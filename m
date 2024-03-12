@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-99806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC3E3878DB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:00:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F752878DB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A93DD1C21875
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:00:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8E75B21066
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720FFB67F;
-	Tue, 12 Mar 2024 03:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F35BE62;
+	Tue, 12 Mar 2024 03:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ofi5QQsi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CydKUjFs"
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF6EB651
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 03:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8691DB664
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 03:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710215996; cv=none; b=MxoOwp2lxEcH72uJ9ySMXgjhK+UAO+ZXLpsVOkTSME7ngnSkGRDVpzah4AoW7+d5gimMDcuzYc466Yqwj2P+SCRR1Es0k+1cd003dXQ3MUBfLODipJddUHSbg2kFTMy2NerQRVJC0ulhgIHkULI1fDaH/aofYW6jIvKhgDlOjKI=
+	t=1710215998; cv=none; b=lb1sYMtVAEz51Cc8ryMjy+uAKVOcz97J2pKjbdXnPKarkbRMHR3Yvr/6IPRFzpcDMcWKOvi/DcVHsfnVgK42Jx8g6Fy+qIJh0f9iU3TABs3jgzVpw2NVh9gyGuIeH+9O4mt5FBYzXHcYmE5iy8ZhEpJeMcfPOz1KNd9RE/ADXMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710215996; c=relaxed/simple;
-	bh=/xAeJJNCtXuVIj2w2SCBuL5oJF5SU5U+dl21TGId92M=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ZtyNg1HjzX0y4FlzknhRTp89TAzgNBFv3bqRgwl/LvZiLOgUfCgbFcwBtJLgW8nOfkB0i1jLO30Z0WPBC+ltMn6Ga0TzvcRaoitiTpkl6CKosU/mTjcobxDjP6g6+7YcejrYm8SmnKaxqM91wrjIxL5xRJmJwd4SBrgS8JGXfqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ofi5QQsi; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1710215998; c=relaxed/simple;
+	bh=m/auRA+yyVu/UsBSlA7tfXY1w6rfbh8RvewRXf/T0l4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Jmo1v7OCycGryB9gGDI5sX7FembXos+ptZpTHJoKB4T9nX9UN7GFA7/c1u7yrY5+0w1xeE78fHTfa8M7D5GwujuJnNkMT5EcH44xj+7ovjfEQpcRjnCZU2JEMc1mk18dF1hB61b2k+evi9/aPYiZu+6zHBVzLvKptCZt5Ax9plA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CydKUjFs; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso7799211276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:59:54 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so8321339276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:59:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710215994; x=1710820794; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=H0vvm77KC92mPCMDKE7JIHK7Q88ob4yruXgItrPO0iI=;
-        b=Ofi5QQsiZqnIQ2kHZAXmB63TZorvBU+zx0bv4pWdMs1sYDZmHAfNJ8+RxunzwOzpjK
-         KNkYgIRYhQ6dYCelrCMrgGfy84SoPtmnuISTCo9ovbmKF6BVJIZ2GI9ImWbo61aIQZ4/
-         OT8ptOQCYmL0DX/V3azwRXoiVpiWCd/wgtm+81rQ9Q/8kEqyNbOVStx3CxS47uQio+ZK
-         OCCo1JlqtuJKCbqAko28GXCVsjhqr3sstOQY9c2UkTLi7ccZIy8zLYAaUxlrTpjMXXnn
-         yw39NI1wG354eQYLEVtOzN9ZPcDED2Fvgp9EeXt2BpNJbbn2pbgtXlLd/lqpEwmSkbv/
-         MuAA==
+        d=google.com; s=20230601; t=1710215995; x=1710820795; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GoKed6yKAS+GwnXsUmVoWRiO+MONN8g5vxEH6EyDAwM=;
+        b=CydKUjFsTnQq15UupCxAbiLlyyInCPUYPpvGi7fR4i0/xgcVrByqg5uZU1nzFbBJTd
+         OWtACPlDBDew3dPSKIlAqqk+dDdbjSeFIIh3RFazbLpsKAd5osAN8+v1C4tO+vF1q4Tw
+         ClyPtehjM32kp+tTupRvCg+g6hi5/rQXmf/YsQjZ5XQGU7GWcRH9XCyPmXZN79a3Y/jv
+         IKIhzinZXc0mXjRfXJBxJy+3EyfC7Vg/0ULxJuSD4+S5V4a/0l6dAQ+91GO+wXu+QuOM
+         ScffZBP077hOn7qWgitXiBlfjl6GsyUOdxOXBYFz1VWF4vGisb4zpF2hazwpE7d5EvHU
+         QOvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710215994; x=1710820794;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H0vvm77KC92mPCMDKE7JIHK7Q88ob4yruXgItrPO0iI=;
-        b=FIDzy2pczuXpZgwqhdjZ8gQmF8presHNmWirPFf+zgn5bGeDSEPPfzISMNAE5OUJoc
-         RnKlpuCYpZGgFsJAW7kPaGJrIkHGoifvikurqVu1hby3O5cfoXR4TTyDn4zlZWO+NYVZ
-         YgDeCy705btdeYkxrPQXSE2ogXRSce9KSgOQB+HKSDKCON0wdogsgebyuyr43ZtjhAh9
-         7iWzHj1mR7dRcx1I0vuZF0VC8YfUcIKQy6UJFwOWnLQlGEGxHkp9FzIlyMFvj+jCe+Ex
-         6ADiQJrYTVLRg1P7Wvt4re2tmYxOaw3w7Rs56QarjvM4d7qgUFWFr7aBN770uSOpJHV2
-         nX+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVZaBpcsZkpBL5Qm6N++727BHmCLu1q4Bns48f9sS3A6D+uWLbN5cYkCPYqHvbaJEf2Z6qqJRQ6cbteZ5lOk/qdBDJ18tyX/0CI7egy
-X-Gm-Message-State: AOJu0YxsO/k+prSyag4SU+haLTdjt5vDLTN7M3bsxb3Cn0UpmhARt2RV
-	iUd7VSNvIQa2Pww7itMqxSyeggPil91aENBkbf8jPnM9wNCziO7+MSn1hiTFzxBrDyLBz6eF+7/
-	NZJAU57h56Ad5yRHAxw==
-X-Google-Smtp-Source: AGHT+IE3j2RbmWLGWhXwtCN+tJydKqNDYdq63uVBUe/GpO70ij5hxpAGdtBQ8Cwz7kcE3p6RwDKKNDFJe0VFKiIx
+        d=1e100.net; s=20230601; t=1710215995; x=1710820795;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GoKed6yKAS+GwnXsUmVoWRiO+MONN8g5vxEH6EyDAwM=;
+        b=MRtekV7X5QX9VEvi3LkWJcuccudQT+azArei4nvh2NH0t2Rn4zk+mS34CMlqMKNZ87
+         eD3CyznvHk4x1bYQ76moIquWQIbXvySIApmPR5ZaOsUgs6z7K/mAUoeMisgmERUdW3Du
+         4xK+fclCiXb08I5O+RvJhu7+ws2hsGDFK5y2JlNqh94tA45dNa9mhbPUIo9vmcLcnibB
+         8193+m9kaZ0L3WbRF4BeNQGN92rcRGxLJQx9xCC3u2MXFk9LT+TXDS5nF/XeFN9lzQBg
+         68V6ca/N1hg/hvKbIc2/YSrVA3n77Mn2BUiI2LhRkrvUTFVNK5tNzwhq2OrsStM1aCL1
+         HK+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUlBn2uVogndXiJUGduiDvGl9j2tsbwCaMwXU2JHC1hx6ZO5M67g/2F0OmXxiZ/ffl4ovn7VKAJWPF2eMeN+m6yMH1TWUZoZ5PfhLcs
+X-Gm-Message-State: AOJu0YxvIw7b01JjVjC1jjAd+jWOJRP3SEzp3FqQTIWzmLLiO2VO064s
+	ZJwIvxXHsAwarZMXl5PcGj2NOHhRLcxwBgXnFLCX2s383ZVF6CPKDVYO/fyKcOA569rpl5PNvsZ
+	UyDsiu27AD4DdcefPew==
+X-Google-Smtp-Source: AGHT+IExFRL/azN3q8HgBq6A2xtMpxQXpFaPTK8KJYQ1jXBub6ECtGohzNaeSuMsvvLKLtLSLkGboXwUHiFLXv1f
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:f02:b0:dcd:2f2d:7a0f with SMTP
- id et2-20020a0569020f0200b00dcd2f2d7a0fmr427882ybb.9.1710215994014; Mon, 11
- Mar 2024 20:59:54 -0700 (PDT)
-Date: Tue, 12 Mar 2024 03:59:49 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:1081:b0:dc7:8e30:e2e3 with
+ SMTP id v1-20020a056902108100b00dc78e30e2e3mr2416970ybu.2.1710215995630; Mon,
+ 11 Mar 2024 20:59:55 -0700 (PDT)
+Date: Tue, 12 Mar 2024 03:59:50 +0000
+In-Reply-To: <20240312035951.3535980-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240312035951.3535980-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240312035951.3535980-1-yosryahmed@google.com>
-Subject: [PATCH 1/3] x86/mm: Use IPIs to synchronize LAM enablement
+Message-ID: <20240312035951.3535980-2-yosryahmed@google.com>
+Subject: [PATCH 2/3] x86/mm: Fix LAM inconsistency during context switch
 From: Yosry Ahmed <yosryahmed@google.com>
 To: x86@kernel.org
 Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
@@ -84,116 +87,151 @@ Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borisl
 Content-Type: text/plain; charset="UTF-8"
 
 LAM can only be enabled when a process is single-threaded.  But _kernel_
-threads can temporarily use a single-threaded process's mm.
+threads can temporarily use a single-threaded process's mm.  That means
+that a context-switching kernel thread can race and observe the mm's LAM
+metadata (mm->context.lam_cr3_mask) change.
 
-If LAM is enabled by a userspace process while a kthread is using its
-mm, the kthread will not observe LAM enablement (i.e.  LAM will be
-disabled in CR3). This could be fine for the kthread itself, as LAM only
-affects userspace addresses. However, if the kthread context switches to
-a thread in the same userspace process, CR3 may or may not be updated
-because the mm_struct doesn't change (based on pending TLB flushes). If
-CR3 is not updated, the userspace thread will run incorrectly with LAM
-disabled, which may cause page faults when using tagged addresses.
-Example scenario:
+The context switch code does two logical things with that metadata:
+populate CR3 and populate 'cpu_tlbstate.lam'.  If it hits this race,
+'cpu_tlbstate.lam' and CR3 can end up out of sync.
 
-CPU 1                                   CPU 2
-/* kthread */
-kthread_use_mm()
-                                        /* user thread */
-                                        prctl_enable_tagged_addr()
-                                        /* LAM enabled on CPU 2 */
-/* LAM disabled on CPU 1 */
-                                        context_switch() /* to CPU 1 */
-/* Switching to user thread */
-switch_mm_irqs_off()
-/* CR3 not updated */
-/* LAM is still disabled on CPU 1 */
+This de-synchronization is currently harmless.  But it is confusing and
+might lead to warnings or real bugs.
 
-Synchronize LAM enablement by sending an IPI from
-prctl_enable_tagged_addr() to all CPUs running with the mm_struct to
-enable LAM. This makes sure LAM is enabled on CPU 1 in the above
-scenario before prctl_enable_tagged_addr() returns and userspace starts
-using tagged addresses, and before it's possible to run the userspace
-process on CPU 1.
+Update set_tlbstate_lam_mode() to take in the LAM mask and untag mask
+instead of an mm_struct pointer, and while we are at it, rename it to
+cpu_tlbstate_update_lam(). This should also make it clearer that we are
+updating cpu_tlbstate. In switch_mm_irqs_off(), read the LAM mask once
+and use it for both the cpu_tlbstate update and the CR3 update.
 
-In switch_mm_irqs_off(), move reading the LAM mask until after
-mm_cpumask() is updated. This ensures that if an outdated LAM mask is
-written to CR3, an IPI is received to update it right after IRQs are
-re-enabled.
-
-Fixes: 82721d8b25d7 ("x86/mm: Handle LAM on context switch")
-Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- arch/x86/kernel/process_64.c | 13 +++++++++++--
- arch/x86/mm/tlb.c            |  7 +++----
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/mmu_context.h | 8 +++++++-
+ arch/x86/include/asm/tlbflush.h    | 9 ++++-----
+ arch/x86/kernel/process_64.c       | 6 ++++--
+ arch/x86/mm/tlb.c                  | 8 +++++---
+ 4 files changed, 20 insertions(+), 11 deletions(-)
 
+diff --git a/arch/x86/include/asm/mmu_context.h b/arch/x86/include/asm/mmu_context.h
+index 8dac45a2c7fcf..19091ebb86338 100644
+--- a/arch/x86/include/asm/mmu_context.h
++++ b/arch/x86/include/asm/mmu_context.h
+@@ -88,7 +88,13 @@ static inline void switch_ldt(struct mm_struct *prev, struct mm_struct *next)
+ #ifdef CONFIG_ADDRESS_MASKING
+ static inline unsigned long mm_lam_cr3_mask(struct mm_struct *mm)
+ {
+-	return mm->context.lam_cr3_mask;
++	/*
++	 * When switch_mm_irqs_off() is called for a kthread, it may race with
++	 * LAM enablement. switch_mm_irqs_off() uses the LAM mask to do two
++	 * things: populate CR3 and populate 'cpu_tlbstate.lam'. Make sure it
++	 * reads a single value for both.
++	 */
++	return READ_ONCE(mm->context.lam_cr3_mask);
+ }
+ 
+ static inline void dup_lam(struct mm_struct *oldmm, struct mm_struct *mm)
+diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+index 25726893c6f4d..69e79fff41b80 100644
+--- a/arch/x86/include/asm/tlbflush.h
++++ b/arch/x86/include/asm/tlbflush.h
+@@ -399,11 +399,10 @@ static inline  u64 tlbstate_lam_cr3_mask(void)
+ 	return lam << X86_CR3_LAM_U57_BIT;
+ }
+ 
+-static inline void set_tlbstate_lam_mode(struct mm_struct *mm)
++static inline void cpu_tlbstate_update_lam(unsigned long lam, u64 untag_mask)
+ {
+-	this_cpu_write(cpu_tlbstate.lam,
+-		       mm->context.lam_cr3_mask >> X86_CR3_LAM_U57_BIT);
+-	this_cpu_write(tlbstate_untag_mask, mm->context.untag_mask);
++	this_cpu_write(cpu_tlbstate.lam, lam >> X86_CR3_LAM_U57_BIT);
++	this_cpu_write(tlbstate_untag_mask, untag_mask);
+ }
+ 
+ #else
+@@ -413,7 +412,7 @@ static inline u64 tlbstate_lam_cr3_mask(void)
+ 	return 0;
+ }
+ 
+-static inline void set_tlbstate_lam_mode(struct mm_struct *mm)
++static inline void cpu_tlbstate_update_lam(unsigned long lam, u64 untag_mask)
+ {
+ }
+ #endif
 diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 33b268747bb7b..76e91fc68c5f3 100644
+index 76e91fc68c5f3..748d2b3bdb985 100644
 --- a/arch/x86/kernel/process_64.c
 +++ b/arch/x86/kernel/process_64.c
-@@ -750,6 +750,16 @@ static long prctl_map_vdso(const struct vdso_image *image, unsigned long addr)
- 
- #define LAM_U57_BITS 6
- 
-+static void enable_lam_func(void *__mm)
-+{
-+	struct mm_struct *mm = __mm;
-+
-+	if (this_cpu_read(cpu_tlbstate.loaded_mm) == mm) {
-+		write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
-+		set_tlbstate_lam_mode(mm);
-+	}
-+}
-+
- static int prctl_enable_tagged_addr(struct mm_struct *mm, unsigned long nr_bits)
+@@ -753,10 +753,12 @@ static long prctl_map_vdso(const struct vdso_image *image, unsigned long addr)
+ static void enable_lam_func(void *__mm)
  {
- 	if (!cpu_feature_enabled(X86_FEATURE_LAM))
-@@ -782,8 +792,7 @@ static int prctl_enable_tagged_addr(struct mm_struct *mm, unsigned long nr_bits)
- 		return -EINVAL;
+ 	struct mm_struct *mm = __mm;
++	unsigned long lam = mm_lam_cr3_mask(mm);
++	u64 untag_mask = mm_untag_mask(mm);
+ 
+ 	if (this_cpu_read(cpu_tlbstate.loaded_mm) == mm) {
+-		write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
+-		set_tlbstate_lam_mode(mm);
++		write_cr3(__read_cr3() | lam);
++		cpu_tlbstate_update_lam(lam, untag_mask);
  	}
+ }
  
--	write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
--	set_tlbstate_lam_mode(mm);
-+	on_each_cpu_mask(mm_cpumask(mm), enable_lam_func, mm, true);
- 	set_bit(MM_CONTEXT_LOCK_LAM, &mm->context.flags);
- 
- 	mmap_write_unlock(mm);
 diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 5768d386efab6..e8feb2e154db2 100644
+index e8feb2e154db2..b2f74c451b3d7 100644
 --- a/arch/x86/mm/tlb.c
 +++ b/arch/x86/mm/tlb.c
-@@ -497,9 +497,9 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- {
- 	struct mm_struct *real_prev = this_cpu_read(cpu_tlbstate.loaded_mm);
- 	u16 prev_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
--	unsigned long new_lam = mm_lam_cr3_mask(next);
- 	bool was_lazy = this_cpu_read(cpu_tlbstate_shared.is_lazy);
- 	unsigned cpu = smp_processor_id();
-+	unsigned long new_lam;
- 	u64 next_tlb_gen;
- 	bool need_flush;
- 	u16 new_asid;
-@@ -622,9 +622,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 			cpumask_clear_cpu(cpu, mm_cpumask(real_prev));
- 		}
+@@ -11,6 +11,7 @@
+ #include <linux/sched/smt.h>
+ #include <linux/task_work.h>
+ #include <linux/mmu_notifier.h>
++#include <linux/mmu_context.h>
  
--		/*
--		 * Start remote flushes and then read tlb_gen.
--		 */
-+		/* Start receiving IPIs and then read tlb_gen (and LAM below) */
- 		if (next != &init_mm)
- 			cpumask_set_cpu(cpu, mm_cpumask(next));
- 		next_tlb_gen = atomic64_read(&next->context.tlb_gen);
-@@ -636,6 +634,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 		barrier();
+ #include <asm/tlbflush.h>
+ #include <asm/mmu_context.h>
+@@ -635,7 +636,6 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
  	}
  
-+	new_lam = mm_lam_cr3_mask(next);
- 	set_tlbstate_lam_mode(next);
+ 	new_lam = mm_lam_cr3_mask(next);
+-	set_tlbstate_lam_mode(next);
  	if (need_flush) {
  		this_cpu_write(cpu_tlbstate.ctxs[new_asid].ctx_id, next->context.ctx_id);
+ 		this_cpu_write(cpu_tlbstate.ctxs[new_asid].tlb_gen, next_tlb_gen);
+@@ -654,6 +654,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 
+ 	this_cpu_write(cpu_tlbstate.loaded_mm, next);
+ 	this_cpu_write(cpu_tlbstate.loaded_mm_asid, new_asid);
++	cpu_tlbstate_update_lam(new_lam, mm_untag_mask(next));
+ 
+ 	if (next != real_prev) {
+ 		cr4_update_pce_mm(next);
+@@ -700,6 +701,7 @@ void initialize_tlbstate_and_flush(void)
+ 	int i;
+ 	struct mm_struct *mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 	u64 tlb_gen = atomic64_read(&init_mm.context.tlb_gen);
++	unsigned long lam = mm_lam_cr3_mask(mm);
+ 	unsigned long cr3 = __read_cr3();
+ 
+ 	/* Assert that CR3 already references the right mm. */
+@@ -707,7 +709,7 @@ void initialize_tlbstate_and_flush(void)
+ 
+ 	/* LAM expected to be disabled */
+ 	WARN_ON(cr3 & (X86_CR3_LAM_U48 | X86_CR3_LAM_U57));
+-	WARN_ON(mm_lam_cr3_mask(mm));
++	WARN_ON(lam);
+ 
+ 	/*
+ 	 * Assert that CR4.PCIDE is set if needed.  (CR4.PCIDE initialization
+@@ -726,7 +728,7 @@ void initialize_tlbstate_and_flush(void)
+ 	this_cpu_write(cpu_tlbstate.next_asid, 1);
+ 	this_cpu_write(cpu_tlbstate.ctxs[0].ctx_id, mm->context.ctx_id);
+ 	this_cpu_write(cpu_tlbstate.ctxs[0].tlb_gen, tlb_gen);
+-	set_tlbstate_lam_mode(mm);
++	cpu_tlbstate_update_lam(lam, mm_untag_mask(mm));
+ 
+ 	for (i = 1; i < TLB_NR_DYN_ASIDS; i++)
+ 		this_cpu_write(cpu_tlbstate.ctxs[i].ctx_id, 0);
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
