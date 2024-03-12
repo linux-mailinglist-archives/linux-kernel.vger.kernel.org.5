@@ -1,221 +1,300 @@
-Return-Path: <linux-kernel+bounces-99792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E2A878D71
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:17:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E1D878D73
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:18:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DD481F21DE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:17:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3D751F21FDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2BCAD5A;
-	Tue, 12 Mar 2024 03:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63BA2B642;
+	Tue, 12 Mar 2024 03:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dOuVIPDu";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="lbPjX/4V"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="TDHOAvTc"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBCD8AD2C;
-	Tue, 12 Mar 2024 03:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710213422; cv=fail; b=pYxH58Re/4PageXDA8bmEAv0No3dkA+5LrxaxY4Ebe7HmlAJELy4LvDSxse6vLvOTsLakAja0e8u+d7sS10K37JuodC6aoK7cnykLqeQC8eoNLawBQ11xesHbuxLKVbguioXfzyNH/5fcwRwDF8wsZ94iVP+kc2MrRnjWSRXMMQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710213422; c=relaxed/simple;
-	bh=mRnTAXa1RW+9+PUHSY4PzxZE8a1JOYlX6tXWuPfgbqA=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 Content-Type:MIME-Version; b=qgnJEyx90fcs17pXdfmM77w1AlwFKDy1rGu+xj3R03JQTvTe/Mj6r/RJT12sPelh3DtDN3Z+0mrtLmJi2Dx1BmHII9dFY4xFvh8J3zk75/LTTzqu4RagRSlIjpAZBShe1beTR5/NcLHPyOpiFRVa9SiFpoD0JYNJ+wJYv+zM6cs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=dOuVIPDu; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=lbPjX/4V; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42C0xI33026232;
-	Tue, 12 Mar 2024 03:15:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
- to : cc : subject : in-reply-to : date : message-id : content-type :
- mime-version; s=corp-2023-11-20;
- bh=m6Q/vQ2y/kdUWFN1Fd/9pldJdXoBv6cb3pNKvJkrbvE=;
- b=dOuVIPDuw2jLRkHjj+D4ql8oBkZlZunlevdENXAIhC9j3+6npB57qv6S3r2JKBvOcRp6
- yZYhCiniUvLQ2p8v32rSGqcXS/uygSeT3mFX71wq2jV0acJtRGVLWDxzHXUMUCUm4KZv
- crjEn5jFfb5kzuYx7UQu0BQL7k7S6SSG9n1wYTsW+6svfCtaF3SgfcCGlyQflJfccqF2
- ddAwAKgNocCLCI2bcAJ5Q+KG88+B6GXyoATCuzuOU+2neLjEXDQE3TUYyUrgHIc/9XxM
- orYzf0SSImCt1Pghj3K36uh4/Q67bojlUjpZT+Gql2mGByFsBgjDelgxC9PG3g9idRef TA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrgaumrkv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 12 Mar 2024 03:15:44 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42C2ZYNl009116;
-	Tue, 12 Mar 2024 03:15:42 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre7cu817-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 12 Mar 2024 03:15:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d+3wyTMgiige2nogzjhbigPrpbOE6rOwYMgEDDoImqvVf4sqUlCpFxu6gNsZeNYT+dRKm0hOaF+1/7Lq0Y4E/BVBD8Z5oNHrgRbfBdkdJXGcGp86t4HsKhGos18lmsVF4+TIVUZYC5aaHVZRLxtmvK3SUOlDJ3vJdtgGlCe/x1hxDYJz/QwUXM8Qf8+FkidPUR5gWfJwQpaSoue6gq9mui2Za5teBsdZeE1EflyQbnpjBAH+GjfXJwYU2M1KqK/TZsTcorqMFeId8GVPKIAqU0GWx9cjUi2a2sOfayWitKaPdkZulUnyy6bRh/NyAT5Dtibla+5l6COkDJMaQqI5QQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m6Q/vQ2y/kdUWFN1Fd/9pldJdXoBv6cb3pNKvJkrbvE=;
- b=HHExKq78URPME1TyO43/79DRJIiaiEJrLM5iue+3LFn+ATrNnWRVOWY0/AAYFLZcpvl2c3xJTmO1JkO/YNjWGPnW59gelc9HsuCl25WF+zp+xk7i3sA+HpvCr4c337OZHuq2fSmDjwGKv4ctxbGnFo727G6yiK39bLNkfdjhxmihL19Bo/qcjmWSuDUalFUUyGVALrm5Rh2vhPyB2X6JtHXXussYMJ2Qun/b8lEYoCJ7FDPiT0ICt33rPG3qM2fgi3YGqAHKqPXeJNEeu5wxNYa+QqtMKUrdOKITkR8r/AagYY37YLwBvL/YPfXCzXRMR8i/hAdPcRCCRYixQViDsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m6Q/vQ2y/kdUWFN1Fd/9pldJdXoBv6cb3pNKvJkrbvE=;
- b=lbPjX/4VueuBqC0ejRS6SOAAX9jGglz+EzFo9g6CvZ2OsufK8WWgvIQbmF2Wr/ZMo/j87rI5tII++PfxWP6mtCWmN4EuOsBllbGSd+hx+/JUX246jRlJb26XmH/Mw043cEbbNsioi7Yga44Zn+YxkI1DdCpuBUCQu7NwGGdXlrA=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by SJ0PR10MB5803.namprd10.prod.outlook.com (2603:10b6:a03:427::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Tue, 12 Mar
- 2024 03:15:40 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::4104:529:ba06:fcb8]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::4104:529:ba06:fcb8%7]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
- 03:15:40 +0000
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
- <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
- <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
- <87r0ghl51f.fsf@oracle.com>
- <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
- <87wmq8pop1.ffs@tglx>
- <5b78a338-cb82-4ac4-8004-77a3eb150604@joelfernandes.org>
-User-agent: mu4e 1.4.10; emacs 27.2
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora
- <ankur.a.arora@oracle.com>, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-        andrew.cooper3@citrix.com, bristot@kernel.org,
-        mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
-        glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
-        mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
-In-reply-to: <5b78a338-cb82-4ac4-8004-77a3eb150604@joelfernandes.org>
-Date: Mon, 11 Mar 2024 20:16:12 -0700
-Message-ID: <87msr4f8cj.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: MW2PR2101CA0035.namprd21.prod.outlook.com
- (2603:10b6:302:1::48) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C12CBE47;
+	Tue, 12 Mar 2024 03:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710213468; cv=none; b=FI7wdVAiBUqpoXFsNO1VlDKGh/BrJ4LBUiX/eXqr/NI+hMjgFa4BCLsq5EoXxz2IMiw1c90gAP2jjsJKs7VXOhQO9kvJhaWJ/DJOXxchUeYva0ttJjTZSAYsIFTxclSn7ZohLpzrpmgRZ/i/YqCe5fQOPW03w+sP4wOADuMlBvE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710213468; c=relaxed/simple;
+	bh=gCU/8+rGJquOzWlNFTKioOfIucB/209HLTC6XzQ2oO8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NEZaW4AoLMxGiRWpBBfYWxK6dcmVgpCTOqto6NorDiuuxfyvfKi+JSOMfwhbt3wApMTX4x7lFw5726Lwizz/HzwmKxTYtE8KrqbwzONcx3pm9E3euNowCO8SnomhpSKcvWWyN2NHjHmO77TXzZ5YN8pbBjv66Dz+e2ab/6lQEAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=TDHOAvTc; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C4B9E20004;
+	Tue, 12 Mar 2024 03:17:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1710213463;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZFmSRgpKIHH0ycxxrAMw+1qR99TDGu7qYDmZTP8gJrs=;
+	b=TDHOAvTc6rbQ6YCr1txxvT1IGNL5xX5QrU5j0HpZXu+C4q26mETHl3rgkfsn2xUClcTtNz
+	S4AFgqnUXX+UWzm7gKJq3NGQ2FMybEkhgrY8p4/trE26tsZwSrMETeYEgUhNlgJQ382HFe
+	b9O/kLchk+8zreKrdBkGhkeiFoSl5WDIH/XAi/H+GSSRK79J+jOutb7tal0FSlqHBSr41R
+	Pk1BGEq/8WV5c0iY4hq/xOaLWRUEBaPPS4hnsPWilfFheyY4DvOpGYYYQGY34CleZefl7x
+	LH6EvOY0r6HIb/vcmGBXBFPmFEcOpCc6b8QgX3lRyyjN9w0W6mB8rNNJVHWW7w==
+Message-ID: <6d601f06-7760-41d7-a190-2f370f7827ba@arinc9.com>
+Date: Tue, 12 Mar 2024 06:17:26 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|SJ0PR10MB5803:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8aedd639-68e3-4320-6c94-08dc4242b1f2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	t6IiCkgmaDr3oSI8H9QHkggWoMzY1m6GxiJdErv54bsL1XiAWGB1BSIp4/riq+HUllQbpPzWF5PE7J3JOtCG/78sAPdQVZK1QE1/D208exJrB4SApcCvgdtYqQq/V6xBzJJ1HQKDz9mNKa//YyK+R5wi34Rh/gXe/Us+nl9q4Sz81Zu6D7YH5zUAGR8xBERxunlKfl09Q3ET4i1cBwf+kNNZJ3DimHt1XCp3qNT83qfzEAuY9uaf/mWSzs75bCREzz2wKh6pUdfmMUWEHxh/dzxrMnrYedLDuiEDgW4uJ915y3YRNwNNx2cOZfK6zDdm/arEoKGz/id6E0pE7APiIaIwQa2XqL/5IF75ZC1u88DKwyTXwt33dx4iiCfUvG/JZ/FZ4M49V/UPlWCsbK/qwFf1Xi7miJrRYQTJx0R4jpMgDmcmxaQXbqdmaFrHfgb8XFvyw3ZcM4FL8icRMn+SRqBOQ21LUbz/9Fl8FWqDX/q/BdAlJQbE97tC7i6DbgysQ2JOm5m9JTyOvLc+h7DpOGL/LZTp94JgYZf4EphAoesjPVl1w7e7htg1PcP8vzuknk+S6hIZ5PhGUvvGCyLQZ3MR02emjJaSMTZeJk6uwy8=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?vIEasew2LRTSlr8yz8jx/G4d+XylDKYtEWD+qGlNus+rwHHtbJDgovxblCH5?=
- =?us-ascii?Q?91ghR49vsHPr1VPk/063Qv2Ukly/hkAGL6FhJ5Lf7SsVg30cMD7n4z5lhG29?=
- =?us-ascii?Q?iV/h7m3Z1f5VQ4gtVg+k/t9+CJnjaqczi5+dwa37TKXCF+wW4qUtqxKurUxr?=
- =?us-ascii?Q?iZcI6xHHbFRwxqFlGBbX6WD3N13mGqyJf6Qh4wZi+6A/bnDCAAm5qEs2bsC1?=
- =?us-ascii?Q?EuDkws+bQjbLiocufKXgfep1oAWd6aP+/l6aZhCbx3ERNq805l2yfsdjitaQ?=
- =?us-ascii?Q?5LBXZHpIi7UD3DGvYFkv7wRRf6kGYPNllweX47bKdN8cJlMriTqAAfQiAQOM?=
- =?us-ascii?Q?0p8gOe9FTmfQDP89352NuKsADMc4YuFHXpnTSCEDh4Ia0eTbDRyvzlksQ/l7?=
- =?us-ascii?Q?Hh3xUmnCrFqABt5kRitCM4hAzo8X0NWwlvTTDi6DAJTKWdViQwmqrrNyzt0D?=
- =?us-ascii?Q?UlM72BAlo/Kve0BeCR7ViCR3EDvUA0vLV+iozGPp6WMqWKoTiFgoTwbkdIJH?=
- =?us-ascii?Q?t2+ymcW65N1bZhPfrzL0FpIwouGutdjyLImLEBZl5q8BqkoVs9m8gC681pUR?=
- =?us-ascii?Q?sLnlchZst8EXRrRmZUxKygYOjRPwgfMtreHZKX15NSxUGpLbGGUITDOrmzjX?=
- =?us-ascii?Q?Sg4G+ZxrbaHPQ3nbjY+K2adE2mSovyLP39lh7nnJI6E70dnPUouvKxzh4aQJ?=
- =?us-ascii?Q?oJv0cyRw1lokgSnMQwZaMhr+DJQSQPy5IyyzGzlSxzYP35jFJQtOXi8jLG2c?=
- =?us-ascii?Q?Rqh0VwzOau4+ukz3rL2+QAAyFRTOzAQL8f97mU2qtB7FmNz0m9cHKqtB2HEc?=
- =?us-ascii?Q?ckNTcEuwpZIP+GKHuEKXqfSftFE9+L43BsSl/nyTF90ey7t1ZPJhnM5LSsGd?=
- =?us-ascii?Q?MXmXyAptqQsfpAaka8MgI+xiySlovnMVtoGzbML2B2EJi9SCTIz4jXE+Icb+?=
- =?us-ascii?Q?WaVLkxvd6pUWmbyZwRUAPoLmGPQcS2t1es1GPkGlvaosWC8VEn6bLkfYvj8h?=
- =?us-ascii?Q?YwfuKsMgK/IPHfI3ayzVVc2DHUld5KvMq8eY8RHgIPUEg+3JBL7In6Crc9Ze?=
- =?us-ascii?Q?Xdx0mjROe1u7d2E5URCLieyMpi/jZwrwQZWxMJPuvJGwvNgF1EpJmVj3OiYQ?=
- =?us-ascii?Q?OAbi4uJp/GSt+DY1AEy9lfASlsIZag+82vBAdQ1NOc7A96diGuVJ/dWSt4mx?=
- =?us-ascii?Q?LqT2m+GGpCaXKHkKOWFopuwA2XWXjwCXOe77rbzXPqzNrDmNpermdo8wFYVq?=
- =?us-ascii?Q?hUYkzqy8lpgBhyydLBvkiLfQiPjRi17DaW1TeV/R68/DQirR5bhWLBX9mR0d?=
- =?us-ascii?Q?629jgRgJkJDo3hSnLXYYTBGL5jJemAvQ8BW83G69ji3dDjG/UOgijL6ldgVu?=
- =?us-ascii?Q?DE6IkY8JgC9O7VT96T9Izare/Iys6hUphyg4xQuovCHQAg7ljfiBF0D0rNlJ?=
- =?us-ascii?Q?HYbFxn6FMPfpcsocxBs/MTzVZMMDNnXSTSlidZRLxY+3w9DqezfYGAearprE?=
- =?us-ascii?Q?xTtadUJQBgYAyJW4j+Tft2q02nBfZOdmNSr7nZ1kjfZ4Zfg4SdG8vTsHJo2D?=
- =?us-ascii?Q?LWloPEGL4dSK0IqWZbYYHT9+v6UIgIcvEgd5cwSGMfNONfcoPTbZQM5snGP6?=
- =?us-ascii?Q?1w=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	Um0gcGoVMVGLFWSMrI7BFaQ4UAIX8uo43m3cIP2lpEXU6IDC9XGyg2BDs/U4p3jNMT8clcJy567UMSxMwt49xSga0fCwZW8aCIkIpJqPcdxFdhL4FDryr88jwkiAJgfoUqt2hYN3WdKavYjy7T4rEMkhP0RB6ZjRuMrBCyje2c0MlLCdP+S/r2QHDMLtslnt0uD7oLgQAEsjvFq89GEZCa7Vjc5Fn135C8Od2MpNRjhU1Jw12TOcEyRpiEYHCJEy6Z8QbOQ/NEGdxjLFsjIKkccDP8j0ZS2JJs9scaswu1GYJqDfKM0a+W6a7DbvQPsn0sS1+2GILVhuw+/0H5dhlq/saYh1EKWZExNBRiF/O7MlKB6Cm5HuFr2JWNR99wOuMaRPTBf9vsoQ1m6+Hgbv3ZWdkbrqdJnE2FDWZyl3c8OuZJXn7JVTE4GbyLLfHLL0cn8qIlU71jvdcagmkZ5yemxCrpqGQBz+DY8wwed4IQTQqtg4kS19saiFsdqWWTi28jb5r2dMJgr41NvLx9wy13t2ow3m5RYLr9u3zSv9R/zD/aLylSxx8m4P8VRFzFXOi/gNFV3rlcp5JO0u3AhxHzAm/zf9vJSobDlfyyu/qpE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8aedd639-68e3-4320-6c94-08dc4242b1f2
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 03:15:40.2675
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gsWHdc+fYmYqEHgRlcKO2UktnLdB0hhfgRaijwXuFtkZYw3inCOUxZKp+flmxX2LxY79YC9WjN2YFJAocwpK7G0w5nZyD19b02NyctIsbpI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5803
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_02,2024-03-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403120024
-X-Proofpoint-GUID: 9RWi8GXA2qZYevKGBXSInQLiXx-G4rVR
-X-Proofpoint-ORIG-GUID: 9RWi8GXA2qZYevKGBXSInQLiXx-G4rVR
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: dsa: mt7530: disable LEDs before reset
+Content-Language: en-US
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: patchwork-bot+netdevbpf@kernel.org,
+ Justin Swartz <justin.swartz@risingedge.co.za>, dqfext@gmail.com,
+ sean.wang@mediatek.com, andrew@lunn.ch, f.fainelli@gmail.com,
+ olteanv@gmail.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
+ <171019143163.14853.15330891015381229970.git-patchwork-notify@kernel.org>
+ <2d206dbb-a27b-4139-a49e-331797d8ba34@arinc9.com>
+ <Ze9-mp269h43WGD3@makrotopia.org>
+ <2846b377-f45b-45fd-9fe2-cb22615e0fd5@arinc9.com>
+ <Ze-XHH4yFjXC0p11@makrotopia.org>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <Ze-XHH4yFjXC0p11@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
+On 12.03.2024 02:43, Daniel Golle wrote:
+> On Tue, Mar 12, 2024 at 02:27:25AM +0300, Arınç ÜNAL wrote:
+>> On 12.03.2024 00:58, Daniel Golle wrote:
+>>> On Tue, Mar 12, 2024 at 12:22:48AM +0300, Arınç ÜNAL wrote:
+>>>> Why was this applied? I already explained it did not achieve anything.
+>>>
+>>> I agree that we were still debating about it, however, I do believe
+>>> Justin that he truely observed this problem and the fix seemed
+>>> appropriate to me.
+>>>
+>>> I've explained this in my previous email which you did not notice
+>>> or at least haven't repied to:
+>>>
+>>> https://patchwork.kernel.org/project/netdevbpf/patch/20240305043952.21590-1-justin.swartz@risingedge.co.za/#25753421
+>>
+>> I did read that and I did not respond because you did not argue over any of
+>> the technical points I've made. All you said was did I repeat the test
+>> enough, on a technical matter that I consider adding two and two together
+>> and expecting a result other than four.
+>>
+>> How I interpreted your response was: I don't know much about this, maybe
+>> you're wrong. Justin must've made this patch for a reason so let's have
+>> them elaborate further.
+>>
+>>>
+>>> In the end it probably depends on the electric capacity of the circuit
+>>> connecting each LED, so it may not be reproducible on all boards and/or
+>>> under all circumstances (temperature, humindity, ...).
+>>
+>> I'm sorry, this makes no sense to me. I simply fail to see how this fits
+>> here. Could you base your argument over my points please?
+> 
+> Sure, will happily do so.
+> 
+>>
+>> Do you agree that the LED controller starts manipulating the state of the
+>> pins used for LEDs and bootstrapping after a link is established?
+> 
+> Yes. But a reset may happen while a link is already up because the switch IC
+> was initialized and in use by the bootloader. And hence LED may be powered
+> by the LED controller in that moment **just before reset**.
 
-Joel Fernandes <joel@joelfernandes.org> writes:
+Yes.
 
-> Hi, Thomas,
-> Thanks for your reply! I replied below.
->
-> On 3/11/2024 3:12 PM, Thomas Gleixner wrote:
->> On Mon, Mar 11 2024 at 11:25, Joel Fernandes wrote:
+> 
+>>
+>> Do you agree that after power is cut from the switch IC and then given
+>> back, any active link from before will go away, meaning the pins will go
+>> back to the state that is being dictated by the bootstrapping design of the
+>> board?
+> 
+> I don't see how this could be related. We are not talking about power cuts
+> here, but rather use of a RESET signal (typically a GPIO on standalone MT753x
+> or reset controller of the CPU-part of the MCM).
 
-   [ ... ]
+Ok that makes sense. Thanks for clearing that up for me.
 
->> What's wrong with the combination of PREEMPT_AUTO=y and PREEMPT_RCU=n?
->> Paul and me agreed long ago that this needs to be supported.
->
-> There's nothing wrong with it. Its just a bit quirky (again just a point of
-> view), that for a configuration that causes preemption (similar to
-> CONFIG_PREEMPT=y), that PREEMPT_RCU can be disabled. After all, again with
-> CONFIG_PREEMPT=y, PREEMPT_RCU cannot be currently disabled.
+> 
+>>
+>> Do you agree that with power given back, the HWTRAP register will be
+>> populated before a link is established?
+> 
+> Yes sure, but see above.
+> 
+>>
+>>>
+>>> Disabling the LEDs and waiting for around 1mS before reset seems like
+>>> a sensible thing to do, and I'm glad Justin took care of it.
+>>
+>> Let's ask Justin if they tested this on a standalone MT7530. Because I did.
+>> The switch chip won't even be powered on before the switch chip reset
+>> operation is done. So the operation this patch brings does not do anything
+>> at all for standalone MT7530.
+> 
+> This is not true in case the bootloader has already powered on the
+> switch in order to load firmware via TFTP. In this case the link may
+> be up (and hence LEDs may be powered on) at the moment the reset
+> triggerd by probe of the DSA driver kicks in.
 
-I think the argument was that PREEMPT_RCU=y is suboptimal for certain
-workloads, and those configurations might prefer the stronger
-forward-progress guarantees that PREEMPT_RCU=n provides.
+This diff works on MCM MT7530 on MT7621AT. Not on standalone MT7530 on
+MT7623NI SoC. Also, I believe the LEDs turn off at the first mt7530_probe()
+which returns -EPROBE_DEFER.
 
-See this:
-https://lore.kernel.org/lkml/73ecce1c-d321-4579-b892-13b1e0a0620a@paulmck-laptop/T/#m6aab5a6fd5f1fd4c3dc9282ce564e64f2fa6cdc3
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index b012cbb249e4..f1a5673baa55 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -2247,6 +2247,24 @@ mt7530_setup(struct dsa_switch *ds)
+  		}
+  	}
+  
++	/* Waiting for MT7530 got to stable */
++	INIT_MT7530_DUMMY_POLL(&p, priv, MT7530_HWTRAP);
++	ret = readx_poll_timeout(_mt7530_read, &p, val, val != 0,
++				 20, 1000000);
++	if (ret < 0) {
++		dev_err(priv->dev, "reset timeout\n");
++		return ret;
++	}
++
++	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_25MHZ)
++		dev_info(priv->dev, "xtal is 25MHz\n");
++
++	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_40MHZ)
++		dev_info(priv->dev, "xtal is 40MHz\n");
++
++	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_20MHZ)
++		dev_info(priv->dev, "xtal is 20MHz\n");
++
+  	/* Reset whole chip through gpio pin or memory-mapped registers for
+  	 * different type of hardware
+  	 */
 
-and the surrounding thread.
+[    5.319534] mt7530-mdio mdio-bus:1f: reset timeout
+[    5.324371] mt7530-mdio: probe of mdio-bus:1f failed with error -110
+[    5.330803] ------------[ cut here ]------------
+[    5.335427] WARNING: CPU: 2 PID: 36 at drivers/regulator/core.c:2398 _regulator_put+0x15c/0x164
+[    5.344180] Modules linked in:
+[    5.347248] CPU: 2 PID: 36 Comm: kworker/u19:0 Not tainted 6.8.0-rc7-next-20240306+ #36
+[    5.355264] Hardware name: Mediatek Cortex-A7 (Device Tree)
+[    5.360841] Workqueue: events_unbound deferred_probe_work_func
+[    5.366694] Call trace:
+[    5.366710]  unwind_backtrace from show_stack+0x10/0x14
+[    5.374487]  show_stack from dump_stack_lvl+0x54/0x68
+[    5.379551]  dump_stack_lvl from __warn+0x94/0xc0
+[    5.384272]  __warn from warn_slowpath_fmt+0x184/0x18c
+[    5.389431]  warn_slowpath_fmt from _regulator_put+0x15c/0x164
+[    5.395283]  _regulator_put from regulator_put+0x1c/0x2c
+[    5.400611]  regulator_put from devres_release_all+0x98/0xfc
+[    5.406290]  devres_release_all from device_unbind_cleanup+0xc/0x60
+[    5.412577]  device_unbind_cleanup from really_probe+0x25c/0x3f4
+[    5.418603]  really_probe from __driver_probe_device+0x9c/0x130
+[    5.424543]  __driver_probe_device from driver_probe_device+0x30/0xc0
+[    5.431003]  driver_probe_device from __device_attach_driver+0xa8/0x120
+[    5.437639]  __device_attach_driver from bus_for_each_drv+0x90/0xe4
+[    5.443927]  bus_for_each_drv from __device_attach+0xa8/0x1d4
+[    5.449692]  __device_attach from bus_probe_device+0x88/0x8c
+[    5.455370]  bus_probe_device from deferred_probe_work_func+0x8c/0xd4
+[    5.461829]  deferred_probe_work_func from process_one_work+0x158/0x2e4
+[    5.468465]  process_one_work from worker_thread+0x264/0x488
+[    5.474142]  worker_thread from kthread+0xd4/0xd8
+[    5.478865]  kthread from ret_from_fork+0x14/0x28
+[    5.483583] Exception stack(0xf08bdfb0 to 0xf08bdff8)
+[    5.488642] dfa0:                                     00000000 00000000 00000000 00000000
+[    5.496829] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    5.505015] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    5.511688] ---[ end trace 0000000000000000 ]---
+[    5.516493] ------------[ cut here ]------------
+[    5.521153] WARNING: CPU: 2 PID: 36 at drivers/regulator/core.c:2398 _regulator_put+0x15c/0x164
+[    5.529904] Modules linked in:
+[    5.532970] CPU: 2 PID: 36 Comm: kworker/u19:0 Tainted: G        W          6.8.0-rc7-next-20240306+ #36
+[    5.542462] Hardware name: Mediatek Cortex-A7 (Device Tree)
+[    5.548038] Workqueue: events_unbound deferred_probe_work_func
+[    5.553890] Call trace:
+[    5.553900]  unwind_backtrace from show_stack+0x10/0x14
+[    5.561673]  show_stack from dump_stack_lvl+0x54/0x68
+[    5.566737]  dump_stack_lvl from __warn+0x94/0xc0
+[    5.571457]  __warn from warn_slowpath_fmt+0x184/0x18c
+[    5.576615]  warn_slowpath_fmt from _regulator_put+0x15c/0x164
+[    5.582465]  _regulator_put from regulator_put+0x1c/0x2c
+[    5.587794]  regulator_put from devres_release_all+0x98/0xfc
+[    5.593471]  devres_release_all from device_unbind_cleanup+0xc/0x60
+[    5.599757]  device_unbind_cleanup from really_probe+0x25c/0x3f4
+[    5.605784]  really_probe from __driver_probe_device+0x9c/0x130
+[    5.611724]  __driver_probe_device from driver_probe_device+0x30/0xc0
+[    5.618184]  driver_probe_device from __device_attach_driver+0xa8/0x120
+[    5.624819]  __device_attach_driver from bus_for_each_drv+0x90/0xe4
+[    5.631106]  bus_for_each_drv from __device_attach+0xa8/0x1d4
+[    5.636871]  __device_attach from bus_probe_device+0x88/0x8c
+[    5.642549]  bus_probe_device from deferred_probe_work_func+0x8c/0xd4
+[    5.649009]  deferred_probe_work_func from process_one_work+0x158/0x2e4
+[    5.655644]  process_one_work from worker_thread+0x264/0x488
+[    5.661321]  worker_thread from kthread+0xd4/0xd8
+[    5.666042]  kthread from ret_from_fork+0x14/0x28
+[    5.670759] Exception stack(0xf08bdfb0 to 0xf08bdff8)
+[    5.675818] dfa0:                                     00000000 00000000 00000000 00000000
+[    5.684004] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    5.692189] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    5.698858] ---[ end trace 0000000000000000 ]---
 
-Thanks
+> 
+>>
+>> My conclusion to this patch is Justin tested this only on an MCM MT7530
+>> where the switch IC still has power before the DSA subdriver kicks in. And
+>> assumed that disabling the LED controller before switch chip reset would
+>> "reduce" the possibility of having these pins continue being manipulated by
+>> the LED controller AFTER power is cut off and given back to the switch
+>> chip, where the state of these pins would be back to being dictated by the
+>> bootstrapping design of the board.
+>>
+>> Jakub, please revert this. And please next time do not apply any patch that
+>> modifies this driver without my approval if I've already made an argument
+>> against it. I'm actively maintaining this driver, if there's a need to
+>> respond, I will do so.
+>>
+>> This patch did not have any ACKs. It also did not have the tree described
+>> on the subject. More reasons as to why this shouldn't have been applied in
+>> its current state.
+> 
+> It was clearly recognizable as a fix.
 
---
-ankur
+I see that it was applied to the net-next tree[1], not net[2]. Looks like
+it wasn't clear enough. Let's follow the rules.
+
+> 
+> However, I agree that applying it after Ack from an active maintainer
+> would have been better.
+> 
+> I don't see a need to revert it before this debate (which starts to
+> look like an argument over authority) has concluded.
+
+Let's hope this patch makes its way to the net tree.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/log/drivers/net/dsa/mt7530.c
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/log/drivers/net/dsa/mt7530.c
+
+Arınç
 
