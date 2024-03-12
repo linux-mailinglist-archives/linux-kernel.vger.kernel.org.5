@@ -1,120 +1,178 @@
-Return-Path: <linux-kernel+bounces-99768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0297878CFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:26:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12843878D01
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:31:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B87971C212DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:26:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58734282BEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3146FB6;
-	Tue, 12 Mar 2024 02:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3B46FC5;
+	Tue, 12 Mar 2024 02:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VOWFjIxO"
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="jS3BWCrH"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B10811
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AB217F7
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710210381; cv=none; b=HNWm+KII2huSqCWWfUiS8qEOqLhvni8RBRmzctzuUZaRoOkNWPAZ5qRmq6ODtAKj7IDGw8vBrN8N1HVcWDQ0gtwRMOlPq1NkYXhU9u6gxjr06ovY5VXyRMjvVC2Tv4Z5HXyLosHBIEO7cbAzPvSXWZSobhzEEtw+LgCZf0JMOAE=
+	t=1710210666; cv=none; b=lMI4qYX1eVe00+nm/qUjceqJ2lqBOVXKBus49/jnHY+CUcu5HVHqPFOaRh/O/l0/OTXfhPuSVvN8F42SnlYGrLQ+rLWzzHN2Q2nwny8ImCrtxZx8zj15MYpwm4u4RPNbBhrAaljz96SgqCm14ILV61U8f+xfh94sunksqqa2dxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710210381; c=relaxed/simple;
-	bh=BOG56Hxgu8xy+GFwdKiAEcsHH2X1Tu4706t+CFcuHqM=;
+	s=arc-20240116; t=1710210666; c=relaxed/simple;
+	bh=Jp4oGdEKemG1pRpVyq3OL4lJnQ8GpDIBUxxHSm5gwbE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J0+LKJ5+QKhydZ9ITPvZX3qYSs1M2VICqTudqZDmrC32Ar6P1oCngFauybRhdq8YB6fS04tdcsics1KWmWCycvREJN5V6NGoOJtqutOmIKUCa6jZ5Fx0EtPu1IUIJ8NUF6WArxWG4hiL+Osy/5OxWOSl0DUK26r8O+Q17/7cPjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VOWFjIxO; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1c6f90d0-ef3a-4ea4-8de6-ad93c93ed3da@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710210377;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j8bXqps/luirsJ8RKYPi+CeFj7wz4+E9180FYv/b4Y4=;
-	b=VOWFjIxO+KLG+Y2DQgdeXdXmOQt01YCZZIl71j/ooGiYMy1/iZXvWcFbfBJ3i+d1Wb8kHL
-	kxV/sKbb2G2BYvI7ZmvdKpeqasTVvfKLrva39nlG3UkkEX6yJ03kot/SC4l40PI7ABnp6t
-	6JmikJQvMbZGhNIdUJI7gmlC3ka1voY=
-Date: Tue, 12 Mar 2024 10:26:07 +0800
+	 In-Reply-To:Content-Type; b=CkZ7jQTLsqke/Hu9lzbowR43zxxXmjVB/N0F0Y1yPRYfhl6S4yF370j6VbgHLyD5wFCqzg3GM1ONLpGoweIpNDxxb+oRc3++14d8JhplnYsBdIBGGjeVpZtSSeA6qhe3FoMkaVTnjIBElNRXsc+eueo9QdtAPXGXuvnizIMhZQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=jS3BWCrH; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-690b8788b12so26761416d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:31:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710210663; x=1710815463; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+5OTy+HMNxO2KNNfosD/+LOKbpZJTKz1P/Ivks1Gea8=;
+        b=jS3BWCrHA9bnKRyoo45I5We6Z0e285kjMHarkPQdWvec0vXqyXaq5sGLAlbybvOFrU
+         eTseKEgZEFEkO3ASqm0DMoXPfEBh9CHSlVqc0+xc/19LVseQfyTp90+miRgoT6YU6dmj
+         CXQ42k4/Ilm525eCWgEqDQ/oc5TIPV7dU31tGEanyZXS6GgoZsm6QzschCxYPbdOXLv9
+         dg8nUOr2iui/644uJrMy56Ff49t3TLCUe1qCmzC8R5qrPIUWmdx/uYfrBawOG4kWPGs6
+         6x5IqsbfYUGk5rybm94knP9PEuUCnYpx2dfzixmh/cOp+Wq2ZpW3JPljVNG5GOXVTYB9
+         xnPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710210663; x=1710815463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+5OTy+HMNxO2KNNfosD/+LOKbpZJTKz1P/Ivks1Gea8=;
+        b=cO99xmuvGDs3GT8VCTv/1GwU0LV1LkhJnu2sSN2R7mCBbidyOKQMdmO7+yUoeVVgOO
+         ZWYM63Hfl1E6Xa/QReHYH2jLXQDPS6Y4rz+iaPTgbruNuoqnURQoj4BP/DDk4032EmYl
+         yVpTZjwmjxLupg4Vm99le7lUzBUr36/7CzxyMym7tFOPHG76CF7Q+vUCtTZouM+ZAT1n
+         In7hNiqgDRxbzftWFpIZqeYBAcMYEuXKiSbOOPUt+CAWdWDQEaJJn87Lrwig/0dBRTLY
+         8uxPX/wEmvbYKHRy+YOAn1SJGTvRd49oj/ETjpS8P81GfmZOrZdojMcmVU/z3ee5iU15
+         dxXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGIMaDNpUe3QivcygPAIj2thnQztsIKwXUs44M30xOK2C9Noy7aFkHpaGsoOukjQRGRGP0kuM/zGb1X/KQbKsTXJ+4ZUgjry+GDmtR
+X-Gm-Message-State: AOJu0Yydzy3fbHWh1lG3aLupKOaCCJ17eMEV3Zvfw6lyTwBuKYjGFrif
+	gdyft1utPnqRdefN5RLPpZ0MIwLkZMehmDv+UdKDhQkRgR/iROKp0Gjd20vbzFs=
+X-Google-Smtp-Source: AGHT+IE3jUExO30zal8fm27lYAMbEGlk4X8+tg7va5ZCzdoLMgtsJSDXPNSw5kv5bL+JTt8cVDV4YA==
+X-Received: by 2002:ad4:40ca:0:b0:690:7928:87bf with SMTP id x10-20020ad440ca000000b00690792887bfmr8724160qvp.22.1710210663622;
+        Mon, 11 Mar 2024 19:31:03 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.8.176])
+        by smtp.gmail.com with ESMTPSA id qh6-20020a0562144c0600b0069049298fccsm3196085qvb.65.2024.03.11.19.31.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 19:31:03 -0700 (PDT)
+Message-ID: <2d4eac35-26f8-484e-9994-2167f0bbec33@sifive.com>
+Date: Mon, 11 Mar 2024 21:31:01 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v6 8/8] hugetlb: parallelize 1G hugetlb initialization
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 0/4] riscv: Use Kconfig to set unaligned access speed
 Content-Language: en-US
-To: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, David Rientjes <rientjes@google.com>,
- Muchun Song <muchun.song@linux.dev>, Tim Chen <tim.c.chen@linux.intel.com>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- Jane Chu <jane.chu@oracle.com>, "Paul E . McKenney" <paulmck@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, ligang.bdlg@bytedance.com
-References: <20240222140422.393911-1-gang.li@linux.dev>
- <20240222140422.393911-9-gang.li@linux.dev>
- <vbj76pzf5mvooydne5fg2ewgjiducgficskq7hcsdxwywsda7l@qisdlq5q2n3o>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Gang Li <gang.li@linux.dev>
-In-Reply-To: <vbj76pzf5mvooydne5fg2ewgjiducgficskq7hcsdxwywsda7l@qisdlq5q2n3o>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Eric Biggers <ebiggers@kernel.org>, Elliot Berman
+ <quic_eberman@quicinc.com>, Charles Lohr <lohr85@gmail.com>,
+ Conor Dooley <conor.dooley@microchip.com>
+References: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Thanks for your review :)
+On 2024-03-08 12:25 PM, Charlie Jenkins wrote:
+> If the hardware unaligned access speed is known at compile time, it is
+> possible to avoid running the unaligned access speed probe to speedup
+> boot-time.
+> 
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+> Changes in v9:
+> - Clarify wording for RISCV_MISALIGNED Kconfig option
+> - Link to v8: https://lore.kernel.org/r/20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com
+> 
+> Changes in v8:
+> - Minor commit message changes (Conor)
+> - Clean up hwprobe_misaligned() (Conor)
+> - Link to v7: https://lore.kernel.org/r/20240306-disable_misaligned_probe_config-v7-0-6c90419e7a96@rivosinc.com
+> 
+> Changes in v7:
+> - Fix check_unaligned_access_emulated_all_cpus to return false when any
+>   cpu has emulated accesses
+> - Fix wording in Kconfig (Conor)
+> - Link to v6: https://lore.kernel.org/r/20240301-disable_misaligned_probe_config-v6-0-612ebd69f430@rivosinc.com
+> 
+> Changes in v6:
+> - Consolidate Kconfig into 4 options (probe, emulated, slow,
+>   efficient)
+> - Change the behavior of "emulated" to allow hwprobe to return "slow" if
+>   unaligned accesses are not emulated by the kernel
+> - With this consolidation, check_unaligned_access_emulated is able to be
+>   moved back into the original file (traps_misaligned.c)
+> - Link to v5: https://lore.kernel.org/r/20240227-disable_misaligned_probe_config-v5-0-b6853846e27a@rivosinc.com
+> 
+> Changes in v5:
+> - Clarify Kconfig options from Conor's feedback
+> - Use "unaligned" instead of "misaligned" in introduced file/function.
+>   This is a bit hard to standardize because the riscv manual says
+>   "misaligned" but the existing Linux configs say "unaligned".
+> - Link to v4: https://lore.kernel.org/r/20240216-disable_misaligned_probe_config-v4-0-dc01e581c0ac@rivosinc.com
+> 
+> Changes in v4:
+> - Add additional Kconfig options for the other unaligned access speeds
+> - Link to v3: https://lore.kernel.org/r/20240202-disable_misaligned_probe_config-v3-0-c44f91f03bb6@rivosinc.com
+> 
+> Changes in v3:
+> - Revert change to csum (Eric)
+> - Change ifndefs for ifdefs (Eric)
+> - Change config in Makefile (Elliot/Eric)
+> - Link to v2: https://lore.kernel.org/r/20240201-disable_misaligned_probe_config-v2-0-77c368bed7b2@rivosinc.com
+> 
+> Changes in v2:
+> - Move around definitions to reduce ifdefs (Clément)
+> - Make RISCV_MISALIGNED depend on !HAVE_EFFICIENT_UNALIGNED_ACCESS
+>   (Clément)
+> - Link to v1: https://lore.kernel.org/r/20240131-disable_misaligned_probe_config-v1-0-98d155e9cda8@rivosinc.com
+> 
+> ---
+> Charlie Jenkins (4):
+>       riscv: lib: Introduce has_fast_unaligned_access()
+>       riscv: Only check online cpus for emulated accesses
+>       riscv: Decouple emulated unaligned accesses from access speed
+>       riscv: Set unaligned access speed at compile time
+> 
+>  arch/riscv/Kconfig                         |  58 ++++--
+>  arch/riscv/include/asm/cpufeature.h        |  31 ++--
+>  arch/riscv/kernel/Makefile                 |   4 +-
+>  arch/riscv/kernel/cpufeature.c             | 255 --------------------------
+>  arch/riscv/kernel/sys_hwprobe.c            |  13 ++
+>  arch/riscv/kernel/traps_misaligned.c       |  17 +-
+>  arch/riscv/kernel/unaligned_access_speed.c | 282 +++++++++++++++++++++++++++++
+>  arch/riscv/lib/csum.c                      |   7 +-
+>  8 files changed, 374 insertions(+), 293 deletions(-)
 
-On 2024/3/9 01:35, Daniel Jordan wrote:
-> On Thu, Feb 22, 2024 at 10:04:21PM +0800, Gang Li wrote:
->> Optimizing the initialization speed of 1G huge pages through
->> parallelization.
->>
->> 1G hugetlbs are allocated from bootmem, a process that is already
->> very fast and does not currently require optimization. Therefore,
->> we focus on parallelizing only the initialization phase in
->> `gather_bootmem_prealloc`.
->>
->> Here are some test results:
->>        test case       no patch(ms)   patched(ms)   saved
->>   ------------------- -------------- ------------- --------
->>    256c2T(4 node) 1G           4745          2024   57.34%
->>    128c1T(2 node) 1G           3358          1712   49.02%
->>       12T         1G          77000         18300   76.23%
-> 
-> Another great improvement.
-> 
->> +static void __init gather_bootmem_prealloc_parallel(unsigned long start,
->> +						    unsigned long end, void *arg)
->> +{
->> +	int nid;
->> +
->> +	for (nid = start; nid < end; nid++)
->> +		gather_bootmem_prealloc_node(nid);
->> +}
->> +
->> +static void __init gather_bootmem_prealloc(void)
->> +{
->> +	struct padata_mt_job job = {
->> +		.thread_fn	= gather_bootmem_prealloc_parallel,
->> +		.fn_arg		= NULL,
->> +		.start		= 0,
->> +		.size		= num_node_state(N_MEMORY),
->> +		.align		= 1,
->> +		.min_chunk	= 1,
->> +		.max_threads	= num_node_state(N_MEMORY),
->> +		.numa_aware	= true,
->> +	};
->> +
->> +	padata_do_multithreaded(&job);
->> +}
-> 
-> Looks fine from the padata side.
-> 
-> Acked-by: Daniel Jordan <daniel.m.jordan@oracle.com> # padata
+With the fix from [1] applied:
+
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
+
+in all four configurations.
+
+[1]: https://lore.kernel.org/linux-riscv/20240312022030.320789-1-samuel.holland@sifive.com/
+
+> ---
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> change-id: 20240131-disable_misaligned_probe_config-043aea375f93
+
 
