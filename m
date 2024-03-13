@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-102080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 444E387AE3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C7A87AE3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:53:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 008A92828D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:53:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52554282638
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB4C15E5D2;
-	Wed, 13 Mar 2024 16:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7CE160862;
+	Wed, 13 Mar 2024 16:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijPTWkF7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="blsca1cv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6A415E5B9;
-	Wed, 13 Mar 2024 16:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281D515F30A;
+	Wed, 13 Mar 2024 16:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348462; cv=none; b=KkhqOTHvgche6QxW7/dDoNSD3gqC6g1/OOWwRpPdkoPPTf1NuiYcrSRpWTmG2S6vMYshR2AWwdsEbEO8gMSTVTxGQ29RUaSe2o1ONzSpAm4ZoNq6E6Ks2vSw7r1FRcU5z+HVLWGvTAVd0QN+lzD9BAqOOL+bRk6AqgAiL2jbrmw=
+	t=1710348464; cv=none; b=VnfuURmWIs3OkGU33rEaGvK0/UscNEy6/MBwDNhvoEyjFmzzX1swWNNap+3ajEyN97oBbhBHj08jojdkJKWYgva2m7exiVxeyhyOR/jmQM0p+PPwHyullHGXmLjEhDhZqifhlq07t82U1K58vE4vu1yCFFslTcjVlbcjyv/TCjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348462; c=relaxed/simple;
-	bh=nhbKbEX9nHakPLpkOIH63yejM4HifZj5GXSMu2I7y9o=;
+	s=arc-20240116; t=1710348464; c=relaxed/simple;
+	bh=h/rVP4ZfvNZ4dNRYln8ZY9JBuriyDowmAoAa1SmtD9s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AtYCoatYWaJZ7NkCkLADFEQGghImn+SIzIVsyde34tSeXqbJodnQ+uSXwvlmvYCOKr65eATTwem8M2HOYs04yAGxvEGm/uptuf0/L73sQs7l1pL1X2UqsAetLnpCLXXjzduLzNwwLeom6WqrqZHuFAp9ESDYVdwqhxxXwWOqh90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijPTWkF7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79DB9C433F1;
-	Wed, 13 Mar 2024 16:47:41 +0000 (UTC)
+	 MIME-Version; b=pt2Zq5P7iMue0j3OpEJhpBG4+wB+6Ev2ulOp86bSGpRYF9Grpnl+P2EVP2QouOS88cCTsxMN1bvpxRqzgiwgy8rZdl/4ldGbazeGq5hueFYwK1zJkaG//ylPTztjJfX89Pcy20MRpgKjqvClUZJzokE0cd/RxWJQ8ZJ+UlOjuHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=blsca1cv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99B99C433F1;
+	Wed, 13 Mar 2024 16:47:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348462;
-	bh=nhbKbEX9nHakPLpkOIH63yejM4HifZj5GXSMu2I7y9o=;
+	s=k20201202; t=1710348463;
+	bh=h/rVP4ZfvNZ4dNRYln8ZY9JBuriyDowmAoAa1SmtD9s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ijPTWkF7TGi52oKap6TAmKdGpaZOMbi+n7cm54b3La3+jEhBRi+TLNUTf75opL3xT
-	 tFtsDw3+aTEj8FVvuR5FxOmlGKB1mg1ReHF/EmKPyytqAA2cS1BshUE8YALP6nTcOB
-	 6B6FLWI40E7aPZ1/QizAnkaISy0KCZ+5fgvQ0RR20AI67Gil48eyEuaAYun4wfWu52
-	 bXscbzWS5uDXSvJqSZTh11TtuJhBEXyvFaGCI2L32jT0ZmFfDsAV0zAa1lekL+SN+U
-	 jQSofgz7qb3/QLvpG+cJ/5wigtc8SAONfevNklVni4pWONEc+rCguORhJH04btmlxg
-	 wsJW1Y5W+2a4Q==
+	b=blsca1cvDHD+2OT6OseKfP0Ymh8+9UysdJivv5vivA1p9Uoap10uxg8ONH4YvBEyu
+	 bOnJ96aG2GpCZGqYBdXj1tBVRcDV9ttaWNTMG6fvF3eg2U+HJ/vdZAI5JdSkgoZ0/U
+	 z+TsDINK8wkKk6Xow69x5UeR+IjWZQ35b2t2NpNk/t2PoO030RfFmLcyyNLO1KUMs+
+	 NTdrLwR8+51H/r8ccndgpTbENFicSNHGzxjAYBPhoi+Z6KMaNxXODX9RcGDmnkZ5ie
+	 KWdQeOnJWKhKoaLX05BeObsUX3moOHztozJfI26rfytvYVA/pjS/W4xblyA28XqQAQ
+	 RLnVYw3SG7Stg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Long Li <longli@microsoft.com>,
+Cc: Dexuan Cui <decui@microsoft.com>,
 	Haiyang Zhang <haiyangz@microsoft.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Shachar Raindel <shacharr@microsoft.com>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 54/73] hv_netvsc: Process NETDEV_GOING_DOWN on VF hot remove
-Date: Wed, 13 Mar 2024 12:46:21 -0400
-Message-ID: <20240313164640.616049-55-sashal@kernel.org>
+Subject: [PATCH 5.10 55/73] hv_netvsc: Make netvsc/VF binding check both MAC and serial number
+Date: Wed, 13 Mar 2024 12:46:22 -0400
+Message-ID: <20240313164640.616049-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -69,58 +71,58 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Long Li <longli@microsoft.com>
+From: Dexuan Cui <decui@microsoft.com>
 
-[ Upstream commit 34b06a2eee44d469f2e2c013a83e6dac3aff6411 ]
+[ Upstream commit 64ff412ad41fe3a5bf759ff4844dc1382176485c ]
 
-On VF hot remove, NETDEV_GOING_DOWN is sent to notify the VF is about to
-go down. At this time, the VF is still sending/receiving traffic and we
-request the VSP to switch datapath.
+Currently the netvsc/VF binding logic only checks the PCI serial number.
 
-On completion, the datapath is switched to synthetic and we can proceed
-with VF hot remove.
+The Microsoft Azure Network Adapter (MANA) supports multiple net_device
+interfaces (each such interface is called a "vPort", and has its unique
+MAC address) which are backed by the same VF PCI device, so the binding
+logic should check both the MAC address and the PCI serial number.
 
-Signed-off-by: Long Li <longli@microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+The change should not break any other existing VF drivers, because
+Hyper-V NIC SR-IOV implementation requires the netvsc network
+interface and the VF network interface have the same MAC address.
+
+Co-developed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+Co-developed-by: Shachar Raindel <shacharr@microsoft.com>
+Signed-off-by: Shachar Raindel <shacharr@microsoft.com>
+Acked-by: Stephen Hemminger <stephen@networkplumber.org>
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Stable-dep-of: 9cae43da9867 ("hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/netvsc_drv.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/hyperv/netvsc_drv.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 57a5ec098e7e0..057b1a9dde153 100644
+index 057b1a9dde153..9ec1633b89b48 100644
 --- a/drivers/net/hyperv/netvsc_drv.c
 +++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -2411,12 +2411,15 @@ static int netvsc_register_vf(struct net_device *vf_netdev)
-  * During hibernation, if a VF NIC driver (e.g. mlx5) preserves the network
-  * interface, there is only the CHANGE event and no UP or DOWN event.
-  */
--static int netvsc_vf_changed(struct net_device *vf_netdev)
-+static int netvsc_vf_changed(struct net_device *vf_netdev, unsigned long event)
- {
- 	struct net_device_context *net_device_ctx;
- 	struct netvsc_device *netvsc_dev;
- 	struct net_device *ndev;
--	bool vf_is_up = netif_running(vf_netdev);
-+	bool vf_is_up = false;
-+
-+	if (event != NETDEV_GOING_DOWN)
-+		vf_is_up = netif_running(vf_netdev);
+@@ -2310,8 +2310,17 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
+ 		if (!ndev_ctx->vf_alloc)
+ 			continue;
  
- 	ndev = get_netvsc_byref(vf_netdev);
- 	if (!ndev)
-@@ -2762,7 +2765,8 @@ static int netvsc_netdev_event(struct notifier_block *this,
- 	case NETDEV_UP:
- 	case NETDEV_DOWN:
- 	case NETDEV_CHANGE:
--		return netvsc_vf_changed(event_dev);
-+	case NETDEV_GOING_DOWN:
-+		return netvsc_vf_changed(event_dev, event);
- 	default:
- 		return NOTIFY_DONE;
+-		if (ndev_ctx->vf_serial == serial)
+-			return hv_get_drvdata(ndev_ctx->device_ctx);
++		if (ndev_ctx->vf_serial != serial)
++			continue;
++
++		ndev = hv_get_drvdata(ndev_ctx->device_ctx);
++		if (ndev->addr_len != vf_netdev->addr_len ||
++		    memcmp(ndev->perm_addr, vf_netdev->perm_addr,
++			   ndev->addr_len) != 0)
++			continue;
++
++		return ndev;
++
  	}
+ 
+ 	/* Fallback path to check synthetic vf with help of mac addr.
 -- 
 2.43.0
 
