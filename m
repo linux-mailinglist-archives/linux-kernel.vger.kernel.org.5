@@ -1,172 +1,181 @@
-Return-Path: <linux-kernel+bounces-102524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C449287B34F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:15:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BBE487B359
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:17:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01AC91C22B72
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:15:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD5DE1C22FC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E54D535B7;
-	Wed, 13 Mar 2024 21:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E8854735;
+	Wed, 13 Mar 2024 21:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTjQ/DD/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f3eVJzyT"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C8DF4E1CE;
-	Wed, 13 Mar 2024 21:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0234E1CE;
+	Wed, 13 Mar 2024 21:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710364534; cv=none; b=abQMYrYUig3aGmpuXZzSey75Xn4oD3w87mX8fEkPZKET0r21ScTkMJzZFGkyHNyDY1qrfCKlY7rvbSYS2dXJkfxfVGnpzSDAnXwioISz+TT1093VLWop9ALZKY/GoKQMRHYuORgd3Tb5NehlvNzmUdfxUAGsTBDrxX+JKijn5Mg=
+	t=1710364652; cv=none; b=DPq/v8gdFdjgr2bQHfSsnylPuBKa9Rm8A+AR96ZrO1yF+u0Haayf+vptTBbKLGPtyZcIB+b5Kpty1sivD9ax/TIHsEyuQMrprDQpY8P/kCkRDz6shMhK3zc4hJHPoavQwyY1NrJiI3O6gIyt7kL3wsAMopflD+QFUv0jVTAZkAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710364534; c=relaxed/simple;
-	bh=yHAWjHhvqpsmBkd0EpSmvltytpSj+yDGYXAeVc4655g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=c7kkdk8y3O0yu7/FD76+qUrwvKrtnXCQqvsjmLWzJXmoCWHHgUzaWEc/rNo2kO+KFFKjcYfTo4SlYDU+N+euCuWUmGb91YDTqSHgKqtKtrOdL+h4Pj3RdjFrEvDfZDuYKF5gdjHFpZZ6PvZKzbavWdpkfhtDCPbt6gxRbaEwgCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTjQ/DD/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC101C433C7;
-	Wed, 13 Mar 2024 21:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710364534;
-	bh=yHAWjHhvqpsmBkd0EpSmvltytpSj+yDGYXAeVc4655g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=fTjQ/DD/ZvdiQ7aDeD+ppLkKKS4/KAHvxnIPXAhOh95DO7D/Gkq1dIHtazi7wTYIy
-	 wKh5RtDh/Q4YYd/QhR6jeUvJdYb+LyiBIT/GyV9/wrgrs4eJLI7c1g4letxD4EW9Yc
-	 atx3rzQXQHJQmPVdqKhfR+kNiEnIuD2VepKn/mzmNJnRdbuxIAqGgMtJE4HI8EpMWh
-	 HgkWzH9oxjFr7KuLwCilYwjLEbOYJv8O4Trn/9UP8d6rDffhANtYrYcqnC/OpoTPLL
-	 sl36Xj6rJvZArDS63LGqU71/ptW88tD1vswuZaXvjiYSx+CtMJfDHO+9MkbTFLyk2b
-	 JMuPzdm4svErg==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
- <mwalle@kernel.org>,  linux-spi@vger.kernel.org,  Mark Brown
- <broonie@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,  Mika
- Westerberg <mika.westerberg@linux.intel.com>,  "Chia-Lin Kao (AceLan)"
- <acelan.kao@canonical.com>,  open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: Fix error code checking in spi_mem_exec_op()
-In-Reply-To: <493cdb11-72b7-4d03-b982-448451fd5824@broadcom.com> (Florian
-	Fainelli's message of "Wed, 13 Mar 2024 13:06:35 -0700")
-References: <20240313171050.3505620-1-florian.fainelli@broadcom.com>
-	<CZSSWP7A9UM7.1R20796VHLU0F@kernel.org> <mafs0o7bic7fs.fsf@kernel.org>
-	<9420b802-5361-4f47-a069-52c43f5fd253@broadcom.com>
-	<mafs0il1qc4n2.fsf@kernel.org>
-	<56318d3f-1d5a-4a73-9d3a-e7ebc66860d9@broadcom.com>
-	<493cdb11-72b7-4d03-b982-448451fd5824@broadcom.com>
-Date: Wed, 13 Mar 2024 22:15:31 +0100
-Message-ID: <mafs0bk7hdea4.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710364652; c=relaxed/simple;
+	bh=ZZ1yvqhV88L8Fdbidzu5N0f/JeBcdFJbua0aS7dkUOg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VTSNP7zcg1FHc34KEFpVfBkNpSTpBPVsQ22LeuelJuW5mx3jmlqkVGz21Ve47cf635YFDeiXlY+oYzCi77lE/X/NEZr5kzJGWpzAfyGDvp2tvSmN5e2Dmw66PAbkVtO3aIrs38N5m6wNFCVebK36S70WH7bCyKoW1CbLRaNe180=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f3eVJzyT; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dd59b95677so2330925ad.1;
+        Wed, 13 Mar 2024 14:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710364650; x=1710969450; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NUlXrKT9EnIj18amwCty7VMhLzOsFE6rwuzLJc3R0iA=;
+        b=f3eVJzyTSVrVC6aY0ja27V+r/mYulVtK3rD8Y2ml2pZ5OcYoL2Ul1pmZk9/FuAaC7+
+         1Zdvmf2GYtnAnBGL3VH/1Tq2+aK5xlQD+27SNy41RKjwfsRUF9XflftkU0YxZkswDfTo
+         xRWP6hQx3HQRArRu+Z8JY9eW5EKhgFxQ++k++JA5aWS/7RNcGCxSRjUUz8oVCXSf9Z7+
+         GrIaqDXFYk79NGXofE+VBpa0N1SeYriVBv8obStiL6jEQ4imYfPyl9jNwUTtj8kTRazG
+         9N/YUDPuu+Zxdx18cw9V6OKylsIsTnZjk8k3MD3Um8RApZne9SdPC013Igs+j584P4C3
+         mN4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710364650; x=1710969450;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NUlXrKT9EnIj18amwCty7VMhLzOsFE6rwuzLJc3R0iA=;
+        b=IEe8Q+PqWHojaNydeL2FlXi1ci3xlRcRl/77GN7cMluE+LIXzM5PfXG413dqRZEyL2
+         XZS/uUixP25t/sOCRBaAJ4GjCF8MFxiFewmchnVZ7bur55NskUHD9oHvoSmAI00Fq+Rl
+         i1YALtJMgimqSBbdvdj0W8JPgjAz+54Bvm1ciIzth64tyJ4Nv78c4Ep6godQGBfjX/XL
+         oD7wwitRLpME2tVQIRkIV54Cn4c0Xj5f2rreK9dCEPqn7iy3VN6A95zIN/zQMn3Rh/+C
+         gZ7PdqHsII0U5qPIpDe2qxXmjDAOQAS61q/Qz2ja4LOTR+mcS75v1W1UvDKlIeYN+QkR
+         XSvg==
+X-Forwarded-Encrypted: i=1; AJvYcCX9/tvwMxJGKhR2rrZ7kcAEccpSnc+DAKCi2KBR//i+EYv4Q027qF41bO+RyM7wlGZG4vfLZ7ukWaKqnAW2GXY8dGFh5kOTmy9hmwgq40dy8OSjk88AwRcxmLYlgXi/Db8QYc4h4OHey/tCpKtYKlQEchh3cbW5CWhqeI3jlDQz3nk4o+cQhr4VqzV36N9PoHN9CTocg9mcY6Rlw/khU4bHayyyRT8DE1zLmXDUaMzYkJl2FCKG8h1ME+UxpuCtcmhkE2J+b3gktJOkvdS76NrZ05//DpQrI8qhdb8=
+X-Gm-Message-State: AOJu0YxHQBe/6JfifRyRkHH47qsVS2TYB9JvICyD7sn9QT4FF5BRu/Qx
+	m9GNgHer9Cw+TQPeEFNvOdjYpw/2va0IiDu0tZCZh6twjpH7Ju93
+X-Google-Smtp-Source: AGHT+IG9I+hDSxyD1Im6G/LLTkYoz1TmcbofHmjXyd16Vyd3jct6bToKtjs1/z8pGQeFpGSefzEBMg==
+X-Received: by 2002:a17:902:ea01:b0:1db:55cc:d226 with SMTP id s1-20020a170902ea0100b001db55ccd226mr14449454plg.66.1710364650361;
+        Wed, 13 Mar 2024 14:17:30 -0700 (PDT)
+Received: from [192.168.254.38] ([50.39.172.77])
+        by smtp.gmail.com with ESMTPSA id j7-20020a170902da8700b001da15580ca8sm65107plx.52.2024.03.13.14.17.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 14:17:29 -0700 (PDT)
+Message-ID: <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
+Date: Wed, 13 Mar 2024 14:17:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>, Karel Balej
+ <balejk@matfyz.cz>, dimitri.ledkov@canonical.com,
+ alexandre.torgue@foss.st.com, davem@davemloft.net, dhowells@redhat.com,
+ herbert@gondor.apana.org.au, keyrings@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org,
+ mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, iwd@lists.linux.dev
+References: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz>
+ <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
+ <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
+ <20240313194423.GA1111@sol.localdomain>
+ <b838e729-dc30-4e18-b928-c34c16b08606@gmail.com>
+ <20240313202223.GB1111@sol.localdomain>
+Content-Language: en-US
+From: James Prestwood <prestwoj@gmail.com>
+In-Reply-To: <20240313202223.GB1111@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 13 2024, Florian Fainelli wrote:
+Hi,
 
-> On 3/13/24 12:34, Florian Fainelli wrote:
->> On 3/13/24 12:29, Pratyush Yadav wrote:
->>> On Wed, Mar 13 2024, Florian Fainelli wrote:
->>>
->>>> On 3/13/24 11:28, Pratyush Yadav wrote:
->>>>> On Wed, Mar 13 2024, Michael Walle wrote:
->>>>>
->>>>>> On Wed Mar 13, 2024 at 6:10 PM CET, Florian Fainelli wrote:
->>>>>>> After commit cff49d58f57e ("spi: Unify error codes by replacing -EN=
-OTSUPP
->>>>>>> with
->>>>>>> -EOPNOTSUPP"), our SPI NOR flashes would stop probing with the foll=
-owing
->>>>>>> visible in the kernel log:
->>>>>>>
->>>>>>> [=C2=A0=C2=A0=C2=A0 2.196300] brcmstb_qspi f0440920.qspi: using bsp=
-i-mspi mode
->>>>>>> [=C2=A0=C2=A0=C2=A0 2.210295] spi-nor: probe of spi1.0 failed with =
-error -95
->>>>>>>
->>>>>>> It turns out that the check in spi_mem_exec_op() was changed to che=
-ck
->>>>>>> for -ENOTSUPP (old error code) or -EOPNOTSUPP (new error code), but=
- this
->>>>>>> means that for drivers that were converted, the second condition is=
- now
->>>>>>> true, and we stop falling through like we used to. Fix the error to
->>>>>>> check for neither error being neither -ENOTSUPP *nor* -EOPNOTSUPP.
->>>>>>>
->>>>>>> Fixes: cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP=
- with
->>>>>>> -EOPNOTSUPP")
->>>>>>> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
->>>>>>> Change-Id: I4159811f6c582c4de2143382473d2000b8755872
->>>>>>
->>>>>> Ha, thank you!
->>>>>>
->>>>>> Reviewed-by: Michael Walle <mwalle@kernel.org>
->>>>>>
->>>>>> FWIW in next, there is commit
->>>>>> e63aef9c9121e ("spi: spi-mem: add statistics support to ->exec_op()
->>>>>> calls")
->>>>>> that probably will conflict with this one.
->>>>>>
->>>>>> Also, - not for this patch - but with that logic, spi_mem_exec_op()
->>>>>> might return EOPNOTSUPP *or* ENOTSUPP, even for drivers which might
->>>>>> still return ENOTSUPP, because there is one condition in
->>>>>> spi_mem_exec_op() which will always return EOPNOTSUPP. That is
->>>>>> somewhat confusing, no?
->>>>> I agree. I suppose it would be better to do:
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret)
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D -ENOTSUPP || ret =3D=3D=
- -EOPNOTSUPP)
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EOPNOTSUPP;
->>>>>
+On 3/13/24 1:22 PM, Eric Biggers wrote:
+> On Wed, Mar 13, 2024 at 01:12:54PM -0700, James Prestwood wrote:
+>> Hi,
+>>
+>> On 3/13/24 12:44 PM, Eric Biggers wrote:
+>>> On Wed, Mar 13, 2024 at 10:26:06AM -0700, James Prestwood wrote:
+>>>> Hi,
 >>>>
->>>> But with e63aef9c9121e ("spi: spi-mem: add statistics support to ->exe=
-c_op()
->>>> calls") applied, would not that mean duplicating the statistics gather=
-ing,
->>>> or
->>>> were the statistics gathering only intended for when ret =3D=3D 0?
->>>
->>> Hmm, I didn't properly understand this. Ignore my suggestion. Your patch
->>> does the right thing.
->> What I meant is that e63aef9c9121e will increment statistics not just wh=
-en we
->> return 0 from ctlr->mem_ops->exec_op, but also if we return -ENOTSUPP or
->> -EOPNOTSUPP, and I am=C2=A0 not sure if this is exactly what is intended=
- But this
->> is somewhat orthogonal.
+>>>> On 3/13/24 1:56 AM, Johannes Berg wrote:
+>>>>> Not sure why you're CC'ing the world, but I guess adding a few more
+>>>>> doesn't hurt ...
+>>>>>
+>>>>> On Wed, 2024-03-13 at 09:50 +0100, Karel Balej wrote:
+>>>>>>     and I use iwd
+>>>>> This is your problem, the wireless stack in the kernel doesn't use any
+>>>>> kernel crypto code for 802.1X.
+>>>> Yes, the wireless stack has zero bearing on the issue. I think that's what
+>>>> you meant by "problem".
+>>>>
+>>>> IWD has used the kernel crypto API forever which was abruptly broken, that
+>>>> is the problem.
+>>>>
+>>>> The original commit says it was to remove support for sha1 signed kernel
+>>>> modules, but it did more than that and broke the keyctl API.
+>>>>
+>>> Which specific API is iwd using that is relevant here?
+>>> I cloned https://kernel.googlesource.com/pub/scm/network/wireless/iwd
+>>> and grepped for keyctl and AF_ALG, but there are no matches.
+>> IWD uses ELL for its crypto, which uses the AF_ALG API:
+>>
+>> https://git.kernel.org/pub/scm/libs/ell/ell.git/
+> Thanks for pointing out that the relevant code is really in that separate
+> repository.  Note, it seems that keyctl() is the problem here, not AF_ALG.  The
+> blamed commit didn't change anything for AF_ALG.
+>
+>> I believe the failure is when calling:
+>>
+>> KEYCTL_PKEY_QUERY enc="x962" hash="sha1"
+>>
+>>  From logs Michael posted on the IWD list, the ELL API that fails is:
+>>
+>> l_key_get_info (ell.git/ell/key.c:416)
+> Okay, I guess that's what's actually causing the problem.  KEYCTL_PKEY_* are a
+> weird set of APIs where userspace can ask the kernel to do asymmetric key
+> operations.  It's unclear why they exist, as the same functionality is available
+> in userspace crypto libraries.
+>
+> I suppose that the blamed commit, or at least part of it, will need to be
+> reverted to keep these weird keyctls working.
+>
+> For the future, why doesn't iwd just use a userspace crypto library such as
+> OpenSSL?
 
-No it won't. This is what confused me in my earlier reply as well. If
-ret is either of -ENOTSUPP or -EOPNOTSUPP, the expression
+I was not around when the original decision was made, but a few reasons 
+I know we don't use openSSL:
 
-    (ret !=3D -ENOTSUPP && ret !=3D -EOPNOTSUPP)
+  - IWD has virtually zero dependencies.
 
-becomes false (along with !ret also being false). In that case, it will
-_not_ go in the if statement, and not call spi_mem_add_op_stats().
-Instead, it will go via the normal SPI path and that path would do the
-accounting based on error or success.
+  - OpenSSL + friends are rather large libraries.
+
+  - AF_ALG has transparent hardware acceleration (not sure if openSSL 
+does too).
+
+Another consideration is once you support openSSL someone wants wolfSSL, 
+then boringSSL etc. Even if users implement support it just becomes a 
+huge burden to carry for the project. Just look at wpa_supplicant's 
+src/crypto/ folder, nearly 40k LOC in there, compared to ELL's crypto 
+modules which is ~5k. You have to sort out all the nitty gritty details 
+of each library, and provide a common driver/API for the core code, 
+differences between openssl versions, the list goes on.
+
+Thanks,
+
+James
+
 
 >
-> It looks like the handling of a non-zero return code will fall either in =
-the
-> -ETIMEDOUT category, or in the general category of an error. I suppose th=
-ere is
-> a question whether a operation that could not be supported should fall in=
- the
-> "error" category.
-
-The only questionable thing I see in spi_mem_add_op_stats() is that it
-increments bytes_{rx,tx} even in case of failure. It mimics what
-spi_statistics_add_transfer_stats() does but perhaps that also is wrong.
-
---=20
-Regards,
-Pratyush Yadav
+> - Eric
 
