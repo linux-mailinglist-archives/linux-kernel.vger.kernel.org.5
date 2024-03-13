@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-101828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5F987ABF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:53:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186F487ABF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:53:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 495F31F21192
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:53:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A80E6B24A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7906CDC2;
-	Wed, 13 Mar 2024 16:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CC66CDDF;
+	Wed, 13 Mar 2024 16:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDOP4Jwy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JpQkgpt9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCD96CDAF;
-	Wed, 13 Mar 2024 16:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE1A6CDCA;
+	Wed, 13 Mar 2024 16:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347862; cv=none; b=UT8RYN1A3jzmb5B4yMrvKeDgaaXRO5LsKmuFzncYRf8/RqLa6J8P/67B0Uh/eXBbvEdLfl6AI69m0Jl4aZtphHLmXyy8cysico+gtyUsfItbeWVLK8cl+kQWrLHlDacqokz07/6umcuqDCCbDICbmxJcxuUnyRm+pyq0GfObYWE=
+	t=1710347863; cv=none; b=rN/6cVAmpL7YteqkHwzObTdf+rhZv6tneQ3ZOBh1r9oO7TuBtmLYpuWDJKJLtCnLj+tlI4zQxj/y+kzEBFAuD82b570tDMElDkEAvzXotxvnL1OFOETIxQgTBwrYFL5g8IHZGhVQTWBfqTPym+69nyFjjpRBWwo7q/v4ppzGCmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347862; c=relaxed/simple;
-	bh=NzKkpGEflhbJZI031o1buuc6gM0iC7cFqyF0et7oL9E=;
+	s=arc-20240116; t=1710347863; c=relaxed/simple;
+	bh=8o1ZOebRTS6KxGyRL3P369CkvJplrXXspwfA5lVfTA0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NicPLnxeQLqGTtYHP0+UDdQbVJDx4zqUk9aM9/3UxL25hqOqTu5rnR1QA8GKlhcaDx0R0V2G1MBGMXyyhkG/dAKdDpSrTVhLGI9opBE1uwXRXTLexFQDrpBTWK2slUp1WJxeAXbUwjY2zPOsNAdaTaHo20+2WfjgfCv6lStFNWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NDOP4Jwy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D73BAC433F1;
-	Wed, 13 Mar 2024 16:37:40 +0000 (UTC)
+	 MIME-Version; b=VjWaecuRArerUNXhOULCUkoRQNQo9s3G3AtX/kDweKqXkz6R9oGb3d8s3QHh5S2GlXoq0vwLZTQ0TOYCNVYVymoyS31Xx7SBR+EABUNK70zKPhRjg8jiIWkaLNJWIkWr6HKmJxYbWyX4sI6aSidb48iv8zX74zJcbJMsbgzdNWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JpQkgpt9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28795C433C7;
+	Wed, 13 Mar 2024 16:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347861;
-	bh=NzKkpGEflhbJZI031o1buuc6gM0iC7cFqyF0et7oL9E=;
+	s=k20201202; t=1710347863;
+	bh=8o1ZOebRTS6KxGyRL3P369CkvJplrXXspwfA5lVfTA0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NDOP4JwyQoltYmf4wbSA6ttFPHFi7x9rNleQ9ZAYif5+H0Cx0Vmksi+KcX6tcLPJz
-	 nWhpvUxiDDgp9zJxkW9bgeirttGD87iEDMU/iD2sqH45Ipv7Kp4kGkA5T0Aevrd5P8
-	 G+JS3iS59WMd1yvkYgsL7KuT+IRvVcpdWtUeStnKt4irXoY8I2yPhepz6NAfiJGHJQ
-	 3LeCcmfLaLbTroGW93p4jS9Hr0oiuSH6nYCnEYktR7RKWN/iX79dsx2Ze7P2S90K+m
-	 HJF45cUw0ADX4Nom2M21v/eJqbjzkN3dpBCe0B6fb2TT2uSQIh4WCmD9Sh5ErJJXQD
-	 qN5YX9jDd3ePQ==
+	b=JpQkgpt98wK6n7p/KLoJ7Aap1hqkcPgr0fnyuMBbntt2cqxWVUGtpYwRGOW8gK9or
+	 9crjrAQg4ioelGm7PMQ55gJLL2GsRaJxPZZyP8mLf8PeVFHITNREnaB9ojifPMuRX0
+	 o4dYl9JaN7KtgD5jEHeP21DbpFncbB6h3de7erIvKNsYgDUKw8Zw20DCzV+aQfPRTr
+	 vSqb6VRzDii8cgXVAUkQ0uZLijaINC/GUbtbs+PEcG6PXWOFyHFkrIaxqpT4/rng+x
+	 44gl5fp3k94a15rfRCK1RmXIt/k7LdRSODhu6u1hsIw0eLCARo7cZoRxu/glZ+SB1V
+	 225fntV7mizug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jacob Keller <jacob.e.keller@intel.com>,
-	Alan Brady <alan.brady@intel.com>,
-	Rafal Romanowski <rafal.romanowski@intel.com>,
+Cc: Rand Deeb <rand.sec96@gmail.com>,
+	Simon Horman <horms@kernel.org>,
 	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 25/60] ice: virtchnl: stop pretending to support RSS over AQ or registers
-Date: Wed, 13 Mar 2024 12:36:32 -0400
-Message-ID: <20240313163707.615000-26-sashal@kernel.org>
+Subject: [PATCH 6.6 26/60] net: ice: Fix potential NULL pointer dereference in ice_bridge_setlink()
+Date: Wed, 13 Mar 2024 12:36:33 -0400
+Message-ID: <20240313163707.615000-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -70,93 +69,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Rand Deeb <rand.sec96@gmail.com>
 
-[ Upstream commit 2652b99e43403dc464f3648483ffb38e48872fe4 ]
+[ Upstream commit 06e456a05d669ca30b224b8ed962421770c1496c ]
 
-The E800 series hardware uses the same iAVF driver as older devices,
-including the virtchnl negotiation scheme.
+The function ice_bridge_setlink() may encounter a NULL pointer dereference
+if nlmsg_find_attr() returns NULL and br_spec is dereferenced subsequently
+in nla_for_each_nested(). To address this issue, add a check to ensure that
+br_spec is not NULL before proceeding with the nested attribute iteration.
 
-This negotiation scheme includes a mechanism to determine what type of RSS
-should be supported, including RSS over PF virtchnl messages, RSS over
-firmware AdminQ messages, and RSS via direct register access.
-
-The PF driver will always prefer VIRTCHNL_VF_OFFLOAD_RSS_PF if its
-supported by the VF driver. However, if an older VF driver is loaded, it
-may request only VIRTCHNL_VF_OFFLOAD_RSS_REG or VIRTCHNL_VF_OFFLOAD_RSS_AQ.
-
-The ice driver happily agrees to support these methods. Unfortunately, the
-underlying hardware does not support these mechanisms. The E800 series VFs
-don't have the appropriate registers for RSS_REG. The mailbox queue used by
-VFs for VF to PF communication blocks messages which do not have the
-VF-to-PF opcode.
-
-Stop lying to the VF that it could support RSS over AdminQ or registers, as
-these interfaces do not work when the hardware is operating on an E800
-series device.
-
-In practice this is unlikely to be hit by any normal user. The iAVF driver
-has supported RSS over PF virtchnl commands since 2016, and always defaults
-to using RSS_PF if possible.
-
-In principle, nothing actually stops the existing VF from attempting to
-access the registers or send an AQ command. However a properly coded VF
-will check the capability flags and will report a more useful error if it
-detects a case where the driver does not support the RSS offloads that it
-does.
-
-Fixes: 1071a8358a28 ("ice: Implement virtchnl commands for AVF support")
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Reviewed-by: Alan Brady <alan.brady@intel.com>
-Tested-by: Rafal Romanowski <rafal.romanowski@intel.com>
+Fixes: b1edc14a3fbf ("ice: Implement ice_bridge_getlink and ice_bridge_setlink")
+Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_virtchnl.c           | 9 +--------
- drivers/net/ethernet/intel/ice/ice_virtchnl_allowlist.c | 2 --
- 2 files changed, 1 insertion(+), 10 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl.c b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-index e7ab78bb0f861..3a28210be3c23 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-@@ -440,7 +440,6 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
- 		vf->driver_caps = *(u32 *)msg;
- 	else
- 		vf->driver_caps = VIRTCHNL_VF_OFFLOAD_L2 |
--				  VIRTCHNL_VF_OFFLOAD_RSS_REG |
- 				  VIRTCHNL_VF_OFFLOAD_VLAN;
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index d8d2aa4c0216a..d23f2ebddeb45 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -7786,6 +7786,8 @@ ice_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 	pf_sw = pf->first_sw;
+ 	/* find the attribute in the netlink message */
+ 	br_spec = nlmsg_find_attr(nlh, sizeof(struct ifinfomsg), IFLA_AF_SPEC);
++	if (!br_spec)
++		return -EINVAL;
  
- 	vfres->vf_cap_flags = VIRTCHNL_VF_OFFLOAD_L2;
-@@ -453,14 +452,8 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
- 	vfres->vf_cap_flags |= ice_vc_get_vlan_caps(hw, vf, vsi,
- 						    vf->driver_caps);
- 
--	if (vf->driver_caps & VIRTCHNL_VF_OFFLOAD_RSS_PF) {
-+	if (vf->driver_caps & VIRTCHNL_VF_OFFLOAD_RSS_PF)
- 		vfres->vf_cap_flags |= VIRTCHNL_VF_OFFLOAD_RSS_PF;
--	} else {
--		if (vf->driver_caps & VIRTCHNL_VF_OFFLOAD_RSS_AQ)
--			vfres->vf_cap_flags |= VIRTCHNL_VF_OFFLOAD_RSS_AQ;
--		else
--			vfres->vf_cap_flags |= VIRTCHNL_VF_OFFLOAD_RSS_REG;
--	}
- 
- 	if (vf->driver_caps & VIRTCHNL_VF_OFFLOAD_RX_FLEX_DESC)
- 		vfres->vf_cap_flags |= VIRTCHNL_VF_OFFLOAD_RX_FLEX_DESC;
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_allowlist.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_allowlist.c
-index 7d547fa616fa6..588b77f1a4bf6 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl_allowlist.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_allowlist.c
-@@ -13,8 +13,6 @@
-  * - opcodes needed by VF when caps are activated
-  *
-  * Caps that don't use new opcodes (no opcodes should be allowed):
-- * - VIRTCHNL_VF_OFFLOAD_RSS_AQ
-- * - VIRTCHNL_VF_OFFLOAD_RSS_REG
-  * - VIRTCHNL_VF_OFFLOAD_WB_ON_ITR
-  * - VIRTCHNL_VF_OFFLOAD_CRC
-  * - VIRTCHNL_VF_OFFLOAD_RX_POLLING
+ 	nla_for_each_nested(attr, br_spec, rem) {
+ 		__u16 mode;
 -- 
 2.43.0
 
