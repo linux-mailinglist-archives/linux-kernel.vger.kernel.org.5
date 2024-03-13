@@ -1,169 +1,215 @@
-Return-Path: <linux-kernel+bounces-102290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6736687B039
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:47:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E90187B03D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2421F28D3AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:47:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F1761C26C10
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FED053E2D;
-	Wed, 13 Mar 2024 17:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1F765BB7;
+	Wed, 13 Mar 2024 17:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WfdT3VKn"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NSFIDmep"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB8153E03;
-	Wed, 13 Mar 2024 17:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5B6657DD;
+	Wed, 13 Mar 2024 17:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710351746; cv=none; b=Yi5ul2S6NN8BQB2zEiFt8CBQ1Fd+kMrxn9lz226lcW6gzegIjaH4hxMOf1rdYISavaPzEyOdxA14yWL8MTX7KbEd+RAfLExGXW95miEstf4CaKdzF0aFmrjueNC3S/sTcJSQ58TmMLxqqKmBMTuCkCLfppYfeYCJmdJn+9z3yVs=
+	t=1710351877; cv=none; b=EcrA59Fe5P7haTrFEbJ5E8aXeghhweR7gNiMbpqkzbLsqSYJfBVAUIb7VL73LH533NBv+VEU+kFuw1c2B2YE/PshyyXCTnVr1t2oz5zdnNF6YiTF7YkLKD4oQa6wwBhJeOmF2iCg3OjLhNUQX4rS9YL9s3F2CVBYpKDt9LcDJTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710351746; c=relaxed/simple;
-	bh=l4aa7dMZOppEVtMCbeeOP1g60YPKOSk0JjgK6J6Vn3s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pWuEmlNCIQ5xqL5JvadtrprnZ3ZogsdQ7ziRYB1fpbZhJykt9QbfdUjF9vkLpFULUwD3mnQyJpx6jgyjw/zl47PAYEasZXbJ3re1DDR3UyVbqQcQlZLThCx9AFB37xp22A0bUgGpl7n+c0fFre2ClUIhz3xce/yo7rDOYJE0UfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WfdT3VKn; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e649a2548cso123583b3a.3;
-        Wed, 13 Mar 2024 10:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710351744; x=1710956544; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=xb6wljFD0LnTtDE1JnDzedxQZT1gVS3KdmlKFwDQbVE=;
-        b=WfdT3VKnxoRcGPT6aw4DKsD1Yrei1a40qw8S9E1YTFXeBraAPvgkiy+bosEllTId1y
-         18s2VnxeaD8OBmvuQDdJ/MwFZIVDPoOmDgyyHXz2cErqEYwDOJwsOSfuqjnSOkTfq6KP
-         iky289xvNcGqw9DGfUZ1CTOrrH36jNUi9Dv5aP1oTVBm4qXCJlAwf6cd0cCpLhkweFJB
-         tDYCTLJSNCEYHTHf6HLFqDMGHHdaVldhTdRZrNACyb/jgeVQcFGcVRwAP6/xIbWW8mfg
-         vVoKBqCZxrIQmdfos4GLaz2vwKiaVvCfKtUV5uzKTdws6RP4AKLULUSPzdAQLrjhmRw7
-         d1aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710351744; x=1710956544;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xb6wljFD0LnTtDE1JnDzedxQZT1gVS3KdmlKFwDQbVE=;
-        b=cggH9WrJGHOAmlATbZFyyARNiu+djUbFnVLt0Jt9spuwpDLkxOe8+FMcksdrzYQvpn
-         C9w65lzi2fz09mTQBXMs3A47GN61MPA/CgQa97a1yKOzxGTfcE3qzpiSazNjjkPXlVSr
-         2hDv2+a0k97OopcL7/R1lV5oibNDfVC3cA4AtvAaNGKuVjZL7TKbQEHEclEz3OruxEHn
-         oR9qIlaSp4kBPGHQli9gjbOB4oBO0pGNXv5dGZLtHnwMQh5iLgUh5caxppmeE6AhG67J
-         EnsC8CRmHbeXcjxi9AzUD5dkxXjPs763q+LxKeBQwKuhgAXue+Kjw+DOV600sZ3EZiJI
-         PXKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXx2jhubBBCZTEVVwrlP55Zg8b/G0XN+Tcl8fqBPH8BTYrwwfCAORxvvaphNRL0sZWhD1pMZm4nO+pxicscdZ1XzjsoPTgk9nZWEx1eZqoqYA/IQ8t/AllqKEVp7eofNXbyzsnZy+fa
-X-Gm-Message-State: AOJu0YzU9/TkqIsiHoip3anTMOYk4YJWLgYkUusb0OibdNCnD5aLyRmL
-	mDA/sVJVfrpNlKlxYOaijRm4RjMYiYw3ewqrg4sjzcE7mS5xf0Lc
-X-Google-Smtp-Source: AGHT+IGOeJoSUTHWkZZ/rIXW/FE2nS2JJ2xO6TnUe79InVgeF6RitaqxvJQPu2fxsJDwAI2GVO7b5w==
-X-Received: by 2002:a05:6a00:2e9d:b0:6e6:4ebc:3cd with SMTP id fd29-20020a056a002e9d00b006e64ebc03cdmr3236804pfb.27.1710351744140;
-        Wed, 13 Mar 2024 10:42:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c26-20020aa78c1a000000b006e3b868b8b8sm8162797pfd.130.2024.03.13.10.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 10:42:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Daniel Diaz <daniel.diaz@linaro.org>,
-	linux-rtc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] rtc: test: Split rtc unit test into slow and normal speed test
-Date: Wed, 13 Mar 2024 10:42:21 -0700
-Message-Id: <20240313174221.1999654-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710351877; c=relaxed/simple;
+	bh=ma7upt0mkxCiGazRLZGR9ohMqsHaHdle+49JOWHsY4E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SEeP+9w4lYbi6PDc1hP9PUrhOhWA2tyNTUFVQcfBmItlEdEAUI88XcJKFs79NBorz84iYFxrZUpspOnKN2UPzOtJuNSjVS9uXgTunC5fkDAssZaA2Hu61s5iYDSkruBtXfqfYmrafv5cJqqiaF65V84ekeScDvl4YEvX7HzGSb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NSFIDmep; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710351875; x=1741887875;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ma7upt0mkxCiGazRLZGR9ohMqsHaHdle+49JOWHsY4E=;
+  b=NSFIDmepAoMopJ3ctPN7krsvaNLyvWxfi4VFfDfxWNeS8G8iH3ek3VYN
+   yidXFovEImepLvyeQh5f1JVbvq8jYiXL0JiX2R3xRRkE52V0Q3wEJy3BX
+   ju9d9mrNXdIZAZQ01SfK70Tp57qZ2cPuixMA77DMU8uX0/lmWPocNM6hd
+   Ycf0di0MEqcNpNu2CfBtDjDxfx+K44YyxgOx9QIOthKKfVhg21iiMkUxR
+   lyqmFE1VYVYDVfhJVQR2ULgHuHzlStcKSIL8axqSy7m/YXq9S4EeRzgLM
+   ssRhTMI5meto4nqz75YNpmCizUjGqG7aBDLyz1PkZ6dpTxQ9pQgCuyuoC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="4997163"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="4997163"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 10:44:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="16739287"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 10:44:35 -0700
+Date: Wed, 13 Mar 2024 10:44:34 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 032/130] KVM: TDX: Add helper functions to
+ allocate/free TDX private host key id
+Message-ID: <20240313174434.GM935089@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7348e22ba8d0eeab7ba093f3e83bfa7ee4da1928.1708933498.git.isaku.yamahata@intel.com>
+ <075322c9db65e2fa19d809357a98fe6067c80508.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <075322c9db65e2fa19d809357a98fe6067c80508.camel@intel.com>
 
-On slow systems, the rtc unit test may result in soft lockups and/or
-generate messages such as
+On Wed, Mar 13, 2024 at 12:44:14AM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
- # rtc_time64_to_tm_test_date_range: Test should be marked slow (runtime: 34.253230015s)
- # rtc_time64_to_tm_test_date_range: pass:1 fail:0 skip:0 total:1
+> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > Add helper functions to allocate/free TDX private host key id (HKID).
+> > 
+> > The memory controller encrypts TDX memory with the assigned TDX
+> > HKIDs.  The
+> > global TDX HKID is to encrypt the TDX module, its memory, and some
+> > dynamic
+> > data (TDR). 
+> 
+> I don't see any code about the global key id.
+> 
+> >  The private TDX HKID is assigned to guest TD to encrypt guest
+> > memory and the related data.  When VMM releases an encrypted page for
+> > reuse, the page needs a cache flush with the used HKID.
+> 
+> Not sure the cache part is pertinent to this patch. Sounds good for
+> some other patch.
+> 
+> >   VMM needs the
+> > global TDX HKID and the private TDX HKIDs to flush encrypted pages.
+> 
+> I think the commit log could have a bit more about what code is added.
+> What about adding something like this (some verbiage from Kai's setup
+> patch):
+> 
+> The memory controller encrypts TDX memory with the assigned TDX
+> HKIDs. Each TDX guest must be protected by its own unique TDX HKID.
+> 
+> The HW has a fixed set of these HKID keys. Out of those, some are set
+> aside for use by for other TDX components, but most are saved for guest
+> use. The code that does this partitioning, records the range chosen to
+> be available for guest use in the tdx_guest_keyid_start and
+> tdx_nr_guest_keyids variables.
+> 
+> Use this range of HKIDs reserved for guest use with the kernel's IDA
+> allocator library helper to create a mini TDX HKID allocator that can
+> be called when setting up a TD. This way it can have an exclusive HKID,
+> as is required. This allocator will be used in future changes.
+> 
+> 
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> > v19:
+> > - Removed stale comment in tdx_guest_keyid_alloc() by Binbin
+> > - Update sanity check in tdx_guest_keyid_free() by Binbin
+> > 
+> > v18:
+> > - Moved the functions to kvm tdx from arch/x86/virt/vmx/tdx/
+> > - Drop exporting symbols as the host tdx does.
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >  arch/x86/kvm/vmx/tdx.c | 28 ++++++++++++++++++++++++++++
+> >  1 file changed, 28 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> > index a7e096fd8361..cde971122c1e 100644
+> > --- a/arch/x86/kvm/vmx/tdx.c
+> > +++ b/arch/x86/kvm/vmx/tdx.c
+> > @@ -11,6 +11,34 @@
+> >  #undef pr_fmt
+> >  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> >  
+> > +/*
+> > + * Key id globally used by TDX module: TDX module maps TDR with this
+> > TDX global
+> > + * key id.  TDR includes key id assigned to the TD.  Then TDX module
+> > maps other
+> > + * TD-related pages with the assigned key id.  TDR requires this TDX
+> > global key
+> > + * id for cache flush unlike other TD-related pages.
+> > + */
+> 
+> The above comment is about tdx_global_keyid, which is unrelated to the
+> patch and code.
 
-The test covers a date range of 160,000 years, resulting in the long
-runtime.
+Will delete this comment as it was moved into the host tdx patch series.
 
-Unit tests running for more than 1 second are supposed to be marked as
-slow. Just marking the test as slow would prevent it from running when
-slow tests are disabled, which would not be desirable. At the same time,
-the current test range of 160,000 years seems to be of limited value.
+> 
+> > +/* TDX KeyID pool */
+> > +static DEFINE_IDA(tdx_guest_keyid_pool);
+> > +
+> > +static int __used tdx_guest_keyid_alloc(void)
+> > +{
+> > +       if (WARN_ON_ONCE(!tdx_guest_keyid_start ||
+> > !tdx_nr_guest_keyids))
+> > +               return -EINVAL;
+> 
+> I think the idea of this warnings is to check if TDX failed to init? It
+> could check X86_FEATURE_TDX_HOST_PLATFORM or enable_tdx, but that seems
+> to be a weird thing to check in a low level function that is called in
+> the middle of in progress setup.
+> 
+> Don't know, I'd probably drop this warning.
+> 
+> > +
+> > +       return ida_alloc_range(&tdx_guest_keyid_pool,
+> > tdx_guest_keyid_start,
+> > +                              tdx_guest_keyid_start +
+> > tdx_nr_guest_keyids - 1,
+> > +                              GFP_KERNEL);
+> > +}
+> > +
+> > +static void __used tdx_guest_keyid_free(int keyid)
+> > +{
+> > +       if (WARN_ON_ONCE(keyid < tdx_guest_keyid_start ||
+> > +                        keyid > tdx_guest_keyid_start +
+> > tdx_nr_guest_keyids - 1))
+> > +               return;
+> 
+> This seems like a more useful warning, but still not sure it's that
+> risky. I guess the point is to check for returning garbage. Because a
+> double free would not be caught, but would be possible to using
+> idr_find(). I would think if we are worried we should do the full
+> check, but I'm not sure we can't just drop this. There are very limited
+> callers or things that change the checked configuration (1 of each).
 
-Split the test into two parts, one covering a range of 1,000 years and
-the other covering the current range of 160,000 years. Mark the 160,000
-year test as slow to be able to separate it from the faster test.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/rtc/lib_test.c | 33 ++++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/rtc/lib_test.c b/drivers/rtc/lib_test.c
-index 225c859d6da5..3893a202e9ea 100644
---- a/drivers/rtc/lib_test.c
-+++ b/drivers/rtc/lib_test.c
-@@ -27,17 +27,17 @@ static void advance_date(int *year, int *month, int *mday, int *yday)
- }
- 
- /*
-- * Checks every day in a 160000 years interval starting on 1970-01-01
-+ * Check every day in specified number of years interval starting on 1970-01-01
-  * against the expected result.
-  */
--static void rtc_time64_to_tm_test_date_range(struct kunit *test)
-+static void rtc_time64_to_tm_test_date_range(struct kunit *test, int years)
- {
- 	/*
--	 * 160000 years	= (160000 / 400) * 400 years
--	 *		= (160000 / 400) * 146097 days
--	 *		= (160000 / 400) * 146097 * 86400 seconds
-+	 * years	= (years / 400) * 400 years
-+	 *		= (years / 400) * 146097 days
-+	 *		= (years / 400) * 146097 * 86400 seconds
- 	 */
--	time64_t total_secs = ((time64_t) 160000) / 400 * 146097 * 86400;
-+	time64_t total_secs = ((time64_t)years) / 400 * 146097 * 86400;
- 
- 	int year	= 1970;
- 	int month	= 1;
-@@ -66,8 +66,27 @@ static void rtc_time64_to_tm_test_date_range(struct kunit *test)
- 	}
- }
- 
-+/*
-+ * Checks every day in a 160000 years interval starting on 1970-01-01
-+ * against the expected result.
-+ */
-+static void rtc_time64_to_tm_test_date_range_160000(struct kunit *test)
-+{
-+	rtc_time64_to_tm_test_date_range(test, 160000);
-+}
-+
-+/*
-+ * Checks every day in a 1000 years interval starting on 1970-01-01
-+ * against the expected result.
-+ */
-+static void rtc_time64_to_tm_test_date_range_1000(struct kunit *test)
-+{
-+	rtc_time64_to_tm_test_date_range(test, 1000);
-+}
-+
- static struct kunit_case rtc_lib_test_cases[] = {
--	KUNIT_CASE(rtc_time64_to_tm_test_date_range),
-+	KUNIT_CASE(rtc_time64_to_tm_test_date_range_1000),
-+	KUNIT_CASE_SLOW(rtc_time64_to_tm_test_date_range_160000),
- 	{}
- };
- 
+The related code is stable now and I don't hit them recently.  I'll drop both
+of them.
 -- 
-2.39.2
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
