@@ -1,151 +1,123 @@
-Return-Path: <linux-kernel+bounces-101695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F84087AAA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:46:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0E1A87AAA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B11311C231B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:46:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71A1B2837B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2ADA481C6;
-	Wed, 13 Mar 2024 15:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A671447F51;
+	Wed, 13 Mar 2024 15:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HmGuABx4"
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U4dOlyXR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6339481BE;
-	Wed, 13 Mar 2024 15:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7D24C85
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710344786; cv=none; b=CZaj1CmzMKdEYUMAM8Si5M+WtIRR2+iM/uyvbrrq/A0jHndozuUpv4hiBLJVOL8cHHDe6sTHQYjup1x7RXr/HGgPC4n9Setqk3txvPRLaAwii2Z2JHaKWCZ7d9r8xEZ0Ik/dDFA7aUtJ+3BWgoMzotsyi3HMvtK9Y9FQwI2SCHQ=
+	t=1710344934; cv=none; b=hL9FTidlV4nHtJsVEdf/nV5hZmbdNE4Ct1Xj/jMwVqqAdfra/AFcBD/FxIdesxa/ZFBZzhtJqyCicAZosPzz+A3r85AmALMnzAqzHImwr+b4ZlkrgM32b0KhNXYdSDdsR6Y5BfEud07YbduhGKuJP/USU4+/1NLWeR2KLHhDym4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710344786; c=relaxed/simple;
-	bh=kbZTvKIUyKrKVMm68AL0IRPNR5dRypdr5syArylXTQ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MjDPg4j9JfgcWA/0JsHLFLVTnquFoR5EDt4yp/WzhlSUXibLAVpbyJRxWrYZ5QT05LgLewYuhsQnvhfx7OJtXGLKTFV5FK+JVAXTSpK1AtPK4nCx9V4l9wX6un+u6DrjL8aaqvkogMWzCUYA/OeRYQwTPy7gQFiqoJYBKAR6zeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HmGuABx4; arc=none smtp.client-ip=209.85.217.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-474cb4bcd3dso480047137.2;
-        Wed, 13 Mar 2024 08:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710344784; x=1710949584; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+WwWvBD5JICifAC4LRXMA04LWk4FKdSKpZw2yIN4sdE=;
-        b=HmGuABx4O/wZG+k/PL/LrQeb2mH3ckkZfUO8aST2cJOP99FOyxTlTm/WufZi7T3W2K
-         L9ZL4HDC6tC58In+wHc+KuuHvMghPiWX8dajECeatG3XYtFZtyCtm/kKlMfXtC3IYEsf
-         p29ju9YNZdhE8w7Jx8k02gRC5ozzXHl0Gr9ePkRMSvGJN7V+qHHZ7FyWBWu8wtWfPDhh
-         B8nxZXnlw1/QKgV+fkauw8tSgNMKU/6T9gf6wAKdCBViZcO16hPWN1Y2/7bVSQtcjvej
-         D8nDTDAXYGY498fmgx3T7hKI8zAHhfolTz2qsHsq/dEdTSu+WNbfbblb9dm+vMfmtiG1
-         VXrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710344784; x=1710949584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+WwWvBD5JICifAC4LRXMA04LWk4FKdSKpZw2yIN4sdE=;
-        b=L7D7YfqhNYhSe/vcd0pc0brkvwb91zAS0gMaHqHc8BkVZX/s/EdHcRMhHPF7KtvchM
-         CeiOHAbWB6MrZsxfqyz6SCuZO7JiPPZXpP849C4K+qkqyvcAXRA9xZtoKVSle06h1crX
-         Jn3hbw+Crfsn1I3nI2GMTBPXI9LjGD+BMpbtsaeQNkX/LWSnJ/JbuDLucWup/Un0wagf
-         zsE7AVW4c3gWzpJ+M5QgJdHPIjWLrK7UYoyQqPxT6+hJp/cM/BwQXlkoJTAAKHP69Ffp
-         zWIfCGINs3hxUnMOkugy9jtDk5iWJU9nzxIttPxLV2ddGABEFvm35n8p4Z3QOX/ukAP+
-         dKYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWMN0zNz/sMd41nj9gu1Zcjnr4t5qO7ocP7jw6dLeQBa9QK7ByGEzobv1f1E3kenXgbjworXjgxP4gTzGoMouW1hGIXglab1ffz883yEl54BtQM/xku+CFQE24rij7S545KzhvI
-X-Gm-Message-State: AOJu0YykD1HD6uKLekvaujWMXFFmnfxvQ7tRicWGVfJQYjEo8AMxqDW9
-	7Wba19IbyfIQ0+Wevxm6e+uMQebKJIi+AE8SM6Sz3MTeQRDdKjpTZ4lh+OM1C5eK3azZB9lu2/d
-	xTnFpxAARbmNXIQq5HPEG2mJYc6G6TWiI1SbUM0D+
-X-Google-Smtp-Source: AGHT+IFGHRcrxRbJ7IkrOHJ9dEOBwd36JeW/1VRvpXj3t1+JiaWxKzxiSsLNwmCzWmgYo/CJd3XJFKFJb2MzqgPNSmE=
-X-Received: by 2002:a05:6102:227a:b0:472:e8a6:ad0 with SMTP id
- v26-20020a056102227a00b00472e8a60ad0mr251000vsd.18.1710344783671; Wed, 13 Mar
- 2024 08:46:23 -0700 (PDT)
+	s=arc-20240116; t=1710344934; c=relaxed/simple;
+	bh=COid3ls/H1cesG2EvzJHTyesfJFy9SOIgs/GvDa4P2c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I6P0jq0RC+quK68b6siBWupqYfXc3bAfrMvZ8vy8AD5DLyTrbHdzKh+7bYpBdpDCOCLWj3WK5gIEMBTSOCin6bMSOVxAkk5PWIOQdungHBIf8f5aSLHfugbk7n8tUO2q29vBkBFJQa1qGjf4ItmKnTlWGu/K1RzCadVGU+ftIyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U4dOlyXR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710344931;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JC1+HJbEXxxyJy+zyJokage5HbCPC99YdysgS1QcXZU=;
+	b=U4dOlyXRGlo4Yae42UPojrgLdKuP5PWyyV34V3ekHuQpbvXyzWnwFkhbKG/P30eqz29NIn
+	hnuBMKVcXgkQhBIbKo+mX62hhGt+0Vb1azCRw6+COgFAzbjZ0rn8yM1Nd5Kklrq/m5WRam
+	xweSQSCWFUjPl+Om1xeV+LQTLOI7cX8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-149-UZMDdUy_MgirT-qVdBpDWw-1; Wed, 13 Mar 2024 11:48:43 -0400
+X-MC-Unique: UZMDdUy_MgirT-qVdBpDWw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B27B18007AF;
+	Wed, 13 Mar 2024 15:48:40 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.233])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 14BF840C6DB7;
+	Wed, 13 Mar 2024 15:48:38 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 13 Mar 2024 16:47:19 +0100 (CET)
+Date: Wed, 13 Mar 2024 16:47:16 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+	mhiramat@kernel.org, bpf@vger.kernel.org,
+	mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/3] uprobes: prepare uprobe args buffer lazily
+Message-ID: <20240313154716.GB25452@redhat.com>
+References: <20240312210233.1941599-1-andrii@kernel.org>
+ <20240312210233.1941599-3-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20240313112706epcas1p2ee50d07f603422b0193f0b71bf1a75e6@epcas1p2.samsung.com>
- <20240313112620.1061463-1-s_min.jeong@samsung.com> <20240313112620.1061463-2-s_min.jeong@samsung.com>
-In-Reply-To: <20240313112620.1061463-2-s_min.jeong@samsung.com>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Wed, 13 Mar 2024 08:46:12 -0700
-Message-ID: <CACOAw_wvVbJD0cCHXsToQmda7oHm5dLG89e_PeWU4_Hy5ivKCw@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: truncate page cache before clearing
- flags when aborting atomic write
-To: Sunmin Jeong <s_min.jeong@samsung.com>
-Cc: jaegeuk@kernel.org, chao@kernel.org, daehojeong@google.com, 
-	linux-f2fs-devel@lists.sourceforge.net, stable@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Sungjong Seo <sj1557.seo@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312210233.1941599-3-andrii@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Again, looks good to me, but I have a minor nit. Feel free to ignore.
 
-On Wed, Mar 13, 2024 at 4:29=E2=80=AFAM Sunmin Jeong <s_min.jeong@samsung.c=
-om> wrote:
+On 03/12, Andrii Nakryiko wrote:
 >
-> In f2fs_do_write_data_page, FI_ATOMIC_FILE flag selects the target inode
-> between the original inode and COW inode. When aborting atomic write and
-> writeback occur simultaneously, invalid data can be written to original
-> inode if the FI_ATOMIC_FILE flag is cleared meanwhile.
->
-> To prevent the problem, let's truncate all pages before clearing the flag
->
-> Atomic write thread              Writeback thread
->   f2fs_abort_atomic_write
->     clear_inode_flag(inode, FI_ATOMIC_FILE)
->                                   __writeback_single_inode
->                                     do_writepages
->                                       f2fs_do_write_data_page
->                                         - use dn of original inode
->     truncate_inode_pages_final
->
-> Fixes: 3db1de0e582c ("f2fs: change the current atomic write way")
-> Cc: stable@vger.kernel.org #v5.19+
-> Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
-> Reviewed-by: Yeongjin Gil <youngjin.gil@samsung.com>
-> Signed-off-by: Sunmin Jeong <s_min.jeong@samsung.com>
-> ---
->  fs/f2fs/segment.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 7901ede58113..7e47b8054413 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -192,6 +192,9 @@ void f2fs_abort_atomic_write(struct inode *inode, boo=
-l clean)
->         if (!f2fs_is_atomic_file(inode))
->                 return;
->
-> +       if (clean)
-> +               truncate_inode_pages_final(inode->i_mapping);
-> +
->         release_atomic_write_cnt(inode);
->         clear_inode_flag(inode, FI_ATOMIC_COMMITTED);
->         clear_inode_flag(inode, FI_ATOMIC_REPLACE);
-> @@ -201,7 +204,6 @@ void f2fs_abort_atomic_write(struct inode *inode, boo=
-l clean)
->         F2FS_I(inode)->atomic_write_task =3D NULL;
->
->         if (clean) {
-> -               truncate_inode_pages_final(inode->i_mapping);
->                 f2fs_i_size_write(inode, fi->original_i_size);
->                 fi->original_i_size =3D 0;
->         }
-> --
-> 2.25.1
->
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>  static void __uprobe_trace_func(struct trace_uprobe *tu,
+>  				unsigned long func, struct pt_regs *regs,
+> -				struct uprobe_cpu_buffer *ucb,
+> +				struct uprobe_cpu_buffer **ucbp,
+>  				struct trace_event_file *trace_file)
+>  {
+>  	struct uprobe_trace_entry_head *entry;
+>  	struct trace_event_buffer fbuffer;
+> +	struct uprobe_cpu_buffer *ucb;
+>  	void *data;
+>  	int size, esize;
+>  	struct trace_event_call *call = trace_probe_event_call(&tu->tp);
+>  
+> +	ucb = *ucbp;
+> +	if (!ucb) {
+> +		ucb = prepare_uprobe_buffer(tu, regs);
+> +		*ucbp = ucb;
+> +	}
+
+perhaps it would be more clean to pass ucbp to prepare_uprobe_buffer()
+and change it to do
+
+	if (*ucbp)
+		return *ucbp;
+
+at the start. Then __uprobe_trace_func() and __uprobe_perf_func() can
+simply do
+
+	ucb = prepare_uprobe_buffer(tu, regs, ucbp);
+
+> -	uprobe_buffer_put(ucb);
+> +	if (ucb)
+> +		uprobe_buffer_put(ucb);
+
+Similarly, I think the "ucb != NULL" check should be shifted into
+uprobe_buffer_put().
+
+Oleg.
+
 
