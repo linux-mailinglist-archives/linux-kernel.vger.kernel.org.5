@@ -1,180 +1,178 @@
-Return-Path: <linux-kernel+bounces-101438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 512AB87A717
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:27:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 064A287A71A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:29:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDC46282F74
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:27:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CC16B22959
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBCE3F8DE;
-	Wed, 13 Mar 2024 11:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBA23F9C3;
+	Wed, 13 Mar 2024 11:29:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="ltS+Drkh"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l3N8xdpJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A0D3F8D0
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:27:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710329237; cv=none; b=LyDnh7SBdGWs6iyQcQb3eIcGtysWd9PUDto1ZeBgYyxvvBETprZUkUYel/VSe+eo+RhZZBKYsem7IjWIM82u+CiWzUzVGGLU4ISM3Q3dpCwsPGp/XrsAwlebpftoIhKYnVmt/AqR4btdo2AC4QMKcRXP1YDzNoMEZZApRA+cxEk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710329237; c=relaxed/simple;
-	bh=9mL5zrW/1kL0kbZ7LHMR3IMlLbAp4r/DDRF9xbj7goA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
-	 Content-Type:References; b=KO+01b1cdximSyn0QCuyQLUi8zDLYUKmatKXquI1kw5Q3CS8nZPVHXVeaSEFEwRFVUTQ4sM1gUiIaRKEOUMPd9RJ+8jKvAbFv9yf45ZDht8n22rhHY4VfPiThrctng4tiA2Hh6sstJMxzapHC+S7PPomGJhpdEZDu+hsOogg73s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=ltS+Drkh; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240313112707epoutp0318c1cb868f8285890679e8231b989298~8T17rEZzJ0438904389epoutp03j
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:27:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240313112707epoutp0318c1cb868f8285890679e8231b989298~8T17rEZzJ0438904389epoutp03j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1710329227;
-	bh=z/iX8u48RiPJtssJ/S7+Jur1BNiD0Y0QneJIHgZwemc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ltS+DrkhRmpbcJYLNYyF901F1eOXxnrY2nbNdjt7MFshj21Ou8KJDlxu1aZpACp3U
-	 DYRfTepd/okpVllkQVk3cFQC3/2wKAshzuu0i5iaABTocbQsxTKtfHck41TMB1NtbG
-	 U2w5UWRioK0cc+UiGMANcQF0lFzNuv/Wyo6oLifo=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-	epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-	20240313112707epcas1p3e218a4a1a7d74ac5d93e2eeae90950df~8T17VEUhJ0101901019epcas1p3p;
-	Wed, 13 Mar 2024 11:27:07 +0000 (GMT)
-Received: from epsmgec1p1.samsung.com (unknown [182.195.38.247]) by
-	epsnrtp1.localdomain (Postfix) with ESMTP id 4TvpBf5pYCz4x9Pp; Wed, 13 Mar
-	2024 11:27:06 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-	epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	2C.EB.08572.A8D81F56; Wed, 13 Mar 2024 20:27:06 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240313112706epcas1p2ee50d07f603422b0193f0b71bf1a75e6~8T16rGmrQ0994709947epcas1p2f;
-	Wed, 13 Mar 2024 11:27:06 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240313112706epsmtrp27aff4350cb0f46f1c58a09a71c5b5963~8T16qdkeQ2918429184epsmtrp26;
-	Wed, 13 Mar 2024 11:27:06 +0000 (GMT)
-X-AuditID: b6c32a33-cefff7000000217c-17-65f18d8a0578
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	83.15.07368.A8D81F56; Wed, 13 Mar 2024 20:27:06 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.98.34]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240313112706epsmtip1fdff2586b5837b9f479ee51f70110939~8T16fyx4Q1478114781epsmtip1l;
-	Wed, 13 Mar 2024 11:27:06 +0000 (GMT)
-From: Sunmin Jeong <s_min.jeong@samsung.com>
-To: jaegeuk@kernel.org, chao@kernel.org, daehojeong@google.com
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	Sunmin Jeong <s_min.jeong@samsung.com>, stable@vger.kernel.org, Sungjong Seo
-	<sj1557.seo@samsung.com>, Yeongjin Gil <youngjin.gil@samsung.com>
-Subject: [PATCH 2/2] f2fs: truncate page cache before clearing flags when
- aborting atomic write
-Date: Wed, 13 Mar 2024 20:26:20 +0900
-Message-Id: <20240313112620.1061463-2-s_min.jeong@samsung.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240313112620.1061463-1-s_min.jeong@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C3D83F8C7;
+	Wed, 13 Mar 2024 11:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710329347; cv=fail; b=dN6Nh8cON8+AbP/WJdrMhU6aTbY4ucDp3poQjulw7N7QMUwkjZYkVfPUfk/KVXgDYEDWaXeCvGWbbvX+cmUbRR2xrYnYsiC6MlHgg/SFbjYv+m1CPf74JGlZRGhqwlcDfDNm2v6xBKqiODJewHnt4eKDihu2s8yTvo7QSL9+3as=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710329347; c=relaxed/simple;
+	bh=KDpVAvEVgfKwPZGUmlWzI4jecyJyiLzCj7cSel2ZB1s=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qu6ZKTXHb0u4CvHldltCk3WwBKbVkkBcyzYLUM3ux3NTIhnfQy3v0emceQLf8/kEatwUu1ikaTTSFO1fvdPRDn1pjY7TlfLleod8/LHheMdQY4D2+I/a7BH+vO+bcFVQZe7mn1sqOpSK4MvkGDoef1mH1G6t2biVzwSwCrQCj3k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l3N8xdpJ; arc=fail smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710329346; x=1741865346;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=KDpVAvEVgfKwPZGUmlWzI4jecyJyiLzCj7cSel2ZB1s=;
+  b=l3N8xdpJOeytjlsa89vQng6FMDEjhmS2VXv4aN3qHX54b5BeByTyVdgO
+   z0CNHTxkkE3o8NIrtFcVIohkb0B4AUFsV9OjTT8IazEfi2TyzCQMuwHom
+   QTqUYf7T7jZpkaXxAZz09c41W9FvaamMRDs/bEVnjgFJ9CeoG+EhPitZQ
+   84US7cToP0ym4g9RaynR4gDA76JtZnSrn6jxBGrVrdmqpjg0gtAupmUlQ
+   3kmt5dxZU6qEq2l6jYuLkfILb+uk5YmUrMsepA62ytH3NEVlqYfSqLVuQ
+   CmOA0qVXFGU9TUICYECR72Tz5h9RNn73QE9v8EmCsY8/Pv+qmhYdsNsrN
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5016831"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="5016831"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 04:29:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="16545004"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Mar 2024 04:29:05 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Mar 2024 04:29:04 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Mar 2024 04:29:03 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Mar 2024 04:29:03 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Mar 2024 04:29:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jYSKFiZ4mdl4beXzX8VE93706r48esVSV435ryAUN87WL6ChZL/N4W7rqXvtqAEmZtgvvcm5C6Ht45wj7PEqOBI09ONifpOYdg2GqIPgPnNKxxcGm2+xgXjyPjmzz+g2pFvwGYc7KFJgEMYygFJLgX2zUzsJRXi4JYJsr5khAbZ5n0ibrLn3xj17wAdHLe2o4IDfbcOSlVdg+W696XGzxVoOEnzy3Tf5j8in3mjZ8xm98uP//jDDXZIvoIZ+rCxj02u3DgFzsxZ2IgjlDhmED7TeYkSyJK+mBAdPDeMg4u1FW/R8SSEduC3XJSdcMvB3tdlfKas7hxgvotEAIkStXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2zRLQi2IFyde4U/nv/r4x1WzDBxYFpQ6UTbYzoVoINQ=;
+ b=L68FgAdV6fQwKnOVvchHFKUd5DlSqJdpDltwjLKH+FCn1+I9ZR316qEBQEQHiXvt1l79StAFXjcdMKlx28ZVYuC6O5pwIzF0c6GowQcioy/g3hogMD77tIlb8+FQo/0dr9EFrIHplP78ftAkyWp8fY7PYp8aDRPZnAudzW93p6cs0iytHdbSNg3k6/Fzxi5H4C2oWCYlSOPNrxDazYfuUINyujEb7A1HKJL1ecqMoYflyMr7T+NRjab9RUC8XEk0rxw8P6RorqW/XgRlXy/+KN2ESbh7AVgHihRZqgL44zpImVufZ2VkGqCWuKPgwndf7FgKU3Am2SJ37TofAKZ57w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com (2603:10b6:510:147::11)
+ by IA0PR11MB7401.namprd11.prod.outlook.com (2603:10b6:208:433::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Wed, 13 Mar
+ 2024 11:28:55 +0000
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630]) by PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630%4]) with mapi id 15.20.7386.017; Wed, 13 Mar 2024
+ 11:28:55 +0000
+Date: Wed, 13 Mar 2024 12:28:41 +0100
+From: Michal Kubiak <michal.kubiak@intel.com>
+To: Ignat Korchagin <ignat@cloudflare.com>
+CC: "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <kernel-team@cloudflare.com>
+Subject: Re: [PATCH net v2 2/2] selftests: net: veth: test the ability to
+ independently manipulate GRO and XDP
+Message-ID: <ZfGN6RTBCbEm6uSO@localhost.localdomain>
+References: <20240312160551.73184-1-ignat@cloudflare.com>
+ <20240312160551.73184-3-ignat@cloudflare.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240312160551.73184-3-ignat@cloudflare.com>
+X-ClientProxiedBy: DU2PR04CA0226.eurprd04.prod.outlook.com
+ (2603:10a6:10:2b1::21) To PH0PR11MB5782.namprd11.prod.outlook.com
+ (2603:10b6:510:147::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplk+LIzCtJLcpLzFFi42LZdlhTX7er92OqwZYDuhanp55lspjavpfR
-	4sn6WcwWlxa5W1zeNYfNYkHrbxaLLf+OsFos2PiI0WLG/qfsDpweCzaVemxa1cnmsXvBZyaP
-	vi2rGD0+b5ILYI3KtslITUxJLVJIzUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLx
-	CdB1y8wBOkdJoSwxpxQoFJBYXKykb2dTlF9akqqQkV9cYquUWpCSU2BWoFecmFtcmpeul5da
-	YmVoYGBkClSYkJ3Ru+0gS8EVvorD/86wNjCu5e5i5OSQEDCROLnpMGsXIxeHkMAORolH8/4z
-	QTifGCVWfv3MBuF8Y5TYdWM2UIYDrGXdHD+QbiGBvYwSe84rwTUsW3aIDSTBJqAj8XDqbRYQ
-	W0TATuLWzUWsIDazwB1GiRUP6kBsYYFEib8r74PVswioSrS+fAs2nxeofv5/HYjr5CVmXvrO
-	DmJzCthLvJy4hBnE5hUQlDg58wkLxEh5ieats5lBbpAQ+MkucXfrRFaIZheJmzsnMkHYwhKv
-	jm9hh7ClJD6/28sGYRdLHJ2/gR2iuYFR4sbXm1BF9hLNrc1sIAcxC2hKrN+lD7GMT+Ld1x5W
-	SDjwSnS0CUFUq0p0P4K4TUJAWmLZsYPsECUeEr0PIiFBNYlR4tVL7gmM8rOQfDALyQezEHYt
-	YGRexSiWWlCcm56abFhgCI/S5PzcTYzg9KhlvIPx8vx/eocYmTgYDzFKcDArifDWKX5MFeJN
-	SaysSi3Kjy8qzUktPsRoCgzeicxSosn5wASdVxJvaGJpYGJmZGJhbGlspiTOe+ZKWaqQQHpi
-	SWp2ampBahFMHxMHp1QDkybfr/5wPo7ta5j/PWgp+b/q5EmDfxuf1B126ziu+WbVxM0bL94K
-	5tQofWjNwvroV7Z/stgKVk1D2wRDk5ImuzWeW6KTXVM4LAUmq+xbvfjdYqa0idXSVrvUe/W2
-	q/slr5xm5S8kFvf7DuOTRz7/djozmt9Skd2r9WFyVVLTwsPinX+79LI+3ytpev5ni9C1JPft
-	a6rX5EoqRocKuu+8v+TlSt5jR9tYdzwLu9MmMaGmY3duj7rwr5m6lnwtP2xndy1Sbyp/nXFf
-	4a3xu7UW3qrphnZvfYUmL+1zyTtZMiNUqefx/ae7+mI5Yhb//33L6LpD3OI1jH+Yzly7Hhny
-	c93LIzt2hzQZXH+891X1OSWW4oxEQy3mouJEAOR6GSgYBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsWy7bCSnG5X78dUg4+9Uhanp55lspjavpfR
-	4sn6WcwWlxa5W1zeNYfNYkHrbxaLLf+OsFos2PiI0WLG/qfsDpweCzaVemxa1cnmsXvBZyaP
-	vi2rGD0+b5ILYI3isklJzcksSy3St0vgyujddpCl4ApfxeF/Z1gbGNdydzFycEgImEism+PX
-	xcjFISSwm1Gi+elaFoi4tMSxP0UQprDE4cPFECUfGCXePNzN2MXIycEmoCPxcOptFhBbRMBJ
-	4v+NdnaQImaBR4wShxoWghUJC8RL/J3XzwxiswioSrS+fMsEMpRXwE5i/n8dkLCEgLzEzEvf
-	2UFsTgF7iZcTl4CVCwGVzJ24nRXE5hUQlDg58wnYLmag+uats5knMArMQpKahSS1gJFpFaNk
-	akFxbnpusmGBYV5quV5xYm5xaV66XnJ+7iZGcIBraexgvDf/n94hRiYOxkOMEhzMSiK8dYof
-	U4V4UxIrq1KL8uOLSnNSiw8xSnOwKInzGs6YnSIkkJ5YkpqdmlqQWgSTZeLglGpgmtG/KWCr
-	gDG/68++LuFpUa27vbmLA9kmhtw+5OzC4vf26HQDzZD1P+Xk3WdyWn681cVc23NB6NCsnQKS
-	PNmMHuovHm1fnPAy6rfQH4Hz5ZHXhXgeFjBX9jWzBnxafdNRs+LU5CUL51eosqhMeLb61nXn
-	9yu9lYNnpm5Zsyb6S838VYtLmT/eFZxwSzvWuHO6vU/0NNNO6b88D8UKG1QWGmwOMA489GNf
-	tvjD4KNPZmufudUVVGB/Y21KolvAnrjyV1qSGlkaukxpzGpmfeIltlOdaw8U7k+bc3mznHq1
-	i7OM3JGNUdqNlfrcj+5KsjYunPV6N9/1pqwPH8rdD2ypudL8bl6LXp+qrc+BheeVWIozEg21
-	mIuKEwEMcDDM3wIAAA==
-X-CMS-MailID: 20240313112706epcas1p2ee50d07f603422b0193f0b71bf1a75e6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240313112706epcas1p2ee50d07f603422b0193f0b71bf1a75e6
-References: <20240313112620.1061463-1-s_min.jeong@samsung.com>
-	<CGME20240313112706epcas1p2ee50d07f603422b0193f0b71bf1a75e6@epcas1p2.samsung.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5782:EE_|IA0PR11MB7401:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5650e9b6-5959-4773-f79f-08dc4350c46a
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Lm+kKiOyd0uXPnegOZHHTyi0234Pjyhp1R39IfEp97mj97eSx74Cf5R4OcQfXs7ZMJR0ItKQRxVZsfWRHU2u3pD2xvCDzFhPUUk75IUBb60y6x7LZsd6hx+U9De1HSy2hRYKmVmYfbnAcSM+ABMRNb6UGFK/4ySxeVj4ZPpndPSwAh/jPrqpJti5BWYhJYDk9fsVQ8cfi2O4r7bplR9/7ZxJxOj3nvwLmBv9Jcq59suCEcp0lwwPHWwd3nC7nuaMW0MPR1PWBkGF6DSyWPXIBVkGgDRYBYDlz+H5HWL7h7hVA65WmhdEFEUx6DHNVb4fGsRkiUNDTvVpxx7kWOozkfF+/rkbJsqwCc5gOsv/Fjdq8V6LgGtvAgb33tTNuNaeO4SlaX6xg2Ww3QmZmzq63IBDSyjGuxNeb8Thtls2Hva/AFiGM21FuoulCq1SUgkvf4pIFhOKl7usg+oqtOT6xyooagHO1utPiCtyBFCBs7lgn7lfoY517+qGeNZzFZ5z4dt0COa2G6QZeujzG01fTqgC6kkAjTZC+9sux9xX1WzF8xsqv9TI6OyEB/H2bSkMUxIgut+lb8ZTOkzoDNSylMKJq6cB4+K+GtSyzZuFs6kguxWM7XQjEXhJD3zkesrJz0l54lC/6pe+oD10ZsupCi4/c6CcMZIFwvix+ENm9GI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5782.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Y+SvTG1NSVYH5hotwSi9huVRX5CSGs6G0FELYNL1cuSxLuZazFwYMqOa0n+p?=
+ =?us-ascii?Q?YTkAi5YiNF50Cwhoqz5QtG7Gzkcjmf9FCpwtEOy4U9wxxx/wekcXGXe7bBYr?=
+ =?us-ascii?Q?Qp3U4HCCcOji/izzUxKTUisbttbYveSQkqQMVox3Em/N+UngrfmDy7oPZsdL?=
+ =?us-ascii?Q?aKHo8aAHPf/QG7ei+T8f3FhjRITgVVmMTyDx+1v/ZXzHxc946aeIv4fifnHH?=
+ =?us-ascii?Q?ZDvegC5QvjRWccAjdrA6Bgb2YrRyyOFYhc0nL1gl8mOPX1RI29ZvIaac3ov9?=
+ =?us-ascii?Q?MebQU6FJc9F7i40f/TYMP7nOVt5NeVA7m1XmALKDMrPUG5VFEmqcW1IkY+aq?=
+ =?us-ascii?Q?/7oXZergB8taJUFLPrlU2EKIVTwK/hUgVqi3zDkT9yWo7l16AUZ9SmfkSpGl?=
+ =?us-ascii?Q?2AOPslLM/lBgZ7urY1jdR7VblE/fmzPoCGtgZevjETuF7UyMuTFKcLNTNPLA?=
+ =?us-ascii?Q?tOmW8W37GXChBufBlH2c5wPqxZ+FNDw3x25UxRJymbgRb/65kNrQ3rpqvVXj?=
+ =?us-ascii?Q?a1tQF2jIt3UutAtkKQ3r0hDGDveUC3n2D8ckNUv097krVCXZCM9NfnOErbWI?=
+ =?us-ascii?Q?uNXiX8rLuvnBi9JfxKPsX5Q0wSfN7I0q39/QFnb6tAzOgQouqFVbr1DwktEU?=
+ =?us-ascii?Q?Otr4dd1LiDZJfh4qMeHYg0u37rDOiCryJWWYQ+z/VmRE1upmxtYCL5f0RXuY?=
+ =?us-ascii?Q?gS5mPeeDjiNEF+VbSoGlNFT3+jfqUepU09Cpd3N4OEuBemyfZpbr3XRBrn4G?=
+ =?us-ascii?Q?lEk6/GoNXHt1LW1DWyQrAx1UPvJ2b9UvaDG611WZ/eDFI8N6jJcE6JlKaIfB?=
+ =?us-ascii?Q?2Qpr2JHJiPRArnGNMWFkDmUIdWH90JeorKdcESWGgvH7VKC/foDj3fQ08GA4?=
+ =?us-ascii?Q?Snp14Q6aEcLFkeBg1AECJHVuXJnqJ6JPKZs8JEGW6cjnp7IEq+vPShXNzCIZ?=
+ =?us-ascii?Q?DZE2QBESW4Du0fOTkLAN+zJyZa3mYlZY7HulhBxiDJPa0v0lRj8dSol1azZB?=
+ =?us-ascii?Q?RYQfe8eIUu1FnmYLs7TSaSAJgiVTFjmM/VxC9fvgKCbM1VZHATO/375I0wl3?=
+ =?us-ascii?Q?O/YTmgcoQcOdhcBREzHmbpW5/Mlal4TwJu557xfAQZnSutmIPQ1q2lz87+32?=
+ =?us-ascii?Q?LZeGqJZSulRiYoE7JSlQXnS4rovQ1mCmnCJqT3RqL8iAUFU19/JlwUxwyQMB?=
+ =?us-ascii?Q?4k8SfQoZV27Ybalm0QNPeze9SuO7I2ZwMqneNKgVbs2qo9F1uDjqym6YVKwp?=
+ =?us-ascii?Q?1rrKzG+IT1W+tu/91LUfYf+i32NNOIuKTLVzV89I9Mo7gh0fkPbV4SNDKBc8?=
+ =?us-ascii?Q?5VVP3I2aJOB0j1B7GDeJhK6ZgZ0Hr3CowYl2+rPAI50FAxZZSLK0aPvhIgqu?=
+ =?us-ascii?Q?8C9pG03Kc65fQHqZyQ/S6/Gp6S/BtmQGayMJlS5lyNcHltc5I6ofUQoXG8lL?=
+ =?us-ascii?Q?wf0YyALNHQROum37MEiyGRNEfkAcIS6FTGm2XY155csCQ7gFnXnyJeZf6iCS?=
+ =?us-ascii?Q?s7HIWZH3njW2CcCQXRyn60WwxS2UJQwo4OPBBO+9sDyq4UKckfIzLquJtT24?=
+ =?us-ascii?Q?Ky1MAsnnTuilCs7AlSu4vmcrllNCUCb/90wH1qw50gVZimPbK22d7QcqONY+?=
+ =?us-ascii?Q?gA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5650e9b6-5959-4773-f79f-08dc4350c46a
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5782.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 11:28:55.2940
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7hkMqTv+uHhVtd71URS+SajN3FQ5suxUakasbkUyHxbB5mWF0clI+tmSlVbN3U4b7K3jzT9OP7cetRDILYM4Tw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7401
+X-OriginatorOrg: intel.com
 
-In f2fs_do_write_data_page, FI_ATOMIC_FILE flag selects the target inode
-between the original inode and COW inode. When aborting atomic write and
-writeback occur simultaneously, invalid data can be written to original
-inode if the FI_ATOMIC_FILE flag is cleared meanwhile.
+On Tue, Mar 12, 2024 at 04:05:52PM +0000, Ignat Korchagin wrote:
+> We should be able to independently flip either XDP or GRO states and toggling
+> one should not affect the other.
+> 
+> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
 
-To prevent the problem, let's truncate all pages before clearing the flag
+Missing "Fixes" tag for the patch targeted to the "net" tree.
 
-Atomic write thread              Writeback thread
-  f2fs_abort_atomic_write
-    clear_inode_flag(inode, FI_ATOMIC_FILE)
-                                  __writeback_single_inode
-                                    do_writepages
-                                      f2fs_do_write_data_page
-                                        - use dn of original inode
-    truncate_inode_pages_final
-
-Fixes: 3db1de0e582c ("f2fs: change the current atomic write way")
-Cc: stable@vger.kernel.org #v5.19+
-Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
-Reviewed-by: Yeongjin Gil <youngjin.gil@samsung.com>
-Signed-off-by: Sunmin Jeong <s_min.jeong@samsung.com>
----
- fs/f2fs/segment.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 7901ede58113..7e47b8054413 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -192,6 +192,9 @@ void f2fs_abort_atomic_write(struct inode *inode, bool clean)
- 	if (!f2fs_is_atomic_file(inode))
- 		return;
- 
-+	if (clean)
-+		truncate_inode_pages_final(inode->i_mapping);
-+
- 	release_atomic_write_cnt(inode);
- 	clear_inode_flag(inode, FI_ATOMIC_COMMITTED);
- 	clear_inode_flag(inode, FI_ATOMIC_REPLACE);
-@@ -201,7 +204,6 @@ void f2fs_abort_atomic_write(struct inode *inode, bool clean)
- 	F2FS_I(inode)->atomic_write_task = NULL;
- 
- 	if (clean) {
--		truncate_inode_pages_final(inode->i_mapping);
- 		f2fs_i_size_write(inode, fi->original_i_size);
- 		fi->original_i_size = 0;
- 	}
--- 
-2.25.1
+Thanks,
+Michal
 
 
