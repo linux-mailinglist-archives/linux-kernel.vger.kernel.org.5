@@ -1,67 +1,88 @@
-Return-Path: <linux-kernel+bounces-102547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1916787B3B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C17987B3B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:44:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AD561C21FA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:44:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6BF1C22CD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DE856B7F;
-	Wed, 13 Mar 2024 21:44:33 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236D758AB4;
+	Wed, 13 Mar 2024 21:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dr7Mz7hh"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8863C53E07;
-	Wed, 13 Mar 2024 21:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C665813E
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710366273; cv=none; b=Zp5ZBt5d1sKsBcn7AmDBluPf+bbW5sofsIvO3QDNsLWWwXB2M1PoZwbym8rp7wFY9grFwA8RA3pwR7jGx9eWY4bWxptERXLcUsgliHcrK+WoyNuQ9CQQCa8Gfwm77/T+DbRdFas66nP/HhYZTflWMEA1Jl3FL+BiCorWFbWWytU=
+	t=1710366276; cv=none; b=jUZkqe6BPpR7OHeawckzqYWHw5g1oRE0xn4FHObktNXMise3+AbGurySPDN8UEOEsSZC12SyV+ndcmFv5k1oqIH97G1ECA671LDMZASf/I9hVpShJzuX5vpx+GDZ1nLnp7B0c2JgWVIniVL5Gzg7qCGMtq7XldcupI1kN6dwMtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710366273; c=relaxed/simple;
-	bh=fHUHblIM4Ym+Lz04JBq2RDtEh1L4l5ZqXeh2B8Xe0mo=;
+	s=arc-20240116; t=1710366276; c=relaxed/simple;
+	bh=M7tMssL3rW6daJmlY8YzvszCMnWhcIOBZ0pI+5TVFAg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e6/KMea9e6puisxxWLSPC/vJeVAu6/QbaBvaLFyDp+9FvF8E77U3FX9yKud80Yi86BqU5raNoF8yXfI7GwRWJ5Vyz5CL+QJl3xfNZYCMKxeBjgiGUCyUK42fIpGjUlTAvQUho1sycFZboeV+4eN6F0611KjQ2vVJUI0gj5wAA2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 8161568BFE; Wed, 13 Mar 2024 22:44:18 +0100 (CET)
-Date: Wed, 13 Mar 2024 22:44:18 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240313214418.GA9129@lst.de>
-References: <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca> <20240307150505.GA28978@lst.de> <20240307210116.GQ9225@ziepe.ca> <20240308164920.GA17991@lst.de> <20240308202342.GZ9225@ziepe.ca> <20240309161418.GA27113@lst.de> <20240310093513.GB12921@unreal> <20240312212844.GA3018@lst.de> <20240313074636.GV12921@unreal>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BARzTDnYNecf+nh5KPpW7M7gcdcVdow6WM9i4cQv03LnensNIS8iCT4lxlbk+7NreKsR1qjW/jXCBuzCwYLgxByyGS5kYCvXzDqffQN22V76czjmCfrMZRtpwR89Jm7PaG4xVjAPV2YI7aLpFFfK0tYSHsPdo9sO5pQusXUtKyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dr7Mz7hh; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dddaa02d22so2060835ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710366274; x=1710971074; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TqpXVYBsDQDgSl0PQ61LrhAcbX98gzLbSWwdys5RLvI=;
+        b=Dr7Mz7hhdOcnWrjy2IStgZTaq3Mq0JKlIyS9xzBr7dVBtsP1N+ERWw0aUz+m+Ma0C7
+         RFGpZQutkCeDosFbjrUOtxhRGoHnDcCcC5POO8a0WhIZAa48MLIT/Fq7UQbKogxIjZbv
+         QzSQatKv8W6QkVKF48mlkdeIaQ1h4XmbZm6G0aSPxv5kcc8+3eke7uOld8aFoVmYPWrs
+         w6VknKtjdv0XOBgCZwOK0bOZgQMPXR9gkhHUy9al2s5Dx0Og9GUCCcn4yUnEzgrOxtMx
+         PnOm/W5KJvllCTzeYp8DuhTr8DPWZ7gLY7L75yucgE1GCyF6kis3icQCLgmSq3PWiEo9
+         2uUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710366274; x=1710971074;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TqpXVYBsDQDgSl0PQ61LrhAcbX98gzLbSWwdys5RLvI=;
+        b=lCJa+oUp7nwiAPK8w2p2M5sfgv0AKsrKtmqn6rAk8auJJPwv38CLsC5ZMBkQakH9xm
+         MuVh3Lc64JBvTpAG/Jrome8PsPgCgi7CzddWmIbdficE+9eq1UJVAoMz0leic8Kr80BI
+         gsf6Gsa0wqxsOjWN66rnTyy+OTUDXLrkpCeTPBmU8i+/XCPiEspTcC2KQWHTJra1tmE8
+         QSpyEkWduZraGz7BjP5RUsftG0nn++hGzvo8SUSm0Rgie38tukBd6wwhES27w/jbjsfB
+         GRhzFCtHOnJyfAdvx8OdX/VSj/3lvr+XgxzHlYvWfvVKc3h+UyvoAlp7fmrWejUQjik2
+         XPug==
+X-Forwarded-Encrypted: i=1; AJvYcCX3AW9LS8N43tx6LXVQddUxq7oVfk+OvKi6FqQFOiyKg4LMJgfFs1TZlF35SvGKQO0ulHzc/jH6mV1OM3NpgrJ7MzPFoe7nKwX24U/8
+X-Gm-Message-State: AOJu0YwWjRtqHdz70IG2Lpr1oOrdfkrgyTQKoAIkH/CY1nLP10zIV3IV
+	mBr9G8ZSYEzWbebCLkCSbHI6TzqC0GYgOsqn7UmRI4xz5BG8HTHoLuMo5mVW
+X-Google-Smtp-Source: AGHT+IGTROaHYXxzf+17P2vGGsVAJyT79RM3PPgmRinvxxlvM/ysxERHCOBQZqY+QnILlv5GLoVePw==
+X-Received: by 2002:a17:902:7890:b0:1dc:51ac:88f5 with SMTP id q16-20020a170902789000b001dc51ac88f5mr33054pll.65.1710366274322;
+        Wed, 13 Mar 2024 14:44:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:2875])
+        by smtp.gmail.com with ESMTPSA id b5-20020a170902650500b001dd7d66ac95sm91424plk.78.2024.03.13.14.44.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 14:44:33 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 13 Mar 2024 11:44:32 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Bart Van Assche <bvanassche@acm.org>,
+	Greg KH <gregkh@linuxfoundation.org>,
+	Kernel development list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fs: sysfs: Fix reference leak in
+ sysfs_break_active_protection()
+Message-ID: <ZfIeQKluEeh7TulW@slm.duckdns.org>
+References: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
+ <e9d710fc-eace-44de-b3cc-1117c3575ef7@rowland.harvard.edu>
+ <2024030428-graph-harmful-1597@gregkh>
+ <416a8311-c725-419a-8b22-74c80207347f@rowland.harvard.edu>
+ <9c2484f4-df62-4d23-97a2-55a160eba55f@rowland.harvard.edu>
+ <ZfIKwFSmw-ACj_jO@slm.duckdns.org>
+ <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,21 +91,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240313074636.GV12921@unreal>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
 
-On Wed, Mar 13, 2024 at 09:46:36AM +0200, Leon Romanovsky wrote:
-> On Tue, Mar 12, 2024 at 10:28:44PM +0100, Christoph Hellwig wrote:
-> > On Sun, Mar 10, 2024 at 11:35:13AM +0200, Leon Romanovsky wrote:
-> > > And you will need to have a way to instruct that pin_user_pages() variant
-> > > to continue anyway, because you asked for FOLL_PCI_P2PDMA. Without that
-> > > force, you will have !FOLL_PCI_P2PDMA behaviour.
-> > 
-> > I don't understand what you mean.
+On Wed, Mar 13, 2024 at 05:43:41PM -0400, Alan Stern wrote:
+> The sysfs_break_active_protection() routine has an obvious reference
+> leak in its error path.  If the call to kernfs_find_and_get() fails then
+> kn will be NULL, so the companion sysfs_unbreak_active_protection()
+> routine won't get called (and would only cause an access violation by
+> trying to dereference kn->parent if it was called).  As a result, the
+> reference to kobj acquired at the start of the function will never be
+> released.
 > 
-> Jason talked about the need to call to pin_user_pages(..., gup_flags | FOLL_PCI_P2PDMA, ...),
-> but in your proposal this call won't be possible anymore.
+> Fix the leak by adding an explicit kobject_put() call when kn is NULL.
+> 
+> Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+> Fixes: 2afc9166f79b ("scsi: sysfs: Introduce sysfs_{un,}break_active_protection()")
+> Cc: Bart Van Assche <bvanassche@acm.org>
+> Cc: <stable@vger.kernel.org>
 
-Why?
+Acked-by: Tejun Heo <tj@kernel.org>
 
+Thanks.
+
+-- 
+tejun
 
