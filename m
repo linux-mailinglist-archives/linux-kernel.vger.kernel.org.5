@@ -1,87 +1,122 @@
-Return-Path: <linux-kernel+bounces-101236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 549F487A465
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:59:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A86C87A46A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 824E41C21BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:58:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0129A2834B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421AC1B95E;
-	Wed, 13 Mar 2024 08:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BBB1B7F8;
+	Wed, 13 Mar 2024 08:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hpDvttiR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="S4yrSkfF"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710D41CA8F
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBC812B93;
+	Wed, 13 Mar 2024 08:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710320324; cv=none; b=KYeWwd00EdpfL4DEZXip0SgjfSUJp0Zj0D7U7cnSwu0+PXusSfOfPPaNlT0OhQ0oRv+vW4CjDhcD07h+mFA1++RkS8l0eJisOGDP5y7Z9V8lw/Y3gK5ykY73izz4ANJ4C2dUam7icRa74M2J/w7MY/DcrbMPhIPLUNGe6PHjBqw=
+	t=1710320387; cv=none; b=XCR7+NCbMSJRdRclfZBXnUDYddWBX6jijtasH2kcoSEQPHmCWkqAkcysI3z2fEYPLcVLSMgSSt4NY7dySZvC0M0VYjh/Z2IJBYJQ5El59SNSig1l2zEFrnknH0vxctCdlJIJneN9QrXzq0OxFf47EqC5OY1MUnGV0QUaLAaCddk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710320324; c=relaxed/simple;
-	bh=cEL99aSk6iGK9iIhaqoNdRsfrJe94zJvfu2DyDWlqIk=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=kErA7HWS/L8oym009QsoP5jmSVVaC+otx5Q0nYefezdhVwSOixiUrqvmVPjfYMuVhV43khQ8viQ2daBkCOMcnkP4vnu9/6bn1vVnJJfjvz+icyFCpxfAOOz+1Z8ueAS7kg0DzmeaetFKdsDHfAhTHnEbgY1NBPzZZ6GsxLMaZ64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hpDvttiR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710320321;
+	s=arc-20240116; t=1710320387; c=relaxed/simple;
+	bh=Nf31kQK77CE/5iZUQr8OaiVUFvX8lf5qat1P9+9FJ5w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=poSl+enkZS/idkllul6+LWBjDYq57GpyUyKkp5exUVt7xy0YuR8Y3eYXOh56V2758LiSIQWYS4f0JD+cTi+bCmbo3Ubs7U0p+CV+DYJ6U6YhZmYvuqcowfp0OK7f71tS4Dm+nuzi6L0klBObiEbfadQr6c0UmUdBHfBI+IFoslM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=S4yrSkfF; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B8E521C0002;
+	Wed, 13 Mar 2024 08:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1710320383;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cEL99aSk6iGK9iIhaqoNdRsfrJe94zJvfu2DyDWlqIk=;
-	b=hpDvttiR6EiiD3cc3Yn+UkuSZ/sKtoloicW8TXKBoLi1FKbCYc8nJpBt1jM++ZfQ76sduA
-	PwPCq1/p9T/q144M+NhqmUBoQt+KcAbuNVbGXz5Mw8FCu4FLgSn0KZt4bJj0Jbuj05KvbP
-	hvhRlFk6So7ArvsdHermh+tjPE1/zYw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-389-uWH7YBmqM6q60T-RNlxmrQ-1; Wed,
- 13 Mar 2024 04:58:38 -0400
-X-MC-Unique: uWH7YBmqM6q60T-RNlxmrQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79CC528EA6E7;
-	Wed, 13 Mar 2024 08:58:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.10])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 15B042166AF0;
-	Wed, 13 Mar 2024 08:58:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <00000000000070f071061376a5b6@google.com>
-References: <00000000000070f071061376a5b6@google.com>
-To: syzbot <syzbot+150fa730f40bce72aa05@syzkaller.appspotmail.com>
-Cc: dhowells@redhat.com, davem@davemloft.net, edumazet@google.com,
-    kuba@kernel.org, linux-afs@lists.infradead.org,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-    marc.dionne@auristor.com, netdev@vger.kernel.org, pabeni@redhat.com,
-    syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] [afs?] WARNING in rxrpc_alloc_data_txbuf
+	bh=KllXQ52SSC7jQLSK+2YhVf2cI0gP4JWuXEq89gqM2Wo=;
+	b=S4yrSkfFJw35bZjc2WGscyANqHuBgISTUw7npMyVKjH2otM+w+OInxoMSWPlQxIruG7MuT
+	4FpGDS6gXSOQ08QMa9poehcXYz7/sV3mpU2PGydaq0OsY0GUByyba3K694tbm8ZGlbqWzZ
+	ldAa6D6e0r+/2rofqW2kivJbPBaiXiM/x/2u1BwOh4A/g9pZ2RzQ6lyFyJBdkyInNBIHbm
+	TqOODbYkaYE7XHcHaDsRLH3rwmgDgfCdyCByCAioJUJmwuZg6nYoxoayhmmNsS+a7Wr1Xc
+	1a59unBX8ICRrtyRu5Huefe0UlVmPebH517fKQtenEOYiOoVexViB9hrmpfyNw==
+Message-ID: <bf0ed70f-e106-4a7f-a98c-de34658feb4d@arinc9.com>
+Date: Wed, 13 Mar 2024 11:59:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3070358.1710320315.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 13 Mar 2024 08:58:35 +0000
-Message-ID: <3070359.1710320315@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: dsa: mt7530: increase reset hold time
+To: Justin Swartz <justin.swartz@risingedge.co.za>,
+ Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <f594a72a91d12f1d027a06962caa9750@risingedge.co.za>
+ <20240312192117.7789-1-justin.swartz@risingedge.co.za>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240312192117.7789-1-justin.swartz@risingedge.co.za>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs=
-git rxrpc-iothread-20240312
+On 12.03.2024 22:21, Justin Swartz wrote:
+> Increase the MT7530 reset hold period from 1000-1100 usec
+> to 5000-5100 usec.
+> 
+> This should reduce the likelihood of an incorrect external
+> crystal frequency selection which may occur when reset is
+> deasserted too early under certain link conditions.
+> 
+> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+> ---
+>   drivers/net/dsa/mt7530.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 3c1f65759..5e9e1381a 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -2243,11 +2243,11 @@ mt7530_setup(struct dsa_switch *ds)
+>   	 */
+>   	if (priv->mcm) {
+>   		reset_control_assert(priv->rstc);
+> -		usleep_range(1000, 1100);
+> +		usleep_range(5000, 5100);
+>   		reset_control_deassert(priv->rstc);
+>   	} else {
+>   		gpiod_set_value_cansleep(priv->reset, 0);
+> -		usleep_range(1000, 1100);
+> +		usleep_range(5000, 5100);
+>   		gpiod_set_value_cansleep(priv->reset, 1);
+>   	}
+>   
 
+Again, the patch subject is missing the indication of a tree. Read the
+networking subsystem (netdev) development page [1].
+
+This ship has sailed anyway. Now the changes the first patch did must be
+reverted too. I will deal with this from now on, you can stop sending
+patches regarding this.
+
+[1] https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
+
+Arınç
 
