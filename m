@@ -1,80 +1,58 @@
-Return-Path: <linux-kernel+bounces-101623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D79887A993
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:36:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5383C87A996
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE7D5281BD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:36:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A4C01F23ECF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:36:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C0FC127;
-	Wed, 13 Mar 2024 14:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57B03C488;
+	Wed, 13 Mar 2024 14:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TK/TAtRc"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZEzqcJeG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A744A11
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10166290A;
+	Wed, 13 Mar 2024 14:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710340576; cv=none; b=oZLz/3yOAQI4PV7dJBETkNgXSbKuoyMiYhWppS3otmyqbQJShDGHSraJ4W6rzfx/GPrU+sSQ41Ds1nJcOFKyGyqjJehNWGJx+mzGLCKi7kou2/lERxyVifVxQj2o1rjZ5l0g0ec+Hle5VUK7nzvLhzZff3RlSnktBkERmNhI9pM=
+	t=1710340577; cv=none; b=lIM8F4iw7d6eomWf8lL9/dz7BW0X1dkHzh3g1zfWo7vTqqcLXCOEMPo/x9Pfx2rQNWTzVVdGhLn1HYjBgJ9Yr+/MBXRS7wvBVbgKT176zNdlYQ8jG4lhf98nOQRoYwrJ6rKbEcHj6Ho2xTYiDF0864eT8ZHpxpgKVde5KWNYdk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710340576; c=relaxed/simple;
-	bh=WBtDlLFwjr6a2gQKftAx1qOjLB+FqxnGKwhOZqeQ0jI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LcCEvTk7R9uIgEl86YfJ3i6cneOUf+pNvwfrKRq1IkoG8XHwA+ka9RlF0cBtU8qzYM010gARe17BKRY0cnnY1sCgcR5FI2bVNLYlPO04hYYDwOV1FBVXCNMme1CPpIz5QMLpLcR5txB8gcT+J5mQiR/sUT0j163PHeDlcTWDLWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TK/TAtRc; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a45f257b81fso661437666b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710340573; x=1710945373; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+VNUI98uGBbk7n2ey+cvrGu4esT/FnUUpds3abi4QF0=;
-        b=TK/TAtRckQ3UhnY+oVDNTU2bH+57Zw7Y6giS5SUVLquqOaS5Hb2uxm4Quv2bvOZNxh
-         6Xmnbos7dpsld5FDOxsFDPFu7F7qQ4XoPKeULlZg1QxjrEpwNL9tTxTa8vl3TJnjdZc2
-         ZvW8s7PiOzNTMnHR0KDmELA0InMbjkG7hEMCqUqIYjfWTgaU2wzCE2zXSblFY+sYR5wt
-         INt16/SxpwVfB+K6D8PAr4UdzNyQgHBsSUH7X5k0gz2HnR83S/lKcWFu/cXuDOwgEv2l
-         s8dXvle1whr3cbD0sxG0WRvw6zE9BQWq6mvkZG2q6VtVdSKf1INXEs2alq0rR2oyeIOn
-         J7pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710340573; x=1710945373;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+VNUI98uGBbk7n2ey+cvrGu4esT/FnUUpds3abi4QF0=;
-        b=B1blNs/ilvuxswPCawhxx8aroz9DNUadgmzCqjebKhMzaj9KBJT8BFWG/RV7rJduuL
-         tbzjcnxKINiaA7su3bjJ68CSTIR1ncp+OQ6W1d0foSC1j0kpaSE3AQiZp7+qffIU73rI
-         AEIb2XxVqhDrE/qPJXavC3XEj8ECjT/QOz2dKow8SCEtclkMkrdezI4NYQd1yPKF2JAk
-         I4geVaLuH11tov0GP4jF5deFLuCJPsn7gF5siBdxUsNPqXRMaYzYK26PM1pLAL8LTRnn
-         69oZJ8WnZoBuStNDxBOJNGdru3ucTuzq2EBt6O1GHOqteG1EyqZ1j+3ifF2Bx8B2Nrm5
-         BdWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/U7RIzoY3D6tMsk05pmgOLG7p6/NtWTF0jX9GpXUwQtaMTIb8M1TMjcF/wOQRNhFvSHebSdMtKINZCweIyjLcngqzU4Ky9cS3HMob
-X-Gm-Message-State: AOJu0YzXsgU8UWyTVaB/+wFwXL/nHi8oDWo9gpMFokn9u+NWKBmNR1R1
-	jv0ckjp2P5BKSldV1P6Jvs7eBZ8pTaRl8TZ5UiwsafOnqtSNlpQkNZNKuWqWBlQ=
-X-Google-Smtp-Source: AGHT+IFCa7DFbtK3UHRnTZLgXaB5cqtF2pyYFRenSdXtbOB2+Qa8CNuq+x9/Pi/H+Tmk36J9EbvdjA==
-X-Received: by 2002:a17:906:ba87:b0:a45:c1a0:5c03 with SMTP id cu7-20020a170906ba8700b00a45c1a05c03mr9938948ejd.47.1710340572593;
-        Wed, 13 Mar 2024 07:36:12 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id x10-20020a1709064a8a00b00a45c9ea48e3sm4895099eju.193.2024.03.13.07.36.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 07:36:12 -0700 (PDT)
-Date: Wed, 13 Mar 2024 17:36:08 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Felix N. Kimbu" <felixkimbu1@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev
-Subject: Re: [PATCH] staging: wlan-ng: Rename 'wlan_unsetup' to
- 'wlan_teardown'
-Message-ID: <089411e2-50fc-4a66-bd07-f76c5aa2788e@moroto.mountain>
-References: <ZfGG093fyjI4G/ci@MOLeToid>
+	s=arc-20240116; t=1710340577; c=relaxed/simple;
+	bh=XFDXYmXdUS9RT2lDf6b0r0Sb31orMCrxt5jtIkbRWKA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=gtWU/utdAouDEUW/5g1K9SuiZgVbXbHlSlnSIyN6zebr8ufxZs7pxXaGluO0V1AIC9EWTSAiQrnlWBxF99cacrybZ+DQEzK9jE8PactcFXytzPPE1tkl4PpI5AIe8zxNL/Gug4ANuTI62uGBTxoMVX9NMbvMgRggKF0KcGC5Oc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZEzqcJeG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41A6CC433F1;
+	Wed, 13 Mar 2024 14:36:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710340576;
+	bh=XFDXYmXdUS9RT2lDf6b0r0Sb31orMCrxt5jtIkbRWKA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=ZEzqcJeGxPPNYFIZRysA/arw8xKmCsgFAtuJNh6CcaGinac4jHPx0j8sRkhwKjbeG
+	 2K66SzJFHUpMdstY/bqu5mF7jniMbPjEs6OsS2AO+4KMoqx9Z00vF4N243TSn7RK//
+	 LDGvlE//xarvy1U0wLhCPnEWUMDbs+ySoXgXfs6LNUEisMlEYFpeELOwDhChL49fJc
+	 66pD5Fz0GtUEGh11BON/V1DjMBIYNy7WUCvoEh7Zw75IJFqYCGfoirAOHQcZdUBZ+w
+	 g4eAR37hfXwlKzswREpP7UkjTykH6a7nFsIOnZeEFHUXkyrxX6XZpXzUMExEOFyY50
+	 v7uwsn4hsoyvA==
+Date: Wed, 13 Mar 2024 09:36:14 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Implement shutdown() callback to properly
+ reset the endpoint devices
+Message-ID: <20240313143614.GA916555@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,19 +61,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZfGG093fyjI4G/ci@MOLeToid>
+In-Reply-To: <20240313-pci-qcom-shutdown-v1-1-fb1515334bfa@linaro.org>
 
-On Wed, Mar 13, 2024 at 11:58:27AM +0100, Felix N. Kimbu wrote:
-> Rename function identifier 'wlan_unsetup' to 'wlan_teardown' in files
-> p80211netdev.c, p80211netdev.h and prism2usb.c, a pairing function for
-> 'wlan_setup' to match common kernel coding style.
+On Wed, Mar 13, 2024 at 05:39:22PM +0530, Manivannan Sadhasivam wrote:
+> PCIe host controller drivers are supposed to properly reset the endpoint
+> devices during host shutdown/reboot. Currently, Qcom driver doesn't do
+> anything during host shutdown/reboot, resulting in both PERST# and refclk
+> getting disabled at the same time. This prevents the endpoint device
+> firmware to properly reset the state machine. Because, if the refclk is
+> cutoff immediately along with PERST#, access to device specific registers
+> within the endpoint will result in a firmware crash.
 > 
-> Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
+> To address this issue, let's call qcom_pcie_host_deinit() inside the
+> shutdown callback, that asserts PERST# and then cuts off the refclk with a
+> delay of 1ms, thus allowing the endpoint device firmware to properly
+> cleanup the state machine.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+I guess this 1ms delay is the PERST_DELAY_US hidden inside
+qcom_ep_reset_assert()?  I assume the refclk disable is done by
+clk_bulk_disable_unprepare()?
 
-We're probably going to delete the wlan-ng driver soon though...
+  #define PERST_DELAY_US 1000
 
-regards,
-dan carpenter
+  qcom_pcie_shutdown
+    qcom_pcie_host_deinit
+      qcom_ep_reset_assert
+        gpiod_set_value_cansleep(pcie->reset, 1);
+        usleep_range(PERST_DELAY_US, PERST_DELAY_US + 500);  <--
+      phy_power_off(pcie->phy)
+      pcie->cfg->ops->deinit()
+        qcom_pcie_deinit_...
+          clk_bulk_disable_unprepare                         <--
+
+Is there a spec citation for this delay requirement?  If not, how do
+we know 1ms is enough for whatever the firmware needs to do?
+
+Do other drivers require similar changes?
+
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 2ce2a3bd932b..41434bc4761a 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1618,6 +1618,13 @@ static int qcom_pcie_resume_noirq(struct device *dev)
+>  	return 0;
+>  }
+>  
+> +static void qcom_pcie_shutdown(struct platform_device *pdev)
+> +{
+> +	struct qcom_pcie *pcie = platform_get_drvdata(pdev);
+> +
+> +	qcom_pcie_host_deinit(&pcie->pci->pp);
+> +}
+> +
+>  static const struct of_device_id qcom_pcie_match[] = {
+>  	{ .compatible = "qcom,pcie-apq8064", .data = &cfg_2_1_0 },
+>  	{ .compatible = "qcom,pcie-apq8084", .data = &cfg_1_0_0 },
+> @@ -1670,5 +1677,6 @@ static struct platform_driver qcom_pcie_driver = {
+>  		.pm = &qcom_pcie_pm_ops,
+>  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+>  	},
+> +	.shutdown = qcom_pcie_shutdown,
+>  };
+>  builtin_platform_driver(qcom_pcie_driver);
+> 
+> ---
+> base-commit: 51459eb30f88651d3688b9e95fed0f97767ececb
+> change-id: 20240313-pci-qcom-shutdown-d86298186560
+> 
+> Best regards,
+> -- 
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
 
