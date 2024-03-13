@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-101941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 506D187ACEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:21:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0884687ACEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:21:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F26DB2571E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:21:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7D431C2042B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29CC4626AF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD42E626D8;
 	Wed, 13 Mar 2024 16:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P5n7akvF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CahHFGXW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A7662177;
-	Wed, 13 Mar 2024 16:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0134350A88;
+	Wed, 13 Mar 2024 16:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348148; cv=none; b=G0+F2WJ4t3NYkD2Tl8KPvbRi6dYjajJzfYzoUt3axH61a3+H+pZADyBDzTPuyJhWHypxVRXc93JwTFuvWsZMvq12OrMxY2ZPROfvOra0bXuoO3pRwZGkrBe5aW0YERsLwh9UM4Mg3HBbEznEXsx6mMzWaBratnZgnU0sR0RRyLY=
+	t=1710348149; cv=none; b=QA0O96Ze4HAJ3w9XWEZ4IUJbTgoVDUgo+hMT3Yk1A9Ik1BM2ziaSTh6tRKB3b2f4kWLjRlr9Gv4Dl5iocPwPjSMua95jZAS5wC46OrE61y6dUcD5FHDockIAf5av8DZv8AczsEhMwBT/KQBbvlW156csGvA687jknacCvDUOLgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348148; c=relaxed/simple;
-	bh=IdN3gYeyWAVlGPzwpeyM5dTBSOISdvZ318vw8Bk+/9w=;
+	s=arc-20240116; t=1710348149; c=relaxed/simple;
+	bh=BKKvaSPOJcIzN9AKZ4t/6eH1vXhiFpdAhQlKssnCZxE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uqJEochHxLJvEmPRvVo9wmIarDZpc90SJX5moG/0G6pP+DG00wphbzfk2CCPu9FtPHWEZCRrF0u6zqbePMv4NluEILpUVXk3GVsC5wljbOwERQGXGCmjcILZ5OqpjUDPQ5v48+DANC4sOXGDdPoUAcegi/JRoZvp3Uh0H0Cd/sM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P5n7akvF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 178EAC43394;
-	Wed, 13 Mar 2024 16:42:26 +0000 (UTC)
+	 MIME-Version; b=aaDbcuqk+qV4sNvbXYCAgpdBswYsXb4HogOR2D97RKgbXWP5rPtGCaV4HaaVNHzBgmI8X3nTFTSFoMYHMkHt8zHEDRLcBFRkuG7BeG9rFT7uO91PDoIEL1jLP77GB0qoh5bxGtLYTv0okJJ4HvmJo7esCoXTdpjzTkmAUVoG0o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CahHFGXW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F54FC43390;
+	Wed, 13 Mar 2024 16:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348147;
-	bh=IdN3gYeyWAVlGPzwpeyM5dTBSOISdvZ318vw8Bk+/9w=;
+	s=k20201202; t=1710348148;
+	bh=BKKvaSPOJcIzN9AKZ4t/6eH1vXhiFpdAhQlKssnCZxE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P5n7akvFAb60dniAxSygVLRftsmwFrHHXCzL3VY4EwrW6uJ5Lo5R/aOX+F7llvY3U
-	 KZDdzk3WX4VaYGMS5P3sQG4qsQn2+wz0mtLqhzMfZmSNy6MvFCuanjomsdDnJdXMF+
-	 DGkizFNXa/GUEzmtsGmzHT3w05K0W7b1LYcUc5x72wv5KvjRimQdxaDxckgE8KaYat
-	 5/M3DbqPIExaL2yFn7jZ93RWdnoXb7XSz9Oin32cH/5PzJyG7fdBByWtYcz3JCPpaa
-	 ID0U/VCuk7KGHj1RRKkJtFG4caCUYG8MIn7glLaGr3njw9Vz77EFEz3BwKibE7GZxi
-	 rJU9/v/Aapo1Q==
+	b=CahHFGXWtHcL18LsOZS2utOmDNW+yieTLJvMpSaT/6wqC/8HTMB1/2aTfT1FiR4dC
+	 8WTku8vWfOR+xptNQ4onOoIIuwNc4l/0UbXaSIkuE09Q/fQ+KwghKln+UfoE/kFH4B
+	 wYxacbZIR6/I6vYx6eDnGhVOjGJbHN8HEm+OpGGOoJDsEb8uxLMNAnWo/JVgkg+0ht
+	 aZW4Myt1nzp3aWeVEw7h8sNmolv8THsCYC2aYfdYrG7PNVlwwVoq5tHXJUSYSMgRO8
+	 jbwllfsFWUsdY36BRpqhICZHfXUDCbCaKxMXPgEoaGWhW0LqfqPcF8o13bAn5vrb3L
+	 xGesmZuznfTcQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yann Gautier <yann.gautier@foss.st.com>,
+Cc: Christophe Kerello <christophe.kerello@foss.st.com>,
 	Ulf Hansson <ulf.hansson@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 01/76] mmc: mmci: stm32: use a buffer for unaligned DMA requests
-Date: Wed, 13 Mar 2024 12:41:08 -0400
-Message-ID: <20240313164223.615640-2-sashal@kernel.org>
+Subject: [PATCH 5.15 02/76] mmc: mmci: stm32: fix DMA API overlapping mappings warning
+Date: Wed, 13 Mar 2024 12:41:09 -0400
+Message-ID: <20240313164223.615640-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -68,182 +68,109 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yann Gautier <yann.gautier@foss.st.com>
+From: Christophe Kerello <christophe.kerello@foss.st.com>
 
-[ Upstream commit 970dc9c11a17994ab878016b536612ab00d1441d ]
+[ Upstream commit 6b1ba3f9040be5efc4396d86c9752cdc564730be ]
 
-In SDIO mode, the sg list for requests can be unaligned with what the
-STM32 SDMMC internal DMA can support. In that case, instead of failing,
-use a temporary bounce buffer to copy from/to the sg list.
-This buffer is limited to 1MB. But for that we need to also limit
-max_req_size to 1MB. It has not shown any throughput penalties for
-SD-cards or eMMC.
+Turning on CONFIG_DMA_API_DEBUG_SG results in the following warning:
 
-Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
-Link: https://lore.kernel.org/r/20220328145114.334577-1-yann.gautier@foss.st.com
+DMA-API: mmci-pl18x 48220000.mmc: cacheline tracking EEXIST,
+overlapping mappings aren't supported
+WARNING: CPU: 1 PID: 51 at kernel/dma/debug.c:568
+add_dma_entry+0x234/0x2f4
+Modules linked in:
+CPU: 1 PID: 51 Comm: kworker/1:2 Not tainted 6.1.28 #1
+Hardware name: STMicroelectronics STM32MP257F-EV1 Evaluation Board (DT)
+Workqueue: events_freezable mmc_rescan
+Call trace:
+add_dma_entry+0x234/0x2f4
+debug_dma_map_sg+0x198/0x350
+__dma_map_sg_attrs+0xa0/0x110
+dma_map_sg_attrs+0x10/0x2c
+sdmmc_idma_prep_data+0x80/0xc0
+mmci_prep_data+0x38/0x84
+mmci_start_data+0x108/0x2dc
+mmci_request+0xe4/0x190
+__mmc_start_request+0x68/0x140
+mmc_start_request+0x94/0xc0
+mmc_wait_for_req+0x70/0x100
+mmc_send_tuning+0x108/0x1ac
+sdmmc_execute_tuning+0x14c/0x210
+mmc_execute_tuning+0x48/0xec
+mmc_sd_init_uhs_card.part.0+0x208/0x464
+mmc_sd_init_card+0x318/0x89c
+mmc_attach_sd+0xe4/0x180
+mmc_rescan+0x244/0x320
+
+DMA API debug brings to light leaking dma-mappings as dma_map_sg and
+dma_unmap_sg are not correctly balanced.
+
+If an error occurs in mmci_cmd_irq function, only mmci_dma_error
+function is called and as this API is not managed on stm32 variant,
+dma_unmap_sg is never called in this error path.
+
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Fixes: 46b723dd867d ("mmc: mmci: add stm32 sdmmc variant")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20240207143951.938144-1-christophe.kerello@foss.st.com
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Stable-dep-of: 6b1ba3f9040b ("mmc: mmci: stm32: fix DMA API overlapping mappings warning")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mmci_stm32_sdmmc.c | 88 +++++++++++++++++++++++------
- 1 file changed, 71 insertions(+), 17 deletions(-)
+ drivers/mmc/host/mmci_stm32_sdmmc.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 4cceb9bab0361..11ae0cb479239 100644
+index 11ae0cb479239..e3201a621870a 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -43,6 +43,9 @@ struct sdmmc_lli_desc {
- struct sdmmc_idma {
- 	dma_addr_t sg_dma;
- 	void *sg_cpu;
-+	dma_addr_t bounce_dma_addr;
-+	void *bounce_buf;
-+	bool use_bounce_buffer;
- };
- 
- struct sdmmc_dlyb {
-@@ -54,6 +57,8 @@ struct sdmmc_dlyb {
- static int sdmmc_idma_validate_data(struct mmci_host *host,
- 				    struct mmc_data *data)
- {
-+	struct sdmmc_idma *idma = host->dma_priv;
-+	struct device *dev = mmc_dev(host->mmc);
+@@ -200,6 +200,8 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
  	struct scatterlist *sg;
  	int i;
  
-@@ -61,41 +66,69 @@ static int sdmmc_idma_validate_data(struct mmci_host *host,
- 	 * idma has constraints on idmabase & idmasize for each element
- 	 * excepted the last element which has no constraint on idmasize
- 	 */
-+	idma->use_bounce_buffer = false;
- 	for_each_sg(data->sg, sg, data->sg_len - 1, i) {
- 		if (!IS_ALIGNED(sg->offset, sizeof(u32)) ||
- 		    !IS_ALIGNED(sg->length, SDMMC_IDMA_BURST)) {
--			dev_err(mmc_dev(host->mmc),
-+			dev_dbg(mmc_dev(host->mmc),
- 				"unaligned scatterlist: ofst:%x length:%d\n",
- 				data->sg->offset, data->sg->length);
--			return -EINVAL;
-+			goto use_bounce_buffer;
- 		}
- 	}
- 
- 	if (!IS_ALIGNED(sg->offset, sizeof(u32))) {
--		dev_err(mmc_dev(host->mmc),
-+		dev_dbg(mmc_dev(host->mmc),
- 			"unaligned last scatterlist: ofst:%x length:%d\n",
- 			data->sg->offset, data->sg->length);
--		return -EINVAL;
-+		goto use_bounce_buffer;
- 	}
- 
-+	return 0;
++	host->dma_in_progress = true;
 +
-+use_bounce_buffer:
-+	if (!idma->bounce_buf) {
-+		idma->bounce_buf = dmam_alloc_coherent(dev,
-+						       host->mmc->max_req_size,
-+						       &idma->bounce_dma_addr,
-+						       GFP_KERNEL);
-+		if (!idma->bounce_buf) {
-+			dev_err(dev, "Unable to map allocate DMA bounce buffer.\n");
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	idma->use_bounce_buffer = true;
-+
+ 	if (!host->variant->dma_lli || data->sg_len == 1 ||
+ 	    idma->use_bounce_buffer) {
+ 		u32 dma_addr;
+@@ -238,9 +240,30 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
  	return 0;
  }
  
- static int _sdmmc_idma_prep_data(struct mmci_host *host,
- 				 struct mmc_data *data)
- {
--	int n_elem;
-+	struct sdmmc_idma *idma = host->dma_priv;
- 
--	n_elem = dma_map_sg(mmc_dev(host->mmc),
--			    data->sg,
--			    data->sg_len,
--			    mmc_get_dma_dir(data));
-+	if (idma->use_bounce_buffer) {
-+		if (data->flags & MMC_DATA_WRITE) {
-+			unsigned int xfer_bytes = data->blksz * data->blocks;
- 
--	if (!n_elem) {
--		dev_err(mmc_dev(host->mmc), "dma_map_sg failed\n");
--		return -EINVAL;
--	}
-+			sg_copy_to_buffer(data->sg, data->sg_len,
-+					  idma->bounce_buf, xfer_bytes);
-+			dma_wmb();
-+		}
-+	} else {
-+		int n_elem;
-+
-+		n_elem = dma_map_sg(mmc_dev(host->mmc),
-+				    data->sg,
-+				    data->sg_len,
-+				    mmc_get_dma_dir(data));
- 
-+		if (!n_elem) {
-+			dev_err(mmc_dev(host->mmc), "dma_map_sg failed\n");
-+			return -EINVAL;
-+		}
-+	}
- 	return 0;
- }
- 
-@@ -112,8 +145,19 @@ static int sdmmc_idma_prep_data(struct mmci_host *host,
- static void sdmmc_idma_unprep_data(struct mmci_host *host,
- 				   struct mmc_data *data, int err)
- {
--	dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
--		     mmc_get_dma_dir(data));
++static void sdmmc_idma_error(struct mmci_host *host)
++{
++	struct mmc_data *data = host->data;
 +	struct sdmmc_idma *idma = host->dma_priv;
 +
-+	if (idma->use_bounce_buffer) {
-+		if (data->flags & MMC_DATA_READ) {
-+			unsigned int xfer_bytes = data->blksz * data->blocks;
++	if (!dma_inprogress(host))
++		return;
 +
-+			sg_copy_from_buffer(data->sg, data->sg_len,
-+					    idma->bounce_buf, xfer_bytes);
-+		}
-+	} else {
++	writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
++	host->dma_in_progress = false;
++	data->host_cookie = 0;
++
++	if (!idma->use_bounce_buffer)
 +		dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
 +			     mmc_get_dma_dir(data));
-+	}
- }
++}
++
+ static void sdmmc_idma_finalize(struct mmci_host *host, struct mmc_data *data)
+ {
++	if (!dma_inprogress(host))
++		return;
++
+ 	writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
++	host->dma_in_progress = false;
  
- static int sdmmc_idma_setup(struct mmci_host *host)
-@@ -137,6 +181,8 @@ static int sdmmc_idma_setup(struct mmci_host *host)
- 		host->mmc->max_segs = SDMMC_LLI_BUF_LEN /
- 			sizeof(struct sdmmc_lli_desc);
- 		host->mmc->max_seg_size = host->variant->stm32_idmabsize_mask;
-+
-+		host->mmc->max_req_size = SZ_1M;
- 	} else {
- 		host->mmc->max_segs = 1;
- 		host->mmc->max_seg_size = host->mmc->max_req_size;
-@@ -154,8 +200,16 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
- 	struct scatterlist *sg;
- 	int i;
- 
--	if (!host->variant->dma_lli || data->sg_len == 1) {
--		writel_relaxed(sg_dma_address(data->sg),
-+	if (!host->variant->dma_lli || data->sg_len == 1 ||
-+	    idma->use_bounce_buffer) {
-+		u32 dma_addr;
-+
-+		if (idma->use_bounce_buffer)
-+			dma_addr = idma->bounce_dma_addr;
-+		else
-+			dma_addr = sg_dma_address(data->sg);
-+
-+		writel_relaxed(dma_addr,
- 			       host->base + MMCI_STM32_IDMABASE0R);
- 		writel_relaxed(MMCI_STM32_IDMAEN,
- 			       host->base + MMCI_STM32_IDMACTRLR);
+ 	if (!data->host_cookie)
+ 		sdmmc_idma_unprep_data(host, data, 0);
+@@ -566,6 +589,7 @@ static struct mmci_host_ops sdmmc_variant_ops = {
+ 	.dma_setup = sdmmc_idma_setup,
+ 	.dma_start = sdmmc_idma_start,
+ 	.dma_finalize = sdmmc_idma_finalize,
++	.dma_error = sdmmc_idma_error,
+ 	.set_clkreg = mmci_sdmmc_set_clkreg,
+ 	.set_pwrreg = mmci_sdmmc_set_pwrreg,
+ 	.busy_complete = sdmmc_busy_complete,
 -- 
 2.43.0
 
