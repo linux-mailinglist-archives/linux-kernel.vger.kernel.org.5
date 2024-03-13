@@ -1,158 +1,94 @@
-Return-Path: <linux-kernel+bounces-101540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D46287A872
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44FD887A873
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 878641C20DA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:31:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76BAD1C22DB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7434845C16;
-	Wed, 13 Mar 2024 13:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TpnFdPPB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B267547779;
+	Wed, 13 Mar 2024 13:29:51 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA9645BF9;
-	Wed, 13 Mar 2024 13:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4917046B83
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710336524; cv=none; b=Qoa4wEceRqL/8/9FrPMRECUfV7sWypiiGHNXi6YFHfjehIlVU8FQGllD+gm/EzfXhZ7hCiWRwuc8Rai/Q1kzwwkRfSB0HNHmIgfkZ7UjrFEDw6kFdvgsvj+c8lsjrHULfqKWqveDNm0auen4+RfEXo+WfkGeD+C6GqCAsaJkQno=
+	t=1710336591; cv=none; b=cw5YcHmk7T3eMFZa1FpUPK5M8xK81feYOA+vKcVariFJOeKUe4TXKsuH8wf9xClvchlWGVxPkR3xK+YLTZxgvVtbMTqIzPEpKtnZw/6PQ8jS9ja2hbfg8itWzxrvVZjRm+5S54iuYS6u2X4sxx9TEw+qH/JEUxvRg9pvfFYiBu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710336524; c=relaxed/simple;
-	bh=nxOroR4b2rIUnv+V/UG5lc0jC6pDP1cKjLwLqOz+xw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AtRooB1ERS00008mCLxjI97D42P7fH2easJr87iIYvPLniry+PDP7gW53TH9mOJiKmIhCrhOrsKHlBDH6qzaxSIqQKznXNNWk61By4YS+diIscde4+4+MnBbWL559DmK34/4/Ivr2vxietg0k83PU/I3s/stq8Rqrtn8pFiqaWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TpnFdPPB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE02C433C7;
-	Wed, 13 Mar 2024 13:28:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710336524;
-	bh=nxOroR4b2rIUnv+V/UG5lc0jC6pDP1cKjLwLqOz+xw4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TpnFdPPBkSHLmGC5KJOHt1TJpVHGJpEea8ClPaOqKVIyFvtdhjJ0EWPHeRAhiKvY1
-	 QZ7VYgdxAnJNIu4y8E184jdMnhX/LRfZYwS70aHgS1ycSXEI7GQ/5t2VfcerG0LqSX
-	 CceWrXXGev/8+Swu/K1Zsz2IJlBI5tVE/hdiItrknDSWg8qdKzPZiS/SEen7afHzn1
-	 aheZRPExhuNQ9iKhKqwB5DmBckF0Igb+mDQ5ikfOmHIfQEpG0LrZaTYjxsPjG4xYF3
-	 dg5TW+qViVGgU1SYlEzn1hbdvtSCvbUYGZB/c6cgSa4PqtPYKJIc7dB6XmvEYD3cDV
-	 EQ6u4II/Um+3Q==
-Date: Wed, 13 Mar 2024 10:28:41 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
- on RT.
-Message-ID: <ZfGqCWzyVzyGQrAQ@x1>
-References: <20240312180814.3373778-1-bigeasy@linutronix.de>
- <ZfDMTlTH2SdwlB9M@x1>
- <20240313081303.DClwQrvb@linutronix.de>
+	s=arc-20240116; t=1710336591; c=relaxed/simple;
+	bh=pdLDJC2piLf5zMosG1/TZ7MhDvUxHrIdoOhQ2pDEzgc=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=WyOHT42+bed3csqpgC3QgUiTH2GOCbtYT93SEpULh9C8fD2V37kTIDiCxGyAOMMRzL9fqMRxVk+8xZ0X0kD1DiC8w0axmqgAItw62Ja7ytozbeJzkc98b2jPBtcj9CmDSlxZJnOJDtb7VdL7qc54DIovBTu7/r3xdAEOGmlBoco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TvrsD1DMFz1Q9gw;
+	Wed, 13 Mar 2024 21:27:12 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id D5A3E140159;
+	Wed, 13 Mar 2024 21:29:39 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Mar 2024 21:29:38 +0800
+Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
+To: Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Richard
+ Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>, Daniel Golle <daniel@makrotopia.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240313084707.3292300-1-arnd@kernel.org>
+ <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
+ <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
+ <1a12c8ed-0cb5-5650-24a2-84b021c444c3@huawei.com>
+ <b08aaae4-8c69-47eb-9658-5f3f5c8e4056@app.fastmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <610231c3-c3ee-e543-1a8a-8e1098ee6a7c@huawei.com>
+Date: Wed, 13 Mar 2024 21:29:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <b08aaae4-8c69-47eb-9658-5f3f5c8e4056@app.fastmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240313081303.DClwQrvb@linutronix.de>
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-On Wed, Mar 13, 2024 at 09:13:03AM +0100, Sebastian Andrzej Siewior wrote:
-> On 2024-03-12 18:42:38 [-0300], Arnaldo Carvalho de Melo wrote:
-> …
-> > But:
-> > 
-> > [acme@nine ~]$ pidof exec_child
-> > 24273 24271 24270 24269 24268 24267 24266 24265 24264 24263 24262 24261 24260 24259 
-> …
+在 2024/3/13 20:21, Arnd Bergmann 写道:
+> On Wed, Mar 13, 2024, at 13:10, Zhihao Cheng wrote:
+>> 在 2024/3/13 19:53, Arnd Bergmann 写道:
+>>> On Wed, Mar 13, 2024, at 12:29, Zhihao Cheng wrote:
+>>>
+>>> The way it usually goes is that someone adds an open-coded
+>>> 64-bit division that causes a link failure, which prompts
+>> I'm a little confused, what kind of link failure? Could you show an example?
 > 
-> > [root@nine ~]# cat /proc/24263/stack
-> > [<0>] irqentry_exit_to_user_mode+0x1c9/0x1e0
-> > [<0>] asm_sysvec_apic_timer_interrupt+0x16/0x20
-> > [root@nine ~]#
-> …
-> > [acme@nine ~]$ ps ax|grep exec_child| wc -l
-> > 504
-> > [acme@nine ~]$ ps ax|grep exec_child| tail
-> >   24264 pts/0    R      0:04 exec_child
-> >   24265 pts/0    R      0:04 exec_child
-> >   24266 pts/0    R      0:04 exec_child
-> >   24267 pts/0    R      0:04 exec_child
-> >   24268 pts/0    R      0:04 exec_child
-> >   24269 pts/0    R      0:04 exec_child
-> >   24270 pts/0    R      0:04 exec_child
-> >   24271 pts/0    R      0:04 exec_child
-> >   24273 pts/0    R      0:04 exec_child
-> >   26704 pts/1    S+     0:00 grep --color=auto exec_child
-> > [acme@nine ~]$
-> > 
-> > All in 'R' state.
-> > 
-> > [root@nine ~]# killall exec_child
-> > exec_child: no process found
-> > [root@nine ~]# ps ax | grep exec_child | head -5
-> >   22964 pts/0    R      0:06 exec_child
-> >   23046 pts/0    R      0:05 exec_child
-> >   23128 pts/0    R      0:05 exec_child
-> >   23129 pts/0    R      0:05 exec_child
-> >   23181 pts/0    R      0:05 exec_child
-> > [root@nine ~]# kill 22964 23046 23128 23129 23181
-> > [root@nine ~]# ps ax | grep exec_child | head -5
-> >   23182 pts/0    R      0:06 exec_child
-> >   23196 pts/0    R      0:06 exec_child
-> >   23197 pts/0    R      0:06 exec_child
-> >   23210 pts/0    R      0:06 exec_child
-> >   23213 pts/0    R      0:06 exec_child
-> > [root@nine ~]#
- 
-> You can't kill them?
-
-I can, they remain in R state and I can kill them with 'kill `pidof exec_child`'
- 
-> > at the end they disappeared, on this last run.
-
-> > But if I do a 'killall remove_on_exec' and stop that loop (control+C/Z)
-> > we get all those exec_child running a seemingly eternal loop:
+> The open-coded 64-bit division without using do_div() shows up as
 > 
-> Is this new or was it there? Is this VM or bare metal?
+> x86_64-linux-ld: drivers/mtd/ubi/nvmem.o: in function `ubi_nvmem_reg_read':
+> nvmem.c:(.text+0x10a): undefined reference to `__umoddi3'
+> x86_64-linux-ld: nvmem.c:(.text+0x11f): undefined reference to `__udivdi3'
+> x86_64-linux-ld: drivers/mtd/ubi/nvmem.o: in function `ubi_nvmem_reg_read.cold':
+> nvmem.c:(.text.unlikely+0x2d): undefined reference to `__umoddi3'
+>  > The idea is that gcc expects __umoddi3 to be provided by libgcc,
+> but Linux intentionally leaves it out in order to catch accidental
+> 64-bit divisions.
+> 
 
-bare metal.
- 
-> One part I don't get: did you let it run or did you kill it?
-
-If I let them run they will finish and exit, no exec_child remains.
-
-If I instead try to stop the loop that goes on forking the 100 of them,
-then the exec_child remain spinning.
-
-> `exec_child' spins until a signal is received or the parent kills it. So
-
-
-> it shouldn't remain there for ever. And my guess, that it is in spinning
-> in userland and not in kernel.
-
-Checking that now, the stack is the one I posted:
-
-> > [root@nine ~]# cat /proc/24263/stack
-> > [<0>] irqentry_exit_to_user_mode+0x1c9/0x1e0
-> > [<0>] asm_sysvec_apic_timer_interrupt+0x16/0x20
-> > [root@nine ~]#
-
-> I tried it on bare metal and VM and couldn't reproduce this.
-
-All my tests are in bare metal.
-
-- Arnaldo
+Thanks for explaination, which means that do_div is used for 64-bit 
+division to solve the link failure caused by missed libgcc. Since 
+parameter 'from' is u32, there is no need to invoke do_div on a 32-bit 
+platform, you just want to stop the wasting behavior on a 32-bit 
+platform. Do I understand right?
 
