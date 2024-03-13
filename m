@@ -1,81 +1,86 @@
-Return-Path: <linux-kernel+bounces-102514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BE7487B31F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:59:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3046687B32E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:03:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01F4C1F274AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:59:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17372B24A3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1067258AA7;
-	Wed, 13 Mar 2024 20:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3244524DF;
+	Wed, 13 Mar 2024 21:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="cJmdM3H6"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pv4xYCTN"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4249E53390;
-	Wed, 13 Mar 2024 20:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E373548790;
+	Wed, 13 Mar 2024 21:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710363500; cv=none; b=PfjkGCDpT9AZt2Eidgdlr35j2Pe0wVJHs0cC0jzc3lULBN6ZJJTxkJYB3lJ5I6BUWzXkUoNzl19r3Ntl2I3WblU9AfWD+OpbYviYO4UOdo6X0/rAFt99x12q7XCTtFIiFsPZGnr4I7ee+Y4caN60P07gDOEW4uqvRJIqFMzNV6A=
+	t=1710363796; cv=none; b=j9KviomTfd2fQDJAfgou6BztGHVyldlC464JUk+ZwkZPR7KNyCdeZwr60RzC8IRJoP1/QVQFG+EXcrPhGaQwc1o/SjPEhoheIzxPsjnLeoEvaWrV91yBWh3I0Mb6PI4HKpeWleT/AX/Xj/lD6+HRY35lqXNkiSZEThJ7p4BXbsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710363500; c=relaxed/simple;
-	bh=NpFjcNUfQjg6JaWNs+hjX6QA8yWopkHnzplj60Jq23A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SwmImfRSRUtGgdAie6VGegzqhI2tLEfxoT28MWR0YzzoOXPq/Sj7HfnuSHTtHH98NMz2AZiWYIsnVFyU/JyHnS6BFhDmah+BMGuTSHAw1yaOJwCWIdOrjVAD+ud5IxLV4CA+XFUStMM8BatDmtSZYWgO+nO/jyPeUvrxfLKUtLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=cJmdM3H6; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42DJ0XDF010221;
-	Wed, 13 Mar 2024 20:58:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=dDUKIL4CKAJWHXeBf8m3+sEfmmg46fIcRdtOGVn5uUI=;
- b=cJmdM3H6QITo230Xq0844UknYHcMCvRuO/jBWBXnpVV0lIWb24qOo5zhaqNXySLjTz5B
- FuzOYka6pkwz3kn1n80aSO0uCpLjyIBsx3D48MJqZbbxvpDxZqiQ3+T6VfLzU1r50jlk
- LOmTeYXlPiBBwTjFWpxSoWQP+JIr4IZUw8QUnM62j1svYpp5CturIrLTV5ZSSB3p3H+c
- PHXzrDekDUQFS7i3DHzbA5IDojXs+uAH7gxzVkVe1hrzajuwtewA6gS9UXQpM2VhOIUl
- 7GIUgpLeLhIuVadwiNi0bAMZgw0LMPnko4VjIZU9EXDGLv5jurjUaCx7NLoBSV3OAA99 OA== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wug29k1q3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 20:58:16 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42DJn38S018552;
-	Wed, 13 Mar 2024 20:58:16 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws4t281hk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 20:58:16 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42DKwC6l32309524
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Mar 2024 20:58:14 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5739D58056;
-	Wed, 13 Mar 2024 20:58:12 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BE0CB5805A;
-	Wed, 13 Mar 2024 20:58:11 +0000 (GMT)
-Received: from jason-laptop.ibmuc.com (unknown [9.61.59.128])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 13 Mar 2024 20:58:11 +0000 (GMT)
-From: "Jason J. Herne" <jjherne@linux.ibm.com>
-To: linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, akrowiak@linux.ibm.com,
-        borntraeger@de.ibm.com, agordeev@linux.ibm.com, gor@linux.ibm.com
-Subject: [PATCH v3 5/5] docs: Update s390 vfio-ap doc for ap_config sysfs attribute
-Date: Wed, 13 Mar 2024 16:58:07 -0400
-Message-ID: <20240313205807.30554-6-jjherne@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240313205807.30554-1-jjherne@linux.ibm.com>
-References: <20240313205807.30554-1-jjherne@linux.ibm.com>
+	s=arc-20240116; t=1710363796; c=relaxed/simple;
+	bh=ACHEgKTAg8x+dFZtHmiOZ6ed6ZmBbNNAKl8EfWjZ23w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FMAwItaHycHNny1fR1/Ray+vWC8Encf8q+g+0pcSIKe8QZS/OYI2mlQsZd8QdaNuHRSSpzSNARriQj5eP0TAP8Iq4Dh2cYioV1ng+JNoGg6Bz4ag8iWERrQ/BDj8txkBnNnn88/x6ibkEyg8qhDDbRokBI9GosYKFYcN6IeH26I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pv4xYCTN; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e8b957a89so162213f8f.0;
+        Wed, 13 Mar 2024 14:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710363792; x=1710968592; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=tq4hB9Jc+RQGEXfo3JGmKPue/SQ5+ustCJP256hctDU=;
+        b=Pv4xYCTNMsagRTeGESdLh602XzXI5JzVcwz8k4DII3Zy2c52+An90eKH0riwJay2F9
+         mexQj49KoQwc51avqqSz6f4vcBOSGkUWgGB7mMA2z7+i91LQIhe3BpAsiWEmsodK4mRz
+         R+HMb4M0n8Bk2hCutouYiJScVr2it0AlZRRveTSDmDmajLxnkHw6jL/CShNrWw4jds9K
+         7llR9Soon2BJigq1ZBwDBNlhvRk2zk6SQdD/mOw3N6K5Px8QY9lG35ExyCYyDiG7neNS
+         TprBl7IM4H9t3O1pXI+O1nXz7NqvyGAaECMgis8b1uzejWd0n6mrIgZ2kw0fQj5SyAo1
+         BzCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710363792; x=1710968592;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tq4hB9Jc+RQGEXfo3JGmKPue/SQ5+ustCJP256hctDU=;
+        b=IDapoNVVg9NeqWoWJLbOHzHKMWTUvOXP/q8RmYuvXsGlNqOtsrRV3V07w6EBCJyXxq
+         4NzTXderV0ivkfRXVZtXu8pXHYkPru2E64Pu18SuiaUDxjPzOejrZjJQAPhhrdFrf90f
+         KNyubwY8EKx3RuV+GTC/KBUwErgxyLohNM4J/EplfmQ5XXtONVsymH6QIm7ec6R0VyTb
+         z2Tzomrx2tK8mdCVCp9qq4MoKdvheOhvlBA//FHsxH5BKsfZN3TcP+NawxqhGj1pdK8/
+         W4Z4/b09F3cy3fvR4l1dKq0nzsq5n/36B0zxtQXgAKH3Afqh7iRehUmLnrbYcymuqy4K
+         1M8A==
+X-Forwarded-Encrypted: i=1; AJvYcCXi4KDPUNZ9J6PayL4C9/FgDbauV8Wv1yTZ5piGKqIdRlF5YQ4/l6MhEBdk2bIAn6ozgDQN+8nl2uMISBY06y6oJttpOV+rCHSmzXPJBn/nV3HvdU6pWV3ZwA+HKjQucQBwui9BiH3A
+X-Gm-Message-State: AOJu0YzYNg4WAs9p94hOYRe8klzyKlhjzbbSVMdfNdxnPkE+x0OxX9gc
+	N6pO992wcNGBL3CqS2W+2d2Delj4UEu+bbeKTcg98SO3bBuhFcM5
+X-Google-Smtp-Source: AGHT+IFu4TelxqjAnGpxw9XNTbNBA19n/8DkVrVe8h754sX3c/i3QT50GNsGDIpqpSbb3P+DCJTECw==
+X-Received: by 2002:adf:f386:0:b0:33e:96c1:3da6 with SMTP id m6-20020adff386000000b0033e96c13da6mr2397535wro.65.1710363792111;
+        Wed, 13 Mar 2024 14:03:12 -0700 (PDT)
+Received: from localhost.localdomain (munkyhouse.force9.co.uk. [84.92.42.80])
+        by smtp.gmail.com with ESMTPSA id d16-20020adfa410000000b0033e87c6bcb2sm31712wra.8.2024.03.13.14.03.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 14:03:11 -0700 (PDT)
+Sender: Adam Butcher <adam.jessaminenet@gmail.com>
+From: Adam Butcher <adam@jessamine.co.uk>
+To: broonie@kernel.org,
+	benjamin@bigler.one,
+	carlos.song@nxp.com,
+	s.hauer@pengutronix.de,
+	shawnguo@kernel.org,
+	stefanmoring@gmail.com
+Cc: kernel@pengutronix.de,
+	linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	adam@jessamine.co.uk
+Subject: [PATCH v2] spi: spi-imx: fix off-by-one in mx51 CPU mode burst length
+Date: Wed, 13 Mar 2024 20:58:19 +0000
+Message-ID: <20240313210258.5990-1-adam@jessamine.co.uk>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,68 +88,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XK_49SgAFNsu43T5h2JENt48jYYOt8XW
-X-Proofpoint-GUID: XK_49SgAFNsu43T5h2JENt48jYYOt8XW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_09,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=0 spamscore=0 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403130160
 
-A new sysfs attribute, ap_config, for the vfio_ap driver is
-documented.
+From: Adam Butcher <adam@jessamine.co.uk>
 
-Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
+corrects three cases of setting the ECSPI burst length but erroneously
+leaves the in-range CPU case one bit to big (in that field a value of
+0 means 1 bit).  The effect was that transmissions that should have been
+8-bit bytes appeared as 9-bit causing failed communication with SPI
+devices.
+
+Link: https://lore.kernel.org/all/20240201105451.507005-1-carlos.song@nxp.com/
+Link: https://lore.kernel.org/all/20240204091912.36488-1-carlos.song@nxp.com/
+Fixes: 992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
+Signed-off-by: Adam Butcher <adam@jessamine.co.uk>
 ---
- Documentation/arch/s390/vfio-ap.rst | 30 +++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
 
-diff --git a/Documentation/arch/s390/vfio-ap.rst b/Documentation/arch/s390/vfio-ap.rst
-index 929ee1c1c940..6056a50ee841 100644
---- a/Documentation/arch/s390/vfio-ap.rst
-+++ b/Documentation/arch/s390/vfio-ap.rst
-@@ -380,6 +380,36 @@ matrix device.
-     control_domains:
-       A read-only file for displaying the control domain numbers assigned to the
-       vfio_ap mediated device.
-+    ap_config:
-+        A read/write file that, when written to, allows all three of the
-+        vfio_ap mediated device's ap matrix masks to be replaced in one shot.
-+        Three masks are given, one for adapters, one for domains, and one for
-+        control domains. If the given state cannot be set then no changes are
-+        made to the vfio-ap mediated device.
-+
-+        The format of the data written to ap_config is as follows:
-+        {amask},{dmask},{cmask}\n
-+
-+        \n is a newline character.
-+
-+        amask, dmask, and cmask are masks identifying which adapters, domains,
-+        and control domains should be assigned to the mediated device.
-+
-+        The format of a mask is as follows:
-+        0xNN..NN
-+
-+        Where NN..NN is 64 hexadecimal characters representing a 256-bit value.
-+        The leftmost (highest order) bit represents adapter/domain 0.
-+
-+        For an example set of masks that represent your mdev's current
-+        configuration, simply cat ap_config.
-+
-+        Setting an adapter or domain number greater than the maximum allowed for
-+        the system will result in an error.
-+
-+        This attribute is intended to be used by automation. End users would be
-+        better served using the respective assign/unassign attributes for
-+        adapters, domains, and control domains.
- 
- * functions:
- 
+This is a cleaned up version of my earlier emails after the mess webmail
+and I made of the previous re-address.  The patch itself is no different,
+but I've moved the discussion part here and sent with git send-email so
+hopefully no more issues.
+
+The original patch submission up to v4 (first link above) did not contain
+the bug that this patch fixes.  It was introduced in the v5 update (second
+link).
+
+---
+ drivers/spi/spi-imx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 7c1fcd5ed52f7..100552e6c56bc 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -743,8 +743,8 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
+ 				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
+ 						<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 			else
+-				ctrl |= spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
+-						BITS_PER_BYTE) * spi_imx->bits_per_word
++				ctrl |= (spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
++						BITS_PER_BYTE) * spi_imx->bits_per_word - 1)
+ 						<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 		}
+ 	}
 -- 
-2.41.0
-
+2.43.0
 
