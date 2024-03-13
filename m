@@ -1,54 +1,44 @@
-Return-Path: <linux-kernel+bounces-102337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE69287B0E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:03:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C9387B138
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D33A1C2685B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:03:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23992282A12
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BAC6A8D1;
-	Wed, 13 Mar 2024 18:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="HF+a7X5l"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F81612F9;
+	Wed, 13 Mar 2024 18:32:03 +0000 (UTC)
+Received: from relay162.nicmail.ru (relay162.nicmail.ru [91.189.117.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2886A8BA;
-	Wed, 13 Mar 2024 18:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F3560EFE;
+	Wed, 13 Mar 2024 18:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710353555; cv=none; b=RRdnioLwxn6sQhhQ74Xn+ODthZSz0CtipgYIWMqE0M8Rf6kk6IFb15PFfYPheJyHfSpklhdTiyHUdu+8s14wORmibI/BQqOl/zna/81rOj5nMuVjjS4YIPqdYxDCst2Sq/Gc0G2ZGIcnQBE8UKHRpLJQiwmzssfCWYjbpwvFEdU=
+	t=1710354723; cv=none; b=eEVl9CMeQW+RAAsDbKAxHdKej7Cn/3z+nyyUkAf1IfiBmQ5/9GLc0qPts5gDWpE3Xemv6T6zgCSeCK/h3i9PmaUnW9y6JHYgAjJyNn8jg5baF15hB0gQyVl0NgqN2/lT/QO7lHXb+OT2IA2TMZZldgqgoOn6M0OWD52AayapyK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710353555; c=relaxed/simple;
-	bh=msE+LoodrnJuR41WimKwSvVNdBUojEMdM6lEeYgLaLE=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=NAO8G6ZEzWGhxfE0UcJVxmiZTU6QJ212g2/2mhnhTvD0e1wb5yoxFVcsE1HlLm9sSPET3dbg4b81HjP1yPJFnWHZDNdnIZNpp1Cf2zeiF72KX4A/dJxgSC6j9wIUUCKlPn3tErJ3aqqSDuoNuCrN4FtgEnaJt74QYH39qKrPkw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=HF+a7X5l; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710353551;
-	bh=msE+LoodrnJuR41WimKwSvVNdBUojEMdM6lEeYgLaLE=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=HF+a7X5lXjnxaIDWE/8k8QRhMGELdabzRPU9htidGUlZ/EkTMOnUa2qc40ZRT3e5v
-	 PXC1jq4Zty8ILQfh1SXwhw9ef53eHANm63bltn1VsnnJpWbj8AimTd/hTRX+MehWL2
-	 N5VuZOLXcOb7nlGDoKOCTYK5UYa8sSeN1Yb/JVAn25GMy91aMtu5Ay5EUZEovc3Wy6
-	 ERV6xwp0yoPWRhiCe3z7nbem9T2YSM+9Ho6xace7PVCBt6ttEEtMxKRlR2dpoVStrY
-	 sBFyGkwe2sSDtEai0T0RRdfJz9fgPUO1+dBd0mnz6dvvAJ5RmoCcifOM4/05w3lRTq
-	 To+iwhhdmvJxg==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3126537802F2;
-	Wed, 13 Mar 2024 18:12:26 +0000 (UTC)
-Message-ID: <b7fb0e92-f74b-4e12-9eaa-0427901c2be5@collabora.com>
-Date: Wed, 13 Mar 2024 23:12:58 +0500
+	s=arc-20240116; t=1710354723; c=relaxed/simple;
+	bh=Cv2GgfThJXowqzO9/Ak8WteLrkRh2x39/7qWu3AeMVQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:References:To:Cc:
+	 In-Reply-To:Content-Type; b=nvqPrlQ7rcePYgMMOL/ZXyBsxLdCTJQxm3v2VcLwSj2GxoIjtKHxGEEXbHYjNUjsQ6YeeALNQ+xyd500Hbov38940azMuNRTiw4fNzUyD28MZoW/4RWtsD6Mfw+mayOSg/7fBcvl/2hIrouufLt6LrMfG4cOh8lxQbIvbuplDO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
+Received: from [10.28.136.255] (port=57140 helo=[192.168.95.111])
+	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
+	(envelope-from <kiryushin@ancud.ru>)
+	id 1rkT6T-0005JQ-7h;
+	Wed, 13 Mar 2024 21:13:25 +0300
+Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO [192.168.95.111])
+	by incarp1105.mail.hosting.nic.ru (Exim 5.55)
+	with id 1rkT6T-005Uld-10;
+	Wed, 13 Mar 2024 21:13:25 +0300
+Message-ID: <e2ef8067-bac7-45c1-96cf-1160625aef3d@ancud.ru>
+Date: Wed, 13 Mar 2024 21:13:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,141 +46,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
- kernel@collabora.com, Ryan Roberts <ryan.roberts@arm.com>,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] selftests/mm: protection_keys: save/restore
- nr_hugepages settings
-To: Joey Gouly <joey.gouly@arm.com>
-References: <20240125154608.720072-1-usama.anjum@collabora.com>
- <20240125154608.720072-5-usama.anjum@collabora.com>
- <20240313145811.GA2896554@e124191.cambridge.arm.com>
+From: Nikita Kiryushin <kiryushin@ancud.ru>
+Subject: [PATCH] net: phy: fix phy_read_poll_timeout argument type in
+ genphy_loopback
+References: <>
 Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240313145811.GA2896554@e124191.cambridge.arm.com>
-Content-Type: text/plain; charset=UTF-8
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-
-On 3/13/24 7:58 PM, Joey Gouly wrote:
-> Hi Muhammad,
-> 
-> On Thu, Jan 25, 2024 at 08:46:07PM +0500, Muhammad Usama Anjum wrote:
->> Save and restore nr_hugepages before changing it during the test. A test
->> should not change system wide settings.
->>
->> Fixes: 5f23f6d082a9 ("x86/pkeys: Add self-tests")
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->>  tools/testing/selftests/mm/protection_keys.c | 34 ++++++++++++++++++++
->>  1 file changed, 34 insertions(+)
->>
->> diff --git a/tools/testing/selftests/mm/protection_keys.c b/tools/testing/selftests/mm/protection_keys.c
->> index 48dc151f8fca8..f822ae31af22e 100644
->> --- a/tools/testing/selftests/mm/protection_keys.c
->> +++ b/tools/testing/selftests/mm/protection_keys.c
->> @@ -54,6 +54,7 @@ int test_nr;
->>  u64 shadow_pkey_reg;
->>  int dprint_in_signal;
->>  char dprint_in_signal_buffer[DPRINT_IN_SIGNAL_BUF_SIZE];
->> +char buf[256];
->>  
->>  void cat_into_file(char *str, char *file)
->>  {
->> @@ -1744,6 +1745,38 @@ void pkey_setup_shadow(void)
->>  	shadow_pkey_reg = __read_pkey_reg();
->>  }
->>  
->> +void restore_settings_atexit(void)
->> +{
->> +	cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
->> +}
->> +
->> +void save_settings(void)
->> +{
->> +	int fd;
->> +	int err;
->> +
->> +	if (geteuid())
->> +		return;
->> +
->> +	fd = open("/proc/sys/vm/nr_hugepages", O_RDONLY);
->> +	if (fd < 0) {
->> +		fprintf(stderr, "error opening\n");
->> +		perror("error: ");
->> +		exit(__LINE__);
->> +	}
->> +
->> +	/* -1 to guarantee leaving the trailing \0 */
->> +	err = read(fd, buf, sizeof(buf)-1);
->> +	if (err < 0) {
->> +		fprintf(stderr, "error reading\n");
->> +		perror("error: ");
->> +		exit(__LINE__);
->> +	}
->> +
->> +	atexit(restore_settings_atexit);
->> +	close(fd);
->> +}
->> +
->>  int main(void)
->>  {
->>  	int nr_iterations = 22;
->> @@ -1751,6 +1784,7 @@ int main(void)
->>  
->>  	srand((unsigned int)time(NULL));
->>  
->> +	save_settings();
->>  	setup_handlers();
->>  
->>  	printf("has pkeys: %d\n", pkeys_supported);
->> -- 
->> 2.42.0
->>
-> 
-> This break the tests for me:
-> 
-> assert() at protection_keys.c::812 test_nr: 19 iteration: 1
-> running abort_hooks()...
-> 
-> This is because some of the tests fork, so on their atexit() they will set the
-> nr_hugepages back to the previous setting. Specifically the
-> test_pkey_alloc_exhaust() test.
-Thank you for reporting. Please can you test the following patch:
-
---- a/tools/testing/selftests/mm/protection_keys.c
-+++ b/tools/testing/selftests/mm/protection_keys.c
-@@ -1745,9 +1745,12 @@ void pkey_setup_shadow(void)
- 	shadow_pkey_reg = __read_pkey_reg();
- }
-
-+pid_t parent_pid;
-+
- void restore_settings_atexit(void)
- {
--	cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
-+	if (parent_pid == getpid())
-+		cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
- }
-
- void save_settings(void)
-@@ -1773,6 +1776,7 @@ void save_settings(void)
- 		exit(__LINE__);
- 	}
-
-+	parent_pid = getpid();
- 	atexit(restore_settings_atexit);
- 	close(fd);
- }
+X-MS-Exchange-Organization-SCL: -1
 
 
-> 
-> Thanks,
-> Joey
-> 
+read_poll_timeout inside phy_read_poll_timeout can set val negative
+in some cases (for example, __mdiobus_read inside phy_read can return
+-EOPNOTSUPP).
 
--- 
-BR,
-Muhammad Usama Anjum
+Supposedly, commit 4ec732951702 ("net: phylib: fix 
+phy_read*_poll_timeout()")
+should fix problems with wrong-signed vals, but I do not see how
+as val is sent to phy_read as is and __val = phy_read (not val)
+is checked for sign.
+
+Change val type for signed to allow better error handling as done in other
+phy_read_poll_timeout callers. This will not fix any error handling
+by itself, but allows, for example, to modify cond with appropriate
+sign check or check resulting val separately.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 014068dcb5b1 ("net: phy: genphy_loopback: add link speed 
+configuration")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+---
+  drivers/net/phy/phy_device.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 8297ef681bf5..6c6ec9475709 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -2831,8 +2831,8 @@ EXPORT_SYMBOL(genphy_resume);
+  int genphy_loopback(struct phy_device *phydev, bool enable)
+  {
+  	if (enable) {
+-		u16 val, ctl = BMCR_LOOPBACK;
+-		int ret;
++		u16 ctl = BMCR_LOOPBACK;
++		int ret, val;
+   		ctl |= mii_bmcr_encode_fixed(phydev->speed, phydev->duplex);
+  -- 2.34.1
+
 
