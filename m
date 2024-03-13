@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-101744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4198F87AB37
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:34:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A6387AB39
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0107BB22638
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:33:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BB5B288854
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B2253E0E;
-	Wed, 13 Mar 2024 16:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC48854BFF;
+	Wed, 13 Mar 2024 16:32:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SKEV1r1G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M/fk1gT8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60D053399;
-	Wed, 13 Mar 2024 16:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A59253E30;
+	Wed, 13 Mar 2024 16:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347565; cv=none; b=tLD6ErLtUnJuIgS4QD0gUU+8fDqdsEEAH93a5JfrCTbfHYiYkX5FA21DDFxFbnsLdBSd3sO3FoJ3fUD5cZWwc3kKU1f3jMlFL1gcAcqkJI4g8CbVgVKD6EH13P7Kfm1dwHQnO65JQX2hFqQPuWODZAf0v/AGh1VgeXRRahDULLE=
+	t=1710347567; cv=none; b=SRd4Oz4yxOxjt5XzzF5bQr3x3uCb+0wGY3uz/HWCOPJgDSPmy7Gjb9XjSKpUEuTnWMto1SY6cIX0/aNHsr4angr7urhnei3XkKqannqISOTiR8I6X3jyNthjzFy8GpRT27/1Ud8eK+HfhC2reN3Ti/3CIBjBLYkNVeQf959CObk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347565; c=relaxed/simple;
-	bh=X5evWfXM8GEHuGV4oJwMVCIjy8InSOaQVoAvsiB2kBw=;
+	s=arc-20240116; t=1710347567; c=relaxed/simple;
+	bh=s2efhrQBCbHJnbdZjOb5z7wBCsEMxP4MrYOva+cNMf4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RXLwczi4ov8OPR4zjdjYFWHIP3uM9EQaPR8qEQ/WmDSaguyQwOfklDrK8A6fzglAooJLKgVtktyZNwEZixUnOnKQPuenhQT1x7d3Ey33D/6niOhSZQTiLaNPVZjeied18mOO3pDdE6hUXTcb/25lsg36KlrRcXMDJ+1eIjkd2ZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SKEV1r1G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D351C433C7;
-	Wed, 13 Mar 2024 16:32:44 +0000 (UTC)
+	 MIME-Version; b=sxBNTexlDdJcIsFIJ6unQMJjfjIJe32jhrDhgaoW+TBLEMJs6BlEJUc1bxW964iULbroGWkU/biJuALFRD038egnKCxaQDcg/l4HHqKAMEbZDc5KNWJegn7z1pqCqIv5OmrQviLgw0cDorxRNPRsBQ+bgNaog9nDv3F8q4C0R0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M/fk1gT8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0330C43394;
+	Wed, 13 Mar 2024 16:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347565;
-	bh=X5evWfXM8GEHuGV4oJwMVCIjy8InSOaQVoAvsiB2kBw=;
+	s=k20201202; t=1710347566;
+	bh=s2efhrQBCbHJnbdZjOb5z7wBCsEMxP4MrYOva+cNMf4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SKEV1r1Go4X59ogJTxQF1uJdKbDhGTD0dRo3NcNxXN//bemuKfIet7Vn3BzjrOB9M
-	 8Ht1/qcUehr2Oe+RvLhVlR3EHaTZPhP8U9zOZSIW28M6ZmsG9cw0TcJuAQ+pjgO0lj
-	 gIV4261xcxhf3fWcBqkM3uZezMGm1Uq/ilbmyWzfd8EcXPrTKvGUu1XOdNGRklOGGU
-	 4I051tSf1ZWM54eiw09HQJpIZ8OPHLHWRUl1MObmG9mNFN8oevdHuCGdAWPHqrrUx/
-	 jQXjm6w9a6RW22CTZhx1SuPkLgWFx5z2ES0mFC41VLz9V0gBNi7yhP4tV6ltpN6n4W
-	 rHgO3B5qsWN9Q==
+	b=M/fk1gT8OIZXzKqIZbzoaaeztVkVBPNTEV65N+b8wC12PwOubzrqMYxaQMeRcy+tt
+	 p+NQ6u3zdCTd9QcmRGM4GsjDHCIBFlGVtEGFxYqji+146AUciAR9WTOvHf31uFrzU3
+	 lJMhDi3ISFPSX/Tkx2/bHBC2HAdRBLgy3cLEETb7xujLDTWjpXdxFm6Ed4Y8mxsYVg
+	 OvZ7x6YI8BrchLJJb/OzUvczNXlILalYGnr0S6LR4MhGG2OZWRB2bU9RdWDwDN4SYX
+	 YFnBdAetWJ0bn5QT0Kn7FysIFyasvsU6omwVXV+E21VyTe/2tisbFPpjdoQLUOJvNE
+	 SqcTQGts4rcyA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Frank Li <Frank.Li@nxp.com>,
-	Rob Herring <robh@kernel.org>,
 	Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 05/61] dt-bindings: dma: fsl-edma: Add fsl-edma.h to prevent hardcoding in dts
-Date: Wed, 13 Mar 2024 12:31:40 -0400
-Message-ID: <20240313163236.613880-6-sashal@kernel.org>
+Subject: [PATCH 6.7 06/61] dmaengine: fsl-edma: utilize common dt-binding header file
+Date: Wed, 13 Mar 2024 12:31:41 -0400
+Message-ID: <20240313163236.613880-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -71,52 +70,65 @@ Content-Transfer-Encoding: 8bit
 
 From: Frank Li <Frank.Li@nxp.com>
 
-[ Upstream commit 1e9b05258271b76ccc04a4b535009d2cb596506a ]
+[ Upstream commit d0e217b72f9f5c5ef35e3423d393ea8093ce98ec ]
 
-Introduce a common dt-bindings header file, fsl-edma.h, shared between
-the driver and dts files. This addition aims to eliminate hardcoded values
-in dts files, promoting maintainability and consistency.
-
-DTS header file not support BIT() macro yet. Directly use 2^n number.
+Refactor the code to use the common dt-binding header file, fsl-edma.h.
+Renaming ARGS* to FSL_EDMA*, ensuring no functional changes.
 
 Signed-off-by: Frank Li <Frank.Li@nxp.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20231114154824.3617255-3-Frank.Li@nxp.com
+Link: https://lore.kernel.org/r/20231114154824.3617255-4-Frank.Li@nxp.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Stable-dep-of: a79f949a5ce1 ("dmaengine: fsl-edma: correct max_segment_size setting")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/dt-bindings/dma/fsl-edma.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
- create mode 100644 include/dt-bindings/dma/fsl-edma.h
+ drivers/dma/fsl-edma-main.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/include/dt-bindings/dma/fsl-edma.h b/include/dt-bindings/dma/fsl-edma.h
-new file mode 100644
-index 0000000000000..fd11478cfe9cc
---- /dev/null
-+++ b/include/dt-bindings/dma/fsl-edma.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+
-+#ifndef _FSL_EDMA_DT_BINDING_H_
-+#define _FSL_EDMA_DT_BINDING_H_
-+
-+/* Receive Channel */
-+#define FSL_EDMA_RX		0x1
-+
-+/* iMX8 audio remote DMA */
-+#define FSL_EDMA_REMOTE		0x2
-+
-+/* FIFO is continue memory region */
-+#define FSL_EDMA_MULTI_FIFO	0x4
-+
-+/* Channel need stick to even channel */
-+#define FSL_EDMA_EVEN_CH	0x8
-+
-+/* Channel need stick to odd channel */
-+#define FSL_EDMA_ODD_CH		0x10
-+
-+#endif
+diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
+index 75cae7ccae270..45cc419b1b4ac 100644
+--- a/drivers/dma/fsl-edma-main.c
++++ b/drivers/dma/fsl-edma-main.c
+@@ -9,6 +9,7 @@
+  * Vybrid and Layerscape SoCs.
+  */
+ 
++#include <dt-bindings/dma/fsl-edma.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/clk.h>
+@@ -21,12 +22,6 @@
+ 
+ #include "fsl-edma-common.h"
+ 
+-#define ARGS_RX                         BIT(0)
+-#define ARGS_REMOTE                     BIT(1)
+-#define ARGS_MULTI_FIFO                 BIT(2)
+-#define ARGS_EVEN_CH                    BIT(3)
+-#define ARGS_ODD_CH                     BIT(4)
+-
+ static void fsl_edma_synchronize(struct dma_chan *chan)
+ {
+ 	struct fsl_edma_chan *fsl_chan = to_fsl_edma_chan(chan);
+@@ -155,14 +150,14 @@ static struct dma_chan *fsl_edma3_xlate(struct of_phandle_args *dma_spec,
+ 		i = fsl_chan - fsl_edma->chans;
+ 
+ 		fsl_chan->priority = dma_spec->args[1];
+-		fsl_chan->is_rxchan = dma_spec->args[2] & ARGS_RX;
+-		fsl_chan->is_remote = dma_spec->args[2] & ARGS_REMOTE;
+-		fsl_chan->is_multi_fifo = dma_spec->args[2] & ARGS_MULTI_FIFO;
++		fsl_chan->is_rxchan = dma_spec->args[2] & FSL_EDMA_RX;
++		fsl_chan->is_remote = dma_spec->args[2] & FSL_EDMA_REMOTE;
++		fsl_chan->is_multi_fifo = dma_spec->args[2] & FSL_EDMA_MULTI_FIFO;
+ 
+-		if ((dma_spec->args[2] & ARGS_EVEN_CH) && (i & 0x1))
++		if ((dma_spec->args[2] & FSL_EDMA_EVEN_CH) && (i & 0x1))
+ 			continue;
+ 
+-		if ((dma_spec->args[2] & ARGS_ODD_CH) && !(i & 0x1))
++		if ((dma_spec->args[2] & FSL_EDMA_ODD_CH) && !(i & 0x1))
+ 			continue;
+ 
+ 		if (!b_chmux && i == dma_spec->args[0]) {
 -- 
 2.43.0
 
