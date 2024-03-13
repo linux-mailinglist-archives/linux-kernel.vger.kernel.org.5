@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-102066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B622C87AE1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:50:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3AB487AE1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 517EBB21451
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:50:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1861F1F2D1BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5D915A4A2;
-	Wed, 13 Mar 2024 16:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3733A15AAA6;
+	Wed, 13 Mar 2024 16:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMmSysbq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="khCL9iHY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A40F15A482;
-	Wed, 13 Mar 2024 16:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7404915A4AA;
+	Wed, 13 Mar 2024 16:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348446; cv=none; b=Rgor2NYssGxZmgGB5htKod1fsp9hs8SppT0/ae7lBxjGH/L57yTxKWYtobrM9k4kUr6+NpwYCPMcIIMaqLj1xz6TvzihXXrdhaAjfmlb2JFVISHKq0KyxizYn4RIMlK3irR+S9MvthSLCjINph/lOJLmQzJZjroQmLeyMuq9MYo=
+	t=1710348447; cv=none; b=Egxfbdix243lDZ4i+NldIoBQVcw93aKjtzUIl5DL5Kfsv0Fya3n234R05amqAMxLG48ndSaECzBRn90LNtJJG78bC3n536rssU/fX4yNpU7FSPlaNrUx6izxQqMWQp/lQHux3/vjFv8oYIfcIluh+dP83WT6JAVoRTvLRGouwDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348446; c=relaxed/simple;
-	bh=ZVWAyljY+AhMX/8zChvX3ogQPcRmys9NtaHqrY/ZiWg=;
+	s=arc-20240116; t=1710348447; c=relaxed/simple;
+	bh=KDuy0YzyLASNQ/uakw1bHnxcMSwZEnqIfhITzteukvI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZG/jSv6kkXfDGkOsA/yEe55GZChKDBtfPUpD79SUFA7H9dhgKv9EYb3M4a2NVotj4cNB68VCh+lp8V/d7KJ+n+wK2m4h1RDzoAYK/kssCRBhto53WWlFL/4aJLmPF21nviV+CY4tEx/sL3ClN7R52uur7SATrx3ZvHBxic/fQhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UMmSysbq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 866D9C433F1;
-	Wed, 13 Mar 2024 16:47:25 +0000 (UTC)
+	 MIME-Version; b=st9x3zoiUwERoiqy3QYDTypDSzvCrghnAw1kgfCv3Ad7/qRd2LB8PB5m6/bFPyfQAcBpjx3M/gIxO1UstJSny6YICRBNsYWnntubfpWvQnnbAJrL5zFWWXYkzDQ/5Kc8PrCWooyQR+izOxXZTuszXD7eLezmCJmRAlJZ+kb5JdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=khCL9iHY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86153C43390;
+	Wed, 13 Mar 2024 16:47:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348446;
-	bh=ZVWAyljY+AhMX/8zChvX3ogQPcRmys9NtaHqrY/ZiWg=;
+	s=k20201202; t=1710348447;
+	bh=KDuy0YzyLASNQ/uakw1bHnxcMSwZEnqIfhITzteukvI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UMmSysbq2x8wHUoE7Hdgj2ieGF2c6qkM1keO2LK+aJVtzdUaAerSaBmSrGhT4H0zP
-	 QPAiMo5x3f0vQemsPaHk8/fGpe8afq5wZ52hyqZG+uwEutP+tt+ycYzVWXrGM+G/J1
-	 egigXoFi3HQjN1cYCmzfRqQFYF5zO1v5BrxUMItoLEc5ZqR5d94Z54Hk8p8ADoj50r
-	 fmtgLisYyn84Jvju8wwaGpNGXv3H5LC3I2RvccIFnSQjEejWgoIH5gKlBEYXA7c20y
-	 bgMDDP7pQdYWVqHNcPROdiDc0Ct1d2SFa/AuoOb1Mg9dXkMxub2MXPzhyvwRpW9Xq0
-	 miUC0zlImJy+w==
+	b=khCL9iHYbhcoHKmE2yXDsOT+z+XvHry/azNVemKbdSeaUbxRV6RrElXgHn7DNl59a
+	 i1NkCpKxZYqVtZjpXyVk9LzS8PxTqJMQZthQZNOvRijyAT8nU8xdqUFhhQ7AVGjMa7
+	 jJrnAerJ39a0Py66pzq90jORS4d0H9CoYx/cx7MQiy3uQ+2KYceKCtfg9I1HM1HtMr
+	 zBl44uQgaNNHWWmJrR3SnFR0G3XzX3jTo75JckDdrUrD2p1T6xgNVunQ9nnjPrkXOU
+	 oL7I00d8x7eMtuq4h62uKCFssAsWt7Q11uEp4oeF7TR5QLSu11QLamhOTMZ+/uumjM
+	 y5V/05F2LyQYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+Cc: Cosmin Tanislav <cosmin.tanislav@analog.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 40/73] serial: max310x: Make use of device properties
-Date: Wed, 13 Mar 2024 12:46:07 -0400
-Message-ID: <20240313164640.616049-41-sashal@kernel.org>
+Subject: [PATCH 5.10 41/73] serial: max310x: use regmap methods for SPI batch operations
+Date: Wed, 13 Mar 2024 12:46:08 -0400
+Message-ID: <20240313164640.616049-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -68,95 +69,91 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Cosmin Tanislav <cosmin.tanislav@analog.com>
 
-[ Upstream commit c808fab604ca62cff19ee6b261211483830807aa ]
+[ Upstream commit 285e76fc049c4d32c772eea9460a7ef28a193802 ]
 
-Device property API allows to gather device resources from different sources,
-such as ACPI. Convert the drivers to unleash the power of device property API.
+The SPI batch read/write operations can be implemented as simple
+regmap raw read and write, which will also try to do a gather
+write just as it is done here.
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20201007084635.594991-1-andy.shevchenko@gmail.com
+Use the regmap raw read and write methods.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+Link: https://lore.kernel.org/r/20220605144659.4169853-2-demonsingur@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Stable-dep-of: b35f8dbbce81 ("serial: max310x: prevent infinite while() loop in port startup")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+ drivers/tty/serial/max310x.c | 36 ++++++++----------------------------
+ 1 file changed, 8 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index bbf45c0626681..8d42c537ee5ea 100644
+index 8d42c537ee5ea..c0fa4ad104774 100644
 --- a/drivers/tty/serial/max310x.c
 +++ b/drivers/tty/serial/max310x.c
-@@ -15,8 +15,8 @@
- #include <linux/device.h>
- #include <linux/gpio/driver.h>
- #include <linux/module.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/serial_core.h>
- #include <linux/serial.h>
-@@ -271,7 +271,7 @@ struct max310x_one {
- 	container_of(_port, struct max310x_one, port)
+@@ -263,8 +263,6 @@ struct max310x_one {
+ 	struct work_struct	md_work;
+ 	struct work_struct	rs_work;
  
- struct max310x_port {
--	struct max310x_devtype	*devtype;
-+	const struct max310x_devtype *devtype;
- 	struct regmap		*regmap;
- 	struct clk		*clk;
- #ifdef CONFIG_GPIOLIB
-@@ -1262,7 +1262,7 @@ static int max310x_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
+-	u8 wr_header;
+-	u8 rd_header;
+ 	u8 rx_buf[MAX310X_FIFO_SIZE];
+ };
+ #define to_max310x_port(_port) \
+@@ -635,32 +633,18 @@ static s32 max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
+ 
+ static void max310x_batch_write(struct uart_port *port, u8 *txbuf, unsigned int len)
+ {
+-	struct max310x_one *one = to_max310x_port(port);
+-	struct spi_transfer xfer[] = {
+-		{
+-			.tx_buf = &one->wr_header,
+-			.len = sizeof(one->wr_header),
+-		}, {
+-			.tx_buf = txbuf,
+-			.len = len,
+-		}
+-	};
+-	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
++	struct max310x_port *s = dev_get_drvdata(port->dev);
++	u8 reg = port->iobase + MAX310X_THR_REG;
++
++	regmap_raw_write(s->regmap, reg, txbuf, len);
  }
- #endif
  
--static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
-+static int max310x_probe(struct device *dev, const struct max310x_devtype *devtype,
- 			 struct regmap *regmap, int irq)
+ static void max310x_batch_read(struct uart_port *port, u8 *rxbuf, unsigned int len)
  {
- 	int i, ret, fmin, fmax, freq;
-@@ -1488,7 +1488,7 @@ static struct regmap_config regcfg = {
- #ifdef CONFIG_SPI_MASTER
- static int max310x_spi_probe(struct spi_device *spi)
- {
--	struct max310x_devtype *devtype;
-+	const struct max310x_devtype *devtype;
- 	struct regmap *regmap;
- 	int ret;
+-	struct max310x_one *one = to_max310x_port(port);
+-	struct spi_transfer xfer[] = {
+-		{
+-			.tx_buf = &one->rd_header,
+-			.len = sizeof(one->rd_header),
+-		}, {
+-			.rx_buf = rxbuf,
+-			.len = len,
+-		}
+-	};
+-	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
++	struct max310x_port *s = dev_get_drvdata(port->dev);
++	u8 reg = port->iobase + MAX310X_RHR_REG;
++
++	regmap_raw_read(s->regmap, reg, rxbuf, len);
+ }
  
-@@ -1500,18 +1500,9 @@ static int max310x_spi_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
+ static void max310x_handle_rx(struct uart_port *port, unsigned int rxlen)
+@@ -1390,10 +1374,6 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 		INIT_WORK(&s->p[i].md_work, max310x_md_proc);
+ 		/* Initialize queue for changing RS485 mode */
+ 		INIT_WORK(&s->p[i].rs_work, max310x_rs_proc);
+-		/* Initialize SPI-transfer buffers */
+-		s->p[i].wr_header = (s->p[i].port.iobase + MAX310X_THR_REG) |
+-				    MAX310X_WRITE_BIT;
+-		s->p[i].rd_header = (s->p[i].port.iobase + MAX310X_RHR_REG);
  
--	if (spi->dev.of_node) {
--		const struct of_device_id *of_id =
--			of_match_device(max310x_dt_ids, &spi->dev);
--		if (!of_id)
--			return -ENODEV;
--
--		devtype = (struct max310x_devtype *)of_id->data;
--	} else {
--		const struct spi_device_id *id_entry = spi_get_device_id(spi);
--
--		devtype = (struct max310x_devtype *)id_entry->driver_data;
--	}
-+	devtype = device_get_match_data(&spi->dev);
-+	if (!devtype)
-+		devtype = (struct max310x_devtype *)spi_get_device_id(spi)->driver_data;
- 
- 	regcfg.max_register = devtype->nr * 0x20 - 1;
- 	regmap = devm_regmap_init_spi(spi, &regcfg);
-@@ -1536,7 +1527,7 @@ MODULE_DEVICE_TABLE(spi, max310x_id_table);
- static struct spi_driver max310x_spi_driver = {
- 	.driver = {
- 		.name		= MAX310X_NAME,
--		.of_match_table	= of_match_ptr(max310x_dt_ids),
-+		.of_match_table	= max310x_dt_ids,
- 		.pm		= &max310x_pm_ops,
- 	},
- 	.probe		= max310x_spi_probe,
+ 		/* Register port */
+ 		ret = uart_add_one_port(&max310x_uart, &s->p[i].port);
 -- 
 2.43.0
 
