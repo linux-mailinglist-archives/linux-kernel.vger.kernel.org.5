@@ -1,186 +1,153 @@
-Return-Path: <linux-kernel+bounces-102182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29B987AF2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:19:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F43287AF62
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7576E1F264FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:19:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDAEB286753
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66EC519A599;
-	Wed, 13 Mar 2024 17:03:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D57283BA2;
+	Wed, 13 Mar 2024 17:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="Qsht05+U"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eoa/I07o"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1780019A56A;
-	Wed, 13 Mar 2024 17:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4585C1509E7
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349424; cv=none; b=qEOGB3w0Rb6DOrK0TxK6LjA5jOywhgViD8w517wOK7yTxx21mqi8lCt41+LaJoHIaqVe00TGpXvbTks+Fgish6Syfb3VMTMuPcy07MqnFAlkuTg43+tOAIwMNFxfxUeYInL5kNMlFUaCK6nk07h9Z8WOIF6MYaKY2nEIQ3wL/P0=
+	t=1710349496; cv=none; b=WU+NzdN7C74XyMPE5qW9twndgi4Xp81ru3HTaK4HnlvOhPW0FU21ETo6XQHtQs5BVeCDnwDKFprWHCwqpTnJzIH1BPXV2+YCLaqDuk1wzHa1Rj4EzQupQepEkrA+j1bnnhzfyqHnITGcvDXUPOlGP0j2Ek/cAbNCuUIn7p5pXZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349424; c=relaxed/simple;
-	bh=3L4GbT2GGY6ZkVB0Gbmb4Xhq7Pezq97Uzm/KdVsUIvg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aIYuPuy2L5vPXnb0ZY8sPafwDYe3mETGWRhNeRff+hHfSuxbCwnRe1KgRbIhwyjeiFW+o0JWbAjgYh7U/fDnf1TZ6n4iXOoKSyfuyaht+8ksbmv3jPQNUMTeR01RezyUFvyI68QlmkKBGeJvPTEZFu58SFRVKFMT3AP6I0FCmLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=Qsht05+U; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4Tvxfz2mzqz9srv;
-	Wed, 13 Mar 2024 18:03:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1710349419;
+	s=arc-20240116; t=1710349496; c=relaxed/simple;
+	bh=NVVCPsRTH9aJFP5INYUA1mg6ri8jiYYeK/20kRzivhs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aJD1i2f3dOywnh/FHjyEcbzL3sPitWXbaLtgMQ2QADooLPy6OZvtorDajCvNEyHWI4YMamG3qyQhc2VobJaw1IbTKLYh0dWHKEWBbjNZk6Our0q5xw8fuooqJtRBAgMS/NTKfW1228MI7c9GYj2AyxDfjQqbpTHyCMO/4d7YyTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eoa/I07o; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710349492;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=K/DUVmmSdMYXfogG3VkAiYhU6qYgNVi5gtPJ5i04LEI=;
-	b=Qsht05+Uu/iP54oqngBXP2qLeNxikfv1Eh/QI13SRmymWufjW1qsMdPY+89rtgm6i4g39y
-	SWW8c6kh0MkZTAY9/vDjZV0NUuGdfEDYIvP8SiXji0DUHluzyiOXftszOjn9q5H1LKy/1C
-	Wmuim/RYXM+z/vXQclsx99izmsENZc4h3Rx1QHNx1sH/37t7Egj0nIEXHyTQVY2eGhYv6O
-	juM46526/LJPKkmSZaGglSY7Z+d/pVduLN+qUMl02bRL2+VEd2C2B1ztr6Pz8AjlF74Dwr
-	r544zElg3fjru2Ijy1ZG+m2sSurj0ux4aO+w3OnINoA1SJvA+sNnSqIZUgG9Vg==
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: willy@infradead.org,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: gost.dev@samsung.com,
-	chandan.babu@oracle.com,
-	hare@suse.de,
-	mcgrof@kernel.org,
-	djwong@kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	david@fromorbit.com,
-	akpm@linux-foundation.org,
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: [PATCH v3 11/11] xfs: enable block size larger than page size support
-Date: Wed, 13 Mar 2024 18:02:53 +0100
-Message-ID: <20240313170253.2324812-12-kernel@pankajraghav.com>
-In-Reply-To: <20240313170253.2324812-1-kernel@pankajraghav.com>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
+	bh=+Xbn72BYWl9q5M69bjzFR6tOEN9CO/5oxYSGxU1c8D8=;
+	b=eoa/I07ouZIHn+PEuEjZ9w3yw9tvuNHo63pze0T1mocf7QGixRihYt61EO1or/obE3n6WN
+	woLh8xUXuHQTi7O4Gm3M1EeiwlONbrICxA4wF5NhXRS5qFe/Cuo3rVUofeRBjbp99EN6s+
+	jDAl1rSfbPTzeRYiO5KoTY4X0Qdbv78=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-643-Vgj_NRLtPQiJww3MCVkOQQ-1; Wed,
+ 13 Mar 2024 13:04:49 -0400
+X-MC-Unique: Vgj_NRLtPQiJww3MCVkOQQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7D8111C07F3A;
+	Wed, 13 Mar 2024 17:04:48 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.233])
+	by smtp.corp.redhat.com (Postfix) with SMTP id CF26F3C21;
+	Wed, 13 Mar 2024 17:04:46 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 13 Mar 2024 18:03:27 +0100 (CET)
+Date: Wed, 13 Mar 2024 18:03:24 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Dylan Hatch <dylanbhatch@google.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 5.10 65/73] exit: wait_task_zombie: kill the no longer
+ necessary spin_lock_irq(siglock)
+Message-ID: <20240313170324.GC25452@redhat.com>
+References: <20240313164640.616049-1-sashal@kernel.org>
+ <20240313164640.616049-66-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313164640.616049-66-sashal@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-From: Pankaj Raghav <p.raghav@samsung.com>
+I do not know what does 5.10 mean. Does this tree has all the changes
+this patch depends on? Say, 1df4bd83cdfdbd0720dd ("do_io_accounting:
+use sig->stats_lock") ?
 
-Page cache now has the ability to have a minimum order when allocating
-a folio which is a prerequisite to add support for block size > page
-size.
+In any case please remove this patch from all your queues, it got the
+"stable" tag by mistake.
 
-Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- fs/xfs/libxfs/xfs_ialloc.c |  5 +++++
- fs/xfs/libxfs/xfs_shared.h |  3 +++
- fs/xfs/xfs_icache.c        |  6 ++++--
- fs/xfs/xfs_mount.c         |  1 -
- fs/xfs/xfs_super.c         | 10 ++--------
- 5 files changed, 14 insertions(+), 11 deletions(-)
+Oleg.
 
-diff --git a/fs/xfs/libxfs/xfs_ialloc.c b/fs/xfs/libxfs/xfs_ialloc.c
-index 2361a22035b0..c040bd6271fd 100644
---- a/fs/xfs/libxfs/xfs_ialloc.c
-+++ b/fs/xfs/libxfs/xfs_ialloc.c
-@@ -2892,6 +2892,11 @@ xfs_ialloc_setup_geometry(
- 		igeo->ialloc_align = mp->m_dalign;
- 	else
- 		igeo->ialloc_align = 0;
-+
-+	if (mp->m_sb.sb_blocksize > PAGE_SIZE)
-+		igeo->min_folio_order = mp->m_sb.sb_blocklog - PAGE_SHIFT;
-+	else
-+		igeo->min_folio_order = 0;
- }
- 
- /* Compute the location of the root directory inode that is laid out by mkfs. */
-diff --git a/fs/xfs/libxfs/xfs_shared.h b/fs/xfs/libxfs/xfs_shared.h
-index 4220d3584c1b..67ed406e7a81 100644
---- a/fs/xfs/libxfs/xfs_shared.h
-+++ b/fs/xfs/libxfs/xfs_shared.h
-@@ -188,6 +188,9 @@ struct xfs_ino_geometry {
- 	/* precomputed value for di_flags2 */
- 	uint64_t	new_diflags2;
- 
-+	/* minimum folio order of a page cache allocation */
-+	unsigned int	min_folio_order;
-+
- };
- 
- #endif /* __XFS_SHARED_H__ */
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index dba514a2c84d..a1857000e2cd 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -88,7 +88,8 @@ xfs_inode_alloc(
- 	/* VFS doesn't initialise i_mode or i_state! */
- 	VFS_I(ip)->i_mode = 0;
- 	VFS_I(ip)->i_state = 0;
--	mapping_set_large_folios(VFS_I(ip)->i_mapping);
-+	mapping_set_folio_min_order(VFS_I(ip)->i_mapping,
-+				    M_IGEO(mp)->min_folio_order);
- 
- 	XFS_STATS_INC(mp, vn_active);
- 	ASSERT(atomic_read(&ip->i_pincount) == 0);
-@@ -323,7 +324,8 @@ xfs_reinit_inode(
- 	inode->i_rdev = dev;
- 	inode->i_uid = uid;
- 	inode->i_gid = gid;
--	mapping_set_large_folios(inode->i_mapping);
-+	mapping_set_folio_min_order(inode->i_mapping,
-+				    M_IGEO(mp)->min_folio_order);
- 	return error;
- }
- 
-diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-index 9cf800586da7..a77e927807e5 100644
---- a/fs/xfs/xfs_mount.c
-+++ b/fs/xfs/xfs_mount.c
-@@ -131,7 +131,6 @@ xfs_sb_validate_fsb_count(
- 	xfs_sb_t	*sbp,
- 	uint64_t	nblocks)
- {
--	ASSERT(PAGE_SHIFT >= sbp->sb_blocklog);
- 	ASSERT(sbp->sb_blocklog >= BBSHIFT);
- 	uint64_t max_index;
- 	uint64_t max_bytes;
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index 98401de832ee..4f5f4cb772d4 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -1624,16 +1624,10 @@ xfs_fs_fill_super(
- 		goto out_free_sb;
- 	}
- 
--	/*
--	 * Until this is fixed only page-sized or smaller data blocks work.
--	 */
- 	if (mp->m_sb.sb_blocksize > PAGE_SIZE) {
- 		xfs_warn(mp,
--		"File system with blocksize %d bytes. "
--		"Only pagesize (%ld) or less will currently work.",
--				mp->m_sb.sb_blocksize, PAGE_SIZE);
--		error = -ENOSYS;
--		goto out_free_sb;
-+"EXPERIMENTAL: Filesystem with Large Block Size (%d bytes) enabled.",
-+			mp->m_sb.sb_blocksize);
- 	}
- 
- 	/* Ensure this filesystem fits in the page cache limits */
--- 
-2.43.0
+On 03/13, Sasha Levin wrote:
+>
+> From: Oleg Nesterov <oleg@redhat.com>
+> 
+> [ Upstream commit c1be35a16b2f1fe21f4f26f9de030ad6eaaf6a25 ]
+> 
+> After the recent changes nobody use siglock to read the values protected
+> by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
+> update the comment.
+> 
+> With this patch only __exit_signal() and thread_group_start_cputime() take
+> stats_lock under siglock.
+> 
+> Link: https://lkml.kernel.org/r/20240123153359.GA21866@redhat.com
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  kernel/exit.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index c41bdc0a7f06b..8f25abdd5fa7d 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -1106,17 +1106,14 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+>  		 * and nobody can change them.
+>  		 *
+>  		 * psig->stats_lock also protects us from our sub-threads
+> -		 * which can reap other children at the same time. Until
+> -		 * we change k_getrusage()-like users to rely on this lock
+> -		 * we have to take ->siglock as well.
+> +		 * which can reap other children at the same time.
+>  		 *
+>  		 * We use thread_group_cputime_adjusted() to get times for
+>  		 * the thread group, which consolidates times for all threads
+>  		 * in the group including the group leader.
+>  		 */
+>  		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+> -		spin_lock_irq(&current->sighand->siglock);
+> -		write_seqlock(&psig->stats_lock);
+> +		write_seqlock_irq(&psig->stats_lock);
+>  		psig->cutime += tgutime + sig->cutime;
+>  		psig->cstime += tgstime + sig->cstime;
+>  		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
+> @@ -1139,8 +1136,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+>  			psig->cmaxrss = maxrss;
+>  		task_io_accounting_add(&psig->ioac, &p->ioac);
+>  		task_io_accounting_add(&psig->ioac, &sig->ioac);
+> -		write_sequnlock(&psig->stats_lock);
+> -		spin_unlock_irq(&current->sighand->siglock);
+> +		write_sequnlock_irq(&psig->stats_lock);
+>  	}
+>  
+>  	if (wo->wo_rusage)
+> -- 
+> 2.43.0
+> 
 
 
