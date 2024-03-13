@@ -1,139 +1,185 @@
-Return-Path: <linux-kernel+bounces-101155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF2B87A334
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 55F8287A336
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:10:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9468CB21E31
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:09:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5B96B21511
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031161643E;
-	Wed, 13 Mar 2024 07:09:25 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EEA17575;
+	Wed, 13 Mar 2024 07:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cLCP7XaE"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0D614A8C;
-	Wed, 13 Mar 2024 07:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A4917552
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710313764; cv=none; b=a1u4oHILG6eK+XCOBqMXzUhVwxpNKjT4wAGIwhvuZKpz33rPh+5RQFhupEG3wDR1SdiZlfzsOPuDk7fA5X/xnyQl8HfKm4uzZxYSK2Sy+Z2xVuL0Hj+I55/LQ7sTUT7rIQUsCiQ50aRt+JbE0v8ZyAY3KmofnYof2HM+9I8BGjI=
+	t=1710313802; cv=none; b=I20i/8cnTZQ5WMP+dmLMJFsVGpZgjNCHcXlWUm69i4EgehYSrjOwhc8M7R1nOw2LaKY6fYKnoVgSS3ATbZ0ACVjplvFNvMrsXH1YGr2riUXXAyXTovp3Ni6WWwJ/3ZQtW1KXy+PXiMZWU7aCwn9VzqxWzwKj4wJoT7QZbaznsNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710313764; c=relaxed/simple;
-	bh=DnVHKZQEGlZsUL1ra8rBA+RZSM3Wki43hGWrTwyDdKI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=BeQfUgfxp/c39ZFBN6l4u63wq94jYNNPU7rdi3YTQg/nBLXaCEiWHJwmSwCTq0V3uZ3sLbbNFnfL7HulhIRBCBCLH2sJ1nJtUadUjUwhI3YGO0B6PLe+ShoTc0XJZOTBdbeSzxX7k4uTWwIQFRs35gXsxLG0ir49bvVdP1Yai90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TvhT66Bn7z4f3mWM;
-	Wed, 13 Mar 2024 15:09:14 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 886931A0172;
-	Wed, 13 Mar 2024 15:09:18 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGBEdUfFlvR42Gw--.15382S3;
-	Wed, 13 Mar 2024 15:09:18 +0800 (CST)
-Subject: Re: [PATCH 3/4] iomap: don't increase i_size if it's not a write
- operation
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
- david@fromorbit.com, tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com
-References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
- <20240311122255.2637311-4-yi.zhang@huaweicloud.com>
- <20240311154829.GU1927156@frogsfrogsfrogs>
- <4a9e607e-36d1-4ea7-1754-c443906b3a1c@huaweicloud.com>
- <20240312162407.GC1927156@frogsfrogsfrogs>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <929f44c6-68e0-1a32-26fd-63b0e87f02fc@huaweicloud.com>
-Date: Wed, 13 Mar 2024 15:09:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1710313802; c=relaxed/simple;
+	bh=7AHBlbBVmOFnsONr0oWSQj7UuiokQ4EM/lXEbQ7dlXM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aXndqWGtzari6NHRSjmGLRJqfTxWOSZyWIycLC/7nBS94hLBuLGmFIcSiZwdDz5Nl4oGhI+Xd4PphflSPWRTCU+JsWl9yTLDc37rDeYGawBMvRq7ozwkQDUed4loBwDQP7XgoeY9F4WZzGlTJgT0Y2mkDJXSpKPk0bNTi6ERo0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cLCP7XaE; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5684073ab38so1021340a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710313797; x=1710918597; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VFM7NHjFeiFIkXrKy4Ve+I5tMlDvoiqgvY2hf19yC/M=;
+        b=cLCP7XaEASri38Z5l1hPf+Qhl4ndoEct2Q8P1B1tTPyjcEhwCgtvali4irXOwQZxCw
+         kszBSokkJwNYMHTYM9LWtqnpwAhR3d13ctvemiAVRXqnEBCkyf3LOoZsDvlV0w25YHJD
+         cqC0gc+zlEWh40qeSVksc5q/GCmDUfiNnnPHDCtEr99Dr+OlTl6IfpNhEey/l8pbNWiF
+         l6CMEQTimpsXjJOemPGRC1EbALYasdEnKy7M7b1SuUd07tSUDhakHpAaDZgQw+DRD5bX
+         TAwgnROOu6uwZNMehfpiHQrDGZzKHuiF+JxP7V8tGZBbNpcg//HO4pbEqwLB2nCE6s8H
+         eXYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710313797; x=1710918597;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VFM7NHjFeiFIkXrKy4Ve+I5tMlDvoiqgvY2hf19yC/M=;
+        b=JzMN4DZ7lJBaL7MVeBmW7IVwiBJtZy4u9+BPqIkVu53Y2AaVhbWYjpiNj0Xp5UPNct
+         lho5w10eXs3EjFFSfl7M987C9tYPzCpqg5KxUQAMJgGlR6DWuW5NFoTuhbSiTDkh6IKO
+         jadtyD0kDp609/BAObtEdgmuc0c9SuSxn32Y0F8OsEdGonLkt7LiWr+ITCR/BXi6bmMW
+         Jy8E9hJrS6YHyg4/WUVuUF1f2cItFmfF0Cc1ac83WdCPtNTe1KBSf99Jg9dN9YoAQciv
+         CxjNeq0+UmsA7KsjLzwiiLVRKAeMCsZDH93S1J3+44wbifxIOnsP5urooXVX4rStoOIl
+         2tNA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmukRqxoATM1TC1uSzvrCsRXOACOSS5sEof149uvVyhpVLcM8zCCUBcP5oH8oCAJAuYkJVjSiaPqAbA44nN3xj1pl5bSZsus6nr1n8
+X-Gm-Message-State: AOJu0YzkOWDUnUa+6MvNRP7tANbzMU+dMJP3t9PG9ncQTR+yu3La5YTR
+	f9gaOVgHffBOsGV6hCGE/kG8Pk11Ratygm8ON5Dco0HLaluhTCN/4jsHZweO6g4=
+X-Google-Smtp-Source: AGHT+IFe/fyuKeyjO4QV1x01xdRBrc72d4UA/whVUFl6wfKoaLR7gJ9oQQHnXlmLUa47VVYaHB/K8g==
+X-Received: by 2002:a50:9b58:0:b0:567:e0e:dda5 with SMTP id a24-20020a509b58000000b005670e0edda5mr1632316edj.17.1710313796845;
+        Wed, 13 Mar 2024 00:09:56 -0700 (PDT)
+Received: from ?IPV6:2003:e5:873a:400:704b:6dbb:e7c0:786e? (p200300e5873a0400704b6dbbe7c0786e.dip0.t-ipconnect.de. [2003:e5:873a:400:704b:6dbb:e7c0:786e])
+        by smtp.gmail.com with ESMTPSA id n21-20020a05640205d500b0056884feacd4sm381463edx.39.2024.03.13.00.09.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 00:09:56 -0700 (PDT)
+Message-ID: <ab57dce7-6e89-44aa-a87a-2ffa8cc87fc4@suse.com>
+Date: Wed, 13 Mar 2024 08:09:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240312162407.GC1927156@frogsfrogsfrogs>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] x86: Rename __{start,end}_init_task to
+ __{start,end}_init_stack
 Content-Language: en-US
+To: "Xin Li (Intel)" <xin@zytor.com>, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ boris.ostrovsky@oracle.com, arnd@arndb.de
+References: <20240313060546.1952893-1-xin@zytor.com>
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+In-Reply-To: <20240313060546.1952893-1-xin@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBHGBEdUfFlvR42Gw--.15382S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFW3XFy8Cr45Xw4DCw4xtFb_yoW8uF4rpr
-	yIkayqk3WktF17ur1vqa45X3sayry5KrW7Jry7WF4fZr1qva1fKF1UGa45uF1kJ3sxAr43
-	Xa1kA393WFZ8A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IUbPEf5UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/3/13 0:24, Darrick J. Wong wrote:
-> On Tue, Mar 12, 2024 at 08:59:15PM +0800, Zhang Yi wrote:
->> On 2024/3/11 23:48, Darrick J. Wong wrote:
->>> On Mon, Mar 11, 2024 at 08:22:54PM +0800, Zhang Yi wrote:
->>>> From: Zhang Yi <yi.zhang@huawei.com>
->>>>
-[...]
->>>> @@ -927,6 +908,24 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->>>>  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
->>>>  		status = iomap_write_end(iter, pos, bytes, copied, folio);
->>>>  
->>>> +		/*
->>>> +		 * Update the in-memory inode size after copying the data into
->>>> +		 * the page cache.  It's up to the file system to write the
->>>> +		 * updated size to disk, preferably after I/O completion so that
->>>> +		 * no stale data is exposed.
->>>> +		 */
->>>> +		old_size = iter->inode->i_size;
->>>> +		if (pos + status > old_size) {
->>>> +			i_size_write(iter->inode, pos + status);
->>>> +			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->>>> +		}
->>>> +		__iomap_put_folio(iter, pos, status, folio);
->>>
->>> Why is it necessary to hoist the __iomap_put_folio calls from
->>> iomap_write_end into iomap_write_iter, iomap_unshare_iter, and
->>> iomap_zero_iter?  None of those functions seem to use it, and it makes
->>> more sense to me that iomap_write_end releases the folio that
->>> iomap_write_begin returned.
->>>
->>
->> Because we have to update i_size before __iomap_put_folio() in
->> iomap_write_iter(). If not, once we unlock folio, it could be raced
->> by the backgroud write back which could start writing back and call
->> folio_zero_segment() (please see iomap_writepage_handle_eof()) to
->> zero out the valid data beyond the not updated i_size. So we
->> have to move out __iomap_put_folio() out together with the i_size
->> updating.
+On 13.03.24 07:05, Xin Li (Intel) wrote:
+> The stack of a task has been separated from the memory of a task_struct
+> struture for a long time on x86, as a result __{start,end}_init_task no
+> longer mark the start and end of the init_task structure, but its stack
+> only.
 > 
-> Ahah.  Please make a note of that in the comment for dunces like me.
+> Rename __{start,end}_init_task to __{start,end}_init_stack.
 > 
-> 	/*
-> 	 * Update the in-memory inode size after copying the data into
-> 	 * the page cache.  It's up to the file system to write the
-> 	 * updated size to disk, preferably after I/O completion so that
-> 	 * no stale data is exposed.  Only once that's done can we
-> 	 * unlock and release the folio.
-> 	 */
+> Note other architectures are not affected because __{start,end}_init_task
+> are used on x86 only.
 > 
+> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+> ---
+>   arch/x86/include/asm/processor.h  | 4 ++--
+>   arch/x86/kernel/head_64.S         | 2 +-
+>   arch/x86/xen/xen-head.S           | 2 +-
+>   include/asm-generic/vmlinux.lds.h | 8 ++++----
+>   4 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index 811548f131f4..8b3a3f3bb859 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -636,10 +636,10 @@ static __always_inline void prefetchw(const void *x)
+>   #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
+>   
+>   #else
+> -extern unsigned long __end_init_task[];
+> +extern unsigned long __end_init_stack[];
+>   
+>   #define INIT_THREAD {							\
+> -	.sp	= (unsigned long)&__end_init_task -			\
+> +	.sp	= (unsigned long)&__end_init_stack -			\
+>   		  TOP_OF_KERNEL_STACK_PADDING -				\
+>   		  sizeof(struct pt_regs),				\
+>   }
+> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+> index d8198fbd70e5..c7babd7ebb0f 100644
+> --- a/arch/x86/kernel/head_64.S
+> +++ b/arch/x86/kernel/head_64.S
+> @@ -66,7 +66,7 @@ SYM_CODE_START_NOALIGN(startup_64)
+>   	mov	%rsi, %r15
+>   
+>   	/* Set up the stack for verify_cpu() */
+> -	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
+> +	leaq	(__end_init_stack - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
+>   
+>   	/* Setup GSBASE to allow stack canary access for C code */
+>   	movl	$MSR_GS_BASE, %ecx
+> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+> index 04101b984f24..43eadf03f46d 100644
+> --- a/arch/x86/xen/xen-head.S
+> +++ b/arch/x86/xen/xen-head.S
+> @@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
+>   	ANNOTATE_NOENDBR
+>   	cld
+>   
+> -	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
+> +	leaq	(__end_init_stack - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
+>   
+>   	/* Set up %gs.
+>   	 *
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index 5dd3a61d673d..a168be99d522 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -399,13 +399,13 @@
+>   
+>   #define INIT_TASK_DATA(align)						\
+>   	. = ALIGN(align);						\
+> -	__start_init_task = .;						\
+> +	__start_init_stack = .;						\
+>   	init_thread_union = .;						\
+>   	init_stack = .;							\
+> -	KEEP(*(.data..init_task))					\
+> +	KEEP(*(.data..init_stack))					\
 
-Sure.
+Is this modification really correct?
 
+>   	KEEP(*(.data..init_thread_info))				\
+> -	. = __start_init_task + THREAD_SIZE;				\
+> -	__end_init_task = .;
+> +	. = __start_init_stack + THREAD_SIZE;				\
+> +	__end_init_stack = .;
+>   
+>   #define JUMP_TABLE_DATA							\
+>   	. = ALIGN(8);							\
+> 
+> base-commit: 626856ae97054963e7b8c35335d4418271c8d0c4
+
+
+Juergen
 
 
