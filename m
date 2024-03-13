@@ -1,105 +1,155 @@
-Return-Path: <linux-kernel+bounces-101328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD48087A59F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:15:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9067887A5A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D895B1C21E7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:15:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E629F1F21F42
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C5A39854;
-	Wed, 13 Mar 2024 10:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532B239AF1;
+	Wed, 13 Mar 2024 10:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itFTvRxf"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AD1lDp0o"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA421CF87;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBABC38DDD;
 	Wed, 13 Mar 2024 10:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710324919; cv=none; b=UO7MhiwyK/LHPp9D5aC/RD++oWlVSE91TqfeXnG/5JtZbi5e8OM420P1PCeT2ABXvK8BJljtcZK2IwjED1cjR2/8CimnDOI/JiIouzT3dsSwV62XKGhM8vdc5XMUqB/DQTDdrcQxWyrR9N6AOBVdh9Ur4EMqDmMjgHNKG6G8yUQ=
+	t=1710324919; cv=none; b=f5eu+Fdjx+YW4PbWGgUUHaC06Qjx+xoSE7hQoPdZfNPpczAfWc74u34h8hdfEDEXRek5K4ZXfbq+kGqZhR22SuqFa6ZWNE4GISajg1tuEpJMwBnxivgZTxdjI7M2O2wKTG4yW31t5jKgITPRU0uXr9jXI5KvxhQ4pSHWNgY/MgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710324919; c=relaxed/simple;
-	bh=aXTCLlS4y4QEhlbLUhInaMoXhFqY3QaANvShb1ApMks=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hoy0e+bVhtySffYrLAq1x+ftEt1xQ2P/KdYKZyy8e2O/yr1SLR5lu5nUnMHfY0MKBbg+20mKeftXir39v3PntVaNr9BVDjVHWQH/QqUQSifRFfnUtjoanaOjNqVKGGtw1Ck8JON/FyYk8i6hsO4XsmLGZw9Ad0CsiqEQatued8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itFTvRxf; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	bh=3xD+8JCwf86jkD5e60v0HwEHcqYhgbc7VhIyD3Yys0Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n8z/7Pjq/MWoRQGacCGZlCyXW59ux5azyFlCV7EdoFWtDDf08Jw+CTADKOzRTqsmM2XFOJ+Y8Q8uKrClIiHAb4TwGoC6jw689mb9L6D34RjYkYkyjetw0ZiUA4RRvo++9BLsyb3I7NXcpYEB1L40F8+s2eIv3UaTrWPrT8nGTMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AD1lDp0o; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29a5f5ea920so857915a91.1;
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33e9623c3a8so681055f8f.0;
         Wed, 13 Mar 2024 03:15:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710324917; x=1710929717; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NQiuGj7PdiBNl0+f5A7u09zOwXRzHIjc9Zi58L9ZCcU=;
-        b=itFTvRxfAeQ1DK6pN88wNWdkvu8O3xrSg14bCgtWKroZyhaKeqgTbhKdTQ4fr3N+zE
-         y50eZAHAe5/bMDSSReRMw3CofkE+9B53RwLejOWFncUhcLNrWWZHKcswj69L0KFZmeFM
-         RJTsVDJkZOFs/Ir5v8UFtKk0KW8t6qbUa2PQNLEHkPYCcqKna1Bd0b5Bto/MCtbg5NsD
-         flsd9HKvru+hMlbQ0ixB58WonQPYmZdAUGUbKVNpVUit7SkcI60mBzyScO5yYe+8RP+e
-         6SI3H4SaZ6GJDlohLpnb1GESQJGjs3ZZ0WX+eWeHTOQlJvtOzXUjpeBOlQzAHPOYI+Dy
-         BgLg==
+        d=gmail.com; s=20230601; t=1710324916; x=1710929716; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kheSY2qAqbE3EfWUfZ/cCoYdLw7ZBN3sckQtrZLqZmQ=;
+        b=AD1lDp0oaBzqO69zR9pEISPlDO57BXHpmJtpmqeyk/kQ9FlED9vL3w+/cnA94D/XaI
+         I8w3ck+sRb5zAe7x/9ItGSCiuECGUjwGXp5WhiemUS3VhAltt3/Lt8R1uzRcvJqgUuvA
+         8Lk0Vz2XzCS+UofKogYIXvuyLrfChAOAX2L8TPB5pElKO67RZdzCalmzzTsIOOSNkvxm
+         K1yFnYA1wr4nG08qC2st+xuK3Bl3hUPVfVYZyUhBCoe50rYZzmiPHmqVCZJ6S9C299VY
+         ALTTlltPqP6Um8Cc4Hh3RJXu4qJcUdlsIwyISX33r7KuB1ZdSLN2KzOX+oPYAQ4YZJ64
+         X0AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710324917; x=1710929717;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1710324916; x=1710929716;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NQiuGj7PdiBNl0+f5A7u09zOwXRzHIjc9Zi58L9ZCcU=;
-        b=SYfDlImS+49RnoVIMHKZeD8mF7s6AQzmwN7LmfLZSVcoYVfyi0lgspF25jvDv6wBrK
-         b1U2zHfboBkj1McMvVq7waQCMyLYktw5QQop1hJidT7L6Hc1cYwPyKcgPylFXjskFbPW
-         Uf1TbF62SksgQthRFccqunpiDTwvOdKVw2fiAgH9XkinJVPKpHkdrLpMxAYI0ohc6iQC
-         +rtvd9eVbJUCFVonrszcoXqAVQCI4Tf25J/wj0Tiq59V7tZJkzvwJMDGpEKODSPzLkFB
-         HKXhiwzFuICejJIekrrsJ9nvgg+IkzyetgHp1f/Fm7+5utxTctYRGRDG4D2fLq7xHb0j
-         wKpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVgmm652KCXwFcIql+U8hWg56tzH5OMyo1lSh9a/SEr7GWLzeXMc45fbJ1K2gbqv9gafKUJMjupkxw0LauRASz1J6kIECrnBY+ig5XUYp2NcC9AFiabpJACphM+hD+iRDfs2ZW6KTT6
-X-Gm-Message-State: AOJu0YyUwAYVW0RpU1IRF27CvxKvn2Yak8+9UUt/WhlcXAdjsfn1zvDs
-	JDoBnz/4+34Zho7qUtNPRZHUW20CIAyuReCnBQktFZOd+9V/gFNmmRaBRuLLeLZCex8eiZsbE8L
-	M/gQyi6uljz2sjN6cRFt8G1ve6Y0=
-X-Google-Smtp-Source: AGHT+IFdJFcl/SekdaJH+/L4KOclnX+rJ0Kbf80hXyVdh/bz4CV/ejFTQkgi9XmXAQjX0FJCQ+yCTkyB9cnpDtcMmME=
-X-Received: by 2002:a17:90a:7186:b0:29b:ff24:4426 with SMTP id
- i6-20020a17090a718600b0029bff244426mr1061401pjk.2.1710324916981; Wed, 13 Mar
- 2024 03:15:16 -0700 (PDT)
+        bh=kheSY2qAqbE3EfWUfZ/cCoYdLw7ZBN3sckQtrZLqZmQ=;
+        b=iRcI1MuxtgiL1E0uBGaVKnPKV0FHtdWzb3PLyLLBB+r5xRnoa3PYPEB2jPWSuOF1M2
+         Qb0uMt4nJBtMqojx39VPY/xKzKddrXyDlD6XZp4MEHQUAeEUdok4WvdekyDjjUNuaFyg
+         G6OaVspWO3akCTqMEoobOXWjbFGnuAmro2apA1BETr5YXaST/MrnsG8o/HgtxeOgrPLQ
+         iL3BtE5EUGBcX/WXkEwQv6c1PNNtzM5sJK6VKPF9CQOHrevR4m3//Gz0rjIBYkNYIj13
+         7EJcM8kB6mmzy7r7b63M3gjFMBd94AeHAu6+L44s6EJb8z2kiO8JIHN41RKxAG5Uf8A9
+         DBiw==
+X-Forwarded-Encrypted: i=1; AJvYcCXE/AMqyOIDiH14XLshPQWYiZ0x6+pMpOdTxtXu8w8atrx/k7TDAO6/m0Y+YK2G7Cre+Tsc6ecOv1LJ9xvil1XFnPoyCPqkB53s4JiV
+X-Gm-Message-State: AOJu0YwIzQx7b2nmP9iWRaT8d9l8u32JpkNu8bgCgISw21sY5V+Ymd7g
+	JH6LH8UD4jDAan/jY+VxF51ksJfwWSfrkdmrAktoMX5On7A34bpu
+X-Google-Smtp-Source: AGHT+IFSt3/f3TSk6zw5n5Q8Lw6ZL0o9c38dSklyPWwS/Cvsr/znwMlO8pvtoidezN3tn4MCQmxkLg==
+X-Received: by 2002:a5d:5646:0:b0:33e:be35:d459 with SMTP id j6-20020a5d5646000000b0033ebe35d459mr110131wrw.48.1710324915413;
+        Wed, 13 Mar 2024 03:15:15 -0700 (PDT)
+Received: from gmail.com (1F2EF295.nat.pool.telekom.hu. [31.46.242.149])
+        by smtp.gmail.com with ESMTPSA id p12-20020adf9d8c000000b0033cf60e268fsm11324713wre.116.2024.03.13.03.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 03:15:14 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Wed, 13 Mar 2024 11:15:12 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Sandipan Das <sandipan.das@amd.com>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	x86@kernel.org, peterz@infradead.org, mingo@redhat.com,
+	acme@kernel.org, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	namhyung@kernel.org, adrian.hunter@intel.com, tglx@linutronix.de,
+	bp@alien8.de, eranian@google.com, irogers@google.com,
+	mario.limonciello@amd.com, ravi.bangoria@amd.com,
+	ananth.narayan@amd.com
+Subject: Re: [PATCH v3 1/3] perf/x86/amd/lbr: Use freeze based on availability
+Message-ID: <ZfF8sIol5xQcJM9F@gmail.com>
+References: <cover.1706526029.git.sandipan.das@amd.com>
+ <12f378d5c9459e765c6c3a14b092e6f91da596e3.1706526029.git.sandipan.das@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307-sdma_upstream-v2-0-e97305a43cf5@nxp.com> <20240307-sdma_upstream-v2-4-e97305a43cf5@nxp.com>
-In-Reply-To: <20240307-sdma_upstream-v2-4-e97305a43cf5@nxp.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Wed, 13 Mar 2024 07:15:04 -0300
-Message-ID: <CAOMZO5ARM2pS93jLjpYZRfLU-tohuDXUZxDrWFjvVBGtH2t_aQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] dmaengine: imx-sdma: Add i2c dma support
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	NXP Linux Team <linux-imx@nxp.com>, dmaengine@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	imx@lists.linux.dev, Robin Gong <yibin.gong@nxp.com>, 
-	Clark Wang <xiaoning.wang@nxp.com>, Joy Zou <joy.zou@nxp.com>, 
-	Daniel Baluta <daniel.baluta@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12f378d5c9459e765c6c3a14b092e6f91da596e3.1706526029.git.sandipan.das@amd.com>
 
-On Thu, Mar 7, 2024 at 2:33=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
->
-> From: Robin Gong <yibin.gong@nxp.com>
->
-> New sdma script (sdma-6q: v3.5, sdma-7d: v4.5) support i2c at imx8mp and
 
-v3.5/ v4.5 is from 2019, so not "new".
-https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git=
-/commit/imx/sdma/sdma-imx6q.bin?id=3D55edf5202154de59ee1c6a5b6b6ba6fa545715=
-15
+* Sandipan Das <sandipan.das@amd.com> wrote:
 
-I think you meant  v3.6/v4.6 that Joy Zou has just submitted:
+> Currently, it is assumed that LBR Freeze is supported on all processors
+> which have CPUID leaf 0x80000022[EAX] bit 1 set. This is incorrect as
 
-https://lore.kernel.org/linux-firmware/20240313071332.1784885-1-joy.zou@nxp=
-com/T/#u
+That's X86_FEATURE_AMD_LBR_V2, right? Should probably be mentioned in the 
+changelog.
+
+> the feature availability is additionally dependent on CPUID leaf 
+> 0x80000022[EAX] bit 2 being set which may not be set for all Zen 4 
+> processors. Define a new feature bit for LBR and PMC freeze and set the 
+> freeze enable bit (FLBRI) in DebugCtl (MSR 0x1d9) conditionally.
+
+What happens on such Zen 4 CPUs that don't support LBR Freeze? Does the CPU 
+just ignore it, or something worse?
+
+> It should still be possible to use LBR without freeze for profile-guided
+> optimization of user programs by using an user-only branch filter during
+> profiling. When the user-only filter is enabled, branches are no longer
+> recorded after the transition to CPL 0 upon PMI arrival. When branch
+> entries are read in the PMI handler, the branch stack does not change.
+> 
+> E.g.
+> 
+>   $ perf record -j any,u -e ex_ret_brn_tkn ./workload
+> 
+> Since the feature bit is visible under flags in /proc/cpuinfo, it can be 
+> used to determine the feasibility of use-cases which require LBR Freeze 
+> to be supported by the hardware such as profile-guided optimization of 
+> kernels.
+
+Sounds good to me.
+
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 4af140cf5719..e47ea31b019d 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -97,7 +97,7 @@
+>  #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
+>  #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
+>  #define X86_FEATURE_AMD_LBR_V2		( 3*32+17) /* AMD Last Branch Record Extension Version 2 */
+> -/* FREE, was #define X86_FEATURE_LFENCE_RDTSC		( 3*32+18) "" LFENCE synchronizes RDTSC */
+> +#define X86_FEATURE_AMD_LBR_PMC_FREEZE	( 3*32+18) /* AMD LBR and PMC Freeze */
+>  #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
+>  #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
+>  #define X86_FEATURE_ALWAYS		( 3*32+21) /* "" Always-present feature */
+
+Could you please port this to the latest upstream kernel? The 3*32+18 slot 
+is now used for another purpose, and we need to define a new synthethic 
+CPUID word, word 21 if I'm counting it right.
+
+Don't forget to increase NCAPINTS from 21 to 22, and consider the fixed 
+asserts in the x86_bug_flags[] definitions in <asm/cpufeature.h>, and the 
+asserts in <asm/disabled-features.h> and <asm/required-features.h>. This 
+new word should probably be added in a separate preparatory patch.
+
+Thanks,
+
+	Ingo
 
