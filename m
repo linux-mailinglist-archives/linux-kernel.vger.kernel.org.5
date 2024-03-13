@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-101858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65DAE87AC34
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:01:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B5A87AC36
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8C2728DF30
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:01:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3A7E1F280A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC34604B8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BE7604B6;
 	Wed, 13 Mar 2024 16:38:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RoeXHWXP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R5/4Z7WX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5442B7602C;
-	Wed, 13 Mar 2024 16:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003A876046;
+	Wed, 13 Mar 2024 16:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347896; cv=none; b=ciM7SJcyBdVjuuEXzaHPIDViYZ4wnPUnrmBDm8BYTSrG5e/ucWh3fiNamE9fhDXVUyKBVZENhzbHql+z9JQY3cy23ERDBj9EIOKLxZ8tysaunVvF9Px9W50X8TzMdboVgJprMXL5I7BIz3js5uT2IFb6q6qq63COp6H0q24NG6Y=
+	t=1710347897; cv=none; b=WIw+YXLt4iwD5/8cz5Lub72eaLm6J5FmA+V+oUltaFsJ1LxfFCAEhGLg/nZv/ZBu+nMEaB3NFxfkEgYET6VgqVe1J1ySbepo2araFaPLMsk+3CRIOv+Icf28rhbDKpIwzWICbp35tLxmIdddDzUH/BDaqe8Vzbxf3obRmC+OkXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347896; c=relaxed/simple;
-	bh=uys9znSgCeHdgzitYvSe3FISZB4ZDmHwLt7pJPKCqpk=;
+	s=arc-20240116; t=1710347897; c=relaxed/simple;
+	bh=jF/IvEEKsyPeFj7S+JTy2wNR+BHVPZyVTF4Bd9/eYCc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e3m3GOKtvxbYeLxtqpYCoHlsGR+gstsesSxsl9YxO4CNClENHTdcGtriqQj7Ynz7yt6weSGX5dtMVPEt2vDELrfRKTb3eswNA6VBRryHfQ6jtD5GVkGUVVViQyX7gfeX/LlpUw9eOjeS8j61wYC+21axfVqpiPCMz0XAavFFz+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RoeXHWXP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7BC3C433C7;
-	Wed, 13 Mar 2024 16:38:14 +0000 (UTC)
+	 MIME-Version; b=ETcNJaarEFhM7l0x1SYQSx/35yFr2w88ZsePPdSqmcdE66N2tLYg6DPd6Ac4dJu71DhggZG1dxlyYPOEhAYxgdlKq8BterHaXzS/rsq4CGkm+50SgzfFd+d93qjunyldWUWkmsT/PPJt1G9G8wSg87u5ZFg+yNB5TmASJ6glzqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R5/4Z7WX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2442AC43394;
+	Wed, 13 Mar 2024 16:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347895;
-	bh=uys9znSgCeHdgzitYvSe3FISZB4ZDmHwLt7pJPKCqpk=;
+	s=k20201202; t=1710347896;
+	bh=jF/IvEEKsyPeFj7S+JTy2wNR+BHVPZyVTF4Bd9/eYCc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RoeXHWXPeOzN7sF+8vM/ZIDj115CSlP4BeIcnBFFDLz7WA+XQdfeonX3rqkwtJYBx
-	 F2eS3JLffeU6TyYE823k+Qo0uUJpIjDCdxMatthHrS9s9hWwl1YdPijVIWbQotxkPI
-	 KJ1lFG+rFBaYsNH6//EqQUETjnVErDgXtlGp2Yk9Q9f/241k3mEMA9d16Odyg5kuyi
-	 AAXE1TXs17tp+DZYnnADL4rIvjir3slJLJT0LX59WC/9xC44ZISv8DekuuPK5NUDZw
-	 QP5Ei7qU/woLFyOVWMciUn/fVcp44SP5XkVpYaq3wxxK4xxpfiLvsPKgKmMotJGXpl
-	 ZrmGu5yor9pdQ==
+	b=R5/4Z7WX8RZ0WjKf8iuYlmGSHIZFJ5qcSGgknIySe3QpKUiFlM63pXcH7WqQP10lk
+	 gLg2lZH2wRrRhtesKbwN7RDpm6pALIuBRWKf7aPEb/8QSiTzH5MEetG2X2dEr/Yv1Y
+	 eB6X+NjhE9zMDP0C50oBJAPRV13/e+kv5Tp1omX+xT7/wxvEfb82JTf57spqFqp/iG
+	 aWGrzutxUfO5VUdhkaN13jwye5qhF7Ll+ISgUligJdkwFRTYg+0jbTlTLLg80c2SZy
+	 bBwVb85sQ5DcvCqC7dmilEwAojg7JdLuBrwjnBFyTv3hb3bWPLITitFakmZ0GqMBfP
+	 SwDvYB7K27+6w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Oleg Nesterov <oleg@redhat.com>,
-	Dylan Hatch <dylanbhatch@google.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 55/60] exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)
-Date: Wed, 13 Mar 2024 12:37:02 -0400
-Message-ID: <20240313163707.615000-56-sashal@kernel.org>
+Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 6.6 56/60] x86/mmio: Disable KVM mitigation when X86_FEATURE_CLEAR_CPU_BUF is set
+Date: Wed, 13 Mar 2024 12:37:03 -0400
+Message-ID: <20240313163707.615000-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -70,62 +68,60 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 
-[ Upstream commit c1be35a16b2f1fe21f4f26f9de030ad6eaaf6a25 ]
+commit e95df4ec0c0c9791941f112db699fae794b9862a upstream.
 
-After the recent changes nobody use siglock to read the values protected
-by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
-update the comment.
+Currently MMIO Stale Data mitigation for CPUs not affected by MDS/TAA is
+to only deploy VERW at VMentry by enabling mmio_stale_data_clear static
+branch. No mitigation is needed for kernel->user transitions. If such
+CPUs are also affected by RFDS, its mitigation may set
+X86_FEATURE_CLEAR_CPU_BUF to deploy VERW at kernel->user and VMentry.
+This could result in duplicate VERW at VMentry.
 
-With this patch only __exit_signal() and thread_group_start_cputime() take
-stats_lock under siglock.
+Fix this by disabling mmio_stale_data_clear static branch when
+X86_FEATURE_CLEAR_CPU_BUF is enabled.
 
-Link: https://lkml.kernel.org/r/20240123153359.GA21866@redhat.com
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/exit.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 21a59a6e1f2e8..1867d420c36c4 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1148,17 +1148,14 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
- 		 * and nobody can change them.
- 		 *
- 		 * psig->stats_lock also protects us from our sub-threads
--		 * which can reap other children at the same time. Until
--		 * we change k_getrusage()-like users to rely on this lock
--		 * we have to take ->siglock as well.
-+		 * which can reap other children at the same time.
- 		 *
- 		 * We use thread_group_cputime_adjusted() to get times for
- 		 * the thread group, which consolidates times for all threads
- 		 * in the group including the group leader.
- 		 */
- 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
--		spin_lock_irq(&current->sighand->siglock);
--		write_seqlock(&psig->stats_lock);
-+		write_seqlock_irq(&psig->stats_lock);
- 		psig->cutime += tgutime + sig->cutime;
- 		psig->cstime += tgstime + sig->cstime;
- 		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
-@@ -1181,8 +1178,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
- 			psig->cmaxrss = maxrss;
- 		task_io_accounting_add(&psig->ioac, &p->ioac);
- 		task_io_accounting_add(&psig->ioac, &sig->ioac);
--		write_sequnlock(&psig->stats_lock);
--		spin_unlock_irq(&current->sighand->siglock);
-+		write_sequnlock_irq(&psig->stats_lock);
- 	}
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 17eb4d76e3a53..19256accc0784 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -422,6 +422,13 @@ static void __init mmio_select_mitigation(void)
+ 	if (boot_cpu_has_bug(X86_BUG_MDS) || (boot_cpu_has_bug(X86_BUG_TAA) &&
+ 					      boot_cpu_has(X86_FEATURE_RTM)))
+ 		setup_force_cpu_cap(X86_FEATURE_CLEAR_CPU_BUF);
++
++	/*
++	 * X86_FEATURE_CLEAR_CPU_BUF could be enabled by other VERW based
++	 * mitigations, disable KVM-only mitigation in that case.
++	 */
++	if (boot_cpu_has(X86_FEATURE_CLEAR_CPU_BUF))
++		static_branch_disable(&mmio_stale_data_clear);
+ 	else
+ 		static_branch_enable(&mmio_stale_data_clear);
  
- 	if (wo->wo_rusage)
+@@ -498,8 +505,11 @@ static void __init md_clear_update_mitigation(void)
+ 		taa_mitigation = TAA_MITIGATION_VERW;
+ 		taa_select_mitigation();
+ 	}
+-	if (mmio_mitigation == MMIO_MITIGATION_OFF &&
+-	    boot_cpu_has_bug(X86_BUG_MMIO_STALE_DATA)) {
++	/*
++	 * MMIO_MITIGATION_OFF is not checked here so that mmio_stale_data_clear
++	 * gets updated correctly as per X86_FEATURE_CLEAR_CPU_BUF state.
++	 */
++	if (boot_cpu_has_bug(X86_BUG_MMIO_STALE_DATA)) {
+ 		mmio_mitigation = MMIO_MITIGATION_VERW;
+ 		mmio_select_mitigation();
+ 	}
 -- 
 2.43.0
 
