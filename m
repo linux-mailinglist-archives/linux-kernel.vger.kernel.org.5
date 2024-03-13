@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-101857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 757A387AC31
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:01:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65DAE87AC34
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12F1C1F27D59
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8C2728DF30
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB07876023;
-	Wed, 13 Mar 2024 16:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC34604B8;
+	Wed, 13 Mar 2024 16:38:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GN4wlVke"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RoeXHWXP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092AC74E27;
-	Wed, 13 Mar 2024 16:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5442B7602C;
+	Wed, 13 Mar 2024 16:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347895; cv=none; b=OSmZH1NaG3d6Knb71dnj8OLk+3e2q0uS3t9/9KLAdVoq5q/bQ7rtaKmGVrK/F7fTY8iE2sBITGU7GGPD6ZuwZwGkYh6GAdDqc1H0R2TaC9hq/lWs4ctbIcahYXhvCWsVF9Q+GcjcOPEJXYsHgJW1TG2LwC6gP9FDTT8chwjpxvg=
+	t=1710347896; cv=none; b=ciM7SJcyBdVjuuEXzaHPIDViYZ4wnPUnrmBDm8BYTSrG5e/ucWh3fiNamE9fhDXVUyKBVZENhzbHql+z9JQY3cy23ERDBj9EIOKLxZ8tysaunVvF9Px9W50X8TzMdboVgJprMXL5I7BIz3js5uT2IFb6q6qq63COp6H0q24NG6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347895; c=relaxed/simple;
-	bh=6tRD9x34ZxPa5AewGiOh/lkWk4oU/IxiNHssuheXCb8=;
+	s=arc-20240116; t=1710347896; c=relaxed/simple;
+	bh=uys9znSgCeHdgzitYvSe3FISZB4ZDmHwLt7pJPKCqpk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jde6uDnfADvJHi7rWtXKeg/TTMQlYZY7vaGN/NfMBhA94EwvLwWuh7sfHXLRSeG9whug8ENK/UHqdrf/pIOKVfj9GQbqIra5NWEhwKX0IcjfozLzbLihQRMf01T7w8XX+Ou8AyEJBr1V1ApUpixJG0OgPN/F+e0WtFay0muSRXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GN4wlVke; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B91B2C433F1;
-	Wed, 13 Mar 2024 16:38:13 +0000 (UTC)
+	 MIME-Version; b=e3m3GOKtvxbYeLxtqpYCoHlsGR+gstsesSxsl9YxO4CNClENHTdcGtriqQj7Ynz7yt6weSGX5dtMVPEt2vDELrfRKTb3eswNA6VBRryHfQ6jtD5GVkGUVVViQyX7gfeX/LlpUw9eOjeS8j61wYC+21axfVqpiPCMz0XAavFFz+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RoeXHWXP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7BC3C433C7;
+	Wed, 13 Mar 2024 16:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347894;
-	bh=6tRD9x34ZxPa5AewGiOh/lkWk4oU/IxiNHssuheXCb8=;
+	s=k20201202; t=1710347895;
+	bh=uys9znSgCeHdgzitYvSe3FISZB4ZDmHwLt7pJPKCqpk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GN4wlVkeJeUomMGxJEdmpD7wzL1K1C6c5mkMfDz7iUB3UH9nVsAypAuRCWLsB/UtI
-	 DyIySslwXtmuoFZ3SWKPDfN4nQ84uWDa+pIiXUVQsLWh74Y6X5dzQCGaVuHy5qp3GJ
-	 K/cXMksGCwbDqagbdI/G2cmh5Z3pvUtiCAMfCMbJs8QVIJ2G3unxGeL3D0xup76xH8
-	 73Li786migOwRkVZN+XOaeX3GsNpW6Pdaum55gr9CGNwjiCjpYI2/OwrnEp/OMPCte
-	 +3UrEZxRQ5uKVdAEL1FOlqyC4c3ED4sUqPiE9jJg8Ur7fmMmohbf9AqdYCwwIx7DhZ
-	 2uvxdX0WxyhXA==
+	b=RoeXHWXPeOzN7sF+8vM/ZIDj115CSlP4BeIcnBFFDLz7WA+XQdfeonX3rqkwtJYBx
+	 F2eS3JLffeU6TyYE823k+Qo0uUJpIjDCdxMatthHrS9s9hWwl1YdPijVIWbQotxkPI
+	 KJ1lFG+rFBaYsNH6//EqQUETjnVErDgXtlGp2Yk9Q9f/241k3mEMA9d16Odyg5kuyi
+	 AAXE1TXs17tp+DZYnnADL4rIvjir3slJLJT0LX59WC/9xC44ZISv8DekuuPK5NUDZw
+	 QP5Ei7qU/woLFyOVWMciUn/fVcp44SP5XkVpYaq3wxxK4xxpfiLvsPKgKmMotJGXpl
+	 ZrmGu5yor9pdQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	Dylan Hatch <dylanbhatch@google.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 54/60] selftests: mptcp: decrease BW in simult flows
-Date: Wed, 13 Mar 2024 12:37:01 -0400
-Message-ID: <20240313163707.615000-55-sashal@kernel.org>
+Subject: [PATCH 6.6 55/60] exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)
+Date: Wed, 13 Mar 2024 12:37:02 -0400
+Message-ID: <20240313163707.615000-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -69,51 +70,62 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+From: Oleg Nesterov <oleg@redhat.com>
 
-[ Upstream commit 5e2f3c65af47e527ccac54060cf909e3306652ff ]
+[ Upstream commit c1be35a16b2f1fe21f4f26f9de030ad6eaaf6a25 ]
 
-When running the simult_flow selftest in slow environments -- e.g. QEmu
-without KVM support --, the results can be unstable. This selftest
-checks if the aggregated bandwidth is (almost) fully used as expected.
+After the recent changes nobody use siglock to read the values protected
+by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
+update the comment.
 
-To help improving the stability while still keeping the same validation
-in place, the BW and the delay are reduced to lower the pressure on the
-CPU.
+With this patch only __exit_signal() and thread_group_start_cputime() take
+stats_lock under siglock.
 
-Fixes: 1a418cb8e888 ("mptcp: simult flow self-tests")
-Fixes: 219d04992b68 ("mptcp: push pending frames when subflow has free space")
-Cc: stable@vger.kernel.org
-Suggested-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Link: https://lore.kernel.org/r/20240131-upstream-net-20240131-mptcp-ci-issues-v1-6-4c1c11e571ff@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lkml.kernel.org/r/20240123153359.GA21866@redhat.com
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/mptcp/simult_flows.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/exit.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/net/mptcp/simult_flows.sh b/tools/testing/selftests/net/mptcp/simult_flows.sh
-index 9096bf5794888..25693b37f820d 100755
---- a/tools/testing/selftests/net/mptcp/simult_flows.sh
-+++ b/tools/testing/selftests/net/mptcp/simult_flows.sh
-@@ -302,12 +302,12 @@ done
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 21a59a6e1f2e8..1867d420c36c4 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -1148,17 +1148,14 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+ 		 * and nobody can change them.
+ 		 *
+ 		 * psig->stats_lock also protects us from our sub-threads
+-		 * which can reap other children at the same time. Until
+-		 * we change k_getrusage()-like users to rely on this lock
+-		 * we have to take ->siglock as well.
++		 * which can reap other children at the same time.
+ 		 *
+ 		 * We use thread_group_cputime_adjusted() to get times for
+ 		 * the thread group, which consolidates times for all threads
+ 		 * in the group including the group leader.
+ 		 */
+ 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+-		spin_lock_irq(&current->sighand->siglock);
+-		write_seqlock(&psig->stats_lock);
++		write_seqlock_irq(&psig->stats_lock);
+ 		psig->cutime += tgutime + sig->cutime;
+ 		psig->cstime += tgstime + sig->cstime;
+ 		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
+@@ -1181,8 +1178,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+ 			psig->cmaxrss = maxrss;
+ 		task_io_accounting_add(&psig->ioac, &p->ioac);
+ 		task_io_accounting_add(&psig->ioac, &sig->ioac);
+-		write_sequnlock(&psig->stats_lock);
+-		spin_unlock_irq(&current->sighand->siglock);
++		write_sequnlock_irq(&psig->stats_lock);
+ 	}
  
- setup
- run_test 10 10 0 0 "balanced bwidth"
--run_test 10 10 1 50 "balanced bwidth with unbalanced delay"
-+run_test 10 10 1 25 "balanced bwidth with unbalanced delay"
- 
- # we still need some additional infrastructure to pass the following test-cases
--run_test 30 10 0 0 "unbalanced bwidth"
--run_test 30 10 1 50 "unbalanced bwidth with unbalanced delay"
--run_test 30 10 50 1 "unbalanced bwidth with opposed, unbalanced delay"
-+run_test 10 3 0 0 "unbalanced bwidth"
-+run_test 10 3 1 25 "unbalanced bwidth with unbalanced delay"
-+run_test 10 3 25 1 "unbalanced bwidth with opposed, unbalanced delay"
- 
- mptcp_lib_result_print_all_tap
- exit $ret
+ 	if (wo->wo_rusage)
 -- 
 2.43.0
 
