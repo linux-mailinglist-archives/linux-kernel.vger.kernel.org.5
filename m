@@ -1,166 +1,169 @@
-Return-Path: <linux-kernel+bounces-102320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CD8687B1C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:25:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571CB87B091
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86816B24A2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:56:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB36A1F22A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93C9142636;
-	Wed, 13 Mar 2024 17:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41889143C62;
+	Wed, 13 Mar 2024 17:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xsUiuoHs"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Pt4Xvk6Z"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022131420CC
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D944D58AB8
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710352441; cv=none; b=AnFFtD2J6gKECudyJdikbQa1ZzzMJlxgohcJIUL/jMAI/0kAtfqOQJdORBqO6Y5WFvvHyfaU9MUwdlGYw1u6rv+tR8HOcJGhOwVl2L7UdgfyaPrvgZ42qbvI5AKn2CJpVmzlDZtxLRXICksrlQYcaptpJoe2t3MHe0W4aImosxM=
+	t=1710352503; cv=none; b=edsVSE5Vap8odPOhL0MwOwUJIVNJ/YxMLzwVBrTn9WgcTKCS5/G4PB+LOO0zyOm/bF2rPINB2gBgCFeaR4savtakm+OAz5B9vNHfikg5ezLQtd77ZriCMisURaxh1Qx4Dmh4sRCcZKJVhDaMFHbTl08zJsCiT2fo6cfnxCGCWcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710352441; c=relaxed/simple;
-	bh=qm9/pAfQvWiGqGVOwNxlH8gFFbT7JVKsj7HqKQPmV6U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Z28TSYwXjrQmQmywPalyNlvtlZ76rJUryq9pTaY57fsJNY0sk26MIsUg2t/7xn4qtpxtYbJ8k5arWpwSKdxrZ/c2ftpCUo4upkitptysEZqN4fJbPzS2Ubi+KFATlIRPo8RwzW5KwdF7/pBVxcjefIrn3RDLFMkfev4vhU6Uhxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xsUiuoHs; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41312232c7aso7790605e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:53:59 -0700 (PDT)
+	s=arc-20240116; t=1710352503; c=relaxed/simple;
+	bh=cwRbPymiLOyZlyDmK8zPSK9UFQ0A0ibmMVEQvH7Wa+Y=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=dsi9rpSlLIgOVIynTwLdCZKLV+wwWCGc7mZXLdcYI8EtMAhnTlzX9/M7V+gNjC+omb/umNBd2oeRerTkTCgRdwWpnbYtvHNo+78Q5HlJAzG4EOnODwl+qrbJDuRTHPvlthlAZfhAwcn1D+wZSIjaj3MEZ9ZV/y0j0R8laJNg+7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--eranian.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Pt4Xvk6Z; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--eranian.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a4ee41269so2671277b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:55:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710352438; x=1710957238; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KM81aTvQ9Jln3M+e1NoWl9j0TAIn4t8Grh3IDfzWXRI=;
-        b=xsUiuoHsQ8qdZC29yszSYghfj0LEfLH22+tXkaGaezo+dT4C22j4JOb2vWwqLMTSc8
-         o7tQrYV3nCbyzNNqQnal3m2Y+3Qks8enkUuzc6H/NtegPgnqB8NbeHfAe7dgEVlGFSwR
-         rcZKfgpRLSO+cCMqv7o4ljZkoF9Emi/uvsxvwaBz+Us8OII6wv70PZedOmVhW/qYtuq4
-         5NHgoOgaV95kVPl2ugRVjltbhi+WUXG1fgLm/m1PpTWtygKvQRULAXkF7JeGLgIEgWGl
-         Jouk2yen8u+dtStVxEe8JPUhL1D195MhejhHkrW7WWVkyo0WGkL5BTKwDF9brU08eZex
-         FHbw==
+        d=google.com; s=20230601; t=1710352501; x=1710957301; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TF6nSMnYxDunkikTDjHzvblyRSJb/thPi17ukSIIAXQ=;
+        b=Pt4Xvk6ZBM44LlEworphKc8xs/rWNmbe4F9EDGmK0ikskq8YK7fVRHBeGZ6a4201SG
+         Jgwar0ivx4YgPfeAQIU5OpdFndGFaqASAOz78ysXRxcvRK0rhrgm56xS4bhQOZBdLhxZ
+         pax2GWJRDwd5K3nxBRjh2OVVSyeSIMxC+gPnPkgdxlAOexZ3fFhWC10nE0lmqpjYK4Hj
+         GfQmmbKO911O0JFmistQhNv0A8paBchp+LGvsn6RG1qVokiJFCFBV0MfYuBrb6gFI+Z3
+         uaxl9EcgNL6sItBAQGgfoz96rFS7BXcY/xognU8vZs1eY/NawTy3iSAvkLadeUQq/KVX
+         kt3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710352438; x=1710957238;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KM81aTvQ9Jln3M+e1NoWl9j0TAIn4t8Grh3IDfzWXRI=;
-        b=P5SpC9iOmH28A/wk/VIakK7Ry0eeJQLxrcv/GAJM7+HbonPixsEOb110K8qzYWr814
-         PgiKuD/upQ+P9NL/qsWswI1/9WM6NTrGhl0k/qynvlIcCFGYHr1ZpJZ0zDU0ZVRYh8W9
-         BZ3LIJPLwwaKIRcWDQrKx182tB3HHqiXLzmTmTSE8vPj7dLq9qYv5yjTwP4qPtlhlP8W
-         UlekokX29RuumoKuWRwMo+0rb/4MveAnTbro9xpMLSqWuHfyCudRbERs6fBPFYmPhYG9
-         vYVjUz5W7A5CCnf19vrIpTzylq4zYytQcrt+dCDBBNjOw3nmMg5PWGDZedfgMfXL0VAx
-         yN2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVkqSke2/xhexckbUR71mwS08ifArwUQTzDn4sHQzS6srugQiczk111w/cESLaEHpyeb0Xaw+Fqv0vnKz2G4gzy4SrKB23UeSFfgJVg
-X-Gm-Message-State: AOJu0Ywmh5hiJIAfHJg0Zj1Vo9vjclJA6SzVUvKy2vHY0lG9gLGlSuZ3
-	yTTsn8qzMgiZf6/spZsAIx+D5L/vaH9MPaHCRKyIIHU7goNULf+CXSwfxJWJ1Mk=
-X-Google-Smtp-Source: AGHT+IFTtMJXFD4nfwVNpeqI+VJeyy9Yl/WRTyR07tWESrF0UzfFkVMdcOIHRLR5tG8MzAvVKVrGSw==
-X-Received: by 2002:a5d:4105:0:b0:33d:eb13:9e27 with SMTP id l5-20020a5d4105000000b0033deb139e27mr2526935wrp.23.1710352438411;
-        Wed, 13 Mar 2024 10:53:58 -0700 (PDT)
-Received: from [127.0.0.1] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id u12-20020a5d6acc000000b0033e7a499deasm9914482wrw.109.2024.03.13.10.53.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 10:53:58 -0700 (PDT)
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date: Wed, 13 Mar 2024 17:53:53 +0000
-Subject: [PATCH v2 2/2] clk: qcom: camcc-x1e80100: Set titan_top_gdsc as
- the parent GDSC of subordinate GDSCs
+        d=1e100.net; s=20230601; t=1710352501; x=1710957301;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TF6nSMnYxDunkikTDjHzvblyRSJb/thPi17ukSIIAXQ=;
+        b=cseUboH575k8hjCLiOFXTLy/Y6wccxxiTdAvbZFVXwMDptCbM0tPmVJWqun9FBd57M
+         uqKiGwEygphI0Ftb9SuDhXIDwQCVBpfMC8WWPIlfQaD0xMl1YxkX62JT/tYBncz7nLcf
+         TtuOmebLy+Em4IiPX9ZU0JU3gdyl7CkNYMxfk4Ew2gqBGrRcsgBMJai5nOEidyFY4s3s
+         Z5s+G/sAlZP1O/k2+9rRS3H3ftyIRtMIccgDAylhzWj91sO0gIOENBA8mV0IcqA3rXNV
+         xL4cH4L3Hjm6vi80GZ0yKecIjuOQxpAn9BkCFyxIRxCGsfUnxfMrmC9jFiD8LA5enzYU
+         t7lg==
+X-Gm-Message-State: AOJu0Yxu0ovE6e2MMqLSiebRd/fZ+2OvzTdOiiQV16DOlx1EwQDjPRZ0
+	FIsaxkTq6JyWrkTTl5oGA7RBbZ58UrQIR8eeWRUmRnA8q2k+Dsj9Zcg3Wpw1qHQJMSjAzVnA1Kd
+	xSwV7RFtZ0U5V3CabEIRjQhzCjM6BHnnZN55bDgF1bCFsXu5QsDTb09u5f3rkjYAHe1LFFIe0eQ
+	MAsvI3qqIbcvEBg3E8ZCCxFhKUGmvGcR+SY18W5Bb5ktECvA==
+X-Google-Smtp-Source: AGHT+IHR438+/k/mtigktr29SR2OtJHKqSj3VsCXUx4RMCkxdP5JpMDHXhyL0jlbkDgq2zlvBMoxEjGZQ2DS
+X-Received: from uluru3.svl.corp.google.com ([2620:15c:2a3:200:a07a:f32f:fd84:7146])
+ (user=eranian job=sendgmr) by 2002:a05:690c:3392:b0:60a:e67:2ed0 with SMTP id
+ fl18-20020a05690c339200b0060a0e672ed0mr876765ywb.9.1710352500739; Wed, 13 Mar
+ 2024 10:55:00 -0700 (PDT)
+Date: Wed, 13 Mar 2024 10:54:53 -0700
+Message-Id: <20240313175453.433166-1-eranian@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240313-linux-next-camcc-fixes-v2-2-9426da94ae37@linaro.org>
-References: <20240313-linux-next-camcc-fixes-v2-0-9426da94ae37@linaro.org>
-In-Reply-To: <20240313-linux-next-camcc-fixes-v2-0-9426da94ae37@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, 
- Abel Vesa <abel.vesa@linaro.org>, Rajendra Nayak <quic_rjendra@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-X-Mailer: b4 0.13-dev-26615
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH] perf/amd/ibs: provide weights for all IBS op samples
+From: Stephane Eranian <eranian@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, namhyung@kernel.org, irogers@google.com, 
+	sandipan.das@amd.com, ravi.bangoria@amd.com, ananth.narayan@amd.com
+Content-Type: text/plain; charset="UTF-8"
 
-The Titan TOP GDSC is the parent GDSC for all other GDSCs in the CAMCC
-block. None of the subordinate blocks will switch on without the parent
-GDSC switched on.
+IBS Op provides instructions latencies for each uop sampled. The current
+code was only providing the weights only for loads. This is useful
+information for performance analysis. This patch modifies the logic to
+provide the weights for all uops.
 
-Fixes: 76126a5129b5 ("clk: qcom: Add camcc clock driver for x1e80100")
-Acked-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+$ perf record -a -W -c 100003 -e ibs_op/cnt_ctl=1/GH ....
+
+Signed-off-by: Stephane Eranian <eranian@google.com>
 ---
- drivers/clk/qcom/camcc-x1e80100.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/events/amd/ibs.c | 46 +++++++++++++++++++++++++++++----------
+ 1 file changed, 35 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/clk/qcom/camcc-x1e80100.c b/drivers/clk/qcom/camcc-x1e80100.c
-index 46bb225906bff..d421da57697a2 100644
---- a/drivers/clk/qcom/camcc-x1e80100.c
-+++ b/drivers/clk/qcom/camcc-x1e80100.c
-@@ -2212,6 +2212,8 @@ static struct clk_branch cam_cc_sfe_0_fast_ahb_clk = {
- 	},
- };
+diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
+index e91970b01d62..d2f4d3b19cf9 100644
+--- a/arch/x86/events/amd/ibs.c
++++ b/arch/x86/events/amd/ibs.c
+@@ -957,6 +957,28 @@ static __u64 perf_ibs_get_op_data2(struct perf_ibs_data *ibs_data,
+ 	return val;
+ }
  
-+static struct gdsc cam_cc_titan_top_gdsc;
++static void perf_ibs_parse_uop_latencies(__u64 sample_type,
++					 struct perf_ibs_data *ibs_data,
++					 struct perf_sample_data *data)
++{
++	union ibs_op_data op_data;
 +
- static struct gdsc cam_cc_bps_gdsc = {
- 	.gdscr = 0x10004,
- 	.en_rest_wait_val = 0x2,
-@@ -2221,6 +2223,7 @@ static struct gdsc cam_cc_bps_gdsc = {
- 		.name = "cam_cc_bps_gdsc",
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
-+	.parent = &cam_cc_titan_top_gdsc.pd,
- 	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
- };
++	/* latencies not requested by user */
++	if (!(sample_type & PERF_SAMPLE_WEIGHT_TYPE))
++		return;
++
++	op_data.val = ibs_data->regs[ibs_op_msr_idx(MSR_AMD64_IBSOPDATA)];
++
++	if (sample_type & PERF_SAMPLE_WEIGHT_STRUCT) {
++		data->weight.var1_dw = 0;
++		data->weight.var2_w = op_data.tag_to_ret_ctr;
++		data->weight.var3_w = op_data.comp_to_ret_ctr;
++	} else {
++		data->weight.full = op_data.tag_to_ret_ctr;
++	}
++	data->sample_flags |= PERF_SAMPLE_WEIGHT_TYPE;
++}
++
+ static void perf_ibs_parse_ld_st_data(__u64 sample_type,
+ 				      struct perf_ibs_data *ibs_data,
+ 				      struct perf_sample_data *data)
+@@ -980,17 +1002,15 @@ static void perf_ibs_parse_ld_st_data(__u64 sample_type,
+ 		data->sample_flags |= PERF_SAMPLE_DATA_SRC;
+ 	}
  
-@@ -2233,6 +2236,7 @@ static struct gdsc cam_cc_ife_0_gdsc = {
- 		.name = "cam_cc_ife_0_gdsc",
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
-+	.parent = &cam_cc_titan_top_gdsc.pd,
- 	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
- };
+-	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE && op_data3.dc_miss &&
+-	    data->data_src.mem_op == PERF_MEM_OP_LOAD) {
++	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE) {
+ 		op_data.val = ibs_data->regs[ibs_op_msr_idx(MSR_AMD64_IBSOPDATA)];
+-
+-		if (sample_type & PERF_SAMPLE_WEIGHT_STRUCT) {
+-			data->weight.var1_dw = op_data3.dc_miss_lat;
+-			data->weight.var2_w = op_data.tag_to_ret_ctr;
+-		} else if (sample_type & PERF_SAMPLE_WEIGHT) {
+-			data->weight.full = op_data3.dc_miss_lat;
++		if (op_data3.dc_miss && data->data_src.mem_op == PERF_MEM_OP_LOAD) {
++			if (sample_type & PERF_SAMPLE_WEIGHT_STRUCT) {
++				data->weight.var1_dw = op_data3.dc_miss_lat;
++			} else if (sample_type & PERF_SAMPLE_WEIGHT) {
++				data->weight.full = op_data3.dc_miss_lat;
++			}
+ 		}
+-		data->sample_flags |= PERF_SAMPLE_WEIGHT_TYPE;
+ 	}
  
-@@ -2245,6 +2249,7 @@ static struct gdsc cam_cc_ife_1_gdsc = {
- 		.name = "cam_cc_ife_1_gdsc",
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
-+	.parent = &cam_cc_titan_top_gdsc.pd,
- 	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
- };
+ 	if (sample_type & PERF_SAMPLE_ADDR && op_data3.dc_lin_addr_valid) {
+@@ -1121,8 +1141,12 @@ static int perf_ibs_handle_irq(struct perf_ibs *perf_ibs, struct pt_regs *iregs)
+ 		perf_sample_save_raw_data(&data, &raw);
+ 	}
  
-@@ -2257,6 +2262,7 @@ static struct gdsc cam_cc_ipe_0_gdsc = {
- 		.name = "cam_cc_ipe_0_gdsc",
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
-+	.parent = &cam_cc_titan_top_gdsc.pd,
- 	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
- };
+-	if (perf_ibs == &perf_ibs_op)
+-		perf_ibs_parse_ld_st_data(event->attr.sample_type, &ibs_data, &data);
++	if (perf_ibs == &perf_ibs_op) {
++		__u32 type = event->attr.sample_type;
++
++		perf_ibs_parse_uop_latencies(type, &ibs_data, &data);
++		perf_ibs_parse_ld_st_data(type, &ibs_data, &data);
++	}
  
-@@ -2269,6 +2275,7 @@ static struct gdsc cam_cc_sfe_0_gdsc = {
- 		.name = "cam_cc_sfe_0_gdsc",
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
-+	.parent = &cam_cc_titan_top_gdsc.pd,
- 	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
- };
- 
-
+ 	/*
+ 	 * rip recorded by IbsOpRip will not be consistent with rsp and rbp
 -- 
-2.44.0
+2.44.0.278.ge034bb2e1d-goog
 
 
