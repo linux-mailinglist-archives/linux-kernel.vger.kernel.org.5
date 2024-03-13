@@ -1,120 +1,121 @@
-Return-Path: <linux-kernel+bounces-101287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B58E487A51E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:42:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B7E87A51F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:42:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 717BB281C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:42:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD99D1C20F11
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB75225DE;
-	Wed, 13 Mar 2024 09:41:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QMB0PnMI"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F75A20DDC;
-	Wed, 13 Mar 2024 09:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86141210E9;
+	Wed, 13 Mar 2024 09:42:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F8024A1F;
+	Wed, 13 Mar 2024 09:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710322911; cv=none; b=qK+mS02K0U9RBrWh9XuNb+FzB+aWDKj5bsscKf0eWfdj8JOJ5DPK0yKKuwtl1RS5eFkMvQaU3euUdJLUoK09T1LHgSzZ7PForQWm4p8gWBNT3Eu2zz6L8g7vNQTi+1WgV60AZE+WbkPZYRAvzQur5sk/p5w1LHzjEScMsyfx/xA=
+	t=1710322921; cv=none; b=kmPTwIFP2KW6+Q8gS+5JqphSjrrHMYjgOcouQ05XOQNLaslW4gZZgU6zTNEq5ZSZQwRuIsZ3XNXpZ3cwIweorGj4MyOQTk55HqEEKoViAAN2VEjQcEEj97F/HUyxyV6t2TOCzVRoTOS+pMZzFYFoccJi171Eg2UZwhhaIp5iFjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710322911; c=relaxed/simple;
-	bh=Iy33NOA8FEicl4HdVCTiTZ1Jnm6pT2oK0Zfr+wPVLGU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LXT10y5Mt5L/0DwVVeehkapqOuV/ztzL9UJPLqZiZsd30MPDfge1Oe3vtkVcVX71UEcWfuXtK3aI8w0smjbkx4djt18fOhN4jvkOYSzlCnQ8a5HxsXUzmeoYIR+sAjkGNY9zKx4nYeIemd74qne3dWXQU/MJcSZT1s+abh/9GaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QMB0PnMI; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4132600824bso5610685e9.2;
-        Wed, 13 Mar 2024 02:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710322908; x=1710927708; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nqT6MbYIUXhVn1ev/HIV8qz1Uih12KTCzkmhMV6SWPg=;
-        b=QMB0PnMI9GjqYeRiGwma3mODigfSyzjeYEs2N1DLTd2lo81g+HajqZKBxyjTfFC0PB
-         BeofCcvF4XAIxlR8gzjcjx9H1nUwd6OJgaO/mDLDcmwwGMBajv0x3ekgR3ITOjGxBNXN
-         Q56Cm8WMMw/198y+xCOerip2ANEjRTJLqT6LLj1guTaIrobgTo1HIbVZVeM9TRMby3RZ
-         gm18IrPKGqRcgnI9TyNN9CQZ16b/hiTLE9j7w8N5j6xkhcVBaRLrKo9uXXzaVtpybTu5
-         ia2jHrB9CoSeScfW0XkGL/Jl5Bw0c0/DbBdArZv7z2DJxUTrq5TLXgAE2/TyFDhQBjnJ
-         XnvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710322908; x=1710927708;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nqT6MbYIUXhVn1ev/HIV8qz1Uih12KTCzkmhMV6SWPg=;
-        b=WYc2hRoguqpYuoQiZIIjpRlzYRVka4CiZJFmyaXyYI2E2gAiuZs+d416f/l6iUFIxl
-         T9eOi33jpLPkUS8HUqBFzVgp8ahw9fiE30Oxxl70cp0aX+iQPl9OxhIWbk5VsMvwbq51
-         2UUCx2JlMTRY+kG/UYGOxjOyqJa3c+EtArrdUSBrt0FjG2Zo+qrlGNFBCKED4oT5m/0C
-         uF++kkWFcieuHXW/ru6EJWQjXoa7MxN+awBf0JqIx4EI1tQpjtBVlfdxwBFWFc98oNTr
-         Qj23EKlbLEUyFKBihNQqki4/GvRURFvZ6muTQsgMV9BrR1dcvjaOt0WHuyVFS4YsnY5m
-         AobQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX88x706dcV3KqpkxhGttEXnJS+F82tlBGs/FzEeoUZqb+7qIGAb+WBX7khamnSWnmlw5GFoZYXO0WnwzLIG0PE8KtunfGYEwwCCqQz3BToXO1Xcj5os8DXaClgHIsyq1XB
-X-Gm-Message-State: AOJu0YyxYfe7tKa5sZCpQld6B2NT9TDMHy3P5B1b0jghBDwCrT3qwQCm
-	BjHQ1WAvZ/swgLML+5zlx2kyL6jdoFiC3krXzol9bO9Z1+5OpNUz
-X-Google-Smtp-Source: AGHT+IG6Xo+xOpnJ7nktDyubCJL/FGt5e8kZ78wAlCMWt+JfD8mn5qZsmzaKSG5u1Tv3FzElNjGzqQ==
-X-Received: by 2002:a05:600c:538c:b0:413:e994:16dd with SMTP id hg12-20020a05600c538c00b00413e99416ddmr974339wmb.28.1710322907592;
-        Wed, 13 Mar 2024 02:41:47 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id h4-20020a05600c350400b00413177c3f1dsm1728584wmq.18.2024.03.13.02.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 02:41:46 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 13 Mar 2024 10:41:44 +0100
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, bpf@vger.kernel.org,
-	mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
-	oleg@redhat.com
-Subject: Re: [PATCH bpf-next 0/3] uprobes: two common case speed ups
-Message-ID: <ZfF02HCzYLcuwmw9@krava>
-References: <20240312210233.1941599-1-andrii@kernel.org>
+	s=arc-20240116; t=1710322921; c=relaxed/simple;
+	bh=0E+wY8cAtE6Az+PbtjplxiRyoa7X5nFl9m7Ia+hmBjo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DTIa+e4wogDsl9g3Cj2I6lBMAFBdusPFtBOJE0hqNty2SYe8wW1ttPh6TDITjkq2VbsN46qR+tw8QBUbIxrdQLSAvFT4WdZ7h1Ik45yEsVnKBWfH0Q4GnauNKV6XgWk4lkU9BFdMeTYen+N6FzS5wnSG7FwQxxlbFXnMKJxyOyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28E0A1007;
+	Wed, 13 Mar 2024 02:42:35 -0700 (PDT)
+Received: from [192.168.1.100] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 35BA63F73F;
+	Wed, 13 Mar 2024 02:41:56 -0700 (PDT)
+Message-ID: <0c503c64-133a-705f-9dc4-47c623dacd2c@arm.com>
+Date: Wed, 13 Mar 2024 09:41:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312210233.1941599-1-andrii@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] perf docs: arm_spe: Clarify more SPE requirements
+Content-Language: en-US
+To: Ian Rogers <irogers@google.com>
+Cc: linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-kernel@vger.kernel.org
+References: <20240312132508.423320-1-james.clark@arm.com>
+ <CAP-5=fWGrkjx1vz+2aQU0A+_B3d=nCtK9WBGiSPbDbUaTXR4pQ@mail.gmail.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <CAP-5=fWGrkjx1vz+2aQU0A+_B3d=nCtK9WBGiSPbDbUaTXR4pQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 02:02:30PM -0700, Andrii Nakryiko wrote:
-> This patch set implements two speed ups for uprobe/uretprobe runtime execution
-> path for some common scenarios: BPF-only uprobes (patches #1 and #2) and
-> system-wide (non-PID-specific) uprobes (patch #3). Please see individual
-> patches for details.
-> 
-> Given I haven't worked with uprobe code before, I'm unfamiliar with
-> conventions in this subsystem, including which kernel tree patches should be
-> sent to. For now I based all the changes on top of bpf-next/master, which is
-> where I tested and benchmarked everything anyways. Please advise what should
-> I use as a base for subsequent revision. Thanks.
-> 
-> Andrii Nakryiko (3):
->   uprobes: encapsulate preparation of uprobe args buffer
->   uprobes: prepare uprobe args buffer lazily
->   uprobes: add speculative lockless system-wide uprobe filter check
 
-nice cleanup and speed up, lgtm
 
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+On 12/03/2024 19:56, Ian Rogers wrote:
+> On Tue, Mar 12, 2024 at 6:25 AM James Clark <james.clark@arm.com> wrote:
+>>
+>> The question of exactly when KPTI needs to be disabled comes up a lot
+>> because it doesn't always need to be done. Add the relevant kernel
+>> function and some examples that describe the behavior.
+>>
+>> Also describe the interrupt requirement and that no error message will
+>> be printed if this isn't met.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+> 
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> 
+> Thanks,
+> Ian
+> 
 
-jirka
+Thanks for the review
 
-> 
->  kernel/trace/trace_uprobe.c | 103 ++++++++++++++++++++++--------------
->  1 file changed, 63 insertions(+), 40 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
+>> ---
+>>  tools/perf/Documentation/perf-arm-spe.txt | 12 +++++++++++-
+>>  1 file changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/Documentation/perf-arm-spe.txt b/tools/perf/Documentation/perf-arm-spe.txt
+>> index bf03222e9a68..0a3eda482307 100644
+>> --- a/tools/perf/Documentation/perf-arm-spe.txt
+>> +++ b/tools/perf/Documentation/perf-arm-spe.txt
+>> @@ -116,6 +116,15 @@ Depending on CPU model, the kernel may need to be booted with page table isolati
+>>  (kpti=off). If KPTI needs to be disabled, this will fail with a console message "profiling buffer
+>>  inaccessible. Try passing 'kpti=off' on the kernel command line".
+>>
+>> +For the full criteria that determine whether KPTI needs to be forced off or not, see function
+>> +unmap_kernel_at_el0() in the kernel sources. Common cases where it's not required
+>> +are on the CPUs in kpti_safe_list, or on Arm v8.5+ where FEAT_E0PD is mandatory.
+>> +
+>> +The SPE interrupt must also be described by the firmware. If the module is loaded and KPTI is
+>> +disabled (or isn't required to be disabled) but the SPE PMU still doesn't show in
+>> +/sys/bus/event_source/devices/, then it's possible that the SPE interrupt isn't described by
+>> +ACPI or DT. In this case no warning will be printed by the driver.
+>> +
+>>  Capturing SPE with perf command-line tools
+>>  ------------------------------------------
+>>
+>> @@ -199,7 +208,8 @@ Common errors
+>>
+>>   - "Cannot find PMU `arm_spe'. Missing kernel support?"
+>>
+>> -   Module not built or loaded, KPTI not disabled (see above), or running on a VM
+>> +   Module not built or loaded, KPTI not disabled, interrupt not described by firmware,
+>> +   or running on a VM. See 'Kernel Requirements' above.
+>>
+>>   - "Arm SPE CONTEXT packets not found in the traces."
+>>
+>> --
+>> 2.34.1
+>>
 > 
 
