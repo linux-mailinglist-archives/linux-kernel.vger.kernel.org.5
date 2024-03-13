@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-101774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FEC187AB75
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:40:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0556A87AB77
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:41:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A19931C21C32
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:40:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02AB6B21301
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1B261675;
-	Wed, 13 Mar 2024 16:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E8861694;
+	Wed, 13 Mar 2024 16:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6QQHvjc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jwd+/bf4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C53960EDE;
-	Wed, 13 Mar 2024 16:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464EF61676;
+	Wed, 13 Mar 2024 16:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347602; cv=none; b=aJdvjF07hs4jFhkZONlwIXHn0XEhXd18K8IRnVHU0aK2Zx3SQGCEFKuQ1JUH7EIEgiC5LtTGmPlYvFXpPXntS62x0vpxW3RzZ+EffS712biHb8VudQ6DayzK5X2bJHWB+PFvnaoxZpwzEmrbsLrSjD+OtmLv5Dnnf8iFvowKlfE=
+	t=1710347603; cv=none; b=thvi5w0UhJplFtAwYmhWjJbuaGQQKUyReY/m/j9JjcRTcaA+0jbrlaPV7RsRG7OLE06/TghU/N4NvgTe/p639ywafUlHSVLsuieO+pXI/M6tfQlpkJuxMOrOJHETX/5PDidPH73BqHROgcCTcXh11NywOfxfHyauxUHAiQTO3c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347602; c=relaxed/simple;
-	bh=NfGB84W7kSIPl3PnIMLdf/TItkTQIHgCMbPF4hc6y78=;
+	s=arc-20240116; t=1710347603; c=relaxed/simple;
+	bh=c9gRSY8NjpefR/RFvaa/fyBhrpNVDBwJnFGznfuiZ9w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XH1gTtT5yjgfo2XFqXB5WX8TiORcAAJaKNq9V+Zqp47Ix3yahqns0Fcxu0il+TK5I1ALzakzPjt3wUer1TvgvTgXXvnUIMRanGWm6EdknDeQa27sNHvGJlhVk0RRNxOZJ4DPBA4c6a2pvI+l/Z2nB8uWYjwMgJq3NyiC8Fei2Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6QQHvjc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD37FC433A6;
-	Wed, 13 Mar 2024 16:33:20 +0000 (UTC)
+	 MIME-Version:Content-Type; b=mz3whTZUh33JjkWAa3iGTZ3bBELccWza2Anvzcb31JMP4y0UWUtJuj0GPlEq962sEi3yDvvpKRX9ucLdHy+A/AmUHn4SmNDa0RSmAJp9SOEyGmW5GmFuHaHyV9NWOC/j9Vnn3OaoAkQAZwZiQIGFHsrBwRCtuHOXm9RlVfXQF0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jwd+/bf4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44F3CC433B2;
+	Wed, 13 Mar 2024 16:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347601;
-	bh=NfGB84W7kSIPl3PnIMLdf/TItkTQIHgCMbPF4hc6y78=;
+	s=k20201202; t=1710347603;
+	bh=c9gRSY8NjpefR/RFvaa/fyBhrpNVDBwJnFGznfuiZ9w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F6QQHvjcxN/vIEREE4BZ4Di904MgjlGp0XbZ69WtxC4gEyRsRxMymma4V6ryk/dZy
-	 fldCVf6+8nuLDOgWKLf2O51V3HYYmBs3k/Qq0XG9mlYiw0I6XEwDxobpDFR4HHwnOW
-	 dRIzvMK2VzJiaPyzuplt0hPuQA6A4NRFU+2dkd9A+vfmNbldzmZFkX0fOkPx55QlXw
-	 SyhemljiesJnf5vTEePfwIZZKLUxOEUYRwtxIiBqb7VV4hNXSwyluktrSBpd6FclY6
-	 Sa6RruMVfFk8FTZSSlusq5qOQjUAi+iY+yuUmbAvO/KDLavWykrwHVuPC9yQDRzdZs
-	 lPBVhsWpFBl+w==
+	b=Jwd+/bf4jfHHtGurKMsGZ4q4Bzk5OSt+VZt9OHvSMFPaG63dzbsrUersntBA9KiU4
+	 o0MJwp7+2F/bck5IHw4FwcPmSbeSujINxXe0DfAYqV+E6X7DbZi3qOj6cnuEg41CoX
+	 E+riH2WMhTl8LBr7kKEbr+cD3il9CTGlHLroO0PbmrE8aofWPqRwkCliUo9/S63FVK
+	 oqoh2nGtEbJ66P82jgpZ+Labi2HM4G00bImdc7RsyZf3wR8VV3Mxdq30nqP6kiWvx+
+	 fGcvhAQGaGBhFsQrBQ7v6o3aJxz+zGClo70wP3asGMm5eQYowTPGy2c2T31JNWaKQ/
+	 aZSjMjhLFF4Og==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Prashant Batra <prbatra.mail@gmail.com>,
 	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 35/61] xdp, bonding: Fix feature flags when there are no slave devs anymore
-Date: Wed, 13 Mar 2024 12:32:10 -0400
-Message-ID: <20240313163236.613880-36-sashal@kernel.org>
+Subject: [PATCH 6.7 36/61] selftests/bpf: Fix up xdp bonding test wrt feature flags
+Date: Wed, 13 Mar 2024 12:32:11 -0400
+Message-ID: <20240313163236.613880-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -75,53 +72,64 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit f267f262815033452195f46c43b572159262f533 ]
+[ Upstream commit 0bfc0336e1348883fdab4689f0c8c56458f36dd8 ]
 
-Commit 9b0ed890ac2a ("bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY")
-changed the driver from reporting everything as supported before a device
-was bonded into having the driver report that no XDP feature is supported
-until a real device is bonded as it seems to be more truthful given
-eventually real underlying devices decide what XDP features are supported.
+Adjust the XDP feature flags for the bond device when no bond slave
+devices are attached. After 9b0ed890ac2a ("bonding: do not report
+NETDEV_XDP_ACT_XSK_ZEROCOPY"), the empty bond device must report 0
+as flags instead of NETDEV_XDP_ACT_MASK.
 
-The change however did not take into account when all slave devices get
-removed from the bond device. In this case after 9b0ed890ac2a, the driver
-keeps reporting a feature mask of 0x77, that is, NETDEV_XDP_ACT_MASK &
-~NETDEV_XDP_ACT_XSK_ZEROCOPY whereas it should have reported a feature
-mask of 0.
-
-Fix it by resetting XDP feature flags in the same way as if no XDP program
-is attached to the bond device. This was uncovered by the XDP bond selftest
-which let BPF CI fail. After adjusting the starting masks on the latter
-to 0 instead of NETDEV_XDP_ACT_MASK the test passes again together with
-this fix.
+  # ./vmtest.sh -- ./test_progs -t xdp_bond
+  [...]
+  [    3.983311] bond1 (unregistering): (slave veth1_1): Releasing backup interface
+  [    3.995434] bond1 (unregistering): Released all slaves
+  [    4.022311] bond2: (slave veth2_1): Releasing backup interface
+  #507/1   xdp_bonding/xdp_bonding_attach:OK
+  #507/2   xdp_bonding/xdp_bonding_nested:OK
+  #507/3   xdp_bonding/xdp_bonding_features:OK
+  #507/4   xdp_bonding/xdp_bonding_roundrobin:OK
+  #507/5   xdp_bonding/xdp_bonding_activebackup:OK
+  #507/6   xdp_bonding/xdp_bonding_xor_layer2:OK
+  #507/7   xdp_bonding/xdp_bonding_xor_layer23:OK
+  #507/8   xdp_bonding/xdp_bonding_xor_layer34:OK
+  #507/9   xdp_bonding/xdp_bonding_redirect_multi:OK
+  #507     xdp_bonding:OK
+  Summary: 1/9 PASSED, 0 SKIPPED, 0 FAILED
+  [    4.185255] bond2 (unregistering): Released all slaves
+  [...]
 
 Fixes: 9b0ed890ac2a ("bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY")
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: Prashant Batra <prbatra.mail@gmail.com>
-Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
 Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Message-ID: <20240305090829.17131-1-daniel@iogearbox.net>
+Message-ID: <20240305090829.17131-2-daniel@iogearbox.net>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/xdp_bonding.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 6cf7f364704e8..b094c48bebc30 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1811,7 +1811,7 @@ void bond_xdp_set_features(struct net_device *bond_dev)
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
+index c3b45745cbccd..6d8b54124cb35 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
+@@ -511,7 +511,7 @@ static void test_xdp_bonding_features(struct skeletons *skeletons)
+ 	if (!ASSERT_OK(err, "bond bpf_xdp_query"))
+ 		goto out;
  
- 	ASSERT_RTNL();
+-	if (!ASSERT_EQ(query_opts.feature_flags, NETDEV_XDP_ACT_MASK,
++	if (!ASSERT_EQ(query_opts.feature_flags, 0,
+ 		       "bond query_opts.feature_flags"))
+ 		goto out;
  
--	if (!bond_xdp_check(bond)) {
-+	if (!bond_xdp_check(bond) || !bond_has_slaves(bond)) {
- 		xdp_clear_features_flag(bond_dev);
- 		return;
- 	}
+@@ -601,7 +601,7 @@ static void test_xdp_bonding_features(struct skeletons *skeletons)
+ 	if (!ASSERT_OK(err, "bond bpf_xdp_query"))
+ 		goto out;
+ 
+-	ASSERT_EQ(query_opts.feature_flags, NETDEV_XDP_ACT_MASK,
++	ASSERT_EQ(query_opts.feature_flags, 0,
+ 		  "bond query_opts.feature_flags");
+ out:
+ 	bpf_link__destroy(link);
 -- 
 2.43.0
 
