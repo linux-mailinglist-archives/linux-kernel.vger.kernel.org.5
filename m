@@ -1,195 +1,125 @@
-Return-Path: <linux-kernel+bounces-101677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03C2687AA5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:29:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7DF87AA60
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:29:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 226E01C224E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:29:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFDF61F22B4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85F546535;
-	Wed, 13 Mar 2024 15:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B1C4654F;
+	Wed, 13 Mar 2024 15:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="jGk8dCmO"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y12zsuiK"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523F2290A
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEF246436
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710343746; cv=none; b=Yb+Xcu1zWE03S+w5hr0fMOByGAmjRYTJ1nRKMrCXH6sodDzi/RuGz4hCWa27dDf8fpDV2e2LfMn3pVDs356Ylt8yLMPJ5S7gyXQiF0+o5tvnDsP0aEJt/sDycO/opfD1+7nbKwmHod/ZwRCNUG3+WEd/F3iIXP1jcuP5d5ryotc=
+	t=1710343780; cv=none; b=KA2RIl2qE2dcW1ZcvxpJ821nlYveaAM/a8+l1Cd77MKGJCx4zvhyCmCyW1ozv6RfgFkzadyEN/X6oyertVwmAHpfaOy665r78BV7IR3D3QfZwNlaMIYzd4QC15TpQebZdFKBV2Wm/vECrtzWfXm8W13nDrcAUDkOjousrxt+bV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710343746; c=relaxed/simple;
-	bh=Dl+3f2HdEzwpKJlWUdV3VN7IJUCKtzspUN8ZJt8CP2c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d2Mjj2FQFT3J6OAzLhMsTL3mMNx7V51/NkiucRq1Nv4ed0lecu9V6CA1uyQXbqGgQzZlL7WgV0BRD9XN/d97bZYj91n+HSkI9XFGKEIEWat83WjaIXfcBN2pPvC/8f/I76MaBctGHr9i9+G7GVPogjGwFJB2NxzExXC3DfryGYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=jGk8dCmO; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-43095d80832so1912611cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:29:04 -0700 (PDT)
+	s=arc-20240116; t=1710343780; c=relaxed/simple;
+	bh=xDnkHtgwr9H5DPFYdG9cIZiaD3ZNEtYgxwS8tw1QMLk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fkU1hG+6uAdZKJQ9Zih9mvcNY7kA52gXRgbFnf6795Alpdn4Sj/n2FH5TbyAGGAWZuyjDZm5I3ZO3KGf7QZ5RUTkDXJGv71Ny1URooe6wlhQ20izSoBNIZsEdkOHeqKvUSbe6NYyIc5h6wqjcL8ufvVYE6jcBqRsUpTZffTHC+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y12zsuiK; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33e1d327595so3134317f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:29:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710343743; x=1710948543; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HWKlYumLkX/+t+ibDwbAcEteYC479oCXqcOK3/Ft1Sg=;
-        b=jGk8dCmORenBTsl0nLMJvlVgG/699gHBPqzO3Ju6kxSqFKtuqNsVz4R8U0Uwx1w1uk
-         CVj1Xd5rKtymuWJQMYpHTBduNsxuWSA8VbMTbBG7Zr5tJV8dMRm+eqwS5agQ23qLXaUu
-         INnBk6Jlg6G91/5GfDGVebpottBtDGulyxokOj1TIXoq/PlZJEKC2xCptTtpu4M0QSKI
-         XFxdBYPPE9Fng/PmHVZC7Df7EUbhymVGiP8hG1Il1qVb1EbTWiw+VVqXWcmwYidBZRGh
-         WIbL5SWTOnaEzWkuP8jaCePAU6ZhSNLZSeZxDk8zkwItuN6rqlrdfD+2f3dkcgbVhM8a
-         +9Dg==
+        d=linaro.org; s=google; t=1710343777; x=1710948577; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tvt8Qtm+W+Qck4IJaiB7iim8R4TtzqabulZr702KWPU=;
+        b=y12zsuiKXNf2nmTZySJ2sGUq8gpHTHVPEaDANqOLYkeUrsXTy7BPwn/6ymbuy9jdnc
+         ll7MAy4UgdmorI+OKODVNcWpQyoOv0mxX+4WM6OAB1t1wqUSP+jop8EVAVTfbD8RmXGA
+         7pKSvC+3p6PcrLCFedViB8lTMx9aMLQ4NIdnuOgBAd4n10hvrODbobW8DHycoux3lQEb
+         9e1B23u3Iz+W7ocXQoPGl+IhLrWI7ZKvsC2U5sOTE1oDnS3Xn+PsIIBdOKkXIxgGE1VZ
+         SEOZbY0YtVqROM/KlbNF0YeDGVejr1v0NbtP1BoeiXmvpY/VlQxsAMTMTdkoVoy/66n1
+         OaWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710343743; x=1710948543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HWKlYumLkX/+t+ibDwbAcEteYC479oCXqcOK3/Ft1Sg=;
-        b=u/bo2oQBtvj1ouUJOwbO5rYqzb+8qmbi0N2IvcxjKVzsp2UBgKGU05mKzAvYWZ2kqH
-         wIjrmFHSy0pMa7rWUPjxdhuwN/Lgt9D8aG75pAmvTHCcBwBP9T18hiBikGp2WDJHzPry
-         4mXDUmNN9X5tlWKgYwXPBsaJ8y5DsXgYU3+C/+ceRqBEis5fTjxY99ecLRF3DdfbAHZW
-         dwIRmDMv0h+uBZMwnUa3ssyBEs4O4M3KnWfHOtwAmVAuidQ2XdoiUNOKoOa+dMR/Xt7w
-         sBBdJbwJAQ4/WEbsj/TBCxGnuFkddhHSkmGt0GEhlTnEveNmsGdysdoxUi5ymei4R/BK
-         ErYA==
-X-Gm-Message-State: AOJu0YzA4IyevmPIox/fmXx8fDYyiG3otnJuHpzLzgIT8llAdCs108yf
-	zoqJWs+pDHKlAwGPfaERQ8V/pieZT9FOIG211YiqrSq1dkx5n+4lMYxUDUV141G0uacdGwuTQ01
-	WJS77jb9wy2ZHshdp5w0Ia8iV3Na7UVsOdVDMZQ==
-X-Google-Smtp-Source: AGHT+IEFWsngRc36KlsisR2qyCNd3E/wD9YsSrdlX25LgRM0Ku6xw1Arb90QhWmAXGGmH9s8YBlIqxzNWtDBwy1ApS0=
-X-Received: by 2002:a05:622a:1909:b0:42f:200b:8d0a with SMTP id
- w9-20020a05622a190900b0042f200b8d0amr4149422qtc.43.1710343743210; Wed, 13 Mar
- 2024 08:29:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710343777; x=1710948577;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tvt8Qtm+W+Qck4IJaiB7iim8R4TtzqabulZr702KWPU=;
+        b=UytI0kaVULPrbZzpikLMKyq0MbFEOQ7i1r554EzgJYedpB468FTQv5UJZxfn2b7aUs
+         9KDRkEdI5fLgFqpAw4cnFwyLv7rnkFkNgXndam6SPp4d7hDbX/kbU8vQ5xbWjwD3oHPS
+         uqbXSqFTbqAYVTQEQU8H981SfE88N5AE1OS8pQuEoCi/MWxYpwuLpLmcrqms4gGRBbX7
+         o0a7iDVJy3iq1aKY2685QrPMzNXfWwoS58nhZLx9yESw7CiLP6lAL9d6xmrkua4kp8cl
+         ukKYSNIS/eL/xsxb6dhQH3daOFh00Q6eUvvkhEuW1J/8p7iAdWeEa0G4Zvl7Pn1b3ITD
+         9TSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXf7Ac3wtf293lrNzyLxPoq1yhw9mh8zss6Oeq0/xPC4Rr92skB0DUHTPgCayoVY1+64YkBxag3eXjmx+yIEYxJemhJWQhm8pzUedKe
+X-Gm-Message-State: AOJu0YxlP6MoSUOO3ZgALI+1rJkrN0/z9kUByXuJTc8V3wao6/nojiDZ
+	RoXbgXywoW+hzEfBNuhdpLazNLhORvWMOP6iv0fdjNreT6pjPmjkd6LJ8L3QCpI=
+X-Google-Smtp-Source: AGHT+IEEiVfKvNxscpnVHMHh0ahECnASeCS3XrSK48Rwfx2u07RKlZ51HTb0HbzQXu+wFEvnKf6Q5Q==
+X-Received: by 2002:adf:f242:0:b0:33e:7564:ceb with SMTP id b2-20020adff242000000b0033e75640cebmr2133308wrp.52.1710343777378;
+        Wed, 13 Mar 2024 08:29:37 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id z2-20020a5d6402000000b0033dedd63382sm11866029wru.101.2024.03.13.08.29.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 08:29:37 -0700 (PDT)
+Message-ID: <d68fd8a7-8889-472e-86db-b62855eebfba@linaro.org>
+Date: Wed, 13 Mar 2024 16:29:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <20240311164638.2015063-12-pasha.tatashin@soleen.com> <87v85qo2fj.ffs@tglx> <CA+CK2bBgeK=rW3=RJSx8zxST8xnJ-VXSSYmKPVK9gHX3pxEWuQ@mail.gmail.com>
-In-Reply-To: <CA+CK2bBgeK=rW3=RJSx8zxST8xnJ-VXSSYmKPVK9gHX3pxEWuQ@mail.gmail.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Wed, 13 Mar 2024 11:28:26 -0400
-Message-ID: <CA+CK2bAzJuCe06g_TEOh3B-hK+dXfUaGaOSTgzyxkN4zqpSU_A@mail.gmail.com>
-Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
-	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
-	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
-	hca@linux.ibm.com, hch@infradead.org, hpa@zytor.com, 
-	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
-	jroedel@suse.de, juri.lelli@redhat.com, kent.overstreet@linux.dev, 
-	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
-	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
-	michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
-	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
-	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
-	urezki@gmail.com, vincent.guittot@linaro.org, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clocksource/drivers/timer-sun4i: Partially convert to a
+ platform driver
+Content-Language: en-US
+To: Samuel Holland <samuel.holland@sifive.com>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: Anup Patel <apatel@ventanamicro.com>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Samuel Holland <samuel@sholland.org>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sunxi@lists.linux.dev
+References: <20240312192519.1602493-1-samuel.holland@sifive.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240312192519.1602493-1-samuel.holland@sifive.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 13, 2024 at 9:43=E2=80=AFAM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
->
-> On Wed, Mar 13, 2024 at 6:23=E2=80=AFAM Thomas Gleixner <tglx@linutronix.=
-de> wrote:
-> >
-> > On Mon, Mar 11 2024 at 16:46, Pasha Tatashin wrote:
-> > > @@ -413,6 +413,9 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
-> > >       }
-> > >  #endif
-> > >
-> > > +     if (dynamic_stack_fault(current, address))
-> > > +             return;
-> > > +
-> > >       irqentry_nmi_enter(regs);
-> > >       instrumentation_begin();
-> > >       notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEG=
-V);
-> > > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> > > index d6375b3c633b..651c558b10eb 100644
-> > > --- a/arch/x86/mm/fault.c
-> > > +++ b/arch/x86/mm/fault.c
-> > > @@ -1198,6 +1198,9 @@ do_kern_addr_fault(struct pt_regs *regs, unsign=
-ed long hw_error_code,
-> > >       if (is_f00f_bug(regs, hw_error_code, address))
-> > >               return;
-> > >
-> > > +     if (dynamic_stack_fault(current, address))
-> > > +             return;
-> >
-> > T1 schedules out with stack used close to the fault boundary.
-> >
-> >    switch_to(T2)
-> >
-> > Now T1 schedules back in
-> >
-> >    switch_to(T1)
-> >      __switch_to_asm()
-> >         ...
-> >         switch_stacks()         <- SP on T1 stack
-> > !        ...
-> > !       jmp __switch_to()
-> > !    __switch_to()
-> > !       ...
-> > !       raw_cpu_write(pcpu_hot.current_task, next_p);
-> >
-> > After switching SP to T1's stack and up to the point where
-> > pcpu_hot.current_task (aka current) is updated to T1 a stack fault will
-> > invoke dynamic_stack_fault(T2, address) which will return false here:
-> >
-> >         /* check if address is inside the kernel stack area */
-> >         stack =3D (unsigned long)tsk->stack;
-> >         if (address < stack || address >=3D stack + THREAD_SIZE)
-> >                 return false;
-> >
-> > because T2's stack does obviously not cover the faulting address on T1'=
-s
-> > stack. As a consequence double fault will panic the machine.
->
-> Hi Thomas,
->
-> Thank you, you are absolutely right, we can't trust "current" in the
-> fault handler.
->
-> We can change dynamic_stack_fault() to only accept fault_address as an
-> argument, and let it determine the right task_struct pointer
-> internally.
->
-> Let's modify dynamic_stack_fault() to accept only the fault_address.
-> It can then determine the correct task_struct pointer internally.
->
-> Here's a potential solution that is fast, avoids locking, and ensures ato=
-micity:
->
-> 1. Kernel Stack VA Space
-> Dedicate a virtual address range ([KSTACK_START_VA - KSTACK_END_VA])
-> exclusively for kernel stacks. This simplifies validation of faulting
-> addresses to be part of a stack.
->
-> 2. Finding the faulty task
-> - Use ALIGN(fault_address, THREAD_SIZE) to calculate the end of the
-> topmost stack page (since stack addresses are aligned to THREAD_SIZE).
-> - Store the task_struct pointer as the last word on this topmost page,
-> that is always present as it is a pre-allcated stack page.
->
-> 3. Stack Padding
-> Increase padding to 8 bytes on x86_64 (TOP_OF_KERNEL_STACK_PADDING 8)
-> to accommodate the task_struct pointer.
+On 12/03/2024 20:25, Samuel Holland wrote:
+> Commit 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a
+> platform driver") broke the MMIO timer on the Allwinner D1 SoC because
+> the IRQ domain is no longer available when timer_probe() is called:
+> 
+>    [    0.000000] irq: no irq domain found for interrupt-controller@10000000 !
+>    [    0.000000] Failed to map interrupt for /soc/timer@2050000
+>    [    0.000000] Failed to initialize '/soc/timer@2050000': -22
+> 
+> Fix this by wrapping the timer initialization in a platform driver.
+> builtin_platform_driver_probe() must be used because the driver uses
+> timer_of_init(), which is marked as __init. Only convert the sun8i
+> variants of the hardware, because some older SoCs still need the timer
+> probed early for sched_clock().
+> 
+> Fixes: 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a platform driver")
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 
-Alternatively, do not even look-up the task_struct in
-dynamic_stack_fault(), but only install the mapping to the faulting
-address, store va in the per-cpu array, and handle the rest in
-dynamic_stack() during context switching. At that time spin locks can
-be taken, and we can do a find_vm_area(addr) call.
+Why EPROBE_DEFER in thermal-of can not fix the issue?
 
-This way, we would not need to modify TOP_OF_KERNEL_STACK_PADDING to
-keep task_struct in there.
+I mean can't we check if of_irq_get_byname() returns EPROBE_DEFER and 
+then return this value?
 
-Pasha
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
