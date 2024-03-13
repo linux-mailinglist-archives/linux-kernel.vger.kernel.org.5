@@ -1,179 +1,134 @@
-Return-Path: <linux-kernel+bounces-102101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BACD687AE6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B51D87AE6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66C52B23C49
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:57:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A47CDB2532D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D86C58220;
-	Wed, 13 Mar 2024 16:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455025A4D3;
+	Wed, 13 Mar 2024 16:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="LW4Hr5WQ"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JaRzCwMH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19E818F36B;
-	Wed, 13 Mar 2024 16:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2B55A11A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348560; cv=none; b=hboicDR0A8CBycdh2kkGeGD39MH7kyPnk4d7tYx7omeUQpX0nKakOtkg1+UsTRBUvk5m1x8mKUg7kc1vSCSsqS05in6l2EMW6aoV4YB3Ukyjx983nk576iYMrsmwxclkNsOC2asDQ82TahViANv1AEG4BjrmvsvQm5NfQOt9lUs=
+	t=1710348592; cv=none; b=cFivHZWMv/GaWWZ22MJkQF277P0qJPGzpS00PC6T6YGqONw7sPj+SeDXJTwl+oPRKPAxMPWgpBQEZk+A2SiKSgoA14P41RJub7gWfoswlruc1yPZX8V6lhrmIUuWcSGqXSkDSKlS5ff36XTpOgbo1aGTusPkAkGP4kYxc3mc4jI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348560; c=relaxed/simple;
-	bh=2hQ6pSoQbMrt0XkGRzDOdvfmCtR4p2HXgr8RQCNnWOg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pz5HCCkAxhkHd4mMGL3JhWSPYEQ+PC3TI7bHodLfJOKF/eqPGtU9jzU47hlaBQQJ0SnL7It359GP1tp0VxOfwcbf1C0sggx8oG2xYlY0xXbEmK3tdeXOSSmD3jZtLApZ3HOdP7IPnsNWETl5TOx+tDuyjzWetsri057rpGteXLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=LW4Hr5WQ; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from ideasonboard.com (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id C5D10B1;
-	Wed, 13 Mar 2024 17:48:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710348533;
-	bh=2hQ6pSoQbMrt0XkGRzDOdvfmCtR4p2HXgr8RQCNnWOg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LW4Hr5WQRELGatP+Rx39XsVdhYqzrluTYRPkZJc07OnmW1sIBdWdkjt8RYM0RfQEc
-	 9VvaLcJpVR9oRFhFrL6chX79fG46ZcWKNoaWgUgpx6LTuGkuSLbjFfqqSI3yHoJYvP
-	 xIG4xlhTnNQHgEYlL2gXycDR6GQT+n6jN9bZMz/M=
-Date: Wed, 13 Mar 2024 17:49:12 +0100
-From: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-To: Stefan Klug <stefan.klug@ideasonboard.com>
-Cc: libcamera-devel@lists.libcamera.org, linux-media@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Rui Miguel Silva <rmfrfs@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Martin Kepplinger <martink@posteo.de>, Purism Kernel Team <kernel@puri.sm>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH] mipi-csis: Emit V4L2_EVENT_FRAME_SYNC events
-Message-ID: <axrx5ynlyoyjgkhj3j4r5b6xfaxwetx4c7u5ngq5wunin5ynv6@qmvav4y3xczq>
-References: <20240313153058.189684-1-stefan.klug@ideasonboard.com>
+	s=arc-20240116; t=1710348592; c=relaxed/simple;
+	bh=VzkYuJhJxHAlsoBEWu8SsfwFLEo1Gz2XkJeX8uCY6dQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=skxYiCkvWOJRzNp/iswf15tRHAbiJ0w7NmQ3fpjvDGU09AQSjy+g6u73fRFMUM7OvLnScVxCDgipua1kyf0vFZdCQmccRUZj4hN49zoSWhtNYwPnJ0u1dnxlAY4P/Y6IWwtz+8/yCWm2lCNuVxoG31a+oEmnyjlA6n9ryEXEXFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JaRzCwMH; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710348589;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q2G67iTaaE7P6XAuMXpD/jw+pGFtD3L7nLatsyiWBEw=;
+	b=JaRzCwMHHM0mp2q2UM3DydGiuZrMwPuskPWan2lRmyeKXFLipBsgvwPNhpH99Pz2qucBbh
+	+yM4QxRGukJ2cNzz+Rzeo4l/KzBir+Oked8gCjuaons4BRhTAqzTS2eBm0QiquJ1xMQ8Wz
+	815rahexbU8oXK4dEWtXcpCRZtQdWMo=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-501-6chHg1SuNHyg8keOyRqVBA-1; Wed, 13 Mar 2024 12:49:47 -0400
+X-MC-Unique: 6chHg1SuNHyg8keOyRqVBA-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-513b1027dd5so66113e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:49:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710348586; x=1710953386;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q2G67iTaaE7P6XAuMXpD/jw+pGFtD3L7nLatsyiWBEw=;
+        b=H+JzVAsqtOCEZM32pVnXKxvvT4/gaLhOVQFCo6fSybNwnOoKRNIybK72JA1X69gtV/
+         1+t1T2j22HPInjlYHAkw83kchgGoeheQKee10JUv7hiovYqbre5AA7a6Z4NMVXy879s0
+         LvDvKfDr5yo6M0ixqhUyA2IHl/CnldghfO/ZV/Qe0E7Kk5n43+XIiGAHYUDU0RgbVT0H
+         nmFNPDW3HAyekOUlHzSbQqn1qiWuTffiR4UVNK8bCsSFIUd5bnPHqmqQRgcGMmLBeKN0
+         GOxsZbRfYeCKCX6/SokcBvVbAqBgfWJgsfUIzyToWmy1cIxxfrtti1Bdm8M0eRJf5vbK
+         JiQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIA9uy4qBAzUJsS5ZMI83IaPRlfsmCrHnOmMy2ai0c4CfFNBbeInxCeYn/j4AmjslkSinQ7rDlt1hzTiv0XV7scEcWqycuoagiar6C
+X-Gm-Message-State: AOJu0YynZgx5sJ6tSnLDkNay+dwnl+4B2KrCJBPqXKLmDJvj9K9YOxCc
+	8iUMY2fjJZ0yCX5KEbXpQII9Czu2IiKscFHJL4HoDpUKcEjDB85+x/wsdaMZCAMPQ90+VZOhoDr
+	xtkc32fuk7t8rb1g5zWUnfMPyjX8FI8xRk54e6QVe1Nnm0r+mUbX72Su0M+wm4smsmhypbEnuEQ
+	g3rqr/XPhQZ76uhvLaL5003WubextXK+Y6MCjn
+X-Received: by 2002:a05:6512:48cf:b0:513:c25b:8fe with SMTP id er15-20020a05651248cf00b00513c25b08femr3633374lfb.58.1710348586398;
+        Wed, 13 Mar 2024 09:49:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFecCVULiWKXEpUHHmxzAFehkHi4UGzzQMhebCu4KpJosY3gPTZT5VnVDgEMzok8/FmGbE0MAM+WicaEPuoM8s=
+X-Received: by 2002:a05:6512:48cf:b0:513:c25b:8fe with SMTP id
+ er15-20020a05651248cf00b00513c25b08femr3633356lfb.58.1710348586028; Wed, 13
+ Mar 2024 09:49:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240313153058.189684-1-stefan.klug@ideasonboard.com>
+References: <20240313091259.1413854-1-ppandit@redhat.com> <0a1aa580-50b2-4657-8308-94bffb194aea@moroto.mountain>
+ <CAE8KmOzcD+__7xdC7tegbHO9HEP48s7=reA4j-tvqVDwzHr+8Q@mail.gmail.com> <3fcb3702-5af2-4b9f-a362-4f08ee626b14@moroto.mountain>
+In-Reply-To: <3fcb3702-5af2-4b9f-a362-4f08ee626b14@moroto.mountain>
+From: Prasad Pandit <ppandit@redhat.com>
+Date: Wed, 13 Mar 2024 22:19:29 +0530
+Message-ID: <CAE8KmOxEyCHbCt=7PZi_xAnCdc2H3mFYYxBJ9YAq6imGmH6aJw@mail.gmail.com>
+Subject: Re: [PATCH v2] staging: bcm2835-audio: add terminating new line to Kconifg
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: florian.fainelli@broadcom.com, bcm-kernel-feedback-list@broadcom.com, 
+	linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, 
+	rjui@broadcom.com, sbranden@broadcom.com, linux-staging@lists.linux.dev, 
+	linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Prasad Pandit <pjp@fedoraproject.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Stefan
+Hello Dan,
 
-In Subject: missing the 'media:' prefix
+On Wed, 13 Mar 2024 at 17:24, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> I wasn't able to get it to enable the CONFIG_NO_HZ_FULL.
 
-On Wed, Mar 13, 2024 at 04:30:58PM +0100, Stefan Klug wrote:
-> The Samsung CSIS Mipi receiver provides a start-of-frame interrupt and
+* CONFIG_ prefix is not required.
 
-s/Mipi/MIPI/
+> ~/config-kernel/configk -e NO_HZ_FULL  -c .config  .
 
-> a framecount register. As the CSI receiver is the hardware unit
-> that lies closest to the sensor, the frame counter is the best we can
-> get on these devices.
-> In case of the ISI available on the i.MX8 M Plus it is also the only
-> native start-of-frame signal available.
->
-> This patch exposes the sof interrupt and the framecount as
-> V4L2_EVENT_FRAME_SYNC event on the subdevice.
->
-> It was tested on a Debix-Som-A with a 6.8-rc4 kernel.
->
-> Signed-off-by: Stefan Klug <stefan.klug@ideasonboard.com>
-> ---
->  drivers/media/platform/nxp/imx-mipi-csis.c | 34 +++++++++++++++++++++-
->  1 file changed, 33 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
-> index db8ff5f5c4d3..caeb1622f741 100644
-> --- a/drivers/media/platform/nxp/imx-mipi-csis.c
-> +++ b/drivers/media/platform/nxp/imx-mipi-csis.c
-> @@ -30,6 +30,7 @@
->
->  #include <media/v4l2-common.h>
->  #include <media/v4l2-device.h>
-> +#include <media/v4l2-event.h>
->  #include <media/v4l2-fwnode.h>
->  #include <media/v4l2-mc.h>
->  #include <media/v4l2-subdev.h>
-> @@ -742,6 +743,18 @@ static void mipi_csis_stop_stream(struct mipi_csis_device *csis)
->  	mipi_csis_system_enable(csis, false);
->  }
->
-> +static void mipi_csis_queue_event_sof(struct mipi_csis_device *csis)
-> +{
-> +	struct v4l2_event event = {
-> +		.type = V4L2_EVENT_FRAME_SYNC,
-> +	};
-> +
-> +	u32 frame = mipi_csis_read(csis, MIPI_CSIS_FRAME_COUNTER_CH(0));
-> +
-> +	event.u.frame_sync.frame_sequence = frame;
-> +	v4l2_event_queue(csis->sd.devnode, &event);
-> +}
-> +
->  static irqreturn_t mipi_csis_irq_handler(int irq, void *dev_id)
->  {
->  	struct mipi_csis_device *csis = dev_id;
-> @@ -765,6 +778,10 @@ static irqreturn_t mipi_csis_irq_handler(int irq, void *dev_id)
->  				event->counter++;
->  		}
->  	}
-> +
-> +	if (status & MIPI_CSIS_INT_SRC_FRAME_START)
-> +		mipi_csis_queue_event_sof(csis);
-> +
->  	spin_unlock_irqrestore(&csis->slock, flags);
->
->  	mipi_csis_write(csis, MIPI_CSIS_INT_SRC, status);
-> @@ -1154,8 +1171,23 @@ static int mipi_csis_log_status(struct v4l2_subdev *sd)
->  	return 0;
->  }
->
-> +static int mipi_csis_subscribe_event(struct v4l2_subdev *sd, struct v4l2_fh *fh,
-> +			       struct v4l2_event_subscription *sub)
+* This command works. It writes informatory logs to stderr. It helps
+to redirect stderr to a log file.
+Enable option:
+  NO_HZ_FULL
+    NO_HZ_COMMON
+      TICK_ONESHOT
+    RCU_NOCB_CPU
+    VIRT_CPU_ACCOUNTING_GEN
+      VIRT_CPU_ACCOUNTING
+      CONTEXT_TRACKING_USER
+        CONTEXT_TRACKING
+    IRQ_WORK
+    CPU_ISOLATION
 
-Please align to open ( on the previous line
+* To see enable/disable/toggle options in action, a command below
+(without -c .config) could make it easier perhaps.
 
-All minors, with the above fixed
-Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+    $ ~/config-kernel/configk -e NO_HZ_FULL=[y/n/m]  <linux-directory>
+ | less -r
 
-Thanks
-  j
+> I'm going Ack your patch because adding a newline is the correct thing
+> but you should probably also change configk to handle that.
 
-> +{
-> +	if (sub->type != V4L2_EVENT_FRAME_SYNC)
-> +		return -EINVAL;
-> +
-> +	/* V4L2_EVENT_FRAME_SYNC doesn't require an id, so zero should be set */
-> +	if (sub->id != 0)
-> +		return -EINVAL;
-> +
-> +	return v4l2_event_subscribe(fh, sub, 0, NULL);
-> +}
-> +
->  static const struct v4l2_subdev_core_ops mipi_csis_core_ops = {
->  	.log_status	= mipi_csis_log_status,
-> +	.subscribe_event =  mipi_csis_subscribe_event,
-> +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
->  };
->
->  static const struct v4l2_subdev_video_ops mipi_csis_video_ops = {
-> @@ -1358,7 +1390,7 @@ static int mipi_csis_subdev_init(struct mipi_csis_device *csis)
->  	snprintf(sd->name, sizeof(sd->name), "csis-%s",
->  		 dev_name(csis->dev));
->
-> -	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
-> +	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
->  	sd->ctrl_handler = NULL;
->
->  	sd->entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
-> --
-> 2.40.1
->
->
+* ie. Handle files not terminating with a newline? There are not as
+many such files. Besides I agree having files terminate with a newline
+is good. It makes all lines/records of consistent format, otherwise
+the very last line/record becomes a special case.
+
+Thank you.
+---
+  - Prasad
+
 
