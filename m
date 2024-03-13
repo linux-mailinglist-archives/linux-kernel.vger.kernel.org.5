@@ -1,151 +1,134 @@
-Return-Path: <linux-kernel+bounces-100984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B3F87A072
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:57:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5964A87A076
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:58:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 532D01F2258B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:57:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 948921C21B51
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E727BE66;
-	Wed, 13 Mar 2024 00:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B712F35;
+	Wed, 13 Mar 2024 00:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V4bdSoyF"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="fdZhuLf6"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FDEBA27;
-	Wed, 13 Mar 2024 00:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8058F61;
+	Wed, 13 Mar 2024 00:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710291369; cv=none; b=vCiNPJQsRLGklTNxUmuu4KfrS5wSVXSzvtF8ao4VcGtztN1LeLNNN5rnuk4K2GzWtPKxyGn0/ZzDEwwtOLPcybXFqx2uMJM3mublppGq7sxaaxOisE/L8f0KZOBRUcBqngr+onOO4Unmq+AgHepd4pt6GofOHwF5vp/2aw2VEiA=
+	t=1710291481; cv=none; b=ZyHY7YmPpJaukZeBzMjl6RnFPHVtncl96Fasc5n6P+QrOhaFR7lxBQ9uNpd05tdqXXQM9z6uvh5GkbcQnpE4thEIGc+6UdI+0jYkIh6zzHTosjaUM37aXa0yD/RRA75Qgl9XAz+N31f6aJoIYaTjsaxlBlUP+AicoG/VvM8SLAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710291369; c=relaxed/simple;
-	bh=W2WJ8Yf5fBQg5Da9WYcCzog1dMgKBINweuFPZ+nOGJY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cYFRJNlplXk6k+kVkOm7gDsi0k5SMACUj+N9T4H4gQX6mQjDuWRaWzhV/1JKhjysSf4cuEsAPRUSxhK7E3Xm6Y1gjEn0SxRUS90wIwvOzGEUFNoyFYXIBYGEgttZIlWfIsvg4dvBOe2xJmmclakW/XmTHjXT1gU5C0Sr7iIyRnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V4bdSoyF; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710291366; x=1741827366;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=W2WJ8Yf5fBQg5Da9WYcCzog1dMgKBINweuFPZ+nOGJY=;
-  b=V4bdSoyFLrbecOSZZB3IneKmpYtUQzNtmF8jZ7Lu41kU+k7klHCkcx/+
-   41GHMucBSoWZDD/OhN6eOSK62He3oJY07qPrhelWk8dkZ0Qi4VVkWfUEA
-   oIHd/90lQsqfZQZyjUZuC6kZJtF3RsjIvNPPvYEyYDKA9oY/AUwe8Bi1k
-   2NLqvVVFLgqTSSjwG4Lix8edI5qexvVleX7UhRE4GF7WH8MPyOpzAb+DE
-   7DijAE9WU4Ic3G3CMV3Acio2L9VmG90i9hfpUXIApbDTbmoUO4cWpzXCe
-   cXQrkq843wbX8ZiSO9rydm0fMcq35WnRTeug0wGtTrme039ZJGfdUOj5T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="8852382"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="8852382"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 17:56:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="11770736"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
-  by orviesa009.jf.intel.com with ESMTP; 12 Mar 2024 17:56:05 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-	id 9BF24301066; Tue, 12 Mar 2024 17:56:04 -0700 (PDT)
-From: Andi Kleen <ak@linux.intel.com>
-To: "Wang, Weilin" <weilin.wang@intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>,  Ian Rogers <irogers@google.com>,
-  Arnaldo Carvalho de Melo <acme@kernel.org>,  Peter Zijlstra
- <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,  Alexander
- Shishkin <alexander.shishkin@linux.intel.com>,  Jiri Olsa
- <jolsa@kernel.org>,  "Hunter, Adrian" <adrian.hunter@intel.com>,  Kan
- Liang <kan.liang@linux.intel.com>,  "linux-perf-users@vger.kernel.org"
- <linux-perf-users@vger.kernel.org>,  "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>,  "Taylor, Perry" <perry.taylor@intel.com>,
-  "Alt, Samantha" <samantha.alt@intel.com>,  "Biggers, Caleb"
- <caleb.biggers@intel.com>
-Subject: Re: [RFC PATCH v4 2/6] perf stat: Fork and launch perf record when
- perf stat needs to get retire latency value for a metric.
-In-Reply-To: <CO6PR11MB56356A213DBE53535E9D802BEE2A2@CO6PR11MB5635.namprd11.prod.outlook.com>
-	(Weilin Wang's message of "Wed, 13 Mar 2024 00:26:26 +0000")
-References: <20240312234921.812685-1-weilin.wang@intel.com>
-	<20240312234921.812685-3-weilin.wang@intel.com>
-	<87le6nm20o.fsf@linux.intel.com>
-	<CO6PR11MB56356A213DBE53535E9D802BEE2A2@CO6PR11MB5635.namprd11.prod.outlook.com>
-Date: Tue, 12 Mar 2024 17:56:04 -0700
-Message-ID: <87edcflzkr.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710291481; c=relaxed/simple;
+	bh=z8YYzN2gZCm6QRJjFH2HLsqFoMBdgH4m1IlqLZ7rCS8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ExaF9k7SBboN2fG2znfW/1wq2WqsBB8+bUGwR9xUJttu22lAP6bGAKYw0DCAiXKC6Yo8uK+aPDUvqoPyd92xdtEjAoIXYhIK+jZSbgu3cGZWZphvtyYDcsdScQCfDGMYxcTCiPgTTEXlc9Tls3NN1TWaCFIllbLia0YmM1pidAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=fdZhuLf6; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710291474;
+	bh=u+UT7fns9W2mUZzIbsCdXkJaDwtFBocLMd9qUaNKNK0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=fdZhuLf6d2QbhreshmuVSnbKlEAc7xQKQeOx+pJh2KPzE7igJosoNf2BdfxJDmCgX
+	 nI5TFgpq5LmGv6O37BzeKi1waEqonZJStYGSIBL9xUgC/foiVtJyledpZ0gE5+V+VR
+	 WQtxVAwxppcqoEHpRZCEfyd6Ejliub7yu4URV5kD18Deq3oDVbXbfbmQSLqc1wklqv
+	 Kez4kVhsmUkSLszOb70Qz1IFqzXzBacEL/aOxWZQ2FZ153qGUqWKrwZeLTNhTk5bel
+	 w142D8gAzHL0KcEc/MRhtEkQut9AqC8lKZRCaFMht0Hu8vetWqfhPPylee4ACMPqSC
+	 n6B0AWm4aP+MQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TvXDd1g6Mz4wx5;
+	Wed, 13 Mar 2024 11:57:52 +1100 (AEDT)
+Date: Wed, 13 Mar 2024 11:57:51 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Herbert Xu <herbert@gondor.apana.org.au>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: Eric Biggers <ebiggers@google.com>, Barry Song <v-songbaohua@oppo.com>,
+ Linux Crypto List <linux-crypto@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the crypto tree
+Message-ID: <20240313115751.36b01158@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/pEpBEmTvEMreNxq9yb47kWI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-"Wang, Weilin" <weilin.wang@intel.com> writes:
+--Sig_/pEpBEmTvEMreNxq9yb47kWI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
->> -----Original Message-----
->> From: Andi Kleen <ak@linux.intel.com>
->> Sent: Tuesday, March 12, 2024 5:03 PM
->> To: Wang, Weilin <weilin.wang@intel.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>; Ian Rogers
->> <irogers@google.com>; Arnaldo Carvalho de Melo <acme@kernel.org>; Peter
->> Zijlstra <peterz@infradead.org>; Ingo Molnar <mingo@redhat.com>;
->> Alexander Shishkin <alexander.shishkin@linux.intel.com>; Jiri Olsa
->> <jolsa@kernel.org>; Hunter, Adrian <adrian.hunter@intel.com>; Kan Liang
->> <kan.liang@linux.intel.com>; linux-perf-users@vger.kernel.org; linux-
->> kernel@vger.kernel.org; Taylor, Perry <perry.taylor@intel.com>; Alt, Samantha
->> <samantha.alt@intel.com>; Biggers, Caleb <caleb.biggers@intel.com>
->> Subject: Re: [RFC PATCH v4 2/6] perf stat: Fork and launch perf record when
->> perf stat needs to get retire latency value for a metric.
->> 
->> weilin.wang@intel.com writes:
->> 
->> > From: Weilin Wang <weilin.wang@intel.com>
->> >
->> > When retire_latency value is used in a metric formula, perf stat would fork a
->> > perf record process with "-e" and "-W" options. Perf record will collect
->> > required retire_latency values in parallel while perf stat is collecting
->> > counting values.
->> 
->> How does that work when the workload is specified on the command line?
->> The workload would run twice? That is very inefficient and may not
->> work if it's a large workload.
->> 
->> The perf tool infrastructure is imho not up to the task of such
->> parallel collection.
->> 
->> Also it won't work for very long collections because you will get a
->> very large perf.data. Better to use a pipeline.
->> 
->> I think it would be better if you made it a separate operation that can
->> generate a file that is then consumed by perf stat. This is also more efficient
->> because often the calibration is only needed once. And it's all under
->> user control so no nasty surprises.
->> 
->
-> Workload runs only once with perf stat. Perf record is forked by perf stat and run
-> in parallel with perf stat. Perf stat will send perf record a signal to terminate after 
-> perf stat stops collecting count value.
+Hi all,
 
-I don't understand how the perf record filters on the workload created by
-the perf stat. At a minimum you would need -p to connect to the pid
-of the parent, but IIRC -p doesnt follow children, so if it forked
-it wouldn't work.
+After merging the crypto tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-I think your approach may only work with -a, but perhaps I'm missing
-something (-a is often not usable due to restrictions)
+In file included from mm/zswap.c:30:
+include/crypto/acompress.h: In function 'acomp_is_async':
+include/crypto/acompress.h:124:16: error: implicit declaration of function =
+'crypto_comp_alg_common'; did you mean 'crypto_tfm_alg_name'? [-Werror=3Dim=
+plicit-function-declaration]
+  124 |         return crypto_comp_alg_common(tfm)->base.cra_flags &
+      |                ^~~~~~~~~~~~~~~~~~~~~~
+      |                crypto_tfm_alg_name
+include/crypto/acompress.h:124:43: error: invalid type argument of '->' (ha=
+ve 'int')
+  124 |         return crypto_comp_alg_common(tfm)->base.cra_flags &
+      |                                           ^~
+include/crypto/acompress.h:126:1: error: control reaches end of non-void fu=
+nction [-Werror=3Dreturn-type]
+  126 | }
+      | ^
+cc1: some warnings being treated as errors
 
-Also if perf stat runs in interval mode and you only get the data
-at the end how would that work?
+Caused by commit
 
-iirc i wrestled with all these questions for toplev (which has a
-similar feature) and in the end i concluded doing it automatically
-has far too many problems.
+  86464db929ca ("crypto: introduce: acomp_is_async to expose if comp driver=
+s might sleep")
 
--Andi
+from the mm-unstable branch of the mm tree interacting with commit
+
+  2beb81fbf0c0 ("crypto: remove CONFIG_CRYPTO_STATS")
+
+from the crypto tree.
+
+I have reverted these commits from the mm-unstable branch for today:
+
+  86464db929ca ("crypto: introduce: acomp_is_async to expose if comp driver=
+s might sleep")
+  791f798331bc ("mm/zswap: remove the memcpy if acomp is not sleepable")
+
+I will stop merging the -unstable parts of the mm tree from tomorrow.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/pEpBEmTvEMreNxq9yb47kWI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXw+g8ACgkQAVBC80lX
+0GwN1gf/Z9bhPozr10QDiOQn/NmWbZAocaJhHllkJWsK3mjoWahO4JnFhpfwqmo0
+hVfizUv2KIB8cwXtNoNrJD5LwjeCRw+GjVtNqARxm89DRuj3M6XGnFal0wXj1hqu
+UWGNJZHWwUchnaVr+/pEiU5FPkb2wGps236A9YIvl8Fsw45LTNr1pDs7XLOx8MhU
+1xusarOJfkM/Xv2kEM8sZTC5xJ6/9HuCh5PuwRW//Hyl3RZSiRgisBfJmAmrp8Oj
+3tt+AnD+7SsHlQPak8SjIZci6zrGu2dusH0bzsEC01RHJfQ7XTEzPOHlhv5y1ygc
+Io4bc7vs1fJPcTFdaZPMenqe8zpxpA==
+=0+3t
+-----END PGP SIGNATURE-----
+
+--Sig_/pEpBEmTvEMreNxq9yb47kWI--
 
