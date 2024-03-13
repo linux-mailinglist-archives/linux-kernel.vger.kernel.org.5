@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-101856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCFF587AC2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:00:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 757A387AC31
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:01:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 945CC28D5B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:00:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12F1C1F27D59
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FEA75807;
-	Wed, 13 Mar 2024 16:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB07876023;
+	Wed, 13 Mar 2024 16:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQ0DS0S+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GN4wlVke"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB78757F3;
-	Wed, 13 Mar 2024 16:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092AC74E27;
+	Wed, 13 Mar 2024 16:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347893; cv=none; b=YCuxkkGLY8Cb8MKZBYgTmUPgmLKWGTOXqLiWRNg5FhCoLirou5lRjOTltFbsSD9BQz/R7hHmz/E+hZT8mJ+uMnTnrDHtx0WQtgcPF5dsUu3dGs9+pfd69a4cUBNifJVaoAkA1CgmYXhnoGtAsOwIrHbXDAFVAFBkT3GgVoAYiVk=
+	t=1710347895; cv=none; b=OSmZH1NaG3d6Knb71dnj8OLk+3e2q0uS3t9/9KLAdVoq5q/bQ7rtaKmGVrK/F7fTY8iE2sBITGU7GGPD6ZuwZwGkYh6GAdDqc1H0R2TaC9hq/lWs4ctbIcahYXhvCWsVF9Q+GcjcOPEJXYsHgJW1TG2LwC6gP9FDTT8chwjpxvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347893; c=relaxed/simple;
-	bh=D0GiyscWZhyFGmz8dbFWduhr88O7Faca/K9usrz4a34=;
+	s=arc-20240116; t=1710347895; c=relaxed/simple;
+	bh=6tRD9x34ZxPa5AewGiOh/lkWk4oU/IxiNHssuheXCb8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ppZRx2T3fjWT/SG2irqeVdyweSVuLyjQWOlH2etJfiejKWH0QUNeYBkPwUklVgIPupkcqq4YUKyiWw2QyQ6621fASkd9YPY8LXUfbxAaHXZcrCOH6ls60V8GSfHtO7igLh27oJIY2OBoq0bcxyycNgcwMRxnIwvXv6OrD6Bc8nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQ0DS0S+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77946C433C7;
-	Wed, 13 Mar 2024 16:38:12 +0000 (UTC)
+	 MIME-Version; b=jde6uDnfADvJHi7rWtXKeg/TTMQlYZY7vaGN/NfMBhA94EwvLwWuh7sfHXLRSeG9whug8ENK/UHqdrf/pIOKVfj9GQbqIra5NWEhwKX0IcjfozLzbLihQRMf01T7w8XX+Ou8AyEJBr1V1ApUpixJG0OgPN/F+e0WtFay0muSRXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GN4wlVke; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B91B2C433F1;
+	Wed, 13 Mar 2024 16:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347893;
-	bh=D0GiyscWZhyFGmz8dbFWduhr88O7Faca/K9usrz4a34=;
+	s=k20201202; t=1710347894;
+	bh=6tRD9x34ZxPa5AewGiOh/lkWk4oU/IxiNHssuheXCb8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OQ0DS0S+vLNg7xE8bC3AuODsBt+nHNcrFbOj5VoYJhE9Y9uVC7pJddrdk+P525Loe
-	 ZDsvmOt7UmwEDQ5+mngmOjfhTSz9AQAqVJQgwaN+j6EhKbLZARV0OjlnwZ9zv+WNX0
-	 51a6qO39MqtYnN+WmVnxKeWFJRmeE++gp7Zi5bvWWjsZ2Ddg6loHqPMNY+iwjF2Ndd
-	 6luN6uDkzxy5dW8BLZ9UsIWbHIXidGLuZHuUXwNtfYtd92pmKPp3Emzf9rDKrf5JdU
-	 HvNC10lbi9GkVDcKZXp0c3yoWy9TRgrTIikKMglLLtx3BhAm7abhRhQ6dVjsZrPerY
-	 fWsvMS3BDcMYg==
+	b=GN4wlVkeJeUomMGxJEdmpD7wzL1K1C6c5mkMfDz7iUB3UH9nVsAypAuRCWLsB/UtI
+	 DyIySslwXtmuoFZ3SWKPDfN4nQ84uWDa+pIiXUVQsLWh74Y6X5dzQCGaVuHy5qp3GJ
+	 K/cXMksGCwbDqagbdI/G2cmh5Z3pvUtiCAMfCMbJs8QVIJ2G3unxGeL3D0xup76xH8
+	 73Li786migOwRkVZN+XOaeX3GsNpW6Pdaum55gr9CGNwjiCjpYI2/OwrnEp/OMPCte
+	 +3UrEZxRQ5uKVdAEL1FOlqyC4c3ED4sUqPiE9jJg8Ur7fmMmohbf9AqdYCwwIx7DhZ
+	 2uvxdX0WxyhXA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>,
-	Guo Xuenan <guoxuenan@huawei.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
+Cc: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 53/60] readahead: avoid multiple marked readahead pages
-Date: Wed, 13 Mar 2024 12:37:00 -0400
-Message-ID: <20240313163707.615000-54-sashal@kernel.org>
+Subject: [PATCH 6.6 54/60] selftests: mptcp: decrease BW in simult flows
+Date: Wed, 13 Mar 2024 12:37:01 -0400
+Message-ID: <20240313163707.615000-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -70,95 +69,51 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jan Kara <jack@suse.cz>
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
 
-[ Upstream commit ab4443fe3ca6298663a55c4a70efc6c3ce913ca6 ]
+[ Upstream commit 5e2f3c65af47e527ccac54060cf909e3306652ff ]
 
-ra_alloc_folio() marks a page that should trigger next round of async
-readahead.  However it rounds up computed index to the order of page being
-allocated.  This can however lead to multiple consecutive pages being
-marked with readahead flag.  Consider situation with index == 1, mark ==
-1, order == 0.  We insert order 0 page at index 1 and mark it.  Then we
-bump order to 1, index to 2, mark (still == 1) is rounded up to 2 so page
-at index 2 is marked as well.  Then we bump order to 2, index is
-incremented to 4, mark gets rounded to 4 so page at index 4 is marked as
-well.  The fact that multiple pages get marked within a single readahead
-window confuses the readahead logic and results in readahead window being
-trimmed back to 1.  This situation is triggered in particular when maximum
-readahead window size is not a power of two (in the observed case it was
-768 KB) and as a result sequential read throughput suffers.
+When running the simult_flow selftest in slow environments -- e.g. QEmu
+without KVM support --, the results can be unstable. This selftest
+checks if the aggregated bandwidth is (almost) fully used as expected.
 
-Fix the problem by rounding 'mark' down instead of up.  Because the index
-is naturally aligned to 'order', we are guaranteed 'rounded mark' == index
-iff 'mark' is within the page we are allocating at 'index' and thus
-exactly one page is marked with readahead flag as required by the
-readahead code and sequential read performance is restored.
+To help improving the stability while still keeping the same validation
+in place, the BW and the delay are reduced to lower the pressure on the
+CPU.
 
-This effectively reverts part of commit b9ff43dd2743 ("mm/readahead: Fix
-readahead with large folios").  The commit changed the rounding with the
-rationale:
-
-"...  we were setting the readahead flag on the folio which contains the
-last byte read from the block.  This is wrong because we will trigger
-readahead at the end of the read without waiting to see if a subsequent
-read is going to use the pages we just read."
-
-Although this is true, the fact is this was always the case with read
-sizes not aligned to folio boundaries and large folios in the page cache
-just make the situation more obvious (and frequent).  Also for sequential
-read workloads it is better to trigger the readahead earlier rather than
-later.  It is true that the difference in the rounding and thus earlier
-triggering of the readahead can result in reading more for semi-random
-workloads.  However workloads really suffering from this seem to be rare.
-In particular I have verified that the workload described in commit
-b9ff43dd2743 ("mm/readahead: Fix readahead with large folios") of reading
-random 100k blocks from a file like:
-
-[reader]
-bs=100k
-rw=randread
-numjobs=1
-size=64g
-runtime=60s
-
-is not impacted by the rounding change and achieves ~70MB/s in both cases.
-
-[jack@suse.cz: fix one more place where mark rounding was done as well]
-  Link: https://lkml.kernel.org/r/20240123153254.5206-1-jack@suse.cz
-Link: https://lkml.kernel.org/r/20240104085839.21029-1-jack@suse.cz
-Fixes: b9ff43dd2743 ("mm/readahead: Fix readahead with large folios")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Guo Xuenan <guoxuenan@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Fixes: 1a418cb8e888 ("mptcp: simult flow self-tests")
+Fixes: 219d04992b68 ("mptcp: push pending frames when subflow has free space")
+Cc: stable@vger.kernel.org
+Suggested-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Link: https://lore.kernel.org/r/20240131-upstream-net-20240131-mptcp-ci-issues-v1-6-4c1c11e571ff@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/readahead.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/mptcp/simult_flows.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/mm/readahead.c b/mm/readahead.c
-index 6925e6959fd3f..1d1a84deb5bc5 100644
---- a/mm/readahead.c
-+++ b/mm/readahead.c
-@@ -469,7 +469,7 @@ static inline int ra_alloc_folio(struct readahead_control *ractl, pgoff_t index,
+diff --git a/tools/testing/selftests/net/mptcp/simult_flows.sh b/tools/testing/selftests/net/mptcp/simult_flows.sh
+index 9096bf5794888..25693b37f820d 100755
+--- a/tools/testing/selftests/net/mptcp/simult_flows.sh
++++ b/tools/testing/selftests/net/mptcp/simult_flows.sh
+@@ -302,12 +302,12 @@ done
  
- 	if (!folio)
- 		return -ENOMEM;
--	mark = round_up(mark, 1UL << order);
-+	mark = round_down(mark, 1UL << order);
- 	if (index == mark)
- 		folio_set_readahead(folio);
- 	err = filemap_add_folio(ractl->mapping, folio, index, gfp);
-@@ -577,7 +577,7 @@ static void ondemand_readahead(struct readahead_control *ractl,
- 	 * It's the expected callback index, assume sequential access.
- 	 * Ramp up sizes, and push forward the readahead window.
- 	 */
--	expected = round_up(ra->start + ra->size - ra->async_size,
-+	expected = round_down(ra->start + ra->size - ra->async_size,
- 			1UL << order);
- 	if (index == expected || index == (ra->start + ra->size)) {
- 		ra->start += ra->size;
+ setup
+ run_test 10 10 0 0 "balanced bwidth"
+-run_test 10 10 1 50 "balanced bwidth with unbalanced delay"
++run_test 10 10 1 25 "balanced bwidth with unbalanced delay"
+ 
+ # we still need some additional infrastructure to pass the following test-cases
+-run_test 30 10 0 0 "unbalanced bwidth"
+-run_test 30 10 1 50 "unbalanced bwidth with unbalanced delay"
+-run_test 30 10 50 1 "unbalanced bwidth with opposed, unbalanced delay"
++run_test 10 3 0 0 "unbalanced bwidth"
++run_test 10 3 1 25 "unbalanced bwidth with unbalanced delay"
++run_test 10 3 25 1 "unbalanced bwidth with opposed, unbalanced delay"
+ 
+ mptcp_lib_result_print_all_tap
+ exit $ret
 -- 
 2.43.0
 
