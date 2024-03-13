@@ -1,231 +1,134 @@
-Return-Path: <linux-kernel+bounces-101080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F0587A1F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:44:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D10D87A1FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:48:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76F351C216DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:44:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C270FB22076
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:48:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1543110958;
-	Wed, 13 Mar 2024 03:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EB110958;
+	Wed, 13 Mar 2024 03:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Mr0JILKU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S5mh72Az"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426EEC13D;
-	Wed, 13 Mar 2024 03:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA3D6FA7;
+	Wed, 13 Mar 2024 03:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710301457; cv=none; b=l8ZOJES6o+qCb8+Cfplh337gJvZXl4pu07c5WUaaTcPDM3hq7VaMwGeqaXHMe45GcqwIkkxkWR6vAdX4r26Hc+44kxI+tSRa0tGSHOfnWWcZrtO50XuNuQEUxZzY8JabxZaTHf239tl8v9sRV8XMWXRMALSStgN9FI9YU+Ur/r0=
+	t=1710301718; cv=none; b=IcP52Fli6Nn22UnrqxKSQiNvlEKJeRIAkdHN51HBN37IsZG/3RjVuWr2xwvmHmJU1tCnwcYoBheXQjZ8tnF5Gm/BjMDsZxfDfE3XuhSS/JlnIKFcClP9422a7woxPXZPrInuope0bNByuTRRZN+a8TLKI3no9gBM8snllPqtNRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710301457; c=relaxed/simple;
-	bh=D5dYzAQq3zwc2Ykhfu8CArrsHZ7nFWtA6rWbqjK8AYg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dJzXw4gxEd1NFSmEfynj2VkslKhuTZoiUf+7EL90TbAVdWCpS+XEe4A1tfexcVbgCljUyE1sH9GsIdiQbiNUyEGh9d54B5KDaUeaWoIHnTr5K365QJKBoUBUfVaeiNMHY5U1eI7SCXWrFdP8f0fa5ZaygpDe+cAy4QiZQRNO7KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Mr0JILKU; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710301456; x=1741837456;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=D5dYzAQq3zwc2Ykhfu8CArrsHZ7nFWtA6rWbqjK8AYg=;
-  b=Mr0JILKU/4IBk7etTDAbVocvOmvvkEGoGbBq9V5ltC2yOQagGPCaNTrP
-   JYO+sa5Y+nDPr4O91LWRJ10g4Iq3haIGsFu5PR5zYwBJRW5h7rwquJVbV
-   jOcgXaHDWPsTRPZl+mI2Vt+1bpV1DUxz0MfS/hMGbP/B6taZ6dlUOWjbV
-   UsGYUw5Dzd17pkVa5jQn0suOHiHwgIjkC6RTTAGY6btVxCZdagdTUYET5
-   oLfpE5eZZ+ddd5mgWxKUrz6xFXlOtI5Zptq0SrBQLmk3wrWo04xngBePb
-   eSIcN3YklWIXQ7WX5cAVGhuNuZm6bTsuj78kdpTJ1qspjBKMQBwiMh1AT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4911377"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="4911377"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 20:44:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="11661215"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 20:44:11 -0700
-Message-ID: <bd61e29d-5842-4136-b30f-929b00bdf6f9@intel.com>
-Date: Wed, 13 Mar 2024 11:44:08 +0800
+	s=arc-20240116; t=1710301718; c=relaxed/simple;
+	bh=CeQaXs0K7RFXkVnM9dXH+pmKXGUSDN4g5SZ9YhtnJgU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DLPGVCRNaBcvbVsIVWq51I3HQKOV5MQuE/a7XGQJNV0joLJ5u7OxKbHimMIPnWm7m4BeQAXqY9tLKXd018YkkJqMgngnACAj8wmsNKFNtFYAGs0/1r0mPJrYnqqn6m59o22UwmWC62tzs7UZHHuIYIp1dSQC7qSZ4tJYKoYAqtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S5mh72Az; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCF02C433F1;
+	Wed, 13 Mar 2024 03:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710301717;
+	bh=CeQaXs0K7RFXkVnM9dXH+pmKXGUSDN4g5SZ9YhtnJgU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=S5mh72AzKBXjn8wZtPDQf18y2EAI1jof5ujqfDI8hgQNuNBvPENMdvylHy8fvQ4q0
+	 RQPnrtZNJncJpGGy5sh7Aop6CALgzpDAF+12Y3kcZcsMJ4wQfH9NPqt910X7g22peI
+	 K/uQkGt9hnigpO7HHsjAhAhODI0FxWRvp7xHLkLYwvN8BHcgUOIrH/ugbaGkfSxd51
+	 IoAKRv2j/UBQFCnrTlrNj3dofIgRscqC/gh5/tBu/XKZm8jdfyonMOWddfpK0OAaIb
+	 D0J7i6TFHSK0Qbc5ap7jRDEeSmiXP/jPrxtRn+tMRc14vSqIMu/3UfMlLdM9z7/dr/
+	 ahma+L0rilO+A==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5135e8262e4so6656025e87.0;
+        Tue, 12 Mar 2024 20:48:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWM7L8zP1HzLZZ9cl5vJDMF3S/Ic0VXUiJamNnRjZm4gOcRXObX9ml0O4gdcA0KJMJ/6NiMzrFRzJzuUgONCUjptJv2Y+fkaKhafP+9A4zJd0JMR6tmlbhMjHmhhJrWCEEm927B5ak9eRo3a3f9/VGep/N0qVP+F+hOCGTUovTcNKrDBVdeN4hY13RM
+X-Gm-Message-State: AOJu0Yye4L0QZ2pmQIVbYBmKBGPRYCMNNehLSZ+tD5kPXcxF7lKLdj7K
+	DQu4534Y//aFKGxwkKFag4Vr9zz9qjhNf9rNr7mE9wGPjL/tKctz+spx74FKCdLaCYa4IAhRz1S
+	Rt3WH5GhbN4rJ10aBiNH7J5Ofi/U=
+X-Google-Smtp-Source: AGHT+IFQGGOXeJS2cP1mqVkQyb8U93YoQbMAGZimnQg5z8RPYJ5VLLQxpIGKpD5eblVrbx+KvNJWQ8s4AgU4cOgUDlI=
+X-Received: by 2002:a05:6512:1149:b0:512:ac3a:7f27 with SMTP id
+ m9-20020a056512114900b00512ac3a7f27mr8291674lfg.66.1710301716348; Tue, 12 Mar
+ 2024 20:48:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] x86/virt/tdx: Export global metadata read
- infrastructure
-Content-Language: en-US
-To: Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: x86@kernel.org, dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
- peterz@infradead.org, tglx@linutronix.de, bp@alien8.de, mingo@redhat.com,
- hpa@zytor.com, seanjc@google.com, pbonzini@redhat.com,
- isaku.yamahata@intel.com, jgross@suse.com
-References: <cover.1709288433.git.kai.huang@intel.com>
- <ec9fc9f1d45348ddfc73362ddfb310cc5f129646.1709288433.git.kai.huang@intel.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ec9fc9f1d45348ddfc73362ddfb310cc5f129646.1709288433.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240312-gcc-plugins-gmp-v1-0-c5e082437b9e@linutronix.de>
+ <20240312-gcc-plugins-gmp-v1-2-c5e082437b9e@linutronix.de> <202403121452.701C91AF6E@keescook>
+In-Reply-To: <202403121452.701C91AF6E@keescook>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Wed, 13 Mar 2024 12:47:59 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ=aSqUUStN_M8QVqeS9R1QVM5CPq7=kzpY0z060XJFDA@mail.gmail.com>
+Message-ID: <CAK7LNAQ=aSqUUStN_M8QVqeS9R1QVM5CPq7=kzpY0z060XJFDA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gcc-plugins: disable plugins when gmp.h is unavailable
+To: Kees Cook <keescook@chromium.org>
+Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/1/2024 7:20 PM, Kai Huang wrote:
-> KVM will need to read a bunch of non-TDMR related metadata to create and
-> run TDX guests.  Export the metadata read infrastructure for KVM to use.
-> 
-> Specifically, export two helpers:
-> 
-> 1) The helper which reads multiple metadata fields to a buffer of a
->     structure based on the "field ID -> structure member" mapping table.
-> 
-> 2) The low level helper which just reads a given field ID.
-
-How about introducing a helper to read a single metadata field comparing 
-to 1) instead of the low level helper.
-
-The low level helper tdx_sys_metadata_field_read() requires the data buf 
-to be u64 *. So the caller needs to use a temporary variable and handle 
-the memcpy when the field is less than 8 bytes.
-
-so why not expose a high level helper to read single field, e.g.,
-
-+int tdx_sys_metadata_read_single(u64 field_id, int bytes, void *buf)
-+{
-+       return stbuf_read_sys_metadata_field(field_id, 0, bytes, buf);
-+}
-+EXPORT_SYMBOL_GPL(tdx_sys_metadata_read_single);
-
-> The two helpers cover cases when the user wants to cache a bunch of
-> metadata fields to a certain structure and when the user just wants to
-> query a specific metadata field on demand.  They are enough for KVM to
-> use (and also should be enough for other potential users).
+On Wed, Mar 13, 2024 at 6:53=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
 >
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->   arch/x86/include/asm/tdx.h  | 22 ++++++++++++++++++++++
->   arch/x86/virt/vmx/tdx/tdx.c | 25 ++++++++-----------------
->   2 files changed, 30 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index eba178996d84..709b9483f9e4 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -116,6 +116,28 @@ static inline u64 sc_retry(sc_func_t func, u64 fn,
->   int tdx_cpu_enable(void);
->   int tdx_enable(void);
->   const char *tdx_dump_mce_info(struct mce *m);
-> +
-> +struct tdx_metadata_field_mapping {
-> +	u64 field_id;
-> +	int offset;
-> +	int size;
-> +};
-> +
-> +#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
-> +	{ .field_id = MD_FIELD_ID_##_field_id,		\
-> +	  .offset   = offsetof(_struct, _member),	\
-> +	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
-> +
-> +/*
-> + * Read multiple global metadata fields to a buffer of a structure
-> + * based on the "field ID -> structure member" mapping table.
-> + */
-> +int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
-> +			  int nr_fields, void *stbuf);
-> +
-> +/* Read a single global metadata field */
-> +int tdx_sys_metadata_field_read(u64 field_id, u64 *data);
-> +
->   #else
->   static inline void tdx_init(void) { }
->   static inline int tdx_cpu_enable(void) { return -ENODEV; }
-> diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-> index 4ee4b8cf377c..dc21310776ab 100644
-> --- a/arch/x86/virt/vmx/tdx/tdx.c
-> +++ b/arch/x86/virt/vmx/tdx/tdx.c
-> @@ -251,7 +251,7 @@ static int build_tdx_memlist(struct list_head *tmb_list)
->   	return ret;
->   }
->   
-> -static int read_sys_metadata_field(u64 field_id, u64 *data)
-> +int tdx_sys_metadata_field_read(u64 field_id, u64 *data)
->   {
->   	struct tdx_module_args args = {};
->   	int ret;
-> @@ -270,6 +270,7 @@ static int read_sys_metadata_field(u64 field_id, u64 *data)
->   
->   	return 0;
->   }
-> +EXPORT_SYMBOL_GPL(tdx_sys_metadata_field_read);
->   
->   /* Return the metadata field element size in bytes */
->   static int get_metadata_field_bytes(u64 field_id)
-> @@ -295,7 +296,7 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
->   	if (WARN_ON_ONCE(get_metadata_field_bytes(field_id) != bytes))
->   		return -EINVAL;
->   
-> -	ret = read_sys_metadata_field(field_id, &tmp);
-> +	ret = tdx_sys_metadata_field_read(field_id, &tmp);
->   	if (ret)
->   		return ret;
->   
-> @@ -304,19 +305,8 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
->   	return 0;
->   }
->   
-> -struct field_mapping {
-> -	u64 field_id;
-> -	int offset;
-> -	int size;
-> -};
-> -
-> -#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
-> -	{ .field_id = MD_FIELD_ID_##_field_id,		\
-> -	  .offset   = offsetof(_struct, _member),	\
-> -	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
-> -
-> -static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
-> -			     void *stbuf)
-> +int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
-> +			  int nr_fields, void *stbuf)
->   {
->   	int i, ret;
->   
-> @@ -331,6 +321,7 @@ static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
->   
->   	return 0;
->   }
-> +EXPORT_SYMBOL_GPL(tdx_sys_metadata_read);
->   
->   #define TD_SYSINFO_MAP_TDMR_INFO(_field_id, _member)	\
->   	TD_SYSINFO_MAP(_field_id, struct tdx_tdmr_sysinfo, _member)
-> @@ -338,7 +329,7 @@ static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
->   static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
->   {
->   	/* Map TD_SYSINFO fields into 'struct tdx_tdmr_sysinfo': */
-> -	const struct field_mapping fields[] = {
-> +	const struct tdx_metadata_field_mapping fields[] = {
->   		TD_SYSINFO_MAP_TDMR_INFO(MAX_TDMRS,		max_tdmrs),
->   		TD_SYSINFO_MAP_TDMR_INFO(MAX_RESERVED_PER_TDMR, max_reserved_per_tdmr),
->   		TD_SYSINFO_MAP_TDMR_INFO(PAMT_4K_ENTRY_SIZE,    pamt_entry_size[TDX_PS_4K]),
-> @@ -347,7 +338,7 @@ static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
->   	};
->   
->   	/* Populate 'tdmr_sysinfo' fields using the mapping structure above: */
-> -	return read_sys_metadata(fields, ARRAY_SIZE(fields), tdmr_sysinfo);
-> +	return tdx_sys_metadata_read(fields, ARRAY_SIZE(fields), tdmr_sysinfo);
->   }
->   
->   /* Calculate the actual TDMR size */
+> On Tue, Mar 12, 2024 at 04:03:30PM +0100, Thomas Wei=C3=9Fschuh wrote:
+> > The header gmp.h is meant to be picked up from the host system.
+> >
+> > When it is unavailable the plugin build fails:
+> >
+> > In file included from ../crosstools/gcc-13.2.0-nolibc/i386-linux/bin/..=
+/lib/gcc/i386-linux/13.2.0/plugin/include/gcc-plugin.h:28,
+> >                  from ../scripts/gcc-plugins/gcc-common.h:7,
+> >                  from ../scripts/gcc-plugins/stackleak_plugin.c:30:
+> > ../crosstools/gcc-13.2.0-nolibc/i386-linux/bin/../lib/gcc/i386-linux/13=
+2.0/plugin/include/system.h:703:10: fatal error: gmp.h: No such file or di=
+rectory
+> >   703 | #include <gmp.h>
+> >       |          ^~~~~~~
+> >
+> > Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
+> > ---
+> >  scripts/gcc-plugins/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
+> > index e383cda05367..a664fb5cdde5 100644
+> > --- a/scripts/gcc-plugins/Kconfig
+> > +++ b/scripts/gcc-plugins/Kconfig
+> > @@ -10,6 +10,7 @@ menuconfig GCC_PLUGINS
+> >       depends on HAVE_GCC_PLUGINS
+> >       depends on CC_IS_GCC
+> >       depends on $(success,test -e $(shell,$(CC) -print-file-name=3Dplu=
+gin)/include/plugin-version.h)
+> > +     depends on $(host-cc-option,-include gmp.h)
+>
+> Why does the prior depends not fail? That's where plugin detection is
+> happening.
+>
+> --
+> Kees Cook
+>
 
+
+
+This patch set should be rejected.
+
+
+It was already discussed in the past.
+Just install a proper package, then gcc-plugin will work.
+
+https://lore.kernel.org/all/CAHk-=3DwjjiYjCp61gdAMpDOsUBU-A2hFFKJoVx5VAC7yV=
+4K6WYg@mail.gmail.com/
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
