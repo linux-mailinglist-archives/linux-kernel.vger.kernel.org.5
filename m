@@ -1,98 +1,89 @@
-Return-Path: <linux-kernel+bounces-101409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7427C87A6C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:09:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D0C487A6DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 305B6284FCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:09:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A5181F21E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8C93F9C8;
-	Wed, 13 Mar 2024 11:06:53 +0000 (UTC)
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BB03EA7B;
-	Wed, 13 Mar 2024 11:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15C83F9C3;
+	Wed, 13 Mar 2024 11:09:39 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E364C618;
+	Wed, 13 Mar 2024 11:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710328012; cv=none; b=QwcIrrWg46KQeU8grUJMDqGF9+amZUEOFvAwbdgEI44Z/oS+sLO+/SgM4IH+q0x4ZDz3l8WBIcA/L6bzocHcBNG8a+m46O9Qq7eEhLophGTvCe/EDsQMuwy/QcqwDtCAXUhbosdylQeYQ649FjOeQQ863nJJdUXbgV4yMzvd7XY=
+	t=1710328179; cv=none; b=PuSiNCY2z0gCf+cM7H7ZXrBFeIQm8rn/YGiDZaQ6XnmSkZCZ15YkCenNZIiQUMSz41K0gAjoJCH8bUGt+WDdYxQgwQUmIDVqF15urn6XFTAtyao4a99ZroJq1RF4Mexv2LT1dnbkwf0yGuTrs2rJGtNBXvvcsyeDnxo5DSCyO2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710328012; c=relaxed/simple;
-	bh=QUK/mXJR9TF8U4K49/iweWEftEMp+8kuzVs1kUkVfQ0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cGelar/KQbuQ9Yhch2BtPOplFzGLp/c2Lf1b4JNjPDUekxxU5Fg5k0MXGUl8qk4xSWtRucigKLeysTbMV18rAOm5D/hXElz8oGfdlWWfEFnIiJtQLihRk7lkYPDiw/c4+Ssb+s4Sjkhfl9cSgOmNM89rgWb3pUey3Nf7KGKlnKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-	by mail.parknet.co.jp (Postfix) with ESMTPSA id 6A780205DB9A;
-	Wed, 13 Mar 2024 20:06:48 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42DB6gvD219176
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 20:06:43 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42DB6gQj1312073
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 20:06:42 +0900
-Received: (from hirofumi@localhost)
-	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 42DB6fSW1312070;
-	Wed, 13 Mar 2024 20:06:41 +0900
-From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gwendal
- Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-In-Reply-To: <ZfFmvGRlNR4ZiMMC@quatroqueijos.cascardo.eti.br> (Thadeu Lima de
-	Souza Cascardo's message of "Wed, 13 Mar 2024 05:41:32 -0300")
-References: <ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
-	<87v86fnz2o.fsf@mail.parknet.co.jp>
-	<Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
-	<87le75s1fg.fsf@mail.parknet.co.jp>
-	<Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
-	<87h6hek50l.fsf@mail.parknet.co.jp>
-	<Ze2IAnSX7lr1fZML@quatroqueijos.cascardo.eti.br>
-	<87cys2jfop.fsf@mail.parknet.co.jp>
-	<ZfFcpWRWdnWmtebd@quatroqueijos.cascardo.eti.br>
-	<878r2mk14a.fsf@mail.parknet.co.jp>
-	<ZfFmvGRlNR4ZiMMC@quatroqueijos.cascardo.eti.br>
-Date: Wed, 13 Mar 2024 20:06:41 +0900
-Message-ID: <874jdajsqm.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710328179; c=relaxed/simple;
+	bh=7E0FWu/tC3XQEAq8/VJphNgdP79HyVmJK+bjjlHyHHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=RCWNRya7DPFkfE1yRsu/Zu3nuuuVM2xpM83T8r6WWL+HY+0q6IgJuXv6jd563BPr0kgkX0RMS7kqZ2lthFSpDGRALHAGqYaVa3AjtBhgKKFi10Nc4InE9ZS8ZfYQY3Y9G67MeoDf6li43VDo2F4aT7xIP8Z9WqSQn2+czEmoqYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 40E6161E5FE04;
+	Wed, 13 Mar 2024 12:08:02 +0100 (CET)
+Message-ID: <6f2af609-e3fc-426b-a7ee-b83b859af09f@molgen.mpg.de>
+Date: Wed, 13 Mar 2024 12:08:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] pinctrl: pinctrl-aspeed-g6: Fix register offset for
+ pinconf of GPIOR-T
+Content-Language: en-US
+To: Billy Tsai <billy_tsai@aspeedtech.com>
+References: <20240313092809.2596644-1-billy_tsai@aspeedtech.com>
+Cc: andrew@codeconstruct.com.au, linus.walleij@linaro.org, joel@jms.id.au,
+ johnny_huang@aspeedtech.com, linux-aspeed@lists.ozlabs.org,
+ openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ BMC-SW@aspeedtech.com, Ricky_CX_Wu@wiwynn.com
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20240313092809.2596644-1-billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+Dear Billy,
 
->> So you break the mkdir/rmdir link counting, isn't it?
->> 
->
-> It is off by one on those images with directories without ".." subdir.
-> Otherwise, everything else works fine. mkdir/rmdir inside such directories work
-> without any issues as rmdir that same directory.
 
-mkdir() increase link count, rmdir decrease link count. Your change set
-a dir link count always 2? So if there are 3 normal subdirs, and rmdir
-all those normal dirs, link count underflow.
+Thank you very much for sending version 2.
 
-Thanks.
 
-> If, on the other hand, we left everything as is and only skipped the
-> validation, such directories would be created with a link count of 0. Then,
-> doing a mkdir inside them would crash the kernel with a BUG as we cannot
-> increment the link count of an inode with 0 links.
->
-> So the idea of the fix here is that, independently of the existence of "..",
-> the link count will always be at least 1.
+Am 13.03.24 um 10:28 schrieb Billy Tsai:
+> The register offset to disable the internal pull-down of GPIOR~T is 0x630
+> instead of 0x620, as specified in the Ast2600 datasheet v15
+> The datasheet can download from the official Aspeed website.
 
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+(No need for another iteration for this, but “can be downloaded”.)
+
+> Fixes: 15711ba6ff19 ("pinctrl: aspeed-g6: Add AST2600 pinconf support")
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>   drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 34 +++++++++++-----------
+>   1 file changed, 17 insertions(+), 17 deletions(-)
+
+[…]
+
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+
+Kind regards,
+
+Paul
 
