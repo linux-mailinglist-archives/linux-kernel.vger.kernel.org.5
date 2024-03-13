@@ -1,134 +1,196 @@
-Return-Path: <linux-kernel+bounces-102336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9773287B0DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:03:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE69287B0E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:03:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5170A290A13
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:03:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D33A1C2685B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0636A8AB;
-	Wed, 13 Mar 2024 18:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BAC6A8D1;
+	Wed, 13 Mar 2024 18:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TjODz66q"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="HF+a7X5l"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71760605C1
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2886A8BA;
+	Wed, 13 Mar 2024 18:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710353545; cv=none; b=lnHqGLMv+O2GHepXfzdtfhI/AqRA38zocdJ3g4yR3hp4vNL6m9YHc1XS60jL98fB5XyI4GvtiC9PLqZoWLvIW4p89FnzCTo0ithuiaNhdZBSNnyJKuWdplhkzGh9jbBVn+2Uk84p3S1dhAgaz1iK5Hh+2xum+eMh9nYJ1g2vdfc=
+	t=1710353555; cv=none; b=RRdnioLwxn6sQhhQ74Xn+ODthZSz0CtipgYIWMqE0M8Rf6kk6IFb15PFfYPheJyHfSpklhdTiyHUdu+8s14wORmibI/BQqOl/zna/81rOj5nMuVjjS4YIPqdYxDCst2Sq/Gc0G2ZGIcnQBE8UKHRpLJQiwmzssfCWYjbpwvFEdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710353545; c=relaxed/simple;
-	bh=Juz30sNn9Vm/o0qmgqL6ej/+Db1FXC/0PH8XbJPugnI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mT0QvRPsadeQ13TfveLFmG2H/YMegXsoWUjJ57jiMXJDgQIC3OrNBPWRKQBlZK7OpNGds0fMyzBa9lgE2XOulpWowAMQrUeG3nLQqw6g8g25bVBASqIOceSWdkreCZ/wrT/ZEsIwhs4BjEYrLf+lOK7rgmizOPqxlF5m7mG488A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TjODz66q; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dd878da011so707665ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:12:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710353543; x=1710958343; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zH16D+dx0oQl5CujF1HkbTVT0zJku0/wsGqqINARPF0=;
-        b=TjODz66qwSw9FCbT7aXlAYxoSRj85qdomQp2Nzrvnuxhu4DKNXcKTBbQ8MoR0d5VcO
-         N99SZPeUYeRI4Ihpt2ZKj/Ks2NnI9szyD/xgXbyMF1bzBB9JB/0l5kN3P4qlYC6MrxNX
-         qU4spN/SOHu1FlLyY3pm5HLgrBI7kaIplfJ6Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710353543; x=1710958343;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zH16D+dx0oQl5CujF1HkbTVT0zJku0/wsGqqINARPF0=;
-        b=wSlkumy5yDkOLPVr0/GYH1R9rzEVH32Q8WMHpBcNASdPveRFdhxW8SZuDDXepm9SBw
-         m6tJZq/neRov/9bFUnR5Ku1DFqyHC/30O/YnTswBPYEDUIPtMOyPDHqx38atEzIdF6GP
-         BDcWe/HyNM7TA2oxmrNjR1LtIb7csHDZicyYQbbrv4KpEBtoPR2i6XgaSGs9jjd7MjMK
-         G+/fgoqAdnPzd8o76KkuXdd+NK8yIC9xIgjfmOYJmlpw0EFIEiC6hNkXPBQDqLJBt1Dy
-         RdM9rqXZ1tJyVAwKVCZ3rLFUvyDqCPfTlBfo4tBHmZzgrZorjnBmxlGExF/gknwjfUOa
-         d9qQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmDAdqp8ZbUNbsZi2eYc8jw6EQiC+bOwYHIorwj08t6SMhvxrD3N/WoMIoHTbG5bZyS4TSgUyvWke6uPqTLMZKepQPnq0wE44o8Sg6
-X-Gm-Message-State: AOJu0YzBpicrkobooBAccZtqRqVeLN2DAXT675APU3HydOCLbnV3U/YI
-	Injh03f+ct3hHxOUkjpsqrWAsNZc47ig2/nDpMeUAsUywmbLuj0spDKMM2id+g==
-X-Google-Smtp-Source: AGHT+IF4D9+0QB6a94Q1UTugK4FIN2Jw3/2SUxLiLcnoVm4wN+52lZO/YIzJAWgk6SC0iB7flOhkNw==
-X-Received: by 2002:a17:902:e849:b0:1dd:5ba0:e0ee with SMTP id t9-20020a170902e84900b001dd5ba0e0eemr6961805plg.9.1710353542738;
-        Wed, 13 Mar 2024 11:12:22 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170902e74a00b001dda1e9f510sm6006486plf.92.2024.03.13.11.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 11:12:22 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Marco Elver <elver@google.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	kasan-dev@googlegroups.com,
-	linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ubsan: Disable signed integer overflow sanitizer on GCC < 8
-Date: Wed, 13 Mar 2024 11:12:20 -0700
-Message-Id: <20240313181217.work.263-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710353555; c=relaxed/simple;
+	bh=msE+LoodrnJuR41WimKwSvVNdBUojEMdM6lEeYgLaLE=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=NAO8G6ZEzWGhxfE0UcJVxmiZTU6QJ212g2/2mhnhTvD0e1wb5yoxFVcsE1HlLm9sSPET3dbg4b81HjP1yPJFnWHZDNdnIZNpp1Cf2zeiF72KX4A/dJxgSC6j9wIUUCKlPn3tErJ3aqqSDuoNuCrN4FtgEnaJt74QYH39qKrPkw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=HF+a7X5l; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710353551;
+	bh=msE+LoodrnJuR41WimKwSvVNdBUojEMdM6lEeYgLaLE=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=HF+a7X5lXjnxaIDWE/8k8QRhMGELdabzRPU9htidGUlZ/EkTMOnUa2qc40ZRT3e5v
+	 PXC1jq4Zty8ILQfh1SXwhw9ef53eHANm63bltn1VsnnJpWbj8AimTd/hTRX+MehWL2
+	 N5VuZOLXcOb7nlGDoKOCTYK5UYa8sSeN1Yb/JVAn25GMy91aMtu5Ay5EUZEovc3Wy6
+	 ERV6xwp0yoPWRhiCe3z7nbem9T2YSM+9Ho6xace7PVCBt6ttEEtMxKRlR2dpoVStrY
+	 sBFyGkwe2sSDtEai0T0RRdfJz9fgPUO1+dBd0mnz6dvvAJ5RmoCcifOM4/05w3lRTq
+	 To+iwhhdmvJxg==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3126537802F2;
+	Wed, 13 Mar 2024 18:12:26 +0000 (UTC)
+Message-ID: <b7fb0e92-f74b-4e12-9eaa-0427901c2be5@collabora.com>
+Date: Wed, 13 Mar 2024 23:12:58 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1242; i=keescook@chromium.org;
- h=from:subject:message-id; bh=Juz30sNn9Vm/o0qmgqL6ej/+Db1FXC/0PH8XbJPugnI=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl8eyE9J4yYHWBRmDSdvgZpqfXhVx4eTZnYonIO
- C2r7NDdWBeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZfHshAAKCRCJcvTf3G3A
- JrdUD/9PrK3mREHrrRuyLF4jhJgBAkp5b4PysQdaAjPjzZYkJbyTnujbjqdj8HsfbcKdySR+sQ5
- onBvzW2mCRKGIevgEPgGaRJC+9qZWmUP/EBSa0kkQJAhA/WkPe297pALLimV0ipGDra9dQnJaR9
- AvQE/QiFBgiUxzrnIEwLqsVsdHIjudciaLu4aWyg+CwfuW06MV82wAfjptQQiKIr95CuFOJ4ykm
- lF7cpXA5NH/v5B+wjfh4iJ4r2/zjaDi8TpGU4HQ+oqYCTNH6A3+x6qEXwuOdzPSO4kcJ3AvfOis
- UW7pd7rW8+O25WJaEyMo0Npxvs+3gKMwDx6G/DgM+PcE5swxdcPHZAqIX1UnL+T0KeQdIBEdgKt
- KqopeblJVpbLxic2Okx2HQDLQQXTec0V3igxfc5msTovLOhTkdlprYSH1pwYC7/Mriht7U+TTUj
- cDewZRRncSAgwMs/EMALchw3L1ZtdIYMifMrnHMMpQ8PwPsptTatZ+WxpQ9T7fAezSb5jgNJCgy
- edDaC8i9zMq3eQHCZcP8W9ej8H3sJ4ywMbbnRUTqD0VF9hE5yBQrwo818Rh3+sU3VvaueK3fVV7
- +j/OFiy6wrf5XSH/dPltWckYZlHgYO1pxaoskP/k/XZiTJUOpJY+DN7ISRH6KiOOBmk8gXBvTgg
- 88J3E9H MDnG3kmA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
+ kernel@collabora.com, Ryan Roberts <ryan.roberts@arm.com>,
+ linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] selftests/mm: protection_keys: save/restore
+ nr_hugepages settings
+To: Joey Gouly <joey.gouly@arm.com>
+References: <20240125154608.720072-1-usama.anjum@collabora.com>
+ <20240125154608.720072-5-usama.anjum@collabora.com>
+ <20240313145811.GA2896554@e124191.cambridge.arm.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240313145811.GA2896554@e124191.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-For opting functions out of sanitizer coverage, the "no_sanitize"
-attribute is used, but in GCC this wasn't introduced until GCC 8.
-Disable the sanitizer unless we're not using GCC, or it is GCC
-version 8 or higher.
+On 3/13/24 7:58 PM, Joey Gouly wrote:
+> Hi Muhammad,
+> 
+> On Thu, Jan 25, 2024 at 08:46:07PM +0500, Muhammad Usama Anjum wrote:
+>> Save and restore nr_hugepages before changing it during the test. A test
+>> should not change system wide settings.
+>>
+>> Fixes: 5f23f6d082a9 ("x86/pkeys: Add self-tests")
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>>  tools/testing/selftests/mm/protection_keys.c | 34 ++++++++++++++++++++
+>>  1 file changed, 34 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/mm/protection_keys.c b/tools/testing/selftests/mm/protection_keys.c
+>> index 48dc151f8fca8..f822ae31af22e 100644
+>> --- a/tools/testing/selftests/mm/protection_keys.c
+>> +++ b/tools/testing/selftests/mm/protection_keys.c
+>> @@ -54,6 +54,7 @@ int test_nr;
+>>  u64 shadow_pkey_reg;
+>>  int dprint_in_signal;
+>>  char dprint_in_signal_buffer[DPRINT_IN_SIGNAL_BUF_SIZE];
+>> +char buf[256];
+>>  
+>>  void cat_into_file(char *str, char *file)
+>>  {
+>> @@ -1744,6 +1745,38 @@ void pkey_setup_shadow(void)
+>>  	shadow_pkey_reg = __read_pkey_reg();
+>>  }
+>>  
+>> +void restore_settings_atexit(void)
+>> +{
+>> +	cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
+>> +}
+>> +
+>> +void save_settings(void)
+>> +{
+>> +	int fd;
+>> +	int err;
+>> +
+>> +	if (geteuid())
+>> +		return;
+>> +
+>> +	fd = open("/proc/sys/vm/nr_hugepages", O_RDONLY);
+>> +	if (fd < 0) {
+>> +		fprintf(stderr, "error opening\n");
+>> +		perror("error: ");
+>> +		exit(__LINE__);
+>> +	}
+>> +
+>> +	/* -1 to guarantee leaving the trailing \0 */
+>> +	err = read(fd, buf, sizeof(buf)-1);
+>> +	if (err < 0) {
+>> +		fprintf(stderr, "error reading\n");
+>> +		perror("error: ");
+>> +		exit(__LINE__);
+>> +	}
+>> +
+>> +	atexit(restore_settings_atexit);
+>> +	close(fd);
+>> +}
+>> +
+>>  int main(void)
+>>  {
+>>  	int nr_iterations = 22;
+>> @@ -1751,6 +1784,7 @@ int main(void)
+>>  
+>>  	srand((unsigned int)time(NULL));
+>>  
+>> +	save_settings();
+>>  	setup_handlers();
+>>  
+>>  	printf("has pkeys: %d\n", pkeys_supported);
+>> -- 
+>> 2.42.0
+>>
+> 
+> This break the tests for me:
+> 
+> assert() at protection_keys.c::812 test_nr: 19 iteration: 1
+> running abort_hooks()...
+> 
+> This is because some of the tests fork, so on their atexit() they will set the
+> nr_hugepages back to the previous setting. Specifically the
+> test_pkey_alloc_exhaust() test.
+Thank you for reporting. Please can you test the following patch:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202403110643.27JXEVCI-lkp@intel.com/
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Cc: Marco Elver <elver@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: kasan-dev@googlegroups.com
-Cc: linux-hardening@vger.kernel.org
----
- lib/Kconfig.ubsan | 2 ++
- 1 file changed, 2 insertions(+)
+--- a/tools/testing/selftests/mm/protection_keys.c
++++ b/tools/testing/selftests/mm/protection_keys.c
+@@ -1745,9 +1745,12 @@ void pkey_setup_shadow(void)
+ 	shadow_pkey_reg = __read_pkey_reg();
+ }
 
-diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-index 48a67058f84e..e81e1ac4a919 100644
---- a/lib/Kconfig.ubsan
-+++ b/lib/Kconfig.ubsan
-@@ -119,6 +119,8 @@ config UBSAN_SIGNED_WRAP
- 	bool "Perform checking for signed arithmetic wrap-around"
- 	default UBSAN
- 	depends on !COMPILE_TEST
-+	# The no_sanitize attribute was introduced in GCC with version 8.
-+	depends on !CC_IS_GCC || GCC_VERSION >= 80000
- 	depends on $(cc-option,-fsanitize=signed-integer-overflow)
- 	help
- 	  This option enables -fsanitize=signed-integer-overflow which checks
++pid_t parent_pid;
++
+ void restore_settings_atexit(void)
+ {
+-	cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
++	if (parent_pid == getpid())
++		cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
+ }
+
+ void save_settings(void)
+@@ -1773,6 +1776,7 @@ void save_settings(void)
+ 		exit(__LINE__);
+ 	}
+
++	parent_pid = getpid();
+ 	atexit(restore_settings_atexit);
+ 	close(fd);
+ }
+
+
+> 
+> Thanks,
+> Joey
+> 
+
 -- 
-2.34.1
-
+BR,
+Muhammad Usama Anjum
 
