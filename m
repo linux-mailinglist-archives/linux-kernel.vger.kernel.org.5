@@ -1,153 +1,170 @@
-Return-Path: <linux-kernel+bounces-101435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F72587A70F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:26:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7865687A712
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:27:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2013C1F227DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:26:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1F4D1F23119
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9193F8EA;
-	Wed, 13 Mar 2024 11:26:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B0C3DBBA;
-	Wed, 13 Mar 2024 11:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427BE3F8F4;
+	Wed, 13 Mar 2024 11:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="hwLbK7fR"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CF23EA78
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710329175; cv=none; b=rcBVXmjRVJF1IcbHNrOqTJwDo0QgiIVdJ3gFrAkFmz4OS79HwhxDfwQT3z5UW0n7lk+UQJ2GXotgd5jyaPmSmCPfJlwgXkMNsLb4KBDrqa+2CBXGp3v4UHN8cX1ld0nsftKJlVldzZMfP3TVhNqrltjlkioHc+sgMq9zNZZfEcU=
+	t=1710329217; cv=none; b=Sby05dNBriqmgI1SAlDAGbqzEqk1UScj/1qhOzlq1FG6Ke4i+tnVQvn7jqpYqqhiYGFhmGoiDgE9NNt8Ft5lUBK2T0i4VwLQY2hmmISUKTkCfDdjHc69s8vD8fE6shSdgMTZeQSTTINgLrL3zcmj49DoyJf3dbpE2s8jOxSaYGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710329175; c=relaxed/simple;
-	bh=y3OqGf9cZrU1G2FvP2a7Qj2ptdbA5j3NjnjuWrWjlwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kpxVKQsSfa2x4F9wLhPS1Taakz3yhFMPvDP6yFl3sETrcEKvalN2xc/xr747NY9WoujWrQqlEej+UxTPytG9GIXP+WbZpOklTjgrDIwMYAZ0ubj4lv59Q/Z9685Ff817fDYwX2bKUKt5AzBZQbNDOU4gwYbxYjyXjHNkZpFO+1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A67731007;
-	Wed, 13 Mar 2024 04:26:49 -0700 (PDT)
-Received: from [192.168.1.100] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B59A3F73F;
-	Wed, 13 Mar 2024 04:26:09 -0700 (PDT)
-Message-ID: <b24137db-62e8-2b60-7a8d-2a7f8ac7ba93@arm.com>
-Date: Wed, 13 Mar 2024 11:26:07 +0000
+	s=arc-20240116; t=1710329217; c=relaxed/simple;
+	bh=NQt8NTW+q0brSzIrik+jUnUM5EwnMAPXW7RAkBx+yjI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 References; b=XPgsDdPopU3H+HKltu8LCpYiVfNctntgUyGNdv7HlE+8YReAugubFp82S95v65IOuGIk0YcDNeJRJ24QyjMHHnkztGCbVSQEEj4+4q/1ij6eiRwceE3r+FO01Ck00porRd8BiRwG8D/0KIZr/CZC590bEBqNlDzTxhaKlPnpLhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=hwLbK7fR; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240313112652epoutp012802c0b1de4fff3401725ff1a47ed379~8T1tpF2YJ0972809728epoutp01w
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:26:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240313112652epoutp012802c0b1de4fff3401725ff1a47ed379~8T1tpF2YJ0972809728epoutp01w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1710329212;
+	bh=o6ngaGJT6sMQ0sj5kIMIyQJUOCiXhM3e9x+mfasClqo=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=hwLbK7fRYv4hhJWnFNDt42HeltZoRu8C1hoEDuxZZHqcAdhvnZta8qqxpipWSHgDP
+	 x4IIxgPpRvTvUIVYgeN7AIQvCOI7v9ZmgV26he2LDWRQ9S5Lsm8wfDEFJm7WMTHoFg
+	 6qRbnvTrGVlPq+9AZt07D9SoGrMj+krMbaZXxzPA=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240313112652epcas1p1f90dda2ac39c0010f7e36e8b2890fdb2~8T1tM7zIe0889908899epcas1p1I;
+	Wed, 13 Mar 2024 11:26:52 +0000 (GMT)
+Received: from epsmgec1p1-new.samsung.com (unknown [182.195.38.248]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4TvpBM4knLz4x9Pp; Wed, 13 Mar
+	2024 11:26:51 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+	epsmgec1p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	78.64.19104.B7D81F56; Wed, 13 Mar 2024 20:26:51 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240313112650epcas1p3e65fdc5f6df18a4f700fa62bb5480b28~8T1r92KDh0101901019epcas1p3P;
+	Wed, 13 Mar 2024 11:26:50 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240313112650epsmtrp13f0dc0d8f8829d2f9182c688f6d17ccc~8T1r9FWvX2300523005epsmtrp13;
+	Wed, 13 Mar 2024 11:26:50 +0000 (GMT)
+X-AuditID: b6c32a4c-80dff70000004aa0-c5-65f18d7b0df1
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	5E.30.08755.A7D81F56; Wed, 13 Mar 2024 20:26:50 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.98.34]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240313112650epsmtip130c69cadd9fa5cb6e282857325ded076~8T1rvUMQr0971409714epsmtip1X;
+	Wed, 13 Mar 2024 11:26:50 +0000 (GMT)
+From: Sunmin Jeong <s_min.jeong@samsung.com>
+To: jaegeuk@kernel.org, chao@kernel.org, daehojeong@google.com
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	Sunmin Jeong <s_min.jeong@samsung.com>, stable@vger.kernel.org, Sungjong Seo
+	<sj1557.seo@samsung.com>, Yeongjin Gil <youngjin.gil@samsung.com>
+Subject: [PATCH 1/2] f2fs: mark inode dirty for FI_ATOMIC_COMMITTED flag
+Date: Wed, 13 Mar 2024 20:26:19 +0900
+Message-Id: <20240313112620.1061463-1-s_min.jeong@samsung.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 00/10] perf: Clean up common uncore boilerplate
-Content-Language: en-US
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linux-perf-users@vger.kernel.org, jialong.yang@shingroup.cn,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Will Deacon <will@kernel.org>
-References: <cover.1710257512.git.robin.murphy@arm.com>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <cover.1710257512.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPKsWRmVeSWpSXmKPExsWy7bCmgW5178dUg8bfihanp55lspjavpfR
+	4sn6WcwWlxa5W1zeNYfNYkHrbxaLLf+OsFos2PiI0WLG/qfsDpweCzaVemxa1cnmsXvBZyaP
+	vi2rGD0+b5ILYI3KtslITUxJLVJIzUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLx
+	CdB1y8wBOkdJoSwxpxQoFJBYXKykb2dTlF9akqqQkV9cYquUWpCSU2BWoFecmFtcmpeul5da
+	YmVoYGBkClSYkJ0x6+lKpoLnPBWXHv1jbGBcx9nFyMkhIWAi8X3BauYuRi4OIYE9jBInp3Sz
+	gCSEBD4xSmzt54NIfGOUWPJ6DxNMR8eeeawQib2MEgu/HoJygDpW3vvJCFLFJqAj8XDqbbBR
+	IgJ2ErduLmIFsZkF7jBKrHhQB2ILC3hIdLU+B6rh4GARUJW4MlMRJMwLVH685TgzxDJ5iZmX
+	vrNDxAUlTs58wgIxRl6ieetssLMlBG6xS0w/e4YRosFFYkf3WqhmYYlXx7ewQ9hSEi/726Ds
+	Yomj8zewQzQ3MErc+HoTKmEv0dzazAZyELOApsT6XfoQy/gk3n3tYQUJSwjwSnS0CUFUq0p0
+	P1oCtUpaYtmxg1BTPCR2tl2DhmKsxLe1z1gmMMrNQvLCLCQvzEJYtoCReRWjVGpBcW56arJh
+	gaFuXmo5PDKT83M3MYJTopbPDsbv6//qHWJk4mA8xCjBwawkwlun+DFViDclsbIqtSg/vqg0
+	J7X4EKMpMFwnMkuJJucDk3JeSbyhiaWBiZmRiYWxpbGZkjjvmStlqUIC6YklqdmpqQWpRTB9
+	TBycUg1MHUunzYs0fHdcPmr1Z97asskXs6PTK1wfFPhOyYnROHUxfp8En/WWN/WbZ2Wlpcb+
+	u3aiI3Ha6ccnO470SV/pZgtQm/VRc+/FV4xBn3RUvvg0zCxb9ubig7pHNk6Caj7+1QLxm6/v
+	+pfw6s4K+XIRoR9aL5/9OThvV+/Hkzan8uZ7pt/farqYve7K3p/bb0Xmlk/5sv5oQsm1cydr
+	0k4lLvRd7WVQ5Mi15eeaNdH5/Fodfhf4my6VJX9qyK7beObjU79HS5k+yZewyjoneD65PNlY
+	wphfOi+PcT//cpuSOzynjq3Ys8Pu94Vn6raH+Fb18pWsrFzDwy648tYbPdlDO7PTl1lK+Suc
+	5/ih9SzGWomlOCPRUIu5qDgRABEsaoISBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKLMWRmVeSWpSXmKPExsWy7bCSnG5V78dUg76zKhanp55lspjavpfR
+	4sn6WcwWlxa5W1zeNYfNYkHrbxaLLf+OsFos2PiI0WLG/qfsDpweCzaVemxa1cnmsXvBZyaP
+	vi2rGD0+b5ILYI3isklJzcksSy3St0vgypj1dCVTwXOeikuP/jE2MK7j7GLk5JAQMJHo2DOP
+	tYuRi0NIYDejxJpdq5m6GDmAEtISx/4UQZjCEocPF0OUfGCUOLLwBgtIL5uAjsTDqbfBbBEB
+	J4n/N9rZQYqYBR4xShxqWMgIkhAW8JDoan3OAjKIRUBV4spMRZAwr4CdxPGW48wQN8hLzLz0
+	nR0iLihxcuYTsJnMQPHmrbOZJzDyzUKSmoUktYCRaRWjZGpBcW56brFhgWFearlecWJucWle
+	ul5yfu4mRnDIamnuYNy+6oPeIUYmDsZDjBIczEoivHWKH1OFeFMSK6tSi/Lji0pzUosPMUpz
+	sCiJ84q/6E0REkhPLEnNTk0tSC2CyTJxcEo1MK3/9u6tucwaiaOZ06dxt8Q+uJldfjL3W4xm
+	01yzAzMUmpz3fSjo31e6IePvaVuWzCSWKj7O31eLL1Q18/511jx7bdeJx76fzsf97b+y99x+
+	zc43SjfjvxervPsnsepOU8WcqfHNgcIH5GZz3JUwmTXxeFLE6j1v3iTHfOHW25ula780PCmS
+	P7RW7girR6qERJ7Xqw9X/0WWpHK457/vn+m0587ZyO1CD8/v2Sq57reW64M31nJ8PJNzSptP
+	TwvdbKH/3re5Siz0fCP327LDcUdEO7TPye6Zxygru/unX+MDoZXeK3fs3vdw0+wZCb0uF1zy
+	A1TqzNkfqkrqaTkY/sxlWligJKxb1TVpX82bZiWW4oxEQy3mouJEAL9U4hHIAgAA
+X-CMS-MailID: 20240313112650epcas1p3e65fdc5f6df18a4f700fa62bb5480b28
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240313112650epcas1p3e65fdc5f6df18a4f700fa62bb5480b28
+References: <CGME20240313112650epcas1p3e65fdc5f6df18a4f700fa62bb5480b28@epcas1p3.samsung.com>
 
+In f2fs_update_inode, i_size of the atomic file isn't updated until
+FI_ATOMIC_COMMITTED flag is set. When committing atomic write right
+after the writeback of the inode, i_size of the raw inode will not be
+updated. It can cause the atomicity corruption due to a mismatch between
+old file size and new data.
 
+To prevent the problem, let's mark inode dirty for FI_ATOMIC_COMMITTED
 
-On 12/03/2024 17:34, Robin Murphy wrote:
-> Hi all,
-> 
-> Since this came up yet again recently, and it's an idea which has been
-> nagging me for years, I decided it was time to see how hard it really
-> would be to start shaving this yak. And it turns out to be refreshingly
-> simple - the core code has quietly become capable of doing most of what
-> we want, the one new functional addition is trivial (patch #2), and the
-> resulting largely-mechanical cleanup seems a pretty nice win.
-> 
-> This series is focused on drivers/perf/ as that's where most mess is
-> concentrated, but figured I'd include the arch/ patches as well since
-> they might be reasonable to land with the core changes, at least for x86
-> (FWIW I did also look at the powerpc drivers but they scared me and I
-> ran away; sorry). The remaining stragglers elsewhere around the tree I'd
-> come back to as a follow-up.
-> 
-> (And yes, I appreciate it's mid-merge-window already, but since I do
-> have a tree-wide rename proposed here, may as well give the discussion
-> a chance for a head start before -rc1...)
-> 
-> Thanks,
-> Robin.
-> 
-> 
-Reviewed-by: James Clark <james.clark@arm.com>
+Atomic write thread                   Writeback thread
+                                        __writeback_single_inode
+                                          write_inode
+                                            f2fs_update_inode
+                                              - skip i_size update
+  f2fs_ioc_commit_atomic_write
+    f2fs_commit_atomic_write
+      set_inode_flag(inode, FI_ATOMIC_COMMITTED)
+    f2fs_do_sync_file
+      f2fs_fsync_node_pages
+        - skip f2fs_update_inode since the inode is clean
 
-> Robin Murphy (10):
->   perf/alibaba_uncore_drw: Use correct CPU affinity
->   perf: Add capability for common event support
->   drivers/perf: Use PERF_PMU_CAP_NO_COMMON_EVENTS
->   perf: Rename PERF_PMU_CAP_NO_INTERRUPT
->   drivers/perf: Use PERF_PMU_CAP_NO_SAMPLING consistently
->   drivers/perf: Clean up redundant per-task checks
->   perf: Define common uncore capabilities
->   drivers/perf: Use common uncore capabilities
->   x86: Use common uncore PMU capabilities
->   ARM: Use common uncore PMU capabilities
-> 
->  arch/arc/kernel/perf_event.c              |  2 +-
->  arch/arm/mach-imx/mmdc.c                  | 16 +-------------
->  arch/arm/mm/cache-l2x0-pmu.c              | 12 +---------
->  arch/csky/kernel/perf_event.c             |  2 +-
->  arch/powerpc/perf/8xx-pmu.c               |  2 +-
->  arch/powerpc/perf/hv-24x7.c               |  2 +-
->  arch/powerpc/perf/hv-gpci.c               |  2 +-
->  arch/powerpc/platforms/pseries/papr_scm.c |  2 +-
->  arch/s390/kernel/perf_cpum_cf.c           |  2 +-
->  arch/sh/kernel/perf_event.c               |  2 +-
->  arch/x86/events/amd/iommu.c               | 17 +-------------
->  arch/x86/events/amd/power.c               | 10 +--------
->  arch/x86/events/amd/uncore.c              | 12 +++-------
->  arch/x86/events/core.c                    |  2 +-
->  arch/x86/events/intel/cstate.c            | 16 +++-----------
->  arch/x86/events/intel/uncore.c            | 11 +--------
->  arch/x86/events/intel/uncore_snb.c        | 20 +++--------------
->  arch/x86/events/msr.c                     |  9 +-------
->  arch/x86/events/rapl.c                    |  9 +-------
->  drivers/fpga/dfl-fme-perf.c               |  2 +-
->  drivers/perf/alibaba_uncore_drw_pmu.c     | 27 +++--------------------
->  drivers/perf/amlogic/meson_ddr_pmu_core.c | 11 +--------
->  drivers/perf/arm-cci.c                    | 15 +------------
->  drivers/perf/arm-ccn.c                    | 20 +----------------
->  drivers/perf/arm-cmn.c                    | 10 +--------
->  drivers/perf/arm_cspmu/arm_cspmu.c        | 27 ++---------------------
->  drivers/perf/arm_dmc620_pmu.c             | 18 +--------------
->  drivers/perf/arm_dsu_pmu.c                | 22 +-----------------
->  drivers/perf/arm_pmu_platform.c           |  2 +-
->  drivers/perf/arm_smmuv3_pmu.c             | 15 +------------
->  drivers/perf/arm_spe_pmu.c                |  7 ++----
->  drivers/perf/cxl_pmu.c                    |  8 +------
->  drivers/perf/dwc_pcie_pmu.c               | 13 +----------
->  drivers/perf/fsl_imx8_ddr_perf.c          | 13 +----------
->  drivers/perf/fsl_imx9_ddr_perf.c          | 13 +----------
->  drivers/perf/hisilicon/hisi_pcie_pmu.c    | 10 +--------
->  drivers/perf/hisilicon/hisi_uncore_pmu.c  | 20 +----------------
->  drivers/perf/hisilicon/hns3_pmu.c         |  9 +-------
->  drivers/perf/marvell_cn10k_ddr_pmu.c      | 15 +------------
->  drivers/perf/marvell_cn10k_tad_pmu.c      |  6 +----
->  drivers/perf/qcom_l2_pmu.c                | 21 ++----------------
->  drivers/perf/qcom_l3_pmu.c                | 21 +-----------------
->  drivers/perf/riscv_pmu_sbi.c              |  2 +-
->  drivers/perf/thunderx2_pmu.c              | 17 +-------------
->  drivers/perf/xgene_pmu.c                  | 16 +-------------
->  include/linux/perf_event.h                |  6 ++++-
->  kernel/events/core.c                      |  7 +++++-
->  47 files changed, 67 insertions(+), 456 deletions(-)
-> 
+Fixes: 3db1de0e582c ("f2fs: change the current atomic write way")
+Cc: stable@vger.kernel.org #v5.19+
+Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
+Reviewed-by: Yeongjin Gil <youngjin.gil@samsung.com>
+Signed-off-by: Sunmin Jeong <s_min.jeong@samsung.com>
+---
+ fs/f2fs/f2fs.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 543898482f8b..a000cb024dbe 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3039,6 +3039,7 @@ static inline void __mark_inode_dirty_flag(struct inode *inode,
+ 	case FI_INLINE_DOTS:
+ 	case FI_PIN_FILE:
+ 	case FI_COMPRESS_RELEASED:
++	case FI_ATOMIC_COMMITTED:
+ 		f2fs_mark_inode_dirty_sync(inode, true);
+ 	}
+ }
+-- 
+2.25.1
+
 
