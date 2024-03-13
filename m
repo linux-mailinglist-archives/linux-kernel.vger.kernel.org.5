@@ -1,141 +1,102 @@
-Return-Path: <linux-kernel+bounces-102540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BF2387B398
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:40:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8A087B3A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C718B1C22CD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:40:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8708B1F23830
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C11C53E3E;
-	Wed, 13 Mar 2024 21:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2EC259158;
+	Wed, 13 Mar 2024 21:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="pxVlJYub"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="iJ88g9MY"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A90C5336D
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2C95787D;
+	Wed, 13 Mar 2024 21:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710366051; cv=none; b=OVNlZAIUiSOHp6HADvzAf4clQac/0V2wqpw7e/P6bojewlIqL+u6gSyLGwKNweY/dfTDEc/Xj1pE63tW5Mz1WJbPOCDUkifRS3X0VlKIzQbVtVhicwpcnl3IWQXac8ncwAzDaXpSp1WUJRBJHjAWtwrbBjCnCwpfsYNFvCtbT/E=
+	t=1710366062; cv=none; b=G970h5xWew6LXuw6ZTUklrCOUmlQw5mF8Mem+kjbi6FPU3PnaWs4D1oypwGFICxy+FYeoKzGpBDnS2znr58R1XuBG3yJlqU5CTLx6ksZsgn1UxNXIiuERlMIZA1BM+WXRQw4lTlz+X8f7E3rGa8W8MUQs51plxLnrcbyqrF3ojg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710366051; c=relaxed/simple;
-	bh=mPoVTQYq7VdvrrxQ6la9CwblUF2lFdSL1QHuZq2WXy8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KodjNKCN3fzWay4r29OaCr/aIJDbayQzGKu7JW+m+LnqdkxTxs6AlrHIWjxH4aseq4fEHBijRFjf3nI65YE9qKEoEnuCVsjsacsIhUhU/aggyHTFt/Z1dSKm2YnU0J2NuHtYeAQrG57MtLpbLE5Rzhr667MLmsPi7ObTOHu3Fks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=pxVlJYub; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	s=arc-20240116; t=1710366062; c=relaxed/simple;
+	bh=SxqjRWGD7n9bBE3YoVgb8xa4tnyqzh6D/786Rf7k8zg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Vw0zvTKb+z9vtfN8+ef3kxqoKA4x6zBoJxv+wF6o1zkNihzuF2vjyZADXlcKs4G5TaM8X9t0IU9JgZehheAtPfEv+1RQB56PRircOFequ5lwQqweutodxWsyPJOluOsfDyH1pc8qipH0H9tAFDYC+vVm18PBlUB/oWVDCmvSDU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=iJ88g9MY; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710366052;
+	bh=lN5s0tY5NPrhuMY9w//wlduHfMOojKurZ/wQGoi4/qA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=iJ88g9MYtWPNZT3FzVM2JeTaLbKHR1w7y3V/BgfGnVvycef5QgDOT0InPbJO7nZ5x
+	 R4sS2b6rck6WPj4jMjjCagofl9PwfelfuSM0o1YdB6Nq/mjN9OidnrDp6cb5GxrhU5
+	 LcG2xpop6aCSvx53B9rkETbiaWzxGj+vAXnyPnoyh+E4vi/ii4/b87JMBW5vU5/gDH
+	 ugkXwAtsRZfOcBVqRuh9Z5PWwxtHxVdskJa34tMCBFWo7P9UDVngD6crIQgWBxr74P
+	 fUSksAGWm/qxyUX+q1z0OEUTIa3wKViiAWyhhglnsFKza6Z6Trp9WzofKisT15rY2E
+	 DpSetuyPLcUBg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CA5592C018E;
-	Thu, 14 Mar 2024 10:40:40 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1710366040;
-	bh=mV4oUURtJa5fDu6eFwW5lGCkuKZZh3l9yb4RSs8QcHQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pxVlJYubjo1eWXzzeyJ8BwJYcJGiFp8JZOY6qVsg+gF+blBWcweh8BYyMwD1+MWPu
-	 Eg7vmuhvRYLrkh5aM2XAIuvx91yL35m9wZIiYmTM0uqN1HNOnJjIWWAo/r5RkBxWR/
-	 cY7K1x5FlVeacgNN6i5VFH0ImCP+A+CGgIQdKhmm6tLYCnTsedSShaquxE63jCqOsE
-	 Xz8nqfaPSgaKTiy3JHFXlfe5MoKaG/gmi4F4gJt2tCS2CR9Rgo9oicQCH7cUgZT1yJ
-	 cxKtB4vnBgD4J2/oycOTk+UItUkVyuJmId4P5CB8PGF1EkvZMbk+bSCUbeg9Q0zWE7
-	 ty8e/8v6vgLJw==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65f21d580000>; Thu, 14 Mar 2024 10:40:40 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 85A5D13EE36;
-	Thu, 14 Mar 2024 10:40:40 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 80C5D280A37; Thu, 14 Mar 2024 10:40:40 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: rafael@kernel.org,
-	lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH] ACPI: docs: enumeration: Make footnotes links
-Date: Thu, 14 Mar 2024 10:40:38 +1300
-Message-ID: <20240313214038.479253-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.2
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tw3pr1jYFz4wcR;
+	Thu, 14 Mar 2024 08:40:52 +1100 (AEDT)
+Date: Thu, 14 Mar 2024 08:40:50 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the device-mapper tree
+Message-ID: <20240314084050.2fe3eb9f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/pJoU3O.5n/8y8gkNX+fwP/D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/pJoU3O.5n/8y8gkNX+fwP/D
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=KIH5D0Fo c=1 sm=1 tr=0 ts=65f21d58 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=K6JAEmCyrfEA:10 a=dw0t6H4-AAAA:8 a=iFXl2urbudpVc5562-MA:9 a=3ZKOabzyN94A:10 a=wVJa4CU9-Z26yuRAZDil:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
 
-Update the numeric footnotes so that they are rendered as hyperlinks in
-the html output.
+Hi all,
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- Documentation/firmware-guide/acpi/enumeration.rst | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+The following commit is also in Linus Torvalds' tree as a different commit
+(but the same patch):
 
-diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Document=
-ation/firmware-guide/acpi/enumeration.rst
-index d79f69390991..0165b09c0957 100644
---- a/Documentation/firmware-guide/acpi/enumeration.rst
-+++ b/Documentation/firmware-guide/acpi/enumeration.rst
-@@ -595,7 +595,7 @@ bridges/switches of the board.
-=20
- For example, let's assume we have a system with a PCIe serial port, an
- Exar XR17V3521, soldered on the main board. This UART chip also includes
--16 GPIOs and we want to add the property ``gpio-line-names`` [1] to thes=
-e pins.
-+16 GPIOs and we want to add the property ``gpio-line-names`` [1]_ to the=
-se pins.
- In this case, the ``lspci`` output for this component is::
-=20
- 	07:00.0 Serial controller: Exar Corp. XR17V3521 Dual PCIe UART (rev 03)
-@@ -637,7 +637,7 @@ of the chipset bridge (also called "root port") with =
-address::
- 	Bus: 0 - Device: 14 - Function: 1
-=20
- To find this information, it is necessary to disassemble the BIOS ACPI t=
-ables,
--in particular the DSDT (see also [2])::
-+in particular the DSDT (see also [2]_)::
-=20
- 	mkdir ~/tables/
- 	cd ~/tables/
-@@ -667,7 +667,7 @@ device::
- 			}
- 	... other definitions follow ...
-=20
--and the _ADR method [3] returns exactly the device/function couple that
-+and the _ADR method [3]_ returns exactly the device/function couple that
- we are looking for. With this information and analyzing the above ``lspc=
-i``
- output (both the devices list and the devices tree), we can write the fo=
-llowing
- ACPI description for the Exar PCIe UART, also adding the list of its GPI=
-O line
-@@ -724,10 +724,10 @@ created analyzing the position of the Exar UART in =
-the PCI bus topology.
- References
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
--[1] Documentation/firmware-guide/acpi/gpio-properties.rst
-+.. [1] Documentation/firmware-guide/acpi/gpio-properties.rst
-=20
--[2] Documentation/admin-guide/acpi/initrd_table_override.rst
-+.. [2] Documentation/admin-guide/acpi/initrd_table_override.rst
-=20
--[3] ACPI Specifications, Version 6.3 - Paragraph 6.1.1 _ADR Address)
-+.. [3] ACPI Specifications, Version 6.3 - Paragraph 6.1.1 _ADR Address)
-     https://uefi.org/sites/default/files/resources/ACPI_6_3_May16.pdf,
-     referenced 2020-11-18
+  2da6b3c1317e ("Revert "dm: use queue_limits_set"")
+
+This is commit
+
+  bff4b74625fe ("Revert "dm: use queue_limits_set"")
+
+in Linus' tree.
+
 --=20
-2.43.2
+Cheers,
+Stephen Rothwell
 
+--Sig_/pJoU3O.5n/8y8gkNX+fwP/D
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXyHWIACgkQAVBC80lX
+0GxB9AgAlXOG0hFLt94qOV3Bk3GvL5y95/zN0VKxRnyAPwgJkSI2i/LAPe7osIu1
+JWOsM0a7ALIhnmrKuYeyy+/uW2mzX0UTTXW4QWrEtv2sOTfdYC7HL68AG7nNMloS
+P9axZWrNvoSdAU16Q2H61LOK9HoRhGPnSpcy54iAW+Q+zW7PQ5HZUNQiTBrlZP87
+7nsiv5OGHZNaxapkqtYA9H9i3Lr64jHoN6zg852/U2hmyfOKZFzFE22zivFgkQwg
+IL7dHccYvq2ZLEPJvhFTZECtJAlqSiAhS+T1O5IEJihbsaYjdpEtV7JsJd7qcBwC
+AT596DyRI8o3GuhE963MLsjnQ4F3GQ==
+=kuwA
+-----END PGP SIGNATURE-----
+
+--Sig_/pJoU3O.5n/8y8gkNX+fwP/D--
 
