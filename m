@@ -1,92 +1,129 @@
-Return-Path: <linux-kernel+bounces-101209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D848987A405
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:17:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E1D87A406
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F0391C215EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:17:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EDC4282AD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC1F199C7;
-	Wed, 13 Mar 2024 08:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8DE1A708;
+	Wed, 13 Mar 2024 08:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="POK08m+l"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="qdLxfDOT"
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D4318EAD
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C585199B0
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710317842; cv=none; b=WyZpULKpbmY6cTQMoY899YsbI2QHIaRLGl3/3rSlJ/bHGyUKlGV4rkR1OKDC4qAU7DvYeG1EQ9fytz3zFcRpHwqv/e4ud32i+lTWUdqv6T9nOUHLgA8hQkT2LI6Q2cRYTK+zmCeekHHeQPp/q1j0FiL1wtbAUQCYxH3ZjHdIoSQ=
+	t=1710317893; cv=none; b=Kuz1sxHeHV961o+Zv2jTWHcVQ8jBQzaKRAOXAJYjVR1GShwxhF8r81XsaFq6ixdnodth+MqVk3W6VNbTG0FDc9xJMKVLgIYH63AeH/ajp86GIRoA5cWJiaFTikHbw6dKpE6F0F+/biu1tEQZgjmmy869EjzfAbLn1VvAikRB/CU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710317842; c=relaxed/simple;
-	bh=R7UrPyomiogXTOEePhUSBvSOHyrsJBsiTYmFkWgfznk=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=acomUNzhGLoxf06WJjIPVq4Pc55Krf8JXnMzcAbMwJjOBE7zDGBc1QUyGo9dEecZDox19u1M2br41nLy7eRANXZT88mnU0oaHwQH9FYzv8I39488Hus3DW8PPh7Df2Co1HmTiPuS33nGnufho76d7VLtlL3xfpbJp4JJYA2x91A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=POK08m+l; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710317839;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R7UrPyomiogXTOEePhUSBvSOHyrsJBsiTYmFkWgfznk=;
-	b=POK08m+lkqHTEr+5eB8pNav3J/4OKhC5XiqLBU0ZmbDlsf3C2JO0Ak4LnkPcIVYKbgh45z
-	iyTiiqH3WOXJ36UKKpHJ80GCycaVg4XRdf+3vZNCh0qltI2lyIw2KxJ+k3LiYGjlw5pD85
-	f5c762JkBE66qQ5yky+XMWKG2LUttUU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-632-sASfXibLP_KkMwtU8aFqsQ-1; Wed, 13 Mar 2024 04:17:14 -0400
-X-MC-Unique: sASfXibLP_KkMwtU8aFqsQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CF9CE80026D;
-	Wed, 13 Mar 2024 08:17:13 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.10])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 624AA1C060A4;
-	Wed, 13 Mar 2024 08:17:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240312233723.2984928-1-dhowells@redhat.com>
-References: <20240312233723.2984928-1-dhowells@redhat.com>
-To: netdev@vger.kernel.org
-Cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-    Yunsheng Lin <linyunsheng@huawei.com>,
-    "David S.
- Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2] rxrpc: Fixes for AF_RXRPC
+	s=arc-20240116; t=1710317893; c=relaxed/simple;
+	bh=eMQlvTb4wLG9OvlhD/JOFhGA2GaNKGff8WlL0I+tz/Y=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ewjgXQJ6XwwjNK+Lm8ZZ4pr1tDx+AIqQ9lbTFySTv5CuOF1TsvvpumVdV/vg3cOao/NTLOzgG09DwHcxV04WQzIClb8+0W7bLBY5OIp9oJnoNRyTUD+bsCrEFtItLPCzorvqHD0e2bezM8wUzeivl2TbawWu7MRIQgNi9u5eia4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=qdLxfDOT; arc=none smtp.client-ip=192.134.164.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=3nqnd/maiTSnv6Ai2MihMDQqeX4giogW9roRuAfqM8Q=;
+  b=qdLxfDOTl8GPVsL7Rg/druvRFHLTznKOqErqxiMR1+j2+8mcueqWBnAB
+   yJaAJJJY+//8MUWyqkeH02on9cUo6HgyPr/8VQxt3ExvyPBjj6sxpoJ9C
+   ah/oFmRQMElb4QInjIZG+MoeszxMSrwZa0jJ0rI/ZZw/wrhpRwHSTXIO7
+   E=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,119,1708383600"; 
+   d="scan'208";a="156385381"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 09:18:07 +0100
+Date: Wed, 13 Mar 2024 09:18:08 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com, 
+    gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
+    linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v4] staging: rtl8712: rename tmpVal to pct_val
+In-Reply-To: <ZfFfW/Flrlzb0+UI@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+Message-ID: <2c63a094-6966-7679-2b23-58c057b451d8@inria.fr>
+References: <ZfFfW/Flrlzb0+UI@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3060407.1710317831.1@warthog.procyon.org.uk>
-Date: Wed, 13 Mar 2024 08:17:11 +0000
-Message-ID: <3060408.1710317831@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Type: text/plain; charset=US-ASCII
 
-David Howells <dhowells@redhat.com> wrote:
 
-> Here are a couple of fixes for the AF_RXRPC changes[1] in net-next.
 
-Actually, this should be aimed at net now that net-next got merged.
+On Wed, 13 Mar 2024, Ayush Tiwari wrote:
 
-David
+> Rename local variable tmpVal to pct_val in function process_link_qual
+> to give intuitive meaning to variable and match the common kernel
+> coding style.
 
+I don't think that the patch with the name avg_val was accepted, so this
+patch has to replace tmpVal by pct_val, as you say in the subject line.
+
+Also, the comment says:
+
+/* <1> Showed on UI for user, in percentage. */
+
+I still have the impression that the value calculated here is an average.
+Total num is just incremented:
+
+if (sqd->total_num++ >= PHY_LINKQUALITY_SLID_WIN_MAX)
+
+while total_val is updated with a new value.
+
+julia
+
+
+>
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+> ---
+> Changes in v3: changed variable name avg_val to pct_val
+> Changes in v3: changed variable name tmpVal to avg_val
+> Changes in v2: added a period in message
+>
+>  drivers/staging/rtl8712/rtl8712_recv.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/staging/rtl8712/rtl8712_recv.c b/drivers/staging/rtl8712/rtl8712_recv.c
+> index 1fabc5137a4c..0b13d0a04304 100644
+> --- a/drivers/staging/rtl8712/rtl8712_recv.c
+> +++ b/drivers/staging/rtl8712/rtl8712_recv.c
+> @@ -861,7 +861,7 @@ static void query_rx_phy_status(struct _adapter *padapter,
+>  static void process_link_qual(struct _adapter *padapter,
+>  			      union recv_frame *prframe)
+>  {
+> -	u32	last_evm = 0, avg_val;
+> +	u32	last_evm = 0, pct_val;
+>  	struct rx_pkt_attrib *pattrib;
+>  	struct smooth_rssi_data *sqd = &padapter->recvpriv.signal_qual_data;
+>
+> @@ -883,8 +883,8 @@ static void process_link_qual(struct _adapter *padapter,
+>  			sqd->index = 0;
+>
+>  		/* <1> Showed on UI for user, in percentage. */
+> -		avg_val = sqd->total_val / sqd->total_num;
+> -		padapter->recvpriv.signal = (u8)avg_val;
+> +		pct_val = sqd->total_val / sqd->total_num;
+> +		padapter->recvpriv.signal = (u8)pct_val;
+>  	}
+>  }
+>
+> --
+> 2.40.1
+>
+>
+>
 
