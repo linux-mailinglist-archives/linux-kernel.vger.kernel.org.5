@@ -1,137 +1,273 @@
-Return-Path: <linux-kernel+bounces-101117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01A487A2A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:25:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FF687A29D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05BD01C2124C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:25:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEFA11F21D1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:22:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A4312B93;
-	Wed, 13 Mar 2024 05:25:40 +0000 (UTC)
-Received: from TWMBX01.aspeed.com (mail.aspeedtech.com [211.20.114.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA09B14A8C;
-	Wed, 13 Mar 2024 05:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.20.114.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4691312B93;
+	Wed, 13 Mar 2024 05:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="j4gXjK/q"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08B7111A9;
+	Wed, 13 Mar 2024 05:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710307539; cv=none; b=kyi5+TFl1phHy+KkqdspIyaDy+au/mYWM4Cyb+gsjI2AqoziAiL+uwBMcVjuHrFJ7uW526g73eYThdLOGniDMP+62vtGJwVpiiiik99h+oihdOurmr3CO9E8Wg1iqwXQVRElS7KI272PaueyVApAeeITByHc055l4I2kTHfpHMU=
+	t=1710307338; cv=none; b=QrttQSHwJQaXsxkUN+tlujuQ6EN+ZFkvHjNtjZBaGxo8l/31cxnNxfZwLZWCPyqsxrR3L8nlqfmsbaPpGcp05SMjxFN1H5Buj+5K/WWaSIy+5UMN2nMGi2DEFDCq+XBq/k2L50dbeYnLkRbM6qf/Cf51prqoHX7frMTq1HFX5us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710307539; c=relaxed/simple;
-	bh=YXfZ10BkuFWjUsfJwrp1RslDVixhGygAPzHtAaUK/p4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i/EwuqpPbTtNUaB0rRl8/E7694sQkplawn3wqq0UkkhHRYFftqiDD2cs7IcR8aUijN1wgD6rCrSH6RCfuyHHIfwfobB+6gAouFWjGNklrggsCTrWGgw2mNmZOPux9MIiqM+Hj40UNF9lEDYiA3L/JUsU5+SAbc/fIMB7y2oFQxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com; spf=pass smtp.mailfrom=aspeedtech.com; arc=none smtp.client-ip=211.20.114.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aspeedtech.com
-Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX01.aspeed.com
- (192.168.0.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 13 Mar
- 2024 13:21:35 +0800
-Received: from twmbx02.aspeed.com (192.168.10.10) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 13 Mar 2024 13:20:27 +0800
-From: Billy Tsai <billy_tsai@aspeedtech.com>
-To: <andrew@codeconstruct.com.au>, <linus.walleij@linaro.org>,
-	<joel@jms.id.au>, <johnny_huang@aspeedtech.com>,
-	<linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-	<linux-gpio@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <BMC-SW@aspeedtech.com>,
-	<Ricky_CX_Wu@wiwynn.com>
-Subject: [PATCH] pinctrl: pinctrl-aspeed-g6: Fix register offset.
-Date: Wed, 13 Mar 2024 13:20:27 +0800
-Message-ID: <20240313052027.1320489-1-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710307338; c=relaxed/simple;
+	bh=TDLZ8JzOACQCQokCdWVJIRKElg5w9ZfrCTFI5yrtP1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HrC3Pb4dfuiRpGz3IrfYLCfpT0LthRGBUlue6Fhv2TAr+5VAXMnM+Qf8tbzUJeTbKU0CTfMOuzidLX7r29Z6ydNBrUwCFkv6vC451vEpkV09jO9p/9/Regm6WS0hOX6aHDXZN1f62qRJTi8shD2itWnCI3dBtaD1TLGi+tcV+ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=j4gXjK/q; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id A662D20B74C0; Tue, 12 Mar 2024 22:22:12 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A662D20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710307332;
+	bh=GUTohkD5BgI6P+4EcgS2Ta5LLd+OYJcdqIU+ix7d/sA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j4gXjK/qwYqjFw4v2jYwOhml2b/zXf3JrPggLUnLAhyd9+v/17d1/9SmnC60SlG0f
+	 SSjm+Fs0UX1fJuN8H9KAnOzI9OIRNP3XyjHs5DcJxCTEO70Gi6lmWUAaYVpPh+YeTT
+	 ofzHJY08lt1UItU/ZApQemK002xjVdvj2HljjPAE=
+Date: Tue, 12 Mar 2024 22:22:12 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Olaf Hering <olaf@aepfle.de>, Ani Sinha <anisinha@redhat.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination
+ for keyfile format
+Message-ID: <20240313052212.GB22465@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <3bf8844a-3e19-4105-8cce-2b1f8f98d3bc@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3bf8844a-3e19-4105-8cce-2b1f8f98d3bc@linux.microsoft.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-The register offset to disable the internal pull-down of GPIOR~T is 0x630
-instead of 0x620.
-
-Fixes: 15711ba6ff19 ("pinctrl: aspeed-g6: Add AST2600 pinconf support")
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 34 +++++++++++-----------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-index d376fa7114d1..029efe16f8cc 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-@@ -43,7 +43,7 @@
- #define SCU614		0x614 /* Disable GPIO Internal Pull-Down #1 */
- #define SCU618		0x618 /* Disable GPIO Internal Pull-Down #2 */
- #define SCU61C		0x61c /* Disable GPIO Internal Pull-Down #3 */
--#define SCU620		0x620 /* Disable GPIO Internal Pull-Down #4 */
-+#define SCU630		0x630 /* Disable GPIO Internal Pull-Down #4 */
- #define SCU634		0x634 /* Disable GPIO Internal Pull-Down #5 */
- #define SCU638		0x638 /* Disable GPIO Internal Pull-Down #6 */
- #define SCU690		0x690 /* Multi-function Pin Control #24 */
-@@ -2495,38 +2495,38 @@ static struct aspeed_pin_config aspeed_g6_configs[] = {
- 	ASPEED_PULL_DOWN_PINCONF(D14, SCU61C, 0),
- 
- 	/* GPIOS7 */
--	ASPEED_PULL_DOWN_PINCONF(T24, SCU620, 23),
-+	ASPEED_PULL_DOWN_PINCONF(T24, SCU630, 23),
- 	/* GPIOS6 */
--	ASPEED_PULL_DOWN_PINCONF(P23, SCU620, 22),
-+	ASPEED_PULL_DOWN_PINCONF(P23, SCU630, 22),
- 	/* GPIOS5 */
--	ASPEED_PULL_DOWN_PINCONF(P24, SCU620, 21),
-+	ASPEED_PULL_DOWN_PINCONF(P24, SCU630, 21),
- 	/* GPIOS4 */
--	ASPEED_PULL_DOWN_PINCONF(R26, SCU620, 20),
-+	ASPEED_PULL_DOWN_PINCONF(R26, SCU630, 20),
- 	/* GPIOS3*/
--	ASPEED_PULL_DOWN_PINCONF(R24, SCU620, 19),
-+	ASPEED_PULL_DOWN_PINCONF(R24, SCU630, 19),
- 	/* GPIOS2 */
--	ASPEED_PULL_DOWN_PINCONF(T26, SCU620, 18),
-+	ASPEED_PULL_DOWN_PINCONF(T26, SCU630, 18),
- 	/* GPIOS1 */
--	ASPEED_PULL_DOWN_PINCONF(T25, SCU620, 17),
-+	ASPEED_PULL_DOWN_PINCONF(T25, SCU630, 17),
- 	/* GPIOS0 */
--	ASPEED_PULL_DOWN_PINCONF(R23, SCU620, 16),
-+	ASPEED_PULL_DOWN_PINCONF(R23, SCU630, 16),
- 
- 	/* GPIOR7 */
--	ASPEED_PULL_DOWN_PINCONF(U26, SCU620, 15),
-+	ASPEED_PULL_DOWN_PINCONF(U26, SCU630, 15),
- 	/* GPIOR6 */
--	ASPEED_PULL_DOWN_PINCONF(W26, SCU620, 14),
-+	ASPEED_PULL_DOWN_PINCONF(W26, SCU630, 14),
- 	/* GPIOR5 */
--	ASPEED_PULL_DOWN_PINCONF(T23, SCU620, 13),
-+	ASPEED_PULL_DOWN_PINCONF(T23, SCU630, 13),
- 	/* GPIOR4 */
--	ASPEED_PULL_DOWN_PINCONF(U25, SCU620, 12),
-+	ASPEED_PULL_DOWN_PINCONF(U25, SCU630, 12),
- 	/* GPIOR3*/
--	ASPEED_PULL_DOWN_PINCONF(V26, SCU620, 11),
-+	ASPEED_PULL_DOWN_PINCONF(V26, SCU630, 11),
- 	/* GPIOR2 */
--	ASPEED_PULL_DOWN_PINCONF(V24, SCU620, 10),
-+	ASPEED_PULL_DOWN_PINCONF(V24, SCU630, 10),
- 	/* GPIOR1 */
--	ASPEED_PULL_DOWN_PINCONF(U24, SCU620, 9),
-+	ASPEED_PULL_DOWN_PINCONF(U24, SCU630, 9),
- 	/* GPIOR0 */
--	ASPEED_PULL_DOWN_PINCONF(V25, SCU620, 8),
-+	ASPEED_PULL_DOWN_PINCONF(V25, SCU630, 8),
- 
- 	/* GPIOX7 */
- 	ASPEED_PULL_DOWN_PINCONF(AB10, SCU634, 31),
--- 
-2.25.1
-
+On Tue, Mar 12, 2024 at 09:58:03AM -0700, Easwar Hariharan wrote:
+> On 3/12/2024 5:38 AM, Shradha Gupta wrote:
+> > If the network configuration strings are passed as a combination of IPv and
+> 
+>                                                                       *IPv4*
+> 
+> > IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
+>                                          *does not/doesn't*
+> > configuration format.
+> > With these changes, the keyfile config generation logic scans through the
+> > list twice to generate IPv4 and IPv6 sections for the configuration files
+> > to handle this support.
+> > 
+> > Built-on: Rhel9
+> > Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
+> 
+> As mentioned by Jakub[1], what value does this information provide?
+> Please follow Haiyang's suggestion [2] and put SKU and test information, or just
+> skip it.
+> 
+> [1] https://lore.kernel.org/all/20240307072923.6cc8a2ba@kernel.org/
+> [2] https://lore.kernel.org/all/DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com/
+Hi Easwar, unlike the other patch this one has details about the tests that were performed.
+Since this is Hyper-v VMs specific, I could not add details around SKU or LISA tests(as it
+could not be tested using LISA). In the last patch we had missed the IPv4, IPv6 combination
+testing(which had some design issues). That's why I feel it is important to call it out in
+this patch.
+> 
+> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> > ---
+> >  Changes in v2
+> >  * Use calloc to avoid initialization later
+> >  * Return standard error codes
+> >  * Free the output_str pointer on completion
+> >  * Add out-of bound checks while writing to buffers
+> > ---
+> >  tools/hv/hv_kvp_daemon.c | 173 +++++++++++++++++++++++++++++----------
+> >  1 file changed, 132 insertions(+), 41 deletions(-)
+> > 
+> > diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+> > index 318e2dad27e0..ae65be004eb1 100644
+> > --- a/tools/hv/hv_kvp_daemon.c
+> > +++ b/tools/hv/hv_kvp_daemon.c
+> > @@ -76,6 +76,12 @@ enum {
+> >  	DNS
+> >  };
+> >  
+> > +enum {
+> > +	IPV4 = 1,
+> > +	IPV6,
+> > +	IP_TYPE_MAX
+> > +};
+> > +
+> >  static int in_hand_shake;
+> >  
+> >  static char *os_name = "";
+> > @@ -102,6 +108,7 @@ static struct utsname uts_buf;
+> >  
+> >  #define MAX_FILE_NAME 100
+> >  #define ENTRIES_PER_BLOCK 50
+> > +#define MAX_IP_ENTRIES 64
+> 
+> Is this a limitation defined by hv_kvp? If so, is it possible it may change in a later
+> version? A comment would help here
+Sure, would update accordingly
+> 
+> >  
+> >  struct kvp_record {
+> >  	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
+> > @@ -1171,6 +1178,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
+> >  	return 0;
+> >  }
+> >  
+> > +int ip_version_check(const char *input_addr)
+> > +{
+> > +	struct in6_addr addr;
+> > +
+> > +	if (inet_pton(AF_INET, input_addr, &addr))
+> > +		return IPV4;
+> > +	else if (inet_pton(AF_INET6, input_addr, &addr))
+> > +		return IPV6;
+> 
+> You can skip the else here...
+> 
+> > +	else
+> > +		return -EINVAL;
+> 
+> ...and you can skip the else here as well and just return -EINVAL
+right, will change this in the next version.
+> 
+> > +}
+> > +
+> >  /*
+> >   * Only IPv4 subnet strings needs to be converted to plen
+> >   * For IPv6 the subnet is already privided in plen format
+> > @@ -1197,14 +1216,71 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
+> >  	return plen;
+> >  }
+> >  
+> > +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
+> > +				  int ip_sec)
+> > +{
+> > +	char addr[INET6_ADDRSTRLEN], *output_str;
+> > +	int ip_offset = 0, error = 0, ip_ver;
+> > +	char *param_name;
+> > +
+> > +	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
+> > +				    sizeof(char));
+> > +
+> > +	if (!output_str)
+> > +		return -ENOMEM;
+> > +
+> > +	memset(addr, 0, sizeof(addr));
+> > +
+> > +	if (type == DNS) {
+> > +		param_name = "dns";
+> > +	} else if (type == GATEWAY) {
+> > +		param_name = "gateway";
+> > +	} else {
+> > +		error = -EINVAL;
+> > +		goto cleanup;
+> > +	}
+> > +
+> > +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
+> > +				   (MAX_IP_ADDR_SIZE * 2))) {
+> > +		ip_ver = ip_version_check(addr);
+> > +		if (ip_ver < 0)
+> > +			continue;
+> > +
+> > +		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
+> > +		    (ip_ver == IPV6 && ip_sec == IPV6)) {
+> > +			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
+> > +			    (strlen(addr))) {
+> > +				strcat(output_str, addr);
+> > +				strcat(output_str, ",");
+> 
+> Prefer strncat() here
+> 
+> > +			}
+> > +			memset(addr, 0, sizeof(addr));
+> > +
+> > +		} else {
+> > +			memset(addr, 0, sizeof(addr));
+> > +			continue;
+> > +		}
+> > +	}
+> > +
+> > +	if (strlen(output_str)) {
+> > +		output_str[strlen(output_str) - 1] = '\0';
+> > +		error = fprintf(f, "%s=%s\n", param_name, output_str);
+> > +		if (error <  0)
+> > +			goto cleanup;
+> > +	}
+> > +
+> > +cleanup:
+> > +	free(output_str);
+> > +	return error;
+> > +}
+> > +
+> >  static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+> > -				int is_ipv6)
+> > +				int ip_sec)
+> >  {
+> >  	char addr[INET6_ADDRSTRLEN];
+> >  	char subnet_addr[INET6_ADDRSTRLEN];
+> >  	int error, i = 0;
+> >  	int ip_offset = 0, subnet_offset = 0;
+> > -	int plen;
+> > +	int plen, ip_ver;
+> >  
+> >  	memset(addr, 0, sizeof(addr));
+> >  	memset(subnet_addr, 0, sizeof(subnet_addr));
+> > @@ -1216,10 +1292,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+> >  						       subnet_addr,
+> >  						       (MAX_IP_ADDR_SIZE *
+> >  							2))) {
+> > -		if (!is_ipv6)
+> > +		ip_ver = ip_version_check(addr);
+> > +		if (ip_ver < 0)
+> > +			continue;
+> > +
+> > +		if (ip_ver == IPV4 && ip_sec == IPV4)
+> >  			plen = kvp_subnet_to_plen((char *)subnet_addr);
+> > -		else
+> > +		else if (ip_ver == IPV6 && ip_sec == IPV6)
+> >  			plen = atoi(subnet_addr);
+> > +		else
+> > +			continue;
+> >  
+> >  		if (plen < 0)
+> >  			return plen;
+> > @@ -1238,12 +1320,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+> >  
+> >  static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+> >  {
+> > -	int error = 0;
+> > +	int error = 0, ip_type;
+> 
+> nit: Can we keep ip_ver through all the functions for consistency
+sure.
+> 
+> <snip>
+> 
+> Thanks,
+> Easwar
 
