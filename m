@@ -1,189 +1,146 @@
-Return-Path: <linux-kernel+bounces-102608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF6CA87B483
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:44:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB9E87B485
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED1521C21711
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:44:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00C181F22969
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF7D5A10F;
-	Wed, 13 Mar 2024 22:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243F95C90B;
+	Wed, 13 Mar 2024 22:44:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xj4QxT6j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="inRtZpEe"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B513B5490C
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DFB5A0EB;
+	Wed, 13 Mar 2024 22:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710369854; cv=none; b=iL8qR8NdxJQ4G3wnZYnBcsKdFjHJU87b5/SnTWOrN6afcinNQnIhe6AZAK3Cwx2PtzI5RaluYvJuLrlS04HZqeWyv7cYRH4pK63++nM/I+AYw97/1hIVGUEOB1d+rvEODxE8JKnuMVqW8ugdRoNKHetuIrDovKBZfzYar3JKZOE=
+	t=1710369873; cv=none; b=mykK3voT7RAhwmSNPO6h5fVh/e9PEORKTAUzfH5f0gpNLJUGLGFCWL4/XNREmAloU28bfGkaTcmXpTvtihvanJ6gtzS5CZiOx4UVo2eGt2uLbR2v32QMQmm732Hh9gYDvvcYpK8x2JuLvBEyuFQFAa7iFwc4i949OkQOC0bOeTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710369854; c=relaxed/simple;
-	bh=KndfCLv9Kww9YMlY+UrHNR8LjNrnIgIuJMwMQQp8CR4=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=DxScnevBh5fD2HtBjwTPk6ktvO3bns+0+Sx6xNkyamXNcUik2z48VmzBK1i42OlOPZ/pOwB07o4FELAwA7buJc/DCnCvgmizURI402s+RirTUJEmmpr6EHOOI1da+5i07xu7+SRdZOC6fdleH1YdjLHbC9wANJSsi8/MI5sUdNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xj4QxT6j; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710369853; x=1741905853;
-  h=date:from:to:cc:subject:message-id;
-  bh=KndfCLv9Kww9YMlY+UrHNR8LjNrnIgIuJMwMQQp8CR4=;
-  b=Xj4QxT6jpqNMrTz8XvhPqZU5cXe0Y1zL9VPUTpmuhxoFGI+fJBDLRp6S
-   nbo2pKIvvDFsTytMO8HO1UXpMnEWqOqAn4OmAGmZ9pvpOMk3h1VOrSrME
-   uECW64+T03FxmfLh+QfJRBi+GUvC+I1/e/rMaAHkPArS5QumHaNkVvyFg
-   X8lzzOp3C/bEfaoHmEMYtNV8XDlfygumrQGoBugwx5FkP3EJcAryysOI0
-   X6ztQRW0Ja7tY2vCgtjs3fq31NAjqnJj9UEu/xuQvh5v0lDT2fQ6S3hKZ
-   50vlNrYEQ6kKyB8hN/jVRc17A41DlNfR0UiGVlwoavdllFj2N8JmnBHId
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="16321473"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="16321473"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 15:44:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="12023714"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 13 Mar 2024 15:44:06 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rkXKO-000Cpy-09;
-	Wed, 13 Mar 2024 22:44:04 +0000
-Date: Thu, 14 Mar 2024 06:43:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- b5ff5e3af69ff09379c8973d9a563a722f980147
-Message-ID: <202403140607.YNwXjB4N-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1710369873; c=relaxed/simple;
+	bh=9SfhzD7WzR3l4SJ6N4L0s4jyKZxID98y82s5AYHquQ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XU6wGAW/afN3xNw9e7Z6qC6mfl4gCQAtwBaYhSxIjZZcL0aB566TzGNJr8EcXv3XK/MJJJPAdXoglL/3LfrHJeswDXlNOCXqKHQo0lNoPf8GtHVDdOA/l7cafO0uiiFdnuF9d5QzzXrFAh+HyUD/PQuFMQAQRkvYh7dHmokTsms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=inRtZpEe; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710369868;
+	bh=2skIhSkaZNIe/CehCvOoNGoYXeQoAEZI8KQCkyfRZ8E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=inRtZpEeG8PkjSs2Ds3C6pXTnaOXBkd0dO463iJ7W7/967ecLyulRsNryrrk3HNmr
+	 bvneQkfVnipNU3dCWOQZTftJiBEnemf9FbMY5DHD9+H3rRCI3VVvoaST3yffIdLoSg
+	 x3j48fycS5XWyxU9ltprgBEhFzJz2ddwn0q/Jd0s0TaQwMHDWO73Ooz+4/ss4S3D0h
+	 tgq62Z6Xpuu/zy9LjhpkLqxpeiRF75RZrrUex2SUIAcXf0P8OjCAe5gbI3b1bwoOb4
+	 lRdjRYNJVf6X0nUyv0rTQaBts/hvDoaCfT+TtjJLwEzARJaZWMtKhCwfKf39RznguV
+	 BUXgDTrzQB1jQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tw5DD32sDz4wcg;
+	Thu, 14 Mar 2024 09:44:28 +1100 (AEDT)
+Date: Thu, 14 Mar 2024 09:44:26 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the kspp tree with the kbuild tree
+Message-ID: <20240314094426.0d2b3d79@canb.auug.org.au>
+In-Reply-To: <20240226165811.56f71171@canb.auug.org.au>
+References: <20240226165811.56f71171@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/GO0ujt7O9IZQpeVC.JAPY4Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: b5ff5e3af69ff09379c8973d9a563a722f980147  Merge branch into tip/master: 'x86/build'
+--Sig_/GO0ujt7O9IZQpeVC.JAPY4Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 723m
+Hi all,
 
-configs tested: 101
-configs skipped: 3
+On Mon, 26 Feb 2024 16:58:11 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the kspp tree got a conflict in:
+>=20
+>   scripts/Makefile.lib
+>=20
+> between commit:
+>=20
+>   bf48d9b756b9 ("kbuild: change tool coverage variables to take the path =
+relative to $(obj)")
+>=20
+> from the kbuild tree and commits:
+>=20
+>   918327e9b7ff ("ubsan: Remove CONFIG_UBSAN_SANITIZE_ALL")
+>   557f8c582a9b ("ubsan: Reintroduce signed overflow sanitizer")
+>=20
+> from the kspp tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc scripts/Makefile.lib
+> index 298bd8c80d65,b4a248c20654..000000000000
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@@ -181,8 -175,11 +181,11 @@@ endi
+>  =20
+>   ifeq ($(CONFIG_UBSAN),y)
+>   _c_flags +=3D $(if $(patsubst n%,, \
+> - 		$(UBSAN_SANITIZE_$(target-stem).o)$(UBSAN_SANITIZE)$(CONFIG_UBSAN_SAN=
+ITIZE_ALL)), \
+>  -		$(UBSAN_SANITIZE_$(basetarget).o)$(UBSAN_SANITIZE)y), \
+> ++		$(UBSAN_SANITIZE_$(target-stem).o)$(UBSAN_SANITIZE)y), \
+>   		$(CFLAGS_UBSAN))
+> + _c_flags +=3D $(if $(patsubst n%,, \
+>  -		$(UBSAN_SIGNED_WRAP_$(basetarget).o)$(UBSAN_SANITIZE_$(basetarget).o)=
+$(UBSAN_SIGNED_WRAP)$(UBSAN_SANITIZE)y), \
+> ++		$(UBSAN_SIGNED_WRAP_$(target-stem).o)$(UBSAN_SANITIZE_$(target-stem).=
+o)$(UBSAN_SIGNED_WRAP)$(UBSAN_SANITIZE)y), \
+> + 		$(CFLAGS_UBSAN_SIGNED_WRAP))
+>   endif
+>  =20
+>   ifeq ($(CONFIG_KCOV),y)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This is now a conflict between the kbuild tree and Linus' tree.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240313   gcc  
-i386         buildonly-randconfig-002-20240313   gcc  
-i386         buildonly-randconfig-003-20240313   clang
-i386         buildonly-randconfig-004-20240313   clang
-i386         buildonly-randconfig-005-20240313   clang
-i386         buildonly-randconfig-006-20240313   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240313   clang
-i386                  randconfig-002-20240313   clang
-i386                  randconfig-003-20240313   clang
-i386                  randconfig-004-20240313   gcc  
-i386                  randconfig-005-20240313   gcc  
-i386                  randconfig-006-20240313   clang
-i386                  randconfig-011-20240313   gcc  
-i386                  randconfig-012-20240313   clang
-i386                  randconfig-013-20240313   gcc  
-i386                  randconfig-014-20240313   gcc  
-i386                  randconfig-015-20240313   clang
-i386                  randconfig-016-20240313   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--Sig_/GO0ujt7O9IZQpeVC.JAPY4Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXyLEoACgkQAVBC80lX
+0GwE9Af+On16ur/pW+Et6PQXq0dcC2mug9g38fwHD6mStE3iOCW/L8hRwBzcekCK
+jUCvpC7H3DJHW+elcUUDvG5hDLGP5YKH0lpIofQjbJpnr0gSQCRi8OmLckeaPJM5
+j8Uu8R9HNcFtK9K3pwYhEBjdArk6R7sSEOQjA/HpkvmscYVquXrhCeq/qE5gfXYc
+O7B+h7i1GXkCu7gBT6EWATxaW0S5EQMhBR2ET2mRyU1DwE6Q5gFydnMxFVVKEgHv
+atnKzsuJFzJiEoWDAQ+gRo49DxC7qQ7uodHxyz8B7LBiWwNpjpw5mWLIM2RsCLoh
+Bw8FJuxYEycUL1sFbhdA3d/IY5DhTg==
+=893b
+-----END PGP SIGNATURE-----
+
+--Sig_/GO0ujt7O9IZQpeVC.JAPY4Z--
 
