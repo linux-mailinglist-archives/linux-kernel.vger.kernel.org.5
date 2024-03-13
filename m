@@ -1,68 +1,75 @@
-Return-Path: <linux-kernel+bounces-101429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2C287A6FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:17:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB10E87A6FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:18:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D3401C22C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:17:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECBA51C225A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53443F9E0;
-	Wed, 13 Mar 2024 11:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310883F8D4;
+	Wed, 13 Mar 2024 11:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Wfa6A5Xw"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HS1gvryZ"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEF93F9C2;
-	Wed, 13 Mar 2024 11:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E132F3B798;
+	Wed, 13 Mar 2024 11:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710328623; cv=none; b=VTKKdDDkZDl9KDC3b5bMwYuAh94iD7QHeZvQGyqVrJe9bS7z4hNsxS4gU+/QrGwE4IylOp5OgU1BUCNYBReVND0FFDyeICDXdlKpRRH1jisb5G/hK7hvGI1Rs6Gvq9X4lHTxUsOGE2OwePUxPyu/oVUQ98wuou8hF4KsyiZAioo=
+	t=1710328687; cv=none; b=XFpLEZXF2pMH8VPYZ7pF3i0lBCNAvs6TQmrmEprUHqoVAWu7b19WyjwFCtmYv+Tjok3mIATHlycAVHaj+jWIW1ILlwD9HzCWX/ad1a4PfIBIBLjTipyMTDIngzt+lk8/S4vrsivttGDgq9tBI2zR2fhqfxj5sicaZggo+qeghwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710328623; c=relaxed/simple;
-	bh=9xGC4SQpm4zfa3uEPVxx0x3Lkh/v6baabtSuFaG50Ic=;
+	s=arc-20240116; t=1710328687; c=relaxed/simple;
+	bh=hxeHZhSBUHvsvoBf5IqvwwNsYzhlISlH5FeUuHmtrBc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dODJkE35v417k3S7mgrAbHtsX0jZ7beSRATm6crk664tLBCNXYgAj3W0pptMKHQlYiQaycZp8iNAe3PsJO5ulAt9XPh2ad4GBS8L7B+w3NFyF029PVbpHrWOwTDzPhGLTy+NQ2ehxSjHfF3uDuYKm8qEkWw5oOY00up23ug3Np4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Wfa6A5Xw; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=yM2Z9vaSXa8HrhpKkEVTckQYcJBQU4Wl+RREtQMe3Ko=; b=Wfa6A5XwQ7fgzY/3vhYdJfpudb
-	PIc1E2SkpFaAIJV57oskRVfmokvr5A4VH4pHz9U7TepUqACgYemlFv33mX0oxBSINDE577R8dIWJE
-	NqxRq1pMXopMJ9nKdg0t9qIsb97C6imowZQ7fcTt02/gUTZyu64tG0EU6YOzVFcvmS5mL3S2rQbOL
-	z1tVjSyXUiaKxvJpDbIH+P69t5GFAHUD+6dWkQgYAyp9QyvAVXO1NZYAw0NMtUdx/C22cKkihrS4c
-	2XHyFugwirV5+eQe+b8xY83IzGuA27hef7lZ7RsggxFZFLRjIFW680jfu+8n94pc40xK5VW2Vqr0y
-	CJlbO9lA==;
-Received: from 179-125-71-247-dinamico.pombonet.net.br ([179.125.71.247] helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rkMbP-009v3c-HN; Wed, 13 Mar 2024 12:16:56 +0100
-Date: Wed, 13 Mar 2024 08:16:50 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-Message-ID: <ZfGLIl7riu0w2pAm@quatroqueijos.cascardo.eti.br>
-References: <Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
- <87le75s1fg.fsf@mail.parknet.co.jp>
- <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
- <87h6hek50l.fsf@mail.parknet.co.jp>
- <Ze2IAnSX7lr1fZML@quatroqueijos.cascardo.eti.br>
- <87cys2jfop.fsf@mail.parknet.co.jp>
- <ZfFcpWRWdnWmtebd@quatroqueijos.cascardo.eti.br>
- <878r2mk14a.fsf@mail.parknet.co.jp>
- <ZfFmvGRlNR4ZiMMC@quatroqueijos.cascardo.eti.br>
- <874jdajsqm.fsf@mail.parknet.co.jp>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BOSmizF2GlbuGWI2dUl4eTbn50XcGO5zCO1Q6ryeZe5aAEzTtAXDUDMVyWH3QNl4OMWtAwDSvUPW/hXc9L+5m1ffp+LIcJg/ofSE6TDsJhGShTmOOUJtgKoCvWUyj5LCdochHSIyLdsGcjFkf73V8fFNzkVmo0uShJMThzu6sEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HS1gvryZ; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7EBF9E000C;
+	Wed, 13 Mar 2024 11:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710328683;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bD8It+AS8zjMzshjMBk0JajORqnW1ER+tTJE8+Q3t9U=;
+	b=HS1gvryZIrb7ssL2gw+ikVXAdfTur20JL1ruPdVMOjVfqSJ9kPA5e28xgOT0X8gRmfPsB8
+	tLAqIXIA4Eg0fSxVywmpezEjP4iZV26JJjE3G2Qy0+yHDWoB5o2qJhNN9XepV8gEUXleF+
+	D2oEz7sRijfNQ+gp0RMS9AOfv7scEREJZiYI3MLPDLsU5lEODgS7+CQBLg5o5IV1JHBDdH
+	3iPTbcoZWf2Oi54w4G3CcRAdQJ3yhvyAJuSicrRHPtIJ/w1d1FVIzKm9B26L97aTblEtq8
+	14m7z6wTpjV8Bgmx9x0EHT+p43ceherUyQ+Wdt5oyrVtpbdykLq9Q8WGWGMPyQ==
+Date: Wed, 13 Mar 2024 12:18:01 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Peter Hilber <peter.hilber@opensynergy.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev, virtio-dev@lists.oasis-open.org,
+	linux-arm-kernel@lists.infradead.org, linux-rtc@vger.kernel.org,
+	"virtio-comment@lists.oasis-open.org" <virtio-comment@lists.oasis-open.org>,
+	"Christopher S. Hall" <christopher.s.hall@intel.com>,
+	Jason Wang <jasowang@redhat.com>, John Stultz <jstultz@google.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+	Richard Cochran <richardcochran@gmail.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	"Ridoux, Julien" <ridouxj@amazon.com>
+Subject: Re: [RFC PATCH v3 0/7] Add virtio_rtc module and related changes
+Message-ID: <202403131118010e7ed5bf@mail.local>
+References: <20231218073849.35294-1-peter.hilber@opensynergy.com>
+ <0e21e3e2be26acd70b5575b9932b3a911c9fe721.camel@infradead.org>
+ <204c6339-e80d-4a98-8d07-a11eeb729497@opensynergy.com>
+ <667c8d944ce9ea5c570b82b1858a70cc67b2f3e4.camel@infradead.org>
+ <f6940954-334a-458b-af32-f03d8efbe607@opensynergy.com>
+ <57704b2658e643fce30468dffd8c1477607f59fb.camel@infradead.org>
+ <d796d9a5-8eda-4528-a6d8-1c4eba24aa1e@opensynergy.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,67 +78,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874jdajsqm.fsf@mail.parknet.co.jp>
+In-Reply-To: <d796d9a5-8eda-4528-a6d8-1c4eba24aa1e@opensynergy.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Wed, Mar 13, 2024 at 08:06:41PM +0900, OGAWA Hirofumi wrote:
-> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+On 13/03/2024 10:45:54+0100, Peter Hilber wrote:
+> > Exposing UTC as the only clock reference is bad enough; when leap
+> > seconds happen there's a whole second during which you don't *know*
+> > which second it is. It seems odd to me, for a precision clock to be
+> > deliberately ambiguous about what the time is!
 > 
-> >> So you break the mkdir/rmdir link counting, isn't it?
-> >> 
-> >
-> > It is off by one on those images with directories without ".." subdir.
-> > Otherwise, everything else works fine. mkdir/rmdir inside such directories work
-> > without any issues as rmdir that same directory.
+> Just to be clear, the device can perfectly expose only a TAI reference
+> clock (or both UTC and TAI), the spec is just completely open about this,
+> as it tries to work for diverse use cases.
 > 
-> mkdir() increase link count, rmdir decrease link count. Your change set
-> a dir link count always 2? So if there are 3 normal subdirs, and rmdir
-> all those normal dirs, link count underflow.
+> > 
+> > But if the virtio-rtc clock is defined as UTC and then expose something
+> > *different* in it, that's even worse. You potentially end up providing
+> > inaccurate time for a whole *day* leading up to the leap second.
+> > 
+> > I think you're right that leap second smearing should be addressed. At
+> > the very least, by making it clear that the virtio-rtc clock which
+> > advertises UTC shall be used *only* for UTC, never UTC-SLS or any other
+> > yet-to-be-defined variant.
+> > 
 > 
-> Thanks.
+> Agreed.
+> 
+> > Please make it explicit that any hypervisor which wants to advertise a
+> > smeared clock shall define a new type which specifies the precise
+> > smearing algorithm and cannot be conflated with the one you're defining
+> > here.
+> > 
+> 
+> I will add a requirement that the UTC clock can never have smeared/smoothed
+> leap seconds.
+> 
+> I think that not every vendor would bother to first add a definition of a
+> smearing algorithm. Also, I think in some cases knowing the precise
+> smearing algorithm might not be important (when having the same time as the
+> hypervisor is enough and accuracy w.r.t. actual time is less important).
+> 
+> So maybe I should add a VIRTIO_RTC_CLOCK_UTC_SMEARED clock type, which for
+> now could catch every UTC-like clock which smears/smoothes leap seconds,
+> where the vendor cannot be bothered to add the smearing algorithm to spec
+> and implementations.
 > 
 
-No. The main change is as follows:
+I still don't know anything about virtio but under Linux, an RTC is
+always UTC (or localtime when dual booting but let's not care) and never
+accounts for leap seconds. Having an RTC and RTC driver behaving
+differently would be super inconvenient. Why don't you leave this to
+userspace?
 
-int fat_subdirs(struct inode *dir)
-{
-[...]
-	int count = 0;
-[...]
--		if (de->attr & ATTR_DIR)
-+		if (de->attr & ATTR_DIR &&
-+		    strncmp(de->name, MSDOS_DOTDOT, MSDOS_NAME))
- 			count++;
-[...]
-	return count;
-}
+I guess I'm still questioning whether this is the correct interface to
+expose the host system time instead of an actual RTC.
 
-int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
-{
-[...]
-	if ((de->attr & ATTR_DIR) && !IS_FREE(de->name)) {
-[...]
--		set_nlink(inode, fat_subdirs(inode));
-+		set_nlink(inode, fat_subdirs(inode) + 1);
-[...]
-}
-
-That is, when first instatiating a directory inode, its link count was set to
-the number of subdirs it had, including "." and "..". Now it is set to 1 + the
-number of subdirs it has ignoring "..".
-
-mkdir and rmdir still increment and decrement the parent directory link count.
-
-Cascardo.
-
-
-> > If, on the other hand, we left everything as is and only skipped the
-> > validation, such directories would be created with a link count of 0. Then,
-> > doing a mkdir inside them would crash the kernel with a BUG as we cannot
-> > increment the link count of an inode with 0 links.
-> >
-> > So the idea of the fix here is that, independently of the existence of "..",
-> > the link count will always be at least 1.
-> 
-> -- 
-> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
