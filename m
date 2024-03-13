@@ -1,202 +1,416 @@
-Return-Path: <linux-kernel+bounces-101651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7783E87A9DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E58887A9C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:49:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E34591F22F88
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:59:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB8901F22ACF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E40446AF;
-	Wed, 13 Mar 2024 14:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC7F4A11;
+	Wed, 13 Mar 2024 14:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="rnTAli7W"
-Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="G/IFVmhq"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C126119;
-	Wed, 13 Mar 2024 14:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688EF4654F
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710341958; cv=none; b=ET6gCExg72jOWTEfo3nTLPj5wMYLuMRKFaqpSrb04hcsV5ciPk9a2T3nnB2ioU8GipnR9fzXKqV1qp6JalyOCba3aIEXdUv38fPZiY8DlmEHeN682tYGAvQtvI2eUGgiIGGzIxY/zpOPfJtAHIHPTkhQsZ0HG4PyfK1KGRqMTbM=
+	t=1710341350; cv=none; b=epBi9h5YQHf7g/xDA47srzH+XRdjJTbkCrbdUctxigvry4IxGNWPVYkA0mukNxw21wdVkUMi2AE+2WU6uFDRdVDGDI0PMtOIevwIZRhsqK2jycFGuAUeWlXn2WyuqkRj3IVPfQ+f+uhT7eHcv7suZL10VD10zh+DcH7lCieNBoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710341958; c=relaxed/simple;
-	bh=Oq5ehj0jgtkb/PT5kiTlAvv5HCm7BnWN2D7UlVXc1po=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q6weYxyNvYONH1oodBFEQuBkHnFXr0aILnyrE/3vM5znYyZog2kXq3YC1pZVf1nIhd9SohEBFOBfLwTinXMSBkC8L1rj0/406o6IpFTNsrHq6hbbdmGeFi9TgjkKoqdIM4juRTrc8MkZ1jvQmXPtcwsHelZSXUheDd4HAlacQaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=rnTAli7W; arc=none smtp.client-ip=199.247.17.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
-Received: from spock.localnet (unknown [94.142.239.106])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by prime.voidband.net (Postfix) with ESMTPSA id 1A917635B049;
-	Wed, 13 Mar 2024 15:49:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-	s=dkim-20170712; t=1710341350;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8iwfkBYf3yJiDaRw2lxcFE7exRFkrA4jEAyCuZ8fP2A=;
-	b=rnTAli7WrlY35E48+oZ1f4A/GguMmiD+kSf16h6wUZdwtv1ztTKx+DS7Tb9Ebr2542K5IU
-	nm+65NJ863HCfnC73H0poAoptFskFChwk+deECjDvOd7qqgz2tSBDb0C496TeOff9coT2N
-	/27yHnC8EokEQCvNOUx7tJ/dG6RmZJI=
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: rafael.j.wysocki@intel.com, Mario.Limonciello@amd.com,
- viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
- Borislav.Petkov@amd.com, Perry Yuan <perry.yuan@amd.com>
-Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
- Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] AMD Pstate Driver Core Performance Boost
-Date: Wed, 13 Mar 2024 15:48:58 +0100
-Message-ID: <2721197.mvXUDI8C0e@natalenko.name>
-In-Reply-To: <cover.1710322310.git.perry.yuan@amd.com>
-References: <cover.1710322310.git.perry.yuan@amd.com>
+	s=arc-20240116; t=1710341350; c=relaxed/simple;
+	bh=qNvHt4qXvFR9i1e4OWyMS9v3NaLUmqAkjzNOiGYBe88=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lxD2z1lD7s/va6npdqedzzRvdvpwrc/F3aB7SbqUKEvxU2PMbayDGP4lG096ldcTLEYxZ6DgR4BbD8Yc2/hNWB63yRJ1cxjWHwaHJhoiozWbzpa8FM6wv2qRkDKyKdbLo6CBJe43b5rjCbdPid9OmotUIoawUIMkaZuGWgO3KqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=G/IFVmhq; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so9047468a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710341346; x=1710946146; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e3eQum80NNnCkG6phw9dHYDaS2ANjJ+Hfdu++iY8NGk=;
+        b=G/IFVmhqxUABgIVQBb37zagMzWgUnVb7AaJr9B2Ag6I+s92tC9atc0zv7GN2PsUTKg
+         XHoyAjNg2KyaMpuyt2b+thaiBP7QF8hR3H4Mw5LcglW14xDpKfwt2+UogbEmq1zAz2fT
+         31+Sz/Y+sPOm1LWLOiEyBn+o322rrSm8VXl2/16QvkiNCr3HYx8QPORM43+qn23DtI2W
+         +7iAxHqF8osqmAotIhHJ73pMZXgpg9IitTOhLI8PA4V3YOjs8vWh2P9PSUsM9nv8NfxP
+         Od72pDLxQ15TTO+DYl1GAmwOrXqvQvzgLcVuyUWDHR29EJvNY6M/Qv9aOnXuXTdElNWK
+         IsZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710341346; x=1710946146;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3eQum80NNnCkG6phw9dHYDaS2ANjJ+Hfdu++iY8NGk=;
+        b=Gz6sk5uqTeXW1/KdmcWqI06hASRT/q8WdcbLgMwTn2A12sp/d/gSv6290uRI3zI4ss
+         o2OxYHQXkwtb6Lf3Myp51UpnBJ1xSeqiWM3nGxJKJFix8hqGXyysffq9k+ky5pFo9+15
+         MQHZR+9lvkcwp8atXBZoWUaPS7iSsdr8TJn+xxr/vm9hFR2wKxvEJi07MmGDSTJkN8hS
+         x6N2y+LtXPL2eTyA+GQuiAKaikyI7425egkZ1Yf5rnjwyFsfX0phfONXGZOIJYkNzpYI
+         pf64fNNTFlG0lgf9dRZe0Byeyea1zaN/f++BvGAJCcxCPqnSgTokmZCp6C8+Sz7XpLfY
+         c/QA==
+X-Forwarded-Encrypted: i=1; AJvYcCWp5i1l68CLTmPK0S1JPYDTomctx8ig5v6+Axp1Mnh8syr/oPDKeqkpKtNtfsuxlu0qVpII3sSEqiXyYESzGq1rjwYHyXQS5IhDy/TL
+X-Gm-Message-State: AOJu0YwvmBSZlcns7W026NbVJJXAHuuoIabXME7CSW1pBjeA+1/ke6hr
+	yY8P1d8WLzP9EGxE4dNf4cLgA4gDANbA6ZJb4nEtdAm3zoF3LoEZ41bIe0lKYlg=
+X-Google-Smtp-Source: AGHT+IGoZ5fJmL+zK19ZDe5D2rupsNcSyxqwyd2LWie0z6AU4dn5RVQinylPT0ATlRNZsuyAtUx0KQ==
+X-Received: by 2002:a17:907:7b06:b0:a46:5b72:6d38 with SMTP id mn6-20020a1709077b0600b00a465b726d38mr1168654ejc.63.1710341345777;
+        Wed, 13 Mar 2024 07:49:05 -0700 (PDT)
+Received: from localhost (host-82-56-173-172.retail.telecomitalia.it. [82.56.173.172])
+        by smtp.gmail.com with ESMTPSA id bh21-20020a170906a0d500b00a44efa48c24sm4933249ejb.117.2024.03.13.07.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 07:49:05 -0700 (PDT)
+From: Andrea della Porta <andrea.porta@suse.com>
+X-Google-Original-From: Andrea della Porta <aporta@suse.de>
+Date: Wed, 13 Mar 2024 15:49:04 +0100
+To: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc: Andrea della Porta <andrea.porta@suse.com>,
+	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Stefan Wahren <stefan.wahren@i2se.com>
+Subject: Re: [PATCH v2 12/15] dmaengine: bcm2835: introduce multi platform
+ support
+Message-ID: <ZfG84EGlh8MTPAbA@apocalypse>
+Mail-Followup-To: Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Andrea della Porta <andrea.porta@suse.com>,
+	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Stefan Wahren <stefan.wahren@i2se.com>
+References: <cover.1710226514.git.andrea.porta@suse.com>
+ <5826eba6ab78b9cdba21c12853a85d5f9a6aab76.1710226514.git.andrea.porta@suse.com>
+ <CAPY8ntDkRVhz-1Go3QdYPihqAsjBDFy2De=q+i2C8rzK7hcV_g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart12395831.O9o76ZdvQC";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPY8ntDkRVhz-1Go3QdYPihqAsjBDFy2De=q+i2C8rzK7hcV_g@mail.gmail.com>
 
---nextPart12395831.O9o76ZdvQC
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-Subject: Re: [PATCH v4 0/7] AMD Pstate Driver Core Performance Boost
-Date: Wed, 13 Mar 2024 15:48:58 +0100
-Message-ID: <2721197.mvXUDI8C0e@natalenko.name>
-In-Reply-To: <cover.1710322310.git.perry.yuan@amd.com>
-References: <cover.1710322310.git.perry.yuan@amd.com>
-MIME-Version: 1.0
+On 17:05 Tue 12 Mar     , Dave Stevenson wrote:
+> Hi Andrea
+> 
+> On Tue, 12 Mar 2024 at 09:13, Andrea della Porta <andrea.porta@suse.com> wrote:
+> >
+> > This finally moves all platform specific stuff into a separate structure,
+> > which is initialized on the OF compatible during probing. Since the DMA
+> > control block is different on the BCM2711 platform, we introduce a common
+> > control block to reserve the necessary space and adequate methods for
+> > access.
+> >
+> > Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+> > Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> > ---
+> >  drivers/dma/bcm2835-dma.c | 336 +++++++++++++++++++++++++++++---------
+> >  1 file changed, 260 insertions(+), 76 deletions(-)
+> >
+> > diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+> > index 88ae5d05402e..b015eae29b08 100644
+> > --- a/drivers/dma/bcm2835-dma.c
+> > +++ b/drivers/dma/bcm2835-dma.c
+> > @@ -48,6 +48,11 @@ struct bcm2835_dmadev {
+> >         struct dma_device ddev;
+> >         void __iomem *base;
+> >         dma_addr_t zero_page;
+> > +       const struct bcm2835_dma_cfg *cfg;
+> > +};
+> > +
+> > +struct bcm_dma_cb {
+> > +       uint32_t rsvd[8];
+> >  };
+> >
+> >  struct bcm2835_dma_cb {
+> > @@ -61,7 +66,7 @@ struct bcm2835_dma_cb {
+> >  };
+> >
+> >  struct bcm2835_cb_entry {
+> > -       struct bcm2835_dma_cb *cb;
+> > +       struct bcm_dma_cb *cb;
+> >         dma_addr_t paddr;
+> >  };
+> >
+> > @@ -82,6 +87,44 @@ struct bcm2835_chan {
+> >         bool is_lite_channel;
+> >  };
+> >
+> > +struct bcm2835_dma_cfg {
+> > +       dma_addr_t addr_offset;
+> > +       u32 cs_reg;
+> > +       u32 cb_reg;
+> > +       u32 next_reg;
+> > +       u32 ti_reg;
+> > +
+> > +       u32 wait_mask;
+> > +       u32 reset_mask;
+> > +       u32 int_mask;
+> > +       u32 active_mask;
+> > +       u32 abort_mask;
+> > +       u32 s_dreq_mask;
+> > +       u32 d_dreq_mask;
+> > +
+> > +       u32 (*cb_get_length)(void *data);
+> > +       dma_addr_t (*cb_get_addr)(void *data, enum dma_transfer_direction);
+> > +
+> > +       void (*cb_init)(void *data, struct bcm2835_chan *c,
+> > +                       enum dma_transfer_direction, u32 src, u32 dst,
+> > +                       bool zero_page);
+> > +       void (*cb_set_src)(void *data, enum dma_transfer_direction, u32 src);
+> > +       void (*cb_set_dst)(void *data, enum dma_transfer_direction, u32 dst);
+> > +       void (*cb_set_next)(void *data, u32 next);
+> > +       void (*cb_set_length)(void *data, u32 length);
+> > +       void (*cb_append_extra)(void *data,
+> > +                               struct bcm2835_chan *c,
+> > +                               enum dma_transfer_direction direction,
+> > +                               bool cyclic, bool final, unsigned long flags);
+> > +
+> > +       dma_addr_t (*to_cb_addr)(dma_addr_t addr);
+> > +
+> > +       void (*chan_plat_init)(struct bcm2835_chan *c);
+> > +       dma_addr_t (*read_addr)(struct bcm2835_chan *c,
+> > +                               enum dma_transfer_direction);
+> > +       u32 (*cs_flags)(struct bcm2835_chan *c);
+> > +};
+> > +
+> >  struct bcm2835_desc {
+> >         struct bcm2835_chan *c;
+> >         struct virt_dma_desc vd;
+> > @@ -215,6 +258,13 @@ static inline struct bcm2835_dmadev *to_bcm2835_dma_dev(struct dma_device *d)
+> >         return container_of(d, struct bcm2835_dmadev, ddev);
+> >  }
+> >
+> > +static inline const struct bcm2835_dma_cfg *to_bcm2835_cfg(struct dma_device *d)
+> > +{
+> > +       struct bcm2835_dmadev *od = container_of(d, struct bcm2835_dmadev, ddev);
+> > +
+> > +       return od->cfg;
+> > +}
+> > +
+> >  static inline struct bcm2835_chan *to_bcm2835_dma_chan(struct dma_chan *c)
+> >  {
+> >         return container_of(c, struct bcm2835_chan, vc.chan);
+> > @@ -292,6 +342,109 @@ static inline bool need_dst_incr(enum dma_transfer_direction direction)
+> >         return false;
+> >  }
+> >
+> > +static inline u32 bcm2835_dma_cb_get_length(void *data)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       return cb->length;
+> > +}
+> > +
+> > +static inline dma_addr_t
+> > +bcm2835_dma_cb_get_addr(void *data, enum dma_transfer_direction direction)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       if (direction == DMA_DEV_TO_MEM)
+> > +               return cb->dst;
+> > +
+> > +       return cb->src;
+> > +}
+> > +
+> > +static inline void
+> > +bcm2835_dma_cb_init(void *data, struct bcm2835_chan *c,
+> > +                   enum dma_transfer_direction direction, u32 src, u32 dst,
+> > +                   bool zero_page)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       cb->info = bcm2835_dma_prepare_cb_info(c, direction, zero_page);
+> > +       cb->src = src;
+> > +       cb->dst = dst;
+> > +       cb->stride = 0;
+> > +       cb->next = 0;
+> > +}
+> > +
+> > +static inline void
+> > +bcm2835_dma_cb_set_src(void *data, enum dma_transfer_direction direction,
+> > +                      u32 src)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       cb->src = src;
+> > +}
+> > +
+> > +static inline void
+> > +bcm2835_dma_cb_set_dst(void *data, enum dma_transfer_direction direction,
+> > +                      u32 dst)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       cb->dst = dst;
+> > +}
+> > +
+> > +static inline void bcm2835_dma_cb_set_next(void *data, u32 next)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       cb->next = next;
+> > +}
+> > +
+> > +static inline void bcm2835_dma_cb_set_length(void *data, u32 length)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       cb->length = length;
+> > +}
+> > +
+> > +static inline void
+> > +bcm2835_dma_cb_append_extra(void *data, struct bcm2835_chan *c,
+> > +                           enum dma_transfer_direction direction,
+> > +                           bool cyclic, bool final, unsigned long flags)
+> > +{
+> > +       struct bcm2835_dma_cb *cb = data;
+> > +
+> > +       cb->info |= bcm2835_dma_prepare_cb_extra(c, direction, cyclic, final,
+> > +                                                flags);
+> > +}
+> > +
+> > +static inline dma_addr_t bcm2835_dma_to_cb_addr(dma_addr_t addr)
+> > +{
+> > +       return addr;
+> > +}
+> > +
+> > +static void bcm2835_dma_chan_plat_init(struct bcm2835_chan *c)
+> > +{
+> > +       /* check in DEBUG register if this is a LITE channel */
+> > +       if (readl(c->chan_base + BCM2835_DMA_DEBUG) & BCM2835_DMA_DEBUG_LITE)
+> > +               c->is_lite_channel = true;
+> > +}
+> > +
+> > +static dma_addr_t bcm2835_dma_read_addr(struct bcm2835_chan *c,
+> > +                                       enum dma_transfer_direction direction)
+> > +{
+> > +       if (direction == DMA_MEM_TO_DEV)
+> > +               return readl(c->chan_base + BCM2835_DMA_SOURCE_AD);
+> > +       else if (direction == DMA_DEV_TO_MEM)
+> > +               return readl(c->chan_base + BCM2835_DMA_DEST_AD);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static u32 bcm2835_dma_cs_flags(struct bcm2835_chan *c)
+> > +{
+> > +       return BCM2835_DMA_CS_FLAGS(c->dreq);
+> > +}
+> > +
+> >  static void bcm2835_dma_free_cb_chain(struct bcm2835_desc *desc)
+> >  {
+> >         size_t i;
+> > @@ -309,16 +462,19 @@ static void bcm2835_dma_desc_free(struct virt_dma_desc *vd)
+> >  }
+> >
+> >  static bool bcm2835_dma_create_cb_set_length(struct dma_chan *chan,
+> > -                                            struct bcm2835_dma_cb *control_block,
+> > +                                            void *data,
+> >                                              size_t len,
+> >                                              size_t period_len,
+> >                                              size_t *total_len)
+> >  {
+> > +       const struct bcm2835_dma_cfg *cfg = to_bcm2835_cfg(chan->device);
+> >         struct bcm2835_chan *c = to_bcm2835_dma_chan(chan);
+> >         size_t max_len = bcm2835_dma_max_frame_length(c);
+> >
+> >         /* set the length taking lite-channel limitations into account */
+> > -       control_block->length = min_t(u32, len, max_len);
+> > +       u32 length = min_t(u32, len, max_len);
+> > +
+> > +       cfg->cb_set_length(data, length);
+> >
+> >         /* finished if we have no period_length */
+> >         if (!period_len)
+> > @@ -333,14 +489,14 @@ static bool bcm2835_dma_create_cb_set_length(struct dma_chan *chan,
+> >          */
+> >
+> >         /* have we filled in period_length yet? */
+> > -       if (*total_len + control_block->length < period_len) {
+> > +       if (*total_len + length < period_len) {
+> >                 /* update number of bytes in this period so far */
+> > -               *total_len += control_block->length;
+> > +               *total_len += length;
+> >                 return false;
+> >         }
+> >
+> >         /* calculate the length that remains to reach period_length */
+> > -       control_block->length = period_len - *total_len;
+> > +       cfg->cb_set_length(data, period_len - *total_len);
+> >
+> >         /* reset total_length for next period */
+> >         *total_len = 0;
+> > @@ -388,15 +544,14 @@ static struct bcm2835_desc *bcm2835_dma_create_cb_chain(
+> >                                         size_t buf_len, size_t period_len,
+> >                                         gfp_t gfp, unsigned long flags)
+> >  {
+> > +       const struct bcm2835_dma_cfg *cfg = to_bcm2835_cfg(chan->device);
+> >         struct bcm2835_dmadev *od = to_bcm2835_dma_dev(chan->device);
+> >         struct bcm2835_chan *c = to_bcm2835_dma_chan(chan);
+> >         size_t len = buf_len, total_len;
+> >         size_t frame;
+> >         struct bcm2835_desc *d;
+> >         struct bcm2835_cb_entry *cb_entry;
+> > -       struct bcm2835_dma_cb *control_block;
+> > -       u32 extrainfo = bcm2835_dma_prepare_cb_extra(c, direction, cyclic,
+> > -                                                    false, flags);
+> > +       struct bcm_dma_cb *control_block;
+> >         bool zero_page = false;
+> >
+> >         if (!frames)
+> > @@ -432,12 +587,7 @@ static struct bcm2835_desc *bcm2835_dma_create_cb_chain(
+> >
+> >                 /* fill in the control block */
+> >                 control_block = cb_entry->cb;
+> > -               control_block->info = bcm2835_dma_prepare_cb_info(c, direction,
+> > -                                                                 zero_page);
+> > -               control_block->src = src;
+> > -               control_block->dst = dst;
+> > -               control_block->stride = 0;
+> > -               control_block->next = 0;
+> > +               cfg->cb_init(control_block, c, src, dst, direction, zero_page);
+> 
+> Can I ask how you've been testing these patches?
 
-On st=C5=99eda 13. b=C5=99ezna 2024 11:04:37, CET Perry Yuan wrote:
->=20
-> Hi all,
-> The patchset series add core performance boost feature for AMD pstate
-> driver including passisve ,guide and active mode support.
->=20
-> User can change core frequency boost control with a new sysfs entry:
->=20
-> "/sys/devices/system/cpu/amd_pstate/cpb_boost"
->=20
-> The legancy boost interface has been removed due to the function
-> conflict with new cpb_boost which can support all modes.
->=20
-> 1). enable core boost:
-> $ sudo bash -c "echo 0 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
-> $ lscpu -ae
-> CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE    MAXMHZ   MINMHZ      MHZ
->   0    0      0    0 0:0:0:0          yes 4201.0000 400.0000 2983.578
->   1    0      0    1 1:1:1:0          yes 4201.0000 400.0000 2983.578
->   2    0      0    2 2:2:2:0          yes 4201.0000 400.0000 2583.855
->   3    0      0    3 3:3:3:0          yes 4201.0000 400.0000 2983.578
->   4    0      0    4 4:4:4:0          yes 4201.0000 400.0000 2983.578
->=20
-> 2). disabble core boost:
-> $ sudo bash -c "echo 1 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
-> $ lscpu -ae
->    0    0      0    0 0:0:0:0          yes 5759.0000 400.0000 2983.578
->   1    0      0    1 1:1:1:0          yes 5759.0000 400.0000 2983.578
->   2    0      0    2 2:2:2:0          yes 5759.0000 400.0000 2983.578
->   3    0      0    3 3:3:3:0          yes 5759.0000 400.0000 2983.578
->   4    0      0    4 4:4:4:0          yes 5759.0000 400.0000 2983.578
->=20
->=20
-> The patches have been tested with the AMD 7950X processor and many users
-> would like to get core boost control enabled for power saving.
->=20
-> If you would like to test this patchset, it needs to apply the patchset
-> based on below one latest version patchset.=20
-> https://lore.kernel.org/lkml/20240208102122.GAZcSrIkbPJfIExdF6@fat_crate.=
-local/
->=20
->=20
-> Perry.
->=20
->=20
-> Changes from v3:
->  * rebased to linux-pm/bleeding-edge v6.8
->  * rename global to amd_pstate_global_params(Oleksandr Natalenko)
+Sure, most of these issues were easily spotted by mem to mem transactions, using dmatest. 
+> 
+> This line was one of the bugs that I found during my work. The
+> prototype for cb_init is
+>  +       void (*cb_init)(void *data, struct bcm2835_chan *c,
+>  +                       enum dma_transfer_direction, u32 src, u32 dst,
+>  +                       bool zero_page);
+> So this call has direction in the wrong place, which leads to quite
+> comical failures.
 
-Would appreciate being in Cc: then.
+Exactly, that was one of the funniest. This is indeed resolved in patch number 14.
+The others being related to address shifting in the 40 bit case, basically I've just 
+replaced << 8 with << 32 on srci and dsti control block fields. 
 
->  * remove comments for boot_supported in amd_pstate.h
->  * fix the compiler warning for amd-pstate-ut.ko
->  * use for_each_online_cpu in cpb_boost_store which fix the null pointer
->    error during testing=20
->  * fix the max frequency value to be KHz when cpb boost disabled(Gautham =
-R. Shenoy)
->=20
-> Changes from v2:
->  * move global struct to amd-pstate.h
->  * fix the amd-pstate-ut with new cpb control interface
->=20
-> Changes from v1:
->  * drop suspend/resume fix patch 6/7 because of the fix should be in
->    another fix series instead of CPB feature
->  * move the set_boost remove patch to the last(Mario)
->  * Fix commit info with "Closes:" (Mario)
->  * simplified global.cpb_supported initialization(Mario)
->  * Add guide mode support for CPB control
->  * Fixed some Doc typos and add guide mode info to Doc as well.
->=20
-> v1: https://lore.kernel.org/all/cover.1706255676.git.perry.yuan@amd.com/
-> v2: https://lore.kernel.org/lkml/cover.1707047943.git.perry.yuan@amd.com/
-> v3: https://lore.kernel.org/lkml/cover.1707297581.git.perry.yuan@amd.com/
->=20
-> Perry Yuan (7):
->   cpufreq: amd-pstate: initialize new core precision boost state
->   cpufreq: amd-pstate: implement cpb_boost sysfs entry for boost control
->   cpufreq: amd-pstate: fix max_perf calculation for amd_get_max_freq()
->   cpufreq: amd-pstate: fix the MSR highest perf will be reset issue
->     while cpb boost off
->   Documentation: cpufreq: amd-pstate: introduce the new cpu boost
->     control method
->   cpufreq: amd-pstate: remove legacy set_boost callback for passive mode
->   cpufreq: amd-pstate-ut: support new cpb boost control interface
->=20
->  Documentation/admin-guide/pm/amd-pstate.rst |  11 ++
->  drivers/cpufreq/amd-pstate-ut.c             |   2 +-
->  drivers/cpufreq/amd-pstate.c                | 157 +++++++++++++++-----
->  include/linux/amd-pstate.h                  |  16 +-
->  4 files changed, 149 insertions(+), 37 deletions(-)
->=20
->=20
+Many thanks,
+Andrea
 
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart12395831.O9o76ZdvQC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmXxvNoACgkQil/iNcg8
-M0vVbBAAjuIVAWC5tJ9yDAmxbzbCwI/34/400d1rFGcEP2vrRUA51G5yCK7YWOGz
-3N2SXE4B24N+9upXbIkyBjHQSZu402PdalldNasFl/nFsAQrdJxvoBKLvx3WTC78
-NHkFCZMaRy9wMrB8JyA63hjoh30BYDcxHHfL/1axm24Q0HEvc9Ab5cnAE6i3SH9x
-0d2Jey91hs4lwYm/5VP/VLlaV03DiXjuLZpO0lpi0SoDu3i2gLsazSijFz/NEJqB
-LTjEd7hmpK0L8PiZRAiMv1G5HdAP/X5Qujd7+dY/Hmf1WUrypr42hnQQajfaFMvS
-ctfMbUtRZ9PQd85nZXhmljPxKyONAdX+6Qi4oU+skWO5YHuuKrJqofLln27OEDPK
-uY590jH+maYu5I0dKnqaIPt5H+4T5J2G8h0QB/imKYIebmRqFBHYXOHtC3ygUt7z
-MbAgIerB47Jcjawri2GN1OclbSUOQ3jj64RR7thODrlfwphUAsSKIIbiNHGpPIob
-1UU3n6ZWQr4sO2K2vq4kl3ZThQHPWHf59v6m2Au3jaxQMkEGE2tjOLaujwDRAP4j
-yEHZRfg2+Vg3in+Vq57mJV3ZgivGdCIE+vjAA1d0r+/q+7FXAIPte0M7ZCO5Rd8d
-bUckmx8FTuKMfXPtA5GybH5UlVohqtXuNBDjQjOztKtvYWOO0Kw=
-=f6Gb
------END PGP SIGNATURE-----
-
---nextPart12395831.O9o76ZdvQC--
-
-
-
+> 
+> Thanks
+>   Dave
+> 
 
