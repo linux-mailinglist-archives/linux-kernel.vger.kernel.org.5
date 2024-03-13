@@ -1,326 +1,86 @@
-Return-Path: <linux-kernel+bounces-101495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B71587A7DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:55:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 354A787A7E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 224CA2861C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:55:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66D191C22E8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A095143ACA;
-	Wed, 13 Mar 2024 12:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ETNJF+7D"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D6027453;
+	Wed, 13 Mar 2024 12:55:09 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAB443AA4
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C1743AB5
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710334507; cv=none; b=jPVXnrkjkMo42U+wAjAHqOoZpJ5A0MFm4P1my4cTTd36bqLv0DW/XNWcr62yltFAUPjUaGuUCHy6NqzQSjnwOn6G3zSXMFGS/n59+1PqAiOFXOc5DQsArd6C7mPabGSehhnlfTPpDA/UOr4bXhD9l4rjUKGiVYhJzwA/u8eriPA=
+	t=1710334509; cv=none; b=On0fyk+jQUwlBaEegNGoZ/I39PlA/p5GyuUwbFueevhzb87SdW/WgdnR0NvTtnR2G5Bjz0NqCquhF6OS7ZUFa9UiO7s5DvSqf4I9Dx+0fmhKsoWWiGJZ/IP17TIXlMmL14ofCkZCr3KwdkX0tBN3DsvI4pf8jLifqpNH15Um0mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710334507; c=relaxed/simple;
-	bh=sh7lOn799mdRNo9SNh2T7fssV2zC50KXVdJoi0KTXRE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UXM+8D0fc7CBGF9Sv6MXbxbtjnd0B53mio5Ci97VMC7Klt8qGD0UU2ZHi7vBuQyQLGWvA+EhZW/zjX90ntePd7/ufAdM8pR5anytQkqxJLUWMy2Gz4WR9jWiilax/3fFugyksmiSt6iVpqfBpDpzDj+VurVDUKLXKJgbVtyJ+I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ETNJF+7D; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710334504;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=h/UYi6EhK4kWHCiuuewAtpIQWiza2uvSvfzWNm0vBG0=;
-	b=ETNJF+7D+SQg4jkKpBn3nAqfKvi8nnI8Y/FTMrhvvEz0SiRIFE3oZaeKh+nKrgHLVkcXER
-	JP0VpbvfUTEry64YFYCVJZ1G+DPx3wiktzIe7pupgfvK8Tj9MP4jb781obOLuhhEur5VJs
-	vyNSRhgY7y6wEb7cju69yLl6BdUP1j4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-615-N9sYoLSWOzi0ey4wgDZ8yA-1; Wed, 13 Mar 2024 08:55:00 -0400
-X-MC-Unique: N9sYoLSWOzi0ey4wgDZ8yA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 33595101A56C;
-	Wed, 13 Mar 2024 12:55:00 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.224.236])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 074503C22;
-	Wed, 13 Mar 2024 12:54:57 +0000 (UTC)
-From: Ivan Vecera <ivecera@redhat.com>
-To: netdev@vger.kernel.org
-Cc: pawel.chmielewski@intel.com,
-	aleksandr.loktionov@intel.com,
-	mschmidt@redhat.com,
-	Hugo Ferreira <hferreir@redhat.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] i40e: Enforce software interrupt during busy-poll exit
-Date: Wed, 13 Mar 2024 13:54:56 +0100
-Message-ID: <20240313125457.19475-1-ivecera@redhat.com>
+	s=arc-20240116; t=1710334509; c=relaxed/simple;
+	bh=OA7n4WoWGbP3oWnO0FZJGlhIW/L9Y5KPqj/OWmrBB0s=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=l5LvC46cfv24xLNJV3/jI7jNEpJJRxZ258UvbtLRbZABwd6Hu6E2hU4fAevac+qPGIETnM0Bz085SYo+l3ZY+ardmq80AGSZV1d9CL5jM8KtnaV3Tcn8GtM79Ri8MNhup0KF3iXbEcfe3A+C8w6hzsGFZcg0+bVIt9OX5tyJjgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c86ecb5b37so90885139f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 05:55:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710334507; x=1710939307;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NTsBJsTIJoCtZSifJCwcmREyobfdSjlUs4dnDW12QoE=;
+        b=NqPrw5Us7I7DnMEVmUcqVvh9EXabtE7fNOVzHCVw1mTUsCagSwpNwfU3+T4WvK9sj9
+         1jEjeJcrPZrx4LvPOt/CHlRkew+CWbCMtLbgR5HaaAFzvkYf959mh56KJATsgUbouh2m
+         gUDOi0kf1OOO8yjVyGWQjDmJ5SDttby5EMe69wnQ+ISi3D0/QF6Pc1oekEmY10Qaa3fD
+         r66XZvoPFMD+zjj+uoHs7q29oJDpYhem5lE06q+PuEXWLOaOBMBglR0ZEn83asVfJ+Qe
+         2sMg0w2S3Djd/Br/2RXLAUD1TAUoRWSyXJqRsQ8lUudxwrZafSVuBax7+QVqVuTmMw9h
+         IPgg==
+X-Forwarded-Encrypted: i=1; AJvYcCW5Mj/2HtgHyZlYgJ9juucyLLZ0fuYojKnbDtqMlDLPZHYWfpTvG+1DxBTRhAXf8b4babM5TOMuVUGGRW4Mc8cz0Fy0+GOXfZnkVfkm
+X-Gm-Message-State: AOJu0YzqpKaNXH4xxctX3r2uPpxaPI0m2y/ca6RHwkVD70Z4glYtXX0Q
+	HVbVnGabZS2kLsS55+5xE+Ej8mm/U64wakOSXmuKOpWo8LZ94npdNl2XIlofppLDo/VsB1VqTTc
+	i/TJukYkvwsyOWFnIKev4gIT74/LnN39ViZf9o0ztp8wC0jZTvUka3Fc=
+X-Google-Smtp-Source: AGHT+IENFWtw/fGe6TW5joyiNJYfM5EpgKtZ7zqhvwGYgsMjoQqO9yN3YRFWktcMZaZGtbQ6m4h18RZJlVkywC6rxjrWx+WOAIpu
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Received: by 2002:a05:6638:2b26:b0:476:f337:688c with SMTP id
+ fm38-20020a0566382b2600b00476f337688cmr201085jab.0.1710334506597; Wed, 13 Mar
+ 2024 05:55:06 -0700 (PDT)
+Date: Wed, 13 Mar 2024 05:55:06 -0700
+In-Reply-To: <tencent_0CC819694F840D98A5AA8DF9923F5DA6DD07@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b6908d06138a4852@google.com>
+Subject: Re: [syzbot] [fs?] WARNING in stashed_dentry_prune
+From: syzbot <syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-As for ice bug fixed by commit b7306b42beaf ("ice: manage interrupts
-during poll exit") I'm seeing the similar issue also with i40e driver.
+Hello,
 
-In certain situation when busy-loop is enabled together with adaptive
-coalescing, the driver occasionally miss that there are outstanding
-descriptors to clean when exiting busy poll.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Try to catch the remaining work by triggering a software interrupt
-when exiting busy poll. No extra interrupts will be generated when
-busy polling is not used.
+Reported-and-tested-by: syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com
 
-The issue was found when running sockperf ping-pong tcp test with
-adaptive coalescing and busy poll enabled (50 as value busy_pool
-and busy_read sysctl knobs) and results in huge latency spikes
-with more than 100000us.
+Tested on:
 
-The fix is inspired from the ice driver and do the following:
-1) During napi poll exit in case of busy-poll (napo_complete_done()
-   returns false) this is recorded to q_vector that we were in busy
-   loop.
-2) In i40e_update_enable_itr()
-   - updates refreshed ITR intervals directly using PFINT_ITRN register
-   - if we are exiting ordinary poll then just enables the interrupt
-     using PFINT_DYN_CTLN
-   - if we are exiting busy poll then enables the interrupt and
-     additionally triggers an immediate software interrupt to catch any
-     pending clean-ups
-3) Reuses unused 3rd ITR (interrupt throttle) index and set it to
-   20K interrupts per second to limit the number of these sw interrupts.
+commit:         b0546776 Merge tag 'printk-for-6.9' of git://git.kerne..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1507ceb6180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b5ec5ccf7234cc6cb86
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=136276d6180000
 
-Test results
-============
-Prior:
-[root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 --mps=max -t 120
-sockperf: == version #3.10-no.git ==
-sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
-
-[ 0] IP = 10.9.9.1        PORT = 11111 # TCP
-sockperf: Warmup stage (sending a few dummy messages)...
-sockperf: Starting test...
-sockperf: Test end (interrupted by timer)
-sockperf: Test ended
-sockperf: [Total Run] RunTime=119.999 sec; Warm up time=400 msec; SentMessages=2438563; ReceivedMessages=2438562
-sockperf: ========= Printing statistics for Server No: 0
-sockperf: [Valid Duration] RunTime=119.549 sec; SentMessages=2429473; ReceivedMessages=2429473
-sockperf: ====> avg-latency=24.571 (std-dev=93.297, mean-ad=4.904, median-ad=1.510, siqr=1.063, cv=3.797, std-error=0.060, 99.0% ci=[24.417, 24.725])
-sockperf: # dropped messages = 0; # duplicated messages = 0; # out-of-order messages = 0
-sockperf: Summary: Latency is 24.571 usec
-sockperf: Total 2429473 observations; each percentile contains 24294.73 observations
-sockperf: ---> <MAX> observation = 103294.331
-sockperf: ---> percentile 99.999 =   45.633
-sockperf: ---> percentile 99.990 =   37.013
-sockperf: ---> percentile 99.900 =   35.910
-sockperf: ---> percentile 99.000 =   33.390
-sockperf: ---> percentile 90.000 =   28.626
-sockperf: ---> percentile 75.000 =   27.741
-sockperf: ---> percentile 50.000 =   26.743
-sockperf: ---> percentile 25.000 =   25.614
-sockperf: ---> <MIN> observation =   12.220
-
-After:
-[root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 --mps=max -t 120
-sockperf: == version #3.10-no.git ==
-sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
-
-[ 0] IP = 10.9.9.1        PORT = 11111 # TCP
-sockperf: Warmup stage (sending a few dummy messages)...
-sockperf: Starting test...
-sockperf: Test end (interrupted by timer)
-sockperf: Test ended
-sockperf: [Total Run] RunTime=119.999 sec; Warm up time=400 msec; SentMessages=2400055; ReceivedMessages=2400054
-sockperf: ========= Printing statistics for Server No: 0
-sockperf: [Valid Duration] RunTime=119.549 sec; SentMessages=2391186; ReceivedMessages=2391186
-sockperf: ====> avg-latency=24.965 (std-dev=5.934, mean-ad=4.642, median-ad=1.485, siqr=1.067, cv=0.238, std-error=0.004, 99.0% ci=[24.955, 24.975])
-sockperf: # dropped messages = 0; # duplicated messages = 0; # out-of-order messages = 0
-sockperf: Summary: Latency is 24.965 usec
-sockperf: Total 2391186 observations; each percentile contains 23911.86 observations
-sockperf: ---> <MAX> observation =  195.841
-sockperf: ---> percentile 99.999 =   45.026
-sockperf: ---> percentile 99.990 =   39.009
-sockperf: ---> percentile 99.900 =   35.922
-sockperf: ---> percentile 99.000 =   33.482
-sockperf: ---> percentile 90.000 =   28.902
-sockperf: ---> percentile 75.000 =   27.821
-sockperf: ---> percentile 50.000 =   26.860
-sockperf: ---> percentile 25.000 =   25.685
-sockperf: ---> <MIN> observation =   12.277
-
-Reported-by: Hugo Ferreira <hferreir@redhat.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e.h        |  1 +
- drivers/net/ethernet/intel/i40e/i40e_main.c   |  6 +++
- .../net/ethernet/intel/i40e/i40e_register.h   |  2 +
- drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 46 ++++++++++++++-----
- drivers/net/ethernet/intel/i40e/i40e_txrx.h   |  1 +
- 5 files changed, 45 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index 9b701615c7c6..4d2b05de6c63 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -908,6 +908,7 @@ struct i40e_q_vector {
- 	struct rcu_head rcu;	/* to avoid race with update stats on free */
- 	char name[I40E_INT_NAME_STR_LEN];
- 	bool arm_wb_state;
-+	bool in_busy_poll;
- 	int irq_num;		/* IRQ assigned to this q_vector */
- } ____cacheline_internodealigned_in_smp;
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 89a3401d20ab..1ea6d06b0acc 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -3915,6 +3915,12 @@ static void i40e_vsi_configure_msix(struct i40e_vsi *vsi)
- 		     q_vector->tx.target_itr >> 1);
- 		q_vector->tx.current_itr = q_vector->tx.target_itr;
- 
-+		/* Set ITR for software interrupts triggered after exiting
-+		 * busy-loop polling.
-+		 */
-+		wr32(hw, I40E_PFINT_ITRN(I40E_SW_ITR, vector - 1),
-+		     I40E_ITR_20K);
-+
- 		wr32(hw, I40E_PFINT_RATEN(vector - 1),
- 		     i40e_intrl_usec_to_reg(vsi->int_rate_limit));
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_register.h b/drivers/net/ethernet/intel/i40e/i40e_register.h
-index 14ab642cafdb..baa6bb68bcf8 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_register.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_register.h
-@@ -335,6 +335,8 @@
- #define I40E_PFINT_DYN_CTLN_INTERVAL_SHIFT 5
- #define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_SHIFT 24
- #define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_MASK I40E_MASK(0x1, I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_SHIFT)
-+#define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_SHIFT 25
-+#define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_MASK I40E_MASK(0x3, I40E_PFINT_DYN_CTLN_SW_ITR_INDX_SHIFT)
- #define I40E_PFINT_ICR0 0x00038780 /* Reset: CORER */
- #define I40E_PFINT_ICR0_INTEVENT_SHIFT 0
- #define I40E_PFINT_ICR0_INTEVENT_MASK I40E_MASK(0x1, I40E_PFINT_ICR0_INTEVENT_SHIFT)
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index 0d7177083708..356c3140adf3 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -2658,8 +2658,22 @@ static inline u32 i40e_buildreg_itr(const int type, u16 itr)
- 	return val;
- }
- 
--/* a small macro to shorten up some long lines */
--#define INTREG I40E_PFINT_DYN_CTLN
-+static inline u32 i40e_buildreg_swint(int type)
-+{
-+	u32 val;
-+
-+	/* 1. Enable the interrupt
-+	 * 2. Do not modify any ITR interval
-+	 * 3. Trigger a SW interrupt specified by type
-+	 */
-+	val = I40E_PFINT_DYN_CTLN_INTENA_MASK |
-+	      I40E_PFINT_DYN_CTLN_ITR_INDX_MASK | /* set noitr */
-+	      I40E_PFINT_DYN_CTLN_SWINT_TRIG_MASK |
-+	      I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_MASK |
-+	      FIELD_PREP(I40E_PFINT_DYN_CTLN_SW_ITR_INDX_MASK, type);
-+
-+	return val;
-+}
- 
- /* The act of updating the ITR will cause it to immediately trigger. In order
-  * to prevent this from throwing off adaptive update statistics we defer the
-@@ -2702,8 +2716,8 @@ static inline void i40e_update_enable_itr(struct i40e_vsi *vsi,
- 	 */
- 	if (q_vector->rx.target_itr < q_vector->rx.current_itr) {
- 		/* Rx ITR needs to be reduced, this is highest priority */
--		intval = i40e_buildreg_itr(I40E_RX_ITR,
--					   q_vector->rx.target_itr);
-+		wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
-+		     q_vector->rx.target_itr >> 1);
- 		q_vector->rx.current_itr = q_vector->rx.target_itr;
- 		q_vector->itr_countdown = ITR_COUNTDOWN_START;
- 	} else if ((q_vector->tx.target_itr < q_vector->tx.current_itr) ||
-@@ -2712,25 +2726,33 @@ static inline void i40e_update_enable_itr(struct i40e_vsi *vsi,
- 		/* Tx ITR needs to be reduced, this is second priority
- 		 * Tx ITR needs to be increased more than Rx, fourth priority
- 		 */
--		intval = i40e_buildreg_itr(I40E_TX_ITR,
--					   q_vector->tx.target_itr);
-+		wr32(hw, I40E_PFINT_ITRN(I40E_TX_ITR, q_vector->reg_idx),
-+		     q_vector->tx.target_itr >> 1);
- 		q_vector->tx.current_itr = q_vector->tx.target_itr;
- 		q_vector->itr_countdown = ITR_COUNTDOWN_START;
- 	} else if (q_vector->rx.current_itr != q_vector->rx.target_itr) {
- 		/* Rx ITR needs to be increased, third priority */
--		intval = i40e_buildreg_itr(I40E_RX_ITR,
--					   q_vector->rx.target_itr);
-+		wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
-+		     q_vector->rx.target_itr >> 1);
- 		q_vector->rx.current_itr = q_vector->rx.target_itr;
- 		q_vector->itr_countdown = ITR_COUNTDOWN_START;
- 	} else {
- 		/* No ITR update, lowest priority */
--		intval = i40e_buildreg_itr(I40E_ITR_NONE, 0);
- 		if (q_vector->itr_countdown)
- 			q_vector->itr_countdown--;
- 	}
- 
--	if (!test_bit(__I40E_VSI_DOWN, vsi->state))
--		wr32(hw, INTREG(q_vector->reg_idx), intval);
-+	/* Do not enable interrupt if VSI is down */
-+	if (test_bit(__I40E_VSI_DOWN, vsi->state))
-+		return;
-+
-+	if (!q_vector->in_busy_poll) {
-+		intval = i40e_buildreg_itr(I40E_ITR_NONE, 0);
-+	} else {
-+		q_vector->in_busy_poll = false;
-+		intval = i40e_buildreg_swint(I40E_SW_ITR);
-+	}
-+	wr32(hw, I40E_PFINT_DYN_CTLN(q_vector->reg_idx), intval);
- }
- 
- /**
-@@ -2845,6 +2867,8 @@ int i40e_napi_poll(struct napi_struct *napi, int budget)
- 	 */
- 	if (likely(napi_complete_done(napi, work_done)))
- 		i40e_update_enable_itr(vsi, q_vector);
-+	else
-+		q_vector->in_busy_poll = true;
- 
- 	return min(work_done, budget - 1);
- }
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.h b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-index abf15067eb5d..2cdc7de6301c 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-@@ -68,6 +68,7 @@ enum i40e_dyn_idx {
- /* these are indexes into ITRN registers */
- #define I40E_RX_ITR    I40E_IDX_ITR0
- #define I40E_TX_ITR    I40E_IDX_ITR1
-+#define I40E_SW_ITR    I40E_IDX_ITR2
- 
- /* Supported RSS offloads */
- #define I40E_DEFAULT_RSS_HENA ( \
--- 
-2.43.0
-
+Note: testing is done by a robot and is best-effort only.
 
