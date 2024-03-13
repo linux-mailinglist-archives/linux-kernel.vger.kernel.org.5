@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D8A87AF7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98BB787AF7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9406A288F4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:26:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 475591F23B67
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7E91A0A3F;
-	Wed, 13 Mar 2024 17:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D821D1A1031;
+	Wed, 13 Mar 2024 17:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qAmQA30D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gC9komB+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217DE1A0A28;
-	Wed, 13 Mar 2024 17:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D80976C9F;
+	Wed, 13 Mar 2024 17:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349508; cv=none; b=F2A1RXkxxZjRHZY5+nppyJUw1xIVZclobau/N071AcMaljdMrl2zY38+aCkyaEaAHSl3AhI8oYBcgP8KFZjjXDLCTok9uP2cNsHPCyBY5yctRLGuIdQW8/1OdI7ugAGscvduxk1dw9voojm+4eHsy1tPU0tBJyvFU8e9KY9CPVI=
+	t=1710349509; cv=none; b=aCRtLMCD4JUYslO0l/JbwkT4xz0IdJwpw+A8d7YQG0ScE3Zgbc3pSiF2SOGmKy2VDNXi9LOnghrN3xYaVve8KRtZHCv8EurURken7KlcoIXLrtlLPaah3wg3fUY103rlrG5RIEFrhjbXGObCSSFhZL33wQEIzZmTxGl0bHAM8as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349508; c=relaxed/simple;
-	bh=maJUSkQfGx/uo6I5Mw8R4UoWYlWWMiuJ3i3H5XFNFVM=;
+	s=arc-20240116; t=1710349509; c=relaxed/simple;
+	bh=WmEHShAVioLu0qe229qhXUrIhwgvEz/ImnTxaOfpfGk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=loZDneE/Y6UfiHMb0VlzbwlDdN9oy+RvMsOUfPG+hS+ijeHtfu3IMMUMi0CH2wwWAVPi4FAFlvFMKjfDPNd14YGewJtcXNJmqoA8dPacoj1/phOIroLEAppWfF4NHm7x1ImkGkXiw2PXGN4svn8s+jyk3oGEu86AnXeAagahHrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qAmQA30D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C900C433F1;
-	Wed, 13 Mar 2024 17:05:07 +0000 (UTC)
+	 MIME-Version; b=B3M5nO67m47t3WrJFFcJnMGNzO8ueM8516CbcnK8IYNbuv16Jg+q/KkVGJc1BLl5UDp4ExmQFgzId6xuN5g3KVLq+O+HdEdG7VLFZgx9Z96hLq2zts3j5Vg+5qfAP+TSPMAHwI1GUrnj1U5TEcdtMMNZ345ZJ9RJEvqObUgToMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gC9komB+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D153C43394;
+	Wed, 13 Mar 2024 17:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349508;
-	bh=maJUSkQfGx/uo6I5Mw8R4UoWYlWWMiuJ3i3H5XFNFVM=;
+	s=k20201202; t=1710349509;
+	bh=WmEHShAVioLu0qe229qhXUrIhwgvEz/ImnTxaOfpfGk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qAmQA30DPXEcCdWFpTNtG8NjpjZY71m7LgYhNvRxlp5qAuMxpXrOr2f3OSKQ7mcBu
-	 8GbfOynqyxw9OO1SiDY7NV1FUOhEPPidxM6ailhu9GiYtQPUKZrIsuHqwtC/oF0BJv
-	 oCiZtDSV4fpBghGXoWEdYlAhxTfkhyFtZeiFPrPM5KGCtECmF4+DSku46N8ljxija2
-	 P3sx4p6DzXMjpzta34E5iooH/CLygWzIyby5pFCsuXb1TwLZwKbZnSJq3+abgXDHyZ
-	 1h2NC76prlkdzdwIye5w3WEESW/btO+wqBZPgy47b7Q84GxTKent5tzb7/xa2wifQ3
-	 GuCYhML5ZB+rg==
+	b=gC9komB+FoEwdKH+AtKfoI4kv4CDxFl14b1/Yl/ch5csQ4Hj+RhOV3f/jOSUUxKrk
+	 cDtqdqNI6Mh3JLbmQBotCA0cm/VAm+kbiQKUvOrfIBIacZKibFs1BsfwHVmkZMKO90
+	 1Yz4odrn5w513bapU+z/4gMDTfem2UQov4Qx4Y6JWWFWoKh4/Z41YMqh0h7iUDOfzm
+	 sxLcF7AyYI04PMGdFvkOuCfSv2v+7iYonTGsMq+45J0obPx7PD6Cx7AyRIawt88AqJ
+	 n4k7ux07siV8bri3xFBTmvMSAAqCPsa1CazJXi5gQAR3C2035FKMJ412Cx3763HbXA
+	 EYSSvOBoUSqJg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Richard Weinberger <richard@nod.at>,
+Cc: Werner Sembach <wse@tuxedocomputers.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/41] um: allow not setting extra rpaths in the linux binary
-Date: Wed, 13 Mar 2024 13:04:21 -0400
-Message-ID: <20240313170435.616724-28-sashal@kernel.org>
+Subject: [PATCH 4.19 28/41] Input: i8042 - fix strange behavior of touchpad on Clevo NS70PU
+Date: Wed, 13 Mar 2024 13:04:22 -0400
+Message-ID: <20240313170435.616724-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170435.616724-1-sashal@kernel.org>
 References: <20240313170435.616724-1-sashal@kernel.org>
@@ -68,80 +68,50 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-[ Upstream commit 386093c68ba3e8bcfe7f46deba901e0e80713c29 ]
+[ Upstream commit a60e6c3918d20848906ffcdfcf72ca6a8cfbcf2e ]
 
-There doesn't seem to be any reason for the rpath being set in
-the binaries, at on systems that I tested on. On the other hand,
-setting rpath is actually harming binaries in some cases, e.g.
-if using nix-based compilation environments where /lib & /lib64
-are not part of the actual environment.
+When closing the laptop lid with an external screen connected, the mouse
+pointer has a constant movement to the lower right corner. Opening the
+lid again stops this movement, but after that the touchpad does no longer
+register clicks.
 
-Add a new Kconfig option (under EXPERT, for less user confusion)
-that allows disabling the rpath additions.
+The touchpad is connected both via i2c-hid and PS/2, the predecessor of
+this device (NS70MU) has the same layout in this regard and also strange
+behaviour caused by the psmouse and the i2c-hid driver fighting over
+touchpad control. This fix is reusing the same workaround by just
+disabling the PS/2 aux port, that is only used by the touchpad, to give the
+i2c-hid driver the lone control over the touchpad.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Stable-dep-of: 846cfbeed09b ("um: Fix adding '-no-pie' for clang")
+v2: Rebased on current master
+
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20231205163602.16106-1-wse@tuxedocomputers.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/Kconfig      | 13 +++++++++++++
- arch/um/Makefile     |  3 ++-
- arch/x86/Makefile.um |  2 +-
- 3 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/input/serio/i8042-x86ia64io.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 8f0cb28099392..251c77474e7b8 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -88,6 +88,19 @@ config LD_SCRIPT_DYN
- 	depends on !LD_SCRIPT_STATIC
-         select MODULE_REL_CRCS if MODVERSIONS
- 
-+config LD_SCRIPT_DYN_RPATH
-+	bool "set rpath in the binary" if EXPERT
-+	default y
-+	depends on LD_SCRIPT_DYN
-+	help
-+	  Add /lib (and /lib64 for 64-bit) to the linux binary's rpath
-+	  explicitly.
-+
-+	  You may need to turn this off if compiling for nix systems
-+	  that have their libraries in random /nix directories and
-+	  might otherwise unexpected use libraries from /lib or /lib64
-+	  instead of the desired ones.
-+
- config HOSTFS
- 	tristate "Host filesystem"
- 	help
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index ab1066c38944e..439edee0b2878 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -119,7 +119,8 @@ archheaders:
- archprepare: include/generated/user_constants.h
- 
- LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
-+LINK-$(CONFIG_LD_SCRIPT_DYN) += $(call cc-option, -no-pie)
-+LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib
- 
- CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
- 	$(call cc-option, -fno-stack-protector,) \
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index 91085a08de6cb..8bc3d493d429a 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -51,7 +51,7 @@ ELF_FORMAT := elf64-x86-64
- 
- # Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
- 
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
-+LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib64
- LINK-y += -m64
- 
- # Do unit-at-a-time unconditionally on x86_64, following the host
+diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+index 06d99931519bd..ce9209f336957 100644
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -1183,6 +1183,12 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
+ 					SERIO_QUIRK_RESET_ALWAYS | SERIO_QUIRK_NOLOOP |
+ 					SERIO_QUIRK_NOPNP)
+ 	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "NS5x_7xPU"),
++		},
++		.driver_data = (void *)(SERIO_QUIRK_NOAUX)
++	},
+ 	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
 -- 
 2.43.0
 
