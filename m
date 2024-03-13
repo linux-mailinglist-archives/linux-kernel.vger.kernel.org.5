@@ -1,123 +1,113 @@
-Return-Path: <linux-kernel+bounces-102341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E11887B0F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:05:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2599587B0E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:04:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 096171F24A90
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:05:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 574531C273E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313796CDD1;
-	Wed, 13 Mar 2024 18:17:13 +0000 (UTC)
-Received: from avasout-ptp-003.plus.net (avasout-ptp-003.plus.net [84.93.230.244])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19FC2605D0;
+	Wed, 13 Mar 2024 18:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivF6CPGg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6716CDA5
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:17:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.93.230.244
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD2A605DE;
+	Wed, 13 Mar 2024 18:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710353832; cv=none; b=rWu0HO+/LquT3TEkW19fH+zLMrcHWAuni3pTWiN9vfRr8mGgo+XC8//qU8ALXNwq4vz7VnZbvanqubhsWgDyaq5DwQ9ZUaH8tPFsCAx0eK8XJ3Y2YqNkUQGeF3WRqQMGs7tRK3cQPNFH8kaspb3KpYctyfnlPiH699cQraSUZps=
+	t=1710353673; cv=none; b=NXyLQDAMbRPc1/Wy642Ute5XCIY1qGdVla4UVv1Ib4FoqSomClHlvcWrqA681+54WvvmZP/551ETtCjHVXSb/avDw+wc7ubQWEFh+QKjgaISsZZd3OD2YAEkUWt5B+ay7mIvIeFynSn7AGLdq30TFGKQj2R07FwO8zDj8j5XJHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710353832; c=relaxed/simple;
-	bh=/ynVUGcijeIjfROVq7PRXn35lD8jorRFN6NALcKHW9M=;
-	h=Message-ID:In-Reply-To:References:Date:Subject:From:To:Cc:
-	 MIME-Version:Content-Type; b=ebGUOpZu4tZI/VcTz7iLcFrYdFIOb+bdqHzZ2Jga16kDiWjhrKbqM/d4V2RChK47xul/IPU0JvI5jmbmFMGRA95fivsbdefpyaHdBQ3i8PT/GfQiL2TL5+ZxIRZzG37PqoyoyMIrke74x4enXfC4bzfSx5mMqxKUvMESIQx+JKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk; spf=none smtp.mailfrom=jessamine.co.uk; arc=none smtp.client-ip=84.93.230.244
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jessamine.co.uk
-Received: from webmail07.plus.net ([84.93.237.82])
-	by smtp with ESMTP
-	id kT6wr5aKcKQLgkT6xr4ZkU; Wed, 13 Mar 2024 18:13:56 +0000
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=JtdSr94C c=1 sm=1 tr=0 ts=65f1ece4
- a=k49VtrWLZTL8DnM+6AvpWw==:117 a=8YZdF9bm7lDkcydB81w8Xw==:17
- a=8nJEP1OIZ-IA:10 a=K6JAEmCyrfEA:10 a=ZBkl__CYAAAA:8 a=VwQbUJbxAAAA:8
- a=8AirrxEcAAAA:8 a=VdYuLKcatEhD6b8jxZQA:9 a=wPNLvfGTeEIA:10
- a=d6WIyDdLbVARuAyufDlf:22 a=AjGcO6oz07-iQ99wixmX:22 a=ST-jHhOKWsTCqRlWije3:22
-Received: from [127.0.0.1] (helo=webmail.plus.net)
-	by webmail07.plus.net with esmtp (Exim 4.89)
-	(envelope-from <adam@jessamine.co.uk>)
-	id 1rkT6w-0004xq-CB; Wed, 13 Mar 2024 18:13:54 +0000
-Received: from 84.92.42.80
-        (SquirrelMail authenticated user jessaminenet+adam)
-        by webmail.plus.net with HTTP;
-        Wed, 13 Mar 2024 18:13:54 -0000
-Message-ID: <41a7e7e46baa40ce28ad0dcb2ee455df.squirrel@webmail.plus.net>
-In-Reply-To: <30b2a315b36e1ee16c0217b32b95a605@jessamine.co.uk>
-References: <30b2a315b36e1ee16c0217b32b95a605@jessamine.co.uk>
-Date: Wed, 13 Mar 2024 18:13:54 -0000
-Subject: Re: [PATCH] spi: spi-imx: fix off-by-one in mx51 CPU mode burst
- length
-From: "Adam Butcher" <adam@jessamine.co.uk>
-To: "Mark Brown" <broonie@kernel.org>,
- shawnguo@kernel.org,
- s.hauer@pengutronix.de,
- kernel@pengutronix.de,
- linux-imx@nxp.com,
- benjamin@bigler.one,
- stefanmoring@gmail.com,
- carlos.song@nxp.com
-Cc: linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-User-Agent: SquirrelMail
+	s=arc-20240116; t=1710353673; c=relaxed/simple;
+	bh=TNsbIG73NJ2s8kx6QAgm6sHZZACJCXrLFk+uu7waAMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QkQkQ05CVQaO99sgsrs23ZKAM8i9+/NhUnVSn5tlp/k7rawb0rrcv7nuQjaBFIb31cgfgX61cYoeMolWGjcFxclIWniXkfHf24bq4NDxJrJXLvJQVqfA8TTreBKYqGvni1PSGvK9hm+xoi+8y4g2/+dsKY3TW8pUNRwuKt5fvC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivF6CPGg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D6F9C433F1;
+	Wed, 13 Mar 2024 18:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710353671;
+	bh=TNsbIG73NJ2s8kx6QAgm6sHZZACJCXrLFk+uu7waAMw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ivF6CPGgFPCX98z7CAELLpGZeuAFTB2HCZ+oVCegSk3BJ0eIiwidSX5m9sqRCtPzI
+	 wEnH5fsgQ75rFmoxFqJeEz3YAnpbD0DEQJgItbItHAB9ILD7qxhsn/GWMillLBsDc9
+	 ChA4i3IT4anWW7MYDYIdFhGibQ4peD34IHRct3XrQCkc4Kq6YLJVKDLcL5dNxGZkrF
+	 PZIdZW9vjIYMwnVnAtsFoh+IjsTeYrUJEzDWDmI8FLVOYeOKDb8NvacfrTxQLf2FOm
+	 yClXdfNOQotjOhPWjYDpZvxKe13oSvRicj27E12i/Sis7YrLzcfy9rYys/4AQ1ygyx
+	 ZhN3+jjiSXpGg==
+Date: Wed, 13 Mar 2024 15:14:28 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Marco Elver <elver@google.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
+ on RT.
+Message-ID: <ZfHtBB5_-3RByE8p@x1>
+References: <20240312180814.3373778-1-bigeasy@linutronix.de>
+ <CANpmjNMYGa46pRQUOfzTa_FRvftOGqg+UDeD_B-tbZgYw-MWww@mail.gmail.com>
+ <ZfHE9Ev5T3Lq7o34@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Priority: 3 (Normal)
-Importance: Normal
-X-CMAE-Envelope: MS4xfJ/HiBvFrqoc6yzrxa12l12e8Z9iHnxHbPSPCRKDs7g1raAnUiG/+3aDW4v9Qr7pj/zkjrfgjAj7eMVaqXweQufriTfeVj7UkX08FlQUEFTPkR7ncHGD
- mvq1PLNIIIrBraF1L0EwMjIqGy09R5iedDcn9nalQHbRbl9lrFv45khvM02Y0nsm8DluL1UEbW1PWBgrYe0CxOAPGw5En3qET0o=
+In-Reply-To: <ZfHE9Ev5T3Lq7o34@x1>
 
-From: Adam Butcher <adam@jessamine.co.uk>
+On Wed, Mar 13, 2024 at 12:23:32PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Wed, Mar 13, 2024 at 03:35:27PM +0100, Marco Elver wrote:
+> > On Tue, 12 Mar 2024 at 19:08, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+> > > Arnaldo reported that "perf test sigtrap" fails on PREEMPT_RT. Sending
+> > > the signal gets delayed until event_sched_out() which then uses
+> > > task_work_add() for its delivery. This breaks on PREEMPT_RT because the
+> > > signal is delivered with disabled preemption.
+ 
+> > > While looking at this, I also stumbled upon __perf_pending_irq() which
+> > > requires disabled interrupts but this is not the case on PREEMPT_RT.
+ 
+> > > This series aim to address both issues while not introducing a new issue
+> > > at the same time ;)
+> > > Any testing is appreciated.
+ 
+> > > v1…v2: https://lore.kernel.org/all/20240308175810.2894694-1-bigeasy@linutronix.de/
+> > >     - Marco pointed me to the testsuite that showed two problems:
+> > >       - Delayed task_work from NMI / missing events.
+> > >         Fixed by triggering dummy irq_work to enforce an interrupt for
+> > >         the exit-to-userland path which checks task_work
+> > >       - Increased ref-count on clean up/ during exec.
+> > >         Mostly addressed by the former change. There is still a window
+> > >         if the NMI occurs during execve(). This is addressed by removing
+> > >         the task_work before free_event().
+> > >       The testsuite (remove_on_exec) fails sometimes if the event/
+> > >       SIGTRAP is sent before the sighandler is installed.
+>  
+> > Tested-by: Marco Elver <elver@google.com>
+>  
+> > It does pass the tests in tools/testing/selftests/perf_events (non-RT
+> > kernel, lockdep enabled). But I do recall this being a particularly
+> > sharp corner of perf, so any additional testing and review here is
+> > useful.
 
-[Apologies, rubbish mailer corrupted the previous re-addressed post]
+> Right, I'm testing with the full 'perf test' suite now.
 
-992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
-corrects three cases of setting the ECSPI burst length but erroneously
-leaves the in-range CPU case one bit to big (in that register a value of
-0 means 1 bit).  The effect was that transmissions that should have been
-8-bit bytes appeared as 9-bit causing failed communication with SPI
-devices.
+'perf test' doesn't show any regression, now I'm running Vince Weaver's
+https://github.com/deater/perf_event_tests, storing the results with
+this patchset and then without, to do a diff, lets see...
 
-It seems the original patch submission up to v4 did not contain the bug.
-It was introduced in the v5 update.
-
-Link: https://lore.kernel.org/all/20240201105451.507005-1-carlos.song@nxp.com/
-Link: https://lore.kernel.org/all/20240204091912.36488-1-carlos.song@nxp.com/
-Fixes: 992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
-Signed-off-by: Adam Butcher <adam@jessamine.co.uk>
----
- drivers/spi/spi-imx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 7c1fcd5ed52f7..100552e6c56bc 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -743,8 +743,8 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
- 				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
- 						<< MX51_ECSPI_CTRL_BL_OFFSET;
- 			else
--				ctrl |= spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
--						BITS_PER_BYTE) * spi_imx->bits_per_word
-+				ctrl |= (spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
-+						BITS_PER_BYTE) * spi_imx->bits_per_word - 1)
- 						<< MX51_ECSPI_CTRL_BL_OFFSET;
- 		}
- 	}
--- 
-2.43.0
-
-
-
-
+- Arnaldo
 
