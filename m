@@ -1,218 +1,126 @@
-Return-Path: <linux-kernel+bounces-101411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E9E87A6C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:10:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D632787A6CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:10:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ABC31C22B1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:10:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 811721F23782
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E223FB8B;
-	Wed, 13 Mar 2024 11:08:43 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374B33FB22;
-	Wed, 13 Mar 2024 11:08:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AD245025;
+	Wed, 13 Mar 2024 11:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aqwPM5Ed"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D316C42078
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710328123; cv=none; b=bEaNIcPBlLycoGMv0XOj/A9Zacf9PnBEdzuC2RcknAtKRxY2UGUDMg7NDGuAliaAbVLIhZaHkukHLBzv45pTSORX/BFwW+mHCQcBzCb2CWIv31mfA+fNwN3/3t6/CgcrKKeZTjU3TLEyg2gNIv9BswBylKvg7X8OTSIcffJ/Obw=
+	t=1710328131; cv=none; b=RNW8BJ84naPr990gd5H6PO4lsLi+N6D4e1wZAgssSnexuTm1PW2OBjh6K3N1lgTo9IXUXgcKRSIEzBXXP9R3F03fKXW31C7ldOzOrqCZkJB2ps8BOg9+joyRJVFZRua9O4JHsVK49E6dXfv0te+qEr/z5UHLKc6wamOWJocZeXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710328123; c=relaxed/simple;
-	bh=yeY7UyWKPjlbQRWzDUs+XYE19tjjxzJDcpZIjr1v7FU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eyoZR8Y9/lFY+kij1WHB0Y+Mt9BQYvh3mLHwD8h5+odkWcZVnaDxoFxRLxIOyvl62dUQCRzjyYCgRJ/VvBWZNlsRA1wqnvYBsI7QzZpM25a+rXQ5XlgrsTwoDjhIansbBecKf8Vh6WSoe2zgMEuVHzQXgeUiiwRGzJLe6Wgx3Tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77BDA1063;
-	Wed, 13 Mar 2024 04:09:17 -0700 (PDT)
-Received: from [10.57.51.109] (unknown [10.57.51.109])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5AC63F73F;
-	Wed, 13 Mar 2024 04:08:38 -0700 (PDT)
-Message-ID: <b4450fd4-677d-45a1-8627-bd0b0eb45e7e@arm.com>
-Date: Wed, 13 Mar 2024 11:08:37 +0000
+	s=arc-20240116; t=1710328131; c=relaxed/simple;
+	bh=luniAF9OyE9AxjoQ87oukSfN2nAfisuW4QkMcg5MzAo=;
+	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=fzQTyO+bGjuKqXXJJx+AdWac16ahGhEec4aSoCJYS+sa34MuIw1j4R0WgNkTicpPwLttVCujvNZKKZY1kIlLngelsgeir1BZYLJVLCP4vSkJbSUjR3KjQSsLmLkJVi1haQNx7K5x7/rjN9ELRxJ/uZL4gDj7cekz0Bh9W5Jslvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aqwPM5Ed; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710328128;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QTP9uAHVPvXi9wcTkRv8pSjlNhXJ/YsIlYMbNyFLnuo=;
+	b=aqwPM5EdJHj5NBqurSJBWazBJosJNG3OBBLQqFLiz+cadqb0HxfcgH/1C5qCTa5l9alXtn
+	/lvRx6nkLRRms5npr/uUnDQVsOLHm4+jRW5DyCk5tn6s2TBmS2FZ6LnW7IRViHV0ZlR+QY
+	4m24C0NXdrHMBZigIHRFzQ7u03thL3o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-388-6Zq0fiNLPpuMq8oycQT-rA-1; Wed, 13 Mar 2024 07:08:43 -0400
+X-MC-Unique: 6Zq0fiNLPpuMq8oycQT-rA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2579487280B;
+	Wed, 13 Mar 2024 11:08:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.10])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 2D2DB492BC7;
+	Wed, 13 Mar 2024 11:08:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Marc Dionne <marc.dionne@auristor.com>,
+    Markus Suvanto <markus.suvanto@gmail.com>
+cc: dhowells@redhat.com, Jeffrey Altman <jaltman@auristor.com>,
+    Christian Brauner <brauner@kernel.org>,
+    linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Revert "afs: Hide silly-rename files from userspace"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V6 06/11] coresight: funnel: Move ACPI support from AMBA
- driver to platform driver
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240312102318.2285165-1-anshuman.khandual@arm.com>
- <20240312102318.2285165-7-anshuman.khandual@arm.com>
- <2dbef82c-96a0-419f-9950-8ee4169fb634@arm.com>
- <bab93283-3b4a-4f39-a4a9-fee8cea1605a@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <bab93283-3b4a-4f39-a4a9-fee8cea1605a@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3085694.1710328121.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 13 Mar 2024 11:08:41 +0000
+Message-ID: <3085695.1710328121@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On 13/03/2024 04:33, Anshuman Khandual wrote:
-> 
-> 
-> On 3/12/24 20:11, Suzuki K Poulose wrote:
->> On 12/03/2024 10:23, Anshuman Khandual wrote:
->>> Add support for the dynamic funnel device in the platform driver, which can
->>> then be used on ACPI based platforms. This change would allow runtime power
->>> management for ACPI based systems.
->>>
->>> The driver would try to enable the APB clock if available. Also, rename the
->>> code to reflect the fact that it now handles both static and dynamic
->>> funnels. But first this refactors funnel_probe() making sure it can be used
->>> both for platform and AMBA drivers, by moving the pm_runtime_put() to the
->>> callers.
->>>
->>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->>> Cc: Sudeep Holla <sudeep.holla@arm.com>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: James Clark <james.clark@arm.com>
->>> Cc: linux-acpi@vger.kernel.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Cc: coresight@lists.linaro.org
->>> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
->>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
->>> Reviewed-by: James Clark <james.clark@arm.com>
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>> Changes in V6:
->>>
->>> - Added clk_disable_unprepare() for pclk in funnel_probe() error path
->>> - Added WARN_ON(!drvdata) check in funnel_platform_remove()
->>> - Added additional elements for acpi_device_id[]
->>>
->>>    drivers/acpi/arm64/amba.c                     |  1 -
->>>    .../hwtracing/coresight/coresight-funnel.c    | 72 ++++++++++++-------
->>>    2 files changed, 48 insertions(+), 25 deletions(-)
->>>
->>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
->>> index 270f4e3819a2..afb6afb66967 100644
->>> --- a/drivers/acpi/arm64/amba.c
->>> +++ b/drivers/acpi/arm64/amba.c
->>> @@ -28,7 +28,6 @@ static const struct acpi_device_id amba_id_list[] = {
->>>        {"ARMHC979", 0}, /* ARM CoreSight TPIU */
->>>        {"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
->>>        {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
->>> -    {"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
->>>        {"", 0},
->>>    };
->>>    diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
->>> index ff3ea0670a5b..3b4be10a0f0c 100644
->>> --- a/drivers/hwtracing/coresight/coresight-funnel.c
->>> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
->>> @@ -36,6 +36,7 @@ DEFINE_CORESIGHT_DEVLIST(funnel_devs, "funnel");
->>>     * struct funnel_drvdata - specifics associated to a funnel component
->>>     * @base:    memory mapped base address for this component.
->>>     * @atclk:    optional clock for the core parts of the funnel.
->>> + * @pclk:    APB clock if present, otherwise NULL
->>>     * @csdev:    component vitals needed by the framework.
->>>     * @priority:    port selection order.
->>>     * @spinlock:    serialize enable/disable operations.
->>> @@ -43,6 +44,7 @@ DEFINE_CORESIGHT_DEVLIST(funnel_devs, "funnel");
->>>    struct funnel_drvdata {
->>>        void __iomem        *base;
->>>        struct clk        *atclk;
->>> +    struct clk        *pclk;
->>>        struct coresight_device    *csdev;
->>>        unsigned long        priority;
->>>        spinlock_t        spinlock;
->>> @@ -236,6 +238,10 @@ static int funnel_probe(struct device *dev, struct resource *res)
->>>                return ret;
->>>        }
->>>    +    drvdata->pclk = coresight_get_enable_apb_pclk(dev);
->>> +    if (IS_ERR(drvdata->pclk))
->>> +        return -ENODEV;
->>> +
->>>        /*
->>>         * Map the device base for dynamic-funnel, which has been
->>>         * validated by AMBA core.
->>> @@ -272,12 +278,13 @@ static int funnel_probe(struct device *dev, struct resource *res)
->>>            goto out_disable_clk;
->>>        }
->>>    -    pm_runtime_put(dev);
->>>        ret = 0;
->>>      out_disable_clk:
->>>        if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
->>>            clk_disable_unprepare(drvdata->atclk);
->>> +    if (ret && !IS_ERR_OR_NULL(drvdata->pclk))
->>> +        clk_disable_unprepare(drvdata->pclk);
->>>        return ret;
->>>    }
->>>    @@ -298,6 +305,9 @@ static int funnel_runtime_suspend(struct device *dev)
->>>        if (drvdata && !IS_ERR(drvdata->atclk))
->>>            clk_disable_unprepare(drvdata->atclk);
->>>    +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
->>> +        clk_disable_unprepare(drvdata->pclk);
->>> +
->>>        return 0;
->>>    }
->>>    @@ -308,6 +318,8 @@ static int funnel_runtime_resume(struct device *dev)
->>>        if (drvdata && !IS_ERR(drvdata->atclk))
->>>            clk_prepare_enable(drvdata->atclk);
->>>    +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
->>> +        clk_prepare_enable(drvdata->pclk);
->>>        return 0;
->>>    }
->>>    #endif
->>> @@ -316,55 +328,61 @@ static const struct dev_pm_ops funnel_dev_pm_ops = {
->>>        SET_RUNTIME_PM_OPS(funnel_runtime_suspend, funnel_runtime_resume, NULL)
->>>    };
->>>    -static int static_funnel_probe(struct platform_device *pdev)
->>> +static int funnel_platform_probe(struct platform_device *pdev)
->>>    {
->>> +    struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>>        int ret;
->>>          pm_runtime_get_noresume(&pdev->dev);
->>>        pm_runtime_set_active(&pdev->dev);
->>>        pm_runtime_enable(&pdev->dev);
->>>    -    /* Static funnel do not have programming base */
->>> -    ret = funnel_probe(&pdev->dev, NULL);
->>> -
->>> -    if (ret) {
->>> -        pm_runtime_put_noidle(&pdev->dev);
->>> +    ret = funnel_probe(&pdev->dev, res);
->>> +    pm_runtime_put(&pdev->dev);
->>> +    if (ret)
->>>            pm_runtime_disable(&pdev->dev);
->>> -    }
->>>          return ret;
->>>    }
->>>    -static void static_funnel_remove(struct platform_device *pdev)
->>> +static void funnel_platform_remove(struct platform_device *pdev)
->>>    {
->>> +    struct funnel_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
->>> +
->>> +    if (WARN_ON(!drvdata))
->>> +        return;
->>> +
->>>        funnel_remove(&pdev->dev);
->>>        pm_runtime_disable(&pdev->dev);
->>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
->>
->> Same as the previous patch
-> 
-> Right, unlike in xxx_runtime_suspend/resume() functions, xxx_platform_remove()
-> functions do have a (!drvdata) check right at the beginning. Hence a redundant
-> check in such places can be dropped.
+    =
 
-This applies to almost all the drivers, so please fix it elsewhere
+This reverts commit 57e9d49c54528c49b8bffe6d99d782ea051ea534.
 
-Suzuki
+This undoes the hiding of .__afsXXXX silly-rename files.  The problem with
+hiding them is that rm can't then manually delete them.
+
+This also reverts commit 5f7a07646655fb4108da527565dcdc80124b14c4 ("afs: F=
+ix
+endless loop in directory parsing") as that's a bugfix for the above.
+
+Fixes: 57e9d49c5452 ("afs: Hide silly-rename files from userspace")
+Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
+Link: https://lists.infradead.org/pipermail/linux-afs/2024-February/008102=
+html
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+---
+ fs/afs/dir.c |   10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 8a67fc427e74..67afe68972d5 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -474,16 +474,6 @@ static int afs_dir_iterate_block(struct afs_vnode *dv=
+node,
+ 			continue;
+ 		}
+ =
+
+-		/* Don't expose silly rename entries to userspace. */
+-		if (nlen > 6 &&
+-		    dire->u.name[0] =3D=3D '.' &&
+-		    ctx->actor !=3D afs_lookup_filldir &&
+-		    ctx->actor !=3D afs_lookup_one_filldir &&
+-		    memcmp(dire->u.name, ".__afs", 6) =3D=3D 0) {
+-			ctx->pos =3D blkoff + next * sizeof(union afs_xdr_dirent);
+-			continue;
+-		}
+-
+ 		/* found the next entry */
+ 		if (!dir_emit(ctx, dire->u.name, nlen,
+ 			      ntohl(dire->u.vnode),
 
 
