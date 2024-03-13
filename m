@@ -1,305 +1,240 @@
-Return-Path: <linux-kernel+bounces-102440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ADA987B201
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:36:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7360587B204
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B06DC28BD95
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:36:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0AFA1F275A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171D053E15;
-	Wed, 13 Mar 2024 19:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79C046537;
+	Wed, 13 Mar 2024 19:36:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Jp1hNDWv"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqWQ4oy1"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F404C624
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296FF210E9;
+	Wed, 13 Mar 2024 19:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710358456; cv=none; b=u7aWZH6j9pSOg12OdLHmhPkWVDEpFGXHk8V2bP1eUzyekEYyNJnlAz5fA3dfrAOl585CcIwdpvudAIxwDd5fiIK5JCMpnnzDAgcowi4OdRR3nwpepPssiIp8meJ3YuokfX2jFw9cTapfKEtSebcr9ESvb5924iuZK9Ht3exglUo=
+	t=1710358609; cv=none; b=Btfnga0XEdaR6Jqq8EpHE5aRoZ0LuwL1ssUW+PKLxLjJRJv9bmQYRLqMGiR1yNatRwxsZQCBo9QLiVFTQAkgqonb0nbVQSITKeE7VAqEgSLwtGYgry8BiVJyRftkgLDGKB2GhRRDydd9Ft4DdyfXc96u5y+1wZcjzuleAp8k8to=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710358456; c=relaxed/simple;
-	bh=nh+cXeJeCvLEgw1KA4aK5xGZeMBbiy+4igpC/pkVyu0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oTMoFLyTLs6R51Tpxi7zJ5Y5I5ECrXLJ+Ls29HbTDZrUxMnLjwgeKEL2F+7GrN2jufulZqUlTQo8aIG135G446q1nH6SmxMFbUNGT2XCOO23+8OXRVp2osD5SBjug/tM5gG2B8qjF+lso1WoUOD4+w4S4l8GcG/BXSMCdVssU3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Jp1hNDWv; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42a029c8e76so964021cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:34:13 -0700 (PDT)
+	s=arc-20240116; t=1710358609; c=relaxed/simple;
+	bh=799tM95udsQ7H+IHk4Yau0GNh2KboPOpDuGINwz7Yjc=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=mjAQogXa/3tTpl6+xzcW+gJDZIAoyiDjAvGP9Vplo0aByLX9/g/ZL47LMexKjNArk2f3uA8ckErEmu81nVyn00UiGOpKt4iMjKLD58RUXmKwXUI6xOjCNvr40aLFKEHrCFRFcu3y6VaVKo3defrhq8mVDQBF09N4GH6TMxpUPpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqWQ4oy1; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-787edfea5adso8216385a.2;
+        Wed, 13 Mar 2024 12:36:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1710358452; x=1710963252; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+b6U4xt7G3SN0nLHleIrPacSlcXJUxlgIjiFEbwa/30=;
-        b=Jp1hNDWvu0WGG8PxvvooC0VRTyugPU7P95S6HJJMI9BQC6i48yPFwCvuY5nmA6CoeZ
-         8UJ6eP6MbU/1rfOZSs8LacS8e+FPFyeRz6nXb3e9lT6IrU++/OJr9lb5JCKjgpS82GEP
-         ndNyAsr+AV7Rh6Pn5qQzfY7yeoo69qP5p1wU8=
+        d=gmail.com; s=20230601; t=1710358607; x=1710963407; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rSQ074WaC5hJeQNbrmwBtZbI9ZTWGrNyYsVRhC9muZs=;
+        b=MqWQ4oy1mKDDh+i28Xc614FT1TUP5lOemo2+/y6z8yXmG2Jh9EiFcskopZgJJqsrP0
+         sVpHKTvwrOzoBbIdyBFzvmwmWColx4BmuIzHEAkVn9Gysvnz2MO6NeSey969sv9wysud
+         jCr/iqF1HGi8vIxVNy3J6QCaYqvJGky2y5dA/cLKJIwDFRidgSJyPOMF3LGQx69cPUQs
+         MOHc5e80AzfOTB6NDhjdjL3MUNWougdiIxrKLA9AWvHQgJtdeusFys5wPZpIyj9Heuky
+         Q6BnGn6ANQNEYYgDrFKSsrhYuYzaq2pJ6enUbJ/6/vs7+1nkz4dCGMoUs3xz84h586Xo
+         RHJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710358452; x=1710963252;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+b6U4xt7G3SN0nLHleIrPacSlcXJUxlgIjiFEbwa/30=;
-        b=XvxSOAGDcT0StzPFdyEE0uuoHjHU7/jbSJeDVwSzp2MQ92F99ON+S10xNiaPn0DfIs
-         MFiCkrhcJH0kI1S0Ubn9UZVThYnJ42Ouh1qRgfsD5vyoHw9kcAmPvhfhSi61r3MxcBQm
-         Ixo1h0hxacc0SORm0E1BG9fpX/qGVmle/gWOHVwQbz9l4CAb35c6WrGaHto8ArJezBUT
-         rC7XpSoxM+m0wW0r1MpU550CM4QQZ5RgglckRQZXmmO69t4NswNP4WtO+IBQfomPWxqk
-         53g4BheRwxDTzdcEUmDR78GIwnhgTs33unxqUIqpONXWw1NieLBiFVxD0A6W4BXw8ZB9
-         X9mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV9Nadh1vcRJ5j1dVHSR0zJ/xhBXBjoMkUH8bvG8uzdfCMoAy6yqsYSyKSxef64L1lerBdGKFBlUV0tVkcr/86mOZe3Ed+YhHxbBtYV
-X-Gm-Message-State: AOJu0YwOLB3XWtOra1+dA9bB0A2n8OncK4LbKmjevBd1Hg5PyYKl/D/N
-	Chtpe8pl1qOOevMlEJteoMk2vEw1b0Jcexz5C8K+QyuhfygSqWJdQByXJHZqnQ==
-X-Google-Smtp-Source: AGHT+IEfFwuJFI7ET4f7hDvz95Jq1Rm2Vs22Jt1H1B/rBjNo52NdGQ5piDvD3UVx2DlEPeUmEyb0Ww==
-X-Received: by 2002:a05:622a:11cb:b0:42e:f8fe:5fdb with SMTP id n11-20020a05622a11cb00b0042ef8fe5fdbmr7877712qtk.67.1710358452122;
-        Wed, 13 Mar 2024 12:34:12 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z9-20020ac87109000000b0042f50ae6cc9sm2587957qto.78.2024.03.13.12.34.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 12:34:08 -0700 (PDT)
-Message-ID: <56318d3f-1d5a-4a73-9d3a-e7ebc66860d9@broadcom.com>
-Date: Wed, 13 Mar 2024 12:34:01 -0700
+        d=1e100.net; s=20230601; t=1710358607; x=1710963407;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rSQ074WaC5hJeQNbrmwBtZbI9ZTWGrNyYsVRhC9muZs=;
+        b=KFsw7cs5aDdtrcUa6EgW4jJD+T1dLSePqBVWq1Z+2HPZ3u9dxvwPtXs0QsGWSDsvGp
+         LGLsMM5xVOGYIc3clOGQBWiFEDy4pwXbL+FIMHK1Gh7uxYicSwm2mJkQKyW9IHA9w9HD
+         H3PFw45HxlynEvyg1A/UVG6kOKeUeT6QQMoQemnUXYmCAY2tvkn+5TMezdOfM/4dbKlL
+         SwMHXU3zh98avn3IQnKUdiDGSY8azY5mYk1/dy95mWgSyX4laD29o2F3Oi50cYaDmVqD
+         nQuuHjL9+211GUmGjKK4kZgHPlgSba+Er4cL4Ra7qrHyKP2RzjCcXDHxKCPTVFQYZmfU
+         clRA==
+X-Forwarded-Encrypted: i=1; AJvYcCX5Y/w5eW3Q++Xq0tsyzmaocIjF65EDTYB7kIIBcrd3f5dRtwSh4CihEMLr7K/iahzzBGfpduaXG7OyE6a8RqroOtX4UevYUJoP+ChgWcIOJnN7vFtmM20taL1GDJXRVN7GHGPh99CDaXtL6hUeHpEC7Dy0g/zxkaHy
+X-Gm-Message-State: AOJu0YxSrCJNJ1EIcaxjSXg6eX7vf2aVAL/44EhOrcjzOnol4xd583yj
+	Urc2uapYgML2j6mh7AN1hZhNxySO01LW0PN5tivLe7Jy96+NrBx3
+X-Google-Smtp-Source: AGHT+IEEpTuJaeyUoYMxU098Zc7iPktQRRlq5d+/M0Bslhapib+5W7stE9v60zOFyaPonDvY3aXMHw==
+X-Received: by 2002:a05:620a:a85:b0:788:1b28:b977 with SMTP id v5-20020a05620a0a8500b007881b28b977mr895655qkg.39.1710358606948;
+        Wed, 13 Mar 2024 12:36:46 -0700 (PDT)
+Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id bq10-20020a05620a468a00b0078813c3b1fdsm5050976qkb.19.2024.03.13.12.36.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 12:36:46 -0700 (PDT)
+Date: Wed, 13 Mar 2024 15:36:46 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Abhishek Chauhan <quic_abchauha@quicinc.com>
+Cc: kernel@quicinc.com, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ bpf <bpf@vger.kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>
+Message-ID: <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
+In-Reply-To: <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+ <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] spi: Fix error code checking in spi_mem_exec_op()
-To: Pratyush Yadav <pratyush@kernel.org>
-Cc: Michael Walle <mwalle@kernel.org>, linux-spi@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240313171050.3505620-1-florian.fainelli@broadcom.com>
- <CZSSWP7A9UM7.1R20796VHLU0F@kernel.org> <mafs0o7bic7fs.fsf@kernel.org>
- <9420b802-5361-4f47-a069-52c43f5fd253@broadcom.com>
- <mafs0il1qc4n2.fsf@kernel.org>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <mafs0il1qc4n2.fsf@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000ffedb706138fdb23"
-
---000000000000ffedb706138fdb23
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-On 3/13/24 12:29, Pratyush Yadav wrote:
-> On Wed, Mar 13 2024, Florian Fainelli wrote:
+Martin KaFai Lau wrote:
+> On 3/13/24 1:52 AM, Willem de Bruijn wrote:
+> > Martin KaFai Lau wrote:
+> >> On 3/1/24 12:13 PM, Abhishek Chauhan wrote:
+> >>> Bridge driver today has no support to forward the userspace timestamp
+> >>> packets and ends up resetting the timestamp. ETF qdisc checks the
+> >>> packet coming from userspace and encounters to be 0 thereby dropping
+> >>> time sensitive packets. These changes will allow userspace timestamps
+> >>> packets to be forwarded from the bridge to NIC drivers.
+> >>>
+> >>> Setting the same bit (mono_delivery_time) to avoid dropping of
+> >>> userspace tstamp packets in the forwarding path.
+> >>>
+> >>> Existing functionality of mono_delivery_time remains unaltered here,
+> >>> instead just extended with userspace tstamp support for bridge
+> >>> forwarding path.
+> >>
+> >> The patch currently broke the bpf selftest test_tc_dtime:
+> >> https://github.com/kernel-patches/bpf/actions/runs/8242487344/job/22541746675
+> >>
+> >> In particular, there is a uapi field __sk_buff->tstamp_type which currently has
+> >> BPF_SKB_TSTAMP_DELIVERY_MONO to mean skb->tstamp has the MONO "delivery" time.
+> >> BPF_SKB_TSTAMP_UNSPEC means everything else (this could be a rx timestamp at
+> >> ingress or a delivery time set by user space).
+> >>
+> >> __sk_buff->tstamp_type depends on skb->mono_delivery_time which does not
+> >> necessarily mean mono after this patch. I thought about fixing it on the bpf
+> >> side such that reading __sk_buff->tstamp_type only returns
+> >> BPF_SKB_TSTAMP_DELIVERY_MONO when the skb->mono_delivery_time is set and skb->sk
+> >> is IPPROTO_TCP. However, it won't work because of bpf_skb_set_tstamp().
+> >>
+> >> There is a bpf helper, bpf_skb_set_tstamp(skb, tstamp,
+> >> BPF_SKB_TSTAMP_DELIVERY_MONO). This helper changes both the skb->tstamp and the
+> >> skb->mono_delivery_time. The expectation is this could change skb->tstamp in the
+> >> ingress skb and redirect to egress sch_fq. It could also set a mono time to
+> >> skb->tstamp where the udp sk->sk_clockid may not be necessary in mono and then
+> >> bpf_redirect to egress sch_fq. When bpf_skb_set_tstamp(skb, tstamp,
+> >> BPF_SKB_TSTAMP_DELIVERY_MONO) succeeds, reading __sk_buff->tstamp_type expects
+> >> BPF_SKB_TSTAMP_DELIVERY_MONO also.
+> >>
+> >> I ran out of idea to solve this uapi breakage.
+> >>
+> >> I am afraid it may need to go back to v1 idea and use another bit
+> >> (user_delivery_time) in the skb.
+> > 
+> > Is the only conflict when bpf_skb_set_tstamp is called for an skb from
+> > a socket with sk_clockid set (and thus SO_TXTIME called)?
 > 
->> On 3/13/24 11:28, Pratyush Yadav wrote:
->>> On Wed, Mar 13 2024, Michael Walle wrote:
->>>
->>>> On Wed Mar 13, 2024 at 6:10 PM CET, Florian Fainelli wrote:
->>>>> After commit cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP with
->>>>> -EOPNOTSUPP"), our SPI NOR flashes would stop probing with the following
->>>>> visible in the kernel log:
->>>>>
->>>>> [    2.196300] brcmstb_qspi f0440920.qspi: using bspi-mspi mode
->>>>> [    2.210295] spi-nor: probe of spi1.0 failed with error -95
->>>>>
->>>>> It turns out that the check in spi_mem_exec_op() was changed to check
->>>>> for -ENOTSUPP (old error code) or -EOPNOTSUPP (new error code), but this
->>>>> means that for drivers that were converted, the second condition is now
->>>>> true, and we stop falling through like we used to. Fix the error to
->>>>> check for neither error being neither -ENOTSUPP *nor* -EOPNOTSUPP.
->>>>>
->>>>> Fixes: cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP with -EOPNOTSUPP")
->>>>> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
->>>>> Change-Id: I4159811f6c582c4de2143382473d2000b8755872
->>>>
->>>> Ha, thank you!
->>>>
->>>> Reviewed-by: Michael Walle <mwalle@kernel.org>
->>>>
->>>> FWIW in next, there is commit
->>>> e63aef9c9121e ("spi: spi-mem: add statistics support to ->exec_op() calls")
->>>> that probably will conflict with this one.
->>>>
->>>> Also, - not for this patch - but with that logic, spi_mem_exec_op()
->>>> might return EOPNOTSUPP *or* ENOTSUPP, even for drivers which might
->>>> still return ENOTSUPP, because there is one condition in
->>>> spi_mem_exec_op() which will always return EOPNOTSUPP. That is
->>>> somewhat confusing, no?
->>> I agree. I suppose it would be better to do:
->>>       if (!ret)
->>>          return 0;
->>>       if (ret == -ENOTSUPP || ret == -EOPNOTSUPP)
->>>          return -EOPNOTSUPP;
->>>
->>
->> But with e63aef9c9121e ("spi: spi-mem: add statistics support to ->exec_op()
->> calls") applied, would not that mean duplicating the statistics gathering, or
->> were the statistics gathering only intended for when ret == 0?
+> Right, because skb->mono_delivery_time does not mean skb->tstamp is mono now and 
+> its interpretation depends on skb->sk->sk_clockid.
 > 
-> Hmm, I didn't properly understand this. Ignore my suggestion. Your patch
-> does the right thing.
+> > Interpreting skb->tstamp as mono if skb->mono_delivery_time is set and
+> > skb->sk is NULL is fine. This is the ingress to egress redirect case.
+> 
+> skb->sk == NULL is fine. I tried something like this in 
+> bpf_convert_tstamp_type_read() for reading __sk_buff->tstamp_type:
+> 
+> __sk_buff->tstamp_type is BPF_SKB_TSTAMP_DELIVERY_MONO when:
+> 
+> 	skb->mono_delivery_time == 1 &&
+> 	(!skb->sk ||
+> 	 !sk_fullsock(skb->sk) /* tcp tw or req sk */ ||
+> 	 skb->sk->sk_protocol == IPPROTO_TCP)
+> 
+> Not a small bpf instruction addition to bpf_convert_tstamp_type_read() but doable.
+> 
+> > 
+> > I don't see an immediate use for this BPF function on egress where it
+> > would overwrite an SO_TXTIME timestamp and now skb->tstamp is mono,
+> > but skb->sk != NULL and skb->sk->sk_clockid != CLOCK_MONOTONIC.
+> 
+> The bpf prog may act as a traffic shaper that limits the bandwidth usage of all 
+> outgoing packets (tcp/udp/...) by setting the mono EDT in skb->tstamp before 
+> sending to the sch_fq.
+> 
+> I currently also don't have a use case for skb->sk->sk_clockid != 
+> CLOCK_MONOTONIC. However, it is something that bpf_skb_set_tstamp() can do now 
+> before queuing to sch_fq.
+> 
+> The container (in netns + veth) may use other sk_clockid/qdisc (e.g. sch_etf) 
+> setup and the non mono skb->tstamp is not cleared now during dev_forward_skb() 
+> between the veth pair.
+> 
+> > 
+> > Perhaps bpf_skb_set_tstamp() can just fail if another delivery time is
+> > already explicitly programmed?
+> 
+> This will change the existing bpf_skb_set_tstamp() behavior, so probably not 
+> acceptable.
+>
+> > 
+> >      skb->sk &&
+> >      sock_flag(sk, SOCK_TXTIME) &&
+> >      skb->sk->sk_clockid != CLOCK_MONOTONIC
+> 
+> > Either that, or unset SOCK_TXTIME to make sk_clockid undefined and
+> > fall back on interpreting as monotonic.
+> 
+> Change sk->sk_flags in tc bpf prog? hmm... I am not sure this will work well also.
+> 
+> sock_valbool_flag(SOCK_TXTIME) should require a lock_sock() to make changes. The 
+> tc bpf prog cannot take the lock_sock, so bpf_skb_set_tstamp() currently only 
+> changes skb and does not change skb->sk.
+> 
+> I think changing sock_valbool_flag(SOCK_TXTIME) will also have a new user space 
+> visible side effect. The sendmsg for cmsg with SCM_TXTIME will start failing 
+> from looking at __sock_cmsg_send().
+> 
+> There may be a short period of disconnect between what is in sk->sk_flags and 
+> what is set in skb->tstamp. e.g. what if user space does setsockopt(SO_TXTIME) 
+> again after skb->tstamp is set by bpf. This could be considered a small glitch 
+> for some amount of skb(s) until the user space settled on setsockopt(SO_TXTIME).
+> 
+> I think all this is crying for another bit in skb to mean user_delivery_time 
+> (skb->tstamp depends on skb->sk->sk_clockid) while mono_delivery_time is the 
+> mono time either set by kernel-tcp or bpf.
 
-What I meant is that e63aef9c9121e will increment statistics not just 
-when we return 0 from ctlr->mem_ops->exec_op, but also if we return 
--ENOTSUPP or -EOPNOTSUPP, and I am  not sure if this is exactly what is 
-intended. But this is somewhat orthogonal.
+It does sound like the approach with least side effects.
 
-> 
-> In this case we should return ret when:
-> 
->      ret is 0
->      OR
->      when ret is not -EOPNOTSUPP or -ENOTSUPP.
-> 
-> So if we get either of the two we _won't_ return and continue forward.
-> 
->  From looking at just this, spi_mem_exec_op() only returns -EOPNOTSUPP so
-> far since it has:
-> 
-> 	if (!spi_mem_internal_supports_op(mem, op))
-> 		return -EOPNOTSUPP;
-> 
-> But then looking further, it has:
-> 
-> 	ret = spi_sync(mem->spi, &msg);
-> 
-> 	if (ret)
-> 		return ret;
-> 
-> spi_sync() can return -ENOTSUPP if it goes via __spi_async(). I suppose
-> we would need to fix that if we want consistent return codes. But that
-> isn't a problem this patch should fix. So with the merge conflict fixed
-> up,
+If we're going to increase to two bits per skb, it's perhaps
+better to just encode the (selected supported) CLOCK_ type, rather
+than only supporting clockid through skb->sk->sk_clockid.
 
-Thanks, although as I replied to Mark in the other branch of the thread, 
-since this is a regression affecting v6.8, would not we want it to be 
-fast tracked, and not based upon for-next?
+This BPF function is the analogue to SO_TXTIME. It is clearly
+extensible to additional BPF_SKB_TSTAMP_DELIVERY_.. types. To
+work with sch_etf, say.
 
-> 
-> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-> 
-
--- 
-Florian
+> If we need to revert the 
+> mono_delivery_time reuse patch later, we will need to revert the netdev patch 
+> and the (to-be-made) bpf patch.
 
 
---000000000000ffedb706138fdb23
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+ 
 
-MIIQeQYJKoZIhvcNAQcCoIIQajCCEGYCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3QMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICv/mcTMjnoGBdE6
-Dg4Rk5piMGu5n3KB1KHHObfT9pYMMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDMxMzE5MzQxMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCXzUgHXylccLxumZ3YJTEp0PnQNbe+6wag
-5n9jEMmulHLmgVUbYPswZtch1pLSxzMJ2tDR4hXnVhVnDD5q7PgigiZZHY8+C6ZthhIljrjhMutf
-SdOkPFCOnIIfaTYHxZJWACzosdg7yVb6ncL4fOp2npQBtCkGjNva/xfVY0g2SwMs8JQBLo0NPw7H
-PlC3nCT0pPGEPckJ25G/fvk6MstAUeV4UX4JtHJ48ocH8VmQtnHbiohWjrCRg5IbV0mfdxDb01rR
-4H25mJ2j/kzH9XXAZqupz24XF8ggA4QPkM+poVfZPpaq7GPfEyisi5s5UjiMgjICutO7gTONoIpa
-n6nQ
---000000000000ffedb706138fdb23--
+
 
