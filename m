@@ -1,100 +1,262 @@
-Return-Path: <linux-kernel+bounces-102631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D709587B51C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:10:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F97D87B51E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:10:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88D9A285300
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:10:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 904BE1C21FCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD175D488;
-	Wed, 13 Mar 2024 23:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="fTo9IO2q"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49E05D752;
+	Wed, 13 Mar 2024 23:10:36 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 719115CDE1
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465E25D729
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710371409; cv=none; b=HPMGMTWiABzJN+OrkPZBNZW8uTO5aBmuQX6d6KOyJPho1QCDEtT3BzQGn/LfoPDos3KMxYgYNobBV55V6oSVuXirmR6gCVa4Fx1QKqjez0uaOCNMJA8lR9TgD/c3gCF53Sk2fAw/QlAARi+QcPMB1n6A5Pe5jpr2d4AUgCWfRRQ=
+	t=1710371436; cv=none; b=G9yX4e/q5HGSnTsw8i73rjJxZxvP6hNT1ZOmZH8OJQ12wK9iY17Mf/G+dsE2FoDAOog+XyX1nefaydhjQnolKF72uQgkU5rf6WAokyfZUwij7D/Nvc6rbLnlEu4ixgUHcRQpHtUFUhTZQQw+JVX2qEJwBF1l6jKstXpVjD317IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710371409; c=relaxed/simple;
-	bh=kdHGNf15Fkji+Yncd0qKZLXXXshvhJrNdSwpkSrHW2E=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=i8gCEcbKro5Jt0PiPUVRbX7aqhw36G6aPB+HOg5duUmdLRI0YZacUDu/D9i355B7LrLST78wV0ylaJmLxzjgOxJTSsNpfxB6vNk1FiVtV9NqSWUbZcUzeIyYPyWR0zUh2+FcJMmNm7sWznUdvelZCuybokUlfRxuTH8jolYAllk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=fTo9IO2q; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=3qu2niw75nb2xbjezbisjc3dce.protonmail; t=1710371398; x=1710630598;
-	bh=rYZPrBzSjkyRIMR5GIwY/KAK6jPdoSu7grZu7ns8X4Q=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=fTo9IO2qtRKJE1X29fMuTUGTtSPKC1Y/lyivka8OWJABM8Bpd764HMOCR/vxeW14V
-	 zRJkNTTeUe7eHXqgM5qKGYS8Uhm/UbJbRFPOa6CbeBdO0ATMw2WB+UtCiDBTp8e8YH
-	 0m05TS0wYo+qGfDNZXJM1Ic0RKKgmJszbR4TXGMqiSZ3uYrAXU/y839sKjLmDMZrbG
-	 64VvCO3nt9XSKT3ZRLQvua04GOU8o+G59eGJ46X3azCa5xo3rPTKnNjww8WzpUqFXe
-	 54UOdOd/L2el/nKQuZ96+hDYefQj+UIJEDJgICx2rEvmccewi0z3ks832LpCQmb/Cl
-	 ZryR0wOx3uSqQ==
-Date: Wed, 13 Mar 2024 23:09:37 +0000
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Laine Taffin Altman <alexanderaltman@me.com>, stable@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rust: init: remove impl Zeroable for Infallible
-Message-ID: <20240313230713.987124-1-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1710371436; c=relaxed/simple;
+	bh=W0n/ndiZEUEPasg9xeSEgOi6hRBR5hFqRQ+G/92EMig=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=p3dtPWWvdc5282n9l3f7Jn161Kmqi00YXLttb71otMWQ4uJL7x7UkkuyyA8oUwVXbgvYUqfRFmtG5z8quaAtUbTCKFJlO7NzuiOBfjm+Obe8msYJmjq8xQ/yUpaLPgP6UulmPEgGiMYU6zQX9t/7W63/oh7IJgmdBnWlGTGY0nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8bcaf249aso25368139f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:10:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710371433; x=1710976233;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WgkzGBsBAW0nNMHj1XFYGOzyoZnb9rpcdvTvIXrFMAc=;
+        b=Fhf2Ogj5+/akVAIZvkMFLzVYc10K04HwR2s3jULp9I0ID9zZ3rT7qBq4Z5bX7Ki1K9
+         nHO+D7k3KaU+EDRsLDTrG1U4RweIxO2Nwhj+cvY10bSVNs9S0ZWV0VPtvEvxrNLEGAA/
+         ZV4K+jbog8U6IXfye1kAXLnG9PnhVoj7FDYYwrEFeWBGS3uDJrHuv8DSQiRlzP2oalZM
+         bvIDfDr5fQv1/NhRspKQoY1cC6g0f5jeDMy1qbkTser+Is6MfdMeXRRXRFCD4eYCk+OM
+         k7QuNHvQzZ+WCcbCD9aQyxTdgft7NVZeTPtP5//X32owlpSXPuT4yHeKvJ24+QNfC8UJ
+         mffQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXAZz2zMLy4Oe2+Qa+iCEJHpo5dYzBtucZQYHOuAQhC1h9zX3eaUgWKS3MmekZ5hwxMbs7Kha87OWPsdI5vWYQ44G7BONEpP/Q5UmD5
+X-Gm-Message-State: AOJu0YygURXqku/zsD8fJPCnM0RWpHGzyr76+sUP2rcVfoNpgAvFGPUl
+	azc/8lCDV8mjE8J7GyFPlNG0HWk2pv77V+JnOBsVhOsqHvZhRxo74tL/T4S8vWqWVgAD3E6u/RR
+	t8UScXqK+/zJuFm3kuR4PZ/WVolZ8htP8i1aRBZB6Jqkp3Si4mSIMn2I=
+X-Google-Smtp-Source: AGHT+IHGGDhha+hmNL9jrW2oSJRpX5yZtSTmhFony7YGDN1cRA1eg4URiWavjg+Yp4DV46+Iy53T9Ja4qUfV5wTGsaWWs7JHJLqC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6638:2b15:b0:476:f8c5:4e19 with SMTP id
+ fm21-20020a0566382b1500b00476f8c54e19mr366jab.1.1710371433550; Wed, 13 Mar
+ 2024 16:10:33 -0700 (PDT)
+Date: Wed, 13 Mar 2024 16:10:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bb26fd061392e1a9@google.com>
+Subject: [syzbot] [overlayfs?] possible deadlock in iter_file_splice_write (3)
+From: syzbot <syzbot+e525d9be15a106e48379@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Laine Taffin Altman <alexanderaltman@me.com>
+Hello,
 
-It is not enough for a type to be a ZST to guarantee that zeroed memory
-is a valid value for it; it must also be inhabited. Creating a value of
-an uninhabited type, ZST or no, is immediate UB.
-Thus remove the implementation of `Zeroable` for `Infallible`, since
-that type is not inhabited.
+syzbot found the following issue on:
 
-Cc: stable@vger.kernel.org
-Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and `init::zeroed` f=
-unction")
-Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
-Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+HEAD commit:    09e5c48fea17 Merge tag 'ceph-for-6.8-rc8' of https://githu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=130a9a3e180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=44c92d6f247776b0
+dashboard link: https://syzkaller.appspot.com/bug?extid=e525d9be15a106e48379
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/be1396cce3c5/disk-09e5c48f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cd84fbdb0969/vmlinux-09e5c48f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/46bf297bd50b/bzImage-09e5c48f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e525d9be15a106e48379@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-rc7-syzkaller-00231-g09e5c48fea17 #0 Not tainted
+------------------------------------------------------
+syz-executor.2/10894 is trying to acquire lock:
+ffff8880434f8468 (&pipe->mutex/1){+.+.}-{3:3}, at: iter_file_splice_write+0x335/0x14e0 fs/splice.c:687
+
+but task is already holding lock:
+ffff88801e194420 (sb_writers#4){.+.+}-{0:0}, at: do_splice+0xcf0/0x1880 fs/splice.c:1353
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #4 (sb_writers#4){.+.+}-{0:0}:
+       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1641 [inline]
+       sb_start_write+0x4d/0x1c0 include/linux/fs.h:1777
+       mnt_want_write+0x3f/0x90 fs/namespace.c:409
+       ovl_create_object+0x13b/0x370 fs/overlayfs/dir.c:629
+       lookup_open fs/namei.c:3500 [inline]
+       open_last_lookups fs/namei.c:3569 [inline]
+       path_openat+0x1424/0x3240 fs/namei.c:3799
+       do_filp_open+0x234/0x490 fs/namei.c:3829
+       do_sys_openat2+0x13e/0x1d0 fs/open.c:1404
+       do_sys_open fs/open.c:1419 [inline]
+       __do_sys_openat fs/open.c:1435 [inline]
+       __se_sys_openat fs/open.c:1430 [inline]
+       __x64_sys_openat+0x247/0x2a0 fs/open.c:1430
+       do_syscall_64+0xf9/0x240
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+-> #3 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}:
+       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
+       inode_lock_shared include/linux/fs.h:814 [inline]
+       lookup_slow+0x45/0x70 fs/namei.c:1709
+       walk_component+0x2e1/0x410 fs/namei.c:2005
+       lookup_last fs/namei.c:2462 [inline]
+       path_lookupat+0x16f/0x450 fs/namei.c:2486
+       filename_lookup+0x255/0x610 fs/namei.c:2515
+       kern_path+0x35/0x50 fs/namei.c:2623
+       lookup_bdev+0xc5/0x290 block/bdev.c:1014
+       resume_store+0x1a0/0x710 kernel/power/hibernate.c:1183
+       kernfs_fop_write_iter+0x3a4/0x500 fs/kernfs/file.c:334
+       call_write_iter include/linux/fs.h:2087 [inline]
+       new_sync_write fs/read_write.c:497 [inline]
+       vfs_write+0xa81/0xcb0 fs/read_write.c:590
+       ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+       do_syscall_64+0xf9/0x240
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+-> #2 (&of->mutex){+.+.}-{3:3}:
+       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       kernfs_seq_start+0x53/0x3b0 fs/kernfs/file.c:154
+       seq_read_iter+0x3d0/0xd60 fs/seq_file.c:225
+       call_read_iter include/linux/fs.h:2081 [inline]
+       new_sync_read fs/read_write.c:395 [inline]
+       vfs_read+0x978/0xb70 fs/read_write.c:476
+       ksys_read+0x1a0/0x2c0 fs/read_write.c:619
+       do_syscall_64+0xf9/0x240
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+-> #1 (&p->lock){+.+.}-{3:3}:
+       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
+       proc_reg_read_iter+0x1c3/0x290 fs/proc/inode.c:299
+       call_read_iter include/linux/fs.h:2081 [inline]
+       copy_splice_read+0x661/0xb60 fs/splice.c:365
+       do_splice_read fs/splice.c:985 [inline]
+       splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
+       do_sendfile+0x515/0xdc0 fs/read_write.c:1301
+       __do_sys_sendfile64 fs/read_write.c:1356 [inline]
+       __se_sys_sendfile64+0x100/0x1e0 fs/read_write.c:1348
+       do_syscall_64+0xf9/0x240
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+-> #0 (&pipe->mutex/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18ca/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       iter_file_splice_write+0x335/0x14e0 fs/splice.c:687
+       do_splice_from fs/splice.c:941 [inline]
+       do_splice+0xd77/0x1880 fs/splice.c:1354
+       __do_splice fs/splice.c:1436 [inline]
+       __do_sys_splice fs/splice.c:1652 [inline]
+       __se_sys_splice+0x331/0x4a0 fs/splice.c:1634
+       do_syscall_64+0xf9/0x240
+       entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+other info that might help us debug this:
+
+Chain exists of:
+  &pipe->mutex/1 --> &ovl_i_mutex_dir_key[depth] --> sb_writers#4
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(sb_writers#4);
+                               lock(&ovl_i_mutex_dir_key[depth]);
+                               lock(sb_writers#4);
+  lock(&pipe->mutex/1);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.2/10894:
+ #0: ffff88801e194420 (sb_writers#4){.+.+}-{0:0}, at: do_splice+0xcf0/0x1880 fs/splice.c:1353
+
+stack backtrace:
+CPU: 1 PID: 10894 Comm: syz-executor.2 Not tainted 6.8.0-rc7-syzkaller-00231-g09e5c48fea17 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18ca/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+ iter_file_splice_write+0x335/0x14e0 fs/splice.c:687
+ do_splice_from fs/splice.c:941 [inline]
+ do_splice+0xd77/0x1880 fs/splice.c:1354
+ __do_splice fs/splice.c:1436 [inline]
+ __do_sys_splice fs/splice.c:1652 [inline]
+ __se_sys_splice+0x331/0x4a0 fs/splice.c:1634
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7fa65fa7dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa6608b00c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+RAX: ffffffffffffffda RBX: 00007fa65fbabf80 RCX: 00007fa65fa7dda9
+RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00007fa65faca47a R08: 0000000000000009 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fa65fbabf80 R15: 00007ffc7c0d55f8
+ </TASK>
+
+
 ---
- rust/kernel/init.rs | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
-index 424257284d16..538e03cfc84a 100644
---- a/rust/kernel/init.rs
-+++ b/rust/kernel/init.rs
-@@ -1292,8 +1292,8 @@ macro_rules! impl_zeroable {
-     i8, i16, i32, i64, i128, isize,
-     f32, f64,
-=20
--    // SAFETY: These are ZSTs, there is nothing to zero.
--    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, Infallible,=
- (),
-+    // SAFETY: These are inhabited ZSTs, there is nothing to zero and a va=
-lid value exists.
-+    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, (),
-=20
-     // SAFETY: Type is allowed to take any value, including all zeros.
-     {<T>} MaybeUninit<T>,
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-base-commit: 768409cff6cc89fe1194da880537a09857b6e4db
---=20
-2.42.0
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
