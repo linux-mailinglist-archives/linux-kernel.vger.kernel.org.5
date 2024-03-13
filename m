@@ -1,105 +1,163 @@
-Return-Path: <linux-kernel+bounces-100999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AEF387A0A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:23:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4AD87A0A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C23C1C22B2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:23:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCE251F23A7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4659BB660;
-	Wed, 13 Mar 2024 01:23:24 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627D8AD25;
+	Wed, 13 Mar 2024 01:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="oOT4oJiA"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEC1AD56;
-	Wed, 13 Mar 2024 01:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF34D9444
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710293003; cv=none; b=AUKfO0v+yXrBNgFRmom64sWugE8+O3EJZ7kV0dBnk2a8xAo6WO5tTYlHxs4xtAno5PtiW3OANoe+xKFsFG3dASnJrgH+1jJxFyEKgRT1GDwsynobdQK/P22DkVbuz7MBoX6e94/wKbTjT+GZO01NAVppoTXT62zxiqm2xCl96g0=
+	t=1710293106; cv=none; b=aM2UVljLFu0PPxZnIsv9k84E8A0UjgL6nYY8zTw5UJa6WG9BdSRlpF0wyNoE3gBRoGKJMRiBZm5Z/9mcE5gE/szU6nmRCpDR6JhXMaEmsPl5oUwDPpoXXKlOUjYk8Gs4IgT3+eBOPPaOb5jN9SMjgBioYwYYXzUQ4Hk+76BVZ3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710293003; c=relaxed/simple;
-	bh=zguCaPaRH8CknYHsCoPumQTnq9ZCBUkYQuGxQqp4PhA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=NvapYbAEDUjNdKLMS6qVzey6EJqU7ArNxcyOJP9Am4KMQ76c+3whWhsKlbdpdHyPRl1jUx/W8+QGjeNzXcQWnI1/EH+zAhUr1nkcS8JrECnFnJtxYu3sfzu0PMBUFr0JuqrE8mUp1Mwm5ERXGGlFcP0xtUs01+xYHg3P+faJLco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 42D1MI6s002888;
-	Wed, 13 Mar 2024 09:22:18 +0800 (GMT-8)
-	(envelope-from liu.yeC@h3c.com)
-Received: from DAG6EX06-IMDC.srv.huawei-3com.com (unknown [10.62.14.15])
-	by mail.maildlp.com (Postfix) with ESMTP id C5B012004BAA;
-	Wed, 13 Mar 2024 09:23:46 +0800 (CST)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
- DAG6EX06-IMDC.srv.huawei-3com.com (10.62.14.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.27; Wed, 13 Mar 2024 09:22:17 +0800
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
- by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
- mapi id 15.02.1258.027; Wed, 13 Mar 2024 09:22:17 +0800
-From: Liuye <liu.yeC@h3c.com>
-To: Daniel Thompson <daniel.thompson@linaro.org>
-CC: "jason.wessel@windriver.com" <jason.wessel@windriver.com>,
-        "dianders@chromium.org" <dianders@chromium.org>,
-        "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "kgdb-bugreport@lists.sourceforge.net"
-	<kgdb-bugreport@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org"
-	<linux-serial@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogtPC4tDogtPC4tDogtPC4tDogW1BBVENIXSBrZGI6IEZpeCB0aGUg?=
- =?gb2312?Q?deadlock_issue_in_KDB_debugging.?=
-Thread-Topic: =?gb2312?B?tPC4tDogtPC4tDogtPC4tDogW1BBVENIXSBrZGI6IEZpeCB0aGUgZGVhZGxv?=
- =?gb2312?Q?ck_issue_in_KDB_debugging.?=
-Thread-Index: AQHaafG3YC/Li+j42kau1FDQhHr2m7EfIsgAgAMadaD///fWgIAJrHcQgAeL+QCAAIb8YP//gGOAgAGAGvA=
-Date: Wed, 13 Mar 2024 01:22:17 +0000
-Message-ID: <410a443612e8441cb729c640a0d606c6@h3c.com>
-References: <20240228025602.3087748-1-liu.yeC@h3c.com>
- <20240228120516.GA22898@aspen.lan> <8b41d34adaef4ddcacde2dd00d4e3541@h3c.com>
- <20240301105931.GB5795@aspen.lan> <2ea381e7407a49aaa0b08fa7d4ff62d3@h3c.com>
- <20240312095756.GB202685@aspen.lan>
- <06cfa3459ed848cf8f228997b983cf53@h3c.com>
- <20240312102419.GC202685@aspen.lan>
-In-Reply-To: <20240312102419.GC202685@aspen.lan>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-sender-location: DAG2
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1710293106; c=relaxed/simple;
+	bh=Xed/+9vg1uBq89mAGM6jEwgHU5GzFADJaBvpXtl+8Ps=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tsKhJ1ZIYqrdzaGCUVWx3dptQQ1XhxYnEE2jnfedMDpcDMgXzc3DaV3lZXs8ab+KQXbCj+ruBwGiymdptHnh1JGHonogm0n/RHsrII+3OUWIhGGgKM1j2jWV5W34/Zre5Wf+8gCjhVXjHK0WJKVtsFO96QC9Apv+aII8NWOn14I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=oOT4oJiA; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68f41af71ebso4403086d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1710293102; x=1710897902; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OrJDkOKo1+JZZr4ZI11hsRHjr+5I0fR2jTuSqQPTPac=;
+        b=oOT4oJiARDLgSJnrgyLtsdTTrGWqD5zztJ32Q3D5qFLWyLlykvMtoJ8pi0EpPs5Owp
+         YQVuDYoFhP1GSy5/BCM/Y2BZVqVZBIZpjqwyFqvmvvpfciwzOVHayhbSCFV3nc5Ju8iO
+         ObUIapMWZ4e0ZNUxwptXTYQVTbs+42diQBkiA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710293102; x=1710897902;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OrJDkOKo1+JZZr4ZI11hsRHjr+5I0fR2jTuSqQPTPac=;
+        b=aNVffrfD4XEigaeUapE6nn0A51TnEg7zrwDpyWH1mlNF/3p0g4N6oKuGkeoCXX6PKU
+         S2SbQpRO5VlsPokCyEMxlcPue48/VVhvvy2HJVTIlFACY/AGGM5SjEF3QAcEQzqYS4mK
+         dFHSXflyykAiThXTXx2gSmUlEzfVR5PFGkIVke/U0z5fS+UgcoXEQwQisy6UG6LBi8qb
+         FHnYXCU9GJhwOoB/grWjgYc++UxpnPjX3eEA9V89b2B2nRXYS/yoyxoYut3UQgpVFqX9
+         X1RMVlJNWb0VEtYHEH3x7fQDOkWm/46eDYb+BhtLKmTonbmNBcfhB0zGEmGRi4Z8qk75
+         sPHA==
+X-Gm-Message-State: AOJu0YwZTwNglAccRgrXvl3ujJdDRwCrXlkfAyVyvUbUYVBq6Pm8KKa6
+	/9kQCqXT5V2v18MspfyTc28450NCHB/NU674PpqT+R2h4E5wbdbLsRXLXLU0qZL2OW0TBV9ekTv
+	Y
+X-Google-Smtp-Source: AGHT+IFU3RRHOiD/YGsC/rGevZ/XrSch/6/oMTX54MWBgiEZfe1b3H+4MHGRznr1iS3mYTt9iwwDDA==
+X-Received: by 2002:a05:6214:15c1:b0:690:df46:2ebb with SMTP id p1-20020a05621415c100b00690df462ebbmr2149499qvz.56.1710293102324;
+        Tue, 12 Mar 2024 18:25:02 -0700 (PDT)
+Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 18:25:01 -0700 (PDT)
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To: linux-kernel@vger.kernel.org
+Cc: Suleiman Souhlal <suleiman@google.com>,
+	Youssef Esmat <youssefesmat@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	David Vernet <void@manifault.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	joseph.salisbury@canonical.com,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Luca Abeni <luca.abeni@santannapisa.it>,
+	Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+	Vineeth Pillai <vineeth@bitbyteword.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Phil Auld <pauld@redhat.com>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v2 00/15] Fair scheduling deadline server fixes
+Date: Tue, 12 Mar 2024 21:24:36 -0400
+Message-Id: <20240313012451.1693807-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 42D1MI6s002888
+Content-Transfer-Encoding: 8bit
 
-Pk9uIFR1ZSwgTWFyIDEyLCAyMDI0IGF0IDEwOjA0OjU0QU0gKzAwMDAsIExpdXllIHdyb3RlOg0K
-Pj4gPk9uIFR1ZSwgTWFyIDEyLCAyMDI0IGF0IDA4OjM3OjExQU0gKzAwMDAsIExpdXllIHdyb3Rl
-Og0KPj4gPj4gSSBrbm93IHRoYXQgeW91IHNhaWQgc2NoZWR1bGVfd29yayBpcyBub3QgTk1JIHNh
-dmUsIHdoaWNoIGlzIHRoZSANCj4+ID4+IGZpcnN0IGlzc3VlLiBQZXJoYXBzIGl0IGNhbiBiZSBm
-aXhlZCB1c2luZyBpcnFfd29ya19xdWV1ZS4gQnV0IGV2ZW4gDQo+PiA+PiBpZiBpcnFfd29ya19x
-dWV1ZSBpcyB1c2VkIHRvIGltcGxlbWVudCBpdCwgdGhlcmUgd2lsbCBzdGlsbCBiZSBhIA0KPj4g
-Pj4gZGVhZGxvY2sgcHJvYmxlbSBiZWNhdXNlIHNsYXZlIGNwdTEgc3RpbGwgaGFzIG5vdCByZWxl
-YXNlZCB0aGUgDQo+PiA+PiBydW5uaW5nIHF1ZXVlIGxvY2sgb2YgbWFzdGVyIENQVTAuDQo+PiA+
-DQo+PiA+VGhpcyBkb2Vzbid0IHNvdW5kIHJpZ2h0IHRvIG1lLiBXaHkgZG8geW91IHRoaW5rIENQ
-VTEgd29uJ3QgcmVsZWFzZSANCj4+ID50aGUgcnVuIHF1ZXVlIGxvY2s/DQo+Pg0KPj4gSW4gdGhp
-cyBleGFtcGxlLCBDUFUxIGlzIHdhaXRpbmcgZm9yIENQVTAgdG8gcmVsZWFzZSBkYmdfc2xhdmVf
-bG9jay4NCj4NCj5UaGF0IHNob3VsZG4ndCBiZSBhIHByb2JsZW0uIENQVTAgd2lsbCBoYXZlIHJl
-bGVhc2VkIHRoYXQgbG9jayBieSB0aGUgdGltZSB0aGUgaXJxIHdvcmsgaXMgZGlzcGF0Y2hlZC4N
-Cg0KUmVsZWFzZSBkYmdfc2xhdmVfbG9jayBpbiBDUFUwLiBCZWZvcmUgdGhhdCwgc2hjZWR1bGVf
-d29yayBuZWVkcyB0byBiZSBoYW5kbGVkLCBhbmQgd2UgYXJlIGJhY2sgdG8gdGhlIHByZXZpb3Vz
-IGlzc3VlLg0K
+Hello,
+The deadline server [1] allows RT tasks to run on a system safely, while not
+wasting CPU that RT tasks may not get on an idle system due to RT throttling.
+
+Here are patches that are mostly fixes that we found while testing out the
+deadline server [1] for ChromeOS. It snowballed from 10 to 15 patches as I
+found that my unit test was breaking, and then we also saw some crashes in the
+field related to the dl_timer! All of that is fixed.
+
+There is also a fix to core scheduling among several other fixes.
+Appreciate a thorough review. I kept all the patches on top of Daniel's and
+Peter's patches because I will let them squash it with appropriate attribution
+to the contributors.
+
+These patches are based on Daniel's preview branch for v6:
+https://git.kernel.org/pub/scm/linux/kernel/git/bristot/linux.git/?h=dl_server_v6
+
+Daniel mentioned he is working on fixing the fair server interface issues [2].
+These patches apply cleanly on his preview version.
+
+[1] https://lore.kernel.org/all/cover.1699095159.git.bristot@kernel.org/
+[2] https://lore.kernel.org/all/091ca2ea-202d-4685-92ea-529186a94f0a@kernel.org/
+
+
+Joel Fernandes (Google) (12):
+  sched/core: Add clearing of ->dl_server in put_prev_task_balance()
+  sched/core: Fix priority checking for DL server picks
+  sched/core: Fix picking of tasks for core scheduling with DL server
+  sched/debug: Use unsigned long for cpu variable to prevent cast errors
+  selftests/sched: Add a test to verify that DL server works with core
+    scheduling
+  selftests/sched: Migrate cs_prctl_test to kselfttest
+  admin-guide/hw-vuln: Correct prctl() argument description
+  sched: Fix build error in "sched/rt: Remove default bandwidth control"
+  sched/deadline: Mark DL server as unthrottled before enqueue
+  sched/deadline: Make start_dl_timer callers more robust
+  sched/deadline: Do not restart the DL server on replenish from timer
+  sched/deadline: Always start a new period if CFS exceeded DL runtime
+
+Suleiman Souhlal (2):
+  sched: server: Don't start hrtick for DL server tasks
+  sched/deadline: Reverse args to dl_time_before in replenish
+
+Youssef Esmat (1):
+  sched/core: Clear prev->dl_server in CFS pick fast path
+
+ .../admin-guide/hw-vuln/core-scheduling.rst   |   4 +-
+ include/linux/sched.h                         |   3 +-
+ kernel/sched/core.c                           |  46 +++-
+ kernel/sched/deadline.c                       |  87 ++++--
+ kernel/sched/debug.c                          |   4 +-
+ kernel/sched/fair.c                           |  22 +-
+ kernel/sched/rt.c                             |   2 +
+ kernel/sched/sched.h                          |   3 +-
+ tools/testing/selftests/sched/Makefile        |  17 +-
+ tools/testing/selftests/sched/common.c        |  24 ++
+ tools/testing/selftests/sched/common.h        |   8 +
+ .../selftests/sched/cs_dlserver_test.c        | 254 ++++++++++++++++++
+ tools/testing/selftests/sched/cs_prctl_test.c |  74 ++---
+ 13 files changed, 456 insertions(+), 92 deletions(-)
+ create mode 100644 tools/testing/selftests/sched/common.c
+ create mode 100644 tools/testing/selftests/sched/common.h
+ create mode 100644 tools/testing/selftests/sched/cs_dlserver_test.c
+
+-- 
+2.34.1
+
 
