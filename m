@@ -1,239 +1,181 @@
-Return-Path: <linux-kernel+bounces-101119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EEF887A2AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:27:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7A8387A2AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:29:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B343B2830A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:27:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04EAFB21BCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3AA168CE;
-	Wed, 13 Mar 2024 05:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E4312E5C;
+	Wed, 13 Mar 2024 05:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Te5eyCrn"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="LdamE+F7"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2073.outbound.protection.outlook.com [40.92.42.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C901C16428;
-	Wed, 13 Mar 2024 05:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710307619; cv=none; b=cWQHwcsauEmO04gjYi3tF4lIavgjtvp6PupKgMt5z4c4GvWGB9SOUlLvDBSBv7EpKASAmDVjfSCBUPCNEvR+vQv9nLDy+X/LQ8u4rjiotIj1RTGD6SGKsLd4t3tGq8v3TTjsdJcT6dzOGF2W6IgPjzxOA3/lHHQ9YZbRAciT/Wk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710307619; c=relaxed/simple;
-	bh=QDIMpAX3SblXqrKkGcVkal7Kc4YUL294h+W6+O3lvc8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KR0aiHFPm9OUhJg4//xhgWRSwhJj+8peFLpHNNKxDwyti0WyEYNmnwFbQMik42b//lJrW6uh+i6tvaFEwwZz+MXSzT7poX+7acUAh4feOpuH6qRSu0Wpbz1JOwGt8Cqk2As0JQQojFSRsdBaVDeWM78uJsy09XNt+gUcFhrLekw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Te5eyCrn; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42D3EQnR026369;
-	Wed, 13 Mar 2024 05:26:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=qcppdkim1; bh=HWAo1HneO3Cr4Ui3pBc8
-	jLTbpGGRUGbVZPOuSOySp24=; b=Te5eyCrndjiFy62oDwa2H/Y0g9SI35JXIBQN
-	Fm5O2JyspEvI4a6KY1Aj3+t5OUxVlKbpW3PkKlRBHHg2E6FW9d726xjOCRgbriJu
-	/6exdJKc2/+NXCptzRv0I9EPAweirglhq+CwqW4HjgYHOiNttZ79Sd73XDwpGkEs
-	wGau5yTNWVdch0O3tFv3/dqoEm23L217QfLTgMx04TRRR5ssUPu4q8ouCjlAqFxw
-	/WaEXudl4dqsFgsUIoO23spyb6+P5wD5W26cN/AZkgSZsCByTLbYm2jSfC8vndDd
-	mpBclfk+3EkJwg2z1PvSNogLRR9IDwH0DXRVPI1wiW7UqH8gGQ==
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wu2j38ayn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 05:26:47 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 42D5QhKs007250;
-	Wed, 13 Mar 2024 05:26:43 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3wrgum5361-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 05:26:43 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42D5QhYE007244;
-	Wed, 13 Mar 2024 05:26:43 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-msavaliy-hyd.qualcomm.com [10.213.110.207])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 42D5QgYK007243
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 05:26:43 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 429934)
-	id 4BC6D240E1; Wed, 13 Mar 2024 10:56:42 +0530 (+0530)
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-To: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org,
-        andi.shyti@kernel.org, wsa@kernel.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Cc: quic_vdadhani@quicinc.com,
-        Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH v4] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI mode
-Date: Wed, 13 Mar 2024 10:56:39 +0530
-Message-Id: <20240313052639.1747078-1-quic_msavaliy@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02302C122;
+	Wed, 13 Mar 2024 05:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710307753; cv=fail; b=Rrk/tEp4LsW6nJb7HDwxKhHBXldxED9NWLC4oM1ferNNkgBBGP7hD/uWi0so+QVBicF9keQoxSM6x6/mpZzl/d4sPV7MSNNecc33XFQlwFBwPKjAlPvWP2v/NfmSldrDM/hzrsNbKRbCWBGCk+PdzkJDdA+PZ9tTexwFjJU9Q4s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710307753; c=relaxed/simple;
+	bh=NvkPFvN54TKLnCOtVSwr+VvP2H/C+sqAffwBchB/2Ec=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=c1vR4suJDl97Smcr0hRp35hBxdVeS7uYieGvuqWvGfhRBY5mxYtRp4OFK5QoO9wygZ4lQcS3Ma7bWuyllWjT4/Olm+sGR78P4VJ416FC8ERPLNIQbfQNffwrZL41KNhSJxbRbzOEc0vbOwC07aeuF5ccttSzvIXHjPwlomjdcrQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=LdamE+F7; arc=fail smtp.client-ip=40.92.42.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GiovIq3zql6MU/UBvFRbEIoMG5c+cKDHLf3QtehSwMHNHo/KCUam+3Xs2q2INKvxBRk/Mqc6ZxHsBtSNica97zeHf1hqLkUMr0OM97CqxS5OnMQ4gNIYg8fYez3TZ21oxZGmpsOEese2fhE9IDjcI8UbMAXSGFoVgBahW9BSkTcAP88fPessILLs7nNBEU1pnFNUBhLVvHF7NQRDGZddUsPREMV2uqRx3vOVDdgICH8UHV67vCqIV7323VRb78YXofi6sg2oKhZ8dUdnuoUm2J+Kg6XEEwB1k/C3HKFj2oie8AFSMzX/b1/VYgwqVw9axdRqtGcpMUm/W+wdNA8sog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dQcA4PPjT92tte1SYGIIIHpkAJ6BCQKzEw3zceAB3dw=;
+ b=aXMn0UftU8ZV1JspaNrZSIdXjfnx41ckzsXdfuFDiSwyTcBGu091IBk3DizR1exeNrQRgPBbveytlKqhXzfX+rYEAryRNNKx1FldUf17vDUwx2Uq8QCeadY3UCB6Ac9vaxiYfJ6FBUZZTEZXfeeSRBsTE2Pke5dlMf/aYwLFEQsfR1Yyae52kJeWEsnvUQZBDoyYXMTTBAl7TGr6H5bhInAVd2GrqDYjKP1oAlAEcokNc0krOLW5Q2ih3kyhEGe3UlI4iOVY5u6e/dc6XzWtvTj4V+B1EtM3nQwA20u/EEI60n4+vbUKDVy84AJWBDD4zte9c0XHeU9gXgocPmgNTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dQcA4PPjT92tte1SYGIIIHpkAJ6BCQKzEw3zceAB3dw=;
+ b=LdamE+F7FpBlj57yZSyBhZ7c+f50frtwdtPPdRusEYgeregb1jMOffv3PhshCaCIrNeVqWUJYQ0Lh8tl6uc0JcqPLtDOqWgq3A4OTNPIPWB4aQ6LqEUbL4qwT9LZwbRPXFFspomCT4b+Yws1r/4HEFZ+JjvfNjCWEmNGIUJlA67Ufz9QGp8/kaFryiwRmgP1Zc+kpq6+MzQtncnsYYEvBDbJriFRfrFdLTHhXZ3PrgYgzEE7TPix017g0qc80K6tEvM9s5p5aEXW7v4oF6u0+rJ0pStBPzz6CG8Ti1L1K06qPdvNdBWzvvGQVaSkBd2U5IsTIREhnV6TEF1XKXa0rg==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by CH0PR02MB7932.namprd02.prod.outlook.com (2603:10b6:610:101::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.34; Wed, 13 Mar
+ 2024 05:29:08 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
+ 05:29:08 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Long Li <longli@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com"
+	<mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com"
+	<hpa@zytor.com>, "arnd@arndb.de" <arnd@arndb.de>, "tytso@mit.edu"
+	<tytso@mit.edu>, jason <jason@zx2c4.com>, "x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: RE: [PATCH v2 1/1] x86/hyperv: Use Hyper-V entropy to seed guest
+ random number generator
+Thread-Topic: [PATCH v2 1/1] x86/hyperv: Use Hyper-V entropy to seed guest
+ random number generator
+Thread-Index: AQHacMAZOd50lMXg2E+WGXTGLlHRJ7E1IpWAgAAI74A=
+Date: Wed, 13 Mar 2024 05:29:08 +0000
+Message-ID:
+ <SN6PR02MB4157E883A8EA7796264D3AA7D42A2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240307184820.70589-1-mhklinux@outlook.com>
+ <SJ1PR21MB34571493BC1473790F5917E0CE2A2@SJ1PR21MB3457.namprd21.prod.outlook.com>
+In-Reply-To:
+ <SJ1PR21MB34571493BC1473790F5917E0CE2A2@SJ1PR21MB3457.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [nnO0d94QcuK1BYdK/tzW9m4QBCPsuQ37]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CH0PR02MB7932:EE_
+x-ms-office365-filtering-correlation-id: 73373275-ae45-45b2-9caf-08dc431e8191
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Qzyd28YrsVpSc8Fyq4c6/jztR4WwUWgdcoBe8X2Gp2GZctcr/ljCOgJeGcQwBVXP4WCdsm6nw4XTKzrbNI+kGH4pzGIcUNOrKRCyaWyCC0BJjudUBXzXCK3loxnmw2cn0jk05XDKgtx/jo5pDTa8cx/DUcbj11p4JTnln4kzAUdSbAAgSjbTYXLyiRnb5woI3YT6/xYnQLe+mn1r6vAYFN/Ny0sQ5r+jJ8gVXVnnGAtLMqJhryn5pMcGC59KXtv7NEYsL7fGFPKrlp1hn4vw17g01pio13bM8tlC6I3dUhAAet0W6JNO1mBGQLuKi0TXJCuyiknoiSpk7vfg/D2twLn+8RIj2/Ta5COCezw2nXbbTJU3Vvtv0Mm0wq5io4xZ/kSxIG8859RYvd9sQ1eUpxlKiDlTq5ZoXwEEx8X79yfS7P5rX/VbayVREAXc6+0CBH4cUHXMa+eit7McV4SMccx1gtxv2mDpSeQTsP9PSzRgr0CDpE6ubqPEqcTDO20BjlSR6iqlnRL4czIz+qjCnLJ8lWlKnnnBP5O/eSWllI2hQ/h4qGZSYq5T9GvLh06R+ujnitvLUJFLZR2Snt7r/4evorNRkXKypqchK5vmlhlCl//IMd+JS1nfKvm6/RDmaRKWKaZZZYJGPn5b5bhHyVdWCZGc6GQaewU/kwYyUGA=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?Z7xo2yiUw5cdOubkGGdIbCIIqkPHbd+BVMP+ZirBIaXEjnLV7zdvh2mb+SFZ?=
+ =?us-ascii?Q?HTkTYYt6d9z9S9tAbUtG65giKj4ejjUdJSBBUwOjWKy3wRcp9Z7qvFvXn3ea?=
+ =?us-ascii?Q?2aeN4VY+19o34BocfvEOlmeysfR7WJGU1ygePM6EWb9VGLn6qz5FtBgJ2MVm?=
+ =?us-ascii?Q?0UwVomQeQEHlszPCs7yioQirTU5+qsqouzs2dCnr+dwRPll4JmnRvu0VTR6G?=
+ =?us-ascii?Q?QHJXPblSV+qQrNFk79kzDQq6HKg7AZDalJjpKdxx4t4gifmW2GrIlKCfEW/d?=
+ =?us-ascii?Q?ztIL0qwE1WzxRcdLWC9DhJ8Z+CxwWp6GS7NmL1yWo/T9UeDEtnJV6Ram08eK?=
+ =?us-ascii?Q?O4ZssmOjDM5iEwMRn8yB0tP8GjQV/bQyR/F8WqtB3KhZoOxE57lWMCHYFXAy?=
+ =?us-ascii?Q?rrc2Zg+vJFP8TKgX5i0FT9c2dNPjNabqSnkp3M+9/VXtBK2uK7ElDIMqbk8+?=
+ =?us-ascii?Q?uL1qHhlCsHhKjmKwI5qJZhjx1rSTsuZM6w238MJ3p6O/XQHI4A0B12KACTCh?=
+ =?us-ascii?Q?YqRqWlUtoPolxXCAEOT49kGvO83bEksmL0G+mn9vWWEZ2c+diWr+goONfBzn?=
+ =?us-ascii?Q?apWUW/zcAbmsrxsB6+eDvbJPV9T3tqGnXHPaGF8zEFLGlWHnu7WbJCCP1cFE?=
+ =?us-ascii?Q?wtYgr60KZ5yJ/LRmZWz4UanrTjhurVdHD5qCdtWrojG/Gf0id7BWeLFq2mLR?=
+ =?us-ascii?Q?Q0FgPEaGWqPa2f0rY8EDjZNeRf0S/NJBckEFxW7Vclsga5X5kJGWzdrKF8rS?=
+ =?us-ascii?Q?ie8Q/L6SlnEZosgGdPVU7NXSKQqky+9vaMBBWS7b5FZEcrxo9nA39vdzZMyB?=
+ =?us-ascii?Q?268DsiNdDj3EFAI9BOrgvlEhOP5ISm/33DqWUX8CW/Y0W5w3voTx5LeTF5lV?=
+ =?us-ascii?Q?5A+7bIQRtaNIkFJfjctiTFn/NtEWRTdKPwDJrI2nV8+y2QsSJ0FK0oP0ccIc?=
+ =?us-ascii?Q?kzI58PNNROgQWrxx0wliAp7ZyNboYe1yPzj2swdWD1qDLDcmTse0PiraX8ah?=
+ =?us-ascii?Q?o9Zc4vXDm/x/490K76o27D9S0RGvsb/j28BYgqu36s6NENz0n9FN2+qlp5aX?=
+ =?us-ascii?Q?umqLThvzIs+0ahEhU+X2gu2spWt1+XzBf1txS7CGlNo26MvTz9XDtDifxU7Z?=
+ =?us-ascii?Q?fKQQGTiM5t84mrEhEVinOYiUwFUsVS6nJOB8M8HtHSscxtl2d9V0m95L4GOd?=
+ =?us-ascii?Q?YW53oHzkdLaUGCdQp4M4i9Lw56Qcs9bkMYhJHA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: TxmVZef7H9yyvkUCUNfsHl74njhk29cM
-X-Proofpoint-GUID: TxmVZef7H9yyvkUCUNfsHl74njhk29cM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_05,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 malwarescore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 clxscore=1015 phishscore=0
- mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403130039
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73373275-ae45-45b2-9caf-08dc431e8191
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 05:29:08.1551
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR02MB7932
 
-I2C driver currently reports "DMA txn failed" error even though it's
-NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
-on the bus instead of generic transfer failure which doesn't give any
-specific clue.
+From: Long Li <longli@microsoft.com> Sent: Tuesday, March 12, 2024 9:51 PM
+>=20
+> > +void __init ms_hyperv_late_init(void)
+> > +{
+> > +       struct acpi_table_header *header;
+> > +       acpi_status status;
+> > +       u8 *randomdata;
+> > +       u32 length, i;
+> > +
+> > +       /*
+> > +        * Seed the Linux random number generator with entropy provided=
+ by
+> > +        * the Hyper-V host in ACPI table OEM0.  It would be nice to do=
+ this
+> > +        * even earlier in ms_hyperv_init_platform(), but the ACPI subs=
+ystem
+> > +        * isn't set up at that point. Skip if booted via EFI as generi=
+c EFI
+> > +        * code has already done some seeding using the EFI RNG protoco=
+l.
+> > +        */
+> > +       if (!IS_ENABLED(CONFIG_ACPI) || efi_enabled(EFI_BOOT))
+> > +               return;
+> > +
+> > +       status =3D acpi_get_table("OEM0", 0, &header);
+> > +       if (ACPI_FAILURE(status) || !header)
+> > +               return;
+>=20
+> Should we call acpi_put_table() if header =3D=3D 0?
 
-Make Changes inside i2c driver callback handler function
-i2c_gpi_cb_result() to parse these errors and make sure GSI driver
-stores the error status during error interrupt.
+No.  acpi_get_table() setting header to NULL is equivalent to
+returning a failure status, per a comment in the code for
+acpi_get_table().  So checking header for NULL is probably
+redundant, but it doesn't hurt.
 
-Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
-v3 -> v4:
-- Included bitfield.h to fix compilation issue for x86 arch.
-- Removed Fixes tag as this is not fixing any crash.
-- Added Reviewed-by tag.
+> It will also be helpful doing a
+> pr_info() here so user knows that hyper-v random number is not used.
 
-v2 -> v3:
-- Modifed commit log reflecting an imperative mood.
+In v1 of the patch, I had such a pr_info(), but Wei Liu recommended
+removing it, and I agreed it wasn't really necessary.  See the brief=20
+discussion here:
 
-v1 -> v2:
-- Commit log changed we->We.
-- Explained the problem that we are not detecing NACK error.
-- Removed Heap based memory allocation and hence memory leakage issue.
-- Used FIELD_GET and removed shiting and masking every time as suggested by Bjorn.
-- Changed commit log to reflect the code changes done.
-- Removed adding anything into struct gpi_i2c_config and created new structure
-  for error status as suggested by Bjorn.
----
- drivers/dma/qcom/gpi.c             | 12 +++++++++++-
- drivers/i2c/busses/i2c-qcom-geni.c | 20 ++++++++++++++++----
- include/linux/dma/qcom-gpi-dma.h   | 10 ++++++++++
- 3 files changed, 37 insertions(+), 5 deletions(-)
+https://lore.kernel.org/linux-hyperv/SN6PR02MB4157B61CA09C0DAF0BB994E1D4212=
+@SN6PR02MB4157.namprd02.prod.outlook.com/
 
-diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
-index 1c93864e0e4d..e3508d51fdc9 100644
---- a/drivers/dma/qcom/gpi.c
-+++ b/drivers/dma/qcom/gpi.c
-@@ -1076,7 +1076,17 @@ static void gpi_process_xfer_compl_event(struct gchan *gchan,
- 	dev_dbg(gpii->gpi_dev->dev, "Residue %d\n", result.residue);
- 
- 	dma_cookie_complete(&vd->tx);
--	dmaengine_desc_get_callback_invoke(&vd->tx, &result);
-+	if (gchan->protocol == QCOM_GPI_I2C) {
-+		struct dmaengine_desc_callback cb;
-+		struct gpi_i2c_result *i2c;
-+
-+		dmaengine_desc_get_callback(&vd->tx, &cb);
-+		i2c = cb.callback_param;
-+		i2c->status = compl_event->status;
-+		dmaengine_desc_callback_invoke(&cb, &result);
-+	} else {
-+		dmaengine_desc_get_callback_invoke(&vd->tx, &result);
-+	}
- 
- gpi_free_desc:
- 	spin_lock_irqsave(&gchan->vc.lock, flags);
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index da94df466e83..11dcfcf13d8b 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -2,6 +2,7 @@
- // Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
- 
- #include <linux/acpi.h>
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
-@@ -66,6 +67,7 @@ enum geni_i2c_err_code {
- 	GENI_TIMEOUT,
- };
- 
-+#define I2C_DMA_TX_IRQ_MASK	GENMASK(12, 5)
- #define DM_I2C_CB_ERR		((BIT(NACK) | BIT(BUS_PROTO) | BIT(ARB_LOST)) \
- 									<< 5)
- 
-@@ -99,6 +101,7 @@ struct geni_i2c_dev {
- 	struct dma_chan *rx_c;
- 	bool gpi_mode;
- 	bool abort_done;
-+	struct gpi_i2c_result i2c_result;
- };
- 
- struct geni_i2c_desc {
-@@ -484,9 +487,18 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 
- static void i2c_gpi_cb_result(void *cb, const struct dmaengine_result *result)
- {
--	struct geni_i2c_dev *gi2c = cb;
--
--	if (result->result != DMA_TRANS_NOERROR) {
-+	struct gpi_i2c_result *i2c_res = cb;
-+	struct geni_i2c_dev *gi2c = container_of(i2c_res, struct geni_i2c_dev, i2c_result);
-+	u32 status;
-+
-+	status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
-+	if (status == BIT(NACK)) {
-+		geni_i2c_err(gi2c, NACK);
-+	} else if (status == BIT(BUS_PROTO)) {
-+		geni_i2c_err(gi2c, BUS_PROTO);
-+	} else if (status == BIT(ARB_LOST)) {
-+		geni_i2c_err(gi2c, ARB_LOST);
-+	} else if (result->result != DMA_TRANS_NOERROR) {
- 		dev_err(gi2c->se.dev, "DMA txn failed:%d\n", result->result);
- 		gi2c->err = -EIO;
- 	} else if (result->residue) {
-@@ -568,7 +580,7 @@ static int geni_i2c_gpi(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 	}
- 
- 	desc->callback_result = i2c_gpi_cb_result;
--	desc->callback_param = gi2c;
-+	desc->callback_param = &gi2c->i2c_result;
- 
- 	dmaengine_submit(desc);
- 	*buf = dma_buf;
-diff --git a/include/linux/dma/qcom-gpi-dma.h b/include/linux/dma/qcom-gpi-dma.h
-index 6680dd1a43c6..f585c6a35e51 100644
---- a/include/linux/dma/qcom-gpi-dma.h
-+++ b/include/linux/dma/qcom-gpi-dma.h
-@@ -80,4 +80,14 @@ struct gpi_i2c_config {
- 	bool multi_msg;
- };
- 
-+/**
-+ * struct gpi_i2c_result - i2c transfer status result in GSI mode
-+ *
-+ * @status: store txfer status value as part of callback
-+ *
-+ */
-+struct gpi_i2c_result {
-+	u32 status;
-+};
-+
- #endif /* QCOM_GPI_DMA_H */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Michael
+
 
 
