@@ -1,195 +1,92 @@
-Return-Path: <linux-kernel+bounces-102575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9859C87B41E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:04:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF39787B424
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22D87284253
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:04:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A69B02842DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475CE59179;
-	Wed, 13 Mar 2024 22:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dp2ELSdY"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A60159B42;
+	Wed, 13 Mar 2024 22:06:08 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CD159163;
-	Wed, 13 Mar 2024 22:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CABE59163;
+	Wed, 13 Mar 2024 22:06:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710367473; cv=none; b=QQDIwQBFgZAtnA6V2gAkDxzHnLlHQjFbh9PxrUVg853jxKfr3bSgJL6ggdApJgzE8DeFJ2gsUsLJjzXVrvmkk4Ku/W1yWFb6O6BERjkRCBPr7BBIHJzTBVNYtlQ5HYtfpKCHCXUxMgh57EOJvf8xWIj8BOc7/IsZ+mn+B8w+cPI=
+	t=1710367567; cv=none; b=Zws3bRga2DnTwswtFvHsAv/6RRbXNFV6oaUV03+ad78KRYAIXD3qPdDOuHmML8QzmvpnQojCxMJUC9p7TuBfV1RuxpS2zBSX/DhmefbGG8X5vvy+CLsh/sQSoiTMShv/VrxVNsutdyq0tLGoftbUXrn/NnGFdAMfKMV8GVI0cq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710367473; c=relaxed/simple;
-	bh=aT7JAHlSUM5tP2npDGpXT0p940C3MIFRBgpo2ZfM2Ug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HH6gk5dkFfdJUELbA9pJgbVV3MxpqStqdbtNqXvJroYy8uXiz+ZYG5K3J2ivqOR6hpw+NkjeT+34NcbrHEKTEsHm/5BDwhO7Q+tPHrkEPE1Whos3KtWN65A6g53c+Ues2XC3i7eitEMl0E3dYeYLD+rAzg8KiR5QD8heMiekQPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dp2ELSdY; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42f3d88bc20so1356031cf.1;
-        Wed, 13 Mar 2024 15:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710367471; x=1710972271; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eWeuSBStir4R3cAHhGitupw1etPSNxb2qdCFFz/LU8Y=;
-        b=Dp2ELSdYfctjdrh3zBQis/h7xOBMc12vBZVY6AnBFHxZJl1JfJBDmyLpVWhoKliZ6V
-         dJfqvA+NU9NDAR/aFkuQ3KlweNpN+LC1uBmgX0MKMNhcib5Rr2pncbivm4UI0t/6Bq6l
-         J/Wh0CmLxTt9R2b078P29puKUui2NvfKxPAVEd3xoZ71y1+m7XwqytGbHgEmBJfFzoY7
-         2MVy8+5AXrEjoD6vlMQSAlmKSBtY+7rY1IMI2ZXyHlueFG8vQsRfgjjJzultPAXaiezj
-         6czVpDF+GadNsZJjf+a49nY6QJNqkeBgNdxidaBy8jn2osBkHZ646egrUo1whX07oLAe
-         MhWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710367471; x=1710972271;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eWeuSBStir4R3cAHhGitupw1etPSNxb2qdCFFz/LU8Y=;
-        b=hGky30HltBCTtliD3e8dxmV/WuUINaWVEfauSNNsPn4SUYW4omnVP33BKPgBMRu2D3
-         c9MQbQY4e3fCWVDcNQlxz8rGt7OVJkBZJlIIspoVhJZQM7uEVJTgbuXTz90MHq2d1IiF
-         ZpgPrXNhu4zMMV2xvUdOng/exb4rj796+A5ONCUvG437fHUN2tg0TSst9shR+giu/dcX
-         4GpoNlaolP4mPF1URHjZvIKPO9Fom0PUJPkZiVgxhKBsEP8mrHqK0VF5l2jupkqODC8X
-         9xYzrbI8b35Ri8Hz5WwGpyNirC+vx6CXOf/10gX02xyrx+snK2vS21mkN8QqKD3k87o+
-         aIWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWRGw9hFlbQEX/SpbCVPnOaol5wBs/hHN1m81Rumz/gw1eRSMFI45xXSTZcUenEOfnwUUfXGn7dw+cUAM9oWn6bn4SkUaaUoZZECGhbov2AuRTROxMkHJCeq3oA0+AJxot7
-X-Gm-Message-State: AOJu0YxQMWriu+wE5TeXcxlTX7fwJcJOQ27NEcG+zQqNWh8DIEmF9OeQ
-	/94i7BUDMHrVEex/rkMEAbNkmy/IgauHuJwcUTn6eGXjwKVazav2
-X-Google-Smtp-Source: AGHT+IEF5kwIGIOSTyzXeOZcOYTOg/AA7EhDxyezfm2rV3nyto+rCKTgt0P1hQ5Ovr3osSiPwkZdpQ==
-X-Received: by 2002:a05:622a:1a98:b0:42f:10a9:e8d1 with SMTP id s24-20020a05622a1a9800b0042f10a9e8d1mr8427598qtc.27.1710367470630;
-        Wed, 13 Mar 2024 15:04:30 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id bp33-20020a05622a1ba100b0042f3ee1443csm40947qtb.10.2024.03.13.15.04.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 15:04:29 -0700 (PDT)
-Message-ID: <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
-Date: Wed, 13 Mar 2024 15:04:26 -0700
+	s=arc-20240116; t=1710367567; c=relaxed/simple;
+	bh=RwVzF1CZDtSXuNTumUDSY351N/2l/elvBx5IVgBSTE0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GwC/k/lW5dEX0UemIMAP03yOvuImFQA3SphvInHvdr5WTXF8jIX/FQeeoRX2ZtgmNknW4oB2wH2hQ73r2UJ1VeVDmb2SF74h7Xr+VRVAeqF25h3oaI40ucTc8lDgnEGFXp/5fZo9rogSYW6NbMn0WONtBAqK4TSeeWeaJyk2lm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rkWjI-0003qS-1T;
+	Wed, 13 Mar 2024 22:05:44 +0000
+Date: Wed, 13 Mar 2024 22:05:37 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Sam Shih <sam.shih@mediatek.com>,
+	Frank Wunderlich <frank-w@public-files.de>,
+	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH] clk: mediatek: mt7988-infracfg: fix clocks for 2nd PCIe port
+Message-ID: <1da2506a51f970706bf4ec9509dd04e0471065e5.1710367453.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
- v6.9]
-Content-Language: en-US
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Joel Fernandes <joel@joelfernandes.org>, Boqun Feng
- <boqun.feng@gmail.com>, Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
- mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
- neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
- frederic@kernel.org, bigeasy@linutronix.de, chenzhongjin@huawei.com,
- yangjihong1@huawei.com, rostedt@goodmis.org,
- Justin Chen <justin.chen@broadcom.com>
-References: <ZetHwrCb0KXE0xFI@tardis>
- <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
- <ZfDEIs63EBIYBJIC@boqun-archlinux>
- <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
- <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
- <ZfDptafiK0jns050@boqun-archlinux>
- <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
- <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
- <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 3/13/24 14:59, Russell King (Oracle) wrote:
-> On Wed, Mar 13, 2024 at 02:30:43PM -0700, Florian Fainelli wrote:
->> I will try to provide multiple answers for the sake of everyone having the
->> same context. Responding to Linus' specifically and his suggestion to use
->> "initcall_debug", this is what it gave me:
->>
->> [    6.970669] ata1: SATA link down (SStatus 0 SControl 300)
->> [  166.136366] probe of unimac-mdio-0:01 returned 0 after 159216218 usecs
->> [  166.142931] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
->> [  166.148900] probe of unimac-mdio.0 returned 0 after 159243553 usecs
->> [  166.155820] probe of f0480000.ethernet returned 0 after 159258794 usecs
->> [  166.166427] ehci-brcm f0b00300.ehci_v2: EHCI Host Controller
->>
->> Also got another occurrence happening resuming from suspend to DRAM with:
->>
->> [   22.570667] brcmstb-dpfe 9932000.dpfe-cpu: PM: calling
->> platform_pm_resume+0x0/0x54 @ 1574, parent: rdb
->> [  181.643809] brcmstb-dpfe 9932000.dpfe-cpu: PM:
->> platform_pm_resume+0x0/0x54 returned 0 after 159073134 usecs
->>
->> and also with the PCIe root complex driver:
->>
->> [   18.266279] brcm-pcie f0460000.pcie: PM: calling
->> brcm_pcie_resume_noirq+0x0/0x164 @ 1597, parent: platform
->> [  177.457219] brcm-pcie f0460000.pcie: clkreq-mode set to default
->> [  177.457225] brcm-pcie f0460000.pcie: link up, 2.5 GT/s PCIe x1 (!SSC)
->> [  177.457231] brcm-pcie f0460000.pcie: PM: brcm_pcie_resume_noirq+0x0/0x164
->> returned 0 after 159190939 usecs
->> [  177.457257] pcieport 0000:00:00.0: PM: calling
->> pci_pm_resume_noirq+0x0/0x160 @ 33, parent: pci0000:00
->>
->> Surprisingly those drivers are consistently reproducing the failures I am
->> seeing so at least this gave me a clue as to where the problem is.
->>
->> There were no changes to drivers/net/ethernet/broadcom/genet/, the two
->> changes done to drivers/net/mdio/mdio-bcm-unimac.c are correct, especially
->> the read_poll_timeout() conversion is correct, we properly break out of the
->> loop. The initial delay looked like a good culprit for a little while, but
->> it is not used on the affected platforms because instead we provide a
->> callback and we have an interrupt to signal the completion of a MDIO
->> operation, therefore unimac_mdio_poll() is not used at all. Finally
->> drivers/memory/brcmstb_dpfe.c also received a single change which is not
->> functional here (.remove function change do return void).
->>
->> I went back to a manual bisection and this time I believe that I have a more
->> plausible candidate with:
->>
->> 7ee988770326fca440472200c3eb58935fe712f6 ("timers: Implement the
->> hierarchical pull model")
-> 
-> I haven't understood the code there yet, and how it would interact with
-> arch code, but one thing that immediately jumps out to me is this:
-> 
-> "    As long as a CPU is busy it expires both local and global timers. When a
->      CPU goes idle it arms for the first expiring local timer."
-> 
-> So are local timers "armed" when they are enqueued while the cpu is
-> "busy" during initialisation, and will they expire, and will that
-> expiry be delivered in a timely manner?
-> 
-> If not, this commit is basically broken, and would be the cause of the
-> issue you are seeing. For the mdio case, we're talking about 2ms
-> polling. For the dpfe case, it looks like we're talking about 1ms
-> sleeps. I'm guessing that these end up being local timers.
-> 
-> Looking at pcie-brcmstb, there's a 100ms msleep(), and then a polling
-> for link up every 5ms - if the link was down and we msleep(5) I wonder
-> if that's triggering the same issue.
-> 
-> Why that would manifest itself on 32-bit but not 64-bit Arm, I can't
-> say. I would imagine that the same hardware timer driver is being used
-> (may be worth checking DT.) The same should be true for the interrupt
-> driver as well. There's been no changes in that code.
+Due to what seems to be an undocumented oddity in MediaTek's MT7988
+SoC design the CLK_INFRA_PCIE_PERI_26M_CK_P2 clock requires
+CLK_INFRA_PCIE_PERI_26M_CK_P3 to be enabled.
 
-I just had it happen with ARM64 I was plagued by:
+This currently leads to PCIe port 2 not working in Linux.
 
-https://lore.kernel.org/lkml/87wmqrjg8n.fsf@somnus/T/
+Reflect the apparent relationship in the clk driver to make sure PCIe
+port 2 of the MT7988 SoC works.
 
-and my earlier bisections somehow did not have ARM64 fail, so I thought 
-it was immune but it fails with about the same failure rate as ARM 32-bit.
+Fixes: 4b4719437d85f ("clk: mediatek: add drivers for MT7988 SoC")
+Suggested-by: Sam Shih <sam.shih@mediatek.com>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/clk/mediatek/clk-mt7988-infracfg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> The last straw I can attempt to grasp at is maybe this has something to
-> do with an inappropriate data type being used - maybe something in the
-> timer code that the blamed commit changes that a 32-bit type is too
-> small?
-> 
+diff --git a/drivers/clk/mediatek/clk-mt7988-infracfg.c b/drivers/clk/mediatek/clk-mt7988-infracfg.c
+index 449041f8abbc9..c8c023afe3e5a 100644
+--- a/drivers/clk/mediatek/clk-mt7988-infracfg.c
++++ b/drivers/clk/mediatek/clk-mt7988-infracfg.c
+@@ -156,7 +156,7 @@ static const struct mtk_gate infra_clks[] = {
+ 	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P1, "infra_pcie_peri_ck_26m_ck_p1",
+ 		    "csw_infra_f26m_sel", 8),
+ 	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P2, "infra_pcie_peri_ck_26m_ck_p2",
+-		    "csw_infra_f26m_sel", 9),
++		    "infra_pcie_peri_ck_26m_ck_p3", 9),
+ 	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P3, "infra_pcie_peri_ck_26m_ck_p3",
+ 		    "csw_infra_f26m_sel", 10),
+ 	/* INFRA1 */
 -- 
-Florian
+2.44.0
 
 
