@@ -1,217 +1,241 @@
-Return-Path: <linux-kernel+bounces-102499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2A4C87B2F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:40:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA94B87B2FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22B471C22EA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:40:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEC771C22481
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718B554735;
-	Wed, 13 Mar 2024 20:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BE552F7A;
+	Wed, 13 Mar 2024 20:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b="oGg3g8eW"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WcINpUrh"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8B85339A
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 20:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203A651C33;
+	Wed, 13 Mar 2024 20:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710362383; cv=none; b=tJhWO2Bqkf8DSZg94PvnAN/D3kxiJJjAqhqdCNxt/56R1GRMjd1KOYe1Ngk+AQbst8EvMTPdwX+iYYBP1hJeocq/vPmh2Qhh+ih//DNoVkPEq0LUU7KlwM4BIMCkBOebEcB1BjvavGNNXeGoEVFU95QxcxQRKJKPl7jx+msJxZc=
+	t=1710362527; cv=none; b=HIeDTfE4AnqZrB7/IraZkXNl9h7yz4ohEeFqxjkwWMxJFGcK7P/izsCFy2lQ6gaNqhj8MRrvvkk0FBe47uAQ4zkNiQjCw5iFsEEHaNMXfzeFd+W3itRTSe8BTu2MrgpcWBw8EaTAmr37E24PXwr7v18iG0kDezV9Pwkvpa+O7r0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710362383; c=relaxed/simple;
-	bh=5NYy5F9GaegC1adFOjJmjFtFKrgOGt8L8XjVO8/x/uA=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:Message-Id:
-	 MIME-Version:Content-Type; b=Mqhqj0vuw/DMNdysySqlm2Eo1TUwJjHuggkulyhZfVTuC7zO8QWMs/y40cEUsxU0Qkp8ClVWFddKLxfgZa0kAkzdgEzdOA/IA4XIs0q+7eL5M4TUKwbKCivCWG97R12wfXTtUemZjQamMFCS+xpRzqfRuSF6JbVp36ne0kT24+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org; spf=pass smtp.mailfrom=mforney.org; dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b=oGg3g8eW; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mforney.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dddbe47ac1so3306015ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mforney.org; s=google; t=1710362381; x=1710967181; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:references:from:subject:cc:to:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
-        b=oGg3g8eW7Ecp6k8wTelqVv/haRgZlmM6e3mOz4fH3MX5P7S1NTqPknDMwduj0Pg/FZ
-         HobP8nODlrlprSh3M7un8SCqPHk7+oXlnQ1CFsofWx01Wg8Ng2kxzU1uZGWOe6WwOEFd
-         7i2wUNhZ7VM/pNrl6AgYhTjHRJ32pPr/5KpgfJk+uM8+xqTD6X+TfFwt2YHqa3S1oQ5h
-         Sy/cPOLRColvjjkGi6mUB6npaUbh3BkcVFFPBxQqvCjAeEaIT9IuEjjErb9j3zfo2cbx
-         7j3m18w5/KIZUz6Sh1I+HbVQAXODZmHU1BmUQI2RLnlW0kR15vHARi1uE11lZYmYjYlb
-         GJYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710362381; x=1710967181;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:references:from:subject:cc:to:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
-        b=utYTgU9XW39+dig3XJIC5dsYbJFDvpKyMa26J1LHs3gSEAy4jXzwbI5iYPfFNttV2h
-         TKRkicssJEfKpwvobYss9KyNLHU9IdfvuhGhZZ0eI8OHeX5VYX24SFdHjMUPi8TPaJGu
-         2WxKePfZ9XPhk+Tm97gfYcacYClSpJcP5xZjId8Zcs29iSyAqYPugo7kRcHyvksIAd+/
-         4HitKxc2ZNjXMPkDELnkDBLOauFwU0zVt8gUG1av059xb3x3q2OcGwsuh8AKODnTHBja
-         aW0rykIXIrU9FiEAoZjuHct4sxxA/deU8r1tN6vMj23gHjcPA0cpOHuKYdugKX6vExok
-         RGmA==
-X-Forwarded-Encrypted: i=1; AJvYcCWZLRfUzqMkeOXEHbm0M5roEKXiERDCTBDtF8BkKzLGc6PyxEovPqxE2ZqaSPXVlI83a1OUek6TiclsjdSSPD8KUo+LNfY4MNtm9oBx
-X-Gm-Message-State: AOJu0Ywrr7cRJ0Y/Ra7lTHqua90Y3pzOm0mrzkXXYCQvbAZ3+QUCODht
-	+5UdPNjwVhZg0i9g03oDkKHdE7KNMgYhBLDmanW7apYH1wavSsS7nG4+lDn8FCE=
-X-Google-Smtp-Source: AGHT+IE/KQaRwJCmaxE7HGMWWWwC9HUvtwPSaTkkWMsQzRjSycKrqz980rtkW102JSTf6os/v9ns7A==
-X-Received: by 2002:a17:902:ea05:b0:1dd:a12e:15c8 with SMTP id s5-20020a170902ea0500b001dda12e15c8mr5302773plg.33.1710362380873;
-        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
-Received: from localhost ([2601:647:6400:20b0:16dd:a9ff:fee7:6b79])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902d50600b001db693d89fdsm22392plg.179.2024.03.13.13.39.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
-Date: Wed, 13 Mar 2024 13:40:46 -0700
-To: Jan Kara <jack@suse.cz>
-Cc: Theodore Ts'o <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>,
- Max Kellermann <max.kellermann@ionos.com>, Xiubo Li <xiubli@redhat.com>,
- Ilya Dryomov <idryomov@gmail.com>, Jeff Layton <jlayton@kernel.org>, Jan
- Kara <jack@suse.com>, Dave Kleikamp <shaggy@kernel.org>,
- ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, Yang Xu
- <xuyang2018.jy@fujitsu.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-From: Michael Forney <mforney@mforney.org>
-References: <20231011100541.sfn3prgtmp7hk2oj@quack3>
- <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
- <20231011120655.ndb7bfasptjym3wl@quack3>
- <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
- <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
- <20231011135922.4bij3ittlg4ujkd7@quack3>
- <20231011-braumeister-anrufen-62127dc64de0@brauner>
- <20231011170042.GA267994@mit.edu> <20231011172606.mztqyvclq6hq2qa2@quack3>
- <20231012142918.GB255452@mit.edu> <20231012144246.h3mklfe52gwacrr6@quack3>
-In-Reply-To: <20231012144246.h3mklfe52gwacrr6@quack3>
-Message-Id: <28DSITL9912E1.2LSZUVTGTO52Q@mforney.org>
-User-Agent: mblaze/1.2
+	s=arc-20240116; t=1710362527; c=relaxed/simple;
+	bh=+gETs3oUauSV6zqpvPZvesZpa1mrp6/VW6P3YLloEWA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=icJrSGD9PbytuIpNKpajBi11IBuQBw2Ls2JS2JmE+1mKTZ9nGqmPvadHvsOqscFSE24unolcsqyyPNF0Xsy1iQnkfSGSnNybBeqQQiY/Po1Qao6eFEzU/l5LRli8oLQUt5aMowp8JoyUzc3Q3GVp9kPr2YBdQ/A9LHVfnDXyF2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WcINpUrh; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42DKY4Wn029229;
+	Wed, 13 Mar 2024 20:41:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=jGDGyPpCYBzr/XWv3ffRnHbJkeG0JATe4aKM18IYXF8=; b=Wc
+	INpUrhi/9QixN9atA58u/nHIFyNcgX+bEvZbVEAU2MiLMK+8xKphfjUIioruECdk
+	dyVnzQaQSleS481Ns3mfbF5W16BhQF6dcl+g5jVSQDpbkpmkqVQm6YAD6o4IHA3R
+	CjfWTScHe2Rq5cRI3vONE+rBvMF9Znwn8wVnE4rH6ZQVEEeNYT2WosA0wsA6v/1M
+	3YT7hHTz05Dc+MUSIc7+TUgA112cVRty6fPkPfjrAcIS6KutJBbzZoWUdW5+xDG7
+	E2+ZKq0AApseA21pkEQkQHD2Oa5wbzdD/Vuntyzmxz9g256P3vm6OLQ68bo89d03
+	Q/hucLfUV8AXonv17qAQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wuc1m96u8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 20:41:22 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42DKfMoh007691
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 20:41:22 GMT
+Received: from [10.110.70.168] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Mar
+ 2024 13:41:18 -0700
+Message-ID: <d6ac0328-3d3d-75bc-09b9-ed0190a6a8c5@quicinc.com>
+Date: Wed, 13 Mar 2024 13:41:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 1/3] drm/msm/dp: Avoid a long timeout for AUX transfer if
+ nothing connected
+Content-Language: en-US
+To: Douglas Anderson <dianders@chromium.org>, Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>, Guenter Roeck <groeck@chromium.org>,
+        "Kuogee Hsieh" <quic_khsieh@quicinc.com>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        Sean Paul <sean@poorly.run>, Tanmay Shah
+	<tanmay@codeaurora.org>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240313001345.2623074-1-dianders@chromium.org>
+ <20240312171305.1.I16aff881c9fe82b5e0fc06ca312da017aa7b5b3e@changeid>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240312171305.1.I16aff881c9fe82b5e0fc06ca312da017aa7b5b3e@changeid>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: cGfVRyVlxK486AZoWFi746EbC71fHezU
+X-Proofpoint-GUID: cGfVRyVlxK486AZoWFi746EbC71fHezU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-13_09,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 clxscore=1011
+ adultscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403130159
 
-Jan Kara <jack@suse.cz> wrote:
-> On Thu 12-10-23 10:29:18, Theodore Ts'o wrote:
-> > On Wed, Oct 11, 2023 at 07:26:06PM +0200, Jan Kara wrote:
-> > > I don't think this is accurate. posix_acl_create() needs unmasked 'mo=
-de'
-> > > because instead of using current_umask() for masking it wants to use
-> > > whatever is stored in the ACLs as an umask.
-> > >=20
-> > > So I still think we need to keep umask handling in both posix_acl_cre=
-ate()
-> > > and vfs_prepare_mode(). But filesystem's only obligation would be to =
-call
-> > > posix_acl_create() if the inode is IS_POSIXACL. No more caring about =
-when
-> > > to apply umask and when not based on config or mount options.
-> >=20
-> > Ah, right, thanks for the clarification.  I *think* the following
-> > patch in the ext4 dev branch (not yet in Linus's tree, but it should
-> > be in linux-next) should be harmless, though, right?  And once we get
-> > the changes in vfs_prepare_mode() we can revert in ext4 --- or do
-> > folks I think I should just drop it from the ext4 dev branch now?
->=20
-> It definitely does no harm. As you say, you can revert it once the VFS
-> changes land if you want.
 
-I've been debugging why flatpak was always considering its database
-corrupted, and found this commit to be the source of the issue.
 
-$ ostree --repo=3Drepo --mode=3Dbare-user-only init
-$ mkdir tree && umask 0 && ln -s target tree/symlink && umask 022
-$ ostree --repo=3Drepo commit --branch=3Dfoo tree/
-c508e0564267b376661889b9016f8438bd6d39412078838f78856383fdd8ac2f
-$ ostree --repo=3Drepo fsck
-Validating refs...
-Validating refs in collections...
-Enumerating commits...
-Verifying content integrity of 1 commit objects...
-fsck objects (1/4) [=3D=3D=3D          ]  25%
-error: In commits c508e0564267b376661889b9016f8438bd6d39412078838f78856383f=
-dd8ac2f: fsck content object a6b40a5400ed082fbe067d2c8397aab54046a089768651=
-c392a36db46d24c1cd: Corrupted file object; checksum expected=3D'a6b40a5400e=
-d082fbe067d2c8397aab54046a089768651c392a36db46d24c1cd'
-actual=3D'6bdc88f9722f96dbd51735e381f8a1b0e01363e1d7ee2edbb474c091f83c3987'=
+On 3/12/2024 5:13 PM, Douglas Anderson wrote:
+> As documented in the description of the transfer() function of
+> "struct drm_dp_aux", the transfer() function can be called at any time
+> regardless of the state of the DP port. Specifically if the kernel has
+> the DP AUX character device enabled and userspace accesses
+> "/dev/drm_dp_auxN" directly then the AUX transfer function will be
+> called regardless of whether a DP device is connected.
+> 
 
-$
+I do see
 
-Turns out that symlinks are inheriting umask on my system (which
-has CONFIG_EXT4_FS_POSIX_ACL=3Dn):
+"
+* Also note that this callback can be called no matter the
+* state @dev is in and also no matter what state the panel is
+* in. It's expected:
+"
 
-$ umask 022
-$ ln -s target symlink
-$ ls -l symlink
-lrwxr-xr-x    1 michael  michael           6 Mar 13 13:28 symlink -> target=
+I understand about the host state that we need to allow the transfers by 
+powering on if the host was off.
 
-$
+But I wonder why we should allow the transfer if the sink is not 
+connected because it will anyway timeout.
 
-Looking at the referenced functions, posix_acl_create() returns
-early before applying umask for symlinks, but ext4_init_acl() now
-applies the umask unconditionally.
+Does it make sense to have get_hpd_status() from the aux dev and not 
+issue the transfers if the sink was not connected?
 
-After reverting this commit, it works correctly. I am also unable
-to reproduce the mentioned issue with O_TMPFILE after reverting the
-commit. It seems that the bug was fixed properly in ac6800e279a2
-('fs: Add missing umask strip in vfs_tmpfile'), and all branches
-that have this ext4_init_acl patch already had ac6800e279a2 backported.
+This is more of questioning the intent of drm_dp_helpers to allow 
+transfers without checking the sink status.
 
-So I think this patch should be reverted, since the bug was already
-fixed and it breaks symlink modes. If not, it should at least be
-changed to not to apply the umask to symlinks.
+> For eDP panels we have a special rule where we wait (with a 5 second
+> timeout) for HPD to go high. This rule was important before all panels
+> drivers were converted to call wait_hpd_asserted() and actually can be
+> removed in a future commit.
+> 
+> For external DP devices we never checked for HPD. That means that
+> trying to access the DP AUX character device (AKA `hexdump -C
+> /dev/drm_dp_auxN`) would very, very slowly timeout. Specifically on my
+> system:
+>    $ time hexdump -C /dev/drm_dp_aux0
+>    hexdump: /dev/drm_dp_aux0: Connection timed out
+> 
+>    real    0m8.200s
+> 
 
-> > commit 484fd6c1de13b336806a967908a927cc0356e312
-> > Author: Max Kellermann <max.kellermann@ionos.com>
-> > Date:   Tue Sep 19 10:18:23 2023 +0200
-> >=20
-> >     ext4: apply umask if ACL support is disabled
-> >    =20
-> >     The function ext4_init_acl() calls posix_acl_create() which is
-> >     responsible for applying the umask.  But without
-> >     CONFIG_EXT4_FS_POSIX_ACL, ext4_init_acl() is an empty inline functi=
-on,
-> >     and nobody applies the umask.
-> >    =20
-> >     This fixes a bug which causes the umask to be ignored with O_TMPFIL=
-E
-> >     on ext4:
-> >    =20
-> >      https://github.com/MusicPlayerDaemon/MPD/issues/558
-> >      https://bugs.gentoo.org/show_bug.cgi?id=3D686142#c3
-> >      https://bugzilla.kernel.org/show_bug.cgi?id=3D203625
-> >    =20
-> >     Reviewed-by: "J. Bruce Fields" <bfields@redhat.com>
-> >     Cc: stable@vger.kernel.org
-> >     Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> >     Link: https://lore.kernel.org/r/20230919081824.1096619-1-max.keller=
-mann@ionos.com
-> >     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> >=20
-> > diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
-> > index 0c5a79c3b5d4..ef4c19e5f570 100644
-> > --- a/fs/ext4/acl.h
-> > +++ b/fs/ext4/acl.h
-> > @@ -68,6 +68,11 @@ extern int ext4_init_acl(handle_t *, struct inode *,=
- struct inode *);
-> >  static inline int
-> >  ext4_init_acl(handle_t *handle, struct inode *inode, struct inode *dir=
-)
-> >  {
-> > +	/* usually, the umask is applied by posix_acl_create(), but if
-> > +	   ext4 ACL support is disabled at compile time, we need to do
-> > +	   it here, because posix_acl_create() will never be called */
-> > +	inode->i_mode &=3D ~current_umask();
-> > +
-> >  	return 0;
-> >  }
-> >  #endif  /* CONFIG_EXT4_FS_POSIX_ACL */
+IIUC, we want to timeout faster by not bailing out if not connected right?
+
+
+> Let's add a check for HPD to avoid the slow timeout. This matches
+> what, for instance, the intel_dp_aux_xfer() function does when it
+> calls intel_tc_port_connected_locked(). That call has a document by it
+> explaining that it's important to avoid the long timeouts.
+> 
+> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+>   drivers/gpu/drm/msm/dp/dp_aux.c     |  8 +++++++-
+>   drivers/gpu/drm/msm/dp/dp_catalog.c | 10 ++++++++++
+>   drivers/gpu/drm/msm/dp/dp_catalog.h |  1 +
+>   3 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
+> index 03f4951c49f4..de0b0eabced9 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+> @@ -307,7 +307,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
+>   	 * turned on the panel and then tried to do an AUX transfer. The panel
+>   	 * driver has no way of knowing when the panel is ready, so it's up
+>   	 * to us to wait. For DP we never get into this situation so let's
+> -	 * avoid ever doing the extra long wait for DP.
+> +	 * avoid ever doing the extra long wait for DP and just query HPD
+> +	 * directly.
+>   	 */
+>   	if (aux->is_edp) {
+>   		ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
+> @@ -315,6 +316,11 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
+>   			DRM_DEBUG_DP("Panel not ready for aux transactions\n");
+>   			goto exit;
+>   		}
+> +	} else {
+> +		if (!dp_catalog_aux_is_hpd_connected(aux->catalog)) {
+> +			ret = -ENXIO;
+> +			goto exit;
+> +		}
+>   	}
+>   
+>   	dp_aux_update_offset_and_segment(aux, msg);
+> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> index 5142aeb705a4..93e2d413a1e7 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> @@ -266,6 +266,16 @@ int dp_catalog_aux_wait_for_hpd_connect_state(struct dp_catalog *dp_catalog)
+>   				2000, 500000);
+>   }
+>   
+> +bool dp_catalog_aux_is_hpd_connected(struct dp_catalog *dp_catalog)
+> +{
+> +	struct dp_catalog_private *catalog = container_of(dp_catalog,
+> +				struct dp_catalog_private, dp_catalog);
+> +
+> +	/* poll for hpd connected status every 2ms and timeout after 500ms */
+> +	return readl(catalog->io->dp_controller.aux.base + REG_DP_DP_HPD_INT_STATUS) &
+> +	       DP_DP_HPD_STATE_STATUS_CONNECTED;
+> +}
+
+This method of checking HPD status works for devices which use internal 
+HPD block to control the HPD (like sc7180/sc7280) but not for devices 
+where HPD is controlled outside the MSM DP controller like sc8280xp, 
+sc835-/sm8450 etc etc which use pmic_glink and DP driver only receives 
+the hpd status using the dp_bridge_hpd_notify() callback.
+
+If we want to make this generic, we have to do something like:
+
+dp_hpd_unplug_handle() notifies the dp_aux.c module that status is 
+disconncted and we should bail out
+
+dp_hpd_plug_handle() notifies dp_aux.c module that status is connected 
+again and we allow the aux transfers.
+
+> +
+>   static void dump_regs(void __iomem *base, int len)
+>   {
+>   	int i;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
+> index 38786e855b51..1694040c530f 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_catalog.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
+> @@ -86,6 +86,7 @@ void dp_catalog_aux_reset(struct dp_catalog *dp_catalog);
+>   void dp_catalog_aux_enable(struct dp_catalog *dp_catalog, bool enable);
+>   void dp_catalog_aux_update_cfg(struct dp_catalog *dp_catalog);
+>   int dp_catalog_aux_wait_for_hpd_connect_state(struct dp_catalog *dp_catalog);
+> +bool dp_catalog_aux_is_hpd_connected(struct dp_catalog *dp_catalog);
+>   u32 dp_catalog_aux_get_irq(struct dp_catalog *dp_catalog);
+>   
+>   /* DP Controller APIs */
 
