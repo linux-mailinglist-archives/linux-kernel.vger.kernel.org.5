@@ -1,205 +1,172 @@
-Return-Path: <linux-kernel+bounces-101690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4171887AA93
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:41:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B2C87AA95
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:41:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB9C32854D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:41:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2370F1F23918
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC4A47A5D;
-	Wed, 13 Mar 2024 15:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D3747A73;
+	Wed, 13 Mar 2024 15:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HJNqfCe+"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KRkhO/Q/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED0547F46;
-	Wed, 13 Mar 2024 15:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710344461; cv=fail; b=F4zl8u1XtGV7IHexLwyskRlAMW9xBWUehuG1K+bq/5PU6TZJkG+SP14A4SXYp1oYms/GhYtx3AtOg78k+cUjeQz03db4vJZL/ogEmGHg6lZH0p/1+LIgEqdulPh+j4PdlEEhvp6HAYJCwX3+GdL8oyuZZrARV1dxTnK2l86TF5E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710344461; c=relaxed/simple;
-	bh=PJc1AwY02jXOZRpcRVSt1mnwJh2kPBYmknQqLS90y7s=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Dk3RyGORca1c8rqA+DafZAHfihlHp9xv8uQrigMGEYs8a8I1asVsBzBZ0ARhZ6ch6We+j9aDxTm14L5mXzD4mLbQrT5IXTXsD2RlJtt8ogWtgGkfiOpIIBWUBphPbye1Wo7lSHOG8R8IYXe7LMmH6zpuPMDy0ae1mj+ZZGfBBhs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HJNqfCe+; arc=fail smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710344461; x=1741880461;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=PJc1AwY02jXOZRpcRVSt1mnwJh2kPBYmknQqLS90y7s=;
-  b=HJNqfCe+sOg6UD3f9pn0LOjG5RTxQvcUECj2p8vHsg/CgE/ffsxw48ai
-   bOnlsV7TAbAohPLhyDQhJlPYjVHCNKMsIzohHP7otYWRWhwQJkac5hfQj
-   8ZYKggVtjEpfeK6vovk+sze1w+9gQHBt2SvTsU8p8ZjPcrICVcpltUo12
-   5pa3pnNCHZHcjKYbezPN7rvGZma/scNsBTu7davETXMr4aBnSp32uxDtV
-   yiVcA+U5lSl9NGD6xuswRMbBF29cq++uXJmebAAUW8rg7ijEmHQwq8e1M
-   oZxzuSDXma6JBFS8s5Mq/0cIgdLbTfAFKEVsI33EDJTrXF3i3YA1XCXEd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5244348"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="5244348"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 08:40:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="11878928"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Mar 2024 08:40:58 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 08:40:57 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 08:40:57 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 13 Mar 2024 08:40:57 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Mar 2024 08:40:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gMtG/ZsFfR8U3VIIL7OTdq3JCryNAf3vkgWd/IbKtYr68c7eyCftRZPwudOLiusvEJY40faftXefV/85IQhBOBNUqjuxTaF0w+LlKpZkQQ36cviKv00CfJ4CiKjc8IUkKH24T11Z48msIU+0dAOY83qUv/63hgFlEgtbuG/ev6y5eU5OREEqsD/gPf1HMstKozhZ7K4liuTniqKo/NVJLr8AVu9H1vQa1DvA4az4AariIdRFEbZC2I4/hXQWLHkP1spYnW3mY18wQAC8pgHoSRgvD79F68OHCzhGQyV0PrQjZeWWPG7pEznrYdyPVwXKoWn4wfE4kZNFZ4ACKM2caA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PJc1AwY02jXOZRpcRVSt1mnwJh2kPBYmknQqLS90y7s=;
- b=JhronHB860MomV5CnZgVaq6BpAM19KZmNpAE1iMV1dhhqDzgcAvHt0LRBjHyGABjBq3eqNmW45XblmOvG0oBls+zdW2yjn75HHUxuGGmSO9g8rL3SvE3Vj2Sris3kNsifeJi0+LhmL3K+fXg3QF7kD8ELSJUnr3TQldJAQMoe3NT8r6eacFZLgOk5EiCH7e1llQ5UwWojYmG/rpcbFsiq2eK9xHbXfdk9ij2BQSS8ZjpooGiZeQXPjA8AaEPJcuDe6D5jiC2VvxIpl2UTxAC/VluFiR61fBy4uC93VYO1+fmKiikX+rXX/Xwo7I6nucqH7oaPQjQr6tqw9wgwejDJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by LV3PR11MB8695.namprd11.prod.outlook.com (2603:10b6:408:211::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.17; Wed, 13 Mar
- 2024 15:40:54 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::fc9e:b72f:eeb5:6c7b]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::fc9e:b72f:eeb5:6c7b%5]) with mapi id 15.20.7386.016; Wed, 13 Mar 2024
- 15:40:53 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "keescook@chromium.org" <keescook@chromium.org>
-CC: "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "luto@kernel.org"
-	<luto@kernel.org>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "debug@rivosinc.com" <debug@rivosinc.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "mingo@redhat.com"
-	<mingo@redhat.com>, "linux-csky@vger.kernel.org"
-	<linux-csky@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "christophe.leroy@csgroup.eu"
-	<christophe.leroy@csgroup.eu>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
-	"hpa@zytor.com" <hpa@zytor.com>, "peterz@infradead.org"
-	<peterz@infradead.org>, "sparclinux@vger.kernel.org"
-	<sparclinux@vger.kernel.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "bp@alien8.de" <bp@alien8.de>,
-	"linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "x86@kernel.org" <x86@kernel.org>,
-	"broonie@kernel.org" <broonie@kernel.org>
-Subject: Re: [PATCH v3 08/12] treewide: Use initializer for struct
- vm_unmapped_area_info
-Thread-Topic: [PATCH v3 08/12] treewide: Use initializer for struct
- vm_unmapped_area_info
-Thread-Index: AQHadMzLOP7Gxz/JLEa2XEcLahB5+bE1AKWAgADPagA=
-Date: Wed, 13 Mar 2024 15:40:53 +0000
-Message-ID: <cd57bd385f5f2d026205119d4ecb3f44ed30b384.camel@intel.com>
-References: <20240312222843.2505560-1-rick.p.edgecombe@intel.com>
-	 <20240312222843.2505560-9-rick.p.edgecombe@intel.com>
-	 <202403122018.DCCE1E000@keescook>
-In-Reply-To: <202403122018.DCCE1E000@keescook>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|LV3PR11MB8695:EE_
-x-ms-office365-filtering-correlation-id: b8386a24-621c-4337-74ac-08dc4373f7d7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qGazlrxgTOwfxImlMVmjk916tz7n/6k+HrZAU+p39187UzMXhd3GWDOBZOhBtQnfYjba/eLaDlVR3hGHPutKvya3QGX0ynKd6/o6PfcOszNhqDOEdNuf3YbmRDfeZ+3vQHna02JhrnWKP/TZwmt6fpb3dUKmz1coYorJIyP1buwach86hZIvarsJuSf1++ZEEjZtsDBy3/BN8+4LT6/0Hghuc8goSV5VrN460RqnIUbkvix328ecd+jah3rZVUG2wEOvo94W8Awj6VZnBrZraFrwp9pq/70LpnrFgiNVGwkkTdPhf4bzCB7jpB/JOyk6Bd0LujnobnaZ50fyugeHBasvwkYl427Mp+UW7c7VD6DYx6flgPPwmjTLbN3DWzObwa4oVRSRNWMgu/dLNbw3FH6B3etvE0XxuMGUX+srRPlVU9y5i5lDYt/QrUl+NUXoTFBeQYBc3NJdG5mJJ4LThdLSBa3qVAa1nnMbTdAEa9Lxe040OdXmVJ0oQm52yxcFwpUBuRA5jJCqVjPrEsE/nUxjBqO3INRIW0vAxZx9i+VQ8zg/7GDmlmUjBLK2NcPTJZBj5fJ49ev4RreQYdb2kTVnbbilrfP25lqbv/eFL82b2HLp7x+g1ufp71QFUEG4sFpY9cfvmtyQTOU55FO6OZ3EaWvRI/HfFDFJUmlAWDH8DPamwoLC88s8ubgfi6Q4j3oNXTULGqSPhevavr8NZA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aHBTejdweWM2azNteGFiZVFuYUpvSEhWTHJ6VFhVZmxqdG9WZ3ZlRWkyVStu?=
- =?utf-8?B?a1NpcWhnc1pvTEdJOXhWVWpocTJPWVZHOEdsTjZhWXJaUnkxTUtueXhmd3VN?=
- =?utf-8?B?b3lkRDBybXg0TFBobmxJVTZpVHlTWGdRT1UxZEVycmN4NW9oR0V6RG9sNTZs?=
- =?utf-8?B?Q2NFWm5kS1JZbjBwL0YrVER1a3VqMUw1RHIwNEozUTkzaGkySWFHSy8rVnVP?=
- =?utf-8?B?RTdmQVk1Mll6Q2EwM3NoVFlXYmtMbTExcHdIQ2tXdFRBb3NrVnd4a0V0Ui9D?=
- =?utf-8?B?cHM4WDNRTU1GbTBjMUcyNVhyQTN3K0ZZR09KVUE4cGZ2b1U4QWVqZkE3K1dO?=
- =?utf-8?B?WGxNU2E5MDg1K0tvOUYzeW5rajg5YUFjVHJWRWlCbTJlOVM0WW5iZU5sVjVZ?=
- =?utf-8?B?Zndqb2g2UWhSYXRZOVRib3hsUnA4OXhFcGxFZ3FQWVBSTjZnU25QU0c5T1BQ?=
- =?utf-8?B?YkVVYXNZVmltRlN2VkJia0VCd1c3ZzNRcTAxVjdkZ0ZqT2VNbUVCNFlTU25Y?=
- =?utf-8?B?a1hzT3R1U2MvbEJhZkVPYTBqL2tFZDdmOHlCb0JqbUpYOEIySWZJZEhNa1g0?=
- =?utf-8?B?VE9HekkxVDBqZjhnUEVhOUVrM0tLNWNkdUV1WFBGSGdhbDRFUXhPNmZrOHlh?=
- =?utf-8?B?QW1oekR3K0lIcm5CWGFJcCtNbXlINTdyaXZUeTZ3NGExYmlJeUNiU2FoL3lV?=
- =?utf-8?B?Q2xoR0ViUWF3cVNVdzhVYXdWTWJEcFJ6UnpLd1ZYNlg2dmhmQ0ZIYVBVY2hR?=
- =?utf-8?B?V0RCZHRjQmcyZXFSR0RmbnpsRDBFOFJwcGV1WU9ZNGZWTTRMZTZXejU0bFE5?=
- =?utf-8?B?Rkh2TVZTNHNpTTE1VlhSVTE5TVJ2cGtTV1BkM0pkaVBUc2lDdXIrZGFTS1lH?=
- =?utf-8?B?Vjl6M1RiaEVBWXBhK0VBRDM1Z1B4ODFhSkkvanUza3hEbVQ1T3ZDM1c4V0w4?=
- =?utf-8?B?eTE2TFRFZ1J6SDNlOTdSWURFeVUzWHBpZG8zaGp6eUNia3loQTlOY0lFWTRu?=
- =?utf-8?B?SHI4WG9tcTVlQ2lrY0hMdkJMNm5DNXc1VG1WYjRUQ2w4WERKTmQ0dXFjN2xw?=
- =?utf-8?B?dGhSdHp3WTRPbVptYloreHRYUCtySUIrV1NCNlN2ZllsVC9zNE5rRlVNMTJH?=
- =?utf-8?B?MktZY3JnY1RNanVvdGh1NmptS3FjUW5CdFRmeDJCdW5HcHpJSlVHYVY3Z3Bx?=
- =?utf-8?B?aXhISG9laWFhOVlWdnhhaXg2aVQrVk1pRXRBZ293aW1TWHI5NFQ2UjNuakVL?=
- =?utf-8?B?VGhwV1VQOW1OeVFEaTMrN3A3UDQzMzNHRnFhQ0ZGclV5TDFqellDSEJ2UnRk?=
- =?utf-8?B?WmRmRE42MWVGRVZwZDdDNXY3dTllRnlITHZNNTlpb2JENU1UY0tMV3haSnUy?=
- =?utf-8?B?Sk5mNjBvMDVSYUR5SjMzRnJXZVNiNThtb0kwd2xDYkZYaGZVc1ZmdmhteU5t?=
- =?utf-8?B?dnhjV1liZnU2dUtDZTdUaEJsWkZsclc5aUVvSWZMcEhlSDJ0YW5WZDUrN1Qy?=
- =?utf-8?B?cTd4ampsaFh2ZUZoR2RzcXdxV3ZMelUzUmp2bTFPcmtWUnJNQ1VzclhpQU9C?=
- =?utf-8?B?T2s2L0srM1F4bG81enRQREU0UnhoeVBGdW02bjB4ekx1VFlkUU5FL2RvQ0F0?=
- =?utf-8?B?SlBhejlJc1Y1WnZhMTFyT0FlUUZ2cHpUamVvQ05TcTNOYlhmSUcrYS9DNnJQ?=
- =?utf-8?B?UXFIR3hXTDNmTmdHL2hPa0ZEK3NZUnk1anZvVVYyUzFsTEl5MXY3bjdXVHdB?=
- =?utf-8?B?QlBFOThaQW56UGNuc09VbU5KdlMxSFZ1YTlqMXhOeWNwbVowZE1vS3RaQXZ3?=
- =?utf-8?B?TTRUV1haS0VtMHlOanZBS1paTTMwUGpsVVNVd2FaeFNGZlNNYWVzZlRRZUZv?=
- =?utf-8?B?ZmpNMm1Cdkgycms1ZmJua2IzVmtncERTeWZxTk9rMFU2TG9RRWcxeHF1VzU2?=
- =?utf-8?B?QURUcGxOVFh2QjNYZ0F0STdCcmFGUWM5MnFNK3FNQU9TRVN5eFV2ZVhnaXda?=
- =?utf-8?B?emFnL1lWSVJMTlAxQzd0aFFBdW5WQk42VlhaN2ZXeTN3YjFiOVUrSitNa1pZ?=
- =?utf-8?B?cmt3V0dQbUVoNENPK3JZdmtkb3JBYUlxeElzUVBUa0RRbnp5eG8rOVd0OEc2?=
- =?utf-8?B?cEVRVnUwVDRlMnVNc1JVcmZ0OVdON21RcE1PdDFZcFJoQWxRd1NlTGNTMC9Y?=
- =?utf-8?Q?mj18PWnLZlG/RfrYZMUQGFU=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5D15D0D8BAEF524083C69778452931F4@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDA1481BE
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710344485; cv=none; b=Fm8RFka0FKiiSpTqJJ+nplT4lWF2nclUbJXYnG/slz67Mrcng6is+aXZtonxUh1JF+QxAulLCNARyBG22HFD4TroFf4HN++hl/mGrvDOzkJ+mVe3HYPidokrZvLUOfmCg+z17w8Wz/OIUB8zW0kruSleBq0dbcU25KOKU9RsZTI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710344485; c=relaxed/simple;
+	bh=145LGBIIbFGitWjkjqb+xZP1asaiY34xwZaQtZhXB/s=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Lxlhj11a6xF+O6EG1eqUi2sBTbMt3E5Rp2pko3BaxNZzetYk95NgtWq1a68GW1z+zW8wYOIVKqpZJPPzBtvbWr0mcuPPbrQu2MCRNJn1H3EWcGAa2NfCTIh/i3c1xQQKC+1Eav6EhckzHWFThptMKvZHwDkK3XLU/aDGnFQJQXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KRkhO/Q/; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710344481;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=4m99PKufR99CbJzmaNHgQ9BpyX8a7GHA951gGV1Wgwc=;
+	b=KRkhO/Q/SqhiLdl2OYIZeco+BnP2Nle9K5wLO31kj+tmmV/1zrhu9UbXK3cPbRMstjYi8V
+	rQmFsB1uu6LuBAnmYoCzPWdsRo/HBSLNJCfAw8q0l+laj1/JjtSzw0Ko1cEqwjoay8XM8m
+	cTlDs9Wj8XveIyETERYo99SgTFBxT5E=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-56-UaoKHYwdNJCSeLradlRrKA-1; Wed, 13 Mar 2024 11:41:20 -0400
+X-MC-Unique: UaoKHYwdNJCSeLradlRrKA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-412f0158ddaso7324535e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:41:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710344479; x=1710949279;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4m99PKufR99CbJzmaNHgQ9BpyX8a7GHA951gGV1Wgwc=;
+        b=c4McELzksfa95SWFrELURVP8uA68ZEONOe6hyu5k7hsP1DI5ETBnJSLDnq4eZ5YQdp
+         1ChAKKnsIb4WXuwYfYUFa7sgyR3WBARyvfzpcX/VPyHmzN9/0lEGxQDPfk+qA6/W+WOk
+         D6t1fHEOmdtx1N1SOpQnIzsVI0IQ3UgBx4BrQJwFxXDhHTZQlkJMu61ZDrB+rf2HxKCn
+         7d6k3ca+er5/GYGOZ09GZVcIv8phjH80B+JRhgxBRjvLskZIJUZd/WwkoNlZ4dHo1Ljy
+         F/5a/x8gbR3MUpmthOk8egy9GQsvXFn5mEkaTeywDa7OhXpgtj3nM2sH8tTqaIoEBF71
+         DAPg==
+X-Forwarded-Encrypted: i=1; AJvYcCV36YT+OHwd99ct0WyLJE7FDo7AUMVMebotIPNuxvrA8Rwiv9QUuzPhZoLvIVP6heg8gFfW+n9zDky1dBs40V+hbRCrqG7My+vCmm8S
+X-Gm-Message-State: AOJu0YzfVU/bLtoH55zB3N4qQq+SPSl2M7HCbJvf/+BvlLDZl7dWbV7u
+	vaeIDQRbS8+AAdnk283iSNck9kJ/SdaZxssO4sVEr37L18dlVdywzgoST8aM367vrMbzmQvsenT
+	ySBUit2z9oAd9FIie8whrbA9ITrfuxovQYvGtypUXq3uRjp+tdNGEiTANOVO/+g==
+X-Received: by 2002:a05:600c:1f0a:b0:412:ddee:e66f with SMTP id bd10-20020a05600c1f0a00b00412ddeee66fmr1617031wmb.2.1710344478984;
+        Wed, 13 Mar 2024 08:41:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuxcedPNKR3ChMcgAsmRfgZCiVheZQmFQRxZQf9+ZjawsgxJkCbYOoPtFPns8Dy+ezQ4MM1g==
+X-Received: by 2002:a05:600c:1f0a:b0:412:ddee:e66f with SMTP id bd10-20020a05600c1f0a00b00412ddeee66fmr1617013wmb.2.1710344478571;
+        Wed, 13 Mar 2024 08:41:18 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-239-131.dyn.eolo.it. [146.241.239.131])
+        by smtp.gmail.com with ESMTPSA id fc6-20020a05600c524600b00413ee7921b4sm382424wmb.15.2024.03.13.08.41.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 08:41:18 -0700 (PDT)
+Message-ID: <e826f337c3db612852c5f543d123ee53adc885bb.camel@redhat.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for untrusted source
+ packet
+From: Paolo Abeni <pabeni@redhat.com>
+To: Shiming Cheng <shiming.cheng@mediatek.com>, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lena.wang@mediatek.com
+Date: Wed, 13 Mar 2024 16:41:16 +0100
+In-Reply-To: <20240313133402.9027-1-shiming.cheng@mediatek.com>
+References: <20240313133402.9027-1-shiming.cheng@mediatek.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8386a24-621c-4337-74ac-08dc4373f7d7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 15:40:53.7553
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vEmFv+A4uX3vQ7g4donffEIX0DkAkQ77OTeQFszBDePi2LuQY8w2bdSHzVnUzkOD+kNDg+q4oQFKTrlFrT2DJEcIyE2ba+WQ02dIVjVeAos=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8695
-X-OriginatorOrg: intel.com
 
-T24gVHVlLCAyMDI0LTAzLTEyIGF0IDIwOjE4IC0wNzAwLCBLZWVzIENvb2sgd3JvdGU6DQo+IA0K
-PiBUaGFua3MhIFRoaXMgbG9va3MgdG8gZG8gZXhhY3RseSB3aGF0IGl0IGRlc2NyaWJlcy4gOikN
-Cj4gDQo+IFJldmlld2VkLWJ5OiBLZWVzIENvb2sgPGtlZXNjb29rQGNocm9taXVtLm9yZz4NCg0K
-VGhhbmtzIQ0K
+On Wed, 2024-03-13 at 21:34 +0800, Shiming Cheng wrote:
+> Kernel exception is reported when making udp frag list segmentation.
+> Backtrace is as below:
+>     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:229
+>     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:262
+> features=3Dfeatures@entry=3D19, is_ipv6=3Dfalse)
+>     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:289
+> features=3D19)
+>     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:399
+> features=3D19)
+>     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/af_inet.c:1418
+> skb@entry=3D0x0, features=3D19, features@entry=3D0)
+>     at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:53
+> tx_path=3D<optimized out>)
+>     at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:124
+
+A full backtrace would help better understanding the issue.
+
+> This packet's frag list is null while gso_type is not 0. Then it is treat=
+ed
+> as a GRO-ed packet and sent to segment frag list. Function call path is
+> udp_rcv_segment =3D> config features value
+>     __udpv4_gso_segment  =3D> skb_gso_ok returns false. Here it should be
+>                             true.=C2=A0
+
+Why? If I read correctly the above, this is GSO packet landing in an
+UDP socket with no UDP_GRO sockopt. The packet is expected to be
+segmented again.
+
+>				Failed reason is features doesn't
+match
+>                             gso_type.
+>         __udp_gso_segment_list
+>             skb_segment_list =3D> packet is linear with skb->next =3D NUL=
+L
+>             __udpv4_gso_segment_list_csum =3D> use skb->next directly and
+>                                              crash happens
+>=20
+> In rx-gro-list GRO-ed packet is set gso type as
+> NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRAGLIST in napi_gro_complete. In gso
+> flow the features should also set them to match with gso_type. Or else it
+> will always return false in skb_gso_ok. Then it can't discover the
+> untrusted source packet and result crash in following function.
+
+What is the 'untrusted source' here? I read the above as the packet
+aggregation happened in the GRO engine???
+
+Could you please give a complete description of the relevant scenario?
+
+> Fixes: f2696099c6c6 ("udp: Avoid post-GRO UDP checksum recalculation")
+> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> ---
+>  include/net/udp.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/include/net/udp.h b/include/net/udp.h
+> index 488a6d2babcc..c87baa23b9da 100644
+> --- a/include/net/udp.h
+> +++ b/include/net/udp.h
+> @@ -464,7 +464,7 @@ void udpv6_encap_enable(void);
+>  static inline struct sk_buff *udp_rcv_segment(struct sock *sk,
+>  					      struct sk_buff *skb, bool ipv4)
+>  {
+> -	netdev_features_t features =3D NETIF_F_SG;
+> +	netdev_features_t features =3D NETIF_F_SG | NETIF_F_GSO_UDP_L4 | NETIF_=
+F_GSO_FRAGLIST;
+
+This looks wrong: real UDP_L4 GSO packets will not segmented anymore
+and should be dropped (?!?)
+
+
 
