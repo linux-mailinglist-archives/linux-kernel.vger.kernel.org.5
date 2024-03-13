@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-101840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB33D87AC0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:56:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C7487AC0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B5B2B2403C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:56:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E04CAB241A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C968B70CD6;
-	Wed, 13 Mar 2024 16:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ED171738;
+	Wed, 13 Mar 2024 16:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M5zy+oR6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xp1aRoRC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1787C70CC4;
-	Wed, 13 Mar 2024 16:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1859170CDD;
+	Wed, 13 Mar 2024 16:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347876; cv=none; b=b+lF0IJ1TH5z+J1cUD94GEB5ZbgT41LKpSG9insXQ3dPP0H67OShkHDSmEtYOmrLVzjeVkLkA9K0sMqzfxspE4oKBajFGMVFL+QtZdqJUAIisHL62f+NHrIaeoDF6l9yR2XuE085oz4HGrEqI+cRFE0ua3NixPO6Zb1fqrW4jfY=
+	t=1710347877; cv=none; b=l3rX2dhJMz21UkRszriPTxkWvyzRHC/Uab5ZItB12uuzP5gAsvyQ5Qqx8f7E3ceGHj+RuZ0MsAP8Rp5WYV7cU1ap5r20u8ML94Y6RMTCaPQby4jTHhJd8r9+mmXPHCpN1wtm7NSD5Q/5wOXr8u2gRomhX0mIMp2b7yMdAA1FdIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347876; c=relaxed/simple;
-	bh=B82JFhnF2PrynKJl6Epqr1Dmh7qWoDe8dYPbBKT1PTE=;
+	s=arc-20240116; t=1710347877; c=relaxed/simple;
+	bh=1ayRbnay81uQwaBNVQbQadvJau2LtCm8yMXjEqr/Yic=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LNVDX70NpYbFoch6wO1zeGvCr4WHUYWk66pkoyFbaXfBjyogwbmkdJ9v9h8HWD5IzQe7eMmCpUB5uIacbzFMNn1FXzEqIJRxNNHUXrXa1n5obNcyb8/Zymxh7sMuuGM8WrGJZoWUaGwFFEkl4HXjpZKJ6GLUwg68APgkdGE+UHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M5zy+oR6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2327CC433A6;
-	Wed, 13 Mar 2024 16:37:55 +0000 (UTC)
+	 MIME-Version; b=IExQBytVvXER1C+MBfJ4mxYQTOz/LFbSCqfIEOmQFu3iOtl/Tw8VNBSyy559pAP+5a6KRCPkkNmWI9CsdXOH0kVE1054EJVN/AXAVZMv8GoXDuZ2NAGPGRoVK0uBXNaDvIIwLGa16x0S/oRciaaHYfDgyplNoeldaUYTjzOEO4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xp1aRoRC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 412E0C433F1;
+	Wed, 13 Mar 2024 16:37:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347876;
-	bh=B82JFhnF2PrynKJl6Epqr1Dmh7qWoDe8dYPbBKT1PTE=;
+	s=k20201202; t=1710347877;
+	bh=1ayRbnay81uQwaBNVQbQadvJau2LtCm8yMXjEqr/Yic=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M5zy+oR62wCuE7GRvT5O5g1ts/b5iXp8DlctC9BrSCj3KpjuzU9//zeClUnBdpdK+
-	 3TQ6tR6PF166c27lVNPIqNXOBVeAugXgtCUJxHkqTYn7mxEFpbdQfgXonmjuIX3LmJ
-	 jFtIQYYa72Idjej1gJochWPgasKrJZRWw93h5vuP1hVFYtTQm8SbhZiOBj3g7Fjrmj
-	 KnI4e7ux2F0vX87EE44qOhmcJhK5qCE+vE1pxy8B/Ro+ykP0e/h6/yjRZMh+2HGJ7W
-	 VJuTmIuPXFgxHGqPJgO6VBybpaf9Tlc0AwuDYomQJAHZ2nP1ov1nLshzgKaSL4o4mS
-	 bmKV/UQrV9LiQ==
+	b=Xp1aRoRC9um5issc8YWk9KsDKAsrgywLpC0nBdLXQwV1BwNAkxnORTZ16SIFAGQhu
+	 D64SMhzDChkRkBB+/XbVlJVe/YAwUrRd7BxWsHBwsa+NqBIvplL8Vf1Vrp/efq84MC
+	 hGjKCRxBve+lYf82kMX7koAwitHS3HpE7dZfkKkKSgqqa0B9ovLnCDbxTHtCWtUPvg
+	 h63vEgsK2C7K9zSXIkpkI3Xvnf9wjoGC820lKdl9DTaUCMTunIKO9wIwK9A1ijTq5V
+	 PBBtqHlf8vTT6q+QhIanvYfkVr1nHkgxSRLbBIXojJUCC8eMSgTtsKEZQ3P4ts8WWw
+	 Wvww7VwRQVjRQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gao Xiang <hsiangkao@linux.alibaba.com>,
-	Jingbo Xu <jefflexu@linux.alibaba.com>,
-	Chao Yu <chao@kernel.org>,
+Cc: Jason Xing <kernelxing@tencent.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 37/60] erofs: apply proper VMA alignment for memory mapped files on THP
-Date: Wed, 13 Mar 2024 12:36:44 -0400
-Message-ID: <20240313163707.615000-38-sashal@kernel.org>
+Subject: [PATCH 6.6 38/60] netrom: Fix a data-race around sysctl_netrom_default_path_quality
+Date: Wed, 13 Mar 2024 12:36:45 -0400
+Message-ID: <20240313163707.615000-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -69,45 +68,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+From: Jason Xing <kernelxing@tencent.com>
 
-[ Upstream commit 4127caee89612a84adedd78c9453089138cd5afe ]
+[ Upstream commit 958d6145a6d9ba9e075c921aead8753fb91c9101 ]
 
-There are mainly two reasons that thp_get_unmapped_area() should be
-used for EROFS as other filesystems:
+We need to protect the reader reading sysctl_netrom_default_path_quality
+because the value can be changed concurrently.
 
- - It's needed to enable PMD mappings as a FSDAX filesystem, see
-   commit 74d2fad1334d ("thp, dax: add thp_get_unmapped_area for pmd
-   mappings");
-
- - It's useful together with large folios and
-   CONFIG_READ_ONLY_THP_FOR_FS which enable THPs for mmapped files
-   (e.g. shared libraries) even without FSDAX.  See commit 1854bc6e2420
-   ("mm/readahead: Align file mappings for non-DAX").
-
-Fixes: 06252e9ce05b ("erofs: dax support for non-tailpacking regular file")
-Fixes: ce529cc25b18 ("erofs: enable large folios for iomap mode")
-Fixes: e6687b89225e ("erofs: enable large folios for fscache mode")
-Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Link: https://lore.kernel.org/r/20240306053138.2240206-1-hsiangkao@linux.alibaba.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/erofs/data.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/netrom/nr_route.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 0c2c99c58b5e3..977bc23f96e47 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -448,5 +448,6 @@ const struct file_operations erofs_file_fops = {
- 	.llseek		= generic_file_llseek,
- 	.read_iter	= erofs_file_read_iter,
- 	.mmap		= erofs_file_mmap,
-+	.get_unmapped_area = thp_get_unmapped_area,
- 	.splice_read	= filemap_splice_read,
- };
+diff --git a/net/netrom/nr_route.c b/net/netrom/nr_route.c
+index baea3cbd76ca5..6f709fdffc11f 100644
+--- a/net/netrom/nr_route.c
++++ b/net/netrom/nr_route.c
+@@ -153,7 +153,7 @@ static int __must_check nr_add_node(ax25_address *nr, const char *mnemonic,
+ 		nr_neigh->digipeat = NULL;
+ 		nr_neigh->ax25     = NULL;
+ 		nr_neigh->dev      = dev;
+-		nr_neigh->quality  = sysctl_netrom_default_path_quality;
++		nr_neigh->quality  = READ_ONCE(sysctl_netrom_default_path_quality);
+ 		nr_neigh->locked   = 0;
+ 		nr_neigh->count    = 0;
+ 		nr_neigh->number   = nr_neigh_no++;
 -- 
 2.43.0
 
