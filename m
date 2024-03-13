@@ -1,93 +1,110 @@
-Return-Path: <linux-kernel+bounces-101301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD69887A540
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:51:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F16787A541
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:52:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741981F229B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:51:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7125F1C211CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D36E24B26;
-	Wed, 13 Mar 2024 09:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D8E36135;
+	Wed, 13 Mar 2024 09:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="N/GnoVRe";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PzwpJQge"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B33RN2S6"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F8FC2261A;
-	Wed, 13 Mar 2024 09:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7942C689
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710323434; cv=none; b=dUWxJ1JAyxU7ZFd0rd32nD5xs/IhJtZCjPWDQuJ6v8St5PwUstErmyfkQK1DabcB8xMBM0lhMZcAMFByTjuaBQW1oVh0W+qjz0vV6xKTSNcP/+SK1n90MKl761pmHWaflhyZkvZXNk7lMPhHZnb7QwJJlnZGKNek4kORvyGtSCs=
+	t=1710323467; cv=none; b=Ze1Xs7COANHmqvz0j0rFXYzops/pU9QKEkLRQwgYsHf0MjhdtBUOBzwhXqeuY6ya4nJKR5VV0SCqEifUIfVsuKUChXF09+tp6fQK444SZ/U+WIaPQJfdenTQswjAJa9BMYxlIK1+GruHOsX/c+4ktEsxz1O91wEuhwUjM2WbDNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710323434; c=relaxed/simple;
-	bh=/VOvO1ICOgorvWfeUJ/OeEtLerixex0X5TqRBe0HFYM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=d3eSJawflgd8rkW2aHq0uc/xs0ZNNnSfCTFYXjS84akowW3POEt8snwVez5kg4gtjFJ30r8iwmmDHe//hc/57VMRuYNdLUuyk4VvCfgvML0vfnQ0M5zPFZCN4ec/LM+qdQEDIKwvKZQU1HBaL0CwoRWsZ5FcpkjrkG8weU9Q2AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=N/GnoVRe; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PzwpJQge; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710323431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/VOvO1ICOgorvWfeUJ/OeEtLerixex0X5TqRBe0HFYM=;
-	b=N/GnoVRemB0lnPrN0ZZ/cffTMben7HeYgNGpj6tZwVvZNGJ7ytDvwvAZmd/b/fPEWpl+VF
-	m4y4wW6N8r2Dn7N7MENLLd9cLHrHt2582jcRuGZ/OX7Ti5VpDSs6QkJgQUhiOyDUL6Jq7D
-	d7+teHLala/Nk2yTVCyZmyR+tP/SojcHfKrYMx1wIyZJxDJY0yCV+NWTueuM46HqIOh2Jd
-	KYYsVBtzIGBhg4SkS/0oOs4c8QhD0busx5BiWRPRx9VYau1egn440tLquyUlLsMKJyJZ/I
-	2O/aqU6RkxTMphWgHk5XU27eDSy84iB3qIV4Te9HyPArEObhZVqMgn1jpt5hBg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710323431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/VOvO1ICOgorvWfeUJ/OeEtLerixex0X5TqRBe0HFYM=;
-	b=PzwpJQgeL8JVSshwRkScr4aIdkl4e6hpxxmme7LIIVs/jrPQZQYkCDTDdB5x9VrJczjwfh
-	9LAg9uJfoTGHo/Bw==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Steven Rostedt
- <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Ilpo
- =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Tony Lindgren <tony@atomide.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Justin Chen
- <justin.chen@broadcom.com>, Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
- linux-serial@vger.kernel.org, Peter Collingbourne <pcc@google.com>
-Subject: Re: [PATCH printk v2 08/26] printk: nbcon: Implement processing in
- port->lock wrapper
-In-Reply-To: <87le6oy9vg.fsf@jogness.linutronix.de>
-References: <87le6oy9vg.fsf@jogness.linutronix.de>
-Date: Wed, 13 Mar 2024 10:55:47 +0106
-Message-ID: <87plvy31hg.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1710323467; c=relaxed/simple;
+	bh=VALqgjTPnatoPxcvD7oU1/NWjcytUzXnQ7aea0zfd7I=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=NT3/B0ZeMtqvCQUUVnYiNkIX2KovkkK2EVgu3LfSQqTWKI+UuvumzfIiNOu1nVgtrdz/qhSHcWFSIvtOiFpUYlFnGEmHlsmI7XUo2yTDpYhqkvcK9YKHyIWBPhLBErBkze59+WOeF8Rki6Jxup0dZ55m7kY0waOLw7TX67XeS88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B33RN2S6; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a6051556dso20835507b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710323465; x=1710928265; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XRJfQxahYGAkNrqo7I2PmE92A0G8ANlJPrSGDn6Zu48=;
+        b=B33RN2S6UPtn4nbljYXOGlyGZtZrF1eHxck7ZmwxZHmT4XKoLcO8kOzgyOKriI38jz
+         dB4yKxutVHtmTBgM0UzKzqw0MOlDlEZV3JYi+Gwill/nOfFq252DVeAhMdGrFdwY/KhU
+         tFaX9oqnuVoOUjDls4yTXhcpZaTQIx+w8EzoKkvT4rAJXmNX8sVBP7XtuyaD25w7m+qe
+         91ftt27nlLMvKdWOu/YJEzBHhTTZiNd5IgiwSaqqKd8kt3lp3qAbKjufNz+Ytr0QMxou
+         up+5kIL8YHpjOuRoTUQSF11HZjmPzNj9VM68HcoxXZUIRZJRDa6g4DZ8f1mejOJ3t5tX
+         Fq/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710323465; x=1710928265;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XRJfQxahYGAkNrqo7I2PmE92A0G8ANlJPrSGDn6Zu48=;
+        b=kxIeYYxHkt5vdMFsIXq2/hpB0WeK0YMy/K7KCyM/YXNwEi7JeSEUk1iyf33zj3LdQB
+         Z7hxXOsu74w5T2UfB8hkb1Y2DOeJBg+mw6faGIvBgyeuTpgffyvVmIUh+zNgq9BCSMhZ
+         YLFRu5NI3CZTGpGY5ClkTEeMVRvqj0kvM/i0t1f7uH+Mx2iCFECTRh/pbTinhHk5s7nz
+         6eRSzsiulZ3p9V4ZXDeqloIjKl4mbdzXH41ok2u5C0dgjp8l8UCPCaYvpa5lAn//n51Y
+         8z0TB5rv5jhgXU0fRtdquLSTI0SCnLhupUMpA7E3bLKWwr1rGDoG93blg/YyxRCH3OfN
+         eWeA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZv4rbt2IAN8/lQYk0znwX4G6tdsLePPz8oAvanWjTtfdvfSWKJ2/jwplTqi5Ho4RHbKb4wxaB99Vb16NlYog5l84d0KC2S9qF/7OP
+X-Gm-Message-State: AOJu0Yw5NG436wCgKB/RUJ0kdbDsSLyddR2QMQdqWcUABfZ7thnY4jUL
+	kww3Mva8hWsvtZ6DYLMXOmjm2lFmGkB6h9Id/m5X/u0mzbnjhwZZ+jh3ymVkf3qLikYZGvXb+VF
+	8cvkkCoj1gi9lUQ==
+X-Google-Smtp-Source: AGHT+IEJpiShMQsaleNGTKsdQI82HF3B6Dh14JeDghGydl0QX1ub+75M2xBZWQMzwcI/zPkgrssHsW93gsXcgGI=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:188c:b0:dcc:6bf0:2eb6 with SMTP
+ id cj12-20020a056902188c00b00dcc6bf02eb6mr61977ybb.6.1710323464848; Wed, 13
+ Mar 2024 02:51:04 -0700 (PDT)
+Date: Wed, 13 Mar 2024 09:50:59 +0000
+In-Reply-To: <ZfCQuh-JrplKtbco@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <ZfCQuh-JrplKtbco@boqun-archlinux>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240313095059.844387-1-aliceryhl@google.com>
+Subject: Re: [PATCH v3 2/2] rust: sync: add `Arc::into_unique_or_drop`
+From: Alice Ryhl <aliceryhl@google.com>
+To: boqun.feng@gmail.com
+Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, aliceryhl@google.com, 
+	benno.lossin@proton.me, bjorn3_gh@protonmail.com, gary@garyguo.net, 
+	linux-kernel@vger.kernel.org, ojeda@kernel.org, 
+	rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
+Content-Type: text/plain; charset="utf-8"
 
-On 2024-03-11, John Ogness <john.ogness@linutronix.de> wrote:
-> And I think you identified a bug relating to the setup() callback.
+Boqun Feng <boqun.feng@gmail.com> writes:
+> The code looks good, and FWIW, I added the Examples section for the
+> function since I at least need something to run when queuing it to
+> rust-dev branch ;-) And I think it's overall good to have examples for
+> every `pub` function. If there is a next version (which is unlikely),
+> feel free to fold it. I can also send it alone once Miguel put your
+> patches into the rust-next branch.
 
-Actually this bug was recently fixed by Peter Collingbourne:
+Thanks! If you have reviewed it, could I have your Reviewed-by tag?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/kernel/printk/printk.c?h=next-20240313&id=801410b26a0e8b8a16f7915b2b55c9528b69ca87
+> From 7d26d1177a2788ba96c607fd9dc45baf469fb439 Mon Sep 17 00:00:00 2001
+> From: Boqun Feng <boqun.feng@gmail.com>
+> Date: Tue, 12 Mar 2024 10:03:39 -0700
+> Subject: [PATCH] kernel: sync: Add "Examples" section for
+>  Arc::into_unique_or_drop()
+> 
+> These examples provide better documentation and can serve as unit tests
+> as well, so add them.
+> 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-One nice thing that has risen from this is we are starting to see
-exactly what the console lock is needed for. At this point I would say
-its main function is synchronizing boot consoles with real
-drivers. Which means we will not be able to remove the console lock
-until we find a real solution to match boot consoles (which circumvent
-the Linux driver model) with the real drivers.
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
-John
+Alice
 
