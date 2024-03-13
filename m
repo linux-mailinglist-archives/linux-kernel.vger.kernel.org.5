@@ -1,124 +1,100 @@
-Return-Path: <linux-kernel+bounces-102062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB2287AE15
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:49:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C520287ADAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3A6EB23226
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81F86282057
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE175644B;
-	Wed, 13 Mar 2024 16:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ABAC4BAA6;
+	Wed, 13 Mar 2024 16:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EDe0zf+z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ensjR6iq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8321586F4;
-	Wed, 13 Mar 2024 16:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8545490C;
+	Wed, 13 Mar 2024 16:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348442; cv=none; b=sXp+N8uzDurLfAjJsvMds6gOfhAVl7Ltckq6dlCj7BEmT/CwIV6HGAU8ArwTBoL3WUZCKAZk86HclDP+1wMxxnsJgA3XIDPh4G9SpfB0+j6ZDjcFFFUBE5104yQ2Dr73Q+2iRmKoRqfG2uNENKkkNOvaPyuAQwKvWtQW0cugaQI=
+	t=1710348368; cv=none; b=evmrsYvtbj4cXEuN2cb1pcjporcQlTo73y5dgvgDrGQ2HhZjHGpRpcJr2zfFTwQCYjkTzEVBvhG9tGsDQpR7Zns6U4VKMpWYW+80Fskr49ELsXlIqQtrarFn44zm2KyzR0FBbKoj6l/aVYK8HtDDSzEjwSQcitVXYNCG6poEfGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348442; c=relaxed/simple;
-	bh=BIM2AE8RAX0nv489/q+jkksa4sAawMGwrIiGDzfIUqE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O7/YuRPYfoHj+vDKcHxKMW8HB3Z491nnO/If/XGKCQWje8pOVw+/GfgGkOlAz9UPWcQdGYqwLjKQHzDEiGlkC6uHLqLevwL/Q5Qom74mvMVDk/a7aI6wgRYuNwpHAvawFj7n8A9c211aK0lY2nRepvqJL3RAfwhJ4OjKryPW95E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EDe0zf+z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A148C43394;
-	Wed, 13 Mar 2024 16:47:21 +0000 (UTC)
+	s=arc-20240116; t=1710348368; c=relaxed/simple;
+	bh=8vD9Fap8m+M7uwpWThRl5X5Lo2K26/LqwhLWSjz1ZmE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TvB2zHbGpYKhb0E70a4IZxeK5MACG64tWK/+zeHR+Lef57zkd2hu0EJG+8KYIqSx0d3jodkWZW3b/iXxKpWjNu4tN3G1ASVgv9jCKaP0s5S5S3znHWQtBjqWKkMr/cD4KeRZAnJVL26QnopTeI+b9PtVHG54QrcBw6M4HL5Bx8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ensjR6iq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D250C433C7;
+	Wed, 13 Mar 2024 16:46:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348442;
-	bh=BIM2AE8RAX0nv489/q+jkksa4sAawMGwrIiGDzfIUqE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EDe0zf+zyBQTOELTbSqlk4czSITlKYbP8Js+jZI+Jo+/j0tVv0//7J0hhT3EpzP4w
-	 SxUmckpfoxNTssW0vLzUt1dknNxyXecZ0p/y6fmiwehuxKJ8xKmzIDBUf6N1PPVkK/
-	 wuCl2U/XlKaTkDLQIZTpxidKsrtoewc7zBcHYz19oXIhVyw2UKNCTRteN9OvSWiM1c
-	 zrYnmzZQ2BkZ8XnyxUPSPvccmWQfYfqIejw8iCK2velI1IyivjTwLwBMdxsXXIKMBq
-	 yX9StxgjMYz2AX6pqpko5q6U3MporZe8moErwURxmamo7gnfpDAgcKzGemlwdUI5gZ
-	 IxZ1jzGlsqtAA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Michal Pecio <michal.pecio@gmail.com>,
-	Mathias Nyman <mathias.nyman@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 36/73] xhci: handle isoc Babble and Buffer Overrun events properly
-Date: Wed, 13 Mar 2024 12:46:03 -0400
-Message-ID: <20240313164640.616049-37-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
-References: <20240313164640.616049-1-sashal@kernel.org>
+	s=k20201202; t=1710348368;
+	bh=8vD9Fap8m+M7uwpWThRl5X5Lo2K26/LqwhLWSjz1ZmE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ensjR6iq9zII4CO79LRlV/0wlP/+PDEZjoLRHPjk5lwzHPZ+N3AEkfJhEUfW++Nsu
+	 nqRXEU2Yvt72Ralt7bi+gK5v8VVu3hptZdS8thvIaOIy6FlJgiYgo+ehdBetDzY0CI
+	 lc/XZZSRYhezzXvbb7IBPsluHQWO0dZizTR1ELmN4K3Anl4i7CoM+AvjNJAXSMOQcg
+	 h/fCKRemVmunGwD2E4v2WtCrj5NRwit61PnuPwQW4hrRecg6xgDMlXi7OUyKWBAxuP
+	 hL58ZklercW6C7p/lI9U30gujZOQD+eQQ6ksaWp3E/yyJrFXlb6GLNeZqzaSK36WFg
+	 nvz5BFeZP4MJw==
+Date: Wed, 13 Mar 2024 16:46:04 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Ansuel Smith <ansuelsmth@gmail.com>
+Subject: Re: [PATCH 5.15 72/76] regmap: allow to define reg_update_bits for
+ no bus configuration
+Message-ID: <6274f1ce-f2e0-414b-b9a9-bf2840fefd90@sirena.org.uk>
+References: <20240313164223.615640-1-sashal@kernel.org>
+ <20240313164223.615640-73-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.213-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.10.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.10.213-rc1
-X-KernelTest-Deadline: 2024-03-15T16:46+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cjF8jBOhLBvTK2G3"
+Content-Disposition: inline
+In-Reply-To: <20240313164223.615640-73-sashal@kernel.org>
+X-Cookie: It's later than you think.
 
-From: Michal Pecio <michal.pecio@gmail.com>
 
-[ Upstream commit 7c4650ded49e5b88929ecbbb631efb8b0838e811 ]
+--cjF8jBOhLBvTK2G3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-xHCI 4.9 explicitly forbids assuming that the xHC has released its
-ownership of a multi-TRB TD when it reports an error on one of the
-early TRBs. Yet the driver makes such assumption and releases the TD,
-allowing the remaining TRBs to be freed or overwritten by new TDs.
+On Wed, Mar 13, 2024 at 12:42:19PM -0400, Sasha Levin wrote:
+> From: Ansuel Smith <ansuelsmth@gmail.com>
+>=20
+> [ Upstream commit 02d6fdecb9c38de19065f6bed8d5214556fd061d ]
+>=20
+> Some device requires a special handling for reg_update_bits and can't use
+> the normal regmap read write logic. An example is when locking is
+> handled by the device and rmw operations requires to do atomic operations.
+> Allow to declare a dedicated function in regmap_config for
+> reg_update_bits in no bus configuration.
 
-The xHC should also report completion of the final TRB due to its IOC
-flag being set by us, regardless of prior errors. This event cannot
-be recognized if the TD has already been freed earlier, resulting in
-"Transfer event TRB DMA ptr not part of current TD" error message.
+This is fairly clearly new functionality?
 
-Fix this by reusing the logic for processing isoc Transaction Errors.
-This also handles hosts which fail to report the final completion.
+--cjF8jBOhLBvTK2G3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Fix transfer length reporting on Babble errors. They may be caused by
-device malfunction, no guarantee that the buffer has been filled.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Michal Pecio <michal.pecio@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20240125152737.2983959-5-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/usb/host/xhci-ring.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXx2EsACgkQJNaLcl1U
+h9DU7wf8Cc9vW6X2/usR4C76o8n6h/sawjjlFC4FnswhsVx8SShR2YdDzOsdRCiK
+r6SpKfi4Apx/anRoZ8Sc67tp0AY43NKh0hCUwiNsmhTDWoSHQ4i6NPgsHJNIDyyu
+YCH/I6dPidoN3yzs6pBbrwHJKkMMRim5kjZbfgAZLfqV3nWHEDTkCF+EipuhyE4T
+henmSMRPDdkfEIEe4zG6aHWr/9b9uG/XOdZ5W32iCFNNpmvMZ0X76KtYTALV0b9q
+braOwEgoFBEmN2KQvVEqd5icIortuQhD1J9PoJ0CRmJbdoNGVJ+9RzAE8knTf1pg
+eXR9f1bFSIg/KWbmoKY7+6w+7ZsRXA==
+=yQty
+-----END PGP SIGNATURE-----
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 883cf477a70b9..4fa387e447f08 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2262,9 +2262,13 @@ static int process_isoc_td(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
- 	case COMP_BANDWIDTH_OVERRUN_ERROR:
- 		frame->status = -ECOMM;
- 		break;
--	case COMP_ISOCH_BUFFER_OVERRUN:
- 	case COMP_BABBLE_DETECTED_ERROR:
-+		sum_trbs_for_length = true;
-+		fallthrough;
-+	case COMP_ISOCH_BUFFER_OVERRUN:
- 		frame->status = -EOVERFLOW;
-+		if (ep_trb != td->last_trb)
-+			td->error_mid_td = true;
- 		break;
- 	case COMP_INCOMPATIBLE_DEVICE_ERROR:
- 	case COMP_STALL_ERROR:
--- 
-2.43.0
-
+--cjF8jBOhLBvTK2G3--
 
