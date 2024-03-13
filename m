@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-101954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0781987AD0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2506D87AD10
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38D3C1C21C0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:24:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247E11C220B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0B013A88A;
-	Wed, 13 Mar 2024 16:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD8313AA42;
+	Wed, 13 Mar 2024 16:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IuSobHWq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="flo1eiRL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B9C13957D;
-	Wed, 13 Mar 2024 16:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1D913A89C;
+	Wed, 13 Mar 2024 16:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348163; cv=none; b=m+uUxUW6ydSCPB8jjxUvTcaL6dfBmfajwrfbSaPZ1r8u2gNAPvBH52HRVYGe1H41e1V1sV3WqYhMgg71rODyLFqtrrZ8RBG9+cXDdFAh2NA4rCJu38Z6M4kRpPFohSVBlGmU84M915e0Rm8MyjbMgp8p2b9X+VrwM14nNpfqUvY=
+	t=1710348164; cv=none; b=RFHSlvmYRuARkWUOIzy7ZW0vkSHvr90MnRmUxR63LRpXdRAxIUioVBOPnPHTJ/8qsBDRvQXz5P3f/Rxxa2E/wDMaVUvzaa/99bIx05IRzl+SXDYJ57QfKdTb3nPB0JSiFO1DbySLbb+X7IdvzDpm7L+lHawbD2D0ASR0vVsANQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348163; c=relaxed/simple;
-	bh=3UekCyyDHThKiG9v+4KxnUS74Ovcmcs7JvlE63gLlaQ=;
+	s=arc-20240116; t=1710348164; c=relaxed/simple;
+	bh=/PQF0yX/ENGcXAUA1kKDscSZKucRJsSGt8v8NkP/bHE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pYNTxrUqgGO42i880jbLEHxyGOIkuN/kn78DFqOehjV+uJMQjsRhb/8s7fwlFX03+pi8Cvuq2IuwrqpzcqmHiNC5Bylih3sNCzL3V+E4l9elo5pUQaLNoVAM5FG6xpki99s2iXzlFzjIgKDw6zLdwx7O59OCo7Mjl3GfPz7Uwy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IuSobHWq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2064CC43390;
-	Wed, 13 Mar 2024 16:42:42 +0000 (UTC)
+	 MIME-Version; b=YHWl7ki8xft168CGkkZJCcwcCyct7P1GzArtsF+DQ/zaen+cT0Hlfp9UXAXGhK6qiWNn9bLoGfE2QUnMcznctlNb1jEa1mULN9kQ5keIkopLtPZ08YoB5AZavUTg7p1CTWesiCaTv/E4aY+jqD3I6gN8Ginl0q8jUW8j5W4J3oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=flo1eiRL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BDA5C433F1;
+	Wed, 13 Mar 2024 16:42:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348162;
-	bh=3UekCyyDHThKiG9v+4KxnUS74Ovcmcs7JvlE63gLlaQ=;
+	s=k20201202; t=1710348164;
+	bh=/PQF0yX/ENGcXAUA1kKDscSZKucRJsSGt8v8NkP/bHE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IuSobHWqBfO9lKL6Kr2eiwzF53TrKjFwAWgqBcc/ACh9bM+GZGNkD7bXu4lk1fNL1
-	 Y+pU0jRaQdHX050pSdnUgmqC5aFwjW3aGyeKr8EvQJ2UhlJW324TkuvFOq63yo+YQd
-	 B5ubaLq6jK9h8wBBVpa+5gdYhFlrKRldOsDG5n6NSE3uQzm/TaIbabgiIP1/N5c+8D
-	 ueHEC/alVHg8LAmhrCxKmhrOh1sR3fE5fw6v2X3R4PMENq09/9Tx7lliR7Bg9jnMcF
-	 cc4cckHuM/9y7Opfd83e4WTnrAf8na6nTZIJJhElDtsXx0a+oV1G7Ah8WSN/4obHxG
-	 KKVjZDx80jj2Q==
+	b=flo1eiRLsyoVLnrKIErZZC9bQS++9UqX08CRX2pi7eQgAcOmx7RN4/YRhy0TWx423
+	 OuAzJf7Umf1gwPJBapv/Ih0YDbj8TjcrksWllDJTIFUC14BJM9x8NmJPwDufRFYQ+C
+	 hy1o8s5D6tkCuIpICgh8VKLDf4wFHzUYtHINjrC8lzigvT/5/xrcxPGxxXSwIW4Sxc
+	 UUegtwg4kk2gFldVQZbIzsB9e7ZubT6RKWnEOO8bqHFCOMaVLPV2wsew2cUTa7UTKM
+	 DTM4RvguIItC0ahbWVHcoZCVsel0Rw/+QXofrL4hTO+0mycKJjimh29ALWc1URyUUl
+	 7Q7oVAiiksQ/w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lena Wang <lena.wang@mediatek.com>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc: Gao Xiang <hsiangkao@linux.alibaba.com>,
+	Jingbo Xu <jefflexu@linux.alibaba.com>,
+	Chao Yu <chao@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 14/76] netfilter: nf_conntrack_h323: Add protection for bmp length out of range
-Date: Wed, 13 Mar 2024 12:41:21 -0400
-Message-ID: <20240313164223.615640-15-sashal@kernel.org>
+Subject: [PATCH 5.15 15/76] erofs: apply proper VMA alignment for memory mapped files on THP
+Date: Wed, 13 Mar 2024 12:41:22 -0400
+Message-ID: <20240313164223.615640-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -68,68 +69,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Lena Wang <lena.wang@mediatek.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit 767146637efc528b5e3d31297df115e85a2fd362 ]
+[ Upstream commit 4127caee89612a84adedd78c9453089138cd5afe ]
 
-UBSAN load reports an exception of BRK#5515 SHIFT_ISSUE:Bitwise shifts
-that are out of bounds for their data type.
+There are mainly two reasons that thp_get_unmapped_area() should be
+used for EROFS as other filesystems:
 
-vmlinux   get_bitmap(b=75) + 712
-<net/netfilter/nf_conntrack_h323_asn1.c:0>
-vmlinux   decode_seq(bs=0xFFFFFFD008037000, f=0xFFFFFFD008037018, level=134443100) + 1956
-<net/netfilter/nf_conntrack_h323_asn1.c:592>
-vmlinux   decode_choice(base=0xFFFFFFD0080370F0, level=23843636) + 1216
-<net/netfilter/nf_conntrack_h323_asn1.c:814>
-vmlinux   decode_seq(f=0xFFFFFFD0080371A8, level=134443500) + 812
-<net/netfilter/nf_conntrack_h323_asn1.c:576>
-vmlinux   decode_choice(base=0xFFFFFFD008037280, level=0) + 1216
-<net/netfilter/nf_conntrack_h323_asn1.c:814>
-vmlinux   DecodeRasMessage() + 304
-<net/netfilter/nf_conntrack_h323_asn1.c:833>
-vmlinux   ras_help() + 684
-<net/netfilter/nf_conntrack_h323_main.c:1728>
-vmlinux   nf_confirm() + 188
-<net/netfilter/nf_conntrack_proto.c:137>
+ - It's needed to enable PMD mappings as a FSDAX filesystem, see
+   commit 74d2fad1334d ("thp, dax: add thp_get_unmapped_area for pmd
+   mappings");
 
-Due to abnormal data in skb->data, the extension bitmap length
-exceeds 32 when decoding ras message then uses the length to make
-a shift operation. It will change into negative after several loop.
-UBSAN load could detect a negative shift as an undefined behaviour
-and reports exception.
-So we add the protection to avoid the length exceeding 32. Or else
-it will return out of range error and stop decoding.
+ - It's useful together with large folios and
+   CONFIG_READ_ONLY_THP_FOR_FS which enable THPs for mmapped files
+   (e.g. shared libraries) even without FSDAX.  See commit 1854bc6e2420
+   ("mm/readahead: Align file mappings for non-DAX").
 
-Fixes: 5e35941d9901 ("[NETFILTER]: Add H.323 conntrack/NAT helper")
-Signed-off-by: Lena Wang <lena.wang@mediatek.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 06252e9ce05b ("erofs: dax support for non-tailpacking regular file")
+Fixes: ce529cc25b18 ("erofs: enable large folios for iomap mode")
+Fixes: e6687b89225e ("erofs: enable large folios for fscache mode")
+Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20240306053138.2240206-1-hsiangkao@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_h323_asn1.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/erofs/data.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/netfilter/nf_conntrack_h323_asn1.c b/net/netfilter/nf_conntrack_h323_asn1.c
-index e697a824b0018..540d97715bd23 100644
---- a/net/netfilter/nf_conntrack_h323_asn1.c
-+++ b/net/netfilter/nf_conntrack_h323_asn1.c
-@@ -533,6 +533,8 @@ static int decode_seq(struct bitstr *bs, const struct field_t *f,
- 	/* Get fields bitmap */
- 	if (nf_h323_error_boundary(bs, 0, f->sz))
- 		return H323_ERROR_BOUND;
-+	if (f->sz > 32)
-+		return H323_ERROR_RANGE;
- 	bmp = get_bitmap(bs, f->sz);
- 	if (base)
- 		*(unsigned int *)base = bmp;
-@@ -589,6 +591,8 @@ static int decode_seq(struct bitstr *bs, const struct field_t *f,
- 	bmp2_len = get_bits(bs, 7) + 1;
- 	if (nf_h323_error_boundary(bs, 0, bmp2_len))
- 		return H323_ERROR_BOUND;
-+	if (bmp2_len > 32)
-+		return H323_ERROR_RANGE;
- 	bmp2 = get_bitmap(bs, bmp2_len);
- 	bmp |= bmp2 >> f->sz;
- 	if (base)
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index 16a41d0db55a3..a859bf0f31df2 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -340,4 +340,5 @@ const struct file_operations erofs_file_fops = {
+ 	.read_iter	= erofs_file_read_iter,
+ 	.mmap		= erofs_file_mmap,
+ 	.splice_read	= generic_file_splice_read,
++	.get_unmapped_area = thp_get_unmapped_area,
+ };
 -- 
 2.43.0
 
