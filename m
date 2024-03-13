@@ -1,185 +1,98 @@
-Return-Path: <linux-kernel+bounces-101634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 534FF87A9B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:43:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524DF87A9BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEE8D1F21FA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:43:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F234B1F228ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE9F43AC8;
-	Wed, 13 Mar 2024 14:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5C67483;
+	Wed, 13 Mar 2024 14:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nmf6Xm61";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K5ptLFKk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nmf6Xm61";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K5ptLFKk"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="KyTny1Qe"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98914A07;
-	Wed, 13 Mar 2024 14:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A30B46A2
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710341012; cv=none; b=QBxoTDcuGJaUcekVQNqB0n0HzV2f/B9beE0lHAZX835I+avFjesQg1GSyIVdsXnill3pZt/jTdOmzp8sOWBu9kegYJ+a93eS1HowE8qjf7Zq5YBV01i+koKGv+IGPDIE3g6o4X0ahnlPYsrgL9AWxT4OnTRy4OWFs7h33P6PVFc=
+	t=1710341253; cv=none; b=GKxOANcqEHJUM2bek1/6q2mde4M3t3ZqQb7vCiaCbQDad/F7awEIcqMazZ6aS+WVn8n7o6M6vGaGoUTPhjXXHEKjaiLSxFdO82xXBK/6I4jRoE8OQ3BWk4mUXdXwN4nPOrwzrH3RKXBMHWWJ21S4qfIp0Q0LiKEBtyT0HFt3SaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710341012; c=relaxed/simple;
-	bh=kXgYc6OgRfqOOlSMEkHcIMjENoa2xrghhi5222Y1ADk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HjjymBDsRXTrqRlaQPDget7KuR5FgQ5O7S8FsoAyoboLMzAN+aW/ONREdH3qFGoD15oE2PcnVMTs4tWUv5tYhLpMmon+5XhTXAcmpIvO2QpfcCUKR25ERlLNRRHmk9v73L0YP+WBmbj6HjPKVKy1NMXPOOf9USXiu8jXzSVLigE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nmf6Xm61; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K5ptLFKk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nmf6Xm61; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K5ptLFKk; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B80CA21C91;
-	Wed, 13 Mar 2024 14:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710341008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O3ouuLw+tQrb8/EbRY+xlkqcLCuq786lUp+bYp4r2zU=;
-	b=Nmf6Xm61+zxcWS+I5r9U+P3gPHU2vCbG7ufrhgetyuVBRCFoAAp+EoXhy5xUB5Tmutzepl
-	7YmX4PfY5TaUAkjwOQpz9y+4LHQEPr3MY6QlMMsIFpMnXXofcmRb61UVwIlpEK3LPlPdr8
-	EojUYmzwXu4oWcfNFWwBYddlMSbm8uY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710341008;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O3ouuLw+tQrb8/EbRY+xlkqcLCuq786lUp+bYp4r2zU=;
-	b=K5ptLFKkA01m4S7ajiM2r/a218s+QmeM+PIHTAAq79pyoH1Wrn2NfXTQLwjdD9JNIp1I+B
-	vI5NUhUMygRO1rDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710341008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O3ouuLw+tQrb8/EbRY+xlkqcLCuq786lUp+bYp4r2zU=;
-	b=Nmf6Xm61+zxcWS+I5r9U+P3gPHU2vCbG7ufrhgetyuVBRCFoAAp+EoXhy5xUB5Tmutzepl
-	7YmX4PfY5TaUAkjwOQpz9y+4LHQEPr3MY6QlMMsIFpMnXXofcmRb61UVwIlpEK3LPlPdr8
-	EojUYmzwXu4oWcfNFWwBYddlMSbm8uY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710341008;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O3ouuLw+tQrb8/EbRY+xlkqcLCuq786lUp+bYp4r2zU=;
-	b=K5ptLFKkA01m4S7ajiM2r/a218s+QmeM+PIHTAAq79pyoH1Wrn2NfXTQLwjdD9JNIp1I+B
-	vI5NUhUMygRO1rDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 73FB413977;
-	Wed, 13 Mar 2024 14:43:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id IMkYHJC78WXjZgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 13 Mar 2024 14:43:28 +0000
-Message-ID: <76c84f17-8b99-4f68-a6ac-a0db22f5ace3@suse.cz>
-Date: Wed, 13 Mar 2024 15:44:13 +0100
+	s=arc-20240116; t=1710341253; c=relaxed/simple;
+	bh=YzkqaXpaFRM8RtDzrlCxHkAAJsnVwNrP+emQe7yxPRQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YD3hXIm4ARAJDDWxbms1mo2Pwsg24+9X84qPvmZNk9ui/kzrKRYydB+etnYDUrTAKBVWpg6Qk6wyy02xRUE34b0N0xAWHP50UZdmhBpuLNLuWVJmj1iDEOyLCa+e8Ec/MKDNqpNUPD+sCEqnfOXnxLizPf3v7iqF9g1InQglUPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=KyTny1Qe; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a46692ec303so14240866b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1710341249; x=1710946049; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YzkqaXpaFRM8RtDzrlCxHkAAJsnVwNrP+emQe7yxPRQ=;
+        b=KyTny1Qetg1Ps+MEj02fDBNNLtgHg08VT7H6QptZkO9h/WejNlfrmCU6tEjUe7hTcL
+         YK2uk7DLv16Whtgmb/qCm9aCmQPcNjw7J/wd+NuHoxGoWNde/Mt8wzLhnYWZu+wyvPYD
+         o3Kz8s9OZAx9rVycrjTucbMP1g9Dt9L4DsEno=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710341249; x=1710946049;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YzkqaXpaFRM8RtDzrlCxHkAAJsnVwNrP+emQe7yxPRQ=;
+        b=sOBwzG8YsryuL9qTkoqZdKJw1CdlxMwUKUGqWOC+7kelcXGnjLKz98X/3rm9H7EfD0
+         bfqWGvNtEcPsuc0BQlRIP4sy5hqtvR5p8AtMNGOh7Q1k5gOMAUBzhlBKd0301ClX8/I3
+         6bOQnHkm4kPH5+SEE4kArXC/MVNf5JVIxDOJtgNhuQNVN4Jz5sfRRijqArXxsUwBlzhm
+         l323uLro/nLiDCjXcL4n1OiUVOA4XPDjh+8tEEiUCRzIxFRfFiK/pHQnN4y2c9ibFU7r
+         K0eL7Rs7UzH2zTLz3zX08YkcEFj0h/EI08c63heaFkaPxv+8aZHpnTKH+PCDSBvGkcfv
+         i/5w==
+X-Forwarded-Encrypted: i=1; AJvYcCX4KaSC0nG3VnUN7MM5BTyMzmTjivqbjsEaaVzjwbZsWuFcjs85Q7cKrSNiygXSE5c5mZE5htaaY3m9IGFDtCdOK7azcDXbbvgr+0UT
+X-Gm-Message-State: AOJu0YwforagUW/3MfP6hW3AJPLdqitmZsyYVBYpEBNeYRLiDDOoFwWi
+	ngqOR5wGgHo2p3gPReDgi89iAlVeSFs2YXb2937raFtasw4KaLFzHWNAQZliv4wDFdpyhxllhIk
+	VgvV3V9OO2PSiceeEbobSa0TqoVmKWXZsiR8LTw==
+X-Google-Smtp-Source: AGHT+IGySR5X6+YUZKH2Phuq/Y7qs8aoKb13avqzeIMqppT7+EeSbdOV2V89Z2OfDgsEw2J1JOH6R/o6+3Vdsa68KFA=
+X-Received: by 2002:a17:907:972a:b0:a45:f4c2:38d7 with SMTP id
+ jg42-20020a170907972a00b00a45f4c238d7mr9051453ejc.18.1710341249573; Wed, 13
+ Mar 2024 07:47:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 20/37] mm: fix non-compound multi-order memory
- accounting in __free_pages
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
- muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
- pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
- dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
- keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
- gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
- penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
- glider@google.com, elver@google.com, dvyukov@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
- rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
- kernel-team@android.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-References: <20240306182440.2003814-1-surenb@google.com>
- <20240306182440.2003814-21-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240306182440.2003814-21-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Nmf6Xm61;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=K5ptLFKk
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.03 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[75];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.03)[56.09%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,nvidia.com,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.03
-X-Rspamd-Queue-Id: B80CA21C91
-X-Spam-Flag: NO
+References: <03d7a29c7e1a8c5741680ea9bc83b4fb40358a25.camel@elektrobit.com> <CAOQ4uxg+RveBHjgui_HjCasYGor3JNeuv-UroR=5j4n6TgRd7w@mail.gmail.com>
+In-Reply-To: <CAOQ4uxg+RveBHjgui_HjCasYGor3JNeuv-UroR=5j4n6TgRd7w@mail.gmail.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Wed, 13 Mar 2024 15:47:17 +0100
+Message-ID: <CAJfpeguBfKB4MGEUkJ=+ZFT9uYJ1DXtCTW9oLrEE0af7XTi=VA@mail.gmail.com>
+Subject: Re: possible deadlock in ovl_llseek 27c1936af506
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: =?UTF-8?Q?Wei=C3=9F=2C_Simone?= <Simone.Weiss@elektrobit.com>, 
+	"linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 13 Mar 2024 at 14:14, Amir Goldstein <amir73il@gmail.com> wrote:
 
+> The reason for this report is calling llseek() on lower ovl from
+> ovl_copy_up_data() when ovl_copy_up_data() is called with upper
+> inode lock and the lower ovl uses the same upper fs.
+>
+> It looks to me like the possible deadlock should have been solved by commit
+> c63e56a4a652 ovl: do not open/llseek lower file with upper sb_writers held
+> that moved ovl_copy_up_data() out of the inode_lock() scope.
 
-On 3/6/24 19:24, Suren Baghdasaryan wrote:
-> When a non-compound multi-order page is freed, it is possible that a
-> speculative reference keeps the page pinned. In this case we free all
-> pages except for the first page, which will be freed later by the last
-> put_page(). However put_page() ignores the order of the page being freed,
-> treating it as a 0-order page. This creates a memory accounting imbalance
-> because the pages freed in __free_pages() do not have their own alloc_tag
-> and their memory was accounted to the first page. To fix this the first
-> page should adjust its allocation size counter when "tail" pages are freed.
-> 
-> Reported-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+That commit is in v6.7, so something different must be happening on v6.8-rc1.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Simone, please send a new report for v6.8-rc1 if a lockdep splat can
+be reproduced on that kernel.
+
+Thanks,
+Miklos
 
