@@ -1,234 +1,149 @@
-Return-Path: <linux-kernel+bounces-101370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E2CA87A627
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:55:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53EC287A629
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B80891F22411
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:55:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8521A1C216AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3643DBBE;
-	Wed, 13 Mar 2024 10:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28043EA77;
+	Wed, 13 Mar 2024 10:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ICnhLx89";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UNsWCCPs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ICnhLx89";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UNsWCCPs"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TIBstJiO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XAcpwtoU"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB2A2E822;
-	Wed, 13 Mar 2024 10:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F723EA66;
+	Wed, 13 Mar 2024 10:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710327305; cv=none; b=EWtPV6qvwakH6Z2TgspecNGXGHEY7t6z+NI+r5cqOs7FK9lRRIFX7JURRaS/q1pdSHeH7zVYWYzez6/SP2nW2Vh4pDx09VMoZHkTa0KxQgVVLvvZdwATPxNgdnwF4KJX+tW8Vne22bKuIbWX4/26+jLa/2+E2VMyOdWxsOO8Byw=
+	t=1710327350; cv=none; b=utiBpcwr/R7Gie83ZrAYfHkjeAfgnTBxux/52tF9M0In4SNLgdAz/ECbLFiOKm9hlFg11R45mmyA+8BlQMHoPiwzvOBuJ7OyRDBZDOi63J2r5D5axmIsCXehpUiiRDeV7inlfwUNBSg5c0YA5fWzUd/pjfjzOTWMj+y9batEFSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710327305; c=relaxed/simple;
-	bh=5extK9f367YL3H5gOJNXWVi1SGFLkqUtL6iLmjGxHfw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WLCv47UU7B7rzI0SeONo6O5VsuVE6vEf/JzjCtZ+diEDnuq/9rdXUFJLZUz/U9pPKyft9WnTsotEPV+cjX2Dr9feP/czZ9wDA8g0TolyA5et1QmOLkzQK1Dj6LsB/xSN6HsJY7HgW12aIuehKV3f4odpyiXtgithz47DSQRK8EU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ICnhLx89; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UNsWCCPs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ICnhLx89; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UNsWCCPs; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7F59321BF3;
-	Wed, 13 Mar 2024 10:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710327301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1710327350; c=relaxed/simple;
+	bh=UUNsX9/ItJg6db3U4H5dMXslJ9T0zc2L/ER7GrzlVEI=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=I08+OGScfha7ugMG5BbUFU0XC6m4UJwU4pYyAOCqSeaP4DcMrbNNXEXNek7QF1nSwk0jfe2pc6ufnJfRpfc7y86qdUKThAV50dcetcYanqCt/xiOl7my2NvnGx2tJdsNSOA3aSlBBimxFyWSvuHCRWx2oodmYpdyABtWrBVkGB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TIBstJiO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XAcpwtoU; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 13 Mar 2024 10:55:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710327347;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QNHl9j5rJS3FB75T3Br2PFgZD7an6d8GVNmFy/0Uptw=;
-	b=ICnhLx89ytvNA+K1nls/VjM4iWaYDo7ArKG+6jS0xNfvwa3idlY0yaq3IVQR506uX4h0Tg
-	sesB0BQqhGbeh8+5eAqoio9ELHwfCdZb3j3A73uu9KmCEm9sbAfS5VfpofGsJb+6iv6mq9
-	ttOXm+rk1dtXSjVR4YcREd7uc1+inU0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710327301;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	bh=f0SKrjf1B+cuGJlUUAjW+HNdsWy3Qcniw+d3IjuhWFg=;
+	b=TIBstJiOs+Dcz2r3PgZwFsOnwlqqNrwv3+NuwMw01C4fX1KuARpcpniaea/MMeSXdMt6WW
+	zVCJ96bw4mM/VauHuzU4M1CObrFas194jOVG0ZUPG32vRGGAkq1t2yjdtbrGkV3OkVSFuT
+	Tl/r9iTgcV8cPCfT/QaAPCNJnboGCD0G6AdOUh6v2nMkro0n3tR6U1oZypiCbipIUmFBfL
+	yGvNRkvqOS4sxHvGIMIKpmVaoLKv3hlu+BbIONEibET8Nu7wU2wBqP0319vWUPKwsdp7bH
+	P7LVmlaj/Ujrh5UMD1S6oajFpP4jZvoav8lh0mD2thQT8/GBXxPOnRIQ9gDvCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710327347;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QNHl9j5rJS3FB75T3Br2PFgZD7an6d8GVNmFy/0Uptw=;
-	b=UNsWCCPsLIlnzTKkR4v5wVRse+HEASQrOEh7ONVrfXZlh5i7Vt1yQNcE/zBsWRG+Tur2Fv
-	SUAbKJ2rTMBM3RAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710327301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QNHl9j5rJS3FB75T3Br2PFgZD7an6d8GVNmFy/0Uptw=;
-	b=ICnhLx89ytvNA+K1nls/VjM4iWaYDo7ArKG+6jS0xNfvwa3idlY0yaq3IVQR506uX4h0Tg
-	sesB0BQqhGbeh8+5eAqoio9ELHwfCdZb3j3A73uu9KmCEm9sbAfS5VfpofGsJb+6iv6mq9
-	ttOXm+rk1dtXSjVR4YcREd7uc1+inU0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710327301;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QNHl9j5rJS3FB75T3Br2PFgZD7an6d8GVNmFy/0Uptw=;
-	b=UNsWCCPsLIlnzTKkR4v5wVRse+HEASQrOEh7ONVrfXZlh5i7Vt1yQNcE/zBsWRG+Tur2Fv
-	SUAbKJ2rTMBM3RAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 699DD13977;
-	Wed, 13 Mar 2024 10:55:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /RehGQWG8WWoFAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 13 Mar 2024 10:55:01 +0000
-Message-ID: <bd05d62d-9f46-46b5-b444-6c4814526459@suse.cz>
-Date: Wed, 13 Mar 2024 11:55:04 +0100
+	bh=f0SKrjf1B+cuGJlUUAjW+HNdsWy3Qcniw+d3IjuhWFg=;
+	b=XAcpwtoUv2HG3gDeIqWSjZ+bKttkIIwhBkK5b7WtUl9kM0JyBleHMOiOMTT4b/B9wViJdP
+	gJt8ze98LJ++8GDA==
+From: "tip-bot2 for Samuel Holland" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] irqchip/riscv-intc: Fix use of AIA interrupts 32-63
+ on riscv32
+Cc: Samuel Holland <samuel.holland@sifive.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Anup Patel <anup@brainfault.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20240312212813.2323841-1-samuel.holland@sifive.com>
+References: <20240312212813.2323841-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/4] mm, slab: move memcg charging to post-alloc hook
-Content-Language: en-US
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>,
- Muchun Song <muchun.song@linux.dev>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
- <20240301-slab-memcg-v1-1-359328a46596@suse.cz> <ZfCkfpogPQVMZnIG@P9FQF9L96D>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZfCkfpogPQVMZnIG@P9FQF9L96D>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <171032734600.398.4666803374287322577.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ICnhLx89;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UNsWCCPs
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-6.50 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLduzbn1medsdpg3i8igc4rk67)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_HI(-3.50)[suse.cz:dkim];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[23];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linux-foundation.org:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,oracle.com,linux.com,google.com,lge.com,gmail.com,cmpxchg.org,linux.dev,zeniv.linux.org.uk,suse.cz,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -6.50
-X-Rspamd-Queue-Id: 7F59321BF3
-X-Spam-Flag: NO
 
-On 3/12/24 19:52, Roman Gushchin wrote:
-> On Fri, Mar 01, 2024 at 06:07:08PM +0100, Vlastimil Babka wrote:
->> The MEMCG_KMEM integration with slab currently relies on two hooks
->> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
->> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
->> to the allocated object(s).
->>
->> As Linus pointed out, this is unnecessarily complex. Failing to charge
->> due to memcg limits should be rare, so we can optimistically allocate
->> the object(s) and do the charging together with assigning the objcg
->> pointer in a single post_alloc hook. In the rare case the charging
->> fails, we can free the object(s) back.
->>
->> This simplifies the code (no need to pass around the objcg pointer) and
->> potentially allows to separate charging from allocation in cases where
->> it's common that the allocation would be immediately freed, and the
->> memcg handling overhead could be saved.
->>
->> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
->> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Nice cleanup, Vlastimil!
-> Couple of small nits below, but otherwise, please, add my
-> 
-> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+The following commit has been merged into the irq/urgent branch of tip:
 
-Thanks!
+Commit-ID:     4ce937160ba053789f96d5130d5de4deaee2ad23
+Gitweb:        https://git.kernel.org/tip/4ce937160ba053789f96d5130d5de4deaee2ad23
+Author:        Samuel Holland <samuel.holland@sifive.com>
+AuthorDate:    Tue, 12 Mar 2024 14:28:08 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 13 Mar 2024 11:50:11 +01:00
 
->>  	/*
->>  	 * The obtained objcg pointer is safe to use within the current scope,
->>  	 * defined by current task or set_active_memcg() pair.
->>  	 * obj_cgroup_get() is used to get a permanent reference.
->>  	 */
->> -	struct obj_cgroup *objcg = current_obj_cgroup();
->> +	objcg = current_obj_cgroup();
->>  	if (!objcg)
->>  		return true;
->>  
->> +	/*
->> +	 * slab_alloc_node() avoids the NULL check, so we might be called with a
->> +	 * single NULL object. kmem_cache_alloc_bulk() aborts if it can't fill
->> +	 * the whole requested size.
->> +	 * return success as there's nothing to free back
->> +	 */
->> +	if (unlikely(*p == NULL))
->> +		return true;
-> 
-> Probably better to move this check up? current_obj_cgroup() != NULL check is more
-> expensive.
+irqchip/riscv-intc: Fix use of AIA interrupts 32-63 on riscv32
 
-It probably doesn't matter in practice anyway, but my thinking was that
-*p == NULL is so rare (the object allocation failed) it shouldn't matter
-that we did current_obj_cgroup() uselessly in case it happens.
-OTOH current_obj_cgroup() returning NULL is not that rare (?) so it
-could be useful to not check *p in those cases?
+riscv_intc_custom_base is initialized to BITS_PER_LONG, so the second
+check passes even though AIA provides 64 interrupts. Adjust the condition to
+only check the custom range for interrupts outside the standard range, and
+adjust the standard range when AIA is available.
 
->> +
->> +	flags &= gfp_allowed_mask;
->> +
->>  	if (lru) {
->>  		int ret;
->>  		struct mem_cgroup *memcg;
->> @@ -1926,71 +1939,51 @@ static bool __memcg_slab_pre_alloc_hook(struct kmem_cache *s,
->>  			return false;
->>  	}
->>  
->> -	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
->> +	if (obj_cgroup_charge(objcg, flags, size * obj_full_size(s)))
->>  		return false;
->>  
->> -	*objcgp = objcg;
->> +	for (i = 0; i < size; i++) {
->> +		slab = virt_to_slab(p[i]);
-> 
-> Not specific to this change, but I wonder if it makes sense to introduce virt_to_slab()
-> variant without any extra checks for this and similar cases, where we know for sure
-> that p resides on a slab page. What do you think?
+Fixes: bb7921cdea12 ("irqchip/riscv-intc: Add support for RISC-V AIA")
+Fixes: e6bd9b966dc8 ("irqchip/riscv-intc: Fix low-level interrupt handler setup for AIA")
+Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Anup Patel <anup@brainfault.org> 
+Link: https://lore.kernel.org/r/20240312212813.2323841-1-samuel.holland@sifive.com
+---
+ drivers/irqchip/irq-riscv-intc.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index f87aeab..9e71c44 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -149,8 +149,9 @@ static int riscv_intc_domain_alloc(struct irq_domain *domain,
+ 	 * Only allow hwirq for which we have corresponding standard or
+ 	 * custom interrupt enable register.
+ 	 */
+-	if ((hwirq >= riscv_intc_nr_irqs && hwirq < riscv_intc_custom_base) ||
+-	    (hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
++	if (hwirq >= riscv_intc_nr_irqs &&
++	    (hwirq < riscv_intc_custom_base ||
++	     hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < nr_irqs; i++) {
+@@ -183,10 +184,12 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
+ 		return -ENXIO;
+ 	}
+ 
+-	if (riscv_isa_extension_available(NULL, SxAIA))
++	if (riscv_isa_extension_available(NULL, SxAIA)) {
++		riscv_intc_nr_irqs = 64;
+ 		rc = set_handle_irq(&riscv_intc_aia_irq);
+-	else
++	} else {
+ 		rc = set_handle_irq(&riscv_intc_irq);
++	}
+ 	if (rc) {
+ 		pr_err("failed to set irq handler\n");
+ 		return rc;
+@@ -195,7 +198,7 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
+ 	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
+ 
+ 	pr_info("%d local interrupts mapped%s\n",
+-		riscv_isa_extension_available(NULL, SxAIA) ? 64 : riscv_intc_nr_irqs,
++		riscv_intc_nr_irqs,
+ 		riscv_isa_extension_available(NULL, SxAIA) ? " using AIA" : "");
+ 	if (riscv_intc_custom_nr_irqs)
+ 		pr_info("%d custom local interrupts mapped\n", riscv_intc_custom_nr_irqs);
 
