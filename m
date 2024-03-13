@@ -1,125 +1,116 @@
-Return-Path: <linux-kernel+bounces-101446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB4E587A72B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:43:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B643B87A73E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1E2EB22F96
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:43:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA5011C21AD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADF13F8FF;
-	Wed, 13 Mar 2024 11:43:20 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D70F3F9E0;
+	Wed, 13 Mar 2024 11:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="is1MNn0M"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4533F8E2
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E353F8F4
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710330200; cv=none; b=djvdvBRqeGO8FsQkMRdr/ikdvHfLm4kaICRu8qdafsqZOP9rNlxq4ykHFWCKy/W4EH7b/HIwwUNfVhAHRF9/AyKSiucdi0rflHQn2tOdDcC+PGfVv75O74L7upf3Pl/q9tLv/KGrWNT3gy3dkVsSL0exewmfQJG0glxVTwBetKM=
+	t=1710330493; cv=none; b=U9QsoiyEjHTK5LPN8ws4A5alrjfY1g2fmnELNafkfbnuyUrjt+mQ1xqALsIdIArKj3bXUD5RWefLrGYHaTq2/l972ppW6eJg4eRK/pKQX/4tUlbIQozWJ85fheU5iZJauVMXCuCCjgDHZKvp4xYQOtZ6aRp740F6DcBNosLkh3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710330200; c=relaxed/simple;
-	bh=ad8rTVaHct8urLSLHqtatS9UKpznhESWblE/bc49dsk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cS1nPOp9HnA7a0lTAlLBfsyr8We/7ZoKDUsKFmSo3ofgn4zajwdiYkLFNjhJNVBwfoUsUmx1DvCIfU/YSbEWy0RPdyCjpOXsxzYLLTfl59mP/tptlXfQpRypWTbLLr017ncmerVe6ilcGJvDMHEHZCpLi52KykNgg9nwMJTNzFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rkN0m-00052U-PD; Wed, 13 Mar 2024 12:43:08 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rkN0l-0066XC-Ph; Wed, 13 Mar 2024 12:43:07 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7371E2A4103;
-	Wed, 13 Mar 2024 11:43:07 +0000 (UTC)
-Date: Wed, 13 Mar 2024 12:43:06 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Daniel Smolik <smolik@mydatex.cz>
-Cc: 
-	"Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Regressions can bus with MCP2515 on sama5d3 connected over SPI
- stop working on kernel > 5.4.271
-Message-ID: <20240313-overload-eloquence-3e504ee0d00b-mkl@pengutronix.de>
-References: <2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz>
- <a2e64be0-e07d-4c55-aba7-87c7e4c876e0@leemhuis.info>
- <734cf096-3769-4610-b72f-394c31a8d942@mydatex.cz>
- <91d8a6b6-6186-4aa0-8462-56b4751854e9@leemhuis.info>
- <6918321b-038d-40b9-8149-d535bf9d3d52@mydatex.cz>
- <5f69d6ee-a07a-42a9-a238-7dbe1f82cc3f@mydatex.cz>
- <3e46d70b-196d-45c7-bfdf-869c78cdc81f@leemhuis.info>
- <20240313-polio-jinx-bc5fd5df7c06-mkl@pengutronix.de>
- <b6c9b015-86bc-475b-a190-e35fa76c1ceb@mydatex.cz>
+	s=arc-20240116; t=1710330493; c=relaxed/simple;
+	bh=DNFni+XUTW3FICrmk/m7hXGzpOYHOb0w8uarqKy8hAQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dHB3HwMVx0n83j05sFOyOLZeqStexbvfCHES3q3U+D2a5PZ+ueqZcD0VaxpykRqmPhaPVbT5j93v8q9afM6VZBFYsiZalgCwtBt38m5ocQ3sqcdbdGbUhxoDP5G47gbE5IGoXYZUDzQNNxhveV2yDGo/gbg1EBHSFaYazIUW/JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=is1MNn0M; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d130979108so3589916241.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 04:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1710330489; x=1710935289; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DNFni+XUTW3FICrmk/m7hXGzpOYHOb0w8uarqKy8hAQ=;
+        b=is1MNn0MzDh2bNxd/Mu5MUtXha5AO9+HWfGhIwfIZQEiAlvyH+p2N5hq6MG1aVtn1G
+         wjWs+GLQ3MAKVmHnmFI35vIpBINl6pFOKcxI6y/6CXNpnTqUbC9cwNYt0rNWyC/qcrjs
+         MsQkCqn8GvYtf5+PIYTSLM6H7J2R9fyq+d9se5je5HiD5BpGYsRW7Z46GZQnWenOMceD
+         RdYq6Dw+i1iDq6gb3Fgc6YB8CyApeJs7X1u0WtdmDUCk372RLxhrhhiNZcwNPWqjtyIx
+         4g/Zm2pkeK9gpNzUNFoqTujAsWjho9ieUkMkoo4DQawydOThl01CRRJPgYDzhtmTe2uz
+         iKSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710330489; x=1710935289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DNFni+XUTW3FICrmk/m7hXGzpOYHOb0w8uarqKy8hAQ=;
+        b=o3crZj5+FN6fWw9zEk9Xk7KoU8ttqpFIJeBftbUqXyzIHYRYqHU29mAoAazIIlctoX
+         vjyBARuTs7YVuKe4/x317ketTqhT9OZoyqEzsd+/OXujrIGX/oPr/a3tXYusICusPmOh
+         j8oZ9PYiZogwzPvUfygQqadVzJ4R8Pcqcgg6qnaB2rkuQ1zPzAbAIuzzvdX6sA59Rx3z
+         XI+31OUy4r+ejl4woxuwt9v2oAPCReFm+Bf83AkPnGDEGFTYD3voriX0Vd9HtswAODRk
+         0bhB+B4PGxHpSsOwfntVq5fWtglKFlZTfOzPn4PSPny7YW0pFuyqxE8U06sFAveVulo3
+         OLoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVbSOqAwMX5ES7TkBvbdXcXG5Yc/qA56kCcqtMZhWq/1jQK4OmSLO0utBW/2E63GfKH0UwQhsI+W9shxrpc7y6NRmRaAVOauiCdQvam
+X-Gm-Message-State: AOJu0Yy8AzF762PEcWqVY/hFUdjy7v9UX21Dl/V8KXqTYC4dEM9VZSB0
+	uZCMW4LPqXNMndlB+HORUmanHYkTGBRtN5DGsvltHkCpLXfLeKTAsLLJH8NDjFk7JRu7shTFaXs
+	P3N/Rdgzb1DPFQf7Ae8kNLm0NHH3KbrlEkg2lIQ==
+X-Google-Smtp-Source: AGHT+IGluT9xzhiFMWC0Cc9+B6tkk59Ep9zHKSImJGtOuPJFypPJghuHNvH8l+0pIM+ELjCSmDlX3v320pWMu4ltdjU=
+X-Received: by 2002:a67:af02:0:b0:473:2066:6df0 with SMTP id
+ v2-20020a67af02000000b0047320666df0mr9214696vsl.33.1710330489649; Wed, 13 Mar
+ 2024 04:48:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="e3a7udsf47bt22ng"
-Content-Disposition: inline
-In-Reply-To: <b6c9b015-86bc-475b-a190-e35fa76c1ceb@mydatex.cz>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---e3a7udsf47bt22ng
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240307135109.3778316-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkda6bykOFY6gcZqRKLAnprUooZooQ_g7Rj_63da2akbwtA@mail.gmail.com> <ZfGKkjxIT9AEd8dy@smile.fi.intel.com>
+In-Reply-To: <ZfGKkjxIT9AEd8dy@smile.fi.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 13 Mar 2024 12:47:58 +0100
+Message-ID: <CAMRc=McjYKCLGKk42SWdCy3Lc=B4B21WpS1kvx_d66itHKsQzQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] gpiolib: Get rid of gpio_free_array()/gpio_request_array()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>, 
+	Alex Shi <alexs@kernel.org>, Yanteng Si <siyanteng@loongson.cn>, 
+	Hu Haowen <2023002089@link.tyut.edu.cn>, Daniel Mack <daniel@zonque.org>, 
+	Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+	Russell King <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 13.03.2024 12:22:25, Daniel Smolik wrote:
-> this is my first bisection please be lenient :-) Threse is a result:
->=20
-> marvin@marvin:/usr/src/linux$ git bisect good
-> Bisecting: 0 revisions left to test after this (roughly 0 steps)
-> [52f96cd135b160d44db4cb62a5b614b3bca20fbc] net: stmmac: xgmac: Remove
-> uneeded computation for RFA/RFD
+On Wed, Mar 13, 2024 at 12:14=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Mar 07, 2024 at 03:36:18PM +0100, Linus Walleij wrote:
+> > On Thu, Mar 7, 2024 at 2:51=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > > There are only two users left of the gpio_free_array()/gpio_request_a=
+rray().
+> > > Convert them to very basic legacy APIs (it requires much less work fo=
+r
+> > > now) and drop no more used gpio_free_array()/gpio_request_array().
+> >
+> > That's reasonable and makes the kernel a better place.
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Thank you!
+>
+> Bart, do you want me to take it via my tree or you want to take directly?
+>
 
-I think you still miss a bisection step.
+We don't have Acks from the relevant arch maintainers yet. I can pick
+it up but I won't do it before the end of the merge window anyway.
 
-The commit 52f96cd135b1 ("net: stmmac: xgmac: Remove uneeded computation
-for RFA/RFD") is unrelated to CAN problem you described. It's in the
-stmmac Ethernet driver.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---e3a7udsf47bt22ng
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXxkUgACgkQKDiiPnot
-vG8JGAf+LdzIqEkeVo4hYrxhHNp/mqLZ9kikzdmydSKIQdZjQT0MNca5MVLa/Uan
-hcGTGeiSQoOa2MUYAZsUdUY/G4mSddDjNzJ5J/FtGrrrfnPcaYzu+OUeR5Rk+iAu
-JzUSd15Bf9NLaTTs9D8+rw50WJq4Irqc9rmek54lOx2QiCveBEbH9H7KLsXpdkVW
-jG31+k/0VICxHJQbnBtnE6t2ZJMNP9VKqx7YwM1/ue3e29X+DNIXpj+BB8rRrGtg
-mawWyA+wyartjJYuMnTbUiwopp55QeQfhRppJ/hKjKUmcIQPFbYOMtxOYl5ktSPT
-3oeQfU2ngbn1qQA2sO5xmI29es8j/w==
-=Dqj4
------END PGP SIGNATURE-----
-
---e3a7udsf47bt22ng--
+Bart
 
