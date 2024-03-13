@@ -1,104 +1,77 @@
-Return-Path: <linux-kernel+bounces-102443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DC9D87B297
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:10:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D6E687B215
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CC3BB26527
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:41:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D68F28A42D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717C84D117;
-	Wed, 13 Mar 2024 19:41:08 +0000 (UTC)
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [116.203.183.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9197A4CE11;
-	Wed, 13 Mar 2024 19:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.183.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0168747A6F;
+	Wed, 13 Mar 2024 19:42:31 +0000 (UTC)
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20E1225AA;
+	Wed, 13 Mar 2024 19:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710358868; cv=none; b=XLu5yaPk+k7ozb6g+vpede9bGYSaoW70E+LK8MRpkZL+VM4Hrcuz20JQkLNVgZQcZNAkZFAMRqntt4VN+JZm9sxkvk3BKANwhcVdLuBWsbnMGrmtwbQQedCHe5m+42EVGhE1VCkc53L3VLApZU4+AHtG0CWlCcn3n0h44pHnmbo=
+	t=1710358950; cv=none; b=rlGUbk6i6bxjda2EN6gJ3NQLX/77qTK4YdQ3TTlcZKW+o4wkxf9bvxeZGU3iJKaemBH9HfRtiBxKZoEnTEblAZn9oFu9H/vzG7bQ4modODcRLUtX7DLedXTJaCulX3lpBXXvjiRa3krtskgUFsEICAGiXtzkn5gIEOXGilCLVZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710358868; c=relaxed/simple;
-	bh=G/HV2rkBpLvlZFMNXRNboGfFRvkIxzCR/w0qKB3g1D8=;
+	s=arc-20240116; t=1710358950; c=relaxed/simple;
+	bh=/vIfaDdu3Q5cNuz3JLcVHVc3X2jfmA0JFBfrkRQdH2c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DtISN1m+okw++iEChXhVWGf8KvQ47MEygt8S6q19XEoLNXCySOiAXkls5aoIY1tdlznCfahmHkUGLWrXiclLYUv5lkfoBmkpCmjEOaaDG3mXJNrdk4pSzkEQ99sHiPkc+vq2b3Hm43+DS5CVE0mc35Ie4kjebq5lyYeoeJwtbus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue; spf=pass smtp.mailfrom=c0d3.blue; arc=none smtp.client-ip=116.203.183.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c0d3.blue
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 13B733F07B;
-	Wed, 13 Mar 2024 20:40:50 +0100 (CET)
-Date: Wed, 13 Mar 2024 20:40:49 +0100
-From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To: Simon Horman <horms@kernel.org>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Dietmar Maurer <dietmar@proxmox.com>,
-	Thomas Lamprecht <t.lamprecht@proxmox.com>,
-	Wolfgang Bumiller <w.bumiller@proxmox.com>,
-	Alexandre Derumier <aderumier@odiso.com>
-Subject: Re: [PATCH net] netfilter: conntrack: fix ct-state for ICMPv6
- Multicast Router Discovery
-Message-ID: <ZfIBQbPeP8SYc3jf@sellars>
-References: <20240306141805.17679-1-linus.luessing@c0d3.blue>
- <20240307101254.GL281974@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FA8yF+RcYceU8n9I/uj+ZrqY4Odfeuly3uUcA3FyHmO/UthQYuWR/xut20E90pxGKpmmygvbCJQRjfzJrBdsL+wKpwgl5aft7VWZn6IxE2hEpCxPidLzJTb5NZjrMXWYk5ovW8SJj5g/dfDh+re5hMjuMnrzjkOei4/M5wEO8yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id 79E4272C8FB;
+	Wed, 13 Mar 2024 22:42:21 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+	id 68DAC7CCB3A; Wed, 13 Mar 2024 21:42:21 +0200 (IST)
+Date: Wed, 13 Mar 2024 21:42:21 +0200
+From: "Dmitry V. Levin" <ldv@strace.io>
+To: Casey Schaufler <casey@schaufler-ca.com>,
+	Paul Moore <paul@paul-moore.com>
+Cc: LSM List <linux-security-module@vger.kernel.org>,
+	Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+	linux-api@vger.kernel.org,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+	James Morris <jmorris@namei.org>, Serge Hallyn <serge@hallyn.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>
+Subject: Re: [PATCH v3] LSM: use 32 bit compatible data types in LSM syscalls.
+Message-ID: <20240313194221.GA18631@altlinux.org>
+References: <00734a64-a5fe-420c-bf6e-bee27c9d83be.ref@schaufler-ca.com>
+ <da4d181d-16b9-4e0f-a744-ac61702e0b63@schaufler-ca.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307101254.GL281974@kernel.org>
-X-Last-TLS-Session-Version: TLSv1.3
+In-Reply-To: <da4d181d-16b9-4e0f-a744-ac61702e0b63@schaufler-ca.com>
 
-On Thu, Mar 07, 2024 at 10:12:54AM +0000, Simon Horman wrote:
-> Hi Linus,
+On Wed, Mar 13, 2024 at 12:32:37PM -0700, Casey Schaufler wrote:
+> LSM: use 32 bit compatible data types in LSM syscalls.
 > 
-> this appears to be a fix and as such I think it warrants a Fixes tag.
-> You should be able to just add it to this thread if no other changes
-> are required - no need for a v2 just to address this.
+> Change the size parameters in lsm_list_modules(), lsm_set_self_attr()
+> and lsm_get_self_attr() from size_t to u32. This avoids the need to
+> have different interfaces for 32 and 64 bit systems.
 > 
-> ...
+> Cc: stable@vger.kernel.org
+> Fixes: a04a1198088a: ("LSM: syscalls for current process attributes")
+> Fixes: ad4aff9ec25f: ("LSM: Create lsm_list_modules system call")
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 
-Hi Simon,
-
-From reading the code and git logs I suspect this
-commit, which introduced icmpv6_error():
-
-  9fb9cbb1082d [NETFILTER]: Add nf_conntrack subsystem.
-
-  (introduced in: Linux v2.6.15 / 2006)
-
-Unfortunately, I was only able to reproduce it in practice
-on a Debian 5 / Linux 2.6.26 in a VM so far.
-
-I could boot a Debian 4 + Linux 2.6.15, but wasn't able to
-insert conntrack rules with ip6tables there though, even
-with some iptables + kernel rebuilds/reconfigure attempts.
+Reported-and-reviewed-by: Dmitry V. Levin <ldv@strace.io>
 
 
-
-Also this related fix introduced in v2.6.29 should hint to the
-age of this issue:
-
-  3f9007135c1d netfilter: nf_conntrack_ipv6: don't track ICMPv6 negotiation message
-
-Which only picked/fixed a few ICMPv6 types but not ICMPv6 MRD
-though.
-
-
-tl;dr: for me this would be ok, if it were ok for others, too, that I
-couldn't fully bisect to it in practice... :
-
-Fixes: 9fb9cbb1082d ("[NETFILTER]: Add nf_conntrack subsystem.")
+-- 
+ldv
 
