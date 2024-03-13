@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 380B087AE26
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:50:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D94E987AE29
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCAB81F2D208
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:50:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0965A1C22136
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C58D15B0FD;
-	Wed, 13 Mar 2024 16:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C29315B979;
+	Wed, 13 Mar 2024 16:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C+Mq+JFR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SzOlrD1I"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A345C15AAD9;
-	Wed, 13 Mar 2024 16:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C5D15B113;
+	Wed, 13 Mar 2024 16:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348450; cv=none; b=Af/LkMfGNl7ueCiA+j8TvqFTOlDGgPy5l0pjYyfuDJeFz6qkGML7HIgGkpSuOzPwsHRg6jilkNj2gz7xhwND8nrpD9tT5bDTiGJnJRlyf0vSU+0NEuct8kYLJwXzv0eMUlEG/E5cgAXdUnNyG+XuY/YoNeLqvN5w/mQjHMvv2+c=
+	t=1710348452; cv=none; b=DXIU9yyGGCCbRjXrIzrnMC5aAvcRGEGatRnOEoRq8tpsDqxh6jAUwThflmDxXl2ZhjCEYOr5wre2URs2B1zQo1IkDjwMF8MGc/Jb5wA3V4Cjwhc0rKovaJyh6lZ3bsBx9B3/JB2pThkxIZUOl5X3CClBhKlt0ljHq7JLqeZ1P6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348450; c=relaxed/simple;
-	bh=35fWejEZZKXvoDZx3BRorUFQb5CQmMP9lyAXTgMA5LI=;
+	s=arc-20240116; t=1710348452; c=relaxed/simple;
+	bh=lhW0E9o8xdX5sdzcKG/6y7daJkXyEql2FjTYwNEWdO8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QE0J9RzKz7u6Zz6nHjaNol0zf+zAh9hXtljBNFfSYJfOjebGi9dQEVitJo/K3WHOXgIK8b3He2iixxic7+ooTso15ZA0CRLQrIJ6IQwdyfutQaj1cJIK6VTh+pz6Iw4dR6SdpuwBUV0mh0WfjzTTnooH7CSY+kfyZm8HbdluMF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C+Mq+JFR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE15BC433F1;
-	Wed, 13 Mar 2024 16:47:29 +0000 (UTC)
+	 MIME-Version; b=goFtx8VLh5sTmJEA6aKsLxsueViS9I7iqK6WR66WMmGZEMSM61s1wOsGf3zeSuKrfS9u0yHWuP1Hf/czCBIMX8VuAlNjtfki8+MJpRWLeboXqGpmRGpMiYkvozpmSmn9o2eGhF4km416I2qorh/L7ZbolxG6G0J8GyAjnP+skas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SzOlrD1I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C34B9C43390;
+	Wed, 13 Mar 2024 16:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348450;
-	bh=35fWejEZZKXvoDZx3BRorUFQb5CQmMP9lyAXTgMA5LI=;
+	s=k20201202; t=1710348451;
+	bh=lhW0E9o8xdX5sdzcKG/6y7daJkXyEql2FjTYwNEWdO8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C+Mq+JFRumLQlHx+esAqJA6Mx/vC5NEoYOkiM2VG53Ll7CiFe95Rv8V4fi6M+S9Vq
-	 IKRROMkYSqk7qhCNQkO1YaMsYbRzybeXdHha5OR1d3RNejc4+JM5QCxVfNzpT14Ud0
-	 BgWBjuOeXl0npTY6Y227d4b4S3pM8r7SeQgy37bS8QTBgwDI3WePvpt8wwgsUFSihD
-	 x0QOfvdxcNFnhxxPvSfYG2MHbSb0VfHH6OIa9gYD4JTFTEXNVlFuLY9CzKtKyaYOIq
-	 OI4ODXZeExo40K9UO1IbeiiYIrfkHolSe5gB+y5kNdkffRYPNz+vnilDYk1+dR8xjL
-	 YX780hf/dDdxA==
+	b=SzOlrD1IPpvB11k7AVSlyqIIEW+WdyQbWc8uaytuFosSaImNlV996w9KgGEnndNOa
+	 skcBNayVsqnbp68yxeOQy915/IopOQF2JkdmB8AFG156+MuPaWLI2ReBWOUAX/oDZx
+	 HW2lG0yJDwalgt62HP7hJVKWEs7IIBc+87q900pprW4Ve2vOnpNL6A14d7NHVi2/hp
+	 AvGnTxGh8Vqm9y4CCeiwz4C61j01ugFsgxAapai1i2bFM4mPY2uFiGy/G0ff1ou2BU
+	 bQDdGHIA6Qjp7TX6yfVHTFWyu5Ta/XCKX4sWVQIWUXS0/UGXYhGDlgxqs8ZfS6rF1L
+	 AUxl/tLq2blZA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 44/73] net: Change sock_getsockopt() to take the sk ptr instead of the sock ptr
-Date: Wed, 13 Mar 2024 12:46:11 -0400
-Message-ID: <20240313164640.616049-45-sashal@kernel.org>
+Subject: [PATCH 5.10 45/73] bpf: net: Change sk_getsockopt() to take the sockptr_t argument
+Date: Wed, 13 Mar 2024 12:46:12 -0400
+Message-ID: <20240313164640.616049-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -70,75 +70,232 @@ Content-Transfer-Encoding: 8bit
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-[ Upstream commit ba74a7608dc12fbbd8ea36e660087f08a81ef26a ]
+[ Upstream commit 4ff09db1b79b98b4a2a7511571c640b76cab3beb ]
 
-A latter patch refactors bpf_getsockopt(SOL_SOCKET) with the
-sock_getsockopt() to avoid code duplication and code
-drift between the two duplicates.
+This patch changes sk_getsockopt() to take the sockptr_t argument
+such that it can be used by bpf_getsockopt(SOL_SOCKET) in a
+latter patch.
 
-The current sock_getsockopt() takes sock ptr as the argument.
-The very first thing of this function is to get back the sk ptr
-by 'sk = sock->sk'.
-
-bpf_getsockopt() could be called when the sk does not have
-the sock ptr created.  Meaning sk->sk_socket is NULL.  For example,
-when a passive tcp connection has just been established but has yet
-been accept()-ed.  Thus, it cannot use the sock_getsockopt(sk->sk_socket)
-or else it will pass a NULL ptr.
-
-This patch moves all sock_getsockopt implementation to the newly
-added sk_getsockopt().  The new sk_getsockopt() takes a sk ptr
-and immediately gets the sock ptr by 'sock = sk->sk_socket'
-
-The existing sock_getsockopt(sock) is changed to call
-sk_getsockopt(sock->sk).  All existing callers have both sock->sk
-and sk->sk_socket pointer.
-
-The latter patch will make bpf_getsockopt(SOL_SOCKET) call
-sk_getsockopt(sk) directly.  The bpf_getsockopt(SOL_SOCKET) does
-not use the optnames that require sk->sk_socket, so it will
-be safe.
+security_socket_getpeersec_stream() is not changed.  It stays
+with the __user ptr (optval.user and optlen.user) to avoid changes
+to other security hooks.  bpf_getsockopt(SOL_SOCKET) also does not
+support SO_PEERSEC.
 
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://lore.kernel.org/r/20220902002756.2887884-1-kafai@fb.com
+Link: https://lore.kernel.org/r/20220902002802.2888419-1-kafai@fb.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Stable-dep-of: 5a287d3d2b9d ("lsm: fix default return value of the socket_getpeersec_*() hooks")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/sock.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ include/linux/filter.h  |  3 +--
+ include/linux/sockptr.h |  5 +++++
+ net/core/filter.c       |  5 ++---
+ net/core/sock.c         | 43 +++++++++++++++++++++++------------------
+ 4 files changed, 32 insertions(+), 24 deletions(-)
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 769e969cd1dc5..95559d088a169 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1293,10 +1293,10 @@ static int groups_to_user(gid_t __user *dst, const struct group_info *src)
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index bc6ce4b202a80..cd56e53bd42e2 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -892,8 +892,7 @@ int sk_reuseport_attach_filter(struct sock_fprog *fprog, struct sock *sk);
+ int sk_reuseport_attach_bpf(u32 ufd, struct sock *sk);
+ void sk_reuseport_prog_free(struct bpf_prog *prog);
+ int sk_detach_filter(struct sock *sk);
+-int sk_get_filter(struct sock *sk, struct sock_filter __user *filter,
+-		  unsigned int len);
++int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len);
+ 
+ bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
+ void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
+diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
+index ea193414298b7..38862819e77a1 100644
+--- a/include/linux/sockptr.h
++++ b/include/linux/sockptr.h
+@@ -64,6 +64,11 @@ static inline int copy_to_sockptr_offset(sockptr_t dst, size_t offset,
  	return 0;
  }
  
--int sock_getsockopt(struct socket *sock, int level, int optname,
--		    char __user *optval, int __user *optlen)
-+static int sk_getsockopt(struct sock *sk, int level, int optname,
-+			 char __user *optval, int __user *optlen)
- {
--	struct sock *sk = sock->sk;
-+	struct socket *sock = sk->sk_socket;
- 
- 	union {
- 		int val;
-@@ -1633,6 +1633,12 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
- 	return 0;
- }
- 
-+int sock_getsockopt(struct socket *sock, int level, int optname,
-+		    char __user *optval, int __user *optlen)
++static inline int copy_to_sockptr(sockptr_t dst, const void *src, size_t size)
 +{
-+	return sk_getsockopt(sock->sk, level, optname, optval, optlen);
++	return copy_to_sockptr_offset(dst, 0, src, size);
 +}
 +
+ static inline void *memdup_sockptr(sockptr_t src, size_t len)
+ {
+ 	void *p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6cfc8fb0562a2..49e4d1535cc82 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9903,8 +9903,7 @@ int sk_detach_filter(struct sock *sk)
+ }
+ EXPORT_SYMBOL_GPL(sk_detach_filter);
+ 
+-int sk_get_filter(struct sock *sk, struct sock_filter __user *ubuf,
+-		  unsigned int len)
++int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len)
+ {
+ 	struct sock_fprog_kern *fprog;
+ 	struct sk_filter *filter;
+@@ -9935,7 +9934,7 @@ int sk_get_filter(struct sock *sk, struct sock_filter __user *ubuf,
+ 		goto out;
+ 
+ 	ret = -EFAULT;
+-	if (copy_to_user(ubuf, fprog->filter, bpf_classic_proglen(fprog)))
++	if (copy_to_sockptr(optval, fprog->filter, bpf_classic_proglen(fprog)))
+ 		goto out;
+ 
+ 	/* Instead of bytes, the API requests to return the number
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 95559d088a169..42da46965b16f 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -644,8 +644,8 @@ static int sock_setbindtodevice(struct sock *sk, sockptr_t optval, int optlen)
+ 	return ret;
+ }
+ 
+-static int sock_getbindtodevice(struct sock *sk, char __user *optval,
+-				int __user *optlen, int len)
++static int sock_getbindtodevice(struct sock *sk, sockptr_t optval,
++				sockptr_t optlen, int len)
+ {
+ 	int ret = -ENOPROTOOPT;
+ #ifdef CONFIG_NETDEVICES
+@@ -668,12 +668,12 @@ static int sock_getbindtodevice(struct sock *sk, char __user *optval,
+ 	len = strlen(devname) + 1;
+ 
+ 	ret = -EFAULT;
+-	if (copy_to_user(optval, devname, len))
++	if (copy_to_sockptr(optval, devname, len))
+ 		goto out;
+ 
+ zero:
+ 	ret = -EFAULT;
+-	if (put_user(len, optlen))
++	if (copy_to_sockptr(optlen, &len, sizeof(int)))
+ 		goto out;
+ 
+ 	ret = 0;
+@@ -1281,20 +1281,23 @@ static void cred_to_ucred(struct pid *pid, const struct cred *cred,
+ 	}
+ }
+ 
+-static int groups_to_user(gid_t __user *dst, const struct group_info *src)
++static int groups_to_user(sockptr_t dst, const struct group_info *src)
+ {
+ 	struct user_namespace *user_ns = current_user_ns();
+ 	int i;
+ 
+-	for (i = 0; i < src->ngroups; i++)
+-		if (put_user(from_kgid_munged(user_ns, src->gid[i]), dst + i))
++	for (i = 0; i < src->ngroups; i++) {
++		gid_t gid = from_kgid_munged(user_ns, src->gid[i]);
++
++		if (copy_to_sockptr_offset(dst, i * sizeof(gid), &gid, sizeof(gid)))
+ 			return -EFAULT;
++	}
+ 
+ 	return 0;
+ }
+ 
+ static int sk_getsockopt(struct sock *sk, int level, int optname,
+-			 char __user *optval, int __user *optlen)
++			 sockptr_t optval, sockptr_t optlen)
+ {
+ 	struct socket *sock = sk->sk_socket;
+ 
+@@ -1312,7 +1315,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 	int lv = sizeof(int);
+ 	int len;
+ 
+-	if (get_user(len, optlen))
++	if (copy_from_sockptr(&len, optlen, sizeof(int)))
+ 		return -EFAULT;
+ 	if (len < 0)
+ 		return -EINVAL;
+@@ -1445,7 +1448,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		cred_to_ucred(sk->sk_peer_pid, sk->sk_peer_cred, &peercred);
+ 		spin_unlock(&sk->sk_peer_lock);
+ 
+-		if (copy_to_user(optval, &peercred, len))
++		if (copy_to_sockptr(optval, &peercred, len))
+ 			return -EFAULT;
+ 		goto lenout;
+ 	}
+@@ -1463,11 +1466,11 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		if (len < n * sizeof(gid_t)) {
+ 			len = n * sizeof(gid_t);
+ 			put_cred(cred);
+-			return put_user(len, optlen) ? -EFAULT : -ERANGE;
++			return copy_to_sockptr(optlen, &len, sizeof(int)) ? -EFAULT : -ERANGE;
+ 		}
+ 		len = n * sizeof(gid_t);
+ 
+-		ret = groups_to_user((gid_t __user *)optval, cred->group_info);
++		ret = groups_to_user(optval, cred->group_info);
+ 		put_cred(cred);
+ 		if (ret)
+ 			return ret;
+@@ -1483,7 +1486,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 			return -ENOTCONN;
+ 		if (lv < len)
+ 			return -EINVAL;
+-		if (copy_to_user(optval, address, len))
++		if (copy_to_sockptr(optval, address, len))
+ 			return -EFAULT;
+ 		goto lenout;
+ 	}
+@@ -1500,7 +1503,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		break;
+ 
+ 	case SO_PEERSEC:
+-		return security_socket_getpeersec_stream(sock, optval, optlen, len);
++		return security_socket_getpeersec_stream(sock, optval.user, optlen.user, len);
+ 
+ 	case SO_MARK:
+ 		v.val = sk->sk_mark;
+@@ -1528,7 +1531,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		return sock_getbindtodevice(sk, optval, optlen, len);
+ 
+ 	case SO_GET_FILTER:
+-		len = sk_get_filter(sk, (struct sock_filter __user *)optval, len);
++		len = sk_get_filter(sk, optval, len);
+ 		if (len < 0)
+ 			return len;
+ 
+@@ -1575,7 +1578,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		sk_get_meminfo(sk, meminfo);
+ 
+ 		len = min_t(unsigned int, len, sizeof(meminfo));
+-		if (copy_to_user(optval, &meminfo, len))
++		if (copy_to_sockptr(optval, &meminfo, len))
+ 			return -EFAULT;
+ 
+ 		goto lenout;
+@@ -1625,10 +1628,10 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ 
+ 	if (len > lv)
+ 		len = lv;
+-	if (copy_to_user(optval, &v, len))
++	if (copy_to_sockptr(optval, &v, len))
+ 		return -EFAULT;
+ lenout:
+-	if (put_user(len, optlen))
++	if (copy_to_sockptr(optlen, &len, sizeof(int)))
+ 		return -EFAULT;
+ 	return 0;
+ }
+@@ -1636,7 +1639,9 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
+ int sock_getsockopt(struct socket *sock, int level, int optname,
+ 		    char __user *optval, int __user *optlen)
+ {
+-	return sk_getsockopt(sock->sk, level, optname, optval, optlen);
++	return sk_getsockopt(sock->sk, level, optname,
++			     USER_SOCKPTR(optval),
++			     USER_SOCKPTR(optlen));
+ }
+ 
  /*
-  * Initialize an sk_lock.
-  *
 -- 
 2.43.0
 
