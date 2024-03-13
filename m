@@ -1,137 +1,181 @@
-Return-Path: <linux-kernel+bounces-102456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 262B387B25D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:56:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15B6487B266
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D653B283EB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:56:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F95728A1F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D99E4CB38;
-	Wed, 13 Mar 2024 19:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UiWcLg9w"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BBC4CE04;
+	Wed, 13 Mar 2024 19:58:18 +0000 (UTC)
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03849482D4;
-	Wed, 13 Mar 2024 19:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326AA20DDB;
+	Wed, 13 Mar 2024 19:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710359765; cv=none; b=XoQo+LMWVFPxcDXv1NyjmXGYxoahaEgFFkoDCze/X6NxlJb6TTC3/490UuzdRpR8BpLJjfPNCEr+ly46uDQ/Bi6Wxb4apVncT0n+yPe1xfciXpmr3CTjC7KWODyIlIKBPCphTsP7hY5I0k6DDYQAJHMOWUsqyr+VRK8EwYIx7wQ=
+	t=1710359898; cv=none; b=ImeV9DvLjNvLogHLRbtuM7rC4SodVDX5svar8zu9BUVC6R6bVBaeivJxAH4SSnAhs4xlm9Y+piUG4PyuYFmtx6c8dzjXyr4vl9CDZj6K4l0NH/Ux3URsBaLq2bYp3sNZRwMJSihLFp2spVWTIs1Nd2dbXbyPYkSEARhiGcKmGUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710359765; c=relaxed/simple;
-	bh=GopJVs09YC8B31IStPnxUVp3Zcqx8IaRJ1z0E3WCq0k=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BPOhY6LpwYz6NbcvuNGsqeWgQDHFCC01nnW+yJ7xAfGSPL+jAw9iToH45Ztp/pSdA8pZld8fJQvzFxc/P50paxaSm0fWd7ajNPRwqnrQ36qMWYQEl5en7lYdYrD1Xlisre9Lj30SUWvekJyHFUn9HSDTSz62afhBiI0WgQ7xDGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UiWcLg9w; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1710359898; c=relaxed/simple;
+	bh=hhFq5IpzNKqt3vASlinqD/E0HbWm7PiMwUPQBESAj5I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TCwFzEsWezUjZH8fv04mi0bJZBH6+tuzneg2tUh/d9TyV63k2DOr3bljkaDqkByp17tATkVqlzrzLVRxisB6dFboc/TNdYJxoPuNVRuk+C1jrVxEtITX8GRAJKRJmsO+Rf5OoVdTi0oYB2QBuyO81qja0QHlhcHenGrbeeta6iY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5682ecd1f81so332142a12.0;
-        Wed, 13 Mar 2024 12:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710359762; x=1710964562; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4UlZ0qXaHrxjPwMvupsh66nrXfN2ATU7nRdRC9at3BQ=;
-        b=UiWcLg9w0yPFsN9FFfMndmgcVmT08WTiN5Ux6HNTSED+9wMtxPyhp7v9pYR+IStVOy
-         u04w10L6kEh9Mj2s8D9JwKVT5D736fLOKKHFf/xMXdQooIZKcL6XL+AvoSGOFbEYHqTC
-         PrGduPtSMg+9kIUMpLWyQsKmrZPCtW9e3ltacKaZR+LdIXru3gtfdqfWQGfikEn/v3KZ
-         e0rxeCOo8Ldj/rbQFA5qYd+3t9M2gQgkwUxo6HE4cTaEUrUIiY2gZCoqApSuufz8KJ/1
-         txZ9UqBnugyowESgcDuIxmm+CcgZrbjdKMGD/spT6wpT/hhJnMY+8OzYV7aHdatRgVA/
-         2ixg==
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-2219edd959dso74895fac.0;
+        Wed, 13 Mar 2024 12:58:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710359762; x=1710964562;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4UlZ0qXaHrxjPwMvupsh66nrXfN2ATU7nRdRC9at3BQ=;
-        b=mF446DIGkIW/XS+4RcdAtQAkK9YcU4OrDfml8dOagUoAepctjjRRCXhi6A9SAjWCDV
-         8tYVr7nt4myn0LT/CisawcjY9dtkkL0w0US8rfkz3Lk5WMA7eEZMd4gqlxmuXiIgT1iB
-         4Ju3mIv0WFkGyFZ4zqJEpfjpL6rIFR7nvWPMZKyEpWDFeLDtBmxvU+9UErg3fOZm/hAb
-         QzqpHt0lFYHHzBlW8lMG90f5EBrSJZWYPi/WAFaQcI91o2plPnQuncsOePdF/oTvRPzp
-         ltKAquMm76VRNDLnMGWuDsRwn7Bhd6DzOup3FLcAcnOIEEpP9vXTjAuvbgZ8ZAHcSHBu
-         meZA==
-X-Forwarded-Encrypted: i=1; AJvYcCURIwHcZCUQLaQvR9A97ejHhD4subIJROETZ4aydeu3d3lNE4+MJF9UNTNggsIqXiuXXWjI0VUMM3DrxSqCZuKuddmJEGWJi5R4CW+DnWcLm3qpq5mzM7dMlbD1go+HiEjfdITPfD0w
-X-Gm-Message-State: AOJu0YyffH7ZIVwz2OVCDONX3XtViIT1zhTUFC36xqRgXMGlMNN8JsX9
-	kiCqc8fug0YmtIP/H5YmDMetX9CLqVCPmOwi/FfOJm1GifUjQ3Y2
-X-Google-Smtp-Source: AGHT+IH8cNdgWX+LUUV7wY6S2o3bUPbzsboy+KMW8TCu6oCxNEmi/ELSH1RwS2TTqnG4UygXYJ6MKw==
-X-Received: by 2002:a50:9b5d:0:b0:566:fbf5:a279 with SMTP id a29-20020a509b5d000000b00566fbf5a279mr2995432edj.20.1710359762056;
-        Wed, 13 Mar 2024 12:56:02 -0700 (PDT)
-Received: from vamoiridPC ([2a04:ee41:82:7577:fa35:157e:1a40:3463])
-        by smtp.gmail.com with ESMTPSA id f8-20020a056402004800b00568550a0762sm3716486edu.6.2024.03.13.12.56.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 12:56:01 -0700 (PDT)
-From: Vasileios Amoiridis <vassilisamir@gmail.com>
-X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
-Date: Wed, 13 Mar 2024 20:55:59 +0100
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
-	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
-	ak@it-klinger.de, petre.rodan@subdimension.ro,
-	linus.walleij@linaro.org, phil@raspberrypi.com, 579lpy@gmail.com,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] iio: pressure: Add timestamp and scan_masks for
- BMP280 driver
-Message-ID: <20240313195559.GC1938985@vamoiridPC>
-References: <20240313174007.1934983-1-vassilisamir@gmail.com>
- <20240313174007.1934983-6-vassilisamir@gmail.com>
- <ZfH2dxmSzcw1_3vt@smile.fi.intel.com>
+        d=1e100.net; s=20230601; t=1710359895; x=1710964695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NdP8F+x5j1lSl9Kjac5VCWtp2OKa5wXezFE2irQlxPY=;
+        b=a0Z04Dna8Gtl25EDeNATVlB59ubX0/tiAtYJlvgryvdokzvYz+eWuu+Z9AX4maeHoK
+         jOIQpFnt/SAADin7E6OCoqIzxTlwJ2vKMZUfcTeyUhbQc2UNv4sKPiQbIjYRhwRkf+Iq
+         pImL6fA8hCJkeInpdxDF+kq/Of+7MyvmC4rDAAleU/4teFrM9I/jhx+YmVUZ1Ov0uPWZ
+         OTkxVbL5o1AFBDm5vW5rM3V6MaCbb68z8ZWMDpqt8/bh+QzF6RVJv3FAq02mRqbmoQAi
+         gUcnhlL/5wZY6imdqWV4Zmz+nieWoBfYdTzwfk+5X2K9BrFb//AkSzOcg3uObKM+USwk
+         oHLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJZEg3ArUTE8aNv3QGGlmHEXzhlSuQQLiZ+3SZLyn8QoCs099nrjdYacb7++GoQJGzRlV4QwYEsXa1BU3ZPKM+Bdf5tR76AXu4Qo4aDJF8bkxs40D2QLu1unVCdxTU+lPpobspiwSJ/qAajyCcXbFV34wd/XsAcQBWKWaWgMXu0PFLuwmy
+X-Gm-Message-State: AOJu0Yx0LO+PUL8p6GQBHCHiWemX9Dni2XD+cDFgBaGbgaVPmNFVYaI4
+	c+6loQSWCa6RUZKrxT+Ds7TSuFF/bYOfigKdBRa2JCJ631axKYFExYNUVnLT2k1YdsF3MbCgzlo
+	vjI8rMg0NY/Aa2Xwt9+rM9UvWMl8=
+X-Google-Smtp-Source: AGHT+IEWlkP/2kfvt3B2rhZO97HkoSPYHA2GD7sErHQcZOV/0GMkTwiKtB++GlXS5E0yL2Z77yUf5VdyVQXQhFtovPU=
+X-Received: by 2002:a05:6871:3325:b0:221:cb1b:cc05 with SMTP id
+ nf37-20020a056871332500b00221cb1bcc05mr3047428oac.0.1710359895299; Wed, 13
+ Mar 2024 12:58:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfH2dxmSzcw1_3vt@smile.fi.intel.com>
+References: <20240312103723.3469762-1-quic_sibis@quicinc.com>
+In-Reply-To: <20240312103723.3469762-1-quic_sibis@quicinc.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 13 Mar 2024 20:58:04 +0100
+Message-ID: <CAJZ5v0iLvq_4mNTTNw9eXZL4rG25jpRuWAKvY_7HZvLDRmGZNw@mail.gmail.com>
+Subject: Re: [PATCH V3] cpufreq: Fix per-policy boost behavior on SoCs using cpufreq_boost_set_sw
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: dietmar.eggemann@arm.com, rafael@kernel.org, viresh.kumar@linaro.org, 
+	xuwei5@hisilicon.com, zhanjie9@hisilicon.com, sudeep.holla@arm.com, 
+	cristian.marussi@arm.com, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, quic_rgottimu@quicinc.com, 
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org, d-gole@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 13, 2024 at 08:54:47PM +0200, Andy Shevchenko wrote:
-> On Wed, Mar 13, 2024 at 06:40:06PM +0100, Vasileios Amoiridis wrote:
-> > The scan mask for the BME280 supports humidity measurement needs
-> > to be distinguished from the rest in order for the timestamp to
-> > be able to work. Scan masks are added for different combinations
-> > of measurements. The temperature measurement is always needed for
-> > pressure and humidity measurements.
-> 
-> (Just to make sure if you used --histogram diff algo when preparing the series)
-> 
-> ...
-> 
-> >  	{
-> > -		.type = IIO_HUMIDITYRELATIVE,
-> > +		.type = IIO_PRESSURE,
-> >  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
-> >  				      BIT(IIO_CHAN_INFO_RAW) |
-> >  				      BIT(IIO_CHAN_INFO_SCALE) |
-> >  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-> > -		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
-> > +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
-> 
-> Stray change
-> 
-I didn't notice that, and the checkpatch.pl didn't actually say something,
-thanks for pointing out.
-> >  					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
-> > +		.scan_index = 1,
-> > +		.scan_type = {
-> > +			.sign = 'u',
-> > +			.realbits = 32,
-> > +			.storagebits = 32,
-> > +			.endianness = IIO_CPU,
-> > +		},
-> >  	},
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+On Tue, Mar 12, 2024 at 11:37=E2=80=AFAM Sibi Sankar <quic_sibis@quicinc.co=
+m> wrote:
+>
+> In the existing code, per-policy flags doesn't have any impact i.e.
+> if cpufreq_driver boost is enabled and one or more of the per-policy
+> boost is disabled, the cpufreq driver will behave as if boost is
+> enabled. Fix this by incorporating per-policy boost flag in the policy->m=
+ax
+> calculus used in cpufreq_frequency_table_cpuinfo and setting the default
+> per-policy boost to mirror the cpufreq_driver boost flag.
+>
+> Fixes: 218a06a79d9a ("cpufreq: Support per-policy performance boost")
+> Reported-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Reviewed-by: Dhruva Gole <d-gole@ti.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
+>
+> v3:
+> * Pickup Rbs.
+> * Simplify per-policy boost setting. [Viresh]
+>
+> v2:
+> * Enable per-policy boost flag in the core instead. [Viresh]
+> * Add more details regarding the bug. [Viresh]
+> * Drop cover-letter and patch 2.
+>
+> Logs reported-by Dietmar Eggemann:
+> https://lore.kernel.org/lkml/265e5f2c-9b45-420f-89b1-44369aeb8418@arm.com=
+/
+>
+>  drivers/cpufreq/cpufreq.c    | 18 ++++++++++++------
+>  drivers/cpufreq/freq_table.c |  2 +-
+>  2 files changed, 13 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index f6f8d7f450e7..66e10a19d76a 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -653,14 +653,16 @@ static ssize_t store_local_boost(struct cpufreq_pol=
+icy *policy,
+>         if (policy->boost_enabled =3D=3D enable)
+>                 return count;
+>
+> +       policy->boost_enabled =3D enable;
+> +
+>         cpus_read_lock();
+>         ret =3D cpufreq_driver->set_boost(policy, enable);
+>         cpus_read_unlock();
+>
+> -       if (ret)
+> +       if (ret) {
+> +               policy->boost_enabled =3D !policy->boost_enabled;
+>                 return ret;
+> -
+> -       policy->boost_enabled =3D enable;
+> +       }
+>
+>         return count;
+>  }
+> @@ -1428,6 +1430,9 @@ static int cpufreq_online(unsigned int cpu)
+>                         goto out_free_policy;
+>                 }
+>
+> +               /* Let the per-policy boost flag mirror the cpufreq_drive=
+r boost during init */
+> +               policy->boost_enabled =3D cpufreq_boost_enabled() && poli=
+cy_has_boost_freq(policy);
+> +
+>                 /*
+>                  * The initialization has succeeded and the policy is onl=
+ine.
+>                  * If there is a problem with its frequency table, take i=
+t
+> @@ -2769,11 +2774,12 @@ int cpufreq_boost_trigger_state(int state)
+>
+>         cpus_read_lock();
+>         for_each_active_policy(policy) {
+> +               policy->boost_enabled =3D state;
+>                 ret =3D cpufreq_driver->set_boost(policy, state);
+> -               if (ret)
+> +               if (ret) {
+> +                       policy->boost_enabled =3D !policy->boost_enabled;
+>                         goto err_reset_state;
+> -
+> -               policy->boost_enabled =3D state;
+> +               }
+>         }
+>         cpus_read_unlock();
+>
+> diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
+> index c4d4643b6ca6..c17dc51a5a02 100644
+> --- a/drivers/cpufreq/freq_table.c
+> +++ b/drivers/cpufreq/freq_table.c
+> @@ -40,7 +40,7 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_poli=
+cy *policy,
+>         cpufreq_for_each_valid_entry(pos, table) {
+>                 freq =3D pos->frequency;
+>
+> -               if (!cpufreq_boost_enabled()
+> +               if ((!cpufreq_boost_enabled() || !policy->boost_enabled)
+>                     && (pos->flags & CPUFREQ_BOOST_FREQ))
+>                         continue;
+>
+> --
 
-Best regards,
-Vasilis Amoiridis
+Applied as 6.9-rc material, thanks!
 
