@@ -1,258 +1,183 @@
-Return-Path: <linux-kernel+bounces-101062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFC1D87A1C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E79187A1CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:05:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E6C41F235F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:55:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF42B1F22EFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:05:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE57D51A;
-	Wed, 13 Mar 2024 02:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6869DDA2;
+	Wed, 13 Mar 2024 03:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WgwOfK9Q"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="KXWf/hiA"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2D6C13D
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E8CC13D
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 03:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710298551; cv=none; b=tMqA5+WPPphD2w7FTV2mGY7m/ZnYOE9zkobfXNUjdB5+Ry6wG1vUfSCwCW/X+V0JFijGGycFHrEUUE4s82nME5ozVBzRTn8SN3JBMorP1zG83IHkxlHF2bVkxgVmlY3PLrFG10Zvlq/FJsThpF4Hww2NyRVboYz2FPspc9fwiZE=
+	t=1710299142; cv=none; b=Cg3k51Krhro2u4moWjhURsGlbYP9jevGUkP7fruNQa4PGW2fvQyqoQXvlpluWbxDNPRBirEQ+tE172DNz5Ll3QB3T1v++1d52/T6GAZr6GxarU3i6DgV9QYLZx/TNWPIdX5uA3uEZ3ltlWwJApIMzmFCmIQfVQXh/GWudICE0IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710298551; c=relaxed/simple;
-	bh=Nx47pDObyrbzralqgVl6NOBCia50rcQJh7y3UjKsxNM=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=G+RAbDGOL7CkIhRYCxFCpAkg31Xc/FuigIU/nSlpJWJcncuW9I4R/ksl+/Gs6wR/HZLmBa/s5e+M0rYHFPPA5PkZvSDAl5Xd18kwWIVLmr4chxnV0fcjLn4r9VuHFxjXQTU6lq833/oJqx0tLUyx3xnw/VKs+rznLltuxuX2oHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WgwOfK9Q; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a45cdb790dfso638822966b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:55:49 -0700 (PDT)
+	s=arc-20240116; t=1710299142; c=relaxed/simple;
+	bh=5AQVABSCCPA3GxKzRQmLPhnBYQjFMLEJmUur/wYzlLI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HHogJ2KIpN9xVBOJ4S1u7EM0L6+sVs/jeMNku/HdbZx7XWiFc2hXPAYwDfzQHimzfvqqvvcrBdnrYtxpBpxiCaNxOj5AhsmO3RTrA4lfupRBhCvibcbvQ3S0tcem/3cm836EfvNBQPTxyNLTPynJ4rPxS6dTrE66bHiGNSDoWz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=KXWf/hiA; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7810827e54eso462997885a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:05:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710298548; x=1710903348; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/3rWfBimKSgUzcFH3WhJRAOHMjF83kSLXcwvLRNPla4=;
-        b=WgwOfK9QITcuwCramORez4MCo/6EKeaQdWKQoePQhYkxHqSEUxQtrFpwM85p9rCPdO
-         Qehrrm5TldFxQnGUBREl04k6PHD+c1uBpPD5OutDwyPFR0g6aWFO/q7wvfsihokDLtiZ
-         WL5xldt6KFzFtEbDAYB99K9gkoRZ3Ip5AWmk3QMnHOPOzZB/pF23EXYfPBgN9U33f6ci
-         +qCILB4p/YGF5pbv0Cje1qKb9b9UjsmwbF+PRkDocYqDD4gerg1I33nLYJt2yhXbsrKN
-         kMDJ/gzZ3Err/jJtD+o+sdrmihZXVoOcCtjjsIpk4wSgBmJGcSKufwYlvSp/MowcuiRB
-         dfDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710298548; x=1710903348;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=sifive.com; s=google; t=1710299139; x=1710903939; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/3rWfBimKSgUzcFH3WhJRAOHMjF83kSLXcwvLRNPla4=;
-        b=hD7+n4hZVAasmmZ9VXo37wPzeQwxpMnotl5ZMvu4Ux2mWqtoKiDHrKV6bTrGtckmmu
-         YCT7hpMrtIg/8hgZheUsh5t6RtODPn3wEqRN/RT8ZS1eAsdN9BA7Di3/xyu1U9TAP/b8
-         ZYb3jU0fcMEP54Ej7nfSgDlfCvOe1F65h1q2rRPZqTFRnrofl/ScDiuPAKQuh0JWykLO
-         z1tedabZ+4+zFVRjYwb++zFa7J/lTQ/Vf/X8uojfT0xNDna3NcGw93zCkLFbKd9xk4Pr
-         nfS+o+33k0MdpNx682kHssjcrfowFDFW5rORirNYRE3pbmcUk2uDd6ztQZuksStVvp5A
-         cqwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2NasOJcx8ROfDmujpIpYC/3jes835uiogeEkMTCV2Q0eWXRmnGErzVK8qS4R1wyMn66BjeKlAyxM7aiBgQr5eO0u2dF/vJJxu41Zi
-X-Gm-Message-State: AOJu0YydrL/F3Dv4e9MPFO+LPrKcj5PJzdWSPfHGemn1+lglO9jHPBYj
-	2bVjqQIQEDn4h7AE9uVZWeebg510u7MiObQ2Vyl/DftX36Ro3UgiyRnTXN8ItuhjPMbQP4ZBONE
-	08IW3TW8tUfonTfX2yTckW0wnomg=
-X-Google-Smtp-Source: AGHT+IECuae9s6cEk6CTEheftzCfvAeBxpjTfNIo7CrwvIQD1RjoOmtoPAVW8n61EGoBNWhg/H3baP0f1bZeiHKnWdk=
-X-Received: by 2002:a17:906:fb81:b0:a43:29e1:6db8 with SMTP id
- lr1-20020a170906fb8100b00a4329e16db8mr7132722ejb.9.1710298548016; Tue, 12 Mar
- 2024 19:55:48 -0700 (PDT)
+        bh=Kbf82l7XAPAahjc9O+Lns4/hY3cNPQ6gdkwG4sxvUl4=;
+        b=KXWf/hiAgPhAg7RsRLiDIUDtk35k7JBDA2mZZ4tXMCv6fAEeKjQSlyIx/ND7e5z79p
+         bYH/7CeOztnMA6UsLu8mnxJW1585NIzgGqTNY0U3C0xy1jvnLRA+G84zFxmeZ/7dck4y
+         6v8dRkIMoqQJgKZtXIllrHSrmGHpj1yirtUnpjZUVnpSkCN1kSciwza+oMnnS760rkwz
+         2YIifbIAnXG22TflrIjkAXUII7A0vhxJU2WWb7y5CfdfeTim1PpLe0yPK0/z6YJcPSv5
+         7sBVVXNSk9/S9IjIROpCfoqBx4Tmw85dqRDgAbg9PiJJiVfc2acGGAGIupdT3ItI2TiM
+         VwbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710299139; x=1710903939;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kbf82l7XAPAahjc9O+Lns4/hY3cNPQ6gdkwG4sxvUl4=;
+        b=PkAL9Z4ZIZXKDAk/Gk//UFti21lDO4UmZFwEs2+49uIfZAzCCB2zxzh+7msNnIQjvg
+         O2/TJ1XF1pcQvl0XoWQ6cjAkfBEr3iUVZaG3l+E0/H+sjVWH7LyAaSZ7DE55GnF//zJ+
+         UGrQtyytIYno8JWjLmK7geRs6wvUHH0KYf5uMLQFvunwV1HdEEs3mM0kK9rCb2FdEjP0
+         vb+g9XJj/q5gVh6s/aAH7Y2cfpABvNnUyhCCCST/06Je6eyYXDa//BpkdluPwHHa53DN
+         ggK3+Nj+0+8oS3gIKAGLYeQzuNgMC/Rkgg6H23FhFljedpw0JBbASQwDIb0yApOWxv/r
+         LdBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGItUZeUv3fSrARJSuJc55Tuj8E5VOXrxuR+dGRggZ44CD6SQC9uOw77PvrtKxFSuPB+4HQPqLCdATf2J1ZD3QDC1VFVSmBkXAW1hB
+X-Gm-Message-State: AOJu0YyWAKDaabpLZTAnFu+2W/CcDnTI38MkGt+pCb7YLq9Q1HurUHbA
+	uvtSKDMOHu97ae2MfXnl0wNfRa1wms+iIVfdzuKEyHJlJf4MXMEGlUgxryg+qUk=
+X-Google-Smtp-Source: AGHT+IGFDeMhxikLP+fXFmb/qaz+LTzsQ4Ifr2IOlIDzBr+zLzd26Ujac9cPg6+HSOdBcVSQtUKFiQ==
+X-Received: by 2002:ae9:c202:0:b0:788:7299:e79a with SMTP id j2-20020ae9c202000000b007887299e79amr5796096qkg.28.1710299139369;
+        Tue, 12 Mar 2024 20:05:39 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.8.176])
+        by smtp.gmail.com with ESMTPSA id i11-20020a05620a248b00b0078874151152sm1943779qkn.18.2024.03.12.20.05.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 20:05:39 -0700 (PDT)
+Message-ID: <06ebe952-c872-4406-bcb9-00b0b892fb6c@sifive.com>
+Date: Tue, 12 Mar 2024 22:05:37 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: cheung wall <zzqq0103.hey@gmail.com>
-Date: Wed, 13 Mar 2024 10:55:36 +0800
-Message-ID: <CAKHoSAtQxd8dcuZcFrYH550An2Zr9bjChCRirYNQgXRk57N8NA@mail.gmail.com>
-Subject: BUG: unable to handle kernel paging request in swiotlb_bounce
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org
-Cc: "cc: H. Peter Anvin" <hpa@zytor.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Vincent Whitchurch <vincent.whitchurch@axis.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: Fix spurious errors from __get/put_kernel_nofault
+Content-Language: en-US
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240312022030.320789-1-samuel.holland@sifive.com>
+ <ZfEVNbt9AMeVJS0k@ghost>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <ZfEVNbt9AMeVJS0k@ghost>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 2024-03-12 9:53 PM, Charlie Jenkins wrote:
+> On Mon, Mar 11, 2024 at 07:19:13PM -0700, Samuel Holland wrote:
+>> These macros did not initialize __kr_err, so they could fail even if
+>> the access did not fault.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: d464118cdc41 ("riscv: implement __get_kernel_nofault and __put_user_nofault")
+>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>> ---
+>> Found while testing the unaligned access speed series[1]. The observed
+>> behavior was that with RISCV_EFFICIENT_UNALIGNED_ACCESS=y, the
+>> copy_from_kernel_nofault() in prepend_copy() failed every time when
+>> filling out /proc/self/mounts, so all of the mount points were "xxx".
+>>
+>> I'm surprised this hasn't been seen before. For reference, I'm compiling
+>> with clang 18.
+>>
+>> [1]: https://lore.kernel.org/linux-riscv/20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com/
+>>
+>>  arch/riscv/include/asm/uaccess.h | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+>> index ec0cab9fbddd..72ec1d9bd3f3 100644
+>> --- a/arch/riscv/include/asm/uaccess.h
+>> +++ b/arch/riscv/include/asm/uaccess.h
+>> @@ -319,7 +319,7 @@ unsigned long __must_check clear_user(void __user *to, unsigned long n)
+>>  
+>>  #define __get_kernel_nofault(dst, src, type, err_label)			\
+>>  do {									\
+>> -	long __kr_err;							\
+>> +	long __kr_err = 0;						\
+>>  									\
+>>  	__get_user_nocheck(*((type *)(dst)), (type *)(src), __kr_err);	\
+>>  	if (unlikely(__kr_err))						\
+>> @@ -328,7 +328,7 @@ do {									\
+>>  
+>>  #define __put_kernel_nofault(dst, src, type, err_label)			\
+>>  do {									\
+>> -	long __kr_err;							\
+>> +	long __kr_err = 0;						\
+>>  									\
+>>  	__put_user_nocheck(*((type *)(src)), (type *)(dst), __kr_err);	\
+>>  	if (unlikely(__kr_err))						\
+>> -- 
+>> 2.43.1
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+> I am not able to reproduce this using Clang 18 with
+> RISCV_EFFICIENT_UNALIGNED_ACCESS=y on 6.8. However I can see how this
+> could be an issue.
+> 
+> Going down the rabbit hold of macros here, I end up at
+> arch/riscv/include/asm/asm-extable.h where the register that hold 'err'
+> is written into the __ex_table section:
+> 
+> #define EX_DATA_REG(reg, gpr)						\
+> 	"((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
+> 
+> #define _ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)		\
+> 	__DEFINE_ASM_GPR_NUMS						\
+> 	__ASM_EXTABLE_RAW(#insn, #fixup, 				\
+> 			  __stringify(EX_TYPE_UACCESS_ERR_ZERO),	\
+> 			  "("						\
+> 			    EX_DATA_REG(ERR, err) " | "			\
+> 			    EX_DATA_REG(ZERO, zero)			\
+> 			  ")")
+> 
+> I am wondering if setting this value to zero solves the problem by
+> hiding another issue. It seems like this shouldn't need to be
+> initialized to zero, however I am lost as to how this extable setup
+> works so perhaps this is the proper solution.
+
+extable works by running the handler (selected by EX_TYPE_*) if some exception
+occurs while executing that instruction -- see the calls to fixup_exception() in
+fault.c and traps.c. If there is no exception, then the handler does not run,
+and the err register is not written by ex_handler_uaccess_err_zero().
+
+If you look at __get_user_asm(), you can see that the err register is not
+touched by the assembly code at all -- the only reference to %0 is in the
+extable entry. So if the macro that declares the error variable doesn't
+initialize it, nothing will.
+
+Compare __get_user() and __put_user() which do initialize their error variable.
 
-Hello,
+Regards,
+Samuel
 
-
-
-when using Healer to fuzz the latest Linux Kernel, the following crash
-
-was triggered on:
-
-
-
-HEAD commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72  (tag: v6.8-rc7)
-
-git tree: upstream
-
-console output:
-https://drive.google.com/file/d/1BQCubjzbGYPIVK4so6wEMwMfwp4bzcoW/view?usp=drive_link
-
-kernel config: https://drive.google.com/file/d/19VXB1YKwoBFpzjqTmm02jVi4-N9tNIvm/view?usp=drive_link
-
-C reproducer: https://drive.google.com/file/d/1CU_h8zSE9anV6gzteBK7_jbBMKKm_wBf/view?usp=drive_link
-
-Syzlang reproducer:
-https://drive.google.com/file/d/1J9VtUKKMwozBjqK2JgjMZ1b6H4lB9f22/view?usp=drive_link
-
-
-
-If you fix this issue, please add the following tag to the commit:
-
-Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
-
-----------------------------------------------------------
-
-
-
-BUG: unable to handle page fault for address: ffff888108a50000
-
-#PF: supervisor read access in kernel mode
-
-#PF: error_code(0x0000) - not-present page
-
-PGD 61c01067 P4D 61c01067 PUD 1008ee063 PMD 108a51063 PTE 800ffffef75af060
-
-Oops: 0000 [#1] PREEMPT SMP KASAN PTI
-
-CPU: 0 PID: 9 Comm: kworker/0:0H Not tainted 6.8.0-rc7 #1
-
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-
-Workqueue: kblockd blk_mq_run_work_fn
-
-RIP: 0010:memcpy_orig+0x1e/0x140 arch/x86/lib/memcpy_64.S:65
-
-Code: 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 48 89 f8 48 83
-fa 20 0f 82 86 00 00 00 40 38 fe 7c 35 48 83 ea 20 48 83 ea 20 <4c> 8b
-06 4c 8b 4e 08 4c 8b 56 10 4c 8b 5e 18 48 8d 76 20 4c 89 07
-
-RSP: 0018:ffff888100307498 EFLAGS: 00010006
-
-RAX: ffff8880bc51f000 RBX: ffff8880bbfdf000 RCX: ffffffffb98de085
-
-RDX: 0000000000000fc0 RSI: ffff888108a50000 RDI: ffff8880bc51f000
-
-RBP: ffff888100dfe0b8 R08: ffff8881c03ccc10 R09: fffffbfff7d61b01
-
-R10: fffffbfff7d61b00 R11: ffffffffbeb0d807 R12: ffff888108a50000
-
-R13: ffffffffbeb0d7a0 R14: ffff8880bc51f000 R15: ffff888108a50000
-
-FS:  0000000000000000(0000) GS:ffff8881c0000000(0000) knlGS:0000000000000000
-
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-
-CR2: ffff888108a50000 CR3: 0000000105330004 CR4: 0000000000770ef0
-
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-PKRU: 55555554
-
-Call Trace:
-
- <TASK>
-
- swiotlb_bounce+0x314/0x560 kernel/dma/swiotlb.c:899
-
- swiotlb_tbl_map_single+0xc67/0xfd0 kernel/dma/swiotlb.c:1343
-
- swiotlb_map+0x17a/0x700 kernel/dma/swiotlb.c:1480
-
- dma_direct_map_page kernel/dma/direct.h:95 [inline]
-
- dma_direct_map_sg+0x293/0x810 kernel/dma/direct.c:492
-
- __dma_map_sg_attrs+0xbb/0x1e0 kernel/dma/mapping.c:199
-
- dma_map_sg_attrs+0x34/0x50 kernel/dma/mapping.c:236
-
- ata_sg_setup drivers/ata/libata-core.c:4741 [inline]
-
- ata_qc_issue+0x5e9/0xb30 drivers/ata/libata-core.c:5043
-
- ata_scsi_translate drivers/ata/libata-scsi.c:1717 [inline]
-
- __ata_scsi_queuecmd+0x8de/0x11d0 drivers/ata/libata-scsi.c:4153
-
- ata_scsi_queuecmd+0xad/0x170 drivers/ata/libata-scsi.c:4198
-
- scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1518 [inline]
-
- scsi_queue_rq+0xc07/0x2ac0 drivers/scsi/scsi_lib.c:1760
-
- blk_mq_dispatch_rq_list+0x3b6/0x1bd0 block/blk-mq.c:2070
-
- __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
-
- blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
-
- __blk_mq_sched_dispatch_requests+0xbd4/0x14b0 block/blk-mq-sched.c:309
-
- blk_mq_sched_dispatch_requests+0xb2/0x110 block/blk-mq-sched.c:331
-
- blk_mq_run_work_fn+0x131/0x190 block/blk-mq.c:2455
-
- process_one_work kernel/workqueue.c:2633 [inline]
-
- process_scheduled_works+0x252/0xe10 kernel/workqueue.c:2706
-
- worker_thread+0x56c/0xc10 kernel/workqueue.c:2787
-
- kthread+0x2c8/0x3c0 kernel/kthread.c:388
-
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
-
- </TASK>
-
-Modules linked in:
-
-CR2: ffff888108a50000
-
----[ end trace 0000000000000000 ]---
-
-RIP: 0010:memcpy_orig+0x1e/0x140 arch/x86/lib/memcpy_64.S:65
-
-Code: 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 48 89 f8 48 83
-fa 20 0f 82 86 00 00 00 40 38 fe 7c 35 48 83 ea 20 48 83 ea 20 <4c> 8b
-06 4c 8b 4e 08 4c 8b 56 10 4c 8b 5e 18 48 8d 76 20 4c 89 07
-
-RSP: 0018:ffff888100307498 EFLAGS: 00010006
-
-RAX: ffff8880bc51f000 RBX: ffff8880bbfdf000 RCX: ffffffffb98de085
-
-RDX: 0000000000000fc0 RSI: ffff888108a50000 RDI: ffff8880bc51f000
-
-RBP: ffff888100dfe0b8 R08: ffff8881c03ccc10 R09: fffffbfff7d61b01
-
-R10: fffffbfff7d61b00 R11: ffffffffbeb0d807 R12: ffff888108a50000
-
-R13: ffffffffbeb0d7a0 R14: ffff8880bc51f000 R15: ffff888108a50000
-
-FS:  0000000000000000(0000) GS:ffff8881c0000000(0000) knlGS:0000000000000000
-
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-
-CR2: ffff888108a50000 CR3: 0000000105330004 CR4: 0000000000770ef0
-
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-PKRU: 55555554
-
-note: kworker/0:0H[9] exited with irqs disabled
-
-note: kworker/0:0H[9] exited with preempt_count 1
 
