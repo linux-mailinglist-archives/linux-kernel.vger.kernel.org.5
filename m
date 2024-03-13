@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-102158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B61F87AEE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:12:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC9187AEEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5CF1C2245B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:12:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DBADB224AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C03E19252F;
-	Wed, 13 Mar 2024 17:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199047690E;
+	Wed, 13 Mar 2024 17:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRQSOaLk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P8YQyktO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E571192510;
-	Wed, 13 Mar 2024 17:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B84192530;
+	Wed, 13 Mar 2024 17:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349375; cv=none; b=LNM5tSFlerBdxAsBtOEgDaKmMW7OiqPzY7v1TejAFEA71u5g5crb5MAINQ/uVInzqnAAboeDsVwliBBKDvwxV4FhYo+5owNxq9XHZLv3oEmVJHhEkl1BWNke+BVPBhEUsBteX+viqkVXcqzti//xN8zK+pKKDD8eU/IZf9I+xBI=
+	t=1710349376; cv=none; b=ShIAYTLMnqC4cl0E/luRiGAdK+eCq56Ojcu9V8ypsUoF1TbnIocZ/mtAegMVqC/xWW2k+yTN28qj4C36efvCQkQxSNxSREKPUFlYAYCLf+cLMdmcMtrEaGTtV540rf5SIBW5RhdtjbcxDt8qyebAZMuXeZ6np1+IsRW6f2Hv1cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349375; c=relaxed/simple;
-	bh=9usbxmcU44yRwvFc8VM78ZFW+ERKIEDx9KcMR4enwU0=;
+	s=arc-20240116; t=1710349376; c=relaxed/simple;
+	bh=7T0pDHheBPUUNvvlEq6usmgQNt0IgEdw4N4upetox1Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ezDOOR5uximE0Z5TGpWyOda/OtVwSM9QM33eB79WkSwBWr/oDy12/4Zc5/3il5I7zLiWG0ZSKv293ZbXmYANvnqx47RwpwmWZxT9+oS8Xks9QLyf7GmeIr/XZbpoPc+Pl4CPMxP6H9dB/0dXes1v9aPMqztB8l2nqGKrHVOtvL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRQSOaLk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57EFDC43394;
-	Wed, 13 Mar 2024 17:02:54 +0000 (UTC)
+	 MIME-Version; b=Px55oM9eUgNmiQKn04mivrtWkXZLajiIzhfnpk+7Eoz/kJcmV/mZCkIaA02aKLiHX+mV9ky+IoqUw12cIY/aFr9PT6fxW33cX7Fyta/QXXB6wV0XccBUZaTsB+TIuzTGtVy0V43KzPJSXFicEa55SrEJi4a46Fq/sRSjOij2w5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P8YQyktO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86F1EC43399;
+	Wed, 13 Mar 2024 17:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349375;
-	bh=9usbxmcU44yRwvFc8VM78ZFW+ERKIEDx9KcMR4enwU0=;
+	s=k20201202; t=1710349376;
+	bh=7T0pDHheBPUUNvvlEq6usmgQNt0IgEdw4N4upetox1Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dRQSOaLkRnjjvGfZqOYUMEQzcyI+C7wL5QVoCbNSVOWAxLl7kMe96qmms6u7Fkx7c
-	 S2fSk2+eIvm9dWWrKiWqL+TXGvqltWrUOpfZ7fFaYNeYqzL1V7q5Ko9rHQfp3oZhQu
-	 19ubGuNdmkpoTZ9iwLWUFDqiPVDwYp/8+7ihktXWhGvXEYmBCIMCT1IJRigM3gOGgW
-	 4kuFuz7DNJX6h+45cAn/1yyEUvlmBcOiAQ92v06SJbN+1wES8iT95UpJBxjfmKlum0
-	 +CU1lUuZBFfV9t8G0QVfXekhGZVLeaDkyuVBZFvgalPpxoFdGfTuyoDKb3oMp2YiEZ
-	 oDzzmOvuWX+Nw==
+	b=P8YQyktOr30QnKSbrO21t8wGCk8XM8fcchLvVDpZy3Gr/mVmHrD7m7PGknGKtoG49
+	 K7K4TIJIAmJnZ4/up3sP/i/tekEaXZx461a3Ie8ezD9lm+Gp+vbXcoEyq+aMhyTDZ4
+	 8rb9aWHKPHMTcb1+oaVXxOgVO/l/mWukFmublKpsqlyxtlKjwi62AFELcwsqFP49zi
+	 b4n1TGhbWu8USGgvFINrf51kwJMcgwuuEIrbwww+1uqAQltdf6Ds/vAg4X4XBjue+g
+	 zzb9+kidn3u3ZmP2ziTtkFgQ5Skah8Ys5dsbbwywcoZtrJZZTPfbmbzp5fuDfEO/PZ
+	 SFXUx/bWnIg5A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Cyrill Gorcunov <gorcunov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 37/51] hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed
-Date: Wed, 13 Mar 2024 13:01:58 -0400
-Message-ID: <20240313170212.616443-38-sashal@kernel.org>
+Subject: [PATCH 5.4 38/51] y2038: rusage: use __kernel_old_timeval
+Date: Wed, 13 Mar 2024 13:01:59 -0400
+Message-ID: <20240313170212.616443-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170212.616443-1-sashal@kernel.org>
 References: <20240313170212.616443-1-sashal@kernel.org>
@@ -70,182 +68,79 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 9cae43da9867412f8bd09aee5c8a8dc5e8dc3dc2 ]
+[ Upstream commit bdd565f817a74b9e30edec108f7cb1dbc762b8a6 ]
 
-If hv_netvsc driver is unloaded and reloaded, the NET_DEVICE_REGISTER
-handler cannot perform VF register successfully as the register call
-is received before netvsc_probe is finished. This is because we
-register register_netdevice_notifier() very early( even before
-vmbus_driver_register()).
-To fix this, we try to register each such matching VF( if it is visible
-as a netdevice) at the end of netvsc_probe.
+There are two 'struct timeval' fields in 'struct rusage'.
 
-Cc: stable@vger.kernel.org
-Fixes: 85520856466e ("hv_netvsc: Fix race of register_netdevice_notifier and VF register")
-Suggested-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Unfortunately the definition of timeval is now ambiguous when used in
+user space with a libc that has a 64-bit time_t, and this also changes
+the 'rusage' definition in user space in a way that is incompatible with
+the system call interface.
+
+While there is no good solution to avoid all ambiguity here, change
+the definition in the kernel headers to be compatible with the kernel
+ABI, using __kernel_old_timeval as an unambiguous base type.
+
+In previous discussions, there was also a plan to add a replacement
+for rusage based on 64-bit timestamps and nanosecond resolution,
+i.e. 'struct __kernel_timespec'. I have patches for that as well,
+if anyone thinks we should do that.
+
+Reviewed-by: Cyrill Gorcunov <gorcunov@gmail.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Stable-dep-of: daa694e41375 ("getrusage: move thread_group_cputime_adjusted() outside of lock_task_sighand()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/netvsc_drv.c | 82 +++++++++++++++++++++++++--------
- 1 file changed, 62 insertions(+), 20 deletions(-)
+ arch/alpha/kernel/osf_sys.c   | 2 +-
+ include/uapi/linux/resource.h | 4 ++--
+ kernel/sys.c                  | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 880c3f69c9c10..e42102a1de41f 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -43,6 +43,10 @@
- #define LINKCHANGE_INT (2 * HZ)
- #define VF_TAKEOVER_INT (HZ / 10)
- 
-+/* Macros to define the context of vf registration */
-+#define VF_REG_IN_PROBE		1
-+#define VF_REG_IN_NOTIFIER	2
-+
- static unsigned int ring_size __ro_after_init = 128;
- module_param(ring_size, uint, 0444);
- MODULE_PARM_DESC(ring_size, "Ring buffer size (# of pages)");
-@@ -2037,7 +2041,7 @@ static rx_handler_result_t netvsc_vf_handle_frame(struct sk_buff **pskb)
+diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
+index bf497b8b0ec60..bbe7a0da6264f 100644
+--- a/arch/alpha/kernel/osf_sys.c
++++ b/arch/alpha/kernel/osf_sys.c
+@@ -963,7 +963,7 @@ put_tv32(struct timeval32 __user *o, struct timespec64 *i)
  }
  
- static int netvsc_vf_join(struct net_device *vf_netdev,
--			  struct net_device *ndev)
-+			  struct net_device *ndev, int context)
+ static inline long
+-put_tv_to_tv32(struct timeval32 __user *o, struct timeval *i)
++put_tv_to_tv32(struct timeval32 __user *o, struct __kernel_old_timeval *i)
  {
- 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
- 	int ret;
-@@ -2060,7 +2064,11 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
- 		goto upper_link_failed;
- 	}
+ 	return copy_to_user(o, &(struct timeval32){
+ 				.tv_sec = i->tv_sec,
+diff --git a/include/uapi/linux/resource.h b/include/uapi/linux/resource.h
+index cc00fd0796317..74ef57b38f9f5 100644
+--- a/include/uapi/linux/resource.h
++++ b/include/uapi/linux/resource.h
+@@ -22,8 +22,8 @@
+ #define	RUSAGE_THREAD	1		/* only the calling thread */
  
--	schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
-+	/* If this registration is called from probe context vf_takeover
-+	 * is taken care of later in probe itself.
-+	 */
-+	if (context == VF_REG_IN_NOTIFIER)
-+		schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
+ struct	rusage {
+-	struct timeval ru_utime;	/* user time used */
+-	struct timeval ru_stime;	/* system time used */
++	struct __kernel_old_timeval ru_utime;	/* user time used */
++	struct __kernel_old_timeval ru_stime;	/* system time used */
+ 	__kernel_long_t	ru_maxrss;	/* maximum resident set size */
+ 	__kernel_long_t	ru_ixrss;	/* integral shared memory size */
+ 	__kernel_long_t	ru_idrss;	/* integral unshared data size */
+diff --git a/kernel/sys.c b/kernel/sys.c
+index f6d6ce8da3e4a..bc3cd0ef894e6 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1767,8 +1767,8 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	unlock_task_sighand(p, &flags);
  
- 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
+ out:
+-	r->ru_utime = ns_to_timeval(utime);
+-	r->ru_stime = ns_to_timeval(stime);
++	r->ru_utime = ns_to_kernel_old_timeval(utime);
++	r->ru_stime = ns_to_kernel_old_timeval(stime);
  
-@@ -2198,7 +2206,7 @@ static int netvsc_prepare_bonding(struct net_device *vf_netdev)
- 	return NOTIFY_DONE;
- }
- 
--static int netvsc_register_vf(struct net_device *vf_netdev)
-+static int netvsc_register_vf(struct net_device *vf_netdev, int context)
- {
- 	struct net_device_context *net_device_ctx;
- 	struct netvsc_device *netvsc_dev;
-@@ -2237,7 +2245,7 @@ static int netvsc_register_vf(struct net_device *vf_netdev)
- 
- 	netdev_info(ndev, "VF registering: %s\n", vf_netdev->name);
- 
--	if (netvsc_vf_join(vf_netdev, ndev) != 0)
-+	if (netvsc_vf_join(vf_netdev, ndev, context) != 0)
- 		return NOTIFY_DONE;
- 
- 	dev_hold(vf_netdev);
-@@ -2301,10 +2309,31 @@ static int netvsc_unregister_vf(struct net_device *vf_netdev)
- 	return NOTIFY_OK;
- }
- 
-+static int check_dev_is_matching_vf(struct net_device *event_ndev)
-+{
-+	/* Skip NetVSC interfaces */
-+	if (event_ndev->netdev_ops == &device_ops)
-+		return -ENODEV;
-+
-+	/* Avoid non-Ethernet type devices */
-+	if (event_ndev->type != ARPHRD_ETHER)
-+		return -ENODEV;
-+
-+	/* Avoid Vlan dev with same MAC registering as VF */
-+	if (is_vlan_dev(event_ndev))
-+		return -ENODEV;
-+
-+	/* Avoid Bonding master dev with same MAC registering as VF */
-+	if (netif_is_bond_master(event_ndev))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
- static int netvsc_probe(struct hv_device *dev,
- 			const struct hv_vmbus_device_id *dev_id)
- {
--	struct net_device *net = NULL;
-+	struct net_device *net = NULL, *vf_netdev;
- 	struct net_device_context *net_device_ctx;
- 	struct netvsc_device_info *device_info = NULL;
- 	struct netvsc_device *nvdev;
-@@ -2405,6 +2434,30 @@ static int netvsc_probe(struct hv_device *dev,
- 	}
- 
- 	list_add(&net_device_ctx->list, &netvsc_dev_list);
-+
-+	/* When the hv_netvsc driver is unloaded and reloaded, the
-+	 * NET_DEVICE_REGISTER for the vf device is replayed before probe
-+	 * is complete. This is because register_netdevice_notifier() gets
-+	 * registered before vmbus_driver_register() so that callback func
-+	 * is set before probe and we don't miss events like NETDEV_POST_INIT
-+	 * So, in this section we try to register the matching vf device that
-+	 * is present as a netdevice, knowing that its register call is not
-+	 * processed in the netvsc_netdev_notifier(as probing is progress and
-+	 * get_netvsc_byslot fails).
-+	 */
-+	for_each_netdev(dev_net(net), vf_netdev) {
-+		ret = check_dev_is_matching_vf(vf_netdev);
-+		if (ret != 0)
-+			continue;
-+
-+		if (net != get_netvsc_byslot(vf_netdev))
-+			continue;
-+
-+		netvsc_prepare_bonding(vf_netdev);
-+		netvsc_register_vf(vf_netdev, VF_REG_IN_PROBE);
-+		__netvsc_vf_setup(net, vf_netdev);
-+		break;
-+	}
- 	rtnl_unlock();
- 
- 	kfree(device_info);
-@@ -2497,28 +2550,17 @@ static int netvsc_netdev_event(struct notifier_block *this,
- 			       unsigned long event, void *ptr)
- {
- 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
-+	int ret = 0;
- 
--	/* Skip our own events */
--	if (event_dev->netdev_ops == &device_ops)
--		return NOTIFY_DONE;
--
--	/* Avoid non-Ethernet type devices */
--	if (event_dev->type != ARPHRD_ETHER)
--		return NOTIFY_DONE;
--
--	/* Avoid Vlan dev with same MAC registering as VF */
--	if (is_vlan_dev(event_dev))
--		return NOTIFY_DONE;
--
--	/* Avoid Bonding master dev with same MAC registering as VF */
--	if (netif_is_bond_master(event_dev))
-+	ret = check_dev_is_matching_vf(event_dev);
-+	if (ret != 0)
- 		return NOTIFY_DONE;
- 
- 	switch (event) {
- 	case NETDEV_POST_INIT:
- 		return netvsc_prepare_bonding(event_dev);
- 	case NETDEV_REGISTER:
--		return netvsc_register_vf(event_dev);
-+		return netvsc_register_vf(event_dev, VF_REG_IN_NOTIFIER);
- 	case NETDEV_UNREGISTER:
- 		return netvsc_unregister_vf(event_dev);
- 	case NETDEV_UP:
+ 	if (who != RUSAGE_CHILDREN) {
+ 		struct mm_struct *mm = get_task_mm(p);
 -- 
 2.43.0
 
