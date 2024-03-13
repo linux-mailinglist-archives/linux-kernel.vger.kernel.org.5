@@ -1,309 +1,235 @@
-Return-Path: <linux-kernel+bounces-101618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B5587A981
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:33:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21D3C87A984
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27DFB1F222BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:33:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8AE1C220A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:33:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8531C46A2;
-	Wed, 13 Mar 2024 14:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436A7443D;
+	Wed, 13 Mar 2024 14:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJOUYQ0D"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Z1dchkgn"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5889B17F3;
-	Wed, 13 Mar 2024 14:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19C94696
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710340347; cv=none; b=FDXPOAE0GpceEFXTkrLgeB7jglpbG7RdMH7ECGEdUvySFENKvvdwVA6IvgIB81Ew8U8NVmIeFqOQmGqrCdZmER+9dLIR0nCyTMu5TOznKwn59X+u9WMU/fE+S3hk4QAUcAW4X9bdgFeVGIg3cqQx/fBuciEbfj4Ttvq/Hb19hS8=
+	t=1710340395; cv=none; b=C6iMdJYe9Rc8Ja4iURm4O4vpjX/gx0RH/vkLbTc1GzKt3jSc2aXyyxCN+U5p7+qF+vTy13jo8zdpWccvxoTfftGEx0p5pYNojG2XgQbrVWUv4BwHQRad5y1gEqB4+taSXmbOG5JQE/lGtv4BbLfZutAHPcfT5yYpNvqaTEvhC+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710340347; c=relaxed/simple;
-	bh=Y3zK9R6I5zScUZrIlgtZ3Eok/UhFNRnl5zVDEdG8Yw4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=lkwf0mrqdjx4GFK+Qrx0mLG95ZMsuhsGujwsPfraEm0nv5lYPwMeb4W4b/xIF+Ife1UVn8PgzsMucCXnPjSnIn7ZMsbVLJSmcWxiIy2txTpSeCWBhDDPp01DX5Dy22U5naK48XIzOlBHDMH0vgBNyWn0b5aNMC6Z1M2oSvfVI+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJOUYQ0D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27336C433F1;
-	Wed, 13 Mar 2024 14:32:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710340344;
-	bh=Y3zK9R6I5zScUZrIlgtZ3Eok/UhFNRnl5zVDEdG8Yw4=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=GJOUYQ0DDvJfjbRB7Zz43EmzqVbrWiLziIdwA2ija5wy9Q2y6p2A42k7DSuAhxDmX
-	 ZusTqkrJmrjOzcrXBKJMZD1VtvTZtq8KdjmMW4GWVgmxIeNXSpdEYhf54k7zRPsj39
-	 KO2nMLnJNzUIzQ+nUdIda4zywIaqhugdTU0MH95/ISGSwwxdVEZ4ZUdBb6o1EQ23e9
-	 Drb9sq3lK+G0rchH3ZpE5PR6jAcHrm8dCdXoi7jTQPKeaB2WAlaf27eOsJCkdx3xSN
-	 HZta7H2tWMNOJkPy7MZjTbm0gfaTKu1P5YOlnJs/hiB4QC3NLBq7SiHl0uWYtEkoE1
-	 aW32CfObnpo4A==
-Message-ID: <21fc3ed1-de3d-4027-b775-ef061eaca53d@kernel.org>
-Date: Wed, 13 Mar 2024 22:32:25 +0800
+	s=arc-20240116; t=1710340395; c=relaxed/simple;
+	bh=EJQw2spgiDe18SYH9zz9HdonKRBjUkfcO0UXFy36YaU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OXHjOGKJOKov1OLJQUqG+AllO3Om0uxkFWbY9W0p/Pl8PxqcpkR83GwvP8xGuRaXGa5/O2ItVJzy/BM07lVrPudHHUhF77JpXxBeG6u68u3iy+MEXwkvENyMQdQAJya2RkzwcVLmQHyVOf+GgHu4IxviLpq7Tn4DQiAi+Km728c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Z1dchkgn; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso105952221fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:33:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710340390; x=1710945190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=frZJGewZzeJ3uIeDRmngnvwGZFXy0aAqB4wzRWvuYFc=;
+        b=Z1dchkgnh7guU0VhT5i8Rt8m6rEQe2+vQAjwdhwOkohdBA60XaGbR0V02SmgZtkX4C
+         TDi+q9BC9NIWmsU4YCzJX+EilbNUjVz8KvHdveD6M2t777RVg4lse3fQI9LjQetHEsph
+         mX3LRwES8O5BszbWZ/6XRcnhyzuEwU7nr7S0a/TwXjnEcK3sswWMksaQTWofBthVfr1m
+         nzjPBHMVGOSgU/IYI0D3AHbjWPbBb34Bk7vIMy1CKDwfFDvwenv00wQyYy6DqO5Dqr4e
+         tu1a41Z1uK4vvsOz15zqhJ2TFub+EUOYzSBOlW58M1OfwffIym45wBQ5WLMwZp+XU40l
+         nhyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710340390; x=1710945190;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=frZJGewZzeJ3uIeDRmngnvwGZFXy0aAqB4wzRWvuYFc=;
+        b=NUbH8ICJnqLAVzRyCgp20BA6yF+68C1ye118Ie8PI0/7PaXQR5v/iLATur05K7X1VK
+         d0HDjQLVOAIyxs6IjhwI4hrAVvk+p/4SK4yCLI4H44SawYbN1eVdJP1kuZKwZhaiGOtt
+         lCfnGalHiGyy9iqAmsstYBKM/Umbjrx3H3cBRCWWXCTJJGxj9MtvWcXqiroOIhJaiGxK
+         GGa7wbjc+dRbfQP6hGxAkQuhOy/143TsM/3OJ/QcmbVGc7HMp8oouWkUKuCMXB6dyePY
+         0foRtmV2xGjYxEUzp71ysECyXSdriJDerMKe9/M+QW69Rg1Uy3fGdWjCElw7JIUAbO4A
+         ifMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUCYnVtVSeGJNISUbYDIgEXG0PTO6vaGf8Fcb/SbvRqw2en5HagZJEvmF6+/0AomRD+ZW9nA8/EhMNZbfFmgI1RW0hhiO870e7COUbm
+X-Gm-Message-State: AOJu0YwXzKInhufeVlG5R6xtbAXjmihRWVe7fvbMYz/Ghh52Tv5K8by6
+	5m835vYWwSzgXDRBGbfs0PFX9MgYtECySq4JPF4PLC91Z8F1k7MBJORACE787fk=
+X-Google-Smtp-Source: AGHT+IGc4/OG230i0WuTH+DEgo3X/n2bWgA2QDnELN/LQ+c+BqGPSX+yI/RIu0rb7SkOm+km48FmGA==
+X-Received: by 2002:a2e:8e89:0:b0:2d2:d449:6425 with SMTP id z9-20020a2e8e89000000b002d2d4496425mr8400526ljk.35.1710340389826;
+        Wed, 13 Mar 2024 07:33:09 -0700 (PDT)
+Received: from localhost (host-82-56-173-172.retail.telecomitalia.it. [82.56.173.172])
+        by smtp.gmail.com with ESMTPSA id lb13-20020a170906adcd00b00a46203a86basm3476615ejb.27.2024.03.13.07.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 07:33:09 -0700 (PDT)
+From: Andrea della Porta <andrea.porta@suse.com>
+X-Google-Original-From: Andrea della Porta <aporta@suse.de>
+Date: Wed, 13 Mar 2024 15:33:08 +0100
+To: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc: Andrea della Porta <andrea.porta@suse.com>,
+	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/15] dmaengine: bcm2835: add BCM2711 40-bit DMA
+ support
+Message-ID: <ZfG5JLkcj4r-1cGY@apocalypse>
+Mail-Followup-To: Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Andrea della Porta <andrea.porta@suse.com>,
+	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1710226514.git.andrea.porta@suse.com>
+ <CAPY8ntCcz7ysTq_78Rb8ohLLETTYZeoZ3DXdPFvDLAkPc9jPWw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in
- f2fs_filemap_fault
-Content-Language: en-US
-To: syzbot <syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com>,
- jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <0000000000000b4e27060ef8694c@google.com>
-From: Chao Yu <chao@kernel.org>
-Autocrypt: addr=chao@kernel.org; keydata=
- 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
-In-Reply-To: <0000000000000b4e27060ef8694c@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPY8ntCcz7ysTq_78Rb8ohLLETTYZeoZ3DXdPFvDLAkPc9jPWw@mail.gmail.com>
 
-#syz test git://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git wip
+On 17:16 Tue 12 Mar     , Dave Stevenson wrote:
+> Hi Andrea
+> 
+> On Tue, 12 Mar 2024 at 09:12, Andrea della Porta <andrea.porta@suse.com> wrote:
+> >
+> > * Spam *
+> > The BCM2711 has 4 DMA channels with a 40-bit address range, allowing them
+> > to access the full 4GB of memory on a Pi 4.
+> > This patchset aims to update the dma engine for BCM* chipset with respect
+> > to current advancements in downstream vendor tree. In particular, it
+> > supports the BCM2711 DMA engine in terms of extended DMA addressing to 40 bit.
+> >
+> > Changes with respect to the first version (see [1]) of this patchset:
+> >
+> > * dropped support of the new BCM2712. It will be the focus of a subsequent
+> >   patch.
+> >
+> > * merged patchset from Stefan Wahren [2] to support newer chipset with a
+> >   platform agnostic design, while also retaining the new features added
+> >   from downstream [1], as follows:
+> >
+> >   - patches from 1 to 5 are preparatory, adding some features and bugfix
+> >     common to all chipsets.
+> >   - patches from 6 to 12 add hw abstraction
+> >   - patches 13 to 15 eventually add 40 bit and BCM2711 support
+> >
+> > * fixed a couple of bugs from [2] relative to address shifting on 40 bit
+> >   support specific code
+> >
+> > * added the relevant entries in the dts and DT binding that was missing
+> >   in the first patch
+> >
+> > * used FIELD_PREP() wherever appropriate as advised in [3]
+> >
+> > * of_match_node() has been replaced by the more generic device_get_match_data(),
+> >   as per [4]
+> >
+> > * fixed several errors and warnings from checkpatch
+> >
+> >
+> > Please note that there is still a pending discussion around here [5]:
+> > this patch still use the current approach (used in both downstream
+> > code and in Stefan's redesigned patchset) of getting the address as it is
+> > (dma_addr_t) and just add the relevant offset when needed (on 40 bit
+> > channel, see .addr_offset in struct bcm2835_dma_cfg). This is not
+> > optimal but still deemed as less hacky than using DMA internals (see
+> > [6]). As soon as there will be guidelines for [5] or dma_map_resource()
+> > will take care of dma_ranges, a subsequent patch will adjust accordingly.
+> >
+> > Since there is an ongoing effort from Dave Stevenson to upstream a
+> > patchset with similar goals, I'm adding him to the email loop in order
+> > seek for collaboration.
+> 
+> Please hold fire on these patches until we resolve the dma-ranges question.
+> If the dma-ranges are defined correctly, then the cb_offset is not
+> required as the mapping deals with it.
+> 
+> At present we have a mess with the 32bit DMA controllers, and need to
+> clean it up whilst still having old DT files work. Fixing it up also
+> requires fixing the DMA users (primarily MMC, SPI, and vc4 HDMI
+> audio), so will need some care over patch ordering to avoid
+> regressions.
+> If at all possible then I would like to avoid the same mess on the 40
+> bit controllers too.
+>
 
-On 2024/1/15 17:12, syzbot wrote:
-> Hello,
+I agree with you: I've just sent the entire patchset again for consistency since
+I had an unlucky issue with the internal imap server that results in the patchset to be
+splitted and to be *not* received by all intended recipients. I saw that you were
+one of those so I apologize for the inconvenience. I'll wait for any guidelines
+regarding dmap_map_resource() and how to proceed about that.
+
+Many thanks,
+Andrea
+ 
+> Thanks
+>   Dave
 > 
-> syzbot found the following issue on:
+> FWIW my work in progress branch is currently
+> https://github.com/6by9/linux/tree/mainline_2712_rp1_dma_vc4_rc5,
+> which includes my fixed up set of Stefan's patches, as well as all the
+> other patches that need working on for Pi5 support upstream.
 > 
-> HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14bb9913e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=490fc2f9d4ae426c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=763afad57075d3f862f2
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9fbcbe80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1422d5ebe80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/51de89c7a81e/disk-052d5343.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/7e03b92536a3/vmlinux-052d5343.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/3d91124eb5ff/bzImage-052d5343.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f67519526788/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/7e871268c842/mount_7.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: slab-use-after-free in f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
-> Read of size 8 at addr ffff88807bb22680 by task syz-executor184/5058
-> 
-> CPU: 0 PID: 5058 Comm: syz-executor184 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
->   print_address_description mm/kasan/report.c:377 [inline]
->   print_report+0x163/0x540 mm/kasan/report.c:488
->   kasan_report+0x142/0x170 mm/kasan/report.c:601
->   f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
->   __do_fault+0x131/0x450 mm/memory.c:4376
->   do_shared_fault mm/memory.c:4798 [inline]
->   do_fault mm/memory.c:4872 [inline]
->   do_pte_missing mm/memory.c:3745 [inline]
->   handle_pte_fault mm/memory.c:5144 [inline]
->   __handle_mm_fault+0x23b7/0x72b0 mm/memory.c:5285
->   handle_mm_fault+0x27e/0x770 mm/memory.c:5450
->   do_user_addr_fault arch/x86/mm/fault.c:1364 [inline]
->   handle_page_fault arch/x86/mm/fault.c:1507 [inline]
->   exc_page_fault+0x456/0x870 arch/x86/mm/fault.c:1563
->   asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-> RIP: 0033:0x7f808e742b50
-> Code: 20 bf 02 00 00 00 e8 9f 24 04 00 48 83 f8 ff 0f 84 08 fa ff ff 48 89 05 e6 65 0c 00 e9 fc f9 ff ff 66 0f 1f 84 00 00 00 00 00 <c7> 04 25 40 00 00 20 66 32 66 73 c6 04 25 44 00 00 20 00 e9 0f fa
-> RSP: 002b:00007f808e735170 EFLAGS: 00010246
-> 
-> RAX: 0000000000000000 RBX: 00007f808e80b6e8 RCX: 00007f808e784fe9
-> RDX: 86d0f56bab720225 RSI: 0000000000000000 RDI: 00007f808e7355a0
-> RBP: 00007f808e80b6e0 R08: 0000000000000000 R09: 00007f808e7356c0
-> R10: 00007f808e80b6e0 R11: 0000000000000246 R12: 00007f808e80b6ec
-> R13: 0000000000000000 R14: 00007fff41e6fc30 R15: 00007fff41e6fd18
->   </TASK>
-> 
-> Allocated by task 5058:
->   kasan_save_stack mm/kasan/common.c:47 [inline]
->   kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
->   unpoison_slab_object mm/kasan/common.c:314 [inline]
->   __kasan_slab_alloc+0x66/0x70 mm/kasan/common.c:340
->   kasan_slab_alloc include/linux/kasan.h:201 [inline]
->   slab_post_alloc_hook mm/slub.c:3813 [inline]
->   slab_alloc_node mm/slub.c:3860 [inline]
->   kmem_cache_alloc+0x16f/0x340 mm/slub.c:3867
->   vm_area_alloc+0x24/0x1d0 kernel/fork.c:465
->   mmap_region+0xbd8/0x1f90 mm/mmap.c:2804
->   do_mmap+0x76b/0xde0 mm/mmap.c:1379
->   vm_mmap_pgoff+0x1e2/0x420 mm/util.c:556
->   ksys_mmap_pgoff+0x4ff/0x6d0 mm/mmap.c:1425
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> 
-> Freed by task 5064:
->   kasan_save_stack mm/kasan/common.c:47 [inline]
->   kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
->   kasan_save_free_info+0x4e/0x60 mm/kasan/generic.c:634
->   poison_slab_object+0xa6/0xe0 mm/kasan/common.c:241
->   __kasan_slab_free+0x34/0x60 mm/kasan/common.c:257
->   kasan_slab_free include/linux/kasan.h:184 [inline]
->   slab_free_hook mm/slub.c:2121 [inline]
->   slab_free mm/slub.c:4299 [inline]
->   kmem_cache_free+0x102/0x2a0 mm/slub.c:4363
->   rcu_do_batch kernel/rcu/tree.c:2158 [inline]
->   rcu_core+0xad8/0x17c0 kernel/rcu/tree.c:2433
->   __do_softirq+0x2b8/0x939 kernel/softirq.c:553
-> 
-> Last potentially related work creation:
->   kasan_save_stack+0x3f/0x60 mm/kasan/common.c:47
->   __kasan_record_aux_stack+0xae/0x100 mm/kasan/generic.c:580
->   __call_rcu_common kernel/rcu/tree.c:2683 [inline]
->   call_rcu+0x167/0xa80 kernel/rcu/tree.c:2797
->   remove_vma mm/mmap.c:148 [inline]
->   remove_mt mm/mmap.c:2283 [inline]
->   do_vmi_align_munmap+0x159d/0x1930 mm/mmap.c:2629
->   do_vmi_munmap+0x24d/0x2d0 mm/mmap.c:2693
->   mmap_region+0x677/0x1f90 mm/mmap.c:2744
->   do_mmap+0x76b/0xde0 mm/mmap.c:1379
->   vm_mmap_pgoff+0x1e2/0x420 mm/util.c:556
->   ksys_mmap_pgoff+0x4ff/0x6d0 mm/mmap.c:1425
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> 
-> The buggy address belongs to the object at ffff88807bb22660
->   which belongs to the cache vm_area_struct of size 192
-> The buggy address is located 32 bytes inside of
->   freed 192-byte region [ffff88807bb22660, ffff88807bb22720)
-> 
-> The buggy address belongs to the physical page:
-> page:ffffea0001eec880 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7bb22
-> flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-> page_type: 0xffffffff()
-> raw: 00fff00000000800 ffff8880142a1b40 dead000000000122 0000000000000000
-> raw: 0000000000000000 00000000800f000f 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 5039, tgid 5039 (sshd), ts 50202976366, free_ts 44674399535
->   set_page_owner include/linux/page_owner.h:31 [inline]
->   post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1533
->   prep_new_page mm/page_alloc.c:1540 [inline]
->   get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3311
->   __alloc_pages+0x255/0x680 mm/page_alloc.c:4567
->   __alloc_pages_node include/linux/gfp.h:238 [inline]
->   alloc_pages_node include/linux/gfp.h:261 [inline]
->   alloc_slab_page+0x5f/0x160 mm/slub.c:2190
->   allocate_slab mm/slub.c:2354 [inline]
->   new_slab+0x84/0x2f0 mm/slub.c:2407
->   ___slab_alloc+0xd17/0x13d0 mm/slub.c:3540
->   __slab_alloc mm/slub.c:3625 [inline]
->   __slab_alloc_node mm/slub.c:3678 [inline]
->   slab_alloc_node mm/slub.c:3850 [inline]
->   kmem_cache_alloc+0x249/0x340 mm/slub.c:3867
->   vm_area_dup+0x27/0x280 kernel/fork.c:480
->   dup_mmap kernel/fork.c:695 [inline]
->   dup_mm kernel/fork.c:1685 [inline]
->   copy_mm+0xd90/0x21b0 kernel/fork.c:1734
->   copy_process+0x1d6f/0x3fb0 kernel/fork.c:2496
->   kernel_clone+0x222/0x840 kernel/fork.c:2901
->   __do_sys_clone kernel/fork.c:3044 [inline]
->   __se_sys_clone kernel/fork.c:3028 [inline]
->   __x64_sys_clone+0x258/0x2a0 kernel/fork.c:3028
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> page last free pid 5037 tgid 5037 stack trace:
->   reset_page_owner include/linux/page_owner.h:24 [inline]
->   free_pages_prepare mm/page_alloc.c:1140 [inline]
->   free_unref_page_prepare+0x959/0xa80 mm/page_alloc.c:2346
->   free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
->   pipe_buf_release include/linux/pipe_fs_i.h:219 [inline]
->   pipe_update_tail fs/pipe.c:234 [inline]
->   pipe_read+0x6ee/0x13e0 fs/pipe.c:354
->   call_read_iter include/linux/fs.h:2079 [inline]
->   new_sync_read fs/read_write.c:395 [inline]
->   vfs_read+0x662/0x900 fs/read_write.c:476
->   ksys_read+0x1a0/0x2c0 fs/read_write.c:619
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> 
-> Memory state around the buggy address:
->   ffff88807bb22580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->   ffff88807bb22600: 00 00 fc fc fc fc fc fc fc fc fc fc fa fb fb fb
->> ffff88807bb22680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                     ^
->   ffff88807bb22700: fb fb fb fb fc fc fc fc fc fc fc fc fc fc 00 00
->   ffff88807bb22780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ==================================================================
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+> > Many thanks,
+> >
+> > Andrea
+> >
+> > Links:
+> > [1] https://lore.kernel.org/linux-arm-kernel/cover.1706948717.git.andrea.porta@suse.com/
+> > [2] https://lore.kernel.org/linux-arm-kernel/13ec386b-2305-27da-9765-8fa3ad71146c@i2se.com/T/
+> > [3] https://lore.kernel.org/linux-arm-kernel/YguMW8n1q0ZV5tKH@matsya/
+> > [4] https://lore.kernel.org/linux-arm-kernel/1e71c153-e482-409c-b229-9b9c0662b67e@arm.com/
+> > [5] https://lore.kernel.org/all/CAPY8ntByJYzSv0kTAc1kY0Dp=vwrzcA0oWiPpyg7x7_BQwGSnA@mail.gmail.com/
+> > [6] https://lkml.org/lkml/2024/2/5/1161
+> >
+> > Andrea della Porta (11):
+> >   dmaengine: bcm2835: Fix several spellos
+> >   dmaengine: bcm2835: Support common dma-channel-mask
+> >   dmaengine: bcm2835: move CB info generation into separate function
+> >   dmaengine: bcm2835: move CB final extra info generation into function
+> >   dmaengine: bcm2835: make address increment platform independent
+> >   dmaengine: bcm2385: drop info parameters
+> >   dmaengine: bcm2835: pass dma_chan to generic functions
+> >   dmaengine: bcm2835: introduce multi platform support
+> >   dt-bindings: dma: Added bcm2711-dma
+> >   dmaengine: bcm2835: Add BCM2711 40-bit DMA support
+> >   ARM: dts: bcm2711: add bcm2711-dma node
+> >
+> > Dom Cobley (2):
+> >   dmaengine: bcm2835: Support dma flags for multi-beat burst
+> >   dmaengine: bcm2835: Fixes for dma_abort
+> >
+> > Phil Elwell (2):
+> >   dmaengine: bcm2835: Add support for per-channel flags
+> >   dmaengine: bcm2835: Add NO_WAIT_RESP, DMA_WIDE_SOURCE and
+> >     DMA_WIDE_DEST flag
+> >
+> >  .../bindings/dma/brcm,bcm2835-dma.yaml        |    4 +-
+> >  arch/arm/boot/dts/broadcom/bcm2711.dtsi       |   16 +
+> >  drivers/dma/bcm2835-dma.c                     | 1084 +++++++++++++----
+> >  3 files changed, 892 insertions(+), 212 deletions(-)
+> >
+> > --
+> > 2.35.3
+> >
+> >
 
