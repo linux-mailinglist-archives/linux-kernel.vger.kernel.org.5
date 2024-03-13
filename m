@@ -1,62 +1,39 @@
-Return-Path: <linux-kernel+bounces-101098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D7787A24C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:27:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5896087A255
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0930282999
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:27:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE979283D2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A16D11193;
-	Wed, 13 Mar 2024 04:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="n9KcuKFp"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E365E65C;
-	Wed, 13 Mar 2024 04:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8117B1118A;
+	Wed, 13 Mar 2024 04:33:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BEBABA2D;
+	Wed, 13 Mar 2024 04:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710304035; cv=none; b=k6ZVGDUQvmQnwOvGDU8/a5eVvuOcU7SuQ1EWdCnUdh4wuTOquHZ6mv9cw6DDtpax9xggA3OctN2eZmwYBMvIMI+HMWgpyLBN77REBRS+KLjnBXzn8Ju5o2LYqfOh+JccC7KrfbLnDvAvSYtkvPjbvIuoT3yACyuSYp7qywcPNe8=
+	t=1710304397; cv=none; b=m680Jf3rv8CCOGTxpJgQm7rHfquBGaZTeLho7wfSF8988eJd+I3h8OxoeGt3SHFrYDwBNYFvB5oeVU1bToHqqgzVZupuMytrbUfTPuLNVZ/EJvA8IitKu2bih+0RrdFZra0YPSivq+X9OAiT2ha+oWQS0nc9Yqt7+6h8lKkCAPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710304035; c=relaxed/simple;
-	bh=RFRDpG5Td68f6Fw5cn/ZXvS9iR0pwkfieQGofQe5jeg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ptPfOV0nJQhCqnApt/zwb3uVFHSZAOFzqMDTFkwX+UoEJn1zUVXwzJyMiSHCEH9U2LQvLGxPbys5Z4fBmiedtpOAh6XfWDIZO2DOOLzwAuVblfsFl9FoDVV6jlyuH7ESyH7yvU6QnOdgbIxc7gzM8E8x2aglI6Uni8BsHwNIhT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=n9KcuKFp; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42D1ARCL022857;
-	Wed, 13 Mar 2024 04:27:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=+82VzOw1lv5FIzC+UC5eKLpt50PCuzFKY5+brNawC8M=; b=n9
-	KcuKFplHW+ArWdvFXVy1oLpFuUGTn96X0WaYqhgx9PBzufo5cZ+/0F8B0NLXrkMA
-	8MFNAYzpcNXEevwscod/trwoD98j6dSvVrylnZrs/XPXsr13BXVeDXZnvsYYuwxC
-	sa+Mcjudle5JuAJSFOCD16bIMnmi8FBZG8VaXBPR9wQEMpNXQsccpAVn9Ide5V7z
-	n6cYbZQ1XzZcrz3D7U6fbaB7AXFTzImDhA7hMoCsH3lhChotVvqt/chN8JMHsbSl
-	q/E8LfFGmT6/t3e2YhhF+tUlkjQJ1eHUbreVDiqsfG+Zx/dIBWNelG8CUkbqYn57
-	g5aNMw9iPBGVTSWWH/RQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wtw3h0y4t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 04:27:07 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42D4QWf0012924
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 04:26:32 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Mar
- 2024 21:26:28 -0700
-Message-ID: <690cba7c-4362-4e19-8573-ab20b8119ae2@quicinc.com>
-Date: Wed, 13 Mar 2024 09:56:25 +0530
+	s=arc-20240116; t=1710304397; c=relaxed/simple;
+	bh=nsV1JfBWq/A84vQXi0hgqmhpryA7fQMeUCoGSii3KnI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PlT9fhKi57gAT++5j8vHNrbSgl9R5Z8ecOkKbLmjpeSdRpSSPJnA2jrA1oX+1M3/TYIhANw9ADWSBhsQVEd+LZvVgNhkq02qruOyoAVN6xQjAA2w9xBVfeWhk/S6Otpx14vOyw5LGxdmLciKaEtMDBrpGbMW5SfMICtBNv+zRmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2A681007;
+	Tue, 12 Mar 2024 21:33:49 -0700 (PDT)
+Received: from [10.162.43.8] (a077893.blr.arm.com [10.162.43.8])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93EF43F64C;
+	Tue, 12 Mar 2024 21:33:09 -0700 (PDT)
+Message-ID: <bab93283-3b4a-4f39-a4a9-fee8cea1605a@arm.com>
+Date: Wed, 13 Mar 2024 10:03:06 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,75 +41,171 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to
- fix boot failure
+Subject: Re: [PATCH V6 06/11] coresight: funnel: Move ACPI support from AMBA
+ driver to platform driver
 Content-Language: en-US
-To: Gabor Juhos <j4g8y7@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette
-	<mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Sricharan
- Ramabadhran" <quic_srichara@quicinc.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Gokul Sriram Palanisamy
-	<quic_gokulsri@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20240311-apss-ipq-pll-ipq5018-hang-v1-1-8ed42b7a904d@gmail.com>
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <20240311-apss-ipq-pll-ipq5018-hang-v1-1-8ed42b7a904d@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Uaj_-QNsnGVNrBV1qqwUJKtX_Oo3BZYT
-X-Proofpoint-GUID: Uaj_-QNsnGVNrBV1qqwUJKtX_Oo3BZYT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_04,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=833
- spamscore=0 malwarescore=0 impostorscore=0 clxscore=1011 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403130031
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <20240312102318.2285165-1-anshuman.khandual@arm.com>
+ <20240312102318.2285165-7-anshuman.khandual@arm.com>
+ <2dbef82c-96a0-419f-9950-8ee4169fb634@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <2dbef82c-96a0-419f-9950-8ee4169fb634@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 3/11/2024 8:36 PM, Gabor Juhos wrote:
-> Booting v6.8 results in a hang on various IPQ5018 based boards.
-> Investigating the problem showed that the hang happens when the
-> clk_alpha_pll_stromer_plus_set_rate() function tries to write
-> into the PLL_MODE register of the APSS PLL.
+On 3/12/24 20:11, Suzuki K Poulose wrote:
+> On 12/03/2024 10:23, Anshuman Khandual wrote:
+>> Add support for the dynamic funnel device in the platform driver, which can
+>> then be used on ACPI based platforms. This change would allow runtime power
+>> management for ACPI based systems.
+>>
+>> The driver would try to enable the APB clock if available. Also, rename the
+>> code to reflect the fact that it now handles both static and dynamic
+>> funnels. But first this refactors funnel_probe() making sure it can be used
+>> both for platform and AMBA drivers, by moving the pm_runtime_put() to the
+>> callers.
+>>
+>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: coresight@lists.linaro.org
+>> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
+>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+>> Reviewed-by: James Clark <james.clark@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V6:
+>>
+>> - Added clk_disable_unprepare() for pclk in funnel_probe() error path
+>> - Added WARN_ON(!drvdata) check in funnel_platform_remove()
+>> - Added additional elements for acpi_device_id[]
+>>
+>>   drivers/acpi/arm64/amba.c                     |  1 -
+>>   .../hwtracing/coresight/coresight-funnel.c    | 72 ++++++++++++-------
+>>   2 files changed, 48 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+>> index 270f4e3819a2..afb6afb66967 100644
+>> --- a/drivers/acpi/arm64/amba.c
+>> +++ b/drivers/acpi/arm64/amba.c
+>> @@ -28,7 +28,6 @@ static const struct acpi_device_id amba_id_list[] = {
+>>       {"ARMHC979", 0}, /* ARM CoreSight TPIU */
+>>       {"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+>>       {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>> -    {"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
+>>       {"", 0},
+>>   };
+>>   diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
+>> index ff3ea0670a5b..3b4be10a0f0c 100644
+>> --- a/drivers/hwtracing/coresight/coresight-funnel.c
+>> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
+>> @@ -36,6 +36,7 @@ DEFINE_CORESIGHT_DEVLIST(funnel_devs, "funnel");
+>>    * struct funnel_drvdata - specifics associated to a funnel component
+>>    * @base:    memory mapped base address for this component.
+>>    * @atclk:    optional clock for the core parts of the funnel.
+>> + * @pclk:    APB clock if present, otherwise NULL
+>>    * @csdev:    component vitals needed by the framework.
+>>    * @priority:    port selection order.
+>>    * @spinlock:    serialize enable/disable operations.
+>> @@ -43,6 +44,7 @@ DEFINE_CORESIGHT_DEVLIST(funnel_devs, "funnel");
+>>   struct funnel_drvdata {
+>>       void __iomem        *base;
+>>       struct clk        *atclk;
+>> +    struct clk        *pclk;
+>>       struct coresight_device    *csdev;
+>>       unsigned long        priority;
+>>       spinlock_t        spinlock;
+>> @@ -236,6 +238,10 @@ static int funnel_probe(struct device *dev, struct resource *res)
+>>               return ret;
+>>       }
+>>   +    drvdata->pclk = coresight_get_enable_apb_pclk(dev);
+>> +    if (IS_ERR(drvdata->pclk))
+>> +        return -ENODEV;
+>> +
+>>       /*
+>>        * Map the device base for dynamic-funnel, which has been
+>>        * validated by AMBA core.
+>> @@ -272,12 +278,13 @@ static int funnel_probe(struct device *dev, struct resource *res)
+>>           goto out_disable_clk;
+>>       }
+>>   -    pm_runtime_put(dev);
+>>       ret = 0;
+>>     out_disable_clk:
+>>       if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
+>>           clk_disable_unprepare(drvdata->atclk);
+>> +    if (ret && !IS_ERR_OR_NULL(drvdata->pclk))
+>> +        clk_disable_unprepare(drvdata->pclk);
+>>       return ret;
+>>   }
+>>   @@ -298,6 +305,9 @@ static int funnel_runtime_suspend(struct device *dev)
+>>       if (drvdata && !IS_ERR(drvdata->atclk))
+>>           clk_disable_unprepare(drvdata->atclk);
+>>   +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>> +        clk_disable_unprepare(drvdata->pclk);
+>> +
+>>       return 0;
+>>   }
+>>   @@ -308,6 +318,8 @@ static int funnel_runtime_resume(struct device *dev)
+>>       if (drvdata && !IS_ERR(drvdata->atclk))
+>>           clk_prepare_enable(drvdata->atclk);
+>>   +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>> +        clk_prepare_enable(drvdata->pclk);
+>>       return 0;
+>>   }
+>>   #endif
+>> @@ -316,55 +328,61 @@ static const struct dev_pm_ops funnel_dev_pm_ops = {
+>>       SET_RUNTIME_PM_OPS(funnel_runtime_suspend, funnel_runtime_resume, NULL)
+>>   };
+>>   -static int static_funnel_probe(struct platform_device *pdev)
+>> +static int funnel_platform_probe(struct platform_device *pdev)
+>>   {
+>> +    struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>       int ret;
+>>         pm_runtime_get_noresume(&pdev->dev);
+>>       pm_runtime_set_active(&pdev->dev);
+>>       pm_runtime_enable(&pdev->dev);
+>>   -    /* Static funnel do not have programming base */
+>> -    ret = funnel_probe(&pdev->dev, NULL);
+>> -
+>> -    if (ret) {
+>> -        pm_runtime_put_noidle(&pdev->dev);
+>> +    ret = funnel_probe(&pdev->dev, res);
+>> +    pm_runtime_put(&pdev->dev);
+>> +    if (ret)
+>>           pm_runtime_disable(&pdev->dev);
+>> -    }
+>>         return ret;
+>>   }
+>>   -static void static_funnel_remove(struct platform_device *pdev)
+>> +static void funnel_platform_remove(struct platform_device *pdev)
+>>   {
+>> +    struct funnel_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
+>> +
+>> +    if (WARN_ON(!drvdata))
+>> +        return;
+>> +
+>>       funnel_remove(&pdev->dev);
+>>       pm_runtime_disable(&pdev->dev);
+>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
 > 
-> Checking the downstream code revealed that it uses [1] stromer
-> specific operations for IPQ5018, whereas in the current code
-> the stromer plus specific operations are used.
-> 
-> The ops in the 'ipq_pll_stromer_plus' clock definition can't be
-> changed since that is needed for IPQ5332, so add a new alpha pll
-> clock declaration which uses the correct stromer ops and use this
-> new clock for IPQ5018 to avoid the boot failure.
-> 
-> 1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4/drivers/clk/qcom/apss-ipq5018.c#L67
+> Same as the previous patch
 
-
-Thanks for catching this!
-
-Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-
-
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 50492f929486 ("clk: qcom: apss-ipq-pll: add support for IPQ5018")
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
-> Based on v6.8.
-> ---
->   drivers/clk/qcom/apss-ipq-pll.c | 20 +++++++++++++++++++-
->   1 file changed, 19 insertions(+), 1 deletion(-)
+Right, unlike in xxx_runtime_suspend/resume() functions, xxx_platform_remove()
+functions do have a (!drvdata) check right at the beginning. Hence a redundant
+check in such places can be dropped.
 
