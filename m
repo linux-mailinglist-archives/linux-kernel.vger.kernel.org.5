@@ -1,247 +1,326 @@
-Return-Path: <linux-kernel+bounces-102021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5239B87ADA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 177B187ADB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:41:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08A7028343F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:40:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C27832837BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E756053395;
-	Wed, 13 Mar 2024 16:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C3455C26;
+	Wed, 13 Mar 2024 16:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="u/x7ASb8"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XarEkFik"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE9D4C600;
-	Wed, 13 Mar 2024 16:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90EA495F0;
+	Wed, 13 Mar 2024 16:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348305; cv=none; b=WvJ4uoYsijG++C3NqFlKhRSCoq2KlbM20wphMmoBmKpFXbsiqLZM+zBqjm1UrJVNYr5Q/BFTXUQL+VLnyD/3djntXd42gpplHlENvzYzFs/ssSs9BZkVIWKejWEMuGkRq4MqIYeckJAyY4eHzaqwcJbqnOaNpOIZ0hs6Iy3nm40=
+	t=1710348404; cv=none; b=Xqd0BwgnqVjnOjQzX1Cegewusf5RtSPTX0/EQBZExRoX8wevZRtOtLiabxTEf/2xilipdC7sOQQATa7rhwkmtJJdmrizN4cRiyd2rffR/B/2DsUR6Apg8jDhOCIQM7/OfX4FX9vIAs6gE8cShQbbocYvN/lWB3MJMDgH8dYV41w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348305; c=relaxed/simple;
-	bh=r2yTOImLEgBv+5kM0rWcsT1rGUuk6c9e8dJPwXpk3p4=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=YNJqpz71JP3ebZ000M24g+hJqyCexg6pO6mFphbtu3UnIRzA952Qcs08fkV/czcOPhiV66OC40kzhPd4u5xFhozqkiTd/Psj3orma1KDLfnq9g2CpXyU9w3KF9lkNuA+r5Sgo8FQAjDt9rxpPlnccL83YlakP9R0vE0BpP45NwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=u/x7ASb8; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1710348404; c=relaxed/simple;
+	bh=KMl7ackn4G4x4NouuYQGLzDa8mNJAOZuVgV0+BlotPo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eU6u4ZJdWS/xYNt/7rDB3Ou8k5WQq5hkjXM9VxVSsM0x/B+LtoKIoeZosWRB/B0HzBZSuTcQjWJlEomVDATZ3Ing6MahDr0bp0rg2pQlAa95NhrMBwhs0iy6YKwiyjiy7oQ/EW7i2CW8dFYrvMb2HKFakCdDnkvWFe/SI7sSN2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XarEkFik; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EAECC433C7;
+	Wed, 13 Mar 2024 16:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710348403;
+	bh=KMl7ackn4G4x4NouuYQGLzDa8mNJAOZuVgV0+BlotPo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XarEkFikWI1Ken+HAxE9gXoJhk9QXNUrEQWQIA7ni4R0DX79tsHjJsUK5T6M8nN5p
+	 A3Cnmi8D/Kg7uVnC+Xt+ubVX1mAbo7KAx0TTk+9yWYpmdf+Cpc61CfMbBbh0kT+XIg
+	 JL8QSmhe2678N/AvAdKBQux1Wx6jIe9w0136r3BukicCs44JA1Nj4xDirYWeUcHTCn
+	 W7zFJlBct6P1hXKZR/mbltiU1+v9PFqTyVwM1QXBqou5fYg4BR/CfFGeZ1H9ymEaVF
+	 zrdjx4cIBrcMywI/YHL6PQdxnhra2njHZwwpiE9CkuZQjJOLTgTia7UstzzWMSmvPr
+	 7wpz4bwbAAEyg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de
+Subject: [PATCH 5.10 00/73] 5.10.213-rc1 review
+Date: Wed, 13 Mar 2024 12:45:27 -0400
+Message-ID: <20240313164640.616049-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1710348294;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wRKYVbWo7rvuu2swGuQTlLkzEW9Czyjs6ZI6qNJKWlo=;
-	b=u/x7ASb8r5+IJYatiC5vG444aqGl7ANW3qnobJ3WI3dR9QVwHGCX23Hgs4LJ+GoKNsSrpY
-	iXF7HeiuTwLKJPEFpX2aGowdgf5lFDeQgBqZ3GW1c4djxB0JZZgznbWchonZVm8rIuyGSA
-	Jvx+/5hXbQE56i7A3GC+4bFaEJmU/A1kyavNRseHFBgFp7c/+s4VDImU8jRCqd02ub3r3K
-	1Uj3L41kJl0QD9oZOYEWcvb9SZ1oTctz26XUdVtKbDS/TEzqMMjPAd6sIGQxjmV/1lmEzE
-	IRMCWVQV9ahsJN4NQPtXvJlJPY1H5tLUhggxQge5klVAXhFP0LU0IwqicRRCLA==
-Date: Wed, 13 Mar 2024 17:44:53 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: Alexey Charkov <alchark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
- Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal, OPP and
- fan
-In-Reply-To: <cen2x7vlenevup34efl7sqn7sm5td35vkfmo4fcaotwk6fmv67@tdpcg5jokjhv>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
- <j3krazypdc7gsvnp4kcocaftxsbjrfhj6nr2kf2cieo4bjxbv7@bqdfbirk5tei>
- <CABjd4Yxs9b0XDXYfdnmT08BQnsJLonRy4X-g73J67yeGw3xL+w@mail.gmail.com>
- <CABjd4YzTL=5S7cS8ACNAYVa730WA3iGd5L_wP1Vn9=f83RCORA@mail.gmail.com>
- <pkyne4g2cln27dcdu3jm7bqdqpmd2kwkbguiolmozntjuiajrb@gvq4nupzna4o>
- <cen2x7vlenevup34efl7sqn7sm5td35vkfmo4fcaotwk6fmv67@tdpcg5jokjhv>
-Message-ID: <5e93447d1b219fde1e2b390d40495ef1@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset=UTF-8
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.213-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.213-rc1
+X-KernelTest-Deadline: 2024-03-15T16:46+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Hello Sebastian,
 
-On 2024-03-13 17:39, Sebastian Reichel wrote:
-> On Thu, Mar 07, 2024 at 11:16:20PM +0100, Sebastian Reichel wrote:
->> On Thu, Mar 07, 2024 at 04:38:24PM +0400, Alexey Charkov wrote:
->> > On Tue, Mar 5, 2024 at 12:06 PM Alexey Charkov <alchark@gmail.com> wrote:
->> > > On Mon, Mar 4, 2024 at 9:51 PM Sebastian Reichel
->> > > <sebastian.reichel@collabora.com> wrote:
->> > > > I'm too busy to have a detailed review of this series right now, but
->> > > > I pushed it to our CI and it results in a board reset at boot time:
->> > > >
->> > > > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/jobs/300950
->> > > >
->> > > > I also pushed just the first three patches (i.e. without OPP /
->> > > > cpufreq) and that boots fine:
->> > > >
->> > > > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/jobs/300953
->> > >
->> > > Thank you for testing these! I've noticed in the boot log that the CI
->> > > machine uses some u-boot 2023.07 - is that a downstream one? Any
->> > > chance to compare it to 2023.11 or 2024.01 from your (Collabora)
->> > > integration tree?
->> > >
->> > > I use 2023.11 from your integration tree, with a binary bl31, and I'm
->> > > not getting those resets even under prolonged heavy load (I rebuild
->> > > Chromium with 8 concurrent compilation jobs as the stress test -
->> > > that's 14 hours of heavy CPU, memory and IO use). Would be interesting
->> > > to understand if it's just a 'lucky' SoC specimen on my side, or if
->> > > there is some dark magic happening differently on my machine vs. your
->> > > CI machine.
->> > >
->> > > Thinking that maybe if your CI machine uses a downstream u-boot it
->> > > might be leaving some extra hardware running (PVTM?) which might do
->> > > weird stuff when TSADC/clocks/voltages get readjusted by the generic
->> > > cpufreq driver?..
->> > >
->> > > > Note, that OPP / cpufreq works on the same boards in the CI when
->> > > > using the ugly-and-not-for-upstream cpufreq driver:
->> > > >
->> > > > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/commit/9c90c5032743a0419bf3fd2f914a24fd53101acd
->> > > >
->> > > > My best guess right now is, that this is related to the generic
->> > > > driver obviously not updating the GRF read margin registers.
->> > >
->> > > If it was about memory read margins I believe I would have been
->> > > unlikely to get my machine to work reliably under heavy load with the
->> > > default ones, but who knows...
->> >
->> > Sebastian's report led me to investigate further how all those things
->> > are organized in the downstream code and in hardware, and what could
->> > be a pragmatic way forward with upstream enablement. It turned out to
->> > be quite a rabbit hole frankly, with multiple layers of abstraction
->> > and intertwined code in different places.
->> >
->> > Here's a quick summary for future reference:
->> >  - CPU clocks on RK3588 are ultimately managed by the ATF firmware,
->> > which provides an SCMI service to expose them to the kernel
->> >  - ATF itself doesn't directly set any clock frequencies. Instead, it
->> > accepts a target frequency via SCMI and converts it into an oscillator
->> > ring length setting for the PVPLL hardware block (via a fixed table
->> > lookup). At least that's how it's done in the recently released TF-A
->> > bl31 code [1] - perhaps the binary bl31 does something similar
->> >  - U-boot doesn't seem to mess with CPU clocks, PVTM or PVPLL
->> >  - PVPLL produces a reference clock to feed to the CPUs, which depends
->> > on the configured oscillator ring length but also on the supply
->> > voltage, silicon quality and perhaps temperature too. ATF doesn't know
->> > anything about voltages or temperatures, so it doesn't guarantee that
->> > the requested frequency is matched by the hardware
->> >  - PVPLL frequency generation is bypassed for lower-frequency OPPs, in
->> > which case the target frequency is directly fed by the ATF to the CRU.
->> > This happens for both big-core and little-core frequencies below 816
->> > MHz
->> >  - Given that requesting a particular frequency via SCMI doesn't
->> > guarantee that it will be what the CPUs end up running at, the vendor
->> > kernel also does a runtime voltage calibration for the supply
->> > regulators, by adjusting the supply voltage in minimum regulator steps
->> > until the frequency reported by PVPLL gets close to the requested one
->> > [2]. It then overwrites OPP provided voltage values with the
->> > calibrated ones
->> >  - There's also some trickery with preselecting OPP voltage sets using
->> > the "-Lx" suffix based on silicon quality, as measured by a "leakage"
->> > value stored in an NVMEM cell and/or the PVTM frequency generated at a
->> > reference "midpoint" OPP [3]. Better performing silicon gets to run at
->> > lower default supply voltages, thus saving power
->> >  - Once the OPPs are selected and calibrated, the only remaining
->> > trickery is the two supply regulators per each CPU cluster (one for
->> > the CPUs and the other for the memory interface)
->> >  - Another catch, as Sebastian points out, is that memory read margins
->> > must be adjusted whenever the memory interface supply voltage crosses
->> > certain thresholds [4]. This has little to do with CPUs or
->> > frequencies, and is only tangentially related to them due to the
->> > dependency chain between the target CPU frequency -> required CPU
->> > supply voltage -> matching memory interface supply voltage -> required
->> > read margins
->> >  - At reset the ATF switches all clocks to the lowest 408 MHz [6], so
->> > setting it to anything in kernel code (as the downstream driver does)
->> > seems redundant
->> >
->> > All in all, it does indeed sound like Collabora's CI machine boot-time
->> > resets are most likely caused by the missing memory read margin
->> > settings in my patch series. Voltage values in the OPPs I used are the
->> > most conservative defaults of what the downstream DT has, and PVPLL
->> > should be able to generate reasonable clock speeds with those (albeit
->> > likely suboptimal, due to them not being tuned to the particular
->> > silicon specimen). And there is little else to differ frankly.
->> >
->> > As for the way forward, it would be great to know the opinions from
->> > the list. My thinking is as follows:
->> >  - I can introduce memory read margin updates as the first priority,
->> > leaving voltage calibration and/or OPP preselection for later (as
->> > those should not affect system stability at current default values,
->> > perhaps only power efficiency to a certain extent)
->> >  - CPUfreq doesn't sound like the right place for those, given that
->> > they have little to do with either CPU or freq :)
->> >  - I suggest a custom regulator config helper to plug into the OPP
->> > layer, as is done for TI OMAP5 [6]. At first, it might be only used
->> > for looking up and setting the correct memory read margin value
->> > whenever the cluster supply voltage changes, and later the same code
->> > can be extended to do voltage calibration. In fact, OMAP code is there
->> > for a very similar purpose, but in their case optimized voltages are
->> > pre-programmed in efuses and don't require runtime recalibration
->> >  - Given that all OPPs in the downstream kernel list identical
->> > voltages for the memory supply as for the CPU supply, I don't think it
->> > makes much sense to customize the cpufreq driver per se.
->> > Single-regulator approach with the generic cpufreq-dt and regulator
->> > coupling sounds much less invasive and thus lower-maintenance
->> 
->> Sorry for my late response.
->> 
->> When doing some more tests I noticed, that the CI never build the
->> custom driver and thus never did any CPU frequency scaling at all.
->> I only used it for my own tests (on RK3588 EVB1). When enabling the
->> custom driver, the CI has the same issues as your series. So my
->> message was completely wrong, sorry about that.
->> 
->> Regarding U-Boot: The CI uses "U-Boot SPL 2023.07-rc4-g46349e27";
->> the last part is the git hash. This is the exact U-Boot source tree
->> being used:
->> 
->> https://gitlab.collabora.com/hardware-enablement/rockchip-3588/u-boot/-/commits/46349e27/
->> 
->> This was one of the first U-Boot trees with Rock 5B Ethernet support
->> and is currently flashed to the SPI flash memory of the CI boards.
->> The vendor U-Boot tree is a lot older. Also it is still using the
->> Rockchip binary BL31. We have plans to also CI boot test U-Boot,
->> but currently nobody has time to work on this. I don't think there 
->> should
->> be any relevant changes between upstream 2023.07 and 2023.11 that 
->> could
->> explain this. But it's the best lead now, so I will try to find some 
->> time
->> for doing further tests related to this in the next days.
->> 
->> Regarding the voltage calibration - One option would be to do this
->> calibration at boot time (i.e. in U-Boot) and update the voltages
->> in DT accordingly.
-> 
-> After some more debugging I finally found the root cause. The CI
-> boards were powered from a USB hub using a USB-A to USB-C cable, so
-> that the team could access maskrom mode. Since I was not involved in
-> setting them up, I was not aware of that. It effectively limits the
-> power draw to 500 or 900 mA (depending on USB port implementation),
-> which is not enough to power the board with the higher frequencies.
-> The KernelCI Rock 5B boards are now switched to proper power
-> supplies and the issues are gone.
-> 
-> Sorry for the false alarm,
+This is the start of the stable review cycle for the 5.10.213 release.
+There are 73 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Great to know, thanks for the clarification.
+Responses should be made by Fri Mar 15 04:46:39 PM UTC 2024.
+Anything received after that time might be too late.
+
+The whole patch series can be found in one patch at:
+        https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.10.y&id2=v5.10.212
+or in the git tree and branch at:
+        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
+
+Thanks,
+Sasha
+
+-------------
+Pseudo-Shortlog of commits:
+
+Andrea Parri (Microsoft) (1):
+  Drivers: hv: vmbus: Drop error message when 'No request id available'
+
+Andres Beltran (2):
+  Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus
+    hardening
+  hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus
+    hardening
+
+Andy Shevchenko (4):
+  serial: max310x: Use devm_clk_get_optional() to get the input clock
+  serial: max310x: Try to get crystal clock rate from property
+  serial: max310x: Make use of device properties
+  serial: max310x: Unprepare and disable clock in error path
+
+Ansuel Smith (1):
+  regmap: allow to define reg_update_bits for no bus configuration
+
+Baokun Li (1):
+  ext4: make ext4_es_insert_extent() return void
+
+Christophe Kerello (1):
+  mmc: mmci: stm32: fix DMA API overlapping mappings warning
+
+Cosmin Tanislav (4):
+  serial: max310x: use regmap methods for SPI batch operations
+  serial: max310x: use a separate regmap for each port
+  serial: max310x: make accessing revision id interface-agnostic
+  serial: max310x: implement I2C support
+
+Dexuan Cui (1):
+  hv_netvsc: Make netvsc/VF binding check both MAC and serial number
+
+Edward Adam Davis (1):
+  net/rds: fix WARNING in rds_conn_connect_if_down
+
+Eric Dumazet (2):
+  geneve: make sure to pull inner header in geneve_rx()
+  net/ipv6: avoid possible UAF in ip6_route_mpath_notify()
+
+Florian Westphal (1):
+  netfilter: nft_ct: fix l3num expectations with inet pseudo family
+
+Hugo Villeneuve (2):
+  serial: max310x: fail probe if clock crystal is unstable
+  serial: max310x: prevent infinite while() loop in port startup
+
+Ingo Molnar (1):
+  exit: Fix typo in comment: s/sub-theads/sub-threads
+
+Jan Kundrát (1):
+  serial: max310x: fix IO data corruption in batched operations
+
+Jason Xing (12):
+  netrom: Fix a data-race around sysctl_netrom_default_path_quality
+  netrom: Fix a data-race around
+    sysctl_netrom_obsolescence_count_initialiser
+  netrom: Fix data-races around sysctl_netrom_network_ttl_initialiser
+  netrom: Fix a data-race around sysctl_netrom_transport_timeout
+  netrom: Fix a data-race around sysctl_netrom_transport_maximum_tries
+  netrom: Fix a data-race around
+    sysctl_netrom_transport_acknowledge_delay
+  netrom: Fix a data-race around sysctl_netrom_transport_busy_delay
+  netrom: Fix a data-race around
+    sysctl_netrom_transport_requested_window_size
+  netrom: Fix a data-race around
+    sysctl_netrom_transport_no_activity_timeout
+  netrom: Fix a data-race around sysctl_netrom_routing_control
+  netrom: Fix a data-race around sysctl_netrom_link_fails_count
+  netrom: Fix data-races around sysctl_net_busy_read
+
+Johannes Berg (1):
+  um: allow not setting extra rpaths in the linux binary
+
+John Efstathiades (4):
+  lan78xx: Fix white space and style issues
+  lan78xx: Add missing return code checks
+  lan78xx: Fix partial packet errors on suspend/resume
+  lan78xx: Fix race conditions in suspend/resume handling
+
+Juhee Kang (1):
+  hv_netvsc: use netif_is_bond_master() instead of open code
+
+Lena Wang (1):
+  netfilter: nf_conntrack_h323: Add protection for bmp length out of
+    range
+
+Long Li (2):
+  hv_netvsc: Wait for completion on request SWITCH_DATA_PATH
+  hv_netvsc: Process NETDEV_GOING_DOWN on VF hot remove
+
+Maciej Fijalkowski (2):
+  ixgbe: {dis, en}able irqs in ixgbe_txrx_ring_{dis, en}able
+  i40e: disable NAPI right after disabling irqs when handling xsk_pool
+
+Marek Vasut (1):
+  regmap: Add bulk read/write callbacks into regmap_config
+
+Martin KaFai Lau (2):
+  net: Change sock_getsockopt() to take the sk ptr instead of the sock
+    ptr
+  bpf: net: Change sk_getsockopt() to take the sockptr_t argument
+
+Mathias Nyman (3):
+  xhci: remove extra loop in interrupt context
+  xhci: prevent double-fetch of transfer and transfer event TRBs
+  xhci: process isoc TD properly when there was a transaction error mid
+    TD.
+
+Michal Pecio (1):
+  xhci: handle isoc Babble and Buffer Overrun events properly
+
+Mike Kravetz (1):
+  mm/hugetlb: change hugetlb_reserve_pages() to type bool
+
+Muhammad Usama Anjum (1):
+  selftests/mm: switch to bash from sh
+
+Nico Pache (1):
+  selftests: mm: fix map_hugetlb failure on 64K page size systems
+
+Oleg Nesterov (5):
+  getrusage: add the "signal_struct *sig" local variable
+  getrusage: move thread_group_cputime_adjusted() outside of
+    lock_task_sighand()
+  getrusage: use __for_each_thread()
+  getrusage: use sig->stats_lock rather than lock_task_sighand()
+  exit: wait_task_zombie: kill the no longer necessary
+    spin_lock_irq(siglock)
+
+Oleksij Rempel (1):
+  net: lan78xx: fix runtime PM count underflow on link stop
+
+Ondrej Mosnacek (1):
+  lsm: fix default return value of the socket_getpeersec_*() hooks
+
+Paul Moore (1):
+  lsm: make security_socket_getpeersec_stream() sockptr_t safe
+
+Prakash Sangappa (1):
+  mm: hugetlb pages should not be reserved by shmat() if SHM_NORESERVE
+
+Rand Deeb (1):
+  net: ice: Fix potential NULL pointer dereference in
+    ice_bridge_setlink()
+
+Sasha Levin (1):
+  Linux 5.10.213-rc1
+
+Shradha Gupta (1):
+  hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed
+
+Steven Rostedt (Google) (1):
+  tracing/net_sched: Fix tracepoints that save qdisc_dev() as a string
+
+Toke Høiland-Jørgensen (1):
+  cpumap: Zero-initialise xdp_rxq_info struct before running XDP program
+
+Yann Gautier (1):
+  mmc: mmci: stm32: use a buffer for unaligned DMA requests
+
+Zhang Yi (2):
+  ext4: refactor ext4_da_map_blocks()
+  ext4: convert to exclusive lock while inserting delalloc extents
+
+ Makefile                                      |   4 +-
+ arch/um/Kconfig                               |  13 +
+ arch/um/Makefile                              |   3 +-
+ arch/x86/Makefile.um                          |   2 +-
+ drivers/base/regmap/internal.h                |   4 +
+ drivers/base/regmap/regmap.c                  |  77 +-
+ drivers/hv/channel.c                          | 174 +++-
+ drivers/hv/hyperv_vmbus.h                     |   3 +-
+ drivers/hv/ring_buffer.c                      |  28 +-
+ drivers/mmc/host/mmci_stm32_sdmmc.c           | 112 ++-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |   2 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  56 +-
+ drivers/net/geneve.c                          |  18 +-
+ drivers/net/hyperv/hyperv_net.h               |  13 +
+ drivers/net/hyperv/netvsc.c                   |  55 +-
+ drivers/net/hyperv/netvsc_drv.c               | 107 +-
+ drivers/net/hyperv/rndis_filter.c             |   1 +
+ drivers/net/usb/lan78xx.c                     | 910 ++++++++++++++----
+ drivers/tty/serial/Kconfig                    |   1 +
+ drivers/tty/serial/max310x.c                  | 378 ++++++--
+ drivers/usb/host/xhci-ring.c                  | 143 ++-
+ drivers/usb/host/xhci.h                       |   3 +
+ fs/ext4/extents.c                             |   5 +-
+ fs/ext4/extents_status.c                      |  14 +-
+ fs/ext4/extents_status.h                      |   6 +-
+ fs/ext4/inode.c                               |  65 +-
+ fs/hugetlbfs/inode.c                          |  17 +-
+ include/linux/filter.h                        |   3 +-
+ include/linux/hugetlb.h                       |   2 +-
+ include/linux/hyperv.h                        |  23 +
+ include/linux/lsm_hook_defs.h                 |   6 +-
+ include/linux/lsm_hooks.h                     |   4 +-
+ include/linux/regmap.h                        |  19 +
+ include/linux/security.h                      |  11 +-
+ include/linux/sockptr.h                       |   5 +
+ include/trace/events/qdisc.h                  |  20 +-
+ kernel/bpf/cpumap.c                           |   2 +-
+ kernel/exit.c                                 |  12 +-
+ kernel/sys.c                                  |  91 +-
+ mm/hugetlb.c                                  |  37 +-
+ net/core/filter.c                             |   5 +-
+ net/core/sock.c                               |  52 +-
+ net/ipv6/route.c                              |  21 +-
+ net/netfilter/nf_conntrack_h323_asn1.c        |   4 +
+ net/netfilter/nft_ct.c                        |  11 +-
+ net/netrom/af_netrom.c                        |  14 +-
+ net/netrom/nr_dev.c                           |   2 +-
+ net/netrom/nr_in.c                            |   6 +-
+ net/netrom/nr_out.c                           |   2 +-
+ net/netrom/nr_route.c                         |   8 +-
+ net/netrom/nr_subr.c                          |   5 +-
+ net/rds/rdma.c                                |   3 +
+ net/rds/send.c                                |   6 +-
+ security/apparmor/lsm.c                       |  29 +-
+ security/security.c                           |  35 +-
+ security/selinux/hooks.c                      |  13 +-
+ security/smack/smack_lsm.c                    |  19 +-
+ .../selftests/vm/charge_reserved_hugetlb.sh   |   2 +-
+ tools/testing/selftests/vm/map_hugetlb.c      |   7 +
+ .../selftests/vm/write_hugetlb_memory.sh      |   2 +-
+ 61 files changed, 1986 insertions(+), 711 deletions(-)
+
+-- 
+2.43.0
+
 
