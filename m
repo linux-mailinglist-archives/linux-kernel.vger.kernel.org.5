@@ -1,80 +1,91 @@
-Return-Path: <linux-kernel+bounces-102248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D25F987AFC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:35:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1522E87AFCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 737011F2DA09
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:35:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46C551C25810
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:35:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF337EF0F;
-	Wed, 13 Mar 2024 17:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFDBF7F493;
+	Wed, 13 Mar 2024 17:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fDm/2mZB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eBSMeSui"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B1D62141;
-	Wed, 13 Mar 2024 17:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEBE612DC;
+	Wed, 13 Mar 2024 17:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710350169; cv=none; b=R4NBRnvFHdEz4bri9yPSR4GCBXs3zLoek5C9PP4er6WGQJKsLaEMMHVEGrLn8H97f1NStzMng654L2HP2ZrvKN2XeuRxB4aLfhRVQeH1TWFIaPiAk9ryuxSUUao2vMy4kuIoxvZuBdDjmqqrMr4PrCM1nlZ2oVAqqlKD15Xv5lk=
+	t=1710350192; cv=none; b=WgZ40kBjnRooezSDSvtlHE9257ZoIp1q4jkuxdPaoG54OAF2fCCzF9zr4/znCDhk/kRECGIvSaOOYm2+FnksIxVWqhcr7YhvMJqEIAVTfI9/x51IOmwDVIOr+LoDdv6iZ8beiMHXXfd/W43e/vxx+1yKbvPdxaaMNQJCVpIjIPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710350169; c=relaxed/simple;
-	bh=+0ELk9KyA7j5R9h8vQwZ4rMn6FfpbqQnPsppTRu/Qt0=;
+	s=arc-20240116; t=1710350192; c=relaxed/simple;
+	bh=KBmGVG0tShTIOfu5Kdwsr3zszT6tpzb6w2J0pA0Nv0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qDO3eazaJd7vCa1PBtxzyIn6uryOdB01GwmOB237pZd9CEqNNOHRH9uQDGA7Z9mLYVm8gRdxbExs3MZ5oT/E7jAhzNj/bhSTus6Ohn8zYgM9Zw19tnR1RKRdO7RUPipxjdP3yJ5DMqhs321NNsXE73WWpGioj6ibEQEjzS83dME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fDm/2mZB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A57E2C433F1;
-	Wed, 13 Mar 2024 17:16:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=n/qvek9zP+cQF16/Cr7oV4sfV00hCBNnrVIZmzBlGgEUa7hjD9mi/Na3SZ6oOlRL41dHCbesT17I/Ueu/79161KwAYcAp1uWkJ4SWGTRUuD7F3Yj26knzm1WsGT9PBzkz3LS9QIJYil1RKexs58RMElrW60QEZnQWdj2B4QIPtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eBSMeSui; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E4AC433C7;
+	Wed, 13 Mar 2024 17:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710350169;
-	bh=+0ELk9KyA7j5R9h8vQwZ4rMn6FfpbqQnPsppTRu/Qt0=;
+	s=k20201202; t=1710350191;
+	bh=KBmGVG0tShTIOfu5Kdwsr3zszT6tpzb6w2J0pA0Nv0o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fDm/2mZBsV4emEweBDJadyOeB9HUk8urOwqjWUzUijkWMRyvUTpli1i8AW52p6tt9
-	 iQn87mRjvONfLAYkjeT4ZikEaqOCRjnJaUgXsTk4nvqjTxx3OTrKbs2plrIUaWeahA
-	 +lRMRxs4VN/YyfniNVtSZ8E/wLbkYjcaQKuS7A9v93+aj2OM5MxFm0HYgx7JeZlbUh
-	 ev38tdhngedD9u62vHXdliHoQi11UgVhBWrnXNDy1oaZaHVlpGwNHbLPDRj7O0gwk1
-	 dPkqTnIu3IHmUAnOUoUPO8UBo7A5KIX7VSz1uOCbyGO6QRJFV4cg3Y/BflzVjmDGLE
-	 CQFblhZt72ZJw==
-Date: Wed, 13 Mar 2024 19:16:04 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Breno Leitao <leitao@debian.org>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240313171604.GB12921@unreal>
-References: <20240313103311.2926567-1-leitao@debian.org>
- <20240313104252.GA12921@unreal>
- <20240313065526.10c6217b@kernel.org>
+	b=eBSMeSuiQlglw1FhL+jFT9AKmI7Ubp2QrXMzGbvo+ajlxcARM0ID+esgAz3OUVIqv
+	 knlq4Zf4VdJXAeFrWNNevaR0HLUWTyM2zKStDhkEsHiEZ673PBluNaGPDuT75cYYpZ
+	 2x73+u6Lg3CizeYPJ7XEXveHQIxrGcVs0b6zUWYo+wBm5UvRJ+2IGbPfRUko9ZU+Ea
+	 T++884U512glJM+BwQKWR1ebxay+tWOdovBslKMj6SYH1cGI6KDfD7sefGuxdF9O5a
+	 oGY6Rb/M69JaCMh5JvpXyMkRaXtEbkqb5BmZPt2BJ7jo4JHUxk5XbZnKXL5nvXf0fQ
+	 cx12YbFzuz3Wg==
+Date: Wed, 13 Mar 2024 13:16:29 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Ansuel Smith <ansuelsmth@gmail.com>
+Subject: Re: [PATCH 5.15 72/76] regmap: allow to define reg_update_bits for
+ no bus configuration
+Message-ID: <ZfHfbYg8HmIRsdBV@sashalap>
+References: <20240313164223.615640-1-sashal@kernel.org>
+ <20240313164223.615640-73-sashal@kernel.org>
+ <6274f1ce-f2e0-414b-b9a9-bf2840fefd90@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240313065526.10c6217b@kernel.org>
+In-Reply-To: <6274f1ce-f2e0-414b-b9a9-bf2840fefd90@sirena.org.uk>
 
-On Wed, Mar 13, 2024 at 06:55:26AM -0700, Jakub Kicinski wrote:
-> On Wed, 13 Mar 2024 12:42:52 +0200 Leon Romanovsky wrote:
-> > > PS: this diff needs d160c66cda0ac8614 ("net: Do not return value from
-> > > init_dummy_netdev()") in order to apply and build cleanly.  
-> > 
-> > We are in merge window now, so if Dennis approves, I will apply it
-> > after the merge window
-> 
-> Can we do a shared branch? We don't want to wait full release cycle
-> for a single driver outside of netdev.
+On Wed, Mar 13, 2024 at 04:46:04PM +0000, Mark Brown wrote:
+>On Wed, Mar 13, 2024 at 12:42:19PM -0400, Sasha Levin wrote:
+>> From: Ansuel Smith <ansuelsmth@gmail.com>
+>>
+>> [ Upstream commit 02d6fdecb9c38de19065f6bed8d5214556fd061d ]
+>>
+>> Some device requires a special handling for reg_update_bits and can't use
+>> the normal regmap read write logic. An example is when locking is
+>> handled by the device and rmw operations requires to do atomic operations.
+>> Allow to declare a dedicated function in regmap_config for
+>> reg_update_bits in no bus configuration.
+>
+>This is fairly clearly new functionality?
 
-No problem, I will create a branch based on -rc1 for it.
+It is, but like the other commit, this new functionality is needed for a
+later fix. We indicate this in the commit message by adding a trailer:
 
-Thanks
+	Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+	Link: https://lore.kernel.org/r/20211104150040.1260-1-ansuelsmth@gmail.com
+	Signed-off-by: Mark Brown <broonie@kernel.org>
+	Stable-dep-of: 3f42b142ea11 ("serial: max310x: fix IO data corruption in batched operations")
+	  ^^^^^^^^^
+	Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+-- 
+Thanks,
+Sasha
 
