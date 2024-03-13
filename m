@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-102055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC6187AE06
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:47:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DDA87AE08
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0861C1C20C5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:47:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2B9228109A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF950155A26;
-	Wed, 13 Mar 2024 16:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E1E156963;
+	Wed, 13 Mar 2024 16:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hT3XXRvk"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OR8eiH02"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313DA15530B;
-	Wed, 13 Mar 2024 16:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C7A155A37;
+	Wed, 13 Mar 2024 16:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348434; cv=none; b=NCuhb1QqvrOB+44HcGpZQ5E3S3iZdmnwagAt75LPHX474MkFw+InhMtQwDAaX7GpHVG6RogPGW05uoRKEkGYVYAaaIZVtjiV7AWbXBBhxyzQ2sfrGyrbtDrysmOFeh+ssCb4C0VGG3i9dkIZvJuzfuRa8pY3qCHY8urfocrQG14=
+	t=1710348435; cv=none; b=braYCVwPMYLn1qJdbaZKiCPGIpG7HqXzci07fKX3xWBWWxXONl3UVAR143RwMFl+6CQPI3dusueDnl9Mc2mmWT1J/61YUWqc1sd/htYx6KvKWiEbRh6UYVxEd6MwhadvQ3Lx3E4aSaUZ8vlbpea87dLymRjWXCCPIZzzKiZcVyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348434; c=relaxed/simple;
-	bh=VOUAc+hS+8LXXjO/8xjaKP/C6ALJcpsGzO3/KKcZsro=;
+	s=arc-20240116; t=1710348435; c=relaxed/simple;
+	bh=Fk4VBjoxky/x4vOZ0nYWTRX8O5NSYCQ4esJ/tMM9+K0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cHhLZQ+lbSjuzz6yLSILVVopCKS8/S/nd9Uv/XxADHD1TROQVnqhh1+Xcaa89SezOe93Remv8612AildYeZN/WkB2NwIXJH1aIN6coQgGJnYs5lh5tZzjdM6Np+W+lsoC4GYvwU5dEJyJ9g8oTf28Hq+V+mmd/4HHvCKva2P260=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hT3XXRvk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51087C43390;
-	Wed, 13 Mar 2024 16:47:13 +0000 (UTC)
+	 MIME-Version; b=VTjtHaqVdx5HU9GItC/II1sFl0fGoo4mLnWGvDEfI2/LZa2IOL1F8HLFi/t7wESE7CSq2eb0KUK6WGUDwIvWV2XyymDjmbqmoy4BWf+HKYpt43P9LRF3ZRAi+5WOj5qIt0sa+EKjGnh65cBo0SnhNAzElcOYvW4HdGwZtdW1GGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OR8eiH02; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE33C43394;
+	Wed, 13 Mar 2024 16:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348434;
-	bh=VOUAc+hS+8LXXjO/8xjaKP/C6ALJcpsGzO3/KKcZsro=;
+	s=k20201202; t=1710348435;
+	bh=Fk4VBjoxky/x4vOZ0nYWTRX8O5NSYCQ4esJ/tMM9+K0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hT3XXRvk91gKer0LC4WRjZO538Ah3PUDazs2Ul3oldCfv+f5BnQtScH9v30ESE6ds
-	 z7oLwC8bEWcrwhbbWAFrOFYcJ6RAMqQcf5TrmR+uHhvTTaleN9Oc6KqJ4uy26F7HTC
-	 NmWUzka1E4Z5t40K35t5/reR0ykVAQKOy1zlnLaayv/GpPv34km7qO4bn0SYSkMPIN
-	 9sXgGa6vwMLFzbM4XKPOI9009m8QnebIWEnQpkzU9LbqGDHn9pU36kA4fGsuQFJ2wD
-	 a5QXb5dJrgyIKuSkVRBLZaJgfMFUDMk/svWpAquZBtiTfJMjO+6suZ22AH4gXkf7Lb
-	 KE9YLeRXJNCTg==
+	b=OR8eiH02rOG4Ri21iqLwApkP6A1SeC9GGKkcQPxNFe0rVNb35ML3s80mOMsdDlmc1
+	 ddu6gBxI9nbqXyiha7ldzDVNypcWmvmd4k9fJfMN+GX5xKC9JFkb1qhuHGVjYq38sy
+	 9dNjAFsPFghcnLNyh8jsKV//NJT/Tv4dFod25Nc2Jg2IrpNToO8Fk3xkK5Hs79dLwv
+	 qqcr0X/u7+ON+ivpjXYFbrVqbu2xNliKFnFYcjbsF8/wKIwBDC9KMrNRNfI+rXNsAB
+	 CuGHOQN+4TwZtiB+nkN3TyIAaTxxYepQIwaxJdI0WZ8AVCGDZOAA2nWA1ePSCabkA/
+	 obO1UPpmieZSQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jason Xing <kernelxing@tencent.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Shuah Khan <shuah@kernel.org>,
+	David Laight <David.Laight@ACULAB.COM>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 29/73] netrom: Fix data-races around sysctl_net_busy_read
-Date: Wed, 13 Mar 2024 12:45:56 -0400
-Message-ID: <20240313164640.616049-30-sashal@kernel.org>
+Subject: [PATCH 5.10 30/73] selftests/mm: switch to bash from sh
+Date: Wed, 13 Mar 2024 12:45:57 -0400
+Message-ID: <20240313164640.616049-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -68,66 +70,56 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jason Xing <kernelxing@tencent.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-[ Upstream commit d380ce70058a4ccddc3e5f5c2063165dc07672c6 ]
+[ Upstream commit bc29036e1da1cf66e5f8312649aeec2d51ea3d86 ]
 
-We need to protect the reader reading the sysctl value because the
-value can be changed concurrently.
+Running charge_reserved_hugetlb.sh generates errors if sh is set to
+dash:
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+/charge_reserved_hugetlb.sh: 9: [[: not found
+/charge_reserved_hugetlb.sh: 19: [[: not found
+/charge_reserved_hugetlb.sh: 27: [[: not found
+/charge_reserved_hugetlb.sh: 37: [[: not found
+/charge_reserved_hugetlb.sh: 45: Syntax error: "(" unexpected
+
+Switch to using /bin/bash instead of /bin/sh.  Make the switch for
+write_hugetlb_memory.sh as well which is called from
+charge_reserved_hugetlb.sh.
+
+Link: https://lkml.kernel.org/r/20240116090455.3407378-1-usama.anjum@collabora.com
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netrom/af_netrom.c | 2 +-
- net/netrom/nr_in.c     | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ tools/testing/selftests/vm/charge_reserved_hugetlb.sh | 2 +-
+ tools/testing/selftests/vm/write_hugetlb_memory.sh    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
-index 376b6af431448..37d0bf6cab456 100644
---- a/net/netrom/af_netrom.c
-+++ b/net/netrom/af_netrom.c
-@@ -954,7 +954,7 @@ int nr_rx_frame(struct sk_buff *skb, struct net_device *dev)
- 		 * G8PZT's Xrouter which is sending packets with command type 7
- 		 * as an extension of the protocol.
- 		 */
--		if (sysctl_netrom_reset_circuit &&
-+		if (READ_ONCE(sysctl_netrom_reset_circuit) &&
- 		    (frametype != NR_RESET || flags != 0))
- 			nr_transmit_reset(skb, 1);
+diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+index 7536ff2f890a1..d0107f8ae6213 100644
+--- a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
++++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
  
-diff --git a/net/netrom/nr_in.c b/net/netrom/nr_in.c
-index 69e58906c32b1..034f79d11ae11 100644
---- a/net/netrom/nr_in.c
-+++ b/net/netrom/nr_in.c
-@@ -97,7 +97,7 @@ static int nr_state1_machine(struct sock *sk, struct sk_buff *skb,
- 		break;
+ set -e
+diff --git a/tools/testing/selftests/vm/write_hugetlb_memory.sh b/tools/testing/selftests/vm/write_hugetlb_memory.sh
+index 70a02301f4c27..3d2d2eb9d6fff 100644
+--- a/tools/testing/selftests/vm/write_hugetlb_memory.sh
++++ b/tools/testing/selftests/vm/write_hugetlb_memory.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
  
- 	case NR_RESET:
--		if (sysctl_netrom_reset_circuit)
-+		if (READ_ONCE(sysctl_netrom_reset_circuit))
- 			nr_disconnect(sk, ECONNRESET);
- 		break;
- 
-@@ -128,7 +128,7 @@ static int nr_state2_machine(struct sock *sk, struct sk_buff *skb,
- 		break;
- 
- 	case NR_RESET:
--		if (sysctl_netrom_reset_circuit)
-+		if (READ_ONCE(sysctl_netrom_reset_circuit))
- 			nr_disconnect(sk, ECONNRESET);
- 		break;
- 
-@@ -263,7 +263,7 @@ static int nr_state3_machine(struct sock *sk, struct sk_buff *skb, int frametype
- 		break;
- 
- 	case NR_RESET:
--		if (sysctl_netrom_reset_circuit)
-+		if (READ_ONCE(sysctl_netrom_reset_circuit))
- 			nr_disconnect(sk, ECONNRESET);
- 		break;
- 
+ set -e
 -- 
 2.43.0
 
