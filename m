@@ -1,172 +1,135 @@
-Return-Path: <linux-kernel+bounces-101613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C0D487A95C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:18:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1857887A959
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:17:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A81628A0E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:18:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8797289D62
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFF44652F;
-	Wed, 13 Mar 2024 14:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4554246436;
+	Wed, 13 Mar 2024 14:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="myNkllq/"
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y3c6tY4n"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4069746433
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C249146441
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710339489; cv=none; b=sSUn5tZlFO0ATk+CrPbSGrCKIwUkeoQJGUH/iDQJLC9vBlEEwZZiSbpq8WetFj4bJ2RBrdr5zBUBc/G3wCeXhRIbf4XcvNPLq9SsSSP5Xm/rn6iOnZdkK0OCTewMBek+leTD1U5REcufpFV+O3K6zSRzflhO8aYbQwAI5VCH32E=
+	t=1710339471; cv=none; b=ZPUMRA6ZenaMMiTryS0j6N/siDwGLO+9NQhcasrVkkPnMlFRyAoM4t0mMmIvKZKI2doDbWRWg/ar40wNmclevbSExO3U3AhCRpJuxWUkEc8tCYgFEugRLwaz63aAmpiTAyJ5WOQvJr2L8E14XKlK0JDSsN0KjGvzgiefnGEk9+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710339489; c=relaxed/simple;
-	bh=YdVzmhaBVHm20JsyPQZC+11KYcds7si9Z8hnWDsJlEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Rl5urunOAcCMGxaDmHxhs50Cb+YegQuwlDfuYiL7Oh9AqbyDGBl3RcjWSlYkK8801zlxd+NkwfWx/Mp9pStDHO+y8fv4YJkVeIhNXSNNlNp8YYQpXl7KzmpyJcagocWloaxCHFRwMtGC6hd2UdZXxxP7VDilshWs5nPRv2tIdhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=myNkllq/; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e4e673d9abso2430154a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:18:08 -0700 (PDT)
+	s=arc-20240116; t=1710339471; c=relaxed/simple;
+	bh=DI5UQKmJ6ci320U8du68tPIQjhz0EADiePzyf3FHvw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BaOc3aklsTu1Hgyw8KYiWWBqRpAqX4Lin/B6c5x19+AB3Nbh9X4CCS2N7xwl+RVbg2eQhJ4HXRyH9xvq+WeC603jbNemvuxYBOebJi5ACNIpkNA1TGf+doftAXifQbh9fbLb9P8kXJYATmwDf0a3bsTNFM2lioMurXRV8PnMheo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y3c6tY4n; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-513a08f2263so4264427e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710339487; x=1710944287; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QD3YDr8tOSlxd6SayzAWcggM8xuhZzTheB38pd8zJuE=;
-        b=myNkllq/dcfYsmnH29jh2ZIN+Mn1+Tyq9HMdK4V58XzRODKuczVMegwi9B3uGY73/T
-         J6ABGIE2nTUggcnKddFqEc7Q1i9f/x7bwX6ehqeVieldguuRfYWbxXSMxcOdjpy1ASu1
-         1EyS2flbhokEs7XR3iyY8tZ5pHoGyC+aJd5lEk4EG6qNhzVmzSZKFCKCuG9636NNrKVV
-         LMhStHtoVipluS0jW7EJEm7Dpymbc/Vj2//0wV5tf9WnYMGqTBUDjwNzZgWteBbvvj3w
-         v6bTKXwHhTgXB8b53QiFC1lmWul2ZhnoRGAlhxqjUlGVCtsN0mYVUy5toA6+eZg7rtyx
-         Gu5A==
+        d=linaro.org; s=google; t=1710339468; x=1710944268; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DI5UQKmJ6ci320U8du68tPIQjhz0EADiePzyf3FHvw4=;
+        b=Y3c6tY4nc5ZcnIU7xal9B4x7B8tqM0ly+9JTLwWArNoqbBCpvbW/BWUgdES3O22yMC
+         2nmjpcDUgrxFjLHGrjbDhpuyCG9GfMaSYGNhoEErZDBqQ7Lrp10LFd8cCVXwL2+XEwP0
+         rzPCRkSJy5aE8hiihTlT0pUlzES4B31+ohj9h+v4RdtyWaxLcXPVfgrAki7xiTjGmcGi
+         AY/MtUFCdwl9tf2u4PTkAw3j/J6Z1Y3PizN2s14zZiEyR747ZuRDx6/rX1TwUTsiX4yP
+         Yjis24LyK2DqskLlTfFIWyIc/2cPooVswf+VDGstxpx+qr3HWWpg+cV+EbSLV9SnjRgI
+         CWTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710339487; x=1710944287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QD3YDr8tOSlxd6SayzAWcggM8xuhZzTheB38pd8zJuE=;
-        b=B1+u9yFZkIhXPabmemE56cedU1M9+lZJKwhaWMcUQp0r2z9z1P/shJ6gNpD9pWBjKn
-         hhattfdMVwyZe7NYS+rMqn3FSe5pmwFYRjtqnWd6oZDfPWILZnt0p0h1yqte18uWVbaR
-         2wkJKBMr8ICq6aWqpDsRbMCwh8UV2/28cXVsq2x9zO6dapltAFHJsyETso1PIo1IbJTj
-         fHSNaVpji7eGQUzU7uR9KScDVrz/ndGNl5ULlPX8GiTVRtiEu9QHuLp0YG7b06CBl870
-         i0RE2KRqoSCnIriVDf9WxmMofcDJW4CFKL0ZOfTe4LinP4eTdIA3lAJ1m9DJPzNajSWN
-         0kRg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKg3K8WVPaGFhD58mTPSmbdEXQT50P1LRk/V4iZ4+S33nagT1ERTuGTdcGxRYavr/c7RDXKC4+81WnNkK2f4xe3u3kaOm5xOzYfE6J
-X-Gm-Message-State: AOJu0YyMQPe1/NUNP96CNQ8wTu0FUq/9kWI68QhXExPpQSvdVBSImz8m
-	0MSgqTWu08C5ktVFHnRXB9Ck/I1MwYk2sI5cpRSh4WIxpNtmdKhk4VExZ7PKAMtjddFJIN3yJvZ
-	FIe3KMWf8d6m4TqqI+443W3PCu8YaVgiltGvs
-X-Google-Smtp-Source: AGHT+IHr4+ut5/5+q0jlcqVCNExW9zh6aYQqmP6HkgA4swCQpZjfqoozX6xBkQQpJ7Z0sfcwNMs78xq0maqVC4Dq+UY=
-X-Received: by 2002:a05:6830:1198:b0:6e5:3c63:7895 with SMTP id
- u24-20020a056830119800b006e53c637895mr14841otq.11.1710339487165; Wed, 13 Mar
- 2024 07:18:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710339468; x=1710944268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DI5UQKmJ6ci320U8du68tPIQjhz0EADiePzyf3FHvw4=;
+        b=lEn2E8xrbGQ4oGpRPDI4k/v7uBZatgrYDYz29wFSXf/wevQT75rBA0g0iMX+ccXweR
+         PI/GtmhkjzgC/p2aY9X3q6Kj8UrQyo1jBmtD2PC6AfmwjKAUjsDLt4pX7ZvgKTfzyVza
+         oiHFf1nXnZdaX8/P6njlq3DkSRozi6LPg1wU/C174gAL+KlZby09o3ERlDL6PtQIg1vb
+         b2w0eyto7l929sdn/lzwbOVuqzxbCLqcLCYv8BdSCBkcJhDGwr7DjrXD5xmGfi7rUrUC
+         WqX9/UjIpXPm4+ev4qwHRmgmL3pysmicnWDXP00tsNO6JWPxgK45qIz7I1YZMiVZNIad
+         AZRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUkcqtZd2Xwq/oqVvNVIGXfwEdtTc39BPfh4O+1eHmvxgswWdIB5XqPJOlyWV8HXsKdNA6NTPRI3OGtFQB9HIIxfLyl8yAtP/HmasTb
+X-Gm-Message-State: AOJu0Yz7lhdlaeOM7kwvXzITejahROCAumjWHVujnkF8kmHXpfNqomA7
+	I++J0bqmAuwiTECQTjsJklDRPIwvE52XyvxNZzEY4ouPfwrDJ7VffujNxQNaZxA=
+X-Google-Smtp-Source: AGHT+IFx+Ru8HLmNgnvlGtS2WaPtuNHppwpho5k+Bj3WbKN3ZgQ4vuHCgkqhvKsxNRYrcFFpxU5muw==
+X-Received: by 2002:a05:6512:3baa:b0:513:b102:7d93 with SMTP id g42-20020a0565123baa00b00513b1027d93mr7524047lfv.24.1710339467939;
+        Wed, 13 Mar 2024 07:17:47 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id v11-20020a05600c444b00b00412f016a151sm2492507wmn.9.2024.03.13.07.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 07:17:47 -0700 (PDT)
+Date: Wed, 13 Mar 2024 14:17:45 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Liuye <liu.yeC@h3c.com>
+Cc: "jason.wessel@windriver.com" <jason.wessel@windriver.com>,
+	"dianders@chromium.org" <dianders@chromium.org>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"jirislaby@kernel.org" <jirislaby@kernel.org>,
+	"kgdb-bugreport@lists.sourceforge.net" <kgdb-bugreport@lists.sourceforge.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
+Subject: Re: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlA==?=
+ =?utf-8?B?5aSNOiDnrZTlpI0=?= =?utf-8?Q?=3A?= [PATCH] kdb: Fix the deadlock
+ issue in KDB debugging.
+Message-ID: <20240313141745.GD202685@aspen.lan>
+References: <20240228025602.3087748-1-liu.yeC@h3c.com>
+ <20240228120516.GA22898@aspen.lan>
+ <8b41d34adaef4ddcacde2dd00d4e3541@h3c.com>
+ <20240301105931.GB5795@aspen.lan>
+ <2ea381e7407a49aaa0b08fa7d4ff62d3@h3c.com>
+ <20240312095756.GB202685@aspen.lan>
+ <06cfa3459ed848cf8f228997b983cf53@h3c.com>
+ <20240312102419.GC202685@aspen.lan>
+ <410a443612e8441cb729c640a0d606c6@h3c.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZfGqCWzyVzyGQrAQ@x1> <ZfGudRl9-tB_TszO@x1>
-In-Reply-To: <ZfGudRl9-tB_TszO@x1>
-From: Marco Elver <elver@google.com>
-Date: Wed, 13 Mar 2024 15:17:28 +0100
-Message-ID: <CANpmjNPrssMSw+jaP1ods1NZLxnk+bO_P9FUmRLs-ENEMPCcgg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
- on RT.
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <410a443612e8441cb729c640a0d606c6@h3c.com>
 
-On Wed, 13 Mar 2024 at 14:47, Arnaldo Carvalho de Melo <acme@kernel.org> wr=
-ote:
+On Wed, Mar 13, 2024 at 01:22:17AM +0000, Liuye wrote:
+> >On Tue, Mar 12, 2024 at 10:04:54AM +0000, Liuye wrote:
+> >> >On Tue, Mar 12, 2024 at 08:37:11AM +0000, Liuye wrote:
+> >> >> I know that you said schedule_work is not NMI save, which is the
+> >> >> first issue. Perhaps it can be fixed using irq_work_queue. But
+> >> >> even if irq_work_queue is used to implement it, there will still
+> >> >> be a deadlock problem because slave cpu1 still has not released
+> >> >> the running queue lock of master CPU0.
+> >> >
+> >> >This doesn't sound right to me. Why do you think CPU1 won't
+> >> >release the run queue lock?
+> >>
+> >> In this example, CPU1 is waiting for CPU0 to release
+> >> dbg_slave_lock.
+> >
+> >That shouldn't be a problem. CPU0 will have released that lock by the
+> >time the irq work is dispatched.
 >
-> On Wed, Mar 13, 2024 at 10:28:44AM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Wed, Mar 13, 2024 at 09:13:03AM +0100, Sebastian Andrzej Siewior wro=
-te:
-> > > One part I don't get: did you let it run or did you kill it?
->
-> > If I let them run they will finish and exit, no exec_child remains.
->
-> > If I instead try to stop the loop that goes on forking the 100 of them,
-> > then the exec_child remain spinning.
->
-> > > `exec_child' spins until a signal is received or the parent kills it.=
- So
->
-> > > it shouldn't remain there for ever. And my guess, that it is in spinn=
-ing
-> > > in userland and not in kernel.
->
-> > Checking that now:
->
-> tldr; the tight loop, full details at the end.
->
-> 100.00  b6:   mov    signal_count,%eax
->               test   %eax,%eax
->             =E2=86=91 je     b6
->
-> remove_on_exec.c
->
-> /* For exec'd child. */
-> static void exec_child(void)
-> {
->         struct sigaction action =3D {};
->         const int val =3D 42;
->
->         /* Set up sigtrap handler in case we erroneously receive a trap. =
-*/
->         action.sa_flags =3D SA_SIGINFO | SA_NODEFER;
->         action.sa_sigaction =3D sigtrap_handler;
->         sigemptyset(&action.sa_mask);
->         if (sigaction(SIGTRAP, &action, NULL))
->                 _exit((perror("sigaction failed"), 1));
->
->         /* Signal parent that we're starting to spin. */
->         if (write(STDOUT_FILENO, &val, sizeof(int)) =3D=3D -1)
->                 _exit((perror("write failed"), 1));
->
->         /* Should hang here until killed. */
->         while (!signal_count);
-> }
->
-> So probably just a test needing to be a bit more polished?
+> Release dbg_slave_lock in CPU0. Before that, shcedule_work needs to be
+> handled, and we are back to the previous issue.
 
-Yes, possible.
+Sorry but I still don't understand what problem you think can happen
+here. What is wrong with calling schedule_work() from the IRQ work
+handler?
 
-> Seems like it, on a newer machine, faster, I managed to reproduce it on
-> a non-RT kernel, with one exec_child remaining:
->
->   1.44  b6:   mov   signal_count,%eax
->               test  %eax,%eax
->  98.56      =E2=86=91 je    b6
+Both irq_work_queue() and schedule_work() are calls to queue deferred
+work. It does not matter when the work is queued (providing we are lock
+safe). What matters is when the work is actually executed.
 
-It's unclear to me why that happens. But I do recall seeing it before,
-and my explanation was that with too many concurrent copies of the
-test the system either ran out of memory (maybe?) because the stress
-test also spawns 30 parallel copies of the "exec_child" subprocess. So
-with the 100 parallel copies we end up with 30 * 100 processes. Maybe
-that's too much?
+Please can you describe the problem you think exists based on when the
+work is executed.
 
-In any case, if the kernel didn't fall over during that kind of stress
-testing, and the test itself passes when run as a single copy, then
-I'd conclude all looks good.
 
-This particular feature of perf along with testing it once before
-melted Peter's and my brain [1]. I hope your experience didn't result
-in complete brain-melt. ;-)
-
-[1] https://lore.kernel.org/all/Y0VofNVMBXPOJJr7@elver.google.com/
-
-Thanks,
--- Marco
+Daniel.
 
