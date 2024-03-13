@@ -1,364 +1,184 @@
-Return-Path: <linux-kernel+bounces-101580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6134787A8F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:03:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34FF487A8FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:04:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 852701C224D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:03:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA5B01F24B70
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7884D44393;
-	Wed, 13 Mar 2024 14:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC4F47784;
+	Wed, 13 Mar 2024 14:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ahi2q9RQ"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e3iIjrj1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B0F39AC3
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710338587; cv=none; b=opeNO5bA8cGBBYlygTQsrQeT3YOfDIfXzZm8rOyE2CuDRhi48Bz86d+WsYAmuSx5FAJGsfzltuEZVgLO3QczhSw3SG9ki0yRinHC2wQ7PfsG+Cq15T1rOvYWXr4DAE/Fr8eFsSdBzT42ge1sYMELVRDe560UtHol0g/HKLmDp18=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710338587; c=relaxed/simple;
-	bh=REoAlMLIAByZen9hmewEqDcUZ0gOOt+dbmRxlUveUdk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=utaW5yfCSJ/c1JZvM5iA868rPo3vzq47T8GqerKdb6rxZeZ9L/aKUQK8Lt5gwAzn+gh6HU4MUsWaLvSGUW8KqC7pQoTHmDc4fXgRwei2Wahv2MD2y/H1o5LzwacctxXzIONf/C8jpyp1GS1EuV/S+i0X/Q1nRpEcvp/CVFC1Yhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ahi2q9RQ; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60a15449303so42832157b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710338585; x=1710943385; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JK0XHQjO5WSH/o6x2gIUnZMlirm1AkRi9XQwO93zFbE=;
-        b=Ahi2q9RQcP3Y30GnLXfqBG5wwYfP68Sf34bwkBKC8+F0ebwc5JsEl51F75v+MmGt+1
-         gXiAanLiLbkTaXdtEvsoxA2XbDAJmmrvJt5pjk6zri6bN9aQ8YProHXUbZtvvDVGhkxd
-         nwYvENjtdWsIvfvi4tR4m/F8CUYgd74pTlpOY8Ah/qE1pQZM7/0YE/mfzc7K4kTnNgUH
-         qkdiRsbhCwmhZ+j0DIq3YYfuzm7B0fAzCLCiYgKffzi1I/wZkwv+6g6D/LDQidQquzyu
-         1mAIRuvWN6DzNQxDT1I3ilHN3ItKiLwODfpw6GcsigyL/cnpGbmfjXcAiC6d9ezXEliZ
-         htLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710338585; x=1710943385;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JK0XHQjO5WSH/o6x2gIUnZMlirm1AkRi9XQwO93zFbE=;
-        b=GCMWDW6D6TbAkxO1/e8rIf4wAx2D/0UZRFIbUFQLGLQZkIZgtYyOLxs0i6PKqpRPDO
-         zATeS5Te7EOC617UClOCrsK0coQACpcb433dHMllgzc7tJdAbWTdwG2tUljz2BiYdLpe
-         pxRfrgT07dWsto59w8qjsz1y+d9CVIxSCfjdSQ68+xcM7wZuLqbOGiiPdI0KlIKU5nzv
-         xaPiaTSpIEIwJyEhOKQJpDuxjvxz41CW+IzM+qJJ6b1XTCiAZajMJNx93wqz5rwRz9Km
-         KOPsviTLnSCEi9ez+ZdHoWWDGkSgd0bl8yTIv4k8w8K81Tl++ILNrJbYdb9iXNnBTClF
-         7JOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1/EWqNc64PFsNPkF/w2h/TOT0e4oQMS+AR0IPCcYqVNASxOXhzjHFV8ABQ8aVKPY6BNJYDrJ4h0jMi4c7vbdlAqfusZe5DwNsCEPR
-X-Gm-Message-State: AOJu0Yw7tMP3bd7B1M184rdBW6Sw6tpXcZskFFVPeNvQNHkrwEz/tngt
-	RCDeWt+QoK4bqEu/U2HRXK0+L7U0xcYcvBsw7qluIT+bfZ5VeJ+yI3AJXAdT81kujekGD3HmOSu
-	q6+ybCl7U+cUivNP2xdTkKlQ1GQ4pjZCNYK50SWsM
-X-Google-Smtp-Source: AGHT+IEdATua92ZogM+M95mw8t+NJgO5bNgZ4k6YtcnvzQvIJZmud6j4FqiH5e25lwAvTtzM7/reB0mZmvzhH/4qJPI=
-X-Received: by 2002:a81:5250:0:b0:60a:425c:10cf with SMTP id
- g77-20020a815250000000b0060a425c10cfmr2754365ywb.9.1710338583128; Wed, 13 Mar
- 2024 07:03:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9092046535;
+	Wed, 13 Mar 2024 14:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710338627; cv=fail; b=lqpxecwsbFBPqa9ZMT8ppQQGUuTwgjqsWlv4sj9vkPTHtmFVEZvr6WYAo/x/LYs0PvZjIBI2N348YwEcqA17bHQbbGaukONnTC3GKQCA7+PGcUwoPafTNeu8TVY5XuYyTuYoNx/kbfWMyMFVNr6OFkJiLhDH6pFS6dcqXK+v2E4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710338627; c=relaxed/simple;
+	bh=wLpo94qKWsozoRr6V7V4egX0OkLI9crZTtr3whCeS3E=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=XxB0OdnNHe+ik76y2zb3+kHNl1RXEeTRbV00b+Szz6MR3gDp9fry+ActBVun1QnPPNTdv330fS/tPi6DKkHCwugoiln487XhzNXXZesPpFJysa8CzOO0ldVhUYBEbO9NGCGqs2P1AfG1eErqCZweHwrYSUp0jlzb38/8NLV+7kg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e3iIjrj1; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710338626; x=1741874626;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=wLpo94qKWsozoRr6V7V4egX0OkLI9crZTtr3whCeS3E=;
+  b=e3iIjrj19jfqQrnv/RLGQ2uTCSleCRqFiKkcRJmy1b9dbMqXulb7dN6a
+   O+sbzvQz8ciWS2xil/rlhMW9LGh2josua+IOFpMwkqOP1aqQ5xo7PHbIh
+   +0kJBn2L8PyAw73sdfOT6l9CpM+sBeTQJGY2iSuxd+0VNgl2d28zc/mtM
+   zzqQ8zMRC1m6MSz6n3gY+GiXDFXXzWkn+IfG4PaGYdEjmWHEo7iWVsW7G
+   jkPa/NuikejOArMYB4CiLKysscL0JLQYhA5NgifKIZzspm4Mwn0D1s309
+   AmO7h5PsewkqdgRP/yZQEbxcQzOtDhwK0iNbu1p3u9zyiR/5f8prrZ5sn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="15738009"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="15738009"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 07:03:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="16660867"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Mar 2024 07:03:44 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Mar 2024 07:03:43 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Mar 2024 07:03:43 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Mar 2024 07:03:43 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Mar 2024 07:03:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dgpv8ogdjqVj5f5e2Y4HgeCBd49+84yi5lcIgGKVyxngFGDgQbiY8mPKWr7nEIsPqO9CEF8J/6fzjGBJJBWTM+r8z9gsacoktWcpaeVC6RvlmeqNO3AUsHfjNhPBZjpz1oa1fEm5neAFAkeSpFeUGFXX4y5AbUsueBO/wa7LljQ/04Atepb00BsTgGmuH1ibUqNo/SA6MepQeeuVppG4QugJn5T65aMvxDrMFQAubQrS9Hsq8GuH/a1i6Qe1f65qemeQGRhne3BcLgrBfpRXyRydc5/f8y4uMDWQpKMAi7CIi3eBkxY5CBRijLio24R7Tdg9trvFprCqIrXpON8nlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x5avEZhcFGBy9GEpP/gOVRgwFi6MJFE6zD5pjqqbTEQ=;
+ b=ERUqxH1E7kMJvcXHQfGdVfVIx1Q8TBLXYwGmOODV8awzm1aQAvxVdozs4703ji9js9LRuUcuqhIlpNFgh2xg1b4P6flnWhL1eoOUku5ntaYuCxCndUkwpruIENw19Lk6+Ex7v1j8ZvuKm80hGUC/40xhRE/v4+EdEztxD0Yc2yqBbLXNNi1qhJ7mUt0LzkOTUdNFmFNcjIk7ruMCG+dv0CcgJFiXpVYeT1CVfWE+g4kqp0f4tjss/wrzBPWz0FSI2zwizxIQzOm54JL8YGmWZ1HelLICc5ghl8LdHQdXkU+CJ/9WRrbrjIUK76S8iyCT9yylMk7Y90RVyXn26Jp8pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com (2603:10b6:510:147::11)
+ by MW6PR11MB8339.namprd11.prod.outlook.com (2603:10b6:303:24b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.17; Wed, 13 Mar
+ 2024 14:03:22 +0000
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630]) by PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630%4]) with mapi id 15.20.7386.017; Wed, 13 Mar 2024
+ 14:03:22 +0000
+Date: Wed, 13 Mar 2024 15:03:16 +0100
+From: Michal Kubiak <michal.kubiak@intel.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Ignat Korchagin <ignat@cloudflare.com>, "David S . Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <kernel-team@cloudflare.com>
+Subject: Re: [PATCH net v2 2/2] selftests: net: veth: test the ability to
+ independently manipulate GRO and XDP
+Message-ID: <ZfGyJMSWbZCqqFlM@localhost.localdomain>
+References: <20240312160551.73184-1-ignat@cloudflare.com>
+ <20240312160551.73184-3-ignat@cloudflare.com>
+ <ZfGN6RTBCbEm6uSO@localhost.localdomain>
+ <20240313065725.46a50ea8@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240313065725.46a50ea8@kernel.org>
+X-ClientProxiedBy: DB8PR09CA0002.eurprd09.prod.outlook.com
+ (2603:10a6:10:a0::15) To PH0PR11MB5782.namprd11.prod.outlook.com
+ (2603:10b6:510:147::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
- <20240311150058.1122862-7-ryan.roberts@arm.com> <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
- <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
-In-Reply-To: <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Wed, 13 Mar 2024 22:02:51 +0800
-Message-ID: <CAK1f24k1AuHDdrLFNLvwdoOy=xJTVkVdfY4+SN+KW5-EiMSa9Q@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and MADV_COLD
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Barry Song <21cnbao@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
-	Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>, 
-	Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5782:EE_|MW6PR11MB8339:EE_
+X-MS-Office365-Filtering-Correlation-Id: 77540b13-7aa6-4c30-7b6c-08dc436657d8
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yLD5ztcxXcqa3/7j65ebJXUa4PxIN/hp8U4MOiS+x/eSzG7Qjaqee/HwWy08MgCK5Ea6dm4IfiCdrHczHQfYFbaBeQ3j/XpPa55Ix8A8XU7ifbYw3x9QwPNd8z6wlW7u5ZHGfrWNN5SPEDx7FGClTsXhW+w/KE4oVarRxNbmsE6ZW8QN6D31398zv+/vytW6mwQUOrTKNbUljun0mo8S7qo69K5gqifTCedDoIY34ENVbshztpM6Nre8CoG7D9twqCqDKDXEZ6faCu57NGWEphF/aUPOM/fiEtX21NP1gtYTNdQXMHzqbXPfwt/dHHsgggH4AY76K++ZOsYwcxSx7qFZKDyxmm0Ss0+iQecMblMdOAy8vh0LuWj9/1VkBHKrvgv7Rx2KY+ZY18j8St9DJwV0BSTC3lo9ti8SNfPy0W7EZpq8KRa28FuhylGa3zny33bugJuhrH1UXH5jiULkDivSESaZzwOvCLHsgCSqI6EI6yhy8kXbV5XLTwfOLf0HbW0bmXrJTopJTLmbgR0YH+oqRqfGrIrj6l2U2PLEXOGGx6d391nCO5iZnMow84yHrab63m1rVr8UxF1inyJLiPogKT+jTmI+zn4UveYf/n4Bo7cMOAbrYcWgYryc1sIaMJLe/Sb5vBPWH40iir1YqMSk26p39gZwn5s8yFeTYTw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5782.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?v4IWkHiwfmHl/sD+uFCauHo47oEAoC7KoRSyogbHlNP8Nb4VjYE9j6Ecv1PA?=
+ =?us-ascii?Q?7g5xUV/bVFeAnDcE1sbkUGmiMeZw8DTEvSqgoI1OYD1KHRI+eB/dgWIi75DQ?=
+ =?us-ascii?Q?T4iartl68WIx7SrsZ9+DEy/EqHhsdrVg/vxc8sI66y6Ad9+Khezb0i8tz+EP?=
+ =?us-ascii?Q?6GLIiWnkzOBfdRjPknHMcrx53ANOGHWoqoVsqoccSajxNtNvMPkgQtjTvFzl?=
+ =?us-ascii?Q?/16JhwLrBnpJ1pkSLByDdF1MtXtek5wuWk7a9C1NjPZXF4msT/m2LagP6FPi?=
+ =?us-ascii?Q?KHOgpMTjgEa7m2jYUt9LKrDUcWfiVD8Kj+Ywr1B2C8bEOe8Cxw/pRCIVCAx9?=
+ =?us-ascii?Q?PK6eYjL1mNneFeA+6vjBkAlxmDsYGtLy3eLEKXN0DX8KlY7KAN8Vfiq9f/8v?=
+ =?us-ascii?Q?lqrr270RR/x+ZpS7IdQUWYmQBYhsVvgdL7fK/TaS9Ijxs0wE6yTgvgXhnUsq?=
+ =?us-ascii?Q?PC6Ht1XWsRUlJIkmRFNjQTEb+ullUsDJkoei2+CkB1KTs3mq+BT1u89EhMZU?=
+ =?us-ascii?Q?Cu4+FK3pvWh4URgb5lDGwaKky5ynqae+OyHjCrk9Q0LZExcDTxGEv1Utw5mk?=
+ =?us-ascii?Q?Avf+5EORoeWnd/w92MUOVWGtihWNeIphLS2IeiO5wo0mPf0wGko/e74PTWN7?=
+ =?us-ascii?Q?0vsiCLK0uXFmh12CGD3ok2SrF1+gCZl365XNqvhn0/8nZ3TIftMRbQD4aI69?=
+ =?us-ascii?Q?sM6hoWmNIew5l3lYGWhOiJcEEVUaYgIVNH5BSh+Av5E3eVIgxzW1fQo0j0Zq?=
+ =?us-ascii?Q?ET4vQbZpp+PgtJAGlnTb75lkratYKWWyqAhiCtWoqa8HFM8JaeO5S4Z4D8Te?=
+ =?us-ascii?Q?BBbOmtYeSc/vNIT6vXzeYrRGF3sZK0nwWY4ospaAalySsCIjK8eSeOvv1RWB?=
+ =?us-ascii?Q?WmTIElKx/oxn8Y8io4KhCVZvibjG+zz2PJKWkYkwPr3Shdiou5EH8PJ+3e6w?=
+ =?us-ascii?Q?vWCGIytDKyGXLjJXJLfZ/WVritr7ByMYDdyfrvCjXl0ou8roRBJelDfoz9j3?=
+ =?us-ascii?Q?hX0sr2Dq3AuLNmSvQcvmQOQ1MB+GY7ZwBIDWp0zBdRDoaSFtldcDyuVE2sVg?=
+ =?us-ascii?Q?REhNpRtOslSJLL5lOTZb/xS5CyTYegLnA3t0mS9gzx9XINBVz1lX5UCA99Co?=
+ =?us-ascii?Q?zh+O+Mp7Traya3aXv2YtGkqlJFtULZ45y5bhOGDhyNu1CTKNzQ9+XEqjDT8F?=
+ =?us-ascii?Q?IlVnjsBoxTT7CMdQMC7l3J3FJ6hss4UpInFmlkT0Z20WuzPk4ckdraWzokQo?=
+ =?us-ascii?Q?VapIu7PWhigrkeXrWnKHpC91DL/96ImxrktEKL+nhqERyBh1XEKrTPKEnmsW?=
+ =?us-ascii?Q?eqtqRJwQxrwarma+9/wfoniuWaNS5Z6KgpAVABhC9CoZxmfXuCFMxXMzgeSt?=
+ =?us-ascii?Q?nzgiecrtoAxP7LTPLxj6/bD4eqWtRNBKeyyREMvY6zC0LpIUjWsW1BS5Imyc?=
+ =?us-ascii?Q?ocfWXT9VbpNiPvKGV9h6zJO2AQ5i7G6qcjXDnjavSCmlxsmRvZYQLhzf0qP5?=
+ =?us-ascii?Q?pI4tR/D8VjhKUnmFtE6eU8d8JfwDCxbOsAyhaAKVNUu8e3vNyqVNpgPKWF5K?=
+ =?us-ascii?Q?YunTsg6nM5lUKKeLUXnhxgRLpeq8TYk2LDo4kjxbefQHQxrNcjwK9Ye+YYrh?=
+ =?us-ascii?Q?gQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77540b13-7aa6-4c30-7b6c-08dc436657d8
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5782.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 14:03:22.0601
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mTIt6nJkb5AgVN4VqU4rut5dCekNANwfjhymJIhLp/NkSBFNWf/d4X7ltR5nlfD+xvfp7gtb+O8SpQnF2J1FjQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR11MB8339
+X-OriginatorOrg: intel.com
 
-On Wed, Mar 13, 2024 at 5:03=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 13/03/2024 07:19, Barry Song wrote:
-> > On Tue, Mar 12, 2024 at 4:01=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.=
-com> wrote:
-> >>
-> >> Rework madvise_cold_or_pageout_pte_range() to avoid splitting any larg=
-e
-> >> folio that is fully and contiguously mapped in the pageout/cold vm
-> >> range. This change means that large folios will be maintained all the
-> >> way to swap storage. This both improves performance during swap-out, b=
-y
-> >> eliding the cost of splitting the folio, and sets us up nicely for
-> >> maintaining the large folio when it is swapped back in (to be covered =
-in
-> >> a separate series).
-> >>
-> >> Folios that are not fully mapped in the target range are still split,
-> >> but note that behavior is changed so that if the split fails for any
-> >> reason (folio locked, shared, etc) we now leave it as is and move to t=
-he
-> >> next pte in the range and continue work on the proceeding folios.
-> >> Previously any failure of this sort would cause the entire operation t=
-o
-> >> give up and no folios mapped at higher addresses were paged out or mad=
-e
-> >> cold. Given large folios are becoming more common, this old behavior
-> >> would have likely lead to wasted opportunities.
-> >>
-> >> While we are at it, change the code that clears young from the ptes to
-> >> use ptep_test_and_clear_young(), which is more efficent than
-> >> get_and_clear/modify/set, especially for contpte mappings on arm64,
-> >> where the old approach would require unfolding/refolding and the new
-> >> approach can be done in place.
-> >>
-> >> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> >
-> > This looks so much better than our initial RFC.
-> > Thank you for your excellent work!
->
-> Thanks - its a team effort - I had your PoC and David's previous batching=
- work
-> to use as a template.
->
-> >
-> >> ---
-> >>  mm/madvise.c | 89 ++++++++++++++++++++++++++++++---------------------=
--
-> >>  1 file changed, 51 insertions(+), 38 deletions(-)
-> >>
-> >> diff --git a/mm/madvise.c b/mm/madvise.c
-> >> index 547dcd1f7a39..56c7ba7bd558 100644
-> >> --- a/mm/madvise.c
-> >> +++ b/mm/madvise.c
-> >> @@ -336,6 +336,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t=
- *pmd,
-> >>         LIST_HEAD(folio_list);
-> >>         bool pageout_anon_only_filter;
-> >>         unsigned int batch_count =3D 0;
-> >> +       int nr;
-> >>
-> >>         if (fatal_signal_pending(current))
-> >>                 return -EINTR;
-> >> @@ -423,7 +424,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t=
- *pmd,
-> >>                 return 0;
-> >>         flush_tlb_batched_pending(mm);
-> >>         arch_enter_lazy_mmu_mode();
-> >> -       for (; addr < end; pte++, addr +=3D PAGE_SIZE) {
-> >> +       for (; addr < end; pte +=3D nr, addr +=3D nr * PAGE_SIZE) {
-> >> +               nr =3D 1;
-> >>                 ptent =3D ptep_get(pte);
-> >>
-> >>                 if (++batch_count =3D=3D SWAP_CLUSTER_MAX) {
-> >> @@ -447,55 +449,66 @@ static int madvise_cold_or_pageout_pte_range(pmd=
-_t *pmd,
-> >>                         continue;
-> >>
-> >>                 /*
-> >> -                * Creating a THP page is expensive so split it only i=
-f we
-> >> -                * are sure it's worth. Split it if we are only owner.
-> >> +                * If we encounter a large folio, only split it if it =
-is not
-> >> +                * fully mapped within the range we are operating on. =
-Otherwise
-> >> +                * leave it as is so that it can be swapped out whole.=
- If we
-> >> +                * fail to split a folio, leave it in place and advanc=
-e to the
-> >> +                * next pte in the range.
-> >>                  */
-> >>                 if (folio_test_large(folio)) {
-> >> -                       int err;
-> >> -
-> >> -                       if (folio_estimated_sharers(folio) > 1)
-> >> -                               break;
-> >> -                       if (pageout_anon_only_filter && !folio_test_an=
-on(folio))
-> >> -                               break;
-> >> -                       if (!folio_trylock(folio))
-> >> -                               break;
-> >> -                       folio_get(folio);
-> >> -                       arch_leave_lazy_mmu_mode();
-> >> -                       pte_unmap_unlock(start_pte, ptl);
-> >> -                       start_pte =3D NULL;
-> >> -                       err =3D split_folio(folio);
-> >> -                       folio_unlock(folio);
-> >> -                       folio_put(folio);
-> >> -                       if (err)
-> >> -                               break;
-> >> -                       start_pte =3D pte =3D
-> >> -                               pte_offset_map_lock(mm, pmd, addr, &pt=
-l);
-> >> -                       if (!start_pte)
-> >> -                               break;
-> >> -                       arch_enter_lazy_mmu_mode();
-> >> -                       pte--;
-> >> -                       addr -=3D PAGE_SIZE;
-> >> -                       continue;
-> >> +                       const fpb_t fpb_flags =3D FPB_IGNORE_DIRTY |
-> >> +                                               FPB_IGNORE_SOFT_DIRTY;
-> >> +                       int max_nr =3D (end - addr) / PAGE_SIZE;
-> >> +
-> >> +                       nr =3D folio_pte_batch(folio, addr, pte, ptent=
-, max_nr,
-> >> +                                            fpb_flags, NULL);
-> >
-> > I wonder if we have a quick way to avoid folio_pte_batch() if users
-> > are doing madvise() on a portion of a large folio.
->
-> Good idea. Something like this?:
->
->         if (pte_pfn(pte) =3D=3D folio_pfn(folio)
->                 nr =3D folio_pte_batch(folio, addr, pte, ptent, max_nr,
->                                      fpb_flags, NULL);
->
-> If we are not mapping the first page of the folio, then it can't be a ful=
-l
-> mapping, so no need to call folio_pte_batch(). Just split it.
+On Wed, Mar 13, 2024 at 06:57:25AM -0700, Jakub Kicinski wrote:
+> On Wed, 13 Mar 2024 12:28:41 +0100 Michal Kubiak wrote:
+> > On Tue, Mar 12, 2024 at 04:05:52PM +0000, Ignat Korchagin wrote:
+> > > We should be able to independently flip either XDP or GRO states and toggling
+> > > one should not affect the other.
+> > > 
+> > > Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>  
+> > 
+> > Missing "Fixes" tag for the patch targeted to the "net" tree.
+> 
+> it's adjusting a selftest, I don't think we need a Fixes tag for that
 
-                 if (folio_test_large(folio)) {
-[...]
-                       nr =3D folio_pte_batch(folio, addr, pte, ptent, max_=
-nr,
-                                            fpb_flags, NULL);
-+                       if (folio_estimated_sharers(folio) > 1)
-+                               continue;
+OK, sorry! My mistake, then.
 
-Could we use folio_estimated_sharers as an early exit point here?
-
-                       if (nr < folio_nr_pages(folio)) {
-                               int err;
-
--                               if (folio_estimated_sharers(folio) > 1)
--                                       continue;
-[...]
-
->
-> >
-> >> +
-> >> +                       if (nr < folio_nr_pages(folio)) {
-> >> +                               int err;
-> >> +
-> >> +                               if (folio_estimated_sharers(folio) > 1=
-)
-> >> +                                       continue;
-> >> +                               if (pageout_anon_only_filter && !folio=
-_test_anon(folio))
-> >> +                                       continue;
-> >> +                               if (!folio_trylock(folio))
-> >> +                                       continue;
-> >> +                               folio_get(folio);
-> >> +                               arch_leave_lazy_mmu_mode();
-> >> +                               pte_unmap_unlock(start_pte, ptl);
-> >> +                               start_pte =3D NULL;
-> >> +                               err =3D split_folio(folio);
-> >> +                               folio_unlock(folio);
-> >> +                               folio_put(folio);
-> >> +                               if (err)
-> >> +                                       continue;
-> >> +                               start_pte =3D pte =3D
-> >> +                                       pte_offset_map_lock(mm, pmd, a=
-ddr, &ptl);
-> >> +                               if (!start_pte)
-> >> +                                       break;
-> >> +                               arch_enter_lazy_mmu_mode();
-> >> +                               nr =3D 0;
-> >> +                               continue;
-> >> +                       }
-> >>                 }
-> >>
-> >>                 /*
-> >>                  * Do not interfere with other mappings of this folio =
-and
-> >> -                * non-LRU folio.
-> >> +                * non-LRU folio. If we have a large folio at this poi=
-nt, we
-> >> +                * know it is fully mapped so if its mapcount is the s=
-ame as its
-> >> +                * number of pages, it must be exclusive.
-> >>                  */
-> >> -               if (!folio_test_lru(folio) || folio_mapcount(folio) !=
-=3D 1)
-> >> +               if (!folio_test_lru(folio) ||
-> >> +                   folio_mapcount(folio) !=3D folio_nr_pages(folio))
-> >>                         continue;
-> >
-> > This looks so perfect and is exactly what I wanted to achieve.
-> >
-> >>
-> >>                 if (pageout_anon_only_filter && !folio_test_anon(folio=
-))
-> >>                         continue;
-> >>
-> >> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
-> >> -
-> >> -               if (!pageout && pte_young(ptent)) {
-> >> -                       ptent =3D ptep_get_and_clear_full(mm, addr, pt=
-e,
-> >> -                                                       tlb->fullmm);
-> >> -                       ptent =3D pte_mkold(ptent);
-> >> -                       set_pte_at(mm, addr, pte, ptent);
-> >> -                       tlb_remove_tlb_entry(tlb, pte, addr);
-> >> +               if (!pageout) {
-> >> +                       for (; nr !=3D 0; nr--, pte++, addr +=3D PAGE_=
-SIZE) {
-> >> +                               if (ptep_test_and_clear_young(vma, add=
-r, pte))
-> >> +                                       tlb_remove_tlb_entry(tlb, pte,=
- addr);
-
-IIRC, some of the architecture(ex, PPC) don't update TLB with set_pte_at an=
-d
-tlb_remove_tlb_entry. So, didn't we consider remapping the PTE with old aft=
-er
-pte clearing?
-
-Thanks,
-Lance
-
-
-
-> >> +                       }
-> >
-> > This looks so smart. if it is not pageout, we have increased pte
-> > and addr here; so nr is 0 and we don't need to increase again in
-> > for (; addr < end; pte +=3D nr, addr +=3D nr * PAGE_SIZE)
-> >
-> > otherwise, nr won't be 0. so we will increase addr and
-> > pte by nr.
->
-> Indeed. I'm hoping that Lance is able to follow a similar pattern for
-> madvise_free_pte_range().
->
->
-> >
-> >
-> >>                 }
-> >>
-> >>                 /*
-> >> --
-> >> 2.25.1
-> >>
-> >
-> > Overall, LGTM,
-> >
-> > Reviewed-by: Barry Song <v-songbaohua@oppo.com>
->
-> Thanks!
->
->
+Michal
 
