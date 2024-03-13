@@ -1,115 +1,97 @@
-Return-Path: <linux-kernel+bounces-101699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73C4787AABF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:51:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E967C87AAC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE47EB22C7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:51:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DF6E1C2176C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3102481C2;
-	Wed, 13 Mar 2024 15:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B31C47F54;
+	Wed, 13 Mar 2024 15:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="dCjpL1Qh"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="IE1pXpb7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6591447F45;
-	Wed, 13 Mar 2024 15:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2596F45028
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710345084; cv=none; b=hDi9vCYo/oqwEG6CP5msLnIb308DHpU9fX+YKO4SR7OtWcWtIeexbSjBM3RW4ch9spCUW2gzMFIas+tU1UvQ0ZvbNUUxndtMzAR8yfN2yz2uYHr5ZX+Dv+ooJTRoAcFTqzkWvD3PJK/FGDGtJo+pu10PCRtEtPyfGawhqNSTff0=
+	t=1710345106; cv=none; b=qj1Y6f/AGhbewzWvVooG3TdEU74iPvZjkzEIi+DujHJOPCAyZDeB6zA5OGvJXfXonX+yYmlpcEa0QyI6gk0P7yzrAdYfTxuA9EC6ShwT62K46/2AbIOAThu9Rol6LhJdUSEq+wGPJ3byNnO4v2lUS/1J2Cq8U4ldZltkfwpgQVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710345084; c=relaxed/simple;
-	bh=2t109cGdjRddVihzmzHhWDx/v8hS77zLbeiHFkAORB4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=smvIX0I23H7sMDYfxDqVsX7u/wQowdHu5ba9GzMOqt8dotD05WYCylzhKUR0/BaDSfyDZmhqwcCpcfEV2fyQWu34v0JirCEC0AXt3ZnVe4R2oi7g7ga1KGYQI9+3Q5duHTWr4cCXLpxZ4ngl/woju7GnV93vCrqqLshFGohGpBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=dCjpL1Qh; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0741CC0002;
-	Wed, 13 Mar 2024 15:51:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710345079;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zmEhZmVSZBopL5MK9mOGygoyzG2onSwohVKSkd/C5f4=;
-	b=dCjpL1Qhypjdy9xlWHCA/0s3JSgZwPFzSzJHfAufqhwzFSQnY0+zHNZjLYvDXAlw0/LawK
-	RDx8xDVnYHshm2m0NrGmnkPQDWIBGnvKiYvxhLRlypYgqMngW3pU9CyIxh0kSafHPT+hhY
-	swkdzbS3JIH+qJ/PXMaqmQUuUrrxxoqq/xOtdYCSEWT5KTZM0jUYkHij2g5ubg/rD86p7g
-	tQhMDJsq5axO88mK1AWI3lpN7C2ChszAxiZvqc1wHXVVVGuMeAUfGqhvEotfO42uiUtjOz
-	9Ow132l3YSiEod4DqhAiKq5s6qZwH6Ma40k97EpgnTbhOHrmXMZgdrb3LRq5aA==
-Message-ID: <757e7f93-9ebd-49e3-afd6-a40eb81a1a49@arinc9.com>
-Date: Wed, 13 Mar 2024 18:51:03 +0300
+	s=arc-20240116; t=1710345106; c=relaxed/simple;
+	bh=mI7fSNRhjdc1x/5jXUqFrblmXVZD1jsPOX+je1rOPJs=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=W2aPRrDqyNztlOA3r6YbHqvIHN6aEzAIuEOPzUGUVi80rmp0+3cdMu1z+pZ2m3GaqyseKxZHxUoAqz+4NVDrt8L1+daNyfUw40iPUyfKNqErpGwUnzOroHHwtkCpNNxwNpqWUzldO0gB5Lo8289U/q+t8qMqw84KP0jWaikcmwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=IE1pXpb7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14731C433C7;
+	Wed, 13 Mar 2024 15:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1710345105;
+	bh=mI7fSNRhjdc1x/5jXUqFrblmXVZD1jsPOX+je1rOPJs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IE1pXpb7tEtDPJb1XPIB8Qu0S2GzmepwH2QCl5imqd4uVrjQ6FOIaKUEilPkEvxvf
+	 8xkpZBwuPD2joCO0YlGF61cyqD55UJYIV8W9ya1CD5oXdVR7zS/ZCbPF3+6GNnNTGc
+	 pey9QOPoFuxqaAqcT4v1qyyDZDa+7k3k4RllX9m0=
+Date: Wed, 13 Mar 2024 08:51:44 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Donet Tom <donettom@linux.ibm.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Aneesh Kumar <aneesh.kumar@kernel.org>,
+ Michal Hocko <mhocko@kernel.org>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Mel Gorman <mgorman@suse.de>, Feng Tang
+ <feng.tang@intel.com>, Andrea Arcangeli <aarcange@redhat.com>, Peter
+ Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Rik van
+ Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>, Matthew
+ Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, Dan
+ Williams <dan.j.williams@intel.com>, Hugh Dickins <hughd@google.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Suren Baghdasaryan
+ <surenb@google.com>
+Subject: Re: [PATCH v2 2/2] mm/numa_balancing:Allow migrate on protnone
+ reference with MPOL_PREFERRED_MANY policy
+Message-Id: <20240313085144.13b37a79c688b6126af0bd07@linux-foundation.org>
+In-Reply-To: <874jdd5z1b.fsf@yhuang6-desk2.ccr.corp.intel.com>
+References: <cover.1709909210.git.donettom@linux.ibm.com>
+	<369d6a58758396335fd1176d97bbca4e7730d75a.1709909210.git.donettom@linux.ibm.com>
+	<874jdd5z1b.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: dsa: mt7530: increase reset hold time
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <f594a72a91d12f1d027a06962caa9750@risingedge.co.za>
- <20240312192117.7789-1-justin.swartz@risingedge.co.za>
- <bf0ed70f-e106-4a7f-a98c-de34658feb4d@arinc9.com>
- <e6525cac666a033a5866465abb3e63f1@risingedge.co.za>
- <2640a495-97a0-4669-a53a-e367af956a78@arinc9.com>
- <c4590e9519d0cd788d157a1e1510cc45@risingedge.co.za>
- <997db446-030b-4e6a-beea-0ae7d990e7e2@arinc9.com>
- <3146df060620f08a620417cfcf2b2179@risingedge.co.za>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <3146df060620f08a620417cfcf2b2179@risingedge.co.za>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 13.03.2024 18:38, Justin Swartz wrote:
-> On 2024-03-13 17:04, Arınç ÜNAL wrote:
->> On 13.03.2024 16:13, Justin Swartz wrote:
->> I think you've missed that your patch is already applied. And it won't be
->> reverted for reasons explained by Paolo in this mail thread.
->>
->> https://git.kernel.org/netdev/net-next/c/2920dd92b980
->>
->> So if your patch here were to be applied too, the final mt7530.c would have
->> the LEDs disabled AND before reset deassertion delay increased.
+On Mon, 11 Mar 2024 09:37:36 +0800 "Huang, Ying" <ying.huang@intel.com> wrote:
+
+> > @@ -2515,15 +2516,26 @@ int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
+> >  		break;
+> >  
+> >  	case MPOL_BIND:
+> > -		/* Optimize placement among multiple nodes via NUMA balancing */
+> > +	case MPOL_PREFERRED_MANY:
+> > +		/*
+> > +		 * Even though MPOL_PREFERRED_MANY can allocate pages outside
+> > +		 * policy nodemask we don't allow numa migration to nodes
+> > +		 * outside policy nodemask for now. This is done so that if we
+> > +		 * want demotion to slow memory to happen, before allocating
+> > +		 * from some DRAM node say 'x', we will end up using a
+> > +		 * MPOL_PREFERRED_MANY mask excluding node 'x'. In such scenario
+> > +		 * we should not promote to node 'x' from slow memory node.
+> > +		 */
 > 
-> Yes, I seem to have missed that. I thought your request for the
-> patch to be reverted definitely would have been performed, or at
-> least queued, seeing as you're the maintainer.
+> This is a little hard to digest for me.  And, I don't think that we need
+> to put this policy choice in code comments.  It's better to put it in
+> patch description.  Where we can give more background, for example, to
+> avoid cross-socket traffic, etc.
 
-Yeah, one would think. :D Since your patch was applied in a good intent of
-not having it miss the current development cycle, it was a bit rushed. So
-before I could present a valid reason to revert the patch, the pull request
-that included your patch was already submitted to Linus. So unless the
-patch is something very bad which it's not, nobody's going to bother
-reverting it.
-
-I've sent another patch an hour or so ago that reverts it and implements
-what we've discussed here. I will also make sure it is applied to stable
-trees.
-
-https://lore.kernel.org/all/20240313-for-netnext-mt7530-better-fix-xtal-frequency-v1-1-5a50df99f51a@arinc9.com/
-
-Arınç
+Oh.  I like the comment.  We could perhaps put additional detail in the
+changelog, but using changelogs to understand the code is so darned
+inconvenient.
 
