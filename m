@@ -1,123 +1,63 @@
-Return-Path: <linux-kernel+bounces-102387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF5F87B17D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:17:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A69D487B181
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B77B71C2833A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:17:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D817E1C287EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67E14CB47;
-	Wed, 13 Mar 2024 18:54:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HyY4TDpC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E4865BCC;
+	Wed, 13 Mar 2024 18:56:25 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AD3210F8;
-	Wed, 13 Mar 2024 18:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B56E57875;
+	Wed, 13 Mar 2024 18:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710356096; cv=none; b=alIlLmCsVmhjep9G6F/6/HaRN16O4y0Kw2sDo2ie1CTnc6F+YAI8CF91xiv/yIW/FJjC8EwH5AQLQSD7SOM2fRLBCC+EaYe1FXUFcW33gdHqW5nuZIk6XKCQIJfUTLTU1M7eH7HdfX1+BAJE+ksBnAWWnwhOv6ZNBzB34AILHp0=
+	t=1710356185; cv=none; b=YxdyFmwPoI0wtiEi7qmnFQDd3+Y+M72D33TS6y0IRGaZYoveGmprZ+grAy1G+CTFl3aUL0HdEHAc+5Kas0dshOe3y/wTlFf2m2njmcNtM1Pb46meay86EalswBCAy73o/TkSNt8u53yHHT5dwpPZBIFkjDNRKnGLw7Ry7+Yy2I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710356096; c=relaxed/simple;
-	bh=ZG1LuLekRiLfxzr/Jqbgw2nhEBHoB9a7CHQNHKlXSjA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FPAKm3+c6G3DoX2ggHFNVFWOSNXXRWJ674K65G+6R3MunbIwaKe8+ypGqXUZKaE51BxAq/cbl/Byyokep2608nAcrCDw0QJYUGHxHwq/LHqaDClh8T6HvMDpFz7nMOY99J6f1xHvn1/hOsczzgxsAjXTH7xjFJhwNnTYZwUcVWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HyY4TDpC; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710356095; x=1741892095;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZG1LuLekRiLfxzr/Jqbgw2nhEBHoB9a7CHQNHKlXSjA=;
-  b=HyY4TDpCBQz9e5NsE8v5i+JFFzk6UOIT2D/oclrMEMz3VbV8LPeryGNX
-   C5IgEyfHHr5y7ddzU89JJP3GVyutAupqoqdDOCaTdoLLr6e1jO1t+W3De
-   MaKvwWvKho0R42yIhmOeUK5wMl/7uZh0xl2Ke1BZGgzz522/XkxV3aiJS
-   ahWGh4m0aqQ+lpY6RMw95FIMcqnv+w+xU5N7a4WzBoJJtQaZRH++Z8L3J
-   pilG8AA7I6qf4aLafRCa7VPM2Xc5fDnQRIH4pI8la+Z3y43CkZ2sYTYQJ
-   zYaciv9vDdtoIwZSzAlfLsaVfedAKIPGikk+fsgzPdz1Za3n9gAbstAxH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="8965627"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="8965627"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 11:54:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914439124"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="914439124"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 11:54:50 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rkTkV-0000000CIce-3mnc;
-	Wed, 13 Mar 2024 20:54:47 +0200
-Date: Wed, 13 Mar 2024 20:54:47 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
-	mazziesaccount@gmail.com, ak@it-klinger.de,
-	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
-	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] iio: pressure: Add timestamp and scan_masks for
- BMP280 driver
-Message-ID: <ZfH2dxmSzcw1_3vt@smile.fi.intel.com>
-References: <20240313174007.1934983-1-vassilisamir@gmail.com>
- <20240313174007.1934983-6-vassilisamir@gmail.com>
+	s=arc-20240116; t=1710356185; c=relaxed/simple;
+	bh=6CPhWplRKL6ZXn4Bpy9iy8veWJTpt4vVWHiQfaK2cI8=;
+	h=From:Subject:Date:Message-ID:To; b=rg1R+oo/9vbCpJiUdx0piDKjO2UrAUdge+MlKPMx0QVHO5w1vjX9k34FOsBDZNcdUXStCssXyZLjRVFR1TKy5oO/o2bI01Oly/byItJ6sYXkORaZ9VVseMr8hBHoVhwpe/O3bwWwOosqU3Jz7Goe/DEa0eX2cczsiIt3dJpYSIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88F9DC433C7;
+	Wed, 13 Mar 2024 18:56:23 +0000 (UTC)
+From: Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 6.6.21-rt26
+Date: Wed, 13 Mar 2024 18:55:31 -0000
+Message-ID: <171035613144.245874.17454534265481939921@demetrius>
+To: LKML <linux-kernel@vger.kernel.org>,linux-rt-users <linux-rt-users@vger.kernel.org>,Steven Rostedt <rostedt@goodmis.org>,Thomas Gleixner <tglx@linutronix.de>,Carsten Emde <C.Emde@osadl.org>,John Kacur <jkacur@redhat.com>,Sebastian Andrzej Siewior <bigeasy@linutronix.de>,Daniel Wagner <daniel.wagner@suse.com>,Tom Zanussi <tom.zanussi@linux.intel.com>,Clark Williams <williams@redhat.com>,Pavel Machek <pavel@denx.de>,Joseph Salisbury <joseph.salisbury@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313174007.1934983-6-vassilisamir@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Mar 13, 2024 at 06:40:06PM +0100, Vasileios Amoiridis wrote:
-> The scan mask for the BME280 supports humidity measurement needs
-> to be distinguished from the rest in order for the timestamp to
-> be able to work. Scan masks are added for different combinations
-> of measurements. The temperature measurement is always needed for
-> pressure and humidity measurements.
+Hello RT-list!
 
-(Just to make sure if you used --histogram diff algo when preparing the series)
+I'm pleased to announce the 6.6.21-rt26 stable release.
 
-..
+You can get this release via the git tree at:
 
->  	{
-> -		.type = IIO_HUMIDITYRELATIVE,
-> +		.type = IIO_PRESSURE,
->  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
->  				      BIT(IIO_CHAN_INFO_RAW) |
->  				      BIT(IIO_CHAN_INFO_SCALE) |
->  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-> -		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
-> +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-Stray change
+  branch: v6.6-rt
+  Head SHA1: 9ddab713e5ac3cc25667f26d74b77da55149c0a9
 
->  					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
-> +		.scan_index = 1,
-> +		.scan_type = {
-> +			.sign = 'u',
-> +			.realbits = 32,
-> +			.storagebits = 32,
-> +			.endianness = IIO_CPU,
-> +		},
->  	},
+Or to build 6.6.21-rt26 directly, the following patches should be applied:
 
--- 
-With Best Regards,
-Andy Shevchenko
+  https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.6.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.6.21.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/6.6/patch-6.6.21-rt26.patch.xz
 
 
+Enjoy!
+Clark
 
