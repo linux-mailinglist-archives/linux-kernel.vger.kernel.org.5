@@ -1,232 +1,130 @@
-Return-Path: <linux-kernel+bounces-100994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBC2987A092
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:14:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C54787A090
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:14:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B0351F23B84
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:14:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D33D42852CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:14:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA7BDF67;
-	Wed, 13 Mar 2024 01:14:20 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B282BE65;
+	Wed, 13 Mar 2024 01:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="FDZNA8oD"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC2A9444;
-	Wed, 13 Mar 2024 01:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17E0947A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710292459; cv=none; b=ds2eWJ/T3KmtmUHqA6vKxWYjGob4oZU7oCQhkJObCTsxP8xfbjMYnDy4iFTNmxZWODXYDJ2a4NvXC6Oj77W9VUD2cx36B7rTv7Io5Y259wwDctOIt1uLB8baWTyuG7xZwKctEvndJTwxn/E4W2mj6uBpexR0eMi/bc4iHHwnaNI=
+	t=1710292456; cv=none; b=nIbBY2yPKF4wshpoJUgodMxYrSPbf6xmCWkkWgVhbMe1DIe3E6pY5nsv3VPH+rbSl7R60iOb7TZqyvEnc0UvJw4w5q+Y43VR/IzvxF+uGSYz+gOJggtdfnKzeO8JW0DcLl6USo9CDHrxePKrsRe/GzDk/rg9qlMZglylOEMMttA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710292459; c=relaxed/simple;
-	bh=nfQVya1SfjvIIWiOwDqJgl+3Vd/ro0NsynnzkA+vcDU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iayWY0F8znPWTYFI5ecAqHoHa4RMNXXGnFheH2dnLD3qQ8nzVBXI+Qx5/TYy2ZyZ5BfEnaaMIQrlpESPR6iTScAy6KyZoTedUWbwUlihwbtzYpM/Shx+metKquy06ryzWJQFP1TBDIsoxPvrm6I+/gYzDxusTkGBGFHGnOcsgjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: e9b13bb08fd846ec84b37e8bf20521fa-20240313
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:6bfcbf21-1856-4e01-973a-19f2a68045fd,IP:10,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:-10
-X-CID-INFO: VERSION:1.1.37,REQID:6bfcbf21-1856-4e01-973a-19f2a68045fd,IP:10,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-10
-X-CID-META: VersionHash:6f543d0,CLOUDID:7659d2ff-c16b-4159-a099-3b9d0558e447,B
-	ulkID:2403130914090NL55WB5,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
-	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: e9b13bb08fd846ec84b37e8bf20521fa-20240313
-X-User: aichao@kylinos.cn
-Received: from localhost.localdomain [(112.64.161.44)] by mailgw
-	(envelope-from <aichao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 267368829; Wed, 13 Mar 2024 09:14:06 +0800
-From: Ai Chao <aichao@kylinos.cn>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org
-Cc: Ai Chao <aichao@kylinos.cn>
-Subject: [PATCH v6] platform/x86: add lenovo wmi camera button driver
-Date: Wed, 13 Mar 2024 09:13:59 +0800
-Message-Id: <20240313011359.835109-1-aichao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710292456; c=relaxed/simple;
+	bh=twMccmPlR7/SShgFg0AONE56vJVPPL3EBuKYw8SPbFI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MgsMYUa2jLrM5XKpv7sl14PphszeiHtc76ePgxHGxiTkmR/T4su6caebNG6bJccjqpl2mp/RnPtnCfdzYDJ5xjiN125p2Vv/zmgoIgKBdYymDFj5IvuGE5lFu0r3R9EagtThnzR6jcaRE4xYSH3MBoWSqVb5T58WFeFCca8v7vI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=FDZNA8oD; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29bb3d62949so3317508a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1710292454; x=1710897254; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=twMccmPlR7/SShgFg0AONE56vJVPPL3EBuKYw8SPbFI=;
+        b=FDZNA8oDu26c1b4Iq8kZpI5sjsgzWxN3M1q+oBqWsp+edkBILL0x/ka8+/nChjOnBo
+         cMYlOjrqOw6kEqUyIAMKHDstbnc8rFkNuM1rrWPxLO3KbA3p4Y++EQDbz8OKhAb5qja8
+         P/1+acCyx9guR3yh+MkS99mdDHrWjPTSgvwyMWYpSq15boCnFJ9P6M8RBXrnaibQe2qk
+         2BsCYF1COi08jt7I+YEdGO6oK2NjxCIwpkkFSRn8A/uCPUSF/O4d72djMV8nJFSKXwUQ
+         W8cPGSiSEhradaspEmLUBW3lkkxtC0OsA80J9lNQ/YWJOsOA1HqnRU1xV0YI5hVDMg7T
+         PbzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710292454; x=1710897254;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=twMccmPlR7/SShgFg0AONE56vJVPPL3EBuKYw8SPbFI=;
+        b=SI6uNQqql2jsCYwEXxE5v+MX/lvkxS19PlIzasTAPHsl+X9gp1dPUQAGV92Vrh8NSE
+         DnDFvp0FOk8eBgDTgWlnutojj90Z4dgKAuBKQDINbs6ccO8OLxaovt9n9mwhpHdoWsV+
+         dfPMxvJQaIXGaDRZsMJP+3QVkduop+jDHKGI1SX5vOXPpbxC9j5kgTGfQ22pUYyU946U
+         OeMp37x7hkpxWwg7vd5BvDHnwBnPbKxl3SnDt6Ki+11473qZKupfn4Yc/y3VxR8xCfE0
+         41F1Cj24BtW0ipVThM72o6IlE2T9UGMhDBzD1Y64yDafmpa6EuZNaemsLP1nHA4hJPHj
+         uR2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVeO+xczJFmUoXvxfUwIqNYNR+yPqmyYxHeLyZ/2Zv1rQbuFTIo+afEAWq5fGJm0vCqeZf/o7D+jHiE7AowWbXTkbkrGRiOqAnoZztZ
+X-Gm-Message-State: AOJu0Yzt/zG4VOmf512dJw5oJuxHiZtFH7SLYxMwMWTU0XJM8KXgN//B
+	Ymb9zZFrwiaaqKOdxLb6/thkW4tJZ4M77Gf1toR0b7nDnWM03SNKl80S9CfVKkDPHx8gXMChGmp
+	lJgY902G5hUrYQHm2h/p2lYJbOfaj7722cynX8A==
+X-Google-Smtp-Source: AGHT+IFJ2nJztVxlcv7iF1fLo4e+81DiH9lck4a4XLEq2MMi6yrbHR+XGNXNfeaQ8LZdIPeyXdsLEIp10M0upU5dDak=
+X-Received: by 2002:a17:90a:bb0d:b0:29c:5ba3:890e with SMTP id
+ u13-20020a17090abb0d00b0029c5ba3890emr829001pjr.4.1710292454186; Tue, 12 Mar
+ 2024 18:14:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-9-dongmenglong.8@bytedance.com> <CAADnVQK+s3XgSYhpSdh7_9Qhq4DimmSO-D9d5+EsSZQMX4TxxA@mail.gmail.com>
+ <CALz3k9hZxsbUGoe5JoWpMEV0URykRwiKWLKZNj4nhvnXg3V=Zg@mail.gmail.com> <CAADnVQJ87Ov6ny2hj-0_WymGB3TeuEZu373EmqmRJqZv-8Ze_Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJ87Ov6ny2hj-0_WymGB3TeuEZu373EmqmRJqZv-8Ze_Q@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Wed, 13 Mar 2024 09:14:03 +0800
+Message-ID: <CALz3k9jf4Q7KJPes=omx5oBpEmoFNSvc=vp=D0hEa-51i7tc_A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 8/9] libbpf: add support for
+ the multi-link of tracing
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add lenovo generic wmi driver to support camera button.
-The Camera button is a GPIO device. This driver receives ACPI notifyi
-when the camera button is switched on/off. This driver is used in
-Lenovo A70, it is a Computer integrated machine.
+On Wed, Mar 13, 2024 at 12:12=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Mar 11, 2024 at 7:44=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dong=
+menglong.8@bytedance.com> wrote:
+> >
+> > On Tue, Mar 12, 2024 at 9:56=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Mar 11, 2024 at 2:35=E2=80=AFAM Menglong Dong
+> > > <dongmenglong.8@bytedance.com> wrote:
+[...]
+> > > Pls use glob_match the way [ku]probe multi are doing
+> > > instead of exact match.
+> >
+> > Hello,
+> >
+> > I'm a little suspecting the effect of glob_match. I seldom found
+> > the use case that the kernel functions which we want to trace
+> > have the same naming pattern. And the exact match seems more
+> > useful.
+> >
+> > Can we use both exact and glob match here?
+>
+> exact is a subset of glob_match.
+> Pls follow the pattern that[ku]probe multi established
+> in terms of user interface expectations.
 
-Signed-off-by: Ai Chao <aichao@kylinos.cn>
----
-v6: Modify SW_CAMERA_LENS_COVER to
-KEY_CAMERA_ACCESS_ENABLE/KEY_CAMERA_ACCESS_DISABLE.
-v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_COVER.
-v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenovo_wmi_priv.
-v3: Remove lenovo_wmi_remove function.
-v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
-
- drivers/platform/x86/Kconfig             | 12 +++
- drivers/platform/x86/Makefile            |  1 +
- drivers/platform/x86/lenovo-wmi-camera.c | 98 ++++++++++++++++++++++++
- 3 files changed, 111 insertions(+)
- create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
-
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index bdd302274b9a..9506a455b547 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
- 	To compile this driver as a module, choose M here: the module
- 	will be called inspur-platform-profile.
- 
-+config LENOVO_WMI_CAMERA
-+	tristate "Lenovo WMI Camera Button driver"
-+	depends on ACPI_WMI
-+	depends on INPUT
-+	help
-+	  This driver provides support for Lenovo camera button. The Camera
-+	  button is a GPIO device. This driver receives ACPI notify when the
-+	  camera button is switched on/off.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called lenovo-wmi-camera.
-+
- source "drivers/platform/x86/x86-android-tablets/Kconfig"
- 
- config FW_ATTR_CLASS
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 1de432e8861e..217e94d7c877 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
- obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
- obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
- obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
-+obj-$(CONFIG_LENOVO_WMI_CAMERA)	+= lenovo-wmi-camera.o
- 
- # Intel
- obj-y				+= intel/
-diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platform/x86/lenovo-wmi-camera.c
-new file mode 100644
-index 000000000000..fc2af7f48bc0
---- /dev/null
-+++ b/drivers/platform/x86/lenovo-wmi-camera.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Lenovo WMI Camera Button Driver
-+ *
-+ * Author: Ai Chao <aichao@kylinos.cn>
-+ * Copyright (C) 2024 KylinSoft Corporation.
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/input.h>
-+#include <linux/module.h>
-+#include <linux/wmi.h>
-+
-+#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
-+
-+struct lenovo_wmi_priv {
-+	struct input_dev *idev;
-+	struct device *dev;
-+};
-+
-+enum {
-+	SW_CAMERA_OFF	= 0,
-+	SW_CAMERA_ON	= 1,
-+};
-+
-+static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
-+{
-+	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-+
-+	if (obj->type == ACPI_TYPE_BUFFER &&
-+	    obj->buffer.pointer[0] <= SW_CAMERA_ON) {
-+		/* obj->buffer.pointer[0] is camera mode:
-+		 *      0 camera close
-+		 *      1 camera open
-+		 */
-+		if (obj->buffer.pointer[0] == SW_CAMERA_ON) {
-+			input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 1);
-+			input_sync(priv->idev);
-+			input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 0);
-+		} else {
-+			input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 1);
-+			input_sync(priv->idev);
-+			input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 0);
-+		}
-+		input_sync(priv->idev);
-+	} else {
-+		dev_dbg(&wdev->dev, "Bad response type %d or Bad camera mode %d\n",
-+			obj->type, obj->buffer.pointer[0]);
-+	}
-+}
-+
-+static int lenovo_wmi_probe(struct wmi_device *wdev, const void *context)
-+{
-+	struct lenovo_wmi_priv *priv;
-+
-+	priv = devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&wdev->dev, priv);
-+
-+	priv->idev = devm_input_allocate_device(&wdev->dev);
-+	if (!priv->idev)
-+		return -ENOMEM;
-+
-+	priv->idev->name = "Lenovo WMI Camera Button";
-+	priv->idev->phys = "wmi/input0";
-+	priv->idev->id.bustype = BUS_HOST;
-+	priv->idev->dev.parent = &wdev->dev;
-+	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_ENABLE);
-+	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_DISABLE);
-+
-+	return input_register_device(priv->idev);
-+}
-+
-+static const struct wmi_device_id lenovo_wmi_id_table[] = {
-+	{ .guid_string = WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
-+	{  }
-+};
-+
-+static struct wmi_driver lenovo_wmi_driver = {
-+	.driver = {
-+		.name = "lenovo-wmi-camera",
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+	},
-+	.id_table = lenovo_wmi_id_table,
-+	.no_singleton = true,
-+	.probe = lenovo_wmi_probe,
-+	.notify = lenovo_wmi_notify,
-+};
-+
-+module_wmi_driver(lenovo_wmi_driver);
-+
-+MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
-+MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
-+MODULE_DESCRIPTION("Lenovo WMI Camera Button Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
-
+Okay!
 
