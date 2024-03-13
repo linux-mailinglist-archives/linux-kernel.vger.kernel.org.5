@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-101838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F126B87AC07
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:56:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8518287AC09
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC7F6287279
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:56:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3923A1F23FC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23EBF6024B;
-	Wed, 13 Mar 2024 16:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6543FB38;
+	Wed, 13 Mar 2024 16:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5Qjsk66"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adKfTfPB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5AC6F53A;
-	Wed, 13 Mar 2024 16:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4728B70CB2;
+	Wed, 13 Mar 2024 16:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347874; cv=none; b=fv5n++KEdOGIekouhdEjF/tNy9o+/8DwGHKNYK24cUdYsEc/b0vcENfeWxBpkgrZg/oat6L5tGT4m3XM/bG/6n+h/A4+XDkP271JadYeEr8VmFnC1zqYgVBz+nfo376fddAewx6TBtdsGRlxHIVxalJKqCXi85iVMhtR46aDAhg=
+	t=1710347875; cv=none; b=jouBiu6yEMTRMIzVGmmQzXshyKnsmN630jUFhz0Zt3btFgYBU47/Y+3aaZeii7LzRv7t7qLN9DzjVAs99wmE2AV2O4o0voebnAy1uQUCwSzyKX9/121P2VNfQ9g7JzgM7XdaLuXNLzhj7+yzsATai1lXPD2yjKx5vo++D1AZIWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347874; c=relaxed/simple;
-	bh=9vQrnnejhIN2O38VyFzgPFbVVMiM3I4ozD7eswGJBvE=;
+	s=arc-20240116; t=1710347875; c=relaxed/simple;
+	bh=3UekCyyDHThKiG9v+4KxnUS74Ovcmcs7JvlE63gLlaQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OI2dEZXULMc/qwqg+YmM+wejdASBgut2RI7qidZYQj4Lf4uBHZCM8YqxjsDRgfSsiIYtRu9/DsJYuxK1myprW0v4Eri8s3W3FsmATwnugAv/OeLsa9V62i1mKgmkHj2mdTJqnrNc6SvsWUriJwqil/CPbDBJCL/aMdqckOR0HEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5Qjsk66; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DB9EC43394;
-	Wed, 13 Mar 2024 16:37:53 +0000 (UTC)
+	 MIME-Version; b=llcCG1UE1xG6sbChpEBozANltygOvX1cMWQk8E9bCKFRzQ4WpCjBXs7uVzwt05HxWClr+385xDD70Raf6amsaWxpskAEPwtTE2WCyYYhrt9CIA8krJYw+9Lv7gaCB8mytpdT65KR9iDv2jKXOwRgixb934JNC6GRWk56Qp6uoyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adKfTfPB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E3CEC433C7;
+	Wed, 13 Mar 2024 16:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347873;
-	bh=9vQrnnejhIN2O38VyFzgPFbVVMiM3I4ozD7eswGJBvE=;
+	s=k20201202; t=1710347874;
+	bh=3UekCyyDHThKiG9v+4KxnUS74Ovcmcs7JvlE63gLlaQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D5Qjsk66Nv6KChPviEpN+A4BdJqPLBZSY+8WP4j6ebfhJZ6MOu8XX/fhvFdSERE5I
-	 XhOG8OjSVvhzd3v0AP4/+VJ38rEDmXLBjxDsljuozgOJ/n5nLhkO1BTOxIqpdtGvTu
-	 bP1gsWs1M7xkMWC9HFFqnf86BWMFRO+Nlm1PvTtMmXG2D1MpJPfX/TcFbX+HvuhbWT
-	 FSFg59WAt/DUkiK/CaTgwerLmcoxpiGiKKivqEv49BsUOWgyEFrXrhcyImTfJI1eHI
-	 hbwA9WMOa4/UrPHfI3TxWfx4J9Kk1owIKHWmXprWBMeRVweSp1/UbcPiUkMkBD4t30
-	 VrS2/l2LRIDTw==
+	b=adKfTfPBi9roFc+fChBMFR8M9cKFZAt+aeTo44et/yKNu98kRGiiXqYZlzlIWviEl
+	 EK1T0NukMmwefVn0zRypa4Zw1moR62TwMKb6nud1rT0d6Ge/YFgJjzQlyVkNx5JX1g
+	 agL9RdXreidqfESmGY0LAczJDOC4P1P2tr0eLc8jBJPP1/PtJ3ZeIryPPbg+vgf1i4
+	 whvP05wW4NPZrzMK2qwd+PD00MbOuontBQA2ZibaG3svZwo5SuHdHrafpalCmw4TyI
+	 MNBmhGANZ44lby/h6cpe6IFgKk7QcasUT5uNgNSW2/8q4NVwfhdhQF+6RAuMKCBc9N
+	 O+KA3nZi6RkjQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Florian Westphal <fw@strlen.de>,
+Cc: Lena Wang <lena.wang@mediatek.com>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 35/60] netfilter: nft_ct: fix l3num expectations with inet pseudo family
-Date: Wed, 13 Mar 2024 12:36:42 -0400
-Message-ID: <20240313163707.615000-36-sashal@kernel.org>
+Subject: [PATCH 6.6 36/60] netfilter: nf_conntrack_h323: Add protection for bmp length out of range
+Date: Wed, 13 Mar 2024 12:36:43 -0400
+Message-ID: <20240313163707.615000-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -68,60 +68,68 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Florian Westphal <fw@strlen.de>
+From: Lena Wang <lena.wang@mediatek.com>
 
-[ Upstream commit 99993789966a6eb4f1295193dc543686899892d3 ]
+[ Upstream commit 767146637efc528b5e3d31297df115e85a2fd362 ]
 
-Following is rejected but should be allowed:
+UBSAN load reports an exception of BRK#5515 SHIFT_ISSUE:Bitwise shifts
+that are out of bounds for their data type.
 
-table inet t {
-        ct expectation exp1 {
-                [..]
-                l3proto ip
+vmlinux   get_bitmap(b=75) + 712
+<net/netfilter/nf_conntrack_h323_asn1.c:0>
+vmlinux   decode_seq(bs=0xFFFFFFD008037000, f=0xFFFFFFD008037018, level=134443100) + 1956
+<net/netfilter/nf_conntrack_h323_asn1.c:592>
+vmlinux   decode_choice(base=0xFFFFFFD0080370F0, level=23843636) + 1216
+<net/netfilter/nf_conntrack_h323_asn1.c:814>
+vmlinux   decode_seq(f=0xFFFFFFD0080371A8, level=134443500) + 812
+<net/netfilter/nf_conntrack_h323_asn1.c:576>
+vmlinux   decode_choice(base=0xFFFFFFD008037280, level=0) + 1216
+<net/netfilter/nf_conntrack_h323_asn1.c:814>
+vmlinux   DecodeRasMessage() + 304
+<net/netfilter/nf_conntrack_h323_asn1.c:833>
+vmlinux   ras_help() + 684
+<net/netfilter/nf_conntrack_h323_main.c:1728>
+vmlinux   nf_confirm() + 188
+<net/netfilter/nf_conntrack_proto.c:137>
 
-Valid combos are:
-table ip t, l3proto ip
-table ip6 t, l3proto ip6
-table inet t, l3proto ip OR l3proto ip6
+Due to abnormal data in skb->data, the extension bitmap length
+exceeds 32 when decoding ras message then uses the length to make
+a shift operation. It will change into negative after several loop.
+UBSAN load could detect a negative shift as an undefined behaviour
+and reports exception.
+So we add the protection to avoid the length exceeding 32. Or else
+it will return out of range error and stop decoding.
 
-Disallow inet pseudeo family, the l3num must be a on-wire protocol known
-to conntrack.
-
-Retain NFPROTO_INET case to make it clear its rejected
-intentionally rather as oversight.
-
-Fixes: 8059918a1377 ("netfilter: nft_ct: sanitize layer 3 and 4 protocol number in custom expectations")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: 5e35941d9901 ("[NETFILTER]: Add H.323 conntrack/NAT helper")
+Signed-off-by: Lena Wang <lena.wang@mediatek.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_ct.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ net/netfilter/nf_conntrack_h323_asn1.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index bfd3e5a14dab6..255640013ab84 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -1256,14 +1256,13 @@ static int nft_ct_expect_obj_init(const struct nft_ctx *ctx,
- 	switch (priv->l3num) {
- 	case NFPROTO_IPV4:
- 	case NFPROTO_IPV6:
--		if (priv->l3num != ctx->family)
--			return -EINVAL;
-+		if (priv->l3num == ctx->family || ctx->family == NFPROTO_INET)
-+			break;
- 
--		fallthrough;
--	case NFPROTO_INET:
--		break;
-+		return -EINVAL;
-+	case NFPROTO_INET: /* tuple.src.l3num supports NFPROTO_IPV4/6 only */
- 	default:
--		return -EOPNOTSUPP;
-+		return -EAFNOSUPPORT;
- 	}
- 
- 	priv->l4proto = nla_get_u8(tb[NFTA_CT_EXPECT_L4PROTO]);
+diff --git a/net/netfilter/nf_conntrack_h323_asn1.c b/net/netfilter/nf_conntrack_h323_asn1.c
+index e697a824b0018..540d97715bd23 100644
+--- a/net/netfilter/nf_conntrack_h323_asn1.c
++++ b/net/netfilter/nf_conntrack_h323_asn1.c
+@@ -533,6 +533,8 @@ static int decode_seq(struct bitstr *bs, const struct field_t *f,
+ 	/* Get fields bitmap */
+ 	if (nf_h323_error_boundary(bs, 0, f->sz))
+ 		return H323_ERROR_BOUND;
++	if (f->sz > 32)
++		return H323_ERROR_RANGE;
+ 	bmp = get_bitmap(bs, f->sz);
+ 	if (base)
+ 		*(unsigned int *)base = bmp;
+@@ -589,6 +591,8 @@ static int decode_seq(struct bitstr *bs, const struct field_t *f,
+ 	bmp2_len = get_bits(bs, 7) + 1;
+ 	if (nf_h323_error_boundary(bs, 0, bmp2_len))
+ 		return H323_ERROR_BOUND;
++	if (bmp2_len > 32)
++		return H323_ERROR_RANGE;
+ 	bmp2 = get_bitmap(bs, bmp2_len);
+ 	bmp |= bmp2 >> f->sz;
+ 	if (base)
 -- 
 2.43.0
 
