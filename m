@@ -1,51 +1,97 @@
-Return-Path: <linux-kernel+bounces-102651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B3987B559
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:47:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB9987B555
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:45:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D4D3B2175E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:47:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8244E1F2126F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 325135E07F;
-	Wed, 13 Mar 2024 23:47:04 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FE75E066
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D92A5D73A;
+	Wed, 13 Mar 2024 23:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="G7+kmqZa";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="URhlWJEy";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="T8GhfltE";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3tYwZoGn"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7DC92260B
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710373623; cv=none; b=lIGeAwdzjxP5QVfUoEVBA03tSXBA8GGTriDkUJCg+72zXEHpARHCGpHwDp6P9PYhk8WIojktdSqXfMTCnVkKU0WBMjT5CcUiflMswBgo+qbv51zj9ghcq3v4ctOt3hlEnr5ObFlhqzSnTVALJKU+W2L3Y+K2jk1o6yCCnjILrxM=
+	t=1710373525; cv=none; b=p0kc/ABkD/Ui0yWl3NkHMcLok8lt4K84JrMXkfl5K8TmyExMKgZOHxb8r9cvAX+YDKijhqwAcfh3ZjBht67InLDO5nMhc5iDKrLGgv8MB1+AomdWDyvIxxFMP9vx9lDKWkAAOFc+GN01DAVaUyDkY0IBX+w6gNLYSr8lxUFkPXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710373623; c=relaxed/simple;
-	bh=+Ej+wixx98+bYwHqfN+n5qbeL8nbp4qjx5dE8Tv3EAg=;
+	s=arc-20240116; t=1710373525; c=relaxed/simple;
+	bh=LsBwd6LQWz93e63sSeME9mO0lntlFCjjQ3p83jw3hdg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eYHn+pKsJQTPuMk7BWbgobAR88y2MuGPFX3Cl9h1n+HDq94PpGPFtM4fvbilCKBx4Fvbk5ARaEQP4uxtD8eSp+cWNFSLM3Ecn+h5UxsFVAf+XNJJcCR/5xQ/5LWpydIOMka/12VKKl62UP8rtu5mooAfsOfNXkR1JTQbJZPFJWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 392361007;
-	Wed, 13 Mar 2024 16:47:36 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D9B73F73F;
-	Wed, 13 Mar 2024 16:46:55 -0700 (PDT)
-Date: Thu, 14 Mar 2024 00:46:19 +0100
-From: Beata Michalska <beata.michalska@arm.com>
-To: Ionela Voinescu <ionela.voinescu@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	vanshikonda@os.amperecomputing.com, sudeep.holla@arm.com,
-	will@kernel.org, catalin.marinas@arm.com,
-	vincent.guittot@linaro.org, sumitg@nvidia.com,
-	yang@os.amperecomputing.com, lihuisong@huawei.com
-Subject: Re: [PATCH v3 2/3] arm64: Provide an AMU-based version of
- arch_freq_get_on_cpu
-Message-ID: <ZfI6y-YScbNzyWDC@arm.com>
-References: <20240312083431.3239989-1-beata.michalska@arm.com>
- <20240312083431.3239989-3-beata.michalska@arm.com>
- <ZfGaAGr9Ej6i2EpJ@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qp+vO29SAsqkTQ0w0h+FC7HxwSNSExe2ALfnXJri2sAMnOKrdKsPTg+u1+7ZI2ntN7k+HQlrsyoYiYSykyLeIgJTpyjMbAz1MTc3kvVuOG/PqV7jJhzP8tHLX616SXw4kGy0gEw4BxT4KshaOVaI8ptQSC8IxY8XgjHjhjugm78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=G7+kmqZa; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=URhlWJEy; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=T8GhfltE; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3tYwZoGn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EE24D21C6C;
+	Wed, 13 Mar 2024 23:45:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710373522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
+	b=G7+kmqZafck5XeVCeJlM2N7kdU0pP37YsQ1UVuNdtk6uuht5pwScJPPdy5K3OTbcKLxzKu
+	RXw04d0kZ3a50tnTNILDsp7LHLRqtLsZCGV+VGK6EZaTknDlgjMwFo5lq8IbCqQwkxkf2t
+	KcCa6+txLjxaV/mqv7ELcaWxbV7BNqw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710373522;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
+	b=URhlWJEyQpyqs/lpXtMams/H/5e0i3ivOeFm3jJz/MM+ttLVJZEf6LgunVS/ijOVEYzAcT
+	BWckFA3qYyw6lyCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710373521; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
+	b=T8GhfltExy8NnQnVGfwEoE2EtvqBrpbun/Y11DYzwF1SGzDb+pgmDlMeCGDNaB8HH3lqo9
+	WRhtbLEO8s7EWsCtWRM2tbU4a1HNGjUIQSRtNw2MEOXcIBIa9zJB6c00Sr4GaMsW18xvNy
+	ZI3Wc5QXRw8XNPUT8vHATT9Nn7/I52s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710373521;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
+	b=3tYwZoGnKoQzbR04xM+ISna2+YqNiqPlbJ3eaAUy8+Hxy0+4bYLpzkFFaDETo13MIRqC8L
+	/foxCg//xfeyPXBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 751181397F;
+	Wed, 13 Mar 2024 23:45:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 69AyGZE68mWtDQAAD6G6ig
+	(envelope-from <osalvador@suse.de>); Wed, 13 Mar 2024 23:45:21 +0000
+Date: Thu, 14 Mar 2024 00:46:40 +0100
+From: Oscar Salvador <osalvador@suse.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
+	Marco Elver <elver@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH] mm,page_owner: Fix recursion
+Message-ID: <ZfI64Orls0Y6SWHF@localhost.localdomain>
+References: <20240313234245.18824-1-osalvador@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,245 +100,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZfGaAGr9Ej6i2EpJ@arm.com>
+In-Reply-To: <20240313234245.18824-1-osalvador@suse.de>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.29
+X-Spamd-Result: default: False [-3.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.99)[95.02%]
+X-Spam-Flag: NO
 
-On Wed, Mar 13, 2024 at 12:20:16PM +0000, Ionela Voinescu wrote:
-> Hi Beata,
-> 
-> Thank you for the patches!
->
-High time for those!
+On Thu, Mar 14, 2024 at 12:42:45AM +0100, Oscar Salvador wrote:
+> @@ -232,6 +241,7 @@ void __reset_page_owner(struct page *page, unsigned short order)
+>  	alloc_handle = page_owner->handle;
+>  
+>  	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
+> +
+>  	for (i = 0; i < (1 << order); i++) {
 
-> On Tuesday 12 Mar 2024 at 08:34:30 (+0000), Beata Michalska wrote:
-> > With the Frequency Invariance Engine (FIE) being already wired up with
-> > sched tick and making use of relevant (core counter and constant
-> > counter) AMU counters, getting the current frequency for a given CPU
-> > on supported platforms can be achieved by utilizing the frequency scale
-> > factor which reflects an average CPU frequency for the last tick period
-> > length.
-> > 
-> > The solution is partially based on APERF/MPERF implementation of
-> > arch_freq_get_on_cpu.
-> > 
-> > Suggested-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> > ---
-> >  arch/arm64/kernel/topology.c | 103 +++++++++++++++++++++++++++++++----
-> >  1 file changed, 92 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> > index 1a2c72f3e7f8..42cb19c31719 100644
-> > --- a/arch/arm64/kernel/topology.c
-> > +++ b/arch/arm64/kernel/topology.c
-> > @@ -17,6 +17,8 @@
-> >  #include <linux/cpufreq.h>
-> >  #include <linux/init.h>
-> >  #include <linux/percpu.h>
-> > +#include <linux/sched/isolation.h>
-> > +#include <linux/seqlock_types.h>
-> >  
-> >  #include <asm/cpu.h>
-> >  #include <asm/cputype.h>
-> > @@ -88,18 +90,31 @@ int __init parse_acpi_topology(void)
-> >   * initialized.
-> >   */
-> >  static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
-> > -static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
-> > -static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
-> >  static cpumask_var_t amu_fie_cpus;
-> >  
-> > +struct amu_cntr_sample {
-> > +	u64		arch_const_cycles_prev;
-> > +	u64		arch_core_cycles_prev;
-> > +	unsigned long	last_update;
-> > +	seqcount_t	seq;
-> > +};
-> > +
-> > +static DEFINE_PER_CPU_SHARED_ALIGNED(struct amu_cntr_sample, cpu_amu_samples) = {
-> > +	.seq = SEQCNT_ZERO(cpu_amu_samples.seq)
-> > +};
-> > +
-> >  void update_freq_counters_refs(void)
-> >  {
-> > -	this_cpu_write(arch_core_cycles_prev, read_corecnt());
-> > -	this_cpu_write(arch_const_cycles_prev, read_constcnt());
-> > +	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
-> > +
-> > +	amu_sample->arch_core_cycles_prev = read_corecnt();
-> > +	amu_sample->arch_const_cycles_prev = read_constcnt();
-> >  }
-> >  
-> >  static inline bool freq_counters_valid(int cpu)
-> >  {
-> > +	struct amu_cntr_sample *amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
-> > +
-> >  	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
-> >  		return false;
-> >  
-> > @@ -108,8 +123,8 @@ static inline bool freq_counters_valid(int cpu)
-> >  		return false;
-> >  	}
-> >  
-> > -	if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
-> > -		     !per_cpu(arch_core_cycles_prev, cpu))) {
-> > +	if (unlikely(!amu_sample->arch_const_cycles_prev ||
-> > +		     !amu_sample->arch_core_cycles_prev)) {
-> >  		pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
-> >  		return false;
-> >  	}
-> > @@ -152,20 +167,27 @@ void freq_inv_set_max_ratio(int cpu, u64 max_rate)
-> >  
-> >  static void amu_scale_freq_tick(void)
-> >  {
-> > +	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
-> >  	u64 prev_core_cnt, prev_const_cnt;
-> >  	u64 core_cnt, const_cnt, scale;
-> >  
-> > -	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
-> > -	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
-> > +	prev_const_cnt = amu_sample->arch_const_cycles_prev;
-> > +	prev_core_cnt = amu_sample->arch_core_cycles_prev;
-> > +
-> > +	write_seqcount_begin(&amu_sample->seq);
-> 
-> The critical section here does not need to be this extensive, right?
-> 
-> The arch_freq_get_on_cpu() function only uses the frequency scale factor
-> and the last_update value, so this need only be placed above
-> "this_cpu_write(arch_freq_scale,..", if I'm not missing anything.
+Sigh, a last-minute unnoticed change.
 
-You're not missing anything. The write side critical section could span only
-those two, but having it extended gives a chance for the readers to get in on
-the update and as those are not really performance sensitive I though it might
-be a good option, especially if we can save the cycles on not needing to poke
-the cpufeq driver. Furthermore, if the critical section is to span only the two,
-then it does not really change much and can be dropped.
+@Andrew: Do you want me to send v2 fixing that up?
 
-> 
-> >  
-> >  	update_freq_counters_refs();
-> >  
-> > -	const_cnt = this_cpu_read(arch_const_cycles_prev);
-> > -	core_cnt = this_cpu_read(arch_core_cycles_prev);
-> > +	const_cnt = amu_sample->arch_const_cycles_prev;
-> > +	core_cnt = amu_sample->arch_core_cycles_prev;
-> >  
-> > +	/*
-> > +	 * This should not happen unless the AMUs have been reset and the
-> > +	 * counter values have not been resroted - unlikely
-> > +	 */
-> >  	if (unlikely(core_cnt <= prev_core_cnt ||
-> >  		     const_cnt <= prev_const_cnt))
-> > -		return;
-> > +		goto leave;
-> >  
-> >  	/*
-> >  	 *	    /\core    arch_max_freq_scale
-> > @@ -182,6 +204,10 @@ static void amu_scale_freq_tick(void)
-> >  
-> >  	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
-> >  	this_cpu_write(arch_freq_scale, (unsigned long)scale);
-> > +
-> > +	amu_sample->last_update = jiffies;
-> > +leave:
-> > +	write_seqcount_end(&amu_sample->seq);
-> >  }
-> >  
-> >  static struct scale_freq_data amu_sfd = {
-> > @@ -189,6 +215,61 @@ static struct scale_freq_data amu_sfd = {
-> >  	.set_freq_scale = amu_scale_freq_tick,
-> >  };
-> >  
-> > +#define AMU_SAMPLE_EXP_MS	20
-> > +
-> > +unsigned int arch_freq_get_on_cpu(int cpu)
-> > +{
-> > +	struct amu_cntr_sample *amu_sample;
-> > +	unsigned long last_update;
-> > +	unsigned int seq;
-> > +	unsigned int freq;
-> > +	u64 scale;
-> > +
-> > +	if (!cpumask_test_cpu(cpu, amu_fie_cpus) || !arch_scale_freq_ref(cpu))
-> > +		return 0;
-> > +
-> > +retry:
-> > +	amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
-> > +
-> > +	do {
-> > +		seq = raw_read_seqcount_begin(&amu_sample->seq);
-> > +		last_update = amu_sample->last_update;
-> > +	} while (read_seqcount_retry(&amu_sample->seq, seq));
-> 
-> Related to the point above, this retry loop should also contain
-> "scale = arch_scale_freq_capacity(cpu)", otherwise there's no much point
-> for synchronisation, as far as I can tell.
-I'm not entirely sure why we would need to include the scale factor within
-the read critical section. The aim here is to make sure we see the update if
-one is ongoing and that the update to the timestamp is observed along with
-one to the scale factor, which is what the write_seqcount_end will guarantee
-(although the latter is not a hard sell as the update happens under interrupts
-being disabled). If later on we fetch newer scale factor that's perfectly fine,
-we do not want to see the stale one. Again, I can drop the seqcount (which is
-slightly abused in this case I must admit) at a cost of potentially missing some
-updates.
-> 
-> For x86, arch_freq_get_on_cpu() uses the counter deltas and it would be
-> bad if values from different ticks would be used. But here the only
-> benefit of synchronisation is to make sure that we're using the scale
-> factor computed at the last update time. For us, even skipping on the
-> synchronisation logic would still be acceptable, as we'd be ensuring that
-> there was a tick in the past 20ms and we'd always use the most recent
-> value of the frequency scale factor.
-How would we ensure there was a tick in last 20ms ?
-> 
-> Hope it helps,
-It does, thank you.
 
---
-BR
-Beata
-> Ionela.
-> 
-> > +
-> > +	/*
-> > +	 * For those CPUs that are in full dynticks mode,
-> > +	 * and those that have not seen tick for a while
-> > +	 * try an alternative source for the counters (and thus freq scale),
-> > +	 * if available for given policy
-> > +	 */
-> > +	if (time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
-> > +		struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> > +		int ref_cpu = nr_cpu_ids;
-> > +
-> > +		if (cpumask_intersects(housekeeping_cpumask(HK_TYPE_TICK),
-> > +				       policy->cpus))
-> > +			ref_cpu = cpumask_nth_and(cpu, policy->cpus,
-> > +						  housekeeping_cpumask(HK_TYPE_TICK));
-> > +
-> > +		cpufreq_cpu_put(policy);
-> > +		if (ref_cpu >= nr_cpu_ids || ref_cpu == cpu)
-> > +			/* No alternative to pull info from */
-> > +			return 0;
-> > +		cpu = ref_cpu;
-> > +		goto retry;
-> > +	}
-> > +	/*
-> > +	 * Reversed computation to the one used to determine
-> > +	 * the arch_freq_scale value
-> > +	 * (see amu_scale_freq_tick for details)
-> > +	 */
-> > +	scale = arch_scale_freq_capacity(cpu);
-> > +	freq = scale * arch_scale_freq_ref(cpu);
-> > +	freq >>= SCHED_CAPACITY_SHIFT;
-> > +
-> > +	return freq;
-> > +}
-> > +
-> >  static void amu_fie_setup(const struct cpumask *cpus)
-> >  {
-> >  	int cpu;
-> > -- 
-> > 2.25.1
-> > 
+-- 
+Oscar Salvador
+SUSE Labs
 
