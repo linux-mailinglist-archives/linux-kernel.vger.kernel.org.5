@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-101843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ABB087AC12
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB75387AC14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C912D28B518
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:57:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FDFE28B881
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C1771B3D;
-	Wed, 13 Mar 2024 16:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B5660261;
+	Wed, 13 Mar 2024 16:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Us7dx6S1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZqpYqrd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E6667175E;
-	Wed, 13 Mar 2024 16:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E22D71B4B;
+	Wed, 13 Mar 2024 16:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347879; cv=none; b=Bij6vQRs/abRT8abGDYl41myjsCeeNAXH2vI4MXTuD0uRzxqc7omdhPpbMhgWzpZ/kzz34bAHT2YgjrVycwQJytr7qwByOLsnv+RFycEiFBfJfnMJUGTsAOl6eZMrZB9gUGFKIwmje+lmop/B6fW9kzmrx5vq1/lSUNvHOTp5PE=
+	t=1710347880; cv=none; b=j5f1iUByahC0aPw4rtDTP5Nne07q4uc+TWFoy6M6Sma7UlpMYwollw3QEQCfYHf99UrNIopEDhfOaEACFfumWGIfMNLL9E1tKr3AFfdU9Z/SMWP+HBj7qg6KzZGrmYqsuojkgznEkDgEpkwiDywoxm4Y8aLrNx+29cfiICCDkKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347879; c=relaxed/simple;
-	bh=sMKE9+q0Dh0q2fgAnNSJaMiGGhkv/VNO3lY3K/oikNk=;
+	s=arc-20240116; t=1710347880; c=relaxed/simple;
+	bh=YUm75QyIDWrVxc/dfGrc7itiCpP7JcwKZfmQ9nq70qk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kx7MQ8MV1ENKw9wmKd7xZC6+d7HZKuN5qUDdXo7++SJDKsQge3V2igdVJoDGexNMOWBhLxxvttiGmZW5ggsAK4zxYouoxYxdxuKQWvIhG37mUHq1+BzzWbGVRug3yllRgkyNhJIBMt4O1aZmRya8qhaN4gYwPSMQ1gameS3MAl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Us7dx6S1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7F9C433F1;
-	Wed, 13 Mar 2024 16:37:58 +0000 (UTC)
+	 MIME-Version; b=K3VHWkcLP8PQ5OgBNTNQ+wKbuhPXZGhD3tx54ZVM0XW0jQimnGwLIVyt0gb8Mw4DX9ZyZpbGw9hb1Jix/NsO5+HseU1BvajTQUtSXLd4rcpZBIIDxKyEtsMhUVH69xHHN8R6n2wDp4M9O8lvjQhYRMJNrt1rgzjJl6Y4OIEobsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZqpYqrd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6226BC43390;
+	Wed, 13 Mar 2024 16:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347879;
-	bh=sMKE9+q0Dh0q2fgAnNSJaMiGGhkv/VNO3lY3K/oikNk=;
+	s=k20201202; t=1710347880;
+	bh=YUm75QyIDWrVxc/dfGrc7itiCpP7JcwKZfmQ9nq70qk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Us7dx6S1puzQieRzS0XCtq34VdTyGblqP9bR43+vzAA/sf5JDjvMfBhHFg+KR/8ki
-	 T5HeQ5PCLKm5n4bPX/kIUy7Jis4x0N3OfUMoyoqdaeIY2e9jFiwBX8CKyPxeAY6t0d
-	 HjuWs7mthvOZWQqY2yFhHj26ScNZfQykEBhid5+RwCBAfLTr15f+g47ub3oMfDbrNm
-	 cBO1nAQItG7R/zVZvA2mI1+15kC+zfAd+fWo22eG3kfVFvrOKThX4bfS8QM1uocIrH
-	 9yilSuJlNTIJck+HJ9FiTDoX0r+UKkmtJY8IokJZTfyYAPuzGnll30hEQRJCe64dES
-	 /q4/ak/a4zj4A==
+	b=MZqpYqrd/AbCoa1xuY0lHUCLQ33xWnUwpERrx0QNl/qEg7H3GtmEHpK/TFakOW6Se
+	 t5RWfRAONZ+PeGw+uP+amB+r+u/8xUIcWhoE3eqttXFRSCPbcCvz+Z5/XkNTozn1XU
+	 9BY1pR2Z2wBfUL4zHhcnGgWUF66nlYDHy7aZPhxIDIMSpqKPVb0FuNWFWGJoETT9W0
+	 sYbH26MDzpFxbnNlEQsMhrN3omLx61E+Xndv/UqzP7/COOlR640wQOQnBGOzvtacX4
+	 s+q3rEzhyUlPcoBAvRkWcEph5AWORxSBdDFrZ8GmQ/TDo8aiMp7pHBSKRsdphVC3rK
+	 08tZ25vY3UsKg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jason Xing <kernelxing@tencent.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 40/60] netrom: Fix data-races around sysctl_netrom_network_ttl_initialiser
-Date: Wed, 13 Mar 2024 12:36:47 -0400
-Message-ID: <20240313163707.615000-41-sashal@kernel.org>
+Subject: [PATCH 6.6 41/60] netrom: Fix a data-race around sysctl_netrom_transport_timeout
+Date: Wed, 13 Mar 2024 12:36:48 -0400
+Message-ID: <20240313163707.615000-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -70,7 +70,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-[ Upstream commit 119cae5ea3f9e35cdada8e572cc067f072fa825a ]
+[ Upstream commit 60a7a152abd494ed4f69098cf0f322e6bb140612 ]
 
 We need to protect the reader reading the sysctl value because the
 value can be changed concurrently.
@@ -80,60 +80,22 @@ Signed-off-by: Jason Xing <kernelxing@tencent.com>
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netrom/nr_dev.c  | 2 +-
- net/netrom/nr_out.c  | 2 +-
- net/netrom/nr_subr.c | 5 +++--
- 3 files changed, 5 insertions(+), 4 deletions(-)
+ net/netrom/af_netrom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netrom/nr_dev.c b/net/netrom/nr_dev.c
-index 3aaac4a22b387..2c34389c3ce6f 100644
---- a/net/netrom/nr_dev.c
-+++ b/net/netrom/nr_dev.c
-@@ -81,7 +81,7 @@ static int nr_header(struct sk_buff *skb, struct net_device *dev,
- 	buff[6] |= AX25_SSSID_SPARE;
- 	buff    += AX25_ADDR_LEN;
+diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
+index 96e91ab71573c..d8a25f614c500 100644
+--- a/net/netrom/af_netrom.c
++++ b/net/netrom/af_netrom.c
+@@ -453,7 +453,7 @@ static int nr_create(struct net *net, struct socket *sock, int protocol,
+ 	nr_init_timers(sk);
  
--	*buff++ = sysctl_netrom_network_ttl_initialiser;
-+	*buff++ = READ_ONCE(sysctl_netrom_network_ttl_initialiser);
- 
- 	*buff++ = NR_PROTO_IP;
- 	*buff++ = NR_PROTO_IP;
-diff --git a/net/netrom/nr_out.c b/net/netrom/nr_out.c
-index 44929657f5b71..5e531394a724b 100644
---- a/net/netrom/nr_out.c
-+++ b/net/netrom/nr_out.c
-@@ -204,7 +204,7 @@ void nr_transmit_buffer(struct sock *sk, struct sk_buff *skb)
- 	dptr[6] |= AX25_SSSID_SPARE;
- 	dptr += AX25_ADDR_LEN;
- 
--	*dptr++ = sysctl_netrom_network_ttl_initialiser;
-+	*dptr++ = READ_ONCE(sysctl_netrom_network_ttl_initialiser);
- 
- 	if (!nr_route_frame(skb, NULL)) {
- 		kfree_skb(skb);
-diff --git a/net/netrom/nr_subr.c b/net/netrom/nr_subr.c
-index e2d2af924cff4..c3bbd5880850b 100644
---- a/net/netrom/nr_subr.c
-+++ b/net/netrom/nr_subr.c
-@@ -182,7 +182,8 @@ void nr_write_internal(struct sock *sk, int frametype)
- 		*dptr++ = nr->my_id;
- 		*dptr++ = frametype;
- 		*dptr++ = nr->window;
--		if (nr->bpqext) *dptr++ = sysctl_netrom_network_ttl_initialiser;
-+		if (nr->bpqext)
-+			*dptr++ = READ_ONCE(sysctl_netrom_network_ttl_initialiser);
- 		break;
- 
- 	case NR_DISCREQ:
-@@ -236,7 +237,7 @@ void __nr_transmit_reply(struct sk_buff *skb, int mine, unsigned char cmdflags)
- 	dptr[6] |= AX25_SSSID_SPARE;
- 	dptr += AX25_ADDR_LEN;
- 
--	*dptr++ = sysctl_netrom_network_ttl_initialiser;
-+	*dptr++ = READ_ONCE(sysctl_netrom_network_ttl_initialiser);
- 
- 	if (mine) {
- 		*dptr++ = 0;
+ 	nr->t1     =
+-		msecs_to_jiffies(sysctl_netrom_transport_timeout);
++		msecs_to_jiffies(READ_ONCE(sysctl_netrom_transport_timeout));
+ 	nr->t2     =
+ 		msecs_to_jiffies(sysctl_netrom_transport_acknowledge_delay);
+ 	nr->n2     =
 -- 
 2.43.0
 
