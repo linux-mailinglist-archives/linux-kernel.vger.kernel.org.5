@@ -1,197 +1,95 @@
-Return-Path: <linux-kernel+bounces-102373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5795C87B17E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:17:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B8E87B158
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:13:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59E7EB2A79D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:13:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E98828C17E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCC46280E;
-	Wed, 13 Mar 2024 18:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BFA63134;
+	Wed, 13 Mar 2024 18:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Cky7LxcD"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=yartys.no header.i=@yartys.no header.b="KrKykjnW"
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D08626AB
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2001A38D7;
+	Wed, 13 Mar 2024 18:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710355094; cv=none; b=RilAohjOheaMB4AT/KClxXMAVPXHwQ2FKJ8MU1cXrHWB2paacjDWwJh+bak+oRSzxU76lO1aRsm8CzPLqQ10SC9tZ+v1YsCTTHlwXtV5OklOzNDeqxgyOLm0XHWhooElEuNNVaf32At/rtjN7YNRryb5sstRer8ILA6Wn8vVQ4c=
+	t=1710355201; cv=none; b=JJGGste2srWiX+VyiJfw69h6Ro6LHWYemOaAKSIHcn9gN3G6D8/6vBkkRquMu0YNZBpMtWaq025n/pjiAxKxGdq7w+45uSs/RtIai3o71NCAHSAgAMdotYCS1/9aP8LVps8ena/ERqaLSDZaaJ6af1JoBzCJ7HZuf3KJEcMaNiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710355094; c=relaxed/simple;
-	bh=URUD89ZpV/M99TV8Q1KUNJTJb1wy6+G5vnL3bqgQajI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GVr/0HC1EQPEOhn5mFda23OmQAr8nkIHoEjSU1UbLhL2sPR0Cuz3zwA9yf2FpkOqDAFhlpLGNfEGkw5PeMdhYOSOKihgrj0uFwf4BN/0dUy/AGFd19R0YMR+rx0kYqY0MUyKX+a73g4l3gwB3+WGFgcGOa66v93xb3ZjSxs2VLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Cky7LxcD; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33e7ae72312so82540f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:38:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1710355091; x=1710959891; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8EzQDcDpN2IS5wJV2ssrZ8U1t23GsreBp6xfIco7Uu8=;
-        b=Cky7LxcDwl9vYQPaUJ5wQy2Ax1nAJmgIqeHWpJODKvLtN0HLjG5djofTuzwlU/QAwl
-         e0xwC1B0W++UHhocrPrQaUWaRyoEGvVPHAy8SlRwRscGvi81ZiLEfNjZ5Mu4mYZcCCis
-         ntJGzNaRGwaVsE2m3WCGexuBOd5EvOndLpg9I6i+pPnLee2dajfMfpmlznQTMBYeRvqv
-         Jr7AezquA3Lb8VkThZ8bobSd5cuBAwrwr9O0NVvDo6amGkyOh6uAaEenihnpfPL+aYrf
-         7dVJfuEW8sgiaEg/PZYUhY2OfVsusEPjVM8svO4IeqS9vkkKm1DJt7mmqF2QPdBjONA3
-         5UIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710355091; x=1710959891;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8EzQDcDpN2IS5wJV2ssrZ8U1t23GsreBp6xfIco7Uu8=;
-        b=AyPeRRJbaDv7m7CbNrBIs4garSBsDhYYaZE2MQ3CmvxOyg0fTkcV4VxES/f4x45qYp
-         XuLvKZ1EEifZtQ3YHKKsXzzq9PXlmJEju1qBbug68HKaHYFuPWiy5hULYASu2NBSWUBF
-         2Ef9tHJYsIC+0RmsVOclrNwzJpupIaQ0HvTnYVQFnr2S1cPvDNCrH+M7oKZChVDMWPM6
-         ywTmFBYlg6HIK/82J9VPAr86HhMSNFBPpSeNdSHbqF1eoznW5FufLZC5BqZG/IZ0av6e
-         PVcd1qranVaNx9zd30etesWZWJyH7wz6CpDirdBH5n/uEbYF9HGGNe+aP1Zl+e+k40Pk
-         5O3A==
-X-Forwarded-Encrypted: i=1; AJvYcCVI+sBr7vlOSzcXDxRCb/TXXvETv3o0CKb8LAGYpdhD5UGYCUSKtNgY8jHPlL6mgqGICwC7SBtzSHe67yGZ18r4NjGuQgx7D8vf3SUJ
-X-Gm-Message-State: AOJu0Yx0KzoQ/rXaizXfSCpF2V3DRTrdKzlHBerdGZ15vERHy9/4Nma8
-	pYzunXd+Q5BvuFSJH/q2xO+xuQludfj0Rafpfij9gyHQULqjrI5HItzLDOgcTwU=
-X-Google-Smtp-Source: AGHT+IGN0kdH+ft/mrswhUd/gRl1XEtRbqs37iks4KzueF1kvu0EfYAfDh8X+dFbpFZ5Sfi7yl0azA==
-X-Received: by 2002:adf:fa0f:0:b0:33e:800d:e87a with SMTP id m15-20020adffa0f000000b0033e800de87amr2281197wrr.34.1710355090852;
-        Wed, 13 Mar 2024 11:38:10 -0700 (PDT)
-Received: from localhost.localdomain ([104.28.192.85])
-        by smtp.gmail.com with ESMTPSA id az19-20020adfe193000000b0033e9d9f891csm7089876wrb.58.2024.03.13.11.38.09
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 13 Mar 2024 11:38:10 -0700 (PDT)
-From: Ignat Korchagin <ignat@cloudflare.com>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-team@cloudflare.com,
-	Ignat Korchagin <ignat@cloudflare.com>
-Subject: [PATCH net v3 2/2] selftests: net: veth: test the ability to independently manipulate GRO and XDP
-Date: Wed, 13 Mar 2024 19:37:59 +0100
-Message-Id: <20240313183759.87923-3-ignat@cloudflare.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240313183759.87923-1-ignat@cloudflare.com>
-References: <20240313183759.87923-1-ignat@cloudflare.com>
+	s=arc-20240116; t=1710355201; c=relaxed/simple;
+	bh=Yrv8K3dsh6oQe0fjpFm5hJusnOC8JMbr41ioJIneLpA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kc0NpeEDlggxn1bcKNuZKkT8DgCIsCiEUtfEMOQaTgqLmRiW0l+9l4vhVACimjf1tfTJf0SbB1oCLvFNsFcIjHZnN0aaDfMN0L2XK9YdsWpDYg/BtbmwMvMeNOYW64eEQznBvdJwlcricRUw3FBhj2HQ48sfCNYbP4bsZRqaxNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yartys.no; spf=pass smtp.mailfrom=yartys.no; dkim=pass (2048-bit key) header.d=yartys.no header.i=@yartys.no header.b=KrKykjnW; arc=none smtp.client-ip=188.165.51.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yartys.no
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yartys.no
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yartys.no;
+	s=protonmail2; t=1710355183; x=1710614383;
+	bh=Yrv8K3dsh6oQe0fjpFm5hJusnOC8JMbr41ioJIneLpA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=KrKykjnW5eFDDULKUiFGV+s7Y+Nvz+Tnn1yTw8HC6fXQ/B7Rtcrn2a8Ufw+mPREHg
+	 tDi5RZEf/D4wxLWLBwp7V3gLFSq8tXkbySxgQr2KYOahuHzApZ9UDBdvCRux+zbUHp
+	 Qu4mZhaiGHYR51PP5aQqM7dbTt45b4iXu1UUYuHKZT/huLEF1M8T21JdBBw3ACqjJF
+	 ero40e4Ujk7NiLh/mTpB5ymvd1WFOyQxNb5h2wrc0e0PaNQJjhJQpRiObxFh3NSW0Q
+	 86BST8cig9RaTNJs4OkBmi5tzkM90F0goJTer1YWD75PRnS7+1uNfwcc+o9uybvspB
+	 5EAMNwiSk8PyQ==
+Date: Wed, 13 Mar 2024 18:39:27 +0000
+To: Johannes Berg <johannes@sipsolutions.net>
+From: Michael Yartys <mail@yartys.no>
+Cc: Karel Balej <balejk@matfyz.cz>, dimitri.ledkov@canonical.com, alexandre.torgue@foss.st.com, davem@davemloft.net, dhowells@redhat.com, herbert@gondor.apana.org.au, keyrings@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org, mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, iwd@lists.linux.dev
+Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+Message-ID: <NbWQKmrYDD20KKHeq9TMda2MJFE00-weepZGuSIRzO5BOgMlTbWBkDlNNweA2dhbvF8TK1F_cHbMxblLVNREZa1HZEFt9TVCkTB1jo_5ppc=@yartys.no>
+In-Reply-To: <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
+References: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz> <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
+Feedback-ID: 77365699:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-We should be able to independently flip either XDP or GRO states and toggling
-one should not affect the other.
+Hi
 
-Adjust other tests as well that had implicit expectation that GRO would be
-automatically enabled.
+This came in via the iwd mailing list, and I would like to add some small a=
+ detail as I also experience this issue on my university eduroam network. I=
+'ve verified that the certificate chain doesn't contain SHA-1 signed certif=
+icates, so the update breaks more than just SHA-1.
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
----
- tools/testing/selftests/net/udpgro_fwd.sh |  4 ++++
- tools/testing/selftests/net/veth.sh       | 24 ++++++++++++++++++++---
- 2 files changed, 25 insertions(+), 3 deletions(-)
+Michael
 
-diff --git a/tools/testing/selftests/net/udpgro_fwd.sh b/tools/testing/selftests/net/udpgro_fwd.sh
-index 9cd5e885e91f..380cb15e942e 100755
---- a/tools/testing/selftests/net/udpgro_fwd.sh
-+++ b/tools/testing/selftests/net/udpgro_fwd.sh
-@@ -217,6 +217,7 @@ for family in 4 6; do
- 	cleanup
- 
- 	create_ns
-+	ip netns exec $NS_DST ethtool -K veth$DST generic-receive-offload on
- 	ip netns exec $NS_DST ethtool -K veth$DST rx-gro-list on
- 	run_test "GRO frag list" $BM_NET$DST 1 0
- 	cleanup
-@@ -227,6 +228,7 @@ for family in 4 6; do
- 	# use NAT to circumvent GRO FWD check
- 	create_ns
- 	ip -n $NS_DST addr add dev veth$DST $BM_NET$DST_NAT/$SUFFIX
-+	ip netns exec $NS_DST ethtool -K veth$DST generic-receive-offload on
- 	ip netns exec $NS_DST ethtool -K veth$DST rx-udp-gro-forwarding on
- 	ip netns exec $NS_DST $IPT -t nat -I PREROUTING -d $BM_NET$DST_NAT \
- 					-j DNAT --to-destination $BM_NET$DST
-@@ -240,6 +242,7 @@ for family in 4 6; do
- 	cleanup
- 
- 	create_vxlan_pair
-+	ip netns exec $NS_DST ethtool -K veth$DST generic-receive-offload on
- 	ip netns exec $NS_DST ethtool -K veth$DST rx-gro-list on
- 	run_test "GRO frag list over UDP tunnel" $OL_NET$DST 1 1
- 	cleanup
-@@ -247,6 +250,7 @@ for family in 4 6; do
- 	# use NAT to circumvent GRO FWD check
- 	create_vxlan_pair
- 	ip -n $NS_DST addr add dev $VXDEV$DST $OL_NET$DST_NAT/$SUFFIX
-+	ip netns exec $NS_DST ethtool -K veth$DST generic-receive-offload on
- 	ip netns exec $NS_DST ethtool -K veth$DST rx-udp-gro-forwarding on
- 	ip netns exec $NS_DST $IPT -t nat -I PREROUTING -d $OL_NET$DST_NAT \
- 					-j DNAT --to-destination $OL_NET$DST
-diff --git a/tools/testing/selftests/net/veth.sh b/tools/testing/selftests/net/veth.sh
-index 5ae85def0739..3a394b43e274 100755
---- a/tools/testing/selftests/net/veth.sh
-+++ b/tools/testing/selftests/net/veth.sh
-@@ -249,9 +249,9 @@ cleanup
- create_ns
- ip -n $NS_DST link set dev veth$DST up
- ip -n $NS_DST link set dev veth$DST xdp object ${BPF_FILE} section xdp
--chk_gro_flag "gro vs xdp while down - gro flag on" $DST on
-+chk_gro_flag "gro vs xdp while down - gro flag off" $DST off
- ip -n $NS_DST link set dev veth$DST down
--chk_gro_flag "                      - after down" $DST on
-+chk_gro_flag "                      - after down" $DST off
- ip -n $NS_DST link set dev veth$DST xdp off
- chk_gro_flag "                      - after xdp off" $DST off
- ip -n $NS_DST link set dev veth$DST up
-@@ -260,6 +260,21 @@ ip -n $NS_SRC link set dev veth$SRC xdp object ${BPF_FILE} section xdp
- chk_gro_flag "                      - after peer xdp" $DST off
- cleanup
- 
-+create_ns
-+ip -n $NS_DST link set dev veth$DST up
-+ip -n $NS_DST link set dev veth$DST xdp object ${BPF_FILE} section xdp
-+ip netns exec $NS_DST ethtool -K veth$DST generic-receive-offload on
-+chk_gro_flag "gro vs xdp while down - gro flag on" $DST on
-+ip -n $NS_DST link set dev veth$DST down
-+chk_gro_flag "                      - after down" $DST on
-+ip -n $NS_DST link set dev veth$DST xdp off
-+chk_gro_flag "                      - after xdp off" $DST on
-+ip -n $NS_DST link set dev veth$DST up
-+chk_gro_flag "                      - after up" $DST on
-+ip -n $NS_SRC link set dev veth$SRC xdp object ${BPF_FILE} section xdp
-+chk_gro_flag "                      - after peer xdp" $DST on
-+cleanup
-+
- create_ns
- chk_channels "default channels" $DST 1 1
- 
-@@ -327,11 +342,14 @@ if [ $CPUS -gt 2 ]; then
- fi
- 
- ip -n $NS_DST link set dev veth$DST xdp object ${BPF_FILE} section xdp 2>/dev/null
--chk_gro_flag "with xdp attached - gro flag" $DST on
-+chk_gro_flag "with xdp attached - gro flag" $DST off
- chk_gro_flag "        - peer gro flag" $SRC off
- chk_tso_flag "        - tso flag" $SRC off
- chk_tso_flag "        - peer tso flag" $DST on
- ip netns exec $NS_DST ethtool -K veth$DST rx-udp-gro-forwarding on
-+chk_gro "        - no aggregation" 10
-+ip netns exec $NS_DST ethtool -K veth$DST generic-receive-offload on
-+chk_gro_flag "        - gro flag with GRO on" $DST on
- chk_gro "        - aggregation" 1
- 
- 
--- 
-2.39.2
 
+
+
+On Wednesday, March 13th, 2024 at 09:56, Johannes Berg <johannes@sipsolutio=
+ns.net> wrote:
+
+>=20
+>=20
+> Not sure why you're CC'ing the world, but I guess adding a few more
+> doesn't hurt ...
+>=20
+> On Wed, 2024-03-13 at 09:50 +0100, Karel Balej wrote:
+>=20
+> > and I use iwd
+>=20
+>=20
+> This is your problem, the wireless stack in the kernel doesn't use any
+> kernel crypto code for 802.1X.
+>=20
+> I suppose iwd wants to use the kernel infrastructure but has no
+> fallbacks to other implementations.
+>=20
+> johannes
 
