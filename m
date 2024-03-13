@@ -1,98 +1,155 @@
-Return-Path: <linux-kernel+bounces-101459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF5E187A768
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:11:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C0287A76E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63294284796
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:11:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D69911F23DF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B1F3FB1D;
-	Wed, 13 Mar 2024 12:11:03 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEDA3FE58;
+	Wed, 13 Mar 2024 12:14:14 +0000 (UTC)
+Received: from mail115-79.sinamail.sina.com.cn (mail115-79.sinamail.sina.com.cn [218.30.115.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757D83F9C7
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5D63FB0F
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710331862; cv=none; b=NADdNOLwS3VTafV0igtcPvKq0p3Qf+LUuK+xnWcDBhn4d2t7aMT5uDe/EYRL9zlWmgw1UL/C0eNFo978+QY6t7ol6mN4R/dhmLD3p6iEiUb+ltfqokyLzMfS0cMnDCAp53oOZRgrz8elJYOdA+YB0uYIRPB0QF7NMD5ijF37hpg=
+	t=1710332053; cv=none; b=kjITxxKLxDc5so+E/1oJIYE0KOmlsu/vEwoF+2etq4EFZzM4ATdJhTVTJ6XVZn8+EYMKKAP2TufAhyNRCLxaSPWq985UaRsY4Zw5vXokETUkI0jx+TlfpENQ1+YUKEaITT3YAlKVprxg/adJj8lEQuvNsfsDS0yY2Rtf5zE0L2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710331862; c=relaxed/simple;
-	bh=NdH9WP6DJGM6iZ0XJKbtpntEDbujgsLMibdp/khVy0g=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=bw3Z/VYQ1cNe6lW092TYafrotA/gbR138xi/eV0Cfp5VSWwHDpCSM9lHkTvbisrdN0ysW6hQiuJTH3QKdHKtrgp9HGxLZ63PHY0n2GcRo3KURwkYZTcl8AW+jFqTBCJyTYvQ/7mgRyQIa6QMTBEoQ+4Z1AV4GXO4DDvt9yk0eOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tvq8w4fJ0z1FMBr;
-	Wed, 13 Mar 2024 20:10:40 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 642BC140159;
-	Wed, 13 Mar 2024 20:10:56 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Mar 2024 20:10:55 +0800
-Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
-To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>, Richard
- Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Daniel Golle <daniel@makrotopia.org>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240313084707.3292300-1-arnd@kernel.org>
- <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
- <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <1a12c8ed-0cb5-5650-24a2-84b021c444c3@huawei.com>
-Date: Wed, 13 Mar 2024 20:10:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1710332053; c=relaxed/simple;
+	bh=sOkhZ/jvuJIvVKMVXakf+8B+RRwVxQbb5lRb+kXv7gY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=TWNo93YdHPW4dmE5C00aFcWwzKKQN8l2Bp22nAFQO0c8f9CEpbcwKLZ+mR4z1jJU9zpkaWludDePPXDJF2kvBX0x6mQGz/gyWmm0jfI2e10t2PhBLjrOMxOyn3PhwG8h51O4+QwJ34KRuUvC8/tkf8DP/IPybnZWLi9zK6ShYJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.9.180])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65F19882000062E7; Wed, 13 Mar 2024 20:13:58 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 63174631457839
+X-SMAIL-UIID: DBAC9056B457471298C7A75B155E6EF3-20240313-201358-1
+From: Hillf Danton <hdanton@sina.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: syzbot <syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com>,
+	andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
+Date: Wed, 13 Mar 2024 20:13:45 +0800
+Message-Id: <20240313121345.2292-1-hdanton@sina.com>
+In-Reply-To: <ZfDC45Kc1VEvBMuW@krava>
+References: <0000000000004aa700061379547e@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
 
-在 2024/3/13 19:53, Arnd Bergmann 写道:
-> On Wed, Mar 13, 2024, at 12:29, Zhihao Cheng wrote:
->> 在 2024/3/13 16:46, Arnd Bergmann 写道:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> The use of do_div() in ubi_nvmem_reg_read() makes calling it on
->>> 32-bit machines rather expensive. Since the 'from' variable is
->>> known to be a 32-bit quantity, it is clearly never needed and
->>> can be optimized into a regular division operation.
->>>
->> Do you meet a performance problem on a 32-bit machine? There are too
->> many places invoking do_div, why do you optimize this one?
->> Have you tested the influence on a x86_64 platform after this patch
->> applied? Looks like that do_div is more efficient in x86.
+On Tue, 12 Mar 2024 22:02:27 +0100 Jiri Olsa <olsajiri@gmail.com>
+> On Tue, Mar 12, 2024 at 09:41:26AM -0700, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    df4793505abd Merge tag 'net-6.8-rc8' of git://git.kernel.o..
+> > git tree:       bpf
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=11fd0092180000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c11c5c676adb61f0
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1509c4ae180000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10babc01180000
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/d2e80ee1112b/disk-df479350.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/b35ea54cd190/vmlinux-df479350.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/59f69d999ad2/bzImage-df479350.xz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com
+> > 
+> > ============================================
+> > WARNING: possible recursive locking detected
+> > 6.8.0-rc7-syzkaller-gdf4793505abd #0 Not tainted
+> > --------------------------------------------
+> > strace-static-x/5063 is trying to acquire lock:
+> > ffffc900096f10d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
+> > 
+> > but task is already holding lock:
+> > ffffc900098410d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
+> > 
+> > other info that might help us debug this:
+> >  Possible unsafe locking scenario:
+> > 
+> >        CPU0
+> >        ----
+> >   lock(&rb->spinlock);
+> >   lock(&rb->spinlock);
+> > 
+> >  *** DEADLOCK ***
+> > 
+> >  May be due to missing lock nesting notation
+> > 
+> > 4 locks held by strace-static-x/5063:
+> >  #0: ffff88807857e068 (&pipe->mutex/1){+.+.}-{3:3}, at: __pipe_lock fs/pipe.c:103 [inline]
+> >  #0: ffff88807857e068 (&pipe->mutex/1){+.+.}-{3:3}, at: pipe_write+0x1cc/0x1a40 fs/pipe.c:465
+> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
+> >  #2: ffffc900098410d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
+> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
+> > 
+> > stack backtrace:
+> > CPU: 0 PID: 5063 Comm: strace-static-x Not tainted 6.8.0-rc7-syzkaller-gdf4793505abd #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+> >  check_deadlock kernel/locking/lockdep.c:3062 [inline]
+> >  validate_chain+0x15c0/0x58e0 kernel/locking/lockdep.c:3856
+> >  __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
+> >  lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+> >  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+> >  __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
+> >  ____bpf_ringbuf_reserve kernel/bpf/ringbuf.c:459 [inline]
+> >  bpf_ringbuf_reserve+0x5c/0x70 kernel/bpf/ringbuf.c:451
+> >  bpf_prog_9efe54833449f08e+0x2d/0x47
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+> >  __bpf_prog_run include/linux/filter.h:651 [inline]
+> >  bpf_prog_run include/linux/filter.h:658 [inline]
+> >  __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
 > 
-> This one was just introduced. The call site looks like a fast
-> path and it caused a build regression that Daniel addressed with
-> an suboptimal commit b8a77b9a5f9c ("mtd: ubi: fix NVMEM over
-> UBI volumes on 32-bit systems").
-> 
-> The way it usually goes is that someone adds an open-coded
-> 64-bit division that causes a link failure, which prompts
-I'm a little confused, what kind of link failure? Could you show an example?
-> the original developer to either rewrite the code to avoid
-> the long division if possible, or add do_div() after showing
-> that it is now performance critical, e.g. only called at
-> probe time.
-> 
->       Arnd
-> .
-> 
+> hum, scratching my head how this could passed through the prog->active check,
+> will try to reproduce
 
+Feel free to take a look at another syzbot report [1,2]
+
+[1] Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state (2)
+https://lore.kernel.org/lkml/ZdwSXCaTrzq7mm7Z@boqun-archlinux/
+
+[2] Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
+https://lore.kernel.org/lkml/00000000000082883f061388d49e@google.com/
 
