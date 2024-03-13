@@ -1,159 +1,187 @@
-Return-Path: <linux-kernel+bounces-102416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C30887B1C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:25:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 632B187B1C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CA451F21538
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:25:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 947EB1C28242
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A54A59163;
-	Wed, 13 Mar 2024 19:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D801C59B64;
+	Wed, 13 Mar 2024 19:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qxworgdJ"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oqeT8VHO"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA015339D
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21AC59B56
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710357644; cv=none; b=ZacE4Cf1ZWJITgg4auEfhtUCpWzWSlbr2rEC9rui9/kTsoHMNs5DTRGZlWkVmYH08UyqGULqkJfhjsj25pkLi95dh/KgB+IURM0CH1zZjP7D2x8p62SSFRkjKKlJIpVCWgTMYVhxO6TaL2hNYskZnjWLms5/zNMXhH4aANrpSnI=
+	t=1710357662; cv=none; b=jPgSD+rlsm+eKJ1MQcRngAA9NgOidXBwXSQpLH1JNsnErfAJTMIyi5qbzOrueZKB66G5FjbcZmBK4asffO5QB0yVg3NIdGvSrxLHvrdiFqmVCUac+VN+XR1dSU8pZbdp+BCG5oqd7u5HAqQMP3mzemQOWzYaboMzmyHLa6uSzsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710357644; c=relaxed/simple;
-	bh=VC3FYxAJ7LoxbZlZBeN1DYkzslCxNHfnh7tRxUYmCO0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gZy0rrrMJOKt16CKBGLLDxaU53AqEDDa0gDEeaHrybn5BNO21P0Qa1q0N86LIyXJOVrKr5VbzDKi6VXfWYQnOeJsv1CfiZKE8/KkuVWMStg1oQzEgGRInpa7RHmNQM4Pw5ZaYC5rkkWUgnWBn5L4SZfhSfPKBasCdcVIQFaCGD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qxworgdJ; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dd045349d42so99252276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:20:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710357642; x=1710962442; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMo4BjQfv07Q0PzE5HGh8mM1dLTyhXyrou/joPFvVAU=;
-        b=qxworgdJ012HU18lqJoxv83RevI6FEJ/u9+a/X/A0hUulXEepSa5GjUonLxeTv2I6I
-         135KFVR2KH0csdXWu7/gFVNzDplMEgLmB9fEhSLBa0UkbSYoNW3Tzx3mtbKEiLTcZ4Hp
-         uK0M8lAhCnv6C0nRmnn7yPEw4mP8xYe5bQ9eAZ3As0KbvC78UDDRhmBvAQPKZ4BPnGYA
-         /SpbP8nqGzd1bxbvoyzwiY3I7HU0DgWlJs0TjuaMnYnq1RUmAx+tgqaGB5q75fPiro3e
-         uF4SqmwBjMe6++RKMJm6jfSNAKmMjs/xgQGZjyBp3njNnqpP5RAqMIqzruAo3sEd4pFZ
-         ekHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710357642; x=1710962442;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OMo4BjQfv07Q0PzE5HGh8mM1dLTyhXyrou/joPFvVAU=;
-        b=ntd08C21Y21UzsPYPSnI2cXyXI3Ti8FKRiJHpxP0VFUAPVO8ncIkz9MUoxG/gRKeAI
-         tmSQ5TEEU952sPrwoTtlb8o/xYuVVbQZVg7xT4Aqqd8MVz6gWXQ+trgpqQqRAmMOJSZq
-         aAwyNgvwIcWW+nROu/24NXGoOTYPBqXaofGYx0tNfD+7T1j5AWXnbV86J/MsjaC+MeHY
-         EW8FdGXag//g7viM99eondPG5bV9p5UBgtepzA2mpr7vv4WdSpdIuwYOVluHAP1sOmTU
-         eehLZJL+wI6/a8U05QcGeydr5mtFRTCl8Hjc2VcktxfS8UdyBoMoFjm2sdTkoOhXGII9
-         h38w==
-X-Forwarded-Encrypted: i=1; AJvYcCVnw/Y8ncT3ZfqoVzY6MrM3hSqqFcCQd0e11U5TGVCgUyUdIuV9u46h/BmbAj6t8FyfwbQO4cQ7F4sf/ocr5afIEb0jN33atiAdy2X5
-X-Gm-Message-State: AOJu0YwqFPoc46IHvL/GotcTXlpVkSExIiAL/jEHS9i/ui4aUxYPmSPK
-	uMo3c3UloLD8gRLSxqjycN++VNifn1vb3OfW4iPftHvzVkZedbRsASjzk5w+AxFZpSsRUnEZelW
-	7xIzzLCvyq2zSrUwEq5oPyRutPITgqN6EKhooxQ==
-X-Google-Smtp-Source: AGHT+IF+pCz+zOs8ZUIs+gSDAT4ZOTitMDi1f/rT/9CPC1qIJVCwncoBoAEkgjvNR2PPBb39YCB5C47IhmON01t+UHE=
-X-Received: by 2002:a5b:bc2:0:b0:dcd:59e4:620c with SMTP id
- c2-20020a5b0bc2000000b00dcd59e4620cmr2174398ybr.49.1710357642225; Wed, 13 Mar
- 2024 12:20:42 -0700 (PDT)
+	s=arc-20240116; t=1710357662; c=relaxed/simple;
+	bh=sJAi3yRoC641aj/7aZ+N27cqQw6Y+OQSeV/UsdjL9Yk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gbq8pzAMhpkG+mHLxcUIPf7oK2BD5FISdTOT6EcRNC9v69TA6wxGE4D6uI/rOh3gGexh69u3KW7vc/FHbpvxrwDPBSIQqFK38lFwoPS1m+VPrN/K98v/L1gC0Kc8sjBL7HFCwb7g6aUS88U53WSDoqU2VqUb3GJ3SkPiw80uzwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oqeT8VHO; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=75WVLbdwI+iDn1zwGEAUGq3py3zyrknBJPOCRtfKgus=; b=oqeT8VHOM5Ys7DVNGOQYq9T/Qa
+	pQoxGa3NprcqJtXMbujtg5idZDjeTniP60jiiC2TiCTOx1D4CO5Qt/SajoAHJg+Xk4fQeaxMLJz27
+	JgvpxyjHawliDFL+XKyBeh+l3o/Gb1ZeoMoirQv+DpWxk7qb9Is+wOS6kD2hhYGDydLprhJG3An0p
+	0NSwjmn/ISlGvXM80dvpc6BXrkuhTpQk1wEukj8RXpsEeCuOEOdiSzPqPh8huOCbiCxv2ez5QgsEj
+	vOJp6bQztpJURPz9GtYin1eeRQmwj4Q6NAu1dAxO2ioQ2FZvlggyYD3H54s/ZoNaEblA/+7623R2e
+	V61Gn5xA==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rkU9p-0000000BZfK-0aN9;
+	Wed, 13 Mar 2024 19:20:57 +0000
+Message-ID: <f0fe1d62-ee99-4576-ad27-62de98f9ad39@infradead.org>
+Date: Wed, 13 Mar 2024 12:20:56 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313-videocc-sm8150-dt-node-v1-0-ae8ec3c822c2@quicinc.com> <20240313-videocc-sm8150-dt-node-v1-1-ae8ec3c822c2@quicinc.com>
-In-Reply-To: <20240313-videocc-sm8150-dt-node-v1-1-ae8ec3c822c2@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 13 Mar 2024 21:20:35 +0200
-Message-ID: <CAA8EJpo63oRA07QNCdzJdHW_hJJWK6aj-LCpp-XwmPJYf0twZw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: clock: qcom: Update SM8150 videocc bindings
-To: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>, 
-	Jagadeesh Kona <quic_jkona@quicinc.com>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 11/16] drm/vkms: Add YUV support
+Content-Language: en-US
+To: Louis Chauvet <louis.chauvet@bootlin.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
+ Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com
+References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
+ <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 13 Mar 2024 at 13:11, Satya Priya Kakitapalli
-<quic_skakitap@quicinc.com> wrote:
->
-> Update the videocc device tree bindings for sm8150 to align with the
-> latest convention.
+Hi,
 
-But why? Bindings already exist. There is nothing wrong with them. And
-sm8150 platform in general uses name-based lookup.
+On 3/13/24 10:45, Louis Chauvet wrote:
+> From: Arthur Grillo <arthurgrillo@riseup.net>
+> 
 
->
-> Fixes: 35d26e9292e2 ("dt-bindings: clock: Add YAML schemas for the QCOM VIDEOCC clock bindings")
-
-It is not a fix, there is no bug that this commit is fixing.
-
-> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+> 
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> [Louis Chauvet:
+> - Adapted Arthur's work
+> - Implemented the read_line_t callbacks for yuv
+> - add struct conversion_matrix
+> - remove struct pixel_yuv_u8
+> - update the commit message
+> - Merge the modifications from Arthur]
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 > ---
->  Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml | 1 +
->  Documentation/devicetree/bindings/clock/qcom,videocc.yaml        | 3 ---
->  2 files changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-> index bad8f019a8d3..e00fdc8ceaa4 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-> @@ -20,6 +20,7 @@ properties:
->      enum:
->        - qcom,sm8450-videocc
->        - qcom,sm8550-videocc
-> +      - qcom,sm8150-videocc
->
->    reg:
->      maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-> index 6999e36ace1b..28d134ad9517 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-> @@ -17,7 +17,6 @@ description: |
->      include/dt-bindings/clock/qcom,videocc-sc7180.h
->      include/dt-bindings/clock/qcom,videocc-sc7280.h
->      include/dt-bindings/clock/qcom,videocc-sdm845.h
-> -    include/dt-bindings/clock/qcom,videocc-sm8150.h
->      include/dt-bindings/clock/qcom,videocc-sm8250.h
->
->  properties:
-> @@ -26,7 +25,6 @@ properties:
->        - qcom,sc7180-videocc
->        - qcom,sc7280-videocc
->        - qcom,sdm845-videocc
-> -      - qcom,sm8150-videocc
->        - qcom,sm8250-videocc
->
->    clocks:
-> @@ -75,7 +73,6 @@ allOf:
->            enum:
->              - qcom,sc7180-videocc
->              - qcom,sdm845-videocc
-> -            - qcom,sm8150-videocc
->      then:
->        properties:
->          clocks:
->
-> --
-> 2.25.1
->
->
+>  drivers/gpu/drm/vkms/vkms_drv.h     |  22 ++
+>  drivers/gpu/drm/vkms/vkms_formats.c | 431 ++++++++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/vkms/vkms_formats.h |   4 +
+>  drivers/gpu/drm/vkms/vkms_plane.c   |  17 +-
+>  4 files changed, 473 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 23e1d247468d..f3116084de5a 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -99,6 +99,27 @@ typedef void (*pixel_read_line_t)(const struct vkms_plane_state *plane, int x_st
+>  				  int y_start, enum pixel_read_direction direction, int count,
+>  				  struct pixel_argb_u16 out_pixel[]);
+>  
+> +/**
+> + * CONVERSION_MATRIX_FLOAT_DEPTH - Number of digits after the point for conversion matrix values
+
+This should be
+
++ * define CONVERSION_MATRIX_FLOAT_DEPTH - Number of digits after the point for conversion matrix values
+
+to conform to kernel-doc format.
+
+> + */
+> +#define CONVERSION_MATRIX_FLOAT_DEPTH 32
+> +
+
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+> index 1449a0e6c706..edbf4b321b91 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+
+> +/**
+> + * get_conversion_matrix_to_argb_u16() - Retrieve the correct yuv to rgb conversion matrix for a
+> + * given encoding and range.
+> + *
+> + * If the matrix is not found, return a null pointer. In all other cases, it return a simple
+> + * diagonal matrix, which act as a "no-op".
+> + *
+> + * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
+> + * @encoding: DRM_COLOR_* value for which to obtain a conversion matrix
+> + * @range: DRM_COLOR_*_RANGE value for which to obtain a conversion matrix
+> + */
+> +struct conversion_matrix *
+> +get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
+> +				  enum drm_color_range range)
+> +{
+> +	static struct conversion_matrix no_operation = {
+> +		.matrix = {
+> +			{ 4294967296, 0,          0, },
+> +			{ 0,          4294967296, 0, },
+> +			{ 0,          0,          4294967296, },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +
+> +	/*
+> +	 * Those matrixies were generated using the colour python framework
+
+	         matrices
+
+> +	 *
+> +	 * Below are the function calls used to generate eac matrix, go to
+
+	                                                 each
+
+> +	 * https://colour.readthedocs.io/en/develop/generated/colour.matrix_YCbCr.html
+> +	 * for more info:
+> +	 *
+> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.601"],
+> +	 *                                  is_legal = False,
+> +	 *                                  bits = 8) * 2**32).astype(int)
+> +	 */
+
+> +
+>  /**
+
+Please convert this comment to kernel-doc format or just use "/*" to begin
+the comment.
+
+>   * Retrieve the correct write_pixel function for a specific format.
+>   * If the format is not supported by VKMS a warn is emitted and a dummy "don't do anything"
+
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
+> index 8875bed76410..987dd2b686a8 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
 
 
+thanks.
 -- 
-With best wishes
-Dmitry
+#Randy
 
