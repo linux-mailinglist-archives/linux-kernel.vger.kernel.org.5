@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-102086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A56687AE46
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:54:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4692F87AE48
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:54:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBC801C2339D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:54:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 007FC2831B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D642D6FE36;
-	Wed, 13 Mar 2024 16:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2354B18BDB5;
+	Wed, 13 Mar 2024 16:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaqnsgmT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nJBTfxNR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FE36FE1E;
-	Wed, 13 Mar 2024 16:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC7E6FE3F;
+	Wed, 13 Mar 2024 16:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348470; cv=none; b=CBQDsBo2be55hJjAtzKmoQOOg8Ak3NbkjCjAxSf2hpTiJi+TUmuRdDWdQni4N22DC3uRkN9Vq5lLbnyBkig+Gbtk+Qq7LKE6mIwZyfRq5c+4oe9BotaUrUrZHl0yqMuD2xzlE2hKU+LusmlksdnUojfnZaeygDDNHoM1WqLOLSQ=
+	t=1710348471; cv=none; b=ieuoPtSUkaru/HgeACkJfsrXdXxKhXcWaYyxOe0XJrr68oJ8nGj6g4t6uBsXF/Wc5+sWYzB+CXLt2kbcG6qVLTQjCspz6K6PYM7BVXgZdj/k4GTn/HqHUzH2Uv1aZ0xOnWXhxLo5N2z5mEnpcIqzCmvIS9LLAbAkRh7nBiq+Owk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348470; c=relaxed/simple;
-	bh=nOLn3S4rg43w66t96mcY9QG+VPaxgLbxU/EajpfW+A0=;
+	s=arc-20240116; t=1710348471; c=relaxed/simple;
+	bh=hnIjlYPTknFCqZsr7fqhnFrv6OB7rf2f6hhyOXu6sLs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QJvNNb0F8ePOa3yOZ1rCyq4SJOpQo1cHlvrrymcTbEdh7RQPkvkQXt68oiDkZ3YNS13K5uWx+ppzxNNQMWVAtXVUImSmloqjcgkAHCv/rdlYDovTHlam4qQcTW5PNW/OPHOSr5ON18EHz7s51gtotqdM/KKM5ywEA6NdncSr6jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aaqnsgmT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25DDBC433C7;
-	Wed, 13 Mar 2024 16:47:49 +0000 (UTC)
+	 MIME-Version; b=DD9cuxCtVCT2HAAtgGLJAwzW4/YUOEZcjRlCeyvRcxjCjcIpJgm81FStYkNLfg2kcHmQTgMFuhR9yMMwS1kCU55pPLIvMoZrbY9vwt6oegmsLl0kTAGh5ZSR0P15w3cCEvy5R+x5TI/NhSzFDRywnBTk+aOSyamuOeIoyNvb7Bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJBTfxNR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 440C6C43390;
+	Wed, 13 Mar 2024 16:47:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348470;
-	bh=nOLn3S4rg43w66t96mcY9QG+VPaxgLbxU/EajpfW+A0=;
+	s=k20201202; t=1710348471;
+	bh=hnIjlYPTknFCqZsr7fqhnFrv6OB7rf2f6hhyOXu6sLs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aaqnsgmTZtTPPNJBRdbNzaGZcJZtxWQvmiWZaJUOmLEwsPb2BkoyRtLRlL7LsWeP/
-	 hXAQL3K8QA9lER3DKHxRxTN+3qq875VzKSqOaIXQ3OKz1153OFUf0uOU3G9N7raP64
-	 yLsXjGAboZoYw/KCa2VVXF5Tn5Ji6g9FwU7kiyRdeaUWjBtMKyd9fXkb1InjJUtLOa
-	 IcZfNUZminIXTl+PtWqvVLXf7XT+5YtccqpUZnGDHb1l+resG9JRxjI6eRxHizWcLA
-	 Dle7pmRjP5b7zXtR0i6E9wKdIZYrPSl1cnX4tXmnlipr9Nl3ac5KJgRq5Qo/k9Ok7Q
-	 4ieYMiU3X0t7Q==
+	b=nJBTfxNRjmam5KP1hy4Jw3rzimGUO/DAEHZiu0thJ8V7Ya2HiqoZv8eY+F6P8DDWY
+	 MnJyg0syOy3q65Hi6uO3zpeo6BiuDFG6HKM1AHcyxyPEYuDRf4OfIwkmTkaL0Leo/7
+	 a8E3f1xHX2FRqsLyDPiQYHnYS0KQQclWjoEnMUR8j4GVblsSqxHBCMRrLHyRWLWxev
+	 kCovex1f6fp+TriXHwmCKHzBst6qH3nSCSWE7A6/TGwUrWXHlhnJcOTecfPYlqmt2d
+	 S1ZT+69c+gUUTS1pDKUbJuWeYmjRpvgQN4EyXTVYxxe1lPwwzll+CRuvzxcYyEx4UX
+	 UJO7fiLpv2vZg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Oleg Nesterov <oleg@redhat.com>,
+	Dylan Hatch <dylanbhatch@google.com>,
 	"Eric W . Biederman" <ebiederm@xmission.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 60/73] getrusage: add the "signal_struct *sig" local variable
-Date: Wed, 13 Mar 2024 12:46:27 -0400
-Message-ID: <20240313164640.616049-61-sashal@kernel.org>
+Subject: [PATCH 5.10 61/73] getrusage: move thread_group_cputime_adjusted() outside of lock_task_sighand()
+Date: Wed, 13 Mar 2024 12:46:28 -0400
+Message-ID: <20240313164640.616049-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -71,89 +72,106 @@ Content-Transfer-Encoding: 8bit
 
 From: Oleg Nesterov <oleg@redhat.com>
 
-[ Upstream commit c7ac8231ace9b07306d0299969e42073b189c70a ]
+[ Upstream commit daa694e4137571b4ebec330f9a9b4d54aa8b8089 ]
 
-No functional changes, cleanup/preparation.
+Patch series "getrusage: use sig->stats_lock", v2.
 
-Link: https://lkml.kernel.org/r/20230909172554.GA20441@redhat.com
+This patch (of 2):
+
+thread_group_cputime() does its own locking, we can safely shift
+thread_group_cputime_adjusted() which does another for_each_thread loop
+outside of ->siglock protected section.
+
+This is also preparation for the next patch which changes getrusage() to
+use stats_lock instead of siglock, thread_group_cputime() takes the same
+lock.  With the current implementation recursive read_seqbegin_or_lock()
+is fine, thread_group_cputime() can't enter the slow mode if the caller
+holds stats_lock, yet this looks more safe and better performance-wise.
+
+Link: https://lkml.kernel.org/r/20240122155023.GA26169@redhat.com
+Link: https://lkml.kernel.org/r/20240122155050.GA26205@redhat.com
 Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Reported-by: Dylan Hatch <dylanbhatch@google.com>
+Tested-by: Dylan Hatch <dylanbhatch@google.com>
 Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Stable-dep-of: daa694e41375 ("getrusage: move thread_group_cputime_adjusted() outside of lock_task_sighand()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sys.c | 37 +++++++++++++++++++------------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+ kernel/sys.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
 diff --git a/kernel/sys.c b/kernel/sys.c
-index bff14910b9262..8a53d858d7375 100644
+index 8a53d858d7375..26c8783bd0757 100644
 --- a/kernel/sys.c
 +++ b/kernel/sys.c
-@@ -1737,6 +1737,7 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+@@ -1736,17 +1736,19 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	struct task_struct *t;
  	unsigned long flags;
  	u64 tgutime, tgstime, utime, stime;
- 	unsigned long maxrss = 0;
-+	struct signal_struct *sig = p->signal;
+-	unsigned long maxrss = 0;
++	unsigned long maxrss;
++	struct mm_struct *mm;
+ 	struct signal_struct *sig = p->signal;
  
- 	memset((char *)r, 0, sizeof (*r));
+-	memset((char *)r, 0, sizeof (*r));
++	memset(r, 0, sizeof(*r));
  	utime = stime = 0;
-@@ -1744,7 +1745,7 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
++	maxrss = 0;
+ 
  	if (who == RUSAGE_THREAD) {
  		task_cputime_adjusted(current, &utime, &stime);
  		accumulate_thread_rusage(p, r);
--		maxrss = p->signal->maxrss;
-+		maxrss = sig->maxrss;
- 		goto out;
+ 		maxrss = sig->maxrss;
+-		goto out;
++		goto out_thread;
  	}
  
-@@ -1754,15 +1755,15 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
- 	switch (who) {
- 	case RUSAGE_BOTH:
- 	case RUSAGE_CHILDREN:
--		utime = p->signal->cutime;
--		stime = p->signal->cstime;
--		r->ru_nvcsw = p->signal->cnvcsw;
--		r->ru_nivcsw = p->signal->cnivcsw;
--		r->ru_minflt = p->signal->cmin_flt;
--		r->ru_majflt = p->signal->cmaj_flt;
--		r->ru_inblock = p->signal->cinblock;
--		r->ru_oublock = p->signal->coublock;
--		maxrss = p->signal->cmaxrss;
-+		utime = sig->cutime;
-+		stime = sig->cstime;
-+		r->ru_nvcsw = sig->cnvcsw;
-+		r->ru_nivcsw = sig->cnivcsw;
-+		r->ru_minflt = sig->cmin_flt;
-+		r->ru_majflt = sig->cmaj_flt;
-+		r->ru_inblock = sig->cinblock;
-+		r->ru_oublock = sig->coublock;
-+		maxrss = sig->cmaxrss;
+ 	if (!lock_task_sighand(p, &flags))
+@@ -1770,9 +1772,6 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 		fallthrough;
  
- 		if (who == RUSAGE_CHILDREN)
- 			break;
-@@ -1772,14 +1773,14 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
- 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
- 		utime += tgutime;
- 		stime += tgstime;
--		r->ru_nvcsw += p->signal->nvcsw;
--		r->ru_nivcsw += p->signal->nivcsw;
--		r->ru_minflt += p->signal->min_flt;
--		r->ru_majflt += p->signal->maj_flt;
--		r->ru_inblock += p->signal->inblock;
--		r->ru_oublock += p->signal->oublock;
--		if (maxrss < p->signal->maxrss)
--			maxrss = p->signal->maxrss;
-+		r->ru_nvcsw += sig->nvcsw;
-+		r->ru_nivcsw += sig->nivcsw;
-+		r->ru_minflt += sig->min_flt;
-+		r->ru_majflt += sig->maj_flt;
-+		r->ru_inblock += sig->inblock;
-+		r->ru_oublock += sig->oublock;
-+		if (maxrss < sig->maxrss)
-+			maxrss = sig->maxrss;
- 		t = p;
- 		do {
- 			accumulate_thread_rusage(t, r);
+ 	case RUSAGE_SELF:
+-		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+-		utime += tgutime;
+-		stime += tgstime;
+ 		r->ru_nvcsw += sig->nvcsw;
+ 		r->ru_nivcsw += sig->nivcsw;
+ 		r->ru_minflt += sig->min_flt;
+@@ -1792,19 +1791,24 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	}
+ 	unlock_task_sighand(p, &flags);
+ 
+-out:
+-	r->ru_utime = ns_to_kernel_old_timeval(utime);
+-	r->ru_stime = ns_to_kernel_old_timeval(stime);
++	if (who == RUSAGE_CHILDREN)
++		goto out_children;
+ 
+-	if (who != RUSAGE_CHILDREN) {
+-		struct mm_struct *mm = get_task_mm(p);
++	thread_group_cputime_adjusted(p, &tgutime, &tgstime);
++	utime += tgutime;
++	stime += tgstime;
+ 
+-		if (mm) {
+-			setmax_mm_hiwater_rss(&maxrss, mm);
+-			mmput(mm);
+-		}
++out_thread:
++	mm = get_task_mm(p);
++	if (mm) {
++		setmax_mm_hiwater_rss(&maxrss, mm);
++		mmput(mm);
+ 	}
++
++out_children:
+ 	r->ru_maxrss = maxrss * (PAGE_SIZE / 1024); /* convert pages to KBs */
++	r->ru_utime = ns_to_kernel_old_timeval(utime);
++	r->ru_stime = ns_to_kernel_old_timeval(stime);
+ }
+ 
+ SYSCALL_DEFINE2(getrusage, int, who, struct rusage __user *, ru)
 -- 
 2.43.0
 
