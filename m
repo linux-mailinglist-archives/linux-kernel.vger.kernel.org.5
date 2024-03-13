@@ -1,119 +1,204 @@
-Return-Path: <linux-kernel+bounces-101583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62B7A87A8FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:04:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6988E87A904
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ED0B287BAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:04:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20D46288563
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:06:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387594596F;
-	Wed, 13 Mar 2024 14:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C4945022;
+	Wed, 13 Mar 2024 14:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TWJQupRI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qwALjHVr"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E58641C7F
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E3F43AD5
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:06:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710338645; cv=none; b=RkBucvSs2E5RaC0XyyXnG1VdRZnCJ99h1FQKBY18GyPE13loLRbhtGCixds6/3Te63IJaey+67gx1GxTH3yK1ZDylFS5/hCAifEQOzoVXYJMk6rs1m4+8Khd2QSb6igSUAJZXGdQ3+gjDjMbG1yKOUvuuRy46XUxLSmzjK3w8JM=
+	t=1710338788; cv=none; b=Ucooo80zykZFc30sdgwvrjBtix6SYfmvXUAT+wy3UlBrtT8ngt6bSV33SPslirsq4ma+brmxOUctp2oDDZN54Pf1avwlvimi7f+jYYvLBkdrbBpW9B4nAD2RHLTUdjxhqskzCK0199Md1O3PFFhUCdBZ40PyE5iLHshn1gp6VHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710338645; c=relaxed/simple;
-	bh=c6F26WYWOWPHGngG2bLzrx8m4VbcPQ7QBfWC8CH32Uc=;
-	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:References:
-	 In-Reply-To; b=Y3jHho7JPCrVY4fepS0bqA1+xb2d4i3kAhqIrJkxI/cPYk3+Zya/FWWyV14K/ANiVFvIsrlt2GZ1sVBY5cd4PsKIxVWO2rAuNjrB594IPEYKAFifrm0IlOI/zKWah4orYyWOHJaiPBmUN3DEvmFp+Xh6WTOFtJ+U6Po6kN2leug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TWJQupRI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5FD8C433C7;
-	Wed, 13 Mar 2024 14:04:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710338645;
-	bh=c6F26WYWOWPHGngG2bLzrx8m4VbcPQ7QBfWC8CH32Uc=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=TWJQupRIoMDLYy8Z56ID/kiUfI6+tt/S/oJpr7erwMaWPJ+GlbRvRDuV7jZ+vNmW8
-	 L84D1juJ/mh9/OBoyiDYlxWn9t7oAQdGo/jRyJ/oRm1l1zEXBxecSCpPYkg9MAJ+pU
-	 64NHCHsaoggzD/OW+aAClUurZ7GUlNxJVHQ1pn3aSbQVAz3YYVf38VFf6tYwMpBubo
-	 NNGz+uzf7S+1MnHqZ0RVmVducRmBkaHBxNG6P3kZ1Pbq6MMEsoqieSyPGFkvX9lAHl
-	 /5Hli3BRxYj1+dtAo2U5BZ9jTfqNZQ7IV+ojXqvGlwvkJG3fsChRR95RPReU9TN6kb
-	 p8/TfJKxXmutQ==
-Content-Type: multipart/signed;
- boundary=fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256;
- micalg=pgp-sha256; protocol="application/pgp-signature"
-Date: Wed, 13 Mar 2024 15:03:52 +0100
-Message-Id: <CZSOG0WG0FAJ.23WQ5CB6Q8RIZ@kernel.org>
-Subject: Re: [PATCH 2/2] mtd: core: Don't fail mtd_device_parse_register()
- if OTP is unsupported
-Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Mika
- Westerberg" <mika.westerberg@linux.intel.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Aapo Vienamo" <aapo.vienamo@linux.intel.com>
-X-Mailer: aerc 0.16.0
-References: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
- <20240307130418.3131898-3-aapo.vienamo@linux.intel.com>
- <CZQZXAB2GOCY.12YVJ6CRGG26B@kernel.org>
- <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
- <CZSIHWU6IYXB.2DUCUUYFTAB2X@kernel.org>
- <lxl3zzgq4kgbgxkya2c6zyagcnrcyp2lzewu553mkmgdlooeca@m2wyltn7qpog>
-In-Reply-To: <lxl3zzgq4kgbgxkya2c6zyagcnrcyp2lzewu553mkmgdlooeca@m2wyltn7qpog>
+	s=arc-20240116; t=1710338788; c=relaxed/simple;
+	bh=dILn5Hndi6QvLrMyB/RNVJCWfu6T1Nm7fN4fplsjkac=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=fHNJfntep2PG0oq/KustxTlMj5fHGs93hL5k+G5ZBO2QxKoB75ZSXBuLwYhCLVdPgjcr3gnrQa6/ua7Zby9kbRf5KAR8u4KgWzSs5FrC95bvJkoLEkJ5ufA4ZmoYb5FfsxOteltt/uES83KNYJYaV/7BRmKGcEQCi+tF8z2cYdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qwALjHVr; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33e95b68b3eso3184105f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710338785; x=1710943585; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q0SucWULpAR7kwQjBV+IjlaMrkGCCyLEbqf0BnsbnwA=;
+        b=qwALjHVrl7rClkS1P6C/sPcJbtFpjgXzBMFBwBUcnigGbaW7XFU8LZqNQkO7pNeiV5
+         P2d+zQAQd8J38ui+iYSrhqrsT3bl4q4b5BV7dd66Da3N4DjmZY0oDwFaKBgFX56GOoef
+         /+uVj0UQ29COQCrrD+mP2IBvS0a/sdXHr6i7+sYaUlIlYdYzOduUX3lyopam/A6lvDJ3
+         KbBhnCLnKTbo946GJWO/t2UH6ANkj0MKDtxYrToS50ZVNdr+vDHXLTMLQWv00XegRqq6
+         /QyKg/qoDjrGcUatzUyZcrNlTozTTQygTGaF49g8zp6ta1K52wHJiUC4ayYd1yI9vDRv
+         6YNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710338785; x=1710943585;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=q0SucWULpAR7kwQjBV+IjlaMrkGCCyLEbqf0BnsbnwA=;
+        b=vLShkLLrvtype/TEnq8v8Yw/CEjyL4hBTEZlnm65ZjbadyklSMvFUroLBqENpyuLkF
+         dwgmtlq+oA4x1avTj2wMg/ooiplTzvwl0mQ2l01rCpGYhFFjLXv48UxllgoLLGRFWy6n
+         xNzfXHMQKilSMlr4OluWISlcx8yB4M9YwCSsOFdedFwO9YQB6a4ogL0EQvtNmqW7BSnI
+         iaumoHAPNPqSGV3j7MHUnXSY1TC/KJi/cC7olZZxDgC5U1X43cqvwrBk3Ut/gDQLDjxd
+         XwwPRKQZeaHgM23bSaSnsOhziPgdILcy9FRkhAyYoKfu6Eco4AEKBjQio0uthVQfL5xV
+         hGrA==
+X-Forwarded-Encrypted: i=1; AJvYcCW1cHyKMfNcq1iVOps+TT/wYwsnC7VrINZXkDJmEoE7NqfG6NV9mGHw0NGFLqunXymR4k4M7JCsfJHx/KqCVQbk9i5zex0GO1GbopKQ
+X-Gm-Message-State: AOJu0YzMeWWKlWOCa477dZEDNrknrOsLVIIyDUMlbLuAN88Z10F7yJYz
+	PR3sJXsy9n8UErsft0C/3/uoUI5lRoySYHdauYjPncJSFAkJvdXpUjILT3wBdB0=
+X-Google-Smtp-Source: AGHT+IHaK9tAlmweFTo+WHnVjQsXoGvjan+LgRuk7V5ZXDrSOlyqkZoO2eO4gJVT1XnMmiEzTFMFng==
+X-Received: by 2002:adf:ffc7:0:b0:33e:12a2:297f with SMTP id x7-20020adfffc7000000b0033e12a2297fmr1805870wrs.41.1710338785078;
+        Wed, 13 Mar 2024 07:06:25 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id bj26-20020a0560001e1a00b0033b66c2d61esm1993293wrb.48.2024.03.13.07.06.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 07:06:24 -0700 (PDT)
+Message-ID: <8f00bf23-47cb-4656-a326-6d8d1d0d10d6@linaro.org>
+Date: Wed, 13 Mar 2024 15:06:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Frank Wunderlich <frank-w@public-files.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Fabio Estevam <festevam@denx.de>, Martin Botka
+ <martin.botka@somainline.org>, Mark Brown <broonie@kernel.org>,
+ Peng Fan <peng.fan@nxp.com>, Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux PM mailing list <linux-pm@vger.kernel.org>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] Thermal material for v6.9-rc1
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
---fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-Hi,
+Hi Rafael,
 
-On Wed Mar 13, 2024 at 2:59 PM CET, Aapo Vienamo wrote:
-> On Wed, Mar 13, 2024 at 10:24:13AM +0100, Michael Walle wrote:
-> > On Mon Mar 11, 2024 at 5:20 PM CET, Aapo Vienamo wrote:
-> > > On Mon, Mar 11, 2024 at 03:38:17PM +0100, Michael Walle wrote:
-> > > > Also, you'll print an error message for EOPNOTSUPP, although that i=
-s
-> > > > not really an error. Is that intended?=20
-> > >
-> > > Well, when we hit this, the functionality of the SPI memory itself is
-> > > degraded in the sense that the OTP functionality is not available. Wh=
-at
-> > > would you suggest?
-> >=20
-> > But it's not really an error, I mean, we are ignoring that one on
-> > purpose now :) I'd just guard it with "if (ret !=3D -EOPNOTSUPP)".
->
-> To clarify, are you suggesting a modification like this to the code at
-> the end of mtd_otp_nvmem_add()?
->
-> err:
-> 	nvmem_unregister(...);
-> 	if (ret !=3D EOPNOTSUPP)
-> 		return dev_err_probe(...);
-> 	return 0;
+The following changes since commit dcb497ec993265dfc5fffa60b486c1ad353e9ad5:
 
-Yes, either this variant, then you don't need to fix the caller or
-return EOPNOTSUPP but just don't print the message.
+   Merge branches 'thermal-core' and 'thermal-intel' (2024-03-07 
+21:05:12 +0100)
 
--michael
+are available in the Git repository at:
 
---fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256
-Content-Type: application/pgp-signature; name="signature.asc"
+ 
+ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git 
+tags/thermal-v6.9-rc1
 
------BEGIN PGP SIGNATURE-----
+for you to fetch changes up to 1828c1c17bb2adf3a3f26abc69cb3fe971eac0e4:
 
-iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZfGySBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQzcodo7VsRvuZrgEArJM6xLpOYhTGbcQdQa1SJArVlp1t5IKr
-KPBIGGXA9cUA/iy1eF1dAKCAhY7cOF1DcpEEl6KNC17kS+2BT82oVJ4E
-=KvfU
------END PGP SIGNATURE-----
+   thermal/drivers/rcar_gen3: Add support for R-Car V4M (2024-03-11 
+17:14:46 +0100)
 
---fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256--
+----------------------------------------------------------------
+- Fix memory leak in the error path at probe time in the Mediatek LVTS
+   driver (Christophe Jaillet)
+
+- Fix control buffer enablement regression on Meditek MT7896 (Frank
+   Wunderlich)
+
+- Drop spaces before TABs in different places: thermal-of, ST drivers
+   and Makefile (Geert Uytterhoeven)
+
+- Adjust DT binding for NXP as fsl,tmu-range min/maxItems can vary
+   among several SoC versions (Fabio Estevam)
+
+- Add support for H616 THS controller for the Sun8i platforms. Note
+   that this change relies on another change in the SoC specific code
+   which is included in this branch (Martin Botka)
+
+- Don't fail probe due to zone registration failure because there is
+   no trip points defined in the DT (Mark Brown)
+
+- Support variable TMU array size for new platforms (Peng Fan)
+
+- Adjust the DT binding for thermal-of and make the polling time not
+   required and assume it is zero when not found in the DT (Konrad
+   Dybcio)
+
+- Add r8a779h0 support in both the DT and the driver (Geert Uytterhoeven)
+
+----------------------------------------------------------------
+Andre Przywara (3):
+       soc: sunxi: sram: export register 0 for THS on H616
+       thermal/drivers/sun8i: Explain unknown H6 register value
+       thermal/drivers/sun8i: Add SRAM register access code
+
+Christophe JAILLET (1):
+       thermal/drivers/mediatek/lvts_thermal: Fix a memory leak in an 
+error handling path
+
+Duy Nguyen (1):
+       dt-bindings: thermal: rcar-gen3-thermal: Add r8a779h0 support
+
+Fabio Estevam (1):
+       dt-bindings: thermal: qoriq-thermal: Adjust fsl,tmu-range 
+min/maxItems
+
+Frank Wunderlich (1):
+       thermal/drivers/mediatek: Fix control buffer enablement on MT7896
+
+Geert Uytterhoeven (2):
+       thermal: Drop spaces before TABs
+       thermal/drivers/rcar_gen3: Add support for R-Car V4M
+
+Konrad Dybcio (2):
+       dt-bindings: thermal-zones: Don't require polling-delay(-passive)
+       thermal/of: Assume polling-delay(-passive) 0 when absent
+
+Maksim Kiselev (1):
+       thermal/drivers/sun8i: Extend H6 calibration to support 4 sensors
+
+Mark Brown (1):
+       thermal/drivers/sun8i: Don't fail probe due to zone registration 
+failure
+
+Martin Botka (2):
+       dt-bindings: thermal: sun8i: Add H616 THS controller
+       thermal/drivers/sun8i: Add support for H616 THS controller
+
+Peng Fan (1):
+       thermal/drivers/qoriq: Fix getting tmu range
+
+  .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |  34 +++--
+  .../devicetree/bindings/thermal/qoriq-thermal.yaml |   3 +-
+  .../bindings/thermal/rcar-gen3-thermal.yaml        |   2 +
+  .../devicetree/bindings/thermal/thermal-zones.yaml |   2 -
+  drivers/soc/sunxi/sunxi_sram.c                     |  22 ++++
+  drivers/thermal/Makefile                           |   2 +-
+  drivers/thermal/mediatek/auxadc_thermal.c          |   3 +
+  drivers/thermal/mediatek/lvts_thermal.c            |   4 +-
+  drivers/thermal/qoriq_thermal.c                    |  12 +-
+  drivers/thermal/rcar_gen3_thermal.c                |   4 +
+  drivers/thermal/st/st_thermal.h                    |  18 +--
+  drivers/thermal/st/st_thermal_memmap.c             |   2 +-
+  drivers/thermal/sun8i_thermal.c                    | 139 
++++++++++++++++++----
+  drivers/thermal/thermal_of.c                       |  14 ++-
+  14 files changed, 203 insertions(+), 58 deletions(-)
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
