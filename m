@@ -1,131 +1,76 @@
-Return-Path: <linux-kernel+bounces-101571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B19787A8D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:57:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C2D287A8D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:57:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 795EAB22A21
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:56:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3B711F24A82
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F44D43AD1;
-	Wed, 13 Mar 2024 13:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E48544367;
+	Wed, 13 Mar 2024 13:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yfj5z0VT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQrq4V1M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07954205A
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD99743AB2;
+	Wed, 13 Mar 2024 13:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710338212; cv=none; b=smGZ6TCX+8S6E1U6TQfSzBLXXUuiogWXi37Tp1HJErE/fmWJjXr2qfA+/EbWcM+lcIfxSsx09sX6pfGfbukWDipZLD0wU2IPOMzqlmEmzguBhYeEkQnXDvXvDIN5pds9Gco3Te0lHMDxi1rWpLDR2M6vbjyodBeJXWslCwBWGkY=
+	t=1710338246; cv=none; b=k2X7/34H0iX7jbfjjVVUhSUiVwsbcPVe9NH6/LdGyWNXcaFcvl0lMHJIjbvsRwzyEV8YlFE4s5UObz5Hj5sxb2Dt9PxrnvyZNn4F4ArULYIEXzBD8xja95SjRXy7qGpX0T/3nmaFtuZyEnsEfs4o3jY47soseJd6WFV4SexfneE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710338212; c=relaxed/simple;
-	bh=GB0XhLkoXhj91tZjk/utBUz3p/nRmxqnPNcYk6PNq9w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TgdUfvFILOHzN9uFIbfvCYUf3Zs0l3S2X5TsN6pcjbPxmTH4l8TbbMlNXTziUIZA5sQVT6mwMZh8OiiYUqmXGxL9WYDmWYh8iCtN3siz0r3mfsPLMALx0VH50BCaUOBrYbGMNOHTi/52iDzoIpNBv0aTx77WjpMnnoxdCVM7nYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yfj5z0VT; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710338211; x=1741874211;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GB0XhLkoXhj91tZjk/utBUz3p/nRmxqnPNcYk6PNq9w=;
-  b=Yfj5z0VTMHRdnU7CXHiQ+qzP/KFiweU0vrN8eb/y4+ez0dEjCEN7JMAZ
-   9MemtGPQ4OgVTwWo+E7V4f6HkgFX13TNdtIO3RgsgMUL8SdOZJ6HkROvN
-   7cQ4YuE7yiHAPgOkK4oqdjWkgOOF5cAna1N3HOGX1qRAxfh5XmhtBOhOF
-   2QBuZCB+MlIVfNT0yS+ZdilXSbnyLR81ez2eW4UePIZif93SmKmG1B9i/
-   K/tVe2MVNcU0iJBxk12HPQ9f1LjFcT4CgSyX5VsFVcMSqwdICfU5afQMy
-   J9YbLO2KRWPveHbZMd1GUa3C8Qc2XPIG1z0e0jQNM+tptizGUDM2A8XKS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5710550"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="5710550"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 06:56:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="937054151"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="937054151"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Mar 2024 06:56:47 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 95C2A4EB; Wed, 13 Mar 2024 15:56:46 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Rob Herring <robh@kernel.org>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Cc: Anatolij Gustschin <agust@denx.de>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] powerpc/52xx: Replace of_gpio.h by proper one
-Date: Wed, 13 Mar 2024 15:56:45 +0200
-Message-ID: <20240313135645.2066362-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1710338246; c=relaxed/simple;
+	bh=KK7opGThc5jVikuIZOARKvcqSgweVwoAbK4+fL+Z7i8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aeKS3PsqAwNHROKYg149tcO8glTDT2tuxn/FTY78VS1ycT75/AY+wt8vHYZTArFOdJzrFQL6cuYt+fUPSvJKFwuf5Ixy1tkmZSMnFbsZI4LNc7q/UT0xCjIgGjd7U1axtUsXG4PTeWlRpf25lS6jCpSnqkR8i6u0ZrJc1iw/5J8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQrq4V1M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1073BC433C7;
+	Wed, 13 Mar 2024 13:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710338246;
+	bh=KK7opGThc5jVikuIZOARKvcqSgweVwoAbK4+fL+Z7i8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=hQrq4V1MDwQCQbkfiWfTuBhrm3ro/rZ+y/D+/Q7pUR/BySOCVcjwGZe4ycQTSaesQ
+	 KdYFvR0n12l8Cx0EXso3LMYSGgUA2gWzwpldGaL9a0Ba7Vw/qFgCWxRVD2ubg0D1cY
+	 asxYK1AGTNj63+c8gihwd45nwVogogSN4VLs9pIDT1ombW0q8FPBetp9HoWhh3qXK0
+	 hNgE68Bx2Sq9UlMfyO4hx3QLG8xnmCjEnEhE+geJs+UMJ+X69oEIw3GGrG1jeLzKTG
+	 U9mojRHusR5SNubDqfNnGZALhsua0vN5Um1Sz7qD19/dJAaRyEv2SVIzOmzvwnYPO2
+	 rfRhdBDEmU8TQ==
+Date: Wed, 13 Mar 2024 06:57:25 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Michal Kubiak <michal.kubiak@intel.com>
+Cc: Ignat Korchagin <ignat@cloudflare.com>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <kernel-team@cloudflare.com>
+Subject: Re: [PATCH net v2 2/2] selftests: net: veth: test the ability to
+ independently manipulate GRO and XDP
+Message-ID: <20240313065725.46a50ea8@kernel.org>
+In-Reply-To: <ZfGN6RTBCbEm6uSO@localhost.localdomain>
+References: <20240312160551.73184-1-ignat@cloudflare.com>
+	<20240312160551.73184-3-ignat@cloudflare.com>
+	<ZfGN6RTBCbEm6uSO@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-of_gpio.h is deprecated and subject to remove.
-The driver doesn't use it directly, replace it
-with what is really being used.
+On Wed, 13 Mar 2024 12:28:41 +0100 Michal Kubiak wrote:
+> On Tue, Mar 12, 2024 at 04:05:52PM +0000, Ignat Korchagin wrote:
+> > We should be able to independently flip either XDP or GRO states and toggling
+> > one should not affect the other.
+> > 
+> > Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>  
+> 
+> Missing "Fixes" tag for the patch targeted to the "net" tree.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- arch/powerpc/platforms/52xx/mpc52xx_common.c | 2 --
- arch/powerpc/platforms/52xx/mpc52xx_gpt.c    | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/platforms/52xx/mpc52xx_common.c b/arch/powerpc/platforms/52xx/mpc52xx_common.c
-index b4938e344f71..253421ffb4e5 100644
---- a/arch/powerpc/platforms/52xx/mpc52xx_common.c
-+++ b/arch/powerpc/platforms/52xx/mpc52xx_common.c
-@@ -12,12 +12,10 @@
- 
- #undef DEBUG
- 
--#include <linux/gpio.h>
- #include <linux/kernel.h>
- #include <linux/spinlock.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
--#include <linux/of_gpio.h>
- #include <linux/export.h>
- #include <asm/io.h>
- #include <asm/mpc52xx.h>
-diff --git a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
-index 581059527c36..2bd6abcdc113 100644
---- a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
-+++ b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
-@@ -48,6 +48,7 @@
-  * the output mode.  This driver does not change the output mode setting.
-  */
- 
-+#include <linux/gpio/driver.h>
- #include <linux/irq.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -56,7 +57,6 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_gpio.h>
- #include <linux/platform_device.h>
- #include <linux/kernel.h>
- #include <linux/property.h>
--- 
-2.43.0.rc1.1.gbec44491f096
-
+it's adjusting a selftest, I don't think we need a Fixes tag for that
 
