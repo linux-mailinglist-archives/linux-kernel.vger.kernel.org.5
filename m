@@ -1,181 +1,361 @@
-Return-Path: <linux-kernel+bounces-102597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8898287B462
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:30:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E05A87B44E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:24:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 346CA2869AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4350B286B4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D925B217;
-	Wed, 13 Mar 2024 22:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED13059B66;
+	Wed, 13 Mar 2024 22:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=scylladb.com header.i=@scylladb.com header.b="QX+p9dx5"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jUhc4oir"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82D159B56
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77CF59B4E
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710369048; cv=none; b=HUsTrf9cjHd1dlMYJt+4+1cHH+Fmbrurzcy28I17A9H4pMdMS+OSmUd0VIu6or8QyVN46oBuR8PxXVEBUJ90XmSnoESNgJHmtOdM1zl9OPNkCz8ikKXn0bWDbbJGyVZvgAdf4YX/bHnMkzFudAt90OLQU+q2+1IT0fWrEVccZGY=
+	t=1710368668; cv=none; b=Z8HxGXdcQxy07wfp0AwEC5Emow6opQyJbCNVhxoiqj6BhBH06J/7P53D18pC5OQuXo+or4vfSQYec5okGLru6M9wAQUQY8C7Wj0dviCOMiy5SO5HGUwzZIjU+H5laR21UJU8pOINy1gCtizIGVOYlQunZ8F1UcstZKnb5EbRzbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710369048; c=relaxed/simple;
-	bh=1KgnKb3sBR6cbRrupoKHTHuK+ZNmuPGzeKCeruiGaoQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=elp0KepMdC+eIFxu/oY753fzjZpCJEtquqfLE5r1Vhj+8AHVWhXzgADJsUJZlx/bjRjM+AomvQWYV9IDpny//tB+ZiCAprru7oPH2God17EDGOxe2R1z5PvO9Vb9XNdr4EA82bRun0CJYY/M5Y9Pk2kAqhI8/F8BKorVfRHxpm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=scylladb.com; spf=pass smtp.mailfrom=scylladb.com; dkim=pass (2048-bit key) header.d=scylladb.com header.i=@scylladb.com header.b=QX+p9dx5; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=scylladb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scylladb.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33e899ce9e3so212162f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:30:46 -0700 (PDT)
+	s=arc-20240116; t=1710368668; c=relaxed/simple;
+	bh=zbLeQIWvy5qwTJ6MDXQixdKvzQX4rEAfnJ7pl0mTJ0E=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=C8OYfsk5sSdPvHkIKMSAkGoKIujOglU5xW+36iSyGxrhoEqMROnE9SKtvdqgEJNfBKDCD1I9AYOjSH40ndcBG4NwQgdZRhALvMZ2Sfbq/NdF7tcqwjhuCWSsfeKLPcvBv6NkvzxR6LMv3K2DaLdWPeoJQDfiJTeIgEm9hIdvxJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jUhc4oir; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso235690276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:24:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb.com; s=google; t=1710369045; x=1710973845; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1KgnKb3sBR6cbRrupoKHTHuK+ZNmuPGzeKCeruiGaoQ=;
-        b=QX+p9dx5uY1Nl5DQ6aNA4ddZxztlwICqeyGylGMwaageC/DpQJCpQU1suokC46CepZ
-         hsjaJ5VnHwUXp8xAyxikYEUwcZH6hKDuxxsSeZHP/BF7iQAssGY21Eqs3jY4c/j7t+Nl
-         euPeOT6uqDTcxG50EQYU/cVcusAMNsO70rsUelLU2wiEw9JBqcYT/fJVdfCg/4gwTfbo
-         8w2l2RJL37NfV+eM7E74zhPHgQivTV3Gr3HQQCzVxtBZ97X/9TKwamkN37OLZ5fG0FQj
-         LNrgb/6goGTVYfdiQsUOKeneZhj3IAtmOC8Gx4u+iYFkpLDZFg/fBHSmLYSAstOzVM7D
-         Lm9g==
+        d=linaro.org; s=google; t=1710368666; x=1710973466; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gqcbVEM/vE886TusLqgUrg1+EocQSk8oVS1AlNPmiiw=;
+        b=jUhc4oirCVgJ2fDB8t8gry2VZ6nd38Hd2QD7En/NefUSFF0UEHvp0eshwmtW7HBUOS
+         fWiAlqv2Zx69EHL1tcOcv2h87qT/G9JUiGv2/S5wWviiEn4FP7XeNL+8DTWXMqVdsx8f
+         wtopVFVJ18utcgwpP5AwP/4nn8qXiTFFlXst21071scIv0E+7XRZnH7EICTobjodq3uZ
+         O03tdhF4snGIoeKUBUXrdi4+9qLyE8EH32ZAl8pX5FsnvZgsMPPmniy9jLM/7ShOncTs
+         tfK0XgmqLxkJIKmk40zzi9aetLU3nq5h45aL0/v5Lq9BshtxCAJFKHafFwwt0bbpHF4x
+         5QqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710369045; x=1710973845;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1KgnKb3sBR6cbRrupoKHTHuK+ZNmuPGzeKCeruiGaoQ=;
-        b=YH0Ax/BIzBeAqvwkccC2SVhGkOJwPz76BOCRB0HkEEMBaOrw5Ph4yOEAru2D9iwqYj
-         VMcMBvcmbq7pSpa6yYVvqlGP2XkwMemfd6/ieE9uTeLsK3JWNT9p3g3l1N6Bjyy168qv
-         Xjp+axNcX1jb8yTL5SVu+DOq2dy1SKA26vhOKIMVXeliqg4KXXYpbQ8n9NI4axZQLvkv
-         MOpwa7RHQLsOAINpto2op9wrNlJDpeIsqDTwjuslNomvWRFP4/CRuyB2Ck7lViJ7OEtJ
-         Xki9WAYFPCipc5kT/40Ce57mu2DdOOzte1dLKaK6+ExWYWmmBekLsCLwHaxRa/7oHjm1
-         LEXQ==
-X-Gm-Message-State: AOJu0YyKRP40CJf+swYi+EyMHUKCL1Gn+7vYaZwuOgIPmwDvBTFGfAMv
-	UBT1qQmtylK3B1CcbymLzMrCTY0mGPWOx0Vu4LPKkn0LP/5+F/dgW9wAM/yXIQqaJj7R/ZoVPaU
-	AWBJAT+4NsAGUhB4oFhgHAuLZmdJRLP+irVl1P8zKG7ug4AboU7O0urhLjbpn5YCulp6y+4PQ+W
-	JU/kqes+RFlZMIQ2IEvnJb3lwLPAhDAt2bssXd7Mo2sN17fYY1Wiur2WDGs6CyoNhtjm5zQOh4J
-	6V3R23eJyWgYnRnRZMS67HzGjy3StV06GJ0dH4TP/xO5zJNYs0K7RUC/zXusc1MO56VDeX/1MCF
-	dmAdUbFMUDahN+kmgpE+ILntYVgwu2aAwVPEUxImpj2sKgyRrL2HUwRaLJ4=
-X-Google-Smtp-Source: AGHT+IFWTDqmAKnxNbMvN1tvVrUrsJUBfbnhN00ItdbKhCgZV7me6wIEkibHvMXjnxNUT/IkJzesXA==
-X-Received: by 2002:a05:600c:3d88:b0:413:e531:5a47 with SMTP id bi8-20020a05600c3d8800b00413e5315a47mr100917wmb.4.1710368609711;
-        Wed, 13 Mar 2024 15:23:29 -0700 (PDT)
-Received: from avi.scylladb.com (system.cloudius-systems.com. [199.203.229.89])
-        by smtp.gmail.com with ESMTPSA id e10-20020a05600c4e4a00b0041316e91c99sm402607wmq.1.2024.03.13.15.23.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 15:23:29 -0700 (PDT)
-Message-ID: <dca2d74b4078a0c2488cefd9beeaeb819a5c7fc9.camel@scylladb.com>
-Subject: Re: [RFC PATCH 0/2] Introduce serialized smp_call_function APIs
-From: Avi Kivity <avi@scylladb.com>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Peter Oskolkov
-	 <posk@google.com>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
- "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>, Boqun Feng
- <boqun.feng@gmail.com>, Andrew Hunter <ahh@google.com>,  Maged Michael
- <maged.michael@gmail.com>, gromer@google.com, Benjamin Herrenschmidt
- <benh@kernel.crashing.org>,  Paul Mackerras <paulus@samba.org>, Michael
- Ellerman <mpe@ellerman.id.au>, Linus Torvalds
- <torvalds@linux-foundation.org>
-Date: Thu, 14 Mar 2024 00:23:27 +0200
-In-Reply-To: <6952b581-68d2-476b-9f7e-e9746c8c0473@efficios.com>
-References: <20240313205622.2179659-1-mathieu.desnoyers@efficios.com>
-	 <7c1860d783e0f317160069bf77d8fafdf01a9f97.camel@scylladb.com>
-	 <6952b581-68d2-476b-9f7e-e9746c8c0473@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        d=1e100.net; s=20230601; t=1710368666; x=1710973466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gqcbVEM/vE886TusLqgUrg1+EocQSk8oVS1AlNPmiiw=;
+        b=TEtlvH31hIsNES5dZQouxTwrkpqzpyZKXxD5/4qjj/NtdMu+CqaKN4A1I6l/BhgaRk
+         Le9dwANa2dRVoCfmzrkrsPsC67T4cZG5ceWNU1VChyJRGtF6N6RSFxH9DmvvSlFoMCdq
+         5rdUcIVCSwql86fCmmkdWp0D1r72zs6sPvyz2RuwCzQAqCO/SYneu3MqOxzKalmJbOnR
+         4lPZ90E+q4NcC8yOPXoXc2ZcswK27Ljn5ttSfPl6omZ3NpGL+EBzZ9KkuLkmD2WzBnNG
+         +U5s0K09QC/xj5nGcYnjiH17o4t+MPL5n4Y6bgVcPBvKJPfJLxPM1Tb4ymDGHU+yH8Nj
+         cIng==
+X-Gm-Message-State: AOJu0Yx3bf0cie35ODNaT3Z+gEFVfUMWCpSp1H0coX9my2wtMFeBlIvI
+	TJGo3Jt4HcdeA4Emk5js0fO95yaZj21Mwpju4idzlqPx0YKOfJlndV/wKkGzBJKeRpFXQIoO+KZ
+	qYtSeDYDezgCVqDdWdBl/DvduMGbb8S1gIa0Uj7oNuNDGi1cBum0=
+X-Google-Smtp-Source: AGHT+IHpQ4YIO03aPM1BuAYFi8DxKeqs+GpFXRCN0uax2uGsql/PD2rMsOs0arfNXIiNgBZ59EP+HKhUHPEKnIm4Fsg=
+X-Received: by 2002:a25:b124:0:b0:dcc:d694:b4a6 with SMTP id
+ g36-20020a25b124000000b00dccd694b4a6mr54290ybj.15.1710368665695; Wed, 13 Mar
+ 2024 15:24:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CLOUD-SEC-AV-Sent: true
-X-CLOUD-SEC-AV-Info: scylladb,google_mail,monitor
-X-Gm-Spam: 0
-X-Gm-Phishy: 0
-X-CLOUD-SEC-AV-Sent: true
-X-CLOUD-SEC-AV-Info: scylla,google_mail,monitor
-X-Gm-Spam: 0
-X-Gm-Phishy: 0
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 13 Mar 2024 23:24:14 +0100
+Message-ID: <CACRpkdYZ01rEzd5d8RcDbZqBPdy4uVU1uYWH6q7XS1WjKNXrUA@mail.gmail.com>
+Subject: [GIT PULL] pin control changes for v6.9
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
+	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-03-13 at 18:06 -0400, Mathieu Desnoyers wrote:
-> On 2024-03-13 17:14, Avi Kivity wrote:
-> > On Wed, 2024-03-13 at 16:56 -0400, Mathieu Desnoyers wrote:
-> > > commit 944d5fe50f3f ("sched/membarrier: reduce the ability to
-> > > hammer=20
-> > > on sys_membarrier")
-> > > introduces a mutex over all membarrier operations to reduce its
-> > > ability
-> > > to slow down the rest of the system.
-> > >=20
-> > > This RFC series has two objectives:
-> > >=20
-> > > 1) Move this mutex to the smp_call_function APIs so other system
-> > > calls
-> > > =C2=A0=C2=A0 using smp_call_function IPIs are limited in the same way=
-,
-> > >=20
-> > > 2) Restore scalability of MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-> > > with
-> > > =C2=A0=C2=A0 MEMBARRIER_CMD_FLAG_CPU, which targets specific CPUs wit=
-h
-> > > IPIs.
-> > > =C2=A0=C2=A0 This may or may not be useful, and I would welcome bench=
-marks
-> > > from
-> > > =C2=A0=C2=A0 users of this feature to figure out if this is worth it.
-> > >=20
-> > > This series applies on top of v6.8.
-> > >=20
-> >=20
-> >=20
-> > I see this doesn't restore scaling of
-> > MEMBARRIER_CMD_PRIVATE_EXPEDITED,=20
-> > which I use (and wasn't aware was broken).
->=20
-> It's mainly a mitigation for IPI Storming: CVE-2024-26602 disclosed
+Hi Linus,
 
+pin control is rather boring this time with mainly cleanups.
+There are some 2-3 new drivers.
 
-Very interesting.
+Some stuff hits drivers/gpio as we split out the Nomadik
+GPIO driver, but the merge should be painless AFAICT.
+The main GPIO maintainer Bartosz is in sync.
 
+Details are in the signed tag, please pull it in!
 
-> as part of [1].
->=20
-> >=20
-> > I don't have comments on the patches, but do have ideas on how to
-> > work=20
-> > around the problem in Seastar. So this was a useful heads-up for
-> > me.
->=20
-> Note that if you don't use membarrier private expedited too heavily,
-> you should not notice any difference. But nevertheless I would be
-> interested to hear about any regression on performance of real
-> workloads resulting from commit 944d5fe50f3f.
->=20
+Yours,
+Linus Walleij
 
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d=
+:
 
-In fact I did observe the original text of 944d5fe50f3f ("On some
-systems, sys_membarrier can be very expensive, causing overall
-slowdowns for everything") to be true [1]. So rather than causing
-a regression, this commit made me fix a problem.
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-The smp_call_function_many_cond() in [1] is very likely due to
-sys_membarrier, and it's slow since it's running on a virtual machine
-without posted interrupt virtualization. Usually we detect virtual
-machines and call membarrier() less frequently, but on that instance
-(AWS d3en) the detection failed and triggered that IPI storm.
+are available in the Git repository at:
 
-My fix is to just detect if there's a concurrent membarrier running and
-fall back to doing something else, I don't think it's generally
-applicable.
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v6.9-1
 
-[1] https://github.com/scylladb/scylladb/issues/17207
+for you to fetch changes up to fa63587f94a77a49b53274dc0fd1ea41dfde5966:
 
+  drivers/gpio/nomadik: move dummy nmk_gpio_dbg_show_one() to header
+(2024-03-12 12:53:35 +0100)
 
+----------------------------------------------------------------
+Pin control changes for the v6.9 kernel cycle:
+
+No core changes this time around.
+
+New drivers:
+
+- New driver for Renesas R8A779H0 also known as R-Car V4M.
+
+- New driver for the Awinic AW9523/B I2C GPIO expander.
+  I found this living out-of-tree in OpenWrt as an upstream
+  attempt had stalled on the finishing line, so I picked it
+  up and finished the job.
+
+Improvements:
+
+- The Nomadik pin control driver was for years re-used out of
+  tree for the ST STA chips, and now the IP was re-used in a
+  MIPS automotive SoC called MobilEyeq5, so it has been split
+  in pin control and GPIO drivers so the latter can be reused
+  by MobilEyeq5. (Along with a long list of cleanups.)
+
+- A lot of overall cleanup and tidying up.
+
+----------------------------------------------------------------
+Andre Przywara (1):
+      pinctrl: pinmux: Suppress error message for -EPROBE_DEFER
+
+Andy Shevchenko (2):
+      pinctrl: nuvoton: Constify wpcm450_groups
+      gpio: nomadik: Finish conversion to use firmware node APIs
+
+AngeloGioacchino Del Regno (2):
+      dt-bindings: pinctrl: Add bindings for Awinic AW9523/AW9523B
+      pinctrl: Add driver for Awinic AW9523/B I2C GPIO Expander
+
+Arturas Moskvinas (1):
+      pinctrl: mcp23s08: Check only GPIOs which have interrupts enabled
+
+Biju Das (4):
+      pinctrl: renesas: rzg2l: Configure interrupt input mode
+      pinctrl: renesas: rzg2l: Simplify rzg2l_gpio_irq_{en,dis}able()
+      pinctrl: renesas: rzg2l: Avoid configuring ISEL in gpio_irq_{en,dis}a=
+ble*(
+      pinctrl: da9062: Add OF table
+
+Charles Keepax (3):
+      pinctrl: cs42l43: Tidy up header includes
+      pinctrl: cs42l43: Remove some needless inlines
+      pinctrl: cs42l43: Use str_high_low()
+
+Chen Ni (1):
+      pinctrl: st: Return pinctrl_gpio_direction_output to transfer the err=
+or
+
+Chen-Yu Tsai (2):
+      pinctrl: mediatek: Drop bogus slew rate register range for MT8186
+      pinctrl: mediatek: Drop bogus slew rate register range for MT8192
+
+Claudiu Beznea (3):
+      pinctrl: renesas: rzg2l: Fix locking in rzg2l_dt_subnode_to_map()
+      pinctrl: renesas: rzg2l: Select GPIOLIB_IRQCHIP and IRQ_DOMAIN_HIERAR=
+CHY
+      pinctrl: renesas: rzg2l: Add suspend/resume support
+
+Colin Ian King (1):
+      pinctrl: ocelot: remove redundant assignment to variable ret
+
+Cong Dang (13):
+      pinctrl: renesas: Initial R8A779H0 (R-Car V4M) PFC support
+      pinctrl: renesas: r8a779h0: Add Ethernet AVB pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add SD/MMC pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add QSPI pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add SCIF pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add SCIF_CLK pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add HSCIF pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add I2C pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add MSIOF pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add PWM/TPU pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add CANFD pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add PCIe pins, groups, functions
+      pinctrl: renesas: r8a779h0: Add Audio pins, groups, functions
+
+Dan Carpenter (2):
+      pinctrl: core: comment that pinctrl_add_gpio_range() is deprecated
+      gpio: nomadik: remove BUG_ON() in nmk_gpio_populate_chip()
+
+Erick Archer (1):
+      pinctrl: pinctrl-zynqmp: Use devm_kcalloc() instead of devm_kzalloc()
+
+Geert Uytterhoeven (4):
+      pinctrl: renesas: r8a779g0: Add missing SCIF_CLK2 pin group/function
+      pinctrl: renesas: checker: Limit cfg reg enum checks to provided IDs
+      dt-bindings: pinctrl: renesas,pfc: Document R-Car V4M support
+      pinctrl: renesas: Allow the compiler to optimize away sh_pfc_pm
+
+Jean Thomas (2):
+      pinctrl: mediatek: mt7981: add additional uart group
+      pinctrl: mediatek: mt7981: add additional emmc groups
+
+Krzysztof Kozlowski (2):
+      dt-bindings: pinctrl: amlogic: narrow regex for unit address to
+hex numbers
+      pinctrl: qcom: sm8650-lpass-lpi: correct Kconfig name
+
+Lad Prabhakar (3):
+      pinctrl: renesas: rzg2l: Improve code for readability
+      pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK() mac=
+ro
+      pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
+
+Linus Walleij (6):
+      Merge tag 'renesas-pinctrl-for-v6.9-tag1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
+into devel
+      Merge tag 'renesas-pinctrl-for-v6.9-tag2' of
+git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
+into devel
+      pinctrl: aw9523: Add proper terminator
+      gpio: nomadik: Back out some managed resources
+      Merge branch 'ib-nomadik-gpio' into devel
+      pinctrl: aw9523: Make the driver tristate
+
+Max Kellermann (1):
+      drivers/gpio/nomadik: move dummy nmk_gpio_dbg_show_one() to header
+
+Michal Simek (1):
+      dt-bindings: pinctr: pinctrl-zynq: Fix compatible string
+
+Naresh Solanki (1):
+      dt-bindings: pinctrl: cy8c95x0: Update gpio-reserved-ranges
+
+Randy Dunlap (1):
+      pinctrl: mt7986: excise kernel-doc warnings
+
+Rob Herring (3):
+      dt-bindings: pinctrl: Unify "input-debounce" schema
+      dt-bindings: pinctrl: nuvoton,npcm845: Drop redundant type for "slew-=
+rate"
+      dt-bindings: pinctrl: nvidia,tegra234-pinmux: Restructure common sche=
+ma
+
+Tengfei Fan (1):
+      dt-bindings: pinctrl: qcom: update compatible name for match with dri=
+ver
+
+Th=C3=A9o Lebrun (28):
+      dt-bindings: pinctrl: mobileye,eyeq5-pinctrl: add bindings
+      dt-bindings: gpio: nomadik: convert into yaml format
+      dt-bindings: gpio: nomadik: add optional ngpios property
+      dt-bindings: gpio: nomadik: add mobileye,eyeq5-gpio compatible
+      dt-bindings: gpio: nomadik: add optional reset property
+      gpio: nomadik: fix offset bug in nmk_pmx_set()
+      gpio: nomadik: extract GPIO platform driver from drivers/pinctrl/noma=
+dik/
+      pinctrl: nomadik: Kconfig: allow building with COMPILE_TEST
+      pinctrl: nomadik: fix build warning (-Wformat)
+      pinctrl: nomadik: fix build warning (-Wpointer-to-int-cast)
+      pinctrl: nomadik: minimise indentation in probe
+      pinctrl: nomadik: follow type-system kernel coding conventions
+      pinctrl: nomadik: follow whitespace kernel coding conventions
+      pinctrl: nomadik: follow conditional kernel coding conventions
+      gpio: nomadik: add #include <linux/slab.h>
+      gpio: nomadik: replace of_find_*() by bus_find_device_by_of_node()
+      gpio: nomadik: replace of_property_read_*() by device_property_read_*=
+()
+      gpio: nomadik: use devm_platform_ioremap_resource() helper
+      gpio: nomadik: use devres version of clk_get*()
+      gpio: nomadik: request dynamic ID allocation
+      gpio: nomadik: make clock optional
+      gpio: nomadik: change driver name from gpio to nomadik-gpio
+      gpio: nomadik: support shared GPIO IRQs
+      gpio: nomadik: handle variadic GPIO count
+      gpio: nomadik: support mobileye,eyeq5-gpio
+      gpio: nomadik: grab optional reset control and deassert it at probe
+      gpio: nomadik: fix Kconfig dependencies inbetween pinctrl & GPIO
+      pinctrl: nomadik: fix dereference of error pointer
+
+Varshini Rajendran (1):
+      dt-bindings: pinctrl: at91: add sam9x7
+
+ .../devicetree/bindings/gpio/gpio-nmk.txt          |   31 -
+ .../devicetree/bindings/gpio/st,nomadik-gpio.yaml  |   95 +
+ .../bindings/pinctrl/amlogic,meson-pinctrl-a1.yaml |    2 +-
+ .../pinctrl/amlogic,meson-pinctrl-g12a-aobus.yaml  |    2 +-
+ .../amlogic,meson-pinctrl-g12a-periphs.yaml        |    2 +-
+ .../pinctrl/amlogic,meson8-pinctrl-aobus.yaml      |    2 +-
+ .../pinctrl/amlogic,meson8-pinctrl-cbus.yaml       |    2 +-
+ .../bindings/pinctrl/atmel,at91-pinctrl.txt        |    2 +
+ .../bindings/pinctrl/awinic,aw9523-pinctrl.yaml    |  139 +
+ .../devicetree/bindings/pinctrl/cirrus,madera.yaml |    3 +-
+ .../bindings/pinctrl/cypress,cy8c95x0.yaml         |   24 +-
+ .../bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml   |  242 ++
+ .../bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml  |    2 -
+ .../bindings/pinctrl/nuvoton,wpcm450-pinctrl.yaml  |    3 +-
+ .../pinctrl/nvidia,tegra234-pinmux-aon.yaml        |    7 +-
+ .../pinctrl/nvidia,tegra234-pinmux-common.yaml     |   84 +-
+ .../bindings/pinctrl/nvidia,tegra234-pinmux.yaml   |    7 +-
+ .../devicetree/bindings/pinctrl/pincfg-node.yaml   |    2 +-
+ .../bindings/pinctrl/qcom,sm4450-tlmm.yaml         |    2 +-
+ .../devicetree/bindings/pinctrl/renesas,pfc.yaml   |    1 +
+ ...nx,zynq-pinctrl.yaml =3D> xlnx,pinctrl-zynq.yaml} |    6 +-
+ MAINTAINERS                                        |    2 +
+ arch/riscv/boot/dts/renesas/r9a07g043f.dtsi        |    4 +
+ drivers/gpio/Kconfig                               |   12 +
+ drivers/gpio/Makefile                              |    1 +
+ drivers/gpio/gpio-nomadik.c                        |  730 ++++
+ drivers/pinctrl/Kconfig                            |   18 +
+ drivers/pinctrl/Makefile                           |    1 +
+ drivers/pinctrl/cirrus/pinctrl-cs42l43.c           |   18 +-
+ drivers/pinctrl/core.c                             |    4 +
+ drivers/pinctrl/mediatek/pinctrl-mt7981.c          |   24 +-
+ drivers/pinctrl/mediatek/pinctrl-mt7986.c          |    2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8186.c          |    1 -
+ drivers/pinctrl/mediatek/pinctrl-mt8192.c          |    1 -
+ drivers/pinctrl/nomadik/Kconfig                    |    8 +-
+ drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c   |    3 +-
+ drivers/pinctrl/nomadik/pinctrl-nomadik-stn8815.c  |    3 +-
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c          |  955 +----
+ drivers/pinctrl/nuvoton/pinctrl-wpcm450.c          |    2 +-
+ drivers/pinctrl/pinctrl-aw9523.c                   | 1119 ++++++
+ drivers/pinctrl/pinctrl-da9062.c                   |    7 +
+ drivers/pinctrl/pinctrl-mcp23s08.c                 |   15 +-
+ drivers/pinctrl/pinctrl-ocelot.c                   |    1 -
+ drivers/pinctrl/pinctrl-st.c                       |    3 +-
+ drivers/pinctrl/pinctrl-zynqmp.c                   |    8 +-
+ drivers/pinctrl/pinmux.c                           |    6 +-
+ drivers/pinctrl/qcom/Kconfig                       |    2 +-
+ drivers/pinctrl/renesas/Kconfig                    |    7 +
+ drivers/pinctrl/renesas/Makefile                   |    1 +
+ drivers/pinctrl/renesas/core.c                     |   14 +-
+ drivers/pinctrl/renesas/pfc-r8a779g0.c             |   14 +
+ drivers/pinctrl/renesas/pfc-r8a779h0.c             | 3967 ++++++++++++++++=
+++++
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c            |  790 +++-
+ drivers/pinctrl/renesas/sh_pfc.h                   |    1 +
+ .../linux/gpio/gpio-nomadik.h                      |  138 +-
+ 55 files changed, 7496 insertions(+), 1046 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-nmk.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/st,nomadik-gpio.=
+yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml
+ rename Documentation/devicetree/bindings/pinctrl/{xlnx,zynq-pinctrl.yaml
+=3D> xlnx,pinctrl-zynq.yaml} (98%)
+ create mode 100644 drivers/gpio/gpio-nomadik.c
+ create mode 100644 drivers/pinctrl/pinctrl-aw9523.c
+ create mode 100644 drivers/pinctrl/renesas/pfc-r8a779h0.c
+ rename drivers/pinctrl/nomadik/pinctrl-nomadik.h =3D>
+include/linux/gpio/gpio-nomadik.h (59%)
 
