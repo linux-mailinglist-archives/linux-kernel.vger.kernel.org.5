@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-102212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A39F87AF77
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D90FB87AF79
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:25:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06125287F39
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:25:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946BA288A39
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B109150CFE;
-	Wed, 13 Mar 2024 17:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F161A0A2B;
+	Wed, 13 Mar 2024 17:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MG4Wy8Ou"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5k/dVVE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA931150CDC;
-	Wed, 13 Mar 2024 17:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7854D1A0A12;
+	Wed, 13 Mar 2024 17:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349505; cv=none; b=XgYCMGFOP4t2WsuPOQ8SWHoi6byg5zlYQodTb/emKYS2wQByb5X9EvsSSbfEAxaB/Z6sV+A7nN9IRgPhOAWIpvE5P7LVHkPREOovrpODVd9QsqgpQHQQ7IWu5MAMWN79HUxLPj2dBtTVeLJL3MUfZzYyu+OY+1bcIbHCZBYlpXc=
+	t=1710349507; cv=none; b=byYPqKLrP8Q/Hbl/tVlUwpOz0hLfBw5G0TLiu6wq3dGrN+eK+l8bj7eHyFhOoH+7coyHucRJWtUED6URjw/9jezYDoGF9z3MM2tEzbN8DFeF801JMTiZbfD70157SsyO5pDH0eSOOLwrHpslxDxEse2599WFmEO+HYgi4qIQgDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349505; c=relaxed/simple;
-	bh=Ptq0cuJxKNvmwtHshe5chi0JrXuel14aDzjpEGVBeKw=;
+	s=arc-20240116; t=1710349507; c=relaxed/simple;
+	bh=8pkugNJXCAGQDIXWP8dF/TDqhdMUENJaJJI8RkjeAeM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OLGkwD81JUTFuC/7bG+2br7VroTNjt2W/MkpGjgTA6NtJkZuos1ilsWZa3WIGt0roT+CFoMS8xOonY/q2CRE0M/e5ZhtTW20I7lvMP3Bj227VKuLxLu80LzUnRqq1dj9o+vFSaLRNg4p5GzoHPGXb++upQrkLiUPmW0qV0d1i70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MG4Wy8Ou; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCD08C43390;
-	Wed, 13 Mar 2024 17:05:04 +0000 (UTC)
+	 MIME-Version; b=uj4FzWcTsGmShT7eGxivjQr/crEGSX/9D5r102VQ8KOAhNbOlNPMt5r5mcq2txviw3mFI2XorZWVB4uiK5E8c1G1G5rWxixoE5sUpwD1bAHA8C/EVAHVUn1bPcbDXXzDQSl7vHLE0H1JTs0OllrP6FAEjC+I6vqj7VRuNRjZjEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r5k/dVVE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD1FC43399;
+	Wed, 13 Mar 2024 17:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349505;
-	bh=Ptq0cuJxKNvmwtHshe5chi0JrXuel14aDzjpEGVBeKw=;
+	s=k20201202; t=1710349507;
+	bh=8pkugNJXCAGQDIXWP8dF/TDqhdMUENJaJJI8RkjeAeM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MG4Wy8Ou3R5YuwqFllfNwx5Cd/hwZnRn5raZB4OwxK63aQ8n9zwERPos2KGW3JW6D
-	 KCcFnVNTqkYVvsBWUUoexA7npm/8wbhnUMX698I+nfSUyfhCzwde3Mb5zrGqxqxWPl
-	 AwjRU/7nOP0BSpsZ132IiqKEkHV/1Eou8yWrDtij3KzFAI/jKPkoww89oOarAlGnYR
-	 0I4jtbTHWTOyrGsdR4lxeUUU5J1M7AE5IfbGRnnitFu9CK0G5bM/t1qRUA6BUyVXns
-	 XsWyRkFMgFRZJUn35qLhYxOyWs+pI9L18uDMIRYc0KUTyP13RBG3/IMlMm6C0t4+Ea
-	 ZojvxydgCKlSg==
+	b=r5k/dVVE2QTUYOvLjD+aFYttX9L5YuqWSt2GPCtT+vtwknRgfRDE08OXYFRtNIlqi
+	 Ys1cUywb/fTi6jr1uHO3KqXCw5rUMX+L7W8v5rXoJdCI61MEH1s3AsKu6SOVUF71Gt
+	 iyAaRO9/8OQ4T8+HxPRgkLCuSNUBRylzOxy90EuY3aB4Rmr/S5Ul6oH4LyjRd4Jr2g
+	 yvt+4jPTm1WrYDqEt/1o22lpwl/QZGn+F87J3iPHdNwC/qDthuzdqNi3kTlnfp/P6k
+	 xOViUokphK+loLgA8BNl/yJ/8olFakLuR/dMIGoLK0hljZzTPX4p9KdKmqPrYJxLBY
+	 ZHbaeycszrtzQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>,
+Cc: Nico Pache <npache@redhat.com>,
+	Donet Tom <donettom@linux.vnet.ibm.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Christophe Leroy <christophe.leroy@c-s.fr>,
 	Michael Ellerman <mpe@ellerman.id.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/41] tools/selftest/vm: allow choosing mem size and page size in map_hugetlb
-Date: Wed, 13 Mar 2024 13:04:19 -0400
-Message-ID: <20240313170435.616724-26-sashal@kernel.org>
+Subject: [PATCH 4.19 26/41] selftests: mm: fix map_hugetlb failure on 64K page size systems
+Date: Wed, 13 Mar 2024 13:04:20 -0400
+Message-ID: <20240313170435.616724-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170435.616724-1-sashal@kernel.org>
 References: <20240313170435.616724-1-sashal@kernel.org>
@@ -68,74 +72,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+From: Nico Pache <npache@redhat.com>
 
-[ Upstream commit fa7b9a805c797b729022029aaa3a2b7c35fff4c6 ]
+[ Upstream commit 91b80cc5b39f00399e8e2d17527cad2c7fa535e2 ]
 
-map_hugetlb maps 256Mbytes of memory with default hugepage size.
+On systems with 64k page size and 512M huge page sizes, the allocation and
+test succeeds but errors out at the munmap.  As the comment states, munmap
+will failure if its not HUGEPAGE aligned.  This is due to the length of
+the mapping being 1/2 the size of the hugepage causing the munmap to not
+be hugepage aligned.  Fix this by making the mapping length the full
+hugepage if the hugepage is larger than the length of the mapping.
 
-This patch allows the user to pass the size and page shift as an
-argument in order to use different size and page size.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Stable-dep-of: 91b80cc5b39f ("selftests: mm: fix map_hugetlb failure on 64K page size systems")
+Link: https://lkml.kernel.org/r/20240119131429.172448-1-npache@redhat.com
+Signed-off-by: Nico Pache <npache@redhat.com>
+Cc: Donet Tom <donettom@linux.vnet.ibm.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/vm/map_hugetlb.c | 29 ++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ tools/testing/selftests/vm/map_hugetlb.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/tools/testing/selftests/vm/map_hugetlb.c b/tools/testing/selftests/vm/map_hugetlb.c
-index 9b777fa95f090..5a2d7b8efc407 100644
+index 5a2d7b8efc407..ab349c6db00d4 100644
 --- a/tools/testing/selftests/vm/map_hugetlb.c
 +++ b/tools/testing/selftests/vm/map_hugetlb.c
-@@ -23,6 +23,14 @@
- #define MAP_HUGETLB 0x40000 /* arch specific */
- #endif
+@@ -15,6 +15,7 @@
+ #include <unistd.h>
+ #include <sys/mman.h>
+ #include <fcntl.h>
++#include "vm_util.h"
  
-+#ifndef MAP_HUGE_SHIFT
-+#define MAP_HUGE_SHIFT 26
-+#endif
-+
-+#ifndef MAP_HUGE_MASK
-+#define MAP_HUGE_MASK 0x3f
-+#endif
-+
- /* Only ia64 requires this */
- #ifdef __ia64__
- #define ADDR (void *)(0x8000000000000000UL)
-@@ -58,12 +66,29 @@ static int read_bytes(char *addr)
- 	return 0;
- }
- 
--int main(void)
-+int main(int argc, char **argv)
+ #define LENGTH (256UL*1024*1024)
+ #define PROTECTION (PROT_READ | PROT_WRITE)
+@@ -70,10 +71,16 @@ int main(int argc, char **argv)
  {
  	void *addr;
  	int ret;
-+	size_t length = LENGTH;
-+	int flags = FLAGS;
-+	int shift = 0;
-+
-+	if (argc > 1)
-+		length = atol(argv[1]) << 20;
-+	if (argc > 2) {
-+		shift = atoi(argv[2]);
-+		if (shift)
-+			flags |= (shift & MAP_HUGE_MASK) << MAP_HUGE_SHIFT;
-+	}
-+
-+	if (shift)
-+		printf("%u kB hugepages\n", 1 << shift);
-+	else
-+		printf("Default size hugepages\n");
-+	printf("Mapping %lu Mbytes\n", (unsigned long)length >> 20);
++	size_t hugepage_size;
+ 	size_t length = LENGTH;
+ 	int flags = FLAGS;
+ 	int shift = 0;
  
--	addr = mmap(ADDR, LENGTH, PROTECTION, FLAGS, -1, 0);
-+	addr = mmap(ADDR, length, PROTECTION, flags, -1, 0);
- 	if (addr == MAP_FAILED) {
- 		perror("mmap");
- 		exit(1);
++	hugepage_size = default_huge_page_size();
++	/* munmap with fail if the length is not page aligned */
++	if (hugepage_size > length)
++		length = hugepage_size;
++
+ 	if (argc > 1)
+ 		length = atol(argv[1]) << 20;
+ 	if (argc > 2) {
 -- 
 2.43.0
 
