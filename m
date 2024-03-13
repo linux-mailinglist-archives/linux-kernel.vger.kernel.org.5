@@ -1,47 +1,49 @@
-Return-Path: <linux-kernel+bounces-102253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA70387AFD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:36:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F0FB87AFD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A61F8286686
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:36:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFFD72866C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D3080C0C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C2580C1B;
 	Wed, 13 Mar 2024 17:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XzCOUfBo"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SW0f0tlU"
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4DF880BF8;
-	Wed, 13 Mar 2024 17:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 920186215F;
+	Wed, 13 Mar 2024 17:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710350434; cv=none; b=JACVuMlDRmAlTV5bsO9x8zPWcOIfETfFHRrZh1VoijhC8XrrbMbHSuqozGNS2uSfQWx7oem/GFXPnHJS/s3dGijju5r996qLZxmHZqy+DgVeOdcnoA4i5WNuJBKWM0dVmqFpmJI6ZI3OVXuFu5LYUtnU43dsJSPL+81vt9/Gy7M=
+	t=1710350435; cv=none; b=eGZS6ESzPBU8G6X3VuiDT3Wc3oISXiZSR1F9+nAbXfJvhiuZPrHJcEX1WrjhNOfQJwbU9Ygwg2Ublb38VNSesi6IHXNLw//R9tsuh+W6kz/A5g8jXfCfgfMFzUo9qqTMK849QgpkPkoOiYYG9YPjsDsX9ckw8UR2p92hroX6xWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710350434; c=relaxed/simple;
-	bh=PDm1SItksNTofzuQzI9fFJVVPjchoKbvQNAAeFJDhCc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=p3foFi9rXcKluMB9dAGpsNtXcjHQApBQ4RV+CZMdgtyXU194w4hJ5piZIDShJz2VbmNNDrx/d6S7sVSKgI6H9F55diwAEb6z2VVNH0GpKbuT+B65btYZUIBHTCl9akeq3R85pVxkSj+l70dV/fS5VEwGWsA8lApRR4rnIxafEqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XzCOUfBo; arc=none smtp.client-ip=217.70.183.195
+	s=arc-20240116; t=1710350435; c=relaxed/simple;
+	bh=Rz+zz8C3FLdGhDB23gaUu1+rgqeKlBGZdedvkEgr6Nc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WYlQuLg8+ZAKFejrFCe8il45ZI2E3JLFGG4xzhaSGyXI4y+y8Cr6o1lEBraHI6siWbe3k4ACdsRZ0+9olR65BHxYkp6z8qgAah61Vqlyf55FgqlEpvoS7uZjSXR7ioBYcW+YVZNaocUYFiP8igqypPUNeb+Rp4GmHlOpSGkAGfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SW0f0tlU; arc=none smtp.client-ip=217.70.183.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5DB3F60006;
-	Wed, 13 Mar 2024 17:20:22 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1685A60004;
+	Wed, 13 Mar 2024 17:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
 	t=1710350424;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ALphmlMJMXjWnAezL6iQbzO6NFcgXvLJ93zEeDxPP/U=;
-	b=XzCOUfBojPliqqGwG1/5px2zHXOyYoIR/4C1B1yPMLdF7qEWnMYdFt4z/1HIsFAqcxeDvx
-	Zy9vGtzScRdZWrE7j7c0bXfyHSvdwI7wTyy+qKmOduy/ZrZrszkFMy4mHaYeTJ8/0SjQ6B
-	17GYllEJHIa6Uzw689W0CsL3NMIyhxdj8uwuv6yik/py/xGZT+PBqVUhqnqeHjAFtyF4wk
-	e62DR3CjOjZpMfucaK7jU5krKYBRwJT9EQccEeFb7ZLa+1E3dSa/7Ujs/1P5My7S7gvLk6
-	ya937VFo1pWt690F3jkENDIcGaU2ksgtB0FkpZROdD3+Rchd0/8RNzUOX804HQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=02+yT9N9o9NKCFVvGS4oNEPEPi28XRrK0I0VU7hqIgM=;
+	b=SW0f0tlUmoTxL3YcuWCoCYj7x9fNRSpY2dFPqyo+Kr9B7DIm5V/tKpYhRogx0nNVaa9MtS
+	x1ls05UAqlVm1E27fMrAprcuCGUf5ah1YxwDAQwKvUb7k3tT2ywSQXxgdUbS7WzPRmavnn
+	DFpujesRViUwsKr/ts+0wl35rr3O8QwWssXTwWjImAtTdNwnRQN0EiFUz11wNYr3tZgW58
+	t/3mrHNOtQY5+K4TkCKeLtIlJFMbgcRZWaetB9m/DUJiOLFgN0bXlVaQtZZKInep5p3TVG
+	6CdwMqvC6r2za3WsIciNoIHXP5plZ8m9oAxZKOJB3ckxV/8i1zSQ3rtNEk0oVw==
 From: =?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
 To: Neil Armstrong <neil.armstrong@linaro.org>,
 	Jessica Zhang <quic_jesszhan@quicinc.com>,
@@ -60,11 +62,15 @@ Cc: dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Yen-Mei Goh <yen-mei.goh@keysight.com>,
-	=?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
-Subject: [PATCH v3 0/3] panel-simple: add support for Crystal Clear CMT430B19N00
-Date: Wed, 13 Mar 2024 18:20:13 +0100
-Message-Id: <20240313172016.387277-1-jeremie.dautheribes@bootlin.com>
+	=?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v3 1/3] dt-bindings: Add Crystal Clear Technology vendor prefix
+Date: Wed, 13 Mar 2024 18:20:14 +0100
+Message-Id: <20240313172016.387277-2-jeremie.dautheribes@bootlin.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240313172016.387277-1-jeremie.dautheribes@bootlin.com>
+References: <20240313172016.387277-1-jeremie.dautheribes@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,40 +81,32 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: jeremie.dautheribes@bootlin.com
 
-Hello everyone,
+Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
+include "cct" as a vendor prefix for "Crystal Clear Technology". CCT is
+the vendor of the CMT430B19N00 TFT-LCD panel.
 
-This patch series add support for the Crystal Clear Technology
-CMT430B19N00 4.3" 480x272 TFT-LCD panel.
-It also adds Crystal Clear Technology to vendor-prefixes.yaml.
+Link: http://www.cct.com.my/
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Please note that unfortunately there is no public datasheet available
-for this panel.
-
-Changes in v3:
-  - PATCH 3/3: use display_timing structure instead of display_mode
-  structure as suggested by Maxime Ripard.
-  - Link to v2: https://lore.kernel.org/all/20240304160454.96977-1-jeremie.dautheribes@bootlin.com/
-
-Changes in v2:
-  - add link to the Crystal Clear Technology website in commit message, as
-  suggested by Conor Dooley and Neil Armstrong.
-  - Link to v1: https://lore.kernel.org/all/20240223134517.728568-1-jeremie.dautheribes@bootlin.com/
-
-Regards,
-
-Jérémie
-
-Jérémie Dautheribes (3):
-  dt-bindings: Add Crystal Clear Technology vendor prefix
-  dt-bindings: display: simple: add support for Crystal Clear
-    CMT430B19N00
-  drm/panel: simple: add CMT430B19N00 LCD panel support
-
- .../bindings/display/panel/panel-simple.yaml  |  2 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
- drivers/gpu/drm/panel/panel-simple.c          | 29 +++++++++++++++++++
- 3 files changed, 33 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index fef2e12b504e..96e47742e250 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -248,6 +248,8 @@ patternProperties:
+     description: Catalyst Semiconductor, Inc.
+   "^cavium,.*":
+     description: Cavium, Inc.
++  "^cct,.*":
++    description: Crystal Clear Technology Sdn. Bhd.
+   "^cdns,.*":
+     description: Cadence Design Systems Inc.
+   "^cdtech,.*":
 -- 
 2.34.1
+
 
