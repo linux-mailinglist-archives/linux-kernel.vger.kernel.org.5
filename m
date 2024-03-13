@@ -1,190 +1,210 @@
-Return-Path: <linux-kernel+bounces-102413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1BD387B1EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:33:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0FFC87B1BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:25:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EDFAB32685
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:24:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C6F11F2247F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:25:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C406C604B8;
-	Wed, 13 Mar 2024 19:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499D15788E;
+	Wed, 13 Mar 2024 19:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jKDQifyU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IkQLFkI1"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A2160EF3;
-	Wed, 13 Mar 2024 19:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F695677A;
+	Wed, 13 Mar 2024 19:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710357419; cv=none; b=G2SWrqTg+xNMc/ln/ZhuoUTbFJg/VFRv/VTItB9P5kUF+/PyF5wh/6zs8LI/I8i08yAplbLk2SueGflstgXIu5Y/BVjBLVbfyas/+mXyD+1fIE1NmmZl/M7/w9BPxzj+XhvoI+xTF/snepBrbCNsYQNeVBWwrfSy4xgvRfrQHB0=
+	t=1710357558; cv=none; b=RfULVWSPeIC2OWhtWxTWjYw3GVfJ6cI50sLdM+MZyRC/6xwqWLAEMbTu6LSyLdmljhsHERI5H7JIbj6Ye85c/h+HP2ddhgtGP9XQrqs8RFeu8s0IzkpUhMCoxukiNCxc6NZFBvYUSJrJ6f1gjJk3PbsU9zvh+iJ7X7nf80q6aHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710357419; c=relaxed/simple;
-	bh=XVu5bJH8nPuKS6s5/fX++LS0JurTPSr9pVBxYJqu/jo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=vAdbiRnusEQZy4mTejmexFJ+NxaK+eqEA8zTECO3C0pe5PuAzSYL8aXIYTxIdxFjG33/sBiitB5YvInov0naoFQIN41RZyVYg3C/DHvLa4ZPwlbkUgxH0OTUcZQNdKSYJZ3XIVtaxvRJOhP++/KEq7V3DXW3pKJlgddYq6qbRZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jKDQifyU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36909C433F1;
-	Wed, 13 Mar 2024 19:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710357418;
-	bh=XVu5bJH8nPuKS6s5/fX++LS0JurTPSr9pVBxYJqu/jo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=jKDQifyU0rvMEek2BTjl1rfmDHVhxbrZtxNt+R75OJbpwFngQosurN4NPqRe0ntre
-	 Ppg020gSZ7kp9o/qmRxK0UU7oU/ApwdgPCzUZVCpPpIItrpfaX1d2TojxiijfCjB96
-	 6olH/B/HSySQ+HMcm3t4//wY+N2CoAXpL+8GyyZ4DT8GkeLoAkjtclDTCxwlAh2FbS
-	 hZU+Z6ageWFTo9+3VTOTu0l+4vwMAlf5l/zPkpJ3AdDCSpgX9HapgcVhIEzQaXFA/N
-	 DM4f4HE99yWgsPdbKbxADncOypuYNjWzc544qiuZqw7EYGbhVP2TTo4uLYy7FhAskO
-	 RG7RYWYcpA3Rg==
-Date: Wed, 13 Mar 2024 14:16:56 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: Implement shutdown() callback to properly
- reset the endpoint devices
-Message-ID: <20240313191656.GA921158@bhelgaas>
+	s=arc-20240116; t=1710357558; c=relaxed/simple;
+	bh=U5Ctd0fHGAqPrMjfc2snlTP8ttHo2mRJD6/wag+K4jU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bX9HodTGGYAb54ZcNSggC47eiyRPmeaHbeQQf5xNbPI5S29Hx0PNXjyYh1E44vPGfCh0l0ItU2TrZI2aC+k9CYWJB3a72dFIsvyq1buMeJZ4nsxUx2f2XpQyc3N4SE08ByCLWFELzAhRcgA6MnuzY5O7dt20qGx9cCn2UnSgCRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IkQLFkI1; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42DGF66r015454;
+	Wed, 13 Mar 2024 19:18:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=KTKmv5ZSX3PW4T2dtjcDox5Wlq9+CL4HUpMzr1+x5ME=; b=Ik
+	QLFkI13R2Ict+AQcLYytUzb2Dmj1SzsySsl4TpRIsNquh24sQq9k4KBFYlbfxIeu
+	RG8a2Ci7HFyj2FrIfklrwgoMfhNJxfAu4M4i2CjudUFE8awp8ZXz6UX3GQ3qgB8n
+	mTExL7pw1k19UAuf6oMehPmOSJwi89+nLsJVkFjunzkiXNyrK6pkrh/cDUAoQ55V
+	GIVvGRwvae3Jk9Pm6xr38EBX8aRr7bY9p27F5kDQtAQZG6P+AsZmp6wqtdtvsSEl
+	viiMlkQi31sX1iR87/RBiiYU469moLZEPDHAFem8IhGaOOBWuQkeAk0nOOQi4iAr
+	chzATwRiRz1E5RGQslcg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wu81m1k70-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 19:18:51 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42DJIoLp008331
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 19:18:50 GMT
+Received: from [10.110.68.255] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Mar
+ 2024 12:18:49 -0700
+Message-ID: <d97f635f-053b-70a7-5ffe-a1ae273091d1@quicinc.com>
+Date: Wed, 13 Mar 2024 12:18:45 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240313150242.GA2656@thinkpad>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v18 20/41] ALSA: usb-audio: qcom: Introduce QC USB SND
+ offloading support
+Content-Language: en-US
+To: Albert Wang <albertccwang@google.com>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240228013619.29758-1-quic_wcheng@quicinc.com>
+ <20240228013619.29758-21-quic_wcheng@quicinc.com>
+ <CANqn-rjTgHgzssxZiuwvTKzOS31wzjS4Y9G-XacZN4a7c82MaA@mail.gmail.com>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <CANqn-rjTgHgzssxZiuwvTKzOS31wzjS4Y9G-XacZN4a7c82MaA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: c1ey3JD6Fr1K_B5-zrMxzjn4x6MkJIlO
+X-Proofpoint-GUID: c1ey3JD6Fr1K_B5-zrMxzjn4x6MkJIlO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-13_09,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ malwarescore=0 lowpriorityscore=0 clxscore=1011 phishscore=0
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403130148
 
-On Wed, Mar 13, 2024 at 08:32:42PM +0530, Manivannan Sadhasivam wrote:
-> On Wed, Mar 13, 2024 at 09:36:14AM -0500, Bjorn Helgaas wrote:
-> > On Wed, Mar 13, 2024 at 05:39:22PM +0530, Manivannan Sadhasivam wrote:
-> > > PCIe host controller drivers are supposed to properly reset the endpoint
-> > > devices during host shutdown/reboot.
+Hi Albert,
 
-Where does this requirement to reset endpoints during host shutdown
-come from?  My working assumption is that .shutdown() needs to stop
-DMA and interrupts, based on this old thread:
-https://lore.kernel.org/all/61f70fd6-52fd-da07-ce73-303f95132131@codeaurora.org/
-
-> > > Currently, Qcom driver doesn't do
-> > > anything during host shutdown/reboot, resulting in both PERST# and refclk
-> > > getting disabled at the same time. This prevents the endpoint device
-> > > firmware to properly reset the state machine. Because, if the refclk is
-> > > cutoff immediately along with PERST#, access to device specific registers
-> > > within the endpoint will result in a firmware crash.
-
-Does "PERST# getting disabled" mean PERST# is asserted or deasserted?
-
-> > > To address this issue, let's call qcom_pcie_host_deinit() inside the
-> > > shutdown callback, that asserts PERST# and then cuts off the refclk with a
-> > > delay of 1ms, thus allowing the endpoint device firmware to properly
-> > > cleanup the state machine.
-
-This *adds* the qcom_pcie_shutdown() callback, right?
-
-> > I guess this 1ms delay is the PERST_DELAY_US hidden inside
-> > qcom_ep_reset_assert()?  I assume the refclk disable is done by
-> > clk_bulk_disable_unprepare()?
+On 3/13/2024 1:03 AM, Albert Wang wrote:
+> +/**
+> + * qc_usb_audio_offload_suspend() - USB offload PM suspend handler
+> + * @intf: USB interface
+> + * @message: suspend type
+> + *
+> + * PM suspend handler to ensure that the USB offloading driver is able to stop
+> + * any pending traffic, so that the bus can be suspended.
+> + *
+> + */
+> +static void qc_usb_audio_offload_suspend(struct usb_interface *intf,
+> +                                               pm_message_t message)
+> +{
+> +       struct qmi_uaudio_stream_ind_msg_v01 disconnect_ind = {0};
+> +       struct snd_usb_audio *chip = usb_get_intfdata(intf);
+> +       struct uaudio_qmi_svc *svc = uaudio_svc;
+> +       struct uaudio_dev *dev;
+> +       int card_num;
+> +       int ret;
+> +
+> +       if (!chip)
+> +               return;
+> +
+> +       card_num = chip->card->number;
+> +       if (card_num >= SNDRV_CARDS)
+> +               return;
+> +
+> +
+> +       mutex_lock(&chip->mutex);
+> +       dev = &uadev[card_num];
+> +
+> +       if (atomic_read(&dev->in_use)) {
+> +               mutex_unlock(&chip->mutex);
+> +               dev_dbg(uaudio_qdev->data->dev, "sending qmi
+> indication suspend\n");
+> +               disconnect_ind.dev_event = USB_QMI_DEV_DISCONNECT_V01;
+> +               disconnect_ind.slot_id = dev->udev->slot_id;
+> +               disconnect_ind.controller_num = dev->usb_core_id;
+> +               disconnect_ind.controller_num_valid = 1;
+> +               ret = qmi_send_indication(svc->uaudio_svc_hdl, &svc->client_sq,
+> +                               QMI_UAUDIO_STREAM_IND_V01,
+> +                               QMI_UAUDIO_STREAM_IND_MSG_V01_MAX_MSG_LEN,
+> +                               qmi_uaudio_stream_ind_msg_v01_ei,
+> +                               &disconnect_ind);
+> +               if (ret < 0)
+> +                       dev_err(uaudio_qdev->data->dev,
+> +                               "qmi send failed with err: %d\n", ret);
+> +
+> +               ret = wait_event_interruptible_timeout(dev->disconnect_wq,
+> +                               !atomic_read(&dev->in_use),
+> +                               msecs_to_jiffies(DEV_RELEASE_WAIT_TIMEOUT));
+> +               if (!ret) {
+> +                       dev_err(uaudio_qdev->data->dev,
+> +                               "timeout while waiting for dev_release\n");
+> +                       atomic_set(&dev->in_use, 0);
+> +               } else if (ret < 0) {
+> +                       dev_err(uaudio_qdev->data->dev,
+> +                               "failed with ret %d\n", ret);
+> +                               atomic_set(&dev->in_use, 0);
+> +               }
+> +               mutex_lock(&chip->mutex);
+> +       }
+> +       mutex_unlock(&chip->mutex);
+> +}
+> +
 > 
-> Yes to both.
+> Hi Wesley,
 > 
-> >   #define PERST_DELAY_US 1000
-> > 
-> >   qcom_pcie_shutdown
-> >     qcom_pcie_host_deinit
-> >       qcom_ep_reset_assert
-> >         gpiod_set_value_cansleep(pcie->reset, 1);
-> >         usleep_range(PERST_DELAY_US, PERST_DELAY_US + 500);  <--
-> >       phy_power_off(pcie->phy)
-> >       pcie->cfg->ops->deinit()
-> >         qcom_pcie_deinit_...
-> >           clk_bulk_disable_unprepare                         <--
-> > 
-> > Is there a spec citation for this delay requirement?  If not, how do
-> > we know 1ms is enough for whatever the firmware needs to do?
-> 
-> Both PCIe base spec and Electromechanical spec only mentions Tperst,
-> which is the minimum time PERST# should remain asserted. But there
-> is no mention about the time, refclk should be active.
+> The suspend function `qc_usb_audio_offload_suspend()` looks to stop
+> the traffic on the bus, so that the bus can be suspended. That allows
+> the application processor(AP) to enter suspend. There is a subtle
+> difference with our feature, which is to allow AP suspend with the
+> Host and USB controller active to continue the audio offloading. We
+> call this feature `allow AP suspend in playback`. So, I have some
+> points to clarify with you:
 
-I see Tperst mentioned in PCIe r6.0, sec 6.6.1, but AFAICS the value
-is only defined in PCIe CEM (r5.0, sec 2.9.2), which says 100us, and
-maybe other form factor specs.
+Yes, I'm aware of that feature also.
 
-If PERST_DELAY_US is enforcing Tperst, why is it 1000us instead of
-100us?
+> 1. Will the suspend flow `usb_audio_suspend() -->
+> platform_ops->suspend_cb() --> qc_usb_audio_offload_suspend()` be
+> called when offloading is active?
 
-> So I used the existing delay post PERST# assert in the driver. I do
-> not know if that is enough for all the endpoints out in the wild,
-> but atleast satisfies the requirement of the endpoint I'm working on
-> (which is another Qcom SoC in EP mode).
-> 
-> We can change the delay if someone reports any issue with the
-> existing one.  Atleast, that's the best we could do in this
-> situation.
+It can be.  This is why in our case, we are going to issue the 
+disconnect event to the audio DSP to stop the session if it is currently 
+in one.
 
-I'm dubious about this.  If endpoints require a delay here to work
-properly, the spec should specify a minimum delay.  We can't make a
-reliable system based on "here's a guess and we'll update it if people
-report issues."  That makes me think this endpoint mode Qcom SoC
-dependency on a delay might itself be non spec-compliant.
+> 2. As my understanding, the suspend function is to allow AP suspend
+> when the offloading is IDLE, but it won't allow AP suspend when in
+> playback or capture. Please correct me if anything is wrong.
 
-> > Do other drivers require similar changes?
-> 
-> Most likely yes, but that also depends on when the drivers are
-> cutting off the refclk. Not all drivers are implementing the
-> shutdown callback, and even few of the ones implementing, do not
-> assert PERST# since it is optional.
+As mentioned above, it will let apps go into PM suspend after forcing 
+the audio stream to be idle.  We won't block PM suspend entry.
 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > >  drivers/pci/controller/dwc/pcie-qcom.c | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > index 2ce2a3bd932b..41434bc4761a 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > @@ -1618,6 +1618,13 @@ static int qcom_pcie_resume_noirq(struct device *dev)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static void qcom_pcie_shutdown(struct platform_device *pdev)
-> > > +{
-> > > +	struct qcom_pcie *pcie = platform_get_drvdata(pdev);
-> > > +
-> > > +	qcom_pcie_host_deinit(&pcie->pci->pp);
-> > > +}
-> > > +
-> > >  static const struct of_device_id qcom_pcie_match[] = {
-> > >  	{ .compatible = "qcom,pcie-apq8064", .data = &cfg_2_1_0 },
-> > >  	{ .compatible = "qcom,pcie-apq8084", .data = &cfg_1_0_0 },
-> > > @@ -1670,5 +1677,6 @@ static struct platform_driver qcom_pcie_driver = {
-> > >  		.pm = &qcom_pcie_pm_ops,
-> > >  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-> > >  	},
-> > > +	.shutdown = qcom_pcie_shutdown,
-> > >  };
-> > >  builtin_platform_driver(qcom_pcie_driver);
-> > > 
-> > > ---
-> > > base-commit: 51459eb30f88651d3688b9e95fed0f97767ececb
-> > > change-id: 20240313-pci-qcom-shutdown-d86298186560
-> > > 
-> > > Best regards,
-> > > -- 
-> > > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+> 3. We would like to integrate the `allow AP suspend in playback`
+> feature with your framework to become one upstream offload solution.
+> Here is the patch:
+> https://patchwork.kernel.org/project/linux-pm/patch/20240223143833.1509961-1-guanyulin@google.com/
+> .
+
+Yes, I saw that patch as well.  I'll take a look once this series lands 
+upstream.
+
+Thanks
+Wesley Cheng
 
