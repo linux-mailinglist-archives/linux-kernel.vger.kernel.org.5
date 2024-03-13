@@ -1,198 +1,234 @@
-Return-Path: <linux-kernel+bounces-101184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91A987A3C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:56:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5EDC87A3C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:58:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EACA21C214B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:56:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CE6E2833B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BA517552;
-	Wed, 13 Mar 2024 07:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C127817566;
+	Wed, 13 Mar 2024 07:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hr36eVei"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YcgoJy59"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8573710A11;
-	Wed, 13 Mar 2024 07:56:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F1F168CD
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710316565; cv=none; b=T8Dx7LgfiU39s0QosfbrHzwlQeW3+VHIQGshT9BOkZbXHsbfrVXALeEleD3ariswjnQnIw24/ufcimiD+TMm1CnhbOT/te772A/a99K39x9CKupTmWGk0oEL7BBcu3ibTI6Rd5aLtAiP6yTTYf6g8G1m9MtluI5PHGbrlaI3xs4=
+	t=1710316685; cv=none; b=Z6Nm0YEuWZ1/+CXMClgnKb/sR9MFkAdnEG9FoajinSRlZ6ZVeBVgKUtfbGsBFl0c2kKQKJBlDNakJ/O5d8FJFmR/7ULYzqnfJk3MpTXog9a5rprdS580WGaVlPEiwnj6OJcGUSIq2h2De5U7rQVPYa9XuNFvAbD/kHHxOtVg0/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710316565; c=relaxed/simple;
-	bh=dhVJDW8Qrm+wYLkmkfOSA2Xkk7LDzKs59l51l7avfp8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=t+EpRzZcyHj/1m/BX8Vnh1fI8JTygmIRsP9I/wbbfoEgijM2+JL4KSmIDYOmH+D2aw7i3xagWGv4KMCJvBZ8EoJRuGJW9D7aP+H4O7H4YX3Ds+qRC9pb3IkMcyLrRJ2GquEkJU6rjpa10HyvbPR1iLO9sT1DwdsJMkTxXXTpGmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hr36eVei; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42D6vvGE015895;
-	Wed, 13 Mar 2024 07:55:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=/o5Xh5ectBhVkTIwKBNcUl1dyYPGYXuvz1gsgQ2Mby4=; b=hr
-	36eVeiw1OtPSBOMdN4G18xV5C0kpQfj6VVsg15qKsOkWBvXPcXDNfL6HLOzYw+wc
-	J7NGM7O1VHTKzXYqXOgZ8hdJ7rNVLJhP6lKVt8ecAGY7ZCdV/wv/rUjBAESGI5wd
-	TIjNGFFszAos6wvg0yY1AR4Hmnk4yQG0MCKGd599kDjjpQKnbyhDGecZJ5Mz8GK6
-	Co3q3hnLfwkalwwFHFlEskwNcmwrr0wu6t00s75qqSRtcAFrwG/G0OcdGGKzMzR3
-	yafa7SPD1pMLKoKy+92bKYBWp6+rRuf3RU4sYy0giQK3o9RDZbrKbWSsNIHFm9b0
-	GIi+44WWXEDIy1PSUlCA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wu3jn0gf7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 07:55:47 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42D7tkZZ014179
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 07:55:46 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Mar
- 2024 00:55:41 -0700
-Message-ID: <f515f9f4-b87c-465b-83c0-f4b7b5c47840@quicinc.com>
-Date: Wed, 13 Mar 2024 15:55:38 +0800
+	s=arc-20240116; t=1710316685; c=relaxed/simple;
+	bh=zpVj8pyqyOguX/knzqVNsnnWNu90us2LsZ/oEuAvwBg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FaTFnNICQPKhvrMO/zNTdekZmOwwGV+uEhkTYe7aqpTTFKWjMkXOqPPrzm7tBQqx+UqiegshtgABszQz/8RROMYpf85J57+5XqbKTTqkIHZ7DTHE77Dx+uOkyWP1z3UOt0Klz+wGo7gRagH/R02VY1vLd+CmBNvwYDVKYNGUWGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YcgoJy59; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512fab8cc6aso1500e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710316682; x=1710921482; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gyI5FAXtWQkxERpfKZsZMwqi1GPHG/mW7Kqn81tTW6o=;
+        b=YcgoJy59n2KQW8h6GITHM2DSmhuewo9aDxstnrqfpRc9Vypz6unfJb/ppzk6hUpPBY
+         1w7EsxhMGA079Sa3aDAygJVBPrZ2t3HYoAgdVE00Ut2XxPTzSk7pG0sF5/O6xM8zSUnC
+         ucVOpfp0hp2FolJ237gebWWRxvTYnwXKZcLjZ4z0fujczYVFM+cKSd7BJR++onDYLIx6
+         qhHALhrhxMnoXP+VghRCeosWjAEEXCsSVyT6fJYAbgVBmi3OietC7O4pPKGkg7t+epWh
+         /XANH9lKXur3WJ3a1HzuS02uCEydmHSjQi3VDcSuWOQGsMu2p1S1ChdPACY/c6j/SDgH
+         Msuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710316682; x=1710921482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gyI5FAXtWQkxERpfKZsZMwqi1GPHG/mW7Kqn81tTW6o=;
+        b=U6gkswx9yNdQ7atZjCewOa9EGA/s/nLMSA3ETRfb4jgfFZUNbjHn6gEafx4npdiToC
+         iTKDqLhI1TXSIqUaxiT6LflrLuevy8Y56arA4gBCeZqML1hFxGeppcODvYadXW0Y86O/
+         6gW+i88U0YxxyKhdalYcc/zBbb5/T6OEHJ5OvX4O2lG4HhtYwQ3UuYIcr6qqZTG2fUPs
+         vl0AEkUhUiHsJM3wNIvLUhxcmkkc4/DPjRAW59MvfJq4bm3QJO4L/Plm+oDzTKXmIE3Y
+         DqINpWdcycG4V8NCeVlLottHuJ2u2JCrfvH99whdIm1WMhtIQe0HnliF1ZAGNh/fW+ob
+         9DOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUcIven5pRSgsq4kbtoV2hLXUEX5Eky0o2qTfZPVxZZHojhC65HH2bWWCS9OVk5t4+6KeVclcTZl2ZIpwt0mpb3XPjiDE7mBPGVUGn7
+X-Gm-Message-State: AOJu0Yx5wV2dImlVMNaF2XE/dYypFC8eD2SdP3378xEvdMrr+FgDBgnH
+	WRsJynodzpL68EYTzgJKDKfJEKxNbiTxrtLI38ZDu2aWzew/B1dvgV2efQ4w0CHy+HCdKnJN5ov
+	t++WIVm6SjYdX365ZuTZ3QXYfyuzy690hX1Fh
+X-Google-Smtp-Source: AGHT+IHM0WdL9YTTo7yhCq8E0OaBp5S7ioOj3YHzWu4iyKfgo1WVJSL5Maf+Diz0yFmQk1tLUHXQcq6N89vCkqPghoY=
+X-Received: by 2002:a19:3803:0:b0:513:574a:c043 with SMTP id
+ f3-20020a193803000000b00513574ac043mr76704lfa.6.1710316681848; Wed, 13 Mar
+ 2024 00:58:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: update compatible name
- for match with driver
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linus.walleij@linaro.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <dmitry.baryshkov@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240312025807.26075-1-quic_tengfan@quicinc.com>
- <20240312025807.26075-2-quic_tengfan@quicinc.com>
- <0d768f17-22d9-448e-9253-8498b61bf71e@linaro.org>
- <31b02b76-88ff-42d7-a665-18d2661e028c@quicinc.com>
- <6a3b5c9d-6375-457f-83c9-269746c1612a@linaro.org>
- <ef237b3c-8613-4cd8-9391-e4a08d50cc6c@quicinc.com>
- <60a0e51f-dc0e-4bbf-8127-f987ac2aae71@linaro.org>
-From: Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <60a0e51f-dc0e-4bbf-8127-f987ac2aae71@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: PLqYrTjrwVbBk5_3lOQx60xH3Cu4P-w8
-X-Proofpoint-GUID: PLqYrTjrwVbBk5_3lOQx60xH3Cu4P-w8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_07,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 spamscore=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403130057
+References: <20240313063306.32571-1-gakula@marvell.com>
+In-Reply-To: <20240313063306.32571-1-gakula@marvell.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 13 Mar 2024 08:57:50 +0100
+Message-ID: <CANn89i++jodT8mzqY82LuxL2WXA4DF6XD5nCmHcsAyKe22Jxbw@mail.gmail.com>
+Subject: Re: [v2 net PATCH] octeontx2-pf: Disable HW TSO for seg size < 16B
+To: Geetha sowjanya <gakula@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org, 
+	davem@davemloft.net, pabeni@redhat.com, sgoutham@marvell.com, 
+	sbhatta@marvell.com, hkelam@marvell.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Mar 13, 2024 at 7:33=E2=80=AFAM Geetha sowjanya <gakula@marvell.com=
+> wrote:
+>
+> Current NIX hardware do not support TSO for the
+> segment size less 16 bytes. This patch disable hw
+> TSO for such packets.
+>
+> Fixes: 86d7476078b8 ("octeontx2-pf: TCP segmentation offload support").
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> ---
+>
+> v1-v2:
+>  - As suggested by Eric Dumazet used ndo_features_check().
+>  - Moved the max fargments support check to ndo_features_check.
+>
+>  .../marvell/octeontx2/nic/otx2_common.c        | 18 ++++++++++++++++++
+>  .../marvell/octeontx2/nic/otx2_common.h        |  3 +++
+>  .../ethernet/marvell/octeontx2/nic/otx2_pf.c   |  1 +
+>  .../ethernet/marvell/octeontx2/nic/otx2_txrx.c | 11 -----------
+>  .../ethernet/marvell/octeontx2/nic/otx2_vf.c   |  1 +
+>  5 files changed, 23 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/d=
+rivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> index 02d0b707aea5..de61c69370be 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> @@ -221,6 +221,24 @@ int otx2_set_mac_address(struct net_device *netdev, =
+void *p)
+>  }
+>  EXPORT_SYMBOL(otx2_set_mac_address);
+>
+> +netdev_features_t
+> +otx2_features_check(struct sk_buff *skb, struct net_device *dev,
+> +                   netdev_features_t features)
+> +{
+> +       /* Due to hw issue segment size less than 16 bytes
+> +        * are not supported. Hence do not offload such TSO
+> +        * segments.
+> +        */
+> +       if (skb_is_gso(skb) && skb_shinfo(skb)->gso_size < 16)
+> +               features &=3D ~NETIF_F_GSO_MASK;
+> +
+> +       if (skb_shinfo(skb)->nr_frags + 1 > OTX2_MAX_FRAGS_IN_SQE)
+> +               features &=3D ~NETIF_F_SG;
+> +
+
+This is a bit extreme. I would attempt to remove NETIF_F_GSO_MASK instead.
+
+if (skb_is_gso(skb)) {
+     if (skb_shinfo(skb)->gso_size < 16 ||
+         skb_shinfo(skb)->nr_frags + 1 > OTX2_MAX_FRAGS_IN_SQE))
+           features &=3D ~NETIF_F_GSO_MASK;
+}
+
+This would very often end up with 1-MSS packets with fewer fragments.
+
+-> No copy involved, and no high order page allocations.
+
+> +       return features;
+> +}
+> +EXPORT_SYMBOL(otx2_features_check);
+> +
+>  int otx2_hw_set_mtu(struct otx2_nic *pfvf, int mtu)
+>  {
+>         struct nix_frs_cfg *req;
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/d=
+rivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> index 06910307085e..6a4bf43bc77e 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> @@ -961,6 +961,9 @@ void otx2_get_mac_from_af(struct net_device *netdev);
+>  void otx2_config_irq_coalescing(struct otx2_nic *pfvf, int qidx);
+>  int otx2_config_pause_frm(struct otx2_nic *pfvf);
+>  void otx2_setup_segmentation(struct otx2_nic *pfvf);
+> +netdev_features_t otx2_features_check(struct sk_buff *skb,
+> +                                     struct net_device *dev,
+> +                                     netdev_features_t features);
+>
+>  /* RVU block related APIs */
+>  int otx2_attach_npa_nix(struct otx2_nic *pfvf);
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drive=
+rs/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> index e5fe67e73865..2364eb8d6732 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> @@ -2737,6 +2737,7 @@ static const struct net_device_ops otx2_netdev_ops =
+=3D {
+>         .ndo_xdp_xmit           =3D otx2_xdp_xmit,
+>         .ndo_setup_tc           =3D otx2_setup_tc,
+>         .ndo_set_vf_trust       =3D otx2_ndo_set_vf_trust,
+> +       .ndo_features_check     =3D otx2_features_check,
+>  };
+>
+>  static int otx2_wq_init(struct otx2_nic *pf)
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/dri=
+vers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> index f828d32737af..9b89aff42eb0 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> @@ -1158,17 +1158,6 @@ bool otx2_sq_append_skb(struct net_device *netdev,=
+ struct otx2_snd_queue *sq,
+>
+>         num_segs =3D skb_shinfo(skb)->nr_frags + 1;
+>
+> -       /* If SKB doesn't fit in a single SQE, linearize it.
+> -        * TODO: Consider adding JUMP descriptor instead.
+> -        */
+> -       if (unlikely(num_segs > OTX2_MAX_FRAGS_IN_SQE)) {
+> -               if (__skb_linearize(skb)) {
+> -                       dev_kfree_skb_any(skb);
+> -                       return true;
+> -               }
+> -               num_segs =3D skb_shinfo(skb)->nr_frags + 1;
+> -       }
+
+Then you need to keep this check for  non GSO packets.
+
+One way to trigger this is to run netperf with tiny fragments.
+TCP is unable to cook GSO packets, because we hit MAX_SKB_FRAGS before
+even filling a single MSS.
+
+netperf -H $remote -t TCP_SENDFILE -- -m 10
 
 
 
-On 3/13/2024 3:23 PM, Krzysztof Kozlowski wrote:
-> On 13/03/2024 02:30, Tengfei Fan wrote:
->>
->>
->> On 3/12/2024 6:55 PM, Krzysztof Kozlowski wrote:
->>> On 12/03/2024 08:47, Tengfei Fan wrote:
->>>>
->>>>
->>>> On 3/12/2024 3:41 PM, Krzysztof Kozlowski wrote:
->>>>> On 12/03/2024 03:58, Tengfei Fan wrote:
->>>>>> Use compatible name "qcom,sm4450-tlmm" instead of "qcom,sm4450-pinctrl"
->>>>>> to match the compatible name in sm4450 pinctrl driver.
->>>>>>
->>>>>> Fixes: 7bf8b78f86db ("dt-bindings: pinctrl: qcom: Add SM4450 pinctrl")
->>>>>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>>>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>>>> ---
->>>>>>     Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml | 2 +-
->>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> Wasn't this applied?
->>>>
->>>> My test code base on tag: next-20240308, this patch is still not applied.
->>>>
->>>> In fact, the following dt binding check warning only can be got before
->>>> this patch is applied.
->>>>
->>>
->>> Please read all emails in the previous thread. You ignored two emails in
->>> the past and apparently one more recent.
->>
->> I don't know if you mean I ignored the email which related with "Patch
->> applied" tag from Linus Walleij. If so, the following is the reasion why
->> I still include this patch:
-> 
-> Yep, that's the one. Please do not send patches which were already
-> applied. It causes unnecessary effort on reviewer and maintainer side.
-> 
->>
->> I synced the latest upstream code on 03/12/2024, the latest tag is
->> next-20240308, this tag still doesn't include this patch[PATCH v3 1/2].
-> 
-> Happens, considering Linus applied it after 8th of March, I think.
-> 
->>
->> Dt binding check still get warning if I only send [PATCH v3 2/2] patch
->> to upstream base on next-20240308. so I include this patch[PATCH v3 1/2]
-> 
-> If you send patch 1+2, dt_binding_check will have exactly the same
-> result. I don't know about what sort of dt binding check you talk, but
-> for all cases: you changed nothing by sending these two patches in that
-> regard. Only noise on the lists.
-
-The dt binding check failed which Rob Herring remind me in previous 
-patch series as the following:
-
-Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.example.dtb:
-/example-0/pinctrl@f100000: failed to match any schema with
-compatible: ['qcom,sm4450-tlmm']
-
-This failed is introduced by 
-https://lore.kernel.org/linux-arm-msm/20231206020840.33228-2-quic_tengfan@quicinc.com/. 
-Something got broken aroud -m flags for dtschema, so indeed no reports 
-this unmatched compatibles warning when this patch was revriwed. We also 
-have some discusstion in patch email.
-
-The patch[PATCH v3 1/2] is made for fix this previous patch dt binding 
-check failed. So dt binding check failed will disappear after this 
-patch[PATCH v3 1/2] is applied.
-
-> 
->> in patch series even if this patch have "Patch applied" tag.
->>
->> Looking forward to getting your advice if submitting patch series this
->> way is problematic.
-> 
-> Do not send patches which are known to be applied.
-
-Yes, I will be careful not to resend the patch which have already been 
-applied in the future work.
-
-Do you think it is necessary to send another version patch series for 
-remove this applied patch[PATCH v3 1/2] from patch series?
-
-> 
-> Best regards,
-> Krzysztof
-> 
-
--- 
-Thx and BRs,
-Tengfei Fan
+> -
+>         if (skb_shinfo(skb)->gso_size && !is_hw_tso_supported(pfvf, skb))=
+ {
+>                 /* Insert vlan tag before giving pkt to tso */
+>                 if (skb_vlan_tag_present(skb))
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c b/drive=
+rs/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+> index 35e06048356f..04aab04e4ba2 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+> @@ -483,6 +483,7 @@ static const struct net_device_ops otx2vf_netdev_ops =
+=3D {
+>         .ndo_tx_timeout =3D otx2_tx_timeout,
+>         .ndo_eth_ioctl  =3D otx2_ioctl,
+>         .ndo_setup_tc =3D otx2_setup_tc,
+> +       .ndo_features_check     =3D otx2_features_check,
+>  };
+>
+>  static int otx2_wq_init(struct otx2_nic *vf)
+> --
+> 2.25.1
+>
 
