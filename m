@@ -1,145 +1,141 @@
-Return-Path: <linux-kernel+bounces-101340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0019687A5C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11A6487A5C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:24:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA7B2282674
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:23:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6B1A282A24
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D4F3BB32;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACC13BBF0;
 	Wed, 13 Mar 2024 10:23:28 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6812E3A1D7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A616A3A292
 	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710325408; cv=none; b=ns5D0mIdU5wRz9StaE/BXKQFmndpffPgNXZbRwWe4XWD3rrTDLnxFLjG9Q3yOV37t8lI3poibUjc8zbVLqx7MmbZC5WSeM/b4PX9P1XgjpYnm7b10BWnQbkbVdp1orP2o4CUmBUMim7qW/Ka1B6U0XP93bhGzfTbJSxD+4ZQkz8=
+	t=1710325408; cv=none; b=qts2tHTh1K6K24PPZmWyyJWU7JXwDmvJuHnDTJ5WvMDHxcZzt/Hy+S59ffioA/WppSiXxmOm3xuU+ghKnV06+V93JOsH9I9aWiJ5Ji7CjHQvis+XN3AtiLQR+n5TrtxXqp42xallqZvoVVUa3tk9w8tUTgz3+Foa/RPuh4brw5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710325408; c=relaxed/simple;
-	bh=4g6NpqxDKIAZqsfqcAVAFTYyZKeZMCms/fJDiM1DmMI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=MvsOnsd/Kb6QD0vr6p40azLAH7FFgIxnu6eHfWiZDrukcP3hDMgSCVpIcx0Hm2VxsrVxbZ4+2ydfqwt3VHHubBAq4aseAboA+3Du6HwYUeUvPsyldm7sFwZH96AJ1WbnxO5ijM/Xp9tBqPQKyl4qsqieY+FQZtPVbsTn+EQxPaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+	bh=gxNUi5JOhIBKz4JZ7h0Xc0lDv+cP7TG6n/WSHrDEO20=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uY1MrEF4RpC4SmgUM5MUAJMKBGmzFJ+vBtaNnvkOgbPVafDecl+DQkGWsHoAuwppgL367YdGw42yXBKS9Gudbz4doWtM3HmONRwLoxhRJvkL/UWvZD1/f1j8mi/Hts0Oo+xi4QtjVzoFdo28r/s79BBTStAQGDVwQD+t1lG6sBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c8b8a6f712so259611139f.1
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3665283d42cso10735175ab.2
         for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 03:23:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710325405; x=1710930205;
+        d=1e100.net; s=20230601; t=1710325406; x=1710930206;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NqUoFNSt8pQJe9OWJRSDP1Xac3QMIinGs6zqSmaMmpY=;
-        b=giiB5Vs4JNwkGJ+qfeANgqjbqoPjnrqLspCQhQd99ytQUOcqL26AWbAcFNH0vDILxR
-         fv8ozr5+BCy5ZR+5Ys8DNsM4g8OjK2BjrBw0ooiAwBVttlRSOO0/ywZyMUAJlIIOyCGI
-         VceMD7iW7JgecqZk52xYp87okyuqiveUSlCVby07I3Oq5ADGEmrhNeBA+x4B+LcxXF6w
-         y3Cw3h5EsPk4egepbDvda6c34j/01u1dJ4MypxcI9g6EfBF34Z+yjB5WFJJJNR1mka7d
-         ux9SeQ2PkeGOuM2wOHJJufgbPy3DrM75JJI4hYJCCIat8npaq0p+wh5fDp7GPMMnFHBu
-         EGqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVceY2E1ApDf00NEU3kM4QKLTx9RB9wO6jleTPLw7RzQNyXMNl20Qwi0zsWSTgNXljPci5SQj2dzumDnxRCnQR21/h3IrL1QYIH97Cz
-X-Gm-Message-State: AOJu0YySy/hzOI5loV1HG2Lmmj9w1PBSsYdzDxnLTyUpKVyymwXOzus6
-	w4Svn+xv/KDTcbOIAaggqq//tjbqv7ISiega4/FGewKVunIHWsn5LJjiKmMtvD6os0Q2aOK2DHI
-	8dPXEYqNNz+ElqoSJdC6VinVeJFEkgkLOPQQwZEwhqC4y3Aa71rpC1BA=
-X-Google-Smtp-Source: AGHT+IHypsCtXS9sd05e21LhuQFA8yALlR1TfQAfomfMr52JZ66PVFgcQNvvL/2Mh62IK4l37baIyRWF4vBbqH1RJSVWQigzQ8zX
+        bh=5ZLwqqlJE+5HGJf4mXsjYm3BkGH4mIvyOCTpLxs/VCg=;
+        b=jNjb0TZRHem1xHN6BhvFWVkiqY/C6n32Sy3NIyYgiB6twRwpAZdEbpw7E45O3LYsJC
+         FhQ2URplG8B40ooahqNdR4oJjjznkndIQxAa6xihHyQeP1xeE8sqnkB/dZc8UpzC533R
+         O/ZRTw/FTdLvy2ZYtwN1dVI5d0+3FJ3nPoAgVxfXJOPMVSnFnkDyYKWewQEnbFH0eoAD
+         aWoY5wyU9sn7d0zf0QpEZUWmciyfSW8qWKzA+3uwcVBVfq19Bt2eXOS4kMMu1imm1ZkP
+         b2iWYSkOMpLt8oPKa2HJW/1oSuztKLbNa9VVOF8DSwu9/tuGPJa18++u9wyyRyWtdsiT
+         2Lhg==
+X-Forwarded-Encrypted: i=1; AJvYcCWfueeFE6XNHyX8sjo9EXfU6r4fzXlpjcm/ShmO7KWgykQYIvNMhd48aVNQ31wuqZH1GsdCUlnBPDwFNllIlwQLCjackuGm1JEVWgEr
+X-Gm-Message-State: AOJu0YyuEdKYLkI/K7c7OlKJ+O1n8y2gnfyutcBZGBVIl8PdWmQXc0t3
+	g8O/SA0jLdwmdEnhuF7nhxj7EoyC6eW3fH5z4NxkyFbdm16H/VJeaVl7zgdteBhWaLJ1464eUjY
+	4xChsuH3WBDqUBewBhcBCGexQf/l/gVZf6OD7EpSS41DHQHbqALLzFoI=
+X-Google-Smtp-Source: AGHT+IH0VEwwmBny+J6rfV/6R0AANdqIP4Jrq6CA23rSQWZ0qT4XcllMQySk1L+aa9dIvUBT/++8YwwYn0lo/rYqKOXLt5RRZohw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2b09:b0:474:e82a:7cec with SMTP id
- fm9-20020a0566382b0900b00474e82a7cecmr542093jab.1.1710325405487; Wed, 13 Mar
+X-Received: by 2002:a05:6e02:12c1:b0:366:4cdc:7053 with SMTP id
+ i1-20020a056e0212c100b003664cdc7053mr160152ilm.4.1710325405824; Wed, 13 Mar
  2024 03:23:25 -0700 (PDT)
 Date: Wed, 13 Mar 2024 03:23:25 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003ea6ba0613882a96@google.com>
-Subject: [syzbot] [fs?] WARNING in stashed_dentry_prune
-From: syzbot <syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com>
-To: brauner@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
+Message-ID: <00000000000043c5e70613882ad1@google.com>
+Subject: [syzbot] [overlayfs?] WARNING in ovl_copy_up_file
+From: syzbot <syzbot+3abd99031b42acf367ef@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    0f1a876682f0 Merge tag 'vfs-6.9.uuid' of git://git.kernel...
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1541d101180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f0300fe4d5cae610
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b5ec5ccf7234cc6cb86
+HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1785a859180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
+dashboard link: https://syzkaller.appspot.com/bug?extid=3abd99031b42acf367ef
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1484d70a180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b38d1180000
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1115ada6180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1626870a180000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9de3cd01214c/disk-0f1a8766.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/af661293680e/vmlinux-0f1a8766.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a439df6ad20e/bzImage-0f1a8766.xz
-
-The issue was bisected to:
-
-commit 2558e3b23112adb82a558bab616890a790a38bc6
-Author: Christian Brauner <brauner@kernel.org>
-Date:   Wed Feb 21 08:59:51 2024 +0000
-
-    libfs: add stashed_dentry_prune()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=108e578e180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=128e578e180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=148e578e180000
+disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com
-Fixes: 2558e3b23112 ("libfs: add stashed_dentry_prune()")
+Reported-by: syzbot+3abd99031b42acf367ef@syzkaller.appspotmail.com
 
-WARNING: CPU: 0 PID: 5112 at fs/libfs.c:2117 stashed_dentry_prune+0x97/0xa0 fs/libfs.c:2117
+evm: overlay not supported
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6187 at fs/overlayfs/copy_up.c:239 ovl_copy_up_file+0x624/0x674 fs/overlayfs/copy_up.c:330
 Modules linked in:
-CPU: 0 PID: 5112 Comm: syz-executor244 Not tainted 6.8.0-syzkaller-00295-g0f1a876682f0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-RIP: 0010:stashed_dentry_prune+0x97/0xa0 fs/libfs.c:2117
-Code: 00 00 e8 3c cc e2 ff 31 c9 4c 89 f0 f0 49 0f b1 0f eb 05 e8 cb ac 80 ff 5b 41 5c 41 5e 41 5f c3 cc cc cc cc e8 ba ac 80 ff 90 <0f> 0b 90 eb e9 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc90003a97b88 EFLAGS: 00010293
-
-RAX: ffffffff8212ba76 RBX: ffff88807e1bbe58 RCX: ffff8880786a0000
-RDX: 0000000000000000 RSI: 0000000000000010 RDI: ffff88807e1bbd60
-RBP: 0000000000000001 R08: ffffffff820ce514 R09: 1ffff1100fc377bf
-R10: dffffc0000000000 R11: ffffffff8212b9e0 R12: dffffc0000000000
-R13: dffffc0000000000 R14: ffff88807e1bbd60 R15: 0000000000000000
-FS:  00007fbd2c2fc6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbd2c2dbd58 CR3: 0000000075822000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __dentry_kill+0xa9/0x630 fs/dcache.c:594
- dput+0x19f/0x2b0 fs/dcache.c:845
- prepare_anon_dentry fs/libfs.c:2018 [inline]
- path_from_stashed+0x695/0xb00 fs/libfs.c:2094
- pidfs_alloc_file+0x136/0x210 fs/pidfs.c:248
- __pidfd_prepare kernel/fork.c:2027 [inline]
- pidfd_prepare+0x7c/0x130 kernel/fork.c:2075
- pidfd_create kernel/pid.c:614 [inline]
- __do_sys_pidfd_open kernel/pid.c:650 [inline]
- __se_sys_pidfd_open+0xe4/0x280 kernel/pid.c:635
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7fbd2c35c7d9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbd2c2fc208 EFLAGS: 00000246 ORIG_RAX: 00000000000001b2
-RAX: ffffffffffffffda RBX: 00007fbd2c3e63d8 RCX: 00007fbd2c35c7d9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000013f0
-RBP: 00007fbd2c3e63d0 R08: 00007fbd2c2fbfa7 R09: 0000000000000032
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fbd2c3b317c
-R13: 00007fbd2c2fc210 R14: 0000000000000001 R15: 00007fbd2c3b301d
- </TASK>
+CPU: 0 PID: 6187 Comm: syz-executor136 Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : ovl_copy_up_file+0x624/0x674 fs/overlayfs/copy_up.c:330
+lr : ovl_verify_area fs/overlayfs/copy_up.c:239 [inline]
+lr : ovl_copy_up_file+0x620/0x674 fs/overlayfs/copy_up.c:330
+sp : ffff800097997180
+x29: ffff800097997280 x28: 00000000fffffffb x27: ffff700012f32e3c
+x26: 0000000000800000 x25: 0000000000800000 x24: ffff800097997240
+x23: ffff800097997220 x22: ffffffffffa64000 x21: ffffffffffa64000
+x20: ffff0000d9fc1900 x19: dfff800000000000 x18: 1ffff00012f32dee
+x17: ffff80008ec9d000 x16: ffff80008ad6b1c0 x15: 0000000000000001
+x14: 1fffe0001b9177f2 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000001 x10: 0000000000ff0100 x9 : 0000000000000000
+x8 : ffff0000d7568000 x7 : ffff80008108d924 x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff80008031a200
+x2 : 00000ffffffff000 x1 : ffffffffffa64000 x0 : ffffffffffffffff
+Call trace:
+ ovl_copy_up_file+0x624/0x674 fs/overlayfs/copy_up.c:330
+ ovl_copy_up_tmpfile fs/overlayfs/copy_up.c:863 [inline]
+ ovl_do_copy_up fs/overlayfs/copy_up.c:976 [inline]
+ ovl_copy_up_one fs/overlayfs/copy_up.c:1168 [inline]
+ ovl_copy_up_flags+0x16d0/0x3694 fs/overlayfs/copy_up.c:1223
+ ovl_copy_up+0x24/0x34 fs/overlayfs/copy_up.c:1263
+ ovl_setattr+0xfc/0x4e4 fs/overlayfs/inode.c:41
+ notify_change+0x9d4/0xc8c fs/attr.c:499
+ chmod_common+0x23c/0x418 fs/open.c:648
+ do_fchmodat fs/open.c:696 [inline]
+ __do_sys_fchmodat fs/open.c:715 [inline]
+ __se_sys_fchmodat fs/open.c:712 [inline]
+ __arm64_sys_fchmodat+0x118/0x1dc fs/open.c:712
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+irq event stamp: 862
+hardirqs last  enabled at (861): [<ffff8000831abcb4>] percpu_counter_add_batch+0x210/0x30c lib/percpu_counter.c:102
+hardirqs last disabled at (862): [<ffff80008ad66988>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
+softirqs last  enabled at (62): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
+softirqs last  enabled at (62): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
+softirqs last disabled at (53): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
+---[ end trace 0000000000000000 ]---
 
 
 ---
@@ -149,7 +145,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
