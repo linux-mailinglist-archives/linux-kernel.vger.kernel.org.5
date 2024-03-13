@@ -1,109 +1,146 @@
-Return-Path: <linux-kernel+bounces-102420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F33D587B1C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:27:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ED6287B1CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:27:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD9B028D30B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 150C128D5C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936CC5A4CB;
-	Wed, 13 Mar 2024 19:23:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978BB52F87;
+	Wed, 13 Mar 2024 19:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fpi7eKRK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="VWLT+q7y"
+Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11023018.outbound.protection.outlook.com [52.101.56.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DB733996
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710357803; cv=none; b=a/dJOC/9ccnZ4M+CJBmyf5v+8CWAMIWIVDT7dx+Z+JKkoc6MZn5I7TRnXyBHjl5IufL45xiQTmCDsdzG+diP8Yeps4xywCR6sCaE6MTzW5W7r1qWDWA3WYxTXgZionDI8byjBFfWGXTyCmd8FpZazLFAda7oAP3IWNid6re9OU0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710357803; c=relaxed/simple;
-	bh=rh5oG6orM3fTGSHdWpi42vJeHhKgSthJIn2wdziMOis=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qECmJSZC4Ai9e1IMeGckHRjMnyCHAaL8Keb3h6WsHWbT78NC22wpGXG77I1hrhutApv9DVci+L7Y/PNsd8cYNjjfJEj2/MrTIrDlhvn5+IIoeDcZMlo1aeRWyLrpEkoo9ZVlzKc5TTlWJf15ZQpLnnLTZQNu2euMOUCPnrTAA6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fpi7eKRK; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710357802; x=1741893802;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rh5oG6orM3fTGSHdWpi42vJeHhKgSthJIn2wdziMOis=;
-  b=fpi7eKRKgdqiY/MSjuDKiXRmXi+RvN4/SR6taXJMtxd6wwjSI3gqpC+R
-   daLiJfTnNqaGj5Lx6NSYB13rs/dA3wS29oluhK10b3UN8amxRpf76eeAV
-   Ddi7nn5S+U1O1tEfOhTqtkawAkdrj5tZ1/bPNmhZ3wSLJoKFuiuNtyNQ9
-   UP1s13Wtnj6NpFhl5ufP/TBXWkULdgvFa1VsJr3MjLxr+0BAKQW/W2dgV
-   rXMWlcyNAUtrzN/H4LBKq/NNJ4iHp/FqfUFYlizDWed0X01HubOEFC03h
-   50Q5Gydb5InavV4mMcYiBSPSfcbOPnvgrQT1a26ZyXJN5KB16M3fgXdNi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="15875886"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="15875886"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:23:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914439688"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="914439688"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:23:20 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rkUC6-0000000CJ7R-0aOr;
-	Wed, 13 Mar 2024 21:23:18 +0200
-Date: Wed, 13 Mar 2024 21:23:17 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: kernel test robot <lkp@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Herve Codina <herve.codina@bootlin.com>
-Subject: Re: WARNING: modpost: vmlinux: section mismatch in reference:
- find_next_bit+0x14 (section: .text.unlikely) ->
- __setup_str_initcall_blacklist (section: .init.rodata)
-Message-ID: <ZfH9JVK1wak2nJmN@smile.fi.intel.com>
-References: <202403140236.HDGbPm2J-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C64A51C33;
+	Wed, 13 Mar 2024 19:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710357825; cv=fail; b=E0w4tz/L/uGnWQ58aUI1whRnWSHhmPFpZcHmSTUAuwrbuIJX+ClCe6IzgJR8IeRUjVijPCEc9GaadBN2/lrye6GZTbCw4nBOkM341nh6/fnLQr2IpdPcRz1GcJKE2CfMPuL9ZrvUH+JTwXfoRA3OEXhzxJyY9xshnYAZws/4NZY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710357825; c=relaxed/simple;
+	bh=L6EAotHBrU+B9tSvSg9C8d64DeuDiyqVS3SzVAKFMX0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=DA4EelGurdiMZFBWAkFclw/SxgiZQZWw0WMpjWnaRN6dVRR5bSwwZMM+Ro+Q6jLTLcPdRC98u8Lj2+toj5MuXkG56QxxBAdY55TFOuA9NHTwPBM9gKcRqXUvCVwb/iPDz8FbUIRWmSTh+B93mi+NlWdKN80xKaNw0negqf5RavY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=VWLT+q7y; arc=fail smtp.client-ip=52.101.56.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cGB4N8nB0WzeKu7uSK8JjtElPiBJBFqZswA0rZVHd80E7Kh4s4L6t12C6RYIzmMHFR3eMNFrHXTAt8qdXF4lS5268wW9EyfDLupeL8vyoNkUTYQDadI6ioktc56X4RDb9RBXVBLwvMHlmTh7uM9WHADMUugU8qrVn8JrzbZET43CX9nAQ216w2gF01ELwphRS0M78+4PFWKnDDfXHzJmbantglk6SS+4B6+IJoIjFgJvIwIsyhvOzr4mbhTSDtTaQLGpvHiY75RYyNH9cJrBcSVROQ0CeKcZRQZxGDXpLpUi8RO9uiZ7TKpt/7vDQTw5ET1bsW4McdqVefx1vj5gbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nLGu38qtdssDAWJwEEQW/luaSKyfQJL7imn1W1e4ho8=;
+ b=lg1lQbtoed3R9q2xL9O8qvlOwEJkPuV0oBdatcS6axs+cFdHUYPN/EeA8OApPpwUHwtVOOmBo4tIPEPpgaQGTR8Ohm+bIWHfuqTeTW3xFFtYbW1ZBD416esmQrsY9qYNgI7VyKyXuJLd5byguO/YHv40zHF+2VFU31tNqFhE0yS7H3A3p1ASOXMaSC2xnpiLLtuWcwoP9Zi8h/dxA5jOiuwP5YnIcP6vO7n/RsuvNP8yA5HIozB1dFMfVU+0BGNfJ3aLtfBI90UuMj3EKGeXBVxQOrCephzTOY4rMtVD0hPFMEgr/yJ6OsVCof4LN1GMhziPLAE0wXYjGGzu/W9vcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nLGu38qtdssDAWJwEEQW/luaSKyfQJL7imn1W1e4ho8=;
+ b=VWLT+q7ykxSpXls6VeYX/pet/8NDH8r+Sg1PXrw02YCQp+knLNItHXeieJIJY0DI0RQtuCNfodWeYwVhAeBT34bRoKtn/8Z3IysswZmPlGq8iOLBXejgZCpdlFY3A4ioUV05rjJlmKf/Y5C1oIkCim4HO5428pphtIHVy1sRQpg=
+Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
+ by IA1PR21MB3764.namprd21.prod.outlook.com (2603:10b6:208:3e3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.6; Wed, 13 Mar
+ 2024 19:23:40 +0000
+Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
+ ([fe80::70f:687e:92e6:45b7]) by SJ1PR21MB3457.namprd21.prod.outlook.com
+ ([fe80::70f:687e:92e6:45b7%4]) with mapi id 15.20.7409.004; Wed, 13 Mar 2024
+ 19:23:40 +0000
+From: Long Li <longli@microsoft.com>
+To: Saurabh Sengar <ssengar@linux.microsoft.com>, KY Srinivasan
+	<kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: Saurabh Singh Sengar <ssengar@microsoft.com>
+Subject: RE: [PATCH 5/6] tools: hv: Add new fcopy application based on uio
+ driver
+Thread-Topic: [PATCH 5/6] tools: hv: Add new fcopy application based on uio
+ driver
+Thread-Index: AQHaYcveJqzl0fBlskqJxgmvLkLRWbE2MYhQ
+Date: Wed, 13 Mar 2024 19:23:40 +0000
+Message-ID:
+ <SJ1PR21MB3457D926702F158DD82BD242CE2A2@SJ1PR21MB3457.namprd21.prod.outlook.com>
+References: <1708193020-14740-1-git-send-email-ssengar@linux.microsoft.com>
+ <1708193020-14740-6-git-send-email-ssengar@linux.microsoft.com>
+In-Reply-To: <1708193020-14740-6-git-send-email-ssengar@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|IA1PR21MB3764:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ a4BhQ+WblXEVS2C81xMpe8oCh+E23gG96SCc3wrcm5bh9QB8OZsktpXKySACIi5U2K3YFMi/KFjSn7c6H2tMPHu3qeNeNG7V7BLHoG3+VgTDwutQGjmyxPEcgO/Ql58qPEd3PfQBDb1CpV8RB1x/VZSnC36viGVgXrcu8A0H9ifWQC3EaH+0CCLWuOO4S8PW6tlWx9KiuOJFs8vrusSC+IdPMvrxFXvXFRlP5lMm24r/poZBwctGgjzTBZaPKxZROZAYZpreED2+nnSn+X1K34h8tQyqqobqdZRFnoP4JL7uVhurHHdlIKnQ2HVJ98nmRa3Z5RXp2+cYGXHUykSBSKbic9Tiuu5hs+Pd6LKhfmOzVFMr4sLBh6SlQHOfJ2M495cq4UT0jPYNu3zpJfSp1kHBfaibmPeTyLDlsJdAo17/Z3Fp27Olq3rWpQgccnr+DDU9wOClEgSX/dHsDr/6UYgQH6KKPAbY6drioCgGOevHKTnRxCV6rq+CMCLzjaSpISOvmMJ7TST0kbe+U7IK8AhoTtcLtG/dITHqOt8/3XSYxYqu7h+DgtvFFLCAdKmEQE4ZlsetpCbGNGKKEp4m1wxGRg1lbg/JOD9S6Gmy7D2P9aglbnJVgtDgmEsjmd4YAEPWqgdq5T4mQGM0qdKhEV79krfpsP3rW0EbHlwtMB0=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?dbR1/bSgzb/JbOYERDOP/yL7lRtgLPGvx29MB+RPAmXVjchn46bBodgeuKHf?=
+ =?us-ascii?Q?+czc+8KnDgPQO9uuuN4e8+sX3eJB8SKrmtS+0f+SjP9haxyDIAnsvdQakzvl?=
+ =?us-ascii?Q?1+PNGseWxlyOHKiy0CC8H5H6R/5+loBRykB+WRXl/LL2lxCQfZlKKit9Djya?=
+ =?us-ascii?Q?L11j9XSxQkLdqCJYQmKoKcGOgCwQcft79UCINV5ZRvnIl4G0qlt9dtD983gv?=
+ =?us-ascii?Q?IfBQyIlg/6xE/yqoV9B1MQ10SZb36j6C3+w5PrMCKeO4L5X02n7wQUmtYqJk?=
+ =?us-ascii?Q?7uzMGVQy+nRlVkAI5FiVHNZ8KzlMoaEIfbIIQq4RbZYheGMIk4WUiyTh7Jiw?=
+ =?us-ascii?Q?0Q28UNW99x7b3BfMO3OTe7QQdfRZ8qEzujcHN7NKetz28KdrUbjZIX+YXRek?=
+ =?us-ascii?Q?dJMdPGwKoxcnNUgL/clH9QfEyGO3Mtl6VHWn2zFXwNIJVdr+a1+9uC54gcr3?=
+ =?us-ascii?Q?kfOcBPP2xbqcN3GNpLIRWQnmbDP/ayxmW7o/GR8XSfkML41uqz4rCAk2Bm8b?=
+ =?us-ascii?Q?ZeVSTNmy9EMhDTbEmXFc5KjRUJNRA0ILXxjGnrdzojwSodI3yxLcR7v4nTcR?=
+ =?us-ascii?Q?HGiX600IsVvY8QB6i/4ujFTh0QnZckXc2AOxHk6T3eI+OYgF/uVE3AQzAkVk?=
+ =?us-ascii?Q?JkE9t0xQiFOO6WzKLqOPseGK6FoJQu1HaMaSN9oMgWzUR9EGO/Djrq2KGac3?=
+ =?us-ascii?Q?MzGQBajyFa3WpfS9fmMUPDbc4Gs/f6JhcRggSICEWj4ZkfyHMm6LrLMZsQaD?=
+ =?us-ascii?Q?HkfaW7E4+YhvlAQ8Sh48Dmqv8v+YzR46wBlteBydxSpBvy5Qo/kl1URety2J?=
+ =?us-ascii?Q?8zo7oaTKV2ScAKOYfOdYAxvxoKtxjG2EKYI/F6j+tQkVdmA0zE1sY48ZdET5?=
+ =?us-ascii?Q?ad3KOt30svbIJPMswmqR+vN/G54wNPnbbsUwkfSia4hwxy2qg1XtaMmy8LWZ?=
+ =?us-ascii?Q?yJAAPcbXOvHYaXJMvyq9mEUY0Kf+F384B68xxvtR+kZiZWxvl56wQZArB15i?=
+ =?us-ascii?Q?CoetG08t9vvj/sX9W9UBI9rd9h1CkPgf/77VYNKISf0Z9d5pTnKePh4pWDiB?=
+ =?us-ascii?Q?oLEqL5s8e+3sJ4jsYTHqA0Y+kdMhcGSPl/THrngeJrC13Qc7LuqzVNYgoz7t?=
+ =?us-ascii?Q?wsQk27/Pg4/IzSfTAhCWFZoSPACHLD/r18oZdrVhNZyz7TwQVaxrEcJHx33w?=
+ =?us-ascii?Q?GXd1BM41JID4LBGPDnV59s6SwtEMRzpPOWkmMN9U+nPkyZit9t7tm47qApE6?=
+ =?us-ascii?Q?UFwkryGAkZDUrOF/D94BxQl4VlBqqP06gz2kUshYPaLJQraFoYPsODsX5OzI?=
+ =?us-ascii?Q?BMc7wfzunFtDqfK86U+uZ/j1utulbCX68OVpHVoYPFQwnknbErlz5a8tDSgu?=
+ =?us-ascii?Q?Lw/x/EqIeaClCaSZ32tQc8C4H5NzEmpV8nzN0dCfjrUfMCBjrpNGbHUczdZE?=
+ =?us-ascii?Q?/Ucp2iCW2jlReC9L2sJUHiJFMYCc8/54w2zjG3oDGngzlqwMlHeYMvE9wRs3?=
+ =?us-ascii?Q?P/EPuHYm5jlhgoihT5KyqorcYFi0WuUcMkWm/udr9M+giicv+xsV4OeJ7Fsg?=
+ =?us-ascii?Q?EJQ38A1N89Ks+KbYdLu25so/u587mQL0aU+/doPP?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403140236.HDGbPm2J-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25ef8d84-d681-4bff-c309-08dc43931737
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 19:23:40.8262
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xDOoXC1e+U4rY3NaJzp86NrEOuHJTei9WWhGKaBubH8EZeO8kPYIAU6ZPlgmZkjJ3V7gRdR2AJouqL3tKuWyIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR21MB3764
 
-On Thu, Mar 14, 2024 at 02:45:30AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   b0546776ad3f332e215cebc0b063ba4351971cca
-> commit: de5f84338970815b9fdd3497a975fb572d11e0b5 lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers
-> date:   2 days ago
-> config: xtensa-randconfig-s031-20211010 (https://download.01.org/0day-ci/archive/20240314/202403140236.HDGbPm2J-lkp@intel.com/config)
-> compiler: xtensa-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240314/202403140236.HDGbPm2J-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403140236.HDGbPm2J-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> WARNING: modpost: missing MODULE_DESCRIPTION() in vmlinux.o
-> WARNING: modpost: vmlinux: section mismatch in reference: put_page+0x3c (section: .text.unlikely) -> initcall_level_names (section: .init.data)
-> >> WARNING: modpost: vmlinux: section mismatch in reference: find_next_bit+0x14 (section: .text.unlikely) -> __setup_str_initcall_blacklist (section: .init.rodata)
+> +			/* Signal host */
+> +			if ((write(fcopy_fd, &tmp, sizeof(int))) !=3D sizeof(int)) {
+> +				ret =3D errno;
+> +				syslog(LOG_ERR, "Registration failed: %s\n",
+> strerror(ret));
 
-Dup of https://lore.kernel.org/oe-kbuild-all/202403121032.WDY8ftKq-lkp@intel.com/ ?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+"Signaling failed" is a better word?
 
 
