@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-101882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C48F187AC68
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:07:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C13287AC6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65A6FB2193B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:07:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5E4F1F2B4CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C08D79929;
-	Wed, 13 Mar 2024 16:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471057994A;
+	Wed, 13 Mar 2024 16:40:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pI6DMlYT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNDdY7pa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA4578B73;
-	Wed, 13 Mar 2024 16:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84D3279925;
+	Wed, 13 Mar 2024 16:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348017; cv=none; b=MKZMqm31Tab6CN4oHwKI6rYbNQ1ZpI/JLwM+1xbQK0in/dL0P51RDiiHXCKdYwJh+b+j7oDIcLkYC4rhSaxwqHiKSaKNJfR2OablMxFuNpIJCBTfWRm0gI/HPyN1Xjq0wvFVSZkShaK28PsZ2BpGdpXhRgODw29v4nxJGSIB4ag=
+	t=1710348018; cv=none; b=DEXw9ednHPreR/ENwzJy5FOYRqjb8E0VCJhvoEnOuKYmrxIZmo6/AoMiDnNbPdrtX9YnP0MXGcMcoSgLM25CF/OkxkbV1P6XDpKuhm+0RbxtW1XmW/K8MUaWCJJpFjfFkgNLqISzWZh/3oClGr2M2nP35WM9/FxzIbnoehLeXB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348017; c=relaxed/simple;
-	bh=JiesEdlzoVGe/xKN+QRJDdEeXgxYM7KmKZPfFDARIQQ=;
+	s=arc-20240116; t=1710348018; c=relaxed/simple;
+	bh=tsRHJiYDxxkCPdHjI0PXWnTWP/c9nI9bvZSGA3yLzSg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g54q+8l14s8a9s1PC4PPKFBZyLN+QA9dm2SfV1aNoJ7vH234peSkxKvV3g4KhMeXt7KbzEuQuY1kFzSR4xBLDUWHXsjxKgKcVN9PN2PcRg7j1ZTxV8wIAiqWgr47ji3tqwEao3VotWwRrST7sUyc/y6qI68djw6/R8TgHgUNBEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pI6DMlYT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D023C43390;
-	Wed, 13 Mar 2024 16:40:16 +0000 (UTC)
+	 MIME-Version; b=e3L9oy701RxtjAQFhZUD9Ppr9lI1KKUnXfCZ/1uhJqq7J/6/F3Kd120ZHD8IeP8UdpkKKVqIt91iQdsG6/Pz+nLDEZGR2iXkeecqqleTWg6KxViGMUCBs7GCP5PjqMPFLAON2dFvclV2r2jbMGrZM7We1kbrS9N9ViDrOmabUvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNDdY7pa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97710C433C7;
+	Wed, 13 Mar 2024 16:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348017;
-	bh=JiesEdlzoVGe/xKN+QRJDdEeXgxYM7KmKZPfFDARIQQ=;
+	s=k20201202; t=1710348018;
+	bh=tsRHJiYDxxkCPdHjI0PXWnTWP/c9nI9bvZSGA3yLzSg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pI6DMlYTXbgKPDB/RV78gN7zpGH9EHr6F7mRv5oNCy1nNrB6a3nB9dLQ2cP/6UicI
-	 Uc4IiSOA/r+naUE2XRkCWbTXjqtvGw1G04AiiAephlWL54kf1PY6cuxb9/K/wtNiaK
-	 yFtjXBwMhANFdyrOWfaffWrRubO2HjsjrW4eRuc7u0C4d3514Z9mLOvPsJxNzkiBOm
-	 Bz1GkLuOhbfyPkUhbWz0j5RiJKEUCTqiexUWcbBAtOgMPqn9b2jKRQJtluCN3Lw1Xy
-	 BVY0MYY3AYdeF3WfA6f+QI4xA5Z9psS2UPs8Y7Z6gPPXTx9fxF/+X4jUgOsKIlPW2D
-	 +17V32ZuZub3A==
+	b=lNDdY7paIh+Ufm6GA95LnAD6AlrB7PbxXQIpQg6GjrVq0ZHojj72Xd3Cjuz6QGet7
+	 moaQuDJ/wfzuz4xcUVeyEYukIv0KLituyOnG76HL3xvMdkJYdj9r/JkuaZsaBDj2hg
+	 Fo4/vaUtbejfnsRUDyxPeJqt8b466XX1Ou7EkhpYzN7gpdDOSUaALuF8+ugEHpzAJu
+	 iCLf7+QZUswkldA6wC8A2RPuif0YwAqpKRz8PqJBBqP73dEYts7LX6mYMkD/Giw2Tm
+	 p01KR2k8uIjx/tfwb5ZLUNz4Zr+Ahx2Co2PTHUMlCi3yrQV9jTlf0fSON0xGcU5H5I
+	 706RxQO9M7SRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Tobias Jakobi (Compleo)" <tobias.jakobi.compleo@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Edward Adam Davis <eadavis@qq.com>,
+	syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 14/71] net: dsa: microchip: fix register write order in ksz8_ind_write8()
-Date: Wed, 13 Mar 2024 12:39:00 -0400
-Message-ID: <20240313163957.615276-15-sashal@kernel.org>
+Subject: [PATCH 6.1 15/71] net/rds: fix WARNING in rds_conn_connect_if_down
+Date: Wed, 13 Mar 2024 12:39:01 -0400
+Message-ID: <20240313163957.615276-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
 References: <20240313163957.615276-1-sashal@kernel.org>
@@ -69,59 +69,55 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: "Tobias Jakobi (Compleo)" <tobias.jakobi.compleo@gmail.com>
+From: Edward Adam Davis <eadavis@qq.com>
 
-[ Upstream commit b7fb7729c94fb2d23c79ff44f7a2da089c92d81c ]
+[ Upstream commit c055fc00c07be1f0df7375ab0036cebd1106ed38 ]
 
-This bug was noticed while re-implementing parts of the kernel
-driver in userspace using spidev. The goal was to enable some
-of the errata workarounds that Microchip describes in their
-errata sheet [1].
+If connection isn't established yet, get_mr() will fail, trigger connection after
+get_mr().
 
-Both the errata sheet and the regular datasheet of e.g. the KSZ8795
-imply that you need to do this for indirect register accesses:
-- write a 16-bit value to a control register pair (this value
-  consists of the indirect register table, and the offset inside
-  the table)
-- either read or write an 8-bit value from the data storage
-  register (indicated by REG_IND_BYTE in the kernel)
-
-The current implementation has the order swapped. It can be
-proven, by reading back some indirect register with known content
-(the EEE register modified in ksz8_handle_global_errata() is one of
-these), that this implementation does not work.
-
-Private discussion with Oleksij Rempel of Pengutronix has revealed
-that the workaround was apparantly never tested on actual hardware.
-
-[1] https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/Errata/KSZ87xx-Errata-DS80000687C.pdf
-
-Signed-off-by: Tobias Jakobi (Compleo) <tobias.jakobi.compleo@gmail.com>
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Fixes: 7b6e6235b664 ("net: dsa: microchip: ksz8795: handle eee specif erratum")
-Link: https://lore.kernel.org/r/20240304154135.161332-1-tobias.jakobi.compleo@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 584a8279a44a ("RDS: RDMA: return appropriate error on rdma map failures")
+Reported-and-tested-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/microchip/ksz8795.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/rds/rdma.c | 3 +++
+ net/rds/send.c | 6 +-----
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index c63e082dc57dc..934600eccbaf2 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -49,9 +49,9 @@ static int ksz8_ind_write8(struct ksz_device *dev, u8 table, u16 addr, u8 data)
- 	mutex_lock(&dev->alu_mutex);
+diff --git a/net/rds/rdma.c b/net/rds/rdma.c
+index fba82d36593ad..a4e3c5de998be 100644
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -301,6 +301,9 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
+ 			kfree(sg);
+ 		}
+ 		ret = PTR_ERR(trans_private);
++		/* Trigger connection so that its ready for the next retry */
++		if (ret == -ENODEV)
++			rds_conn_connect_if_down(cp->cp_conn);
+ 		goto out;
+ 	}
  
- 	ctrl_addr = IND_ACC_TABLE(table) | addr;
--	ret = ksz_write8(dev, regs[REG_IND_BYTE], data);
-+	ret = ksz_write16(dev, regs[REG_IND_CTRL_0], ctrl_addr);
- 	if (!ret)
--		ret = ksz_write16(dev, regs[REG_IND_CTRL_0], ctrl_addr);
-+		ret = ksz_write8(dev, regs[REG_IND_BYTE], data);
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 0c5504068e3c2..a4ba45c430d81 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1314,12 +1314,8 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
  
- 	mutex_unlock(&dev->alu_mutex);
+ 	/* Parse any control messages the user may have included. */
+ 	ret = rds_cmsg_send(rs, rm, msg, &allocated_mr, &vct);
+-	if (ret) {
+-		/* Trigger connection so that its ready for the next retry */
+-		if (ret ==  -EAGAIN)
+-			rds_conn_connect_if_down(conn);
++	if (ret)
+ 		goto out;
+-	}
  
+ 	if (rm->rdma.op_active && !conn->c_trans->xmit_rdma) {
+ 		printk_ratelimited(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
 -- 
 2.43.0
 
