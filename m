@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F49E87AE17
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:49:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC2F87AE19
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:49:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A250281860
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A6951C22C22
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C52158D84;
-	Wed, 13 Mar 2024 16:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D8315956E;
+	Wed, 13 Mar 2024 16:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P4ahr/5C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uCfK00eU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9530A158D75;
-	Wed, 13 Mar 2024 16:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A91158D93;
+	Wed, 13 Mar 2024 16:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348443; cv=none; b=CWdDJkHwqdUlb+P+/576OX7ithJA7w96lepquigPLzeO3Gp/Se+yCWa6+hSYZBZs4vhmIee7eNOhEoI+ALYXUWe3FitWMaDP+FxtU4SoN7DUv0FLcWgT1xpvJT6jVm1hcnar/TgTxopx0xfolmw4zzLAbGM+rrELm7zoEs/Y7tg=
+	t=1710348444; cv=none; b=C2xVgSGMAtabzdVIzctQ1Rrsz/4aNJF3JHKSFnDqG0grFPAC61m5BPqGFZdtQIdpmNDb83cU0WOiz2Jb1fIZhF1lbwehQbBAc5Zq+iI3Bcl5T4akOxqrJEmmfhk50DCMApHIuLMAOFA4jXzHtK1nMrqiBzIIOFFuwfsAJ5rbJdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348443; c=relaxed/simple;
-	bh=EwYFc6u/vRmEQVBhKndW0cFn92ioVA9ZTpiDm23xcUs=;
+	s=arc-20240116; t=1710348444; c=relaxed/simple;
+	bh=5F8DJBRhvFfkT6zRKT0jjF22bUNX95SUh7FnLyf5P6c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AOeXlBgnHaeoXDZ0CedvioxXRu1cDBVKzweTXrmwbUui3ZwjpQN7am+WeTDJJKkun1ueQx5fLKRS+NnQfJTaeKKu1Mn3bqvf6chfklAAHBjpL5CluutaO9Bv4IATzVlr1kvq0LDw3fbO8Y4a8fitUKGSzPz3OqM+IljNw8Qq1dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P4ahr/5C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7251BC433C7;
-	Wed, 13 Mar 2024 16:47:22 +0000 (UTC)
+	 MIME-Version; b=gPzyJD1fwWXd6LjGxJAALVU/gkco86AU81wweOGr26po1H2B+6226rSWkUCurDHRhUjseSDjqFuk1UY/PnIqPCffI2uPNb3kflJhP/qv+PhXeybQz2aq8WRJtgsakp0coZx0dMv6jUKX/+a5iiTliSNq4UNqyjhJU/4jpFtPVEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uCfK00eU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73969C433F1;
+	Wed, 13 Mar 2024 16:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348443;
-	bh=EwYFc6u/vRmEQVBhKndW0cFn92ioVA9ZTpiDm23xcUs=;
+	s=k20201202; t=1710348444;
+	bh=5F8DJBRhvFfkT6zRKT0jjF22bUNX95SUh7FnLyf5P6c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P4ahr/5CoXYxhBzevLiigzC95ArZnJEWrxE960QIfn1E8oulRCDfdat1oga0AiOcB
-	 o7APPzCkmgaggf8aSpA0HrwDMnO23UbeppxY82MSz2CjcMQWA9HZqXFCNdHGd3SM80
-	 nAgedQ7Sq8fOt/N3ps6xpyRLMeXLYWiqtD8gEZ2ujaxEdGIGQBbw+MCCy1zzFPuma9
-	 Wiov/YAZB+dauO6irkKditKOMfMNaauEaKFewqc0YQP0ZDfn3wGUGgENHRJXK3voea
-	 ybJygIxZy10jKgfwgydeAimDWXT6gBetMfUTu0Hw0TneA/41I7YrABYq26dhmU14US
-	 R2azWwxZhyFWA==
+	b=uCfK00eUGrgfqM2yuJsMOfa3Y/TUPGVcfkU+yt3uAi8ElFAeFpPlujp91Qf7Oy1T7
+	 gfRc/ktNrKxmsoexk2J0mFtarx41zIAlxr0G1b4DTJj7A6g45ZG7X16Y7wns83fK1K
+	 f54NvNDZv+vhgBOxBBqake8esHV2GZhmnShUWZLoe78tP2iavgznBi227W0eHr11pp
+	 K4NvqOeQNa+aGFA1wzCY5e+zjTA+S8owNQJirtF6c8ZDnGJHHcCzgfe+n6P+46T03u
+	 cAoy7g5D0U8M7l8jxJr7vZMW937LQwqZGb4f5FaRWwDUh2r4fb8C5kcXVb4xN1MOuq
+	 BjtLUM1gkh67Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 37/73] serial: max310x: Use devm_clk_get_optional() to get the input clock
-Date: Wed, 13 Mar 2024 12:46:04 -0400
-Message-ID: <20240313164640.616049-38-sashal@kernel.org>
+Subject: [PATCH 5.10 38/73] serial: max310x: Try to get crystal clock rate from property
+Date: Wed, 13 Mar 2024 12:46:05 -0400
+Message-ID: <20240313164640.616049-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -68,75 +68,111 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 974e454d6f96da0c0ab1b4115b92587dd9406f6a ]
+[ Upstream commit d4d6f03c4fb3a91dadfe147b47edd40e4d7e4d36 ]
 
-Simplify the code which fetches the input clock by using
-devm_clk_get_optional(). If no input clock is present
-devm_clk_get_optional() will return NULL instead of an error
-which matches the behavior of the old code.
+In some configurations, mainly ACPI-based, the clock frequency of the device
+is supplied by very well established 'clock-frequency' property. Hence, try
+to get it from the property at last if no other providers are available.
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20201007084635.594991-2-andy.shevchenko@gmail.com
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210517172930.83353-1-andriy.shevchenko@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Stable-dep-of: 8afa6c6decea ("serial: max310x: fail probe if clock crystal is unstable")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/tty/serial/max310x.c | 40 +++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 14537878f9855..8bf3c5ab59431 100644
+index 8bf3c5ab59431..0e0f778d75cd4 100644
 --- a/drivers/tty/serial/max310x.c
 +++ b/drivers/tty/serial/max310x.c
-@@ -1265,7 +1265,6 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
+@@ -556,7 +556,7 @@ static int max310x_update_best_err(unsigned long f, long *besterr)
+ 	return 1;
+ }
+ 
+-static int max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
++static u32 max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
+ 			       unsigned long freq, bool xtal)
+ {
+ 	unsigned int div, clksrc, pllcfg = 0;
+@@ -629,7 +629,7 @@ static int max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
+ 			dev_warn(dev, "clock is not stable yet\n");
+ 	}
+ 
+-	return (int)bestfreq;
++	return bestfreq;
+ }
+ 
+ static void max310x_batch_write(struct uart_port *port, u8 *txbuf, unsigned int len)
+@@ -1264,9 +1264,10 @@ static int max310x_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
+ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
  			 struct regmap *regmap, int irq)
  {
- 	int i, ret, fmin, fmax, freq, uartclk;
--	struct clk *clk_osc, *clk_xtal;
+-	int i, ret, fmin, fmax, freq, uartclk;
++	int i, ret, fmin, fmax, freq;
  	struct max310x_port *s;
- 	bool xtal = false;
+-	bool xtal = false;
++	u32 uartclk = 0;
++	bool xtal;
  
-@@ -1279,23 +1278,24 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+@@ -1278,24 +1279,20 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
  		return -ENOMEM;
  	}
  
--	clk_osc = devm_clk_get(dev, "osc");
--	clk_xtal = devm_clk_get(dev, "xtal");
--	if (!IS_ERR(clk_osc)) {
--		s->clk = clk_osc;
-+	s->clk = devm_clk_get_optional(dev, "osc");
-+	if (IS_ERR(s->clk))
-+		return PTR_ERR(s->clk);
-+	if (s->clk) {
- 		fmin = 500000;
- 		fmax = 35000000;
--	} else if (!IS_ERR(clk_xtal)) {
--		s->clk = clk_xtal;
--		fmin = 1000000;
--		fmax = 4000000;
--		xtal = true;
--	} else if (PTR_ERR(clk_osc) == -EPROBE_DEFER ||
--		   PTR_ERR(clk_xtal) == -EPROBE_DEFER) {
--		return -EPROBE_DEFER;
++	/* Always ask for fixed clock rate from a property. */
++	device_property_read_u32(dev, "clock-frequency", &uartclk);
++
+ 	s->clk = devm_clk_get_optional(dev, "osc");
+ 	if (IS_ERR(s->clk))
+ 		return PTR_ERR(s->clk);
+ 	if (s->clk) {
+-		fmin = 500000;
+-		fmax = 35000000;
++		xtal = false;
  	} else {
--		dev_err(dev, "Cannot get clock\n");
--		return -EINVAL;
-+		s->clk = devm_clk_get_optional(dev, "xtal");
-+		if (IS_ERR(s->clk))
-+			return PTR_ERR(s->clk);
-+		if (s->clk) {
-+			fmin = 1000000;
-+			fmax = 4000000;
-+			xtal = true;
-+		} else {
-+			dev_err(dev, "Cannot get clock\n");
-+			return -EINVAL;
-+		}
+ 		s->clk = devm_clk_get_optional(dev, "xtal");
+ 		if (IS_ERR(s->clk))
+ 			return PTR_ERR(s->clk);
+-		if (s->clk) {
+-			fmin = 1000000;
+-			fmax = 4000000;
+-			xtal = true;
+-		} else {
+-			dev_err(dev, "Cannot get clock\n");
+-			return -EINVAL;
+-		}
++
++		xtal = true;
  	}
  
  	ret = clk_prepare_enable(s->clk);
+@@ -1303,6 +1300,21 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
+ 		return ret;
+ 
+ 	freq = clk_get_rate(s->clk);
++	if (freq == 0)
++		freq = uartclk;
++	if (freq == 0) {
++		dev_err(dev, "Cannot get clock rate\n");
++		return -EINVAL;
++	}
++
++	if (xtal) {
++		fmin = 1000000;
++		fmax = 4000000;
++	} else {
++		fmin = 500000;
++		fmax = 35000000;
++	}
++
+ 	/* Check frequency limits */
+ 	if (freq < fmin || freq > fmax) {
+ 		ret = -ERANGE;
 -- 
 2.43.0
 
