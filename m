@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-102073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC47387AE2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:51:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B5E587AE2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EE4F283037
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:51:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4DD01C2208B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D5B15B99A;
-	Wed, 13 Mar 2024 16:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B8E15CD59;
+	Wed, 13 Mar 2024 16:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OfoxGFMT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qSxgRZWh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D32515B985;
-	Wed, 13 Mar 2024 16:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE8815B99F;
+	Wed, 13 Mar 2024 16:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348454; cv=none; b=Ubx6arMBHE89zELhhvGEWTtQcueDwmMaluLeLcTAYOBzwy7QrVfmsXV71+8z1wu6tclnnYPM7V2AvmeHaDvOld2dM1CWovm4+oTHDPNcsfX58uvMHC/8IytE2Au48GpBjgT7Ebe+HVle6ZUsgOrLQcVrm3Kp0tIQygYUbzRtGN8=
+	t=1710348455; cv=none; b=LUv1sukgZCgMhrDb05oGY7OiMvUVxJ+NxX5y5ejaQ2IIhTOW5uPcBGCJvkpLztGlbhLd06qXrdWfUwT0deAkvzZ6MZR1if0FlB9+6g0kyRlf69hTh10TD4rkkeTbCRqVhvnmfI/9cm47VBKpbYpLWFGMQEo0u0CSwpJlUOi26KI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348454; c=relaxed/simple;
-	bh=36tOWfFuzG3HhdjxZYdrj+qn15FcF4TnU7zWvxXyEQo=;
+	s=arc-20240116; t=1710348455; c=relaxed/simple;
+	bh=fnCtHXKpMQRO52XU6DnTr/ttKAOmG1WL57rSqunSTqg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CNnhGQPypS+qatoHZVQgB/LohuZTRqXaTo3yLKdPEl9MehVA2ZIOyfzORMRGJ4NTAGWI/8iRmBmngRBnOkLT1i4kqjTXiwJb4W5zXIRcnHLh/xqq1uvrJ2l3DjxtfysRRX8evxHy+wo8I59ZToREIJwvEKBYGCQXeJyqUdS26wA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OfoxGFMT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36BEBC43399;
-	Wed, 13 Mar 2024 16:47:33 +0000 (UTC)
+	 MIME-Version; b=eYB6XPdrT6nB3Z5ahhDLPE6Fg7VIaGHBzeKds3+fkielpIKrWlZutdoupdHK9i6mATvVoEPIzluJY8j55aQ+H3wICY57IptMjmewXZBRaePPKtoyKI8XBIPbWjZ4ugFnhtjt1srM3++sQ92amRR8Wqr1dxSreMWTsWcIPQjTbFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qSxgRZWh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38251C433F1;
+	Wed, 13 Mar 2024 16:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348453;
-	bh=36tOWfFuzG3HhdjxZYdrj+qn15FcF4TnU7zWvxXyEQo=;
+	s=k20201202; t=1710348455;
+	bh=fnCtHXKpMQRO52XU6DnTr/ttKAOmG1WL57rSqunSTqg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OfoxGFMT3msQRmbeyptykW34vb2JaN5ZgslhKv/e8NvpZwaI21PX7LO9cNPwDC2ag
-	 ctQyeevzlxCeEjUhay21dVJ5csbBGFtxTjhcML3gtFrszYDt5UFA4ifIE7EDOyMHry
-	 YSSFZtVV0mn+F6qbFwBC/fbdBbg+IYFAl6NLrQhq79+bTTg7ZAXZteL04lb1wtdRZU
-	 qKVvwpz3hpLxR6IyQWHDBUyLputE7I0Oh4TFa5QIDNJ4YsT9gIkThWQSstC6EWAKBx
-	 Mk2AV4xPjjA5cDR0hq5Y3MvWY/1cLxOBy1JNkKVN12MhKVUnqyKvNJQ9m/gZbGSYd0
-	 +OP5Q3AIak0jg==
+	b=qSxgRZWhb5pA1nZslfCNoKQWsWGtUlOLLR6zdLNtYvX0x7e3ucCk87s8NYiE7iyi4
+	 tOFy8ZnTv2V7nwp0pgYnN0xoWG7KNcPqmEBmUn0gmcUzkTrOo8oDbS3zz5K560IHvp
+	 ofCUp8Q7X0eUj877VLRXoCeGRnxJMyguu9i8bhDUDDL38QIlVDp37IPlh70dDhucpJ
+	 r4SAYPn3M6OYBTD2x5z2Jlon0zS06bSy5zKexcQ7fQMc/aRzGQ3qQQt27b92jsZ5HU
+	 19ojS2Sokg3JM1hvGp73e/pF0o5dm+eIoH0DUfquaLb3CV8dxDmlg7WK8Dc3W3iaok
+	 6hcHCyBjW5yDg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ondrej Mosnacek <omosnace@redhat.com>,
-	Paul Moore <paul@paul-moore.com>,
+Cc: Baokun Li <libaokun1@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 47/73] lsm: fix default return value of the socket_getpeersec_*() hooks
-Date: Wed, 13 Mar 2024 12:46:14 -0400
-Message-ID: <20240313164640.616049-48-sashal@kernel.org>
+Subject: [PATCH 5.10 48/73] ext4: make ext4_es_insert_extent() return void
+Date: Wed, 13 Mar 2024 12:46:15 -0400
+Message-ID: <20240313164640.616049-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -68,89 +69,156 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ondrej Mosnacek <omosnace@redhat.com>
+From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit 5a287d3d2b9de2b3e747132c615599907ba5c3c1 ]
+[ Upstream commit 6c120399cde6b1b5cf65ce403765c579fb3d3e50 ]
 
-For these hooks the true "neutral" value is -EOPNOTSUPP, which is
-currently what is returned when no LSM provides this hook and what LSMs
-return when there is no security context set on the socket. Correct the
-value in <linux/lsm_hooks.h> and adjust the dispatch functions in
-security/security.c to avoid issues when the BPF LSM is enabled.
+Now ext4_es_insert_extent() never return error, so make it return void.
 
-Cc: stable@vger.kernel.org
-Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-[PM: subject line tweak]
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20230424033846.4732-12-libaokun1@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Stable-dep-of: acf795dc161f ("ext4: convert to exclusive lock while inserting delalloc extents")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/lsm_hook_defs.h |  4 ++--
- security/security.c           | 31 +++++++++++++++++++++++++++----
- 2 files changed, 29 insertions(+), 6 deletions(-)
+ fs/ext4/extents.c        |  5 +++--
+ fs/ext4/extents_status.c | 14 ++++++--------
+ fs/ext4/extents_status.h |  6 +++---
+ fs/ext4/inode.c          | 21 ++++++---------------
+ 4 files changed, 18 insertions(+), 28 deletions(-)
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 9f550eab8ebdb..07abcd384975b 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -293,9 +293,9 @@ LSM_HOOK(int, 0, socket_getsockopt, struct socket *sock, int level, int optname)
- LSM_HOOK(int, 0, socket_setsockopt, struct socket *sock, int level, int optname)
- LSM_HOOK(int, 0, socket_shutdown, struct socket *sock, int how)
- LSM_HOOK(int, 0, socket_sock_rcv_skb, struct sock *sk, struct sk_buff *skb)
--LSM_HOOK(int, 0, socket_getpeersec_stream, struct socket *sock,
-+LSM_HOOK(int, -ENOPROTOOPT, socket_getpeersec_stream, struct socket *sock,
- 	 sockptr_t optval, sockptr_t optlen, unsigned int len)
--LSM_HOOK(int, 0, socket_getpeersec_dgram, struct socket *sock,
-+LSM_HOOK(int, -ENOPROTOOPT, socket_getpeersec_dgram, struct socket *sock,
- 	 struct sk_buff *skb, u32 *secid)
- LSM_HOOK(int, 0, sk_alloc_security, struct sock *sk, int family, gfp_t priority)
- LSM_HOOK(void, LSM_RET_VOID, sk_free_security, struct sock *sk)
-diff --git a/security/security.c b/security/security.c
-index e9dcde3c4f14b..0bbcb100ba8e9 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2227,14 +2227,37 @@ EXPORT_SYMBOL(security_sock_rcv_skb);
- int security_socket_getpeersec_stream(struct socket *sock, sockptr_t optval,
- 				      sockptr_t optlen, unsigned int len)
- {
--	return call_int_hook(socket_getpeersec_stream, -ENOPROTOOPT, sock,
--			     optval, optlen, len);
-+	struct security_hook_list *hp;
-+	int rc;
-+
-+	/*
-+	 * Only one module will provide a security context.
-+	 */
-+	hlist_for_each_entry(hp, &security_hook_heads.socket_getpeersec_stream,
-+			     list) {
-+		rc = hp->hook.socket_getpeersec_stream(sock, optval, optlen,
-+						       len);
-+		if (rc != LSM_RET_DEFAULT(socket_getpeersec_stream))
-+			return rc;
-+	}
-+	return LSM_RET_DEFAULT(socket_getpeersec_stream);
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 68aa8760cb465..9e12592727914 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3107,8 +3107,9 @@ static int ext4_zeroout_es(struct inode *inode, struct ext4_extent *ex)
+ 	if (ee_len == 0)
+ 		return 0;
+ 
+-	return ext4_es_insert_extent(inode, ee_block, ee_len, ee_pblock,
+-				     EXTENT_STATUS_WRITTEN);
++	ext4_es_insert_extent(inode, ee_block, ee_len, ee_pblock,
++			      EXTENT_STATUS_WRITTEN);
++	return 0;
  }
  
- int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb, u32 *secid)
+ /* FIXME!! we need to try to merge to left or right after zero-out  */
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index cccbdfd49a86b..f37e62546745b 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -846,12 +846,10 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes,
+ /*
+  * ext4_es_insert_extent() adds information to an inode's extent
+  * status tree.
+- *
+- * Return 0 on success, error code on failure.
+  */
+-int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+-			  ext4_lblk_t len, ext4_fsblk_t pblk,
+-			  unsigned int status)
++void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
++			   ext4_lblk_t len, ext4_fsblk_t pblk,
++			   unsigned int status)
  {
--	return call_int_hook(socket_getpeersec_dgram, -ENOPROTOOPT, sock,
--			     skb, secid);
-+	struct security_hook_list *hp;
-+	int rc;
-+
-+	/*
-+	 * Only one module will provide a security context.
-+	 */
-+	hlist_for_each_entry(hp, &security_hook_heads.socket_getpeersec_dgram,
-+			     list) {
-+		rc = hp->hook.socket_getpeersec_dgram(sock, skb, secid);
-+		if (rc != LSM_RET_DEFAULT(socket_getpeersec_dgram))
-+			return rc;
-+	}
-+	return LSM_RET_DEFAULT(socket_getpeersec_dgram);
- }
- EXPORT_SYMBOL(security_socket_getpeersec_dgram);
+ 	struct extent_status newes;
+ 	ext4_lblk_t end = lblk + len - 1;
+@@ -863,13 +861,13 @@ int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+ 	bool revise_pending = false;
  
+ 	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+-		return 0;
++		return;
+ 
+ 	es_debug("add [%u/%u) %llu %x to extent status tree of inode %lu\n",
+ 		 lblk, len, pblk, status, inode->i_ino);
+ 
+ 	if (!len)
+-		return 0;
++		return;
+ 
+ 	BUG_ON(end < lblk);
+ 
+@@ -938,7 +936,7 @@ int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+ 		goto retry;
+ 
+ 	ext4_es_print_tree(inode);
+-	return 0;
++	return;
+ }
+ 
+ /*
+diff --git a/fs/ext4/extents_status.h b/fs/ext4/extents_status.h
+index 4ec30a7982605..481ec4381bee6 100644
+--- a/fs/ext4/extents_status.h
++++ b/fs/ext4/extents_status.h
+@@ -127,9 +127,9 @@ extern int __init ext4_init_es(void);
+ extern void ext4_exit_es(void);
+ extern void ext4_es_init_tree(struct ext4_es_tree *tree);
+ 
+-extern int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+-				 ext4_lblk_t len, ext4_fsblk_t pblk,
+-				 unsigned int status);
++extern void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
++				  ext4_lblk_t len, ext4_fsblk_t pblk,
++				  unsigned int status);
+ extern void ext4_es_cache_extent(struct inode *inode, ext4_lblk_t lblk,
+ 				 ext4_lblk_t len, ext4_fsblk_t pblk,
+ 				 unsigned int status);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 365c4d3a434ab..ab2a7f9902887 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -589,10 +589,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 		    ext4_es_scan_range(inode, &ext4_es_is_delayed, map->m_lblk,
+ 				       map->m_lblk + map->m_len - 1))
+ 			status |= EXTENT_STATUS_DELAYED;
+-		ret = ext4_es_insert_extent(inode, map->m_lblk,
+-					    map->m_len, map->m_pblk, status);
+-		if (ret < 0)
+-			retval = ret;
++		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
++				      map->m_pblk, status);
+ 	}
+ 	up_read((&EXT4_I(inode)->i_data_sem));
+ 
+@@ -701,12 +699,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 		    ext4_es_scan_range(inode, &ext4_es_is_delayed, map->m_lblk,
+ 				       map->m_lblk + map->m_len - 1))
+ 			status |= EXTENT_STATUS_DELAYED;
+-		ret = ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+-					    map->m_pblk, status);
+-		if (ret < 0) {
+-			retval = ret;
+-			goto out_sem;
+-		}
++		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
++				      map->m_pblk, status);
+ 	}
+ 
+ out_sem:
+@@ -1800,7 +1794,6 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+ 		set_buffer_new(bh);
+ 		set_buffer_delay(bh);
+ 	} else if (retval > 0) {
+-		int ret;
+ 		unsigned int status;
+ 
+ 		if (unlikely(retval != map->m_len)) {
+@@ -1813,10 +1806,8 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+ 
+ 		status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+ 				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+-		ret = ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+-					    map->m_pblk, status);
+-		if (ret != 0)
+-			retval = ret;
++		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
++				      map->m_pblk, status);
+ 	}
+ 
+ out_unlock:
 -- 
 2.43.0
 
