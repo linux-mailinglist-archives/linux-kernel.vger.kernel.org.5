@@ -1,142 +1,134 @@
-Return-Path: <linux-kernel+bounces-101326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EBA387A58F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:09:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2089987A592
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAB2CB2177D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:09:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 603E2B22107
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8321138DE6;
-	Wed, 13 Mar 2024 10:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AF4939867;
+	Wed, 13 Mar 2024 10:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VRyLy1Fl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Qwx0mRY4"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789BD383B9
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D86E39860;
+	Wed, 13 Mar 2024 10:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710324533; cv=none; b=NT7iaGONSTGCCGsIpc9CJXCjiSc0T9Y9B5o14UvMJzS+gVv5fSOcE3Ul1itHG/DfngGizfdaj+qDAJvfIPHZqX4tG9N/aoanT4uDJAGkG2Q6D2Fc1vN7joA2nK7D66wJBFXhk6NySQxztPIUYuXV8PjFK0/+sYyL9JRZpNSJpio=
+	t=1710324555; cv=none; b=tBK+fOMm5Uaoz+PM8pAO5GwhyUK5P2nj7pxSw8p1f6UEFkqpTEyXr14yojFNcs4EgqvyibbXs44zCSMt9N/TV/fp2WRcBiCqdlJ7n9p5E1cLww9l1l0jTnm2EMt8L9je1TZAukTgraCLZpsqWFw8Mg1ckzqH9nnczsPFBECT4ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710324533; c=relaxed/simple;
-	bh=aSw6o7ezc8c9/Vjkfi+RE9UYn23okpahByuvCrBXroI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=akUI2Y6MDq+CBM80eSd9KONi7iyV/J8OBQJ1YO3KeivCKoFmD+Pp8T6LVuArSeJR92qEByK7nyG1VESSK3swJF7RoWldPQM8NDOWfxHuxPMGQqYVd59TyrAKeDGSQmRuwKVk+xJ1ftLsykKJuVHOlApaVsyXkJih8mKx0BqDMMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VRyLy1Fl; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710324532; x=1741860532;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=aSw6o7ezc8c9/Vjkfi+RE9UYn23okpahByuvCrBXroI=;
-  b=VRyLy1FlcOaOB+M4wVCpEZa+/wgIxT6sFsRB3lfPDYkXJzm0dZiLxcMq
-   0x6KsvuvMI6pjb3ddMwBzWfbtIHnFDsxn/S3yILBScKPlQ4K6b3158fuD
-   VUry7gJm9sDYbJBgbpvHxBW31HMT2T0dDNfXv6AjXY7HP0N33qIXdvZCo
-   cT4oCPgFFL1qZfL7uUQMUlYrwIkIG6ZZrG+x6RUSWDkJNy/haI9lSLiEO
-   rVkxdUIqIr3k0W+7WduhcgQixNa1gbhxNbR4HeUIFHaFHizoA7JpSvaXV
-   y/DLmW3QqurS2pHiJCHAiWr+Ig4UTIU9drHwCahVd06oGBrad25xwOcnd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="8848410"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="8848410"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 03:08:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="16442321"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.6.143])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 03:08:48 -0700
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- linux-staging@lists.linux.dev, Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: outreachy@lists.linux.dev
-Subject: Re: [PATCH v5] staging: rtl8712: rename tmpVal to avg_val
-Date: Wed, 13 Mar 2024 11:08:45 +0100
-Message-ID: <2263049.iZASKD2KPV@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <ZfFpW9XvHhUkcspq@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
-References: <ZfFpW9XvHhUkcspq@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1710324555; c=relaxed/simple;
+	bh=fWGLhnxLEh7eGyNf4dii+sqAe5pXpPJ9tpcuMouGdHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cq9XIrJU30oLPkxgMFH4ruGfb0ppsCvtASm00Dn0fRG8GSmIhXNhmijq9TS04EZmyKlZRhyAsAl7qERinbpaTWtbJ2b5ewOZwVPI+7dSi2eFYc/cde3kJvX8d/69AVCOq4Qru0iLaRZ2kWlwHz418/bi3jFRqi1bKx25iLOje4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Qwx0mRY4; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=dqscFof3UIk2f9tQdsmkjOVmktSh5/Fa3QHjZqZqyQQ=; b=Qwx0mRY4Q4QHwU75DoBroYRY8q
+	FFLCzsbtgdqoG2GoFm/PbyH3Aln5E+hgpBN9cgAGb39bcabXs7J5s6EMJsitA6hoHC7tC7pu1YAyB
+	geD/7sVzA9qXD/MV3lHiHuNJVY4aa5ziK69BPhnPqfo4f6BRNe/HOKpDUrLnsKbdcGf0/tuaLXvYl
+	vpIV/Id/Y1CHel5mzYm69GJrHkODL0iQ4URqFUWdLPWStVbIyER+OUwzBrxpsCPI+uvynp15Ogv9W
+	at6YrOyQxED8ZiPO5pp9XZF+/QcjsI1QDPwyeUZ/Gdh8s1ApS4pEvkqnR60Y4DW+22GAoAME911Gl
+	+Vaoi/Ow==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33378)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rkLXn-0007X4-1k;
+	Wed, 13 Mar 2024 10:09:07 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rkLXk-0004Pg-F8; Wed, 13 Mar 2024 10:09:04 +0000
+Date: Wed, 13 Mar 2024 10:09:04 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Duanqiang Wen <duanqiangwen@net-swift.com>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH clk] clk: clkdev: add error messages for name exceeding
+ maximum length
+Message-ID: <ZfF7QE0Jqok2uKrL@shell.armlinux.org.uk>
+References: <20240313064252.50233-1-duanqiangwen@net-swift.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313064252.50233-1-duanqiangwen@net-swift.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wednesday, 13 March 2024 09:52:43 CET Ayush Tiwari wrote:
-> Rename local variable tmpVal back to avg_val in function process_link_qual
-
-You are making a new patch versions (v5) against your previous one. This is 
-not how the development process works...
-
-Make v6 against a clean staging tree, and change your commit message 
-accordingly:
-
-Rename tmpVal to avg_val in process_link_qual() to reflect the intended use of 
-the variable and conform to the kernel coding style. 
-
-Not directly related but, there is no need to say that process_link_qual() is 
-a function (parentheses already say that). Furthermore, by renaming you make 
-it clear what is the intended use of symbols, you don't "give meaning" to them 
-(they already have meaning by the mere fact that they serve their intended 
-purpose - https://ludwig.guru/s/to+give+meaning+to+something).
-
-Remember that only the final versions of patches, the accepted version, will be 
-applied against the kernel. Therefore, if this version was good, it couldn't 
-be applied because in process_link_qual() there is no variable called pct_val.
-
-git-am on your patch gives expected errors:
-
-Applying: staging: rtl8712: rename tmpVal to avg_val
-error: patch failed: drivers/staging/rtl8712/rtl8712_recv.c:861
-error: drivers/staging/rtl8712/rtl8712_recv.c: patch does not apply
-
-> to give intuitive meaning to variable and match the common kernel
-> coding style.
-> 
-> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
-> ---
-> 
-> [skip]
->
-> --- a/drivers/staging/rtl8712/rtl8712_recv.c
-> +++ b/drivers/staging/rtl8712/rtl8712_recv.c
-> @@ -861,7 +861,7 @@ static void query_rx_phy_status(struct _adapter
-> *padapter, static void process_link_qual(struct _adapter *padapter,
->  			      union recv_frame *prframe)
+On Wed, Mar 13, 2024 at 02:42:52PM +0800, Duanqiang Wen wrote:
+> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
+> index ee37d0be6877..620dc1e80b48 100644
+> --- a/drivers/clk/clkdev.c
+> +++ b/drivers/clk/clkdev.c
+> @@ -158,6 +158,9 @@ vclkdev_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
+>  	va_list ap)
 >  {
-> -	u32	last_evm = 0, pct_val;
+>  	struct clk_lookup_alloc *cla;
+> +	struct device *dev;
+> +
+> +	dev = clk_hw_get_dev(hw);
 
-As said, a clean process_link_qual() has no pct_val variable.
+Sorry, but no, clkdev should have minimal dependencies on CCF (it was
+designed to be completely independent). I'd prefer not to add this.
+Just print the formatted dev_fmt+ap and the con_id when reporting
+errors.
 
-Fabio
+>  
+>  	cla = kzalloc(sizeof(*cla), GFP_KERNEL);
+>  	if (!cla)
+> @@ -165,11 +168,19 @@ vclkdev_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
+>  
+>  	cla->cl.clk_hw = hw;
+>  	if (con_id) {
+> +		if (strlen(dev_fmt) >= MAX_CON_ID) {
 
-> +	u32	last_evm = 0, avg_val;
->  	struct rx_pkt_attrib *pattrib;
->  	struct smooth_rssi_data *sqd = &padapter->recvpriv.signal_qual_data;
-> 
-> @@ -883,8 +883,8 @@ static void process_link_qual(struct _adapter *padapter,
-> sqd->index = 0;
-> 
->  		/* <1> Showed on UI for user, in percentage. */
-> -		pct_val = sqd->total_val / sqd->total_num;
-> -		padapter->recvpriv.signal = (u8)pct_val;
-> +		avg_val = sqd->total_val / sqd->total_num;
-> +		padapter->recvpriv.signal = (u8)avg_val;
+This is wrong (uses dev_fmt not con_id). Also, use sizeof(cla->con_id)
+to test against.
+
+> +			pr_err("%s:con_id string cannot be greater than 16 characters\n", dev_fmt);
+
+Cleanup?
+
+> +			return NULL;
+> +		}
+>  		strscpy(cla->con_id, con_id, sizeof(cla->con_id));
+>  		cla->cl.con_id = cla->con_id;
 >  	}
->  }
+>  
+>  	if (dev_fmt) {
+> +		if (strlen(dev_fmt) >= MAX_DEV_ID) {
 
+This is also wrong. The length of the format string does not give any
+information on how long the resulting string actually is.
 
+> +			pr_err("%s:dev_id string cannot be greater than 20 characters\n", dev_fmt);
 
+Cleanup?
 
+> +			return NULL;
+> +		}
+>  		vscnprintf(cla->dev_id, sizeof(cla->dev_id), dev_fmt, ap);
+
+Using vsnprintf() here and checking whether the return value is larger
+than sizeof(cla->dev_id) would be better.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
