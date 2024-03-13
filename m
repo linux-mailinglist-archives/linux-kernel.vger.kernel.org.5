@@ -1,130 +1,93 @@
-Return-Path: <linux-kernel+bounces-101902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 674F887AC93
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:11:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5534387AC46
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2451028A4C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:11:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4FF0B2299D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9BB81731;
-	Wed, 13 Mar 2024 16:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIF92ouT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D85D60897;
+	Wed, 13 Mar 2024 16:39:31 +0000 (UTC)
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEEF81219;
-	Wed, 13 Mar 2024 16:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A934DA05;
+	Wed, 13 Mar 2024 16:39:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348039; cv=none; b=oFCXUx8k2uUa/WebAC69H7y8HNfam2MKT+uuymElAdPgOJVNCxR9bfSzF2I/9f+6R9S/p1zJ7W6IQh7kzK0fD7bytXb9scz0l7OClZSfYXPEMGb7tz3EHlSBqa/HCFMntdIQZr2cGuuXfzXrpj1UQHiDXG4t09KFsa6bllp0PV4=
+	t=1710347971; cv=none; b=KDMovb7BwjLXeAXtGFcwhf0xuQPoSebOw9sUpOdIc0lA6Icf/9BBc4+dumhUX34F1F6we1mLf9ljpsJMaBhcSEnGrdNfZCbA812GoJMaxLbR8eljYqVPlEufEK5cy59v3y4W7FhtOLVRfqWQds0lLYmALoZjhGnF55by3iGmW3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348039; c=relaxed/simple;
-	bh=a6IhWdWXdOwczKFyKIuSC60sB+c8ssghEzrNz4Ee4UM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=URzWRDM7FhhcdS/SBbHli8uIn8OswzJzSzYOQeLu6sFpw76XZa0IC1LnN72OhhNv6bmkw/yAXFYT8XDyuOlszy5LuXYY7TLLiI8xkWqRPed2wWtXWkltB2PQDfXAGmlsatO/sQubNp0T0vUQsSIbtuQNflG+5Rj5Un7LQsXjFFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hIF92ouT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F392C433A6;
-	Wed, 13 Mar 2024 16:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348039;
-	bh=a6IhWdWXdOwczKFyKIuSC60sB+c8ssghEzrNz4Ee4UM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hIF92ouT9ND30z8+QINzYEm3UFzJ7/cg7/+vpVqpAG1oKXMsXOtDNAUc6fyizy15S
-	 jIsBBPlXh21a07fTGGJuje06+2db+xLfpSZ1aVeYyyriPpdtefejI5O0cHq9RLKldq
-	 n1W6+1QDEtzSASajSopJasMwbdJu/9zenq8VuLpslgNSl/wf9YWmLivAZnC3BqDeLS
-	 noxMeKV6P4Sp4f+FZc0EsC6sH6Phin716n/orz+Y15g0D/a88PBehFsGg+x/MqbU7Y
-	 u59CQJ0XVWi7IKmvwUhGV1R52jYVcV/V5kZWRGQnoVCR9vv/QTbJ9sRjsyQ90v8ZIs
-	 Z6fOHstMdRRcQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Jerry Zuo <jerry.zuo@amd.com>,
-	Jun Lei <Jun.Lei@amd.com>,
-	Wayne Lin <Wayne.Lin@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 34/71] drm/amd/display: Fix uninitialized variable usage in core_link_ 'read_dpcd() & write_dpcd()' functions
-Date: Wed, 13 Mar 2024 12:39:20 -0400
-Message-ID: <20240313163957.615276-35-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
-References: <20240313163957.615276-1-sashal@kernel.org>
+	s=arc-20240116; t=1710347971; c=relaxed/simple;
+	bh=W6R8O4M25dj7O1UDjRAq3AUKBrOJQ+XGzWoFoLCvgPs=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=DkbxXeJ0Gq7DiUVvCwWHoOOUVZfqnHIyU/VaObOcXW7n3cDkubXyEdRDmSVKMAJI+O50Y1SHDgiCYtJzBJnCOSlgh4eH3SdkSAU1gylnzq2Kz4Aq1bMJz+OgtlCBNDqYtyi0uD6BeNgT2vNkwE52c2aNpW2W/M+2FfMCd2hqsXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=fail smtp.mailfrom=linux.com; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.com
+Received: by gentwo.org (Postfix, from userid 1003)
+	id CA6CD40A9B; Wed, 13 Mar 2024 09:39:21 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id C9A8340941;
+	Wed, 13 Mar 2024 09:39:21 -0700 (PDT)
+Date: Wed, 13 Mar 2024 09:39:21 -0700 (PDT)
+From: "Christoph Lameter (Ampere)" <cl@linux.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+cc: Sudeep Holla <sudeep.holla@arm.com>, 
+    Catalin Marinas <catalin.marinas@arm.com>, 
+    Mark Rutland <mark.rutland@arm.com>, 
+    "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
+    "Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <vireshk@kernel.org>, 
+    Will Deacon <will@kernel.org>, Jonathan.Cameron@huawei.com, 
+    Matteo.Carlini@arm.com, Valentin.Schneider@arm.com, 
+    akpm@linux-foundation.org, anshuman.khandual@arm.com, 
+    Eric Mackay <eric.mackay@oracle.com>, dave.kleikamp@oracle.com, 
+    linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+    linux-mm@kvack.org, linux@armlinux.org.uk, robin.murphy@arm.com, 
+    vanshikonda@os.amperecomputing.com, yang@os.amperecomputing.com, 
+    Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
+ supported CPUs to 512
+In-Reply-To: <432c1980-b00f-4b07-9e24-0bec52ccb5d6@samsung.com>
+Message-ID: <173078dd-3743-2d39-a9ea-015ea5be48f8@linux.com>
+References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org> <CGME20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f@eucas1p1.samsung.com> <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com> <Ze9TsQ-qVCZMazfI@arm.com> <9352f410-9dad-ac89-181a-b3cfc86176b8@linux.com>
+ <bf1757ca-6d41-87e7-53dd-56146eef5693@linux.com> <ZfCXJRJSMK4tt_Cm@arm.com> <ZfG5oyrgGOkpHYD6@bogus> <432c1980-b00f-4b07-9e24-0bec52ccb5d6@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.82-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-6.1.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 6.1.82-rc1
-X-KernelTest-Deadline: 2024-03-15T16:39+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323329-2114933744-1710347961=:1414196"
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-[ Upstream commit a58371d632ebab9ea63f10893a6b6731196b6f8d ]
+--8323329-2114933744-1710347961=:1414196
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-The 'status' variable in 'core_link_read_dpcd()' &
-'core_link_write_dpcd()' was uninitialized.
+On Wed, 13 Mar 2024, Marek Szyprowski wrote:
 
-Thus, initializing 'status' variable to 'DC_ERROR_UNEXPECTED' by default.
+>> I did try to trigger this on FVP by adding OPPs + some hacks to add dummy
+>> clock provider to successfully probe this driver. I couldn't hit the issue
+>> reported 🙁. It could be that with the hardware clock/regulator drivers, it
+>> take a different path in OPP core.
+>
+> I can fully reproduce this issue on Khadas VIM3 and Odroid-N2 boards.
+> Both Meson A311D SoC based.
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dpcd.c:226 core_link_read_dpcd() error: uninitialized symbol 'status'.
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dpcd.c:248 core_link_write_dpcd() error: uninitialized symbol 'status'.
+Hmm... Would it trigger on Orangepi5plus? With some effort I can get that 
+board up at home.
 
-Cc: stable@vger.kernel.org
-Cc: Jerry Zuo <jerry.zuo@amd.com>
-Cc: Jun Lei <Jun.Lei@amd.com>
-Cc: Wayne Lin <Wayne.Lin@amd.com>
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/amd/display/dc/core/dc_link_dpcd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Could you reboot with some memory diagnostics so that we are sure that 
+nothing gets corrupted?
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dpcd.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dpcd.c
-index af110bf9470fa..aefca9756dbe8 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dpcd.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dpcd.c
-@@ -202,7 +202,7 @@ enum dc_status core_link_read_dpcd(
- 	uint32_t extended_size;
- 	/* size of the remaining partitioned address space */
- 	uint32_t size_left_to_read;
--	enum dc_status status;
-+	enum dc_status status = DC_ERROR_UNEXPECTED;
- 	/* size of the next partition to be read from */
- 	uint32_t partition_size;
- 	uint32_t data_index = 0;
-@@ -231,7 +231,7 @@ enum dc_status core_link_write_dpcd(
- {
- 	uint32_t partition_size;
- 	uint32_t data_index = 0;
--	enum dc_status status;
-+	enum dc_status status = DC_ERROR_UNEXPECTED;
- 
- 	while (size) {
- 		partition_size = dpcd_get_next_partition_size(address, size);
--- 
-2.43.0
+F.e. specify a command line parameter "slub_debug" to enable redzoning. 
+That way we may see potential memory corruption.
 
+--8323329-2114933744-1710347961=:1414196--
 
