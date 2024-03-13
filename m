@@ -1,139 +1,141 @@
-Return-Path: <linux-kernel+bounces-101443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0379787A725
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:38:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F4787A727
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6364CB22C3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:38:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5D31F22872
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522FC3F8FF;
-	Wed, 13 Mar 2024 11:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788473F8FB;
+	Wed, 13 Mar 2024 11:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PE963hp2"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=mydatex.cz header.i=@mydatex.cz header.b="eoSrV7j8"
+Received: from kali.sitour.cz (smtp.sitour.cz [77.48.244.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139B32629C;
-	Wed, 13 Mar 2024 11:37:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B223D3BE;
+	Wed, 13 Mar 2024 11:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.48.244.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710329881; cv=none; b=Bt9fWc1HSWBnbWTtvm7Li2QAPgoFwCYSsB7CtjrORzk4/++Y8DwLkI3x82Y+b9h4YIX0LS28wvxOHDFCsXSeIH4YCZvGAoE+ELQBO/HE3xBrQOT+HrquVF6eTyU8xFhG1cnKYSHBvQjSgV3KyWGPn/nC6KhC2zdy0sPUNqqsmD0=
+	t=1710329960; cv=none; b=o+0AcQwi6eb4osLwequQWPxYccp5UFFwvOAUTjN2Tw/zyRmmNMhq4lzYYXims/m6aCf8mKjqC8mCUHI3hjIdEhJDVZrV5QhFSLMwgQ8qoOFiDQRCmu/JgRnU3UX7P90SgB8IFRk5zdjG05bgzt8tRXCWsWFw4QD7NAblHp8ZM9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710329881; c=relaxed/simple;
-	bh=Qa7ll0GyaGUvz7Usuw8YD3mUQgOjcuJgigdKi3gJ5Bw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Y+XXVsm+Y5/DvctMzuKRqZUaAuu+Xd5fIFiAA8oVt1EVvpFXjcbgE/h6Zp8HAUJi+Vxv22M16/PhJT1VV3z3s/RaAKH0EFa9A5E+cPodw2wL0FYbtmqTpNUgNb8Sm+hKDySv6zXBQyAKDGMRZk6T3gTJCxkckCmQotUlMF6OsSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PE963hp2; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710329881; x=1741865881;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Qa7ll0GyaGUvz7Usuw8YD3mUQgOjcuJgigdKi3gJ5Bw=;
-  b=PE963hp2jhrdHAVP82a8wAvH7RIs22phuj778FRoSvzaOG5594B8wjM7
-   d3iQ1Av84h1ltKExsCeu7Qlk7MhX7FMmpue54CBnLsE3/x4oYavAIeYqx
-   5iAkD5UEV/V2epwswP/0unKJ4alf5AMcebXPNMfcXoVKAV4QRnMq3UE7R
-   kU9i0nyxtI8xQ1urUqp7AFCC2ttMvaM55bfew3sHK2QE35ELlzUWtwMul
-   Tp75+7o3rno2kFyMfXqn+Zm5EmH/KKIgdTIKKz0cd6AQfq5cvVHaujcBo
-   3UuiGr4ZQ72TFnUWb3PmnnjMRJ8ieRadX1ti+OUU6yjy91WL3mmDZsacY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5017713"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="5017713"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 04:38:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="16547029"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.7])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 04:37:57 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 13 Mar 2024 13:37:51 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: linux-kselftest@vger.kernel.org, 
-    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
-    Babu Moger <babu.moger@amd.com>, Fenghua Yu <fenghua.yu@intel.com>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 08/13] selftests/resctrl: Add ->init() callback into
- resctrl_val_param
-In-Reply-To: <vzluzxmks6bqfszwoib72ufbanxucxk5xzilavp3wrwoh7fqxh@rugv6wcptofu>
-Message-ID: <511bb602-e29d-0a2c-3076-81fdd5a5955f@linux.intel.com>
-References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-9-ilpo.jarvinen@linux.intel.com> <zxrd5yzgtbet3d42c77ifgu5t2guyhwbz76zhk7zhrp6hnamrb@pl72dxisxax6> <vzluzxmks6bqfszwoib72ufbanxucxk5xzilavp3wrwoh7fqxh@rugv6wcptofu>
+	s=arc-20240116; t=1710329960; c=relaxed/simple;
+	bh=9ovafFScVtcbkEjyPonUN2CJTjm1kMv9ezENYlGgXfw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CEP9fb0q94Rv0jM+cHCkyH9NZSyYCnn/UXvo3TloGk60itCbcSMpPRG9H6F4LHqIR9ijUvnVuGGBD4bUDziwuZNpHJEG3GXirfwIvXzbpyv07gXDrTh0tvP3zLKyQWSaCyMoeRltcNOmvTMCq6F6Q8KUMxt5+ewhhqz8ZsLgzJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mydatex.cz; spf=pass smtp.mailfrom=mydatex.cz; dkim=pass (2048-bit key) header.d=mydatex.cz header.i=@mydatex.cz header.b=eoSrV7j8; arc=none smtp.client-ip=77.48.244.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mydatex.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mydatex.cz
+Received: from localhost (localhost [127.0.0.1])
+	by kali.sitour.cz (Postfix) with ESMTP id 1221E4E0278;
+	Wed, 13 Mar 2024 12:39:17 +0100 (CET)
+X-Virus-Scanned: Debian amavis at sitour.cz
+Received: from kali.sitour.cz ([127.0.0.1])
+ by localhost (sitour.cz [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id bu-wu_DxQ_yc; Wed, 13 Mar 2024 12:39:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mydatex.cz; s=mydatex;
+	t=1710329954; bh=9ovafFScVtcbkEjyPonUN2CJTjm1kMv9ezENYlGgXfw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eoSrV7j8FOthplpG1aUzEeP0f99doS5lN9cI5h4iYrq73t+r4DTrm+YOkv/6AUhOX
+	 ORR3WUCxGRZFdNOeRxz0dCt3QJSNS9PnIjhA5cQ//PpXe6vs785lTKHnkWT55onQfP
+	 4YA1r946U6X1k5P+KkQoPAgQuo4goA3TUCJrrj9k7KMoQ3JtRHcTkXnZ42sdP3ontS
+	 ruTQW+swSdII5xncTZU1oFfOucBZQjabjU88XVbtljNrhpHzf73r5QjQN+JLmNO1Iq
+	 J+Kr4r/ybOz+DP3WhQGVLfdbKk+0c7O9zWD36WRZ/qio1R0pG9dlN86km7kOWMXk9L
+	 D4rZe5VU4AeMA==
+Received: from [192.168.3.13] (firma.mydatex.cz [84.242.99.246])
+	by kali.sitour.cz (Postfix) with ESMTPSA id 455494E0276;
+	Wed, 13 Mar 2024 12:39:14 +0100 (CET)
+Message-ID: <fccabbff-4a71-4498-934a-5f6b18b94dd2@mydatex.cz>
+Date: Wed, 13 Mar 2024 12:39:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1018063897-1710329871=:1167"
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323328-1018063897-1710329871=:1167
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-On Wed, 13 Mar 2024, Maciej Wieczor-Retman wrote:
-> On 2024-03-13 at 11:15:30 +0100, Maciej Wieczor-Retman wrote:
-> >On 2024-03-11 at 15:52:25 +0200, Ilpo J=E4rvinen wrote:
-> >>diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing=
-/selftests/resctrl/cmt_test.c
-> >>index 241c0b129b58..e79eca9346f3 100644
-> >>--- a/tools/testing/selftests/resctrl/cmt_test.c
-> >>+++ b/tools/testing/selftests/resctrl/cmt_test.c
-> >>@@ -16,6 +16,17 @@
-> >> #define MAX_DIFF=09=092000000
-> >> #define MAX_DIFF_PERCENT=0915
-> >>=20
-> >>+#define CON_MON_LCC_OCCUP_PATH=09=09\
-> >>+=09"%s/%s/mon_groups/%s/mon_data/mon_L3_%02d/llc_occupancy"
-> >>+
-> >>+static int set_cmt_path(const struct resctrl_val_param *param, int dom=
-ain_id)
-> >>+{
-> >>+=09sprintf(llc_occup_path,=09CON_MON_LCC_OCCUP_PATH,=09RESCTRL_PATH,
-> >>+=09=09param->ctrlgrp, param->mongrp, domain_id);
-> >>+
-> >>+=09return 0;
-> >>+}
-> >>+
-> >
-> >Is there an option to make this function (and the set_mbm_path()) global=
- through
-> >the resctrl.h?
-> >
-> >I'd like to use it in my SNC series [1] for looping over different nodes=
- and
-> >that requires changing the paths during the measure phase of the tests a=
-nd that
-> >part is currently in cache.c:measure_llc_resctrl().
-> >
-> >Or would you suggest some other way of changing these paths in cache?
-> >
->=20
-> +forgot to add the link :b
->=20
-> [1] https://lore.kernel.org/all/cover.1709721159.git.maciej.wieczor-retma=
-n@intel.com/
-
-Perhaps ->init() should just prepare an array of filenames to read from=20
-to support SNC. That would keep the filename preparations out of the=20
-measurement period.
-
-It feels slightly hacky to have an array of files but I cannot think of=20
-anything else that would be cleaner and would not require creating the=20
-filenames during the actual test.
+User-Agent: Mozilla Thunderbird
+Subject: Re: Regressions can bus with MCP2515 on sama5d3 connected over SPI
+ stop working on kernel > 5.4.271
+Content-Language: cs-CZ
+To: Linux regressions mailing list <regressions@lists.linux.dev>,
+ Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz>
+ <a2e64be0-e07d-4c55-aba7-87c7e4c876e0@leemhuis.info>
+ <734cf096-3769-4610-b72f-394c31a8d942@mydatex.cz>
+ <91d8a6b6-6186-4aa0-8462-56b4751854e9@leemhuis.info>
+ <6918321b-038d-40b9-8149-d535bf9d3d52@mydatex.cz>
+ <5f69d6ee-a07a-42a9-a238-7dbe1f82cc3f@mydatex.cz>
+ <3e46d70b-196d-45c7-bfdf-869c78cdc81f@leemhuis.info>
+ <20240313-polio-jinx-bc5fd5df7c06-mkl@pengutronix.de>
+ <b6c9b015-86bc-475b-a190-e35fa76c1ceb@mydatex.cz>
+ <8086dce0-11d2-4bad-be47-e16bbc0800d9@leemhuis.info>
+From: Daniel Smolik <smolik@mydatex.cz>
+In-Reply-To: <8086dce0-11d2-4bad-be47-e16bbc0800d9@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---=20
- i.
+No, if you kick me little I do it:-)
 
---8323328-1018063897-1710329871=:1167--
+git clone -o mainline --no-checkout \
+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ~/linux/
+cd ~/linux/
+git remote add -t master stable \
+   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+git checkout --detach v6.8
+
+cd ~/linux/
+
+git cherry-pick
+--no-commit   52f96cd135b160d44db4cb62a5b614b3bca20fbc]
+
+Is this right way ?
+
+	Regards
+			Dan
+
+
+
+
+
+
+Dne 13. 03. 24 v 12:32 Linux regression tracking (Thorsten Leemhuis) 
+napsal(a):
+> On 13.03.24 12:22, Daniel Smolik wrote:
+>> this is my first bisection please be lenient :-) Threse is a result:
+>>
+>> marvin@marvin:/usr/src/linux$ git bisect good
+>> Bisecting: 0 revisions left to test after this (roughly 0 steps)
+>> [52f96cd135b160d44db4cb62a5b614b3bca20fbc] net: stmmac: xgmac: Remove
+>> uneeded computation for RFA/RFD
+> Have you tried reverting that commit on-top of 5.5 and/or 6.8 to see if
+> this fixes the problem, as advised by the bisection guide I mentioned?
+>
+> Ciao, Thorsten
+>
+>> Dne 13. 03. 24 v 11:35 Marc Kleine-Budde napsal(a):
+>>
+>>> On 13.03.2024 10:16:47, Linux regression tracking (Thorsten Leemhuis)
+>>> wrote:
+>>>> Hi! Mark and Manivannan, do you by chance have an idea what might be
+>>>> wrong with Daniel's system or can point us in the direction of people
+>>>> that might be able to help? See
+>>>> https://lore.kernel.org/all/2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz/
+>>>> for the initial report (but it is in the quote below, too).
+>>> At the first glance the mcp251x.c changes between v5.4 and v5.5 look
+>>> unrelated.
+>>>
+>>> I try to find some time to setup bisecting on an imx6.
+>>>
+>>> Marc
+>>>
+>>
+>>
+
 
