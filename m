@@ -1,56 +1,60 @@
-Return-Path: <linux-kernel+bounces-102083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE92387AE41
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:53:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20A9487AE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E2ED2825F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:53:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82F841F2A58D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB6C5813E;
-	Wed, 13 Mar 2024 16:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80A4160872;
+	Wed, 13 Mar 2024 16:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K+CkS2TP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knQ/BFSi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344A0161B54;
-	Wed, 13 Mar 2024 16:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D611858AA4;
+	Wed, 13 Mar 2024 16:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348466; cv=none; b=gO6BW76OzZtOWG4Ld7eU0mBa34p2hQe0MN7E4/Wz/ZAiuLwKpm+k0eduv9I1Ww+WcDH27TNEFoXRGrssHbBEN92FgxSduyv8f+CEuO+1KUSPavYeUTXFlTyJL/x4xnoKz5qIwolbfQ4U5MShybX8FXdBfd5Onskd3/Jbj6BJ1gk=
+	t=1710348467; cv=none; b=m64xEibxge5ubGcxxml3e9G8VNHPVO5adKYJTR+7PzEC3bHmMoKIryP5A/ELCELVgeAtuFUqhzarFv9tgQokpdLTHaPNUkcSMzb7ewK5ifacfGG097iVrq/MtHG0seKTTykrzfR00HynFazCxKvcJmo5qd4sXuF+/ZwbRZ4Jml4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348466; c=relaxed/simple;
-	bh=SO10NYY2rFlZKfrtasX2qxmzBJJJrpWGsfzvhZ2o1io=;
+	s=arc-20240116; t=1710348467; c=relaxed/simple;
+	bh=8DrZe4V/PmgJG0xFr0P5OAc30m8lwJITKLM3iheY4xI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZJR5ZfP/TO9TYpq0Y4RvPwy5XfyM92jR8dNvWtLeOLvXoxakbsPJNGjs0dCzwMRPMlfqYpkGYnuukwnMS1VrDP0hEChjIrhdCNwthWMS6kzWJYX1yoGzSCnQyh1EPHhGfqAOvnWzMH9+dc7BoNzUpt298w/MIahDlbxVe5Sxlu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K+CkS2TP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3D1BC43399;
-	Wed, 13 Mar 2024 16:47:44 +0000 (UTC)
+	 MIME-Version; b=I2sZn+VN1BlNYPbp3otKfW17PtmsMJX7VyHoBLmmbR1CX7VLJVFM3qulydkyXqOTTEoHGMYiftAQPpQOQMq8kBmmFM30gvDMdquQTdWIsb3CN6lkRvyVXhCIx5in7sZQKNchqIZpXNMDhBoVJHqq1hA2xrB0WI6GuD/rZXBPz7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knQ/BFSi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61523C433C7;
+	Wed, 13 Mar 2024 16:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348466;
-	bh=SO10NYY2rFlZKfrtasX2qxmzBJJJrpWGsfzvhZ2o1io=;
+	s=k20201202; t=1710348467;
+	bh=8DrZe4V/PmgJG0xFr0P5OAc30m8lwJITKLM3iheY4xI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K+CkS2TPZ9JPHWgHn5BLP/xPgNprVbd51+vQInnCgLeEj7uP8PhAW66evqV4UjHFD
-	 UmV92idviCYxNDS4VJ8g1OnOR52Zj9KKrBtOWdPMTN7OVtIE15huj80VYjRuGWIjtY
-	 eAErdLdTeQtGhH/E8mi2hyNyPoUQPVMEtCmMqJsEuwpY5fi2D90gZ57/lBvNovQkFd
-	 RLutZhGroWRVhT8S2fAv0qp4aQPQQjW3CirhX1ZPcHQHeBSnLxyOjMUdf85e3h2Lq9
-	 9rutn7gnT8Y7uQ7mdaZ7AJJSgjqpusLBbZoEdGmPjMYG6wicZJgYz1+E+xZQxrlWHJ
-	 tHgzgf666I+HQ==
+	b=knQ/BFSiQji/VgVw44LELxq/pIZNRZep1ZtIBJx1moVHLjc6BaIEuszQuj0NuVswj
+	 n0TibKt+i8phOi4ANqW1y+fUyt4m0zJ6erpTnGURUW1md4HGlTYIoDi6xPZslpgfy3
+	 xZ+xWCpd7PuLca/ZOWHDOy8a8fGWst/8yT8K9PVuF4n2liCOWWje07CFVFtogMr15T
+	 UCeT7uWzuHQlxUQKtVO1fyYtnX7Jw99AIlDEF4E1njUfxW20nVhbm0GQUqmEnXBbFg
+	 FmQaTedKWsDwhrA4R7xGtH4osizcjhDUlKQONR7ciLIkfyGgO+yWdpCXWRaTWItatu
+	 kUzXr9AlaN/Xg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Mike Kravetz <mike.kravetz@oracle.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Dan Carpenter <dan.carpenter@oracle.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 57/73] hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed
-Date: Wed, 13 Mar 2024 12:46:24 -0400
-Message-ID: <20240313164640.616049-58-sashal@kernel.org>
+Subject: [PATCH 5.10 58/73] mm/hugetlb: change hugetlb_reserve_pages() to type bool
+Date: Wed, 13 Mar 2024 12:46:25 -0400
+Message-ID: <20240313164640.616049-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -70,182 +74,189 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-[ Upstream commit 9cae43da9867412f8bd09aee5c8a8dc5e8dc3dc2 ]
+[ Upstream commit 33b8f84a4ee78491a8f4f9e4c5520c9da4a10983 ]
 
-If hv_netvsc driver is unloaded and reloaded, the NET_DEVICE_REGISTER
-handler cannot perform VF register successfully as the register call
-is received before netvsc_probe is finished. This is because we
-register register_netdevice_notifier() very early( even before
-vmbus_driver_register()).
-To fix this, we try to register each such matching VF( if it is visible
-as a netdevice) at the end of netvsc_probe.
+While reviewing a bug in hugetlb_reserve_pages, it was noticed that all
+callers ignore the return value.  Any failure is considered an ENOMEM
+error by the callers.
 
-Cc: stable@vger.kernel.org
-Fixes: 85520856466e ("hv_netvsc: Fix race of register_netdevice_notifier and VF register")
-Suggested-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Change the function to be of type bool.  The function will return true if
+the reservation was successful, false otherwise.  Callers currently assume
+a zero return code indicates success.  Change the callers to look for true
+to indicate success.  No functional change, only code cleanup.
+
+Link: https://lkml.kernel.org/r/20201221192542.15732-1-mike.kravetz@oracle.com
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Stable-dep-of: e656c7a9e596 ("mm: hugetlb pages should not be reserved by shmat() if SHM_NORESERVE")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/netvsc_drv.c | 82 +++++++++++++++++++++++++--------
- 1 file changed, 62 insertions(+), 20 deletions(-)
+ fs/hugetlbfs/inode.c    |  4 ++--
+ include/linux/hugetlb.h |  2 +-
+ mm/hugetlb.c            | 37 ++++++++++++++-----------------------
+ 3 files changed, 17 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index e8efcc6a0b05a..0fc0f9cb3f34b 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -44,6 +44,10 @@
- #define LINKCHANGE_INT (2 * HZ)
- #define VF_TAKEOVER_INT (HZ / 10)
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index a0edd4b8fa189..c3e9fa7ce75f7 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -176,7 +176,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 	file_accessed(file);
  
-+/* Macros to define the context of vf registration */
-+#define VF_REG_IN_PROBE		1
-+#define VF_REG_IN_NOTIFIER	2
-+
- static unsigned int ring_size __ro_after_init = 128;
- module_param(ring_size, uint, 0444);
- MODULE_PARM_DESC(ring_size, "Ring buffer size (# of pages)");
-@@ -2194,7 +2198,7 @@ static rx_handler_result_t netvsc_vf_handle_frame(struct sk_buff **pskb)
+ 	ret = -ENOMEM;
+-	if (hugetlb_reserve_pages(inode,
++	if (!hugetlb_reserve_pages(inode,
+ 				vma->vm_pgoff >> huge_page_order(h),
+ 				len >> huge_page_shift(h), vma,
+ 				vma->vm_flags))
+@@ -1500,7 +1500,7 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
+ 	inode->i_size = size;
+ 	clear_nlink(inode);
+ 
+-	if (hugetlb_reserve_pages(inode, 0,
++	if (!hugetlb_reserve_pages(inode, 0,
+ 			size >> huge_page_shift(hstate_inode(inode)), NULL,
+ 			acctflag))
+ 		file = ERR_PTR(-ENOMEM);
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 99b73fc4a8246..90c66b9458c31 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -140,7 +140,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
+ 				unsigned long dst_addr,
+ 				unsigned long src_addr,
+ 				struct page **pagep);
+-int hugetlb_reserve_pages(struct inode *inode, long from, long to,
++bool hugetlb_reserve_pages(struct inode *inode, long from, long to,
+ 						struct vm_area_struct *vma,
+ 						vm_flags_t vm_flags);
+ long hugetlb_unreserve_pages(struct inode *inode, long start, long end,
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 81949f6d29af5..02b7c8f9b0e87 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5108,12 +5108,13 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 	return pages << h->order;
  }
  
- static int netvsc_vf_join(struct net_device *vf_netdev,
--			  struct net_device *ndev)
-+			  struct net_device *ndev, int context)
+-int hugetlb_reserve_pages(struct inode *inode,
++/* Return true if reservation was successful, false otherwise.  */
++bool hugetlb_reserve_pages(struct inode *inode,
+ 					long from, long to,
+ 					struct vm_area_struct *vma,
+ 					vm_flags_t vm_flags)
  {
- 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
- 	int ret;
-@@ -2217,7 +2221,11 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
- 		goto upper_link_failed;
+-	long ret, chg, add = -1;
++	long chg, add = -1;
+ 	struct hstate *h = hstate_inode(inode);
+ 	struct hugepage_subpool *spool = subpool_inode(inode);
+ 	struct resv_map *resv_map;
+@@ -5123,7 +5124,7 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 	/* This should never happen */
+ 	if (from > to) {
+ 		VM_WARN(1, "%s called with a negative range\n", __func__);
+-		return -EINVAL;
++		return false;
  	}
  
--	schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
-+	/* If this registration is called from probe context vf_takeover
-+	 * is taken care of later in probe itself.
-+	 */
-+	if (context == VF_REG_IN_NOTIFIER)
-+		schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
+ 	/*
+@@ -5132,7 +5133,7 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 	 * without using reserves
+ 	 */
+ 	if (vm_flags & VM_NORESERVE)
+-		return 0;
++		return true;
  
- 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
+ 	/*
+ 	 * Shared mappings base their reservation on the number of pages that
+@@ -5154,7 +5155,7 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 		/* Private mapping. */
+ 		resv_map = resv_map_alloc();
+ 		if (!resv_map)
+-			return -ENOMEM;
++			return false;
  
-@@ -2355,7 +2363,7 @@ static int netvsc_prepare_bonding(struct net_device *vf_netdev)
- 	return NOTIFY_DONE;
- }
+ 		chg = to - from;
  
--static int netvsc_register_vf(struct net_device *vf_netdev)
-+static int netvsc_register_vf(struct net_device *vf_netdev, int context)
- {
- 	struct net_device_context *net_device_ctx;
- 	struct netvsc_device *netvsc_dev;
-@@ -2395,7 +2403,7 @@ static int netvsc_register_vf(struct net_device *vf_netdev)
- 
- 	netdev_info(ndev, "VF registering: %s\n", vf_netdev->name);
- 
--	if (netvsc_vf_join(vf_netdev, ndev) != 0)
-+	if (netvsc_vf_join(vf_netdev, ndev, context) != 0)
- 		return NOTIFY_DONE;
- 
- 	dev_hold(vf_netdev);
-@@ -2479,10 +2487,31 @@ static int netvsc_unregister_vf(struct net_device *vf_netdev)
- 	return NOTIFY_OK;
- }
- 
-+static int check_dev_is_matching_vf(struct net_device *event_ndev)
-+{
-+	/* Skip NetVSC interfaces */
-+	if (event_ndev->netdev_ops == &device_ops)
-+		return -ENODEV;
-+
-+	/* Avoid non-Ethernet type devices */
-+	if (event_ndev->type != ARPHRD_ETHER)
-+		return -ENODEV;
-+
-+	/* Avoid Vlan dev with same MAC registering as VF */
-+	if (is_vlan_dev(event_ndev))
-+		return -ENODEV;
-+
-+	/* Avoid Bonding master dev with same MAC registering as VF */
-+	if (netif_is_bond_master(event_ndev))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
- static int netvsc_probe(struct hv_device *dev,
- 			const struct hv_vmbus_device_id *dev_id)
- {
--	struct net_device *net = NULL;
-+	struct net_device *net = NULL, *vf_netdev;
- 	struct net_device_context *net_device_ctx;
- 	struct netvsc_device_info *device_info = NULL;
- 	struct netvsc_device *nvdev;
-@@ -2590,6 +2619,30 @@ static int netvsc_probe(struct hv_device *dev,
+@@ -5162,18 +5163,12 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 		set_vma_resv_flags(vma, HPAGE_RESV_OWNER);
  	}
  
- 	list_add(&net_device_ctx->list, &netvsc_dev_list);
-+
-+	/* When the hv_netvsc driver is unloaded and reloaded, the
-+	 * NET_DEVICE_REGISTER for the vf device is replayed before probe
-+	 * is complete. This is because register_netdevice_notifier() gets
-+	 * registered before vmbus_driver_register() so that callback func
-+	 * is set before probe and we don't miss events like NETDEV_POST_INIT
-+	 * So, in this section we try to register the matching vf device that
-+	 * is present as a netdevice, knowing that its register call is not
-+	 * processed in the netvsc_netdev_notifier(as probing is progress and
-+	 * get_netvsc_byslot fails).
-+	 */
-+	for_each_netdev(dev_net(net), vf_netdev) {
-+		ret = check_dev_is_matching_vf(vf_netdev);
-+		if (ret != 0)
-+			continue;
-+
-+		if (net != get_netvsc_byslot(vf_netdev))
-+			continue;
-+
-+		netvsc_prepare_bonding(vf_netdev);
-+		netvsc_register_vf(vf_netdev, VF_REG_IN_PROBE);
-+		__netvsc_vf_setup(net, vf_netdev);
-+		break;
-+	}
- 	rtnl_unlock();
- 
- 	netvsc_devinfo_put(device_info);
-@@ -2746,28 +2799,17 @@ static int netvsc_netdev_event(struct notifier_block *this,
- 			       unsigned long event, void *ptr)
- {
- 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
-+	int ret = 0;
- 
--	/* Skip our own events */
--	if (event_dev->netdev_ops == &device_ops)
--		return NOTIFY_DONE;
+-	if (chg < 0) {
+-		ret = chg;
++	if (chg < 0)
+ 		goto out_err;
+-	}
 -
--	/* Avoid non-Ethernet type devices */
--	if (event_dev->type != ARPHRD_ETHER)
--		return NOTIFY_DONE;
--
--	/* Avoid Vlan dev with same MAC registering as VF */
--	if (is_vlan_dev(event_dev))
--		return NOTIFY_DONE;
--
--	/* Avoid Bonding master dev with same MAC registering as VF */
--	if (netif_is_bond_master(event_dev))
-+	ret = check_dev_is_matching_vf(event_dev);
-+	if (ret != 0)
- 		return NOTIFY_DONE;
+-	ret = hugetlb_cgroup_charge_cgroup_rsvd(
+-		hstate_index(h), chg * pages_per_huge_page(h), &h_cg);
  
- 	switch (event) {
- 	case NETDEV_POST_INIT:
- 		return netvsc_prepare_bonding(event_dev);
- 	case NETDEV_REGISTER:
--		return netvsc_register_vf(event_dev);
-+		return netvsc_register_vf(event_dev, VF_REG_IN_NOTIFIER);
- 	case NETDEV_UNREGISTER:
- 		return netvsc_unregister_vf(event_dev);
- 	case NETDEV_UP:
+-	if (ret < 0) {
+-		ret = -ENOMEM;
++	if (hugetlb_cgroup_charge_cgroup_rsvd(hstate_index(h),
++				chg * pages_per_huge_page(h), &h_cg) < 0)
+ 		goto out_err;
+-	}
+ 
+ 	if (vma && !(vma->vm_flags & VM_MAYSHARE) && h_cg) {
+ 		/* For private mappings, the hugetlb_cgroup uncharge info hangs
+@@ -5188,19 +5183,15 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 	 * reservations already in place (gbl_reserve).
+ 	 */
+ 	gbl_reserve = hugepage_subpool_get_pages(spool, chg);
+-	if (gbl_reserve < 0) {
+-		ret = -ENOSPC;
++	if (gbl_reserve < 0)
+ 		goto out_uncharge_cgroup;
+-	}
+ 
+ 	/*
+ 	 * Check enough hugepages are available for the reservation.
+ 	 * Hand the pages back to the subpool if there are not
+ 	 */
+-	ret = hugetlb_acct_memory(h, gbl_reserve);
+-	if (ret < 0) {
++	if (hugetlb_acct_memory(h, gbl_reserve) < 0)
+ 		goto out_put_pages;
+-	}
+ 
+ 	/*
+ 	 * Account for the reservations made. Shared mappings record regions
+@@ -5218,7 +5209,6 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 
+ 		if (unlikely(add < 0)) {
+ 			hugetlb_acct_memory(h, -gbl_reserve);
+-			ret = add;
+ 			goto out_put_pages;
+ 		} else if (unlikely(chg > add)) {
+ 			/*
+@@ -5251,7 +5241,8 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 			hugetlb_cgroup_put_rsvd_cgroup(h_cg);
+ 		}
+ 	}
+-	return 0;
++	return true;
++
+ out_put_pages:
+ 	/* put back original number of pages, chg */
+ 	(void)hugepage_subpool_put_pages(spool, chg);
+@@ -5267,7 +5258,7 @@ int hugetlb_reserve_pages(struct inode *inode,
+ 			region_abort(resv_map, from, to, regions_needed);
+ 	if (vma && is_vma_resv_set(vma, HPAGE_RESV_OWNER))
+ 		kref_put(&resv_map->refs, resv_map_release);
+-	return ret;
++	return false;
+ }
+ 
+ long hugetlb_unreserve_pages(struct inode *inode, long start, long end,
 -- 
 2.43.0
 
