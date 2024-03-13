@@ -1,173 +1,149 @@
-Return-Path: <linux-kernel+bounces-101121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE5DA87A2B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:31:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5FE787A2B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:33:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DCC41C21330
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 805E4282E1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093D712E54;
-	Wed, 13 Mar 2024 05:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEE9134B7;
+	Wed, 13 Mar 2024 05:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="GmNF8iqq"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2019.outbound.protection.outlook.com [40.92.107.19])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WzkxPoay"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0110AC122;
-	Wed, 13 Mar 2024 05:31:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710307867; cv=fail; b=bCGS29Zq3ZKedxgdvbeGGuRsmYjFkkRMm56onHa2fLt/ykmz3k5XYNHDIqZ1PExnM9jwc2ufiMOHzxcszI4X+pHa+wWzn8aYM+xRt6mes1ceQoS2u6FKbqwSiKaDQDb+AyLaFryvxLjKZBwbV0wHujZiBM4EEiBNWxwuEMtNsB0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710307867; c=relaxed/simple;
-	bh=sfzTcWKT+IVG0bQbG8cdE51BLAJGmmw8QImpAwDr1wQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Gaae8Wt07YBQ9+a/qqUhVFJLCm/VXh7pD7xgYf3oiVZXry8wFmrYbIscItxFSkU9Hr4kcI0c0nf6xLdmvlEvZntb/hBwm+ut+R/izBP1bdwi1QTVIj4I2IeKxNA0S5a29G25nAQtdybRyxnNg4GydrMGjdi7doQQUdRIQhRHY1U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=GmNF8iqq; arc=fail smtp.client-ip=40.92.107.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=muAaNwLORX7fJ+Ig1DsuYO7blGz6HZO79OhrPEZsnOsFStgoNBCo+/vH9QJtb54umTHOyL/PerlhE2ON5Um7V2yljheKQIBVMjqhCiPLs/AcLZtT3cdQVWzM3BpLyXJBuzSYjF58NRQi1owkHYosMiVJvCrso8WGnHWH3r8s5mWETuA++vmZ/vyxnqLvAd0hnifaAt+lnPfqzSTTHzmivq7xE4htBNROtNRlwcmA6K5KTfWBN9ar63HNxipGTLsqpnFq76iu1MaKSzPCSyY2qhfk0qEs9PK8tdwu9kikkIq307w38aG3r+T+JAM5gtd6C7wTYuG5W+C6y0BcVxbqkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uMI7xVKU4uDUE42Kzzfj+N4wy0Shf9QGDbMALqTDRcw=;
- b=SavSeSp0UexO5Al53v0VlaFQ38DRdGeyk1mc2sLiUmWRVB5CF2cWTCBi9RJBPHIeR6gibXdXGhCdYZ4sfLcObM9m8S0luy7DNw6ujU5xfp0SHLw+juyuirHD3TemPUbslg5cura3wlmOeOXgkgLhdc42+eJkobL+NGkpvpPrlx5bbe2Oi19aaHpu5LBoTIiYTb4ZUeFsX3xv1iLzy/QqQ8BAzSowlKe8OGYmrSZWLft9NDQ9PzZygoYS56Z/3XGMPBt64gTlyg86bKNdZYDTMj32Uo8tPKEgU2yReHwiDdzUtx10g46CxaBv07eq9JJJp1JD74l9nQ863lt07Ow2YQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uMI7xVKU4uDUE42Kzzfj+N4wy0Shf9QGDbMALqTDRcw=;
- b=GmNF8iqqYTQsj4+uSc2g4p4/UU3wPwQRj94/C7Yd2mbqP6dqzUsgzjCk6RSp7CgOH7ddo2BbaF/tVQFYd+XUYRoZsOMAFfnzZ7e4OKcJ2sjt8afkTrCAZCvMfufOCbqs0BaP0PpF+DUfTEFWjcy3oAtDTe2MHGh29iG6hGddHJfnh18ieB0ip5hYe6Aa5SuX8dMVX113bl+P88oKKAv8OgsmrsUjNS4zsUWzOOJptxoXAX9E9SOKSx/WS5ROqj3+A3V5RrcLi8belE/5wKeuRvZh7v/fqgT2mgwld2Sh8sDOYgpUKEI/r4Arqb7WAQl+GCyJZnyQ/PAIOCYm0jVz8A==
-Received: from TYSPR04MB7084.apcprd04.prod.outlook.com (2603:1096:400:47a::10)
- by SEZPR04MB5777.apcprd04.prod.outlook.com (2603:1096:101:75::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Wed, 13 Mar
- 2024 05:30:58 +0000
-Received: from TYSPR04MB7084.apcprd04.prod.outlook.com
- ([fe80::e19a:45cb:fc9e:b6af]) by TYSPR04MB7084.apcprd04.prod.outlook.com
- ([fe80::e19a:45cb:fc9e:b6af%6]) with mapi id 15.20.7386.017; Wed, 13 Mar 2024
- 05:30:58 +0000
-From: Enlin Mu <enlin.mu@outlook.com>
-To: tglx@linutronix.de,
-	linux-kernel@vger.kernel.org,
-	enlin.mu@unisoc.com,
-	enlinmu@gmail.com
-Cc: linux-hardening@vger.kernel.org
-Subject: [PATCH] hrtimer:Add get_hrtimer_cpu_base()
-Date: Wed, 13 Mar 2024 05:30:41 +0000
-Message-ID:
- <TYSPR04MB7084FCAF74B4CFA30D386B698A2A2@TYSPR04MB7084.apcprd04.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:
- [yhOtgPa62GqTez0h+f9oCUgf5NdoVv9oxy4qTc9Bn1rBBrB0LeVyYT5nK6yxjERcNBm2X5X+Zv0=]
-X-ClientProxiedBy: SG2PR01CA0168.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::24) To TYSPR04MB7084.apcprd04.prod.outlook.com
- (2603:1096:400:47a::10)
-X-Microsoft-Original-Message-ID:
- <20240313053041.152591-1-enlin.mu@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363EE8495;
+	Wed, 13 Mar 2024 05:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710307982; cv=none; b=BlIWRbqe9M8Zi190vUcmEOuiFW8Q9icWEWpUQKawZjKGrrUq2JaMU526uqf9/2NnGNPakRx+UrvSSuQP6m5uiSMUu/+sWO7Kc0528VoNPNwVRQ55wpPe7wxTj+sh2omhzm4pgzNTcQnBLB+En7rNd4R8yM4Hj6OgaLUFgOlQRFQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710307982; c=relaxed/simple;
+	bh=WpWEtgxvWQtwicuZDouwiTQ/0K6lqQ5dGDujlyQm6Vw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=dcFW7OGdSJds34g+FPhTxyusIXSGEVVrd/OFYFRmNgwtV69ugG2plfF6ar+TwZSDIRh8jHQbakjAJqqGUU61fP8G3WTZIn0lUzKIUkEz89YidHN74A2YNi8m1FrXsxGKzxy5vpra1vZUYmFcEtJFIG6WGhjHjN3LC62C2OzVdaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WzkxPoay; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42D4xZMW011563;
+	Wed, 13 Mar 2024 05:32:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=CUK9aHL4Poax07Aaff/Rcqwy3Sb4I0NsaB4STP9xUWY=; b=Wz
+	kxPoayQ0vvDcVDciB7NF3pHDuZ+uHUhX7bxuby2wdJ8G/o5RRK3DMTyz++ginm92
+	EwSIpjmEsRyhfvJ2N1Mw7rqXZFSFEU57j77sVIiCQCcSKTfqW8dAlmlTJSCzoonV
+	Se1EhrCiQq65WYrFOJ1KboAGhBFl5NwgR/K+mT3crtuGvi0sam8aFUt0aPiGRy30
+	egkTH/st9sMymywSSUEaPhYgmI/1+8ttnFTtqTm+QeGWfZkE698YIDhNnY2k3gQv
+	gCnPQfl6xQy33V8ZSwzw1TC3T7eyGruNWm3FoQDPJeW0vYUBPoqy7uHQW9Lrjhkt
+	H5llvxRG7ML1yKutBQJg==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wu2j38b8h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 05:32:33 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42D5WW1q025340
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 05:32:32 GMT
+Received: from [10.110.34.216] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Mar
+ 2024 22:32:28 -0700
+Message-ID: <8128f2e0-f954-4391-b3c3-f20e2e8961f6@quicinc.com>
+Date: Tue, 12 Mar 2024 22:32:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYSPR04MB7084:EE_|SEZPR04MB5777:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43790805-7e8e-455f-055f-08dc431ec349
-X-MS-Exchange-SLBlob-MailProps:
-	AZnQBsB9Xmq7W9edkj+H8FcuyZZ+q5XONKgxb1iEN6m64xdtTbjdL3jzOVNbLNFARU1+qY7eogLyZPZlBXfn96s/Ojg5BdTx5BHoNb5i9gq3xlr1bPciEBJ67elc2VxHI2iuEyPwf3Urv0jpm2K5Xuleq9hbQdrVGfiU7Y48+FWev0awKz1w51ycJhIhP1y7MnNCTgvrjITdud33+eo8ruJBf1QNr5ucKexa5YT8Zx+rbf/5DEai3+dk9mRdBDd65CQ7Zvowo5X29xdybHBYDqoMcBS7i5q1Mk5jstWl9LZpZ1HuhJiCQnZmXSgs3cEobANEZNxLDtiHyWlgiqMJmL5ZV76T9WWkse3fgt1ECoTm2AJLySY6xOaC3Rjt/llSfczq2DtbskgA6WFRJR+oQTxNFSOTkmJaLzeS7Ifa8i8BJ8xV8HdqakgKAYWq4JGp/oTMvKd2llhT95zkzihQ4EdueYdx1lnD6THEI70Lm/E4IUuJG8XQlxpn4p2SsTa+jJuqG82l2DXrmKJl6flCvlvq4emgktMKI9rlkPW7MncTPTn+vGgnioeSWNiEY/s7L4JGQwrLFNxsUdOtlX8Zce5G9CFCvxBZRfbo83qZSxAg43IvrHWSTYYnaOy6Hx9DZohNti1RnxVlDruMbBXHy/aYXjIA/RTUMNPubZjXkRA7LmOrUC2+DEBLJVYSbEi/nM4r8c76p0Hq8oG5M1FNp8E4ebpX2m+wSg7pgFrMRZpFHrre6SbOfN6nDtVZ9hSty9voBsd3uFI=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Yb7SlXi35n/jf1p7t0WJqTdo1Fi9bOgsd9MLPGuN9q4Vr9zV9DSbH6O6gnvLM4EvEj4eR5SGHrICE4L/DyYiVs2+kXwztKYoA+onSX/ggakibOUnpWP6DQvhHZoqA0OkPehvWwgHY191oujK/W7GDVVT58Y9jat2mi02r3eXu+IPnXS2e8noLqC+MW5rGkrpKhJlm9KGsnC6ERfR4GpkWovCXw5oGn8f5K+icPC8LH77Z2oRxAwDUsg+manRv/p9ma+6IQ70p1fMl3V5VqDIZH6mqZzfjzrVOEWTX0IttK3/8/iJU43LJYN2VtzZSK6aurjOlspPaSR/q7JPEjovz6scSWUuc+yBxNnXybLix5V+b+DpHR+zrfp5wqcXe9qQxMjflQGDrNOXqsGLymf5bsidNTordVrr4ZJ6sKrMyMDdo9roasbGyTwX+e5IOFCb8OzCIUJtO4lJnrDeSYkCaopTn8O/d3jTOLIn3xun/kAswnw7q/NayTL3s3z2/H78zbd01Fn0+IvCWABeKhS1u2M6vHxQT4H4ALpge8n8kbt5zzrEfkr/7tKP6aijtskn
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?QVzCBW+mjsjtVpLPmXYUzD6IXA8Vs9AotZnsk4H/UNsxv+0VV1xa39MT8V5i?=
- =?us-ascii?Q?5dqLcALWz+tLdozy9/ELO95w02gu3NJUFbt8NYOvbgedFLrei8hMKqiIR/yT?=
- =?us-ascii?Q?gWejDDmup7Sk5/dejN/O1W8SFgTYd3Su7Qexx5CGLqeTnG3uQe7eEs6rlzt9?=
- =?us-ascii?Q?jixy9A4PjMHsSNcoHsTIe6eHFt9Q5CHu5rCq4TxXo6VG7Mase9ioAOohAuse?=
- =?us-ascii?Q?RupVe/KxrbAFjmGlZQkB3jsIuvWZFqVf9u9CBy8foHbbtRkBrq4zFYKpDa9K?=
- =?us-ascii?Q?DQfnCaihIjZiOW1ubmfU1NjeMuW/G3fYCcrRzmXkSz6ahrMN1n6NbYIxH35w?=
- =?us-ascii?Q?Kcs7cYAwjBDHPN48MJaet1V6yj8cWOoKJNDpfVXI9RmN/ksamKxVFENd1/du?=
- =?us-ascii?Q?Ixdipzua2ihrq6NcCojs+mL7OnaefSh94qC8AWsSAtjfbDQmk5PofS7zIPzj?=
- =?us-ascii?Q?YDiH6rIaeGhTzdEzpW6/TTcTNU32LddduwsL6Uy3XL4auX2pECbH0LeALLhR?=
- =?us-ascii?Q?Pap+WI0zaRDOhdAQOFan9Psidk8gkY8UE9Pgr/YJWa2y4fLjgG5rgxjI6jUL?=
- =?us-ascii?Q?7PR9j2LGtLE34hCSaDog9HndrrQwda4CUX/Oq6SEJidvuEDh/JUXN4gVrbc5?=
- =?us-ascii?Q?/orrB7Dlgj2bihe5H5xuL8p/ic80q9bPFEUxqmUhI0w8S3eyXK6b1b3x9c+r?=
- =?us-ascii?Q?PWG6PnpEKjN9M3VP4YfQ9gSnCYmi93fLBlaqQD4vDUEj3QwCSoruiTcSC95I?=
- =?us-ascii?Q?ixON3pJPlp47jPKM9JMHQqkgsUYO99TUHGIVTpwTAveLa+SrZwJk3mtEWtlG?=
- =?us-ascii?Q?rRgVe/x0ksSBCCFOGiq2WSF2Bs7g2GHSj7ZA7rOfpGHP1r8qSOaTgv2HD/21?=
- =?us-ascii?Q?Vnrd4nrX/7ARVsZNCnZ2kLqbc46XrVqRK6n7hZoVXoGK4JwTMKYcFy7nKAEa?=
- =?us-ascii?Q?QP632IjKYal129nkKGVb+5s17CMrNgvktpGxxJK60dQe/XtEwhje4ZYK6WAk?=
- =?us-ascii?Q?Jwypf2Nc/5ddXhZwyq7lZP3T9aF1nsWXjoOzv3BJCLh5jFVWGdHGVxABw4Ub?=
- =?us-ascii?Q?qUBjdA6yr6+0x2dNIoCuglPdWwVJwxRFUdQ991gnw8nAOPCiQXL5zf/CHdK/?=
- =?us-ascii?Q?Hb2pXCRmwFmCGe9slvYPSg3blQ9MK6gnL51oKCQJnkf7yv1ah/auOKIj4dYx?=
- =?us-ascii?Q?ALzZb1sOH41VUXjt7/g/SnTOAirOATjyTQWL/HZXOIdCvMV8Vg5Eo8Tw+nzL?=
- =?us-ascii?Q?e6Xf1HgC05kNIGvGDLGGDetolB+BjDV3fjj57ZbpTT28P62UuMpveUSwA4W8?=
- =?us-ascii?Q?z4e3+ZDKB91be9KCzvVG0ARzILyOC/3pyU1z5ZX/OxuN1g=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43790805-7e8e-455f-055f-08dc431ec349
-X-MS-Exchange-CrossTenant-AuthSource: TYSPR04MB7084.apcprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 05:30:58.8129
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB5777
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
+Content-Language: en-US
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+        Willem de Bruijn
+	<willemdebruijn.kernel@gmail.com>
+CC: <kernel@quicinc.com>, "David S. Miller" <davem@davemloft.net>,
+        "Eric
+ Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel
+ Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii
+ Nakryiko <andrii@kernel.org>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <56499130-765d-464a-810c-45b19490986b@quicinc.com>
+In-Reply-To: <56499130-765d-464a-810c-45b19490986b@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: tmzZCcpetsJZhzxMh99DS-959NlpZ3L7
+X-Proofpoint-GUID: tmzZCcpetsJZhzxMh99DS-959NlpZ3L7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-13_05,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 malwarescore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 clxscore=1015 phishscore=0
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403130040
 
-From: Enlin Mu <enlin.mu@unisoc.com>
 
-On the Arm platform,arch_timer may occur irq strom,
-By using the next_timer of hrtimer_cpu_base, it is
-possible to quickly locate abnormal timers.
-As it is an out of tree modules,the function needs
-to be exproted.
 
-Signed-off-by: Enlin Mu <enlin.mu@unisoc.com>
----
- include/linux/hrtimer.h | 1 +
- kernel/time/hrtimer.c   | 6 ++++++
- 2 files changed, 7 insertions(+)
+On 3/12/2024 9:34 PM, Abhishek Chauhan (ABC) wrote:
+> 
+> 
+> On 3/12/2024 4:52 PM, Martin KaFai Lau wrote:
+>> On 3/1/24 12:13 PM, Abhishek Chauhan wrote:
+>>> Bridge driver today has no support to forward the userspace timestamp
+>>> packets and ends up resetting the timestamp. ETF qdisc checks the
+>>> packet coming from userspace and encounters to be 0 thereby dropping
+>>> time sensitive packets. These changes will allow userspace timestamps
+>>> packets to be forwarded from the bridge to NIC drivers.
+>>>
+>>> Setting the same bit (mono_delivery_time) to avoid dropping of
+>>> userspace tstamp packets in the forwarding path.
+>>>
+>>> Existing functionality of mono_delivery_time remains unaltered here,
+>>> instead just extended with userspace tstamp support for bridge
+>>> forwarding path.
+>>
+>> The patch currently broke the bpf selftest test_tc_dtime: https://github.com/kernel-patches/bpf/actions/runs/8242487344/job/22541746675
+>>
+>> In particular, there is a uapi field __sk_buff->tstamp_type which currently has BPF_SKB_TSTAMP_DELIVERY_MONO to mean skb->tstamp has the MONO "delivery" time. BPF_SKB_TSTAMP_UNSPEC means everything else (this could be a rx timestamp at ingress or a delivery time set by user space).
+>>
+>> __sk_buff->tstamp_type depends on skb->mono_delivery_time which does not necessarily mean mono after this patch. I thought about fixing it on the bpf side such that reading __sk_buff->tstamp_type only returns BPF_SKB_TSTAMP_DELIVERY_MONO when the skb->mono_delivery_time is set and skb->sk is IPPROTO_TCP. However, it won't work because of bpf_skb_set_tstamp().
+>>
+>> There is a bpf helper, bpf_skb_set_tstamp(skb, tstamp, BPF_SKB_TSTAMP_DELIVERY_MONO). This helper changes both the skb->tstamp and the skb->mono_delivery_time. The expectation is this could change skb->tstamp in the ingress skb and redirect to egress sch_fq. It could also set a mono time to skb->tstamp where the udp sk->sk_clockid may not be necessary in mono and then bpf_redirect to egress sch_fq. When bpf_skb_set_tstamp(skb, tstamp, BPF_SKB_TSTAMP_DELIVERY_MONO) succeeds, reading __sk_buff->tstamp_type expects BPF_SKB_TSTAMP_DELIVERY_MONO also.
+>>
+>> I ran out of idea to solve this uapi breakage.
+>>
+>> I am afraid it may need to go back to v1 idea and use another bit (user_delivery_time) in the skb.
+>>
+> I am okay to switch back to version 1 of this patch by adding another bit called userspace_time_stamp as that was the initial intent. 
+> 
+> Martin what do you suggest ? 
+Sorry i meant Willem. 
 
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index aa1e65ccb615..2a37d2a8e808 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -277,6 +277,7 @@ static inline void hrtimer_start(struct hrtimer *timer, ktime_t tim,
- 
- extern int hrtimer_cancel(struct hrtimer *timer);
- extern int hrtimer_try_to_cancel(struct hrtimer *timer);
-+extern struct hrtimer_cpu_base *get_hrtimer_cpu_base(int cpu);
- 
- static inline void hrtimer_start_expires(struct hrtimer *timer,
- 					 enum hrtimer_mode mode)
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 70625dff62ce..f7cf7d48b91d 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1309,6 +1309,12 @@ void hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
- }
- EXPORT_SYMBOL_GPL(hrtimer_start_range_ns);
- 
-+struct hrtimer_cpu_base *get_hrtimer_cpu_base(int cpu)
-+{
-+	return &per_cpu(hrtimer_bases, cpu);
-+}
-+EXPORT_SYMBOL_GPL(get_hrtimer_cpu_base);
-+
- /**
-  * hrtimer_try_to_cancel - try to deactivate a timer
-  * @timer:	hrtimer to stop
--- 
-2.39.2
+Willem do we want to fall back to version 1 where we add an extra bit for userspace timestamp as Martin is facing some issue in one of his test case. 
+
 
 
