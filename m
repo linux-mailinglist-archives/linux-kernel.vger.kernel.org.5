@@ -1,117 +1,217 @@
-Return-Path: <linux-kernel+bounces-102498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00C2087B2F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2A4C87B2F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:40:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 323931C25702
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:39:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22B471C22EA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40694E1CE;
-	Wed, 13 Mar 2024 20:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718B554735;
+	Wed, 13 Mar 2024 20:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kKiHump1"
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b="oGg3g8eW"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B039B2E629;
-	Wed, 13 Mar 2024 20:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8B85339A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 20:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710362380; cv=none; b=K1p2gH4/p4fHe0g1QCnoiLt03g2OOvCSNaiZ6UNNuTF+j+99gQJtQxFlMoLJHxksQASJMWnchEz2WG5cU98vz6S8Ij1zEtSNqk37hE+gc67TVSJJJzEY7zpS9xO0Cytjg2NoMVkUIjihSUxQctcfbjkQVp7bn8aixIoi/E7TH6c=
+	t=1710362383; cv=none; b=tJhWO2Bqkf8DSZg94PvnAN/D3kxiJJjAqhqdCNxt/56R1GRMjd1KOYe1Ngk+AQbst8EvMTPdwX+iYYBP1hJeocq/vPmh2Qhh+ih//DNoVkPEq0LUU7KlwM4BIMCkBOebEcB1BjvavGNNXeGoEVFU95QxcxQRKJKPl7jx+msJxZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710362380; c=relaxed/simple;
-	bh=B5te+7bxzJ9qHExPAAMr7pHPWobOwgO9aT2CbAG1Vyk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OvOPk7w9R7VFSGsoo7/TPRkvLAxQA9EmWoUceCSU3arAW6GA9inKbScG7J1H0lMizaL4TWVuLUT+x+xexPmMpb+Tvv+zqvyBKXWLKKqxw1kU9iGvs+q552sSVmPYAfDa8XuB1q7lrx0ojZbToD3EYyJVbuNuEUo5lR9sMy400fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kKiHump1; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29c64ee87easo247369a91.3;
-        Wed, 13 Mar 2024 13:39:38 -0700 (PDT)
+	s=arc-20240116; t=1710362383; c=relaxed/simple;
+	bh=5NYy5F9GaegC1adFOjJmjFtFKrgOGt8L8XjVO8/x/uA=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:Message-Id:
+	 MIME-Version:Content-Type; b=Mqhqj0vuw/DMNdysySqlm2Eo1TUwJjHuggkulyhZfVTuC7zO8QWMs/y40cEUsxU0Qkp8ClVWFddKLxfgZa0kAkzdgEzdOA/IA4XIs0q+7eL5M4TUKwbKCivCWG97R12wfXTtUemZjQamMFCS+xpRzqfRuSF6JbVp36ne0kT24+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org; spf=pass smtp.mailfrom=mforney.org; dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b=oGg3g8eW; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mforney.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dddbe47ac1so3306015ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:39:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710362378; x=1710967178; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hyu5FEzeA37wRHOaDO/zzPay3cpygxvKSMTi6XiaofA=;
-        b=kKiHump1g/4Vy66v43huHZ88ye7N3ljj38WZox/1DdxgjhVi2iYiaOcPQazTYfl28N
-         5bbS2XUu/KX9VzEntSRgKRH6c54PB/Z5+rLlCijNczBUUyFuzsBIpC+zpkgK9ew/1Bpj
-         JGlFV6SlncigL/j4FgyUip3W3RVIy3B2Jv480dmlG7gj8sBJnLWhgVcEpCpVRVSmhE/j
-         cnt+SmJ91ZrEL2NDw4or3Ok6gkig7IFirW5lnLpRnBII0OxcdJyH8T4taDSiTlhxOY8M
-         iVqy1Q7xw6Jg4U7E6VWk1wNjP7ciC9EjsFdg3VAFh94id4nuE3loxyx8OgIVocpbo+lM
-         T9SA==
+        d=mforney.org; s=google; t=1710362381; x=1710967181; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:user-agent:message-id
+         :in-reply-to:references:from:subject:cc:to:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
+        b=oGg3g8eW7Ecp6k8wTelqVv/haRgZlmM6e3mOz4fH3MX5P7S1NTqPknDMwduj0Pg/FZ
+         HobP8nODlrlprSh3M7un8SCqPHk7+oXlnQ1CFsofWx01Wg8Ng2kxzU1uZGWOe6WwOEFd
+         7i2wUNhZ7VM/pNrl6AgYhTjHRJ32pPr/5KpgfJk+uM8+xqTD6X+TfFwt2YHqa3S1oQ5h
+         Sy/cPOLRColvjjkGi6mUB6npaUbh3BkcVFFPBxQqvCjAeEaIT9IuEjjErb9j3zfo2cbx
+         7j3m18w5/KIZUz6Sh1I+HbVQAXODZmHU1BmUQI2RLnlW0kR15vHARi1uE11lZYmYjYlb
+         GJYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710362378; x=1710967178;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hyu5FEzeA37wRHOaDO/zzPay3cpygxvKSMTi6XiaofA=;
-        b=lhZTnMi+wwfyliclBAXRgopsv/7pIr6F9Zjz9bXvbrq5fcNTmCsxrxS1RK2C11wgas
-         DkKuKEezRekdgfcv7ZgzdLyC1TrpBcaPKpUGqM5dP1zU7JNT/NXLRszQOFX2LACEpc7Z
-         oUY00GzKqWHKTSmg+LechuIZwfEiIyNqh2BNEKEQ5JbqTGpojMp9HEoa+V7hB5E7qViW
-         DnAk7xr9IFiqyPCgkTAakkWdFo20iTv/frh7w/0ewAst2NoMtSNaXSTgNxWVZo3I0Sde
-         Z8rs7UT0daYqo07hKWOMHXy9DsnEtl71kXJD0mU3XWjuI4WibxjQHXKO3PAEkeRefiTF
-         degQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXssp62+ejfIgUbLYim9NHV0sEPhv6s77+Yr7MAeAhV3veXTsHaPNbCrmaxtHJh6Asxegm70bcXdASL3oYbeDHPRbL0Kdw9l2esT4Ch0iq4XGNAq+WOvACvHjiwKXf9DVg3Dvcx
-X-Gm-Message-State: AOJu0Yx59j2FYMjomFLcTJ8Cx48TS4O/kYM3JgXwOOyVwcoaCHZFTv98
-	YJPagRFBDASJR/kJAgbaxTlXvZr0ZYShxRGD6/ecWO2Bqd1w+vCx
-X-Google-Smtp-Source: AGHT+IG2GsiUnhBfNRqw3czUZr4DxvX56UPAronO4ziBqWbfsgzxWhVKJWg+wGbSnTm11egfkDTtqQ==
-X-Received: by 2002:a17:90a:5647:b0:29b:c172:2c3d with SMTP id d7-20020a17090a564700b0029bc1722c3dmr4607969pji.39.1710362377725;
-        Wed, 13 Mar 2024 13:39:37 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id q66-20020a17090a17c800b0029bb1631819sm1677246pja.0.2024.03.13.13.39.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 13:39:36 -0700 (PDT)
-Message-ID: <b4ab8f64-7b33-4365-9ad5-510171a7f9b8@gmail.com>
-Date: Wed, 13 Mar 2024 13:39:35 -0700
+        d=1e100.net; s=20230601; t=1710362381; x=1710967181;
+        h=content-transfer-encoding:mime-version:user-agent:message-id
+         :in-reply-to:references:from:subject:cc:to:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
+        b=utYTgU9XW39+dig3XJIC5dsYbJFDvpKyMa26J1LHs3gSEAy4jXzwbI5iYPfFNttV2h
+         TKRkicssJEfKpwvobYss9KyNLHU9IdfvuhGhZZ0eI8OHeX5VYX24SFdHjMUPi8TPaJGu
+         2WxKePfZ9XPhk+Tm97gfYcacYClSpJcP5xZjId8Zcs29iSyAqYPugo7kRcHyvksIAd+/
+         4HitKxc2ZNjXMPkDELnkDBLOauFwU0zVt8gUG1av059xb3x3q2OcGwsuh8AKODnTHBja
+         aW0rykIXIrU9FiEAoZjuHct4sxxA/deU8r1tN6vMj23gHjcPA0cpOHuKYdugKX6vExok
+         RGmA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZLRfUzqMkeOXEHbm0M5roEKXiERDCTBDtF8BkKzLGc6PyxEovPqxE2ZqaSPXVlI83a1OUek6TiclsjdSSPD8KUo+LNfY4MNtm9oBx
+X-Gm-Message-State: AOJu0Ywrr7cRJ0Y/Ra7lTHqua90Y3pzOm0mrzkXXYCQvbAZ3+QUCODht
+	+5UdPNjwVhZg0i9g03oDkKHdE7KNMgYhBLDmanW7apYH1wavSsS7nG4+lDn8FCE=
+X-Google-Smtp-Source: AGHT+IE/KQaRwJCmaxE7HGMWWWwC9HUvtwPSaTkkWMsQzRjSycKrqz980rtkW102JSTf6os/v9ns7A==
+X-Received: by 2002:a17:902:ea05:b0:1dd:a12e:15c8 with SMTP id s5-20020a170902ea0500b001dda12e15c8mr5302773plg.33.1710362380873;
+        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
+Received: from localhost ([2601:647:6400:20b0:16dd:a9ff:fee7:6b79])
+        by smtp.gmail.com with ESMTPSA id b6-20020a170902d50600b001db693d89fdsm22392plg.179.2024.03.13.13.39.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
+Date: Wed, 13 Mar 2024 13:40:46 -0700
+To: Jan Kara <jack@suse.cz>
+Cc: Theodore Ts'o <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>,
+ Max Kellermann <max.kellermann@ionos.com>, Xiubo Li <xiubli@redhat.com>,
+ Ilya Dryomov <idryomov@gmail.com>, Jeff Layton <jlayton@kernel.org>, Jan
+ Kara <jack@suse.com>, Dave Kleikamp <shaggy@kernel.org>,
+ ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, Yang Xu
+ <xuyang2018.jy@fujitsu.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+From: Michael Forney <mforney@mforney.org>
+References: <20231011100541.sfn3prgtmp7hk2oj@quack3>
+ <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
+ <20231011120655.ndb7bfasptjym3wl@quack3>
+ <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
+ <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
+ <20231011135922.4bij3ittlg4ujkd7@quack3>
+ <20231011-braumeister-anrufen-62127dc64de0@brauner>
+ <20231011170042.GA267994@mit.edu> <20231011172606.mztqyvclq6hq2qa2@quack3>
+ <20231012142918.GB255452@mit.edu> <20231012144246.h3mklfe52gwacrr6@quack3>
+In-Reply-To: <20231012144246.h3mklfe52gwacrr6@quack3>
+Message-Id: <28DSITL9912E1.2LSZUVTGTO52Q@mforney.org>
+User-Agent: mblaze/1.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 3/3] net: lan743x: Address problems with wake option
- flags configuration sequences
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Ronnie.Kunin@microchip.com, Raju.Lakkaraju@microchip.com,
- netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-kernel@vger.kernel.org, Bryan.Whitehead@microchip.com,
- richardcochran@gmail.com, UNGLinuxDriver@microchip.com
-References: <20240226080934.46003-1-Raju.Lakkaraju@microchip.com>
- <20240226080934.46003-4-Raju.Lakkaraju@microchip.com>
- <78d7e538-9fa0-490e-bcfb-0a5943ad80c9@lunn.ch>
- <LV8PR11MB87008454A629EE15B9CE14099F272@LV8PR11MB8700.namprd11.prod.outlook.com>
- <PH8PR11MB79656DCF7806D7390C7100DE95272@PH8PR11MB7965.namprd11.prod.outlook.com>
- <fd22d022-cad4-489c-9861-36765dd98a87@lunn.ch>
- <PH8PR11MB79655416A331370D3496854A952A2@PH8PR11MB7965.namprd11.prod.outlook.com>
- <3e84e1c9-f680-47fa-aa59-615ce57b65da@gmail.com>
- <725e8182-50de-4469-9f87-fa58179f8922@lunn.ch>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <725e8182-50de-4469-9f87-fa58179f8922@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 3/13/24 12:52, Andrew Lunn wrote:
-> So i think we need to agree on best practices for new drivers and
-> document what that is, probably in both the ethtool man page and
-> include/uapi/linux/ethtool.h
-> 
-> * WAKE_MAGIC on its own is O.K.
-> * WAKE_MAGICSECURE without WAKE_MAGIC is invalid. -EINVAL
-> * WAKE_MAGIC + WAKE_MAGICSECURE means only secure magic WoL.
-> * Each driver needs to enforce this, due to backwards compatibility.
->    Some may decide not to.
-> 
-> Can we agree on this?
+Jan Kara <jack@suse.cz> wrote:
+> On Thu 12-10-23 10:29:18, Theodore Ts'o wrote:
+> > On Wed, Oct 11, 2023 at 07:26:06PM +0200, Jan Kara wrote:
+> > > I don't think this is accurate. posix_acl_create() needs unmasked 'mo=
+de'
+> > > because instead of using current_umask() for masking it wants to use
+> > > whatever is stored in the ACLs as an umask.
+> > >=20
+> > > So I still think we need to keep umask handling in both posix_acl_cre=
+ate()
+> > > and vfs_prepare_mode(). But filesystem's only obligation would be to =
+call
+> > > posix_acl_create() if the inode is IS_POSIXACL. No more caring about =
+when
+> > > to apply umask and when not based on config or mount options.
+> >=20
+> > Ah, right, thanks for the clarification.  I *think* the following
+> > patch in the ext4 dev branch (not yet in Linus's tree, but it should
+> > be in linux-next) should be harmless, though, right?  And once we get
+> > the changes in vfs_prepare_mode() we can revert in ext4 --- or do
+> > folks I think I should just drop it from the ext4 dev branch now?
+>=20
+> It definitely does no harm. As you say, you can revert it once the VFS
+> changes land if you want.
 
-Yes, that works for me as well.
--- 
-Florian
+I've been debugging why flatpak was always considering its database
+corrupted, and found this commit to be the source of the issue.
 
+$ ostree --repo=3Drepo --mode=3Dbare-user-only init
+$ mkdir tree && umask 0 && ln -s target tree/symlink && umask 022
+$ ostree --repo=3Drepo commit --branch=3Dfoo tree/
+c508e0564267b376661889b9016f8438bd6d39412078838f78856383fdd8ac2f
+$ ostree --repo=3Drepo fsck
+Validating refs...
+Validating refs in collections...
+Enumerating commits...
+Verifying content integrity of 1 commit objects...
+fsck objects (1/4) [=3D=3D=3D          ]  25%
+error: In commits c508e0564267b376661889b9016f8438bd6d39412078838f78856383f=
+dd8ac2f: fsck content object a6b40a5400ed082fbe067d2c8397aab54046a089768651=
+c392a36db46d24c1cd: Corrupted file object; checksum expected=3D'a6b40a5400e=
+d082fbe067d2c8397aab54046a089768651c392a36db46d24c1cd'
+actual=3D'6bdc88f9722f96dbd51735e381f8a1b0e01363e1d7ee2edbb474c091f83c3987'=
+
+$
+
+Turns out that symlinks are inheriting umask on my system (which
+has CONFIG_EXT4_FS_POSIX_ACL=3Dn):
+
+$ umask 022
+$ ln -s target symlink
+$ ls -l symlink
+lrwxr-xr-x    1 michael  michael           6 Mar 13 13:28 symlink -> target=
+
+$
+
+Looking at the referenced functions, posix_acl_create() returns
+early before applying umask for symlinks, but ext4_init_acl() now
+applies the umask unconditionally.
+
+After reverting this commit, it works correctly. I am also unable
+to reproduce the mentioned issue with O_TMPFILE after reverting the
+commit. It seems that the bug was fixed properly in ac6800e279a2
+('fs: Add missing umask strip in vfs_tmpfile'), and all branches
+that have this ext4_init_acl patch already had ac6800e279a2 backported.
+
+So I think this patch should be reverted, since the bug was already
+fixed and it breaks symlink modes. If not, it should at least be
+changed to not to apply the umask to symlinks.
+
+> > commit 484fd6c1de13b336806a967908a927cc0356e312
+> > Author: Max Kellermann <max.kellermann@ionos.com>
+> > Date:   Tue Sep 19 10:18:23 2023 +0200
+> >=20
+> >     ext4: apply umask if ACL support is disabled
+> >    =20
+> >     The function ext4_init_acl() calls posix_acl_create() which is
+> >     responsible for applying the umask.  But without
+> >     CONFIG_EXT4_FS_POSIX_ACL, ext4_init_acl() is an empty inline functi=
+on,
+> >     and nobody applies the umask.
+> >    =20
+> >     This fixes a bug which causes the umask to be ignored with O_TMPFIL=
+E
+> >     on ext4:
+> >    =20
+> >      https://github.com/MusicPlayerDaemon/MPD/issues/558
+> >      https://bugs.gentoo.org/show_bug.cgi?id=3D686142#c3
+> >      https://bugzilla.kernel.org/show_bug.cgi?id=3D203625
+> >    =20
+> >     Reviewed-by: "J. Bruce Fields" <bfields@redhat.com>
+> >     Cc: stable@vger.kernel.org
+> >     Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> >     Link: https://lore.kernel.org/r/20230919081824.1096619-1-max.keller=
+mann@ionos.com
+> >     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> >=20
+> > diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
+> > index 0c5a79c3b5d4..ef4c19e5f570 100644
+> > --- a/fs/ext4/acl.h
+> > +++ b/fs/ext4/acl.h
+> > @@ -68,6 +68,11 @@ extern int ext4_init_acl(handle_t *, struct inode *,=
+ struct inode *);
+> >  static inline int
+> >  ext4_init_acl(handle_t *handle, struct inode *inode, struct inode *dir=
+)
+> >  {
+> > +	/* usually, the umask is applied by posix_acl_create(), but if
+> > +	   ext4 ACL support is disabled at compile time, we need to do
+> > +	   it here, because posix_acl_create() will never be called */
+> > +	inode->i_mode &=3D ~current_umask();
+> > +
+> >  	return 0;
+> >  }
+> >  #endif  /* CONFIG_EXT4_FS_POSIX_ACL */
 
