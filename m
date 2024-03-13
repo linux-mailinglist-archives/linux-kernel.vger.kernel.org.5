@@ -1,100 +1,140 @@
-Return-Path: <linux-kernel+bounces-102464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB64587B279
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:04:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0441287B27C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5119828A90C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:04:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F87E1F2612F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BCF4D108;
-	Wed, 13 Mar 2024 20:04:04 +0000 (UTC)
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA6E4CE04;
+	Wed, 13 Mar 2024 20:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IykUHfmR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB834CB35;
-	Wed, 13 Mar 2024 20:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F54950261;
+	Wed, 13 Mar 2024 20:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710360244; cv=none; b=h8sIQyt84oiN8qOYlzjIVtCzMXrOOA17+9N4Sq/ihKEvHEFDOYNFR38doqN2udJaXrqcQcecSlcAcK/MqZfrdERrRCOhDsNRMePtPxtrqX1si4qFtonCC/4zAQnzehjUAaHIIxomcRzB4bH4/vqn/BRTKa/jQ3w/4j1yZ7QGiyU=
+	t=1710360253; cv=none; b=EUPSZAShhjZBdBXze+sLfPCilmsVCjW9SHuQJIzJGoOD1Vn37L5rx8A5mwmT66EAFPaI3/icwdVFjJ1cBKkgV9z7xO0yg2x3w/2ug/nl9+83piu/GRGQrq1dfa8Y6/XzpddgyQd8fbHipZCElXvW6090Xr86X8XoqslXNBwXrVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710360244; c=relaxed/simple;
-	bh=HpnEoUB/oMjy6t9QQon1zh6WUkd8bXZJNBtBgtGcZ38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C73sVRYyk0Ra6n2F+nJhbkb4GPtK250CPjHId/aeIO+ZylytvEFE4UeP9UGIz99dDobGYckE2c8bGEgb6pXmAuicWxbH0OwFJ617cGZJOkjyGv0P91VhsuZZvY6oeEppuS+jjRF2tIXw0BV8PIp4MCJeYiTVWq/Zrd8IRJZQqgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bc21303a35so74928b6e.0;
-        Wed, 13 Mar 2024 13:04:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710360242; x=1710965042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6HjfA5JeS0LPF5tA3E2BddNSyfSC+siJkaEjPswhwp4=;
-        b=vFtyYy0lhshYq+oFdf80W6M7s5/neMjUvJ+jLWA9LMSFFT7hbPNRZ83YO3abBp2ImJ
-         NO4wzwaf44kEB+BLZCq1mnAbgqAURroZQEbjyQr2hUTdJXAPdsGsrcOOFizddWonNZCP
-         9bF70SHg4f6NC0Q6Il2CAHodwc3dkrd6K+XDrh8QmLzc6gWl8Yw3f3DZK8zJ2BcExDO1
-         d0ZcdGUgQwiWOtuPtbgibK3opf8jFRT9WORsM547dDdVfP2L4sliJ+cIj1KWvrLzCiiT
-         dVxPQmWhOu0yzljWWY7uK2w5SQyGei8mGd6t1HvPqe1iSf8gqNpAMyCEEFkeocayWQuY
-         Hqcg==
-X-Forwarded-Encrypted: i=1; AJvYcCWOAAeIdJV9eKh3FrKkB6i2aFeGbGPSkJq6+42vabV5fDR7lhKKAwtVioTxg6VwmyS84o8UVUNUjLVUr6hUAYmm3noWMpf3hErDvCht7Y6R0cmsM/wdZXdunkcRjJipA7N5leg3PqI5/w==
-X-Gm-Message-State: AOJu0YwMXqrTJ7JUa312G4LtwhsAGHx+izrKHVkud9LFPeUacf814r26
-	HIvAQzMKRFQExpQIXMYXYBUhh9TKUJnlHz4JU6p6xQPIfbBaVGrJVHUYVQduxj3La8uQh+6sSbA
-	mR7TOEvxkDNioAMrkynTHxVqOBb8HFjJX
-X-Google-Smtp-Source: AGHT+IGoah+dWg2O7jbUzVhRGML+Fdut2kM0oYls7T42xhIzyeWm7X4GmCawVRkDOSnQt1bBxxcOJyOGsW3fPjozBw8=
-X-Received: by 2002:a05:6871:54e:b0:221:c9ef:43f with SMTP id
- t14-20020a056871054e00b00221c9ef043fmr11194388oal.1.1710360241762; Wed, 13
- Mar 2024 13:04:01 -0700 (PDT)
+	s=arc-20240116; t=1710360253; c=relaxed/simple;
+	bh=1isCJ/HiRQqsOQID7hdC+OE/BFsB1DwZ8Ioqspcdcsk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UshDd1En+1z3YNPMECa9Kt2Op7Y+oA9cKWn39xL3Rnw98bZ6g99lAcN5XmFbvDQDHnnbpTJzckRJ40B3PGCVBVzoVrCmNeRTnHCYfjBvAaHbpA87MP1oIxCVHZbPAJfQTuhBlaaHrxOa9wtV5KsWfmUCdTFFTupqo2mF0ZXmyeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IykUHfmR; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710360252; x=1741896252;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1isCJ/HiRQqsOQID7hdC+OE/BFsB1DwZ8Ioqspcdcsk=;
+  b=IykUHfmRmQZuQEI0EKY2o/GdzjDbmuzVJRzoifaCUlBrpo5HjgYVxDrA
+   39b14ya611PcooA6D/PCVxbFCIrDiwRbq/B/iu1NPH5j4Btm0J8u5O5Xq
+   1qZz+WQw/W4Ra6VilQwkqpMNwMXoCHW6D0Oa5QiO4s29r6ndBhPMtdFBp
+   kM9D87gHreoalgQsi6RW9k+Pmj1eg1TCw9fsbRnx8Ppn1kWQYoRx6fhvn
+   cDUUkBXwP+FYjR0zJ5TFYbh7ZmoOEs+eIJUMRBs0gQEVpPbwUj7CU/bI5
+   NW2+OOTuOrlP9u0+Fuqw0tOSkeD8bDPCu91URkoVgeP0t5NK7zhIz4J3o
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="15880485"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="15880485"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 13:04:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914440421"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="914440421"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 13:04:08 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rkUpa-0000000CJiw-0kRb;
+	Wed, 13 Mar 2024 22:04:06 +0200
+Date: Wed, 13 Mar 2024 22:04:05 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
+	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] iio: pressure: add SCALE and RAW values for
+ channels
+Message-ID: <ZfIGtUPZpyDBnWwz@smile.fi.intel.com>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+ <20240313174007.1934983-4-vassilisamir@gmail.com>
+ <ZfH4bET-HX0e3PO_@smile.fi.intel.com>
+ <20240313195110.GB1938985@vamoiridPC>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308073214.11262-1-yang.lee@linux.alibaba.com>
-In-Reply-To: <20240308073214.11262-1-yang.lee@linux.alibaba.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 13 Mar 2024 21:03:50 +0100
-Message-ID: <CAJZ5v0h0KwKE9QOZSej6HVR1WePw_jd=GR03hDd_Kg6Fo2s3qA@mail.gmail.com>
-Subject: Re: [PATCH -next] ACPI: Add kernel-doc comments to
- handle_eject_request function
-To: Yang Li <yang.lee@linux.alibaba.com>
-Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313195110.GB1938985@vamoiridPC>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Mar 8, 2024 at 8:32=E2=80=AFAM Yang Li <yang.lee@linux.alibaba.com>=
- wrote:
->
-> This patch adds proper kernel-doc comments to the
-> handle_eject_request function in the ACPI dock subsystem.
->
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/acpi/dock.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/acpi/dock.c b/drivers/acpi/dock.c
-> index a89bdbe00184..a7c00ef78086 100644
-> --- a/drivers/acpi/dock.c
-> +++ b/drivers/acpi/dock.c
-> @@ -380,6 +380,8 @@ static int dock_in_progress(struct dock_station *ds)
->
->  /**
->   * handle_eject_request - handle an undock request checking for error co=
-nditions
-> + * @ds: The dock station to undock.
-> + * @event: The ACPI event number associated with the undock request.
->   *
->   * Check to make sure the dock device is still present, then undock and
->   * hotremove all the devices that may need removing.
-> --
+On Wed, Mar 13, 2024 at 08:51:10PM +0100, Vasileios Amoiridis wrote:
+> On Wed, Mar 13, 2024 at 09:03:08PM +0200, Andy Shevchenko wrote:
+> > On Wed, Mar 13, 2024 at 06:40:04PM +0100, Vasileios Amoiridis wrote:
+> > > Add extra IIO_CHAN_INFO_SCALE and IIO_CHAN_INFO_RAW in order to be
+> > > able to calculate the processed value with standard userspace IIO
+> > > tools. Can be used for triggered buffers as well.
 
-Applied as 6.9-rc material with edits in the subject and changelog, thanks!
+..
+
+> > > +	case IIO_CHAN_INFO_RAW:
+> > > +		switch (chan->type) {
+> > > +		case IIO_HUMIDITYRELATIVE:
+> > > +			*val = data->chip_info->read_humid(data);
+> > > +			ret = IIO_VAL_INT;
+> > > +			break;
+> > > +		case IIO_PRESSURE:
+> > > +			*val = data->chip_info->read_press(data);
+> > > +			ret = IIO_VAL_INT;
+> > > +			break;
+> > > +		case IIO_TEMP:
+> > > +			*val = data->chip_info->read_temp(data);
+> > > +			ret = IIO_VAL_INT;
+> > > +			break;
+> > > +		default:
+> > > +			ret = -EINVAL;
+> > > +			break;
+> > 
+> > Is it mutex that prevents us from returning here?
+> > If so, perhaps switching to use cleanup.h first?
+> 
+> I haven't seen cleanup.h used in any file and now that I searched,
+> only 5-6 are including it.
+
+Hmm... Which repository you are checking with?
+
+$ git grep -lw cleanup.h -- drivers/ | wc -l
+47
+
+(Today's Linux Next)
+
+> I am currently thinking if the mutex
+> that already exists is really needed since most of the drivers
+> don't have it + I feel like this is something that should be done
+> by IIO, thus maybe it's not even needed here.
+
+> > > +		}
+> > > +		break;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
