@@ -1,97 +1,179 @@
-Return-Path: <linux-kernel+bounces-102582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C209C87B437
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:10:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53FE687B43E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:11:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F41761C21A4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:10:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ADC4286691
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E22459B57;
-	Wed, 13 Mar 2024 22:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04AD59B7E;
+	Wed, 13 Mar 2024 22:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="mDIlLO93"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hlrZKybJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A69859B43
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7535917C;
+	Wed, 13 Mar 2024 22:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710367821; cv=none; b=iN+PJ4Nw4KEhAK1inqVcaPlYkZDHsoJQ/arKcydLgACfOlsGbsWSPrLlOrhDwSYYcaYp6tqFY/jfzNJ4BLiDL83gTa8yHi3e5q2CDtHXbEGl1MmmvwZMeJbvaajSGwGyap6/sFTAIBHOdGBYiQ802OnjxD2By4ljXGc50eZDaUU=
+	t=1710367846; cv=none; b=mpaRoZx8xyVP1CmslbZ/fBNhxNUTI3TefKb+HiO8fIDVfy4sXTiR9eh4VwGe83LfyHWsi3FRCdU7MoVN1bGmQ+/fZefxYhPE5K+kX1wzWU6ZUQOoPRROh0p2DaNZNE83b27ycp9zPkC62spRblmrZV/C8PuWsTHYUu9lsaBLgAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710367821; c=relaxed/simple;
-	bh=G7WnWN0sS77GFvtJh/eSBeZOL2g3lWCyHdmf+zU/TvA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NsbEyiYivZkhK93ADcUoc/0bJKGvLWD380h+NGu4pYiLM2jeYOHIGDqC+N51TxsNQG6237uW/5jdvGM/yfhhF5mMKmnWKeMtbdiFgyUKZ2CWJdq7x5yvvm15IeZHh4aAN1rZY/rUy7y77vyCG89nH6WF7gf1eQesDoDQxm+JCYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=mDIlLO93; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4Tw4Sq2vKPz6Cl4Pd;
-	Wed, 13 Mar 2024 22:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1710367817; x=1712959818; bh=QQJMlgP56N7rXjX31zXaJf43
-	BsG8SkIAMHm4Wi+TRMk=; b=mDIlLO937fImNgwXd5PEtVK0N7LEYsg9eVCWEAQq
-	ZoEOrNcT+Fk//wYTY+GUyqihlXUPaGCc0rRQC4N3nQ7o4NxXm25jT+81e3XcexGk
-	uOuJNLjDEacsh7huMD8HWjuwLgX2vHUM6//ExfDGOfb1Gf+84r4eVxxyA8QPgRqn
-	0gfZmBU8sniEik+OE+2JZfuhgR7RcFC6nx7EkyjYNa9GQxWzp7mldNgnW0CqHPPO
-	LN1U4RrjSvVMjLttqlIHe4L5ULEI9OINV/HqkDI1hD8rCPf/sgroVKNHICxeKXfR
-	FgJ/dhgyY0frXWDtb7K9rcP6Vh1HkJvxsmcZy/Us5pEXXQ==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id V5FYab1wQ-Sh; Wed, 13 Mar 2024 22:10:17 +0000 (UTC)
-Received: from [100.96.154.173] (unknown [104.132.1.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4Tw4Sn3b4Xz6ClL9N;
-	Wed, 13 Mar 2024 22:10:17 +0000 (UTC)
-Message-ID: <436fb309-1f6f-4279-8c33-121fd76a7129@acm.org>
-Date: Wed, 13 Mar 2024 15:10:16 -0700
+	s=arc-20240116; t=1710367846; c=relaxed/simple;
+	bh=5APNX9joY8E9yLLTfEuVlbvQ/cODNID0jd3oX4Dqksg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pC4dxYuYHW6KNvXXXe0iRiVIzsnMmompUYig7Dj93Nw+odxJV+17Q4JSyHdYbb/AtkV0fj7FiJgIknTM8Fp5uNSwtiOzR0/b0FKtKdD8186L/slRXbVBTZSOrsB7ci54pdDZdvv02uO81CYic6lUGl6EZOsVSdFWBu7geX7wIFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hlrZKybJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AAEEC433F1;
+	Wed, 13 Mar 2024 22:10:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710367845;
+	bh=5APNX9joY8E9yLLTfEuVlbvQ/cODNID0jd3oX4Dqksg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hlrZKybJJe3Ws3NMMxCNeEsHHbw+o6y1ncI16R6kzSspIO+mmP6NvDgwf4y8KiWzB
+	 ISriQDG/umtsjSLZngtc4bWRPmhaVLTwDEOJycCVs9T3pb2db6630MGkmEU1X9BTXf
+	 C/FR1pn4FLZNh7+e2vIRbE75VMM25aAR7Ehz3Q5So2rhXs8lMAJ/BPam+hhyEE2RK8
+	 TKJzV2JoGANM/fguI5enojXimqQG14HPKu1bLHKGoszu/nNEhNHQE4sQ1LLPnOn7gz
+	 zp7GTVMs3MuZxyJr6kTsKeJA9ylvnISwYysl+bpNM9dmNSZ3Hug4u0zZxEyvRICWYD
+	 MYiWylj9cA9LA==
+Date: Wed, 13 Mar 2024 15:10:43 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: James Prestwood <prestwoj@gmail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>,
+	Karel Balej <balejk@matfyz.cz>, dimitri.ledkov@canonical.com,
+	alexandre.torgue@foss.st.com, davem@davemloft.net,
+	dhowells@redhat.com, herbert@gondor.apana.org.au,
+	keyrings@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org,
+	mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org, iwd@lists.linux.dev
+Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+Message-ID: <20240313221043.GC1111@sol.localdomain>
+References: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz>
+ <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
+ <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
+ <20240313194423.GA1111@sol.localdomain>
+ <b838e729-dc30-4e18-b928-c34c16b08606@gmail.com>
+ <20240313202223.GB1111@sol.localdomain>
+ <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fs: sysfs: Fix reference leak in
- sysfs_break_active_protection()
-Content-Language: en-US
-To: Alan Stern <stern@rowland.harvard.edu>, Tejun Heo <tj@kernel.org>
-Cc: Greg KH <gregkh@linuxfoundation.org>,
- Kernel development list <linux-kernel@vger.kernel.org>
-References: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
- <e9d710fc-eace-44de-b3cc-1117c3575ef7@rowland.harvard.edu>
- <2024030428-graph-harmful-1597@gregkh>
- <416a8311-c725-419a-8b22-74c80207347f@rowland.harvard.edu>
- <9c2484f4-df62-4d23-97a2-55a160eba55f@rowland.harvard.edu>
- <ZfIKwFSmw-ACj_jO@slm.duckdns.org>
- <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
 
-On 3/13/24 14:43, Alan Stern wrote:
-> The sysfs_break_active_protection() routine has an obvious reference
-> leak in its error path.  If the call to kernfs_find_and_get() fails then
-> kn will be NULL, so the companion sysfs_unbreak_active_protection()
-> routine won't get called (and would only cause an access violation by
-> trying to dereference kn->parent if it was called).  As a result, the
-> reference to kobj acquired at the start of the function will never be
-> released.
+On Wed, Mar 13, 2024 at 02:17:29PM -0700, James Prestwood wrote:
+> Hi,
 > 
-> Fix the leak by adding an explicit kobject_put() call when kn is NULL.
+> On 3/13/24 1:22 PM, Eric Biggers wrote:
+> > On Wed, Mar 13, 2024 at 01:12:54PM -0700, James Prestwood wrote:
+> > > Hi,
+> > > 
+> > > On 3/13/24 12:44 PM, Eric Biggers wrote:
+> > > > On Wed, Mar 13, 2024 at 10:26:06AM -0700, James Prestwood wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > On 3/13/24 1:56 AM, Johannes Berg wrote:
+> > > > > > Not sure why you're CC'ing the world, but I guess adding a few more
+> > > > > > doesn't hurt ...
+> > > > > > 
+> > > > > > On Wed, 2024-03-13 at 09:50 +0100, Karel Balej wrote:
+> > > > > > >     and I use iwd
+> > > > > > This is your problem, the wireless stack in the kernel doesn't use any
+> > > > > > kernel crypto code for 802.1X.
+> > > > > Yes, the wireless stack has zero bearing on the issue. I think that's what
+> > > > > you meant by "problem".
+> > > > > 
+> > > > > IWD has used the kernel crypto API forever which was abruptly broken, that
+> > > > > is the problem.
+> > > > > 
+> > > > > The original commit says it was to remove support for sha1 signed kernel
+> > > > > modules, but it did more than that and broke the keyctl API.
+> > > > > 
+> > > > Which specific API is iwd using that is relevant here?
+> > > > I cloned https://kernel.googlesource.com/pub/scm/network/wireless/iwd
+> > > > and grepped for keyctl and AF_ALG, but there are no matches.
+> > > IWD uses ELL for its crypto, which uses the AF_ALG API:
+> > > 
+> > > https://git.kernel.org/pub/scm/libs/ell/ell.git/
+> > Thanks for pointing out that the relevant code is really in that separate
+> > repository.  Note, it seems that keyctl() is the problem here, not AF_ALG.  The
+> > blamed commit didn't change anything for AF_ALG.
+> > 
+> > > I believe the failure is when calling:
+> > > 
+> > > KEYCTL_PKEY_QUERY enc="x962" hash="sha1"
+> > > 
+> > >  From logs Michael posted on the IWD list, the ELL API that fails is:
+> > > 
+> > > l_key_get_info (ell.git/ell/key.c:416)
+> > Okay, I guess that's what's actually causing the problem.  KEYCTL_PKEY_* are a
+> > weird set of APIs where userspace can ask the kernel to do asymmetric key
+> > operations.  It's unclear why they exist, as the same functionality is available
+> > in userspace crypto libraries.
+> > 
+> > I suppose that the blamed commit, or at least part of it, will need to be
+> > reverted to keep these weird keyctls working.
+> > 
+> > For the future, why doesn't iwd just use a userspace crypto library such as
+> > OpenSSL?
+> 
+> I was not around when the original decision was made, but a few reasons I
+> know we don't use openSSL:
+> 
+>  - IWD has virtually zero dependencies.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Depending on something in the kernel does not eliminate a dependency; it just
+adds that particular kernel UAPI to your list of dependencies.  The reason that
+we're having this discussion in the first place is because iwd is depending on
+an obscure kernel UAPI that is not well defined.  Historically it's been hard to
+avoid "breaking" changes in these crypto-related UAPIs because of the poor
+design where a huge number of algorithms are potentially supported, but the list
+is undocumented and it varies from one system to another based on configuration.
+Also due to their obscurity many kernel developers don't know that these UAPIs
+even exist.  (The reaction when someone finds out is usually "Why!?")
+
+It may be worth looking at if iwd should make a different choice for this
+dependency.  It's understandable to blame dependencies when things go wrong, but
+at the same time the choice of dependency is very much a choice, and some
+choices can be more technically sound and cause fewer problems than others...
+
+>  - OpenSSL + friends are rather large libraries.
+
+The Linux kernel is also large, and it's made larger by having to support
+obsolete crypto algorithms for backwards compatibility with iwd.
+
+>  - AF_ALG has transparent hardware acceleration (not sure if openSSL does
+> too).
+
+OpenSSL takes advantage of CPU-based hardware acceleration, e.g. AES-NI.
+
+> Another consideration is once you support openSSL someone wants wolfSSL,
+> then boringSSL etc. Even if users implement support it just becomes a huge
+> burden to carry for the project. Just look at wpa_supplicant's src/crypto/
+> folder, nearly 40k LOC in there, compared to ELL's crypto modules which is
+> ~5k. You have to sort out all the nitty gritty details of each library, and
+> provide a common driver/API for the core code, differences between openssl
+> versions, the list goes on.
+
+What is the specific functionality that you're actually relying on that you
+think would need 40K lines of code to replace, even using OpenSSL?  I see you
+are using KEYCTL_PKEY_*, but what specifically are you using them for?  What
+operations are being performed, and with which algorithms and key formats?
+Also, is the kernel behavior that you're relying on documented anywhere?  There
+are man pages for those keyctls, but they don't say anything about any
+particular hash algorithm, SHA-1 or otherwise, being supported.
+
+- Eric
 
