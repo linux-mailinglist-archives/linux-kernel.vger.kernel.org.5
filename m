@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-101749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AE0387AB42
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:35:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0132387AB44
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:35:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 376C82898C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:35:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABD992898A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C9359B64;
-	Wed, 13 Mar 2024 16:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949005914B;
+	Wed, 13 Mar 2024 16:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4jKOea2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pprrMp8l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260475917C;
-	Wed, 13 Mar 2024 16:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33075A0ED;
+	Wed, 13 Mar 2024 16:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347571; cv=none; b=lWdRSmME5NnBFdXTYuZAqCePO3b4Du7hn5cyD/RAgn/lTwRU6Mf7lqz7RUOuASRwuWoE+lUBhkeryA8KgmVTRXmjql03oNyWASWi/JxZJHWoB/8k7IdTTbhVrH/LfWuJG5El57bCtQypryPlp7YHukKmV8qeIv8RlLVBKcWD1z4=
+	t=1710347572; cv=none; b=LehZuLgFS/VxR6t5yXIXK27JLnBNwE04s5AWDeq3tWhudGffnGzXdwYS7oyYOLwxxxsPABhtN01jHcWy3rj5IoNx2MITQQ6j4+BGvNzCjWl3NXQzBYhUucKGMESUJplVVgevdjjVpcr4cmf2fYn1k+rEOTJ8gikJB8H9ZiZAhW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347571; c=relaxed/simple;
-	bh=oot0yLFZ/cSpMIaV7o+cb5pLc+I+X2NT5B3fpxJtVmQ=;
+	s=arc-20240116; t=1710347572; c=relaxed/simple;
+	bh=Hed3TEareCvIUKBfgFbhINSfYCn/aFDJdplwrgdDfAQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IM396lpvu3sBulr52UDoEOnS4eP1TGrUTrtm0dIpQIqcAKL2eC0FAaHIXay4Dvt5Ru3WmK9P+e16tzK8c2Kp2hFD4CgJuxYel/MuGTYKrfliEQVzxn7Q05uMrNfXzDUHDDifBevtFaNv8kBuTuM4kNoNrPo5/FYhipCYyIEmH30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4jKOea2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28D6AC433A6;
-	Wed, 13 Mar 2024 16:32:50 +0000 (UTC)
+	 MIME-Version; b=kUvC8Vtuv7K7ALm3xqpa0rsIpZ5a4NyZHsCPtS41bnghuCJDrU5GlpZtuEHr13faGagOIvbIVfMwMCoXN5QwXC6mJbZVvMypdaoA0XyfvQ2sDSONz2KpS4jtcFO8qkAX5j3A5k9utGE4c/8Mm1rTAIiOdpHUVHKa5u0bdaEseJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pprrMp8l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48404C433C7;
+	Wed, 13 Mar 2024 16:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347571;
-	bh=oot0yLFZ/cSpMIaV7o+cb5pLc+I+X2NT5B3fpxJtVmQ=;
+	s=k20201202; t=1710347572;
+	bh=Hed3TEareCvIUKBfgFbhINSfYCn/aFDJdplwrgdDfAQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T4jKOea26BLQDDhL9Zn1tQAIjXavkYM8z8dcIGAoQxh52Fte12kpUqvN6ylkSl2f5
-	 myoedHlBRi1uDVokWQm8oseubLYovMb5jlU2i9vlUYLsT2k6tq2Qw8MSliSMiYJKUY
-	 nicFPbnCUax8b2aoOBAshDpv/39RRgVHNMaHP7KQpfOAyefKl7T2FsBIfxvqAJ1bKA
-	 AnIf9vJSjP07Q7SsnXh23yB5E55+m6wepPPkCxa5l/20GlDNgk+G6gG08ct1H90RVY
-	 penNc0ubzVUwmqgTQqnq4nWg/fnscdHtawuya3MJdcIJSrj96jE1fOKTuh8aejC9X3
-	 HENBFFJ/yeIEg==
+	b=pprrMp8lN4G0VG/WiqFaFjxSQVAhnc+wI2JgIIArOchXxBvqubbtTUxqj7tJ2R4nI
+	 3YZxpnatrizrz8aUUOZXuM8mamNd6xWxogbb1MwAXop01+SsbIzLYkajEd9GEuhYAH
+	 GdmlsUHzjXz4yFfhnhJsKBhebl6Kk1LajUjKxbkr6WcWWu8vdrYWQllgoifQmizCfA
+	 E2uPSSyrb5TR7n7Q1M1dYABCL665zhGM0sIzF0rLgYHbdaTxbbCbwfUMCYNUWbrgoT
+	 AB7fxgnUj50DZxORcpXO8Ocy8jZs1m3sKv3wu4jexZA5J00JDWZez3E+eqU5W/2b/T
+	 PYlQTCz4eRhEQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	Jiri Pirko <jiri@nvidia.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Pavel Vazharov <pavel@x3me.net>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Chandan Kumar Rout <chandanx.rout@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 10/61] net: lan78xx: fix runtime PM count underflow on link stop
-Date: Wed, 13 Mar 2024 12:31:45 -0400
-Message-ID: <20240313163236.613880-11-sashal@kernel.org>
+Subject: [PATCH 6.7 11/61] ixgbe: {dis, en}able irqs in ixgbe_txrx_ring_{dis, en}able
+Date: Wed, 13 Mar 2024 12:31:46 -0400
+Message-ID: <20240313163236.613880-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -69,43 +71,136 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-[ Upstream commit 1eecc7ab82c42133b748e1895275942a054a7f67 ]
+[ Upstream commit cbf996f52c4e658b3fb4349a869a62fd2d4c3c1c ]
 
-Current driver has some asymmetry in the runtime PM calls. On lan78xx_open()
-it will call usb_autopm_get() and unconditionally usb_autopm_put(). And
-on lan78xx_stop() it will call only usb_autopm_put(). So far, it was
-working only because this driver do not activate autosuspend by default,
-so it was visible only by warning "Runtime PM usage count underflow!".
+Currently routines that are supposed to toggle state of ring pair do not
+take care of associated interrupt with queue vector that these rings
+belong to. This causes funky issues such as dead interface due to irq
+misconfiguration, as per Pavel's report from Closes: tag.
 
-Since, with current driver, we can't use runtime PM with active link,
-execute lan78xx_open()->usb_autopm_put() only in error case. Otherwise,
-keep ref counting high as long as interface is open.
+Add a function responsible for disabling single IRQ in EIMC register and
+call this as a very first thing when disabling ring pair during xsk_pool
+setup. For enable let's reuse ixgbe_irq_enable_queues(). Besides this,
+disable/enable NAPI as first/last thing when dealing with closing or
+opening ring pair that xsk_pool is being configured on.
 
-Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Pavel Vazharov <pavel@x3me.net>
+Closes: https://lore.kernel.org/netdev/CAJEV1ijxNyPTwASJER1bcZzS9nMoZJqfR86nu_3jFFVXzZQ4NA@mail.gmail.com/
+Fixes: 024aa5800f32 ("ixgbe: added Rx/Tx ring disable/enable functions")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent Worker at Intel)
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/lan78xx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 56 ++++++++++++++++---
+ 1 file changed, 49 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index a2dde84499fdd..f0fb9cd1ff56c 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -3137,7 +3137,8 @@ static int lan78xx_open(struct net_device *net)
- done:
- 	mutex_unlock(&dev->dev_mutex);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 6a3f633406c4b..ce234e76ea236 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -2939,8 +2939,8 @@ static void ixgbe_check_lsc(struct ixgbe_adapter *adapter)
+ static inline void ixgbe_irq_enable_queues(struct ixgbe_adapter *adapter,
+ 					   u64 qmask)
+ {
+-	u32 mask;
+ 	struct ixgbe_hw *hw = &adapter->hw;
++	u32 mask;
  
--	usb_autopm_put_interface(dev->intf);
-+	if (ret < 0)
-+		usb_autopm_put_interface(dev->intf);
- 
- 	return ret;
+ 	switch (hw->mac.type) {
+ 	case ixgbe_mac_82598EB:
+@@ -10524,6 +10524,44 @@ static void ixgbe_reset_rxr_stats(struct ixgbe_ring *rx_ring)
+ 	memset(&rx_ring->rx_stats, 0, sizeof(rx_ring->rx_stats));
  }
+ 
++/**
++ * ixgbe_irq_disable_single - Disable single IRQ vector
++ * @adapter: adapter structure
++ * @ring: ring index
++ **/
++static void ixgbe_irq_disable_single(struct ixgbe_adapter *adapter, u32 ring)
++{
++	struct ixgbe_hw *hw = &adapter->hw;
++	u64 qmask = BIT_ULL(ring);
++	u32 mask;
++
++	switch (adapter->hw.mac.type) {
++	case ixgbe_mac_82598EB:
++		mask = qmask & IXGBE_EIMC_RTX_QUEUE;
++		IXGBE_WRITE_REG(&adapter->hw, IXGBE_EIMC, mask);
++		break;
++	case ixgbe_mac_82599EB:
++	case ixgbe_mac_X540:
++	case ixgbe_mac_X550:
++	case ixgbe_mac_X550EM_x:
++	case ixgbe_mac_x550em_a:
++		mask = (qmask & 0xFFFFFFFF);
++		if (mask)
++			IXGBE_WRITE_REG(hw, IXGBE_EIMS_EX(0), mask);
++		mask = (qmask >> 32);
++		if (mask)
++			IXGBE_WRITE_REG(hw, IXGBE_EIMS_EX(1), mask);
++		break;
++	default:
++		break;
++	}
++	IXGBE_WRITE_FLUSH(&adapter->hw);
++	if (adapter->flags & IXGBE_FLAG_MSIX_ENABLED)
++		synchronize_irq(adapter->msix_entries[ring].vector);
++	else
++		synchronize_irq(adapter->pdev->irq);
++}
++
+ /**
+  * ixgbe_txrx_ring_disable - Disable Rx/Tx/XDP Tx rings
+  * @adapter: adapter structure
+@@ -10540,6 +10578,11 @@ void ixgbe_txrx_ring_disable(struct ixgbe_adapter *adapter, int ring)
+ 	tx_ring = adapter->tx_ring[ring];
+ 	xdp_ring = adapter->xdp_ring[ring];
+ 
++	ixgbe_irq_disable_single(adapter, ring);
++
++	/* Rx/Tx/XDP Tx share the same napi context. */
++	napi_disable(&rx_ring->q_vector->napi);
++
+ 	ixgbe_disable_txr(adapter, tx_ring);
+ 	if (xdp_ring)
+ 		ixgbe_disable_txr(adapter, xdp_ring);
+@@ -10548,9 +10591,6 @@ void ixgbe_txrx_ring_disable(struct ixgbe_adapter *adapter, int ring)
+ 	if (xdp_ring)
+ 		synchronize_rcu();
+ 
+-	/* Rx/Tx/XDP Tx share the same napi context. */
+-	napi_disable(&rx_ring->q_vector->napi);
+-
+ 	ixgbe_clean_tx_ring(tx_ring);
+ 	if (xdp_ring)
+ 		ixgbe_clean_tx_ring(xdp_ring);
+@@ -10578,9 +10618,6 @@ void ixgbe_txrx_ring_enable(struct ixgbe_adapter *adapter, int ring)
+ 	tx_ring = adapter->tx_ring[ring];
+ 	xdp_ring = adapter->xdp_ring[ring];
+ 
+-	/* Rx/Tx/XDP Tx share the same napi context. */
+-	napi_enable(&rx_ring->q_vector->napi);
+-
+ 	ixgbe_configure_tx_ring(adapter, tx_ring);
+ 	if (xdp_ring)
+ 		ixgbe_configure_tx_ring(adapter, xdp_ring);
+@@ -10589,6 +10626,11 @@ void ixgbe_txrx_ring_enable(struct ixgbe_adapter *adapter, int ring)
+ 	clear_bit(__IXGBE_TX_DISABLED, &tx_ring->state);
+ 	if (xdp_ring)
+ 		clear_bit(__IXGBE_TX_DISABLED, &xdp_ring->state);
++
++	/* Rx/Tx/XDP Tx share the same napi context. */
++	napi_enable(&rx_ring->q_vector->napi);
++	ixgbe_irq_enable_queues(adapter, BIT_ULL(ring));
++	IXGBE_WRITE_FLUSH(&adapter->hw);
+ }
+ 
+ /**
 -- 
 2.43.0
 
