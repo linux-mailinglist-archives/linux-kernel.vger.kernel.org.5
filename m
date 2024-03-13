@@ -1,127 +1,104 @@
-Return-Path: <linux-kernel+bounces-101663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C792087AA18
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:09:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C62387AA20
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DE0F1F22BC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:09:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA103B2444D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A882B46447;
-	Wed, 13 Mar 2024 15:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DD0E4778C;
+	Wed, 13 Mar 2024 15:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Heaf8Scd"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BQTqO5RK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB88BE7F
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5E53D0DD;
+	Wed, 13 Mar 2024 15:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710342573; cv=none; b=HNJfL0KlfR2yEwXzzntLaIkK1eVNV8a4FxPgTyTal88RxaIsbCuRfe+G+dBknzK7rpCHd57V5G6gV2h2cKfCM9WDvMAXb5A86Slhrrfx/seSkpc+8zQo9wLnMoYCN4rTs42Mh+3JhDaP/RjjIFpNc9vN6IzHST6aZTMGZRIGNMA=
+	t=1710342655; cv=none; b=BIiIPhMokPBnB2X06b/d245xTxq4J3nKxipS9gsxLwdWaCnL7waHFXrTqlpujV8NcP/j6GwaxJED0uyU8PQQN8D/B4s679zHnY8kqx+0fcM/R1I/5wL5lAcwOfmpr5Npb3imKRwcJY6HiCgZd8CVzAbX2SKok/I11kqQtcCTfro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710342573; c=relaxed/simple;
-	bh=z/Z25UIEPd4XesS5jpsAI+gHLTNALvUUXb9vxxblowY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=cgJB2Ap4Mq+cj7PXSJHCuqPiwwpM27lhxvZq2Rkg3EvQ8+n61elty2Jas1aY8Wf4GmYDvyQXdPk8e17jxnVCUMXbIDLEFuEGTRRYl5BRjLlXw6Zx2uX0BKll+mIBS66sCuES1D4uFHS6BKUrBqt6Dq5WR+RM3Xa+P6+YHRhKn2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Heaf8Scd; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609d95434daso96861047b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710342570; x=1710947370; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jiK1nnwokLzGpizwqoIOUJDEcuxjEjEOqPz6qD9AYqQ=;
-        b=Heaf8ScdMiZ5Hiwx9eulvIo08u0xbT2zSz20o0K9KgK7y330n65dhU0/SgP4nPaEtg
-         E9ovsfCaaqcAAaFRRKXqvHt9CJbI5qqAMf9I9NzaZYPdEVSkSZKJWUAM1YSAwgoPKNjI
-         pHm+Hj/Tty1ypqiWIAREwCA+6W5mM3d1pvve2MxhKGip0tMJyKasp8Qs2b3AijR99r5+
-         g52W8EdJ2at6xYMKvNeS6OsMWp+W48FeZmJvBHsr2UdcxyB9u95G8psqq/aabvkrOCjC
-         Qw2q68l81cU8/jUjmYOT/FBpWGSiGHx27CKY0BLXZX/TSlu+IP2uGf0liGfDAhWQfyfi
-         AjFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710342570; x=1710947370;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jiK1nnwokLzGpizwqoIOUJDEcuxjEjEOqPz6qD9AYqQ=;
-        b=ScoUZSUsfGE4uRuvQ9vBGKCVa4ZEJk5G30elGmbA12zDBYIvqcWGgtR0n2AzC9JcjN
-         jmyS6Ic2dy+w1sBmFycxeDGLRRS2xO2lZtx7WSjjk4yWFCYP3gchnwCIzGyrX3LYNmYW
-         Zx4AbGE8XDNGcS5YN7UEi5CmFcOVwH+IIDBFaicjD2jEa2wIXvIFBmx/IjbUsXxLArti
-         ilMz2zVZKyWvGZKKOhvcBBwzx2Ge4J18UKnFcLvVr1pwx35HCtUaUkelCOcjbf9qt0ul
-         YFJ59iPoqkxwPuPc8dPEnJp4vovdYKStkDRlm3zH8g/yTj2ZgRUO3Ez3DN3QfIBd9i05
-         lH3w==
-X-Forwarded-Encrypted: i=1; AJvYcCW5VcTsDgxdZvXim88g1H952Xvtp7HJRgEW3zt4wBNQT1bh8SA1z8yV1p5MvFvDsmPoCYToAAdxT5j3mPWaGR8KQIgVMwiXo638IiKV
-X-Gm-Message-State: AOJu0YwjqLhTOH2BzlX80QNeBN/j22ao8EzcgmWwbaJGlGyRQhSXe40h
-	rDOqasf9sO3ieFcGJvQhtBhXJxjoWHOxZJagTjojmzOOiX7ezqicb9J3ctl/rikDKeUbcZhjuyR
-	yig==
-X-Google-Smtp-Source: AGHT+IGY9jbJwt2sIbwHDebpTbc6rS9RQrbKdpk4Cuy3oeVMttN2tgAYGXjwAhCb1VWdz+Wc4ZOF8nb5Tu0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:9251:0:b0:60c:b1d4:a9f9 with SMTP id
- j78-20020a819251000000b0060cb1d4a9f9mr333730ywg.10.1710342570551; Wed, 13 Mar
- 2024 08:09:30 -0700 (PDT)
-Date: Wed, 13 Mar 2024 08:09:28 -0700
-In-Reply-To: <ZfFp6HtYSmO4Q6sW@yzhao56-desk.sh.intel.com>
+	s=arc-20240116; t=1710342655; c=relaxed/simple;
+	bh=Ocy8geFE9kPb4bFGq3+89/S58bGkARoG+qV87/35muY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IVq4akUdvLdaR1rx/IgxUS2eDR0ZNElcnFEEKK1h2Nq3okYYZKybUQJ3UxoLqYUXJsm4kvwTTN6paUnys7OkNxFlOqKvOHeRuuOp35FwUO4FSTZ7zh9E8isnBSXlscb1r9Iow7R5OYPHUPlS6Kz+cp6KF0MrnUwms0JIgwL2P5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BQTqO5RK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5857CC43390;
+	Wed, 13 Mar 2024 15:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710342654;
+	bh=Ocy8geFE9kPb4bFGq3+89/S58bGkARoG+qV87/35muY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=BQTqO5RKQ54EJbv1S8P4pENDD44OtCvTkL9lM0F/BjZDviqG3B0fDJJK/mP93C5AD
+	 e9TBae3uLVN8p+c9QD+Cgcg5BhM0SQ+cbTJVjY48VqldBqjhoxy/kKJ5GZr+iYgyDD
+	 fMap9HtRVG7CVD0kHcCT7P/XpbW1oiZ5e3mTERWJg34aNJRfbiC6lAgjQ3bdjLyQUc
+	 5F2CmhbUXwmkDQLp5Dbww4+yg9bG3nIQNdrd3luSRaFR4fmxe1IG1k6USgNsRoMmQU
+	 m7Z7qjL5d+9JQOr9qOo3eGbT3GtBTePzlKT0Am8DiS2uvcVVYuktEKspVo05H7FTg5
+	 8XlUR3jJv1Mkg==
+Message-ID: <bb1cbf09-53dd-42d9-bce5-9ac1ba94be2c@kernel.org>
+Date: Wed, 13 Mar 2024 16:10:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-6-seanjc@google.com>
- <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com> <Ze-hC8NozVbOQQIT@google.com>
- <BN9PR11MB527600EC915D668127B97E3C8C2B2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZfB9rzqOWmbaOeHd@google.com> <ZfD++pl/3pvyi0xD@yzhao56-desk.sh.intel.com>
- <BN9PR11MB527688657D92896F1B19C2F98C2A2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZfFp6HtYSmO4Q6sW@yzhao56-desk.sh.intel.com>
-Message-ID: <ZfHBqNzaoh36PXDn@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
-From: Sean Christopherson <seanjc@google.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, "jgg@nvidia.com" <jgg@nvidia.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH v4 0/3] Add minimal XDP support to TI AM65
+ CPSW Ethernet driver
+To: Ratheesh Kannoth <rkannoth@marvell.com>,
+ Julien Panis <jpanis@baylibre.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>
+References: <20240223-am65-cpsw-xdp-basic-v4-0-38361a63a48b@baylibre.com>
+ <20240313134441.GA1263398@maili.marvell.com>
+ <9016930f-d90b-4a7a-b6fb-80cf56a94bd8@baylibre.com>
+ <MWHPR1801MB19184E6AFDEAF4062FB1C4B3D32A2@MWHPR1801MB1918.namprd18.prod.outlook.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <MWHPR1801MB19184E6AFDEAF4062FB1C4B3D32A2@MWHPR1801MB1918.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 13, 2024, Yan Zhao wrote:
-> > We'll certain fix the security hole on CPUs w/ self-snoop. In this case
-> > CPU accesses are guaranteed to be coherent and the vulnerability can
-> > only be exposed via non-coherent DMA which is supposed to be fixed
-> > by your coming series. 
-> > 
-> > But for old CPUs w/o self-snoop the hole can be exploited using either CPU
-> > or non-coherent DMA once the guest PAT is honored. As long as nobody
-> > is willing to actually fix the CPU path (is it possible?) I'm kind of convinced
-> We can cook a patch to check CPU self-snoop and force WB in EPT even for
-> non-coherent DMA if no self-snoop. Then back porting such a patch together
-> with the IOMMU side mitigation for non-coherent DMA.
 
-Please don't.  This is a "let sleeping dogs lie" situation.
 
-  let sleeping dogs lie - avoid interfering in a situation that is currently
-  causing no problems but might do so as a result of such interference.
+On 13/03/2024 15.31, Ratheesh Kannoth wrote:
+>> From: Julien Panis <jpanis@baylibre.com>
+>> Sent: Wednesday, March 13, 2024 7:34 PM
+>> On 3/13/24 14:44, Ratheesh Kannoth wrote:
+>>> On 2024-03-12 at 18:52:39, Julien Panis (jpanis@baylibre.com) wrote:
+>>>> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
+>>> is this a net-next item ?
+>>
+>> Initially I worked on top of mainline kernel v6.8-rc1. Then, I also ensured that
+>> the series could be applied on top of net-next/main.
+>>
+> Please post to net-next ; once it is open
+>  > https://patchwork.hopto.org/net-next.html
 
-Yes, there is technically a flaw, but we have zero evidence that anyone cares or
-that it is actually problematic in practice.  On the other hand, any functional
-change we make has a non-zero changes of breaking existing setups that have worked
-for many years. 
+Funny link, as I usually use:
+  https://netdev.bots.linux.dev/net-next.html
 
-> Otherwise, IOMMU side mitigation alone is meaningless for platforms of CPU of
-> no self-snoop.
-> 
-> > by Sean that sustaining the old behavior is probably the best option...
-> Yes, as long as we think exposing secuirty hole on those platforms is acceptable. 
+As documented in:
+  https://kernel.org/doc/html/latest/process/maintainer-netdev.html
 
-Yes, I think it's acceptable.  Obviously not ideal, but given the alternatives,
-I think it is a reasonable risk.
+--Jesper
 
-Being 100% secure is simply not possible.  Security is often about balancing the
-risk/threat against the cost.  In this case, the risk is low (old hardware,
-uncommon setup for untrusted guests, small window of opportunity, and limited
-data exposure), whereas the cost is high (decent chance of breaking existing VMs).
 
