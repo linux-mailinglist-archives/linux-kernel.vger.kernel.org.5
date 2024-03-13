@@ -1,187 +1,178 @@
-Return-Path: <linux-kernel+bounces-101628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE5C487A9A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:38:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FBEC87A9A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:41:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C6A91C21909
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:38:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6517EB232EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A85B446D1;
-	Wed, 13 Mar 2024 14:38:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988C44A07;
+	Wed, 13 Mar 2024 14:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="v6oioyru"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="eX0ymyI5"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1230446AC;
-	Wed, 13 Mar 2024 14:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300BC290A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:40:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710340686; cv=none; b=EmQu0Mmhcw0XOm712B+kvwIue8S3JiGiHvVjrrursyRqD/nSi2Wz+D/wM7/GD0p65JJUeqY9tkZnTbh3jMwLquad9+jWFCVu9cUeQ/xW/4cGv9yTIq/9TElEynD0uw5rdgwu/9QGowmE0bpqjrHlj5gbN/Ob6APmh2qxGmYS750=
+	t=1710340855; cv=none; b=XmFGh5A11cBwRyTkYf0IDv8x7JpyMuZ5gh4cRyzwOJFSIDkY/naWE4U+gAcYJMDzmDKx+ahvz2fgS3+OorHSESRYWNUkOdGXsMvkvKNwUW1Ht1H3NJK5F6xy6SEHPwohgI93HY6s6KHyVc2X25ILyUDXg8LK+O6t8+KZKzaPdbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710340686; c=relaxed/simple;
-	bh=hDA7tqOmA8wnGfEta/8cJQeKmR/C5NjwCnDdHSybjqM=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=lJn65KbiGogd8iMDlZCMGW0DzJFmw/CsIo2CqY0UNk/n3bvo35jvO/kdcNIj/ndpBcE1NZASXzV6aL4BAX5rCKNjorRshkgmwnjblNQU/+TGoHtAGkAzZB9EE6hq99qRBU1eI/K8YiqwgZvqZziqUWBCmDSls/JbCiBURiZbsy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=v6oioyru; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=wd9jIWlbL+VuMUA20BcRV4ZrSSX3yz6PI7b617YPVYg=; b=v6oioyruOR/Pu9TsNjWNIth39V
-	CkvQrCA2em2BEA6giEmspJ5W/G0Zus38b6PCQSy/IIZenuFF8WeONzOgrrOQWiYG7bEA7TW9zAIo6
-	1LEbjne0s+R0vdLybqgH+onPBeI2bFPgRIVFS0sljxLl1ZlVms7KarwF0+qRiaHcWtDo=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52044 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rkPju-0005c0-L2; Wed, 13 Mar 2024 10:37:55 -0400
-Date: Wed, 13 Mar 2024 10:37:54 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Message-Id: <20240313103754.6c33d160f5d69427a29a3e2b@hugovil.com>
-In-Reply-To: <20240307161828.118495-4-hugo@hugovil.com>
-References: <20240307161828.118495-1-hugo@hugovil.com>
-	<20240307161828.118495-4-hugo@hugovil.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710340855; c=relaxed/simple;
+	bh=YSUjV/yHnDAZVgS3+ncJxNIQukG94Jfh316n+Q5XKik=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KNXFxCxbGERpJsFZ/i7A1SXTpCDKj6dW6p6AbtVLZSi7CxVIQKTOvRM80Y2JjaCULwJ9s0FRF/+pKcHxg1ijPBItT0eOCNZ0KNodG9n6sh++AHqKZGZTZqU8NY6Ikk4R93+nZShyEPwvO78cGqVAmO0C1AA6I8YzOSiyarqPDxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=eX0ymyI5; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-690be84583fso31662776d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1710340853; x=1710945653; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wwH7Po5mYA7bjttrElAdnD+M7EOKKFjEG6xtlrYwvBg=;
+        b=eX0ymyI5DeWKmGnbShb/DyQZD97bIJeXOh5GC86/Eaz6rVpzyksM13x2hLZsB7DsfX
+         ZX8KT02phUVaAfGVTcGJEE37I1eUPVFZ9Iqa0heQxzgWbVfAOpoo82bwoQPpTCWwSQ3h
+         FW4NnlrqntxdhWvhgT4R899DzEDYx5jhjbMgQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710340853; x=1710945653;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wwH7Po5mYA7bjttrElAdnD+M7EOKKFjEG6xtlrYwvBg=;
+        b=sGd2JucrPHLdYzR9XNdUD0EWFMywcZHBJJ9Ja34NqAKetCF2VxVFUnVBFXeGqfNPSP
+         Ky8u7CrkE1HQolo1xKG6G9QUQOH1SaS5CugsroKEoIYqVIQ4YZM08hBUn9RbZWCOvA4K
+         q3uGs8OPDHeYq9aNiuHAH9aD5/6YsPlqvsg+VyAQb3qyg7Hwj1lknnaNMiPgzWyxzyvg
+         6kCf/Xjvjtd75ezqgQhursOS3qvID/9W7XsQ9p2uTs5ST+87Unfr8V3qmwt9sbyKLcRg
+         OaUUc5mX8f89OT9q9RvwtWkSQ+x1DAO8O3ynNlcSNw3BwnGr/OwgbzIqpBveY27Jr2mS
+         9hrw==
+X-Forwarded-Encrypted: i=1; AJvYcCUMh85lQN00l41x02ILtAvnN/+RVjoLDeBoZU+CfCG61XOMTea7L5gnPscLoiyzYFGAKzQ7eoP9baNxTwk7EfNGopmOAVWNT1xaU/n5
+X-Gm-Message-State: AOJu0YwB2SqCIUFH+pn9xF//jYt8E9h/w9rPbzCIfR4VvF1IKxktwtzO
+	FqAF8YiCk4Riud3z6E2T+gX/WaFgAzPGmMj+0uJw3oT4WCpLZ4TcWmFlXSHfIM4=
+X-Google-Smtp-Source: AGHT+IEAg+gYeWjVfARG1jte7Q1+PT2yH9Z+ZORju1u6/8TtwosWFHanvuMw8bwEDA1gsoId9YYe9A==
+X-Received: by 2002:a0c:c445:0:b0:690:de2a:3f1f with SMTP id t5-20020a0cc445000000b00690de2a3f1fmr18603qvi.32.1710340852927;
+        Wed, 13 Mar 2024 07:40:52 -0700 (PDT)
+Received: from [10.5.0.2] ([91.196.69.182])
+        by smtp.gmail.com with ESMTPSA id c2-20020a0ceb42000000b00690cba72427sm3560137qvq.33.2024.03.13.07.40.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 07:40:52 -0700 (PDT)
+Message-ID: <aa221e99-bf08-4d36-aef1-07ffc5e71516@joelfernandes.org>
+Date: Wed, 13 Mar 2024 10:40:50 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Reduce synchronize_rcu() delays when all wait heads
+ are in use
+Content-Language: en-US
+To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>, paulmck@kernel.org,
+ frederic@kernel.org, josh@joshtriplett.org, boqun.feng@gmail.com,
+ rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+ qiang.zhang1211@gmail.com
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ neeraj.upadhyay@kernel.org
+References: <20240313083228.233247-1-Neeraj.Upadhyay@amd.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20240313083228.233247-1-Neeraj.Upadhyay@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -1.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH v2 3/4] serial: sc16is7xx: split into core and I2C/SPI
- parts (sc16is7xx_lines)
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On Thu,  7 Mar 2024 11:18:27 -0500
-Hugo Villeneuve <hugo@hugovil.com> wrote:
+Hi Neeraj,
 
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 3/13/2024 4:32 AM, Neeraj Upadhyay wrote:
+> When all wait heads are in use, which can happen when
+> rcu_sr_normal_gp_cleanup_work()'s callback processing
+> is slow, any new synchronize_rcu() user's rcu_synchronize
+> node's processing is deferred to future GP periods. This
+> can result in long list of synchronize_rcu() invocations
+> waiting for full grace period processing, which can delay
+> freeing of memory. Mitigate this problem by using first
+> node in the list as wait tail when all wait heads are in use.
+> While methods to speed up callback processing would be needed
+> to recover from this situation, allowing new nodes to complete
+> their grace period can help prevent delays due to a fixed
+> number of wait head nodes.
 > 
-> Before, sc16is7xx_lines was checked for a free (zero) bit first, and then
-> later it was set only if UART port registration succeeded.
-> 
-> Now that sc16is7xx_lines is shared for the I2C and SPI drivers, make sure
-> it is reserved and modified atomically, and use a new variable to hold the
-> status of UART port regisration.
-> 
-> Remove need to check for previous port registration in sc16is7xx_remove(),
-> because if sc16is7xx_probe() succeeded, we are guaranteed to have
-> successfully registered both ports.
-> 
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 > ---
->  drivers/tty/serial/sc16is7xx.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
+>  kernel/rcu/tree.c | 27 +++++++++++++--------------
+>  1 file changed, 13 insertions(+), 14 deletions(-)
 > 
-> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> index 5b53c88b7133..d81aad1b201d 100644
-> --- a/drivers/tty/serial/sc16is7xx.c
-> +++ b/drivers/tty/serial/sc16is7xx.c
-> @@ -343,6 +343,8 @@ struct sc16is7xx_port {
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 9fbb5ab57c84..bdccce1ed62f 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1470,14 +1470,11 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+>   * for this new grace period. Given that there are a fixed
+>   * number of wait nodes, if all wait nodes are in use
+>   * (which can happen when kworker callback processing
+> - * is delayed) and additional grace period is requested.
+> - * This means, a system is slow in processing callbacks.
+> - *
+> - * TODO: If a slow processing is detected, a first node
+> - * in the llist should be used as a wait-tail for this
+> - * grace period, therefore users which should wait due
+> - * to a slow process are handled by _this_ grace period
+> - * and not next.
+> + * is delayed), first node in the llist is used as wait
+> + * tail for this grace period. This means, the first node
+> + * has to go through additional grace periods before it is
+> + * part of the wait callbacks. This should be ok, as
+> + * the system is slow in processing callbacks anyway.
+>   *
+>   * Below is an illustration of how the done and wait
+>   * tail pointers move from one set of rcu_synchronize nodes
+> @@ -1725,15 +1722,17 @@ static bool rcu_sr_normal_gp_init(void)
+>  		return start_new_poll;
 >  
->  static DECLARE_BITMAP(sc16is7xx_lines, SC16IS7XX_MAX_DEVS);
->  
-> +static DEFINE_MUTEX(sc16is7xx_lines_lock); /* For probe atomic line reservation. */
-> +
->  static struct uart_driver sc16is7xx_uart = {
->  	.owner		= THIS_MODULE,
->  	.driver_name    = SC16IS7XX_NAME,
-> @@ -1468,6 +1470,7 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
->  	u32 uartclk = 0;
->  	int i, ret;
->  	struct sc16is7xx_port *s;
-> +	bool port_registered[SC16IS7XX_MAX_PORTS];
->  
->  	for (i = 0; i < devtype->nr_uart; i++)
->  		if (IS_ERR(regmaps[i]))
-> @@ -1532,14 +1535,21 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
->  	regmap_write(regmaps[0], SC16IS7XX_IOCONTROL_REG,
->  		     SC16IS7XX_IOCONTROL_SRESET_BIT);
->  
-> +	memset(port_registered, 0, sizeof(port_registered));
-> +
->  	for (i = 0; i < devtype->nr_uart; ++i) {
-> +		mutex_lock(&sc16is7xx_lines_lock);
->  		s->p[i].port.line = find_first_zero_bit(sc16is7xx_lines,
->  							SC16IS7XX_MAX_DEVS);
->  		if (s->p[i].port.line >= SC16IS7XX_MAX_DEVS) {
->  			ret = -ERANGE;
-> +			mutex_unlock(&sc16is7xx_lines_lock);
->  			goto out_ports;
->  		}
->  
-> +		set_bit(s->p[i].port.line, sc16is7xx_lines);
-> +		mutex_unlock(&sc16is7xx_lines_lock);
-> +
->  		/* Initialize port data */
->  		s->p[i].port.dev	= dev;
->  		s->p[i].port.irq	= irq;
-> @@ -1584,7 +1594,7 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
->  		if (ret)
->  			goto out_ports;
->  
-> -		set_bit(s->p[i].port.line, sc16is7xx_lines);
-> +		port_registered[i] = true;
->  
->  		/* Enable EFR */
->  		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG,
-> @@ -1642,9 +1652,11 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
->  #endif
->  
->  out_ports:
-> -	for (i = 0; i < devtype->nr_uart; i++)
-> -		if (test_and_clear_bit(s->p[i].port.line, sc16is7xx_lines))
-> +	for (i = 0; i < devtype->nr_uart; i++) {
-> +		clear_bit(s->p[i].port.line, sc16is7xx_lines);
-> +		if (port_registered[i])
+>  	wait_head = rcu_sr_get_wait_head();
+> -	if (!wait_head) {
+> -		// Kick another GP to retry.
+> +	if (wait_head) {
+> +		/* Inject a wait-dummy-node. */
+> +		llist_add(wait_head, &rcu_state.srs_next);
+> +	} else {
+> +		// Kick another GP for first node.
+>  		start_new_poll = true;
+> -		return start_new_poll;
+> +		if (first == rcu_state.srs_done_tail)
 
-Hi Andy,
-I just realised that since we no longer need to search if a
-bit is set, it is possible to simplify sc16is7xx_lines allocation
-by using the IDA framework, as you suggested a few months ago.
+small nit:
+Does done_tail access here need smp_load_acquire() or READ_ONCE() to match the
+other users?
 
-I will send a V3 with this change.
+Also if you don't mind could you please rebase your patch on top of mine [1] ? I
+think it will otherwise trigger this warning in my patch:
 
-Hugo Villeneuve
+WARN_ON_ONCE(!rcu);
+
+Because I always assume there to be at least 2 wait heads at clean up time.
+
+[1] https://lore.kernel.org/all/20240308224439.281349-1-joel@joelfernandes.org/
+
+Thanks!
+
+ - Joel
 
 
->  			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
-> +	}
->  
->  	kthread_stop(s->kworker_task);
->  
-> @@ -1667,8 +1679,8 @@ void sc16is7xx_remove(struct device *dev)
->  
->  	for (i = 0; i < s->devtype->nr_uart; i++) {
->  		kthread_cancel_delayed_work_sync(&s->p[i].ms_work);
-> -		if (test_and_clear_bit(s->p[i].port.line, sc16is7xx_lines))
-> -			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
-> +		clear_bit(s->p[i].port.line, sc16is7xx_lines);
-> +		uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
->  		sc16is7xx_power(&s->p[i].port, 0);
+> +			return start_new_poll;
+> +		wait_head = first;
 >  	}
 >  
-> -- 
-> 2.39.2
-> 
-> 
+> -	/* Inject a wait-dummy-node. */
+> -	llist_add(wait_head, &rcu_state.srs_next);
+> -
+>  	/*
+>  	 * A waiting list of rcu_synchronize nodes should be empty on
+>  	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
 
