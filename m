@@ -1,151 +1,213 @@
-Return-Path: <linux-kernel+bounces-101274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77E687A4EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:24:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA61887A4EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:25:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 259B7B21B04
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:24:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61BFAB2105A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F147224E8;
-	Wed, 13 Mar 2024 09:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6813225CB;
+	Wed, 13 Mar 2024 09:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u3QdwIqS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y8g8FsSh"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F25224D8
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A52225A9
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710321862; cv=none; b=j4sPSssAdBdUKp7DHdkGkHqRe6t2m1fPImuTQNXxM0ffjcpco31bbhkeL2Pvy8btz0+Qp7MM67QHjNvmsAnLQ7aZ2ptjhKAWi3qKTU3DEDSyLJ9tDu5DlKPaNkCCg+4fKNcTHkIE65EzdlO3YafDIAB80mVS3ZVvC4k4MAh7kyU=
+	t=1710321889; cv=none; b=QR6fsye22Q37fIL4s4BdqS9VoVk4xNa1ORWutz9E17iKLSpZQCh/Wf02x9xcfYvRwGpHpa4lSx3SMp8ycSBK8OVxLxAm1Qt8BR/LWqB75IL53hxImopQNP1LYGtaXoui0hj53nvoVI4TIKz46lKtC3gb7GX4+Fgd8vhBMvqQ2Go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710321862; c=relaxed/simple;
-	bh=cEc1lGHAzmhktzZB3LfkyJVWkCDMr1m6qmRcF67PJgE=;
-	h=Content-Type:Date:Message-Id:To:Subject:Cc:From:References:
-	 In-Reply-To; b=satS36VoqnnWPKQjA+9QtdrwWlqL9kmKg0+oea5y83gDsejYj8eSoOGy9kj6YXWhyN+Tt0EjylptLy0B/DhEHOkEaeT9FdaKQhPYUI2hB2XQoX9MfCeTvS5GNPhacx6kMVqLm8ynjSKfjN8bkQ78grfUUnLMRbQu4htQz6SFX4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u3QdwIqS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E18C43390;
-	Wed, 13 Mar 2024 09:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710321862;
-	bh=cEc1lGHAzmhktzZB3LfkyJVWkCDMr1m6qmRcF67PJgE=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To:From;
-	b=u3QdwIqSRNu5/om0tD9SwyuK8cIYuVYHvLvUNW53DAa0NROSmvucitQ0yLnmqIenD
-	 qm103QJ3GGn182nkchaA8rvdEZN7PyRVUATcM+NkKbQt/9eNOLqLcOmgwu9Mi6anUG
-	 QIz+5CYzNn6l9I9aFozmhbzkn1zzRDJlnFK0Nvulx306itgLhsiyeSXgNGwI99p9sU
-	 sSwW72KfNh3CZyyRgJX0HqpWHIwHVGO/bm9wDU1tjLY9a3/Hf7MemvYdMETTve3Kra
-	 x9xYQvQhbZKfb8Ei2CshzKn6BRU9Bz01hcCnnhFw340Dyjizo0+4I731zwV7fyDOwZ
-	 2Arl373zckpQQ==
-Content-Type: multipart/signed;
- boundary=8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783;
- micalg=pgp-sha256; protocol="application/pgp-signature"
-Date: Wed, 13 Mar 2024 10:24:13 +0100
-Message-Id: <CZSIHWU6IYXB.2DUCUUYFTAB2X@kernel.org>
-To: "Aapo Vienamo" <aapo.vienamo@linux.intel.com>
-Subject: Re: [PATCH 2/2] mtd: core: Don't fail mtd_device_parse_register()
- if OTP is unsupported
-Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Mika
- Westerberg" <mika.westerberg@linux.intel.com>
-From: "Michael Walle" <mwalle@kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
- <20240307130418.3131898-3-aapo.vienamo@linux.intel.com>
- <CZQZXAB2GOCY.12YVJ6CRGG26B@kernel.org>
- <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
-In-Reply-To: <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
+	s=arc-20240116; t=1710321889; c=relaxed/simple;
+	bh=SbhoT3EgfOWatK99Mmjz4V7DOPij7jfKKuuXN4xhnwo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D+89tludvXqI4Iwc9RowIj6RsgJHrqeN9oPS2T+df18VHwWeICMLoZZqtLrfnJU9xU+rlNihbJm9dN9qRRA8AbEAPKSP9U5b1jb5lmIhBrAUVaftxO7C39egix8n0Otc0VzQa4Zbs6r4UWYhE5wjH16PNpzrLQEKkU5PIVRpthY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y8g8FsSh; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5682360e095so8033067a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:24:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710321886; x=1710926686; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PPD+cxv+0qUBoucY+ZqtBX2TszFOHU0DupeB2/oO4k0=;
+        b=Y8g8FsShs+eaiVtMkHTwXOrS68WnGQkLYwDRUdN4hQphVfdi3BcaSOAMXn1Djpz07O
+         XcWpQG4Li4cC7I8uJhZCLDbhub+L0UIMAOwi7ptoDjZIP4O2ZrKVTfO8xfLBW8G0c58P
+         pszJQsLp0SO/XoLBX/gnHamLF17axs4Ioyg0hSpi0M8sQfAzhNMjsDoQa8FcdR8cJG7n
+         y/dUTeJ/jVMO7zl2b1JnyconpLKprmIdh0GHzihbzzWK5/DLsJkslp3zF85Vx/qKYCr3
+         F/mCOQdplhZytshhWKnhMvyIVN76AyEFSeEZBEvLuL/nY/mtH87zqaR7zEhCqFMrEk5x
+         WVuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710321886; x=1710926686;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PPD+cxv+0qUBoucY+ZqtBX2TszFOHU0DupeB2/oO4k0=;
+        b=eVxiOufGccynJTJHGojUNxUjej79rMMq1XgiPo4I+5ZarX3DOTVlW+EPw/toQd9Wty
+         QFiUBGlkL5LTYkf5vEzyodqJB2ATWLcXPEmTudMCpmkgWup+mi4r7FaJ1Gq0SDhT7ztt
+         q/X4eKP0Y67LaekI08LuMLmoPhUQQOLos6iCx3AaDhDv90AyAMUixTdHBdvYdJzwRDY6
+         dzvMgT8DWN2Li9lt4Qfi2JzXpazYNR2xnguROVdosfyHN3nPAbOU7zPEEx1wa81PYQaL
+         ujP5lVMx1UNKgFrv0YwslZmWQletL3auK6ViYIkMEmXpy+7Wqjo1uNCylJ3HZ36gmm3/
+         e+aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVsZq5YSy1eoq5pN3gv5Vu2lhWjZxRTTX1E/EseoR8mRtopi91ACCFCpV9qEU9stsYMBm43TS7v53d0PFOjuHmWytawnnhiM6fTA/Hn
+X-Gm-Message-State: AOJu0Yy4GiSbj0/YgzhjRMRLXRfUVKZ/ecNduIutlE+V5geWZ1umkQdX
+	wjGgCYCSC1qzIL8E+9gQC1QT3/mJ1P/B1+7xAFki32/hglBmPeLennGAKeazizTzscIvW+NA2W8
+	LhCLlFlQlYvhD3zJH47CshfBG/C4=
+X-Google-Smtp-Source: AGHT+IFD54pe1kRDZc3skthbk+PAXH90rU1buFJKLdAnOrx/jHLKY+yJZGAokd4mO7aP2jrPKgE4eb/8Fb3Vx4SnwGA=
+X-Received: by 2002:a50:c01b:0:b0:566:43ab:8b78 with SMTP id
+ r27-20020a50c01b000000b0056643ab8b78mr7925871edb.30.1710321885387; Wed, 13
+ Mar 2024 02:24:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-
---8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240304081348.197341-1-21cnbao@gmail.com> <20240304081348.197341-4-21cnbao@gmail.com>
+ <e73c12ff-5234-44d5-a2b3-99cdc61a9c37@arm.com> <24dc6251-8582-790f-bbd3-465deed946f5@oppo.com>
+ <f880135f-e113-4d42-b3a0-8b0b9eebcbf4@arm.com>
+In-Reply-To: <f880135f-e113-4d42-b3a0-8b0b9eebcbf4@arm.com>
+From: Chuanhua Han <chuanhuahan@gmail.com>
+Date: Wed, 13 Mar 2024 17:24:33 +0800
+Message-ID: <CANzGp4+w-e+Xg8B=1pSbdoTuftPiYRvFMKr9GiOXUs44B5SLig@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 3/5] mm: swap: make should_try_to_free_swap()
+ support large-folio
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Chuanhua Han <hanchuanhua@oppo.com>, Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	david@redhat.com, hannes@cmpxchg.org, kasong@tencent.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com, steven.price@arm.com, 
+	surenb@google.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
+	xiang@kernel.org, ying.huang@intel.com, yosryahmed@google.com, 
+	yuzhao@google.com, Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-Hi,
-
-On Mon Mar 11, 2024 at 5:20 PM CET, Aapo Vienamo wrote:
-> On Mon, Mar 11, 2024 at 03:38:17PM +0100, Michael Walle wrote:
-> > On Thu Mar 7, 2024 at 2:04 PM CET, Aapo Vienamo wrote:
-> > > Handle the case where -EOPNOTSUPP is returned from OTP driver.
-> > > +	/*
-> > > +	 * Don't abort MTD init if OTP functionality is unsupported. The
-> > > +	 * cleanup of the OTP init is contained within mtd_otp_nvmem_add().
-> > > +	 * Omitting goto out here is safe since the cleanup code there
-> > > +	 * should be no-ops.
-> > > +	 */
-> >=20
-> > Only if that's true for both the factory and user OTP area.
+Hi Ryan,
+Ryan Roberts <ryan.roberts@arm.com> =E4=BA=8E2024=E5=B9=B43=E6=9C=8813=E6=
+=97=A5=E5=91=A8=E4=B8=89 17:10=E5=86=99=E9=81=93=EF=BC=9A
 >
-> I'm not sure I follow. I'm not seeing a path in mtd_otp_nvmem_add()
-> that would result in either mtd->otp_user_nvmem or mtd->otp_factor_nvmem
-> needing to be cleaned up by the caller, if an error is returned, if
-> that's what you are referring to.
-
-Yes you're right, sorry for the noise.
+> On 13/03/2024 02:21, Chuanhua Han wrote:
+> > hi, Ryan Roberts
+> >
+> > =E5=9C=A8 2024/3/12 20:34, Ryan Roberts =E5=86=99=E9=81=93:
+> >> On 04/03/2024 08:13, Barry Song wrote:
+> >>> From: Chuanhua Han <hanchuanhua@oppo.com>
+> >>>
+> >>> should_try_to_free_swap() works with an assumption that swap-in is al=
+ways done
+> >>> at normal page granularity, aka, folio_nr_pages =3D 1. To support lar=
+ge folio
+> >>> swap-in, this patch removes the assumption.
+> >>>
+> >>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> >>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> >>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> >>> Acked-by: Chris Li <chrisl@kernel.org>
+> >>> ---
+> >>>  mm/memory.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/mm/memory.c b/mm/memory.c
+> >>> index abd4f33d62c9..e0d34d705e07 100644
+> >>> --- a/mm/memory.c
+> >>> +++ b/mm/memory.c
+> >>> @@ -3837,7 +3837,7 @@ static inline bool should_try_to_free_swap(stru=
+ct folio *folio,
+> >>>      * reference only in case it's likely that we'll be the exlusive =
+user.
+> >>>      */
+> >>>     return (fault_flags & FAULT_FLAG_WRITE) && !folio_test_ksm(folio)=
+ &&
+> >>> -           folio_ref_count(folio) =3D=3D 2;
+> >>> +           folio_ref_count(folio) =3D=3D (1 + folio_nr_pages(folio))=
+;
+> >> I don't think this is correct; one reference has just been added to th=
+e folio in
+> >> do_swap_page(), either by getting from swapcache (swap_cache_get_folio=
+()) or by
+> >> allocating. If it came from the swapcache, it could be a large folio, =
+because we
+> >> swapped out a large folio and never removed it from swapcache. But in =
+that case,
+> >> others may have partially mapped it, so the refcount could legitimatel=
+y equal
+> >> the number of pages while still not being exclusively mapped.
+> >>
+> >> I'm guessing this logic is trying to estimate when we are likely exclu=
+sive so
+> >> that we remove from swapcache (release ref) and can then reuse rather =
+than CoW
+> >> the folio? The main CoW path currently CoWs page-by-page even for larg=
+e folios,
+> >> and with Barry's recent patch, even the last page gets copied. So not =
+sure what
+> >> this change is really trying to achieve?
+> >>
+> > First, if it is a large folio in the swap cache, then its refcont is at
+> > least folio_nr_pages(folio) :
 >
-> > Also, you'll print an error message for EOPNOTSUPP, although that is
-> > not really an error. Is that intended?=20
+> Ahh! Sorry, I had it backwards - was thinking there would be 1 ref for th=
+e swap
+> cache, and you were assuming 1 ref per page taken by do_swap_page(). I
+> understand now. On this basis:
 >
-> Well, when we hit this, the functionality of the SPI memory itself is
-> degraded in the sense that the OTP functionality is not available. What
-> would you suggest?
+> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
-But it's not really an error, I mean, we are ignoring that one on
-purpose now :) I'd just guard it with "if (ret !=3D -EOPNOTSUPP)".
-
-> >=20
-> > >  	ret =3D mtd_otp_nvmem_add(mtd);
-> > > -	if (ret)
-> > > +	if (ret && ret !=3D -EOPNOTSUPP)
-> >=20
-> > Maybe there is a better way to handle this, like controller
-> > capabilities instead of putting these EOPNOTSUPP checks
-> > everywhere? I'm not sure.
+Thank you for your review!
 >
-> Trying to come up with clear semantics for a capabilities flag to solve
-> this is difficult. The issue is that on the SPI controller side, the
-> limitation stems from the really strict set of opcodes that are allowed.
-> For example, we already hit an error with the 0x35 (read configuration
-> register) not being on the set of allowed opcodes. While this
-> instruction is used by the OTP code, it's not a strictly OTP specific
-> operation.
-
-I see. It's just that due to this (very) restricted SPI contoller
-all this EOPNOTSUPP handling is creeping into more an more places in
-spi-nor core and now mtdcore :)
-
-Anyway, I don't have any better idea right now. So I think this is
-fine.
-
--michael
-
-
-> If there was a flag that would signal OTP support, I think it would have
-> be defined as "the controller supports all operations that are
-> performed by the OTP code", which sounds brittle. The other way around
-> would be to have a really fine-grained set of flags that the MTD core
-> would check, but that feels tedious and error prone as well.
-
-
---8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZfFwvRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQzcodo7VsRvtCSAD/YJkNHNj/CVCUeVVMRLzNJTsb131beCFk
-kGoenLQ4aE8BAJpLL0syl9RnrQOhboV6hPopHwley8DRc9x7jlNUn0ED
-=5+gS
------END PGP SIGNATURE-----
-
---8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783--
+> >
+> >
+> > For example, in add_to_swap_cache path:
+> >
+> > int add_to_swap_cache(struct folio *folio, swp_entry_t entry,
+> >                         gfp_t gfp, void **shadowp)
+> > {
+> >         struct address_space *address_space =3D swap_address_space(entr=
+y);
+> >         pgoff_t idx =3D swp_offset(entry);
+> >         XA_STATE_ORDER(xas, &address_space->i_pages, idx,
+> > folio_order(folio));
+> >         unsigned long i, nr =3D folio_nr_pages(folio); <---
+> >         void *old;
+> >         ...
+> >         folio_ref_add(folio, nr); <---
+> >         folio_set_swapcache(folio);
+> >         ...
+> > }
+> >
+> >
+> >   *
+> >
+> >     Then in the do_swap_page path:
+> >
+> >   * if (should_try_to_free_swap(folio, vma, vmf->flags))
+> >             folio_free_swap(folio);
+> >   *
+> >
+> >   * It also indicates that only folio in the swap cache will call
+> >     folio_free_swap
+> >   * to delete it from the swap cache, So I feel like this patch is
+> >     necessary!? =F0=9F=98=81
+> >
+> >>>  }
+> >>>
+> >>>  static vm_fault_t pte_marker_clear(struct vm_fault *vmf)
+> >
+> > Thanks,
+> >
+> > Chuanhua
+> >
+>
+>
+Thanks,
+Chuanhua
 
