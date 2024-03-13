@@ -1,155 +1,179 @@
-Return-Path: <linux-kernel+bounces-102095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B738887AE5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:56:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BACD687AE6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:57:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 528ECB22DA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:56:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66C52B23C49
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F296E59176;
-	Wed, 13 Mar 2024 16:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D86C58220;
+	Wed, 13 Mar 2024 16:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vdmrIvLo"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="LW4Hr5WQ"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DDD18CEAF
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:47:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19E818F36B;
+	Wed, 13 Mar 2024 16:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348480; cv=none; b=fca7gdFIedoCCxVR0yUiSwAe2jseI6oZxTooIvqcVWHl5v3r+g8tiHqrOoaNXi6b8S9j0mJfuFR5uPM+FF3iYXh7zbow2kwugI0AsteQ1dyu7ITuz7tqS9fjJmZOLrEHZ8IPcr1fqtZN8BmG0+yIe45p16chnnvWVLtx/sny5mA=
+	t=1710348560; cv=none; b=hboicDR0A8CBycdh2kkGeGD39MH7kyPnk4d7tYx7omeUQpX0nKakOtkg1+UsTRBUvk5m1x8mKUg7kc1vSCSsqS05in6l2EMW6aoV4YB3Ukyjx983nk576iYMrsmwxclkNsOC2asDQ82TahViANv1AEG4BjrmvsvQm5NfQOt9lUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348480; c=relaxed/simple;
-	bh=OABrLHkuFcQXG/wDXLMHESQAG2PiCXNRa2hkf80/5kM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qeRUFvx8h3gz8zO+4iEGaXSikJWL3P1/7T392jzKBSUtcjfvygHKJ5uAOMNAsAb8VsFcu16qnzUK5Z9SuU00F4VLoM4WqvDIXwewfxikwnZJo1wzlL4yQ0cI2kpV+WUCHyi2aqzp2ftHLlb0Snz4HyWNXIzR+L5UACN/yxtlk14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vdmrIvLo; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-413ef6a4f4bso385915e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:47:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710348476; x=1710953276; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=aL2HNMMWYIQUqUiL5ub2nwsmZvrAMS79QvM7mKq9XnU=;
-        b=vdmrIvLoFbB3M2ouFxtTtZ2aeCQa97jVV+HlsAGIK25749y43OwpUTHNjOOBVEqyWI
-         XIplHh+EUuhBtcewR0UAe245ALospGqXynRD7kja6EGXMMNSn1P4rD/FzJw+ttSZPoMP
-         b5U/oFcacvwNwuvt2mpJ4CuZ2BmDPNxzElpqw9O+BzzCdvufcst4dT5C9M4kwEvILcGJ
-         IyMUDoPCuwvC3BxQ5xMtSOxiovvOFx8HHe4wMOFaXeqSOJl9i10xd9vVR2uN00CZJpWF
-         gdyqxrOMgf2JVqFW5lLJA9mhOLBKXOL3oEY9vxyFiWXyD/kCQ5v6rN5A8d22oVe0847D
-         No7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710348476; x=1710953276;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aL2HNMMWYIQUqUiL5ub2nwsmZvrAMS79QvM7mKq9XnU=;
-        b=W2M6mKIHCkgQ8MjFcvA7h7u+M2/0Zc/mxDicBUC4gKyb1i2x6a8ROENcZLlPkhdFK4
-         +GEQ6kAhPLk9YnkBFPMaWv5t3kFCnp4jFV6nC2XDcpBCvAA+pV3FGaAORtxfgq3k6gP0
-         xzLM2FmRFJPVn55ua59Gw4If3ZGr6fT/IKgPP8V8d+o++kiPj+gaET6Urn7AZC3BN22S
-         PHKoT1HgTEMJ9ygpvuW0UaXdCyoXJ8tFYr2/ZQ7CAwHNrZJ2PPsd/LytWL/iHkjX+j/i
-         SOgNORgRwn6VJa2CrQzJjKUtEsJvSft5KoOCg1jLx53sFCwXHqzBQpfLIrgPjC1oz4rK
-         5jDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWBdHwK6P6oxQ4khIq1n8WiyBFp44wIw2G7YwUGBES1CFrs0dIqTCQaBPy1VQExvE6bOgAYwjIi2ZVUursEjDnTwsanlBQDW9fPGgHD
-X-Gm-Message-State: AOJu0YwsH5x+40EBefaXaaD3N1UyNwOptYOFfGM3xjLKihtWRotyC0Is
-	BdtPPkiDV5nD3AYWiupRnTMXJO3e/oO6xnpDY8v7Oe59I+cEwn/spkoxK/Tmt48=
-X-Google-Smtp-Source: AGHT+IH0kSLdw4SyxenHbvADWPBA+1/ymroD7wywet+sZrpLPA6tHINQFd4bvIKAxr345/cxFAIuQw==
-X-Received: by 2002:a05:600c:1f07:b0:413:1828:b8fe with SMTP id bd7-20020a05600c1f0700b004131828b8femr423510wmb.21.1710348476329;
-        Wed, 13 Mar 2024 09:47:56 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id fm26-20020a05600c0c1a00b00413ebdca679sm1679024wmb.37.2024.03.13.09.47.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 09:47:55 -0700 (PDT)
-Message-ID: <98c662ef-e6ef-4ef1-85df-6d8e3432101e@linaro.org>
-Date: Wed, 13 Mar 2024 17:47:53 +0100
+	s=arc-20240116; t=1710348560; c=relaxed/simple;
+	bh=2hQ6pSoQbMrt0XkGRzDOdvfmCtR4p2HXgr8RQCNnWOg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pz5HCCkAxhkHd4mMGL3JhWSPYEQ+PC3TI7bHodLfJOKF/eqPGtU9jzU47hlaBQQJ0SnL7It359GP1tp0VxOfwcbf1C0sggx8oG2xYlY0xXbEmK3tdeXOSSmD3jZtLApZ3HOdP7IPnsNWETl5TOx+tDuyjzWetsri057rpGteXLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=LW4Hr5WQ; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from ideasonboard.com (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id C5D10B1;
+	Wed, 13 Mar 2024 17:48:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710348533;
+	bh=2hQ6pSoQbMrt0XkGRzDOdvfmCtR4p2HXgr8RQCNnWOg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LW4Hr5WQRELGatP+Rx39XsVdhYqzrluTYRPkZJc07OnmW1sIBdWdkjt8RYM0RfQEc
+	 9VvaLcJpVR9oRFhFrL6chX79fG46ZcWKNoaWgUgpx6LTuGkuSLbjFfqqSI3yHoJYvP
+	 xIG4xlhTnNQHgEYlL2gXycDR6GQT+n6jN9bZMz/M=
+Date: Wed, 13 Mar 2024 17:49:12 +0100
+From: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To: Stefan Klug <stefan.klug@ideasonboard.com>
+Cc: libcamera-devel@lists.libcamera.org, linux-media@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Rui Miguel Silva <rmfrfs@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Martin Kepplinger <martink@posteo.de>, Purism Kernel Team <kernel@puri.sm>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH] mipi-csis: Emit V4L2_EVENT_FRAME_SYNC events
+Message-ID: <axrx5ynlyoyjgkhj3j4r5b6xfaxwetx4c7u5ngq5wunin5ynv6@qmvav4y3xczq>
+References: <20240313153058.189684-1-stefan.klug@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: ice: Document sc7280 inline
- crypto engine
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240313-sc7280-ice-v1-0-3fa089fb7a27@fairphone.com>
- <20240313-sc7280-ice-v1-1-3fa089fb7a27@fairphone.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240313-sc7280-ice-v1-1-3fa089fb7a27@fairphone.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240313153058.189684-1-stefan.klug@ideasonboard.com>
 
-On 13/03/2024 13:53, Luca Weiss wrote:
-> Document the compatible used for the inline crypto engine found on
-> SC7280.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+Hi Stefan
+
+In Subject: missing the 'media:' prefix
+
+On Wed, Mar 13, 2024 at 04:30:58PM +0100, Stefan Klug wrote:
+> The Samsung CSIS Mipi receiver provides a start-of-frame interrupt and
+
+s/Mipi/MIPI/
+
+> a framecount register. As the CSI receiver is the hardware unit
+> that lies closest to the sensor, the frame counter is the best we can
+> get on these devices.
+> In case of the ISI available on the i.MX8 M Plus it is also the only
+> native start-of-frame signal available.
+>
+> This patch exposes the sof interrupt and the framecount as
+> V4L2_EVENT_FRAME_SYNC event on the subdevice.
+>
+> It was tested on a Debix-Som-A with a 6.8-rc4 kernel.
+>
+> Signed-off-by: Stefan Klug <stefan.klug@ideasonboard.com>
 > ---
+>  drivers/media/platform/nxp/imx-mipi-csis.c | 34 +++++++++++++++++++++-
+>  1 file changed, 33 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
+> index db8ff5f5c4d3..caeb1622f741 100644
+> --- a/drivers/media/platform/nxp/imx-mipi-csis.c
+> +++ b/drivers/media/platform/nxp/imx-mipi-csis.c
+> @@ -30,6 +30,7 @@
+>
+>  #include <media/v4l2-common.h>
+>  #include <media/v4l2-device.h>
+> +#include <media/v4l2-event.h>
+>  #include <media/v4l2-fwnode.h>
+>  #include <media/v4l2-mc.h>
+>  #include <media/v4l2-subdev.h>
+> @@ -742,6 +743,18 @@ static void mipi_csis_stop_stream(struct mipi_csis_device *csis)
+>  	mipi_csis_system_enable(csis, false);
+>  }
+>
+> +static void mipi_csis_queue_event_sof(struct mipi_csis_device *csis)
+> +{
+> +	struct v4l2_event event = {
+> +		.type = V4L2_EVENT_FRAME_SYNC,
+> +	};
+> +
+> +	u32 frame = mipi_csis_read(csis, MIPI_CSIS_FRAME_COUNTER_CH(0));
+> +
+> +	event.u.frame_sync.frame_sequence = frame;
+> +	v4l2_event_queue(csis->sd.devnode, &event);
+> +}
+> +
+>  static irqreturn_t mipi_csis_irq_handler(int irq, void *dev_id)
+>  {
+>  	struct mipi_csis_device *csis = dev_id;
+> @@ -765,6 +778,10 @@ static irqreturn_t mipi_csis_irq_handler(int irq, void *dev_id)
+>  				event->counter++;
+>  		}
+>  	}
+> +
+> +	if (status & MIPI_CSIS_INT_SRC_FRAME_START)
+> +		mipi_csis_queue_event_sof(csis);
+> +
+>  	spin_unlock_irqrestore(&csis->slock, flags);
+>
+>  	mipi_csis_write(csis, MIPI_CSIS_INT_SRC, status);
+> @@ -1154,8 +1171,23 @@ static int mipi_csis_log_status(struct v4l2_subdev *sd)
+>  	return 0;
+>  }
+>
+> +static int mipi_csis_subscribe_event(struct v4l2_subdev *sd, struct v4l2_fh *fh,
+> +			       struct v4l2_event_subscription *sub)
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Please align to open ( on the previous line
 
-Best regards,
-Krzysztof
+All minors, with the above fixed
+Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
 
+Thanks
+  j
+
+> +{
+> +	if (sub->type != V4L2_EVENT_FRAME_SYNC)
+> +		return -EINVAL;
+> +
+> +	/* V4L2_EVENT_FRAME_SYNC doesn't require an id, so zero should be set */
+> +	if (sub->id != 0)
+> +		return -EINVAL;
+> +
+> +	return v4l2_event_subscribe(fh, sub, 0, NULL);
+> +}
+> +
+>  static const struct v4l2_subdev_core_ops mipi_csis_core_ops = {
+>  	.log_status	= mipi_csis_log_status,
+> +	.subscribe_event =  mipi_csis_subscribe_event,
+> +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+>  };
+>
+>  static const struct v4l2_subdev_video_ops mipi_csis_video_ops = {
+> @@ -1358,7 +1390,7 @@ static int mipi_csis_subdev_init(struct mipi_csis_device *csis)
+>  	snprintf(sd->name, sizeof(sd->name), "csis-%s",
+>  		 dev_name(csis->dev));
+>
+> -	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+> +	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+>  	sd->ctrl_handler = NULL;
+>
+>  	sd->entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
+> --
+> 2.40.1
+>
+>
 
