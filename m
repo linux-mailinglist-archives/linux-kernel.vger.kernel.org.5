@@ -1,101 +1,151 @@
-Return-Path: <linux-kernel+bounces-102521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD4587B348
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:12:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFD087B34A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:12:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F7BAB25367
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:12:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A20C31C22A2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D548C55C0A;
-	Wed, 13 Mar 2024 21:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1278657863;
+	Wed, 13 Mar 2024 21:12:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IyFptiMZ"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OVVLp0ng"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D3E54BD3
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:12:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570B45787D
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710364323; cv=none; b=TAxW2G92iQAw1JNU6U0vUM7BvUvBjk6AgXzdL/lwdp4/Gz9PU/rQKzJtqf2YSJs8PjAeCTj0BOW8VDgd0bvA+4cTvCb4ol5qXRO88N712BOU9lWU2pjuPZ5S8Qze/E4+RIyNw/7gmSwZwN4DvOpTuZ8/3IsOoR5E93j9YJJBe1M=
+	t=1710364347; cv=none; b=sttEp3ZnvpEjqbaH4D03g6PREC/nEV3XAFleV3H/qNzqdtC/1GW1nXMCUTjSquzO6G2w/dCuLzdfo3385DfrxaCOG0lr5vbLHvB3Tno/Nwi0iN93gjinwBMnm0scyUnqo4pNupZ4RuQnfw7xx6qqC4radwSh5k1MKEyo89+boX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710364323; c=relaxed/simple;
-	bh=qiT72c9JTz/mIY2biql9EBUdBUvC+l9mx9EAksC0Flc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=SL5b4AfEDnO3HgPxRn0+danUL1BqvRxmn3Nh1ESVIT+dTJnNA7BJl1WbAi3q+sk3fD/6h9BFgtp8bSpzoX/pTAAlwKQolG7kJjBFWmefXTAMurviuTkJTSfT9Q9doF3JigDPLIby8xuuKyq6jhnVoytuB8vnHm4a3I0gAkNESQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IyFptiMZ; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609fb4fc058so4967857b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710364321; x=1710969121; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AFldDYFYoZJVu+X/7qJi9Dh0UTrOOknI+KaE9Y/cruY=;
-        b=IyFptiMZc2cMqGVZlnJtDqXqZv6XavWxqAHqYDCdsUN4XCqsk/3ufj8GAsDyOYBOwB
-         coHk9All0ZGxL3bzlcqAPWNR5R3ikZGr0f2OgfayYqOq8DElz07vy5oZ2Pre8TovxuIY
-         hFka1wG4p1fBGOu0dITLMEm1Ui86YBMsgdqAEbfhpmYH13hwDY/FjAalr9X5rGKSg4lT
-         Uxwp00v7jN9cXIvoQDmNulvPx+pQzBClbiLGp9XECH3CrrcWICCGncZbKPIEOFHmeOga
-         fGX+OtsA5D8Gc1dTb6M3ybIqHd3J9Kz82y33eNkxNatXn6+cfCZZXPsoboW1dhLQv8ye
-         CbXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710364321; x=1710969121;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AFldDYFYoZJVu+X/7qJi9Dh0UTrOOknI+KaE9Y/cruY=;
-        b=bmNzndY1UHAwuc5rsoECl70a+iufYG3XgchzqXcZpEbljGwRo4W8R2GDdTwvx9s0cC
-         2r8UMMDx6LsPc6ZWEZh6yx6wROSTm+fkdvY+WcYP2SWLSO/s70WMGr5J7L5RZfHwp6eF
-         hP/p8CsIKxJ3EAr4gIIuRLo1CZ8LCfctd/OLuesHzpEgYzBrJLE4l40GwikmylmMxc+N
-         VfEpp1lCnUin229YJqIJ1sVlHFpmKkJQYbeXNLFVyREME9QA1Vmrme63WfDjoz/jJT+V
-         64rvyk4uc3NvHEV51y2j2OpLpiWvqFybnP8qpUOuAsNrLUEdDoDNKAyzDUCy1Nrhfqra
-         +gOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWdVtfTNPuZysMinP/9HmNQWrZRN9x+qFBIMeMzS17lBrGOmzGKBBffbuy/MJxHfxPOONZYpowYd57h1l2cayPfNUX+AlBc3sx6+zyO
-X-Gm-Message-State: AOJu0YyH6UYHBhFZ4ytGlA7JhFkpkalyRUiyKy0HnOdBPuC46mJ8y6Tz
-	rLwqzh4pmrE3mn1grFFZpe2CyFDFuLwcIDZfoP5h5vm8Hi4B+mQsQ6YizjY+qCz41hl2NO3i++K
-	bDw==
-X-Google-Smtp-Source: AGHT+IG7ZnlWrbgu/ly+F89sgb5mQBbUUJEyVYuKM782fY5hVU8Int08JPvlCwJXLXABPZ6VjEEzriKV4K0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:95c:b0:60a:574b:b37b with SMTP id
- cc28-20020a05690c095c00b0060a574bb37bmr748933ywb.0.1710364320848; Wed, 13 Mar
- 2024 14:12:00 -0700 (PDT)
-Date: Wed, 13 Mar 2024 14:11:59 -0700
-In-Reply-To: <a5fd2f03c453962bd54db81ae18d3c2b8b7cf7b1.camel@intel.com>
+	s=arc-20240116; t=1710364347; c=relaxed/simple;
+	bh=pn/5tZr/4USUk6Xl24wnyddCOFjB3FKvA39M4UJsywA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=hR8XAopygIob16GR5RiyPMSTK5w4eSMKnl0hunYRe0y2DjPG7CXc2FbvQcFpBORsswoBskZaFgjwX6xEMm4bmRCgL47/+PzLh9zbPgwC1STUyMrD5fVfA0136R4ORaMsNi+rES7qHX/ztxiCrAlk1O1Fj/u60bScRVXMAcDDxPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OVVLp0ng; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D14B7C433C7;
+	Wed, 13 Mar 2024 21:12:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710364346;
+	bh=pn/5tZr/4USUk6Xl24wnyddCOFjB3FKvA39M4UJsywA=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=OVVLp0ngrjEYvpCQp85XBLMBGVNfeDd+jUm1srgzNoDnDyDrATHtsTaMRJjDAAz2n
+	 SPeyfyN7XDvrFM+pP7Z+KpTTVBqgUNDZ7GFoWQOb2QQrA76SAEWW+KtlK2WVAzkOaW
+	 Mu9v6lAeldFor/kreLZP+qeO0g4rwAibD5qiBg9RAjP1Ips659p0GcW48VRG7DiRK5
+	 hD1HAC7qg6ex8Q3POGlp08U/W22rSypG+5WAqBr9HK6wf96Y+Voyqn1sopodg9ZUDk
+	 4UlsgSRl8f+r0yKyJ6L5H5i3x87m2AIegX2RRgvNCwOFC5wBP7rfuwxvfRDWkJ3FQh
+	 JiMVjoweSBAQQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5BDFC54E66;
+	Wed, 13 Mar 2024 21:12:26 +0000 (UTC)
+From: Douglas Anderson via B4 Relay <devnull+dianders.chromium.org@kernel.org>
+Date: Wed, 13 Mar 2024 14:12:14 -0700
+Subject: [PATCH] drm/panel: atna33xc20: Fix unbalanced regulator in the
+ case HPD doesn't assert
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240312173334.2484335-1-rick.p.edgecombe@intel.com>
- <ZfIElEiqYxfq2Gz4@google.com> <a5fd2f03c453962bd54db81ae18d3c2b8b7cf7b1.camel@intel.com>
-Message-ID: <ZfIWnykN1XG-8TlC@google.com>
-Subject: Re: [PATCH] KVM: x86/mmu: x86: Don't overflow lpage_info when
- checking attributes
-From: Sean Christopherson <seanjc@google.com>
-To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	"hao.p.peng@linux.intel.com" <hao.p.peng@linux.intel.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Isaku Yamahata <isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240313-homestarpanel-regulator-v1-1-b8e3a336da12@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAK0W8mUC/x2MywqAIBAAfyX2nKAl9PiV6GC12kJprBZB9O9Jp
+ 2EOMw9EZMIIffEA40WRgs+iygLm1XiHgpbsUMlKy1opsYYdYzJ8GI+bYHTnZlJgYfXUdtJmNDP
+ k+mC0dP/nYXzfD1GOg+BpAAAA
+To: Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Douglas Anderson <dianders@chromium.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710364346; l=2015;
+ i=dianders@chromium.org; s=20240311; h=from:subject:message-id;
+ bh=/jgB/LgJDly6Altvbipo14aZmr/j8F+XuDmbB4fICv0=;
+ b=ZSkyjZHVIxke1plTs0iVfALVXhp73xvZV1inGwLQ3nW5eOV+sfMENciF2dYF1l2+2oZFBEoiT
+ vi6lBPds8GkA6mNzmas1XXWF4TafE7e2SSJw22U5dDDFyN3gdum072f
+X-Developer-Key: i=dianders@chromium.org; a=ed25519;
+ pk=3pyAfvsLkkkp4Xpq0XV7ZHOoA0WmPoJTE/BIAhunPKg=
+X-Endpoint-Received:
+ by B4 Relay for dianders@chromium.org/20240311 with auth_id=138
+X-Original-From: Douglas Anderson <dianders@chromium.org>
+Reply-To: <dianders@chromium.org>
 
-On Wed, Mar 13, 2024, Rick P Edgecombe wrote:
-> 2. lpage_info doesn't need to keep track of unaligned heads and tails
-> because the unaligned part can never be huge. lpage_info_slot() can
-> skip checking the array based on the slot, GFN and page size which it
-> already has. Allocating kvm_lpage_info's for those and then carefully
-> making sure they are always disabled adds complexity (especially with
-> KVM_LPAGE_MIXED_FLAG in the mix) and uses extra memory. Whether it's a
-> tiny bit faster that a conditional in a helper, I don't know.
+From: Douglas Anderson <dianders@chromium.org>
 
-I wouldn't prioritize speed, I would prioritize overall complexity.  And my gut
-reaction is that the overall complexity would go up because we'd need to make
-multiple paths aware that lpage_info could be NULL.  There are other side effects
-to making something conditionally valid too, e.g. in the unlikely scenario where
-we mucked up the allocation, KVM would silently fall back to 4KiB mappings, versus
-today KVM would explode (bad for production, but good for development).
+When the atna33xc20 driver was first written the resume code never
+returned an error. If there was a problem waiting for HPD it just
+printed a warning and moved on. This changed in response to review
+feedback [1] on a future patch but I accidentally didn't account for
+rolling back the regulator enable in the error cases. Do so now.
+
+[1] https://lore.kernel.org/all/5f3cf3a6-1cc2-63e4-f76b-4ee686764705@linaro.org/
+
+Fixes: 3b5765df375c ("drm/panel: atna33xc20: Take advantage of wait_hpd_asserted() in struct drm_dp_aux")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+ drivers/gpu/drm/panel/panel-samsung-atna33xc20.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c b/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c
+index 76c2a8f6718c..9c336c71562b 100644
+--- a/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c
++++ b/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c
+@@ -109,19 +109,17 @@ static int atana33xc20_resume(struct device *dev)
+ 		if (hpd_asserted < 0)
+ 			ret = hpd_asserted;
+ 
+-		if (ret)
++		if (ret) {
+ 			dev_warn(dev, "Error waiting for HPD GPIO: %d\n", ret);
+-
+-		return ret;
+-	}
+-
+-	if (p->aux->wait_hpd_asserted) {
++			goto error;
++		}
++	} else if (p->aux->wait_hpd_asserted) {
+ 		ret = p->aux->wait_hpd_asserted(p->aux, HPD_MAX_US);
+ 
+-		if (ret)
++		if (ret) {
+ 			dev_warn(dev, "Controller error waiting for HPD: %d\n", ret);
+-
+-		return ret;
++			goto error;
++		}
+ 	}
+ 
+ 	/*
+@@ -133,6 +131,12 @@ static int atana33xc20_resume(struct device *dev)
+ 	 * right times.
+ 	 */
+ 	return 0;
++
++error:
++	drm_dp_dpcd_set_powered(p->aux, false);
++	regulator_disable(p->supply);
++
++	return ret;
+ }
+ 
+ static int atana33xc20_disable(struct drm_panel *panel)
+
+---
+base-commit: b33651a5c98dbd5a919219d8c129d0674ef74299
+change-id: 20240311-homestarpanel-regulator-f4b890ff4b7c
+
+Best regards,
+-- 
+Douglas Anderson <dianders@chromium.org>
+
 
