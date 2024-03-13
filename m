@@ -1,160 +1,165 @@
-Return-Path: <linux-kernel+bounces-102104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28A687AE70
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:58:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9800287AE72
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:58:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A063283AE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:58:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A1D0B24330
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6445B5B03A;
-	Wed, 13 Mar 2024 16:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042095C8EC;
+	Wed, 13 Mar 2024 16:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XyIvhhVH"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="QH13WtVu"
+Received: from PA5P264CU001.outbound.protection.outlook.com (mail-francecentralazon11020002.outbound.protection.outlook.com [52.101.167.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FCD5A10F
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348593; cv=none; b=SaycTAtosSt5o6sWLHOJb5c8dSug//ePLuD4yml2Bfb/tsVjW/TKKq/5wkxyGqfoKPztfts0Xo+1B6Ev0NSRKZtRfdMHUU87Nev+vgoJqCX0ajzAtQrCXbYMf+CF9FciHBqvAbd4HXGHwvPsgHWbW9K+nfhx8gZcLeqRr9v1JlM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348593; c=relaxed/simple;
-	bh=hPL3zw5JCqO9Uf0fSyTYE74YPTyUk0Giy5TIIbo6qF4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dt1AR5d7MWM4Vb4XFkSK7z1I8XdkbE0Vl0c0jQgaTRxTwD35KaaUCYleJA7Q6AZcZAgnYkya/29aAd1SJO0q7EXTlYKJonQbTEco4G7dOYK7AOTC63+vOGlxzj1Hm0DQVdslgWaYh8jzMj9uSOn2iD8tkxbWx/Dn5HhjWq1Hg7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XyIvhhVH; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5682360e095so48318a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1710348589; x=1710953389; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:date:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QPkIANYlnqpJGOaQz5GtJSLehMlH+HibJAm6EUdPbkE=;
-        b=XyIvhhVHlKZYnacQWGKlDtD3CMP6ZTq6capZFpjAY18Bcr8SCaEdTKWnL8aPI/NMn4
-         yBLrKZOtaMRoRRMT31YTrY1kIDgpppyKPF0HDCGeGgFgNANk/1UGjvBkmUBfYxIh7o2B
-         4V8wmTWqq1ibX8iDzyxyu3q1eqD5OyZ7scSSvkS3dk3UG2rOXp+N+Trmc4yNMf/FLmzc
-         pE3feMENX4iueUAOP8WUmVUMX8sjvM7FoSL1h/a82D51MiAX6f0nAVcZP7GT+ktkc08F
-         w3rWI3rRqwUfnN7DYNnicnXJyGj9p+G2mMlb0bG5PPfwKdj2tzNanajJcFXWOgmpyyz1
-         BywA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710348589; x=1710953389;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QPkIANYlnqpJGOaQz5GtJSLehMlH+HibJAm6EUdPbkE=;
-        b=tx1doOfkkxHBpw86ATwovvxaWBqdlPrVBItspWkSF2+V1El9Libk5S98aYgqz3lTjT
-         PxI6WKT0DwvGiP/TmEhhK5YblP54CtBB2KbR7HkTU+kTF2kOLS9av3JiwccxqeVUiIYH
-         ZpZqDy0HVppVROYo2t45W4Hlvy0BL/RaXo7ZugRfZXPZpVzsm7HguLZGLNdtm1vpagNa
-         Yaitj7k10sl6vTl5zqI8n6a+s88Bs+Cu8pOnJSxD9BgQYNSaff05aQSSjRGRwETzfM6S
-         sD7SrozFtAaUpdVTqMB+/3IBHe19Knn9EkMOC0Ru/atbky4vMC3pp/7vVtv3yU6ZoElb
-         n26Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUGN0VITZjrkSwYDKlkxdTBqN7saAB/T/QuJJO3iAC0wQbL3O9K9KwVJWPP+na2jag9ANlyE3QbRp33CohUG69pKBTPR7qtem/Wd82S
-X-Gm-Message-State: AOJu0YwwBRSuht5i+T9hhfWE2GfxmDhJ1Jp42/AXDwTpkcBO7jKHwST9
-	3Yw5XZcSn7AQuOf74NUseSyKJZe7U7fnF9a/wGLZfIaIC62vME4v20uBeiF7ZkE=
-X-Google-Smtp-Source: AGHT+IGqIboO89JDdz68otiTxC7R5thbY+dJhwJvuyQri1Y0mW+DslANVakowZJW0e4mX3PczuljcA==
-X-Received: by 2002:a17:907:a644:b0:a46:134c:ae8c with SMTP id vu4-20020a170907a64400b00a46134cae8cmr9631602ejc.50.1710348588653;
-        Wed, 13 Mar 2024 09:49:48 -0700 (PDT)
-Received: from localhost (host-82-56-173-172.retail.telecomitalia.it. [82.56.173.172])
-        by smtp.gmail.com with ESMTPSA id bn23-20020a170906c0d700b00a462e4d7216sm2787595ejb.76.2024.03.13.09.49.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 09:49:48 -0700 (PDT)
-From: Andrea della Porta <andrea.porta@suse.com>
-X-Google-Original-From: Andrea della Porta <aporta@suse.de>
-Date: Wed, 13 Mar 2024 17:49:47 +0100
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Andrea della Porta <andrea.porta@suse.com>,
-	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	dave.stevenson@raspberrypi.com, Phil Elwell <phil@raspberrypi.org>,
-	Maxime Ripard <maxime@cerno.tech>,
-	Stefan Wahren <stefan.wahren@i2se.com>,
-	Dom Cobley <popcornmix@gmail.com>
-Subject: Re: [PATCH v2 01/15] dmaengine: bcm2835: Fix several spellos
-Message-ID: <ZfHZK8fb8m41t9UF@apocalypse>
-Mail-Followup-To: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Andrea della Porta <andrea.porta@suse.com>,
-	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	dave.stevenson@raspberrypi.com, Phil Elwell <phil@raspberrypi.org>,
-	Maxime Ripard <maxime@cerno.tech>,
-	Stefan Wahren <stefan.wahren@i2se.com>,
-	Dom Cobley <popcornmix@gmail.com>
-References: <cover.1710226514.git.andrea.porta@suse.com>
- <f57e15192166d696aca23804f8ac79dfe81fd399.1710226514.git.andrea.porta@suse.com>
- <831fee14-387a-41d9-8dfc-e3ba09a140b1@broadcom.com>
- <ZfHFiHdAeXgoNHNk@apocalypse>
- <886b0def-7884-4780-8b7f-e29bf3d9ce7d@broadcom.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A355C5F4
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:51:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.2
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710348669; cv=fail; b=EtWL0LZtfUvQceUoMdsQOFM06uoJp1zdnf1NXekz3rv1nx+F63Ks0/OPPA+4aeo8sknZJuhe5fzGV524aC3qHv5aKnIHR8CfAM/vJlrY3kEwPPRMaAzNNj706x5oslm8MYyaz2VOnGtMqzAEoIAL0fO/G8O7NhOFZP1A2ps8cL8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710348669; c=relaxed/simple;
+	bh=dc+4jZk9Uk9Jt4zzklHMNEGJ0mAYjsDRRFi10DF/g74=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=upnNd1oP6cqzBvD/1sBGptC32mgKej2tWs4WA39zFQrzFS7U/oT7rM0YWepLse8O6qx85T8fFQtNv+K29fuy9+DnICQXXgXCwNxcJHQzsDnKaGEeUh+C5noT+fD//Xv/Xsma5TNjag8kS08Ypw1h98f9McuEg7KJKARhX8xfA38=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=QH13WtVu; arc=fail smtp.client-ip=52.101.167.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SWZ/riiHky3G0XFzE77fjKZeiqsxc+SA420z/IYIovogqbdzR6NLilhg0IO9ctQaqJIfoU41UNsxMP6FgeS5pz2h+wNTfrxzPkAO6MH1GzcuA7ses3SeevXz81BC02C2KD+UOykY8PPDk9tBmnmRrmMHXh51FKUPoiYbnHQUOtnTGtMzQR7Nbsr/zychn6oy0E+/zJRxzWtksfTt+GMlnTzllg9UqBuYCwUs8eXw2Qjlj8Kdf8sqpAwVS3oeMvP0BMeQYzyPfFBqItYxBJ1NFXaFVAEzf7vmTz8MtEAi7361pitN3fwELNq/tIQquOwjU9PzwUB3m2yj4ZKpwrNgQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dc+4jZk9Uk9Jt4zzklHMNEGJ0mAYjsDRRFi10DF/g74=;
+ b=R2dAecL1cEFastAlL3uBjM+XvyvqBs/3s6xNCA2AmcPHW6nKFYn98nIrQC8r5g2l60rtQBlhxBTVvsY1UAzjSc0QQrRV9OEuFwuXaCcE3WvTdGPrK9mLLWOUUsYLXRSzjg0Ivt3mQBCHBJhOkE/SvGZGlumOChPjZI+8XQ0IU6k19ywhBvOokKU/BRflTVheFquUJgSV8Oken90/rNBIMCa2lvGceYup72MySx71lknIIrDdzD+M1zqbE8RArPBsvQbBk1UoQa5SR84ROvS6PSUym0GuVaTkok3FYyk3S79SOaTyztTHuCXuRAeANLwMUACfzw5MBPnAytaNnEcjzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dc+4jZk9Uk9Jt4zzklHMNEGJ0mAYjsDRRFi10DF/g74=;
+ b=QH13WtVuj3jzzsrskNjZCRujm1ux4a2N9ZenKyCHg94cKzW0n8m+jiYSMPWdaITqNJC4tUI3qRNRJQQTGY1GMyxfEuyiJtStmR5PhTrLvPVEo5Ebm079vD1iVNjPtDL0cksClbQhKKLoZt6Kq9MiFEw7CvFJVVE37CpFykSMplulXJ4gFLT07wY2K7dzbQuPR4Xsz5kdxHh9kvBqCQ/gI61syM3e47rA5IsBNsjQyx9JyGvaLbnV8GQEziyhzwrEgY5pTl2JpbFHKHLoMhFUCpEdq/yx1TeLs7gcvnfLJlu2bQ6GHljD+3OwFT5z7PoKQh8WIbrTM2N90WoVV/xjXQ==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR0P264MB1610.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Wed, 13 Mar
+ 2024 16:51:04 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7386.017; Wed, 13 Mar 2024
+ 16:51:04 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "debug@rivosinc.com"
+	<debug@rivosinc.com>, "luto@kernel.org" <luto@kernel.org>, "x86@kernel.org"
+	<x86@kernel.org>, "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+	"broonie@kernel.org" <broonie@kernel.org>, "keescook@chromium.org"
+	<keescook@chromium.org>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "mingo@redhat.com"
+	<mingo@redhat.com>, "kirill.shutemov@linux.intel.com"
+	<kirill.shutemov@linux.intel.com>, "bp@alien8.de" <bp@alien8.de>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "peterz@infradead.org"
+	<peterz@infradead.org>
+CC: "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 09/12] mm: Take placement mappings gap into account
+Thread-Topic: [PATCH v3 09/12] mm: Take placement mappings gap into account
+Thread-Index: AQHadMy2AcD12Qgk5E+xVTk36tMlvLE1YVaAgABi34CAAB92gA==
+Date: Wed, 13 Mar 2024 16:51:04 +0000
+Message-ID: <d69aef55-9a5e-4965-a660-66cb2ee3d9c5@csgroup.eu>
+References: <20240312222843.2505560-1-rick.p.edgecombe@intel.com>
+ <20240312222843.2505560-10-rick.p.edgecombe@intel.com>
+ <615a783a-0912-4539-94bd-f1e09535bf38@csgroup.eu>
+ <6457f3a65ebb25811ce57be9f8da39fe475496fa.camel@intel.com>
+In-Reply-To: <6457f3a65ebb25811ce57be9f8da39fe475496fa.camel@intel.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB1610:EE_
+x-ms-office365-filtering-correlation-id: ecfd203d-3e58-4479-010b-08dc437dc567
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ QSNLLhbyKtSZQvqOzkpw5d5b0H8OqdrWobfcCARogwvr5ELxmoBFZW995TWSc/b6VtVkqCYWn812j7O8ZfLglj47YT1XVDAw9roxtnQuAKauejjItuZ7AmXH4JO0q/b9lEog5v13epMw3tyqFDNlTu07AL9nf2+ZKp9YnTZFCAYjS35daWW7dwBhW+t05t2gjX4Otx2wt4oTk+w9hvMgvoIxD8+aZBWGc25DVq64F2LoOzgxLOqy5drYXko4cub1766YTc6KGvkrlQfGfHzmLc8U0+ZQL4MzSclrD8y9UOdr5z3HIyWU6eOV1GJ8z7dQQ/YaI2yec51eOm1BvqYJ+EDqDC9eq3goeEj8YiloKvGLDbXMaheT39lYXEG5s4oOaSUiEcISGm7Ct0CJB07nMYgwrmes9WdXQXuzukeYf+lLAqxNJvcGgsVAmLXcR+nV2js7XkePyDdEFgIju6vqabzXVoKgGsubw8cqppPN0U0/FZTEAzaK8Lc0oDuamkFV7WD6UjZKhMpS+jlNJW2SeZueCLHAT6w2tOrNn6LpJGewiH8IzWBhaDrBLyAkgBTETUppvQ++1qC9BQRN7PRatR1gtP4tc6k20WwH1c1qbmSMDcN4ChRzd7OoqD9Eku0FLBp7VSPXJcwNcq3v+OB6eUg5JlhG2KaceR2YW2HbmRRmfch1xg63jcCQMy4Jll4RyEwdMZdldAIcX5S9/JIshEZ4zBWYfVIeNBZegkBb5uU=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(921011)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?SzQ3R3ZQc280Mnp6MmpiTkRaTk5nRkdGRDZJK2x0NjZpUlkxOU1EblorMFJF?=
+ =?utf-8?B?dk9YUFNjYS9GeVc1dUhGMUFaVVQyU3I2bFJPL3p3YXdub21IUlROazduRU9i?=
+ =?utf-8?B?cHJDeGdGYm5wTU44b2w2T2cvQ056Vm5FSHdDOVJCQWxXOFNBbUorQUR4YTBs?=
+ =?utf-8?B?SllLMkVvWUcyOFRKTzBkZ2tqdWNYT2NERjRYaTVBL2xKalVUa2g2V0dQckFL?=
+ =?utf-8?B?cUJlT1JnTHpDdmp3cGt1UXJmSGEzUS84bTVqUFZzbDRMS0hMN0JmQjFSRjUy?=
+ =?utf-8?B?VkVycmEvd0JmM0Fva0E0Rmp6YUJTVUJOcW1rdkQrc3ptWVpIZHdqK2szVURr?=
+ =?utf-8?B?bUJTUnQ1TENra0VaMFBCQlVTRFg5dXVORktISUhCM0dIblJidllJckJZaGNn?=
+ =?utf-8?B?RktpWk1VY3lrSmh0S1NjdzdENkdmV2FUNHpDYVgwVFgxTWJlVm5adXg3ZmFV?=
+ =?utf-8?B?b1ZkakNBdDY4R2V3OUtkSW83K2loYWgyL1FHZDd2eTNLWGtRQ1pucUlpaElO?=
+ =?utf-8?B?Ti84ODdEeHZSamZlRW84aGlObVNraFZoYWlaaGxqMDVoOFIvcU1vUVdCWTJP?=
+ =?utf-8?B?djVib3R4cE1oQWRlR3VUL1c1cGZkLzYzNUExcWs5bWdrd3JDaGgzMHBRdTVp?=
+ =?utf-8?B?dUlMcGorVHlzUjVFUjBWV1F1aXdIMmgwMFI1Yk5rOTBGcWUxby9ta1hvTHFo?=
+ =?utf-8?B?U29QTURMcVcvZFZUZ1BTNDBCcVVvZVRKKzFkTWJUTWJXcGxKakthblZDTEJQ?=
+ =?utf-8?B?SGNKSDVsaEh4MzFpcWV6U2t6RmREaWJtS3NnNktrbk9uRkRHc21VY21CUmp5?=
+ =?utf-8?B?TEdXa0NMcEVSQ3R1YTVWeTNzTGNQVDhWWjZvTG5UVVZhcEl5K2N4WkpYQ1Zx?=
+ =?utf-8?B?R0VkM2NUK0ZQdUdwVW9CRGJQK3lYRWIrZjN6czBwbmZta0tuRmh4RjVseG5h?=
+ =?utf-8?B?ckZvZ2xFc3pKOFFqb1VHbmE2WVRtWGtHLzlTV1U4anpzeHFuV2w3dnVWRXpX?=
+ =?utf-8?B?OXJGQVlVKzkzenBScURzanQ4UEZPK0ZzdXdEZG5UajdyZFZ6RG9JUVhudktW?=
+ =?utf-8?B?MHB1WFRLU1pCb3lQRVVnb25pak5uSDZqVmNhR0tlRmp4UVZSWTJLdExkd2RE?=
+ =?utf-8?B?ZUpxZjlITzZZWXAxd3ZhRFR2bjFTdEhhUXlXSG1sWEJSQ1B3S3p5OS95bnB2?=
+ =?utf-8?B?TjA4UDhCTzRNQ2FzUkJJZGptdzdUanRmNEVFYnBJdjNtSGJEVXlBWWRFczBm?=
+ =?utf-8?B?K1lIaFVGRkJrTnA3amwvR05IUkFrdTFobEFDWis3OWthRGQwVlo4THlVcWd4?=
+ =?utf-8?B?bzZkcFJpYVN0dGtTQmpwcW5NdVd0SlhINTZFVDFWZE5rcGRDTjdqVkFxQ3hD?=
+ =?utf-8?B?cnhhNHFlRDAxM01May9JMDUvTW5NdGZsOVdNWjZ0V09SUGM4N2xXTjYrZVQr?=
+ =?utf-8?B?RWRaKzhjSHpseS9LL0x1L2I2TmNLWkN4NThZQjAyVVJhbnpwWWhwcHUwdEJt?=
+ =?utf-8?B?SVNwc1laZEI1YXd4VVRiRXAzSUJiekRJU0hGanRySUVHUXRpYkp4MFRTN2hr?=
+ =?utf-8?B?UEpBbVhuaGZLTUprTGI5RmxBQzdjRS9QSnNNakVlY1o0Wjh1b053a0J5MGRq?=
+ =?utf-8?B?OEdDR3FXck9pK0sydnErenBlQXdzOTlOS2k1NjhBS1B3YnRDOHRYOGFUM1Z5?=
+ =?utf-8?B?TnJSOHYwdElpUTRJcmFYNXZmQ0xmMXpYbVV1RFlaZkIwSmZ5TE9GdDFiU1V0?=
+ =?utf-8?B?U1U1MGxrcm42VmVVWlNHalE2bGVrYXRwN3RBamxQcllidkx4bXRwWHpBcElO?=
+ =?utf-8?B?aXVWajlJNGpmTHlodU9tMGpEem1VdHY5eFRLS3hhRTRxa2ZUaWZpNnhzNlNZ?=
+ =?utf-8?B?cVNyRGk4RFBOZlhqaWdIR3piYXI2emh3VytFNXF2QUp3em9xYnV2S3h1L0Zv?=
+ =?utf-8?B?TmZIMkxYNVJkSkR3SVlwakdHK0RQck5sWERJaFQ0Z0xiYXV6djkrcXV5SEdJ?=
+ =?utf-8?B?NlgxQ1FrL1lrMzh6Tm41amhMdmE5WnpVNlEzTytqb1Z5NmI4ZFFONjVERUt6?=
+ =?utf-8?B?UGFkTTEyRkRCcVRGcXh2WWpEZmdFOFZ4VTdWVVBObTQ2bmdsL2p4TjUzVmVo?=
+ =?utf-8?B?cSt1TzhRSUJ3b3hSYi8rVjBIVE80TGEwT2RnVUNEN0V4WG5hOVlFdklkWlFH?=
+ =?utf-8?B?ZHc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B4EF80ADEAD5F74BB1C9BF391C65994F@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <886b0def-7884-4780-8b7f-e29bf3d9ce7d@broadcom.com>
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecfd203d-3e58-4479-010b-08dc437dc567
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 16:51:04.1157
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hVdbuW9wFQfjcIRzCFgZd36WDkS1UbDl0XcU7tRfVhjMNFFqNI6hK49TusY2Wb5f4vYpzGi6nUy5jSThtdt0ZnYQIs9K5e/5cDKKTWv/PU8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB1610
 
-On 09:38 Wed 13 Mar     , Florian Fainelli wrote:
-> On 3/13/24 08:26, Andrea della Porta wrote:
-> > On 08:00 Wed 13 Mar     , Florian Fainelli wrote:
-> > > 
-> > > 
-> > > On 3/13/2024 7:08 AM, Andrea della Porta wrote:
-> > > > Fixed Codespell reported warnings about spelling and coding convention
-> > > > violations, among which there are also a couple potential operator
-> > > > precedence issue in macroes.
-> 
-> and s/macroes/macros/
-
-right, sorry about that...
-
-> 
-> > > > 
-> > > > Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
-> > > 
-> > > There are no spelling errors being fixed in this commit, this is purely
-> > > stylistic and conforming to the Linux coding style guidelines.
-> > 
-> > -	/* detect a size missmatch */
-> > -	if (buf_len && (d->size != buf_len))
-> > +	/* detect a size mismatch */
-> > +	if (buf_len && d->size != buf_len)
-> > 
-> > Isn't 'missmatch' a spelling error? Maybe I can drop the word 'several', since it's
-> > indeed only one...
-> 
-> Can we agree this was easy to miss when 99% of the changes are stylistic?
-> The summary is that the commit subject and the message are not describing
-> what this patch is about.
-> -- 
-> Florian
-> 
-
-I agree with you that I could've added '...and coding style fixes' to the subject
-(while also dropping 'several').  The comment seems fine enough though. Maybe
-you're suggesting to separate the patches into two, one dealing with spelling
-errors and the other with coding conventions?
-
-Many thanks,
-Andrea
+DQoNCkxlIDEzLzAzLzIwMjQgw6AgMTU6NTgsIEVkZ2Vjb21iZSwgUmljayBQIGEgw6ljcml0wqA6
+DQo+IE9uIFdlZCwgMjAyNC0wMy0xMyBhdCAwOTowNCArMDAwMCwgQ2hyaXN0b3BoZSBMZXJveSB3
+cm90ZToNCj4+DQo+PiBPbmx5IGEgc3RhcnRfZ2FwIGlzIG5lZWRlZCA/IE5vIG5lZWQgb2YgYW4g
+ZW5kX2dhcCA/DQo+IA0KPiBZZWEsIHNoYWRvdyBzdGFja3Mgb25seSBoYXZlIGEgc3RhcnQgZ2Fw
+LiBJZiBhbnkgZW5kIGdhcCBpcyBuZWVkZWQsIGl0DQo+IHdpbGwgYmUgbXVjaCBlYXNpZXIgdG8g
+YWRkIGFmdGVyIGFsbCBvZiB0aGlzLg0KDQpPaw0KDQoNClJldmlld2VkLWJ5OiBDaHJpc3RvcGhl
+IExlcm95IDxjaHJpc3RvcGhlLmxlcm95QGNzZ3JvdXAuZXU+DQo=
 
