@@ -1,55 +1,76 @@
-Return-Path: <linux-kernel+bounces-102386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F395787B179
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:17:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF5F87B17D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:17:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CDEA1F26630
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:17:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B77B71C2833A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603E765BB0;
-	Wed, 13 Mar 2024 18:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67E14CB47;
+	Wed, 13 Mar 2024 18:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bas1vNSp"
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HyY4TDpC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FD04F88A
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AD3210F8;
+	Wed, 13 Mar 2024 18:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710355984; cv=none; b=nD7spFMdR1ph7pwWr9LyIub2MlHQ/j27xesfpfnN1NXUAZCrkyss6L26bv2+6QaNSN9kgbhKQ9JXHlNVq3c/RXTxmk9S7FXo5HG+ckjQJfgTngP9cxx8ZSYZntg/Mxs/raUHSBz4+yZ/CZnww/GW15SVVzSm2/ik7PFCjhGJq/4=
+	t=1710356096; cv=none; b=alIlLmCsVmhjep9G6F/6/HaRN16O4y0Kw2sDo2ie1CTnc6F+YAI8CF91xiv/yIW/FJjC8EwH5AQLQSD7SOM2fRLBCC+EaYe1FXUFcW33gdHqW5nuZIk6XKCQIJfUTLTU1M7eH7HdfX1+BAJE+ksBnAWWnwhOv6ZNBzB34AILHp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710355984; c=relaxed/simple;
-	bh=YVcQq+dmsP/qAi9rtaqS5+Tz53AiNYC2GGqYJEr+tZI=;
+	s=arc-20240116; t=1710356096; c=relaxed/simple;
+	bh=ZG1LuLekRiLfxzr/Jqbgw2nhEBHoB9a7CHQNHKlXSjA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XaEFVN5rclROEZ/CTgCRQItyG3CfsNWdq9YsvYc2JqIdO3yDmB+rUCq/AuEI8lYOx5CVCTFEPZI947/JuBRmIkpEpqM2pZ914UJJRNT977iJtNQ+4o5lbr0fySV/1pGd1ObZPL0Q7RqQlSvP3ixiG/dI00+xA0cC6SVRyMtAwSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bas1vNSp; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 13 Mar 2024 14:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710355980;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GXEAy3+toOLXEJR1J0N7Y1UVgbk2sOpxJGCRr43PliU=;
-	b=bas1vNSp4Dz15sjAd2Ox31F6Q6ohP/hMPu8I8x8i7ykp8w3hvyVMAVewpjnHpW6gXe6hps
-	4JCUFLi3ps16cs+jJFFJZp3lUYffsq20Mlv17kZJGot0kNQFeq/AqqZOpL1/QmYKzX07BV
-	hNWXMqaA09b1DtCqhqecV1zuMsxD7c0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-stable@vger.kernel.org, 
+	 Content-Type:Content-Disposition:In-Reply-To; b=FPAKm3+c6G3DoX2ggHFNVFWOSNXXRWJ674K65G+6R3MunbIwaKe8+ypGqXUZKaE51BxAq/cbl/Byyokep2608nAcrCDw0QJYUGHxHwq/LHqaDClh8T6HvMDpFz7nMOY99J6f1xHvn1/hOsczzgxsAjXTH7xjFJhwNnTYZwUcVWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HyY4TDpC; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710356095; x=1741892095;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZG1LuLekRiLfxzr/Jqbgw2nhEBHoB9a7CHQNHKlXSjA=;
+  b=HyY4TDpCBQz9e5NsE8v5i+JFFzk6UOIT2D/oclrMEMz3VbV8LPeryGNX
+   C5IgEyfHHr5y7ddzU89JJP3GVyutAupqoqdDOCaTdoLLr6e1jO1t+W3De
+   MaKvwWvKho0R42yIhmOeUK5wMl/7uZh0xl2Ke1BZGgzz522/XkxV3aiJS
+   ahWGh4m0aqQ+lpY6RMw95FIMcqnv+w+xU5N7a4WzBoJJtQaZRH++Z8L3J
+   pilG8AA7I6qf4aLafRCa7VPM2Xc5fDnQRIH4pI8la+Z3y43CkZ2sYTYQJ
+   zYaciv9vDdtoIwZSzAlfLsaVfedAKIPGikk+fsgzPdz1Za3n9gAbstAxH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="8965627"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="8965627"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 11:54:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914439124"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="914439124"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 11:54:50 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rkTkV-0000000CIce-3mnc;
+	Wed, 13 Mar 2024 20:54:47 +0200
+Date: Wed, 13 Mar 2024 20:54:47 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
+	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.7.y
-Message-ID: <qffolwx7uqvvmvjy6ga37fp2xcefqhtqmavgy2olkoi7kzgpdc@w2awisbf6unk>
-References: <2zaqetj6wlxgpbxgex643dnudgwhcrz23xgfuai3t3hgavjb2d@vwhyha3hlg5y>
- <zneppz2ohlalk2qeitdkzxvtexuqgfbhx6sxocgiasuuwsbopl@cr4d3wve2sot>
- <2024031352-valuables-handling-cec3@gregkh>
+Subject: Re: [PATCH v2 5/6] iio: pressure: Add timestamp and scan_masks for
+ BMP280 driver
+Message-ID: <ZfH2dxmSzcw1_3vt@smile.fi.intel.com>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+ <20240313174007.1934983-6-vassilisamir@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,63 +79,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024031352-valuables-handling-cec3@gregkh>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240313174007.1934983-6-vassilisamir@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Mar 13, 2024 at 07:20:44PM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Mar 12, 2024 at 08:54:24PM -0400, Kent Overstreet wrote:
-> > On Sun, Mar 10, 2024 at 03:43:38PM -0400, Kent Overstreet wrote:
-> > > The following changes since commit 2e7cdd29fc42c410eab52fffe5710bf656619222:
-> > > 
-> > >   Linux 6.7.9 (2024-03-06 14:54:01 +0000)
-> > > 
-> > > are available in the Git repository at:
-> > > 
-> > >   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-for-v6.7-stable-20240310
-> > > 
-> > > for you to fetch changes up to 560ceb6a4d9e3bea57c29f5f3a7a1d671dfc7983:
-> > > 
-> > >   bcachefs: Fix BTREE_ITER_FILTER_SNAPSHOTS on inodes btree (2024-03-10 14:36:57 -0400)
-> > > 
-> > > ----------------------------------------------------------------
-> > > bcachefs fixes for 6.7 stable
-> > > 
-> > > "bcachefs: fix simulateously upgrading & downgrading" is the important
-> > > one here. This fixes a really nasty bug where in a rare situation we
-> > > wouldn't downgrade; we'd write a superblock where the version number is
-> > > higher than the currently supported version.
-> > > 
-> > > This caused total failure to mount multi device filesystems with the
-> > > splitbrain checking in 6.8, since now we wouldn't be updating the member
-> > > sequence numbers used for splitbrain checking, but the version number
-> > > said we would be - and newer versions would attempt to kick every device
-> > > out of the fs.
-> > > 
-> > > ----------------------------------------------------------------
-> > > Helge Deller (1):
-> > >       bcachefs: Fix build on parisc by avoiding __multi3()
-> > > 
-> > > Kent Overstreet (3):
-> > >       bcachefs: check for failure to downgrade
-> > >       bcachefs: fix simulateously upgrading & downgrading
-> > >       bcachefs: Fix BTREE_ITER_FILTER_SNAPSHOTS on inodes btree
-> > > 
-> > > Mathias Krause (1):
-> > >       bcachefs: install fd later to avoid race with close
-> > > 
-> > >  fs/bcachefs/btree_iter.c        |  4 +++-
-> > >  fs/bcachefs/chardev.c           |  3 +--
-> > >  fs/bcachefs/errcode.h           |  1 +
-> > >  fs/bcachefs/mean_and_variance.h |  2 +-
-> > >  fs/bcachefs/super-io.c          | 27 ++++++++++++++++++++++++---
-> > >  5 files changed, 30 insertions(+), 7 deletions(-)
-> > 
-> > Why wasn't this applied?
-> 
-> Because our queue is huge and 1/2 of the stable team is finally taking
-> his first vacation in years (and regretting reading email during it
-> right now)?  Relax, it will get there, backport requests like this not
-> being handled in 48 hours seems like a big ask, don't you think?
+On Wed, Mar 13, 2024 at 06:40:06PM +0100, Vasileios Amoiridis wrote:
+> The scan mask for the BME280 supports humidity measurement needs
+> to be distinguished from the rest in order for the timestamp to
+> be able to work. Scan masks are added for different combinations
+> of measurements. The temperature measurement is always needed for
+> pressure and humidity measurements.
 
-Ok - sorry for bothering you then :)
+(Just to make sure if you used --histogram diff algo when preparing the series)
+
+..
+
+>  	{
+> -		.type = IIO_HUMIDITYRELATIVE,
+> +		.type = IIO_PRESSURE,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+>  				      BIT(IIO_CHAN_INFO_RAW) |
+>  				      BIT(IIO_CHAN_INFO_SCALE) |
+>  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+> -		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+> +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+
+Stray change
+
+>  					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
+> +		.scan_index = 1,
+> +		.scan_type = {
+> +			.sign = 'u',
+> +			.realbits = 32,
+> +			.storagebits = 32,
+> +			.endianness = IIO_CPU,
+> +		},
+>  	},
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
