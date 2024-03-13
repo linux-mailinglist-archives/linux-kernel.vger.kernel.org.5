@@ -1,68 +1,97 @@
-Return-Path: <linux-kernel+bounces-102580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE97D87B432
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:10:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C209C87B437
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A873B21FC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:10:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F41761C21A4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3500959B53;
-	Wed, 13 Mar 2024 22:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E22459B57;
+	Wed, 13 Mar 2024 22:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PkP0XDDu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="mDIlLO93"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A1759175;
-	Wed, 13 Mar 2024 22:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A69859B43
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710367791; cv=none; b=oG7YoVhQ3bwtQRALFXOQ5ugq2wMHyk2oVWrEDP2+pcmCYTJpMNMEfRDh37ZcDWk7V8268HsiDBjIONrq4uY9KezBtxTNSIIkPc7lJB5lezudMGUDvr+XYEJbWEO+jZHguCVZz+HVwzX+hU7lxdgIML93DjJhNXuQGUpxfb4NVRE=
+	t=1710367821; cv=none; b=iN+PJ4Nw4KEhAK1inqVcaPlYkZDHsoJQ/arKcydLgACfOlsGbsWSPrLlOrhDwSYYcaYp6tqFY/jfzNJ4BLiDL83gTa8yHi3e5q2CDtHXbEGl1MmmvwZMeJbvaajSGwGyap6/sFTAIBHOdGBYiQ802OnjxD2By4ljXGc50eZDaUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710367791; c=relaxed/simple;
-	bh=T63j2vgyYX9Cwz5H21b5fP+iNTyYvbmn0iKcyawREEc=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:To:Date; b=G6RQ5/tafl0FDO1Eg3nu2lEKFYv0V8AtmOe/XZ/kjD/JIe79heekFH9SuVNB92L5rB3URo+A7Ol4QH28T/22BAli3YhZgGWoAs4FhnZZKUydXExZnx096F2oDWtKcxjtzsunixeODT7r4fFAY45x7rA7jRqS28/HxA3ArS17uSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PkP0XDDu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31488C433F1;
-	Wed, 13 Mar 2024 22:09:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710367791;
-	bh=T63j2vgyYX9Cwz5H21b5fP+iNTyYvbmn0iKcyawREEc=;
-	h=In-Reply-To:References:Subject:From:To:Date:From;
-	b=PkP0XDDuH74nKU1wtkUZJs2xM1fdkMQ02axfR1YNc13jNopN43G8p55NmcNxFhJkL
-	 xTeMIAN2EPMudLDPFvlvobM8DnK/B5eVuR/y5SxO9qmalUMtcgzkW6kLeqO5i/dbnC
-	 rFizWCb7Be+ZLjKUWQnZndKX94BJXHceg619KoE7Q5df4V25ictdN4NQE2GngqnEXB
-	 f2ZkPJWOFRrtV7UiYm9QGMz77mdk7k6SxtHa6xm4QeKDMeUEF5lws11DOZ/LVjWajU
-	 0W6Ntvm/CxLS2QhyXvTwyAwH5Tjq80fvWQl9ZqmkV/CxxaJY9NNfycqY7aFYmLZD2D
-	 n1n9OtIM2RPPQ==
-Message-ID: <5e8a0f9f37457d6d136f8b7382936a15.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710367821; c=relaxed/simple;
+	bh=G7WnWN0sS77GFvtJh/eSBeZOL2g3lWCyHdmf+zU/TvA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NsbEyiYivZkhK93ADcUoc/0bJKGvLWD380h+NGu4pYiLM2jeYOHIGDqC+N51TxsNQG6237uW/5jdvGM/yfhhF5mMKmnWKeMtbdiFgyUKZ2CWJdq7x5yvvm15IeZHh4aAN1rZY/rUy7y77vyCG89nH6WF7gf1eQesDoDQxm+JCYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=mDIlLO93; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4Tw4Sq2vKPz6Cl4Pd;
+	Wed, 13 Mar 2024 22:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1710367817; x=1712959818; bh=QQJMlgP56N7rXjX31zXaJf43
+	BsG8SkIAMHm4Wi+TRMk=; b=mDIlLO937fImNgwXd5PEtVK0N7LEYsg9eVCWEAQq
+	ZoEOrNcT+Fk//wYTY+GUyqihlXUPaGCc0rRQC4N3nQ7o4NxXm25jT+81e3XcexGk
+	uOuJNLjDEacsh7huMD8HWjuwLgX2vHUM6//ExfDGOfb1Gf+84r4eVxxyA8QPgRqn
+	0gfZmBU8sniEik+OE+2JZfuhgR7RcFC6nx7EkyjYNa9GQxWzp7mldNgnW0CqHPPO
+	LN1U4RrjSvVMjLttqlIHe4L5ULEI9OINV/HqkDI1hD8rCPf/sgroVKNHICxeKXfR
+	FgJ/dhgyY0frXWDtb7K9rcP6Vh1HkJvxsmcZy/Us5pEXXQ==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id V5FYab1wQ-Sh; Wed, 13 Mar 2024 22:10:17 +0000 (UTC)
+Received: from [100.96.154.173] (unknown [104.132.1.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4Tw4Sn3b4Xz6ClL9N;
+	Wed, 13 Mar 2024 22:10:17 +0000 (UTC)
+Message-ID: <436fb309-1f6f-4279-8c33-121fd76a7129@acm.org>
+Date: Wed, 13 Mar 2024 15:10:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240312185035.720491-1-krzysztof.kozlowski@linaro.org>
-References: <20240312185035.720491-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] dt-bindings: clock: samsung,s3c6400-clock: convert to DT Schema
-From: Stephen Boyd <sboyd@kernel.org>
-To: Alim Akhtar <alim.akhtar@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Date: Wed, 13 Mar 2024 15:09:49 -0700
-User-Agent: alot/0.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs: sysfs: Fix reference leak in
+ sysfs_break_active_protection()
+Content-Language: en-US
+To: Alan Stern <stern@rowland.harvard.edu>, Tejun Heo <tj@kernel.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>,
+ Kernel development list <linux-kernel@vger.kernel.org>
+References: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
+ <e9d710fc-eace-44de-b3cc-1117c3575ef7@rowland.harvard.edu>
+ <2024030428-graph-harmful-1597@gregkh>
+ <416a8311-c725-419a-8b22-74c80207347f@rowland.harvard.edu>
+ <9c2484f4-df62-4d23-97a2-55a160eba55f@rowland.harvard.edu>
+ <ZfIKwFSmw-ACj_jO@slm.duckdns.org>
+ <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Quoting Krzysztof Kozlowski (2024-03-12 11:50:35)
-> Convert Samsung S3C6400/S3C6410 SoC clock controller bindings to DT
-> schema.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+On 3/13/24 14:43, Alan Stern wrote:
+> The sysfs_break_active_protection() routine has an obvious reference
+> leak in its error path.  If the call to kernfs_find_and_get() fails then
+> kn will be NULL, so the companion sysfs_unbreak_active_protection()
+> routine won't get called (and would only cause an access violation by
+> trying to dereference kn->parent if it was called).  As a result, the
+> reference to kobj acquired at the start of the function will never be
+> released.
+> 
+> Fix the leak by adding an explicit kobject_put() call when kn is NULL.
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
