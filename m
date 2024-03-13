@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-101005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B46D87A0AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:26:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEB8387A0AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:26:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CF1D1C22146
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:26:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B0E8284857
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:26:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06091428A;
-	Wed, 13 Mar 2024 01:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A1D17541;
+	Wed, 13 Mar 2024 01:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="fvt2DG9i"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Yj5qNxpO"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E56B12E4E
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF4A14A97
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710293117; cv=none; b=l7ULVDAnFuGoMhUMnaV7obUI6D/YMWCMsS68WL+CSMzSVzVAbhWa16+tpb8M3wh6Pv6qkFoxL1Klqsco7lNn39qmIAR4jCfHJn6OEdC/90mfK3X7DLcYyoDu8QNc9bgQzeNiEHth8xrcYDCd9z13ZTF2MRYNAOjiEwuGjhddMKg=
+	t=1710293119; cv=none; b=ZjVU2qiir+3grSWlKXrAnLW2HBXzdU2Xlbz9jYpHZDbXh2cDVSuG8/R/blsS1PFHWjzontOGGX6WzFgVcY4M522Tm1fbmiCUVoUDQxQ+G3dV9ORvruaWBVdbc6J8eL/QgNAqtf77uNjx9rjqbloLnqvcP88q8mOSNnQ15qAl0q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710293117; c=relaxed/simple;
-	bh=BdbG0yYlQpcAJTV+cb1BRObS/3sDHMAKLat6xu5MQUI=;
+	s=arc-20240116; t=1710293119; c=relaxed/simple;
+	bh=G1fDd4qTQBCk+lDij0THy4jcCMe3hYb5TF5caIUyaxo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ky3kREDB4lF+G7cFB3Do90NnlweABiNxcowm8dB6QK7NMbH0Fus6q8ZBQlXJDQ1ggu4xbaKUU8d8OfqIiXRRuL2wW2+hi79RTTRsqeuSAx/3G0nXmGlr80mLJ2XeCGLyojqWXTtdvbK5aw53RVaX8gsS01GXoaIRc84CdkktxAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=fvt2DG9i; arc=none smtp.client-ip=209.85.219.44
+	 MIME-Version; b=oqk4Cm8T0TCtQdl+MJ1g4Oq9hTFxT8PYOM5RM1tcuSUR4gQvxcP5Od0lYTvWWlDOOkzO6Jf77CeBlI8/OkiZ7RFKFkO30lrZFDfOaRHWlsF1wxoqLOrGs4RVYJJ4NP3S9ps+PoSd1Hz34p3A5qcq1FoPxkO01O3qV37WlbqIz5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Yj5qNxpO; arc=none smtp.client-ip=209.85.219.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68f41af71ebso4404396d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:15 -0700 (PDT)
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-69107859bedso3472436d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710293114; x=1710897914; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1710293116; x=1710897916; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zgoJ2Cj2+UUPtAnwZcQw+JcHc1DVxxL4Tm75yla0jg4=;
-        b=fvt2DG9i08ArM6uUdv35//9sTm3nLCxklABUyuAKmRC6TVmgFS9Qono92GNuB4fNmL
-         6Rp32oN7Hl1NJyDrmtq+Xj9dNNa0rJJV4hHgIfBIqYabgCIHOpa30hxr2rR2tv05VF4T
-         SHPWdf7Zliz3KPDjRpfEUeW6oVV0aS79PxQZU=
+        bh=NIgRVY95Czz2uvDMLBT/P8lHA/YSLsxu7WXMaEzsDZ8=;
+        b=Yj5qNxpOM9DBANALmv+Kiut7N14/5IeMZUkpI+zPYYoC0UbLInDVOP0fBHq95RakIk
+         nQ6oZAKM7KXWOKe3vyFRmRzEZUE45kEYYFTOPP7dUzkFWs+9HoVT6WIeYqLr0O0hU/uY
+         yPnk6JswUFMhsVaqRkaSHHpMOpsb/4gwkMrzc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710293114; x=1710897914;
+        d=1e100.net; s=20230601; t=1710293116; x=1710897916;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zgoJ2Cj2+UUPtAnwZcQw+JcHc1DVxxL4Tm75yla0jg4=;
-        b=g26RCNzYtSA6BKz97AQ5JMm4Mda4psmeLm6g6n3OUkd46IcTNDwZIOjXlvITzE7nap
-         wSiHUBS9NuanVq1Q+BlrO1uzvME1ipwk+Z8KBs6mkve/8YThJ7nfWZISTQTuZnQubDV2
-         wWMsrxg+5mf1pgzWdfdnDwwgN15JrvVLgy4lTtlQ39eoIutQI9C+NItewqEVdb6aznzn
-         RLk+m05VhCtkT06E0lbLxCkf37B0RoB+M2vbqBh5hwYp1mn8o3x0ShJjJklZlsXcEFUx
-         4PvOAZiU03F3A7r2wnHgqO4H0XsJRQTO4iMJNqtNaXrm/h7/qRLcvn5GvBm5gqxqBw4j
-         Jp8Q==
-X-Gm-Message-State: AOJu0YziTh/G0sVHb18ylnjcbs8QKJK005Wz5Vvgp00ESSJOGoiJv/E9
-	2YMR8e+UbYhhW7gVH79FjDsSjwRg6g+nTqeygDaz+mIHr8jJQ6roG4AbLcuL7ctg8vbw78hYuCy
-	h
-X-Google-Smtp-Source: AGHT+IGrnT4NaK5dgEfbg6BsheeR1Bp46xKOKlinXlRpGxwicEeQcbXPiAZiOr+R4nhkDUtlf00cVg==
-X-Received: by 2002:a0c:ecca:0:b0:690:9a95:d8f9 with SMTP id o10-20020a0cecca000000b006909a95d8f9mr1796667qvq.2.1710293113824;
-        Tue, 12 Mar 2024 18:25:13 -0700 (PDT)
+        bh=NIgRVY95Czz2uvDMLBT/P8lHA/YSLsxu7WXMaEzsDZ8=;
+        b=SInlx4seYqkRzrLvYie2fgaZUvZ3Dyxgwyt4O7YlGlNZWEeCl1p8JalEfnWx82GEr+
+         w3yMC2Go5Q/4tEzWXm36YLrSI4jY9nWtB4HPL6o4V9E2rSl6NbQ9zbu774NoJ5B2oxd5
+         47I9qilKwdbWbB6In9mISDQ1nnHafhbgnCBp45DRkhMsS3/l6W/SXBbuhstf67GDgSqQ
+         q5ZeooEN8CLSVVTxkxFZnjqf9e1G8XVu1jaO0Lk20R6jIgeRhlNZdnxTg6gAoceFhuFo
+         Ihb8YgEOmXP4Mn9VDC3uYyXhHOFVIGpWJRZXaabDctubAs3NF2YY4iIExZEaMDKhsLuh
+         W04g==
+X-Gm-Message-State: AOJu0Yw5euQVXhu5+tQWVEoyGomtUoDkc4m8UMpbtxLsh+Dl73b0Be58
+	UUxTfJ3DKfmu1A2xg0sE00PsoREPlKMRiVWWOVUGnzJC2AD6MPfj2DoCbPULpeNr0CphLEK0Ej2
+	8
+X-Google-Smtp-Source: AGHT+IGDvfbapxrZkVxMym6KQupINN2xVHHvjKMlG2VhI6KAqiOpH9z9LYAoPfehJ8VFbhJq3AOnkQ==
+X-Received: by 2002:a05:6214:2e14:b0:690:7c8e:afcf with SMTP id mx20-20020a0562142e1400b006907c8eafcfmr5071713qvb.43.1710293115705;
+        Tue, 12 Mar 2024 18:25:15 -0700 (PDT)
 Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.12
+        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 18:25:12 -0700 (PDT)
+        Tue, 12 Mar 2024 18:25:15 -0700 (PDT)
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To: linux-kernel@vger.kernel.org,
 	Ingo Molnar <mingo@redhat.com>,
@@ -74,11 +74,7 @@ To: linux-kernel@vger.kernel.org,
 	Ben Segall <bsegall@google.com>,
 	Mel Gorman <mgorman@suse.de>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>
+	Valentin Schneider <vschneid@redhat.com>
 Cc: Suleiman Souhlal <suleiman@google.com>,
 	Youssef Esmat <youssefesmat@google.com>,
 	David Vernet <void@manifault.com>,
@@ -89,12 +85,10 @@ Cc: Suleiman Souhlal <suleiman@google.com>,
 	Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
 	Vineeth Pillai <vineeth@bitbyteword.org>,
 	Shuah Khan <skhan@linuxfoundation.org>,
-	Phil Auld <pauld@redhat.com>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	llvm@lists.linux.dev
-Subject: [PATCH v2 05/15] sched/debug: Use unsigned long for cpu variable to prevent cast errors
-Date: Tue, 12 Mar 2024 21:24:41 -0400
-Message-Id: <20240313012451.1693807-6-joel@joelfernandes.org>
+	Phil Auld <pauld@redhat.com>
+Subject: [PATCH v2 06/15] sched: server: Don't start hrtick for DL server tasks
+Date: Tue, 12 Mar 2024 21:24:42 -0400
+Message-Id: <20240313012451.1693807-7-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240313012451.1693807-1-joel@joelfernandes.org>
 References: <20240313012451.1693807-1-joel@joelfernandes.org>
@@ -106,40 +100,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This avoids compiler errors seen with clang:
+From: Suleiman Souhlal <suleiman@google.com>
 
-In file included from kernel/sched/build_utility.c:72:
-kernel/sched/debug.c:532:47: error: cast to 'void *' from smaller integer
-	type 'unsigned int' [-Werror,-Wint-to-void-pointer-cast]
-debugfs_create_file("runtime", 0644, d_cpu, (void *) cpu, &fair_server_runtime_fops);
+Otherwise, we might start it even for tasks in a sched class that should
+have it off.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Suleiman Souhlal <suleiman@google.com>
 ---
- kernel/sched/debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/deadline.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index c6c0120ff105..2590041696bc 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -516,7 +516,7 @@ static struct dentry *debugfs_sched;
- static void debugfs_fair_server_init(void)
- {
- 	struct dentry *d_fair;
--	unsigned int cpu;
-+	unsigned long cpu;
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 8fafe3f8b59c..5adfc15803c3 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2325,11 +2325,12 @@ static struct task_struct *pick_next_task_dl(struct rq *rq)
+ 	if (!p)
+ 		return p;
  
- 	d_fair = debugfs_create_dir("fair_server", debugfs_sched);
- 	if (!d_fair)
-@@ -526,7 +526,7 @@ static void debugfs_fair_server_init(void)
- 		struct dentry *d_cpu;
- 		char buf[32];
+-	if (!p->dl_server)
++	if (!p->dl_server) {
+ 		set_next_task_dl(rq, p, true);
  
--		snprintf(buf, sizeof(buf), "cpu%d", cpu);
-+		snprintf(buf, sizeof(buf), "cpu%lu", cpu);
- 		d_cpu = debugfs_create_dir(buf, d_fair);
+-	if (hrtick_enabled(rq))
+-		start_hrtick_dl(rq, &p->dl);
++		if (hrtick_enabled(rq))
++			start_hrtick_dl(rq, &p->dl);
++	}
  
- 		debugfs_create_file("runtime", 0644, d_cpu, (void *) cpu, &fair_server_runtime_fops);
+ 	return p;
+ }
 -- 
 2.34.1
 
