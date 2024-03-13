@@ -1,97 +1,50 @@
-Return-Path: <linux-kernel+bounces-102650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB9987B555
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:45:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B8987B55E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:50:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8244E1F2126F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:45:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9ECF1C20F07
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D92A5D73A;
-	Wed, 13 Mar 2024 23:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="G7+kmqZa";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="URhlWJEy";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="T8GhfltE";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3tYwZoGn"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7DC92260B
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9245D74E;
+	Wed, 13 Mar 2024 23:50:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50E25336D
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710373525; cv=none; b=p0kc/ABkD/Ui0yWl3NkHMcLok8lt4K84JrMXkfl5K8TmyExMKgZOHxb8r9cvAX+YDKijhqwAcfh3ZjBht67InLDO5nMhc5iDKrLGgv8MB1+AomdWDyvIxxFMP9vx9lDKWkAAOFc+GN01DAVaUyDkY0IBX+w6gNLYSr8lxUFkPXQ=
+	t=1710373840; cv=none; b=GG/qTN82VW+Vsn7XwQFRtiJKy4+U55tJ1N5qrdGa7naekFkB21C7ZGgnVJYCMwJtUlBEB26hO8ByvbBgweqFfWUg8gnKiA+2HwaNJwxGeOJ/LYufvdN2+aZ2c/pv7/mUdmMGf0YXXjS0eTWQDxlHbH63elphNbJgztOz8S2X2jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710373525; c=relaxed/simple;
-	bh=LsBwd6LQWz93e63sSeME9mO0lntlFCjjQ3p83jw3hdg=;
+	s=arc-20240116; t=1710373840; c=relaxed/simple;
+	bh=ByyhjiMnk2+hZUiI7OFtRvQm1bF5Rd89kOoggsgFmp8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qp+vO29SAsqkTQ0w0h+FC7HxwSNSExe2ALfnXJri2sAMnOKrdKsPTg+u1+7ZI2ntN7k+HQlrsyoYiYSykyLeIgJTpyjMbAz1MTc3kvVuOG/PqV7jJhzP8tHLX616SXw4kGy0gEw4BxT4KshaOVaI8ptQSC8IxY8XgjHjhjugm78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=G7+kmqZa; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=URhlWJEy; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=T8GhfltE; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3tYwZoGn; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EE24D21C6C;
-	Wed, 13 Mar 2024 23:45:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710373522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
-	b=G7+kmqZafck5XeVCeJlM2N7kdU0pP37YsQ1UVuNdtk6uuht5pwScJPPdy5K3OTbcKLxzKu
-	RXw04d0kZ3a50tnTNILDsp7LHLRqtLsZCGV+VGK6EZaTknDlgjMwFo5lq8IbCqQwkxkf2t
-	KcCa6+txLjxaV/mqv7ELcaWxbV7BNqw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710373522;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
-	b=URhlWJEyQpyqs/lpXtMams/H/5e0i3ivOeFm3jJz/MM+ttLVJZEf6LgunVS/ijOVEYzAcT
-	BWckFA3qYyw6lyCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710373521; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
-	b=T8GhfltExy8NnQnVGfwEoE2EtvqBrpbun/Y11DYzwF1SGzDb+pgmDlMeCGDNaB8HH3lqo9
-	WRhtbLEO8s7EWsCtWRM2tbU4a1HNGjUIQSRtNw2MEOXcIBIa9zJB6c00Sr4GaMsW18xvNy
-	ZI3Wc5QXRw8XNPUT8vHATT9Nn7/I52s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710373521;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cJKNEamgKE8o2ZSAXqef3Ys0r2vec9y0IJ3iOWK2PI=;
-	b=3tYwZoGnKoQzbR04xM+ISna2+YqNiqPlbJ3eaAUy8+Hxy0+4bYLpzkFFaDETo13MIRqC8L
-	/foxCg//xfeyPXBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 751181397F;
-	Wed, 13 Mar 2024 23:45:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 69AyGZE68mWtDQAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Wed, 13 Mar 2024 23:45:21 +0000
-Date: Thu, 14 Mar 2024 00:46:40 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH] mm,page_owner: Fix recursion
-Message-ID: <ZfI64Orls0Y6SWHF@localhost.localdomain>
-References: <20240313234245.18824-1-osalvador@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YaibxuKc509wJiqng5A5CnuJfgZe93UzSZf1YswVKoCv1X/QG4803jOtdCdR7Aa0stscHbv0YIdJ19yl8paMxrhKmbk388yvZsCkJbOwgDsqveYEHRG718P2CNgL04tmRih3njH4t+ON5FPnkz9TLkHeAnRRLmTvEbcR2YsnClQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A142C1007;
+	Wed, 13 Mar 2024 16:51:14 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5ACF03F73F;
+	Wed, 13 Mar 2024 16:50:34 -0700 (PDT)
+Date: Thu, 14 Mar 2024 00:49:57 +0100
+From: Beata Michalska <beata.michalska@arm.com>
+To: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	vanshikonda@os.amperecomputing.com, sudeep.holla@arm.com,
+	will@kernel.org, catalin.marinas@arm.com,
+	vincent.guittot@linaro.org, sumitg@nvidia.com,
+	yang@os.amperecomputing.com, lihuisong@huawei.com
+Subject: Re: [PATCH v3 0/3] Add support for AArch64 AMUv1-based
+ arch_freq_get_on_cpu
+Message-ID: <ZfI7pQtXgXAG7RBH@arm.com>
+References: <20240312083431.3239989-1-beata.michalska@arm.com>
+ <ZfGbyfBl35cyACAc@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,46 +53,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240313234245.18824-1-osalvador@suse.de>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.29
-X-Spamd-Result: default: False [-3.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.99)[95.02%]
-X-Spam-Flag: NO
+In-Reply-To: <ZfGbyfBl35cyACAc@arm.com>
 
-On Thu, Mar 14, 2024 at 12:42:45AM +0100, Oscar Salvador wrote:
-> @@ -232,6 +241,7 @@ void __reset_page_owner(struct page *page, unsigned short order)
->  	alloc_handle = page_owner->handle;
->  
->  	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
-> +
->  	for (i = 0; i < (1 << order); i++) {
+On Wed, Mar 13, 2024 at 12:27:53PM +0000, Ionela Voinescu wrote:
+> Hey,
+> 
+> On Tuesday 12 Mar 2024 at 08:34:28 (+0000), Beata Michalska wrote:
+> > Introducing arm64 specific version of arch_freq_get_on_cpu, cashing on
+> > existing implementation for FIE and AMUv1 support: the frequency scale
+> > factor, updated on each sched tick, serves as a base for retrieving
+> > the frequency for a given CPU, representing an average frequency
+> > reported between the ticks - thus its accuracy is limited.
+> > 
+> > The changes have been rather lightly (due to some limitations) tested on
+> > an FVP model.
+> > 
+> > Relevant discussions:
+> > [1] https://lore.kernel.org/all/20240229162520.970986-1-vanshikonda@os.amperecomputing.com/
+> > [2] https://lore.kernel.org/all/7eozim2xnepacnnkzxlbx34hib4otycnbn4dqymfziqou5lw5u@5xzpv3t7sxo3/
+> > [3] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
+> > [4] https://lore.kernel.org/lkml/ZIHpd6unkOtYVEqP@e120325.cambridge.arm.com/T/#m4e74cb5a0aaa353c60fedc6cfb95ab7a6e381e3c
+> > 
+> > v3:
+> > - dropping changes to cpufreq_verify_current_freq
+> > - pulling in changes from Ionela initializing capacity_freq_ref to 0
+> >   (thanks for that!)  and applying suggestions made by her during last review:
+> > 	- switching to arch_scale_freq_capacity and arch_scale_freq_ref when
+> > 	  reversing freq scale factor computation
+> > 	- swapping shift with multiplication
+> > - adding time limit for considering last scale update as valid
+> > - updating frequency scale factor upon entering idle
+> > 
+> > v2:
+> > - Splitting the patches
+> > - Adding comment for full dyntick mode
+> > - Plugging arch_freq_get_on_cpu into cpufreq_verify_current_freq instead
+> >   of in show_cpuinfo_cur_freq to allow the framework to stay more in sync
+> >   with potential freq changes
+> > 
+> > Beata Michalska (2):
+> >   arm64: Provide an AMU-based version of arch_freq_get_on_cpu
+> >   arm64: Update AMU-based frequency scale factor on entering idle
+> > 
+> > Ionela Voinescu (1):
+> >   arch_topology: init capacity_freq_ref to 0
+> > 
+> 
+> Should there have been a patch that adds a call to
+> arch_freq_get_on_cpu() from show_cpuinfo_cur_freq() as well?
+> 
+> My understanding from this [1] thread and others referenced there is
+> that was something we wanted.
+>
+Right, so I must have missunderstood that, as the way I did read it was that
+it is acceptable to keep things as they are wrt cpufreq sysfs entries.
 
-Sigh, a last-minute unnoticed change.
-
-@Andrew: Do you want me to send v2 fixing that up?
-
-
--- 
-Oscar Salvador
-SUSE Labs
+---
+BR
+Beata
+> [1] https://lore.kernel.org/lkml/2cfbc633-1e94-d741-2337-e1b0cf48b81b@nvidia.com/
+> 
+> Thanks,
+> Ionela.
+> 
+> 
+> >  arch/arm64/kernel/topology.c | 116 +++++++++++++++++++++++++++++++----
+> >  drivers/base/arch_topology.c |   8 ++-
+> >  2 files changed, 110 insertions(+), 14 deletions(-)
+> > 
+> > -- 
+> > 2.25.1
+> > 
 
