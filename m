@@ -1,109 +1,155 @@
-Return-Path: <linux-kernel+bounces-102332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE5187B0D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:02:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA70287B0D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 291E81C2709C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:02:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AED97B2D865
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EC2604BC;
-	Wed, 13 Mar 2024 18:03:18 +0000 (UTC)
-Received: from avasout-peh-001.plus.net (avasout-peh-001.plus.net [212.159.14.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE26A5B698;
+	Wed, 13 Mar 2024 18:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ITF+suKL"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D7869D2B
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.159.14.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7805A4EF
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710352998; cv=none; b=mmKveBveIJqmHUb7yFn9+3SikDnt5M3g97R28VV34KS3Oh7grbuQKvMU5uzUuIk0Vwp/Vg60N5xzN0uvjBktnSVMke3Nvfn7YN9kxxR6hOnsesP05SsTk/Khbbx1WMdD0uH5WvpoIHuOG6yLkoZTuDuTN6K275WPGCBo0ASREVs=
+	t=1710352812; cv=none; b=A4vaF6hLmtX4w+i0TwCSrrEJuWMcGQBrXWG4zUDQSCxKYL1nOOstBbVYZ1acVzPwl9Tqhw6y9FgLLgYGqDxvLjypF+vZL+StoHapJsuTdtqpZikszE9LbJUM3L5EaBkd/xrYBRQkdic04jM7EGVodJWfhFa/bFTNDfZvR//R/dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710352998; c=relaxed/simple;
-	bh=Y2Z0/3xow7nPavZadbi94o6aySaUf4dO4/vQqQPCEIs=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:Message-ID; b=Wd5v/hKw3f07geTf7ghtqW52lykDskO3G7LDbxuBCBVj/99DAe23Ven66hS+k68Bi8AS2VnRT+N8C++A7FpA8xYgH5ZS3hQDJyxwJM+EgZ27TETcy+hE3zkXLnE77j4j/vAQNeK18ytaqg1U0EVkmkjAfoU4nTnL6TPHt87GmPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk; spf=none smtp.mailfrom=jessamine.co.uk; arc=none smtp.client-ip=212.159.14.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jessamine.co.uk
-Received: from webmail.plus.net ([84.93.237.82])
-	by smtp with ESMTPA
-	id kStYr8pPPcsBEkStZrac4p; Wed, 13 Mar 2024 18:00:05 +0000
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=Go3h+V1C c=1 sm=1 tr=0 ts=65f1e9a5
- a=k49VtrWLZTL8DnM+6AvpWw==:117 a=8YZdF9bm7lDkcydB81w8Xw==:17
- a=vpjNtYboqT8A:10 a=kj9zAlcOel0A:10 a=K6JAEmCyrfEA:10 a=ZBkl__CYAAAA:8
- a=VwQbUJbxAAAA:8 a=8AirrxEcAAAA:8 a=_R0pZofXfCjbRRL6lAkA:9 a=CjuIK1q_8ugA:10
- a=d6WIyDdLbVARuAyufDlf:22 a=AjGcO6oz07-iQ99wixmX:22 a=ST-jHhOKWsTCqRlWije3:22
-X-AUTH: jessaminenet+adam@:2501
-Received: from munkyhouse.force9.co.uk ([84.92.42.80])
- by webmail.plus.net
- with HTTP (HTTP/1.1 POST); Wed, 13 Mar 2024 18:00:03 +0000
+	s=arc-20240116; t=1710352812; c=relaxed/simple;
+	bh=F42kIbIk/43SiWPpzXA3ztz6/BrGgO6AUNMOlP2miIM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BLaA0trB+REUA+UdVrnOeLZoPA0CSJNkQcQZclzkBalK2d+4IphYYh9WMxBOoY/ShdIK5vruKzbl3CxeE3mBiWpuylWPoT6yZCvF2J3AeoNO0eL1Lleb2Z3cgiJ3/V8FZ0iFcz46WZGhc3gHchNrPIKM3/UZPFJdNq0pXdjOajg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ITF+suKL; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d4548468edso1308681fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710352809; x=1710957609; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=derrcjnwSJJNCziG4NqwFO9vgc3iqv6k+AF2mT8DS9E=;
+        b=ITF+suKL8wpEvoGzTZGh3SNSZZBD+MWRXMY68e+xN8mlAOgcBNc7lBSE4I5YVqqBMk
+         Gb4kRti9JR+2e+K1F8W08xeXrRCw+TgwExac71x59Qsq12y9siNmwrQHJkvjmCDLzJRr
+         ncwbnZpRvVtu3mgQXg+pslAg5d7ZzzAE3Lhky7ftbhTsKosnCSNCBgMMsSY9v+8pWddh
+         NB0BAnbFCApKiY7Q7MGTqBBI+kMH8szTxMIvQKWQg+KsOD51rYBmcLWFXOps6aI9U73O
+         JqITJGZskfob4crDQw6iDcd6zc7vF9gXf1z2TeJEbbhSeeGclvfycPJ1WT70VVelOMnD
+         n+Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710352809; x=1710957609;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=derrcjnwSJJNCziG4NqwFO9vgc3iqv6k+AF2mT8DS9E=;
+        b=I19c3NCat59kTDR4u7FSKh4PurtaaVKJz1d3hiT7SKUiO9Rs4PtNbeQWH7eR0wEIKt
+         ONcc6hdmZmughRJuQujNHRgf4f2WQeGyiJTn3uU2mmUoesvLlnSsNxzZDUvpDLTDYBXW
+         bLDn5f30eTWJAG1jDUfa4FOROtvmV6S1SyuBVqe1VVSmTrrIxZGKGYewiuJeJy9TZ/Nb
+         cmUGRL90HFC9cFSvW8K9keoF0ShshqtRfh8xMKiql1qZ90nr7RFmNPY5CAkC/KtbuJX5
+         2y66Vw/ZznUCVqRJVXqtSxpYHU1MY5keAMgZ+LqR43xbwCrXkt9LJ/iJpXFfS36DiWCU
+         dwhw==
+X-Forwarded-Encrypted: i=1; AJvYcCXykb6HcQsLbovOSF/WzvArNdeP8khIr70NCIj50KMUVe8V+aYCRn3/PvR10u0tt1xdSyRQhE6ZHHmo5YBDWj/NXidL+s5rW4JdJVMw
+X-Gm-Message-State: AOJu0YxjnhD0SJ1C/79/VBpWm6hZ3pJxdlUB53Urt/S+GbDEKPzl/WCr
+	OFjsZIiO5Eip2j7NeOGHzj9e2DDi7ZOl1joTF9t+y64MUU32Csfe
+X-Google-Smtp-Source: AGHT+IFqVBnwTErrJW1JlpTp+YoKswH61zcdqC+BG2gIwV2l620ZcdYjNYXIMOKYg6GGHWZ1uC27mg==
+X-Received: by 2002:ac2:4a70:0:b0:513:c9f5:cbf2 with SMTP id q16-20020ac24a70000000b00513c9f5cbf2mr1549904lfp.59.1710352808450;
+        Wed, 13 Mar 2024 11:00:08 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id bi15-20020a05600c3d8f00b00413ef6a6930sm287284wmb.17.2024.03.13.11.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 11:00:07 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: wens@csie.org, samuel@sholland.org, Kamil Kasperski <ressetkk@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] dts: arm64: sunxi: add initial support for t95 tv box
+Date: Wed, 13 Mar 2024 19:00:06 +0100
+Message-ID: <8344274.T7Z3S40VBb@jernej-laptop>
+In-Reply-To: <20240313173808.38d893b5@donnerap.manchester.arm.com>
+References:
+ <20240311174750.6428-1-ressetkk@gmail.com>
+ <13468418.uLZWGnKmhe@jernej-laptop>
+ <20240313173808.38d893b5@donnerap.manchester.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 13 Mar 2024 18:00:03 +0000
-From: Adam Butcher <adam@jessamine.co.uk>
-To: Mark Brown <broonie@kernel.org>, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
- benjamin@bigler.one, stefanmoring@gmail.com, carlos.song@nxp.com
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: spi-imx: fix off-by-one in mx51 CPU mode burst length
-Message-ID: <30b2a315b36e1ee16c0217b32b95a605@jessamine.co.uk>
-X-Sender: adam@jessamine.co.uk
-User-Agent: Webmail
-X-CMAE-Envelope: MS4xfNAd/d3xNc7akxcdpSdbmEU52kI977HmdV1aqlg6KJKnoOaT4G+sI3vNrEtMFWSbhVBJRIRBEn+/Wo1KC+g66lB8X9VlIV8otAjltYiXk5DDt3e+Ulbi
- 6RgMTtrbXPWgtQLrX8VawJHw2fMMf9I5j4N5gZs8fn6+ZEsLXbuzeBtrv0eyJyG6qXlnu/CyOqslOLaKVw3bRHXWn8W9FVBViD4=
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
- From: Adam Butcher <adam@jessamine.co.uk>
+Dne sreda, 13. marec 2024 ob 18:38:08 CET je Andre Przywara napisal(a):
+> On Wed, 13 Mar 2024 18:25:14 +0100
+> Jernej =C5=A0krabec <jernej.skrabec@gmail.com> wrote:
+>=20
+> > Hi Kamil!
+> >=20
+> > Dne ponedeljek, 11. marec 2024 ob 18:47:47 CET je Kamil Kasperski napis=
+al(a):
+> > > T95 is a most commonly known for being a box with a pre-installed mal=
+ware.
+> > > It uses Allwinner H616 and comes with eMMC and DDR3 memory.
+> > > This device comes with two versions - one with AXP305 PMIC and anothe=
+r with AXP313 PMIC. =20
+> >=20
+> > I have this board and it always felt like a clone of X96 Mate, which is
+> > already supported in kernel, except for broken sd card detection. Would=
+ it
+> > make sense to unify those two boards and just overwrite or update parts=
+ here
+> > that are not the same?
+>=20
+> I think the box you have is an older one, with the AXP305? IIUC, this is
+> about a newer revision with the AXP313. There are quite some differences
+> between the two PMICs, though it might still make sense to share the DTs,
+> see the OrangePi Zero[23].
 
-992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
-corrects three cases of setting the ECSPI burst length but erroneously
-leaves the in-range CPU case one bit to big (in that register a value of
-0 means 1 bit).  The effect was that transmissions that should have been
-8-bit bytes appeared as 9-bit causing failed communication with SPI
-devices.
+Right, mine is with AXP305. It has "T95MAX v4.0" printed on PCB.
 
-It seems the original patch submission up to v4 did not contain the bug.
-It was introduced in the v5 update.
+Kamil, does your board also have "MAX" mentioned somewhere?
 
-Link: 
-https://lore.kernel.org/all/20240201105451.507005-1-carlos.song@nxp.com/
-Link: 
-https://lore.kernel.org/all/20240204091912.36488-1-carlos.song@nxp.com/
-Fixes: 992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU 
-mode")
-Signed-off-by: Adam Butcher <adam@jessamine.co.uk>
----
-  drivers/spi/spi-imx.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+Best regards,
+Jernej
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 7c1fcd5ed52f7..100552e6c56bc 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -743,8 +743,8 @@ static int mx51_ecspi_prepare_transfer(struct 
-spi_imx_data *spi_imx,
-  				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
-  						<< MX51_ECSPI_CTRL_BL_OFFSET;
-  			else
--				ctrl |= spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
--						BITS_PER_BYTE) * spi_imx->bits_per_word
-+				ctrl |= (spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
-+						BITS_PER_BYTE) * spi_imx->bits_per_word - 1)
-  						<< MX51_ECSPI_CTRL_BL_OFFSET;
-  		}
-  	}
--- 
-2.43.0
+>=20
+> Cheers,
+> Andre
+>=20
+> > > Kamil Kasperski (3):
+> > >   dt-bindings: vendor-prefixes: sunxi: add T95 to vendor-prefixes
+> > >   dt-bindings: arm: sunxi: add t95 compatible string to list of known
+> > >     boards
+> > >   dts: arm64: sunxi: add initial support for T95 AXP313 tv box
+> > >=20
+> > >  .../devicetree/bindings/arm/sunxi.yaml        |   5 +
+> > >  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+> > >  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+> > >  .../dts/allwinner/sun50i-h616-t95-axp313.dts  | 138 ++++++++++++++++=
+++
+> > >  4 files changed, 146 insertions(+)
+> > >  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-t95-axp=
+313.dts
+> > >=20
+> > >  =20
+> >=20
+> >=20
+> >=20
+> >=20
+> >=20
+>=20
+>=20
+
+
 
 
 
