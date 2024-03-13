@@ -1,109 +1,83 @@
-Return-Path: <linux-kernel+bounces-101519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C28187A836
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:24:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5856D87A83D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:25:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DDAA1C20BC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:24:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EE8C1F2353A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B65440860;
-	Wed, 13 Mar 2024 13:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0FC4206E;
+	Wed, 13 Mar 2024 13:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b="WSrCbeXk"
-Received: from mail.rosalinux.ru (mail.rosalinux.ru [195.19.76.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABE83C39;
-	Wed, 13 Mar 2024 13:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.19.76.54
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Bb3NbINI"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F89210F1;
+	Wed, 13 Mar 2024 13:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710336245; cv=none; b=dtkrxqVBAhPU3+po+xtngVY9K/u/9YOPE1WukB6hfzlNEmLsJq5qBgjpPVO6ADxRvusfsZuPLpqKZTUiTBiJe1U6iwcueThvd4lneJooEcqZztMDNsxfmiR6nZqJp8DQy2AUU49PAdpYaN3N6X94K+EojJvrlPO2gXMIpj0CY/Y=
+	t=1710336311; cv=none; b=nFiZkgPMyH4F7I733qW9u8ey6IFFTH1LaMRomKhmrIGV1be1hJpCtEvt7EvyQwnP1fluXtUzMiKt8sk0vT1TSjdkR0bC3lAnWeFY9HqtrOQyF7Igk9HH0IBLYdAF8WPz13En8JVjfJnGrS6BWjTgFWRepugTsMYi5oNrlQMaa3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710336245; c=relaxed/simple;
-	bh=yPqAe7ClhayYRrLN2CJq+cfkSc0n2HvZp2xKEfV+UR4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D5KAQkHTKo0sI4LmCgzaR5SMSonPF/du4c6JtoJrfBTN/pfzZSKekRGVqq1UWjM7QP5d3b2bnPmOlfmjuTwHXQEZMd3lIbARtFwOvQOT7VlIEm9glMVCSGw13fCPj++xiOoU+Z106eT39izyhVLFsKfGrAM/M9A7zhTP7VjvE0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru; spf=pass smtp.mailfrom=rosalinux.ru; dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b=WSrCbeXk; arc=none smtp.client-ip=195.19.76.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosalinux.ru
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id 3E84FDFACF8A1;
-	Wed, 13 Mar 2024 16:23:45 +0300 (MSK)
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id H1TS0Fis9ARg; Wed, 13 Mar 2024 16:23:45 +0300 (MSK)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id E9292DFACF89F;
-	Wed, 13 Mar 2024 16:23:44 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rosalinux.ru E9292DFACF89F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosalinux.ru;
-	s=1D4BB666-A0F1-11EB-A1A2-F53579C7F503; t=1710336225;
-	bh=Q3mlrkprHQSqqe7ZzbpkZFoFX1OW7QRMBkhOjb+6+wk=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=WSrCbeXkAvXISeJK+KzWxdWYqFbr7juu33ozGTbEQ/MiuyQvMpNu9n2suLoizodtj
-	 19BROhwGoadIkh3xPdQBcVmiMtmkM+VzIgo8yaG3bJIg9jObsF0pBHqQEajmwVx6rq
-	 /H5yVc5YlMtP9aFqL+z3IsehxMWZrWXySKamnSlceKrRWHQSP6w4KwXhFRaFI7qimT
-	 UXigrPTQ/BuKkJWlA+z3aZCN7ZlWXI6egbEhS8q0q8PSOO2fKafpBUlmUZMdJS9agS
-	 CQ1xKsNuOM0lh9O74vhe8t1XjZ1xtiahR+Jq9WlV1NPYjgG4veybjLNNekvkfUyEM4
-	 f8lQ4cUN45a/A==
-X-Virus-Scanned: amavisd-new at rosalinux.ru
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id E4DEAnA0C_be; Wed, 13 Mar 2024 16:23:44 +0300 (MSK)
-Received: from localhost.localdomain (unknown [62.217.186.174])
-	by mail.rosalinux.ru (Postfix) with ESMTPSA id A8892DFACF8A1;
-	Wed, 13 Mar 2024 16:23:44 +0300 (MSK)
-From: Mikhail Lobanov <m.lobanov@rosalinux.ru>
-To: Martin Schiller <ms@dev.tdt.de>
-Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	linux-x25@vger.kernel.org,
+	s=arc-20240116; t=1710336311; c=relaxed/simple;
+	bh=TcOVyEgWPO7+FIB4h6Ug6v35BqN5ZuqUqlOKKCHwN5Y=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=URdaYDfcZNX5YQGCSR0ZPFgi1dBNpJ5jVi9lfpZ5vUhYC5hK+xvEX9/C7KMThiuKLdPEYg3QrJNA/1oIEVoDrsD5FkfPoZt6GV+92GlX27o1rmNUINkRXKFcdZ5rYheKfQYk05nQ5U+g6FIIGzmHWaumpTMCM4PhF62ythscV1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Bb3NbINI; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 71CBC20B74C0;
+	Wed, 13 Mar 2024 06:25:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 71CBC20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710336304;
+	bh=N1ONS5i/qA6Bitcc0ZJ2Ph+JttW5gpC5h00IFpVNWJg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Bb3NbININzf3eTKcMHkrZdhWWBgYjyQMPEEMHxFvQlQsMvhwKDYXzHAeh0lAZLucR
+	 f8UxpylM6UgpozTTBnWSnfixeJhUdOt1G103DfcpMhkVaf31kGmWoUv9JnZqRcinwO
+	 NPmPTfcONtZapBOk0RPdqMeufq/PN+SIx0xU0pMQ=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	sharmaajay@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] x_25: Adding a null pointer dereference check to the x25_accept() function
-Date: Wed, 13 Mar 2024 09:22:08 -0400
-Message-ID: <20240313132214.48716-1-m.lobanov@rosalinux.ru>
-X-Mailer: git-send-email 2.43.0
+Subject: [PATCH rdma-next 0/4] Define and use mana queues for CQs and WQs
+Date: Wed, 13 Mar 2024 06:24:55 -0700
+Message-Id: <1710336299-27344-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 
-To avoid the problem of dereferencing the null pointer in the x25_accept(=
-)
-function, you need to add an additional check that the pointer skb is
-not equal to NULL.
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+This patch series aims to reduce code duplication by
+introducing a notion of mana ib queues and corresponding helpers
+to create and destroy them.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
----
- net/x25/af_x25.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Konstantin Taranov (4):
+  RDMA/mana_ib: Introduce helpers to create and destroy mana queues
+  RDMA:mana_ib: Use struct mana_ib_queue for CQs
+  RDMA/mana_ib: Use struct mana_ib_queue for WQs
+  RDMA/mana_ib: Use struct mana_ib_queue for RAW QPs
 
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index f7a7c7798c3b..91bc5994cef6 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -896,7 +896,7 @@ static int x25_accept(struct socket *sock, struct soc=
-ket *newsock, int flags,
- 		goto out2;
- 	skb =3D skb_dequeue(&sk->sk_receive_queue);
- 	rc =3D -EINVAL;
--	if (!skb->sk)
-+	if (!skb || !skb->sk)
- 		goto out2;
- 	newsk		 =3D skb->sk;
- 	sock_graft(newsk, newsock);
---=20
+ drivers/infiniband/hw/mana/cq.c      | 52 ++++-------------
+ drivers/infiniband/hw/mana/main.c    | 40 +++++++++++++
+ drivers/infiniband/hw/mana/mana_ib.h | 31 ++++++----
+ drivers/infiniband/hw/mana/qp.c      | 86 ++++++++++------------------
+ drivers/infiniband/hw/mana/wq.c      | 31 ++--------
+ 5 files changed, 104 insertions(+), 136 deletions(-)
+
+
+base-commit: 96d9cbe2f2ff7abde021bac75eafaceabe9a51fa
+-- 
 2.43.0
 
 
