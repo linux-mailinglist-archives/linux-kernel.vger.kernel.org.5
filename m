@@ -1,129 +1,103 @@
-Return-Path: <linux-kernel+bounces-101486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B9E87A7BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:44:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E83487A7BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:44:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5972BB23758
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:43:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2652F284898
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753473E487;
-	Wed, 13 Mar 2024 12:43:47 +0000 (UTC)
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0738F2BB09;
-	Wed, 13 Mar 2024 12:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2512A1E891;
+	Wed, 13 Mar 2024 12:44:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33704087F
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710333827; cv=none; b=szjkbKdGYsMlr9qH3xnr8gX1XRpxFldtCp9mIUw1w2qzgDdR8uRPPKiN0knQ+ccssDa6gdLECWRT0PO+ajfNeeeM860UaSdRgRw4aiIRRSbXAD+4dMpkwx3KvNikHgU4bMzJaCJRDKXkcEEoMTcSSuEaZNanbNRKMo9uDUv7W8Q=
+	t=1710333840; cv=none; b=Pzm2t9oYmu6ICCamYZ/ZJg5OMevfmvBNqd07HYDYORJqNwkQUkE/7RulOlx2VS42C3Z1NMWYo3ENAL2tc0olBMSURC/A9yWcMW04J498BuG4DKaBcxa+NE3KPonsW65rt4Qw2/ZlulO5iS0jVxtoFUNMmHfXcmJeSZSKIn4ilWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710333827; c=relaxed/simple;
-	bh=JnCsaxUnb/cF6AyWmh2AiBaTUlyLUY6tgAL031/OaCY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=oPPPDzh20iNhEtm2RaPEJPbSRTwdwIvcV3OHrdwBzilVVltsGQipX/4jqIYGwLWRMlONEpPUw7D2PoMCaEk+hL5uPdCqIVNJayXLu9zN1vQWchkIOeZPBPF30wdHoI5Yj0F9l06Y0zYklfXX/W8rw6IW6iIGRKVMW082unYjaTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-	by mail.parknet.co.jp (Postfix) with ESMTPSA id 03914205DB9A;
-	Wed, 13 Mar 2024 21:43:43 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42DChaQV220242
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 21:43:37 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42DChaaN1323405
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 21:43:36 +0900
-Received: (from hirofumi@localhost)
-	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 42DCharF1323404;
-	Wed, 13 Mar 2024 21:43:36 +0900
-From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gwendal
- Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-In-Reply-To: <ZfGLIl7riu0w2pAm@quatroqueijos.cascardo.eti.br> (Thadeu Lima de
-	Souza Cascardo's message of "Wed, 13 Mar 2024 08:16:50 -0300")
-References: <Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
-	<87le75s1fg.fsf@mail.parknet.co.jp>
-	<Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
-	<87h6hek50l.fsf@mail.parknet.co.jp>
-	<Ze2IAnSX7lr1fZML@quatroqueijos.cascardo.eti.br>
-	<87cys2jfop.fsf@mail.parknet.co.jp>
-	<ZfFcpWRWdnWmtebd@quatroqueijos.cascardo.eti.br>
-	<878r2mk14a.fsf@mail.parknet.co.jp>
-	<ZfFmvGRlNR4ZiMMC@quatroqueijos.cascardo.eti.br>
-	<874jdajsqm.fsf@mail.parknet.co.jp>
-	<ZfGLIl7riu0w2pAm@quatroqueijos.cascardo.eti.br>
-Date: Wed, 13 Mar 2024 21:43:36 +0900
-Message-ID: <87zfv2i9on.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710333840; c=relaxed/simple;
+	bh=JifDVMoaPXHaAUPJL3A+n8/jjHlsbgg+T4JcEzCN6DM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XMnqnbmfl8fhIF/EPQzG3wp4dW/SwuYJ/PR4+cPCisFH7I4TioNIT2iSGrOn9EM9vXactGUvV3XHrhLJSbU6LQz57v7AAYHBnhrxmTs8YxLc+WvYLPy8nJ5VU5PMfu8kAHb5FL8JlwvYS66H93HHkxByuNybMMUV2B2keGqMdfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CAE661007;
+	Wed, 13 Mar 2024 05:44:33 -0700 (PDT)
+Received: from [10.57.52.245] (unknown [10.57.52.245])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E38D53F762;
+	Wed, 13 Mar 2024 05:43:54 -0700 (PDT)
+Message-ID: <6b2fa7af-0fef-4c18-a6ff-1bf4ea16810f@arm.com>
+Date: Wed, 13 Mar 2024 12:43:52 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] direct-dma: WARN_ON_ONCE when the page is not addressable
+ by device's coherent_dma_mask
+Content-Language: en-GB
+To: John Hsu <john.hsu@mediatek.com>, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: surenb@google.com, Chinwen Chang <chinwen.change@mediatek.com>,
+ Casper Li <casper.li@mediatek.com>,
+ Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240313121933.15839-1-john.hsu@mediatek.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240313121933.15839-1-john.hsu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+On 2024-03-13 12:19 pm, John Hsu wrote:
+> From: JohnHsu <john.hsu@mediatek.com>
+> 
+> The dma_direct_alloc() may return null in some cases. For example, the
+> allocated page is not addressable for the device's coherent_dma_mask,
+> and the allocated page will be assigned to null.
+> 
+> This patch can WARN_ON_ONCE() when the returned page is null in
+> dma_direct_alloc. It helps the developers position the root cause of
+> allocation failure rapidly.
 
-> On Wed, Mar 13, 2024 at 08:06:41PM +0900, OGAWA Hirofumi wrote:
->> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
->> 
->> >> So you break the mkdir/rmdir link counting, isn't it?
->> >> 
->> >
->> > It is off by one on those images with directories without ".." subdir.
->> > Otherwise, everything else works fine. mkdir/rmdir inside such directories work
->> > without any issues as rmdir that same directory.
->> 
->> mkdir() increase link count, rmdir decrease link count. Your change set
->> a dir link count always 2? So if there are 3 normal subdirs, and rmdir
->> all those normal dirs, link count underflow.
->> 
->> Thanks.
->> 
->
-> No. The main change is as follows:
->
-> int fat_subdirs(struct inode *dir)
-> {
-> [...]
-> 	int count = 0;
-> [...]
-> -		if (de->attr & ATTR_DIR)
-> +		if (de->attr & ATTR_DIR &&
-> +		    strncmp(de->name, MSDOS_DOTDOT, MSDOS_NAME))
->  			count++;
-> [...]
-> 	return count;
-> }
->
-> int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
-> {
-> [...]
-> 	if ((de->attr & ATTR_DIR) && !IS_FREE(de->name)) {
-> [...]
-> -		set_nlink(inode, fat_subdirs(inode));
-> +		set_nlink(inode, fat_subdirs(inode) + 1);
-> [...]
-> }
->
-> That is, when first instatiating a directory inode, its link count was set to
-> the number of subdirs it had, including "." and "..". Now it is set to 1 + the
-> number of subdirs it has ignoring "..".
->
-> mkdir and rmdir still increment and decrement the parent directory link count.
+No. Failure to allocate a buffer can happen for any number of reasons, 
+it is not specific to dma-direct, and in some cases it is even expected, 
+hence why DMA_ATTR_NO_WARN exists. And either way it's still not a 
+condition worthy of panicking when panic_on_warn is in use.
 
-Ah, sorry, I misread.  So next, it should create "." and ".." on initial
-create/mkdir or such, like mkdir does.
+Sure, this may well be a handy development hack for debugging a 
+particular driver which isn't handling failure correctly, but it is not 
+suitable for mainline.
 
-Thanks.
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Thanks,
+Robin.
+
+> Signed-off-by: JohnHsu <john.hsu@mediatek.com>
+> ---
+>   kernel/dma/direct.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> index 9596ae1aa0da..a73b8ad1ef9e 100644
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -156,6 +156,8 @@ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
+>   		}
+>   	}
+>   
+> +	WARN_ON_ONCE(!page);
+> +
+>   	return page;
+>   }
+>   
 
