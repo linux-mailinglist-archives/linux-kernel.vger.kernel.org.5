@@ -1,58 +1,54 @@
-Return-Path: <linux-kernel+bounces-102146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2963587AECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:09:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9251D87AED0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:10:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A26E7B26EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:09:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 334C91F30BE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A80274404;
-	Wed, 13 Mar 2024 17:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B31C4D9ED;
+	Wed, 13 Mar 2024 17:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKxI7dkv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iaJZcFsD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67635745E4;
-	Wed, 13 Mar 2024 17:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF6374BEB;
+	Wed, 13 Mar 2024 17:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349362; cv=none; b=m+ozlaYMqjC/tW346r2BYKPU9smmnY35k3qGnZiRxaGe+rNx9dgjVxmSbJA8RoHSeiy5wT2lUIitxSZQqzX3ZZc3/y4k2U/DddPLIkxn6bxm75tlEvDhg9myqfNtKFuN/0TNLD2EnzjdcyzViIrClMh3dWPMCO2+Ini4kxGsu40=
+	t=1710349363; cv=none; b=VaknWriqurYyI5jv+bBrHHr8mMUiTzqbwe8dpHqmBRRKsFBVG8Yal+l4NTpfsvDZTlYcg4adKHSLrqYk+MRdDMv+rxJcQR+XNzZ6Ir8QItW+jGFF0hWcxhR4Xn8tbrz4DE1y0I3UabPi+/LuURfB8aGqzcfxnXE5zgtdYejfvYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349362; c=relaxed/simple;
-	bh=LyeZc5QveyggAQYPY/hrck83W9yX91L3yriLGxrzjlU=;
+	s=arc-20240116; t=1710349363; c=relaxed/simple;
+	bh=noSTJlXRcgDjp3N/BVak0TfI6we7ARRsLPccEiaIzIU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hmDXU9LJbXLgD9104R2HOd4CzyctcH4iG+d/1jkMeKbupX2v28nPnzXwGN0szYdNuC7RywNfoqhAX/fBg/wd3gNq6oIKoLt9n1YrBCA7Mw1B/IhoPBOSnndMyXYMND2rIvqxibmkiGnEnj4DUoWkmPm0xO7gsFUJwy4CborLua8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKxI7dkv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39DCC43399;
-	Wed, 13 Mar 2024 17:02:40 +0000 (UTC)
+	 MIME-Version; b=NzS8l2CWCxgZD5EbNU6HTHTEB4I8f8fh1uNHWsaV4gGKgZ1Pji5dhq7SI8+FDnLJQ0i37vVEhg86Ug6xicYV6RQeARwzfxlEDzLs96Ntu0rcJ/lYvxPMVM2YVnohvltQEwrvZpEchquNitf56GBUfiXDWTunBoAvOBejojlQSCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iaJZcFsD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A0D6C43394;
+	Wed, 13 Mar 2024 17:02:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349362;
-	bh=LyeZc5QveyggAQYPY/hrck83W9yX91L3yriLGxrzjlU=;
+	s=k20201202; t=1710349363;
+	bh=noSTJlXRcgDjp3N/BVak0TfI6we7ARRsLPccEiaIzIU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XKxI7dkvZYxPRHIXro8P1rmohz1NXiATrqQ5lN9nToO5OgLEiExQDKRv3wc7oydrE
-	 PqFIPieLTxrKPkWs0/8rKiljsqXazK2M1YmApJCPEG92yPKTuLelkoMPOetpD3nx6x
-	 yrPNrwQMiCgQ4ccrauwbyQRIjHf2fgKYZ7x7hH3U5VMPOyqw5eGpx7a0Se6pUGaKj9
-	 m7F+GU2hL2VEkE7H86FGwaiwzjRbzYBzcU0b2+GVL1oIVp/GEePbwp0MVxVNerHwxk
-	 8DOCzGvWXPbOHMzbW5hlDgZLi2iTIWVkXHZTdGT00crH0ZArcR6Fn+/pbvXfabq8+a
-	 nYVsw2sxR9JdA==
+	b=iaJZcFsD0OLsM6ZBDBL8Pwf5grOCXYVVLgME+7xjeiv8soDn3RqYqNbGN5Wg9nLgl
+	 e3B9Eos7/sfTGGQzLdf02Vmk59bl5dxOaCOrwFPXBYPla411W5/fjskJdOni2tvcij
+	 F4oXqbtNoCLhNvnUxbwz1g/wojD3Pd6Nvjv6a/wuK9z02NfmhMr6kfIxS/ro3/XEzP
+	 OimzRrsE2spNoExS9cndQ4qbqqAb7E5Qac0iIG3C2dD0uyAVfVXBtJ2G5kFJT/VIiB
+	 gVixWEuVepFKD8JJHkJZJCkOrQ/8XEDcjNIutaCjxN6BOQWH8OROw2xOpGeKOTFduv
+	 LEKoK6Aj7hCWQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nico Pache <npache@redhat.com>,
-	Donet Tom <donettom@linux.vnet.ibm.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Christophe Leroy <christophe.leroy@c-s.fr>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Andrew Morton <akpm@linux-foundation.org>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Richard Weinberger <richard@nod.at>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 25/51] selftests: mm: fix map_hugetlb failure on 64K page size systems
-Date: Wed, 13 Mar 2024 13:01:46 -0400
-Message-ID: <20240313170212.616443-26-sashal@kernel.org>
+Subject: [PATCH 5.4 26/51] um: allow not setting extra rpaths in the linux binary
+Date: Wed, 13 Mar 2024 13:01:47 -0400
+Message-ID: <20240313170212.616443-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170212.616443-1-sashal@kernel.org>
 References: <20240313170212.616443-1-sashal@kernel.org>
@@ -72,59 +68,80 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nico Pache <npache@redhat.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 91b80cc5b39f00399e8e2d17527cad2c7fa535e2 ]
+[ Upstream commit 386093c68ba3e8bcfe7f46deba901e0e80713c29 ]
 
-On systems with 64k page size and 512M huge page sizes, the allocation and
-test succeeds but errors out at the munmap.  As the comment states, munmap
-will failure if its not HUGEPAGE aligned.  This is due to the length of
-the mapping being 1/2 the size of the hugepage causing the munmap to not
-be hugepage aligned.  Fix this by making the mapping length the full
-hugepage if the hugepage is larger than the length of the mapping.
+There doesn't seem to be any reason for the rpath being set in
+the binaries, at on systems that I tested on. On the other hand,
+setting rpath is actually harming binaries in some cases, e.g.
+if using nix-based compilation environments where /lib & /lib64
+are not part of the actual environment.
 
-Link: https://lkml.kernel.org/r/20240119131429.172448-1-npache@redhat.com
-Signed-off-by: Nico Pache <npache@redhat.com>
-Cc: Donet Tom <donettom@linux.vnet.ibm.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Add a new Kconfig option (under EXPERT, for less user confusion)
+that allows disabling the rpath additions.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Stable-dep-of: 846cfbeed09b ("um: Fix adding '-no-pie' for clang")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/vm/map_hugetlb.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/um/Kconfig      | 13 +++++++++++++
+ arch/um/Makefile     |  3 ++-
+ arch/x86/Makefile.um |  2 +-
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/map_hugetlb.c b/tools/testing/selftests/vm/map_hugetlb.c
-index 312889edb84ab..c65c55b7a789f 100644
---- a/tools/testing/selftests/vm/map_hugetlb.c
-+++ b/tools/testing/selftests/vm/map_hugetlb.c
-@@ -15,6 +15,7 @@
- #include <unistd.h>
- #include <sys/mman.h>
- #include <fcntl.h>
-+#include "vm_util.h"
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 468a5d63ef269..107a0bc668e9f 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -85,6 +85,19 @@ config LD_SCRIPT_DYN
+ 	depends on !LD_SCRIPT_STATIC
+ 	select MODULE_REL_CRCS if MODVERSIONS
  
- #define LENGTH (256UL*1024*1024)
- #define PROTECTION (PROT_READ | PROT_WRITE)
-@@ -70,10 +71,16 @@ int main(int argc, char **argv)
- {
- 	void *addr;
- 	int ret;
-+	size_t hugepage_size;
- 	size_t length = LENGTH;
- 	int flags = FLAGS;
- 	int shift = 0;
- 
-+	hugepage_size = default_huge_page_size();
-+	/* munmap with fail if the length is not page aligned */
-+	if (hugepage_size > length)
-+		length = hugepage_size;
++config LD_SCRIPT_DYN_RPATH
++	bool "set rpath in the binary" if EXPERT
++	default y
++	depends on LD_SCRIPT_DYN
++	help
++	  Add /lib (and /lib64 for 64-bit) to the linux binary's rpath
++	  explicitly.
 +
- 	if (argc > 1)
- 		length = atol(argv[1]) << 20;
- 	if (argc > 2) {
++	  You may need to turn this off if compiling for nix systems
++	  that have their libraries in random /nix directories and
++	  might otherwise unexpected use libraries from /lib or /lib64
++	  instead of the desired ones.
++
+ config HOSTFS
+ 	tristate "Host filesystem"
+ 	help
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 773120be0f56f..94cea8d46b222 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -118,7 +118,8 @@ archprepare:
+ 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
+ 
+ LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
+-LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
++LINK-$(CONFIG_LD_SCRIPT_DYN) += $(call cc-option, -no-pie)
++LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib
+ 
+ CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
+ 	$(call cc-option, -fno-stack-protector,) \
+diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
+index 1db7913795f51..b3c1ae084180d 100644
+--- a/arch/x86/Makefile.um
++++ b/arch/x86/Makefile.um
+@@ -44,7 +44,7 @@ ELF_FORMAT := elf64-x86-64
+ 
+ # Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
+ 
+-LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
++LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib64
+ LINK-y += -m64
+ 
+ endif
 -- 
 2.43.0
 
