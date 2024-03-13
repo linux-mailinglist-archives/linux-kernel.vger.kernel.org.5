@@ -1,155 +1,331 @@
-Return-Path: <linux-kernel+bounces-101461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40C0287A76E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:14:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A9B487A76C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D69911F23DF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:14:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5030E28486E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEDA3FE58;
-	Wed, 13 Mar 2024 12:14:14 +0000 (UTC)
-Received: from mail115-79.sinamail.sina.com.cn (mail115-79.sinamail.sina.com.cn [218.30.115.79])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7113FB0F;
+	Wed, 13 Mar 2024 12:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E9V0VbxP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5D63FB0F
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BC83FB15
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710332053; cv=none; b=kjITxxKLxDc5so+E/1oJIYE0KOmlsu/vEwoF+2etq4EFZzM4ATdJhTVTJ6XVZn8+EYMKKAP2TufAhyNRCLxaSPWq985UaRsY4Zw5vXokETUkI0jx+TlfpENQ1+YUKEaITT3YAlKVprxg/adJj8lEQuvNsfsDS0yY2Rtf5zE0L2Q=
+	t=1710331992; cv=none; b=jCgphOfl2h5A0Z0irxPcsaOovCyGMgTW1zAIMi2wv0SFc2bCrmeGag1SV6t8Tiaiqf3+kzGgB9CWH/nF9QgTycPxYogMswDgYwjQIzCaDVCGrkMGU+M61QBMfrrIxLfdUKMLWXe7LkrtXXJeEoAl5lv6uJD0v8OisTNMCw+JMpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710332053; c=relaxed/simple;
-	bh=sOkhZ/jvuJIvVKMVXakf+8B+RRwVxQbb5lRb+kXv7gY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TWNo93YdHPW4dmE5C00aFcWwzKKQN8l2Bp22nAFQO0c8f9CEpbcwKLZ+mR4z1jJU9zpkaWludDePPXDJF2kvBX0x6mQGz/gyWmm0jfI2e10t2PhBLjrOMxOyn3PhwG8h51O4+QwJ34KRuUvC8/tkf8DP/IPybnZWLi9zK6ShYJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.9.180])
-	by sina.com (10.75.12.45) with ESMTP
-	id 65F19882000062E7; Wed, 13 Mar 2024 20:13:58 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 63174631457839
-X-SMAIL-UIID: DBAC9056B457471298C7A75B155E6EF3-20240313-201358-1
-From: Hillf Danton <hdanton@sina.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: syzbot <syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com>,
-	andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
-Date: Wed, 13 Mar 2024 20:13:45 +0800
-Message-Id: <20240313121345.2292-1-hdanton@sina.com>
-In-Reply-To: <ZfDC45Kc1VEvBMuW@krava>
-References: <0000000000004aa700061379547e@google.com>
+	s=arc-20240116; t=1710331992; c=relaxed/simple;
+	bh=KY3GmGiPcro3a+CAKfJWS6zbPB2AHWvN4QxteRVDrsY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YliPQx7sSNqZy4it0NmZ6jtf+tUlYj81efZEd1qSQHWdH/Gm5MwIcZI4/9qN6DEd1BZA6Bj4PF08QzThrBoj/fN2h7dF5G4ZoMf6VY6xfQmxDisZWKXR4SFBn54L4qqrI7RXG0qizsMyjV7+SKbO6J/W1leUo5N0twxw7bkEvjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E9V0VbxP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710331988;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FQcf1nOKlMmN0CZVH5a2pQzTSI6ZekOBuZjHd+HZgWU=;
+	b=E9V0VbxPV3ZzkkEJTuK/FJYBzWxWy5F9K/Y82vh56ab96hxG/DB/rzmxwW0rEvjexorMou
+	tqtKxfafI/dp05dSKEi3fv6VY01h4iweUVFviFLwjwz4UsrVqWIWgITrAar+vFqKhdTGjM
+	1qq6Ycip1/PAu8zGPyYyY9+LSXm0eGQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-97-bn3cwYwINeCfsO7QsZGFFA-1; Wed, 13 Mar 2024 08:13:04 -0400
+X-MC-Unique: bn3cwYwINeCfsO7QsZGFFA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1D2088007AF;
+	Wed, 13 Mar 2024 12:13:04 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.21])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 67E3C1121306;
+	Wed, 13 Mar 2024 12:13:02 +0000 (UTC)
+Date: Wed, 13 Mar 2024 08:14:44 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+	Vivek Goyal <vgoyal@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Bernd Schubert <bernd.schubert@fastmail.fm>,
+	"Michael S . Tsirkin" <mst@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	houtao1@huawei.com
+Subject: Re: [PATCH v2 4/6] virtiofs: support bounce buffer backed by
+ scattered pages
+Message-ID: <ZfGYtAq01tPv7BNc@bfoster>
+References: <20240228144126.2864064-1-houtao@huaweicloud.com>
+ <20240228144126.2864064-5-houtao@huaweicloud.com>
+ <ZeCcV9Jo3mTRPsME@bfoster>
+ <ef80346a-532a-c394-77f7-ec9f640e5b6f@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ef80346a-532a-c394-77f7-ec9f640e5b6f@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Tue, 12 Mar 2024 22:02:27 +0100 Jiri Olsa <olsajiri@gmail.com>
-> On Tue, Mar 12, 2024 at 09:41:26AM -0700, syzbot wrote:
-> > Hello,
-> > 
-> > syzbot found the following issue on:
-> > 
-> > HEAD commit:    df4793505abd Merge tag 'net-6.8-rc8' of git://git.kernel.o..
-> > git tree:       bpf
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=11fd0092180000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c11c5c676adb61f0
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1509c4ae180000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10babc01180000
-> > 
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/d2e80ee1112b/disk-df479350.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/b35ea54cd190/vmlinux-df479350.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/59f69d999ad2/bzImage-df479350.xz
-> > 
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com
-> > 
-> > ============================================
-> > WARNING: possible recursive locking detected
-> > 6.8.0-rc7-syzkaller-gdf4793505abd #0 Not tainted
-> > --------------------------------------------
-> > strace-static-x/5063 is trying to acquire lock:
-> > ffffc900096f10d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
-> > 
-> > but task is already holding lock:
-> > ffffc900098410d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
-> > 
-> > other info that might help us debug this:
-> >  Possible unsafe locking scenario:
-> > 
-> >        CPU0
-> >        ----
-> >   lock(&rb->spinlock);
-> >   lock(&rb->spinlock);
-> > 
-> >  *** DEADLOCK ***
-> > 
-> >  May be due to missing lock nesting notation
-> > 
-> > 4 locks held by strace-static-x/5063:
-> >  #0: ffff88807857e068 (&pipe->mutex/1){+.+.}-{3:3}, at: __pipe_lock fs/pipe.c:103 [inline]
-> >  #0: ffff88807857e068 (&pipe->mutex/1){+.+.}-{3:3}, at: pipe_write+0x1cc/0x1a40 fs/pipe.c:465
-> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
-> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
-> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
-> >  #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
-> >  #2: ffffc900098410d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
-> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
-> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
-> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
-> >  #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
-> > 
-> > stack backtrace:
-> > CPU: 0 PID: 5063 Comm: strace-static-x Not tainted 6.8.0-rc7-syzkaller-gdf4793505abd #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
-> >  check_deadlock kernel/locking/lockdep.c:3062 [inline]
-> >  validate_chain+0x15c0/0x58e0 kernel/locking/lockdep.c:3856
-> >  __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
-> >  lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-> >  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-> >  __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
-> >  ____bpf_ringbuf_reserve kernel/bpf/ringbuf.c:459 [inline]
-> >  bpf_ringbuf_reserve+0x5c/0x70 kernel/bpf/ringbuf.c:451
-> >  bpf_prog_9efe54833449f08e+0x2d/0x47
-> >  bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
-> >  __bpf_prog_run include/linux/filter.h:651 [inline]
-> >  bpf_prog_run include/linux/filter.h:658 [inline]
-> >  __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+On Sat, Mar 09, 2024 at 12:14:23PM +0800, Hou Tao wrote:
+> Hi,
 > 
-> hum, scratching my head how this could passed through the prog->active check,
-> will try to reproduce
+> On 2/29/2024 11:01 PM, Brian Foster wrote:
+> > On Wed, Feb 28, 2024 at 10:41:24PM +0800, Hou Tao wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> When reading a file kept in virtiofs from kernel (e.g., insmod a kernel
+> >> module), if the cache of virtiofs is disabled, the read buffer will be
+> >> passed to virtiofs through out_args[0].value instead of pages. Because
+> >> virtiofs can't get the pages for the read buffer, virtio_fs_argbuf_new()
+> >> will create a bounce buffer for the read buffer by using kmalloc() and
+> >> copy the read buffer into bounce buffer. If the read buffer is large
+> >> (e.g., 1MB), the allocation will incur significant stress on the memory
+> >> subsystem.
+> >>
+> >> So instead of allocating bounce buffer by using kmalloc(), allocate a
+> >> bounce buffer which is backed by scattered pages. The original idea is
+> >> to use vmap(), but the use of GFP_ATOMIC is no possible for vmap(). To
+> >> simplify the copy operations in the bounce buffer, use a bio_vec flex
+> >> array to represent the argbuf. Also add an is_flat field in struct
+> >> virtio_fs_argbuf to distinguish between kmalloc-ed and scattered bounce
+> >> buffer.
+> >>
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  fs/fuse/virtio_fs.c | 163 ++++++++++++++++++++++++++++++++++++++++----
+> >>  1 file changed, 149 insertions(+), 14 deletions(-)
+> >>
+> >> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> >> index f10fff7f23a0f..ffea684bd100d 100644
+> >> --- a/fs/fuse/virtio_fs.c
+> >> +++ b/fs/fuse/virtio_fs.c
+> > ...
+> >> @@ -408,42 +425,143 @@ static void virtio_fs_request_dispatch_work(struct work_struct *work)
+> >>  	}
+> >>  }
+> >>  
+> > ...  
+> >>  static void virtio_fs_argbuf_copy_from_in_arg(struct virtio_fs_argbuf *argbuf,
+> >>  					      unsigned int offset,
+> >>  					      const void *src, unsigned int len)
+> >>  {
+> >> -	memcpy(argbuf->buf + offset, src, len);
+> >> +	struct iov_iter iter;
+> >> +	unsigned int copied;
+> >> +
+> >> +	if (argbuf->is_flat) {
+> >> +		memcpy(argbuf->f.buf + offset, src, len);
+> >> +		return;
+> >> +	}
+> >> +
+> >> +	iov_iter_bvec(&iter, ITER_DEST, argbuf->s.bvec,
+> >> +		      argbuf->s.nr, argbuf->s.size);
+> >> +	iov_iter_advance(&iter, offset);
+> > Hi Hou,
+> >
+> > Just a random comment, but it seems a little inefficient to reinit and
+> > readvance the iter like this on every copy/call. It looks like offset is
+> > already incremented in the callers of the argbuf copy helpers. Perhaps
+> > iov_iter could be lifted into the callers and passed down, or even just
+> > include it in the argbuf structure and init it at alloc time?
+> 
+> Sorry for the late reply. Being busy with off-site workshop these days.
+> 
 
-Feel free to take a look at another syzbot report [1,2]
+No worries.
 
-[1] Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state (2)
-https://lore.kernel.org/lkml/ZdwSXCaTrzq7mm7Z@boqun-archlinux/
+> I have tried a similar idea before in which iov_iter was saved directly
+> in argbuf struct, but it didn't work out well. The reason is that for
+> copy both in_args and out_args, an iov_iter is needed, but the direction
+> is different. Currently the bi-directional io_vec is not supported, so
+> the code have to initialize the iov_iter twice: one for copy from
+> in_args and another one for copy to out_args.
+> 
 
-[2] Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
-https://lore.kernel.org/lkml/00000000000082883f061388d49e@google.com/
+Ok, seems reasonable enough.
+
+> For dio read initiated from kernel, both of its in_numargs and
+> out_numargs is 1, so there will be only one iov_iter_advance() in
+> virtio_fs_argbuf_copy_to_out_arg() and the offset is 64, so I think the
+> overhead will be fine. For dio write initiated from kernel, its
+> in_numargs is 2 and out_numargs is 1, so there will be two invocations
+> of iov_iter_advance(). The first one with offset=64, and the another one
+> with offset=round_up_page_size(64 + write_size), so the later one may
+> introduce extra overhead. But compared with the overhead of data copy, I
+> still think the overhead of calling iov_iter_advance() is fine.
+> 
+
+I'm not claiming the overhead is some practical problem here, but rather
+that we shouldn't need to be concerned with it in the first place with
+some cleaner code. It's been a bit since I first looked at this. I was
+originally wondering about defining the iov_iter in the caller and pass
+as a param, but on another look, do the lowest level helpers really need
+to exist?
+
+If you don't anticipate further users, IMO something like the diff below
+is a bit more clean (compile tested only, but no reinits and less code
+overall). But that's just my .02, feel free to use it or not..
+
+Brian
+
+--- 8< ---
+
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 9ee71051c89f..9de477e9ccd5 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -544,26 +544,6 @@ static unsigned int virtio_fs_argbuf_setup_sg(struct virtio_fs_argbuf *argbuf,
+ 	return cur - sg;
+ }
+ 
+-static void virtio_fs_argbuf_copy_from_in_arg(struct virtio_fs_argbuf *argbuf,
+-					      unsigned int offset,
+-					      const void *src, unsigned int len)
+-{
+-	struct iov_iter iter;
+-	unsigned int copied;
+-
+-	if (argbuf->is_flat) {
+-		memcpy(argbuf->f.buf + offset, src, len);
+-		return;
+-	}
+-
+-	iov_iter_bvec(&iter, ITER_DEST, argbuf->s.bvec,
+-		      argbuf->s.nr, argbuf->s.size);
+-	iov_iter_advance(&iter, offset);
+-
+-	copied = _copy_to_iter(src, len, &iter);
+-	WARN_ON_ONCE(copied != len);
+-}
+-
+ static unsigned int
+ virtio_fs_argbuf_out_args_offset(struct virtio_fs_argbuf *argbuf,
+ 				 const struct fuse_args *args)
+@@ -577,26 +557,6 @@ virtio_fs_argbuf_out_args_offset(struct virtio_fs_argbuf *argbuf,
+ 	return round_up(offset, PAGE_SIZE);
+ }
+ 
+-static void virtio_fs_argbuf_copy_to_out_arg(struct virtio_fs_argbuf *argbuf,
+-					     unsigned int offset, void *dst,
+-					     unsigned int len)
+-{
+-	struct iov_iter iter;
+-	unsigned int copied;
+-
+-	if (argbuf->is_flat) {
+-		memcpy(dst, argbuf->f.buf + offset, len);
+-		return;
+-	}
+-
+-	iov_iter_bvec(&iter, ITER_SOURCE, argbuf->s.bvec,
+-		      argbuf->s.nr, argbuf->s.size);
+-	iov_iter_advance(&iter, offset);
+-
+-	copied = _copy_from_iter(dst, len, &iter);
+-	WARN_ON_ONCE(copied != len);
+-}
+-
+ /*
+  * Returns 1 if queue is full and sender should wait a bit before sending
+  * next request, 0 otherwise.
+@@ -684,23 +644,41 @@ static void virtio_fs_hiprio_dispatch_work(struct work_struct *work)
+ static void copy_args_to_argbuf(struct fuse_req *req)
+ {
+ 	struct fuse_args *args = req->args;
++	struct virtio_fs_argbuf *argbuf = req->argbuf;
++	struct iov_iter iter;
++	unsigned int copied;
+ 	unsigned int offset = 0;
+ 	unsigned int num_in;
+ 	unsigned int i;
+ 
++	if (!argbuf->is_flat) {
++		iov_iter_bvec(&iter, ITER_DEST, argbuf->s.bvec, argbuf->s.nr,
++			argbuf->s.size);
++	}
++
+ 	num_in = args->in_numargs - args->in_pages;
+ 	for (i = 0; i < num_in; i++) {
+-		virtio_fs_argbuf_copy_from_in_arg(req->argbuf, offset,
+-						  args->in_args[i].value,
+-						  args->in_args[i].size);
+-		offset += args->in_args[i].size;
++		const void *src = args->in_args[i].value;
++		unsigned int len = args->in_args[i].size;
++
++		if (argbuf->is_flat) {
++			memcpy(argbuf->f.buf + offset, src, len);
++			offset += len;
++			continue;
++		}
++
++		iov_iter_advance(&iter, len);
++		copied = _copy_to_iter(src, len, &iter);
++		WARN_ON_ONCE(copied != len);
+ 	}
+ }
+ 
+ /* Copy args out of req->argbuf */
+ static void copy_args_from_argbuf(struct fuse_args *args, struct fuse_req *req)
+ {
+-	struct virtio_fs_argbuf *argbuf;
++	struct virtio_fs_argbuf *argbuf = req->argbuf;
++	struct iov_iter iter;
++	unsigned int copied;
+ 	unsigned int remaining;
+ 	unsigned int offset;
+ 	unsigned int num_out;
+@@ -711,10 +689,14 @@ static void copy_args_from_argbuf(struct fuse_args *args, struct fuse_req *req)
+ 	if (!num_out)
+ 		goto out;
+ 
+-	argbuf = req->argbuf;
++	if (!argbuf->is_flat)
++		iov_iter_bvec(&iter, ITER_SOURCE, argbuf->s.bvec,
++		      argbuf->s.nr, argbuf->s.size);
++
+ 	offset = virtio_fs_argbuf_out_args_offset(argbuf, args);
+ 	for (i = 0; i < num_out; i++) {
+ 		unsigned int argsize = args->out_args[i].size;
++		void *dst = args->out_args[i].value;
+ 
+ 		if (args->out_argvar &&
+ 		    i == args->out_numargs - 1 &&
+@@ -722,10 +704,14 @@ static void copy_args_from_argbuf(struct fuse_args *args, struct fuse_req *req)
+ 			argsize = remaining;
+ 		}
+ 
+-		virtio_fs_argbuf_copy_to_out_arg(argbuf, offset,
+-						 args->out_args[i].value,
+-						 argsize);
+-		offset += argsize;
++		if (argbuf->is_flat) {
++			memcpy(dst, argbuf->f.buf + offset, argsize);
++			offset += argsize;
++		} else {
++			iov_iter_advance(&iter, argsize);
++			copied = _copy_from_iter(dst, argsize, &iter);
++			WARN_ON_ONCE(copied != argsize);
++		}
+ 
+ 		if (i != args->out_numargs - 1)
+ 			remaining -= argsize;
+
 
