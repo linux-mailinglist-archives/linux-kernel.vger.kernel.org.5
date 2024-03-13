@@ -1,191 +1,184 @@
-Return-Path: <linux-kernel+bounces-102614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5384787B497
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:48:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCA2387B499
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89F34B214EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:48:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20D3B285E1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B71B5CDE1;
-	Wed, 13 Mar 2024 22:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EEA5D729;
+	Wed, 13 Mar 2024 22:49:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="CQQhi+DH"
-Received: from sonic315-27.consmr.mail.ne1.yahoo.com (sonic315-27.consmr.mail.ne1.yahoo.com [66.163.190.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="sk+VCr55"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4805B698
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.190.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2435B698;
+	Wed, 13 Mar 2024 22:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710370125; cv=none; b=BrsmXUnz2hGPZiWSPyDsVNeWTgyqQXqG7DeHc7Ze3yXGdy9ZiOnj8AcVELdEYNG60b86zPtKoUIfiTN6sthxoR9/ZgvSUgTz2vUvRAx4+TEnMclHVsbLCLjJBnVA7Sck1oF9JRjxnIETwpcbz8qHvFcXE98kmK3LXsfyaeWWQ5Q=
+	t=1710370168; cv=none; b=NGvEnXEU/kXMjJsuTlRZUYmab5tGpL8Xz8S8pr/S4BRfFS/XlqhA6jg/FFlzsVJcRjC9twTNl/Scq89WCZFne6A09gPgPdkcczu0GafVieitHVeZR1hJIrmqwDzecsDkAADmjEN4XApCcbuYiVSr7Ji6kt560JpUuxXlW9YyNyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710370125; c=relaxed/simple;
-	bh=PyIOdhdZkqJVPJaxodCHSPWUJMB0XNUnKXDY2PM6CN8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g94vvCuy14HOPX5K6fWi1j7x9OJqZixMSSxkt06k90jDJMqlxryOIALO0ZQggzSPNFCz6iH1CRJRdLppV9QHe0NyPtr9TxCCuElcfLoR+qx6u3ps+/LSKeyRcI4mLDg5FpXulUuzLDKzwsTqytrYTTjxEA4FLLEmIMEzoYjWZiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=CQQhi+DH; arc=none smtp.client-ip=66.163.190.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710370121; bh=z9S5aNIbF5R8F8pTxplTgt6vTEckDoQattE+/knS+kg=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=CQQhi+DHf1flxAh0HOOgFdBAHW8cTqZpnuRw1D/F5yz03v3CigiHHyaHjP+HSJpkoSvAnKNcZfCgVihRVBxmb/ezhzGJr94hJgOAQgItM4T69FpyGOWVNxAXh7SUnk9DD7lMohdvEK2glY8TXNnQz79cUlia1BjKs8oWQcoI1Z93DzPXxwbQqKgsgTQL803bUROLhAl0KDT5vNggCPZw65lWaWApsXBBrz94JPxy4PDmu77+038Kat0gX8FZI+57TZdGpeLsT6My/vv7btAFou3T2DmWkH3on0a0+bNsEPQj5ZePZOyT5BqIHx9mD+5fITvhYcg41BE4rps/weCoOQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710370121; bh=ljoL8v2vJCbDJtdu4pF+iRbQbojj0OwRcUYNsKQPaH+=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=IuhA+hql+9lQyaQAMxtZ++uW0DTyOfM0VunGWiCyfS/21smYgWA5Q7Gd+iPmTfX7N4I5sv0YaC2HCsVLfEr9M1rnJCQj92bXMrqunMaUldlns6WlWl5JeYQIrtOZTvIa/gz2GU2EFU6xowj/RnoVrXY7ypi9ZiWobJcY45H4wNdaPAq1xQo5ldpQPsh4u8qH2Lm5DZ/+yuvl3fNqsTsrQ5AhxdHVcz/+KFfUk+9T4oAKhVLLt23Fpe9195qCXnBvkKZcN+hZhRDZhs5Krko5JfdblZOxOqjLBVI0l4aqz4jNMDvGJ/vUHZ/AVddh0bNzyivZsAwx5vtUnHAB5BD/qg==
-X-YMail-OSG: A8aHJgUVM1khfUo9iwkTjejN3UxcGK_Ds_wKaPOiqJpoWzf_Bio8hbIEsDm0AY6
- F2iXh_TPtYAi1EJn0af3PtqtS8kXJZ4BNZEnsfvU3j_VwQyjkVCm43MpxfsUIc0jLvNSU9VQryBQ
- 19zNc.Z6tdStYeGmV6zDxS.FKxnWsEKtPWx1qbggcablKEuuG3.Jket9XAce1jU6Ik2Bmx8s0jLs
- .OJF6e3rEOLQGjnhf3C7p3wDvVgOx8PrDzNZJlaeQSrmQ9KjKq5z2vpZhmYIwuqNVYLU2aAqtO.z
- 96mRGuwnV9N_lP76l6t2RaRIjRvlq96ESMz8wUjC327TLCFlLpf9e4ONdJz2oPJZEx2MA5J59W0_
- hVupUvh4JwGogp7cd_q2_ULWU17RHW5ixG4nHkV8cJYmuG6fGDffriCSf7RHTJXmwFxbMzv2OqSd
- 9lE_uyq3xMowagcz9t0RauIAD925quHkYIg_X4VqpAYhVooo_srN1cxIQCXIMDEVVra.DezE9XIE
- wrV5Fg.3C.vjAefA2bSpLRUEzI14oWD2i6V4hjMyvEjTohQn_eRd_uD_M653WkDqyKnfB7xOYl._
- hz676XKkaBs8yzKmlKcS54GB2NvevrwiRmylUlEYKJWWZmqqTUHx803436Mc4RHNET2IMkXDQj9B
- hLl4yRabFMZT71SklyVKoTck3UISCDD0Hq9ig5RkS72RQlvJaNixDJcwUAGkHMuq_KfeJRO3scw6
- Ob_LAiEwK5pml3qIoMXAh1meHDVYis_9rwAYqg.kyvDa.u7pZQx_6KR88JI8sDYpL0OJ6eJv_hcQ
- GmjRNcRxzjrZEuCaBqM6qfOtrWfkVHJfjTjol6Ob8XAR1pwOL.k0MwDBixIfJ7Sw5wWap_1iKd7I
- kyN6U47sRVq_o9DTYQju8NmZSVqlc7Yc2_0fjBVcdW45XtUw1YygYgA3Mgy0RgIgcT6IdAbW4q0j
- .Fx8B6jhbQuvs8_znY8IMzTkBMwwDTdgMSb3ROTFN4HWgPosLcbxwRnq___f3DLY70240xxztum9
- TiPqszOvmjtjEWq93BvtPOox_mu6WqbclrZcj9Ke3if.TPY7I_IStRYk.WIGeqJtMnr3VcsMa_GG
- 9HbGS59HK_tNnbyjiFFXSRnO6qkU5Z.STjrjFZ7PDals6oeJseoeVV7YMXF04RRNx6Brs.493mnB
- WHbmwDx.Pk9IFpY7MTbsPwgjQFmqgVxN7NJghrBys_jFeiMauAoZj.J9sd1oDuT.bec8MpZ_fAyE
- CdKzcR7VT1TrhnMMF4cz0QAcexUgKM8.7puaOSlnQzI4pGYET6oAWsRxLtPtNYIYjdQGYeGvZdus
- FbF7AmMVE4yB7RCqT_s9nsnFHn574yLGVDLP0FugiJiShve3HcKmTQib49znrffOB6A39o2rcN2A
- 2FbHkzMvgL702R4oQ5EY3ZTSXJjrxsg2sQbM6d7fjTPqXcgY17cYR9eyFrjoX8H1qTsZ_KE0aXAu
- paIyf17ZtDuVpFUWAVeoUZR5aZ2ySbq9crAu30k26ntsNXCHaLKF8LP5pKnJOAwO0fJDuXngimK4
- IJzbcs2lHYIpKtJ_1VBVoI50QTEz0P2syT8oKIVShLor6Jvw.GZZDvF9hAeO4O85A6ZJnM8zqIw1
- nKfLwNXADpz_A0GDI6zMNjO1xAXdjvSAlJ0SP5_qwZfo.YMfA9rTy.QMki_ZcpKoS1HjdD9VhMlL
- ExE9WmTdJovRMH_t12QhSPJU4VaU8y6ilGc82LCMaA8w6udTnlHf3JysXVDNj_Qr47qQlOI_WAMB
- jsjWhziCetg936ksseYWFGEAJcbi7iLFEN3oSufP2WA5WREGc9mMH4eYyQFQhBOw1tgSvYknwQPZ
- LeDKRRm_PmzXCbRLOQyM86w0i1A1DT4s8enAVNxPC1DKGBPoAHDlIqaZ1oRP9.Hzz9J17qRhOSRs
- 28byVM.PaBRxQer69j2aZmMdXlKt1JdvfmATVwJzq5MlHpLIbvUOqwzzBxkO94C4.KFLIgK8Ad54
- GDFzd4O4RwcfjspZeAhgUMOhsjcxwXLR7fnybJ2djl22WJFBiyEv2_lxD0aHuCNExrjYkPvRud5K
- TbtVHcX.p82vPCPFwaZQwIoYD7DecZyl1xULSzjfC9S4HWvWW6oSNUdDgC5gohuB3RtF.Mj_wzrr
- cbdzS4r_hgqfzam7xbkfIdNQOfhTq2ulr5PNy6rkOSLL1jGuvlRQvTa6fKBS6MStien5WYviPObo
- 7.bgAhV61DYSOMCc_94hhkOhdrFp2MZdSvOHSQH6j
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 620a23b5-a15e-4b8d-afa5-6a5509c0d503
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Wed, 13 Mar 2024 22:48:41 +0000
-Received: by hermes--production-gq1-5c57879fdf-tnlsv (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 1755cffa5cc96e26b368b5bbd8d41f0a;
-          Wed, 13 Mar 2024 22:48:38 +0000 (UTC)
-Message-ID: <b5ebbb40-0dda-4595-a058-d5c3a6e800df@schaufler-ca.com>
-Date: Wed, 13 Mar 2024 15:48:37 -0700
+	s=arc-20240116; t=1710370168; c=relaxed/simple;
+	bh=nek76MaUd8CRieyJYFUDcAswrStRcG9fu+1l2HVMdP4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fYfnfs00KJh2WyRGwC2bava4K30lFzap4N33Z4+hPi66AB4fHUUhh+aw3D9IAHpFNaRTEiQtDqlx3+ldBADAGEdUBvQQcDkpY6c1vhg8krI5QE3Tzb+cawnc0RSZNjNuxBzqTCE3vD7VfFiXR4m0xP2bLp3mSTKIhC+rOXfeHxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=sk+VCr55; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=kYJ36KwNuXIC2GGEAAYTQQ0oqxpqcrzztRKyJVrIE0Q=; b=sk+VCr555q40ixk8RZjak6MGdB
+	xNSbxmXeiNdfD4M9K81A5l7erbg5g8sowpdIf9UuYLa9YNiqDslHqEDwHEwd0bCfMmb9zGgM9psBZ
+	VCWcxKuney282w/+oPe0NP8r+p7VTHEiWzLu7Y4NMtrviQ7O/UqIHx6+c8WxnU1PHYf45AcfRm4X/
+	NHnh/1feE4w2U1waB2Ccsj3esWPg+jJJLAm+qz7rTgmJK7aKNczFfDH3L3Ctqh9FsiMctSXehBVxB
+	JsSr3LJXt9gXVIkom7RJ8/awSlLnjP6BUs8Vqz8XZqcLl0CqxJwJiFoEmjyETiuHsUAB3N+K0YdOy
+	RKQhzI1g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34448)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rkXPQ-0008G0-12;
+	Wed, 13 Mar 2024 22:49:16 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rkXPK-0004rD-PW; Wed, 13 Mar 2024 22:49:10 +0000
+Date: Wed, 13 Mar 2024 22:49:10 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	paulmck@kernel.org, mingo@kernel.org, tglx@linutronix.de,
+	rcu@vger.kernel.org, neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com, frederic@kernel.org,
+	bigeasy@linutronix.de, chenzhongjin@huawei.com,
+	yangjihong1@huawei.com, rostedt@goodmis.org,
+	Justin Chen <justin.chen@broadcom.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
+ v6.9]
+Message-ID: <ZfItZs756Bps2pFa@shell.armlinux.org.uk>
+References: <ZetHwrCb0KXE0xFI@tardis>
+ <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux>
+ <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+ <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+ <ZfDptafiK0jns050@boqun-archlinux>
+ <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
+ <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
+ <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
+ <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] LSM: use 32 bit compatible data types in LSM syscalls.
-Content-Language: en-US
-To: Paul Moore <paul@paul-moore.com>, "Dmitry V. Levin" <ldv@strace.io>,
- LSM List <linux-security-module@vger.kernel.org>
-Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>,
- linux-api@vger.kernel.org, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
- <mic@digikod.net>, James Morris <jmorris@namei.org>,
- Serge Hallyn <serge@hallyn.com>, John Johansen
- <john.johansen@canonical.com>,
- Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
- Stephen Smalley <stephen.smalley.work@gmail.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <da4d181d-16b9-4e0f-a744-ac61702e0b63@schaufler-ca.com>
- <ef972e0088964722adffc596d38b0463@paul-moore.com>
- <CAHC9VhTkvyWpvkejbFf-VJoTvUKVDGxBDYkKFdNrdgq4jy5i_w@mail.gmail.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CAHC9VhTkvyWpvkejbFf-VJoTvUKVDGxBDYkKFdNrdgq4jy5i_w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.22129 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 3/13/2024 3:37 PM, Paul Moore wrote:
-> On Wed, Mar 13, 2024 at 4:07 PM Paul Moore <paul@paul-moore.com> wrote:
->> On Mar 13, 2024 Casey Schaufler <casey@schaufler-ca.com> wrote:
->>> LSM: use 32 bit compatible data types in LSM syscalls.
->>>
->>> Change the size parameters in lsm_list_modules(), lsm_set_self_attr()
->>> and lsm_get_self_attr() from size_t to u32. This avoids the need to
->>> have different interfaces for 32 and 64 bit systems.
->>>
->>> Cc: stable@vger.kernel.org
->>> Fixes: a04a1198088a: ("LSM: syscalls for current process attributes")
->>> Fixes: ad4aff9ec25f: ("LSM: Create lsm_list_modules system call")
->>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
->>> Reported-and-reviewed-by: Dmitry V. Levin <ldv@strace.io>
->>> ---
->>>  include/linux/lsm_hook_defs.h                        |  4 ++--
->>>  include/linux/security.h                             |  8 ++++----
->>>  security/apparmor/lsm.c                              |  4 ++--
->>>  security/lsm_syscalls.c                              | 10 +++++-----
->>>  security/security.c                                  | 12 ++++++------
->>>  security/selinux/hooks.c                             |  4 ++--
->>>  security/smack/smack_lsm.c                           |  4 ++--
->>>  tools/testing/selftests/lsm/common.h                 |  6 +++---
->>>  tools/testing/selftests/lsm/lsm_get_self_attr_test.c | 10 +++++-----
->>>  tools/testing/selftests/lsm/lsm_list_modules_test.c  |  8 ++++----
->>>  tools/testing/selftests/lsm/lsm_set_self_attr_test.c |  6 +++---
->>>  11 files changed, 38 insertions(+), 38 deletions(-)
->> Okay, this looks better, I'm going to merge this into lsm/stable-6.9
->> and put it through the usual automated testing as well as a kselftest
->> run to make sure everything there is still okay.  Assuming all goes
->> well and no one raises any objections, I'll likely send this up to
->> Linus tomorrow.
->>
->> Thanks everyone!
-> Unfortunately it looks like we have a kselftest failure (below).  I'm
-> pretty sure that this was working at some point, but it's possible I
-> missed it when I ran the selftests previously.  I've got to break for
-> a personal appt right now, but I'll dig into this later tonight.
+On Wed, Mar 13, 2024 at 03:04:26PM -0700, Florian Fainelli wrote:
+> On 3/13/24 14:59, Russell King (Oracle) wrote:
+> > On Wed, Mar 13, 2024 at 02:30:43PM -0700, Florian Fainelli wrote:
+> > > I will try to provide multiple answers for the sake of everyone having the
+> > > same context. Responding to Linus' specifically and his suggestion to use
+> > > "initcall_debug", this is what it gave me:
+> > > 
+> > > [    6.970669] ata1: SATA link down (SStatus 0 SControl 300)
+> > > [  166.136366] probe of unimac-mdio-0:01 returned 0 after 159216218 usecs
+> > > [  166.142931] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
+> > > [  166.148900] probe of unimac-mdio.0 returned 0 after 159243553 usecs
+> > > [  166.155820] probe of f0480000.ethernet returned 0 after 159258794 usecs
+> > > [  166.166427] ehci-brcm f0b00300.ehci_v2: EHCI Host Controller
+> > > 
+> > > Also got another occurrence happening resuming from suspend to DRAM with:
+> > > 
+> > > [   22.570667] brcmstb-dpfe 9932000.dpfe-cpu: PM: calling
+> > > platform_pm_resume+0x0/0x54 @ 1574, parent: rdb
+> > > [  181.643809] brcmstb-dpfe 9932000.dpfe-cpu: PM:
+> > > platform_pm_resume+0x0/0x54 returned 0 after 159073134 usecs
+> > > 
+> > > and also with the PCIe root complex driver:
+> > > 
+> > > [   18.266279] brcm-pcie f0460000.pcie: PM: calling
+> > > brcm_pcie_resume_noirq+0x0/0x164 @ 1597, parent: platform
+> > > [  177.457219] brcm-pcie f0460000.pcie: clkreq-mode set to default
+> > > [  177.457225] brcm-pcie f0460000.pcie: link up, 2.5 GT/s PCIe x1 (!SSC)
+> > > [  177.457231] brcm-pcie f0460000.pcie: PM: brcm_pcie_resume_noirq+0x0/0x164
+> > > returned 0 after 159190939 usecs
+> > > [  177.457257] pcieport 0000:00:00.0: PM: calling
+> > > pci_pm_resume_noirq+0x0/0x160 @ 33, parent: pci0000:00
+> > > 
+> > > Surprisingly those drivers are consistently reproducing the failures I am
+> > > seeing so at least this gave me a clue as to where the problem is.
+> > > 
+> > > There were no changes to drivers/net/ethernet/broadcom/genet/, the two
+> > > changes done to drivers/net/mdio/mdio-bcm-unimac.c are correct, especially
+> > > the read_poll_timeout() conversion is correct, we properly break out of the
+> > > loop. The initial delay looked like a good culprit for a little while, but
+> > > it is not used on the affected platforms because instead we provide a
+> > > callback and we have an interrupt to signal the completion of a MDIO
+> > > operation, therefore unimac_mdio_poll() is not used at all. Finally
+> > > drivers/memory/brcmstb_dpfe.c also received a single change which is not
+> > > functional here (.remove function change do return void).
+> > > 
+> > > I went back to a manual bisection and this time I believe that I have a more
+> > > plausible candidate with:
+> > > 
+> > > 7ee988770326fca440472200c3eb58935fe712f6 ("timers: Implement the
+> > > hierarchical pull model")
+> > 
+> > I haven't understood the code there yet, and how it would interact with
+> > arch code, but one thing that immediately jumps out to me is this:
+> > 
+> > "    As long as a CPU is busy it expires both local and global timers. When a
+> >      CPU goes idle it arms for the first expiring local timer."
+> > 
+> > So are local timers "armed" when they are enqueued while the cpu is
+> > "busy" during initialisation, and will they expire, and will that
+> > expiry be delivered in a timely manner?
+> > 
+> > If not, this commit is basically broken, and would be the cause of the
+> > issue you are seeing. For the mdio case, we're talking about 2ms
+> > polling. For the dpfe case, it looks like we're talking about 1ms
+> > sleeps. I'm guessing that these end up being local timers.
+> > 
+> > Looking at pcie-brcmstb, there's a 100ms msleep(), and then a polling
+> > for link up every 5ms - if the link was down and we msleep(5) I wonder
+> > if that's triggering the same issue.
+> > 
+> > Why that would manifest itself on 32-bit but not 64-bit Arm, I can't
+> > say. I would imagine that the same hardware timer driver is being used
+> > (may be worth checking DT.) The same should be true for the interrupt
+> > driver as well. There's been no changes in that code.
+> 
+> I just had it happen with ARM64 I was plagued by:
+> 
+> https://lore.kernel.org/lkml/87wmqrjg8n.fsf@somnus/T/
+> 
+> and my earlier bisections somehow did not have ARM64 fail, so I thought it
+> was immune but it fails with about the same failure rate as ARM 32-bit.
 
-In v2:
+Okay, so if that's two architectures failing, it's probably not an
+architecture specific issue. It could still be a timer/interrupt driver
+issue though. It would be nice to have a reproducer on x86 which would
+confirm it.
 
-diff --git a/security/security.c b/security/security.c
-index 7035ee35a393..a0f9caf89ae1 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -810,7 +810,7 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, size_t *uctx_len,
- 	nctx->ctx_len = val_len;
- 	memcpy(nctx->ctx, val, val_len);
- 
--	if (copy_to_user(uctx, nctx, nctx_len))
-+	if (uctx && copy_to_user(uctx, nctx, nctx_len))
- 		rc = -EFAULT;
- 
- out:
+Do you know the frequency that the failure happens?
 
-This addresses the case where NULL is passed in the call to lsm_get_self_attr()
-to get the buffer size required.
-
-
->
-> # timeout set to 45
-> # selftests: lsm: lsm_get_self_attr_test
-> # TAP version 13
-> # 1..6
-> # # Starting 6 tests from 1 test cases.
-> # #  RUN           global.size_null_lsm_get_self_attr ...
-> # #            OK  global.size_null_lsm_get_self_attr
-> # ok 1 global.size_null_lsm_get_self_attr
-> # #  RUN           global.ctx_null_lsm_get_self_attr ...
-> # # lsm_get_self_attr_test.c:49:ctx_null_lsm_get_self_attr:Expected -1 (-1) != r
-> c (-1)
-> # # ctx_null_lsm_get_self_attr: Test terminated by assertion
-> # #          FAIL  global.ctx_null_lsm_get_self_attr
-> # not ok 2 global.ctx_null_lsm_get_self_attr
-> # #  RUN           global.size_too_small_lsm_get_self_attr ...
-> # #            OK  global.size_too_small_lsm_get_self_attr
-> # ok 3 global.size_too_small_lsm_get_self_attr
-> # #  RUN           global.flags_zero_lsm_get_self_attr ...
-> # #            OK  global.flags_zero_lsm_get_self_attr
-> # ok 4 global.flags_zero_lsm_get_self_attr
-> # #  RUN           global.flags_overset_lsm_get_self_attr ...
-> # #            OK  global.flags_overset_lsm_get_self_attr
-> # ok 5 global.flags_overset_lsm_get_self_attr
-> # #  RUN           global.basic_lsm_get_self_attr ...
-> # #            OK  global.basic_lsm_get_self_attr
-> # ok 6 global.basic_lsm_get_self_attr
-> # # FAILED: 5 / 6 tests passed.
-> # # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
-> not ok 1 selftests: lsm: lsm_get_self_attr_test # exit=1
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
