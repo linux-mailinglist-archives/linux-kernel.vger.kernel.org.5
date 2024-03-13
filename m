@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-101285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 660DA87A511
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:37:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511BE87A51B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:41:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EBE91C20B30
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07477282F94
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C51520B2E;
-	Wed, 13 Mar 2024 09:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C73210E8;
+	Wed, 13 Mar 2024 09:41:49 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B84168CE
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D442FC16;
+	Wed, 13 Mar 2024 09:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710322620; cv=none; b=X14wj/I2PZLPv+/W20wDbR/ygjjWhnEknMyGRSrGQpomIG/6peoOyHfyqp9Xvqs7VL0qf+6vZeNLxoGLeJXgBfvr+MaFwU/tSTmSK9XV9XeY0t0x5wzAGP752co0GTvgSPykjZGh5YGmL/KQ2dWQEEscvfXmuvbQU96SXIrqzAk=
+	t=1710322909; cv=none; b=B6XXvF+wTyQI70+WmEEKy8SmaPmo0qkXcW4c2GaH9NvNEviGaQ+2NiXlwmY244TN9TICE9lgsocvcP5O3vfLhAxMP9BEbbOLiYYEWZSiqrsIHzvgwQXRpHjf2IKm2yZrTR6WJbYDh5QMMOftvbsmwbF0QNykoT86b0VT18O2WUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710322620; c=relaxed/simple;
-	bh=3rLB7do1aTmx5DccixOPQKqFlSVMSmgZv9epuXeiOME=;
+	s=arc-20240116; t=1710322909; c=relaxed/simple;
+	bh=21fdptQdCpp0Zv7JsGqyIAExfGPwwg4YtOObMUPRD6U=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W+MZAkW8dhNCXJUNqq1/Y4X2ieF9GCsRA7ZRZYJvcYqXRFeNFMov4oHcD137mrU4/NHDb/On1QYFtHc+MY8bO1e45mLyaq7BpSHPBrDSiAoP12ltTsIbaw333SXQUysvE85aIwEJF3PE3jC+1vHHf4o6fhusn9NgjBFJI+vtCmM=
+	 In-Reply-To:Content-Type; b=F/AsgwJafIZ3vidfNqdo6O0BcIMePjRE2usqX4lkZFJAjIx+nsQaDeeiEKtBLBOguEUovjYOBxnI7Xms2xL6oVJG9NObABIfln1CJQ2Cro+qt+dr7QmFxzs75vQIDbTcE4leesFCctHERQPEKDNKfAs2INVtmDdoUvZ7CLpDy/I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B8501007;
-	Wed, 13 Mar 2024 02:37:34 -0700 (PDT)
-Received: from [10.57.67.164] (unknown [10.57.67.164])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 636663F73F;
-	Wed, 13 Mar 2024 02:36:54 -0700 (PDT)
-Message-ID: <00a3ba1d-98e1-409b-ae6e-7fbcbdcd74d5@arm.com>
-Date: Wed, 13 Mar 2024 09:36:52 +0000
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 030CE1007;
+	Wed, 13 Mar 2024 02:42:23 -0700 (PDT)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E15D43F73F;
+	Wed, 13 Mar 2024 02:41:43 -0700 (PDT)
+Message-ID: <9b8f8e96-c205-4089-abf4-8b6ef0d4b182@arm.com>
+Date: Wed, 13 Mar 2024 09:41:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,269 +41,180 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and
- MADV_COLD
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: Lance Yang <ioworker0@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
- Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>,
- Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
- Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
- Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
- <20240311150058.1122862-7-ryan.roberts@arm.com>
- <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
- <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
- <CAGsJ_4wodFkL4YZ1iQveUjK6QL7sNajyayBq4hJ3-GPoWJ6foQ@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4wodFkL4YZ1iQveUjK6QL7sNajyayBq4hJ3-GPoWJ6foQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH V6 05/11] coresight: replicator: Move ACPI support from
+ AMBA driver to platform driver
+Content-Language: en-US
+To: Anshuman Khandual <anshuman.khandual@arm.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <20240312102318.2285165-1-anshuman.khandual@arm.com>
+ <20240312102318.2285165-6-anshuman.khandual@arm.com>
+ <9f95ba15-b75c-414c-b87a-e88fddc77ebf@arm.com>
+ <5c4512ff-3102-4302-bc4b-2400799bd598@arm.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <5c4512ff-3102-4302-bc4b-2400799bd598@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 13/03/2024 09:16, Barry Song wrote:
-> On Wed, Mar 13, 2024 at 10:03 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 13/03/2024 07:19, Barry Song wrote:
->>> On Tue, Mar 12, 2024 at 4:01 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> Rework madvise_cold_or_pageout_pte_range() to avoid splitting any large
->>>> folio that is fully and contiguously mapped in the pageout/cold vm
->>>> range. This change means that large folios will be maintained all the
->>>> way to swap storage. This both improves performance during swap-out, by
->>>> eliding the cost of splitting the folio, and sets us up nicely for
->>>> maintaining the large folio when it is swapped back in (to be covered in
->>>> a separate series).
->>>>
->>>> Folios that are not fully mapped in the target range are still split,
->>>> but note that behavior is changed so that if the split fails for any
->>>> reason (folio locked, shared, etc) we now leave it as is and move to the
->>>> next pte in the range and continue work on the proceeding folios.
->>>> Previously any failure of this sort would cause the entire operation to
->>>> give up and no folios mapped at higher addresses were paged out or made
->>>> cold. Given large folios are becoming more common, this old behavior
->>>> would have likely lead to wasted opportunities.
->>>>
->>>> While we are at it, change the code that clears young from the ptes to
->>>> use ptep_test_and_clear_young(), which is more efficent than
->>>> get_and_clear/modify/set, especially for contpte mappings on arm64,
->>>> where the old approach would require unfolding/refolding and the new
->>>> approach can be done in place.
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>
->>> This looks so much better than our initial RFC.
->>> Thank you for your excellent work!
->>
->> Thanks - its a team effort - I had your PoC and David's previous batching work
->> to use as a template.
->>
->>>
->>>> ---
->>>>  mm/madvise.c | 89 ++++++++++++++++++++++++++++++----------------------
->>>>  1 file changed, 51 insertions(+), 38 deletions(-)
->>>>
->>>> diff --git a/mm/madvise.c b/mm/madvise.c
->>>> index 547dcd1f7a39..56c7ba7bd558 100644
->>>> --- a/mm/madvise.c
->>>> +++ b/mm/madvise.c
->>>> @@ -336,6 +336,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>         LIST_HEAD(folio_list);
->>>>         bool pageout_anon_only_filter;
->>>>         unsigned int batch_count = 0;
->>>> +       int nr;
->>>>
->>>>         if (fatal_signal_pending(current))
->>>>                 return -EINTR;
->>>> @@ -423,7 +424,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>                 return 0;
->>>>         flush_tlb_batched_pending(mm);
->>>>         arch_enter_lazy_mmu_mode();
->>>> -       for (; addr < end; pte++, addr += PAGE_SIZE) {
->>>> +       for (; addr < end; pte += nr, addr += nr * PAGE_SIZE) {
->>>> +               nr = 1;
->>>>                 ptent = ptep_get(pte);
->>>>
->>>>                 if (++batch_count == SWAP_CLUSTER_MAX) {
->>>> @@ -447,55 +449,66 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>                         continue;
->>>>
->>>>                 /*
->>>> -                * Creating a THP page is expensive so split it only if we
->>>> -                * are sure it's worth. Split it if we are only owner.
->>>> +                * If we encounter a large folio, only split it if it is not
->>>> +                * fully mapped within the range we are operating on. Otherwise
->>>> +                * leave it as is so that it can be swapped out whole. If we
->>>> +                * fail to split a folio, leave it in place and advance to the
->>>> +                * next pte in the range.
->>>>                  */
->>>>                 if (folio_test_large(folio)) {
->>>> -                       int err;
->>>> -
->>>> -                       if (folio_estimated_sharers(folio) > 1)
->>>> -                               break;
->>>> -                       if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>> -                               break;
->>>> -                       if (!folio_trylock(folio))
->>>> -                               break;
->>>> -                       folio_get(folio);
->>>> -                       arch_leave_lazy_mmu_mode();
->>>> -                       pte_unmap_unlock(start_pte, ptl);
->>>> -                       start_pte = NULL;
->>>> -                       err = split_folio(folio);
->>>> -                       folio_unlock(folio);
->>>> -                       folio_put(folio);
->>>> -                       if (err)
->>>> -                               break;
->>>> -                       start_pte = pte =
->>>> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
->>>> -                       if (!start_pte)
->>>> -                               break;
->>>> -                       arch_enter_lazy_mmu_mode();
->>>> -                       pte--;
->>>> -                       addr -= PAGE_SIZE;
->>>> -                       continue;
->>>> +                       const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
->>>> +                                               FPB_IGNORE_SOFT_DIRTY;
->>>> +                       int max_nr = (end - addr) / PAGE_SIZE;
->>>> +
->>>> +                       nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
->>>> +                                            fpb_flags, NULL);
->>>
->>> I wonder if we have a quick way to avoid folio_pte_batch() if users
->>> are doing madvise() on a portion of a large folio.
->>
->> Good idea. Something like this?:
->>
->>         if (pte_pfn(pte) == folio_pfn(folio)
+On 13/03/2024 02:31, Anshuman Khandual wrote:
 > 
-> what about
 > 
-> "If (pte_pfn(pte) == folio_pfn(folio) && max_nr >= nr_pages)"
-> 
->  just to account for cases where the user's end address falls within
-> the middle of a large folio?
+> On 3/12/24 20:09, Suzuki K Poulose wrote:
+>> On 12/03/2024 10:23, Anshuman Khandual wrote:
+>>> Add support for the dynamic replicator device in the platform driver, which
+>>> can then be used on ACPI based platforms. This change would now allow
+>>> runtime power management for replicator devices on ACPI based systems.
+>>>
+>>> The driver would try to enable the APB clock if available. Also, rename the
+>>> code to reflect the fact that it now handles both static and dynamic
+>>> replicators. But first this refactors replicator_probe() making sure it can
+>>> be used both for platform and AMBA drivers, by moving the pm_runtime_put()
+>>> to the callers.
+>>>
+>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: James Clark <james.clark@arm.com>
+>>> Cc: linux-acpi@vger.kernel.org
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Cc: coresight@lists.linaro.org
+>>> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
+>>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>> Changes in V6:
+>>>
+>>> - Added clk_disable_unprepare() for pclk in replicator_probe() error path
+>>> - Added WARN_ON(!drvdata) check in replicator_platform_remove()
+>>> - Added additional elements for acpi_device_id[]
+>>>
+>>>    drivers/acpi/arm64/amba.c                     |  1 -
+>>>    .../coresight/coresight-replicator.c          | 68 ++++++++++++-------
+>>>    2 files changed, 45 insertions(+), 24 deletions(-)
+>>>
+>>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+>>> index 171b5c2c7edd..270f4e3819a2 100644
+>>> --- a/drivers/acpi/arm64/amba.c
+>>> +++ b/drivers/acpi/arm64/amba.c
+>>> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+>>>        {"ARMHC503", 0}, /* ARM CoreSight Debug */
+>>>        {"ARMHC979", 0}, /* ARM CoreSight TPIU */
+>>>        {"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+>>> -    {"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
+>>>        {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>>>        {"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
+>>>        {"", 0},
+>>> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+>>> index ddb530a8436f..ed9be5435f94 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+>>> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>>>     * @base:    memory mapped base address for this component. Also indicates
+>>>     *        whether this one is programmable or not.
+>>>     * @atclk:    optional clock for the core parts of the replicator.
+>>> + * @pclk:    APB clock if present, otherwise NULL
+>>>     * @csdev:    component vitals needed by the framework
+>>>     * @spinlock:    serialize enable/disable operations.
+>>>     * @check_idfilter_val: check if the context is lost upon clock removal.
+>>> @@ -38,6 +39,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>>>    struct replicator_drvdata {
+>>>        void __iomem        *base;
+>>>        struct clk        *atclk;
+>>> +    struct clk        *pclk;
+>>>        struct coresight_device    *csdev;
+>>>        spinlock_t        spinlock;
+>>>        bool            check_idfilter_val;
+>>> @@ -243,6 +245,10 @@ static int replicator_probe(struct device *dev, struct resource *res)
+>>>                return ret;
+>>>        }
+>>>    +    drvdata->pclk = coresight_get_enable_apb_pclk(dev);
+>>> +    if (IS_ERR(drvdata->pclk))
+>>> +        return -ENODEV;
+>>> +
+>>>        /*
+>>>         * Map the device base for dynamic-replicator, which has been
+>>>         * validated by AMBA core
+>>> @@ -285,11 +291,12 @@ static int replicator_probe(struct device *dev, struct resource *res)
+>>>        }
+>>>          replicator_reset(drvdata);
+>>> -    pm_runtime_put(dev);
+>>>      out_disable_clk:
+>>>        if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
+>>>            clk_disable_unprepare(drvdata->atclk);
+>>> +    if (ret && !IS_ERR_OR_NULL(drvdata->pclk))
+>>> +        clk_disable_unprepare(drvdata->pclk);
+>>>        return ret;
+>>>    }
+>>>    @@ -301,29 +308,34 @@ static int replicator_remove(struct device *dev)
+>>>        return 0;
+>>>    }
+>>>    -static int static_replicator_probe(struct platform_device *pdev)
+>>> +static int replicator_platform_probe(struct platform_device *pdev)
+>>>    {
+>>> +    struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>        int ret;
+>>>          pm_runtime_get_noresume(&pdev->dev);
+>>>        pm_runtime_set_active(&pdev->dev);
+>>>        pm_runtime_enable(&pdev->dev);
+>>>    -    /* Static replicators do not have programming base */
+>>> -    ret = replicator_probe(&pdev->dev, NULL);
+>>> -
+>>> -    if (ret) {
+>>> -        pm_runtime_put_noidle(&pdev->dev);
+>>> +    ret = replicator_probe(&pdev->dev, res);
+>>> +    pm_runtime_put(&pdev->dev);
+>>> +    if (ret)
+>>>            pm_runtime_disable(&pdev->dev);
+>>> -    }
+>>>          return ret;
+>>>    }
+>>>    -static void static_replicator_remove(struct platform_device *pdev)
+>>> +static void replicator_platform_remove(struct platform_device *pdev)
+>>>    {
+>>> +    struct replicator_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
+>>> +
+>>> +    if (WARN_ON(!drvdata))
+>>> +        return;
+>>> +
+>>>        replicator_remove(&pdev->dev);
+>>>        pm_runtime_disable(&pdev->dev);
+>>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>>> +        clk_put(drvdata->pclk);
 
-yes, even better. I'll add this for the next version.
+The comment below applies here. We already return for !drvdata, so you 
+don't need a duplicate check.
 
-> 
-> 
-> BTW, another minor issue is here:
-> 
->                 if (++batch_count == SWAP_CLUSTER_MAX) {
->                         batch_count = 0;
->                         if (need_resched()) {
->                                 arch_leave_lazy_mmu_mode();
->                                 pte_unmap_unlock(start_pte, ptl);
->                                 cond_resched();
->                                 goto restart;
->                         }
->                 }
-> 
-> We are increasing 1 for nr ptes, thus, we are holding PTL longer
-> than small folios case? we used to increase 1 for each PTE.
-> Does it matter?
 
-I thought about that, but the vast majority of the work is per-folio, not
-per-pte. So I concluded it would be best to continue to increment per-folio.
+>>>    }
+>>>      #ifdef CONFIG_PM
+>>> @@ -334,6 +346,8 @@ static int replicator_runtime_suspend(struct device *dev)
+>>>        if (drvdata && !IS_ERR(drvdata->atclk))
+>>>            clk_disable_unprepare(drvdata->atclk);
+>>>    +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>>> +        clk_disable_unprepare(drvdata->pclk);
+>>>        return 0;
+>>>    }
+>>>    @@ -344,6 +358,8 @@ static int replicator_runtime_resume(struct device *dev)
+>>>        if (drvdata && !IS_ERR(drvdata->atclk))
+>>>            clk_prepare_enable(drvdata->atclk);
+>>>    +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>>> +        clk_prepare_enable(drvdata->pclk);
+>>
+>> nit: drvdata is != NULL, so could drop it
+> But we already have a similar check for drvdata->atclk above, would not
+> dropping drvdata for drvdata->pclk cause inconsistency and asymmetry ?
 
-> 
->>                 nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
->>                                      fpb_flags, NULL);
->>
->> If we are not mapping the first page of the folio, then it can't be a full
->> mapping, so no need to call folio_pte_batch(). Just split it.
->>
->>>
->>>> +
->>>> +                       if (nr < folio_nr_pages(folio)) {
->>>> +                               int err;
->>>> +
->>>> +                               if (folio_estimated_sharers(folio) > 1)
->>>> +                                       continue;
->>>> +                               if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>> +                                       continue;
->>>> +                               if (!folio_trylock(folio))
->>>> +                                       continue;
->>>> +                               folio_get(folio);
->>>> +                               arch_leave_lazy_mmu_mode();
->>>> +                               pte_unmap_unlock(start_pte, ptl);
->>>> +                               start_pte = NULL;
->>>> +                               err = split_folio(folio);
->>>> +                               folio_unlock(folio);
->>>> +                               folio_put(folio);
->>>> +                               if (err)
->>>> +                                       continue;
->>>> +                               start_pte = pte =
->>>> +                                       pte_offset_map_lock(mm, pmd, addr, &ptl);
->>>> +                               if (!start_pte)
->>>> +                                       break;
->>>> +                               arch_enter_lazy_mmu_mode();
->>>> +                               nr = 0;
->>>> +                               continue;
->>>> +                       }
->>>>                 }
->>>>
->>>>                 /*
->>>>                  * Do not interfere with other mappings of this folio and
->>>> -                * non-LRU folio.
->>>> +                * non-LRU folio. If we have a large folio at this point, we
->>>> +                * know it is fully mapped so if its mapcount is the same as its
->>>> +                * number of pages, it must be exclusive.
->>>>                  */
->>>> -               if (!folio_test_lru(folio) || folio_mapcount(folio) != 1)
->>>> +               if (!folio_test_lru(folio) ||
->>>> +                   folio_mapcount(folio) != folio_nr_pages(folio))
->>>>                         continue;
->>>
->>> This looks so perfect and is exactly what I wanted to achieve.
->>>
->>>>
->>>>                 if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>>                         continue;
->>>>
->>>> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
->>>> -
->>>> -               if (!pageout && pte_young(ptent)) {
->>>> -                       ptent = ptep_get_and_clear_full(mm, addr, pte,
->>>> -                                                       tlb->fullmm);
->>>> -                       ptent = pte_mkold(ptent);
->>>> -                       set_pte_at(mm, addr, pte, ptent);
->>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>> +               if (!pageout) {
->>>> +                       for (; nr != 0; nr--, pte++, addr += PAGE_SIZE) {
->>>> +                               if (ptep_test_and_clear_young(vma, addr, pte))
->>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>> +                       }
->>>
->>> This looks so smart. if it is not pageout, we have increased pte
->>> and addr here; so nr is 0 and we don't need to increase again in
->>> for (; addr < end; pte += nr, addr += nr * PAGE_SIZE)
->>>
->>> otherwise, nr won't be 0. so we will increase addr and
->>> pte by nr.
->>
->> Indeed. I'm hoping that Lance is able to follow a similar pattern for
->> madvise_free_pte_range().
->>
->>
->>>
->>>
->>>>                 }
->>>>
->>>>                 /*
->>>> --
->>>> 2.25.1
->>>>
->>>
->>> Overall, LGTM,
->>>
->>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
->>
->> Thanks!
->>
->>
+Sorry, I meant this for above. See above.
+
+
 
 
