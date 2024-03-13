@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-101748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3AA87AB40
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:35:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AE0387AB42
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:35:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2C251F2176D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:34:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 376C82898C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03DE34C62B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C9359B64;
 	Wed, 13 Mar 2024 16:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFniQbpM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4jKOea2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465B65914B;
-	Wed, 13 Mar 2024 16:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260475917C;
+	Wed, 13 Mar 2024 16:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347570; cv=none; b=FSU6Mv/7G7J595dozJOYzQP+bHcG/Y8trS1Tb8zFlLYayWeW5iQQTJ6nsrTlRpzncYoXXIqyk8iPhfvIHNlWoE5roG00IJBgCFwyVwl6BO9nDLlCstoUfsLbk6xswpipgzSMmxJggZ5H3cenR4KtXeP0VXytdXiJtDCfy8bV688=
+	t=1710347571; cv=none; b=lWdRSmME5NnBFdXTYuZAqCePO3b4Du7hn5cyD/RAgn/lTwRU6Mf7lqz7RUOuASRwuWoE+lUBhkeryA8KgmVTRXmjql03oNyWASWi/JxZJHWoB/8k7IdTTbhVrH/LfWuJG5El57bCtQypryPlp7YHukKmV8qeIv8RlLVBKcWD1z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347570; c=relaxed/simple;
-	bh=mER1yfa1dH9o/9mw+NAa4OwuQlcgdGWtxZnPh2QN7k0=;
+	s=arc-20240116; t=1710347571; c=relaxed/simple;
+	bh=oot0yLFZ/cSpMIaV7o+cb5pLc+I+X2NT5B3fpxJtVmQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H64VD8WqH8qFisSBOGJ9hiButr05T9+AjOiOUqHCvd/FRXuCaGHnMqwSPG+JBRLO3yCjwO3d3SZl1tOA5fx2PhMRwJuB+rMtYRrvrqeFmnWqdQQdjZWVgZBeA9pWlhQmcKHv3rL1Gurkm6g1vsFTbID6k7QsD5jpMSFLQ2N9kIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFniQbpM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E53B0C433F1;
-	Wed, 13 Mar 2024 16:32:48 +0000 (UTC)
+	 MIME-Version; b=IM396lpvu3sBulr52UDoEOnS4eP1TGrUTrtm0dIpQIqcAKL2eC0FAaHIXay4Dvt5Ru3WmK9P+e16tzK8c2Kp2hFD4CgJuxYel/MuGTYKrfliEQVzxn7Q05uMrNfXzDUHDDifBevtFaNv8kBuTuM4kNoNrPo5/FYhipCYyIEmH30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4jKOea2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28D6AC433A6;
+	Wed, 13 Mar 2024 16:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347569;
-	bh=mER1yfa1dH9o/9mw+NAa4OwuQlcgdGWtxZnPh2QN7k0=;
+	s=k20201202; t=1710347571;
+	bh=oot0yLFZ/cSpMIaV7o+cb5pLc+I+X2NT5B3fpxJtVmQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HFniQbpMy28SxrVYYCxhFkXOrTh3sFNnzgZI7d3H2qF8hpLEDHDFdLNtPlAYB/Ehs
-	 vQe9Ov1Qj5Rc9gfSKg5oYISJMtUZ1XgtcxISIwH3P9a+j9znRg9gtX1B7YG6XSi5pS
-	 X11+Pv1St36SydMMIhQ3mNy9QjsBanOTgzXAaiWvpWrDHRsjTuu4SF4TY5hZ8HkdRX
-	 ozjuFbkFyFcSc2nJ2V9eaKtyOoqge6l7ooK2dPav4b4CfxBnR2w4X3NeOz4c+emup1
-	 VnvIWgH9uCu56XYAGFU0hcA01q/tTmOOSE+LokeMFUU4qtaxrNj2rUlrAUgeQJeF+J
-	 EBPk6Sx8xHDEg==
+	b=T4jKOea26BLQDDhL9Zn1tQAIjXavkYM8z8dcIGAoQxh52Fte12kpUqvN6ylkSl2f5
+	 myoedHlBRi1uDVokWQm8oseubLYovMb5jlU2i9vlUYLsT2k6tq2Qw8MSliSMiYJKUY
+	 nicFPbnCUax8b2aoOBAshDpv/39RRgVHNMaHP7KQpfOAyefKl7T2FsBIfxvqAJ1bKA
+	 AnIf9vJSjP07Q7SsnXh23yB5E55+m6wepPPkCxa5l/20GlDNgk+G6gG08ct1H90RVY
+	 penNc0ubzVUwmqgTQqnq4nWg/fnscdHtawuya3MJdcIJSrj96jE1fOKTuh8aejC9X3
+	 HENBFFJ/yeIEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Leon Romanovsky <leonro@nvidia.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Mike Yu <yumike@google.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	Jiri Pirko <jiri@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 09/61] xfrm: Pass UDP encapsulation in TX packet offload
-Date: Wed, 13 Mar 2024 12:31:44 -0400
-Message-ID: <20240313163236.613880-10-sashal@kernel.org>
+Subject: [PATCH 6.7 10/61] net: lan78xx: fix runtime PM count underflow on link stop
+Date: Wed, 13 Mar 2024 12:31:45 -0400
+Message-ID: <20240313163236.613880-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -70,37 +69,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit 983a73da1f996faee9997149eb05b12fa7bd8cbf ]
+[ Upstream commit 1eecc7ab82c42133b748e1895275942a054a7f67 ]
 
-In addition to citied commit in Fixes line, allow UDP encapsulation in
-TX path too.
+Current driver has some asymmetry in the runtime PM calls. On lan78xx_open()
+it will call usb_autopm_get() and unconditionally usb_autopm_put(). And
+on lan78xx_stop() it will call only usb_autopm_put(). So far, it was
+working only because this driver do not activate autosuspend by default,
+so it was visible only by warning "Runtime PM usage count underflow!".
 
-Fixes: 89edf40220be ("xfrm: Support UDP encapsulation in packet offload mode")
-CC: Steffen Klassert <steffen.klassert@secunet.com>
-Reported-by: Mike Yu <yumike@google.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Since, with current driver, we can't use runtime PM with active link,
+execute lan78xx_open()->usb_autopm_put() only in error case. Otherwise,
+keep ref counting high as long as interface is open.
+
+Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/lan78xx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
-index 3784534c91855..653e51ae39648 100644
---- a/net/xfrm/xfrm_device.c
-+++ b/net/xfrm/xfrm_device.c
-@@ -407,7 +407,7 @@ bool xfrm_dev_offload_ok(struct sk_buff *skb, struct xfrm_state *x)
- 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
- 	struct net_device *dev = x->xso.dev;
+diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
+index a2dde84499fdd..f0fb9cd1ff56c 100644
+--- a/drivers/net/usb/lan78xx.c
++++ b/drivers/net/usb/lan78xx.c
+@@ -3137,7 +3137,8 @@ static int lan78xx_open(struct net_device *net)
+ done:
+ 	mutex_unlock(&dev->dev_mutex);
  
--	if (!x->type_offload || x->encap)
-+	if (!x->type_offload)
- 		return false;
+-	usb_autopm_put_interface(dev->intf);
++	if (ret < 0)
++		usb_autopm_put_interface(dev->intf);
  
- 	if (x->xso.type == XFRM_DEV_OFFLOAD_PACKET ||
+ 	return ret;
+ }
 -- 
 2.43.0
 
