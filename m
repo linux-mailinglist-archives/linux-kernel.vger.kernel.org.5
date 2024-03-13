@@ -1,136 +1,113 @@
-Return-Path: <linux-kernel+bounces-101256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC0387A49E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:07:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1821687A3A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:39:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E9871C20306
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:07:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C90AB21789
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100081B95C;
-	Wed, 13 Mar 2024 09:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502E4171AC;
+	Wed, 13 Mar 2024 07:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="i8YBiMSS";
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="Hef1er5h"
-Received: from mta-04.yadro.com (mta-04.yadro.com [89.207.88.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GdnaITHH"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1240C1CD14
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.207.88.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005701FAA
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710320753; cv=none; b=j8trc18AKS6NMuxaZvQ0XHLeorfagkYPNn1inwCVCaRqz4BHPLwMapzLWoXfAFTx6zA0rjIcVzHtgQsSreSV1ANXSl7qL0QLV/nzUoA77+on0vxXFNNWWT7wLaUwi9YOyHajP1R4Z3QvekPTWc6p3bhk/BSMkQg5nWOCKXBS4ds=
+	t=1710315575; cv=none; b=isSoefyIUfF2huFsiw3bApaEwDPsiKXA/RaG3MBvp53L5bOH1HbhOzB3SnXkW072aCvgJzSjNA5IG09ihrhVFO6+HSzP9Pk1wt2aF7GZCZ6ervpUezaesJSegKZWGc0yOJ2Su2LWU2Bi+71T/5dLLbZNWScSnukjXcmno+GViE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710320753; c=relaxed/simple;
-	bh=oYO5G2kgoI0v/4fOm9QTTExYPwIT6pOuW8fRLgogous=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=H8PD/pISilukfduS4i1CGFC1tkIqYtyn+9ObCU7AnqEVlYxnFJP6UGtf7PUc4q/eJD5FB2JIzcmmsyzOG118+n28ngbDIuTd/K8NJQ+yCsVBfM/ub/MUIF433/nWUduhHkKPYdlsA2oR0ajieYDbirSLyUjPH2cA2UjPezYGjFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=syntacore.com; spf=fail smtp.mailfrom=syntacore.com; dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b=i8YBiMSS; dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b=Hef1er5h; arc=none smtp.client-ip=89.207.88.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=syntacore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=syntacore.com
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-04.yadro.com 83FCFC0003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-04; t=1710320742;
-	bh=hzex8GVy1A6DhuERVgut3DhHXnR8ynA/aRj+HZfrGmI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=i8YBiMSSWB1gKyBsNgx996JhaURZDLnrGhmAj+E0n1uG9gB2BKDYVRvY8lw5iP9ad
-	 0NEiMLcZUS5bbZqMcXgNrzHoJfxSSMzWtKR4LYNx+enblE/wgFBjgHgJc+aYmmgWrk
-	 0MKAAeHuJKZdfQsb17U76NtGelm+ydqAb4AbJyJyMF8Lq1fxMfMAL8w19gO6SJShrj
-	 OgYuwiEjc3yqETaQJIdlT6Ec7ol7b+JsA7MOVWm/3Wl8nrz/eqQlEFYlkCfEH6IUSd
-	 wSEUQoHrEVMO5hLl4/Dt/fxZrr+DpMnFauQz870aAT7aXt/y9STWuyvePSSjtmyi+R
-	 21PTIwnrOSBjw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-03; t=1710320742;
-	bh=hzex8GVy1A6DhuERVgut3DhHXnR8ynA/aRj+HZfrGmI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Hef1er5h30zUfWFAow6aUvTmO9ZGDnXJ3MG7GtFkpLGLAjGbz+p1HSHBkokeZRRdD
-	 K4QfOxNQTXtsLhRfc2NbWPVL1RAo4pw260p+nmJx50N0PJAmHNYgi/EuDgUkXvWc3m
-	 jhgzOGAlZmfUvrrcVkGngCCv8X7o84THxeiQPenJ982Ab0rYn6nLanxhLGR15CCxwE
-	 PdNwaC7VMVH8uCjEMwYrxhrOcBPEMo8hUn7s+RTHRMnXzIgMCw8zKlrrVIphZU1PdO
-	 p7jn91p8MJSygbgUOt/Yh8daWQQtpBvIo8nxE+24DPi4puDSdC+yyhH2+gr2KzmYcx
-	 D/QSEUi+/gvZg==
-From: Vladimir Isaev <vladimir.isaev@syntacore.com>
-To: <paul.walmsley@sifive.com>, <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-	<catalin.marinas@arm.com>, <evan@rivosinc.com>, <nicolas@fjasle.eu>,
-	<tglx@linutronix.de>, <samitolvanen@google.com>, <masahiroy@kernel.org>,
-	<maskray@google.com>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <guoren@kernel.org>
-CC: Vladimir Isaev <vladimir.isaev@syntacore.com>, Roman Artemev
-	<roman.artemev@syntacore.com>
-Subject: [PATCH] riscv: hwprobe: do not produce frtace relocation
-Date: Wed, 13 Mar 2024 10:35:46 +0300
-Message-ID: <20240313085843.17661-1-vladimir.isaev@syntacore.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710315575; c=relaxed/simple;
+	bh=AvANucvrZ/fsPo2yOI31iWo1FDKNiABMfD22ldNz5dc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QdC7HwSuSxQj8w9XMCzYaVMvbIsLbSqo24XAJ/nF15ds7r5oiofAo753KJtpUVUn+3yAHLqQeNugEnA+Ph7Nko0GzUWumEfAFt6Mz6CtrXXWqMDEYsfZTXUhM6HV+V+Y12HrxLgecynWNXNOU6W5VQq/L4rYfbM2CEuMw6XCzAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GdnaITHH; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a44e3176120so817004366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710315572; x=1710920372; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AvANucvrZ/fsPo2yOI31iWo1FDKNiABMfD22ldNz5dc=;
+        b=GdnaITHHnDyTc59DrnY/aK1qBmW4s8v+1Wlo7OaXKXq57D0uGr0gsQX/ItX/BACBPM
+         mCpMOjziUb+3Mn5COgkXtUpoeoLEcXZCGTpgGjzVyLc+VMKae2PiFkxwSu99rRhGu5PL
+         h0DwhApPO9cJtQFK8IR03dSWBM+quu8+QvheMmkAeD9cyenRXDT5FzO/WA+ETkmUxyZa
+         SN1VD6WkfLXCEc+IYf4zf/JHE0Wo1vDZsy4xcu7u+lDW5Wu0D+wy0+1TtlvzrncNvHlr
+         tpridwRMpXbbySaNM/TBwn2tAXOaruwSht9ctgRneZZUslHQzUPXkKVV6MMDE1ceGHf3
+         4nnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710315572; x=1710920372;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AvANucvrZ/fsPo2yOI31iWo1FDKNiABMfD22ldNz5dc=;
+        b=Sh9rTyJSq4jhTb5eD6I2WlHfDpPhc893rgmEPzNmMABOs8Zpo2xcXQEAkrB8mZvTtQ
+         hjKmUhpG2N0H7tYiuoQGsDOOBY9Fgg+nwVYXGl+52SRC7PjnZvfagT1fH+J0nQZIAZ+S
+         gKrnmIc60P0HvSYT/oG223KQYvGgLlqARDYXnUSg6Tl7MA2BVubnz2iiJqtwbVWRA6qd
+         CzayCskoCabaaxbb43LfvetwxwbY2rpbQUccg/qshiOKfrIEWgF1x7q3ugWoRrmZVIdo
+         se4+UgZwMCzfDxCDjiP5w7MT2Djo+MNjUpo7L3RyVlEGdSks6Uh3CYILQCSwsMa7rUes
+         3JOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUs8B8CalQy2ps4EATxSvlUjyZc5DpO7C1lXy5rX1YTwOPh7iaAQvGmrmqQBBG3Q5xUaKJaFV1ex0pT7M2S1nQciic86XobX8vj+MLH
+X-Gm-Message-State: AOJu0Yy3kzZBCd2++zlmifsCvHx55IvxG/HOUDRS1bd+stS+Yeeq9+5p
+	2a8fS9+R863+sIVP3KCHmMSUAexZfbpU3FkHbDb7Jh2On91geqlLW08z8mVf2AA=
+X-Google-Smtp-Source: AGHT+IH38GneADkyKtRbEkb8+HLK5ZsZNpyhD22lE4uk6eUmiwmdHa00scLatPQEFNYx/T2Y2VkSUg==
+X-Received: by 2002:a17:906:2ccb:b0:a41:3e39:b918 with SMTP id r11-20020a1709062ccb00b00a413e39b918mr7484516ejr.24.1710315572226;
+        Wed, 13 Mar 2024 00:39:32 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id qx26-20020a170906fcda00b00a45a687b52asm4578781ejb.213.2024.03.13.00.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 00:39:31 -0700 (PDT)
+Date: Wed, 13 Mar 2024 10:39:28 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
+	Kees Cook <keescook@chromium.org>,
+	Daniel Diaz <daniel.diaz@linaro.org>,
+	David Gow <davidgow@google.com>,
+	Arthur Grillo <arthurgrillo@riseup.net>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, loongarch@lists.linux.dev,
+	netdev@lists.linux.dev
+Subject: Re: [PATCH 00/14] Add support for suppressing warning backtraces
+Message-ID: <43ef4ef4-303b-45c6-aa50-3e0982c93bd7@moroto.mountain>
+References: <20240312170309.2546362-1-linux@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: T-EXCH-06.corp.yadro.com (172.17.10.110) To
- S-Exch-01.corp.yadro.com (10.78.5.241)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312170309.2546362-1-linux@roeck-us.net>
 
-Such relocation causes crash of android linker similar to one
-described in commit e05d57dcb8c7
-("riscv: Fixup __vdso_gettimeofday broke dynamic ftrace").
+Thanks!
 
-Looks like this relocation is added by CONFIG_DYNAMIC_FTRACE which is
-disabled in the default android kernel.
+Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Before:
-
-readelf -rW arch/riscv/kernel/vdso/vdso.so:
-
-Relocation section '.rela.dyn' at offset 0xd00 contains 1 entry:
-    Offset             Info             Type
-0000000000000d20  0000000000000003 R_RISCV_RELATIVE
-
-objdump:
-0000000000000c86 <__vdso_riscv_hwprobe@@LINUX_4.15>:
- c86:   0001                    nop
- c88:   0001                    nop
- c8a:   0001                    nop
- c8c:   0001                    nop
- c8e:   e211                    bnez    a2,c92 <__vdso_riscv_hwprobe...
-
-After:
-readelf -rW arch/riscv/kernel/vdso/vdso.so:
-
-There are no relocations in this file.
-
-objdump:
-0000000000000c86 <__vdso_riscv_hwprobe@@LINUX_4.15>:
- c86:   e211                    bnez    a2,c8a <__vdso_riscv_hwprobe...
- c88:   c6b9                    beqz    a3,cd6 <__vdso_riscv_hwprobe...
- c8a:   e739                    bnez    a4,cd8 <__vdso_riscv_hwprobe...
- c8c:   ffffd797                auipc   a5,0xffffd
-
-Also disable SCS since it also should not be available in vdso.
-
-Fixes: aa5af0aa90ba ("RISC-V: Add hwprobe vDSO function and data")
-Signed-off-by: Roman Artemev <roman.artemev@syntacore.com>
-Signed-off-by: Vladimir Isaev <vladimir.isaev@syntacore.com>
----
- arch/riscv/kernel/vdso/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index 9b517fe1b8a8..272c431ac5b9 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -37,6 +37,7 @@ endif
- 
- # Disable -pg to prevent insert call site
- CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS)
-+CFLAGS_REMOVE_hwprobe.o = $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS)
- 
- # Disable profiling and instrumentation for VDSO code
- GCOV_PROFILE := n
--- 
-2.43.0
+regards,
+dan carpenter
 
 
