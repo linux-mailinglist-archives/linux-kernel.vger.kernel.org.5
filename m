@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-102009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DC3987AD8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:37:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0CAC87AD8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:37:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F24C1C223E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:37:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CE77282E62
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899E414D43A;
-	Wed, 13 Mar 2024 16:43:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFD514E2C3;
+	Wed, 13 Mar 2024 16:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vEjDxbOk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPt16zyY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B773F14CADE;
-	Wed, 13 Mar 2024 16:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B5A14D444;
+	Wed, 13 Mar 2024 16:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348222; cv=none; b=d9YEQIfUHNfk/pPxYRxOcoxs6VJjLSk7tTvmUqZDsGRqSumZSLZ5X7idTrZtvW+FHaUC9arZBZCqiqUq1n6CQoeLBKyzz+dnnnFX6opfJswnY0N4qH5Ce3NKO06yS+YyfTIltRi17PFHsIAxz8gxZM7z17jWIeEGuI6GAyA9HJI=
+	t=1710348224; cv=none; b=i1bwl8rQ+xL/NyawDqB7BmRfUVGfP/MeYclsYtsA8jA94hMLZeD6tim21EoyUafPWMCTWhBMj4sXM71E+IlIEgKZUNVjCcCcYkNzDHJSsQPgYm3BXcnQ/he25XPXE/f5ekDBQCuOyPv91/GLGGkytfI7qO2htN5Q5lE+tcZPJtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348222; c=relaxed/simple;
-	bh=6dxmNiCCcPORI/dA+Z0VsqZXbOzR01ZPsdvJA7HTG90=;
+	s=arc-20240116; t=1710348224; c=relaxed/simple;
+	bh=s8SnMuojUTopw8S4/MfbR5xT0i36Z9rfYwSR7D7R1wQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mo/aR2mZjy57lWLmlaVYWUd9Yn0kmZEUNtml90AEJXYiZQNiZFzS/dAbAjkIV8dmjmeM60oNWh+vuBOjAZ5WTTCIHDe38lUlWplM0wL4AL3vIrOB3rcb6IPKvcfE+d3jwkU3cMz/SH8l8VMgtN7jX1qNSO02jwwpCNKtrNhek4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vEjDxbOk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87382C433F1;
-	Wed, 13 Mar 2024 16:43:41 +0000 (UTC)
+	 MIME-Version; b=OJVCcQX7vF58WPczAyWLPnSaczW2WGmobHO8BSp0SRqO4r+3aQ+b9+lshMW0LeREN8fnMwGxSyF7XO9D8GbMLNP2dUbmzIIIRh/RAD2FcV/sRKKhPpCYTh3Y1rXcdqC14Cnzb6sh1efRxE9ZMbQawJ3Pb9pGBoSt9ik228B3mtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPt16zyY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90B2FC43390;
+	Wed, 13 Mar 2024 16:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348222;
-	bh=6dxmNiCCcPORI/dA+Z0VsqZXbOzR01ZPsdvJA7HTG90=;
+	s=k20201202; t=1710348223;
+	bh=s8SnMuojUTopw8S4/MfbR5xT0i36Z9rfYwSR7D7R1wQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vEjDxbOk4ASmaihi2yzCB60hXT5KNYcUWen59yS+PI2ff2IFp6Q2PxKjCDb025VBc
-	 kTbUYnFZnBLAh8YRBovwC3ACQaTEzjIqkPe52sIE/gQJwpKj7/hJvBdZpsQN6zpUi2
-	 jjwM5Mp1xctFeScwM67WTjTlu0AEXHMWL4Taa6Joi5ouKL2DzAdv/+BgCzv1F/M3vN
-	 a4iI+AzFy1p2uiXnDy9eWqQH/0PjhWZ5HRr2/v/pKkmKvOvu+/cta4Ze1B2AZ9HRQ5
-	 5B0wrZhcZL83+fQrryy+kFK0Nkz7GOHNJU7G8rqFwTsSff3DnOAQMKFljVBlYTGtsp
-	 psmvuy9TSPIWg==
+	b=EPt16zyY9P3F5r+J/f5LStTkzPfGqXmqxcl/XtMlqdyza3F/waI+D3vm02Yu1WUwR
+	 21KZHb/TQx39szIm64bYBK9u8wIDzY2USsUyInm9nXmFVSBDsTRoMiA7dCL7ajJHPo
+	 dfHMCg+qMHI/yDlL6uvDuIsl7mxqpdzrOvc4pfjm9pQ6fBm6LNPNcA72JVp6D/B5Kw
+	 PI1GHisl53cWpc5nYdLHaWeRi2Pvcb9CFTG1m0KTT7BfaRp+BtMwvR9svhFAS4+Wla
+	 bTX4Zl9aSk07ERwAXSBy54F2uK/7UP80yaRWvzJhQXWsG2MSKSClltpVPb7T7Y+dBL
+	 TR4Ut6ZYbT6+A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Wan Jiabing <wanjiabing@vivo.com>,
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Dan Carpenter <error27@gmail.com>,
 	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 68/76] ALSA: usb-audio: Fix wrong kfree issue in snd_usb_endpoint_free_all
-Date: Wed, 13 Mar 2024 12:42:15 -0400
-Message-ID: <20240313164223.615640-69-sashal@kernel.org>
+Subject: [PATCH 5.15 69/76] ALSA: usb-audio: Always initialize fixed_rate in snd_usb_find_implicit_fb_sync_format()
+Date: Wed, 13 Mar 2024 12:42:16 -0400
+Message-ID: <20240313164223.615640-70-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -68,37 +69,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Wan Jiabing <wanjiabing@vivo.com>
+From: Jaroslav Kysela <perex@perex.cz>
 
-[ Upstream commit 03a8b0df757f1beb21ba1626e23ca7412e48b525 ]
+[ Upstream commit 291e9da91403e0e628d7692b5ed505100e7b7706 ]
 
-Fix following coccicheck error:
-/sound/usb/endpoint.c:1671:8-10: ERROR: reference preceded by free on line 1671.
+Handle the fallback code path, too.
 
-Here should be 'cp' rather than 'ip'.
-
-Fixes: c11117b634f4 ("ALSA: usb-audio: Refcount multiple accesses on the single clock")
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-Link: https://lore.kernel.org/r/20220518021617.10114-1-wanjiabing@vivo.com
+Fixes: fd28941cff1c ("ALSA: usb-audio: Add new quirk FIXED_RATE for JBL Quantum810 Wireless")
+BugLink: https://lore.kernel.org/alsa-devel/Y7frf3N%2FxzvESEsN@kili/
+Reported-by: Dan Carpenter <error27@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Link: https://lore.kernel.org/r/20230109141133.335543-1-perex@perex.cz
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/endpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/implicit.c | 3 ++-
+ sound/usb/pcm.c      | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 26af199f3836e..8188113ca83f2 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1720,7 +1720,7 @@ void snd_usb_endpoint_free_all(struct snd_usb_audio *chip)
- 		kfree(ip);
+diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
+index 41ac7185b42b6..4727043fd7458 100644
+--- a/sound/usb/implicit.c
++++ b/sound/usb/implicit.c
+@@ -471,7 +471,7 @@ snd_usb_find_implicit_fb_sync_format(struct snd_usb_audio *chip,
+ 	subs = find_matching_substream(chip, stream, target->sync_ep,
+ 				       target->fmt_type);
+ 	if (!subs)
+-		return sync_fmt;
++		goto end;
  
- 	list_for_each_entry_safe(cp, cn, &chip->clock_ref_list, list)
--		kfree(ip);
-+		kfree(cp);
- }
+ 	high_score = 0;
+ 	list_for_each_entry(fp, &subs->fmt_list, list) {
+@@ -485,6 +485,7 @@ snd_usb_find_implicit_fb_sync_format(struct snd_usb_audio *chip,
+ 		}
+ 	}
  
- /*
++ end:
+ 	if (fixed_rate)
+ 		*fixed_rate = snd_usb_pcm_has_fixed_rate(subs);
+ 	return sync_fmt;
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 962a6e1bc70c8..580e2649641e4 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -163,6 +163,8 @@ bool snd_usb_pcm_has_fixed_rate(struct snd_usb_substream *subs)
+ 	struct snd_usb_audio *chip = subs->stream->chip;
+ 	int rate = -1;
+ 
++	if (!subs)
++		return false;
+ 	if (!(chip->quirk_flags & QUIRK_FLAG_FIXED_RATE))
+ 		return false;
+ 	list_for_each_entry(fp, &subs->fmt_list, list) {
 -- 
 2.43.0
 
