@@ -1,144 +1,169 @@
-Return-Path: <linux-kernel+bounces-102418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0384387B1C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:26:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3458887B245
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C654A1C20B17
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30251B32E10
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6B9482DA;
-	Wed, 13 Mar 2024 19:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAC65A78A;
+	Wed, 13 Mar 2024 19:22:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RyU4OZqh"
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OnlpoAQ3"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2325A0F6
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED835A4CB;
+	Wed, 13 Mar 2024 19:22:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710357688; cv=none; b=QK7txOHaxHu4WHfkPiWpO2L7PZi/xmDbiUMG7j9SN7yYFs4KM7OIVTdrilCYtvHcReRUhzaQwVttryDOiPpjS6eHR5KrZ7VrAeYDO54wkIDs+tLr9PZMSNCx+RKvcLVYUKix6f7fIDuMNjuJJo0fyL6K/l7VTuigb0lyqO7khy4=
+	t=1710357771; cv=none; b=FrBuwlSs8x9UTl8AFEEzoHj3DmtULsOAWRNV+vS9FjeH0Qd1EmABBB6STzA2DQ1MT5gGYA5XjZp11QeceKL78FdISKRPz8xx55jodmfCpJrf6bx+Q8a1yekCSdwY0zynXgJMnhLfHLOPHsG+iOWw2B3mXmZITHQhIsS+i3ZQ3SI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710357688; c=relaxed/simple;
-	bh=iZYmwsM238XNM8Ka0wxu6uYfCPdbHZABFgW2AEZ2A5A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jQJwLZ5FwcUwVCdzXdbIw+uL2Y3JDjl5p84Qe8Ycxz0B/QbI2CkuIH3kVL+w4y48lIr4tNk8fiFy7fU0RUD2B545DlYuj3DJe09AWNj3XIJ5/kQ0LFg4uSU7cJ12F8rovg49qizXkLnKgQ1lmK2vpEcdJuGnNbJjpvxt7grvpyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RyU4OZqh; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-22215ccbafeso136931fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:21:25 -0700 (PDT)
+	s=arc-20240116; t=1710357771; c=relaxed/simple;
+	bh=hegL53YisatVfqScAH8O+Ma2lNAVHNa5j9LpcGW4hlQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qR19rMa+U8LbprpzIXDQ0RRE8480G9RZqjSMIrkxpKSBiErVD7Xwcp+VeNmmzKSTk7PA73KvSD4b/81+5yCp8mpp+7mINaCNZvpW7uJ/9KAXY5PcpHJ4nkrt0F3SZBEZz155CumVJz2uZ1qDwkEPBeRpsi1ZeyATz6jyGNH8tUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OnlpoAQ3; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5139d80f8b6so274076e87.1;
+        Wed, 13 Mar 2024 12:22:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710357684; x=1710962484; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0nX9WeXEjo5PIfyS44ffFidwlQU53WgsdSl+O4sm0lo=;
-        b=RyU4OZqhbaquR1sr2ajJpKrbFz+23Nk48Eq+U4r+jm9lOt0t2ai/D3MVC22VcBZAVO
-         6BQopXT1cnK/cm009vnw8wMhDAMdHBV6yQKnpbhNKW/QZuxCQdUwlWR3tHRHWSz6O0tU
-         C3wF7k22b4p0mLCrDEHZhlA1Ig84BaOgdpHAyAGXqzU4AHw+z07Zcc1rguxcNEWorVMW
-         sWGoWrjlWUXy+03lc77tWTpRYpCyySUL8H2PK1/PK3u2XSR7PKqv3MWwehxoAWVe+UNS
-         ac8gIHqpd2U67Z9cD8MoOq4AllGAv1VQ0//Ro5mts2GL9wj0SsmJI7uDtpeSGK9poksX
-         1i/A==
+        d=gmail.com; s=20230601; t=1710357768; x=1710962568; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j3gL898swQb46Dg7Z65eqHW+FEtsbhrhHveU9DG0Nak=;
+        b=OnlpoAQ3oLzh3jCvYf5w98A+tGzlb4doqZ7KMIF1yJrv02h/4mXMKMGgk+mRMWtHCS
+         Rcb6vBLlxoRq9krOvLfc9tPlb18HMcznFgOkmSLZEmLGwdOZd8rsFEdcRVcv9tWCAGkg
+         pUe3vVtJDuIVM9tmh+65HuuWi6IDujpBOrGGi4LsBv6aNmV0RIxQBx7qLUa4JY867YVs
+         U2wqpRMckoNuExYvOykkd/dOS4M683/FmXMQJ/e/r3ZCpCcG81D8ss6sabjd3PbBpX4f
+         LAf24UuYuWWOzLU9dhlzFAt6xZchfE1md4Y8TaYvAWLh6I5EqJ4EqEO0/EOUBgdWtLBU
+         RL3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710357684; x=1710962484;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0nX9WeXEjo5PIfyS44ffFidwlQU53WgsdSl+O4sm0lo=;
-        b=fg+BVrFlozILPCWqTPBmdk1ikVbGhkoaKTLHxc9pWS3ph4hQUrSHcztKNtr0smC7Lg
-         H2eU9/qduO7adT07LlxlB/yD1vC1n72FVpzIXrYbTUZOOFCu2zJKsiFWo/+VlbkCQMeA
-         Y7MrsDCFCSLMpwDivEV1X1KZRVL/ANNHrlik/cfkVB32P2w9SqPLkFbgaAQkT1iOQf2m
-         gAcjNJw2S9Zvx40T+9O9kNCweV6RnVjPNDEPWSU5m7bwXLlPvVxe7Z4cLcSHJmZTzIUk
-         fBhNWZqktq2gzoaBs5Sg8Qes3NPZ9HL3V+dixj34L8EXaN54kq2kd7mziqeKTnd56PDL
-         UbVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWEi76bHNKonrhSRDGswAfOnuKvCSynknlZERpfgnidoOAJ3fGyuY+2pW/MKc2/rLoPnPOgs13a99a4yU108YphwbbdRL+f1c5gmnS1
-X-Gm-Message-State: AOJu0YzveFJ3q0IMLBUKYNnVe9Z7WjomJK1IlPp8Yolhq7y4gobkNOL7
-	9o6cGDu925Wr+5BeCA9nraRyvRntfKQCgvyxQC4hX3NAhdFQa1pBNNBZvKssnziLTL1+BQ47Ygw
-	z3T4=
-X-Google-Smtp-Source: AGHT+IEtnW1J7GXHGOqaIzmbtOjHec4OFcEwDYVWwXFNvZ5VPNlUHz9si/ANbbnG1Y+dvgioohgMcg==
-X-Received: by 2002:a05:6870:210f:b0:21e:fc35:73ef with SMTP id f15-20020a056870210f00b0021efc3573efmr8191998oae.38.1710357684512;
-        Wed, 13 Mar 2024 12:21:24 -0700 (PDT)
-Received: from [192.168.17.16] ([149.19.169.183])
-        by smtp.gmail.com with ESMTPSA id gk17-20020a0568703c1100b00221b5fb8a3csm2874235oab.27.2024.03.13.12.21.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 12:21:24 -0700 (PDT)
-Message-ID: <2f15e804-a2d7-4ad0-9b84-02db8c89985d@linaro.org>
-Date: Wed, 13 Mar 2024 13:21:21 -0600
+        d=1e100.net; s=20230601; t=1710357768; x=1710962568;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j3gL898swQb46Dg7Z65eqHW+FEtsbhrhHveU9DG0Nak=;
+        b=IVjq3WbcIMRz2GxTHWpqmIz2vZHrSkGiPRdQpIYtbkefDZFoij0DFwk3riCc9ZS6bt
+         KajKjQPJLVTrPZfn+8iWJeBbha7DOr9XWFrurYbhK5nvHIumfDAwbpnty6zRMIDEldBn
+         LhSak6ydS2OpBSTeybLWw2B1GGtJAw2hCgWMr8D8KFdPfLhrfKyx2ZImEhUn+HpVuHpw
+         /ZJtq9r9QP/Lw0Welms+7yyaZYwoIygQCaNBYclgADhgKfGL2y+EVld70DpVyGBhBHO7
+         mWTwSD4XfYyvNVElgaDldoFoZY+oMFwJEgtHGtO9Hgb8vudz3aZ6+5dSIfdmA8VLSPu9
+         rGfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWm0RlmBS9HZ99gjTxyGcrkHn80MIBMqMNKnCXZrh56FGz8e6shVkZd1r8dVEGMv17XJarbqYWhbDG9GkvQFHFwlH4q6XMv3gcWAbLRu4IxU5AgEB+yeT5PR1FkGeqBeVa32sgIs5j/
+X-Gm-Message-State: AOJu0YxDHRa7GEKDCTgWrOM1WmbE+N1hCJXdioXSZ/JWV/xKZna5/Q9u
+	ZrgFoJNELLPwDGaN5RopTkkJ+37GNX596cX8lBl1i0sjjfrL95G6
+X-Google-Smtp-Source: AGHT+IH8OvgB09Zk6nPwLCqXHFKhBEtAFHEG+1k9GCXH+aKBdlJaW9sgiMNTohtT47iVRdTG6sqDLw==
+X-Received: by 2002:ac2:4c9a:0:b0:513:c658:7997 with SMTP id d26-20020ac24c9a000000b00513c6587997mr2707890lfl.24.1710357767813;
+        Wed, 13 Mar 2024 12:22:47 -0700 (PDT)
+Received: from vamoiridPC ([2a04:ee41:82:7577:fa35:157e:1a40:3463])
+        by smtp.gmail.com with ESMTPSA id ij12-20020a056402158c00b00562d908daf4sm5200027edb.84.2024.03.13.12.22.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 12:22:47 -0700 (PDT)
+From: Vasileios Amoiridis <vassilisamir@gmail.com>
+X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
+Date: Wed, 13 Mar 2024 20:22:45 +0100
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
+	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
+	ak@it-klinger.de, petre.rodan@subdimension.ro,
+	linus.walleij@linaro.org, phil@raspberrypi.com, 579lpy@gmail.com,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] iio: pressure: Simplify read_* functions
+Message-ID: <20240313192245.GA1938985@vamoiridPC>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+ <20240313174007.1934983-3-vassilisamir@gmail.com>
+ <ZfH4IyeFTGFBKT4J@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 00/76] 5.15.152-rc1 review
-Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, nathan@kernel.org
-References: <20240313164223.615640-1-sashal@kernel.org>
-From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfH4IyeFTGFBKT4J@smile.fi.intel.com>
 
-Hello!
-
-On 13/03/24 10:41 a. m., Sasha Levin wrote:
-> This is the start of the stable review cycle for the 5.15.152 release.
-> There are 76 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Mar 13, 2024 at 09:01:55PM +0200, Andy Shevchenko wrote:
+> On Wed, Mar 13, 2024 at 06:40:03PM +0100, Vasileios Amoiridis wrote:
 > 
-> Responses should be made by Fri Mar 15 04:42:22 PM UTC 2024.
-> Anything received after that time might be too late.
+> In the Subject: ... read_*() functions
 > 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.15.y&id2=v5.15.151
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+> > Add the coefficients for the IIO standard units inside the chip_info
+> > structure.
+> > 
+> > Remove the calculations with the coefficients for the IIO compatibility
+> > from inside the read_(temp/press/humid) functions and move it to the
 > 
-> Thanks,
-> Sasha
+> read_{temp,press,humid}()
+> 
+> > read_raw function.
+> 
+> read_raw()
+> 
+> > Execute the calculations with the coefficients inside the read_raw
+> 
+> read_raw()
+> 
+> > oneshot capture functions.
+> > 
+> > Also fix raw_* and comp_* values signs.
+> 
+Thank you very much for pointing these out, I should have thought it.
 
-We see new warnings everywhere:
+> ...
+> 
+> >  		case IIO_TEMP:
+> > -			ret = data->chip_info->read_temp(data, val, val2);
+> > +			ret = data->chip_info->read_temp(data);
+> > +			*val = data->chip_info->temp_coeffs[0] * ret;
+> > +			*val2 = data->chip_info->temp_coeffs[1];
+> 
+> > +			if (!strcmp(indio_dev->name, "bmp580"))
+> > +				ret = IIO_VAL_FRACTIONAL_LOG2;
+> > +			else
+> > +				ret = IIO_VAL_FRACTIONAL;
+> 
+> I'm wondering if we may replace these strcmp():s by using enum and respective
+> values in chip_info.
+> 
 
------8<-----
-   /builds/linux/scripts/mod/modpost.c:1123:44: warning: excess elements in array initializer
-    1123 |         .good_tosec = {ALL_TEXT_SECTIONS , NULL},
-         |                                            ^~~~
------>8-----
+The whole problem starts from the fact that all these BMPxxx_CHIP_ID defines are
+not unique for the respective BMPxxx device. You mean to add a new variable
+that could store some enum values that would be the actual chip_info IDs? Like:
 
-Bisection points to:
+enum chip_info_ids = {
+	BMP085,
+	BMP180,
+	...
+	BMP580,
+};
 
-   commit 4060bae9dab232eb15bc7ddaaeb278b39456adf9
-   Author: Nathan Chancellor <nathan@kernel.org>
-   Date:   Tue Jan 23 15:59:55 2024 -0700
+and later for every chip_info struct to use it like this:
 
-       modpost: Add '.ltext' and '.ltext.*' to TEXT_SECTIONS
-       
-       [ Upstream commit 397586506c3da005b9333ce5947ad01e8018a3be ]
+const struct bmp280_chip_info bmpxxx_chip_info = {
+	...
+	.chip_info_id = BIT(BMPxxx),
+	...
+}
 
-Reverting that commits makes the warning go away.
+And in the read_raw() function to just use the test_bit() function in the same
+way that is done with the test_bit() and avail_scan_mask to test for the
+enabled channels?
 
-One reproducer:
+Best regards,
+Vasilis Amoiridis 
 
-   tuxmake --runtime podman --target-arch arm64 --toolchain gcc-12 --kconfig tinyconfig
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
+> >  			break;
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
