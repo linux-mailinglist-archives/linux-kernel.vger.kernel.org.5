@@ -1,169 +1,239 @@
-Return-Path: <linux-kernel+bounces-101108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5345987A281
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:51:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B5387A284
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:54:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D50BD283380
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:51:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E58EB2193A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8C614014;
-	Wed, 13 Mar 2024 04:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E15168CE;
+	Wed, 13 Mar 2024 04:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="aEE4LVRS"
-Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11023018.outbound.protection.outlook.com [52.101.56.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fR/Y1QYT"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092CA134BE;
-	Wed, 13 Mar 2024 04:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710305467; cv=fail; b=ZvEwm9QJi2lStq9o+iISVIaHCIsK7JjVfCHdHWjAkaUtQg/UEBnFG0v4RkXqv7Uqx5rZezzOItzUu0v2pdzuvdWoT6tWlHWN8dMVxxfw3RlEhTAurVlLjQoc82mAc+ewrPtszCF67yvhU51aLxW/ycLTufJmodt3g6qVFnwLOk0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710305467; c=relaxed/simple;
-	bh=ra8gO1o5lfXvVTqnzgLCErczKszcKpQzq1Nb+FZ64Hw=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=TRciSgSKGDTGMg5pzfyiazbKYhkUg8Y8lToBcFXmdNFa52rIo8H0JZrgErpIIJIM2C65sCSbRw1Y1ctjwSo5Kf5P+Fnf6muD6O4xAE4fbA5WZuvQAaUhGxM4tc7YSw3LMWScd09bjfJl4ngQWqAj1AkXF3sEai8R2IT8yWPowqc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=aEE4LVRS; arc=fail smtp.client-ip=52.101.56.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iVQKWKU/lgQAubc3OUJadsXbhlgx4lKbxgkXv+Flys/E7c/tzwLCvcFssFYxSDZzDWqaROUSIXu7U7vcMZmcLNFs1L30hBquSb8i9m/spXHgJ0oAuPyDiRczK/ERwTXF9VbYKSLMv9rATE8JXxf3gq8r92QGV8b2zDE6Ir7E3o7JLpuLiAud76X89NBY2vZxyTKYYaixEJd8NhqKJ3qyKqYKvL0y9waMMWLSffNJl65DDQR9A73I1Z6cmLtHugxeHolBhfkdUDUgtSAnjR+gvLch0+apzZh9lPTYFQc4YV2JEIfCHYtPTY4AXbObJq6j7+DX3Mu65kHocJZAxqcxxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DSrN9Mxen8HOv2T1PT3jDbN1w0RuvE/e4nNcBtAJZqQ=;
- b=EFfMaOEGPkcS/cgMuzwnwiIdHc35Ay+jM6C/YfFb7a7BnbCx79KJLZmXBlhFfJ+LhCObPUrEy4bNz2TFbz92GyyDQjQ+X5RW2zwfLLHa+SPP1MR6RbJPSg7sjOk2mZHg2fMxQmIgVBJIqeKualDecSo+9eGtIKtbvr6SNtQeo7rElnAIzDZnKPyw0bEBvUCoupkkFBREs1EzIp/1LcXymM/Vv1MBQXgCysFS8MShRaqPH+6NqnEIoJgdMuq7GS23WsnwGUMStZbZrPIJ/R2rNIRpSHhHt8Eew8Vw53n6C71RkGeWb6DlSsn0q7CK+qgn+IZ9ntB1QFg97ADYEkZ0hQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DSrN9Mxen8HOv2T1PT3jDbN1w0RuvE/e4nNcBtAJZqQ=;
- b=aEE4LVRSCUWF+zEMmrJp2pGd11uVzYmSpPqs3tgs8nfbFG8ek29zI7e+73KpY3ypWChTpyV61Z6XWxf+fqlrNgeYzsFZAfOekB2Zu2DQHkNrLnCbkOamiL/niLBLidoACnYAw0vA58oReddm5bgarsPzJmdCq5g4caTuje2fT0o=
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
- by MN0PR21MB3072.namprd21.prod.outlook.com (2603:10b6:208:370::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.2; Wed, 13 Mar
- 2024 04:51:02 +0000
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7]) by SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7%4]) with mapi id 15.20.7409.004; Wed, 13 Mar 2024
- 04:50:59 +0000
-From: Long Li <longli@microsoft.com>
-To: "mhklinux@outlook.com" <mhklinux@outlook.com>, Haiyang Zhang
-	<haiyangz@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan
- Cui <decui@microsoft.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com"
-	<hpa@zytor.com>, "arnd@arndb.de" <arnd@arndb.de>, "tytso@mit.edu"
-	<tytso@mit.edu>, jason <jason@zx2c4.com>, "x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] x86/hyperv: Use Hyper-V entropy to seed guest
- random number generator
-Thread-Topic: [PATCH v2 1/1] x86/hyperv: Use Hyper-V entropy to seed guest
- random number generator
-Thread-Index: AQHacMAmGe+doP7+JUap2rkXt0C9bbE1H/cA
-Date: Wed, 13 Mar 2024 04:50:59 +0000
-Message-ID:
- <SJ1PR21MB34571493BC1473790F5917E0CE2A2@SJ1PR21MB3457.namprd21.prod.outlook.com>
-References: <20240307184820.70589-1-mhklinux@outlook.com>
-In-Reply-To: <20240307184820.70589-1-mhklinux@outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|MN0PR21MB3072:EE_
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- uNaas9j4oFxa32AWKOU38HtQ575/6i+67gQA1r+19Lj5nK3aKCAn5en5NTpYulYc29A8AbeBQ24E5c5VYUoU7aOvIAXF7o4YHW7A0VtA6+0a1SukrLUw2rVpIGot1EsjFfYwO9SzXHsSo8okTzGLjzUQwbis+TGMlbHbTkfgF/nLL6hnpLf4XVda5RP/HCOsnXIYcsLyWebcj1jYj/T3LzKNKA5IJR6hXDfrLDZQg+x8/mDIQKPku4ZRAE8cVa4jj4FAXQSntlLLlglIwHSBz+JIDZzSjAoJzk4tUl8fPj5Xp3CW2xrFfeNMVh9g8N/vf6a37NG7iXfWdst07W7fiKs9wnpU++eYSlKMXGMImlccHRllwO8rnJBy1QDBG32TIQo2861OfdIc9h12fXqzzXpcrouvFAjcGKcT7JN0rSadi24HXvSznnQf/YN4Mksx1G48q3yoqaApVAtwhGzriAtOAFSqLkGgdEbRkszvHi34fhbP1CWg7nRqpJdJR1fPuAoGRZu6mBHdZO1DV9rKKXroMNBzU9rw4m1+WeMyV2bc/fi/OsXts5YV70bO/FpIIHVL/K8u9sJU0973/rIroipLEu2vKU2TKroJxqK9m5fZdjkw1jsEE7bRGfzDSSBrqNLwosolA3sJ2J+8fKum3eJd02hG9lzGGZ0H8EbWPl/bLrAsT0crkYosA2dn1cGiDSON3Q+wM3imzeEFx5XtEw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?bnwBxejsjYmJmWlblpmWapoNjU07e5175zTHyn4Sy+iXqLxVLtle6nG6x1n8?=
- =?us-ascii?Q?5JIbDYdWSmAxDI0+1eGyAHtKBiloUBfWuBvk0dWtW97ztMtgriFLFpPkvcm+?=
- =?us-ascii?Q?pE+DmVrOhmGw/x34anDJrFbSBalxmxYbG33nMeBbbxCtH6XxuQSWRH+H3aU2?=
- =?us-ascii?Q?bNHPbS161pZQHbJPPhej2wnuxILA9G/NPHFpePNsRSkE2FUYrLVOnlY4awYU?=
- =?us-ascii?Q?3Xctwrr1sa/lLDgt7Kkt3ASP9/ethoJPZ4FJRjt7kqJR4KiAiaA+1R6n7waD?=
- =?us-ascii?Q?cj7033SZBdFDWS3D9w820m9i0i6JmkZ9Z2zRDXCnstSRdpeMar05oCHcSzj/?=
- =?us-ascii?Q?G4CW7fUYrwYtIv7Kbuz6pp/YYQXrH0jOmqEGdYiTI5oxQJhYXeDq/EIYh51L?=
- =?us-ascii?Q?YuNGZwW15e5uX9JBl+Phdj0RSVQ2GGf5kmF8hV4+NZ5QBzL9miSyZzi1Dgz2?=
- =?us-ascii?Q?RbBZJVxipb32sRd4Y4JFoKd2Nz3WZFKS5ddGcv1AYD3ug1t2SBDv7Kksm35Y?=
- =?us-ascii?Q?4us4OhhyefO1BOlctB4ITsIpq5FIyBqdC2fVVwKSdlDXt1H2PILr68hNjG3L?=
- =?us-ascii?Q?Xt8PhI6/9qGK5NYcuwHobvQ1qQpvgB7nA4bMX0RfJLQ+qAShxL5747wwbIVd?=
- =?us-ascii?Q?BfO7iER2ow9BK44vflN6cEeTf+1ZmfBN4XktAtjWxursiO1FLMzDaDQWx3zO?=
- =?us-ascii?Q?5zr4jrGbJ0B4R05kIJiu9J3ZprFyuobe53Bkp0b/39XKfMzqOwb9r1LJe3iT?=
- =?us-ascii?Q?PE2A2Zgj0VCa+p+9aIBaNJXCgLc7xRT6d4r6ORrJeNQdYRssqnGBSSKqx0oV?=
- =?us-ascii?Q?7Cjt0iKO4IYbOq5X736Mrk8jYH/pJjfJs3/S9xftCDLO7xQMAUh32vyYoyKk?=
- =?us-ascii?Q?bBGwc6tgtqy14dWKn1q73UOVugt5qWYORzKaExHVhWVwcUduz8h/qJupk8Bu?=
- =?us-ascii?Q?8YxlXL/0OxRzavOd3R5nHUSVX82jVVuEi7a7Yl4P3VIBboaajYgBDpyd0+od?=
- =?us-ascii?Q?1OZf7Zccc1MnHZ4iSlvn+MeQHcO3yNYrVPPZHZE4VTBSrWdjB8vd3eh1X6u1?=
- =?us-ascii?Q?Rl5c/zeUn+XevVNlM8cCtpKi7cGj9R85E36pSd/2J8eUCKGBkn4jkxl88dQg?=
- =?us-ascii?Q?K4Zw9GUJ81dNpqxmhAolESu1qqW8Z25P8/80jFGKtIP+te3DYCO+Rdcw1BlN?=
- =?us-ascii?Q?Njpha7D8FYrHjd6kcIL5W8J4XcYN3UPfkHeEEyWnZIgUpRoBeF0FXGYJBr6F?=
- =?us-ascii?Q?9kqieY9SH03UPVFH0j+w5ZwydQu6EIEhatAAOniUGfgVzxk5XeAdI3q6QorN?=
- =?us-ascii?Q?T3lAfBOnKvD+mIMfRe3s9/Crz8Horq0YgxM5ciV8eQMmg2suSAF5s9zKKHKL?=
- =?us-ascii?Q?DQ/Xi+xlV/ckRxzMMclTBZjDiUuTH4a1c1dmsJociYsm2DiZn5dnNAvETosp?=
- =?us-ascii?Q?vGhkNQ5qR2RgUKwbEgIbWbJ8Vmnj1bnGaykAQV2AvXEP7mcA3iFll38mqn01?=
- =?us-ascii?Q?gDCHKnnOZdwsp5ZSKUh5hMyA0Sc7n0hhb1CZOULEpJN4ZKG+nawselDPcptg?=
- =?us-ascii?Q?jDAWxo/nrzskxT/xi4ZqmkJueydUDxUrwBwIP0/q?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0B4168A4
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 04:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710305647; cv=none; b=KAWzUm/h5zeH7rvHS96vDFZwnOJCWyLuszh/Pa4m+ZlsE4LKayprBdzEkSQSKonsyIKegd5NQ/NxeM6pLE6/uW/kHfZAGr+59JbC+SHEg8HE6XpvaIpwsWMvy3v49LcyB5NswgLanazK6iPUbCFQlEzUuxhzIKZnNfA4cUl0+MU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710305647; c=relaxed/simple;
+	bh=RwE1SZFykbFIEdXhc32E9CCRRyP1RnAu8GR+ZlbsO/s=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=S6FoDLPNG3Lne0ygrNKb777jECWPPNgW0Y0vuL8D0Mg8mtH9DhhG+aiBjmfq+ngDZZ6ZgSqMkqfhcdf9cyOWIPLOaSR5kTzyN5MhzyrCG3qypV8uQUoqK3peLVAp59OO1ED3UydbkC5WqJOjnkYsrrnxld5W6r9jeuupxraLpxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fR/Y1QYT; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4649c6f040so146394766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710305644; x=1710910444; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lmEJWusqrVjTeVeazF5ThOOQa2SgJsJeK5CBTdQJlGQ=;
+        b=fR/Y1QYT3aH4Mw8zp+6OfN15zh6CV51Zatm5IY2VasTdCrWgGlIWsHRAC+wiUHepN4
+         v6vXn96yms2Vw9XSMroRHT9G6vIvpMk1ES/Jb/OxpBhFNh2i2XUfwKwJGJpPRQUVRoMV
+         9vrSLZnv4XBn8fKOkumRWz8TTr6QG3Rz8J/fFUxDD/L1p8+BhfF5YI28HNPXiO/7KxSz
+         pRqBPbXcdk6+yhpoKAwn0pQmsu961yCAUF77l3VgTeknhlgIURE++9PLZ/2GtikE0lbq
+         zMpwpPCsECvFTCudbBrbsRAx0Qftdo0Lo0FtCz99rIJzqGC/WUt/Iq5JzKm15En50dJY
+         NVrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710305644; x=1710910444;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lmEJWusqrVjTeVeazF5ThOOQa2SgJsJeK5CBTdQJlGQ=;
+        b=DABZVjWM1QrkWCIog1qn7rBtkK+oHUwjRHpIhKbDQXPNKFhyWlQlMowrqfNnVut3sB
+         dRIhSvCV3zKWI1gUAinBif+QyVj1cEE0GjE89OXEINLVWl53OY7dJzdw6cWp1uqKzBX+
+         yaAcrewFGOOo+PTxMFVyTDZv4JYfeWpX6iOkb9DGUqBtDao3o/1oGe+JEgjcS7OmG6dn
+         d8VLmotPkdrpnzggOEiLO2J44r9bKpv2ofhyMxqsKO13fJITryU6+wR+VOwcCscckln9
+         fTCXjQStS0FD91Lrbv3aZFPNw43uxFwoQrjE9lYYEAm/19Czsx2a/tRR5FXt+GEaKWEG
+         kcLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUmTsIRvLwOKGCvN0OjJKaq70P2H8sfBTkSeeSourzKyQAyuJAjwyNt2XWfOqB6qYZxBJ9koALk9+zcMi7Qyn4iZlsFYOSDsAxDqYzP
+X-Gm-Message-State: AOJu0Yy3qyiMaSCLylFGOrSIVRmiBhjvTvyPeXOk5mVHDth0mU1ECNdj
+	xchEUdOf8lO+XlgYWVKsEwSIKQt6uvAYZWR6t+iyAmOENnsPyeecvtODxnvwlYoX+wT8YTsJIqw
+	MFdbfR1iVhnskqWrTscBdhwXyGh2IxRv6qVo1GU4R
+X-Google-Smtp-Source: AGHT+IGA6jXg1KHSmhq3jxMUXwOEZxn4SaAY8LwGrOjltmSJhZU1yi1SAptl3xHhi6p/lunMrGzl1F2xeKA6/jBhX1Y=
+X-Received: by 2002:a17:906:fb81:b0:a43:29e1:6db8 with SMTP id
+ lr1-20020a170906fb8100b00a4329e16db8mr7240435ejb.9.1710305643877; Tue, 12 Mar
+ 2024 21:54:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccc39837-62b3-4cc2-92ce-08dc43192d7a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 04:50:59.5445
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +fuKOg2rX4f+dTwigZ/IwAqUkpN8fqF8/BAIiSOccGEIMyC0fCanRbjHNCtx3PE7U6Gw4tt4cMDtTEG3XWCALA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3072
+From: cheung wall <zzqq0103.hey@gmail.com>
+Date: Wed, 13 Mar 2024 12:53:52 +0800
+Message-ID: <CAKHoSAtTA7pTi5T7oYZkNdVwt79sXbW+1=V=LZxpKdJGRSk0Eg@mail.gmail.com>
+Subject: memory leak in kvm_init_stage2_mmu
+To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Zenghui Yu <yuzenghui@huawei.com>, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-> +void __init ms_hyperv_late_init(void)
-> +{
-> +       struct acpi_table_header *header;
-> +       acpi_status status;
-> +       u8 *randomdata;
-> +       u32 length, i;
-> +
-> +       /*
-> +        * Seed the Linux random number generator with entropy provided b=
-y
-> +        * the Hyper-V host in ACPI table OEM0.  It would be nice to do t=
-his
-> +        * even earlier in ms_hyperv_init_platform(), but the ACPI subsys=
-tem
-> +        * isn't set up at that point. Skip if booted via EFI as generic =
-EFI
-> +        * code has already done some seeding using the EFI RNG protocol.
-> +        */
-> +       if (!IS_ENABLED(CONFIG_ACPI) || efi_enabled(EFI_BOOT))
-> +               return;
-> +
-> +       status =3D acpi_get_table("OEM0", 0, &header);
-> +       if (ACPI_FAILURE(status) || !header)
-> +               return;
+Hello,
 
-Should we call acpi_put_table() if header =3D=3D 0? It will also be helpful=
- doing a pr_info() here so user knows that hyper-v random number is not use=
-d.
+when using Syzkaller to fuzz the latest Linux Kernel arm64 version,
+the following crash
+
+was triggered on:
+
+
+HEAD commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a  (tag: v6.7)
+
+git tree: upstream
+
+console output: https://pastebin.com/raw/MLVZbN01
+
+kernel config: https://pastebin.com/raw/PFD96ZwE
+
+C reproducer: https://pastebin.com/raw/rHmMzvGt
+
+Syzlang reproducer: https://pastebin.com/raw/dAt714WD
+
+
+If you fix this issue, please add the following tag to the commit:
+
+Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
+
+----------------------------------------------------------
+
+2024/03/05 18:24:34 executed programs: 0
+2024/03/05 18:26:41 executed programs: 8
+BUG: memory leak
+unreferenced object 0xffff023ad74b8100 (size 128):
+  comm "syz-executor.3", pid 3911, jiffies 4295149819 (age 22.132s)
+  hex dump (first 32 bytes):
+    28 00 00 00 01 00 00 00 00 40 4e d7 3a 02 ff ff  (........@N.:...
+    80 d9 5f a4 48 d3 ff ff c8 69 46 d7 3a 02 ff ff  .._.H....iF.:...
+  backtrace:
+    [<000000008d295845>] kmemleak_alloc_recursive
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/./include/linux/kmemleak.h:42
+[inline]
+    [<000000008d295845>] slab_post_alloc_hook
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slab.h:740
+[inline]
+    [<000000008d295845>] slab_alloc_node
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slub.c:3398
+[inline]
+    [<000000008d295845>] __kmem_cache_alloc_node+0x1f4/0x320
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slub.c:3437
+    [<000000003fbdfe35>] kmalloc_trace+0x44/0x6c
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slab_common.c:1045
+    [<00000000a94cbf84>] kmalloc
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/./include/linux/slab.h:553
+[inline]
+    [<00000000a94cbf84>] kzalloc
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/./include/linux/slab.h:689
+[inline]
+    [<00000000a94cbf84>] kvm_init_stage2_mmu+0x88/0x450
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/mmu.c:712
+    [<00000000d7d73550>] kvm_arch_init_vm+0x6c/0x2d0
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/arm.c:145
+    [<000000001e472e33>] kvm_create_vm
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/../../../virt/kvm/kvm_main.c:1219
+[inline]
+    [<000000001e472e33>] kvm_dev_ioctl_create_vm
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/../../../virt/kvm/kvm_main.c:5009
+[inline]
+    [<000000001e472e33>] kvm_dev_ioctl+0x790/0x158c
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/../../../virt/kvm/kvm_main.c:5051
+    [<000000005f1541e3>] vfs_ioctl
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:51
+[inline]
+    [<000000005f1541e3>] __do_sys_ioctl
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:870
+[inline]
+    [<000000005f1541e3>] __se_sys_ioctl
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:856
+[inline]
+    [<000000005f1541e3>] __arm64_sys_ioctl+0x17c/0x204
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:856
+    [<00000000721fb6b6>] __invoke_syscall
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:38
+[inline]
+    [<00000000721fb6b6>] invoke_syscall+0x84/0x2d0
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:52
+    [<00000000718e28b1>] el0_svc_common.constprop.0+0xe8/0x2e4
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:142
+    [<000000001553392f>] do_el0_svc+0x64/0x1fc
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:206
+    [<00000000585b9848>] el0_svc+0x2c/0x6c
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/entry-common.c:637
+    [<0000000051149d12>] el0t_64_sync_handler+0xf4/0x120
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/entry-common.c:655
+    [<00000000decfe0e2>] el0t_64_sync+0x18c/0x190
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/entry.S:585
+
+BUG: memory leak
+unreferenced object 0xffff023ad0484d00 (size 128):
+  comm "syz-executor.2", pid 3935, jiffies 4295150036 (age 21.268s)
+  hex dump (first 32 bytes):
+    28 00 00 00 01 00 00 00 00 00 13 c7 3a 02 ff ff  (...........:...
+    80 d9 5f a4 48 d3 ff ff c8 a9 c3 cd 3a 02 ff ff  .._.H.......:...
+  backtrace:
+    [<000000008d295845>] kmemleak_alloc_recursive
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/./include/linux/kmemleak.h:42
+[inline]
+    [<000000008d295845>] slab_post_alloc_hook
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slab.h:740
+[inline]
+    [<000000008d295845>] slab_alloc_node
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slub.c:3398
+[inline]
+    [<000000008d295845>] __kmem_cache_alloc_node+0x1f4/0x320
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slub.c:3437
+    [<000000003fbdfe35>] kmalloc_trace+0x44/0x6c
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/mm/slab_common.c:1045
+    [<00000000a94cbf84>] kmalloc
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/./include/linux/slab.h:553
+[inline]
+    [<00000000a94cbf84>] kzalloc
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/./include/linux/slab.h:689
+[inline]
+    [<00000000a94cbf84>] kvm_init_stage2_mmu+0x88/0x450
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/mmu.c:712
+    [<00000000d7d73550>] kvm_arch_init_vm+0x6c/0x2d0
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/arm.c:145
+    [<000000001e472e33>] kvm_create_vm
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/../../../virt/kvm/kvm_main.c:1219
+[inline]
+    [<000000001e472e33>] kvm_dev_ioctl_create_vm
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/../../../virt/kvm/kvm_main.c:5009
+[inline]
+    [<000000001e472e33>] kvm_dev_ioctl+0x790/0x158c
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kvm/../../../virt/kvm/kvm_main.c:5051
+    [<000000005f1541e3>] vfs_ioctl
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:51
+[inline]
+    [<000000005f1541e3>] __do_sys_ioctl
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:870
+[inline]
+    [<000000005f1541e3>] __se_sys_ioctl
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:856
+[inline]
+    [<000000005f1541e3>] __arm64_sys_ioctl+0x17c/0x204
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/fs/ioctl.c:856
+    [<00000000721fb6b6>] __invoke_syscall
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:38
+[inline]
+    [<00000000721fb6b6>] invoke_syscall+0x84/0x2d0
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:52
+    [<00000000718e28b1>] el0_svc_common.constprop.0+0xe8/0x2e4
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:142
+    [<000000001553392f>] do_el0_svc+0x64/0x1fc
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/syscall.c:206
+    [<00000000585b9848>] el0_svc+0x2c/0x6c
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/entry-common.c:637
+    [<0000000051149d12>] el0t_64_sync_handler+0xf4/0x120
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/entry-common.c:655
+    [<00000000decfe0e2>] el0t_64_sync+0x18c/0x190
+data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/arch/arm64/kernel/entry.S:585
 
