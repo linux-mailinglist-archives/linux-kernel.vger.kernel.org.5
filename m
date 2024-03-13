@@ -1,78 +1,139 @@
-Return-Path: <linux-kernel+bounces-102433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D5187B1F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:34:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A7A987B1F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E714F1F283F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:34:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B16911C2744C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC90626AB;
-	Wed, 13 Mar 2024 19:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95F14CDF9;
+	Wed, 13 Mar 2024 19:28:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u8pJQgu6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YODp69Yv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E3B5EE7E
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806A3210E9;
+	Wed, 13 Mar 2024 19:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710358100; cv=none; b=o0UjsXBS4kppRkw84pjmTrMRDzH2JOXm8X6RUmA0ibq3WUyvuQuQwFL5B8NogbwmmJ3VdL/GLDrqJMmHuHZZ4mtXnNEf3naf+U1paTySlS0gvc0klIb91LfCPZF7kDbeI+4cDOP1N69GSM2r06jbHFKcaQtPeIu8oCYpwwSnHIQ=
+	t=1710358136; cv=none; b=NkJ/Jkc+9QQtC8MDWaU1oZ7VU4HHhnC+cEZb1TXBwT47kgW+zV/yKsonzz5ySV/XGPDC9Q6Dn0B+g1dAEDWJjqjaTDMP3sw2a7kI2sul7ZxyWQDzxBLKc6qI8L4TvEUyn2ZpfasNxDPTGx4/nlwBp2fGowwAGFaKIghBl5Mo0Do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710358100; c=relaxed/simple;
-	bh=J+yhx8CDs0RjV5zrthtGqQh3sZHfR3DlyiCnFJoqLRo=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=qf+h2MckF4DrWJqG0XRfnkCWlQuW01VsqcFAcEwL71JSbEYtM8oK5BAw55leQoxKPAOH57xVVxtwObfBoGoBXJucfHSn3mkQd1H08gUKgX9TkmxYxTYnkZ0DTj7RzTKvnXuax6Vaglyi9qXbTob7PXDeYKv4uGNoJtcljRhbwXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u8pJQgu6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 88E9BC433C7;
-	Wed, 13 Mar 2024 19:28:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710358099;
-	bh=J+yhx8CDs0RjV5zrthtGqQh3sZHfR3DlyiCnFJoqLRo=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=u8pJQgu6P+unZ3AetKT63onvh/avsdO4B2tlOx8o5LuHv7xNV6WQu+0kJ7QFQVDp/
-	 YD2dCKbvjzENwy9UnGs42WicljolHcKEfyUcx4BlMQpgvSE59KwRlUSj52R9gvjPvH
-	 tip0L0mza7XfWRVLJmUpaFRPPtHfhn0Q2sK6sr/MQM+fkKPyWQQAeipgPdCJn+0bNQ
-	 28VD9lmKJSmuDojUlf7gBhFEO2S/XYT8/sPPDK0JHyYe1yMRkR7zaZdEgLpgH49O/H
-	 X1CIGJ/PZfYTUmcNAwRfgJLS+lJz5IMBVIx3zHUlMEIejQFk+NSkhZ3xcKa7tFuLfm
-	 tsgfSLzIPL1Vw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 73E1AD9505F;
-	Wed, 13 Mar 2024 19:28:19 +0000 (UTC)
-Subject: Re: [GIT PULL] pwm: Changes for v6.9-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ebsgtolipefn2id5vvxxhga6de7gvatfmzvehu5fj5dxl45j7z@yp2jcj4njfht>
-References: <ebsgtolipefn2id5vvxxhga6de7gvatfmzvehu5fj5dxl45j7z@yp2jcj4njfht>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ebsgtolipefn2id5vvxxhga6de7gvatfmzvehu5fj5dxl45j7z@yp2jcj4njfht>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git tags/pwm/for-6.9-rc1
-X-PR-Tracked-Commit-Id: dd6c6d57ab61d496f6ff7d6ca38611062af142a1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: aeb152910a7aecabde5c5f0477a08b397e94059c
-Message-Id: <171035809947.9850.13850214484637403368.pr-tracker-bot@kernel.org>
-Date: Wed, 13 Mar 2024 19:28:19 +0000
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, kernel@pengutronix.de, Dharma Balasubiramani <dharma.b@microchip.com>, Dong Aisheng <aisheng.dong@nxp.com>, Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, Jerome Brunet <jbrunet@baylibre.com>, Raag Jadav <raag.jadav@intel.com>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+	s=arc-20240116; t=1710358136; c=relaxed/simple;
+	bh=jEX7xRWr5bS1ECghF4PJiW3looDCCj225HvMYgHcpM4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l1N8CgLi9ODBYlz3XEZSj33mOR1pHa4WlyzhEiUC+u5qGm7gbydGvOx66OB82NTSsMhrSl0skStgorPcrmBdHpJs6SUcKnukY7QfGb2dIkpfUb+8o6o0pcZ0gQXpgSX+0VUhyjC8B4elyR8U56n2LAYh3K1ofujg9ifjybwP9AE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YODp69Yv; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710358135; x=1741894135;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jEX7xRWr5bS1ECghF4PJiW3looDCCj225HvMYgHcpM4=;
+  b=YODp69YvPtwh9Y6RYowYz+P7pMCFNiBLIRflFe+mTW9RvaWBF+mbjJCx
+   HHFvOFqn3LNzuRTJJPif5U7C3EySBVjokdInT3dsomTNGXyZcK6KOr7o2
+   Dmii6yRptti7LubZMJeapTweQHLVUfnOtiDnxEs7PbggrTZDa3gm3mEin
+   2UF1tIhEDbUZXPqNKEHiT70+1ZjsCqt6fUnVJ0jH1+Cn4Pg2hF7vVz2Fe
+   D0SiVTQzhcKpqPpMQNMxCX0c2RD4tcKx/gJab+ZLyzlzKrCocNzY8MNZL
+   jktWl86XjJ4C40yy9iBOv7BBDS3Jf747QEHw9Ara3Y5Xo7v4JFqhqxC8H
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="15876370"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="15876370"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:28:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914439794"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="914439794"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:28:50 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rkUHQ-0000000CJBn-0szT;
+	Wed, 13 Mar 2024 21:28:48 +0200
+Date: Wed, 13 Mar 2024 21:28:47 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
+	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] iio: pressure: Simplify read_* functions
+Message-ID: <ZfH-b2KWcU_8-Nmh@smile.fi.intel.com>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+ <20240313174007.1934983-3-vassilisamir@gmail.com>
+ <ZfH4IyeFTGFBKT4J@smile.fi.intel.com>
+ <20240313192245.GA1938985@vamoiridPC>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313192245.GA1938985@vamoiridPC>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The pull request you sent on Mon, 11 Mar 2024 10:16:04 +0100:
+On Wed, Mar 13, 2024 at 08:22:45PM +0100, Vasileios Amoiridis wrote:
+> On Wed, Mar 13, 2024 at 09:01:55PM +0200, Andy Shevchenko wrote:
+> > On Wed, Mar 13, 2024 at 06:40:03PM +0100, Vasileios Amoiridis wrote:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git tags/pwm/for-6.9-rc1
+..
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/aeb152910a7aecabde5c5f0477a08b397e94059c
+> > >  		case IIO_TEMP:
+> > > -			ret = data->chip_info->read_temp(data, val, val2);
+> > > +			ret = data->chip_info->read_temp(data);
+> > > +			*val = data->chip_info->temp_coeffs[0] * ret;
+> > > +			*val2 = data->chip_info->temp_coeffs[1];
+> > 
+> > > +			if (!strcmp(indio_dev->name, "bmp580"))
+> > > +				ret = IIO_VAL_FRACTIONAL_LOG2;
+> > > +			else
+> > > +				ret = IIO_VAL_FRACTIONAL;
+> > 
+> > I'm wondering if we may replace these strcmp():s by using enum and respective
+> > values in chip_info.
+> 
+> The whole problem starts from the fact that all these BMPxxx_CHIP_ID defines are
+> not unique for the respective BMPxxx device. You mean to add a new variable
+> that could store some enum values that would be the actual chip_info IDs? Like:
+> 
+> enum chip_info_ids = {
+> 	BMP085,
+> 	BMP180,
+> 	...
+> 	BMP580,
+> };
+> 
+> and later for every chip_info struct to use it like this:
+> 
+> const struct bmp280_chip_info bmpxxx_chip_info = {
+> 	...
+> 	.chip_info_id = BIT(BMPxxx),
 
-Thank you!
+No BIT(), but yes.
+
+> 	...
+> }
+> 
+> And in the read_raw() function to just use the test_bit() function in the same
+> way that is done with the test_bit() and avail_scan_mask to test for the
+> enabled channels?
+
+If BIT() is more suitable, than also yes.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+With Best Regards,
+Andy Shevchenko
+
+
 
