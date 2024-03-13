@@ -1,227 +1,928 @@
-Return-Path: <linux-kernel+bounces-101614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459DE87A964
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:23:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 256DF87A975
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:30:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9E871F23C38
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:23:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5980281ABA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B9A46441;
-	Wed, 13 Mar 2024 14:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3292447781;
+	Wed, 13 Mar 2024 14:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dQxHcnUE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AnEnV5QH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE1D33F7
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF754652F;
+	Wed, 13 Mar 2024 14:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710339800; cv=none; b=QdMfFNCZxIAGuY1eKilw6MyTk7B7gPgAuxVCLXEYUZ5HrO5RUUvZ8wrQOGAbXNG4Ovsp0RXJ2iUOczBVzYelp3Sxhg5HPaDlgfW47InT/Yd0ZhhbgMS0F59Cn6KGrScL/VDftovX2zE8i7/uuLafegxSxh+Lxn5fsECghKr35cs=
+	t=1710340212; cv=none; b=Yv+a01E8843W7T+zQ+jm2DVpWu402IN1Nr2yqgPZQlwFjbhh4qWQ3n53ivCASW0AP68qEIyolc9hIQsh/WMv3lHt+lO6uW4mbz+96279iI49/HRtF+z1zrahfJbWIs2vE3Q1xrVQGrlp0i7XIAIuop3GSZQSsIo3BFaUFXIyquQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710339800; c=relaxed/simple;
-	bh=Wyu4z0W6k2g6dt5sKU4IQIp5NXtrKnscvInafp6gwmE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Oj7kUVrEMDHg8iCgQQ0u9Rc6UyYOBQvWmH+pb8JbAn5OlW0Id/lgAWQJMIi/xbaPukw1BZ8anBoUbas7eySlsNuws1OOSAf4Zeon2U8wRoas6I45aX9BSvunOB/qxX99sear/kEld30EeD3YRxIi8c20P4aABW9IyY+AuZCMZP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dQxHcnUE; arc=none smtp.client-ip=198.175.65.16
+	s=arc-20240116; t=1710340212; c=relaxed/simple;
+	bh=NKCAnvn2GlfxmGaWc2Xki/TBiHErm1NzNh5kU3t7Iv4=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=CSbLbbC2VCjQfjlgezUQ9+/JrDksesY1YLth4kZ7Ab5jwj4anLRzqD6lAz9eArBI3JE6/auqOYk41Z69fbIP2JLUrD4b5rdJImaUlKRjVZYe9DjjHxBstJQvyT+gyzLnb1IXK2gaRBHLPB1vl7QQUMhBRkoYwzkLdsL0jxheDPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AnEnV5QH; arc=none smtp.client-ip=198.175.65.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710339798; x=1741875798;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Wyu4z0W6k2g6dt5sKU4IQIp5NXtrKnscvInafp6gwmE=;
-  b=dQxHcnUEqF3klOmX1cMKPnnM4EiVu17mXzDj1L1vhfVdIg88ITR31i6j
-   GWzo9LyCOfwojjiKJXgedh5lNaznogKFUBpdWEdTlLZEB5PdetkHVUHkq
-   Pf0b/8s9LyyBM7WccqSUjRNW4qljYpUgorQODNWsWSzs4BnzpSgvwkvJx
-   AXqCStkj/qazC9lKovIuAIY2eCdQquk59oWzPt+yL6aaN42E3tarjFOJx
-   w8V7KriOcPgdiwknnkdHaju0yUJC0YGiRv11WShclMNpnSTihXb5J0rn1
-   D3oDpKT3NRADHj2ewnCf+5W9x/rAkw8tLgi9qtZ21UdyCSSuxxSIdITvL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5230535"
+  t=1710340210; x=1741876210;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=NKCAnvn2GlfxmGaWc2Xki/TBiHErm1NzNh5kU3t7Iv4=;
+  b=AnEnV5QHh37rOedXYz1YqzjkGNRx9hfMMxyf7ony+TOgxmFZqrt69xA2
+   Shkn5JRIEVbz3q/qT3vdO9r8+Yla57tnuxfrDiC4KSqNrXG+SeB2u0JGl
+   bzkpa/EXOQR16v3hsbpqOtAdI6dkSjR+alj3md5azMDijQ35t3NOc4GB5
+   8VH6trIvA6ZyPkqoUYzi9V5LfrEYokloMhIS1FcNlx+WW+ZKquHHuc49g
+   JTGjBVHmWSMJ15+kY/swJjmKtAqYXAy7JN+lfsJBxTkeEd2nlJan5+1/L
+   69SV/BnzTRT1juQInNjoBKAYQA4nBgJKgIJ2pdD705XehOEsAH7ZidUOw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5230961"
 X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="5230535"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 07:23:18 -0700
+   d="scan'208";a="5230961"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 07:30:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="937054193"
 X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="937054193"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Mar 2024 07:23:15 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 75D754EB; Wed, 13 Mar 2024 16:23:14 +0200 (EET)
-Date: Wed, 13 Mar 2024 16:23:14 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Andy Shevchenko <andy@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Miguel Ojeda <ojeda@kernel.org>
-Subject: [GIT PULL] auxdisplay for 6.9-1
-Message-ID: <ZfG20vf2kW1h-xA2@black.fi.intel.com>
+   d="scan'208";a="42939914"
+Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 07:30:09 -0700
+Date: Wed, 13 Mar 2024 07:29:45 -0700 (PDT)
+From: matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
+To: "Colberg, Peter" <peter.colberg@intel.com>
+cc: "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>, 
+    "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>, 
+    "Xu, Yilun" <yilun.xu@intel.com>, "Rix, Tom" <trix@redhat.com>, 
+    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+    "Ravuri, Ananda" <ananda.ravuri@intel.com>
+Subject: Re: [PATCH] fpga: add DFL driver for CXL Cache IP block
+In-Reply-To: <9b7cc086e984ea48fdaa7129f67f8ffe9aab519b.camel@intel.com>
+Message-ID: <alpine.DEB.2.22.394.2403130728260.290512@sj-4150-psse-sw-opae-dev2>
+References: <20240308172327.1970160-1-matthew.gerlach@linux.intel.com> <9b7cc086e984ea48fdaa7129f67f8ffe9aab519b.camel@intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-Hi Linus,
-
-First PR from me as a maintainer of auxdisplay subsystem. Miguel retired and
-nominated me as a successor (it appears that for the last a couple of years
-I am appeared a main contributor to the subsystem), however I have no much time
-for that, that's why the update in MAINTAINERS has 'Odd Fixes'. Nevertheless,
-Geert agreed to help as the official reviewer. So far so good, the collection
-of the code has been in Linux Next for a while with one reported issue that
-had been addressed (and also stayed a couple of days in the Linux Next).
-Please pull for v6.9-rc1.
-
-Thanks,
-
-With Best Regards,
-Andy Shevchenko
-
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-auxdisplay.git tags/auxdisplay-v6.9-1
-
-for you to fetch changes up to 5d9e12972259cd86ae9c3fc0d5338b15831b9929:
-
-  auxdisplay: img-ascii-lcd: Convert to platform remove callback returning void (2024-03-12 17:37:54 +0200)
-
-----------------------------------------------------------------
-auxdisplay for v6.9-1
-
-* New driver for GPIO based 7-segment LED display (Chris Packham)
-* New driver for Maxim MAX6958/6959 I²C 7-segment LED display controller
-* Refactor linedisp library to make the above happen
-* Update Holtek HT16k33 driver to follow the linedisp refactoring
-* Convert .remove to return void in platform drivers (Uwe Kleine-König)
-* Fix DT schemas (Krzysztof Kozlowski)
-* Refresh MAINTAINERS database
-
-The following is an automated git shortlog grouped by driver:
-
-Add 7-segment LED display drivers:
- - Add 7-segment LED display driver
- - Add driver for MAX695x 7-segment LED controllers
- - Add 7 and 14 segment mappings to MAINTAINERS
-
-cfag12864bfb:
- -  Convert to platform remove callback returning void
-
-dt-bindings:
- -  auxdisplay: Add bindings for generic 7-segment LED
- -  auxdisplay: Add Maxim MAX6958/6959
- -  auxdisplay: hit,hd44780: use defines for GPIO flags
- -  auxdisplay: adjust example indentation and use generic node names
-
-hd44780:
- -  Convert to platform remove callback returning void
-
-ht16k33:
- -  Drop struct ht16k33_seg
- -  Switch to use line display character mapping
- -  Define a few helper macros
- -  Move ht16k33_linedisp_ops down
- -  Add default to switch-cases
-
-img-ascii-lcd:
- -  Convert to platform remove callback returning void
- -  Make container_of() no-op for struct linedisp
-
-linedisp:
- -  Allocate buffer for the string
- -  Add support for overriding character mapping
- -  Provide struct linedisp_ops for future extension
- -  Move exported symbols to a namespace
- -  Add missing header(s)
- -  Unshadow error codes in ->store()
- -  Use unique number for id
- -  Free allocated resources in ->release()
-
-panel:
- -  Switch to use module_parport_driver()
-
-seg-led-gpio:
- -  Import linedisp namespace
-
-----------------------------------------------------------------
-Andy Shevchenko (19):
-      auxdisplay: Take over maintainership, but in Odd Fixes mode
-      auxdisplay: Add 7 and 14 segment mappings to MAINTAINERS
-      auxdisplay: panel: Switch to use module_parport_driver()
-      auxdisplay: img-ascii-lcd: Make container_of() no-op for struct linedisp
-      auxdisplay: linedisp: Free allocated resources in ->release()
-      auxdisplay: linedisp: Use unique number for id
-      auxdisplay: linedisp: Unshadow error codes in ->store()
-      auxdisplay: linedisp: Add missing header(s)
-      auxdisplay: linedisp: Move exported symbols to a namespace
-      auxdisplay: linedisp: Provide struct linedisp_ops for future extension
-      auxdisplay: linedisp: Add support for overriding character mapping
-      auxdisplay: linedisp: Allocate buffer for the string
-      auxdisplay: ht16k33: Add default to switch-cases
-      auxdisplay: ht16k33: Move ht16k33_linedisp_ops down
-      auxdisplay: ht16k33: Define a few helper macros
-      auxdisplay: ht16k33: Switch to use line display character mapping
-      auxdisplay: ht16k33: Drop struct ht16k33_seg
-      dt-bindings: auxdisplay: Add Maxim MAX6958/6959
-      auxdisplay: Add driver for MAX695x 7-segment LED controllers
-
-Chris Packham (3):
-      auxdisplay: Add 7-segment LED display driver
-      dt-bindings: auxdisplay: Add bindings for generic 7-segment LED
-      auxdisplay: seg-led-gpio: Import linedisp namespace
-
-Krzysztof Kozlowski (2):
-      dt-bindings: auxdisplay: adjust example indentation and use generic node names
-      dt-bindings: auxdisplay: hit,hd44780: use defines for GPIO flags
-
-Uwe Kleine-König (3):
-      auxdisplay: cfag12864bfb: Convert to platform remove callback returning void
-      auxdisplay: hd44780: Convert to platform remove callback returning void
-      auxdisplay: img-ascii-lcd: Convert to platform remove callback returning void
-
- .../bindings/auxdisplay/arm,versatile-lcd.yaml     |   4 +-
- .../bindings/auxdisplay/gpio-7-segment.yaml        |  55 ++++++
- .../bindings/auxdisplay/hit,hd44780.yaml           |  62 +++---
- .../bindings/auxdisplay/holtek,ht16k33.yaml        |  50 ++---
- .../bindings/auxdisplay/img,ascii-lcd.yaml         |   4 +-
- .../bindings/auxdisplay/maxim,max6959.yaml         |  44 +++++
- MAINTAINERS                                        |   8 +-
- drivers/auxdisplay/Kconfig                         |  25 +++
- drivers/auxdisplay/Makefile                        |   2 +
- drivers/auxdisplay/cfag12864bfb.c                  |   6 +-
- drivers/auxdisplay/hd44780.c                       |   5 +-
- drivers/auxdisplay/ht16k33.c                       | 174 +++++++----------
- drivers/auxdisplay/img-ascii-lcd.c                 |  45 ++---
- drivers/auxdisplay/line-display.c                  | 166 ++++++++++++++--
- drivers/auxdisplay/line-display.h                  |  53 ++++-
- drivers/auxdisplay/max6959.c                       | 194 ++++++++++++++++++
- drivers/auxdisplay/panel.c                         | 216 +++++++++------------
- drivers/auxdisplay/seg-led-gpio.c                  | 113 +++++++++++
- 18 files changed, 888 insertions(+), 338 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/auxdisplay/gpio-7-segment.yaml
- create mode 100644 Documentation/devicetree/bindings/auxdisplay/maxim,max6959.yaml
- create mode 100644 drivers/auxdisplay/max6959.c
- create mode 100644 drivers/auxdisplay/seg-led-gpio.c
-
--- 
-With Best Regards,
-Andy Shevchenko
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
 
+
+On Tue, 12 Mar 2024, Colberg, Peter wrote:
+
+> On Fri, 2024-03-08 at 09:23 -0800, Matthew Gerlach wrote:
+>> From: Tim Whisonant <tim.whisonant@intel.com>
+>>
+>> Add a Device Feature List (DFL) driver for the
+>> Intel CXL Cache IP block. The driver
+>> provides a means of accessing the device MMIO and the
+>> capability to pin buffers and program their physical
+>> addresses into the HE-Cache registers. User interface
+>> is exposed via /dev/dfl-cxl-cache.X as described in
+>> include/uapi/linux/fpga-dfl.h.
+>>
+>> Signed-off-by: Tim Whisonant <tim.whisonant@intel.com>
+>> Co-developed-by: Ananda Ravuri <ananda.ravuri@intel.com>
+>> Signed-off-by: Ananda Ravuri <ananda.ravuri@intel.com>
+>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> ---
+>>  drivers/fpga/Kconfig          |  11 +
+>>  drivers/fpga/Makefile         |   1 +
+>>  drivers/fpga/dfl-cxl-cache.c  | 645 ++++++++++++++++++++++++++++++++++
+>>  include/uapi/linux/fpga-dfl.h |  98 ++++++
+>>  4 files changed, 755 insertions(+)
+>>  create mode 100644 drivers/fpga/dfl-cxl-cache.c
+>>
+>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+>> index 2f689ac4ba3a..00931a3deebf 100644
+>> --- a/drivers/fpga/Kconfig
+>> +++ b/drivers/fpga/Kconfig
+>> @@ -257,6 +257,17 @@ config FPGA_M10_BMC_SEC_UPDATE
+>>  	  (BMC) and provides support for secure updates for the BMC image,
+>>  	  the FPGA image, the Root Entry Hashes, etc.
+>>
+>> +config FPGA_DFL_CXL_CACHE
+>> +	tristate "Intel CXL cache driver"
+>> +	depends on DRM && FPGA_DFL
+>> +	help
+>> +	  This is the driver for CXL cache Accelerated Function Unit
+>> +	  (AFU) which configures the IP and provides DMA buffer management
+>> +	  to user space.
+>> +
+>> +	  To compile this driver as a module, chose M here: the
+>> +	  module will be called dfl_cxl_cache.
+>> +
+>>  config FPGA_MGR_MICROCHIP_SPI
+>>  	tristate "Microchip Polarfire SPI FPGA manager"
+>>  	depends on SPI
+>> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+>> index 352a2612623e..970902810845 100644
+>> --- a/drivers/fpga/Makefile
+>> +++ b/drivers/fpga/Makefile
+>> @@ -55,6 +55,7 @@ obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
+>>
+>>  # Drivers for FPGAs which implement DFL
+>>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+>> +obj-$(CONFIG_FPGA_DFL_CXL_CACHE)	+= dfl-cxl-cache.o
+>>
+>>  # KUnit tests
+>>  obj-$(CONFIG_FPGA_KUNIT_TESTS)		+= tests/
+>> diff --git a/drivers/fpga/dfl-cxl-cache.c b/drivers/fpga/dfl-cxl-cache.c
+>> new file mode 100644
+>> index 000000000000..ee2ae04ac058
+>> --- /dev/null
+>> +++ b/drivers/fpga/dfl-cxl-cache.c
+>> @@ -0,0 +1,645 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * DFL device driver for Host Exerciser Cache private feature.
+>> + *
+>> + * Provides a means of accessing the device MMIO and the
+>> + * capability to pin buffers and program their physical
+>> + * addresses into the HE-Cache registers. User interface
+>> + * is exposed via /dev/dfl-cxl-cache.X as described in
+>> + * include/uapi/linux/fpga-dfl.h.
+>> + *
+>> + * Copyright (C) 2023 Intel Corporation, Inc.
+>> + *
+>> + * Authors:
+>> + *   Tim Whisonant <tim.whisonant@intel.com>
+>> + *   Ananda Ravuri <ananda.ravuri@intel.com>
+>> + */
+>> +
+>> +#include <linux/bitfield.h>
+>> +#include <linux/cdev.h>
+>> +#include <linux/cleanup.h>
+>> +#include <linux/container_of.h>
+>> +#include <linux/dfl.h>
+>> +#include <linux/errno.h>
+>> +#include <linux/fpga-dfl.h>
+>> +#include <linux/highmem.h>
+>> +#include <linux/io.h>
+>> +#include <linux/mmap_lock.h>
+>> +#include <linux/module.h>
+>> +#include <linux/mutex.h>
+>> +#include <linux/pgtable.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/spinlock.h>
+>> +#include <linux/types.h>
+>> +
+>> +#include <drm/drm_cache.h>
+>> +
+>> +#define DFL_CXL_CACHE_DRIVER_NAME	"dfl-cxl-cache"
+>> +#define FME_FEATURE_ID_CXL_CACHE	0x25
+>> +
+>> +struct dfl_cxl_cache_buffer_region {
+>> +	struct rb_node node;
+>> +	u32 flags;
+>> +	u64 user_addr;
+>> +	u64 length;
+>> +	struct page **pages;
+>> +	phys_addr_t phys;
+>> +	u64 offset[DFL_ARRAY_MAX_SIZE];
+>> +};
+>> +
+>> +struct dfl_cxl_cache {
+>> +	struct cdev cdev;
+>> +	struct dfl_device *ddev;
+>> +	int id;
+>> +	struct device *dev;
+>> +	atomic_t opened;
+>> +	void __iomem *mmio_base;
+>> +	int mmio_size;
+>> +	struct dfl_cxl_cache_region_info rinfo;
+>> +	struct rb_root dma_regions;
+>> +};
+>> +
+>> +static DEFINE_MUTEX(dfl_cxl_cache_class_lock);
+>> +static struct class *dfl_cxl_cache_class;
+>> +static dev_t dfl_cxl_cache_devt;
+>> +static int dfl_cxl_cache_devices;
+>> +
+>> +static int dfl_cxl_cache_open(struct inode *inode, struct file *filp)
+>> +{
+>> +	struct dfl_cxl_cache *cxl_cache = container_of(inode->i_cdev, struct dfl_cxl_cache, cdev);
+>> +
+>> +	if (atomic_cmpxchg(&cxl_cache->opened, 0, 1))
+>> +		return -EBUSY;
+>> +
+>> +	filp->private_data = cxl_cache;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static long cxl_cache_ioctl_check_extension(struct dfl_cxl_cache *cxl_cache, unsigned long arg)
+>> +{
+>> +	/* No extension support for now */
+>> +	return 0;
+>> +}
+>> +
+>> +static long cxl_cache_ioctl_get_region_info(struct dfl_cxl_cache *cxl_cache, void __user *arg)
+>> +{
+>> +	struct dfl_cxl_cache_region_info rinfo;
+>> +	unsigned long minsz;
+>> +
+>> +	minsz = offsetofend(struct dfl_cxl_cache_region_info, offset);
+>> +	if (copy_from_user(&rinfo, arg, minsz))
+>> +		return -EFAULT;
+>> +
+>> +	if (rinfo.argsz < minsz)
+>> +		return -EINVAL;
+>> +
+>> +	rinfo.flags = cxl_cache->rinfo.flags;
+>> +	rinfo.size = cxl_cache->rinfo.size;
+>> +	rinfo.offset = cxl_cache->rinfo.offset;
+>> +
+>> +	if (copy_to_user(arg, &rinfo, sizeof(rinfo)))
+>> +		return -EFAULT;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void cxl_cache_unpin_pages(struct device *dev, struct page ***pages, unsigned long length)
+>> +{
+>> +	const long npages = PFN_DOWN(length);
+>> +
+>> +	if (!*pages)
+>> +		return;
+>> +
+>> +	unpin_user_pages(*pages, npages);
+>> +	kfree(*pages);
+>> +	*pages = NULL;
+>> +	account_locked_vm(current->mm, npages, false);
+>> +}
+>> +
+>> +static bool cxl_cache_check_continuous_pages(struct page **pages, unsigned long length)
+>> +{
+>> +	int i;
+>> +	const int npages = PFN_DOWN(length);
+>> +
+>> +	for (i = 0; i < npages - 1; i++)
+>> +		if (page_to_pfn(pages[i]) + 1 != page_to_pfn(pages[i + 1]))
+>> +			return false;
+>> +
+>> +	return true;
+>> +}
+>> +
+>> +static int cxl_cache_dma_pin_pages(struct dfl_cxl_cache *cxl_cache,
+>> +				   struct dfl_cxl_cache_buffer_region *region)
+>> +{
+>> +	int ret, pinned;
+>> +	unsigned int flags = FOLL_LONGTERM;
+>> +	const int npages = PFN_DOWN(region->length);
+>> +
+>> +	ret = account_locked_vm(current->mm, npages, true);
+>> +	if (ret) {
+>> +		dev_err(cxl_cache->dev, "account_locked_vm() failed: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	region->pages = kcalloc(npages, sizeof(struct page *), GFP_KERNEL);
+>> +	if (!region->pages) {
+>> +		ret = -ENOMEM;
+>> +		goto unlock_vm;
+>> +	}
+>> +
+>> +	if (region->flags & DFL_CXL_BUFFER_MAP_WRITABLE)
+>> +		flags |= FOLL_WRITE;
+>> +
+>> +	pinned = pin_user_pages_fast(region->user_addr, npages, flags, region->pages);
+>> +	if (pinned == npages)
+>> +		return 0;
+>> +
+>> +	ret = -EFAULT;
+>> +	if (pinned > 0)
+>> +		unpin_user_pages(region->pages, pinned);
+>> +
+>> +	kfree(region->pages);
+>> +unlock_vm:
+>> +	account_locked_vm(current->mm, npages, false);
+>> +	return ret;
+>> +}
+>> +
+>> +static void cxl_cache_dma_region_remove(struct dfl_cxl_cache *cxl_cache,
+>> +					struct dfl_cxl_cache_buffer_region *region)
+>> +{
+>> +	rb_erase(&region->node, &cxl_cache->dma_regions);
+>> +}
+>> +
+>> +static bool dma_region_check_user_addr(struct dfl_cxl_cache_buffer_region *region, u64 user_addr,
+>> +				       u64 size)
+>> +{
+>> +	if (!size && region->user_addr != user_addr)
+>> +		return false;
+>> +
+>> +	return (region->user_addr <= user_addr) &&
+>> +		(region->length + region->user_addr >= user_addr + size);
+>> +}
+>> +
+>> +static struct dfl_cxl_cache_buffer_region*
+>> +cxl_cache_dma_region_find(struct dfl_cxl_cache *cxl_cache, u64 user_addr, u64 size)
+>> +{
+>> +	struct rb_node *node = cxl_cache->dma_regions.rb_node;
+>> +
+>> +	while (node) {
+>> +		struct dfl_cxl_cache_buffer_region *region;
+>> +
+>> +		region = container_of(node, struct dfl_cxl_cache_buffer_region, node);
+>> +
+>> +		if (dma_region_check_user_addr(region, user_addr, size))
+>> +			return region;
+>> +
+>> +		if (user_addr < region->user_addr)
+>> +			node = node->rb_left;
+>> +		else if (user_addr > region->user_addr)
+>> +			node = node->rb_right;
+>> +		else
+>> +			break;
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +static int cxl_cache_dma_region_add(struct dfl_cxl_cache *cxl_cache,
+>> +				    struct dfl_cxl_cache_buffer_region *region)
+>> +{
+>> +	struct rb_node **new, *parent = NULL;
+>> +
+>> +	new = &cxl_cache->dma_regions.rb_node;
+>> +
+>> +	while (*new) {
+>> +		struct dfl_cxl_cache_buffer_region *this;
+>> +
+>> +		this = container_of(*new, struct dfl_cxl_cache_buffer_region, node);
+>> +		parent = *new;
+>> +
+>> +		if (dma_region_check_user_addr(this, region->user_addr, region->length))
+>> +			return -EEXIST;
+>> +
+>> +		if (region->user_addr < this->user_addr)
+>> +			new = &((*new)->rb_left);
+>> +		else if (region->user_addr > this->user_addr)
+>> +			new = &((*new)->rb_right);
+>> +		else
+>> +			return -EEXIST;
+>> +	}
+>> +
+>> +	rb_link_node(&region->node, parent, new);
+>> +	rb_insert_color(&region->node, &cxl_cache->dma_regions);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void fixup_ptes(struct mm_struct *mm, unsigned long start, unsigned long end)
+>> +{
+>> +	unsigned long addr;
+>> +	pgd_t *pgd;
+>> +	p4d_t *p4d;
+>> +	pud_t *pud;
+>> +	pmd_t *pmd;
+>> +	pte_t *pte;
+>> +
+>> +	for (addr = start; addr < end; addr += PAGE_SIZE) {
+>> +		pgd = pgd_offset(mm, addr);
+>> +		if (pgd_bad(*pgd) || pgd_none(*pgd))
+>> +			continue;
+>> +
+>> +		p4d = p4d_offset(pgd, addr);
+>> +		if (p4d_bad(*p4d) || p4d_none(*p4d))
+>> +			continue;
+>> +
+>> +		pud = pud_offset(p4d, addr);
+>> +		if (pud_bad(*pud) || pud_none(*pud))
+>> +			continue;
+>> +
+>> +		pmd = pmd_offset(pud, addr);
+>> +		if (pmd_bad(*pmd) || pmd_none(*pmd))
+>> +			continue;
+>> +
+>> +		pte = pte_offset_kernel(pmd, addr);
+>> +		if (!pte_none(*pte) && pte_present(*pte))
+>> +			*pte = pte_wrprotect(*pte);
+>> +	}
+>> +}
+>> +
+>> +static long cxl_cache_set_region_read_only(struct dfl_cxl_cache *cxl_cache,
+>> +					   struct dfl_cxl_cache_buffer_region *region)
+>> +{
+>> +	struct vm_area_struct *vma;
+>> +	long ret = 0;
+>> +
+>> +	vma = vma_lookup(current->mm, region->user_addr);
+>> +	if (IS_ERR(vma)) {
+>> +		ret = PTR_ERR(vma);
+>
+> As pointed out by Coverity, vma_lookup() returns NULL on error, not an
+> error pointer, resolved in downstream [1] commit 0eec35cdda2b2 ("fpga:
+> dfl-cxl-cache: fix check of return of vma_lookup()").
+>
+> [1] https://github.com/OFS/linux-dfl/commit/0eec35cdda2b20991bbd7fa032f9cd12a0de6f5b
+
+Thanks for catching this. I will update in a v2 submission.
+
+>
+>> +		dev_err(cxl_cache->dev, "vma_lookup() failed: %ld\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	mmap_write_lock(current->mm);
+>> +
+>> +	/* Mark the pages as non-cached and write-protected. */
+>> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+>> +	vm_flags_clear(vma, VM_WRITE);
+>> +
+>> +	fixup_ptes(current->mm, vma->vm_start, vma->vm_end);
+>> +
+>> +	mmap_write_unlock(current->mm);
+>> +
+>> +	/* Flush all remaining cache entries. */
+>> +	drm_clflush_virt_range(page_address(region->pages[0]), region->length);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static long cxl_cache_ioctl_numa_buffer_map(struct dfl_cxl_cache *cxl_cache, void __user *arg)
+>> +{
+>> +	int i = 0;
+>> +	unsigned long minsz = 0;
+>> +	long ret = 0;
+>> +	struct dfl_cxl_cache_buffer_map dma_map;
+>> +	struct dfl_cxl_cache_buffer_region *region;
+>> +
+>> +	minsz = offsetofend(struct dfl_cxl_cache_buffer_map, csr_array);
+>> +	if (copy_from_user(&dma_map, arg, minsz)) {
+>> +		dev_err(cxl_cache->dev, "fails to copy from user space buffer\n");
+>> +		return -EFAULT;
+>> +	}
+>> +	if (dma_map.argsz < minsz) {
+>> +		dev_err(cxl_cache->dev, "invalid ioctl buffer size\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* Check Inputs, only accept page-aligned user memory region with valid length */
+>> +	if (!PAGE_ALIGNED(dma_map.user_addr) || !PAGE_ALIGNED(dma_map.length) ||
+>> +	    !(dma_map.length)) {
+>> +		dev_err(cxl_cache->dev, "length is not page-aligned or the length is zero\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* Check overflow */
+>> +	if (dma_map.user_addr + dma_map.length < dma_map.user_addr) {
+>> +		dev_err(cxl_cache->dev, "dma buffer check overflow\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	region = kzalloc(sizeof(*region), GFP_KERNEL);
+>> +	if (!region)
+>> +		return -ENOMEM;
+>> +
+>> +	region->flags = dma_map.flags;
+>> +	region->user_addr = dma_map.user_addr;
+>> +	region->length = dma_map.length;
+>> +
+>> +	/* Pin the user memory region */
+>> +	ret = cxl_cache_dma_pin_pages(cxl_cache, region);
+>> +	if (ret) {
+>> +		dev_err(cxl_cache->dev, "failed to pin pages\n");
+>> +		goto free_region;
+>> +	}
+>> +
+>> +	/* Only accept continuous pages, return error else */
+>> +	if (!cxl_cache_check_continuous_pages(region->pages, region->length)) {
+>> +		dev_err(cxl_cache->dev, "pages are not continuous\n");
+>> +		ret = -EINVAL;
+>> +		goto out_unpin_pages;
+>> +	}
+>> +
+>> +	if (!(region->flags & DFL_CXL_BUFFER_MAP_WRITABLE)) {
+>> +		ret = cxl_cache_set_region_read_only(cxl_cache, region);
+>> +		if (ret)
+>> +			goto out_unpin_pages;
+>> +	}
+>> +
+>> +	ret = cxl_cache_dma_region_add(cxl_cache, region);
+>> +	if (ret) {
+>> +		dev_err(cxl_cache->dev, "failed to add dma region\n");
+>> +		goto out_unpin_pages;
+>> +	}
+>> +
+>> +	region->phys = page_to_phys(region->pages[0]);
+>> +
+>> +	for (i = 0; i < DFL_ARRAY_MAX_SIZE; i++) {
+>> +		if (dma_map.csr_array[i] && dma_map.csr_array[i] < cxl_cache->rinfo.size)
+>> +			writeq(region->phys, cxl_cache->mmio_base + dma_map.csr_array[i]);
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +out_unpin_pages:
+>> +	cxl_cache_unpin_pages(cxl_cache->dev, &region->pages, region->length);
+>> +free_region:
+>> +	kfree(region);
+>> +	return ret;
+>> +}
+>> +
+>> +static long cxl_cache_ioctl_numa_buffer_unmap(struct dfl_cxl_cache *cxl_cache, void __user *arg)
+>> +{
+>> +	unsigned long minsz = 0;
+>> +	long ret = 0;
+>> +	int i = 0;
+>> +	struct dfl_cxl_cache_buffer_unmap dma_unmap;
+>> +	struct dfl_cxl_cache_buffer_region *region;
+>> +
+>> +	minsz = offsetofend(struct dfl_cxl_cache_buffer_unmap, csr_array);
+>> +	if (copy_from_user(&dma_unmap, arg, minsz)) {
+>> +		dev_err(cxl_cache->dev, "fails to copy from user space buffer\n");
+>> +		return -EFAULT;
+>> +	}
+>> +	if (dma_unmap.argsz < minsz) {
+>> +		dev_err(cxl_cache->dev, "invalid ioctl buffer size\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	region = cxl_cache_dma_region_find(cxl_cache, dma_unmap.user_addr, dma_unmap.length);
+>> +	if (!region) {
+>> +		dev_err(cxl_cache->dev, "fails to find buffer\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	cxl_cache_dma_region_remove(cxl_cache, region);
+>> +	cxl_cache_unpin_pages(cxl_cache->dev, &region->pages, region->length);
+>> +
+>> +	for (i = 0; i < DFL_ARRAY_MAX_SIZE; i++) {
+>> +		if (dma_unmap.csr_array[i] && dma_unmap.csr_array[i] < cxl_cache->rinfo.size)
+>> +			writeq(0, cxl_cache->mmio_base + dma_unmap.csr_array[i]);
+>> +	}
+>> +
+>> +	kfree(region);
+>> +	return ret;
+>> +}
+>> +
+>> +static long dfl_cxl_cache_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>> +{
+>> +	struct dfl_cxl_cache *cxl_cache = filp->private_data;
+>> +
+>> +	switch (cmd) {
+>> +	case DFL_FPGA_GET_API_VERSION:
+>> +		return DFL_FPGA_GET_API_VERSION;
+>> +	case DFL_FPGA_CHECK_EXTENSION:
+>> +		return cxl_cache_ioctl_check_extension(cxl_cache, arg);
+>> +	case DFL_CXL_CACHE_GET_REGION_INFO:
+>> +		return cxl_cache_ioctl_get_region_info(cxl_cache, (void __user *)arg);
+>> +	case DFL_CXL_CACHE_NUMA_BUFFER_MAP:
+>> +		return cxl_cache_ioctl_numa_buffer_map(cxl_cache, (void __user *)arg);
+>> +	case DFL_CXL_CACHE_NUMA_BUFFER_UNMAP:
+>> +		return cxl_cache_ioctl_numa_buffer_unmap(cxl_cache, (void __user *)arg);
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +}
+>> +
+>> +static const struct vm_operations_struct cxl_cache_vma_ops = {
+>> +#ifdef CONFIG_HAVE_IOREMAP_PROT
+>> +	.access = generic_access_phys,
+>> +#endif
+>> +};
+>> +
+>> +static int dfl_cxl_cache_mmap(struct file *filp, struct vm_area_struct *vma)
+>> +{
+>> +	struct dfl_cxl_cache *cxl_cache = filp->private_data;
+>> +	u64 size = vma->vm_end - vma->vm_start;
+>> +	u64 offset;
+>> +
+>> +	if (!(vma->vm_flags & VM_SHARED))
+>> +		return -EINVAL;
+>> +
+>> +	if (!(cxl_cache->rinfo.flags & DFL_CXL_CACHE_REGION_MMAP))
+>> +		return -EINVAL;
+>> +
+>> +	if ((vma->vm_flags & VM_READ) && !(cxl_cache->rinfo.flags & DFL_CXL_CACHE_REGION_READ))
+>> +		return -EPERM;
+>> +
+>> +	if ((vma->vm_flags & VM_WRITE) && !(cxl_cache->rinfo.flags & DFL_CXL_CACHE_REGION_WRITE))
+>> +		return -EPERM;
+>> +
+>> +	offset = PFN_PHYS(vma->vm_pgoff);
+>> +
+>> +	/* Support debug access to the mapping */
+>> +	vma->vm_ops = &cxl_cache_vma_ops;
+>> +
+>> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+>> +
+>> +	return remap_pfn_range(vma, vma->vm_start,
+>> +			       PFN_DOWN(cxl_cache->ddev->mmio_res.start +
+>> +			       (offset - cxl_cache->rinfo.offset)),
+>> +			       size, vma->vm_page_prot);
+>> +}
+>> +
+>> +static void cxl_cache_dma_region_destroy(struct dfl_cxl_cache *cxl_cache)
+>> +{
+>> +	struct rb_node *node = rb_first(&cxl_cache->dma_regions);
+>> +	struct dfl_cxl_cache_buffer_region *region;
+>> +
+>> +	while (node) {
+>> +		region = container_of(node, struct dfl_cxl_cache_buffer_region, node);
+>> +
+>> +		rb_erase(node, &cxl_cache->dma_regions);
+>> +
+>> +		if (region->pages)
+>> +			cxl_cache_unpin_pages(cxl_cache->dev, &region->pages, region->length);
+>> +
+>> +		node = rb_next(node);
+>> +		kfree(region);
+>> +	}
+>> +}
+>> +
+>> +static int dfl_cxl_cache_release(struct inode *inode, struct file *filp)
+>> +{
+>> +	struct dfl_cxl_cache *cxl_cache = filp->private_data;
+>> +
+>> +	cxl_cache_dma_region_destroy(cxl_cache);
+>> +	atomic_set(&cxl_cache->opened, 0);
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct file_operations dfl_cxl_cache_fops = {
+>> +	.owner = THIS_MODULE,
+>> +	.open = dfl_cxl_cache_open,
+>> +	.release = dfl_cxl_cache_release,
+>> +	.unlocked_ioctl = dfl_cxl_cache_ioctl,
+>> +	.mmap = dfl_cxl_cache_mmap,
+>> +};
+>> +
+>> +static void cxl_cache_dev_release(struct device *dev)
+>> +{
+>> +	struct dfl_cxl_cache *cxl_cache = dev_get_drvdata(dev);
+>> +
+>> +	cdev_del(&cxl_cache->cdev);
+>> +}
+>> +
+>> +static void cxl_cache_chardev_uinit(struct dfl_cxl_cache *cxl_cache)
+>> +{
+>> +	device_destroy(dfl_cxl_cache_class,
+>> +		       MKDEV(MAJOR(dfl_cxl_cache_devt), cxl_cache->id));
+>> +}
+>> +
+>> +static int cxl_cache_chardev_init(struct dfl_cxl_cache *cxl_cache,
+>> +				  struct dfl_device *ddev,
+>> +				  void __iomem *mmio_base)
+>> +{
+>> +	int ret;
+>> +
+>> +	dev_set_drvdata(&ddev->dev, cxl_cache);
+>> +	cxl_cache->ddev = ddev;
+>> +	cxl_cache->mmio_base = mmio_base;
+>> +	cxl_cache->id = dfl_cxl_cache_devices++;
+>> +	cxl_cache->dma_regions = RB_ROOT;
+>> +
+>> +	cxl_cache->rinfo.argsz = sizeof(struct dfl_cxl_cache_region_info);
+>> +	cxl_cache->rinfo.flags = DFL_CXL_CACHE_REGION_READ | DFL_CXL_CACHE_REGION_WRITE |
+>> +			   DFL_CXL_CACHE_REGION_MMAP;
+>> +	cxl_cache->rinfo.size = resource_size(&ddev->mmio_res);
+>> +	cxl_cache->rinfo.offset = 0;
+>> +
+>> +	cxl_cache->dev = device_create(dfl_cxl_cache_class, &ddev->dev,
+>> +				       MKDEV(MAJOR(dfl_cxl_cache_devt), cxl_cache->id),
+>> +				       cxl_cache, DFL_CXL_CACHE_DRIVER_NAME ".%d",
+>> +				       cxl_cache->id);
+>> +
+>> +	if (IS_ERR(cxl_cache->dev)) {
+>> +		ret = PTR_ERR(cxl_cache->dev);
+>> +		dev_err(&ddev->dev, "device_create failed: %d\n", ret);
+>> +		cxl_cache->dev = NULL;
+>> +		return ret;
+>> +	}
+>> +	cxl_cache->dev->release = cxl_cache_dev_release;
+>> +
+>> +	cdev_init(&cxl_cache->cdev, &dfl_cxl_cache_fops);
+>> +	cxl_cache->cdev.owner = THIS_MODULE;
+>> +	cxl_cache->cdev.ops = &dfl_cxl_cache_fops;
+>> +
+>> +	ret = cdev_add(&cxl_cache->cdev, cxl_cache->dev->devt, 1);
+>> +	if (ret)
+>> +		dev_err(cxl_cache->dev, "cdev_add failed: %d\n", ret);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int dfl_cxl_cache_probe(struct dfl_device *ddev)
+>> +{
+>> +	int ret = 0;
+>> +	void __iomem *mmio_base;
+>> +	struct dfl_cxl_cache *cxl_cache;
+>> +
+>> +	guard(mutex)(&dfl_cxl_cache_class_lock);
+>> +
+>> +	if (!dfl_cxl_cache_class) {
+>> +		dfl_cxl_cache_class = class_create(DFL_CXL_CACHE_DRIVER_NAME);
+>> +		if (IS_ERR(dfl_cxl_cache_class)) {
+>> +			ret = PTR_ERR(dfl_cxl_cache_class);
+>> +			dfl_cxl_cache_class = NULL;
+>> +			dev_err_probe(&ddev->dev, ret, "class_create failed\n");
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>> +	if (!MAJOR(dfl_cxl_cache_devt)) {
+>> +		ret = alloc_chrdev_region(&dfl_cxl_cache_devt, 0,
+>> +					  MINORMASK,
+>> +					  DFL_CXL_CACHE_DRIVER_NAME);
+>> +		if (ret) {
+>> +			dev_err_probe(&ddev->dev, ret, "alloc_chrdev_region failed\n");
+>> +			dfl_cxl_cache_devt = MKDEV(0, 0);
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>> +	mmio_base = devm_ioremap_resource(&ddev->dev, &ddev->mmio_res);
+>> +	if (IS_ERR(mmio_base))
+>> +		return PTR_ERR(mmio_base);
+>> +
+>> +	cxl_cache = devm_kzalloc(&ddev->dev, sizeof(*cxl_cache), GFP_KERNEL);
+>> +	if (!cxl_cache)
+>> +		return -ENOMEM;
+>> +
+>> +	ret = cxl_cache_chardev_init(cxl_cache, ddev, mmio_base);
+>> +	if (ret)
+>> +		dev_err_probe(&ddev->dev, ret, "cxl_cache_chardev_init failed\n");
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void dfl_cxl_cache_remove(struct dfl_device *ddev)
+>> +{
+>> +	struct dfl_cxl_cache *cxl_cache = dev_get_drvdata(&ddev->dev);
+>> +
+>> +	guard(mutex)(&dfl_cxl_cache_class_lock);
+>> +	cxl_cache_chardev_uinit(cxl_cache);
+>> +
+>> +	if (dfl_cxl_cache_devices-- == 0) {
+>> +		if (dfl_cxl_cache_class) {
+>> +			class_destroy(dfl_cxl_cache_class);
+>> +			dfl_cxl_cache_class = NULL;
+>> +		}
+>> +
+>> +		if (MAJOR(dfl_cxl_cache_devt)) {
+>> +			unregister_chrdev_region(dfl_cxl_cache_devt, MINORMASK);
+>> +			dfl_cxl_cache_devt = MKDEV(0, 0);
+>> +		}
+>> +	}
+>> +}
+>> +
+>> +static const struct dfl_device_id dfl_cxl_cache_ids[] = {
+>> +	{ FME_ID, FME_FEATURE_ID_CXL_CACHE },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(dfl, dfl_cxl_cache_ids);
+>> +
+>> +static struct dfl_driver dfl_cxl_cache_driver = {
+>> +	.drv	= {
+>> +		.name	= DFL_CXL_CACHE_DRIVER_NAME,
+>> +	},
+>> +	.id_table = dfl_cxl_cache_ids,
+>> +	.probe   = dfl_cxl_cache_probe,
+>> +	.remove = dfl_cxl_cache_remove,
+>> +};
+>> +module_dfl_driver(dfl_cxl_cache_driver);
+>> +
+>> +MODULE_DESCRIPTION("DFL CXL Cache driver");
+>> +MODULE_AUTHOR("Intel Corporation");
+>> +MODULE_LICENSE("GPL");
+>> diff --git a/include/uapi/linux/fpga-dfl.h b/include/uapi/linux/fpga-dfl.h
+>> index 1621b077bf21..866f50b99eb6 100644
+>> --- a/include/uapi/linux/fpga-dfl.h
+>> +++ b/include/uapi/linux/fpga-dfl.h
+>> @@ -31,6 +31,7 @@
+>>  #define DFL_FPGA_BASE 0
+>>  #define DFL_PORT_BASE 0x40
+>>  #define DFL_FME_BASE 0x80
+>> +#define DFL_CXL_CACHE_BASE 0xA0
+>>
+>>  /* Common IOCTLs for both FME and AFU file descriptor */
+>>
+>> @@ -276,4 +277,101 @@ struct dfl_fpga_fme_port_pr {
+>>  					     DFL_FME_BASE + 4,	\
+>>  					     struct dfl_fpga_irq_set)
+>>
+>> + /**
+>> +  * DFL_CXL_CACHE_GET_REGION_INFO - _IOWR(DFL_FPGA_MAGIC, DFL_CXL_CACHE_BASE + 0,
+>> +  *                                      struct dfl_cxl_cache_region_info)
+>> +  *
+>> +  * Retrieve information about a device memory region.
+>> +  * Caller provides struct dfl_cxl_cache_region_info with flags.
+>> +  * Driver returns the region info in other fields.
+>> +  * Return: 0 on success, -errno on failure.
+>> +  */
+>> +
+>
+> Nit: one space of indentation can be removed.
+>
+>> +#define DFL_CXL_CACHE_GET_REGION_INFO _IO(DFL_FPGA_MAGIC, DFL_CXL_CACHE_BASE + 0)
+>> +
+>> +  /**
+>> +   * struct dfl_cxl_cache_region_info - CXL cache region information
+>> +   * @argsz: structure length
+>> +   * @flags: access permission
+>> +   * @size: region size (bytes)
+>> +   * @offset: region offset from start of device fd
+>> +   *
+>> +   * to retrieve  information about a device memory region
+>> +   */
+>
+> Nit: two spaces of indentation can be removed.
+>
+> Thanks,
+> Peter
+
+Thanks again. I will remove unneeded indentation.
+
+>
+>> +struct dfl_cxl_cache_region_info {
+>> +	__u32 argsz;
+>> +	__u32 flags;
+>> +#define DFL_CXL_CACHE_REGION_READ	_BITUL(0)
+>> +#define DFL_CXL_CACHE_REGION_WRITE	_BITUL(1)
+>> +#define DFL_CXL_CACHE_REGION_MMAP	_BITUL(2)
+>> +	__u64 size;
+>> +	__u64 offset;
+>> +};
+>> +
+>> +/**
+>> + * DFL_CXL_CACHE_NUMA_BUFFER_MAP - _IOWR(DFL_FPGA_MAGIC, DFL_CXL_CACHE_BASE + 1,
+>> + *                                      struct dfl_cxl_cache_buffer_map)
+>> + *
+>> + * Map the user memory per user_addr, length and numa node which are
+>> + * provided by caller. The driver allocates memory on the numa node,
+>> + * converts the user's virtual addressto a continuous physical address,
+>> + * and writes the physical address to the cxl cache read/write address table CSR.
+>> + *
+>> + * This interface only accepts page-size aligned user memory for mapping.
+>> + * Return: 0 on success, -errno on failure.
+>> + */
+>> +
+>> +#define DFL_ARRAY_MAX_SIZE   0x10
+>> +
+>> +#define DFL_CXL_CACHE_NUMA_BUFFER_MAP    _IO(DFL_FPGA_MAGIC,  DFL_CXL_CACHE_BASE + 1)
+>> +
+>> +/**
+>> + * struct dfl_cxl_cache_buffer_map - maps user address to physical address.
+>> + * @argsz: structure length
+>> + * @flags: flags
+>> + * @user_addr: user mmap virtual address
+>> + * @length: length of mapping (bytes)
+>> + * @csr_array: array of region address offset
+>> + *
+>> + * maps user allocated virtual address to physical address.
+>> + */
+>> +struct dfl_cxl_cache_buffer_map {
+>> +	__u32 argsz;
+>> +#define DFL_CXL_BUFFER_MAP_WRITABLE	1
+>> +	__u32 flags;
+>> +	__u64 user_addr;
+>> +	__u64 length;
+>> +	__u64 csr_array[DFL_ARRAY_MAX_SIZE];
+>> +};
+>> +
+>> +/**
+>> + * DFL_CXL_CACHE_NUMA_BUFFER_UNMAP - _IOWR(DFL_FPGA_MAGIC, DFL_CXL_CACHE_BASE + 1,
+>> + *                                      struct dfl_cxl_cache_buffer_unmap)
+>> + *
+>> + * Unmaps the user memory per user_addr and length which are provided by caller
+>> + * The driver deletes the physical pages of the user address and writes a zero
+>> + * to the read/write address table CSR.
+>> + * Return: 0 on success, -errno on failure.
+>> + */
+>> +
+>> +#define DFL_CXL_CACHE_NUMA_BUFFER_UNMAP  _IO(DFL_FPGA_MAGIC,  DFL_CXL_CACHE_BASE + 2)
+>> +
+>> +/**
+>> + * struct dfl_cxl_cache_buffer_unmap - unmaps user allocated memory.
+>> + * @argsz: structure length
+>> + * @flags: flags
+>> + * @user_addr: user mmap virtual address
+>> + * @length: length of mapping (bytes)
+>> + * @csr_array: array of region address offset
+>> + *
+>> + * unmaps user allocated memory.
+>> + */
+>> +struct dfl_cxl_cache_buffer_unmap {
+>> +	__u32 argsz;
+>> +	__u32 flags;
+>> +	__u64 user_addr;
+>> +	__u64 length;
+>> +	__u64 csr_array[DFL_ARRAY_MAX_SIZE];
+>> +};
+>> +
+>>  #endif /* _UAPI_LINUX_FPGA_DFL_H */
+>
+>
 
