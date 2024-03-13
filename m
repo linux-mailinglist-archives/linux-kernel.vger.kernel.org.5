@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-101952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63F9687AD05
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:24:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 409A387AD09
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:24:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02CCE1F25A45
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:24:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D44B6B23C97
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FD062A1D;
-	Wed, 13 Mar 2024 16:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB8113791A;
+	Wed, 13 Mar 2024 16:42:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jZlyfmtw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T+uOunmh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36588139579;
-	Wed, 13 Mar 2024 16:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B1613959F;
+	Wed, 13 Mar 2024 16:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348161; cv=none; b=tz+rEdHT1lA8b+kDkv+YdXlM4Dvehg02qkEb3PToa7EJRb8U7GhYsSbj/zLDLuD0VhJVMWai4fyOPowM/9z8sjI6zVcJCaPvf5TwPRki+Xw6SxCLBF+/M9P2mBHLTE1IuOckp+j09o1bbAD+6YU1yNzYvneGhcN3mrtD2q5aaqk=
+	t=1710348162; cv=none; b=lSkOrkYOe3SzVx1L4XgEpgZgcaXIVWsJ8nUf77g8cG8pP8RUottDEeaBxH/gLio1yyKPQDVUQkXAseUXzSE9qKlw3ZM4PVE9Hrqblotud74e7guodI8isG8z8GQ8DJyd7KHXOoPgaH3QHRNF25ECjfvOXfVfUyPMnzC5q3cpHuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348161; c=relaxed/simple;
-	bh=BJMqZs3HypZYIgRRS3ZNRgnZRiqh9LAfOakZLpvame4=;
+	s=arc-20240116; t=1710348162; c=relaxed/simple;
+	bh=Y0qmczXQKt4PXOHrKH1s+dGEO4SYk47hEsGX3+xvWyE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rMzGBxWx8ISuiOlA1RJbchNN8QdmfeXCOT533KlySW4HVkocOsBK20yXrWs4IFN1SZShpgomhNhx54dLkd++5SvXPlBTZ75N1MQFF72WrfvAaBTD47kysFHiFFdFhMLcsPKt9n2FwbEj1E27N/cbASb3mzwSW58S+cznfR/yFuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jZlyfmtw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4508C433C7;
-	Wed, 13 Mar 2024 16:42:39 +0000 (UTC)
+	 MIME-Version; b=g4rF44fsxpl8UdWfQIPLXeta0t8rqRIWFzJXFGIFzIPV9EliEitobdCLqjGztL+a6AKS1UFcxkFP56UYviIVHFvIT4AFxIAtF1H2BKrK5JHMsO4VvBAplJm0I2Aumx/B1Pi1xiLPfm88tob2Hz+ijGvOXJrzA9NxRlZEUaFZppY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T+uOunmh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18798C433F1;
+	Wed, 13 Mar 2024 16:42:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348160;
-	bh=BJMqZs3HypZYIgRRS3ZNRgnZRiqh9LAfOakZLpvame4=;
+	s=k20201202; t=1710348161;
+	bh=Y0qmczXQKt4PXOHrKH1s+dGEO4SYk47hEsGX3+xvWyE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jZlyfmtwrRtLfiCbXW/8pnac+o21uKiJ0pt0HJCKRbC43Dhm+RjTE9ESOxGpWOOvL
-	 YWFqeC6jd67kk1bTXLv/qEOlb3IMYeUaWFBERcboJGH8FJ6OOTplhclObDbPHDnZoI
-	 yTJDoq1bNIiFau+ja6sqxN9h3YC6OfuIapTYDIKtMtYCrtfXTcuqJkw4D9AquU9qPb
-	 MR6QFMcuUc17C2mhG50x9EiW/kk8JE5prMHPFrpqabFEdK1SlrypnLsynD6cnChN6b
-	 LLW27v0e07c/SzUyByYfekNBpaX7dxvVbjWk1Id2SCcK+deaNOpQ8cJpBkMnVu50fr
-	 uZsjM+FDsOSow==
+	b=T+uOunmh59+FrDYBvW8rwzXVJbF0P7BpwU4OI0sQqDxTKE+UqOhw+ziJ/tJlDuxW1
+	 wR5WbxfWmprNotTfvmuhymljoL2i4/WSRJArGLpFBIhOp4numjh6DfG9qAFZPjUJMV
+	 dfVKUZ9g8nT6IeN/p5GqzEmb99FNu/VSNZVQ0yTDf5IZNpOCIr+hRISl5xM7MDp4X4
+	 xVWY32W5rXD6MxbZlPjMbk0irDW3jjB+TdOzz8bAPeRI72p+VWjFgytdTmYf/eG6o+
+	 MhjwHNK0hudGt6dHvXSRoIod9bKzsVvXm/NnNI8++UzXt1PFadCO4l69xMPwEimH9V
+	 3rNPjT5GECqpg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edward Adam Davis <eadavis@qq.com>,
-	syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Florian Westphal <fw@strlen.de>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 12/76] net/rds: fix WARNING in rds_conn_connect_if_down
-Date: Wed, 13 Mar 2024 12:41:19 -0400
-Message-ID: <20240313164223.615640-13-sashal@kernel.org>
+Subject: [PATCH 5.15 13/76] netfilter: nft_ct: fix l3num expectations with inet pseudo family
+Date: Wed, 13 Mar 2024 12:41:20 -0400
+Message-ID: <20240313164223.615640-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -69,55 +68,60 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Edward Adam Davis <eadavis@qq.com>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit c055fc00c07be1f0df7375ab0036cebd1106ed38 ]
+[ Upstream commit 99993789966a6eb4f1295193dc543686899892d3 ]
 
-If connection isn't established yet, get_mr() will fail, trigger connection after
-get_mr().
+Following is rejected but should be allowed:
 
-Fixes: 584a8279a44a ("RDS: RDMA: return appropriate error on rdma map failures")
-Reported-and-tested-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+table inet t {
+        ct expectation exp1 {
+                [..]
+                l3proto ip
+
+Valid combos are:
+table ip t, l3proto ip
+table ip6 t, l3proto ip6
+table inet t, l3proto ip OR l3proto ip6
+
+Disallow inet pseudeo family, the l3num must be a on-wire protocol known
+to conntrack.
+
+Retain NFPROTO_INET case to make it clear its rejected
+intentionally rather as oversight.
+
+Fixes: 8059918a1377 ("netfilter: nft_ct: sanitize layer 3 and 4 protocol number in custom expectations")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rds/rdma.c | 3 +++
- net/rds/send.c | 6 +-----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ net/netfilter/nft_ct.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-index 6f1a50d50d06d..c29c7a59f2053 100644
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -301,6 +301,9 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
- 			kfree(sg);
- 		}
- 		ret = PTR_ERR(trans_private);
-+		/* Trigger connection so that its ready for the next retry */
-+		if (ret == -ENODEV)
-+			rds_conn_connect_if_down(cp->cp_conn);
- 		goto out;
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index 7c667629c5149..69214993b5a2c 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -1192,14 +1192,13 @@ static int nft_ct_expect_obj_init(const struct nft_ctx *ctx,
+ 	switch (priv->l3num) {
+ 	case NFPROTO_IPV4:
+ 	case NFPROTO_IPV6:
+-		if (priv->l3num != ctx->family)
+-			return -EINVAL;
++		if (priv->l3num == ctx->family || ctx->family == NFPROTO_INET)
++			break;
+ 
+-		fallthrough;
+-	case NFPROTO_INET:
+-		break;
++		return -EINVAL;
++	case NFPROTO_INET: /* tuple.src.l3num supports NFPROTO_IPV4/6 only */
+ 	default:
+-		return -EOPNOTSUPP;
++		return -EAFNOSUPPORT;
  	}
  
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 53444397de669..d6462d1471c14 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -1314,12 +1314,8 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
- 
- 	/* Parse any control messages the user may have included. */
- 	ret = rds_cmsg_send(rs, rm, msg, &allocated_mr, &vct);
--	if (ret) {
--		/* Trigger connection so that its ready for the next retry */
--		if (ret ==  -EAGAIN)
--			rds_conn_connect_if_down(conn);
-+	if (ret)
- 		goto out;
--	}
- 
- 	if (rm->rdma.op_active && !conn->c_trans->xmit_rdma) {
- 		printk_ratelimited(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
+ 	priv->l4proto = nla_get_u8(tb[NFTA_CT_EXPECT_L4PROTO]);
 -- 
 2.43.0
 
