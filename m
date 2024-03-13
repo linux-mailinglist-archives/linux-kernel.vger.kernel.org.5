@@ -1,144 +1,165 @@
-Return-Path: <linux-kernel+bounces-101679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CD7E87AA66
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0FDF87AA78
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:32:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD7E31C2256B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:30:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F31931C22D7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A239947A70;
-	Wed, 13 Mar 2024 15:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9533547A64;
+	Wed, 13 Mar 2024 15:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XGVxzUqE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="vKEYO3rz"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1359147A52;
-	Wed, 13 Mar 2024 15:30:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77B04502C;
+	Wed, 13 Mar 2024 15:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710343819; cv=none; b=iJctAn97m99WGnZFczDsElljdVpzUkZNG/TVUq99i47fiASRCtQER4MQWIpdtANTpRKr2dQekuycoNIMVWq4+pJef1mHjARgjyaYw87xnyojvvco6KDiLGzuLG6CcQuNfI03886/gpR3fQmJAKQqtQAfvQL0ZMvNYQZCjN90Hz0=
+	t=1710343943; cv=none; b=d6md1cLSE0ovuQ0uuxJLcqOm3IeZunQ07WQ1lNF6n0Trc7lNVHvwvaIEsLBDvkgd9+aHjWO3nbrB7+UhpqWOqU/HSTfU4Mi88z+DIBUBE310Jje96tI81kUqIv1gr+vkTR3fO3DRhgNkvN18cPwkNSQW0CMr/ubp8KoTA84GFxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710343819; c=relaxed/simple;
-	bh=6YkpdduqF4HnEdxpbqFhxmHLrelbL/HBKCE3WIC3SQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iGiMVzgr+quc+YyY4WH3P0P+PqNnY6fYHgtEXWmqaeohChPoMnl+KQIUPmE9lL68+TpGNS6WSsux4++Fnql/i18t78c4iK2i2J9Pnu0UJE+t4eU5YO1LUiF0actSaEgW2+MEd0NdXQA8PwFw7+lFNX3j920sqQXa2TTfZG7b8Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XGVxzUqE; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710343818; x=1741879818;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6YkpdduqF4HnEdxpbqFhxmHLrelbL/HBKCE3WIC3SQE=;
-  b=XGVxzUqE/ZMTl+vm4Eqxr0yqDFyC2T12AmD9mCLJYdJr84TIMHMRdwZg
-   wxx3B3kckp1De890W19mumDadkJVcSCiSboNUJ/juE7HuA7tjxbD5KB72
-   ojv79Xm2WPzh9oaT6BdwQq/O3pQIJP8nHz9xVVMSOh8fYI4Sh3KA1dLrf
-   GN/pbSC/gdgcg46+cAjUjeQTK+gutC5dZfR5rw11nFIxpOMqnzzjidYeb
-   Ms7aJgBbi4R6QXKsHte6pK/o78sQHrPLlh2Vvef5wVYu0SMnLcabmooR3
-   D6agQN+ML5gMKZPIkgujpWNvvZgNiFrGeXdXJNwMKQf33vX+rona0/Gri
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="27595144"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="27595144"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 08:30:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="12532232"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 08:30:14 -0700
-Message-ID: <c6279239-fb9c-41ca-a628-c0dd1e8c08a3@linux.intel.com>
-Date: Wed, 13 Mar 2024 23:30:11 +0800
+	s=arc-20240116; t=1710343943; c=relaxed/simple;
+	bh=RYj/hTGFeOICAffBo+IOFSfUokMceJPXN3Xwefp5Ee4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BvdNqa07PRo2CfUtOas0fvRiL7q4QShf7HRbOZvWVJAiU1Yfu/YxyEM0MUVjEoSDrjHDkamq2rENGHbhelQpb+G4udgke16zKyijbnmypo0zPVQj2GMdEPPnYYSeULzXjJszjtw+ZpZFX2j0Hrc4ZSZJRlSB6VcVGctrxsqaBL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=vKEYO3rz; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from jasper.fritz.box (unknown [IPv6:2a00:6020:448c:6c00:9b07:31b5:38e1:e957])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id BBF51A8F;
+	Wed, 13 Mar 2024 16:31:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710343917;
+	bh=RYj/hTGFeOICAffBo+IOFSfUokMceJPXN3Xwefp5Ee4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=vKEYO3rzSe33FG42cJPkl0ClUEYxkAfR9ZnW4wrdK56dAsnXCEpeOmIf5k6JImSk3
+	 TK06yhx3ScUjKFrsHZJbiFV6CVzHVTbE4018kKNoISnJ48nxMgojTL2BIqVuLZTQsn
+	 QTxPOhHeCmU29xv7PCtcW3CjuD7uSYnaol0JUHXg=
+From: Stefan Klug <stefan.klug@ideasonboard.com>
+To: libcamera-devel@lists.libcamera.org,
+	linux-media@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Stefan Klug <stefan.klug@ideasonboard.com>,
+	Rui Miguel Silva <rmfrfs@gmail.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Martin Kepplinger <martink@posteo.de>,
+	Purism Kernel Team <kernel@puri.sm>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: [PATCH] mipi-csis: Emit V4L2_EVENT_FRAME_SYNC events
+Date: Wed, 13 Mar 2024 16:30:58 +0100
+Message-Id: <20240313153058.189684-1-stefan.klug@ideasonboard.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 021/130] KVM: x86/vmx: initialize loaded_vmcss_on_cpu
- in vmx_init()
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Yuan Yao <yuan.yao@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <c1b7f0e5c2476f9f565acda5c1e746b8d181499b.1708933498.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <c1b7f0e5c2476f9f565acda5c1e746b8d181499b.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+The Samsung CSIS Mipi receiver provides a start-of-frame interrupt and
+a framecount register. As the CSI receiver is the hardware unit
+that lies closest to the sensor, the frame counter is the best we can
+get on these devices.
+In case of the ISI available on the i.MX8 M Plus it is also the only
+native start-of-frame signal available.
 
+This patch exposes the sof interrupt and the framecount as
+V4L2_EVENT_FRAME_SYNC event on the subdevice.
 
-On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> vmx_hardware_disable() accesses loaded_vmcss_on_cpu via
-> hardware_disable_all().  To allow hardware_enable/disable_all() before
-> kvm_init(), initialize it in before kvm_x86_vendor_init() in vmx_init()
-> so that tdx module initialization, hardware_setup method, can reference
-> the variable.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+It was tested on a Debix-Som-A with a 6.8-rc4 kernel.
 
-The shortlog should be this?
-KVM: VMX: Initialize loaded_vmcss_on_cpu in vmx_init()
+Signed-off-by: Stefan Klug <stefan.klug@ideasonboard.com>
+---
+ drivers/media/platform/nxp/imx-mipi-csis.c | 34 +++++++++++++++++++++-
+ 1 file changed, 33 insertions(+), 1 deletion(-)
 
-Others,
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
-
->
-> ---
-> v19:
-> - Fix the subject to match the patch by Yuan
->
-> v18:
-> - Move the vmcss_on_cpu initialization from vmx_hardware_setup() to
->    early point of vmx_init() by Binbin
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/vmx.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 434f5aaef030..8af0668e4dca 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -8539,6 +8539,10 @@ static int __init vmx_init(void)
->   	 */
->   	hv_init_evmcs();
->   
-> +	/* vmx_hardware_disable() accesses loaded_vmcss_on_cpu. */
-> +	for_each_possible_cpu(cpu)
-> +		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> +
->   	r = kvm_x86_vendor_init(&vt_init_ops);
->   	if (r)
->   		return r;
-> @@ -8554,11 +8558,8 @@ static int __init vmx_init(void)
->   	if (r)
->   		goto err_l1d_flush;
->   
-> -	for_each_possible_cpu(cpu) {
-> -		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> -
-> +	for_each_possible_cpu(cpu)
->   		pi_init_cpu(cpu);
-> -	}
->   
->   	cpu_emergency_register_virt_callback(vmx_emergency_disable);
->   
+diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
+index db8ff5f5c4d3..caeb1622f741 100644
+--- a/drivers/media/platform/nxp/imx-mipi-csis.c
++++ b/drivers/media/platform/nxp/imx-mipi-csis.c
+@@ -30,6 +30,7 @@
+ 
+ #include <media/v4l2-common.h>
+ #include <media/v4l2-device.h>
++#include <media/v4l2-event.h>
+ #include <media/v4l2-fwnode.h>
+ #include <media/v4l2-mc.h>
+ #include <media/v4l2-subdev.h>
+@@ -742,6 +743,18 @@ static void mipi_csis_stop_stream(struct mipi_csis_device *csis)
+ 	mipi_csis_system_enable(csis, false);
+ }
+ 
++static void mipi_csis_queue_event_sof(struct mipi_csis_device *csis)
++{
++	struct v4l2_event event = {
++		.type = V4L2_EVENT_FRAME_SYNC,
++	};
++
++	u32 frame = mipi_csis_read(csis, MIPI_CSIS_FRAME_COUNTER_CH(0));
++
++	event.u.frame_sync.frame_sequence = frame;
++	v4l2_event_queue(csis->sd.devnode, &event);
++}
++
+ static irqreturn_t mipi_csis_irq_handler(int irq, void *dev_id)
+ {
+ 	struct mipi_csis_device *csis = dev_id;
+@@ -765,6 +778,10 @@ static irqreturn_t mipi_csis_irq_handler(int irq, void *dev_id)
+ 				event->counter++;
+ 		}
+ 	}
++
++	if (status & MIPI_CSIS_INT_SRC_FRAME_START)
++		mipi_csis_queue_event_sof(csis);
++
+ 	spin_unlock_irqrestore(&csis->slock, flags);
+ 
+ 	mipi_csis_write(csis, MIPI_CSIS_INT_SRC, status);
+@@ -1154,8 +1171,23 @@ static int mipi_csis_log_status(struct v4l2_subdev *sd)
+ 	return 0;
+ }
+ 
++static int mipi_csis_subscribe_event(struct v4l2_subdev *sd, struct v4l2_fh *fh,
++			       struct v4l2_event_subscription *sub)
++{
++	if (sub->type != V4L2_EVENT_FRAME_SYNC)
++		return -EINVAL;
++
++	/* V4L2_EVENT_FRAME_SYNC doesn't require an id, so zero should be set */
++	if (sub->id != 0)
++		return -EINVAL;
++
++	return v4l2_event_subscribe(fh, sub, 0, NULL);
++}
++
+ static const struct v4l2_subdev_core_ops mipi_csis_core_ops = {
+ 	.log_status	= mipi_csis_log_status,
++	.subscribe_event =  mipi_csis_subscribe_event,
++	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+ };
+ 
+ static const struct v4l2_subdev_video_ops mipi_csis_video_ops = {
+@@ -1358,7 +1390,7 @@ static int mipi_csis_subdev_init(struct mipi_csis_device *csis)
+ 	snprintf(sd->name, sizeof(sd->name), "csis-%s",
+ 		 dev_name(csis->dev));
+ 
+-	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
++	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+ 	sd->ctrl_handler = NULL;
+ 
+ 	sd->entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
+-- 
+2.40.1
 
 
