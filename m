@@ -1,165 +1,113 @@
-Return-Path: <linux-kernel+bounces-101422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C04587A6EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05CC387A6EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08C7F286DA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:12:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4BDE28723A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0F94502B;
-	Wed, 13 Mar 2024 11:11:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC6645021;
-	Wed, 13 Mar 2024 11:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D50DD3EA83;
+	Wed, 13 Mar 2024 11:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="gxodk2EI"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1693EA6C;
+	Wed, 13 Mar 2024 11:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710328309; cv=none; b=eZ0yP06FXiUGYH6tWGL84WnV5UsGKQKcSvGGw1CB8o2YMXNuJkAY3ze6cjRjOmUEpGU39QT+dJ41ttn1e8BRJtlt88Uu1pYtx0fzrybEHEXJCtfZXgFqxeWfxSNB5bnJLzHBYDPwdnlTQBlueLmRV8Pag6TCRXQD27oxkcc9j4Q=
+	t=1710328344; cv=none; b=Wu9EnL6ncNDMSn3xqPzZ1/kG06ls8F6rg9vmWQ85O8il50uHQglsE/SgYcY0lk62+j6tIpIos4wYGsGCkvf1SDwwWuqXbFnONTArn71fHscm3PJMYds+Sisotq5OUMC1JUqC6pvXnmZ8Blvy4jDs5B2Xy9mPUA2+7imdsUT4hEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710328309; c=relaxed/simple;
-	bh=LEyXAn/v2Hw3prnwl+wVgn/JXUC8HGQ1YBXsFPPZx6c=;
+	s=arc-20240116; t=1710328344; c=relaxed/simple;
+	bh=QRcCAIIgMh2jYQYsK66leYgGBqgJ9NaFN8yK5PCXZOk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bTExvI1qeP8VaF0JRGHz++H2/b2pn3xFppjDVD+P1QKY+Uv5Fi3lmBShUuxeOXKze0EOcqS4IaY9FJ6MmjnOgAivfe6GZd9dF8CcNP4+HtEj8XeDm5pZeNapwuDxbDOzw03vIFxG3/lkDzU9Q5YPT8y0bVArQKBZdQ9qvj9BruY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6B071007;
-	Wed, 13 Mar 2024 04:12:23 -0700 (PDT)
-Received: from [192.168.1.100] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE4913F73F;
-	Wed, 13 Mar 2024 04:11:43 -0700 (PDT)
-Message-ID: <2ce4838e-7b5e-45ff-a78a-6363c57de5d9@arm.com>
-Date: Wed, 13 Mar 2024 11:11:42 +0000
+	 In-Reply-To:Content-Type; b=qslYi2253YoBfHtbyQZU8SkL43jB+Q2029QO5Bi1qNYqciNFKWBE/az0UFNqpCeOT2eCmCw/c29YKCcqCnYl1P836uugYfI6dC/2Oe12RE4lJgAGcoWmBtCwMOElcsSHNQPgbniTQEcyqwwsbR/Hw7aR7j7L/Aqyle+L2bGABVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=gxodk2EI; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.1.104] (unknown [103.251.226.70])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id CB34E720;
+	Wed, 13 Mar 2024 12:11:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710328317;
+	bh=QRcCAIIgMh2jYQYsK66leYgGBqgJ9NaFN8yK5PCXZOk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gxodk2EI0pjdrje5j2/uhsRCu/PjBYPkYpycOEpKnsk9L7S4h2A3PvmjFUiH8WSWN
+	 EVnkQVVGbd9YFWSfZs673eCO4HIVErTVr1NMF+X47oNST5JQL3ZrfjauV4fi8ijD21
+	 ybNMvuHVQ7R6TcRtLsHatWLFzN4lR1lahHtof1t4=
+Message-ID: <d32c985d-7610-4838-a37c-2b455d4e421e@ideasonboard.com>
+Date: Wed, 13 Mar 2024 16:42:09 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 05/10] drivers/perf: Use PERF_PMU_CAP_NO_SAMPLING
- consistently
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] media: i2c: Add imx283 camera sensor driver
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-media@vger.kernel.org,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ willl will <will@willwhang.com>, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, tomi.valkeinen@ideasonboard.com,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans de Goede
+ <hdegoede@redhat.com>, Alain Volmat <alain.volmat@foss.st.com>,
+ Paul Elder <paul.elder@ideasonboard.com>,
+ Mehdi Djait <mehdi.djait@bootlin.com>, Bingbu Cao <bingbu.cao@intel.com>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240313070705.91140-1-umang.jain@ideasonboard.com>
+ <20240313070705.91140-3-umang.jain@ideasonboard.com>
+ <CAHp75VcdcQbF76=j=xTtDRgkQNwVdCJ+0oD7KX4TbTfndX_5fA@mail.gmail.com>
 Content-Language: en-US
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linux-perf-users@vger.kernel.org, jialong.yang@shingroup.cn,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Will Deacon <will@kernel.org>
-References: <cover.1710257512.git.robin.murphy@arm.com>
- <5622df31e5f4874c2c085d1ce930f5bbad889181.1710257512.git.robin.murphy@arm.com>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <5622df31e5f4874c2c085d1ce930f5bbad889181.1710257512.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Umang Jain <umang.jain@ideasonboard.com>
+In-Reply-To: <CAHp75VcdcQbF76=j=xTtDRgkQNwVdCJ+0oD7KX4TbTfndX_5fA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+Hello Andy,
 
+On 13/03/24 2:25 pm, Andy Shevchenko wrote:
+> On Wed, Mar 13, 2024 at 9:08 AM Umang Jain <umang.jain@ideasonboard.com> wrote:
+>> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+>>
+>> Add a v4l2 subdevice driver for the Sony IMX283 image sensor.
+>>
+>> The IMX283 is a 20MP Diagonal 15.86 mm (Type 1) CMOS Image Sensor with
+>> Square Pixel for Color Cameras.
+>>
+>> The following features are supported:
+>> - Manual exposure an gain control support
+>> - vblank/hblank/link freq control support
+>> - Test pattern support control
+>> - Arbitrary horizontal and vertical cropping
+>> - Supported resolution:
+>>    - 5472x3648 @ 20fps (SRGGB12)
+>>    - 5472x3648 @ 25fps (SRGGB10)
+>>    - 2736x1824 @ 50fps (SRGGB12)
+> I have got only this patch and there is no word about changes. Please,
 
-On 12/03/2024 17:34, Robin Murphy wrote:
-> Our system PMUs fundamentally cannot support the current notion of
-> sampling events, so now that the core capability has been clarified,
-> apply it consistently and purge yet more boilerplate.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> ---
->  drivers/perf/alibaba_uncore_drw_pmu.c     |  6 +-----
->  drivers/perf/amlogic/meson_ddr_pmu_core.c |  3 ++-
->  drivers/perf/arm-cci.c                    |  3 ++-
->  drivers/perf/arm-ccn.c                    | 12 +-----------
->  drivers/perf/arm-cmn.c                    |  3 ++-
->  drivers/perf/arm_cspmu/arm_cspmu.c        | 17 ++++-------------
->  drivers/perf/arm_dmc620_pmu.c             |  4 ++--
->  drivers/perf/arm_dsu_pmu.c                | 12 +-----------
->  drivers/perf/arm_smmuv3_pmu.c             |  6 +-----
->  drivers/perf/cxl_pmu.c                    |  3 ++-
->  drivers/perf/dwc_pcie_pmu.c               |  5 +----
->  drivers/perf/fsl_imx8_ddr_perf.c          |  3 ++-
->  drivers/perf/fsl_imx9_ddr_perf.c          |  3 ++-
->  drivers/perf/hisilicon/hisi_pcie_pmu.c    |  4 ++--
->  drivers/perf/hisilicon/hisi_uncore_pmu.c  |  3 ++-
->  drivers/perf/hisilicon/hns3_pmu.c         |  4 ++--
->  drivers/perf/marvell_cn10k_ddr_pmu.c      |  6 +-----
->  drivers/perf/qcom_l2_pmu.c                |  7 +------
->  drivers/perf/qcom_l3_pmu.c                |  7 +------
->  drivers/perf/thunderx2_pmu.c              |  4 ++--
->  drivers/perf/xgene_pmu.c                  |  4 ++--
->  21 files changed, 36 insertions(+), 83 deletions(-)
-> 
-[...]
->  
-> diff --git a/drivers/perf/arm-ccn.c b/drivers/perf/arm-ccn.c
-> index ce26bb773a56..4114349e62dd 100644
-> --- a/drivers/perf/arm-ccn.c
-> +++ b/drivers/perf/arm-ccn.c
-> @@ -713,7 +713,6 @@ static void arm_ccn_pmu_event_release(struct perf_event *event)
->  static int arm_ccn_pmu_event_init(struct perf_event *event)
->  {
->  	struct arm_ccn *ccn;
-> -	struct hw_perf_event *hw = &event->hw;
->  	u32 node_xp, type, event_id;
->  	int valid;
->  	int i;
-> @@ -721,16 +720,6 @@ static int arm_ccn_pmu_event_init(struct perf_event *event)
->  
->  	ccn = pmu_to_arm_ccn(event->pmu);
->  
-> -	if (hw->sample_period) {
-> -		dev_dbg(ccn->dev, "Sampling not supported!\n");
-> -		return -EOPNOTSUPP;
-> -	}
-> -
-> -	if (has_branch_stack(event)) {
-> -		dev_dbg(ccn->dev, "Can't exclude execution levels!\n");
-> -		return -EINVAL;
-> -	}
-> -
+Sorry about that. I should have cc'ed your explicitly or perhaps there 
+is a way to cc all recipients just for the cover.
 
-[...]
+I have
+     `cccmd ="`pwd`/scripts/get_maintainer.pl"`
 
-> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
-> index f5ea5acaf2f3..3424d165795c 100644
-> --- a/drivers/perf/arm_dsu_pmu.c
-> +++ b/drivers/perf/arm_dsu_pmu.c
-> @@ -544,23 +544,12 @@ static int dsu_pmu_event_init(struct perf_event *event)
->  {
->  	struct dsu_pmu *dsu_pmu = to_dsu_pmu(event->pmu);
->  
-> -	/* We don't support sampling */
-> -	if (is_sampling_event(event)) {
-> -		dev_dbg(dsu_pmu->pmu.dev, "Can't support sampling events\n");
-> -		return -EOPNOTSUPP;
-> -	}
-> -
->  	/* We cannot support task bound events */
->  	if (event->cpu < 0 || event->attach_state & PERF_ATTACH_TASK) {
->  		dev_dbg(dsu_pmu->pmu.dev, "Can't support per-task counters\n");
->  		return -EINVAL;
->  	}
->  
-> -	if (has_branch_stack(event)) {
-> -		dev_dbg(dsu_pmu->pmu.dev, "Can't support filtering\n");
-> -		return -EINVAL;
-> -	}
-> -
+in my .gitconfig but I think I need to do extra to make sure everyone 
+receives the cover-letter atleast.
 
-I'm assuming that this and the other has_branch_stack() check were
-removed because branch stacks don't actually do anything unless sampling
-is enabled?
+The changelog here:
+https://lore.kernel.org/linux-media/20240313070705.91140-1-umang.jain@ideasonboard.com/T/#m550b44ee8769b84e0c1419dc5bfd9a51414468d9
 
-It's a small difference that there is now no error message if you ask
-for branch stacks, but it wouldn't have done anything anyway? I suppose
-this error message was also not applied very consistently across the
-different devices.
-
-James
+> either make sure you Cc'ed people in cover letter to all reviewers,
+> and/or use a comment area (after '---' line to list the changes
+> related to this patch).
+>
 
 
