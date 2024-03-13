@@ -1,174 +1,145 @@
-Return-Path: <linux-kernel+bounces-101455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECDF787A75F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:03:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8444B87A764
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:07:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 091DDB23897
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:03:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CA081F2402A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A228E3FB1E;
-	Wed, 13 Mar 2024 12:03:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C2F4405FB;
-	Wed, 13 Mar 2024 12:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7383FB0F;
+	Wed, 13 Mar 2024 12:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="StyduBs2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 776F63FB1C;
+	Wed, 13 Mar 2024 12:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710331381; cv=none; b=MwordXPZY/pcYmrRuD7Ay4DhCywDMXjhZsLZIOCXSpTQ8M3AuGDummHBh95vOc8fZQrkG17lzr2Wq9TojHtoWXYtqoZxwx+vX/wS4+ALJzMpqGMaLHqRYaAy2ZJo5aSAjXBUiZRfiTw5KT7p41wuobOkK4M8aOBO1xMlhr/p/lw=
+	t=1710331614; cv=none; b=XXXDpU5Wh5/zg/AXQfO6ttEm0EEoMX0hM3AHSd6RIv9Ta+ieJlF54jumEapcENKNmp3xescIkYHniDOabq8I8dcXKv8QBnDhewERP7yKJBd6jiogQyPwxvFKAoy9xNqrTf2ArLWHSAF7iA3A2o+TwJkEG4fVm6Mc6EszP6/IEZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710331381; c=relaxed/simple;
-	bh=ejg+XL+wXUEIUGaX+YNuKkT2bE9I+6ueqE+pHgEI/4I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S8XcZXTc/nY2k4e7UI7kNgoCU7Iq8sUd9Fz7v1RkcJ4K5ArV9rsnLlj/mr81ZXbyK4w5BUsTr5KLtKj0nZLlMiJl0h0HKAizxmtULfH8DO9qE9G90p0W1gKTxRJQBtqcSXHj5H/0Xri9dLZGMlsAPz0cSsl2Ciw8lL4ViBn/cyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79E5F1007;
-	Wed, 13 Mar 2024 05:03:35 -0700 (PDT)
-Received: from [10.57.52.245] (unknown [10.57.52.245])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0472D3F762;
-	Wed, 13 Mar 2024 05:02:52 -0700 (PDT)
-Message-ID: <44587738-ad0f-4c7e-b1ca-230a62605724@arm.com>
-Date: Wed, 13 Mar 2024 12:02:50 +0000
+	s=arc-20240116; t=1710331614; c=relaxed/simple;
+	bh=M425A9spsJt2sc60u2h4SBdYauiKFkLuf2a5/almDhY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BGCZxos2dWviDmH4uC7vEyI9DG9ROCXYrlfC6SpigEGFpS0QnY1JZbRYuH/PHuxuCuRRULLBtN+lMrjksHTSCTxe+JDexGRWB1Bs4poPf7jhP7CE0poZGwDCh38QN+6YzdCfBrDNhTmklDgz+4q+Dis/hfSPR/a1UaWSnrtsl50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=StyduBs2; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710331613; x=1741867613;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=M425A9spsJt2sc60u2h4SBdYauiKFkLuf2a5/almDhY=;
+  b=StyduBs2bkVV/PgwKxmEW/FYiutthkBye8avcfcOkR0Ny8Ok8xgEg1p9
+   VokH0NtsML/3hvyeE/UiaTxK8iUP0Ux9LEL99ZzeQ5CqJVZU4LBmd19Ba
+   2ROfKMudXBqe9fEUxlAG6SMcn7EmyHkvN5RkNrz99s6FUabOLynuGAkVg
+   WH23apmd6l29Hi4wlk8Kqb5iQbecEsYDoNeH3H4cOV59kusQnqN3jocPv
+   kvtHr/RJRahhfYsz8T/+fdUwo3dfDwbx3YfgEA5n1zIRp2ha/dmC852M1
+   ZHM5f9elAl1o7iI+EYuWX1q1/Pe3Kx8YMAwCtIrsu0QGpT6t6vWLthEr8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="15724252"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="15724252"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 05:06:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="16498296"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 13 Mar 2024 05:06:47 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rkNNc-000CLb-2d;
+	Wed, 13 Mar 2024 12:06:44 +0000
+Date: Wed, 13 Mar 2024 20:05:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Robin Murphy <robin.murphy@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	x86@kernel.org, linux-perf-users@vger.kernel.org,
+	jialong.yang@shingroup.cn
+Subject: Re: [PATCH 04/10] perf: Rename PERF_PMU_CAP_NO_INTERRUPT
+Message-ID: <202403131930.sz1VjXDw-lkp@intel.com>
+References: <0999a39f0a068979dbcc6119380f63d706101b4f.1710257512.git.robin.murphy@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/10] drivers/perf: Use PERF_PMU_CAP_NO_SAMPLING
- consistently
-Content-Language: en-GB
-To: James Clark <james.clark@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linux-perf-users@vger.kernel.org, jialong.yang@shingroup.cn,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Will Deacon <will@kernel.org>
-References: <cover.1710257512.git.robin.murphy@arm.com>
- <5622df31e5f4874c2c085d1ce930f5bbad889181.1710257512.git.robin.murphy@arm.com>
- <2ce4838e-7b5e-45ff-a78a-6363c57de5d9@arm.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <2ce4838e-7b5e-45ff-a78a-6363c57de5d9@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0999a39f0a068979dbcc6119380f63d706101b4f.1710257512.git.robin.murphy@arm.com>
 
-On 2024-03-13 11:11 am, James Clark wrote:
-> 
-> 
-> On 12/03/2024 17:34, Robin Murphy wrote:
->> Our system PMUs fundamentally cannot support the current notion of
->> sampling events, so now that the core capability has been clarified,
->> apply it consistently and purge yet more boilerplate.
->>
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->> ---
->>   drivers/perf/alibaba_uncore_drw_pmu.c     |  6 +-----
->>   drivers/perf/amlogic/meson_ddr_pmu_core.c |  3 ++-
->>   drivers/perf/arm-cci.c                    |  3 ++-
->>   drivers/perf/arm-ccn.c                    | 12 +-----------
->>   drivers/perf/arm-cmn.c                    |  3 ++-
->>   drivers/perf/arm_cspmu/arm_cspmu.c        | 17 ++++-------------
->>   drivers/perf/arm_dmc620_pmu.c             |  4 ++--
->>   drivers/perf/arm_dsu_pmu.c                | 12 +-----------
->>   drivers/perf/arm_smmuv3_pmu.c             |  6 +-----
->>   drivers/perf/cxl_pmu.c                    |  3 ++-
->>   drivers/perf/dwc_pcie_pmu.c               |  5 +----
->>   drivers/perf/fsl_imx8_ddr_perf.c          |  3 ++-
->>   drivers/perf/fsl_imx9_ddr_perf.c          |  3 ++-
->>   drivers/perf/hisilicon/hisi_pcie_pmu.c    |  4 ++--
->>   drivers/perf/hisilicon/hisi_uncore_pmu.c  |  3 ++-
->>   drivers/perf/hisilicon/hns3_pmu.c         |  4 ++--
->>   drivers/perf/marvell_cn10k_ddr_pmu.c      |  6 +-----
->>   drivers/perf/qcom_l2_pmu.c                |  7 +------
->>   drivers/perf/qcom_l3_pmu.c                |  7 +------
->>   drivers/perf/thunderx2_pmu.c              |  4 ++--
->>   drivers/perf/xgene_pmu.c                  |  4 ++--
->>   21 files changed, 36 insertions(+), 83 deletions(-)
->>
-> [...]
->>   
->> diff --git a/drivers/perf/arm-ccn.c b/drivers/perf/arm-ccn.c
->> index ce26bb773a56..4114349e62dd 100644
->> --- a/drivers/perf/arm-ccn.c
->> +++ b/drivers/perf/arm-ccn.c
->> @@ -713,7 +713,6 @@ static void arm_ccn_pmu_event_release(struct perf_event *event)
->>   static int arm_ccn_pmu_event_init(struct perf_event *event)
->>   {
->>   	struct arm_ccn *ccn;
->> -	struct hw_perf_event *hw = &event->hw;
->>   	u32 node_xp, type, event_id;
->>   	int valid;
->>   	int i;
->> @@ -721,16 +720,6 @@ static int arm_ccn_pmu_event_init(struct perf_event *event)
->>   
->>   	ccn = pmu_to_arm_ccn(event->pmu);
->>   
->> -	if (hw->sample_period) {
->> -		dev_dbg(ccn->dev, "Sampling not supported!\n");
->> -		return -EOPNOTSUPP;
->> -	}
->> -
->> -	if (has_branch_stack(event)) {
->> -		dev_dbg(ccn->dev, "Can't exclude execution levels!\n");
->> -		return -EINVAL;
->> -	}
->> -
-> 
-> [...]
-> 
->> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
->> index f5ea5acaf2f3..3424d165795c 100644
->> --- a/drivers/perf/arm_dsu_pmu.c
->> +++ b/drivers/perf/arm_dsu_pmu.c
->> @@ -544,23 +544,12 @@ static int dsu_pmu_event_init(struct perf_event *event)
->>   {
->>   	struct dsu_pmu *dsu_pmu = to_dsu_pmu(event->pmu);
->>   
->> -	/* We don't support sampling */
->> -	if (is_sampling_event(event)) {
->> -		dev_dbg(dsu_pmu->pmu.dev, "Can't support sampling events\n");
->> -		return -EOPNOTSUPP;
->> -	}
->> -
->>   	/* We cannot support task bound events */
->>   	if (event->cpu < 0 || event->attach_state & PERF_ATTACH_TASK) {
->>   		dev_dbg(dsu_pmu->pmu.dev, "Can't support per-task counters\n");
->>   		return -EINVAL;
->>   	}
->>   
->> -	if (has_branch_stack(event)) {
->> -		dev_dbg(dsu_pmu->pmu.dev, "Can't support filtering\n");
->> -		return -EINVAL;
->> -	}
->> -
-> 
-> I'm assuming that this and the other has_branch_stack() check were
-> removed because branch stacks don't actually do anything unless sampling
-> is enabled?
-> 
-> It's a small difference that there is now no error message if you ask
-> for branch stacks, but it wouldn't have done anything anyway? I suppose
-> this error message was also not applied very consistently across the
-> different devices.
+Hi Robin,
 
-Right - the rarity of these checks, plus the fact that in both cases 
-here they give a nonsensical debug message that has nothing whatsoever 
-to do with the actual failing condition, seems to make it clear that 
-they aren't realistically useful.
+kernel test robot noticed the following build errors:
 
-In general I don't see any good reason for a non-sampling event to be 
-picky about the exact type of samples it isn't collecting.
+[auto build test ERROR on perf-tools-next/perf-tools-next]
+[also build test ERROR on perf-tools/perf-tools linus/master v6.8 next-20240313]
+[cannot apply to acme/perf/core tip/perf/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Robin.
+url:    https://github.com/intel-lab-lkp/linux/commits/Robin-Murphy/perf-alibaba_uncore_drw-Use-correct-CPU-affinity/20240313-013915
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
+patch link:    https://lore.kernel.org/r/0999a39f0a068979dbcc6119380f63d706101b4f.1710257512.git.robin.murphy%40arm.com
+patch subject: [PATCH 04/10] perf: Rename PERF_PMU_CAP_NO_INTERRUPT
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20240313/202403131930.sz1VjXDw-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240313/202403131930.sz1VjXDw-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403131930.sz1VjXDw-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> arch/x86/events/core.c:1815:46: error: expected ';' after expression
+    1815 |         pmu.capabilities |= PERF_PMU_CAP_NO_SAMPLING
+         |                                                     ^
+         |                                                     ;
+   1 error generated.
+
+
+vim +1815 arch/x86/events/core.c
+
+  1799	
+  1800	static void __init pmu_check_apic(void)
+  1801	{
+  1802		if (boot_cpu_has(X86_FEATURE_APIC))
+  1803			return;
+  1804	
+  1805		x86_pmu.apic = 0;
+  1806		pr_info("no APIC, boot with the \"lapic\" boot parameter to force-enable it.\n");
+  1807		pr_info("no hardware sampling interrupt available.\n");
+  1808	
+  1809		/*
+  1810		 * If we have a PMU initialized but no APIC
+  1811		 * interrupts, we cannot sample hardware
+  1812		 * events (user-space has to fall back and
+  1813		 * sample via a hrtimer based software event):
+  1814		 */
+> 1815		pmu.capabilities |= PERF_PMU_CAP_NO_SAMPLING
+  1816	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
