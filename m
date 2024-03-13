@@ -1,168 +1,160 @@
-Return-Path: <linux-kernel+bounces-102345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 939DB87B105
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:06:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECB0687B102
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 052931F25AF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:06:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94F6A29338F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F346E612;
-	Wed, 13 Mar 2024 18:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5BD6E5E1;
+	Wed, 13 Mar 2024 18:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="K5lk+tMh"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ufml1w12"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573306E5F8;
-	Wed, 13 Mar 2024 18:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D9360B9E
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710353926; cv=none; b=LRsCXmMsrYRDuUu/D6pk2iBVr4xurarmvEk2PM8Vh3YIoyofVzxxo3CYGsyxgeOZ8FgH3/86QLKbQVIpNbWex0oqJA/DDXQy3bsOntWgWXESf0N9wtOD5XQA+GqjZsezXGJSkF/dDXQY1Kg1zbhSncCBWzBCDNaw6EM5JumjZGM=
+	t=1710353921; cv=none; b=THdHbcq3N2MU4JPkAUKnRcmjpfFyNQb8c/bYgmSSFSZGjStDmEGAZ4Ti6nyGlmkiRqZrEO1AqBrzEwi4o2AFR+D9penI5vNRspg5vc9KhsfsR6Llp1nrVI/3LMKAZzhLxYd9oJR9geWSsECm+/3qgQ9WRWo0FB88Fx5hg2qsx20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710353926; c=relaxed/simple;
-	bh=j4RkNzplLs9576Ucdv2wSRJ6anZyubu7F7JHevpn1lw=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=V92iaEZyPCVHqsXEVedNe5E19iOpNYrasWCcjuG0QfpQ1djKzv+ntlAJDVcxp3NI0/lpOtvdvIWIDTxq0y2JcLIOl3iocR9l8Gw2nNlBqwMebvSYNjTFSlTImCi4Iygbhy8UfVQnIJQgbM8GkYzsNC9CkIDvV2gxrZcp9Uylcz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=K5lk+tMh; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=5+MK1q3QTmns8nfY5HZNCopdbKSZ21Tc/bjtiTp4oRc=; b=K5lk+tMhwdeSzTuJ8d27O76dee
-	LV/ZWfmzaCs4Yd+dKhKZcaeWJhSopVXbW12MHQMbAf5n4Z/8fzhoC3B4ytSmOwv/neZhIFyo6UyU7
-	lZfx3ZslUF/66yof/vxBqwaCGoHxIKvTznoGFJ++ui2YqcNV4cvTydHbD67YMZors0DbKNNm7m91N
-	q2mZ5qO4G4IZD8Ib54JbbOAg1kMaO7wcm8iR/d6oDABlDQKAgcnLhWE0CZxGUjw/Y8RDj3XHW/K86
-	Upi76UdV7rw8Dl6aSCwOSYbkFJOdRbmaoEgZ0+NwwZokgN4tOR1Z8b7g+KWydqaxV2C0W5H1XITGQ
-	i3GwRkYQ==;
-Received: from [2a00:23ee:1400:c5e0:79a9:c9e8:9823:feca] (helo=[IPv6:::1])
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkTBS-00000005yG2-1ztJ;
-	Wed, 13 Mar 2024 18:18:37 +0000
-Date: Wed, 13 Mar 2024 18:18:31 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Peter Hilber <peter.hilber@opensynergy.com>, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, virtio-dev@lists.oasis-open.org,
- linux-arm-kernel@lists.infradead.org, linux-rtc@vger.kernel.org,
- "virtio-comment@lists.oasis-open.org" <virtio-comment@lists.oasis-open.org>
-CC: "Christopher S. Hall" <christopher.s.hall@intel.com>,
- Jason Wang <jasowang@redhat.com>, John Stultz <jstultz@google.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
- Richard Cochran <richardcochran@gmail.com>, Stephen Boyd <sboyd@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- "Ridoux, Julien" <ridouxj@amazon.com>
-Subject: Re: [RFC PATCH v3 0/7] Add virtio_rtc module and related changes
-User-Agent: K-9 Mail for Android
-In-Reply-To: <60607bcc-93c5-4a6f-832d-ea4dbd81178e@opensynergy.com>
-References: <20231218073849.35294-1-peter.hilber@opensynergy.com> <0e21e3e2be26acd70b5575b9932b3a911c9fe721.camel@infradead.org> <204c6339-e80d-4a98-8d07-a11eeb729497@opensynergy.com> <667c8d944ce9ea5c570b82b1858a70cc67b2f3e4.camel@infradead.org> <f6940954-334a-458b-af32-f03d8efbe607@opensynergy.com> <57704b2658e643fce30468dffd8c1477607f59fb.camel@infradead.org> <d796d9a5-8eda-4528-a6d8-1c4eba24aa1e@opensynergy.com> <47bf0757de3268c420d2cd3bbffaf5897b67b661.camel@infradead.org> <60607bcc-93c5-4a6f-832d-ea4dbd81178e@opensynergy.com>
-Message-ID: <89268C36-E8FB-4A17-8F81-1DED4BF47400@infradead.org>
+	s=arc-20240116; t=1710353921; c=relaxed/simple;
+	bh=Bda/tnr2Gweo1vW+6mtT16FlcwdOgeaHwK/iuF0gX0k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P9E/YNtyzwlCWPQPBTc9o4juBCWxMj8dsYiD/A28uk7L1DKcdTfTcET+1zX65OtdhmlkthexlEkGOCZXlNq8PijgeP3sPN5AMxnfXIKL1sB6WafF/2hyN6iQn8l0sXqnW9i13wPn4A2Qmq6E/tK5MUvKByqOwWATDWn/UBhLsx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ufml1w12; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dd8dd198d0so704515ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710353919; x=1710958719; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RTPa6mW4skZMTVBISgv1w+QSbNBfwtAG1NsTquu+3lU=;
+        b=Ufml1w12HVPXxivP0lU1rKd7wdFNwXCaWW7skbx6G4m+t6SI9MkgLgsDP7CmCVwwDa
+         RZ+JEZutR0+Le1rTe57BIrAPwdgSSuXHbAv5atVfnLKZd9Sd3t72hTRlbdxU1rv4pq0+
+         FURxrPT88DPw16vYrW28Y7ZO22bcKpvlGJT/4v2txUANoNSCZQvPKMr2uxQnTG2OuVjZ
+         qr5Z1zW3Gv58Ao19dumUMoO7YV0c8XmmfgqmCQPcxttFWzqhRT56Hd5YIqx//As6fGAM
+         Q+br0Uu+9SnbSmTrYdG1SO+izsF9KYJei5fRD2tHqcWvcQQ4r9ANi4k7ICgrlOAvLIjs
+         7DtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710353919; x=1710958719;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RTPa6mW4skZMTVBISgv1w+QSbNBfwtAG1NsTquu+3lU=;
+        b=r7ZCYx9pgXiyXYnQ24Cl0vN3ShM40nQy0xjskNB3NXA87QuwLoHYRDU7NQ29kz0ic1
+         s024qKbrnD1N4Ww72U8iYH/cvfq2r21xRP/DIkIrV6JBUeNgMhYi9HwUuGqqK886XolT
+         Yx6GbPK9l+QpDsSl8vS6mJMFkedqyhOiXIArKBqKmyVhBR696tGxt2Cf5GRer7cGFv91
+         XaAi7kAsENQxZGCeLQ107obAA85GhbGlbPtVmxw+MIMvoUPZaq3hUhuKQgWR+zSC1Iah
+         uOBwnxE4x9nDE5NxQ/ptKPqbDdQXXdGgeBArcPfko2rBwklpq/3MW/IfOnvxBZ6nsf0u
+         gzrA==
+X-Forwarded-Encrypted: i=1; AJvYcCVE53FSbqqJ99Y9PAViNyRO54S9L5MAqg3bVnVnvSjJKnHgY5BuPuFp9pgXKN6Xmmz2nOhlzn9AicvuymEBg0KsKRR87OrSBtvUa+dZ
+X-Gm-Message-State: AOJu0YxB22jghvMuMIFbFm4s9k+LDDQV4TeQPOonAymJ+DpDMsPt0H9+
+	jfOvC4xcbe4E7x3M1V5nLXU2i9nxFT40JMNTLPXVVxWYOkBS12R6VsW7A4DvkQ==
+X-Google-Smtp-Source: AGHT+IEmI5dfjtwpySpmP5uQqwn0Y6a1ZEgkcPqkn1FgTjPpZVuBpetb7bRagRG+eKtRIr1qMm9j7g==
+X-Received: by 2002:a17:903:11c7:b0:1dd:22ec:7b22 with SMTP id q7-20020a17090311c700b001dd22ec7b22mr19318070plh.33.1710353919264;
+        Wed, 13 Mar 2024 11:18:39 -0700 (PDT)
+Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
+        by smtp.gmail.com with ESMTPSA id m4-20020a170902db0400b001dd6ebd88b0sm6828587plx.198.2024.03.13.11.18.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 11:18:38 -0700 (PDT)
+Date: Wed, 13 Mar 2024 18:18:35 +0000
+From: Mingwei Zhang <mizhang@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Wei W Wang <wei.w.wang@intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Aaron Lewis <aaronlewis@google.com>,
+	Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH] KVM: x86/pmu: Return correct value of
+ IA32_PERF_CAPABILITIES for userspace after vCPU has run
+Message-ID: <ZfHt-waLl3mg0Lbx@google.com>
+References: <20240313003739.3365845-1-mizhang@google.com>
+ <DS0PR11MB63731F54EA26D14CF7D6A3FDDC2A2@DS0PR11MB6373.namprd11.prod.outlook.com>
+ <ZfG7SgyqTTtqF3cw@google.com>
+ <CABgObfYfAS2DBaW71iUcQgua7K3VY4nz8krGYGxyBt1+7i193A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABgObfYfAS2DBaW71iUcQgua7K3VY4nz8krGYGxyBt1+7i193A@mail.gmail.com>
 
-On 13 March 2024 17:50:48 GMT, Peter Hilber <peter=2Ehilber@opensynergy=2Ec=
-om> wrote:
->On 13=2E03=2E24 13:45, David Woodhouse wrote:
->> Surely the whole point of this effort is to provide guests with precise
->> and *unambiguous* knowledge of what the time is?=20
+On Wed, Mar 13, 2024, Paolo Bonzini wrote:
+> On Wed, Mar 13, 2024 at 3:42 PM Sean Christopherson <seanjc@google.com> wrote:
+> > We discussed this whole MSRs mess at PUCK this morning.  I forgot to hit RECORD,
+> > but Paolo took notes and will post them soon.
+> >
+> > Going from memory, the plan is to:
+> >
+> >   1. Commit to, and document, that userspace must do KVM_SET_CPUID{,2} prior to
+> >      KVM_SET_MSRS.
+> 
+> Correct.
+
+This is clear to me now. Glad to have the direction settled down.
+
+> 
+> >   2. Go with roughly what I proposed in the CET thread (for unsupported MSRS,
+> >      read 0 and drop writes of '0')[*].
+> 
+> More precisely, read a sensible default value corresponding to
+> "everything disabled", which generally speaking should be 0. And
+> generally speaking, commit to:
+> - allowing host_initiated reads independent of CPUID
+> - allowing host_initiated writes of the same value that was read
+> - blocking host_initiated writes of nonzero (or nondefault) values if
+> the corresponding guest CPUID bit is clear
+
 >
->I would say, a fundamental point of this effort is to enable such
->implementations, and to detect if a device is promising to support this=
-=2E
->
->Where we might differ is as to whether the Virtio clock *for every
->implementation* has to be *continuously* accurate w=2Er=2Et=2E a time sta=
-ndard,
->or whether *for some implementations* it could be enough that all guests =
-in
->the local system have the same, precise local notion of time, which might
->be off from the actual time standard=2E
+> Right now some MSRs do not allow host initiated writes, for example
+> MSR_KVM_* (check for calls to guest_pv_has), and the VMX MSRs.
+> 
+> Generally speaking we want to fix them, unless it's an unholy pain
+> (for example the VMX capabilities MSRs are good candidates for pain,
+> because they have some "must be 1" bits in bits 63:32).
+> 
+> All this should be covered by selftests.
+> 
+> >   3. Add a quire for PERF_CAPABILITIES, ARCH_CAPABILITIES, and PLATFORM_INFO
+> >      (if quirk==enabled, keep KVM's current behavior; if quirk==disabled, zero-
+> >       initialize the MSRs).
+> 
+> More precisely, even if quirk==enabled we will move the setting of a
+> non-zero default value for the MSR from vCPU creation to
+> KVM_SET_CPUID2, and only set a non-zero default value if the CPUID bit
+> is set.
+> 
+> Another small thing in my notes was to look at the duplication between
+> emulated_msrs and msr_based_features_all_except_vmx. Right now
+> MSR_AMD64_DE_CFG is the only one that is not in both and, probably not
+> a coincidence, it's also the only one implemented only for one vendor.
+> There's probably some opportunity for both cleanups and fixes. It
+> looks like svm_has_emulated_msr(MSR_AMD64_DE_CFG) should return true
+> for example.
+> 
+> Paolo
+> 
 
-That makes sense, but remember I don't just want {X, Y, Z} but *also* the =
-error bounds of =C2=B1deltaY and =C2=B1deltaZ too=2E
+Ack. Thanks.
 
-So your example just boils down to "I'm calling it UTC, and it's really pr=
-ecise, but we make no promises about its *accuracy*"=2E And that's fine=2E
-
->Also, cf=2E ptp_kvm, which AFAIU doesn't address leap seconds at all=2E=
-=2E=2E
-
-KVM is not an exemplar of good time practices=2E=20
-Not in *any* respect :)
-
->With your described use case the UTC_SMEARED clock should of course not b=
-e
->used=2E The UTC_SMEARED clock would get a distinct name through udev, lik=
-e
->/dev/ptp_virtio_utc_smeared, so the incompatibility could at least be
->detected=2E
-
-As long as it's clear to all concerned that this is fundamentally not usab=
-le as an accurate time source, and is only for the local-sync case you desc=
-ribed, sure=2E
-
->> Using UTC is bad enough, because for a UTC timestamp in the middle of a
->> leap second the guest can't know know *which* occurrence of that leap
->> second it is, so it might be wrong by a second=2E To resolve that
->> ambiguity needs a leap indicator and/or tai_offset field=2E
->
->I agree that virtio-rtc should communicate this=2E The question is, what
->exactly, and for which clock read request?
-
-Are we now conflating software architecture (and Linux in particular) with=
- "hardware" design?
-
-To a certain extent, as long as the virtio-rtc device is designed to expos=
-e time precisely and unambiguously, it's less important if the Linux kernel=
- *today* can use that=2E Although of course we should strive for that=2E Le=
-t's be=2E=2E=2Ewell, *unambiguous*, I suppose=2E=2E=2E that we've changed t=
-opics to discuss that though=2E
-
->As for PTP clocks:
->
->- It doesn't fit into the ioctl PTP_SYS_OFFSET_PRECISE2=2E
->
->- The clock_adjtime(2) tai_offset and return value could be set (if
->  upstream will accept this)=2E Would this help? As discussed, user space
->  would need to interpret this (and currently no dynamic POSIX clock sets
->  this)=2E
-
-Hm, maybe?
-
-
->>> I think I can add a SHOULD requirement which vaguely refers to vCPU 0,=
- or
->>> boot vCPU=2E But the Virtio device is not necessarily hosted by a hype=
-rvisor,
->>> so the device might not even know which vCPUs there are=2E E=2Eg=2E th=
-ere is even
->>> interest to make virtio-rtc work as part of the virtio-net device (whi=
-ch
->>> might be implemented in hardware)=2E
->>=20
->> Sure, but those implementations aren't going to offer the TSC pairing
->> at all, are they?
->>=20
->
->They could offer an Intel ART pairing (some physical PTP NICs are already
->doing this, look for the convert_art_to_tsc() users)=2E
-
-Right, but isn't that software's problem? The time pairing is defined agai=
-nst the ART in that case=2E
+> > With those pieces in place, KVM can simply check X86_FEATURE_PDCM for both reads
+> > and writes to PERF_CAPABILITIES, and the common userspace MSR handling will
+> > convert "unsupported" to "success" as appropriate.
+> >
+> > [*] https://lore.kernel.org/all/ZfDdS8rtVtyEr0UR@google.com
+> 
 
