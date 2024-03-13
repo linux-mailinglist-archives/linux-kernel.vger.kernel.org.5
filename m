@@ -1,191 +1,101 @@
-Return-Path: <linux-kernel+bounces-101625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 956BA87A998
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:37:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D79887A993
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:36:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 496C2281C5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:37:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE7D5281BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6207A290A;
-	Wed, 13 Mar 2024 14:36:20 +0000 (UTC)
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C0FC127;
+	Wed, 13 Mar 2024 14:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TK/TAtRc"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBEF43153;
-	Wed, 13 Mar 2024 14:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A744A11
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710340579; cv=none; b=uOZlfeX2uOPMFAdg5cZvV+COYL9urWbrcDtjzi0fCm2qayZmCMk/vzuc18cCMEqz+9KqEES3LGk4yQONrs0Nq+4rYU6Lh/uVXjdXo2YAmAhyI1qIjmb0lbXQk3bahyKEBmKCQBsDtqhLreTICOo9MPzP0Omii8u99CfN+Bf28TM=
+	t=1710340576; cv=none; b=oZLz/3yOAQI4PV7dJBETkNgXSbKuoyMiYhWppS3otmyqbQJShDGHSraJ4W6rzfx/GPrU+sSQ41Ds1nJcOFKyGyqjJehNWGJx+mzGLCKi7kou2/lERxyVifVxQj2o1rjZ5l0g0ec+Hle5VUK7nzvLhzZff3RlSnktBkERmNhI9pM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710340579; c=relaxed/simple;
-	bh=4kSzgAPS7b/6Qy1T/egELO1W8cCxPyzCB5Q1Lg4QaMg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q0sm555HRzleukaVCfxuQoFPIjI/ublbtirGPgtD1ifolbK6SXY6DIftsfHjUwSbr+0wxj5y1aRxvBCXhCD90orDa3zxoUwhKHnQqmO1q6NZA60Z0PK0Qbk+oFybiF2yLTXYlaDY9vVFFV6cDwM0+ikAao6LhUtJEgrkLuq8Vik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-220ce420472so2020689fac.1;
-        Wed, 13 Mar 2024 07:36:17 -0700 (PDT)
+	s=arc-20240116; t=1710340576; c=relaxed/simple;
+	bh=WBtDlLFwjr6a2gQKftAx1qOjLB+FqxnGKwhOZqeQ0jI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LcCEvTk7R9uIgEl86YfJ3i6cneOUf+pNvwfrKRq1IkoG8XHwA+ka9RlF0cBtU8qzYM010gARe17BKRY0cnnY1sCgcR5FI2bVNLYlPO04hYYDwOV1FBVXCNMme1CPpIz5QMLpLcR5txB8gcT+J5mQiR/sUT0j163PHeDlcTWDLWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TK/TAtRc; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a45f257b81fso661437666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:36:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710340573; x=1710945373; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+VNUI98uGBbk7n2ey+cvrGu4esT/FnUUpds3abi4QF0=;
+        b=TK/TAtRckQ3UhnY+oVDNTU2bH+57Zw7Y6giS5SUVLquqOaS5Hb2uxm4Quv2bvOZNxh
+         6Xmnbos7dpsld5FDOxsFDPFu7F7qQ4XoPKeULlZg1QxjrEpwNL9tTxTa8vl3TJnjdZc2
+         ZvW8s7PiOzNTMnHR0KDmELA0InMbjkG7hEMCqUqIYjfWTgaU2wzCE2zXSblFY+sYR5wt
+         INt16/SxpwVfB+K6D8PAr4UdzNyQgHBsSUH7X5k0gz2HnR83S/lKcWFu/cXuDOwgEv2l
+         s8dXvle1whr3cbD0sxG0WRvw6zE9BQWq6mvkZG2q6VtVdSKf1INXEs2alq0rR2oyeIOn
+         J7pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710340577; x=1710945377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pZ/CrXQS2qKyBuyyZ5fVt7Tba0YRofaW6XNtwA1CrZ8=;
-        b=At77UDB6BvJhJyeWPTaTPx0Z6Wm2idEuuvnsDnwLrdXVh/GQHr50BsrrI5ui1lZyc8
-         Iw3kGJK5G2IRLv0ygy6iQUZ30SWlUqO35fBdbJkiLEhJ/o0lN7EHN0eADmh9zngqw7Jl
-         uLNWusqlqA2yMqgMpGoLiXQmTU+RAKu8/95doV+i+e/iJqfn1FWMp9EWby6xTq4DTLGv
-         UDlcv540Ihyphexv7EaCivPaPpruHh1/rAYBHPBmm+jXMty5eY+sErYhi0pSZlff7M+H
-         E6yXVxxKKcOt/x/ghV+DBbwrOzocRb5g+W0zvLsDZxWMy9nGxo7F1wnfFx5CZl2pYxJn
-         p5ag==
-X-Forwarded-Encrypted: i=1; AJvYcCU3DBJUgIDjWVoz3ahsBnodKC4AIMIzy5EnFAXZjvoKyxd4DQ82Btbw4snjm0cQQhaD3TnNdxwQ14oA/oQC17O9X3z3nIQaJwX8DBFZPC2977uZBHHQ/DznQU5L6yv+6EiZyT7qsfI=
-X-Gm-Message-State: AOJu0YxDtyKopF+8+jKgH2g3qGW8K3w4T64vApTOkiTNAa37UgnMuSK+
-	wHvYtdV+I/quNxwI0yfdqn6zE7yjL0N8qY1HzgJIqB2R+BfhwYHWLV7zaggSw3Sn8AsZgRdi/tI
-	NSeAQBwCau71B4j+s1nH8LWYeBpc=
-X-Google-Smtp-Source: AGHT+IGRTbUgJg5jv7tmdyyZlPs9zAb0SbQS9bjKIAxVdawQ+PEILrXDZWItUu1HzlmpTODLRIqLKHapDaN6Et3CeCg=
-X-Received: by 2002:a05:6871:3325:b0:221:cb1b:cc05 with SMTP id
- nf37-20020a056871332500b00221cb1bcc05mr2134168oac.0.1710340577247; Wed, 13
- Mar 2024 07:36:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710340573; x=1710945373;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+VNUI98uGBbk7n2ey+cvrGu4esT/FnUUpds3abi4QF0=;
+        b=B1blNs/ilvuxswPCawhxx8aroz9DNUadgmzCqjebKhMzaj9KBJT8BFWG/RV7rJduuL
+         tbzjcnxKINiaA7su3bjJ68CSTIR1ncp+OQ6W1d0foSC1j0kpaSE3AQiZp7+qffIU73rI
+         AEIb2XxVqhDrE/qPJXavC3XEj8ECjT/QOz2dKow8SCEtclkMkrdezI4NYQd1yPKF2JAk
+         I4geVaLuH11tov0GP4jF5deFLuCJPsn7gF5siBdxUsNPqXRMaYzYK26PM1pLAL8LTRnn
+         69oZJ8WnZoBuStNDxBOJNGdru3ucTuzq2EBt6O1GHOqteG1EyqZ1j+3ifF2Bx8B2Nrm5
+         BdWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/U7RIzoY3D6tMsk05pmgOLG7p6/NtWTF0jX9GpXUwQtaMTIb8M1TMjcF/wOQRNhFvSHebSdMtKINZCweIyjLcngqzU4Ky9cS3HMob
+X-Gm-Message-State: AOJu0YzXsgU8UWyTVaB/+wFwXL/nHi8oDWo9gpMFokn9u+NWKBmNR1R1
+	jv0ckjp2P5BKSldV1P6Jvs7eBZ8pTaRl8TZ5UiwsafOnqtSNlpQkNZNKuWqWBlQ=
+X-Google-Smtp-Source: AGHT+IFCa7DFbtK3UHRnTZLgXaB5cqtF2pyYFRenSdXtbOB2+Qa8CNuq+x9/Pi/H+Tmk36J9EbvdjA==
+X-Received: by 2002:a17:906:ba87:b0:a45:c1a0:5c03 with SMTP id cu7-20020a170906ba8700b00a45c1a05c03mr9938948ejd.47.1710340572593;
+        Wed, 13 Mar 2024 07:36:12 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id x10-20020a1709064a8a00b00a45c9ea48e3sm4895099eju.193.2024.03.13.07.36.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 07:36:12 -0700 (PDT)
+Date: Wed, 13 Mar 2024 17:36:08 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Felix N. Kimbu" <felixkimbu1@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	outreachy@lists.linux.dev
+Subject: Re: [PATCH] staging: wlan-ng: Rename 'wlan_unsetup' to
+ 'wlan_teardown'
+Message-ID: <089411e2-50fc-4a66-bd07-f76c5aa2788e@moroto.mountain>
+References: <ZfGG093fyjI4G/ci@MOLeToid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8f00bf23-47cb-4656-a326-6d8d1d0d10d6@linaro.org>
-In-Reply-To: <8f00bf23-47cb-4656-a326-6d8d1d0d10d6@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 13 Mar 2024 15:36:05 +0100
-Message-ID: <CAJZ5v0iSxZMPnCf3MSJMSLXhkfEmDWNVv2eq3PXSivZaYtLMFQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Thermal material for v6.9-rc1
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
-	Frank Wunderlich <frank-w@public-files.de>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Fabio Estevam <festevam@denx.de>, Martin Botka <martin.botka@somainline.org>, 
-	Mark Brown <broonie@kernel.org>, Peng Fan <peng.fan@nxp.com>, 
-	Konrad Dybcio <konrad.dybcio@somainline.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux PM mailing list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfGG093fyjI4G/ci@MOLeToid>
 
-Hi Daniel,
+On Wed, Mar 13, 2024 at 11:58:27AM +0100, Felix N. Kimbu wrote:
+> Rename function identifier 'wlan_unsetup' to 'wlan_teardown' in files
+> p80211netdev.c, p80211netdev.h and prism2usb.c, a pairing function for
+> 'wlan_setup' to match common kernel coding style.
+> 
+> Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
 
-On Wed, Mar 13, 2024 at 3:06=E2=80=AFPM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
-> The following changes since commit dcb497ec993265dfc5fffa60b486c1ad353e9a=
-d5:
->
->    Merge branches 'thermal-core' and 'thermal-intel' (2024-03-07
-> 21:05:12 +0100)
->
-> are available in the Git repository at:
->
->
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-> tags/thermal-v6.9-rc1
->
-> for you to fetch changes up to 1828c1c17bb2adf3a3f26abc69cb3fe971eac0e4:
->
->    thermal/drivers/rcar_gen3: Add support for R-Car V4M (2024-03-11
-> 17:14:46 +0100)
->
-> ----------------------------------------------------------------
-> - Fix memory leak in the error path at probe time in the Mediatek LVTS
->    driver (Christophe Jaillet)
->
-> - Fix control buffer enablement regression on Meditek MT7896 (Frank
->    Wunderlich)
->
-> - Drop spaces before TABs in different places: thermal-of, ST drivers
->    and Makefile (Geert Uytterhoeven)
->
-> - Adjust DT binding for NXP as fsl,tmu-range min/maxItems can vary
->    among several SoC versions (Fabio Estevam)
->
-> - Add support for H616 THS controller for the Sun8i platforms. Note
->    that this change relies on another change in the SoC specific code
->    which is included in this branch (Martin Botka)
->
-> - Don't fail probe due to zone registration failure because there is
->    no trip points defined in the DT (Mark Brown)
->
-> - Support variable TMU array size for new platforms (Peng Fan)
->
-> - Adjust the DT binding for thermal-of and make the polling time not
->    required and assume it is zero when not found in the DT (Konrad
->    Dybcio)
->
-> - Add r8a779h0 support in both the DT and the driver (Geert Uytterhoeven)
->
-> ----------------------------------------------------------------
-> Andre Przywara (3):
->        soc: sunxi: sram: export register 0 for THS on H616
->        thermal/drivers/sun8i: Explain unknown H6 register value
->        thermal/drivers/sun8i: Add SRAM register access code
->
-> Christophe JAILLET (1):
->        thermal/drivers/mediatek/lvts_thermal: Fix a memory leak in an
-> error handling path
->
-> Duy Nguyen (1):
->        dt-bindings: thermal: rcar-gen3-thermal: Add r8a779h0 support
->
-> Fabio Estevam (1):
->        dt-bindings: thermal: qoriq-thermal: Adjust fsl,tmu-range
-> min/maxItems
->
-> Frank Wunderlich (1):
->        thermal/drivers/mediatek: Fix control buffer enablement on MT7896
->
-> Geert Uytterhoeven (2):
->        thermal: Drop spaces before TABs
->        thermal/drivers/rcar_gen3: Add support for R-Car V4M
->
-> Konrad Dybcio (2):
->        dt-bindings: thermal-zones: Don't require polling-delay(-passive)
->        thermal/of: Assume polling-delay(-passive) 0 when absent
->
-> Maksim Kiselev (1):
->        thermal/drivers/sun8i: Extend H6 calibration to support 4 sensors
->
-> Mark Brown (1):
->        thermal/drivers/sun8i: Don't fail probe due to zone registration
-> failure
->
-> Martin Botka (2):
->        dt-bindings: thermal: sun8i: Add H616 THS controller
->        thermal/drivers/sun8i: Add support for H616 THS controller
->
-> Peng Fan (1):
->        thermal/drivers/qoriq: Fix getting tmu range
->
->   .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |  34 +++--
->   .../devicetree/bindings/thermal/qoriq-thermal.yaml |   3 +-
->   .../bindings/thermal/rcar-gen3-thermal.yaml        |   2 +
->   .../devicetree/bindings/thermal/thermal-zones.yaml |   2 -
->   drivers/soc/sunxi/sunxi_sram.c                     |  22 ++++
->   drivers/thermal/Makefile                           |   2 +-
->   drivers/thermal/mediatek/auxadc_thermal.c          |   3 +
->   drivers/thermal/mediatek/lvts_thermal.c            |   4 +-
->   drivers/thermal/qoriq_thermal.c                    |  12 +-
->   drivers/thermal/rcar_gen3_thermal.c                |   4 +
->   drivers/thermal/st/st_thermal.h                    |  18 +--
->   drivers/thermal/st/st_thermal_memmap.c             |   2 +-
->   drivers/thermal/sun8i_thermal.c                    | 139
-> +++++++++++++++++----
->   drivers/thermal/thermal_of.c                       |  14 ++-
->   14 files changed, 203 insertions(+), 58 deletions(-)
->
-> --
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Pulled, thanks!
+We're probably going to delete the wlan-ng driver soon though...
+
+regards,
+dan carpenter
 
