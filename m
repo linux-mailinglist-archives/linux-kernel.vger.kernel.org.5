@@ -1,172 +1,375 @@
-Return-Path: <linux-kernel+bounces-101691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B2C87AA95
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:41:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C2F487AA9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2370F1F23918
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:41:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B054F1C209EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D3747A73;
-	Wed, 13 Mar 2024 15:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38713481B3;
+	Wed, 13 Mar 2024 15:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KRkhO/Q/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JzonOFgY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDA1481BE
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE5C47773;
+	Wed, 13 Mar 2024 15:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710344485; cv=none; b=Fm8RFka0FKiiSpTqJJ+nplT4lWF2nclUbJXYnG/slz67Mrcng6is+aXZtonxUh1JF+QxAulLCNARyBG22HFD4TroFf4HN++hl/mGrvDOzkJ+mVe3HYPidokrZvLUOfmCg+z17w8Wz/OIUB8zW0kruSleBq0dbcU25KOKU9RsZTI=
+	t=1710344700; cv=none; b=liFZjXhRfVGnhalG+k14bdMBQAhreWKLgtY9Fq+/47ynfYD2km1URQ+Gcu/59XzeLTwhWMWPxdihUn7Kbh5mBQItZ3/puPOmor+FZclZEjtdJR+Gn7R45caW1WR/vNHjeH7d5m73B4YzzEh3B0mcHTCAEALJJq+5BZh4w+6TrAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710344485; c=relaxed/simple;
-	bh=145LGBIIbFGitWjkjqb+xZP1asaiY34xwZaQtZhXB/s=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Lxlhj11a6xF+O6EG1eqUi2sBTbMt3E5Rp2pko3BaxNZzetYk95NgtWq1a68GW1z+zW8wYOIVKqpZJPPzBtvbWr0mcuPPbrQu2MCRNJn1H3EWcGAa2NfCTIh/i3c1xQQKC+1Eav6EhckzHWFThptMKvZHwDkK3XLU/aDGnFQJQXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KRkhO/Q/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710344481;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=4m99PKufR99CbJzmaNHgQ9BpyX8a7GHA951gGV1Wgwc=;
-	b=KRkhO/Q/SqhiLdl2OYIZeco+BnP2Nle9K5wLO31kj+tmmV/1zrhu9UbXK3cPbRMstjYi8V
-	rQmFsB1uu6LuBAnmYoCzPWdsRo/HBSLNJCfAw8q0l+laj1/JjtSzw0Ko1cEqwjoay8XM8m
-	cTlDs9Wj8XveIyETERYo99SgTFBxT5E=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-56-UaoKHYwdNJCSeLradlRrKA-1; Wed, 13 Mar 2024 11:41:20 -0400
-X-MC-Unique: UaoKHYwdNJCSeLradlRrKA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-412f0158ddaso7324535e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:41:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710344479; x=1710949279;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4m99PKufR99CbJzmaNHgQ9BpyX8a7GHA951gGV1Wgwc=;
-        b=c4McELzksfa95SWFrELURVP8uA68ZEONOe6hyu5k7hsP1DI5ETBnJSLDnq4eZ5YQdp
-         1ChAKKnsIb4WXuwYfYUFa7sgyR3WBARyvfzpcX/VPyHmzN9/0lEGxQDPfk+qA6/W+WOk
-         D6t1fHEOmdtx1N1SOpQnIzsVI0IQ3UgBx4BrQJwFxXDhHTZQlkJMu61ZDrB+rf2HxKCn
-         7d6k3ca+er5/GYGOZ09GZVcIv8phjH80B+JRhgxBRjvLskZIJUZd/WwkoNlZ4dHo1Ljy
-         F/5a/x8gbR3MUpmthOk8egy9GQsvXFn5mEkaTeywDa7OhXpgtj3nM2sH8tTqaIoEBF71
-         DAPg==
-X-Forwarded-Encrypted: i=1; AJvYcCV36YT+OHwd99ct0WyLJE7FDo7AUMVMebotIPNuxvrA8Rwiv9QUuzPhZoLvIVP6heg8gFfW+n9zDky1dBs40V+hbRCrqG7My+vCmm8S
-X-Gm-Message-State: AOJu0YzfVU/bLtoH55zB3N4qQq+SPSl2M7HCbJvf/+BvlLDZl7dWbV7u
-	vaeIDQRbS8+AAdnk283iSNck9kJ/SdaZxssO4sVEr37L18dlVdywzgoST8aM367vrMbzmQvsenT
-	ySBUit2z9oAd9FIie8whrbA9ITrfuxovQYvGtypUXq3uRjp+tdNGEiTANOVO/+g==
-X-Received: by 2002:a05:600c:1f0a:b0:412:ddee:e66f with SMTP id bd10-20020a05600c1f0a00b00412ddeee66fmr1617031wmb.2.1710344478984;
-        Wed, 13 Mar 2024 08:41:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFuxcedPNKR3ChMcgAsmRfgZCiVheZQmFQRxZQf9+ZjawsgxJkCbYOoPtFPns8Dy+ezQ4MM1g==
-X-Received: by 2002:a05:600c:1f0a:b0:412:ddee:e66f with SMTP id bd10-20020a05600c1f0a00b00412ddeee66fmr1617013wmb.2.1710344478571;
-        Wed, 13 Mar 2024 08:41:18 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-239-131.dyn.eolo.it. [146.241.239.131])
-        by smtp.gmail.com with ESMTPSA id fc6-20020a05600c524600b00413ee7921b4sm382424wmb.15.2024.03.13.08.41.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 08:41:18 -0700 (PDT)
-Message-ID: <e826f337c3db612852c5f543d123ee53adc885bb.camel@redhat.com>
-Subject: Re: [PATCH net] udp: fix segmentation crash for untrusted source
- packet
-From: Paolo Abeni <pabeni@redhat.com>
-To: Shiming Cheng <shiming.cheng@mediatek.com>, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lena.wang@mediatek.com
-Date: Wed, 13 Mar 2024 16:41:16 +0100
-In-Reply-To: <20240313133402.9027-1-shiming.cheng@mediatek.com>
-References: <20240313133402.9027-1-shiming.cheng@mediatek.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1710344700; c=relaxed/simple;
+	bh=4LS8aRKIv6OoIEijA+nidlByxj4qjolaeOnhyJK/vSk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IBuFQlelTQ8lksk/b5oEZNGXyUA4yn7DBuh+EI4OMn7tkxnDC5XE2tEmlkp01QbGImwizo3HipcGP3eRkEL5sCGjsGjXwppHhNcL8Kjb106Z69nmlPxrW51j4WP2IMYFzrZfIIB4rk6sSJdXkNOoSv+YsqtDpZbakSJcuJqNIGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JzonOFgY; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710344698; x=1741880698;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4LS8aRKIv6OoIEijA+nidlByxj4qjolaeOnhyJK/vSk=;
+  b=JzonOFgYqZ2N+R+u8WO1Mvr0wwITkJUlUZDq5dwqry4n/wISQfO5qHKo
+   iciWLhQ/9wtutKQmHAshti4yXhz5iHe8I99oTkuT/KvtiHPvsAhsy2Yf9
+   LHhkZvv/JwmYe/5sgVYQxgzz9n0kjDoSHAsIDxrEPCbUXuTKgnPq3Sqxc
+   j+FM35Kx8Cg1SJdlSd/LYMCf1hwegFIpj4FoslMQVGdwfHUUYfPOau3K0
+   +lj4o8Ctq7apLD9DMEnz8+t0M/u2KGdMkBXS3dZIlATFQDsNi4bWcsAjM
+   dOyOAVjTnH6du1U6xj6EGr3OmS3As8v0BvF6RuMgvw9AS5sUIxUdjIeJK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="16515873"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="16515873"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 08:44:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="42969991"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 13 Mar 2024 08:44:53 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rkQmg-000CU7-1f;
+	Wed, 13 Mar 2024 15:44:50 +0000
+Date: Wed, 13 Mar 2024 23:44:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Robin Murphy <robin.murphy@arm.com>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	x86@kernel.org, linux-perf-users@vger.kernel.org,
+	jialong.yang@shingroup.cn
+Subject: Re: [PATCH 04/10] perf: Rename PERF_PMU_CAP_NO_INTERRUPT
+Message-ID: <202403132349.Ph0CYSV2-lkp@intel.com>
+References: <0999a39f0a068979dbcc6119380f63d706101b4f.1710257512.git.robin.murphy@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0999a39f0a068979dbcc6119380f63d706101b4f.1710257512.git.robin.murphy@arm.com>
 
-On Wed, 2024-03-13 at 21:34 +0800, Shiming Cheng wrote:
-> Kernel exception is reported when making udp frag list segmentation.
-> Backtrace is as below:
->     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:229
->     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:262
-> features=3Dfeatures@entry=3D19, is_ipv6=3Dfalse)
->     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:289
-> features=3D19)
->     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:399
-> features=3D19)
->     at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/af_inet.c:1418
-> skb@entry=3D0x0, features=3D19, features@entry=3D0)
->     at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:53
-> tx_path=3D<optimized out>)
->     at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:124
+Hi Robin,
 
-A full backtrace would help better understanding the issue.
+kernel test robot noticed the following build warnings:
 
-> This packet's frag list is null while gso_type is not 0. Then it is treat=
-ed
-> as a GRO-ed packet and sent to segment frag list. Function call path is
-> udp_rcv_segment =3D> config features value
->     __udpv4_gso_segment  =3D> skb_gso_ok returns false. Here it should be
->                             true.=C2=A0
+[auto build test WARNING on perf-tools-next/perf-tools-next]
+[also build test WARNING on perf-tools/perf-tools linus/master v6.8 next-20240313]
+[cannot apply to acme/perf/core tip/perf/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Why? If I read correctly the above, this is GSO packet landing in an
-UDP socket with no UDP_GRO sockopt. The packet is expected to be
-segmented again.
+url:    https://github.com/intel-lab-lkp/linux/commits/Robin-Murphy/perf-alibaba_uncore_drw-Use-correct-CPU-affinity/20240313-013915
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
+patch link:    https://lore.kernel.org/r/0999a39f0a068979dbcc6119380f63d706101b4f.1710257512.git.robin.murphy%40arm.com
+patch subject: [PATCH 04/10] perf: Rename PERF_PMU_CAP_NO_INTERRUPT
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20240313/202403132349.Ph0CYSV2-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240313/202403132349.Ph0CYSV2-lkp@intel.com/reproduce)
 
->				Failed reason is features doesn't
-match
->                             gso_type.
->         __udp_gso_segment_list
->             skb_segment_list =3D> packet is linear with skb->next =3D NUL=
-L
->             __udpv4_gso_segment_list_csum =3D> use skb->next directly and
->                                              crash happens
->=20
-> In rx-gro-list GRO-ed packet is set gso type as
-> NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRAGLIST in napi_gro_complete. In gso
-> flow the features should also set them to match with gso_type. Or else it
-> will always return false in skb_gso_ok. Then it can't discover the
-> untrusted source packet and result crash in following function.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403132349.Ph0CYSV2-lkp@intel.com/
 
-What is the 'untrusted source' here? I read the above as the packet
-aggregation happened in the GRO engine???
+All warnings (new ones prefixed by >>):
 
-Could you please give a complete description of the relevant scenario?
-
-> Fixes: f2696099c6c6 ("udp: Avoid post-GRO UDP checksum recalculation")
-> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
-> ---
->  include/net/udp.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index 488a6d2babcc..c87baa23b9da 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -464,7 +464,7 @@ void udpv6_encap_enable(void);
->  static inline struct sk_buff *udp_rcv_segment(struct sock *sk,
->  					      struct sk_buff *skb, bool ipv4)
->  {
-> -	netdev_features_t features =3D NETIF_F_SG;
-> +	netdev_features_t features =3D NETIF_F_SG | NETIF_F_GSO_UDP_L4 | NETIF_=
-F_GSO_FRAGLIST;
-
-This looks wrong: real UDP_L4 GSO packets will not segmented anymore
-and should be dropped (?!?)
+   arch/powerpc/perf/hv-24x7.c: In function 'hv_24x7_init':
+   arch/powerpc/perf/hv-24x7.c:1742:9: error: expected ';' before 'r'
+    1742 |         r = create_events_from_catalog(&event_group.attrs,
+         |         ^
+   arch/powerpc/perf/hv-24x7.c: At top level:
+>> arch/powerpc/perf/hv-24x7.c:764:12: warning: 'create_events_from_catalog' defined but not used [-Wunused-function]
+     764 | static int create_events_from_catalog(struct attribute ***events_,
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+vim +/create_events_from_catalog +764 arch/powerpc/perf/hv-24x7.c
+
+5c5cd7b502595f Cody P Schafer        2015-01-30   763  
+7debc970ae7a55 Li Zhong              2015-04-13  @764  static int create_events_from_catalog(struct attribute ***events_,
+5c5cd7b502595f Cody P Schafer        2015-01-30   765  				      struct attribute ***event_descs_,
+5c5cd7b502595f Cody P Schafer        2015-01-30   766  				      struct attribute ***event_long_descs_)
+5c5cd7b502595f Cody P Schafer        2015-01-30   767  {
+38d81846106bb1 Thiago Jung Bauermann 2017-06-29   768  	long hret;
+5c5cd7b502595f Cody P Schafer        2015-01-30   769  	size_t catalog_len, catalog_page_len, event_entry_count,
+5c5cd7b502595f Cody P Schafer        2015-01-30   770  	       event_data_len, event_data_offs,
+5c5cd7b502595f Cody P Schafer        2015-01-30   771  	       event_data_bytes, junk_events, event_idx, event_attr_ct, i,
+5c5cd7b502595f Cody P Schafer        2015-01-30   772  	       attr_max, event_idx_last, desc_ct, long_desc_ct;
+5c5cd7b502595f Cody P Schafer        2015-01-30   773  	ssize_t ct, ev_len;
+12bf85a71000af Thiago Jung Bauermann 2017-06-29   774  	uint64_t catalog_version_num;
+5c5cd7b502595f Cody P Schafer        2015-01-30   775  	struct attribute **events, **event_descs, **event_long_descs;
+5c5cd7b502595f Cody P Schafer        2015-01-30   776  	struct hv_24x7_catalog_page_0 *page_0 =
+5c5cd7b502595f Cody P Schafer        2015-01-30   777  		kmem_cache_alloc(hv_page_cache, GFP_KERNEL);
+5c5cd7b502595f Cody P Schafer        2015-01-30   778  	void *page = page_0;
+5c5cd7b502595f Cody P Schafer        2015-01-30   779  	void *event_data, *end;
+5c5cd7b502595f Cody P Schafer        2015-01-30   780  	struct hv_24x7_event_data *event;
+5c5cd7b502595f Cody P Schafer        2015-01-30   781  	struct rb_root ev_uniq = RB_ROOT;
+7debc970ae7a55 Li Zhong              2015-04-13   782  	int ret = 0;
+5c5cd7b502595f Cody P Schafer        2015-01-30   783  
+7debc970ae7a55 Li Zhong              2015-04-13   784  	if (!page) {
+7debc970ae7a55 Li Zhong              2015-04-13   785  		ret = -ENOMEM;
+5c5cd7b502595f Cody P Schafer        2015-01-30   786  		goto e_out;
+7debc970ae7a55 Li Zhong              2015-04-13   787  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   788  
+5c5cd7b502595f Cody P Schafer        2015-01-30   789  	hret = h_get_24x7_catalog_page(page, 0, 0);
+7debc970ae7a55 Li Zhong              2015-04-13   790  	if (hret) {
+7debc970ae7a55 Li Zhong              2015-04-13   791  		ret = -EIO;
+5c5cd7b502595f Cody P Schafer        2015-01-30   792  		goto e_free;
+7debc970ae7a55 Li Zhong              2015-04-13   793  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   794  
+5c5cd7b502595f Cody P Schafer        2015-01-30   795  	catalog_version_num = be64_to_cpu(page_0->version);
+5c5cd7b502595f Cody P Schafer        2015-01-30   796  	catalog_page_len = be32_to_cpu(page_0->length);
+5c5cd7b502595f Cody P Schafer        2015-01-30   797  
+5c5cd7b502595f Cody P Schafer        2015-01-30   798  	if (MAX_4K < catalog_page_len) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   799  		pr_err("invalid page count: %zu\n", catalog_page_len);
+7debc970ae7a55 Li Zhong              2015-04-13   800  		ret = -EIO;
+5c5cd7b502595f Cody P Schafer        2015-01-30   801  		goto e_free;
+5c5cd7b502595f Cody P Schafer        2015-01-30   802  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   803  
+5c5cd7b502595f Cody P Schafer        2015-01-30   804  	catalog_len = catalog_page_len * 4096;
+5c5cd7b502595f Cody P Schafer        2015-01-30   805  
+5c5cd7b502595f Cody P Schafer        2015-01-30   806  	event_entry_count = be16_to_cpu(page_0->event_entry_count);
+5c5cd7b502595f Cody P Schafer        2015-01-30   807  	event_data_offs   = be16_to_cpu(page_0->event_data_offs);
+5c5cd7b502595f Cody P Schafer        2015-01-30   808  	event_data_len    = be16_to_cpu(page_0->event_data_len);
+5c5cd7b502595f Cody P Schafer        2015-01-30   809  
+12bf85a71000af Thiago Jung Bauermann 2017-06-29   810  	pr_devel("cv %llu cl %zu eec %zu edo %zu edl %zu\n",
+12bf85a71000af Thiago Jung Bauermann 2017-06-29   811  			catalog_version_num, catalog_len,
+5c5cd7b502595f Cody P Schafer        2015-01-30   812  			event_entry_count, event_data_offs, event_data_len);
+5c5cd7b502595f Cody P Schafer        2015-01-30   813  
+5c5cd7b502595f Cody P Schafer        2015-01-30   814  	if ((MAX_4K < event_data_len)
+5c5cd7b502595f Cody P Schafer        2015-01-30   815  			|| (MAX_4K < event_data_offs)
+5c5cd7b502595f Cody P Schafer        2015-01-30   816  			|| (MAX_4K - event_data_offs < event_data_len)) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   817  		pr_err("invalid event data offs %zu and/or len %zu\n",
+5c5cd7b502595f Cody P Schafer        2015-01-30   818  				event_data_offs, event_data_len);
+7debc970ae7a55 Li Zhong              2015-04-13   819  		ret = -EIO;
+5c5cd7b502595f Cody P Schafer        2015-01-30   820  		goto e_free;
+5c5cd7b502595f Cody P Schafer        2015-01-30   821  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   822  
+5c5cd7b502595f Cody P Schafer        2015-01-30   823  	if ((event_data_offs + event_data_len) > catalog_page_len) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   824  		pr_err("event data %zu-%zu does not fit inside catalog 0-%zu\n",
+5c5cd7b502595f Cody P Schafer        2015-01-30   825  				event_data_offs,
+5c5cd7b502595f Cody P Schafer        2015-01-30   826  				event_data_offs + event_data_len,
+5c5cd7b502595f Cody P Schafer        2015-01-30   827  				catalog_page_len);
+7debc970ae7a55 Li Zhong              2015-04-13   828  		ret = -EIO;
+5c5cd7b502595f Cody P Schafer        2015-01-30   829  		goto e_free;
+5c5cd7b502595f Cody P Schafer        2015-01-30   830  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   831  
+8f69dc701aac17 Sukadev Bhattiprolu   2016-02-16   832  	if (SIZE_MAX - 1 < event_entry_count) {
+8f69dc701aac17 Sukadev Bhattiprolu   2016-02-16   833  		pr_err("event_entry_count %zu is invalid\n", event_entry_count);
+7debc970ae7a55 Li Zhong              2015-04-13   834  		ret = -EIO;
+5c5cd7b502595f Cody P Schafer        2015-01-30   835  		goto e_free;
+5c5cd7b502595f Cody P Schafer        2015-01-30   836  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   837  
+5c5cd7b502595f Cody P Schafer        2015-01-30   838  	event_data_bytes = event_data_len * 4096;
+5c5cd7b502595f Cody P Schafer        2015-01-30   839  
+5c5cd7b502595f Cody P Schafer        2015-01-30   840  	/*
+5c5cd7b502595f Cody P Schafer        2015-01-30   841  	 * event data can span several pages, events can cross between these
+5c5cd7b502595f Cody P Schafer        2015-01-30   842  	 * pages. Use vmalloc to make this easier.
+5c5cd7b502595f Cody P Schafer        2015-01-30   843  	 */
+5c5cd7b502595f Cody P Schafer        2015-01-30   844  	event_data = vmalloc(event_data_bytes);
+5c5cd7b502595f Cody P Schafer        2015-01-30   845  	if (!event_data) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   846  		pr_err("could not allocate event data\n");
+7debc970ae7a55 Li Zhong              2015-04-13   847  		ret = -ENOMEM;
+5c5cd7b502595f Cody P Schafer        2015-01-30   848  		goto e_free;
+5c5cd7b502595f Cody P Schafer        2015-01-30   849  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   850  
+5c5cd7b502595f Cody P Schafer        2015-01-30   851  	end = event_data + event_data_bytes;
+5c5cd7b502595f Cody P Schafer        2015-01-30   852  
+5c5cd7b502595f Cody P Schafer        2015-01-30   853  	/*
+5c5cd7b502595f Cody P Schafer        2015-01-30   854  	 * using vmalloc_to_phys() like this only works if PAGE_SIZE is
+5c5cd7b502595f Cody P Schafer        2015-01-30   855  	 * divisible by 4096
+5c5cd7b502595f Cody P Schafer        2015-01-30   856  	 */
+5c5cd7b502595f Cody P Schafer        2015-01-30   857  	BUILD_BUG_ON(PAGE_SIZE % 4096);
+5c5cd7b502595f Cody P Schafer        2015-01-30   858  
+5c5cd7b502595f Cody P Schafer        2015-01-30   859  	for (i = 0; i < event_data_len; i++) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   860  		hret = h_get_24x7_catalog_page_(
+5c5cd7b502595f Cody P Schafer        2015-01-30   861  				vmalloc_to_phys(event_data + i * 4096),
+5c5cd7b502595f Cody P Schafer        2015-01-30   862  				catalog_version_num,
+5c5cd7b502595f Cody P Schafer        2015-01-30   863  				i + event_data_offs);
+5c5cd7b502595f Cody P Schafer        2015-01-30   864  		if (hret) {
+12bf85a71000af Thiago Jung Bauermann 2017-06-29   865  			pr_err("Failed to get event data in page %zu: rc=%ld\n",
+12bf85a71000af Thiago Jung Bauermann 2017-06-29   866  			       i + event_data_offs, hret);
+7debc970ae7a55 Li Zhong              2015-04-13   867  			ret = -EIO;
+5c5cd7b502595f Cody P Schafer        2015-01-30   868  			goto e_event_data;
+5c5cd7b502595f Cody P Schafer        2015-01-30   869  		}
+5c5cd7b502595f Cody P Schafer        2015-01-30   870  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   871  
+5c5cd7b502595f Cody P Schafer        2015-01-30   872  	/*
+5c5cd7b502595f Cody P Schafer        2015-01-30   873  	 * scan the catalog to determine the number of attributes we need, and
+5c5cd7b502595f Cody P Schafer        2015-01-30   874  	 * verify it at the same time.
+5c5cd7b502595f Cody P Schafer        2015-01-30   875  	 */
+5c5cd7b502595f Cody P Schafer        2015-01-30   876  	for (junk_events = 0, event = event_data, event_idx = 0, attr_max = 0;
+5c5cd7b502595f Cody P Schafer        2015-01-30   877  	     ;
+5c5cd7b502595f Cody P Schafer        2015-01-30   878  	     event_idx++, event = (void *)event + ev_len) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   879  		size_t offset = (void *)event - (void *)event_data;
+5c5cd7b502595f Cody P Schafer        2015-01-30   880  		char *name;
+5c5cd7b502595f Cody P Schafer        2015-01-30   881  		int nl;
+5c5cd7b502595f Cody P Schafer        2015-01-30   882  
+5c5cd7b502595f Cody P Schafer        2015-01-30   883  		ev_len = catalog_event_len_validate(event, event_idx,
+5c5cd7b502595f Cody P Schafer        2015-01-30   884  						    event_data_bytes,
+5c5cd7b502595f Cody P Schafer        2015-01-30   885  						    event_entry_count,
+5c5cd7b502595f Cody P Schafer        2015-01-30   886  						    offset, end);
+5c5cd7b502595f Cody P Schafer        2015-01-30   887  		if (ev_len < 0)
+5c5cd7b502595f Cody P Schafer        2015-01-30   888  			break;
+5c5cd7b502595f Cody P Schafer        2015-01-30   889  
+5c5cd7b502595f Cody P Schafer        2015-01-30   890  		name = event_name(event, &nl);
+5c5cd7b502595f Cody P Schafer        2015-01-30   891  
+e5f9d8858612c1 Kajol Jain            2020-12-28   892  		if (ignore_event(name)) {
+e5f9d8858612c1 Kajol Jain            2020-12-28   893  			junk_events++;
+e5f9d8858612c1 Kajol Jain            2020-12-28   894  			continue;
+e5f9d8858612c1 Kajol Jain            2020-12-28   895  		}
+5c5cd7b502595f Cody P Schafer        2015-01-30   896  		if (event->event_group_record_len == 0) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   897  			pr_devel("invalid event %zu (%.*s): group_record_len == 0, skipping\n",
+5c5cd7b502595f Cody P Schafer        2015-01-30   898  					event_idx, nl, name);
+5c5cd7b502595f Cody P Schafer        2015-01-30   899  			junk_events++;
+5c5cd7b502595f Cody P Schafer        2015-01-30   900  			continue;
+5c5cd7b502595f Cody P Schafer        2015-01-30   901  		}
+5c5cd7b502595f Cody P Schafer        2015-01-30   902  
+5c5cd7b502595f Cody P Schafer        2015-01-30   903  		if (!catalog_entry_domain_is_valid(event->domain)) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   904  			pr_info("event %zu (%.*s) has invalid domain %d\n",
+5c5cd7b502595f Cody P Schafer        2015-01-30   905  					event_idx, nl, name, event->domain);
+5c5cd7b502595f Cody P Schafer        2015-01-30   906  			junk_events++;
+5c5cd7b502595f Cody P Schafer        2015-01-30   907  			continue;
+5c5cd7b502595f Cody P Schafer        2015-01-30   908  		}
+5c5cd7b502595f Cody P Schafer        2015-01-30   909  
+8f69dc701aac17 Sukadev Bhattiprolu   2016-02-16   910  		attr_max++;
+5c5cd7b502595f Cody P Schafer        2015-01-30   911  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   912  
+5c5cd7b502595f Cody P Schafer        2015-01-30   913  	event_idx_last = event_idx;
+5c5cd7b502595f Cody P Schafer        2015-01-30   914  	if (event_idx_last != event_entry_count)
+5c5cd7b502595f Cody P Schafer        2015-01-30   915  		pr_warn("event buffer ended before listed # of events were parsed (got %zu, wanted %zu, junk %zu)\n",
+5c5cd7b502595f Cody P Schafer        2015-01-30   916  				event_idx_last, event_entry_count, junk_events);
+5c5cd7b502595f Cody P Schafer        2015-01-30   917  
+5c5cd7b502595f Cody P Schafer        2015-01-30   918  	events = kmalloc_array(attr_max + 1, sizeof(*events), GFP_KERNEL);
+7debc970ae7a55 Li Zhong              2015-04-13   919  	if (!events) {
+7debc970ae7a55 Li Zhong              2015-04-13   920  		ret = -ENOMEM;
+5c5cd7b502595f Cody P Schafer        2015-01-30   921  		goto e_event_data;
+7debc970ae7a55 Li Zhong              2015-04-13   922  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   923  
+5c5cd7b502595f Cody P Schafer        2015-01-30   924  	event_descs = kmalloc_array(event_idx + 1, sizeof(*event_descs),
+5c5cd7b502595f Cody P Schafer        2015-01-30   925  				GFP_KERNEL);
+7debc970ae7a55 Li Zhong              2015-04-13   926  	if (!event_descs) {
+7debc970ae7a55 Li Zhong              2015-04-13   927  		ret = -ENOMEM;
+5c5cd7b502595f Cody P Schafer        2015-01-30   928  		goto e_event_attrs;
+7debc970ae7a55 Li Zhong              2015-04-13   929  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   930  
+5c5cd7b502595f Cody P Schafer        2015-01-30   931  	event_long_descs = kmalloc_array(event_idx + 1,
+5c5cd7b502595f Cody P Schafer        2015-01-30   932  			sizeof(*event_long_descs), GFP_KERNEL);
+7debc970ae7a55 Li Zhong              2015-04-13   933  	if (!event_long_descs) {
+7debc970ae7a55 Li Zhong              2015-04-13   934  		ret = -ENOMEM;
+5c5cd7b502595f Cody P Schafer        2015-01-30   935  		goto e_event_descs;
+7debc970ae7a55 Li Zhong              2015-04-13   936  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   937  
+5c5cd7b502595f Cody P Schafer        2015-01-30   938  	/* Iterate over the catalog filling in the attribute vector */
+5c5cd7b502595f Cody P Schafer        2015-01-30   939  	for (junk_events = 0, event_attr_ct = 0, desc_ct = 0, long_desc_ct = 0,
+5c5cd7b502595f Cody P Schafer        2015-01-30   940  				event = event_data, event_idx = 0;
+5c5cd7b502595f Cody P Schafer        2015-01-30   941  			event_idx < event_idx_last;
+5c5cd7b502595f Cody P Schafer        2015-01-30   942  			event_idx++, ev_len = be16_to_cpu(event->length),
+5c5cd7b502595f Cody P Schafer        2015-01-30   943  				event = (void *)event + ev_len) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   944  		char *name;
+5c5cd7b502595f Cody P Schafer        2015-01-30   945  		int nl;
+5c5cd7b502595f Cody P Schafer        2015-01-30   946  		int nonce;
+5c5cd7b502595f Cody P Schafer        2015-01-30   947  		/*
+5c5cd7b502595f Cody P Schafer        2015-01-30   948  		 * these are the only "bad" events that are intermixed and that
+5c5cd7b502595f Cody P Schafer        2015-01-30   949  		 * we can ignore without issue. make sure to skip them here
+5c5cd7b502595f Cody P Schafer        2015-01-30   950  		 */
+5c5cd7b502595f Cody P Schafer        2015-01-30   951  		if (event->event_group_record_len == 0)
+5c5cd7b502595f Cody P Schafer        2015-01-30   952  			continue;
+5c5cd7b502595f Cody P Schafer        2015-01-30   953  		if (!catalog_entry_domain_is_valid(event->domain))
+5c5cd7b502595f Cody P Schafer        2015-01-30   954  			continue;
+5c5cd7b502595f Cody P Schafer        2015-01-30   955  
+5c5cd7b502595f Cody P Schafer        2015-01-30   956  		name  = event_name(event, &nl);
+e5f9d8858612c1 Kajol Jain            2020-12-28   957  		if (ignore_event(name))
+e5f9d8858612c1 Kajol Jain            2020-12-28   958  			continue;
+e5f9d8858612c1 Kajol Jain            2020-12-28   959  
+5c5cd7b502595f Cody P Schafer        2015-01-30   960  		nonce = event_uniq_add(&ev_uniq, name, nl, event->domain);
+5c5cd7b502595f Cody P Schafer        2015-01-30   961  		ct    = event_data_to_attrs(event_idx, events + event_attr_ct,
+5c5cd7b502595f Cody P Schafer        2015-01-30   962  					    event, nonce);
+8f69dc701aac17 Sukadev Bhattiprolu   2016-02-16   963  		if (ct < 0) {
+5c5cd7b502595f Cody P Schafer        2015-01-30   964  			pr_warn("event %zu (%.*s) creation failure, skipping\n",
+5c5cd7b502595f Cody P Schafer        2015-01-30   965  				event_idx, nl, name);
+5c5cd7b502595f Cody P Schafer        2015-01-30   966  			junk_events++;
+5c5cd7b502595f Cody P Schafer        2015-01-30   967  		} else {
+8f69dc701aac17 Sukadev Bhattiprolu   2016-02-16   968  			event_attr_ct++;
+5c5cd7b502595f Cody P Schafer        2015-01-30   969  			event_descs[desc_ct] = event_to_desc_attr(event, nonce);
+5c5cd7b502595f Cody P Schafer        2015-01-30   970  			if (event_descs[desc_ct])
+5c5cd7b502595f Cody P Schafer        2015-01-30   971  				desc_ct++;
+5c5cd7b502595f Cody P Schafer        2015-01-30   972  			event_long_descs[long_desc_ct] =
+5c5cd7b502595f Cody P Schafer        2015-01-30   973  					event_to_long_desc_attr(event, nonce);
+5c5cd7b502595f Cody P Schafer        2015-01-30   974  			if (event_long_descs[long_desc_ct])
+5c5cd7b502595f Cody P Schafer        2015-01-30   975  				long_desc_ct++;
+5c5cd7b502595f Cody P Schafer        2015-01-30   976  		}
+5c5cd7b502595f Cody P Schafer        2015-01-30   977  	}
+5c5cd7b502595f Cody P Schafer        2015-01-30   978  
+5c5cd7b502595f Cody P Schafer        2015-01-30   979  	pr_info("read %zu catalog entries, created %zu event attrs (%zu failures), %zu descs\n",
+5c5cd7b502595f Cody P Schafer        2015-01-30   980  			event_idx, event_attr_ct, junk_events, desc_ct);
+5c5cd7b502595f Cody P Schafer        2015-01-30   981  
+5c5cd7b502595f Cody P Schafer        2015-01-30   982  	events[event_attr_ct] = NULL;
+5c5cd7b502595f Cody P Schafer        2015-01-30   983  	event_descs[desc_ct] = NULL;
+5c5cd7b502595f Cody P Schafer        2015-01-30   984  	event_long_descs[long_desc_ct] = NULL;
+5c5cd7b502595f Cody P Schafer        2015-01-30   985  
+5c5cd7b502595f Cody P Schafer        2015-01-30   986  	event_uniq_destroy(&ev_uniq);
+5c5cd7b502595f Cody P Schafer        2015-01-30   987  	vfree(event_data);
+5c5cd7b502595f Cody P Schafer        2015-01-30   988  	kmem_cache_free(hv_page_cache, page);
+5c5cd7b502595f Cody P Schafer        2015-01-30   989  
+5c5cd7b502595f Cody P Schafer        2015-01-30   990  	*events_ = events;
+5c5cd7b502595f Cody P Schafer        2015-01-30   991  	*event_descs_ = event_descs;
+5c5cd7b502595f Cody P Schafer        2015-01-30   992  	*event_long_descs_ = event_long_descs;
+7debc970ae7a55 Li Zhong              2015-04-13   993  	return 0;
+5c5cd7b502595f Cody P Schafer        2015-01-30   994  
+5c5cd7b502595f Cody P Schafer        2015-01-30   995  e_event_descs:
+5c5cd7b502595f Cody P Schafer        2015-01-30   996  	kfree(event_descs);
+5c5cd7b502595f Cody P Schafer        2015-01-30   997  e_event_attrs:
+5c5cd7b502595f Cody P Schafer        2015-01-30   998  	kfree(events);
+5c5cd7b502595f Cody P Schafer        2015-01-30   999  e_event_data:
+5c5cd7b502595f Cody P Schafer        2015-01-30  1000  	vfree(event_data);
+5c5cd7b502595f Cody P Schafer        2015-01-30  1001  e_free:
+5c5cd7b502595f Cody P Schafer        2015-01-30  1002  	kmem_cache_free(hv_page_cache, page);
+5c5cd7b502595f Cody P Schafer        2015-01-30  1003  e_out:
+5c5cd7b502595f Cody P Schafer        2015-01-30  1004  	*events_ = NULL;
+5c5cd7b502595f Cody P Schafer        2015-01-30  1005  	*event_descs_ = NULL;
+5c5cd7b502595f Cody P Schafer        2015-01-30  1006  	*event_long_descs_ = NULL;
+7debc970ae7a55 Li Zhong              2015-04-13  1007  	return ret;
+5c5cd7b502595f Cody P Schafer        2015-01-30  1008  }
+5c5cd7b502595f Cody P Schafer        2015-01-30  1009  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
