@@ -1,118 +1,107 @@
-Return-Path: <linux-kernel+bounces-101186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 197B987A3CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:59:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDB5E87A3CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7501B216E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:58:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A85A7283048
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFFB1756B;
-	Wed, 13 Mar 2024 07:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E589E17588;
+	Wed, 13 Mar 2024 07:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="UzxXb4FR"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ER3EPbND"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D94171A6;
-	Wed, 13 Mar 2024 07:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82162168CD
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710316730; cv=none; b=iAszUwPUbjYTTy2XcTfWyMY5GcgH4pAvfDBd1bFXZOg5LWYno5Ns49jV6fhvz1mOAeW6oHw+mfuV5AviAqrKe10z6y5MKYT6p1vh9iNSHcGzUAvXC8mTHTeQFhz4j0CPdBFTkO1acUXSczoACxKquMRsuloXAh6HcUNHCEB6nMA=
+	t=1710316753; cv=none; b=u/hdweTwfMUt5zaOB++vF9EfJQ+LRkfY/zygtyoPE59DRF25VYC91hk/XUhKjGEj3UhKND8rd6wam3ktHhNxZchjZo18MA8twCZqwF+0SjgJb6KeOvIn91wJTIGimtPM3zflfOQ67v9g1g7cTXVwwwio6O4twH2MrX54RC4Jow8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710316730; c=relaxed/simple;
-	bh=JlKuSkPUwrhxX3vqcCM8N8UvB8OUNHKL9iWYmIFdDv0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZZUiUx6claVs/uV9KjMtk5QdctsczuCA3iUEnoEpppbOZahmnZVYpy6IutHRfF5sM7ytCqh0AcgeYjzWxAgTtfOfEZEDMdL3QyhkvtK+DD18s1OKSRvoBNLoc+SrhtMAujaKKNslmU1SZoO0lCPg3y4mugbaGME9Oi+L5glr7QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=UzxXb4FR; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=y3By8P/lmmAckKltg6fI83BkWW0s7sRt/a2ltlsOLZk=; b=UzxXb4FRlE4diPpaDJny1V+AWK
-	dfW6zRl/Iv9JQU5BF5DJv2ry0lyLUkLXk3hU+pQgE7hjTneLobsBDyE3cQ4CXbmwq3IUsgwlewcGF
-	eifIniIDRAMDhewe14wFwLlta6vrH1S5atV1LZ+6v/tI1WbmP52fsx6FxpC8/5xdOXcGQ8X9d1Fco
-	mqAAg0KPuvsYS29psALFTCjuTA/KUHyD5BdhyWFjfeBz4AMHzBScAapaMGzzmU7Kos1bw2UKu5IP3
-	j/9S+F04aq1rgGFLUSAo9Y1ORlI2cEHtdny1oop8a0iWoF3S4CGH3NHg+9Z1a6AbCkB/TsPAQuPU9
-	t7IjzWjQ==;
-Received: from [179.93.183.242] (helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rkJVT-009lNI-Pu; Wed, 13 Mar 2024 08:58:36 +0100
-Date: Wed, 13 Mar 2024 04:58:29 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-Message-ID: <ZfFcpWRWdnWmtebd@quatroqueijos.cascardo.eti.br>
-References: <874jdzpov7.fsf@mail.parknet.co.jp>
- <87zfvroa1c.fsf@mail.parknet.co.jp>
- <ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
- <87v86fnz2o.fsf@mail.parknet.co.jp>
- <Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
- <87le75s1fg.fsf@mail.parknet.co.jp>
- <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
- <87h6hek50l.fsf@mail.parknet.co.jp>
- <Ze2IAnSX7lr1fZML@quatroqueijos.cascardo.eti.br>
- <87cys2jfop.fsf@mail.parknet.co.jp>
+	s=arc-20240116; t=1710316753; c=relaxed/simple;
+	bh=q+qcFCVN+8qOeJnlbBAPgfVssdFLR1xbMoqBCTMrCXQ=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=NSmwmrP8Os3z1Yg/KkL1tIPQzrHxc/x7XiUeu07PTM3vWLkZsdcl/EsYfCKlA0EpvcFUqjtToVJw3UnrXk08NeTh3pCuUNhr6ylIY+2OjQ067L/lJqzhLEGrkRmNQEKjJgQ4cWiY2ZLQec+msZtyEOx8geYrUfWcQ0peKnl6ewc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ER3EPbND; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so872179a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710316749; x=1710921549; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a2LV9+nYbBq5j2mh5nDsTue/YcwXza1QFubwAYcXUGo=;
+        b=ER3EPbNDlkaZMg3bAq4PZg83zS1puMYovfTMygdcOQhJqFhJJvfXTqn29j0PAceR0P
+         Ug9IDvi6YEF2x/uDm2CFYNJ4/GY88sA05538qamRYZsaro00yQyuyR7H0Cw70iqKtLxX
+         I12jyDeQNBMUQL/UtZcIrucz6XSFyb6AqXzauAgCPze2Q7E1iLLqz7Dcvi85UpLXcRBL
+         cDvgteGonOl8wj5o/UFpQB7Q1VNxdYaUD6VQGT9Pm/tXf5LcSBJy/NzQRLA6sjWuayqs
+         ItVs9Y8QoFU87c7/WZGLMc0A2RY8zZH8x50HYxP5FhcJNm2hAUedBiMYCAsQy2v+Odo1
+         sHvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710316749; x=1710921549;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a2LV9+nYbBq5j2mh5nDsTue/YcwXza1QFubwAYcXUGo=;
+        b=P2ejeadtymwVRmqp3AoOJUeI0qZPAtYC6e4r/BsiHN4b40UQ1bofCJciFB5bWpdna6
+         m1pq7deuzLfQ8ittUnRXstON2QS6Fj3l0XfZkWN9Qc6Ef4MT6qAXkqnSBhga1IlVqzUD
+         w79muxabahmjAqiW9+SyBg+K/X8W0KvqEdlQLvsOOB4Rr6KYhlNsbmqxCdwHbNfN6xtx
+         yJnCsAqjxgY2nOCARKLbIx6L4doOSrXz5fHVYOVkJarlpSDYL1vzfVlPcpTwBFl7/7P5
+         98fD0mXwnd0/YcSp1aUv+5+6pYdcHra3M4d+4biWMP+ggjhFtPQg6AdLGM2sWWIFUydL
+         8uSA==
+X-Forwarded-Encrypted: i=1; AJvYcCUkDi9kSJwhf+3oEzYkX1PATwnv1BDxJ73HFECiAAn3TAePS+RkKp4SP42PxqvZtDLst6r/ynGjPOPUUWUo7+8w2c4Cb6DgvIbeIxeQ
+X-Gm-Message-State: AOJu0YxNv3HGEw/vhWuMX/jjWsk6wwY5Yic+JwuRcBurTpK/l/ItTgNT
+	titBBiBXrI/mEd5LaJgT/LGRFF2wS1KWIS2nogwl8O0P2pzrC7rT
+X-Google-Smtp-Source: AGHT+IEXhCmnlpKmoL1ss/cBt/Ilp5OY7Ni3lJIvuIoTQ+/kRFIOZVfJbwlCyzhp692SSVMCr9ltiw==
+X-Received: by 2002:a17:906:2e86:b0:a45:4416:1fbd with SMTP id o6-20020a1709062e8600b00a4544161fbdmr3368291eji.39.1710316749087;
+        Wed, 13 Mar 2024 00:59:09 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id qx26-20020a170906fcda00b00a45a687b52asm4594185ejb.213.2024.03.13.00.59.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 Mar 2024 00:59:08 -0700 (PDT)
+From: Wei Yang <richard.weiyang@gmail.com>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com
+Cc: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH 0/4] Cleanup vmlinux.lds.S
+Date: Wed, 13 Mar 2024 07:58:35 +0000
+Message-Id: <20240313075839.8321-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87cys2jfop.fsf@mail.parknet.co.jp>
 
-On Sun, Mar 10, 2024 at 11:59:34PM +0900, OGAWA Hirofumi wrote:
-> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
-> 
-> >> If we really want to accept this image, we have to change the fat driver
-> >> without affecting good image.  And your patch affects to good image,
-> >> because that patch doesn't count directory correctly, so bad link count.
-> >> 
-> >
-> > Well, it does behave the same on a correct image. It ignores the existence of
-> > ".." when counting subdirs, but always adds an extra link count.
-> >
-> > So, images that have both "." and ".." subdirs, will have the 2 links, both
-> > with the patch and without the patch.
-> 
-> You are forgetting to count about normal dirs other than "." and ".."?
-> 
+To support 32/64 bits system, we have some definition conditionally. while
+some definition is duplicated:
 
-Yes, I was not counting those. The patch simply ignores ".." when counting dirs
-(which is used only for determining the number of links), and always adds one
-link. Then, when validating the inode, it also only requires that at least one
-link exists instead of two.
+* __PHYSICAL_START has the same definition as LOAD_PHYSICAL_ADDR
+* LOAD_OFFSET could be defined directly to __START_KERNEL_map 
 
-There is only one other instance of fat_subdirs being called and that's when
-the root dir link count is determined. I left that one unchanged, as usually
-"." and ".." does not exist there and we always add two links there.
+After these cleanup, we could reduce some complexity of vmlinux.lds.S.
 
-Cascardo.
+Wei Yang (4):
+  vmlinux.lds.h: fix a typo in comment
+  x86/boot: replace __PHYSICAL_START with LOAD_PHYSICAL_ADDR
+  x86/vmlinux.lds.S: remove conditional definition of LOAD_OFFSET
+  x86/vmlinux.lds.S: take __START_KERNEL out conditional definition
 
-> Thanks.
-> 
-> > Images with neither dirs will be rejected before the patch and have a link
-> > count of 1 after the patch. Still, creating and removing subdirs will work.
-> > Removing the bad dir itself also works.
-> >
-> > Images with only "." or only ".." would have a link count of 1 and be rejected
-> > without the patch.
-> >
-> > With the patch, directories with only ".." should behave the same as if they
-> > had neither subdirs. That is, link count of 1. And directories with only "."
-> > will have a link count of 2.
-> -- 
-> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+ arch/x86/include/asm/boot.h       | 5 -----
+ arch/x86/include/asm/page_types.h | 8 +++++---
+ arch/x86/kernel/vmlinux.lds.S     | 7 +------
+ include/asm-generic/vmlinux.lds.h | 2 +-
+ 4 files changed, 7 insertions(+), 15 deletions(-)
+
+-- 
+2.34.1
+
 
