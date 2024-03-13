@@ -1,90 +1,194 @@
-Return-Path: <linux-kernel+bounces-101586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9DB87A906
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:06:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF3EA87A90D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C3541F23CA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:06:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75ECD288725
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D1A45BFD;
-	Wed, 13 Mar 2024 14:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17A746426;
+	Wed, 13 Mar 2024 14:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d2rHGejP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ASOgumZS"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DB744369;
-	Wed, 13 Mar 2024 14:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC704437F
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710338810; cv=none; b=dEX/NjBy6M8D+FFLFjrhQs/Ggj4irvsZuuxcy3RkvD6AIqNnEs/So472H5BVmHE/roTve7RaSeDRppEAbuYR6pM2GZ2HWngED+eWMPmYWjZS0ofJNTh/VWIuvFNPeuXTYaKw4thn36KffrM3gwjrEK/QDjUuLyOjexpvOQ35Z1A=
+	t=1710338931; cv=none; b=CSWLkZn58YK5wr5DjIzBEDd3yPw9zPYMlh2Ei1wsPvx9tnJgrfYx9ugydJ7peQXPDb+gHXlLN8Eb7q0jsjAyTzar3Jj6OiV6Nnyrz+5SWHgEfbjlosq5KA0Mpyc1EAMAWas74VSYKwJR371R3Dr2Fh8vh8jxPqoBdAGL4FM9mPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710338810; c=relaxed/simple;
-	bh=0jlutHs2yvu1tTSpSrKgQrXzPWCFfYo1yaC03lAmRJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hAO3XgaoNVBIVSWKYszKP3jRe4SJCn1mTRv/1VMnNhRyEUutCQWzJQdg7RTC6uVVrcOhW2ZWpzGQSEJqBzpdkG7mQz7BFfI8VGjeJbTs6Vm9E0HBLMA8yEDiSA+9SRQwxO7j1Y1mC6D6zmEiwNdoMjRWC7OuCLxl6syLjH91NC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d2rHGejP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59E71C433F1;
-	Wed, 13 Mar 2024 14:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710338809;
-	bh=0jlutHs2yvu1tTSpSrKgQrXzPWCFfYo1yaC03lAmRJs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d2rHGejPC6zUe43HEHmolXuF+RGCmZkV3WlO/ezoNnheDMK4Ru0SNxL7xADNon3FG
-	 BYbtnxq1u0jdpg07fV4A0ULudqsvsuttjFGMwLDN0JAjIAjfi41XEjDfFpAnSQLnGz
-	 79VUBQ/GTfykN4HLG8lpZI9rrbIZJHWf0B+98jqX633EsbGzNo+XU2gTyETO1Gl0fu
-	 cpb/ZIirhxyV6+GC0B5yiM3T/HR6yGQuMZ6X/7x5j8Kn7WUwUMv5YhgDC48V6c5pw8
-	 wmCwVbmXMZILmfrEq4/9QQABTyq8uEwHWKnMzBtBSlMTUVLei7SPQg7M21LZ5lHPtZ
-	 uZ5l9by1bouIw==
-Date: Wed, 13 Mar 2024 11:06:46 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
- on RT.
-Message-ID: <ZfGy9ggOIvtr_-cd@x1>
-References: <20240312180814.3373778-1-bigeasy@linutronix.de>
- <ZfDMTlTH2SdwlB9M@x1>
- <20240313081303.DClwQrvb@linutronix.de>
- <ZfGqCWzyVzyGQrAQ@x1>
- <20240313134645.bO-XyxAM@linutronix.de>
+	s=arc-20240116; t=1710338931; c=relaxed/simple;
+	bh=MHQ5MsizRo2+P4Qktsrzy/cEr2Tvjv/30W5YJIhvXEA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tOXEvVctN+B30lJ6GYn6UsMaljWjag2PAKoyweRFRGXwTXuV7RvtS4K7Tub1zUnl9BAVdDFjm5SyqNsP1gh8JyXMXAlbm2gceQViE/upR5bzqw/TX4i+7j8RfMZ7uSsS3y6RoZo0av1G868tbRbfY2h+zSVmIo2y0T/DtQkkHU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ASOgumZS; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4645485da6so262737766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710338927; x=1710943727; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nFaFWSbAggIWNNRtL6qVwdZXd8rjrLSqMYNza7qT6dQ=;
+        b=ASOgumZSHAKW3U1vuYD9yrfNQ/bb/+BsCNuxJ+2lR2WDdQG8v6j47NzWrQ8xojFoP8
+         SF38Vv/GQZHKd64KarA1rNPeyyc+w0LChQt+BBm/S7wW2avIlP77M9K+l84yPLAmesgO
+         9DLF7dboH8bCdK19RvUCBBwTXpH24lhSq3UKg9qsgWUGWdzHeo6IaWp1dQbsY3dSf8NZ
+         WwIpUCDRVCrkC4+rIKUsGTw06KE2x4cTGM74EHxQOA+wIs2EAZHKDNQ7o5a7Lh/nl86J
+         8OlCKn6oEV5wsTDXUKK0fpNT+Dic4400QS1fqFXI+Zt7uZxozuGtVN0AgRBXB6wKKBv/
+         b/sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710338927; x=1710943727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nFaFWSbAggIWNNRtL6qVwdZXd8rjrLSqMYNza7qT6dQ=;
+        b=oqZt/7ta8iqgBV3L3CnZpXtcTP3CtcLMdVXPWHV5gGhl4zze0YUtCpTdT3zi84p8K1
+         fmBGGH5eeJXF2KZ/EkDl7BqL+ckOmya+VNpWZXqQSzcnCskrnzzQa5c/jreFbi/TSims
+         zwqbEz8xKCdJnYCyBwO7OO3TNMtUNFQsxXoKH7bt3wseTJ7CqTWDMjZNYRPaya19JXyo
+         UR/gVglkKEimyDzHUNEgXrMNngPhVvPAl+/Cv7P+Xh0NAy+qIjO9SdCUvFEfF5XTNE8N
+         8AlYZo7PWsxuBiMu0f4oxGb4AgZ7m6iwBn/Lo3sKUKvNSxlyHO1T6p22u01r4RDL7kR5
+         DVRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXyF/FXrBqtEfD38ivTzWeSD0FXvSJkSJmmx5GnhlIJVXGZO6GmSVmYvRh/5fzKyzMU0VWrqfQvC8VSymQkZe4RFwMYPsCKNvMCLs07
+X-Gm-Message-State: AOJu0YzalRC8VkL3q/eghwYYEZBVZmVZaObnATAao0XcANM9WhtZPpEr
+	IbE+cOn503pUQ8afp7OtHYTwXvuarH839HQlObCsq49mnPvZm4eBKYG/EuJd4/E=
+X-Google-Smtp-Source: AGHT+IFGEupu0zEFftAf3tP8pRRB7sRV7oLyxGKsi3LTI6oxXj6mdWTOqk8zm4iCBRtSwIBCI2TX6w==
+X-Received: by 2002:a17:907:a801:b0:a45:94bf:18e6 with SMTP id vo1-20020a170907a80100b00a4594bf18e6mr10631233ejc.73.1710338926973;
+        Wed, 13 Mar 2024 07:08:46 -0700 (PDT)
+Received: from localhost (host-82-56-173-172.retail.telecomitalia.it. [82.56.173.172])
+        by smtp.gmail.com with ESMTPSA id xe2-20020a170907318200b00a4666bfa979sm102216ejb.118.2024.03.13.07.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 07:08:46 -0700 (PDT)
+From: Andrea della Porta <andrea.porta@suse.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Saenz Julienne <nsaenz@kernel.org>,
+	dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	dave.stevenson@raspberrypi.com
+Cc: Phil Elwell <phil@raspberrypi.org>,
+	Maxime Ripard <maxime@cerno.tech>,
+	Stefan Wahren <stefan.wahren@i2se.com>,
+	Dom Cobley <popcornmix@gmail.com>,
+	Andrea della Porta <andrea.porta@suse.com>
+Subject: [PATCH v2 00/15] dmaengine: bcm2835: add BCM2711 40-bit DMA support
+Date: Wed, 13 Mar 2024 15:08:25 +0100
+Message-ID: <cover.1710226514.git.andrea.porta@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313134645.bO-XyxAM@linutronix.de>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 13, 2024 at 02:46:45PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2024-03-13 10:28:41 [-0300], Arnaldo Carvalho de Melo wrote:
-> > > One part I don't get: did you let it run or did you kill it?
-> > 
-> > If I let them run they will finish and exit, no exec_child remains.
-> > 
-> > If I instead try to stop the loop that goes on forking the 100 of them,
-> > then the exec_child remain spinning.
-> 
-> Okay. So that problem only exists if you intervene. And you can
-> reproduce this odd behaviour with my patches but not without them,
-> right?
+The BCM2711 has 4 DMA channels with a 40-bit address range, allowing them
+to access the full 4GB of memory on a Pi 4.
+This patchset aims to update the dma engine for BCM* chipset with respect
+to current advancements in downstream vendor tree. In particular, it
+supports the BCM2711 DMA engine in terms of extended DMA addressing to 40 bit.
 
-See the next message, I managed to reproduce that behaviour in a non-RT
-kernel as well.
- 
-- Arnaldo
+Changes with respect to the first version (see [1]) of this patchset:
+
+* dropped support of the new BCM2712. It will be the focus of a subsequent
+  patch.
+
+* merged patchset from Stefan Wahren [2] to support newer chipset with a
+  platform agnostic design, while also retaining the new features added 
+  from downstream [1], as follows:
+
+  - patches from 1 to 5 are preparatory, adding some features and bugfix
+    common to all chipsets.
+  - patches from 6 to 12 add hw abstraction
+  - patches 13 to 15 eventually add 40 bit and BCM2711 support
+
+* fixed a couple of bugs from [2] relative to address shifting on 40 bit
+  support specific code
+
+* added the relevant entries in the dts and DT binding that was missing
+  in the first patch
+
+* used FIELD_PREP() wherever appropriate as advised in [3]
+
+* of_match_node() has been replaced by the more generic device_get_match_data(),
+  as per [4] 
+
+* fixed several errors and warnings from checkpatch
+
+
+Please note that there is still a pending discussion around here [5]:
+this patch still use the current approach (used in both downstream
+code and in Stefan's redesigned patchset) of getting the address as it is 
+(dma_addr_t) and just add the relevant offset when needed (on 40 bit
+channel, see .addr_offset in struct bcm2835_dma_cfg). This is not
+optimal but still deemed as less hacky than using DMA internals (see
+[6]). As soon as there will be guidelines for [5] or dma_map_resource()
+will take care of dma_ranges, a subsequent patch will adjust accordingly.
+
+Since there is an ongoing effort from Dave Stevenson to upstream a
+patchset with similar goals, I'm adding him to the email loop in order 
+seek for collaboration.
+
+NOTE: I apologize to any of you that received an incomplete patchset: unfortunately
+I had some issues with internal imap server that prevent correct mail delivery.
+I'm resending the entire patchset again to be sure everyone is getting a copy.
+Again, apologize for the inconvenince.
+
+Many thanks,
+
+Andrea
+
+Links:
+[1] https://lore.kernel.org/linux-arm-kernel/cover.1706948717.git.andrea.porta@suse.com/
+[2] https://lore.kernel.org/linux-arm-kernel/13ec386b-2305-27da-9765-8fa3ad71146c@i2se.com/T/
+[3] https://lore.kernel.org/linux-arm-kernel/YguMW8n1q0ZV5tKH@matsya/
+[4] https://lore.kernel.org/linux-arm-kernel/1e71c153-e482-409c-b229-9b9c0662b67e@arm.com/
+[5] https://lore.kernel.org/all/CAPY8ntByJYzSv0kTAc1kY0Dp=vwrzcA0oWiPpyg7x7_BQwGSnA@mail.gmail.com/
+[6] https://lkml.org/lkml/2024/2/5/1161
+
+Andrea della Porta (11):
+  dmaengine: bcm2835: Fix several spellos
+  dmaengine: bcm2835: Support common dma-channel-mask
+  dmaengine: bcm2835: move CB info generation into separate function
+  dmaengine: bcm2835: move CB final extra info generation into function
+  dmaengine: bcm2835: make address increment platform independent
+  dmaengine: bcm2385: drop info parameters
+  dmaengine: bcm2835: pass dma_chan to generic functions
+  dmaengine: bcm2835: introduce multi platform support
+  dt-bindings: dma: Added bcm2711-dma
+  dmaengine: bcm2835: Add BCM2711 40-bit DMA support
+  ARM: dts: bcm2711: add bcm2711-dma node
+
+Dom Cobley (2):
+  dmaengine: bcm2835: Support dma flags for multi-beat burst
+  dmaengine: bcm2835: Fixes for dma_abort
+
+Phil Elwell (2):
+  dmaengine: bcm2835: Add support for per-channel flags
+  dmaengine: bcm2835: Add NO_WAIT_RESP, DMA_WIDE_SOURCE and
+    DMA_WIDE_DEST flag
+
+ .../bindings/dma/brcm,bcm2835-dma.yaml        |    4 +-
+ arch/arm/boot/dts/broadcom/bcm2711.dtsi       |   16 +
+ drivers/dma/bcm2835-dma.c                     | 1084 +++++++++++++----
+ 3 files changed, 892 insertions(+), 212 deletions(-)
+
+-- 
+2.35.3
+
 
