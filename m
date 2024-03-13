@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-101391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DE3E87A685
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:04:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ECF687A689
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:05:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911B01C2151C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:04:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1261E1F22760
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F78E487B3;
-	Wed, 13 Mar 2024 11:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 891AD4C60C;
+	Wed, 13 Mar 2024 11:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="aWerTd/Q"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="g4/cJf0P"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2AE481BA;
-	Wed, 13 Mar 2024 11:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7AA3EA95;
+	Wed, 13 Mar 2024 11:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710327746; cv=none; b=sFS0TEThM/8JZrVlWIuVqYkT8Cjl+ibyvLhE19X56vIAPDB2jiJoFjVsh9mdkpitu5fEtZG8K6ET9dOHEePUkefrllBmLFNqg3saQUcynubXuabjvstZDmGr/YxX5x1Jf3jEVRda4XWsIlFhRB/SCXlHwY0cRr7A4qrfpkcd7mE=
+	t=1710327749; cv=none; b=M+AAHj5sC2ayH6Z326cTDvrEOoNUkt/CgWPrIW4xI6ZHpw8VP+4VRQZ8/w6lziX2Azn6zHAN/wBJxfF+X+DfqqOx8dsOI2hKviaePbTEBEt7LaguogmmebA7brfgSaoh/6KqnJVyDR+v6g/pb8K4kATFkxsJNs46L4aqr0qnsnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710327746; c=relaxed/simple;
-	bh=8dO/knddMZmgChwWbJp/fcjiVO5qSxhidYiSZvCNm60=;
+	s=arc-20240116; t=1710327749; c=relaxed/simple;
+	bh=J1cLn1ZkiMj/nqWHv8FW9Fb4kGxB9xQ83ourhgps8rk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mYqEvH9WFH7MIkhwXnctsnHSJuoHpF1jhsrxtr5gVwKnl7dowyS6tkd+sT+n3di5rdde92tKM58I51kdMiZnVTZs1Q6KYLOqkaKX72wCvpaXSqhNuBqv+zd/995CnYSTaXUGT/EIkQ1gO2xtneNnEOyivjvPLhzga5v8SycNyP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=aWerTd/Q; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=YDP+pePJIxEi/yrxEclBgtj5TmLDDTGhFQqt+8z1sv1NRfo0oXiN2JwswFVCctE5ler/1h1LlSicHvjkqdd98MabreAl1QD7BbGU96oLRlho2R+CpZdxTJMRM8eStnTgJUgPx/2ZbzCaZMy1sZoM8o3TbtwgCueuHGqOZPo3JTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=g4/cJf0P; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710327743;
-	bh=8dO/knddMZmgChwWbJp/fcjiVO5qSxhidYiSZvCNm60=;
+	s=mail; t=1710327746;
+	bh=J1cLn1ZkiMj/nqWHv8FW9Fb4kGxB9xQ83ourhgps8rk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aWerTd/QLQkShRMWlVUD4ZLpadSorfTGnZV09Vd//Hauslc2UEEbPHXgw2eoVwjjF
-	 35brLSBgyp46gTPg0zuUj5X0NzsjuyHzgQcXHuAEsJs6z4fZCnH/Q+mm+eqSxW/XNQ
-	 av5OvMtVJPYr/MsjzVfNTOJU1mx8kEoYdzCQdiLu+xdA29zBiFmvlkLuunYIFXg0i0
-	 uPCzvhwaaNOEZvg4MrZJGf9RaP/yYH47Oqfkmh/ZMg89Eop1TVRS6TEU8oYSFA+73M
-	 4MkwUQN24HVZluCRQuoxfoDBuVGdVOSdh/1e9jsP9Jkb+xU5e1Tqrtia1VAWeBdlT7
-	 DbfCTpR2hdjow==
+	b=g4/cJf0PMZj8KCogZuIBGwvavnqjqHDExCoSM79qvPoOfWYGqkAuPv6ruTTVZwQmJ
+	 I7l3I1h65tPVeWZTioVz+0KKQqNA7FPWWPMG3ZE/bD8HmPIWpa3S+6QS3IrbnkpSCQ
+	 YHA5FncB4R1oMpUDJQKPhxMc9K3eelG5rRYGYv4jE5EU8LprzfLc1ddPgWpFOsly/q
+	 3BbZAbReYXkR3C0TJ9xOBC1Av1URvocK40Qkb134Beez/os8UF8fimqWEBWWBIKKiC
+	 wTfrCSLmvYHThq8kiS6bVybIycsZExzOc86KlWue+meL1NByYdpVHXmaWeu7YshPc+
+	 jMCgP7lZDnIzA==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7BC0337810CD;
-	Wed, 13 Mar 2024 11:02:21 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D96933782079;
+	Wed, 13 Mar 2024 11:02:23 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -86,9 +86,9 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v3 11/22] ASoC: mediatek: Add common snd_soc_ops .startup() callback
-Date: Wed, 13 Mar 2024 12:01:36 +0100
-Message-ID: <20240313110147.1267793-12-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v3 12/22] ASoC: mediatek: mt8195: Migrate to the common mtk_soundcard_startup
+Date: Wed, 13 Mar 2024 12:01:37 +0100
+Message-ID: <20240313110147.1267793-13-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
 References: <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
@@ -100,131 +100,341 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-MediaTek platforms are typically setting PCM rate and channels
-constraints for playback, capture and HDMI/DisplayPort playback:
-commonize the startup callback by adding the PCM constraints data
-to the mtk_platform_card_data structure and by reusing the common
-mtk_soundcard_startup() function for all of them by getting back
-the parameters from the aforementioned struct.
+Add a const mtk_pcm_constraints_data struct array with all of the
+(again, constant) constraints for all of the supported usecases,
+remove the duplicated functions and call mtk_soundcard_startup()
+instead in all of the .startup() callbacks.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../mediatek/common/mtk-soundcard-driver.c    | 51 +++++++++++++++++++
- .../mediatek/common/mtk-soundcard-driver.h    | 24 +++++++++
- 2 files changed, 75 insertions(+)
+ sound/soc/mediatek/mt8195/mt8195-mt6359.c | 195 ++++++----------------
+ 1 file changed, 53 insertions(+), 142 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.c b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-index b1db17e392d5..d344630f7851 100644
---- a/sound/soc/mediatek/common/mtk-soundcard-driver.c
-+++ b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-@@ -139,6 +139,57 @@ void clean_card_reference(struct snd_soc_card *card)
- }
- EXPORT_SYMBOL_GPL(clean_card_reference);
+diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359.c b/sound/soc/mediatek/mt8195/mt8195-mt6359.c
+index f694618e7635..d143ce3406fe 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-mt6359.c
++++ b/sound/soc/mediatek/mt8195/mt8195-mt6359.c
+@@ -328,44 +328,7 @@ static int mt8195_mt6359_init(struct snd_soc_pcm_runtime *rtd)
  
-+int mtk_soundcard_startup(struct snd_pcm_substream *substream,
-+			  enum mtk_pcm_constraint_type ctype)
-+{
-+	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct mtk_soc_card_data *soc_card = snd_soc_card_get_drvdata(rtd->card);
-+	const struct mtk_pcm_constraints_data *mpc = &soc_card->card_data->pcm_constraints[ctype];
-+	int ret;
-+
-+	if (unlikely(!mpc))
-+		return -EINVAL;
-+
-+	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_RATE,
-+					 &mpc->rates);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
-+		return ret;
-+	}
-+
-+	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_CHANNELS,
-+					 &mpc->channels);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "hw_constraint_list channel failed\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mtk_soundcard_startup);
-+
-+static int mtk_soundcard_playback_startup(struct snd_pcm_substream *substream)
-+{
-+	return mtk_soundcard_startup(substream, MTK_CONSTRAINT_PLAYBACK);
-+}
-+
-+const struct snd_soc_ops mtk_soundcard_common_playback_ops = {
-+	.startup = mtk_soundcard_playback_startup,
-+};
-+EXPORT_SYMBOL_GPL(mtk_soundcard_common_playback_ops);
-+
-+static int mtk_soundcard_capture_startup(struct snd_pcm_substream *substream)
-+{
-+	return mtk_soundcard_startup(substream, MTK_CONSTRAINT_CAPTURE);
-+}
-+
-+const struct snd_soc_ops mtk_soundcard_common_capture_ops = {
-+	.startup = mtk_soundcard_capture_startup,
-+};
-+EXPORT_SYMBOL_GPL(mtk_soundcard_common_capture_ops);
-+
- int mtk_soundcard_common_probe(struct platform_device *pdev)
+ static int mt8195_hdmitx_dptx_startup(struct snd_pcm_substream *substream)
  {
- 	struct device_node *platform_node, *adsp_node;
-diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.h b/sound/soc/mediatek/common/mtk-soundcard-driver.h
-index 4fd2ffb7e486..c38e2ac09ad3 100644
---- a/sound/soc/mediatek/common/mtk-soundcard-driver.h
-+++ b/sound/soc/mediatek/common/mtk-soundcard-driver.h
-@@ -11,11 +11,26 @@
+-	static const unsigned int rates[] = {
+-		48000
+-	};
+-	static const unsigned int channels[] = {
+-		2, 4, 6, 8
+-	};
+-	static const struct snd_pcm_hw_constraint_list constraints_rates = {
+-		.count = ARRAY_SIZE(rates),
+-		.list  = rates,
+-		.mask = 0,
+-	};
+-	static const struct snd_pcm_hw_constraint_list constraints_channels = {
+-		.count = ARRAY_SIZE(channels),
+-		.list  = channels,
+-		.mask = 0,
+-	};
+-
+-	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int ret;
+-
+-	ret = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_RATE,
+-					 &constraints_rates);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
+-		return ret;
+-	}
+-
+-	ret = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_CHANNELS,
+-					 &constraints_channels);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "hw_constraint_list channel failed\n");
+-		return ret;
+-	}
+-
+-	return 0;
++	return mtk_soundcard_startup(substream, MTK_CONSTRAINT_HDMIDP);
+ }
  
- struct mtk_sof_priv;
- struct mtk_soc_card_data;
-+struct snd_pcm_hw_constraint_list;
+ static const struct snd_soc_ops mt8195_hdmitx_dptx_playback_ops = {
+@@ -428,98 +391,6 @@ static int mt8195_dptx_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-static int mt8195_playback_startup(struct snd_pcm_substream *substream)
+-{
+-	static const unsigned int rates[] = {
+-		48000
+-	};
+-	static const unsigned int channels[] = {
+-		2
+-	};
+-	static const struct snd_pcm_hw_constraint_list constraints_rates = {
+-		.count = ARRAY_SIZE(rates),
+-		.list  = rates,
+-		.mask = 0,
+-	};
+-	static const struct snd_pcm_hw_constraint_list constraints_channels = {
+-		.count = ARRAY_SIZE(channels),
+-		.list  = channels,
+-		.mask = 0,
+-	};
+-
+-	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int ret;
+-
+-	ret = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_RATE,
+-					 &constraints_rates);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
+-		return ret;
+-	}
+-
+-	ret = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_CHANNELS,
+-					 &constraints_channels);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "hw_constraint_list channel failed\n");
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static const struct snd_soc_ops mt8195_playback_ops = {
+-	.startup = mt8195_playback_startup,
+-};
+-
+-static int mt8195_capture_startup(struct snd_pcm_substream *substream)
+-{
+-	static const unsigned int rates[] = {
+-		48000
+-	};
+-	static const unsigned int channels[] = {
+-		1, 2
+-	};
+-	static const struct snd_pcm_hw_constraint_list constraints_rates = {
+-		.count = ARRAY_SIZE(rates),
+-		.list  = rates,
+-		.mask = 0,
+-	};
+-	static const struct snd_pcm_hw_constraint_list constraints_channels = {
+-		.count = ARRAY_SIZE(channels),
+-		.list  = channels,
+-		.mask = 0,
+-	};
+-
+-	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int ret;
+-
+-	ret = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_RATE,
+-					 &constraints_rates);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
+-		return ret;
+-	}
+-
+-	ret = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_CHANNELS,
+-					 &constraints_channels);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "hw_constraint_list channel failed\n");
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static const struct snd_soc_ops mt8195_capture_ops = {
+-	.startup = mt8195_capture_startup,
+-};
+-
+ static int mt8195_rt5682_etdm_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params)
+ {
+@@ -1042,7 +913,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+-		.ops = &mt8195_playback_ops,
++		.ops = &mtk_soundcard_common_playback_ops,
+ 		SND_SOC_DAILINK_REG(DL2_FE),
+ 	},
+ 	[DAI_LINK_DL3_FE] = {
+@@ -1054,7 +925,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+-		.ops = &mt8195_playback_ops,
++		.ops = &mtk_soundcard_common_playback_ops,
+ 		SND_SOC_DAILINK_REG(DL3_FE),
+ 	},
+ 	[DAI_LINK_DL6_FE] = {
+@@ -1066,7 +937,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+-		.ops = &mt8195_playback_ops,
++		.ops = &mtk_soundcard_common_playback_ops,
+ 		SND_SOC_DAILINK_REG(DL6_FE),
+ 	},
+ 	[DAI_LINK_DL7_FE] = {
+@@ -1089,7 +960,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+-		.ops = &mt8195_playback_ops,
++		.ops = &mtk_soundcard_common_playback_ops,
+ 		SND_SOC_DAILINK_REG(DL8_FE),
+ 	},
+ 	[DAI_LINK_DL10_FE] = {
+@@ -1113,7 +984,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+-		.ops = &mt8195_playback_ops,
++		.ops = &mtk_soundcard_common_playback_ops,
+ 		SND_SOC_DAILINK_REG(DL11_FE),
+ 	},
+ 	[DAI_LINK_UL1_FE] = {
+@@ -1136,7 +1007,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+-		.ops = &mt8195_capture_ops,
++		.ops = &mtk_soundcard_common_capture_ops,
+ 		SND_SOC_DAILINK_REG(UL2_FE),
+ 	},
+ 	[DAI_LINK_UL3_FE] = {
+@@ -1148,7 +1019,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+-		.ops = &mt8195_capture_ops,
++		.ops = &mtk_soundcard_common_capture_ops,
+ 		SND_SOC_DAILINK_REG(UL3_FE),
+ 	},
+ 	[DAI_LINK_UL4_FE] = {
+@@ -1160,7 +1031,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+-		.ops = &mt8195_capture_ops,
++		.ops = &mtk_soundcard_common_capture_ops,
+ 		SND_SOC_DAILINK_REG(UL4_FE),
+ 	},
+ 	[DAI_LINK_UL5_FE] = {
+@@ -1172,7 +1043,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+-		.ops = &mt8195_capture_ops,
++		.ops = &mtk_soundcard_common_capture_ops,
+ 		SND_SOC_DAILINK_REG(UL5_FE),
+ 	},
+ 	[DAI_LINK_UL6_FE] = {
+@@ -1195,7 +1066,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+-		.ops = &mt8195_capture_ops,
++		.ops = &mtk_soundcard_common_capture_ops,
+ 		SND_SOC_DAILINK_REG(UL8_FE),
+ 	},
+ 	[DAI_LINK_UL9_FE] = {
+@@ -1207,7 +1078,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+-		.ops = &mt8195_capture_ops,
++		.ops = &mtk_soundcard_common_capture_ops,
+ 		SND_SOC_DAILINK_REG(UL9_FE),
+ 	},
+ 	[DAI_LINK_UL10_FE] = {
+@@ -1219,7 +1090,7 @@ static struct snd_soc_dai_link mt8195_mt6359_dai_links[] = {
+ 		},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+-		.ops = &mt8195_capture_ops,
++		.ops = &mtk_soundcard_common_capture_ops,
+ 		SND_SOC_DAILINK_REG(UL10_FE),
+ 	},
+ 	/* BE */
+@@ -1561,6 +1432,40 @@ static int mt8195_mt6359_soc_card_probe(struct mtk_soc_card_data *soc_card_data,
+ 	return 0;
+ }
+ 
++static const unsigned int mt8195_pcm_playback_channels[] = { 2 };
++static const unsigned int mt8195_pcm_capture_channels[] = { 1, 2 };
++static const unsigned int mt8195_pcm_hdmidp_channels[] = { 2, 4, 6, 8 };
++static const unsigned int mt8195_pcm_rates[] = { 48000 };
 +
-+enum mtk_pcm_constraint_type {
-+	MTK_CONSTRAINT_PLAYBACK,
-+	MTK_CONSTRAINT_CAPTURE,
-+	MTK_CONSTRAINT_HDMIDP,
-+	MTK_CONSTRAINT_MAX
++static const struct snd_pcm_hw_constraint_list mt8195_rate_constraint = {
++	.list = mt8195_pcm_rates,
++	.count = ARRAY_SIZE(mt8195_pcm_rates)
 +};
 +
-+struct mtk_pcm_constraints_data {
-+	const struct snd_pcm_hw_constraint_list channels;
-+	const struct snd_pcm_hw_constraint_list rates;
++static const struct mtk_pcm_constraints_data mt8195_pcm_constraints[MTK_CONSTRAINT_HDMIDP + 1] = {
++	[MTK_CONSTRAINT_PLAYBACK] = {
++		.channels = {
++			.list = mt8195_pcm_playback_channels,
++			.count = ARRAY_SIZE(mt8195_pcm_playback_channels)
++		},
++		.rates = mt8195_rate_constraint,
++	},
++	[MTK_CONSTRAINT_CAPTURE] = {
++		.channels = {
++			.list = mt8195_pcm_capture_channels,
++			.count = ARRAY_SIZE(mt8195_pcm_capture_channels)
++		},
++		.rates = mt8195_rate_constraint,
++	},
++	[MTK_CONSTRAINT_HDMIDP] = {
++		.channels = {
++			.list = mt8195_pcm_hdmidp_channels,
++			.count = ARRAY_SIZE(mt8195_pcm_hdmidp_channels)
++		},
++		.rates = mt8195_rate_constraint,
++	},
 +};
- 
- struct mtk_platform_card_data {
- 	struct snd_soc_card *card;
- 	struct snd_soc_jack *jacks;
-+	const struct mtk_pcm_constraints_data *pcm_constraints;
- 	u8 num_jacks;
-+	u8 num_pcm_constraints;
- 	u8 flags;
- };
- 
-@@ -23,9 +38,18 @@ struct mtk_soundcard_pdata {
- 	const char *card_name;
- 	struct mtk_platform_card_data *card_data;
- 	const struct mtk_sof_priv *sof_priv;
 +
- 	int (*soc_probe)(struct mtk_soc_card_data *card_data, bool legacy);
- };
- 
-+/* Common playback/capture card startup ops */
-+extern const struct snd_soc_ops mtk_soundcard_common_playback_ops;
-+extern const struct snd_soc_ops mtk_soundcard_common_capture_ops;
-+
-+/* Exported for custom/extended soundcard startup ops */
-+int mtk_soundcard_startup(struct snd_pcm_substream *substream,
-+			  enum mtk_pcm_constraint_type ctype);
-+
- int parse_dai_link_info(struct snd_soc_card *card);
- void clean_card_reference(struct snd_soc_card *card);
- int mtk_soundcard_common_probe(struct platform_device *pdev);
+ static const struct mtk_sof_priv mt8195_sof_priv = {
+ 	.conn_streams = g_sof_conn_streams,
+ 	.num_streams = ARRAY_SIZE(g_sof_conn_streams),
+@@ -1572,6 +1477,8 @@ static const struct mtk_soundcard_pdata mt8195_mt6359_rt1019_rt5682_card = {
+ 	.card_data = &(struct mtk_platform_card_data) {
+ 		.card = &mt8195_mt6359_soc_card,
+ 		.num_jacks = MT8195_JACK_MAX,
++		.pcm_constraints = mt8195_pcm_constraints,
++		.num_pcm_constraints = ARRAY_SIZE(mt8195_pcm_constraints),
+ 		.flags = RT1019_SPEAKER_AMP_PRESENT
+ 	},
+ 	.sof_priv = &mt8195_sof_priv,
+@@ -1583,6 +1490,8 @@ static const struct mtk_soundcard_pdata mt8195_mt6359_rt1011_rt5682_card = {
+ 	.card_data = &(struct mtk_platform_card_data) {
+ 		.card = &mt8195_mt6359_soc_card,
+ 		.num_jacks = MT8195_JACK_MAX,
++		.pcm_constraints = mt8195_pcm_constraints,
++		.num_pcm_constraints = ARRAY_SIZE(mt8195_pcm_constraints),
+ 		.flags = RT1011_SPEAKER_AMP_PRESENT
+ 	},
+ 	.sof_priv = &mt8195_sof_priv,
+@@ -1594,6 +1503,8 @@ static const struct mtk_soundcard_pdata mt8195_mt6359_max98390_rt5682_card = {
+ 	.card_data = &(struct mtk_platform_card_data) {
+ 		.card = &mt8195_mt6359_soc_card,
+ 		.num_jacks = MT8195_JACK_MAX,
++		.pcm_constraints = mt8195_pcm_constraints,
++		.num_pcm_constraints = ARRAY_SIZE(mt8195_pcm_constraints),
+ 		.flags = MAX98390_SPEAKER_AMP_PRESENT
+ 	},
+ 	.sof_priv = &mt8195_sof_priv,
 -- 
 2.44.0
 
