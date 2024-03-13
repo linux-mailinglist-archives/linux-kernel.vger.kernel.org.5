@@ -1,52 +1,80 @@
-Return-Path: <linux-kernel+bounces-102593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED5C087B459
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:29:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 528AF87B45A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:29:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8888285604
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:29:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 775051C2143D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48BD159B53;
-	Wed, 13 Mar 2024 22:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E2659B64;
+	Wed, 13 Mar 2024 22:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="id6RFgIT"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h87fucOd"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076FB59B4E;
-	Wed, 13 Mar 2024 22:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA7B5917B
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710368944; cv=none; b=Szuy3aCYg0nyORkpZ+GRQWkB02RW7Vb/zsRiOR2al8npN0nnaBkPGrhsxQ3s11mlKKxVLsFtnCQwJbb80hitvlZyXGpQrz/yR3wESmnW/91fC/7eDA9gAUVU16GCfii+m7dt1lpTG9Gjk4BtqdTJGnc1DfVgivjbDDoGYYlwbaE=
+	t=1710368984; cv=none; b=MdW5WbuinHaEl1+C8TKBPO4qJGsHyOvwoK85va/rEFtVC1FvSom8eQGFMym6i0hHvmdR6hqaNmUlw5hMgo3yXAxPrx6ZLJH7Jk6ieyT217jQEidaEmLrbpFHdGQVZ5gh+Jc57jYp6D0892fyrhCUqV1Ft3ioz0PWcYaRR5RkSKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710368944; c=relaxed/simple;
-	bh=cD01GlzbpDft9/egkt97qgIoWlbkMTHG3rZa/g6LfpM=;
+	s=arc-20240116; t=1710368984; c=relaxed/simple;
+	bh=jDn8w2lAj/HkiVf9cFQYrMkeMkPnT2d5AXwCaMiH39k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qx+s3dhLOwodz/LLa6D2d6j6ou3OUzDD8xrKXDH/nldVrM+4h2J6nZe1u8OO0vv+SPWBAMzzudQOS01vuiTu4F2rX+iAw2NlcQ4u3JITVi0JuOKMoXpIKtbgl1A7MdQNxNykc2HA2bkshquo6r09c5c9FOoWS5pXg1VUquM4WXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=id6RFgIT; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710368935; x=1710973735; i=w_armin@gmx.de;
-	bh=20CbePg34fNBEaE5jWgFVZCXbm8KLekGbiZqGqIC5I4=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=id6RFgITiDN9dNIZ1+pwKLeZgGpJUGo19CHjCLJD2Ai8oDRD0YMZYlvxAYEtbNjM
-	 /IzUSC+wbUK85WCx7oeDPgbSDKGI4mUlioHn/z8KIEShrvFuIVtObUggwaY2Uoy5p
-	 4jyKgONPMbom6rV4zkBfAc5e3QM+z5NGKquAfBp/vVwIXxFqGl0q9Z9tWa7o6ZM7V
-	 e3rER6JWZxASKiVG5T0A4x3uJ+60+bLs9JDjvczalR9eax9K6VbE98fZ8h7mG6qPQ
-	 RvZGauXQZrxh72zpDxA6xemf2ZnS4VhVnUcQODogcOcZ3blcT1sjgb+pHj2+lYQEL
-	 hTMLdJ3v4wPniev1Rg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M89Gj-1rfsWq324h-005Ewb; Wed, 13
- Mar 2024 23:28:55 +0100
-Message-ID: <2e8100b0-d87c-413e-bcb1-b91c3ce41633@gmx.de>
-Date: Wed, 13 Mar 2024 23:28:55 +0100
+	 In-Reply-To:Content-Type; b=jg8YaBvRwQeQNYgVu8ZmMFgRCD15RRJjnrIxdV5MSnPny2kiIzDbUAb/dagjSsLLgGqXkRfbvBQLJkDlppCooCUBzpRY8fofyewu/C8tvmoj5kDEU7p1DCpNGBQvtcpSp7GevTQGATdL5CU2wd4egjfdd6jljm7AoH7CTlrY1qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h87fucOd; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710368981;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=12CyAa4k38z6rcIwWOkPhdFUnWRFJxdmKxlTnpdxwmo=;
+	b=h87fucOdT/+J4oYlDBmy1X5wN0dnF5xTithEtHeRk4Qj1uNeQHtkpvzi4WW16rpBh+9k44
+	Nj1x0k63nd4jQyG7Ngm/lLjstlhse49zbqc5ID9/vABPZF9N3D141H6yOfbvkHaKDzyZ2/
+	eTCENY/pAvP1fnAjqao9ncKhBLhMcYE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-590-QjF5xAJoNrOVnjaAdFAKJQ-1; Wed, 13 Mar 2024 18:29:38 -0400
+X-MC-Unique: QjF5xAJoNrOVnjaAdFAKJQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-412db0e24aeso1633395e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:29:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710368977; x=1710973777;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=12CyAa4k38z6rcIwWOkPhdFUnWRFJxdmKxlTnpdxwmo=;
+        b=iQwChrfaHFBnuKOtUcQ8NVPVR/OTgjAmXUPZLiBCvcX2VcViqz464M0EV7EpQIFyrO
+         AjzaaqRwdh7TNe5kJMRmMDgGf/vhagkTrMUsXM71u18ufgtsI2tnlqqUmWyVp6waY386
+         03vgFDbHJepE+PE8Kdh3tvIynsQcOD4kbMl+Ty86N8sQIErnJsrtc7V8b+qBo5oya00k
+         W/Tyiwk9M3c+aRA2APGc+3jdiV4Udjg4Qtp9nDE6k1OlRQUrFTbJZv31ppbwr/MM2/BY
+         kpwSR9/9gf8R7Gyz/d0u8gJSs3IkoHqqd+tJzhYntoE8Li6db3RKCUKHgLum1glRcZlo
+         5fJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWmLamzR3+NL0CQ5nQD6+qBXMgS8kquwiqMeBqjk463yuJLM0Nm34jJskg2dJzQgJSEh/ZU9ivQDN+cj3rVZ8oCdzyQ4twp/gPEZo26
+X-Gm-Message-State: AOJu0YwT3+8pdV3U3gtBGU2iJ3bWOLZwVz56XTz4EPafu/HJTOz+W5DR
+	Vxfap/eDkVFwbdiqX1SjDH/EPWBH5W1JgyFLAUMiaNAutiyANxGL1EskAEnMrj0lxiLXd6mU14d
+	tK1yxGcOHBjaqsuP6fxBCtYxqd3zKI7XyuEBmiEwarX8rr9nsfTGiUaszsRCGvA==
+X-Received: by 2002:a05:600c:a0e:b0:413:304a:a31 with SMTP id z14-20020a05600c0a0e00b00413304a0a31mr96358wmp.24.1710368977089;
+        Wed, 13 Mar 2024 15:29:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE/hMCzn3EYvHOnca0AbdDcLK6SXlYaA5b/P5a6t7F6iPoRJxEf+mD3fuV2poPe+cl/uLDSqQ==
+X-Received: by 2002:a05:600c:a0e:b0:413:304a:a31 with SMTP id z14-20020a05600c0a0e00b00413304a0a31mr96350wmp.24.1710368976752;
+        Wed, 13 Mar 2024 15:29:36 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70e:2600:cd60:7701:f644:b131? (p200300cbc70e2600cd607701f644b131.dip0.t-ipconnect.de. [2003:cb:c70e:2600:cd60:7701:f644:b131])
+        by smtp.gmail.com with ESMTPSA id by1-20020a056000098100b0033d9f0dcb35sm146131wrb.87.2024.03.13.15.29.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 15:29:36 -0700 (PDT)
+Message-ID: <4a1f9359-8ecb-4962-92f5-a52cf2fd8564@redhat.com>
+Date: Wed, 13 Mar 2024 23:29:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,89 +82,86 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] ACPI: bus: _OSC fixes
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: lenb@kernel.org, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240309201310.7548-1-W_Armin@gmx.de>
- <CAJZ5v0hKwThcAO4jMOzi7ySqSv_jHvs_+paBB212qVsaf7LZng@mail.gmail.com>
+Subject: Re: [PATCH] mm/memory: Fix missing pte marker for !page on pte zaps
 Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <CAJZ5v0hKwThcAO4jMOzi7ySqSv_jHvs_+paBB212qVsaf7LZng@mail.gmail.com>
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>
+References: <20240313213107.235067-1-peterx@redhat.com>
+ <c04c81bc-dfc1-4dd6-972c-23c2eb8a5d0d@redhat.com> <ZfIoFP4lGXW3el8b@x1n>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZfIoFP4lGXW3el8b@x1n>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wI++P+1b+yKc3YfUm2hj1g7DmaS99w7cJz6RXTctsALxs2etRWd
- ywx1NcFkSLsO8QpJQIVn8/1XbUkmdt10xTqWn0DdzXFBHyFey3Y2eekSkWtgK7oEuJ9VNDT
- 6B1nA/6qiefS6P0fcSt7ogVznZkh4DVh7KfG8otKP+7SawOeJ1bG7nzNvyX7sv3Un+PlI2+
- DB3NIafcmslS8mOecEM0A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:P2LB0CjAtRs=;UnbPdXSB8tyXnF5xg20gQT1w9ys
- JMctO74RNrzAl1GH29HunkOTFQ4sZqPUDY7ohOKeMMfsloHeDZgDOyer2mLzK5FFPpMu1IBeD
- 0H1ZHWTSFrzfFaeJtvOXm6HI5bpyxTEVL5E9cawTXXxT0STq6R0452CERoHHG1w2AXhHdzsNI
- 0mmEynM9voaN7qRJfmC4ZiUEnJ6zQi1E2FssXXQVJ/JPAxq82Dih2mr0VsTJb5CHh10WEdBcQ
- pmqQ4qO36zcQg1gwdltwAK8NyRk+EADiqYokRmaTA9JNj1Z1o2wFvWp5S+bE7nJuuGcYZoAIG
- KLxzIuPgTltbvHXKkhb1N27Zxuf/1ke77+MbkJQOST8Mbq5etdubuiTDQ9y1BYzQuFDzn+LM5
- z9IlF3o5Dum4pjBEUekolvUrBPtdZH8aAqI9g7z7JcU10PwqdNj9Ay0+q0RYxaUtuFYX0Qth/
- lB7nebHVcsQciVE53u7RLJaVnSfCH4kRnoKc5KB5KWNXbacHdDNto3OkI10uPfuBQt5Oqysob
- OTseHYAl6Xc6WRhcA8Gi9M1s1tXzIC5Gv2FlnhVj5RaqcWqXEsauHp6iUUts1IjqFxVz0d2Bi
- UyZLY3eOBt10hEy92CwH5PDk19CH+/URD2BBoPdTM3tlOxzD20XW5EccPjSftUeJFiQ50+aNr
- N/NMDlEuj+w8T3SrCP62hdElmBygnk4CLzcUHByKOm3mX1LT7UKIyNK2wtTx3+2F7Uz26s9ZK
- 5PSwEJJbxY6NX/6EY59gacnsH1jMdG85RcGCr81DyUJ4fsFNhFGoIx+J2NiM9Ubmm/mzWRXVl
- 7q8K79JU8z9B51bF+B20paDAWyz2EN1uuB6rkvMZ+nVSc=
+Content-Transfer-Encoding: 7bit
 
-Am 12.03.24 um 21:10 schrieb Rafael J. Wysocki:
+On 13.03.24 23:26, Peter Xu wrote:
+> On Wed, Mar 13, 2024 at 11:03:04PM +0100, David Hildenbrand wrote:
+>> On 13.03.24 22:31, peterx@redhat.com wrote:
+>>> From: Peter Xu <peterx@redhat.com>
+>>>
+>>> Commit 0cf18e839f64 of large folio zap work broke uffd-wp.  Now mm's uffd
+>>> unit test "wp-unpopulated" will trigger this WARN_ON_ONCE().
+>>
+>> Good that I added the WARN_ON_ONCE() :)
+> 
+> To be explict, VM_WARN_ON_ONCE. :) And that's my guess that you didn't hit
+> it when you posted the series and did the tests, as I know latest distros
+> like Fedora dropped DEBUG_VM, so maybe you had your base config out of
+> there (but I normally have it irrelevant of that).
 
-> On Sat, Mar 9, 2024 at 9:13=E2=80=AFPM Armin Wolf <W_Armin@gmx.de> wrote=
-:
->> This patch series fixes the handling of various ACPI features bits
->> when evaluating _OSC.
->>
->> The first three patches fix the reporting of various features supported
->> by the kernel, while the fourth patch corrects the feature bit used to
->> indicate support for the "Generic Initiator Affinity" in SRAT.
->>
->> The last patch fixes the reporting of IRQ ResourceSource support. Unlik=
-e
->> the other feature bits, the ACPI specification states that this feature
->> bit might be used by the ACPI firmware to indicate whether or not it
->> supports the usage of IRQ ResourceSource:
->>
->>          "If not set, the OS may choose to ignore the ResourceSource
->>           parameter in the extended interrupt descriptor."
->>
->> Since the code responsible for parsing IRQ ResourceSource already check=
-s
->> if ResourceSource is present, i assumed that we can omit taking this
->> into account.
->>
->> All patches where tested on a Asus Prime B650-Plus and a Dell Inspiron
->> 3505.
->>
->> Armin Wolf (5):
->>    ACPI: bus: Indicate support for _TFP thru _OSC
->>    ACPI: bus: Indicate support for more than 16 p-states thru _OSC
->>    ACPI: bus: Indicate support for the Generic Event Device thru _OSC
->>    ACPI: Fix Generic Initiator Affinity _OSC bit
->>    ACPI: bus: Indicate support for IRQ ResourceSource thru _OSC
->>
->>   drivers/acpi/bus.c   | 5 +++++
->>   include/linux/acpi.h | 6 +++++-
->>   2 files changed, 10 insertions(+), 1 deletion(-)
->>
->> --
-> All of that looks reasonable to me, but do you know about systems in
-> the field where any of these patches actually fix functionality?
->
-> If not, I'd prefer to queue them up for 6.10 as they are likely to
-> change behavior, at least in corner cases.
->
-> Thanks!
+It's rather surprising that this went unnoticed for quite a while. I 
+usually do run with DEBUG_VM, but I have a bunch of different VMs where 
+I tests stuff, likely it was off when I ran the selftests.
 
-Hi,
+-- 
+Cheers,
 
-i know no system which even queries those feature bits, so i am fine with
-this landing in 6.10.
-
-Thanks,
-Armin Wolf
+David / dhildenb
 
 
