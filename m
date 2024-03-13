@@ -1,169 +1,187 @@
-Return-Path: <linux-kernel+bounces-102266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F0D87AFFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:40:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 109A987B000
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72E901C25FAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:40:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B256028C05F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA2084A5B;
-	Wed, 13 Mar 2024 17:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6FE285289;
+	Wed, 13 Mar 2024 17:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yb8Nnsa8"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NpHmzg+a"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB2863410
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2486C634FF
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710351035; cv=none; b=Pq8o+20KBkg7pPR+ka9PINAZCP16jkwRsxqyxYs8Jp0aMJWCxFlJhPu72Z+/K6ro9QnXb+LRJxUoP4pEXoQULCi8wFCV4Hg9rPHIu6YokTdpIqiMJ8GZvuRDn266h2CDWKXVpQirEPtRcNjMxHEvKCTexWlSm6QSfs/S2L3u/BU=
+	t=1710351056; cv=none; b=knDjv18ZjsF5O6lpzsXjGrXxRhFYkggPyIhZ6cvAw/vzlStOFB+DTMESvcTbF6GhKMCTO5AzCkpuS+o8As9JOwJWzfSAynV0AnwwWt89VHKGtDMDEuA3GhjhztTGbPsGNrtCHuoBJ5/QlBiqwnFSo5z7KmlkllWK6sHgwxxcWX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710351035; c=relaxed/simple;
-	bh=mQK451AsPUWoNGu5tQADsqz6lNGCGwlzWicoSCxfOds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nIqzCX4oiRTRLyPtEzL3axlZYLWLvjv1XczwZx6Lix81bfeXzOHOXjmMEeW8j65aUsJ/YU75U8bc1pD//3Hs6m6tXm5Kw+s46/sNrGv+EklAQjfPgoa0cnMsO/bbOv6JmrcDHf0STjGrdwyK8n/uC1hxoVsHXz2zQu/K4Ueie0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yb8Nnsa8; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd9568fc51so529245ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:30:33 -0700 (PDT)
+	s=arc-20240116; t=1710351056; c=relaxed/simple;
+	bh=nWQimufB7QxLE0zvx0a0J1BIOGZtKvCDLCS4/1vS8PQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=h6M4bwIJBA4QxnMDSIzZsh0a6FsOHYRnLySJb1jQcX10tCqZ5WiZWRwHrinS8rFLxwzFkJvJyUgJ39zOJYFUvEtNl95mD/fTTLUeXBNI1Au89AAXwYOTfolaf9sr9Y7V2L24E3T4ElZykrM1E+B6PVnfkWkjn8y9+U/ZcnQvw/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NpHmzg+a; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e92b3b5c9so18579f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710351033; x=1710955833; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FlLkhEe/0D5rW6ngXULURvSkbqIjDZBghD0r9MHVOtc=;
-        b=Yb8Nnsa8fdv8TEJkT3ptAc9ZMHslYnkF3FGqaVxsmxQ/WzfBajk++fZaUa2sVh8PlF
-         YTdAXY5VFgOGCYcNJwa833cpgOkjXDPtaGvZlqkFiEK0U1Yck3otiVr1YCiv5jcMxlRl
-         zHk1eF8sHSgqf0lkqKLTTbuXn9ACKMPE0AtiB5AvZMXrOnaqrqdjM0wo7mJKVjQQAkdt
-         KL5MHHW+EYAk6drRXcFganZfFLFx7RVb1VwUdfr8D17juqyPP9cXZ2uHwAtVqLOWJEuI
-         CXigYqvhTSqkPIOMpWZHwPWEAKiTUYYyh/Fj7bFoKf3OG+fZccsF39Ndcm6PzCcnZq4r
-         Kijw==
+        d=linaro.org; s=google; t=1710351053; x=1710955853; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AoJBLvGLSO1Au71tnmkkcC/uvFLxr7hz04I6Ua/2Z9M=;
+        b=NpHmzg+auK50FAWD6o3qFz60e1vehQ6LhRQwsXYS4lEJo1DIOlyU1xN02cWBwIbbsJ
+         s8nRSgsBktMTSWZn6ZlbmTQ2PO6p/EEc9iff3zY0N5CtJPXfSuZ0l9FlDBiOYPjdsNwO
+         /0kUNYgVqV6U4XK5INRkox0IIu+Ak7Vy9nrRBu9KOkSSJrqLPwHfnkL7N84/rw/+Y7TA
+         D5HFDVslUm+Ve9QNFNilzvs0irwnaOChmqnXzjQiOiZ4ddhlD+48DaAfDFR6Q96sa1UO
+         zkaVDtzQyThOJZhVo2HDdat9/a6v9moUpYM1g6Tbgn1NWofwNGWkcv1brirkgN+cbWvV
+         AJPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710351033; x=1710955833;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FlLkhEe/0D5rW6ngXULURvSkbqIjDZBghD0r9MHVOtc=;
-        b=kmnzs72sJM7xlwqH4pp04hbUkUDSz6gvzRHNOowadKw+3Ct4hXEHG6Wq1hJVRV3P//
-         QaGi5/YbghhzaSlbEl6T5jhUpIjIw9HGcemy7wYbFUJKdAnTguKmb4e6sTX4n/VmvWS2
-         4ACnPK4XbIDZyRBWh/2Ydfcpgb/zKPRAR6b233BezWrrCC7OWTTQRF6pLiiVoavF/dpg
-         zr5Kls9Zw/xIsgwvqV/REi0tIP/Y2hdoj4sSgIvk2i0yagPfrM5qmgUv+ERC9d9AimJm
-         rUurziT0PDuGlFV76BUJSD67TWQ80DhCkoEtSLMOPYwxZtcK6eeLN648aGKFjFLYX+z7
-         favw==
-X-Forwarded-Encrypted: i=1; AJvYcCUG1pXkpF5ZYtkW3WFVQBlwIt29UU89rtQI/OiYtsKxDZtCj+1EScidTiAH0Yx4Sy6EpYPZymt5jZe2XRI2MmaFnj8BCM6XRGV23UZo
-X-Gm-Message-State: AOJu0Yzi5BpB5LWI5C3SI3tiuyq/iGfhv3Sjho5Zzy352UF/Ud4Z/JN3
-	458reTN0t6yXHhSENMYFrbm2OxaCePKefXnp0xsCeLCyaSkthHTmCsED8X/0eF/AnnuwsRt/YSu
-	sNQ==
-X-Google-Smtp-Source: AGHT+IFVyHBcjaoHp5u3gjWValua5wG3aHh6kxQ2DzTMvQHWnOQyAZbWjWCIBkbZD3QkB6MBrYydLQ==
-X-Received: by 2002:a17:902:cec7:b0:1dd:9090:a36b with SMTP id d7-20020a170902cec700b001dd9090a36bmr11723705plg.4.1710351032699;
-        Wed, 13 Mar 2024 10:30:32 -0700 (PDT)
-Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
-        by smtp.gmail.com with ESMTPSA id ko16-20020a17090307d000b001d9d4375149sm8970398plb.215.2024.03.13.10.30.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 10:30:31 -0700 (PDT)
-Date: Wed, 13 Mar 2024 17:30:27 +0000
-From: Mingwei Zhang <mizhang@google.com>
-To: "Wang, Wei W" <wei.w.wang@intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Aaron Lewis <aaronlewis@google.com>,
-	Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH] KVM: x86/pmu: Return correct value of
- IA32_PERF_CAPABILITIES for userspace after vCPU has run
-Message-ID: <ZfHis9Omgy2k3qTK@google.com>
-References: <20240313003739.3365845-1-mizhang@google.com>
- <DS0PR11MB63731F54EA26D14CF7D6A3FDDC2A2@DS0PR11MB6373.namprd11.prod.outlook.com>
+        d=1e100.net; s=20230601; t=1710351053; x=1710955853;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AoJBLvGLSO1Au71tnmkkcC/uvFLxr7hz04I6Ua/2Z9M=;
+        b=GIf5DK2ox7nBrXG23gblA1JH+FOVY1qsI1VEnrfxt7DunKU9yVoPNs3x9EvO9oxpR+
+         I1QB3UbtNPjPMas5ghqnMXI0ai7lWZh19p8cO1oUSp4rX34jAcXZ+Yg8/L2Yk1472K5s
+         JTMFxzYck4oC9TmEsAVOSdbxKUeLnCL8W25+OixgY7S0QNtI7dju5eOmxlSrRMMLbi2P
+         2GRI751bYtzE4yKzILKr5ZHK1tbqdTxcZl5SogMHWGv+lAKAYjbh/1M27iVaB3Tb1xhh
+         1vIxgkqA3zuEgC2TsEGdV8EXzr4zbszC9pqU3v8eOo5otObhylQt5Y9KRv9jQ9+cJ6Yq
+         ImOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDRazC4yraVoq+LiYcLdfDg30GZon3IDcineeBM7uFC4XQqn4qVRaM0sunohvdW4Eb72JJ/quOkPmw+0I8JX5grwCDv4jeYAOMnnOX
+X-Gm-Message-State: AOJu0Yx06V1jvW5BouEwnCpBGXchp5OcL6nde0pnHIXKhUm0mRCMb2B3
+	MeQnPdFykvRBn9w6uNwBx5dW/zjUPstQ3mb5bURlMueelhwHzviKoTJwlLIvQJA=
+X-Google-Smtp-Source: AGHT+IFpt3nKpb6yZp4WeSJe1NcrqDMP7HGMmEVeZpWD8HEqgofCrKHYpfbd5ftktIToiD8wlHn5zA==
+X-Received: by 2002:adf:e482:0:b0:33e:9113:a228 with SMTP id i2-20020adfe482000000b0033e9113a228mr2042063wrm.35.1710351053336;
+        Wed, 13 Mar 2024 10:30:53 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:c945:fed:36d6:130? ([2a01:e0a:982:cbb0:c945:fed:36d6:130])
+        by smtp.gmail.com with ESMTPSA id ba1-20020a0560001c0100b0033e712b1d9bsm1934600wrb.77.2024.03.13.10.30.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 10:30:52 -0700 (PDT)
+Message-ID: <571aceaf-fe32-4bce-ba79-8a5718f1aeac@linaro.org>
+Date: Wed, 13 Mar 2024 18:30:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v3 3/3] drm/panel: simple: add CMT430B19N00 LCD panel
+ support
+To: =?UTF-8?B?SsOpcsOpbWllIERhdXRoZXJpYmVz?=
+ <jeremie.dautheribes@bootlin.com>, Jessica Zhang
+ <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Yen-Mei Goh <yen-mei.goh@keysight.com>
+References: <20240313172016.387277-1-jeremie.dautheribes@bootlin.com>
+ <20240313172016.387277-4-jeremie.dautheribes@bootlin.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20240313172016.387277-4-jeremie.dautheribes@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <DS0PR11MB63731F54EA26D14CF7D6A3FDDC2A2@DS0PR11MB6373.namprd11.prod.outlook.com>
 
-On Wed, Mar 13, 2024, Wang, Wei W wrote:
-> On Wednesday, March 13, 2024 8:38 AM, Mingwei Zhang wrote:
-> > Return correct value of IA32_PERF_CAPABILITIES when userspace tries to read
-> > it after vCPU has already run. Previously, KVM will always return the guest
-> > cached value on get_msr() even if guest CPUID lacks X86_FEATURE_PDCM. The
-> > guest cached value on default is kvm_caps.supported_perf_cap. However,
-> > when userspace sets the value during live migration, the call fails because of
-> > the check on X86_FEATURE_PDCM.
+On 13/03/2024 18:20, Jérémie Dautheribes wrote:
+> Add support for Crystal Clear Technology CMT430B19N00 4.3" 480x272
+> TFT-LCD panel.
 > 
-> Could you point where in the set_msr path that could fail?
-> (I don’t find there is a check of X86_FEATURE_PDCM in vmx_set_msr and
-> kvm_set_msr_common)
+> Suggested-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
+> ---
+>   drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
+>   1 file changed, 29 insertions(+)
 > 
-My memory cheated me... The check was on pmu->version, which not
-X86_FEATURE_PDCM. Note pmu->version is basically backed by another bits
-guest CPUID.
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 20e3df1c59d4..d13c42d0f57b 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -1457,6 +1457,32 @@ static const struct panel_desc boe_hv070wsa = {
+>   	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+>   };
+>   
+> +static const struct display_timing cct_cmt430b19n00_timing = {
+> +	.pixelclock = { 8000000, 9000000, 12000000 },
+> +	.hactive = { 480, 480, 480 },
+> +	.hfront_porch = { 2, 8, 75 },
+> +	.hback_porch = { 3, 43, 43 },
+> +	.hsync_len = { 2, 4, 75 },
+> +	.vactive = { 272, 272, 272 },
+> +	.vfront_porch = { 2, 8, 37 },
+> +	.vback_porch = { 2, 12, 12 },
+> +	.vsync_len = { 2, 4, 37 },
+> +	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW
+> +};
+> +
+> +static const struct panel_desc cct_cmt430b19n00 = {
+> +	.timings = &cct_cmt430b19n00_timing,
+> +	.num_timings = 1,
+> +	.bpc = 8,
+> +	.size = {
+> +		.width = 95,
+> +		.height = 53,
+> +	},
+> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
+> +	.connector_type = DRM_MODE_CONNECTOR_DPI,
+> +};
+> +
+>   static const struct drm_display_mode cdtech_s043wq26h_ct7_mode = {
+>   	.clock = 9000,
+>   	.hdisplay = 480,
+> @@ -4402,6 +4428,9 @@ static const struct of_device_id platform_of_match[] = {
+>   	}, {
+>   		.compatible = "boe,hv070wsa-100",
+>   		.data = &boe_hv070wsa
+> +	}, {
+> +		.compatible = "cct,cmt430b19n00",
+> +		.data = &cct_cmt430b19n00,
+>   	}, {
+>   		.compatible = "cdtech,s043wq26h-ct7",
+>   		.data = &cdtech_s043wq26h_ct7,
 
-> > 
-> > Initially, it sounds like a pure userspace issue. It is not. After vCPU has run,
-> > KVM should faithfully return correct value to satisify legitimate requests from
-> > userspace such as VM suspend/resume and live migrartion. In this case, KVM
-> > should return 0 when guest cpuid lacks X86_FEATURE_PDCM. 
-> Some typos above (satisfy, migration, CPUID)
-> 
-> Seems the description here isn’t aligned to your code below?
-> The code below prevents userspace from reading the MSR value (not return 0 as the
-> read value) in that case.
-> 
-> >So fix the
-> > problem by adding an additional check in vmx_set_msr().
-> > 
-> > Note that IA32_PERF_CAPABILITIES is emulated on AMD side, which is fine
-> > because it set_msr() is guarded by kvm_caps.supported_perf_cap which is
-> > always 0.
-> > 
-> > Cc: Aaron Lewis <aaronlewis@google.com>
-> > Cc: Jim Mattson <jmattson@google.com>
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > ---
-> >  arch/x86/kvm/vmx/vmx.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c index
-> > 40e3780d73ae..6d8667b56091 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -2049,6 +2049,17 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu,
-> > struct msr_data *msr_info)
-> >  		msr_info->data = to_vmx(vcpu)->msr_ia32_sgxlepubkeyhash
-> >  			[msr_info->index - MSR_IA32_SGXLEPUBKEYHASH0];
-> >  		break;
-> > +	case MSR_IA32_PERF_CAPABILITIES:
-> > +		/*
-> > +		 * Host VMM should not get potentially invalid MSR value if
-> > vCPU
-> > +		 * has already run but guest cpuid lacks the support for the
-> > +		 * MSR.
-> > +		 */
-> > +		if (msr_info->host_initiated &&
-> > +		    kvm_vcpu_has_run(vcpu) &&
-> > +		    !guest_cpuid_has(vcpu, X86_FEATURE_PDCM))
-> > +			return 1;
-> > +		break;
-> >  	case KVM_FIRST_EMULATED_VMX_MSR ...
-> > KVM_LAST_EMULATED_VMX_MSR:
-> >  		if (!guest_can_use(vcpu, X86_FEATURE_VMX))
-> >  			return 1;
-> > 
-> > base-commit: fd89499a5151d197ba30f7b801f6d8f4646cf446
-> > --
-> > 2.44.0.291.gc1ea87d7ee-goog
-> > 
-> 
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
