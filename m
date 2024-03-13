@@ -1,101 +1,128 @@
-Return-Path: <linux-kernel+bounces-101124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85A1387A2B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7D187A2BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E8B21F22D36
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:39:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83B1B1F225FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF11412E5E;
-	Wed, 13 Mar 2024 05:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29856134AD;
+	Wed, 13 Mar 2024 05:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EVc544xo"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="CZSnrEsh"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0E110A1D
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 05:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADCAD8495;
+	Wed, 13 Mar 2024 05:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710308359; cv=none; b=JAhggPQDQw4/uPVuAkYpkM/fHb9531IYdoImCpJecgEAD1lNrzzTvgvD23YHRTBHiXAPbvnp5HpnBS7X5y5QOh08oqVrfA7VMg+nmekcPd0/A+ftYsU/r6rfVAUlLdHe1/h1xEwwSgnbNmOnD8QpYd4De9/jeIsb6mAHrLNwVpE=
+	t=1710308670; cv=none; b=MvBc4q8XEODauRUCqUJI/WyG2H7kBDULnlahZhjkR85SCiiQoR2C2n+5D/+By+cK/d88zbcTh/KNI9cGztNLo71Nou3McrJXDRH6s4/uEYJrgeH6TkEHHE9SC1efeWeSiNVrMkwuiz4dFnzt/89hAeQL2mADCtIIvMXFr2jp2Gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710308359; c=relaxed/simple;
-	bh=qv9E0ryVzOnQqUuvfK/MZ3ePXhFc9C6pWJ33POv+pnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FgBaomZsfv1V7Emc87GKanTQPptYnPKxdBQLptYlxHvsEuRr2KNAYc0X4e5zwI9/8YNxrtNiWXVisBA0MOEZmLiRGB7uv8TOQX65JqEhKcjZFZmj/WhbsTX04TBOHQs6T7bEUZAG2DP5NT0eoSTSq3zU9udY0RN/csfwRe2pOw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EVc544xo; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a45ba1f8e89so686843266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:39:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710308355; x=1710913155; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NSWceIUzISd19ErGqmK4nWkvRpe4eyaho/RKTDtrGmc=;
-        b=EVc544xoeqN98Epj3hVaNPWwm3ye2HgaLuPkR0/yGmZIxFg409003kOp/yQ+NV8WI2
-         W4g881JbChsf471QcRyMXSVvpktuz20hU2+se5giLx/fHEnl8cJHlNKVId+9Fd9sHUEP
-         Lg9yRdivacbJZaQp363EVrIf3GLGEk7uRR6PNmASD4gVsscngm8KDpj8MhgcWMo6AWEQ
-         wI3qHHUTKJK7wvK9zw/CkPG1/FT+8bqbaan7/AqWjn91S6vEcUedIMMvAbH0xtvkF1ep
-         9+Jr8bOWMlNtiKGbpoxwhTLTo1K45OShZyt4sNhY5eR+DeSpKX7mOmbWU3Chl09Bsmwm
-         N4BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710308355; x=1710913155;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NSWceIUzISd19ErGqmK4nWkvRpe4eyaho/RKTDtrGmc=;
-        b=S1dYWsiCJoBlObVvdvWy+Jp95nmt9UenXzzMaQC99afKb/DKhANgQQWvLd1atokUcD
-         MkeQ7DCFHkFVuDL6WIDvpShUjFAae+tDOc1uVZ+jjXcFnMC8rlw6ptg+YT7Reh+JthWK
-         uuArysuE68wDvp63D7bfbITppxcAQc08pCpPqQWUm4wAf986lU/lw5vcjMgAEiixt0gX
-         xELp8m6wOfhy+KPHCpK/JrOz/l92PzE6VlnoTm+2Ytrg+8SzcyovyiP7aVHQLWhsgzy4
-         yXoF8j2pmouWM+Sdac2Psb0HLjTAjk9CO4+meJWBnKEGyr+jshvziNRzHm2f6Z/7+qfm
-         Xt6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW4x+kilxGzqyoCKmR2FW3iSUOBRT2FUpKP1b9GiS5PDML9mBhqiKC4WdMeXq+RO8/6yfBIyA4ReCpnvvzBUzGB+4rqnnQ0GWr63UJw
-X-Gm-Message-State: AOJu0YxNRhbOYW29QENjdlfoVZPvbe/fiTcDaqV4c6aSGw0BUeJteKdJ
-	NfrCOvciOoxbstdVHhdCf+h128UBv3ezPLPQ2xEikDOW5IQN65HA2JVQSHXvRGM=
-X-Google-Smtp-Source: AGHT+IHIl2MZeMkBVrLJIRHhVpuSEJV9aPJOnnzBZz3010xMAZ4WjFN325JjVYWACAPKVHCN6Hpa3Q==
-X-Received: by 2002:a17:906:bf47:b0:a46:22a3:4798 with SMTP id ps7-20020a170906bf4700b00a4622a34798mr5890684ejb.46.1710308354976;
-        Tue, 12 Mar 2024 22:39:14 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id zh16-20020a170906881000b00a44d01aff81sm4525776ejb.97.2024.03.12.22.39.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 22:39:14 -0700 (PDT)
-Date: Wed, 13 Mar 2024 08:39:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Felix N. Kimbu" <felixkimbu1@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev
-Subject: Re: [PATCH v4] staging: wlan-ng: Rename 'foo' to 'rc' in p80211conv.c
-Message-ID: <f6f5e779-4881-4fcd-b162-8a8dde514b2c@moroto.mountain>
-References: <ZfEvTF7qwYZORGsY@MOLeToid>
+	s=arc-20240116; t=1710308670; c=relaxed/simple;
+	bh=VvPHDqLLpC8LFZI3SJ/kylxCfbttkPc48ru0yzUUwTo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RZ30UmVfMJotkFFTzManGY2KqqtWl2nhqswYUt9hLvv3I+U9RkF7L21gIVHfxbUCQPKDM+yCHF6LlEMJm696hrQGY95Ha0Sb7J+x+T3KlzcTAPngW7Frlcz0ONfQpY8VCVCiGJFFW6ZMxqQYqPlEGatg/iRAtMus9Piwvw397o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=CZSnrEsh; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: bb69f4b8e0fc11ee935d6952f98a51a9-20240313
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=GlYVVpTEX60HSlvFhX9PdtlLCFZyH18RDFoJDw6Zob0=;
+	b=CZSnrEshWO3lKSY0O2xd0pN/rJEpJygmJoAL14UDt8s8GAPz2zywU4kPmEV07XxCVWPyMWId0RF58fw76N2bTkSn0aeCuQcjoqD1enmb7qHhSv2AneOLLqw3Gx1ZjFfvTMWGg20YPEK/FpHYDMkFwFFTQd+gK3mnd9cG0F+ualY=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:8f1e1c91-5659-47a7-aa18-d80f4c515a89,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:6f543d0,CLOUDID:53917081-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: bb69f4b8e0fc11ee935d6952f98a51a9-20240313
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+	(envelope-from <zhi.mao@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 2058357756; Wed, 13 Mar 2024 13:44:17 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 13 Mar 2024 13:44:16 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 13 Mar 2024 13:44:14 +0800
+From: Zhi Mao <zhi.mao@mediatek.com>
+To: <mchehab@kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <sakari.ailus@linux.intel.com>
+CC: <laurent.pinchart@ideasonboard.com>, <shengnan.wang@mediatek.com>,
+	<yaya.chang@mediatek.com>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>, <yunkec@chromium.org>,
+	<conor+dt@kernel.org>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>, <jacopo.mondi@ideasonboard.com>,
+	<zhi.mao@mediatek.com>, <10572168@qq.com>, <hverkuil-cisco@xs4all.nl>,
+	<heiko@sntech.de>, <jernej.skrabec@gmail.com>, <macromorgan@hotmail.com>,
+	<linus.walleij@linaro.org>, <hdegoede@redhat.com>,
+	<tomi.valkeinen@ideasonboard.com>, <gerald.loacker@wolfvision.net>,
+	<andy.shevchenko@gmail.com>, <bingbu.cao@intel.com>,
+	<dan.scally@ideasonboard.com>, <linux-media@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH 0/2] media: i2c: Add support for GC05A2 sensor 
+Date: Wed, 13 Mar 2024 13:44:07 +0800
+Message-ID: <20240313054409.8073-1-zhi.mao@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfEvTF7qwYZORGsY@MOLeToid>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-On Wed, Mar 13, 2024 at 05:45:00AM +0100, Felix N. Kimbu wrote:
-> Rename identifier 'foo' to 'rc' in skb_p80211_to_ether() and
-> skb_ether_to_p80211() to match the common kernel coding style.
-> 
-> Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
-> ---
+This series adds YAML DT binding and V4L2 sub-device driver for Galaxycore's
+GC05A2 5-megapixel 10-bit RAW CMOS 1/5" sensor, with an MIPI CSI-2 image data
+interface and the I2C control bus.
 
-Thanks!
+The driver is implemented with V4L2 framework.
+ - Async registered as a V4L2 sub-device.
+ - As the first component of camera system including Seninf, ISP pipeline.
+ - A media entity that provides one source pad in common.
+ - Used in camera features on ChromeOS application.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Also this driver supports following features:
+ - manual exposure and analog gain control support
+ - vertical blanking control support
+ - test pattern support
+ - media controller support
+ - runtime PM support
+ - support resolution: 2592x1944@30fps, 1280x720@60fps
 
-regards,
-dan carpenter
+This series is based on linux-next, tag: next-20240312
+ 
+Thanks 
+
+Zhi Mao (2):
+  media: dt-bindings: i2c: add GalaxyCore GC05A2 image sensor
+  media: i2c: Add GC05A2 image sensor driver
+
+ .../bindings/media/i2c/galaxycore,gc05a2.yaml |  112 ++
+ drivers/media/i2c/Kconfig                     |   10 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/gc05a2.c                    | 1377 +++++++++++++++++
+ 4 files changed, 1500 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc05a2.yaml
+ create mode 100644 drivers/media/i2c/gc05a2.c
+
+-- 
+2.25.1
+
+
 
 
