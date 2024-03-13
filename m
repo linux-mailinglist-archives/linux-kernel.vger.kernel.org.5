@@ -1,95 +1,86 @@
-Return-Path: <linux-kernel+bounces-101413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BF1487A6CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 832D887A6E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5CD9285678
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:10:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F6A7286216
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA6846447;
-	Wed, 13 Mar 2024 11:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N/Ctlpie"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14B73F8D1;
+	Wed, 13 Mar 2024 11:11:04 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902DF3FB28;
-	Wed, 13 Mar 2024 11:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FBE3EA94
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710328150; cv=none; b=EQQvhpd8vxU08M43rU62MZMEcCWONhsH6hFgXgm4sPi99NMaWY6OBl0WfgWiIJVXwQv2e9pNDGCk46ACNOCsLw7dyzBGBCfdvx0wBH0nIWmo62ko441FoxtLjKNjcpHit33M6dnbxJf2aERvQV5Jte88Xsg2sCjBjuwsGLzCnnM=
+	t=1710328264; cv=none; b=jdLOHJVDhFUHcot9qXyedD9Ae4rwxgUYb1rAGydlg+r2E6/tL8dY04m6bDLhISLVfS+btvREAdV4FA4LxTfalTH5dj6Y2YMENapYleXBwzt8WbP02thy/sc3tQTW6S8ZIUD4NijLEQb984OCLYPOFErlfz46pyKrkkNWnAJ4HdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710328150; c=relaxed/simple;
-	bh=+7KhbQ0r4aTSlFz/9H9ebVTA5rD0wSrH9ITpUsZtlHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J8iWNqhkQgyAY44/FT48955Nhwj44Hdl38RoqQCCZaQvT6s7JJrgMGQYbuNUBajHYa6lJa9AkHr6x2/moZi3IYMaGNs+mWxfQLVTsOPkePSGScVC3E3RyesRKAIHeuBOyoROQq3X2t74Em92igY9YbQ8cNCGrKtJLcEqz2O+lqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N/Ctlpie; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B5F8C433C7;
-	Wed, 13 Mar 2024 11:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710328150;
-	bh=+7KhbQ0r4aTSlFz/9H9ebVTA5rD0wSrH9ITpUsZtlHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N/CtlpieknVFQYr4x2MZ3ye177KlniREQXVlwK8NkYauHntJt+8KndE+A0q9c0oh1
-	 OiyApAA9yuQJU0b410kl3Mxp1LDyqdaE97Ba/iD4JzeB1y/309LtwffLJPFqDy4VhI
-	 6hHlAST9iBjsNn5+aO/SnGOFeBgCtR4j8kh62DzImjig9hmBJL1GRQAgrRlhxuNayU
-	 NoJ8oMUmRDtvPwSEg6rF1VI/ex1LrEKi6hNMZ6nu62jL015I/g80xOUcQ82H5As1kJ
-	 M6vG9juryrDQlkF8LevmX4oEVzatxs+gzKCW5RKfR0I5+52iitsQZgikBDyXx3nPGy
-	 L2/9UrwmAEH/A==
-Date: Wed, 13 Mar 2024 12:09:04 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: mani@kernel.org, kw@linux.com
-Cc: niklas.cassel@wdc.com, bhelgaas@google.com,
-	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
-	jdmason@kudzu.us, jingoohan1@gmail.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
- interpreted as a free ATU slot
-Message-ID: <ZfGJUDoGnFXKBoG0@ryzen>
-References: <20240304224616.1238966-1-Frank.Li@nxp.com>
+	s=arc-20240116; t=1710328264; c=relaxed/simple;
+	bh=krDBWLkCksHvcCVwuVZHOJZxILbXM8XQWz4eTUBRtws=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=SQiH+poQD5jhZhYS2PPCfNex2LdbxYxjh8zxA79ATTQW6C3JcinNLgQkJjjRskztG3MFBCiZuD1AOGZfIkxbfRJhJkQVO54rohCQdKpDKj+6DkX5RWtr0q3JhXc3YII4VapoErJNRGJlHDumtyXsbp1hAU02OiHiFJtnmwEtpFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36677ca965aso4236695ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 04:11:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710328262; x=1710933062;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=og43RopSDbtIXOr5b/QeLC2pWLh0Ixgs+pA7WVJx5ec=;
+        b=osZpsARLuFfEPihEbhOlbcC2QLMAbCJIJbmpG2NcMTfO1LC+uzncOLEMix9CbqgOis
+         W4p4/C191SoG8gfkfTQe4b0GwcjOr5ougGi4o2g2Uug0hvcxvP5VhP7NfPExRlxD2ukO
+         vVEG0MvoCC0crnsRXM/Gu5SHKm/Mu6m6uF7hLrYMEhzF29zYOY9jEs57N5prfyYadzlN
+         kRjy7uB+DgCieokNJHo6FYKkcKrabhNCcKiay7CDtFWpnjl/3BKIFeop3fDau1K4LzRZ
+         5BC/kD5++ZRZQoQxfEl/AJSjxrcfexzcqRIqDmOLek2MeQb4aYvEdF+qf2gSsT7B6hDA
+         RTbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXXLC7HoIxDXwF/CtPf+znokTb1zHcx66Ga0I5zgJ0r29aOUTIGFgoJTIrofFXE39v+d1Q/aGfVdRmp0R2lMa8jFofFGhZmga/hA51y
+X-Gm-Message-State: AOJu0YyTT9dkzMlkjcnUcBJsB8N8/weG/1K7TEaValAhVZ5Cv8JncszM
+	oqpqs2EfyAE6od2KVMUA3hlSEtx8EdcPqGg8VHjmHwsqu0DeNs5wJXh9AzYIMUWhV0hYUMyIHzB
+	VW5iGSLfKm1dqDsVAu/XJRkuWn2EHomYk2LMaOY/ujoo0Mfr1O/Cz0Wo=
+X-Google-Smtp-Source: AGHT+IFaPEtekJpvI19Rdgsih8mBDripRhpN/aYvFtOZCwZOz7KH171DUMzoli3mUYqTPnAJ0c4PIa3brACgehgGgTMmaDCgP4fK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304224616.1238966-1-Frank.Li@nxp.com>
+X-Received: by 2002:a05:6e02:214c:b0:365:26e3:6e60 with SMTP id
+ d12-20020a056e02214c00b0036526e36e60mr427700ilv.0.1710328262063; Wed, 13 Mar
+ 2024 04:11:02 -0700 (PDT)
+Date: Wed, 13 Mar 2024 04:11:02 -0700
+In-Reply-To: <20240313104628.2178-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000082883f061388d49e@google.com>
+Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
+From: syzbot <syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
-> dw_pcie_ep_inbound_atu()
-> {
-> 	...
-> 	if (!ep->bar_to_atu[bar])
-> 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
-> 	else
-> 		free_win = ep->bar_to_atu[bar];
-> 	...
-> }
-> 
-> The atu index 0 is valid case for atu number. The find_first_zero_bit()
-> will return 6 when second time call into this function if atu is 0. Suppose
-> it should use branch 'free_win = ep->bar_to_atu[bar]'.
-> 
-> Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
-> it have not allocate atu to the bar.
-> 
-> Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
-> Closes: https://lore.kernel.org/linux-pci/ZXt2A+Fusfz3luQV@x1-carbon/T/#u
-> Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
-> Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+Hello,
 
-Any chance of this fix being picked up?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
+Reported-and-tested-by: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com
 
-Kind regards,
-Niklas
+Tested on:
+
+commit:         b0546776 Merge tag 'printk-for-6.9' of git://git.kerne..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d3a48a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10a7ce1a180000
+
+Note: testing is done by a robot and is best-effort only.
 
