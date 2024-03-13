@@ -1,109 +1,109 @@
-Return-Path: <linux-kernel+bounces-101683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4A5A87AA7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:32:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DAFF87AA84
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:36:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9F3EB242B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:32:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A3551F22FFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8750D47A5C;
-	Wed, 13 Mar 2024 15:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6051047A55;
+	Wed, 13 Mar 2024 15:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ajQsrxej"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b="IU1f/G9R"
+Received: from mail.rosalinux.ru (mail.rosalinux.ru [195.19.76.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BD04595B;
-	Wed, 13 Mar 2024 15:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CAD546441;
+	Wed, 13 Mar 2024 15:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.19.76.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710343958; cv=none; b=XHb2HYhLVG6sj7kyIwLoA3myUI+40WiNDvQBxL0fGH/yo66siyksP262031dFKZZ7QCk2qZdW/yeI5TABgk3gndhn2pYOx0cqEuHDHa8mn9AMG45E+l5adPt2T66Ry96El2hOSP48A5jZVfbkGkzw4Laj5uKWWMzx3Xkz78smnk=
+	t=1710344169; cv=none; b=o9fHmB1k8uu96f6Bn31DZ8Zv6gO9nDzlCzVRkZYt9ZPXXkaQ/2OTiIEfnygqroOZyfDbr6AWO0vIuAtA2pN1todpCgGcOkv9+78JWT1Ott+mOSYH2tOb3EIQ8gFRxTed7N8n8eG7+OzqwwDqduT8K449+iyo4oEtCoIVs4fRd3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710343958; c=relaxed/simple;
-	bh=SXintdCZxmv3YrePptPMqe4uFM8pu6Zw1KyUM+YfwIk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=svdlb7nQwf9Wu/3lIUj1sC4I8ghjQncQF4ezQb99N3ZwM1TpH3mM2rSl6mkddnXx0NtqiJLEnKOXhAbO2OpcP7MAOKv6Sx47QLPokhts/slAyRPLbfo6TgTHzot5iWprR/uTSD+2ljVT8wx71Zic9RQYpFgvL9kVNcIHkhDyOLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ajQsrxej; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5303C43390;
-	Wed, 13 Mar 2024 15:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710343958;
-	bh=SXintdCZxmv3YrePptPMqe4uFM8pu6Zw1KyUM+YfwIk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ajQsrxejrhdqPTrSdl54MMC30/dHcv9oa3ptfvZpXZVu6ssKlpajpyqUq83FvKuT0
-	 8IR8paej7oCAzcU89lXIm41mLn1XfghKwazdWRjGqCQh6N0JeceFnxzn0KqG/JIROZ
-	 +MEAe0hiMMmEMxfU00sOFbU4FTIj25SPfN/PUBZ3X3duPIxflzHReN7HCMkEhwsUaX
-	 9/bcRtGxnXUvz/ihLPL8KtTPWUhL8h4NeVKM+/O1dm9sLq+ej+aPKt6zDUzp3kHPbT
-	 wggYEMEKqwWeEEYdoWi5msFhli5mpxsKFkxIapkP7cP+HI7YmxDeqbjBPRxjRtcgIF
-	 5ZGyxcH8O1b+A==
-Date: Wed, 13 Mar 2024 08:32:36 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-	Michael =?iso-8859-1?Q?B=FCsch?= <m@bues.ch>,
-	linux-wireless@vger.kernel.org, Kalle Valo <kvalo@kernel.org>,
-	Johannes Berg <johannes@sipsolutions.net>, llvm@lists.linux.dev
-Subject: Re: [PATCH] ssb: use "break" on default case to prevent warning
-Message-ID: <20240313153236.GA2931742@dev-arch.thelio-3990X>
-References: <20240313001305.18820-1-rdunlap@infradead.org>
+	s=arc-20240116; t=1710344169; c=relaxed/simple;
+	bh=O7uOKiFVPAmuNg68j9at/KETUNZl0bI/kM2wWFUizh8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ofcet0SfAQgZ92wBKK5ElPf0KVgpPZRdznlD5wPlWGKZ339QeWr4mhdq8BP5cVSeogzKaImrTMKSl4i+ze8a7SlGoIVddD026y1yS6Oc68wpseKFRQhV3MpWp5U5Hc7itNC9np5V5o93klKlZ/s/zWj3EsU40FK+rxGup5EMoKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru; spf=pass smtp.mailfrom=rosalinux.ru; dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b=IU1f/G9R; arc=none smtp.client-ip=195.19.76.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosalinux.ru
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rosalinux.ru (Postfix) with ESMTP id 59DD3DFBBDDDA;
+	Wed, 13 Mar 2024 18:35:53 +0300 (MSK)
+Received: from mail.rosalinux.ru ([127.0.0.1])
+	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id zvWePlngsIes; Wed, 13 Mar 2024 18:35:53 +0300 (MSK)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rosalinux.ru (Postfix) with ESMTP id 1E113DFBBDDD8;
+	Wed, 13 Mar 2024 18:35:53 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rosalinux.ru 1E113DFBBDDD8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosalinux.ru;
+	s=1D4BB666-A0F1-11EB-A1A2-F53579C7F503; t=1710344153;
+	bh=Zn7e/vbnoFOlSvvvgW+KMY6UzRzOSfRxr3SxgN8pnw8=;
+	h=From:To:Date:Message-ID:MIME-Version;
+	b=IU1f/G9RZN2S7tK1x8h2PbJgYIgunLztFCGVz3xYlPjo5EsMOz8WGDueB6FtjShra
+	 pVJ9O3TdAfeTwri4DZAfvuIwykJr+U5VfSo3bcO0ig9WCGG3ZjK7+m/KQRvA5ggIMZ
+	 dH2peLUAu3ij3EdFA6fwNjSFufoGhQN8ZS3W6TIDYf6XOMYQdgoM5lhq3B7xIQWnwn
+	 yRT2qFTeTU+LF7ViTQWVL9Ib3Ogs60GMM80DlbvZB5qZJ5JunHrOQ8t5vU/uXzbSp7
+	 YYru0aittpo6zRw+HLEyJBm0jvW3k0m17fNIgE6HdWErafvrwGSrLdg19EqQakxo2n
+	 qHXNL8oG2NwVg==
+X-Virus-Scanned: amavisd-new at rosalinux.ru
+Received: from mail.rosalinux.ru ([127.0.0.1])
+	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id iMZCX_rECthx; Wed, 13 Mar 2024 18:35:53 +0300 (MSK)
+Received: from localhost.localdomain (unknown [62.217.186.174])
+	by mail.rosalinux.ru (Postfix) with ESMTPSA id D8557DFBBDDD7;
+	Wed, 13 Mar 2024 18:35:52 +0300 (MSK)
+From: Mikhail Lobanov <m.lobanov@rosalinux.ru>
+To: Raju Rangoju <rajur@chelsio.com>
+Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	netdev@vger.kernel.org (open list:CXGB4 ETHERNET DRIVER (CXGB4)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] cxgb4: unnecessary check for 0 in the free_sge_txq_uld() function
+Date: Wed, 13 Mar 2024 11:34:36 -0400
+Message-ID: <20240313153437.124749-1-m.lobanov@rosalinux.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240313001305.18820-1-rdunlap@infradead.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 05:13:03PM -0700, Randy Dunlap wrote:
-> Having an empty default: case in a switch statement causes a warning
-> (when using Clang; I don't see the warning when using gcc),
-> so add a "break;" to the default case to prevent the warning:
-> 
-> drivers/ssb/main.c:1149:2: warning: label at end of compound statement is a C2x extension [-Wc2x-extensions]
+The free_sge_txq_old() function has an unnecessary txq check of 0.
+This check is not necessary, since the txq pointer is initialized by the
+uldtxq[i] address from the operation &txq_info->uldtxq[i], which ensures
+that txq is not equal to 0.
 
-It is a hard error with earlier versions of clang as well:
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-  drivers/ssb/main.c:1148:10: error: label at end of compound statement: expected statement
-          default:
-                  ^
-                   ;
-  1 error generated.
+Fixes: ab677ff4ad15 ("cxgb4: Allocate Tx queues dynamically")
+Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
+---
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Fixes: e27b02e23a70 ("ssb: drop use of non-existing CONFIG_SSB_DEBUG symbol")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202403130717.TWm17FiD-lkp@intel.com/
-> Cc: Michael Büsch <m@bues.ch>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: Kalle Valo <kvalo@kernel.org>
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: llvm@lists.linux.dev
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c b/drivers/net=
+/ethernet/chelsio/cxgb4/cxgb4_uld.c
+index 17faac715882..5c13bcb4550d 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c
+@@ -406,7 +406,7 @@ free_sge_txq_uld(struct adapter *adap, struct sge_uld=
+_txq_info *txq_info)
+ 	for (i =3D 0; i < nq; i++) {
+ 		struct sge_uld_txq *txq =3D &txq_info->uldtxq[i];
+=20
+-		if (txq && txq->q.desc) {
++		if (txq->q.desc) {
+ 			tasklet_kill(&txq->qresume_tsk);
+ 			t4_ofld_eq_free(adap, adap->mbox, adap->pf, 0,
+ 					txq->q.cntxt_id);
+--=20
+2.43.0
 
-Thanks for the quick fix!
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->  drivers/ssb/main.c |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff -- a/drivers/ssb/main.c b/drivers/ssb/main.c
-> --- a/drivers/ssb/main.c
-> +++ b/drivers/ssb/main.c
-> @@ -1144,6 +1144,7 @@ u32 ssb_dma_translation(struct ssb_devic
->  				return SSB_PCI_DMA;
->  		}
->  	default:
-> +		break;
->  	}
->  	return 0;
->  }
-> 
 
