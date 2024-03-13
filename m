@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-101189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A16987A3CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:59:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 718D587A3D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C45E1C2161F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:59:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E36A1F21D29
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 586111B814;
-	Wed, 13 Mar 2024 07:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C321CF87;
+	Wed, 13 Mar 2024 07:59:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8jSqfZa"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UQQJn8Ig"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04AEF17589
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCCA1AAD4
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710316755; cv=none; b=Er0dE7MnUCX43gGJPmxvHSkicMMmiR328tjfr4kxEFPOkn6WsiQ7tPleKPK0to8/4xsMhqMVFVnGNff40HtvTJTUgR4vRbi2dB1z7KV0DsSnsmc12p1uQjfl2bD/AUv4C1ZKIRO+kJog9QLea8UOyWToDnzV/Z9pGuCkeab275w=
+	t=1710316757; cv=none; b=sFTM3nZAYc4vSNMOQKpkcPn3tSh87Pf4WxJow+RXUV0uXXMLCQ41fyp0LqzGViHI49Nr94sED5nHTIwD00PYXxqLbeg+hs8vwG/rNwCNNItN45H+erH0D94CNyyjShpgOnN+FrGTb9d9waBvaF41xurAK60yauqaEcLAvehwD0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710316755; c=relaxed/simple;
-	bh=5EKNsvHVcpLfe38673V9v/i6xog89qCKvXxKXsLsi1I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=JfzOqr5IMRxl6/WueEKK4OB/LdYFwC6UC9ENLLmA2P7sFlBRIiT2LK3mvHCoLSlw57lvc0lkc3fuSFL2UDWP7MvK/CNQOYoGmIzq6Tn6wUPFSnKOyDLiN9QoIqh6+Fhg1Vhrq8HqJr+GCZenWZ7SynEyFoxBWAhKzOVPia7nZMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8jSqfZa; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1710316757; c=relaxed/simple;
+	bh=obXivfF7E+Qg8Iznsw6G79d73R/MUgaLs32PvM0qVFY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=nXabxbfkWGjC7cvk1W9ruybC1MWVAEeFSmkVqhOH8EpWf3GWMy9KHPsE5vwu9Ko6jAijJlGcHszlFj58NSdoZ3HYBLXEwFk3yPtVylJV0kLUGOzaheMDcjZQkghKyBMDQQEohXPFC2+aE/jc1DlLMg/E4PUt1KSfOAu3RiyOTMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UQQJn8Ig; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5684ea117a3so5688955a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:59:13 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56877761303so1697752a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:59:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710316752; x=1710921552; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710316754; x=1710921554; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=gvr0OywRqfXlY8J8P6TNVybbliGURKEupVKvqRMCnx0=;
-        b=a8jSqfZaixpbH5KxI6Z4Jo2AHPdUeWB4Sgqm8gvEQhzDQgzlC5H/1M7RC62oEtQI4i
-         VAsY45HKlp3qFEK7/x7IFOJ0Z4yu3WWyQuQfzsKlUbiGxv/LWZ68DxH9Op7urQdI7yfS
-         mLS51mb8uYABgjjYhVpiF8seSXLMMuwZnsk29GVHOPMStNeqlFMeIZCuZvQ72lr0QCE6
-         d8/xsWE4oG3cHJjD/Xi+4BBaE+TBxfxEzM3pLT2esCvHyfH5uGnuL8OJV47IDCTay/hC
-         auL2QCtd3xz7oHOfzjUeafXdE/LkhCeplaGnXxNNxz07P/DWykFvesGnu4soyDL8xWIJ
-         XqFw==
+        bh=Wrnm8nAMmPhT5umInNW1PAAnG9V/dud8dEQbqU6dbpM=;
+        b=UQQJn8IgVzKySajSjoK1l2ZpmB04brKXJ9nXFjQGse9QpzuRbGreBBmaeZEzy7R20S
+         Bq0BZ9qa2vTxgJc/2u5mzy9O6tWs3RvN0PE3YOvpDxJrLHKuS7yGGZnnx3ihMw7ljU/a
+         Sp+OiW3yMOcBvhfqiyDTnsLXyBO6rI7To+SrR7fNiEWsuKgjraJDcZ6KjW12KS6Q2pcw
+         9ZArcz+m+F+4F+qxbk/Y139diAQCgJFl3VEi2YIJ373kqs9bE8lc9/+JcZDfVWpDVvXf
+         XnxrG4bGa724C3LsnujxwJ+FJvDGkU9edNa6diWxpXLr2vkLY1T63nNpWfL/KXs9q5dv
+         Rz+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710316752; x=1710921552;
+        d=1e100.net; s=20230601; t=1710316754; x=1710921554;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gvr0OywRqfXlY8J8P6TNVybbliGURKEupVKvqRMCnx0=;
-        b=P9AUoKe6is3XcDP8FsBBc5Xm+UPxYGbUbYvwPNz9j8d1k0elrjKcPlhOq+R8dOCgbo
-         d9g8U5dSXnL1H1Qk91G3rmpvqlI4cO23bIDn0qKP5iEqyi/t3Rj/nXOfjSUrusD6LTtt
-         YE5qfyVExzYEzbcM1qSXx9Jj3sYp/7AfY1c9ju+irH/SLwvQbwFBOWxqsLDbAaCUyOPo
-         VFOthfXWVoXBNpVAGj4MXv4DCyAdjeh2RHtJyKQQ4Rc7EHR4jKqVCXkCDIklfArH9KN9
-         AaTkcP/H95vIecI+wJmhvSm/Z02HCnCQyEyvs728CiKhuQOcijSpP2EL3WmUvtRucmf7
-         MdpA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrl1Mm6NoRIBwtsSLTO/+5JticlPAH6lLHOaiQwF7kw0+Nlib0sJaDkXKbebaZYlRiXCGmeQz9npb7t16do9SdG3avlhlNmCAE5WH8
-X-Gm-Message-State: AOJu0Yyg7WbsbRl//QZHuqQEVNIcA/QlaskPYD68+5Van6ZxYJuQF+H9
-	uwZcgGfh5HhsgiuRbbTB1n8suPVY75fXWe6n0ZKlnAQJM+I/a8cQ
-X-Google-Smtp-Source: AGHT+IGGPGs/rU+JEecIR5qdQtkiY1iwvNiaohvrYnd7OyeCWe8dWNXV5knp2zHQaPYwdoseqlHCpg==
-X-Received: by 2002:a17:906:1150:b0:a46:4851:b8cb with SMTP id i16-20020a170906115000b00a464851b8cbmr1506147eja.15.1710316752093;
-        Wed, 13 Mar 2024 00:59:12 -0700 (PDT)
+        bh=Wrnm8nAMmPhT5umInNW1PAAnG9V/dud8dEQbqU6dbpM=;
+        b=k55LyqmJCmWSoDcTCr1LG1pt7s/EPszzNEbwcYvNNK2cjc/Sg1sEB6ogryVDhtr712
+         /wEXyl+bq57Ix2GkhBT0qDDCYjetWXngUM3p2qFOpXnJjPtBEf3XgZe66XWk8p9Q5Xjz
+         BCMzIX46GsOIJ8/PXfcipuHUbIxoH6p5FeePS1dIy8otGWIB0A8rQn4O/h/WaOiwuaMK
+         PAHGDctFjoVw1S+CEcqacOUJbnSctiHV6hjiJvcTl8k8UOquMHU0d9S27bnVk7ceVMX2
+         OLqgIWobZgF0ISXST4mn7aPCJp/pJaK5414LbiNjK63+JUe9qqt6dhSfzejWlsQVbY4G
+         EsTw==
+X-Forwarded-Encrypted: i=1; AJvYcCVeZHu6eGQ9UkT8uFFs1+ZqdNp9qUEV4U1PoAMFZIiNcpFcwn4RtQIIJ/eCVu7mfo3b/1xjwfYMJ8gkQ35DQDdLAct6cJzGpXAhIC35
+X-Gm-Message-State: AOJu0YwG+XaXOaJ0C7+P7R8xn11HeLfBYI0szk4AbBe25wN3xROgBf0K
+	6ISDXc82iTWGSsQELReY+pvT+24i42E2y3JbvKX2cloY0Lx1a7H3
+X-Google-Smtp-Source: AGHT+IHfcNH1IR7eAO+6tj1I7o0filQpt97iIoZFKXVns+GITmlG2JVBGhf+s3v7yyuLvy7iFEbQAw==
+X-Received: by 2002:a50:d71b:0:b0:567:504e:e779 with SMTP id t27-20020a50d71b000000b00567504ee779mr2644679edi.25.1710316753549;
+        Wed, 13 Mar 2024 00:59:13 -0700 (PDT)
 Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id la18-20020a170907781200b00a43e8e76825sm4677315ejc.149.2024.03.13.00.59.11
+        by smtp.gmail.com with ESMTPSA id ij12-20020a056402158c00b00562d908daf4sm4703669edb.84.2024.03.13.00.59.12
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Mar 2024 00:59:11 -0700 (PDT)
+        Wed, 13 Mar 2024 00:59:12 -0700 (PDT)
 From: Wei Yang <richard.weiyang@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -71,9 +71,9 @@ To: tglx@linutronix.de,
 Cc: x86@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH 2/4] x86/boot: replace __PHYSICAL_START with LOAD_PHYSICAL_ADDR
-Date: Wed, 13 Mar 2024 07:58:37 +0000
-Message-Id: <20240313075839.8321-3-richard.weiyang@gmail.com>
+Subject: [PATCH 3/4] x86/vmlinux.lds.S: remove conditional definition of LOAD_OFFSET
+Date: Wed, 13 Mar 2024 07:58:38 +0000
+Message-Id: <20240313075839.8321-4-richard.weiyang@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20240313075839.8321-1-richard.weiyang@gmail.com>
 References: <20240313075839.8321-1-richard.weiyang@gmail.com>
@@ -83,57 +83,33 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Both __PHYSICAL_START and LOAD_PHYSICAL_ADDR are defined to get aligned
-CONFIG_PHYSICAL_START, so we can replace __PHYSICAL_START with
-LOAD_PHYSICAL_ADDR. And then remove the definition of __PHYSICAL_START,
-which is only used to define __START_KERNEL.
+In vmlinux.lds.S, we define LOAD_OFFSET conditionally to __PAGE_OFFSET
+or __START_KERNEL_map. While __START_KERNEL_map is already defined to
+the same value with the same condition.
 
-Since <asm/boot.h> includes <asm/pgtable_types.h>, which includes
-<asm/page_types.h>, it is fine to move definition from <asm/boot.h> to
-<asm/page_types.h>.
+So it is fine to define LOAD_OFFSET to __START_KERNEL_map directly.
 
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 ---
- arch/x86/include/asm/boot.h       | 5 -----
- arch/x86/include/asm/page_types.h | 8 +++++---
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ arch/x86/kernel/vmlinux.lds.S | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
-index a38cc0afc90a..12cbc57d0128 100644
---- a/arch/x86/include/asm/boot.h
-+++ b/arch/x86/include/asm/boot.h
-@@ -6,11 +6,6 @@
- #include <asm/pgtable_types.h>
- #include <uapi/asm/boot.h>
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 56451fd2099e..88dcf9366949 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -15,11 +15,7 @@
+  * put it inside the section definition.
+  */
  
--/* Physical address where kernel should be loaded. */
--#define LOAD_PHYSICAL_ADDR ((CONFIG_PHYSICAL_START \
--				+ (CONFIG_PHYSICAL_ALIGN - 1)) \
--				& ~(CONFIG_PHYSICAL_ALIGN - 1))
--
- /* Minimum kernel alignment, as a power of two */
- #ifdef CONFIG_X86_64
- # define MIN_KERNEL_ALIGN_LG2	PMD_SHIFT
-diff --git a/arch/x86/include/asm/page_types.h b/arch/x86/include/asm/page_types.h
-index 86bd4311daf8..acc1620fd121 100644
---- a/arch/x86/include/asm/page_types.h
-+++ b/arch/x86/include/asm/page_types.h
-@@ -31,10 +31,12 @@
+-#ifdef CONFIG_X86_32
+-#define LOAD_OFFSET __PAGE_OFFSET
+-#else
+ #define LOAD_OFFSET __START_KERNEL_map
+-#endif
  
- #define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
--#define __PHYSICAL_START	ALIGN(CONFIG_PHYSICAL_START, \
--				      CONFIG_PHYSICAL_ALIGN)
-+/* Physical address where kernel should be loaded. */
-+#define LOAD_PHYSICAL_ADDR ((CONFIG_PHYSICAL_START \
-+				+ (CONFIG_PHYSICAL_ALIGN - 1)) \
-+				& ~(CONFIG_PHYSICAL_ALIGN - 1))
- 
--#define __START_KERNEL		(__START_KERNEL_map + __PHYSICAL_START)
-+#define __START_KERNEL		(__START_KERNEL_map + LOAD_PHYSICAL_ADDR)
- 
- #ifdef CONFIG_X86_64
- #include <asm/page_64_types.h>
+ #define RUNTIME_DISCARD_EXIT
+ #define EMITS_PT_NOTE
 -- 
 2.34.1
 
