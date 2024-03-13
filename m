@@ -1,160 +1,100 @@
-Return-Path: <linux-kernel+bounces-101482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ECA087A7AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26FC387A7B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E63781F23FEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:39:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D16651F2424B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A62C3FB88;
-	Wed, 13 Mar 2024 12:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C241E891;
+	Wed, 13 Mar 2024 12:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="XyMHnB6V"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mEVM4V/R";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nUP9+ZOx"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C5AA28F3
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E394416;
+	Wed, 13 Mar 2024 12:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710333549; cv=none; b=IiAu6P3u87P0MeXuxa3ab3pMz4TRK3CUZKjFNtT3CDA8rXuEPuSaKLZTNC8e0UrH2BRJRlMiQC+pfRNJ7d0U2LVWi6evCwES/g5AXRno8OPOKtnYi/ghAjCM/J4Ku4TmhLS5TSAQTNlpzyITdioaAbExoAhwasDM7MXadLM8xnM=
+	t=1710333572; cv=none; b=Ql/FfkpRT9iciuErEG0fwnNuvGvtCCmsr87Mq0wwtDB0VXo3Yt7LeCYUWRcs/6cA5n4fe9jqKLpSXf80b4WmVZGxaZigJilK8uNqXaWRVGH7gxkZ0XiDZhp6WOGNi7KMoPD1jy6lGlunhNIfMkWwUfXCH6ibQx55jJV+IPEvQwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710333549; c=relaxed/simple;
-	bh=VxnYqFpMNrkrvkCd/Uk+38u8KTxd2R1sXfsxtDeMJDA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LjfJeNOTAG0kMkd3HdR8E0R1P4AR3M3kswIUE9zZ6NiNExasiBaMbOsZkEg/E0HOipT9SgbodltPxAYmhQdLemFgTh3gvLnLzwOMGJtMAeI2+OyWSXm29TMFg5EQIcUTQktrq/Inebs0CZf0eOBKeDeaYY/jCzRt8qN/THTysJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=XyMHnB6V; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd10a37d68so8913685ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 05:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1710333546; x=1710938346; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p793P1BTk7k277weTIdJuZGu4hnig42k4ieb9wGqdXY=;
-        b=XyMHnB6Vrl6qGN6n7LSzkQfSJYz0SaaLQI8oIbNdGuHUKaYirpCyc6nZCUjjNN3Zvg
-         yqh6vTQaH5qKTfwe0RAfWF7IGf/ga4rPyg+KFeP9XReVNHV99RHFymJ5aAGw+Qw5PRiB
-         G/LZTOJGJxx57Tkhre669B2181N78ENk+4im8uD5JF3ch+sKZ9zSbSlOmI+v0/3tv+Xr
-         Zq7M/PB1VjdpsYhhoUL9vhk2fq4FL+jPdN3wFmocREsul/4ZBSvFOnlM1yeYVy2m1fin
-         bkZ4Mr9Ebmgud2Ku8uDD3OHUQKHVmKOmvHw9Y88L1mmXf7zs11z+vkW0oEUKC2qOnhhF
-         r7Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710333546; x=1710938346;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p793P1BTk7k277weTIdJuZGu4hnig42k4ieb9wGqdXY=;
-        b=SPy4EQhknz6zs6mcY65PCkk1WbUdQFaJPmehOTenqn2GlQ+In0UGr8ZbSTJjJFiuCQ
-         bSXJah30FzbgoajSBTIVd5XgFLonHDj6ia7XWjibI1dFVJvtiP49tlGaUA9ZOJciV+dA
-         6DxwRGJT2A7/3KyXuXdawZQtDZTQlVseJVLHhkemVpIyJYduNTbsHTor98TwbKGENXEe
-         GcmB9jupW36RnWpafzDMAFhumby9uJxiVCQT08CHkRfsKJyHV8TUIyex2eriqSAGuXT9
-         e55M4fpJiY4y++fSq/mpgGvDlFEfciqRFc5wPiaUeAdrIYMFhezvyEtT7U231+mqc04m
-         JG/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUTMNvDQjemZ0no/Rr5V/8qt7cHP09vuG87u34EWhcbQTsWVlMGdg1T2t/JWkDvcV99fms39CpOUJBuq0JxidJYez81M8YptKvinCtd
-X-Gm-Message-State: AOJu0Yy6/4d8/J6Yyzjb55I8jSZjmRklpoaDPVoaY/Fl65seVdQxMksA
-	MuxaXolIOv/mLCfm5fI3K7w9502ZrcZLqJyhPRQmYz0r6opbf0dlz3RMjagGb6A=
-X-Google-Smtp-Source: AGHT+IHSR4NZqEKpPRGEz1h9gCqyf3I7QrJuUdWoD2pI+Gb4mE8YekSGojr4q+MbQUi3dR12PXz0YQ==
-X-Received: by 2002:a17:903:22c8:b0:1dd:72cd:9442 with SMTP id y8-20020a17090322c800b001dd72cd9442mr3612081plg.30.1710333546263;
-        Wed, 13 Mar 2024 05:39:06 -0700 (PDT)
-Received: from localhost.localdomain.cc ([2407:cdc0:ab48:2284:ee43:5c89:b26a:f291])
-        by smtp.gmail.com with ESMTPSA id w17-20020a170902e89100b001dd95b5dd0fsm6440696plg.69.2024.03.13.05.39.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 05:39:05 -0700 (PDT)
-From: Li Feng <fengli@smartx.com>
-To: Keith Busch <kbusch@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Anton.Gavriliuk@hpe.ua,
-	Li Feng <fengli@smartx.com>
-Subject: [PATCH v2 2/2] nvme/tcp: Add wq_unbound modparam for nvme_tcp_wq
-Date: Wed, 13 Mar 2024 20:38:10 +0800
-Message-ID: <20240313123816.625115-2-fengli@smartx.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240313123816.625115-1-fengli@smartx.com>
-References: <20240313123816.625115-1-fengli@smartx.com>
+	s=arc-20240116; t=1710333572; c=relaxed/simple;
+	bh=NFM9gcOH0xSx5epNsLrj556RESBc3LI2P165z8F1sQw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uwfrSwliVHXWQWR1+whob8uHxHcHwfKLtefVTZTlgf7cKBCp+p6WnrMkTtZwMdfTyC1fCZeBanTNxdO+Tn5y3hOwgWTPXZHB+kpub2zzOgUeqws7WJaosDeh59UsbH92A0Tlc4PomzCT5+uCx/xFooieot67rrPOl1EYe8WmFUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mEVM4V/R; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nUP9+ZOx; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710333569;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NFM9gcOH0xSx5epNsLrj556RESBc3LI2P165z8F1sQw=;
+	b=mEVM4V/RscEpbePLHNjcRF2vhiHSlwRBWiNAVRD6+1LY8CF9P4bahY/q5cwl5HaM71XAPN
+	sHs7t53//FVLxWHI5hU/iOdzywAsnZ2u0SG0+bqqL+T1dRv+EyJQM9AcNgNHJW0YwVW0R1
+	wurNXkEN0RgT/5rPiFf9pnGzSFWy7DlI0e7nLS8CW4sX6Fx4YrC4hIZNFTdPPgJRqqpIfg
+	QRKiBJzIUYq0hIxD1Qgw5qRSnVKBR4TcQS9MX3jAR40/zVkD70ozAPMJnxrfi65oaANM6c
+	WXkeXDoyKndVo0+jnYNkeFo9vMdVBjFCTMlhdROlV9B8ApyrOAVR/7XOxa9fNA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710333569;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NFM9gcOH0xSx5epNsLrj556RESBc3LI2P165z8F1sQw=;
+	b=nUP9+ZOxwaDNLyrRw1e2GJAc6Eq1xLjh18gtQVTa6Y0ohAVO8icHSH9XvgMgqcNzKJRvrw
+	PNpeFEu+cogSMZDw==
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Bibo Mao <maobibo@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey Shtylyov
+ <s.shtylyov@omp.ru>, lvjianmin@loongson.cn
+Subject: Re: [PATCH v5 3/3] irqchip/loongson-eiointc: Refine irq affinity
+ setting during resume
+In-Reply-To: <CAAhV-H6Qqz54yQ8uehjx+jEhwCzNzeFfN=gHttLaq_xYQJZchg@mail.gmail.com>
+References: <20240130082722.2912576-1-maobibo@loongson.cn>
+ <20240130082722.2912576-4-maobibo@loongson.cn> <87a5o4iti4.ffs@tglx>
+ <CAAhV-H6Qqz54yQ8uehjx+jEhwCzNzeFfN=gHttLaq_xYQJZchg@mail.gmail.com>
+Date: Wed, 13 Mar 2024 13:39:28 +0100
+Message-ID: <87plvynw5b.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The default nvme_tcp_wq will use all CPUs to process tasks. Sometimes it is
-necessary to set CPU affinity to improve performance.
+On Wed, Mar 13 2024 at 14:20, Huacai Chen wrote:
+> On Tue, Feb 13, 2024 at 5:49=E2=80=AFPM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+>>
+>> On Tue, Jan 30 2024 at 16:27, Bibo Mao wrote:
+>> > During suspend and resume, CPUs except CPU0 can be hot-unpluged and IR=
+Qs
+>> > will be migrated to CPU0. So it is not necessary to restore irq affini=
+ty
+>> > for eiointc irq controller when system resumes.
+>>
+>> That's not the reason. The point is that eiointc_router_init() which is
+>> invoked in the resume path affines all interrupts to CPU0, so the
+>> restore operation is redundant, no?
+> I'm sorry for the late response but I think this is a little wrong.
+> When irq_migrate_all_off_this_cpu() is called at hot-unplug, if an
+> irqdesc is irqd_affinity_is_managed() then its affinity is untouched
+> (doesn't change to CPU0). Then after resume we should not keep its
+> affinity on CPU0 set by eiointc_router_init() , but need to restore
+> its old affinity.
 
-A new module parameter wq_unbound is added here. If set to true, users can
-configure cpu affinity through
-/sys/devices/virtual/workqueue/nvme_tcp_wq/cpumask.
-
-Signed-off-by: Li Feng <fengli@smartx.com>
----
- drivers/nvme/host/tcp.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 2ec1186db0a3..34a882b2ec53 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -36,6 +36,14 @@ static int so_priority;
- module_param(so_priority, int, 0644);
- MODULE_PARM_DESC(so_priority, "nvme tcp socket optimize priority");
- 
-+/*
-+ * Use the unbound workqueue for nvme_tcp_wq, then we can set the cpu affinity
-+ * from sysfs.
-+ */
-+static bool wq_unbound;
-+module_param(wq_unbound, bool, 0644);
-+MODULE_PARM_DESC(wq_unbound, "Use unbound workqueue for nvme-tcp IO context (default false)");
-+
- /*
-  * TLS handshake timeout
-  */
-@@ -1551,7 +1559,10 @@ static void nvme_tcp_set_queue_io_cpu(struct nvme_tcp_queue *queue)
- 	else if (nvme_tcp_poll_queue(queue))
- 		n = qid - ctrl->io_queues[HCTX_TYPE_DEFAULT] -
- 				ctrl->io_queues[HCTX_TYPE_READ] - 1;
--	queue->io_cpu = cpumask_next_wrap(n - 1, cpu_online_mask, -1, false);
-+	if (wq_unbound)
-+		queue->io_cpu = WORK_CPU_UNBOUND;
-+	else
-+		queue->io_cpu = cpumask_next_wrap(n - 1, cpu_online_mask, -1, false);
- }
- 
- static void nvme_tcp_tls_done(void *data, int status, key_serial_t pskid)
-@@ -2790,6 +2801,8 @@ static struct nvmf_transport_ops nvme_tcp_transport = {
- 
- static int __init nvme_tcp_init_module(void)
- {
-+	unsigned int wq_flags = WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_SYSFS;
-+
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_hdr) != 8);
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_cmd_pdu) != 72);
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_data_pdu) != 24);
-@@ -2799,8 +2812,10 @@ static int __init nvme_tcp_init_module(void)
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_icresp_pdu) != 128);
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_term_pdu) != 24);
- 
--	nvme_tcp_wq = alloc_workqueue("nvme_tcp_wq",
--			WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_SYSFS, 0);
-+	if (wq_unbound)
-+		wq_flags |= WQ_UNBOUND;
-+
-+	nvme_tcp_wq = alloc_workqueue("nvme_tcp_wq", wq_flags, 0);
- 	if (!nvme_tcp_wq)
- 		return -ENOMEM;
- 
--- 
-2.44.0
-
+Affinity is restored when the interrupt is started up again, so yes the
+affinity setting should not be changed.
 
