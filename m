@@ -1,142 +1,98 @@
-Return-Path: <linux-kernel+bounces-102445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341FD87B217
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:43:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E49587B229
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1DC41F273F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:43:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706871C254E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC244AEFD;
-	Wed, 13 Mar 2024 19:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3824D9F0;
+	Wed, 13 Mar 2024 19:44:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jQHCEXmc"
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+lHgNSp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F50E4D9ED
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED3F4776A;
+	Wed, 13 Mar 2024 19:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710358972; cv=none; b=W1FyP4cj3wDbrYBGoGWa/aOiI2QmBDxiWK/Xzzv19amT/2GsU8P5C0NPgIpANli65V5ePdB9wa7N0dEi+kxC8oQ2OYAOUGUzMB8ghR3HrK9TPZ8GNSfoPB64XrkXqYzGmH0oq65Y8mPvtQ9TX1QZ9dOKwbybozFCCWO02+cqfxc=
+	t=1710359066; cv=none; b=pmthT7VxFmPBUiL+OTRNIUHMGNQyfr/FNYhbj81Sdl7Kke7FioK5H5oP4cnkt4+LNxCZBd0AFGhUuHQRvMgu1Y58cH1/lmOXMLxdVbJtdxyHqgyW9gaUSoZWg83mzpw4r8ja9d8AZ4oNu/WcAxDWoQRn8/fAmbAh8XmZoMniDMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710358972; c=relaxed/simple;
-	bh=E+jLFz1+KAMdfFOIEDPlUwPmAJ/O4s0jS/Ky0Fcqb9c=;
+	s=arc-20240116; t=1710359066; c=relaxed/simple;
+	bh=y4IkOkfDTy6Hf5RFlO9oP6K871NhGp6uazdYCzXOG5o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=na9VDQvn6SxAdoQQMNjN7alHw7FIZCFxPi3096B901a5Vr3i5vCKs7vBDYdApyEUomCkoy5i3sYFYoae3L3AYFulPDMFQuJUWaszojy0mIC6IyxcyPzFk+4A/409mRldR+PKVYAxKrVYc7iqGpIUOMgpGiRzw6UpnxxyQPrMOBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jQHCEXmc; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 13 Mar 2024 12:42:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710358968;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Dk+nf9vh0nOvWNFnphPCv/gkG9LNigZwfhqnSK2cUmQ=;
-	b=jQHCEXmcdKpEnoJmAzzx7S4DkZ6npgZkz9+EDG59h2VMgjNuBFBiLgcwV1NE2R7OgC0+Cj
-	KTWfhUFQcnFWNNmvdw2IXL8AcJYSVF1X75rL8yZlR6w4e/ppsGqaRzCLaAuqWVuOiR9V8l
-	RQ/hqGQkwmV1rszlm0/Y6IwwDmZzmAI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-	Mostafa Saleh <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] KVM: arm64: Add PSCI SYSTEM_OFF2 function for
- hibernation
-Message-ID: <ZfIBr25V0ulNGUHN@thinky-boi>
-References: <20240312135958.727765-1-dwmw2@infradead.org>
- <20240312135958.727765-2-dwmw2@infradead.org>
- <ZfB5BMfLHWhQXLZY@thinky-boi>
- <d140bb65f02d2b0e33d176beef400d9e22bebafa.camel@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YjjqEgF/Ig42wOKYGZE6Esr5KjrfJXhS1FrmR/qqrjsgiV0YV0Ufhgkh/LvFLSUcAargJd9awgJqqcHpwLmz0Iveqlqif2uQAoQ+q1GlBosNDT0Kbnmguycm0ke9eURaeHFKnTOkFw49dtbgE5B7EzxTpQDQ4pwMFo+avp7xM64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+lHgNSp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD9B6C433F1;
+	Wed, 13 Mar 2024 19:44:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710359065;
+	bh=y4IkOkfDTy6Hf5RFlO9oP6K871NhGp6uazdYCzXOG5o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m+lHgNSpmOVZFWHTL9/c1q9/BAn+Hs2c1s3lqTXVoGwnLWhY7ebljIWs+Di9lmYPq
+	 qXxJTCDpoiM7OxydG+AfbATKxYHfO32qhDAHBzPR0ycn1LuXPzCJNyE8PopCBIoZ0M
+	 VwhveDYuplvMxkTUkwzkykT4bQqyHomo7QVmqsp1/ZjJfE9/gcUTM1Q3+1xPmgCX7G
+	 I5dWqE2e/Uh5P0Z0lGYULRAIvr/aFXnaHeV5yTMsJ1D3VxEfHcvff3RKqfp8Y3iGSm
+	 eNptZnJxrvjBkgKQV7nTr0N1VrlxJ7XMFIUOIIqlrwLGQqZYj6y7WNi7DkErD8bqC8
+	 uaVnhthnNyIfw==
+Date: Wed, 13 Mar 2024 12:44:23 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: James Prestwood <prestwoj@gmail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>,
+	Karel Balej <balejk@matfyz.cz>, dimitri.ledkov@canonical.com,
+	alexandre.torgue@foss.st.com, davem@davemloft.net,
+	dhowells@redhat.com, herbert@gondor.apana.org.au,
+	keyrings@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org,
+	mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org, iwd@lists.linux.dev
+Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+Message-ID: <20240313194423.GA1111@sol.localdomain>
+References: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz>
+ <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
+ <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d140bb65f02d2b0e33d176beef400d9e22bebafa.camel@infradead.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
 
-On Wed, Mar 13, 2024 at 12:53:45PM +0000, David Woodhouse wrote:
-> On Tue, 2024-03-12 at 08:47 -0700, Oliver Upton wrote:
-> > Hi,
-> > 
-> > On Tue, Mar 12, 2024 at 01:51:28PM +0000, David Woodhouse wrote:
-> > > From: David Woodhouse <dwmw@amazon.co.uk>
-> > > 
-> > > The PSCI v1.3 specification (alpha) adds support for a SYSTEM_OFF2 function
-> > > which is analogous to ACPI S4 state. This will allow hosting environments
-> > > to determine that a guest is hibernated rather than just powered off, and
-> > > ensure that they preserve the virtual environment appropriately to allow
-> > > the guest to resume safely (or bump the hardware_signature in the FACS to
-> > > trigger a clean reboot instead).
-> > > 
-> > > The beta version will be changed to say that PSCI_FEATURES returns a bit
-> > > mask of the supported hibernate types, which is implemented here.
-> > 
-> > Have you considered doing the PSCI implementation in userspace? The
-> > SMCCC filter [*] was added for this exact purpose. 
-> > 
+On Wed, Mar 13, 2024 at 10:26:06AM -0700, James Prestwood wrote:
+> Hi,
 > 
-> For the purpose of deprecating the in-KVM PSCI implementation and
-> reimplementing it in VMMs? So we're never going to add new features and
-> versions to the kernel PSCI?
+> On 3/13/24 1:56 AM, Johannes Berg wrote:
+> > Not sure why you're CC'ing the world, but I guess adding a few more
+> > doesn't hurt ...
+> > 
+> > On Wed, 2024-03-13 at 09:50 +0100, Karel Balej wrote:
+> > >   and I use iwd
+> > This is your problem, the wireless stack in the kernel doesn't use any
+> > kernel crypto code for 802.1X.
+> 
+> Yes, the wireless stack has zero bearing on the issue. I think that's what
+> you meant by "problem".
+> 
+> IWD has used the kernel crypto API forever which was abruptly broken, that
+> is the problem.
+> 
+> The original commit says it was to remove support for sha1 signed kernel
+> modules, but it did more than that and broke the keyctl API.
+> 
 
-I'm not against the idea of adding features to the in-kernel PSCI
-implementation when it has a clear reason to live in the kernel. For
-this hypercall in particular the actual implementation lives in
-userspace, the KVM code is just boilerplate for migration / UAPI
-compatibility.
+Which specific API is iwd using that is relevant here?
+I cloned https://kernel.googlesource.com/pub/scm/network/wireless/iwd
+and grepped for keyctl and AF_ALG, but there are no matches.
 
-> If that's the case then I suppose I can send the patch to clearly
-> document the in-KVM PSCI as deprecated, and do it that way.
-
-There probably isn't an awful lot to be gained from documenting the UAPI
-as deprecated, we will never actually get to delete it.
-
-> But to answer your question directly, no I hadn't considered that. I
-> was just following the existing precedent of adding new optional PSCI
-> features like SYSTEM_RESET2.
-
-Understandable. And the infrastructure I'm recommending didn't exist
-around the time of THE SYSTEM_RESET2 addition.
-
-> I didn't think that the addition of SYSTEM_OFF2 in precisely the same
-> fashion would be the straw that broke the camel's back, and pushed us
-> to reimplement it in userspace instead.
-
-I do not believe using the SMCCC filter to take SYSTEM_OFF2 to userspace
-would necessitate a _full_ userspace reimplementation. You're free to
-leave the default handler in place for functions you don't care about.
-Forwarding PSCI_VERSION, PSCI_FEATURES, and SYSTEM_OFF2 would be sufficient
-to get this off the ground, and the VMM can still advertise the rest of
-the hypercalls implemented by KVM.
-
-That might get you where you want to go a bit faster, since it'd avoid
-any concerns about implementing a draft ABI in the kernel.
-
--- 
-Thanks,
-Oliver
+- Eric
 
