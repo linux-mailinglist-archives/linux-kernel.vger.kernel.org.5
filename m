@@ -1,62 +1,39 @@
-Return-Path: <linux-kernel+bounces-101102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DFE687A25C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:35:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265E687A259
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 902D21C21CC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:35:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90BBDB21C63
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACD2514A8C;
-	Wed, 13 Mar 2024 04:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R0WB1oYu"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6502014014;
-	Wed, 13 Mar 2024 04:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B317F1118A;
+	Wed, 13 Mar 2024 04:35:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4796A12E6C;
+	Wed, 13 Mar 2024 04:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710304529; cv=none; b=X+vs/VzKBN1ayJIrp9Xj30v/6b1fJojpIFfawBknKxRRYpwWsOXN/Z13xDHI1yuMQOl3WiLFl+uvAOubv9yd2i2bFPQfGpN3a3YeWPjS3UQc+2IczWGicSCfhZUeTXX1EjcCvYGbxRyp+1GczxAK8I1Z6Orz2YuI8L8wr6yMi8M=
+	t=1710304521; cv=none; b=FHxTNXWO0RJlVfuFvEIDjhd2GLWPt99VTa/qPl7fzEMwMagw+4Obrm/1PS/MboudNqtz2iBHdleuHnhlsicBorUy2DrkPDqRFJV7AUWb75jv+3cRpuLC5HRYEN4huowpDTNygBFDjuGgjuB+Gew/P0WzdnXa21igGbS15dw2aZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710304529; c=relaxed/simple;
-	bh=hXPckeOHlRVYvJ9kRUC3OMTGkew5zgh6PkqyNUOU8dA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NdY3t1/ULm0ahqNnWlJsPRKGwkzJoMnlyDSsp07JMaAMpeuEZIDCEIUEsEjRsGuGFOvKSFZuQv0kFtZ+j2oiPvqQ4AoOl03b9Z744RR5sHn3auTraiXzYch5h4sDV1Jk+URnrIFZuvkcNB3+kURutMf26wVAuA7icYiq3BLJOds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R0WB1oYu; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42D4XjVc005866;
-	Wed, 13 Mar 2024 04:35:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=9kXcIzewiyknFWfr41dRuCxtnoqV7rMNA3Sg0O134WM=; b=R0
-	WB1oYuNjRuf3FsCNTvmbnXoCI1wjz2ob/svtauKlmZqSjUNHr4U8yneilh6TBX1i
-	fRYXD3C+fJDu6T66uRnnEuI+sM9xkU93EDdEl24p28bPyg8dm+szP+8CwRPPrbNK
-	vLopUMUqtQg4p2L/TAFzz+iF8gukdJyB5VaQf//wl6fq3KqsPyCAYPhOpEHFgAcU
-	ahalxFu8jSs6TnjCqnG6SAKA61gzOihKDdKadflrMgLq1CfbBBe2U+n6IrwlNPEj
-	KiqCRY+TsHaYJFrsJofgLlAut4lCofJbO5Hx1FQqbM+x5xxIgya2HrR1yYL3Gkx5
-	FHadakVoKKNdT3ScNfmA==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wtw3h0ygd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 04:35:04 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42D4Z3EG023024
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 04:35:03 GMT
-Received: from [10.110.34.216] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Mar
- 2024 21:34:59 -0700
-Message-ID: <56499130-765d-464a-810c-45b19490986b@quicinc.com>
-Date: Tue, 12 Mar 2024 21:34:58 -0700
+	s=arc-20240116; t=1710304521; c=relaxed/simple;
+	bh=Cv42gZ4ret2wP0KfK5KZWwIAxVSwjAnNgLoQDhZ2hEM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O+lcSBPRDrzEhENoRXCXdI32f704PIIkheyWdUguKxBXk/jhe/IijcIIeftDX1kxpyCske3Wfzoq2nqXIA3BPcvoJK5htnBXeml1WJTtPgspsgAVcGbXr1GA+8QhuicBRMPJOVKgpBaArNzo/TRVE0MBuOeRLTOY8zhmZ4DE7cA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 473FF1007;
+	Tue, 12 Mar 2024 21:35:55 -0700 (PDT)
+Received: from [10.162.43.8] (a077893.blr.arm.com [10.162.43.8])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF6AE3F64C;
+	Tue, 12 Mar 2024 21:35:14 -0700 (PDT)
+Message-ID: <47c70fb9-144b-45ce-9670-85f2ec6744f5@arm.com>
+Date: Wed, 13 Mar 2024 10:05:12 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,77 +41,224 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
- for userspace tstamp packets
-To: Martin KaFai Lau <martin.lau@linux.dev>,
-        Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>
-CC: <kernel@quicinc.com>, "David S. Miller" <davem@davemloft.net>,
-        "Eric
- Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        "Martin
- KaFai Lau" <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel
- Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii
- Nakryiko <andrii@kernel.org>
-References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
- <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+Subject: Re: [PATCH V6 07/11] coresight: catu: Move ACPI support from AMBA
+ driver to platform driver
 Content-Language: en-US
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: B8KnfuS5T1cfaJQ80BNNk6Kazb9KXIes
-X-Proofpoint-GUID: B8KnfuS5T1cfaJQ80BNNk6Kazb9KXIes
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_04,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 malwarescore=0 impostorscore=0 clxscore=1011 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403130032
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <20240312102318.2285165-1-anshuman.khandual@arm.com>
+ <20240312102318.2285165-8-anshuman.khandual@arm.com>
+ <9f4c2e47-3790-464e-a831-f900265a4dcc@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <9f4c2e47-3790-464e-a831-f900265a4dcc@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 3/12/2024 4:52 PM, Martin KaFai Lau wrote:
-> On 3/1/24 12:13 PM, Abhishek Chauhan wrote:
->> Bridge driver today has no support to forward the userspace timestamp
->> packets and ends up resetting the timestamp. ETF qdisc checks the
->> packet coming from userspace and encounters to be 0 thereby dropping
->> time sensitive packets. These changes will allow userspace timestamps
->> packets to be forwarded from the bridge to NIC drivers.
+On 3/12/24 20:35, Suzuki K Poulose wrote:
+> On 12/03/2024 10:23, Anshuman Khandual wrote:
+>> Add support for the catu devices in a new platform driver, which can then
+>> be used on ACPI based platforms. This change would now allow runtime power
+>> management for ACPI based systems. The driver would try to enable the APB
+>> clock if available. But first this renames and then refactors catu_probe()
+>> and catu_remove(), making sure it can be used both for platform and AMBA
+>> drivers. This also moves pm_runtime_put() from catu_probe() to the callers.
 >>
->> Setting the same bit (mono_delivery_time) to avoid dropping of
->> userspace tstamp packets in the forwarding path.
+>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: coresight@lists.linaro.org
+>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+>> Reviewed-by: James Clark <james.clark@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V6:
 >>
->> Existing functionality of mono_delivery_time remains unaltered here,
->> instead just extended with userspace tstamp support for bridge
->> forwarding path.
+>> - Added clk_put() for pclk in catu_platform_probe() error path
+>> - Added WARN_ON(!drvdata) check in catu_platform_remove()
+>> - Added additional elements for acpi_device_id[]
+>>
+>>   drivers/acpi/arm64/amba.c                    |   1 -
+>>   drivers/hwtracing/coresight/coresight-catu.c | 146 ++++++++++++++++---
+>>   drivers/hwtracing/coresight/coresight-catu.h |   1 +
+>>   3 files changed, 125 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+>> index afb6afb66967..587061b0fd2f 100644
+>> --- a/drivers/acpi/arm64/amba.c
+>> +++ b/drivers/acpi/arm64/amba.c
+>> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+>>       {"ARMHC503", 0}, /* ARM CoreSight Debug */
+>>       {"ARMHC979", 0}, /* ARM CoreSight TPIU */
+>>       {"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+>> -    {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>>       {"", 0},
+>>   };
+>>   diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+>> index 3949ded0d4fa..8fa035e5a0e8 100644
+>> --- a/drivers/hwtracing/coresight/coresight-catu.c
+>> +++ b/drivers/hwtracing/coresight/coresight-catu.c
+>> @@ -7,6 +7,8 @@
+>>    * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>    */
+>>   +#include <linux/platform_device.h>
+>> +#include <linux/acpi.h>
 > 
-> The patch currently broke the bpf selftest test_tc_dtime: https://github.com/kernel-patches/bpf/actions/runs/8242487344/job/22541746675
-> 
-> In particular, there is a uapi field __sk_buff->tstamp_type which currently has BPF_SKB_TSTAMP_DELIVERY_MONO to mean skb->tstamp has the MONO "delivery" time. BPF_SKB_TSTAMP_UNSPEC means everything else (this could be a rx timestamp at ingress or a delivery time set by user space).
-> 
-> __sk_buff->tstamp_type depends on skb->mono_delivery_time which does not necessarily mean mono after this patch. I thought about fixing it on the bpf side such that reading __sk_buff->tstamp_type only returns BPF_SKB_TSTAMP_DELIVERY_MONO when the skb->mono_delivery_time is set and skb->sk is IPPROTO_TCP. However, it won't work because of bpf_skb_set_tstamp().
-> 
-> There is a bpf helper, bpf_skb_set_tstamp(skb, tstamp, BPF_SKB_TSTAMP_DELIVERY_MONO). This helper changes both the skb->tstamp and the skb->mono_delivery_time. The expectation is this could change skb->tstamp in the ingress skb and redirect to egress sch_fq. It could also set a mono time to skb->tstamp where the udp sk->sk_clockid may not be necessary in mono and then bpf_redirect to egress sch_fq. When bpf_skb_set_tstamp(skb, tstamp, BPF_SKB_TSTAMP_DELIVERY_MONO) succeeds, reading __sk_buff->tstamp_type expects BPF_SKB_TSTAMP_DELIVERY_MONO also.
-> 
-> I ran out of idea to solve this uapi breakage.
-> 
-> I am afraid it may need to go back to v1 idea and use another bit (user_delivery_time) in the skb.
-> 
-I am okay to switch back to version 1 of this patch by adding another bit called userspace_time_stamp as that was the initial intent. 
+> minor nit: Please retain the alphabetic order.
 
-Martin what do you suggest ? 
+Sure, will do that.
+
+> 
+>>   #include <linux/amba/bus.h>
+>>   #include <linux/device.h>
+>>   #include <linux/dma-mapping.h>
+>> @@ -502,31 +504,25 @@ static const struct coresight_ops catu_ops = {
+>>       .helper_ops = &catu_helper_ops,
+>>   };
+>>   -static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>> +static int __catu_probe(struct device *dev, struct resource *res)
+>>   {
+>>       int ret = 0;
+>>       u32 dma_mask;
+>> -    struct catu_drvdata *drvdata;
+>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>       struct coresight_desc catu_desc;
+>>       struct coresight_platform_data *pdata = NULL;
+>> -    struct device *dev = &adev->dev;
+>>       void __iomem *base;
+>>         catu_desc.name = coresight_alloc_device_name(&catu_devs, dev);
+>>       if (!catu_desc.name)
+>>           return -ENOMEM;
+>>   -    drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+>> -    if (!drvdata) {
+>> -        ret = -ENOMEM;
+>> -        goto out;
+>> -    }
+>> -
+>> -    dev_set_drvdata(dev, drvdata);
+>> -    base = devm_ioremap_resource(dev, &adev->res);
+>> -    if (IS_ERR(base)) {
+>> -        ret = PTR_ERR(base);
+>> -        goto out;
+>> +    if (res) {
+> 
+> We don't have a case where res == NULL and we shouldn't support that.
+
+Sure, will drop that here and in cpu debug driver as well.
+
+> 
+>> +        base = devm_ioremap_resource(dev, res);
+>> +        if (IS_ERR(base)) {
+>> +            ret = PTR_ERR(base);
+>> +            goto out;
+>> +        }
+>>       }
+>>         /* Setup dma mask for the device */
+>> @@ -567,19 +563,39 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>>       drvdata->csdev = coresight_register(&catu_desc);
+>>       if (IS_ERR(drvdata->csdev))
+>>           ret = PTR_ERR(drvdata->csdev);
+>> -    else
+>> -        pm_runtime_put(&adev->dev);
+>>   out:
+>>       return ret;
+>>   }
+>>   -static void catu_remove(struct amba_device *adev)
+>> +static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>> +{
+>> +    struct catu_drvdata *drvdata;
+>> +    int ret;
+>> +
+>> +    drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
+>> +    if (!drvdata)
+>> +        return -ENOMEM;
+>> +
+>> +    amba_set_drvdata(adev, drvdata);
+>> +    ret = __catu_probe(&adev->dev, &adev->res);
+>> +    if (!ret)
+>> +        pm_runtime_put(&adev->dev);
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +static void __catu_remove(struct device *dev)
+>>   {
+>> -    struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
+>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>         coresight_unregister(drvdata->csdev);
+>>   }
+>>   +static void catu_remove(struct amba_device *adev)
+>> +{
+>> +    __catu_remove(&adev->dev);
+>> +}
+>> +
+>>   static struct amba_id catu_ids[] = {
+>>       CS_AMBA_ID(0x000bb9ee),
+>>       {},
+>> @@ -598,13 +614,99 @@ static struct amba_driver catu_driver = {
+>>       .id_table            = catu_ids,
+>>   };
+>>   +static int catu_platform_probe(struct platform_device *pdev)
+>> +{
+>> +    struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +    struct catu_drvdata *drvdata;
+>> +    int ret = 0;
+>> +
+>> +    drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+>> +    if (!drvdata)
+>> +        return -ENOMEM;
+>> +
+>> +    drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
+>> +    if (IS_ERR(drvdata->pclk))
+>> +        return -ENODEV;
+>> +
+>> +    pm_runtime_get_noresume(&pdev->dev);
+>> +    pm_runtime_set_active(&pdev->dev);
+>> +    pm_runtime_enable(&pdev->dev);
+>> +
+>> +    dev_set_drvdata(&pdev->dev, drvdata);
+>> +    ret = __catu_probe(&pdev->dev, res);
+>> +    pm_runtime_put(&pdev->dev);
+>> +    if (ret) {
+>> +        pm_runtime_disable(&pdev->dev);
+>> +        if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+> 
+> Here drvdata is guaranteed to be valid and the check is not required.
+
+Sure, will drop.
+
+> 
+>> +            clk_put(drvdata->pclk);
+>> +    }
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +static int catu_platform_remove(struct platform_device *pdev)
+>> +{
+>> +    struct catu_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
+>> +
+>> +    if (WARN_ON(!drvdata))
+>> +        return -ENODEV;
+>> +
+>> +    __catu_remove(&pdev->dev);
+>> +    pm_runtime_disable(&pdev->dev);
+>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+> 
+> Same here. Rest looks fine.
+
+Sure, will drop.
 
