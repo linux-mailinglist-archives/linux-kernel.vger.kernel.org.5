@@ -1,135 +1,227 @@
-Return-Path: <linux-kernel+bounces-101612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1857887A959
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:17:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 459DE87A964
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8797289D62
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:17:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9E871F23C38
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4554246436;
-	Wed, 13 Mar 2024 14:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B9A46441;
+	Wed, 13 Mar 2024 14:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y3c6tY4n"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dQxHcnUE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C249146441
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE1D33F7
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710339471; cv=none; b=ZPUMRA6ZenaMMiTryS0j6N/siDwGLO+9NQhcasrVkkPnMlFRyAoM4t0mMmIvKZKI2doDbWRWg/ar40wNmclevbSExO3U3AhCRpJuxWUkEc8tCYgFEugRLwaz63aAmpiTAyJ5WOQvJr2L8E14XKlK0JDSsN0KjGvzgiefnGEk9+Q=
+	t=1710339800; cv=none; b=QdMfFNCZxIAGuY1eKilw6MyTk7B7gPgAuxVCLXEYUZ5HrO5RUUvZ8wrQOGAbXNG4Ovsp0RXJ2iUOczBVzYelp3Sxhg5HPaDlgfW47InT/Yd0ZhhbgMS0F59Cn6KGrScL/VDftovX2zE8i7/uuLafegxSxh+Lxn5fsECghKr35cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710339471; c=relaxed/simple;
-	bh=DI5UQKmJ6ci320U8du68tPIQjhz0EADiePzyf3FHvw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BaOc3aklsTu1Hgyw8KYiWWBqRpAqX4Lin/B6c5x19+AB3Nbh9X4CCS2N7xwl+RVbg2eQhJ4HXRyH9xvq+WeC603jbNemvuxYBOebJi5ACNIpkNA1TGf+doftAXifQbh9fbLb9P8kXJYATmwDf0a3bsTNFM2lioMurXRV8PnMheo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y3c6tY4n; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-513a08f2263so4264427e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710339468; x=1710944268; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DI5UQKmJ6ci320U8du68tPIQjhz0EADiePzyf3FHvw4=;
-        b=Y3c6tY4nc5ZcnIU7xal9B4x7B8tqM0ly+9JTLwWArNoqbBCpvbW/BWUgdES3O22yMC
-         2nmjpcDUgrxFjLHGrjbDhpuyCG9GfMaSYGNhoEErZDBqQ7Lrp10LFd8cCVXwL2+XEwP0
-         rzPCRkSJy5aE8hiihTlT0pUlzES4B31+ohj9h+v4RdtyWaxLcXPVfgrAki7xiTjGmcGi
-         AY/MtUFCdwl9tf2u4PTkAw3j/J6Z1Y3PizN2s14zZiEyR747ZuRDx6/rX1TwUTsiX4yP
-         Yjis24LyK2DqskLlTfFIWyIc/2cPooVswf+VDGstxpx+qr3HWWpg+cV+EbSLV9SnjRgI
-         CWTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710339468; x=1710944268;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DI5UQKmJ6ci320U8du68tPIQjhz0EADiePzyf3FHvw4=;
-        b=lEn2E8xrbGQ4oGpRPDI4k/v7uBZatgrYDYz29wFSXf/wevQT75rBA0g0iMX+ccXweR
-         PI/GtmhkjzgC/p2aY9X3q6Kj8UrQyo1jBmtD2PC6AfmwjKAUjsDLt4pX7ZvgKTfzyVza
-         oiHFf1nXnZdaX8/P6njlq3DkSRozi6LPg1wU/C174gAL+KlZby09o3ERlDL6PtQIg1vb
-         b2w0eyto7l929sdn/lzwbOVuqzxbCLqcLCYv8BdSCBkcJhDGwr7DjrXD5xmGfi7rUrUC
-         WqX9/UjIpXPm4+ev4qwHRmgmL3pysmicnWDXP00tsNO6JWPxgK45qIz7I1YZMiVZNIad
-         AZRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUkcqtZd2Xwq/oqVvNVIGXfwEdtTc39BPfh4O+1eHmvxgswWdIB5XqPJOlyWV8HXsKdNA6NTPRI3OGtFQB9HIIxfLyl8yAtP/HmasTb
-X-Gm-Message-State: AOJu0Yz7lhdlaeOM7kwvXzITejahROCAumjWHVujnkF8kmHXpfNqomA7
-	I++J0bqmAuwiTECQTjsJklDRPIwvE52XyvxNZzEY4ouPfwrDJ7VffujNxQNaZxA=
-X-Google-Smtp-Source: AGHT+IFx+Ru8HLmNgnvlGtS2WaPtuNHppwpho5k+Bj3WbKN3ZgQ4vuHCgkqhvKsxNRYrcFFpxU5muw==
-X-Received: by 2002:a05:6512:3baa:b0:513:b102:7d93 with SMTP id g42-20020a0565123baa00b00513b1027d93mr7524047lfv.24.1710339467939;
-        Wed, 13 Mar 2024 07:17:47 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id v11-20020a05600c444b00b00412f016a151sm2492507wmn.9.2024.03.13.07.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 07:17:47 -0700 (PDT)
-Date: Wed, 13 Mar 2024 14:17:45 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Liuye <liu.yeC@h3c.com>
-Cc: "jason.wessel@windriver.com" <jason.wessel@windriver.com>,
-	"dianders@chromium.org" <dianders@chromium.org>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"jirislaby@kernel.org" <jirislaby@kernel.org>,
-	"kgdb-bugreport@lists.sourceforge.net" <kgdb-bugreport@lists.sourceforge.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Subject: Re: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlA==?=
- =?utf-8?B?5aSNOiDnrZTlpI0=?= =?utf-8?Q?=3A?= [PATCH] kdb: Fix the deadlock
- issue in KDB debugging.
-Message-ID: <20240313141745.GD202685@aspen.lan>
-References: <20240228025602.3087748-1-liu.yeC@h3c.com>
- <20240228120516.GA22898@aspen.lan>
- <8b41d34adaef4ddcacde2dd00d4e3541@h3c.com>
- <20240301105931.GB5795@aspen.lan>
- <2ea381e7407a49aaa0b08fa7d4ff62d3@h3c.com>
- <20240312095756.GB202685@aspen.lan>
- <06cfa3459ed848cf8f228997b983cf53@h3c.com>
- <20240312102419.GC202685@aspen.lan>
- <410a443612e8441cb729c640a0d606c6@h3c.com>
+	s=arc-20240116; t=1710339800; c=relaxed/simple;
+	bh=Wyu4z0W6k2g6dt5sKU4IQIp5NXtrKnscvInafp6gwmE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Oj7kUVrEMDHg8iCgQQ0u9Rc6UyYOBQvWmH+pb8JbAn5OlW0Id/lgAWQJMIi/xbaPukw1BZ8anBoUbas7eySlsNuws1OOSAf4Zeon2U8wRoas6I45aX9BSvunOB/qxX99sear/kEld30EeD3YRxIi8c20P4aABW9IyY+AuZCMZP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dQxHcnUE; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710339798; x=1741875798;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Wyu4z0W6k2g6dt5sKU4IQIp5NXtrKnscvInafp6gwmE=;
+  b=dQxHcnUEqF3klOmX1cMKPnnM4EiVu17mXzDj1L1vhfVdIg88ITR31i6j
+   GWzo9LyCOfwojjiKJXgedh5lNaznogKFUBpdWEdTlLZEB5PdetkHVUHkq
+   Pf0b/8s9LyyBM7WccqSUjRNW4qljYpUgorQODNWsWSzs4BnzpSgvwkvJx
+   AXqCStkj/qazC9lKovIuAIY2eCdQquk59oWzPt+yL6aaN42E3tarjFOJx
+   w8V7KriOcPgdiwknnkdHaju0yUJC0YGiRv11WShclMNpnSTihXb5J0rn1
+   D3oDpKT3NRADHj2ewnCf+5W9x/rAkw8tLgi9qtZ21UdyCSSuxxSIdITvL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5230535"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="5230535"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 07:23:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="937054193"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="937054193"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Mar 2024 07:23:15 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 75D754EB; Wed, 13 Mar 2024 16:23:14 +0200 (EET)
+Date: Wed, 13 Mar 2024 16:23:14 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Andy Shevchenko <andy@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Miguel Ojeda <ojeda@kernel.org>
+Subject: [GIT PULL] auxdisplay for 6.9-1
+Message-ID: <ZfG20vf2kW1h-xA2@black.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <410a443612e8441cb729c640a0d606c6@h3c.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 13, 2024 at 01:22:17AM +0000, Liuye wrote:
-> >On Tue, Mar 12, 2024 at 10:04:54AM +0000, Liuye wrote:
-> >> >On Tue, Mar 12, 2024 at 08:37:11AM +0000, Liuye wrote:
-> >> >> I know that you said schedule_work is not NMI save, which is the
-> >> >> first issue. Perhaps it can be fixed using irq_work_queue. But
-> >> >> even if irq_work_queue is used to implement it, there will still
-> >> >> be a deadlock problem because slave cpu1 still has not released
-> >> >> the running queue lock of master CPU0.
-> >> >
-> >> >This doesn't sound right to me. Why do you think CPU1 won't
-> >> >release the run queue lock?
-> >>
-> >> In this example, CPU1 is waiting for CPU0 to release
-> >> dbg_slave_lock.
-> >
-> >That shouldn't be a problem. CPU0 will have released that lock by the
-> >time the irq work is dispatched.
->
-> Release dbg_slave_lock in CPU0. Before that, shcedule_work needs to be
-> handled, and we are back to the previous issue.
+Hi Linus,
 
-Sorry but I still don't understand what problem you think can happen
-here. What is wrong with calling schedule_work() from the IRQ work
-handler?
+First PR from me as a maintainer of auxdisplay subsystem. Miguel retired and
+nominated me as a successor (it appears that for the last a couple of years
+I am appeared a main contributor to the subsystem), however I have no much time
+for that, that's why the update in MAINTAINERS has 'Odd Fixes'. Nevertheless,
+Geert agreed to help as the official reviewer. So far so good, the collection
+of the code has been in Linux Next for a while with one reported issue that
+had been addressed (and also stayed a couple of days in the Linux Next).
+Please pull for v6.9-rc1.
 
-Both irq_work_queue() and schedule_work() are calls to queue deferred
-work. It does not matter when the work is queued (providing we are lock
-safe). What matters is when the work is actually executed.
+Thanks,
 
-Please can you describe the problem you think exists based on when the
-work is executed.
+With Best Regards,
+Andy Shevchenko
+
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-auxdisplay.git tags/auxdisplay-v6.9-1
+
+for you to fetch changes up to 5d9e12972259cd86ae9c3fc0d5338b15831b9929:
+
+  auxdisplay: img-ascii-lcd: Convert to platform remove callback returning void (2024-03-12 17:37:54 +0200)
+
+----------------------------------------------------------------
+auxdisplay for v6.9-1
+
+* New driver for GPIO based 7-segment LED display (Chris Packham)
+* New driver for Maxim MAX6958/6959 I²C 7-segment LED display controller
+* Refactor linedisp library to make the above happen
+* Update Holtek HT16k33 driver to follow the linedisp refactoring
+* Convert .remove to return void in platform drivers (Uwe Kleine-König)
+* Fix DT schemas (Krzysztof Kozlowski)
+* Refresh MAINTAINERS database
+
+The following is an automated git shortlog grouped by driver:
+
+Add 7-segment LED display drivers:
+ - Add 7-segment LED display driver
+ - Add driver for MAX695x 7-segment LED controllers
+ - Add 7 and 14 segment mappings to MAINTAINERS
+
+cfag12864bfb:
+ -  Convert to platform remove callback returning void
+
+dt-bindings:
+ -  auxdisplay: Add bindings for generic 7-segment LED
+ -  auxdisplay: Add Maxim MAX6958/6959
+ -  auxdisplay: hit,hd44780: use defines for GPIO flags
+ -  auxdisplay: adjust example indentation and use generic node names
+
+hd44780:
+ -  Convert to platform remove callback returning void
+
+ht16k33:
+ -  Drop struct ht16k33_seg
+ -  Switch to use line display character mapping
+ -  Define a few helper macros
+ -  Move ht16k33_linedisp_ops down
+ -  Add default to switch-cases
+
+img-ascii-lcd:
+ -  Convert to platform remove callback returning void
+ -  Make container_of() no-op for struct linedisp
+
+linedisp:
+ -  Allocate buffer for the string
+ -  Add support for overriding character mapping
+ -  Provide struct linedisp_ops for future extension
+ -  Move exported symbols to a namespace
+ -  Add missing header(s)
+ -  Unshadow error codes in ->store()
+ -  Use unique number for id
+ -  Free allocated resources in ->release()
+
+panel:
+ -  Switch to use module_parport_driver()
+
+seg-led-gpio:
+ -  Import linedisp namespace
+
+----------------------------------------------------------------
+Andy Shevchenko (19):
+      auxdisplay: Take over maintainership, but in Odd Fixes mode
+      auxdisplay: Add 7 and 14 segment mappings to MAINTAINERS
+      auxdisplay: panel: Switch to use module_parport_driver()
+      auxdisplay: img-ascii-lcd: Make container_of() no-op for struct linedisp
+      auxdisplay: linedisp: Free allocated resources in ->release()
+      auxdisplay: linedisp: Use unique number for id
+      auxdisplay: linedisp: Unshadow error codes in ->store()
+      auxdisplay: linedisp: Add missing header(s)
+      auxdisplay: linedisp: Move exported symbols to a namespace
+      auxdisplay: linedisp: Provide struct linedisp_ops for future extension
+      auxdisplay: linedisp: Add support for overriding character mapping
+      auxdisplay: linedisp: Allocate buffer for the string
+      auxdisplay: ht16k33: Add default to switch-cases
+      auxdisplay: ht16k33: Move ht16k33_linedisp_ops down
+      auxdisplay: ht16k33: Define a few helper macros
+      auxdisplay: ht16k33: Switch to use line display character mapping
+      auxdisplay: ht16k33: Drop struct ht16k33_seg
+      dt-bindings: auxdisplay: Add Maxim MAX6958/6959
+      auxdisplay: Add driver for MAX695x 7-segment LED controllers
+
+Chris Packham (3):
+      auxdisplay: Add 7-segment LED display driver
+      dt-bindings: auxdisplay: Add bindings for generic 7-segment LED
+      auxdisplay: seg-led-gpio: Import linedisp namespace
+
+Krzysztof Kozlowski (2):
+      dt-bindings: auxdisplay: adjust example indentation and use generic node names
+      dt-bindings: auxdisplay: hit,hd44780: use defines for GPIO flags
+
+Uwe Kleine-König (3):
+      auxdisplay: cfag12864bfb: Convert to platform remove callback returning void
+      auxdisplay: hd44780: Convert to platform remove callback returning void
+      auxdisplay: img-ascii-lcd: Convert to platform remove callback returning void
+
+ .../bindings/auxdisplay/arm,versatile-lcd.yaml     |   4 +-
+ .../bindings/auxdisplay/gpio-7-segment.yaml        |  55 ++++++
+ .../bindings/auxdisplay/hit,hd44780.yaml           |  62 +++---
+ .../bindings/auxdisplay/holtek,ht16k33.yaml        |  50 ++---
+ .../bindings/auxdisplay/img,ascii-lcd.yaml         |   4 +-
+ .../bindings/auxdisplay/maxim,max6959.yaml         |  44 +++++
+ MAINTAINERS                                        |   8 +-
+ drivers/auxdisplay/Kconfig                         |  25 +++
+ drivers/auxdisplay/Makefile                        |   2 +
+ drivers/auxdisplay/cfag12864bfb.c                  |   6 +-
+ drivers/auxdisplay/hd44780.c                       |   5 +-
+ drivers/auxdisplay/ht16k33.c                       | 174 +++++++----------
+ drivers/auxdisplay/img-ascii-lcd.c                 |  45 ++---
+ drivers/auxdisplay/line-display.c                  | 166 ++++++++++++++--
+ drivers/auxdisplay/line-display.h                  |  53 ++++-
+ drivers/auxdisplay/max6959.c                       | 194 ++++++++++++++++++
+ drivers/auxdisplay/panel.c                         | 216 +++++++++------------
+ drivers/auxdisplay/seg-led-gpio.c                  | 113 +++++++++++
+ 18 files changed, 888 insertions(+), 338 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/auxdisplay/gpio-7-segment.yaml
+ create mode 100644 Documentation/devicetree/bindings/auxdisplay/maxim,max6959.yaml
+ create mode 100644 drivers/auxdisplay/max6959.c
+ create mode 100644 drivers/auxdisplay/seg-led-gpio.c
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Daniel.
 
