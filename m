@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-102014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 118C787AD97
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:38:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2A8487AD98
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC5D92810D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:38:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 024EB1C21E75
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6A614EA53;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6C114EFC0;
 	Wed, 13 Mar 2024 16:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bjwnR2cS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VBsxCuWp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC5714EA31;
-	Wed, 13 Mar 2024 16:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F369564CF5;
+	Wed, 13 Mar 2024 16:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348228; cv=none; b=lQVziIiEON+Kr0KQJy+oTKEooW00JYRuna9beJgoHCJE9Z9UllMX9jQUGg0Wt3T/0ABrAGBwXqPPDP+B+tygI4MBvaxA+vqpEAaXR5jP9sUUxZKK36KR0QYz8ufG7j2LGg77xIyt1ioYnK0CeqqQAvzIj6X/jxPgWKt4Ngt79Pk=
+	t=1710348229; cv=none; b=hmDBDSYqYgOBrBv0GRH5mIclWInDxGp7cVm36yDeNUU78GfQnMnikvs6XJd+m1tPmYgJ3g+dhR4kEHOLkjAhY2FeeitJT8YosNyVKAu+BUq/V9zwjKQttImvfV8+Owi7xx0TyWFNDKywfLjqyt73J6Ka1DRGBSpA676NPnwrNk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348228; c=relaxed/simple;
-	bh=51XAzNGg8gzGapu9s6Ag8EJfxhvD/5hMAB4MTW0nNPo=;
+	s=arc-20240116; t=1710348229; c=relaxed/simple;
+	bh=FlAnfQi6O4H9BoJpowWiJxTJFnaB688i8rTR2c3Ha+Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sdZTZ2pJeZlgcAOZcCdY20HsRIFcystaFc0iLuEzLSTTsFHsOVk0A2uKlzSczGo8mzAfP5spKPVHL8FDycr5iI7sfTZL49lXDbm59pTRCAEifUSo+CfpqYydvS5AmnVkQI3cvledIfDBkDQul8SX1YhN2URh6cQiKm9s9vzCz+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bjwnR2cS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8045BC43394;
-	Wed, 13 Mar 2024 16:43:46 +0000 (UTC)
+	 MIME-Version; b=YCxdngG/RseYK8BYLJHwe1AzHgwSVBj/+OlvAa64ceVBk8R/9fBQRFGxUzquOsOr3lmu5vv+LlACqaP3h8Tfq1fW+AI41XdCuo1gD+xyU6ntc+vPRNTjZgSApD7hjCYCboJ7z/9q+UH5EWzXdxRZ6cx9cSNqTINUv1wxXF0XMzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VBsxCuWp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E540C43399;
+	Wed, 13 Mar 2024 16:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348227;
-	bh=51XAzNGg8gzGapu9s6Ag8EJfxhvD/5hMAB4MTW0nNPo=;
+	s=k20201202; t=1710348228;
+	bh=FlAnfQi6O4H9BoJpowWiJxTJFnaB688i8rTR2c3Ha+Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bjwnR2cSgpShXjh+pSVCwUpakzgaVvI+J/i8vaxWoq9Im9DpbQbnW6S8RKbAgOf6s
-	 Ta3LM7ZZvTcqdjPLjgZDILBp+DnVQ7loE2IOjC8p5SAsLRE4h54L5u8mUM96L9Y+ub
-	 /zYdY1eY1993+LWPIBb+oV2ekWkDcdnH+WJEzRcu/QyIDXp8I5JLsmKtcETkVemGgs
-	 EshLP4ufqo1CZZow3ZeM0/TjMRa+ZcdZTrLR64zBhRp2Zm4zAVSi/64SprRvn/Dj9X
-	 Vng3td0G0BNDyHOjTZbu2CYUBEjl+AhT4DV0908YKAyNU/lcmtDN6w5ip2h7wkNNMl
-	 jXCpqh1yRdawA==
+	b=VBsxCuWpBdeV0hlRU+z9YbbgEZ3NaW9kv0w1EoYQqC5e0BeKxRONRSyIsnJ8fWUO4
+	 KdRRbg9uFbUKNSyZfof5uFj69FvoAk/dVRKUKy/c8JJydFpFuRdzxiyDZTRPZr4g0K
+	 C0icF9yiu6aKXc7Ai2nZmW4QOnweKLjm7L2MSlmshy5PrSPypd76vPpagybvfMpYaF
+	 GNFBEcOh/PnpQF6pZJxnsRPBI8KMyiagKd4X6WToEHg3OWId9+bMMexEq61k0tb48b
+	 kq9wUf3STKl/ixSHhNRSPgx4NgwNGsHLDqVZoivY++t0EiH+YFniR0RYCmW20aMN/O
+	 DkCySvYjmtyqA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Marek Vasut <marex@denx.de>,
-	Jagan Teki <jagan@amarulasolutions.com>,
-	Mark Brown <broonie@kernel.org>,
-	Maxime Ripard <maxime@cerno.tech>,
-	Robert Foss <robert.foss@linaro.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
+Cc: Cosmin Tanislav <cosmin.tanislav@analog.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 73/76] regmap: Add bulk read/write callbacks into regmap_config
-Date: Wed, 13 Mar 2024 12:42:20 -0400
-Message-ID: <20240313164223.615640-74-sashal@kernel.org>
+Subject: [PATCH 5.15 74/76] serial: max310x: make accessing revision id interface-agnostic
+Date: Wed, 13 Mar 2024 12:42:21 -0400
+Message-ID: <20240313164223.615640-75-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -73,298 +69,155 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Marek Vasut <marex@denx.de>
+From: Cosmin Tanislav <cosmin.tanislav@analog.com>
 
-[ Upstream commit d77e745613680c54708470402e2b623dcd769681 ]
+[ Upstream commit b3883ab5e95713e479f774ea68be275413e8e5b2 ]
 
-Currently the regmap_config structure only allows the user to implement
-single element register read/write using .reg_read/.reg_write callbacks.
-The regmap_bus already implements bulk counterparts of both, and is being
-misused as a workaround for the missing bulk read/write callbacks in
-regmap_config by a couple of drivers. To stop this misuse, add the bulk
-read/write callbacks to regmap_config and call them from the regmap core
-code.
+SPI can only use 5 address bits, since one bit is reserved for
+specifying R/W and 2 bits are used to specify the UART port.
+To access registers that have addresses past 0x1F, an extended
+register space can be enabled by writing to the GlobalCommand
+register (address 0x1F).
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Jagan Teki <jagan@amarulasolutions.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Maxime Ripard <maxime@cerno.tech>
-Cc: Robert Foss <robert.foss@linaro.org>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-To: dri-devel@lists.freedesktop.org
-Link: https://lore.kernel.org/r/20220430025145.640305-1-marex@denx.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+I2C uses 8 address bits. The R/W bit is placed in the slave
+address, and so is the UART port. Because of this, registers
+that have addresses higher than 0x1F can be accessed normally.
+
+To access the RevID register, on SPI, 0xCE must be written to
+the 0x1F address to enable the extended register space, after
+which the RevID register is accessible at address 0x5. 0xCD
+must be written to the 0x1F address to disable the extended
+register space.
+
+On I2C, the RevID register is accessible at address 0x25.
+
+Create an interface config struct, and add a method for
+toggling the extended register space and a member for the RevId
+register address. Implement these for SPI.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+Link: https://lore.kernel.org/r/20220605144659.4169853-4-demonsingur@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Stable-dep-of: 3f42b142ea11 ("serial: max310x: fix IO data corruption in batched operations")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/regmap/internal.h |  4 ++
- drivers/base/regmap/regmap.c   | 76 ++++++++++++++++++----------------
- include/linux/regmap.h         | 12 ++++++
- 3 files changed, 56 insertions(+), 36 deletions(-)
+ drivers/tty/serial/max310x.c | 40 +++++++++++++++++++++++++++---------
+ 1 file changed, 30 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/base/regmap/internal.h b/drivers/base/regmap/internal.h
-index b1905916f7af8..93e028445dade 100644
---- a/drivers/base/regmap/internal.h
-+++ b/drivers/base/regmap/internal.h
-@@ -108,6 +108,10 @@ struct regmap {
- 	int (*reg_write)(void *context, unsigned int reg, unsigned int val);
- 	int (*reg_update_bits)(void *context, unsigned int reg,
- 			       unsigned int mask, unsigned int val);
-+	/* Bulk read/write */
-+	int (*read)(void *context, const void *reg_buf, size_t reg_size,
-+		    void *val_buf, size_t val_size);
-+	int (*write)(void *context, const void *data, size_t count);
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 41251fdf7c845..4299211183a74 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -72,7 +72,7 @@
+ #define MAX310X_GLOBALCMD_REG		MAX310X_REG_1F /* Global Command (WO) */
  
- 	bool defer_caching;
+ /* Extended registers */
+-#define MAX310X_REVID_EXTREG		MAX310X_REG_05 /* Revision ID */
++#define MAX310X_SPI_REVID_EXTREG	MAX310X_REG_05 /* Revision ID */
  
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index ab924127e0aef..6adb345866610 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -835,12 +835,15 @@ struct regmap *__regmap_init(struct device *dev,
- 		map->reg_stride_order = ilog2(map->reg_stride);
- 	else
- 		map->reg_stride_order = -1;
--	map->use_single_read = config->use_single_read || !bus || !bus->read;
--	map->use_single_write = config->use_single_write || !bus || !bus->write;
--	map->can_multi_write = config->can_multi_write && bus && bus->write;
-+	map->use_single_read = config->use_single_read || !(config->read || (bus && bus->read));
-+	map->use_single_write = config->use_single_write || !(config->write || (bus && bus->write));
-+	map->can_multi_write = config->can_multi_write && (config->write || (bus && bus->write));
- 	if (bus) {
- 		map->max_raw_read = bus->max_raw_read;
- 		map->max_raw_write = bus->max_raw_write;
-+	} else if (config->max_raw_read && config->max_raw_write) {
-+		map->max_raw_read = config->max_raw_read;
-+		map->max_raw_write = config->max_raw_write;
- 	}
- 	map->dev = dev;
- 	map->bus = bus;
-@@ -874,7 +877,16 @@ struct regmap *__regmap_init(struct device *dev,
- 		map->read_flag_mask = bus->read_flag_mask;
- 	}
+ /* IRQ register bits */
+ #define MAX310X_IRQ_LSR_BIT		(1 << 0) /* LSR interrupt */
+@@ -253,6 +253,12 @@
+ #define MAX14830_BRGCFG_CLKDIS_BIT	(1 << 6) /* Clock Disable */
+ #define MAX14830_REV_ID			(0xb0)
  
--	if (!bus) {
-+	if (config && config->read && config->write) {
-+		map->reg_read  = _regmap_bus_read;
++struct max310x_if_cfg {
++	int (*extended_reg_enable)(struct device *dev, bool enable);
 +
-+		/* Bulk read/write */
-+		map->read = config->read;
-+		map->write = config->write;
++	unsigned int rev_id_reg;
++};
 +
-+		reg_endian = REGMAP_ENDIAN_NATIVE;
-+		val_endian = REGMAP_ENDIAN_NATIVE;
-+	} else if (!bus) {
- 		map->reg_read  = config->reg_read;
- 		map->reg_write = config->reg_write;
- 		map->reg_update_bits = config->reg_update_bits;
-@@ -891,10 +903,13 @@ struct regmap *__regmap_init(struct device *dev,
- 	} else {
- 		map->reg_read  = _regmap_bus_read;
- 		map->reg_update_bits = bus->reg_update_bits;
--	}
-+		/* Bulk read/write */
-+		map->read = bus->read;
-+		map->write = bus->write;
+ struct max310x_devtype {
+ 	char	name[9];
+ 	int	nr;
+@@ -275,6 +281,7 @@ struct max310x_one {
  
--	reg_endian = regmap_get_reg_endian(bus, config);
--	val_endian = regmap_get_val_endian(dev, bus, config);
-+		reg_endian = regmap_get_reg_endian(bus, config);
-+		val_endian = regmap_get_val_endian(dev, bus, config);
-+	}
+ struct max310x_port {
+ 	const struct max310x_devtype *devtype;
++	const struct max310x_if_cfg *if_cfg;
+ 	struct regmap		*regmap;
+ 	struct clk		*clk;
+ #ifdef CONFIG_GPIOLIB
+@@ -364,13 +371,12 @@ static int max3109_detect(struct device *dev)
+ 	unsigned int val = 0;
+ 	int ret;
  
- 	switch (config->reg_bits + map->reg_shift) {
- 	case 2:
-@@ -1668,8 +1683,6 @@ static int _regmap_raw_write_impl(struct regmap *map, unsigned int reg,
- 	size_t len;
- 	int i;
+-	ret = regmap_write(s->regmap, MAX310X_GLOBALCMD_REG,
+-			   MAX310X_EXTREG_ENBL);
++	ret = s->if_cfg->extended_reg_enable(dev, true);
+ 	if (ret)
+ 		return ret;
  
--	WARN_ON(!map->bus);
--
- 	/* Check for unwritable or noinc registers in range
- 	 * before we start
- 	 */
-@@ -1751,7 +1764,7 @@ static int _regmap_raw_write_impl(struct regmap *map, unsigned int reg,
- 		val = work_val;
+-	regmap_read(s->regmap, MAX310X_REVID_EXTREG, &val);
+-	regmap_write(s->regmap, MAX310X_GLOBALCMD_REG, MAX310X_EXTREG_DSBL);
++	regmap_read(s->regmap, s->if_cfg->rev_id_reg, &val);
++	s->if_cfg->extended_reg_enable(dev, false);
+ 	if (((val & MAX310x_REV_MASK) != MAX3109_REV_ID)) {
+ 		dev_err(dev,
+ 			"%s ID 0x%02x does not match\n", s->devtype->name, val);
+@@ -395,13 +401,12 @@ static int max14830_detect(struct device *dev)
+ 	unsigned int val = 0;
+ 	int ret;
+ 
+-	ret = regmap_write(s->regmap, MAX310X_GLOBALCMD_REG,
+-			   MAX310X_EXTREG_ENBL);
++	ret = s->if_cfg->extended_reg_enable(dev, true);
+ 	if (ret)
+ 		return ret;
+ 	
+-	regmap_read(s->regmap, MAX310X_REVID_EXTREG, &val);
+-	regmap_write(s->regmap, MAX310X_GLOBALCMD_REG, MAX310X_EXTREG_DSBL);
++	regmap_read(s->regmap, s->if_cfg->rev_id_reg, &val);
++	s->if_cfg->extended_reg_enable(dev, false);
+ 	if (((val & MAX310x_REV_MASK) != MAX14830_REV_ID)) {
+ 		dev_err(dev,
+ 			"%s ID 0x%02x does not match\n", s->devtype->name, val);
+@@ -1250,6 +1255,7 @@ static int max310x_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
+ #endif
+ 
+ static int max310x_probe(struct device *dev, const struct max310x_devtype *devtype,
++			 const struct max310x_if_cfg *if_cfg,
+ 			 struct regmap *regmaps[], int irq)
+ {
+ 	int i, ret, fmin, fmax, freq;
+@@ -1308,6 +1314,7 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 
+ 	s->regmap = regmaps[0];
+ 	s->devtype = devtype;
++	s->if_cfg = if_cfg;
+ 	dev_set_drvdata(dev, s);
+ 
+ 	/* Check device to ensure we are talking to what we expect */
+@@ -1477,6 +1484,19 @@ static struct regmap_config regcfg = {
+ };
+ 
+ #ifdef CONFIG_SPI_MASTER
++static int max310x_spi_extended_reg_enable(struct device *dev, bool enable)
++{
++	struct max310x_port *s = dev_get_drvdata(dev);
++
++	return regmap_write(s->regmap, MAX310X_GLOBALCMD_REG,
++			    enable ? MAX310X_EXTREG_ENBL : MAX310X_EXTREG_DSBL);
++}
++
++static const struct max310x_if_cfg __maybe_unused max310x_spi_if_cfg = {
++	.extended_reg_enable = max310x_spi_extended_reg_enable,
++	.rev_id_reg = MAX310X_SPI_REVID_EXTREG,
++};
++
+ static int max310x_spi_probe(struct spi_device *spi)
+ {
+ 	const struct max310x_devtype *devtype;
+@@ -1503,7 +1523,7 @@ static int max310x_spi_probe(struct spi_device *spi)
+ 		regmaps[i] = devm_regmap_init_spi(spi, &regcfg);
  	}
  
--	if (map->async && map->bus->async_write) {
-+	if (map->async && map->bus && map->bus->async_write) {
- 		struct regmap_async *async;
- 
- 		trace_regmap_async_write_start(map, reg, val_len);
-@@ -1819,10 +1832,10 @@ static int _regmap_raw_write_impl(struct regmap *map, unsigned int reg,
- 	 * write.
- 	 */
- 	if (val == work_val)
--		ret = map->bus->write(map->bus_context, map->work_buf,
--				      map->format.reg_bytes +
--				      map->format.pad_bytes +
--				      val_len);
-+		ret = map->write(map->bus_context, map->work_buf,
-+				 map->format.reg_bytes +
-+				 map->format.pad_bytes +
-+				 val_len);
- 	else if (map->bus->gather_write)
- 		ret = map->bus->gather_write(map->bus_context, map->work_buf,
- 					     map->format.reg_bytes +
-@@ -1841,7 +1854,7 @@ static int _regmap_raw_write_impl(struct regmap *map, unsigned int reg,
- 		memcpy(buf, map->work_buf, map->format.reg_bytes);
- 		memcpy(buf + map->format.reg_bytes + map->format.pad_bytes,
- 		       val, val_len);
--		ret = map->bus->write(map->bus_context, buf, len);
-+		ret = map->write(map->bus_context, buf, len);
- 
- 		kfree(buf);
- 	} else if (ret != 0 && !map->cache_bypass && map->format.parse_val) {
-@@ -1898,7 +1911,7 @@ static int _regmap_bus_formatted_write(void *context, unsigned int reg,
- 	struct regmap_range_node *range;
- 	struct regmap *map = context;
- 
--	WARN_ON(!map->bus || !map->format.format_write);
-+	WARN_ON(!map->format.format_write);
- 
- 	range = _regmap_range_lookup(map, reg);
- 	if (range) {
-@@ -1911,8 +1924,7 @@ static int _regmap_bus_formatted_write(void *context, unsigned int reg,
- 
- 	trace_regmap_hw_write_start(map, reg, 1);
- 
--	ret = map->bus->write(map->bus_context, map->work_buf,
--			      map->format.buf_size);
-+	ret = map->write(map->bus_context, map->work_buf, map->format.buf_size);
- 
- 	trace_regmap_hw_write_done(map, reg, 1);
- 
-@@ -1932,7 +1944,7 @@ static int _regmap_bus_raw_write(void *context, unsigned int reg,
- {
- 	struct regmap *map = context;
- 
--	WARN_ON(!map->bus || !map->format.format_val);
-+	WARN_ON(!map->format.format_val);
- 
- 	map->format.format_val(map->work_buf + map->format.reg_bytes
- 			       + map->format.pad_bytes, val, 0);
-@@ -1946,7 +1958,7 @@ static int _regmap_bus_raw_write(void *context, unsigned int reg,
- 
- static inline void *_regmap_map_get_context(struct regmap *map)
- {
--	return (map->bus) ? map : map->bus_context;
-+	return (map->bus || (!map->bus && map->read)) ? map : map->bus_context;
+-	return max310x_probe(&spi->dev, devtype, regmaps, spi->irq);
++	return max310x_probe(&spi->dev, devtype, &max310x_spi_if_cfg, regmaps, spi->irq);
  }
  
- int _regmap_write(struct regmap *map, unsigned int reg,
-@@ -2356,7 +2368,7 @@ static int _regmap_raw_multi_reg_write(struct regmap *map,
- 	u8 = buf;
- 	*u8 |= map->write_flag_mask;
- 
--	ret = map->bus->write(map->bus_context, buf, len);
-+	ret = map->write(map->bus_context, buf, len);
- 
- 	kfree(buf);
- 
-@@ -2662,9 +2674,7 @@ static int _regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
- 	struct regmap_range_node *range;
- 	int ret;
- 
--	WARN_ON(!map->bus);
--
--	if (!map->bus || !map->bus->read)
-+	if (!map->read)
- 		return -EINVAL;
- 
- 	range = _regmap_range_lookup(map, reg);
-@@ -2680,9 +2690,9 @@ static int _regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
- 				      map->read_flag_mask);
- 	trace_regmap_hw_read_start(map, reg, val_len / map->format.val_bytes);
- 
--	ret = map->bus->read(map->bus_context, map->work_buf,
--			     map->format.reg_bytes + map->format.pad_bytes,
--			     val, val_len);
-+	ret = map->read(map->bus_context, map->work_buf,
-+			map->format.reg_bytes + map->format.pad_bytes,
-+			val, val_len);
- 
- 	trace_regmap_hw_read_done(map, reg, val_len / map->format.val_bytes);
- 
-@@ -2793,8 +2803,6 @@ int regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
- 	unsigned int v;
- 	int ret, i;
- 
--	if (!map->bus)
--		return -EINVAL;
- 	if (val_len % map->format.val_bytes)
- 		return -EINVAL;
- 	if (!IS_ALIGNED(reg, map->reg_stride))
-@@ -2809,7 +2817,7 @@ int regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
- 		size_t chunk_count, chunk_bytes;
- 		size_t chunk_regs = val_count;
- 
--		if (!map->bus->read) {
-+		if (!map->read) {
- 			ret = -ENOTSUPP;
- 			goto out;
- 		}
-@@ -2869,7 +2877,7 @@ EXPORT_SYMBOL_GPL(regmap_raw_read);
-  * @val: Pointer to data buffer
-  * @val_len: Length of output buffer in bytes.
-  *
-- * The regmap API usually assumes that bulk bus read operations will read a
-+ * The regmap API usually assumes that bulk read operations will read a
-  * range of registers. Some devices have certain registers for which a read
-  * operation read will read from an internal FIFO.
-  *
-@@ -2887,10 +2895,6 @@ int regmap_noinc_read(struct regmap *map, unsigned int reg,
- 	size_t read_len;
- 	int ret;
- 
--	if (!map->bus)
--		return -EINVAL;
--	if (!map->bus->read)
--		return -ENOTSUPP;
- 	if (val_len % map->format.val_bytes)
- 		return -EINVAL;
- 	if (!IS_ALIGNED(reg, map->reg_stride))
-@@ -3004,7 +3008,7 @@ int regmap_bulk_read(struct regmap *map, unsigned int reg, void *val,
- 	if (val_count == 0)
- 		return -EINVAL;
- 
--	if (map->bus && map->format.parse_inplace && (vol || map->cache_type == REGCACHE_NONE)) {
-+	if (map->format.parse_inplace && (vol || map->cache_type == REGCACHE_NONE)) {
- 		ret = regmap_raw_read(map, reg, val, val_bytes * val_count);
- 		if (ret != 0)
- 			return ret;
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 22652e5fbc380..f74e543fadc07 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -295,6 +295,12 @@ typedef void (*regmap_unlock)(void *);
-  *		     if the function require special handling with lock and reg
-  *		     handling and the operation cannot be represented as a simple
-  *		     update_bits operation on a bus such as SPI, I2C, etc.
-+ * @read: Optional callback that if filled will be used to perform all the
-+ *        bulk reads from the registers. Data is returned in the buffer used
-+ *        to transmit data.
-+ * @write: Same as above for writing.
-+ * @max_raw_read: Max raw read size that can be used on the device.
-+ * @max_raw_write: Max raw write size that can be used on the device.
-  * @fast_io:	  Register IO is fast. Use a spinlock instead of a mutex
-  *	     	  to perform locking. This field is ignored if custom lock/unlock
-  *	     	  functions are used (see fields lock/unlock of struct regmap_config).
-@@ -379,6 +385,12 @@ struct regmap_config {
- 	int (*reg_write)(void *context, unsigned int reg, unsigned int val);
- 	int (*reg_update_bits)(void *context, unsigned int reg,
- 			       unsigned int mask, unsigned int val);
-+	/* Bulk read/write */
-+	int (*read)(void *context, const void *reg_buf, size_t reg_size,
-+		    void *val_buf, size_t val_size);
-+	int (*write)(void *context, const void *data, size_t count);
-+	size_t max_raw_read;
-+	size_t max_raw_write;
- 
- 	bool fast_io;
- 
+ static int max310x_spi_remove(struct spi_device *spi)
 -- 
 2.43.0
 
