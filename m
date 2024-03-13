@@ -1,101 +1,88 @@
-Return-Path: <linux-kernel+bounces-102545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93FB087B3B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:43:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA45C87B3B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:43:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A2861F2364D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:43:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 181571C22C26
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7637A54BF4;
-	Wed, 13 Mar 2024 21:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="p8odqVnK"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724A1524DF;
-	Wed, 13 Mar 2024 21:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A424554BCF;
+	Wed, 13 Mar 2024 21:43:51 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 0D8B053E07
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710366213; cv=none; b=B4CHgji1FwFMceQinCfg7u9xoZtmfhgsPUi44WXJ9zVBIuCI2faqHAzBWhpxretmC+2mNyL2vw+hDpj3tyBb/ie8+Ww7JVh258MWDRt3QrrP6xZ4wLp4SFlWsG7wTe7lDYmkzWD93Gz++VGh4nBtLnpDI1hwUVl/yYj8YG8iILM=
+	t=1710366231; cv=none; b=EoNjfqqR9alP0Yj0+hltyGypwh+jBhcm8jT5hdsIVR9BY4h5n/zVEpUyTpofnSwf6bULnj5D9Km7g1XiAtD1QKq9oYlS+8T3n9GIANWQ2doOpquHngQQp2ThSQ6BCCpmNTXrrwhO4CLkQ8wToqBY3SQiKqo5LXC9jolCz1u6scI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710366213; c=relaxed/simple;
-	bh=nSvmH5cY1qqsIMMuuVzSuN+abFWZP955PUNeLH+UWXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=XjS5oc4DuqTxre9qPwcPu5msNY5NOwcY2bIprt1X5bI3t0CzSQwZldalWupwO7F1y2akvHtJwGoGO5qCkdlWkVPKAmMnimXY2BHYI1aqOZ1ThaED1UseAKl6+Ypa9t8CEG+bWTrax5WpHDAIPk6XJ4V1zKju/Cmkabzi0LJ0vQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=p8odqVnK; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710366209;
-	bh=eiuPN6TUMFhOmRSYqaLZfazTB5/WJ2wVrB5rIGesWeE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=p8odqVnKMbuPqOC00NAJXTwu2ge1cYJWvcoM9ntFXkOrrBx6uF6oxg05Ht0EY+N0S
-	 NHnCMtVmF7kV9yaht4XjsuKFr2xcSTMBtILhoV1vOqYW8jlqWsKwV215wYTVXZYbme
-	 C62aScOXSTyKfb4GR4Mal/QLUF4FX3PYS9/X6Y0RkntqRcOCh9U91ZUeyRtNEi8oSu
-	 hqODcVi6UIS12g7elfPoC5h5NvIBXR9xs2VPusHR/8Jm3B5PJ+ndx0qyRFPcxTBmK6
-	 ER5CfDeqo4MxqMoVaIW5ZuV+RqUYPkl7SdNvmBG/FMM9JyfLAllb+rbRMA0ObzdFmG
-	 vbGOFOSTds49g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tw3ss5vQQz4wcR;
-	Thu, 14 Mar 2024 08:43:29 +1100 (AEDT)
-Date: Thu, 14 Mar 2024 08:43:29 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the opp tree
-Message-ID: <20240314084329.6c9c59dd@canb.auug.org.au>
+	s=arc-20240116; t=1710366231; c=relaxed/simple;
+	bh=r4i5ta+jYDvR8K3Bx4rs272ug04BSW8OU6QwJrAcKeA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pOwrKCtaM/f4Q7CBB5+SvGenHeJz+ltuc6s/rwd0uoLBzYqB6eXtR1S8S9guqrAsYmzgUt8S1ZXvCqFzDOj2DTgTg4xsfzGYHvSKCup02qdew34kQO4MjslrMBZ+BD8NexSksT1xDoQWXzE/lq6LDNWi5+SqrR96e1b1G8IuzrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 430978 invoked by uid 1000); 13 Mar 2024 17:43:41 -0400
+Date: Wed, 13 Mar 2024 17:43:41 -0400
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Tejun Heo <tj@kernel.org>
+Cc: Bart Van Assche <bvanassche@acm.org>,
+  Greg KH <gregkh@linuxfoundation.org>,
+  Kernel development list <linux-kernel@vger.kernel.org>
+Subject: [PATCH] fs: sysfs: Fix reference leak in
+ sysfs_break_active_protection()
+Message-ID: <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
+References: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
+ <e9d710fc-eace-44de-b3cc-1117c3575ef7@rowland.harvard.edu>
+ <2024030428-graph-harmful-1597@gregkh>
+ <416a8311-c725-419a-8b22-74c80207347f@rowland.harvard.edu>
+ <9c2484f4-df62-4d23-97a2-55a160eba55f@rowland.harvard.edu>
+ <ZfIKwFSmw-ACj_jO@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Om94KyMa7Y1dwInHsWH3gTs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfIKwFSmw-ACj_jO@slm.duckdns.org>
 
---Sig_/Om94KyMa7Y1dwInHsWH3gTs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The sysfs_break_active_protection() routine has an obvious reference
+leak in its error path.  If the call to kernfs_find_and_get() fails then
+kn will be NULL, so the companion sysfs_unbreak_active_protection()
+routine won't get called (and would only cause an access violation by
+trying to dereference kn->parent if it was called).  As a result, the
+reference to kobj acquired at the start of the function will never be
+released.
 
-Hi all,
+Fix the leak by adding an explicit kobject_put() call when kn is NULL.
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Fixes: 2afc9166f79b ("scsi: sysfs: Introduce sysfs_{un,}break_active_protection()")
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: <stable@vger.kernel.org>
 
-  0b5466a8bc71 ("OPP: Extend dev_pm_opp_data with turbo support")
-  3678779d8b64 ("OPP: debugfs: Fix warning with W=3D1 builds")
-  6c9a1a56d316 ("OPP: debugfs: Fix warning around icc_get_name()")
-  ace4b31b297d ("cpufreq: Move dev_pm_opp_{init|free}_cpufreq_table() to pm=
-_opp.h")
-  bde3127675ff ("dt-bindings: opp: drop maxItems from inner items")
+---
 
---=20
-Cheers,
-Stephen Rothwell
+ fs/sysfs/file.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---Sig_/Om94KyMa7Y1dwInHsWH3gTs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXyHgEACgkQAVBC80lX
-0GyWEAf9G8973G/2QYMdKdSqXNYLAbJNkjxy8gOmEgKqS/4aIchKU1OIfJTjb7AI
-wB1Wct+KK6uIvbktppbMbubU9xpqI7wv+srQOmol1MF21+uwhRs4Dov2Rhrep2H3
-HNlPDvrAt7v9LE4QCbKm7DUptIdk07CSJtvxTrz2He4GPRNr3jxxmon3O2IKdSG6
-nN11qdmQDNGCl0zH1J5OFkoDufT1nAfm9jCWZUTTCFTrvtzPpz6iuy22OSxPnm9y
-J+QobZdCtTL0TlXZXE9GhG9Aeu6QDJ+4LwPQuLx3SF0AUEIjpCNWGz4XFUFEbHvV
-5RvgXAiCFV7YSjLD9pWGdMYZa0DM2g==
-=72GZ
------END PGP SIGNATURE-----
-
---Sig_/Om94KyMa7Y1dwInHsWH3gTs--
+Index: usb-devel/fs/sysfs/file.c
+===================================================================
+--- usb-devel.orig/fs/sysfs/file.c
++++ usb-devel/fs/sysfs/file.c
+@@ -463,6 +463,8 @@ struct kernfs_node *sysfs_break_active_p
+ 	kn = kernfs_find_and_get(kobj->sd, attr->name);
+ 	if (kn)
+ 		kernfs_break_active_protection(kn);
++	else
++		kobject_put(kobj);
+ 	return kn;
+ }
+ EXPORT_SYMBOL_GPL(sysfs_break_active_protection);
 
