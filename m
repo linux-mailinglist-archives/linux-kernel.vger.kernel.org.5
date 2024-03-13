@@ -1,268 +1,209 @@
-Return-Path: <linux-kernel+bounces-101058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B42A87A1BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:48:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76ED487A1C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2B91C21D2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:48:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB201282AA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18169DDBB;
-	Wed, 13 Mar 2024 02:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7996ECA4A;
+	Wed, 13 Mar 2024 02:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="BenxyVSo"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2069.outbound.protection.outlook.com [40.107.22.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNgvDw+W"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE8038B;
-	Wed, 13 Mar 2024 02:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710298087; cv=fail; b=cNNgYQEAax+1LMFXijZOhWQVchOj9UIjod7mIV/xH22hleMH7dAloQSmPJEwexSpeQODZ9YAp8IEGSwSHEAZSvLkFK7PTmMwbeWp1wHXBW7meSeYigHRttOQCiFiUKO5hUb9EOtSQT7GabYuVsWeGF7F0cwTIeBDYS3a0k0mJiE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710298087; c=relaxed/simple;
-	bh=6OXC4j0bYZVekeS5AlxY88qypDwivl3zFhUxqVB9OSQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eFSkkPt0vLyGKpfDLi0cfv12U9lsR2laVxbfghyvF30j6M/2xbYYn7sotQNh9CsDlH5yKw2oztACn3DIZmhdNB5XSzp87cTTB8frx1rhVVEcdDXlsvu8Brqw03UTRpfTFCRNxW89Nd7legPObQ0qyzk0Gm+VjgN2agiOOwupNps=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=BenxyVSo; arc=fail smtp.client-ip=40.107.22.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A7VmlhQUiQZj4QRJXL30PIwiATSFYPaPrjK4xr3lrKTq5caD69CuxApxfEjteCSZD/vmEhSj0VpMvcbidbs9rf0TIcBEzUouFBSl0iNu/gGRw7cfR2VhZcwW2zG64U8BviHzcF7ugSVxs3PF3YDl7EkSkjHrbxP3/w7QuJHqkj8s2dR8qXagULMrZFgMYQqGTI8ZMi7N5ikNlWk7bDeC1n2R0zNQa58mcGgLWGKrAP1sILdVD+PHNirfNfWej61kUTCMepjjWFLCqZH7FD4ATTiaE70W8uqIQ6lRdxZAzsk5t398H8cRxqysu0ZkolBSj8iJFlut9u9Rqr+KtaRBFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4StoFe/ReBiKhyyAM7E5gD22X57lOD3SdDgiCs63qVw=;
- b=QhDzVKc8mRh2TSQ/Pe3vg4KeznckY/jk1XN570w7lINR7DHv0yVtLdhqjZnpLXNF8BkC+3rLQ3wobe0o64bzlUSqQf18LMIrk8nj980/HwEEaDrTiCqb1wetxuilfY9FbKb99pmX1gpj30zVKWMu2rWNFstL6AGiXZtUqEN2pfe678o3UOiQ6a78s+JwAXMtumniIlODG5GjoYbljM+5BZD38X6TSOLBslsRqLe0gxkZRjWZSovb5nxzsAxkOYb1EtDYJPkn1BWDi0O73zwJTo7eghrxzPNy6904RaK/Wv8gLesSyTtnjf1EfVm1oXao/OE/g+4pysDCVBy6U0dggQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4StoFe/ReBiKhyyAM7E5gD22X57lOD3SdDgiCs63qVw=;
- b=BenxyVSou0k6gssfxsB/T8mNfWwxIH4j8OEo9nkWLGpbwZLJLBzW2MfHFfut1Wx9Okc9bUEITtds87VfQ+OC0t+etaHAFkelYQVCQP1e3xztYU/76OyD+9Cn39tCQPGY8tQ89chWExRq/CP64SK82OTzXlxbX+F4xZf2xcqgk9w=
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com (2603:10a6:10:2e1::11)
- by GV1PR04MB9102.eurprd04.prod.outlook.com (2603:10a6:150:21::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Wed, 13 Mar
- 2024 02:48:00 +0000
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::d45f:4483:c11:68b0]) by DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::d45f:4483:c11:68b0%7]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
- 02:48:00 +0000
-From: Xu Yang <xu.yang_2@nxp.com>
-To: Rob Herring <robh@kernel.org>
-CC: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"shawnguo@kernel.org" <shawnguo@kernel.org>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>, "festevam@gmail.com"
-	<festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
-	"peter.chen@kernel.org" <peter.chen@kernel.org>, Jun Li <jun.li@nxp.com>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "imx@lists.linux.dev"
-	<imx@lists.linux.dev>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH v8 05/10] dt-bindings: usb: ci-hdrc-usb2-imx:
- add restrictions for reg, interrupts, clock and clock-names properties
-Thread-Topic: [EXT] Re: [PATCH v8 05/10] dt-bindings: usb: ci-hdrc-usb2-imx:
- add restrictions for reg, interrupts, clock and clock-names properties
-Thread-Index: AQHadF4T9fa4/JJRF0KTO2HRURFsjLE0MIuAgAC6gbA=
-Date: Wed, 13 Mar 2024 02:48:00 +0000
-Message-ID:
- <DU2PR04MB8822976F9F052E18D7951FA48C2A2@DU2PR04MB8822.eurprd04.prod.outlook.com>
-References: <20240312091703.1220649-1-xu.yang_2@nxp.com>
- <20240312091703.1220649-5-xu.yang_2@nxp.com>
- <20240312145035.GA2204647-robh@kernel.org>
-In-Reply-To: <20240312145035.GA2204647-robh@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU2PR04MB8822:EE_|GV1PR04MB9102:EE_
-x-ms-office365-filtering-correlation-id: 559acab8-22d4-482b-44d3-08dc4307ff53
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- M4dh4gncJ1TVuwg3/YJ0L0Z/WFxxsgptw/O0JpKYpdr98NoJoLKcStfOIAUNnjPi7sl303cTv046aOKRHSUpOcgBLDO54I4Kmt0zrEIbx0/ok32Exqc2f1uM3h0QWc3PzNnM8wseEph/w1PYgfCtZNAOuoHre31KusOO/5iVojD5EFWvOuyuaSwTwMbCx3RI1Hg1H26BkUXNIbIoS4N/iuSjBbsRsRTnxKdjLnOW6TjxQxdfWvEwQbrwYhMuI9V2J6a65eXfiK4isWox0iHF1TOh33qbe7WWQz5FqzU/LrJGjN8/YHSbOA+xEJy0UTTtAYTjFeseZAlgT2+kRK+Wj6A9s93GT4/wR11Tmh2Bq2LRayWG+USHURUxiCxzVwy3CvSUUYCX29m8nQrrjYL/LW9c80aWC/U9+4TpaUfCrbDq5AxuX81zy4XOyUO5VnsbHmtSPafB1Lc7T52Qm3UcplPj66w0QPKYmxBnK3CuLcV7o9N/pBh1YYz6fCqelMwfSZA+B49u0CQdYPV6s5cHedhqgp9Aiqn35+tX1oNJ/D8+hMYGzXXY80MGN9Q9OQYTrwiYSIvOiRW/+qLQgTsbaIrTTtSvnkEDyOV2F4xexEBsPTwaqL2go2j9SDzQ5wk8ruh8eqBmPavR2oLttRvundX+fkMHRYJ6VuB/Gelq0FTyOHP9XepW3gLe5OiQCfsoxa8RTteMm45q4MkN+bxxd/5lTaCafGttaEQWqaeNhQA=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8822.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?B+Se9ZusxlzEysQWaS6tZ+yEhYL1atknGtFGBm3ak7/RsbEzcZbQs4QrU+i8?=
- =?us-ascii?Q?rrlV9/Xw8I2DSgP5ZPblj797kAG5qyGqN57QjGJ0LxrJ6Ur82kJjIttNBsB3?=
- =?us-ascii?Q?s2Q6h43J3hpLJT5/1ZWzkeA8zYbI3DawxYcsAQN8/2GIuqRxPBfOHmxUfdrE?=
- =?us-ascii?Q?t5RQsPpCmJvfBxj3O5QusxSC3WkZSE+BMEfcN3AhqXbpkwxvDAbm4e3eUV4A?=
- =?us-ascii?Q?sb+yt2ilSwQ50XGSZkTtpzemEBdtLHJamIeq1dEzXkfP0z7aVbn3Cqg3rI26?=
- =?us-ascii?Q?ZMGyWGRienT9LbwL/i6ZDy5oyOuHa0YjGiYFsDEitFOU8S1CHVvxg39t49Xj?=
- =?us-ascii?Q?Iy8n4ZSLBD3+ugsHcmwYCvXEcKrmBQ3w4GKg8la7yfd5+lQ5bJJAO2GgtwPL?=
- =?us-ascii?Q?QmkqkrWApyK6uWMoxbKtv0yFNGicc0D6RDgMOUwPxuaPMX9bI55zFUMXyBOd?=
- =?us-ascii?Q?ageIm9eNUWbUp1gtqHut2EMgYZoySohx4/W3n6HJPLbuFmntKINnftLu1IbR?=
- =?us-ascii?Q?Fz/HgsfRw8k8rojaAaABXzXoQcNmbXcvBVEqPBrSvwoZxJChI2Hsxteugko2?=
- =?us-ascii?Q?/jufWAHXX5WMe6yOtWEJuDcbHhkVudEqiVcD83jrFtEtaujyGz4F2H6K9DHT?=
- =?us-ascii?Q?7sx2fD67mrjh8F/529XBzmUARcB81A+eWz/ALMa1Tbogo75qqQRDt+y6FJ+T?=
- =?us-ascii?Q?eSAzUaG8Hm8yYLXCAX2jKgj7mf8aFdP22wCrl6vAIKogNOqz3SVA0UFcxWBq?=
- =?us-ascii?Q?eaWqjlYPAvhaAbp0np7hTQLkPOCnTylRHBl0+qxU5VvlRlZVNsUl8nc2LkFj?=
- =?us-ascii?Q?8/96GUd3u4MiC3z4VRcJahmLFfW9mxNkzMEBM7BmaJqJGklxVANQ6KU45twf?=
- =?us-ascii?Q?ZGiltYc5Pp01DCGNYdA94ELaHf42P2N8LNikYUSHBy5e5vQ9hEgSCKQmCdV3?=
- =?us-ascii?Q?daU1bwgXBgo//ycUk3XAwA9QSKDLlhR+EAQClrncMaIiabRMBpn6oWzqE3zG?=
- =?us-ascii?Q?g70MaffUkcnAKZCAo9ZySRlyKs7OmvdDogPyxFxdRYTF25m2uS2JGQTv84Vy?=
- =?us-ascii?Q?TpZ2n9zuPe6nd9lRBGpzPlr97IlqFHbKMRxCFmYc+I//zodVvuQSHo+cSUhz?=
- =?us-ascii?Q?ki/0YgYqGcAgE6ZNb+9lSKz8ulPN5QdrQPsyN7Qor0U5pul9ukGNpnTwrQ5K?=
- =?us-ascii?Q?uDepRgOWOgSBwk1oSt9+iOHM8q92FEWFzg5hC5fWSxnbebaF/YEdgyz/I74R?=
- =?us-ascii?Q?TQOC4flLeGNgwp8pNwp+HY2VMGqnRf8PqXnbMovybj/q7TgDF49qQCJ6/Osz?=
- =?us-ascii?Q?NatXw0SDoBJE13e/i50Y14ph8RWKfcyGeXIKjIRHth00j+4VzVaDFgKp5kWN?=
- =?us-ascii?Q?CZEM4rkygIxVBF+BMTfLRj6Uvil/MrWziP606xoyJNMaAc0SUCWlHYp5f38x?=
- =?us-ascii?Q?G7cZWpvZlk8Z6XvhNiVLuk4sPhU1Tzs4vZKsHrsT2yLcDu33uy361TIz4kP4?=
- =?us-ascii?Q?ejQLr3r/HwD/tOFaPUUEU9FQFL2LAes0tE+Ss7Jg57NszkZbudo2rbBQ2W6Z?=
- =?us-ascii?Q?AkD8Trhi/ZICpopsjZg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA15CC122
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710298410; cv=none; b=QZOAkdVPBdrN453pFwPJ7u//WOd8AMkxkLfRYj/jGynhZ1LuujlYXcv8TyNjhGnNY9/WjLMd5OB1csEk1o3aVkMhUM8WnIDxcTDpy1l4bToXNhh3zG9IDkuAtZv+26EKEnKqZTUNUZoEyIYv1X0Zx0O3/mQF5mjiBjGgYJmmJJ4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710298410; c=relaxed/simple;
+	bh=mfxUoHcNMF2gk2gmpTCyNw/571AIksLqulcTMRkIn0U=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=kPyvhipcyrUVkSAQBkctj9Ywr3pyI7B7VRjcpysYpk2yR+pYNO+S6nQM8yHsw2kDkTLpPfpwhK3xQG4qGUxbfv/zxnc/dO+uO37Pm0e7uB4eD5nNu2fukfUTGB8QINYe1LemZqX8TfpgjuDD7f5WJ8OVlu9lHTz0E/fK6pIF46M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNgvDw+W; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5683093ffbbso7262996a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710298407; x=1710903207; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wNq1j2TllPPXhyK+5cXK8U8CFe2aAywzojzjA3Xpjyk=;
+        b=HNgvDw+WAZ+E1/CBBHLXavzHgsGcTmckLVO+C+F5LoKlk2GTB/WlteH1s+Hgst4i0q
+         XVjMfE+TLXSJWmHrbs7Z75AcoQtEgyTQBTUIO4S+aLIlQ9Zi1KtiiNOdL7W2it05A4WP
+         E97EW1E7dFsk0SybbiMIEqZaoAk7gtMGBvMTF1KuHWfp5oGd3ZKp8Ugr/JLYNGDfgRlp
+         XeohykxZ1+PNZnmCWTOkL4bofLesx6EinSIK4fsaY4s6rAvmGAnN2Qv+XG/kslgjLDV4
+         UAxZQLREPisKfE1ib1sWfpQoEqgo4s6ee9IxGhA0qDGeATQg+S50mXGo04ftTHcVFwMu
+         5HEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710298407; x=1710903207;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wNq1j2TllPPXhyK+5cXK8U8CFe2aAywzojzjA3Xpjyk=;
+        b=YR02Se2Xr5XQU3/zN1VqStXW1ncIc7C7g3Zh9yaB8Q12JkPQK6ll9Gqengui30luF6
+         GraJ1cUgu8d7bpPl/z1xilrTXHAOCbyepM6HVkktUI1dNgSwSQGpSjVTISYoV7FwU/EP
+         Hk4iQP6rSBEK+AQe+IdN3lxQWsifX2vKMUZqtmk1gCJPc+FsgCb9m5HHa4fVn+ma0upS
+         Ggfr5f5VAx+ErqRPTwIXzcUn8D/4WEqUMCYNQVpK+P0Pf/rasmM5U3vI6SGx+N4gCP6n
+         gQl0ZL4ydeWSjHh9O9OAb+oHX4F7oChKtIvPHjqqtdbMmcnqyfatoWWE+dYL5O1/9854
+         OS2g==
+X-Forwarded-Encrypted: i=1; AJvYcCUGipHdKW8EgzaVhPE52ZKvNYgJHbqrTs1iUAUSuOkguE3So/WCm0CNyQATO4jV+S7NyuRxcrhU0LSAnxshCApPvBza0EYAiE/XxzX7
+X-Gm-Message-State: AOJu0YyNoNJrpaWXKzyZJlCjQOFbigibA6sc0q9iEsWj5GFQcJbxBseE
+	uLiTno8fYkiOj8jLDaqCIqnnGzkSsxwhWvFFYqU/n1gmOULWdRpbJ3PcsEsPJdHfOhTjoAtUVky
+	Huaauz9N9eAgClC1xxvolJ6YfRtg=
+X-Google-Smtp-Source: AGHT+IHS5oqmlrV+olpSzmdNtHnZV9zk2lEeYrHyJTrf6VcMYEyA2fUgoRS6eTUYBCU05zt/o9R3Ff6u/PYAocx4aR0=
+X-Received: by 2002:a17:906:eb53:b0:a46:300c:626e with SMTP id
+ mc19-20020a170906eb5300b00a46300c626emr4701822ejb.46.1710298407015; Tue, 12
+ Mar 2024 19:53:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8822.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 559acab8-22d4-482b-44d3-08dc4307ff53
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 02:48:00.6916
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uKpaBP/+0ZcnFJq4m8cgx8rq1o8zdPeztnljAur17Qis0WEyEF5IJVnklPYZL4Da32XxLwIeWPRZu2giArxc9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB9102
+From: cheung wall <zzqq0103.hey@gmail.com>
+Date: Wed, 13 Mar 2024 10:53:15 +0800
+Message-ID: <CAKHoSAuWKO0b3bK-DdT_CDVHrpaB_iUP2pwJujtTAs4JGy-1bA@mail.gmail.com>
+Subject: BUG: unable to handle kernel paging request in arch_adjust_kprobe_addr
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Jinghao Jia <jinghao7@illinois.edu>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
 
 
->=20
-> On Tue, Mar 12, 2024 at 05:16:58PM +0800, Xu Yang wrote:
-> > Add restrictions for reg, interrupts, clock and clock-names properties
-> > for imx Socs.
-> >
-> > Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
-> >
-> > ---
-> > Changes in v4:
-> >  - new patch since v3's discussion
-> >  - split the reg, interrupts, clock and clock-names properties into
-> >    common part and device-specific
-> > Changes in v5:
-> >  - keep common property unchanged
-> >  - make if-then more readable
-> >  - remove non imx part
-> > Changes in v6:
-> >  - new patch based on ci-hdrc-usb2-imx.yaml
-> > Changes in v7:
-> >  - no changes
-> > Changes in v8:
-> >  - remove if:else:if:else:if:else block
-> > ---
-> >  .../bindings/usb/chipidea,usb2-imx.yaml       | 80 +++++++++++++++++++
-> >  1 file changed, 80 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.ya=
-ml
-> b/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.yaml
-> > index cdbb224e9f68..fb1c378dfe88 100644
-> > --- a/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.yaml
-> > @@ -49,6 +49,12 @@ properties:
-> >            - const: fsl,imx6ul-usb
-> >            - const: fsl,imx27-usb
-> >
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> >    clocks:
-> >      minItems: 1
-> >      maxItems: 3
-> > @@ -144,6 +150,80 @@ allOf:
-> >              - const: idle
-> >              - const: active
-> >
-> > +  # imx27 Soc needs three clocks
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          const: fsl,imx27-usb
-> > +    then:
-> > +      properties:
-> > +        clocks:
-> > +          minItems: 3
-> > +          maxItems: 3
->=20
-> The max is already 3, so drop maxItems.
+when using Healer to fuzz the latest Linux Kernel, the following crash
 
-Okay.
+was triggered on:
 
->=20
-> > +        clock-names:
-> > +          items:
-> > +            - const: ipg
-> > +            - const: ahb
-> > +            - const: per
-> > +
-> > +  # imx25 and imx35 Soc need three clocks
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - fsl,imx25-usb
-> > +              - fsl,imx35-usb
-> > +    then:
-> > +      properties:
-> > +        clocks:
-> > +          minItems: 3
-> > +          maxItems: 3
->=20
-> Same here.
 
-Okay.
+HEAD commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a  (tag: v6.7)
 
->=20
-> > +        clock-names:
-> > +          items:
-> > +            - const: ipg
-> > +            - const: ahb
-> > +            - const: per
-> > +
-> > +  # imx7d Soc need one clock
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          items:
-> > +            - const: fsl,imx7d-usb
-> > +            - const: fsl,imx27-usb
-> > +    then:
-> > +      properties:
-> > +        clocks:
-> > +          maxItems: 1
-> > +        clock-names:
-> > +          maxItems: 1
->=20
-> What's the name?
+git tree: upstream
 
-Can I not specify the name since the macro definition for USB
-controller clock in clock.h is recognizable and the driver doesn't
-get this clock by name rather index?
+console output: https://pastebin.com/raw/iw2bFsWa
 
-Thanks,
-Xu Yang
+kernel config: https://pastebin.com/raw/Ta59KYzh
 
+C reproducer: https://pastebin.com/raw/JDqeSxiK
+
+Syzlang reproducer: https://pastebin.com/raw/Vjs199hz
+
+
+If you fix this issue, please add the following tag to the commit:
+
+Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
+
+----------------------------------------------------------
+
+
+BUG: unable to handle page fault for address: ffffffff95003e80
+audit: type=1400 audit(1710291918.880:7): avc:  denied  { open } for
+pid=298 comm="syz-executor372" scontext=system_u:system_r:kernel_t:s0
+tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 1c4a7067 P4D 1c4a7067 PUD 1c4a8063
+audit: type=1400 audit(1710291918.880:8): avc:  denied  { kernel } for
+ pid=298 comm="syz-executor372" scontext=system_u:system_r:kernel_t:s0
+tcontext=system_u:system_r:kernel_t:s0 tclass=perf_event permissive=1
+PMD 800fffffe29ff062
+Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 PID: 298 Comm: syz-executor372 Not tainted 6.7.0 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:arch_adjust_kprobe_addr+0x42/0x180 arch/x86/kernel/kprobes/core.c:338
+Code: 48 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 14 02
+48 89 e8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 09 01 00 00 <44> 8b
+6d 00 41 81 fd 66 0f 1f 00 74 18 e8 3c e5 30 00 41 81 e5 ff
+RSP: 0018:ffff888112af7a68 EFLAGS: 00010246
+RAX: 0000000000000003 RBX: 0000000000000000 RCX: ffffffff902cd938
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff95003e80
+RBP: ffffffff95003e80 R08: ffff8881bec62da8 R09: ffffffff930000eb
+R10: ffffffff906e4e58 R11: ffffffff92f009b3 R12: ffff888112af7b70
+R13: ffff888107f5e258 R14: ffff88810124c6f0 R15: 0000000000000001
+FS:  000055555555e880(0000) GS:ffff8881c0000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffff95003e80 CR3: 00000001036da005 CR4: 0000000000770ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ _kprobe_addr+0x10e/0x140 kernel/kprobes.c:1479
+ register_kprobe+0xe0/0x15b0 kernel/kprobes.c:1622
+ __register_trace_kprobe kernel/trace/trace_kprobe.c:510 [inline]
+ __register_trace_kprobe+0x233/0x2a0 kernel/trace/trace_kprobe.c:478
+ create_local_trace_kprobe+0x209/0x370 kernel/trace/trace_kprobe.c:1821
+ perf_kprobe_init+0xed/0x1b0 kernel/trace/trace_event_perf.c:267
+ perf_kprobe_event_init+0xcc/0x180 kernel/events/core.c:10334
+ perf_try_init_event+0x10d/0x4e0 kernel/events/core.c:11650
+ perf_init_event kernel/events/core.c:11720 [inline]
+ perf_event_alloc kernel/events/core.c:12000 [inline]
+ perf_event_alloc+0xded/0x3310 kernel/events/core.c:11866
+ __do_sys_perf_event_open+0x328/0x1d50 kernel/events/core.c:12507
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x43/0xf0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f92060ecb4d
+Code: 28 c3 e8 36 29 00 00 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff2df5c268 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f92060ecb4d
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 0000000020001200
+RBP: 00007f92060a6500 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007f92060a65a0
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+CR2: ffffffff95003e80
+---[ end trace 0000000000000000 ]---
+RIP: 0010:arch_adjust_kprobe_addr+0x42/0x180 arch/x86/kernel/kprobes/core.c:338
+Code: 48 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 14 02
+48 89 e8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 09 01 00 00 <44> 8b
+6d 00 41 81 fd 66 0f 1f 00 74 18 e8 3c e5 30 00 41 81 e5 ff
+RSP: 0018:ffff888112af7a68 EFLAGS: 00010246
+RAX: 0000000000000003 RBX: 0000000000000000 RCX: ffffffff902cd938
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff95003e80
+RBP: ffffffff95003e80 R08: ffff8881bec62da8 R09: ffffffff930000eb
+R10: ffffffff906e4e58 R11: ffffffff92f009b3 R12: ffff888112af7b70
+R13: ffff888107f5e258 R14: ffff88810124c6f0 R15: 0000000000000001
+FS:  000055555555e880(0000) GS:ffff8881c0000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffff95003e80 CR3: 00000001036da005 CR4: 0000000000770ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+note: syz-executor372[298] exited with irqs disabled
+----------------
+Code disassembly (best guess):
+   0: 48 89 ea             mov    %rbp,%rdx
+   3: 48 b8 00 00 00 00 00 movabs $0xdffffc0000000000,%rax
+   a: fc ff df
+   d: 48 c1 ea 03           shr    $0x3,%rdx
+  11: 0f b6 14 02           movzbl (%rdx,%rax,1),%edx
+  15: 48 89 e8             mov    %rbp,%rax
+  18: 83 e0 07             and    $0x7,%eax
+  1b: 83 c0 03             add    $0x3,%eax
+  1e: 38 d0                 cmp    %dl,%al
+  20: 7c 08                 jl     0x2a
+  22: 84 d2                 test   %dl,%dl
+  24: 0f 85 09 01 00 00     jne    0x133
+* 2a: 44 8b 6d 00           mov    0x0(%rbp),%r13d <-- trapping instruction
+  2e: 41 81 fd 66 0f 1f 00 cmp    $0x1f0f66,%r13d
+  35: 74 18                 je     0x4f
+  37: e8 3c e5 30 00       callq  0x30e578
+  3c: 41                   rex.B
+  3d: 81                   .byte 0x81
+  3e: e5 ff                 in     $0xff,%eax
 
