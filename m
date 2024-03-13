@@ -1,123 +1,172 @@
-Return-Path: <linux-kernel+bounces-101226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC2B87A444
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:52:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D4987A43F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1EDBB21431
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:52:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1419282266
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F101B5BB;
-	Wed, 13 Mar 2024 08:52:21 +0000 (UTC)
-Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B311912E73;
-	Wed, 13 Mar 2024 08:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741B71A286;
+	Wed, 13 Mar 2024 08:51:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E6512E73
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710319941; cv=none; b=ho1gzQ+Q8wj1jSxBMVrPkOQMo3lRxo9+SnVlNFaFIYXLjzSqUZxHUXzWX25sTof/Xqgn9Np2T2szmn1Kq+FDSCUk1+Ab3JHWjKZe6ILZLZa5+R4SZ7RbYgcIayUKM0w49kwe7BXF+n5xF5FJP4TeFY72Bu7/7ojvaVhi8TtYSmI=
+	t=1710319865; cv=none; b=BgpDGAnrFvGGi1ni9xm47s++pf519CNExLHCSKI0tXsKSxHIrp4haUI5AMrgiitAtae5KgkFYvlPiI2iIppzpcznljMCen038IyJCXo5+HPDjHvUxQ2V5/Y4PABWPkAfTs1phcPGGPvIvkbEv6qyJRN/rqHWWAzD7aeQJXsc4lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710319941; c=relaxed/simple;
-	bh=+NePArLWJMB57UThWlpn3BKXqneliUUo+Wa39GBb6SQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
-	 In-Reply-To; b=HXQ6SUGto9CJzXQDIifpc0tJNK/1/aqdmypyOYL0oZEQ3srdY5TXDjd2A4QgHcMDeBMPaS2+cofvuxoXo/TOaaOGm3+RAJHj4koN4wyvpkkWL+2Lm6ssjEHHHlRq0VPqgCuuSgO6xiFyKA6hyNMvv0piwY67oNLzx7ujR1g1XqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; arc=none smtp.client-ip=195.113.20.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
-X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
-	serial F5FD910E8FE2121B897F7E55B84E351D
-	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
-	auth type TLS.CUNI
-Received: from localhost (koleje-wifi-0013.koleje.cuni.cz [78.128.191.13])
-	(authenticated)
-	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42D8neSJ059445
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Wed, 13 Mar 2024 09:49:41 +0100 (CET)
-	(envelope-from balejk@matfyz.cz)
+	s=arc-20240116; t=1710319865; c=relaxed/simple;
+	bh=gZxNSeva8JfKY+GiGnoxI+gN4pgBisVb5qOB8r7dw+8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LE1Xl3/O0z6tPEpMjWM0v5YDajV0xXtV1sumT5jFqiLPUa24Suln2RECO/xXdpcOcI7KMPZefeGViznVqOg+kS/AAP+nNZBHSTQhapJu9OnyJI1415gR0Owh32saFvNDhSt/2AnQWLZvBUvqk/aj0yTKWLVh2SBdvmfEulB3oJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB4C91007;
+	Wed, 13 Mar 2024 01:51:32 -0700 (PDT)
+Received: from [10.57.67.164] (unknown [10.57.67.164])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 091143F73F;
+	Wed, 13 Mar 2024 01:50:52 -0700 (PDT)
+Message-ID: <3d60e840-00e1-4e6e-a9f4-e67d905b1782@arm.com>
+Date: Wed, 13 Mar 2024 08:50:51 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/6] Swap-out mTHP without splitting
+Content-Language: en-GB
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <878r2n516c.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <28914585-80bd-4308-b3aa-dd0dbb2cb201@arm.com>
+ <2fbc83bf-2e51-40fa-8865-499911ba8102@arm.com>
+ <87zfv32aq7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87zfv32aq7.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 13 Mar 2024 09:50:11 +0100
-Message-Id: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz>
-Cc: <alexandre.torgue@foss.st.com>, <davem@davemloft.net>,
-        <dhowells@redhat.com>, <herbert@gondor.apana.org.au>,
-        <keyrings@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-modules@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>, <mcgrof@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
-To: <dimitri.ledkov@canonical.com>,
-        "Johannes Berg"
- <johannes@sipsolutions.net>
-From: "Karel Balej" <balejk@matfyz.cz>
-In-Reply-To: <20231010212240.61637-1-dimitri.ledkov@canonical.com>
+Content-Transfer-Encoding: 7bit
 
-Dimitri, Johannes,
+On 13/03/2024 01:15, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> On 12/03/2024 08:49, Ryan Roberts wrote:
+>>> On 12/03/2024 08:01, Huang, Ying wrote:
+>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>>
+>>>>> Hi All,
+>>>>>
+>>>>> This series adds support for swapping out multi-size THP (mTHP) without needing
+>>>>> to first split the large folio via split_huge_page_to_list_to_order(). It
+>>>>> closely follows the approach already used to swap-out PMD-sized THP.
+>>>>>
+>>>>> There are a couple of reasons for swapping out mTHP without splitting:
+>>>>>
+>>>>>   - Performance: It is expensive to split a large folio and under extreme memory
+>>>>>     pressure some workloads regressed performance when using 64K mTHP vs 4K
+>>>>>     small folios because of this extra cost in the swap-out path. This series
+>>>>>     not only eliminates the regression but makes it faster to swap out 64K mTHP
+>>>>>     vs 4K small folios.
+>>>>>
+>>>>>   - Memory fragmentation avoidance: If we can avoid splitting a large folio
+>>>>>     memory is less likely to become fragmented, making it easier to re-allocate
+>>>>>     a large folio in future.
+>>>>>
+>>>>>   - Performance: Enables a separate series [4] to swap-in whole mTHPs, which
+>>>>>     means we won't lose the TLB-efficiency benefits of mTHP once the memory has
+>>>>>     been through a swap cycle.
+>>>>>
+>>>>> I've done what I thought was the smallest change possible, and as a result, this
+>>>>> approach is only employed when the swap is backed by a non-rotating block device
+>>>>> (just as PMD-sized THP is supported today). Discussion against the RFC concluded
+>>>>> that this is sufficient.
+>>>>>
+>>>>>
+>>>>> Performance Testing
+>>>>> ===================
+>>>>>
+>>>>> I've run some swap performance tests on Ampere Altra VM (arm64) with 8 CPUs. The
+>>>>> VM is set up with a 35G block ram device as the swap device and the test is run
+>>>>> from inside a memcg limited to 40G memory. I've then run `usemem` from
+>>>>> vm-scalability with 70 processes, each allocating and writing 1G of memory. I've
+>>>>> repeated everything 6 times and taken the mean performance improvement relative
+>>>>> to 4K page baseline:
+>>>>>
+>>>>> | alloc size |            baseline |       + this series |
+>>>>> |            |  v6.6-rc4+anonfolio |                     |
+>>>>> |:-----------|--------------------:|--------------------:|
+>>>>> | 4K Page    |                0.0% |                1.4% |
+>>>>> | 64K THP    |              -14.6% |               44.2% |
+>>>>> | 2M THP     |               87.4% |               97.7% |
+>>>>>
+>>>>> So with this change, the 64K swap performance goes from a 15% regression to a
+>>>>> 44% improvement. 4K and 2M swap improves slightly too.
+>>>>
+>>>> I don't understand why the performance of 2M THP improves.  The swap
+>>>> entry allocation becomes a little slower.  Can you provide some
+>>>> perf-profile to root cause it?
+>>>
+>>> I didn't post the stdev, which is quite large (~10%), so that may explain some
+>>> of it:
+>>>
+>>> | kernel   |   mean_rel |   std_rel |
+>>> |:---------|-----------:|----------:|
+>>> | base-4K  |       0.0% |      5.5% |
+>>> | base-64K |     -14.6% |      3.8% |
+>>> | base-2M  |      87.4% |     10.6% |
+>>> | v4-4K    |       1.4% |      3.7% |
+>>> | v4-64K   |      44.2% |     11.8% |
+>>> | v4-2M    |      97.7% |     13.3% |
+>>>
+>>> Regardless, I'll do some perf profiling and post results shortly.
+>>
+>> I did a lot more runs (24 for each config) and meaned them to try to remove the
+>> noise in the measurements. It's now only showing a 4% improvement for 2M. So I
+>> don't think the 2M improvement is real:
+>>
+>> | kernel   |   mean_rel |   std_rel |
+>> |:---------|-----------:|----------:|
+>> | base-4K  |       0.0% |      3.2% |
+>> | base-64K |      -9.1% |     10.1% |
+>> | base-2M  |      88.9% |      6.8% |
+>> | v4-4K    |       0.5% |      3.1% |
+>> | v4-64K   |      44.7% |      8.3% |
+>> | v4-2M    |      93.3% |      7.8% |
+>>
+>> Looking at the perf data, the only thing that sticks out is that a big chunk of
+>> time is spent in during contpte_convert(), called as a result of
+>> try_to_unmap_one(). This is present in both the before and after configs.
+>>
+>> This is an arm64 function to "unfold" contpte mappings. Essentially, the PMD is
+>> being split during shrink_folio_list()  with TTU_SPLIT_HUGE_PMD, meaning the
+>> THPs are PTE-mapped in contpte blocks. Then we are unmapping each pte one-by-one
+>> which means the contpte block needs to be unfolded. I think try_to_unmap_one()
+>> could potentially be optimized to batch unmap a contiguously mapped folio and
+>> avoid this unfold. But that would be an independent and separate piece of work.
+> 
+> Thanks for more data and detailed explanation.
 
-ever since upgrading to Linux v6.7 I am unable to connect to a 802.1X
-wireless network (specifically, eduroam). In my dmesg, the following
-messages appear:
+And thanks for your review! I'll address all your comments (and any others that
+I get in the meantime) and repost after the merge window. It would be great if
+we can get this in for v6.10.
 
-	[   68.161621] wlan0: authenticate with xx:xx:xx:xx:xx:xx (local address=
-=3Dxx:xx:xx:xx:xx:xx)
-	[   68.163733] wlan0: send auth to xx:xx:xx:xx:xx:xx (try 1/3)
-	[   68.165773] wlan0: authenticated
-	[   68.166785] wlan0: associate with xx:xx:xx:xx:xx:xx (try 1/3)
-	[   68.168498] wlan0: RX AssocResp from xx:xx:xx:xx:xx:xx (capab=3D0x1411 =
-status=3D0 aid=3D4)
-	[   68.172445] wlan0: associated
-	[   68.204956] wlan0: Limiting TX power to 23 (23 - 0) dBm as advertised b=
-y xx:xx:xx:xx:xx:xx
-	[   70.262032] wlan0: deauthenticated from xx:xx:xx:xx:xx:xx (Reason: 23=
-=3DIEEE8021X_FAILED)
-	[   73.065966] wlan0: authenticate with xx:xx:xx:xx:xx:xx (local address=
-=3Dxx:xx:xx:xx:xx:xx)
-	[   73.068006] wlan0: send auth to xx:xx:xx:xx:xx:xx (try 1/3)
-	[   73.070166] wlan0: authenticated
-	[   73.070756] wlan0: associate with xx:xx:xx:xx:xx:xx (try 1/3)
-	[   73.072807] wlan0: RX AssocResp from xx:xx:xx:xx:xx:xx (capab=3D0x1411 =
-status=3D0 aid=3D4)
-	[   73.076676] wlan0: associated
-	[   73.120396] wlan0: Limiting TX power to 23 (23 - 0) dBm as advertised b=
-y xx:xx:xx:xx:xx:xx
-	[   75.148376] wlan0: deauthenticating from xx:xx:xx:xx:xx:xx by local cho=
-ice (Reason: 23=3DIEEE8021X_FAILED)
-	[   77.718016] wlan0: authenticate with xx:xx:xx:xx:xx:xx (local address=
-=3Dxx:xx:xx:xx:xx:xx)
-	[   77.720137] wlan0: send auth to xx:xx:xx:xx:xx:xx (try 1/3)
-	[   77.722670] wlan0: authenticated
-	[   77.724737] wlan0: associate with xx:xx:xx:xx:xx:xx (try 1/3)
-	[   77.726172] wlan0: RX AssocResp from xx:xx:xx:xx:xx:xx (capab=3D0x1411 =
-status=3D0 aid=3D4)
-	[   77.730822] wlan0: associated
-	[   77.830763] wlan0: Limiting TX power to 23 (23 - 0) dBm as advertised b=
-y xx:xx:xx:xx:xx:xx
-	[   79.784199] wlan0: deauthenticating from xx:xx:xx:xx:xx:xx by local cho=
-ice (Reason: 23=3DIEEE8021X_FAILED)
+> 
+> --
+> Best Regards,
+> Huang, Ying
 
-The connection works fine with v6.6 and I have bisected the problem to
-the revision introduced by this patch (16ab7cb5825f mainline).
-
-My wireless kernel driver is iwlwifi and I use iwd. I started the bisect
-with a config copied from my distribution package [1].
-
-Would you please help me with this? Please let me know if I forgot to
-mention something which could be helpful in resolving this.
-
-[1] https://raw.githubusercontent.com/void-linux/void-packages/master/srcpk=
-gs/linux6.6/files/x86_64-dotconfig
-
-Thank you very much, kind regards,
-K. B.
 
