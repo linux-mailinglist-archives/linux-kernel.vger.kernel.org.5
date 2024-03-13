@@ -1,201 +1,168 @@
-Return-Path: <linux-kernel+bounces-101564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0E9387A8C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:52:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DBB787A8C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FDEB1F2153B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:52:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A13301C22110
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A0B446A0;
-	Wed, 13 Mar 2024 13:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D2A043ACA;
+	Wed, 13 Mar 2024 13:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Maisu8p+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IkYTQT/R";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Maisu8p+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IkYTQT/R"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=yotsuba.nl header.i=@yotsuba.nl header.b="Z4/lruuK";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kTiGgZnV"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FAC35894;
-	Wed, 13 Mar 2024 13:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D5D3FB96;
+	Wed, 13 Mar 2024 13:53:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710337953; cv=none; b=NmM0KjRZWoX6F9Jc7YvCfLo60dOFDJn8zCK40jv3XbSS6Fvupk4lyjHqbhriVpyMj3XWvm1H5URw4OT+kuUGMToPPLpvfbMPSbvd25HrYYGC33ppCl2uBnKYSgKXRE2Oc7U87VIVplvMdudtK7VlTkG+mI3iL1Ltvuf8T6lpd/0=
+	t=1710338022; cv=none; b=dczPnopUrW2W+Hdyjp3zeEE/9MsA/xYnPmsKyAdzYLqbhvFKqa5XWwn7cctklKGYdQiKRKCewb/JWNF4x0ABG/y2aEXH7yQmbuPPDHj9PLxSV1YM/PcOPJ/dscglHgCDLbOIJdwOruEDI7MtuwJagGAsI4npmeMsfMCLO2GQWtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710337953; c=relaxed/simple;
-	bh=rHfsoLgtf5f5k5fyHTRd1g6+/B0CcY2M6+E3znEcWu8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zuvt7qaCp/BJoq3m9Ai/zgHKKDocxK+Mqs4iQ5Hl0EXI1JQwh15yOo3wHcWGn1bbnMayUZeLPkAgdOOKrYGaN7oaJQN98ch3OclQTZUSaO8KoxKShFs9UiwHLz2NG1r/6kbk9BuH7mKR+KaGRSQPLwUeErzjJpK4QNrO2Ci0mM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Maisu8p+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IkYTQT/R; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Maisu8p+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IkYTQT/R; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 20D211F7D4;
-	Wed, 13 Mar 2024 13:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710337948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XFhbbMRYCJAgLqELLxWLqfsH3hbHEF1BH4hx+bhAMaM=;
-	b=Maisu8p+8VOLtYY3TrJkR6rfS5B+biJ+LLvd8LzgWVs36+MO0dIgBYONhiDpj9BO0wU7As
-	5WBYSK4zyJyrGYI8oVkWNfm29jvIUlPG3mv1SaFBB4ETsn/Low2VGH0rrgxV/8AONovAQG
-	lFNCUTxmHnFtwn6WdPREzN5h/FCJMs4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710337948;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XFhbbMRYCJAgLqELLxWLqfsH3hbHEF1BH4hx+bhAMaM=;
-	b=IkYTQT/R3aiB5aD7xFbTOmZOArH9iK+B5x3LUVlKBuTsf4vF+4u7JaIoaAkSErym3uJ5X+
-	FaW3DBH6chjv6vDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710337948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XFhbbMRYCJAgLqELLxWLqfsH3hbHEF1BH4hx+bhAMaM=;
-	b=Maisu8p+8VOLtYY3TrJkR6rfS5B+biJ+LLvd8LzgWVs36+MO0dIgBYONhiDpj9BO0wU7As
-	5WBYSK4zyJyrGYI8oVkWNfm29jvIUlPG3mv1SaFBB4ETsn/Low2VGH0rrgxV/8AONovAQG
-	lFNCUTxmHnFtwn6WdPREzN5h/FCJMs4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710337948;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XFhbbMRYCJAgLqELLxWLqfsH3hbHEF1BH4hx+bhAMaM=;
-	b=IkYTQT/R3aiB5aD7xFbTOmZOArH9iK+B5x3LUVlKBuTsf4vF+4u7JaIoaAkSErym3uJ5X+
-	FaW3DBH6chjv6vDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AAB161397F;
-	Wed, 13 Mar 2024 13:52:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id E5Z1KZuv8WWIVAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 13 Mar 2024 13:52:27 +0000
-Message-ID: <b4e5a48f-9a43-4f80-a3e7-75c04dba9a0f@suse.cz>
-Date: Wed, 13 Mar 2024 14:53:08 +0100
+	s=arc-20240116; t=1710338022; c=relaxed/simple;
+	bh=jOmLX9ygpmZOCRGB3UnwkgJ3dC6PNOA9d5iZ5hUwSno=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=eKDCQS7S5x12fVXR8zM25EyURfhjschq5FgEVO/5pIfluaT0CMaYxvuKDyAuxIf8DpoMYhNi0tDV23RynEbrqtgUoXoqHdSgnm5bfwPmFVPlsHr1T7KRbGaD5GUACRcVCOSdc+r90A8iOqkbyPorkfrA6WbUZZx2DMyOZFYE3zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yotsuba.nl; spf=pass smtp.mailfrom=yotsuba.nl; dkim=pass (2048-bit key) header.d=yotsuba.nl header.i=@yotsuba.nl header.b=Z4/lruuK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kTiGgZnV; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yotsuba.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yotsuba.nl
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 9D0291800179;
+	Wed, 13 Mar 2024 09:53:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Wed, 13 Mar 2024 09:53:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yotsuba.nl; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1710338017;
+	 x=1710424417; bh=hlJNMnPDZ47iGewL2R5tNcfmY0Ncoyko7ICHGM78HtI=; b=
+	Z4/lruuKIlDPERzDJJKOi47zVhtM07JblQBSOg/x1KOj64WuSuVs+ZwEHwaNKVCE
+	PvBcH1atP8EzMsH/I6L2OHwOdyYiR6HRFlzeoGGNd5NlW/SeJhNPQH2Iw1QAuQNm
+	RJS61lGMLY30GfbbQHln0yu2wdF98lwH0mBFcvWBukALOhtk3IRRsLN+DlhYLjHb
+	qFWoVbjOlZobQTQ1ckABWDZNQun5//NhQuEBTAuMFWsYknHoGnf0ZFT9U+fmCMXa
+	GlqjxLkXHcbGBekRzD0L2djv+I9NlqUsdJBlIRe2uDaoh1rldsQqr4Zj4jfap52W
+	5DX7ELjKEykC6bxH2YHr6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710338017; x=
+	1710424417; bh=hlJNMnPDZ47iGewL2R5tNcfmY0Ncoyko7ICHGM78HtI=; b=k
+	TiGgZnVa9MBX8K1GO3PvlKjJz9UvRRqGLnzhq78PKh27BZ/2dI9Pgs79lzkADe8I
+	2vcCnYb2MeN5weAgd3MVepWVKXEusr/pp4iIojp9ZuwPA28wwoidFNbCbil2tJ20
+	gGitIXS7OgnUmK82WUTZ4lSDnagfJmxpmflL0gLzBL+GIRIDV5UrHYgl+ZuopMmv
+	A6MQRvGkjdmtHAJjyIetLUck8TruyNvZwdl/7X8k9+cDGzi1woMPhY3hg6VfecAf
+	j+ka1/UEkRnOqaQtIbjSg4l4X5FM1+S1Myrkg1G2jkd4FzZ7YXOdM8G5Zu0qgjEm
+	ld/xatpNm7BX7Akx5dn2w==
+X-ME-Sender: <xms:4K_xZTuBcXi8RVwvkv5ZCsJhwtiR80on4mi3EGDb-VqFBqOAXxFtvw>
+    <xme:4K_xZUckydZDVAk1OpUXsXCQYsnkbphL8ijyrGhuoCg5GW5YUonBQW86PExvY9yR_
+    3nNUiMl4IH8LkjA6RM>
+X-ME-Received: <xmr:4K_xZWyUECXhLI52dhlvPSPiee9Vy8FmhPZe1URMcCvSkOwS9srSdMbwlAyB43tcS_5BW1GxnYb8Swgho6US9EdCHLd3wrqlz9J1EEY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeehgdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpegtggfuhfgjffevgffkfhfvofesthhqmhdthhdtjeenucfhrhhomhepofgrrhhk
+    uceomhgrrhhkseihohhtshhusggrrdhnlheqnecuggftrfgrthhtvghrnhephfffjeefje
+    eutedvjeekleduteettdehkeeugefgjedvgfevteffffeukefggedtnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhkseihohhtshhusg
+    grrdhnlh
+X-ME-Proxy: <xmx:4K_xZSOm220sVy8E_uXhX_wepleI3WNqGeJ0ny-L4oB0PaJ2dRww_g>
+    <xmx:4K_xZT_zUNygdaO7A1-689aCqaHBF7N5jV0eADHaywsjbbJwwQZaTA>
+    <xmx:4K_xZSXI_OmVhTIZuBhxZls1nSwgrU6YUVL5kjcAIP6F7E--QNoNZg>
+    <xmx:4K_xZUcHLMdobRnn0h0j0_EkPupyAuDoPhxlsARFQvUPipztqo-GYw>
+    <xmx:4a_xZSUuGTJQgYIcedNWuZR87CNUwLq561iZq36G-QQhWnpTjkREfUdPXF8>
+Feedback-ID: i85e1472c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Mar 2024 09:53:35 -0400 (EDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/37] mm/slub: Mark slab_free_freelist_hook()
- __always_inline
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
- muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
- pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
- dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
- keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
- gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
- penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
- glider@google.com, elver@google.com, dvyukov@google.com,
- shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
- aliceryhl@google.com, rientjes@google.com, minchan@google.com,
- kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-References: <20240306182440.2003814-1-surenb@google.com>
- <20240306182440.2003814-4-surenb@google.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240306182440.2003814-4-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Maisu8p+;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="IkYTQT/R"
-X-Spamd-Result: default: False [-1.77 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 URIBL_BLOCKED(0.00)[chromium.org:email,suse.cz:email,suse.cz:dkim,linux.dev:email,soleen.com:email];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 BAYES_HAM(-2.97)[99.88%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[76];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,nvidia.com,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -1.77
-X-Rspamd-Queue-Id: 20D211F7D4
-X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH] netpoll: support sending over raw IP interfaces
+From: Mark <mark@yotsuba.nl>
+In-Reply-To: <20240313133602.GA1263314@maili.marvell.com>
+Date: Wed, 13 Mar 2024 14:53:23 +0100
+Cc: netdev@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Breno Leitao <leitao@debian.org>,
+ Ingo Molnar <mingo@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Paolo Abeni <pabeni@redhat.com>,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7C42FC4B-D803-4194-8FBB-19A432D37124@yotsuba.nl>
+References: <20240313124613.51399-1-mark@yotsuba.nl>
+ <20240313133602.GA1263314@maili.marvell.com>
+To: Ratheesh Kannoth <rkannoth@marvell.com>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-On 3/6/24 19:24, Suren Baghdasaryan wrote:
-> From: Kent Overstreet <kent.overstreet@linux.dev>
-> 
-> It seems we need to be more forceful with the compiler on this one.
-> This is done for performance reasons only.
-> 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Hi Ratheesh,
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Op 13 mrt 6 Reiwa, om 14:36 heeft Ratheesh Kannoth =
+<rkannoth@marvell.com> het volgende geschreven:
+>=20
+> On 2024-03-13 at 18:16:13, Mark Cilissen (mark@yotsuba.nl) wrote:
+>> [=E2=80=A6]
+> Taking an assumption based on dev=E2=80=99s lower layer does not look =
+to be good.
+> why not transmit packet from skb_network_header() in your driver (by =
+making
+> changes in your driver)
 
-> ---
->  mm/slub.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 2ef88bbf56a3..0f3369f6188b 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2121,9 +2121,9 @@ bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
->  	return !kasan_slab_free(s, x, init);
->  }
->  
-> -static inline bool slab_free_freelist_hook(struct kmem_cache *s,
-> -					   void **head, void **tail,
-> -					   int *cnt)
-> +static __fastpath_inline
-> +bool slab_free_freelist_hook(struct kmem_cache *s, void **head, void **tail,
-> +			     int *cnt)
->  {
->  
->  	void *object;
+There=E2=80=99s two assumptions at play here:
+- The lower layer is ethernet: this has always been present in netpoll, =
+and is even
+  documented in netconsole.rst. This comment just mentions it because we =
+add a way
+  to bypass the assumption; it is not an assumption this patch adds to =
+the code.
+- hard_header_len=3D=3D0 means that there is no exposed link layer: this =
+is a rather
+  conservative assumption in my opinion, and is also mentioned in the =
+definition
+  of LL_RESERVED_SPACE:
+
+> * Alternative is:
+> *   dev->hard_header_len ? (dev->hard_header_len +
+> *                            (HH_DATA_MOD - 1)) & ~(HH_DATA_MOD - 1) : =
+0
+
+  The same assumption is also made in more places in the core network =
+code, like af_packet:
+
+>   - If the device has no dev->header_ops->create, there is no LL =
+header
+>     visible above the device. In this case, its hard_header_len should =
+be 0.
+>     The device may prepend its own header internally. In this case, =
+its
+>     needed_headroom should be set to the space needed for it to add =
+its
+>     internal header.
+
+I could change it to, like af_packet, check `dev->header_ops` instead if =
+that is preferred,
+but I don=E2=80=99t think that patching every single raw IP driver to =
+deal with skbs that managed
+to somehow have link layer data would be preferred here, especially =
+since netpoll is kind
+of a special case to begin with. I am open to suggestions and ideas, =
+though.
+
+> [=E2=80=A6]
+
+Thanks and regards,
+Mark=
 
