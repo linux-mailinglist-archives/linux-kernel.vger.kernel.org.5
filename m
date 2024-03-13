@@ -1,96 +1,96 @@
-Return-Path: <linux-kernel+bounces-101352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F21087A5DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:29:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8596C87A5E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B85BB1F2482F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:29:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B74E31C21C00
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF75C39AE9;
-	Wed, 13 Mar 2024 10:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428993B789;
+	Wed, 13 Mar 2024 10:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DniLVqzr"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ugu2wrmu"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8B7225DF
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C48D3A1B4
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710325779; cv=none; b=HOAjiDwRquzj+T6g6Xc9iQz9MXY7imCk9s4Ikq6VkBbYRbWIPO7nSDMJQOLN9njfK9CSeo7xPw6B4/QwWI1TmNqMKtJx+6T415zSOOkTN2yyCzxqYxV9Vpu4wrS62kxSHminZvE3/Hebk98HyqkROFRWFGoBN0VKMclJfu9Uk7U=
+	t=1710325783; cv=none; b=a6qEtiXJ7YKGik1IMLnIw3X3SsyHNNpBC1VxkkTtc8CM/Q9/uLm1P6wxDGCDX1b2KNJg4X3/jP+t6XN+wq/vVPCDV4vAvbLMHYzi2zgczIYX4phNuLnUkOld3ZhcITOkgjkl5kuak2ekSnrIKX33KLcm5BETKg15XoKUiy9OGPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710325779; c=relaxed/simple;
-	bh=m3qsEjoHZVZae/FJXbdV0xVIbL7h4+G7nvMM5xyhcb8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ETPpxjpuOFUiWGOD68AgP0vWJRF6OYtml2S+CMDL8rg1NdTH6rIwjWUZjKw6GThzFoJrTf5muumvAe8bnOOMWEiZcMQ7ATbtM7lBRLhGuCpkBVjagX60jxLVZBcbP8Ht0eYH1e9VlnGGsUEUHPPy8gk75IZ8RYHaFR/S04XoooU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DniLVqzr; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-413ea3219feso2540785e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 03:29:37 -0700 (PDT)
+	s=arc-20240116; t=1710325783; c=relaxed/simple;
+	bh=+BNsXKsv3Z99gUImvWqUbE2s/DQXyamyA3qt0L+MQz8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u0aiLbjxN6qlIlDNskf9uiz4j6x2w4G3v7xDxU3y7W/0+UTpd5Ds2wAMPqXrN/RIy37/0vB51VYQkeMxlghhro3tpE3oHhksxFmksgZAYHbc6OqRVcG699nprCWbHliby8ExGSry3prEleEnkbRS/FMOBP27kD4O+o+BBUTopaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Ugu2wrmu; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a465ddc2c09so43819566b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 03:29:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710325776; x=1710930576; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MQWsiCF2QjnYE9FiKBWb3DmvBqG0ZBw0xDIosoHssNQ=;
-        b=DniLVqzrt4RABdJZbiTe435tdyi31dMj4IIHAlYlpDli0anQ1ClMUCvcKY3rMM3u2L
-         AsGXCYOkgP2zMo03ov/hsYbjjApVNvwKaMwUhDT5u6vR4yQRuAYAVdffiqKs2tG7RZqY
-         c4qDQjtBJzue3B4YChjnWQwIufNZuY+X18R/VmdgPx8F3runjEGRCvGoKqtHTr6tcMt7
-         OdlA53AnyxfeQNFALQvuydTcGseM6Sp/bXwgh7Dcxkt2NzxnEUoji1wXGxnzKlVEZTRx
-         e0y6V0dpehj0jY1V2p62dutDixynYQBEvjLHDRCI0wDQwzww06LWHu9F39CV1hKkdF9v
-         vDuQ==
+        d=suse.com; s=google; t=1710325779; x=1710930579; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h90PwmEKgkeo9xq9N4xH2gsdxhkIDdIMs34ij43dsWo=;
+        b=Ugu2wrmuyu6NFvXKbWdtg3weOKAgRlIEiHWP3VNbbZdlJiOdexwkh4dNOy7yaKs1RW
+         uqZkPUDPodad8k0kNzZXegxLfajpSukpzS0Mrn9ZZqGyeUInLmOB9AX66O4BrhfrZyPZ
+         M0HPgAneNOySnYSAQT+UZT8dS402/Cz/NSFlhHNfUZBe7jlvYXiRR6Dpv7fQ1w2YRGXJ
+         x8y04YGYBi7505hZo8mQe4rl4ue7izrloCUPTD172X5yIdDffwvjItkknVKI2RidAWMk
+         7TPaXNxAcGDnzEO7c5HCGqwSr1BBMSqoLBGk8zetLWvZlf+weW6qmOprTqjhb+zijTHu
+         DRHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710325776; x=1710930576;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MQWsiCF2QjnYE9FiKBWb3DmvBqG0ZBw0xDIosoHssNQ=;
-        b=rCUJtzx4KoViuQpEyDJ/X9jQ2uFwAs7OVBi8Ca46gjb2a/5gNT/Tb1LTJo5/b839Wn
-         5QpMqdztxswyF5jXH3mOmjaj2r86b9iDzAvh4ML9BrTGcUYwArelkgPsp+s3uCDQPwS3
-         awafkg3pez0kOYoI9crNrsONwhuSvcBBYYcSMxIUK1OAIcEUbk4ZI3aAmdWyWSuKCFaj
-         m362o18EV6iWWCg8vOI5T5fD6e8GknyPklMRMWL1QfpkNexwY+E1iTg8GZp2/4Rohzo8
-         s8U4NDLjWMObLL1TlgSKsqKE17vtzf6lJXUBsq82LX6XkQcJ90/S2G+nuIT9qKee62nk
-         w3hg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9eRuTaYx4I6DlbTp//yLAeUnig6UcqenyKUFdpvptMKt/T2HnbbJJ7J4fP/t4aq5f0+OZDea9FbKmKDus88dI96/YGJSf56XtJPLT
-X-Gm-Message-State: AOJu0YxDnBK5kSYuzR/17yEJqH1Tm000UWWjnfeeia6fAGwkxqvLieQ3
-	t8yyaFG2mV+qQ3vtzqZbKY13AvLy9YvEETMERxEbeqjOJjnBbFkG
-X-Google-Smtp-Source: AGHT+IGgGU+TCXrH3d3W5gNTpq0sTP0iPUVqiQceTeIF/Rj1nHjkOnVF3JPtPvBcEXD8wXrxFnLpjA==
-X-Received: by 2002:a05:600c:5253:b0:413:137f:49a2 with SMTP id fc19-20020a05600c525300b00413137f49a2mr9865995wmb.9.1710325775459;
-        Wed, 13 Mar 2024 03:29:35 -0700 (PDT)
-Received: from gmail.com (1F2EF295.nat.pool.telekom.hu. [31.46.242.149])
-        by smtp.gmail.com with ESMTPSA id fm23-20020a05600c0c1700b00413e4cf0c42sm1869951wmb.25.2024.03.13.03.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 03:29:35 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 13 Mar 2024 11:29:33 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Wei Yang <richard.weiyang@gmail.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] x86/boot: replace __PHYSICAL_START with
- LOAD_PHYSICAL_ADDR
-Message-ID: <ZfF/ekjP9R91dw2j@gmail.com>
-References: <20240313075839.8321-1-richard.weiyang@gmail.com>
- <20240313075839.8321-3-richard.weiyang@gmail.com>
+        d=1e100.net; s=20230601; t=1710325779; x=1710930579;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h90PwmEKgkeo9xq9N4xH2gsdxhkIDdIMs34ij43dsWo=;
+        b=Jht/AiOzc+9nxiVNtu+9h9BK1pvsAAu99SwfG5QWnmMfK9X5Vk2EepQ5kt2S//MnKy
+         OUNZOQpmZvU0T+aEkBNtWEEQykBqzkI4e71FSetS6MHMKDzfjb8/NdA1O4fmcaSUWyLR
+         PXcK9RurN5LjRncYeWiwPkRGRKE/NoCdyJuTg5rlphBwY8B17N214H/xw7QzWRyVbEIh
+         R2rndhXTZfjcvR8NTBu5YmimCFP/HuiqkX+/FdgPJS7RgRJ7vygMt2DHtXkISGQ2plVq
+         UijjVg/TucJMjILxRMOeuqaLHo6QuBbcvlmeMmgt+u+cFWxGC3GQ4mtqNO28+7zauiG9
+         IUsg==
+X-Forwarded-Encrypted: i=1; AJvYcCWhaEYYrdPNpvWu3Qy/X8P7PRT4vtqGayfuqQtBwdyXkY1TaOeNEwm50QycxxXD8c68yc2fM3OG+aTrZSBIU7xQDmlMiM/rq7MfzElY
+X-Gm-Message-State: AOJu0Yw7xUqhDQKJpPSikU8DhVsf5018LYxUMfN9+6S0pHeGH8Gdzbug
+	U6rYkgCjCyDzSCLF0BgrHhL7HcXtXbuwFxNHcSy1JML7WNQFr+Pf7ojsAXhR8bc=
+X-Google-Smtp-Source: AGHT+IGQ9hru+o0CKXheTMDFWVHZM9tnEJyYpndf58cTWLJjL9Sxz6u4h7l6Y7AZXNJmefNCTejN5A==
+X-Received: by 2002:a17:906:5917:b0:a44:4c9e:85ef with SMTP id h23-20020a170906591700b00a444c9e85efmr6327478ejq.77.1710325779403;
+        Wed, 13 Mar 2024 03:29:39 -0700 (PDT)
+Received: from ?IPV6:2a10:bac0:b000:73a8:7285:c2ff:fedd:7e3a? ([2a10:bac0:b000:73a8:7285:c2ff:fedd:7e3a])
+        by smtp.gmail.com with ESMTPSA id nb31-20020a1709071c9f00b00a46006bc7e9sm4594377ejc.159.2024.03.13.03.29.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 03:29:39 -0700 (PDT)
+Message-ID: <d167bf69-64f7-4b7b-81ee-054f05d39c98@suse.com>
+Date: Wed, 13 Mar 2024 12:29:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] x86/boot: replace __PHYSICAL_START with
+ LOAD_PHYSICAL_ADDR
+Content-Language: en-US
+To: Wei Yang <richard.weiyang@gmail.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20240313075839.8321-1-richard.weiyang@gmail.com>
+ <20240313075839.8321-3-richard.weiyang@gmail.com>
+From: Nikolay Borisov <nik.borisov@suse.com>
 In-Reply-To: <20240313075839.8321-3-richard.weiyang@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-* Wei Yang <richard.weiyang@gmail.com> wrote:
 
+On 13.03.24 г. 9:58 ч., Wei Yang wrote:
 > Both __PHYSICAL_START and LOAD_PHYSICAL_ADDR are defined to get aligned
 > CONFIG_PHYSICAL_START, so we can replace __PHYSICAL_START with
 > LOAD_PHYSICAL_ADDR. And then remove the definition of __PHYSICAL_START,
@@ -102,34 +102,34 @@ In-Reply-To: <20240313075839.8321-3-richard.weiyang@gmail.com>
 > 
 > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 > ---
->  arch/x86/include/asm/boot.h       | 5 -----
->  arch/x86/include/asm/page_types.h | 8 +++++---
->  2 files changed, 5 insertions(+), 8 deletions(-)
+>   arch/x86/include/asm/boot.h       | 5 -----
+>   arch/x86/include/asm/page_types.h | 8 +++++---
+>   2 files changed, 5 insertions(+), 8 deletions(-)
 > 
 > diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
 > index a38cc0afc90a..12cbc57d0128 100644
 > --- a/arch/x86/include/asm/boot.h
 > +++ b/arch/x86/include/asm/boot.h
 > @@ -6,11 +6,6 @@
->  #include <asm/pgtable_types.h>
->  #include <uapi/asm/boot.h>
->  
+>   #include <asm/pgtable_types.h>
+>   #include <uapi/asm/boot.h>
+>   
 > -/* Physical address where kernel should be loaded. */
 > -#define LOAD_PHYSICAL_ADDR ((CONFIG_PHYSICAL_START \
 > -				+ (CONFIG_PHYSICAL_ALIGN - 1)) \
 > -				& ~(CONFIG_PHYSICAL_ALIGN - 1))
 > -
->  /* Minimum kernel alignment, as a power of two */
->  #ifdef CONFIG_X86_64
->  # define MIN_KERNEL_ALIGN_LG2	PMD_SHIFT
+>   /* Minimum kernel alignment, as a power of two */
+>   #ifdef CONFIG_X86_64
+>   # define MIN_KERNEL_ALIGN_LG2	PMD_SHIFT
 > diff --git a/arch/x86/include/asm/page_types.h b/arch/x86/include/asm/page_types.h
 > index 86bd4311daf8..acc1620fd121 100644
 > --- a/arch/x86/include/asm/page_types.h
 > +++ b/arch/x86/include/asm/page_types.h
 > @@ -31,10 +31,12 @@
->  
->  #define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
->  
+>   
+>   #define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+>   
 > -#define __PHYSICAL_START	ALIGN(CONFIG_PHYSICAL_START, \
 > -				      CONFIG_PHYSICAL_ALIGN)
 > +/* Physical address where kernel should be loaded. */
@@ -137,10 +137,13 @@ In-Reply-To: <20240313075839.8321-3-richard.weiyang@gmail.com>
 > +				+ (CONFIG_PHYSICAL_ALIGN - 1)) \
 > +				& ~(CONFIG_PHYSICAL_ALIGN - 1))
 
-I agree with this simplification, but the ALIGN() expression is far easier 
-to read, so please keep that one instead of the open-coded version.
+Why don't you simply define LOAD_PHYSICAL_ADDR via 
+ALIGN(CONFIG_PHYSICAL_START, CONFIG_PHYSICAL_ALING) it's way more readable.
 
-Thanks,
-
-	Ingo
+>   
+> -#define __START_KERNEL		(__START_KERNEL_map + __PHYSICAL_START)
+> +#define __START_KERNEL		(__START_KERNEL_map + LOAD_PHYSICAL_ADDR)
+>   
+>   #ifdef CONFIG_X86_64
+>   #include <asm/page_64_types.h>
 
