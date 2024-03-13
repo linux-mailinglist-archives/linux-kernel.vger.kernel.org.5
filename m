@@ -1,259 +1,144 @@
-Return-Path: <linux-kernel+bounces-102311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA85A87B058
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:52:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 289C087B05D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:53:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 586021F26B16
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:52:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A2251C2618C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF4A138485;
-	Wed, 13 Mar 2024 17:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B464C624;
+	Wed, 13 Mar 2024 17:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mBg24YhG"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="ogrRRkDg"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB29967E85
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49FA13A877;
+	Wed, 13 Mar 2024 17:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710351947; cv=none; b=TlEsFwxSI4YMV1oh8ol4zWOlIG8D1gzra1aDOEW/EOY6UYlPYzDnItmtaELefLX9HSuPf9a4vhjg61K0RgIIb2z1ToVVIwHRa63jZTByg0wFy7NDwx4U2FxFmEsOybCTq/+/lQcIKI5KuZW7cS+8Qdy3qAJvEaEey3sCkP7LQno=
+	t=1710351989; cv=none; b=XZhcxgh+PaEzsPaKT1kQjalYFinxFSCnp/SwLXvdbW5ekDEoVAyj9nIJcq/cCquAkoml9Nc2g92HcU4A+MN5P7cnL/JzjguEpaKsyvybVmXCB5miAYf+0VHPPkIs5J7oN+gL+61we+9Qar266BRtpnpPDZrOfB7827cxodHuT80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710351947; c=relaxed/simple;
-	bh=9rA67U9H0cUfYO3fgMPTyUG7C69zMCKQfaLOUG8oJ+A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eVg+fVpfB44veh3cuK5h/5LGCJ8SSOTeam+7cynmD8CqQJocXkDC3CeNVdVtybD2BPKcvepXJgH92iBYGTpws9gBA5BVwIHVfYAkg5kyASyJKHTZNzZnnslirY1gNzviHjUNYbHdPPSyi9KxlC3Pj2d+l9NXQFtfAXjmat3Q0zE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mBg24YhG; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 125AC40005;
-	Wed, 13 Mar 2024 17:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710351942;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jXogfLj07V/5NU7N2k8u25LuCo1tbpPLvfUwLakxFt8=;
-	b=mBg24YhGBR7be0MtBRaL+gbZvRu8G2jc/m6rx8XACcY4qIPL61153Jvi2GVpxAURWIG/eH
-	qhouCXV56ohvAUu0vKgenodoVtQ8S6e7XsbxXRhAEx4g014UVvpa2mSEqVoBRPe4mtxE6/
-	lAz+zJiYagtudyMYNBPirj65O2YXe3BWwJ82dqt9TuPtXlOpdAcUjSAKYO6LkbkT7SGTQ6
-	17cg+wCFHRddC77Gq8CVOjWYbg9UIOdPVdl1mFuGqA6zhHMIFWMJanswzHKOimsxL87CHG
-	H1/0H5OKAlbWLxmMGjcJniPGqyKNZ2bkyD9vijxa83KRIdMDqTibdYRhUe4T7g==
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-Date: Wed, 13 Mar 2024 18:45:10 +0100
-Subject: [PATCH v5 16/16] drm/vkms: Add support for DRM_FORMAT_R*
+	s=arc-20240116; t=1710351989; c=relaxed/simple;
+	bh=Vz3xWXLFes5LX1WztRFQXWd6AtMPmMC3pdI1XLC+2Og=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L1swEycc0Svt9ymtUrvASu8S37J+Y5cS8M6/+qidcjdhY/7FOBdLXufOpCxzbfPsX+PW83/Wxm06N/Xbv43Y9LJKF4BxYNFJht1QPCVpV3R63fIgZz3bWHoC1JG4UW3AOXdSxCIm39FoKlktdnCH5lq/WTgaYLzXs45A8Vn7/Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=ogrRRkDg; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42DHjT8d2268621
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 13 Mar 2024 10:45:30 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42DHjT8d2268621
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1710351931;
+	bh=rzerA9hoGeFJCAIOx2/2/GsCWjUYIzB/Laek7drkNa4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ogrRRkDg6g2i+51nEZwh9h/klWPjU6VT0YpdSjqNtKHbej6934YuPe2MOtK0YAjPU
+	 g6B9xVG7HpfPwMAV+y+SjUi9T7PXbALMMdZjs+bGDqoFcO0y2UfuRhUHxQOh/rYIZF
+	 eiR+V1PLMEBe+4hUpPfWv4WwY+zQ7S85vBIdkJHYorGddUTm3gHFdlE4shNhOVBpVE
+	 uzR3u7AHEufSQ0GfzQS2KAZ9NvJ0zn/tDRAFZ31CmSusC/V1CCRo4wKxP/KNUg6VFE
+	 HLjdjzcrE4FZWZc7zUlp6Kb+ANl9GE7HB1Kd2u8Wsm/F9LXBPUNM2+LpNLUEGskYXW
+	 ocDaMHmI9oDfg==
+Message-ID: <a686dd76-276d-418a-be57-4e9e9b80a4b9@zytor.com>
+Date: Wed, 13 Mar 2024 10:45:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240313-yuv-v5-16-e610cbd03f52@bootlin.com>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-In-Reply-To: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
- Melissa Wen <melissa.srw@gmail.com>, 
- =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>, 
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net, 
- Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, 
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com, 
- nicolejadeyee@google.com, Louis Chauvet <louis.chauvet@bootlin.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5760;
- i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=9rA67U9H0cUfYO3fgMPTyUG7C69zMCKQfaLOUG8oJ+A=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBl8eY1Q7D2/rrZJHb7RkqnZoULnQUuc8BbwKC3nJG4
- UflwfJqJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZfHmNQAKCRAgrS7GWxAs4pLaEA
- C3FRWES+R2Y2GR1j8ZLeP/Ccwoq2SgYrj8b9O6eq/tWPy+6QhRXTg01U+5wcCjRFfZIeZUnLtu/XOQ
- 2fUHPXOy4wEwIqKW3jtYsihl/9vBnCPKBfQ2vXFQYflzEI0iV6Tx8X1SjRgG9oIiF2KyqlO9n4cVBR
- rhpCFNnlos8ubrVQaG/xDvdrMVMjHn5rvwYSTW3ct6xbxue7Otzb7NLVdE2b/Awq22upazC7UPfHYr
- mvKopiLDw/hDJN8FCmOPqyCMyJ08IkKQk5CVt3qbo09I9e8Ns1cpLFnXdFPIkzK5EAdlM0NzQ/H0dB
- j31pBCx103LClrItIaHL9PK06ZRrIKgsso97Gym3FVyeQDmYNpQH1oIQDqTk45VlNvY4hshRP89wTQ
- sa3pl5c46krOY5VdiAKXwCDDik4oKAP1H6Dcgoq6+ZGmkMtQlcxioPKGms9N9/+/AhL7SujLVrbeOW
- eYYxglRYGtjmr0G2BtSrWIc6Efhqf/QTnvFpM1R1TfRAUrVnnnQkIlwg5G/LU0IRYbbLuhMoV1IaNG
- wMP10VNhe2FAZdzNPQCEcl5E6ET5uDj0BuqetAdWoOChHbkx/15KWUmP5pEuVVSDXvV9w3mRTYVHql
- Koc9fm2n0XA8GwAJbvvA3+ZM6+QYfXHQWKnFenwBXXrbtXxqbPgECVdUu68A==
-X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
- fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
-X-GND-Sasl: louis.chauvet@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] x86: Rename __{start,end}_init_task to
+ __{start,end}_init_stack
+To: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-arch@vger.kernel.org
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        boris.ostrovsky@oracle.com, arnd@arndb.de
+References: <20240313060546.1952893-1-xin@zytor.com>
+ <ab57dce7-6e89-44aa-a87a-2ffa8cc87fc4@suse.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <ab57dce7-6e89-44aa-a87a-2ffa8cc87fc4@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-This add the support for:
-- R1/R2/R4/R8
+On 3/13/2024 12:09 AM, Jürgen Groß wrote:
+> On 13.03.24 07:05, Xin Li (Intel) wrote:
+>> The stack of a task has been separated from the memory of a task_struct
+>> struture for a long time on x86, as a result __{start,end}_init_task no
+>> longer mark the start and end of the init_task structure, but its stack
+>> only.
+>>
+>> Rename __{start,end}_init_task to __{start,end}_init_stack.
+>>
+>> Note other architectures are not affected because __{start,end}_init_task
+>> are used on x86 only.
+>>
 
-R1 format was tested with [1] and [2].
+>> diff --git a/include/asm-generic/vmlinux.lds.h 
+>> b/include/asm-generic/vmlinux.lds.h
+>> index 5dd3a61d673d..a168be99d522 100644
+>> --- a/include/asm-generic/vmlinux.lds.h
+>> +++ b/include/asm-generic/vmlinux.lds.h
+>> @@ -399,13 +399,13 @@
+>>   #define INIT_TASK_DATA(align)                        \
+>>       . = ALIGN(align);                        \
+>> -    __start_init_task = .;                        \
+>> +    __start_init_stack = .;                        \
+>>       init_thread_union = .;                        \
+>>       init_stack = .;                            \
+>> -    KEEP(*(.data..init_task))                    \
+>> +    KEEP(*(.data..init_stack))                    \
+> 
+> Is this modification really correct?
+> 
 
-[1]: https://lore.kernel.org/r/20240313-new_rotation-v2-0-6230fd5cae59@bootlin.com
-[2]: https://lore.kernel.org/igt-dev/20240306-b4-kms_tests-v1-0-8fe451efd2ac@bootlin.com/
+Good catch, I should not change it.
 
-Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
----
- drivers/gpu/drm/vkms/vkms_formats.c | 100 ++++++++++++++++++++++++++++++++++++
- drivers/gpu/drm/vkms/vkms_plane.c   |   6 ++-
- 2 files changed, 105 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-index 863fc91d6d48..cbb2ec09564a 100644
---- a/drivers/gpu/drm/vkms/vkms_formats.c
-+++ b/drivers/gpu/drm/vkms/vkms_formats.c
-@@ -201,6 +201,11 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(const u16 *pixel)
- 	return out_pixel;
- }
- 
-+static struct pixel_argb_u16 argb_u16_from_gray8(u8 gray)
-+{
-+	return argb_u16_from_u8888(255, gray, gray, gray);
-+}
-+
- VISIBLE_IF_KUNIT struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 cb, u8 cr,
- 							    struct conversion_matrix *matrix)
- {
-@@ -269,6 +274,89 @@ static void black_to_argb_u16(const struct vkms_plane_state *plane, int x_start,
- 	}
- }
- 
-+static void Rx_read_line(const struct vkms_plane_state *plane, int x_start,
-+			 int y_start, enum pixel_read_direction direction, int count,
-+			 struct pixel_argb_u16 out_pixel[], u8 bit_per_pixel, u8 lum_per_level)
-+{
-+	struct pixel_argb_u16 *end = out_pixel + count;
-+	u8 *src_pixels;
-+	int rem_x, rem_y;
-+
-+	packed_pixels_addr(plane->frame_info, x_start, y_start, 0, &src_pixels, &rem_x, &rem_y);
-+	int bit_offset = (int)rem_x * bit_per_pixel;
-+	int step = get_step_next_block(plane->frame_info->fb, direction, 0);
-+	int mask = (0x1 << bit_per_pixel) - 1;
-+
-+	if (direction == READ_LEFT_TO_RIGHT || direction == READ_RIGHT_TO_LEFT) {
-+		int restart_bit_offset = 0;
-+		int step_bit_offset = bit_per_pixel;
-+
-+		if (direction == READ_RIGHT_TO_LEFT) {
-+			restart_bit_offset = 8 - bit_per_pixel;
-+			step_bit_offset = -bit_per_pixel;
-+		}
-+
-+		while (out_pixel < end) {
-+			u8 val = (*src_pixels & (mask << bit_offset)) >> bit_offset;
-+
-+			*out_pixel = argb_u16_from_gray8(val * lum_per_level);
-+
-+			bit_offset += step_bit_offset;
-+			if (bit_offset < 0 || 8 <= bit_offset) {
-+				bit_offset = restart_bit_offset;
-+				src_pixels += step;
-+			}
-+			out_pixel += 1;
-+		}
-+	} else if (direction == READ_TOP_TO_BOTTOM || direction == READ_BOTTOM_TO_TOP) {
-+		while (out_pixel < end) {
-+			u8 val = (*src_pixels & (mask << bit_offset)) >> bit_offset;
-+			*out_pixel = argb_u16_from_gray8(val * lum_per_level);
-+			src_pixels += step;
-+			out_pixel += 1;
-+		}
-+	}
-+}
-+
-+static void R1_read_line(const struct vkms_plane_state *plane, int x_start,
-+			 int y_start, enum pixel_read_direction direction, int count,
-+			 struct pixel_argb_u16 out_pixel[])
-+{
-+	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 1, 0xFF);
-+}
-+
-+static void R2_read_line(const struct vkms_plane_state *plane, int x_start,
-+			 int y_start, enum pixel_read_direction direction, int count,
-+			 struct pixel_argb_u16 out_pixel[])
-+{
-+	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 2, 0x55);
-+}
-+
-+static void R4_read_line(const struct vkms_plane_state *plane, int x_start,
-+			 int y_start, enum pixel_read_direction direction, int count,
-+			 struct pixel_argb_u16 out_pixel[])
-+{
-+	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 4, 0x11);
-+}
-+
-+static void R8_read_line(const struct vkms_plane_state *plane, int x_start,
-+			 int y_start, enum pixel_read_direction direction, int count,
-+			 struct pixel_argb_u16 out_pixel[])
-+{
-+	struct pixel_argb_u16 *end = out_pixel + count;
-+	u8 *src_pixels;
-+	int rem_x, rem_y;
-+	int step = get_step_next_block(plane->frame_info->fb, direction, 0);
-+
-+	packed_pixels_addr(plane->frame_info, x_start, y_start, 0, &src_pixels, &rem_x, &rem_y);
-+
-+	while (out_pixel < end) {
-+		*out_pixel = argb_u16_from_gray8(*src_pixels);
-+		src_pixels += step;
-+		out_pixel += 1;
-+	}
-+}
-+
- static void ARGB8888_read_line(const struct vkms_plane_state *plane, int x_start, int y_start,
- 			       enum pixel_read_direction direction, int count,
- 			       struct pixel_argb_u16 out_pixel[])
-@@ -582,6 +670,14 @@ pixel_read_line_t get_pixel_read_line_function(u32 format)
- 	case DRM_FORMAT_YVU422:
- 	case DRM_FORMAT_YVU444:
- 		return &planar_yuv_read_line;
-+	case DRM_FORMAT_R1:
-+		return &R1_read_line;
-+	case DRM_FORMAT_R2:
-+		return &R2_read_line;
-+	case DRM_FORMAT_R4:
-+		return &R4_read_line;
-+	case DRM_FORMAT_R8:
-+		return &R8_read_line;
- 	default:
- 		/*
- 		 * This is a bug in vkms_plane_atomic_check. All the supported
-@@ -855,6 +951,10 @@ get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
- 	case DRM_FORMAT_ARGB16161616:
- 	case DRM_FORMAT_XRGB16161616:
- 	case DRM_FORMAT_RGB565:
-+	case DRM_FORMAT_R1:
-+	case DRM_FORMAT_R2:
-+	case DRM_FORMAT_R4:
-+	case DRM_FORMAT_R8:
- 		/*
- 		 * Those formats are supported, but they don't need a conversion matrix. Return
- 		 * a valid pointer to avoid kernel panic in case this matrix is used/checked
-diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
-index e21cc92cf497..dc9d62acf350 100644
---- a/drivers/gpu/drm/vkms/vkms_plane.c
-+++ b/drivers/gpu/drm/vkms/vkms_plane.c
-@@ -29,7 +29,11 @@ static const u32 vkms_formats[] = {
- 	DRM_FORMAT_YUV444,
- 	DRM_FORMAT_YVU420,
- 	DRM_FORMAT_YVU422,
--	DRM_FORMAT_YVU444
-+	DRM_FORMAT_YVU444,
-+	DRM_FORMAT_R1,
-+	DRM_FORMAT_R2,
-+	DRM_FORMAT_R4,
-+	DRM_FORMAT_R8
- };
- 
- static struct drm_plane_state *
-
--- 
-2.43.0
+Thanks!
+     Xin
 
 
