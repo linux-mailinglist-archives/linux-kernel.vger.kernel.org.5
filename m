@@ -1,484 +1,172 @@
-Return-Path: <linux-kernel+bounces-101708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF0C87AAD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:00:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 279B687AAD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:02:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30AD5B2320E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:00:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C7001C21C1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3FE4C60C;
-	Wed, 13 Mar 2024 16:00:23 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D87481CD;
+	Wed, 13 Mar 2024 16:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QnkD+bn7"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB304BAA6
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF29D481A5
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710345622; cv=none; b=rIzVtyAZSklGQK/OLKZaoR6Lbzd58MT9fVzbH/KWCmkzw2pyCyV5N5Z656AhHlSQrEiRygxFE6T9txLme1l4ZPyNnzTSsdYCVUgW2ZhPtb6q4VcMCxtdaKUrJ9P7rRTarpZ86ct9UGi3/LGnLsgrDwpGSbPsEkwawOJymmF0NPI=
+	t=1710345722; cv=none; b=NvXjp2RlTKiVDVFABNo7gRFNTR7r6h7Wf290MBGgLYDHiC9HTGA4YhthsnPf5Gimaa08sMwwQ+yjVk8Y4jKm7p0IdNlcKI1YeoSPzZfRl//KSz6RemffLPBYDAtotobwLvzCSKsESlK4Av5OBbewTVku9TqDGULuWAaO+Oenb+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710345622; c=relaxed/simple;
-	bh=yREVDGtMhrbZjskIIlnDLXnDOKjLf4OeZLNksziv5B0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=cH/Bfs/LmJFqR3arAaq03HdfZhN2MUF4PAWJmsclzaR/2th5qV1jAsnDXLQszIxfrHdjq7C2E1QQQWS3IT9YtBlaQWZfdppVnU1ZQsJ0lUduK6x6r+WHXtqXwT58p8yeRiSM0aFEosiJQhjNXnZFlHeJd76BBDmbbJTL07c0js0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9262EC43390;
-	Wed, 13 Mar 2024 16:00:20 +0000 (UTC)
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] arm64 updates
-Date: Wed, 13 Mar 2024 16:00:18 +0000
-Message-Id: <20240313160018.2603344-1-catalin.marinas@arm.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710345722; c=relaxed/simple;
+	bh=skEFlYVRbGKrwaoRI9SBnK72i4qW8cNFfPFUKmMt/V4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=In5phVLK67Frjo5wVEKJLT8ZYhF7SRIlbrk25B2pWRBfkAg2ytRIB8antGp6Trtk7HZuob1NxyjRUV3zC3ycOLacjVNEwbEzT//o63Jekzp85u7IwMgUh+f5kqTLFyTjAf53xED1dxqxhGDL1j2w3lehFhbEl76JWAe49qN4sLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=QnkD+bn7; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d4541bf57eso16699451fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 09:02:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1710345719; x=1710950519; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PhI7fuOW7O94CdymJJXoJUrg+PQKoUQdDuMwFu4gOLk=;
+        b=QnkD+bn71GHRBfgc2+oSSOVxJjg7U9yLCwoek6EifD2I2yLHdXnWMA/utDeelZjPVS
+         3wBbvzkX+2tI82+N4Y2GQ4/JUz2q0VA9k5sLZ61XoZmid8cfkRR1QOAzQM1/xTwsDk6P
+         19ZqznP79EZXH9VUbFd/XBScIXpM7kSFSNdME=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710345719; x=1710950519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PhI7fuOW7O94CdymJJXoJUrg+PQKoUQdDuMwFu4gOLk=;
+        b=kVD0cbwx7lzjtyP+kCX8aMv38OahVODgCrovH2BNWZHdA1edsv0u8TWQKXCn1HegBy
+         8u6BpGIY/agGJqUOY7crrMnXSAYb0SmIFL5iIoWZ+Vr6SWRW04WhawunjJ48D7ksfqrY
+         SHXIWmApHsPa6DLy9V63wnUA325NJiBIw8jj/aLkVafalQEaJy05hlvl2QMRtdi5r+KJ
+         YTQAWeGXCASHHD/QVRkEB50Ri3BVd10W8xV2iu8HLokpyddXfu2CavAgzHuAc771Zyj/
+         C+1rYobka8DMjq45JXReLunanOvt4Y5necOPgXqghQgwsTqc1NOQ1MGtqco8zyWVhab+
+         ebRA==
+X-Forwarded-Encrypted: i=1; AJvYcCXERvHMfVlz7CTEn4wGPWgxPSqSHIUBCYW5xS9UjLl3o20e44Ghf9rrgbiiIZFLIW5LCjrMPH5U7ZzaTSVG/hdf2V9xLqw9urB68Ezf
+X-Gm-Message-State: AOJu0Yy+u+Wju/0hRGbELBMQ2yKuo1f7ZPpIkKBQ5USyNxlaAhD36Hww
+	XMyEN/Hr9UWIxWkRKR1L7RPP7dPRcFq+jb2aWq48l5ML5iqujJ5i4Or7Y3VR6sNFkrOm5lDEDZs
+	zEG5qUD2PDvsXGMVDJqXOBbTm/GOJbp+4qXCEvA==
+X-Google-Smtp-Source: AGHT+IEB+ypKw1227kSwoEpCb58giwsbWQ7T3kqHZKNM52jxhQC6RiCthXFaTfppDX19xNPkqW1S/iblz4CA4LMGbpA=
+X-Received: by 2002:a05:651c:3c9:b0:2d4:6e5:2cd6 with SMTP id
+ f9-20020a05651c03c900b002d406e52cd6mr2361699ljp.25.1710345718592; Wed, 13 Mar
+ 2024 09:01:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <ZetHwrCb0KXE0xFI@tardis> <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux> <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+ <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com> <ZfDptafiK0jns050@boqun-archlinux>
+In-Reply-To: <ZfDptafiK0jns050@boqun-archlinux>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Wed, 13 Mar 2024 12:01:45 -0400
+Message-ID: <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for v6.9]
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Florian Fainelli <f.fainelli@gmail.com>, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org, 
+	mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org, 
+	neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com, 
+	frederic@kernel.org, bigeasy@linutronix.de, anna-maria@linutronix.de, 
+	chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+Hello Florian,
 
-Please pull the arm64 updates below for 6.9-rc1. The major features are
-support for LPA2 (52-bit VA/PA with 4K and 16K pages), the dpISA
-extension and Rust enabled on arm64. The changes are mostly contained
-within the usual arch/arm64/, drivers/perf, the arm64 Documentation and
-kselftests. The exception is the Rust support which touches some generic
-build files.
+On Tue, Mar 12, 2024 at 7:48=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> On Tue, Mar 12, 2024 at 02:44:14PM -0700, Linus Torvalds wrote:
+> > On Tue, 12 Mar 2024 at 14:34, Florian Fainelli <f.fainelli@gmail.com> w=
+rote:
+> > >
+> > > and here is a log where this fails:
+> > >
+> > > https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
+> >
+> > You could try the 'initcall_debug' kernel command line.
+> >
+>
+> Right, that'll be helpful.
+>
+> Besides I took a look at the config Florian shared, no TASKS_RCU,
+> RCU_LAZY or RCU nocb is enabled. So probably the only left changes in
+> the PR are around RCU expedited. Florian, could you see if you can build
+> and test with CONFIG_PROVE_RCU=3Dy (you need to select
+> CONFIG_PROVE_LOCKING for that)? That'll call synchronize_rcu() +
+> synchronize_rcu_expedited() before and after we switch
+> rcu_scheduler_active, and it may provide more information. Thanks!
 
-There are two last-minute reverts: enabling CPUMASK_OFFSTACK on arm64
-seems to have caused some issue with the cpufreq/opp drivers (still
-debugging); the other is SCTLR_EL1.WXN hardening on arm64, the feature
-is no longer applicable with permissions indirection, so the approach
-needs revisiting.
+Adding to everyone's suggestions, could you also try booting with
+"rcupdate.rcu_normal=3D1" ? This will disable expedited RCU and help us
+further confirm that it is indeed expedited RCU (and then we can look
+into fixing that).
 
-So far there's a single conflict with your tree in rust/Makefile:
+Also there are 2 additional users of expedited RCU in this release I notice=
+d:
 
-------------------------8<-----------------------------
-diff --cc rust/Makefile
-index a78fcf4004b0,fe045dbc701e..1eaefc34f4b7
---- a/rust/Makefile
-+++ b/rust/Makefile
-@@@ -434,8 -435,11 +435,11 @@@ $(obj)/core.o: private skip_clippy = 
-  $(obj)/core.o: private skip_flags = -Dunreachable_pub
-  $(obj)/core.o: private rustc_objcopy = $(foreach sym,$(redirect-intrinsics),--redefine-sym $(sym)=__rust$(sym))
-  $(obj)/core.o: private rustc_target_flags = $(core-cfgs)
-- $(obj)/core.o: $(RUST_LIB_SRC)/core/src/lib.rs scripts/target.json FORCE
-+ $(obj)/core.o: $(RUST_LIB_SRC)/core/src/lib.rs FORCE
- -	$(call if_changed_dep,rustc_library)
- +	+$(call if_changed_dep,rustc_library)
-+ ifneq ($(or $(CONFIG_X86_64),$(CONFIG_LOONGARCH)),)
-+ $(obj)/core.o: scripts/target.json
-+ endif
-  
-  $(obj)/compiler_builtins.o: private rustc_objcopy = -w -W '__*'
-  $(obj)/compiler_builtins.o: $(src)/compiler_builtins.rs $(obj)/core.o FORCE
-------------------------8<-----------------------------
+78c3253f27e5 ("net: use synchronize_rcu_expedited in cleanup_net()")
+1ebb85f9c03d ("netfilter: conntrack: expedite rcu in
+nf_conntrack_cleanup_net_list")
 
-I'll expect one or two more conflicts with the KVM tree when that gets
-pulled in but the resolutions in -next are correct.
+Could you also try reverting those patches as well, and see if the
+issue goes away?
 
-Thanks.
+thanks,
 
-The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
+ - Joel
 
-  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-upstream
-
-for you to fetch changes up to 1ef21fcd6a50f011680dbbd678c1bea8e3f67ab9:
-
-  Revert "mm: add arch hook to validate mmap() prot flags" (2024-03-13 10:59:38 +0000)
-
-----------------------------------------------------------------
-arm64 updates for 6.9:
-
-* Reorganise the arm64 kernel VA space and add support for LPA2 (at
-  stage 1, KVM stage 2 was merged earlier) - 52-bit VA/PA address range
-  with 4KB and 16KB pages
-
-* Enable Rust on arm64
-
-* Support for the 2023 dpISA extensions (data processing ISA), host only
-
-* arm64 perf updates:
-
-  - StarFive's StarLink (integrates one or more CPU cores with a shared
-    L3 memory system) PMU support
-
-  - Enable HiSilicon Erratum 162700402 quirk for HIP09
-
-  - Several updates for the HiSilicon PCIe PMU driver
-
-  - Arm CoreSight PMU support
-
-  - Convert all drivers under drivers/perf/ to use .remove_new()
-
-* Miscellaneous:
-
-  - Don't enable workarounds for "rare" errata by default
-
-  - Clean up the DAIF flags handling for EL0 returns (in preparation for
-    NMI support)
-
-  - Kselftest update for ptrace()
-
-  - Update some of the sysreg field definitions
-
-  - Slight improvement in the code generation for inline asm I/O
-    accessors to permit offset addressing
-
-  - kretprobes: acquire regs via a BRK exception (previously done via a
-    trampoline handler)
-
-  - SVE/SME cleanups, comment updates
-
-  - Allow CALL_OPS+CC_OPTIMIZE_FOR_SIZE with clang (previously disabled
-    due to gcc silently ignoring -falign-functions=N)
-
-----------------------------------------------------------------
-Anshuman Khandual (4):
-      arm64/sysreg: Add register fields for ID_AA64DFR1_EL1
-      arm64/sysreg: Update ID_DFR0_EL1 register fields
-      arm64/sysreg: Update ID_AA64DFR0_EL1 register
-      arm64/hw_breakpoint: Directly use ESR_ELx_WNR for an watchpoint exception
-
-Ard Biesheuvel (53):
-      arm64: mm: Move PCI I/O emulation region above the vmemmap region
-      arm64: mm: Move fixmap region above vmemmap region
-      arm64: ptdump: Allow all region boundaries to be defined at boot time
-      arm64: ptdump: Discover start of vmemmap region at runtime
-      arm64: vmemmap: Avoid base2 order of struct page size to dimension region
-      arm64: mm: Reclaim unused vmemmap region for vmalloc use
-      arm64: kaslr: Adjust randomization range dynamically
-      arm64: kernel: Manage absolute relocations in code built under pi/
-      arm64: kernel: Don't rely on objcopy to make code under pi/ __init
-      arm64: head: move relocation handling to C code
-      arm64: idreg-override: Move to early mini C runtime
-      arm64: kernel: Remove early fdt remap code
-      arm64: head: Clear BSS and the kernel page tables in one go
-      arm64: Move feature overrides into the BSS section
-      arm64: head: Run feature override detection before mapping the kernel
-      arm64: head: move dynamic shadow call stack patching into early C runtime
-      arm64: cpufeature: Add helper to test for CPU feature overrides
-      arm64: kaslr: Use feature override instead of parsing the cmdline again
-      arm64: idreg-override: Create a pseudo feature for rodata=off
-      arm64: Add helpers to probe local CPU for PAC and BTI support
-      arm64: head: allocate more pages for the kernel mapping
-      arm64: head: move memstart_offset_seed handling to C code
-      arm64: mm: Make kaslr_requires_kpti() a static inline
-      arm64: mmu: Make __cpu_replace_ttbr1() out of line
-      arm64: head: Move early kernel mapping routines into C code
-      arm64: mm: Use 48-bit virtual addressing for the permanent ID map
-      arm64: pgtable: Decouple PGDIR size macros from PGD/PUD/PMD levels
-      arm64: kernel: Create initial ID map from C code
-      arm64: mm: avoid fixmap for early swapper_pg_dir updates
-      arm64: mm: omit redundant remap of kernel image
-      arm64: Revert "mm: provide idmap pointer to cpu_replace_ttbr1()"
-      arm64: mm: Handle LVA support as a CPU feature
-      arm64: mm: Add feature override support for LVA
-      arm64: Avoid #define'ing PTE_MAYBE_NG to 0x0 for asm use
-      arm64: Add ESR decoding for exceptions involving translation level -1
-      arm64: mm: Wire up TCR.DS bit to PTE shareability fields
-      arm64: mm: Add LPA2 support to phys<->pte conversion routines
-      arm64: mm: Add definitions to support 5 levels of paging
-      arm64: mm: add LPA2 and 5 level paging support to G-to-nG conversion
-      arm64: Enable LPA2 at boot if supported by the system
-      arm64: mm: Add 5 level paging support to fixmap and swapper handling
-      arm64: kasan: Reduce minimum shadow alignment and enable 5 level paging
-      arm64: mm: Add support for folding PUDs at runtime
-      arm64: ptdump: Disregard unaddressable VA space
-      arm64: ptdump: Deal with translation levels folded at runtime
-      arm64: kvm: avoid CONFIG_PGTABLE_LEVELS for runtime levels
-      arm64: Enable 52-bit virtual addressing for 4k and 16k granule configs
-      arm64: defconfig: Enable LPA2 support
-      mm: add arch hook to validate mmap() prot flags
-      arm64: mm: add support for WXN memory translation attribute
-      arm64: mm: Make PUD folding check in set_pud() a runtime check
-      arm64/mm: Use generic __pud_free() helper in pud_free() implementation
-      arm64/mm: Avoid ID mapping of kpti flag if it is no longer needed
-
-Bartosz Golaszewski (1):
-      arm64: gitignore: ignore relacheck
-
-Catalin Marinas (5):
-      Merge branches 'for-next/reorg-va-space', 'for-next/rust-for-arm64', 'for-next/misc', 'for-next/daif-cleanup', 'for-next/kselftest', 'for-next/documentation', 'for-next/sysreg' and 'for-next/dpisa', remote-tracking branch 'arm64/for-next/perf' into for-next/core
-      Merge branch 'for-next/stage1-lpa2' into for-next/core
-      Revert "ARM64: Dynamically allocate cpumasks and increase supported CPUs to 512"
-      Revert "arm64: mm: add support for WXN memory translation attribute"
-      Revert "mm: add arch hook to validate mmap() prot flags"
-
-Christoph Lameter (Ampere) (1):
-      ARM64: Dynamically allocate cpumasks and increase supported CPUs to 512
-
-Dawei Li (1):
-      arm64: remove unneeded BUILD_BUG_ON assertion
-
-Jamie Cunliffe (2):
-      rust: Refactor the build target to allow the use of builtin targets
-      arm64: rust: Enable Rust support for AArch64
-
-Ji Sheng Teoh (4):
-      perf: starfive: Add StarLink PMU support
-      dt-bindings: perf: starfive: Add JH8100 StarLink PMU
-      docs: perf: Add description for StarFive's StarLink PMU
-      MAINTAINERS: Add entry for StarFive StarLink PMU
-
-Jinjie Ruan (1):
-      arm64: Remove enable_daif macro
-
-Junhao He (5):
-      drivers/perf: hisi: Enable HiSilicon Erratum 162700402 quirk for HIP09
-      drivers/perf: hisi_pcie: Check the target filter properly
-      drivers/perf: hisi_pcie: Relax the check on related events
-      drivers/perf: hisi_pcie: Merge find_related_event() and get_event_idx()
-      docs: perf: Update usage for target filter of hisi-pcie-pmu
-
-Kemeng Shi (1):
-      arm64: make member of struct pt_regs and it's offset macro in the same order
-
-Leonardo Bras (1):
-      arm64: remove unnecessary ifdefs around is_compat_task()
-
-Liao Chang (1):
-      arm64: cpufeatures: Clean up temporary variable to simplify code
-
-Marc Zyngier (1):
-      arm64: Use Signed/Unsigned enums for TGRAN{4,16,64} and VARange
-
-Mark Brown (17):
-      kselftest/arm64: Test that ptrace takes effect in the target process
-      arm64/sve: Remove bitrotted comment about syscall behaviour
-      arm64/sme: Fix cut'n'paste in ABI document
-      arm64/fp: Clarify effect of setting an unsupported system VL
-      arm64/sme: Remove spurious 'is' in SME documentation
-      arm64/sve: Document that __SVE_VQ_MAX is much larger than needed
-      arm64/sve: Ensure that all fields in ZCR_EL1 are set to known values
-      arm64/sme: Ensure that all fields in SMCR_EL1 are set to known values
-      arm64/cpufeature: Hook new identification registers up to cpufeature
-      arm64/fpsimd: Enable host kernel access to FPMR
-      arm64/fpsimd: Support FEAT_FPMR
-      arm64/signal: Add FPMR signal handling
-      arm64/ptrace: Expose FPMR via ptrace
-      arm64/hwcap: Define hwcaps for 2023 DPISA features
-      kselftest/arm64: Handle FPMR context in generic signal frame parser
-      kselftest/arm64: Add basic FPMR test
-      kselftest/arm64: Add 2023 DPISA hwcap test coverage
-
-Mark Rutland (5):
-      arm64: io: permit offset addressing
-      arm64: Simplify do_notify_resume() DAIF masking
-      arm64: Move do_notify_resume() to entry-common.c
-      arm64: Unmask Debug + SError in do_notify_resume()
-      arm64: kretprobes: acquire the regs via a BRK exception
-
-Robin Murphy (6):
-      perf/arm-cmn: Improve debugfs pretty-printing for large configs
-      perf/arm_cspmu: Simplify initialisation
-      perf/arm_cspmu: Simplify attribute groups
-      perf/arm_cspmu: Simplify counter reset
-      dt-bindings/perf: Add Arm CoreSight PMU
-      perf/arm_cspmu: Add devicetree support
-
-Ryo Takakura (1):
-      arm64: Update setup_arch() comment on interrupt masking
-
-Stephen Boyd (1):
-      arm64: ftrace: Don't forbid CALL_OPS+CC_OPTIMIZE_FOR_SIZE with Clang
-
-Uwe Kleine-König (18):
-      perf: alibaba_uncore_drw: Convert to platform remove callback returning void
-      perf: amlogic: Convert to platform remove callback returning void
-      perf: arm-cci: Convert to platform remove callback returning void
-      perf: arm-ccn: Convert to platform remove callback returning void
-      perf: arm-cmn: Convert to platform remove callback returning void
-      perf: arm_cspmu: Convert to platform remove callback returning void
-      perf: arm_dmc620: Convert to platform remove callback returning void
-      perf: arm_dsu: Convert to platform remove callback returning void
-      perf: arm_smmuv3: Convert to platform remove callback returning void
-      perf: arm_spe: Convert to platform remove callback returning void
-      perf: fsl_imx8_ddr: Convert to platform remove callback returning void
-      perf: fsl_imx9_ddr: Convert to platform remove callback returning void
-      perf: hisilicon: Convert to platform remove callback returning void
-      perf: marvell_cn10k_ddr: Convert to platform remove callback returning void
-      perf: marvell_cn10k_tad: Convert to platform remove callback returning void
-      perf: qcom_l2: Convert to platform remove callback returning void
-      perf: thunderx2: Convert to platform remove callback returning void
-      perf: xgene: Convert to platform remove callback returning void
-
-Will Deacon (2):
-      arm64: errata: Don't enable workarounds for "rare" errata by default
-      perf: starfive: Only allow COMPILE_TEST for 64-bit architectures
-
-Yicong Yang (5):
-      drivers/perf: hisi_pcie: Rename hisi_pcie_pmu_{config,clear}_filter()
-      drivers/perf: hisi_pcie: Introduce hisi_pcie_pmu_get_event_ctrl_val()
-      drivers/perf: hisi_pcie: Fix incorrect counting under metric mode
-      drivers/perf: hisi_pcie: Add more events for counting TLP bandwidth
-      docs: perf: Fix build warning of hisi-pcie-pmu.rst
-
- Documentation/admin-guide/perf/hisi-pcie-pmu.rst   |   32 +-
- Documentation/admin-guide/perf/index.rst           |    1 +
- .../admin-guide/perf/starfive_starlink_pmu.rst     |   46 +
- Documentation/arch/arm64/elf_hwcaps.rst            |   49 +
- Documentation/arch/arm64/silicon-errata.rst        |    5 +-
- Documentation/arch/arm64/sme.rst                   |   11 +-
- Documentation/arch/arm64/sve.rst                   |   10 +-
- .../bindings/perf/arm,coresight-pmu.yaml           |   39 +
- .../perf/starfive,jh8100-starlink-pmu.yaml         |   46 +
- Documentation/rust/arch-support.rst                |    1 +
- MAINTAINERS                                        |    7 +
- Makefile                                           |    1 -
- arch/arm64/Kconfig                                 |   55 +-
- arch/arm64/Makefile                                |    4 +
- arch/arm64/configs/defconfig                       |    1 -
- arch/arm64/include/asm/archrandom.h                |    2 -
- arch/arm64/include/asm/assembler.h                 |   59 +-
- arch/arm64/include/asm/brk-imm.h                   |    2 +
- arch/arm64/include/asm/cpu.h                       |    3 +
- arch/arm64/include/asm/cpufeature.h                |  113 ++
- arch/arm64/include/asm/elf.h                       |   10 +-
- arch/arm64/include/asm/esr.h                       |   13 +-
- arch/arm64/include/asm/exception.h                 |    2 +-
- arch/arm64/include/asm/fixmap.h                    |    2 +-
- arch/arm64/include/asm/fpsimd.h                    |    4 +-
- arch/arm64/include/asm/hw_breakpoint.h             |    1 -
- arch/arm64/include/asm/hwcap.h                     |   15 +
- arch/arm64/include/asm/io.h                        |   12 +-
- arch/arm64/include/asm/kasan.h                     |    2 -
- arch/arm64/include/asm/kernel-pgtable.h            |  103 +-
- arch/arm64/include/asm/kvm_arm.h                   |    2 +-
- arch/arm64/include/asm/kvm_emulate.h               |   10 +-
- arch/arm64/include/asm/kvm_host.h                  |    1 +
- arch/arm64/include/asm/memory.h                    |   31 +-
- arch/arm64/include/asm/mmu.h                       |   40 +-
- arch/arm64/include/asm/mmu_context.h               |   53 +-
- arch/arm64/include/asm/pgalloc.h                   |   52 +-
- arch/arm64/include/asm/pgtable-hwdef.h             |   33 +-
- arch/arm64/include/asm/pgtable-prot.h              |   20 +-
- arch/arm64/include/asm/pgtable-types.h             |    6 +
- arch/arm64/include/asm/pgtable.h                   |  237 ++-
- arch/arm64/include/asm/processor.h                 |    4 +
- arch/arm64/include/asm/scs.h                       |   36 +-
- arch/arm64/include/asm/setup.h                     |    3 -
- arch/arm64/include/asm/tlb.h                       |    3 +
- arch/arm64/include/uapi/asm/hwcap.h                |   15 +
- arch/arm64/include/uapi/asm/sigcontext.h           |    8 +
- arch/arm64/include/uapi/asm/sve_context.h          |   11 +
- arch/arm64/kernel/Makefile                         |   13 +-
- arch/arm64/kernel/asm-offsets.c                    |    2 +-
- arch/arm64/kernel/cpufeature.c                     |  182 ++-
- arch/arm64/kernel/cpuinfo.c                        |   18 +
- arch/arm64/kernel/entry-common.c                   |   36 +-
- arch/arm64/kernel/fpsimd.c                         |   18 +
- arch/arm64/kernel/head.S                           |  463 +-----
- arch/arm64/kernel/hw_breakpoint.c                  |    3 +-
- arch/arm64/kernel/image-vars.h                     |   35 +
- arch/arm64/kernel/kaslr.c                          |    4 +-
- arch/arm64/kernel/module.c                         |    2 +-
- arch/arm64/kernel/pi/.gitignore                    |    3 +
- arch/arm64/kernel/pi/Makefile                      |   27 +-
- arch/arm64/kernel/{ => pi}/idreg-override.c        |   78 +-
- arch/arm64/kernel/pi/kaslr_early.c                 |   82 +-
- arch/arm64/kernel/pi/map_kernel.c                  |  253 ++++
- arch/arm64/kernel/pi/map_range.c                   |  105 ++
- arch/arm64/kernel/{ => pi}/patch-scs.c             |   36 +-
- arch/arm64/kernel/pi/pi.h                          |   36 +
- arch/arm64/kernel/pi/relacheck.c                   |  130 ++
- arch/arm64/kernel/pi/relocate.c                    |   64 +
- arch/arm64/kernel/probes/kprobes.c                 |   21 +-
- arch/arm64/kernel/probes/kprobes_trampoline.S      |   78 +-
- arch/arm64/kernel/process.c                        |    3 -
- arch/arm64/kernel/ptrace.c                         |   50 +-
- arch/arm64/kernel/setup.c                          |   27 +-
- arch/arm64/kernel/signal.c                         |   98 +-
- arch/arm64/kernel/sleep.S                          |    3 -
- arch/arm64/kernel/syscall.c                        |    5 +-
- arch/arm64/kernel/vmlinux.lds.S                    |   17 +-
- arch/arm64/kvm/fpsimd.c                            |    1 +
- arch/arm64/kvm/mmu.c                               |   17 +-
- arch/arm64/mm/fault.c                              |   30 +-
- arch/arm64/mm/fixmap.c                             |   39 +-
- arch/arm64/mm/init.c                               |    2 +-
- arch/arm64/mm/kasan_init.c                         |  165 ++-
- arch/arm64/mm/mmap.c                               |    4 +
- arch/arm64/mm/mmu.c                                |  255 ++--
- arch/arm64/mm/pgd.c                                |   17 +-
- arch/arm64/mm/proc.S                               |  116 +-
- arch/arm64/mm/ptdump.c                             |   77 +-
- arch/arm64/tools/cpucaps                           |    2 +
- arch/arm64/tools/sysreg                            |   43 +-
- arch/loongarch/Makefile                            |    1 +
- arch/x86/Makefile                                  |    1 +
- drivers/perf/Kconfig                               |    9 +
- drivers/perf/Makefile                              |    1 +
- drivers/perf/alibaba_uncore_drw_pmu.c              |    6 +-
- drivers/perf/amlogic/meson_g12_ddr_pmu.c           |    6 +-
- drivers/perf/arm-cci.c                             |    8 +-
- drivers/perf/arm-ccn.c                             |    6 +-
- drivers/perf/arm-cmn.c                             |   14 +-
- drivers/perf/arm_cspmu/arm_cspmu.c                 |  159 ++-
- drivers/perf/arm_cspmu/arm_cspmu.h                 |    1 +
- drivers/perf/arm_cspmu/nvidia_cspmu.c              |    6 -
- drivers/perf/arm_dmc620_pmu.c                      |    6 +-
- drivers/perf/arm_dsu_pmu.c                         |    6 +-
- drivers/perf/arm_smmuv3_pmu.c                      |    6 +-
- drivers/perf/arm_spe_pmu.c                         |    5 +-
- drivers/perf/fsl_imx8_ddr_perf.c                   |    5 +-
- drivers/perf/fsl_imx9_ddr_perf.c                   |    6 +-
- drivers/perf/hisilicon/hisi_pcie_pmu.c             |  102 +-
- drivers/perf/hisilicon/hisi_uncore_cpa_pmu.c       |    5 +-
- drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c      |    5 +-
- drivers/perf/hisilicon/hisi_uncore_hha_pmu.c       |    5 +-
- drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c       |    5 +-
- drivers/perf/hisilicon/hisi_uncore_pa_pmu.c        |    5 +-
- drivers/perf/hisilicon/hisi_uncore_sllc_pmu.c      |    5 +-
- drivers/perf/hisilicon/hisi_uncore_uc_pmu.c        |   42 +-
- drivers/perf/marvell_cn10k_ddr_pmu.c               |    5 +-
- drivers/perf/marvell_cn10k_tad_pmu.c               |    6 +-
- drivers/perf/qcom_l2_pmu.c                         |    5 +-
- drivers/perf/starfive_starlink_pmu.c               |  642 +++++++++
- drivers/perf/thunderx2_pmu.c                       |    5 +-
- drivers/perf/xgene_pmu.c                           |    6 +-
- include/uapi/linux/elf.h                           |    1 +
- rust/Makefile                                      |    6 +-
- scripts/Makefile                                   |    4 +-
- scripts/generate_rust_target.rs                    |    4 +-
- tools/testing/selftests/arm64/abi/hwcap.c          |  217 +++
- tools/testing/selftests/arm64/fp/.gitignore        |    1 +
- tools/testing/selftests/arm64/fp/Makefile          |    5 +-
- tools/testing/selftests/arm64/fp/fp-ptrace-asm.S   |  279 ++++
- tools/testing/selftests/arm64/fp/fp-ptrace.c       | 1503 ++++++++++++++++++++
- tools/testing/selftests/arm64/fp/fp-ptrace.h       |   13 +
- tools/testing/selftests/arm64/signal/.gitignore    |    1 +
- .../arm64/signal/testcases/fpmr_siginfo.c          |   82 ++
- .../selftests/arm64/signal/testcases/testcases.c   |    8 +
- .../selftests/arm64/signal/testcases/testcases.h   |    1 +
- 137 files changed, 5513 insertions(+), 1583 deletions(-)
- create mode 100644 Documentation/admin-guide/perf/starfive_starlink_pmu.rst
- create mode 100644 Documentation/devicetree/bindings/perf/arm,coresight-pmu.yaml
- create mode 100644 Documentation/devicetree/bindings/perf/starfive,jh8100-starlink-pmu.yaml
- create mode 100644 arch/arm64/kernel/pi/.gitignore
- rename arch/arm64/kernel/{ => pi}/idreg-override.c (84%)
- create mode 100644 arch/arm64/kernel/pi/map_kernel.c
- create mode 100644 arch/arm64/kernel/pi/map_range.c
- rename arch/arm64/kernel/{ => pi}/patch-scs.c (89%)
- create mode 100644 arch/arm64/kernel/pi/pi.h
- create mode 100644 arch/arm64/kernel/pi/relacheck.c
- create mode 100644 arch/arm64/kernel/pi/relocate.c
- create mode 100644 drivers/perf/starfive_starlink_pmu.c
- create mode 100644 tools/testing/selftests/arm64/fp/fp-ptrace-asm.S
- create mode 100644 tools/testing/selftests/arm64/fp/fp-ptrace.c
- create mode 100644 tools/testing/selftests/arm64/fp/fp-ptrace.h
- create mode 100644 tools/testing/selftests/arm64/signal/testcases/fpmr_siginfo.c
+On Tue, Mar 12, 2024 at 7:48=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> On Tue, Mar 12, 2024 at 02:44:14PM -0700, Linus Torvalds wrote:
+> > On Tue, 12 Mar 2024 at 14:34, Florian Fainelli <f.fainelli@gmail.com> w=
+rote:
+> > >
+> > > and here is a log where this fails:
+> > >
+> > > https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
+> >
+> > You could try the 'initcall_debug' kernel command line.
+> >
+>
+> Right, that'll be helpful.
+>
+> Besides I took a look at the config Florian shared, no TASKS_RCU,
+> RCU_LAZY or RCU nocb is enabled. So probably the only left changes in
+> the PR are around RCU expedited. Florian, could you see if you can build
+> and test with CONFIG_PROVE_RCU=3Dy (you need to select
+> CONFIG_PROVE_LOCKING for that)? That'll call synchronize_rcu() +
+> synchronize_rcu_expedited() before and after we switch
+> rcu_scheduler_active, and it may provide more information. Thanks!
+>
+> Regards,
+> Boqun
+>
+> > It will make the above *much* noisier, but it might - thanks to all
+> > the new noise - show exactly *what* is being crazy slow to initialize.
+> >
+> > Because right now it's just radio silence in between those
+> >
+> >   [    1.926435] bcmgenet f0480000.ethernet: GENET 5.0 EPHY: 0x0000
+> >   [  162.148135] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
+> >
+> > things, and that's presumably because some random initcall there just
+> > takes forever to time out.
+> >
+> >              Linus
 
