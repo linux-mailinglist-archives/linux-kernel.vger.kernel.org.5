@@ -1,160 +1,99 @@
-Return-Path: <linux-kernel+bounces-102344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECB0687B102
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:05:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D7B387B107
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94F6A29338F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:05:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED2B9293895
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5BD6E5E1;
-	Wed, 13 Mar 2024 18:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEA36EB40;
+	Wed, 13 Mar 2024 18:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ufml1w12"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J/dUXMnz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D9360B9E
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E07A60BB2;
+	Wed, 13 Mar 2024 18:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710353921; cv=none; b=THdHbcq3N2MU4JPkAUKnRcmjpfFyNQb8c/bYgmSSFSZGjStDmEGAZ4Ti6nyGlmkiRqZrEO1AqBrzEwi4o2AFR+D9penI5vNRspg5vc9KhsfsR6Llp1nrVI/3LMKAZzhLxYd9oJR9geWSsECm+/3qgQ9WRWo0FB88Fx5hg2qsx20=
+	t=1710353953; cv=none; b=PdE7QYFVohsh3aOpN/uyEXWqbsVVjYpeF1L6GpY0T/JvsjUI6xFH/wBDPQfRFXmZcLNsd8yFYo0vy8hyZnD6/GRlbAw40bG0JEgsN8K+DhEgEP4k0O+zsP2At7DfdjZ6UvI7MvCeYr8o680HvHPUygjvUcJ2idyQ0Y9hjjXggAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710353921; c=relaxed/simple;
-	bh=Bda/tnr2Gweo1vW+6mtT16FlcwdOgeaHwK/iuF0gX0k=;
+	s=arc-20240116; t=1710353953; c=relaxed/simple;
+	bh=jcQ51BbBPMa4cDIwbdORtxDz4pgEYRzkZCsa/H28N1E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P9E/YNtyzwlCWPQPBTc9o4juBCWxMj8dsYiD/A28uk7L1DKcdTfTcET+1zX65OtdhmlkthexlEkGOCZXlNq8PijgeP3sPN5AMxnfXIKL1sB6WafF/2hyN6iQn8l0sXqnW9i13wPn4A2Qmq6E/tK5MUvKByqOwWATDWn/UBhLsx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ufml1w12; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dd8dd198d0so704515ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:18:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710353919; x=1710958719; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RTPa6mW4skZMTVBISgv1w+QSbNBfwtAG1NsTquu+3lU=;
-        b=Ufml1w12HVPXxivP0lU1rKd7wdFNwXCaWW7skbx6G4m+t6SI9MkgLgsDP7CmCVwwDa
-         RZ+JEZutR0+Le1rTe57BIrAPwdgSSuXHbAv5atVfnLKZd9Sd3t72hTRlbdxU1rv4pq0+
-         FURxrPT88DPw16vYrW28Y7ZO22bcKpvlGJT/4v2txUANoNSCZQvPKMr2uxQnTG2OuVjZ
-         qr5Z1zW3Gv58Ao19dumUMoO7YV0c8XmmfgqmCQPcxttFWzqhRT56Hd5YIqx//As6fGAM
-         Q+br0Uu+9SnbSmTrYdG1SO+izsF9KYJei5fRD2tHqcWvcQQ4r9ANi4k7ICgrlOAvLIjs
-         7DtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710353919; x=1710958719;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RTPa6mW4skZMTVBISgv1w+QSbNBfwtAG1NsTquu+3lU=;
-        b=r7ZCYx9pgXiyXYnQ24Cl0vN3ShM40nQy0xjskNB3NXA87QuwLoHYRDU7NQ29kz0ic1
-         s024qKbrnD1N4Ww72U8iYH/cvfq2r21xRP/DIkIrV6JBUeNgMhYi9HwUuGqqK886XolT
-         Yx6GbPK9l+QpDsSl8vS6mJMFkedqyhOiXIArKBqKmyVhBR696tGxt2Cf5GRer7cGFv91
-         XaAi7kAsENQxZGCeLQ107obAA85GhbGlbPtVmxw+MIMvoUPZaq3hUhuKQgWR+zSC1Iah
-         uOBwnxE4x9nDE5NxQ/ptKPqbDdQXXdGgeBArcPfko2rBwklpq/3MW/IfOnvxBZ6nsf0u
-         gzrA==
-X-Forwarded-Encrypted: i=1; AJvYcCVE53FSbqqJ99Y9PAViNyRO54S9L5MAqg3bVnVnvSjJKnHgY5BuPuFp9pgXKN6Xmmz2nOhlzn9AicvuymEBg0KsKRR87OrSBtvUa+dZ
-X-Gm-Message-State: AOJu0YxB22jghvMuMIFbFm4s9k+LDDQV4TeQPOonAymJ+DpDMsPt0H9+
-	jfOvC4xcbe4E7x3M1V5nLXU2i9nxFT40JMNTLPXVVxWYOkBS12R6VsW7A4DvkQ==
-X-Google-Smtp-Source: AGHT+IEmI5dfjtwpySpmP5uQqwn0Y6a1ZEgkcPqkn1FgTjPpZVuBpetb7bRagRG+eKtRIr1qMm9j7g==
-X-Received: by 2002:a17:903:11c7:b0:1dd:22ec:7b22 with SMTP id q7-20020a17090311c700b001dd22ec7b22mr19318070plh.33.1710353919264;
-        Wed, 13 Mar 2024 11:18:39 -0700 (PDT)
-Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
-        by smtp.gmail.com with ESMTPSA id m4-20020a170902db0400b001dd6ebd88b0sm6828587plx.198.2024.03.13.11.18.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 11:18:38 -0700 (PDT)
-Date: Wed, 13 Mar 2024 18:18:35 +0000
-From: Mingwei Zhang <mizhang@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Wei W Wang <wei.w.wang@intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Aaron Lewis <aaronlewis@google.com>,
-	Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH] KVM: x86/pmu: Return correct value of
- IA32_PERF_CAPABILITIES for userspace after vCPU has run
-Message-ID: <ZfHt-waLl3mg0Lbx@google.com>
-References: <20240313003739.3365845-1-mizhang@google.com>
- <DS0PR11MB63731F54EA26D14CF7D6A3FDDC2A2@DS0PR11MB6373.namprd11.prod.outlook.com>
- <ZfG7SgyqTTtqF3cw@google.com>
- <CABgObfYfAS2DBaW71iUcQgua7K3VY4nz8krGYGxyBt1+7i193A@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YJKKx0zVUYxn4M0Brgad6pjSoSARh7M25GC4hCTE0/Py6KwkvJ3Eenv7h8muBiiZmTMt6e2WC31XVS04Q9PjBnW1XY+akaqhiXK65NmmWcsZ1l3LpmQqrjZKWsy6wWk/A1c6Lgfd0SC+wZP7UXvY7HFJUjiJjUBXSRjP4apYgY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J/dUXMnz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F642C433C7;
+	Wed, 13 Mar 2024 18:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710353952;
+	bh=jcQ51BbBPMa4cDIwbdORtxDz4pgEYRzkZCsa/H28N1E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J/dUXMnzuKsdgZGgLI2cg3PsYl4zc+t94S+hGf2obk79UtydDsaOkSTkpVoKQaV34
+	 xWeQ2m5kSrnNUBZdFa0+LfRRK3Bi6B0qontxBrPOZL43Ry/LHCZeSyPngaItsDp9l6
+	 dHCCuzOhP8NDA55cXZNXsnmJAgbfC71/L2lWJqmzLT8AaDJP8InPxAM6UJVTxSBjag
+	 QjtD4IS2q8Jl0htrHwHxYNslFkrn72fc/u5lCKPFluPQw5UAXK3UN4n3IVRYF9itjL
+	 SVy5BKPS++vJyuwYgzuIE3RRqQB1yjiggCNjaIgsOFaAZhAM1dy1h/e4LmHFrgbseh
+	 /hRPlWoAG0ATg==
+Date: Wed, 13 Mar 2024 18:19:07 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Adam Butcher <adam@jessamine.co.uk>
+Cc: shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	linux-imx@nxp.com, benjamin@bigler.one, stefanmoring@gmail.com,
+	carlos.song@nxp.com, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: spi-imx: fix off-by-one in mx51 CPU mode burst
+ length
+Message-ID: <4879c575-7101-4c4a-9e23-0e4961d46b9b@sirena.org.uk>
+References: <30b2a315b36e1ee16c0217b32b95a605@jessamine.co.uk>
+ <41a7e7e46baa40ce28ad0dcb2ee455df.squirrel@webmail.plus.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Fy8kL3rfaji1NWgs"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfYfAS2DBaW71iUcQgua7K3VY4nz8krGYGxyBt1+7i193A@mail.gmail.com>
+In-Reply-To: <41a7e7e46baa40ce28ad0dcb2ee455df.squirrel@webmail.plus.net>
+X-Cookie: It's later than you think.
 
-On Wed, Mar 13, 2024, Paolo Bonzini wrote:
-> On Wed, Mar 13, 2024 at 3:42 PM Sean Christopherson <seanjc@google.com> wrote:
-> > We discussed this whole MSRs mess at PUCK this morning.  I forgot to hit RECORD,
-> > but Paolo took notes and will post them soon.
-> >
-> > Going from memory, the plan is to:
-> >
-> >   1. Commit to, and document, that userspace must do KVM_SET_CPUID{,2} prior to
-> >      KVM_SET_MSRS.
-> 
-> Correct.
 
-This is clear to me now. Glad to have the direction settled down.
+--Fy8kL3rfaji1NWgs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> >   2. Go with roughly what I proposed in the CET thread (for unsupported MSRS,
-> >      read 0 and drop writes of '0')[*].
-> 
-> More precisely, read a sensible default value corresponding to
-> "everything disabled", which generally speaking should be 0. And
-> generally speaking, commit to:
-> - allowing host_initiated reads independent of CPUID
-> - allowing host_initiated writes of the same value that was read
-> - blocking host_initiated writes of nonzero (or nondefault) values if
-> the corresponding guest CPUID bit is clear
+On Wed, Mar 13, 2024 at 06:13:54PM -0000, Adam Butcher wrote:
+> From: Adam Butcher <adam@jessamine.co.uk>
+>=20
+> [Apologies, rubbish mailer corrupted the previous re-addressed post]
 
->
-> Right now some MSRs do not allow host initiated writes, for example
-> MSR_KVM_* (check for calls to guest_pv_has), and the VMX MSRs.
-> 
-> Generally speaking we want to fix them, unless it's an unholy pain
-> (for example the VMX capabilities MSRs are good candidates for pain,
-> because they have some "must be 1" bits in bits 63:32).
-> 
-> All this should be covered by selftests.
-> 
-> >   3. Add a quire for PERF_CAPABILITIES, ARCH_CAPABILITIES, and PLATFORM_INFO
-> >      (if quirk==enabled, keep KVM's current behavior; if quirk==disabled, zero-
-> >       initialize the MSRs).
-> 
-> More precisely, even if quirk==enabled we will move the setting of a
-> non-zero default value for the MSR from vCPU creation to
-> KVM_SET_CPUID2, and only set a non-zero default value if the CPUID bit
-> is set.
-> 
-> Another small thing in my notes was to look at the duplication between
-> emulated_msrs and msr_based_features_all_except_vmx. Right now
-> MSR_AMD64_DE_CFG is the only one that is not in both and, probably not
-> a coincidence, it's also the only one implemented only for one vendor.
-> There's probably some opportunity for both cleanups and fixes. It
-> looks like svm_has_emulated_msr(MSR_AMD64_DE_CFG) should return true
-> for example.
-> 
-> Paolo
-> 
+Please put administrative stuff like this after the --- so that it
+doesn't end up in the changelog.  Hopefully none of the tooling gets
+confused by having the same thing posted twice with two different
+contents...
 
-Ack. Thanks.
+--Fy8kL3rfaji1NWgs
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> > With those pieces in place, KVM can simply check X86_FEATURE_PDCM for both reads
-> > and writes to PERF_CAPABILITIES, and the common userspace MSR handling will
-> > convert "unsupported" to "success" as appropriate.
-> >
-> > [*] https://lore.kernel.org/all/ZfDdS8rtVtyEr0UR@google.com
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXx7hoACgkQJNaLcl1U
+h9DbjAf8Dmlockcel5V/shGKmKzMCtwiM64jEm/LHQpgf3kK2LJVnrFENHX8sP0x
+8f1NmwNRJfvCJpaCq2VIj0KjFIkMXonti7e0zchsz9TAAetQq3osljH2lCQuaiYN
+Lil/iwKb5lrcYVEE8h7CXcu8WOK/bRX2PXUFvYVjTZ6FIQQk1yk7b6M5zyGn+oXM
+0oC2wcic/rNhE1siZpZHD3rlSCzt/HsdGxYlmPwDcWUr+ORYXYc5v+NOmV0iHwQ2
+dJTQkpbuTfDmz9GZT1eXEYInNaonNt3326QrJEgAvBsDK06dIt0hVYuUQAv7w6/W
+7+5MbzAaO7gVYvscSEC+HVe86C7ajQ==
+=4X+3
+-----END PGP SIGNATURE-----
+
+--Fy8kL3rfaji1NWgs--
 
