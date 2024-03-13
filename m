@@ -1,159 +1,298 @@
-Return-Path: <linux-kernel+bounces-102649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F79487B554
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:44:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B3987B559
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:47:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A554B1C21002
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:44:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D4D3B2175E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D8995D75F;
-	Wed, 13 Mar 2024 23:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B950LDTc"
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A027F2260B
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 325135E07F;
+	Wed, 13 Mar 2024 23:47:04 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FE75E066
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710373482; cv=none; b=mwf4Tye6zpD6/VmgWhrW0jLWSuj5fyCutMz6gOh7jd4Do5ltioeI6SkY7GhHBSC4pIm1LRy4cGYy2Mq7aA1/JXj6uAZEcGROVMj+MxzlqvWn3N60JUHy0cfh3f8FNUtNS8x0F9iHcWovMJSlDOj3ZyE5Iz2LyPPYH3isZb8Odhg=
+	t=1710373623; cv=none; b=lIGeAwdzjxP5QVfUoEVBA03tSXBA8GGTriDkUJCg+72zXEHpARHCGpHwDp6P9PYhk8WIojktdSqXfMTCnVkKU0WBMjT5CcUiflMswBgo+qbv51zj9ghcq3v4ctOt3hlEnr5ObFlhqzSnTVALJKU+W2L3Y+K2jk1o6yCCnjILrxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710373482; c=relaxed/simple;
-	bh=HD34+N4HmuIBIUoDyYFlYqEAmxFkbtPrHj9GtqwLe3E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h6gISgvis4QOZ28OtMJH828nVKMOSJhHDw7K1mavPA6cdofxRdWNi3Fek92VRuQX9ZnpVO77m+p49oSSnLbYGtqey+yfhuSrTYhOcEA7OUNRhko/OkTGl1FZtVJ9NqueyHWQw5tqXw4BJyRRR4pErGIBR8fJQmFC+USP7WaJHNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B950LDTc; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6da9dc9d-fad6-40f9-91d3-602f87397b47@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710373478;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MJIpyrb3PHRzKDP68+qCFyuGvH3roDNGt7412UBHY+c=;
-	b=B950LDTcgmmMuFK+GObDC0V29wtU0hoZPvbSOzgc1CLMnMcuZI0MtoxwnRDTGQOceS59vj
-	m2vD6+U7GGcXlqWM2fGP/KO6+0CZ+fPc0Cbarc2NDzp12oEaYhS5BzWDMde/d3nDqWvwEC
-	Hf8PpacFp90wzyjcTD5hzNB4t9xNrj0=
-Date: Wed, 13 Mar 2024 16:44:30 -0700
+	s=arc-20240116; t=1710373623; c=relaxed/simple;
+	bh=+Ej+wixx98+bYwHqfN+n5qbeL8nbp4qjx5dE8Tv3EAg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eYHn+pKsJQTPuMk7BWbgobAR88y2MuGPFX3Cl9h1n+HDq94PpGPFtM4fvbilCKBx4Fvbk5ARaEQP4uxtD8eSp+cWNFSLM3Ecn+h5UxsFVAf+XNJJcCR/5xQ/5LWpydIOMka/12VKKl62UP8rtu5mooAfsOfNXkR1JTQbJZPFJWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 392361007;
+	Wed, 13 Mar 2024 16:47:36 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D9B73F73F;
+	Wed, 13 Mar 2024 16:46:55 -0700 (PDT)
+Date: Thu, 14 Mar 2024 00:46:19 +0100
+From: Beata Michalska <beata.michalska@arm.com>
+To: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	vanshikonda@os.amperecomputing.com, sudeep.holla@arm.com,
+	will@kernel.org, catalin.marinas@arm.com,
+	vincent.guittot@linaro.org, sumitg@nvidia.com,
+	yang@os.amperecomputing.com, lihuisong@huawei.com
+Subject: Re: [PATCH v3 2/3] arm64: Provide an AMU-based version of
+ arch_freq_get_on_cpu
+Message-ID: <ZfI6y-YScbNzyWDC@arm.com>
+References: <20240312083431.3239989-1-beata.michalska@arm.com>
+ <20240312083431.3239989-3-beata.michalska@arm.com>
+ <ZfGaAGr9Ej6i2EpJ@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] tools/testing/selftests/bpf/test_tc_tunnel.sh: Prevent
- client connect before server bind
-Content-Language: en-US
-To: Alessandro Carminati <alessandro.carminati@gmail.com>
-Cc: Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Andrii Nakryiko <andrii@kernel.org>, Shuah Khan <shuah@kernel.org>
-References: <20240229140000.175274-1-alessandro.carminati@gmail.com>
- <fe323c90-bda3-4837-8daa-372073014446@linux.dev>
- <CAPp5cGR2gFtMh3jWHuFHXdHvLdq85j5qcMPh4EoiOv+JA_HYTw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAPp5cGR2gFtMh3jWHuFHXdHvLdq85j5qcMPh4EoiOv+JA_HYTw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfGaAGr9Ej6i2EpJ@arm.com>
 
-On 3/10/24 1:45 AM, Alessandro Carminati wrote:
-> Hi Martin,
-> Thanks for the review.
+On Wed, Mar 13, 2024 at 12:20:16PM +0000, Ionela Voinescu wrote:
+> Hi Beata,
 > 
-> Il giorno ven 8 mar 2024 alle ore 02:03 Martin KaFai Lau
-> <martin.lau@linux.dev> ha scritto:
->>
->> On 2/29/24 6:00 AM, Alessandro Carminati (Red Hat) wrote:
->>> In some systems, the netcat server can incur in delay to start listening.
->>> When this happens, the test can randomly fail in various points.
->>> This is an example error message:
->>>      # ip gre none gso
->>>      # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
->>>      # test basic connectivity
->>>      # Ncat: Connection refused.
->>
->> This explained what is the issue. Please also explain how the patch solves it.
->>
-> The issue, as stated, depends on a race condition between the netcat client
-> and server. The test author addressed this problem using a sleep, which I
-> removed in this patch. To easily solve the issue, one could simply increase
-> the sleep duration. However, this patch opts to tackle the problem by
-> querying the /proc directory and verifying TCP binds at the specified port
-> before letting the client connect.
+> Thank you for the patches!
+>
+High time for those!
 
-Please include this in the commit message.
+> On Tuesday 12 Mar 2024 at 08:34:30 (+0000), Beata Michalska wrote:
+> > With the Frequency Invariance Engine (FIE) being already wired up with
+> > sched tick and making use of relevant (core counter and constant
+> > counter) AMU counters, getting the current frequency for a given CPU
+> > on supported platforms can be achieved by utilizing the frequency scale
+> > factor which reflects an average CPU frequency for the last tick period
+> > length.
+> > 
+> > The solution is partially based on APERF/MPERF implementation of
+> > arch_freq_get_on_cpu.
+> > 
+> > Suggested-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+> > ---
+> >  arch/arm64/kernel/topology.c | 103 +++++++++++++++++++++++++++++++----
+> >  1 file changed, 92 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> > index 1a2c72f3e7f8..42cb19c31719 100644
+> > --- a/arch/arm64/kernel/topology.c
+> > +++ b/arch/arm64/kernel/topology.c
+> > @@ -17,6 +17,8 @@
+> >  #include <linux/cpufreq.h>
+> >  #include <linux/init.h>
+> >  #include <linux/percpu.h>
+> > +#include <linux/sched/isolation.h>
+> > +#include <linux/seqlock_types.h>
+> >  
+> >  #include <asm/cpu.h>
+> >  #include <asm/cputype.h>
+> > @@ -88,18 +90,31 @@ int __init parse_acpi_topology(void)
+> >   * initialized.
+> >   */
+> >  static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
+> > -static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
+> > -static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
+> >  static cpumask_var_t amu_fie_cpus;
+> >  
+> > +struct amu_cntr_sample {
+> > +	u64		arch_const_cycles_prev;
+> > +	u64		arch_core_cycles_prev;
+> > +	unsigned long	last_update;
+> > +	seqcount_t	seq;
+> > +};
+> > +
+> > +static DEFINE_PER_CPU_SHARED_ALIGNED(struct amu_cntr_sample, cpu_amu_samples) = {
+> > +	.seq = SEQCNT_ZERO(cpu_amu_samples.seq)
+> > +};
+> > +
+> >  void update_freq_counters_refs(void)
+> >  {
+> > -	this_cpu_write(arch_core_cycles_prev, read_corecnt());
+> > -	this_cpu_write(arch_const_cycles_prev, read_constcnt());
+> > +	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
+> > +
+> > +	amu_sample->arch_core_cycles_prev = read_corecnt();
+> > +	amu_sample->arch_const_cycles_prev = read_constcnt();
+> >  }
+> >  
+> >  static inline bool freq_counters_valid(int cpu)
+> >  {
+> > +	struct amu_cntr_sample *amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
+> > +
+> >  	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
+> >  		return false;
+> >  
+> > @@ -108,8 +123,8 @@ static inline bool freq_counters_valid(int cpu)
+> >  		return false;
+> >  	}
+> >  
+> > -	if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
+> > -		     !per_cpu(arch_core_cycles_prev, cpu))) {
+> > +	if (unlikely(!amu_sample->arch_const_cycles_prev ||
+> > +		     !amu_sample->arch_core_cycles_prev)) {
+> >  		pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
+> >  		return false;
+> >  	}
+> > @@ -152,20 +167,27 @@ void freq_inv_set_max_ratio(int cpu, u64 max_rate)
+> >  
+> >  static void amu_scale_freq_tick(void)
+> >  {
+> > +	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
+> >  	u64 prev_core_cnt, prev_const_cnt;
+> >  	u64 core_cnt, const_cnt, scale;
+> >  
+> > -	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
+> > -	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
+> > +	prev_const_cnt = amu_sample->arch_const_cycles_prev;
+> > +	prev_core_cnt = amu_sample->arch_core_cycles_prev;
+> > +
+> > +	write_seqcount_begin(&amu_sample->seq);
+> 
+> The critical section here does not need to be this extensive, right?
+> 
+> The arch_freq_get_on_cpu() function only uses the frequency scale factor
+> and the last_update value, so this need only be placed above
+> "this_cpu_write(arch_freq_scale,..", if I'm not missing anything.
 
->>>
->>> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
->>> ---
->>>    tools/testing/selftests/bpf/test_tc_tunnel.sh | 19 ++++++++++++++++++-
->>>    1 file changed, 18 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
->>> index 910044f08908..01c0f4b1a8c2 100755
->>> --- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
->>> +++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
->>> @@ -72,7 +72,6 @@ cleanup() {
->>>    server_listen() {
->>>        ip netns exec "${ns2}" nc "${netcat_opt}" -l "${port}" > "${outfile}" &
->>>        server_pid=$!
->>> -     sleep 0.2
->>>    }
->>>
->>>    client_connect() {
->>> @@ -93,6 +92,22 @@ verify_data() {
->>>        fi
->>>    }
->>>
->>> +wait_for_port() {
->>> +     local digits=8
->>> +     local port2check=$(printf ":%04X" $1)
->>> +     local prot=$([ "$2" == "-6" ] && echo 6 && digits=32)
->>> +
->>> +     for i in $(seq 20); do
->>> +             if ip netns exec "${ns2}" cat /proc/net/tcp${prot} | \
->>> +                     sed -r 's/^[ \t]+[0-9]+: ([0-9A-F]{'${digits}'}:[0-9A-F]{4}) .*$/\1/' | \
->>> +                     grep -q "${port2check}"; then
->>
->> The idea is to check if there is socket listening on port 8888?
->>
->> May be something simpler like "ss -OHtl src :$1" instead?
-> Indeed, the aim is to ensure that the server is bound before the
-> client attempts to
-> connect by checking if socket is listening, and yes using 'ss' would be shorter.
-> However, I chose not to use 'ss' or 'netstat' to avoid adding new dependencies,
-> considering they are already many.
+You're not missing anything. The write side critical section could span only
+those two, but having it extended gives a chance for the readers to get in on
+the update and as those are not really performance sensitive I though it might
+be a good option, especially if we can save the cycles on not needing to poke
+the cpufeq driver. Furthermore, if the critical section is to span only the two,
+then it does not really change much and can be dropped.
 
-ss should be in the same iproute package that "(ip) netns..." lives in also. The 
-above changes added sed and grep.
+> 
+> >  
+> >  	update_freq_counters_refs();
+> >  
+> > -	const_cnt = this_cpu_read(arch_const_cycles_prev);
+> > -	core_cnt = this_cpu_read(arch_core_cycles_prev);
+> > +	const_cnt = amu_sample->arch_const_cycles_prev;
+> > +	core_cnt = amu_sample->arch_core_cycles_prev;
+> >  
+> > +	/*
+> > +	 * This should not happen unless the AMUs have been reset and the
+> > +	 * counter values have not been resroted - unlikely
+> > +	 */
+> >  	if (unlikely(core_cnt <= prev_core_cnt ||
+> >  		     const_cnt <= prev_const_cnt))
+> > -		return;
+> > +		goto leave;
+> >  
+> >  	/*
+> >  	 *	    /\core    arch_max_freq_scale
+> > @@ -182,6 +204,10 @@ static void amu_scale_freq_tick(void)
+> >  
+> >  	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
+> >  	this_cpu_write(arch_freq_scale, (unsigned long)scale);
+> > +
+> > +	amu_sample->last_update = jiffies;
+> > +leave:
+> > +	write_seqcount_end(&amu_sample->seq);
+> >  }
+> >  
+> >  static struct scale_freq_data amu_sfd = {
+> > @@ -189,6 +215,61 @@ static struct scale_freq_data amu_sfd = {
+> >  	.set_freq_scale = amu_scale_freq_tick,
+> >  };
+> >  
+> > +#define AMU_SAMPLE_EXP_MS	20
+> > +
+> > +unsigned int arch_freq_get_on_cpu(int cpu)
+> > +{
+> > +	struct amu_cntr_sample *amu_sample;
+> > +	unsigned long last_update;
+> > +	unsigned int seq;
+> > +	unsigned int freq;
+> > +	u64 scale;
+> > +
+> > +	if (!cpumask_test_cpu(cpu, amu_fie_cpus) || !arch_scale_freq_ref(cpu))
+> > +		return 0;
+> > +
+> > +retry:
+> > +	amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
+> > +
+> > +	do {
+> > +		seq = raw_read_seqcount_begin(&amu_sample->seq);
+> > +		last_update = amu_sample->last_update;
+> > +	} while (read_seqcount_retry(&amu_sample->seq, seq));
+> 
+> Related to the point above, this retry loop should also contain
+> "scale = arch_scale_freq_capacity(cpu)", otherwise there's no much point
+> for synchronisation, as far as I can tell.
+I'm not entirely sure why we would need to include the scale factor within
+the read critical section. The aim here is to make sure we see the update if
+one is ongoing and that the update to the timestamp is observed along with
+one to the scale factor, which is what the write_seqcount_end will guarantee
+(although the latter is not a hard sell as the update happens under interrupts
+being disabled). If later on we fetch newer scale factor that's perfectly fine,
+we do not want to see the stale one. Again, I can drop the seqcount (which is
+slightly abused in this case I must admit) at a cost of potentially missing some
+updates.
+> 
+> For x86, arch_freq_get_on_cpu() uses the counter deltas and it would be
+> bad if values from different ticks would be used. But here the only
+> benefit of synchronisation is to make sure that we're using the scale
+> factor computed at the last update time. For us, even skipping on the
+> synchronisation logic would still be acceptable, as we'd be ensuring that
+> there was a tick in the past 20ms and we'd always use the most recent
+> value of the frequency scale factor.
+How would we ensure there was a tick in last 20ms ?
+> 
+> Hope it helps,
+It does, thank you.
 
-Regardless, this external dependency will be all gone once moved to the 
-selftests/test_progs. The check-and-wait will be gone by creating a listen fd 
-instead of using "nc -l...". A simpler change such that people doing the future 
-test_progs migration will have an easier time.
-
->> The check-and-wait fix in this patch is fine to get your test environment going.
->>
->> Eventually, it will be good to see the test_tc_tunnel.sh test moved to
->> test_progs. The test_tc_tunnel.sh is not run by bpf CI and issue like this got
->> unnoticed. Some other "*.sh" tests have already been moved to test_progs.
->>
->>
-> Regards
-> Alessandro
-
+--
+BR
+Beata
+> Ionela.
+> 
+> > +
+> > +	/*
+> > +	 * For those CPUs that are in full dynticks mode,
+> > +	 * and those that have not seen tick for a while
+> > +	 * try an alternative source for the counters (and thus freq scale),
+> > +	 * if available for given policy
+> > +	 */
+> > +	if (time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
+> > +		struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+> > +		int ref_cpu = nr_cpu_ids;
+> > +
+> > +		if (cpumask_intersects(housekeeping_cpumask(HK_TYPE_TICK),
+> > +				       policy->cpus))
+> > +			ref_cpu = cpumask_nth_and(cpu, policy->cpus,
+> > +						  housekeeping_cpumask(HK_TYPE_TICK));
+> > +
+> > +		cpufreq_cpu_put(policy);
+> > +		if (ref_cpu >= nr_cpu_ids || ref_cpu == cpu)
+> > +			/* No alternative to pull info from */
+> > +			return 0;
+> > +		cpu = ref_cpu;
+> > +		goto retry;
+> > +	}
+> > +	/*
+> > +	 * Reversed computation to the one used to determine
+> > +	 * the arch_freq_scale value
+> > +	 * (see amu_scale_freq_tick for details)
+> > +	 */
+> > +	scale = arch_scale_freq_capacity(cpu);
+> > +	freq = scale * arch_scale_freq_ref(cpu);
+> > +	freq >>= SCHED_CAPACITY_SHIFT;
+> > +
+> > +	return freq;
+> > +}
+> > +
+> >  static void amu_fie_setup(const struct cpumask *cpus)
+> >  {
+> >  	int cpu;
+> > -- 
+> > 2.25.1
+> > 
 
