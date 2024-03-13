@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-102072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2970187AE2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:51:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC47387AE2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:51:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6D1E1F2D2C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:51:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EE4F283037
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312E815AAD9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D5B15B99A;
 	Wed, 13 Mar 2024 16:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jIQh/mQ3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OfoxGFMT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1FD15B96C;
-	Wed, 13 Mar 2024 16:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D32515B985;
+	Wed, 13 Mar 2024 16:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348453; cv=none; b=EE7oe0KwQ7yj+zUB3rw6vSAQAMqIiqrk+ji//7xvDLAIAAjqQGGhKryFg1VKJ+2KBjO963GIrbNhsIyUK9XNEHQDGiDolmsx33pFs/gFyjpIJgo4LLuA7NEb5BJijB8bZ93ZfaH2laxYRufPW+W9R4DgEpTchJKZyZZMNBa51hM=
+	t=1710348454; cv=none; b=Ubx6arMBHE89zELhhvGEWTtQcueDwmMaluLeLcTAYOBzwy7QrVfmsXV71+8z1wu6tclnnYPM7V2AvmeHaDvOld2dM1CWovm4+oTHDPNcsfX58uvMHC/8IytE2Au48GpBjgT7Ebe+HVle6ZUsgOrLQcVrm3Kp0tIQygYUbzRtGN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348453; c=relaxed/simple;
-	bh=QjxLFRsGdo57Hkre15eaMsp+MhCn58/hHstYIjAHJCM=;
+	s=arc-20240116; t=1710348454; c=relaxed/simple;
+	bh=36tOWfFuzG3HhdjxZYdrj+qn15FcF4TnU7zWvxXyEQo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bq8+dG6emYctGHsfVwumTjGf/x/mP3TycuCvaGSIJyVGALMgqSgEtvt+XRE0+NKWPWHPeIsaIbkty5MEc/SoFziJjhVOY03DJGDA6FNJfauMuk3X5BWMDL45eIX0hmqnAm20rr4nhwJ+/LfYJZSrhG/yFNJ5Fi+dthcgiMJWS40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jIQh/mQ3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16123C433F1;
-	Wed, 13 Mar 2024 16:47:31 +0000 (UTC)
+	 MIME-Version; b=CNnhGQPypS+qatoHZVQgB/LohuZTRqXaTo3yLKdPEl9MehVA2ZIOyfzORMRGJ4NTAGWI/8iRmBmngRBnOkLT1i4kqjTXiwJb4W5zXIRcnHLh/xqq1uvrJ2l3DjxtfysRRX8evxHy+wo8I59ZToREIJwvEKBYGCQXeJyqUdS26wA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OfoxGFMT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36BEBC43399;
+	Wed, 13 Mar 2024 16:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348452;
-	bh=QjxLFRsGdo57Hkre15eaMsp+MhCn58/hHstYIjAHJCM=;
+	s=k20201202; t=1710348453;
+	bh=36tOWfFuzG3HhdjxZYdrj+qn15FcF4TnU7zWvxXyEQo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jIQh/mQ3ZIaJtFH65nPq21mUgS5DqSXG1+utIUtr6dWhRszDiPajDaE6Zzrl7Vgow
-	 0gKXtGrJbkZc9j0fu5eraTkMCZWRPWRGJ/iL1pjTTuYTd8+KQHTRBD0X46aTBfCjLX
-	 95KNsvh5mJ9Jf3YS/YHGpn3f9ego2GXP/h6JY7xH5g7uT/U/Ql/LI3nrtXT+8Dk+Qz
-	 cr9jDURzZgGwXL+0Ns8TUV4TeNwX3TtKCNLDy0aUjV7wgfMXCGvlmjJDER8ZOq/l9Z
-	 pCA+5Cu3Wlv3CF1YVIMoYEtRRTbWSY5Lr/Jaz2GA5QaW0vhavqIDnqEBy4DLEN7HQJ
-	 8tXeIcM8toXFg==
+	b=OfoxGFMT3msQRmbeyptykW34vb2JaN5ZgslhKv/e8NvpZwaI21PX7LO9cNPwDC2ag
+	 ctQyeevzlxCeEjUhay21dVJ5csbBGFtxTjhcML3gtFrszYDt5UFA4ifIE7EDOyMHry
+	 YSSFZtVV0mn+F6qbFwBC/fbdBbg+IYFAl6NLrQhq79+bTTg7ZAXZteL04lb1wtdRZU
+	 qKVvwpz3hpLxR6IyQWHDBUyLputE7I0Oh4TFa5QIDNJ4YsT9gIkThWQSstC6EWAKBx
+	 Mk2AV4xPjjA5cDR0hq5Y3MvWY/1cLxOBy1JNkKVN12MhKVUnqyKvNJQ9m/gZbGSYd0
+	 +OP5Q3AIak0jg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Paul Moore <paul@paul-moore.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	John Johansen <john.johansen@canonical.com>,
+Cc: Ondrej Mosnacek <omosnace@redhat.com>,
+	Paul Moore <paul@paul-moore.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 46/73] lsm: make security_socket_getpeersec_stream() sockptr_t safe
-Date: Wed, 13 Mar 2024 12:46:13 -0400
-Message-ID: <20240313164640.616049-47-sashal@kernel.org>
+Subject: [PATCH 5.10 47/73] lsm: fix default return value of the socket_getpeersec_*() hooks
+Date: Wed, 13 Mar 2024 12:46:14 -0400
+Message-ID: <20240313164640.616049-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -69,279 +68,88 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Paul Moore <paul@paul-moore.com>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-[ Upstream commit b10b9c342f7571f287fd422be5d5c0beb26ba974 ]
+[ Upstream commit 5a287d3d2b9de2b3e747132c615599907ba5c3c1 ]
 
-Commit 4ff09db1b79b ("bpf: net: Change sk_getsockopt() to take the
-sockptr_t argument") made it possible to call sk_getsockopt()
-with both user and kernel address space buffers through the use of
-the sockptr_t type.  Unfortunately at the time of conversion the
-security_socket_getpeersec_stream() LSM hook was written to only
-accept userspace buffers, and in a desire to avoid having to change
-the LSM hook the commit author simply passed the sockptr_t's
-userspace buffer pointer.  Since the only sk_getsockopt() callers
-at the time of conversion which used kernel sockptr_t buffers did
-not allow SO_PEERSEC, and hence the
-security_socket_getpeersec_stream() hook, this was acceptable but
-also very fragile as future changes presented the possibility of
-silently passing kernel space pointers to the LSM hook.
+For these hooks the true "neutral" value is -EOPNOTSUPP, which is
+currently what is returned when no LSM provides this hook and what LSMs
+return when there is no security context set on the socket. Correct the
+value in <linux/lsm_hooks.h> and adjust the dispatch functions in
+security/security.c to avoid issues when the BPF LSM is enabled.
 
-There are several ways to protect against this, including careful
-code review of future commits, but since relying on code review to
-catch bugs is a recipe for disaster and the upstream eBPF maintainer
-is "strongly against defensive programming", this patch updates the
-LSM hook, and all of the implementations to support sockptr_t and
-safely handle both user and kernel space buffers.
-
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-Acked-by: John Johansen <john.johansen@canonical.com>
+Cc: stable@vger.kernel.org
+Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+[PM: subject line tweak]
 Signed-off-by: Paul Moore <paul@paul-moore.com>
-Stable-dep-of: 5a287d3d2b9d ("lsm: fix default return value of the socket_getpeersec_*() hooks")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/lsm_hook_defs.h |  2 +-
- include/linux/lsm_hooks.h     |  4 ++--
- include/linux/security.h      | 11 +++++++----
- net/core/sock.c               |  3 ++-
- security/apparmor/lsm.c       | 29 +++++++++++++----------------
- security/security.c           |  6 +++---
- security/selinux/hooks.c      | 13 ++++++-------
- security/smack/smack_lsm.c    | 19 ++++++++++---------
- 8 files changed, 44 insertions(+), 43 deletions(-)
+ include/linux/lsm_hook_defs.h |  4 ++--
+ security/security.c           | 31 +++++++++++++++++++++++++++----
+ 2 files changed, 29 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 92a76ce0c382d..9f550eab8ebdb 100644
+index 9f550eab8ebdb..07abcd384975b 100644
 --- a/include/linux/lsm_hook_defs.h
 +++ b/include/linux/lsm_hook_defs.h
-@@ -294,7 +294,7 @@ LSM_HOOK(int, 0, socket_setsockopt, struct socket *sock, int level, int optname)
+@@ -293,9 +293,9 @@ LSM_HOOK(int, 0, socket_getsockopt, struct socket *sock, int level, int optname)
+ LSM_HOOK(int, 0, socket_setsockopt, struct socket *sock, int level, int optname)
  LSM_HOOK(int, 0, socket_shutdown, struct socket *sock, int how)
  LSM_HOOK(int, 0, socket_sock_rcv_skb, struct sock *sk, struct sk_buff *skb)
- LSM_HOOK(int, 0, socket_getpeersec_stream, struct socket *sock,
--	 char __user *optval, int __user *optlen, unsigned len)
-+	 sockptr_t optval, sockptr_t optlen, unsigned int len)
- LSM_HOOK(int, 0, socket_getpeersec_dgram, struct socket *sock,
+-LSM_HOOK(int, 0, socket_getpeersec_stream, struct socket *sock,
++LSM_HOOK(int, -ENOPROTOOPT, socket_getpeersec_stream, struct socket *sock,
+ 	 sockptr_t optval, sockptr_t optlen, unsigned int len)
+-LSM_HOOK(int, 0, socket_getpeersec_dgram, struct socket *sock,
++LSM_HOOK(int, -ENOPROTOOPT, socket_getpeersec_dgram, struct socket *sock,
  	 struct sk_buff *skb, u32 *secid)
  LSM_HOOK(int, 0, sk_alloc_security, struct sock *sk, int family, gfp_t priority)
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 64cdf4d7bfb30..bbf9c8c7bd9c5 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -926,8 +926,8 @@
-  *	SO_GETPEERSEC.  For tcp sockets this can be meaningful if the
-  *	socket is associated with an ipsec SA.
-  *	@sock is the local socket.
-- *	@optval userspace memory where the security state is to be copied.
-- *	@optlen userspace int where the module should copy the actual length
-+ *	@optval memory where the security state is to be copied.
-+ *	@optlen memory where the module should copy the actual length
-  *	of the security state.
-  *	@len as input is the maximum length to copy to userspace provided
-  *	by the caller.
-diff --git a/include/linux/security.h b/include/linux/security.h
-index e388b1666bcfc..5b61aa19fac66 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -31,6 +31,7 @@
- #include <linux/err.h>
- #include <linux/string.h>
- #include <linux/mm.h>
-+#include <linux/sockptr.h>
- 
- struct linux_binprm;
- struct cred;
-@@ -1366,8 +1367,8 @@ int security_socket_getsockopt(struct socket *sock, int level, int optname);
- int security_socket_setsockopt(struct socket *sock, int level, int optname);
- int security_socket_shutdown(struct socket *sock, int how);
- int security_sock_rcv_skb(struct sock *sk, struct sk_buff *skb);
--int security_socket_getpeersec_stream(struct socket *sock, char __user *optval,
--				      int __user *optlen, unsigned len);
-+int security_socket_getpeersec_stream(struct socket *sock, sockptr_t optval,
-+				      sockptr_t optlen, unsigned int len);
- int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb, u32 *secid);
- int security_sk_alloc(struct sock *sk, int family, gfp_t priority);
- void security_sk_free(struct sock *sk);
-@@ -1501,8 +1502,10 @@ static inline int security_sock_rcv_skb(struct sock *sk,
- 	return 0;
- }
- 
--static inline int security_socket_getpeersec_stream(struct socket *sock, char __user *optval,
--						    int __user *optlen, unsigned len)
-+static inline int security_socket_getpeersec_stream(struct socket *sock,
-+						    sockptr_t optval,
-+						    sockptr_t optlen,
-+						    unsigned int len)
- {
- 	return -ENOPROTOOPT;
- }
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 42da46965b16f..016c0b9e01b70 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1503,7 +1503,8 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
- 		break;
- 
- 	case SO_PEERSEC:
--		return security_socket_getpeersec_stream(sock, optval.user, optlen.user, len);
-+		return security_socket_getpeersec_stream(sock,
-+							 optval, optlen, len);
- 
- 	case SO_MARK:
- 		v.val = sk->sk_mark;
-diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index 585edcc6814d2..052f1b920e43f 100644
---- a/security/apparmor/lsm.c
-+++ b/security/apparmor/lsm.c
-@@ -1070,11 +1070,10 @@ static struct aa_label *sk_peer_label(struct sock *sk)
-  * Note: for tcp only valid if using ipsec or cipso on lan
-  */
- static int apparmor_socket_getpeersec_stream(struct socket *sock,
--					     char __user *optval,
--					     int __user *optlen,
-+					     sockptr_t optval, sockptr_t optlen,
- 					     unsigned int len)
- {
--	char *name;
-+	char *name = NULL;
- 	int slen, error = 0;
- 	struct aa_label *label;
- 	struct aa_label *peer;
-@@ -1091,23 +1090,21 @@ static int apparmor_socket_getpeersec_stream(struct socket *sock,
- 	/* don't include terminating \0 in slen, it breaks some apps */
- 	if (slen < 0) {
- 		error = -ENOMEM;
--	} else {
--		if (slen > len) {
--			error = -ERANGE;
--		} else if (copy_to_user(optval, name, slen)) {
--			error = -EFAULT;
--			goto out;
--		}
--		if (put_user(slen, optlen))
--			error = -EFAULT;
--out:
--		kfree(name);
--
-+		goto done;
-+	}
-+	if (slen > len) {
-+		error = -ERANGE;
-+		goto done_len;
- 	}
- 
-+	if (copy_to_sockptr(optval, name, slen))
-+		error = -EFAULT;
-+done_len:
-+	if (copy_to_sockptr(optlen, &slen, sizeof(slen)))
-+		error = -EFAULT;
- done:
- 	end_current_label_crit_section(label);
--
-+	kfree(name);
- 	return error;
- }
- 
+ LSM_HOOK(void, LSM_RET_VOID, sk_free_security, struct sock *sk)
 diff --git a/security/security.c b/security/security.c
-index 269c3965393f4..e9dcde3c4f14b 100644
+index e9dcde3c4f14b..0bbcb100ba8e9 100644
 --- a/security/security.c
 +++ b/security/security.c
-@@ -2224,11 +2224,11 @@ int security_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
- }
- EXPORT_SYMBOL(security_sock_rcv_skb);
- 
--int security_socket_getpeersec_stream(struct socket *sock, char __user *optval,
--				      int __user *optlen, unsigned len)
-+int security_socket_getpeersec_stream(struct socket *sock, sockptr_t optval,
-+				      sockptr_t optlen, unsigned int len)
+@@ -2227,14 +2227,37 @@ EXPORT_SYMBOL(security_sock_rcv_skb);
+ int security_socket_getpeersec_stream(struct socket *sock, sockptr_t optval,
+ 				      sockptr_t optlen, unsigned int len)
  {
- 	return call_int_hook(socket_getpeersec_stream, -ENOPROTOOPT, sock,
--				optval, optlen, len);
-+			     optval, optlen, len);
+-	return call_int_hook(socket_getpeersec_stream, -ENOPROTOOPT, sock,
+-			     optval, optlen, len);
++	struct security_hook_list *hp;
++	int rc;
++
++	/*
++	 * Only one module will provide a security context.
++	 */
++	hlist_for_each_entry(hp, &security_hook_heads.socket_getpeersec_stream,
++			     list) {
++		rc = hp->hook.socket_getpeersec_stream(sock, optval, optlen,
++						       len);
++		if (rc != LSM_RET_DEFAULT(socket_getpeersec_stream))
++			return rc;
++	}
++	return LSM_RET_DEFAULT(socket_getpeersec_stream);
  }
  
  int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb, u32 *secid)
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 50d3ddfe15fd1..46c00a68bb4bd 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -5110,11 +5110,12 @@ static int selinux_socket_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 	return err;
- }
- 
--static int selinux_socket_getpeersec_stream(struct socket *sock, char __user *optval,
--					    int __user *optlen, unsigned len)
-+static int selinux_socket_getpeersec_stream(struct socket *sock,
-+					    sockptr_t optval, sockptr_t optlen,
-+					    unsigned int len)
  {
- 	int err = 0;
--	char *scontext;
-+	char *scontext = NULL;
- 	u32 scontext_len;
- 	struct sk_security_struct *sksec = sock->sk->sk_security;
- 	u32 peer_sid = SECSID_NULL;
-@@ -5130,17 +5131,15 @@ static int selinux_socket_getpeersec_stream(struct socket *sock, char __user *op
- 				      &scontext_len);
- 	if (err)
- 		return err;
--
- 	if (scontext_len > len) {
- 		err = -ERANGE;
- 		goto out_len;
- 	}
- 
--	if (copy_to_user(optval, scontext, scontext_len))
-+	if (copy_to_sockptr(optval, scontext, scontext_len))
- 		err = -EFAULT;
--
- out_len:
--	if (put_user(scontext_len, optlen))
-+	if (copy_to_sockptr(optlen, &scontext_len, sizeof(scontext_len)))
- 		err = -EFAULT;
- 	kfree(scontext);
- 	return err;
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index e1669759403a6..5388f143eecd8 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -4022,12 +4022,12 @@ static int smack_socket_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
-  * returns zero on success, an error code otherwise
-  */
- static int smack_socket_getpeersec_stream(struct socket *sock,
--					  char __user *optval,
--					  int __user *optlen, unsigned len)
-+					  sockptr_t optval, sockptr_t optlen,
-+					  unsigned int len)
- {
- 	struct socket_smack *ssp;
- 	char *rcp = "";
--	int slen = 1;
-+	u32 slen = 1;
- 	int rc = 0;
- 
- 	ssp = sock->sk->sk_security;
-@@ -4035,15 +4035,16 @@ static int smack_socket_getpeersec_stream(struct socket *sock,
- 		rcp = ssp->smk_packet->smk_known;
- 		slen = strlen(rcp) + 1;
- 	}
--
--	if (slen > len)
-+	if (slen > len) {
- 		rc = -ERANGE;
--	else if (copy_to_user(optval, rcp, slen) != 0)
--		rc = -EFAULT;
-+		goto out_len;
+-	return call_int_hook(socket_getpeersec_dgram, -ENOPROTOOPT, sock,
+-			     skb, secid);
++	struct security_hook_list *hp;
++	int rc;
++
++	/*
++	 * Only one module will provide a security context.
++	 */
++	hlist_for_each_entry(hp, &security_hook_heads.socket_getpeersec_dgram,
++			     list) {
++		rc = hp->hook.socket_getpeersec_dgram(sock, skb, secid);
++		if (rc != LSM_RET_DEFAULT(socket_getpeersec_dgram))
++			return rc;
 +	}
- 
--	if (put_user(slen, optlen) != 0)
-+	if (copy_to_sockptr(optval, rcp, slen))
-+		rc = -EFAULT;
-+out_len:
-+	if (copy_to_sockptr(optlen, &slen, sizeof(slen)))
- 		rc = -EFAULT;
--
- 	return rc;
++	return LSM_RET_DEFAULT(socket_getpeersec_dgram);
  }
+ EXPORT_SYMBOL(security_socket_getpeersec_dgram);
  
 -- 
 2.43.0
