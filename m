@@ -1,175 +1,115 @@
-Return-Path: <linux-kernel+bounces-101265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E6A287A4BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5ABE87A4BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:17:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E53D9282EB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:17:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B06282F38
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3BE224FA;
-	Wed, 13 Mar 2024 09:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FCD2374D;
+	Wed, 13 Mar 2024 09:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="lFfJfBl0"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ed6rwpt2";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="H2yv2z3/"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C25210F8;
-	Wed, 13 Mar 2024 09:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21012261A;
+	Wed, 13 Mar 2024 09:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710321418; cv=none; b=V3HgkYgYhaTNQOn4Z/OPvwEL+N/ctILkoqMXdvAWqH2taGS37voHX2OArnsm031vja2Mx477eikieEdr1bIZfaiCg8qHO2fOgpqeDGxfqOFl4QabJ0FFrrbPlYHXN9zLWEDyBGpOH7rF6K877KCgrkZmgsFIxH1zsTQ6+aQYX70=
+	t=1710321430; cv=none; b=NLqXghBQd3kN0VdX+fCzz7VCF7RKt4Kbverv3UYcUNtkCluUYlRfVlSKdwPUPe0LEAkK91gfn08ER4c/sie6oVXpja1mEjLygezImZFalGO6LoPF9lsbR63zdhlR+wMbAoavm46O+HARUCsI+twvbzX1I6zFxygclDELw5f09bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710321418; c=relaxed/simple;
-	bh=ByCbagcTebOW3qifvCBn2/PTAzLo4LTEj67iXwr3nrc=;
-	h=Message-ID:Date:MIME-Version:Subject:References:From:Cc:To:
-	 In-Reply-To:Content-Type; b=qAnPrcpBi7VnOR5AghvOymmpSZ55hoZxNADrFejEs5KUS5Vhkmtfcw1axoAIpgZzWgW6WKwzGxNrRaDG02Kp5L7YIwDOuz+gUSmPPqMD3PxpXeR+et1hi6brepdbr6/m+V/tWZEQAeR3FcCmMHPnhYynuETiYTVUqf3tfDh1vHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=lFfJfBl0; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:To:Reply-To:Cc:From:References:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=QIi9/DjwhK5Nca9r9Q65/MotMONafCf0MSaMXkjEpqQ=;
-	t=1710321415; x=1710753415; b=lFfJfBl0eMMtZLlb424xJS9UysEnuYdchXRGPUhpITSnP0e
-	8jk2/NTZDF5qC+8yUKiBUIsAO110XGj8py8GVLSRuuEoxhH0vH8glXYnVpbnA6MfFv77IhvBeAJ8z
-	u2NhyltYWhLiYADUHX0ip4+u7hMYWgUYYDO8Rvnv3mOGR05/XPuB2r9yME9yFrT10yPmpTDWhLYkG
-	SlrTqrWmscSuxRbQ5cRtDcCSMDBhrBiiP8f7vori3s8wqepoXXrYPJw9pbyKCmMEbgi/m3l4CtBcl
-	xZXkB2E8JQSkA0LYE2bCP6UobA9yXUE7uEiaudvYAKVqwhbXm4Ivo/hr9BXjLYEA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rkKjA-0004TW-0c; Wed, 13 Mar 2024 10:16:48 +0100
-Message-ID: <3e46d70b-196d-45c7-bfdf-869c78cdc81f@leemhuis.info>
-Date: Wed, 13 Mar 2024 10:16:47 +0100
+	s=arc-20240116; t=1710321430; c=relaxed/simple;
+	bh=R+56XbCW7VCmvc6HpQtkGngJnu7ekY4FJCSyrZVjUWk=;
+	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=FzADFu4kgdN7I/9HeTRt6J662k9trs7EfjlStImF9h7c0MdQHPUvUkOy/4tPilLGoO/VU3N6HxKDy75qfn7KQGG6BIis6SnZFk5AEb+QZ9vVAThGFoJTPwpxJB0yIllQef1a4Y8z1NnsDrn6RPqdZa6jQAXy9bzvLaTrNSaCLko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ed6rwpt2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=H2yv2z3/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 13 Mar 2024 09:16:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710321420;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=rRlQGyhZFVjQ4qM9e0Ekd5/R5Rqi8++m4vJCSr26Mj8=;
+	b=Ed6rwpt2/oWdT7rO0xZi9lx7EkPuxNHLMa4QacKnOgL3C+5CJ5GygbdMlF57/7EOe6V+TE
+	5uVFEaeBnEgr/rQ8KooF7P1xHbyvIBJWYfh5x0jwkDXeuv6cb41y6Gmz7OXlELKH1/06Fl
+	Ri+PMgbX3+hQ0w1RhGKEEAXxPY8P/8chkQ5OcJJwopUVHh2z0IpUOdlItOoCyOPraKDigX
+	1FddWU8arqYM+21AMH5LUvoK2MmVivZ63O72QWQ2aRMZvZBjNtXazm6aqW2fTNqIAy3cH3
+	BCfnYUW9X3fZHbq7D6tthf90GOAthtxyhpzpvqkEp9IV99xEtOWFKQ4KBo9Ivg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710321420;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=rRlQGyhZFVjQ4qM9e0Ekd5/R5Rqi8++m4vJCSr26Mj8=;
+	b=H2yv2z3/7DlWhihI2z3Sdc6FH9ShHgabVd4m5sPaYdcmJVB02CXNkBF8idJr8HhaM7dL8s
+	rLHJ8JUZuYsPRuBw==
+From: "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/urgent] Revert "x86/bugs: Use fixed addressing for VERW operand"
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, Ingo Molnar <mingo@kernel.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Regressions can bus with MCP2515 on sama5d3 connected over SPI
- stop working on kernel > 5.4.271
-Content-Language: en-US, de-DE
-References: <2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz>
- <a2e64be0-e07d-4c55-aba7-87c7e4c876e0@leemhuis.info>
- <734cf096-3769-4610-b72f-394c31a8d942@mydatex.cz>
- <91d8a6b6-6186-4aa0-8462-56b4751854e9@leemhuis.info>
- <6918321b-038d-40b9-8149-d535bf9d3d52@mydatex.cz>
- <5f69d6ee-a07a-42a9-a238-7dbe1f82cc3f@mydatex.cz>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Cc: Daniel Smolik <smolik@mydatex.cz>,
- Linux regressions mailing list <regressions@lists.linux.dev>,
- linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-In-Reply-To: <5f69d6ee-a07a-42a9-a238-7dbe1f82cc3f@mydatex.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710321415;f0b7d482;
-X-HE-SMSGID: 1rkKjA-0004TW-0c
+Message-ID: <171032141964.398.11885459177041650089.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi! Mark and Manivannan, do you by chance have an idea what might be
-wrong with Daniel's system or can point us in the direction of people
-that might be able to help? See
-https://lore.kernel.org/all/2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz/
-for the initial report (but it is in the quote below, too).
+The following commit has been merged into the x86/urgent branch of tip:
 
-On 13.03.24 00:22, Daniel Smolik wrote:
-> I am not very familiar with bisecting :-(  I have found how to solve
-> another problem and compile 5.5.0 kernel. And now I know that latest
-> working is 5.4.271 and first not working is 5.5.0.
+Commit-ID:     bfa5fa246c0724c2cc1bd0dfe57531aaa7f520c1
+Gitweb:        https://git.kernel.org/tip/bfa5fa246c0724c2cc1bd0dfe57531aaa7f520c1
+Author:        Dave Hansen <dave.hansen@linux.intel.com>
+AuthorDate:    Tue, 12 Mar 2024 07:27:57 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 13 Mar 2024 10:08:09 +01:00
 
-Let's wait first if Mark and Manivannan might haven an idea. And in case
-you in the end have to bisect: please follow the guide I pointed to and
-tell me where you have the problem, as the guide (and an earlier mail,
-too!) tells you that you need to bisect from 5.4 to 5.5.
+Revert "x86/bugs: Use fixed addressing for VERW operand"
 
-Ciao, Thorsten
+This was reverts commit 8009479ee919b9a91674f48050ccbff64eafedaa.
 
-> Dne 12. 03. 24 v 20:57 Daniel Smolik napsal(a):
->> Hi ,
->> 6.8  is affected   with this bug.  I try bisect the bug.
->>
->> Regards
->>             Dan
->>
->> Dne 12. 03. 24 v 11:39 Linux regression tracking (Thorsten Leemhuis)
->> napsal(a):
->>> On 12.03.24 11:27, Dan Smolik wrote:
->>>> Dne 12. 03. 24 v 11:19 Linux regression tracking (Thorsten Leemhuis)
->>>> napsal(a):
->>>>> On 11.03.24 22:55, Daniel Smolik wrote:
->>>>>> I have found problem with kernel > 5.4.271 (long term) on sama5d3.
->>>>>> When
->>>>>> I config can bus with:
->>>>>>
->>>>>> ip link set can0 type can bitrate 125000 triple-sampling on
->>>>>>
->>>>>> and type
->>>>>> ifconfig can0 up
->>>>>>
->>>>>> prompt never returns and cannot run eg. ip a (never returns) existing
->>>>>> ssh connection works but can´t do new one.
->>>>>>
->>>>>>
->>>>>>     I have my own daughter  board with can bus driver MCP2515
->>>>>> connected
->>>>>> over SPI bus. There is
->>>>>> snippet of my DTB:
->>>>>>
->>>>>>    can0: can@0 {
->>>>>>                                           compatible =
->>>>>> "microchip,mcp2515";
->>>>>>                                           reg = <0>;
->>>>>>                                           clocks = <&can0_osc_fixed>;
->>>>>>                                           interrupt-parent = <&pioD>;
->>>>>>                                           interrupts = <29
->>>>>> IRQ_TYPE_EDGE_RISING>;
->>>>>> spi-max-frequency = <10000000>;
->>>>>>                                       };
->>>>>>
->>>>>> with this all working  perfect  on long term kernels 4.19.  I try
->>>>>> switch
->>>>>> to newer kernel and latest I get working is 5.4.271. Kernel 5.5.0
->>>>>> -5.5.6 I can´t  compile and 5.5.14  is affected with bug.
->>>>> The two important question here are:
->>>>>
->>>>> * Is mainline (e.g. 6.8) affected as well? That determines if the
->>>>> regular developers or the stable team has to look into this.
->>>> I mean yes,  I tested 6.6.21 and is affected.   6.8 I can test today
->>>> afternoon.
->>> Yes, please test 6.8.
->>>
->>>>> * Could you bisect the problem (e.g. I assume between 5.4.271 and
->>>>> 5.4.272)? I'm working on a guide that explains this:
->>>>> https://www.leemhuis.info/files/misc/How%20to%20bisect%20a%20Linux%20kernel%20regression%20%e2%80%94%20The%20Linux%20Kernel%20documentation.html
->>>> Yes I try this but it looks like that latest good is 5.4.271 and first
->>>> bad us 5.5.0  but this kernel fail when building to arm platform. 
->>>> First
->>>> which I build for arm is 5.5.14.
->>>>
->>>> I try bisecting but when I can't build kernel what can I do ?
->>> Bisect between 5.4 and 5.5 and during the bisection use "git cherry-pick
->>> --no-commit <sha1sum>" to apply the fix(es) without committing them
->>> before you build; once the build is ready, use "git reset --hard" to
->>> reset things.
->>>
->>> But please check 6.8 first; if it is affected we can CC a few
->>> developers. If you are lucky they have an idea what might be wrong here
->>> and then no bisection might be needed.
->>>
->>> Ciao, Thorsten
->>
->>
-> 
-> 
-> 
+It was originally in x86/urgent, but was deemed wrong so got zapped.
+But in the meantime, x86/urgent had been merged into x86/apic to
+resolve a conflict.  I didn't notice the merge so didn't zap it
+from x86/apic and it managed to make it up with the x86/apic
+material.
+
+The reverted commit is known to cause some KASAN problems.
+
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ arch/x86/include/asm/nospec-branch.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index d0b8bb7..fc3a8a3 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -314,7 +314,7 @@
+  * Note: Only the memory operand variant of VERW clears the CPU buffers.
+  */
+ .macro CLEAR_CPU_BUFFERS
+-	ALTERNATIVE "", __stringify(verw mds_verw_sel), X86_FEATURE_CLEAR_CPU_BUF
++	ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
+ .endm
+ 
+ #else /* __ASSEMBLY__ */
 
