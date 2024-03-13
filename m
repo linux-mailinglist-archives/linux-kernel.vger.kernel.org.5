@@ -1,169 +1,267 @@
-Return-Path: <linux-kernel+bounces-100958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DCA487A016
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:14:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 228D187A019
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1ECB1C224D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:14:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8ED5B21C75
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10672AD52;
-	Wed, 13 Mar 2024 00:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8B239B;
+	Wed, 13 Mar 2024 00:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WJ4cjpfe"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HMUnE2gG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07D7749A
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB21A182
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710288845; cv=none; b=TZYo8vxSr08S3uXS5mR+nwnK6eVdoMXld8dEaeRti5j7u0COA6Bh84uc7TxC5QlDYp/4CtUvlTGGFfXHbYBe8YZn1jztfi/cZD04z5vXlX7nDMHElO2IiDUIEFXJpp4Pl5VQmF5aETX1ldey7bxYDg7bZAa3m4NPD1eNcOuUAzk=
+	t=1710289110; cv=none; b=DbBzWeItj4nSFlIjSOA9604RcQaBEIOg1PEW5EypBCT7F/Ztwz4uN9SMeN+YahUiHuTlBTMwZo/GqCgqv9MKPfGvoIrIeJgP3wvhkias+uVHNNTtZn1QBV5tmFF/prKri6OZq1ZtEguX4QTBooRX7Zbft1+wdDQ/pxhMOSahw1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710288845; c=relaxed/simple;
-	bh=tz/keXsa37xWJ0MEaMsuV4ypOd5lshGQXM3Y1Ue3+6w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XE1fTgANDI+yQRdwry8B7w04gPkU7lsdKvPrJUbeWPBz+FX0zQaSGw5L2FWDATjpC7cMzlVfOphO3gJsBW04ekN+oJBYEBTNzPu0T1UXlY/0wAJ5CoqpX5D19jG/fWkd0XlSeZSSBY7p1qnDE+mqXyl4+RvrAwg9M+z9PVYxFbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WJ4cjpfe; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so2327315ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710288843; x=1710893643; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ojXHCUbSnEQhORVd/rWq7LKRiJH0Wv/f2AD6HriHOV4=;
-        b=WJ4cjpfe50D2VHXM6Yn+wjZm6vTrfn9hLWLGzfotXI/LO0tJZ3AYy6qE0GQftTSyeI
-         JCw/BdUyAPEycUAIUv5Y6Sfgdfl0DH8Gc9F4VB5Nmqq8Yp6cN8XjQ8C60iD3gLxxm100
-         sK+taO65aJllH3v7Pp4EWkQZPFeLu0Ppuyr18=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710288843; x=1710893643;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ojXHCUbSnEQhORVd/rWq7LKRiJH0Wv/f2AD6HriHOV4=;
-        b=AlUD8CkjtoVJVNnARjQmzNdwM0rrIxwWWEOUbZvrHJCeVCCcNzpYK/B1NvnPI1FaWl
-         Pa1iBwQ5kmWIvTQ/Qr6hZA66ZR+lfOTB0hZWxjzqbuqi4Lbote3IrTSzfPSmvr+sp0q8
-         KlMQj3i7HtGJP2d5xc5e21O5bdLcjqLbDVmXEE9gqpU32J5S/WjDMGk9LKdyxcpO9H6W
-         pgeZUuvLJYsVW2S1aYUBYMTZPuXnesBZrygOJKfN3l0ZIAnsOcDVuGQpzx5CvyBVS5o7
-         JQRTWiiTvrrj5bFGQI4n6JWp0ZfSNF9PdDXdn6IZrbqrMW53WW5XNrEgMIenNqfkrBN/
-         2XJw==
-X-Forwarded-Encrypted: i=1; AJvYcCVR/sxuXOdY4bfU0OMtWtnQ+LRwPPQDUd9lznx2YBd8atBO2qXvF6gRZ4KYNsE5lG/kkZ6oYE6vpaIia+YzzRkmmaryY7VjfNPwE5ZG
-X-Gm-Message-State: AOJu0YwOc1O3lIEGgoVxsoV9ptk13BLhGCMnsoVSZ5/oOeX/kfkZdbYi
-	pEa5GeLIVOPxD5oX6CvhN9mLiWZFu0rd9bcTIu5nqHJhyQ1Vx99ki8Q2tVjS+A==
-X-Google-Smtp-Source: AGHT+IHg+QGPW6c7yNuVfIy4mB1qUblGBo63Tt7Q82dhAxfSHW8SU9MTfYSWrSGI9xpyWtMDyKwWUw==
-X-Received: by 2002:a17:903:22cb:b0:1dd:8d25:f8a0 with SMTP id y11-20020a17090322cb00b001dd8d25f8a0mr1295429plg.24.1710288843216;
-        Tue, 12 Mar 2024 17:14:03 -0700 (PDT)
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:f8dd:895c:e876:6edb])
-        by smtp.gmail.com with ESMTPSA id x8-20020a170902a38800b001dd761faec3sm7432924pla.251.2024.03.12.17.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 17:14:01 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-To: Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Douglas Anderson <dianders@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Kuogee Hsieh <quic_khsieh@quicinc.com>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	Sean Paul <sean@poorly.run>,
-	dri-devel@lists.freedesktop.org,
-	freedreno@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/msm/dp: Delete the old 500 ms wait for eDP HPD in aux transfer
-Date: Tue, 12 Mar 2024 17:13:18 -0700
-Message-ID: <20240312171305.3.I535606f6d4f7e3e5588bb75c55996f61980183cd@changeid>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-In-Reply-To: <20240313001345.2623074-1-dianders@chromium.org>
-References: <20240313001345.2623074-1-dianders@chromium.org>
+	s=arc-20240116; t=1710289110; c=relaxed/simple;
+	bh=pmvAYadZLDXGkN4VGLz6uWCiFoJdgdRr9Tv24YDX+KI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=RfHS3GSE7u1lChhQ5QlshKTVQgkPe0VCZigK7Pghne93J4of9cacs1+IS+IBKirvQnwaEy+loyr5QZkNsWi0AC/gKdy0VkytENJYuz98cMwvZETr1h1xrf8xW+817mT8shRGMBXV0HniraXRPNCSaUBbZQxGSaSSYMdWXGwgrBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HMUnE2gG; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710289109; x=1741825109;
+  h=date:from:to:cc:subject:message-id;
+  bh=pmvAYadZLDXGkN4VGLz6uWCiFoJdgdRr9Tv24YDX+KI=;
+  b=HMUnE2gGxc9mvwQ/j0QIoK6LkwTW4P+xgyIgyMrT6U6wqOnsvSJBMSgw
+   G78prYHDafwrGlrqPYxC6CSpZ/pttRhPwQsI8vukMYTCBpNSYfjD/9QQo
+   MsftxnclRmSjPO8MT6fMdE2kPyTCSQmICLS+6nFox54UUZwrY4Qp+h+2q
+   JM09OoP1kC/V1Btt7agxGNE+3tO6F3B1rpR3z0rIvW2OFzuwMqc0istOY
+   ziiLmnMbR+NrDOE/jSQ/AFLing16mIkpmtreN78LDuvi+sA19ynCquEC8
+   WzggM8uNYxmi7/BcymzfzsDL8bWfFxcsedJ3upkucBscLiyXzRtyfnBGE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4959427"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="4959427"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 17:18:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="11648604"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 12 Mar 2024 17:18:27 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rkCK8-000BpF-1V;
+	Wed, 13 Mar 2024 00:18:24 +0000
+Date: Wed, 13 Mar 2024 08:18:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ d72cf62438d67b911212f8d4cf65d6167c1541ba
+Message-ID: <202403130806.KQAG5K10-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Before the introduction of the wait_hpd_asserted() callback in commit
-841d742f094e ("drm/dp: Add wait_hpd_asserted() callback to struct
-drm_dp_aux") the API between panel drivers and DP AUX bus drivers was
-that it was up to the AUX bus driver to wait for HPD in the transfer()
-function.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: d72cf62438d67b911212f8d4cf65d6167c1541ba  sched/balancing: Fix a couple of outdated function names in comments
 
-Now wait_hpd_asserted() has been added. The two panel drivers that are
-DP AUX endpoints use it. See commit 2327b13d6c47 ("drm/panel-edp: Take
-advantage of wait_hpd_asserted() in struct drm_dp_aux") and commit
-3b5765df375c ("drm/panel: atna33xc20: Take advantage of
-wait_hpd_asserted() in struct drm_dp_aux"). We've implemented
-wait_hpd_asserted() in the MSM DP driver as of commit e2969ee30252
-("drm/msm/dp: move of_dp_aux_populate_bus() to eDP probe()"). There is
-no longer any reason for long wait in the AUX transfer() function.
-Remove it.
+elapsed time: 735m
 
-NOTE: the wait_hpd_asserted() is listed as "optional". That means it's
-optional for the DP AUX bus to implement. In the case of the MSM DP
-driver we implement it so we can assume it will be called.
+configs tested: 179
+configs skipped: 3
 
-ALSO NOTE: the wait wasn't actually _hurting_ anything and wasn't even
-causing long timeouts, but it's still nice to get rid of unneeded
-code. Specificaly it's not truly needed because to handle other DP
-drivers that can't power on as quickly (specifically parade-ps8640) we
-already avoid DP AUX transfers for eDP panels that aren't powered
-on. See commit 8df1ddb5bf11 ("drm/dp: Don't attempt AUX transfers when
-eDP panels are not powered").
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240312   gcc  
+arc                   randconfig-002-20240312   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                       imx_v4_v5_defconfig   clang
+arm                   randconfig-001-20240312   clang
+arm                   randconfig-002-20240312   gcc  
+arm                   randconfig-003-20240312   gcc  
+arm                   randconfig-004-20240312   clang
+arm                          sp7021_defconfig   gcc  
+arm                        spear6xx_defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240312   gcc  
+arm64                 randconfig-002-20240312   gcc  
+arm64                 randconfig-003-20240312   gcc  
+arm64                 randconfig-004-20240312   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240312   gcc  
+csky                  randconfig-002-20240312   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240312   clang
+hexagon               randconfig-002-20240312   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240312   gcc  
+i386         buildonly-randconfig-002-20240312   gcc  
+i386         buildonly-randconfig-003-20240312   gcc  
+i386         buildonly-randconfig-004-20240312   gcc  
+i386         buildonly-randconfig-005-20240312   clang
+i386         buildonly-randconfig-006-20240312   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240312   gcc  
+i386                  randconfig-002-20240312   clang
+i386                  randconfig-003-20240312   gcc  
+i386                  randconfig-004-20240312   gcc  
+i386                  randconfig-005-20240312   gcc  
+i386                  randconfig-006-20240312   gcc  
+i386                  randconfig-011-20240312   gcc  
+i386                  randconfig-012-20240312   gcc  
+i386                  randconfig-013-20240312   clang
+i386                  randconfig-014-20240312   clang
+i386                  randconfig-015-20240312   gcc  
+i386                  randconfig-016-20240312   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240312   gcc  
+loongarch             randconfig-002-20240312   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      maltaaprp_defconfig   clang
+nios2                         10m50_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240312   gcc  
+nios2                 randconfig-002-20240312   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240312   gcc  
+parisc                randconfig-002-20240312   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                        cell_defconfig   gcc  
+powerpc                     ep8248e_defconfig   gcc  
+powerpc                   lite5200b_defconfig   clang
+powerpc                 mpc8313_rdb_defconfig   gcc  
+powerpc               randconfig-001-20240312   gcc  
+powerpc               randconfig-002-20240312   clang
+powerpc               randconfig-003-20240312   gcc  
+powerpc                      tqm8xx_defconfig   clang
+powerpc64                        alldefconfig   clang
+powerpc64             randconfig-001-20240312   clang
+powerpc64             randconfig-002-20240312   clang
+powerpc64             randconfig-003-20240312   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240312   clang
+riscv                 randconfig-002-20240312   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240312   clang
+s390                  randconfig-002-20240312   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                     magicpanelr2_defconfig   gcc  
+sh                    randconfig-001-20240312   gcc  
+sh                    randconfig-002-20240312   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240312   gcc  
+sparc64               randconfig-002-20240312   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240312   gcc  
+um                    randconfig-002-20240312   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240312   clang
+x86_64       buildonly-randconfig-002-20240312   clang
+x86_64       buildonly-randconfig-003-20240312   clang
+x86_64       buildonly-randconfig-004-20240312   clang
+x86_64       buildonly-randconfig-005-20240312   gcc  
+x86_64       buildonly-randconfig-006-20240312   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240312   clang
+x86_64                randconfig-002-20240312   clang
+x86_64                randconfig-003-20240312   gcc  
+x86_64                randconfig-004-20240312   gcc  
+x86_64                randconfig-005-20240312   gcc  
+x86_64                randconfig-006-20240312   clang
+x86_64                randconfig-011-20240312   gcc  
+x86_64                randconfig-012-20240312   clang
+x86_64                randconfig-013-20240312   gcc  
+x86_64                randconfig-014-20240312   gcc  
+x86_64                randconfig-015-20240312   clang
+x86_64                randconfig-016-20240312   clang
+x86_64                randconfig-071-20240312   gcc  
+x86_64                randconfig-072-20240312   gcc  
+x86_64                randconfig-073-20240312   clang
+x86_64                randconfig-074-20240312   gcc  
+x86_64                randconfig-075-20240312   gcc  
+x86_64                randconfig-076-20240312   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240312   gcc  
+xtensa                randconfig-002-20240312   gcc  
 
- drivers/gpu/drm/msm/dp/dp_aux.c | 26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index fc398e8a69a7..dd62ad6007a6 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -302,26 +302,14 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
- 	}
- 
- 	/*
--	 * For eDP it's important to give a reasonably long wait here for HPD
--	 * to be asserted. This is because the panel driver may have _just_
--	 * turned on the panel and then tried to do an AUX transfer. The panel
--	 * driver has no way of knowing when the panel is ready, so it's up
--	 * to us to wait. For DP we never get into this situation so let's
--	 * avoid ever doing the extra long wait for DP and just query HPD
--	 * directly.
-+	 * If HPD isn't asserted then the transfer won't succeed. Return
-+	 * right away. If we don't do this we can end up with long timeouts
-+	 * if someone tries to access the DP AUX character device when no
-+	 * DP device is connected.
- 	 */
--	if (aux->is_edp) {
--		ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog,
--								500000);
--		if (ret) {
--			DRM_DEBUG_DP("Panel not ready for aux transactions\n");
--			goto exit;
--		}
--	} else {
--		if (!dp_catalog_aux_is_hpd_connected(aux->catalog)) {
--			ret = -ENXIO;
--			goto exit;
--		}
-+	if (!dp_catalog_aux_is_hpd_connected(aux->catalog)) {
-+		ret = -ENXIO;
-+		goto exit;
- 	}
- 
- 	dp_aux_update_offset_and_segment(aux, msg);
 -- 
-2.44.0.278.ge034bb2e1d-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
