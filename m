@@ -1,95 +1,155 @@
-Return-Path: <linux-kernel+bounces-101016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205F787A0BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:29:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD4F487A0BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAFD61F22352
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:29:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 753001F2328F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41178B67D;
-	Wed, 13 Mar 2024 01:29:33 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD9AB663;
+	Wed, 13 Mar 2024 01:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="C87PEHjb"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC350B652
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6F18F6F;
+	Wed, 13 Mar 2024 01:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710293372; cv=none; b=i90FSQ/L4GRQeOMGUx7WBvvPqNfVd1c1pzqEUPA1KRTn9qATUL3WdBAmCvVMYw0Hw7k4jYDWepIDwh/xC4mbWOqpvrGzYEss4Hqrgfpv8IPTV+ZQGhXpD2vVW/CtRGzzOMm8chMJmpve9FwFYyXDB2I1xDmb/qH7MGM3z/CISGo=
+	t=1710293423; cv=none; b=kuuQ8g32nimJHXcVN73S3Gp3sDaQ+ChY8GgAv9LHgNEir43MGAPy8P+03rL3KQ2WN0fmq4SPlpRW/TpKu6DjtMtOVGKWlwFWdE40MssYYNDWw35841772TWD15DMXoG4+DLSDoNG3u27nx+B1jolhkrbOD2xFqDFGqv9Vg3KkvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710293372; c=relaxed/simple;
-	bh=UJlpHkjPoNvC6jxkYpAzHDrDK0oNnOtTFuq6EhLz/48=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XLfysyIZssQs5AK9r4l4dZmzJ3wG3KqrP4PYIDSq6e/oBEY36V1yhb2HDlctgNIyeHisy33Ba0S07T4SWLS/f+fZZ95TXgCJVdDJ8W6kvVdFZ5wLjyL/qJ3ehBqcQ/bjQxD8L1YsQtaZB01JA3Ytbt0E9lzwXcIc9eWimLS5l1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TvXt75qYSzXj3j;
-	Wed, 13 Mar 2024 09:26:55 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3C9FF18007B;
-	Wed, 13 Mar 2024 09:29:21 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Mar 2024 09:29:20 +0800
-From: Peng Zhang <zhangpeng362@huawei.com>
-To: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC: <akpm@linux-foundation.org>, <willy@infradead.org>,
-	<ying.huang@intel.com>, <fengwei.yin@intel.com>, <david@redhat.com>,
-	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
-	<wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>,
-	<zhangpeng362@huawei.com>
-Subject: [PATCH] filemap: replace pte_offset_map() with pte_offset_map_nolock()
-Date: Wed, 13 Mar 2024 09:29:13 +0800
-Message-ID: <20240313012913.2395414-1-zhangpeng362@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710293423; c=relaxed/simple;
+	bh=QeLHPMjtJQa9u4WOOLbF84Sos8zF1E8vXw09x+PS0QM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=PEHWIj8AcGqV1eLSyY6EkWgYXuvYtoC9iE+BXPnTRL1bDxc68yXSHVca2V2iPh673BTLBrMjaHPwwxlbNSMjd10Txf2BWSHwj/iketFyZjxfuNZMgMfEsnULbiu8vMVMnIa1r4MVkvQoWKzeBvtU1YycChQK+bD1Ka2IUpLozbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=C87PEHjb; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42D0gDH0019760;
+	Wed, 13 Mar 2024 01:30:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ouYn95H+zAQcXhJ9561a3sq1sdW1pT1PRaJbAoeiPVw=; b=C8
+	7PEHjbpB6gK6X5rRmyhRG4qumP2JfXag15854fGJ3OROzTzB+Eg2/Q6fufcMsZ0D
+	o0DkdKVMxv3szxG6yTBL7qOTV4PkXm+jUWyYTK/0viLzLhqiwAD/ZlG1P8OzUWQr
+	LN57rB9ziyMOD0ieDk96Vu75Op/zQpwT+zEd0tVUE/wGKXgJHzjNhHRYUAntANPG
+	N+7VkjswSXEu3NXkh8cmZEOrdfhOew1oOXLoJrz0QrpH/aT0kmhErfT2SWYQaX9R
+	Pe2CLtlydMrZu0F3Ae2rnZn2Phf2yDYag1JeeogoHvyB1gbk6SEJ0DVNglOcRyNu
+	ddRBtrDNHCLMu2rdKb0g==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wtmpd2041-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 01:30:16 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42D1UFkF010432
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 01:30:15 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Mar
+ 2024 18:30:09 -0700
+Message-ID: <ef237b3c-8613-4cd8-9391-e4a08d50cc6c@quicinc.com>
+Date: Wed, 13 Mar 2024 09:30:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: update compatible name
+ for match with driver
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linus.walleij@linaro.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dmitry.baryshkov@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20240312025807.26075-1-quic_tengfan@quicinc.com>
+ <20240312025807.26075-2-quic_tengfan@quicinc.com>
+ <0d768f17-22d9-448e-9253-8498b61bf71e@linaro.org>
+ <31b02b76-88ff-42d7-a665-18d2661e028c@quicinc.com>
+ <6a3b5c9d-6375-457f-83c9-269746c1612a@linaro.org>
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <6a3b5c9d-6375-457f-83c9-269746c1612a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jsOBfqwhhLdUvo5ElmlqqDO-Hc4Hp-4J
+X-Proofpoint-ORIG-GUID: jsOBfqwhhLdUvo5ElmlqqDO-Hc4Hp-4J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_14,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=928 mlxscore=0
+ spamscore=0 clxscore=1015 malwarescore=0 impostorscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403130010
 
-From: ZhangPeng <zhangpeng362@huawei.com>
 
-The vmf->ptl in filemap_fault_recheck_pte_none() is still set from
-handle_pte_fault(). But at the same time, we did a pte_unmap(vmf->pte).
-After a pte_unmap(vmf->pte) unmap and rcu_read_unlock(), the page table
-may be racily changed and vmf->ptl maybe fails to protect the actual
-page table.
-Fix this by replacing pte_offset_map() with pte_offset_map_nolock().
 
-Fixes: 58f327f2ce80 ("filemap: avoid unnecessary major faults in filemap_fault()")
-Suggested-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
----
- mm/filemap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 3/12/2024 6:55 PM, Krzysztof Kozlowski wrote:
+> On 12/03/2024 08:47, Tengfei Fan wrote:
+>>
+>>
+>> On 3/12/2024 3:41 PM, Krzysztof Kozlowski wrote:
+>>> On 12/03/2024 03:58, Tengfei Fan wrote:
+>>>> Use compatible name "qcom,sm4450-tlmm" instead of "qcom,sm4450-pinctrl"
+>>>> to match the compatible name in sm4450 pinctrl driver.
+>>>>
+>>>> Fixes: 7bf8b78f86db ("dt-bindings: pinctrl: qcom: Add SM4450 pinctrl")
+>>>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>>>> ---
+>>>>    Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> Wasn't this applied?
+>>
+>> My test code base on tag: next-20240308, this patch is still not applied.
+>>
+>> In fact, the following dt binding check warning only can be got before
+>> this patch is applied.
+>>
+> 
+> Please read all emails in the previous thread. You ignored two emails in
+> the past and apparently one more recent.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 31ab455c4537..222adac7c9c5 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3207,7 +3207,8 @@ static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault *vmf)
- 	if (!(vmf->flags & FAULT_FLAG_ORIG_PTE_VALID))
- 		return 0;
- 
--	ptep = pte_offset_map(vmf->pmd, vmf->address);
-+	ptep = pte_offset_map_nolock(vma->vm_mm, vmf->pmd, vmf->address,
-+				     &vmf->ptl);
- 	if (unlikely(!ptep))
- 		return VM_FAULT_NOPAGE;
- 
+I don't know if you mean I ignored the email which related with "Patch 
+applied" tag from Linus Walleij. If so, the following is the reasion why 
+I still include this patch:
+
+I synced the latest upstream code on 03/12/2024, the latest tag is 
+next-20240308, this tag still doesn't include this patch[PATCH v3 1/2].
+
+Dt binding check still get warning if I only send [PATCH v3 2/2] patch 
+to upstream base on next-20240308. so I include this patch[PATCH v3 1/2] 
+in patch series even if this patch have "Patch applied" tag.
+
+Looking forward to getting your advice if submitting patch series this 
+way is problematic.
+
+Thank Krzysztof again for your patient and kind review this patch series!
+
+> 
+> Best regards,
+> Krzysztof
+> 
+
 -- 
-2.25.1
-
+Thx and BRs,
+Tengfei Fan
 
