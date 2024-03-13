@@ -1,194 +1,465 @@
-Return-Path: <linux-kernel+bounces-101650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E17687A9DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:58:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E3F687A9E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 917061F22EF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:58:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3263B22F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688A841202;
-	Wed, 13 Mar 2024 14:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7004446BD;
+	Wed, 13 Mar 2024 14:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jrVtsQ7M"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jh5gs3Hu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0740D41C6E
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710341913; cv=fail; b=rvovmAzoIrXMPaW3kdHUoNfptm3jWsOvzLALRBaYaWoPIqnbLEYAK/oDNN3go1Ko3/NuqT6bsgBtFDggmBCj3cSV87765RKiJITrVg0mQdUbTdo+UsnZ3DWF6nzjiB7321EOFoXORhbG+OCcv89mK6Uite7yP+VVz9yVB2pr1CQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710341913; c=relaxed/simple;
-	bh=3ZHi/NU+G8U3jiEFby18CFcLXFKtAHTiMPqNo8JKTpw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=KXAJxAMQGplP1r66kr8iR4nPCfc6vf6xKjfXsd7BfttdkvZpI/wV+6i4LsD9CzVNi4mpIccBiaJvZMWsz1ly/BcGD0VqYZSStfb9pRt1WM65dzqh2NFgz10Gpu0L9WUmT+Znh99b52RvmPIfbied+bwlt/s3AIqXRzNX5on1rbI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jrVtsQ7M; arc=fail smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710341912; x=1741877912;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=3ZHi/NU+G8U3jiEFby18CFcLXFKtAHTiMPqNo8JKTpw=;
-  b=jrVtsQ7MoRZ2SRaBRLR9P1aYUzlT0g1/MvnYBZPXqwKxy137RR9a19Ca
-   tZaPbtaZMEL65TwqGo7uFt9qfvWdkI1zHUYF9GP/TZb5+ADSSdYdpmXhp
-   8E4cHeu9crLQbBr7h3bc9fp6SWC8xaXSKSc53Zfe4M2wK6ofVrA0bESNw
-   ZxBitRCY4FweulMe3B6yUfj7dyN7y6CJ3LaXvdlWtGW6d1XkksAmWJn4T
-   fqQjXvgqBWn85boTz4eTI/2+FRNGHxu8IpGU3qcnve296LxckSMYpraBu
-   rPOfZK5U2P2FsUtNg7zDzatRMIaPKp6b3+PgH/cGqY762qcXoq8hIqh5I
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="22624875"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="22624875"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 07:58:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="16547816"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Mar 2024 07:58:30 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 07:58:30 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 07:58:29 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 13 Mar 2024 07:58:29 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Mar 2024 07:58:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XJmmQmeoStSNKo2ygf4LEWO+t8G6MNGcnHUd6LntWqQtDuERbOR8zW+Q+gfvTuInmOerRF4cYnckflTHT6v+M2S+/cZW73NeWuaSUxbP5wPkyd05Su0QXd9OydbpMtWuq4CHRf8Ujuwnp0qv8mP4MM4LFgUniujUZMZgJk5i+Xx1hXwWbqe4TFAW+lVw/zLWDDyJiEM9qa1xqcPL+rIn1a4mBAN61c2gXnNx79dWveaRrf0JqUZyLFOJU3gwoKczfjWe6Uvb5ROjXHPYCXjj1CBNxp9usYcaIz9TqtR4sdWOdIcvOWwSoXXQyM0BJLxka4ml3Ts0WCdkFkUWnOSN7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3ZHi/NU+G8U3jiEFby18CFcLXFKtAHTiMPqNo8JKTpw=;
- b=C0RbmJt9PaEc88cPhK8LKEqZqAIHIfytJ0NMIsoHCnI4d0cnIdwXKbRloXm6a5nVye8Xe6A+Rg3hadC62OadSc0lj7qprzjqNcRPXPbeLOU8ctESUAksOzUs10X6AQm+ACK1DHrM2eQeTBSgmlbjoy8FeAA9PlOv0cN9xRqIFRyhyIMYfBSXnvFwKkifGkcMJfdEZWh40lhF0xy5NY6Gpe8GLch51z1QcBBfJHC1Koq495D3I9HE5NPUhRfG5pb7m/K4dPwneihe2NbvFjSsmT/bHKU0WvFWHah6T7ODZIuAeQqHdkQEUikdKJjgTyNxsphTY2/JhngBjnrnWmm7Ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by CH3PR11MB7673.namprd11.prod.outlook.com (2603:10b6:610:126::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Wed, 13 Mar
- 2024 14:58:27 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::fc9e:b72f:eeb5:6c7b]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::fc9e:b72f:eeb5:6c7b%5]) with mapi id 15.20.7386.016; Wed, 13 Mar 2024
- 14:58:27 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "debug@rivosinc.com" <debug@rivosinc.com>, "luto@kernel.org"
-	<luto@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "broonie@kernel.org"
-	<broonie@kernel.org>, "keescook@chromium.org" <keescook@chromium.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com"
-	<hpa@zytor.com>, "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "mingo@redhat.com"
-	<mingo@redhat.com>, "kirill.shutemov@linux.intel.com"
-	<kirill.shutemov@linux.intel.com>, "bp@alien8.de" <bp@alien8.de>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "peterz@infradead.org"
-	<peterz@infradead.org>
-CC: "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 09/12] mm: Take placement mappings gap into account
-Thread-Topic: [PATCH v3 09/12] mm: Take placement mappings gap into account
-Thread-Index: AQHadMzQbQ6iiqjCZ0m44IAU+ZlTp7E1YViAgABi2wA=
-Date: Wed, 13 Mar 2024 14:58:27 +0000
-Message-ID: <6457f3a65ebb25811ce57be9f8da39fe475496fa.camel@intel.com>
-References: <20240312222843.2505560-1-rick.p.edgecombe@intel.com>
-	 <20240312222843.2505560-10-rick.p.edgecombe@intel.com>
-	 <615a783a-0912-4539-94bd-f1e09535bf38@csgroup.eu>
-In-Reply-To: <615a783a-0912-4539-94bd-f1e09535bf38@csgroup.eu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CH3PR11MB7673:EE_
-x-ms-office365-filtering-correlation-id: afae2643-ed2e-4e9d-f97e-08dc436e0a3e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zmunS2lRYyCWzkiKhWMpCakLONuOQmOvE40XZ1R0hotCmkXjWVD9ExNlZIgxf1I7s212qZppzjDijxCGw2ipwInhMZAR5iLyXbTQXb6lqL/PzJR5kOXxe7MAanbIZL/DSPvKfRdVvnnKQD9X8v5lZ6e37Y6ZkzcuHmIN2sBC3VB7NB5pynNrmhscmKzX/u5pv+psd+WKEXouDXbgglmTOVna5uvy1tQfASnidbTf31gBJhXkFRN2bwZK/OMBS1OJgkHGv6ECvwcNKgsfzyWl9JUxVlYQ8/HXOsVqgjtvWXq0OrNoQ786ddtdbdNf7uhtAPvtDaicUg3OdR4rXohiCx1pcnvJ/+Cl0CbsvOgzx/G5KivoCGGNGl4qEGzVi6EAavKDdaHIohIyjrHkvRnUTVMOBaT3DlyHdb8/TU1Dc+054tad8GZb/hUbhgT2+Lhfy9rwS6JfcT+5BuZ6bIPU0S523yN4rS5hGRAuzQ1REpdVXf8yEs8GBeEQvDQGT21u0r4bunlOn7VabHv+va75RGIgGAFivdQqoA32wgFR1/OUOJnqmsMVVMqueMiWHMyNx4vAq/91d1r7RjvCQhnhguOivwOEZFHkeaVyKaJNVl/d24u4FLfSkvBeuM/oPyZw6PraBbfaSRxQ5UvNn5UV+QQisIc6w81FaPNmwVj6PcPXRoDP3+BYO0uhuJ7HK6nQpI58LpGfNBxN7NXvSi2ymsLHCUch212/AXlhemdpFXI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(38070700009)(921011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R1ZrWExOak5STGd4WUs0UDkxOVExNnJtV1FlNWFVZlIxR1lqRFBtNUhwbnll?=
- =?utf-8?B?bHR0OFpOendjenROamdpaVhYMkpaVm1ZNDFVWitLR3RsS2lMUmtZeFphV0Jn?=
- =?utf-8?B?OHN1bS9XZzY1VFNuZnVZeGNhNXFiclMwSGxQTjJSTFp1bSthM1gvaEhMN3ZM?=
- =?utf-8?B?amNuUWp2U2ltc0VjcnVhMkMxQmxrbzBmNFltbkQvMWVGM2pKZ0lKSmJ2WVNJ?=
- =?utf-8?B?Z2RhNlB0ejlSSXVKQUtZNkh2d2NRWlhqY2RQUU8ya2d1dGM4LzBoSDl5M1pY?=
- =?utf-8?B?bVN2VURzTG9HRldMVXYzd3B5Y0NoeEdEY3hsZWZubFFiUXhKbHg4eFNxdm1K?=
- =?utf-8?B?dHJUemNvTjNXRjJFL2FjWWpQUXhTejE1RStpZmRZK0pmaEFSbE9NU3FudGYr?=
- =?utf-8?B?R2lzOEw1Ry9uMnlKa1laYVFveWxoVGx2REtMYjhDdjFpRUcyd1Y2T2VQQjZM?=
- =?utf-8?B?OE1SNTRTUGFhVGxaemRPdHQ2KzRnS3pXN2hqZkVNaUdzbEcxWHhvOENHeVNW?=
- =?utf-8?B?QlV6dTZXOGFtZmJqbytURXpNK1pwVXYrQU9MbXJHTTI4UUxJaFlQUVA2dEFp?=
- =?utf-8?B?Rmh4NEVmbHJaRXhNZE9nK0hpbEpNMEx3dkJMcVY4bmNzRCttQVlyM2hZb1VR?=
- =?utf-8?B?dmtnVzZrVk90a0xpMzdJdlNnWHhyQTdKdnFlanFRWUl0cFBWTlV5WEdhYUxy?=
- =?utf-8?B?QnYzWnlOa2JkMmxJQVBCeWxFS0kyV2RMaHdiMTlPWEFEcld2cm5WVG80SEZP?=
- =?utf-8?B?c2FBMGhpSU9lZGdYeGptLzlzVGk4cXc1QWNVYVdqTSsrWXdZU3Awb3ZSSmhU?=
- =?utf-8?B?YlljaklMUnJiVmFEWHd2SHN2MS81NDV0WnRaUnRsNTdPdFJSekNZMTQxb2N6?=
- =?utf-8?B?L1FZMmNHQzJ6ZXVwY2doSXF6UzRpaUhJVHV0b0huZmlZM2N0TzZCdUhnWlZh?=
- =?utf-8?B?YVlITTM0TTNweXFzRmNEVjF3RWkyazN3UGJQMXdwd0ZyRFlJdFdFdkExZWgr?=
- =?utf-8?B?Q1BOTUU3ZnI4N1A5Q1RWbUZjZ29IdlMxMDNYSE5rbnZobHZZWDN5MWJ5Mkd0?=
- =?utf-8?B?QzNqWXdWTVJpdllSMXpFRXFNZWVMMEE4aHhsZEZ0aHBTRTNEbGo1NVArVlJR?=
- =?utf-8?B?dmVwdDE3bEVVVW9oWDJWQ08zc044UnlxTTNWUk05alZsd0ZTL2RFeTErZ1dp?=
- =?utf-8?B?VzI1V1FwSGRJcGN5ZzNoVHVsa1JPekpSUnUzV0ZReCtkVFdiek8zSmk0ZXdr?=
- =?utf-8?B?NFM0MGg2SGhMb2NmTlFHRmFvdGFnY29Ec0tVM00vaFlnSXI4UFcxdktObFZJ?=
- =?utf-8?B?ZFlVRDdTQm9zTG5xSlRmL3lSNCtMQUcxeG10YUZZZ1BHYXBuejc4d0dPblJU?=
- =?utf-8?B?aHFTR1ZUbCtydDlxd2RSTWNPVVUvMjVmNktTRWJ6Z3dYN21aT2JOVXFTVEwv?=
- =?utf-8?B?N2ZLbTlRaEtTeDZ0MmVMcUh5dUtGdmJGY05aNHhHaktCM1dMUGVuNXRCU1lT?=
- =?utf-8?B?T0ZyNmhzdnhmQTZRYU9TdkFzNXUrb1pmUUxNSTJEQ0pYRU80dWRSbW1FVllY?=
- =?utf-8?B?cFlqQThvbkxYRVJNYWxxK21QUFM3dHlkWjVCcmIxVG5IWVpoNjRCV2RWY3E0?=
- =?utf-8?B?dDRSR3ZwMG9CTmxvN0NsVDlJRmNmTVhNSTBCalpPNExFWDJXSGpVWHFDc2VH?=
- =?utf-8?B?eTVielFqblMydnNzMHBpZmE3TjlJTFM3YUp3dytFQS95WUQzL2pCNlE2WC8y?=
- =?utf-8?B?T3k5UmxFcUNuQ1JDK1psSU1kdDJxQkJpUEUvUjBsb1VqTStoSnBjVSs5NmJM?=
- =?utf-8?B?RlUxWXF4SFhBWmp5aHowUDU0bCtnU1JKL2s0STdBUkI2NUk3L3FPY1Zvb0JU?=
- =?utf-8?B?VzQ1UFpRL3N0UGsvS0hUTC9LUmFtMklZREl6aFVYUHpnSFNoWDZZZ0c1OUVG?=
- =?utf-8?B?YnBIVFM5bTFSRE0wRDdpb1pXSlYvZkpVelBJbnRYMnVvWmUwK0JrdytUcDZz?=
- =?utf-8?B?NVE2MU5sSXZFd2dkWFpEZkUva1h1Y082MnQxZE5meXNFcnVPV2dPSEVoMm9K?=
- =?utf-8?B?cUMxSlJGS0pkNTdSQUNOaGt1TjByaUN6Rk0rQ0VVUEg5Zm1hcVdVRGxCSmg2?=
- =?utf-8?B?eGRmczVLRk52eWNNdmoyOFI4eU0wQ2oyUXRORmZLT3A5bmtWYmJ2bUd2Tjcx?=
- =?utf-8?Q?fj85k9Ze+cyze8jdZms5DtU=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3AC61150AE0AAC4FBBFC5082B8B4123B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783017483;
+	Wed, 13 Mar 2024 14:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710341972; cv=none; b=hOISN/LJS7ChWksGP+B4uegz0Zc2lBasPdJeFREwbdZEYateqnIIRprfnYqscQ6eCOrO9ZKYCD8GdzrdznEbA2rXSw5WrNIihtUIxbNVbFIBlwoSBACbNYaCsZSwkxcZo9yWgcsCuuuR3MF7gz7F4s5BSIJn+0zmRzIF9wQRDWo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710341972; c=relaxed/simple;
+	bh=LZLp5RrHmMyULHvEPNz65qxqnQ0PaY3rtOZLS9J+fVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MGGKWLlKfBlT38vmHA+uh6W1dEghXvlXDa98vHrxwtVXKAo+aoXcpRquTvr5koSXaQyhcPz8yu8ODR2kTzCWn8pvt04Tcyp8UeGQ9lq2WWIJUhQAyXAM7zZec1WggY7nnytdLBwJ9ZB+IbySc/1cCuYhu5GSdT+0nqF+FE7giN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jh5gs3Hu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4BABC433F1;
+	Wed, 13 Mar 2024 14:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710341972;
+	bh=LZLp5RrHmMyULHvEPNz65qxqnQ0PaY3rtOZLS9J+fVE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=jh5gs3HuWRleradC0rqbQBubdBJxmuLiEF/rkfwkTme4KEFXjh/RTaA/N3mZIb8/3
+	 1GCQDkuwuoaoNo1SjA+DFt/K9tlYoaaNf6jfHnIm6wsGwv9ngURfHq4lLTwPW3PRtN
+	 rq3bHRi9lhC+8MPjqtjnYQiBlE/Woz5NhX4GVRk5ffCBj5VtCg5avDl2SW5Fgq2On/
+	 4spOjTgwwAtRfoyiQgfREwDmQMGB9sszyNKejtWWvYo/o2IBMGbp/u7WNI4KwR4tgi
+	 nCIQOFEFW0DcXQRW0HJncsqU1ojQl6kLVz0VGnDoDqECtHtdi06/pCW4ALbEWlKdQR
+	 7Q1Z3n3qsOW7g==
+Date: Wed, 13 Mar 2024 09:59:30 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+Subject: [GIT PULL] PCI changes for v6.9
+Message-ID: <20240313145930.GA918008@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: afae2643-ed2e-4e9d-f97e-08dc436e0a3e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 14:58:27.6828
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ffwUAiNrtzhNzyySwZgK+AsQ51S24yfzhp2rrV+YFL2R4PEyHunFy49tlDrfAXOqyuYpMeAmqYgQviLaJifd9Godcr+UKuNQp4aweEx7CnQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7673
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-T24gV2VkLCAyMDI0LTAzLTEzIGF0IDA5OjA0ICswMDAwLCBDaHJpc3RvcGhlIExlcm95IHdyb3Rl
-Og0KPiANCj4gT25seSBhIHN0YXJ0X2dhcCBpcyBuZWVkZWQgPyBObyBuZWVkIG9mIGFuIGVuZF9n
-YXAgPw0KDQpZZWEsIHNoYWRvdyBzdGFja3Mgb25seSBoYXZlIGEgc3RhcnQgZ2FwLiBJZiBhbnkg
-ZW5kIGdhcCBpcyBuZWVkZWQsIGl0DQp3aWxsIGJlIG11Y2ggZWFzaWVyIHRvIGFkZCBhZnRlciBh
-bGwgb2YgdGhpcy4NCg==
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.9-changes
+
+for you to fetch changes up to aabf7173cdfed20ba8677548b601ee6d966712aa:
+
+  Merge branch 'pci/controller/qcom' (2024-03-12 12:14:26 -0500)
+
+----------------------------------------------------------------
+
+Enumeration:
+
+  - Consolidate interrupt related code in irq.c (Ilpo Järvinen)
+
+  - Reduce kernel size by replacing sysfs resource macros with functions
+    (Ilpo Järvinen)
+
+  - Reduce kernel size by compiling sysfs support only when CONFIG_SYSFS=y
+    (Lukas Wunner)
+
+  - Avoid using Extended Tags on 3ware-9650SE Root Port to work around an
+    apparent hardware defect (Jörg Wedekind)
+
+Resource management:
+
+  - Fix an MMIO mapping leak in pci_iounmap() (Philipp Stanner)
+
+  - Move pci_iomap.c and other PCI-specific devres code to drivers/pci
+    (Philipp Stanner)
+
+  - Consolidate PCI devres code in devres.c (Philipp Stanner)
+
+Power management:
+
+  - Avoid D3cold on Asus B1400 PCI-NVMe bridge, where firmware doesn't know
+    how to return correctly to D0, and remove previous quirk that wasn't as
+    specific (Daniel Drake)
+
+  - Allow runtime PM when the driver enables it but doesn't need any
+    runtime PM callbacks (Raag Jadav)
+
+  - Drain runtime-idle callbacks before driver removal to avoid races
+    between .remove() and .runtime_idle(), which caused intermittent page
+    faults when the rtsx .runtime_idle() accessed registers that its
+    .remove() had already unmapped (Rafael J. Wysocki)
+
+Virtualization:
+
+  - Avoid Secondary Bus Reset on LSI FW643 so it can be assigned to VMs
+    with VFIO, e.g., for professional audio software on many Apple
+    machines, at the cost of leaking state between VMs (Edmund Raile)
+
+Error handling:
+
+  - Print all logged TLP Prefixes, not just the first, after AER or DPC
+    errors (Ilpo Järvinen)
+
+  - Quirk the DPC PIO log size for Intel Raptor Lake Root Ports, which
+    still don't advertise a legal size (Paul Menzel)
+
+  - Ignore expected DPC Surprise Down errors on hot removal (Smita
+    Koralahalli)
+
+  - Block runtime suspend while handling AER errors to avoid races that
+    prevent the device form being resumed from D3hot (Stanislaw Gruszka)
+
+Peer-to-peer DMA:
+
+  - Use atomic XA allocation in RCU read section (Christophe JAILLET)
+
+ASPM:
+
+  - Collect bits of ASPM-related code that we need even without
+    CONFIG_PCIEASPM into aspm.c (David E. Box)
+
+  - Save/restore L1 PM Substates config for suspend/resume (David E. Box)
+
+  - Update save_save when ASPM config is changed, so a .slot_reset() during
+    error recovery restores the changed config, not the .probe()-time
+    config (Vidya Sagar)
+
+Endpoint framework:
+
+  - Refactor and improve pci_epf_alloc_space() API (Niklas Cassel)
+
+  - Clean up endpoint BAR descriptions (Niklas Cassel)
+
+  - Fix ntb_register_device() name leak in error path (Yang Yingliang)
+
+  - Return actual error code for pci_vntb_probe() failure (Yang Yingliang)
+
+Broadcom STB PCIe controller driver:
+
+  - Fix MDIO write polling, which previously never waited for completion
+    (Jonathan Bell)
+
+Cadence PCIe endpoint driver:
+
+  - Clear the ARI "Next Function Number" of last function (Jasko-EXT
+    Wojciech)
+
+Freescale i.MX6 PCIe controller driver:
+
+  - Simplify by replacing switch statements with function pointers for
+    different hardware variants (Frank Li)
+
+  - Simplify by using clk_bulk*() API (Frank Li)
+
+  - Remove redundant DT clock and reg/reg-name details (Frank Li)
+
+  - Add i.MX95 DT and driver support for both Root Complex and Endpoint
+    mode (Frank Li)
+
+Microsoft Hyper-V host bridge driver:
+
+  - Reduce memory usage by limiting ring buffer size to 16KB instead of 4
+    pages (Michael Kelley)
+
+Qualcomm PCIe controller driver:
+
+  - Add X1E80100 DT and driver support (Abel Vesa)
+
+  - Add DT 'required-opps' for SoCs that require a minimum performance
+    level (Johan Hovold)
+
+  - Make DT 'msi-map-mask' optional, depending on how MSI interrupts are
+    mapped (Johan Hovold)
+
+  - Disable ASPM L0s for sc8280xp, sa8540p and sa8295p because the PHY
+    configuration isn't tuned correctly for L0s (Johan Hovold)
+
+  - Split dt-binding qcom,pcie.yaml into qcom,pcie-common.yaml and separate
+    files for SA8775p, SC7280, SC8180X, SC8280XP, SM8150, SM8250, SM8350,
+    SM8450, SM8550 for easier reviewing (Krzysztof Kozlowski)
+
+  - Enable BDF to SID translation by disabling bypass mode (Manivannan
+    Sadhasivam)
+
+  - Add endpoint MHI support for Snapdragon SA8775P SoC (Mrinmay Sarkar)
+
+Synopsys DesignWare PCIe controller driver:
+
+  - Allocate 64-bit MSI address if no 32-bit address is available (Ajay
+    Agarwal)
+
+  - Fix endpoint Resizable BAR to actually advertise the required 1MB size
+    (Niklas Cassel)
+
+MicroSemi Switchtec management driver:
+
+  - Release resources if the .probe() fails (Christophe JAILLET)
+
+Miscellaneous:
+
+  - Make pcie_port_bus_type const (Ricardo B. Marliere)
+
+----------------------------------------------------------------
+Abel Vesa (2):
+      dt-bindings: PCI: qcom: Document the X1E80100 PCIe Controller
+      PCI: qcom: Add X1E80100 PCIe support
+
+Ajay Agarwal (1):
+      PCI: dwc: Strengthen the MSI address allocation logic
+
+Bjorn Helgaas (19):
+      PCI/ASPM: Disable L1 before configuring L1 Substates
+      Merge branch 'pci/aer'
+      Merge branch 'pci/aspm'
+      Merge branch 'pci/devres'
+      Merge branch 'pci/dpc'
+      Merge branch 'pci/enumeration'
+      Merge branch 'pci/p2pdma'
+      Merge branch 'pci/pm'
+      Merge branch 'pci/switchtec'
+      Merge branch 'pci/sysfs'
+      Merge branch 'pci/virtualization'
+      Merge branch 'pci/endpoint'
+      Merge branch 'pci/misc'
+      Merge branch 'pci/controller/broadcom'
+      Merge branch 'pci/controller/cadence'
+      Merge branch 'pci/controller/dwc'
+      Merge branch 'pci/controller/hyperv'
+      Merge branch 'pci/controller/imx'
+      Merge branch 'pci/controller/qcom'
+
+Christophe JAILLET (2):
+      PCI/P2PDMA: Fix a sleeping issue in a RCU read section
+      PCI: switchtec: Fix an error handling path in switchtec_pci_probe()
+
+Daniel Drake (2):
+      PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+      Revert "ACPI: PM: Block ASUS B1400CEAE from suspend to idle by default"
+
+David E. Box (5):
+      PCI/ASPM: Move pci_configure_ltr() to aspm.c
+      PCI/ASPM: Always build aspm.c
+      PCI/ASPM: Move pci_save_ltr_state() to aspm.c
+      PCI/ASPM: Save L1 PM Substates Capability for suspend/resume
+      PCI/ASPM: Call pci_save_ltr_state() from pci_save_pcie_state()
+
+Edmund Raile (1):
+      PCI: Mark LSI FW643 to avoid bus reset
+
+Frank Li (13):
+      PCI: imx6: Simplify clock handling by using clk_bulk*() function
+      PCI: imx6: Simplify PHY handling by using IMX6_PCIE_FLAG_HAS_PHYDRV
+      PCI: imx6: Simplify reset handling by using *_FLAG_HAS_*_RESET
+      PCI: imx6: Simplify ltssm_enable() by using ltssm_off and ltssm_mask
+      PCI: imx6: Simplify configure_type() by using mode_off and mode_mask
+      PCI: imx6: Simplify switch-case logic by introducing init_phy() callback
+      dt-bindings: imx6q-pcie: Clean up duplicate clocks check
+      dt-bindings: imx6q-pcie: Restruct reg and reg-name
+      PCI: imx6: Add iMX95 PCIe Root Complex support
+      PCI: imx6: Clean up addr_space retrieval code
+      PCI: imx6: Add epc_features in imx6_pcie_drvdata
+      dt-bindings: imx6q-pcie: Add iMX95 pcie endpoint compatible string
+      PCI: imx6: Add iMX95 Endpoint (EP) support
+
+Ilpo Järvinen (5):
+      PCI/DPC: Print all TLP Prefixes, not just the first
+      PCI: Place interrupt related code into irq.c
+      PCI/sysfs: Demacrofy pci_dev_resource_resize_attr(n) functions
+      PCI/AER: Use explicit register size for PCI_ERR_CAP
+      PCI/AER: Generalize TLP Header Log reading
+
+Jasko-EXT Wojciech (1):
+      PCI: cadence: Clear the ARI Capability Next Function Number of the last function
+
+Johan Hovold (5):
+      PCI/AER: Fix rootport attribute paths in ABI docs
+      PCI/AER: Clean up version indentation in ABI docs
+      dt-bindings: PCI: qcom: Allow 'required-opps'
+      dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
+      PCI: qcom: Disable ASPM L0s for sc8280xp, sa8540p and sa8295p
+
+Jonathan Bell (1):
+      PCI: brcmstb: Fix broken brcm_pcie_mdio_write() polling
+
+Jörg Wedekind (1):
+      PCI: Mark 3ware-9650SE Root Port Extended Tags as broken
+
+Krzysztof Kozlowski (9):
+      dt-bindings: PCI: qcom,pcie-sm8550: Move SM8550 to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sm8450: Move SM8450 to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sm8250: Move SM8250 to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sm8150: Move SM8150 to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sm8350: Move SM8350 to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sc8280xp: Move SC8280XP to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sc8180x: Move SC8180X to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sc7280: Move SC7280 to dedicated schema
+      dt-bindings: PCI: qcom,pcie-sa8775p: Move SA8775p to dedicated schema
+
+Lukas Wunner (2):
+      PCI/sysfs: Compile pci-sysfs.c only if CONFIG_SYSFS=y
+      PCI: Remove obsolete pci_cleanup_rom() declaration
+
+Manivannan Sadhasivam (2):
+      PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function names
+      PCI: qcom: Enable BDF to SID translation properly
+
+Michael Kelley (1):
+      PCI: hv: Fix ring buffer size calculation
+
+Mrinmay Sarkar (1):
+      PCI: epf-mhi: Add support for SA8775P SoC
+
+Niklas Cassel (7):
+      PCI: endpoint: Refactor pci_epf_alloc_space() API
+      PCI: endpoint: Improve pci_epf_alloc_space() API
+      PCI: endpoint: pci-epf-test: Remove superfluous checks for pci_epf_alloc_space() API
+      PCI: endpoint: pci-epf-vntb: Remove superfluous checks for pci_epf_alloc_space() API
+      PCI: endpoint: Clean up hardware description for BARs
+      PCI: endpoint: Drop only_64bit on reserved BARs
+      PCI: dwc: endpoint: Fix advertised resizable BAR size
+
+Paul Menzel (1):
+      PCI/DPC: Quirk PIO log size for Intel Raptor Lake Root Ports
+
+Philipp Stanner (4):
+      pci_iounmap(): Fix MMIO mapping leak
+      PCI: Move pci_iomap.c to drivers/pci/
+      PCI: Move PCI-specific devres code to drivers/pci/
+      PCI: Move devres code from pci.c to devres.c
+
+Raag Jadav (1):
+      PCI/PM: Allow runtime PM with no PM callbacks at all
+
+Rafael J. Wysocki (1):
+      PCI/PM: Drain runtime-idle callbacks before driver removal
+
+Ricardo B. Marliere (2):
+      PCI: endpoint: Make pci_epf_bus_type const
+      PCI: Make pcie_port_bus_type const
+
+Richard Zhu (1):
+      dt-bindings: imx6q-pcie: Add imx95 pcie compatible string
+
+Smita Koralahalli (1):
+      PCI/DPC: Ignore Surprise Down error on hot removal
+
+Stanislaw Gruszka (1):
+      PCI/AER: Block runtime suspend when handling errors
+
+Vidya Sagar (1):
+      PCI/ASPM: Update save_state when configuration changes
+
+Yang Yingliang (2):
+      NTB: fix possible name leak in ntb_register_device()
+      PCI: epf-vntb: Return actual error code during pci_vntb_probe() failure
+
+ .../ABI/testing/sysfs-bus-pci-devices-aer_stats    |  18 +-
+ .../bindings/pci/fsl,imx6q-pcie-common.yaml        |  17 +-
+ .../devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml |  46 +-
+ .../devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |  49 +-
+ .../devicetree/bindings/pci/qcom,pcie-common.yaml  | 100 ++++
+ .../devicetree/bindings/pci/qcom,pcie-sa8775p.yaml | 166 ++++++
+ .../devicetree/bindings/pci/qcom,pcie-sc7280.yaml  | 166 ++++++
+ .../devicetree/bindings/pci/qcom,pcie-sc8180x.yaml | 170 ++++++
+ .../bindings/pci/qcom,pcie-sc8280xp.yaml           | 180 ++++++
+ .../devicetree/bindings/pci/qcom,pcie-sm8150.yaml  | 158 +++++
+ .../devicetree/bindings/pci/qcom,pcie-sm8250.yaml  | 173 ++++++
+ .../devicetree/bindings/pci/qcom,pcie-sm8350.yaml  | 184 ++++++
+ .../devicetree/bindings/pci/qcom,pcie-sm8450.yaml  | 178 ++++++
+ .../devicetree/bindings/pci/qcom,pcie-sm8550.yaml  | 171 ++++++
+ .../bindings/pci/qcom,pcie-x1e80100.yaml           | 165 ++++++
+ .../devicetree/bindings/pci/qcom,pcie.yaml         | 378 +-----------
+ Documentation/driver-api/device-io.rst             |   3 -
+ Documentation/driver-api/pci/pci.rst               |   6 +
+ MAINTAINERS                                        |   1 -
+ arch/x86/pci/fixup.c                               |  48 ++
+ drivers/acpi/sleep.c                               |  12 -
+ drivers/firmware/efi/cper.c                        |   4 +-
+ drivers/ntb/core.c                                 |   8 +-
+ drivers/pci/Kconfig                                |   5 +
+ drivers/pci/Makefile                               |   7 +-
+ drivers/pci/controller/cadence/pcie-cadence-ep.c   |  14 +-
+ drivers/pci/controller/cadence/pcie-cadence.h      |   6 +
+ drivers/pci/controller/dwc/pci-imx6.c              | 636 ++++++++++++---------
+ drivers/pci/controller/dwc/pci-keystone.c          |  12 +-
+ drivers/pci/controller/dwc/pci-layerscape-ep.c     |   5 +-
+ drivers/pci/controller/dwc/pcie-designware-ep.c    |   7 +-
+ drivers/pci/controller/dwc/pcie-designware-host.c  |  21 +-
+ drivers/pci/controller/dwc/pcie-keembay.c          |   8 +-
+ drivers/pci/controller/dwc/pcie-qcom.c             |  42 +-
+ drivers/pci/controller/dwc/pcie-rcar-gen4.c        |   4 +-
+ drivers/pci/controller/dwc/pcie-tegra194.c         |  10 +-
+ drivers/pci/controller/dwc/pcie-uniphier-ep.c      |  15 +-
+ drivers/pci/controller/pci-hyperv.c                |   3 +-
+ drivers/pci/controller/pcie-brcmstb.c              |   2 +-
+ drivers/pci/controller/pcie-rcar-ep.c              |  14 +-
+ drivers/pci/devres.c                               | 448 +++++++++++++++
+ drivers/pci/endpoint/functions/pci-epf-mhi.c       |  21 +-
+ drivers/pci/endpoint/functions/pci-epf-ntb.c       |   6 +-
+ drivers/pci/endpoint/functions/pci-epf-test.c      |  21 +-
+ drivers/pci/endpoint/functions/pci-epf-vntb.c      |  25 +-
+ drivers/pci/endpoint/pci-epc-core.c                |  25 +-
+ drivers/pci/endpoint/pci-epf-core.c                |  20 +-
+ lib/pci_iomap.c => drivers/pci/iomap.c             |   5 +-
+ drivers/pci/irq.c                                  | 204 +++++++
+ drivers/pci/mmap.c                                 |  29 +
+ drivers/pci/p2pdma.c                               |   2 +-
+ drivers/pci/pci-driver.c                           |  23 +-
+ drivers/pci/pci-sysfs.c                            | 167 +++---
+ drivers/pci/pci.c                                  | 496 ++--------------
+ drivers/pci/pci.h                                  |  55 +-
+ drivers/pci/pcie/Makefile                          |   2 +-
+ drivers/pci/pcie/aer.c                             |  20 +-
+ drivers/pci/pcie/aspm.c                            | 268 ++++++++-
+ drivers/pci/pcie/dpc.c                             |  76 ++-
+ drivers/pci/pcie/err.c                             |  20 +
+ drivers/pci/pcie/portdrv.h                         |   2 +-
+ drivers/pci/probe.c                                |  66 +--
+ drivers/pci/quirks.c                               |  11 +
+ drivers/pci/setup-irq.c                            |  64 ---
+ drivers/pci/switch/switchtec.c                     |   4 +-
+ include/linux/aer.h                                |  11 +-
+ include/linux/pci-epc.h                            |  39 +-
+ include/linux/pci-epf.h                            |   4 +-
+ include/linux/pci.h                                |   2 +-
+ include/ras/ras_event.h                            |  10 +-
+ lib/Kconfig                                        |   3 -
+ lib/Makefile                                       |   1 -
+ lib/devres.c                                       | 208 +------
+ 73 files changed, 3796 insertions(+), 1774 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-common.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sa8775p.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sc7280.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sc8180x.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sc8280xp.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sm8150.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sm8250.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sm8350.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sm8450.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-sm8550.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-x1e80100.yaml
+ create mode 100644 drivers/pci/devres.c
+ rename lib/pci_iomap.c => drivers/pci/iomap.c (99%)
+ delete mode 100644 drivers/pci/setup-irq.c
 
