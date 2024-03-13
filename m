@@ -1,138 +1,172 @@
-Return-Path: <linux-kernel+bounces-101611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDF987A957
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:17:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C0D487A95C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:18:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50F611C219E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:17:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A81628A0E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:18:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2C44652F;
-	Wed, 13 Mar 2024 14:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFF44652F;
+	Wed, 13 Mar 2024 14:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="lSSQi3xc"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="myNkllq/"
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4566C41A80;
-	Wed, 13 Mar 2024 14:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4069746433
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710339434; cv=none; b=jwLOQq6SNtPJmH1mt4/p6QpcI//tsEQqUuewT67SenjCRvBQ8tbJcFVPd/Ky3DnO8iMqa2hd5+u3wk9lsifbC1j3Ukj2uBt8i0dRoIBEXKa457EnCet4sOnb4C7zHfF+m5fgxaSkS0WLYrggYOtvvydEGJsVnJKsD+7HqJblQJo=
+	t=1710339489; cv=none; b=sSUn5tZlFO0ATk+CrPbSGrCKIwUkeoQJGUH/iDQJLC9vBlEEwZZiSbpq8WetFj4bJ2RBrdr5zBUBc/G3wCeXhRIbf4XcvNPLq9SsSSP5Xm/rn6iOnZdkK0OCTewMBek+leTD1U5REcufpFV+O3K6zSRzflhO8aYbQwAI5VCH32E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710339434; c=relaxed/simple;
-	bh=7LeOG2wNuxDjCRbEa+kiNhbHeBP3r4A3vvB0gv+OL1o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=icaIFBTIbQqZG8qJIpZcW+Rgo+eGs5/p6BPM3zpHGeW1Vmg2n6gmSCPKgEDOoovq9MRDk0KZYg72LqZ25yVBbjFCcGx+NugaCrdAx65gXb/Iq47NtE7dhm4TU59Cu2FpCvV2eUaqM/3r54ki6YtJrR4F858pnNbjpJ0WE9qd0Xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=lSSQi3xc; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710339431;
-	bh=7LeOG2wNuxDjCRbEa+kiNhbHeBP3r4A3vvB0gv+OL1o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lSSQi3xcCksgyjMDBukyOvFXAqcj6zABeVftEMLPXBvAz3ZUF9aONImTVbkJL4mFq
-	 fSz1SeNylIwugM4ZgfGQ6o6/yFsnXJVIanSABL1R4XAGkfX0NCA99H4rZqBxQe2W6F
-	 ei7OplwH9OSwGDXVKvzzel5+BiJyICrp8R205slhxuB8xAfeqsV/0LrjEhiHMAIwNE
-	 VRaWQ+R+8W8oyfgNGlCFUjLtusKYFKcGmBPsfdkh/fehr1wfpplv7a6HBqan5n/u5i
-	 D8I8dmYOGAS2kG0swlvF7SXCxCYtgkoybq58Df8L6tUIK0YK0S9UL0HATzOgu8vO0S
-	 6REnjOzPiBQiA==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 820EE37820D4;
-	Wed, 13 Mar 2024 14:17:11 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 13DD81061C35; Wed, 13 Mar 2024 15:17:11 +0100 (CET)
-Date: Wed, 13 Mar 2024 15:17:11 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Subject: Re: [PATCH v1 1/1] net: stmmac: dwmac-rk: Remove unused of_gpio.h
-Message-ID: <mz55sv7refxxpf7krrbbu4etnim6z7kv4ksovg2vsoi5dzymub@hsi3qgqnzm3k>
-References: <20240313140057.2088667-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1710339489; c=relaxed/simple;
+	bh=YdVzmhaBVHm20JsyPQZC+11KYcds7si9Z8hnWDsJlEg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Rl5urunOAcCMGxaDmHxhs50Cb+YegQuwlDfuYiL7Oh9AqbyDGBl3RcjWSlYkK8801zlxd+NkwfWx/Mp9pStDHO+y8fv4YJkVeIhNXSNNlNp8YYQpXl7KzmpyJcagocWloaxCHFRwMtGC6hd2UdZXxxP7VDilshWs5nPRv2tIdhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=myNkllq/; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e4e673d9abso2430154a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710339487; x=1710944287; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QD3YDr8tOSlxd6SayzAWcggM8xuhZzTheB38pd8zJuE=;
+        b=myNkllq/dcfYsmnH29jh2ZIN+Mn1+Tyq9HMdK4V58XzRODKuczVMegwi9B3uGY73/T
+         J6ABGIE2nTUggcnKddFqEc7Q1i9f/x7bwX6ehqeVieldguuRfYWbxXSMxcOdjpy1ASu1
+         1EyS2flbhokEs7XR3iyY8tZ5pHoGyC+aJd5lEk4EG6qNhzVmzSZKFCKCuG9636NNrKVV
+         LMhStHtoVipluS0jW7EJEm7Dpymbc/Vj2//0wV5tf9WnYMGqTBUDjwNzZgWteBbvvj3w
+         v6bTKXwHhTgXB8b53QiFC1lmWul2ZhnoRGAlhxqjUlGVCtsN0mYVUy5toA6+eZg7rtyx
+         Gu5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710339487; x=1710944287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QD3YDr8tOSlxd6SayzAWcggM8xuhZzTheB38pd8zJuE=;
+        b=B1+u9yFZkIhXPabmemE56cedU1M9+lZJKwhaWMcUQp0r2z9z1P/shJ6gNpD9pWBjKn
+         hhattfdMVwyZe7NYS+rMqn3FSe5pmwFYRjtqnWd6oZDfPWILZnt0p0h1yqte18uWVbaR
+         2wkJKBMr8ICq6aWqpDsRbMCwh8UV2/28cXVsq2x9zO6dapltAFHJsyETso1PIo1IbJTj
+         fHSNaVpji7eGQUzU7uR9KScDVrz/ndGNl5ULlPX8GiTVRtiEu9QHuLp0YG7b06CBl870
+         i0RE2KRqoSCnIriVDf9WxmMofcDJW4CFKL0ZOfTe4LinP4eTdIA3lAJ1m9DJPzNajSWN
+         0kRg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKg3K8WVPaGFhD58mTPSmbdEXQT50P1LRk/V4iZ4+S33nagT1ERTuGTdcGxRYavr/c7RDXKC4+81WnNkK2f4xe3u3kaOm5xOzYfE6J
+X-Gm-Message-State: AOJu0YyMQPe1/NUNP96CNQ8wTu0FUq/9kWI68QhXExPpQSvdVBSImz8m
+	0MSgqTWu08C5ktVFHnRXB9Ck/I1MwYk2sI5cpRSh4WIxpNtmdKhk4VExZ7PKAMtjddFJIN3yJvZ
+	FIe3KMWf8d6m4TqqI+443W3PCu8YaVgiltGvs
+X-Google-Smtp-Source: AGHT+IHr4+ut5/5+q0jlcqVCNExW9zh6aYQqmP6HkgA4swCQpZjfqoozX6xBkQQpJ7Z0sfcwNMs78xq0maqVC4Dq+UY=
+X-Received: by 2002:a05:6830:1198:b0:6e5:3c63:7895 with SMTP id
+ u24-20020a056830119800b006e53c637895mr14841otq.11.1710339487165; Wed, 13 Mar
+ 2024 07:18:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s4m5pnqu3w2utz3e"
-Content-Disposition: inline
-In-Reply-To: <20240313140057.2088667-1-andriy.shevchenko@linux.intel.com>
-
-
---s4m5pnqu3w2utz3e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <ZfGqCWzyVzyGQrAQ@x1> <ZfGudRl9-tB_TszO@x1>
+In-Reply-To: <ZfGudRl9-tB_TszO@x1>
+From: Marco Elver <elver@google.com>
+Date: Wed, 13 Mar 2024 15:17:28 +0100
+Message-ID: <CANpmjNPrssMSw+jaP1ods1NZLxnk+bO_P9FUmRLs-ENEMPCcgg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
+ on RT.
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, 13 Mar 2024 at 14:47, Arnaldo Carvalho de Melo <acme@kernel.org> wr=
+ote:
+>
+> On Wed, Mar 13, 2024 at 10:28:44AM -0300, Arnaldo Carvalho de Melo wrote:
+> > On Wed, Mar 13, 2024 at 09:13:03AM +0100, Sebastian Andrzej Siewior wro=
+te:
+> > > One part I don't get: did you let it run or did you kill it?
+>
+> > If I let them run they will finish and exit, no exec_child remains.
+>
+> > If I instead try to stop the loop that goes on forking the 100 of them,
+> > then the exec_child remain spinning.
+>
+> > > `exec_child' spins until a signal is received or the parent kills it.=
+ So
+>
+> > > it shouldn't remain there for ever. And my guess, that it is in spinn=
+ing
+> > > in userland and not in kernel.
+>
+> > Checking that now:
+>
+> tldr; the tight loop, full details at the end.
+>
+> 100.00  b6:   mov    signal_count,%eax
+>               test   %eax,%eax
+>             =E2=86=91 je     b6
+>
+> remove_on_exec.c
+>
+> /* For exec'd child. */
+> static void exec_child(void)
+> {
+>         struct sigaction action =3D {};
+>         const int val =3D 42;
+>
+>         /* Set up sigtrap handler in case we erroneously receive a trap. =
+*/
+>         action.sa_flags =3D SA_SIGINFO | SA_NODEFER;
+>         action.sa_sigaction =3D sigtrap_handler;
+>         sigemptyset(&action.sa_mask);
+>         if (sigaction(SIGTRAP, &action, NULL))
+>                 _exit((perror("sigaction failed"), 1));
+>
+>         /* Signal parent that we're starting to spin. */
+>         if (write(STDOUT_FILENO, &val, sizeof(int)) =3D=3D -1)
+>                 _exit((perror("write failed"), 1));
+>
+>         /* Should hang here until killed. */
+>         while (!signal_count);
+> }
+>
+> So probably just a test needing to be a bit more polished?
 
-On Wed, Mar 13, 2024 at 04:00:57PM +0200, Andy Shevchenko wrote:
-> of_gpio.h is deprecated and subject to remove.
-> The driver doesn't use it, simply remove the unused header.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+Yes, possible.
 
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Seems like it, on a newer machine, faster, I managed to reproduce it on
+> a non-RT kernel, with one exec_child remaining:
+>
+>   1.44  b6:   mov   signal_count,%eax
+>               test  %eax,%eax
+>  98.56      =E2=86=91 je    b6
 
--- Sebastian
+It's unclear to me why that happens. But I do recall seeing it before,
+and my explanation was that with too many concurrent copies of the
+test the system either ran out of memory (maybe?) because the stress
+test also spawns 30 parallel copies of the "exec_child" subprocess. So
+with the 100 parallel copies we end up with 30 * 100 processes. Maybe
+that's too much?
 
->  drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net=
-/ethernet/stmicro/stmmac/dwmac-rk.c
-> index 382e8de1255d..7ae04d8d291c 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-> @@ -12,10 +12,8 @@
->  #include <linux/clk.h>
->  #include <linux/phy.h>
->  #include <linux/of_net.h>
-> -#include <linux/gpio.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_gpio.h>
->  #include <linux/platform_device.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/delay.h>
-> --=20
-> 2.43.0.rc1.1.gbec44491f096
->=20
+In any case, if the kernel didn't fall over during that kind of stress
+testing, and the test itself passes when run as a single copy, then
+I'd conclude all looks good.
 
---s4m5pnqu3w2utz3e
-Content-Type: application/pgp-signature; name="signature.asc"
+This particular feature of perf along with testing it once before
+melted Peter's and my brain [1]. I hope your experience didn't result
+in complete brain-melt. ;-)
 
------BEGIN PGP SIGNATURE-----
+[1] https://lore.kernel.org/all/Y0VofNVMBXPOJJr7@elver.google.com/
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXxtV4ACgkQ2O7X88g7
-+ppV1A//fyQqXP+7uaMBcWR9nRq+3t4g6Z61t1qGl8setP/+tyCbdYlUZ7CWSBAq
-Kk/fxK5Jh9ChrPByBz8/kNmub2Qj/x0iHKyabQYcH9p0Ifon98pP+D/Cw5olXAIf
-e4uq/bKHwSPe8XnB9YSgseVci5CSqBzwoc+1pZkhi2zZwTskKq6jFar/KWDE6GiL
-1QdlO5JOojO6Iv+cJKtqSmZ0ebc6WvhDb25Kcz0bkNy2znTy0XZlpVZrHCFV0SXf
-6lDxoBN6vba7rVq+2RFnT6ieam+5L8unJGn0cnePHoWQX9yekrrZNMfdYDBZxIfj
-PdB4vVt8aQohtGRU0m36RfKiQEDGim61oji9NiHhLPt8yhWSK0kWPy5An5LfnyvS
-0HGkd5lKGYSlfTM71bt7YkAL1ixgJZ3iOzfe/J2KlpyarZMCskh2ycB+4vl0XJkS
-rC5OwSXtLF+/34mHJblKiMaKcIxrLX5Pssa/d+6EE8lfVTqlkZdPRipyPZUbdZ7r
-J+JibT3Yv5coDWAnkBBeB+P9rKj9CUXK2NHA9exN/3cKnYglBn2T8BC8XiaSVOWd
-ITDvFSs3fQjLjXtOB1UbA2nJHl8kVtifdQDTd0oXVnR6FuBp+I2lG2nLVhzeQ4NA
-+8ZdWZIhI0lxvN9xMHLS17MpnvBh/0iEUtPAlkN6/Z3kM1IAfk8=
-=bv+r
------END PGP SIGNATURE-----
-
---s4m5pnqu3w2utz3e--
+Thanks,
+-- Marco
 
