@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-101824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9032D87ABE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AEEF87ABED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DBC3B2461A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:52:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1544B236D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB006BB4A;
-	Wed, 13 Mar 2024 16:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B946BFB3;
+	Wed, 13 Mar 2024 16:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQSnvrhv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfX/TMhs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0B16AFA9;
-	Wed, 13 Mar 2024 16:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D8D6BB54;
+	Wed, 13 Mar 2024 16:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347856; cv=none; b=qHIaaB9nFbYlYFgYnUe6EfFihW+Dey/gBfxzphLrjM5CYbFltmO7sSPZoIIqu8Z23lHJpFSRZvsj/AwIK/cNU+06CNsKcaslDcR+RjIXfqUaOK+2trcCMBGrbpq2WHtlTe1ZtCXbgcQegf8dbfIKUmDFOspS4i03c/pp6jpCk3E=
+	t=1710347858; cv=none; b=MPXhCeWY+Ki6/wXbAlWKPuTOWWpPyParlv74hDu3IhF8Wg44mdrAcjaap82FrZHWwwa6aJmHW+EagcGzC82MUgHYKGOVg8xlXI+CLCl9RvGejuHpLXPGBOuXnf9gbFfztT1vBDd8ui45pCy7p+oQs2KV/sJF1nP/DW0pcHyMRgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347856; c=relaxed/simple;
-	bh=HgNeIMIUSl/ymCYFblU0oK2L6lUJ4nE4XJFe/wXIm+4=;
+	s=arc-20240116; t=1710347858; c=relaxed/simple;
+	bh=zVXcsojt3NoTCzwiD8lRVyRUKNBhxrBo3ee7NlCp+A4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jT3U+iHH7zUyhzbXeJjO/zdXj7jbWrdn4H+NXt61m18nbEbneIWI6kyLvu8JOL6ZZ0BIptP8vAaBWlj5rwzDciXTOntUWS326ubr6ibtqWQTRhVcwWeWZARg9HMFblLl5simHrXUsyHNxatemxZ8kJgrS+qq+LRmXj+IJYsj0HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQSnvrhv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0A9C3277B;
-	Wed, 13 Mar 2024 16:37:35 +0000 (UTC)
+	 MIME-Version:Content-Type; b=b/HThUz7RxScbjEqiUyUCfYFttFurn9jhpYcsZJCJO1fE4DW8qqTyK3iIOeKpEDOD26VnaCMb6Jdef/fkPeEGe2qQxHE8uT3qFn0hP6XYojsGesLGmRn9gzSZA3CHA2ewwH7ksuDU8otluj7YUKZKQRV2hQjgq7EoCOTkORzNmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfX/TMhs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E98CEC43399;
+	Wed, 13 Mar 2024 16:37:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347856;
-	bh=HgNeIMIUSl/ymCYFblU0oK2L6lUJ4nE4XJFe/wXIm+4=;
+	s=k20201202; t=1710347857;
+	bh=zVXcsojt3NoTCzwiD8lRVyRUKNBhxrBo3ee7NlCp+A4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CQSnvrhvnSufQ1gxk81VAD6F/Os3oHhgWiopQbCQ02YclTnCNSxSNquDccXkovP/a
-	 Nbq4+uAY+vLfPsajXI9l5Sfj6oCXReCNNpo5ZPnEvMyqG2IqR+X/p8KgXOQ4W4Cgse
-	 KWYe50oC3QTvsnRX3AfUQHZktpsJFubPKUpFXOTyy0zu/kCtuJ2j+9KHGvAdFoebw+
-	 XRABx3B1aeMNQNdNTnBzwR2xzQMSoScdFCyGwWdCIRUKHSDt+SixKTd5tM2q808rdb
-	 SMXX7yTdfbYBxp2NPBlx/03Jl7C4bJG6qtsF7n9Uiv/AoGYPn/+H27SY0bkI+E2iuJ
-	 gf+YsZ5alKWkw==
+	b=lfX/TMhs273B8vLRmEtwWzwHPYvVxVXYbyHkvAnPYi53mCqND6Ex1uHa8R+UsMwxn
+	 MbiSQKQCQKz4YRmsGWOpFnZj8b8IuRg4HSAHuGlrCeAG09z8z0M0Uvv+gK3t3N75nq
+	 je2EyCKFdlSu2HVqzjYfaunqN6wXbYf8BpqNGgUzoKHlMQlFGebnK/siUpYp5+yrbT
+	 hyRSxhV7WLzA0R9+tq+gS+7BbbcMLyObOu9SS9hLPzHlmNwlCDsZuPEoJJKi6oyhfT
+	 TaIX9znaxGGSAlgvS0vNPob3P4Vl+/pUk32k86iWJlb3fU387sfUpohGnR497rVxL6
+	 bRG28baouDiDA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Vadim Fedorenko <vadfed@meta.com>,
+Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 21/60] net/mlx5e: Switch to using _bh variant of of spinlock API in port timestamping NAPI poll context
-Date: Wed, 13 Mar 2024 12:36:28 -0400
-Message-ID: <20240313163707.615000-22-sashal@kernel.org>
+Subject: [PATCH 6.6 22/60] tracing/net_sched: Fix tracepoints that save qdisc_dev() as a string
+Date: Wed, 13 Mar 2024 12:36:29 -0400
+Message-ID: <20240313163707.615000-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -59,6 +59,7 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.22-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-6.6.y
@@ -69,68 +70,87 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-[ Upstream commit 90502d433c0e7e5483745a574cb719dd5d05b10c ]
+[ Upstream commit 51270d573a8d9dd5afdc7934de97d66c0e14b5fd ]
 
-The NAPI poll context is a softirq context. Do not use normal spinlock API
-in this context to prevent concurrency issues.
+I'm updating __assign_str() and will be removing the second parameter. To
+make sure that it does not break anything, I make sure that it matches the
+__string() field, as that is where the string is actually going to be
+saved in. To make sure there's nothing that breaks, I added a WARN_ON() to
+make sure that what was used in __string() is the same that is used in
+__assign_str().
 
-Fixes: 3178308ad4ca ("net/mlx5e: Make tx_port_ts logic resilient to out-of-order CQEs")
-Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-CC: Vadim Fedorenko <vadfed@meta.com>
+In doing this change, an error was triggered as __assign_str() now expects
+the string passed in to be a char * value. I instead had the following
+warning:
+
+include/trace/events/qdisc.h: In function ‘trace_event_raw_event_qdisc_reset’:
+include/trace/events/qdisc.h:91:35: error: passing argument 1 of 'strcmp' from incompatible pointer type [-Werror=incompatible-pointer-types]
+   91 |                 __assign_str(dev, qdisc_dev(q));
+
+That's because the qdisc_enqueue() and qdisc_reset() pass in qdisc_dev(q)
+to __assign_str() and to __string(). But that function returns a pointer
+to struct net_device and not a string.
+
+It appears that these events are just saving the pointer as a string and
+then reading it as a string as well.
+
+Use qdisc_dev(q)->name to save the device instead.
+
+Fixes: a34dac0b90552 ("net_sched: add tracepoints for qdisc_reset() and qdisc_destroy()")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Reviewed-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ include/trace/events/qdisc.h | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
-index 803035d4e5976..15d97c685ad33 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
-@@ -42,9 +42,9 @@ mlx5e_ptp_port_ts_cqe_list_add(struct mlx5e_ptp_port_ts_cqe_list *list, u8 metad
+diff --git a/include/trace/events/qdisc.h b/include/trace/events/qdisc.h
+index a3995925cb057..1f4258308b967 100644
+--- a/include/trace/events/qdisc.h
++++ b/include/trace/events/qdisc.h
+@@ -81,14 +81,14 @@ TRACE_EVENT(qdisc_reset,
+ 	TP_ARGS(q),
  
- 	WARN_ON_ONCE(tracker->inuse);
- 	tracker->inuse = true;
--	spin_lock(&list->tracker_list_lock);
-+	spin_lock_bh(&list->tracker_list_lock);
- 	list_add_tail(&tracker->entry, &list->tracker_list_head);
--	spin_unlock(&list->tracker_list_lock);
-+	spin_unlock_bh(&list->tracker_list_lock);
- }
+ 	TP_STRUCT__entry(
+-		__string(	dev,		qdisc_dev(q)	)
+-		__string(	kind,		q->ops->id	)
+-		__field(	u32,		parent		)
+-		__field(	u32,		handle		)
++		__string(	dev,		qdisc_dev(q)->name	)
++		__string(	kind,		q->ops->id		)
++		__field(	u32,		parent			)
++		__field(	u32,		handle			)
+ 	),
  
- static void
-@@ -54,9 +54,9 @@ mlx5e_ptp_port_ts_cqe_list_remove(struct mlx5e_ptp_port_ts_cqe_list *list, u8 me
+ 	TP_fast_assign(
+-		__assign_str(dev, qdisc_dev(q));
++		__assign_str(dev, qdisc_dev(q)->name);
+ 		__assign_str(kind, q->ops->id);
+ 		__entry->parent = q->parent;
+ 		__entry->handle = q->handle;
+@@ -106,14 +106,14 @@ TRACE_EVENT(qdisc_destroy,
+ 	TP_ARGS(q),
  
- 	WARN_ON_ONCE(!tracker->inuse);
- 	tracker->inuse = false;
--	spin_lock(&list->tracker_list_lock);
-+	spin_lock_bh(&list->tracker_list_lock);
- 	list_del(&tracker->entry);
--	spin_unlock(&list->tracker_list_lock);
-+	spin_unlock_bh(&list->tracker_list_lock);
- }
+ 	TP_STRUCT__entry(
+-		__string(	dev,		qdisc_dev(q)	)
+-		__string(	kind,		q->ops->id	)
+-		__field(	u32,		parent		)
+-		__field(	u32,		handle		)
++		__string(	dev,		qdisc_dev(q)->name	)
++		__string(	kind,		q->ops->id		)
++		__field(	u32,		parent			)
++		__field(	u32,		handle			)
+ 	),
  
- void mlx5e_ptpsq_track_metadata(struct mlx5e_ptpsq *ptpsq, u8 metadata)
-@@ -155,7 +155,7 @@ static void mlx5e_ptpsq_mark_ts_cqes_undelivered(struct mlx5e_ptpsq *ptpsq,
- 	struct mlx5e_ptp_metadata_map *metadata_map = &ptpsq->metadata_map;
- 	struct mlx5e_ptp_port_ts_cqe_tracker *pos, *n;
- 
--	spin_lock(&cqe_list->tracker_list_lock);
-+	spin_lock_bh(&cqe_list->tracker_list_lock);
- 	list_for_each_entry_safe(pos, n, &cqe_list->tracker_list_head, entry) {
- 		struct sk_buff *skb =
- 			mlx5e_ptp_metadata_map_lookup(metadata_map, pos->metadata_id);
-@@ -170,7 +170,7 @@ static void mlx5e_ptpsq_mark_ts_cqes_undelivered(struct mlx5e_ptpsq *ptpsq,
- 		pos->inuse = false;
- 		list_del(&pos->entry);
- 	}
--	spin_unlock(&cqe_list->tracker_list_lock);
-+	spin_unlock_bh(&cqe_list->tracker_list_lock);
- }
- 
- #define PTP_WQE_CTR2IDX(val) ((val) & ptpsq->ts_cqe_ctr_mask)
+ 	TP_fast_assign(
+-		__assign_str(dev, qdisc_dev(q));
++		__assign_str(dev, qdisc_dev(q)->name);
+ 		__assign_str(kind, q->ops->id);
+ 		__entry->parent = q->parent;
+ 		__entry->handle = q->handle;
 -- 
 2.43.0
 
