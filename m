@@ -1,196 +1,157 @@
-Return-Path: <linux-kernel+bounces-101658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 478FB87A9EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:03:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5858887A9FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:05:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CA4D2854FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:03:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66E9DB22914
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:05:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECDD46441;
-	Wed, 13 Mar 2024 15:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6276F44C73;
+	Wed, 13 Mar 2024 15:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b3LQq+qn"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="u4TINEae"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DBEA45942
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0983545BEC;
+	Wed, 13 Mar 2024 15:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710342172; cv=none; b=gZEBGBKNtVXCA3RN2VbMUwkj1rqPEz0qBZlSSJhUfBcmhXkQOrGHr7tjPmMECXfJrlfK1lTo4WZTNTH5cAsQEMXBvlNtQc6HAMmGqFWERJ72AbNdh/rS7qhtRFkcG0O/AP3rHZu7O2DftOkwt+mbf0rblwOdmfBuwxw99hWZ2+A=
+	t=1710342293; cv=none; b=Z3UkJ+6xAb5IrvtYOuGsHSiCeN13msux/dk2jGmepDpKojTCLFiufaU2APeGPHys8KaQmd5Zdpjrvfpww/TpoeoZnQuFEq7E2GEAtE+f5C4GIORA7AXShu7dZIT31xTGon54LNHtqyJEVVvmCv3dlDhSUKp/0MX5u5/RNsXHu60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710342172; c=relaxed/simple;
-	bh=M3rZB2mfjzbY+mEbtIQebEVLPHXxIpa8VoDp8iBqC8I=;
+	s=arc-20240116; t=1710342293; c=relaxed/simple;
+	bh=mEZSaX1JcOlnF+YV8hHDQGh4aTWrB0MRoLH9GvaDuc8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=usrthd2jG8LJJ89GtlSU7xa4sVuWl0Z3GNvdNR1LS0p1vVl55PwsRDtZPWnbiBbyqNVZ/JY6yUl8Ve0EUXo7ckS4GJz+a0c754DZCE9jJNBFQ7aHKpFKT0aWm117GqMix3vAhYQKt6OfflxIb3UdG1Ml2Zae7kzOFwf0ZTBPIOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=b3LQq+qn; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd922cbcc7so28490555ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710342170; x=1710946970; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Jfij9dXHIDj9rmOGh+MeYJy8++dhkqBgca6X7NgY2Qw=;
-        b=b3LQq+qnZ8wxX/YLZnHbVcqYflHqf5B/sGWSI5IrYMTMREPif+taM9ryzKZLCHV/Y2
-         29beR6KI02s6L1j/cEIA2oO0eIz86IjFwbxRbaWyphk4PgWcwkZ+YepVmKeqhi63bqx0
-         w5eSOvrfaQgK1rJffRfg0h3hs19CBq6xAgl1JDXyaSLrzc2PGzr1JfKo2orKINJeVYYr
-         ebglrikTSqs2DbJIjxFhw4CXB7TGvminx2Qqeuw3/QAzJNaW78Vti9Q0M1VTWV1r2ux8
-         IkaIpjKN0WBO+FErqLNHeazsZyIpVfN+GI6neficQTs/Q7naIyqMKL+L93CKdYU2HaPF
-         wtFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710342170; x=1710946970;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jfij9dXHIDj9rmOGh+MeYJy8++dhkqBgca6X7NgY2Qw=;
-        b=TtugQKfvY+rv2JQJV/qXKmmAT5Deca96HeOun/cNLaU1uW9+ZO9cvNTbI1C2n4WSp3
-         GHx8jz3HnIKpzMbRGRyvmM07kDMzCq0rSOy5yxc4i/kaOu2XRI5KBEXSR4G3wUnI8YZs
-         nQqor2wpJuemzwJ7zX4Wz+pXaDy8w+NN/Z5HSdDEKYfwiWmra/Vji1Bp6sYhTwrtdN/F
-         wt76pfozOl8/pNDSUb1SEv6qGOrnG4JIn2LiLUlh3ZvHhQwqlUz7SDaQqKXpjqADOUUp
-         gPLwbUZpU1qcUsEwQRU+XozR4wBTqihdUkI9fU5Vet9mcAtOUDcA8pV+VNpkembHZvcm
-         +qhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1tdTjD5Z1HF0deITdGpbZpFSDPR4p7lxQKsOEJ76LfZBHiHhBJeuGpZGQDKqFvVKkUw6j+KWiuEkvWA1rElG2Me09/O+kV48UFf33
-X-Gm-Message-State: AOJu0Yy4L/7FvsT28+52HovbB2I8Sag5HU9+img+loc/6eWTCsUNfjFe
-	63n2iSUi73CCrjW5Z7Nhr+u3T+RKt1X4jA+c1XMTozoU0mhgrB5sgDdOupZD6w==
-X-Google-Smtp-Source: AGHT+IEUBRSfm5jxLzMUkvJnOZ0wxVinWuUhkiXEaLkjXUOM1flKmlbWFV8LK6g2WXaQLj7Cuw1ToA==
-X-Received: by 2002:a17:902:d4c5:b0:1dd:90ce:4e43 with SMTP id o5-20020a170902d4c500b001dd90ce4e43mr13804843plg.11.1710342169628;
-        Wed, 13 Mar 2024 08:02:49 -0700 (PDT)
-Received: from thinkpad ([117.213.99.94])
-        by smtp.gmail.com with ESMTPSA id i7-20020a170902c94700b001dd8e1db1b1sm7135187pla.175.2024.03.13.08.02.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 08:02:49 -0700 (PDT)
-Date: Wed, 13 Mar 2024 20:32:42 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: Implement shutdown() callback to properly
- reset the endpoint devices
-Message-ID: <20240313150242.GA2656@thinkpad>
-References: <20240313-pci-qcom-shutdown-v1-1-fb1515334bfa@linaro.org>
- <20240313143614.GA916555@bhelgaas>
+	 Content-Type:Content-Disposition:In-Reply-To; b=po5gPQFq0GVawbB5ul9QXVcg6V9Qx037T+Q1z5P2yALEpSTPj0xH/jaDn50emqYymGowRpW3Ofub+bZcadp1hSCNrly7YqCrycX4pjiNXLvR1a4kjuOGyiDwmcGAUvUrMmxdI4YyWUD6tZvsNApwNNk40y2OpaUQfYGuFyxEEXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=u4TINEae; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=BNxK5EuN2z1du2u9zHs8dUJAhvJjbhbwG8RbEiAeClc=; b=u4TINEaeR8pBfu92hqQSLLqbw1
+	brpvAqC+UAYMwivkfgs4750GbK7A0qwui27QEc2QH9iUDu5HAbvxzTVnDcFLyemP/XUIx9MpoFbPi
+	q4IVLXkwKfK0hyxYOhjsEbyDlhqHvslhIMnMIWKJYzFQxuE5veIEox3shpukVhJnJOi9hLp44r+EM
+	DfO73+5LdareoKzomTSUfKrn8QRIKkQrbx5fl0+DUtdOpn8MXP/hU/JOuGLEbRDpiIk2OiOzBuZml
+	hSNWxtuUjaxB+C0meEeMqttlRscGDUvIcxO795C5WNAIzRQjXMNkZ2PfpYOcF19WaReKmjCOY/R0S
+	0uWwi/1Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rkQ9R-00000005dNK-1tqa;
+	Wed, 13 Mar 2024 15:04:17 +0000
+Date: Wed, 13 Mar 2024 15:04:17 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+	kernel-team@android.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v5 20/37] mm: fix non-compound multi-order memory
+ accounting in __free_pages
+Message-ID: <ZfHAcVwJ6w9b1x0Z@casper.infradead.org>
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-21-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240313143614.GA916555@bhelgaas>
+In-Reply-To: <20240306182440.2003814-21-surenb@google.com>
 
-On Wed, Mar 13, 2024 at 09:36:14AM -0500, Bjorn Helgaas wrote:
-> On Wed, Mar 13, 2024 at 05:39:22PM +0530, Manivannan Sadhasivam wrote:
-> > PCIe host controller drivers are supposed to properly reset the endpoint
-> > devices during host shutdown/reboot. Currently, Qcom driver doesn't do
-> > anything during host shutdown/reboot, resulting in both PERST# and refclk
-> > getting disabled at the same time. This prevents the endpoint device
-> > firmware to properly reset the state machine. Because, if the refclk is
-> > cutoff immediately along with PERST#, access to device specific registers
-> > within the endpoint will result in a firmware crash.
-> > 
-> > To address this issue, let's call qcom_pcie_host_deinit() inside the
-> > shutdown callback, that asserts PERST# and then cuts off the refclk with a
-> > delay of 1ms, thus allowing the endpoint device firmware to properly
-> > cleanup the state machine.
-> 
-> I guess this 1ms delay is the PERST_DELAY_US hidden inside
-> qcom_ep_reset_assert()?  I assume the refclk disable is done by
-> clk_bulk_disable_unprepare()?
-> 
+On Wed, Mar 06, 2024 at 10:24:18AM -0800, Suren Baghdasaryan wrote:
+> When a non-compound multi-order page is freed, it is possible that a
+> speculative reference keeps the page pinned. In this case we free all
+> pages except for the first page, which will be freed later by the last
+> put_page(). However put_page() ignores the order of the page being freed,
+> treating it as a 0-order page. This creates a memory accounting imbalance
+> because the pages freed in __free_pages() do not have their own alloc_tag
+> and their memory was accounted to the first page. To fix this the first
+> page should adjust its allocation size counter when "tail" pages are freed.
 
-Yes to both.
+It's not "ignored".  It's not available!
 
->   #define PERST_DELAY_US 1000
-> 
->   qcom_pcie_shutdown
->     qcom_pcie_host_deinit
->       qcom_ep_reset_assert
->         gpiod_set_value_cansleep(pcie->reset, 1);
->         usleep_range(PERST_DELAY_US, PERST_DELAY_US + 500);  <--
->       phy_power_off(pcie->phy)
->       pcie->cfg->ops->deinit()
->         qcom_pcie_deinit_...
->           clk_bulk_disable_unprepare                         <--
-> 
-> Is there a spec citation for this delay requirement?  If not, how do
-> we know 1ms is enough for whatever the firmware needs to do?
-> 
+Better wording:
 
-Both PCIe base spec and Electromechanical spec only mentions Tperst, which is
-the minimum time PERST# should remain asserted. But there is no mention about
-the time, refclk should be active.
+However the page passed to put_page() is indisinguishable from an
+order-0 page, so it cannot do the accounting, just as it cannot free
+the subsequent pages.  Do the accounting here, where we free the pages.
 
-So I used the existing delay post PERST# assert in the driver. I do not know if
-that is enough for all the endpoints out in the wild, but atleast satisfies the
-requirement of the endpoint I'm working on (which is another Qcom SoC in EP
-mode).
+(I'm sure further improvements are possible)
 
-We can change the delay if someone reports any issue with the existing one.
-Atleast, that's the best we could do in this situation.
+> +static inline void pgalloc_tag_sub_bytes(struct alloc_tag *tag, unsigned int order)
+> +{
+> +	if (mem_alloc_profiling_enabled() && tag)
+> +		this_cpu_sub(tag->counters->bytes, PAGE_SIZE << order);
+> +}
 
-> Do other drivers require similar changes?
-> 
+This is a terribly named function.  And it's not even good for what we
+want to use it for.
 
-Most likely yes, but that also depends on when the drivers are cutting off the
-refclk. Not all drivers are implementing the shutdown callback, and even few of
-the ones implementing, do not assert PERST# since it is optional.
+static inline void pgalloc_tag_sub_pages(struct alloc_tag *tag, unsigned int nr)
+{
+	if (mem_alloc_profiling_enabled() && tag)
+		this_cpu_sub(tag->counters->bytes, PAGE_SIZE * nr);
+}
 
-- Mani
+> +++ b/mm/page_alloc.c
+> @@ -4697,12 +4697,21 @@ void __free_pages(struct page *page, unsigned int order)
+>  {
+>  	/* get PageHead before we drop reference */
+>  	int head = PageHead(page);
+> +	struct alloc_tag *tag = pgalloc_tag_get(page);
+>  
+>  	if (put_page_testzero(page))
+>  		free_the_page(page, order);
+>  	else if (!head)
+> -		while (order-- > 0)
+> +		while (order-- > 0) {
+>  			free_the_page(page + (1 << order), order);
+> +			/*
+> +			 * non-compound multi-order page accounts all allocations
+> +			 * to the first page (just like compound one), therefore
+> +			 * we need to adjust the allocation size of the first
+> +			 * page as its order is ignored when put_page() frees it.
+> +			 */
+> +			pgalloc_tag_sub_bytes(tag, order);
 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-qcom.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > index 2ce2a3bd932b..41434bc4761a 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > @@ -1618,6 +1618,13 @@ static int qcom_pcie_resume_noirq(struct device *dev)
-> >  	return 0;
-> >  }
-> >  
-> > +static void qcom_pcie_shutdown(struct platform_device *pdev)
-> > +{
-> > +	struct qcom_pcie *pcie = platform_get_drvdata(pdev);
-> > +
-> > +	qcom_pcie_host_deinit(&pcie->pci->pp);
-> > +}
-> > +
-> >  static const struct of_device_id qcom_pcie_match[] = {
-> >  	{ .compatible = "qcom,pcie-apq8064", .data = &cfg_2_1_0 },
-> >  	{ .compatible = "qcom,pcie-apq8084", .data = &cfg_1_0_0 },
-> > @@ -1670,5 +1677,6 @@ static struct platform_driver qcom_pcie_driver = {
-> >  		.pm = &qcom_pcie_pm_ops,
-> >  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-> >  	},
-> > +	.shutdown = qcom_pcie_shutdown,
-> >  };
-> >  builtin_platform_driver(qcom_pcie_driver);
-> > 
-> > ---
-> > base-commit: 51459eb30f88651d3688b9e95fed0f97767ececb
-> > change-id: 20240313-pci-qcom-shutdown-d86298186560
-> > 
-> > Best regards,
-> > -- 
-> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > 
+-	else if (!head
++	else if (!head) {
++		pgalloc_tag_sub_pages(1 << order - 1);
+		while (order-- > 0)
+			free_the_page(page + (1 << order), order);
++	}
 
--- 
-மணிவண்ணன் சதாசிவம்
+It doesn't need a comment, it's obvious what you're doing.
+
 
