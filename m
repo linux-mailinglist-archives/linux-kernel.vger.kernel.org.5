@@ -1,156 +1,132 @@
-Return-Path: <linux-kernel+bounces-102570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 961B187B3F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:54:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2B987B401
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 263112835EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:54:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8314C2853FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCE656B90;
-	Wed, 13 Mar 2024 21:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC45C55E6E;
+	Wed, 13 Mar 2024 21:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cA6e+Bbz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=scylladb.com header.i=@scylladb.com header.b="OCTLWt+E"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACAC53E3D
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3455C54BCF
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710366844; cv=none; b=cBt/z3ntb36i2GSbmCSbmyCj3/KxYxRG40QGYQcHYmaJRLwhUUV7YV1WDRVdA+sOjTAw1Z97lx6UQBob95wYq3HrV767XHK/HRdcQDvltSZ5O9QRTOBEqrGgNQmrYJyDzWzPpjkCtAjoRsqxMKLPoRXFwhgwcK7WZTe83BTHPik=
+	t=1710367131; cv=none; b=XkcZHHQv2uHCloMGTZKFwDKfBelkvykwOrWA8Pb/Jxt8HhdiAmlrihbmZCOtO75Z5V33wLwKIwJhDcRpSysQ0NeAjF9M2ws3oUtvrDRmjIo/1Tnm9nAZU09QPK+zWAyOkatnCsACuSQryDEH4XMuQPaeYJVN8ZFTgh6YRTUa7YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710366844; c=relaxed/simple;
-	bh=IS+WsJ5TLvLtZdo+Uk62ZZK6uhmnItQcpKASq8gj7aw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=bhO5edqy80yis1l4EuakAzejpiOnYCwLq8uvix6UC1Dthy9N3v3vs9eytHUM/Igj7/mKy76Zh/qssyyKhdFXGfmISaT3QwH4JukCUwmAik2VZLaD+5m4S2EoZwHiPNi9/QMH72r92cgPEJJFzw4RI0m8UOaawHj9e6tErOdGNb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cA6e+Bbz; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710366841;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E2KPW5KF47bF+5Cf+8HkAv2DAr6yEshp1fbNv4HMysQ=;
-	b=cA6e+BbzVgel1bDgxk6HnILWxb/+MrOte7ZAYORLgM6wZeP7brEMJobeQAtIhMPpG12tYm
-	A07WMH5Ki1WRELc9WK9kVP6zbwJKKG/91c875UmjXd1dGzBVK04scrN3CCZssYeBX1gbyq
-	u8w3PSPJs93EXFTxpSKIx7CR769aLK8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-7gaW0fJIP_u5jYPi6cGXrA-1; Wed, 13 Mar 2024 17:53:59 -0400
-X-MC-Unique: 7gaW0fJIP_u5jYPi6cGXrA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41330261f8cso1581305e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:53:59 -0700 (PDT)
+	s=arc-20240116; t=1710367131; c=relaxed/simple;
+	bh=mr233kmYQvQ0cZG7aNTOq+2559t3369Edstg1GpCS9E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Lx0z51Q06eNVT15kM6hBl9HV8BIu0ILG89l8O1kb1qRa06wU62yWOlN1/aoUm+t+KKVo18EXgN4XcMlWoh/2m5AVKGFdgOF5NLgwhgTyMt1f2TTGxwQoMvb5KrLCXOXPN4+sADjanZOBnXFKWWcPc50LQNqS5ymPj9eFAdmF15Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=scylladb.com; spf=pass smtp.mailfrom=scylladb.com; dkim=pass (2048-bit key) header.d=scylladb.com header.i=@scylladb.com header.b=OCTLWt+E; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=scylladb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scylladb.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33e966f56c7so259444f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:58:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=scylladb.com; s=google; t=1710367127; x=1710971927; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mr233kmYQvQ0cZG7aNTOq+2559t3369Edstg1GpCS9E=;
+        b=OCTLWt+EmPbkXhtzS7ZHXOfLwndH84IzCuENAqFZLiLV7wADbzylyXJugxnz+jRBHT
+         nKH6ZO8NI0y3M77sbsFlO5KoZvwzqkoWi+6UFpdFEbDv1Qprxca9iR73mk8T6We86ccy
+         tZesUsR1a0mmKNTq5QRPRtwbrK9Oe6qVX7QfsA7/TDrWqmwFIarUKWCLyFaj5m8OJv42
+         iKGz00+wFGMFYPgsjuICnhs+xOknjaoB5EprtAinSAL33CWOnpkw0MSX5sFjhcy142Lo
+         vMSVEXQAUn01+WENQq/p/sBwb9BxBoXZA/nAp0ziCF/IrtHmnFdzOdGm8B6fq4gI6XPV
+         dp4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710366838; x=1710971638;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E2KPW5KF47bF+5Cf+8HkAv2DAr6yEshp1fbNv4HMysQ=;
-        b=bVmSRFvuuOoalxb90+bDn5pzlgSsYyXUEaEJ0RzkQPyb918wUkYUPKHzuMyvS3Tk91
-         eT3+aHXv5mQegM6ciYKd4bgj+9qVVczqsc5p+gkAl5q+n5jNv7ZrccPZ5Mtd4sp51pIZ
-         J87esAByGtisr/Uf1yFAw2+DnvJ6LGBxNAMh2Q4X2Qy/EpXf/KD7WNMkKLG5nbiwpxUU
-         /9FGsFwp49MMOhWHgNr6NH/K9c/PA5nae/rvrTbVSrQg9UTtSwTfON8SI2j5LLWGH35j
-         l3TwGkhG7cU9lD4sfNWr/eZWH7ojBb061+Ea74Hk/J/IeQFpcSp1+tc13JEnTLkZ8HsB
-         M6jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVImZ0C7Wn5n0ts4YFg7Iz1XvnJzr3pBdQ9CnaPAENQso3H2NpANm1qW933cTeXTdrKtHqjzWHuyQVo89imRuhJ/LKK+XqnvnBXGcEY
-X-Gm-Message-State: AOJu0YwZMsoyaGPXXy0CiyYI3O3xld877fI/jINU3a5p96G4whErCiVp
-	CRx38RWcqN73iz4tvya2MUPa6dCiQp4HxXkH2gDbOLNTy9uXoraaWTy4Vr57Qw+8NQlRnHbjHWY
-	2ewXqtLi+gdHl8EUwe1rCNaa6jvbgoBCjiWP3DWJ5YLuex/J5ukVN4/3XvaItNg==
-X-Received: by 2002:a05:600c:3d96:b0:413:1012:5b6 with SMTP id bi22-20020a05600c3d9600b00413101205b6mr49539wmb.22.1710366838617;
-        Wed, 13 Mar 2024 14:53:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHJ0OheeUPMmjuVVJzjxLnfhEvsYHX+e2ieqRk+uD2jbxBCs+tKv1zogU1HQmjXy61sfj7CPw==
-X-Received: by 2002:a05:600c:3d96:b0:413:1012:5b6 with SMTP id bi22-20020a05600c3d9600b00413101205b6mr49513wmb.22.1710366838213;
-        Wed, 13 Mar 2024 14:53:58 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id l24-20020a05600c1d1800b00413e6a1935dsm313510wms.36.2024.03.13.14.53.57
+        d=1e100.net; s=20230601; t=1710367127; x=1710971927;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mr233kmYQvQ0cZG7aNTOq+2559t3369Edstg1GpCS9E=;
+        b=Y1Y/UeqwqIDjecOZl7hVAISWgvEfI5oeh4oSMuQQDxY+MSxk90rjHjW5eE20tA4FR8
+         iD+DztHVTmSJe/9xY1O48BD6lYdkOfzebA/5aZmMrbIpyYghaf0+L87VmjcQZm0VSWc+
+         dQTAto8zRSDM/9M9GtubhDChxBjkN9hXw1rF1JSA3AndrE7oJQz7wMXEXNxmJmE/g9rE
+         xr8zvBY64sWnX4tQD393e8iyATQN2R7Q+6w1SBY2Jfo9H9AR0JM0bOwVnIUh38GgOkye
+         7f0G4j2lVflAmw5E05jakjqUmMyxaSx/zd3+PPaMtpzGaq8gFYx6vmd0sVSdqvABf6j2
+         NWfg==
+X-Gm-Message-State: AOJu0Yx+NTuznmqBD1DFWVRzK3STleX/t4EiV244gmA7YPkWafy8NzTH
+	d2afP2dAwftyp55hBSd1WASyBAUx97XIpN+SLqj1CW5ZdLkES42J/0TKhBxBYUqEhP6jk3WMCdA
+	h2+EjCEIUMgE4D73+saqOdjOwYohWDNhQE4HA+pFQv43AxrKjXoTs+ftH3Uza7wNSsWjtCQwCti
+	n9aCWGoHuBatHzIwZA3ZHoLKyijp4T01H1owvI+DXuNeuZsHWnVwLURCJ7EppD7BaxRveK5KkeW
+	mjytkBeA7UjUltxWGL+ycXduVnqn28BMRcH6mcG1Jxo0oCH8U1l9UCYqpqxiaPQm/ieZ6VmEz0z
+	3apbr/u2cvstmrZZ7S+BJVPjLVAv25iXDu2Dqo57FYSbCw==
+X-Google-Smtp-Source: AGHT+IFr3YjxaL5z3EOknY50vzW2ARohxjcIJEuW4ogMqiMgHsxF4dFq7/Z68oUWzf2c3h3R/jn5Ag==
+X-Received: by 2002:adf:eec7:0:b0:33d:7afa:fb0b with SMTP id a7-20020adfeec7000000b0033d7afafb0bmr2677991wrp.15.1710367127199;
+        Wed, 13 Mar 2024 14:58:47 -0700 (PDT)
+Received: from avi.scylladb.com (system.cloudius-systems.com. [199.203.229.89])
+        by smtp.gmail.com with ESMTPSA id m17-20020a5d4a11000000b0033e8c50fc3fsm95079wrq.90.2024.03.13.14.58.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 14:53:57 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 70547112FDA8; Wed, 13 Mar 2024 22:53:57 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, Simon Horman
- <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang
- <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>, Hannes
- Frederic Sowa <hannes@stressinduktion.org>, linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com, Joel
- Fernandes <joel@joelfernandes.org>, "Paul E. McKenney"
- <paulmck@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com, Jesper
- Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH v3 net 0/3] Report RCU QS for busy network kthreads
-In-Reply-To: <cover.1710346410.git.yan@cloudflare.com>
-References: <cover.1710346410.git.yan@cloudflare.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 13 Mar 2024 22:53:57 +0100
-Message-ID: <87a5n1pzm2.fsf@toke.dk>
+        Wed, 13 Mar 2024 14:58:46 -0700 (PDT)
+Message-ID: <96325519f8f05d7289ec9b0af4e89da28c432e4f.camel@scylladb.com>
+Subject: Re: [RFC PATCH 0/2] Introduce serialized smp_call_function APIs
+From: Avi Kivity <avi@scylladb.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Peter Oskolkov
+	 <posk@google.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+ "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Andrew Hunter <ahh@google.com>,  Maged Michael
+ <maged.michael@gmail.com>, gromer@google.com, Benjamin Herrenschmidt
+ <benh@kernel.crashing.org>,  Paul Mackerras <paulus@samba.org>, Michael
+ Ellerman <mpe@ellerman.id.au>
+Date: Wed, 13 Mar 2024 23:58:44 +0200
+In-Reply-To: <20240313205622.2179659-1-mathieu.desnoyers@efficios.com>
+References: <20240313205622.2179659-1-mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-CLOUD-SEC-AV-Sent: true
+X-CLOUD-SEC-AV-Info: scylladb,google_mail,monitor
+X-Gm-Spam: 0
+X-Gm-Phishy: 0
+X-CLOUD-SEC-AV-Sent: true
+X-CLOUD-SEC-AV-Info: scylla,google_mail,monitor
+X-Gm-Spam: 0
+X-Gm-Phishy: 0
 
-Yan Zhai <yan@cloudflare.com> writes:
+[resend in plain text for the list]
 
-> This changeset fixes a common problem for busy networking kthreads.
-> These threads, e.g. NAPI threads, typically will do:
->
-> * polling a batch of packets
-> * if there are more work, call cond_resched to allow scheduling
-> * continue to poll more packets when rx queue is not empty
->
-> We observed this being a problem in production, since it can block RCU
-> tasks from making progress under heavy load. Investigation indicates
-> that just calling cond_resched is insufficient for RCU tasks to reach
-> quiescent states. This at least affects NAPI threads, napi_busy_loop, and
-> also cpumap kthread for now.
->
-> By reporting RCU QSes in these kthreads periodically before
-> cond_resched, the blocked RCU waiters can correctly progress. Instead of
-> just reporting QS for RCU tasks, these code share the same concern as
-> noted in the commit d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched
-> and RCU-preempt when safe"). So report a consolidated QS for safety.
->
-> It is worth noting that, although this problem is reproducible in
-> napi_busy_loop, it only shows up when setting the polling interval to as
-> high as 2ms, which is far larger than recommended 50us-100us in the
-> documentation. So napi_busy_loop is left untouched.
->
-> V2: https://lore.kernel.org/bpf/ZeFPz4D121TgvCje@debian.debian/
-> V1: https://lore.kernel.org/lkml/Zd4DXTyCf17lcTfq@debian.debian/#t
->
-> changes since v2:
->  * created a helper in rcu header to abstract the behavior
->  * fixed cpumap kthread in addition
->
-> changes since v1:
->  * disable preemption first as Paul McKenney suggested
->
-> Yan Zhai (3):
->   rcu: add a helper to report consolidated flavor QS
->   net: report RCU QS on threaded NAPI repolling
->   bpf: report RCU QS in cpumap kthread
->
->  include/linux/rcupdate.h | 23 +++++++++++++++++++++++
->  kernel/bpf/cpumap.c      |  2 ++
->  net/core/dev.c           |  3 +++
->  3 files changed, 28 insertions(+)
+On Wed, 2024-03-13 at 16:56 -0400, Mathieu Desnoyers wrote:
+> commit 944d5fe50f3f ("sched/membarrier: reduce the ability to hammer
+> on sys_membarrier")
+> introduces a mutex over all membarrier operations to reduce its
+> ability
+> to slow down the rest of the system.
+>=20
+> This RFC series has two objectives:
+>=20
+> 1) Move this mutex to the smp_call_function APIs so other system
+> calls
+> =C2=A0=C2=A0 using smp_call_function IPIs are limited in the same way,
+>=20
+> 2) Restore scalability of MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ with
+> =C2=A0=C2=A0 MEMBARRIER_CMD_FLAG_CPU, which targets specific CPUs with IP=
+Is.
+> =C2=A0=C2=A0 This may or may not be useful, and I would welcome benchmark=
+s from
+> =C2=A0=C2=A0 users of this feature to figure out if this is worth it.
+>=20
 
-For the series:
+I see this doesn't restore scaling of MEMBARRIER_CMD_PRIVATE_EXPEDITED,
+which I use (and wasn't aware was broken).
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
+I don't have comments on the patches, but do have ideas on how to work
+around the problem in Seastar. So this was a useful heads-up for me.
 
