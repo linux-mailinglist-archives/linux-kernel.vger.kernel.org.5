@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-101757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E367787AB52
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9C4287AB54
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 838C0B23959
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:37:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 599D1B23B30
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02F65E3A0;
-	Wed, 13 Mar 2024 16:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E205EE8D;
+	Wed, 13 Mar 2024 16:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pVUNHFiL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ktp6qR6w"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EBF05E07C;
-	Wed, 13 Mar 2024 16:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DAF5EE64;
+	Wed, 13 Mar 2024 16:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347581; cv=none; b=uleDDyge5coHqwrT0+BkOMHpsIeA/Eh03qwWg1jEAjbMJheaSu7Pj5jj/B4vlKQjdRJCevFxKddxnm6QoplwJxFQCO8TiipKh8jCn2n3nwWONoBWXRMB3xrAQzC3BrZTd8CLtOkIX8rJOtnuSGDsokoyU7KWhEwtv1z4SAc5n70=
+	t=1710347582; cv=none; b=mhAL4WrfE+WCseC3bEt5owdFUF7gytC4ElVQZvKOJDz17M18GeSHyZrKeKzzefy3Ebe7p6CVGPynnJf12vwKjEjAFG1H0Om/tFR7UJ3TqFGyIuvCQQX4bea7metfzCgwSN8afEfmoaDMJQqPTp9sgr/9BIO1j6vjaMpbzLOMFZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347581; c=relaxed/simple;
-	bh=BTDWC0OO27JZwD2AgNmBq4kpj5Z1Fx6E2ug8jwUS5Zg=;
+	s=arc-20240116; t=1710347582; c=relaxed/simple;
+	bh=H2VUbgktaqbNth6+JJL4CT0s14g7H4+8bKuRnMz788s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RcgKbbGC5VziPGXVD006Zs/5srjQtVsfP5STsQWgjVaefMtdvZG0+TR9ysVcA10TZeviIWOQ3gylAj7tNmNEPl/ZJba0eBqua1jKmWpVNVCUzyT7mzGBeTflycyo6xrevbIJwSptqlnkr7jXgb2xlDA2lLKydHQqaZMA1+IWdKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pVUNHFiL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEE5FC433F1;
-	Wed, 13 Mar 2024 16:32:59 +0000 (UTC)
+	 MIME-Version; b=LQZr68w3uvy5VpCCCzHkQmlp/P737n6jnw0gb0m6dEVk2FWbh4zCJeizATFR4EgDihPiiHedQ4Yi5JW/Mw/JuNJejyB114avvED8hPZt4nSwjdH1VRl7glTKTY2EIsLLJERDQuSL3xGMQ2rJe3jgiJJg6cxjN/vXhh9YwcbSvW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ktp6qR6w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D38FC433C7;
+	Wed, 13 Mar 2024 16:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347580;
-	bh=BTDWC0OO27JZwD2AgNmBq4kpj5Z1Fx6E2ug8jwUS5Zg=;
+	s=k20201202; t=1710347582;
+	bh=H2VUbgktaqbNth6+JJL4CT0s14g7H4+8bKuRnMz788s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pVUNHFiLs9oHbFIH2ZDn/nbWliDI8oEVPnVO2PISdlmyDv8PqRCfBOg6NqNUG5Rku
-	 ttcA+MiQY6dUpgi7+sCXwXAWHGROxqwajWfKKw90SGQj4AQybzh8dt8nBNJNVait/M
-	 qJxgmjXxsK8Mr74zGvdcJm/IiLByuch/9Np8/AEbBE4fTyM/ZfFGZF+Eu7JlBDE4Sj
-	 ejHo8kuSBc6Xv9ay0l8p0QLimqdXVxFGlb+W4eKRdEJmd4ZStJbOwKKVXIXg/meVxD
-	 NY4p5AZtm9AL7aNF5QVvupCFjzdjYOQYPaSOkd/lcRMtfiMBIj5yxDZquM9VQBA4o1
-	 bRznwnLYNEHQQ==
+	b=ktp6qR6wD24TmNJh+oHx6V6X2vXxWSrNuvMKILd53mY2CPX+y+WPYYoYqgjXdNscD
+	 nEumQlTH4Dp0Ybu1N84nkySSZxEysutLZLWp83U+EJVStNXjTzHT1/NUXETLHbU2sY
+	 l+CCHDjLo5IbWYpZL0km3+Xp0Q0/Pmr+VTQVichi0Dkc6BW7Smrsscx6+C1rj7HI1t
+	 wDRGNYD22Fz7J91ORddYu6k6QAdqeKo1gFTrRIXvQtRSiV9z7jpngDbOw8oo0MXeKC
+	 RTAk538QTpvu8A1HCydaYdKJH8APXFR+vqRBMEyi9JQ6wpgm5WKxSzqgKL7yTixdrz
+	 scQXG6e+idS5A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jianbo Liu <jianbol@nvidia.com>,
-	Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+Cc: Aya Levin <ayal@nvidia.com>,
+	Moshe Shemesh <moshe@nvidia.com>,
 	Saeed Mahameed <saeedm@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 18/61] net/mlx5: E-switch, Change flow rule destination checking
-Date: Wed, 13 Mar 2024 12:31:53 -0400
-Message-ID: <20240313163236.613880-19-sashal@kernel.org>
+Subject: [PATCH 6.7 19/61] net/mlx5: Fix fw reporter diagnose output
+Date: Wed, 13 Mar 2024 12:31:54 -0400
+Message-ID: <20240313163236.613880-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -69,76 +69,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jianbo Liu <jianbol@nvidia.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit 85ea2c5c5ef5f24fe6e6e7028ddd90be1cb5d27e ]
+[ Upstream commit ac8082a3c7a158640a2c493ec437dd9da881a6a7 ]
 
-The checking in the cited commit is not accurate. In the common case,
-VF destination is internal, and uplink destination is external.
-However, uplink destination with packet reformat is considered as
-internal because firmware uses LB+hairpin to support it. Update the
-checking so header rewrite rules with both internal and external
-destinations are not allowed.
+Restore fw reporter diagnose to print the syndrome even if it is zero.
+Following the cited commit, in this case (syndrome == 0) command returns no
+output at all.
 
-Fixes: e0e22d59b47a ("net/mlx5: E-switch, Add checking for flow rule destinations")
-Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
-Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+This fix restores command output in case syndrome is cleared:
+$ devlink health diagnose pci/0000:82:00.0 reporter fw
+    Syndrome: 0
+
+Fixes: d17f98bf7cc9 ("net/mlx5: devlink health: use retained error fmsg API")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../mellanox/mlx5/core/eswitch_offloads.c     | 23 +++++++++++--------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/health.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 14b3bd3c5e2f7..baaae628b0a0f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -535,21 +535,26 @@ esw_src_port_rewrite_supported(struct mlx5_eswitch *esw)
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+index 8ff6dc9bc8033..b5c709bba1553 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+@@ -452,10 +452,10 @@ mlx5_fw_reporter_diagnose(struct devlink_health_reporter *reporter,
+ 	struct health_buffer __iomem *h = health->health;
+ 	u8 synd = ioread8(&h->synd);
  
- static bool
--esw_dests_to_vf_pf_vports(struct mlx5_flow_destination *dests, int max_dest)
-+esw_dests_to_int_external(struct mlx5_flow_destination *dests, int max_dest)
- {
--	bool vf_dest = false, pf_dest = false;
-+	bool internal_dest = false, external_dest = false;
- 	int i;
++	devlink_fmsg_u8_pair_put(fmsg, "Syndrome", synd);
+ 	if (!synd)
+ 		return 0;
  
- 	for (i = 0; i < max_dest; i++) {
--		if (dests[i].type != MLX5_FLOW_DESTINATION_TYPE_VPORT)
-+		if (dests[i].type != MLX5_FLOW_DESTINATION_TYPE_VPORT &&
-+		    dests[i].type != MLX5_FLOW_DESTINATION_TYPE_UPLINK)
- 			continue;
+-	devlink_fmsg_u8_pair_put(fmsg, "Syndrome", synd);
+ 	devlink_fmsg_string_pair_put(fmsg, "Description", hsynd_str(synd));
  
--		if (dests[i].vport.num == MLX5_VPORT_UPLINK)
--			pf_dest = true;
-+		/* Uplink dest is external, but considered as internal
-+		 * if there is reformat because firmware uses LB+hairpin to support it.
-+		 */
-+		if (dests[i].vport.num == MLX5_VPORT_UPLINK &&
-+		    !(dests[i].vport.flags & MLX5_FLOW_DEST_VPORT_REFORMAT_ID))
-+			external_dest = true;
- 		else
--			vf_dest = true;
-+			internal_dest = true;
- 
--		if (vf_dest && pf_dest)
-+		if (internal_dest && external_dest)
- 			return true;
- 	}
- 
-@@ -695,9 +700,9 @@ mlx5_eswitch_add_offloaded_rule(struct mlx5_eswitch *esw,
- 
- 		/* Header rewrite with combined wire+loopback in FDB is not allowed */
- 		if ((flow_act.action & MLX5_FLOW_CONTEXT_ACTION_MOD_HDR) &&
--		    esw_dests_to_vf_pf_vports(dest, i)) {
-+		    esw_dests_to_int_external(dest, i)) {
- 			esw_warn(esw->dev,
--				 "FDB: Header rewrite with forwarding to both PF and VF is not allowed\n");
-+				 "FDB: Header rewrite with forwarding to both internal and external dests is not allowed\n");
- 			rule = ERR_PTR(-EINVAL);
- 			goto err_esw_get;
- 		}
+ 	return 0;
 -- 
 2.43.0
 
