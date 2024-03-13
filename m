@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9251D87AED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:10:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED5B287AED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:10:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 334C91F30BE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:10:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B892847E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B31C4D9ED;
-	Wed, 13 Mar 2024 17:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D23474C1F;
+	Wed, 13 Mar 2024 17:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iaJZcFsD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rqBxE1iB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF6374BEB;
-	Wed, 13 Mar 2024 17:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E62174C08;
+	Wed, 13 Mar 2024 17:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349363; cv=none; b=VaknWriqurYyI5jv+bBrHHr8mMUiTzqbwe8dpHqmBRRKsFBVG8Yal+l4NTpfsvDZTlYcg4adKHSLrqYk+MRdDMv+rxJcQR+XNzZ6Ir8QItW+jGFF0hWcxhR4Xn8tbrz4DE1y0I3UabPi+/LuURfB8aGqzcfxnXE5zgtdYejfvYw=
+	t=1710349364; cv=none; b=iRTulEFBR3hX6Qm6Kk9SvDQXpSDUYwh/puSdWL5Q2RKsCAAB0V7v8KavCapEr6SG9VEh2tBV3BvBkh/PjrcPsiJyoxW0VxEPCat03Rk/YgGHb3KaEyo0UUzgJiMpI8DQngIHEbodSrQ3TLjavyjvS/VGfuvhKbTcs03MVegopSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349363; c=relaxed/simple;
-	bh=noSTJlXRcgDjp3N/BVak0TfI6we7ARRsLPccEiaIzIU=;
+	s=arc-20240116; t=1710349364; c=relaxed/simple;
+	bh=EwYFc6u/vRmEQVBhKndW0cFn92ioVA9ZTpiDm23xcUs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NzS8l2CWCxgZD5EbNU6HTHTEB4I8f8fh1uNHWsaV4gGKgZ1Pji5dhq7SI8+FDnLJQ0i37vVEhg86Ug6xicYV6RQeARwzfxlEDzLs96Ntu0rcJ/lYvxPMVM2YVnohvltQEwrvZpEchquNitf56GBUfiXDWTunBoAvOBejojlQSCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iaJZcFsD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A0D6C43394;
-	Wed, 13 Mar 2024 17:02:42 +0000 (UTC)
+	 MIME-Version; b=nBgAM3uf6nnawQCkpf65dMuG0aM5UV6J5RctIzoRtzIUGC2wiWN6rIASa5lDKDcolCwT1l9S35yqWWEBl0BVjKNhUrijSQQj/tECZAnT4C8g/7WqsspZasIQlYOMl5Sao3/CFh0lUQ4rcs5zZ9CUMiAUfFUAzfBUWRncmLR0MXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rqBxE1iB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A006C43399;
+	Wed, 13 Mar 2024 17:02:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349363;
-	bh=noSTJlXRcgDjp3N/BVak0TfI6we7ARRsLPccEiaIzIU=;
+	s=k20201202; t=1710349364;
+	bh=EwYFc6u/vRmEQVBhKndW0cFn92ioVA9ZTpiDm23xcUs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iaJZcFsD0OLsM6ZBDBL8Pwf5grOCXYVVLgME+7xjeiv8soDn3RqYqNbGN5Wg9nLgl
-	 e3B9Eos7/sfTGGQzLdf02Vmk59bl5dxOaCOrwFPXBYPla411W5/fjskJdOni2tvcij
-	 F4oXqbtNoCLhNvnUxbwz1g/wojD3Pd6Nvjv6a/wuK9z02NfmhMr6kfIxS/ro3/XEzP
-	 OimzRrsE2spNoExS9cndQ4qbqqAb7E5Qac0iIG3C2dD0uyAVfVXBtJ2G5kFJT/VIiB
-	 gVixWEuVepFKD8JJHkJZJCkOrQ/8XEDcjNIutaCjxN6BOQWH8OROw2xOpGeKOTFduv
-	 LEKoK6Aj7hCWQ==
+	b=rqBxE1iBJFfOWfZzTh9ESFbac/yeUXlz4FkjUVJV09V0YnyuIlyVj/H5CThIrYn+m
+	 ZBBCJXxE8oQZQ2iv7RT1Dtz/9XXzTeL+SjVtakBnCrcVYSKDr199GqmaXLr5FYSMUB
+	 DLVg0/PsHBBZ4ZwGqAHPUGKgZbGIbZPthQ9kGlbwKtBewETdlbygu9meC0H6d5MxGp
+	 COuzADfdbHaOevVBvzVMRYnHXFd590QCn0fVNgctWFS4AhLs1SFprTh9WykUL6saVK
+	 R20MuEfKqRCp44ar5TjzIMDIfhe26qmTAV+bqdcT6psP5qJc5OlmGKYPerhkR7ApSA
+	 muSYt+AhIBUbA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Richard Weinberger <richard@nod.at>,
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 26/51] um: allow not setting extra rpaths in the linux binary
-Date: Wed, 13 Mar 2024 13:01:47 -0400
-Message-ID: <20240313170212.616443-27-sashal@kernel.org>
+Subject: [PATCH 5.4 27/51] serial: max310x: Use devm_clk_get_optional() to get the input clock
+Date: Wed, 13 Mar 2024 13:01:48 -0400
+Message-ID: <20240313170212.616443-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170212.616443-1-sashal@kernel.org>
 References: <20240313170212.616443-1-sashal@kernel.org>
@@ -68,80 +68,75 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-[ Upstream commit 386093c68ba3e8bcfe7f46deba901e0e80713c29 ]
+[ Upstream commit 974e454d6f96da0c0ab1b4115b92587dd9406f6a ]
 
-There doesn't seem to be any reason for the rpath being set in
-the binaries, at on systems that I tested on. On the other hand,
-setting rpath is actually harming binaries in some cases, e.g.
-if using nix-based compilation environments where /lib & /lib64
-are not part of the actual environment.
+Simplify the code which fetches the input clock by using
+devm_clk_get_optional(). If no input clock is present
+devm_clk_get_optional() will return NULL instead of an error
+which matches the behavior of the old code.
 
-Add a new Kconfig option (under EXPERT, for less user confusion)
-that allows disabling the rpath additions.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Stable-dep-of: 846cfbeed09b ("um: Fix adding '-no-pie' for clang")
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20201007084635.594991-2-andy.shevchenko@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Stable-dep-of: 8afa6c6decea ("serial: max310x: fail probe if clock crystal is unstable")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/Kconfig      | 13 +++++++++++++
- arch/um/Makefile     |  3 ++-
- arch/x86/Makefile.um |  2 +-
- 3 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/tty/serial/max310x.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 468a5d63ef269..107a0bc668e9f 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -85,6 +85,19 @@ config LD_SCRIPT_DYN
- 	depends on !LD_SCRIPT_STATIC
- 	select MODULE_REL_CRCS if MODVERSIONS
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 14537878f9855..8bf3c5ab59431 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1265,7 +1265,6 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
+ 			 struct regmap *regmap, int irq)
+ {
+ 	int i, ret, fmin, fmax, freq, uartclk;
+-	struct clk *clk_osc, *clk_xtal;
+ 	struct max310x_port *s;
+ 	bool xtal = false;
  
-+config LD_SCRIPT_DYN_RPATH
-+	bool "set rpath in the binary" if EXPERT
-+	default y
-+	depends on LD_SCRIPT_DYN
-+	help
-+	  Add /lib (and /lib64 for 64-bit) to the linux binary's rpath
-+	  explicitly.
-+
-+	  You may need to turn this off if compiling for nix systems
-+	  that have their libraries in random /nix directories and
-+	  might otherwise unexpected use libraries from /lib or /lib64
-+	  instead of the desired ones.
-+
- config HOSTFS
- 	tristate "Host filesystem"
- 	help
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 773120be0f56f..94cea8d46b222 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -118,7 +118,8 @@ archprepare:
- 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
+@@ -1279,23 +1278,24 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
+ 		return -ENOMEM;
+ 	}
  
- LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
-+LINK-$(CONFIG_LD_SCRIPT_DYN) += $(call cc-option, -no-pie)
-+LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib
+-	clk_osc = devm_clk_get(dev, "osc");
+-	clk_xtal = devm_clk_get(dev, "xtal");
+-	if (!IS_ERR(clk_osc)) {
+-		s->clk = clk_osc;
++	s->clk = devm_clk_get_optional(dev, "osc");
++	if (IS_ERR(s->clk))
++		return PTR_ERR(s->clk);
++	if (s->clk) {
+ 		fmin = 500000;
+ 		fmax = 35000000;
+-	} else if (!IS_ERR(clk_xtal)) {
+-		s->clk = clk_xtal;
+-		fmin = 1000000;
+-		fmax = 4000000;
+-		xtal = true;
+-	} else if (PTR_ERR(clk_osc) == -EPROBE_DEFER ||
+-		   PTR_ERR(clk_xtal) == -EPROBE_DEFER) {
+-		return -EPROBE_DEFER;
+ 	} else {
+-		dev_err(dev, "Cannot get clock\n");
+-		return -EINVAL;
++		s->clk = devm_clk_get_optional(dev, "xtal");
++		if (IS_ERR(s->clk))
++			return PTR_ERR(s->clk);
++		if (s->clk) {
++			fmin = 1000000;
++			fmax = 4000000;
++			xtal = true;
++		} else {
++			dev_err(dev, "Cannot get clock\n");
++			return -EINVAL;
++		}
+ 	}
  
- CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
- 	$(call cc-option, -fno-stack-protector,) \
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index 1db7913795f51..b3c1ae084180d 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -44,7 +44,7 @@ ELF_FORMAT := elf64-x86-64
- 
- # Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
- 
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
-+LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib64
- LINK-y += -m64
- 
- endif
+ 	ret = clk_prepare_enable(s->clk);
 -- 
 2.43.0
 
