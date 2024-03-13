@@ -1,145 +1,122 @@
-Return-Path: <linux-kernel+bounces-102396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05FD687B18F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:19:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBD187B1A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:21:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7013928F354
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:19:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA3FFB3115C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:19:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0415BAC3;
-	Wed, 13 Mar 2024 19:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E965A7B4;
+	Wed, 13 Mar 2024 19:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="L1pgeIkS"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mdjSVanR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE1B5B5C5
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C46D5A4D8;
+	Wed, 13 Mar 2024 19:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710356603; cv=none; b=rTVwn3xKDg66b27+Ob+7ZUrTauJgMNSM4Sr5ji/wp7jiEFILi09WX+eH8fKmY6QtBgTDf7zRvOcyR54f2s3jfEkULfJjq2PZFXjaCm02tM8CMmH6oFtM0644HM93I+tr98qsm7V5dzt4FNEx1NV7CrsOoeAcXqF1mU0yVxJGhKU=
+	t=1710356597; cv=none; b=VdQNoRw8vq1U4YlqzGUE37QZQLDpUcTd6e7EXMb6R7kIqxUQ6n+Jq8e70ece89UAE3PhABGWcooWJPKk1TGPI8Y4kojpOeL8iO8RgJUsYKyGECnFdnxXQsocC44yuSofknqabkpjZWdMx5HhVA2S4w5wjqZTeRdrnLs1TF6LqGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710356603; c=relaxed/simple;
-	bh=SX+fEPlUzQH+SDjF+fg9M0nYR4xU4g4PvaNbAOfrrho=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eQUclu7hSfzv6EH58739meB5Li6GkilKIWgaNF0emaYHMLexolDDL+M7DBVe2Hd8q8hlQNc9lyMW6agsyvF+6SX7nMfOZsD/dJp4UcNwCO+FFZqMH/sa8d4fkUC9dtgJ4FdA2zCj1FNSn+JDxTMVKtx7bSQM3Ensvlpzcjk8OEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=L1pgeIkS; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-568107a9ff2so195099a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1710356599; x=1710961399; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=z0czGQahQJmLOhb1t7D6nFie7YcEp1Eo0BOuwVvzqhY=;
-        b=L1pgeIkSkB6oidxQZW6w0VEPRoHmSjDrbfQchntBbcZuaO7ElZW3FyTCpKsEtQY9OH
-         pU8d6ZfECLovqMLuWahuE32Lu33FenkpsBQ/AUteZf4j3h+QNcqdyG2qksNxIWVKKvdX
-         2ebRMxIzu8A2J3SLZ0O6/zXHuiF14s1TpFxx1GgAQAgXcWKesCFP6LDJaejcR35nGFeq
-         cGa7D/742K6iQHhk3J4qxSbLS54rPCBo92G3TsuVWKXeG977KRORTj6ZqmAh3kWEUqIO
-         HUIBInQVaiz3OvocMvgRGG8g/iSsq6fwfEf87L9CPEZ7hbz+dv2VaC/3LQ1Yb5Q8LCRi
-         4aFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710356599; x=1710961399;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z0czGQahQJmLOhb1t7D6nFie7YcEp1Eo0BOuwVvzqhY=;
-        b=Y7k/kcHesdryARRSIJTbYKVpX3itB32l1GLAXUDtq7jiteQggX0XaYMop1tVifCglq
-         U/iWd/468TGByHbz07UnLEbueTIW2ILicECSaxvemf/qZxI/xtn6TlOF5TIjbVIHKebI
-         EJJQyCRZluPJquzFFuoAmdYeldzD9AYDvZgEymoFRSPak7Yg7Cw8xQhQONdYMNnQuc2q
-         z95rdxE+fE3PRiJJt4qp0cu8PyxnEgUgkSI2dfQnhwvprkUMT8vgUrHzt53QWN4SnO5A
-         5sEAnf5zqgsmU6GbF85nQBXBU+s+vFh5GpaW3XQZqfOC4nEmh3RZB2dd7TfEUvfdtjr9
-         fHkw==
-X-Forwarded-Encrypted: i=1; AJvYcCXZuCA3PS4Lt11GH1br+4Ljt7uDcMXXeqNK7HmJVfJIFosWnZyqY87T1o713IPSzibfXa5ylHG72fQOEyFXZXbD/yve118X8DTWgWGJ
-X-Gm-Message-State: AOJu0YyAPNgu33Jmzlzg5OOMG7LaWm7VF2+8SmdpuEnYRJKJUUgAEfFt
-	vZ6gDlnQwYueVw+bdaV6yncBK0WAWsrcj9rtsisqb7Rpj9E528DmRZylmVnYVck=
-X-Google-Smtp-Source: AGHT+IHlCY08CcHpJhARgnL+nVCYWz4gNBvKEftYoIsGP8VnUgwgLnr/RbwslLxE6aluPvisCaT/ug==
-X-Received: by 2002:a17:906:1308:b0:a46:60c6:98c9 with SMTP id w8-20020a170906130800b00a4660c698c9mr1283936ejb.68.1710356599394;
-        Wed, 13 Mar 2024 12:03:19 -0700 (PDT)
-Received: from localhost ([79.142.230.34])
-        by smtp.gmail.com with ESMTPSA id r1-20020a170906364100b00a4320e22b31sm5163914ejb.19.2024.03.13.12.03.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 12:03:19 -0700 (PDT)
-From: Andreas Hindborg <nmi@metaspace.dk>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Bart Van Assche <bvanassche@acm.org>,  Jens Axboe <axboe@kernel.dk>,
-  Christoph Hellwig <hch@lst.de>,  Keith Busch <kbusch@kernel.org>,  Damien
- Le Moal <Damien.LeMoal@wdc.com>, 	Hannes Reinecke <hare@suse.de>,
-  "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,  Andreas
- Hindborg <a.hindborg@samsung.com>,  Niklas Cassel <Niklas.Cassel@wdc.com>,
-  Greg KH <gregkh@linuxfoundation.org>,  Matthew Wilcox
- <willy@infradead.org>, 	Miguel Ojeda <ojeda@kernel.org>,  Alex Gaynor
- <alex.gaynor@gmail.com>,  Wedson Almeida Filho <wedsonaf@gmail.com>, 	Gary
- Guo <gary@garyguo.net>,  =?utf-8?Q?Bj=C3=B6rn?= Roy Baron
- <bjorn3_gh@protonmail.com>,
-  Benno Lossin <benno.lossin@proton.me>, 	Alice Ryhl
- <aliceryhl@google.com>,  Chaitanya Kulkarni <chaitanyak@nvidia.com>,  Luis
- Chamberlain <mcgrof@kernel.org>,  Yexuan Yang <1182282462@bupt.edu.cn>,
-  Sergio =?utf-8?Q?Gonz=C3=A1lez?= Collado <sergio.collado@gmail.com>,  Joel
- Granados
- <j.granados@samsung.com>,  "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>,  Daniel Gomez <da.gomez@samsung.com>,  open
- list <linux-kernel@vger.kernel.org>,  "rust-for-linux@vger.kernel.org"
- <rust-for-linux@vger.kernel.org>,  "lsf-pc@lists.linux-foundation.org"
- <lsf-pc@lists.linux-foundation.org>,  "gost.dev@samsung.com"
- <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 0/5] Rust block device driver API and null block driver
-In-Reply-To: <ZfHu48NGktOx_uhG@boqun-archlinux> (Boqun Feng's message of "Wed,
-	13 Mar 2024 11:22:27 -0700")
-References: <20240313110515.70088-1-nmi@metaspace.dk>
-	<855a006d-5afc-4f70-90a9-ec94c0414d4f@acm.org>
-	<ZfHu48NGktOx_uhG@boqun-archlinux>
-User-Agent: mu4e 1.12.0; emacs 29.2
-Date: Wed, 13 Mar 2024 20:03:07 +0100
-Message-ID: <87r0get0no.fsf@metaspace.dk>
+	s=arc-20240116; t=1710356597; c=relaxed/simple;
+	bh=Y3asIHRcfcnUNu8RRFRQdtWj1CUUVV8XA2p1BBBkpdA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PcF8yDNUhJRGS6emZgGG3iksMAk6lczpO0bjB1Z2cMX9BJIXj4q8IaG16ytsNuAvxyQ5sL96GovPqNqa6nprMVCbk6OlRnandfB6FMASZyA2yCioKUCWv/z2sokLVBvpCr3xGLKlv5CHA4aQpxZzed+gSkrFU8Xgxv24aAPEewA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mdjSVanR; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710356596; x=1741892596;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Y3asIHRcfcnUNu8RRFRQdtWj1CUUVV8XA2p1BBBkpdA=;
+  b=mdjSVanRt4TwDwd37BqoFcnNJoF8P9ZMxR47wYkwrxWK9xhrukwhMmab
+   kkPHeJVE6c8o2s1zc4bEkWANIw2HWtud5WtIX4mbUFEFcsngnn6OdLlRe
+   f2epTzKySAR1FUzVDxizUVuOXIEt7A9m4YrMHMIHE2gtphVcN8ekDERjJ
+   BOyOHSlClrooAWbdXDk9OYufP8qFTqx2/ygeXQ3tMVnN2pKn62EL9Ic+P
+   pHAgr1/OC6550PPhBi3zWN9BieWODCYUwBWuiZljV0GtQjWj4OXjDMZ+F
+   AtMF4gtLAESBhzo5eY98eSSpSIieGPFxDiWqLZ2OTEk/4+eGKrCkbw9xO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="15874085"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="15874085"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:03:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914439293"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="914439293"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:03:12 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rkTsb-0000000CIiu-0a3O;
+	Wed, 13 Mar 2024 21:03:09 +0200
+Date: Wed, 13 Mar 2024 21:03:08 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
+	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] iio: pressure: add SCALE and RAW values for
+ channels
+Message-ID: <ZfH4bET-HX0e3PO_@smile.fi.intel.com>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+ <20240313174007.1934983-4-vassilisamir@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313174007.1934983-4-vassilisamir@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Boqun Feng <boqun.feng@gmail.com> writes:
+On Wed, Mar 13, 2024 at 06:40:04PM +0100, Vasileios Amoiridis wrote:
+> Add extra IIO_CHAN_INFO_SCALE and IIO_CHAN_INFO_RAW in order to be
+> able to calculate the processed value with standard userspace IIO
+> tools. Can be used for triggered buffers as well.
 
-> On Wed, Mar 13, 2024 at 11:02:23AM -0700, Bart Van Assche wrote:
->> On 3/13/24 04:05, Andreas Hindborg wrote:
->> > This is the second version of the Rust block device driver API and the Rust null
->> > block driver. The context and motivation can be seen in cover letter of the RFC
->> > v1 [1]. If more context is required, a talk about this effort was recorded at
->> > LPC [2]. I hope to be able to discuss this series at LSF this year [3].
->> 
->> Memory safety may land in C++ in the near future (see also
->> https://herbsutter.com/2024/03/). If memory-safe C++ or memory-safe C
->> would be adopted in the kernel, it would allow writing memory-safe
->> drivers without having to add complicated bindings between existing C
->
-> I honestly doubt it, memory-safe is not free, basically you will still
-> want unsafe part for the performance reason (or interacting with
-> hardware), and provide a safe API for driver development. I don't think
-> that part will be gone with a memory-safe C++. So the complication still
-> exists. But I'm happy to be proved wrong ;-)
+..
 
-I think it is great that people are starting to realize that bringing
-memory safety to other systems languages is a good idea. But from one
-person blogging about it to things being ready for production is a long
-journey. Language designers have to design ways to express the new
-semantics, standards committees has to agree, compiler engineers have to
-build and test their compilers. Probably we need a few cycles of this to
-get things right. At any rate, it is going to take a while.
+> +	case IIO_CHAN_INFO_RAW:
+> +		switch (chan->type) {
+> +		case IIO_HUMIDITYRELATIVE:
+> +			*val = data->chip_info->read_humid(data);
+> +			ret = IIO_VAL_INT;
+> +			break;
+> +		case IIO_PRESSURE:
+> +			*val = data->chip_info->read_press(data);
+> +			ret = IIO_VAL_INT;
+> +			break;
+> +		case IIO_TEMP:
+> +			*val = data->chip_info->read_temp(data);
+> +			ret = IIO_VAL_INT;
+> +			break;
+> +		default:
+> +			ret = -EINVAL;
+> +			break;
 
-Second, as Boqun is saying, interfacing the unsafe C part of the kernel
-with memory safe C++ is going to require the same complicated
-abstraction logic as the safe Rust APIs are bringing. The complexity in
-bringing Rust to the kernel is not coming from interfacing a foreign
-language. It stems from the inherent difficulty in designing memory safe
-wrappers around unsafe C APIs.
+Is it mutex that prevents us from returning here?
+If so, perhaps switching to use cleanup.h first?
 
-Best regards,
-Andreas
+> +		}
+> +		break;
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
