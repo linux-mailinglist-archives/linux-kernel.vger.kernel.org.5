@@ -1,281 +1,521 @@
-Return-Path: <linux-kernel+bounces-101034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3977887A0F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:49:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE1887A0A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA5691F2309A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:49:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED997B21AB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA57101DE;
-	Wed, 13 Mar 2024 01:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MSWeRuAR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2AAFB664;
+	Wed, 13 Mar 2024 01:20:15 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09AB3D26D;
-	Wed, 13 Mar 2024 01:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710294528; cv=fail; b=XsxNLq+2lP0vXgW8QxJBLUF3JWuRjYDDcO+Mxnec+K7spLjsH1tzM0dO1FrwfU/nQ6t38IRrx5FnoWfFtGjLrPo4DkEsCI/fjrUywJZNDXxm1Atw536xqxTcU6IArOW4nxDm8yxI8OcOP9QzBMQrTFTg/S5xhLnQie5oFtbQKQo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710294528; c=relaxed/simple;
-	bh=wfKDqgTKeUiqxgUJ4lX2t4fTgcWlYB4C809/M41xx0M=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=vErtqkZ8RNrUd0pEehoHiqFyKrhbmHC643EwpbVmN2ox6Hhu9xaRwBhN1A2/ucN9ctJLuWRswiN6yj0LevO49TZKWyUnIWIhU9b8EGiU939bjAFUwrUfgDLhk0R1/u1JAoSXaNM7rwXFfOya5gJceUNd0SCJDQPrFg5GOMwuJyk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MSWeRuAR; arc=fail smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710294527; x=1741830527;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=wfKDqgTKeUiqxgUJ4lX2t4fTgcWlYB4C809/M41xx0M=;
-  b=MSWeRuARP/BAwPu1jny5Qo2ngWFtFY90e7vYH2bywa968ePrpnKScng9
-   fgw6MXC2OHL/wfuC5FbmYH0XZpVysi+N5nwkSmnwg097lTIg8yXcPAl3y
-   FwcPlljqUejivPC9beZTDJ6SxfafaBnrNspfh+V8/HCCW0jipey7jDChc
-   kmwh5GCdCLelOfZioi0jRX6m/PkXNzY8bL1aD7ckcLNrZaalxTrvuKsN6
-   i49HMVhm/gfgCgE4B/SdiZm4nzRczs2Y2ZeObwtIo1jiMwBJ7csBHpApV
-   g9tQtMa3tHX0YiIAqUGKoDYGqyRsHfdaWapl8BEGIZhT5ccb2xxqHlnLW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="22492247"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="22492247"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 18:48:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="16389131"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Mar 2024 18:48:47 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Mar 2024 18:48:45 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Mar 2024 18:48:45 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 12 Mar 2024 18:48:45 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 12 Mar 2024 18:48:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jWLw9Bi5vei90+mRyHsZwbvUCsYYGwmwxtiep0XPHvzLEsQUwU68XWW2kxChyPmkRusvXb6J4urq/vcBPORHLKY8oudjs4+DAkY3smYCbblSF1nTUOTyfo2meLHg4T0ZFz/6bB6BSHYC+q5c7deNOH+z+DLgmM2q01+cy8FYLdY3/M6u12Gf2v3oSahd2SQ+ikErPfk/xXaHPR2sDHwJ2Tm9WzC7mDNcdX1TLeIRCeb86awVzucwCEJbjuB114+9SDsX2HazznFfnyDI2uE5D//ZEQko5hwYx11UtNFGOUbTg9cufPhM8IvNpahwa3jSPQ3PRxXaM84y7f3mdA1LwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fir4yT50Swbo7ChUM3TDXkXOb1/kUiCNSp3EVw0G084=;
- b=OMFx6+AvFuieH12qR3g1jPZ2b1QExuIbbMgABl6r0V2R8IraOFryHjsW95raun4af9EwSIfHTtuntp6iCM/JpXqXNYVghKoTR1Xsq8OsOGJ4y2AnarrvzO5soxZAugxEh2otOA2ZQELuxH2pPpZ4e7aOIfIXLmR2xA591RvDvCtd0TAmWMHh1FSr2KNNHs67G90rOdCFhNuydujGNZB20JJ5FtsMz1oTr3T8GIP+lGH9EBu4FABtLums45NQwTmOmy0gZ07/tpzoJnEJhxwxgGZpI58YP7cRgpOW55DKNZgZdXTCQBUetqxMESxZAfHA1sBOlbpjRK928Vx1QDxLNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- CYYPR11MB8357.namprd11.prod.outlook.com (2603:10b6:930:c5::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.16; Wed, 13 Mar 2024 01:48:43 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af%5]) with mapi id 15.20.7386.016; Wed, 13 Mar 2024
- 01:48:43 +0000
-Date: Wed, 13 Mar 2024 09:18:50 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Sean Christopherson <seanjc@google.com>, <jgg@nvidia.com>
-CC: Kevin Tian <kevin.tian@intel.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney"
-	<paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "rcu@vger.kernel.org"
-	<rcu@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Yiwei Zhang <zzyiwei@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
- support self-snoop
-Message-ID: <ZfD++pl/3pvyi0xD@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20240309010929.1403984-1-seanjc@google.com>
- <20240309010929.1403984-6-seanjc@google.com>
- <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com>
- <Ze-hC8NozVbOQQIT@google.com>
- <BN9PR11MB527600EC915D668127B97E3C8C2B2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZfB9rzqOWmbaOeHd@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZfB9rzqOWmbaOeHd@google.com>
-X-ClientProxiedBy: SI2PR01CA0023.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::17) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B93FAD54;
+	Wed, 13 Mar 2024 01:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710292814; cv=none; b=iIS2KHCdaXzMT7RToogG5DOlWJQFJSXNuBbi65J4GIaVAKXJZnFkqwAtMZfX/bicHgXA1ZRD/lXwQb0Rdjtm+RJObEBb9TPNP0nOap5c7wEgqfdhUA1GIlKxi90xp3Ue8sKWQbjqbxDmArg93WlDrXLIjN2Ha1k4WoE7J7qZnRY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710292814; c=relaxed/simple;
+	bh=czttNToLPhyFl4q1tzxkru+sfqgsvMYszkiavZlExa8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Kqa8UcEBWOp4L+Nzv3XB0Ju8RX8MRVOcwZxtHyarPeShO7P1nan7PWBXBzCXiyq35fTKhnR8RRotheDVjR4luNdh96RBu52pBwDPdirYe1vHWnjqAG16nOYbU+HAeH7TlYMUFkxYk9Y5bww8eBM79O4QcF+S5GPlZ79QOJJj+TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TvXk96dzPz4f3kFY;
+	Wed, 13 Mar 2024 09:20:01 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 99CA51A0283;
+	Wed, 13 Mar 2024 09:20:07 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RFC__BlaQkdGw--.10896S3;
+	Wed, 13 Mar 2024 09:20:04 +0800 (CST)
+Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system;
+ successfully bisected
+To: junxiao.bi@oracle.com, Yu Kuai <yukuai1@huaweicloud.com>,
+ Song Liu <song@kernel.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ linux-raid@vger.kernel.org, stable@vger.kernel.org,
+ Dan Moulding <dan@danm.net>, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240123005700.9302-1-dan@danm.net>
+ <20240220230658.11069-1-dan@danm.net>
+ <7efac6e0-32df-457e-9d21-4945c69328f8@leemhuis.info>
+ <CAPhsuW5QYTjBvjAjf8SdcKmPGO20e5-p57n6af5FaXudSiOCmg@mail.gmail.com>
+ <739634c3-3e21-44dd-abb1-356cf54e54fd@oracle.com>
+ <d3cdebfe-17c0-4f61-9ad9-71d9de2339b2@oracle.com>
+ <ecfce4d7-bcf7-c09a-7f01-5c7de88df107@huaweicloud.com>
+ <ba26ac4f-160a-451e-a08b-27f577d8d2ba@oracle.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <fa4beda8-986c-1112-f3f2-159f20674d47@huaweicloud.com>
+Date: Wed, 13 Mar 2024 09:20:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|CYYPR11MB8357:EE_
-X-MS-Office365-Filtering-Correlation-Id: cf88d365-7526-4963-5a07-08dc42ffb6ed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XkzJ5/ww2GYoXGLAPSaq7HCx3lnR0X4rwY0ZGr/9vdQ50Tgfw6J+clGuSntF4jZjkz7aoDFCcS9K7ZaJcS41zdprZvw7/tA3HvR/PdGKk4uTMt3tjDtlQ/whYGWRw59rRiKkH6unx6/sJdisbMtsFYSz7dh/MySJHDhD/bg2R+3vTSBM7J4DuQHxJ/I5z7rvlMT7e3Rr+OBVQR6xGAdmFdNYy1CSl+Sg+IhaCH1J0OPnNzE0Aaeqq2DevjwsUYkHSDR9ioxNbKAQyCQLzYgPU32mJLDGVBPTPiR+zg6kJWiPShCUISjtCicPNnDjv1jOb1wjKiAlFDLEh404238yf7351wKffq48BWIVH+5kPQHkFX0bKSr1Qq4WW4QXmDtUUE9kkbp+Lsw0zh9uQsEtJeo5SpjnL3y6bqkvx/epJhxMI3IEPCxD1tCsX7byP2hCleCRL9QTXOHTEIRisaAvvF007FYWWYlwUGRO/08L2RLB3aws0Hr4AdALzY9x8mcYycP0nhYJOkcyJls3ka4vTNgijOX1ZFAf1WRK147Pj0mWsVtXlKSj+xCMjdDcpZ8CLN0fslg4h7tiXKOCjaclzHYbS7PuV8fghGRFcXE51Nq0T9aNujzYSrEbOGxT1fhi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXpQcmRiZnlOZzVOdldvYjh6UERmTHFuTEFEU2F2ZjdRSWxadGpWUlZYUitq?=
- =?utf-8?B?eFFXbllyMUVMRVEzMzVqeWhXeFlMMDN3TGhvUDVCajc4TlpxNWRpM3k2aExi?=
- =?utf-8?B?cHQyd0pudzdlNy82OVJpQWtvSnRtOFRXUnRkZXVIMzZZQk1RbUdnWVgwTXla?=
- =?utf-8?B?eG5QTkJBdVk4eDNxejJFVVM0dTdUSmVZRVVLdnFDdVFZK2RRSDZST1VPZlVr?=
- =?utf-8?B?ZHJUZ2RQL2h0cVdwTXkwRTg2dThad3M1WkpTY2lBMlZoMFY4RnJBSFhjR2Zr?=
- =?utf-8?B?MzRQZ1VkbURrb0w4LzB6aDlXT0I2QlUzQ1puanFXcmVxUGhyU1BNcGtiUUNj?=
- =?utf-8?B?eko5WUR5SlFCaWljOG9HWG1nZ1gvekp6YjRxL05wR2xoOEpDUUJxM3A1ZmFa?=
- =?utf-8?B?WGp4NGoxSDFET2M3VkpiUXpyTkR0TDlvVUF4RGlRbHFmMCthNVMwMFJVbE8r?=
- =?utf-8?B?WXdVcXY0V2ZqRWJveitSOHYrbE1YVWNhYUE2M2k5aEJjTEMvNEZUd3IvTGZQ?=
- =?utf-8?B?NzNMWWpzWWM3UU1Id2s2cTg0NWQ1ZDRJVzBNeFQwcEJ2QjlzSjNadFVOQU1U?=
- =?utf-8?B?c09qV05MczJDbWtTNEZGM1FhRXJpNWpGbG5GVnlhN2VYSFFFVkVaWkc3V3Zq?=
- =?utf-8?B?VlBRT1JHSTdUMGE2bU1VS3JvSklRWVl0aTJoeC85VVR4TzZUMmd0cWxZWDhk?=
- =?utf-8?B?UkthMDUydW1pV0xpeEgwc21aQnJ3MXhZMG9ZeHh3cXd4YUtWVFpSaXZMNkkx?=
- =?utf-8?B?ZW44WldFMWlsd1FXbGZNcFlQNzN3akJmcS9mWHp5dXptZFBla21LRFVyZzNW?=
- =?utf-8?B?SkdKUFNPdFhKZVE4azJwMi9RT0gyK0dWODJJYTZSbG5iQUxXSm1vWEFsaGow?=
- =?utf-8?B?SjRpYzYwZnhPMEcydVcxbm9kNEhGM3NnK0hLWU5IYTdNNnV6citsbFJvSzJH?=
- =?utf-8?B?b2h0TE43dzVLc3JpcVhTZzFhVEhDVjhvZGRUVlViMG9PRjNjOFBPNHR6bHVw?=
- =?utf-8?B?ekpEVUJaZnVvNFpLMVE1ZVNZMGFpd1VtRzRldi9lNEZ1UUcwbE5TaEkySVhE?=
- =?utf-8?B?M3JyOTAzdUJqK0JpRjMzUFpDRXl0Y1VhQkExUGRYa0ZTUjlOT1BzbDRYY01r?=
- =?utf-8?B?Vk9JM3RIUitaOWtXWmdrK05PTmluMjczWWZJNXdFdnIzYlpUUmJweUZaRk1j?=
- =?utf-8?B?SzNoazFWcUZ5SmpSTUVnN2pSekQxUGdPNUFTKzdJWnM3ZWZzVmVTdWl6QjQv?=
- =?utf-8?B?RGhCM2p4WFUycTJsQ3lNLzV1VWY5MzhiY2NrNFdhVTBHUUFNYnNOTnhUUnVi?=
- =?utf-8?B?R21ZRDlnUElHRzN0dVUrNDZZbmxKY2pkYUZBOER5dEtZTVpWMmh5cXF4V0lx?=
- =?utf-8?B?K2hGeU13a0xlUjhTb3FlTU4xbXdkQW52dnB1MW9xYmNqQ3lOS1hjeFh4aXNZ?=
- =?utf-8?B?dHQ1Y2V1TUZtS0FsZXpsdXZ2TkhLQ0pQOWUvTWgrVnpjdDdaRVF4WWZhNVZU?=
- =?utf-8?B?ZVgxNHJkR1ZpL1ZSM0hiTnR4QXBhdlJFcVRUL0k1UVFsbmJVTUxaWTlXMGF6?=
- =?utf-8?B?ZzdLS3RvZlppR24rOWhrSWU0RjE4eENzdTJ2ckZUUTZoZlNkVEg3VlBKcTBr?=
- =?utf-8?B?aHNaSDNHZ2U1dEdSMStSOVlBeWZpZzR0MUNETHJxeUplcWZHRGdaSTJaRlU5?=
- =?utf-8?B?cG9ITUxnZ3NZUXZYUTM4YTZOTG5HYzY1ck43cCtpanBtYUxiYVNsM05zREJn?=
- =?utf-8?B?M3VCWVRlSmo0aFNwaUlFN0lDeDhYdDZ5L2pCT3ZzS2lBVGsxTkRaNGoxRFJu?=
- =?utf-8?B?dHBlaWtUQXdEbkJYTVFBajJncXhTUG8yMGtVbzNwd2dnUWE4OXpiQ2RiNm8y?=
- =?utf-8?B?ZDJ3anlkRlRUeWprYzlhK3Jha0N0bkt3d05vNHdVS2trdTliRy9GbFJ3Zk9m?=
- =?utf-8?B?ZldZUjdxaXNRMStIZVk1bElhRElkRnpYd0JOcFFIWGJYY3dEdTVXYnk2NUlv?=
- =?utf-8?B?bnVMdzk2NXlPcEV1cElLL054Uno0c3FGMWRNblRQakRacXBWOTc4V0RTdXdi?=
- =?utf-8?B?Yytnejl3UzJ5eS95QnV1WDMraTN3dVVDZVFZMzdmM3cyQm9uang5RXhCVnpa?=
- =?utf-8?Q?zJZ6J76OFaFlzbrmC13k+4Ml1?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf88d365-7526-4963-5a07-08dc42ffb6ed
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 01:48:43.4192
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pfj+iCn6pcuOKcWkLUfzN0DteQ3wLTkVtRJ2CE7DgClS2qiKVZRl6rjbsTy8Z+rqwOUJiJYVfR99v8E3si/aDg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR11MB8357
-X-OriginatorOrg: intel.com
+In-Reply-To: <ba26ac4f-160a-451e-a08b-27f577d8d2ba@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RFC__BlaQkdGw--.10896S3
+X-Coremail-Antispam: 1UD129KBjvAXoW3Zw1fGrW3tFWrGry3XF4kXrb_yoW8ArykKo
+	W5Kw1fXw4rWw4UKr1UJw1UAry3Jw1DJFnrJryUGr17Grn5tw4UZ3y8Cry5tayUJr18WF1x
+	Ar1UXr1YyFyUJr18n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20EY4v20xva
+	j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+	x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
+	Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+	n2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j
+	6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Tue, Mar 12, 2024 at 09:07:11AM -0700, Sean Christopherson wrote:
-> On Tue, Mar 12, 2024, Kevin Tian wrote:
-> > > From: Sean Christopherson <seanjc@google.com>
-> > > Sent: Tuesday, March 12, 2024 8:26 AM
-> > > 
-> > > On Mon, Mar 11, 2024, Yan Zhao wrote:
-> > > > For the case of !static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-> > > > kvm_arch_has_noncoherent_dma(vcpu->kvm), I think we at least should warn
-> > > > about unsafe before honoring guest memory type.
-> > > 
-> > > I don't think it gains us enough to offset the potential pain such a
-> > > message would bring.  Assuming the warning isn't outright ignored, the most
-> > > likely scenario is that the warning will cause random end users to worry
-> > > that the setup they've been running for years is broken, when in reality
-> > > it's probably just fine for their
-> > > use case.
-> > 
-> > Isn't the 'worry' necessary to allow end users evaluate whether "it's
-> > probably just fine for their use case"?
-> 
-> Realistically, outside of large scale deployments, no end user is going to be able
-> to make that evaluation, because practically speaking it requires someone with
-> quite low-level hardware knowledge to be able to make that judgment call.  And
-> counting by number of human end users (as opposed to number of VMs being run), I
-> am willing to bet that the overwhelming majority of KVM users aren't kernel or
-> systems engineers.
-> 
-> Understandably, users tend to be alarmed by (or suspicious of) new warnings that
-> show up.  E.g. see the ancient KVM_SET_TSS_ADDR pr_warn[*].  And recently, we had
-> an internal bug report filed against KVM because they observed a performance
-> regression when booting a KVM guest, and saw a new message about some CPU
-> vulnerability being mitigated on VM-Exit that showed up in their *guest* kernel.
-> 
-> In short, my concern is that adding a new pr_warn() will generate noise for end
-> users *and* for KVM developers/maintainers, because even if we phrase the message
-> to talk specifically about "untrusted workloads", the majority of affected users
-> will not have the necessary knowledge to make an informed decision.
-> 
-> [*] https://lore.kernel.org/all/f1afa6c0-cde2-ab8b-ea71-bfa62a45b956@tarent.de
-> 
-> > I saw the old comment already mentioned that doing so may lead to unexpected
-> > behaviors. But I'm not sure whether such code-level caveat has been visible
-> > enough to end users.
->
-What about add a new module parameter to turn on honoring guest for
-non-coherent DMAs on CPUs without self-snoop?
-A previous example is VFIO's "allow_unsafe_interrupts" parameter.
+Hi,
 
-> Another point to consider: KVM is _always_ potentially broken on such CPUs, as
-> KVM forces WB for guest accesses.  I.e. KVM will create memory aliasing if the
-> host has guest memory mapped as non-WB in the PAT, without non-coherent DMA
-> exposed to the guest.
-In this case, memory aliasing may only lead to guest not function well, since
-guest is not using WC/UC (which can bypass host initialization data in cache).
-But if guest has any chance to read information not intended to it, I believe
-we need to fix it as well.
-
-
-> > > I would be quite surprised if there are people running untrusted workloads
-> > > on 10+ year old silicon *and* have passthrough devices and non-coherent
-> > > IOMMUs/DMA.
-What if the guest is a totally malicious one?
-Previously we trust the guest in the case of noncoherent DMA is because
-we believe a malicious guest will only meet data corruption and shoot his own
-foot.
-
-But as Jason raised the security problem in another mail thread [1],
-this will expose security hole if CPUs have no self-snoop. So, we need
-to fix it, right?
-+ Jason, in case I didn't understand this problem correctly.
-
-[1] https://lore.kernel.org/all/20240108153818.GK50406@nvidia.com/
-
-> > this is probably true.
-> > 
-> > > And anyone exposing a device directly to an untrusted workload really
-> > > should have done their homework.
-> > 
-> > or they run trusted workloads which might be tampered by virus to
-> > exceed the scope of their homework. 😊
+在 2024/03/13 6:56, junxiao.bi@oracle.com 写道:
+> On 3/10/24 6:50 PM, Yu Kuai wrote:
 > 
-> If a workload is being run in a KVM guest for host isolation/security purposes,
-> and a device was exposed to said workload, then I would firmly consider analyzing
-> the impact of a compromised guest to be part of their homework.
+>> Hi,
+>>
+>> 在 2024/03/09 7:49, junxiao.bi@oracle.com 写道:
+>>> Here is the root cause for this issue:
+>>>
+>>> Commit 5e2cf333b7bd ("md/raid5: Wait for MD_SB_CHANGE_PENDING in 
+>>> raid5d") introduced a regression, it got reverted through commit 
+>>> bed9e27baf52 ("Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING in 
+>>> raid5d"). To fix the original issue commit 5e2cf333b7bd was fixing, 
+>>> commit d6e035aad6c0 ("md: bypass block throttle for superblock 
+>>> update") was created, it avoids md superblock write getting throttled 
+>>> by block layer which is good, but md superblock write could be stuck 
+>>> in block layer due to block flush as well, and that is what was 
+>>> happening in this regression report.
+>>>
+>>> Process "md0_reclaim" got stuck while waiting IO for md superblock 
+>>> write done, that IO was marked with REQ_PREFLUSH | REQ_FUA flags, 
+>>> these 3 steps ( PREFLUSH, DATA and POSTFLUSH ) will be executed 
+>>> before done, the hung of this process is because the last step 
+>>> "POSTFLUSH" never done. And that was because of  process "md0_raid5" 
+>>> submitted another IO with REQ_FUA flag marked just before that step 
+>>> started. To handle that IO, blk_insert_flush() will be invoked and 
+>>> hit "REQ_FSEQ_DATA | REQ_FSEQ_POSTFLUSH" case where 
+>>> "fq->flush_data_in_flight" will be increased. When the IO for md 
+>>> superblock write was to issue "POSTFLUSH" step through 
+>>> blk_kick_flush(), it found that "fq->flush_data_in_flight" was not 
+>>> zero, so it will skip that step, that is expected, because flush will 
+>>> be triggered when "fq->flush_data_in_flight" dropped to zero.
+>>>
+>>> Unfortunately here that inflight data IO from "md0_raid5" will never 
+>>> done, because it was added into the blk_plug list of that process, 
+>>> but "md0_raid5" run into infinite loop due to "MD_SB_CHANGE_PENDING" 
+>>> which made it never had a chance to finish the blk plug until 
+>>> "MD_SB_CHANGE_PENDING" was cleared. Process "md0_reclaim" was 
+>>> supposed to clear that flag but it was stuck by "md0_raid5", so this 
+>>> is a deadlock.
+>>>
+>>> Looks like the approach in the RFC patch trying to resolve the 
+>>> regression of commit 5e2cf333b7bd can help this issue. Once 
+>>> "md0_raid5" starts looping due to "MD_SB_CHANGE_PENDING", it should 
+>>> release all its staging IO requests to avoid blocking others. Also a 
+>>> cond_reschedule() will avoid it run into lockup.
+>>
+>> The analysis sounds good, however, it seems to me that the behaviour
+>> raid5d() pings the cpu to wait for 'MD_SB_CHANGE_PENDING' to be cleared
+>> is not reasonable, because md_check_recovery() must hold
+>> 'reconfig_mutex' to clear the flag.
 > 
-> > > And it's not like we're going to change KVM's historical behavior at this point.
-> > 
-> > I agree with your point of not breaking userspace. But still think a warning
-> > might be informative to let users evaluate their setup against a newly
-> > identified "unexpected behavior"  which has security implication beyond
-> > the guest, while the previous interpretation of "unexpected behavior" 
-> > might be that the guest can at most shoot its own foot...
+> That's the behavior before commit 5e2cf333b7bd which was added into Sep 
+> 2022, so this behavior has been with raid5 for many years.
 > 
-> If this issue weren't limited to 10+ year old hardware, I would be more inclined
-> to add a message.  But at this point, realistically the only thing KVM would be
-> saying is "you're running old hardware, that might be unsafe in today's world".
+
+Yes, it exists for a long time doesn't mean it's good. It is really
+weird to hold spinlock to wait for a mutex.
 > 
-> For users that care about security, we'd be telling them something they already
-> know (and if they don't know, they've got bigger problems).  And for everyone
-> else, it'd be scary noise without any meaningful benefit.
+>>
+>> Look at raid1/raid10, there are two different behaviour that seems can
+>> avoid this problem as well:
+>>
+>> 1) blk_start_plug() is delayed until all failed IO is handled. This look
+>> reasonable because in order to get better performance, IO should be
+>> handled by submitted thread as much as possible, and meanwhile, the
+>> deadlock can be triggered here.
+>> 2) if 'MD_SB_CHANGE_PENDING' is not cleared by md_check_recovery(), skip
+>> the handling of failed IO, and when mddev_unlock() is called, daemon
+>> thread will be woken up again to handle failed IO.
+>>
+>> How about the following patch?
+>>
+>> Thanks,
+>> Kuai
+>>
+>> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+>> index 3ad5f3c7f91e..0b2e6060f2c9 100644
+>> --- a/drivers/md/raid5.c
+>> +++ b/drivers/md/raid5.c
+>> @@ -6720,7 +6720,6 @@ static void raid5d(struct md_thread *thread)
+>>
+>>         md_check_recovery(mddev);
+>>
+>> -       blk_start_plug(&plug);
+>>         handled = 0;
+>>         spin_lock_irq(&conf->device_lock);
+>>         while (1) {
+>> @@ -6728,6 +6727,14 @@ static void raid5d(struct md_thread *thread)
+>>                 int batch_size, released;
+>>                 unsigned int offset;
+>>
+>> +               /*
+>> +                * md_check_recovery() can't clear sb_flags, usually 
+>> because of
+>> +                * 'reconfig_mutex' can't be grabbed, wait for 
+>> mddev_unlock() to
+>> +                * wake up raid5d().
+>> +                */
+>> +               if (test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags))
+>> +                       goto skip;
+>> +
+>>                 released = release_stripe_list(conf, 
+>> conf->temp_inactive_list);
+>>                 if (released)
+>>                         clear_bit(R5_DID_ALLOC, &conf->cache_state);
+>> @@ -6766,8 +6773,8 @@ static void raid5d(struct md_thread *thread)
+>>                         spin_lock_irq(&conf->device_lock);
+>>                 }
+>>         }
+>> +skip:
+>>         pr_debug("%d stripes handled\n", handled);
+>> -
+>>         spin_unlock_irq(&conf->device_lock);
+>>         if (test_and_clear_bit(R5_ALLOC_MORE, &conf->cache_state) &&
+>>             mutex_trylock(&conf->cache_size_mutex)) {
+>> @@ -6779,6 +6786,7 @@ static void raid5d(struct md_thread *thread)
+>>                 mutex_unlock(&conf->cache_size_mutex);
+>>         }
+>>
+>> +       blk_start_plug(&plug);
+>>         flush_deferred_bios(conf);
+>>
+>>         r5l_flush_stripe_to_raid(conf->log);
+> 
+> This patch eliminated the benefit of blk_plug, i think it will not be 
+> good for IO performance perspective?
+
+There is only one daemon thread, so IO should not be handled here as
+much as possible. The IO should be handled by the thread that is
+submitting the IO, and let daemon to hanldle the case that IO failed or
+can't be submitted at that time.
+
+Thanks,
+Kuai
+
+> 
+> 
+> Thanks,
+> 
+> Junxiao.
+> 
+>>
+>>>
+>>> https://www.spinics.net/lists/raid/msg75338.html
+>>>
+>>> Dan, can you try the following patch?
+>>>
+>>> diff --git a/block/blk-core.c b/block/blk-core.c
+>>> index de771093b526..474462abfbdc 100644
+>>> --- a/block/blk-core.c
+>>> +++ b/block/blk-core.c
+>>> @@ -1183,6 +1183,7 @@ void __blk_flush_plug(struct blk_plug *plug, 
+>>> bool from_schedule)
+>>>          if (unlikely(!rq_list_empty(plug->cached_rq)))
+>>>                  blk_mq_free_plug_rqs(plug);
+>>>   }
+>>> +EXPORT_SYMBOL(__blk_flush_plug);
+>>>
+>>>   /**
+>>>    * blk_finish_plug - mark the end of a batch of submitted I/O
+>>> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+>>> index 8497880135ee..26e09cdf46a3 100644
+>>> --- a/drivers/md/raid5.c
+>>> +++ b/drivers/md/raid5.c
+>>> @@ -6773,6 +6773,11 @@ static void raid5d(struct md_thread *thread)
+>>> spin_unlock_irq(&conf->device_lock);
+>>>                          md_check_recovery(mddev);
+>>> spin_lock_irq(&conf->device_lock);
+>>> +               } else {
+>>> + spin_unlock_irq(&conf->device_lock);
+>>> +                       blk_flush_plug(&plug, false);
+>>> +                       cond_resched();
+>>> + spin_lock_irq(&conf->device_lock);
+>>>                  }
+>>>          }
+>>>          pr_debug("%d stripes handled\n", handled);
+>>>
+>>> Thanks,
+>>>
+>>> Junxiao.
+>>>
+>>> On 3/1/24 12:26 PM, junxiao.bi@oracle.com wrote:
+>>>> Hi Dan & Song,
+>>>>
+>>>> I have not root cause this yet, but would like share some findings 
+>>>> from the vmcore Dan shared. From what i can see, this doesn't look 
+>>>> like a md issue, but something wrong with block layer or below.
+>>>>
+>>>> 1. There were multiple process hung by IO over 15mins.
+>>>>
+>>>> crash> ps -m | grep UN
+>>>> [0 00:15:50.424] [UN]  PID: 957      TASK: ffff88810baa0ec0 CPU: 1 
+>>>> COMMAND: "jbd2/dm-3-8"
+>>>> [0 00:15:56.151] [UN]  PID: 1835     TASK: ffff888108a28ec0 CPU: 2 
+>>>> COMMAND: "dd"
+>>>> [0 00:15:56.187] [UN]  PID: 876      TASK: ffff888108bebb00 CPU: 3 
+>>>> COMMAND: "md0_reclaim"
+>>>> [0 00:15:56.185] [UN]  PID: 1914     TASK: ffff8881015e6740 CPU: 1 
+>>>> COMMAND: "kworker/1:2"
+>>>> [0 00:15:56.255] [UN]  PID: 403      TASK: ffff888101351d80 CPU: 7 
+>>>> COMMAND: "kworker/u21:1"
+>>>>
+>>>> 2. Let pick md0_reclaim to take a look, it is waiting done 
+>>>> super_block update. We can see there were two pending superblock 
+>>>> write and other pending io for the underling physical disk, which 
+>>>> caused these process hung.
+>>>>
+>>>> crash> bt 876
+>>>> PID: 876      TASK: ffff888108bebb00  CPU: 3    COMMAND: "md0_reclaim"
+>>>>  #0 [ffffc900008c3d10] __schedule at ffffffff81ac18ac
+>>>>  #1 [ffffc900008c3d70] schedule at ffffffff81ac1d82
+>>>>  #2 [ffffc900008c3d88] md_super_wait at ffffffff817df27a
+>>>>  #3 [ffffc900008c3dd0] md_update_sb at ffffffff817df609
+>>>>  #4 [ffffc900008c3e20] r5l_do_reclaim at ffffffff817d1cf4
+>>>>  #5 [ffffc900008c3e98] md_thread at ffffffff817db1ef
+>>>>  #6 [ffffc900008c3ef8] kthread at ffffffff8114f8ee
+>>>>  #7 [ffffc900008c3f30] ret_from_fork at ffffffff8108bb98
+>>>>  #8 [ffffc900008c3f50] ret_from_fork_asm at ffffffff81000da1
+>>>>
+>>>> crash> mddev.pending_writes,disks 0xffff888108335800
+>>>>   pending_writes = {
+>>>>     counter = 2  <<<<<<<<<< 2 active super block write
+>>>>   },
+>>>>   disks = {
+>>>>     next = 0xffff88810ce85a00,
+>>>>     prev = 0xffff88810ce84c00
+>>>>   },
+>>>> crash> list -l md_rdev.same_set -s md_rdev.kobj.name,nr_pending 
+>>>> 0xffff88810ce85a00
+>>>> ffff88810ce85a00
+>>>>   kobj.name = 0xffff8881067c1a00 "dev-dm-1",
+>>>>   nr_pending = {
+>>>>     counter = 0
+>>>>   },
+>>>> ffff8881083ace00
+>>>>   kobj.name = 0xffff888100a93280 "dev-sde",
+>>>>   nr_pending = {
+>>>>     counter = 10 <<<<
+>>>>   },
+>>>> ffff8881010ad200
+>>>>   kobj.name = 0xffff8881012721c8 "dev-sdc",
+>>>>   nr_pending = {
+>>>>     counter = 8 <<<<<
+>>>>   },
+>>>> ffff88810ce84c00
+>>>>   kobj.name = 0xffff888100325f08 "dev-sdd",
+>>>>   nr_pending = {
+>>>>     counter = 2 <<<<<
+>>>>   },
+>>>>
+>>>> 3. From block layer, i can find the inflight IO for md superblock 
+>>>> write which has been pending 955s which matches with the hung time 
+>>>> of "md0_reclaim"
+>>>>
+>>>> crash> 
+>>>> request.q,mq_hctx,cmd_flags,rq_flags,start_time_ns,bio,biotail,state,__data_len,flush,end_io 
+>>>> ffff888103b4c300
+>>>>   q = 0xffff888103a00d80,
+>>>>   mq_hctx = 0xffff888103c5d200,
+>>>>   cmd_flags = 38913,
+>>>>   rq_flags = 139408,
+>>>>   start_time_ns = 1504179024146,
+>>>>   bio = 0x0,
+>>>>   biotail = 0xffff888120758e40,
+>>>>   state = MQ_RQ_COMPLETE,
+>>>>   __data_len = 0,
+>>>>   flush = {
+>>>>     seq = 3, <<<< REQ_FSEQ_PREFLUSH | REQ_FSEQ_DATA
+>>>>     saved_end_io = 0x0
+>>>>   },
+>>>>   end_io = 0xffffffff815186e0 <mq_flush_data_end_io>,
+>>>>
+>>>> crash> p tk_core.timekeeper.tkr_mono.base
+>>>> $1 = 2459916243002
+>>>> crash> eval 2459916243002-1504179024146
+>>>> hexadecimal: de86609f28
+>>>>     decimal: 955737218856  <<<<<<< IO pending time is 955s
+>>>>       octal: 15720630117450
+>>>>      binary: 
+>>>> 0000000000000000000000001101111010000110011000001001111100101000
+>>>>
+>>>> crash> bio.bi_iter,bi_end_io 0xffff888120758e40
+>>>>   bi_iter = {
+>>>>     bi_sector = 8, <<<< super block offset
+>>>>     bi_size = 0,
+>>>>     bi_idx = 0,
+>>>>     bi_bvec_done = 0
+>>>>   },
+>>>>   bi_end_io = 0xffffffff817dca50 <super_written>,
+>>>> crash> dev -d | grep ffff888103a00d80
+>>>>     8 ffff8881003ab000   sdd        ffff888103a00d80       0 0 0
+>>>>
+>>>> 4. Check above request, even its state is "MQ_RQ_COMPLETE", but it 
+>>>> is still pending. That's because each md superblock write was marked 
+>>>> with REQ_PREFLUSH | REQ_FUA, so it will be handled in 3 steps: 
+>>>> pre_flush, data, and post_flush. Once each step complete, it will be 
+>>>> marked in "request.flush.seq", here the value is 3, which is 
+>>>> REQ_FSEQ_PREFLUSH |  REQ_FSEQ_DATA, so the last step "post_flush" 
+>>>> has not be done. Another wired thing is that 
+>>>> blk_flush_queue.flush_data_in_flight is still 1 even "data" step 
+>>>> already done.
+>>>>
+>>>> crash> blk_mq_hw_ctx.fq 0xffff888103c5d200
+>>>>   fq = 0xffff88810332e240,
+>>>> crash> blk_flush_queue 0xffff88810332e240
+>>>> struct blk_flush_queue {
+>>>>   mq_flush_lock = {
+>>>>     {
+>>>>       rlock = {
+>>>>         raw_lock = {
+>>>>           {
+>>>>             val = {
+>>>>               counter = 0
+>>>>             },
+>>>>             {
+>>>>               locked = 0 '\000',
+>>>>               pending = 0 '\000'
+>>>>             },
+>>>>             {
+>>>>               locked_pending = 0,
+>>>>               tail = 0
+>>>>             }
+>>>>           }
+>>>>         }
+>>>>       }
+>>>>     }
+>>>>   },
+>>>>   flush_pending_idx = 1,
+>>>>   flush_running_idx = 1,
+>>>>   rq_status = 0 '\000',
+>>>>   flush_pending_since = 4296171408,
+>>>>   flush_queue = {{
+>>>>       next = 0xffff88810332e250,
+>>>>       prev = 0xffff88810332e250
+>>>>     }, {
+>>>>       next = 0xffff888103b4c348, <<<< the request is in this list
+>>>>       prev = 0xffff888103b4c348
+>>>>     }},
+>>>>   flush_data_in_flight = 1,  >>>>>> still 1
+>>>>   flush_rq = 0xffff888103c2e000
+>>>> }
+>>>>
+>>>> crash> list 0xffff888103b4c348
+>>>> ffff888103b4c348
+>>>> ffff88810332e260
+>>>>
+>>>> crash> request.tag,state,ref 0xffff888103c2e000 >>>> flush_rq of hw 
+>>>> queue
+>>>>   tag = -1,
+>>>>   state = MQ_RQ_IDLE,
+>>>>   ref = {
+>>>>     counter = 0
+>>>>   },
+>>>>
+>>>> 5. Looks like the block layer or underlying(scsi/virtio-scsi) may 
+>>>> have some issue which leading to the io request from md layer stayed 
+>>>> in a partial complete statue. I can't see how this can be related 
+>>>> with the commit bed9e27baf52 ("Revert "md/raid5: Wait for 
+>>>> MD_SB_CHANGE_PENDING in raid5d"")
+>>>>
+>>>>
+>>>> Dan,
+>>>>
+>>>> Are you able to reproduce using some regular scsi disk, would like 
+>>>> to rule out whether this is related with virtio-scsi?
+>>>>
+>>>> And I see the kernel version is 6.8.0-rc5 from vmcore, is this the 
+>>>> official mainline v6.8-rc5 without any other patches?
+>>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Junxiao.
+>>>>
+>>>> On 2/23/24 6:13 PM, Song Liu wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On Fri, Feb 23, 2024 at 12:07 AM Linux regression tracking (Thorsten
+>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+>>>>>> On 21.02.24 00:06, Dan Moulding wrote:
+>>>>>>> Just a friendly reminder that this regression still exists on the
+>>>>>>> mainline. It has been reverted in 6.7 stable. But I upgraded a
+>>>>>>> development system to 6.8-rc5 today and immediately hit this issue
+>>>>>>> again. Then I saw that it hasn't yet been reverted in Linus' tree.
+>>>>>> Song Liu, what's the status here? I aware that you fixed with quite a
+>>>>>> few regressions recently, but it seems like resolving this one is
+>>>>>> stalled. Or were you able to reproduce the issue or make some 
+>>>>>> progress
+>>>>>> and I just missed it?
+>>>>> Sorry for the delay with this issue. I have been occupied with some
+>>>>> other stuff this week.
+>>>>>
+>>>>> I haven't got luck to reproduce this issue. I will spend more time 
+>>>>> looking
+>>>>> into it next week.
+>>>>>
+>>>>>> And if not, what's the way forward here wrt to the release of 6.8?
+>>>>>> Revert the culprit and try again later? Or is that not an option 
+>>>>>> for one
+>>>>>> reason or another?
+>>>>> If we don't make progress with it in the next week, we will do the 
+>>>>> revert,
+>>>>> same as we did with stable kernels.
+>>>>>
+>>>>>> Or do we assume that this is not a real issue? That it's caused by 
+>>>>>> some
+>>>>>> oddity (bit-flip in the metadata or something like that?) only to be
+>>>>>> found in Dan's setup?
+>>>>> I don't think this is because of oddities. Hopefully we can get more
+>>>>> information about this soon.
+>>>>>
+>>>>> Thanks,
+>>>>> Song
+>>>>>
+>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression 
+>>>>>> tracker' hat)
+>>>>>> -- 
+>>>>>> Everything you wanna know about Linux kernel regression tracking:
+>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
+>>>>>> If I did something stupid, please tell me, as explained on that page.
+>>>>>>
+>>>>>> #regzbot poke
+>>>>>>
+>>>
+>>> .
+>>>
+>>
+> .
+> 
+
 
