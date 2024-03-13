@@ -1,123 +1,127 @@
-Return-Path: <linux-kernel+bounces-101163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AAB987A34B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:14:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC72087A34D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85D8A1F22222
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:14:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CFC72830BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FDB1CF9C;
-	Wed, 13 Mar 2024 07:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E75E62134F;
+	Wed, 13 Mar 2024 07:14:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f0D0WAzO"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nj8Bne9h";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nj8Bne9h"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DCCA1CA94
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8596420DC5
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710314002; cv=none; b=KPw5vDRyDghBc+Ag1qmf9ig3FHIGjQfJP/yWsHMvY5NAgukf9lxMuRxHTteYHMrWxJtJzM5YR4sBLT1nhDeviLzHH8Wr6yJUdimp2JKEezKbA0YB09L+2ryqp6dapmePtKaBs6lH1uYdP+2A2C4sZW0P2aGY1myYzbvuNaE95+8=
+	t=1710314062; cv=none; b=Jyp/LQAPh5ZnPWHnsyXD6ELswTF6xWn/kY8t+pcWpifffsAZT38+ZSRO0X+NJ5zCGQSrJ9bxCdfoDOe2QDpalfhGz1porX5BNTDxWJhCH/9pV9ZIaMAehXKK5mZ4rlko567gvG0RM8WRP/DnI+9Ar6ECcPztM1HqgAA//MQMajk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710314002; c=relaxed/simple;
-	bh=NswmWCAg+kMRO6U9D0wl7waRlD6nXsRyQ2PxmrtRxow=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ljuXHFnJgMzlB48Xd7FibR+C+qbcrofgI9HqM/rnczttcXcDBMlxZpyIfQ+vD1oFPv05OXVjslkBXZtkKpIN1/n4E6QgCZyd8xeUGeCJ71Vo1a/8WbUziZXg0NNtQgYLSi/E9ODAGTY3nRQ0AFfmvNHStEdFckoKC5Zh1phRD3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f0D0WAzO; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc13fb0133so34078055ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710314000; x=1710918800; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oBO1QyjEKgY+z+cbFw6h6LK60G04OlYaLIToSeOvUhY=;
-        b=f0D0WAzOmGZ8xHDIr6Eh2zZIUT0GxMuQ0vsQLWtdL0ytyXuhrgAQXjzR6AxSW7FvEr
-         XDVZbFkxkZTImC7HrNkrlhx9e5bBVi9HPLMemTJA0XXt/dcQlSWDFEpBQUo2iMQ6f8hK
-         44xrlNLeD5IPkhbp8OfXxsHJC+MWTRC0xzZfYUt1ZL9GCUNJvuSXMEyzJbkYdjzkYAXz
-         mfHzsMiq2R8PpNT9xfUQmZUGYZ8fsooXW2fj4Fv4EeunrsGFzz/RCN13INbvUWboOcRs
-         Xqy3LY2sZS3FE4FFf5VR+4q5RHPHkNfV+ARKipcYEoabfWgqB25fHdAyty3egCXHHmia
-         afyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710314000; x=1710918800;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oBO1QyjEKgY+z+cbFw6h6LK60G04OlYaLIToSeOvUhY=;
-        b=WR83PtWxN+lEEPauKw1ByywMb1hMgQVTeJFVGUDHpSEaAJK2GIhRjceTjR9Mz8PDTt
-         fnMmEDSnJ7uy4dehJizGZ65/U//vINO9m7TwIYa5TAeM76FQXnnBsxeFpXO2mfQDjv0B
-         z9lbpwuyx3qkEQU+1JM2V6SG2rsWMSnzt+dWVWOIHhE9NPc4OTcF6bnc0N8UP6f5f6MH
-         ziDUlAfSS4aRkOWzmierPvuai9dmFVvZUIGegH69udboS5+YHZkBP9YRuHYaJqJHbUtS
-         ZqwmFx7+5tvgLa+2E687SyHvHKc2CBFd/IIUU1IOT34SPIuL5o4D4xwTSDaGT5HOFi8P
-         M1GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1pa13Peb3vAsV/NAGuR/IhEHLaOMQEm1kyIoBYTJhq2qehz/OO68cVR5RDHEalv2nFNXg+WgcBtqPXBAkqjIjKqu3svdbDRW5Mjct
-X-Gm-Message-State: AOJu0YwU21Xoq3jF4bYrB4gaEG+A7RIorPCOvk6DGg9GkjMhIvwyFq2k
-	w4cqUzTWvR3754QckRCPqaL8PzVNsRrzkEjS5EBGrc8xwfQ5X+f/
-X-Google-Smtp-Source: AGHT+IFblix/LUHDLSUUvpaHyyUSlGJQl+RzQPyKcxgsHFzN57XwW20vnlxtvFbGF30VidNwlzsWzg==
-X-Received: by 2002:a17:902:b691:b0:1dd:6eba:c592 with SMTP id c17-20020a170902b69100b001dd6ebac592mr8500687pls.56.1710314000537;
-        Wed, 13 Mar 2024 00:13:20 -0700 (PDT)
-Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.67])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170902ea0200b001dc6b99af70sm7806180plg.108.2024.03.13.00.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 00:13:20 -0700 (PDT)
-Date: Wed, 13 Mar 2024 12:43:18 +0530
-From: Ayush Tiwari <ayushtiw0110@gmail.com>
-To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev
-Cc: outreachy@lists.linux.dev
-Subject: [PATCH v3] staging: rtl8712: rename tmpVal to avg_val
-Message-ID: <ZfFSDoNPjQypC829@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1710314062; c=relaxed/simple;
+	bh=Qqm+mNyOMNGhWGPazj/rebH3gZ12O8vArW5ISueyxxo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DjF1adlP6gMuUsLwZkveP9vTy/yEU6l1YrmNyhdIj6Q1PVIuX8LVWolCoyTyuXPq2mAE8802bnCHtA2nRb5GBQZTXGWnjh85Awvh0837NPmvNNiDVkZEusnJu/+dEe0B6xpnYcVNIJQe6ohUVPH8W30EvKBNC83iRFhxDxyQ1EU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nj8Bne9h; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nj8Bne9h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0A64F21B98;
+	Wed, 13 Mar 2024 07:14:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710314053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=kxMz5wRYRts6SEKGqAGBVkV0rkhnV3B7oQVvSfAgUd8=;
+	b=nj8Bne9hJ+j5/yvQm/rexgklUlFOuMukRu3zd6VSc+1L5d3a/L4osnKJ3W0+g8SaTHiXNH
+	Rs7oux9FA9GDxamk3jtETc2hlMzVyZ6gZY31Hs0C/csnKfO5xrkmYdU7vbrVDljMiogmiu
+	TPzwDSOY9Q5oJO4d+VI2AVn8pBh6lIw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710314053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=kxMz5wRYRts6SEKGqAGBVkV0rkhnV3B7oQVvSfAgUd8=;
+	b=nj8Bne9hJ+j5/yvQm/rexgklUlFOuMukRu3zd6VSc+1L5d3a/L4osnKJ3W0+g8SaTHiXNH
+	Rs7oux9FA9GDxamk3jtETc2hlMzVyZ6gZY31Hs0C/csnKfO5xrkmYdU7vbrVDljMiogmiu
+	TPzwDSOY9Q5oJO4d+VI2AVn8pBh6lIw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BAFCB13977;
+	Wed, 13 Mar 2024 07:14:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kyWaK0RS8WWlSAAAD6G6ig
+	(envelope-from <jgross@suse.com>); Wed, 13 Mar 2024 07:14:12 +0000
+From: Juergen Gross <jgross@suse.com>
+To: linux-kernel@vger.kernel.org
+Cc: Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	xen-devel@lists.xenproject.org
+Subject: [PATCH 0/2] xen: two fixes related to event channels
+Date: Wed, 13 Mar 2024 08:14:07 +0100
+Message-Id: <20240313071409.25913-1-jgross@suse.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=nj8Bne9h
+X-Spamd-Result: default: False [4.66 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.03)[56.12%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 URIBL_BLOCKED(0.00)[suse.com:dkim];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: 4.66
+X-Spam-Level: ****
+X-Rspamd-Queue-Id: 0A64F21B98
+X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-Rename local variable tmpVal to avg_val in function process_link_qual
-to give intuitive meaning to variable and match the common kernel
-coding style.
+Two patches fixing one seen problem and another potential one. Both
+have been introduced in the 6.7 kernel.
 
-Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+Juergen Gross (2):
+  xen/evtchn: avoid WARN() when unbinding an event channel
+  xen/events: increment refcnt only if event channel is refcounted
 
-Changes in v3: changed variable name tmpVal to avg_val
-Changes in v2: added a period in message
----
- drivers/staging/rtl8712/rtl8712_recv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/xen/events/events_base.c | 22 +++++++++++++---------
+ drivers/xen/evtchn.c             |  6 ++++++
+ 2 files changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/staging/rtl8712/rtl8712_recv.c b/drivers/staging/rtl8712/rtl8712_recv.c
-index a3c4713c59b3..1fabc5137a4c 100644
---- a/drivers/staging/rtl8712/rtl8712_recv.c
-+++ b/drivers/staging/rtl8712/rtl8712_recv.c
-@@ -861,7 +861,7 @@ static void query_rx_phy_status(struct _adapter *padapter,
- static void process_link_qual(struct _adapter *padapter,
- 			      union recv_frame *prframe)
- {
--	u32	last_evm = 0, tmpVal;
-+	u32	last_evm = 0, avg_val;
- 	struct rx_pkt_attrib *pattrib;
- 	struct smooth_rssi_data *sqd = &padapter->recvpriv.signal_qual_data;
- 
-@@ -883,8 +883,8 @@ static void process_link_qual(struct _adapter *padapter,
- 			sqd->index = 0;
- 
- 		/* <1> Showed on UI for user, in percentage. */
--		tmpVal = sqd->total_val / sqd->total_num;
--		padapter->recvpriv.signal = (u8)tmpVal;
-+		avg_val = sqd->total_val / sqd->total_num;
-+		padapter->recvpriv.signal = (u8)avg_val;
- 	}
- }
- 
 -- 
-2.40.1
+2.35.3
 
 
