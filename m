@@ -1,361 +1,176 @@
-Return-Path: <linux-kernel+bounces-102588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E05A87B44E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A60FB87B451
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4350B286B4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:24:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30093286ADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED13059B66;
-	Wed, 13 Mar 2024 22:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE7C59B6C;
+	Wed, 13 Mar 2024 22:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jUhc4oir"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b7MgKrCo"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77CF59B4E
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947A059B4D
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710368668; cv=none; b=Z8HxGXdcQxy07wfp0AwEC5Emow6opQyJbCNVhxoiqj6BhBH06J/7P53D18pC5OQuXo+or4vfSQYec5okGLru6M9wAQUQY8C7Wj0dviCOMiy5SO5HGUwzZIjU+H5laR21UJU8pOINy1gCtizIGVOYlQunZ8F1UcstZKnb5EbRzbM=
+	t=1710368797; cv=none; b=NvIvDGFHOOY400NL1bXILbuXoHcjmQcoTfByz7Y0gkdifNcnCADk/DybaTOWjbpowvnFLD6hTlLhuc7oIl4EXpRV5D/CTz/g2QXC0xLyzjZUzr5Mnx3ttu9BwFdqy6YvqZqpFkORL7IKjgJQd6QZqhs7fuFHL5A/I4qqzNEk/iM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710368668; c=relaxed/simple;
-	bh=zbLeQIWvy5qwTJ6MDXQixdKvzQX4rEAfnJ7pl0mTJ0E=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=C8OYfsk5sSdPvHkIKMSAkGoKIujOglU5xW+36iSyGxrhoEqMROnE9SKtvdqgEJNfBKDCD1I9AYOjSH40ndcBG4NwQgdZRhALvMZ2Sfbq/NdF7tcqwjhuCWSsfeKLPcvBv6NkvzxR6LMv3K2DaLdWPeoJQDfiJTeIgEm9hIdvxJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jUhc4oir; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso235690276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:24:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710368666; x=1710973466; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gqcbVEM/vE886TusLqgUrg1+EocQSk8oVS1AlNPmiiw=;
-        b=jUhc4oirCVgJ2fDB8t8gry2VZ6nd38Hd2QD7En/NefUSFF0UEHvp0eshwmtW7HBUOS
-         fWiAlqv2Zx69EHL1tcOcv2h87qT/G9JUiGv2/S5wWviiEn4FP7XeNL+8DTWXMqVdsx8f
-         wtopVFVJ18utcgwpP5AwP/4nn8qXiTFFlXst21071scIv0E+7XRZnH7EICTobjodq3uZ
-         O03tdhF4snGIoeKUBUXrdi4+9qLyE8EH32ZAl8pX5FsnvZgsMPPmniy9jLM/7ShOncTs
-         tfK0XgmqLxkJIKmk40zzi9aetLU3nq5h45aL0/v5Lq9BshtxCAJFKHafFwwt0bbpHF4x
-         5QqQ==
+	s=arc-20240116; t=1710368797; c=relaxed/simple;
+	bh=9l4GN0ED0DK/GGygB+LgC/xsWQauGR6CXlrGH+hem84=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=XxfWrOjlxOZzUZ3Vdcihw8z+mJDfoSbeNNleFdwtPBlIEIaAcxB5Qb6YSBAFTTUCeJpS7Ylld8fb3RBL/H9OJFFzNVdIfyta3E5aD70EqzRsYzYmuNZ7bIGvvKsQzl7xNNx2xnau0ypNWpSZy3bpQ7/qN5NetzaEZK+SKhR9bBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b7MgKrCo; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710368794;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=TEVDwJXX84y5L0n1tmhtEPizUS9bA6evHI5uoMWVQCQ=;
+	b=b7MgKrCoDs3LADle1LCK3MRvvTGCq85ZkJ0iek55M6xTG7SUPAtu8Xg1oRpPYfXHAqqhuk
+	CVA+eGteNHM3C7ERd51XkVHiHpfeMDKAwKjn4Y2flakn34TBIb60C07nQThl0D0U12jhiU
+	XvPyNxSECFr8smzYvGjXgTlyQucmOvY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-655-OZsQCkfcNG-eHL8D7NYlEA-1; Wed, 13 Mar 2024 18:26:25 -0400
+X-MC-Unique: OZsQCkfcNG-eHL8D7NYlEA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d51bb9353so98771f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:26:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710368666; x=1710973466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gqcbVEM/vE886TusLqgUrg1+EocQSk8oVS1AlNPmiiw=;
-        b=TEtlvH31hIsNES5dZQouxTwrkpqzpyZKXxD5/4qjj/NtdMu+CqaKN4A1I6l/BhgaRk
-         Le9dwANa2dRVoCfmzrkrsPsC67T4cZG5ceWNU1VChyJRGtF6N6RSFxH9DmvvSlFoMCdq
-         5rdUcIVCSwql86fCmmkdWp0D1r72zs6sPvyz2RuwCzQAqCO/SYneu3MqOxzKalmJbOnR
-         4lPZ90E+q4NcC8yOPXoXc2ZcswK27Ljn5ttSfPl6omZ3NpGL+EBzZ9KkuLkmD2WzBnNG
-         +U5s0K09QC/xj5nGcYnjiH17o4t+MPL5n4Y6bgVcPBvKJPfJLxPM1Tb4ymDGHU+yH8Nj
-         cIng==
-X-Gm-Message-State: AOJu0Yx3bf0cie35ODNaT3Z+gEFVfUMWCpSp1H0coX9my2wtMFeBlIvI
-	TJGo3Jt4HcdeA4Emk5js0fO95yaZj21Mwpju4idzlqPx0YKOfJlndV/wKkGzBJKeRpFXQIoO+KZ
-	qYtSeDYDezgCVqDdWdBl/DvduMGbb8S1gIa0Uj7oNuNDGi1cBum0=
-X-Google-Smtp-Source: AGHT+IHpQ4YIO03aPM1BuAYFi8DxKeqs+GpFXRCN0uax2uGsql/PD2rMsOs0arfNXIiNgBZ59EP+HKhUHPEKnIm4Fsg=
-X-Received: by 2002:a25:b124:0:b0:dcc:d694:b4a6 with SMTP id
- g36-20020a25b124000000b00dccd694b4a6mr54290ybj.15.1710368665695; Wed, 13 Mar
- 2024 15:24:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710368784; x=1710973584;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TEVDwJXX84y5L0n1tmhtEPizUS9bA6evHI5uoMWVQCQ=;
+        b=PlbD5eqlrQlzotZqMAb1XIM1MpVQxgCPTpbuwbUDuwlzjZEIX1hqON5KBKIl008dFk
+         4ELVih0poH+v7YdEnwKNvMllKNCKGPWoaiTF0P7faQwIL2aqhpcOuQhhU87WSgmoCCnm
+         a6dVj5+31Cmhf8wwBgxMb/oSlckH0da2tV4dMW7RYd7LEs9mhiHpJH40Crl7LzvI569V
+         TCoYIOnAgpsjD6MxgbzKhpgkJeuWfn9Vpg3svQUiy2wZAQb94oVlQtmGafitPVniuLqo
+         o8pb7RnF0O02X9N7bTKtmjdh8c1k0m2b8dpLcm1oKfCvtiDyiy8yr8dmwGoV9B8V610b
+         +0yw==
+X-Forwarded-Encrypted: i=1; AJvYcCVS8owclOqOGohiSGcDCdexYpwCg59KMO89hqmSp+Pz4UNgfu43XCVDE1p26kNSYrtbO2/+gJbfq9qhiCAFTlP2cADT/rXV6oUjbLGK
+X-Gm-Message-State: AOJu0YzOrdcKKfHiAWyhpoSP1hEj+Id3a6Or3G8o/asUy3k/SxrZj4wS
+	aWkMVtZwPS5HIuJZ5M4x7seAzRVChcLg7FybgY+13IJQ4mbS5YBCSqFV+5fYrqRhO9WCU8vNM8c
+	W+y2bxtd5LzpTaG2SWMX6aa+H1tw1HDUtfS5jWvuuoLeA/yKeMq3eqY85oSQQlg==
+X-Received: by 2002:a5d:6101:0:b0:33e:6056:6b84 with SMTP id v1-20020a5d6101000000b0033e60566b84mr2622589wrt.2.1710368783993;
+        Wed, 13 Mar 2024 15:26:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGo18HcMBQyZG2Or6jsxJRYvakM9UTXNeyDpb4irgy9JX7554u1opD+jxQfgyJUaFcDT55W4Q==
+X-Received: by 2002:a5d:6101:0:b0:33e:6056:6b84 with SMTP id v1-20020a5d6101000000b0033e60566b84mr2622582wrt.2.1710368783578;
+        Wed, 13 Mar 2024 15:26:23 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70e:2600:cd60:7701:f644:b131? (p200300cbc70e2600cd607701f644b131.dip0.t-ipconnect.de. [2003:cb:c70e:2600:cd60:7701:f644:b131])
+        by smtp.gmail.com with ESMTPSA id iv14-20020a05600c548e00b00412ee7d65a6sm400743wmb.6.2024.03.13.15.26.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 15:26:23 -0700 (PDT)
+Message-ID: <ce552774-d02a-4408-b0f3-2ad94ff36e42@redhat.com>
+Date: Wed, 13 Mar 2024 23:26:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 13 Mar 2024 23:24:14 +0100
-Message-ID: <CACRpkdYZ01rEzd5d8RcDbZqBPdy4uVU1uYWH6q7XS1WjKNXrUA@mail.gmail.com>
-Subject: [GIT PULL] pin control changes for v6.9
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
-	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/memory: Fix missing pte marker for !page on pte zaps
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+To: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>
+References: <20240313213107.235067-1-peterx@redhat.com>
+ <c04c81bc-dfc1-4dd6-972c-23c2eb8a5d0d@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <c04c81bc-dfc1-4dd6-972c-23c2eb8a5d0d@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Linus,
+On 13.03.24 23:03, David Hildenbrand wrote:
+> On 13.03.24 22:31, peterx@redhat.com wrote:
+>> From: Peter Xu <peterx@redhat.com>
+>>
+>> Commit 0cf18e839f64 of large folio zap work broke uffd-wp.  Now mm's uffd
+>> unit test "wp-unpopulated" will trigger this WARN_ON_ONCE().
+> 
+> Good that I added the WARN_ON_ONCE() :)
+> 
+>>
+>> The WARN_ON_ONCE() asserts that an VMA cannot be registered with
+>> userfaultfd-wp if it contains a !normal page, but it's actually possible.
+>> One example is an anonymous vma, register with uffd-wp, read anything will
+>> install a zero page.  Then when zap on it, this should trigger.
+> 
+> Are you sure? zap_install_uffd_wp_if_needed() contains right at the start:
+> 
+> 	/* Zap on anonymous always means dropping everything */
+> 	if (vma_is_anonymous(vma))
+> 		return;
+> 
+> So if that's the case the unit test triggers, I'm confused.
 
-pin control is rather boring this time with mainly cleanups.
-There are some 2-3 new drivers.
 
-Some stuff hits drivers/gpio as we split out the Nomadik
-GPIO driver, but the merge should be painless AFAICT.
-The main GPIO maintainer Bartosz is in sync.
+Ah, got it. It's not that we have to place a marker, just that it can 
+happen. Of course it can. All makes sense.
 
-Details are in the signed tag, please pull it in!
+Thanks!
 
-Yours,
-Linus Walleij
+-- 
+Cheers,
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d=
-:
+David / dhildenb
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tags/pinctrl-v6.9-1
-
-for you to fetch changes up to fa63587f94a77a49b53274dc0fd1ea41dfde5966:
-
-  drivers/gpio/nomadik: move dummy nmk_gpio_dbg_show_one() to header
-(2024-03-12 12:53:35 +0100)
-
-----------------------------------------------------------------
-Pin control changes for the v6.9 kernel cycle:
-
-No core changes this time around.
-
-New drivers:
-
-- New driver for Renesas R8A779H0 also known as R-Car V4M.
-
-- New driver for the Awinic AW9523/B I2C GPIO expander.
-  I found this living out-of-tree in OpenWrt as an upstream
-  attempt had stalled on the finishing line, so I picked it
-  up and finished the job.
-
-Improvements:
-
-- The Nomadik pin control driver was for years re-used out of
-  tree for the ST STA chips, and now the IP was re-used in a
-  MIPS automotive SoC called MobilEyeq5, so it has been split
-  in pin control and GPIO drivers so the latter can be reused
-  by MobilEyeq5. (Along with a long list of cleanups.)
-
-- A lot of overall cleanup and tidying up.
-
-----------------------------------------------------------------
-Andre Przywara (1):
-      pinctrl: pinmux: Suppress error message for -EPROBE_DEFER
-
-Andy Shevchenko (2):
-      pinctrl: nuvoton: Constify wpcm450_groups
-      gpio: nomadik: Finish conversion to use firmware node APIs
-
-AngeloGioacchino Del Regno (2):
-      dt-bindings: pinctrl: Add bindings for Awinic AW9523/AW9523B
-      pinctrl: Add driver for Awinic AW9523/B I2C GPIO Expander
-
-Arturas Moskvinas (1):
-      pinctrl: mcp23s08: Check only GPIOs which have interrupts enabled
-
-Biju Das (4):
-      pinctrl: renesas: rzg2l: Configure interrupt input mode
-      pinctrl: renesas: rzg2l: Simplify rzg2l_gpio_irq_{en,dis}able()
-      pinctrl: renesas: rzg2l: Avoid configuring ISEL in gpio_irq_{en,dis}a=
-ble*(
-      pinctrl: da9062: Add OF table
-
-Charles Keepax (3):
-      pinctrl: cs42l43: Tidy up header includes
-      pinctrl: cs42l43: Remove some needless inlines
-      pinctrl: cs42l43: Use str_high_low()
-
-Chen Ni (1):
-      pinctrl: st: Return pinctrl_gpio_direction_output to transfer the err=
-or
-
-Chen-Yu Tsai (2):
-      pinctrl: mediatek: Drop bogus slew rate register range for MT8186
-      pinctrl: mediatek: Drop bogus slew rate register range for MT8192
-
-Claudiu Beznea (3):
-      pinctrl: renesas: rzg2l: Fix locking in rzg2l_dt_subnode_to_map()
-      pinctrl: renesas: rzg2l: Select GPIOLIB_IRQCHIP and IRQ_DOMAIN_HIERAR=
-CHY
-      pinctrl: renesas: rzg2l: Add suspend/resume support
-
-Colin Ian King (1):
-      pinctrl: ocelot: remove redundant assignment to variable ret
-
-Cong Dang (13):
-      pinctrl: renesas: Initial R8A779H0 (R-Car V4M) PFC support
-      pinctrl: renesas: r8a779h0: Add Ethernet AVB pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add SD/MMC pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add QSPI pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add SCIF pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add SCIF_CLK pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add HSCIF pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add I2C pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add MSIOF pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add PWM/TPU pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add CANFD pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add PCIe pins, groups, functions
-      pinctrl: renesas: r8a779h0: Add Audio pins, groups, functions
-
-Dan Carpenter (2):
-      pinctrl: core: comment that pinctrl_add_gpio_range() is deprecated
-      gpio: nomadik: remove BUG_ON() in nmk_gpio_populate_chip()
-
-Erick Archer (1):
-      pinctrl: pinctrl-zynqmp: Use devm_kcalloc() instead of devm_kzalloc()
-
-Geert Uytterhoeven (4):
-      pinctrl: renesas: r8a779g0: Add missing SCIF_CLK2 pin group/function
-      pinctrl: renesas: checker: Limit cfg reg enum checks to provided IDs
-      dt-bindings: pinctrl: renesas,pfc: Document R-Car V4M support
-      pinctrl: renesas: Allow the compiler to optimize away sh_pfc_pm
-
-Jean Thomas (2):
-      pinctrl: mediatek: mt7981: add additional uart group
-      pinctrl: mediatek: mt7981: add additional emmc groups
-
-Krzysztof Kozlowski (2):
-      dt-bindings: pinctrl: amlogic: narrow regex for unit address to
-hex numbers
-      pinctrl: qcom: sm8650-lpass-lpi: correct Kconfig name
-
-Lad Prabhakar (3):
-      pinctrl: renesas: rzg2l: Improve code for readability
-      pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK() mac=
-ro
-      pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
-
-Linus Walleij (6):
-      Merge tag 'renesas-pinctrl-for-v6.9-tag1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
-into devel
-      Merge tag 'renesas-pinctrl-for-v6.9-tag2' of
-git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
-into devel
-      pinctrl: aw9523: Add proper terminator
-      gpio: nomadik: Back out some managed resources
-      Merge branch 'ib-nomadik-gpio' into devel
-      pinctrl: aw9523: Make the driver tristate
-
-Max Kellermann (1):
-      drivers/gpio/nomadik: move dummy nmk_gpio_dbg_show_one() to header
-
-Michal Simek (1):
-      dt-bindings: pinctr: pinctrl-zynq: Fix compatible string
-
-Naresh Solanki (1):
-      dt-bindings: pinctrl: cy8c95x0: Update gpio-reserved-ranges
-
-Randy Dunlap (1):
-      pinctrl: mt7986: excise kernel-doc warnings
-
-Rob Herring (3):
-      dt-bindings: pinctrl: Unify "input-debounce" schema
-      dt-bindings: pinctrl: nuvoton,npcm845: Drop redundant type for "slew-=
-rate"
-      dt-bindings: pinctrl: nvidia,tegra234-pinmux: Restructure common sche=
-ma
-
-Tengfei Fan (1):
-      dt-bindings: pinctrl: qcom: update compatible name for match with dri=
-ver
-
-Th=C3=A9o Lebrun (28):
-      dt-bindings: pinctrl: mobileye,eyeq5-pinctrl: add bindings
-      dt-bindings: gpio: nomadik: convert into yaml format
-      dt-bindings: gpio: nomadik: add optional ngpios property
-      dt-bindings: gpio: nomadik: add mobileye,eyeq5-gpio compatible
-      dt-bindings: gpio: nomadik: add optional reset property
-      gpio: nomadik: fix offset bug in nmk_pmx_set()
-      gpio: nomadik: extract GPIO platform driver from drivers/pinctrl/noma=
-dik/
-      pinctrl: nomadik: Kconfig: allow building with COMPILE_TEST
-      pinctrl: nomadik: fix build warning (-Wformat)
-      pinctrl: nomadik: fix build warning (-Wpointer-to-int-cast)
-      pinctrl: nomadik: minimise indentation in probe
-      pinctrl: nomadik: follow type-system kernel coding conventions
-      pinctrl: nomadik: follow whitespace kernel coding conventions
-      pinctrl: nomadik: follow conditional kernel coding conventions
-      gpio: nomadik: add #include <linux/slab.h>
-      gpio: nomadik: replace of_find_*() by bus_find_device_by_of_node()
-      gpio: nomadik: replace of_property_read_*() by device_property_read_*=
-()
-      gpio: nomadik: use devm_platform_ioremap_resource() helper
-      gpio: nomadik: use devres version of clk_get*()
-      gpio: nomadik: request dynamic ID allocation
-      gpio: nomadik: make clock optional
-      gpio: nomadik: change driver name from gpio to nomadik-gpio
-      gpio: nomadik: support shared GPIO IRQs
-      gpio: nomadik: handle variadic GPIO count
-      gpio: nomadik: support mobileye,eyeq5-gpio
-      gpio: nomadik: grab optional reset control and deassert it at probe
-      gpio: nomadik: fix Kconfig dependencies inbetween pinctrl & GPIO
-      pinctrl: nomadik: fix dereference of error pointer
-
-Varshini Rajendran (1):
-      dt-bindings: pinctrl: at91: add sam9x7
-
- .../devicetree/bindings/gpio/gpio-nmk.txt          |   31 -
- .../devicetree/bindings/gpio/st,nomadik-gpio.yaml  |   95 +
- .../bindings/pinctrl/amlogic,meson-pinctrl-a1.yaml |    2 +-
- .../pinctrl/amlogic,meson-pinctrl-g12a-aobus.yaml  |    2 +-
- .../amlogic,meson-pinctrl-g12a-periphs.yaml        |    2 +-
- .../pinctrl/amlogic,meson8-pinctrl-aobus.yaml      |    2 +-
- .../pinctrl/amlogic,meson8-pinctrl-cbus.yaml       |    2 +-
- .../bindings/pinctrl/atmel,at91-pinctrl.txt        |    2 +
- .../bindings/pinctrl/awinic,aw9523-pinctrl.yaml    |  139 +
- .../devicetree/bindings/pinctrl/cirrus,madera.yaml |    3 +-
- .../bindings/pinctrl/cypress,cy8c95x0.yaml         |   24 +-
- .../bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml   |  242 ++
- .../bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml  |    2 -
- .../bindings/pinctrl/nuvoton,wpcm450-pinctrl.yaml  |    3 +-
- .../pinctrl/nvidia,tegra234-pinmux-aon.yaml        |    7 +-
- .../pinctrl/nvidia,tegra234-pinmux-common.yaml     |   84 +-
- .../bindings/pinctrl/nvidia,tegra234-pinmux.yaml   |    7 +-
- .../devicetree/bindings/pinctrl/pincfg-node.yaml   |    2 +-
- .../bindings/pinctrl/qcom,sm4450-tlmm.yaml         |    2 +-
- .../devicetree/bindings/pinctrl/renesas,pfc.yaml   |    1 +
- ...nx,zynq-pinctrl.yaml =3D> xlnx,pinctrl-zynq.yaml} |    6 +-
- MAINTAINERS                                        |    2 +
- arch/riscv/boot/dts/renesas/r9a07g043f.dtsi        |    4 +
- drivers/gpio/Kconfig                               |   12 +
- drivers/gpio/Makefile                              |    1 +
- drivers/gpio/gpio-nomadik.c                        |  730 ++++
- drivers/pinctrl/Kconfig                            |   18 +
- drivers/pinctrl/Makefile                           |    1 +
- drivers/pinctrl/cirrus/pinctrl-cs42l43.c           |   18 +-
- drivers/pinctrl/core.c                             |    4 +
- drivers/pinctrl/mediatek/pinctrl-mt7981.c          |   24 +-
- drivers/pinctrl/mediatek/pinctrl-mt7986.c          |    2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8186.c          |    1 -
- drivers/pinctrl/mediatek/pinctrl-mt8192.c          |    1 -
- drivers/pinctrl/nomadik/Kconfig                    |    8 +-
- drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c   |    3 +-
- drivers/pinctrl/nomadik/pinctrl-nomadik-stn8815.c  |    3 +-
- drivers/pinctrl/nomadik/pinctrl-nomadik.c          |  955 +----
- drivers/pinctrl/nuvoton/pinctrl-wpcm450.c          |    2 +-
- drivers/pinctrl/pinctrl-aw9523.c                   | 1119 ++++++
- drivers/pinctrl/pinctrl-da9062.c                   |    7 +
- drivers/pinctrl/pinctrl-mcp23s08.c                 |   15 +-
- drivers/pinctrl/pinctrl-ocelot.c                   |    1 -
- drivers/pinctrl/pinctrl-st.c                       |    3 +-
- drivers/pinctrl/pinctrl-zynqmp.c                   |    8 +-
- drivers/pinctrl/pinmux.c                           |    6 +-
- drivers/pinctrl/qcom/Kconfig                       |    2 +-
- drivers/pinctrl/renesas/Kconfig                    |    7 +
- drivers/pinctrl/renesas/Makefile                   |    1 +
- drivers/pinctrl/renesas/core.c                     |   14 +-
- drivers/pinctrl/renesas/pfc-r8a779g0.c             |   14 +
- drivers/pinctrl/renesas/pfc-r8a779h0.c             | 3967 ++++++++++++++++=
-++++
- drivers/pinctrl/renesas/pinctrl-rzg2l.c            |  790 +++-
- drivers/pinctrl/renesas/sh_pfc.h                   |    1 +
- .../linux/gpio/gpio-nomadik.h                      |  138 +-
- 55 files changed, 7496 insertions(+), 1046 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-nmk.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/st,nomadik-gpio.=
-yaml
- create mode 100644
-Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml
- create mode 100644
-Documentation/devicetree/bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml
- rename Documentation/devicetree/bindings/pinctrl/{xlnx,zynq-pinctrl.yaml
-=3D> xlnx,pinctrl-zynq.yaml} (98%)
- create mode 100644 drivers/gpio/gpio-nomadik.c
- create mode 100644 drivers/pinctrl/pinctrl-aw9523.c
- create mode 100644 drivers/pinctrl/renesas/pfc-r8a779h0.c
- rename drivers/pinctrl/nomadik/pinctrl-nomadik.h =3D>
-include/linux/gpio/gpio-nomadik.h (59%)
 
