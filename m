@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-101742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B024E87AB33
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:33:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFABD87AB34
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65C07287D5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:33:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BA59287EBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E2D51C49;
-	Wed, 13 Mar 2024 16:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3684A52F8C;
+	Wed, 13 Mar 2024 16:32:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="boGeGxLG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4WMCU1Q"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C87B50261;
-	Wed, 13 Mar 2024 16:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B3C51037;
+	Wed, 13 Mar 2024 16:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347563; cv=none; b=q8n8sy4WJ6dPaH1WydWEKcVANm9gBaxka8XxeYkzbHKi3E0uDpxlgumOl+PYXS6KwfogVhzu2TGFb/VZ0xoxyGldoiHMya4raPLQawk9Z/FmGW8bFx7FGic8C71KLg6MUdxJ8TV5lCUY52IOReSSb6sqo+fkO1DynB7AjrOFW9w=
+	t=1710347564; cv=none; b=TzeZbLpLfAoAFGfsiHF0ze3swtpLMuE9rujVz9tsSQrTXu3MIRKK59YPHjJAccYGz5dCj+OFCYNl6dcfV02lFt5u2yYWSS2H7Qm1tFJJZZRp1iAQFFgC1cNCVNxuHmqAIeaBlyf5o8ntKL+edGqMAJZYgtGCQgKb0HAm0sGxb00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347563; c=relaxed/simple;
-	bh=HZcpCYJegohwqAGzE9d45VD7u/AH9BEOgCzNNB1Jyxw=;
+	s=arc-20240116; t=1710347564; c=relaxed/simple;
+	bh=5itnuw8rkfFsHoEsvM+/W5bVCEbxe4whwlPwsjtLUOo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NGqMRfkZZftqfCdOwurNX3WlHFMy/tZ4DIVbgnb+zUhayeRPzz5eXzMxHpn3Y/hINZQzsR0M9Cqqrjxc0eHXdKOk76bTbm2xYvUbCR0FVLwYWu/NIxUXy+HYsx+6q8a1Cj8HwZ/1YAGba/umTtwLWKekPljobmA+fkcZmdfZKBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=boGeGxLG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFD73C43330;
-	Wed, 13 Mar 2024 16:32:41 +0000 (UTC)
+	 MIME-Version; b=TGbz6CWnZA71T/tZIdnoBP9Y4DXXM/1JeWxv09vN/1c1h6z4+qmPhSEBncFbVUAm18J0XAv4evTKYSMGwrXi9JFP7ohCUUFJ5z6UfyTSfqe30HqQVUamp2MGid/9zOTu2k5lxhwpxd9LMn/SoMCydnOBC+7Vg1J7lx50JJZgfNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4WMCU1Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 551B6C433F1;
+	Wed, 13 Mar 2024 16:32:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347563;
-	bh=HZcpCYJegohwqAGzE9d45VD7u/AH9BEOgCzNNB1Jyxw=;
+	s=k20201202; t=1710347564;
+	bh=5itnuw8rkfFsHoEsvM+/W5bVCEbxe4whwlPwsjtLUOo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=boGeGxLG0WSuB9h7PhiDyjFf8+76JHDoUqMVPPrmyGwVO039F8QUq0PR8zWcvcBsD
-	 6mTJrxDNXeClPpuvWJHJc8gpbN9c0J2L0kMNVpdP61EyrSnOH2EmXGYTck5BTReD6+
-	 PQPfk8UqNkIBH0L7Vj3qJPujwquun1v6/hl62SuVQSxQ71kBxLJYvCD1tzoyA1yMtJ
-	 vkH3E/ye/N1jSk5OduyG34nxLwUWOUKH2ifznrubLRR7U7GQbm44qIHIIGL18aP6SB
-	 8YnIbdmw6UVzPOIah9VPvm5GbCmGKim6JtbUp7EXxQRG0WXwnPA5twrsV5gCV9HvgA
-	 drMoAXVcPitRw==
+	b=A4WMCU1QGdIKHISLwwUqyKTtieJg7x8Wq8CBf8OLNiBkcIMbTSVT6FDPPj+d9a/rA
+	 7c5wL5ECSnQo24p8nhFFP2dXtdYjVHRMXllx/oYeAZ8WXvVgVugSwoii1J3dK3tC6l
+	 8ngX1INYOj2b4ARejjGpbT+QxlLKAasFkaejdVSIyPy7EzK6Xsj1wCuXZRSJqVKVrE
+	 5SvtdgpZelQP0R+zCdnHs0bp4qO5LVcPT8dlrBftbX+eadl5yQCWiQGrDGe9FMafA2
+	 35ZEE1t/41/CLA5jLMvijvk/nkhAhPHxpMuuLH4l01Tz5C7llBMs1kvsTsEWgxHRcr
+	 bSFZdTdilcCSw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Josh Poimboeuf <jpoimboe@kernel.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 6.7 03/61] x86/rfds: Mitigate Register File Data Sampling (RFDS)
-Date: Wed, 13 Mar 2024 12:31:38 -0400
-Message-ID: <20240313163236.613880-4-sashal@kernel.org>
+Subject: [PATCH 6.7 04/61] KVM/x86: Export RFDS_NO and RFDS_CLEAR to guests
+Date: Wed, 13 Mar 2024 12:31:39 -0400
+Message-ID: <20240313163236.613880-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -72,23 +72,16 @@ Content-Transfer-Encoding: 8bit
 
 From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 
-commit 8076fcde016c9c0e0660543e67bff86cb48a7c9c upstream.
+commit 2a0180129d726a4b953232175857d442651b55a0 upstream.
 
-RFDS is a CPU vulnerability that may allow userspace to infer kernel
-stale data previously used in floating point registers, vector registers
-and integer registers. RFDS only affects certain Intel Atom processors.
+Mitigation for RFDS requires RFDS_CLEAR capability which is enumerated
+by MSR_IA32_ARCH_CAPABILITIES bit 27. If the host has it set, export it
+to guests so that they can deploy the mitigation.
 
-Intel released a microcode update that uses VERW instruction to clear
-the affected CPU buffers. Unlike MDS, none of the affected cores support
-SMT.
-
-Add RFDS bug infrastructure and enable the VERW based mitigation by
-default, that clears the affected buffers just before exiting to
-userspace. Also add sysfs reporting and cmdline parameter
-"reg_file_data_sampling" to control the mitigation.
-
-For details see:
-Documentation/admin-guide/hw-vuln/reg-file-data-sampling.rst
+RFDS_NO indicates that the system is not vulnerable to RFDS, export it
+to guests so that they don't deploy the mitigation unnecessarily. When
+the host is not affected by X86_BUG_RFDS, but has RFDS_NO=0, synthesize
+RFDS_NO to the guest.
 
 Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -96,361 +89,32 @@ Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../ABI/testing/sysfs-devices-system-cpu      |  1 +
- .../admin-guide/kernel-parameters.txt         | 21 +++++
- arch/x86/Kconfig                              | 11 +++
- arch/x86/include/asm/cpufeatures.h            |  1 +
- arch/x86/include/asm/msr-index.h              |  8 ++
- arch/x86/kernel/cpu/bugs.c                    | 78 ++++++++++++++++++-
- arch/x86/kernel/cpu/common.c                  | 38 ++++++++-
- drivers/base/cpu.c                            |  3 +
- include/linux/cpu.h                           |  2 +
- 9 files changed, 157 insertions(+), 6 deletions(-)
+ arch/x86/kvm/x86.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-index a1db6db475055..710d47be11e04 100644
---- a/Documentation/ABI/testing/sysfs-devices-system-cpu
-+++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-@@ -516,6 +516,7 @@ What:		/sys/devices/system/cpu/vulnerabilities
- 		/sys/devices/system/cpu/vulnerabilities/mds
- 		/sys/devices/system/cpu/vulnerabilities/meltdown
- 		/sys/devices/system/cpu/vulnerabilities/mmio_stale_data
-+		/sys/devices/system/cpu/vulnerabilities/reg_file_data_sampling
- 		/sys/devices/system/cpu/vulnerabilities/retbleed
- 		/sys/devices/system/cpu/vulnerabilities/spec_store_bypass
- 		/sys/devices/system/cpu/vulnerabilities/spectre_v1
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index b72e2049c4876..40b89dd7c0bb3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1137,6 +1137,26 @@
- 			The filter can be disabled or changed to another
- 			driver later using sysfs.
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 468870450b8ba..8021c62b0e7b0 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1620,7 +1620,8 @@ static bool kvm_is_immutable_feature_msr(u32 msr)
+ 	 ARCH_CAP_SKIP_VMENTRY_L1DFLUSH | ARCH_CAP_SSB_NO | ARCH_CAP_MDS_NO | \
+ 	 ARCH_CAP_PSCHANGE_MC_NO | ARCH_CAP_TSX_CTRL_MSR | ARCH_CAP_TAA_NO | \
+ 	 ARCH_CAP_SBDR_SSDP_NO | ARCH_CAP_FBSDP_NO | ARCH_CAP_PSDP_NO | \
+-	 ARCH_CAP_FB_CLEAR | ARCH_CAP_RRSBA | ARCH_CAP_PBRSB_NO | ARCH_CAP_GDS_NO)
++	 ARCH_CAP_FB_CLEAR | ARCH_CAP_RRSBA | ARCH_CAP_PBRSB_NO | ARCH_CAP_GDS_NO | \
++	 ARCH_CAP_RFDS_NO | ARCH_CAP_RFDS_CLEAR)
  
-+	reg_file_data_sampling=
-+			[X86] Controls mitigation for Register File Data
-+			Sampling (RFDS) vulnerability. RFDS is a CPU
-+			vulnerability which may allow userspace to infer
-+			kernel data values previously stored in floating point
-+			registers, vector registers, or integer registers.
-+			RFDS only affects Intel Atom processors.
-+
-+			on:	Turns ON the mitigation.
-+			off:	Turns OFF the mitigation.
-+
-+			This parameter overrides the compile time default set
-+			by CONFIG_MITIGATION_RFDS. Mitigation cannot be
-+			disabled when other VERW based mitigations (like MDS)
-+			are enabled. In order to disable RFDS mitigation all
-+			VERW based mitigations need to be disabled.
-+
-+			For details see:
-+			Documentation/admin-guide/hw-vuln/reg-file-data-sampling.rst
-+
- 	driver_async_probe=  [KNL]
- 			List of driver names to be probed asynchronously. *
- 			matches with all driver names. If * is specified, the
-@@ -3385,6 +3405,7 @@
- 					       nospectre_bhb [ARM64]
- 					       nospectre_v1 [X86,PPC]
- 					       nospectre_v2 [X86,PPC,S390,ARM64]
-+					       reg_file_data_sampling=off [X86]
- 					       retbleed=off [X86]
- 					       spec_store_bypass_disable=off [X86,PPC]
- 					       spectre_v2_user=off [X86]
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1566748f16c42..d2003865b7cf6 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2609,6 +2609,17 @@ config GDS_FORCE_MITIGATION
- 
- 	  If in doubt, say N.
- 
-+config MITIGATION_RFDS
-+	bool "RFDS Mitigation"
-+	depends on CPU_SUP_INTEL
-+	default y
-+	help
-+	  Enable mitigation for Register File Data Sampling (RFDS) by default.
-+	  RFDS is a hardware vulnerability which affects Intel Atom CPUs. It
-+	  allows unprivileged speculative access to stale data previously
-+	  stored in floating point, vector and integer registers.
-+	  See also <file:Documentation/admin-guide/hw-vuln/reg-file-data-sampling.rst>
-+
- endif
- 
- config ARCH_HAS_ADD_PAGES
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index caf4cf2e1036f..0e4f2da9f618a 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -499,4 +499,5 @@
- /* BUG word 2 */
- #define X86_BUG_SRSO			X86_BUG(1*32 + 0) /* AMD SRSO bug */
- #define X86_BUG_DIV0			X86_BUG(1*32 + 1) /* AMD DIV0 speculation bug */
-+#define X86_BUG_RFDS			X86_BUG(1*32 + 2) /* CPU is vulnerable to Register File Data Sampling */
- #endif /* _ASM_X86_CPUFEATURES_H */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 1d51e1850ed03..857839df66dfb 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -165,6 +165,14 @@
- 						 * CPU is not vulnerable to Gather
- 						 * Data Sampling (GDS).
- 						 */
-+#define ARCH_CAP_RFDS_NO		BIT(27)	/*
-+						 * Not susceptible to Register
-+						 * File Data Sampling.
-+						 */
-+#define ARCH_CAP_RFDS_CLEAR		BIT(28)	/*
-+						 * VERW clears CPU Register
-+						 * File.
-+						 */
- 
- #define ARCH_CAP_XAPIC_DISABLE		BIT(21)	/*
- 						 * IA32_XAPIC_DISABLE_STATUS MSR
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index cd6ac89c1a0df..01ac18f56147f 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -480,6 +480,57 @@ static int __init mmio_stale_data_parse_cmdline(char *str)
- }
- early_param("mmio_stale_data", mmio_stale_data_parse_cmdline);
- 
-+#undef pr_fmt
-+#define pr_fmt(fmt)	"Register File Data Sampling: " fmt
-+
-+enum rfds_mitigations {
-+	RFDS_MITIGATION_OFF,
-+	RFDS_MITIGATION_VERW,
-+	RFDS_MITIGATION_UCODE_NEEDED,
-+};
-+
-+/* Default mitigation for Register File Data Sampling */
-+static enum rfds_mitigations rfds_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_RFDS) ? RFDS_MITIGATION_VERW : RFDS_MITIGATION_OFF;
-+
-+static const char * const rfds_strings[] = {
-+	[RFDS_MITIGATION_OFF]			= "Vulnerable",
-+	[RFDS_MITIGATION_VERW]			= "Mitigation: Clear Register File",
-+	[RFDS_MITIGATION_UCODE_NEEDED]		= "Vulnerable: No microcode",
-+};
-+
-+static void __init rfds_select_mitigation(void)
-+{
-+	if (!boot_cpu_has_bug(X86_BUG_RFDS) || cpu_mitigations_off()) {
-+		rfds_mitigation = RFDS_MITIGATION_OFF;
-+		return;
-+	}
-+	if (rfds_mitigation == RFDS_MITIGATION_OFF)
-+		return;
-+
-+	if (x86_read_arch_cap_msr() & ARCH_CAP_RFDS_CLEAR)
-+		setup_force_cpu_cap(X86_FEATURE_CLEAR_CPU_BUF);
-+	else
-+		rfds_mitigation = RFDS_MITIGATION_UCODE_NEEDED;
-+}
-+
-+static __init int rfds_parse_cmdline(char *str)
-+{
-+	if (!str)
-+		return -EINVAL;
-+
+ static u64 kvm_get_arch_capabilities(void)
+ {
+@@ -1652,6 +1653,8 @@ static u64 kvm_get_arch_capabilities(void)
+ 		data |= ARCH_CAP_SSB_NO;
+ 	if (!boot_cpu_has_bug(X86_BUG_MDS))
+ 		data |= ARCH_CAP_MDS_NO;
 +	if (!boot_cpu_has_bug(X86_BUG_RFDS))
-+		return 0;
-+
-+	if (!strcmp(str, "off"))
-+		rfds_mitigation = RFDS_MITIGATION_OFF;
-+	else if (!strcmp(str, "on"))
-+		rfds_mitigation = RFDS_MITIGATION_VERW;
-+
-+	return 0;
-+}
-+early_param("reg_file_data_sampling", rfds_parse_cmdline);
-+
- #undef pr_fmt
- #define pr_fmt(fmt)     "" fmt
++		data |= ARCH_CAP_RFDS_NO;
  
-@@ -513,6 +564,11 @@ static void __init md_clear_update_mitigation(void)
- 		mmio_mitigation = MMIO_MITIGATION_VERW;
- 		mmio_select_mitigation();
- 	}
-+	if (rfds_mitigation == RFDS_MITIGATION_OFF &&
-+	    boot_cpu_has_bug(X86_BUG_RFDS)) {
-+		rfds_mitigation = RFDS_MITIGATION_VERW;
-+		rfds_select_mitigation();
-+	}
- out:
- 	if (boot_cpu_has_bug(X86_BUG_MDS))
- 		pr_info("MDS: %s\n", mds_strings[mds_mitigation]);
-@@ -522,6 +578,8 @@ static void __init md_clear_update_mitigation(void)
- 		pr_info("MMIO Stale Data: %s\n", mmio_strings[mmio_mitigation]);
- 	else if (boot_cpu_has_bug(X86_BUG_MMIO_UNKNOWN))
- 		pr_info("MMIO Stale Data: Unknown: No mitigations\n");
-+	if (boot_cpu_has_bug(X86_BUG_RFDS))
-+		pr_info("Register File Data Sampling: %s\n", rfds_strings[rfds_mitigation]);
- }
- 
- static void __init md_clear_select_mitigation(void)
-@@ -529,11 +587,12 @@ static void __init md_clear_select_mitigation(void)
- 	mds_select_mitigation();
- 	taa_select_mitigation();
- 	mmio_select_mitigation();
-+	rfds_select_mitigation();
- 
- 	/*
--	 * As MDS, TAA and MMIO Stale Data mitigations are inter-related, update
--	 * and print their mitigation after MDS, TAA and MMIO Stale Data
--	 * mitigation selection is done.
-+	 * As these mitigations are inter-related and rely on VERW instruction
-+	 * to clear the microarchitural buffers, update and print their status
-+	 * after mitigation selection is done for each of these vulnerabilities.
- 	 */
- 	md_clear_update_mitigation();
- }
-@@ -2622,6 +2681,11 @@ static ssize_t mmio_stale_data_show_state(char *buf)
- 			  sched_smt_active() ? "vulnerable" : "disabled");
- }
- 
-+static ssize_t rfds_show_state(char *buf)
-+{
-+	return sysfs_emit(buf, "%s\n", rfds_strings[rfds_mitigation]);
-+}
-+
- static char *stibp_state(void)
- {
- 	if (spectre_v2_in_eibrs_mode(spectre_v2_enabled) &&
-@@ -2781,6 +2845,9 @@ static ssize_t cpu_show_common(struct device *dev, struct device_attribute *attr
- 	case X86_BUG_GDS:
- 		return gds_show_state(buf);
- 
-+	case X86_BUG_RFDS:
-+		return rfds_show_state(buf);
-+
- 	default:
- 		break;
- 	}
-@@ -2855,4 +2922,9 @@ ssize_t cpu_show_gds(struct device *dev, struct device_attribute *attr, char *bu
- {
- 	return cpu_show_common(dev, attr, buf, X86_BUG_GDS);
- }
-+
-+ssize_t cpu_show_reg_file_data_sampling(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	return cpu_show_common(dev, attr, buf, X86_BUG_RFDS);
-+}
- #endif
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 34cac9ea19171..97ea52a4e8a39 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1274,6 +1274,8 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
- #define SRSO		BIT(5)
- /* CPU is affected by GDS */
- #define GDS		BIT(6)
-+/* CPU is affected by Register File Data Sampling */
-+#define RFDS		BIT(7)
- 
- static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
- 	VULNBL_INTEL_STEPPINGS(IVYBRIDGE,	X86_STEPPING_ANY,		SRBDS),
-@@ -1301,9 +1303,18 @@ static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
- 	VULNBL_INTEL_STEPPINGS(TIGERLAKE,	X86_STEPPING_ANY,		GDS),
- 	VULNBL_INTEL_STEPPINGS(LAKEFIELD,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
- 	VULNBL_INTEL_STEPPINGS(ROCKETLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_D,	X86_STEPPING_ANY,		MMIO),
--	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS),
-+	VULNBL_INTEL_STEPPINGS(ALDERLAKE,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(ALDERLAKE_L,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(RAPTORLAKE,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(RAPTORLAKE_P,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(RAPTORLAKE_S,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(ATOM_GRACEMONT,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
-+	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_D,	X86_STEPPING_ANY,		MMIO | RFDS),
-+	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
-+	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT_D,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT_PLUS, X86_STEPPING_ANY,		RFDS),
- 
- 	VULNBL_AMD(0x15, RETBLEED),
- 	VULNBL_AMD(0x16, RETBLEED),
-@@ -1337,6 +1348,24 @@ static bool arch_cap_mmio_immune(u64 ia32_cap)
- 		ia32_cap & ARCH_CAP_SBDR_SSDP_NO);
- }
- 
-+static bool __init vulnerable_to_rfds(u64 ia32_cap)
-+{
-+	/* The "immunity" bit trumps everything else: */
-+	if (ia32_cap & ARCH_CAP_RFDS_NO)
-+		return false;
-+
-+	/*
-+	 * VMMs set ARCH_CAP_RFDS_CLEAR for processors not in the blacklist to
-+	 * indicate that mitigation is needed because guest is running on a
-+	 * vulnerable hardware or may migrate to such hardware:
-+	 */
-+	if (ia32_cap & ARCH_CAP_RFDS_CLEAR)
-+		return true;
-+
-+	/* Only consult the blacklist when there is no enumeration: */
-+	return cpu_matches(cpu_vuln_blacklist, RFDS);
-+}
-+
- static void __init cpu_set_bug_bits(struct cpuinfo_x86 *c)
- {
- 	u64 ia32_cap = x86_read_arch_cap_msr();
-@@ -1448,6 +1477,9 @@ static void __init cpu_set_bug_bits(struct cpuinfo_x86 *c)
- 	    boot_cpu_has(X86_FEATURE_AVX))
- 		setup_force_cpu_bug(X86_BUG_GDS);
- 
-+	if (vulnerable_to_rfds(ia32_cap))
-+		setup_force_cpu_bug(X86_BUG_RFDS);
-+
- 	if (cpu_matches(cpu_vuln_whitelist, NO_MELTDOWN))
- 		return;
- 
-diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 548491de818ef..ef427ee787a99 100644
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -565,6 +565,7 @@ CPU_SHOW_VULN_FALLBACK(mmio_stale_data);
- CPU_SHOW_VULN_FALLBACK(retbleed);
- CPU_SHOW_VULN_FALLBACK(spec_rstack_overflow);
- CPU_SHOW_VULN_FALLBACK(gds);
-+CPU_SHOW_VULN_FALLBACK(reg_file_data_sampling);
- 
- static DEVICE_ATTR(meltdown, 0444, cpu_show_meltdown, NULL);
- static DEVICE_ATTR(spectre_v1, 0444, cpu_show_spectre_v1, NULL);
-@@ -579,6 +580,7 @@ static DEVICE_ATTR(mmio_stale_data, 0444, cpu_show_mmio_stale_data, NULL);
- static DEVICE_ATTR(retbleed, 0444, cpu_show_retbleed, NULL);
- static DEVICE_ATTR(spec_rstack_overflow, 0444, cpu_show_spec_rstack_overflow, NULL);
- static DEVICE_ATTR(gather_data_sampling, 0444, cpu_show_gds, NULL);
-+static DEVICE_ATTR(reg_file_data_sampling, 0444, cpu_show_reg_file_data_sampling, NULL);
- 
- static struct attribute *cpu_root_vulnerabilities_attrs[] = {
- 	&dev_attr_meltdown.attr,
-@@ -594,6 +596,7 @@ static struct attribute *cpu_root_vulnerabilities_attrs[] = {
- 	&dev_attr_retbleed.attr,
- 	&dev_attr_spec_rstack_overflow.attr,
- 	&dev_attr_gather_data_sampling.attr,
-+	&dev_attr_reg_file_data_sampling.attr,
- 	NULL
- };
- 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index fc8094419084f..e990c180282e7 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -75,6 +75,8 @@ extern ssize_t cpu_show_spec_rstack_overflow(struct device *dev,
- 					     struct device_attribute *attr, char *buf);
- extern ssize_t cpu_show_gds(struct device *dev,
- 			    struct device_attribute *attr, char *buf);
-+extern ssize_t cpu_show_reg_file_data_sampling(struct device *dev,
-+					       struct device_attribute *attr, char *buf);
- 
- extern __printf(4, 5)
- struct device *cpu_device_create(struct device *parent, void *drvdata,
+ 	if (!boot_cpu_has(X86_FEATURE_RTM)) {
+ 		/*
 -- 
 2.43.0
 
