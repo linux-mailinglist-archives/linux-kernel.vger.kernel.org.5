@@ -1,150 +1,117 @@
-Return-Path: <linux-kernel+bounces-102497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A514287B2F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C2087B2F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:39:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D73741C23989
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:37:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 323931C25702
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8004176C;
-	Wed, 13 Mar 2024 20:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40694E1CE;
+	Wed, 13 Mar 2024 20:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJBtQez9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kKiHump1"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E469C1EB31
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 20:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B039B2E629;
+	Wed, 13 Mar 2024 20:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710362261; cv=none; b=XkRE02+IYk1+n87ulOfTxeKbvPEBflWl1uHCPNlrCjZUPYLOZbPKdBnkdXB17cs8/RiOjBs/TUwvmTQ619JqCMh+hWoCCSbJU/0ubEYNSmdNod+zhZIo/6uZNzHo/O8IeUIDe9BXA0OdBV9blWQ2amNOM4DvXMA8XnOn94AMQgA=
+	t=1710362380; cv=none; b=K1p2gH4/p4fHe0g1QCnoiLt03g2OOvCSNaiZ6UNNuTF+j+99gQJtQxFlMoLJHxksQASJMWnchEz2WG5cU98vz6S8Ij1zEtSNqk37hE+gc67TVSJJJzEY7zpS9xO0Cytjg2NoMVkUIjihSUxQctcfbjkQVp7bn8aixIoi/E7TH6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710362261; c=relaxed/simple;
-	bh=FkS9XoH9oAoq7iil98tyf1OpnLIRd5y82JyOV+VOxVA=;
-	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=gu9QisoQN+hFR7UH3tVBfCXxL783uJFLRK1yJC07Sj2OcPrBmIMhmbyHzi01b9VKo6Yz6vv7oROyDEAlul/rgHygRJYza7ZFkkoi+PKRpGPPGo9npqNMdpJPesHooAFBb+Uxkl+U4yZN3c5QEwpcxPz3l6B0jjgfCivKKq71/6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJBtQez9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2399AC433F1;
-	Wed, 13 Mar 2024 20:37:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710362260;
-	bh=FkS9XoH9oAoq7iil98tyf1OpnLIRd5y82JyOV+VOxVA=;
-	h=Date:From:To:cc:Subject:From;
-	b=DJBtQez9zV775RdQkjE8kXrjmthGZ20b0utsJHGDPepKGeA/j0yR1zi3pvjDaMIyI
-	 J6QYp1rfBhku0kgE5pSjJH8EJi1kNxMpzqyUxzWzczlpXx7hvcb0VM7Mw/HIZJFpyk
-	 z6zcCX/xhz27EsIbJry+qiJXgwWizGd6xu2S1S45aP8cuNZ0KOc3FCHdRx0ycroBTI
-	 d+AEThLO3ZAH58Bnv3JbA86ZOQxTjXZ1TethW3zsjp6ci5PXJwzr2yV4yRBzJL3WM/
-	 5I1/UyB8Rh5XqMsSmR/3pUbwYzQ+ttjMb/Bbh2DYv4sLSUTO51DgLnvYzGdordQn1S
-	 KvKe1g4yTlJwQ==
-Date: Wed, 13 Mar 2024 21:37:37 +0100 (CET)
-From: Jiri Kosina <jikos@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-    linux-kernel@vger.kernel.org
-Subject: [GIT PULL] HID for 6.9 merge window
-Message-ID: <nycvar.YFH.7.76.2403132132240.20263@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+	s=arc-20240116; t=1710362380; c=relaxed/simple;
+	bh=B5te+7bxzJ9qHExPAAMr7pHPWobOwgO9aT2CbAG1Vyk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OvOPk7w9R7VFSGsoo7/TPRkvLAxQA9EmWoUceCSU3arAW6GA9inKbScG7J1H0lMizaL4TWVuLUT+x+xexPmMpb+Tvv+zqvyBKXWLKKqxw1kU9iGvs+q552sSVmPYAfDa8XuB1q7lrx0ojZbToD3EYyJVbuNuEUo5lR9sMy400fM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kKiHump1; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29c64ee87easo247369a91.3;
+        Wed, 13 Mar 2024 13:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710362378; x=1710967178; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hyu5FEzeA37wRHOaDO/zzPay3cpygxvKSMTi6XiaofA=;
+        b=kKiHump1g/4Vy66v43huHZ88ye7N3ljj38WZox/1DdxgjhVi2iYiaOcPQazTYfl28N
+         5bbS2XUu/KX9VzEntSRgKRH6c54PB/Z5+rLlCijNczBUUyFuzsBIpC+zpkgK9ew/1Bpj
+         JGlFV6SlncigL/j4FgyUip3W3RVIy3B2Jv480dmlG7gj8sBJnLWhgVcEpCpVRVSmhE/j
+         cnt+SmJ91ZrEL2NDw4or3Ok6gkig7IFirW5lnLpRnBII0OxcdJyH8T4taDSiTlhxOY8M
+         iVqy1Q7xw6Jg4U7E6VWk1wNjP7ciC9EjsFdg3VAFh94id4nuE3loxyx8OgIVocpbo+lM
+         T9SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710362378; x=1710967178;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hyu5FEzeA37wRHOaDO/zzPay3cpygxvKSMTi6XiaofA=;
+        b=lhZTnMi+wwfyliclBAXRgopsv/7pIr6F9Zjz9bXvbrq5fcNTmCsxrxS1RK2C11wgas
+         DkKuKEezRekdgfcv7ZgzdLyC1TrpBcaPKpUGqM5dP1zU7JNT/NXLRszQOFX2LACEpc7Z
+         oUY00GzKqWHKTSmg+LechuIZwfEiIyNqh2BNEKEQ5JbqTGpojMp9HEoa+V7hB5E7qViW
+         DnAk7xr9IFiqyPCgkTAakkWdFo20iTv/frh7w/0ewAst2NoMtSNaXSTgNxWVZo3I0Sde
+         Z8rs7UT0daYqo07hKWOMHXy9DsnEtl71kXJD0mU3XWjuI4WibxjQHXKO3PAEkeRefiTF
+         degQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXssp62+ejfIgUbLYim9NHV0sEPhv6s77+Yr7MAeAhV3veXTsHaPNbCrmaxtHJh6Asxegm70bcXdASL3oYbeDHPRbL0Kdw9l2esT4Ch0iq4XGNAq+WOvACvHjiwKXf9DVg3Dvcx
+X-Gm-Message-State: AOJu0Yx59j2FYMjomFLcTJ8Cx48TS4O/kYM3JgXwOOyVwcoaCHZFTv98
+	YJPagRFBDASJR/kJAgbaxTlXvZr0ZYShxRGD6/ecWO2Bqd1w+vCx
+X-Google-Smtp-Source: AGHT+IG2GsiUnhBfNRqw3czUZr4DxvX56UPAronO4ziBqWbfsgzxWhVKJWg+wGbSnTm11egfkDTtqQ==
+X-Received: by 2002:a17:90a:5647:b0:29b:c172:2c3d with SMTP id d7-20020a17090a564700b0029bc1722c3dmr4607969pji.39.1710362377725;
+        Wed, 13 Mar 2024 13:39:37 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q66-20020a17090a17c800b0029bb1631819sm1677246pja.0.2024.03.13.13.39.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 13:39:36 -0700 (PDT)
+Message-ID: <b4ab8f64-7b33-4365-9ad5-510171a7f9b8@gmail.com>
+Date: Wed, 13 Mar 2024 13:39:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 3/3] net: lan743x: Address problems with wake option
+ flags configuration sequences
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Ronnie.Kunin@microchip.com, Raju.Lakkaraju@microchip.com,
+ netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, Bryan.Whitehead@microchip.com,
+ richardcochran@gmail.com, UNGLinuxDriver@microchip.com
+References: <20240226080934.46003-1-Raju.Lakkaraju@microchip.com>
+ <20240226080934.46003-4-Raju.Lakkaraju@microchip.com>
+ <78d7e538-9fa0-490e-bcfb-0a5943ad80c9@lunn.ch>
+ <LV8PR11MB87008454A629EE15B9CE14099F272@LV8PR11MB8700.namprd11.prod.outlook.com>
+ <PH8PR11MB79656DCF7806D7390C7100DE95272@PH8PR11MB7965.namprd11.prod.outlook.com>
+ <fd22d022-cad4-489c-9861-36765dd98a87@lunn.ch>
+ <PH8PR11MB79655416A331370D3496854A952A2@PH8PR11MB7965.namprd11.prod.outlook.com>
+ <3e84e1c9-f680-47fa-aa59-615ce57b65da@gmail.com>
+ <725e8182-50de-4469-9f87-fa58179f8922@lunn.ch>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <725e8182-50de-4469-9f87-fa58179f8922@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Linus,
+On 3/13/24 12:52, Andrew Lunn wrote:
+> So i think we need to agree on best practices for new drivers and
+> document what that is, probably in both the ethtool man page and
+> include/uapi/linux/ethtool.h
+> 
+> * WAKE_MAGIC on its own is O.K.
+> * WAKE_MAGICSECURE without WAKE_MAGIC is invalid. -EINVAL
+> * WAKE_MAGIC + WAKE_MAGICSECURE means only secure magic WoL.
+> * Each driver needs to enforce this, due to backwards compatibility.
+>    Some may decide not to.
+> 
+> Can we agree on this?
 
-please pull from
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git tags/hid-for-linus-2024031301
-
-to receive HID subsystem queue for 6.9 merge window.
-
-=====
-- support for the following Bluetooth devices from Samsung (Sandeep C S):
-            Samsung wireless Keyboard
-            Samsung wireless GamePad
-            Samsung Wireless Action Mouse
-            Samsung Wireless Book Cover
-            Samsung Wireless Universal Keyboard
-            Samsung Wireless HOGP Keyboard
-- second version of code for applying proper quirk depending on firmware 
-  version for lenovo/cptkbd (Mikhail Khvainitski)
-- lenovo/cptkbd firmware-dependent quirk (Mikhail Khvainitski)
-- assorted fixes and optimizations for amd-sfh (Basavaraj Natikar)
-- dead code and dead data structures removal (Jiri Slaby, Jiapeng Chong)
-=====
-
-----------------------------------------------------------------
-Basavaraj Natikar (6):
-      HID: amd_sfh: Increase sensor command timeout
-      HID: amd_sfh: Update HPD sensor structure elements
-      HID: amd_sfh: Avoid disabling the interrupt
-      HID: amd_sfh: Improve boot time when SFH is available
-      HID: amd_sfh: Extend MP2 register access to SFH
-      HID: amd_sfh: Set the AMD SFH driver to depend on x86
-
-Dmitry Torokhov (1):
-      HID: input: avoid polling stylus battery on Chromebook Pompom
-
-Even Xu (1):
-      HID: intel-ish-hid: ipc: Add Arrow Lake PCI device ID
-
-Jiapeng Chong (2):
-      HID: nintendo: Remove some unused functions
-      HID: nintendo: Remove some unused functions
-
-Jiri Slaby (SUSE) (7):
-      HID: apple: remove unused members from struct apple_sc_backlight
-      HID: wacom: remove unused hid_data::pressure
-      HID: protect hid_device::bpf by CONFIG_HID_BPF
-      HID: hid-lg3ff: remove unused struct lg3ff_device
-      HID: hid-multitouch: remove unused mt_application::dev_time
-      HID: hid-prodikeys: remove unused struct pcmidi_snd members
-      HID: hid-prodikeys: remove struct pk_device
-
-Mikhail Khvainitski (1):
-      HID: lenovo: Add middleclick_workaround sysfs knob for cptkbd
-
-Sandeep C S (6):
-      HID: samsung: Broaden device compatibility in samsung driver
-      HID: samsung: Rewrite rdesc checking code using memcmp()
-      HID: samsung: Add Samsung wireless keyboard support
-      HID: samsung: Add Samsung wireless gamepad support
-      HID: samsung: Add Samsung wireless action mouse support
-      HID: samsung: Add Samsung wireless bookcover and universal keyboard support
-
-Tatsunosuke Tobita (1):
-      HID: wacom: Clean up use of struct->wacom_wac
-
- drivers/hid/amd-sfh-hid/Kconfig                    |   1 +
- drivers/hid/amd-sfh-hid/amd_sfh_common.h           |  16 +
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.c             | 118 +++++-
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.h             |   6 +-
- drivers/hid/amd-sfh-hid/sfh1_1/amd_sfh_desc.c      |   2 +-
- drivers/hid/amd-sfh-hid/sfh1_1/amd_sfh_init.c      |   4 +-
- drivers/hid/amd-sfh-hid/sfh1_1/amd_sfh_interface.c |  10 +-
- drivers/hid/hid-apple.c                            |   1 -
- drivers/hid/hid-ids.h                              |   8 +
- drivers/hid/hid-input.c                            |   2 +
- drivers/hid/hid-lenovo.c                           |  57 ++-
- drivers/hid/hid-lg3ff.c                            |   4 -
- drivers/hid/hid-multitouch.c                       |   1 -
- drivers/hid/hid-nintendo.c                         |  22 --
- drivers/hid/hid-prodikeys.c                        | 115 ++----
- drivers/hid/hid-samsung.c                          | 437 +++++++++++++++++++--
- drivers/hid/intel-ish-hid/ipc/hw-ish.h             |   1 +
- drivers/hid/intel-ish-hid/ipc/pci-ish.c            |   1 +
- drivers/hid/wacom_wac.c                            |   8 +-
- drivers/hid/wacom_wac.h                            |   1 -
- include/linux/hid.h                                |   4 +-
- 21 files changed, 623 insertions(+), 196 deletions(-)
-
+Yes, that works for me as well.
 -- 
-Jiri Kosina
-SUSE Labs
+Florian
 
 
