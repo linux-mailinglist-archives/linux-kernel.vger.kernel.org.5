@@ -1,127 +1,162 @@
-Return-Path: <linux-kernel+bounces-102117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DBBA87AE8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:01:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C754087AE90
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:02:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE883284B96
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:01:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83028284C09
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF0E6A347;
-	Wed, 13 Mar 2024 16:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLfi2zOh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DA46A35D;
+	Wed, 13 Mar 2024 16:59:39 +0000 (UTC)
+Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702C66A33F;
-	Wed, 13 Mar 2024 16:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA7775FB83;
+	Wed, 13 Mar 2024 16:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349146; cv=none; b=cFmhD1mcGVlxY/sI/5zb5UDKMeR/Hqgpy6kh5ML9ChhG1MCkhdNsTeGI4V3krAqoa7i7MPro00QyFYrWyVex/J75C8OZ5/Ry00axsmsLPvkI4yDc62/3O8wF+LcddZVKbU3PI4wQo04RSgmZgr2zH9WlzDGji+b7InfqYczDDDc=
+	t=1710349178; cv=none; b=NiSVI04e7C9M74hGe/rg9DGrDcAerx/c4BmITNZFQASNLznQ8CJ3mmiRkAuYng62nGuCOUcHqgPl7Zv9kwW6a8z47vmmMtazHAOI4JIjqF68M/CwqdU3WVT/wQzJgqZLsyzhs0x3oEsyuhwmuy+xXESpGwMqHrwaSpoHoYUyNXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349146; c=relaxed/simple;
-	bh=LT3kIpTgfIeJT2ndzGReEZ3LVNsm9Vy8OKpjO+wpUoE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qdeJsjqLpX2RdEhlSb9I/KwvWS16hDoCU0xuCatbbQyFFaYN3tREtMJ0I6Ftl6wVGPTAZz3kuQ15qNa37HV/BMcdNXs5/C58LwF+pc4w9E/yERWdsupEjB9WEM/BEgq4tbU4VFmGmYHMzerChhC5Bv95nxq9DjFnwSywcnwknQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLfi2zOh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA8EC433F1;
-	Wed, 13 Mar 2024 16:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349146;
-	bh=LT3kIpTgfIeJT2ndzGReEZ3LVNsm9Vy8OKpjO+wpUoE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nLfi2zOhyYhf8rekQqiDjcHVEKiOJiT0fNDLlF4RwWn8HgsukBlvaEf3+YrV6HO30
-	 HO4JUxM4mgIJ5/gScZPZTwWrc6UliEN+XINNp2/A0UPOkS0ZZTCkDQTOhdICZm2LeD
-	 FPEwoHSLF8lktqvcFZVrHHdArR8PnlugmJGt+BwoaAIY22392rK8/zPIDnoyuTKdET
-	 TljdRX1zJDuCJs8e/R2WOU+LbELAZW8vtvRPpB1MPf58IE/1CRFxQWn5npgTXZHQDq
-	 s3+raPiqn1eFetOWqwSz6SRYGwO9j0oz/0kJ52yS/yylSt3+gLktXdRmfLwMYxMGp5
-	 P2kOD0OPg282A==
-Date: Wed, 13 Mar 2024 09:59:03 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	kernel test robot <lkp@intel.com>, llvm@lists.linux.dev
-Subject: Re: [PATCH] tracing: Use strcmp() in __assign_str() WARN_ON() check
-Message-ID: <20240313165903.GA3021536@dev-arch.thelio-3990X>
-References: <20240312113002.00031668@gandalf.local.home>
+	s=arc-20240116; t=1710349178; c=relaxed/simple;
+	bh=7CQ0Zt6v9yu+wOVhL0EuICXMQCVf+Uv8jOusf96MpUw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W6Ho+tHfsI/hU36caydC+y+bB7prSSraKbnPaHbbYec7Y5g8HmnksCb/ncPO/i1GbBWMiksvWYrLLHbZVX2kY2JSkyD2RG81c6IBcRDbNza/KZhHQQWWA2hK4LYpKS4v4RMYs+gXctwGIJRoDDCTdToqdVattCRg60akRLnVnrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
+Received: from localhost (localhost [127.0.0.1])
+	by sonata.ens-lyon.org (Postfix) with ESMTP id 1B771A02C1;
+	Wed, 13 Mar 2024 17:59:35 +0100 (CET)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id JocweP3rqU8a; Wed, 13 Mar 2024 17:59:35 +0100 (CET)
+Received: from begin (nat-inria-interne-52-gw-01-bso.bordeaux.inria.fr [194.199.1.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by sonata.ens-lyon.org (Postfix) with ESMTPSA id 01353A02B7;
+	Wed, 13 Mar 2024 17:59:35 +0100 (CET)
+Received: from samy by begin with local (Exim 4.97)
+	(envelope-from <samuel.thibault@ens-lyon.org>)
+	id 1rkRx0-00000002L8B-2o6F;
+	Wed, 13 Mar 2024 17:59:34 +0100
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+To: linux-kernel@vger.kernel.org,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Helge Deller <deller@gmx.de>,
+	Alexey Gladkov <legion@kernel.org>,
+	Jiry Slaby <jirislaby@kernel.org>
+Cc: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH] fbcon: Increase maximum font width x height to 64 x 64
+Date: Wed, 13 Mar 2024 17:59:34 +0100
+Message-ID: <20240313165934.557879-1-samuel.thibault@ens-lyon.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312113002.00031668@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 11:30:02AM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> The WARN_ON() check in __assign_str() to catch where the source variable
-> to the macro doesn't match the source variable to __string() gives an
-> error in clang:
-> 
-> >> include/trace/events/sunrpc.h:703:4: warning: result of comparison against a string literal is unspecified (use an explicit string comparison function instead) [-Wstring-compare]
->      670 |                         __assign_str(progname, "unknown");
-> 
-> That's because the __assign_str() macro has:
-> 
->    WARN_ON_ONCE((src) != __data_offsets.dst##_ptr_);
-> 
-> Where "src" is a string literal. Clang warns when comparing a string
-> literal directly as it is undefined to what the value of the literal is.
-> 
-> Since this is still to make sure the same string that goes to __string()
-> is the same as __assign_str(), for string literals do a test for that and
-> then use strcmp() in those cases
-> 
-> Note that this depends on commit 51270d573a8d ("tracing/net_sched: Fix
-> tracepoints that save qdisc_dev() as a string") being applied, as this was
-> what found that bug.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202402292111.KIdExylU-lkp@intel.com/
-> Fixes: 433e1d88a3be ("tracing: Add warning if string in __assign_str() does not match __string()")
+This remains relatively simple by just enlarging integers.
 
-Is this change destined for 6.9 or 6.10? I applied it to current
-trace/core (eb1533d156d3) along with 51270d573a8d but the warning is
-still present. I even tried
+It wouldn't be that simple to get to the console's 64x128 maximum, as it would
+require 128b integers.
 
-    __builtin_choose_expr(__is_constexpr((src)),
-                         strcmp((src), __data_offsets.dst##_ptr_),
-                         (src) != __data_offsets.dst##_ptr_));
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ drivers/video/fbdev/core/fbcon.c | 17 ++++++++++-------
+ include/linux/fb.h               | 10 +++++-----
+ 2 files changed, 15 insertions(+), 12 deletions(-)
 
-but not even that silenced the warning. I think we will still need a
-diag directive to fully silence this warning.
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index 46823c2e2ba1..849562f92bd5 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -101,6 +101,9 @@ enum {
+ 	FBCON_LOGO_DONTSHOW	= -3	/* do not show the logo */
+ };
+ 
++#define FBCON_MAX_FONT_WIDTH	(sizeof(((struct fb_pixmap *) 0)->blit_x) * 8)
++#define FBCON_MAX_FONT_HEIGHT	(sizeof(((struct fb_pixmap *) 0)->blit_y) * 8)
++
+ static struct fbcon_display fb_display[MAX_NR_CONSOLES];
+ 
+ static struct fb_info *fbcon_registered_fb[FB_MAX];
+@@ -2483,12 +2486,12 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
+ 	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
+ 		return -EINVAL;
+ 
+-	if (font->width > 32 || font->height > 32)
++	if (font->width > FBCON_MAX_FONT_WIDTH || font->height > FBCON_MAX_FONT_HEIGHT)
+ 		return -EINVAL;
+ 
+ 	/* Make sure drawing engine can handle the font */
+-	if (!(info->pixmap.blit_x & BIT(font->width - 1)) ||
+-	    !(info->pixmap.blit_y & BIT(font->height - 1)))
++	if (!(info->pixmap.blit_x & BIT_ULL(font->width - 1)) ||
++	    !(info->pixmap.blit_y & BIT_ULL(font->height - 1)))
+ 		return -EINVAL;
+ 
+ 	/* Make sure driver can handle the font length */
+@@ -3082,8 +3085,8 @@ void fbcon_get_requirement(struct fb_info *info,
+ 			vc = vc_cons[i].d;
+ 			if (vc && vc->vc_mode == KD_TEXT &&
+ 			    info->node == con2fb_map[i]) {
+-				caps->x |= 1 << (vc->vc_font.width - 1);
+-				caps->y |= 1 << (vc->vc_font.height - 1);
++				caps->x |= 1ULL << (vc->vc_font.width - 1);
++				caps->y |= 1ULL << (vc->vc_font.height - 1);
+ 				charcnt = vc->vc_font.charcount;
+ 				if (caps->len < charcnt)
+ 					caps->len = charcnt;
+@@ -3094,8 +3097,8 @@ void fbcon_get_requirement(struct fb_info *info,
+ 
+ 		if (vc && vc->vc_mode == KD_TEXT &&
+ 		    info->node == con2fb_map[fg_console]) {
+-			caps->x = 1 << (vc->vc_font.width - 1);
+-			caps->y = 1 << (vc->vc_font.height - 1);
++			caps->x = 1ULL << (vc->vc_font.width - 1);
++			caps->y = 1ULL << (vc->vc_font.height - 1);
+ 			caps->len = vc->vc_font.charcount;
+ 		}
+ 	}
+diff --git a/include/linux/fb.h b/include/linux/fb.h
+index 05dc9624897d..2bac166cd3f2 100644
+--- a/include/linux/fb.h
++++ b/include/linux/fb.h
+@@ -144,8 +144,8 @@ struct fb_event {
+ };
+ 
+ struct fb_blit_caps {
+-	u32 x;
+-	u32 y;
++	u64 x;
++	u64 y;
+ 	u32 len;
+ 	u32 flags;
+ };
+@@ -192,10 +192,10 @@ struct fb_pixmap {
+ 	u32 scan_align;		/* alignment per scanline		*/
+ 	u32 access_align;	/* alignment per read/write (bits)	*/
+ 	u32 flags;		/* see FB_PIXMAP_*			*/
+-	u32 blit_x;             /* supported bit block dimensions (1-32)*/
+-	u32 blit_y;             /* Format: blit_x = 1 << (width - 1)    */
++	u64 blit_x;             /* supported bit block dimensions (1-64)*/
++	u64 blit_y;             /* Format: blit_x = 1 << (width - 1)    */
+ 	                        /*         blit_y = 1 << (height - 1)   */
+-	                        /* if 0, will be set to 0xffffffff (all)*/
++	                        /* if 0, will be set to ~0ull (all)     */
+ 	/* access methods */
+ 	void (*writeio)(struct fb_info *info, void __iomem *dst, void *src, unsigned int size);
+ 	void (*readio) (struct fb_info *info, void *dst, void __iomem *src, unsigned int size);
+-- 
+2.39.2
 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  include/trace/stages/stage6_event_callback.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
-> index a0c15f67eabe..83da83a0c14f 100644
-> --- a/include/trace/stages/stage6_event_callback.h
-> +++ b/include/trace/stages/stage6_event_callback.h
-> @@ -35,7 +35,9 @@
->  	do {								\
->  		char *__str__ = __get_str(dst);				\
->  		int __len__ = __get_dynamic_array_len(dst) - 1;		\
-> -		WARN_ON_ONCE((src) != __data_offsets.dst##_ptr_);	\
-> +		WARN_ON_ONCE(__builtin_constant_p(src) ?		\
-> +			     strcmp((src), __data_offsets.dst##_ptr_) :	\
-> +			     (src) != __data_offsets.dst##_ptr_);	\
->  		memcpy(__str__, __data_offsets.dst##_ptr_ ? :		\
->  		       EVENT_NULL_STR, __len__);			\
->  		__str__[__len__] = '\0';				\
-> -- 
-> 2.43.0
-> 
 
