@@ -1,39 +1,73 @@
-Return-Path: <linux-kernel+bounces-102237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEDF587AFAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:32:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D859F87AFB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5831F2D0D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:32:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3CB51C2623D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C400A79B7C;
-	Wed, 13 Mar 2024 17:11:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D0E612FC;
-	Wed, 13 Mar 2024 17:11:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D3A7A701;
+	Wed, 13 Mar 2024 17:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="gSLH53Zu"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7A3612FC
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349898; cv=none; b=GjnuHwPOr7MEl7t35TTIVWt5x0DHjznT1VPmNfDCVclpTBdiSR/NryZNm8AB0gkc9Zbk2F8TNotFXHNICJ9iyEya2qEHHtW8gi2PG+XawSMShskAEvxi9iAk5J8MrLiYgqUwbSyI4QxzYAXjkSz1X1aBjs4ThLhFEFoMLJjxNB8=
+	t=1710349917; cv=none; b=t0Hw4HhJByyU41UZvH7rMp+z/3AsWH4O91kEQVTgSPM8VL+JygY98JNNrywiCVp1newnvBBquZ259eTGHOPrXi/OS454QmoKxPhUop+WzGpTCqRWUv057WkHk7HMTzlEhnCma1L5rcOp1j9ZAE96F7KVC4syjNIBUQLxUz9szIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349898; c=relaxed/simple;
-	bh=o3yUCeYnmGTYvzE+DYAY+ANpaPKcBEzwnq4w44cGrVw=;
+	s=arc-20240116; t=1710349917; c=relaxed/simple;
+	bh=yxoN1G+uMZp38YC1jCCVFNGNRYjvjcKz2fKoJoCswhk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LqwTZydkwXDx+cKMD+QOopTzqTeIOXxs2TDbGTJ8UkZwZQrctTfJbFeO7gr1Wk1y8jFvRq/HPHGLZ39L1PXJha3GKXPalTo1GKtHyTbAaJJmWnS3alfmauyX+PVPnGKn8iJ6rtmrImfG5oNmPFrFIUbcfJLudAWtqsWcjCiAPyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C30631007;
-	Wed, 13 Mar 2024 10:12:11 -0700 (PDT)
-Received: from [10.57.15.67] (unknown [10.57.15.67])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BA6BE3F73F;
-	Wed, 13 Mar 2024 10:11:31 -0700 (PDT)
-Message-ID: <c21e247f-3140-4812-9516-f8b9d0ceea2d@arm.com>
-Date: Wed, 13 Mar 2024 17:11:29 +0000
+	 In-Reply-To:Content-Type; b=GI1U+xnCqCW0rYrrULf52bKtYNlBmNAIpiA0AlER+pyOUPFxIFBzWV/ukAHYEmMx6StcXRvkyTO0L71/RrchFvVL/Rz90ho9g23tabB2VzfwAcSUECW7wFtLaVqM6KDtMhs7JsR9YaG7A2dp/ST4ULC17W7z0tlT/XpweuWbwtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=gSLH53Zu; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-413385f1a0dso514185e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:11:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710349913; x=1710954713; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DfCyEn4BBkDtIZTeeb4WXSUMa8UuweDcHmhz18/rnUY=;
+        b=gSLH53Zuf44lWqdRb6iA7fAwPJb93ikqPpRNFOPpYfvooXiydYnU+odaOlRyO42z6u
+         VXotUZw8YSGf6fcHH6+NQ7MX58v2AMxhatFk4F/eFXsYlS50Xk5RhDNN2rGQuaCnuMUa
+         7YifQyaqQs6KJfmP8+OKSAHjcHg8uoq0QdKQnfhnIt4goBeNoKKf92fO4n5O7XnzDuSP
+         4DpQisXF63e9RiSfAGbfJG98E2cGKIVJ4Ikw++1/+DL/U5RQ1Ht77cNgLT9OWfHUCxkt
+         yvu7t2IdNmeLpZJVWzthSlAVsSTgSl+zUezXUkoUuX5KJhsGLxUU35m+CRGs1DRoFR2P
+         U9LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710349913; x=1710954713;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DfCyEn4BBkDtIZTeeb4WXSUMa8UuweDcHmhz18/rnUY=;
+        b=E1/2wAVgc31lwP2BJHi5ZuMObM4EIYOARQw3t7CL+0tmh/b+8BbqHaqCNmPP/qn+Mu
+         x8mrYkTO54hqrGboz7NCeEL5Ua7Cvn0caX93lCjKsR62tWY4b5eqQ/l5CvJUfYq1e5xR
+         SEA1t9QBXwdkIDH3HGHrhT9iZMpdmaWkk2axgctJivv4dq+ScIcrWGLQ82h1v3HhsnS9
+         yMWJnUGQZgBPm/q21ORALHkQ+htITKVzF431zYhzb0RBQJsTrCjt/Jj3pf2+iHBKbAim
+         fwalysRCGf4DDnSig76Rw+rXw5Ur5YkJrJTHU3qnzDKOMHd02+LTz2BPeND5fjoTGHP4
+         28RQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUjRHDpqyWZtFOdvfs54AbLQoqo+q9EJ6bJlci+yODJxXGiMFDgGiaZVK5Ym03OXSwCOJXyPv+coYWRNYWSL9nVfqY67XzmRJxTOjrV
+X-Gm-Message-State: AOJu0Yz9+PzMEiKd9BYdRix9JOD+4Yo4CCNy9jn73jNeV3Tvv2rRcsvi
+	/WiiOI0jTUo7jjZp5REAqqNCwfDMrk72gWRLm5Fi+3IvqFVptjd7FbStpB/daoY=
+X-Google-Smtp-Source: AGHT+IFz1KXw55V676KHOL/rzoBQjJ9Rihc/CWALu4Z7kIN17vZX/My8C/6xcsm62UiChBonG2y1pw==
+X-Received: by 2002:a05:600c:450c:b0:413:1285:6e40 with SMTP id t12-20020a05600c450c00b0041312856e40mr442329wmo.20.1710349912671;
+        Wed, 13 Mar 2024 10:11:52 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id ay23-20020a05600c1e1700b00412ff941abasm2920026wmb.21.2024.03.13.10.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 10:11:52 -0700 (PDT)
+Message-ID: <ef4da1f6-d3c5-4484-8df5-1a04df4453a0@baylibre.com>
+Date: Wed, 13 Mar 2024 18:11:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,126 +75,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC gmem v1 4/8] KVM: x86: Add gmem hook for invalidating
- memory
-To: Sean Christopherson <seanjc@google.com>,
- Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
- "tabba@google.com" <tabba@google.com>, linux-coco@lists.linux.dev,
- linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- pbonzini@redhat.com, isaku.yamahata@intel.com, ackerleytng@google.com,
- vbabka@suse.cz, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
- jroedel@suse.de, pankaj.gupta@amd.com
-References: <20231016115028.996656-1-michael.roth@amd.com>
- <20231016115028.996656-5-michael.roth@amd.com>
- <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com> <ZcY2VRsRd03UQdF7@google.com>
- <84d62953-527d-4837-acf8-315391f4b225@arm.com> <ZcZBCdTA2kBoSeL8@google.com>
- <20240311172431.zqymfqd4xlpd3pft@amd.com> <ZfC6gnqVhZQJnB_3@google.com>
-From: Steven Price <steven.price@arm.com>
-Content-Language: en-GB
-In-Reply-To: <ZfC6gnqVhZQJnB_3@google.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 12/18] ASoC: codecs: mt6357: add MT6357 codec
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ Nicolas Belin <nbelin@baylibre.com>
+References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
+ <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
+ <9891855d-2284-42e4-9d3a-35ba406540e8@sirena.org.uk>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <9891855d-2284-42e4-9d3a-35ba406540e8@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 12/03/2024 20:26, Sean Christopherson wrote:
-> On Mon, Mar 11, 2024, Michael Roth wrote:
->> On Fri, Feb 09, 2024 at 07:13:13AM -0800, Sean Christopherson wrote:
->>> On Fri, Feb 09, 2024, Steven Price wrote:
->>>>>> One option that I've considered is to implement a seperate CCA ioctl to
->>>>>> notify KVM whether the memory should be mapped protected.
->>>>>
->>>>> That's what KVM_SET_MEMORY_ATTRIBUTES+KVM_MEMORY_ATTRIBUTE_PRIVATE is for, no?
->>>>
->>>> Sorry, I really didn't explain that well. Yes effectively this is the
->>>> attribute flag, but there's corner cases for destruction of the VM. My
->>>> thought was that if the VMM wanted to tear down part of the protected
->>>> range (without making it shared) then a separate ioctl would be needed
->>>> to notify KVM of the unmap.
->>>
->>> No new uAPI should be needed, because the only scenario time a benign VMM should
->>> do this is if the guest also knows the memory is being removed, in which case
->>> PUNCH_HOLE will suffice.
->>>
->>>>>> This 'solves' the problem nicely except for the case where the VMM
->>>>>> deliberately punches holes in memory which the guest is using.
->>>>>
->>>>> I don't see what problem there is to solve in this case.  PUNCH_HOLE is destructive,
->>>>> so don't do that.
->>>>
->>>> A well behaving VMM wouldn't PUNCH_HOLE when the guest is using it, but
->>>> my concern here is a VMM which is trying to break the host. In this case
->>>> either the PUNCH_HOLE needs to fail, or we actually need to recover the
->>>> memory from the guest (effectively killing the guest in the process).
->>>
->>> The latter.  IIRC, we talked about this exact case somewhere in the hour-long
->>> rambling discussion on guest_memfd at PUCK[1].  And we've definitely discussed
->>> this multiple times on-list, though I don't know that there is a single thread
->>> that captures the entire plan.
->>>
->>> The TL;DR is that gmem will invoke an arch hook for every "struct kvm_gmem"
->>> instance that's attached to a given guest_memfd inode when a page is being fully
->>> removed, i.e. when a page is being freed back to the normal memory pool.  Something
->>> like this proposed SNP patch[2].
->>>
->>> Mike, do have WIP patches you can share?
->>
->> Sorry, I missed this query earlier. I'm a bit confused though, I thought
->> the kvm_arch_gmem_invalidate() hook provided in this patch was what we
->> ended up agreeing on during the PUCK call in question.
-> 
-> Heh, I trust your memory of things far more than I trust mine.  I'm just proving
-> Cunningham's Law.  :-)
-> 
->> There was an open question about what to do if a use-case came along
->> where we needed to pass additional parameters to
->> kvm_arch_gmem_invalidate() other than just the start/end PFN range for
->> the pages being freed, but we'd determined that SNP and TDX did not
->> currently need this, so I didn't have any changes planned in this
->> regard.
->>
->> If we now have such a need, what we had proposed was to modify
->> __filemap_remove_folio()/page_cache_delete() to defer setting
->> folio->mapping to NULL so that we could still access it in
->> kvm_gmem_free_folio() so that we can still access mapping->i_private_list
->> to get the list of gmem/KVM instances and pass them on via
->> kvm_arch_gmem_invalidate().
-> 
-> Yeah, this is what I was remembering.  I obviously forgot that we didn't have a
-> need to iterate over all bindings at this time.
-> 
->> So that's doable, but it's not clear from this discussion that that's
->> needed.
-> 
-> Same here.  And even if it is needed, it's not your problem to solve.  The above
-> blurb about needing to preserve folio->mapping being free_folio() is sufficient
-> to get the ARM code moving in the right direction.
-> 
-> Thanks!
-> 
->> If the idea to block/kill the guest if VMM tries to hole-punch,
->> and ARM CCA already has plans to wire up the shared/private flags in
->> kvm_unmap_gfn_range(), wouldn't that have all the information needed to
->> kill that guest? At that point, kvm_gmem_free_folio() can handle
->> additional per-page cleanup (with additional gmem/KVM info plumbed in
->> if necessary).
 
-Yes, the missing piece of the puzzle was provided by "KVM: Prepare for
-handling only shared mappings in mmu_notifier events"[1] - namely the
-"only_shared" flag. We don't need to actually block/kill the guest until
-it attempts access to the memory which has been removed from the guest -
-at that point the guest cannot continue because the security properties
-have been violated (the protected memory contents have been lost) so
-attempts to continue the guest will fail.
 
-You can ignore most of my other ramblings - as long as everyone is happy
-with that flag then Arm CCA should be fine. I was just looking at other
-options.
+On 26/02/2024 17:09, Mark Brown wrote:
+>> index 000000000000..13e95c227114
+>> --- /dev/null
+>> +++ b/sound/soc/codecs/mt6357.c
+>> @@ -0,0 +1,1805 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * MT6357 ALSA SoC audio codec driver
+>> + *
+> Please use a C++ comment for the whole comment to make it clearer that
+> this is intentional.
 
-Thanks,
+If I do that, the checkpatch raise a warning:
 
-Steve
+WARNING: Improper SPDX comment style for 
+'sound/soc/mediatek/mt8365/mt8365-afe-clk.c', please use '//' instead
+#22: FILE: sound/soc/mediatek/mt8365/mt8365-afe-clk.c:1:
++/* SPDX-License-Identifier: GPL-2.0
 
-[1]
-https://lore.kernel.org/lkml/20231027182217.3615211-13-seanjc@google.com/
+WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+#22: FILE: sound/soc/mediatek/mt8365/mt8365-afe-clk.c:1:
++/* SPDX-License-Identifier: GPL-2.0
+
+even if I put:
+/* SPDX-License-Identifier: GPL-2.0 */
+
+IMO, the checkpatch tool should be fixed/update first.
+
+-- 
+Regards,
+Alexandre
 
