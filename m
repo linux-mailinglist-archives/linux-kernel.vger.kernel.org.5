@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-101971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD8C87AD38
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:28:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A36E387AD3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:29:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 875D3B21C19
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:28:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F82E28502A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:29:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29CD714532D;
-	Wed, 13 Mar 2024 16:43:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2EB14534F;
+	Wed, 13 Mar 2024 16:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MlV4aIGk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f1CCMwt3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2771448F3;
-	Wed, 13 Mar 2024 16:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D811145336;
+	Wed, 13 Mar 2024 16:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348180; cv=none; b=fxsoKvGB0WC4SCYo68Uu/3CrUc+yu5PCxWPsT6EnukKVjd2lzIQ6QQNHaHd7HVnCaNHFsHdgUE0BO7shwuDRjyJMN5KJD8UHOL2eeUr5gjCv/6yygRfzmXK72D8o7RW1PKztDc38ljddg0Q3aFVAqAGhF49Tjnh6YH3GueNO82s=
+	t=1710348181; cv=none; b=IU4tAqM+YbQF3HewNA1L/Usu3FZud8XKok9QXPF1XWbQmHBI5cJFovsCucdtmpDmjtAUnTtFrOxE1JC5D1Cl58gOAvCKO3FFbC+T4w5y1Bc46tneg4z+ODk05WhsZZ/0i7KkOKYQO6+m2q8hWFiviX+gyhYV/4km+boJQsYoik4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348180; c=relaxed/simple;
-	bh=VYkQF9qbqyMDJR8JFKnAreUT2dI30RanQeT2HZkhdO0=;
+	s=arc-20240116; t=1710348181; c=relaxed/simple;
+	bh=d4bgCm84uOLJ0JEFkn9q+wIIL0g3dWamq5di/Dq6FBg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qT6DXD7Q+wsLmeP9Uh8e1R81vCVqaZAxSedZd5sWlpxbog5LFPluyJdyA2Ps7zb1vGJfC3BXYG7YN6J/45lXCDfYQ/RVEeh9PEGmraFLrXjFxTaq3uBvrRQuYdtUrsu1yKqx5+Vsc3RAgpwfxoL+Vbv6bZ2lh6V3jlpwEBNvpoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MlV4aIGk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EE40C43394;
-	Wed, 13 Mar 2024 16:42:59 +0000 (UTC)
+	 MIME-Version; b=MhjmLbpQiAtkeTFZhzp6ag9cXktoYwSYsx/ycR0QaOmWbYb97A/3ddjWLt1PNuV9C3En4LXkV6vdnRZT4Mu0AInUfuXkrXFrorlEXE1YLVAZCYPMkG5zlHHk4K5KnghUiKG9jse8hHc1O6crUAaXwimUJY/dWx4x3pLMSbr4uQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f1CCMwt3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CB5CC43399;
+	Wed, 13 Mar 2024 16:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348180;
-	bh=VYkQF9qbqyMDJR8JFKnAreUT2dI30RanQeT2HZkhdO0=;
+	s=k20201202; t=1710348181;
+	bh=d4bgCm84uOLJ0JEFkn9q+wIIL0g3dWamq5di/Dq6FBg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MlV4aIGkUo2pMOveXaiJud9l057e1bwCHwXOzTRkZdTQOiohP6AAsqOPdUJwUpuST
-	 IAzQM0ibvTg85rkFDxQpLjrYv5GxL0X5eYfRwpKRQ/pvrN3hj32Wa2ZqEibYMw3C11
-	 UbNRimmRKKiDiu4fsj7S8Vm91wRa5e2C0jQvGLTaXi5X2dPHzAB7zm0RGio8Fwtgs6
-	 wrjlURTcx4uhFynKbgvBC634lmvGLUmP+C+uozk1ETht7r6riPnB0K0x3IoWfLkfIV
-	 lOrAZk4TDLVlX7gFoTS4uKBLznEJ0lSPeJumBqou/ISHbqpGxIds5/NrzuHxgDtuSV
-	 SRPwKwoqH9uDA==
+	b=f1CCMwt36QteyK1CPz6zP6E6UOKYwl5GLO/0u9YxRr/e3i3fdtUhJSIL8yWzpOX/E
+	 YrIW4SlozFRYWezYpdBdRRpYOG//XfCTtCkMYzBdNc0lAnZ53JyaveUWl0bY+qJdbA
+	 5AE+CPcdJqDGlhLGgpdupIC3r2v8eDQmGLETFUyLO+BF2BDIYZOTTTMiBotCH/h3eU
+	 slFcjN9PW2uLix2HlKtc/qXPKamkqmlv3+Pc6XofK9a0V0ttiALKt1BPtqPlN62Sr6
+	 G34AwJ3ctSzxDOFlM+bS38UpJ4JZNA0n8dGxnY/l4TyiLQYLZSVIH5XsSGliZiDjUY
+	 iT2IyTP+bDP6w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 31/76] ALSA: usb-audio: Properly refcounting clock rate
-Date: Wed, 13 Mar 2024 12:41:38 -0400
-Message-ID: <20240313164223.615640-32-sashal@kernel.org>
+Subject: [PATCH 5.15 32/76] ALSA: usb-audio: Apply mutex around snd_usb_endpoint_set_params()
+Date: Wed, 13 Mar 2024 12:41:39 -0400
+Message-ID: <20240313164223.615640-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -69,70 +69,57 @@ Content-Transfer-Encoding: 8bit
 
 From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 9a737e7f8b371e97eb649904276407cee2c9cf30 ]
+[ Upstream commit a74f8d0aa902ca494676b79226e0b5a1747b81d4 ]
 
-We fixed the bug introduced by the patch for managing the shared
-clocks at the commit 809f44a0cc5a ("ALSA: usb-audio: Clear fixed clock
-rate at closing EP"), but it was merely a workaround.  By this change,
-the clock reference rate is cleared at each EP close, hence the still
-remaining EP may need a re-setup of rate unnecessarily.
+The protection with chip->mutex was lost after splitting
+snd_usb_endpoint_set_params() and snd_usb_endpoint_prepare().
+Apply the same mutex again to the former function.
 
-This patch introduces the proper refcounting for the clock reference
-object so that the clock setup is done only when needed.
-
-Fixes: 809f44a0cc5a ("ALSA: usb-audio: Clear fixed clock rate at closing EP")
-Fixes: c11117b634f4 ("ALSA: usb-audio: Refcount multiple accesses on the single clock")
-Link: https://lore.kernel.org/r/20220920181126.4912-1-tiwai@suse.de
+Fixes: 2be79d586454 ("ALSA: usb-audio: Split endpoint setups for hw_params and prepare (take#2)")
+Link: https://lore.kernel.org/r/20221009104212.18877-3-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Stable-dep-of: 7822baa844a8 ("ALSA: usb-audio: add quirk for RODE NT-USB+")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/endpoint.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/usb/endpoint.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 32a9e016665c8..2d3f814d067b5 100644
+index 2d3f814d067b5..486ef6b022552 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -39,6 +39,7 @@ struct snd_usb_iface_ref {
- struct snd_usb_clock_ref {
- 	unsigned char clock;
- 	atomic_t locked;
-+	int opened;
- 	int rate;
- 	bool need_setup;
- 	struct list_head list;
-@@ -810,6 +811,7 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
- 				ep = NULL;
- 				goto unlock;
- 			}
-+			ep->clock_ref->opened++;
- 		}
+@@ -1339,10 +1339,11 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
+ 	const struct audioformat *fmt = ep->cur_audiofmt;
+ 	int err;
  
- 		ep->cur_audiofmt = fp;
-@@ -934,8 +936,10 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
- 		endpoint_set_interface(chip, ep, false);
++	mutex_lock(&chip->mutex);
+ 	/* release old buffers, if any */
+ 	err = release_urbs(ep, false);
+ 	if (err < 0)
+-		return err;
++		goto unlock;
  
- 	if (!--ep->opened) {
--		if (ep->clock_ref && !atomic_read(&ep->clock_ref->locked))
--			ep->clock_ref->rate = 0;
-+		if (ep->clock_ref) {
-+			if (!--ep->clock_ref->opened)
-+				ep->clock_ref->rate = 0;
-+		}
- 		ep->iface = 0;
- 		ep->altsetting = 0;
- 		ep->cur_audiofmt = NULL;
-@@ -1656,8 +1660,7 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep, bool keep_pending)
- 			WRITE_ONCE(ep->sync_source->sync_sink, NULL);
- 		stop_urbs(ep, false, keep_pending);
- 		if (ep->clock_ref)
--			if (!atomic_dec_return(&ep->clock_ref->locked))
--				ep->clock_ref->rate = 0;
-+			atomic_dec(&ep->clock_ref->locked);
- 	}
+ 	ep->datainterval = fmt->datainterval;
+ 	ep->maxpacksize = fmt->maxpacksize;
+@@ -1380,13 +1381,16 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
+ 	usb_audio_dbg(chip, "Set up %d URBS, ret=%d\n", ep->nurbs, err);
+ 
+ 	if (err < 0)
+-		return err;
++		goto unlock;
+ 
+ 	/* some unit conversions in runtime */
+ 	ep->maxframesize = ep->maxpacksize / ep->cur_frame_bytes;
+ 	ep->curframesize = ep->curpacksize / ep->cur_frame_bytes;
+ 
+-	return update_clock_ref_rate(chip, ep);
++	err = update_clock_ref_rate(chip, ep);
++ unlock:
++	mutex_unlock(&chip->mutex);
++	return err;
  }
  
+ static int init_sample_rate(struct snd_usb_audio *chip,
 -- 
 2.43.0
 
