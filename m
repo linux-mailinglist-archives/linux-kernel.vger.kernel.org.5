@@ -1,53 +1,56 @@
-Return-Path: <linux-kernel+bounces-102164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 603E087AEF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:13:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F7A87AEF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:14:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86E491C2342F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:13:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3C541F2AF70
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC1E15016F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F257D19381B;
 	Wed, 13 Mar 2024 17:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZjUe6qoz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hpiTG4A6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3C115016E;
-	Wed, 13 Mar 2024 17:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D14B15018E;
+	Wed, 13 Mar 2024 17:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349382; cv=none; b=U/+9wYmQI4+Efq/dQZOhmL/+D9rlDdgTPmR/zeGOXWDNgUqsw6LpQd4ZGJArih2Ui2e37l5OM1kle5IRLOWPpqv3olQWN14QtBttwWfurvn6IvDuseH/qJPhBustYG2HWzLtBTGHGySQU7a5S1pnAi9gE49jLgRr/oGq6EKw9yQ=
+	t=1710349383; cv=none; b=iOSou/P619JHbm9nUG5aLmyCT1qZ7pLa4w0LM5uem36Evg+ehUeKMe8uSqvL90zRPDVkOstEhIy6iinBU5e2zLo2wIHGK8ueBZJ/Jevl537ySKhQIo1onbTCESjfN0NN6JmL3NMGgFzZFWEged60JGC08j95AIKx0FPl8sUWj0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349382; c=relaxed/simple;
-	bh=U5KI75RrYKkDHuScB67gmzm68FhIjtcTcYt7Z1c6L1Q=;
+	s=arc-20240116; t=1710349383; c=relaxed/simple;
+	bh=yNYrhUZhrrcOmJeNzgfCI2uOaV3TNjr5wBZmtoW+uNA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k3S7KgBa0ia/LbfGs+aeDWUQfh7ZfzMnSmw/gRmAjH5w7CCRP6+tGYsU9Q5LS3uQfvdXBW8h1BaTNrINW04DgWGcT2jTJJA8aTGvLqdusPVTwyUvmQyMpyxGFNcKG/uw/BbBgruFRL0I2+VjoXPQHiR0Q7PtqV6fIq/AGAu3fxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZjUe6qoz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 327DAC43394;
-	Wed, 13 Mar 2024 17:03:01 +0000 (UTC)
+	 MIME-Version; b=PB7mV/Dm/ElR83ZHxkDRul+AUbTFW0Dv/118POhuSzYhF+tApdCJRRc4eJjeqxFj49ElHITY146y3eEBt3+T+lEGkqxdUTOjeCxT8p3MYnxX6SL4UExtAytLDMwtkxzIUUIhPs8BzZHPOgOunf4pawfcmkNvCgcfU8vQrSkngLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hpiTG4A6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 203F8C43390;
+	Wed, 13 Mar 2024 17:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349381;
-	bh=U5KI75RrYKkDHuScB67gmzm68FhIjtcTcYt7Z1c6L1Q=;
+	s=k20201202; t=1710349383;
+	bh=yNYrhUZhrrcOmJeNzgfCI2uOaV3TNjr5wBZmtoW+uNA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZjUe6qoz22FJcjaLUhd0aN27BV1MwMp60WTi9aO99PWVRBaCEZNmnPwj4lmlpRIOD
-	 GsTDnsenox4eHem6A7GHdRm3g2ycdPWxILqnxDhIkvPPrvxm/HKe1WX6OoPpJyK/F9
-	 LZSW6pYBxwiXSije0yYeNam59/Yc26VYq7XV64agnQLRZ3qUdZtN9CAqErskluAqQX
-	 xuiZ0tVGDTJlR+mEKNmHQrQ113xMmVsK1YIY1nsDS41aw5RN/L79B9uc9aGtI0USdo
-	 J3Hn98Iwz6b8dxyIASYDQtAP7xchd2IbwvjQeGfiyllz6NcunU8I0QBJhE0Opg8Y8a
-	 CVpjDEme4e0Fw==
+	b=hpiTG4A65DvqLo7szU3AKy03REYzMPXD79wrXFK+UNle4m0/4TVfiSSCdYKRUJOZc
+	 9K3AfFL/+6alvp67UpZ9gWiBbZy3bTWUNVcJJeL1DXQs8Y98OsFEhHgyyjpYzWtYQ8
+	 M/r60igLaAyDQklQm54sSbwoA3BS6zHn7lGbzLfJkHbxqeKsiUTReG2m8OOESsYhDv
+	 sW8xoE1AOl4NRb8tWPFoK/voBCrlha6OdTxSVVp+L+HDizz1S0H2Fg1uy3iq3tsB63
+	 gIj6RR4uCup7LCP+e6Q1tX0f3kJGJqfUoXrlzT+6sEYzVnsJLOY8MwDbhnN2MafIha
+	 q6NpobaW+3n5Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ingo Molnar <mingo@kernel.org>,
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	Dylan Hatch <dylanbhatch@google.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 43/51] exit: Fix typo in comment: s/sub-theads/sub-threads
-Date: Wed, 13 Mar 2024 13:02:04 -0400
-Message-ID: <20240313170212.616443-44-sashal@kernel.org>
+Subject: [PATCH 5.4 44/51] exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)
+Date: Wed, 13 Mar 2024 13:02:05 -0400
+Message-ID: <20240313170212.616443-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170212.616443-1-sashal@kernel.org>
 References: <20240313170212.616443-1-sashal@kernel.org>
@@ -67,31 +70,62 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ingo Molnar <mingo@kernel.org>
+From: Oleg Nesterov <oleg@redhat.com>
 
-[ Upstream commit dcca34754a3f5290406403b8066e3b15dda9f4bf ]
+[ Upstream commit c1be35a16b2f1fe21f4f26f9de030ad6eaaf6a25 ]
 
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Stable-dep-of: c1be35a16b2f ("exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)")
+After the recent changes nobody use siglock to read the values protected
+by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
+update the comment.
+
+With this patch only __exit_signal() and thread_group_start_cputime() take
+stats_lock under siglock.
+
+Link: https://lkml.kernel.org/r/20240123153359.GA21866@redhat.com
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/exit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/exit.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/exit.c b/kernel/exit.c
-index c764d16328f6a..b2a005acb6cda 100644
+index b2a005acb6cda..7a8a67aed9cac 100644
 --- a/kernel/exit.c
 +++ b/kernel/exit.c
-@@ -1106,7 +1106,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
- 		 * p->signal fields because the whole thread group is dead
+@@ -1107,17 +1107,14 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
  		 * and nobody can change them.
  		 *
--		 * psig->stats_lock also protects us from our sub-theads
-+		 * psig->stats_lock also protects us from our sub-threads
- 		 * which can reap other children at the same time. Until
- 		 * we change k_getrusage()-like users to rely on this lock
- 		 * we have to take ->siglock as well.
+ 		 * psig->stats_lock also protects us from our sub-threads
+-		 * which can reap other children at the same time. Until
+-		 * we change k_getrusage()-like users to rely on this lock
+-		 * we have to take ->siglock as well.
++		 * which can reap other children at the same time.
+ 		 *
+ 		 * We use thread_group_cputime_adjusted() to get times for
+ 		 * the thread group, which consolidates times for all threads
+ 		 * in the group including the group leader.
+ 		 */
+ 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+-		spin_lock_irq(&current->sighand->siglock);
+-		write_seqlock(&psig->stats_lock);
++		write_seqlock_irq(&psig->stats_lock);
+ 		psig->cutime += tgutime + sig->cutime;
+ 		psig->cstime += tgstime + sig->cstime;
+ 		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
+@@ -1140,8 +1137,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+ 			psig->cmaxrss = maxrss;
+ 		task_io_accounting_add(&psig->ioac, &p->ioac);
+ 		task_io_accounting_add(&psig->ioac, &sig->ioac);
+-		write_sequnlock(&psig->stats_lock);
+-		spin_unlock_irq(&current->sighand->siglock);
++		write_sequnlock_irq(&psig->stats_lock);
+ 	}
+ 
+ 	if (wo->wo_rusage)
 -- 
 2.43.0
 
