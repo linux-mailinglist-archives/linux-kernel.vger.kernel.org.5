@@ -1,200 +1,169 @@
-Return-Path: <linux-kernel+bounces-101632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3726287A9A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:42:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA9787A9AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D691B23435
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:42:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E6DC1F2268A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B62E3F9E0;
-	Wed, 13 Mar 2024 14:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8091A4696;
+	Wed, 13 Mar 2024 14:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JOmX3w+o"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jksYYxOr"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06304A0C
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C29224FA
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710340942; cv=none; b=Az5fNzOorcR3YKnTnCg+hgrhmWL90p1jqislOSInfxjk9WefoqZHqLIu1LrIZLfSfc/OX2xYik2A0tpRSkOZQsBo2SQu1ZXgNthUk+ZuDTNEEMerQ0RgINiCQwiuuTuXME2iSJG/YXpFhx7LtQ5T3/eQdsOMxISBh9LAOL7z1mU=
+	t=1710341004; cv=none; b=AxVSBAoB5GQ15DzFE2XQcTv7kaDcl7iydKEOyUvhWBa8GFeUdq3bVNPyhj1eMBUh9kvTg3df9d8TBDaXfEA9h8KO4hfkLkNyXhKoUAsxKuKRx+u99wlCsri9hO0zgErrFj8Mh37io10XAV/j3Jxcmh+DPAtro5pfsvk5hbJY98Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710340942; c=relaxed/simple;
-	bh=chSdJDUtKzDuTUHtdpxMes7gNjiM378d/wKDulIvMMY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=sAa7ms86WpR5jTd+FxpzyonzRNwAeT/bkSIRdmfSiO3IZe/dwhW+D2kJsrBwBuueLARDXK7ISEaadMbRFHLbd2ox3em25mY5U7ZUNxIPah67pZAEECjqHDk+qMkCiOdEguLJMdelO3ym9Wc6ut/2y9y1tnKyjXlOmqr08e46ahE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JOmX3w+o; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1dd916d7d55so10726585ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:42:20 -0700 (PDT)
+	s=arc-20240116; t=1710341004; c=relaxed/simple;
+	bh=lCaNQB2loTvOG12Rj6ZuqIpIL166wy5YgOYvmqL9w2U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gTcem6dHuLNhyFtRNG6cKmMjzOgMYI3pT7hoRWYCe/j+YjrBodrUkHvEukbVnJHO4jfuA9Aymo3UW6P0e1nuBGimbXZjJ0F/DxG1XzhjMCzOXEn7ayPAYijbLvdX1JbcigC5SvpCAvbxRWlwxU4zQ3piey0wz3GkNlUIlVlCCSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jksYYxOr; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33e76d653b5so1070311f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:43:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710340940; x=1710945740; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DsNKRRM5eqSpZG2xIM+UvbeP4kbCL6MaPJhxll06mGE=;
-        b=JOmX3w+oqIU6KuLkFHyDzPpwKe5G+DEeYBq48twDtZ5BBeXcmlYbUygc567atDUNcf
-         lRDKZdU88N4xBMJB0tPDWKuThr+fxzaFaxa87LkVzTdbGkrYEDiUzgiscT1x81P+stll
-         7V8fLehlMOt7md/z3HwTzm3PM38E78ZPKIK7HvwcL9HUxHjT3XBB8QodRq+jEeTcGcPA
-         ORPV5hcsg4LTMDqibuWdCyQ5mHxqSKodbkNzC+bLfay7eTiFBbAoL7QzK5VMPJNJKH12
-         15Gt8IgWkGsAyaotGbUMnh0wITvnZlKzdd6x9SDjuE1XLQe3VJSuN4ZtL/WFNYeFvdiE
-         gBYw==
+        d=linaro.org; s=google; t=1710341001; x=1710945801; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wOyyWxqr4Zt5l8qx0EOpnngPAjzS6Yb2YM91AanmvQ0=;
+        b=jksYYxOrE9KIy2IQfKN4l41yAhmIp9ompOI+JogCs58sGFdPGYy62FA4h4BCXGDonc
+         yrs8gTG+HANaeWGJoc7V9DsObtXAhN9YOP8x7CRl2lRopiVgvVKIYsLAGRIvS/xu8HIK
+         t6iV2mBTT1VG51si7hgxbN9DzduZciljBxJKtZz6/5Nbw41974hn3Qzh2jN7DIE0p1Bj
+         9Kd8mj/0056+s77wU1bMoFQbuha4T/AjvFQuzc/PIrEDO5b6MObd7GXbx99b6Af3uOsH
+         h3zDKDX4NqqHwke+pu3H7KAutWufbYwoHV5JiyQ0/uVYGAYbYxOfqMTPwkC1C2hnjxJ2
+         QVHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710340940; x=1710945740;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DsNKRRM5eqSpZG2xIM+UvbeP4kbCL6MaPJhxll06mGE=;
-        b=QExlCZ4ha+L94Y43wk+nHpStG8nkiXj8di0wH6hCfnow2pDGwx84okVEV+d6ddgIIE
-         IsvAfPLAn4kqB0WU28DzNdt8jc9WpW8QgnILQw5RWi0Cs4ZyGwbJbFBZujN81DWhfneo
-         puPiArJHmwtUGw6uqbeBSNdATTzGkuK9SCtUFLgwy27LUOPY+0doyHuRe8LRj77bVLWX
-         ugCI7vdUhCLNHSODSOn+qLfqXUE00FbVgC/b6vjHIochNYb8nrIMElgdDU2dBLNILEae
-         Fwn0/cTP68B8zWFDEODwX1ivutkPgdYDZvS6KAzbQWd9n04MhqrMBzjdAygjz9r6KdA6
-         ZVJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUuFdczYDaqewEd2VNWsCL6P0CCORHlFCCtpj+GyR4/HhsesRQSgkMDa1/zPOuE5KRen3mHko3QZHfKJ+Vy3G6aenvgqON9F2WaUVGj
-X-Gm-Message-State: AOJu0YxwlM0MSHH3dcxSNTy2gC4RfgfdHPLkrqDc9anfR4TgjKD3RA8p
-	+bJgO5fkE4SrlxirGYA/q7cxn0OjsvxMUwH3WdAa2ejB3sPyB/LToi/A8BnJ11c+7NnldAfgr3K
-	sqg==
-X-Google-Smtp-Source: AGHT+IHmi4XfzjW9EmfmQD9pOXVOy3+HJOzNMlldLJHQy/DYtS/xbnEr/IVuJdigkFptyFLAb8v8t0j5vGY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:41cc:b0:1dd:9250:2d5d with SMTP id
- u12-20020a17090341cc00b001dd92502d5dmr8798ple.9.1710340940087; Wed, 13 Mar
- 2024 07:42:20 -0700 (PDT)
-Date: Wed, 13 Mar 2024 07:42:18 -0700
-In-Reply-To: <DS0PR11MB63731F54EA26D14CF7D6A3FDDC2A2@DS0PR11MB6373.namprd11.prod.outlook.com>
+        d=1e100.net; s=20230601; t=1710341001; x=1710945801;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wOyyWxqr4Zt5l8qx0EOpnngPAjzS6Yb2YM91AanmvQ0=;
+        b=nxAP8PWOzCyb2dkUwH8bWF7xtvLbYmJeq/vxgcROdig2RC1B8qKuRFo0t+g6c9TRph
+         QAb5SsLgnZpl+sBGVWEfOwbFWSEFbMqQAXEIDNqfIdbYIpxpwhw2/BJZKUJM1MHdy0ZE
+         4xbtUp8SsQigBneMmOgf4k1Tjx9Cv7Ta5iLlIkaOYZQL61H1ha5M/i6FAcx/e+gceHw9
+         CmpsRn5dS65bLBfbkB7oKe65xolwQNz/7Rh3Rum0PfRMrqxVc2EHiGf2t9IBoSUADfN6
+         ckifywLOmD5C1hLRd/Z0Gua/Y+OyRGF/Z/vPQMpU/op2wmqprrf5XjE/rbj3icff+BT0
+         d35w==
+X-Forwarded-Encrypted: i=1; AJvYcCXbCMTB9vrNHv3EWAu50udr7EB8VM6IaIhKjlm88JLWQgLYevnAho/l4ueO+Rdp6Lfqcfmf7oCEo8MKBx/eUUs9R3NYu+RK9EEY79RR
+X-Gm-Message-State: AOJu0YyyVwn5cMvCU8n8S/SI6y+ZMDyKrCuvPsz9QRL/nWZ00nQtn89M
+	DdAnLdUlAn9Rq5FPnqId9VpFT/tyZOxjALQG0msD8hfXUtntOKGFiTTFKsUkUEc=
+X-Google-Smtp-Source: AGHT+IHnYo+Mfw14XHLEGD+XsgTuPyQnaH13Xt3Jsj4nuhLeGe0VgxyoZDpIhuF+vbZ90D3cZE0hww==
+X-Received: by 2002:a5d:40d1:0:b0:33e:be35:d449 with SMTP id b17-20020a5d40d1000000b0033ebe35d449mr676795wrq.44.1710341001070;
+        Wed, 13 Mar 2024 07:43:21 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id bj28-20020a0560001e1c00b0033e7de97214sm12107696wrb.40.2024.03.13.07.43.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 07:43:20 -0700 (PDT)
+Message-ID: <42665ccc-d020-48c4-a5bb-2713f7cbb75c@linaro.org>
+Date: Wed, 13 Mar 2024 15:43:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240313003739.3365845-1-mizhang@google.com> <DS0PR11MB63731F54EA26D14CF7D6A3FDDC2A2@DS0PR11MB6373.namprd11.prod.outlook.com>
-Message-ID: <ZfG7SgyqTTtqF3cw@google.com>
-Subject: Re: [PATCH] KVM: x86/pmu: Return correct value of IA32_PERF_CAPABILITIES
- for userspace after vCPU has run
-From: Sean Christopherson <seanjc@google.com>
-To: Wei W Wang <wei.w.wang@intel.com>
-Cc: Mingwei Zhang <mizhang@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Aaron Lewis <aaronlewis@google.com>, 
-	Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clocksource/drivers/timer-sun4i: Partially convert to a
+ platform driver
+Content-Language: en-US
+To: Samuel Holland <samuel.holland@sifive.com>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: Anup Patel <apatel@ventanamicro.com>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Samuel Holland <samuel@sholland.org>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sunxi@lists.linux.dev
+References: <20240312192519.1602493-1-samuel.holland@sifive.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240312192519.1602493-1-samuel.holland@sifive.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 13, 2024, Wei W Wang wrote:
-> On Wednesday, March 13, 2024 8:38 AM, Mingwei Zhang wrote:
-> > Return correct value of IA32_PERF_CAPABILITIES when userspace tries to =
-read
-> > it after vCPU has already run. Previously, KVM will always return the g=
-uest
-> > cached value on get_msr() even if guest CPUID lacks X86_FEATURE_PDCM. T=
-he
-> > guest cached value on default is kvm_caps.supported_perf_cap. However,
-> > when userspace sets the value during live migration, the call fails bec=
-ause of
-> > the check on X86_FEATURE_PDCM.
->=20
-> Could you point where in the set_msr path that could fail?
-> (I don=E2=80=99t find there is a check of X86_FEATURE_PDCM in vmx_set_msr=
- and
-> kvm_set_msr_common)
+On 12/03/2024 20:25, Samuel Holland wrote:
+> Commit 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a
+> platform driver") broke the MMIO timer on the Allwinner D1 SoC because
+> the IRQ domain is no longer available when timer_probe() is called:
 
-The changelog is misleading, it's not the PDCM feature bit, it's the PMU ve=
-rsion
-check in vmx_set_msr():
+Did you mean: s/no longer available/not yet available/ ?
 
-	case MSR_IA32_PERF_CAPABILITIES:
-		if (data && !vcpu_to_pmu(vcpu)->version)
-			return 1;
 
-> > Initially, it sounds like a pure userspace issue. It is not. After vCPU=
- has run,
-> > KVM should faithfully return correct value to satisify legitimate reque=
-sts from
-> > userspace such as VM suspend/resume and live migrartion. In this case, =
-KVM
-> > should return 0 when guest cpuid lacks X86_FEATURE_PDCM.=20
-> Some typos above (satisfy, migration, CPUID)
->=20
-> Seems the description here isn=E2=80=99t aligned to your code below?
-> The code below prevents userspace from reading the MSR value (not return =
-0 as the
-> read value) in that case.
+>    [    0.000000] irq: no irq domain found for interrupt-controller@10000000 !
+>    [    0.000000] Failed to map interrupt for /soc/timer@2050000
+>    [    0.000000] Failed to initialize '/soc/timer@2050000': -22
+> 
+> Fix this by wrapping the timer initialization in a platform driver.
+> builtin_platform_driver_probe() must be used because the driver uses
+> timer_of_init(), which is marked as __init. Only convert the sun8i
+> variants of the hardware, because some older SoCs still need the timer
+> probed early for sched_clock().
+> 
+> Fixes: 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a platform driver")
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+> 
+>   drivers/clocksource/timer-sun4i.c | 24 ++++++++++++++++++++----
+>   1 file changed, 20 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/clocksource/timer-sun4i.c b/drivers/clocksource/timer-sun4i.c
+> index 7bdcc60ad43c..728dac2baa84 100644
+> --- a/drivers/clocksource/timer-sun4i.c
+> +++ b/drivers/clocksource/timer-sun4i.c
+> @@ -20,6 +20,7 @@
+>   #include <linux/of.h>
+>   #include <linux/of_address.h>
+>   #include <linux/of_irq.h>
+> +#include <linux/platform_device.h>
+>   
+>   #include "timer-of.h"
+>   
+> @@ -218,9 +219,24 @@ static int __init sun4i_timer_init(struct device_node *node)
+>   }
+>   TIMER_OF_DECLARE(sun4i, "allwinner,sun4i-a10-timer",
+>   		       sun4i_timer_init);
+> -TIMER_OF_DECLARE(sun8i_a23, "allwinner,sun8i-a23-timer",
+> -		 sun4i_timer_init);
+> -TIMER_OF_DECLARE(sun8i_v3s, "allwinner,sun8i-v3s-timer",
+> -		 sun4i_timer_init);
+>   TIMER_OF_DECLARE(suniv, "allwinner,suniv-f1c100s-timer",
+>   		       sun4i_timer_init);
+> +
+> +static int __init sun4i_timer_probe(struct platform_device *pdev)
+> +{
+> +	return sun4i_timer_init(dev_of_node(&pdev->dev));
+> +}
+> +
+> +static const struct of_device_id sun4i_timer_of_match[] = {
+> +	{ .compatible = "allwinner,sun8i-a23-timer" },
+> +	{ .compatible = "allwinner,sun8i-v3s-timer" },
+> +	{ /* sentinel */ }
+> +};
+> +
+> +static struct platform_driver sun4i_timer_driver = {
+> +	.driver	= {
+> +		.name		= "sun4i-timer",
+> +		.of_match_table	= sun4i_timer_of_match,
+> +	},
+> +};
+> +builtin_platform_driver_probe(sun4i_timer_driver, sun4i_timer_probe);
 
-Ya.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> >So fix the
-> > problem by adding an additional check in vmx_set_msr().
-> >=20
-> > Note that IA32_PERF_CAPABILITIES is emulated on AMD side, which is fine
-> > because it set_msr() is guarded by kvm_caps.supported_perf_cap which is
-> > always 0.
-> >=20
-> > Cc: Aaron Lewis <aaronlewis@google.com>
-> > Cc: Jim Mattson <jmattson@google.com>
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > ---
-> >  arch/x86/kvm/vmx/vmx.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >=20
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c index
-> > 40e3780d73ae..6d8667b56091 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -2049,6 +2049,17 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu,
-> > struct msr_data *msr_info)
-> >  		msr_info->data =3D to_vmx(vcpu)->msr_ia32_sgxlepubkeyhash
-> >  			[msr_info->index - MSR_IA32_SGXLEPUBKEYHASH0];
-> >  		break;
-> > +	case MSR_IA32_PERF_CAPABILITIES:
-> > +		/*
-> > +		 * Host VMM should not get potentially invalid MSR value if
-> > vCPU
-> > +		 * has already run but guest cpuid lacks the support for the
-> > +		 * MSR.
-> > +		 */
-> > +		if (msr_info->host_initiated &&
-> > +		    kvm_vcpu_has_run(vcpu) &&
-> > +		    !guest_cpuid_has(vcpu, X86_FEATURE_PDCM))
-> > +			return 1;
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
-As Wei pointed out, this doesn't match the changelog.  And I don't think th=
-is is
-what we want, at least not in isolation.  Making KVM more restrictive on us=
-erspace
-reads doesn't solve the live migration save/restore issue, and the kvm_vcpu=
-_has_run()
-adds yet another flavor of MSR handling.
-
-We discussed this whole MSRs mess at PUCK this morning.  I forgot to hit RE=
-CORD,
-but Paolo took notes and will post them soon.
-
-Going from memory, the plan is to:
-
-  1. Commit to, and document, that userspace must do KVM_SET_CPUID{,2} prio=
-r to
-     KVM_SET_MSRS.
-
-  2. Go with roughly what I proposed in the CET thread (for unsupported MSR=
-S,
-     read 0 and drop writes of '0')[*].
-
-  3. Add a quire for PERF_CAPABILITIES, ARCH_CAPABILITIES, and PLATFORM_INF=
-O
-     (if quirk=3D=3Denabled, keep KVM's current behavior; if quirk=3D=3Ddis=
-abled, zero-
-      initialize the MSRs).
-
-With those pieces in place, KVM can simply check X86_FEATURE_PDCM for both =
-reads
-and writes to PERF_CAPABILITIES, and the common userspace MSR handling will
-convert "unsupported" to "success" as appropriate.
-
-[*] https://lore.kernel.org/all/ZfDdS8rtVtyEr0UR@google.com
 
