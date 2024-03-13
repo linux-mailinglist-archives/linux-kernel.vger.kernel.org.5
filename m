@@ -1,143 +1,70 @@
-Return-Path: <linux-kernel+bounces-101518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68E287A831
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A2EA487A854
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774D21F22B79
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:21:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 585001F2367B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53F343ACA;
-	Wed, 13 Mar 2024 13:20:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZpnByxP3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34D547793;
+	Wed, 13 Mar 2024 13:27:55 +0000 (UTC)
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D6043AA4
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5453145010
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710336057; cv=none; b=V0Sxly6OMQ+CTDxx498tU0bk02qnuGPwQ4X5pqQwlZJG+xcQa1mflT77UuLrGLmQeHFsD2oNyFVg1rlC/aQtcifuB2l2VmmRCCARp75W8Jjm/0Q/IyFtqd1YXCd3wbfDkcSkB6bysDHBhPf1PZmqnS4MlVKcfdeEdTGNBElhAfw=
+	t=1710336475; cv=none; b=Hmv6MCBqaIw0gum7vWNq4K2WgtxUUyLbY/T6L7XXCyr2tr3Y+hInYkfLkTD20HCuPAmQGg/uEJXNfDpsup+1KwJOsCzCQIEEegcq4t413xj7ziohZvJTprlvfHGv+f5wPf3M2wck3DCrlw0a6tEirQpKOi9SEQpI+R4UcTUtWfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710336057; c=relaxed/simple;
-	bh=FaT4XGiP/1deYiwr6gMlT38Yu4UeP83mybH7QKeqj60=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IO1YbIM9/IaJ+avjMGHE2t3vzi+aI9cakVaYuOpX/z0t+eTx3shIXdLuLtDYRv2jFlpOQ8BKZ4kgDJ3FvMZVf8lw6zOEk1xw4Vdp/jchzMUf6H9d4d8DU2aND7E8nrjLJnXKGBXERsylLVIRxoLMYkD0B3aYU2euokG/RLyuiD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZpnByxP3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710336054;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k9AU0bydAYPASchpnpF2gWjzciQAPMb4OtYaMryl0jc=;
-	b=ZpnByxP3a1EC3rLcm5WXjBNK/tJfzfH/o/KKkQyUqosfU0/LVDAwv7bza0Hn5ZzhB7D6Vo
-	PQVYI6HlcAWjkbY0JP7GBy7H0JJ9WvTO8Xw4lJAuPWzxVJQBrAAiti2XAUEHQUZJeH3qbW
-	/VlWV9FlqyxthVhMZfgIn0Gfgv9CmVI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-645-gV73DBrjPaWDGE1FfRfGdw-1; Wed, 13 Mar 2024 09:20:51 -0400
-X-MC-Unique: gV73DBrjPaWDGE1FfRfGdw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	s=arc-20240116; t=1710336475; c=relaxed/simple;
+	bh=cJ+rQ4JlHxzBKTZwdGlaoR61MV5w43ulOU+XKZxbjHU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=SunyAv9YUPB63xMD8wlH4bgup/vOd9YXBNUBMSo89qP5FD6nym/LYXZeAN4Dj8/jtqCY69ouWc7GSl/cKNf4pqhl4y1D9PkCjXg47r8SgGuCPi/DzWd4p2cYl8VkNatxGVZ9otLK+Z/W//s/V5fOC0B41wyaN7MwhDNSj7F5oGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96A17101CC63;
-	Wed, 13 Mar 2024 13:20:50 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.233])
-	by smtp.corp.redhat.com (Postfix) with SMTP id D189B2166B4F;
-	Wed, 13 Mar 2024 13:20:48 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 13 Mar 2024 14:19:29 +0100 (CET)
-Date: Wed, 13 Mar 2024 14:19:26 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, bpf@vger.kernel.org,
-	mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 3/3] uprobes: add speculative lockless
- system-wide uprobe filter check
-Message-ID: <20240313131926.GA19986@redhat.com>
-References: <20240312210233.1941599-1-andrii@kernel.org>
- <20240312210233.1941599-4-andrii@kernel.org>
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tvrsz4S0Kz4x1c;
+	Thu, 14 Mar 2024 00:27:51 +1100 (AEDT)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <85a86e51b4ab26ce4b592984cc0a0851a3cc9479.1708076780.git.christophe.leroy@csgroup.eu>
+References: <85a86e51b4ab26ce4b592984cc0a0851a3cc9479.1708076780.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/trace: Restrict hash_fault trace event to HASH MMU
+Message-Id: <171033598336.517247.1756148879387291088.b4-ty@ellerman.id.au>
+Date: Thu, 14 Mar 2024 00:19:43 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312210233.1941599-4-andrii@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-I forgot everything about this code, plus it has changed a lot since
-I looked at it many years ago, but ...
+On Fri, 16 Feb 2024 10:46:43 +0100, Christophe Leroy wrote:
+> 'perf list' on powerpc 8xx shows an event named "1:hash_fault".
+> 
+> This event is pointless because trace_hash_fault() is called only
+> from mm/book3s64/hash_utils.c
+> 
+> Only define it when CONFIG_PPC_64S_HASH_MMU is selected.
+> 
+> [...]
 
-I think this change is fine but the changelog looks a bit confusing
-(overcomplicated) to me.
+Applied to powerpc/next.
 
-On 03/12, Andrii Nakryiko wrote:
->
-> This patch adds a speculative check before grabbing that rwlock. If
-> nr_systemwide is non-zero, lock is skipped and event is passed through.
-> From examining existing logic it looks correct and safe to do. If
-> nr_systemwide is being modified under rwlock in parallel, we have to
-> consider basically just one important race condition: the case when
-> nr_systemwide is dropped from one to zero (from
-> trace_uprobe_filter_remove()) under filter->rwlock, but
-> uprobe_perf_filter() raced and saw it as >0.
+[1/1] powerpc/trace: Restrict hash_fault trace event to HASH MMU
+      https://git.kernel.org/powerpc/c/9e00743aba832f3f30ecb017d3345baf1f372140
 
-Unless I am totally confused, there is nothing new. Even without
-this change trace_uprobe_filter_remove() can clear nr_systemwide
-right after uprobe_perf_filter() drops filter->rwlock.
-
-And of course, trace_uprobe_filter_add() can change nr_systemwide
-from 0 to 1. In this case uprobe_perf_func() can "wrongly" return
-UPROBE_HANDLER_REMOVE but we can't avoid this and afaics this is
-fine even if handler_chain() does unapply_uprobe(), uprobe_perf_open()
-will do uprobe_apply() after that, we can rely on ->register_rwsem.
-
-> In case we speculatively read nr_systemwide as zero, while it was
-> incremented in parallel, we'll proceed to grabbing filter->rwlock and
-> re-doing the check, this time in lock-protected and non-racy way.
-
-See above...
-
-
-So I think uprobe_perf_filter() needs filter->rwlock only to iterate
-the list, it can check nr_systemwide lockless and this means that you
-can also remove the same check in __uprobe_perf_filter(), other callers
-trace_uprobe_filter_add/remove check it themselves.
-
-
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -1351,6 +1351,10 @@ static bool uprobe_perf_filter(struct uprobe_consumer *uc,
->  	tu = container_of(uc, struct trace_uprobe, consumer);
->  	filter = tu->tp.event->filter;
->
-> +	/* speculative check */
-> +	if (READ_ONCE(filter->nr_systemwide))
-> +		return true;
-> +
->  	read_lock(&filter->rwlock);
->  	ret = __uprobe_perf_filter(filter, mm);
->  	read_unlock(&filter->rwlock);
-
-ACK,
-
-but see above. I think the changelog should be simplified and the
-filter->nr_systemwide check in __uprobe_perf_filter() should be
-removed. But I won't insist and perhaps I missed something...
-
-Oleg.
-
+cheers
 
