@@ -1,126 +1,155 @@
-Return-Path: <linux-kernel+bounces-102356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2356B87B117
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:08:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 709A787B11C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:08:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B85CC1F23DB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:08:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00CA51F22C43
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BAD71749;
-	Wed, 13 Mar 2024 18:23:47 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD9971B28;
+	Wed, 13 Mar 2024 18:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TnIXA0xc"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D275160EDA
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD24460DD7
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710354227; cv=none; b=sdJjx1Z0O0ahGOSOROSyYZRpoK5sOw0+DCd6YaqSauJtbu13YTtv325qvdUKwEp/coaKr7uPP/XRnLzz4+pK7bdrUoow45+chGZNvHM1R1G71VdbpopCMOudXasypdbOwTYehvgi/318OnDIO89lXbrzdMbTnOJyIVzn6XFf9sc=
+	t=1710354278; cv=none; b=XB55gd0jF2gGq84zWO3TUFw0Q6kSfQTntYJibKJWi8Qbv40XG+MO9l8rnDxW3iUns84VQ+xzbC8UxmqYd5jtu7v5txzw6NIqVxV2GRYCGsnH6s994+0mRLFzMNxk139mhWdHARuQJEGL1bMONa6kbN5BpdukCRkamyaJvxEXRy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710354227; c=relaxed/simple;
-	bh=+L7RmxbS57YhWRV5vrUo1xvbeBgnnm0H6PxuTVlMG7U=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ByFodjveSFbQW0N7VucLfJfGOWIaIeOcuXg/W4FskUqFayENNkJ5TQtnjeEOGrHTc0cAIb1iPn3rq0Yb5fy1lxLoxcN0VRnqL4Jo66vh9Fq6ujIn0FlqJQATcUstbYQ8MlPTyxStxFSz8VqBtnYAtGZeWbYkTfZ6ukkcP8qqr8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.77.133) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 13 Mar
- 2024 21:23:38 +0300
-Subject: Re: [PATCH] fixp-arith: prevent division by zero in fixp_sin32_rad()
-To: Roman Smirnov <r.smirnov@omp.ru>, <linux-kernel@vger.kernel.org>
-CC: <lvc-project@linuxtesting.org>
-References: <20240312094852.15400-1-r.smirnov@omp.ru>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <ef045b6e-14cd-a2a8-f89f-35d38776ed8b@omp.ru>
-Date: Wed, 13 Mar 2024 21:23:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1710354278; c=relaxed/simple;
+	bh=e/RNEOTsNeVJU1RLAdUw08Pp5tLcMSyCknZ5M6XD/vA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=tVOYG1HDaCWlb7AxZoE/uiXaTD3FJrvF2nrCDvukn2ckcirietkXBNK686AwUp/B5A36ZJ5ghdc1BRO+hhms8fjQxo5C+BJo7rqoLlqal4IZ5Zpn6+XIwPbTmqSffTQOY4PEqAGwQsJERLR1Khp4Q7fCX0UL2ryjYViTHk7LeEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TnIXA0xc; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513b16bb739so184523e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:24:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710354275; x=1710959075; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=MoWko07qaYolfYfAx9R/ZUapZCHp//rdFFq/1H1F/js=;
+        b=TnIXA0xc4hUvU780P45zGTW4g3l/eYkDfV4vKf5Wb8cIUr0R+fUTMhrSkaZ80EoBXU
+         qW+erZRKsZwpimGtrk+GfpayNWjbE9vw1UqEc6E8MIRFNeRUZ3jfVoGIYzk4ZR3rG/ng
+         4tzQ/SG9LQKkVZsnw6JrXbGq/64Vu6rkAFAhKdLOsWP5NQ6fRzx7JYj/Evvnfq2oD9Fg
+         cRrOHTmeEEbzQ8f5RNufk0tiMI61vMafscK5wyoLA0oXo09BpHgXFgKYuXi55YgKL012
+         J2IXVpyoV4oM/XqXzPnFyOiOaXwiZlYTaUR/MRo33S0ydXv+Qel67RpBECI3md7ndlGB
+         CL0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710354275; x=1710959075;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MoWko07qaYolfYfAx9R/ZUapZCHp//rdFFq/1H1F/js=;
+        b=q2cFU0iHIO+bLP7Ac6exp7F2fsGJz2SjcWZOI+2WIEADOlHUWqwqvpJwfsjXnA8/Ls
+         hbuSrerUhpfwCrKc6UrtE+5w60MB+eWGnq6D0nnwGEgHi2Dt+3vmnLytaxDnBdF9UuDq
+         HnM8oOEGQqCtnx7WwHIuEuX6BIdin7jOJ6k7GzLo76g9aQhchIePtRObWk2XEhjiKhDe
+         MFm1gg9mO9aa70IWHpUPR7wWLUDDwZkx3dVEXZaZNfNALY5yEbz+15hVc4tBJk3iQu9C
+         Lcp9zfyaPGzk4EgEPkxbOtA9AadXkzjCZSU6j7c6rR++4FfhoP50GaHMivAQc0RNQ44n
+         xtkw==
+X-Forwarded-Encrypted: i=1; AJvYcCXEJaarjnt6IkfgL9odMh9EVEaEgKeivBhpaBe2AAGeKSTk+t5bylIiJuTvNTWQXG7ksA+brKIeYkr16dUOjdycRg2SKdd8SWNJNc4I
+X-Gm-Message-State: AOJu0YxqakOTH6ZZJn9vaLeUmYiFbrl7w8SuSIn8xSwqsiyhj9bEaBvJ
+	Z58XqSYT+R8KuOnYpayqiMumCvgVRJ5fve4zjD+RhXH+oaqfvPvLYIpLcLwkdlM=
+X-Google-Smtp-Source: AGHT+IF+xQ8/I3+QY0kvbvM6EqWEV7Ay2qL/sch4eC/x/bTweldSOonGt1H1tuKVbp9oePAwzWzbwg==
+X-Received: by 2002:ac2:5e7c:0:b0:513:cdde:18f9 with SMTP id a28-20020ac25e7c000000b00513cdde18f9mr203567lfr.54.1710354274826;
+        Wed, 13 Mar 2024 11:24:34 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id fb4-20020a05600c520400b00413e6a1935dsm3002319wmb.36.2024.03.13.11.24.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 11:24:34 -0700 (PDT)
+Message-ID: <d4d6421c-a3bb-4de9-9a03-9e41a255d80d@linaro.org>
+Date: Wed, 13 Mar 2024 19:24:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240312094852.15400-1-r.smirnov@omp.ru>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: display: samsung,exynos5-dp: convert to DT
+ Schema
+To: Inki Dae <inki.dae@samsung.com>, Seung-Woo Kim <sw0312.kim@samsung.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240313182108.12458-1-krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240313182108.12458-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/13/2024 18:03:29
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 184146 [Mar 13 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.4
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 10 0.3.10
- 53c821b925e16276b831986eabc71d60ab82ee60
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.133
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/13/2024 18:09:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/13/2024 4:59:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On 3/12/24 12:48 PM, Roman Smirnov wrote:
+On 13/03/2024 19:21, Krzysztof Kozlowski wrote:
+> Convert Samsung Exynos5250/5420 SoC Display Port Controller bindings to
+> DT schema with changes:
+> 1. Drop samsung,hpd-gpio, because it is not used by Linux driver.
+>    Existing usage in DTS is going to be fixed.
 
-> The parameter twopi can have a zero value. It is necessary
-> to prevent division by zero.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with Svace.
-> 
-> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-> ---
->  include/linux/fixp-arith.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/fixp-arith.h b/include/linux/fixp-arith.h
-> index e485fb0c1201..434eee8bd9ef 100644
-> --- a/include/linux/fixp-arith.h
-> +++ b/include/linux/fixp-arith.h
-> @@ -118,8 +118,9 @@ static inline s32 fixp_sin32_rad(u32 radians, u32 twopi)
->  
->  	/*
->  	 * Avoid too large values for twopi, as we don't want overflows.
-> +	 * Also prevent division by zero.
->  	 */
-> -	BUG_ON(twopi > 1 << 18);
-> +	BUG_ON(!twopi || twopi > 1 << 18);
+My bad, samsung,hpd-gpio is implemented in the driver, so I will
+document it. V2 is coming.
 
-    Not really sure ATM that BUG_ON() is better than division by 0
-(which should cause exception 0 on x86 but I'm not sure about e.g.
-ARM32/64)...
+Best regards,
+Krzysztof
 
->  
->  	degrees = (radians * 360) / twopi;
->  	tmp = radians - (degrees * twopi) / 360;
-> 
-
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-
-[...]
-
-MBR, Sergey
 
