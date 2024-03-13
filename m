@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A641A87AE23
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 380B087AE26
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:50:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 207801F2D28C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:50:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCAB81F2D208
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD02515B0E8;
-	Wed, 13 Mar 2024 16:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C58D15B0FD;
+	Wed, 13 Mar 2024 16:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNKQXbmk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C+Mq+JFR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E439C15AAD1;
-	Wed, 13 Mar 2024 16:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A345C15AAD9;
+	Wed, 13 Mar 2024 16:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348450; cv=none; b=r2Q5lvAECS+30KECJdQ2yy3r8SUzx1h2jOKjX0QHeFUvkxjPYuveQ2fT6uYeNa6CW+Y8G8vuRuWdIoCNUCkkUGmv/vKxy5Qf7pefqfosrT4WyAgJvB53W3BM3Ts3vZ4P82B4KUJVTtnVBt8UA3TOkKOQLDZm1YnEtI71A9t5dDM=
+	t=1710348450; cv=none; b=Af/LkMfGNl7ueCiA+j8TvqFTOlDGgPy5l0pjYyfuDJeFz6qkGML7HIgGkpSuOzPwsHRg6jilkNj2gz7xhwND8nrpD9tT5bDTiGJnJRlyf0vSU+0NEuct8kYLJwXzv0eMUlEG/E5cgAXdUnNyG+XuY/YoNeLqvN5w/mQjHMvv2+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710348450; c=relaxed/simple;
-	bh=uB6Kmj+7UuWh5REtj+8LBvTzv9j9EamYzrZD7GF8gUU=;
+	bh=35fWejEZZKXvoDZx3BRorUFQb5CQmMP9lyAXTgMA5LI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YHF/NMATbd5HVsavbx7v/eIMJjgcILN8/ie2SKDr4R9rMHW6y68x6AfFybBDo18HFDFnRIJMKDu3VvLbtqJS9BMYbm/WiulFt9avKjEtJXqkz8+XRtVXtx2wRK+5jjhYsfEUMSmh4aXbjnq8mOy65pRVIegWPs1llmoBbaFku5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNKQXbmk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B62A2C43390;
-	Wed, 13 Mar 2024 16:47:28 +0000 (UTC)
+	 MIME-Version; b=QE0J9RzKz7u6Zz6nHjaNol0zf+zAh9hXtljBNFfSYJfOjebGi9dQEVitJo/K3WHOXgIK8b3He2iixxic7+ooTso15ZA0CRLQrIJ6IQwdyfutQaj1cJIK6VTh+pz6Iw4dR6SdpuwBUV0mh0WfjzTTnooH7CSY+kfyZm8HbdluMF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C+Mq+JFR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE15BC433F1;
+	Wed, 13 Mar 2024 16:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348449;
-	bh=uB6Kmj+7UuWh5REtj+8LBvTzv9j9EamYzrZD7GF8gUU=;
+	s=k20201202; t=1710348450;
+	bh=35fWejEZZKXvoDZx3BRorUFQb5CQmMP9lyAXTgMA5LI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lNKQXbmkhJ7LCg9xnmCMTjudcpvJfWmWRIdPQ9m3/qoTCiMYmTqi0Gv6QUwUEDef1
-	 ogDIxx91ZK0YaTMqwxy+o06mcz/Fn9C9HpAkQZwvpptCqc7FLLHyejqWkGwjooDvFl
-	 mSdt2TcgOew5lz/lOaBmiIkjLi83AyjwvU6wmQLSXh6jdiggMpkxIw6qcKierVjEte
-	 MDPSwnsnwciXICRYAnqggjMJ80c9PdsGJTN2so3UlrdznFl314HRuTo9dUecmieUbK
-	 rGRZVNqIQYFitGjciT3ip771sS8k2yr4pPsYOR8Ms1mFUuPgls6ACf5Jcm10MnxX5N
-	 0W9wzBpLGr+uA==
+	b=C+Mq+JFRumLQlHx+esAqJA6Mx/vC5NEoYOkiM2VG53Ll7CiFe95Rv8V4fi6M+S9Vq
+	 IKRROMkYSqk7qhCNQkO1YaMsYbRzybeXdHha5OR1d3RNejc4+JM5QCxVfNzpT14Ud0
+	 BgWBjuOeXl0npTY6Y227d4b4S3pM8r7SeQgy37bS8QTBgwDI3WePvpt8wwgsUFSihD
+	 x0QOfvdxcNFnhxxPvSfYG2MHbSb0VfHH6OIa9gYD4JTFTEXNVlFuLY9CzKtKyaYOIq
+	 OI4ODXZeExo40K9UO1IbeiiYIrfkHolSe5gB+y5kNdkffRYPNz+vnilDYk1+dR8xjL
+	 YX780hf/dDdxA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc: Martin KaFai Lau <martin.lau@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 43/73] serial: max310x: prevent infinite while() loop in port startup
-Date: Wed, 13 Mar 2024 12:46:10 -0400
-Message-ID: <20240313164640.616049-44-sashal@kernel.org>
+Subject: [PATCH 5.10 44/73] net: Change sock_getsockopt() to take the sk ptr instead of the sock ptr
+Date: Wed, 13 Mar 2024 12:46:11 -0400
+Message-ID: <20240313164640.616049-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -68,74 +68,77 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-[ Upstream commit b35f8dbbce818b02c730dc85133dc7754266e084 ]
+[ Upstream commit ba74a7608dc12fbbd8ea36e660087f08a81ef26a ]
 
-If there is a problem after resetting a port, the do/while() loop that
-checks the default value of DIVLSB register may run forever and spam the
-I2C bus.
+A latter patch refactors bpf_getsockopt(SOL_SOCKET) with the
+sock_getsockopt() to avoid code duplication and code
+drift between the two duplicates.
 
-Add a delay before each read of DIVLSB, and a maximum number of tries to
-prevent that situation from happening.
+The current sock_getsockopt() takes sock ptr as the argument.
+The very first thing of this function is to get back the sk ptr
+by 'sk = sock->sk'.
 
-Also fail probe if port reset is unsuccessful.
+bpf_getsockopt() could be called when the sk does not have
+the sock ptr created.  Meaning sk->sk_socket is NULL.  For example,
+when a passive tcp connection has just been established but has yet
+been accept()-ed.  Thus, it cannot use the sock_getsockopt(sk->sk_socket)
+or else it will pass a NULL ptr.
 
-Fixes: 10d8b34a4217 ("serial: max310x: Driver rework")
-Cc: stable@vger.kernel.org
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Link: https://lore.kernel.org/r/20240116213001.3691629-5-hugo@hugovil.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch moves all sock_getsockopt implementation to the newly
+added sk_getsockopt().  The new sk_getsockopt() takes a sk ptr
+and immediately gets the sock ptr by 'sock = sk->sk_socket'
+
+The existing sock_getsockopt(sock) is changed to call
+sk_getsockopt(sock->sk).  All existing callers have both sock->sk
+and sk->sk_socket pointer.
+
+The latter patch will make bpf_getsockopt(SOL_SOCKET) call
+sk_getsockopt(sk) directly.  The bpf_getsockopt(SOL_SOCKET) does
+not use the optnames that require sk->sk_socket, so it will
+be safe.
+
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Link: https://lore.kernel.org/r/20220902002756.2887884-1-kafai@fb.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Stable-dep-of: 5a287d3d2b9d ("lsm: fix default return value of the socket_getpeersec_*() hooks")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ net/core/sock.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 80298a5714bcb..978d9d93127e5 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -235,6 +235,10 @@
- #define MAX310x_REV_MASK		(0xf8)
- #define MAX310X_WRITE_BIT		0x80
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 769e969cd1dc5..95559d088a169 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1293,10 +1293,10 @@ static int groups_to_user(gid_t __user *dst, const struct group_info *src)
+ 	return 0;
+ }
  
-+/* Port startup definitions */
-+#define MAX310X_PORT_STARTUP_WAIT_RETRIES	20 /* Number of retries */
-+#define MAX310X_PORT_STARTUP_WAIT_DELAY_MS	10 /* Delay between retries */
-+
- /* Crystal-related definitions */
- #define MAX310X_XTAL_WAIT_RETRIES	20 /* Number of retries */
- #define MAX310X_XTAL_WAIT_DELAY_MS	10 /* Delay between retries */
-@@ -1316,6 +1320,9 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 		goto out_clk;
+-int sock_getsockopt(struct socket *sock, int level, int optname,
+-		    char __user *optval, int __user *optlen)
++static int sk_getsockopt(struct sock *sk, int level, int optname,
++			 char __user *optval, int __user *optlen)
+ {
+-	struct sock *sk = sock->sk;
++	struct socket *sock = sk->sk_socket;
  
- 	for (i = 0; i < devtype->nr; i++) {
-+		bool started = false;
-+		unsigned int try = 0, val = 0;
-+
- 		/* Reset port */
- 		regmap_write(regmaps[i], MAX310X_MODE2_REG,
- 			     MAX310X_MODE2_RST_BIT);
-@@ -1324,8 +1331,17 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 	union {
+ 		int val;
+@@ -1633,6 +1633,12 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
+ 	return 0;
+ }
  
- 		/* Wait for port startup */
- 		do {
--			regmap_read(regmaps[i], MAX310X_BRGDIVLSB_REG, &ret);
--		} while (ret != 0x01);
-+			msleep(MAX310X_PORT_STARTUP_WAIT_DELAY_MS);
-+			regmap_read(regmaps[i], MAX310X_BRGDIVLSB_REG, &val);
++int sock_getsockopt(struct socket *sock, int level, int optname,
++		    char __user *optval, int __user *optlen)
++{
++	return sk_getsockopt(sock->sk, level, optname, optval, optlen);
++}
 +
-+			if (val == 0x01)
-+				started = true;
-+		} while (!started && (++try < MAX310X_PORT_STARTUP_WAIT_RETRIES));
-+
-+		if (!started) {
-+			ret = dev_err_probe(dev, -EAGAIN, "port reset failed\n");
-+			goto out_uart;
-+		}
- 
- 		regmap_write(regmaps[i], MAX310X_MODE1_REG, devtype->mode1);
- 	}
+ /*
+  * Initialize an sk_lock.
+  *
 -- 
 2.43.0
 
