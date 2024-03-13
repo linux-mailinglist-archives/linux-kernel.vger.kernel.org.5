@@ -1,123 +1,227 @@
-Return-Path: <linux-kernel+bounces-101697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0E1A87AAA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:49:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7476A87AAA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71A1B2837B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:49:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045451F230A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A671447F51;
-	Wed, 13 Mar 2024 15:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF28A47F64;
+	Wed, 13 Mar 2024 15:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U4dOlyXR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l+G/PNFS"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7D24C85
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E7546BA6
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710344934; cv=none; b=hL9FTidlV4nHtJsVEdf/nV5hZmbdNE4Ct1Xj/jMwVqqAdfra/AFcBD/FxIdesxa/ZFBZzhtJqyCicAZosPzz+A3r85AmALMnzAqzHImwr+b4ZlkrgM32b0KhNXYdSDdsR6Y5BfEud07YbduhGKuJP/USU4+/1NLWeR2KLHhDym4=
+	t=1710344870; cv=none; b=jqiYHWPcPwvJCz4N/KkJHZ6Xymz7YJA83ltYX+JcEaj2MMIhpUgiRpUHWUkTqHssipnZsV2M73T7Vuth5sG7eNy6CDmjBoG+siLgA5NDDk+0PU7TW2v7yrWD+Y2yJleS2P9Qy2qDDeQmzBiBpVYDnP/B/1rBdZ9Y7DcDa6W/YDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710344934; c=relaxed/simple;
-	bh=COid3ls/H1cesG2EvzJHTyesfJFy9SOIgs/GvDa4P2c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I6P0jq0RC+quK68b6siBWupqYfXc3bAfrMvZ8vy8AD5DLyTrbHdzKh+7bYpBdpDCOCLWj3WK5gIEMBTSOCin6bMSOVxAkk5PWIOQdungHBIf8f5aSLHfugbk7n8tUO2q29vBkBFJQa1qGjf4ItmKnTlWGu/K1RzCadVGU+ftIyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U4dOlyXR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710344931;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JC1+HJbEXxxyJy+zyJokage5HbCPC99YdysgS1QcXZU=;
-	b=U4dOlyXRGlo4Yae42UPojrgLdKuP5PWyyV34V3ekHuQpbvXyzWnwFkhbKG/P30eqz29NIn
-	hnuBMKVcXgkQhBIbKo+mX62hhGt+0Vb1azCRw6+COgFAzbjZ0rn8yM1Nd5Kklrq/m5WRam
-	xweSQSCWFUjPl+Om1xeV+LQTLOI7cX8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-149-UZMDdUy_MgirT-qVdBpDWw-1; Wed, 13 Mar 2024 11:48:43 -0400
-X-MC-Unique: UZMDdUy_MgirT-qVdBpDWw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B27B18007AF;
-	Wed, 13 Mar 2024 15:48:40 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.233])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 14BF840C6DB7;
-	Wed, 13 Mar 2024 15:48:38 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 13 Mar 2024 16:47:19 +0100 (CET)
-Date: Wed, 13 Mar 2024 16:47:16 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, bpf@vger.kernel.org,
-	mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/3] uprobes: prepare uprobe args buffer lazily
-Message-ID: <20240313154716.GB25452@redhat.com>
-References: <20240312210233.1941599-1-andrii@kernel.org>
- <20240312210233.1941599-3-andrii@kernel.org>
+	s=arc-20240116; t=1710344870; c=relaxed/simple;
+	bh=DXU7ph51IFvnFqSwDtmBTf5RGlHHgDbueVIPKluOaU8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=A07UyIxGRL6pvjXQSYov3UypX/bxn5Rct1jLgjAcs9CVD2nHvcbVeP/LHMHIueU1QFlFn5y6bHVCLKgGglsKAVA8uZhl3Avm3uZ8PIymURM9lZKEPavUyOvZMtPwo5tdQUK3wSQKzwWn1osYVkV5LX/xBeCzwIyC7PCxXfwuDHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l+G/PNFS; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1dd916d7d55so11418335ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710344869; x=1710949669; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e/Z6H8FJpqkR5eo4Ljxl8hO8FSLCWuqRj+smCk6ObEc=;
+        b=l+G/PNFSwp9RZZPCNF8SnQzJGaDxO/et1tiXBiyQ6KezckROFd2upWKeQKeNXK/kVd
+         LlyUhOI7jJTbdiLeWY8ILK/UJO3nzs/cOLMb53mZT0mDkcjgzsrUrU3sCg9tnVNN9q7q
+         6zmj6yCvBiU8wGJEVDciMjykfyHU8kGaJgkvSNuyF4SEgspOr8vIOStK02XEgww7cNsu
+         lgQ539GCoEg7jv/7G7Hc4WNOtW3+roxHAvo/XGFLpD0iSM/RubbStfnAtFBkm3E11uxy
+         TL/+CaTiJRXEqmJL7ghb6PW1HGgV7GLfjQw/ScTVA9OOU5/6bvzV9tFChOUmyBDcGPs5
+         /etw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710344869; x=1710949669;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=e/Z6H8FJpqkR5eo4Ljxl8hO8FSLCWuqRj+smCk6ObEc=;
+        b=Hjl5UnJHVCeKnkQnGc6/Xglno5hpLYr6OZjSGu/vFvp8qSCntTzk8YOA72/1/Bf6Fl
+         c9NxdJrvIF0+xstWieJyb+RPRN8zvDS3TF8TsLScRfcozFzcCay3BnGFPgDHkDAGtv+Q
+         KoNmGNDJZB5GnHUfIEdatmfJsNUUFDM4HpJDuhvLU8MPQ/VZOcaEgfu5WFN4eO9IUwqh
+         0JTS0poSfzGaVgUBHvEW1AuDZyYJo02rvnwzf3X0vzhDwhSYZWNlyL2tx/NG0pzTuWQ6
+         YRcnOME+qz4uoSizTaiqZRGrIL+BSTK2o7usryNY0oEs/ca+rf2n0E5KOaM7DjLUWkSe
+         /GPg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQJ1rWoTiECL8R/nqr01Go4rzESvIQ8ROxSLVdwv/I71UMK1twvG3yQ3CfGfgcAgOu3Xz/9bClm55eZyiswY1JZxt0+IFn/pHBjpXL
+X-Gm-Message-State: AOJu0YzMXiFdQw5Bc/LSCTWpFhRl+3SCjsyP0OwomUOCHxks1b5z99RS
+	ZYaQXptN28b1yzHbsE6ewFDAzSeXF7hdkeH2sDyDkB0TCXSF172MmZ8AHKhsfhGE8UOrkq9eD3P
+	ufg==
+X-Google-Smtp-Source: AGHT+IGJ6RZ0IkgPXm+643N45QY0e2z6ADAKgdz99dpQRYWWh6VJ9xo8TROXQkD9DyMcWkMBuXFLtkFK0+w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:d4c4:b0:1dd:47b7:47f9 with SMTP id
+ o4-20020a170902d4c400b001dd47b747f9mr9378plg.11.1710344868617; Wed, 13 Mar
+ 2024 08:47:48 -0700 (PDT)
+Date: Wed, 13 Mar 2024 15:47:47 +0000
+In-Reply-To: <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312210233.1941599-3-andrii@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Mime-Version: 1.0
+References: <20240229025759.1187910-1-stevensd@google.com> <ZeCIX5Aw5s1L0YEh@infradead.org>
+ <CAD=HUj7fT2CVXLfi5mty0rSzpG_jK9fhcKYGQnTf_H8Hg-541Q@mail.gmail.com>
+ <72285e50-6ffc-4f24-b97b-8c381b1ddf8e@amd.com> <ZfGrS4QS_WhBWiDl@google.com>
+ <0b109bc4-ee4c-4f13-996f-b89fbee09c0b@amd.com> <ZfG801lYHRxlhZGT@google.com> <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com>
+Message-ID: <ZfHKoxVMcBAMqcSC@google.com>
+Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
+From: Sean Christopherson <seanjc@google.com>
+To: "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>
+Cc: David Stevens <stevensd@chromium.org>, Christoph Hellwig <hch@infradead.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Again, looks good to me, but I have a minor nit. Feel free to ignore.
-
-On 03/12, Andrii Nakryiko wrote:
+On Wed, Mar 13, 2024, Christian K=C3=B6nig wrote:
+> Am 13.03.24 um 15:48 schrieb Sean Christopherson:
+> > On Wed, Mar 13, 2024, Christian K=C3=B6nig wrote:
+> > > Am 13.03.24 um 14:34 schrieb Sean Christopherson:
+> > > > What Christoph is objecting to is that, in this series, KVM is expl=
+icitly adding
+> > > > support for mapping non-compound (huge)pages into KVM guests.  Davi=
+d is arguing
+> > > > that Christoph's objection to _KVM_ adding support is unfair, becau=
+se the real
+> > > > problem is that the kernel already maps such pages into host usersp=
+ace.  I.e. if
+> > > > the userspace mapping ceases to exist, then there are no mappings f=
+or KVM to follow
+> > > > and propagate to KVM's stage-2 page tables.
+> > > And I have to agree with Christoph that this doesn't make much sense.=
+ KVM
+> > > should *never* map (huge) pages from VMAs marked with VM_PFNMAP into =
+KVM
+> > > guests in the first place.
+> > >=20
+> > > What it should do instead is to mirror the PFN from the host page tab=
+les
+> > > into the guest page tables.
+> > That's exactly what this series does.  Christoph is objecting to KVM pl=
+aying nice
+> > with non-compound hugepages, as he feels that such mappings should not =
+exist
+> > *anywhere*.
+>=20
+> Well Christoph is right those mappings shouldn't exists and they also don=
+'t
+> exists.
 >
->  static void __uprobe_trace_func(struct trace_uprobe *tu,
->  				unsigned long func, struct pt_regs *regs,
-> -				struct uprobe_cpu_buffer *ucb,
-> +				struct uprobe_cpu_buffer **ucbp,
->  				struct trace_event_file *trace_file)
->  {
->  	struct uprobe_trace_entry_head *entry;
->  	struct trace_event_buffer fbuffer;
-> +	struct uprobe_cpu_buffer *ucb;
->  	void *data;
->  	int size, esize;
->  	struct trace_event_call *call = trace_probe_event_call(&tu->tp);
->  
-> +	ucb = *ucbp;
-> +	if (!ucb) {
-> +		ucb = prepare_uprobe_buffer(tu, regs);
-> +		*ucbp = ucb;
-> +	}
+> What happens here is that a driver has allocated some contiguous memory t=
+o
+> do DMA with. And then some page table is pointing to a PFN inside that
+> memory because userspace needs to provide parameters for the DMA transfer=
+.
+>=20
+> This is *not* a mapping of a non-compound hugepage, it's simply a PTE
+> pointing to some PFN.=20
 
-perhaps it would be more clean to pass ucbp to prepare_uprobe_buffer()
-and change it to do
+Yes, I know.  And David knows.  By "such mappings" I did not mean "huge PMD=
+ mappings
+that point at non-compound pages", I meant "any mapping in the host userspa=
+ce
+VMAs and page tables that points at memory that is backed by a larger-than-=
+order-0,
+non-compound allocation".
 
-	if (*ucbp)
-		return *ucbp;
+And even then, the whole larger-than-order-0 mapping is not something we on=
+ the
+KVM side care about, at all.  The _only_ new thing KVM is trying to do in t=
+his
+series is to allow mapping non-refcounted struct page memory into KVM guest=
+.
+Those details were brought up purely because they provide context on how/wh=
+y such
+non-refcounted pages exist.
 
-at the start. Then __uprobe_trace_func() and __uprobe_perf_func() can
-simply do
+> It can trivially be that userspace only maps 4KiB of some 2MiB piece of
+> memory the driver has allocate.
+>
+> > I.e. Christoph is (implicitly) saying that instead of modifying KVM to =
+play nice,
+> > we should instead fix the TTM allocations.  And David pointed out that =
+that was
+> > tried and got NAK'd.
+>=20
+> Well as far as I can see Christoph rejects the complexity coming with the
+> approach of sometimes grabbing the reference and sometimes not.
 
-	ucb = prepare_uprobe_buffer(tu, regs, ucbp);
+Unless I've wildly misread multiple threads, that is not Christoph's object=
+ion.
+From v9 (https://lore.kernel.org/all/ZRpiXsm7X6BFAU%2Fy@infradead.org):
 
-> -	uprobe_buffer_put(ucb);
-> +	if (ucb)
-> +		uprobe_buffer_put(ucb);
+  On Sun, Oct 1, 2023 at 11:25=E2=80=AFPM Christoph Hellwig <hch@infradead.=
+org> wrote:
+  >
+  > On Fri, Sep 29, 2023 at 09:06:34AM -0700, Sean Christopherson wrote:
+  > > KVM needs to be aware of non-refcounted struct page memory no matter =
+what; see
+  > > CVE-2021-22543 and, commit f8be156be163 ("KVM: do not allow mapping v=
+alid but
+  > > non-reference-counted pages"). =C2=A0I don't think it makes any sense=
+ whatsoever to
+  > > remove that code and assume every driver in existence will do the rig=
+ht thing.
+  >
+  > Agreed.
+  >
+  > >
+  > > With the cleanups done, playing nice with non-refcounted paged instea=
+d of outright
+  > > rejecting them is a wash in terms of lines of code, complexity, and o=
+ngoing
+  > > maintenance cost.
+  >
+  > I tend to strongly disagree with that, though. =C2=A0We can't just let =
+these
+  > non-refcounted pages spread everywhere and instead need to fix their
+  > usage.
 
-Similarly, I think the "ucb != NULL" check should be shifted into
-uprobe_buffer_put().
+> And I have to agree that this is extremely odd.
 
-Oleg.
+Yes, it's odd and not ideal.  But with nested virtualization, KVM _must_ "m=
+ap"
+pfns directly into the guest via fields in the control structures that are
+consumed by hardware.  I.e. pfns are exposed to the guest in an "out-of-ban=
+d"
+structure that is NOT part of the stage-2 page tables.  And wiring those up=
+ to
+the MMU notifiers is extremely difficult for a variety of reasons[*].
 
+Because KVM doesn't control which pfns are mapped this way, KVM's compromis=
+e is
+to grab a reference to the struct page while the out-of-band mapping exists=
+, i.e.
+to pin the page to prevent use-after-free.  And KVM's historical ABI is to =
+support
+any refcounted page for these out-of-band mappings, regardless of whether t=
+he
+page was obtained by gup() or follow_pte().
+
+Thus, to support non-refouncted VM_PFNMAP pages without breaking existing u=
+serspace,
+KVM resorts to conditionally grabbing references and disllowing non-refcoun=
+ted
+pages from being inserted into the out-of-band mappings.
+
+But again, I don't think these details are relevant to Christoph's objectio=
+n.
+
+[*] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com
 
