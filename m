@@ -1,104 +1,205 @@
-Return-Path: <linux-kernel+bounces-100986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F20C687A07A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:01:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9D687A080
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:09:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF1EB283467
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:01:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FBAD1C21615
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:09:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC174AD21;
-	Wed, 13 Mar 2024 01:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3429476;
+	Wed, 13 Mar 2024 01:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="djrMq6cT"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l/BRS7Vb"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558CF79C5
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B429444;
+	Wed, 13 Mar 2024 01:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710291668; cv=none; b=K7VI2omeWojVMJ6QDP1CBcTa+AwBy9mMBg5qN+6gWHL7/4Ynb5Xv5O0U9V6n8snIcwbRBqgHAqk4YJaloM+GDf1rvObdi3C2sZjs0QN10C3jXZjwfll+D6tsL6xYSI9tSygtIhemJideagoU6SHByYehQoeV9Fxk6oCVeEDUa28=
+	t=1710292151; cv=none; b=EWqHrUkVzMA7PUb2Ny7txyCRihiJAE8n/GGfVFrSkIdGbBqGI0lnEwesY91UehmBtM3NafFtzALU/0+vdP7csxds276obvv+v/N9l3iOM0VjZmsZZY0Ulfy37gPNU0qKm5ncmpbQ06oApVa7qg0YyJ2aFRZyIm+594RDHppJL/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710291668; c=relaxed/simple;
-	bh=vod0Oteo/6Tbo55PLgkq1rrHpuWN6dhPTkJvDCvNrsY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NX22ys+pTj7Dj1Jw9iCnCIAS3d7GvEy68Yvg86A1laNC53xMWffGKAEXqZ0wi1PkrMKuBwr4ZlzN2XhbE6rmBsTUkRrO8H+YAjx37xbiAOTP2YuyJBzhf2nLprdQJUYNOvpGXn5dqxIZoQ2yioswWC1neF1K9lsOdzyGmXsrSbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=djrMq6cT; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso7195577a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1710291664; x=1710896464; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3T4oJ3T2wQraOYexFpJYePqHAPHXrr02cgINFeasfxE=;
-        b=djrMq6cT5gh89sVB78d38f7yZeGiv1u2vydaViH+yKsZlDYJx9x3EM923Nkmm4BWVE
-         OzmNIY83Y1zKmJquGqH1WZBMiDyDGWyjaveStKuQt/9qBkUey8T7jqr6NYzeiML3CgVj
-         xu8yHxpC3oFby6nFDygfBMdWKmq/NxBJdMkxU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710291664; x=1710896464;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3T4oJ3T2wQraOYexFpJYePqHAPHXrr02cgINFeasfxE=;
-        b=GFEsqaA4AfuRj5eyQmOrrAeRwBg4uxWZrKl++yFmiJPyphYMAYYM8APUBFA8PjnA3C
-         XN3GYo5HpTc0wX6Ms265Xh0tSjRrkdpBdnP1YZjfKiLn3/MxkNjee6VKVQ2a11owDLXv
-         3KBdN2XAjT6hK28a+7qmLpu9Z1jWHvAWsZnH4thTBggYKpxmA6Erm6B/u+ttvfskfQpp
-         44MzFJZCoA3L0ZJ+DzCXnZe3L3txZdC4B3xTyixqtge73SRHDumDIIL4uMEEIIHCnJMV
-         Shn5nLCz/FGYA9yPHI+lSQaMJB90kIeH5ACbW6z/34mic+uXDurw94uSrU5OSGNgrB9+
-         2sTA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2xTte860Ngru54sM3Pat59dz0G8zYumANU/Qv/FTPtZ2AUitcq55Tk+PdtmEQsiDnVeTnF7aRKDcGXoSZMLLBapOqXvVKGv24bZvn
-X-Gm-Message-State: AOJu0YwIDb0A6zV+UyZqr8WQtVcUqVXyGVfyonvgV4f6GW3STMDWREUd
-	zuWo89SRvyeMDimMDh7wnxIlK5n3Zv1E4EG/45ZqJ2d/+0STwRnFbuG90QCfMp2zwdj86hgYY5I
-	ezkyBNw==
-X-Google-Smtp-Source: AGHT+IF3nZOIVCcSqV/TN+pb7IiWo9vwouLB/Riqs+Ck9QiwVrjRWJuMiL/qN8ARuZ4AB5O/r976CA==
-X-Received: by 2002:a50:f61e:0:b0:566:4654:4fac with SMTP id c30-20020a50f61e000000b0056646544facmr7729892edn.5.1710291664675;
-        Tue, 12 Mar 2024 18:01:04 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id g2-20020a056402320200b005687717d1f5sm999747eda.10.2024.03.12.18.01.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 18:01:04 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a45fd0a0980so487297066b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:01:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXv+2cYR+LwnETlvjqJdUrGCFrhyNQ/KDzj0boml1BhkOYda3X7sjXEClG0lPmlfum8YORJSTiz00iO1xkaPjJVvtHVhstE1jvFf32r
-X-Received: by 2002:a17:907:c247:b0:a45:5328:8432 with SMTP id
- tj7-20020a170907c24700b00a4553288432mr9215023ejc.50.1710291663582; Tue, 12
- Mar 2024 18:01:03 -0700 (PDT)
+	s=arc-20240116; t=1710292151; c=relaxed/simple;
+	bh=XMSgvQxqmXm4qOhJzqmqlGh1fNQViYOclec57iBqaLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B3Jf3nREAEKCiC9gsugPUojXmDbZwc3ocb4rSGQCitJB99btDwLlzP3O2ZmYMFyOvHL6F2Ln90SxJ9UyYpFzdrqyztMk/UAJT1DhqapUGp1bzS+WvB2ZXvYMsGR8Ukj70vvqvqTJlhEaPKU8Jmehns1lZsbesqjM8j+bQ5bbnLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l/BRS7Vb; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710292150; x=1741828150;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XMSgvQxqmXm4qOhJzqmqlGh1fNQViYOclec57iBqaLc=;
+  b=l/BRS7VbB313umrYaRFRKr08EX5GHd+lc10xaKrNUSNNo9R2mvfFBkrt
+   8pOpZiOuP1r10xOux8WoIGssqacz6arDwtpR1W5tS3TMEZWv92HwxG9gK
+   6xHtasDRNOmgUjpNxUA/FZl4A+0cUsN+KwVCLQDAmos1tbKN/ZTv0pFfm
+   pduJYBDTyVbuF/VlXzP/8giaGpzNYsD0bFwoj5vV4wV8X0yfd+mDdXLt3
+   3ER++nPe7UnLtXGXt2twUzLEA2qZkYHk4hc0kpY91k84QUEG5zHCga7dM
+   JLmufGCuH0ob32/i8jY7JSWHzkon7EySBnxBkbC12deTC6Z47aTE0on1i
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="22488349"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="22488349"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 18:09:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="16221111"
+Received: from linux.bj.intel.com ([10.238.157.71])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 18:09:06 -0700
+Date: Wed, 13 Mar 2024 09:06:14 +0800
+From: Tao Su <tao1.su@linux.intel.com>
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] kvm/cpuid: set proper GuestPhysBits in
+ CPUID.0x80000008
+Message-ID: <ZfD8BrVOM9gaTudC@linux.bj.intel.com>
+References: <20240311104118.284054-1-kraxel@redhat.com>
+ <20240311104118.284054-3-kraxel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312042504.1835743-1-kuba@kernel.org>
-In-Reply-To: <20240312042504.1835743-1-kuba@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 12 Mar 2024 18:00:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi0La3-L+WJ=vw7x7L=WYv0B_2YfeSuKD3YyCYJ6oAwKA@mail.gmail.com>
-Message-ID: <CAHk-=wi0La3-L+WJ=vw7x7L=WYv0B_2YfeSuKD3YyCYJ6oAwKA@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking for v6.9
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	pabeni@redhat.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240311104118.284054-3-kraxel@redhat.com>
 
-On Mon, 11 Mar 2024 at 21:25, Jakub Kicinski <kuba@kernel.org> wrote:
->
->  - Large effort by Eric to lower rtnl_lock pressure and remove locks:
+On Mon, Mar 11, 2024 at 11:41:17AM +0100, Gerd Hoffmann wrote:
+> The AMD APM (3.35) defines GuestPhysBits (EAX[23:16]) as:
+> 
+>   Maximum guest physical address size in bits.  This number applies
+>   only to guests using nested paging.  When this field is zero, refer
+>   to the PhysAddrSize field for the maximum guest physical address size.
+> 
+> Tom Lendacky confirmed that the purpose of GuestPhysBits is software use
+> and KVM can use it as described below.  Hardware always returns zero
+> here.
+> 
+> Use the GuestPhysBits field to communicate the max addressable GPA to
+> the guest.  Typically this is identical to the max effective GPA, except
+> in case the CPU supports MAXPHYADDR > 48 but does not support 5-level
+> TDP.
+> 
+> GuestPhysBits is set only in case TDP is enabled, otherwise it is left
+> at zero.
+> 
+> GuestPhysBits will be used by the guest firmware to make sure resources
+> like PCI bars are mapped into the addressable GPA.
+> 
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> ---
+>  arch/x86/kvm/mmu.h     |  2 ++
+>  arch/x86/kvm/cpuid.c   | 31 +++++++++++++++++++++++++++++--
+>  arch/x86/kvm/mmu/mmu.c |  5 +++++
+>  3 files changed, 36 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 60f21bb4c27b..b410a227c601 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
+>  	return boot_cpu_data.x86_phys_bits;
+>  }
+>  
+> +u8 kvm_mmu_get_max_tdp_level(void);
+> +
+>  void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
+>  void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
+>  void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index c638b5fb2144..cd627dead9ce 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -1221,8 +1221,22 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>  		entry->eax = entry->ebx = entry->ecx = 0;
+>  		break;
+>  	case 0x80000008: {
+> +		/*
+> +		 * GuestPhysAddrSize (EAX[23:16]) is intended for software
+> +		 * use.
+> +		 *
+> +		 * KVM's ABI is to report the effective MAXPHYADDR for the
+> +		 * guest in PhysAddrSize (phys_as), and the maximum
+> +		 * *addressable* GPA in GuestPhysAddrSize (g_phys_as).
+> +		 *
+> +		 * GuestPhysAddrSize is valid if and only if TDP is enabled,
+> +		 * in which case the max GPA that can be addressed by KVM may
+> +		 * be less than the max GPA that can be legally generated by
+> +		 * the guest, e.g. if MAXPHYADDR>48 but the CPU doesn't
+> +		 * support 5-level TDP.
+> +		 */
+>  		unsigned int virt_as = max((entry->eax >> 8) & 0xff, 48U);
+> -		unsigned int phys_as;
+> +		unsigned int phys_as, g_phys_as;
+>  
+>  		if (!tdp_enabled) {
+>  			/*
+> @@ -1232,11 +1246,24 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>  			 * for memory encryption affect shadow paging, too.
+>  			 */
+>  			phys_as = boot_cpu_data.x86_phys_bits;
+> +			g_phys_as = 0;
+>  		} else {
+> +			/*
+> +			 * If TDP is enabled, the effective guest MAXPHYADDR
+> +			 * is the same as the raw bare metal MAXPHYADDR, as
+> +			 * reductions to HPAs don't affect GPAs.  The max
+> +			 * addressable GPA is the same as the max effective
+> +			 * GPA, except that it's capped at 48 bits if 5-level
+> +			 * TDP isn't supported (hardware processes bits 51:48
+> +			 * only when walking the fifth level page table).
+> +			 */
+>  			phys_as = entry->eax & 0xff;
+> +			g_phys_as = phys_as;
+> +			if (kvm_mmu_get_max_tdp_level() < 5)
+> +				g_phys_as = min(g_phys_as, 48);
+>  		}
+>  
+> -		entry->eax = phys_as | (virt_as << 8);
+> +		entry->eax = phys_as | (virt_as << 8) | (g_phys_as << 16);
 
-W00t!
+When g_phys_as==phys_as, I would suggest advertising g_phys_as==0,
+otherwise application can easily know whether it is in a VM, I’m
+concerned this could be abused by application.
 
-Pulled. The rtnl lock is probably my least favorite kernel lock. It's
-been one of the few global locks we have left (at least that matters).
-
-There are others (I'm not claiming tasklist_lock is great), but
-rtnl_lock has certainly been "up there" with the worst of them.
-
-            Linus
+>  		entry->ecx &= ~(GENMASK(31, 16) | GENMASK(11, 8));
+>  		entry->edx = 0;
+>  		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 2d6cdeab1f8a..ffd32400fd8c 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5267,6 +5267,11 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
+>  	return max_tdp_level;
+>  }
+>  
+> +u8 kvm_mmu_get_max_tdp_level(void)
+> +{
+> +	return tdp_root_level ? tdp_root_level : max_tdp_level;
+> +}
+> +
+>  static union kvm_mmu_page_role
+>  kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
+>  				union kvm_cpu_role cpu_role)
+> -- 
+> 2.44.0
+> 
+> 
 
