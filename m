@@ -1,59 +1,56 @@
-Return-Path: <linux-kernel+bounces-101810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8CC87ABCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC2F87ABD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDBBB2872A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:49:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39D45B24F2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2369D5D729;
-	Wed, 13 Mar 2024 16:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD2F5DF27;
+	Wed, 13 Mar 2024 16:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kdk09B9A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uzRAJaP6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B915CDF3;
-	Wed, 13 Mar 2024 16:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9DA5D757;
+	Wed, 13 Mar 2024 16:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347841; cv=none; b=i6cc6Gar3/sk2ow3z56kmnCFtPbWitfoMS/q66UFyi2IJWC0mstNufRNV062RIboHB4TQgAxcSM7NTm3p6bqA6L4yIrJ+TEPmopj1x/8dydSDARxzN0R4xo45VzKUBaeEW+YngR0lw3w5oZzEBYC18oYgFd8oRi1yZ0wUYj2eA0=
+	t=1710347842; cv=none; b=RLJuqFE8LbXTiBOoZfMMqyF9/cvLV3VMri1yoy6UcsSXmBdhYzEk4mveXn9ND3ezpIUWzIvl9EgcQnynkpCT2vswC2xx/CFslsCenl1l8Vmhi2R9RFebq0CgKywLCAelxZsswWJ6RaE8PuJweb6nnmhzH2KPei39hRuz1dS1/m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347841; c=relaxed/simple;
-	bh=6IZSRF9oYx4o0Bu7gHaOZWPeDA5VBcMeB+M5ckdVeME=;
+	s=arc-20240116; t=1710347842; c=relaxed/simple;
+	bh=mER1yfa1dH9o/9mw+NAa4OwuQlcgdGWtxZnPh2QN7k0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kPFHYyVohiBnlLsQ9YJheJc43rgdl4LIxjrOmw/pWLVVpe826GwOHsukisG3+10FKFw8yVaDi6NldVQhK/QFlH8wtyQECAf6Z+7JTRMhnT9zSDzvNI0iffYHzKih/42I8bxHH5UrvxXoqqyTKPlaWQd2jbPQGpGbMqIcoyEvPwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kdk09B9A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA44C433C7;
-	Wed, 13 Mar 2024 16:37:19 +0000 (UTC)
+	 MIME-Version; b=bguRyvdeUm9wHM2oWj5jz8ke6UpRG3IWh5W6EjoBM0a115/6O4ZX1MlIJDLiUuy5jKM9DMLz6b0BlCiWtcDPcHgHh/3HXWt8Isxqh/4SeCDflgsIgcYzYEMaPnTy+sEsw95S4zSF5wF26SCwOVkjqrppsLKVaSFMek3vN95tkVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uzRAJaP6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 400BEC433F1;
+	Wed, 13 Mar 2024 16:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347840;
-	bh=6IZSRF9oYx4o0Bu7gHaOZWPeDA5VBcMeB+M5ckdVeME=;
+	s=k20201202; t=1710347842;
+	bh=mER1yfa1dH9o/9mw+NAa4OwuQlcgdGWtxZnPh2QN7k0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Kdk09B9ALwy2TE8VqpYBdCSgUZeHB5wEiey18LHak2dIDIoBveXttG/WQQduu7KFA
-	 4JFOqtNGR9i948qm1YlbZbxYayr0fq2myygtS19NQQvL+kAvzquZdx8Dfl3TQd7ItO
-	 TKJ+gkJXUQvUT+7YPXMsvTFemP6X8F88eb1XKfmmvTGbyHlea6/btqa8RA8bO4oYuX
-	 F0kf/p1lvbLW+GUt1gE0SO2+4dQDcQxa9qXu7+W7mBceRpdajDzz6czrQgJdnT1IcT
-	 nNuJbFxcVCAZmRW36Elqdce3pHTlMSMkKxwMczT7MMvvoqsPi54St5XQ1n7x+IjFgU
-	 /1XSLFhvrBqOw==
+	b=uzRAJaP681MEuBSvoIfGJzD1SjNOWL2hrpit8wzSkpbMYw8VtMd47LkngvMAk59Gt
+	 L6+ZQ55+IrqSfOGEvEPYKqjvxH88aeNGiCnn1gV9UzlOs7dQTcTTSHGnTx5W/3to2h
+	 kN4f5i15V7WYXoA0lxQyk3bHVlNVklLAOAZBWQbvYKMi3UM/3wiffr27zQgWjPha64
+	 DzrJkES0UPGqfqD0ZwKzckN4TP6+gnT8+l0qg3irMTbIuHqWhcI7w4zOclPB/vGCt/
+	 3m9ZIDWWPoPlGCAvOcgui0fe8weiznLMwCYTXa9bAfMW1ndg1rtTsLZM2wvtQW6QdN
+	 KcCfYkL0eJThw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Byungchul Park <byungchul@sk.com>,
-	Hyeongtak Ji <hyeongtak.ji@sk.com>,
-	Oscar Salvador <osalvador@suse.de>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
+Cc: Leon Romanovsky <leonro@nvidia.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Mike Yu <yumike@google.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 08/60] mm/vmscan: fix a bug calling wakeup_kswapd() with a wrong zone index
-Date: Wed, 13 Mar 2024 12:36:15 -0400
-Message-ID: <20240313163707.615000-9-sashal@kernel.org>
+Subject: [PATCH 6.6 09/60] xfrm: Pass UDP encapsulation in TX packet offload
+Date: Wed, 13 Mar 2024 12:36:16 -0400
+Message-ID: <20240313163707.615000-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -73,96 +70,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Byungchul Park <byungchul@sk.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 2774f256e7c0219e2b0a0894af1c76bdabc4f974 ]
+[ Upstream commit 983a73da1f996faee9997149eb05b12fa7bd8cbf ]
 
-With numa balancing on, when a numa system is running where a numa node
-doesn't have its local memory so it has no managed zones, the following
-oops has been observed.  It's because wakeup_kswapd() is called with a
-wrong zone index, -1.  Fixed it by checking the index before calling
-wakeup_kswapd().
+In addition to citied commit in Fixes line, allow UDP encapsulation in
+TX path too.
 
-> BUG: unable to handle page fault for address: 00000000000033f3
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 0 P4D 0
-> Oops: 0000 [#1] PREEMPT SMP NOPTI
-> CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
->    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
-> Code: (omitted)
-> RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
-> RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
-> RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
-> R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
-> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
-> FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  <TASK>
-> ? __die
-> ? page_fault_oops
-> ? __pte_offset_map_lock
-> ? exc_page_fault
-> ? asm_exc_page_fault
-> ? wakeup_kswapd
-> migrate_misplaced_page
-> __handle_mm_fault
-> handle_mm_fault
-> do_user_addr_fault
-> exc_page_fault
-> asm_exc_page_fault
-> RIP: 0033:0x55b897ba0808
-> Code: (omitted)
-> RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
-> RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
-> RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
-> RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
-> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-> R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
->  </TASK>
-
-Link: https://lkml.kernel.org/r/20240216111502.79759-1-byungchul@sk.com
-Signed-off-by: Byungchul Park <byungchul@sk.com>
-Reported-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-Fixes: c574bbe917036 ("NUMA balancing: optimize page placement for memory tiering system")
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Fixes: 89edf40220be ("xfrm: Support UDP encapsulation in packet offload mode")
+CC: Steffen Klassert <steffen.klassert@secunet.com>
+Reported-by: Mike Yu <yumike@google.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/migrate.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/xfrm/xfrm_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index e5f2f7243a659..d69b4556cc15f 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2515,6 +2515,14 @@ static int numamigrate_isolate_folio(pg_data_t *pgdat, struct folio *folio)
- 			if (managed_zone(pgdat->node_zones + z))
- 				break;
- 		}
-+
-+		/*
-+		 * If there are no managed zones, it should not proceed
-+		 * further.
-+		 */
-+		if (z < 0)
-+			return 0;
-+
- 		wakeup_kswapd(pgdat->node_zones + z, 0,
- 			      folio_order(folio), ZONE_MOVABLE);
- 		return 0;
+diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
+index 3784534c91855..653e51ae39648 100644
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -407,7 +407,7 @@ bool xfrm_dev_offload_ok(struct sk_buff *skb, struct xfrm_state *x)
+ 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
+ 	struct net_device *dev = x->xso.dev;
+ 
+-	if (!x->type_offload || x->encap)
++	if (!x->type_offload)
+ 		return false;
+ 
+ 	if (x->xso.type == XFRM_DEV_OFFLOAD_PACKET ||
 -- 
 2.43.0
 
