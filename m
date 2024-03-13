@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-101987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8D287AD5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:32:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C6A887AD5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:32:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A56E11F29152
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:32:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 081C628311F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5F7F1487F8;
-	Wed, 13 Mar 2024 16:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB99148FF1;
+	Wed, 13 Mar 2024 16:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N3yKTJJ+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZV80LE8k"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17D21487E1;
-	Wed, 13 Mar 2024 16:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD64663CAE;
+	Wed, 13 Mar 2024 16:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348199; cv=none; b=sCJbz6ZKCAc+TuloSJXAiZejEuyTwMqdUP1DhMV44Z1X788OdJJAnO/t5MjAP7cQfYvSu3DZ0e1gZjOmxUNtwG7Pp0J++AnsJwWW0Si4PbGtYk9l7e2DXTVWmB/B2tCZjxHLen8bLbfnunf1UA8kCIncnvTXXITqCkO54jnVY04=
+	t=1710348199; cv=none; b=SY2QC78cpk+xHvILoMCfcxGG8G+2JQUpm5clwMAu419n5/z6kRayQSHQio82qGn57sAxjH0fsaCDdMxBwwHbCdp4bgeohcAEF7cDRytWxFVOMfI74tmr9+EhznSYWnBbwYAZB99Kz4rLbEixujGw7WhC2pCFe46qPf0phOFNP4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710348199; c=relaxed/simple;
-	bh=H/BEk14QfxxwzVTPYhHlI6B6JlzJZBjZ/A9OkanOfRk=;
+	bh=uL4wRVagRog8IuUH9Dd2Z/ogV6B19zOQMfGMFLV9ap8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VuCM7MpCo2r9RA9hs7Xhxf3aYByWAiR6xFOsX4iDSVY7yME6bNwr7Cyvh9l23PkzfQ4HYkqNYyrAmt0zTwireveQotraRhkusATyeIC3UMV8Kfq736HMNdG+IdQ8CXApJOCDyJZdgzD5zkYbbDOEzPqjnnDtr8fwMNjgNnxt/Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N3yKTJJ+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CD9CC43399;
-	Wed, 13 Mar 2024 16:43:17 +0000 (UTC)
+	 MIME-Version; b=BbCQst7jX6/EGoqMf1STi9jY7YUkr7L9vVukXQYSzm3skp2D6WZs+UzX4Y3LJy0l0oAOc3AzNTyrz6MZxDIE2/uvJS+LWfKFTY2E77arYo3msiIC0Ie993UzacV+OC9AKIoOfvFI60wQzYf28NZaBTlMl37LB/N/fRrT5yBxkiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZV80LE8k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8803C43394;
+	Wed, 13 Mar 2024 16:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348198;
-	bh=H/BEk14QfxxwzVTPYhHlI6B6JlzJZBjZ/A9OkanOfRk=;
+	s=k20201202; t=1710348199;
+	bh=uL4wRVagRog8IuUH9Dd2Z/ogV6B19zOQMfGMFLV9ap8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N3yKTJJ+ERKYk3btlyzFfdPIuCR84FbEuFP/iB3NhZp53HwyqnhNflhUmsKj/6FK1
-	 QrtsaPupj8Rd9l9Jnw4BEsKNzcD5vO8wq8QOqYMJ9N+M/zKuRXXyJGnv0x0Oh6s45Z
-	 64sRvyOeqEdfA89Q/owUy6Bfdv4+vbwBL+BCC8UqOEidxHtOzWqk/0iNC5jAUk6PDc
-	 qU8iMswFUGw/MpbIRr3ua77Gy7h+D3xPrGZ4OVgSKM0jdOD6gITpEtMxwhvcjmepjL
-	 kTVWA3KFtIVu26cX5FCAkDnCUfyA88WA7LANKqdi0wUiUBIXbZK4m6hYOrRk98bwYN
-	 Z5LDnUJkCCWPg==
+	b=ZV80LE8k9WFTWly+QxQNB0AL8FvO1286bBTDDoTB3SHMG3UvpPBN9M2rBSGrs+57t
+	 W23G6MQPpahLI6hTKKqdWiyk8Eam8lesUoMaxk8NtAsV8b1zwy8t4IiodC8lEUVuVH
+	 oQtZcAWJq7DHSxBCvoDxnjC9EG1kYD0NpStTW3xQKcI4uUE3pD3z/6ybhqbEaZQRer
+	 l0s+LGDJ7Bzs9UnbXuGgX13k0m0lHUBkt7jMTV1aGz8wIt7VoBNHTaKIRYDPhnrUoe
+	 D+DrfDPv3AMU9dyO7Q0P6ur2cMWZeCjwkfNVz3QW3HtCY5zhv7hYrcEl4p9zqxv2Xb
+	 MRrqtsOZMyHvQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Michal Pecio <michal.pecio@gmail.com>,
-	Mathias Nyman <mathias.nyman@linux.intel.com>,
+Cc: Cosmin Tanislav <cosmin.tanislav@analog.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 47/76] xhci: handle isoc Babble and Buffer Overrun events properly
-Date: Wed, 13 Mar 2024 12:41:54 -0400
-Message-ID: <20240313164223.615640-48-sashal@kernel.org>
+Subject: [PATCH 5.15 48/76] serial: max310x: use regmap methods for SPI batch operations
+Date: Wed, 13 Mar 2024 12:41:55 -0400
+Message-ID: <20240313164223.615640-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -69,55 +69,91 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Michal Pecio <michal.pecio@gmail.com>
+From: Cosmin Tanislav <cosmin.tanislav@analog.com>
 
-[ Upstream commit 7c4650ded49e5b88929ecbbb631efb8b0838e811 ]
+[ Upstream commit 285e76fc049c4d32c772eea9460a7ef28a193802 ]
 
-xHCI 4.9 explicitly forbids assuming that the xHC has released its
-ownership of a multi-TRB TD when it reports an error on one of the
-early TRBs. Yet the driver makes such assumption and releases the TD,
-allowing the remaining TRBs to be freed or overwritten by new TDs.
+The SPI batch read/write operations can be implemented as simple
+regmap raw read and write, which will also try to do a gather
+write just as it is done here.
 
-The xHC should also report completion of the final TRB due to its IOC
-flag being set by us, regardless of prior errors. This event cannot
-be recognized if the TD has already been freed earlier, resulting in
-"Transfer event TRB DMA ptr not part of current TD" error message.
+Use the regmap raw read and write methods.
 
-Fix this by reusing the logic for processing isoc Transaction Errors.
-This also handles hosts which fail to report the final completion.
-
-Fix transfer length reporting on Babble errors. They may be caused by
-device malfunction, no guarantee that the buffer has been filled.
-
-Signed-off-by: Michal Pecio <michal.pecio@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20240125152737.2983959-5-mathias.nyman@linux.intel.com
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+Link: https://lore.kernel.org/r/20220605144659.4169853-2-demonsingur@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Stable-dep-of: b35f8dbbce81 ("serial: max310x: prevent infinite while() loop in port startup")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-ring.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/tty/serial/max310x.c | 36 ++++++++----------------------------
+ 1 file changed, 8 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 7e88b65b694ad..31d355613933f 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2446,9 +2446,13 @@ static int process_isoc_td(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
- 	case COMP_BANDWIDTH_OVERRUN_ERROR:
- 		frame->status = -ECOMM;
- 		break;
--	case COMP_ISOCH_BUFFER_OVERRUN:
- 	case COMP_BABBLE_DETECTED_ERROR:
-+		sum_trbs_for_length = true;
-+		fallthrough;
-+	case COMP_ISOCH_BUFFER_OVERRUN:
- 		frame->status = -EOVERFLOW;
-+		if (ep_trb != td->last_trb)
-+			td->error_mid_td = true;
- 		break;
- 	case COMP_INCOMPATIBLE_DEVICE_ERROR:
- 	case COMP_STALL_ERROR:
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 5dd73d1da1ecc..c9032e300a586 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -263,8 +263,6 @@ struct max310x_one {
+ 	struct work_struct	md_work;
+ 	struct work_struct	rs_work;
+ 
+-	u8 wr_header;
+-	u8 rd_header;
+ 	u8 rx_buf[MAX310X_FIFO_SIZE];
+ };
+ #define to_max310x_port(_port) \
+@@ -635,32 +633,18 @@ static s32 max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
+ 
+ static void max310x_batch_write(struct uart_port *port, u8 *txbuf, unsigned int len)
+ {
+-	struct max310x_one *one = to_max310x_port(port);
+-	struct spi_transfer xfer[] = {
+-		{
+-			.tx_buf = &one->wr_header,
+-			.len = sizeof(one->wr_header),
+-		}, {
+-			.tx_buf = txbuf,
+-			.len = len,
+-		}
+-	};
+-	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
++	struct max310x_port *s = dev_get_drvdata(port->dev);
++	u8 reg = port->iobase + MAX310X_THR_REG;
++
++	regmap_raw_write(s->regmap, reg, txbuf, len);
+ }
+ 
+ static void max310x_batch_read(struct uart_port *port, u8 *rxbuf, unsigned int len)
+ {
+-	struct max310x_one *one = to_max310x_port(port);
+-	struct spi_transfer xfer[] = {
+-		{
+-			.tx_buf = &one->rd_header,
+-			.len = sizeof(one->rd_header),
+-		}, {
+-			.rx_buf = rxbuf,
+-			.len = len,
+-		}
+-	};
+-	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
++	struct max310x_port *s = dev_get_drvdata(port->dev);
++	u8 reg = port->iobase + MAX310X_RHR_REG;
++
++	regmap_raw_read(s->regmap, reg, rxbuf, len);
+ }
+ 
+ static void max310x_handle_rx(struct uart_port *port, unsigned int rxlen)
+@@ -1386,10 +1370,6 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 		INIT_WORK(&s->p[i].md_work, max310x_md_proc);
+ 		/* Initialize queue for changing RS485 mode */
+ 		INIT_WORK(&s->p[i].rs_work, max310x_rs_proc);
+-		/* Initialize SPI-transfer buffers */
+-		s->p[i].wr_header = (s->p[i].port.iobase + MAX310X_THR_REG) |
+-				    MAX310X_WRITE_BIT;
+-		s->p[i].rd_header = (s->p[i].port.iobase + MAX310X_RHR_REG);
+ 
+ 		/* Register port */
+ 		ret = uart_add_one_port(&max310x_uart, &s->p[i].port);
 -- 
 2.43.0
 
