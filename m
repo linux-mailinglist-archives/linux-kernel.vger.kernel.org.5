@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-102078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267E687AE37
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:52:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F6C87AE39
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 866B91F26923
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 270AD1C2319C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AFC15E5A0;
-	Wed, 13 Mar 2024 16:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2052B15E5B1;
+	Wed, 13 Mar 2024 16:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OS0dhJy2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILcwp6b3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3676C57863;
-	Wed, 13 Mar 2024 16:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7A615E5A1;
+	Wed, 13 Mar 2024 16:47:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348460; cv=none; b=nf2TD1Z3lFYDHTDNJMcjEM1xKEYJMS0k+jKeIeqJIQvIOIg9hnnzXqTTwrzgLBwW4sLD3QGy76pGYh1n05OyX7drmlpwuXnJhT+6+Wl2UoVk18TS0uGM411g/xwFL2xJEPqrfe7oMByJOIXCP8NzV95UE+JsfP8eAvavuI+J6I4=
+	t=1710348461; cv=none; b=Xjo7VpSzOGpRuzpI/zsowAgtHdphoYsTIfSMbfPytnmX+gCMzQdqSm4Hsq6cQGJ2R44Gci8kmxOmeJlSmo7UtoC/z6XtK41O+yF+g8P94qY7Ak5JqTbRiAE2wlofFEkojWhOx+ZFcxzlitorP29rcMrUjawg+Tt3O+c/YaAPuLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348460; c=relaxed/simple;
-	bh=67joID66XQABK1cTcPNd6BUkVrz/MyGfrjRExWE0uTY=;
+	s=arc-20240116; t=1710348461; c=relaxed/simple;
+	bh=vgRMZG9xgkjHsd1YI558si+2khyZ0254KjZZLGoJkFE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mtDcdkstvCWA3rTMV3+6xH4amznUjIEhFlVMcFdRPtm0kKnzMFzKyD7Zsk0olKo0Zr0O0ePwOf8rctsCCAKwwVK12bqpb3kuhfrW//SOLT39f3afQycaiXp2cCvAEoeNOzBIC3b7sBvLzfHOVI6aoMLO/Hj6MuiAC35L1nVbdzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OS0dhJy2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CB8C43390;
-	Wed, 13 Mar 2024 16:47:38 +0000 (UTC)
+	 MIME-Version; b=BCSZ5oWL4fslqCUok+yU8pYAlcDgw/BHWUhNM8yUUF4zii72mxpwEcdGYb2nMgjYZvEk8HIbDHUGc8K0f4TwC+t6DBkT55ldJ0hSN7U4oJfs5D701S7XQaHg5vSPm04oyeYetIGF25i4EpeVEPHMYN6tW/CRVr8wPrWW9F0gbyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILcwp6b3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F44EC433C7;
+	Wed, 13 Mar 2024 16:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348460;
-	bh=67joID66XQABK1cTcPNd6BUkVrz/MyGfrjRExWE0uTY=;
+	s=k20201202; t=1710348461;
+	bh=vgRMZG9xgkjHsd1YI558si+2khyZ0254KjZZLGoJkFE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OS0dhJy2HGGEJCrlOpVTXQYwqP5ciHcaeOKC1llwkfW4FLF429+33p42bbKCavPzf
-	 eEe9epmfZQ9ygXyl0YMbPLX/QaejN3uVOON4DvdBC8YWd77xjJ9H1MHb/Ow8/orsRZ
-	 +lyOF2tVJ4mKNRKo9K3uja2c3958iBugtuqiaftZneTxgw7GoirFks/Z5vvohKVdw1
-	 4mjghSp4gxog2vK2X/XddtoyiF8J56p7C8xjg6+B5G3VqOVdwc5QdkCrMirWWBmC5s
-	 lDg9e8YmpomRaHAWl/hAEu3v3cI5QbY9LndX+taVKTLoQ2funhATyncNRbVtbkvtXA
-	 gEC1Rg8t8taLQ==
+	b=ILcwp6b3HQdhsAsoUN1vYeHcON7Q7g+ZMnqwg2TKki3sDBZpIo/mW4h3jaYDQfeMg
+	 eSBfRaZ+5NXsJZFKYhrkeoajuyziLlIdx6bJprzFXI0dE6ZQ8Y37DzALMmQXsp7SEf
+	 yLH635V2BLFOuyMBVBFEiWFtyh3urGSi4XWKcnUwkGnuQH3gB5MQL355cv8sLJ0CXt
+	 J0v4ySt9V9b0eIvi9ZGdVFY7ZcAVXsfj55eTeJ4Znfb512Th9HsgA4MXm6j86uUG6m
+	 /wvqANhT1yaICVeLN/TkAbYlgpUKjomLV2U0MJxEXJx88JbT6UctykA0ZmaW+1Wzw5
+	 uvhh9CArBJl/Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andres Beltran <lkmlabelt@gmail.com>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Michael Kelley <mikelley@microsoft.com>,
+Cc: Long Li <longli@microsoft.com>,
+	kernel test robot <lkp@intel.com>,
 	Jakub Kicinski <kuba@kernel.org>,
-	Wei Liu <wei.liu@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	netdev@vger.kernel.org,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 52/73] hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening
-Date: Wed, 13 Mar 2024 12:46:19 -0400
-Message-ID: <20240313164640.616049-53-sashal@kernel.org>
+Subject: [PATCH 5.10 53/73] hv_netvsc: Wait for completion on request SWITCH_DATA_PATH
+Date: Wed, 13 Mar 2024 12:46:20 -0400
+Message-ID: <20240313164640.616049-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -73,163 +69,106 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andres Beltran <lkmlabelt@gmail.com>
+From: Long Li <longli@microsoft.com>
 
-[ Upstream commit 4d18fcc95f50950a99bd940d4e61a983f91d267a ]
+[ Upstream commit 8b31f8c982b738e4130539e47f03967c599d8e22 ]
 
-Currently, pointers to guest memory are passed to Hyper-V as
-transaction IDs in netvsc. In the face of errors or malicious
-behavior in Hyper-V, netvsc should not expose or trust the transaction
-IDs returned by Hyper-V to be valid guest memory addresses. Instead,
-use small integers generated by vmbus_requestor as requests
-(transaction) IDs.
+The completion indicates if NVSP_MSG4_TYPE_SWITCH_DATA_PATH has been
+processed by the VSP. The traffic is steered to VF or synthetic after we
+receive this completion.
 
-Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Link: https://lore.kernel.org/r/20201109100402.8946-4-parri.andrea@gmail.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Long Li <longli@microsoft.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Stable-dep-of: 9cae43da9867 ("hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/hyperv_net.h   | 13 +++++++++++++
- drivers/net/hyperv/netvsc.c       | 22 ++++++++++++++++------
- drivers/net/hyperv/rndis_filter.c |  1 +
- include/linux/hyperv.h            |  1 +
- 4 files changed, 31 insertions(+), 6 deletions(-)
+ drivers/net/hyperv/netvsc.c     | 37 ++++++++++++++++++++++++++++++---
+ drivers/net/hyperv/netvsc_drv.c |  1 -
+ 2 files changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
-index 367878493e704..15652d7951f9e 100644
---- a/drivers/net/hyperv/hyperv_net.h
-+++ b/drivers/net/hyperv/hyperv_net.h
-@@ -847,6 +847,19 @@ struct nvsp_message {
- 
- #define NETVSC_XDP_HDRM 256
- 
-+#define NETVSC_MIN_OUT_MSG_SIZE (sizeof(struct vmpacket_descriptor) + \
-+				 sizeof(struct nvsp_message))
-+#define NETVSC_MIN_IN_MSG_SIZE sizeof(struct vmpacket_descriptor)
-+
-+/* Estimated requestor size:
-+ * out_ring_size/min_out_msg_size + in_ring_size/min_in_msg_size
-+ */
-+static inline u32 netvsc_rqstor_size(unsigned long ringbytes)
-+{
-+	return ringbytes / NETVSC_MIN_OUT_MSG_SIZE +
-+		ringbytes / NETVSC_MIN_IN_MSG_SIZE;
-+}
-+
- #define NETVSC_XFER_HEADER_SIZE(rng_cnt) \
- 		(offsetof(struct vmtransfer_page_packet_header, ranges) + \
- 		(rng_cnt) * sizeof(struct vmtransfer_page_range))
 diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 3eae31c0f97a6..c9b73a0448813 100644
+index c9b73a0448813..03333a4136bf4 100644
 --- a/drivers/net/hyperv/netvsc.c
 +++ b/drivers/net/hyperv/netvsc.c
-@@ -50,7 +50,7 @@ void netvsc_switch_datapath(struct net_device *ndev, bool vf)
+@@ -37,6 +37,10 @@ void netvsc_switch_datapath(struct net_device *ndev, bool vf)
+ 	struct netvsc_device *nv_dev = rtnl_dereference(net_device_ctx->nvdev);
+ 	struct nvsp_message *init_pkt = &nv_dev->channel_init_pkt;
+ 
++	/* Block sending traffic to VF if it's about to be gone */
++	if (!vf)
++		net_device_ctx->data_path_is_vf = vf;
++
+ 	memset(init_pkt, 0, sizeof(struct nvsp_message));
+ 	init_pkt->hdr.msg_type = NVSP_MSG4_TYPE_SWITCH_DATA_PATH;
+ 	if (vf)
+@@ -50,8 +54,11 @@ void netvsc_switch_datapath(struct net_device *ndev, bool vf)
  
  	vmbus_sendpacket(dev->channel, init_pkt,
  			       sizeof(struct nvsp_message),
--			       (unsigned long)init_pkt,
-+			       VMBUS_RQST_ID_NO_RESPONSE,
- 			       VM_PKT_DATA_INBAND, 0);
+-			       VMBUS_RQST_ID_NO_RESPONSE,
+-			       VM_PKT_DATA_INBAND, 0);
++			       (unsigned long)init_pkt,
++			       VM_PKT_DATA_INBAND,
++			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
++	wait_for_completion(&nv_dev->channel_init_wait);
++	net_device_ctx->data_path_is_vf = vf;
  }
  
-@@ -163,7 +163,7 @@ static void netvsc_revoke_recv_buf(struct hv_device *device,
- 		ret = vmbus_sendpacket(device->channel,
- 				       revoke_packet,
- 				       sizeof(struct nvsp_message),
--				       (unsigned long)revoke_packet,
-+				       VMBUS_RQST_ID_NO_RESPONSE,
- 				       VM_PKT_DATA_INBAND, 0);
- 		/* If the failure is because the channel is rescinded;
- 		 * ignore the failure since we cannot send on a rescinded
-@@ -213,7 +213,7 @@ static void netvsc_revoke_send_buf(struct hv_device *device,
- 		ret = vmbus_sendpacket(device->channel,
- 				       revoke_packet,
- 				       sizeof(struct nvsp_message),
--				       (unsigned long)revoke_packet,
-+				       VMBUS_RQST_ID_NO_RESPONSE,
- 				       VM_PKT_DATA_INBAND, 0);
- 
- 		/* If the failure is because the channel is rescinded;
-@@ -557,7 +557,7 @@ static int negotiate_nvsp_ver(struct hv_device *device,
- 
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 				sizeof(struct nvsp_message),
--				(unsigned long)init_packet,
-+				VMBUS_RQST_ID_NO_RESPONSE,
- 				VM_PKT_DATA_INBAND, 0);
- 
- 	return ret;
-@@ -614,7 +614,7 @@ static int netvsc_connect_vsp(struct hv_device *device,
- 	/* Send the init request */
- 	ret = vmbus_sendpacket(device->channel, init_packet,
- 				sizeof(struct nvsp_message),
--				(unsigned long)init_packet,
-+				VMBUS_RQST_ID_NO_RESPONSE,
- 				VM_PKT_DATA_INBAND, 0);
- 	if (ret != 0)
- 		goto cleanup;
-@@ -698,10 +698,19 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
- 				    const struct vmpacket_descriptor *desc,
- 				    int budget)
+ /* Worker to setup sub channels on initial setup
+@@ -757,8 +764,31 @@ static void netvsc_send_completion(struct net_device *ndev,
+ 				   const struct vmpacket_descriptor *desc,
+ 				   int budget)
  {
--	struct sk_buff *skb = (struct sk_buff *)(unsigned long)desc->trans_id;
- 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
-+	struct sk_buff *skb;
- 	u16 q_idx = 0;
- 	int queue_sends;
+-	const struct nvsp_message *nvsp_packet = hv_pkt_data(desc);
++	const struct nvsp_message *nvsp_packet;
+ 	u32 msglen = hv_pkt_datalen(desc);
++	struct nvsp_message *pkt_rqst;
 +	u64 cmd_rqst;
 +
-+	cmd_rqst = vmbus_request_addr(&channel->requestor, (u64)desc->trans_id);
-+	if (cmd_rqst == VMBUS_RQST_ERROR) {
-+		netdev_err(ndev, "Incorrect transaction id\n");
++	/* First check if this is a VMBUS completion without data payload */
++	if (!msglen) {
++		cmd_rqst = vmbus_request_addr(&incoming_channel->requestor,
++					      (u64)desc->trans_id);
++		if (cmd_rqst == VMBUS_RQST_ERROR) {
++			netdev_err(ndev, "Invalid transaction id\n");
++			return;
++		}
++
++		pkt_rqst = (struct nvsp_message *)(uintptr_t)cmd_rqst;
++		switch (pkt_rqst->hdr.msg_type) {
++		case NVSP_MSG4_TYPE_SWITCH_DATA_PATH:
++			complete(&net_device->channel_init_wait);
++			break;
++
++		default:
++			netdev_err(ndev, "Unexpected VMBUS completion!!\n");
++		}
 +		return;
 +	}
-+
-+	skb = (struct sk_buff *)(unsigned long)cmd_rqst;
  
- 	/* Notify the layer above us */
- 	if (likely(skb)) {
-@@ -1530,6 +1539,7 @@ struct netvsc_device *netvsc_device_add(struct hv_device *device,
- 		       netvsc_poll, NAPI_POLL_WEIGHT);
+ 	/* Ensure packet is big enough to read header fields */
+ 	if (msglen < sizeof(struct nvsp_message_header)) {
+@@ -766,6 +796,7 @@ static void netvsc_send_completion(struct net_device *ndev,
+ 		return;
+ 	}
  
- 	/* Open the channel */
-+	device->channel->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(device->channel, netvsc_ring_bytes,
- 			 netvsc_ring_bytes,  NULL, 0,
- 			 netvsc_channel_cb, net_device->chan_table);
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index 90bc0008fa2fd..13f62950eeb9f 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -1170,6 +1170,7 @@ static void netvsc_sc_open(struct vmbus_channel *new_sc)
- 	/* Set the channel before opening.*/
- 	nvchan->channel = new_sc;
++	nvsp_packet = hv_pkt_data(desc);
+ 	switch (nvsp_packet->hdr.msg_type) {
+ 	case NVSP_MSG_TYPE_INIT_COMPLETE:
+ 		if (msglen < sizeof(struct nvsp_message_header) +
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index 790bf750281ad..57a5ec098e7e0 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2429,7 +2429,6 @@ static int netvsc_vf_changed(struct net_device *vf_netdev)
  
-+	new_sc->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
- 	ret = vmbus_open(new_sc, netvsc_ring_bytes,
- 			 netvsc_ring_bytes, NULL, 0,
- 			 netvsc_channel_cb, nvchan);
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index 4cb65a79d92f6..2aaf450c8d800 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -779,6 +779,7 @@ struct vmbus_requestor {
+ 	if (net_device_ctx->data_path_is_vf == vf_is_up)
+ 		return NOTIFY_OK;
+-	net_device_ctx->data_path_is_vf = vf_is_up;
  
- #define VMBUS_NO_RQSTOR U64_MAX
- #define VMBUS_RQST_ERROR (U64_MAX - 1)
-+#define VMBUS_RQST_ID_NO_RESPONSE (U64_MAX - 2)
- 
- struct vmbus_device {
- 	u16  dev_type;
+ 	if (vf_is_up && !net_device_ctx->vf_alloc) {
+ 		netdev_info(ndev, "Waiting for the VF association from host\n");
 -- 
 2.43.0
 
