@@ -1,150 +1,114 @@
-Return-Path: <linux-kernel+bounces-102347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF1887B10B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E543187B111
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:07:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28CF51C28037
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:06:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21A041C26E2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1056560DC8;
-	Wed, 13 Mar 2024 18:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA96C60EDC;
+	Wed, 13 Mar 2024 18:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CUvalIDA"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="V0IZuJfX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97BA060BA7;
-	Wed, 13 Mar 2024 18:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBED60EE4;
+	Wed, 13 Mar 2024 18:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710353981; cv=none; b=f6tqVRM6EQX5hXvH8r/hCq4n0pHNcP+X1x7zwhB6cHxaiI7E6UIkru1g16pGllBjI0BKK7gyTJk5a+gP3+Ybsxmfhw1U95KVBGh5T9a0vh/L6y+BLFeWWwPhBkAPGxQrYzg7l0/NmVikK8+RZunecFghQ88wW2xj86Qydk2GgLo=
+	t=1710354054; cv=none; b=UHGWkavKJCOlI+6IYTSzMtdoZI/jN16t6SXEuxb4HvuUUVEKV3M6y4k/4NKbYdAhDG8Eo6RSfhJaNSZFNSnuE1nRb7RW6LLZbZZYue2hz6dQqLxtrfI103vZnNjMzCPKAVJ4K3svKg7S8KtWQE581b/9xPxcBkcr+qA2kympYLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710353981; c=relaxed/simple;
-	bh=sFEx9EamTD3MBPAzuFxki6UN7ViktTDSTCqur/C/nLk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aI+1t4uCmTesovAX2UriG9DIJudYDJEOGsBBtoM2MnxbwiuHEFwl3+eNmrwF0bq6DsbYxrIxDsLoyValubIEykrtwfHzwzVDoPTanaujgbv+KOV42gF9JEy37Itdot1ikAreYXgjHHODV1pjRsB8/d881FWPFW30cIuKwmGNY7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CUvalIDA; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-413e93b0f54so994455e9.3;
-        Wed, 13 Mar 2024 11:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710353978; x=1710958778; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SwM77+n02Bo5Xptc9aWDNDUBbm1WtjmR5t0ZnrE2toM=;
-        b=CUvalIDAr9bzUHeArk/TuBNkWVDKUyS94fkraWRVT46WsKzM6qzztcx+OWJOmGeZHI
-         7WxkWGsOrsHEYvHrd2XLIRX1W/xO6ax1nPXBwjTy8uECvSXE72Y3MzjlXU3XJK1tEPv7
-         02iKI4/HP2bf+toxPe8rn8ogqvmuBa4P/CZeFl4zEXbsPBxbFIyYfCgnrFrgCtME9Y3u
-         C2N+NS9uHrcW4gc57wzD3qH29doX6ZoFI9a9JAVVIDAbv7uqibh+l4Zans9h/vZxn1Lp
-         4WqpclzpFAUriy5rYdcQcUB1RiEB78kywZ9B0j3jYAT1ZCu8iXRAQyFBCGDGQvGHaFNf
-         UsFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710353978; x=1710958778;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SwM77+n02Bo5Xptc9aWDNDUBbm1WtjmR5t0ZnrE2toM=;
-        b=XMo5bW7p9Qeo+G1R8MppE7aiPrELmkyiaNdr1mq6R3P4PsXwZXu2chqiG7880fUUaC
-         qb3qqYuLJLdxGKf9ZfUZXmZavvu0ZuufC1rWzGiZIYs+LI/qeV0rRvtzE/6dp8G0IF1M
-         ucA7HSJ2DO70ilo3/AGdxPSFB+v5CMnY+TwzqB/RBgj8w2IxmiREYUcAxCkQzAfartKJ
-         nROZKuRm/PQJi6E1/ll9jjIy4rfIrYWGRYUjVkGc6M1+HyEHmjGmKQM7XFXuKSG/Zahn
-         fy+RNo9e0nWcu1NRBJi5SInL/BZTAvArmLCIx4YPP1B7Jk14Omkvds26+FzkReH5Ygdr
-         Ws3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXRm/5agFqcCixEdLWYYXEJVKDc4PvK2y5NTMxqmhXCDLdWjSBEnIJZCU2IJJOP1Wd/76xBbj+Pj8H+f6JOLNBIsgQ7OEHBt0/u8YFWfMc8dtUlEMcnfOU3IIERJFL/9/iFKue5LtSeiQ==
-X-Gm-Message-State: AOJu0Yzu6ZmAT/IJWkWPmI2ijJL1JGcV6FzEik3cIb+R9l9bBcBpnmnk
-	NPvR2DMMLcaYHkrtRbYErWm4bo48sq87ozXTL0pmVJOqK+VzvSjm
-X-Google-Smtp-Source: AGHT+IFlvx5P3FvCMw0RLTEExCoJ3AlezUzg/TACD26EKiNO9ZAOgIth5qkO0ze33vBplTbp7wq6XQ==
-X-Received: by 2002:a05:600c:45c8:b0:413:3890:25f4 with SMTP id s8-20020a05600c45c800b00413389025f4mr539775wmo.36.1710353977808;
-        Wed, 13 Mar 2024 11:19:37 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id q6-20020a05600c46c600b004132aa2f857sm3034508wmo.17.2024.03.13.11.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 11:19:37 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Frank Oltmanns <frank@oltmanns.dev>
-Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- Frank Oltmanns <frank@oltmanns.dev>, Erico Nunes <nunes.erico@gmail.com>
-Subject: Re: [PATCH v4 5/5] arm64: dts: allwinner: a64: Run GPU at 432 MHz
-Date: Wed, 13 Mar 2024 19:19:35 +0100
-Message-ID: <1978377.usQuhbGJ8B@jernej-laptop>
-In-Reply-To: <20240310-pinephone-pll-fixes-v4-5-46fc80c83637@oltmanns.dev>
-References:
- <20240310-pinephone-pll-fixes-v4-0-46fc80c83637@oltmanns.dev>
- <20240310-pinephone-pll-fixes-v4-5-46fc80c83637@oltmanns.dev>
+	s=arc-20240116; t=1710354054; c=relaxed/simple;
+	bh=pb3PbjRUKpd/7/a641PCQHaVm1QIzqBTmJAIh9Wpowg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B8idFYOrX9RdODQwV9xycmYXKT0d6tLxemoE6QsmyR+ZTiyKgfRtoIgoWiCT808HvfWx82U+Kni7sjgoPXRRlBu0f4UXzR3RLztwNPMAqniOKr0NcQ99QbjC0bCBBDW9GvG2pK3RpIVdMkOkG+4t2Pn+mL2ytC6n1aZD4gVJ1FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=V0IZuJfX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A66CFC433C7;
+	Wed, 13 Mar 2024 18:20:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1710354053;
+	bh=pb3PbjRUKpd/7/a641PCQHaVm1QIzqBTmJAIh9Wpowg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V0IZuJfX2Vwh09ol7ZcUKsvb8pu86deNyfD3mySIpkxFxGDbUPCzcgh4HKX3bmArC
+	 70jTK2mNeXnkheUex8YZ45vBJkAtoIjjUpsdOjS94W8eEuUSCo6ojXqGyYP+D8rC76
+	 Js68Di862bahzXNUncQKXExo7qZ+cDzMmoeez7ZE=
+Date: Wed, 13 Mar 2024 19:20:44 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-stable@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.7.y
+Message-ID: <2024031352-valuables-handling-cec3@gregkh>
+References: <2zaqetj6wlxgpbxgex643dnudgwhcrz23xgfuai3t3hgavjb2d@vwhyha3hlg5y>
+ <zneppz2ohlalk2qeitdkzxvtexuqgfbhx6sxocgiasuuwsbopl@cr4d3wve2sot>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <zneppz2ohlalk2qeitdkzxvtexuqgfbhx6sxocgiasuuwsbopl@cr4d3wve2sot>
 
-Dne nedelja, 10. marec 2024 ob 14:21:15 CET je Frank Oltmanns napisal(a):
-> The Allwinner A64's GPU has currently three operating points. However,
-> the BSP runs the GPU fixed at 432 MHz. In addition, at least one of the
-> devices using that SoC - the pinephone - shows unstabilities (see link)
-> that can be circumvented by running the GPU at a fixed rate.
+On Tue, Mar 12, 2024 at 08:54:24PM -0400, Kent Overstreet wrote:
+> On Sun, Mar 10, 2024 at 03:43:38PM -0400, Kent Overstreet wrote:
+> > The following changes since commit 2e7cdd29fc42c410eab52fffe5710bf656619222:
+> > 
+> >   Linux 6.7.9 (2024-03-06 14:54:01 +0000)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-for-v6.7-stable-20240310
+> > 
+> > for you to fetch changes up to 560ceb6a4d9e3bea57c29f5f3a7a1d671dfc7983:
+> > 
+> >   bcachefs: Fix BTREE_ITER_FILTER_SNAPSHOTS on inodes btree (2024-03-10 14:36:57 -0400)
+> > 
+> > ----------------------------------------------------------------
+> > bcachefs fixes for 6.7 stable
+> > 
+> > "bcachefs: fix simulateously upgrading & downgrading" is the important
+> > one here. This fixes a really nasty bug where in a rare situation we
+> > wouldn't downgrade; we'd write a superblock where the version number is
+> > higher than the currently supported version.
+> > 
+> > This caused total failure to mount multi device filesystems with the
+> > splitbrain checking in 6.8, since now we wouldn't be updating the member
+> > sequence numbers used for splitbrain checking, but the version number
+> > said we would be - and newer versions would attempt to kick every device
+> > out of the fs.
+> > 
+> > ----------------------------------------------------------------
+> > Helge Deller (1):
+> >       bcachefs: Fix build on parisc by avoiding __multi3()
+> > 
+> > Kent Overstreet (3):
+> >       bcachefs: check for failure to downgrade
+> >       bcachefs: fix simulateously upgrading & downgrading
+> >       bcachefs: Fix BTREE_ITER_FILTER_SNAPSHOTS on inodes btree
+> > 
+> > Mathias Krause (1):
+> >       bcachefs: install fd later to avoid race with close
+> > 
+> >  fs/bcachefs/btree_iter.c        |  4 +++-
+> >  fs/bcachefs/chardev.c           |  3 +--
+> >  fs/bcachefs/errcode.h           |  1 +
+> >  fs/bcachefs/mean_and_variance.h |  2 +-
+> >  fs/bcachefs/super-io.c          | 27 ++++++++++++++++++++++++---
+> >  5 files changed, 30 insertions(+), 7 deletions(-)
 > 
-> Therefore, remove the other two operating points from the GPU OPP table,
-> so that the GPU runs at a fixed rate of 432 MHz.
-> 
-> Link: https://gitlab.com/postmarketOS/pmaports/-/issues/805
-> Acked-by: Erico Nunes <nunes.erico@gmail.com>
-> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> Why wasn't this applied?
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Because our queue is huge and 1/2 of the stable team is finally taking
+his first vacation in years (and regretting reading email during it
+right now)?  Relax, it will get there, backport requests like this not
+being handled in 48 hours seems like a big ask, don't you think?
 
-Best regards,
-Jernej
-
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 8 --------
->  1 file changed, 8 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> index 57ac18738c99..c810380aab6d 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> @@ -107,14 +107,6 @@ de: display-engine {
->  	gpu_opp_table: opp-table-gpu {
->  		compatible = "operating-points-v2";
->  
-> -		opp-120000000 {
-> -			opp-hz = /bits/ 64 <120000000>;
-> -		};
-> -
-> -		opp-312000000 {
-> -			opp-hz = /bits/ 64 <312000000>;
-> -		};
-> -
->  		opp-432000000 {
->  			opp-hz = /bits/ 64 <432000000>;
->  		};
-> 
-> 
-
-
-
-
+greg k-h
 
