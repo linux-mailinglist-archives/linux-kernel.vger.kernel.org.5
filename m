@@ -1,113 +1,97 @@
-Return-Path: <linux-kernel+bounces-102457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DC5287B260
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:56:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6709B87B290
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:07:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF8221C21AC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:56:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B14DB24470
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310154C630;
-	Wed, 13 Mar 2024 19:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CCF4CB47;
+	Wed, 13 Mar 2024 19:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="tUta5kxe"
-Received: from relay.smtp-ext1.broadcom.com (unknown [192.19.166.228])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bepm2M7I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8C54C60C;
-	Wed, 13 Mar 2024 19:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F6C1A38D7;
+	Wed, 13 Mar 2024 19:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710359806; cv=none; b=X1P9VhLca9MbnG9FFY/ORwEZCjDo45lfPtWWvShbq830FqmSIlo/BwTI2acqMZShzYjpOzeCV32Io14Blveg7NYhR554/e4vt4EShRAJWFVn71YDt2HST78szUFJdGtEF2MRThUvk4MtEiP116bLW5LVEKvtcxL5hLxpqYBiOX8=
+	t=1710359224; cv=none; b=VtMX0KLNl7lATve152gg6cuQ11NeLl3EAaNpvINuvKKm+ZpikKLZTuMWvNGYysHL9CluqFNZZIL5X3xKl/Ij3kPbdtFgR97u67ytD+mPSonBtgsKukYfrnQPWzhNgfpYGWmZlDorNM2ZKi7Uii5rScvgkUXe/95rzfs4C7YrjRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710359806; c=relaxed/simple;
-	bh=3BD4gGhAqghzw6gpQVHVO4yadhEZRKKYCsiViAsbDhM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S3vKyZuAjoEgrbf5okDH+g5Cr9ACQwBNbctJ4tL1D12K2Xw9CdsjE4dFQNDKpzIpFdvQnNzU4vvWaK4oSQEhMqnb3Haua+/5EY78b5EYGXnGaH7EOGHCUUQ0c7zzEhK1I12MB/GRMwNT1jXQdDjWoDqgSXW1M/okrb8fyQUKY8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=tUta5kxe; arc=none smtp.client-ip=192.19.166.228
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext1.broadcom.com (Postfix) with ESMTP id C325CC0029DF;
-	Wed, 13 Mar 2024 12:46:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext1.broadcom.com C325CC0029DF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1710359211;
-	bh=3BD4gGhAqghzw6gpQVHVO4yadhEZRKKYCsiViAsbDhM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=tUta5kxe1gtE33JzJgGyTd5oeSmmxvUFDJwjpG12tNxx+xEM433oOsW88mKXz/bGq
-	 s8Ehaqk8Ijf3J4guH05GXDrZgV2bCWgDDTqU0P87YRyI16jJoKEoPVwGQdm7w9IVSz
-	 PMvjprG9LlKjJX7IbSjVInpl2qmeeRsfkGfzDZXQ=
-Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 2521C18041CAC4;
-	Wed, 13 Mar 2024 12:46:50 -0700 (PDT)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: linux-spi@vger.kernel.org
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Michael Walle <mwalle@kernel.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	"Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] spi: Fix error code checking in spi_mem_exec_op()
-Date: Wed, 13 Mar 2024 12:45:30 -0700
-Message-Id: <20240313194530.3150446-1-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710359224; c=relaxed/simple;
+	bh=8nx1MMxE37CMP/FBmCmmcRTdwd9+RGwykYBsdXB2gIs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bpfje1EiVaYcn1gw44aMVYO83EtHqXrQm2lXuE5yoyQUpOtGHrgcz97r4xTctpFb1EXBq+MAtAg+2E1A87Vzcj+t399xaj7KfA95stRrRDQOmY9YXl7bFxCBbUBggiGulkF6ehur1glV2Df4dmOk6ABsMoN1auHLOdGMnpTNokY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bepm2M7I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF186C433C7;
+	Wed, 13 Mar 2024 19:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710359224;
+	bh=8nx1MMxE37CMP/FBmCmmcRTdwd9+RGwykYBsdXB2gIs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bepm2M7IEKVi2GgFwZHE4gWXbjwMXf8NGPcUV1rXvU8Hxh7tQSSf/wULrx/PXblx9
+	 fiLlfRtLzszwgwAt93v6d7hbJRlLCZ+bBwnuiECxxQbfJUcG+kghIFVHA8z/8WmLf4
+	 7CCZ1UAB0+0RGHbyKvpFVLlZuNczOYJ0YrfsbC+t2uTNpwibs1zUKgK7A7k9Hq5Lcj
+	 QHEpJhZJOLVbomZ2lYQ7xdqahPjuf9gxsqfcC+0l9LTrDg+WTgWnLsnQEWZ57OK83O
+	 so+cgsUq18Wktog7t2MX75UVkcRaQ3s/8iN9sZluzkJ8AcVQmTmH+ulTDiR9DG/B70
+	 9mS01ZFShn4Dw==
+Date: Wed, 13 Mar 2024 20:46:59 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Cc: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org, 
+	wsa@kernel.org, linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, quic_vdadhani@quicinc.com, 
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
+ mode
+Message-ID: <lnilroeg5c32fpqu2reg3s37qbymd37xnrrwcx4zw3bcc5lfe2@zd43lndyj657>
+References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
+ <a5oiihch2yqsosq337hogqzd3r4ldgfrzub4m6kofheh2k3qjv@wxageydv4q37>
+ <0971ac51-f823-4338-ba95-3ceced9d2a1c@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0971ac51-f823-4338-ba95-3ceced9d2a1c@quicinc.com>
 
-After commit cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP with
--EOPNOTSUPP"), our SPI NOR flashes would stop probing with the following
-visible in the kernel log:
+Hi Mukesh,
 
-[    2.196300] brcmstb_qspi f0440920.qspi: using bspi-mspi mode
-[    2.210295] spi-nor: probe of spi1.0 failed with error -95
+> > > +	status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
+> > 
+> > This fails here:
+> > 
+> > drivers/i2c/busses/i2c-qcom-geni.c: In function 'i2c_gpi_cb_result':
+> > drivers/i2c/busses/i2c-qcom-geni.c:493:18: error: implicit declaration of function 'FIELD_GET' [-Werror=implicit-function-declaration]
+> >    493 |         status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
+> >        |                  ^~~~~~~~~
+> > cc1: all warnings being treated as errors
+> > 
+> > I will remove this patch from the i2c/i2c-host and we will need
+> > to wait for the next merge window to get this through.
+> > 
+> > Please submit v4 with the Cc list recommended by Wolfram.
+> > Submitted V4 patch. Let me wait for the dmaengine maintainers to sig off
+> too. Sorry for the trouble.
 
-It turns out that the check in spi_mem_exec_op() was changed to check
-for -ENOTSUPP (old error code) or -EOPNOTSUPP (new error code), but this
-means that for drivers that were converted, the second condition is now
-true, and we stop falling through like we used to. Fix the error to
-check for neither error being neither -ENOTSUPP *nor* -EOPNOTSUPP.
+Please, don't be sorry... when something goes wrong it's a shared
+responsibility.
 
-Fixes: cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP with -EOPNOTSUPP")
-Reviewed-by: Michael Walle <mwalle@kernel.org>
-Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
-Changes in v2:
+But fortunately nothing went really wrong here because Stephen
+cought it in time :-)
 
-- collected R-by tags from Michael and Pratyush
-- rebased against spi/for-next
+I missed this failure because in the testing config the qcom-geni
+was missing.
 
- drivers/spi/spi-mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the prompt fix!
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index c9d6d42a88f5..17b8baf749e6 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -382,7 +382,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 		 * read path) and expect the core to use the regular SPI
- 		 * interface in other cases.
- 		 */
--		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP) {
-+		if (!ret || (ret != -ENOTSUPP && ret != -EOPNOTSUPP)) {
- 			spi_mem_add_op_stats(ctlr->pcpu_statistics, op, ret);
- 			spi_mem_add_op_stats(mem->spi->pcpu_statistics, op, ret);
- 
--- 
-2.34.1
-
+Andi
 
