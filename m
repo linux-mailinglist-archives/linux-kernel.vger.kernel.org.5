@@ -1,185 +1,210 @@
-Return-Path: <linux-kernel+bounces-101156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55F8287A336
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:10:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A0387A339
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:10:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5B96B21511
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:10:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54F36281DEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EEA17575;
-	Wed, 13 Mar 2024 07:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF35B14AAE;
+	Wed, 13 Mar 2024 07:10:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cLCP7XaE"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YYxCpeNC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A4917552
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6D819452
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710313802; cv=none; b=I20i/8cnTZQ5WMP+dmLMJFsVGpZgjNCHcXlWUm69i4EgehYSrjOwhc8M7R1nOw2LaKY6fYKnoVgSS3ATbZ0ACVjplvFNvMrsXH1YGr2riUXXAyXTovp3Ni6WWwJ/3ZQtW1KXy+PXiMZWU7aCwn9VzqxWzwKj4wJoT7QZbaznsNE=
+	t=1710313847; cv=none; b=RSGbZ4rDQdPllEx64XsmxTWGh79bNZVaUyrmvqgY+7WNUTE5xybp1iY1D4F9n19rbyQaiUSkfwWBQmPScwLK82A5Z1KhGDb0NO9vhOCvQSdbXeNB+xHaMj3EjWQOGqCeqUDv5DMm2CkA0dLZ4wkUki8n+C1pWj1QuyHbg2VTHy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710313802; c=relaxed/simple;
-	bh=7AHBlbBVmOFnsONr0oWSQj7UuiokQ4EM/lXEbQ7dlXM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aXndqWGtzari6NHRSjmGLRJqfTxWOSZyWIycLC/7nBS94hLBuLGmFIcSiZwdDz5Nl4oGhI+Xd4PphflSPWRTCU+JsWl9yTLDc37rDeYGawBMvRq7ozwkQDUed4loBwDQP7XgoeY9F4WZzGlTJgT0Y2mkDJXSpKPk0bNTi6ERo0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cLCP7XaE; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5684073ab38so1021340a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1710313797; x=1710918597; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VFM7NHjFeiFIkXrKy4Ve+I5tMlDvoiqgvY2hf19yC/M=;
-        b=cLCP7XaEASri38Z5l1hPf+Qhl4ndoEct2Q8P1B1tTPyjcEhwCgtvali4irXOwQZxCw
-         kszBSokkJwNYMHTYM9LWtqnpwAhR3d13ctvemiAVRXqnEBCkyf3LOoZsDvlV0w25YHJD
-         cqC0gc+zlEWh40qeSVksc5q/GCmDUfiNnnPHDCtEr99Dr+OlTl6IfpNhEey/l8pbNWiF
-         l6CMEQTimpsXjJOemPGRC1EbALYasdEnKy7M7b1SuUd07tSUDhakHpAaDZgQw+DRD5bX
-         TAwgnROOu6uwZNMehfpiHQrDGZzKHuiF+JxP7V8tGZBbNpcg//HO4pbEqwLB2nCE6s8H
-         eXYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710313797; x=1710918597;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VFM7NHjFeiFIkXrKy4Ve+I5tMlDvoiqgvY2hf19yC/M=;
-        b=JzMN4DZ7lJBaL7MVeBmW7IVwiBJtZy4u9+BPqIkVu53Y2AaVhbWYjpiNj0Xp5UPNct
-         lho5w10eXs3EjFFSfl7M987C9tYPzCpqg5KxUQAMJgGlR6DWuW5NFoTuhbSiTDkh6IKO
-         jadtyD0kDp609/BAObtEdgmuc0c9SuSxn32Y0F8OsEdGonLkt7LiWr+ITCR/BXi6bmMW
-         Jy8E9hJrS6YHyg4/WUVuUF1f2cItFmfF0Cc1ac83WdCPtNTe1KBSf99Jg9dN9YoAQciv
-         CxjNeq0+UmsA7KsjLzwiiLVRKAeMCsZDH93S1J3+44wbifxIOnsP5urooXVX4rStoOIl
-         2tNA==
-X-Forwarded-Encrypted: i=1; AJvYcCUmukRqxoATM1TC1uSzvrCsRXOACOSS5sEof149uvVyhpVLcM8zCCUBcP5oH8oCAJAuYkJVjSiaPqAbA44nN3xj1pl5bSZsus6nr1n8
-X-Gm-Message-State: AOJu0YzkOWDUnUa+6MvNRP7tANbzMU+dMJP3t9PG9ncQTR+yu3La5YTR
-	f9gaOVgHffBOsGV6hCGE/kG8Pk11Ratygm8ON5Dco0HLaluhTCN/4jsHZweO6g4=
-X-Google-Smtp-Source: AGHT+IFe/fyuKeyjO4QV1x01xdRBrc72d4UA/whVUFl6wfKoaLR7gJ9oQQHnXlmLUa47VVYaHB/K8g==
-X-Received: by 2002:a50:9b58:0:b0:567:e0e:dda5 with SMTP id a24-20020a509b58000000b005670e0edda5mr1632316edj.17.1710313796845;
-        Wed, 13 Mar 2024 00:09:56 -0700 (PDT)
-Received: from ?IPV6:2003:e5:873a:400:704b:6dbb:e7c0:786e? (p200300e5873a0400704b6dbbe7c0786e.dip0.t-ipconnect.de. [2003:e5:873a:400:704b:6dbb:e7c0:786e])
-        by smtp.gmail.com with ESMTPSA id n21-20020a05640205d500b0056884feacd4sm381463edx.39.2024.03.13.00.09.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 00:09:56 -0700 (PDT)
-Message-ID: <ab57dce7-6e89-44aa-a87a-2ffa8cc87fc4@suse.com>
-Date: Wed, 13 Mar 2024 08:09:55 +0100
+	s=arc-20240116; t=1710313847; c=relaxed/simple;
+	bh=+LBIvHeK5jJ+fU/XIdQzzX0EaneiQXp+HeWNZtrVw9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j5LOXjJ4JFrTzmQZFUGMA0qtWHFyCzes48sV6s380fJupvEpV2Z+XAV5Gymyv1qe5gArOS5hAB9LU1UmlRZNlpCQGTSZFX2gRBzy/JqnZoXuKMWZ9xZMvxKJDI7kEge8TKWNFpcfFNiJ8659ejSFDqkPfv/rtcz9bEjD48caznw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YYxCpeNC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710313844;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z9m0flQIeLqxyKbiwOgkeWggQ2qsLzO5+Pi+cvXBRIU=;
+	b=YYxCpeNC+et3QqkJeLYd/BeQfUomEpZl87+/3DurX/xonXezoTwSvPNhZgwmvJ4YMhh79P
+	7YY4aLQaeN79ub3AqO36p/BSrSQRZC/6OeBfiEl07OJLY6eJFiWghL0sPBaEzTnWKApfkY
+	+dQ/eYdP3fEp+9ubwFEZWlOnOnpTKiE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-695-A_LvjSnQPMGNLRwzgYbMmA-1; Wed, 13 Mar 2024 03:10:38 -0400
+X-MC-Unique: A_LvjSnQPMGNLRwzgYbMmA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BAF9585A58C;
+	Wed, 13 Mar 2024 07:10:37 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.13])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B65A2022C1E;
+	Wed, 13 Mar 2024 07:10:36 +0000 (UTC)
+Date: Wed, 13 Mar 2024 15:10:34 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
+	joe@perches.com, nathan@kernel.org, conor@kernel.org
+Subject: Re: kexec verbose dumps with 6.8 [was: [PATCH v4 1/7] kexec_file:
+ add kexec_file flag to control debug printing]
+Message-ID: <ZfFRaoOIgQQY46zD@MiWiFi-R3L-srv>
+References: <20231213055747.61826-1-bhe@redhat.com>
+ <20231213055747.61826-2-bhe@redhat.com>
+ <4c775fca-5def-4a2d-8437-7130b02722a2@kernel.org>
+ <ZfD37AlznCXJ6P54@MiWiFi-R3L-srv>
+ <2f8b1b2d-0abb-43f0-8665-0855928f017c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] x86: Rename __{start,end}_init_task to
- __{start,end}_init_stack
-Content-Language: en-US
-To: "Xin Li (Intel)" <xin@zytor.com>, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- boris.ostrovsky@oracle.com, arnd@arndb.de
-References: <20240313060546.1952893-1-xin@zytor.com>
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-In-Reply-To: <20240313060546.1952893-1-xin@zytor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f8b1b2d-0abb-43f0-8665-0855928f017c@kernel.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On 13.03.24 07:05, Xin Li (Intel) wrote:
-> The stack of a task has been separated from the memory of a task_struct
-> struture for a long time on x86, as a result __{start,end}_init_task no
-> longer mark the start and end of the init_task structure, but its stack
-> only.
+On 03/13/24 at 06:58am, Jiri Slaby wrote:
+> Hi,
 > 
-> Rename __{start,end}_init_task to __{start,end}_init_stack.
 > 
-> Note other architectures are not affected because __{start,end}_init_task
-> are used on x86 only.
+> On 13. 03. 24, 1:48, Baoquan He wrote:
+> > Hi Jiri,
+> > 
+> > On 03/12/24 at 10:58am, Jiri Slaby wrote:
+> > > On 13. 12. 23, 6:57, Baoquan He wrote:
+> >   ... snip...
+> > > > --- a/include/linux/kexec.h
+> > > > +++ b/include/linux/kexec.h
+> > > ...
+> > > > @@ -500,6 +500,13 @@ static inline int crash_hotplug_memory_support(void) { return 0; }
+> > > >    static inline unsigned int crash_get_elfcorehdr_size(void) { return 0; }
+> > > >    #endif
+> > > > +extern bool kexec_file_dbg_print;
+> > > > +
+> > > > +#define kexec_dprintk(fmt, ...)					\
+> > > > +	printk("%s" fmt,					\
+> > > > +	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
+> > > > +	       ##__VA_ARGS__)
+> > > 
+> > > This means you dump it _always_. Only with different levels.
+> > 
+> > It dumped always too with pr_debug() before, I just add a switch to
+> > control it's pr_info() or pr_debug().
 > 
-> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
-> ---
->   arch/x86/include/asm/processor.h  | 4 ++--
->   arch/x86/kernel/head_64.S         | 2 +-
->   arch/x86/xen/xen-head.S           | 2 +-
->   include/asm-generic/vmlinux.lds.h | 8 ++++----
->   4 files changed, 8 insertions(+), 8 deletions(-)
+> Not really, see below.
 > 
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index 811548f131f4..8b3a3f3bb859 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -636,10 +636,10 @@ static __always_inline void prefetchw(const void *x)
->   #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
->   
->   #else
-> -extern unsigned long __end_init_task[];
-> +extern unsigned long __end_init_stack[];
->   
->   #define INIT_THREAD {							\
-> -	.sp	= (unsigned long)&__end_init_task -			\
-> +	.sp	= (unsigned long)&__end_init_stack -			\
->   		  TOP_OF_KERNEL_STACK_PADDING -				\
->   		  sizeof(struct pt_regs),				\
->   }
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index d8198fbd70e5..c7babd7ebb0f 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -66,7 +66,7 @@ SYM_CODE_START_NOALIGN(startup_64)
->   	mov	%rsi, %r15
->   
->   	/* Set up the stack for verify_cpu() */
-> -	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
-> +	leaq	(__end_init_stack - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
->   
->   	/* Setup GSBASE to allow stack canary access for C code */
->   	movl	$MSR_GS_BASE, %ecx
-> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-> index 04101b984f24..43eadf03f46d 100644
-> --- a/arch/x86/xen/xen-head.S
-> +++ b/arch/x86/xen/xen-head.S
-> @@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
->   	ANNOTATE_NOENDBR
->   	cld
->   
-> -	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
-> +	leaq	(__end_init_stack - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
->   
->   	/* Set up %gs.
->   	 *
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 5dd3a61d673d..a168be99d522 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -399,13 +399,13 @@
->   
->   #define INIT_TASK_DATA(align)						\
->   	. = ALIGN(align);						\
-> -	__start_init_task = .;						\
-> +	__start_init_stack = .;						\
->   	init_thread_union = .;						\
->   	init_stack = .;							\
-> -	KEEP(*(.data..init_task))					\
-> +	KEEP(*(.data..init_stack))					\
+> > > 
+> > > And without any prefix whatsoever, so people see bloat like this in their
+> > > log now:
+> > > [  +0.000001] 0000000000001000-000000000009ffff (1)
+> > > [  +0.000002] 000000007f96d000-000000007f97efff (3)
+> > > [  +0.000002] 0000000000800000-0000000000807fff (4)
+> > > [  +0.000001] 000000000080b000-000000000080bfff (4)
+> > > [  +0.000002] 0000000000810000-00000000008fffff (4)
+> > > [  +0.000001] 000000007f97f000-000000007f9fefff (4)
+> > > [  +0.000001] 000000007ff00000-000000007fffffff (4)
+> > > [  +0.000002] 0000000000000000-0000000000000fff (2)
+> > 
+> > On which arch are you seeing this? There should be one line above these
+> > range printing to tell what they are, like:
+> > 
+> > E820 memmap:
+> 
+> Ah this is there too. It's a lot of output, so I took it out of context,
+> apparently.
+> 
+> > 0000000000000000-000000000009a3ff (1)
+> > 000000000009a400-000000000009ffff (2)
+> > 00000000000e0000-00000000000fffff (2)
+> > 0000000000100000-000000006ff83fff (1)
+> > 000000006ff84000-000000007ac50fff (2)
+> 
+> It should all be prefixed like kdump: or kexec: in any way.
 
-Is this modification really correct?
+I can reproduce it now on fedora. OK, I will add kexec or something
+similar to prefix. Thanks.
 
->   	KEEP(*(.data..init_thread_info))				\
-> -	. = __start_init_task + THREAD_SIZE;				\
-> -	__end_init_task = .;
-> +	. = __start_init_stack + THREAD_SIZE;				\
-> +	__end_init_stack = .;
->   
->   #define JUMP_TABLE_DATA							\
->   	. = ALIGN(8);							\
 > 
-> base-commit: 626856ae97054963e7b8c35335d4418271c8d0c4
+> > > without actually knowing what that is.
+> > > 
+> > > There should be nothing logged if that is not asked for and especially if
+> > > kexec load went fine, right?
+> > 
+> > Right. Before this patch, those pr_debug() were already there. You need
+> > enable them to print out like add '#define DEBUG' in *.c file, or enable
+> > the dynamic debugging of the file or function.
+> 
+> I think it's perfectly fine for DEBUG builds to print this out. And many
+> (all major?) distros use dyndbg, so it used to print nothing by default.
+> 
+> > With this patch applied,
+> > you only need specify '-d' when you execute kexec command with
+> > kexec_file load interface, like:
+> > 
+> > kexec -s -l -d /boot/vmlinuz-xxxx.img --initrd xxx.img --reuse-cmdline
+> 
+> Perhaps our (SUSE) tooling passes -d? But I am seeing this every time I
+> boot.
+> 
+> No, it does not seem so:
+> load.sh[915]: Starting kdump kernel load; kexec cmdline: /sbin/kexec -p
+> /var/lib/kdump/kernel --append=" loglevel=7 console=tty0 console=ttyS0
+> video=1920x1080,1024x768,800x600 oops=panic
+> lsm=lockdown,capability,integrity,selinux sysrq=yes reset_devices
+> acpi_no_memhotplug cgroup_disable=memory nokaslr numa=off irqpoll nr_cpus=1
+> root=kdump rootflags=bind rd.udev.children-max=8 disable_cpu_apicid=0
+> panic=1" --initrd=/var/lib/kdump/initrd  -a
+> 
+> > For kexec_file load, it is not logging if not specifying '-d', unless
+> > you take way to make pr_debug() work in that file.
+> 
+> So is -d detection malfunctioning under some circumstances?
+> 
+> > > Can this be redesigned, please?
+> > 
+> > Sure, after making clear what's going on with this, I will try.
+> > 
+> > > 
+> > > Actually what was wrong on the pr_debug()s? Can you simply turn them on from
+> > > the kernel when -d is passed to kexec instead of all this?
+> > 
+> > Joe suggested this during v1 reviewing:
+> > https://lore.kernel.org/all/1e7863ec4e4ab10b84fd0e64f30f8464d2e484a3.camel@perches.com/T/#u
+> > 
+> > > 
+> > > ...
+> > > > --- a/kernel/kexec_core.c
+> > > > +++ b/kernel/kexec_core.c
+> > > > @@ -52,6 +52,8 @@ atomic_t __kexec_lock = ATOMIC_INIT(0);
+> > > >    /* Flag to indicate we are going to kexec a new kernel */
+> > > >    bool kexec_in_progress = false;
+> > > > +bool kexec_file_dbg_print;
+> > > 
+> > > Ugh, and a global flag for this?
+> > 
+> > Yeah, kexec_file_dbg_print records if '-d' is specified when 'kexec'
+> > command executed. Anything wrong with the global flag?
+> 
+> Global variables are frowned upon. To cite coding style: unless you
+> **really** need them. Here, it looks like you do not.
 
-
-Juergen
+I see your point, will consider and change. Thanks again.
 
 
