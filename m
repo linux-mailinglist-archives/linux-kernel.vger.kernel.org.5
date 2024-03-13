@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-101310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA1187A569
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:01:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FA2287A56F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B97AB2137F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:01:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A03AC1C20B82
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:01:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5172038DDA;
-	Wed, 13 Mar 2024 10:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57C23C6AC;
+	Wed, 13 Mar 2024 10:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="t3J11eM4"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2059.outbound.protection.outlook.com [40.107.212.59])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xSVNStdi"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2060.outbound.protection.outlook.com [40.107.92.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DAE3A1B5;
-	Wed, 13 Mar 2024 10:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419C43B784;
+	Wed, 13 Mar 2024 10:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.60
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710324056; cv=fail; b=L9WsRl9v12cNGDdz+bAh1pVPc7lVwMuLIRdPPjffVA3wsU192oXbTZBjmT3g+O6ApCR0QLt0tZU3vJElZBA0Z7QlKn0jjhy/iX6oLj0KrYafhXJgad/s+xGx1p4s6KOiK1pFKv2wkTu9OHenugay9SStUZbJK42LP0RsPESct9w=
+	t=1710324060; cv=fail; b=QArMU538gBgbFAgwX9jH5IX9z0uKghIUxaWl3yG7nGOpereJ0UCu2SgX9XrD3cXswCo6f2PaOnYOqeQYJV1YvlbQsUJFVWjnipZz5JujyVRp9HCAojoZUXOoYH05Po+Nh4wRSt+NybpVPtbobE9v/G70JR2a7jBBtSQmfh3Hux8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710324056; c=relaxed/simple;
-	bh=fFaC2eFGT3VvaloNNsoODFmvoI3Kzd31hKTJAA69Odw=;
+	s=arc-20240116; t=1710324060; c=relaxed/simple;
+	bh=tFFUHZSIBy2VAcUx/SHgg8f7JHunBYp+CfzJLV/T/Zc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Oe8gcoIIN6/JluT+yshY0NgTFH8IKQkLuFfo9ejkfTQMMO6V7H2S5pM4VeURmcfVOcyXytrthYZkGVSp8GZIIwnDuFgjGHU/hqUiIByKfktrSKFNVk9xa32wpqdQdWDYUyVVGsjDhy+q95bJNJODzAdM13dlKCyBZr1bnR1CcT4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=t3J11eM4; arc=fail smtp.client-ip=40.107.212.59
+	 MIME-Version:Content-Type; b=M+YU3ByiePl6DgUS2z+83jeoJ/195arXh0aK9dib5jky1y3BZXFnXKJAO9Z7ObK5zFYWViiAbA3T0uZafXZdH47kbkpM5ftf5lzj6XTYCa6WL2NrX6uew+ZZ3AszdthlR6B3JfO/T13CjMIqkUGN76dBP5QTGPjMp7cdzoaj+yw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xSVNStdi; arc=fail smtp.client-ip=40.107.92.60
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UHXS88v3bMV5pub8HLQ/8HKiIm5O+tVhwXXesYGVj0aIWwE9vkA4GkOrJBs9S/amzubH8bBaC26UhUY4NSfEbuSjbQY74sjfQwU1QhaXhFzdZ4iYmf+1KGcyOBloDaiJQox5zQ9/78yD6psbOSfF7R6WfpmHHHHxJfgjgXHfAzSgmOilRoowfZlDZyH3cpS2Pan4Rr3hljwjYGgsM4VvbMs1hWSehVKGqCpCLYX8x9UViFxkcvDwL8fFNDPzf/5zlbxEb7N9kyS4ONMhRe/IOwL9TiNhuSrDYaYTUj2tFbJNgy4gTu8OUb4kARj8fq8IfSygIXsuyRcvkPX8QBk5hQ==
+ b=Y/CMtI1IR4m7E8suY2Yl8hyn6wwwaiF2zuRSsDdAZ8wFEYK1AfiGBx3cSTp/iLWFPYlmBGPBOxCx3DRGUBMjMsVPe8gWG9dQZLArqa/916XsqBpUoXtK7qR+Rjhu0jzwC2LWvdUscZp+kfOpQ5jg4EW+MhEbe607LrcC1ltQxCh8LZCA1q2U8bwT/QJm2/Qbheaj8kBfrjxHBj4qgwpNJCVMmdQTpubUTJ77vk8M1oq7UHTV5p0U/XSEUAyyqNc08p3W+r23HyD8TbCSRPh2xl7RKy0Oce2zvwUkc6QU+5Xs5D7NJyFN3AyOHFFFCLXsVlcU/1wIyQRdevWDdb2Dzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K/FaF+4lx0lXVkGTv7YAAWX3CSKxQR1KBoBVBpr7wts=;
- b=MJcLpB594vbMKUL/7gHRpW8vDAGwXmBMpcUd7eQ+dqcQDjswLL+i05mRrsCol9kCvtCXVW+ReXxLifK0Dzzr4lyfzByu06Gun+NZkoRSMNh0h/8a9Yr3u8vanP4BFn3fnmaKeQav+WSYPYRyd2JRLuVIbqMDiPtH10OiRFtXpwHaRu2kdAl8P9v8t3AyRfs/kXqwA9YGsSL2ewwtnJXyVFTkAaXZ4MlfNhYSc6TUuS4ODXz1hiEHiWwFKziIhGA/pZNnq0kwFZ9KWhi/yv2aQ8te+K6+7DpFPVIYe02Z8mw5Br8YvIfgyKJ0tYVkRbqnnxWzAKzuNjPkq2T6I6FEKQ==
+ bh=QjCRBnNEShlzlvRtTZXG3+HzhkmrBxfrEeKxtggpS8E=;
+ b=WMqtNy9JOd7+UqFxMO/j51nPvQIKAh9nd5OqHr7+8H4pJLG0ESjEXUPXd2v2kJ3zHqwXPcInEkneTTi/BDLN2jXBlkPadwiKOBKbJil5zuyFpR4Tq3DZZxSHsy94a7ey3AV54tkVXJ1Srp1IMoS+JZ7zkzXfcuUwkmaLI3NRbtWdQPgyrHwudAjFlntmx0UZsJ3u9bRAwf7wAinMFGczfNa1bZm60AWK3YWEtBUbGhdbLj/3lcHCWRlGqlV+ccErBBD0rINahgu2D4E5ca1WXUJ+mzQJ3e/M2mPfJJId3Jzb5G3QJoB1WM5xYdmEACJ45MgbFijAe5E45DbgBMLC+A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K/FaF+4lx0lXVkGTv7YAAWX3CSKxQR1KBoBVBpr7wts=;
- b=t3J11eM4oFwxa82oFrZguAJngQBrQFTNR4SKyY/u5aaiglIOWhXwFFbCEbBi5FLQIo2lIDLVpldqZzOKt+DPdwNF+TiZWcJQ+8PbvZzxXbFgYp+SGG1agwv5EkO3Es5+7ZAyYAdp93vQrYYgLqnGWqmdANbt2GmSiJqOSXYpJnY=
-Received: from SJ0PR05CA0071.namprd05.prod.outlook.com (2603:10b6:a03:332::16)
- by DM6PR12MB4299.namprd12.prod.outlook.com (2603:10b6:5:223::9) with
+ bh=QjCRBnNEShlzlvRtTZXG3+HzhkmrBxfrEeKxtggpS8E=;
+ b=xSVNStdid977QQHqB0YT9CchYeK7uODgnKqA8l2p0wb5zma6n+E3uzA6GfSlYWOuv3ShcAWV/2GFq4O4OcXv+YolqCYUTs2xo56g8qJDFA0S6te8RvaaKf8M9vvc4zj2/mLJk6B072M+QZW20jmCjs4kbS1TraKbBDhX1SMzeRg=
+Received: from SJ0PR05CA0079.namprd05.prod.outlook.com (2603:10b6:a03:332::24)
+ by DM6PR12MB4370.namprd12.prod.outlook.com (2603:10b6:5:2aa::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Wed, 13 Mar
- 2024 10:00:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Wed, 13 Mar
+ 2024 10:00:50 +0000
 Received: from CO1PEPF000066E9.namprd05.prod.outlook.com
- (2603:10b6:a03:332:cafe::fb) by SJ0PR05CA0071.outlook.office365.com
- (2603:10b6:a03:332::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18 via Frontend
- Transport; Wed, 13 Mar 2024 10:00:48 +0000
+ (2603:10b6:a03:332:cafe::cc) by SJ0PR05CA0079.outlook.office365.com
+ (2603:10b6:a03:332::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19 via Frontend
+ Transport; Wed, 13 Mar 2024 10:00:49 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -64,11 +64,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CO1PEPF000066E9.mail.protection.outlook.com (10.167.249.11) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7386.12 via Frontend Transport; Wed, 13 Mar 2024 10:00:48 +0000
+ 15.20.7386.12 via Frontend Transport; Wed, 13 Mar 2024 10:00:49 +0000
 Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 05:00:42 -0500
+ 15.1.2507.35; Wed, 13 Mar 2024 05:00:45 -0500
 From: Perry Yuan <perry.yuan@amd.com>
 To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
 	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
@@ -76,9 +76,9 @@ To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
 CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
 	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 2/6] cpufreq:amd-pstate: initialize nominal_freq of each cpudata
-Date: Wed, 13 Mar 2024 17:59:14 +0800
-Message-ID: <df0c880226fd09947ff83ec8c56a434a506ba3f1.1710323410.git.perry.yuan@amd.com>
+Subject: [PATCH v7 3/6] cpufreq:amd-pstate: get pstate transition delay and latency value from ACPI tables
+Date: Wed, 13 Mar 2024 17:59:15 +0800
+Message-ID: <705e1a21a6a9d91a7ac67526c55c2961318ad678.1710323410.git.perry.yuan@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1710323410.git.perry.yuan@amd.com>
 References: <cover.1710323410.git.perry.yuan@amd.com>
@@ -94,117 +94,99 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000066E9:EE_|DM6PR12MB4299:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9b0468f7-8752-4e09-ec55-08dc4344757e
+X-MS-TrafficTypeDiagnostic: CO1PEPF000066E9:EE_|DM6PR12MB4370:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a097344-77e2-4d22-d106-08dc43447625
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	EwsjtZ+MdT6W5U3U8SIPTS6ny5OpjzLJ4FFb8bRIJMhpAeN8l9Y7Nb4h7kUs3xaPXt9EsbneXr2dYHVW4Z5yl5xoSQTsWfsJieY1OafPUz4WRfyScF6PDDY1vK0OzhizjdyCmUem5+W8frt4Wd1RhpVqXLnLtq9T3E16Wki9r8fVw/7rgom6nf0KLpqkzY1XKYsUUjXdYK3tsgLCVUCmvK6ooK2TOrtL+/nzH4M2mNorlEreiyskSwnwMfRR0ZxCZWB16A1VflZ9QvH28+tBBx8B+8i1sT0RWHbRmoVKTxSkn6rRB6MmzvGP31KJKU5LxGNCG00Vuw632fVEsewst/uIYVQ9G99l99WOWG0mwRZVUfG10VzUfZfnr47OXjzCEQfBMQzFnEWmSLK0zAoXp9jfVFpSsecO6vhT1cNWpNh0S5nKjX61J077D1rhfHmTcyucpq6N0PdHRwVOlUnxUsCTpAPFoFcW0sAtndswAtMpQ1a/qtkgtMWmWpD0fZhAcXNgHqml9tM9Prs65ag8pWx1TBRhYtTPMCe6dpYEH67KaHpTSuSBcMPnsaqq8GPHjRPG2a3+UW2q9JeJ9bUroWk29tKf1r/iLpAMO9EXvAaHJ1H8BYuiQrkSn0r1nZxbdcunreOapZMNt7ixEz+o6kpDCzAWhA6cL4BTyLG6FihzgGDQCUxVDQzEvGBQLCdpCH2OhRlNihZf1c401t/JTnlpR6JVS8tPQszGGSZ8rNaTr9scJvUyQsOxfqTfJc/2
+	08zR98KB39+E92cnN4IDXE02A5MXesiRi1lm4if2h4bbPMCPMiWZsXufTcvdaJ7djiAijithtSqyMkw39QtRaXx8OmFNaQmCxu5dp0ug6v/Rns4E849hUl/TauSMtVxbLY9zkx9fF5hD2DbjYcI6CGHnvU3qyxUVuTejuoTy3YeZa0FKiBDr023FQoTdVELaMxhmlBwEpRAi+1eotGZRb50A/1rzLIwEKaGDQtkmtrUOwuVRVdfbS2PMv5mft50JSL6Ya1KX5KK34fEIAseeX44FGwZ1j/MsGpIawauIP09h/QfPQMY4Dz/MUgQUt9ed4p90Z21iIrx5Jioqx5Ww/9hQ5WKMThOZshaXz8xHoiHgzQa4uAmKh1ZhPn0HnIt5/UfGfxcHGGtJolxdQhodSokqZebnNGU5R8cdz4MvHxpxxS9S+rW/Y5FIcA4fqqT4UlF/UF3q2rPHHyudrXiI7P0Sl2eyYQdgWUhzsNxtO78vHcDg2yVuS4q5Ktwjl49NrsRcbp9oRDRvKTK+d5IC1vRjHbd8Uck9dl0Cw9gO6E4x3UReimcwaSEWeOOAUFMwMmRPqhU/8mIgPKcwQ/y0xx4KMwmR+RZUY3ZsSwBRuHu+j0MkqRgAySzszEQx+CBST4OwLd8PmYzATg+glQiKdiP37pRJf0VDrRdsJV+IPjAXXXefBpqdzAq/X0cRA3gkL3L5vLYdIR6uwbqMO4Llr8TCw1apREs454ncIdLeLhxT6NcBCZuB4gUS6/NYIcEZ
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(36860700004)(376005);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(82310400014)(376005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 10:00:48.5513
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 10:00:49.7232
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b0468f7-8752-4e09-ec55-08dc4344757e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a097344-77e2-4d22-d106-08dc43447625
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	CO1PEPF000066E9.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4299
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4370
 
-Optimizes the process of retrieving the nominal frequency by utilizing
-'cpudata->nominal_freq' instead of repeatedly accessing the cppc_acpi interface.
+make pstate driver initially retrieve the P-state transition delay and latency
+values from the BIOS ACPI tables which has more reasonable delay and latency
+values according to the platform design and requirements.
 
-To enhance efficiency and reduce the CPU load, shifted to using
-'cpudata->nominal_freq'. It allows for the nominal frequency to be accessed
-directly from the cached data in 'cpudata' of each CPU.
-It will also slightly reduce the frequency change latency while using pstate
-driver passive mode.
+Previously there values were hardcoded at specific value which may
+have conflicted with platform and it might not reflect the most accurate or
+optimized setting for the processor.
+
+[054h 0084   8]                Preserve Mask : FFFFFFFF00000000
+[05Ch 0092   8]                   Write Mask : 0000000000000001
+[064h 0100   4]              Command Latency : 00000FA0
+[068h 0104   4]          Maximum Access Rate : 0000EA60
+[06Ch 0108   2]      Minimum Turnaround Time : 0000
 
 Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 Signed-off-by: Perry Yuan <perry.yuan@amd.com>
 ---
- drivers/cpufreq/amd-pstate.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/cpufreq/amd-pstate.c | 34 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index 3faa895b77b7..6db9256f42c0 100644
+index 6db9256f42c0..ec6259957d25 100644
 --- a/drivers/cpufreq/amd-pstate.c
 +++ b/drivers/cpufreq/amd-pstate.c
-@@ -626,7 +626,7 @@ static int amd_get_max_freq(struct amd_cpudata *cpudata)
- 	if (ret)
- 		return ret;
+@@ -827,6 +827,36 @@ static void amd_pstate_update_limits(unsigned int cpu)
+ 	mutex_unlock(&amd_pstate_driver_lock);
+ }
  
--	nominal_freq = cppc_perf.nominal_freq;
-+	nominal_freq = READ_ONCE(cpudata->nominal_freq);
- 	nominal_perf = READ_ONCE(cpudata->nominal_perf);
- 	max_perf = READ_ONCE(cpudata->highest_perf);
- 
-@@ -661,7 +661,7 @@ static int amd_get_lowest_nonlinear_freq(struct amd_cpudata *cpudata)
- 	if (ret)
- 		return ret;
- 
--	nominal_freq = cppc_perf.nominal_freq;
-+	nominal_freq = READ_ONCE(cpudata->nominal_freq);
- 	nominal_perf = READ_ONCE(cpudata->nominal_perf);
- 
- 	lowest_nonlinear_perf = cppc_perf.lowest_nonlinear_perf;
-@@ -855,13 +855,14 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
- 		goto free_cpudata1;
- 
- 	min_freq = amd_get_min_freq(cpudata);
--	max_freq = amd_get_max_freq(cpudata);
- 	nominal_freq = amd_get_nominal_freq(cpudata);
-+	cpudata->nominal_freq = nominal_freq;
-+	max_freq = amd_get_max_freq(cpudata);
- 	lowest_nonlinear_freq = amd_get_lowest_nonlinear_freq(cpudata);
- 
--	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
--		dev_err(dev, "min_freq(%d) or max_freq(%d) value is incorrect\n",
--			min_freq, max_freq);
-+	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq || nominal_freq == 0) {
-+		dev_err(dev, "min_freq(%d) or max_freq(%d) or nominal_freq(%d) is incorrect\n",
-+			min_freq, max_freq, nominal_freq);
- 		ret = -EINVAL;
- 		goto free_cpudata1;
- 	}
-@@ -900,7 +901,6 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
- 	cpudata->min_freq = min_freq;
- 	cpudata->max_limit_freq = max_freq;
- 	cpudata->min_limit_freq = min_freq;
--	cpudata->nominal_freq = nominal_freq;
- 	cpudata->lowest_nonlinear_freq = lowest_nonlinear_freq;
- 
- 	policy->driver_data = cpudata;
-@@ -1317,12 +1317,13 @@ static int amd_pstate_epp_cpu_init(struct cpufreq_policy *policy)
- 		goto free_cpudata1;
- 
- 	min_freq = amd_get_min_freq(cpudata);
--	max_freq = amd_get_max_freq(cpudata);
- 	nominal_freq = amd_get_nominal_freq(cpudata);
-+	cpudata->nominal_freq = nominal_freq;
-+	max_freq = amd_get_max_freq(cpudata);
- 	lowest_nonlinear_freq = amd_get_lowest_nonlinear_freq(cpudata);
--	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
--		dev_err(dev, "min_freq(%d) or max_freq(%d) value is incorrect\n",
--				min_freq, max_freq);
-+	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq || nominal_freq == 0) {
-+		dev_err(dev, "min_freq(%d) or max_freq(%d) or nominal_freq(%d) is incorrect\n",
-+				min_freq, max_freq, nominal_freq);
- 		ret = -EINVAL;
++/**
++ * Get pstate transition delay time from ACPI tables that firmware set
++ * instead of using hardcode value directly.
++ */
++static u32 amd_pstate_get_transition_delay_us(unsigned int cpu)
++{
++	u32 transition_delay_ns;
++
++	transition_delay_ns = cppc_get_transition_latency(cpu);
++	if (transition_delay_ns == CPUFREQ_ETERNAL)
++		return AMD_PSTATE_TRANSITION_DELAY;
++
++	return transition_delay_ns / NSEC_PER_USEC;
++}
++
++/**
++ * Get pstate transition latency value from ACPI tables that firmware set
++ * instead of using hardcode value directly.
++ */
++static u32 amd_pstate_get_transition_latency(unsigned int cpu)
++{
++	u32 transition_latency;
++
++	transition_latency = cppc_get_transition_latency(cpu);
++	if (transition_latency  == CPUFREQ_ETERNAL)
++		return AMD_PSTATE_TRANSITION_LATENCY;
++
++	return transition_latency;
++}
++
+ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
+ {
+ 	int min_freq, max_freq, nominal_freq, lowest_nonlinear_freq, ret;
+@@ -867,8 +897,8 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
  		goto free_cpudata1;
  	}
-@@ -1335,7 +1336,6 @@ static int amd_pstate_epp_cpu_init(struct cpufreq_policy *policy)
- 	/* Initial processor data capability frequencies */
- 	cpudata->max_freq = max_freq;
- 	cpudata->min_freq = min_freq;
--	cpudata->nominal_freq = nominal_freq;
- 	cpudata->lowest_nonlinear_freq = lowest_nonlinear_freq;
  
- 	policy->driver_data = cpudata;
+-	policy->cpuinfo.transition_latency = AMD_PSTATE_TRANSITION_LATENCY;
+-	policy->transition_delay_us = AMD_PSTATE_TRANSITION_DELAY;
++	policy->cpuinfo.transition_latency = amd_pstate_get_transition_latency(policy->cpu);
++	policy->transition_delay_us = amd_pstate_get_transition_delay_us(policy->cpu);
+ 
+ 	policy->min = min_freq;
+ 	policy->max = max_freq;
 -- 
 2.34.1
 
