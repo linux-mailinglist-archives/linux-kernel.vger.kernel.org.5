@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-101001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01AC187A0A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:25:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86B2E87A0AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:25:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 342611C22A70
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:25:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4262F285102
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D39BE5D;
-	Wed, 13 Mar 2024 01:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CA0DF6C;
+	Wed, 13 Mar 2024 01:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="AXh1/gNI"
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="w0SRTMg6"
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F78A93C
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD566BA2D
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710293108; cv=none; b=j0K3QF0ndi9/y3RoGxLmpdmOGFC/xNSefyvY7cs/1lr2l2gNwD7a7T0ti4tnUsSQPlscdBMzCg3EG7ejibcahgjDdi0BtXFN10nR5wAnBlhLtYkZpkuYun23rIJjvmPOOdt2ftnGXOaSK3gKcVRk3KKsDvYgumY3g+nvO+QfFko=
+	t=1710293110; cv=none; b=ASN3kY4rzK5piSEHTJoXt5W1BQluBH2gMvQEigDDqMQmPhTTW44fcjVXLSX8iV/4fSsQWWLDWwwSSjgHinUm/Eg1zkOEWhAO58kA8JJrB12O+ayQzHRcyqYq62lVOOrjZb4pD3pqXpFpvWhESjF8gxH+BhtFqwaWI+67lEEqPcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710293108; c=relaxed/simple;
-	bh=/tum2WF4xPzP3d2/oUJvAp904N/cyC9DIis13Mprwms=;
+	s=arc-20240116; t=1710293110; c=relaxed/simple;
+	bh=ZOaTdU6+mkYKcu73jBNLA/JSAJmZHt+8O8zlVTj/AiM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hoZ1lN09s2KSufeChy9XOKZPs9YqU+lM0dqKYivsb47mL06yLasQxgWgG+/grcrkju9wZrkjIz+MdyuFuGZjILzQNoe70pi+8rWNzjdZw0U2co3EPQ7eD1Knism/w7nhqW7iCrRmzlI76tp6MgG22rorKVR2zO8f+98tY6E2Y+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=AXh1/gNI; arc=none smtp.client-ip=209.85.217.42
+	 MIME-Version; b=Agtm3yqktSlEAoaTH/nyRjQUsfLuo7gxziGCijoYc6tgTeec6Cqm42Xc8KAR4xv6xzA0cXJXEhAofuhwHc/7xwUm+MpqDjXfnkKaIl7Jx/KefY6BIdOMBJS/ZCnrVnveTT86qTGgIdUksC+RbBcHTMQyT8U3y+o8qBs7ts4XVCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=w0SRTMg6; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-473ac7bbe64so386267137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:06 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-690b7ce0f59so29559736d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710293105; x=1710897905; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1710293107; x=1710897907; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dVFjYg00n2ZAFDWX2JpqdHNuxugRyfOJfGbuxjDxV/Q=;
-        b=AXh1/gNIRiIYRyHi/5afgdmUDcJxiLlFhc4sqZ7s3rfWa/RqRyuQNDIjOHlL5s04Du
-         k+wmmxCUx3oz89sr7U9l5PRyv4oSxIXqkr2fVh5Dt/8ChgGx3nKqLDg4DZ7mBYNfCi3N
-         x9cTAq7RWzgzFYvexyDR5a+Tk7XZWdEI5i9CA=
+        bh=eIq/RsKJ+ZDmqaV4DNR53VSSNnL2VAVCUisag/qJ124=;
+        b=w0SRTMg66QtBoU7h+Z5j+J5aWX6/gFxCfpQxwqeNuIBHTFJaz7lRwD3JDScgLJj0Ig
+         qlB7+LRw0JURaKW62YheWAAL5yAUDD7Ls61oWyNG/8AEq5/kirbuvZjdjK2dagK0Famw
+         6ZaYGfSRr3n29cXqyCfFkOdSh/XVB2hnkb+G8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710293105; x=1710897905;
+        d=1e100.net; s=20230601; t=1710293107; x=1710897907;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dVFjYg00n2ZAFDWX2JpqdHNuxugRyfOJfGbuxjDxV/Q=;
-        b=NqziyTuASk6p7HYvQ1Hb2R28vE3C+MbCcuSuwyOoUzRZV/RPef35+s0lI0rKx1u9gZ
-         JVKI/DQWl/XeiTZI3gTmlKi5Qq6UV+Di4OmVI2sVytatbQF6u/7t0SgudslszXVp2P4w
-         GhIK6fPu0zzrXzJ1aA23rf0CaRUdUf9o0IVT7QLBypbTDDgZBKQuFClzgCieEIHDg9cn
-         jSk0bhrupxULsHofTArAKO7vFTFFhx4ZmSkOR8C2QlIklMQTUfPEPKgWfGVWF57VsLX6
-         wnv8tssIg8IjPD946dFyIhmD0s01MOzdgV5R4kpZCp/SUyXQBAUKQKr8l0peKJTbU8XV
-         nO6g==
-X-Gm-Message-State: AOJu0YxLnsina4ulKf8Y9534gNsotk4zBic1COGAupD0VYMa+AsB97oO
-	Rmho6sFUkP6AyvEXJA2zuPiVlndg3aXny9OTuugOSZOaZrwJcQISqGECNiIqlrC0+QVsvvvxjbZ
-	D
-X-Google-Smtp-Source: AGHT+IEXEUJofH0D0+hQCIBelr5x7iiFfSw5Npn4vbtW58PtqlERPNfEzwBLL4rsFAlZJvZQqR6xyw==
-X-Received: by 2002:a67:e290:0:b0:472:53e0:6549 with SMTP id g16-20020a67e290000000b0047253e06549mr2130218vsf.14.1710293104735;
-        Tue, 12 Mar 2024 18:25:04 -0700 (PDT)
+        bh=eIq/RsKJ+ZDmqaV4DNR53VSSNnL2VAVCUisag/qJ124=;
+        b=iaCuzAtdZVEwsKXypVr6z8lGdJ9nGLMCgoFc054ZllR6Non3wYsBu0syA7dzeABFZN
+         bgYPTvHyf3shwjmmQHdkY/ibyGGhPNpCEXk5RpRPLfFG2p7rHVTPdNFQYHnG1BWMnP2U
+         MJP3CoLm+i7H4LIdW0xHd8EyTb7hstxmHwvyc2DBQ/wYcJhnz7iAvgbQG11NVWifr/jy
+         dQLAs35pSjf9JH1aRhxgn+BNKQEC6ftxrxs/XrpyAw1cPXV5PRUvHiC8pw6AlMl4OnMw
+         01XOaicwU/x3xRQOPZ8xm1JRoTqTup4nTzxDo5MCEcrIDbi6QOFrlQ/S4rmhNdGoBaaX
+         ps7A==
+X-Gm-Message-State: AOJu0Yx/RzQdVLQioPS4eJbrMRrgiD+y/K4Ff/b2OQ2DftGLjS7GSGHo
+	+MLtzmihN2hr3iu0kCq+NtJUDoRmDDmE+iyFPCxpCkl1aS9rPQvJgJdK8E5ATZG1ixFIQwXrHO9
+	U
+X-Google-Smtp-Source: AGHT+IEo3qLwxTzSVUZ92CVnWSt4p1RkIwgvb8H6YC7a+n6trhN/r0aCvm8ypkHWszNoBkdIwgnCBA==
+X-Received: by 2002:a05:6214:888:b0:690:e2b5:9219 with SMTP id cz8-20020a056214088800b00690e2b59219mr4643667qvb.22.1710293106976;
+        Tue, 12 Mar 2024 18:25:06 -0700 (PDT)
 Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.02
+        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 18:25:03 -0700 (PDT)
+        Tue, 12 Mar 2024 18:25:06 -0700 (PDT)
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To: linux-kernel@vger.kernel.org,
 	Ingo Molnar <mingo@redhat.com>,
@@ -86,10 +86,10 @@ Cc: Suleiman Souhlal <suleiman@google.com>,
 	Vineeth Pillai <vineeth@bitbyteword.org>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Phil Auld <pauld@redhat.com>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH v2 01/15] sched/core: Add clearing of ->dl_server in put_prev_task_balance()
-Date: Tue, 12 Mar 2024 21:24:37 -0400
-Message-Id: <20240313012451.1693807-2-joel@joelfernandes.org>
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH v2 02/15] sched/core: Clear prev->dl_server in CFS pick fast path
+Date: Tue, 12 Mar 2024 21:24:38 -0400
+Message-Id: <20240313012451.1693807-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240313012451.1693807-1-joel@joelfernandes.org>
 References: <20240313012451.1693807-1-joel@joelfernandes.org>
@@ -101,48 +101,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Paths using put_prev_task_balance() need to do a pick shortly after. Make sure
-they also clear the ->dl_server on prev as a part of that.
+From: Youssef Esmat <youssefesmat@google.com>
 
+In case the previous pick was a DL server pick, ->dl_server might be
+set. Clear it in the fast path as well.
+
+Signed-off-by: Youssef Esmat <youssefesmat@google.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ kernel/sched/core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 973fd610d089..7f3a2596c1ed 100644
+index 7f3a2596c1ed..63f41453b79e 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5998,6 +5998,14 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
- #endif
+@@ -6036,6 +6036,13 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 			p = pick_next_task_idle(rq);
+ 		}
  
- 	put_prev_task(rq, prev);
++		/*
++		 * This is a normal CFS pick, but the previous could be a DL pick.
++		 * Clear it as previous is no longer picked.
++		 */
++		if (prev->dl_server)
++			prev->dl_server = NULL;
 +
-+	/*
-+	 * We've updated @prev and no longer need the server link, clear it.
-+	 * Must be done before ->pick_next_task() because that can (re)set
-+	 * ->dl_server.
-+	 */
-+	if (prev->dl_server)
-+		prev->dl_server = NULL;
- }
- 
- /*
-@@ -6041,14 +6049,6 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- restart:
- 	put_prev_task_balance(rq, prev, rf);
- 
--	/*
--	 * We've updated @prev and no longer need the server link, clear it.
--	 * Must be done before ->pick_next_task() because that can (re)set
--	 * ->dl_server.
--	 */
--	if (prev->dl_server)
--		prev->dl_server = NULL;
--
- 	for_each_class(class) {
- 		p = class->pick_next_task(rq);
- 		if (p)
+ 		/*
+ 		 * This is the fast path; it cannot be a DL server pick;
+ 		 * therefore even if @p == @prev, ->dl_server must be NULL.
 -- 
 2.34.1
 
