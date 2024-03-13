@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-101854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FB7187AC2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:00:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 319B587AC2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 253B71F2750B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:00:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A9A5B237FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BBC74E21;
-	Wed, 13 Mar 2024 16:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115D7757E9;
+	Wed, 13 Mar 2024 16:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WSLFtJBO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="je5Svtqd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCB374C1A;
-	Wed, 13 Mar 2024 16:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4958F74E26;
+	Wed, 13 Mar 2024 16:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347891; cv=none; b=dgi3ixWnzutEhQbtgiAqkwWwObdgOc8iiDPWuVEZpOMLlhOoOE40CMG107tjXlZo3Q7o/mgwrfFlrSXG9Klo2MWjW45lf+WzdGFlL0Q6UJ3yHw3U4kbZ5kap+6hvDhPPx8/SWRNHa9LzHUk5LaT597LkuPQ7YeH53MrcpVQGorw=
+	t=1710347892; cv=none; b=bUdw57JkS2jfFCnkjfW8WdaVIvz4ATI9QoQAkWpnIFG/ABUK5lvj495TtFFCEa//B374ORa1keCX2L1K0CAljrOd8iNIuO4HtSUx7fC37lURA70bg/CuLpdVXfi0wtTCGV8SI7tdM+FX0iKVMd8EuWHQGSt6XBXf1NvAITAGG1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347891; c=relaxed/simple;
-	bh=eWt5CNSeCkrIAqjqsbX95+C1lHWJJl9703dTTPGx8Xs=;
+	s=arc-20240116; t=1710347892; c=relaxed/simple;
+	bh=CsHzNpdG5SPYklOSqqw8wKOSpXXQqJ0UmRMBg28eU9Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PKveaApFaWkJTdoGuIRzkMrj0pTgl2UpyIifRDAaeDCIOe6m5cvQ1Ottr+k5jy2/U5VqtHMrCCTkKiYfaAEB/j9h7Lw1XlES6Q+Q2f4iJuYQjgwbOMzxA1TneDIU6vMUo8uLszp2OddHk3J4EjhWdUCT12Wfd6IdXkcYekZOScg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WSLFtJBO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5196C433C7;
-	Wed, 13 Mar 2024 16:38:09 +0000 (UTC)
+	 MIME-Version; b=CQJnm/7mW5DzqE51iLapXd0i+/kDoZ8+oVaALoevNAKWR7bq3MEmrk7wHELtHFVZpdj2eRB3IEUjuM3ZPYpAPPd2sp8ZyYZCV8uU+xexttoPxJusTBu13AldLoZ4CQjyz51W2GjbbmsiBGNJzLPozXfEWAa/+CPlzFZCV1sXJS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=je5Svtqd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16215C43390;
+	Wed, 13 Mar 2024 16:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347890;
-	bh=eWt5CNSeCkrIAqjqsbX95+C1lHWJJl9703dTTPGx8Xs=;
+	s=k20201202; t=1710347892;
+	bh=CsHzNpdG5SPYklOSqqw8wKOSpXXQqJ0UmRMBg28eU9Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WSLFtJBO343yTA9lrokyWjMnlrwlyfogdwRTiOJlkY4GXIRa/latFg0OtxcVxp2RA
-	 rfJGjk558TQlKhPistq4x2kc9o4xHneJufacla89wJsB6+A74PHUcPv2q847aYEJEF
-	 +l83YBGZcqVZkvouRV6Y1NllQ+1Hi7ddpfGdppJ74H9lRFn+69KhxHirpwD/sLAVXR
-	 KRyoiWT31W1MgmB2O2UubUBTveyGER0nX55E234DOKcrzERXKkey2HUoITY5KdUmxo
-	 JlKDWXIMQ+Nhy7Fnz37qHSvsA7zSU6hQDqftxxJgQRnA0tDfXxgEEmS33MGmIGpWQo
-	 x3hxO2tL1EhSQ==
+	b=je5SvtqdoDNR8yIU+LSrdQlszXlkbVs8TG5+EKKpRqHm+0wX1cuyRO7IOVWCSRHu7
+	 gcyjCtGeQ1cxHVgZhRDGL37ADyxqlaZSCdz+/9Z7R396uvNb1SjL0MIK2ZqgPJ4Cnm
+	 VszfQetCd3JaxgFmlciggx+jwEQpvCAknkjGHzZ+YYIKnjKXfgMEuEuK90STMQzbUZ
+	 g5GgPKtjPtyPzw9scjs5O6+vYhbeJlsiUuRj5wbXhgWe3AIHU1gc0GId+0ZKBJWt3j
+	 QQ6z8KLksz/7AT2M81YR9CVIC7dj6b5KHY9fMn4P/gEUxefLaui/ZiLc3FUR/DW053
+	 y0ZLeZ+kffpSw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nico Boehr <nrb@linux.ibm.com>,
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Marc Hartmayer <mhartmay@linux.ibm.com>,
 	David Hildenbrand <david@redhat.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
 	Janosch Frank <frankja@linux.ibm.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 51/60] KVM: s390: add stat counter for shadow gmap events
-Date: Wed, 13 Mar 2024 12:36:58 -0400
-Message-ID: <20240313163707.615000-52-sashal@kernel.org>
+Subject: [PATCH 6.6 52/60] KVM: s390: vsie: fix race during shadow creation
+Date: Wed, 13 Mar 2024 12:36:59 -0400
+Message-ID: <20240313163707.615000-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -70,166 +71,64 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nico Boehr <nrb@linux.ibm.com>
+From: Christian Borntraeger <borntraeger@linux.ibm.com>
 
-[ Upstream commit c3235e2dd6956448a562d6b1112205eeebc8ab43 ]
+[ Upstream commit fe752331d4b361d43cfd0b89534b4b2176057c32 ]
 
-The shadow gmap tracks memory of nested guests (guest-3). In certain
-scenarios, the shadow gmap needs to be rebuilt, which is a costly operation
-since it involves a SIE exit into guest-1 for every entry in the respective
-shadow level.
+Right now it is possible to see gmap->private being zero in
+kvm_s390_vsie_gmap_notifier resulting in a crash.  This is due to the
+fact that we add gmap->private == kvm after creation:
 
-Add kvm stat counters when new shadow structures are created at various
-levels. Also add a counter gmap_shadow_create when a completely fresh
-shadow gmap is created as well as a counter gmap_shadow_reuse when an
-existing gmap is being reused.
+static int acquire_gmap_shadow(struct kvm_vcpu *vcpu,
+                               struct vsie_page *vsie_page)
+{
+[...]
+        gmap = gmap_shadow(vcpu->arch.gmap, asce, edat);
+        if (IS_ERR(gmap))
+                return PTR_ERR(gmap);
+        gmap->private = vcpu->kvm;
 
-Note that when several levels are shadowed at once, counters on all
-affected levels will be increased.
+Let children inherit the private field of the parent.
 
-Also note that not all page table levels need to be present and a ASCE
-can directly point to e.g. a segment table. In this case, a new segment
-table will always be equivalent to a new shadow gmap and hence will be
-counted as gmap_shadow_create and not as gmap_shadow_segment.
-
-Signed-off-by: Nico Boehr <nrb@linux.ibm.com>
+Reported-by: Marc Hartmayer <mhartmay@linux.ibm.com>
+Fixes: a3508fbe9dc6 ("KVM: s390: vsie: initial support for nested virtualization")
+Cc: <stable@vger.kernel.org>
+Cc: David Hildenbrand <david@redhat.com>
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 Reviewed-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-Link: https://lore.kernel.org/r/20231009093304.2555344-2-nrb@linux.ibm.com
-Message-Id: <20231009093304.2555344-2-nrb@linux.ibm.com>
-Stable-dep-of: fe752331d4b3 ("KVM: s390: vsie: fix race during shadow creation")
+Signed-off-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+Link: https://lore.kernel.org/r/20231220125317.4258-1-borntraeger@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/kvm_host.h | 7 +++++++
- arch/s390/kvm/gaccess.c          | 7 +++++++
- arch/s390/kvm/kvm-s390.c         | 9 ++++++++-
- arch/s390/kvm/vsie.c             | 5 ++++-
- 4 files changed, 26 insertions(+), 2 deletions(-)
+ arch/s390/kvm/vsie.c | 1 -
+ arch/s390/mm/gmap.c  | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index 427f9528a7b69..67a298b6cf6e9 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -777,6 +777,13 @@ struct kvm_vm_stat {
- 	u64 inject_service_signal;
- 	u64 inject_virtio;
- 	u64 aen_forward;
-+	u64 gmap_shadow_create;
-+	u64 gmap_shadow_reuse;
-+	u64 gmap_shadow_r1_entry;
-+	u64 gmap_shadow_r2_entry;
-+	u64 gmap_shadow_r3_entry;
-+	u64 gmap_shadow_sg_entry;
-+	u64 gmap_shadow_pg_entry;
- };
- 
- struct kvm_arch_memory_slot {
-diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
-index 6d6bc19b37dcb..ff8349d17b331 100644
---- a/arch/s390/kvm/gaccess.c
-+++ b/arch/s390/kvm/gaccess.c
-@@ -1382,6 +1382,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
- 				  unsigned long *pgt, int *dat_protection,
- 				  int *fake)
- {
-+	struct kvm *kvm;
- 	struct gmap *parent;
- 	union asce asce;
- 	union vaddress vaddr;
-@@ -1390,6 +1391,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
- 
- 	*fake = 0;
- 	*dat_protection = 0;
-+	kvm = sg->private;
- 	parent = sg->parent;
- 	vaddr.addr = saddr;
- 	asce.val = sg->orig_asce;
-@@ -1450,6 +1452,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
- 		rc = gmap_shadow_r2t(sg, saddr, rfte.val, *fake);
- 		if (rc)
- 			return rc;
-+		kvm->stat.gmap_shadow_r1_entry++;
- 	}
- 		fallthrough;
- 	case ASCE_TYPE_REGION2: {
-@@ -1478,6 +1481,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
- 		rc = gmap_shadow_r3t(sg, saddr, rste.val, *fake);
- 		if (rc)
- 			return rc;
-+		kvm->stat.gmap_shadow_r2_entry++;
- 	}
- 		fallthrough;
- 	case ASCE_TYPE_REGION3: {
-@@ -1515,6 +1519,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
- 		rc = gmap_shadow_sgt(sg, saddr, rtte.val, *fake);
- 		if (rc)
- 			return rc;
-+		kvm->stat.gmap_shadow_r3_entry++;
- 	}
- 		fallthrough;
- 	case ASCE_TYPE_SEGMENT: {
-@@ -1548,6 +1553,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
- 		rc = gmap_shadow_pgt(sg, saddr, ste.val, *fake);
- 		if (rc)
- 			return rc;
-+		kvm->stat.gmap_shadow_sg_entry++;
- 	}
- 	}
- 	/* Return the parent address of the page table */
-@@ -1618,6 +1624,7 @@ int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
- 	pte.p |= dat_protection;
- 	if (!rc)
- 		rc = gmap_shadow_page(sg, saddr, __pte(pte.val));
-+	vcpu->kvm->stat.gmap_shadow_pg_entry++;
- 	ipte_unlock(vcpu->kvm);
- 	mmap_read_unlock(sg->mm);
- 	return rc;
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 49cce436444e0..1af55343a606b 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -66,7 +66,14 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
- 	STATS_DESC_COUNTER(VM, inject_pfault_done),
- 	STATS_DESC_COUNTER(VM, inject_service_signal),
- 	STATS_DESC_COUNTER(VM, inject_virtio),
--	STATS_DESC_COUNTER(VM, aen_forward)
-+	STATS_DESC_COUNTER(VM, aen_forward),
-+	STATS_DESC_COUNTER(VM, gmap_shadow_reuse),
-+	STATS_DESC_COUNTER(VM, gmap_shadow_create),
-+	STATS_DESC_COUNTER(VM, gmap_shadow_r1_entry),
-+	STATS_DESC_COUNTER(VM, gmap_shadow_r2_entry),
-+	STATS_DESC_COUNTER(VM, gmap_shadow_r3_entry),
-+	STATS_DESC_COUNTER(VM, gmap_shadow_sg_entry),
-+	STATS_DESC_COUNTER(VM, gmap_shadow_pg_entry),
- };
- 
- const struct kvm_stats_header kvm_vm_stats_header = {
 diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-index e55f489e1fb79..8207a892bbe22 100644
+index 8207a892bbe22..db9a180de65f1 100644
 --- a/arch/s390/kvm/vsie.c
 +++ b/arch/s390/kvm/vsie.c
-@@ -1210,8 +1210,10 @@ static int acquire_gmap_shadow(struct kvm_vcpu *vcpu,
- 	 * we're holding has been unshadowed. If the gmap is still valid,
- 	 * we can safely reuse it.
- 	 */
--	if (vsie_page->gmap && gmap_shadow_valid(vsie_page->gmap, asce, edat))
-+	if (vsie_page->gmap && gmap_shadow_valid(vsie_page->gmap, asce, edat)) {
-+		vcpu->kvm->stat.gmap_shadow_reuse++;
- 		return 0;
-+	}
- 
- 	/* release the old shadow - if any, and mark the prefix as unmapped */
- 	release_gmap_shadow(vsie_page);
-@@ -1219,6 +1221,7 @@ static int acquire_gmap_shadow(struct kvm_vcpu *vcpu,
+@@ -1220,7 +1220,6 @@ static int acquire_gmap_shadow(struct kvm_vcpu *vcpu,
+ 	gmap = gmap_shadow(vcpu->arch.gmap, asce, edat);
  	if (IS_ERR(gmap))
  		return PTR_ERR(gmap);
- 	gmap->private = vcpu->kvm;
-+	vcpu->kvm->stat.gmap_shadow_create++;
+-	gmap->private = vcpu->kvm;
+ 	vcpu->kvm->stat.gmap_shadow_create++;
  	WRITE_ONCE(vsie_page->gmap, gmap);
  	return 0;
- }
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index 20786f6883b29..157e0a8d5157d 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -1691,6 +1691,7 @@ struct gmap *gmap_shadow(struct gmap *parent, unsigned long asce,
+ 		return ERR_PTR(-ENOMEM);
+ 	new->mm = parent->mm;
+ 	new->parent = gmap_get(parent);
++	new->private = parent->private;
+ 	new->orig_asce = asce;
+ 	new->edat_level = edat_level;
+ 	new->initialized = false;
 -- 
 2.43.0
 
