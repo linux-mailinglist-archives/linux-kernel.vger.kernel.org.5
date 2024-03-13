@@ -1,143 +1,142 @@
-Return-Path: <linux-kernel+bounces-101325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77CE87A58B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:06:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EBA387A58F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 669BC1F21802
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:06:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAB2CB2177D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89633D0A9;
-	Wed, 13 Mar 2024 10:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8321138DE6;
+	Wed, 13 Mar 2024 10:08:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QEGyuIAy"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VRyLy1Fl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E3F3DBB2;
-	Wed, 13 Mar 2024 10:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710324327; cv=fail; b=dmuiwcSxSHpl+WSRWwD9NLtyzcjSQDprgehcm16UnpeDse8UY+u6/Iq+F3jBdDOQfqIxZ6lZRQoLG5ceMLEmj4+xCgjlsjgPdySu3CdieeMsPCkNthVHxT3AdE9OnrIT0i1Iu4EUZdXil4zGMUToXs2M4kFJd2ZZCR+U9W40fCw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710324327; c=relaxed/simple;
-	bh=G02pH48d8Db06kvsEBrKMIuPJnL8wLDz6Y2MuwmFRDA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q2gviyhDs/emSx5cBR2lZ8XTV/oNMgCV8yyhsPR7DyFVvq3F8kHwq9dAn46v3T6fYQTTyEvpR3ocFjl/pdleEacx2ha49QEt4tmVHJLzAb/ixWaHG+r/VAfzdqkD4PqoyCC3sp1wFawVaK0rqwpoX1UMhgrWr8iYP7dIzZOpVls=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QEGyuIAy; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f3Qg1CUCGH1d8xnXjTXgHOEo0yOfBQjmxO6km2fYvrsVtZyU3KhpZDybLkldNqNF+20NPXwT8KSxUacAjc8ocReN4I6Q2ThE9293ItXBq0ksyhvVh0tDNaFIHg+V1QHiD5HvOiw3OdGXXFFdFwYU0w5vi6AIjAsH54ntXbq0BCtNS42TbiN+miKQyE0g38XJQQUryS6YJjKVlPxuZzRz1VUgG8KWKdTRgmA/tEirb0Zj36bBezI/eTl1D7FHTI28EB8Eh5SCGg8Zbew4gAIXclRsS5eL8wMhdNrgACe/hHlYSZkVlE1rlaahLXZS8dwmgAnAUo9kWFlFnT7OkUBSfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y1sLe1zptm6M7KMO+14mkYFferByd7hCOhOYHL7G7mY=;
- b=hXu2VXh5FkugJBiOSU/MI4Kohmx4FSMdvyLgL0ztlv+QEhx5F0KHYd2vLeOOfYPfPWQj+hLdAnvvpXkCtgU64DYcYlrFr9+wenR66an9VwLuYpNVbW4VVydfC0VYKD3uBfR+7gVTmB9V0tfMvCOa9X4fkJd88NqxIyUyo70L9WIZd+V34ZKiXCKGUNF5lGD1k1cGRQhuMxEkJedpSnKaYBDJTi34t5DyWI4erK+C2YkCkM19sC+tFEAX+Lza33ipqYgOCGEP/One28R4fhvE4Lj9g+gPM5JVaLI7Tc5Sd2hJ1XS/OOygo2rD3HUZ53nlT3Nao8GrAYjLCScGLat3ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y1sLe1zptm6M7KMO+14mkYFferByd7hCOhOYHL7G7mY=;
- b=QEGyuIAy9isScqbr1W2ns40qYHDj1BP1emxo+twvMIj57os4QwjDrqEMslHUp84nbR4XUcgDmaQ2UWLol1lBIgeWn1d7eNcTWJMLBqs+4gVsPnM2MizF+zzlc5W4YUP4GXbDuvKBNDUNYCRRbJq4Fpz1Y7AEWa2JC0K/IyyyPvI=
-Received: from MW3PR06CA0008.namprd06.prod.outlook.com (2603:10b6:303:2a::13)
- by DS0PR12MB9348.namprd12.prod.outlook.com (2603:10b6:8:1a0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Wed, 13 Mar
- 2024 10:05:21 +0000
-Received: from CO1PEPF000066E8.namprd05.prod.outlook.com
- (2603:10b6:303:2a:cafe::8b) by MW3PR06CA0008.outlook.office365.com
- (2603:10b6:303:2a::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19 via Frontend
- Transport; Wed, 13 Mar 2024 10:05:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000066E8.mail.protection.outlook.com (10.167.249.6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7386.12 via Frontend Transport; Wed, 13 Mar 2024 10:05:21 +0000
-Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 05:05:17 -0500
-From: Perry Yuan <perry.yuan@amd.com>
-To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
-	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
-	<Borislav.Petkov@amd.com>
-CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
-	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 7/7] cpufreq: amd-pstate-ut: support new cpb boost control interface
-Date: Wed, 13 Mar 2024 18:04:44 +0800
-Message-ID: <1932134a71717f9c4156d7755d40af6f63dc98b1.1710322310.git.perry.yuan@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1710322310.git.perry.yuan@amd.com>
-References: <cover.1710322310.git.perry.yuan@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789BD383B9
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710324533; cv=none; b=NT7iaGONSTGCCGsIpc9CJXCjiSc0T9Y9B5o14UvMJzS+gVv5fSOcE3Ul1itHG/DfngGizfdaj+qDAJvfIPHZqX4tG9N/aoanT4uDJAGkG2Q6D2Fc1vN7joA2nK7D66wJBFXhk6NySQxztPIUYuXV8PjFK0/+sYyL9JRZpNSJpio=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710324533; c=relaxed/simple;
+	bh=aSw6o7ezc8c9/Vjkfi+RE9UYn23okpahByuvCrBXroI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=akUI2Y6MDq+CBM80eSd9KONi7iyV/J8OBQJ1YO3KeivCKoFmD+Pp8T6LVuArSeJR92qEByK7nyG1VESSK3swJF7RoWldPQM8NDOWfxHuxPMGQqYVd59TyrAKeDGSQmRuwKVk+xJ1ftLsykKJuVHOlApaVsyXkJih8mKx0BqDMMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VRyLy1Fl; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710324532; x=1741860532;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=aSw6o7ezc8c9/Vjkfi+RE9UYn23okpahByuvCrBXroI=;
+  b=VRyLy1FlcOaOB+M4wVCpEZa+/wgIxT6sFsRB3lfPDYkXJzm0dZiLxcMq
+   0x6KsvuvMI6pjb3ddMwBzWfbtIHnFDsxn/S3yILBScKPlQ4K6b3158fuD
+   VUry7gJm9sDYbJBgbpvHxBW31HMT2T0dDNfXv6AjXY7HP0N33qIXdvZCo
+   cT4oCPgFFL1qZfL7uUQMUlYrwIkIG6ZZrG+x6RUSWDkJNy/haI9lSLiEO
+   rVkxdUIqIr3k0W+7WduhcgQixNa1gbhxNbR4HeUIFHaFHizoA7JpSvaXV
+   y/DLmW3QqurS2pHiJCHAiWr+Ig4UTIU9drHwCahVd06oGBrad25xwOcnd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="8848410"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="8848410"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 03:08:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="16442321"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.6.143])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 03:08:48 -0700
+From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ linux-staging@lists.linux.dev, Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: outreachy@lists.linux.dev
+Subject: Re: [PATCH v5] staging: rtl8712: rename tmpVal to avg_val
+Date: Wed, 13 Mar 2024 11:08:45 +0100
+Message-ID: <2263049.iZASKD2KPV@fdefranc-mobl3>
+Organization: intel
+In-Reply-To: <ZfFpW9XvHhUkcspq@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+References: <ZfFpW9XvHhUkcspq@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000066E8:EE_|DS0PR12MB9348:EE_
-X-MS-Office365-Filtering-Correlation-Id: b18f8761-2501-4bcd-36ca-08dc434517e3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	zoUjMm1ppxIoNvhM7DjqKICK3lSoKQOEmct0/W+k+25oOaPY4Ez4YZpf8zNt2qpn1HmeakL+E2EGvsKW9DVXevwmW77eUFG97MXWTVLql93pag5sz6D5j8Vru5L2qSlbEPbFZAanmggbimtCeoXQvL7O65QCesfsab3uJW80MUV+7m9nHOQTlTFKnW3LA6rbKMGrOCf3qb0zQMHwS5WBVBxl3sNnSTuiV1qJRkeGOQEwzO+28SHq+RB9dsSTrYPwZnJ3j91wQoSU0zuJ7jWoYCrQmQThm+CkUFbWgKfZ5k6ElYBbNhHOKYikckSw4GNVqhLaVJ8gdJiZfyUnotWaIYjR4LaKLwQpwgw3gNDmZqjIOWV7QZSWIvpOw42q6VWQvcjtYvgDB2jcuNQPkc+j5d1xcSSUag0Q6rs1KONqkT0TP3aFl9c6f5l/pFpu4TzzH3CnCS+zOFWaP0jXNaC07fy+7Y/OlxmeJIivBOMR/OTzT/F6Gfyjd0Ci8DWyk0RuP45RTNfR1iGhO15w91PdzjiWwG8FFmj5Ynm0jQSAeGEreoClBunHZH+ikD51/BhHKsKjSTEstLxa4bIk8Bu5r/Ezg9a5ip9RCpGUwNAQYWHFx7SpNMcR/Kj2h90k9aiz7OMumSHGzTLZPc6z1FCUawok4y5J00Bc9m2zHt62ezNAw5xAiUZW73PzEXbfjXMVVAJhZVZT0/kLwon9mFw2fYM9wZLIFth/5uOHHEj4eot4wsVc5b3XE6rFioJDtACQ
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(36860700004)(1800799015)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 10:05:21.0776
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b18f8761-2501-4bcd-36ca-08dc434517e3
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000066E8.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9348
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-As the new CPB boost control is enabled, pstate unit test needs to remove
-legacy `boost_supported` check and start to use new CPB boost control
-interface `global.cpb_boost`.
+On Wednesday, 13 March 2024 09:52:43 CET Ayush Tiwari wrote:
+> Rename local variable tmpVal back to avg_val in function process_link_qual
 
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
----
- drivers/cpufreq/amd-pstate-ut.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You are making a new patch versions (v5) against your previous one. This is 
+not how the development process works...
 
-diff --git a/drivers/cpufreq/amd-pstate-ut.c b/drivers/cpufreq/amd-pstate-ut.c
-index f04ae67dda37..b3601b0e6dd3 100644
---- a/drivers/cpufreq/amd-pstate-ut.c
-+++ b/drivers/cpufreq/amd-pstate-ut.c
-@@ -226,7 +226,7 @@ static void amd_pstate_ut_check_freq(u32 index)
- 			goto skip_test;
- 		}
- 
--		if (cpudata->boost_supported) {
-+		if (amd_pstate_global_params.cpb_boost) {
- 			if ((policy->max == cpudata->max_freq) ||
- 					(policy->max == cpudata->nominal_freq))
- 				amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_PASS;
--- 
-2.34.1
+Make v6 against a clean staging tree, and change your commit message 
+accordingly:
+
+Rename tmpVal to avg_val in process_link_qual() to reflect the intended use of 
+the variable and conform to the kernel coding style. 
+
+Not directly related but, there is no need to say that process_link_qual() is 
+a function (parentheses already say that). Furthermore, by renaming you make 
+it clear what is the intended use of symbols, you don't "give meaning" to them 
+(they already have meaning by the mere fact that they serve their intended 
+purpose - https://ludwig.guru/s/to+give+meaning+to+something).
+
+Remember that only the final versions of patches, the accepted version, will be 
+applied against the kernel. Therefore, if this version was good, it couldn't 
+be applied because in process_link_qual() there is no variable called pct_val.
+
+git-am on your patch gives expected errors:
+
+Applying: staging: rtl8712: rename tmpVal to avg_val
+error: patch failed: drivers/staging/rtl8712/rtl8712_recv.c:861
+error: drivers/staging/rtl8712/rtl8712_recv.c: patch does not apply
+
+> to give intuitive meaning to variable and match the common kernel
+> coding style.
+> 
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+> ---
+> 
+> [skip]
+>
+> --- a/drivers/staging/rtl8712/rtl8712_recv.c
+> +++ b/drivers/staging/rtl8712/rtl8712_recv.c
+> @@ -861,7 +861,7 @@ static void query_rx_phy_status(struct _adapter
+> *padapter, static void process_link_qual(struct _adapter *padapter,
+>  			      union recv_frame *prframe)
+>  {
+> -	u32	last_evm = 0, pct_val;
+
+As said, a clean process_link_qual() has no pct_val variable.
+
+Fabio
+
+> +	u32	last_evm = 0, avg_val;
+>  	struct rx_pkt_attrib *pattrib;
+>  	struct smooth_rssi_data *sqd = &padapter->recvpriv.signal_qual_data;
+> 
+> @@ -883,8 +883,8 @@ static void process_link_qual(struct _adapter *padapter,
+> sqd->index = 0;
+> 
+>  		/* <1> Showed on UI for user, in percentage. */
+> -		pct_val = sqd->total_val / sqd->total_num;
+> -		padapter->recvpriv.signal = (u8)pct_val;
+> +		avg_val = sqd->total_val / sqd->total_num;
+> +		padapter->recvpriv.signal = (u8)avg_val;
+>  	}
+>  }
+
+
+
 
 
