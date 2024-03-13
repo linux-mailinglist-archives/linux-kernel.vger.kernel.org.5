@@ -1,237 +1,326 @@
-Return-Path: <linux-kernel+bounces-101494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EF1687A7DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:55:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B71587A7DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42D141C229FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:55:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 224CA2861C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB442405EB;
-	Wed, 13 Mar 2024 12:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A095143ACA;
+	Wed, 13 Mar 2024 12:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cK+N2M9q"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ETNJF+7D"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4B947784;
-	Wed, 13 Mar 2024 12:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAB443AA4
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710334435; cv=none; b=haUqDbglT3r0pu60TbIiGjA/I+r7e+7jKPEE+QitCyY4J1JpDM/blfyxObekn4DKv8DXs3oNasxxVvhferuovtuT8LvvVko7ifJq25hNbq3rG5Tna6WzkG11Hm09sN7YNDmh8xwMGk2kNt8rjiNDGbZPG1wFGpWAxgnRJPW7lvM=
+	t=1710334507; cv=none; b=jPVXnrkjkMo42U+wAjAHqOoZpJ5A0MFm4P1my4cTTd36bqLv0DW/XNWcr62yltFAUPjUaGuUCHy6NqzQSjnwOn6G3zSXMFGS/n59+1PqAiOFXOc5DQsArd6C7mPabGSehhnlfTPpDA/UOr4bXhD9l4rjUKGiVYhJzwA/u8eriPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710334435; c=relaxed/simple;
-	bh=2bkWqeBjdMH1Pf6rhubjFFeWLFL+x7SMasA5oLGOids=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b9IFKewjFs0YR3O8wguyzJeHCTgM4flOG5QGIJbjtczAX194fQEjQQN4ApRfg1aq29JrBC/sDDPH1b5X6HXqx/mf14q+A3jb1PbqnAhef3pusW2ux5MPF9Urc4o3ZLHWNf0/SzHuEsNwHyHNGgNx3ISrf384LJGZqFeaxnuoxbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cK+N2M9q; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=2bkWqeBjdMH1Pf6rhubjFFeWLFL+x7SMasA5oLGOids=; b=cK+N2M9qYUkiVAtBg2+PVt7Ffs
-	DklTnRhTbIxJlBqis+Ip7j6c6DDfHsY9Hp/ng9wLpirhFWFFm1INvpwpDWrWqj22ilmKqhHPgx180
-	Bq91Cs2L2PQ/XzXivxSbTHCWd4LP1reC9lFGd/iC8ev1PKUMohyY+6KE4+cq15Y/mEoDgNy8HdF4j
-	n2cRgtzUQBNHSVboc7OXLzaWsBV+Eml82B31tJ16SqGcM/PCABoQ+3pu5iPsq1B8PyDS/CEpMArF6
-	jzkMrst8jmITewHbnFWMjD3UKPilw+CNQRb3d2kSwcgEAp7k+3XffIdkds1i3oitjfKNLl5D2aN01
-	n2T1WZpg==;
-Received: from [2001:8b0:10b:5:4f46:ad9a:6045:e619] (helo=u3832b3a9db3152.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkO77-00000005QBu-3Jbe;
-	Wed, 13 Mar 2024 12:53:45 +0000
-Message-ID: <d140bb65f02d2b0e33d176beef400d9e22bebafa.camel@infradead.org>
-Subject: Re: [RFC PATCH 1/2] KVM: arm64: Add PSCI SYSTEM_OFF2 function for
- hibernation
-From: David Woodhouse <dwmw2@infradead.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, Paolo Bonzini
- <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Marc Zyngier
- <maz@kernel.org>, James Morse <james.morse@arm.com>, Suzuki K Poulose
- <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, Catalin
- Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
- Pavel Machek <pavel@ucw.cz>, Mostafa Saleh <smostafa@google.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>, 
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev,  linux-pm@vger.kernel.org
-Date: Wed, 13 Mar 2024 12:53:45 +0000
-In-Reply-To: <ZfB5BMfLHWhQXLZY@thinky-boi>
-References: <20240312135958.727765-1-dwmw2@infradead.org>
-	 <20240312135958.727765-2-dwmw2@infradead.org> <ZfB5BMfLHWhQXLZY@thinky-boi>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-0ta80y/i/t7SPSDn5TDI"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1710334507; c=relaxed/simple;
+	bh=sh7lOn799mdRNo9SNh2T7fssV2zC50KXVdJoi0KTXRE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UXM+8D0fc7CBGF9Sv6MXbxbtjnd0B53mio5Ci97VMC7Klt8qGD0UU2ZHi7vBuQyQLGWvA+EhZW/zjX90ntePd7/ufAdM8pR5anytQkqxJLUWMy2Gz4WR9jWiilax/3fFugyksmiSt6iVpqfBpDpzDj+VurVDUKLXKJgbVtyJ+I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ETNJF+7D; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710334504;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=h/UYi6EhK4kWHCiuuewAtpIQWiza2uvSvfzWNm0vBG0=;
+	b=ETNJF+7D+SQg4jkKpBn3nAqfKvi8nnI8Y/FTMrhvvEz0SiRIFE3oZaeKh+nKrgHLVkcXER
+	JP0VpbvfUTEry64YFYCVJZ1G+DPx3wiktzIe7pupgfvK8Tj9MP4jb781obOLuhhEur5VJs
+	vyNSRhgY7y6wEb7cju69yLl6BdUP1j4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-N9sYoLSWOzi0ey4wgDZ8yA-1; Wed, 13 Mar 2024 08:55:00 -0400
+X-MC-Unique: N9sYoLSWOzi0ey4wgDZ8yA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 33595101A56C;
+	Wed, 13 Mar 2024 12:55:00 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.224.236])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 074503C22;
+	Wed, 13 Mar 2024 12:54:57 +0000 (UTC)
+From: Ivan Vecera <ivecera@redhat.com>
+To: netdev@vger.kernel.org
+Cc: pawel.chmielewski@intel.com,
+	aleksandr.loktionov@intel.com,
+	mschmidt@redhat.com,
+	Hugo Ferreira <hferreir@redhat.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] i40e: Enforce software interrupt during busy-poll exit
+Date: Wed, 13 Mar 2024 13:54:56 +0100
+Message-ID: <20240313125457.19475-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
+As for ice bug fixed by commit b7306b42beaf ("ice: manage interrupts
+during poll exit") I'm seeing the similar issue also with i40e driver.
 
---=-0ta80y/i/t7SPSDn5TDI
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In certain situation when busy-loop is enabled together with adaptive
+coalescing, the driver occasionally miss that there are outstanding
+descriptors to clean when exiting busy poll.
 
-On Tue, 2024-03-12 at 08:47 -0700, Oliver Upton wrote:
-> Hi,
->=20
-> On Tue, Mar 12, 2024 at 01:51:28PM +0000, David Woodhouse wrote:
-> > From: David Woodhouse <dwmw@amazon.co.uk>
-> >=20
-> > The PSCI v1.3 specification (alpha) adds support for a SYSTEM_OFF2 func=
-tion
-> > which is analogous to ACPI S4 state. This will allow hosting environmen=
-ts
-> > to determine that a guest is hibernated rather than just powered off, a=
-nd
-> > ensure that they preserve the virtual environment appropriately to allo=
-w
-> > the guest to resume safely (or bump the hardware_signature in the FACS =
-to
-> > trigger a clean reboot instead).
-> >=20
-> > The beta version will be changed to say that PSCI_FEATURES returns a bi=
-t
-> > mask of the supported hibernate types, which is implemented here.
->=20
-> Have you considered doing the PSCI implementation in userspace? The
-> SMCCC filter [*] was added for this exact purpose.=C2=A0
->=20
+Try to catch the remaining work by triggering a software interrupt
+when exiting busy poll. No extra interrupts will be generated when
+busy polling is not used.
 
-For the purpose of deprecating the in-KVM PSCI implementation and
-reimplementing it in VMMs? So we're never going to add new features and
-versions to the kernel PSCI?
+The issue was found when running sockperf ping-pong tcp test with
+adaptive coalescing and busy poll enabled (50 as value busy_pool
+and busy_read sysctl knobs) and results in huge latency spikes
+with more than 100000us.
 
-If that's the case then I suppose I can send the patch to clearly
-document the in-KVM PSCI as deprecated, and do it that way.
+The fix is inspired from the ice driver and do the following:
+1) During napi poll exit in case of busy-poll (napo_complete_done()
+   returns false) this is recorded to q_vector that we were in busy
+   loop.
+2) In i40e_update_enable_itr()
+   - updates refreshed ITR intervals directly using PFINT_ITRN register
+   - if we are exiting ordinary poll then just enables the interrupt
+     using PFINT_DYN_CTLN
+   - if we are exiting busy poll then enables the interrupt and
+     additionally triggers an immediate software interrupt to catch any
+     pending clean-ups
+3) Reuses unused 3rd ITR (interrupt throttle) index and set it to
+   20K interrupts per second to limit the number of these sw interrupts.
 
-But to answer your question directly, no I hadn't considered that. I
-was just following the existing precedent of adding new optional PSCI
-features like SYSTEM_RESET2.
+Test results
+============
+Prior:
+[root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 --mps=max -t 120
+sockperf: == version #3.10-no.git ==
+sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
 
-I didn't think that the addition of SYSTEM_OFF2 in precisely the same
-fashion would be the straw that broke the camel's back, and pushed us
-to reimplement it in userspace instead.
+[ 0] IP = 10.9.9.1        PORT = 11111 # TCP
+sockperf: Warmup stage (sending a few dummy messages)...
+sockperf: Starting test...
+sockperf: Test end (interrupted by timer)
+sockperf: Test ended
+sockperf: [Total Run] RunTime=119.999 sec; Warm up time=400 msec; SentMessages=2438563; ReceivedMessages=2438562
+sockperf: ========= Printing statistics for Server No: 0
+sockperf: [Valid Duration] RunTime=119.549 sec; SentMessages=2429473; ReceivedMessages=2429473
+sockperf: ====> avg-latency=24.571 (std-dev=93.297, mean-ad=4.904, median-ad=1.510, siqr=1.063, cv=3.797, std-error=0.060, 99.0% ci=[24.417, 24.725])
+sockperf: # dropped messages = 0; # duplicated messages = 0; # out-of-order messages = 0
+sockperf: Summary: Latency is 24.571 usec
+sockperf: Total 2429473 observations; each percentile contains 24294.73 observations
+sockperf: ---> <MAX> observation = 103294.331
+sockperf: ---> percentile 99.999 =   45.633
+sockperf: ---> percentile 99.990 =   37.013
+sockperf: ---> percentile 99.900 =   35.910
+sockperf: ---> percentile 99.000 =   33.390
+sockperf: ---> percentile 90.000 =   28.626
+sockperf: ---> percentile 75.000 =   27.741
+sockperf: ---> percentile 50.000 =   26.743
+sockperf: ---> percentile 25.000 =   25.614
+sockperf: ---> <MIN> observation =   12.220
 
---=-0ta80y/i/t7SPSDn5TDI
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+After:
+[root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 --mps=max -t 120
+sockperf: == version #3.10-no.git ==
+sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwMzEzMTI1MzQ1WjAvBgkqhkiG9w0BCQQxIgQgC4mmOD4h
-5g+iELLwQzIi9/IOjwqhas5H08euhI5YemAwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCSgYS9ztXhCO7aY/WmGf+wdP6RJG1fDoUM
-NDECDUn9uFGDMOl46d4W2awx7TAjHEatPFHluJ6Ko0iN/72v29R0Kr/Ndint+c44WHANBA7DAlgY
-RK7o7I8/ksLGRjPxVuuL+f8z16wQk3F6z98xCRwkcHkKX5Q48qsXQ1ZfOcfAbghXWGecauQCkw/v
-XzQjhDPVWGQUmhogpS57+eCeF08Fu6LitYoDO7mPW5hTosrYwQsmuI3h2fasWYvC+Mek+c74Kz2C
-8CSw9quPm3iHpcxpwUavMxlSpVNZGF4ZVjglub8v8HWCW6hFHiuK5Svh+GLl0ezUacXQC6LXAa50
-NjYC1geanJ8sXhE8qSF/V2qQFHSsnpGk6WgcpuJOLFtoPgpKKJu671GAlPzhEhfQVwkBm4mtCLcY
-Q6txW/kcEE/y6/yIvg5o5o5H6Ifwik9574yHfK+LPGQq2ILXZUDzL3sbPgxB8AU8jxnzHh8wJg3+
-DwZfoeG+CWeFT81qneTKTvSDIediaGZi91vynsrBK4PsGoK3cuo6fV+53NS/Ts3eULybuuwgqtVE
-7pATsUomRX4k3YGzLIXrvRvtStFWA3jhmsZy1Lc3v6DZhVFrATCUqONqKx69T5mRIJOdCqnOjlZq
-Brk0KOhPDuIIC3mt5XCNQFXUPW1j04Rz6vxDi0/0rwAAAAAAAA==
+[ 0] IP = 10.9.9.1        PORT = 11111 # TCP
+sockperf: Warmup stage (sending a few dummy messages)...
+sockperf: Starting test...
+sockperf: Test end (interrupted by timer)
+sockperf: Test ended
+sockperf: [Total Run] RunTime=119.999 sec; Warm up time=400 msec; SentMessages=2400055; ReceivedMessages=2400054
+sockperf: ========= Printing statistics for Server No: 0
+sockperf: [Valid Duration] RunTime=119.549 sec; SentMessages=2391186; ReceivedMessages=2391186
+sockperf: ====> avg-latency=24.965 (std-dev=5.934, mean-ad=4.642, median-ad=1.485, siqr=1.067, cv=0.238, std-error=0.004, 99.0% ci=[24.955, 24.975])
+sockperf: # dropped messages = 0; # duplicated messages = 0; # out-of-order messages = 0
+sockperf: Summary: Latency is 24.965 usec
+sockperf: Total 2391186 observations; each percentile contains 23911.86 observations
+sockperf: ---> <MAX> observation =  195.841
+sockperf: ---> percentile 99.999 =   45.026
+sockperf: ---> percentile 99.990 =   39.009
+sockperf: ---> percentile 99.900 =   35.922
+sockperf: ---> percentile 99.000 =   33.482
+sockperf: ---> percentile 90.000 =   28.902
+sockperf: ---> percentile 75.000 =   27.821
+sockperf: ---> percentile 50.000 =   26.860
+sockperf: ---> percentile 25.000 =   25.685
+sockperf: ---> <MIN> observation =   12.277
 
+Reported-by: Hugo Ferreira <hferreir@redhat.com>
+Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e.h        |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  6 +++
+ .../net/ethernet/intel/i40e/i40e_register.h   |  2 +
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 46 ++++++++++++++-----
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h   |  1 +
+ 5 files changed, 45 insertions(+), 11 deletions(-)
 
---=-0ta80y/i/t7SPSDn5TDI--
+diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
+index 9b701615c7c6..4d2b05de6c63 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e.h
++++ b/drivers/net/ethernet/intel/i40e/i40e.h
+@@ -908,6 +908,7 @@ struct i40e_q_vector {
+ 	struct rcu_head rcu;	/* to avoid race with update stats on free */
+ 	char name[I40E_INT_NAME_STR_LEN];
+ 	bool arm_wb_state;
++	bool in_busy_poll;
+ 	int irq_num;		/* IRQ assigned to this q_vector */
+ } ____cacheline_internodealigned_in_smp;
+ 
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 89a3401d20ab..1ea6d06b0acc 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -3915,6 +3915,12 @@ static void i40e_vsi_configure_msix(struct i40e_vsi *vsi)
+ 		     q_vector->tx.target_itr >> 1);
+ 		q_vector->tx.current_itr = q_vector->tx.target_itr;
+ 
++		/* Set ITR for software interrupts triggered after exiting
++		 * busy-loop polling.
++		 */
++		wr32(hw, I40E_PFINT_ITRN(I40E_SW_ITR, vector - 1),
++		     I40E_ITR_20K);
++
+ 		wr32(hw, I40E_PFINT_RATEN(vector - 1),
+ 		     i40e_intrl_usec_to_reg(vsi->int_rate_limit));
+ 
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_register.h b/drivers/net/ethernet/intel/i40e/i40e_register.h
+index 14ab642cafdb..baa6bb68bcf8 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_register.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_register.h
+@@ -335,6 +335,8 @@
+ #define I40E_PFINT_DYN_CTLN_INTERVAL_SHIFT 5
+ #define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_SHIFT 24
+ #define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_MASK I40E_MASK(0x1, I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_SHIFT)
++#define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_SHIFT 25
++#define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_MASK I40E_MASK(0x3, I40E_PFINT_DYN_CTLN_SW_ITR_INDX_SHIFT)
+ #define I40E_PFINT_ICR0 0x00038780 /* Reset: CORER */
+ #define I40E_PFINT_ICR0_INTEVENT_SHIFT 0
+ #define I40E_PFINT_ICR0_INTEVENT_MASK I40E_MASK(0x1, I40E_PFINT_ICR0_INTEVENT_SHIFT)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 0d7177083708..356c3140adf3 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2658,8 +2658,22 @@ static inline u32 i40e_buildreg_itr(const int type, u16 itr)
+ 	return val;
+ }
+ 
+-/* a small macro to shorten up some long lines */
+-#define INTREG I40E_PFINT_DYN_CTLN
++static inline u32 i40e_buildreg_swint(int type)
++{
++	u32 val;
++
++	/* 1. Enable the interrupt
++	 * 2. Do not modify any ITR interval
++	 * 3. Trigger a SW interrupt specified by type
++	 */
++	val = I40E_PFINT_DYN_CTLN_INTENA_MASK |
++	      I40E_PFINT_DYN_CTLN_ITR_INDX_MASK | /* set noitr */
++	      I40E_PFINT_DYN_CTLN_SWINT_TRIG_MASK |
++	      I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_MASK |
++	      FIELD_PREP(I40E_PFINT_DYN_CTLN_SW_ITR_INDX_MASK, type);
++
++	return val;
++}
+ 
+ /* The act of updating the ITR will cause it to immediately trigger. In order
+  * to prevent this from throwing off adaptive update statistics we defer the
+@@ -2702,8 +2716,8 @@ static inline void i40e_update_enable_itr(struct i40e_vsi *vsi,
+ 	 */
+ 	if (q_vector->rx.target_itr < q_vector->rx.current_itr) {
+ 		/* Rx ITR needs to be reduced, this is highest priority */
+-		intval = i40e_buildreg_itr(I40E_RX_ITR,
+-					   q_vector->rx.target_itr);
++		wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
++		     q_vector->rx.target_itr >> 1);
+ 		q_vector->rx.current_itr = q_vector->rx.target_itr;
+ 		q_vector->itr_countdown = ITR_COUNTDOWN_START;
+ 	} else if ((q_vector->tx.target_itr < q_vector->tx.current_itr) ||
+@@ -2712,25 +2726,33 @@ static inline void i40e_update_enable_itr(struct i40e_vsi *vsi,
+ 		/* Tx ITR needs to be reduced, this is second priority
+ 		 * Tx ITR needs to be increased more than Rx, fourth priority
+ 		 */
+-		intval = i40e_buildreg_itr(I40E_TX_ITR,
+-					   q_vector->tx.target_itr);
++		wr32(hw, I40E_PFINT_ITRN(I40E_TX_ITR, q_vector->reg_idx),
++		     q_vector->tx.target_itr >> 1);
+ 		q_vector->tx.current_itr = q_vector->tx.target_itr;
+ 		q_vector->itr_countdown = ITR_COUNTDOWN_START;
+ 	} else if (q_vector->rx.current_itr != q_vector->rx.target_itr) {
+ 		/* Rx ITR needs to be increased, third priority */
+-		intval = i40e_buildreg_itr(I40E_RX_ITR,
+-					   q_vector->rx.target_itr);
++		wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
++		     q_vector->rx.target_itr >> 1);
+ 		q_vector->rx.current_itr = q_vector->rx.target_itr;
+ 		q_vector->itr_countdown = ITR_COUNTDOWN_START;
+ 	} else {
+ 		/* No ITR update, lowest priority */
+-		intval = i40e_buildreg_itr(I40E_ITR_NONE, 0);
+ 		if (q_vector->itr_countdown)
+ 			q_vector->itr_countdown--;
+ 	}
+ 
+-	if (!test_bit(__I40E_VSI_DOWN, vsi->state))
+-		wr32(hw, INTREG(q_vector->reg_idx), intval);
++	/* Do not enable interrupt if VSI is down */
++	if (test_bit(__I40E_VSI_DOWN, vsi->state))
++		return;
++
++	if (!q_vector->in_busy_poll) {
++		intval = i40e_buildreg_itr(I40E_ITR_NONE, 0);
++	} else {
++		q_vector->in_busy_poll = false;
++		intval = i40e_buildreg_swint(I40E_SW_ITR);
++	}
++	wr32(hw, I40E_PFINT_DYN_CTLN(q_vector->reg_idx), intval);
+ }
+ 
+ /**
+@@ -2845,6 +2867,8 @@ int i40e_napi_poll(struct napi_struct *napi, int budget)
+ 	 */
+ 	if (likely(napi_complete_done(napi, work_done)))
+ 		i40e_update_enable_itr(vsi, q_vector);
++	else
++		q_vector->in_busy_poll = true;
+ 
+ 	return min(work_done, budget - 1);
+ }
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.h b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+index abf15067eb5d..2cdc7de6301c 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+@@ -68,6 +68,7 @@ enum i40e_dyn_idx {
+ /* these are indexes into ITRN registers */
+ #define I40E_RX_ITR    I40E_IDX_ITR0
+ #define I40E_TX_ITR    I40E_IDX_ITR1
++#define I40E_SW_ITR    I40E_IDX_ITR2
+ 
+ /* Supported RSS offloads */
+ #define I40E_DEFAULT_RSS_HENA ( \
+-- 
+2.43.0
+
 
