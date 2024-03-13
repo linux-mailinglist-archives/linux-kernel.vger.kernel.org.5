@@ -1,209 +1,215 @@
-Return-Path: <linux-kernel+bounces-101687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AB5987AA85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:37:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1B5587AA87
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9197B1F23163
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:37:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21B571C20F6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C114047773;
-	Wed, 13 Mar 2024 15:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B3647A62;
+	Wed, 13 Mar 2024 15:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HoE+ILJd"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="C8kd2jv3"
+Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114F83E48C
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8556345C10;
+	Wed, 13 Mar 2024 15:38:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710344247; cv=none; b=LmkOUslPL3IdCOx5HT6hA0JFi/yi90j/RrX4Ky6nxEakL7UgQjUczZIQl/buDprB+vozvW1GgK2f+BQNnmhA3lAloz9rJZ3iqD12txKEVvRKeqD2oz3/LYh9mgA5IR1J0K2tSOTU/RgF+uGZkXXGGT9QqqZJ3x3zvgZutC+T2dI=
+	t=1710344333; cv=none; b=YPi7CW+RME5G9oE8TZteGOsxUFuveL04tdQm0o0RPAbYwjPpiVyuM54z6QEjo6kfMMA0Am13anwYFSKinCu43wW7IM0L4GsVuN5FpcS+qpkx8QcHf3XIQQICnBxbxnG1IJna8V2I2ThKxtIZ2D1C0OB826uv/zONFqgcsM8VUPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710344247; c=relaxed/simple;
-	bh=wyRvOh55eFri7lzQSBWIL+bfhOJ6wW4bqJdvl15+6n8=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=Be6n8rWZa9OA+8xIoanIhA/zWuDTy+zj4ROnVCpxlrI9/esZ00RZBP1VLYWf7CoFHattTyYgb9X+J2qnPzLPoLfptTliNxOhP0B7cjo2600xeiMypWKnCjNxAoEG1yGBGB1W9viRK2eIMVjVnwc0McVVYOKIBXGRQyLdZ+AUjWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HoE+ILJd; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e7ae72312so4902057f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:37:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710344243; x=1710949043; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ltqfc1ssllsg0Pb1xlVI1xuNT6EUJLMewunYB64JavQ=;
-        b=HoE+ILJdW059WWBrVvHiQDEZgq06d/78nASkahtHIrtGj0nuFOM6GRCADOBPAmEOlc
-         TwZEHXWS09NK1487XiuhUOPvm4aza2v5YjeULYdGjjhWvjWM4rz80oJZmzprK+nTBWNO
-         Kptlkkj8r11NpvF6pK8kry188ZxQL7EAv7jnX98wqL5nAGVycEuLgDQPaNXErMSD44x4
-         j8JcFbDl120PMGq9snLzncqEVNp2/rI9EWUKWuGAgkrz0UuNxVU3Z3s8c9eA8ktlo/aH
-         8TeEq00c4Rj845QEs9hHaIMV+BXS13s++a/x/rtBIKiLu7LLwB6w9dH5QYBv5XXJ0rui
-         GHxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710344243; x=1710949043;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ltqfc1ssllsg0Pb1xlVI1xuNT6EUJLMewunYB64JavQ=;
-        b=UvRumcgntHnaT2G2wirmghh1ucJFB7jZE6dlebX3Lj7FdFfb21qHuj7pCYVjMEagd+
-         zSd/NdR7s4JTs4fmteItI4Un5UWrJCdBzcpP7BJCmIFvrQH4aNWE++xBWcTyKLu+0oiy
-         Jv949hsyWYFt3arZGkj9Ll4E1sn6cpzAGGDKm55Qu9HOR6SYZX9ZJOeZR7dl6AI3hwGp
-         dY0q2F9f4E4QQwB4Mb+UJaB31W+nmCnUjrXzBGIU1CxtOo4WiCSHuBpBkOqJmBZQk1TP
-         w6lg1rvG4sBBlLczLx8DgkW60neo+ZQZpSAFwWkZgBICSlIkeufq412XO5jcEnymEFT+
-         NM8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXNeL4k3bCgcEEOPnlcbjN72x6UyoNlJJh+T+y1LaNEBtanfqh6ovqa81uyMzh1duTcZRglSd480TtunH810KUXDlfXiBE57kXy1g6o
-X-Gm-Message-State: AOJu0YzgEhzec7wZ4mA6SD3mcMzSjHJNUk++IKQKPV642QfRbVEkHnz1
-	AwIVZahyf4JbITTXiEIPIXlDKA+ILRcvodNryrp3XLs20TJTsf3M4CcuXqa7rQc=
-X-Google-Smtp-Source: AGHT+IGr2jNokbIYXEgfMfmScVl25We1OALkmrBI3/mDBeg9nYZCi45jpVwfa4YlpyXlTDQ/yAOQnA==
-X-Received: by 2002:a5d:4110:0:b0:33e:5fb9:af21 with SMTP id l16-20020a5d4110000000b0033e5fb9af21mr2092726wrp.56.1710344243401;
-        Wed, 13 Mar 2024 08:37:23 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id bp24-20020a5d5a98000000b0033e25c39ac3sm12423960wrb.80.2024.03.13.08.37.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 08:37:23 -0700 (PDT)
-Message-ID: <5552010a-1ce2-46a1-a740-a69f2e9a2cf2@linaro.org>
-Date: Wed, 13 Mar 2024 16:37:22 +0100
+	s=arc-20240116; t=1710344333; c=relaxed/simple;
+	bh=tZaSYOA5Sqr0R3HTX+qBFadHyYoG3rbkZTOfznRjIrg=;
+	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
+	 References:Message-ID; b=aO5pL0gqksN7XNrTpEh+zu1SpTN2sDEMr65bjw5ELcecaxU99Xm03pLScKahq4L5VlNLeZESg4acaf6882uwwTKyVjxQuUM1+M1rI9fsJ9D2CoMs5hexLrDuT+oryZhMf3JcmXu+fqt+dvsqD6Qf3lBMl/EB//PaJvLbsYdRMsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=C8kd2jv3; arc=none smtp.client-ip=188.40.0.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
+	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
+	sender:bcc; bh=oKGkz+5yG2rxE8g4ISa2cT/1YcQdAFQoNiwBx3QyI0I=; b=C8kd2jv3ZOQYnC
+	Ei8vdK0ciGe8+LTwhqUnmaLxBr49zBTG6U+FzFo4U1tbD/3tcKSrFkC4WsOxHzWX15p7DOKWBWv1r
+	lwW4wzdFK2Be3a38gruQF2YXZDEYlDO2q56Zdcryg/xhFaP1bpaj4OOoqeIUEVswmAQHwHCeUf97q
+	X6Z/JYOBGmAYOOoWCq5kFiVJK+MlrhFix1urbLo/ckEmsZfU/CkahAgK5y0UIwVZdtxSg5GJXdeuc
+	EmLWXs7URR1fdTsBcT5ouH1tpzDIxG1APEku/BNrLaVmKl6B/nkPxl5xfghn7jOIenh+ASqPKA2G7
+	uILULVi1KX67NBi9peiQ==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rkQgg-0021r6-Of; Wed, 13 Mar 2024 17:38:42 +0200
+Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
+	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rkQge-0006Bo-8W; Wed, 13 Mar 2024 17:38:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
- Peter Griffin <peter.griffin@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Peng Fan <peng.fan@nxp.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Sergio Paracuellos <sergio.paracuellos@gmail.com>,
- Mubin Sayyed <mubin.sayyed@amd.com>, Ley Foon Tan <lftan@altera.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] timer drivers for v6.9-rc1
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date: Wed, 13 Mar 2024 17:38:35 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, Florian
+ Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] net: dsa: mt7530: increase reset hold time
+In-Reply-To: <997db446-030b-4e6a-beea-0ae7d990e7e2@arinc9.com>
+References: <f594a72a91d12f1d027a06962caa9750@risingedge.co.za>
+ <20240312192117.7789-1-justin.swartz@risingedge.co.za>
+ <bf0ed70f-e106-4a7f-a98c-de34658feb4d@arinc9.com>
+ <e6525cac666a033a5866465abb3e63f1@risingedge.co.za>
+ <2640a495-97a0-4669-a53a-e367af956a78@arinc9.com>
+ <c4590e9519d0cd788d157a1e1510cc45@risingedge.co.za>
+ <997db446-030b-4e6a-beea-0ae7d990e7e2@arinc9.com>
+Message-ID: <3146df060620f08a620417cfcf2b2179@risingedge.co.za>
+X-Sender: justin.swartz@risingedge.co.za
+User-Agent: Roundcube Webmail/1.3.17
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.21)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT/2O3gPR4g/CqkfWst+Ku0pPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
+ WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
+ 3T+KSG//gbuP7hnUK8NQdLwsVWKIv+fXqqb3FJ1Z7kkAIev0U9CKH/oA07tJunDPm536TODb5GPR
+ oyaaXp1VNA9dXvxV+mFktoWo3CKg4C3LDJ75vu2U4GT70q7ZqN/P49BncZ5XB7lfx9K88uL/WnJE
+ LAEP514Y/yfAEbrTclu3OeNcbACmFr3ts0d2E6vXySsvfMaT9Bjf4etJ827HW1/sdZ81dz6BqXHU
+ oYg+nmOeSIjjxA24TPuOyBrko5yKpcR03QEJ9DjWmjcfK/FpTD0spWG+rMYoj8CdNq4vLYsMDbt4
+ 2oUP1Ae/eGZl2OLANHAHEjHENEhX9cq65nsXPA0MIFDIPOMDW/6+MC+5Mq5RH9OoW0W22an/ubzj
+ InB/ImqScRfGyrhHVstPeAuxsRhUFJC4TtSvIahFt3uEpT0304dV2Yoz1SesQUA6bnjJZT6m9lal
+ 9vikoy50DqR3hu/rL5PGAoTDzn0QdoxFeruM0Uhu+b+DV6LvumMBiTpVm+SuIysihnVW8zB2Qi26
+ vkVALycwzSdeC1kd8cXa71WqOc72jXbRpMw6Agze1f399OurHEyYS7nq+EBNvgiWKNNSkdVDZOrL
+ 5kxgO94lq2025NSImfKeGaSpuwkt9kMFaoxOFH3nT6Zph4wUZj+IQLUKRJzeMs4VIrisX+dtrxYn
+ /0jYEvj5QBAPtzfeVlNHdCJmwgf0M7fnqgzRvCMiN68tcHQey84mBB4XoB473XOJmIRPynE3O7YZ
+ oFBs6I7QuC1BjGNT52hVLEr/9PrrMm81h6IAYzikeIJfw26MB/V1E5BP9Gv0xI1YXOxC1lZqyFpL
+ AwQr6muMti2YanICQnMITeB2fd0UyjU/MIq3Vtx6CgQGHtezYqxGMqsKjARq8PBC4qgGsfAERwCB
+ JFs7XjZYbJPBsmpIto2O4JO2fx1gIuNHgi11AwJSTGCrOFs22K1ZnDqAw3gLmOBPHazhChxq9nGW
+ aSi6bFHidB1VgzDzDZn/+QEiRQv+PVjjwa+Z5RFCOMRmYvGVP5J/K7tDFQHNyAqzdfFYVDBYJee7
+ gx/u82RtU4hygYFW3IzBm5Ionz3C0cE0mVfWLKEgol9rYV4JEcNP1rJoln/cD8h/RIvkzXRTCYvX
+ WLQhlD92+1l+zHfJg1FMwntsduNBxKPaTpE5L8d4VqFy6yKUFQtzhTlGiGL9B13u48a8ZFhRnJqB
+ D+KeQursqcSfLN3+f9txz8J8C1oTIIDSVMZhrIoAWTF5tIdhy/UIEBYDcZg+Q8UhuRLyBn1+pvlH
+ hV6a5QjptwQBGybQyDQ2/GYwPjlMcE57ESN6G+kn87CtwPdB/10jfVNpDbYnXJdSRQj8460WHJib
+ IxmU2pb4i4DTkMZeMiNI9JSIyUbtnrlbG4BI8o81FOo91axhCaqPShJzgHH7y4ZfQxML
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+
+On 2024-03-13 17:04, Arınç ÜNAL wrote:
+> On 13.03.2024 16:13, Justin Swartz wrote:
+>> On 2024-03-13 14:06, Arınç ÜNAL wrote:
+>>> On 13.03.2024 14:52, Justin Swartz wrote:
+>>>> 
+>>>> On 2024-03-13 10:59, Arınç ÜNAL wrote:
+>>>>> This ship has sailed anyway. Now the changes the first patch did 
+>>>>> must be
+>>>>> reverted too. I will deal with this from now on, you can stop 
+>>>>> sending
+>>>>> patches regarding this.
+>>>> 
+>>>> At least if the first patch isn't reverted, the approach used is
+>>>> less likely to result in the problem occuring, IMHO.
+>>> 
+>>> I disagree that the previous approach is less likely to result in the
+>>> problem occurring. If you don't like the delay amount we agreed on, 
+>>> feel
+>>> free to express a higher amount.
+>> 
+>> I created and tested a patch to entertain your input about what you
+>> thought could be a suitable hold period to address the problem, and it
+>> appeared to work. The criteria being that the crystal frequency 
+>> selection
+>> was correct over 20 tests.
+>> 
+>> So if only the reset hold period is going to change, I'm good with 
+>> what
+>> you had suggested: 5000 - 5100 usec.
+>> 
+>> Ultimately the selection of this period should be guided by the timing
+>> information provided in a datasheet or design guide from the 
+>> manufacturer.
+> 
+> That's a good point, I agree.
+> 
+>> 
+>> If you, or anyone else, has such a document that provides this 
+>> information
+>> and is able to confirm or deny speculation about any/all timing 
+>> periods
+>> related to reset, please do so.
+> 
+> These are the documents I use to program this switch family. I did not
+> stumble upon a page going over this.
+> 
+> MT7621 Giga Switch Programming Guide v0.3:
+> 
+> https://github.com/vschagen/documents/blob/main/MT7621_ProgrammingGuide_GSW_v0_3.pdf
+> 
+> MT7531 switch chip datasheet:
+> 
+> https://wiki.banana-pi.org/Banana_Pi_BPI-R64#Documents
+
+Thanks for the links.
+
+Have you encountered this one?
+
+MT7530 Giga Switch Programming Guide v0.1:
+https://github.com/libc0607/arduino_mt7530/blob/master/MT7530_programming_guide_V00.pdf
+
+It has some timing diagrams, but nothing I found for reset.
+
+The HWTRAP description has some bits swapped, so I guess those were 
+typos,
+in the case of XTAL_SELECT.
 
 
-Hi Thomas,
+>>> I also disagree on introducing a solution that is in addition to 
+>>> another
+>>> solution, both of which fix the same problem.
+>> 
+>> I'm not sure I understand why you say that. These patches were 
+>> intended
+>> to be applied exclusively, or in other words: in isolation - not 
+>> together.
+>> 
+>> Although if they were applied together, it wouldn't really matter.
+>> 
+>> For the record, I've only continued to keep this thread alive in the
+>> hope that some solution to this problem will make it into mainline
+>> eventually.
+>> 
+>> I don't care if it was my original patch, the subsequent patch, or a
+>> later patch provided by you or someone else. :)
+> 
+> I think you've missed that your patch is already applied. And it won't 
+> be
+> reverted for reasons explained by Paolo in this mail thread.
+> 
+> https://git.kernel.org/netdev/net-next/c/2920dd92b980
+> 
+> So if your patch here were to be applied too, the final mt7530.c would 
+> have
+> the LEDs disabled AND before reset deassertion delay increased.
 
-The following changes since commit 71fee48fb772ac4f6cfa63dbebc5629de8b4cc09:
-
-   tick-sched: Fix idle and iowait sleeptime accounting vs CPU hotplug 
-(2024-01-19 16:40:38 +0100)
-
-are available in the Git repository at:
-
-   https://git.linaro.org/people/daniel.lezcano/linux.git 
-tags/timers-v6.9-rc1
-
-for you to fetch changes up to 8248ca30ef89f9cc74ace62ae1b9a22b5f16736c:
-
-   clocksource/drivers/timer-riscv: Clear timer interrupt on timer 
-initialization (2024-03-13 12:08:59 +0100)
-
-----------------------------------------------------------------
-- Fix -Wunused-but-set-variable warning for the iMX GPT timer (Daniel
-   Lezcano)
-
-- Add Pixel6 compatible string for Exynos 4210 MCT timer (Peter Griffin)
-
-- Fix all kernel-doc warnings and misuse of comment format (Randy
-   Dunlap)
-
-- Document in the DT bindings the interrupt used for input capture
-   interrupt and udpate the example to match the reality (Geert
-   Uytterhoeven)
-
-- Document RZ/Five SoC DT bindings (Lad Prabhakar)
-
-- Add DT bindings support for the i.MX95, reorganize the driver to
-   move globale variables to a timer private structure and introduce
-   the i.MX95 timer support (Peng Fan)
-
-- Fix prescalar value to conform to the ARM global timer
-   documentation. Fix data types and comparison, guard the divide by
-   zero code section and use the available macros for bit manipulation
-   (Martin Blumenstingl)
-
-- Add Ralink SoCs system tick counter (Sergio Paracuellos)
-
-- Add support for cadence TTC PWM (Mubin Sayyed)
-
-- Clear timer interrupt on timer initialization to prevent the
-   interrupt to fire during setup (Ley Foon Tan)
-
-----------------------------------------------------------------
-Daniel Lezcano (1):
-       clocksource/drivers/imx: Fix -Wunused-but-set-variable warning
-
-Geert Uytterhoeven (1):
-       dt-bindings: timer: renesas,tmu: Document input capture interrupt
-
-Lad Prabhakar (1):
-       dt-bindings: timer: renesas: ostm: Document RZ/Five SoC
-
-Ley Foon Tan (1):
-       clocksource/drivers/timer-riscv: Clear timer interrupt on timer 
-initialization
-
-Martin Blumenstingl (5):
-       clocksource/drivers/arm_global_timer: Fix maximum prescaler value
-       clocksource/drivers/arm_global_timer: Remove stray tab
-       clocksource/drivers/arm_global_timer: Make gt_target_rate 
-unsigned long
-       clocksource/drivers/arm_global_timer: Guard against division by zero
-       clocksource/drivers/arm_global_timer: Simplify prescaler register 
-access
-
-Mubin Sayyed (1):
-       dt-bindings: timer: Add support for cadence TTC PWM
-
-Peng Fan (3):
-       dt-bindings: timer: nxp,sysctr-timer: support i.MX95
-       clocksource/drivers/imx-sysctr: Drop use global variables
-       clocksource/drivers/imx-sysctr: Add i.MX95 support
-
-Peter Griffin (1):
-       dt-bindings: timer: exynos4210-mct: Add google,gs101-mct compatible
-
-Randy Dunlap (3):
-       clocksource/drivers/stm32: Fix all kernel-doc warnings
-       clocksource/drivers/ti-32K: Fix misuse of "/**" comment
-       clocksource: arm_global_timer: fix non-kernel-doc comment
-
-Sergio Paracuellos (1):
-       dt-bindings: timer: add Ralink SoCs system tick counter
-
-  .../devicetree/bindings/timer/cdns,ttc.yaml        |  22 +++-
-  .../bindings/timer/nxp,sysctr-timer.yaml           |   4 +-
-  .../bindings/timer/ralink,cevt-systick.yaml        |  38 +++++++
-  .../devicetree/bindings/timer/renesas,ostm.yaml    |   2 +-
-  .../devicetree/bindings/timer/renesas,tmu.yaml     |  18 +++-
-  .../bindings/timer/samsung,exynos4210-mct.yaml     |   2 +
-  drivers/clocksource/arm_global_timer.c             |  35 +++---
-  drivers/clocksource/timer-imx-gpt.c                |   3 +-
-  drivers/clocksource/timer-imx-sysctr.c             | 117 
-+++++++++++++++------
-  drivers/clocksource/timer-riscv.c                  |   3 +
-  drivers/clocksource/timer-stm32.c                  |   4 +-
-  drivers/clocksource/timer-ti-32k.c                 |   2 +-
-  12 files changed, 191 insertions(+), 59 deletions(-)
-  create mode 100644 
-Documentation/devicetree/bindings/timer/ralink,cevt-systick.yaml
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Yes, I seem to have missed that. I thought your request for the
+patch to be reverted definitely would have been performed, or at
+least queued, seeing as you're the maintainer.
 
