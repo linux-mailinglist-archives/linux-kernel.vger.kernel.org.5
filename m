@@ -1,198 +1,114 @@
-Return-Path: <linux-kernel+bounces-101489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F9C187A7C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:46:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8989287A7D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA6C1B231E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:46:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40BC8285331
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:53:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49532BB09;
-	Wed, 13 Mar 2024 12:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C38433996;
+	Wed, 13 Mar 2024 12:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yotsuba.nl header.i=@yotsuba.nl header.b="kAJNGphh";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HHcl5cpc"
-Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="xR3PO07V"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0641392;
-	Wed, 13 Mar 2024 12:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39281F958
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710333991; cv=none; b=k6VV/guIAqDWjN3i0Zv8DXorUVZsjdV+oUnZZhwUFoElUBhMp3m7goa98Ubm084JL+R9PyU1cGM5T9vwE/R3wH2rwuUE/Ffh/OQHm2xDkyQECnnKJc7TY8IdEICHux+i1OhOpdiNZTlppIzqosShgwaIfbyEhml48RmT2JQFdvc=
+	t=1710334415; cv=none; b=BkJf8WKk5PFFWOJh05ICTNWkiZSaTDgHZ52gyg8q8R/iLjk9Mx5pdTAw5DL3cW/ZA5dkNT8+b7yHrEPlmEevWN1kBdIYe7tunbVaNH2OK8v39ey5z3siScYPFvx9Xi7QOZM1x/7kdGFPzTnMms8jkYGE6J3Q+n5XP4f4ltaOA34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710333991; c=relaxed/simple;
-	bh=Jf+wu1IZHLSWPSiVXKPRin5lWsBglxHwN2VUQsB6oqI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b0rkeuhseD9Z7OPCY52+vEXxKPJzBVNRHzhe8P64K2psUQzCVH5j3+sYAzai+t/HaEDBeVMleMX1O64U/EbQbTLFmsutGsQhUrFNd9suz0y4GFNKZYsul4S9GY/XZz07njM7Vg0AVBkRSnKFiNt191zzN4TIhV51v3sfnOz/0JA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yotsuba.nl; spf=pass smtp.mailfrom=yotsuba.nl; dkim=pass (2048-bit key) header.d=yotsuba.nl header.i=@yotsuba.nl header.b=kAJNGphh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HHcl5cpc; arc=none smtp.client-ip=64.147.123.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yotsuba.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yotsuba.nl
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 60B0918001BB;
-	Wed, 13 Mar 2024 08:46:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 13 Mar 2024 08:46:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yotsuba.nl; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1710333985; x=1710420385; bh=l1HL0LHZYJaa4pEADEaCe
-	pA+q5O8TlifflcHnra0QqM=; b=kAJNGphhutQWSqDwIPVWxfX4B2Ls6qyt5SRAb
-	7mscMZZWQjWk9d+DKHTAELnkGvKlB+8017xTnuA0HnjRMUM5g8TUfnUcAvNsdjCh
-	gjOQ6+XVDbVyOaulxtW1oJVax6oyX6W1e0RFolTaTQf4l55MsmLsT5/sP6xipVtT
-	NhppMje77RVMp6ELAF06ZcshSnRL0TSlhrbYY2bg+H2kFtjVA/ugWkDMo+XT6o05
-	RNTff7PTG+Hb69F/EtKaH5pzBiUs+6OHCnYon3tMDe3rOEFnnd5OqV8h+dViddqa
-	vsp/7rMcNeXnNDWYa7Gg3V0AqF9m+7t1UtGYzt0IK4OTuqiSw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710333985; x=1710420385; bh=l1HL0LHZYJaa4pEADEaCepA+q5O8
-	TlifflcHnra0QqM=; b=HHcl5cpcVWs3sCINvtq5T/1HVVqtVnSoaqDJ+lfZFmng
-	mQqHieWuRJlf1YvxUFGlAExb9NtoygRgJV9P58Ymh7Iv6CIwB0DTpVFnY6MhESQY
-	MtaL3z8ekwp+SoxerKuDxc4TcxmJasCCmDa/+qUJdFFUtTdRU1E0OBftZ4JnujMW
-	/nsvKmBA2UjcAghK23tB3NkOjVMUzO569kalXSsHUOKoPwSL8cb0X045OlKn2jEH
-	Yths4QGBRbuh8gXsP6bv/z5uGcgZxo49qXoyTMTxP43rqMMJsk/zQP3oxXhFmGd/
-	NEaM21O/4nwY30ZvdqGnX9xDbaiY+3X9l2Q7Ycokkw==
-X-ME-Sender: <xms:IaDxZap81TWSO2g5QIK2km_GZu-LqECRZhOdYSRnu8puVCP0b1yRYw>
-    <xme:IaDxZYrslFq5N23pWbj6KYIxMca8VkhZvVPk9u-z4DBq9fOYTEYkUF1nnh9czCjcv
-    RShwgVxVpMGh3FZaWk>
-X-ME-Received: <xmr:IaDxZfMKhRCJtpIYUzx0H4T3cBDZpcOOjIhCymrcXvvI2wpnr6GYUZjDqHJrkw9vIZPnuaUuePjrVSAvHmdpIMADbSiupw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeehgdegfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforghrkhcuvehi
-    lhhishhsvghnuceomhgrrhhkseihohhtshhusggrrdhnlheqnecuggftrfgrthhtvghrnh
-    epfffftdevgfffgfdvveduteeufeetfeejueehledvtdekjeeuleegvdfhtdettdetnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhkse
-    ihohhtshhusggrrdhnlh
-X-ME-Proxy: <xmx:IaDxZZ5nY6ciN-dnoz249BIkV0vJ0mxOO1rE7le5f-YEqH5awpdhZA>
-    <xmx:IaDxZZ7WVlpXExDIQcdJzm1JEmWOXhC0xDG6RPRBw0rrmt2Mwjbvhg>
-    <xmx:IaDxZZjxWdqI7JAy1tBwd36_lPFw9NncOVUVHPF-RT1cZrxl4MWDHA>
-    <xmx:IaDxZT7_F8LrOOMz4-fDHVjrTCZ3b-zHG_PkJhCRAivz4JFjALnOLw>
-    <xmx:IaDxZViaL9wJmMDlfb23u4TaU6iNF4-GoTRXawbb6mFcQkqe5xczD5ugnK4>
-Feedback-ID: i85e1472c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Mar 2024 08:46:24 -0400 (EDT)
-From: Mark Cilissen <mark@yotsuba.nl>
-To: netdev@vger.kernel.org
-Cc: Mark Cilissen <mark@yotsuba.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Breno Leitao <leitao@debian.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] netpoll: support sending over raw IP interfaces
-Date: Wed, 13 Mar 2024 13:46:13 +0100
-Message-ID: <20240313124613.51399-1-mark@yotsuba.nl>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710334415; c=relaxed/simple;
+	bh=YMw6FXUUv+blIKXVMARtF/BZiC35J4VjJ2wII6LwQ1Q=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=n0Y+95Jh2N8iRiip8qhNsWvecF4z1vu9Rld+mWK73WWBV+8x6t8hWaWfi3of28HP+9OFZfHEfJHL2K+UNLokpWh/eP2XdNf4XpVf6UN7jeqfg0Mm/Rj2X9evV399vghJvRgzY14VK3lvhOvKiQeS5j+SzWddn7sYDFjSgSsxmEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=xR3PO07V; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so156332366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 05:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1710334411; x=1710939211; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V8ViWIka8v0fvl6fi9rfxOWkjF5zhtO+EwXsSRYTTAY=;
+        b=xR3PO07VvOpLlimM9PTTDU7rpOilBc8WtFa9zUgljEfKdKCREtGrDKzeR8Hr/AcY+k
+         6ap/ULQofv4LclBv5x0KyOIs5xwlg4bz7+6ES7i2D6Qpkb4N/ik2R/12Bea9A1onc1MG
+         YmNXf8+mxrrHL8o69rg+U+8HEk+anazBwrupS58jM7jwkaIeQRaZ0q8nTZlnhOvd0lDR
+         0aOP+1aT0v+v4OyD6d4Rr2K+1fFfn+Zqv1U8+SXR6HNf8jEg+HA/H3juxojlGFg290sU
+         HBuygBjlPa+ygtVEUnQSxtZGLUwWaAfvZNkhqAPaEhOksivOKrWX1tdgDopecT1tvatR
+         NvXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710334411; x=1710939211;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V8ViWIka8v0fvl6fi9rfxOWkjF5zhtO+EwXsSRYTTAY=;
+        b=gO7pAJ6XZihZsYgjVpgf/My3D1X2p7Ul8xSiclIR3aT4YZ4NlKpUZExS9K2o2c74Rd
+         m//Pa2jWXjlLYrP1QKk3xpml1hE8fTvtwq9cOZxYtZUjJAsmEASu/krFEsQpxtCInRuP
+         sXB91m6cQVvzp/UJ7H13MufVf8scNhDYUYmLOx/czOIVUGCnifv9FugAG//aK507eyB+
+         PsuK7GhQaGmOL4uiuviD72WHnxplfI/W8XNZ0hiOdNeJHpUvRC/40+DKYknO9BuBXnT7
+         iozIid/8SANQzOtiPGdVdyVEL4JQlSmKLiqiT56TJ6HaoZe2wsYXrdLE69CG4ttBb6PK
+         XtFw==
+X-Forwarded-Encrypted: i=1; AJvYcCV2wgtyCXp1zSkbD23la9i8Uqicbl3ieUy7T9UgkuxyyZcgMFPRlqFVksniG1N7Fkdqo6Rz5uevLXx6+zj33aIfVJ8bH0DTGyljTe6T
+X-Gm-Message-State: AOJu0Yz9lCDE47xOB5suDkGLzMe+S38bnAMtMdzLcQaEtjzUOHZXeokX
+	bTROXETaHln218GtgdvPNNjZq7QnFkEjW81hGE9QyMfWqYmki3euZKlZYz2asog=
+X-Google-Smtp-Source: AGHT+IEARlJFryEqeY6MQ0xjILbFvD8WfbU2PPjwCmUkH81u0Z36qkT5RKRMbiaOFmE/vvt1bS6N5A==
+X-Received: by 2002:a17:907:cb87:b0:a46:13d3:e5e6 with SMTP id un7-20020a170907cb8700b00a4613d3e5e6mr2421588ejc.0.1710334411048;
+        Wed, 13 Mar 2024 05:53:31 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id jw22-20020a170906e95600b00a4623030893sm3249098ejb.126.2024.03.13.05.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 05:53:30 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH 0/2] Add Inline Crypto Engine for SC7280 UFS
+Date: Wed, 13 Mar 2024 13:53:13 +0100
+Message-Id: <20240313-sc7280-ice-v1-0-3fa089fb7a27@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALmh8WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDIwML3eJkcyMLA93M5FTdRFNTAzMjs6S0ZANLJaCGgqLUtMwKsGHRsbW
+ 1AFIEwhpcAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.13.0
 
-Currently, netpoll only supports interfaces with an ethernet-compatible
-link layer. Certain interfaces like SLIP do not have a link layer
-on the network interface level at all and expect raw IP packets,
-and could benefit from being supported by netpoll.
+Add the required bits to support Inline Crypto Engine on SC7280 SoC with
+UFS.
 
-This commit adds support for such interfaces by using the network device's
-`hard_header_len` field as an indication that no link layer is present.
-If that is the case we simply skip adding the ethernet header, causing
-a raw IP packet to be sent over the interface. This has been confirmed
-to add netconsole support to at least SLIP and WireGuard interfaces.
-
-Signed-off-by: Mark Cilissen <mark@yotsuba.nl>
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
- Documentation/networking/netconsole.rst |  3 ++-
- net/core/netpoll.c                      | 30 ++++++++++++++++---------
- 2 files changed, 22 insertions(+), 11 deletions(-)
+Luca Weiss (2):
+      dt-bindings: crypto: ice: Document sc7280 inline crypto engine
+      arm64: dts: qcom: sc7280: Add inline crypto engine
 
-diff --git a/Documentation/networking/netconsole.rst b/Documentation/networking/netconsole.rst
-index d55c2a22ec7a..434ce0366027 100644
---- a/Documentation/networking/netconsole.rst
-+++ b/Documentation/networking/netconsole.rst
-@@ -327,4 +327,5 @@ enable the logging of even the most critical kernel bugs. It works
- from IRQ contexts as well, and does not enable interrupts while
- sending packets. Due to these unique needs, configuration cannot
- be more automatic, and some fundamental limitations will remain:
--only IP networks, UDP packets and ethernet devices are supported.
-+only UDP packets over IP networks, over ethernet links if a
-+hardware layer is required, are supported.
-diff --git a/net/core/netpoll.c b/net/core/netpoll.c
-index 543007f159f9..0299fb71b456 100644
---- a/net/core/netpoll.c
-+++ b/net/core/netpoll.c
-@@ -399,7 +399,7 @@ EXPORT_SYMBOL(netpoll_send_skb);
- 
- void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
- {
--	int total_len, ip_len, udp_len;
-+	int total_len, ip_len, udp_len, link_len;
- 	struct sk_buff *skb;
- 	struct udphdr *udph;
- 	struct iphdr *iph;
-@@ -416,7 +416,10 @@ void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
- 	else
- 		ip_len = udp_len + sizeof(*iph);
- 
--	total_len = ip_len + LL_RESERVED_SPACE(np->dev);
-+	/* if there's a hardware header assume ethernet, else raw IP */
-+	eth = NULL;
-+	link_len = np->dev->hard_header_len ? LL_RESERVED_SPACE(np->dev) : 0;
-+	total_len = ip_len + link_len;
- 
- 	skb = find_skb(np, total_len + np->dev->needed_tailroom,
- 		       total_len - len);
-@@ -458,9 +461,11 @@ void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
- 		ip6h->saddr = np->local_ip.in6;
- 		ip6h->daddr = np->remote_ip.in6;
- 
--		eth = skb_push(skb, ETH_HLEN);
--		skb_reset_mac_header(skb);
--		skb->protocol = eth->h_proto = htons(ETH_P_IPV6);
-+		skb->protocol = htons(ETH_P_IPV6);
-+		if (link_len) {
-+			eth = skb_push(skb, ETH_HLEN);
-+			skb_reset_mac_header(skb);
-+		}
- 	} else {
- 		udph->check = 0;
- 		udph->check = csum_tcpudp_magic(np->local_ip.ip,
-@@ -487,13 +492,18 @@ void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
- 		put_unaligned(np->remote_ip.ip, &(iph->daddr));
- 		iph->check    = ip_fast_csum((unsigned char *)iph, iph->ihl);
- 
--		eth = skb_push(skb, ETH_HLEN);
--		skb_reset_mac_header(skb);
--		skb->protocol = eth->h_proto = htons(ETH_P_IP);
-+		skb->protocol = htons(ETH_P_IP);
-+		if (link_len) {
-+			eth = skb_push(skb, ETH_HLEN);
-+			skb_reset_mac_header(skb);
-+		}
- 	}
- 
--	ether_addr_copy(eth->h_source, np->dev->dev_addr);
--	ether_addr_copy(eth->h_dest, np->remote_mac);
-+	if (eth) {
-+		eth->h_proto = skb->protocol;
-+		ether_addr_copy(eth->h_source, np->dev->dev_addr);
-+		ether_addr_copy(eth->h_dest, np->remote_mac);
-+	}
- 
- 	skb->dev = np->dev;
- 
+ .../devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml    | 1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi                             | 9 +++++++++
+ 2 files changed, 10 insertions(+)
+---
+base-commit: 5f19977109ce685937fee9feea9b807599dfc925
+change-id: 20231208-sc7280-ice-a550626bfc09
+
+Best regards,
 -- 
-2.43.0
+Luca Weiss <luca.weiss@fairphone.com>
 
 
