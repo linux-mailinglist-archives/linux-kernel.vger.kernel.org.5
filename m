@@ -1,207 +1,117 @@
-Return-Path: <linux-kernel+bounces-101921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13EA087ACBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:15:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4947887AC48
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:03:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94F441F3001F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:15:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04466285426
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3506712BF22;
-	Wed, 13 Mar 2024 16:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0E260BA2;
+	Wed, 13 Mar 2024 16:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="is349ZVj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l0AvnPKj"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B5E12BEB2;
-	Wed, 13 Mar 2024 16:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6160360881;
+	Wed, 13 Mar 2024 16:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348062; cv=none; b=Kbzaq4hHeC5Ux9yOgcUexhPeXJnyEQlcgR6Wzr61IyHGroL3DJVQyLO/EYYegcH8JnmlY4ztW/IM+rVGribVCZ//Q7b2eYs3rQtQyi2abugqpkxoAoDF08jeMufZNzGj3g4AbTihEZd7NfWqHzFoP0fQtWtKfcifS6oJu8JB1y8=
+	t=1710347985; cv=none; b=RTEuWWDI+VJVD80zWPG9HBVyeq6xZnB79AUgvqksWovFc4g8t/oJEi/iV/Q3ObpST5Q2kmPFYdTIUvVgE6cYXIvQuB/+RChh+zEMEZD2xw343s0GsHjRNrQ4cJI0Y0MSPoXa6R4YEDtI6qojDhDPz7mw6ixeezOcy/vdQ1rGX10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348062; c=relaxed/simple;
-	bh=PowxuJQcK0zXz7vu+ktPazmRv9F90wojoKT9raPpi44=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HnKynGVt7xBwL9QZeSITYqngWzTIFtBLPgS2HO8KpJIyJQZnJS0fASg9FKnECMEn2kocUyEyk9PI1cXnZ8xMOQ6zv/R1+j1EwdwkyZRa5IofDz2e/R9t+bhB97PPe95fo7UEp3vmjZMQpgf3aUFr8QglrLdwuaNYLods0k7yqJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=is349ZVj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4714BC433F1;
-	Wed, 13 Mar 2024 16:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348062;
-	bh=PowxuJQcK0zXz7vu+ktPazmRv9F90wojoKT9raPpi44=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=is349ZVjlnH6IoeZuAox0CumiC3/OVBchpI8PFs1Xx6kPkyNVNbP97Gn58uxmiJfu
-	 v7IVwlDI9EFzb7gSMfzXfOLCC9weRv98kDTxI2qjI782MWgAnZsMybK0f19KyXZ0Ff
-	 xs5jkf6A2+G9YOLwWq90bw+tLO7fqTEgyapIw8n2sFsytOYFWjdj7c+EKOPGCPVPcI
-	 bGposp1lGk0zaTMmVSJ1rOkLE+2MQL2fukKuP5uLYXL1KGWlduUTA4z/POP9PSPV8I
-	 SshfpuwuYo8uSW/nKBVW4GYL50y67dWjKIBXQSPw0+2RxCen2b7vd8Jr/E+M+Wjpfi
-	 /fy+2XDizI+AQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>,
-	Andreas Herrmann <aherrmann@suse.de>,
-	Tejun Heo <tj@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 53/71] blk-wbt: pass a gendisk to wbt_{enable,disable}_default
-Date: Wed, 13 Mar 2024 12:39:39 -0400
-Message-ID: <20240313163957.615276-54-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
-References: <20240313163957.615276-1-sashal@kernel.org>
+	s=arc-20240116; t=1710347985; c=relaxed/simple;
+	bh=gBpHjSZpjDFXvuiIbpzC535LhD6ix8zxBIgTnu8tYLY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=O8FFTlGziLxYHOB1iNvGlWNOCfKmzq7PBbWWnmABioNB8upf0J1rs+jvT4+XtwUkgrMXe8rPzRtEy1PVdh5aZ0K4/J6FWb0uQwO0+y1C2e0K2l1/coOuIK4Nkato1MjwPZnW33nN0rBlqG3Ppjn2qupt1gvkj9Y3KU7Xt3xlJSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l0AvnPKj; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-413ee4d4f64so424385e9.1;
+        Wed, 13 Mar 2024 09:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710347981; x=1710952781; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8F8neoasSZhR6V/DsTj5KFDld/PtQqmCaaEQYiHmneQ=;
+        b=l0AvnPKjQc5mLgsFwHjE8ova6jNYS54eKKnATUsfWE1mzW7eTgZPFCmqPV+R5RcZ9M
+         WK9+mU4pI4C8Ka0eN0SDuxzYq3utrZAD0T5gYTuz1MJp1snAbEZVUECgGtlkbzyTfHRj
+         VjnYrA+Jbfnw0GiicgNwftsKF2phTcU3IcyFfbEYQZAKicrE2coTOJOOUz7JAtIVoTJz
+         ynwOrutnYX98Xnnw2G+2sjtoJtSznG9pO3eNVcMAemKVps3S7r5HTjrIPzLgBtxjKmhq
+         Q5y6ucAJM0evEfiZgxs1hwMJoUtL9ETWNDU9GVQ3IjCb0jdv+fgKHHWDAHgV3JjvrfgU
+         nwLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710347981; x=1710952781;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8F8neoasSZhR6V/DsTj5KFDld/PtQqmCaaEQYiHmneQ=;
+        b=M0JWsI0TQWW9OEVdB/Q7dnKzA7NVX9D1VlPMakVdAA1wGjudtCzCjy2hpPX8eKqo+c
+         Nv194+ONNkpC5UISRZVhh7HkAZie3+Mxtrk3oUc1KFXRMvFyst47EhUV0hEa1JuUEC49
+         XSZRUGWK+TaQmMfkw5stnK5JgXGXhwpQs+KuViaiswHIx4sklQA7sw5dOREG+8b1DB87
+         EtanW0PbQG8b4Wa5CAppjl3CsAUYab4gCTXIfGq0F1EfAHe7Yme8c0i7IQq3l2oUYILx
+         4L31/GVDnqruXH6JPicKrsyKx/UZwN6e6xSsV3pj7WW9ebxN+TBZ15ijwjuWzZmjN+15
+         iBag==
+X-Forwarded-Encrypted: i=1; AJvYcCU4n+4sI/XOCsHt82SYHBSus09aTGe2tC9dUAHktCvg5TUXffxVrurlyYk+bqjUL8wqKAmtXbumtjRokrCa/NpeNsXmsN3LAlSNvN2p
+X-Gm-Message-State: AOJu0YxczSK9Nea1tztMBYwt8aeOnJKNYErI5StF7bnAlBD1CXjpuaY6
+	9mUEu+VR4QeFJIDgXATWCV6ISGlAciBcHisfgCYs8cywE6sc8Io4OpOeCcYD
+X-Google-Smtp-Source: AGHT+IE2uHk9GewV6px4YV+5kfONQ7dP8tNoZOCWOZPepd0bNIcgWH6EoE3nvjiS2DHqsfnZSXvCYQ==
+X-Received: by 2002:a05:600c:548f:b0:412:d149:254c with SMTP id iv15-20020a05600c548f00b00412d149254cmr392744wmb.17.1710347981195;
+        Wed, 13 Mar 2024 09:39:41 -0700 (PDT)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id fl21-20020a05600c0b9500b00413320f795fsm2805025wmb.35.2024.03.13.09.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 09:39:40 -0700 (PDT)
+Date: Wed, 13 Mar 2024 16:39:39 +0000
+From: Stafford Horne <shorne@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux OpenRISC <linux-openrisc@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] OpenRISC updates for 6.9
+Message-ID: <ZfHWyzu2sVF6kno6@antec>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.82-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-6.1.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 6.1.82-rc1
-X-KernelTest-Deadline: 2024-03-15T16:39+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Christoph Hellwig <hch@lst.de>
+Hello Linus,
 
-[ Upstream commit 04aad37be1a88de6a1919996a615437ac74de479 ]
+Please consider for pull,
 
-Pass a gendisk to wbt_enable_default and wbt_disable_default to
-prepare for phasing out usage of the request_queue in the blk-cgroup
-code.
+The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Andreas Herrmann <aherrmann@suse.de>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20230203150400.3199230-9-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Stable-dep-of: f814bdda774c ("blk-wbt: Fix detection of dirty-throttled tasks")
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/bfq-iosched.c | 4 ++--
- block/blk-iocost.c  | 4 ++--
- block/blk-sysfs.c   | 2 +-
- block/blk-wbt.c     | 7 ++++---
- block/blk-wbt.h     | 8 ++++----
- 5 files changed, 13 insertions(+), 12 deletions(-)
+  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index e4699291aee23..84b4763b2b223 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -7060,7 +7060,7 @@ static void bfq_exit_queue(struct elevator_queue *e)
- 
- 	blk_stat_disable_accounting(bfqd->queue);
- 	clear_bit(ELEVATOR_FLAG_DISABLE_WBT, &e->flags);
--	wbt_enable_default(bfqd->queue);
-+	wbt_enable_default(bfqd->queue->disk);
- 
- 	kfree(bfqd);
- }
-@@ -7206,7 +7206,7 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_type *e)
- 	blk_queue_flag_set(QUEUE_FLAG_SQ_SCHED, q);
- 
- 	set_bit(ELEVATOR_FLAG_DISABLE_WBT, &eq->flags);
--	wbt_disable_default(q);
-+	wbt_disable_default(q->disk);
- 	blk_stat_enable_accounting(q);
- 
- 	return 0;
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 3788774a7b729..72ca07f24b3c0 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -3281,11 +3281,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 		blk_stat_enable_accounting(disk->queue);
- 		blk_queue_flag_set(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = true;
--		wbt_disable_default(disk->queue);
-+		wbt_disable_default(disk);
- 	} else {
- 		blk_queue_flag_clear(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = false;
--		wbt_enable_default(disk->queue);
-+		wbt_enable_default(disk);
- 	}
- 
- 	if (user) {
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index a82bdec923b21..c59c4d3ee7a27 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -837,7 +837,7 @@ int blk_register_queue(struct gendisk *disk)
- 		goto put_dev;
- 
- 	blk_queue_flag_set(QUEUE_FLAG_REGISTERED, q);
--	wbt_enable_default(q);
-+	wbt_enable_default(disk);
- 	blk_throtl_register(disk);
- 
- 	/* Now everything is ready and send out KOBJ_ADD uevent */
-diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-index afb1782b4255e..8d4f075f13e2f 100644
---- a/block/blk-wbt.c
-+++ b/block/blk-wbt.c
-@@ -637,8 +637,9 @@ void wbt_set_write_cache(struct request_queue *q, bool write_cache_on)
- /*
-  * Enable wbt if defaults are configured that way
-  */
--void wbt_enable_default(struct request_queue *q)
-+void wbt_enable_default(struct gendisk *disk)
- {
-+	struct request_queue *q = disk->queue;
- 	struct rq_qos *rqos;
- 	bool disable_flag = q->elevator &&
- 		    test_bit(ELEVATOR_FLAG_DISABLE_WBT, &q->elevator->flags);
-@@ -705,9 +706,9 @@ static void wbt_exit(struct rq_qos *rqos)
- /*
-  * Disable wbt, if enabled by default.
-  */
--void wbt_disable_default(struct request_queue *q)
-+void wbt_disable_default(struct gendisk *disk)
- {
--	struct rq_qos *rqos = wbt_rq_qos(q);
-+	struct rq_qos *rqos = wbt_rq_qos(disk->queue);
- 	struct rq_wb *rwb;
- 	if (!rqos)
- 		return;
-diff --git a/block/blk-wbt.h b/block/blk-wbt.h
-index 7e44eccc676dd..58c226fe33d48 100644
---- a/block/blk-wbt.h
-+++ b/block/blk-wbt.h
-@@ -89,8 +89,8 @@ static inline unsigned int wbt_inflight(struct rq_wb *rwb)
- #ifdef CONFIG_BLK_WBT
- 
- int wbt_init(struct request_queue *);
--void wbt_disable_default(struct request_queue *);
--void wbt_enable_default(struct request_queue *);
-+void wbt_disable_default(struct gendisk *disk);
-+void wbt_enable_default(struct gendisk *disk);
- 
- u64 wbt_get_min_lat(struct request_queue *q);
- void wbt_set_min_lat(struct request_queue *q, u64 val);
-@@ -105,10 +105,10 @@ static inline int wbt_init(struct request_queue *q)
- {
- 	return -EINVAL;
- }
--static inline void wbt_disable_default(struct request_queue *q)
-+static inline void wbt_disable_default(struct gendisk *disk)
- {
- }
--static inline void wbt_enable_default(struct request_queue *q)
-+static inline void wbt_enable_default(struct gendisk *disk)
- {
- }
- static inline void wbt_set_write_cache(struct request_queue *q, bool wc)
--- 
-2.43.0
+are available in the Git repository at:
 
+  https://github.com/openrisc/linux.git tags/for-linus
+
+for you to fetch changes up to 7f1e2fc493480086fbb375f4f6d33cb93fc069d6:
+
+  openrisc: Use asm-generic's version of fix_to_virt() & virt_to_fix() (2024-03-10 08:55:46 +0000)
+
+----------------------------------------------------------------
+OpenRISC updates for 6.9
+
+Just a few cleanups and updates that were sent in:
+
+ - Replace asm/fixmap.h with asm-generic version
+ - Fix to move memblock setup up before it's used during init
+
+----------------------------------------------------------------
+Dawei Li (1):
+      openrisc: Use asm-generic's version of fix_to_virt() & virt_to_fix()
+
+Oreoluwa Babatunde (1):
+      openrisc: Call setup_memory() earlier in the init sequence
+
+ arch/openrisc/include/asm/fixmap.h | 31 +------------------------------
+ arch/openrisc/kernel/setup.c       |  6 +++---
+ 2 files changed, 4 insertions(+), 33 deletions(-)
 
