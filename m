@@ -1,80 +1,73 @@
-Return-Path: <linux-kernel+bounces-102574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94AAD87B414
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:03:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9859C87B41E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ECCB1F22D7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:03:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22D87284253
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70E45914E;
-	Wed, 13 Mar 2024 22:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475CE59179;
+	Wed, 13 Mar 2024 22:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VxPO5/3s"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dp2ELSdY"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EB25823C
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CD159163;
+	Wed, 13 Mar 2024 22:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710367391; cv=none; b=ADiz6CRftCB60eS9IfDw+pJ9MFtk9lBYO7CvqiMx0gOm4QbCvj7yP4DKiRAvQ3s8ASkJd3N3ixa43ZP36w7l24ZwYWqqNPhYUSfKuyUmycEZttvC5XnW8bonZlyBv2sijHHrggTMvyaOhAQLT55jVpFPdD5CNbrDxI0xkQiNjNw=
+	t=1710367473; cv=none; b=QQDIwQBFgZAtnA6V2gAkDxzHnLlHQjFbh9PxrUVg853jxKfr3bSgJL6ggdApJgzE8DeFJ2gsUsLJjzXVrvmkk4Ku/W1yWFb6O6BERjkRCBPr7BBIHJzTBVNYtlQ5HYtfpKCHCXUxMgh57EOJvf8xWIj8BOc7/IsZ+mn+B8w+cPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710367391; c=relaxed/simple;
-	bh=DnlhJqQ9/i52YDp542HabWDdzKKDSTG32LnufLRXQ7c=;
+	s=arc-20240116; t=1710367473; c=relaxed/simple;
+	bh=aT7JAHlSUM5tP2npDGpXT0p940C3MIFRBgpo2ZfM2Ug=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZtsRvGfj5XvIbbax+4Fk/9+mTKBqJEUeZ9OjahJ2QUIV0fjYi3PRZcm65/VZV8AcidLWgQRwe1uskoCw8K4NrUP21MUqsrB6wmAkVmSrHaNLb9Dwu8MblngoTbc++fNjV/rTF/qyZKA56H/9eIUqa85a/XAgG1usx4AIyizAZWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VxPO5/3s; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710367388;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=6oqvVu+UL+HBieKDZrolGCCcogarIGUTX/10GrezDHM=;
-	b=VxPO5/3s8pBbMIMGHwQaIP3utuO3UhSI1mWpMJDx8yKx4/rrU1YbfRN2gEWeMqGWe80hCX
-	GzqELKpjD6DzKw6xXWsk2fNEgahoIDeZ72KmCPDxVB77UrUM7RSFbOTETtiPQjA+bPP5UY
-	74PSaPfaiZUxl55Kkd/SkNXJs84Tk/8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-690-jSUMD3OEOKm-8f38mWrxPA-1; Wed, 13 Mar 2024 18:03:07 -0400
-X-MC-Unique: jSUMD3OEOKm-8f38mWrxPA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4132a5b38adso2345705e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:03:07 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=HH6gk5dkFfdJUELbA9pJgbVV3MxpqStqdbtNqXvJroYy8uXiz+ZYG5K3J2ivqOR6hpw+NkjeT+34NcbrHEKTEsHm/5BDwhO7Q+tPHrkEPE1Whos3KtWN65A6g53c+Ues2XC3i7eitEMl0E3dYeYLD+rAzg8KiR5QD8heMiekQPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dp2ELSdY; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42f3d88bc20so1356031cf.1;
+        Wed, 13 Mar 2024 15:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710367471; x=1710972271; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eWeuSBStir4R3cAHhGitupw1etPSNxb2qdCFFz/LU8Y=;
+        b=Dp2ELSdYfctjdrh3zBQis/h7xOBMc12vBZVY6AnBFHxZJl1JfJBDmyLpVWhoKliZ6V
+         dJfqvA+NU9NDAR/aFkuQ3KlweNpN+LC1uBmgX0MKMNhcib5Rr2pncbivm4UI0t/6Bq6l
+         J/Wh0CmLxTt9R2b078P29puKUui2NvfKxPAVEd3xoZ71y1+m7XwqytGbHgEmBJfFzoY7
+         2MVy8+5AXrEjoD6vlMQSAlmKSBtY+7rY1IMI2ZXyHlueFG8vQsRfgjjJzultPAXaiezj
+         6czVpDF+GadNsZJjf+a49nY6QJNqkeBgNdxidaBy8jn2osBkHZ646egrUo1whX07oLAe
+         MhWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710367386; x=1710972186;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6oqvVu+UL+HBieKDZrolGCCcogarIGUTX/10GrezDHM=;
-        b=H8DPZRv02hRzxdSSpi4mcPjffJDk/w5IVwsWmlBA9JMWAKwhVJeLZFV96ZNy0PcN8w
-         jpVsmZDTa8Ke+OhnjbdUuj0YrbpNTBUZr+WYLqS0Fd//HM3/EyI1eIef0JqqeLgBf8mT
-         vVAtXPfH9koOeuxuBbBEQ+EeGuyueC0ZeofhIMopuPsiDlrU+yH9SiIdKX5vI2C5sBIN
-         11Q68weqqgW+BFciVyLC0Yb22KO9G044TCgqJmd4g8hk+23l/IzBx+LhEA5Qn8gSp/NQ
-         F73A19aYDSHg21PVTMXKdSIlxJbtXses0neZ95sDgGx5f12pMU7heCtoEYq24JjQburi
-         8WYg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+jtDg9KI+yFMuzpj7vLY55rUOJW4KD0/qJcnrDbhvJRat+jBoHb/8OMNU13HFj5gJFKbNlMwSn4jOq7bS3xee46vlUKAsY0SWPHBo
-X-Gm-Message-State: AOJu0Yw6W9iTIP27PkXDua+uKSO90D+rSaIgLlVCO5E9bbSz4Fk1gtdZ
-	WL0pS9eICdurtTFFljc5olunmf2xuHn3bohGnoFbOzQH9rPB8/reikjdq+TlSyS2EXhrGtv0G6K
-	4BoaGTsfoN9Tb4M6NPBsTt106uyegcKDVS//mCvDhK2QDgkByFyYEln6UGW++CQ==
-X-Received: by 2002:a05:600c:4f8e:b0:412:f3af:c6c6 with SMTP id n14-20020a05600c4f8e00b00412f3afc6c6mr64924wmq.10.1710367385963;
-        Wed, 13 Mar 2024 15:03:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEGJr7nY+MrI4BsVfuIG9W9Xa8WiNurfhsZ1fk9O1VCmZJbq6bAjaDoMOZb1csrEDSOl4U+Tw==
-X-Received: by 2002:a05:600c:4f8e:b0:412:f3af:c6c6 with SMTP id n14-20020a05600c4f8e00b00412f3afc6c6mr64913wmq.10.1710367385576;
-        Wed, 13 Mar 2024 15:03:05 -0700 (PDT)
-Received: from [192.168.3.108] (p4ff23447.dip0.t-ipconnect.de. [79.242.52.71])
-        by smtp.gmail.com with ESMTPSA id fb4-20020a05600c520400b00413e4ff2884sm3508154wmb.40.2024.03.13.15.03.04
+        d=1e100.net; s=20230601; t=1710367471; x=1710972271;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eWeuSBStir4R3cAHhGitupw1etPSNxb2qdCFFz/LU8Y=;
+        b=hGky30HltBCTtliD3e8dxmV/WuUINaWVEfauSNNsPn4SUYW4omnVP33BKPgBMRu2D3
+         c9MQbQY4e3fCWVDcNQlxz8rGt7OVJkBZJlIIspoVhJZQM7uEVJTgbuXTz90MHq2d1IiF
+         ZpgPrXNhu4zMMV2xvUdOng/exb4rj796+A5ONCUvG437fHUN2tg0TSst9shR+giu/dcX
+         4GpoNlaolP4mPF1URHjZvIKPO9Fom0PUJPkZiVgxhKBsEP8mrHqK0VF5l2jupkqODC8X
+         9xYzrbI8b35Ri8Hz5WwGpyNirC+vx6CXOf/10gX02xyrx+snK2vS21mkN8QqKD3k87o+
+         aIWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWRGw9hFlbQEX/SpbCVPnOaol5wBs/hHN1m81Rumz/gw1eRSMFI45xXSTZcUenEOfnwUUfXGn7dw+cUAM9oWn6bn4SkUaaUoZZECGhbov2AuRTROxMkHJCeq3oA0+AJxot7
+X-Gm-Message-State: AOJu0YxQMWriu+wE5TeXcxlTX7fwJcJOQ27NEcG+zQqNWh8DIEmF9OeQ
+	/94i7BUDMHrVEex/rkMEAbNkmy/IgauHuJwcUTn6eGXjwKVazav2
+X-Google-Smtp-Source: AGHT+IEF5kwIGIOSTyzXeOZcOYTOg/AA7EhDxyezfm2rV3nyto+rCKTgt0P1hQ5Ovr3osSiPwkZdpQ==
+X-Received: by 2002:a05:622a:1a98:b0:42f:10a9:e8d1 with SMTP id s24-20020a05622a1a9800b0042f10a9e8d1mr8427598qtc.27.1710367470630;
+        Wed, 13 Mar 2024 15:04:30 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bp33-20020a05622a1ba100b0042f3ee1443csm40947qtb.10.2024.03.13.15.04.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 15:03:05 -0700 (PDT)
-Message-ID: <c04c81bc-dfc1-4dd6-972c-23c2eb8a5d0d@redhat.com>
-Date: Wed, 13 Mar 2024 23:03:04 +0100
+        Wed, 13 Mar 2024 15:04:29 -0700 (PDT)
+Message-ID: <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
+Date: Wed, 13 Mar 2024 15:04:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,130 +75,121 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/memory: Fix missing pte marker for !page on pte zaps
-To: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Muhammad Usama Anjum <usama.anjum@collabora.com>
-References: <20240313213107.235067-1-peterx@redhat.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
+ v6.9]
 Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240313213107.235067-1-peterx@redhat.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Joel Fernandes <joel@joelfernandes.org>, Boqun Feng
+ <boqun.feng@gmail.com>, Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+ mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
+ neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
+ frederic@kernel.org, bigeasy@linutronix.de, chenzhongjin@huawei.com,
+ yangjihong1@huawei.com, rostedt@goodmis.org,
+ Justin Chen <justin.chen@broadcom.com>
+References: <ZetHwrCb0KXE0xFI@tardis>
+ <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux>
+ <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+ <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+ <ZfDptafiK0jns050@boqun-archlinux>
+ <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
+ <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
+ <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 13.03.24 22:31, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
+On 3/13/24 14:59, Russell King (Oracle) wrote:
+> On Wed, Mar 13, 2024 at 02:30:43PM -0700, Florian Fainelli wrote:
+>> I will try to provide multiple answers for the sake of everyone having the
+>> same context. Responding to Linus' specifically and his suggestion to use
+>> "initcall_debug", this is what it gave me:
+>>
+>> [    6.970669] ata1: SATA link down (SStatus 0 SControl 300)
+>> [  166.136366] probe of unimac-mdio-0:01 returned 0 after 159216218 usecs
+>> [  166.142931] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
+>> [  166.148900] probe of unimac-mdio.0 returned 0 after 159243553 usecs
+>> [  166.155820] probe of f0480000.ethernet returned 0 after 159258794 usecs
+>> [  166.166427] ehci-brcm f0b00300.ehci_v2: EHCI Host Controller
+>>
+>> Also got another occurrence happening resuming from suspend to DRAM with:
+>>
+>> [   22.570667] brcmstb-dpfe 9932000.dpfe-cpu: PM: calling
+>> platform_pm_resume+0x0/0x54 @ 1574, parent: rdb
+>> [  181.643809] brcmstb-dpfe 9932000.dpfe-cpu: PM:
+>> platform_pm_resume+0x0/0x54 returned 0 after 159073134 usecs
+>>
+>> and also with the PCIe root complex driver:
+>>
+>> [   18.266279] brcm-pcie f0460000.pcie: PM: calling
+>> brcm_pcie_resume_noirq+0x0/0x164 @ 1597, parent: platform
+>> [  177.457219] brcm-pcie f0460000.pcie: clkreq-mode set to default
+>> [  177.457225] brcm-pcie f0460000.pcie: link up, 2.5 GT/s PCIe x1 (!SSC)
+>> [  177.457231] brcm-pcie f0460000.pcie: PM: brcm_pcie_resume_noirq+0x0/0x164
+>> returned 0 after 159190939 usecs
+>> [  177.457257] pcieport 0000:00:00.0: PM: calling
+>> pci_pm_resume_noirq+0x0/0x160 @ 33, parent: pci0000:00
+>>
+>> Surprisingly those drivers are consistently reproducing the failures I am
+>> seeing so at least this gave me a clue as to where the problem is.
+>>
+>> There were no changes to drivers/net/ethernet/broadcom/genet/, the two
+>> changes done to drivers/net/mdio/mdio-bcm-unimac.c are correct, especially
+>> the read_poll_timeout() conversion is correct, we properly break out of the
+>> loop. The initial delay looked like a good culprit for a little while, but
+>> it is not used on the affected platforms because instead we provide a
+>> callback and we have an interrupt to signal the completion of a MDIO
+>> operation, therefore unimac_mdio_poll() is not used at all. Finally
+>> drivers/memory/brcmstb_dpfe.c also received a single change which is not
+>> functional here (.remove function change do return void).
+>>
+>> I went back to a manual bisection and this time I believe that I have a more
+>> plausible candidate with:
+>>
+>> 7ee988770326fca440472200c3eb58935fe712f6 ("timers: Implement the
+>> hierarchical pull model")
 > 
-> Commit 0cf18e839f64 of large folio zap work broke uffd-wp.  Now mm's uffd
-> unit test "wp-unpopulated" will trigger this WARN_ON_ONCE().
+> I haven't understood the code there yet, and how it would interact with
+> arch code, but one thing that immediately jumps out to me is this:
+> 
+> "    As long as a CPU is busy it expires both local and global timers. When a
+>      CPU goes idle it arms for the first expiring local timer."
+> 
+> So are local timers "armed" when they are enqueued while the cpu is
+> "busy" during initialisation, and will they expire, and will that
+> expiry be delivered in a timely manner?
+> 
+> If not, this commit is basically broken, and would be the cause of the
+> issue you are seeing. For the mdio case, we're talking about 2ms
+> polling. For the dpfe case, it looks like we're talking about 1ms
+> sleeps. I'm guessing that these end up being local timers.
+> 
+> Looking at pcie-brcmstb, there's a 100ms msleep(), and then a polling
+> for link up every 5ms - if the link was down and we msleep(5) I wonder
+> if that's triggering the same issue.
+> 
+> Why that would manifest itself on 32-bit but not 64-bit Arm, I can't
+> say. I would imagine that the same hardware timer driver is being used
+> (may be worth checking DT.) The same should be true for the interrupt
+> driver as well. There's been no changes in that code.
 
-Good that I added the WARN_ON_ONCE() :)
+I just had it happen with ARM64 I was plagued by:
+
+https://lore.kernel.org/lkml/87wmqrjg8n.fsf@somnus/T/
+
+and my earlier bisections somehow did not have ARM64 fail, so I thought 
+it was immune but it fails with about the same failure rate as ARM 32-bit.
 
 > 
-> The WARN_ON_ONCE() asserts that an VMA cannot be registered with
-> userfaultfd-wp if it contains a !normal page, but it's actually possible.
-> One example is an anonymous vma, register with uffd-wp, read anything will
-> install a zero page.  Then when zap on it, this should trigger.
-
-Are you sure? zap_install_uffd_wp_if_needed() contains right at the start:
-
-	/* Zap on anonymous always means dropping everything */
-	if (vma_is_anonymous(vma))
-		return;
-
-So if that's the case the unit test triggers, I'm confused.
-
+> The last straw I can attempt to grasp at is maybe this has something to
+> do with an inappropriate data type being used - maybe something in the
+> timer code that the blamed commit changes that a 32-bit type is too
+> small?
 > 
-> What's more, removing that WARN_ON_ONCE may not be enough either, because
-> we should also not rely on "whether it's a normal page" to decide whether
-> pte marker is needed.  For example, one can register wr-protect over some
-> DAX regions to track writes when UFFD_FEATURE_WP_ASYNC enabled, in which
-> case it can have page==NULL for a devmap but we may want to keep the marker
-> around.
-
-I thought uffd-wp was limited to specific backends only. But looks like 
-that changed with UFFD_FEATURE_WP_ASYNC, I guess?
-
-
-Change itself looks, good. Not sure about the anon_vma example above.
-
-Thanks!
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
-> 
-> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Fixes: 0cf18e839f64 ("mm/memory: handle !page case in zap_present_pte() separately")
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->   mm/memory.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index f2bc6dd15eb8..904f70b99498 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1536,7 +1536,9 @@ static inline int zap_present_ptes(struct mmu_gather *tlb,
->   		ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
->   		arch_check_zapped_pte(vma, ptent);
->   		tlb_remove_tlb_entry(tlb, pte, addr);
-> -		VM_WARN_ON_ONCE(userfaultfd_wp(vma));
-> +		if (userfaultfd_pte_wp(vma, ptent))
-> +			zap_install_uffd_wp_if_needed(vma, addr, pte, 1,
-> +						      details, ptent);
->   		ksm_might_unmap_zero_page(mm, ptent);
->   		return 1;
->   	}
-
 -- 
-Cheers,
-
-David / dhildenb
+Florian
 
 
