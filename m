@@ -1,131 +1,160 @@
-Return-Path: <linux-kernel+bounces-102392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB89187B189
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5AA887B18A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:18:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 313401C27F28
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:18:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03EA61C27560
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E1D56440;
-	Wed, 13 Mar 2024 19:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B63959B5A;
+	Wed, 13 Mar 2024 19:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EY2Pydaj"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nqJQixae"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A463225DE;
-	Wed, 13 Mar 2024 19:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B2C225AF
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710356556; cv=none; b=CWAB6Bz3oqwwPDx8R2Twl3mteZUmvDPzUzx2eOlvaF+cWfkS9+Q07Pp7pxgIURXPidbxljaMITfj5YnD4X7TLrtbUr9JDlbR9bpo3DQWyrOhAc9qaLspyfaHrgAQNPrTcI5QwHLxFBXPdLEFwgRJ0Dm9OwKQECAZ50WTiQHGpEI=
+	t=1710356567; cv=none; b=CVTbAU7kAWunUFxaJdrDz1E+rmIyE3UyFYE/jgInfiNBGzw78dmixxg1BHE6uFx3zWmdDfRvjzgiCM0ApP5AjAez0Rk1QB07QxPLQBUSi9hkrAKssmlwLL5wYViqrpNQmcbkENtuOCCEaxjBEKCB7yvqysiZZH5jYmOHmMboPLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710356556; c=relaxed/simple;
-	bh=Yz4mTpJ4QQ7245qWd/JzIlgbf8MSRzBz6tfWD10wBdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hRMeU2ZxnXgC0AnkV5qf/V2Y72jCDmI9epQNThNB6zIyVXd1o2v6DRdc5/EvrNi/Q0ova6+fTv2O1U1bcr54wMyWw24fZxyQOAZoB0L8dk0XRwMUkoeN0pwqdq8xsdn9c7o65aB1K1zkFSjJ5ILFUcIKlYw/6Y9CtmVU5IPOh/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EY2Pydaj; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710356555; x=1741892555;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Yz4mTpJ4QQ7245qWd/JzIlgbf8MSRzBz6tfWD10wBdM=;
-  b=EY2PydajNR7eYIRpiP1tPxjr02VAOQXFJ+YZp0ysv3dfSTlzh1WllK2s
-   zVo/Ih6RffqowtI8N1Et0qUe8rg6XfyP2D8UeH7bYatHTThbGAzZIVPtn
-   IKm5G8A3ttYh3DjYsfGM52p2XKjwabGPIaqXWaGeJN6J4ncDkgF/JNLkg
-   2fCOCNl+O7ejxoOVuyQIy71JRzotuUza8bK1P4JPUJm3/xNP3GeRyNtwh
-   qpPPY/xsm209uyECG+mR4kiMWbAXt8cx48nJz27QZDwbdEo6r2VWexXjt
-   jr1zYxBf2MJETkFI1K5OASP7407H31FrW1P1aDtHw2AGuxEwzrw2tSZm0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="8966436"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="8966436"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:02:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914439267"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="914439267"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 12:01:58 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rkTrP-0000000CIhg-2NCK;
-	Wed, 13 Mar 2024 21:01:55 +0200
-Date: Wed, 13 Mar 2024 21:01:55 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
-	mazziesaccount@gmail.com, ak@it-klinger.de,
-	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
-	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] iio: pressure: Simplify read_* functions
-Message-ID: <ZfH4IyeFTGFBKT4J@smile.fi.intel.com>
-References: <20240313174007.1934983-1-vassilisamir@gmail.com>
- <20240313174007.1934983-3-vassilisamir@gmail.com>
+	s=arc-20240116; t=1710356567; c=relaxed/simple;
+	bh=kOETKqj4ms9TeecxQwKc7Q6phMDpAvy8Z6jCiPxe64A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NvgRjlFdMkGTs+UxZfYpxAeQVcgJdFKf/i345K7pLbIKSxpe5/xAjuj2IDwJ1iyojfBNgZCcjeJKYLj6ie6s3CeLPs8iXrVSmZDyJyhuaC+qHAjsK9gTQFYz2cjFDT6tLf0h05PeZtR3At0cq+K86yTyPhFkTNNpjvCnDxVD5Ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nqJQixae; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=rIJP/2UJwo6seYvgvi0OmkEBz55Yak5Htnxi3myTKu8=; b=nqJQixaelhfIlCtIrd1vO8BEV0
+	PZDMhh4NiN+/ct17a5eR3LnU4zyGsAWNx6XwhHoUlSiiSqSvHKQqEcMMb3g9QJCBA+WJCSD6HNJDr
+	WOaFKLWNb6UZMaGaEy/SwAa9MefGcFxOFMqCbKOgvp7V5VTZLBT/gOUnh1kFvj9eH+BTqxZyg84aj
+	t5gCEQYwvGPOt/RL8Wybru6ZnNMJ2LdJeHxT4jE+/quDaREQeut52+AmrTxW/pNTOsvCnI2Q1L+Ks
+	2kSHf5pg15e6zpJe+b9iw5/zwUCTLORVlyOcNz+lHH1EBw5YBAgqxnnhz6VqroVbXsS4ihBAtWBhY
+	/X9x7byQ==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rkTs6-0000000BUAS-3Dl5;
+	Wed, 13 Mar 2024 19:02:38 +0000
+Message-ID: <1cda54fb-a61d-4485-b9fe-338a935d7980@infradead.org>
+Date: Wed, 13 Mar 2024 12:02:37 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313174007.1934983-3-vassilisamir@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 03/16] drm/vkms: write/update the documentation for
+ pixel conversion and pixel write functions
+Content-Language: en-US
+To: Louis Chauvet <louis.chauvet@bootlin.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
+ Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com
+References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
+ <20240313-yuv-v5-3-e610cbd03f52@bootlin.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240313-yuv-v5-3-e610cbd03f52@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 13, 2024 at 06:40:03PM +0100, Vasileios Amoiridis wrote:
+Hi,
 
-In the Subject: ... read_*() functions
-
-> Add the coefficients for the IIO standard units inside the chip_info
-> structure.
+On 3/13/24 10:44, Louis Chauvet wrote:
+> Add some documentation on pixel conversion functions.
+> Update of outdated comments for pixel_write functions.
 > 
-> Remove the calculations with the coefficients for the IIO compatibility
-> from inside the read_(temp/press/humid) functions and move it to the
-
-read_{temp,press,humid}()
-
-> read_raw function.
-
-read_raw()
-
-> Execute the calculations with the coefficients inside the read_raw
-
-read_raw()
-
-> oneshot capture functions.
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_composer.c |  7 ++++
+>  drivers/gpu/drm/vkms/vkms_drv.h      | 13 ++++++++
+>  drivers/gpu/drm/vkms/vkms_formats.c  | 62 ++++++++++++++++++++++++++++++------
+>  3 files changed, 73 insertions(+), 9 deletions(-)
 > 
-> Also fix raw_* and comp_* values signs.
 
-..
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+> index 172830a3936a..6e3dc8682ff9 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
 
->  		case IIO_TEMP:
-> -			ret = data->chip_info->read_temp(data, val, val2);
-> +			ret = data->chip_info->read_temp(data);
-> +			*val = data->chip_info->temp_coeffs[0] * ret;
-> +			*val2 = data->chip_info->temp_coeffs[1];
 
-> +			if (!strcmp(indio_dev->name, "bmp580"))
-> +				ret = IIO_VAL_FRACTIONAL_LOG2;
-> +			else
-> +				ret = IIO_VAL_FRACTIONAL;
+> @@ -216,6 +238,14 @@ static void argb_u16_to_RGB565(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel)
+>  	*pixels = cpu_to_le16(r << 11 | g << 5 | b);
+>  }
+>  
+> +/**
 
-I'm wondering if we may replace these strcmp():s by using enum and respective
-values in chip_info.
+This comment is not in kernel-doc format, so either use "/*" to begin the comment
+or add the function name in the first comment line, like:
 
->  			break;
 
++ * vkms_writeback_row - Generic loop for all supported writeback format. It is executed just after the blending to
+
+> + * Generic loop for all supported writeback format. It is executed just after the blending to
+> + * write a line in the writeback buffer.
+> + *
+> + * @wb: Job where to insert the final image
+> + * @src_buffer: Line to write
+> + * @y: Row to write in the writeback buffer
+> + */
+>  void vkms_writeback_row(struct vkms_writeback_job *wb,
+>  			const struct line_buffer *src_buffer, int y)
+>  {
+> @@ -229,6 +259,13 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
+>  		wb->pixel_write(dst_pixels, &in_pixels[x]);
+>  }
+>  
+> +/**
+
+Needs function name or don't use "/**" to begin the comment.
+
+> + * Retrieve the correct read_pixel function for a specific format.
+> + * The returned pointer is NULL for unsupported pixel formats. The caller must ensure that the
+> + * pointer is valid before using it in a vkms_plane_state.
+> + *
+> + * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
+> + */
+>  void *get_pixel_conversion_function(u32 format)
+>  {
+>  	switch (format) {
+> @@ -247,6 +284,13 @@ void *get_pixel_conversion_function(u32 format)
+>  	}
+>  }
+>  
+> +/**
+
+Same here.
+
+> + * Retrieve the correct write_pixel function for a specific format.
+> + * The returned pointer is NULL for unsupported pixel formats. The caller must ensure that the
+> + * pointer is valid before using it in a vkms_writeback_job.
+> + *
+> + * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
+> + */
+>  void *get_pixel_write_function(u32 format)
+>  {
+>  	switch (format) {
+> 
+
+thanks.
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+#Randy
 
