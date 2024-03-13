@@ -1,69 +1,77 @@
-Return-Path: <linux-kernel+bounces-102507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C294187B311
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:56:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E043F87B315
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:58:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78CF0287389
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:56:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D9B41C21E84
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2113E5339D;
-	Wed, 13 Mar 2024 20:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A43151C4F;
+	Wed, 13 Mar 2024 20:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="HmLkOYMo"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qQs2Medn"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA7F225AF
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 20:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623191A38E8;
+	Wed, 13 Mar 2024 20:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710363392; cv=none; b=eXwlHeN/EkdYYDMPrI3zkwv6vfxsNbJfKuVIj9fAKNC/KZ1yiW3wWLF0rulDejDaYQrfTrei2dlB8iW6ixVCeRwagvKFIi0Wp/HdPfi/8HSurMezNXOQ6r47MJHNu7jhAwwEJ1GS9/oWQtAGhf0qErq8BGonPg8L26mu95wsBy0=
+	t=1710363496; cv=none; b=d6X26yLNErsTDHs2ilVr9IZwTa+BanGLHQrPv2dEdq+b2T7PtRQGxokdDWj6PzsB+5JkmkdqcXbgzMhQVoEvk+P2FbPR78lzV5qnUC5TcK3a0bhQlBbQvP55SncCPdycs7BzszYFYASIPXD0v52s5qZBdouT+KwRI6A7XyQMbag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710363392; c=relaxed/simple;
-	bh=h7MYZvQ42ZrkU+g07VqiXmidevdYRk1IO5cCImEWhZ4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BytAXvOJgzSOXIe1Mfd6JyIQVshMoTakRyBdCBpqkOjSb3grnOSY8Hyg535FLv/Ol5boFb03BmcP3ZoXnBPSvn/VEtlwmEcGfiln4B9dSs7k3PPF0BAznutFaO8PfsRfwhoc7xf+e+jjy2PTWeP9mASknI7amHiVLMwoKJzW/gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=HmLkOYMo; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1710363382;
-	bh=h7MYZvQ42ZrkU+g07VqiXmidevdYRk1IO5cCImEWhZ4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HmLkOYMoEc4qLDE2XTDsTMz8UY18NWo/MBEJTqvVW3Cb/xxq0S3kPECJfD6RUsZ6R
-	 IQmMfVgOKHr9iTDlu1sO6CdtwQVBT6BCEuMHz7sij/MqxVtmDD7mxdRhkN8u2CFUbB
-	 ceRHdL6NLt4FLwLjPGeF0jMko57CsQwS8d1E14akCgtZCWmqIdBScECIWlnfpc+F+g
-	 eHFJ81OuMiO6u2P0KG4eEQpMdvHxbbFdZAo41uc7cQ3mvPbf1EstTdGwu6DyokLoGu
-	 xfng3mSXb2m5cWKYRwN5L1XGkARZsP43vqAUil3MJNSaODuGizgE5KXd8TgE8O/r/T
-	 Laa5xUi0G/JPg==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Tw2qV0tPyzjQk;
-	Wed, 13 Mar 2024 16:56:22 -0400 (EDT)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Peter Oskolkov <posk@google.com>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Andrew Hunter <ahh@google.com>,
-	Maged Michael <maged.michael@gmail.com>,
-	gromer@google.com,
-	Avi Kivity <avi@scylladb.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Linus Torvalds <torvalds@linuxfoundation.org>
-Subject: [RFC PATCH 2/2] sched/membarrier: Use serialized smp_call_function APIs
-Date: Wed, 13 Mar 2024 16:56:22 -0400
-Message-Id: <20240313205622.2179659-3-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240313205622.2179659-1-mathieu.desnoyers@efficios.com>
-References: <20240313205622.2179659-1-mathieu.desnoyers@efficios.com>
+	s=arc-20240116; t=1710363496; c=relaxed/simple;
+	bh=alb5ymLAMq/qTYU6rhTwwfBGamSExk2vgHrexAkzTqw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KPIb+6ZzSp9NtSBz8ad2juE1hs4BkozHqt0cjWCBuFaqAMeTOKdoLT8BFKFG7eVuDbWR/sz2AIZ7J+0ioMa12C+GGwyuhFL/JzFpAQLHkbEvl4CaL7R+SsJyioSO63eZ4XT8Jb1lkeg608k5kNXPBGAEoOU97ma9Ysu05B5ugMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qQs2Medn; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42DGraI4006974;
+	Wed, 13 Mar 2024 20:58:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=lC+CWytan5xtF4ASqrgCjXjedFAbcidykNFLvI1oAhg=;
+ b=qQs2MednltN9YaejeK1qPNikKlXozuL0GLq9JHJPXeUI0IJLcU4w48Af7RsZALeiXnFo
+ X79ugglpYQFpjfPv8fRNS9T1XT6I6Nl2+istc26TUGu4SVH6tAv7EKGOaGPw15oKD+XC
+ i6qHjgpMFHLboJfUbexZfIYYH9dykVjs2L9GUpylLhaJQWPw928CUIacye+glJlPBHF9
+ KKkkBrKHKJAJviTtViyhQ2A3XEhxZPtGwoEMQK+t45f/OparMNqQXVsoTfWrYbaHujsp
+ EhEK4Yu55ssNiLkw8EkIf8yEday2TWN+WomRQ6qZfNaz2rgWK7nqWYzFY8ewO4qUlX5n aQ== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wug29k1p8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 20:58:12 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42DIMqai014861;
+	Wed, 13 Mar 2024 20:58:12 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws33p0gw8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 20:58:12 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42DKw8dj29950648
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 13 Mar 2024 20:58:11 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DB3B65803F;
+	Wed, 13 Mar 2024 20:58:08 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 50BA058060;
+	Wed, 13 Mar 2024 20:58:08 +0000 (GMT)
+Received: from jason-laptop.ibmuc.com (unknown [9.61.59.128])
+	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 13 Mar 2024 20:58:08 +0000 (GMT)
+From: "Jason J. Herne" <jjherne@linux.ibm.com>
+To: linux-s390@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, akrowiak@linux.ibm.com,
+        borntraeger@de.ibm.com, agordeev@linux.ibm.com, gor@linux.ibm.com
+Subject: [PATCH v3 0/5] s390/vfio-ap: ap_config sysfs attribute for mdevctl automation
+Date: Wed, 13 Mar 2024 16:58:02 -0400
+Message-ID: <20240313205807.30554-1-jjherne@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,129 +79,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: klUTMC5yknQrCZXv9kR-Oi5d_jiQ6yBY
+X-Proofpoint-GUID: klUTMC5yknQrCZXv9kR-Oi5d_jiQ6yBY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-13_09,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403130160
 
-Use the serialized smp_call_function APIs to issue IPIs, thus limiting
-the rate at which IPIs can be generated for each CPU.
+Mdevctl requires a way to atomically query and atomically update a vfio-ap
+mdev's current state. This patch set creates the ap_config sysfs attribute.
+This new attribute allows reading and writing an mdev's entire state in one go.
+If a newly written state is invalid for any reason the entire state is rejected
+and the target mdev remains unchanged.
 
-Limiting the rate of IPIs at the smp_call_function level ensures that
-various mechanisms cannot be combined to overwhelm a CPU with IPIs.
+Changelog
+==========
+v3
+  - Optimization: hot unplug functions skip apcb update if nothing was actually
+    unplugged.
+  - Hot unplug functions modified to zero bitmaps before use.
+  - Rename ap_matrix_length_check to ap_matrix_overflow_check
+  - Fixed omissions and errors in several commit messages and the docs.
+  - Added Tested-by tags.
+v2
+  - Rebased patched on top of latest master
+  - Reworked code to fit changes introduced by f848cba767e59
+      s390/vfio-ap: reset queues filtered from the guest's AP config
+  - Moved docs changes to separate patch
 
-This allows removing the IPI serialization mutex introduced by commit
-944d5fe50f3f ("sched/membarrier: reduce the ability to hammer on
-sys_membarrier"), which restores scaling of membarrier
-MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ targeting a specific CPU with
-MEMBARRIER_CMD_FLAG_CPU. This is used in Google tcmalloc for cross-CPU
-operations.
 
-[ I do not have numbers justifying the benefit of moving to a per-CPU
-  mutex for MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ targeting a specific
-  CPU. Perhaps Google folks using this have benchmarks that can provide
-  those numbers ? ]
+Jason J. Herne (5):
+  s390/ap: Externalize AP bus specific bitmap reading function
+  s390/vfio-ap: Add sysfs attr, ap_config, to export mdev state
+  s390/vfio-ap: Ignore duplicate link requests in
+    vfio_ap_mdev_link_queue
+  s390/vfio-ap: Add write support to sysfs attr ap_config
+  docs: Update s390 vfio-ap doc for ap_config sysfs attribute
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Andrew Hunter <ahh@google.com>
-Cc: Maged Michael <maged.michael@gmail.com>
-Cc: gromer@google.com
-Cc: Avi Kivity <avi@scylladb.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Peter Oskolkov <posk@google.com>
----
- kernel/sched/membarrier.c | 24 +++++++-----------------
- 1 file changed, 7 insertions(+), 17 deletions(-)
+ Documentation/arch/s390/vfio-ap.rst   |  30 ++++
+ drivers/s390/crypto/ap_bus.c          |  13 +-
+ drivers/s390/crypto/ap_bus.h          |  22 +++
+ drivers/s390/crypto/vfio_ap_ops.c     | 220 ++++++++++++++++++++++++--
+ drivers/s390/crypto/vfio_ap_private.h |   6 +-
+ 5 files changed, 262 insertions(+), 29 deletions(-)
 
-diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-index 4e715b9b278e..368afd35c1de 100644
---- a/kernel/sched/membarrier.c
-+++ b/kernel/sched/membarrier.c
-@@ -162,9 +162,6 @@
- 	| MEMBARRIER_PRIVATE_EXPEDITED_RSEQ_BITMASK			\
- 	| MEMBARRIER_CMD_GET_REGISTRATIONS)
- 
--static DEFINE_MUTEX(membarrier_ipi_mutex);
--#define SERIALIZE_IPI() guard(mutex)(&membarrier_ipi_mutex)
--
- static void ipi_mb(void *info)
- {
- 	smp_mb();	/* IPIs should be serializing but paranoid. */
-@@ -262,7 +259,6 @@ static int membarrier_global_expedited(void)
- 	if (!zalloc_cpumask_var(&tmpmask, GFP_KERNEL))
- 		return -ENOMEM;
- 
--	SERIALIZE_IPI();
- 	cpus_read_lock();
- 	rcu_read_lock();
- 	for_each_online_cpu(cpu) {
-@@ -295,9 +291,7 @@ static int membarrier_global_expedited(void)
- 	}
- 	rcu_read_unlock();
- 
--	preempt_disable();
--	smp_call_function_many(tmpmask, ipi_mb, NULL, 1);
--	preempt_enable();
-+	smp_call_function_many_serialize(tmpmask, ipi_mb, NULL, 1);
- 
- 	free_cpumask_var(tmpmask);
- 	cpus_read_unlock();
-@@ -351,7 +345,6 @@ static int membarrier_private_expedited(int flags, int cpu_id)
- 	if (cpu_id < 0 && !zalloc_cpumask_var(&tmpmask, GFP_KERNEL))
- 		return -ENOMEM;
- 
--	SERIALIZE_IPI();
- 	cpus_read_lock();
- 
- 	if (cpu_id >= 0) {
-@@ -382,10 +375,10 @@ static int membarrier_private_expedited(int flags, int cpu_id)
- 
- 	if (cpu_id >= 0) {
- 		/*
--		 * smp_call_function_single() will call ipi_func() if cpu_id
--		 * is the calling CPU.
-+		 * smp_call_function_single_serialize() will call
-+		 * ipi_func() if cpu_id is the calling CPU.
- 		 */
--		smp_call_function_single(cpu_id, ipi_func, NULL, 1);
-+		smp_call_function_single_serialize(cpu_id, ipi_func, NULL, 1);
- 	} else {
- 		/*
- 		 * For regular membarrier, we can save a few cycles by
-@@ -405,11 +398,9 @@ static int membarrier_private_expedited(int flags, int cpu_id)
- 		 * rseq critical section.
- 		 */
- 		if (flags != MEMBARRIER_FLAG_SYNC_CORE) {
--			preempt_disable();
--			smp_call_function_many(tmpmask, ipi_func, NULL, true);
--			preempt_enable();
-+			smp_call_function_many_serialize(tmpmask, ipi_func, NULL, true);
- 		} else {
--			on_each_cpu_mask(tmpmask, ipi_func, NULL, true);
-+			on_each_cpu_mask_serialize(tmpmask, ipi_func, NULL, true);
- 		}
- 	}
- 
-@@ -465,7 +456,6 @@ static int sync_runqueues_membarrier_state(struct mm_struct *mm)
- 	 * between threads which are users of @mm has its membarrier state
- 	 * updated.
- 	 */
--	SERIALIZE_IPI();
- 	cpus_read_lock();
- 	rcu_read_lock();
- 	for_each_online_cpu(cpu) {
-@@ -478,7 +468,7 @@ static int sync_runqueues_membarrier_state(struct mm_struct *mm)
- 	}
- 	rcu_read_unlock();
- 
--	on_each_cpu_mask(tmpmask, ipi_sync_rq_state, mm, true);
-+	on_each_cpu_mask_serialize(tmpmask, ipi_sync_rq_state, mm, true);
- 
- 	free_cpumask_var(tmpmask);
- 	cpus_read_unlock();
 -- 
-2.39.2
+2.41.0
 
 
