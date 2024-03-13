@@ -1,109 +1,100 @@
-Return-Path: <linux-kernel+bounces-101315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D0E87A575
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:02:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF7187A578
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:03:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 554611C21416
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:02:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A345E1F20F95
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196C638DF7;
-	Wed, 13 Mar 2024 10:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7B938DDA;
+	Wed, 13 Mar 2024 10:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mDf951Am"
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HW57ffSG"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19AFC383BA;
-	Wed, 13 Mar 2024 10:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13BB22615
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710324111; cv=none; b=g065c0JqeNGWbCk5QSUzFdJerjmMbl32Zlasp0jtXlgL/0sk2T36DlUNncvLpLUebveyN4qKWuIDM6z1JigjrdR/oPRmLHZHIRmi9CyPthPo/bYotKJOncxBlNyeIl+g6Q1/CoDiuN5OD1K6v8vTxxUWW1DAEPqeX7XPmp5hUKY=
+	t=1710324212; cv=none; b=cDfcgi0iuSD6IxXGDQnemWk7awoT5hPJc/jn6MPyXEbLL7NDPH5aU0GfjYHsllhNZUZtWgfZq+NosLpku45kYPoOYXo7NJNFSiwIjVc8iAX+hTmkEbIEyqaD7Nfm1ZG2SHSr1WzWc4NdakFO97FZN9PPySCc+MQNvkiOhRKuLw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710324111; c=relaxed/simple;
-	bh=iz1x5RuOHvSAgTvYl/1JMHFx8PMJeDHVQ081QiJoKqw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N6hHwi6BXYuH/RCTbJOmp9sE76fhCcmmAL5n5CoWRdVX9uDP7fBwVeGAO5uCGScvUpZ6RU0FfJWI4pY3JHyfMSjszO4dDBJtH4tU5GC0rKFuJjCqiCc2FgRxgCZ5yiJ2OTxvvxAkOhtUDe53Xh21vNxzpCRL5d/ZwW2XzyGapVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mDf951Am; arc=none smtp.client-ip=209.85.214.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-1dd10ae77d8so48247315ad.0;
-        Wed, 13 Mar 2024 03:01:49 -0700 (PDT)
+	s=arc-20240116; t=1710324212; c=relaxed/simple;
+	bh=SYoPjcYuU8Jtq9dJ6eJ/BaLc9EDIPdRFn0FcCAdJ5Mg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CdJk+TAzOhRaypqfdJ9e5K+/RcGm3H8t1V5DTJjQ/6J2Hh+VT/oT9657BxB3kJrtuHG2EpFSAcEHtVvWZR1iNzgafHPcMzy29lYdwyGAb6Wrkh3OPmbha7/3o3+KJlCQ/PARiEqcGpq3KQr2659jys9Vdj366sc9KR9whXAbFAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HW57ffSG; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d28051376eso70179651fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 03:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710324109; x=1710928909; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4v37dg+iJFB5VWIwGZR5ria28sA0OiKXNSMSERlE9Q=;
-        b=mDf951AmNPJzpv/LrwyESTpSx8zP6WD6cRKkO8Z6XrG7zjPWPp+5RClsAaqP/viKNa
-         26XFwiwhL8KswDrF9y0AWhRvf2D5pYs2uY7O0rmVuioSPEgvGSjUNnbjEm6EpWOmyKLY
-         4DfLYBD7JNVSJ5d8t+PMf7PqYk8bQrdqb5ids6KIZeIDDAyu/W2QRWDeKo5ILFPv5GCq
-         vbzxbN5wbJp2cOiV5J5ku/fRdRgIHr9UumNYuwkm55HY8zTFVaBiTaajkgeCEDxx1haX
-         0qzpMJIUMy1o0if/jarCjRRc+gsOc0utjHKvpUbEX3KHI/GAT7XGJYxUny/gmoKwNTSm
-         zygg==
+        d=linaro.org; s=google; t=1710324209; x=1710929009; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l3c+f14fS4xcyhQ4ZpJsTOO0eup+3eDmvL4CiWI3nyo=;
+        b=HW57ffSG87N8jCwHyBVjeNb8au5nRBo5UeuC6ZNmd41R8G/PYvUN/cm2FWoRj4X0tv
+         LB108uvFOHdiNy+Qfjsq8KAgJUTK+7HDdhO1bX2XA0Q6VHnN6TRmOKTkGJcNBmKTZmBS
+         Ei1Cts5yaAGvIeNme3KdUx8ZA3brx3oAPtwmdb2L7qje9UzONx/Ep1BRsdGSUkLu/aVE
+         6rPnXA4C38kbjZw56//nGWouN4XOQLKKM4uQkrcuyGgklhUu9duxTAEQ9NmipTY8D9E7
+         AKc+5EIX8ByIsSH/69Ldq6rLY1ikTvns0wFfNLQ3uy5NN/oYXHDIyYmeOKmaKeRTy/JW
+         2Ssg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710324109; x=1710928909;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q4v37dg+iJFB5VWIwGZR5ria28sA0OiKXNSMSERlE9Q=;
-        b=tTchvPpWfLsUwm3dDxXmHl8QMNxifdTqVlcMXZuKSxtclc9eTQjf//XuPiO+YWi3Q6
-         iPLnp4KjCYzlHHWpkuoDA6nXdIl/Gn4OoBWig7Jvw/9cjgkpDqqHiXODzJMR7eoDLYOV
-         EIeXhWkUxWqPqBfDzxPnV5v5v/cCAPP4DoihEFlHjsHOYnpdmxWBl2+TNRsu0KIsboLA
-         8N4SZIL+8/KbdYSYqDdZ6xAkPc7KKeixhPPYDYB0VBE3qsL0pvkz0HepChqeRvA9Jy18
-         Yb1xSekrii9vglKn0uvKIKNK6dNktQkxiikvUsJUfMt7pQnd8uOMUoJzZjwKyEAxAQfc
-         3oyg==
-X-Forwarded-Encrypted: i=1; AJvYcCW8V3gPfFbMCHvfRARAsnFp+zLYseByQ2Ne3w6X4hXeY58eieL3v/vre+PqWX5i3st1b8R4uRLvjmOa4cGOE7Yz7bCQpW3IPrTK
-X-Gm-Message-State: AOJu0YyO4qEI67yjxGIV7DK+wdmWwfHMwzzeeJ5MN/1v1VjjDfvVRVox
-	WJNCqNj2j5BXNLdpskoUXUN15B05pE5kSbObbnKHvLfUypqZ7+8nNqOoROR/v1CXfJQ/Hoo=
-X-Google-Smtp-Source: AGHT+IHwqr4F/g7VHfy4bOVoK9rpNdApa6BVDq/i3v3C8DpaeVn0B1xeO0UOq3LggFnG8H3hcQ5jHQ==
-X-Received: by 2002:a17:902:c412:b0:1dd:76f0:4455 with SMTP id k18-20020a170902c41200b001dd76f04455mr5052479plk.49.1710324109349;
-        Wed, 13 Mar 2024 03:01:49 -0700 (PDT)
-Received: from u.localdomain (ns1006999.ip-51-81-155.us. [51.81.155.96])
-        by smtp.gmail.com with ESMTPSA id ld12-20020a170902facc00b001dcfaf4db22sm8287466plb.2.2024.03.13.03.01.46
+        d=1e100.net; s=20230601; t=1710324209; x=1710929009;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l3c+f14fS4xcyhQ4ZpJsTOO0eup+3eDmvL4CiWI3nyo=;
+        b=hd95Gft05gjuGhTbf6+d04OOPik579587CpCepk7Zo2xaKOH16oZn0AHNOSz6YoDy3
+         PpZev/bcE5kplGu3ziGR3Iu8msTNsGGPhEJgXzli2QSp0gkk7GiaJMpP512GcVmnpABR
+         4aRehkx59LlJBWgn4+tGhVp+XGe4HwZ+ePsDT+4AYoICaRgG/G5q3keiI5Yd21HCbpBi
+         FroSbcjQ9Gy8rLjhhmaWN7b4zQ7YM2hoxEW8Hq9v/jS82v4zg15yoP8FU+RTjzOd/Yo4
+         lj2xBiwbdK1N6Uav3YmGOHAideXi2n0V3EWHl2fVJHGq2oXm8fUGFDNueRnZM91awDev
+         pYaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUbSOcR2VnNRzBnSmbvkMmMuoo+QdhSa4rio5N1AuhHFXh1ygRoaN38Jngg9QguLbFDgKaK1D6uTpmkV+Nag8tnb8L2isQc+3JOtJDD
+X-Gm-Message-State: AOJu0YwxNy66QQKpO33fVLsJqIuVMdMZK7+YSgaeMStTRwxhzsOFsIj4
+	nQGl9V0b2ZEPHOVaTma8OJhpRJtnbks86qmNPJ1+GLWqkdRS35ObduN+FAxJ1zA=
+X-Google-Smtp-Source: AGHT+IGaGa1c2MagWSCpfcSUCwskPRY6kaoYAs/KYgSO6bXuZ0WkU9338PzQENzjzFIlgzadxX4hUQ==
+X-Received: by 2002:a2e:9ecb:0:b0:2d3:8c1f:c0ff with SMTP id h11-20020a2e9ecb000000b002d38c1fc0ffmr7515975ljk.16.1710324208831;
+        Wed, 13 Mar 2024 03:03:28 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id b20-20020aa7dc14000000b005684fa1c4dbsm3746849edu.52.2024.03.13.03.03.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 03:01:49 -0700 (PDT)
-From: Maki Hatano <maki.y.hatano@gmail.com>
-X-Google-Original-From: Maki Hatano <Maki.Y.Hatano@gmail.com>
-To: corbet@lwn.net
-Cc: linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Maki Hatano <Maki.Y.Hatano@gmail.com>
-Subject: [PATCH] README: Fix spelling
-Date: Wed, 13 Mar 2024 18:01:07 +0800
-Message-ID: <20240313100136.20424-1-Maki.Y.Hatano@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 13 Mar 2024 03:03:28 -0700 (PDT)
+Date: Wed, 13 Mar 2024 13:03:24 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v5] staging: rtl8712: rename tmpVal to avg_val
+Message-ID: <34420a42-e81d-4618-af88-f17152bf88eb@moroto.mountain>
+References: <ZfFpW9XvHhUkcspq@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfFpW9XvHhUkcspq@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 
-- ReStructured Text should be exactly reStructuredText
-- "reStructuredText" is ONE word, not two! according to https://docutils.sourceforge.io/rst.html
+On Wed, Mar 13, 2024 at 02:22:43PM +0530, Ayush Tiwari wrote:
+> Rename local variable tmpVal back to avg_val in function process_link_qual
+> to give intuitive meaning to variable and match the common kernel
+> coding style.
 
-Signed-off-by: Maki Hatano <Maki.Y.Hatano@gmail.com>
----
- README | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You're write your patches as if we have applied the previous versions
+but we are not going to.  Please read my blog on how to send a v2 patch.
 
-diff --git a/README b/README
-index 026eff0b8e06..fd903645e6de 100644
---- a/README
-+++ b/README
-@@ -11,7 +11,7 @@ In order to build the documentation, use ``make htmldocs`` or
-     https://www.kernel.org/doc/html/latest/
- 
- There are various text files in the Documentation/ subdirectory,
--several of them using the ReStructured Text markup notation.
-+several of them using the reStructuredText markup notation.
- 
- Please read the Documentation/process/changes.rst file, as it contains the
- requirements for building and running the kernel, and information about
--- 
-2.43.0
+https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
+
+regards,
+dan carpenter
 
 
