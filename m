@@ -1,174 +1,133 @@
-Return-Path: <linux-kernel+bounces-101448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1509F87A747
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:52:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A811F87A749
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:53:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 335F01C22B96
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:52:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49C9AB23535
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7648B3FB01;
-	Wed, 13 Mar 2024 11:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530A73D0A9;
+	Wed, 13 Mar 2024 11:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="LcdqIFtr"
-Received: from outgoing4.flk.host-h.net (outgoing4.flk.host-h.net [188.40.0.90])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="ZYnQM7p8";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eZUqb3sU"
+Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6743F9C7;
-	Wed, 13 Mar 2024 11:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9AB03EA72
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710330740; cv=none; b=o3s8xz4IcUlCSwrZ7Z1bJS0hOTG0uJt6IZben4XFe8KDnXAGUhsaFdqo61iH7bGB2si211epKBEePRz7ujsI+V6r61lxh26wAd4ttEUUNQoK3fzZ+E0eyJqdwhH+0ncyAcDL6l/T6MfMgsOB2C87zeVlWfqHvAWcRjcJ3HjSSJ0=
+	t=1710330813; cv=none; b=Vl9UoxCwYbo+xFHuWlDfWWqV7g0tjQgkRScA5b1JttaOsjWjEwaeIVPzR6P0DYgIFlHXO8JScWi9/PFnzpuAFkTuPEq/rtOofITZeQLrkei5Bi0dHEheJARdPU3i/xqfcWU2FoBHuDiCC5lmB3h7V66hfOfuT3f0B01+tbCW2Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710330740; c=relaxed/simple;
-	bh=oR32zcbSbD07sD8xPlKozpRT+Tm2pr/c1t+ufn09Jzk=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=pKVgLBstG71NzqwypO6bJXuj6Xu0jVoFra11bbHMN8C7nfjyhJV6uO889vOFhAJ49sW6vjeh4+LbCRFhnohaJcN/pvwEkVarHPRd+llC2Mhv7QFnjn5jCCLhyRWichlUim7y/S120nktFJZgYYI25m2a+0OmmWW6bFfHQKpWKBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=LcdqIFtr; arc=none smtp.client-ip=188.40.0.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
-	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
-	sender:bcc; bh=kP/x0UCxIGXaYUmSQNq85lpjgX5/E0wqn7vxqxEhUfo=; b=LcdqIFtrdhQeB8
-	8k5zjPNEpsUiPgKbFrlAtdamD6V9691rlFLiaAselfqb0TqcgkNS/+D9msF9f4XIdnvYeGlVgE9Mp
-	FT+rY7fkOL5AZUeYd+NWioD0fAm+bTZENqfKARGPw7E4f4LtdXoL5/sDXsKoTzPJAwMt4mjvw7J+S
-	8nUmbTk2nDxi5Py4PSkg4Qaa9XoaUFn2BzOoC5vXvZoXi1ysqe7w+qUqFk5eoSLQoUOlBpQmD9cUg
-	C2xAAb3Fw1hCiSd6UTHvAFT6e1Y+HsTt8OOdvGTEiRaq6gAZ8GyGThhTRX/EgBaIyrgSY5Nd2xHBj
-	T8Z5yApQIDh/URhFGvxg==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam1-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rkN9R-00DrWD-Km; Wed, 13 Mar 2024 13:52:08 +0200
-Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
-	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rkN9O-0005Os-9C; Wed, 13 Mar 2024 13:52:02 +0200
+	s=arc-20240116; t=1710330813; c=relaxed/simple;
+	bh=6Y76AgpBre4SyVMFQz8Gz8vJ7A93p7tmbyD0hs1nla8=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=rAGM9s3KTOlJPpwFp6ZXHywvtUBDvR7xBe+k6nwvcoqPACL557kjwMzZglDN0eGe3TEQ4jDfC0Tt2zf5ZwyIcq/RkFJ9BJXvfmmgkh8Zbxqhlh3wrS8HqTf7sOs8Sl57wy6RGLGlY/nx+Eo7nGDkLQih1KpPDITVRIN/t7RX2no=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=ZYnQM7p8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eZUqb3sU; arc=none smtp.client-ip=103.168.172.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id D6D621380134;
+	Wed, 13 Mar 2024 07:53:29 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 13 Mar 2024 07:53:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1710330809;
+	 x=1710417209; bh=gn0b2WKvEfTg/FZ9LXq190CVS7p5sTA5MQLvPVDkM3s=; b=
+	ZYnQM7p8x/dP3H+5hWC13tUah5T99wlcWE8gOwezOGhcibshahMJ5psB/nXpI11J
+	kjwEu3VUBPQfU5TCmCNMNFZGOcQ0xO3MDxzIK/2kd5Bo6v1BnO4AT5IqU3GO5iby
+	M27nshnCWSa7JyT6usf/0VIXG+DYDnrknzaYcyFg1oUXziIClTElvL71abMRpRDK
+	H7gvKtv4XpEedSnH0rBSy55tQUq/eQcmP+JqQV1ZiljN0N9r0IAlecQHVscQRSyt
+	GkCv31l1hX8AW6X4vgbIW5husbH5zCyFiTeXJQlDP0DNPveoTMD0rf1qwP+K/7k1
+	5VhecXmy3tGx5ZOVquwoNw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710330809; x=
+	1710417209; bh=gn0b2WKvEfTg/FZ9LXq190CVS7p5sTA5MQLvPVDkM3s=; b=e
+	ZUqb3sUkme8YY7sunqMcd7kgqEWfeQZ4GfUpMMuwqPWi3qZC7uCjmrk3AUvXF5I6
+	sCzYembUcddX4rNT4jppC5CJa9geTUpG2MUT8Tt3jzLwTHlr9cl8wTfDl+BLYfS6
+	7IAxclCPexIrBG2BVnePeiPOFON5U34KRQEvpF6iAGRdrF1nimJbq1gKm8jgYWbJ
+	QapwtZ3LBd7JWtkrq7TQmYlb21d6CDah3Uf3FgZ8DyMW6jb/fhLiAXkUHkF77uWS
+	U1xrPo7H6Qu/ds46blGaA+7yIFSIWUzr5CzwupSlXBNEthYy//0L0cBEo25Iaf9a
+	wGDf9Xeuuux7gvDqb72VA==
+X-ME-Sender: <xms:uZPxZTU141cMxAzB1qC7B0IRPSUJwJG3UNsdiYYw8SRtDWUf4XWvXw>
+    <xme:uZPxZblhXdjQvRXBBwmSjLSK0xXK7OkgwgQ2ImSOV_QTSRzIRhgb1OK8kgux-9EuX
+    b2R_iw3t1KOaxewfi0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeehgdefvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:uZPxZfYpe4EJPrxNTPVtS-AjAzTrDk7bd2mdHCVE-zQn1igwJ4sWHQ>
+    <xmx:uZPxZeVNzxCRcItYmAYR83vxJAjKHCOls9zlkWWdj1qZeq59iPhI4A>
+    <xmx:uZPxZdmsnwm7NkJDATBGK1wi7cn3sv_gkrMacb0qxQsLeW2P4sK2_w>
+    <xmx:uZPxZbcqOpW6nUb74efVXhKe6YWnhc2z9lhxGOnHcF3yDXRdmIL8fw>
+    <xmx:uZPxZf57wFFPJfrIxMya7jtFJn6lO-PNwRuFGUxiwAbWrwE71s4_pQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 46CCEB6008D; Wed, 13 Mar 2024 07:53:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Wed, 13 Mar 2024 13:52:02 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, Florian
- Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] net: dsa: mt7530: increase reset hold time
-In-Reply-To: <bf0ed70f-e106-4a7f-a98c-de34658feb4d@arinc9.com>
-References: <f594a72a91d12f1d027a06962caa9750@risingedge.co.za>
- <20240312192117.7789-1-justin.swartz@risingedge.co.za>
- <bf0ed70f-e106-4a7f-a98c-de34658feb4d@arinc9.com>
-Message-ID: <e6525cac666a033a5866465abb3e63f1@risingedge.co.za>
-X-Sender: justin.swartz@risingedge.co.za
-User-Agent: Roundcube Webmail/1.3.17
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.03)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT/f5ASvLhoONzvM3Neet7I0PUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIv+fXqqb3FJ1Z7kkAIev0U9CKH/oA07tJunDPm536TODb5GPR
- oyaaXp1VNA9dXvxV+mFktoWo3CKg4C3LDJ75vu2U4GT70q7ZqN/P49BncZ5XB7lfx9K88uL/WnJE
- LAEP514Y/yfAEbrTclu3OeNcbACmFr3ts0d2E6vXySsvfMaT9Bjf4etJ827HW1/sdZ81dz6BqXHU
- oYg+nmOeSIjjxA24TPuOyBrko5yKpcR03QEJ9DjWmjcfK/FpTD0spWG+rMYoj8CdNq4vLYsMDbt4
- 2oUP1Ae/eGZl2OLANHAHEjHENEhX9cq65nsXPA0MIFDIPOMDW/6+MC+5Mq5RH9OoW0W22an/ubzj
- InB/ImqScRfGyrhHVstPeAuxsRhUFJC4TtSvIahFt3uEpT0304dV2Yoz1SesQUA6bnjJZT6m9lal
- 9vikoy50DqR3hu/rL5PGAoTDzn0QdoxFeruM0Uhu+VmAdrqarzedA2bamK+XGdcihnVW8zB2Qi26
- vkVALycwzSdeC1kd8cXa71WqOc72jXbRpMw6Agze1f399OurHEyYS7nq+EBNvgiWKNNSkdVDZOrL
- 5kxgO94lq2025NSImfKeGaSpuwkt9kMFaoxOFH1hIqsDqiY5NFuEmlCmGLsHMs4VIrisX+dtrxYn
- /0jYEvj5QBAPtzfeVlNHdCJmwgf0M7fnqgzRvCMiN68tcHQey84mBB4XoB473XOJmIRPynE3O7YZ
- oFBs6I7QuC1BjGNT52hVLEr/9PrrMm81h6IAYzikeIJfw26MB/V1E5BP9Gv0xI1YXOxC1lZqyFpL
- AwQr6muMti2YanICQnMITeB2fd0UyjU/MIq3Vtx6CgQGHtezYqxGMqsKjARq8PBC4qgGsfAERwCB
- JFs7XjZYbJPBsmpIto2O4JO2fx1gIuNHgi11AwJSTGCrOFs22K1ZnDqAw3gLmOBPHazhChxq9nGW
- aSi6bFHidB1VgzDzDZn/+QEiRQv+PVjjwa+Z5RFCOMQwU3LvoOQWIGmR34v72byEdfFYVDBYJee7
- gx/u82RtU6CfboKKYz8yU9NdQv+cV8A0mVfWLKEgol9rYV4JEcNP1rJoln/cD8h/RIvkzXRTCYvX
- WLQhlD92+1l+zHfJg1FMwntsduNBxKPaTpE5L8d4VqFy6yKUFQtzhTlGiGL9B0AyxPUbQ/f3iVyf
- P9wHzfAz6SNqPP2zalJxIwFTIvo1IIDSVMZhrIoAWTF5tIdhy/UIEBYDcZg+Q8UhuRLyBn1+pvlH
- hV6a5QjptwQBGybQyDQ2/GYwPjlMcE57ESN6G+kn87CtwPdB/10jfVNpDbYnXJdSRQj8460WHJib
- IxmU2pb4i4DTkMZeMiNI9JSIyUbtnrlbG4BI8o81FOo91axhCaqPShJzgHH7y4ZfQxML
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+Message-Id: <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
+In-Reply-To: <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
+References: <20240313084707.3292300-1-arnd@kernel.org>
+ <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
+Date: Wed, 13 Mar 2024 12:53:08 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Zhihao Cheng" <chengzhihao1@huawei.com>,
+ "Arnd Bergmann" <arnd@kernel.org>, "Richard Weinberger" <richard@nod.at>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Daniel Golle" <daniel@makrotopia.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Mar 13, 2024, at 12:29, Zhihao Cheng wrote:
+> =E5=9C=A8 2024/3/13 16:46, Arnd Bergmann =E5=86=99=E9=81=93:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>=20
+>> The use of do_div() in ubi_nvmem_reg_read() makes calling it on
+>> 32-bit machines rather expensive. Since the 'from' variable is
+>> known to be a 32-bit quantity, it is clearly never needed and
+>> can be optimized into a regular division operation.
+>>=20
+> Do you meet a performance problem on a 32-bit machine? There are too=20
+> many places invoking do_div, why do you optimize this one?
+> Have you tested the influence on a x86_64 platform after this patch=20
+> applied? Looks like that do_div is more efficient in x86.
 
-On 2024-03-13 10:59, Arınç ÜNAL wrote:
-> On 12.03.2024 22:21, Justin Swartz wrote:
->> Increase the MT7530 reset hold period from 1000-1100 usec
->> to 5000-5100 usec.
->> 
->> This should reduce the likelihood of an incorrect external
->> crystal frequency selection which may occur when reset is
->> deasserted too early under certain link conditions.
->> 
->> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
->> ---
->>   drivers/net/dsa/mt7530.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
->> index 3c1f65759..5e9e1381a 100644
->> --- a/drivers/net/dsa/mt7530.c
->> +++ b/drivers/net/dsa/mt7530.c
->> @@ -2243,11 +2243,11 @@ mt7530_setup(struct dsa_switch *ds)
->>   	 */
->>   	if (priv->mcm) {
->>   		reset_control_assert(priv->rstc);
->> -		usleep_range(1000, 1100);
->> +		usleep_range(5000, 5100);
->>   		reset_control_deassert(priv->rstc);
->>   	} else {
->>   		gpiod_set_value_cansleep(priv->reset, 0);
->> -		usleep_range(1000, 1100);
->> +		usleep_range(5000, 5100);
->>   		gpiod_set_value_cansleep(priv->reset, 1);
->>   	}
->> 
-> 
-> Again, the patch subject is missing the indication of a tree. Read the
-> networking subsystem (netdev) development page [1].
+This one was just introduced. The call site looks like a fast
+path and it caused a build regression that Daniel addressed with
+an suboptimal commit b8a77b9a5f9c ("mtd: ubi: fix NVMEM over
+UBI volumes on 32-bit systems").
 
-Thanks for that pointer.
+The way it usually goes is that someone adds an open-coded
+64-bit division that causes a link failure, which prompts
+the original developer to either rewrite the code to avoid
+the long division if possible, or add do_div() after showing
+that it is now performance critical, e.g. only called at
+probe time.
 
-
-> This ship has sailed anyway. Now the changes the first patch did must 
-> be
-> reverted too. I will deal with this from now on, you can stop sending
-> patches regarding this.
-
-At least if the first patch isn't reverted, the approach used is
-less likely to result in the problem occuring, IMHO.
-
-The delay between deliberately switching the LEDs off, instead of
-only waiting on chip reset logic to handle that, and the reset
-assertion could be considered a "reset setup" period to complement
-the original reset hold period.
-
-Increasing the hold period to what should be 5000 - 5100 usec,
-definitely made the problem go away my testing, but the previous
-approach is (if nothing else) more explicit in its intent.
-
-
-> [1] 
-> https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
-> 
-> Arınç
+     Arnd
 
