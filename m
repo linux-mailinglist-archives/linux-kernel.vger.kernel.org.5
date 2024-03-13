@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-101914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A1A387ACAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:14:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5293287ACAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AB0C1F2FF36
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:14:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84D051C21A0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB5386243;
-	Wed, 13 Mar 2024 16:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8725D86260;
+	Wed, 13 Mar 2024 16:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wz2LQo7h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iSuXHZnt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46DAA84A54;
-	Wed, 13 Mar 2024 16:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BFD8624D;
+	Wed, 13 Mar 2024 16:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348054; cv=none; b=d04V8+xNfY04ivSC56HQywmrQ5uOW3gEZgy6MFRHC3fHsjL1yacIJwzFerrGTT7O5St9AP3OudwzxvBcbl9tw+PlbR4iOwaojAQQUi8l8xKIYD0xBy42CsYaBnBlgpfJpXT+JXTB9xkTif+T8y4igO1RD//5inErVQl/2DilZiw=
+	t=1710348055; cv=none; b=oQhU7a3xemAulo6VsOq2WjkjaEUTxyVk9cpagse6a30skAFpessGNxoKLVR7h6XZNzuqiYI+SSgyU2ZeJEg5rZXk6cJrCN6y67rsXVZk1feEfVr/e6JBXbTSjPh75F/psF3Rr7irYdJ5SfOENhHoYf7uSWI50WADeWIk6xjj4LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348054; c=relaxed/simple;
-	bh=sNoxLVjrPoo95Yw3BWo7eps67bRpz9m866wf6XMDmIM=;
+	s=arc-20240116; t=1710348055; c=relaxed/simple;
+	bh=C9GUrPMH2cVL8miH76/ny0uWeulQVdoKNRFf5/jrCKg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CFKLDrOwfg2aWvoyqYWyHJi77jcPulZoVjjcxLv4BdqUeakpb24NSiCndKJIS6o4bRtCG4aIGR0/FtoTW+LjLUGMpx7SL3Qy094dyor8ag++VnDfJr0fuYrm/sAS4X5lqpsqAbNXriov67p+B8vqmMovPZKGUIDs7nM1sFneMRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wz2LQo7h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2019BC43394;
-	Wed, 13 Mar 2024 16:40:53 +0000 (UTC)
+	 MIME-Version; b=ezrTZIvY247uYFoYi63Uy+ObowrKI1k793AYe1urRJ42ynrAuW5Zqkb3cUv1NE53V/DPdj47u6qampJqfcOF6xZfp8xr4UVpNpdyz9dBXvcLXQee6Jqgw7OX7dkXwfL7AE58fBfmBvUV/+ovBknc62QAXZSfxEMLk0QTdxc8xQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iSuXHZnt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6942AC43390;
+	Wed, 13 Mar 2024 16:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348054;
-	bh=sNoxLVjrPoo95Yw3BWo7eps67bRpz9m866wf6XMDmIM=;
+	s=k20201202; t=1710348055;
+	bh=C9GUrPMH2cVL8miH76/ny0uWeulQVdoKNRFf5/jrCKg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Wz2LQo7hQfJv5zd60ILboQP1LVlV7JEfgAqiLelA4iXxWdMmSg9zUHOYXTEdngqOl
-	 ONLyQt6FWwwTRd+pTRUOKzsrLBNk/yRXuoAJq7oVVmzDhE3BiALoopBAhKNIEY6cmI
-	 r5qS40wRL6X6GfNMiCetjd7EzH33VBZ3UiqKDyZxpXP/Q+qX/fXMMJAOrLmNGeZW16
-	 QxJMjxCSIME2j7nJFU5v7wpgdtuBrY7UAjQHNRchLjTsItsEoxZHODwOt9hwIL2uxD
-	 F+EzPP6edGCPPtVrj256ZgpF/GLpg/gC3bb8nLtWhDquUHbf1F5APYzdBSJtE45PWm
-	 bt1n4nrgCylZw==
+	b=iSuXHZnt+cxCFf9uoRXC8y5mmq4eehMBjYRriN27MFqr5FDdQYqWXy2UIff+c9UZe
+	 XQWEwKsrIjRDGmE/4xD031KbH2Fd/V78ejd6Sso1gMUnS82bvu4JvRwCZ8dQfhhXPF
+	 AROcjToQDXhllu/xLae0ctKeePoVvu1DYljetCyv4uygK1/Sm6ovfPD49Ysk04RfQK
+	 94uqX3uxw3/lihKLqriS9IuyRRqY6KZldqyf9Y9xS1tHE20rp0WIaTW9leRDreBiRo
+	 /DAHFWWKRYGEbewfZ/wTNr/EMcHHzv6B+skzYTipWZESn8iLmsBvwxLs/c66X/IdGA
+	 CXsbuB14Xu7pw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 6.1 46/71] KVM/x86: Export RFDS_NO and RFDS_CLEAR to guests
-Date: Wed, 13 Mar 2024 12:39:32 -0400
-Message-ID: <20240313163957.615276-47-sashal@kernel.org>
+Cc: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.1 47/71] selftests: mptcp: decrease BW in simult flows
+Date: Wed, 13 Mar 2024 12:39:33 -0400
+Message-ID: <20240313163957.615276-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
 References: <20240313163957.615276-1-sashal@kernel.org>
@@ -70,51 +69,49 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
 
-commit 2a0180129d726a4b953232175857d442651b55a0 upstream.
+[ Upstream commit 5e2f3c65af47e527ccac54060cf909e3306652ff ]
 
-Mitigation for RFDS requires RFDS_CLEAR capability which is enumerated
-by MSR_IA32_ARCH_CAPABILITIES bit 27. If the host has it set, export it
-to guests so that they can deploy the mitigation.
+When running the simult_flow selftest in slow environments -- e.g. QEmu
+without KVM support --, the results can be unstable. This selftest
+checks if the aggregated bandwidth is (almost) fully used as expected.
 
-RFDS_NO indicates that the system is not vulnerable to RFDS, export it
-to guests so that they don't deploy the mitigation unnecessarily. When
-the host is not affected by X86_BUG_RFDS, but has RFDS_NO=0, synthesize
-RFDS_NO to the guest.
+To help improving the stability while still keeping the same validation
+in place, the BW and the delay are reduced to lower the pressure on the
+CPU.
 
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1a418cb8e888 ("mptcp: simult flow self-tests")
+Fixes: 219d04992b68 ("mptcp: push pending frames when subflow has free space")
+Cc: stable@vger.kernel.org
+Suggested-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Link: https://lore.kernel.org/r/20240131-upstream-net-20240131-mptcp-ci-issues-v1-6-4c1c11e571ff@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/testing/selftests/net/mptcp/simult_flows.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 7144e51668136..688bc7b72eb66 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1613,7 +1613,8 @@ static unsigned int num_msr_based_features;
- 	 ARCH_CAP_SKIP_VMENTRY_L1DFLUSH | ARCH_CAP_SSB_NO | ARCH_CAP_MDS_NO | \
- 	 ARCH_CAP_PSCHANGE_MC_NO | ARCH_CAP_TSX_CTRL_MSR | ARCH_CAP_TAA_NO | \
- 	 ARCH_CAP_SBDR_SSDP_NO | ARCH_CAP_FBSDP_NO | ARCH_CAP_PSDP_NO | \
--	 ARCH_CAP_FB_CLEAR | ARCH_CAP_RRSBA | ARCH_CAP_PBRSB_NO | ARCH_CAP_GDS_NO)
-+	 ARCH_CAP_FB_CLEAR | ARCH_CAP_RRSBA | ARCH_CAP_PBRSB_NO | ARCH_CAP_GDS_NO | \
-+	 ARCH_CAP_RFDS_NO | ARCH_CAP_RFDS_CLEAR)
+diff --git a/tools/testing/selftests/net/mptcp/simult_flows.sh b/tools/testing/selftests/net/mptcp/simult_flows.sh
+index 4a417f9d51d67..06ad0510469e3 100755
+--- a/tools/testing/selftests/net/mptcp/simult_flows.sh
++++ b/tools/testing/selftests/net/mptcp/simult_flows.sh
+@@ -301,10 +301,10 @@ done
  
- static u64 kvm_get_arch_capabilities(void)
- {
-@@ -1650,6 +1651,8 @@ static u64 kvm_get_arch_capabilities(void)
- 		data |= ARCH_CAP_SSB_NO;
- 	if (!boot_cpu_has_bug(X86_BUG_MDS))
- 		data |= ARCH_CAP_MDS_NO;
-+	if (!boot_cpu_has_bug(X86_BUG_RFDS))
-+		data |= ARCH_CAP_RFDS_NO;
+ setup
+ run_test 10 10 0 0 "balanced bwidth"
+-run_test 10 10 1 50 "balanced bwidth with unbalanced delay"
++run_test 10 10 1 25 "balanced bwidth with unbalanced delay"
  
- 	if (!boot_cpu_has(X86_FEATURE_RTM)) {
- 		/*
+ # we still need some additional infrastructure to pass the following test-cases
+-run_test 30 10 0 0 "unbalanced bwidth"
+-run_test 30 10 1 50 "unbalanced bwidth with unbalanced delay"
+-run_test 30 10 50 1 "unbalanced bwidth with opposed, unbalanced delay"
++run_test 10 3 0 0 "unbalanced bwidth"
++run_test 10 3 1 25 "unbalanced bwidth with unbalanced delay"
++run_test 10 3 25 1 "unbalanced bwidth with opposed, unbalanced delay"
+ exit $ret
 -- 
 2.43.0
 
