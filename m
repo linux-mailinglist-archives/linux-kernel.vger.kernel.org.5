@@ -1,88 +1,117 @@
-Return-Path: <linux-kernel+bounces-101425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 072A287A6EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56EF087A6F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:14:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A3AA287833
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:14:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1372D287B19
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1659E3F9CE;
-	Wed, 13 Mar 2024 11:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F3EF3EA74;
+	Wed, 13 Mar 2024 11:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gwl5dDsx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EEI6DrJx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59763F9C2
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DC03D3B1
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710328452; cv=none; b=IP68Z57SaXOXTJEOaWcwzZ3FbPjzgQAxp2NDNS8A3RI731M6Mh4xouzLgJkq+fAVId5lVVdfk8CAGge3hmDOmz1T2AP4hqLa4eVjU0YTMqRg17Gt1hiZp0O2RndsV7SN9niEhUO6+vK10KQ1MlgjId0ObDOp6v+tQjXsJveRSCE=
+	t=1710328471; cv=none; b=Aib1CFHzcaGbxeJxEGJFo9fsvhfk3gFbP2XI8vfAlIZ+bohi0gqAULlmCs8dGSyEnWxk1PgnBTh1NYmTnbMgq2ivFJMWdVSBTKWy5HjMPcQXNg3NG8sU195A1ornhkxA3yqAUeVi8I5mtN4tZpSNgOScXZ5wlLf4NnwaQvWVs5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710328452; c=relaxed/simple;
-	bh=O2khxfHdkj4ZQ1U0sRtZjb5+p0cWYFEGv5IoGvbXspg=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=Sn96x2bHxRfG7BtoWm7ewPW3n1dNjnKzfLk2DVSaMtJEzDsWA9q93oQbuBZY8CgfgU/9xQrdJx9JT+BwwIdSN62x8IashWewpvkvv/l0tU4+1Qul74ncBM7dXPB4hhlCLh+wHRaiBIQ+xROfC5Xj6KB8aGMtfCw2bJfqjA+SMyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gwl5dDsx; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1710328471; c=relaxed/simple;
+	bh=HbsPiSZiLZuvC7Bw0pUzyKyQkcDR5oghfKlA8aZSUH0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FN9f4FiQEEQmorFyNTV//5tafuE5atU5fxfq2nURNYSNbtPYEFZFcXgSq8ZqGPcTW9UbXBbEz2Ty/UHKO7plRzSW+4V69XZmA2Ye2XnwE7QWSUG0JlsFHjPXRHm/8yRx04d5AJ9WZ4Z5VrBfKV+Mq0H7xzFgJYSIbSqkKA+CTkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EEI6DrJx; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710328449;
+	s=mimecast20190719; t=1710328468;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=O2khxfHdkj4ZQ1U0sRtZjb5+p0cWYFEGv5IoGvbXspg=;
-	b=Gwl5dDsxUPPJSyz2tcN4OK29wOczx4MgV1Uih6QUkXOfE9RDl5/5+vCUf3OAZdj+nrqWyP
-	gee80833/6+AWFtp2l1sCArv/Y2O7sulsf0VW2v2WgkiwrlKWDv0QDGAMwByVZgig7O15n
-	cbYEKtLMXTlmMVxFqT9slgxp6MBxI7Q=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-638-HKb6oDvhMDSFbuQsiL4lFw-1; Wed,
- 13 Mar 2024 07:14:04 -0400
-X-MC-Unique: HKb6oDvhMDSFbuQsiL4lFw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 110723C0DF79;
-	Wed, 13 Mar 2024 11:14:04 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.10])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D875C3C23;
-	Wed, 13 Mar 2024 11:14:01 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240312233723.2984928-2-dhowells@redhat.com>
-References: <20240312233723.2984928-2-dhowells@redhat.com> <20240312233723.2984928-1-dhowells@redhat.com>
-To: netdev@vger.kernel.org
-Cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-    Yunsheng Lin <linyunsheng@huawei.com>,
-    "David S.
- Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-    linux-kernel@vger.kernel.org,
-    Alexander Duyck <alexander.duyck@gmail.com>,
-    "Michael S . Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH net-next 1/2] rxrpc: Fix use of changed alignment param to page_frag_alloc_align()
+	bh=I0GqW7xBDUz604Sa3jXvzrWYTHr9T0/hZBEYMVEZaQI=;
+	b=EEI6DrJxr8Tw6bHYc/7ZS2h85J4565cpAm9FDwQ8sgm6ZQOK5P3oZNSisccIfaZU+/SfNY
+	wIfR7CmtPMuc+eftixkGJA5OEkP+BaEhLOWXYOOCEgOaUOA0+lvQs4HWt7z+udxL0ApNRa
+	IuOFpqIIbmqeAIjbR7EL7chBe23Ew6M=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-443-yWAnIh15PhKRZxmXRgdfGw-1; Wed, 13 Mar 2024 07:14:27 -0400
+X-MC-Unique: yWAnIh15PhKRZxmXRgdfGw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33e9203e775so2018923f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 04:14:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710328466; x=1710933266;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I0GqW7xBDUz604Sa3jXvzrWYTHr9T0/hZBEYMVEZaQI=;
+        b=f+851EToXYCBb8pbgrqnJqfCaB6BgkSu3pkyBEDGfF0+AnG4VBM3PEtzVJ7D6UmcHL
+         Of5mMSqyVeFJKGFzIyafQZVELsOQkzXqbKWhuNvDXuIGmHODviyT7jHxlqFDvWVgKnxA
+         yaRWDMGgIYsxS32kmwK/g4ENiLA/3W5gfu26V5rmKdmrK8gZP1TP9ACsynlRtGDzNXgW
+         ZcIkz6doiHqPpKiBtmgEA+4XYiZf31UaxuQ5SAlfBQv1qd9d5McBNrXfqT1xzZL+CgXl
+         1ZRWWbvLe8UKDuISb52BvsBHeEIdpTcUvQ43CoFDUYQ8mAZvT4x8IVuh7GTQByuhE90e
+         njNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX0e2DR1hw4fCrXNCEjZbyrIEamv6qXHO45S9yojFgXr71BCLdXI70OGQbZsSit2ezeeiXEKP+8vnfqyNdziTOzNaYu7i/XwOFGTbjf
+X-Gm-Message-State: AOJu0YzP3KrjfG1+wpSg2dlQnx9+zZ15UeliX/cjJecqY5C626Zvv+cj
+	4b5tbiz22W9rRimZrd7y0Q5kpIJYwkPCu9hZO/+B14oxLdaOn7kcXhsWppadc0HX0ZU3PViQDcU
+	IkMrX6mB9ESrq+m3rLhtLEOiAJ2KyUtr3l3OmqBAD/2bITktDBGFjpg7+Sgn+S3a3dETpB9k1QZ
+	O39qRwIcHMRtjNKNCnfehqco5I2vOlPNV8HlhQ
+X-Received: by 2002:a05:6000:1845:b0:33e:34b7:895f with SMTP id c5-20020a056000184500b0033e34b7895fmr2037354wri.24.1710328466373;
+        Wed, 13 Mar 2024 04:14:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFQCIGIRkhQHVb3DstYf3kXLe8waQUx3BrqHnYehfHc9OhoVVDC6vfotsn8lZEYQgMrPHv39WvnmJScfSrgowk=
+X-Received: by 2002:a05:6000:1845:b0:33e:34b7:895f with SMTP id
+ c5-20020a056000184500b0033e34b7895fmr2037342wri.24.1710328466114; Wed, 13 Mar
+ 2024 04:14:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3086025.1710328441.1@warthog.procyon.org.uk>
-Date: Wed, 13 Mar 2024 11:14:01 +0000
-Message-ID: <3086026.1710328441@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+References: <20240313091259.1413854-1-ppandit@redhat.com> <0a1aa580-50b2-4657-8308-94bffb194aea@moroto.mountain>
+In-Reply-To: <0a1aa580-50b2-4657-8308-94bffb194aea@moroto.mountain>
+From: Prasad Pandit <ppandit@redhat.com>
+Date: Wed, 13 Mar 2024 16:44:09 +0530
+Message-ID: <CAE8KmOzcD+__7xdC7tegbHO9HEP48s7=reA4j-tvqVDwzHr+8Q@mail.gmail.com>
+Subject: Re: [PATCH v2] staging: bcm2835-audio: add terminating new line to Kconifg
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: florian.fainelli@broadcom.com, bcm-kernel-feedback-list@broadcom.com, 
+	linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, 
+	rjui@broadcom.com, sbranden@broadcom.com, linux-staging@lists.linux.dev, 
+	linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Prasad Pandit <pjp@fedoraproject.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Reported-and-tested-by: syzbot+150fa730f40bce72aa05@syzkaller.appspotmail.com
+Hi,
+
+On Wed, 13 Mar 2024 at 15:47, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> Why does this make a difference?  Is it just because it's annoying to
+> cat a file that doesn't have a newline at the end?
+
+* It's not just #PetPeeve. I'm trying to fix parsing errors reported
+by the config-kernel tool[1], so that users can view all CONFIG
+attributes without errors.
+
+> I checked, and it's not a checkpatch warning.  Perhaps it should be though.
+> KTODO: make checkpatch.pl warn about files that don't end in a newline
+
+* I'll take a look at checkpatch.pl.
+
+> subject but he's on vacation...  s/Kconifg/Kconfig/
+> Just fix the subject and add a line to the commit message and I'll ack the patch.
+
+* Okay, will send a revised patch.
+
+Thank you.
+---
+  - Prasad
+[1] https://github.com/pjps/config-kernel
 
 
