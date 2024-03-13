@@ -1,65 +1,78 @@
-Return-Path: <linux-kernel+bounces-102478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 167AA87B2A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:12:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50D6387B2A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 797FB28A27C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:12:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81D181C2265C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA354D599;
-	Wed, 13 Mar 2024 20:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484FE4D9FA;
+	Wed, 13 Mar 2024 20:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aeyhR+6o"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="uyO/mUu3"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0571A38EB;
-	Wed, 13 Mar 2024 20:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F03E225AF;
+	Wed, 13 Mar 2024 20:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710360749; cv=none; b=PGHViAQTsIwjIztrtlwmCmJag/nfMbedGvY75Ik/bH/uv0J8Rq0clTq4+wNDfF1/Waowxvpm961BYzoLVUYCr9qx4onK/jteBAkOQyOX1LaF30190wsX00JlVgJFAsy0S7KMdahamxx4J97OeA1qYUbK2whZsfRjJxW5RIc6vzs=
+	t=1710360731; cv=none; b=knbnzCY8VMT1+6hbzRejxNX5dc28qz+FsOg7CLeTXdPP9QSWY/jh4B8hmhED1rUq39c2g0ZPhScNxNqPfs9++cBgxazdcWYaJGOl4yCSLuNx3xWPDC2tCOlZTkWyMMKHdGDXoxjEEiNmrTzHYk8cJmPUfVJtKXP6KnmMV3ZcIvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710360749; c=relaxed/simple;
-	bh=KmHmCj+Lnzq0QNomtCs32nKQgaqPB7HVxODv8tzQo90=;
+	s=arc-20240116; t=1710360731; c=relaxed/simple;
+	bh=vxiSIG1jZQwlWtR6AV5q/3NgPvGpxmDe0qfJ03T7J/I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nvAkiJNKab943AlAMQPCmH+wf87MoOeXPk6zs8lKQv8NBo6eO1igxDCAoX8wK4iNS/yuudSypUXeLOkNP9l/e+MFIWl3tTD5QU8ff7/qmHnCOeBJ59dEctLOWbkggipwR36dx/5/eX6x/q1WGx01RH6m2DtM9gjr0PEe+hvw3W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aeyhR+6o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92BB8C433C7;
-	Wed, 13 Mar 2024 20:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710360748;
-	bh=KmHmCj+Lnzq0QNomtCs32nKQgaqPB7HVxODv8tzQo90=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aeyhR+6out14XsDJIPLZGZsgI2RlADZ/r3E58+N7EpCHHS92kcKzWK1CoXhDb70oC
-	 B6U6VjfB0JPW5ydDZBqtw0f0Ff56OfXAK99bWWvL9FvBVvu3RfYkQoC98O5m8JE3n3
-	 frm7ysGa/3+IAXBBgGRoEANeLQrqANN+5pZRqQKBcbCca7moFUxYgzh4+s2k4XNi/v
-	 92MHYHBAlbdGHkKdlyH+Zn1p+gvG7GZU48b4U5MPswOenwIpcxv31q1qUbkzOA0/+3
-	 Vdm/xl2AATX/yF1DAs0SodIfsNW8Wv+sB3yUWE+P8TaqLUC5qepx/kRMussryDPly4
-	 vGb38XgyeZ/YQ==
-Date: Wed, 13 Mar 2024 17:12:25 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Marco Elver <elver@google.com>, Vince Weaver <vincent.weaver@maine.edu>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
- on RT.
-Message-ID: <ZfIIqcmRlrxwUFTn@x1>
-References: <20240312180814.3373778-1-bigeasy@linutronix.de>
- <CANpmjNMYGa46pRQUOfzTa_FRvftOGqg+UDeD_B-tbZgYw-MWww@mail.gmail.com>
- <ZfHE9Ev5T3Lq7o34@x1>
- <ZfHtBB5_-3RByE8p@x1>
- <ZfHw3J5PY6qy4mXn@x1>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ugvHWAn7wYkK6pouxzkfDHXmb464PSxAVf8JEetUepNvw/PAZcoiD9fxDh9LooOnRkQUueyg0MbBmVzE7bvd9f059qzt90AoYDWvSiNuM0GTxFOH1o4LxpiYQeILcKHg/lRFfix6G+roN9lNF/b9TgnVHNdg+GDrLuDeKcPdhIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=uyO/mUu3; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Xp82gEIbZeLnmlswzlNrQpFNfajF/0oeJJd0n1Kue3M=; b=uyO/mUu37qErfYKSWEqKd3wmSq
+	R92vQ0Yv/x3wGFeS61sdERP3c8R58AiQJcDKZWMDD2tYjU7aAfpuSODq8UsXekoI0N+bYq8lpWfoj
+	5mZtGQ4mTrXRiz83cgieU7Sw/vfr469Fi6WdYPCEebdmgUvvXdQsJhMbOrBqKgYnW6CI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rkUxr-00AGOu-Ik; Wed, 13 Mar 2024 21:12:39 +0100
+Date: Wed, 13 Mar 2024 21:12:39 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Peter Hilber <peter.hilber@opensynergy.com>,
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	virtio-dev@lists.oasis-open.org,
+	linux-arm-kernel@lists.infradead.org, linux-rtc@vger.kernel.org,
+	"virtio-comment@lists.oasis-open.org" <virtio-comment@lists.oasis-open.org>,
+	"Christopher S. Hall" <christopher.s.hall@intel.com>,
+	Jason Wang <jasowang@redhat.com>, John Stultz <jstultz@google.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+	Richard Cochran <richardcochran@gmail.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	"Ridoux, Julien" <ridouxj@amazon.com>
+Subject: Re: [RFC PATCH v3 0/7] Add virtio_rtc module and related changes
+Message-ID: <04246331-e890-4c9a-95fb-9673580e6d30@lunn.ch>
+References: <204c6339-e80d-4a98-8d07-a11eeb729497@opensynergy.com>
+ <667c8d944ce9ea5c570b82b1858a70cc67b2f3e4.camel@infradead.org>
+ <f6940954-334a-458b-af32-f03d8efbe607@opensynergy.com>
+ <57704b2658e643fce30468dffd8c1477607f59fb.camel@infradead.org>
+ <d796d9a5-8eda-4528-a6d8-1c4eba24aa1e@opensynergy.com>
+ <202403131118010e7ed5bf@mail.local>
+ <dcd07f0b733a90ac3f3c43a4614967bbb3ef14ad.camel@infradead.org>
+ <20240313125813ec78d5a9@mail.local>
+ <96be7312f7bddaf06c690e082a8028fa8b511deb.camel@infradead.org>
+ <202403131450547f373268@mail.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,106 +81,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZfHw3J5PY6qy4mXn@x1>
+In-Reply-To: <202403131450547f373268@mail.local>
 
-On Wed, Mar 13, 2024 at 03:30:52PM -0300, Arnaldo Carvalho de Melo wrote:
-> On Wed, Mar 13, 2024 at 03:14:28PM -0300, Arnaldo Carvalho de Melo wrote:
-> > 'perf test' doesn't show any regression, now I'm running Vince Weaver's
-> > https://github.com/deater/perf_event_tests, storing the results with
-> > this patchset and then without, to do a diff, lets see...
-> 
-> So things improved! I'll re-run to see if these results are stable...
+> As long as it doesn't behave differently from the other RTC, I'm fine
+> with this. This is important because I don't want to carry any special
+> infrastructure for this driver or to have to special case this driver
+> later on because it is incompatible with some evolution of the
+> subsystem.
 
-tldr; No dmesg activity, no kernel splats, most tests passed, nothing
-noticeable when running with/without the patch with Vince's regression
-tests. So:
+Maybe deliberately throw away all the sub-second accuracy when
+accessing the time via the RTC API? That helps to make it look like an
+RTC. And when doing the rounding, add a constant offset of 10ms to
+emulate the virtual i2c bus it is hanging off, like most RTCs?
 
-
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-- Arnaldo
-
-Further details:
-
-Without the patch:
-
-[root@nine perf_event_tests]# ./run_tests.sh | tee results.$(uname -r).new ; diff -u results.$(uname -r) results.$(uname -r).new
---- results.6.8.0-rc7-rt6	2024-03-13 15:26:37.923323518 -0300
-+++ results.6.8.0-rc7-rt6.new	2024-03-13 15:32:43.983245095 -0300
-@@ -296,7 +296,7 @@
-   + tests/rdpmc/rdpmc_validation
-     Testing if userspace rdpmc reads give expected results...  PASSED
-   + tests/rdpmc/rdpmc_multiplexing
--    Testing if userspace rdpmc multiplexing works...           PASSED
-+    Testing if userspace rdpmc multiplexing works...           FAILED
-   + tests/rdpmc/rdpmc_reset
-     Testing if resetting while using rdpmc works...            PASSED
-   + tests/rdpmc/rdpmc_group
-@@ -304,15 +304,15 @@
-   + tests/rdpmc/rdpmc_attach
-     Testing if rdpmc attach works...                           PASSED
-   + tests/rdpmc/rdpmc_attach_cpu
--    Running on CPU 4
-+    Running on CPU 0
- Testing if rdpmc behavior on attach CPU...                 PASSED
-   + tests/rdpmc/rdpmc_attach_global_cpu
--    Running on CPU 6
-+    Running on CPU 3
- Testing if rdpmc behavior on attach all procs on other CPU... FAILED
-   + tests/rdpmc/rdpmc_attach_other_cpu
--    Measuring on CPU 5
--Running on CPU 6
--Measuring on CPU 5
-+    Measuring on CPU 0
-+Running on CPU 3
-+Measuring on CPU 0
- Testing if rdpmc behavior on attach other CPU...           FAILED
-   + tests/rdpmc/rdpmc_multiattach
-     Testing if rdpmc multi-attach works...                     PASSED
-
-A test flipped results.
-
-Trying again with a more compact output:
-
-[root@nine perf_event_tests]# ./run_tests.sh | tee results.$(uname -r).new ; diff -u results.$(uname -r) results.$(uname -r).new | grep ^[+-]
---- results.6.8.0-rc7-rt6	2024-03-13 15:26:37.923323518 -0300
-+++ results.6.8.0-rc7-rt6.new	2024-03-13 17:06:34.944149451 -0300
--    Running on CPU 4
--Testing if rdpmc behavior on attach CPU...                 PASSED
--  + tests/rdpmc/rdpmc_attach_global_cpu
-+Testing if rdpmc behavior on attach CPU...                 FAILED
-+  + tests/rdpmc/rdpmc_attach_global_cpu
-+    Running on CPU 0
--    Measuring on CPU 5
--Running on CPU 6
--Measuring on CPU 5
-+    Measuring on CPU 7
-+Running on CPU 1
-+Measuring on CPU 7
-[root@nine perf_event_tests]#
-
-Since its that rdpmc that is now always failing without this patch
-series, lets try using that .new as the new baseline:
-
-[root@nine perf_event_tests]# ./run_tests.sh | tee results.$(uname -r).new2 ; diff -u results.$(uname -r).new results.$(uname -r).new2 | grep ^[+-]
---- results.6.8.0-rc7-rt6.new	2024-03-13 17:06:34.944149451 -0300
-+++ results.6.8.0-rc7-rt6.new2	2024-03-13 17:08:41.438282558 -0300
--    Testing "branch-misses" generalized event...               FAILED
-+    Testing "branch-misses" generalized event...               PASSED
--    Testing if userspace rdpmc multiplexing works...           PASSED
-+    Testing if userspace rdpmc multiplexing works...           FAILED
--    Running on CPU 6
--Testing if rdpmc behavior on attach CPU...                 FAILED
-+    Running on CPU 2
-+Testing if rdpmc behavior on attach CPU...                 PASSED
--    Running on CPU 0
-+    Running on CPU 2
--    Measuring on CPU 7
--Running on CPU 1
--Measuring on CPU 7
-+    Measuring on CPU 2
-+Running on CPU 0
-+Measuring on CPU 2
-[root@nine perf_event_tests]#
+	  Andrew
 
