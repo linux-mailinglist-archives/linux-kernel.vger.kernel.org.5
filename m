@@ -1,191 +1,247 @@
-Return-Path: <linux-kernel+bounces-101996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B755B87AD6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:34:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5239B87ADA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E89971C2222B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08A7028343F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5769114A4C3;
-	Wed, 13 Mar 2024 16:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E756053395;
+	Wed, 13 Mar 2024 16:45:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IlAO3/Bw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="u/x7ASb8"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4B314A0A3;
-	Wed, 13 Mar 2024 16:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE9D4C600;
+	Wed, 13 Mar 2024 16:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348208; cv=none; b=hSFv5uvPKnXM1RooC0fOdMbosY2ztKgbQHhUn6wSYVuVM6k9p7PSvjWx/L/Nz7PYlz+HxUcq/fjC6hqhbUfEb/KLYG3yZhXAJyGga/EeDJ98MAtYI2kgF8eVs4LlQ4lCTbxTp9iLD56e0XsPQEbV10ZGUzqh19HahTCevZn7Bso=
+	t=1710348305; cv=none; b=WvJ4uoYsijG++C3NqFlKhRSCoq2KlbM20wphMmoBmKpFXbsiqLZM+zBqjm1UrJVNYr5Q/BFTXUQL+VLnyD/3djntXd42gpplHlENvzYzFs/ssSs9BZkVIWKejWEMuGkRq4MqIYeckJAyY4eHzaqwcJbqnOaNpOIZ0hs6Iy3nm40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348208; c=relaxed/simple;
-	bh=IDlEN0E8MowaTytU4EKxm/sGXa1OtfRb3YalHLIr5/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b9R4UZKN16h2X1CPaJCGmrSZ3T7InBDbfgixjpzYmEL6iAua8OvZUBX3spNMxhJgtY7kcWzo6JkQfDQfXJzHkW9HfTAeEFLSetRSeiFW5TyFySI1C5LcC1LX6iqzJPQwjZyf/TtoBQZjtkovI4rLURUg648zeMv9/aGWw3fYR7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IlAO3/Bw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE470C433A6;
-	Wed, 13 Mar 2024 16:43:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348208;
-	bh=IDlEN0E8MowaTytU4EKxm/sGXa1OtfRb3YalHLIr5/Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IlAO3/BwXxIloSJ6WWq3OX990c6cYuw7j6ytd633qw/SjAAg3xX32lfm+ybZm4x+P
-	 rCtBOycAzJD6A5HebnXZGefLMyU7mWMM/C9E29DugrPNpqKI4eCe2J40hz16IpBdx1
-	 U8O0qrjnDPBdWqWIgXPwSkh7uQwquAOA8yWw3mrlR6/6OxoVafVioAwKwgt7AgVhjs
-	 xPmUrVk4ILAiT8Or+zI2rDZjuL+a+7Kxxt/ZU+7EYe5KeV7/Aakjge200q72sTwCF0
-	 Ri0aPRqtfrLxbEv5a+6CdxSMr+eD8DR5Hus9QLg2R158UhBtSH5oFWazly2HKq8pj/
-	 9TKwnZI1meTNQ==
-Date: Wed, 13 Mar 2024 17:43:25 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: paulmck@kernel.org, joel@joelfernandes.org, josh@joshtriplett.org,
-	boqun.feng@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org
-Subject: Re: [PATCH] rcu: Reduce synchronize_rcu() delays when all wait heads
- are in use
-Message-ID: <ZfHXrTUHRhAVjBOE@localhost.localdomain>
-References: <20240313083228.233247-1-Neeraj.Upadhyay@amd.com>
- <ZfHDwPkPHulJHrD0@localhost.localdomain>
- <35e009c4-d52c-4b96-ba10-afa0be9dfd5e@amd.com>
+	s=arc-20240116; t=1710348305; c=relaxed/simple;
+	bh=r2yTOImLEgBv+5kM0rWcsT1rGUuk6c9e8dJPwXpk3p4=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=YNJqpz71JP3ebZ000M24g+hJqyCexg6pO6mFphbtu3UnIRzA952Qcs08fkV/czcOPhiV66OC40kzhPd4u5xFhozqkiTd/Psj3orma1KDLfnq9g2CpXyU9w3KF9lkNuA+r5Sgo8FQAjDt9rxpPlnccL83YlakP9R0vE0BpP45NwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=u/x7ASb8; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1710348294;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wRKYVbWo7rvuu2swGuQTlLkzEW9Czyjs6ZI6qNJKWlo=;
+	b=u/x7ASb8r5+IJYatiC5vG444aqGl7ANW3qnobJ3WI3dR9QVwHGCX23Hgs4LJ+GoKNsSrpY
+	iXF7HeiuTwLKJPEFpX2aGowdgf5lFDeQgBqZ3GW1c4djxB0JZZgznbWchonZVm8rIuyGSA
+	Jvx+/5hXbQE56i7A3GC+4bFaEJmU/A1kyavNRseHFBgFp7c/+s4VDImU8jRCqd02ub3r3K
+	1Uj3L41kJl0QD9oZOYEWcvb9SZ1oTctz26XUdVtKbDS/TEzqMMjPAd6sIGQxjmV/1lmEzE
+	IRMCWVQV9ahsJN4NQPtXvJlJPY1H5tLUhggxQge5klVAXhFP0LU0IwqicRRCLA==
+Date: Wed, 13 Mar 2024 17:44:53 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Alexey Charkov <alchark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
+ Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal, OPP and
+ fan
+In-Reply-To: <cen2x7vlenevup34efl7sqn7sm5td35vkfmo4fcaotwk6fmv67@tdpcg5jokjhv>
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <j3krazypdc7gsvnp4kcocaftxsbjrfhj6nr2kf2cieo4bjxbv7@bqdfbirk5tei>
+ <CABjd4Yxs9b0XDXYfdnmT08BQnsJLonRy4X-g73J67yeGw3xL+w@mail.gmail.com>
+ <CABjd4YzTL=5S7cS8ACNAYVa730WA3iGd5L_wP1Vn9=f83RCORA@mail.gmail.com>
+ <pkyne4g2cln27dcdu3jm7bqdqpmd2kwkbguiolmozntjuiajrb@gvq4nupzna4o>
+ <cen2x7vlenevup34efl7sqn7sm5td35vkfmo4fcaotwk6fmv67@tdpcg5jokjhv>
+Message-ID: <5e93447d1b219fde1e2b390d40495ef1@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <35e009c4-d52c-4b96-ba10-afa0be9dfd5e@amd.com>
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Le Wed, Mar 13, 2024 at 09:41:58PM +0530, Neeraj Upadhyay a écrit :
-> Hi Frederic,
+Hello Sebastian,
+
+On 2024-03-13 17:39, Sebastian Reichel wrote:
+> On Thu, Mar 07, 2024 at 11:16:20PM +0100, Sebastian Reichel wrote:
+>> On Thu, Mar 07, 2024 at 04:38:24PM +0400, Alexey Charkov wrote:
+>> > On Tue, Mar 5, 2024 at 12:06â€¯PM Alexey Charkov <alchark@gmail.com> wrote:
+>> > > On Mon, Mar 4, 2024 at 9:51â€¯PM Sebastian Reichel
+>> > > <sebastian.reichel@collabora.com> wrote:
+>> > > > I'm too busy to have a detailed review of this series right now, but
+>> > > > I pushed it to our CI and it results in a board reset at boot time:
+>> > > >
+>> > > > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/jobs/300950
+>> > > >
+>> > > > I also pushed just the first three patches (i.e. without OPP /
+>> > > > cpufreq) and that boots fine:
+>> > > >
+>> > > > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/jobs/300953
+>> > >
+>> > > Thank you for testing these! I've noticed in the boot log that the CI
+>> > > machine uses some u-boot 2023.07 - is that a downstream one? Any
+>> > > chance to compare it to 2023.11 or 2024.01 from your (Collabora)
+>> > > integration tree?
+>> > >
+>> > > I use 2023.11 from your integration tree, with a binary bl31, and I'm
+>> > > not getting those resets even under prolonged heavy load (I rebuild
+>> > > Chromium with 8 concurrent compilation jobs as the stress test -
+>> > > that's 14 hours of heavy CPU, memory and IO use). Would be interesting
+>> > > to understand if it's just a 'lucky' SoC specimen on my side, or if
+>> > > there is some dark magic happening differently on my machine vs. your
+>> > > CI machine.
+>> > >
+>> > > Thinking that maybe if your CI machine uses a downstream u-boot it
+>> > > might be leaving some extra hardware running (PVTM?) which might do
+>> > > weird stuff when TSADC/clocks/voltages get readjusted by the generic
+>> > > cpufreq driver?..
+>> > >
+>> > > > Note, that OPP / cpufreq works on the same boards in the CI when
+>> > > > using the ugly-and-not-for-upstream cpufreq driver:
+>> > > >
+>> > > > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/commit/9c90c5032743a0419bf3fd2f914a24fd53101acd
+>> > > >
+>> > > > My best guess right now is, that this is related to the generic
+>> > > > driver obviously not updating the GRF read margin registers.
+>> > >
+>> > > If it was about memory read margins I believe I would have been
+>> > > unlikely to get my machine to work reliably under heavy load with the
+>> > > default ones, but who knows...
+>> >
+>> > Sebastian's report led me to investigate further how all those things
+>> > are organized in the downstream code and in hardware, and what could
+>> > be a pragmatic way forward with upstream enablement. It turned out to
+>> > be quite a rabbit hole frankly, with multiple layers of abstraction
+>> > and intertwined code in different places.
+>> >
+>> > Here's a quick summary for future reference:
+>> >  - CPU clocks on RK3588 are ultimately managed by the ATF firmware,
+>> > which provides an SCMI service to expose them to the kernel
+>> >  - ATF itself doesn't directly set any clock frequencies. Instead, it
+>> > accepts a target frequency via SCMI and converts it into an oscillator
+>> > ring length setting for the PVPLL hardware block (via a fixed table
+>> > lookup). At least that's how it's done in the recently released TF-A
+>> > bl31 code [1] - perhaps the binary bl31 does something similar
+>> >  - U-boot doesn't seem to mess with CPU clocks, PVTM or PVPLL
+>> >  - PVPLL produces a reference clock to feed to the CPUs, which depends
+>> > on the configured oscillator ring length but also on the supply
+>> > voltage, silicon quality and perhaps temperature too. ATF doesn't know
+>> > anything about voltages or temperatures, so it doesn't guarantee that
+>> > the requested frequency is matched by the hardware
+>> >  - PVPLL frequency generation is bypassed for lower-frequency OPPs, in
+>> > which case the target frequency is directly fed by the ATF to the CRU.
+>> > This happens for both big-core and little-core frequencies below 816
+>> > MHz
+>> >  - Given that requesting a particular frequency via SCMI doesn't
+>> > guarantee that it will be what the CPUs end up running at, the vendor
+>> > kernel also does a runtime voltage calibration for the supply
+>> > regulators, by adjusting the supply voltage in minimum regulator steps
+>> > until the frequency reported by PVPLL gets close to the requested one
+>> > [2]. It then overwrites OPP provided voltage values with the
+>> > calibrated ones
+>> >  - There's also some trickery with preselecting OPP voltage sets using
+>> > the "-Lx" suffix based on silicon quality, as measured by a "leakage"
+>> > value stored in an NVMEM cell and/or the PVTM frequency generated at a
+>> > reference "midpoint" OPP [3]. Better performing silicon gets to run at
+>> > lower default supply voltages, thus saving power
+>> >  - Once the OPPs are selected and calibrated, the only remaining
+>> > trickery is the two supply regulators per each CPU cluster (one for
+>> > the CPUs and the other for the memory interface)
+>> >  - Another catch, as Sebastian points out, is that memory read margins
+>> > must be adjusted whenever the memory interface supply voltage crosses
+>> > certain thresholds [4]. This has little to do with CPUs or
+>> > frequencies, and is only tangentially related to them due to the
+>> > dependency chain between the target CPU frequency -> required CPU
+>> > supply voltage -> matching memory interface supply voltage -> required
+>> > read margins
+>> >  - At reset the ATF switches all clocks to the lowest 408 MHz [6], so
+>> > setting it to anything in kernel code (as the downstream driver does)
+>> > seems redundant
+>> >
+>> > All in all, it does indeed sound like Collabora's CI machine boot-time
+>> > resets are most likely caused by the missing memory read margin
+>> > settings in my patch series. Voltage values in the OPPs I used are the
+>> > most conservative defaults of what the downstream DT has, and PVPLL
+>> > should be able to generate reasonable clock speeds with those (albeit
+>> > likely suboptimal, due to them not being tuned to the particular
+>> > silicon specimen). And there is little else to differ frankly.
+>> >
+>> > As for the way forward, it would be great to know the opinions from
+>> > the list. My thinking is as follows:
+>> >  - I can introduce memory read margin updates as the first priority,
+>> > leaving voltage calibration and/or OPP preselection for later (as
+>> > those should not affect system stability at current default values,
+>> > perhaps only power efficiency to a certain extent)
+>> >  - CPUfreq doesn't sound like the right place for those, given that
+>> > they have little to do with either CPU or freq :)
+>> >  - I suggest a custom regulator config helper to plug into the OPP
+>> > layer, as is done for TI OMAP5 [6]. At first, it might be only used
+>> > for looking up and setting the correct memory read margin value
+>> > whenever the cluster supply voltage changes, and later the same code
+>> > can be extended to do voltage calibration. In fact, OMAP code is there
+>> > for a very similar purpose, but in their case optimized voltages are
+>> > pre-programmed in efuses and don't require runtime recalibration
+>> >  - Given that all OPPs in the downstream kernel list identical
+>> > voltages for the memory supply as for the CPU supply, I don't think it
+>> > makes much sense to customize the cpufreq driver per se.
+>> > Single-regulator approach with the generic cpufreq-dt and regulator
+>> > coupling sounds much less invasive and thus lower-maintenance
+>> 
+>> Sorry for my late response.
+>> 
+>> When doing some more tests I noticed, that the CI never build the
+>> custom driver and thus never did any CPU frequency scaling at all.
+>> I only used it for my own tests (on RK3588 EVB1). When enabling the
+>> custom driver, the CI has the same issues as your series. So my
+>> message was completely wrong, sorry about that.
+>> 
+>> Regarding U-Boot: The CI uses "U-Boot SPL 2023.07-rc4-g46349e27";
+>> the last part is the git hash. This is the exact U-Boot source tree
+>> being used:
+>> 
+>> https://gitlab.collabora.com/hardware-enablement/rockchip-3588/u-boot/-/commits/46349e27/
+>> 
+>> This was one of the first U-Boot trees with Rock 5B Ethernet support
+>> and is currently flashed to the SPI flash memory of the CI boards.
+>> The vendor U-Boot tree is a lot older. Also it is still using the
+>> Rockchip binary BL31. We have plans to also CI boot test U-Boot,
+>> but currently nobody has time to work on this. I don't think there 
+>> should
+>> be any relevant changes between upstream 2023.07 and 2023.11 that 
+>> could
+>> explain this. But it's the best lead now, so I will try to find some 
+>> time
+>> for doing further tests related to this in the next days.
+>> 
+>> Regarding the voltage calibration - One option would be to do this
+>> calibration at boot time (i.e. in U-Boot) and update the voltages
+>> in DT accordingly.
 > 
-> On 3/13/2024 8:48 PM, Frederic Weisbecker wrote:
-> > Le Wed, Mar 13, 2024 at 02:02:28PM +0530, Neeraj Upadhyay a écrit :
-> >> When all wait heads are in use, which can happen when
-> >> rcu_sr_normal_gp_cleanup_work()'s callback processing
-> >> is slow, any new synchronize_rcu() user's rcu_synchronize
-> >> node's processing is deferred to future GP periods. This
-> >> can result in long list of synchronize_rcu() invocations
-> >> waiting for full grace period processing, which can delay
-> >> freeing of memory. Mitigate this problem by using first
-> >> node in the list as wait tail when all wait heads are in use.
-> >> While methods to speed up callback processing would be needed
-> >> to recover from this situation, allowing new nodes to complete
-> >> their grace period can help prevent delays due to a fixed
-> >> number of wait head nodes.
-> >>
-> >> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> >> ---
-> >>  kernel/rcu/tree.c | 27 +++++++++++++--------------
-> >>  1 file changed, 13 insertions(+), 14 deletions(-)
-> >>
-> >> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> >> index 9fbb5ab57c84..bdccce1ed62f 100644
-> >> --- a/kernel/rcu/tree.c
-> >> +++ b/kernel/rcu/tree.c
-> >> @@ -1470,14 +1470,11 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
-> >>   * for this new grace period. Given that there are a fixed
-> >>   * number of wait nodes, if all wait nodes are in use
-> >>   * (which can happen when kworker callback processing
-> >> - * is delayed) and additional grace period is requested.
-> >> - * This means, a system is slow in processing callbacks.
-> >> - *
-> >> - * TODO: If a slow processing is detected, a first node
-> >> - * in the llist should be used as a wait-tail for this
-> >> - * grace period, therefore users which should wait due
-> >> - * to a slow process are handled by _this_ grace period
-> >> - * and not next.
-> >> + * is delayed), first node in the llist is used as wait
-> >> + * tail for this grace period. This means, the first node
-> >> + * has to go through additional grace periods before it is
-> >> + * part of the wait callbacks. This should be ok, as
-> >> + * the system is slow in processing callbacks anyway.
-> >>   *
-> >>   * Below is an illustration of how the done and wait
-> >>   * tail pointers move from one set of rcu_synchronize nodes
-> >> @@ -1725,15 +1722,17 @@ static bool rcu_sr_normal_gp_init(void)
-> >>  		return start_new_poll;
-> >>  
-> >>  	wait_head = rcu_sr_get_wait_head();
-> >> -	if (!wait_head) {
-> >> -		// Kick another GP to retry.
-> >> +	if (wait_head) {
-> >> +		/* Inject a wait-dummy-node. */
-> >> +		llist_add(wait_head, &rcu_state.srs_next);
-> >> +	} else {
-> >> +		// Kick another GP for first node.
-> >>  		start_new_poll = true;
-> >> -		return start_new_poll;
-> >> +		if (first == rcu_state.srs_done_tail)
-> >> +			return start_new_poll;
-> >> +		wait_head = first;
-> > 
-> > This means you're setting a non-wait-head as srs_wait_tail, right?
-> > Doesn't it trigger the following warning in rcu_sr_normal_gp_cleanup():
-> > 
-> > 	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
-> > 
+> After some more debugging I finally found the root cause. The CI
+> boards were powered from a USB hub using a USB-A to USB-C cable, so
+> that the team could access maskrom mode. Since I was not involved in
+> setting them up, I was not aware of that. It effectively limits the
+> power draw to 500 or 900 mA (depending on USB port implementation),
+> which is not enough to power the board with the higher frequencies.
+> The KernelCI Rock 5B boards are now switched to proper power
+> supplies and the issues are gone.
 > 
-> Oh I missed it. Will fix it, thanks!
-> 
-> > Also there is a risk that this non-wait-head gets later assigned as
-> > rcu_state.srs_done_tail. And then this pending sr may not be completed
-> > until the next grace period calling rcu_sr_normal_gp_cleanup()? (Because
-> > the work doesn't take care of rcu_state.srs_done_tail itself). And then
-> > the delay can be arbitrary.
-> > 
-> 
-> That is correct. Only the first node suffers from deferred GP.
-> If there are large number of callbacks which got added after
-> last available wait head was queued, all those callbacks (except one)
-> can still have a GP assigned to them.
-> 
-> > And the next grace period completing this sr (that non-wait-head set
-> > as rcu_state.srs_done_tail) and thus allowing its caller to wipe it out
-> > of its stack may race with the cleanup work dereferencing it?
-> > 
-> 
-> This sr can only be completed when done tail moves to new node. Till
-> then, it gets deferred continuously. So, we won't be entering into
-> the situation where the sr processing is complete while done tail is pointing
-> to it. Please correct me if I am missing something here.
+> Sorry for the false alarm,
 
-Ok I'm confused as usual. Let's take a practical case. Is the following
-sequence possible?
-
-1) wait_tail = NULL
-   done_tail = WH4->SR4->WH3->SR3->WH2->SR2->WH1->SR1...
-
-Initial layout
-
-2) wait_tail = SR5 -> WH4...
-   done_tail = WH4->SR4->WH3->SR3->WH2->SR2->WH1->SR1...
-
-New GP
-
-3) wait_tail = NULL
-   done_tail = SR5->WH4->SR4->WH3->SR3->WH2->SR2->WH1->SR1...
-
-GP completes, normal cleanup
-
-3) wait_tail = SR6->SR5...
-   done_tail = SR5->WH4->SR4->WH3->SR2->WH2->SR1->WH1->SR1...
-
-New GP
-
-4) GP completes and SR5 is completed by rcu_sr_normal_gp_cleanup(). So
-   the caller releases it from the stack. But before rcu_sr_normal_gp_cleanup()
-   overwrites done_tail to SR6->WH4->SR4.... , the workqueue manages to run
-   and concurrently dereferences SR5.
-
-But I bet I'm missing something obvious in the middle, preventing that...
+Great to know, thanks for the clarification.
 
