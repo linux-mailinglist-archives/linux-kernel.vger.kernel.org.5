@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-101823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3765587ABE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9032D87ABE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD2592885E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:52:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DBC3B2461A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE235FB83;
-	Wed, 13 Mar 2024 16:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB006BB4A;
+	Wed, 13 Mar 2024 16:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AV3BU/7z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQSnvrhv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAD36A8C7;
-	Wed, 13 Mar 2024 16:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0B16AFA9;
+	Wed, 13 Mar 2024 16:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347855; cv=none; b=DK+ikC39VxphAjOX+5uSAySMcTtQGZPa2jQOE/14kD0BEVT9Cg2OXWTspH4O5F95opfFGrna+xGK1K/51YyVPW0V3imeee72tXMnIhsnGA9djRTKn3hq8fw61hcgcHXm3d/RQcywdSBixx0/kfMe4oKHNUsZfJayx6ME0LBEiSQ=
+	t=1710347856; cv=none; b=qHIaaB9nFbYlYFgYnUe6EfFihW+Dey/gBfxzphLrjM5CYbFltmO7sSPZoIIqu8Z23lHJpFSRZvsj/AwIK/cNU+06CNsKcaslDcR+RjIXfqUaOK+2trcCMBGrbpq2WHtlTe1ZtCXbgcQegf8dbfIKUmDFOspS4i03c/pp6jpCk3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347855; c=relaxed/simple;
-	bh=rluNJOBW/oQ5by3CTxx7JlTMFlO/HxGIYjcgOs+lZXc=;
+	s=arc-20240116; t=1710347856; c=relaxed/simple;
+	bh=HgNeIMIUSl/ymCYFblU0oK2L6lUJ4nE4XJFe/wXIm+4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ApwCJHIAwQSlCwosYPfZVqaipHkTV3LzO1HHcmW8W6+MKgwrXcBlZvo9EnxxJPW/mpCZv8xrb3hE49lk+X/lMDE7xXdwWSSFAq+0jntJH6FiepNzwTy6qJc5+ExanLPVix4LqeYVbqhDyfkzis4E/h/F0C4jrlWozGOUzpaEyWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AV3BU/7z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B1F6C43399;
-	Wed, 13 Mar 2024 16:37:34 +0000 (UTC)
+	 MIME-Version; b=jT3U+iHH7zUyhzbXeJjO/zdXj7jbWrdn4H+NXt61m18nbEbneIWI6kyLvu8JOL6ZZ0BIptP8vAaBWlj5rwzDciXTOntUWS326ubr6ibtqWQTRhVcwWeWZARg9HMFblLl5simHrXUsyHNxatemxZ8kJgrS+qq+LRmXj+IJYsj0HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQSnvrhv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0A9C3277B;
+	Wed, 13 Mar 2024 16:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347855;
-	bh=rluNJOBW/oQ5by3CTxx7JlTMFlO/HxGIYjcgOs+lZXc=;
+	s=k20201202; t=1710347856;
+	bh=HgNeIMIUSl/ymCYFblU0oK2L6lUJ4nE4XJFe/wXIm+4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AV3BU/7zFUml0a41t6pwwMA7t0rsXPknzN/tg7jXEmqjfjecIU0VNCOqd2iPltwq8
-	 h7VOuy7bUT13Y08rhdfidYuPNan57c+vWmJrWEQ0zc3fl199bNAhoiaRZmfezrLZ4P
-	 uWidNJ3vAKiDzPczZUbmMNu7EaY1Jnr8aKKDECl1CH0GnkZC+XaadxhnbuWIYIoI6d
-	 M5LWJPpgY5yQ/4WR6540thgi6qZ+mYWYlZ1s3vDIWWB46u98J4Ff43Ef4yCNXa69i0
-	 9fviWFbjFZHMyMlEIvLyQ3mKYENks55IiKz6aZ1X18kN1cMwdAD5cIjY/cD6lwzxao
-	 qKbawprbKGk0g==
+	b=CQSnvrhvnSufQ1gxk81VAD6F/Os3oHhgWiopQbCQ02YclTnCNSxSNquDccXkovP/a
+	 Nbq4+uAY+vLfPsajXI9l5Sfj6oCXReCNNpo5ZPnEvMyqG2IqR+X/p8KgXOQ4W4Cgse
+	 KWYe50oC3QTvsnRX3AfUQHZktpsJFubPKUpFXOTyy0zu/kCtuJ2j+9KHGvAdFoebw+
+	 XRABx3B1aeMNQNdNTnBzwR2xzQMSoScdFCyGwWdCIRUKHSDt+SixKTd5tM2q808rdb
+	 SMXX7yTdfbYBxp2NPBlx/03Jl7C4bJG6qtsF7n9Uiv/AoGYPn/+H27SY0bkI+E2iuJ
+	 gf+YsZ5alKWkw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Rahul Rameshbabu <rrameshbabu@nvidia.com>,
 	Saeed Mahameed <saeedm@nvidia.com>,
 	Vadim Fedorenko <vadfed@meta.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 20/60] net/mlx5e: Use a memory barrier to enforce PTP WQ xmit submission tracking occurs after populating the metadata_map
-Date: Wed, 13 Mar 2024 12:36:27 -0400
-Message-ID: <20240313163707.615000-21-sashal@kernel.org>
+Subject: [PATCH 6.6 21/60] net/mlx5e: Switch to using _bh variant of of spinlock API in port timestamping NAPI poll context
+Date: Wed, 13 Mar 2024 12:36:28 -0400
+Message-ID: <20240313163707.615000-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -71,39 +71,66 @@ Content-Transfer-Encoding: 8bit
 
 From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
 
-[ Upstream commit b7cf07586c40f926063d4d09f7de28ff82f62b2a ]
+[ Upstream commit 90502d433c0e7e5483745a574cb719dd5d05b10c ]
 
-Just simply reordering the functions mlx5e_ptp_metadata_map_put and
-mlx5e_ptpsq_track_metadata in the mlx5e_txwqe_complete context is not good
-enough since both the compiler and CPU are free to reorder these two
-functions. If reordering does occur, the issue that was supposedly fixed by
-7e3f3ba97e6c ("net/mlx5e: Track xmit submission to PTP WQ after populating
-metadata map") will be seen. This will lead to NULL pointer dereferences in
-mlx5e_ptpsq_mark_ts_cqes_undelivered in the NAPI polling context due to the
-tracking list being populated before the metadata map.
+The NAPI poll context is a softirq context. Do not use normal spinlock API
+in this context to prevent concurrency issues.
 
-Fixes: 7e3f3ba97e6c ("net/mlx5e: Track xmit submission to PTP WQ after populating metadata map")
+Fixes: 3178308ad4ca ("net/mlx5e: Make tx_port_ts logic resilient to out-of-order CQEs")
 Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 CC: Vadim Fedorenko <vadfed@meta.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index f0b506e562df3..1ead69c5f5fa3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -401,6 +401,8 @@ mlx5e_txwqe_complete(struct mlx5e_txqsq *sq, struct sk_buff *skb,
- 		mlx5e_skb_cb_hwtstamp_init(skb);
- 		mlx5e_ptp_metadata_map_put(&sq->ptpsq->metadata_map, skb,
- 					   metadata_index);
-+		/* ensure skb is put on metadata_map before tracking the index */
-+		wmb();
- 		mlx5e_ptpsq_track_metadata(sq->ptpsq, metadata_index);
- 		if (!netif_tx_queue_stopped(sq->txq) &&
- 		    mlx5e_ptpsq_metadata_freelist_empty(sq->ptpsq)) {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+index 803035d4e5976..15d97c685ad33 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+@@ -42,9 +42,9 @@ mlx5e_ptp_port_ts_cqe_list_add(struct mlx5e_ptp_port_ts_cqe_list *list, u8 metad
+ 
+ 	WARN_ON_ONCE(tracker->inuse);
+ 	tracker->inuse = true;
+-	spin_lock(&list->tracker_list_lock);
++	spin_lock_bh(&list->tracker_list_lock);
+ 	list_add_tail(&tracker->entry, &list->tracker_list_head);
+-	spin_unlock(&list->tracker_list_lock);
++	spin_unlock_bh(&list->tracker_list_lock);
+ }
+ 
+ static void
+@@ -54,9 +54,9 @@ mlx5e_ptp_port_ts_cqe_list_remove(struct mlx5e_ptp_port_ts_cqe_list *list, u8 me
+ 
+ 	WARN_ON_ONCE(!tracker->inuse);
+ 	tracker->inuse = false;
+-	spin_lock(&list->tracker_list_lock);
++	spin_lock_bh(&list->tracker_list_lock);
+ 	list_del(&tracker->entry);
+-	spin_unlock(&list->tracker_list_lock);
++	spin_unlock_bh(&list->tracker_list_lock);
+ }
+ 
+ void mlx5e_ptpsq_track_metadata(struct mlx5e_ptpsq *ptpsq, u8 metadata)
+@@ -155,7 +155,7 @@ static void mlx5e_ptpsq_mark_ts_cqes_undelivered(struct mlx5e_ptpsq *ptpsq,
+ 	struct mlx5e_ptp_metadata_map *metadata_map = &ptpsq->metadata_map;
+ 	struct mlx5e_ptp_port_ts_cqe_tracker *pos, *n;
+ 
+-	spin_lock(&cqe_list->tracker_list_lock);
++	spin_lock_bh(&cqe_list->tracker_list_lock);
+ 	list_for_each_entry_safe(pos, n, &cqe_list->tracker_list_head, entry) {
+ 		struct sk_buff *skb =
+ 			mlx5e_ptp_metadata_map_lookup(metadata_map, pos->metadata_id);
+@@ -170,7 +170,7 @@ static void mlx5e_ptpsq_mark_ts_cqes_undelivered(struct mlx5e_ptpsq *ptpsq,
+ 		pos->inuse = false;
+ 		list_del(&pos->entry);
+ 	}
+-	spin_unlock(&cqe_list->tracker_list_lock);
++	spin_unlock_bh(&cqe_list->tracker_list_lock);
+ }
+ 
+ #define PTP_WQE_CTR2IDX(val) ((val) & ptpsq->ts_cqe_ctr_mask)
 -- 
 2.43.0
 
