@@ -1,94 +1,123 @@
-Return-Path: <linux-kernel+bounces-101050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 699DF87A19F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:29:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F70887A1A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 251A62838DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:29:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 917671C21C5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4EFEC144;
-	Wed, 13 Mar 2024 02:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C46CA4A;
+	Wed, 13 Mar 2024 02:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k5jVH3Wi"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bgBJX0cS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3976FCB;
-	Wed, 13 Mar 2024 02:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8D638B;
+	Wed, 13 Mar 2024 02:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710296955; cv=none; b=n/yw2HA3yqScjiqGBH7xYRYNClMjb/NKIdIG8C9uOqbKtH2b1L91LoIzJyRNVn07RqrajFdVVtkp/mkS+38BHLCmmozGmLyompHGOqdSTq1rWWYNlbAaA6EKgWPTRyihS3+c+W+HH58R+ikm2Pb2Si7Uab0LLG9YBAzpus+fCNs=
+	t=1710297045; cv=none; b=hx2ciwWFrKajSTTQusdFObiwfMlp0aTxtmuYBCghFzDFHyejYjYlGdVHyIqOpScTRJ29d0vWgUQXlaKwiMcBs5iVBqZqUx96EdD3yVvJ1SOUAlhJloBwdmEYqjzDo8DEir5v8BSguumyzVzRXvKCy8fSBQgygeqehaP7AfA0Pjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710296955; c=relaxed/simple;
-	bh=4rGwAcnJt85Pg1C0n0uYVRoLE6oWycRlJ1Rp3ygQ5Tg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c8WEtGdIJMylwJ4+milh6ETvffHIiyDkvw5gM7wDkp7YvFzwKnsSwJpMl2D5BABzj/rNIWSCk7nIqaiw1PJ9/sevy/4NdT+rfIPt7nUeRWsUDiJKdHlfXS1L9UpBrQ1NNNwA4T48lyGJmnqSQx4YBBGUmYKrYEsnmYc7ye0aaew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k5jVH3Wi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D897C433F1;
-	Wed, 13 Mar 2024 02:29:14 +0000 (UTC)
+	s=arc-20240116; t=1710297045; c=relaxed/simple;
+	bh=6epCFR+TeeVisNrBltVtOxZRUBOkKoRbe0+eZ0ebHGM=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=QlnkRJqVGSU5j/fTxJBjxBdwaG6fuTWSW6zgXxAdmGRFzT8dzIfnI/FDi/DbvBkNhGjCyV5X72GJ1xi57O9C1++vGx8XGZINeZ4NhSlPSY55X4m3mRNAWbndyREQAxu17/qbrdOtN/XYOsEqpmq2k9VcX7nEX2BT1FknC8nzzuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bgBJX0cS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 608ABC433C7;
+	Wed, 13 Mar 2024 02:30:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710296954;
-	bh=4rGwAcnJt85Pg1C0n0uYVRoLE6oWycRlJ1Rp3ygQ5Tg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k5jVH3WiDcJCklPgdkYPN1JtWt3j0xGIXX4EQPw5qldiPwkKuL3ocpct5ZdVoOP5T
-	 5RmNtnnCNmaQlUuDOFK84Qc/y6Rf768wMjAEvfYjYS/EZ5xm+w08lSNgJycoU68uPu
-	 MGdI3DpvVOKp6UkSPg0YQi1Htu7eN82YRK4yQCImWzJECE4dsz1O8l8ial3IPV/5Op
-	 g/A2AKYd6Fj+zkVh2M6wWoVlpQNvj2o46P2ehVyYHIt6co9R+7Ndq38gj0nbRv/P+2
-	 EYP5vsBltW5Dybs4Rc8VsC54uyqXWred/IukXaGiwollcYKrg1MGcJrAYE/djLbVtC
-	 H8DpQqS//1myA==
-Date: Tue, 12 Mar 2024 19:29:12 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Linux Crypto List <linux-crypto@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the crypto tree
-Message-ID: <20240313022912.GD1148@sol.localdomain>
-References: <20240313115751.36b01158@canb.auug.org.au>
- <ZfEE2GDznBOZDXs4@gondor.apana.org.au>
- <ZfEFKxl8/42oXv0i@gondor.apana.org.au>
- <20240313020112.GB1148@sol.localdomain>
- <ZfEJrBefjrvPxaIg@gondor.apana.org.au>
+	s=k20201202; t=1710297044;
+	bh=6epCFR+TeeVisNrBltVtOxZRUBOkKoRbe0+eZ0ebHGM=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=bgBJX0cS4c75xtuhF2avvRAWfGeIS+DdV9OofdYqXwKLsvGUd5FxhhtQqF0mLN4dN
+	 /0zkpqzGk89wpr1NMFTIK1F09qLuKqVRWGN1AEMMo8y869BZWQpgbq02ZoWvzirGgH
+	 THVKVcTueHcJgN4l7N6LFujds6IA3UTv4MpUn8piGXRjtyy/043Xpku/hccu4QijI3
+	 6XlS/SxMGolxlTZT7Z5sQGHZUGSCI/ZDbMrnfFiY59kOGX3Gy8aMXXZf4F9nAaQGmY
+	 vLPYqL/t1jcl39selk774Xbsnx6JUYWkn2Ok/z3U449vArJT3GIT4RYGhZFpsCNg3F
+	 uaCPkK9BvACLg==
+Date: Tue, 12 Mar 2024 20:30:43 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfEJrBefjrvPxaIg@gondor.apana.org.au>
+From: Rob Herring <robh@kernel.org>
+To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ Michal Simek <michal.simek@amd.com>, 
+ Andrzej Hajda <andrzej.hajda@intel.com>, David Airlie <airlied@gmail.com>, 
+ Maxime Ripard <mripard@kernel.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+ linux-media@vger.kernel.org, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Daniel Vetter <daniel@ffwll.ch>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Conor Dooley <conor+dt@kernel.org>, Robert Foss <rfoss@kernel.org>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, 
+ linux-arm-kernel@lists.infradead.org, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <20240312-dp-live-fmt-v2-7-a9c35dc5c50d@amd.com>
+References: <20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com>
+ <20240312-dp-live-fmt-v2-7-a9c35dc5c50d@amd.com>
+Message-Id: <171029704194.3354722.2132570272705371334.robh@kernel.org>
+Subject: Re: [PATCH v2 7/8] dt-bindings: xlnx: Add VTC and TPG bindings
 
-On Wed, Mar 13, 2024 at 10:04:28AM +0800, Herbert Xu wrote:
-> On Tue, Mar 12, 2024 at 07:01:12PM -0700, Eric Biggers wrote:
-> >
-> > The only user of comp_alg_common was the crypto stats, and it was introduced by
-> > a refactoring of the crypto stats (commit 0a742389bcc0, "crypto: acomp - Count
-> > error stats differently"), so it seems appropriate to remove it for now.
-> > 
-> > If you could go through my patch and explain what other unused code related to
-> > the crypto stats you might consider to be "infrastructure" that should not be
-> > removed, that would be helpful.
+
+On Tue, 12 Mar 2024 17:55:04 -0700, Anatoliy Klymenko wrote:
+> DO NOT MERGE. REFERENCE ONLY.
 > 
-> The first patch should only remove code directly related to
-> STATS.  Any removal of code that is rendered useless should
-> be done in one or more subsequent patches.
+> Add binding for AMD/Xilinx Video Timing Controller and Test Pattern
+> Generator.
 > 
-> Thanks,
+> Copy media-bus-formats.h into dt-bindings/media to suplement TPG DT node.
+> 
+> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+> ---
+>  .../bindings/display/xlnx/xlnx,v-tpg.yaml          |  87 ++++++++++
+>  .../devicetree/bindings/display/xlnx/xlnx,vtc.yaml |  65 ++++++++
+>  include/dt-bindings/media/media-bus-format.h       | 177 +++++++++++++++++++++
+>  3 files changed, 329 insertions(+)
+> 
 
-comp_alg_common was part of the implementation of STATS.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-I'll do the best I can to interpret your request, but if you could actually
-review my original patch and let me know if there are any other specific changes
-you'd like besides keeping comp_alg_common, that would be helpful as then maybe
-the next version won't get reverted.
+yamllint warnings/errors:
+/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml:35:4: [warning] wrong indentation: expected 4 but found 3 (indentation)
+/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml:45:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
+/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml:49:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
 
-- Eric
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.yaml: xlnx,pixels-per-clock: missing type definition
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml: bus-format: missing type definition
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml: xlnx,bridge: missing type definition
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240312-dp-live-fmt-v2-7-a9c35dc5c50d@amd.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
