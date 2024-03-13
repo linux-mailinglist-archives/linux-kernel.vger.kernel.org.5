@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-101961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BDE887AD1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:26:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2647587AD1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B34341C2121F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:26:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5C8E2802BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD6F13E7CF;
-	Wed, 13 Mar 2024 16:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C6B13F438;
+	Wed, 13 Mar 2024 16:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ro7x6/Os"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uHRAPNgf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E1413D30D;
-	Wed, 13 Mar 2024 16:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7128213EFE4;
+	Wed, 13 Mar 2024 16:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348170; cv=none; b=bfH6SXm0cB7ECHY7XXmb5DNHESc/xouMdTXxZ1E1WuwrvoxnvFN4qfF4u0MSbRb9biG8ZlhdYlvigLQGymnCzWXWWo+g6nP2AX81L03Az4XecMBMHKxmFT5FqT4Q/sJS/stYPUlBlF1JRpirIBVrupNGr9Ea1/ajk1dY2INrJhk=
+	t=1710348171; cv=none; b=oSPjOMjW/2RWASxbgR1COQg36uUx85sH9kBgPJM/xnUjj+x5wHu3PxC7934GIajM5GrmGqPMWpA6xWF0q2x3n0W1qSpVFOup+tJbZhy6kkLSNuyPV18EfFGn0pbeshan2epdAJhbvMwWqzx0xTcb/6qmfuumzN9KnqCy1JbbF9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348170; c=relaxed/simple;
-	bh=67liw3T/StQ4cXBr9axLBR840ACqH5dgsHUqaBCJwWg=;
+	s=arc-20240116; t=1710348171; c=relaxed/simple;
+	bh=JupO535FDJs874LcX2bRQiX9YuUvDP4z5KRR1MTFWag=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CjCmlGLwEJC5eQPANMfw6KLEG1KIJBno/k+0suAh8DZMAatBOpivrjlJAHLBBEWz0+WmUpX1iuhD28tsb3wXl0Zi6z7bI0+vInNNaOTtCGrrqMZrwHEpWxv7WdASrUhtqY2dMBAoFO+HJUx+G8kpPAx2aULzfHbzqnmN1ZiYSq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ro7x6/Os; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D4A9C433C7;
-	Wed, 13 Mar 2024 16:42:49 +0000 (UTC)
+	 MIME-Version; b=jPBbWa6rRttuwOLxm+1eV8VQZfKMH6tbkViB2ZGPKdEFHoPMlmR8GNN59gFUbLsV/jSvEsYRGXc21ariKC9t3V87f3+mwh44VM2NZ8Q/isLKnMfHPf1XotpzdyO3F6pX71IXFaLifeIN7aE91nu2wZGHDdXSsle9o4zG+TuTnxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uHRAPNgf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D735C43394;
+	Wed, 13 Mar 2024 16:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348170;
-	bh=67liw3T/StQ4cXBr9axLBR840ACqH5dgsHUqaBCJwWg=;
+	s=k20201202; t=1710348171;
+	bh=JupO535FDJs874LcX2bRQiX9YuUvDP4z5KRR1MTFWag=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ro7x6/OsWSIq+nrlafX+VJbbLrbi67cH4Xqu0b9mRoermmf4DolJbdFlRzyENU0ZX
-	 2F6u3IbIQjXT4nx4TGBWIYhHHl4Ac7zXKf0L6jg5I+eN/Op3SE/IRmsAP3oXLFDimX
-	 vlQaSz1rfG4TXgVIqjJn3H+03polxDFEAh2aSLMRCB7+F/AjkR5xpZnn/89yQLFzBK
-	 CCQxBkzOnBe8m3zFqNWHD2TU9pIjzyKXTnf2dxi8WzYy0CsSEfih0H1hLCznZSDS5t
-	 w9ulrmwDUwBLuYQYBQF7OTzcL2ybKkpw4zf2WPVO6+t/EZXgrhS0+TF6NRaWDUTLfC
-	 w1f0x5crzunww==
+	b=uHRAPNgfAXAsch/Zh7PDup8SA1XgwNbmGPP0efN2VKV0kQOzxVnEKhXPJ2oNUt8Lx
+	 hBhVE8OsWLLs/OV6/9p8eRTyAgSYcXy929Z4Wh2IJOVpKY1Ym/HF4By/yPdZQp/2qx
+	 B5DNTrvMFXjF/va1TR6O0rnILicAZabe1ioQrpT7DR7wiPtXcVSONmEZOzrktB/R8u
+	 xbPlK4AtnpRxvbgNSrpwsJT6IxDz2kEeT10CelGDmk7XpGORcn4iY4nZaNsdv4R8C9
+	 Yjx0+1zFVk4oXY7bcv9289ZgkNuhtXSDQAB16Htj4QF80+3ubAzkUSHWZAY4JO38zm
+	 Ug+M2De00r31g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jason Xing <kernelxing@tencent.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 21/76] netrom: Fix a data-race around sysctl_netrom_transport_acknowledge_delay
-Date: Wed, 13 Mar 2024 12:41:28 -0400
-Message-ID: <20240313164223.615640-22-sashal@kernel.org>
+Subject: [PATCH 5.15 22/76] netrom: Fix a data-race around sysctl_netrom_transport_busy_delay
+Date: Wed, 13 Mar 2024 12:41:29 -0400
+Message-ID: <20240313164223.615640-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -70,7 +70,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-[ Upstream commit 806f462ba9029d41aadf8ec93f2f99c5305deada ]
+[ Upstream commit 43547d8699439a67b78d6bb39015113f7aa360fd ]
 
 We need to protect the reader reading the sysctl value because the
 value can be changed concurrently.
@@ -84,18 +84,18 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
-index 678a7bbd84bf2..5a5cca18ae0c6 100644
+index 5a5cca18ae0c6..76d66eb0de255 100644
 --- a/net/netrom/af_netrom.c
 +++ b/net/netrom/af_netrom.c
-@@ -455,7 +455,7 @@ static int nr_create(struct net *net, struct socket *sock, int protocol,
- 	nr->t1     =
- 		msecs_to_jiffies(READ_ONCE(sysctl_netrom_transport_timeout));
- 	nr->t2     =
--		msecs_to_jiffies(sysctl_netrom_transport_acknowledge_delay);
-+		msecs_to_jiffies(READ_ONCE(sysctl_netrom_transport_acknowledge_delay));
+@@ -459,7 +459,7 @@ static int nr_create(struct net *net, struct socket *sock, int protocol,
  	nr->n2     =
  		msecs_to_jiffies(READ_ONCE(sysctl_netrom_transport_maximum_tries));
  	nr->t4     =
+-		msecs_to_jiffies(sysctl_netrom_transport_busy_delay);
++		msecs_to_jiffies(READ_ONCE(sysctl_netrom_transport_busy_delay));
+ 	nr->idle   =
+ 		msecs_to_jiffies(sysctl_netrom_transport_no_activity_timeout);
+ 	nr->window = sysctl_netrom_transport_requested_window_size;
 -- 
 2.43.0
 
