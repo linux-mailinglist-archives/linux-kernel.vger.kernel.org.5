@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-102085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A220487AE44
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:54:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A56687AE46
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DBF02830FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:54:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBC801C2339D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5AD96FE16;
-	Wed, 13 Mar 2024 16:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D642D6FE36;
+	Wed, 13 Mar 2024 16:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kUM9xHkq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaqnsgmT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7626FE02;
-	Wed, 13 Mar 2024 16:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FE36FE1E;
+	Wed, 13 Mar 2024 16:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348469; cv=none; b=E+Z6l2+gJWW3sZTjQdv7X0bS55Fsee/1pJWjdelGvYusEF9f8RlUHV2tgpeUuCk98lMbzC6Je2R2uQMggQCVQkCDdknchKyEvlPiEL6ZqBm1KotDKFH9npFo1ziF2tC+JUkoIE5EbMw6BP+I3fR9xzLd8sYlLrAY0qVR8H+CVcs=
+	t=1710348470; cv=none; b=CBQDsBo2be55hJjAtzKmoQOOg8Ak3NbkjCjAxSf2hpTiJi+TUmuRdDWdQni4N22DC3uRkN9Vq5lLbnyBkig+Gbtk+Qq7LKE6mIwZyfRq5c+4oe9BotaUrUrZHl0yqMuD2xzlE2hKU+LusmlksdnUojfnZaeygDDNHoM1WqLOLSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348469; c=relaxed/simple;
-	bh=GVU3b2m2MSnTEGBcFRcMvG/E+T4QoRdGny2PkMtzVi4=;
+	s=arc-20240116; t=1710348470; c=relaxed/simple;
+	bh=nOLn3S4rg43w66t96mcY9QG+VPaxgLbxU/EajpfW+A0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BL82fa+Vo3mWkeY64mtepiTb0a+CEvzJRmXnOidIsJ++qSAx6OLk8NOM60DLGFVbvIelA0bd9faRjtZxmbrB60QKSMpH4PyZPLhhYkoNdq4us47DEkXvvt2UixGvTUmSTrCNK0Qi1qF8VYIKs7gYHuXWQ8iSr3G35ZamLkpyR1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kUM9xHkq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BC69C43390;
-	Wed, 13 Mar 2024 16:47:47 +0000 (UTC)
+	 MIME-Version; b=QJvNNb0F8ePOa3yOZ1rCyq4SJOpQo1cHlvrrymcTbEdh7RQPkvkQXt68oiDkZ3YNS13K5uWx+ppzxNNQMWVAtXVUImSmloqjcgkAHCv/rdlYDovTHlam4qQcTW5PNW/OPHOSr5ON18EHz7s51gtotqdM/KKM5ywEA6NdncSr6jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aaqnsgmT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25DDBC433C7;
+	Wed, 13 Mar 2024 16:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348468;
-	bh=GVU3b2m2MSnTEGBcFRcMvG/E+T4QoRdGny2PkMtzVi4=;
+	s=k20201202; t=1710348470;
+	bh=nOLn3S4rg43w66t96mcY9QG+VPaxgLbxU/EajpfW+A0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kUM9xHkqB4IP5CpjKrHkPvt3n/cIZHMg+7zLq2WGaWTbHlq1Y9hv+2QmJ/dLzbiyr
-	 /m+tQSU0Zn4xD+k527SbW68u3q6AtygGKJIvhg2O7a4rsvsKWtznk8yLHdxN6yj0Cd
-	 KSJRF39ZbX9dMUFHn1CwGUNsyj32TLUU/CPFIf4necF4IZfY42jdSQElDyGMmc0lqi
-	 +apZeCUhzSWTE4yCBcsLrIlGz8wEJSDkYZtAkTacHpENJTAWd45kJPdYQZTlUT5Sse
-	 F6RKByG2fo8BivD11bx7cBlLRxb/ZsLZiYcrfn9kJ3HNNMdV/4TrAdjIOYhBzcR5R8
-	 sZ2oMg1MAZOLw==
+	b=aaqnsgmTZtTPPNJBRdbNzaGZcJZtxWQvmiWZaJUOmLEwsPb2BkoyRtLRlL7LsWeP/
+	 hXAQL3K8QA9lER3DKHxRxTN+3qq875VzKSqOaIXQ3OKz1153OFUf0uOU3G9N7raP64
+	 yLsXjGAboZoYw/KCa2VVXF5Tn5Ji6g9FwU7kiyRdeaUWjBtMKyd9fXkb1InjJUtLOa
+	 IcZfNUZminIXTl+PtWqvVLXf7XT+5YtccqpUZnGDHb1l+resG9JRxjI6eRxHizWcLA
+	 Dle7pmRjP5b7zXtR0i6E9wKdIZYrPSl1cnX4tXmnlipr9Nl3ac5KJgRq5Qo/k9Ok7Q
+	 4ieYMiU3X0t7Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Prakash Sangappa <prakash.sangappa@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 59/73] mm: hugetlb pages should not be reserved by shmat() if SHM_NORESERVE
-Date: Wed, 13 Mar 2024 12:46:26 -0400
-Message-ID: <20240313164640.616049-60-sashal@kernel.org>
+Subject: [PATCH 5.10 60/73] getrusage: add the "signal_struct *sig" local variable
+Date: Wed, 13 Mar 2024 12:46:27 -0400
+Message-ID: <20240313164640.616049-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -69,106 +69,91 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Prakash Sangappa <prakash.sangappa@oracle.com>
+From: Oleg Nesterov <oleg@redhat.com>
 
-[ Upstream commit e656c7a9e59607d1672d85ffa9a89031876ffe67 ]
+[ Upstream commit c7ac8231ace9b07306d0299969e42073b189c70a ]
 
-For shared memory of type SHM_HUGETLB, hugetlb pages are reserved in
-shmget() call.  If SHM_NORESERVE flags is specified then the hugetlb pages
-are not reserved.  However when the shared memory is attached with the
-shmat() call the hugetlb pages are getting reserved incorrectly for
-SHM_HUGETLB shared memory created with SHM_NORESERVE which is a bug.
+No functional changes, cleanup/preparation.
 
--------------------------------
-Following test shows the issue.
-
-$cat shmhtb.c
-
-int main()
-{
-	int shmflags = 0660 | IPC_CREAT | SHM_HUGETLB | SHM_NORESERVE;
-	int shmid;
-
-	shmid = shmget(SKEY, SHMSZ, shmflags);
-	if (shmid < 0)
-	{
-		printf("shmat: shmget() failed, %d\n", errno);
-		return 1;
-	}
-	printf("After shmget()\n");
-	system("cat /proc/meminfo | grep -i hugepages_");
-
-	shmat(shmid, NULL, 0);
-	printf("\nAfter shmat()\n");
-	system("cat /proc/meminfo | grep -i hugepages_");
-
-	shmctl(shmid, IPC_RMID, NULL);
-	return 0;
-}
-
- #sysctl -w vm.nr_hugepages=20
- #./shmhtb
-
-After shmget()
-HugePages_Total:      20
-HugePages_Free:       20
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-After shmat()
-HugePages_Total:      20
-HugePages_Free:       20
-HugePages_Rsvd:        5 <--
-HugePages_Surp:        0
---------------------------------
-
-Fix is to ensure that hugetlb pages are not reserved for SHM_HUGETLB shared
-memory in the shmat() call.
-
-Link: https://lkml.kernel.org/r/1706040282-12388-1-git-send-email-prakash.sangappa@oracle.com
-Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
-Acked-by: Muchun Song <muchun.song@linux.dev>
-Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20230909172554.GA20441@redhat.com
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Stable-dep-of: daa694e41375 ("getrusage: move thread_group_cputime_adjusted() outside of lock_task_sighand()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hugetlbfs/inode.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ kernel/sys.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index c3e9fa7ce75f7..bf3cda4989623 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -135,6 +135,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	loff_t len, vma_len;
- 	int ret;
- 	struct hstate *h = hstate_file(file);
-+	vm_flags_t vm_flags;
+diff --git a/kernel/sys.c b/kernel/sys.c
+index bff14910b9262..8a53d858d7375 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1737,6 +1737,7 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	unsigned long flags;
+ 	u64 tgutime, tgstime, utime, stime;
+ 	unsigned long maxrss = 0;
++	struct signal_struct *sig = p->signal;
  
- 	/*
- 	 * vma address alignment (but not the pgoff alignment) has
-@@ -176,10 +177,20 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	file_accessed(file);
- 
- 	ret = -ENOMEM;
-+
-+	vm_flags = vma->vm_flags;
-+	/*
-+	 * for SHM_HUGETLB, the pages are reserved in the shmget() call so skip
-+	 * reserving here. Note: only for SHM hugetlbfs file, the inode
-+	 * flag S_PRIVATE is set.
-+	 */
-+	if (inode->i_flags & S_PRIVATE)
-+		vm_flags |= VM_NORESERVE;
-+
- 	if (!hugetlb_reserve_pages(inode,
- 				vma->vm_pgoff >> huge_page_order(h),
- 				len >> huge_page_shift(h), vma,
--				vma->vm_flags))
-+				vm_flags))
+ 	memset((char *)r, 0, sizeof (*r));
+ 	utime = stime = 0;
+@@ -1744,7 +1745,7 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	if (who == RUSAGE_THREAD) {
+ 		task_cputime_adjusted(current, &utime, &stime);
+ 		accumulate_thread_rusage(p, r);
+-		maxrss = p->signal->maxrss;
++		maxrss = sig->maxrss;
  		goto out;
+ 	}
  
- 	ret = 0;
+@@ -1754,15 +1755,15 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	switch (who) {
+ 	case RUSAGE_BOTH:
+ 	case RUSAGE_CHILDREN:
+-		utime = p->signal->cutime;
+-		stime = p->signal->cstime;
+-		r->ru_nvcsw = p->signal->cnvcsw;
+-		r->ru_nivcsw = p->signal->cnivcsw;
+-		r->ru_minflt = p->signal->cmin_flt;
+-		r->ru_majflt = p->signal->cmaj_flt;
+-		r->ru_inblock = p->signal->cinblock;
+-		r->ru_oublock = p->signal->coublock;
+-		maxrss = p->signal->cmaxrss;
++		utime = sig->cutime;
++		stime = sig->cstime;
++		r->ru_nvcsw = sig->cnvcsw;
++		r->ru_nivcsw = sig->cnivcsw;
++		r->ru_minflt = sig->cmin_flt;
++		r->ru_majflt = sig->cmaj_flt;
++		r->ru_inblock = sig->cinblock;
++		r->ru_oublock = sig->coublock;
++		maxrss = sig->cmaxrss;
+ 
+ 		if (who == RUSAGE_CHILDREN)
+ 			break;
+@@ -1772,14 +1773,14 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+ 		utime += tgutime;
+ 		stime += tgstime;
+-		r->ru_nvcsw += p->signal->nvcsw;
+-		r->ru_nivcsw += p->signal->nivcsw;
+-		r->ru_minflt += p->signal->min_flt;
+-		r->ru_majflt += p->signal->maj_flt;
+-		r->ru_inblock += p->signal->inblock;
+-		r->ru_oublock += p->signal->oublock;
+-		if (maxrss < p->signal->maxrss)
+-			maxrss = p->signal->maxrss;
++		r->ru_nvcsw += sig->nvcsw;
++		r->ru_nivcsw += sig->nivcsw;
++		r->ru_minflt += sig->min_flt;
++		r->ru_majflt += sig->maj_flt;
++		r->ru_inblock += sig->inblock;
++		r->ru_oublock += sig->oublock;
++		if (maxrss < sig->maxrss)
++			maxrss = sig->maxrss;
+ 		t = p;
+ 		do {
+ 			accumulate_thread_rusage(t, r);
 -- 
 2.43.0
 
