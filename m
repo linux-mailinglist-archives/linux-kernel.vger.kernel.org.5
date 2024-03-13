@@ -1,132 +1,152 @@
-Return-Path: <linux-kernel+bounces-101548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC72B87A894
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:39:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7577987A893
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:39:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E8EBB22085
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:39:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC62C1F24873
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E694437D;
-	Wed, 13 Mar 2024 13:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527BD41757;
+	Wed, 13 Mar 2024 13:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYgcaqBQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UGZkqgQj"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185CD4087C
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DB740BE1;
+	Wed, 13 Mar 2024 13:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710337164; cv=none; b=l/q5Y7q90R5lwOmX7zxGIQIoxkupS/s5tYx1CykQjQ2yY/lZfKzHPbMwsUJkYXA+SyQ0kCFPw7QiOoTlcpnCB48iux8kjq8ZoULyHe0gO0qWyzjvqEI0qaNG+1F1M3tXHf8Ey3nHOKwP/4qEfHbHG/AoYNuWedZA2Mex6tbCeaw=
+	t=1710337158; cv=none; b=VqcnjVk4QqPM1j4rCQ6XdLmNTvIcGfOmopIgnL97DxqU3U7NCUsfA+E/CcDTJh3+96rqk/yCjJtRF+SwrcPOX/iuIf1ipVz7UX89RERLW5B6jKlJWueJ7Zw2Qax436TJWsTtbl0wVv92rOpcv/z/YZYvx5Ov8AO7nEhryH1Vtbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710337164; c=relaxed/simple;
-	bh=Xhj8PeGA+xn3RlIFxAyzyjj2VoYDNowf7/GzR0mzkcI=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=tylBnWUucYyJJyuGLai+Qwee8svm7YpVhBziAyof5CKsO5V97JIY7/5AkfGbwJnuqLevBDKatCDFPYtntFpl5RqEwg9mKHVzT0wmRDhlCgOHCbk73bwMMJQKGodVcDEa08Ch+Wp3pZS+G5ObtuN1YsIDE4xNDGT3FSe+jCYLQbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GYgcaqBQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 669B3C43399;
-	Wed, 13 Mar 2024 13:39:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710337163;
-	bh=Xhj8PeGA+xn3RlIFxAyzyjj2VoYDNowf7/GzR0mzkcI=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=GYgcaqBQ3otWLI05Cxd8FbyYoePrktfKd0g+YxsNPY8VT57VOLfFEKRereujisEul
-	 AdsarZigeT6DDq7KWx5jHtIgG1460AeYRrDh7WkzrwtwaZm/oQkSwVRi008XilA+LN
-	 KZfdMOomVJlsXf2EOZ+gKhE1F3boucYUbnmGkEIPfyc9ckzcSPX+nt/JMoKw7uNwjz
-	 tJ/vllKjYHMRg5i4HoSkwgUuK6jGIxIHGzPz/bkzfXLhfEjDCjgX40MaANvWGGg+am
-	 IF1Q5N8t7BhRzJ3hgU1wIaNIVh26ZhhiUFILSRQ1NhsIRgHFYrtYsM7NSnbza1S8Rn
-	 TI0YVlIJA8UwA==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 50DC9120006A;
-	Wed, 13 Mar 2024 09:39:22 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 13 Mar 2024 09:39:22 -0400
-X-ME-Sender: <xms:iazxZVjjBTP9gjRDwv5yMgdIsEgM9WQpwY9IO0jM1PczrBFbytnxPw>
-    <xme:iazxZaD42DClgIDIfbfUopTidRGiisdd-avVz6omhLD_TcpZP61fMvTdk-zJE2T9i
-    LqShiEbJigYyzM4LNk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeehgdehgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvddttdffjeefgeeggfelfefggefhheeffefftefggfelgeduveevtefh
-    feejveeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:iazxZVH0oaZVp7GUugBinV1Qq5kQ5vD1wHyw-0dVDA0sRu-TzT3tFw>
-    <xmx:iazxZaQ4BTI4BBQPJTJp3WaNB36yjaBtIo9kiZuifrtf0xtuSbyGdw>
-    <xmx:iazxZSw6kKhhTEAu4420A52rgPsP3NZYuzFxWyAxBhT5YN_Eg2ZROQ>
-    <xmx:iazxZQ7pIqN8hcyrOrVE-Ittl22kGRrJ6sf5_OH_Uhxs-mgSpconcg>
-    <xmx:iqzxZdzq8bPaYCo2DJXhNoanwZ55mrNjLQQAU8JBrEmFYgf330-HfR7DFgk>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 47790B6008D; Wed, 13 Mar 2024 09:39:21 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710337158; c=relaxed/simple;
+	bh=vK73uYI8Vxy7OroeXl4DurknrQfBeM/0gM/pIFpXnz0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=U4GYLkZRquokEnCedUmaIKHDyvinkIR9k/Q4EyEmKly3dbDW9YPpUAx/mi50XvxeFaGsCx1dSNKBS6gtpxwPB7lwnaAmLMfvUFuX+ODzr0tOr0zmurMLwNz7J0af1RC2FiB1r5CNYm6/VS1QB4OFoC0a04cPzFJq1kv3DnbVOlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UGZkqgQj; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 13F651BF203;
+	Wed, 13 Mar 2024 13:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710337147;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=0Bicd0MobasMR69S0J0ZR+LESgqwadmjj5jzewTxOFc=;
+	b=UGZkqgQjBuQWRDSbsBJcj9tSbHmSSMqrrXGdSrV1lJakRo5Nw8r0HtMpq9VOIlFDARoY5d
+	dPuT/HoGEHXHC1tC6sRTUELctEwG0Od+JbwVkc3EdpaG0ol0SagF/UP3P8cbuPoN5lCyZ9
+	P2YjyZDketjsISPfMJdH8Y6cDdnQyW4TvZgYVVADEVGawQqxRe1bRJPRBto54I2mmTEy+f
+	f7WDHvLk5Uq2oh7mb+EJR33edrVrw0IZl+K0AiK7meN7l4x69/MDePS93fjCb7drmFy9ko
+	LG2Bxjd//mzqO5+Htz9zggoDh+u+jSvWvqCutClznq5K1eNelgTVjoTJ/1tUKw==
+Message-ID: <21ec269340a83f436bbf7a23a2be4289c88b70dd.camel@bootlin.com>
+Subject: Re: [PATCH net v3] net: macb: remove change_mtu callback
+From: Thomas Perrot <thomas.perrot@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>, "David S . Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org,  linux-kernel@vger.kernel.org
+Date: Wed, 13 Mar 2024 14:39:05 +0100
+In-Reply-To: <20240311161727.629c0bab@kernel.org>
+References: <20240311154315.2575297-1-thomas.perrot@bootlin.com>
+	 <20240311161727.629c0bab@kernel.org>
+Autocrypt: addr=thomas.perrot@bootlin.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-ejHT/lGTQBdmCNEHSl5Q"
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <21cd0f32-c94b-4b2b-8fa6-ebe12756b0c4@app.fastmail.com>
-In-Reply-To: <610231c3-c3ee-e543-1a8a-8e1098ee6a7c@huawei.com>
-References: <20240313084707.3292300-1-arnd@kernel.org>
- <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
- <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
- <1a12c8ed-0cb5-5650-24a2-84b021c444c3@huawei.com>
- <b08aaae4-8c69-47eb-9658-5f3f5c8e4056@app.fastmail.com>
- <610231c3-c3ee-e543-1a8a-8e1098ee6a7c@huawei.com>
-Date: Wed, 13 Mar 2024 14:39:01 +0100
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Zhihao Cheng" <chengzhihao1@huawei.com>, "Arnd Bergmann" <arnd@arndb.de>,
- "Richard Weinberger" <richard@nod.at>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Daniel Golle" <daniel@makrotopia.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
-Content-Type: text/plain;charset=utf-8
+X-GND-Sasl: thomas.perrot@bootlin.com
+
+
+--=-ejHT/lGTQBdmCNEHSl5Q
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 13, 2024, at 14:29, Zhihao Cheng wrote:
-> =E5=9C=A8 2024/3/13 20:21, Arnd Bergmann =E5=86=99=E9=81=93:
->> On Wed, Mar 13, 2024, at 13:10, Zhihao Cheng wrote:
->>> =E5=9C=A8 2024/3/13 19:53, Arnd Bergmann =E5=86=99=E9=81=93:
->>>> On Wed, Mar 13, 2024, at 12:29, Zhihao Cheng wrote:
->>>>
->>>> The way it usually goes is that someone adds an open-coded
->>>> 64-bit division that causes a link failure, which prompts
->>> I'm a little confused, what kind of link failure? Could you show an =
-example?
->>=20
->> The open-coded 64-bit division without using do_div() shows up as
->>=20
->> x86_64-linux-ld: drivers/mtd/ubi/nvmem.o: in function `ubi_nvmem_reg_=
-read':
->> nvmem.c:(.text+0x10a): undefined reference to `__umoddi3'
->> x86_64-linux-ld: nvmem.c:(.text+0x11f): undefined reference to `__udi=
-vdi3'
->> x86_64-linux-ld: drivers/mtd/ubi/nvmem.o: in function `ubi_nvmem_reg_=
-read.cold':
->> nvmem.c:(.text.unlikely+0x2d): undefined reference to `__umoddi3'
->>  > The idea is that gcc expects __umoddi3 to be provided by libgcc,
->> but Linux intentionally leaves it out in order to catch accidental
->> 64-bit divisions.
->>=20
->
-> Thanks for explaination, which means that do_div is used for 64-bit=20
-> division to solve the link failure caused by missed libgcc. Since=20
-> parameter 'from' is u32, there is no need to invoke do_div on a 32-bit=20
-> platform, you just want to stop the wasting behavior on a 32-bit=20
-> platform. Do I understand right?
+Hello,
 
-Yes, correct.
+On Mon, 2024-03-11 at 16:17 -0700, Jakub Kicinski wrote:
+> On Mon, 11 Mar 2024 16:43:15 +0100 thomas.perrot@bootlin.com=C2=A0wrote:
+> > Because it doesn't allow MTU changes when the interface is up,
+> > although
+> > it is not necessary.
+> >=20
+> > This callback has been added to add in a first implementation of
+> > the Jumbo
+> > support [1],since it has been reworked and moved to the probe [2].
+> >=20
+> > With this patch the core will set the MTU, regardless of if the
+> > interface
+> > is up or not.
+> >=20
+> > [1] commit a5898ea09aad ("net: macb: Add change_mtu callback with
+> > =C2=A0=C2=A0=C2=A0 jumbo support")
+> > [2] commit 44770e1180de ("ethernet: use core min/max MTU checking")
+> >=20
+> > Fixes: 44770e1180de ("ethernet: use core min/max MTU checking")
+>=20
+> static void macb_init_rx_buffer_size(struct macb *bp, size_t size)
+> {
+> 	if (!macb_is_gem(bp)) {
+> 		bp->rx_buffer_size =3D MACB_RX_BUFFER_SIZE;
+> 	} else {
+> 		bp->rx_buffer_size =3D size;
+>=20
+> where size is:
+>=20
+> 	size_t bufsz =3D dev->mtu + ETH_HLEN + ETH_FCS_LEN +
+> NET_IP_ALIGN;
+>=20
+> I guess you tested this on a platform where !macb_is_gem(bp) ?
 
-      Arnd
+Thank you for your review, indeed that won=E2=80=99t be correct on GEM in w=
+hen
+the MTU used to initialize the RX buffer is lower than the new MTU.
+
+So, I will suggest another patch with an acceptable solution.
+
+Kind regards,
+Thomas Perrot
+
+> Otherwise the buffer size seems to be based on MTU and the proposed
+> change won't be correct.
+
+--=20
+Thomas Perrot, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+
+--=-ejHT/lGTQBdmCNEHSl5Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCAAdFiEEh0B3xqajCiMDqBIhn8ALBXH+Cu0FAmXxrHkACgkQn8ALBXH+
+Cu0e2wv6A0yb8620vWwKOceSKAQ9PGXx6VVDpiEBk1S7Ga6L1FXgL6bYeXleE/t4
+MhfEXjGpeQEjIgCc0UPtWs3il9LsWiGla6sAJAs9wNCcckQiOkHUFPJdA/jM5OM3
++03DqH3ybJ0prSZYKPmwiDp/I7UivzsIY/TtY8wLabeyV7kSZTVNWRrxUB0Eo2ST
+zo156o/RINOH1uyo/M6v+3au3gpaag+mUUr9YTumTTMwusEo/sbVDaBnCrRIjz+r
+xSKdSyKnbvLoHp5ImCCBtWXAV4boNVrbKImnX/U056YYqgcMe9Fi+Uik0F7HZWgV
+m4ePL0F1X+eqcgET017IYuWhgMoZZe7hRSaRojJZiu4bLt/DGcaa/mAzyrA+Ry7r
+u+veh3PNbG9StWGhcDJ91TlOkEtVemFwoEaGfLAYbyjOxdZnCbKLDRJtzFQ79vyt
+VB3AKmtfvCNosRtOqOdYfCiJdK1tmzTJeUROYaphdJ7KvhRG4+qbpr0gEo9F2D9c
+RYDgFzPj
+=8JL7
+-----END PGP SIGNATURE-----
+
+--=-ejHT/lGTQBdmCNEHSl5Q--
 
