@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-101404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39BE87A6AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D260087A6B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FE061F22819
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:07:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 612FC1F231C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1AE33FB09;
-	Wed, 13 Mar 2024 11:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2059B4645B;
+	Wed, 13 Mar 2024 11:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="QpGPgSSu"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="0A3yRXY1"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520C03EA88
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754693F9C2
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710327967; cv=none; b=FqzcEwredXA+wyzvgpFx+O/Fvn84HbNOmIn1HyPKL4ScKfJ1WCXaHLBMf9NrWuY1KIPlxXyViNpFQneQPKFdiki6BVKkF6t+qmwOy0gJ7sf7mgV7DL33bZcemortN0JdS6bnL55Vls5klD93ZKCUQ5NtR3UlyBLWlblPwSeLmJM=
+	t=1710327970; cv=none; b=mTVXMLgo6Y+R1N03kM4q+wjQHDUM8fz5Dkk9LKY+Yl+OlbTFOZfcn+9z/1E1zESXOomUYX9hzqjK9zx0v4R5+pdlj0+IOB+ZSjXxzGNyNV96+lyUjz6sFmlbn/w9qIMXgRvYkhbPMk8Dn4rz58+5Rhi9RWOWPJCFUgSg1wHfRYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710327967; c=relaxed/simple;
-	bh=0nWQWFCl6B4xYKkDm97E2SVl9EyjGoZdLZ86Sb/jU9k=;
+	s=arc-20240116; t=1710327970; c=relaxed/simple;
+	bh=xjQCJb4J7tMhqbOJEMnpM+ZXei9HK+wmDq2+xus48ZQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cY6/BWlyu2A51p8bA6nOyhwT6MNTYp8auzT1IJpEb1C+YMdlT36ykeED9Gqh2pO9FMo8d4eO+f2WtYX/UFdrGOm0JM3vwt1hruCxV/Gf1wjQHcEQ+ovb9+AeDtDnqWoBgFhKfiFXGgHlCXLYKnyrLVTBcY7nbznNxb9ep9op2d8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=QpGPgSSu; arc=none smtp.client-ip=209.85.218.47
+	 MIME-Version; b=C/KQdwVsT+hpZGHubJjyAOG47kqTYc06L2gumMHsJWTGWxaXqK2Iabg/WLgYM2IgEvDUOlPrpCGb+w1LNIby2LKjxFy2zJD5IEpkfgwkEiq2hcIFOzcUX40VBtTur/rWnxbbYGfRw6/fLVjckCv3NUuy7xXXHV4YRkod++pBcWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=0A3yRXY1; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44665605f3so899997366b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 04:06:05 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a450615d1c4so130462266b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 04:06:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1710327964; x=1710932764; darn=vger.kernel.org;
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1710327966; x=1710932766; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g9bZI5MgzNqcWYjN2D6bG0PRoNDep28qrRC33Rpd138=;
-        b=QpGPgSSurQeAV00kBohfIDQQ/sRbcn65+FgAjpsiTxNjEekBpJMerxBs2t3phB2iwJ
-         KPkkqNlIK+ifJR+HcW+SqLy5RmnIwuy/B87lJ0e0pRYw+xsxG0Fv8/ucTq2YXBVu/pXG
-         0bb1k4K3/b88I9bCvm7GrrAEuz/jHnruh5RFztsAoRdsDgreIMZPKJ0pRid4a1jR/SDN
-         2hmavXdRUOHAq68FvSK4sgI1ZtM+lt/kgWQzbCaYlvKn/uXhlODQEtfCBkSHeBdF9S3q
-         rZaEJkcsswGeR1RuA1XOu76bMkzWyD5+fS0BKfY4IV9TRBqr24H3z89Ze97+c0xVKKUL
-         s0Eg==
+        bh=2I4BjeZBW5065VSFTPBsKa9SI4Ksu3+QBW/uFzCaABA=;
+        b=0A3yRXY1VMqCKvJ6Oe6xCSlecM4puPbyCfKKksLY9sMVEx29KhWIVrKAHBzgA7zsgy
+         sJ9CnvWD6+jnICpW+lhZRknTGK+z9TYQd+OzBM05W3957eg7KPMahmVpV6KgIVz6itU/
+         D25YRI54VRKFS8FIr+GsQpDK2hg7M68gxJm1Or6CMtSsXDeoOLT63CI1FxfP0VUoMvrb
+         RF+rd3IlgH7WQ5Lr/4g0oJMxuht8CQgbLYulzBcBu/M/DvtlIjEPD5CfVAhZiWqlbyBI
+         U7nGzWnq6eDsCx7hLhfuDSMuE47P3ztPLZIauGOpBGDA9BtlY+YbIBkYT/YKr/Cy1CHB
+         Elaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710327964; x=1710932764;
+        d=1e100.net; s=20230601; t=1710327966; x=1710932766;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g9bZI5MgzNqcWYjN2D6bG0PRoNDep28qrRC33Rpd138=;
-        b=GBDzoWxZyyIUl98+OHd6B1KXfc+XRSIE/ZAxxx+808MlRNXzz9K5I/WHyi41oDUylH
-         K4YUFzdRlEEhm2iM+rdAIimvcbeZf0g/LG4w0QpQL94KP9oSAIVSS2yj0wXoJ/t/i23l
-         tWtCNLh3ZUC/agzNt3ooxyWOkbfFiLxDtpw+XgOEOJC2WmOQmlx83USHUZbR91eVOIUN
-         bqAQPFeBwPxAK3kYJJSphj0TFb0NnLsdAqS1oeIoums0r8fpmrNY2SKOfgm5GaQkfQjD
-         s0PW5TnaWp1nfE4pf2BnozeLiGNKwhIqPf16V01p5UPXTMxhkl/LTt5u2Gxe6bt6o21Q
-         kUjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU6dy0YcXYe3Jq6jcuxD+/e0LtjyHuuLhI3qzePU/YB55oYtMs7OZnZKWSFQJpwk8GcCbi76xlHQ7gFgPClapFGh7aWijJsHYnjtAo3
-X-Gm-Message-State: AOJu0YyXhwOCKqESNC80Nuxs0u80WFvgxUSmTtlQQERAMFHdyCx7eAN9
-	VmUqhzeo7dOb15DoBMdDKynCoBgu2sJJyYlXNL2SLF4pFmM3NFVwmjlBfxTu/BQ=
-X-Google-Smtp-Source: AGHT+IGELi8A7Ge1QGtgoog0Js/kx4/CnhNpUUdBbM6NEhHLHoRBcFT6jXqrv9OjTLpIoqQcdAlmcQ==
-X-Received: by 2002:a17:907:d049:b0:a43:f587:d427 with SMTP id vb9-20020a170907d04900b00a43f587d427mr9420734ejc.34.1710327963467;
-        Wed, 13 Mar 2024 04:06:03 -0700 (PDT)
+        bh=2I4BjeZBW5065VSFTPBsKa9SI4Ksu3+QBW/uFzCaABA=;
+        b=iHexoju3b6czQ/NSpyzKeTk5KRYa09tg95QQHP5S8nXoVVgjVpbHQedOBT5mukgXd2
+         HPRx9AfPWyiObXUTnhrBA848RvuR+W24DOD02bb8uIMxSo1aVyvAAEYfD+74TonVoCqW
+         FVPhZEePhkj3PhawRbPSVJeX1nJBzOdNGfAS2vXHRxBcpRiCiZgO2w3RNBqqgNtBXbWh
+         +cohOMKfxPxzmE8doRAeZ6k8sVNjkXa5iCbXYkdDAiPR3RkwqrMWv1pLwH8XBRnQdJjU
+         RO5VYDwLTzPfOE+AZ1q2KMpvvI2KxUsi5OrIc+cPx4XZnWn1v+0TNlBSQaJQ0aNlgDdI
+         y7Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCXrT/5QiVFMyqjzqTXTWS7Xau9GnX4OogNA6lMBoC4rD7N8lwgdNHdePfow8mjI2AHgiM7MY2TKwo8uftgY69DUM44QJNG4mHjBkZ9q
+X-Gm-Message-State: AOJu0Yx4bOrLnmNi/AE9dcu5UNqKWckU3yq9aJk2eb9mf2NPhdJ19ISw
+	54+vT60aOBgR8eL5EC5Sov4DyJWg8e3VOuF29NU7Vihg/TsjiVq2iUD4z1rAqeM=
+X-Google-Smtp-Source: AGHT+IGOchPTEwVc1NP+20OHE3woXNtq7ZGAK95XOq6o/e/XnJ5OU4vtDQ9GpW7fyFG0Xs6V3WYxGw==
+X-Received: by 2002:a17:906:54c2:b0:a44:52ec:b9e7 with SMTP id c2-20020a17090654c200b00a4452ecb9e7mr1771157ejp.16.1710327965737;
+        Wed, 13 Mar 2024 04:06:05 -0700 (PDT)
 Received: from localhost ([79.142.230.34])
-        by smtp.gmail.com with ESMTPSA id o18-20020a17090608d200b00a461f6da4e3sm3367049eje.94.2024.03.13.04.06.02
+        by smtp.gmail.com with ESMTPSA id jw22-20020a170906e95600b00a4623030893sm3173785ejb.126.2024.03.13.04.06.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 04:06:03 -0700 (PDT)
+        Wed, 13 Mar 2024 04:06:05 -0700 (PDT)
 From: Andreas Hindborg <nmi@metaspace.dk>
 To: Jens Axboe <axboe@kernel.dk>,
 	Christoph Hellwig <hch@lst.de>,
@@ -97,9 +97,9 @@ Cc: Andreas Hindborg <a.hindborg@samsung.com>,
 	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
 	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
 	"gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: [RFC PATCH 3/5] rust: block: allow `hrtimer::Timer` in `RequestData`
-Date: Wed, 13 Mar 2024 12:05:10 +0100
-Message-ID: <20240313110515.70088-4-nmi@metaspace.dk>
+Subject: [RFC PATCH 4/5] rust: block: add rnull, Rust null_blk implementation
+Date: Wed, 13 Mar 2024 12:05:11 +0100
+Message-ID: <20240313110515.70088-5-nmi@metaspace.dk>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240313110515.70088-1-nmi@metaspace.dk>
 References: <20240313110515.70088-1-nmi@metaspace.dk>
@@ -115,100 +115,397 @@ From: Andreas Hindborg <a.hindborg@samsung.com>
 
 Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
 ---
- rust/kernel/block/mq/request.rs | 67 ++++++++++++++++++++++++++++++++-
- 1 file changed, 66 insertions(+), 1 deletion(-)
+ drivers/block/Kconfig  |   4 +
+ drivers/block/Makefile |   3 +
+ drivers/block/rnull.rs | 323 +++++++++++++++++++++++++++++++++++++++++
+ rust/helpers.c         |   1 +
+ scripts/Makefile.build |   2 +-
+ 5 files changed, 332 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/block/rnull.rs
 
-diff --git a/rust/kernel/block/mq/request.rs b/rust/kernel/block/mq/request.rs
-index cccffde45981..8b7f08f894be 100644
---- a/rust/kernel/block/mq/request.rs
-+++ b/rust/kernel/block/mq/request.rs
-@@ -4,13 +4,16 @@
- //!
- //! C header: [`include/linux/blk-mq.h`](srctree/include/linux/blk-mq.h)
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index 5b9d4aaebb81..fb877d4f8ddf 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -354,6 +354,10 @@ config VIRTIO_BLK
+ 	  This is the virtual block driver for virtio.  It can be used with
+           QEMU based VMMs (like KVM or Xen).  Say Y or M.
  
-+use kernel::hrtimer::RawTimer;
++config BLK_DEV_RUST_NULL
++	tristate "Rust null block driver"
++	depends on RUST
 +
- use crate::{
-     bindings,
-     block::mq::Operations,
-     error::{Error, Result},
-+    hrtimer::{HasTimer, TimerCallback},
-     types::{ARef, AlwaysRefCounted, Opaque},
- };
--use core::{ffi::c_void, marker::PhantomData, ops::Deref};
-+use core::{ffi::c_void, marker::PhantomData, ops::Deref, ptr::NonNull};
+ config BLK_DEV_RBD
+ 	tristate "Rados block device (RBD)"
+ 	depends on INET && BLOCK
+diff --git a/drivers/block/Makefile b/drivers/block/Makefile
+index 101612cba303..1105a2d4fdcb 100644
+--- a/drivers/block/Makefile
++++ b/drivers/block/Makefile
+@@ -9,6 +9,9 @@
+ # needed for trace events
+ ccflags-y				+= -I$(src)
  
- use crate::block::bio::Bio;
- use crate::block::bio::BioIterator;
-@@ -175,6 +178,68 @@ fn deref(&self) -> &Self::Target {
-     }
- }
- 
-+impl<T> RawTimer for RequestDataRef<T>
-+where
-+    T: Operations,
-+    T::RequestData: HasTimer<T::RequestData>,
-+    T::RequestData: Sync,
-+{
-+    fn schedule(self, expires: u64) {
-+        let self_ptr = self.deref() as *const T::RequestData;
-+        core::mem::forget(self);
++obj-$(CONFIG_BLK_DEV_RUST_NULL) += rnull_mod.o
++rnull_mod-y := rnull.o
 +
-+        // SAFETY: `self_ptr` is a valid pointer to a `T::RequestData`
-+        let timer_ptr = unsafe { T::RequestData::raw_get_timer(self_ptr) };
+ obj-$(CONFIG_MAC_FLOPPY)	+= swim3.o
+ obj-$(CONFIG_BLK_DEV_SWIM)	+= swim_mod.o
+ obj-$(CONFIG_BLK_DEV_FD)	+= floppy.o
+diff --git a/drivers/block/rnull.rs b/drivers/block/rnull.rs
+new file mode 100644
+index 000000000000..05fef30e910c
+--- /dev/null
++++ b/drivers/block/rnull.rs
+@@ -0,0 +1,323 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+        // `Timer` is `repr(transparent)`
-+        let c_timer_ptr = timer_ptr.cast::<bindings::hrtimer>();
++//! This is a Rust implementation of the C null block driver.
++//!
++//! Supported features:
++//!
++//! - optional memory backing
++//! - blk-mq interface
++//! - direct completion
++//! - softirq completion
++//! - timer completion
++//!
++//! The driver is configured at module load time by parameters
++//! `param_memory_backed`, `param_capacity_mib`, `param_irq_mode` and
++//! `param_completion_time_nsec!.
 +
-+        // Schedule the timer - if it is already scheduled it is removed and
-+        // inserted
++use core::ops::Deref;
 +
-+        // SAFETY: c_timer_ptr points to a valid hrtimer instance that was
-+        // initialized by `hrtimer_init`
-+        unsafe {
-+            bindings::hrtimer_start_range_ns(
-+                c_timer_ptr as *mut _,
-+                expires as i64,
-+                0,
-+                bindings::hrtimer_mode_HRTIMER_MODE_REL,
-+            );
++use kernel::{
++    bindings,
++    block::{
++        bio::Segment,
++        mq::{self, GenDisk, Operations, RequestDataRef, TagSet},
++    },
++    error::Result,
++    folio::*,
++    hrtimer::{RawTimer, TimerCallback},
++    new_mutex, pr_info,
++    prelude::*,
++    sync::{Arc, Mutex},
++    types::{ARef, ForeignOwnable},
++    xarray::XArray,
++};
++
++use kernel::new_spinlock;
++use kernel::CacheAligned;
++use kernel::sync::SpinLock;
++
++module! {
++    type: NullBlkModule,
++    name: "rnull_mod",
++    author: "Andreas Hindborg",
++    license: "GPL v2",
++    params: {
++        param_memory_backed: bool {
++            default: true,
++            permissions: 0,
++            description: "Use memory backing",
++        },
++        // Problems with pin_init when `irq_mode`
++        param_irq_mode: u8 {
++            default: 0,
++            permissions: 0,
++            description: "IRQ Mode (0: None, 1: Soft, 2: Timer)",
++        },
++        param_capacity_mib: u64 {
++            default: 4096,
++            permissions: 0,
++            description: "Device capacity in MiB",
++        },
++        param_completion_time_nsec: u64 {
++            default: 1_000_000,
++            permissions: 0,
++            description: "Completion time in nano seconds for timer mode",
++        },
++        param_block_size: u16 {
++            default: 4096,
++            permissions: 0,
++            description: "Block size in bytes",
++        },
++    },
++}
++
++#[derive(Debug)]
++enum IRQMode {
++    None,
++    Soft,
++    Timer,
++}
++
++impl TryFrom<u8> for IRQMode {
++    type Error = kernel::error::Error;
++
++    fn try_from(value: u8) -> Result<Self> {
++        match value {
++            0 => Ok(Self::None),
++            1 => Ok(Self::Soft),
++            2 => Ok(Self::Timer),
++            _ => Err(kernel::error::code::EINVAL),
 +        }
 +    }
 +}
 +
-+impl<T> kernel::hrtimer::RawTimerCallback for RequestDataRef<T>
-+where
-+    T: Operations,
-+    T: Sync,
-+    T::RequestData: HasTimer<T::RequestData>,
-+    T::RequestData: TimerCallback<Receiver = Self>,
-+{
-+    unsafe extern "C" fn run(ptr: *mut bindings::hrtimer) -> bindings::hrtimer_restart {
-+        // `Timer` is `repr(transparent)`
-+        let timer_ptr = ptr.cast::<kernel::hrtimer::Timer<T::RequestData>>();
++struct NullBlkModule {
++    _disk: Pin<Box<Mutex<GenDisk<NullBlkDevice>>>>,
++}
 +
-+        // SAFETY: By C API contract `ptr` is the pointer we passed when
-+        // enqueing the timer, so it is a `Timer<T::RequestData>` embedded in a `T::RequestData`
-+        let receiver_ptr = unsafe { T::RequestData::timer_container_of(timer_ptr) };
++fn add_disk(tagset: Arc<TagSet<NullBlkDevice>>) -> Result<GenDisk<NullBlkDevice>> {
++    let block_size = *param_block_size.read();
++    if block_size % 512 != 0 || !(512..=4096).contains(&block_size) {
++        return Err(kernel::error::code::EINVAL);
++    }
 +
-+        // SAFETY: The pointer was returned by `T::timer_container_of` so it
-+        // points to a valid `T::RequestData`
-+        let request_ptr = unsafe { bindings::blk_mq_rq_from_pdu(receiver_ptr.cast::<c_void>()) };
++    let irq_mode = (*param_irq_mode.read()).try_into()?;
 +
-+        // SAFETY: We own a refcount that we leaked during `RawTimer::schedule()`
-+        let dref = RequestDataRef::new(unsafe {
-+            ARef::from_raw(NonNull::new_unchecked(request_ptr.cast::<Request<T>>()))
-+        });
++    let queue_data = Box::pin_init(pin_init!(
++        QueueData {
++            tree <- TreeContainer::new(),
++            completion_time_nsec: *param_completion_time_nsec.read(),
++            irq_mode,
++            memory_backed: *param_memory_backed.read(),
++            block_size,
++        }
++    ))?;
 +
-+        T::RequestData::run(dref);
++    let block_size = queue_data.block_size;
 +
-+        bindings::hrtimer_restart_HRTIMER_NORESTART
++    let mut disk = GenDisk::try_new(tagset, queue_data)?;
++    disk.set_name(format_args!("rnullb{}", 0))?;
++    disk.set_capacity_sectors(*param_capacity_mib.read() << 11);
++    disk.set_queue_logical_block_size(block_size.into());
++    disk.set_queue_physical_block_size(block_size.into());
++    disk.set_rotational(false);
++    Ok(disk)
++}
++
++impl kernel::Module for NullBlkModule {
++    fn init(_module: &'static ThisModule) -> Result<Self> {
++        pr_info!("Rust null_blk loaded\n");
++        let tagset = Arc::pin_init(TagSet::try_new(1, (), 256, 1))?;
++        let disk = Box::pin_init(new_mutex!(add_disk(tagset)?, "nullb:disk"))?;
++
++        disk.lock().add()?;
++
++        Ok(Self { _disk: disk })
 +    }
 +}
 +
- // SAFETY: All instances of `Request<T>` are reference counted. This
- // implementation of `AlwaysRefCounted` ensure that increments to the ref count
- // keeps the object alive in memory at least until a matching reference count
++impl Drop for NullBlkModule {
++    fn drop(&mut self) {
++        pr_info!("Dropping rnullb\n");
++    }
++}
++
++struct NullBlkDevice;
++
++type Tree = XArray<Box<UniqueFolio>>;
++type TreeRef<'a> = &'a Tree;
++
++#[pin_data]
++struct TreeContainer {
++    // `XArray` is safe to use without a lock, as it applies internal locking.
++    // However, there are two reasons to use an external lock: a) cache line
++    // contention and b) we don't want to take the lock for each page we
++    // process.
++    //
++    // A: The `XArray` lock (xa_lock) is located on the same cache line as the
++    // xarray data pointer (xa_head). The effect of this arrangement is that
++    // under heavy contention, we often get a cache miss when we try to follow
++    // the data pointer after acquiring the lock. We would rather have consumers
++    // spinning on another lock, so we do not get a miss on xa_head. This issue
++    // can potentially be fixed by padding the C `struct xarray`.
++    //
++    // B: The current `XArray` Rust API requires that we take the `xa_lock` for
++    // each `XArray` operation. This is very inefficient when the lock is
++    // contended and we have many operations to perform. Eventually we should
++    // update the `XArray` API to allow multiple tree operations under a single
++    // lock acquisition. For now, serialize tree access with an external lock.
++    #[pin]
++    tree: CacheAligned<Tree>,
++    #[pin]
++    lock: CacheAligned<SpinLock<()>>,
++}
++
++impl TreeContainer {
++    fn new() -> impl PinInit<Self> {
++        pin_init!(TreeContainer {
++            tree <- CacheAligned::new_initializer(XArray::new(0)),
++            lock <- CacheAligned::new_initializer(new_spinlock!((), "rnullb:mem")),
++        })
++    }
++}
++
++#[pin_data]
++struct QueueData {
++    #[pin]
++    tree: TreeContainer,
++    completion_time_nsec: u64,
++    irq_mode: IRQMode,
++    memory_backed: bool,
++    block_size: u16,
++}
++
++impl NullBlkDevice {
++    #[inline(always)]
++    fn write(tree: TreeRef<'_>, sector: usize, segment: &Segment<'_>) -> Result {
++        let idx = sector >> bindings::PAGE_SECTORS_SHIFT;
++
++        let mut folio = if let Some(page) = tree.get_locked(idx) {
++            page
++        } else {
++            tree.set(idx, Box::try_new(Folio::try_new(0)?)?)?;
++            tree.get_locked(idx).unwrap()
++        };
++
++        segment.copy_to_folio(&mut folio)?;
++
++        Ok(())
++    }
++
++    #[inline(always)]
++    fn read(tree: TreeRef<'_>, sector: usize, segment: &mut Segment<'_>) -> Result {
++        let idx = sector >> bindings::PAGE_SECTORS_SHIFT;
++
++        if let Some(folio) = tree.get_locked(idx) {
++            segment.copy_from_folio(folio.deref())?;
++        }
++
++        Ok(())
++    }
++
++    #[inline(never)]
++    fn transfer(
++        command: bindings::req_op,
++        tree: TreeRef<'_>,
++        sector: usize,
++        segment: &mut Segment<'_>,
++    ) -> Result {
++        match command {
++            bindings::req_op_REQ_OP_WRITE => Self::write(tree, sector, segment)?,
++            bindings::req_op_REQ_OP_READ => Self::read(tree, sector, segment)?,
++            _ => (),
++        }
++        Ok(())
++    }
++}
++
++#[pin_data]
++struct Pdu {
++    #[pin]
++    timer: kernel::hrtimer::Timer<Self>,
++}
++
++impl TimerCallback for Pdu {
++    type Receiver = RequestDataRef<NullBlkDevice>;
++
++    fn run(this: Self::Receiver) {
++        this.request().end_ok();
++    }
++}
++
++kernel::impl_has_timer! {
++    impl HasTimer<Self> for Pdu { self.timer }
++}
++
++#[vtable]
++impl Operations for NullBlkDevice {
++    type RequestData = Pdu;
++    type RequestDataInit = impl PinInit<Pdu>;
++    type QueueData = Pin<Box<QueueData>>;
++    type HwData = ();
++    type TagSetData = ();
++
++    fn new_request_data(
++        _tagset_data: <Self::TagSetData as ForeignOwnable>::Borrowed<'_>,
++    ) -> Self::RequestDataInit {
++        pin_init!( Pdu {
++            timer <- kernel::hrtimer::Timer::new(),
++        })
++    }
++
++    #[inline(always)]
++    fn queue_rq(
++        _hw_data: (),
++        queue_data: &QueueData,
++        rq: ARef<mq::Request<Self>>,
++        _is_last: bool,
++    ) -> Result {
++        rq.start();
++        if queue_data.memory_backed {
++            let guard = queue_data.tree.lock.lock();
++            let tree = queue_data.tree.tree.deref();
++
++            let mut sector = rq.sector();
++            for bio in rq.bio_iter() {
++                for mut segment in bio.segment_iter() {
++                    Self::transfer(rq.command(), tree, sector, &mut segment)?;
++                    sector += segment.len() >> bindings::SECTOR_SHIFT;
++                }
++            }
++
++            drop(guard);
++        }
++
++
++        match queue_data.irq_mode {
++            IRQMode::None => rq.end_ok(),
++            IRQMode::Soft => rq.complete(),
++            IRQMode::Timer => {
++                mq::Request::owned_data_ref(rq).schedule(queue_data.completion_time_nsec)
++            }
++        }
++
++        Ok(())
++    }
++
++    fn commit_rqs(
++        _hw_data: <Self::HwData as ForeignOwnable>::Borrowed<'_>,
++        _queue_data: <Self::QueueData as ForeignOwnable>::Borrowed<'_>,
++    ) {
++    }
++
++    fn complete(rq: &mq::Request<Self>) {
++        rq.end_ok();
++    }
++
++    fn init_hctx(
++        _tagset_data: <Self::TagSetData as ForeignOwnable>::Borrowed<'_>,
++        _hctx_idx: u32,
++    ) -> Result<Self::HwData> {
++        Ok(())
++    }
++}
+diff --git a/rust/helpers.c b/rust/helpers.c
+index 017fa90366e6..9c8976629e90 100644
+--- a/rust/helpers.c
++++ b/rust/helpers.c
+@@ -200,6 +200,7 @@ struct page *rust_helper_folio_page(struct folio *folio, size_t n)
+ {
+ 	return folio_page(folio, n);
+ }
++EXPORT_SYMBOL_GPL(rust_helper_folio_page);
+ 
+ loff_t rust_helper_folio_pos(struct folio *folio)
+ {
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index dae447a1ad30..f64be2310010 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -262,7 +262,7 @@ $(obj)/%.lst: $(src)/%.c FORCE
+ # Compile Rust sources (.rs)
+ # ---------------------------------------------------------------------------
+ 
+-rust_allowed_features := new_uninit,offset_of
++rust_allowed_features := new_uninit,offset_of,allocator_api,impl_trait_in_assoc_type
+ 
+ # `--out-dir` is required to avoid temporaries being created by `rustc` in the
+ # current working directory, which may be not accessible in the out-of-tree
 -- 
 2.44.0
 
