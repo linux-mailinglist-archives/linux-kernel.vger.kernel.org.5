@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302B387ADB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:41:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 528D187ADB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:41:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF34F28235A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:41:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8E79B21B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C0E664A0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BF0664AD;
 	Wed, 13 Mar 2024 16:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TlYb+PHe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B1pGaa55"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774A565BC8;
-	Wed, 13 Mar 2024 16:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B115165BCD;
+	Wed, 13 Mar 2024 16:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348406; cv=none; b=iVs7Lbz98zeG36656OCGKba9vGGSbF5JDwRtCPsJzLI3ScX6ztt76I6NOZSKCCOkSZ7uIQElkPj2rmrstvhwwiINlIT5D3MBB2irz6VBxnO1bOo6ZNTeJywlYE4bAaxU9WOh2ZiFN3J4Tpi9FAu061hZ93Zk5SBGv2MJY6LaMf4=
+	t=1710348406; cv=none; b=MXjKDjKoRxIEBzIEz1ZuT3Kn5uL3p2866uLvGB4uzlgl4g8lMbmHg35PFaFbnH8gaWOskv7ba0OIR6WVfW+msPleP/tljBkjThsGsMrkSiH58rr2LaRxfADt9VqF9f5rXlaYWzlGVmBZW4O4LQvsn8GFBWYFzoSospz16wc/164=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710348406; c=relaxed/simple;
-	bh=BKKvaSPOJcIzN9AKZ4t/6eH1vXhiFpdAhQlKssnCZxE=;
+	bh=O9RtS8FWhtxlW5ztN8AWDTv8q6f95o+zJ5QEMBwRT6k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z71vep2EiVsb2kFwKSdmnxQ959oqpXzCKe6VgIn72JxMBOD9PSilPAXkpTQjGqWtdTj23XO5pN5p8erUSie6cF4ABMVOPsu+OeuekiWMpTLhoOvHuDKlCODbPp/C5bFkEq6vqE2dEb4Ur5g3vlkWUZ2xXmIejTe/7hGuopBEOBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TlYb+PHe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8573C43390;
-	Wed, 13 Mar 2024 16:46:44 +0000 (UTC)
+	 MIME-Version; b=VP/UCYx68zfgzGmdFzHe58bpLqoLBhvljBTBm9/gyexhad794fDO/UEjH2hsa3BxbvtHKq6phUvcgfiE9M44J0QNlzn0960UOO9dQsbuIWcjl1yv5ci2O3jIfdAWG75MLc+0gHNLcGhDpcnPCNRKSR1H6jUPb5rOVCho+ZRqQYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B1pGaa55; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6048C433F1;
+	Wed, 13 Mar 2024 16:46:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348405;
-	bh=BKKvaSPOJcIzN9AKZ4t/6eH1vXhiFpdAhQlKssnCZxE=;
+	s=k20201202; t=1710348406;
+	bh=O9RtS8FWhtxlW5ztN8AWDTv8q6f95o+zJ5QEMBwRT6k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TlYb+PHeSLuicUVvd7XTWy3OmSljCScnJzsnXrEK2nxMJQFltelnMC10e+Jy/z1pT
-	 8jxBXulUFOkayYx16mQLWtugj2bOQYUFyj8S1Jlb2a0o3yk8VY0QZRORHAUmnRAaPs
-	 rbHjJNI7Jk2KkmWimaOCFkyRYL58ixIGlnw3wRjr0vdErsdeMvP1vNqSAh48HF5mBw
-	 /izNYE4ggDMI46vUOQm/UYCCq7Ff0DzuIj+kxzbFo3bmk3twjoc/6veI5o8e35V1xB
-	 np1yHF/jRk+eCd/mRBQQijn3YNCaMdLEZ0tk6k3WFEFwGF5nKqhBZCCHLKA1eQkanT
-	 Nw8PxT9429TKQ==
+	b=B1pGaa55E+QqEwwrOten6Z7DkP7IgVn38NMbkEUx/7pSt+1GtAONCSUaD94wcl41w
+	 aW0/jexQIZ/IBNZTj5PcKwjYkHLQW3XKbkGGm00/uOLYRO8FFp72bX+puxO0V2QjM8
+	 dhMCsCNL6uvHC0kHk3GEf64I2/oDdHhToeq3APiIlDXe8tjoy2qMtHOrYaWwYeJNiA
+	 h9OL29QUw+ehSMpkp5IH2+CrmJbQn+2EU1DYF1Rbt0QwOqfCvNUEz+1PsPhsWS/KP/
+	 RMNmabn4rvYyDzIRVc/z7bMiuBau0a/8tE41dDpSO2AHaavbToSozvHo8A5ZWi4hmr
+	 uyWgKC+lvSJnQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe Kerello <christophe.kerello@foss.st.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
+Cc: John Efstathiades <john.efstathiades@pebblebay.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 02/73] mmc: mmci: stm32: fix DMA API overlapping mappings warning
-Date: Wed, 13 Mar 2024 12:45:29 -0400
-Message-ID: <20240313164640.616049-3-sashal@kernel.org>
+Subject: [PATCH 5.10 03/73] lan78xx: Fix white space and style issues
+Date: Wed, 13 Mar 2024 12:45:30 -0400
+Message-ID: <20240313164640.616049-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -68,109 +68,253 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe Kerello <christophe.kerello@foss.st.com>
+From: John Efstathiades <john.efstathiades@pebblebay.com>
 
-[ Upstream commit 6b1ba3f9040be5efc4396d86c9752cdc564730be ]
+[ Upstream commit 9ceec7d33adf9647293f24d2fd9a055b89c63864 ]
 
-Turning on CONFIG_DMA_API_DEBUG_SG results in the following warning:
+Fix white space and code style issues identified by checkpatch.
 
-DMA-API: mmci-pl18x 48220000.mmc: cacheline tracking EEXIST,
-overlapping mappings aren't supported
-WARNING: CPU: 1 PID: 51 at kernel/dma/debug.c:568
-add_dma_entry+0x234/0x2f4
-Modules linked in:
-CPU: 1 PID: 51 Comm: kworker/1:2 Not tainted 6.1.28 #1
-Hardware name: STMicroelectronics STM32MP257F-EV1 Evaluation Board (DT)
-Workqueue: events_freezable mmc_rescan
-Call trace:
-add_dma_entry+0x234/0x2f4
-debug_dma_map_sg+0x198/0x350
-__dma_map_sg_attrs+0xa0/0x110
-dma_map_sg_attrs+0x10/0x2c
-sdmmc_idma_prep_data+0x80/0xc0
-mmci_prep_data+0x38/0x84
-mmci_start_data+0x108/0x2dc
-mmci_request+0xe4/0x190
-__mmc_start_request+0x68/0x140
-mmc_start_request+0x94/0xc0
-mmc_wait_for_req+0x70/0x100
-mmc_send_tuning+0x108/0x1ac
-sdmmc_execute_tuning+0x14c/0x210
-mmc_execute_tuning+0x48/0xec
-mmc_sd_init_uhs_card.part.0+0x208/0x464
-mmc_sd_init_card+0x318/0x89c
-mmc_attach_sd+0xe4/0x180
-mmc_rescan+0x244/0x320
-
-DMA API debug brings to light leaking dma-mappings as dma_map_sg and
-dma_unmap_sg are not correctly balanced.
-
-If an error occurs in mmci_cmd_irq function, only mmci_dma_error
-function is called and as this API is not managed on stm32 variant,
-dma_unmap_sg is never called in this error path.
-
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Fixes: 46b723dd867d ("mmc: mmci: add stm32 sdmmc variant")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20240207143951.938144-1-christophe.kerello@foss.st.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: John Efstathiades <john.efstathiades@pebblebay.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Stable-dep-of: 1eecc7ab82c4 ("net: lan78xx: fix runtime PM count underflow on link stop")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mmci_stm32_sdmmc.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/net/usb/lan78xx.c | 80 ++++++++++++++++++++-------------------
+ 1 file changed, 42 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 11ae0cb479239..e3201a621870a 100644
---- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-+++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -200,6 +200,8 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
- 	struct scatterlist *sg;
- 	int i;
+diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
+index c5a666bb86ee4..00424f3375528 100644
+--- a/drivers/net/usb/lan78xx.c
++++ b/drivers/net/usb/lan78xx.c
+@@ -385,7 +385,7 @@ struct lan78xx_net {
+ 	struct usb_anchor	deferred;
  
-+	host->dma_in_progress = true;
-+
- 	if (!host->variant->dma_lli || data->sg_len == 1 ||
- 	    idma->use_bounce_buffer) {
- 		u32 dma_addr;
-@@ -238,9 +240,30 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
- 	return 0;
+ 	struct mutex		phy_mutex; /* for phy access */
+-	unsigned		pipe_in, pipe_out, pipe_intr;
++	unsigned int		pipe_in, pipe_out, pipe_intr;
+ 
+ 	u32			hard_mtu;	/* count any extra framing */
+ 	size_t			rx_urb_size;	/* size for rx urbs */
+@@ -395,7 +395,7 @@ struct lan78xx_net {
+ 	wait_queue_head_t	*wait;
+ 	unsigned char		suspend_count;
+ 
+-	unsigned		maxpacket;
++	unsigned int		maxpacket;
+ 	struct timer_list	delay;
+ 	struct timer_list	stat_monitor;
+ 
+@@ -504,7 +504,7 @@ static int lan78xx_read_stats(struct lan78xx_net *dev,
+ 	if (likely(ret >= 0)) {
+ 		src = (u32 *)stats;
+ 		dst = (u32 *)data;
+-		for (i = 0; i < sizeof(*stats)/sizeof(u32); i++) {
++		for (i = 0; i < sizeof(*stats) / sizeof(u32); i++) {
+ 			le32_to_cpus(&src[i]);
+ 			dst[i] = src[i];
+ 		}
+@@ -518,10 +518,11 @@ static int lan78xx_read_stats(struct lan78xx_net *dev,
+ 	return ret;
  }
  
-+static void sdmmc_idma_error(struct mmci_host *host)
-+{
-+	struct mmc_data *data = host->data;
-+	struct sdmmc_idma *idma = host->dma_priv;
-+
-+	if (!dma_inprogress(host))
-+		return;
-+
-+	writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
-+	host->dma_in_progress = false;
-+	data->host_cookie = 0;
-+
-+	if (!idma->use_bounce_buffer)
-+		dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
-+			     mmc_get_dma_dir(data));
-+}
-+
- static void sdmmc_idma_finalize(struct mmci_host *host, struct mmc_data *data)
- {
-+	if (!dma_inprogress(host))
-+		return;
-+
- 	writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
-+	host->dma_in_progress = false;
+-#define check_counter_rollover(struct1, dev_stats, member) {	\
+-	if (struct1->member < dev_stats.saved.member)		\
+-		dev_stats.rollover_count.member++;		\
+-	}
++#define check_counter_rollover(struct1, dev_stats, member)		\
++	do {								\
++		if ((struct1)->member < (dev_stats).saved.member)	\
++			(dev_stats).rollover_count.member++;		\
++	} while (0)
  
- 	if (!data->host_cookie)
- 		sdmmc_idma_unprep_data(host, data, 0);
-@@ -566,6 +589,7 @@ static struct mmci_host_ops sdmmc_variant_ops = {
- 	.dma_setup = sdmmc_idma_setup,
- 	.dma_start = sdmmc_idma_start,
- 	.dma_finalize = sdmmc_idma_finalize,
-+	.dma_error = sdmmc_idma_error,
- 	.set_clkreg = mmci_sdmmc_set_clkreg,
- 	.set_pwrreg = mmci_sdmmc_set_pwrreg,
- 	.busy_complete = sdmmc_busy_complete,
+ static void lan78xx_check_stat_rollover(struct lan78xx_net *dev,
+ 					struct lan78xx_statstage *stats)
+@@ -847,9 +848,9 @@ static int lan78xx_read_raw_otp(struct lan78xx_net *dev, u32 offset,
+ 
+ 	for (i = 0; i < length; i++) {
+ 		lan78xx_write_reg(dev, OTP_ADDR1,
+-					((offset + i) >> 8) & OTP_ADDR1_15_11);
++				  ((offset + i) >> 8) & OTP_ADDR1_15_11);
+ 		lan78xx_write_reg(dev, OTP_ADDR2,
+-					((offset + i) & OTP_ADDR2_10_3));
++				  ((offset + i) & OTP_ADDR2_10_3));
+ 
+ 		lan78xx_write_reg(dev, OTP_FUNC_CMD, OTP_FUNC_CMD_READ_);
+ 		lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
+@@ -903,9 +904,9 @@ static int lan78xx_write_raw_otp(struct lan78xx_net *dev, u32 offset,
+ 
+ 	for (i = 0; i < length; i++) {
+ 		lan78xx_write_reg(dev, OTP_ADDR1,
+-					((offset + i) >> 8) & OTP_ADDR1_15_11);
++				  ((offset + i) >> 8) & OTP_ADDR1_15_11);
+ 		lan78xx_write_reg(dev, OTP_ADDR2,
+-					((offset + i) & OTP_ADDR2_10_3));
++				  ((offset + i) & OTP_ADDR2_10_3));
+ 		lan78xx_write_reg(dev, OTP_PRGM_DATA, data[i]);
+ 		lan78xx_write_reg(dev, OTP_TST_CMD, OTP_TST_CMD_PRGVRFY_);
+ 		lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
+@@ -962,7 +963,7 @@ static int lan78xx_dataport_wait_not_busy(struct lan78xx_net *dev)
+ 		usleep_range(40, 100);
+ 	}
+ 
+-	netdev_warn(dev->net, "lan78xx_dataport_wait_not_busy timed out");
++	netdev_warn(dev->net, "%s timed out", __func__);
+ 
+ 	return -EIO;
+ }
+@@ -975,7 +976,7 @@ static int lan78xx_dataport_write(struct lan78xx_net *dev, u32 ram_select,
+ 	int i, ret;
+ 
+ 	if (usb_autopm_get_interface(dev->intf) < 0)
+-			return 0;
++		return 0;
+ 
+ 	mutex_lock(&pdata->dataport_mutex);
+ 
+@@ -1048,9 +1049,9 @@ static void lan78xx_deferred_multicast_write(struct work_struct *param)
+ 	for (i = 1; i < NUM_OF_MAF; i++) {
+ 		lan78xx_write_reg(dev, MAF_HI(i), 0);
+ 		lan78xx_write_reg(dev, MAF_LO(i),
+-					pdata->pfilter_table[i][1]);
++				  pdata->pfilter_table[i][1]);
+ 		lan78xx_write_reg(dev, MAF_HI(i),
+-					pdata->pfilter_table[i][0]);
++				  pdata->pfilter_table[i][0]);
+ 	}
+ 
+ 	lan78xx_write_reg(dev, RFE_CTL, pdata->rfe_ctl);
+@@ -1069,11 +1070,12 @@ static void lan78xx_set_multicast(struct net_device *netdev)
+ 			    RFE_CTL_DA_PERFECT_ | RFE_CTL_MCAST_HASH_);
+ 
+ 	for (i = 0; i < DP_SEL_VHF_HASH_LEN; i++)
+-			pdata->mchash_table[i] = 0;
++		pdata->mchash_table[i] = 0;
++
+ 	/* pfilter_table[0] has own HW address */
+ 	for (i = 1; i < NUM_OF_MAF; i++) {
+-			pdata->pfilter_table[i][0] =
+-			pdata->pfilter_table[i][1] = 0;
++		pdata->pfilter_table[i][0] = 0;
++		pdata->pfilter_table[i][1] = 0;
+ 	}
+ 
+ 	pdata->rfe_ctl |= RFE_CTL_BCAST_EN_;
+@@ -1267,9 +1269,10 @@ static void lan78xx_status(struct lan78xx_net *dev, struct urb *urb)
+ 			generic_handle_irq(dev->domain_data.phyirq);
+ 			local_irq_enable();
+ 		}
+-	} else
++	} else {
+ 		netdev_warn(dev->net,
+ 			    "unexpected interrupt: 0x%08x\n", intdata);
++	}
+ }
+ 
+ static int lan78xx_ethtool_get_eeprom_len(struct net_device *netdev)
+@@ -1358,7 +1361,7 @@ static void lan78xx_get_wol(struct net_device *netdev,
+ 	struct lan78xx_priv *pdata = (struct lan78xx_priv *)(dev->data[0]);
+ 
+ 	if (usb_autopm_get_interface(dev->intf) < 0)
+-			return;
++		return;
+ 
+ 	ret = lan78xx_read_reg(dev, USB_CFG0, &buf);
+ 	if (unlikely(ret < 0)) {
+@@ -1980,7 +1983,7 @@ static int lan8835_fixup(struct phy_device *phydev)
+ 
+ 	/* RGMII MAC TXC Delay Enable */
+ 	lan78xx_write_reg(dev, MAC_RGMII_ID,
+-				MAC_RGMII_ID_TXC_DELAY_EN_);
++			  MAC_RGMII_ID_TXC_DELAY_EN_);
+ 
+ 	/* RGMII TX DLL Tune Adjust */
+ 	lan78xx_write_reg(dev, RGMII_TX_BYP_DLL, 0x3D00);
+@@ -3334,9 +3337,10 @@ static void lan78xx_tx_bh(struct lan78xx_net *dev)
+ 		if (skb)
+ 			dev_kfree_skb_any(skb);
+ 		usb_free_urb(urb);
+-	} else
++	} else {
+ 		netif_dbg(dev, tx_queued, dev->net,
+ 			  "> tx, len %d, type 0x%x\n", length, skb->protocol);
++	}
+ }
+ 
+ static void lan78xx_rx_bh(struct lan78xx_net *dev)
+@@ -3437,7 +3441,7 @@ static void lan78xx_delayedwork(struct work_struct *work)
+ 		unlink_urbs(dev, &dev->rxq);
+ 		status = usb_autopm_get_interface(dev->intf);
+ 		if (status < 0)
+-				goto fail_halt;
++			goto fail_halt;
+ 		status = usb_clear_halt(dev->udev, dev->pipe_in);
+ 		usb_autopm_put_interface(dev->intf);
+ 		if (status < 0 &&
+@@ -3610,8 +3614,8 @@ static int lan78xx_probe(struct usb_interface *intf,
+ 	struct net_device *netdev;
+ 	struct usb_device *udev;
+ 	int ret;
+-	unsigned maxp;
+-	unsigned period;
++	unsigned int maxp;
++	unsigned int period;
+ 	u8 *buf = NULL;
+ 
+ 	udev = interface_to_usbdev(intf);
+@@ -3842,10 +3846,10 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
+ 		/* set WUF_CFG & WUF_MASK for IPv4 Multicast */
+ 		crc = lan78xx_wakeframe_crc16(ipv4_multicast, 3);
+ 		lan78xx_write_reg(dev, WUF_CFG(mask_index),
+-					WUF_CFGX_EN_ |
+-					WUF_CFGX_TYPE_MCAST_ |
+-					(0 << WUF_CFGX_OFFSET_SHIFT_) |
+-					(crc & WUF_CFGX_CRC16_MASK_));
++				  WUF_CFGX_EN_ |
++				  WUF_CFGX_TYPE_MCAST_ |
++				  (0 << WUF_CFGX_OFFSET_SHIFT_) |
++				  (crc & WUF_CFGX_CRC16_MASK_));
+ 
+ 		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 7);
+ 		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
+@@ -3856,10 +3860,10 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
+ 		/* for IPv6 Multicast */
+ 		crc = lan78xx_wakeframe_crc16(ipv6_multicast, 2);
+ 		lan78xx_write_reg(dev, WUF_CFG(mask_index),
+-					WUF_CFGX_EN_ |
+-					WUF_CFGX_TYPE_MCAST_ |
+-					(0 << WUF_CFGX_OFFSET_SHIFT_) |
+-					(crc & WUF_CFGX_CRC16_MASK_));
++				  WUF_CFGX_EN_ |
++				  WUF_CFGX_TYPE_MCAST_ |
++				  (0 << WUF_CFGX_OFFSET_SHIFT_) |
++				  (crc & WUF_CFGX_CRC16_MASK_));
+ 
+ 		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 3);
+ 		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
+@@ -3886,10 +3890,10 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
+ 		 */
+ 		crc = lan78xx_wakeframe_crc16(arp_type, 2);
+ 		lan78xx_write_reg(dev, WUF_CFG(mask_index),
+-					WUF_CFGX_EN_ |
+-					WUF_CFGX_TYPE_ALL_ |
+-					(0 << WUF_CFGX_OFFSET_SHIFT_) |
+-					(crc & WUF_CFGX_CRC16_MASK_));
++				  WUF_CFGX_EN_ |
++				  WUF_CFGX_TYPE_ALL_ |
++				  (0 << WUF_CFGX_OFFSET_SHIFT_) |
++				  (crc & WUF_CFGX_CRC16_MASK_));
+ 
+ 		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 0x3000);
+ 		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
+@@ -4034,7 +4038,7 @@ static int lan78xx_resume(struct usb_interface *intf)
+ 	if (!--dev->suspend_count) {
+ 		/* resume interrupt URBs */
+ 		if (dev->urb_intr && test_bit(EVENT_DEV_OPEN, &dev->flags))
+-				usb_submit_urb(dev->urb_intr, GFP_NOIO);
++			usb_submit_urb(dev->urb_intr, GFP_NOIO);
+ 
+ 		spin_lock_irq(&dev->txq.lock);
+ 		while ((res = usb_get_from_anchor(&dev->deferred))) {
 -- 
 2.43.0
 
