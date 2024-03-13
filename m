@@ -1,126 +1,116 @@
-Return-Path: <linux-kernel+bounces-102330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E27CD87B0CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:01:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CAF487B0CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:02:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F30728ECEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:01:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35AF91F25B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 442BF604B0;
-	Wed, 13 Mar 2024 18:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECBA669948;
+	Wed, 13 Mar 2024 18:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e0CWS6P8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="PvwJJZIj"
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C05B6027E
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE78D6027E;
+	Wed, 13 Mar 2024 18:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710352951; cv=none; b=hTIxjc0na/AGlWDieY8CwK5jj/liM0Pz77YrDfUb2ydtV83JFcP9phfCb3xgL86XCF239/W69xF4LhRyqtR3eyZKZWmWRwq0rN07THjD7IB8d5xErUm0QH5Rtgm7NsLGGif6gk6gIrKZY+UnAO7gLi9ciYdwKNfOZJOYkXsM0YQ=
+	t=1710352962; cv=none; b=CK6vWpQhbetw6EJ12Du5Vo41haG1Vd/XVUKbeZuOXznaWMW2UvPI7bsE4hP6WCkTBS08DAF7rfb497w8ljZ6orSq8pvc7oEUEwMLfn1TB7LablZjK2HZXnCgtPMo1WdkNc9ew/Yqghsl9hVLu3LeZG0wrHbhenp1WR1FEz7DNB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710352951; c=relaxed/simple;
-	bh=SmKZWZOsYB/pJ+10dsUo6FKTrviWROv7v/wIEMqhvPo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NoOsVcl1cvurCKgejDKGhQkrMu896lp3pBLR1eAhnMv1iBh9hwwkvP4qhzYoVbAyvlJZGXVy8ODc8vwDH6EJrf3F59hRhNv2SMqqkN09+JC4vSxuDn3iUJHCu4Wncl4jG5p7xl3yLB/gFSKwop3Makv+n9mFamiiY3jjeY9jRAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e0CWS6P8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710352949;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XucXp3hxAwKTj7st+z6y9+02SpKNl75gXYBpv6v0s08=;
-	b=e0CWS6P8/oSVQWRcalaJDZ7s1AL6SftZgvsr1tkQt8lDXe4nYhOVfamRu7sGTVme0Zt0AJ
-	lHHkL25OJAM2SVULOc/FrieggE8hhgR47BLBm77EO9YdHriurvzofZceXfry8FeBPYytT3
-	GimwMZPhXhsQ5kuNqK1f6+b73Xr9YmY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-270-kynu_JlIMbuON6sxRRgrVg-1; Wed,
- 13 Mar 2024 14:02:22 -0400
-X-MC-Unique: kynu_JlIMbuON6sxRRgrVg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	s=arc-20240116; t=1710352962; c=relaxed/simple;
+	bh=3Tg8fUT5dEkstMBRfJXr2xPDXXckp1lHdj52ARSGdMU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RT9g6kTs5seCOJNZ8Ur5ecQBYWq49nx6tfSqKLXKrqKp8OxOQzBr1Dp9s/woXrkLgsYjzcRw6OeXRgBchFViTyBzRvWPLhARJRwAVmFmMRlOCOLOV9kHI6iBEmEPJnaYwIaWp+2dPu9n+fTzzXIJ9C8GC2QtjKk5Z8H3MwbPjp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=PvwJJZIj; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4Tvyz361VHzlgVnY;
+	Wed, 13 Mar 2024 18:02:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1710352950; x=1712944951; bh=3Tg8fUT5dEkstMBRfJXr2xPD
+	XXckp1lHdj52ARSGdMU=; b=PvwJJZIjCvMkq/ewCWjgMLmM8HhIyK4gdS4/cdCf
+	TOmaaL1p1SxJMi/2QaLRBwgD1nEswS3j9YYxyjAeNQ3OVpwQG3zGC1jo1NHBherD
+	iPwxY/gkZsNl4R20j24tzd4466em3P/kjbPAkNBBtwkStXDYWIQ0Vj/qLjRXB8F5
+	AU0bBOd+4juYj/jE4mRgkl/uDpiRjrBONjajJXd8GoesjO6rgHnE8xKuQADKj6CL
+	nBngxXvTo9UkOI7gmxIzAXXnpy8igDjcxnnqwbt8I+bhWcyEx9bmJtCSscwS36Hy
+	B9KuAGZif1Of4GVff0o/1MkJJ+mnzUnEt6lVCTgDyevobg==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id ZsLKpM7Fp7Kn; Wed, 13 Mar 2024 18:02:30 +0000 (UTC)
+Received: from [100.125.77.66] (unknown [104.132.0.66])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BCB8A1C05EAD;
-	Wed, 13 Mar 2024 18:02:20 +0000 (UTC)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.194.115])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 40865C04221;
-	Wed, 13 Mar 2024 18:02:15 +0000 (UTC)
-From: Valentin Schneider <vschneid@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	x86@kernel.org
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Jason Baron <jbaron@akamai.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Feng Tang <feng.tang@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	David Hildenbrand <david@redhat.com>,
-	"ndesaulniers@google.com" <ndesaulniers@google.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: [PATCH v3 4/4] x86/tsc: Make __use_tsc __ro_after_init
-Date: Wed, 13 Mar 2024 19:01:06 +0100
-Message-ID: <20240313180106.2917308-5-vschneid@redhat.com>
-In-Reply-To: <20240313180106.2917308-1-vschneid@redhat.com>
-References: <20240313180106.2917308-1-vschneid@redhat.com>
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4Tvyyp60GSzlgVnW;
+	Wed, 13 Mar 2024 18:02:26 +0000 (UTC)
+Message-ID: <855a006d-5afc-4f70-90a9-ec94c0414d4f@acm.org>
+Date: Wed, 13 Mar 2024 11:02:23 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/5] Rust block device driver API and null block
+ driver
+Content-Language: en-US
+To: Andreas Hindborg <nmi@metaspace.dk>, Jens Axboe <axboe@kernel.dk>,
+ Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>, Hannes Reinecke <hare@suse.de>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Cc: Andreas Hindborg <a.hindborg@samsung.com>,
+ Niklas Cassel <Niklas.Cassel@wdc.com>, Greg KH <gregkh@linuxfoundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>, Alice Ryhl <aliceryhl@google.com>,
+ Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Yexuan Yang <1182282462@bupt.edu.cn>,
+ =?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>,
+ Joel Granados <j.granados@samsung.com>,
+ "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+ Daniel Gomez <da.gomez@samsung.com>, open list
+ <linux-kernel@vger.kernel.org>,
+ "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+ "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+ "gost.dev@samsung.com" <gost.dev@samsung.com>
+References: <20240313110515.70088-1-nmi@metaspace.dk>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240313110515.70088-1-nmi@metaspace.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-__use_tsc is only ever enabled in __init tsc_enable_sched_clock(), so mark
-it as __ro_after_init.
+On 3/13/24 04:05, Andreas Hindborg wrote:
+> This is the second version of the Rust block device driver API and the Rust null
+> block driver. The context and motivation can be seen in cover letter of the RFC
+> v1 [1]. If more context is required, a talk about this effort was recorded at
+> LPC [2]. I hope to be able to discuss this series at LSF this year [3].
 
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
----
- arch/x86/kernel/tsc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Memory safety may land in C++ in the near future (see also
+https://herbsutter.com/2024/03/). If memory-safe C++ or memory-safe C
+would be adopted in the kernel, it would allow writing memory-safe
+drivers without having to add complicated bindings between existing C
+code and new Rust code. Please do not take this as personal criticism -
+I appreciate the effort that has been spent on coming up with great
+Rust bindings for the Linux kernel block layer.
 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 5a69a49acc963..0f7624ed1d1d0 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -44,7 +44,7 @@ EXPORT_SYMBOL(tsc_khz);
- static int __read_mostly tsc_unstable;
- static unsigned int __initdata tsc_early_khz;
- 
--static DEFINE_STATIC_KEY_FALSE(__use_tsc);
-+static DEFINE_STATIC_KEY_FALSE_RO(__use_tsc);
- 
- int tsc_clocksource_reliable;
- 
--- 
-2.43.0
+Thanks,
+
+Bart.
 
 
