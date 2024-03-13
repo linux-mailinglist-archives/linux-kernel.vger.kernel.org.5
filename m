@@ -1,145 +1,171 @@
-Return-Path: <linux-kernel+bounces-101561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA58887A8B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:48:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039A687A889
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:34:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 609021F24756
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:48:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2570B1C22D83
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:34:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FCC43AB5;
-	Wed, 13 Mar 2024 13:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C754594C;
+	Wed, 13 Mar 2024 13:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="oGfDetpX"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WdH3f50a"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F64E4174F;
-	Wed, 13 Mar 2024 13:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5654745010
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710337695; cv=none; b=DoIWb2Ry74SEPRERqyrTrE2sYw1GiigbNR4n+zPZlkJ5pzpgbFMYgilDDxg0G+i8ayl8WjUXaMo5Lgax+G7PN2Qq8pNvaMphXKbseZqMDH7xpRxjVr6Z7NFTqEC4E0Gv1hMlwQM5mSh1Xj+h3Cv+8NwIUdnEyYbf0oDMsgLhUVg=
+	t=1710336848; cv=none; b=S2EWsjiCokl5j9NlUeXtaq1MGRHhlpDzzVuiEfTj40u2hZdu6K+kYikoPd0p3HkIubxO5uuI8MpUxa0gHW6fWo83niY+yIZZry0yrREPSeNO06EVhDzVbh+HIxpkq1QHhXW7t5FbUP1ReIZCe/ILcLCtx4q3D4GhlEvrWzEhEWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710337695; c=relaxed/simple;
-	bh=YRfQD+t2dkUzHEULs3NlLIIcIZaaDOWzomGtk1FtK3Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UDY1sYNxeQgegoJdfQlLvDnuslnHVG/WeoY4QG/8YjO+R3TqwKvZZJRf881kdeL0Frzsx0ycOubjiVQ0hRxucZs/QCCy8StNZQnoxBE7MLIFDCBPT2I4g/87Z+2rh3LQk+jOe47xuxHYfI4zSIEY4orfLgvDeriSYzRASWfpzc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=oGfDetpX; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 50dcf980e14011eeb8927bc1f75efef4-20240313
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=L4w20N+otfg7LwiYSgZBTvkCN/wv91X1s34i/ad5CCw=;
-	b=oGfDetpXML9V4gCa5zrrGvflXDfgBD950x4waeaDoTDUBe4hUAIU5I/ta2RUpqEJdxFb2Mt3vk5lJNDNKt5e1KiF3i4Oe5ZE9BACbRq1BaSyPkfrLuncWkNrr7eutK0gECQ+YRguwUBNj/QBJrvGsQyXuvulZjFHfkNCmS5Ycz0=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:60f705f5-bd61-4bfa-ad4b-07ab2bc4ba90,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:31555c90-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 50dcf980e14011eeb8927bc1f75efef4-20240313
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-	(envelope-from <shiming.cheng@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1696624639; Wed, 13 Mar 2024 21:48:04 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 13 Mar 2024 21:48:01 +0800
-Received: from mbjsdccf07.gcn.mediatek.inc (10.15.20.246) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 13 Mar 2024 21:48:01 +0800
-From: Shiming Cheng <shiming.cheng@mediatek.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lena.wang@mediatek.com>, <shiming.cheng@mediatek.com>
-Subject: [PATCH net] udp: fix segmentation crash for untrusted source packet
-Date: Wed, 13 Mar 2024 21:34:02 +0800
-Message-ID: <20240313133402.9027-1-shiming.cheng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	s=arc-20240116; t=1710336848; c=relaxed/simple;
+	bh=YtYXHrh16rFL2dlK6AeuHKPIT11j+xPYazuoPkbjZLc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Dw1kDEDgj64QigBmCawDqiXWrMLNe6EVMlt6ZiXpK1+JT5MlZ7vYsT+P7LHIACpJIrd2UaDFNv0PrzVJsNo6uplsOC6ya5hNhvTc8821FFZBuOwJoa+oLsRL3xS+ilhtqeB2KtYjpKGfLP2/9Q+9MVkY6Io6iwh3LXz2/N8VgEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WdH3f50a; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a54004e9fso44576107b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 06:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710336845; x=1710941645; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EeDuCrW/OzuKfmQ7trx25bc/3MeStGmMLBCg0AQiaHs=;
+        b=WdH3f50aYLRfhaIpGyF4J/uhRxpyHr1gXlnRTH6Noa3fju8EhzbYu5UkxL10y9l/Bl
+         zFEksM9UGcOdBG9WzPp1NYn2rj/Qu7INfb55jLgoawARiFNU314cLesKZGZY/6ih5wt8
+         6FsFq1+L3+j4jyDzGiLLbO5A9dv3nQ5q6P/ZHZ43QAIkNaq4/JDOsPDeaQii1t95f5tX
+         pldM1UEy8YTh8awwEsbyF0atLYgZl0c3NEESQlUOgCpvy7+OWok7iQQzmKFgo+eC2Og9
+         XS8mgF5IYz8KIj3Hq9Gjm0brD9FhsPLiIVaw3D32XdT0BaYp7lB0eJ8k77LhQ1PMoJtX
+         +vAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710336845; x=1710941645;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EeDuCrW/OzuKfmQ7trx25bc/3MeStGmMLBCg0AQiaHs=;
+        b=C7cWTWf0HUwP3VLmJA+AWyToVnL2+7L9xtc6illTBRw4IYb2eprvJS7P38beXAPJEH
+         2xr/qgsHThYgw+DIkRtFsYGqi49+xP0ipRvzuB75oPMTsHqcXlhYsN6EsCSNPlvPff//
+         ypWw+LyeU6wQRppxQw+gWGRcg+U7Rr4Gx7la163xNTSzoTsOLV7zP9Ye6niODGjaQQ1m
+         7cNeko0lZqqeaAjk4B6d0eoCCOgLp1hLxMsiebj+0DojPBJDlaZSloIIgTIkNW83bWOH
+         pEaT+6l3S27p3wB5XmBzHnGEpxtuuIByG1HdZ4qRu4M9+hlsO3/QTBCQnysGhzxLpj6b
+         cwpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHBSV8BQAcCEOZDsAMEXLGHyAARUginXHBVbutnSouaqRoHPFbmDUP3YAPbfKvT4kTfYNYP7QkBpYjlBkCnABBs4uAWmMi8oIcz3wQ
+X-Gm-Message-State: AOJu0Yw9LGIPjrZJOYLI8hPs5C9yKSwwJLearA2zfOpaqMNMprBRdWuv
+	z0aK5FJoCKcKWkPpwW0RFRkECfAGUfuJUR0G2taOpz+BQ7hdoZiHdAjN6ZGiy200YAK8xMT/UKw
+	oYQ==
+X-Google-Smtp-Source: AGHT+IGzeTp0Kd/KVSxA1L/KjVh99PquENLfknjJ/YqzT8MDcFuAl63vKayUBQvut1tAWWM0sBlPgMKxY1Y=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:9251:0:b0:60c:b1d4:a9f9 with SMTP id
+ j78-20020a819251000000b0060cb1d4a9f9mr277116ywg.10.1710336845403; Wed, 13 Mar
+ 2024 06:34:05 -0700 (PDT)
+Date: Wed, 13 Mar 2024 06:34:03 -0700
+In-Reply-To: <72285e50-6ffc-4f24-b97b-8c381b1ddf8e@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--0.036400-8.000000
-X-TMASE-MatchedRID: wpfAD6xEq/UmcsJib2IjaZyebS/i2xjjRf40pT7Zmv4AhmnHHeGnvd5N
-	RzJ0gz5Ho2jEjZ+uot2x/IsbGBsvcXHPBvSspzfjlUgQqGVMqmw+alo1+UETifgnJH5vm2+gE1H
-	sA1hANbFWqgnWQ924PABrzRY/wC05Z4gQbTRJ1T0poxDq3DugMkyQ5fRSh265DpCUEeEFm7B91D
-	unZtIaFuLzNWBegCW2wgn7iDBesS1YF3qW3Je6+3Cl2j/T96VWClrgwgRb4DTA1+j5xhROnF/E0
-	Qms4izZ9dXR8igG1pZpqUV/1/kckl6hsFytkdpyBzxJxdddetpD1vQ6Bk4NMYCE5xpCtDRTUbJF
-	yh4XXyqYo/TPOlMB4bCh3zE4wqa8wIE77PEBbml+3BndfXUhXQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--0.036400-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: EB00A10A7E0B78C7CD380D35C873753B8267A33E8C1FB10F0EF5AEE09A8965CE2000:8
-X-MTK: N
+Mime-Version: 1.0
+References: <20240229025759.1187910-1-stevensd@google.com> <ZeCIX5Aw5s1L0YEh@infradead.org>
+ <CAD=HUj7fT2CVXLfi5mty0rSzpG_jK9fhcKYGQnTf_H8Hg-541Q@mail.gmail.com> <72285e50-6ffc-4f24-b97b-8c381b1ddf8e@amd.com>
+Message-ID: <ZfGrS4QS_WhBWiDl@google.com>
+Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
+From: Sean Christopherson <seanjc@google.com>
+To: "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>
+Cc: David Stevens <stevensd@chromium.org>, Christoph Hellwig <hch@infradead.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kernel exception is reported when making udp frag list segmentation.
-Backtrace is as below:
-    at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:229
-    at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:262
-features=features@entry=19, is_ipv6=false)
-    at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:289
-features=19)
-    at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/udp_offload.c:399
-features=19)
-    at out/android15-6.6/kernel-6.6/kernel-6.6/net/ipv4/af_inet.c:1418
-skb@entry=0x0, features=19, features@entry=0)
-    at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:53
-tx_path=<optimized out>)
-    at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:124
+On Wed, Mar 13, 2024, Christian K=C3=B6nig wrote:
+> Am 13.03.24 um 05:55 schrieb David Stevens:
+> > On Thu, Feb 29, 2024 at 10:36=E2=80=AFPM Christoph Hellwig <hch@infrade=
+ad.org> wrote:
+> > > On Thu, Feb 29, 2024 at 11:57:51AM +0900, David Stevens wrote:
+> > > > Our use case is virtio-gpu blob resources [1], which directly map h=
+ost
+> > > > graphics buffers into the guest as "vram" for the virtio-gpu device=
+.
+> > > > This feature currently does not work on systems using the amdgpu dr=
+iver,
+> > > > as that driver allocates non-compound higher order pages via
+> > > > ttm_pool_alloc_page().
+> > > .. and just as last time around that is still the problem that needs
+> > > to be fixed instead of creating a monster like this to map
+> > > non-refcounted pages.
+> > >=20
+> > Patches to amdgpu to have been NAKed [1] with the justification that
+> > using non-refcounted pages is working as intended and KVM is in the
+> > wrong for wanting to take references to pages mapped with VM_PFNMAP
+> > [2].
+> >=20
+> > The existence of the VM_PFNMAP implies that the existence of
+> > non-refcounted pages is working as designed. We can argue about
+> > whether or not VM_PFNMAP should exist, but until VM_PFNMAP is removed,
+> > KVM should be able to handle it. Also note that this is not adding a
+> > new source of non-refcounted pages, so it doesn't make removing
+> > non-refcounted pages more difficult, if the kernel does decide to go
+> > in that direction.
+>=20
+> Well, the meaning of VM_PFNMAP is that you should not touch the underlyin=
+g
+> struct page the PTE is pointing to. As far as I can see this includes
+> grabbing a reference count.
+>=20
+> But that isn't really the problem here. The issue is rather that KVM assu=
+mes
+> that by grabbing a reference count to the page that the driver won't chan=
+ge
+> the PTE to point somewhere else.. And that is simply not true.
 
-This packet's frag list is null while gso_type is not 0. Then it is treated
-as a GRO-ed packet and sent to segment frag list. Function call path is
-udp_rcv_segment => config features value
-    __udpv4_gso_segment  => skb_gso_ok returns false. Here it should be
-                            true. Failed reason is features doesn't match
-                            gso_type.
-        __udp_gso_segment_list
-            skb_segment_list => packet is linear with skb->next = NULL
-            __udpv4_gso_segment_list_csum => use skb->next directly and
-                                             crash happens
+No, KVM doesn't assume that.
 
-In rx-gro-list GRO-ed packet is set gso type as
-NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRAGLIST in napi_gro_complete. In gso
-flow the features should also set them to match with gso_type. Or else it
-will always return false in skb_gso_ok. Then it can't discover the
-untrusted source packet and result crash in following function.
+> So what KVM needs to do is to either have an MMU notifier installed so th=
+at
+> updates to the PTEs on the host side are reflected immediately to the PTE=
+s
+> on the guest side.
 
-Fixes: f2696099c6c6 ("udp: Avoid post-GRO UDP checksum recalculation")
-Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-Signed-off-by: Lena Wang <lena.wang@mediatek.com>
----
- include/net/udp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+KVM already has an MMU notifier and reacts accordingly.
 
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 488a6d2babcc..c87baa23b9da 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -464,7 +464,7 @@ void udpv6_encap_enable(void);
- static inline struct sk_buff *udp_rcv_segment(struct sock *sk,
- 					      struct sk_buff *skb, bool ipv4)
- {
--	netdev_features_t features = NETIF_F_SG;
-+	netdev_features_t features = NETIF_F_SG | NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRAGLIST;
- 	struct sk_buff *segs;
- 
- 	/* Avoid csum recalculation by skb_segment unless userspace explicitly
--- 
-2.18.0
+> Or (even better) you use hardware functionality like nested page tables s=
+o
+> that we don't actually need to update the guest PTEs when the host PTEs
+> change.
 
+That's not how stage-2 page tables work.=20
+
+> And when you have either of those two functionalities the requirement to =
+add
+> a long term reference to the struct page goes away completely. So when th=
+is
+> is done right you don't need to grab a reference in the first place.
+
+The KVM issue that this series is solving isn't that KVM grabs a reference,=
+ it's
+that KVM assumes that any non-reserved pfn that is backed by "struct page" =
+is
+refcounted.
+
+What Christoph is objecting to is that, in this series, KVM is explicitly a=
+dding
+support for mapping non-compound (huge)pages into KVM guests.  David is arg=
+uing
+that Christoph's objection to _KVM_ adding support is unfair, because the r=
+eal
+problem is that the kernel already maps such pages into host userspace.  I.=
+e. if
+the userspace mapping ceases to exist, then there are no mappings for KVM t=
+o follow
+and propagate to KVM's stage-2 page tables.
 
