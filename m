@@ -1,60 +1,59 @@
-Return-Path: <linux-kernel+bounces-101809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7606187ABCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A8CC87ABCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32735286FE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:49:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDBBB2872A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0E75C902;
-	Wed, 13 Mar 2024 16:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2369D5D729;
+	Wed, 13 Mar 2024 16:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sLlwADTq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kdk09B9A"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C738B5BAC3;
-	Wed, 13 Mar 2024 16:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B915CDF3;
+	Wed, 13 Mar 2024 16:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347839; cv=none; b=BFF+mavJrHchmi2w0pEsTds77GiL9mopOlnCsqDp8D55WDa+QJS9o0lTD0AAhI4PEbh6ukXSadtPZGWe8O5agJdU1HQQ9dZbv+kAQH2feiWohCxG4lyfbT2pyK7ND9JpZm2UhQAVRuA4Ce/gWzc6/LYB/jYl3TyD/HfcwW18duA=
+	t=1710347841; cv=none; b=i6cc6Gar3/sk2ow3z56kmnCFtPbWitfoMS/q66UFyi2IJWC0mstNufRNV062RIboHB4TQgAxcSM7NTm3p6bqA6L4yIrJ+TEPmopj1x/8dydSDARxzN0R4xo45VzKUBaeEW+YngR0lw3w5oZzEBYC18oYgFd8oRi1yZ0wUYj2eA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347839; c=relaxed/simple;
-	bh=T6QsRNkgdzo6I3UWRsu4FApuPB6ewk3CFmecwbTtWM0=;
+	s=arc-20240116; t=1710347841; c=relaxed/simple;
+	bh=6IZSRF9oYx4o0Bu7gHaOZWPeDA5VBcMeB+M5ckdVeME=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UMepFH+Bld2YHU8ZAR/IaKbCadobRfCEqEJZpFjErpjv2Ol8RiyUPscld+C5ce1purnBMKM/R0fHEvDlokatJ5LnAEr0N/7W7yhPEMAzoykAGVn6enJrAxmShXGYEqDYnq+TIKW00bNogoVFp8xW4ho20DX2ZclFDwQ8kzL/pX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sLlwADTq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07EA7C43390;
-	Wed, 13 Mar 2024 16:37:17 +0000 (UTC)
+	 MIME-Version; b=kPFHYyVohiBnlLsQ9YJheJc43rgdl4LIxjrOmw/pWLVVpe826GwOHsukisG3+10FKFw8yVaDi6NldVQhK/QFlH8wtyQECAf6Z+7JTRMhnT9zSDzvNI0iffYHzKih/42I8bxHH5UrvxXoqqyTKPlaWQd2jbPQGpGbMqIcoyEvPwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kdk09B9A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA44C433C7;
+	Wed, 13 Mar 2024 16:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347839;
-	bh=T6QsRNkgdzo6I3UWRsu4FApuPB6ewk3CFmecwbTtWM0=;
+	s=k20201202; t=1710347840;
+	bh=6IZSRF9oYx4o0Bu7gHaOZWPeDA5VBcMeB+M5ckdVeME=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sLlwADTqHQXnEfbk/mat25aKXSBWtYIJ7HlzwAQWal1YDgNfvDSZ3Ks1Ub8hqIIrU
-	 AzHQg0kXe/x3KRq3Aw9hyEP52sS5tOdskzLJ4TBmLQpdTLyTbpPjrhRXcnl6aM0TWu
-	 hBqiz4/ir6dzikI7nKr4EyzeujPziy9KuaxW4sJZcd0ZJVfsRIT5JxLECx3/jsdr2Q
-	 fh8hiFtxbaCGZA6PVTr1ZhSWxVIz2ynfWQzuq4Kj6oXTKCoKQdPuzR0bQv15hpSZUx
-	 Foutp96jZKJrEUxMdJEHvlkdDLJSwIN8IKmveieeuBI7D/Dt397Rn9yQy9C+4hyylN
-	 olCn8TQLAlReA==
+	b=Kdk09B9ALwy2TE8VqpYBdCSgUZeHB5wEiey18LHak2dIDIoBveXttG/WQQduu7KFA
+	 4JFOqtNGR9i948qm1YlbZbxYayr0fq2myygtS19NQQvL+kAvzquZdx8Dfl3TQd7ItO
+	 TKJ+gkJXUQvUT+7YPXMsvTFemP6X8F88eb1XKfmmvTGbyHlea6/btqa8RA8bO4oYuX
+	 F0kf/p1lvbLW+GUt1gE0SO2+4dQDcQxa9qXu7+W7mBceRpdajDzz6czrQgJdnT1IcT
+	 nNuJbFxcVCAZmRW36Elqdce3pHTlMSMkKxwMczT7MMvvoqsPi54St5XQ1n7x+IjFgU
+	 /1XSLFhvrBqOw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Zi Yan <ziy@nvidia.com>,
-	David Hildenbrand <david@redhat.com>,
+Cc: Byungchul Park <byungchul@sk.com>,
+	Hyeongtak Ji <hyeongtak.ji@sk.com>,
+	Oscar Salvador <osalvador@suse.de>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
 	"Huang, Ying" <ying.huang@intel.com>,
-	Hugh Dickins <hughd@google.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 07/60] mm: migrate: convert numamigrate_isolate_page() to numamigrate_isolate_folio()
-Date: Wed, 13 Mar 2024 12:36:14 -0400
-Message-ID: <20240313163707.615000-8-sashal@kernel.org>
+Subject: [PATCH 6.6 08/60] mm/vmscan: fix a bug calling wakeup_kswapd() with a wrong zone index
+Date: Wed, 13 Mar 2024 12:36:15 -0400
+Message-ID: <20240313163707.615000-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
 References: <20240313163707.615000-1-sashal@kernel.org>
@@ -74,84 +73,96 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Byungchul Park <byungchul@sk.com>
 
-[ Upstream commit 2ac9e99f3b21b2864305fbfba4bae5913274c409 ]
+[ Upstream commit 2774f256e7c0219e2b0a0894af1c76bdabc4f974 ]
 
-Rename numamigrate_isolate_page() to numamigrate_isolate_folio(), then
-make it takes a folio and use folio API to save compound_head() calls.
+With numa balancing on, when a numa system is running where a numa node
+doesn't have its local memory so it has no managed zones, the following
+oops has been observed.  It's because wakeup_kswapd() is called with a
+wrong zone index, -1.  Fixed it by checking the index before calling
+wakeup_kswapd().
 
-Link: https://lkml.kernel.org/r/20230913095131.2426871-4-wangkefeng.wang@huawei.com
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Reviewed-by: Zi Yan <ziy@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>
+> BUG: unable to handle page fault for address: 00000000000033f3
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page
+> PGD 0 P4D 0
+> Oops: 0000 [#1] PREEMPT SMP NOPTI
+> CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
+> Code: (omitted)
+> RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
+> RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
+> RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
+> R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
+> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
+> FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>  <TASK>
+> ? __die
+> ? page_fault_oops
+> ? __pte_offset_map_lock
+> ? exc_page_fault
+> ? asm_exc_page_fault
+> ? wakeup_kswapd
+> migrate_misplaced_page
+> __handle_mm_fault
+> handle_mm_fault
+> do_user_addr_fault
+> exc_page_fault
+> asm_exc_page_fault
+> RIP: 0033:0x55b897ba0808
+> Code: (omitted)
+> RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
+> RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
+> RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
+> RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
+> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+> R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
+>  </TASK>
+
+Link: https://lkml.kernel.org/r/20240216111502.79759-1-byungchul@sk.com
+Signed-off-by: Byungchul Park <byungchul@sk.com>
+Reported-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+Fixes: c574bbe917036 ("NUMA balancing: optimize page placement for memory tiering system")
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
 Cc: "Huang, Ying" <ying.huang@intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Stable-dep-of: 2774f256e7c0 ("mm/vmscan: fix a bug calling wakeup_kswapd() with a wrong zone index")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/migrate.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ mm/migrate.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/mm/migrate.c b/mm/migrate.c
-index c9fabb960996f..e5f2f7243a659 100644
+index e5f2f7243a659..d69b4556cc15f 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -2501,10 +2501,9 @@ static struct folio *alloc_misplaced_dst_folio(struct folio *src,
- 	return __folio_alloc_node(gfp, order, nid);
- }
- 
--static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
-+static int numamigrate_isolate_folio(pg_data_t *pgdat, struct folio *folio)
- {
--	int nr_pages = thp_nr_pages(page);
--	int order = compound_order(page);
-+	int nr_pages = folio_nr_pages(folio);
- 
- 	/* Avoid migrating to a node that is nearly full */
- 	if (!migrate_balanced_pgdat(pgdat, nr_pages)) {
-@@ -2516,22 +2515,23 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+@@ -2515,6 +2515,14 @@ static int numamigrate_isolate_folio(pg_data_t *pgdat, struct folio *folio)
  			if (managed_zone(pgdat->node_zones + z))
  				break;
  		}
--		wakeup_kswapd(pgdat->node_zones + z, 0, order, ZONE_MOVABLE);
-+		wakeup_kswapd(pgdat->node_zones + z, 0,
-+			      folio_order(folio), ZONE_MOVABLE);
++
++		/*
++		 * If there are no managed zones, it should not proceed
++		 * further.
++		 */
++		if (z < 0)
++			return 0;
++
+ 		wakeup_kswapd(pgdat->node_zones + z, 0,
+ 			      folio_order(folio), ZONE_MOVABLE);
  		return 0;
- 	}
- 
--	if (!isolate_lru_page(page))
-+	if (!folio_isolate_lru(folio))
- 		return 0;
- 
--	mod_node_page_state(page_pgdat(page), NR_ISOLATED_ANON + page_is_file_lru(page),
-+	node_stat_mod_folio(folio, NR_ISOLATED_ANON + folio_is_file_lru(folio),
- 			    nr_pages);
- 
- 	/*
--	 * Isolating the page has taken another reference, so the
--	 * caller's reference can be safely dropped without the page
-+	 * Isolating the folio has taken another reference, so the
-+	 * caller's reference can be safely dropped without the folio
- 	 * disappearing underneath us during migration.
- 	 */
--	put_page(page);
-+	folio_put(folio);
- 	return 1;
- }
- 
-@@ -2565,7 +2565,7 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
- 	if (page_is_file_lru(page) && PageDirty(page))
- 		goto out;
- 
--	isolated = numamigrate_isolate_page(pgdat, page);
-+	isolated = numamigrate_isolate_folio(pgdat, page_folio(page));
- 	if (!isolated)
- 		goto out;
- 
 -- 
 2.43.0
 
