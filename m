@@ -1,179 +1,118 @@
-Return-Path: <linux-kernel+bounces-102583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53FE687B43E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:11:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 124BF87B441
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ADC4286691
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:11:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 427EC1C20B17
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04AD59B7E;
-	Wed, 13 Mar 2024 22:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF67659B4E;
+	Wed, 13 Mar 2024 22:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hlrZKybJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BlXdhDD3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7535917C;
-	Wed, 13 Mar 2024 22:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AB359B44
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710367846; cv=none; b=mpaRoZx8xyVP1CmslbZ/fBNhxNUTI3TefKb+HiO8fIDVfy4sXTiR9eh4VwGe83LfyHWsi3FRCdU7MoVN1bGmQ+/fZefxYhPE5K+kX1wzWU6ZUQOoPRROh0p2DaNZNE83b27ycp9zPkC62spRblmrZV/C8PuWsTHYUu9lsaBLgAI=
+	t=1710367940; cv=none; b=RMLwp/ho0yYUPJZNyGZK0Z7tGBCm7C+Es+esS6MZbfncH/2GUG1lIUkNxiUBFj13QL8as6WSxPtxzqzMUJ2QS847scFLqfGSLSi4jwhR8o9WbdmSRgebic9bEPY68X9PM3NapPP/w6vNUX/fH96n2VuG4tOncVaO4viXcS7rlns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710367846; c=relaxed/simple;
-	bh=5APNX9joY8E9yLLTfEuVlbvQ/cODNID0jd3oX4Dqksg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pC4dxYuYHW6KNvXXXe0iRiVIzsnMmompUYig7Dj93Nw+odxJV+17Q4JSyHdYbb/AtkV0fj7FiJgIknTM8Fp5uNSwtiOzR0/b0FKtKdD8186L/slRXbVBTZSOrsB7ci54pdDZdvv02uO81CYic6lUGl6EZOsVSdFWBu7geX7wIFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hlrZKybJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AAEEC433F1;
-	Wed, 13 Mar 2024 22:10:45 +0000 (UTC)
+	s=arc-20240116; t=1710367940; c=relaxed/simple;
+	bh=v0NYQJnm+0oPrrxJx2uQC72EnGbS1DFxIMODtPfQOTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ArjQwiLA3W+QJYS/yWXszCXwNyHag1NqtWy6TySL+DyJcV+VShLdQSrZaTr+6ZuD5HuetX1+1vCBGKRHUUZf7ftNna27XbEpT+EXVuWEwANWWEudeFpIha5I4UD7uTsTuLnstbTkN9IvlHoQ/BHlrRjN2CxXFB7g8DWZi6ZMPn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BlXdhDD3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76FE5C433F1;
+	Wed, 13 Mar 2024 22:12:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710367845;
-	bh=5APNX9joY8E9yLLTfEuVlbvQ/cODNID0jd3oX4Dqksg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hlrZKybJJe3Ws3NMMxCNeEsHHbw+o6y1ncI16R6kzSspIO+mmP6NvDgwf4y8KiWzB
-	 ISriQDG/umtsjSLZngtc4bWRPmhaVLTwDEOJycCVs9T3pb2db6630MGkmEU1X9BTXf
-	 C/FR1pn4FLZNh7+e2vIRbE75VMM25aAR7Ehz3Q5So2rhXs8lMAJ/BPam+hhyEE2RK8
-	 TKJzV2JoGANM/fguI5enojXimqQG14HPKu1bLHKGoszu/nNEhNHQE4sQ1LLPnOn7gz
-	 zp7GTVMs3MuZxyJr6kTsKeJA9ylvnISwYysl+bpNM9dmNSZ3Hug4u0zZxEyvRICWYD
-	 MYiWylj9cA9LA==
-Date: Wed, 13 Mar 2024 15:10:43 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: James Prestwood <prestwoj@gmail.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>,
-	Karel Balej <balejk@matfyz.cz>, dimitri.ledkov@canonical.com,
-	alexandre.torgue@foss.st.com, davem@davemloft.net,
-	dhowells@redhat.com, herbert@gondor.apana.org.au,
-	keyrings@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-modules@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org,
-	mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org, iwd@lists.linux.dev
-Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
-Message-ID: <20240313221043.GC1111@sol.localdomain>
-References: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz>
- <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
- <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
- <20240313194423.GA1111@sol.localdomain>
- <b838e729-dc30-4e18-b928-c34c16b08606@gmail.com>
- <20240313202223.GB1111@sol.localdomain>
- <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
+	s=k20201202; t=1710367939;
+	bh=v0NYQJnm+0oPrrxJx2uQC72EnGbS1DFxIMODtPfQOTU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=BlXdhDD3PPIIA/ofOSBE9bH90AeexC+g1lLsJ0QBrJqmwOs4SPCtgBozY39KJeF7p
+	 dvFtXGv4LkOWq/kpVQtmF1h4spvM/dmiwWiFlHwxVlqkW1cfmFNxGoXP8efEXsDOF+
+	 xmWsafsKJJ9Bph6W8H/jEzwM5ybJd7XYZ/WFlBGuKPjM6mO8EfZSRCgaEIbV1agWhw
+	 db6hr2GCuDa5Vi5jCLIjEg/H2RN97N9pHtgMbd1j2vsx+aoMUdVW8hEwVJT/Vq5x3D
+	 jOtN6x/kqDj1Csm64t1JLvogcSo7wFoCL9yL15evecJY8LdIuZFe1mwckD695Fx/KN
+	 bqsiTYkGpWQng==
+Received: by mercury (Postfix, from userid 1000)
+	id 2133F1061C36; Wed, 13 Mar 2024 23:12:12 +0100 (CET)
+Date: Wed, 13 Mar 2024 23:12:12 +0100
+From: Sebastian Reichel <sre@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hsi changes for hsi-6.9
+Message-ID: <jp7jclyag7qcknwl3zryrerud2dlrcssh3o6oqexs6oe2z27np@g4aahpksii7x>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qvkdgkeszeuphbmn"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
 
-On Wed, Mar 13, 2024 at 02:17:29PM -0700, James Prestwood wrote:
-> Hi,
-> 
-> On 3/13/24 1:22 PM, Eric Biggers wrote:
-> > On Wed, Mar 13, 2024 at 01:12:54PM -0700, James Prestwood wrote:
-> > > Hi,
-> > > 
-> > > On 3/13/24 12:44 PM, Eric Biggers wrote:
-> > > > On Wed, Mar 13, 2024 at 10:26:06AM -0700, James Prestwood wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > On 3/13/24 1:56 AM, Johannes Berg wrote:
-> > > > > > Not sure why you're CC'ing the world, but I guess adding a few more
-> > > > > > doesn't hurt ...
-> > > > > > 
-> > > > > > On Wed, 2024-03-13 at 09:50 +0100, Karel Balej wrote:
-> > > > > > >     and I use iwd
-> > > > > > This is your problem, the wireless stack in the kernel doesn't use any
-> > > > > > kernel crypto code for 802.1X.
-> > > > > Yes, the wireless stack has zero bearing on the issue. I think that's what
-> > > > > you meant by "problem".
-> > > > > 
-> > > > > IWD has used the kernel crypto API forever which was abruptly broken, that
-> > > > > is the problem.
-> > > > > 
-> > > > > The original commit says it was to remove support for sha1 signed kernel
-> > > > > modules, but it did more than that and broke the keyctl API.
-> > > > > 
-> > > > Which specific API is iwd using that is relevant here?
-> > > > I cloned https://kernel.googlesource.com/pub/scm/network/wireless/iwd
-> > > > and grepped for keyctl and AF_ALG, but there are no matches.
-> > > IWD uses ELL for its crypto, which uses the AF_ALG API:
-> > > 
-> > > https://git.kernel.org/pub/scm/libs/ell/ell.git/
-> > Thanks for pointing out that the relevant code is really in that separate
-> > repository.  Note, it seems that keyctl() is the problem here, not AF_ALG.  The
-> > blamed commit didn't change anything for AF_ALG.
-> > 
-> > > I believe the failure is when calling:
-> > > 
-> > > KEYCTL_PKEY_QUERY enc="x962" hash="sha1"
-> > > 
-> > >  From logs Michael posted on the IWD list, the ELL API that fails is:
-> > > 
-> > > l_key_get_info (ell.git/ell/key.c:416)
-> > Okay, I guess that's what's actually causing the problem.  KEYCTL_PKEY_* are a
-> > weird set of APIs where userspace can ask the kernel to do asymmetric key
-> > operations.  It's unclear why they exist, as the same functionality is available
-> > in userspace crypto libraries.
-> > 
-> > I suppose that the blamed commit, or at least part of it, will need to be
-> > reverted to keep these weird keyctls working.
-> > 
-> > For the future, why doesn't iwd just use a userspace crypto library such as
-> > OpenSSL?
-> 
-> I was not around when the original decision was made, but a few reasons I
-> know we don't use openSSL:
-> 
->  - IWD has virtually zero dependencies.
 
-Depending on something in the kernel does not eliminate a dependency; it just
-adds that particular kernel UAPI to your list of dependencies.  The reason that
-we're having this discussion in the first place is because iwd is depending on
-an obscure kernel UAPI that is not well defined.  Historically it's been hard to
-avoid "breaking" changes in these crypto-related UAPIs because of the poor
-design where a huge number of algorithms are potentially supported, but the list
-is undocumented and it varies from one system to another based on configuration.
-Also due to their obscurity many kernel developers don't know that these UAPIs
-even exist.  (The reaction when someone finds out is usually "Why!?")
+--qvkdgkeszeuphbmn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It may be worth looking at if iwd should make a different choice for this
-dependency.  It's understandable to blame dependencies when things go wrong, but
-at the same time the choice of dependency is very much a choice, and some
-choices can be more technically sound and cause fewer problems than others...
+Hi Linus,
 
->  - OpenSSL + friends are rather large libraries.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-The Linux kernel is also large, and it's made larger by having to support
-obsolete crypto algorithms for backwards compatibility with iwd.
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
->  - AF_ALG has transparent hardware acceleration (not sure if openSSL does
-> too).
+are available in the Git repository at:
 
-OpenSSL takes advantage of CPU-based hardware acceleration, e.g. AES-NI.
+  https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-hsi.git tags/hsi-for-6.9
 
-> Another consideration is once you support openSSL someone wants wolfSSL,
-> then boringSSL etc. Even if users implement support it just becomes a huge
-> burden to carry for the project. Just look at wpa_supplicant's src/crypto/
-> folder, nearly 40k LOC in there, compared to ELL's crypto modules which is
-> ~5k. You have to sort out all the nitty gritty details of each library, and
-> provide a common driver/API for the core code, differences between openssl
-> versions, the list goes on.
+for you to fetch changes up to 3693760295e8c8a1a88cb3da5b178959b3cc7c75:
 
-What is the specific functionality that you're actually relying on that you
-think would need 40K lines of code to replace, even using OpenSSL?  I see you
-are using KEYCTL_PKEY_*, but what specifically are you using them for?  What
-operations are being performed, and with which algorithms and key formats?
-Also, is the kernel behavior that you're relying on documented anywhere?  There
-are man pages for those keyctls, but they don't say anything about any
-particular hash algorithm, SHA-1 or otherwise, being supported.
+  HSI: ssi_protocol: fix struct members kernel-doc warnings (2024-02-25 19:05:45 +0100)
 
-- Eric
+----------------------------------------------------------------
+HSI changes for the 6.9 series
+
+ * fix kernel-doc warning
+ * make hsi_bus_type const
+
+----------------------------------------------------------------
+Randy Dunlap (1):
+      HSI: ssi_protocol: fix struct members kernel-doc warnings
+
+Ricardo B. Marliere (1):
+      hsi: hsi_core: make hsi_bus_type const
+
+ drivers/hsi/clients/ssi_protocol.c | 3 ++-
+ drivers/hsi/hsi_core.c             | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+--qvkdgkeszeuphbmn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXyJLsACgkQ2O7X88g7
++po4CRAAg3K0dgjj2KqGfCB83OjO0LG1iePBjOdEa1wQ9/sjlpvGY7eof540nRHw
+9zz2Y4zkRqr3aBwFF4no28Ck0R1Rb7Q9idyXxcOi3rXxw53qxDc+PbrP4o7TX0NX
+nN9X0IKz6w9cNk1A4cee8J4N6Rllac/1ENOE74VWwI3Zh76JB47Nh0viTAsJ3M8N
+Q6K4mREfmoIcS+1P2Pprh46Xs/LGRb3oy5PHnVcoewL9drWMsR5Prf5No1YqCiPY
+BfpCqCC5S6QlY3400fQ/l0+aR/na1fhQaepxHK9mBGSz8Lm6KaOXBYNjbaaCqJSG
+tv6hF0wLhETMWLBwQ+V/5YgG5ihVTHPWXITp4/Abnre9OJqn8ei7qApj35PsNcuO
+M+Lwnmgr+UGPoGP8Pn+IdHGvLKShLZnNffV/nsEBqJbQ31Re+jC2oZ+6LjBiSIhj
+2g7NSnc3KUYFXYcLa3Hwnqhj6A57YFWehwtsI/KB34Me3J7Cy3l05PmVAfSjKdYR
+ifIBSmD8SI6yJUvzYGUY3su2a+MKGEOKa/vP5zGtAojfOzjFVaYbsFsHcmRYv7pc
+iSyQPfT4xdxuGBxvnbHR7M3gEd0s/wsTqC3xuOr2Cj2tyK1Y+ieWzh5c+kHRz3ID
+39waJ4YpA9iSWnXcqZUF4pjYKMC9mGORzDe2V4uhupr+/OysH8s=
+=P+X4
+-----END PGP SIGNATURE-----
+
+--qvkdgkeszeuphbmn--
 
