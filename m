@@ -1,94 +1,98 @@
-Return-Path: <linux-kernel+bounces-101541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FD887A873
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:31:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5767B87A885
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:34:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76BAD1C22DB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:31:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12AAD28824F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B267547779;
-	Wed, 13 Mar 2024 13:29:51 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B7141A81;
+	Wed, 13 Mar 2024 13:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IO4tH2PE"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4917046B83
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523CE405FB;
+	Wed, 13 Mar 2024 13:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710336591; cv=none; b=cw5YcHmk7T3eMFZa1FpUPK5M8xK81feYOA+vKcVariFJOeKUe4TXKsuH8wf9xClvchlWGVxPkR3xK+YLTZxgvVtbMTqIzPEpKtnZw/6PQ8jS9ja2hbfg8itWzxrvVZjRm+5S54iuYS6u2X4sxx9TEw+qH/JEUxvRg9pvfFYiBu0=
+	t=1710336833; cv=none; b=J465oQgO9NjEEqHi/l4mAej1fHtSLFWftNQlH2Hbprp1m4ZC/KH3Yd7xOubsqWmfPZaKPKhh+ulYjEiQVXFacQgGUmBOlJNn+LVzTSoNbJ5udzEs9Cmq/+z/UofCfv5WxqTm3FwB6IBKrue8It6eCTxYQDPlFHWpyPw2gnqZD0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710336591; c=relaxed/simple;
-	bh=pdLDJC2piLf5zMosG1/TZ7MhDvUxHrIdoOhQ2pDEzgc=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=WyOHT42+bed3csqpgC3QgUiTH2GOCbtYT93SEpULh9C8fD2V37kTIDiCxGyAOMMRzL9fqMRxVk+8xZ0X0kD1DiC8w0axmqgAItw62Ja7ytozbeJzkc98b2jPBtcj9CmDSlxZJnOJDtb7VdL7qc54DIovBTu7/r3xdAEOGmlBoco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TvrsD1DMFz1Q9gw;
-	Wed, 13 Mar 2024 21:27:12 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id D5A3E140159;
-	Wed, 13 Mar 2024 21:29:39 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Mar 2024 21:29:38 +0800
-Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
-To: Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Richard
- Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Daniel Golle <daniel@makrotopia.org>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240313084707.3292300-1-arnd@kernel.org>
- <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
- <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
- <1a12c8ed-0cb5-5650-24a2-84b021c444c3@huawei.com>
- <b08aaae4-8c69-47eb-9658-5f3f5c8e4056@app.fastmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <610231c3-c3ee-e543-1a8a-8e1098ee6a7c@huawei.com>
-Date: Wed, 13 Mar 2024 21:29:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1710336833; c=relaxed/simple;
+	bh=UKNfHkFUfW8BD4aHXiUmUAZ/Q8J+UTCD0Y4wEBqhxb8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f95qsLhTGs+0RdA3VO2CcMtyM+Hp7TJAjXKqpuOJuK9KFyWZ9Ok6vYTbZZYVWEvHAc2xKRRPYT8mzYVm9fpVplAL1QhI6OCD+gGLzdcTUXMGUXmp8xT1bQyKMT4b3+EjiTXyEmIb2PG7C0o+pDsiifdzZFZbJ6MO792clJYJPh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IO4tH2PE; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=33U31DCV2KCLLZyQAScLDgQiaurxz3slXOJCTqSXSig=; b=IO4tH2PEhqV8bjmUANSsH9yBTe
+	ptWtHefyPjRLVI3cib2dxXCEQFvJzGq3jL4INWhx3If8EpMEcuAZwnp1LsAodRkspZgaeRqZmIM5a
+	88cHTcI+PTfP6CpHZ5f21IdgmTIpAMPPOIuGumIR+Tz23utC3sGTrildhKvMXJv2uxpX1AS9EdXlw
+	jJFmJ4k9ltxclmV14y980yolFqFwOCp8e/MmyeSVyatBF8BYlq1JeGJ7YNJwV5Zxb2u0a8eDmKP0x
+	rGhNv38w0JVWVcXJ6It/3ANdkzroiRADow26MsYNmw0lvKWliKYhgtPz8uUbB///5zwFNM+9mXyV6
+	gFyyDiDQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rkOjl-0000000AFHm-0hcx;
+	Wed, 13 Mar 2024 13:33:41 +0000
+Date: Wed, 13 Mar 2024 06:33:41 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: David Stevens <stevensd@chromium.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Christian Koenig <christian.koenig@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Yu Zhang <yu.c.zhang@linux.intel.com>,
+	Isaku Yamahata <isaku.yamahata@gmail.com>,
+	Zhi Wang <zhi.wang.linux@gmail.com>,
+	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
+Message-ID: <ZfGrNSmroP-r9EHy@infradead.org>
+References: <20240229025759.1187910-1-stevensd@google.com>
+ <ZeCIX5Aw5s1L0YEh@infradead.org>
+ <CAD=HUj7fT2CVXLfi5mty0rSzpG_jK9fhcKYGQnTf_H8Hg-541Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b08aaae4-8c69-47eb-9658-5f3f5c8e4056@app.fastmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+In-Reply-To: <CAD=HUj7fT2CVXLfi5mty0rSzpG_jK9fhcKYGQnTf_H8Hg-541Q@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-在 2024/3/13 20:21, Arnd Bergmann 写道:
-> On Wed, Mar 13, 2024, at 13:10, Zhihao Cheng wrote:
->> 在 2024/3/13 19:53, Arnd Bergmann 写道:
->>> On Wed, Mar 13, 2024, at 12:29, Zhihao Cheng wrote:
->>>
->>> The way it usually goes is that someone adds an open-coded
->>> 64-bit division that causes a link failure, which prompts
->> I'm a little confused, what kind of link failure? Could you show an example?
+On Wed, Mar 13, 2024 at 01:55:20PM +0900, David Stevens wrote:
+> On Thu, Feb 29, 2024 at 10:36 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Thu, Feb 29, 2024 at 11:57:51AM +0900, David Stevens wrote:
+> > > Our use case is virtio-gpu blob resources [1], which directly map host
+> > > graphics buffers into the guest as "vram" for the virtio-gpu device.
+> > > This feature currently does not work on systems using the amdgpu driver,
+> > > as that driver allocates non-compound higher order pages via
+> > > ttm_pool_alloc_page().
+> >
+> > .. and just as last time around that is still the problem that needs
+> > to be fixed instead of creating a monster like this to map
+> > non-refcounted pages.
+> >
 > 
-> The open-coded 64-bit division without using do_div() shows up as
-> 
-> x86_64-linux-ld: drivers/mtd/ubi/nvmem.o: in function `ubi_nvmem_reg_read':
-> nvmem.c:(.text+0x10a): undefined reference to `__umoddi3'
-> x86_64-linux-ld: nvmem.c:(.text+0x11f): undefined reference to `__udivdi3'
-> x86_64-linux-ld: drivers/mtd/ubi/nvmem.o: in function `ubi_nvmem_reg_read.cold':
-> nvmem.c:(.text.unlikely+0x2d): undefined reference to `__umoddi3'
->  > The idea is that gcc expects __umoddi3 to be provided by libgcc,
-> but Linux intentionally leaves it out in order to catch accidental
-> 64-bit divisions.
-> 
+> Patches to amdgpu to have been NAKed [1] with the justification that
+> using non-refcounted pages is working as intended and KVM is in the
+> wrong for wanting to take references to pages mapped with VM_PFNMAP
+> [2].
 
-Thanks for explaination, which means that do_div is used for 64-bit 
-division to solve the link failure caused by missed libgcc. Since 
-parameter 'from' is u32, there is no need to invoke do_div on a 32-bit 
-platform, you just want to stop the wasting behavior on a 32-bit 
-platform. Do I understand right?
+So make them not work for KVM as they should to kick the amdgpu
+maintainers a***es.
+
 
