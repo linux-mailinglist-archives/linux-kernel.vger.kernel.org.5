@@ -1,106 +1,168 @@
-Return-Path: <linux-kernel+bounces-102279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6429E87B020
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:44:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C6A887B03E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B5731C26029
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:44:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4B3FB2A313
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965A412EBE2;
-	Wed, 13 Mar 2024 17:38:14 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9B2634FB
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3D312F588;
+	Wed, 13 Mar 2024 17:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dqu768mf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="832EQJtb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dqu768mf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="832EQJtb"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71103481C2;
+	Wed, 13 Mar 2024 17:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710351494; cv=none; b=OffmqXPu0lrdO3X4bRhcj7NoZyRy+geL0CaL5Z3LM+Dc1bb1KwHOrSefbv+kPuQZB9nHz9dCZUIQ1uWYiUxqn0tbCtcWFmHW6ev+bEpy6mF34A5ZbX2/vcFyqZXYyP5oGD9FCQKXlLb2XA6kLTEKBS4vezeUZGkcbtgA+Pybusg=
+	t=1710351533; cv=none; b=VJDAWA1DM09peppBmNdpOPVbrFQAaSWvvB8AnKMhFvWmgsi24ueOns6Z6FU1j8In585Mtlw5WaupCzq5U8gjQ9mNR4LLSeTIdvSVFBrZb58fwJjujZ+ZTNlY+Jq/d/aU/H8XI112LQonai8wWlkp+svc0B8j9QC1gYNvnUGYbSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710351494; c=relaxed/simple;
-	bh=Po+4lA1wENmeWL/NswnAViySKzXpp/YmiQdUG3AAD3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u4RJKHxCnWljuJtdfkjl8P2R+Q8ffX71618yK96uovydaWuwbudu9HL8+qulwiovTBwkh0692HmB7LHRsHX7mrR2f4eEIyTmL1jFbknnscd/6XEvVLqhQaIMIIeueUFpBioOvos5qOwWuy20Jwbzv7m15zLbMXDj1MZ7BQUBPog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD6801007;
-	Wed, 13 Mar 2024 10:38:48 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E8533F73F;
-	Wed, 13 Mar 2024 10:38:11 -0700 (PDT)
-Date: Wed, 13 Mar 2024 17:38:08 +0000
-From: Andre Przywara <andre.przywara@arm.com>
-To: Jernej =?UTF-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-Cc: wens@csie.org, samuel@sholland.org, Kamil Kasperski
- <ressetkk@gmail.com>, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] dts: arm64: sunxi: add initial support for t95 tv
- box
-Message-ID: <20240313173808.38d893b5@donnerap.manchester.arm.com>
-In-Reply-To: <13468418.uLZWGnKmhe@jernej-laptop>
-References: <20240311174750.6428-1-ressetkk@gmail.com>
-	<13468418.uLZWGnKmhe@jernej-laptop>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+	s=arc-20240116; t=1710351533; c=relaxed/simple;
+	bh=iT2EbtIiOSs+T3XVOk0ucGQQB0rgJHFWBYQuIY3ikcY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T6fbck+V67qzALht4ypfs4YS6ixIh+LX07pzJ8hSu8QH4dvgmq7Uwel0wbujQLADGFHKc/mPhhX8oeKJOPSvC567IruyR0zZqtzitemmaJ4M7WuxD4p3DvPrJh1BDuwGNoSHK8THopf/yjrgGnrEUibtS7/alFEn2l/Pq0CRP7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dqu768mf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=832EQJtb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dqu768mf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=832EQJtb; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3F8FD1F7DB;
+	Wed, 13 Mar 2024 17:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710351524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yMHX7C1BrffE+lUVVYYRj2OqTJWgz3tHlk1+zoyfoP8=;
+	b=dqu768mf5iPEPwfo/ukXFQJBMhYb31aq3rO7+/lVl4HVLt/Z5Y5qqKrJBWQGoId0fhTKWA
+	6zIQO0qY/sgdLT64Xw6dzzPRUuk6K3koWpuRK5WqJ2Pt2DfVmEd0zAEsZG16nCjwG8I3cQ
+	Ytb12fy/D5hwgraP2lBsDUPUraFPats=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710351524;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yMHX7C1BrffE+lUVVYYRj2OqTJWgz3tHlk1+zoyfoP8=;
+	b=832EQJtbK1RWV+Y9LTKVBumFeZcIhjeT0e45VbJiMaT+A1au8tMIdpvorlMJXYyqj57SzZ
+	EVJ/ahR0ziHKmbAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710351524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yMHX7C1BrffE+lUVVYYRj2OqTJWgz3tHlk1+zoyfoP8=;
+	b=dqu768mf5iPEPwfo/ukXFQJBMhYb31aq3rO7+/lVl4HVLt/Z5Y5qqKrJBWQGoId0fhTKWA
+	6zIQO0qY/sgdLT64Xw6dzzPRUuk6K3koWpuRK5WqJ2Pt2DfVmEd0zAEsZG16nCjwG8I3cQ
+	Ytb12fy/D5hwgraP2lBsDUPUraFPats=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710351524;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yMHX7C1BrffE+lUVVYYRj2OqTJWgz3tHlk1+zoyfoP8=;
+	b=832EQJtbK1RWV+Y9LTKVBumFeZcIhjeT0e45VbJiMaT+A1au8tMIdpvorlMJXYyqj57SzZ
+	EVJ/ahR0ziHKmbAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 329761397F;
+	Wed, 13 Mar 2024 17:38:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZJ1KDKTk8WXPIgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 13 Mar 2024 17:38:44 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C8D6FA07D9; Wed, 13 Mar 2024 18:38:43 +0100 (CET)
+Date: Wed, 13 Mar 2024 18:38:43 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+4fec87c399346da35903@syzkaller.appspotmail.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, kch@nvidia.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [hfs?] INFO: task hung in hfs_mdb_commit
+Message-ID: <20240313173843.bhsvylbozi3kvcit@quack3>
+References: <000000000000aa9b7405f261a574@google.com>
+ <0000000000007c7392061317a56f@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000007c7392061317a56f@google.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dqu768mf;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=832EQJtb
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.02 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.01)[46.51%];
+	 SUBJECT_HAS_QUESTION(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872];
+	 TAGGED_RCPT(0.00)[4fec87c399346da35903];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_HI(-3.50)[suse.cz:dkim];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.02
+X-Rspamd-Queue-Id: 3F8FD1F7DB
+X-Spam-Flag: NO
 
-On Wed, 13 Mar 2024 18:25:14 +0100
-Jernej =C5=A0krabec <jernej.skrabec@gmail.com> wrote:
+On Thu 07-03-24 12:09:01, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126c98ea180000
+> start commit:   7475e51b8796 Merge tag 'net-6.7-rc2' of git://git.kernel.o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4fec87c399346da35903
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1286c3c0e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=121cc388e80000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-> Hi Kamil!
->=20
-> Dne ponedeljek, 11. marec 2024 ob 18:47:47 CET je Kamil Kasperski napisal=
-(a):
-> > T95 is a most commonly known for being a box with a pre-installed malwa=
-re.
-> > It uses Allwinner H616 and comes with eMMC and DDR3 memory.
-> > This device comes with two versions - one with AXP305 PMIC and another =
-with AXP313 PMIC. =20
->=20
-> I have this board and it always felt like a clone of X96 Mate, which is
-> already supported in kernel, except for broken sd card detection. Would it
-> make sense to unify those two boards and just overwrite or update parts h=
-ere
-> that are not the same?
+Makes sense.
 
-I think the box you have is an older one, with the AXP305? IIUC, this is
-about a newer revision with the AXP313. There are quite some differences
-between the two PMICs, though it might still make sense to share the DTs,
-see the OrangePi Zero[23].
+#syz fix: fs: Block writes to mounted block devices
 
-Cheers,
-Andre
-
-> > Kamil Kasperski (3):
-> >   dt-bindings: vendor-prefixes: sunxi: add T95 to vendor-prefixes
-> >   dt-bindings: arm: sunxi: add t95 compatible string to list of known
-> >     boards
-> >   dts: arm64: sunxi: add initial support for T95 AXP313 tv box
-> >=20
-> >  .../devicetree/bindings/arm/sunxi.yaml        |   5 +
-> >  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
-> >  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
-> >  .../dts/allwinner/sun50i-h616-t95-axp313.dts  | 138 ++++++++++++++++++
-> >  4 files changed, 146 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-t95-axp31=
-3.dts
-> >=20
-> >  =20
->=20
->=20
->=20
->=20
->=20
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
