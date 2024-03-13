@@ -1,106 +1,150 @@
-Return-Path: <linux-kernel+bounces-101135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9DD87A2EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:21:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2DDB87A2F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F7D41F22499
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:21:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 739C8B21B44
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797F013AD9;
-	Wed, 13 Mar 2024 06:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D203168C4;
+	Wed, 13 Mar 2024 06:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FhYCXFI0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NtNihdWS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EEE134AD;
-	Wed, 13 Mar 2024 06:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766741642A;
+	Wed, 13 Mar 2024 06:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710310871; cv=none; b=B69OI5CtYgD1/8mD2Wdm/UFFSHfn/3gpm9owL+G0D2jIKbNInX4t4/sA75sFxrPqdfn8lifCzZa+aAQN9kfahDhgrq6Kbff7hL8Z9dseNqLD0ZnRsby87nrTR8QHKYgJn1KHyAaO2ELzNvHSCGiiJZTO3cQgOleD7CdyoD0+igU=
+	t=1710310880; cv=none; b=CKWZZgRe7wCroT0fPyGgrwcmk99qGZ+MZu8zXwMMd+VCTYCGJRV3JbJ6e8cdB5JZOqDCGZnCTGW+sNgUF7EtlOvTID/0cdhInBt9pbJJ6elpd407WJlWMNO1lh3x5dW/BZm7yjLFhWdsikOf8EG/QrejwsvgDp79H1bWiOr95xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710310871; c=relaxed/simple;
-	bh=EPw8e/w2xSm3NHGve5v9/ek70f9QhUmv8BOnvxYj4Xo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TPHaixHpNvFTX/B+qyXRHUEwS2mRB1YPPF18fJaWELJQ9iTettEPaQOWaA6aynNPmYb92LzfciXx69y6x+A4IUV4X94FK24K9gi18OwrKHlREowcXcHL7aKqrqnYkn+Oi02z6Oo+Nc8DbnvTv703JFtHQuT3jpNFGVMQIzBcdb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FhYCXFI0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29DB4C43394;
-	Wed, 13 Mar 2024 06:21:11 +0000 (UTC)
+	s=arc-20240116; t=1710310880; c=relaxed/simple;
+	bh=Kf6Rjwq8Q1L9x0D8vIvoKvL60yatJLvjveDYXD/c7gA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xnh59m8tOppVe/4K/2tgFA8Ug9EDB6YAv0wwOFsqrZe7crd376uCw8EW1k1dOatFOnWExmv65o9Rln6SPPG7i6tj3MIvv0VSeKc1aNinIR9dgEeAaHjHPV1kzn8Ybv67raPCyRhP4FJpvJ/gZtJKkDnpYuzA/jmePEEuSzXApBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NtNihdWS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D745C433C7;
+	Wed, 13 Mar 2024 06:21:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710310871;
-	bh=EPw8e/w2xSm3NHGve5v9/ek70f9QhUmv8BOnvxYj4Xo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FhYCXFI0QI/o3Gj2Bo+N15oaw6m38zRgPEB6NroGStto3CyuGayLWOWUL/E4siQI8
-	 9s39DhDXfZ+8Lwd0nh4iyboF1XsscFXuELPTyk44qk3d/m/dfKn4DXqYcs4ViL5gYL
-	 0gfQCag92xpjVmoXye1b5uvyL6Rypu0wQab/syoFJx2+Wf+/KowhOHSxGY/PKweiBX
-	 QbGrT1Q87DVWrj5/WmKOqJtREUC9WKUhnxo53gAO0O6wz9/G/jzgJfEp2FpgxW2Lc+
-	 8GwQuV3bDk/6SYWWVY6WUveiojbh/FqGccnkhw3pgCkpXJNbyGqsGkjA4ebeix4mR/
-	 FgFhlaVMKbphA==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51323dfce59so4631579e87.3;
-        Tue, 12 Mar 2024 23:21:11 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWUwxv7zdEOmqQVaRc/p7wrWYvHJf74Q+6IdcaQ9at7MgWKYUmSh8UKCz7K5iZ7cSdKhu4ers5RfsaPYpJx9EUGaCRzzQ9huhWVJMF2PLZT4qR5LFebWnOQutX87a+rjcvAvP3oOdV81w==
-X-Gm-Message-State: AOJu0YzopidVaqIxih0HG+dXcDZ3R4NkatAYqo6yDhwu0pE5rs4yVAc5
-	NfSkIHZlZ9Wnb3v+ieXbQ6AoXWkJaR8Vl0bojQSckRyY9b0va9FCwQ6zJMPhrGklYlFAU1aI7AX
-	cUYxYbWqf3UmQS4JS9Um88D8fW5I=
-X-Google-Smtp-Source: AGHT+IGgtSaFsoXuyPfMfrQ74aFVHUDiMTCWWAU+KEtddvyBQBjy2sz9m7lnXhzYDoKzDxYRLNrLYdEULpa1L3x6lzU=
-X-Received: by 2002:a05:6512:34ce:b0:513:4766:2713 with SMTP id
- w14-20020a05651234ce00b0051347662713mr7384351lfr.59.1710310869358; Tue, 12
- Mar 2024 23:21:09 -0700 (PDT)
+	s=k20201202; t=1710310880;
+	bh=Kf6Rjwq8Q1L9x0D8vIvoKvL60yatJLvjveDYXD/c7gA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NtNihdWSavdZK7WJ7rW+uC0ywk1ZLKAmigCAUwxsZUA4LOLM8E2g9JQHQ7y+PfFbI
+	 U0j5+YurMymB4TupTy0krDJSIOzqf7MwVMT9jJ2ra12uNhkeL6/N8w2RNBB9M85q57
+	 ACmkvUktWcH+tJoT/qE1BSYU1gbjxP9cpIUop7/6hX+/JRi5HmH6nEI5KJuWgnEo9t
+	 YQ0sbFc6L4+F9uWBR0jjI5nNJBCGj4t87pVTLEtwOqfN+9s/rYLUVkYAe/Av4Ybxx3
+	 T0SySpLc85/Kd1g+opSMUY6oPyCZl9fT7H0LJykOUzxxKF54al5+FxVFTl5ltlCSiI
+	 o9KtJxRkR1xIA==
+Date: Wed, 13 Mar 2024 07:21:16 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: Tony Lindgren <tony@atomide.com>,
+	Thomas Richard <thomas.richard@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+Subject: Re: [PATCH v4 03/18] i2c: omap: wakeup the controller during
+ suspend() callback
+Message-ID: <ZfFF3LpzesdwZH2t@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Tony Lindgren <tony@atomide.com>,
+	Thomas Richard <thomas.richard@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+References: <20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com>
+ <20240102-j7200-pcie-s2r-v4-3-6f1f53390c85@bootlin.com>
+ <20240308084240.GK52537@atomide.com>
+ <ZfAMT8CDW1VKW0qR@shikoro>
+ <63oaudxrjdqredpbh4rojcpgjh5tot2tx2gs2kpfplwgjmrluw@f3x2x5us5hw5>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130082722.2912576-1-maobibo@loongson.cn> <20240130082722.2912576-4-maobibo@loongson.cn>
- <87a5o4iti4.ffs@tglx>
-In-Reply-To: <87a5o4iti4.ffs@tglx>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Wed, 13 Mar 2024 14:20:58 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6Qqz54yQ8uehjx+jEhwCzNzeFfN=gHttLaq_xYQJZchg@mail.gmail.com>
-Message-ID: <CAAhV-H6Qqz54yQ8uehjx+jEhwCzNzeFfN=gHttLaq_xYQJZchg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] irqchip/loongson-eiointc: Refine irq affinity
- setting during resume
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Bibo Mao <maobibo@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Sergey Shtylyov <s.shtylyov@omp.ru>, lvjianmin@loongson.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5scK1x9kjxT2H4q5"
+Content-Disposition: inline
+In-Reply-To: <63oaudxrjdqredpbh4rojcpgjh5tot2tx2gs2kpfplwgjmrluw@f3x2x5us5hw5>
 
-Hi, Thomas,
 
-On Tue, Feb 13, 2024 at 5:49=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Tue, Jan 30 2024 at 16:27, Bibo Mao wrote:
-> > During suspend and resume, CPUs except CPU0 can be hot-unpluged and IRQ=
-s
-> > will be migrated to CPU0. So it is not necessary to restore irq affinit=
-y
-> > for eiointc irq controller when system resumes.
->
-> That's not the reason. The point is that eiointc_router_init() which is
-> invoked in the resume path affines all interrupts to CPU0, so the
-> restore operation is redundant, no?
-I'm sorry for the late response but I think this is a little wrong.
-When irq_migrate_all_off_this_cpu() is called at hot-unplug, if an
-irqdesc is irqd_affinity_is_managed() then its affinity is untouched
-(doesn't change to CPU0). Then after resume we should not keep its
-affinity on CPU0 set by eiointc_router_init() , but need to restore
-its old affinity.
+--5scK1x9kjxT2H4q5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Huacai
+Hi Andi,
 
->
-> > This patch removes this piece of code about irq affinity restoring in
-> > function eiointc_resume().
->
-> Again. 'This patch' is pointless because we already know that this is a
-> patch, no?
->
+> Agree... but who is going to take this? Eventually I can just
+> this one.
+
+Usually, it should be stated in the coverletter what the suggested path
+for upstreaming is. If it is not, then I apply my gut feeling what
+should be better. With this series (and seeing that there are no other
+omap patches pending), I assume some other tree so I ack in advance. If
+I am wrong and should apply it independently, people will tell me at
+this stage. That's how I handle it.
+
+Happy hacking,
+
+   Wolfram
+
+
+--5scK1x9kjxT2H4q5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXxRdcACgkQFA3kzBSg
+Kba8phAAhAo3TFrjiov9KU/9ImhFn6FAJISY+9pjqIRBEVJVf+LM/ky3QcorHKZI
+dMtQR+V1gj8en3ZBi2oZSQB3VW8Ije4evX/CtxviumW34i1cH0NyN3dn0WLrTwb3
+Le+u1d8LSRIO+hIHLpRQ3WuRfk5TEI052bHmSJINKqh1TjHImKIn+niRruR+cb77
+7KNJwqPjFu1NnLgNV4nP56Jwh8wRO1oUEZrHq3st3yX3c6sq7oNovYoqenFtiNjt
+SkpsuJupYCYob+sH5b2F+ZhtSMSM0C7JvLk7oQSxuEJ5UeIxuDD1u/zhMMW1AjQ7
+c+f/y1SEeSQkwHt5ywEEYFxuHgQNV/YedJwFDT4j/U5kWL5dT2ZEslZIao+y0gEt
+f5ktqsPVeYCWDVZL56I0kNNDpJiR78uZxuBk5YB7VXLlihnmNVcD7cNYhRecU7d+
+gv1A21XSiCZLXK96YS9PqBKODRY5I+yqv2geNBOEW4KJvacFR8aQ9big1Oizppgm
+RYyHdnbkrfAUHU1NrVmYsn1kgboUxgi0E+mD0bImSXEUW/G1bHofOo+g2ccKSdXR
+jFlvQzck0qQQuxJCHlOTlTGZuqKVIkZ0x8ItqMQkSSP9GXtICdDWrl63V6+Yki5a
+josi4NEL739wHNHZDYyjd8wyR+CkkDsaQBH4eLrBYjOdyCvNybU=
+=jpCM
+-----END PGP SIGNATURE-----
+
+--5scK1x9kjxT2H4q5--
 
