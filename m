@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-102056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12DDA87AE08
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:47:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C8E587AE0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2B9228109A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:47:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67621F2D0FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E1E156963;
-	Wed, 13 Mar 2024 16:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB32C15698C;
+	Wed, 13 Mar 2024 16:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OR8eiH02"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PGi+CYOM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C7A155A37;
-	Wed, 13 Mar 2024 16:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E3415697B;
+	Wed, 13 Mar 2024 16:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348435; cv=none; b=braYCVwPMYLn1qJdbaZKiCPGIpG7HqXzci07fKX3xWBWWxXONl3UVAR143RwMFl+6CQPI3dusueDnl9Mc2mmWT1J/61YUWqc1sd/htYx6KvKWiEbRh6UYVxEd6MwhadvQ3Lx3E4aSaUZ8vlbpea87dLymRjWXCCPIZzzKiZcVyM=
+	t=1710348437; cv=none; b=R9hpWR2ZTIh5HV+3O86aBFnK5AWLYP2JoQ2EcATkA8cIVMfWDnOZ6saQKuvWHNYuBx6VAAW0DISUV7WVwY6WPkwkvo07R+JzLrj2my2wnht6OhBc3O0qPFwL+fHSkjxGjW65kjE42s+j1fFgJoqxuXMe25s37dByygzGfSV9T0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348435; c=relaxed/simple;
-	bh=Fk4VBjoxky/x4vOZ0nYWTRX8O5NSYCQ4esJ/tMM9+K0=;
+	s=arc-20240116; t=1710348437; c=relaxed/simple;
+	bh=LyeZc5QveyggAQYPY/hrck83W9yX91L3yriLGxrzjlU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VTjtHaqVdx5HU9GItC/II1sFl0fGoo4mLnWGvDEfI2/LZa2IOL1F8HLFi/t7wESE7CSq2eb0KUK6WGUDwIvWV2XyymDjmbqmoy4BWf+HKYpt43P9LRF3ZRAi+5WOj5qIt0sa+EKjGnh65cBo0SnhNAzElcOYvW4HdGwZtdW1GGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OR8eiH02; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE33C43394;
-	Wed, 13 Mar 2024 16:47:14 +0000 (UTC)
+	 MIME-Version; b=cJGGHeOFtW6/H+P3lHwDqOiLFV26f4OYgU4nRj0maf69YCOojK4DeUVoHJcY+DzFmCzEm826M1e3hOVNB9RSGook32hCCrBBKgqv2E/XJLw45o2qrlO9AJTgy27UHp620NeYB4HGjV4WqLmGfcNJzFuQtE/WdaarXdOJHgeAZo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PGi+CYOM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9289EC43399;
+	Wed, 13 Mar 2024 16:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348435;
-	bh=Fk4VBjoxky/x4vOZ0nYWTRX8O5NSYCQ4esJ/tMM9+K0=;
+	s=k20201202; t=1710348436;
+	bh=LyeZc5QveyggAQYPY/hrck83W9yX91L3yriLGxrzjlU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OR8eiH02rOG4Ri21iqLwApkP6A1SeC9GGKkcQPxNFe0rVNb35ML3s80mOMsdDlmc1
-	 ddu6gBxI9nbqXyiha7ldzDVNypcWmvmd4k9fJfMN+GX5xKC9JFkb1qhuHGVjYq38sy
-	 9dNjAFsPFghcnLNyh8jsKV//NJT/Tv4dFod25Nc2Jg2IrpNToO8Fk3xkK5Hs79dLwv
-	 qqcr0X/u7+ON+ivpjXYFbrVqbu2xNliKFnFYcjbsF8/wKIwBDC9KMrNRNfI+rXNsAB
-	 CuGHOQN+4TwZtiB+nkN3TyIAaTxxYepQIwaxJdI0WZ8AVCGDZOAA2nWA1ePSCabkA/
-	 obO1UPpmieZSQ==
+	b=PGi+CYOM6bmhJO3Nt1Yi1aZ2MiFiToiqpLpcl6mFdf9AFGjwh+WDxep0+xNqIV1Ti
+	 6uTzEKxbodeC5pF7OqrmteTSG8L20dnN5nLI4HU9o7fsHrUhcAT7t7tdTPlXBkVhWU
+	 0FwyF7v212ejYq1Xl64C7j6FNivdKUzZ17wSkxCtSzHKt0KGKYgoFTEDsZCOhF9kJH
+	 Y5XzxPl/Le5RrmixbCALe33db+aFuushywUEfhb0+mZYyDUNiuIKxu6T2kSXS5gQUg
+	 2D+rLrSDGILgdFKEGjmOjuwGse/LN2k6fTvnj36q4SFEWTiwl0K6qAXbjIm16RLMJU
+	 TBFnqakPCcawQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+Cc: Nico Pache <npache@redhat.com>,
+	Donet Tom <donettom@linux.vnet.ibm.com>,
 	Shuah Khan <shuah@kernel.org>,
-	David Laight <David.Laight@ACULAB.COM>,
+	Christophe Leroy <christophe.leroy@c-s.fr>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 30/73] selftests/mm: switch to bash from sh
-Date: Wed, 13 Mar 2024 12:45:57 -0400
-Message-ID: <20240313164640.616049-31-sashal@kernel.org>
+Subject: [PATCH 5.10 31/73] selftests: mm: fix map_hugetlb failure on 64K page size systems
+Date: Wed, 13 Mar 2024 12:45:58 -0400
+Message-ID: <20240313164640.616049-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -70,56 +72,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+From: Nico Pache <npache@redhat.com>
 
-[ Upstream commit bc29036e1da1cf66e5f8312649aeec2d51ea3d86 ]
+[ Upstream commit 91b80cc5b39f00399e8e2d17527cad2c7fa535e2 ]
 
-Running charge_reserved_hugetlb.sh generates errors if sh is set to
-dash:
+On systems with 64k page size and 512M huge page sizes, the allocation and
+test succeeds but errors out at the munmap.  As the comment states, munmap
+will failure if its not HUGEPAGE aligned.  This is due to the length of
+the mapping being 1/2 the size of the hugepage causing the munmap to not
+be hugepage aligned.  Fix this by making the mapping length the full
+hugepage if the hugepage is larger than the length of the mapping.
 
-/charge_reserved_hugetlb.sh: 9: [[: not found
-/charge_reserved_hugetlb.sh: 19: [[: not found
-/charge_reserved_hugetlb.sh: 27: [[: not found
-/charge_reserved_hugetlb.sh: 37: [[: not found
-/charge_reserved_hugetlb.sh: 45: Syntax error: "(" unexpected
-
-Switch to using /bin/bash instead of /bin/sh.  Make the switch for
-write_hugetlb_memory.sh as well which is called from
-charge_reserved_hugetlb.sh.
-
-Link: https://lkml.kernel.org/r/20240116090455.3407378-1-usama.anjum@collabora.com
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Link: https://lkml.kernel.org/r/20240119131429.172448-1-npache@redhat.com
+Signed-off-by: Nico Pache <npache@redhat.com>
+Cc: Donet Tom <donettom@linux.vnet.ibm.com>
 Cc: Shuah Khan <shuah@kernel.org>
-Cc: David Laight <David.Laight@ACULAB.COM>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/vm/charge_reserved_hugetlb.sh | 2 +-
- tools/testing/selftests/vm/write_hugetlb_memory.sh    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/vm/map_hugetlb.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-index 7536ff2f890a1..d0107f8ae6213 100644
---- a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-+++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/bin/bash
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/tools/testing/selftests/vm/map_hugetlb.c b/tools/testing/selftests/vm/map_hugetlb.c
+index 312889edb84ab..c65c55b7a789f 100644
+--- a/tools/testing/selftests/vm/map_hugetlb.c
++++ b/tools/testing/selftests/vm/map_hugetlb.c
+@@ -15,6 +15,7 @@
+ #include <unistd.h>
+ #include <sys/mman.h>
+ #include <fcntl.h>
++#include "vm_util.h"
  
- set -e
-diff --git a/tools/testing/selftests/vm/write_hugetlb_memory.sh b/tools/testing/selftests/vm/write_hugetlb_memory.sh
-index 70a02301f4c27..3d2d2eb9d6fff 100644
---- a/tools/testing/selftests/vm/write_hugetlb_memory.sh
-+++ b/tools/testing/selftests/vm/write_hugetlb_memory.sh
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/bin/bash
- # SPDX-License-Identifier: GPL-2.0
+ #define LENGTH (256UL*1024*1024)
+ #define PROTECTION (PROT_READ | PROT_WRITE)
+@@ -70,10 +71,16 @@ int main(int argc, char **argv)
+ {
+ 	void *addr;
+ 	int ret;
++	size_t hugepage_size;
+ 	size_t length = LENGTH;
+ 	int flags = FLAGS;
+ 	int shift = 0;
  
- set -e
++	hugepage_size = default_huge_page_size();
++	/* munmap with fail if the length is not page aligned */
++	if (hugepage_size > length)
++		length = hugepage_size;
++
+ 	if (argc > 1)
+ 		length = atol(argv[1]) << 20;
+ 	if (argc > 2) {
 -- 
 2.43.0
 
