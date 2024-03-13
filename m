@@ -1,116 +1,157 @@
-Return-Path: <linux-kernel+bounces-101512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8735787A81B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B73E487A811
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA1181C217A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:12:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8D421C20B63
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:07:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27EE4405E6;
-	Wed, 13 Mar 2024 13:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C56405E6;
+	Wed, 13 Mar 2024 13:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Qhza5gW+"
-Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R1fm8+l9"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CD4225AD;
-	Wed, 13 Mar 2024 13:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B043E487
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710335556; cv=none; b=ZnZT9wlyFD4kMzg0pLEDqgh+klesV71azUVIEzJ3mUsjcbBX2rWMyfB1FK3htx21iqpvyxdutXoTJzUtiLXx7jydddyn4WkBLdGimVr+ihYtTHu36i6TVFT6AxS33u8DUAvf+ChteB9cuvQoeDEb10DfWpQ8EwzBcQTzAfugysU=
+	t=1710335233; cv=none; b=Yqr73jZ3ZwOMFaidz59AfmlvO4TyoXyIk6ILJRRI/oEmdV7/JWpUwB1T6/CWVUSYGRlgZjQMSN3Y/liYQWJeaxBPfTsY4kAjkqb+19nrP5/KS1vvwiONvb4Rd8j0W5/FAieNE5Uq+Yd2uIf1CqOVxBD0skRUS6dCfKQmVl+1mXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710335556; c=relaxed/simple;
-	bh=EIddhXL/hBKW+RNALtuYnMmsP6DjsCPpVs48fZbzdJc=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=PsfCAjEdTcZrumNrjHxVN0S/iT1iIo4oHbW4SIUorx9fHcAiVs8jUkzbeTlWIP9Whr0KmnmN+Y4QH7IX10+YawyTT9E9T47MEqketnAUbJVUfSOgKzsPzAXSMtUHOQEf2EvDPtekSqJRE4G1kwRrkEgry9p0b+Y/UVog0ruefoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Qhza5gW+; arc=none smtp.client-ip=162.62.58.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710335231; bh=RxP83Uir+gh2fkaF4ZBO/T3Fp1vZ98pgi+n34nEkhLA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Qhza5gW+BA1RHn7e4AZJoeT1gvAVNUNhuOBYca5Gl6/ODtZt4n80xVFWzzS6Qb934
-	 hb2WH1ZQhX0djNSu7s0dqN86NqSOeeSUSxYb7M+4YWYozNi5zjhefEx/8w53iwGAsc
-	 gonrtXLJGjN+CAxnovbM0oibQHSIcVvxwSOS2+w4=
-Received: from pek-lxu-l1.wrs.com ([2408:8409:ce0:12a0:a032:4bf1:303d:acae])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 1C02DA4B; Wed, 13 Mar 2024 21:07:00 +0800
-X-QQ-mid: xmsmtpt1710335220t7y7fak82
-Message-ID: <tencent_938637BC4BA674C576F366443D5336109609@qq.com>
-X-QQ-XMAILINFO: NY/MPejODIJVt9wmOCP3xvkfrWcMJLkYT8gKu08MBlRe0mNe0uhXafEkyPldnd
-	 GQTtqyKiUna8/LnsnoteWmoOX94MOUhnS/3R9QPPfBn5nlVLMfIc+6QTlM7wA1Pfv0z3WpOb0Yiy
-	 FuacueNFL2uIBd15V0jpe9FA/5iDElNlgcsQgFZHDJOMhgVLEwa12l2sQ2PMAxm9R0PvatuRuJS/
-	 52SRFMVC9OyrXyR9QXjVEBgaLksQ96PeyfpifzFhQnLnRDEQOjDyaJZD/hythMxUENSobt84DWp7
-	 TDXParTfw4YftWL9zanyo+fHFSaERrNymhQ5P6C86C0+ayZNk8D0Tv88y1/At1GHqjc4W1WyIMZd
-	 xd/3WyuxqLg1TIwLmDEMIkipJSItxU9Lr8xuFrbVPstaWLwK1uUQsffxcRjRJ1aBUTscQF8o85lp
-	 bLCZiAmSDSwZsLmVjuYr+tOGpVu3ukCWeySolvO7jzB7EkGrQvIwRA1ra0WvQx/0KBX4yA9yI3Ne
-	 M78BibzWtkhaIdhOlYMlYeB0pLfffpRIKgTnXkOrWQOLaAKGo6o+q7NiJkDP+u1lkC2aREB0nyi1
-	 Wu9cyXW1NqfCosp31Sb/v50bj7L/FIF8pXOGWthC6Kf1fI0x0m9HuuF0dBySPxcZ83KAkQzKrEtH
-	 pbI2LyQC/HowEtlMoJmy///ImQqfSPBmlHDuNwuqsZ1ujpR6wAjO7FDBbQDS4ZRqRqUxvDJaFmdU
-	 SuK7vHNYOA+KjEhmAdUEK7/qhS58dNO1E82nWDbDZn0EkAbqHAflBKCXokEXp9gAW5a05lHkHrgT
-	 ACh2Ycz/uYFKt64r1kMzKanqcxcYeXpAF1eG1zkChIqoSD42ECzPjMyWAZxfzTtIywQiirCmHQL3
-	 PttSrfA+dwcyixrL8M8cUcfe3Lsq5YE6DcnzD1thbngm2BkVT0RjxGbB/L6IVCwQ==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com
-Cc: brauner@kernel.org,
-	jack@suse.cz,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	viro@zeniv.linux.org.uk
-Subject: [PATCH] libfs: fix warning in stashed_dentry_prune
-Date: Wed, 13 Mar 2024 21:07:00 +0800
-X-OQ-MSGID: <20240313130659.392488-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000003ea6ba0613882a96@google.com>
-References: <0000000000003ea6ba0613882a96@google.com>
+	s=arc-20240116; t=1710335233; c=relaxed/simple;
+	bh=AOENklKCQlzcOp8ThZzmspRg8sESxjS+RseYzxgGx7k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jBhzqtJjQgZW04kAEX079yCXjtKL1vRGfujV4vZ8CF8ptcUWZsT6QnZEWFOoZStd9w0RcYWJC/zIspGe+DZdc368zvMNC8/GZy1WKuQBGgFheXO2L0HxmD5Jf6Y32ogJ3VhDt/2rfXPRxxhkj2lGpP4Ue7Z865cMLZMEkRH6/9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=R1fm8+l9; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-413ebcf1315so2719705e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 06:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710335230; x=1710940030; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0h1HJWTel+cUT0T3nBc4aPkZwYen93F3ipuXMLtZBk0=;
+        b=R1fm8+l9iHmFOk+qsI+dU8sysRumMqDffcqN9d6OnPRVXk+3YQOZSjunrXZBYLLcPu
+         KJ0jmLIKROv+tDap5yMehtdx36wyljejbAL33rYDRpD0CIqheHYDrDMckmBe4A0gDLgq
+         C0OUSQQcRvLsdiIUoifAc9cvw3xMvgaOcrs04CK76I5Al6JL4wY7+4DGOb5ry5itCLTT
+         r/aC3siRdlQtRooAQhV+bpn+hQm78o0ueZtr3u/vidRuTVGxb6zJPtItehbneN0lfWzh
+         pTZjBYTht9W2Uqf0Po+hncby0RWqccBPQuVZxp2FhJ/9w0fRpNqZlhxo17oJ3nQR9/V5
+         W9vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710335230; x=1710940030;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0h1HJWTel+cUT0T3nBc4aPkZwYen93F3ipuXMLtZBk0=;
+        b=HnKFHpsC7mO1jN2HRdtF6AIrWVHwRuLJFqLmpcSNX3/3ZrCNokTTIIkZjmVDT0fHzw
+         JfPS4ZC1GLn9l71KFI1hyVDxlsVS89xn2VMRshk1LJWILckRT8Fji57lxV0uBc0FI8wz
+         0B8R6sZBMuQM5I5QO2/2V0jCYcPSAZM8i9hR836qGJgTF1flkYTcgSfmY6y73lF3vkoW
+         lgkYhOnSGg/FV4tpUWeCSbRZHjuaZ2oyZOhRzop3cnJuwtehxLk92dHd0N1vb9SWkY3J
+         3Uq0DbMRXACx7ICKE154CK9PwCoCz5u/fA5g4F3avVWtkcqU61XpL8tiUaXXCVTVitok
+         U+zw==
+X-Forwarded-Encrypted: i=1; AJvYcCUEoUryw9lpn+cZx0FrJn/hXs+pjXFvS0/e/jumHxUGP6NJUKCDguFWqpAkF4ogPyj6dV2el0yfexmoOkZ4TBp9+z2BmEgXySkdQO3Y
+X-Gm-Message-State: AOJu0YxMo6U6kECLyDGBNf8TSskWZWh9z7UIUFid/7C60tBlcz2IpzeW
+	icz5/8ps4lPCvG8Do4I39h6atka/UFv3Tu9gSpY+zJs7P5TenGcqW1EH5Eq5Oys=
+X-Google-Smtp-Source: AGHT+IGCNQQ+vVI9A+/mKULdTaoDGN4LOObKn8d9gfyev3ibpUqDcfmSUpsIWnmdEnjLU2rGKjCHpQ==
+X-Received: by 2002:a05:600c:3542:b0:412:ebce:4166 with SMTP id i2-20020a05600c354200b00412ebce4166mr8648709wmq.32.1710335230145;
+        Wed, 13 Mar 2024 06:07:10 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id bg28-20020a05600c3c9c00b0041330d49604sm2287312wmb.45.2024.03.13.06.07.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 06:07:09 -0700 (PDT)
+Message-ID: <f0961a18-ddb7-4bb9-aee6-c13f8a1dc020@linaro.org>
+Date: Wed, 13 Mar 2024 14:07:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Sumit Garg <sumit.garg@linaro.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org
+Cc: andersson@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, stephan@gerhold.net,
+ caleb.connolly@linaro.org, neil.armstrong@linaro.org,
+ laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com,
+ jimmy.lalande@se.com, benjamin.missey@non.se.com,
+ daniel.thompson@linaro.org, linux-kernel@vger.kernel.org,
+ Jagdish Gediya <jagdish.gediya@linaro.org>
+References: <20240313123017.362570-1-sumit.garg@linaro.org>
+ <20240313123017.362570-4-sumit.garg@linaro.org>
+ <c0e10cbf-c6f3-4b0c-8616-983da2a40236@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <c0e10cbf-c6f3-4b0c-8616-983da2a40236@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Initialize d_fsdata in advance to avoid warnings when recycling dentry due to
-inode allocation failures.
+On 13/03/2024 14:04, Konrad Dybcio wrote:
+> 
+>> +		led@5 {
+>> +			reg = <5>;
+>> +			label = "apq8016-hmibsc:green:wlan";
+> 
+> These names look overly complicated.. s/apq8016-hmibsc://g?
+> 
 
-Fixes: 2558e3b23112 ("libfs: add stashed_dentry_prune()")
-Reported-and-tested-by: syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/libfs.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+It should be dropped entirely in fact. There is color and function.
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 0d14ae808fcf..67dc503272eb 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -2013,6 +2013,8 @@ static struct dentry *prepare_anon_dentry(struct dentry **stashed,
- 	if (!dentry)
- 		return ERR_PTR(-ENOMEM);
- 
-+	/* Store address of location where dentry's supposed to be stashed. */
-+	dentry->d_fsdata = stashed;
- 	inode = new_inode_pseudo(sb);
- 	if (!inode) {
- 		dput(dentry);
-@@ -2029,9 +2031,6 @@ static struct dentry *prepare_anon_dentry(struct dentry **stashed,
- 	WARN_ON_ONCE(!S_ISREG(inode->i_mode));
- 	WARN_ON_ONCE(!IS_IMMUTABLE(inode));
- 
--	/* Store address of location where dentry's supposed to be stashed. */
--	dentry->d_fsdata = stashed;
--
- 	/* @data is now owned by the fs */
- 	d_instantiate(dentry, inode);
- 	return dentry;
--- 
-2.43.0
+Best regards,
+Krzysztof
 
 
