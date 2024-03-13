@@ -1,78 +1,92 @@
-Return-Path: <linux-kernel+bounces-102586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8ED87B44A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F9987B44B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F91D1F22868
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:23:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E4CD1F228DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A195A0F0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B733C5A0F6;
 	Wed, 13 Mar 2024 22:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JayZT0gC"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EoelQSV3"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B33459B53
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293DD59B4A;
+	Wed, 13 Mar 2024 22:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710368604; cv=none; b=bHjQqwlh9coQ6/cxEsUdBuNm2cU4TkbKvQnN1e3WHwNkvtUUXFeF2mwlhHBVF70g1DCF3K8Vy06AyzUcXXEeCzH2qdSUOcxL80N/+y9NmWcw04GIOm1+aJn0fc0yEcugkrBE2Y6YXDAZE6YJ0LFKPJ/TyDzHCz3bIolXkjLFm8o=
+	t=1710368605; cv=none; b=GGrcnIuEpLvDGY/pSjguYOavxXrNrzH1G2H4AmN38JYuI8kXUeCEy9oPd5+f58uHKC9T4VPkBXe74VukdW9mCIaSLFBykg9O3MQ1mtbPUWY/68YdkbH+u9CRGaaqoZT+4x08quvdILoPe1VKoXf1z/gqYA3un8hGsdKALaYMOCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710368604; c=relaxed/simple;
-	bh=PZG5cRX3qQhXu4dXkIQZpq03uK2kDc7kp9VzX1tWb98=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KkINoFfZM5IGMunAB4vTc7oA/YvcHIR+7Fjjav18bi1Oqv6K7ydG1T00Q2Yv/I/blj2PlXttbQzRpfb2GSSDfNn8jOw7e7ugxgDNOZQJUkG4FKkAB30prDqnw9nBp9ZRy0Br2nHWSS9+ppjlXaGOEXASweVlcVDdnu86TIYjN9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JayZT0gC; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 13 Mar 2024 18:22:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710368601;
+	s=arc-20240116; t=1710368605; c=relaxed/simple;
+	bh=a8Sh3dNbafbG/9FnX5AWeGa/mggShESsl2IMd9EzZtg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=nsOLwT4OaEqg3UtwlTkmlXzPYkGylKxgn2XVOCaidK3bo8NGpX71B2N89hrzkHn+lOPGfNr2ryNau5VcJY1iJLPENX1+SvgASdQr+17HDamnBkxA9aH6CwjBFkrpJ6r4KYL0jv0ZtpjhQCo/KiZYFVwwm6PgFfCk+DN5wTH4zdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EoelQSV3; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D03211BF204;
+	Wed, 13 Mar 2024 22:23:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710368599;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ej/n2ekg+Kv/YAEOWW6eOfRdqaxPcS5Y8kZhD/22lus=;
-	b=JayZT0gC61yuifMb6XpSXr3kHmjBmtpxNh0YLWPfhTIVudGk1ES92eYWfgu2kqyZ15EIb3
-	EA0X6S1hTc3d7HPW+bJ+OBL3aNg8bnQl8zFBBCKWo92za96DrCcnOCZbikOZFPu0aHNMh5
-	t501lEbDbQ08wq3lZC6Pt0KynKZgtGI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs updates for 6.9
-Message-ID: <hbncybkxmlxqukxvfcxcnlc53nrna3hawykbovq3h3u5xpm7iy@6ay4wjnpuqs4>
-References: <lfypw4vqq3rkohlh2iwhub3igjopdy26lfforfcjws2dfizk7d@32yk5dnemi4u>
- <CAHk-=wg3djFJMeN3L_zx3P-6eN978Y1JTssxy81RhAbxB==L8Q@mail.gmail.com>
- <bqlnihgtaxv4gq2k6nah33hq7f3vk73x2sd6mlbdvxln2nbfu6@ypoukdqdqbtb>
- <CAHk-=whbgtooUErM9bOP2iWimndpkPLaPy1YZmbmHACU07h3Mw@mail.gmail.com>
+	bh=3LF1DgETq3+uAOl/bFUlSXoTzHAoPYEGhBrdRccuLQQ=;
+	b=EoelQSV3syJ71nv3hScMYI/oP/f38N7nV2KbckHkGwKn3GP/6MVb3kUVskLwVuEv33dSpb
+	S0swiDDtCYQJPmeOwt/pEmh8F3XF2lPPsfWsLs98O0L9wwaOqSNfqtaZSr+6Ga6BCPyWM+
+	vus4WQYwUx0dsD2xPAs/syXMYWLvEl6ORZcJNCUTYxy0O8MeZ868zgJvn80aSO9PcvqVyX
+	XkcQOcLcaGBY+CFd99rTkp9TmnWrvXnVpzKgkbdthBHoLGeYw207Z0H4k3KJe921NqZB5u
+	29RdXywPV7g6Ny4IgGqZKQMDLivSZwNJC9xIFAh2vVahZFGUP8sxhGfETnXo/Q==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Cc: kernel@collabora.com,
+	kernel-janitors@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: spi-nor: core: correct type of i
+Date: Wed, 13 Mar 2024 23:23:13 +0100
+Message-Id: <20240313222313.800965-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240304090103.818092-1-usama.anjum@collabora.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whbgtooUErM9bOP2iWimndpkPLaPy1YZmbmHACU07h3Mw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'2842dc9bc1a53893eec62ec9e49beb3b501702d0'
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On Wed, Mar 13, 2024 at 02:51:38PM -0700, Linus Torvalds wrote:
-> On Wed, 13 Mar 2024 at 14:34, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > I liked your MAD suggestion, but the catch was that we need an
-> > exponentially weighted version,
+On Mon, 2024-03-04 at 09:01:03 UTC, Muhammad Usama Anjum wrote:
+> The i should be signed to find out the end of the loop. Otherwise,
+> i >= 0 is always true and loop becomes infinite. Make its type to be
+> int.
 > 
-> The code for the weighted version literally doesn't change.
+> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Reviewed-by: Michael Walle <mwalle@kernel.org>
+> Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Well, no, and there's another problem I can't believe I missed until
-now. MAD is defined as median of the absolute deviations, not mean, and
-you can't compute a median incrementally.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-So MAD doesn't work here at all.
+Miquel
 
