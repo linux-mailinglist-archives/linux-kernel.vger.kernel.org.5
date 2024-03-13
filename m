@@ -1,239 +1,98 @@
-Return-Path: <linux-kernel+bounces-101560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD9AB87A8B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C75787A8B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D979B1C21A6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:47:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E5491C21D9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002C34437C;
-	Wed, 13 Mar 2024 13:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJ8VuGqZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494EF4596F;
+	Wed, 13 Mar 2024 13:48:22 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2374743AD1;
-	Wed, 13 Mar 2024 13:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA9945033
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710337657; cv=none; b=AINy+U0xMkGJ+xtSRPqB+PKf5W5pkw1nU33L+ZwwTQrmojjb/3WTz8xRgD+b7K2sRn42lTHRPaY9/SK7TyS2DetHS2AXkzTKL+0YgXW7/2EiMGW8oiOnOiHrlsOUnI0AHVbAg+/rNwcY1XQEUmG6augLwTtbU8zVaQhRVd61FkQ=
+	t=1710337701; cv=none; b=JpMaDCrv2kltF/sQEOP6CxvWK5CiLBdLUyVS1j23jsgMFD/mSeC8gwI1yXFXzhrcr9p+ebRReKmQZU3tbMnSngC+B63onGGHXC9pdU++GJFabJLCab1rPxq1Gh8bUQ2klFyM7t2g3sgsJORB0hDywDKBqhi2kDF9pX9Nuh1lySA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710337657; c=relaxed/simple;
-	bh=Wm12Cwnnaqqxe6Rw9omoTYJwGYyRMYnkrihCLFB1dLg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Vc11uJlUNQr2FZysI0D5yxBbafAh+SeHEJbIzy4W5FJLwcXTsDWECYW1sdFUP9VdX9QY/NFo5qgBdkW1NAyXMymHLwW6y3dL4qvoqg5SdQ+9oq8ZpNv48LfnQWt6gHbKIIbO6S2RbtTPezTK5wU8x6Zv9C5N19rP3IjzOSr016M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PJ8VuGqZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 117BBC43390;
-	Wed, 13 Mar 2024 13:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710337656;
-	bh=Wm12Cwnnaqqxe6Rw9omoTYJwGYyRMYnkrihCLFB1dLg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=PJ8VuGqZqsRwlTYOY7+8sOgrmQ4V9EP9qdW+8lWd07EaQ40dhKJ45vzLMybMBBdBM
-	 W0x301+/QGXMPSnX+1SW3FtBu5vIiN6xCze+MuJLXGvX1WHvKa7skNGjVx63S1g3h5
-	 Mwdn5iL7BXY/WFmsnjDhC+IAQsnpxkBvyHThGYiW577rhpEIHHPAgbezLAwbzhNJpl
-	 Ny1dei9uxXxQXL/eEwvUsDGnYhvtjNMyYc1TeQ1zdYHix70ghVFu4LOeTZEJYTnCmD
-	 Daj7s1ktSQlpfo9aob5je8Z6zz+0b4V/pGf++TgUJzrsTz0cpFsBzzT0hLmIEux21f
-	 RqfnyXerwe5Fg==
-Date: Wed, 13 Mar 2024 10:47:33 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
- on RT.
-Message-ID: <ZfGudRl9-tB_TszO@x1>
+	s=arc-20240116; t=1710337701; c=relaxed/simple;
+	bh=J7uAPX7OeS6bA6lq6FyD33kqbbeigY+cd6q0Sfc6rts=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rQpPHi8CPeMDCywX3pTZP0JbzVfo+xECKmgB7ti3GI4t31nHrG/eOtXWoNCFy/J59O5R1kGpMMaNW9WWczHS10xoDlyXW0XmZtXwMCFswzkLRUbFIWzXi50+Rga5+T23CTTARjjiJJ4KLRiLPl9osXWFEpPS6B902b1+yxb+O9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36630680c5dso60121105ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 06:48:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710337699; x=1710942499;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ikndV0hRiImdaRH7K36X5nfDsUA1+XpvlkKvXQSFaRg=;
+        b=hXZvH6cDeq29gkDbIIb7nuxlik15pkFZ/ZjuudrIF3or0UwevE+u1wFJk4B2QuC/tY
+         PbTv366khtjr7VYKRlz9/GmEdnJ2fgqOfmSAFYViTjPgkrOGiN5DtW+Fteuc38ljzACq
+         hS2Nto0gq/euPqM+n4PHbhkbN9aPLpcIe0DkcCMa/4wYXGowD8JPOGPEspH73+E5KBZP
+         5ReMWM6BmMeZVVfkZhmINdAwAVYD2uJbuUPCg+HaguBvfhuhmPmxfpKy2hUNuqOxBzGZ
+         BHU628xRAOGZN7032O4y6B9mtz0dAE/Rdo+krRFwz5Hb6Tok8jZPTRTrF46NJNsHVWrI
+         Hn8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWJLONZJjDVHYYa3pYJn6xdOXHnw4xaJlEXnPzwOu4HKh8BL7L4Tc/tAORLM2mDKaLdM8Ly7hGRFMT5YCWK2E8FBJQPvxgFyGTNt/0S
+X-Gm-Message-State: AOJu0Yxzr3E7hkdEXhKZigouRx/LUCfIoheLSptH8E3PnKUorrRQhMZx
+	otdN5jUzY1bn5d3vnVUxXcVz6vxX8mfV1zMRnIlP5pVFwHj5MikAzMbujRM+j8Lue/N512yLFFh
+	TKmd9/PLKrkj1SFDyJTghp7lcNv4URnozdm/X5o37nFKzr8TvD5jdpCY=
+X-Google-Smtp-Source: AGHT+IHLMglO+B6K34BPxVcH6Z4sKTBQ9OM9KGBIwPsHzQE8JQExZMv7EcEM0MAGcfTzq7vwDhh0CbxH4ou5ehju8MGosvJXY+M2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZfGqCWzyVzyGQrAQ@x1>
+X-Received: by 2002:a05:6e02:1a61:b0:365:c9f8:4882 with SMTP id
+ w1-20020a056e021a6100b00365c9f84882mr648780ilv.4.1710337699566; Wed, 13 Mar
+ 2024 06:48:19 -0700 (PDT)
+Date: Wed, 13 Mar 2024 06:48:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000076aec06138b073d@google.com>
+Subject: [syzbot] Monthly udf report (Mar 2024)
+From: syzbot <syzbot+listbbb74d14bbf78e9e83c5@syzkaller.appspotmail.com>
+To: jack@suse.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 13, 2024 at 10:28:44AM -0300, Arnaldo Carvalho de Melo wrote:
-> On Wed, Mar 13, 2024 at 09:13:03AM +0100, Sebastian Andrzej Siewior wrote:
-> > One part I don't get: did you let it run or did you kill it?
- 
-> If I let them run they will finish and exit, no exec_child remains.
- 
-> If I instead try to stop the loop that goes on forking the 100 of them,
-> then the exec_child remain spinning.
- 
-> > `exec_child' spins until a signal is received or the parent kills it. So
- 
-> > it shouldn't remain there for ever. And my guess, that it is in spinning
-> > in userland and not in kernel.
- 
-> Checking that now:
+Hello udf maintainers/developers,
 
-tldr; the tight loop, full details at the end.
+This is a 31-day syzbot report for the udf subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/udf
 
-100.00  b6:   mov    signal_count,%eax
-              test   %eax,%eax
-            ↑ je     b6     
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 5 issues are still open and 27 have been fixed so far.
 
-remove_on_exec.c
+Some of the still happening issues:
 
-/* For exec'd child. */
-static void exec_child(void)
-{
-        struct sigaction action = {};
-        const int val = 42;
+Ref Crashes Repro Title
+<1> 2138    Yes   WARNING in udf_truncate_extents
+                  https://syzkaller.appspot.com/bug?extid=43fc5ba6dcb33e3261ca
+<2> 399     Yes   KMSAN: uninit-value in udf_update_tag
+                  https://syzkaller.appspot.com/bug?extid=d31185aa54170f7fc1f5
+<3> 24      Yes   WARNING in udf_setsize (2)
+                  https://syzkaller.appspot.com/bug?extid=db6df8c0f578bc11e50e
 
-        /* Set up sigtrap handler in case we erroneously receive a trap. */
-        action.sa_flags = SA_SIGINFO | SA_NODEFER;
-        action.sa_sigaction = sigtrap_handler;
-        sigemptyset(&action.sa_mask);
-        if (sigaction(SIGTRAP, &action, NULL))
-                _exit((perror("sigaction failed"), 1));
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-        /* Signal parent that we're starting to spin. */
-        if (write(STDOUT_FILENO, &val, sizeof(int)) == -1)
-                _exit((perror("write failed"), 1));
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-        /* Should hang here until killed. */
-        while (!signal_count);
-}
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-So probably just a test needing to be a bit more polished?
-
-Seems like it, on a newer machine, faster, I managed to reproduce it on
-a non-RT kernel, with one exec_child remaining:
-
-  1.44  b6:   mov   signal_count,%eax
-              test  %eax,%eax
- 98.56      ↑ je    b6
-
-same tight loop:
-
-acme@x1:~/git/perf-tools-next/tools/testing/selftests/perf_events$ pidof exec_child
-722300
-acme@x1:~/git/perf-tools-next/tools/testing/selftests/perf_events$ ps ax|grep exec_child
- 722300 pts/2    R      4:08 exec_child
- 722502 pts/2    S+     0:00 grep --color=auto exec_child
-acme@x1:~/git/perf-tools-next/tools/testing/selftests/perf_events$
-
-- Arnaldo
-
-[root@nine ~]# perf record --call-graph dwarf -p 35785
-^C[ perf record: Woken up 48 times to write data ]
-[ perf record: Captured and wrote 12.120 MB perf.data (1503 samples) ]
-
-[root@nine ~]# ls -la perf.data
--rw-------. 1 root root 12720152 Mar 13 10:32 perf.data
-[root@nine ~]#
-[root@nine ~]# perf report --no-child --stdio
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 1K of event 'cycles:P'
-# Event count (approx.): 926018718
-#
-# Overhead  Command  Shared Object      Symbol                                
-# ........  .......  .................  ......................................
-#
-    98.48%  exe      remove_on_exec     [.] exec_child
-            |
-            ---exec_child
-               main
-               __libc_start_call_main
-               __libc_start_main@@GLIBC_2.34
-               _start
-
-     0.33%  exe      [kernel.kallsyms]  [k] arch_scale_freq_tick
-     0.13%  exe      [kernel.kallsyms]  [k] debug_smp_processor_id
-     0.13%  exe      [kernel.kallsyms]  [k] check_cpu_stall
-     0.13%  exe      [kernel.kallsyms]  [k] acct_account_cputime
-     0.13%  exe      [kernel.kallsyms]  [k] cpuacct_account_field
-     0.07%  exe      [kernel.kallsyms]  [k] preempt_count_add
-     0.07%  exe      [kernel.kallsyms]  [k] update_irq_load_avg
-     0.07%  exe      [kernel.kallsyms]  [k] cgroup_rstat_updated
-     0.07%  exe      [kernel.kallsyms]  [k] rcu_sched_clock_irq
-     0.07%  exe      [kernel.kallsyms]  [k] account_user_time
-     0.07%  exe      [kernel.kallsyms]  [k] __hrtimer_run_queues
-     0.07%  exe      [kernel.kallsyms]  [k] tick_nohz_highres_handler
-     0.07%  exe      [kernel.kallsyms]  [k] ktime_get_update_offsets_now
-     0.06%  exe      [kernel.kallsyms]  [k] __enqueue_entity
-     0.06%  exe      [kernel.kallsyms]  [k] tick_sched_handle
-     0.00%  exe      [kernel.kallsyms]  [k] __intel_pmu_enable_all.constprop.0
-
-
-#
-# (Tip: To show assembler sample contexts use perf record -b / perf script -F +brstackinsn --xed)
-#
-[root@nine ~]#
-
-[root@nine ~]# perf annotate --stdio2 exec_child 
-Samples: 1K of event 'cycles:P', 4000 Hz, Event count (approx.): 911943256, [percent: local period]
-exec_child() /home/acme/git/linux/tools/testing/selftests/perf_events/remove_on_exec
-Percent        
-               
-               
-            Disassembly of section .text:
-               
-            00000000004045cf <exec_child>:
-              push   %rbp   
-              mov    %rsp,%rbp
-              sub    $0xb0,%rsp
-              lea    -0xa0(%rbp),%rdx
-              mov    $0x0,%eax
-              mov    $0x13,%ecx
-              mov    %rdx,%rdi
-              rep    stos %rax,%es:(%rdi)
-              movl   $0x2a,-0xa4(%rbp)
-              movl   $0x40000004,-0x18(%rbp)
-              movq   $0x402a2e,-0xa0(%rbp)
-              lea    -0xa0(%rbp),%rax
-              add    $0x8,%rax
-              mov    %rax,%rdi
-            → callq  sigemptyset@plt
-              lea    -0xa0(%rbp),%rax
-              mov    $0x0,%edx
-              mov    %rax,%rsi
-              mov    $0x5,%edi
-            → callq  sigaction@plt
-              test   %eax,%eax
-            ↓ je     82     
-              mov    $0x4058af,%edi
-            → callq  perror@plt
-              mov    $0x1,%edi
-            → callq  _exit@plt
-        82:   lea    -0xa4(%rbp),%rax
-              mov    $0x4,%edx
-              mov    %rax,%rsi
-              mov    $0x1,%edi
-            → callq  write@plt
-              cmp    $0xffffffffffffffff,%rax
-            ↓ jne    b5     
-              mov    $0x4058c0,%edi
-            → callq  perror@plt
-              mov    $0x1,%edi
-            → callq  _exit@plt
-        b5:   nop           
-100.00  b6:   mov    signal_count,%eax
-              test   %eax,%eax
-            ↑ je     b6     
-              nop           
-              nop           
-              leaveq        
-            ← retq          
-[root@nine ~]#
+You may send multiple commands in a single email message.
 
