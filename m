@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-101916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E9887ACB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:14:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5562487ACB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:15:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B94C828E956
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:14:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 882961C215F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4142686277;
-	Wed, 13 Mar 2024 16:40:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C99129A74;
+	Wed, 13 Mar 2024 16:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cgpk2K8B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h79dsPer"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C25C6168A;
-	Wed, 13 Mar 2024 16:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2856286252;
+	Wed, 13 Mar 2024 16:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348056; cv=none; b=UN79Oi+CcIRwPqRVySTeC6UlrybAuX/j58S1GE2l4rSXP2o0mB3J2z94fpp+bTIHVVCVec5T/XJTK/n6S1VRGr6C3NzgL/XvIfnWe6p0TLnXtD0nSHMWCLdZbyNiKU1GUAKPMXMJ5qFQwvg8wzWbBiRm/54W0p63uzwx+nm46CE=
+	t=1710348058; cv=none; b=fXEQUIsSFh+/S2i5nt1GaPW8qJNFQMKcUjm2Bqgd1jihLCF6hAsa+SU2J2Yc1ptnpzpTjzepEvToOOG2gFO4GIIkeWgkHs1L7UMXWOz/4qzcf6cCLslvDmDB5l3/JRdgTnp4T35IDaI5KsSq0SelW86ektz1LS4ppZR4nsGVkJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348056; c=relaxed/simple;
-	bh=CaMNA1CPG/CLbl0+AMv8sEX54UXwJGSXM39ncBAlxSY=;
+	s=arc-20240116; t=1710348058; c=relaxed/simple;
+	bh=uLR2HXXfcTb17vMFKT0En/Q5eZl9oBPOTtFoesrxo0Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kMRezm2zHs9FjA0LV6Oqsa5PeCRte5LXAQbU53rxF/Z2OyX2LCWbzA0fmI4p2Kg+YFpwNL2qUkBkYO/KfM5YWqZt6J8YprmWzdYHxqUMRYE9QJGKqJw+11IyG9pLnBFjsHLhHg5/CX+Jx61crFOPxbxYIaFi9E2YyloJ3CwZw68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cgpk2K8B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88923C433C7;
-	Wed, 13 Mar 2024 16:40:55 +0000 (UTC)
+	 MIME-Version; b=MX/x2Cw0aF9P0h+6aqLBSaysQ3oVy79VfB5MMUuQkEnyQUo0TCrXhT7XVB/RAAnthECZwNwD54gB0twEMnVTn9qWEmqDME8F0W9yUN8UWo8pt4MuhhZcG8lnKIUj4kY6Cj+XyWYRwPUUDFOj2H8c/1J4H2D42HGRA6hCT9gTC/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h79dsPer; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7CBDC433F1;
+	Wed, 13 Mar 2024 16:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348056;
-	bh=CaMNA1CPG/CLbl0+AMv8sEX54UXwJGSXM39ncBAlxSY=;
+	s=k20201202; t=1710348057;
+	bh=uLR2HXXfcTb17vMFKT0En/Q5eZl9oBPOTtFoesrxo0Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Cgpk2K8B8f8sY1BPYYvfWfnMbp6p53c1xNezhMEwzpGxons4pv2AuuqNx9xGE7hAW
-	 vmdSD8E8jF2Rur5TOkhhEQ9y3a5d8x82nndI7LEQtBDQpaqI3svAymZBeiyPaE7CtN
-	 oDG9/P7dx4d5CVvzDOFYMIlXldXUY4s3mYgBCVtsKKS19lbCWkgn1d4ItJnsYVkLyV
-	 CVqkuScLVc/QJc/G6yrz33DwA2CZ95FUsMAnNrFcpds1tNbvmgfs1Bpmh+sW1/pISQ
-	 KHeKqmaVCOu9TsX8wcylRzb+G0aUgiWqnZwm/bX0nIAhzLm+fJD4SU/zE2YTY9xM2X
-	 SsKyfZa0s8aGw==
+	b=h79dsPeriBOZgOLZc1oHYRQAwi/E0AiNE8mFgeDcSJJD9J2o9/l2GHLYhvWUNlmc1
+	 jmoosxDA4/EwCkVx/smBIlaBSX0vAH8Qqd2q9sAWimi8lFd2MX/zlJ5GT2infigphP
+	 HY8Oz/HjUkLLieldCLnGpBju86aOhRulLT/Wn+Q6ljvJrEoqpriGu7SnmpxseA9XkD
+	 mamPnuZlcgqAGCXFikCP+EHAz3EXKT0WA7TTv5uP6MnwPRBCYhsGnnCqZZQtZZlRQi
+	 EZMZrGmU1PSJbO0OuMIDLQZrhkF47Kp/FWmvSX5WGoMzGvOSl0W7zxWsNZ00MO6nKb
+	 xM52LiwRwYfIg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Yu Kuai <yukuai3@huawei.com>,
-	Tejun Heo <tj@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Eric Biggers <ebiggers@google.com>,
 	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 48/71] blk-iocost: disable writeback throttling
-Date: Wed, 13 Mar 2024 12:39:34 -0400
-Message-ID: <20240313163957.615276-49-sashal@kernel.org>
+Subject: [PATCH 6.1 49/71] elevator: remove redundant code in elv_unregister_queue()
+Date: Wed, 13 Mar 2024 12:39:35 -0400
+Message-ID: <20240313163957.615276-50-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
 References: <20240313163957.615276-1-sashal@kernel.org>
@@ -71,42 +72,35 @@ Content-Transfer-Encoding: 8bit
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 8796acbc9a0eceeddd99eaef833bdda1241d39b9 ]
+[ Upstream commit 6d9f4cf125585ebf0718abcf5ce9ca898877c6d2 ]
 
-Commit b5dc5d4d1f4f ("block,bfq: Disable writeback throttling") disable
-wbt for bfq, because different write-throttling heuristics should not
-work together.
-
-For the same reason, wbt and iocost should not work together as well,
-unless admin really want to do that, dispite that performance is
-affected.
+"elevator_queue *e" is already declared and initialized in the beginning
+of elv_unregister_queue().
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20221012094035.390056-2-yukuai1@huaweicloud.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20221019121518.3865235-2-yukuai1@huaweicloud.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Stable-dep-of: f814bdda774c ("blk-wbt: Fix detection of dirty-throttled tasks")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-iocost.c | 2 ++
- 1 file changed, 2 insertions(+)
+ block/elevator.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index e6557024e3da8..3788774a7b729 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -3281,9 +3281,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 		blk_stat_enable_accounting(disk->queue);
- 		blk_queue_flag_set(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = true;
-+		wbt_disable_default(disk->queue);
- 	} else {
- 		blk_queue_flag_clear(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = false;
-+		wbt_enable_default(disk->queue);
- 	}
+diff --git a/block/elevator.c b/block/elevator.c
+index bd71f0fc4e4b6..20e70fd3f77f9 100644
+--- a/block/elevator.c
++++ b/block/elevator.c
+@@ -524,8 +524,6 @@ void elv_unregister_queue(struct request_queue *q)
+ 	lockdep_assert_held(&q->sysfs_lock);
  
- 	if (user) {
+ 	if (e && e->registered) {
+-		struct elevator_queue *e = q->elevator;
+-
+ 		kobject_uevent(&e->kobj, KOBJ_REMOVE);
+ 		kobject_del(&e->kobj);
+ 
 -- 
 2.43.0
 
