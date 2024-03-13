@@ -1,404 +1,716 @@
-Return-Path: <linux-kernel+bounces-102503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E37587B30A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 391CB87B30B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:54:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0BDE1C212CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:52:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A0531C211F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2AB52F62;
-	Wed, 13 Mar 2024 20:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA3951C49;
+	Wed, 13 Mar 2024 20:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="imy2EkrH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FpybdMVs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B9F1A38E7;
-	Wed, 13 Mar 2024 20:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710363160; cv=fail; b=YdH54xSDJ3jlUSkKgZz4IhFUVJ4bHWsb7/4zCZPdISDz7qzi1rWR0vFLQPrECiHXJvK8Pd7Wxht0ODvbW6em1F7LJ9RY6lRhBVo5PYg8zisyT5H9CqCNQAeE5hMrYQJsqGiKw2/oqHxOg/GoyDawddVtvB8IeoyoAqxkRXpni5M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710363160; c=relaxed/simple;
-	bh=u0BahzERh+AVkSEJEI+KuPZ3IrDwJYOpt1/sk0fL4hE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ans5kAi5IGqAbKABByJnr890pYyOnEW9x3sTB9HDl13vehp0fsbtInC5EYWgwcXO+mye/j2R1sMSUAb278MGlDOuXXoNKnHGU0ROjG8nM0KRdGi/JQiyVvjPRMX46nsu6gj1FQNQGQ59oKI/KuMTJC3EzLcKPj0EFlpJeM3NV0I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=imy2EkrH; arc=fail smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710363158; x=1741899158;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=u0BahzERh+AVkSEJEI+KuPZ3IrDwJYOpt1/sk0fL4hE=;
-  b=imy2EkrHy3KrEXyRGMSiDmtOjQMdh+wTODxPzkq8ecR0svFe3KBcDQFi
-   gu02hHhUfdXIc32TZhAXavRRh8HOL/oNI7d+ifATmvciR/IP9SzgHh6JC
-   dim8KO7XTa5NxuqB2mCVAm2Xc3NuphbMCLwXDpebFKZ402o7nlUZ44AKC
-   cjWiFMokqxCOIkncn+oV0+YR9D8C/f2Uher2bPuAa1NEOoRqqaYRRcwN4
-   OHQMrE2ESGOVQYqWKGLCcB/ZoPB2//sbKu7holvxFqqLuHln6snv47TEn
-   Zp8br63Y0e8W/Gj3wSdLg5sH9mQCFW97PkZRKapFJtuBOCMX2JxU6qmuE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="5010148"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="5010148"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 13:52:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="12468267"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Mar 2024 13:52:01 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 13:52:00 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Mar 2024 13:51:59 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 13 Mar 2024 13:51:59 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Mar 2024 13:51:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lhfqnynxVemsn5q1MtEcaT1yzpJ1bC2hxAHDuMbesX5o1bWziLpqUBRuFvjTTHkMLrUhBjySK2iMOLJGqld2Rk/tFTOXAalrhekDhg1eZ5CvG3vNxO98gX1inoppTq+lxWWq4wxBuA8nE+/ee2ZpQN4NOZA9c9vx7HkAqEe+7uB/LwQsiWloY39EVII3Ep3dzYW+FFGaCoJ3NTWmIkMv/vQ+/VbNE7Cj1cyj/osJAvuuDanzXRL9q/esLvcSCZvwS9UADYJv/MIjRCbtlkeEtlVYXevXANvTEZZq7BXTFJ4LgwcVZy08SGGpGjYAVzMCTFnZxMrN1pU1H7hSH4FLXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u0BahzERh+AVkSEJEI+KuPZ3IrDwJYOpt1/sk0fL4hE=;
- b=iHrFVNiwluTffneWkupWTARoMk6nN1uA+yNYvb7Lo7P7Fc+hBScrU5kzEUNtr3s+YbihiYwfRjKcqVhmBXboYHf4+AM/5rO6AXPF53mBSuaajDE0mrBp/kTxBorkYDFvXuy8TPbe7SauYg9NFQg3t54IIaBxSkHrHSWBz+bw9v6aLM+r7cUQ9AoHFYBb11VlbLthwkmAuUl7RjyFJev8mOOI19LA5n3R6Lw83Qxsu18b3gYkhd4gyVvjGT+U051j2xi0uxw8YUv8qPfGDOt8MSRVbJ8ZhXDnE2TOqVlfil2FeHajVqZ77K1y584DkSKd3qUheSTCftcLPkRw81T8WA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Wed, 13 Mar
- 2024 20:51:53 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::fc9e:b72f:eeb5:6c7b]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::fc9e:b72f:eeb5:6c7b%5]) with mapi id 15.20.7386.016; Wed, 13 Mar 2024
- 20:51:53 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Yamahata,
- Isaku" <isaku.yamahata@intel.com>
-CC: "Zhang, Tina" <tina.zhang@intel.com>, "seanjc@google.com"
-	<seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>, "Huang, Kai"
-	<kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com"
-	<sagis@google.com>, "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>, "pbonzini@redhat.com"
-	<pbonzini@redhat.com>, "binbin.wu@linux.intel.com"
-	<binbin.wu@linux.intel.com>
-Subject: Re: [PATCH v19 058/130] KVM: x86/mmu: Add a private pointer to struct
- kvm_mmu_page
-Thread-Topic: [PATCH v19 058/130] KVM: x86/mmu: Add a private pointer to
- struct kvm_mmu_page
-Thread-Index: AQHadYhHvzdNxEnyc0eILiymig0CaQ==
-Date: Wed, 13 Mar 2024 20:51:53 +0000
-Message-ID: <50dc7be78be29bbf412e1d6a330d97b29adadb76.camel@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
-	 <9d86b5a2787d20ffb5a58f86e43601a660521f16.1708933498.git.isaku.yamahata@intel.com>
-In-Reply-To: <9d86b5a2787d20ffb5a58f86e43601a660521f16.1708933498.git.isaku.yamahata@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|PH0PR11MB5832:EE_
-x-ms-office365-filtering-correlation-id: 3cc1db8b-c4d5-437a-77f7-08dc439f69a0
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A1Xm5cSdBBHgI55hXn8z284wELn32hxOc7x+grcYjHZypi+dCJmvQHAOESuhJ57tfN/j8UDZBELaSRQtTDJb4CD1/GCcXIFNo2fGMPbpbla51KGQrreyhqYkFvonM2yr8+Qt6WLJKGkXW/X+OHrA9S9vAdvSU0/nIEphaCz0Xu28SrlZCjMMnWJpLB4NZ78uxFzn4rn3cl407v5XoXeOf0aFJ3UJNdmCmKtTj1howzpjE75zMRSz64GOYN+GgqOsq48u/ctw25aZTPXDTs0uaoDlcbfiDGdIzN/xkGlPnfCGDF6RThun6U79xMIl329ni97MsUiABIn8HcXOVOfVQ1qI1yxFl1bx2K7+EQdvkMZ7aFOWIXRoSIrNq9LNh+OcK0v6rYRb77iU8vcmHWhVkDOQ+lAueC0nghFy3X4aWvKY2bm3iu6dNSNG2EMHo9sm2gdKkem9fj1ZCXz7bA90OHKO8JoZ2f+++Qw3jcxiVE2J2Re6iyPivwdo/iGHw9Tfc66dj1jMDO40ujsaXUUW4Lbo6/WHR22CJjRNnA8ZXHC9bTWaLw4AKsHd6rWF1lqV8FizMpEwEW3ShCCJ4VKzqcI/o3L6eSw5SfIqChZwLpl6MtD8B7JS78KdHBWekGN9r4PVAjus+alCgaF/+mAGvw/qL03PFfJC6mxM6lioWDvCCD3NrKwFAf2aAvitTlUWrkh5RKGDarw+hZBngWWeHZQFSg2G/dcRA+VjqA4fHLE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SGVZSmlMc21DUzMxV1VYVENRTkdOMnBnSk5Rd3pDeEZKU2g1Z2lRcUNGMkxH?=
- =?utf-8?B?dkZzYWp4K0xueWloOC9wWXk3M29TN3VIUTBVVkt3dVpFZkRmNXlzSVlQeUtP?=
- =?utf-8?B?Sm9KS0ZHNm5hcjRsSmJXREYyQk9mKzZGL1g1bURiNDVLMExTcmlSSERNeGt0?=
- =?utf-8?B?ZzN3dERvc3BHRk5qOExTZmhSeGd2OXdGbXYydjhWWFdGUTUvbWtQM0VHdmc2?=
- =?utf-8?B?S0FZQ0txT3UweFdGUHNZUlozMDZBTGxIRkNDemFHWkFjWWdIY0hCcmNLenl6?=
- =?utf-8?B?cWMvSUdPS2ROKzRSRWhsVFRCenRaekRpODZ4Y0N6OEI0TDhsc1E3Z3RzRGJZ?=
- =?utf-8?B?dmtOWXpTb3VCQklYLzhVeUR2MERCSDNDY1hCbXFTZVhaNUVDNkFYckNkcFJ3?=
- =?utf-8?B?eTQ1U2g0UDhBTCtnTnF0azJremYrWEVoeWsza2Q1SjBnd1JEKzFGeTVvdm14?=
- =?utf-8?B?MU93R3JnU0QwcjdtT1ZNcDdQVWVNUzJZRjZOdXpSY2UxcHA4dlVRSWNWMG82?=
- =?utf-8?B?Y3JlNUthMUZhRUpHb053MGNRSmpYR2RPL2JqNEFiRHpMTlZ1UmhrYjM2b21D?=
- =?utf-8?B?a3g4NDEwbFhIMUd6Y0RURDJnUkU0ZjZtVG45Ym94emROYmo2ZUp0S1J0Z1lo?=
- =?utf-8?B?c1BXMUc2MEVVUEdJR2E3dzc4NjFSbTl5S1JDNUNKdWdOZ0tkK2R1Q3hOcnFC?=
- =?utf-8?B?MEQzN3NhTE94d1lOYUlHMldhcEcwaTBhbTl0MlA1dzl0VjJSMFNWQlNTSVRW?=
- =?utf-8?B?dzkxWGFBMDM2a3U3cVRCTTdlU3dhSE5seG9VNmk5eXJnaUxkQTFrMEVCUnVD?=
- =?utf-8?B?ZWs2WmkwWDl4c1luQVdSNGhyVkVOYndyWWFuVlhXZFhUQW5zS2Jyd1dQUEFT?=
- =?utf-8?B?Y05sMXl6SDlPUVpiT2R0WkJwdFRDbTNFcFhYb0VsTmlMZ2RCQnZMK1FpY28x?=
- =?utf-8?B?WVltNEVjVVl1ekdITkJOWGNYVSttd1RSSXpuRHJvL1gxTnhpT3Nubm96TmRz?=
- =?utf-8?B?MndEcEwyQmZsZlpxOHZ6M3NLVGlyeGh5WE5jTE1kRmI1bTI3NHorMGErVDVN?=
- =?utf-8?B?bW0yaTdyMTBiOWo2OFdDYWtuZTNONUlZQjA5M1Y4RFdmTXNSdG53SlJEVDVH?=
- =?utf-8?B?MEZYOWs4TWRrSWdOdDhCQ3pwVDhPYUIvU1dwVzM4eFBsMllGbnQya2ZSUEh2?=
- =?utf-8?B?VHphdkcvYmpXbFRSSTM0TEcyM1ZnK1R4MnVXYlVCT0JTbVBWNUEyWWIwWE14?=
- =?utf-8?B?N1VsNHZhbXllaVdEeGY3U0oxVlJ5OTNEb21waFVKTnc3Z2tZQWxBRVFvajBs?=
- =?utf-8?B?NUVaTlZZdWptSm41cmpWNUlTMHplQ1VxZGtHUW8yK1NpOW02OUUvMk1QVFlC?=
- =?utf-8?B?cmg4M2FsQzhzMStWbzBVdVRWUVUrSzdXZjBFNTZHZXJPay9xRFI3RWk5UEMw?=
- =?utf-8?B?K29GVDdYSytNK2JuSEFwd2licTRVRkZlK2ZuWHZodG5GWERwWkYrU0dUY1Nq?=
- =?utf-8?B?clNKc010OTZQa3V3dk5CUS9LNS8zVkJnWnpJbmVscUR0Wmw0eWJadjlETkZR?=
- =?utf-8?B?MlpHZEYyWjEyOFc5ejBkUk9CL0xwRFZ5dGFjR09jTWlDWExDK0RjV1F0OEZw?=
- =?utf-8?B?ZFRrSXJSZGU4d1hmTzQ0N0s2OWtvak1YV0lRazFKMHk3aWFJQ2tTelk0MjMw?=
- =?utf-8?B?bG8xL2pobkdZWm5ILzdPNjBKb3lMNUJzSmhlSWVSWi84SWVoaStiZ1k0K3JY?=
- =?utf-8?B?ek96UFBLV0hjNnlaRWtaTXF3N05qbkgwb0FwZzU0cXBITTRtbWFDeFpmL29i?=
- =?utf-8?B?OU1kcnVGbWhpRGU4UWJzV2JKVUthL3BuUzlHQzhkMlU5ZHJSZDFKUUY2bGtR?=
- =?utf-8?B?cnV3MDI1aGtIWEc2YjhobFErN3NLUndibjdzVjdDcHdWenNGRUp1cnZiYmJT?=
- =?utf-8?B?UmVKNDZZT0E3QzVFOHowNXRhVUxTcUUxTXlITlRnd1czc0xJTTFLeFZ5Z05V?=
- =?utf-8?B?RzZRQWtReURzQU5xTU1TeFdCUGpZYnk3TkQ0L1c4eG5CVXU5NTM0THRTdUQy?=
- =?utf-8?B?MktTb3ovb01JU2srQmowazluTkxhV0c0QldVUkRVU3BaVlI3S1FSejJEM0M2?=
- =?utf-8?B?UnI1cUZSNnRxZy9DZStyYlU0aVFoMGJsVVpVTlN6ekFqRmdSalIweHlrUHpl?=
- =?utf-8?Q?nyh20PutvfiQ48qajq2AFYE=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <01F0BAAFE3779841A585018AF96F31DC@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33712E629;
+	Wed, 13 Mar 2024 20:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710363276; cv=none; b=CBS3qZmnMrfBfYLiECDRBjE41l/QATZzurEdW2lHS2sOWLxMJwwKxHNFBydelpp4RqXE2LnjqhsB27RP1RwMS5OhbgmHv5EsUTVzGmQjikXnFb+SiPcTRpoH8yVr8od0+lRlh1+mGJUBHOeBKBz9FClTjKNM3MkbvQIH9BV6T0A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710363276; c=relaxed/simple;
+	bh=8fTrmeAJ9SU1grtRfV3cLnMUmwPr5ur8F51YcUeyqKI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bKm+Our2e8TeEgzfKd0MKbirem6LKKqKQ/fF2S3haRLQOHFKxmDZLmgc1hckRoGrC+/tn11hYHiW966UQ3ZTINi2Z3ly0AKDESS4D/p11hX6kBofsiyfHaUItMgapWT+5u4O2GQF65MoUmd09x6rM6tdeolpDkB9FCnhSaP6beM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FpybdMVs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B72BC433F1;
+	Wed, 13 Mar 2024 20:54:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710363276;
+	bh=8fTrmeAJ9SU1grtRfV3cLnMUmwPr5ur8F51YcUeyqKI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FpybdMVsX/o6TC57LONPmHZM8TfKldxFuMj6w23arB+/Pbskp5lXhK7FzTQBU4ZpL
+	 9l5h9M2qbrGDGRIWZ02RYkB3f+orN4wTArrcxkFdq6H84fTy+5AIcaTYsXaOh7HQof
+	 Hi+7+umXKBd3bcTAuBbtnbplq9SeqMsPGBDSsu3L/2jBzEdaCxKT2rd2JSs9I0oyKh
+	 Y77DVRNNF06Zvz8C07U4m5hUAnwO2xrZMLAXJSXCXCikw6GnCHHPidjCBCX098xIP+
+	 IXeBgQtYPgNDmxekoQVh1GXxbzaRxD5B/OCkhDB2ldiwB+RzubzaNMXkEDLPH95ra8
+	 k3tPG4Kc0ZW6Q==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [GIT PULL] perf tools changes for v6.9
+Date: Wed, 13 Mar 2024 13:54:34 -0700
+Message-ID: <20240313205434.3066697-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3cc1db8b-c4d5-437a-77f7-08dc439f69a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 20:51:53.0250
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PO+zaYOdi5bzAF91H+v6OLbhKF8wX2K3Yq2sVMWkKLiDCfjdJcmdXA4JQOikT2PbvsRNunAhsSePEHJkRvDuSOayKM6xbUUdv2XH1BXnP0o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5832
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-T24gTW9uLCAyMDI0LTAyLTI2IGF0IDAwOjI2IC0wODAwLCBpc2FrdS55YW1haGF0YUBpbnRlbC5j
-b20gd3JvdGU6Cj4gRnJvbTogSXNha3UgWWFtYWhhdGEgPGlzYWt1LnlhbWFoYXRhQGludGVsLmNv
-bT4KPiAKPiBGb3IgcHJpdmF0ZSBHUEEsIENQVSByZWZlcnMgYSBwcml2YXRlIHBhZ2UgdGFibGUg
-d2hvc2UgY29udGVudHMgYXJlCj4gZW5jcnlwdGVkLsKgIFRoZSBkZWRpY2F0ZWQgQVBJcyB0byBv
-cGVyYXRlIG9uIGl0IChlLmcuCj4gdXBkYXRpbmcvcmVhZGluZyBpdHMKPiBQVEUgZW50cnkpIGFy
-ZSB1c2VkIGFuZCB0aGVpciBjb3N0IGlzIGV4cGVuc2l2ZS4KPiAKPiBXaGVuIEtWTSByZXNvbHZl
-cyBLVk0gcGFnZSBmYXVsdCwgaXQgd2Fsa3MgdGhlIHBhZ2UgdGFibGVzLsKgIFRvIHJldXNlCj4g
-dGhlCj4gZXhpc3RpbmcgS1ZNIE1NVSBjb2RlIGFuZCBtaXRpZ2F0ZSB0aGUgaGVhdnkgY29zdCB0
-byBkaXJlY3RseSB3YWxrCj4gcHJpdmF0ZQo+IHBhZ2UgdGFibGUsIGFsbG9jYXRlIG9uZSBtb3Jl
-IHBhZ2UgdG8gY29weSB0aGUgZHVtbXkgcGFnZSB0YWJsZSBmb3IKPiBLVk0gTU1VCj4gY29kZSB0
-byBkaXJlY3RseSB3YWxrLsKgIFJlc29sdmUgS1ZNIHBhZ2UgZmF1bHQgd2l0aCB0aGUgZXhpc3Rp
-bmcKPiBjb2RlLCBhbmQKPiBkbyBhZGRpdGlvbmFsIG9wZXJhdGlvbnMgbmVjZXNzYXJ5IGZvciB0
-aGUgcHJpdmF0ZSBwYWdlIHRhYmxlLsKgCgo+ICBUbwo+IGRpc3Rpbmd1aXNoIHN1Y2ggY2FzZXMs
-IHRoZSBleGlzdGluZyBLVk0gcGFnZSB0YWJsZSBpcyBjYWxsZWQgYQo+IHNoYXJlZCBwYWdlCj4g
-dGFibGUgKGkuZS4gbm90IGFzc29jaWF0ZWQgd2l0aCBwcml2YXRlIHBhZ2UgdGFibGUpLCBhbmQg
-dGhlIHBhZ2UKPiB0YWJsZQo+IHdpdGggcHJpdmF0ZSBwYWdlIHRhYmxlIGlzIGNhbGxlZCBhIHBy
-aXZhdGUgcGFnZSB0YWJsZS4KClRoaXMgbWFrZXMgaXQgc291bmQgbGlrZSB0aGUgZHVtbXkgcGFn
-ZSB0YWJsZSBmb3IgdGhlIHByaXZhdGUgYWxpYXMgaXMKYWxzbyBjYWxsZWQgYSBzaGFyZWQgcGFn
-ZSB0YWJsZSwgYnV0IGluIHRoZSBkcmF3aW5nIGJlbG93IGl0IGxvb2tzIGxpa2UKb25seSB0aGUg
-c2hhcmVkIGFsaWFzIGlzIGNhbGxlZCAic2hhcmVkIFBUIi4KCj4gwqAgVGhlIHJlbGF0aW9uc2hp
-cAo+IGlzIGRlcGljdGVkIGJlbG93Lgo+IAo+IEFkZCBhIHByaXZhdGUgcG9pbnRlciB0byBzdHJ1
-Y3Qga3ZtX21tdV9wYWdlIGZvciBwcml2YXRlIHBhZ2UgdGFibGUKPiBhbmQKPiBhZGQgaGVscGVy
-IGZ1bmN0aW9ucyB0byBhbGxvY2F0ZS9pbml0aWFsaXplL2ZyZWUgYSBwcml2YXRlIHBhZ2UgdGFi
-bGUKPiBwYWdlLgo+IAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEtWTSBwYWdlIGZhdWx0
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8Cj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBWwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCB8Cj4gwqDCoMKgwqDCoMKgwqAgLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0twqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfAo+IMKgwqDCoMKgwqDCoMKgIHzCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHwKPiDCoMKgwqDCoMKgwqDCoCBWwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIFbCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8Cj4g
-wqDCoMKgwqAgc2hhcmVkIEdQQcKgwqDCoMKgwqDCoMKgwqDCoMKgIHByaXZhdGUgR1BBwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCB8Cj4gwqDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-fAo+IMKgwqDCoMKgwqDCoMKgIFbCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgVsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwKPiDCoMKgwqAgc2hhcmVk
-IFBUIHJvb3TCoMKgwqDCoMKgIGR1bW15IFBUIHJvb3TCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzC
-oMKgwqAgcHJpdmF0ZSBQVCByb290Cj4gwqDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgfMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwKPiDCoMKgwqDCoMKgwqDCoCBWwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFbCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqAgVgo+IMKgwqDCoMKgIHNoYXJlZCBQVMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgZHVtbXkgUFQgLS0tLXByb3BhZ2F0ZS0tLS0+wqDCoCBwcml2YXRl
-IFBUCj4gwqDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHwKPiDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIFwtLS0tLS0tLS0tLS0tLS0tLSstLS0tLS1cwqDCoMKgIHwKPiDCoMKgwqDC
-oMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqDCoMKgIHzCoMKgwqAgfAo+IMKg
-wqDCoMKgwqDCoMKgIFbCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqAgVsKgwqDCoCBW
-Cj4gwqAgc2hhcmVkIGd1ZXN0IHBhZ2XCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgcHJpdmF0ZSBndWVzdAo+IHBhZ2UKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfAo+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbm9uLWVuY3J5cHRlZCBtZW1v
-cnnCoCB8wqDCoMKgIGVuY3J5cHRlZAo+IG1lbW9yeQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCB8Cj4gUFQ6IHBhZ2UgdGFibGUKPiAtIFNoYXJlZCBQVCBpcyB2aXNp
-YmxlIHRvIEtWTSBhbmQgaXQgaXMgdXNlZCBieSBDUFUuCj4gLSBQcml2YXRlIFBUIGlzIHVzZWQg
-YnkgQ1BVIGJ1dCBpdCBpcyBpbnZpc2libGUgdG8gS1ZNLgo+IC0gRHVtbXkgUFQgaXMgdmlzaWJs
-ZSB0byBLVk0gYnV0IG5vdCB1c2VkIGJ5IENQVS7CoCBJdCBpcyB1c2VkIHRvCj4gwqAgcHJvcGFn
-YXRlIFBUIGNoYW5nZSB0byB0aGUgYWN0dWFsIHByaXZhdGUgUFQgd2hpY2ggaXMgdXNlZCBieSBD
-UFUuCj4gCj4gU2lnbmVkLW9mZi1ieTogSXNha3UgWWFtYWhhdGEgPGlzYWt1LnlhbWFoYXRhQGlu
-dGVsLmNvbT4KPiBSZXZpZXdlZC1ieTogQmluYmluIFd1IDxiaW5iaW4ud3VAbGludXguaW50ZWwu
-Y29tPgo+IC0tLQo+IHYxOToKPiAtIHR5cG8gaW4gdGhlIGNvbW1lbnQgaW4ga3ZtX21tdV9hbGxv
-Y19wcml2YXRlX3NwdCgpCj4gLSBkcm9wIENPTkZJR19LVk1fTU1VX1BSSVZBVEUKPiAtLS0KPiDC
-oGFyY2gveDg2L2luY2x1ZGUvYXNtL2t2bV9ob3N0LmggfMKgIDUgKysrCj4gwqBhcmNoL3g4Ni9r
-dm0vbW11L21tdS5jwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCA3ICsrKysKPiDCoGFyY2gveDg2L2t2
-bS9tbXUvbW11X2ludGVybmFsLmggfCA2MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKyst
-Cj4gLS0KPiDCoGFyY2gveDg2L2t2bS9tbXUvdGRwX21tdS5jwqDCoMKgwqDCoCB8wqAgMSArCj4g
-wqA0IGZpbGVzIGNoYW5nZWQsIDcyIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4gCj4g
-ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL2t2bV9ob3N0LmgKPiBiL2FyY2gveDg2
-L2luY2x1ZGUvYXNtL2t2bV9ob3N0LmgKPiBpbmRleCBkY2M2ZjdjMzhhODMuLmVmZDNmZGExYzE3
-NyAxMDA2NDQKPiAtLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9rdm1faG9zdC5oCj4gKysrIGIv
-YXJjaC94ODYvaW5jbHVkZS9hc20va3ZtX2hvc3QuaAo+IEBAIC04MjUsNiArODI1LDExIEBAIHN0
-cnVjdCBrdm1fdmNwdV9hcmNoIHsKPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGt2bV9tbXVfbWVt
-b3J5X2NhY2hlIG1tdV9zaGFkb3dfcGFnZV9jYWNoZTsKPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0
-IGt2bV9tbXVfbWVtb3J5X2NhY2hlIG1tdV9zaGFkb3dlZF9pbmZvX2NhY2hlOwo+IMKgwqDCoMKg
-wqDCoMKgwqBzdHJ1Y3Qga3ZtX21tdV9tZW1vcnlfY2FjaGUgbW11X3BhZ2VfaGVhZGVyX2NhY2hl
-Owo+ICvCoMKgwqDCoMKgwqDCoC8qCj4gK8KgwqDCoMKgwqDCoMKgICogVGhpcyBjYWNoZSBpcyB0
-byBhbGxvY2F0ZSBwcml2YXRlIHBhZ2UgdGFibGUuIEUuZy7CoAo+IFNlY3VyZS1FUFQgdXNlZAo+
-ICvCoMKgwqDCoMKgwqDCoCAqIGJ5IHRoZSBURFggbW9kdWxlLgo+ICvCoMKgwqDCoMKgwqDCoCAq
-Lwo+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBrdm1fbW11X21lbW9yeV9jYWNoZSBtbXVfcHJpdmF0
-ZV9zcHRfY2FjaGU7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgLyoKPiDCoMKgwqDCoMKgwqDCoMKg
-ICogUUVNVSB1c2Vyc3BhY2UgYW5kIHRoZSBndWVzdCBlYWNoIGhhdmUgdGhlaXIgb3duIEZQVQo+
-IHN0YXRlLgo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rdm0vbW11L21tdS5jIGIvYXJjaC94ODYv
-a3ZtL21tdS9tbXUuYwo+IGluZGV4IGVlZWJiYzY3ZTQyYi4uMGQ2ZDQ1MDZlYzk3IDEwMDY0NAo+
-IC0tLSBhL2FyY2gveDg2L2t2bS9tbXUvbW11LmMKPiArKysgYi9hcmNoL3g4Ni9rdm0vbW11L21t
-dS5jCj4gQEAgLTY4NSw2ICs2ODUsMTIgQEAgc3RhdGljIGludCBtbXVfdG9wdXBfbWVtb3J5X2Nh
-Y2hlcyhzdHJ1Y3QKPiBrdm1fdmNwdSAqdmNwdSwgYm9vbCBtYXliZV9pbmRpcmVjdCkKPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIDEgKyBQVDY0X1JPT1RfTUFYX0xFVkVMICsKPiBQVEVfUFJFRkVUQ0hf
-TlVNKTsKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKHIpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqByZXR1cm4gcjsKPiArwqDCoMKgwqDCoMKgwqBpZiAoa3ZtX2dmbl9zaGFyZWRfbWFz
-ayh2Y3B1LT5rdm0pKSB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHIgPSBrdm1f
-bW11X3RvcHVwX21lbW9yeV9jYWNoZSgmdmNwdS0KPiA+YXJjaC5tbXVfcHJpdmF0ZV9zcHRfY2Fj
-aGUsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBQVDY0X1JPT1RfTUFYX0xF
-VkVMKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHIpCj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gcjsKPiArwqDCoMKg
-wqDCoMKgwqB9Cj4gwqDCoMKgwqDCoMKgwqDCoHIgPSBrdm1fbW11X3RvcHVwX21lbW9yeV9jYWNo
-ZSgmdmNwdS0KPiA+YXJjaC5tbXVfc2hhZG93X3BhZ2VfY2FjaGUsCj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBQVDY0X1JPT1RfTUFYX0xFVkVMKTsKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKHIpCj4gQEAg
-LTcwNCw2ICs3MTAsNyBAQCBzdGF0aWMgdm9pZCBtbXVfZnJlZV9tZW1vcnlfY2FjaGVzKHN0cnVj
-dAo+IGt2bV92Y3B1ICp2Y3B1KQo+IMKgwqDCoMKgwqDCoMKgwqBrdm1fbW11X2ZyZWVfbWVtb3J5
-X2NhY2hlKCZ2Y3B1LQo+ID5hcmNoLm1tdV9wdGVfbGlzdF9kZXNjX2NhY2hlKTsKPiDCoMKgwqDC
-oMKgwqDCoMKga3ZtX21tdV9mcmVlX21lbW9yeV9jYWNoZSgmdmNwdS0+YXJjaC5tbXVfc2hhZG93
-X3BhZ2VfY2FjaGUpOwo+IMKgwqDCoMKgwqDCoMKgwqBrdm1fbW11X2ZyZWVfbWVtb3J5X2NhY2hl
-KCZ2Y3B1LQo+ID5hcmNoLm1tdV9zaGFkb3dlZF9pbmZvX2NhY2hlKTsKPiArwqDCoMKgwqDCoMKg
-wqBrdm1fbW11X2ZyZWVfbWVtb3J5X2NhY2hlKCZ2Y3B1LT5hcmNoLm1tdV9wcml2YXRlX3NwdF9j
-YWNoZSk7Cj4gwqDCoMKgwqDCoMKgwqDCoGt2bV9tbXVfZnJlZV9tZW1vcnlfY2FjaGUoJnZjcHUt
-PmFyY2gubW11X3BhZ2VfaGVhZGVyX2NhY2hlKTsKPiDCoH0KPiDCoAo+IGRpZmYgLS1naXQgYS9h
-cmNoL3g4Ni9rdm0vbW11L21tdV9pbnRlcm5hbC5oCj4gYi9hcmNoL3g4Ni9rdm0vbW11L21tdV9p
-bnRlcm5hbC5oCj4gaW5kZXggZTNmNTQ3MDFmOThkLi4wMDJmM2Y4MGJmM2IgMTAwNjQ0Cj4gLS0t
-IGEvYXJjaC94ODYva3ZtL21tdS9tbXVfaW50ZXJuYWwuaAo+ICsrKyBiL2FyY2gveDg2L2t2bS9t
-bXUvbW11X2ludGVybmFsLmgKPiBAQCAtMTAxLDcgKzEwMSwyMSBAQCBzdHJ1Y3Qga3ZtX21tdV9w
-YWdlIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGludCByb290X2NvdW50Owo+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmVmY291bnRfdCB0ZHBfbW11X3Jvb3Rf
-Y291bnQ7Cj4gwqDCoMKgwqDCoMKgwqDCoH07Cj4gLcKgwqDCoMKgwqDCoMKgdW5zaWduZWQgaW50
-IHVuc3luY19jaGlsZHJlbjsKPiArwqDCoMKgwqDCoMKgwqB1bmlvbiB7Cj4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBpbnQgdW5zeW5jX2NoaWxkcmVuOwo+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyoKPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIE51bWJlciBvZiB3cml0ZXMg
-c2luY2UgdGhlIGxhc3QgdGltZQo+IHRyYXZlcnNhbAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogdmlzaXRlZCB0aGlzIHBhZ2UuCj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8KPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGF0b21pY190IHdyaXRlX2Zsb29kaW5n
-X2NvdW50Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9OwoKSSB0aGluayB0aGUg
-cG9pbnQgb2YgcHV0dGluZyB0aGVzZSBpbiBhIHVuaW9uIGlzIHRoYXQgdGhleSBvbmx5IGFwcGx5
-CnRvIHNoYWRvdyBwYWdpbmcgYW5kIHNvIGNhbid0IGJlIHVzZWQgd2l0aCBURFguIEkgdGhpbmsg
-eW91IGFyZSBwdXR0aW5nCm1vcmUgdGhhbiB0aGUgc2l6ZW9mKHZvaWQgKikgaW4gdGhlcmUgYXMg
-dGhlcmUgYXJlIG11bHRpcGxlIGluIHRoZSBzYW1lCmNhdGVnb3J5LiBCdXQgdGhlcmUgc2VlbXMg
-dG8gYmUgYSBuZXcgb25lIGFkZGVkLCAqc2hhZG93ZWRfdHJhbnNsYXRpb24uClNob3VsZCBpdCBn
-byBpbiB0aGVyZSB0b28/IElzIHRoZSB1bmlvbiBiZWNhdXNlIHRoZXJlIHdhc24ndCByb29tCmJl
-Zm9yZSwgb3IganVzdCB0byBiZSB0aWR5PwoKSSB0aGluayB0aGUgY29tbWl0IGxvZyBzaG91bGQg
-aGF2ZSBtb3JlIGRpc2N1c3Npb24gb2YgdGhpcyB1bmlvbiBhbmQKbWF5YmUgYSBjb21tZW50IGlu
-IHRoZSBzdHJ1Y3QgdG8gZXhwbGFpbiB0aGUgcHVycG9zZSBvZiB0aGUKb3JnYW5pemF0aW9uLiBD
-YW4geW91IGV4cGxhaW4gdGhlIHJlYXNvbmluZyBub3cgZm9yIHRoZSBzYWtlIG9mCmRpc2N1c3Np
-b24/Cgo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKgo+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgKiBBc3NvY2lhdGVkIHByaXZhdGUgc2hhZG93IHBhZ2UgdGFibGUs
-IGUuZy4gU2VjdXJlLQo+IEVQVCBwYWdlCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCAqIHBhc3NlZCB0byB0aGUgVERYIG1vZHVsZS4KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgICovCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHZvaWQgKnByaXZhdGVf
-c3B0Owo+ICvCoMKgwqDCoMKgwqDCoH07Cj4gwqDCoMKgwqDCoMKgwqDCoHVuaW9uIHsKPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBrdm1fcm1hcF9oZWFkIHBhcmVudF9w
-dGVzOyAvKiBybWFwIHBvaW50ZXJzIHRvCj4gcGFyZW50IHNwdGVzICovCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqB0ZHBfcHRlcF90IHB0ZXA7Cj4gQEAgLTEyNCw5ICsxMzgsNiBA
-QCBzdHJ1Y3Qga3ZtX21tdV9wYWdlIHsKPiDCoMKgwqDCoMKgwqDCoMKgaW50IGNsZWFyX3NwdGVf
-Y291bnQ7Cj4gwqAjZW5kaWYKPiDCoAo+IC3CoMKgwqDCoMKgwqDCoC8qIE51bWJlciBvZiB3cml0
-ZXMgc2luY2UgdGhlIGxhc3QgdGltZSB0cmF2ZXJzYWwgdmlzaXRlZAo+IHRoaXMgcGFnZS7CoCAq
-Lwo+IC3CoMKgwqDCoMKgwqDCoGF0b21pY190IHdyaXRlX2Zsb29kaW5nX2NvdW50Owo+IC0KPiDC
-oCNpZmRlZiBDT05GSUdfWDg2XzY0Cj4gwqDCoMKgwqDCoMKgwqDCoC8qIFVzZWQgZm9yIGZyZWVp
-bmcgdGhlIHBhZ2UgYXN5bmNocm9ub3VzbHkgaWYgaXQgaXMgYSBURFAKPiBNTVUgcGFnZS4gKi8K
-PiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IHJjdV9oZWFkIHJjdV9oZWFkOwo+IEBAIC0xNTAsNiAr
-MTYxLDUwIEBAIHN0YXRpYyBpbmxpbmUgYm9vbCBpc19wcml2YXRlX3NwKGNvbnN0IHN0cnVjdAo+
-IGt2bV9tbXVfcGFnZSAqc3ApCj4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiBrdm1fbW11X3BhZ2Vf
-cm9sZV9pc19wcml2YXRlKHNwLT5yb2xlKTsKPiDCoH0KPiDCoAo+ICtzdGF0aWMgaW5saW5lIHZv
-aWQgKmt2bV9tbXVfcHJpdmF0ZV9zcHQoc3RydWN0IGt2bV9tbXVfcGFnZSAqc3ApCj4gK3sKPiAr
-wqDCoMKgwqDCoMKgwqByZXR1cm4gc3AtPnByaXZhdGVfc3B0Owo+ICt9Cj4gKwo+ICtzdGF0aWMg
-aW5saW5lIHZvaWQga3ZtX21tdV9pbml0X3ByaXZhdGVfc3B0KHN0cnVjdCBrdm1fbW11X3BhZ2Ug
-KnNwLAo+IHZvaWQgKnByaXZhdGVfc3B0KQo+ICt7Cj4gK8KgwqDCoMKgwqDCoMKgc3AtPnByaXZh
-dGVfc3B0ID0gcHJpdmF0ZV9zcHQ7Cj4gK30KPiArCj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBrdm1f
-bW11X2FsbG9jX3ByaXZhdGVfc3B0KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwKPiBzdHJ1Y3Qga3Zt
-X21tdV9wYWdlICpzcCkKPiArewo+ICvCoMKgwqDCoMKgwqDCoGJvb2wgaXNfcm9vdCA9IHZjcHUt
-PmFyY2gucm9vdF9tbXUucm9vdF9yb2xlLmxldmVsID09IHNwLQo+ID5yb2xlLmxldmVsOwo+ICsK
-PiArwqDCoMKgwqDCoMKgwqBLVk1fQlVHX09OKCFrdm1fbW11X3BhZ2Vfcm9sZV9pc19wcml2YXRl
-KHNwLT5yb2xlKSwgdmNwdS0KPiA+a3ZtKTsKPiArwqDCoMKgwqDCoMKgwqBpZiAoaXNfcm9vdCkK
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyoKPiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgICogQmVjYXVzZSBURFggbW9kdWxlIGFzc2lnbnMgcm9vdCBTZWN1cmUtRVBU
-IHBhZ2UKPiBhbmQgc2V0IGl0IHRvCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAq
-IFNlY3VyZS1FUFRQIHdoZW4gVEQgdmNwdSBpcyBjcmVhdGVkLCBzZWN1cmUgcGFnZQo+IHRhYmxl
-IGZvcgo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiByb290IGlzbid0IG5lZWRl
-ZC4KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICovCj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoHNwLT5wcml2YXRlX3NwdCA9IE5VTEw7Cj4gK8KgwqDCoMKgwqDCoMKg
-ZWxzZSB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qCj4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCAqIEJlY2F1c2UgdGhlIFREWCBtb2R1bGUgZG9lc24ndCB0cnVz
-dCBWTU0gYW5kCj4gaW5pdGlhbGl6ZXMKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICogdGhlIHBhZ2VzIGl0c2VsZiwgS1ZNIGRvZXNuJ3QgaW5pdGlhbGl6ZSB0aGVtLsKgCj4gQWxs
-b2NhdGUKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogcGFnZXMgd2l0aCBnYXJi
-YWdlIGFuZCBnaXZlIHRoZW0gdG8gdGhlIFREWAo+IG1vZHVsZS4KPiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgICovCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNwLT5w
-cml2YXRlX3NwdCA9IGt2bV9tbXVfbWVtb3J5X2NhY2hlX2FsbG9jKCZ2Y3B1LQo+ID5hcmNoLm1t
-dV9wcml2YXRlX3NwdF9jYWNoZSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8q
-Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIEJlY2F1c2UgbW11X3ByaXZhdGVf
-c3B0X2NhY2hlIGlzIHRvcHBlZCB1cCBiZWZvcmUKPiBzdGFydGluZwo+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgKiBrdm0gcGFnZSBmYXVsdCByZXNvbHZpbmcsIHRoZSBhbGxvY2F0
-aW9uIGFib3ZlCj4gc2hvdWxkbid0Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAq
-IGZhaWwuCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBXQVJOX09OX09OQ0UoIXNwLT5wcml2YXRlX3NwdCk7CgpUaGVy
-ZSBpcyBhbHJlYWR5IGEgQlVHX09OKCkgZm9yIHRoZSBhbGxvY2F0aW9uIGZhaWx1cmUgaW4Ka3Zt
-X21tdV9tZW1vcnlfY2FjaGVfYWxsb2MoKS4KCj4gK8KgwqDCoMKgwqDCoMKgfQo+ICt9Cj4gKwo+
-ICtzdGF0aWMgaW5saW5lIHZvaWQga3ZtX21tdV9mcmVlX3ByaXZhdGVfc3B0KHN0cnVjdCBrdm1f
-bW11X3BhZ2UgKnNwKQo+ICt7Cj4gK8KgwqDCoMKgwqDCoMKgaWYgKHNwLT5wcml2YXRlX3NwdCkK
-CmZyZWVfcGFnZSgpIGNhbiBhY2NlcHQgTlVMTCwgc28gdGhlIGFib3ZlIGNoZWNrIGlzIHVubmVl
-ZGVkLgoKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZnJlZV9wYWdlKCh1bnNpZ25l
-ZCBsb25nKXNwLT5wcml2YXRlX3NwdCk7Cj4gK30KPiArCj4gwqBzdGF0aWMgaW5saW5lIGJvb2wg
-a3ZtX21tdV9wYWdlX2FkX25lZWRfd3JpdGVfcHJvdGVjdChzdHJ1Y3QKPiBrdm1fbW11X3BhZ2Ug
-KnNwKQo+IMKgewo+IMKgwqDCoMKgwqDCoMKgwqAvKgo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9r
-dm0vbW11L3RkcF9tbXUuYyBiL2FyY2gveDg2L2t2bS9tbXUvdGRwX21tdS5jCj4gaW5kZXggODcy
-MzNiM2NlYWVmLi5kNDdmMGRhZjFiMDMgMTAwNjQ0Cj4gLS0tIGEvYXJjaC94ODYva3ZtL21tdS90
-ZHBfbW11LmMKPiArKysgYi9hcmNoL3g4Ni9rdm0vbW11L3RkcF9tbXUuYwo+IEBAIC01Myw2ICs1
-Myw3IEBAIHZvaWQga3ZtX21tdV91bmluaXRfdGRwX21tdShzdHJ1Y3Qga3ZtICprdm0pCj4gwqAK
-PiDCoHN0YXRpYyB2b2lkIHRkcF9tbXVfZnJlZV9zcChzdHJ1Y3Qga3ZtX21tdV9wYWdlICpzcCkK
-PiDCoHsKPiArwqDCoMKgwqDCoMKgwqBrdm1fbW11X2ZyZWVfcHJpdmF0ZV9zcHQoc3ApOwoKVGhp
-cyBwYXJ0aWN1bGFyIG1lbWNhY2hlIHplcm9zIHRoZSBhbGxvY2F0aW9ucyBzbyBpdCBpcyBzYWZl
-IHRvIGZyZWUKdGhpcyB3aXRob3V0IHJlZ2FyZCB0byB3aGV0aGVyIHNwLT5wcml2YXRlX3NwdCBo
-YXMgYmVlbiBzZXQgYW5kIHRoYXQKdGhlIGFsbG9jYXRpb24gY2FsbGVyIGlzIG5vdCBpbiBwbGFj
-ZSB5ZXQuIEl0IHdvdWxkIGJlIG5pY2UgdG8gYWRkIHRoaXMKZGV0YWlsIGluIHRoZSBsb2cuCgo+
-IMKgwqDCoMKgwqDCoMKgwqBmcmVlX3BhZ2UoKHVuc2lnbmVkIGxvbmcpc3AtPnNwdCk7Cj4gwqDC
-oMKgwqDCoMKgwqDCoGttZW1fY2FjaGVfZnJlZShtbXVfcGFnZV9oZWFkZXJfY2FjaGUsIHNwKTsK
-PiDCoH0KCg==
+Hi Linus,
+
+Please consider pulling perf-tools changes for v6.9.
+
+Note that there was a merge conflict with kvm-riscv tree in linux-next.  It was
+because of a tree-wide change in the Makefile to remove unnecessary assignments.
+As it's mostly in the perf tools change, it went through the perf-tools tree.
+I think it's straight-forward to resolve and I don't see the conflict as of the
+current master but I'd like to inform you anyway.  You can see the resolution
+in the below message.
+
+  https://lore.kernel.org/r/20240307145422.0de43782@canb.auug.org.au
+
+Thanks,
+Namhyung
+
+----------------------------------------------------------------
+The following changes since commit fdd0ae72b34e56eb5e896d067c49a78ecb451032:
+
+  perf tools headers: update the asm-generic/unaligned.h copy with the kernel sources (2024-01-31 14:02:41 -0300)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git tags/perf-tools-for-v6.9-2024-03-13
+
+for you to fetch changes up to 0f66dfe7b91d2743cc71dfff37af503215b204ef:
+
+  perf annotate: Add comments in the data structures (2024-03-06 20:25:48 -0800)
+
+----------------------------------------------------------------
+perf tools changes for v6.9
+
+perf stat
+---------
+* Support new 'cluster' aggregation mode for shared resources depending on the
+  hardware configuration.
+
+    $ sudo perf stat -a --per-cluster -e cycles,instructions sleep 1
+
+     Performance counter stats for 'system wide':
+
+    S0-D0-CLS0    2         85,051,822      cycles
+    S0-D0-CLS0    2         73,909,908      instructions      #    0.87  insn per cycle
+    S0-D0-CLS2    2         93,365,918      cycles
+    S0-D0-CLS2    2         83,006,158      instructions      #    0.89  insn per cycle
+    S0-D0-CLS4    2        104,157,523      cycles
+    S0-D0-CLS4    2         53,234,396      instructions      #    0.51  insn per cycle
+    S0-D0-CLS6    2         65,891,079      cycles
+    S0-D0-CLS6    2         41,478,273      instructions      #    0.63  insn per cycle
+
+           1.002407989 seconds time elapsed
+
+* Various fixes and cleanups for event metrics including NaN handling.
+
+perf script
+-----------
+* Use libcapstone if available to disassemble the instructions.  This enables
+  'perf script -F disasm' and 'perf script --insn-trace=disasm' (for Intel-PT).
+
+    $ perf script -F event,ip,disasm
+    cycles:P:  ffffffffa988d428             wrmsr
+    cycles:P:  ffffffffa9839d25             movq %rax, %r14
+    cycles:P:  ffffffffa9cdcaf0             endbr64
+    cycles:P:  ffffffffa988d428             wrmsr
+    cycles:P:  ffffffffa988d428             wrmsr
+    cycles:P:  ffffffffaa401f86             iretq
+    cycles:P:  ffffffffa99c4de5             movq 0x30(%rcx), %r8
+    cycles:P:  ffffffffa988d428             wrmsr
+    cycles:P:  ffffffffaa401f86             iretq
+    cycles:P:  ffffffffa9907983             movl 0x68(%rbx), %eax
+    cycles:P:  ffffffffa988d428             wrmsr
+
+* Expose sample ID / stream ID to python scripts
+
+perf test
+---------
+* Add more perf test cases from Redhat internal test suites.  This time it adds
+  the base infra and a few perf probe tests.  More to come. :)
+
+* Add 'perf test -p' for parallel execution and fix some issues found by the
+  parallel test.
+
+* Support symbol test to print symbols in given (active) module:
+
+    $ perf test -F -v Symbols --dso /lib/modules/$(uname -r)/kernel/fs/ext4/ext4.ko
+    --- start ---
+    Testing /lib/modules/6.5.13-1rodete2-amd64/kernel/fs/ext4/ext4.ko
+    Overlapping symbols:
+     7a990-7a9a0 l __pfx_ext4_exit_fs
+     7a990-7a9a0 g __pfx_cleanup_module
+    Overlapping symbols:
+     7a9a0-7aa1c l ext4_exit_fs
+     7a9a0-7aa1c g cleanup_module
+    ...
+
+JSON metric updates
+-------------------
+* A new round of Intel metric updates.
+
+* Support Power11 PVR (compatible to Power10).
+
+* Fix cache latency events on Zen 4 to set SliceId properly.
+
+Internal
+--------
+* Fix reference counting for 'map' data structure, tireless work from Ian!
+
+* More memory optimization for struct thread and annotate histogram.  Now,
+  'perf report' (TUI) and 'perf annotate' should be much lighter-weight in
+  terms of memory footprint.
+
+* Support cross-arch perf register access.  Clean up the build configuration
+  so that it can detect arch-register support at runtime.  This can allow to
+  parse register data in sample which was recorded in a different arch.
+
+Others
+------
+* Sync task state in 'perf sched' to kernel using trace event fields.  The
+  task states have been changed so tools cannot assume a fixed encoding.
+
+* Clean up 'perf mem' to generalize the arch-specific events.
+
+* Add support for local and global variables to data type profiling.  This
+  would increase the success rate of type resolution with DWARF.
+
+* Add short option -H for --hierarchy in 'perf report' and 'perf top'.
+
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+
+----------------------------------------------------------------
+Adrian Hunter (3):
+      perf tools: Make it possible to see perf's kernel and module memory mappings
+      perf symbols: Slightly improve module file executable section mappings
+      perf test: Enable Symbols test to work with a current module dso
+
+Andi Kleen (2):
+      perf report: Prevent segfault with --no-parent
+      perf Documentation: Add some more hints to tips.txt
+
+Arnaldo Carvalho de Melo (4):
+      perf bpf: Clean up the generated/copied vmlinux.h
+      perf augmented_raw_syscalls.bpf: Move 'struct timespec64' to vmlinux.h
+      perf bpf: Check that the minimal vmlinux.h installed is the latest one
+      perf test: Use TEST_FAIL in the TEST_ASSERT macros instead of -1
+
+Ben Gainey (1):
+      tools: perf: Expose sample ID / stream ID to python scripts
+
+Changbin Du (5):
+      perf: build: introduce the libcapstone
+      perf: util: use capstone disasm engine to show assembly instructions
+      perf: script: add field 'disasm' to display mnemonic instructions
+      perf: script: add raw|disasm arguments to --insn-trace option
+      perf: script: prefer capstone to XED
+
+Christophe JAILLET (1):
+      perf pmu: Fix a potential memory leak in perf_pmu__lookup()
+
+Colin Ian King (1):
+      perf test: Fix spelling mistake "curent" -> "current"
+
+Ian Rogers (71):
+      perf pmu: Treat the msr pmu as software
+      perf tsc: Add missing newlines to debug statements
+      perf parse-events: Improve error location of terms cloned from an event
+      perf parse-events: Print all errors
+      perf jevents: Drop or simplify small integer values
+      perf kvm powerpc: Fix build
+      perf srcline: Add missed addr2line closes
+      perf maps: Switch from rbtree to lazily sorted array for addresses
+      perf maps: Get map before returning in maps__find
+      perf maps: Get map before returning in maps__find_by_name
+      perf maps: Get map before returning in maps__find_next_entry
+      perf maps: Hide maps internals
+      perf maps: Locking tidy up of nr_maps
+      perf expr: Allow NaN to be a valid number
+      perf expr: Fix "has_event" function for metric style events
+      perf stat: Avoid metric-only segv
+      perf metric: Don't remove scale from counts
+      perf vendor events intel: Update alderlake events to v1.24
+      perf vendor events intel: Update alderlaken events to v1.24
+      perf vendor events intel: Update broadwell events to v29
+      perf vendor events intel: Update emeraldrapids events to v1.03
+      perf vendor events intel: Update grandridge events to v1.01
+      perf vendor events intel: Update haswell events to v35
+      perf vendor events intel: Update icelake events to v1.21
+      perf vendor events intel: Update meteorlake events to v1.07
+      perf vendor events intel: Update rocketlake events to v1.02
+      perf vendor events intel: Update sierraforst events to v1.01
+      perf vendor events intel: Update skylake events to v58
+      perf vendor events intel: Update tigerlake events to v1.15
+      perf vendor events intel: Update alderlake TMA metrics to 4.7
+      perf vendor events intel: Update broadwell TMA metrics to 4.7
+      perf vendor events intel: Update broadwellde TMA metrics to 4.7
+      perf vendor events intel: Update broadwellx TMA metrics to 4.7
+      perf vendor events intel: Update cascadelakex TMA metrics to 4.7
+      perf vendor events intel: Update haswell TMA metrics to 4.7
+      perf vendor events intel: Update haswellx TMA metrics to 4.7
+      perf vendor events intel: Update icelake TMA metrics to 4.7
+      perf vendor events intel: Update icelakex TMA metrics to 4.7
+      perf vendor events intel: Update ivybridge TMA metrics to 4.7
+      perf vendor events intel: Update ivytown TMA metrics to 4.7
+      perf vendor events intel: Update jaketown TMA metrics to 4.7
+      perf vendor events intel: Update rocketlake TMA metrics to 4.7
+      perf vendor events intel: Update sandybridge TMA metrics to 4.7
+      perf vendor events intel: Update sapphirerapids TMA metrics to 4.7
+      perf vendor events intel: Update skylake TMA metrics to 4.7
+      perf vendor events intel: Update skylakex TMA metrics to 4.7
+      perf vendor events intel: Update tigerlake TMA metrics to 4.7
+      perf list: For metricgroup only list include description
+      perf stat: Pass fewer metric arguments
+      perf metrics: Compute unmerged uncore metrics individually
+      perf stat: Fix metric-only aggregation index
+      perf thread_map: Skip exited threads when scanning /proc
+      perf list: Add scandirat compatibility function
+      perf tests: Avoid fork in perf_has_symbol test
+      tools subcmd: Add a no exec function call option
+      perf test: Rename builtin-test-list and add missed header guard
+      perf tests: Use scandirat for shell script finding
+      perf tests: Run time generate shell test suites
+      perf tests: Add option to run tests in parallel
+      perf metrics: Fix metric matching
+      perf metrics: Fix segv for metrics with no events
+      libperf evlist: Avoid out-of-bounds access
+      perf map: Fix map reference count issues
+      perf vendor events intel: Add umasks/occ_sel to PCU events.
+      perf report: Sort child tasks by tid
+      perf trace: Ignore thread hashing in summary
+      perf machine: Move fprintf to for_each loop and a callback
+      perf machine: Move machine's threads into its own abstraction
+      perf threads: Move threads to its own files
+      perf threads: Switch from rbtree to hashmap
+      perf threads: Reduce table size from 256 to 8
+
+Ilkka Koskinen (1):
+      perf data convert: Fix segfault when converting to json when cpu_desc isn't set
+
+James Clark (4):
+      perf evlist: Fix evlist__new_default() for > 1 core PMU
+      perf version: Display availability of HAVE_DWARF_UNWIND_SUPPORT
+      perf test: Skip test_arm_callgraph_fp.sh if unwinding isn't built in
+      perf version: Display availability of OpenCSD support
+
+Kan Liang (8):
+      perf mem: Add mem_events into the supported perf_pmu
+      perf mem: Clean up perf_mem_events__ptr()
+      perf mem: Clean up perf_mem_events__name()
+      perf mem: Clean up perf_mem_event__supported()
+      perf mem: Clean up is_mem_loads_aux_event()
+      perf mem: Clean up perf_mem_events__record_args()
+      perf mem: Clean up perf_pmus__num_mem_pmus()
+      perf script: Print source line for each jump in brstackinsn
+
+Leo Yan (4):
+      perf build: Remove unused CONFIG_PERF_REGS
+      perf parse-regs: Always build perf register functions
+      perf parse-regs: Introduce a weak function arch__sample_reg_masks()
+      perf build: Cleanup perf register configuration
+
+Madhavan Srinivasan (1):
+      perf/pmu-events/powerpc: Update json mapfile with Power11 PVR
+
+Mark Rutland (1):
+      perf print-events: make is_event_supported() more robust
+
+Masahiro Yamada (1):
+      treewide: remove meaningless assignments in Makefiles
+
+Michael Petlan (1):
+      perf testsuite: Install kprobe tests and common files
+
+Namhyung Kim (19):
+      perf annotate-data: Parse 'lock' prefix from llvm-objdump
+      perf annotate-data: Handle macro fusion on x86
+      perf annotate-data: Handle array style accesses
+      perf annotate-data: Add stack operation pseudo type
+      perf annotate-data: Handle PC-relative addressing
+      perf annotate-data: Support global variables
+      perf dwarf-aux: Add die_get_cfa()
+      perf annotate-data: Support stack variables
+      perf dwarf-aux: Check allowed DWARF Ops
+      perf tools: Add -H short option for --hierarchy
+      perf record: Display data size on pipe mode
+      perf tools: Remove misleading comments on map functions
+      Merge branch 'perf-tools' into perf-tools-next
+      perf tools: Fixup module symbol end address properly
+      perf lock contention: Account contending locks too
+      perf annotate: Add a hashmap for symbol histogram
+      perf annotate: Calculate instruction overhead using hashmap
+      perf annotate: Remove sym_hist.addr[] array
+      perf annotate: Add comments in the data structures
+
+Sandipan Das (1):
+      perf vendor events amd: Fix Zen 4 cache latency events
+
+Thomas Richter (2):
+      perf test: raise limit to 20 percent for perf_stat_--bpf-counters_test
+      perf list: fix short description for some cache events
+
+Veronika Molnarova (6):
+      perf testsuite: Add common regex patters
+      perf testsuite: Add common setting for shell tests
+      perf testsuite: Add initialization script for shell tests
+      perf testsuite: Add test case for perf probe
+      perf testsuite: Add common output checking helpers
+      perf testsuite: Add test for kprobe handling
+
+Weilin Wang (1):
+      perf test: Simplify metric value validation test final report
+
+Yang Jihong (10):
+      perf build: Check whether pkg-config is installed when libtraceevent is linked
+      perf record: Fix possible incorrect free in record__switch_output()
+      perf record: Check conflict between '--timestamp-filename' option and pipe mode before recording
+      perf data: Minor code style alignment cleanup
+      perf evsel: Fix duplicate initialization of data->id in evsel__parse_sample()
+      perf sched: Move start_work_mutex and work_done_wait_mutex initialization to perf_sched__replay()
+      perf sched: Fix memory leak in perf_sched__map()
+      perf sched: Move curr_thread initialization to perf_sched__map()
+      perf sched: Move curr_pid and cpu_last_switched initialization to perf_sched__{lat|map|replay}()
+      perf thread_map: Free strlist on normal path in thread_map__new_by_tid_str()
+
+Yicong Yang (2):
+      perf test: Skip metric w/o event name on arm64 in stat STD output linter
+      perf stat: Support per-cluster aggregation
+
+Ze Gao (5):
+      perf sched: Sync state char array with the kernel
+      perf util: Add helpers to parse task state string from libtraceevent
+      perf util: Add evsel__taskstate() to parse the task state info instead
+      perf sched: Commit to evsel__taskstate() to parse task state info
+      perf evsel: Rename get_states() to parse_task_states() and make it public
+
+ tools/build/Makefile.feature                       |    2 +
+ tools/build/feature/Makefile                       |    4 +
+ tools/build/feature/test-all.c                     |    4 +
+ tools/build/feature/test-libcapstone.c             |   11 +
+ tools/lib/perf/evlist.c                            |   18 +-
+ tools/lib/perf/include/internal/evlist.h           |    4 +-
+ tools/lib/subcmd/run-command.c                     |    2 +
+ tools/lib/subcmd/run-command.h                     |    2 +
+ tools/perf/Documentation/perf-intel-pt.txt         |   14 +-
+ tools/perf/Documentation/perf-report.txt           |   29 +-
+ tools/perf/Documentation/perf-script-python.txt    |    4 +-
+ tools/perf/Documentation/perf-script.txt           |   20 +-
+ tools/perf/Documentation/perf-stat.txt             |   11 +
+ tools/perf/Documentation/perf-top.txt              |   32 +-
+ tools/perf/Documentation/perf.txt                  |    2 +
+ tools/perf/Documentation/tips.txt                  |   31 +-
+ tools/perf/Makefile.config                         |  142 +-
+ tools/perf/Makefile.perf                           |   18 +-
+ tools/perf/arch/arm/util/perf_regs.c               |    7 +-
+ tools/perf/arch/arm/util/pmu.c                     |    3 +
+ tools/perf/arch/arm64/Makefile                     |    2 +-
+ tools/perf/arch/arm64/util/machine.c               |    2 +
+ tools/perf/arch/arm64/util/mem-events.c            |   39 +-
+ tools/perf/arch/arm64/util/mem-events.h            |    7 +
+ tools/perf/arch/arm64/util/perf_regs.c             |    7 +-
+ tools/perf/arch/csky/util/perf_regs.c              |    7 +-
+ tools/perf/arch/loongarch/Makefile                 |    2 +-
+ tools/perf/arch/loongarch/util/perf_regs.c         |    7 +-
+ tools/perf/arch/mips/Makefile                      |    2 +-
+ tools/perf/arch/mips/util/perf_regs.c              |    7 +-
+ tools/perf/arch/powerpc/Makefile                   |    2 +-
+ tools/perf/arch/powerpc/util/Build                 |    1 +
+ tools/perf/arch/powerpc/util/kvm-stat.c            |    2 +-
+ tools/perf/arch/powerpc/util/mem-events.c          |   16 +-
+ tools/perf/arch/powerpc/util/mem-events.h          |    7 +
+ tools/perf/arch/powerpc/util/perf_regs.c           |    7 +-
+ tools/perf/arch/powerpc/util/pmu.c                 |   12 +
+ tools/perf/arch/riscv/util/perf_regs.c             |    7 +-
+ tools/perf/arch/s390/Makefile                      |    2 +-
+ tools/perf/arch/s390/util/perf_regs.c              |    7 +-
+ tools/perf/arch/x86/Makefile                       |    2 +-
+ tools/perf/arch/x86/tests/dwarf-unwind.c           |    1 +
+ tools/perf/arch/x86/tests/hybrid.c                 |    5 +-
+ tools/perf/arch/x86/util/mem-events.c              |   99 +-
+ tools/perf/arch/x86/util/mem-events.h              |   10 +
+ tools/perf/arch/x86/util/perf_regs.c               |    7 +-
+ tools/perf/arch/x86/util/pmu.c                     |   19 +-
+ tools/perf/arch/x86/util/tsc.c                     |    4 +-
+ tools/perf/builtin-c2c.c                           |   45 +-
+ tools/perf/builtin-list.c                          |   21 +-
+ tools/perf/builtin-mem.c                           |   48 +-
+ tools/perf/builtin-record.c                        |   19 +-
+ tools/perf/builtin-report.c                        |  221 +-
+ tools/perf/builtin-sched.c                         |  220 +-
+ tools/perf/builtin-script.c                        |   66 +-
+ tools/perf/builtin-stat.c                          |   52 +-
+ tools/perf/builtin-top.c                           |    2 +-
+ tools/perf/builtin-trace.c                         |   41 +-
+ tools/perf/builtin-version.c                       |    3 +
+ tools/perf/pmu-events/arch/powerpc/mapfile.csv     |    1 +
+ .../perf/pmu-events/arch/s390/cf_z16/extended.json |   62 +-
+ .../pmu-events/arch/x86/alderlake/adl-metrics.json |  459 ++--
+ .../arch/x86/alderlake/floating-point.json         |   30 +-
+ .../arch/x86/alderlake/metricgroups.json           |   11 +-
+ .../perf/pmu-events/arch/x86/alderlake/other.json  |   10 +
+ .../pmu-events/arch/x86/alderlake/pipeline.json    |   13 +
+ .../perf/pmu-events/arch/x86/alderlaken/other.json |    9 +
+ .../pmu-events/arch/x86/alderlaken/pipeline.json   |    9 +
+ tools/perf/pmu-events/arch/x86/amdzen4/cache.json  |   56 +
+ .../pmu-events/arch/x86/broadwell/bdw-metrics.json |  204 +-
+ .../perf/pmu-events/arch/x86/broadwell/memory.json |    2 +-
+ .../arch/x86/broadwell/metricgroups.json           |    7 +-
+ .../arch/x86/broadwellde/bdwde-metrics.json        |  191 +-
+ .../arch/x86/broadwellde/metricgroups.json         |    7 +-
+ .../arch/x86/broadwellde/uncore-power.json         |    3 +
+ .../arch/x86/broadwellx/bdx-metrics.json           |  250 +-
+ .../arch/x86/broadwellx/metricgroups.json          |    7 +-
+ .../arch/x86/broadwellx/uncore-power.json          |    3 +
+ .../arch/x86/cascadelakex/clx-metrics.json         |  566 ++--
+ .../arch/x86/cascadelakex/metricgroups.json        |   12 +-
+ .../arch/x86/cascadelakex/uncore-power.json        |    3 +
+ .../arch/x86/emeraldrapids/uncore-cache.json       |  152 ++
+ .../perf/pmu-events/arch/x86/grandridge/cache.json |  185 ++
+ .../arch/x86/grandridge/floating-point.json        |   68 +
+ .../pmu-events/arch/x86/grandridge/frontend.json   |   16 +
+ .../pmu-events/arch/x86/grandridge/memory.json     |   66 +
+ .../perf/pmu-events/arch/x86/grandridge/other.json |   16 +
+ .../pmu-events/arch/x86/grandridge/pipeline.json   |  353 +++
+ .../arch/x86/grandridge/uncore-cache.json          | 1795 ++++++++++++
+ .../arch/x86/grandridge/uncore-interconnect.json   |  175 ++
+ .../pmu-events/arch/x86/grandridge/uncore-io.json  | 1187 ++++++++
+ .../arch/x86/grandridge/uncore-memory.json         |  385 +++
+ .../arch/x86/grandridge/uncore-power.json          |   10 +
+ .../arch/x86/grandridge/virtual-memory.json        |  113 +-
+ .../pmu-events/arch/x86/haswell/hsw-metrics.json   |  178 +-
+ tools/perf/pmu-events/arch/x86/haswell/memory.json |    2 +-
+ .../pmu-events/arch/x86/haswell/metricgroups.json  |    7 +-
+ .../pmu-events/arch/x86/haswellx/hsx-metrics.json  |  224 +-
+ .../pmu-events/arch/x86/haswellx/metricgroups.json |    7 +-
+ .../pmu-events/arch/x86/haswellx/uncore-power.json |    3 +
+ .../pmu-events/arch/x86/icelake/icl-metrics.json   |  398 ++-
+ tools/perf/pmu-events/arch/x86/icelake/memory.json |    1 +
+ .../pmu-events/arch/x86/icelake/metricgroups.json  |   12 +-
+ tools/perf/pmu-events/arch/x86/icelake/other.json  |    2 +-
+ .../perf/pmu-events/arch/x86/icelake/pipeline.json |   10 +-
+ .../pmu-events/arch/x86/icelakex/icx-metrics.json  |  586 ++--
+ .../pmu-events/arch/x86/icelakex/metricgroups.json |   12 +-
+ .../pmu-events/arch/x86/icelakex/uncore-power.json |    3 +
+ .../pmu-events/arch/x86/ivybridge/ivb-metrics.json |  197 +-
+ .../arch/x86/ivybridge/metricgroups.json           |    7 +-
+ .../pmu-events/arch/x86/ivytown/ivt-metrics.json   |  200 +-
+ .../pmu-events/arch/x86/ivytown/metricgroups.json  |    7 +-
+ .../pmu-events/arch/x86/ivytown/uncore-power.json  |    3 +
+ .../pmu-events/arch/x86/jaketown/jkt-metrics.json  |   64 +-
+ .../pmu-events/arch/x86/jaketown/metricgroups.json |    7 +-
+ .../pmu-events/arch/x86/jaketown/uncore-power.json |    3 +
+ tools/perf/pmu-events/arch/x86/mapfile.csv         |   24 +-
+ .../perf/pmu-events/arch/x86/meteorlake/cache.json |    8 +-
+ .../arch/x86/meteorlake/floating-point.json        |   86 +-
+ .../perf/pmu-events/arch/x86/meteorlake/other.json |   10 +
+ .../pmu-events/arch/x86/meteorlake/pipeline.json   |   76 +
+ .../arch/x86/meteorlake/virtual-memory.json        |   36 +
+ .../pmu-events/arch/x86/rocketlake/memory.json     |    1 +
+ .../arch/x86/rocketlake/metricgroups.json          |   12 +-
+ .../perf/pmu-events/arch/x86/rocketlake/other.json |    2 +-
+ .../pmu-events/arch/x86/rocketlake/pipeline.json   |   10 +-
+ .../arch/x86/rocketlake/rkl-metrics.json           |  406 +--
+ .../arch/x86/sandybridge/metricgroups.json         |    7 +-
+ .../arch/x86/sandybridge/snb-metrics.json          |   71 +-
+ .../arch/x86/sapphirerapids/metricgroups.json      |   12 +-
+ .../arch/x86/sapphirerapids/spr-metrics.json       |  773 ++++--
+ .../pmu-events/arch/x86/sierraforest/cache.json    |  185 ++
+ .../arch/x86/sierraforest/floating-point.json      |   68 +
+ .../pmu-events/arch/x86/sierraforest/frontend.json |   16 +
+ .../pmu-events/arch/x86/sierraforest/memory.json   |   66 +
+ .../pmu-events/arch/x86/sierraforest/other.json    |   16 +
+ .../pmu-events/arch/x86/sierraforest/pipeline.json |  360 +++
+ .../arch/x86/sierraforest/uncore-cache.json        | 2853 ++++++++++++++++++++
+ .../arch/x86/sierraforest/uncore-cxl.json          |   10 +
+ .../arch/x86/sierraforest/uncore-interconnect.json | 1228 +++++++++
+ .../arch/x86/sierraforest/uncore-io.json           | 1634 +++++++++++
+ .../arch/x86/sierraforest/uncore-memory.json       |  385 +++
+ .../arch/x86/sierraforest/uncore-power.json        |   10 +
+ .../arch/x86/sierraforest/virtual-memory.json      |  113 +-
+ tools/perf/pmu-events/arch/x86/skylake/memory.json |    2 +-
+ .../pmu-events/arch/x86/skylake/metricgroups.json  |   12 +-
+ .../perf/pmu-events/arch/x86/skylake/pipeline.json |    2 +-
+ .../pmu-events/arch/x86/skylake/skl-metrics.json   |  395 +--
+ .../arch/x86/skylake/virtual-memory.json           |    2 +-
+ .../pmu-events/arch/x86/skylakex/metricgroups.json |   12 +-
+ .../pmu-events/arch/x86/skylakex/skx-metrics.json  |  548 ++--
+ .../pmu-events/arch/x86/skylakex/uncore-power.json |    3 +
+ .../arch/x86/snowridgex/uncore-power.json          |    3 +
+ .../arch/x86/tigerlake/metricgroups.json           |   12 +-
+ .../perf/pmu-events/arch/x86/tigerlake/other.json  |    2 +-
+ .../pmu-events/arch/x86/tigerlake/pipeline.json    |   10 +-
+ .../pmu-events/arch/x86/tigerlake/tgl-metrics.json |  406 +--
+ .../arch/x86/tigerlake/uncore-interconnect.json    |    2 +
+ tools/perf/pmu-events/jevents.py                   |   27 +-
+ tools/perf/tests/Build                             |    2 +-
+ tools/perf/tests/builtin-test-list.c               |  207 --
+ tools/perf/tests/builtin-test-list.h               |   12 -
+ tools/perf/tests/builtin-test.c                    |  378 +--
+ tools/perf/tests/expand-cgroup.c                   |    3 +-
+ tools/perf/tests/make                              |    4 +-
+ tools/perf/tests/maps.c                            |    3 +
+ tools/perf/tests/parse-events.c                    |    9 +-
+ tools/perf/tests/pmu-events.c                      |   22 +-
+ tools/perf/tests/shell/base_probe/settings.sh      |   48 +
+ .../tests/shell/base_probe/test_adding_kernel.sh   |  278 ++
+ .../tests/shell/common/check_all_lines_matched.pl  |   39 +
+ .../tests/shell/common/check_all_patterns_found.pl |   34 +
+ .../tests/shell/common/check_no_patterns_found.pl  |   34 +
+ tools/perf/tests/shell/common/init.sh              |  117 +
+ tools/perf/tests/shell/common/patterns.sh          |  268 ++
+ tools/perf/tests/shell/common/settings.sh          |   79 +
+ tools/perf/tests/shell/lib/perf_has_symbol.sh      |    2 +-
+ .../perf/tests/shell/lib/perf_json_output_lint.py  |    4 +-
+ .../perf/tests/shell/lib/perf_metric_validation.py |  231 +-
+ tools/perf/tests/shell/lib/stat_output.sh          |   12 +
+ tools/perf/tests/shell/perftool-testsuite_probe.sh |   23 +
+ tools/perf/tests/shell/stat+csv_output.sh          |    2 +
+ tools/perf/tests/shell/stat+json_output.sh         |   13 +
+ tools/perf/tests/shell/stat+std_output.sh          |    4 +-
+ tools/perf/tests/shell/stat_bpf_counters.sh        |   12 +-
+ tools/perf/tests/shell/stat_metrics_values.sh      |    4 +-
+ tools/perf/tests/shell/test_arm_callgraph_fp.sh    |    6 +
+ tools/perf/tests/symbols.c                         |   68 +
+ tools/perf/tests/tests-scripts.c                   |  257 ++
+ tools/perf/tests/tests-scripts.h                   |    9 +
+ tools/perf/tests/tests.h                           |   16 +-
+ tools/perf/tests/thread-maps-share.c               |    8 +-
+ tools/perf/tests/vmlinux-kallsyms.c                |   10 +-
+ tools/perf/ui/browsers/res_sample.c                |    2 +-
+ tools/perf/ui/browsers/scripts.c                   |    2 +-
+ tools/perf/ui/gtk/annotate.c                       |   14 +-
+ tools/perf/util/Build                              |    2 +
+ tools/perf/util/annotate-data.c                    |  119 +-
+ tools/perf/util/annotate-data.h                    |    8 +-
+ tools/perf/util/annotate.c                         |  269 +-
+ tools/perf/util/annotate.h                         |   98 +-
+ tools/perf/util/bpf-event.c                        |    1 +
+ tools/perf/util/bpf_lock_contention.c              |  124 +-
+ .../util/bpf_skel/augmented_raw_syscalls.bpf.c     |   15 +-
+ tools/perf/util/bpf_skel/lock_contention.bpf.c     |   16 +-
+ tools/perf/util/bpf_skel/lock_data.h               |    7 +
+ tools/perf/util/bpf_skel/vmlinux/vmlinux.h         |    7 +
+ tools/perf/util/callchain.c                        |    2 +-
+ tools/perf/util/cpumap.c                           |   33 +-
+ tools/perf/util/cpumap.h                           |   19 +-
+ tools/perf/util/data-convert-json.c                |    4 +-
+ tools/perf/util/data.c                             |   10 +-
+ tools/perf/util/data.h                             |    6 +-
+ tools/perf/util/debug.c                            |    3 +
+ tools/perf/util/debug.h                            |    1 +
+ tools/perf/util/dwarf-aux.c                        |  187 +-
+ tools/perf/util/dwarf-aux.h                        |   18 +
+ tools/perf/util/env.h                              |    1 +
+ tools/perf/util/event.c                            |    4 +-
+ tools/perf/util/evsel.c                            |   34 +-
+ tools/perf/util/evsel.h                            |    1 +
+ tools/perf/util/expr.c                             |   20 +-
+ tools/perf/util/expr.l                             |    9 +
+ tools/perf/util/machine.c                          |  375 +--
+ tools/perf/util/machine.h                          |   30 +-
+ tools/perf/util/map.c                              |    9 +-
+ tools/perf/util/maps.c                             | 1306 +++++----
+ tools/perf/util/maps.h                             |   65 +-
+ tools/perf/util/mem-events.c                       |  217 +-
+ tools/perf/util/mem-events.h                       |   19 +-
+ tools/perf/util/metricgroup.c                      |   24 +-
+ tools/perf/util/parse-events.c                     |   92 +-
+ tools/perf/util/parse-events.h                     |   14 +-
+ tools/perf/util/parse-events.y                     |    2 -
+ tools/perf/util/parse-regs-options.c               |    8 +-
+ tools/perf/util/perf-regs-arch/perf_regs_aarch64.c |    4 -
+ tools/perf/util/perf-regs-arch/perf_regs_arm.c     |    4 -
+ tools/perf/util/perf-regs-arch/perf_regs_csky.c    |    4 -
+ .../perf/util/perf-regs-arch/perf_regs_loongarch.c |    4 -
+ tools/perf/util/perf-regs-arch/perf_regs_mips.c    |    4 -
+ tools/perf/util/perf-regs-arch/perf_regs_powerpc.c |    4 -
+ tools/perf/util/perf-regs-arch/perf_regs_riscv.c   |    4 -
+ tools/perf/util/perf-regs-arch/perf_regs_s390.c    |    4 -
+ tools/perf/util/perf-regs-arch/perf_regs_x86.c     |    4 -
+ tools/perf/util/perf_regs.c                        |   11 +-
+ tools/perf/util/perf_regs.h                        |   34 +-
+ tools/perf/util/pmu.c                              |   32 +-
+ tools/perf/util/pmu.h                              |    7 +
+ tools/perf/util/pmus.c                             |    6 -
+ tools/perf/util/pmus.h                             |    1 -
+ tools/perf/util/print-events.c                     |   40 +-
+ tools/perf/util/print_insn.c                       |  135 +
+ tools/perf/util/print_insn.h                       |   16 +
+ tools/perf/util/probe-event.c                      |    5 +-
+ tools/perf/util/python-ext-sources                 |    1 +
+ tools/perf/util/python.c                           |    1 +
+ tools/perf/util/rb_resort.h                        |    5 -
+ .../util/scripting-engines/trace-event-python.c    |    8 +-
+ tools/perf/util/session.c                          |   11 +
+ tools/perf/util/session.h                          |    2 +
+ tools/perf/util/setup.py                           |    1 +
+ tools/perf/util/sort.c                             |    2 +-
+ tools/perf/util/srcline.c                          |    2 +
+ tools/perf/util/stat-display.c                     |   24 +-
+ tools/perf/util/stat-shadow.c                      |   72 +-
+ tools/perf/util/stat.h                             |    1 +
+ tools/perf/util/symbol-elf.c                       |   79 +-
+ tools/perf/util/symbol.c                           |   52 +-
+ tools/perf/util/thread.c                           |    4 +-
+ tools/perf/util/thread.h                           |    7 -
+ tools/perf/util/thread_map.c                       |   11 +-
+ tools/perf/util/threads.c                          |  190 ++
+ tools/perf/util/threads.h                          |   35 +
+ tools/perf/util/trace-event-parse.c                |  113 +
+ tools/perf/util/trace-event.h                      |    3 +
+ tools/perf/util/unwind-libdw.c                     |    2 +-
+ tools/perf/util/unwind-libunwind-local.c           |    2 +-
+ tools/perf/util/unwind-libunwind.c                 |    7 +-
+ tools/perf/util/util.c                             |   19 +
+ tools/perf/util/util.h                             |    8 +
+ tools/scripts/Makefile.include                     |    2 +-
+ tools/testing/selftests/kvm/Makefile               |    4 +-
+ 282 files changed, 21268 insertions(+), 4813 deletions(-)
+ create mode 100644 tools/build/feature/test-libcapstone.c
+ create mode 100644 tools/perf/arch/arm64/util/mem-events.h
+ create mode 100644 tools/perf/arch/powerpc/util/mem-events.h
+ create mode 100644 tools/perf/arch/powerpc/util/pmu.c
+ create mode 100644 tools/perf/arch/x86/util/mem-events.h
+ create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/floating-point.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-cache.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-interconnect.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-io.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-memory.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-power.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/floating-point.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-cache.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-cxl.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-interconnect.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-io.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-memory.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-power.json
+ delete mode 100644 tools/perf/tests/builtin-test-list.c
+ delete mode 100644 tools/perf/tests/builtin-test-list.h
+ create mode 100644 tools/perf/tests/shell/base_probe/settings.sh
+ create mode 100755 tools/perf/tests/shell/base_probe/test_adding_kernel.sh
+ create mode 100755 tools/perf/tests/shell/common/check_all_lines_matched.pl
+ create mode 100755 tools/perf/tests/shell/common/check_all_patterns_found.pl
+ create mode 100755 tools/perf/tests/shell/common/check_no_patterns_found.pl
+ create mode 100644 tools/perf/tests/shell/common/init.sh
+ create mode 100644 tools/perf/tests/shell/common/patterns.sh
+ create mode 100644 tools/perf/tests/shell/common/settings.sh
+ create mode 100755 tools/perf/tests/shell/perftool-testsuite_probe.sh
+ create mode 100644 tools/perf/tests/tests-scripts.c
+ create mode 100644 tools/perf/tests/tests-scripts.h
+ create mode 100644 tools/perf/util/print_insn.c
+ create mode 100644 tools/perf/util/print_insn.h
+ create mode 100644 tools/perf/util/threads.c
+ create mode 100644 tools/perf/util/threads.h
 
