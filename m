@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-102216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F9987AF7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC6E887AF81
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E14291F24453
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:26:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC0841C259F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC081A1059;
-	Wed, 13 Mar 2024 17:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5AB1A16EB;
+	Wed, 13 Mar 2024 17:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6hg19du"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4FlB73F"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753E91A1040;
-	Wed, 13 Mar 2024 17:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FCF676C72;
+	Wed, 13 Mar 2024 17:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349510; cv=none; b=gEi8QByEvULHt+izJPCa4u6CIEwO2RCZxG/bL0wEvgALPEQq3ALTS4K1JgszG2G9Z60t+Gm6iucg+vmS/tijUWvYgA75sm5oVkC/x5UjZM8qT2Rl4rc0xyLLK4SbsB14eesQRYUVWV8zsFNCmXb5omgFHVbAcsWUfzk0pOl+67s=
+	t=1710349511; cv=none; b=LOgHkTUYeLkXzRYSVXjEPMp/6dY8v5eZ0VpKtCY8Jnl3sws661lPEH2Y5lSjR71gme8MrccS7JHajHB1jw0v+UvPi8LdkgzGvmnuNLgXI2A7JJVJCnY9mTowJt5tCUyGNLvOvjnsYWHR7EMyXTNZhhPUCItTWZFfC1P9ENaIRl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349510; c=relaxed/simple;
-	bh=fmIVIIiO9vaCsapouNjn2huS07HhKqTleCE92uaJSbI=;
+	s=arc-20240116; t=1710349511; c=relaxed/simple;
+	bh=ZOqp/fXGfohcv3G3cxDdBtf9efWk2VsY/682ju0ztfU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rYi3BFQTJSfsHpQojgck1me68ZhRBSYvVzObzGfy3I2l+73OL3mRRUiev/XHKodyNPnQE7hxHohKuF9Bj9kX5vX/gwBC/wkB8oH48BdbIn72hWBKw1pp90rBH6J0nvsBC9feKDbczVYw7VTi/RsC5vVkwovrfN6O9ZOA4Rf7Y8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U6hg19du; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AD46C433C7;
-	Wed, 13 Mar 2024 17:05:09 +0000 (UTC)
+	 MIME-Version; b=PTOdcZuaBGtuYG/xFZ5NE7e/3QZpgw+0M2KWNT0xVMcwIrB3cWkXNglU8IGFoIYRFL99PIJexpWeHkP99qTnYcM3cVBZgRZB2u6NGTuH4CChk2mY16yap6OfwalapLmU+MQM9+sOmcthFZgNy7u8nArm71gA2OJQQhgz+GQ5C4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4FlB73F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AB3DC433B2;
+	Wed, 13 Mar 2024 17:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349510;
-	bh=fmIVIIiO9vaCsapouNjn2huS07HhKqTleCE92uaJSbI=;
+	s=k20201202; t=1710349511;
+	bh=ZOqp/fXGfohcv3G3cxDdBtf9efWk2VsY/682ju0ztfU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U6hg19duGsZ8BcVpNmzdoRXCq/JCxeGxcVUDn4wVtenFTRRrPTQX04jw86LYBmvRH
-	 rKxLvJhFRGwn7iICingQQ4C0W9HqEuOT/Pxmw1HVmPU/mZIQcWDRcvqaB3+cjzEIfH
-	 VbUOw0CEDY9Ejk04ENMcCMCZzoY69knswoU4d/Cf69mN94sYLChnFhVT5+X3Y33UdO
-	 rwpq/ck+PM+7XnT7JICXfHMcyc3M5a54AAkY2cwobxSYfuDlypz93o3/0RHjp5nUuK
-	 JCciHZ+1ICokE/zX9Xhhx9leFMfj2GFwXeTMaOBUvzrkD7Hf35ZJBGeApnOcRNxGvW
-	 91FM5ZFvlOLNA==
+	b=j4FlB73FAcX18ghz/6tC7MKcLL/egMSEk9j/3ZxI3SxRlw1F+/ktzPrebws3s65AO
+	 bMjVTYQ+rQYmyzvioRck/IIlF6gRiobL+UVs1J+ZgBncSKWeGZLf4ec2p0fBvWgDdh
+	 ZJ09BE9UWTtEHR03+HwUZEg/emLBFmlg1Cjl1ufRTF4/81q4pINzf5BGSCR4lK3Zcj
+	 P2ZyXTtqojq0mY8ePhvdcODJRXGPvaEuokCiYhfYL7RznOXp89BAhI37CJY3Uy4O7E
+	 UtOePTcNfoUuOtMIYwwhRIBC7rDkv9WWHfvF84pac55i4c5e1KTW9yLtMV8B5p45Bn
+	 SDGqgwxCa619w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dexuan Cui <decui@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Shachar Raindel <shacharr@microsoft.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
+Cc: Juhee Kang <claudiajkang@gmail.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 29/41] hv_netvsc: Make netvsc/VF binding check both MAC and serial number
-Date: Wed, 13 Mar 2024 13:04:23 -0400
-Message-ID: <20240313170435.616724-30-sashal@kernel.org>
+Subject: [PATCH 4.19 30/41] hv_netvsc: use netif_is_bond_master() instead of open code
+Date: Wed, 13 Mar 2024 13:04:24 -0400
+Message-ID: <20240313170435.616724-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170435.616724-1-sashal@kernel.org>
 References: <20240313170435.616724-1-sashal@kernel.org>
@@ -71,58 +68,36 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Juhee Kang <claudiajkang@gmail.com>
 
-[ Upstream commit 64ff412ad41fe3a5bf759ff4844dc1382176485c ]
+[ Upstream commit c60882a4566a0a62dc3a40c85131103aad83dcb3 ]
 
-Currently the netvsc/VF binding logic only checks the PCI serial number.
+Use netif_is_bond_master() function instead of open code, which is
+((event_dev->priv_flags & IFF_BONDING) && (event_dev->flags & IFF_MASTER)).
+This patch doesn't change logic.
 
-The Microsoft Azure Network Adapter (MANA) supports multiple net_device
-interfaces (each such interface is called a "vPort", and has its unique
-MAC address) which are backed by the same VF PCI device, so the binding
-logic should check both the MAC address and the PCI serial number.
-
-The change should not break any other existing VF drivers, because
-Hyper-V NIC SR-IOV implementation requires the netvsc network
-interface and the VF network interface have the same MAC address.
-
-Co-developed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-Co-developed-by: Shachar Raindel <shacharr@microsoft.com>
-Signed-off-by: Shachar Raindel <shacharr@microsoft.com>
-Acked-by: Stephen Hemminger <stephen@networkplumber.org>
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Juhee Kang <claudiajkang@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Stable-dep-of: 9cae43da9867 ("hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/netvsc_drv.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/net/hyperv/netvsc_drv.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index ce17917b6f76f..fcf89ee5080f1 100644
+index fcf89ee5080f1..2d1c6f10d4e19 100644
 --- a/drivers/net/hyperv/netvsc_drv.c
 +++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -2141,8 +2141,17 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
- 		if (!ndev_ctx->vf_alloc)
- 			continue;
+@@ -2497,8 +2497,7 @@ static int netvsc_netdev_event(struct notifier_block *this,
+ 		return NOTIFY_DONE;
  
--		if (ndev_ctx->vf_serial == serial)
--			return hv_get_drvdata(ndev_ctx->device_ctx);
-+		if (ndev_ctx->vf_serial != serial)
-+			continue;
-+
-+		ndev = hv_get_drvdata(ndev_ctx->device_ctx);
-+		if (ndev->addr_len != vf_netdev->addr_len ||
-+		    memcmp(ndev->perm_addr, vf_netdev->perm_addr,
-+			   ndev->addr_len) != 0)
-+			continue;
-+
-+		return ndev;
-+
- 	}
+ 	/* Avoid Bonding master dev with same MAC registering as VF */
+-	if ((event_dev->priv_flags & IFF_BONDING) &&
+-	    (event_dev->flags & IFF_MASTER))
++	if (netif_is_bond_master(event_dev))
+ 		return NOTIFY_DONE;
  
- 	/* Fallback path to check synthetic vf with help of mac addr.
+ 	switch (event) {
 -- 
 2.43.0
 
