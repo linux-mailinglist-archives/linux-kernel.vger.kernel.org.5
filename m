@@ -1,61 +1,39 @@
-Return-Path: <linux-kernel+bounces-101665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4443887AA37
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3D0E87AA3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71D091C21879
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:16:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5CD61C2269E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E9A45BF3;
-	Wed, 13 Mar 2024 15:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SZbkr+3f"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9F82D600
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE3A47A70;
+	Wed, 13 Mar 2024 15:16:26 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3179446B4
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710342960; cv=none; b=hfAaMYertip5VmO1QaIdL3JhME5Y+9ALnKSK800nvsmbCLX/vjGeSeSOTD7QyBfg81hGoMCk/9pxgAA0C1p8zcx/0e0k7U5TwvRjDNvWQhECVbqBORQZxFKcnDqE998Svlvfm8jIc3WMCzSCr/ZwDAGs6xxRWUPWtuUYYh/BFzE=
+	t=1710342985; cv=none; b=oYhytq9xCd0gwu7wB5tKqIwYvD64Po5VII+mVzpzZtjYr/YvrMbqMaN31VxZTjz0z9BmT8xG27nfjIWwpS8AxHhXsBdefr+OvNpUl0piknT8j2ARykIbYsxv6Kcxnv4fCn2VhoXLGakN6bpIcHXruptPSIRQ6dFzay4iceCnbNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710342960; c=relaxed/simple;
-	bh=wo+8XUVZ6ioK9G4Sp1j0QYOyDvxZDEEvuVlcXX0TV+U=;
+	s=arc-20240116; t=1710342985; c=relaxed/simple;
+	bh=HfTMsearY5B2rKgibry+P2rgMsGaHqzfyBrktay2qCs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t9SWE4DNdnpWiM9HPn8NLSl4M8ykTqIgb4dEilsyUG+lSuvBXocGsHMWmWjSX6fY/8cv8ML9Q8ebEfIwNmzAMTVdGaGfalWD6df1v+z6NDWxLg6Mv/4ZGn/cOK8oIqWceL70w/ViG8flWYhsKggg4bMw+EgjYIqL/Rndvu5+PqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SZbkr+3f; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710342957;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zitympJcMqQpZuvfBggEaIHiO0WpMlfnPdF8UjN+huc=;
-	b=SZbkr+3f+/9smXXv6f7M33GxFFDVdGzgaRgNt/U2LA4mTGqudaKft5uN/JVDqt98JpaksR
-	tc0tvRo20Qf+8gKWQkvwEHn2G6jOZT3I6hKYUmRArUil9GhfAwhxn/6PoukwXji0VzVKFf
-	BE/REcxO/ABD7vl4Smyu5Pb4Kt6IsCE=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-632-HkdNa89aMmqpz2KCcnIf3g-1; Wed,
- 13 Mar 2024 11:15:54 -0400
-X-MC-Unique: HkdNa89aMmqpz2KCcnIf3g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FDD43C0C8A1;
-	Wed, 13 Mar 2024 15:15:53 +0000 (UTC)
-Received: from [10.45.224.236] (unknown [10.45.224.236])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C0D213C23;
-	Wed, 13 Mar 2024 15:15:51 +0000 (UTC)
-Message-ID: <3f934c7b-867c-4550-93ea-4f567807fa98@redhat.com>
-Date: Wed, 13 Mar 2024 16:15:51 +0100
+	 In-Reply-To:Content-Type; b=oaEcRKkQoz9vL9PLLSYW2cx+MYl0bIi2tapZVdEiAvioGlmLOOkAqXRsAFv7HhpCtgWl54ooM31UcYXvVopNXOg7hmkefpm8bRjyjj3a1Zl8kqouLW/HMSh6wAvl8EPvpolXOSKangoczNDPlzSnoXK2HEMdvr/zYNPrKCIiLFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA4921007;
+	Wed, 13 Mar 2024 08:16:58 -0700 (PDT)
+Received: from [10.34.100.133] (e126645.nice.arm.com [10.34.100.133])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30A3C3F73F;
+	Wed, 13 Mar 2024 08:16:20 -0700 (PDT)
+Message-ID: <d43ed111-085b-432b-ad5b-433d5031fad1@arm.com>
+Date: Wed, 13 Mar 2024 16:16:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,54 +41,117 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] i40e: Enforce software interrupt during busy-poll
- exit
-To: Michal Schmidt <mschmidt@redhat.com>
-Cc: netdev@vger.kernel.org, pawel.chmielewski@intel.com,
- aleksandr.loktionov@intel.com, Hugo Ferreira <hferreir@redhat.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240313125457.19475-1-ivecera@redhat.com>
- <CADEbmW3NQ7SQpccOqTD=p_czpBbOY=41kS7krwx2ZEDmFfcgrg@mail.gmail.com>
+Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
+ affinity changes
+To: Ze Gao <zegao2021@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ Mel Gorman <mgorman@suse.de>, Juri Lelli <juri.lelli@redhat.com>,
+ Ingo Molnar <mingo@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Ben Segall <bsegall@google.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Valentin Schneider <vschneid@redhat.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ze Gao <zegao@tencent.com>
+References: <20240313085817.48892-1-zegao@tencent.com>
 Content-Language: en-US
-From: Ivan Vecera <ivecera@redhat.com>
-In-Reply-To: <CADEbmW3NQ7SQpccOqTD=p_czpBbOY=41kS7krwx2ZEDmFfcgrg@mail.gmail.com>
+From: Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <20240313085817.48892-1-zegao@tencent.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
+Hello Ze,
 
+I am running stress-ng with the following command:
+   stress-ng -c 1 -l 10 &
+and migrating the process with:
+   taskset -pc [cpus] [pid]
 
-On 13. 03. 24 14:47, Michal Schmidt wrote:
->> -/* a small macro to shorten up some long lines */
->> -#define INTREG I40E_PFINT_DYN_CTLN
->> +static inline u32 i40e_buildreg_swint(int type)
->> +{
->> +       u32 val;
->> +
->> +       /* 1. Enable the interrupt
->> +        * 2. Do not modify any ITR interval
->> +        * 3. Trigger a SW interrupt specified by type
->> +        */
->> +       val = I40E_PFINT_DYN_CTLN_INTENA_MASK |
->> +             I40E_PFINT_DYN_CTLN_ITR_INDX_MASK | /* set noitr */
->> +             I40E_PFINT_DYN_CTLN_SWINT_TRIG_MASK |
->> +             I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_MASK |
->> +             FIELD_PREP(I40E_PFINT_DYN_CTLN_SW_ITR_INDX_MASK, type);
->> +
->> +       return val;
->> +}
-> This function is called only from one place and with a constant
-> argument. Does it  really need to be a function, as opposed to a
-> constant? Or are you going to add more callers soon?
+The thread seems to be migrated via:
+sched_setaffinity
+   \-__sched_setaffinity()
+     \-__set_cpus_allowed_ptr()
+       \-__set_cpus_allowed_ptr_locked()
+         \- [1]
 
-This can be reused also from i40e_force_wb() but I didn't want to make 
-such refactors in this fix. Lets do it later in -next.
+[1]
+/*
+  * Picking a ~random cpu helps in cases where we are changing affinity
+  * for groups of tasks (ie. cpuset), so that load balancing is not
+  * immediately required to distribute the tasks within their new mask.
+  */
+dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, ctx->new_mask);
 
-Ivan
+So it seems the destination CPU chosen among the new CPU affinity mask is done
+here, by picking a random CPU in the mask.
 
+Checking the cpus_ptr in select_idle_sibling() might be useful in other cases,
+but I think the experiment doesn't show that. Maybe a another small tweak could
+be done at [1] instead ?
+
+Regards,
+Pierre
+
+On 3/13/24 09:58, Ze Gao wrote:
+> We observered select_idle_sibling() is likely to return the *target* cpu
+> early which is likely to be the previous cpu this task is running on even
+> when it's actually not within the affinity list newly set, from where after
+> we can only rely on select_fallback_rq() to choose one for us at its will
+> (the first valid mostly for now).
+> 
+> However, the one chosen by select_fallback_rq() is highly likely not a
+> good enough candidate, sometimes it has to rely on load balancer to kick
+> in to place itself to a better cpu, which adds one or more unnecessary
+> migrations in no doubt. For example, this is what I get when I move task
+> 3964 to cpu 23-24 where cpu 23 has a cpu bound work pinned already:
+> 
+>          swapper       0 [013]   959.791829: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=13 dest_cpu=23
+> kworker/24:2-mm    1014 [024]   959.806148: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=23 dest_cpu=24
+> 
+> The thing is we can actually do better if we do checks early and take more
+> advantages of the *target* in select_idle_sibling(). That is, we continue
+> the idle cpu selection if *target* fails the test of cpumask_test_cpu(
+> *target*, p->cpus_ptr). By doing so, we are likely to pick a good candidate,
+> especially when the newly allowed cpu set shares some cpu resources with
+> *target*.
+> 
+> And with this change, we clearly see the improvement when I move task 3964
+> to cpu 25-26 where cpu 25 has a cpu bound work pinned already.
+> 
+>          swapper       0 [027]  4249.204658: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=27 dest_cpu=26
+> 
+> Note we do the same check for *prev* in select_idle_sibling() as well.
+> 
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>   kernel/sched/fair.c | 13 ++++++++-----
+>   1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..9ef6e74c6b2a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7511,16 +7511,19 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>   	 */
+>   	lockdep_assert_irqs_disabled();
+>   
+> -	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
+> -	    asym_fits_cpu(task_util, util_min, util_max, target))
+> +	if (cpumask_test_cpu(target, p->cpus_ptr) &&
+> +		(available_idle_cpu(target) || sched_idle_cpu(target)) &&
+> +		asym_fits_cpu(task_util, util_min, util_max, target))
+>   		return target;
+>   
+>   	/*
+>   	 * If the previous CPU is cache affine and idle, don't be stupid:
+>   	 */
+> -	if (prev != target && cpus_share_cache(prev, target) &&
+> -	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+> -	    asym_fits_cpu(task_util, util_min, util_max, prev)) {
+> +	if (cpumask_test_cpu(prev, p->cpus_ptr) &&
+> +		prev != target &&
+> +		cpus_share_cache(prev, target) &&
+> +		(available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+> +		asym_fits_cpu(task_util, util_min, util_max, prev)) {
+>   
+>   		if (!static_branch_unlikely(&sched_cluster_active) ||
+>   		    cpus_share_resources(prev, target))
 
