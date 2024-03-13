@@ -1,169 +1,293 @@
-Return-Path: <linux-kernel+bounces-102517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C39E87B329
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:01:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60FD087B34C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6EAF2888E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:01:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161C5289353
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D041548F2;
-	Wed, 13 Mar 2024 21:01:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RXHAnEp2"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734EB52F62;
+	Wed, 13 Mar 2024 21:12:29 +0000 (UTC)
+Received: from mx30.also.com (mx30.also.com [46.231.192.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE1D53E3E
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710363690; cv=none; b=QSWauWGjt0WBjSRb9yJyLEluh7W20NpvGdmEw5xbClXplJWJT2+tYpuWHZqWFiLIFxP6Is0xgTGZL1Wjngc2n8ZzSRRKVLO0LpetsN7d1NYNrn6vcU1aDscaJTGp/gHMeqhTitwOOwM87Vv8yHok/5lFMz6DvVpQhJ5OmuSC+7Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710363690; c=relaxed/simple;
-	bh=lf0Ezrq6sV2vTi6Ku6PoBK22a4QkYPhDCEIeqxlzhyE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=b5OPyFS1RvJQGIHmTdy3pI1m22U93QfzX6FBrVbv2/89pKB20oYxTWn7o65IypZZgvNyaKQs0DydywTAPnhbu68oWvP+SJ3n8GwnJtdMqP29HhuzlU3wC2X4Nv1RPck9AFGD9fOwmEqAup6xaap5zfdScJbxzo+Qmt4mV2Z0gC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RXHAnEp2; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so275914b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710363688; x=1710968488; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=fGhwISbVuL7Awql500VL3lEax8ufxO5GMx6PyydUNdU=;
-        b=RXHAnEp2F8ulXkExAdKwn9WwJD5xhb+zIeGdbgFFmP62OkdVFLG4N117xH/J4OLwCm
-         0SiMPTXMGB9c7SnOzfci9ifFU4JgSeKxw8ZoP/+56hV+FKMQXY7w8VGgwoomp0cL5IMj
-         QAgDA0/uGKl/vPuAsFaISBdhwsxeiIKo0pR86I6dN8U80UbqISEHB+5CBZs8pGJQthA9
-         mGufKqXL5K9UxOmhKzsd9xhsam4ytzdEZ0YwK42Xp6PHcV+FTAC4GnB54xksRwida1xg
-         1LeZuEV7Xqp1t2Eyx7EHG85XqYYT7SFGi6whVVvX6QNwqHYFWgMClGwuXz3egIOlT96b
-         Ipkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710363688; x=1710968488;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fGhwISbVuL7Awql500VL3lEax8ufxO5GMx6PyydUNdU=;
-        b=C8q964AvCqUuR5g0bHQzYxXNYaAXfz33XPEoOCqH0f//j7Qn6psPlzeoHhoaW/fyd5
-         Db0AXZWafOiW13qF+y3r/JzampdFC0oo1YNtxX3eE+ZEvuP6MYJ8Rha1PFh+N90TDYci
-         bB/PoO5PLM0SgXjxI2OWoVG5fiQdIJe5nBUG7K8oADa5XSpB/pLQjxIeb3mjBrUPTrat
-         D2eoAZYxHSFVV0qSjVqA5kDbqAxdjJV/Thl+dd0l2drhvITModDTLrRdKP6RuyyDB+Dx
-         s4xhVenVze1SpMy7MZc3MuBmz99bms3twuV5A1x7C8ZH+GhF2DeO75uqrGNYCWNTG7vh
-         G50w==
-X-Forwarded-Encrypted: i=1; AJvYcCVH+IpVN/UvKI6j9IpeGM551jfbTJ6bXRKxhU65gyZJpt6N3CK1cjC4FWP+09DuZt8uYu5fTHuMGgg6GmRfEeUVg6HXDmUeBXkh2hRX
-X-Gm-Message-State: AOJu0YyWY4hRlN787QEqi2uWF57I84bdRQaVGk7kKqLEIMuIV1iiAYTn
-	YKJ7a2h0MP2tdLmHWtcKfapWo2ycXC+L+pi9qPPTE0q5dtp/uy4BFyC6lzjO
-X-Google-Smtp-Source: AGHT+IEIgG//aMbW2AdxO5RyUy8gxUffjty+SyVJ0zda+1NFxzLGPPT2ihYW3PeYlZ4rBt+z9HxQDw==
-X-Received: by 2002:a05:6a20:d492:b0:1a3:2d9a:44dc with SMTP id im18-20020a056a20d49200b001a32d9a44dcmr81534pzb.50.1710363688016;
-        Wed, 13 Mar 2024 14:01:28 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f17-20020a17090ace1100b0029bed2dc95esm1825641pju.56.2024.03.13.14.01.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 14:01:26 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: John Stultz <jstultz@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH] kunit: time: Add faster unit test with shorter time range
-Date: Wed, 13 Mar 2024 14:01:24 -0700
-Message-Id: <20240313210124.2858729-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D29E5786B
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:12:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=46.231.192.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710364348; cv=fail; b=fk+B0+udSaeZeBIHgl6LI8xm5iHRQ5KJO6OJkNCxQbL9y2zm9M27Aw4nigqlW1uyoeypn0M8ENt+RNG5IOt86yjM+ktYGJK5uzcK7TQqCo53hLDwh0+s3tn4guC/xHf1bUzSPzAZGiF/Yh6OVjQUJSm8Bv0pXuN1ZpFZIBQ0CTw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710364348; c=relaxed/simple;
+	bh=56lqnsFZ+z6kdhcwUNnG3yFzoGkdqAXhVMz947IFANI=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZjIGDrmXBISa/PXNpT9cBSrrmQTnuxodrnXO+TA4yUzWUZrHKD8J0h9P6mUMkO9fB6+9nkUu094Fc9wplnFx/K+5MU0o7zPKB8zn+q2p8pVOSzXk9hETiJepDMUom3Fb58dRIDwXEpGggbb9Xy60ILbpMFZdMjdWvdnUiyb+kNs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hpe.ua; spf=pass smtp.mailfrom=hpe.ua; arc=fail smtp.client-ip=46.231.192.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hpe.ua
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.ua
+Received: from 172.28.22.3 by mx30.also.com (Tls12, Aes256, Sha384,
+ DiffieHellmanEllipticKey384); Wed, 13 Mar 2024 21:07:24 GMT
+From: Anton Gavriliuk <Anton.Gavriliuk@hpe.ua>
+To: Li Feng <fengli@smartx.com>, Keith Busch <kbusch@kernel.org>, Jens Axboe
+	<axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg
+	<sagi@grimberg.me>, "open list:NVM EXPRESS DRIVER"
+	<linux-nvme@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 2/2] nvme/tcp: Add wq_unbound modparam for nvme_tcp_wq
+Thread-Topic: [PATCH v2 2/2] nvme/tcp: Add wq_unbound modparam for nvme_tcp_wq
+Thread-Index: AQHadUN5+uWesked50+FTP+LFMilnbE2JQ4w
+Date: Wed, 13 Mar 2024 21:07:19 +0000
+Message-ID: <VI1PR05MB4431B6A2DF97E31C9103A364992A2@VI1PR05MB4431.eurprd05.prod.outlook.com>
+References: <20240313123816.625115-1-fengli@smartx.com>
+ <20240313123816.625115-2-fengli@smartx.com>
+In-Reply-To: <20240313123816.625115-2-fengli@smartx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels: MSIP_Label_8dbef4c5-c818-41ba-ac89-c164c445b051_ActionId=31ef3d83-eb99-4499-9e48-c7f22e039790;MSIP_Label_8dbef4c5-c818-41ba-ac89-c164c445b051_ContentBits=0;MSIP_Label_8dbef4c5-c818-41ba-ac89-c164c445b051_Enabled=true;MSIP_Label_8dbef4c5-c818-41ba-ac89-c164c445b051_Method=Standard;MSIP_Label_8dbef4c5-c818-41ba-ac89-c164c445b051_Name=8dbef4c5-c818-41ba-ac89-c164c445b051;MSIP_Label_8dbef4c5-c818-41ba-ac89-c164c445b051_SetDate=2024-03-13T20:48:24Z;MSIP_Label_8dbef4c5-c818-41ba-ac89-c164c445b051_SiteId=95924808-3044-4177-9c1b-713746ffab95;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=hpe.ua;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: VI1PR05MB4431:EE_|AS5PR05MB11072:EE_
+x-ms-office365-filtering-correlation-id: 0ce9c541-a874-4826-381c-08dc43a191c3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jYAZS+8yuHb7Ew3B2BVcyUFlKeKyhRaoUPnB7kaQD9CxCVpOKPwQHXggtrdRERUFo8qHycVZb6+wS8IQvgU8rJDebcvRUuZrhwk/RplIcJbuUwP1Ps6dH8Xp25y18SKXqXC9bVO4SXcNOa9mf6JAXbcyFoViJ2zAdz4xH8c7umEZ2rjaQTNHUuBQsRZfV9B3xH1Pxf58JtArn/hECLU2XYka/lTiEOjWZkq1o2nWbDEKOixrTTXgW0Jj/tTkoU55a1h8cIZJSch7XLmpUwQfefcBV/beX2Xz1+v+TxXdZDRx26RcVucuQD/FvQNrlKKaKn6fq3Fqt3s9z8gTlyBJnDRFRMBXE3QMzAcL+30LOD83yU8DAnlEwU1JtAZCiARxPLOrA22FHQPPrFRrgy0MVqv2x25naeUxgTQvWdcEJmg4doDWp3BGj/xaTyYJAVFAp9dZRfkn7SRQAfubLSmYZfuqFDnToovJw0Ll+jEVQ6S30WPMFEwbc/fv9/6KHEY8fUq1WJ7sznTyArinRzIKJ3V+CSrMYcu+AlKXq2nwWKnvTsZSQ3+nstF/k+STUuRDn7ovf5COG85R6y5rxnrQhUMDv9NLj+csZGqw/kP+kwDbyTdp4fQ+9m9OziP/etQCL2nlgp12NRQ4cTdW3E37gUO10XR1IsPz+ncouy9qk5har10pb3QsYQXmMNfJhAtM0c4T3lpg0ZtaQ7fM7wkwsXM08iZa/+huKip3fxyCI40=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4431.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ITCy6CV3Fg46leUF8ZlM97QPyOz/xORL8erPFOqvUKgqNMHFXk0nXNpnjMOK?=
+ =?us-ascii?Q?cCtir/dTo0GU6KBO0atAjxH0eLIl+cYRV4lFNykiKclfJTii/msTQEb8hSYN?=
+ =?us-ascii?Q?hK/ykH1naJcRFJ7WO1DehKSOQXxF/6ccPXi3QQpWYtaOZqfq65Z+p9msxZff?=
+ =?us-ascii?Q?1YY2kRduZoH8cYH2QE2r3XZmGz+vFBRjo9xZYuFR3nL1zF3GGHDwRdwhaTpV?=
+ =?us-ascii?Q?sh+vEuGg+MLuJbAC7gYcnPpqPdP/O2lHB3/F+S8Gt9AwVImv2UAP53NQy+Ks?=
+ =?us-ascii?Q?fm858vkSmWP+3igqAk7sCetQQkN5Ga03L1BQLmvNJZ+bOlGOQvZkoJwY+9rG?=
+ =?us-ascii?Q?3dPs89Zw1SAQhTZeQB0L/j1eqM8Ym3QR9aWdH53Zt5zWHgYs1T9qH6KK7j3D?=
+ =?us-ascii?Q?mRD6q4C2hI5X9RN+SdRQmel7lBZ7POrh5ZXWqlnZtQDEVYot5rDHy7mYLB9S?=
+ =?us-ascii?Q?M25dT5yLrGPQn6kDhg0UlY6s5P9vLCaGl8llGcvAY6trUnvKCuxZCZfjBlCL?=
+ =?us-ascii?Q?OADIAZTekNQUHkCPLwsRHvo/zNAMiZ0oyNf9etjflq50JwJTT9DlRuiiDpin?=
+ =?us-ascii?Q?LWok5fykAr8kzVE2r89F3EQBiYcus+5MCLYFY8L9tuBaJDuIjKAOBXCvIsUR?=
+ =?us-ascii?Q?FCzvmrCLmZvSB0SYlEwGwbpN53owc/eADBY7PiP2M703pQQ8xr+VLKzB4GVr?=
+ =?us-ascii?Q?YlKZhB0HfAfGIu2R0fWXqb2BJuRTjqlQQgEvfEoXM4yKYMlWnuLhTsy+1HQf?=
+ =?us-ascii?Q?R5T/iZ2xvXsS6Iimy1HixG4/I4nVSLJMzr3Vl3FOzuIDwzaR9TKeDDWN4hg8?=
+ =?us-ascii?Q?2sIRSPG3oWxa0ark5WF+9vAk3gSU4vkHB6wS6UMhtzWMb6CBju70o98xKsDn?=
+ =?us-ascii?Q?S/dIKcCJRrTgwhTh5VLFaIJWCAWVAF/JRjxj7TSE0H3Jwq5n3+X/p1DHEC8/?=
+ =?us-ascii?Q?KBeLnWoSEWL2bxgdehKU2lfCjfOeD0E/spitMIEy7JPJ66jqrN4bXjoGmQx2?=
+ =?us-ascii?Q?DsPv8tPU+YvxZfvCbnWAHKoK4R+8att0rFPgax4tGVIR258JOjRgBKOzt8Va?=
+ =?us-ascii?Q?7GE0n8R/lFJEhnV/93nl2tzXHnrMwhzIX1xd1VEW1QZ90Tj4k/7DxALo4W8y?=
+ =?us-ascii?Q?paLgiO4spHmr3NiZYn9dAZSw0fNkz4yP/1BTXgSYFGFc32UyklxaqEwDXyVX?=
+ =?us-ascii?Q?GNa4GF3sVX5DJZM1mIGg5ywWcwRX/R3hgHX3MLIdmAh8BbcNv1VwWKf+Vl9G?=
+ =?us-ascii?Q?VCpEtYuOaQXF/wx5cAUsFmUgvhzhq/PhlmxomyXk0PM/hHJIOHTLYHkFyzsO?=
+ =?us-ascii?Q?WnnBvuSsW8aR4GuuZKX+fLhwvjwIiRSu/LUPHpW8KS2SiQnz4KorGWGPnx6X?=
+ =?us-ascii?Q?RUXl6cowooWZ81+rfhqiH+XqJVF+aNaKg9HuPby9HSAOdzwX/D5nh32SB7Lx?=
+ =?us-ascii?Q?2M518Y2biAcWO35yZ6Kx1wCaoDtlUga77szbzgQr0jLsRg/K0Z5Dr3fBK/du?=
+ =?us-ascii?Q?hotwEO6Na7ymJlk324cHc3dhPq65StA/9xW1/RCu2bqTAi5fdC/vb0gH+ylV?=
+ =?us-ascii?Q?qChXjQXsUDsrtpPc3UKrTSCKE37KNIEWc4qDm19K?=
+arc-seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dh66lFGk1xWXY/pJbmzhDHR6zAPZ7JI4xHSMv4Lt2EXNn4Nf+D0yStSRZzQ33ycIrxHGdpOCTGZdUdMJnF+4gPyLJyTNYHIUcly0ZFQuNO9XgX6SaAMD7ydcMiJnVfcSPl52j6dIV9S/iU6/m4qCA/ro/1q1I69CX6684NLEQ+BQ+7ZmJBmRwsUBBs+/RSKaeVn0kAMF0bMYI8aRpvOU0fFCUbBukUt8VjD/OgjP6vaLt2AY+onn48Zr0WZMXZ8P9Uk3ctGXpgupk5JBgfkBJeji+1y1WcAE7FoU1T/7te4ClDOCzEyOT9kcUTQWSUfR3FA1LzrWLnIsQR4XPQRO3w==
+arc-message-signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2VAKoTriiSjtEIH3vZVsUrlNIHtvlE7FCrM1MoSwOJY=;
+ b=G10rdIeLx0rB18TSnBMA8HD4BG8qNG83IAuiqWPAR6/nOTJYFXQh4HEPGU1nKHhKkUeTd+ZiKayx+1yIDUCSuG42NACRNA4P+QEFOD6YJUgtN6qQiq9g/KPTHzqZJm2xqeL2gzgUxQLZ2SwURIhjPSQ1CYfnhfUQBSARjF5man4q4QB2oJBC7fg3a1uPt/kkpKkD+9y7e/vUHcQVxfrTyogzI+jKw7gU1Ppg/fcSEhiJByDCa8gzNzSTheujP+IwWtI/I6HZ+ttUejgq+EIY6pSOttPmfnEpRid+iTjjmJIeeFdhvZRZLCH+sQ/0ScTYOjDrtf3RepzUhsgGt1xE7Q==
+arc-authentication-results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.ua; dmarc=pass action=none header.from=hpe.ua; dkim=pass
+ header.d=hpe.ua; arc=none
+x-ms-exchange-antispam-externalhop-messagedata-chunkcount: 1
+x-ms-exchange-antispam-externalhop-messagedata-0: cEUdVgrCzDKXLoNXgQFRTDbg0ZxVRWcG/tELxs6nJyBAZmTi2X2qAZwKugz5Rve7je98v5X5nYvbtatllt2FOZQLPXx2+BDm06OsJYgQeAI321AUBxsfUuKA4VWQfsawdpYVOlL5sIlnJx9lRwvKxtoNL/3ZOGeiLh8KpPrtzTfCBgCRHwwxHozky4CmDjCX6U+c+SWXUDlHdglDTmL7v18njuIzDOJBEECBNh3shDGttZ3E68b9MA6VttuvcmDbhs9o2/932JzdpDtSSnNncTIvVB6VeGV4O8ykKi5Zasqjib94nL9vzQ+wEGH2e+d+ihCA9ZCOVyODRb7AUXh/lF9iw6hePdFaMoee8D7qA7LYrJlBplUUQe6mss6YCwGFdtYieeEDefNGzc28R9nJQcs/fyk4aMlatKMgi082LtBOtRBkeT9JRyOGZTkeiTBPIO+5tlT/q72KM4bT/nVXwagVfsUbkWrTuSK5uC/OcFxbu86JS8Rf5/3TEj2dA+4fdYHb1J6xQWBaBhsGmai4U/BYYW5hNlCrCps+PaQIViKa/8oFhmSk29v0+xAibEmx2X5zt95jY/fffN7liLB4tJaWkir29ktqbD7kOP+RmI+UT1oBQ1hh8aj0Vq0O7qsXJpODuCJh8lHWI3ua4xgCrQ==
+x-ms-exchange-crosstenant-authas: Internal
+x-ms-exchange-crosstenant-authsource: VI1PR05MB4431.eurprd05.prod.outlook.com
+x-ms-exchange-crosstenant-network-message-id: 0ce9c541-a874-4826-381c-08dc43a191c3
+x-ms-exchange-crosstenant-originalarrivaltime: 13 Mar 2024 21:07:19.3910 (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-crosstenant-id: 95924808-3044-4177-9c1b-713746ffab95
+x-ms-exchange-crosstenant-mailboxtype: HOSTED
+x-ms-exchange-crosstenant-userprincipalname: BCuFAK5PAGYwp28SwnuWuMIRGziJEG7yQBEjLmL4FTnSqp215a7haYn2jq/tCn2Fcsms7Y6AVrehmZNnwyUipixEWcH8z0kEq4YuOEK2ziQ=
+x-ms-exchange-transport-crosstenantheadersstamped: AS5PR05MB11072
+x-originatororg: hpe.ua
+x-c2processedorg: 05d38579-af40-45c7-a100-db7b2fc24033
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Commit a547c4ce10bd ("kunit: time: Mark test as slow using test
-attributes") marked the time unit test as slow. This means it does not
-run anymore if slow tests are disabled. This reduces test coverage and
-is thus undesirable. At the same time, the test currently covers a range
-of 160,000 years, which has limited value.
+Thanks, it works.
 
-Add additional test case covering a total range of 1,600 years. This test
-takes less than a second to run even on slow systems while still covering
-twice the leap year calculation range of 400 years around the center date.
-This test can run even with slow tests disabled.
+Will it be added by default to the 6.9 mainline ?
 
-Cc: Rae Moar <rmoar@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Anton
+
+-----Original Message-----
+From: Li Feng <fengli@smartx.com>
+Sent: Wednesday, March 13, 2024 2:38 PM
+To: Keith Busch <kbusch@kernel.org>; Jens Axboe <axboe@kernel.dk>; Christop=
+h Hellwig <hch@lst.de>; Sagi Grimberg <sagi@grimberg.me>; open list:NVM EXP=
+RESS DRIVER <linux-nvme@lists.infradead.org>; open list <linux-kernel@vger.=
+kernel.org>
+Cc: Anton Gavriliuk <Anton.Gavriliuk@hpe.ua>; Li Feng <fengli@smartx.com>
+Subject: [PATCH v2 2/2] nvme/tcp: Add wq_unbound modparam for nvme_tcp_wq
+
+The default nvme_tcp_wq will use all CPUs to process tasks. Sometimes it is=
+ necessary to set CPU affinity to improve performance.
+
+A new module parameter wq_unbound is added here. If set to true, users can =
+configure cpu affinity through /sys/devices/virtual/workqueue/nvme_tcp_wq/c=
+pumask.
+
+Signed-off-by: Li Feng <fengli@smartx.com>
 ---
- kernel/time/time_test.c | 35 +++++++++++++++++++++++++++--------
- 1 file changed, 27 insertions(+), 8 deletions(-)
+ drivers/nvme/host/tcp.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
-index 3e5d422dd15c..15c6f3a5e73c 100644
---- a/kernel/time/time_test.c
-+++ b/kernel/time/time_test.c
-@@ -47,18 +47,18 @@ static void advance_date(long *year, int *month, int *mday, int *yday)
- }
- 
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c index 2ec118=
+6db0a3..34a882b2ec53 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -36,6 +36,14 @@ static int so_priority;  module_param(so_priority, int, =
+0644);  MODULE_PARM_DESC(so_priority, "nvme tcp socket optimize priority");
+
++/*
++ * Use the unbound workqueue for nvme_tcp_wq, then we can set the cpu
++affinity
++ * from sysfs.
++ */
++static bool wq_unbound;
++module_param(wq_unbound, bool, 0644);
++MODULE_PARM_DESC(wq_unbound, "Use unbound workqueue for nvme-tcp IO
++context (default false)");
++
  /*
-- * Checks every day in a 160000 years interval centered at 1970-01-01
-+ * Checks every day in a specified interval centered at 1970-01-01
-  * against the expected result.
+  * TLS handshake timeout
   */
--static void time64_to_tm_test_date_range(struct kunit *test)
-+static void time64_to_tm_test_date_range(struct kunit *test, int years)
- {
- 	/*
--	 * 80000 years	= (80000 / 400) * 400 years
--	 *		= (80000 / 400) * 146097 days
--	 *		= (80000 / 400) * 146097 * 86400 seconds
-+	 * years	= (years / 400) * 400 years
-+	 *		= (years / 400) * 146097 days
-+	 *		= (years / 400) * 146097 * 86400 seconds
- 	 */
--	time64_t total_secs = ((time64_t) 80000) / 400 * 146097 * 86400;
--	long year = 1970 - 80000;
-+	time64_t total_secs = ((time64_t) years) / 400 * 146097 * 86400;
-+	long year = 1970 - years;
- 	int month = 1;
- 	int mdday = 1;
- 	int yday = 0;
-@@ -85,8 +85,27 @@ static void time64_to_tm_test_date_range(struct kunit *test)
- 	}
+@@ -1551,7 +1559,10 @@ static void nvme_tcp_set_queue_io_cpu(struct nvme_tc=
+p_queue *queue)
+        else if (nvme_tcp_poll_queue(queue))
+                n =3D qid - ctrl->io_queues[HCTX_TYPE_DEFAULT] -
+                                ctrl->io_queues[HCTX_TYPE_READ] - 1;
+-       queue->io_cpu =3D cpumask_next_wrap(n - 1, cpu_online_mask, -1, fal=
+se);
++       if (wq_unbound)
++               queue->io_cpu =3D WORK_CPU_UNBOUND;
++       else
++               queue->io_cpu =3D cpumask_next_wrap(n - 1, cpu_online_mask,=
+ -1, false);
  }
- 
-+ /*
-+  * Checks every day in a 1600 years interval centered at 1970-01-01
-+  * against the expected result.
-+  */
-+static void time64_to_tm_test_date_range_1600(struct kunit *test)
-+{
-+	time64_to_tm_test_date_range(test, 800);
-+}
+
+ static void nvme_tcp_tls_done(void *data, int status, key_serial_t pskid) =
+@@ -2790,6 +2801,8 @@ static struct nvmf_transport_ops nvme_tcp_transport =
+=3D {
+
+ static int __init nvme_tcp_init_module(void)  {
++       unsigned int wq_flags =3D WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_SYSFS;
 +
-+ /*
-+  * Checks every day in a 160000 years interval centered at 1970-01-01
-+  * against the expected result.
-+  */
-+static void time64_to_tm_test_date_range_160000(struct kunit *test)
-+{
-+	time64_to_tm_test_date_range(test, 80000);
-+}
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_hdr) !=3D 8);
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_cmd_pdu) !=3D 72);
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_data_pdu) !=3D 24); @@ -2799,8 =
++2812,10 @@ static int __init nvme_tcp_init_module(void)
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_icresp_pdu) !=3D 128);
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_term_pdu) !=3D 24);
+
+-       nvme_tcp_wq =3D alloc_workqueue("nvme_tcp_wq",
+-                       WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_SYSFS, 0);
++       if (wq_unbound)
++               wq_flags |=3D WQ_UNBOUND;
 +
- static struct kunit_case time_test_cases[] = {
--	KUNIT_CASE_SLOW(time64_to_tm_test_date_range),
-+	KUNIT_CASE(time64_to_tm_test_date_range_1600),
-+	KUNIT_CASE_SLOW(time64_to_tm_test_date_range_160000),
- 	{}
- };
- 
--- 
-2.39.2
++       nvme_tcp_wq =3D alloc_workqueue("nvme_tcp_wq", wq_flags, 0);
+        if (!nvme_tcp_wq)
+                return -ENOMEM;
+
+--
+2.44.0
+
+Anton
+
+-----Original Message-----
+From: Li Feng <fengli@smartx.com>
+Sent: Wednesday, March 13, 2024 2:38 PM
+To: Keith Busch <kbusch@kernel.org>; Jens Axboe <axboe@kernel.dk>; Christop=
+h Hellwig <hch@lst.de>; Sagi Grimberg <sagi@grimberg.me>; open list:NVM EXP=
+RESS DRIVER <linux-nvme@lists.infradead.org>; open list <linux-kernel@vger.=
+kernel.org>
+Cc: Anton Gavriliuk <Anton.Gavriliuk@hpe.ua>; Li Feng <fengli@smartx.com>
+Subject: [PATCH v2 2/2] nvme/tcp: Add wq_unbound modparam for nvme_tcp_wq
+
+The default nvme_tcp_wq will use all CPUs to process tasks. Sometimes it is=
+ necessary to set CPU affinity to improve performance.
+
+A new module parameter wq_unbound is added here. If set to true, users can =
+configure cpu affinity through /sys/devices/virtual/workqueue/nvme_tcp_wq/c=
+pumask.
+
+Signed-off-by: Li Feng <fengli@smartx.com>
+---
+ drivers/nvme/host/tcp.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c index 2ec118=
+6db0a3..34a882b2ec53 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -36,6 +36,14 @@ static int so_priority;  module_param(so_priority, int, =
+0644);  MODULE_PARM_DESC(so_priority, "nvme tcp socket optimize priority");
+
++/*
++ * Use the unbound workqueue for nvme_tcp_wq, then we can set the cpu
++affinity
++ * from sysfs.
++ */
++static bool wq_unbound;
++module_param(wq_unbound, bool, 0644);
++MODULE_PARM_DESC(wq_unbound, "Use unbound workqueue for nvme-tcp IO
++context (default false)");
++
+ /*
+  * TLS handshake timeout
+  */
+@@ -1551,7 +1559,10 @@ static void nvme_tcp_set_queue_io_cpu(struct nvme_tc=
+p_queue *queue)
+        else if (nvme_tcp_poll_queue(queue))
+                n =3D qid - ctrl->io_queues[HCTX_TYPE_DEFAULT] -
+                                ctrl->io_queues[HCTX_TYPE_READ] - 1;
+-       queue->io_cpu =3D cpumask_next_wrap(n - 1, cpu_online_mask, -1, fal=
+se);
++       if (wq_unbound)
++               queue->io_cpu =3D WORK_CPU_UNBOUND;
++       else
++               queue->io_cpu =3D cpumask_next_wrap(n - 1, cpu_online_mask,=
+ -1, false);
+ }
+
+ static void nvme_tcp_tls_done(void *data, int status, key_serial_t pskid) =
+@@ -2790,6 +2801,8 @@ static struct nvmf_transport_ops nvme_tcp_transport =
+=3D {
+
+ static int __init nvme_tcp_init_module(void)  {
++       unsigned int wq_flags =3D WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_SYSFS;
++
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_hdr) !=3D 8);
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_cmd_pdu) !=3D 72);
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_data_pdu) !=3D 24); @@ -2799,8 =
++2812,10 @@ static int __init nvme_tcp_init_module(void)
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_icresp_pdu) !=3D 128);
+        BUILD_BUG_ON(sizeof(struct nvme_tcp_term_pdu) !=3D 24);
+
+-       nvme_tcp_wq =3D alloc_workqueue("nvme_tcp_wq",
+-                       WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_SYSFS, 0);
++       if (wq_unbound)
++               wq_flags |=3D WQ_UNBOUND;
++
++       nvme_tcp_wq =3D alloc_workqueue("nvme_tcp_wq", wq_flags, 0);
+        if (!nvme_tcp_wq)
+                return -ENOMEM;
+
+--
+2.44.0
 
 
