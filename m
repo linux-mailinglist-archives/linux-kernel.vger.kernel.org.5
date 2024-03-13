@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-101527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F4A287A850
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:28:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D14787A86C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:30:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA808B23CBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:28:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB5D31C21AB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:30:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A984502D;
-	Wed, 13 Mar 2024 13:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436364D9F8;
+	Wed, 13 Mar 2024 13:28:06 +0000 (UTC)
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5F3446A0
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E94A43AA4;
+	Wed, 13 Mar 2024 13:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710336474; cv=none; b=eiAKAGFnWYgBdNeTivP6NVcHREAt18ByZSpp73Sh0J3XiygXVJZH1cQNThH6aZlusPElvby8KqzHoKIYtk5R389H7umLuRHRYppMiynQLxWvDFlhb2W6ee9GDLEcqSrzJTiS89aa3VogvcNOp1fYPzAWuob8OWtxi0CasZMKMKk=
+	t=1710336485; cv=none; b=dSOuWcjmkgIbRtph9/TU+s+1fwxUr+pqz9KW8o00hbdORYlNPKF7xYgWuTFuVKbanYwM+XFzEtvROlwUeG12mkpVpH49Mgazj8tv6m29NFy/bfnjrbrfagdno8GzIuIgn+6rRGjSBfY7FXoh+WYtp6OvdwiIMPapJu0pPiT0PCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710336474; c=relaxed/simple;
-	bh=fob+OCoD/ZqFHOa7b+XC+USdOxB3YpQjVsw9rSR/cMM=;
+	s=arc-20240116; t=1710336485; c=relaxed/simple;
+	bh=CHtNAQTIT1rvRWPPhR3rIHeiRbGPnmXiD2gTyBFLaGs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=RuyQ+Nhn4/4qUDaDFUv4+0fQwoXZ3NQA8lf6HktVVxVbaURt7s/dfqpHq+8VLAk9FthPAKo8z/FVfZToIdM8+lk8YSYWEBluooGDVWtrRZ6wmSa9lcsaK6M6t1+bOEbYIambSfbGvBapojH49CiERHV8M17qiaZg9bppas78+hI=
+	 MIME-Version:Content-Type; b=byF4RuIMTWcCErhOkBA3Q0uIphiz3X9oxe2UDzfK6Es6eAKKDuuzv95ahGbMlFUPC53+/HqtfE3XZGUGV4jyhRwapYYlKg5PHZZmeSOheeRn+mwVZ1kwQhTnVdqle/mi0kolXvjf9q4mg16J8BakWHygG2Jqi1uylunumszfqtc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; arc=none smtp.client-ip=150.107.74.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
@@ -32,15 +32,15 @@ Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tvrsx46Rhz4x0q;
-	Thu, 14 Mar 2024 00:27:49 +1100 (AEDT)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tvrt96D1qz4x4T;
+	Thu, 14 Mar 2024 00:28:01 +1100 (AEDT)
 From: Michael Ellerman <patch-notifications@ellerman.id.au>
-To: npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com, Kunwu Chan <chentao@kylinos.cn>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240301085834.1512921-1-chentao@kylinos.cn>
-References: <20240301085834.1512921-1-chentao@kylinos.cn>
-Subject: Re: [PATCH v2] powerpc/mm: Code cleanup for __hash_page_thp
-Message-Id: <171033598344.517247.16630935060498918995.b4-ty@ellerman.id.au>
+To: Dawei Li <set_pte_at@outlook.com>
+Cc: npiggin@gmail.com, christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org, linux-ide@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <TYCP286MB232391520CB471E7C8D6EA84CAD19@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB232391520CB471E7C8D6EA84CAD19@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+Subject: Re: [PATCH v3] powerpc: macio: Make remove callback of macio driver void returned
+Message-Id: <171033598348.517247.10069683831844972530.b4-ty@ellerman.id.au>
 Date: Thu, 14 Mar 2024 00:19:43 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,21 +51,20 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-On Fri, 01 Mar 2024 16:58:34 +0800, Kunwu Chan wrote:
-> This part was commented from commit 6d492ecc6489
-> ("powerpc/THP: Add code to handle HPTE faults for hugepages")
-> in about 11 years before.
+On Wed, 01 Feb 2023 22:36:19 +0800, Dawei Li wrote:
+> Commit fc7a6209d571 ("bus: Make remove callback return void") forces
+> bus_type::remove be void-returned, it doesn't make much sense for any
+> bus based driver implementing remove callbalk to return non-void to
+> its caller.
 > 
-> If there are no plans to enable this part code in the future,
-> we can remove this dead code and replace with a comment
-> explaining what the dead code was trying to say.
+> This change is for macio bus based drivers.
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc/mm: Code cleanup for __hash_page_thp
-      https://git.kernel.org/powerpc/c/d9cf600ecb7b053345aa76c1988cf374260cfdaf
+[1/1] powerpc: macio: Make remove callback of macio driver void returned
+      https://git.kernel.org/powerpc/c/9db2235326c4b868b6e065dfa3a69011ee570848
 
 cheers
 
