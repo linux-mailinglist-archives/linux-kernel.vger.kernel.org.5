@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-101990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B11387AD62
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:33:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4CB87AD64
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161EC282EF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:33:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D80021F29C31
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE431487E1;
-	Wed, 13 Mar 2024 16:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A2E1493AE;
+	Wed, 13 Mar 2024 16:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RfQX2Qdo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jf2FfqM7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6344149019;
-	Wed, 13 Mar 2024 16:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0405814939D;
+	Wed, 13 Mar 2024 16:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348201; cv=none; b=r6VAkfG8KpZvUNP4xCdEzzfM9Vx/1rc7QDBR/E6b81AVUYxyHyeX8P+hbyjMF9ppZbtN15EXw5X1GznqN4Ml3iKTpb+Ec4j/2v3JAnIO/E9RFx6BXdw36Gdw47Qfl4CV49GOv8UPi3vCOil8771sDalQMP9NhlFyLYAzRwthvR4=
+	t=1710348203; cv=none; b=GC8pII98eQFABCMrA8FxrR67+gaaU4IqStBylPAT45ArTOQ6WToAmMHGD4RATSYwnMJZuax2CGzb6LbN9VQZA3TKsOLMblMHNt/1tREPED9hRew0Cf2zxqfxlPOW6AB5BwuDRn6vfyeXh6suetuN7R/UtZZ2lXPNmvFrh5lzF20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348201; c=relaxed/simple;
-	bh=E+O2824pnAebbyG8An1Pn9KJS1r4lPV+GKukQp0+tR4=;
+	s=arc-20240116; t=1710348203; c=relaxed/simple;
+	bh=OkoS5TTcRGYuMZ6dkOhiY+0lat7Zn4j2ojDEj8rTdt8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qzo6Go7FwAKUNCvtAoH/+9y86KAr+jq6T7oQB8mofHwIuZadhir/5Gb118ZCbe4UN0V5XxP5IQKajomRPHSmOwpDVUo0K+infoLSDWpDPvaRdWTyDDheqkwsa5nk1uM0xh/nfXfBxQMLYUjicfFx4ZyEFCMtXfoEqRSP686ZRLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RfQX2Qdo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07CF4C433F1;
-	Wed, 13 Mar 2024 16:43:20 +0000 (UTC)
+	 MIME-Version; b=Z32vpEzDPrl0b/m4naoWWVXlh4lTaTbhJU8lair2Q2Q5bu8hSaOFL2le1Ed9F+EoX/eQRTqWAWLBaJYyXAtQQi2KPEhGPjHJR6SKY6J6ncyCCBkFqNOP2c/A3yTnFLe0oB+7Cswd1wLZ2jcwinHpqLT7uqZnQjHeTKFbI6Dj5sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jf2FfqM7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DA49C433C7;
+	Wed, 13 Mar 2024 16:43:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348201;
-	bh=E+O2824pnAebbyG8An1Pn9KJS1r4lPV+GKukQp0+tR4=;
+	s=k20201202; t=1710348202;
+	bh=OkoS5TTcRGYuMZ6dkOhiY+0lat7Zn4j2ojDEj8rTdt8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RfQX2Qdor89Ccr7z4rO+ILZB74KkMWL2jzSgQ9tuyphUDng4EsGjOiapl8C8qoA8k
-	 /JaObncRMoXf1FADuXKWwhqDa4ELbcfgt1lHxtXX78dYf+ACleuvBeW/Nct/KfmXMq
-	 4SPu+9LLgV61n3vXqA4Z20cobKg5DkMN/r0D6Sben5yigC0juf5yleKCXTL6ckmAsc
-	 mbMzNOTkqHrErG9kbf+RHmETbPBkwtdUhMvjv8w45nwoajjvXqcsxTe8/LHT+dh7xZ
-	 f3TOKuCaMtBntNItZNvYFuRgz8sM3PoHHIwQw3gXZ7hyGEBiEaYKvQCE8KLnMfLcwy
-	 2Klz3aqWSXd4g==
+	b=jf2FfqM7K19faHdtwg38p+9g+asEvN5tWv9xWh5G0Y/iBqk5xWCgMTFxpFfJQd1s8
+	 NXGdIDCUJPEnaeTMxI10377oh3BNMRIFgINlmaWQ+wNoNxnpJ0+34q8g0k57rLzj5X
+	 aPTx+feYjD2pB+3nPMFZbBlAjYcSr6MaAv2hX7Cn5FmjWbtlejWfUaviBt0g/ca3B+
+	 X3WMd02YxFzl0o4FLgJXGx5/NM0eA4R6z5Ymr6hv07a4DQHX6JX3I+e9LsmunTzKSv
+	 Qouz3lZPrANODGritMpY0aSA6dX6d2yKKlHnyUDG/3+Lce+UYA+Ajmw92cNQK61vrI
+	 qlM/TJPbGY9uw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc: Evan Quan <evan.quan@amd.com>,
+	Lijo Lazar <lijo.lazar@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 50/76] serial: max310x: prevent infinite while() loop in port startup
-Date: Wed, 13 Mar 2024 12:41:57 -0400
-Message-ID: <20240313164223.615640-51-sashal@kernel.org>
+Subject: [PATCH 5.15 51/76] drm/amd/pm: do not expose the API used internally only in kv_dpm.c
+Date: Wed, 13 Mar 2024 12:41:58 -0400
+Message-ID: <20240313164223.615640-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -68,74 +69,113 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+From: Evan Quan <evan.quan@amd.com>
 
-[ Upstream commit b35f8dbbce818b02c730dc85133dc7754266e084 ]
+[ Upstream commit 28a31774b050261371953401e8072ae15200c91e ]
 
-If there is a problem after resetting a port, the do/while() loop that
-checks the default value of DIVLSB register may run forever and spam the
-I2C bus.
+Move it to kv_dpm.c instead.
 
-Add a delay before each read of DIVLSB, and a maximum number of tries to
-prevent that situation from happening.
-
-Also fail probe if port reset is unsuccessful.
-
-Fixes: 10d8b34a4217 ("serial: max310x: Driver rework")
-Cc: stable@vger.kernel.org
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Link: https://lore.kernel.org/r/20240116213001.3691629-5-hugo@hugovil.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Stable-dep-of: 733025626866 ("drm/amdgpu: Reset IH OVERFLOW_CLEAR bit")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/pm/amdgpu_dpm.c       | 23 ---------------------
+ drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h   |  2 --
+ drivers/gpu/drm/amd/pm/powerplay/kv_dpm.c | 25 ++++++++++++++++++++++-
+ 3 files changed, 24 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index d61e8a6bc99dd..41251fdf7c845 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -235,6 +235,10 @@
- #define MAX310x_REV_MASK		(0xf8)
- #define MAX310X_WRITE_BIT		0x80
+diff --git a/drivers/gpu/drm/amd/pm/amdgpu_dpm.c b/drivers/gpu/drm/amd/pm/amdgpu_dpm.c
+index a68496b3f9296..197ea6e263878 100644
+--- a/drivers/gpu/drm/amd/pm/amdgpu_dpm.c
++++ b/drivers/gpu/drm/amd/pm/amdgpu_dpm.c
+@@ -188,29 +188,6 @@ u32 amdgpu_dpm_get_vrefresh(struct amdgpu_device *adev)
+ 	return vrefresh;
+ }
  
-+/* Port startup definitions */
-+#define MAX310X_PORT_STARTUP_WAIT_RETRIES	20 /* Number of retries */
-+#define MAX310X_PORT_STARTUP_WAIT_DELAY_MS	10 /* Delay between retries */
-+
- /* Crystal-related definitions */
- #define MAX310X_XTAL_WAIT_RETRIES	20 /* Number of retries */
- #define MAX310X_XTAL_WAIT_DELAY_MS	10 /* Delay between retries */
-@@ -1312,6 +1316,9 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 		goto out_clk;
+-bool amdgpu_is_internal_thermal_sensor(enum amdgpu_int_thermal_type sensor)
+-{
+-	switch (sensor) {
+-	case THERMAL_TYPE_RV6XX:
+-	case THERMAL_TYPE_RV770:
+-	case THERMAL_TYPE_EVERGREEN:
+-	case THERMAL_TYPE_SUMO:
+-	case THERMAL_TYPE_NI:
+-	case THERMAL_TYPE_SI:
+-	case THERMAL_TYPE_CI:
+-	case THERMAL_TYPE_KV:
+-		return true;
+-	case THERMAL_TYPE_ADT7473_WITH_INTERNAL:
+-	case THERMAL_TYPE_EMC2103_WITH_INTERNAL:
+-		return false; /* need special handling */
+-	case THERMAL_TYPE_NONE:
+-	case THERMAL_TYPE_EXTERNAL:
+-	case THERMAL_TYPE_EXTERNAL_GPIO:
+-	default:
+-		return false;
+-	}
+-}
+-
+ union power_info {
+ 	struct _ATOM_POWERPLAY_INFO info;
+ 	struct _ATOM_POWERPLAY_INFO_V2 info_2;
+diff --git a/drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h b/drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h
+index 16e3f72d31b9f..a3f6caaec88c7 100644
+--- a/drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h
++++ b/drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h
+@@ -501,8 +501,6 @@ void amdgpu_dpm_get_active_displays(struct amdgpu_device *adev);
+ int amdgpu_dpm_read_sensor(struct amdgpu_device *adev, enum amd_pp_sensors sensor,
+ 			   void *data, uint32_t *size);
  
- 	for (i = 0; i < devtype->nr; i++) {
-+		bool started = false;
-+		unsigned int try = 0, val = 0;
-+
- 		/* Reset port */
- 		regmap_write(regmaps[i], MAX310X_MODE2_REG,
- 			     MAX310X_MODE2_RST_BIT);
-@@ -1320,8 +1327,17 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+-bool amdgpu_is_internal_thermal_sensor(enum amdgpu_int_thermal_type sensor);
+-
+ int amdgpu_get_platform_caps(struct amdgpu_device *adev);
  
- 		/* Wait for port startup */
- 		do {
--			regmap_read(regmaps[i], MAX310X_BRGDIVLSB_REG, &ret);
--		} while (ret != 0x01);
-+			msleep(MAX310X_PORT_STARTUP_WAIT_DELAY_MS);
-+			regmap_read(regmaps[i], MAX310X_BRGDIVLSB_REG, &val);
-+
-+			if (val == 0x01)
-+				started = true;
-+		} while (!started && (++try < MAX310X_PORT_STARTUP_WAIT_RETRIES));
-+
-+		if (!started) {
-+			ret = dev_err_probe(dev, -EAGAIN, "port reset failed\n");
-+			goto out_uart;
-+		}
- 
- 		regmap_write(regmaps[i], MAX310X_MODE1_REG, devtype->mode1);
+ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev);
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/kv_dpm.c b/drivers/gpu/drm/amd/pm/powerplay/kv_dpm.c
+index 309c9f0b8f83a..b56854c03ead6 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/kv_dpm.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/kv_dpm.c
+@@ -1256,6 +1256,29 @@ static void kv_dpm_enable_bapm(void *handle, bool enable)
  	}
+ }
+ 
++static bool kv_is_internal_thermal_sensor(enum amdgpu_int_thermal_type sensor)
++{
++	switch (sensor) {
++	case THERMAL_TYPE_RV6XX:
++	case THERMAL_TYPE_RV770:
++	case THERMAL_TYPE_EVERGREEN:
++	case THERMAL_TYPE_SUMO:
++	case THERMAL_TYPE_NI:
++	case THERMAL_TYPE_SI:
++	case THERMAL_TYPE_CI:
++	case THERMAL_TYPE_KV:
++		return true;
++	case THERMAL_TYPE_ADT7473_WITH_INTERNAL:
++	case THERMAL_TYPE_EMC2103_WITH_INTERNAL:
++		return false; /* need special handling */
++	case THERMAL_TYPE_NONE:
++	case THERMAL_TYPE_EXTERNAL:
++	case THERMAL_TYPE_EXTERNAL_GPIO:
++	default:
++		return false;
++	}
++}
++
+ static int kv_dpm_enable(struct amdgpu_device *adev)
+ {
+ 	struct kv_power_info *pi = kv_get_pi(adev);
+@@ -1352,7 +1375,7 @@ static int kv_dpm_enable(struct amdgpu_device *adev)
+ 	}
+ 
+ 	if (adev->irq.installed &&
+-	    amdgpu_is_internal_thermal_sensor(adev->pm.int_thermal_type)) {
++	    kv_is_internal_thermal_sensor(adev->pm.int_thermal_type)) {
+ 		ret = kv_set_thermal_temperature_range(adev, KV_TEMP_RANGE_MIN, KV_TEMP_RANGE_MAX);
+ 		if (ret) {
+ 			DRM_ERROR("kv_set_thermal_temperature_range failed\n");
 -- 
 2.43.0
 
