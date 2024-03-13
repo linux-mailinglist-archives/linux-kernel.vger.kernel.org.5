@@ -1,157 +1,119 @@
-Return-Path: <linux-kernel+bounces-101231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B93FE87A451
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:56:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 758C487A453
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73AAF2829FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:56:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CE3F1F228A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A83A1B267;
-	Wed, 13 Mar 2024 08:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B61A1B59B;
+	Wed, 13 Mar 2024 08:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="rMzcvAdN"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jOZPVISl"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A00B19452
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41BCC1B965;
+	Wed, 13 Mar 2024 08:56:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710320168; cv=none; b=sdu4B51AJFDutglE1DZZjFO6jlGF+dxitWOx5S+G2gjQ92BcjJXz42MuTlLhJ9AMmfZ/1U5pg4MjZy6UHc3zZtjKVgRPtvP0AheZ0akH/thx9/9gfFLYjthUWXT/XBMm2z30fwU4wULGGcTQETyDcryDPsjsdfmcn8v1nrKS6y8=
+	t=1710320180; cv=none; b=ZHT427iv9mPnb6mpZFv0TlMKpKvEsIiknBVFaC8mOknyg4klVLW160GmTxX1T3nraaH/reqnLQq/Z5djAkA5DNFK9RYjbnUsp8wzOab4gRNmB5RTi4DSMKkx01GSoQ4DChznh6cGSB8RF9lyO6m8SV8QxOdeKuDl3xUfiW1gqvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710320168; c=relaxed/simple;
-	bh=AN/agWW3HoQxK3M61OPsqagSCr9q3SqrjjZVpXonF4g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q+zq88MP1Ha3c8pzsAcbbMlhM6AlM+PV5x9OuKd16aJx2GHUpFHf+zIpnJBx58xAwR4Yvo9BjCZfGKU417ivp6evxOsHCjWYyrFWhIufRsARwZ1OPzDwULic7fO4qvVlISk+mka1CihwoiuQKDUt0e53WZx7hQKnn/8XU6xbXRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=rMzcvAdN; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so4159265ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:56:05 -0700 (PDT)
+	s=arc-20240116; t=1710320180; c=relaxed/simple;
+	bh=Db5VWsrKGzEZDK9pD+LBmGjlxK6z26zYbHNc0/tNv0k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cImocCmErE+hAhRDJle50hdy9zZfOIR/OsXSUPGPeVqr64w+9mVxV+mANB5hxNf77pbQt9d8rpC4grwnP6ueolNiQ1lg6sFgZLw7beqlWKqwn1IJoC8oNQS6EEGGlt+ejAigGBnhGRO29wKRhmvndX91sAdyRp5qQ+MkTOjkFJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jOZPVISl; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so967518a12.1;
+        Wed, 13 Mar 2024 01:56:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1710320165; x=1710924965; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dm85BXuVczHuF7thZskvHACa56yT/MJpoY/H4BB3y8Y=;
-        b=rMzcvAdNd3HPhHSa6LpnYZRdUn8r0eqUzXA0590UgJR1dALYdPnJ7SgVYhN0TjZwuk
-         1uFPmc92VJh8ZV8h7SMijDJ8oOM+S+/Uz1beM1eWlara5mmufnXkCgEDSEeMq5gw2uUv
-         F1QrB91/PJT7ctRk/vs/CMVDTCnIDrcaIXpfjn58Mzko/N/rt1lJlYFJ3X9QPAtYCsxh
-         cXK8cjqhVynLt6TYUMXDYL1cofqpkGOV/mqFy/ejq5UJAjMF3AZxhej60xu52m5BuBg6
-         EQqpQDoluMdfY8K1ElfwfC7OGrujebBQlFD/zmigGLJG04STg0SZlzvnYD9FYGiJi9W3
-         64NQ==
+        d=gmail.com; s=20230601; t=1710320177; x=1710924977; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d+mO86kMfMWDJIo9fRORC6334q4eXYxL4m5tAq3xCEk=;
+        b=jOZPVISlJ5PWA3UGAKR3muRGpjHUIax85JQUC+PG872jD9F0iF5mk+MZm3l6lNKJJI
+         dAhOKxfHqv/WO523rTg56o6hbd8no7LZvjupzOo9XqA6nEiiDQN44Ga9WvDyXhAqtisw
+         NYzi/u+Vhv+s9DmwiQuo/DImYmRqZwq6l7AUfLEWuekGvYz4NmEMp6jC/+/ilb1/Ei/i
+         AQEwrL2U1P7/uI7eO8h3D1Jmtx1t+OOWqNIPvpw/BJ5A2QaGMWu3C24ndql4yA2iKEXS
+         WBDMsLAagh7OxNbuvflbMynbRirkHyoWoqpcEVyEbBD0N5Ou4XTqngUxVgXQ/g4jzteB
+         l6jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710320165; x=1710924965;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Dm85BXuVczHuF7thZskvHACa56yT/MJpoY/H4BB3y8Y=;
-        b=uzj4SohTmDfiYjSEekgTMXnjnAFBeBWo43BiWPIGRSoJzavawopzeieTOjw20nqFbW
-         oP1kIfE91aAeawyVaDXupuSbgWurGVz+/ggUW8JGaGssPQjsyRaCpQcRwa3eaQIKQOgE
-         jmzM/ktMY0DuSZBHHfiaTBsgdkGJ6M3Mvcd590H8CWtrEx0LHxeR7dLoqYlPsKR2aTBs
-         x2YNV/ZsNIi+BHgqyP4aOP2QOFcpvgMKQsZRxbUjf9wr5ocg9kxE7fU/XVppDrN3l6Cr
-         cNMiL+N38fezAIwF84TLMqySyz266rWZTn+N2Fge+3WmqyGr5Jiw7gvrrVxg+B5k7cY7
-         Q3Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXFGfdJ6xt/LrcdXatkLpfRaC/EJd2wQHkRAUlHerlU7PGBsNZR6JqHyI2qTPAYhpIjISDzsPqBU2g0bKSszQ2i/2SH/W9tF2Y6cZQk
-X-Gm-Message-State: AOJu0YyzAzKk39hHRmU5CfqWMYw3kTyiSszMA4Gi1+brf3i8T1bNIRsu
-	uMCgNfj6bhQ2EVjjp+NVruKOE5Y7LhyUHfUFFd0j4jkjt+EowfP/gOkYMwtWoemFDo9cBMf8cVF
-	ugyYE6A==
-X-Google-Smtp-Source: AGHT+IHj9sWvnrNbgEbJTmkO0mdVRd3JkV/BMSjseGuZwRkFHTRCBZuuBBAWm3G3tmwBHnuUO6m/Dw==
-X-Received: by 2002:a17:903:947:b0:1dd:a616:8205 with SMTP id ma7-20020a170903094700b001dda6168205mr2047210plb.34.1710320164517;
-        Wed, 13 Mar 2024 01:56:04 -0700 (PDT)
-Received: from localhost.localdomain.cc ([8.210.91.195])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170902ea0200b001dc6b99af70sm8022794plg.108.2024.03.13.01.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 01:56:03 -0700 (PDT)
-From: Li Feng <fengli@smartx.com>
-To: Keith Busch <kbusch@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Anton.Gavriliuk@hpe.ua,
-	Li Feng <fengli@smartx.com>
-Subject: [PATCH] nvme/tcp: Add wq_unbound modparam for nvme_tcp_wq
-Date: Wed, 13 Mar 2024 16:55:17 +0800
-Message-ID: <20240313085531.617633-1-fengli@smartx.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1710320177; x=1710924977;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d+mO86kMfMWDJIo9fRORC6334q4eXYxL4m5tAq3xCEk=;
+        b=MKntWNxcGOD1Xr+t3nLVXz1tebrBhJ2UBIrt0ZE8Fqd/d2vG/LNUJRkF5nLTRnDIJz
+         i30/LbV55WCu2qhiV/tJqmRe7p/wc/gYbVunSjoiU+ffUjqK5TAqaNw+kYyRGCdCje1H
+         lqztbO2Z1cprWtXa8LXtdsNndZO1Z2VfkgcYH4XnJ5daoSzq5gH7YDCCWou+qNN4NfAL
+         /i0kyNy3ocXjrPVDcCSxq/g+RAebJOYBBiGthhP0udCCOCKA96aRj9v4uxf2Ijh/iSR0
+         FBJnikENUFVxBWasWtCd1tt1DbeTT0oVWRvMEL0xrwUtB9MsFERWFvCMpUQqwbeg/F0K
+         B//A==
+X-Forwarded-Encrypted: i=1; AJvYcCWzJG2WEZOvmqb0ImTs5fgPuWwU8rUnSagvVcGCdHj+OqXtWqdqCruC5Uu0O+BqOgmgyZ5PnerQSzvqMgfPJ+khM/UyyJeh8hhPXocc
+X-Gm-Message-State: AOJu0YwjR7Ny+j8bdnaukUJVauVesIW2Fh172GuLu46RdYXXXtWUixPM
+	p3eXOMN2N57DdgEMk5I6ffmLyojhINbihxFx5T1HjxS7dE9ZkRFw8Vnqcsl/NwonNxUFbXd220W
+	086WRLVCWAbvpLAUXKfo0CR3FOwU=
+X-Google-Smtp-Source: AGHT+IGNRJNpkCuB1o+4v+BYFzZP0XtP8y73twDHUCnGXIa7pEfKd+ZuHmpzhScwTAmnqSCY2V/DvEdFUrwnHXCwgMY=
+X-Received: by 2002:a17:906:4481:b0:a46:1b3f:ccbf with SMTP id
+ y1-20020a170906448100b00a461b3fccbfmr4047748ejo.25.1710320177469; Wed, 13 Mar
+ 2024 01:56:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240313070705.91140-1-umang.jain@ideasonboard.com> <20240313070705.91140-3-umang.jain@ideasonboard.com>
+In-Reply-To: <20240313070705.91140-3-umang.jain@ideasonboard.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 13 Mar 2024 10:55:41 +0200
+Message-ID: <CAHp75VcdcQbF76=j=xTtDRgkQNwVdCJ+0oD7KX4TbTfndX_5fA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] media: i2c: Add imx283 camera sensor driver
+To: Umang Jain <umang.jain@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, 
+	Kieran Bingham <kieran.bingham@ideasonboard.com>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, willl will <will@willwhang.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, tomi.valkeinen@ideasonboard.com, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
+	Hans de Goede <hdegoede@redhat.com>, Alain Volmat <alain.volmat@foss.st.com>, 
+	Paul Elder <paul.elder@ideasonboard.com>, Mehdi Djait <mehdi.djait@bootlin.com>, 
+	Bingbu Cao <bingbu.cao@intel.com>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The default nvme_tcp_wq will use all CPUs to process tasks. Sometimes it is
-necessary to set CPU affinity to improve performance.
+On Wed, Mar 13, 2024 at 9:08=E2=80=AFAM Umang Jain <umang.jain@ideasonboard=
+com> wrote:
+>
+> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+>
+> Add a v4l2 subdevice driver for the Sony IMX283 image sensor.
+>
+> The IMX283 is a 20MP Diagonal 15.86 mm (Type 1) CMOS Image Sensor with
+> Square Pixel for Color Cameras.
+>
+> The following features are supported:
+> - Manual exposure an gain control support
+> - vblank/hblank/link freq control support
+> - Test pattern support control
+> - Arbitrary horizontal and vertical cropping
+> - Supported resolution:
+>   - 5472x3648 @ 20fps (SRGGB12)
+>   - 5472x3648 @ 25fps (SRGGB10)
+>   - 2736x1824 @ 50fps (SRGGB12)
 
-A new module parameter wq_unbound is added here. If set to true, users can
-configure cpu affinity through
-/sys/devices/virtual/workqueue/nvme_tcp_wq/cpumask.
+I have got only this patch and there is no word about changes. Please,
+either make sure you Cc'ed people in cover letter to all reviewers,
+and/or use a comment area (after '---' line to list the changes
+related to this patch).
 
-Signed-off-by: Li Feng <fengli@smartx.com>
----
- drivers/nvme/host/tcp.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index a6d596e05602..5eaa275f436f 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -36,6 +36,14 @@ static int so_priority;
- module_param(so_priority, int, 0644);
- MODULE_PARM_DESC(so_priority, "nvme tcp socket optimize priority");
- 
-+/*
-+ * Use the unbound workqueue for nvme_tcp_wq, then we can set the cpu affinity
-+ * from sysfs.
-+ */
-+static bool wq_unbound;
-+module_param(wq_unbound, bool, 0644);
-+MODULE_PARM_DESC(wq_unbound, "set unbound flag for nvme tcp work queue");
-+
- /*
-  * TLS handshake timeout
-  */
-@@ -1551,7 +1559,10 @@ static void nvme_tcp_set_queue_io_cpu(struct nvme_tcp_queue *queue)
- 	else if (nvme_tcp_poll_queue(queue))
- 		n = qid - ctrl->io_queues[HCTX_TYPE_DEFAULT] -
- 				ctrl->io_queues[HCTX_TYPE_READ] - 1;
--	queue->io_cpu = cpumask_next_wrap(n - 1, cpu_online_mask, -1, false);
-+	if (wq_unbound)
-+		queue->io_cpu = WORK_CPU_UNBOUND;
-+	else
-+		queue->io_cpu = cpumask_next_wrap(n - 1, cpu_online_mask, -1, false);
- }
- 
- static void nvme_tcp_tls_done(void *data, int status, key_serial_t pskid)
-@@ -2790,6 +2801,8 @@ static struct nvmf_transport_ops nvme_tcp_transport = {
- 
- static int __init nvme_tcp_init_module(void)
- {
-+	unsigned int wq_flags = WQ_MEM_RECLAIM | WQ_HIGHPRI;
-+
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_hdr) != 8);
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_cmd_pdu) != 72);
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_data_pdu) != 24);
-@@ -2799,8 +2812,10 @@ static int __init nvme_tcp_init_module(void)
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_icresp_pdu) != 128);
- 	BUILD_BUG_ON(sizeof(struct nvme_tcp_term_pdu) != 24);
- 
--	nvme_tcp_wq = alloc_workqueue("nvme_tcp_wq",
--			WQ_MEM_RECLAIM | WQ_HIGHPRI, 0);
-+	if (wq_unbound)
-+		wq_flags |= WQ_UNBOUND | WQ_SYSFS;
-+
-+	nvme_tcp_wq = alloc_workqueue("nvme_tcp_wq", wq_flags, 0);
- 	if (!nvme_tcp_wq)
- 		return -ENOMEM;
- 
--- 
-2.44.0
-
+--=20
+With Best Regards,
+Andy Shevchenko
 
