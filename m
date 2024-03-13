@@ -1,134 +1,117 @@
-Return-Path: <linux-kernel+bounces-101563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0368387A8B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:51:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88AF487A8C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A527328703E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:51:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EC011F22337
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B44241C7F;
-	Wed, 13 Mar 2024 13:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5130443ACA;
+	Wed, 13 Mar 2024 13:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="OgW22M8N";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IXlb1e7i"
-Received: from fout2-smtp.messagingengine.com (fout2-smtp.messagingengine.com [103.168.172.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z0AJ8SZx"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3641735894
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315B541A87
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 13:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710337899; cv=none; b=BLL+kGOt/EmyakF1K9Ri9dpQndUyJBuv9uJbewmsTpTlaQDrFtonbE/uVPjfwKbD9e39oXv0aR6o9KNbKiY0KAMk+ovkLEfZKqn3cMbuN4FYTKCDlXI3JCz95/AkNkTJlIFPkRXwsAZfmUgpZuON2CYyIw0tZxOwft/rjHZEhlk=
+	t=1710338041; cv=none; b=FW5n2kJdalaw3ZVB69inNsyV1bHB9wJOZ0PtOGlG0HnGMoOcBGt/BtxB0SSmX3Jd405JoSYibee2ck01EoiC5TQ2TVi20VJNzdw32vJiTEeXMbC7V54e6MCxhAPMJzZNWOSqnOYqLUqx2HslPUsDz3sYr+e9vTH/Bu+x8uC2JSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710337899; c=relaxed/simple;
-	bh=XfodRi+g2MAHEbvaL6rJMGAilrpUe8XvghzMd8UayVI=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=HuY8psh92IpnALE9zWTPB0nVxpBrkIujfPq74D/FANW3NdZqzW0ZOUv/RWSp08xNUSPfJfhvq6w1M7z0G3sPtIZTst1ddNcXJa1XYy5u+579xSZ8NxBgzt2xwHUb2csr5OTKy8Vt6LEGzj06RDYzd1PDerpU/+n9WN4reftPN0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=OgW22M8N; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IXlb1e7i; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 3788C13800C4;
-	Wed, 13 Mar 2024 09:51:36 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 13 Mar 2024 09:51:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1710337896;
-	 x=1710424296; bh=UF33/biTEk+qguK6UgC6G5DzkRWJpdJ3TPt8FCcXrto=; b=
-	OgW22M8NJ5eWiAaCNYCPbbSMKZhr3yN8z3+VjSy410ClcDv5i7z8CZsFaDgxqMn5
-	pgoV1h45tTvUOlsLK6zmDmWnmhbwUhH8SbtsZeazwUB8G+cDlST/vsqArttL47i5
-	trONPg+Tad2vw5CfbUWVr9GADXMHTmagizAsrQ1axinvklQHm4N4xwI6yMjNIo2n
-	ExZN+RNBI5BrlGPyjl20ep3Pl7oZXcAKn/rIsqD+LKaefX41v78jqPNseU3ElXn5
-	/aRSb1/sCw6hTrtK9WsvwFpJCmv9lemvfohH11UuKjTD13n45fg3spg8uyPmVdoC
-	2lX5AGTN0as5oG31/5c2HA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710337896; x=
-	1710424296; bh=UF33/biTEk+qguK6UgC6G5DzkRWJpdJ3TPt8FCcXrto=; b=I
-	Xlb1e7iaQ9sB1Gh28/aRIyf91fDvFf/FQU2hbkk1TWs/vZf9zgZBRlXH0giCrmwl
-	AR2wFmmdH5pSAOft9/cr+/dBRLbuHifafZY6IXWMkbPmDlk+6Xdb8P2Teqn6W5oo
-	/0r35KJjQAMJrH7gNwoEthHva3ciPgsEUx7LFBtRuUzQSRtkjpEmh1OINmZ0xkSW
-	NiEE+i5X+bLKaqRb8H5vc3gkzSFe9V0PubjJkun8C6bytlmW/RhQVH1Af6s4MO/C
-	02g/H7ynvqV4rDwnWXlLnymSQbXx5aivauR60MFg5JpVg1d+KVEi9vzlGvqy715o
-	7iS8tITxYSgvxUvZlOGvw==
-X-ME-Sender: <xms:Zq_xZQ6YcqwjbX8cpD0MWJwABF5FhoQCfz0XPLpIZTwgSDMUsEGw-w>
-    <xme:Zq_xZR5uRfpGHMkWAQJVg7LRVXt1T25X3Ko_sKnxI6xRV1Taw3y_05LtLN8ZSV3fQ
-    b0a-lrbFvfDRhqYw-0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeehgdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:Zq_xZfcuh2-c0LS5sXsSce9JHykwNIph3tccVuz6FZkoc6RzRgDJXg>
-    <xmx:Zq_xZVJVWLMuACqtXw0sbVnqj5o6tkC__Yac1SvW4jJChN8i4cQ5iQ>
-    <xmx:Zq_xZULEH7kh3YQyNbQ9-J13UCD_0iuxsp3AimTkgNUFq5YGDhfVYQ>
-    <xmx:Zq_xZWx4mAZXPvXa0uBBF6pyJaG5Q44Z17gyBwrv0TZftlpSRNF6BQ>
-    <xmx:aK_xZT_DS3-L1O6zcIQnJk9OmvxiXiV3CPLyEIhn9vUIgo6nXNUBIA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A6AD1B6008D; Wed, 13 Mar 2024 09:51:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710338041; c=relaxed/simple;
+	bh=1WvjdW9Mx5rCDs4ryRQnEBXl7hdJ86vv3Rwr2lWNiTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=c0/he0KE4tYsQGW6eF4e9GEiK3pW/KnI6Vp+DUZENHRK7QCBJUHi7egUrWHO2/MtiZoOlgxbrEyMrDquEBeLom3ULyKUtufAxQV4/7UxMUzG9Uoao9RSKe2Tfa/aCHGF5zyqxLK1oxqt3Hey7gWUGUTwyYzBvwfYqFADXZlfb/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z0AJ8SZx; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc49b00bdbso41494075ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 06:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710338039; x=1710942839; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/heQt+Db0ehDtq1JCZPcwy70snmGl2Z1H+WOU5UmOPc=;
+        b=Z0AJ8SZxfVtjG/Fxm22gxUuyrKinQe3S6HmcMmxS04Bs/ME6jAyaoVDA7Q+loTYBOw
+         bq1nNr9nAbrgumD8Ltvs5vibW9VYe43OWi4Hg1kaFvWIbeYytq4dq/WzVTtZdSTxxZ6l
+         65A2XdzrrFSJ2LKkWv8NzyC/KM0CeVir4kuV0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710338039; x=1710942839;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/heQt+Db0ehDtq1JCZPcwy70snmGl2Z1H+WOU5UmOPc=;
+        b=AQ3z2hJx3dcpsP8oTcd0U1isviYcrYLpegPKMmE08+bZLwgMyKIr5f2yBQhuW8Os5+
+         TIE5bA73+45P1zPlD58hDkfqzIaIq95fC/4gty2yzHNmrBU8HMikZbQ9Smyrqoa2Qr44
+         rM+j7oaz0P5QvR7FiMjCqXJoWq5RUH4zHRW5JhLcqA4lsjXb1LXbxCY5Ooj0MwzbWxL7
+         Ox2BxgmeY4qTI6CI9r1UzDNCQajGkEFPMrIqYmmztLs1pjWFuHQxIgAp+/yY5PnpzYoH
+         EeHgJyNgXaOQHdo7CPqnJVOYoykpqZImVlxLHaA2utJHwTdSteRwFCNiJSQoBaflE/2X
+         So1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUcKjTRpfdv/Hb8XKvSQjp4RhewStEguvUtdG46aWu8eQuSrkLWyOCis4apJkJKQBuVpIruD9fPv0o2NQM9OLpBi9+ttFKhDa8ms5fY
+X-Gm-Message-State: AOJu0Yy9vZE5YVpz4LLYgNnXW6zoBc1b9wUuf6HXd76+s7XK2PXsxsZr
+	2D2JodE8AH7Cc5UyDaZWNxgde9NK6nLljLK2/myr1sbIClOBJgZr6lQslmlCew==
+X-Google-Smtp-Source: AGHT+IE3PgaxgQ7zHkHAgGrWi0X7VbrllC27gi8LCOikz9dtE/g945xwEfsoOmxKeOZnqAPMvOWqew==
+X-Received: by 2002:a17:902:f544:b0:1dd:aa58:a648 with SMTP id h4-20020a170902f54400b001ddaa58a648mr8030088plf.43.1710338039452;
+        Wed, 13 Mar 2024 06:53:59 -0700 (PDT)
+Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:3708:eea3:d1b4:2032])
+        by smtp.gmail.com with ESMTPSA id d16-20020a170902ced000b001d8aa88f59esm8632504plg.110.2024.03.13.06.53.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 06:53:59 -0700 (PDT)
+From: Pin-yen Lin <treapking@chromium.org>
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	=?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= <nfraprado@collabora.com>,
+	devicetree@vger.kernel.org,
+	Pin-yen Lin <treapking@chromium.org>
+Subject: [PATCH] arm64: dts: mediatek: mt8192-asurada: Update min voltage constraint for Vgpu
+Date: Wed, 13 Mar 2024 21:51:36 +0800
+Message-ID: <20240313135157.98989-1-treapking@chromium.org>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <1ee86ea9-fa91-4795-b5f8-2e57609ae65e@app.fastmail.com>
-In-Reply-To: <ecc5d070-a773-1180-b50c-59088b23695e@huawei.com>
-References: <20240313084707.3292300-1-arnd@kernel.org>
- <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
- <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
- <1a12c8ed-0cb5-5650-24a2-84b021c444c3@huawei.com>
- <b08aaae4-8c69-47eb-9658-5f3f5c8e4056@app.fastmail.com>
- <610231c3-c3ee-e543-1a8a-8e1098ee6a7c@huawei.com>
- <21cd0f32-c94b-4b2b-8fa6-ebe12756b0c4@app.fastmail.com>
- <ecc5d070-a773-1180-b50c-59088b23695e@huawei.com>
-Date: Wed, 13 Mar 2024 14:51:14 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Zhihao Cheng" <chengzhihao1@huawei.com>,
- "Arnd Bergmann" <arnd@kernel.org>, "Richard Weinberger" <richard@nod.at>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Daniel Golle" <daniel@makrotopia.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 13, 2024, at 14:43, Zhihao Cheng wrote:
-> =E5=9C=A8 2024/3/13 21:39, Arnd Bergmann =E5=86=99=E9=81=93:
->
->>> Thanks for explaination, which means that do_div is used for 64-bit
->>> division to solve the link failure caused by missed libgcc. Since
->>> parameter 'from' is u32, there is no need to invoke do_div on a 32-b=
-it
->>> platform, you just want to stop the wasting behavior on a 32-bit
->>> platform. Do I understand right?
->>=20
-> How do you find it? I mean there are so many types and many do_div=20
-> callers, do you have a static check tool?
+Although the minimum voltage listed on the GPU OPP table is 606250 uV,
+the actual requested voltage could be even lower when the MTK Smart
+Voltage Scaling (SVS) driver is enabled.
 
-I had a local fix with the same effect that I applied when
-the code originally broke, but had not gotten around to
-sending my fix.
+Set the minimum voltage to 300000 uV because it's supported by the
+regulator.
 
-After b8a77b9a5f9c ("mtd: ubi: fix NVMEM over UBI volumes on
-32-bit systems") introduced a different workaround, I got the
-link error because I had removed the do_div().
+Fixes: 3183cb62b033 ("arm64: dts: mediatek: asurada: Add SPMI regulators")
+Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+---
 
-     Arnd
+ arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+index 43d80334610a..5cc5100a7c40 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+@@ -1448,7 +1448,7 @@ regulators {
+ 			mt6315_7_vbuck1: vbuck1 {
+ 				regulator-compatible = "vbuck1";
+ 				regulator-name = "Vgpu";
+-				regulator-min-microvolt = <606250>;
++				regulator-min-microvolt = <300000>;
+ 				regulator-max-microvolt = <800000>;
+ 				regulator-enable-ramp-delay = <256>;
+ 				regulator-allowed-modes = <0 1 2>;
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
