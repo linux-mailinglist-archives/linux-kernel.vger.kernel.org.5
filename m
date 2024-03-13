@@ -1,93 +1,154 @@
-Return-Path: <linux-kernel+bounces-101040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75F0487A138
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:01:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CE9287A158
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FB231F22086
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:01:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 043352834E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620F5BE66;
-	Wed, 13 Mar 2024 02:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41383FC16;
+	Wed, 13 Mar 2024 02:07:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IsRWOK0+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="zXj8LJnX"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E3A8BA27;
-	Wed, 13 Mar 2024 02:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F58D51B;
+	Wed, 13 Mar 2024 02:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710295274; cv=none; b=YdvQbDeVY89udMDHkYVWljR7TsqlVn+DycGULj/2ZitxjE4tO3ebwa/YqaW7Lv8toWkTGdHvzK2nRKOGvzsYpM9A7EKx0RXXLb4dnjFp69dQZzXRc1Dels5bRkgkM2dANxQVDr3ZHFvZoTMw84v5uKJVJVDhwf+L+MCskKithr8=
+	t=1710295653; cv=none; b=Dj9HnS4lJF2jQVPhhb+DgbS5UJfY5b6WXdGlnxGj3YpV78sxK8MAECIarjsO/Ll2KDjy3mY8jYjsLrt4ztKJu1s/rd3EVSr/VfPSrVKaynNoGA87Ug8LWK5GrIG0T2pnm4RgBxRSzzNw9B71NHGCY9bp/8RmBjWxj+J9C0S9+/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710295274; c=relaxed/simple;
-	bh=vTj6c7lYUYxxzCjHXy7wpZDaEnI23La6H27WpOf7WCU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z3NLrJsiW6xFGs44GIf04OGD5RW7c0BoesgO8OH52U37Dwni9w2EmeQguyL7fP4oHZGx/aAwZG9eFJVRw2eYgY9+noG3xVIq5L5Oy5WiePdxbbVs8bIC3QVdTqyRhMPjhrwENP6OVmhqVlENCLFPXosgKBfpq9gXH1hYhv7z0zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IsRWOK0+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46EE2C433C7;
-	Wed, 13 Mar 2024 02:01:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710295274;
-	bh=vTj6c7lYUYxxzCjHXy7wpZDaEnI23La6H27WpOf7WCU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IsRWOK0+qLb4R3vnX1x4P3cd063/uYm919hMnV1S0OUyyL10KxlMNinH6Qt2QNodu
-	 fejMkhz7bCUIvevjTWNA10XKuIfJEk++Do3mnlnbAWiX6gGwoaI+uPmF9/c6EBPo9T
-	 ClyDXIWZtpXL6NZt71tEYRy0+nCVUbrmi7B9oqADqvpl8mLBpxSzM7lQ5TE68dkXWV
-	 XreL4NpGGpOrtZLCViC8Pf3+x4v/XAfrNsR45bH/A6xrKfSycY17jaWnt22S53Wd6Z
-	 Yr7qq440ZSgnKOzxD6V1HW0/d4DnaSaVyO86uRqgbYBp3RG9LXSN8VjCw21F420doU
-	 fAzWcMR+5Zw/w==
-Date: Tue, 12 Mar 2024 19:01:12 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Linux Crypto List <linux-crypto@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the crypto tree
-Message-ID: <20240313020112.GB1148@sol.localdomain>
-References: <20240313115751.36b01158@canb.auug.org.au>
- <ZfEE2GDznBOZDXs4@gondor.apana.org.au>
- <ZfEFKxl8/42oXv0i@gondor.apana.org.au>
+	s=arc-20240116; t=1710295653; c=relaxed/simple;
+	bh=gKwwcvUxoUfiRZgtmQ2NL3a3X4Bit9aEPZb/w5hi4Kw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iXjw/IGniN/dfg0u3hEZ8ABRphBBiYBShmCqrSSiGOAFdIiweeZ9oTNFWdkmV3pUG5g9Yqd/gHUL1sNEh8XCc6bfh57xKZFqzodP3NOEsng/scTOV1pYjeVaubBjx8lULS5nyFkiuwpyOJx1hIuINuJWo2uLZoNpaRyEAKx2e0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=zXj8LJnX; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1710295640;
+	bh=XFmy5qLFjf2ks+5NUTUH+n2hvFSsq9w+oqbAfXiCgEw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=zXj8LJnXvd7ntd71Jpb0DG83WNa85l/b9bdtyvYwPGWQfkL3b+sVRrwXPTEO6fRIW
+	 xayHJ2CCAJrek33vCXv2G89vK0+XjQQmn+K6SNXuU/bhSYZM2gZGBHsaHGdoAbPayw
+	 6o95DlD9eCV1fDeT+n4EdFtjaoHmwBb4XN09e9/I=
+Received: from [172.17.78.110] ([58.208.182.212])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 4F08A3D; Wed, 13 Mar 2024 10:01:15 +0800
+X-QQ-mid: xmsmtpt1710295275t00qd39pu
+Message-ID: <tencent_DDDFB09AF2B2DC73F9570E5A02D929004609@qq.com>
+X-QQ-XMAILINFO: MR/iVh5QLeieDm8r7gyCqMZkbJNGCHLkFir2u0+j1lEOROSGz/03/07Lvs3KuN
+	 y4tscX5UYggiqcgKQvpdkDjQPyz0mcMw+aqjms661Ixbki+Gb3UN+6+bLMNWTuj8/UhzFjgZr3XK
+	 OKiCjfLsiwJqjneHLY8fwexbH9EjT2PeCNa7Qawv3gxsJW/zSimhWCikZOsFzk3r+8W3OIbKR8ko
+	 TjjeiOoQJHnzSbdU4jfs7DkiyPN6kP4xB2yI24YU0+JX6qB9ej6nWDx+WE4v51o4/fH0Vq0814be
+	 01GfIfffZmio5y65cvQK6Rre/Uklns0/bRJafZcbkWR1lkMZ5f8TYgoLZTxsw5x8PC/mzAyVRv2T
+	 RtXPVu1nUMfvtGiRRDMn9D/bieUgyuLkCPLeJgo5kno7Ugx0ol7jh7FSh9s1MtWYvn9YDO4vayW0
+	 G1qRq6T4coN6hwfP5/OXy+SG81eD5E3AwMl5GPDXV+tfYKri9mB7Y3HNBq1rfhWzGa8f/3WJFnh6
+	 QglGrQ3lP7prXkd2iPKbLmqLdPBdN0ncPIrSoC2hw4P5hTnURryw7G8OOIyNg/KF18GKMoOw3o81
+	 F/HSTfdJ+3USvIMYvosUaN7BlivdvSH/aX+5HUJnIRjE5+SXEF7zI7YgmxWAwrp6JJag5xKuLH22
+	 n1wpwx/6A8WMUAL8pOM0ZPKZ+3OnxzUVGkGN6WjxbdlO0A8h22WVXQaI6aTLXyh3EoNf/UxiwkF4
+	 bdhSNTEY/bnqkvKX/V0U1+RCpQUxyYbF15YGgTkA4N/HLzzKJhig3UN6obX/e1REz1X/FIgaEny4
+	 mx6Dj/sC2uM1NVEDT9J08A7DF0K3TLd99m8jVacqT3F3fjSfsnIMrBNlhrVLK0RJ+Ri1NuIHuEsD
+	 rRT7CK5JR206JdN3DU66xVrLcyZTkjRr/sAenV5rGU91uHXu9FlrNRn5epe9CMi8Hf2pPq/dbZH/
+	 pS/A6Jbox9QXpBZMnUjEio1AT3DPpL6rFcGG1iuXQ=
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+X-OQ-MSGID: <1cffd0fd-c8a1-4e12-b2c9-42ace78c44ed@foxmail.com>
+Date: Wed, 13 Mar 2024 10:01:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfEFKxl8/42oXv0i@gondor.apana.org.au>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86/mmu: treat WC memory as MMIO
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+ hpa@zytor.com, rdunlap@infradead.org, akpm@linux-foundation.org,
+ bhelgaas@google.com, mawupeng1@huawei.com, linux-kernel@vger.kernel.org,
+ pbonzini@redhat.com, kvm@vger.kernel.org
+References: <tencent_4B50D08D2E6211E4F9B867F0531F2C05BA0A@qq.com>
+ <Ze8vM6HcU4vnXVSS@google.com>
+ <tencent_AA5D14EAA36D58807959EE9AFC9E07548108@qq.com>
+ <ZfBzBUbxpF9MpII-@google.com>
+From: francisco flynn <francisco_flynn@foxmail.com>
+In-Reply-To: <ZfBzBUbxpF9MpII-@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Herbert,
-
-On Wed, Mar 13, 2024 at 09:45:15AM +0800, Herbert Xu wrote:
-> On Wed, Mar 13, 2024 at 09:43:52AM +0800, Herbert Xu wrote:
-> >
-> > Instead of using the non-existent crypto_comp_alg_common, it
-> > should do something like
-> > 
-> > 		return crypto_acomp_tfm(tfm)->__crt_alg->cra_flags & ...
+On 2024/3/12 23:21, Sean Christopherson wrote:
+> On Tue, Mar 12, 2024, francisco flynn wrote:
+>> On 2024/3/12 00:20, Sean Christopherson wrote:
+>>> On Mon, Mar 11, 2024, francisco_flynn wrote:
+>>>> when doing kvm_tdp_mmu_map for WC memory, such as pages
+>>>> allocated by amdgpu ttm driver for ttm_write_combined
+>>>> caching mode(e.g. host coherent in vulkan),
+>>>> the spte would be set to WB, in this case, vcpu write
+>>>> to these pages would goes to cache first, and never
+>>>> be write-combined and host-coherent anymore. so
+>>>> WC memory should be treated as MMIO, and the effective
+>>>> memory type is depending on guest PAT.
+>>>
+>>> No, the effective memtype is not fully guest controlled.  By forcing the EPT memtype
+>>> to UC, the guest can only use UC or WC.  I don't know if there's a use case for
+>>
+>> Well,it's actually the host mapping memory WC and guest uses WC,
 > 
-> Nevermind, the stats revert should not have removed acomp infrastructure
-> like this.
+> No, when the guest is running, the host, i.e. KVM, sets the EPT memory type to UC
 > 
-> I'll revert it.
+>   static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+>   {
+> 	if (is_mmio)
+> 		return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
 > 
-> Thanks,
+> which effectively makes the guest "MTRR" memtype UC, and thus restricts the guest
+> to using UC or WC.
+> 
+> Your use case wants to map the memory as WC in the guest, but there are zero
+> guarantees that *every* use case wants to access such memory as WC (or UC),
+> i.e. forcing UC could cause performance regressions for existing use cases.
+> 
 
-The only user of comp_alg_common was the crypto stats, and it was introduced by
-a refactoring of the crypto stats (commit 0a742389bcc0, "crypto: acomp - Count
-error stats differently"), so it seems appropriate to remove it for now.
+yes, this may cause performance regressions in some cases.
 
-If you could go through my patch and explain what other unused code related to
-the crypto stats you might consider to be "infrastructure" that should not be
-removed, that would be helpful.
+> Ideally, KVM would force the EPT memtype to match the host PAT memtype while still
+> honoring guest PAT, but if we wanted to go that route, then KVM should (a) stuff
+> the exact memtype, (b) stuff the memtype for all of guest memory, and (c) do so
+> for all flavors of KVM on x86, not just EPT on VMX.
+> 
 
-- Eric
+it's true.
+
+> Unfortunatley, making that change now risks breaking 15+ years of KVM ABI.  And
+> there's also the whole "unsafe on Intel CPUs without self-snoop" problem.
+> 
+>> one use case is virtio-gpu host blob, which is to map physical GPU buffers into guest
+>>
+>>> the host mapping memory WC while the guest uses WB, but it should be a moot point,
+>>> because this this series should do what you want (allow guest to map GPU buffers
+>>> as WC).
+>>>
+>>> https://lore.kernel.org/all/20240309010929.1403984-1-seanjc@google.com
+>>>
+>>
+>> yes, this is what i want, but for virtio-gpu device, if we mapping WC typed 
+>> GPU buffer into guest, kvm_arch_has_noncoherent_dma would return false, 
+>> so on cpu without self-snoop support, guest PAT will be ignored, the effective
+>> memory type would be set to WB, causing data inconsistency.
+> 
+> My understanding is that every Intel CPU released in the last 8+ years supports
+> self-snoop.  See check_memory_type_self_snoop_errata().
+> 
+> IMO, that's a perfectly reasonable line to draw: if you want virtio-gpu support,
+> upgrade to Ivy Bridge or later.
+
+it make sense.
+
 
