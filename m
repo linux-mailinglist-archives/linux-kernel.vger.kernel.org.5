@@ -1,317 +1,428 @@
-Return-Path: <linux-kernel+bounces-101075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C238B87A1F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:33:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 217DE87A1F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5148F284D78
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:33:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C4A0B22197
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31076101DE;
-	Wed, 13 Mar 2024 03:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B1F101C1;
+	Wed, 13 Mar 2024 03:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="celGwZHt";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="lqXfa/wB"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f+RhbdYk"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A22E5372;
-	Wed, 13 Mar 2024 03:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=60.244.123.138
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710300798; cv=fail; b=WoI4hpGMQsy6OCmSmrS5SCivKK2PkvZ27HQSpBS7W0XWpL5xr9pErKSvzLqfc6u84ejIrog0j7AkmyyivA27jQg/ZBY9agY5ah1TPg3juWOfKJF1+AynjMokXfjjG524ERE528sYT2Lsd175yUC39w6shdH6EyyZKCGXaVjN7Hs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710300798; c=relaxed/simple;
-	bh=p7aK8/80K/Zx77+blpTNEr3pKVanY+n5TdRJpi5Lo8U=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UZIByBx4pcotmb+G16qmIIUtlP0YsuCi3EYMrcsLFKjqZ43AjVEIQWt+ZdWQEiJLQldxpmkVjO93NcWu1aGhYaH0y00ch5cQbpSy26gOBa6R3DieCocwRYmUGwGZe+TX0g1Tj1/FM453YKPF3W5CbwyH4BimOeYjhjsjz07Ylpg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=celGwZHt; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=lqXfa/wB; arc=fail smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 6732bbeee0ea11eeb8927bc1f75efef4-20240313
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=p7aK8/80K/Zx77+blpTNEr3pKVanY+n5TdRJpi5Lo8U=;
-	b=celGwZHtkRCorGXXAmxcXnMdTaHF2RgKYcjAnCJKhubel2zSX1uvM5BwJhCZY94OKzmr5EKrMvEh25NmDIHK0MWxI1Ha3IPwlH2audWVxq06ImsGspa3Hy67bbdFBvCmKEM56VzmHvWo4TCB5GsBoX2kt9A1zoSsNm/adq7bl+s=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:ff1741f3-7369-4214-bf8b-f52fd9d87420,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:724a6f81-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 6732bbeee0ea11eeb8927bc1f75efef4-20240313
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
-	(envelope-from <jianjun.wang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2113460127; Wed, 13 Mar 2024 11:33:05 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 13 Mar 2024 11:33:05 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 13 Mar 2024 11:33:04 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S2ioXd/TzXVcnpolkUpUdwGaUKKWuto5RFtBeErcXZlaBz8Z2Zm/42PG345VB0Zk9hX2eEG6o2/0NiyG79+Rs3QFdgKItjGR9lwZpzyxBJdsqQFpENqHZQgaX1NmBiR2GMEzru3YEBUEO/K7EknpmH9D+oKwXDqTRQIj87mPgErpQQLmYY9AmlkEi8Mm2EnEQD2qPQwuk1ibw4HyFA3MTdUjiB0xtsTDnRWkmjzBn+EzppxSgjgQ6SUaC8MYiuFoH9nzj46G+MoX0V+mK6luL/5xxtIzgFwFjBJSYXHkiETrstYiLXkvjfGhYOiE42DHZP52sp9an/e3PoLVZKdxOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p7aK8/80K/Zx77+blpTNEr3pKVanY+n5TdRJpi5Lo8U=;
- b=htJCp214BcS1ucA1EE58Gfpp/gwPN07bnrq/LpX3XniPBBNPwgVXOHAQGOdXHBeZ9I1ieOts/Go6D/ID0BaD1oVFW4P+eb7RJ8ikvkwSEfNTut9dlY6Uc+1znFnAQ5qsN7QIek99xRE84JAbwsP650KHf58a/FcpWhupCg/6J6a2wnaXK7B26S3vEJ0IWKSJ8UkhqM7+OuqP9Hn8BB30U9ggVy1ZdHCHZt9agPzKUl/5fbD2GYc6UG1/PFAexHAMxJP1qr2C3BA17r9twRXB2UF45+HM8gnHjlCeBp13r07zuNuofWQQOe9Jeeu68rUQnr1BPkLxQECv/x2+UKTNgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EFE910A01;
+	Wed, 13 Mar 2024 03:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710300841; cv=none; b=RX80P+c3Zx6zFXBXpe46Xj3R53Vhe+zy1Y7i62GClnjYREhEuwvG9hNtbP5FICOpJz6xto01jxYP90dmEu+xKZuXrZfcGMfRWh1NJHTY+uLchwdcY+pjI/G4FC2Mj6gikuTDaabPkrFobxxb3h05GKOgfAMIIJ3EalCQVew/iuo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710300841; c=relaxed/simple;
+	bh=/On8k4vyETEu6WTe0KxLZS6dEteydlkGh4TTnnC7TJM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Esci21zeKz75oWGuLYO1Ao0hfcfYs6i1wXG9viaPa8otdV2JCw8rPqVd3nsEbGdujr49+rZ9X8Wg+wbF345EOk4WudXEL0y+Js0KUSNQkVR9/r3mu/AN2i9sRody3fneiw+Ml3aM0Xh0mUBpa5lQga1kfbXZ7tVyr9Uk1ZL+KX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f+RhbdYk; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6910c1f983bso3746076d6.0;
+        Tue, 12 Mar 2024 20:33:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p7aK8/80K/Zx77+blpTNEr3pKVanY+n5TdRJpi5Lo8U=;
- b=lqXfa/wBD/EWQJ1mkh8gfpkp94u/3xlLTEEvp+9y7eJ47KHCgHabrcskv2Z6DrnbGcIBgfVgfI798/smD16fVd2S/acuqHK4sFQDSqD0Eh6Eh4ZL/LXwjIIi+WG/jNs6c9xAgiwT9dNYqZwjlwQBY9f9wKmwpX3mZIrlDxcwuDQ=
-Received: from PSAPR03MB5365.apcprd03.prod.outlook.com (2603:1096:301:17::5)
- by JH0PR03MB9034.apcprd03.prod.outlook.com (2603:1096:990:7d::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.34; Wed, 13 Mar
- 2024 03:33:01 +0000
-Received: from PSAPR03MB5365.apcprd03.prod.outlook.com
- ([fe80::22dd:6695:c2ad:c4bf]) by PSAPR03MB5365.apcprd03.prod.outlook.com
- ([fe80::22dd:6695:c2ad:c4bf%7]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
- 03:33:01 +0000
-From: =?utf-8?B?Smlhbmp1biBXYW5nICjnjovlu7rlhpsp?= <Jianjun.Wang@mediatek.com>
-To: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"wenst@chromium.org" <wenst@chromium.org>, "kernel@collabora.com"
-	<kernel@collabora.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-	"robh@kernel.org" <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "bhelgaas@google.com"
-	<bhelgaas@google.com>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"lpieralisi@kernel.org" <lpieralisi@kernel.org>, Ryder Lee
-	<Ryder.Lee@mediatek.com>, "nfraprado@collabora.com" <nfraprado@collabora.com>
-Subject: Re: [PATCH v2] PCI: mediatek-gen3: Assert MAC reset only if PHY reset
- also present
-Thread-Topic: [PATCH v2] PCI: mediatek-gen3: Assert MAC reset only if PHY
- reset also present
-Thread-Index: AQHaavEyOFiHWdSs9EW2P5MBW1O/vrEiMBwAgAhAmACAAzPPAIAAN2IAgAc8hAA=
-Date: Wed, 13 Mar 2024 03:33:01 +0000
-Message-ID: <e6d657d8a08bce730e1ececee948bf4f283cc2f2.camel@mediatek.com>
-References: <20240229092449.580971-1-angelogioacchino.delregno@collabora.com>
-	 <30824df32636dec25b9a5972b1ee8de76b295feb.camel@mediatek.com>
-	 <c55f2c6e-1de8-4248-a52a-d6c9e49b565a@collabora.com>
-	 <8a5a695ccbc4401954f7df5a9690af726fc59173.camel@mediatek.com>
-	 <fb9d4791-73e2-491a-8117-e8e5f811fe7a@collabora.com>
-In-Reply-To: <fb9d4791-73e2-491a-8117-e8e5f811fe7a@collabora.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PSAPR03MB5365:EE_|JH0PR03MB9034:EE_
-x-ms-office365-filtering-correlation-id: d53f062d-9c1e-4bb9-9a36-08dc430e4932
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 01V/MNbNCXBtnwKwNDbaig5VdUprfcoNdNqFS9e7zZ1+0+0lgK+LDJ6TYXYoKIOW2PqfOF8jmlOM0axkVH9Ujsjzc9yGvdeU1mVVolbx6tdgsA1Cpc1LaEXrj3HnW7boMXXgi0RnFg7AnbZhz96b5url1LIlnuRl9MML8BlHO3bz+BHi4HB9LaPzfh0T3ciT55Qkx5KG9ntmY4ghgxvkOP3L0tMB7xBKLWTDiArzWDcXHaDM88nQMLxaL7vtxzdwBtrc744pPizDqoEtPlfx0R+vfLUT5luI/oHm+9YL/79GzzokPw/JPdstRAM4hiQox0AL1b4/hN1LZ1gGPYxCMaLumT7TprwqqAg6C+jjUETGeb9Zbdpqz92qkgJq3uJytGIaa9LcPunmo32xM2F5KHmELsiAE7+IOJvrczchHqkbv/o1/arBoodVEdh40zoMEAglBAj5GVIN1YnfhjnNbU5hjDYpxMJxr6dypU6g7+op2yfACpYjcdeSU3wTV11gjf/VPMKdFREQZHlnNhvFzVfsegtoAoZD+Q5dEDpE/N/FrFuycABzs6DZEQVRCJ2Z0s7hReqxFRHHZ9zYAGwMUOgqRRTGXNbbYu7U4u2unwW47hKAp9dbUtJSOPnKPJTuWwsbHr3YaqeM9IGhThZmrfId8VVmoj+uAwEku7De9nJKNNO5TTi2SsVRRnhZOCkN4ltNWMW8h4r+dateKnXBX6UTku8zmmcIhdIIjAnYm9k=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR03MB5365.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Ym5rbFova01jZ1ZiQU1yZlhHZHVhSGVUN2pCTSthWk5iZkJ5S1oxRThxS1Fv?=
- =?utf-8?B?OGcvdzR1UDJNdXppcmxDMERNOFZVdytiV0E1Y2dsekFOTTBQNkxZR0wzTFVG?=
- =?utf-8?B?TkhScG9CZm9paFdWdEVWaFg3aTNUUlk5ODB3SkhTOXZNWVBnUXhSQjhSY3Y2?=
- =?utf-8?B?NGIvSzRQaXJuYWNkbHZ3RE8zNFB4cHlXZ3JwQ2hPYWJEVTk4WHArd2FkU2RE?=
- =?utf-8?B?VUVvY3FWZUc0NlEyUjl5eUtXRXhST24rdnNDbnBVNzhCQVl5UHNESUkvd1A5?=
- =?utf-8?B?WDJ4MGE1RzRUS2cwMVVUVk9LcFMzMFRiUUErc1FHMmo2SFgzNVdFNmFFbFIy?=
- =?utf-8?B?SmVIS2NJWGdnQzl6VzhGMFpDeGpkZ1VjK3pUd3YzYzlSZk1hMnNBb0ozNUtJ?=
- =?utf-8?B?aEs1QkIwVXRMNy9jTXBZb0NLWlUxa2dLR3FUcFVqamxHWFBzeG5Wak9NUkdn?=
- =?utf-8?B?YjVwU1A4N3FleDl0eHcrUGxUdmlaemNpanUwbG9ITXFRR01qd3c4Njlub05U?=
- =?utf-8?B?RDZiTTBPMFJ0a2VSeXQzM0twRFcyZTVZSmo2Y0Z6VmhCZG5JdXlrT0FLM2Yx?=
- =?utf-8?B?WHJGbmRrOXczUjRnL21HSEJuYnI1dStjWDdpY0FObk0vT3A1VGhldi9SSC9V?=
- =?utf-8?B?YUNwdmdFQzhhTWZuZ1haNXQxOG8vRURRTEh4RXZSRHFGLzRkczQvL1JidldR?=
- =?utf-8?B?ZUIvZE5OQnRXK3V2TDA2ODVYMitDcjdYRUVXMXJGYkxMZXRqajZvdFdQT3pa?=
- =?utf-8?B?VUV1Q3JIUEVQV2JYSU15VUJaZ1ZOSU9QN0lYMVE5WWJUTU9KTEJDVjd3ZHZF?=
- =?utf-8?B?RWRBK2dVWUZRbEJoaUppRVpLRjVWcC9BWHBSM3IzZWs0THJLNjI1Y085dmpH?=
- =?utf-8?B?TnhIc2FpZHE5Y2g5NzRBYVRKN0NqVzRlYml0WVpxN3JmWmgwVEZiS2lGUXR5?=
- =?utf-8?B?NVY3OGJhTTZCaHE5bXBDNzdGU05nQ05MWXc2VU1zVzRQSE5sSG1UNnNsSktt?=
- =?utf-8?B?cVBKc1FHMzk3dTlkWFc4ZVVxbU41UHRpd0VzVjUwQ1VzRm9wc3FzeEFNU3lU?=
- =?utf-8?B?bjlteDRnWmZBNjRENjRKemRaVmdMU3VRdmhxZ0NPMWRodlhadUF1Z1J6WFUw?=
- =?utf-8?B?dlp5QVlnU1k2SkZHd0M1b3d6WmlicFBrTTBBZ20yTDBVUEVjQTY0VG1SMnFV?=
- =?utf-8?B?MmxMZW53NnZJVEpvZnBkbWN2VEJkODBBMDc1Q1JMK3ZsdERRWjhieG9iNzR1?=
- =?utf-8?B?VGpaalZTS1R4S0xkN2JCdTdUc29MU1c4Unl5cytUUDBhWkRXUHpVQ0cwZ09t?=
- =?utf-8?B?Zloyc1JBQWV1dkdOeDZTNHpCS3ordkp4a3g1MlNCVmJWQndiUkVGUjZDZUY3?=
- =?utf-8?B?ek1sa1FSMllKWTZiaEw3dWdTVURDZ1VnZ1NYZWg4cFd3aWRXUm5TQlFqL0Zo?=
- =?utf-8?B?bm9xb2hsV0Z1aVZ6ZjdvMVV2cVhEamtOR1VxN04yeFBYb2oya0JVWTZxMXdJ?=
- =?utf-8?B?Z1Y1cjdubjZNY09yZ0FVZHltMXUyQzVkRGdiakdCZmp4QWxhVWVzTkNRdkxQ?=
- =?utf-8?B?WEUyRjczWmM2dHBxaEY1N2tHQlplcHVGSmdUM2hTRklBS09zUWhnTk9IbXFp?=
- =?utf-8?B?eWN4TkdpeWQvdlpnSGg1ZE1JVWZadHVoajRIVzh3TjVZUWZPZ0t6ZTczQnlM?=
- =?utf-8?B?eU5DTUhTckxudG9YUjl3SWxla0JvUXhGMFRFV2hTOXJrdXVNdkg2aUpMQ05C?=
- =?utf-8?B?dGgzaWhDNDVHbkFqSnE5SDNjTDRXbUJtbFRGTHhxZHd1NDBxL3pSUFRuRGZW?=
- =?utf-8?B?eFFnc2FsNklpeFhmVmovank4WG1UZkNMQ0xRamhtMDVFYmRxK1Rhbkgxbzdo?=
- =?utf-8?B?ZHZjaDZJNFhPU1NnNmVPZDJWQ3krWUJ3dDJsdmJUQWlCUml0Tm5hcS85UlQz?=
- =?utf-8?B?SjlwZ3h2b0ZHMy9lZjRvbWVIMWUyeFh6Zm4rWVg5TGZKQ3A3eGN5cXR4MFVZ?=
- =?utf-8?B?Y2dQa3pHT0FrMmtWZTdTN2RKSWNjSHYvQXhFS2xodU1oMzRvYnZXWXJSUnJY?=
- =?utf-8?B?clFxQndaWjVJNi9JYU5BVmR1ZTBXTUJEVjZaV2lYQk5zd05aS1NaclYweXdt?=
- =?utf-8?B?QTg2VDNIS0h6elBGemRwQWdXNFBNWTdER1AySlVOYVJzME56WHVKVEt5eUVa?=
- =?utf-8?B?eEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FBEFC9A200C25D478BBEA7EADF075B1C@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1710300838; x=1710905638; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zuENEYXMhuQPnOQ0QKI/DLZWxbU7Fvwd76DVVZKAww8=;
+        b=f+RhbdYkY244EwvD2fgwRS5foBOpFF9z0AIys5TfiHQ9yxignNrL5NqYc32znct2fS
+         noXZfvRGrv6lyHHd+y0lP1CBedJwXk/O7XBPR3jnWjC4oUBVo82lLCUM16vZB5jFPFmx
+         PcUu/HIBWqW8GBdO21wXbWc8hoixHXpwLENjKkK3fi6vX8VymM11YZynvQ9gK0f9JDMs
+         xwkMKtJu1dRxok8ir/v0qivk3+xIyk69Gucj4lx44azgcP9ezicit1fmwezLwvioGPcJ
+         m8Uyi4JAx7EQJgSCXNDJbOWM1qGSRTE1nOZ7PRiBp+yjXU9mfE605lyGJPT+EogZaMbI
+         bI/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710300838; x=1710905638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zuENEYXMhuQPnOQ0QKI/DLZWxbU7Fvwd76DVVZKAww8=;
+        b=Z42C33xkaPWADB19Pi63bNMpL0HYEU2sBWFW7IVeTefGRFbC3kuMro9r/05TJQlJXh
+         YnA25T3UblYFnvqLcjxeUsZkLi6EgkiurwHbkph1leuUFWnOoKrJiyRKFFgxL5FMyo0l
+         z9nOT8miyJlIrJB+r4tHvy+AAEfpruNCZSUB8zY5SyoVLovhjv6pwV24CFGNMjtUaVjZ
+         c8mAL0qbKR57Qi5kAyM+Cao08H6GsoNdAvGZunBWIG2R4Mv82yrcfE2KA9EKFTloWgVZ
+         IrfjbZiP9q+FR7Dq6K6AgCSpkh4KVcOjwm7NvowWFzQSZyKw7syzJUnJbHWIWanxvRbM
+         ZKfg==
+X-Forwarded-Encrypted: i=1; AJvYcCWF97iwvA7Q/zWXiLkXYD8wxsxT/RukcGbUer7LsCUDJb32SWVPY7paQ2IwycPOEmriHgyo0m5+Tg8SwRL5bCSbkgU6LX5Ct7gf6rHQUnM4hB89Na4WHPXOJ0FwmlrpYeOys0jhHQ==
+X-Gm-Message-State: AOJu0Ywqsbg0YOpRwEXN57fgjUNAK798YhJJk4E12fQEuQ9XQ7Pbj3GA
+	JrAxsKqXLQT4d8L4pi7fzY4jDm7Y7nOL0XEkNw3zNkxTrIeHacZu4J1lVcXojt9Tg4aQP1VK4w0
+	3Q4H1k2knJl4BCe5oeZqWs/h/emw=
+X-Google-Smtp-Source: AGHT+IEkhFr+oNLUXdL2/mGvZxP9hbY6R0/lebxkFAdhKa87FdP1nlrhaX0JPZOMKoM9tIrsuBO4eAQKG60exBKDUT0=
+X-Received: by 2002:a05:6214:4a41:b0:690:d000:c819 with SMTP id
+ ph1-20020a0562144a4100b00690d000c819mr8068306qvb.60.1710300838384; Tue, 12
+ Mar 2024 20:33:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR03MB5365.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d53f062d-9c1e-4bb9-9a36-08dc430e4932
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2024 03:33:01.5970
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fK2hn4HaTAVG/yquHUAmtTNcGQA/x/Rb8sQNJmTTIoyMWjDn7Y7Co4WpPqppiX9jpS3DGZOZ3Z7Xbp6lylmogGkRmo28wQyKjFVcklVe+bw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR03MB9034
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--29.478200-8.000000
-X-TMASE-MatchedRID: MDgwTWowY3bUL3YCMmnG4kD6z8N1m1ALjLOy13Cgb4+qvcIF1TcLYHsN
-	je6oE7/XUmsNbSHn8eAQDZh9tV+I0YjQo/Iw2s1SM8ORI7N4NZYpWss5kPUFdCqt2Dk7ZTAMY6s
-	q+xRPSkBj/dLh9t0mGQitCJZE82T4rGqzbR7VPHmd4hCa7xSZobv00HtUkATFUekjLrC3lTDfyy
-	MmbNfTqr7aCg+WDekTQOrxUK8RJo1iukh7cLo+q/28T9BUNXkhsEf8CpnIYtnfUZT83lbkEDydO
-	VERLYzlR7R2zxLpJHlkLUniIb4AyKC1lU3nQJyvFYJUGv4DL3wxXH/dlhvLv1pbYq2f4jz+kqO2
-	AbVSuPxUM8SJMgfHHUdR4F8gUNXYbNjNjHLDuHOpvjJtAL8lc6J6BGsfymksGrKZCS5aXXUkJCG
-	PFvgt07feHiFvOKaJaq5LFy3qY2FOdkJru9i75Z4CIKY/Hg3AwWulRtvvYxTWRN8STJpl3PoLR4
-	+zsDTtAqYBE3k9Mpw=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--29.478200-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	B49D9814BC38015A581C48CCD335A3681A26BA1CF81D77C3227B0B4450F23AE82000:8
+References: <ZcWOh9u3uqZjNFMa@chrisdown.name> <20240229235134.2447718-1-axelrasmussen@google.com>
+ <ZeEhvV15IWllPKvM@chrisdown.name> <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
+ <CALOAHbBupMYBMWEzMK2xdhnqwR1C1+mJSrrZC1L0CKE2BMSC+g@mail.gmail.com>
+ <CAJHvVcjhUNx8UP9mao4TdvU6xK7isRzazoSU53a4NCcFiYuM-g@mail.gmail.com>
+ <ZfC16BikjhupKnVG@google.com> <ZfC2612ZYwwxpOmR@google.com>
+In-Reply-To: <ZfC2612ZYwwxpOmR@google.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 13 Mar 2024 11:33:21 +0800
+Message-ID: <CALOAHbAAnGjt2yd8avcSSkMA2MeUWN1-CTkN81GJF+udwE6+DQ@mail.gmail.com>
+Subject: Re: MGLRU premature memcg OOM on slow writes
+To: Yu Zhao <yuzhao@google.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>, Chris Down <chris@chrisdown.name>, 
+	cgroups@vger.kernel.org, hannes@cmpxchg.org, kernel-team@fb.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gRnJpLCAyMDI0LTAzLTA4IGF0IDE0OjAyICswMTAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
-ZWdubyB3cm90ZToNCj4gSWwgMDgvMDMvMjQgMTA6NDQsIEppYW5qdW4gV2FuZyAo546L5bu65Yab
-KSBoYSBzY3JpdHRvOg0KPiA+IE9uIFdlZCwgMjAyNC0wMy0wNiBhdCAwOTo1MCArMDEwMCwgQW5n
-ZWxvR2lvYWNjaGlubyBEZWwgUmVnbm8NCj4gPiB3cm90ZToNCj4gPiA+IElsIDAxLzAzLzI0IDAz
-OjQ4LCBKaWFuanVuIFdhbmcgKOeOi+W7uuWGmykgaGEgc2NyaXR0bzoNCj4gPiA+ID4gSGkgQW5n
-ZWxvLA0KPiA+ID4gPiANCj4gPiA+ID4gVGhhbmtzIGZvciB5b3VyIHBhdGNoLg0KPiA+ID4gPiAN
-Cj4gPiA+ID4gT24gVGh1LCAyMDI0LTAyLTI5IGF0IDEwOjI0ICswMTAwLCBBbmdlbG9HaW9hY2No
-aW5vIERlbCBSZWdubw0KPiA+ID4gPiB3cm90ZToNCj4gPiA+ID4gPiBTb21lIFNvQ3MgaGF2ZSB0
-d28gUENJLUV4cHJlc3MgY29udHJvbGxlcnM6IGluIHRoZSBjYXNlIG9mDQo+ID4gPiA+ID4gTVQ4
-MTk1LA0KPiA+ID4gPiA+IG9uZSBvZiB0aGVtIGlzIHVzaW5nIGEgZGVkaWNhdGVkIFBIWSwgYnV0
-IHRoZSBvdGhlciB1c2VzIGENCj4gPiA+ID4gPiBjb21ibw0KPiA+ID4gPiA+IFBIWQ0KPiA+ID4g
-PiA+IHRoYXQgaXMgc2hhcmVkIHdpdGggVVNCIGFuZCBpbiB0aGF0IGNhc2UgdGhlIFBIWSBjYW5u
-b3QgYmUNCj4gPiA+ID4gPiByZXNldA0KPiA+ID4gPiA+IGZyb20gdGhlIFBDSWUgZHJpdmVyLCBv
-ciBVU0IgZnVuY3Rpb25hbGl0eSB3aWxsIGJlIHVuYWJsZSB0bw0KPiA+ID4gPiA+IHJlc3VtZS4N
-Cj4gPiA+ID4gPiANCj4gPiA+ID4gPiBSZXNldHRpbmcgdGhlIFBDSWUgTUFDIHdpdGhvdXQgYWxz
-byByZXNldHRpbmcgdGhlIFBIWSB3aWxsDQo+ID4gPiA+ID4gcmVzdWx0DQo+ID4gPiA+ID4gaW4N
-Cj4gPiA+ID4gPiBhIGZ1bGwgc3lzdGVtIGxvY2t1cCBhdCBQQ0llIHJlc3VtZSB0aW1lIGFuZCB0
-aGUgb25seSBvcHRpb24NCj4gPiA+ID4gPiB0bw0KPiA+ID4gPiA+IHJlc3VtZSBvcGVyYXRpb24g
-aXMgdG8gaGFyZCByZWJvb3QgdGhlIHN5c3RlbSAod2l0aCBhIFBNSUMNCj4gPiA+ID4gPiBjdXQt
-DQo+ID4gPiA+ID4gb2ZmKS4NCj4gPiA+ID4gPiANCj4gPiA+ID4gPiBUbyByZXNvbHZlIHRoaXMg
-aXNzdWUsIGNoZWNrIGlmIHdlJ3ZlIGdvdCBib3RoIGEgUEhZIGFuZCBhDQo+ID4gPiA+ID4gTUFD
-DQo+ID4gPiA+ID4gcmVzZXQNCj4gPiA+ID4gPiBhbmQsIGlmIG5vdCwgbmV2ZXIgYXNzZXJ0IHJl
-c2V0cyBhdCBQTSBzdXNwZW5kIHRpbWU6IGluIHRoYXQNCj4gPiA+ID4gPiBjYXNlLA0KPiA+ID4g
-PiA+IHRoZSBsaW5rIGlzIHN0aWxsIGdldHRpbmcgcG93ZXJlZCBkb3duIGFzIGJvdGggdGhlIGNs
-b2NrcyBhbmQNCj4gPiA+ID4gPiB0aGUNCj4gPiA+ID4gPiBwb3dlciBkb21haW5zIHdpbGwgZ28g
-ZG93biBhbnl3YXkuDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gRml4ZXM6IGQ1MzdkYzEyNWYwNyAo
-IlBDSTogbWVkaWF0ZWstZ2VuMzogQWRkIHN5c3RlbSBQTQ0KPiA+ID4gPiA+IHN1cHBvcnQiKQ0K
-PiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEFuZ2Vsb0dpb2FjY2hpbm8gRGVsIFJlZ25vIDwNCj4g
-PiA+ID4gPiBhbmdlbG9naW9hY2NoaW5vLmRlbHJlZ25vQGNvbGxhYm9yYS5jb20+DQo+ID4gPiA+
-ID4gLS0tDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gQ2hhbmdlcyBpbiB2MjoNCj4gPiA+ID4gPiAg
-ICAtIFJlYmFzZWQgb3ZlciBuZXh0LTIwMjQwMjI5DQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gICAg
-ZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMuYyB8IDI1DQo+ID4gPiA+
-ID4gKysrKysrKysrKysrKystLS0tLQ0KPiA+ID4gPiA+IC0tDQo+ID4gPiA+ID4gICAgMSBmaWxl
-IGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pDQo+ID4gPiA+ID4gDQo+
-ID4gPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRl
-ay1nZW4zLmMNCj4gPiA+ID4gPiBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRl
-ay1nZW4zLmMNCj4gPiA+ID4gPiBpbmRleCA5NzViMzAyNGZiMDguLjk5YjVkN2E0OWJlMSAxMDA2
-NDQNCj4gPiA+ID4gPiAtLS0gYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWst
-Z2VuMy5jDQo+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlh
-dGVrLWdlbjMuYw0KPiA+ID4gPiA+IEBAIC04NzQsMTcgKzg3NCwyNiBAQCBzdGF0aWMgaW50IG10
-a19wY2llX3Bvd2VyX3VwKHN0cnVjdA0KPiA+ID4gPiA+IG10a19nZW4zX3BjaWUgKnBjaWUpDQo+
-ID4gPiA+ID4gICAgCXJldHVybiBlcnI7DQo+ID4gPiA+ID4gICAgfQ0KPiA+ID4gPiA+ICAgIA0K
-PiA+ID4gPiA+IC1zdGF0aWMgdm9pZCBtdGtfcGNpZV9wb3dlcl9kb3duKHN0cnVjdCBtdGtfZ2Vu
-M19wY2llICpwY2llKQ0KPiA+ID4gPiA+ICtzdGF0aWMgdm9pZCBtdGtfcGNpZV9wb3dlcl9kb3du
-KHN0cnVjdCBtdGtfZ2VuM19wY2llICpwY2llLA0KPiA+ID4gPiA+IGJvb2wNCj4gPiA+ID4gPiBp
-c19zdXNwZW5kKQ0KPiA+ID4gPiA+ICAgIHsNCj4gPiA+ID4gPiArCWJvb2wgc3VzcGVuZF9yZXNl
-dF9zdXBwb3J0ZWQgPSBwY2llLT5tYWNfcmVzZXQgJiYgcGNpZS0NCj4gPiA+ID4gPiA+IHBoeV9y
-ZXNldDsNCj4gPiA+ID4gPiANCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gICAgCWNsa19idWxrX2Rp
-c2FibGVfdW5wcmVwYXJlKHBjaWUtPm51bV9jbGtzLCBwY2llLT5jbGtzKTsNCj4gPiA+ID4gPiAg
-ICANCj4gPiA+ID4gPiAgICAJcG1fcnVudGltZV9wdXRfc3luYyhwY2llLT5kZXYpOw0KPiA+ID4g
-PiA+ICAgIAlwbV9ydW50aW1lX2Rpc2FibGUocGNpZS0+ZGV2KTsNCj4gPiA+ID4gPiAtCXJlc2V0
-X2NvbnRyb2xfYXNzZXJ0KHBjaWUtPm1hY19yZXNldCk7DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+
-ICsJLyoNCj4gPiA+ID4gPiArCSAqIEFzc2VydCBNQUMgcmVzZXQgb25seSBpZiB3ZSBhbHNvIGdv
-dCBhIFBIWSByZXNldCwNCj4gPiA+ID4gPiBvdGhlcndpc2UNCj4gPiA+ID4gPiArCSAqIHRoZSBz
-eXN0ZW0gd2lsbCBsb2NrdXAgYXQgUE0gcmVzdW1lIHRpbWUuDQo+ID4gPiA+ID4gKwkgKi8NCj4g
-PiA+ID4gPiArCWlmIChpc19zdXNwZW5kICYmIHN1c3BlbmRfcmVzZXRfc3VwcG9ydGVkKQ0KPiA+
-ID4gPiA+ICsJCXJlc2V0X2NvbnRyb2xfYXNzZXJ0KHBjaWUtPm1hY19yZXNldCk7DQo+ID4gPiA+
-ID4gICAgDQo+ID4gPiA+ID4gICAgCXBoeV9wb3dlcl9vZmYocGNpZS0+cGh5KTsNCj4gPiA+ID4g
-PiAgICAJcGh5X2V4aXQocGNpZS0+cGh5KTsNCj4gPiA+ID4gPiAtCXJlc2V0X2NvbnRyb2xfYXNz
-ZXJ0KHBjaWUtPnBoeV9yZXNldCk7DQo+ID4gPiA+ID4gKwlpZiAoaXNfc3VzcGVuZCAmJiBzdXNw
-ZW5kX3Jlc2V0X3N1cHBvcnRlZCkNCj4gPiA+ID4gPiArCQlyZXNldF9jb250cm9sX2Fzc2VydChw
-Y2llLT5waHlfcmVzZXQpOw0KPiA+ID4gPiA+ICAgIH0NCj4gPiA+ID4gPiAgICANCj4gPiA+ID4g
-PiAgICBzdGF0aWMgaW50IG10a19wY2llX3NldHVwKHN0cnVjdCBtdGtfZ2VuM19wY2llICpwY2ll
-KQ0KPiA+ID4gPiA+IEBAIC05MjAsNyArOTI5LDcgQEAgc3RhdGljIGludCBtdGtfcGNpZV9zZXR1
-cChzdHJ1Y3QNCj4gPiA+ID4gPiBtdGtfZ2VuM19wY2llDQo+ID4gPiA+ID4gKnBjaWUpDQo+ID4g
-PiA+ID4gICAgCXJldHVybiAwOw0KPiA+ID4gPiA+ICAgIA0KPiA+ID4gPiA+ICAgIGVycl9zZXR1
-cDoNCj4gPiA+ID4gPiAtCW10a19wY2llX3Bvd2VyX2Rvd24ocGNpZSk7DQo+ID4gPiA+ID4gKwlt
-dGtfcGNpZV9wb3dlcl9kb3duKHBjaWUsIGZhbHNlKTsNCj4gPiA+ID4gPiAgICANCj4gPiA+ID4g
-PiAgICAJcmV0dXJuIGVycjsNCj4gPiA+ID4gPiAgICB9DQo+ID4gPiA+ID4gQEAgLTk1MSw3ICs5
-NjAsNyBAQCBzdGF0aWMgaW50IG10a19wY2llX3Byb2JlKHN0cnVjdA0KPiA+ID4gPiA+IHBsYXRm
-b3JtX2RldmljZQ0KPiA+ID4gPiA+ICpwZGV2KQ0KPiA+ID4gPiA+ICAgIAllcnIgPSBwY2lfaG9z
-dF9wcm9iZShob3N0KTsNCj4gPiA+ID4gPiAgICAJaWYgKGVycikgew0KPiA+ID4gPiA+ICAgIAkJ
-bXRrX3BjaWVfaXJxX3RlYXJkb3duKHBjaWUpOw0KPiA+ID4gPiA+IC0JCW10a19wY2llX3Bvd2Vy
-X2Rvd24ocGNpZSk7DQo+ID4gPiA+ID4gKwkJbXRrX3BjaWVfcG93ZXJfZG93bihwY2llLCBmYWxz
-ZSk7DQo+ID4gPiA+ID4gICAgCQlyZXR1cm4gZXJyOw0KPiA+ID4gPiA+ICAgIAl9DQo+ID4gPiA+
-ID4gICAgDQo+ID4gPiA+ID4gQEAgLTk2OSw3ICs5NzgsNyBAQCBzdGF0aWMgdm9pZCBtdGtfcGNp
-ZV9yZW1vdmUoc3RydWN0DQo+ID4gPiA+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ID4g
-PiA+ICAgIAlwY2lfdW5sb2NrX3Jlc2Nhbl9yZW1vdmUoKTsNCj4gPiA+ID4gPiAgICANCj4gPiA+
-ID4gPiAgICAJbXRrX3BjaWVfaXJxX3RlYXJkb3duKHBjaWUpOw0KPiA+ID4gPiA+IC0JbXRrX3Bj
-aWVfcG93ZXJfZG93bihwY2llKTsNCj4gPiA+ID4gPiArCW10a19wY2llX3Bvd2VyX2Rvd24ocGNp
-ZSwgZmFsc2UpOw0KPiA+ID4gPiANCj4gPiA+ID4gSXMgdGhlcmUgYW55IHJlYXNvbiBub3QgdG8g
-cmVzZXQgdGhlIE1BQyBhbmQgUEhZIHdoZW4gcHJvYmUNCj4gPiA+ID4gZmFpbHMNCj4gPiA+ID4g
-YW5kDQo+ID4gPiA+IGRyaXZlciByZW1vdmluZz8gU29tZSBTb0NzIG1heSBub3QgaGF2ZSBNVENN
-T1MgdG8gY3V0IG9mZiB0aGVpcg0KPiA+ID4gPiBwb3dlciwNCj4gPiA+ID4gd2UgbmVlZCB0byBh
-c3NlcnQgdGhlIHJlc2V0IHNpZ25hbCB0byBzYXZlIHBvd2VyIGluIHRoYXQgY2FzZS4NCj4gPiA+
-ID4gDQo+ID4gPiANCj4gPiA+IFNvcnJ5IGZvciB0aGUgbGF0ZSByZXBseSAtIHllcywgdGhlcmUg
-aXMgYSByZWFzb24uDQo+ID4gPiANCj4gPiA+IE9uIHBsYXRmb3JtcyBuZWVkaW5nIHRoaXMgcXVp
-cmssIHJlc2V0dGluZyBhdCAucmVtb3ZlKCkgdGltZSB3aWxsDQo+ID4gPiBoYW5nIHRoZQ0KPiA+
-ID4gbWFjaGluZSBpZiB0aGUgbW9kdWxlIGlzIHJlaW5zZXJ0ZWQgbGF0ZXIgKGhlbmNlLCAucHJv
-YmUoKSBjYWxsZWQNCj4gPiA+IGF0DQo+ID4gPiBhIGxhdGVyDQo+ID4gPiB0aW1lKS4NCj4gPiAN
-Cj4gPiBEb2VzIHRoaXMgb25seSBoYXBwZW4gd2hlbiB0aGUgUENJZSBNQUMgaXMgcmVzZXQgd2l0
-aG91dCByZXNldHRpbmcNCj4gPiB0aGUNCj4gPiBQSFk/IElzIGl0IHJlbGF0ZWQgdG8gdGhlIHJl
-c2V0IGZyYW1ld29yaz8NCj4gPiANCj4gDQo+IEhhcHBlbnMgb25seSB3aGVuIE1BQyBpcyByZXNl
-dCB3aXRob3V0IHJlc2V0dGluZyB0aGUgUEhZIGFmdGVyDQo+IGNhbGxpbmcNCj4gcGh5X3Bvd2Vy
-X29mZigpOyBwaHlfZXhpdCgpOw0KPiANCj4gSXQncyBub3QgYSByZXNldCBmcmFtZXdvcmsgaXNz
-dWUsIHRoYXQncyBmb3Igc3VyZS4NCg0KVGhhbmtzIGZvciB0aGUgZXhwbGFuYXRpb24uDQoNCklu
-IHRoYXQgY2FzZSwgd2h5IGRvIHdlIG9ubHkgcmVzZXQgZHVyaW5nIHN1c3BlbmQ/IENhbiB3ZSBh
-bHNvIHJlc2V0DQp0aGVtIHdoZW4gcHJvYmUgZmFpbHMgYW5kIGRyaXZlciByZW1vdmluZywgaWYg
-Ym90aCB0aGUgUEhZIGFuZCBNQUMNCnJlc2V0cyBhcmUgcHJlc2VudD8NCg0KVGhhbmtzLg0KDQo+
-IA0KPiBBbmdlbG8NCj4gDQo+ID4gVGhhbmtzLg0KPiA+ID4gDQo+ID4gPiBSZWdhcmRzLA0KPiA+
-ID4gQW5nZWxvDQo+ID4gPiANCj4gPiA+ID4gVGhhbmtzLg0KPiA+ID4gPiANCj4gPiA+ID4gPiAg
-ICB9DQo+ID4gPiA+ID4gICAgDQo+ID4gPiA+ID4gICAgc3RhdGljIHZvaWQgbXRrX3BjaWVfaXJx
-X3NhdmUoc3RydWN0IG10a19nZW4zX3BjaWUgKnBjaWUpDQo+ID4gPiA+ID4gQEAgLTEwNDQsNyAr
-MTA1Myw3IEBAIHN0YXRpYyBpbnQNCj4gPiA+ID4gPiBtdGtfcGNpZV9zdXNwZW5kX25vaXJxKHN0
-cnVjdA0KPiA+ID4gPiA+IGRldmljZQ0KPiA+ID4gPiA+ICpkZXYpDQo+ID4gPiA+ID4gICAgCWRl
-dl9kYmcocGNpZS0+ZGV2LCAiZW50ZXJlZCBMMiBzdGF0ZXMgc3VjY2Vzc2Z1bGx5Iik7DQo+ID4g
-PiA+ID4gICAgDQo+ID4gPiA+ID4gICAgCW10a19wY2llX2lycV9zYXZlKHBjaWUpOw0KPiA+ID4g
-PiA+IC0JbXRrX3BjaWVfcG93ZXJfZG93bihwY2llKTsNCj4gPiA+ID4gPiArCW10a19wY2llX3Bv
-d2VyX2Rvd24ocGNpZSwgdHJ1ZSk7DQo+ID4gPiA+ID4gICAgDQo+ID4gPiA+ID4gICAgCXJldHVy
-biAwOw0KPiA+ID4gPiA+ICAgIH0NCj4gPiA+ID4gPiBAQCAtMTA2MCw3ICsxMDY5LDcgQEAgc3Rh
-dGljIGludCBtdGtfcGNpZV9yZXN1bWVfbm9pcnEoc3RydWN0DQo+ID4gPiA+ID4gZGV2aWNlDQo+
-ID4gPiA+ID4gKmRldikNCj4gPiA+ID4gPiAgICANCj4gPiA+ID4gPiAgICAJZXJyID0gbXRrX3Bj
-aWVfc3RhcnR1cF9wb3J0KHBjaWUpOw0KPiA+ID4gPiA+ICAgIAlpZiAoZXJyKSB7DQo+ID4gPiA+
-ID4gLQkJbXRrX3BjaWVfcG93ZXJfZG93bihwY2llKTsNCj4gPiA+ID4gPiArCQltdGtfcGNpZV9w
-b3dlcl9kb3duKHBjaWUsIGZhbHNlKTsNCj4gPiA+ID4gPiAgICAJCXJldHVybiBlcnI7DQo+ID4g
-PiA+ID4gICAgCX0NCj4gPiA+ID4gPiAgICANCj4gPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gDQo+
-IA0K
+On Wed, Mar 13, 2024 at 4:11=E2=80=AFAM Yu Zhao <yuzhao@google.com> wrote:
+>
+> On Tue, Mar 12, 2024 at 02:07:04PM -0600, Yu Zhao wrote:
+> > On Tue, Mar 12, 2024 at 09:44:19AM -0700, Axel Rasmussen wrote:
+> > > On Mon, Mar 11, 2024 at 2:11=E2=80=AFAM Yafang Shao <laoar.shao@gmail=
+com> wrote:
+> > > >
+> > > > On Sat, Mar 9, 2024 at 3:19=E2=80=AFAM Axel Rasmussen <axelrasmusse=
+n@google.com> wrote:
+> > > > >
+> > > > > On Thu, Feb 29, 2024 at 4:30=E2=80=AFPM Chris Down <chris@chrisdo=
+wn.name> wrote:
+> > > > > >
+> > > > > > Axel Rasmussen writes:
+> > > > > > >A couple of dumb questions. In your test, do you have any of t=
+he following
+> > > > > > >configured / enabled?
+> > > > > > >
+> > > > > > >/proc/sys/vm/laptop_mode
+> > > > > > >memory.low
+> > > > > > >memory.min
+> > > > > >
+> > > > > > None of these are enabled. The issue is trivially reproducible =
+by writing to
+> > > > > > any slow device with memory.max enabled, but from the code it l=
+ooks like MGLRU
+> > > > > > is also susceptible to this on global reclaim (although it's le=
+ss likely due to
+> > > > > > page diversity).
+> > > > > >
+> > > > > > >Besides that, it looks like the place non-MGLRU reclaim wakes =
+up the
+> > > > > > >flushers is in shrink_inactive_list() (which calls wakeup_flus=
+her_threads()).
+> > > > > > >Since MGLRU calls shrink_folio_list() directly (from evict_fol=
+ios()), I agree it
+> > > > > > >looks like it simply will not do this.
+> > > > > > >
+> > > > > > >Yosry pointed out [1], where MGLRU used to call this but stopp=
+ed doing that. It
+> > > > > > >makes sense to me at least that doing writeback every time we =
+age is too
+> > > > > > >aggressive, but doing it in evict_folios() makes some sense to=
+ me, basically to
+> > > > > > >copy the behavior the non-MGLRU path (shrink_inactive_list()) =
+has.
+> > > > > >
+> > > > > > Thanks! We may also need reclaim_throttle(), depending on how y=
+ou implement it.
+> > > > > > Current non-MGLRU behaviour on slow storage is also highly susp=
+ect in terms of
+> > > > > > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRI=
+TEBACK, but one
+> > > > > > thing at a time :-)
+> > > > >
+> > > > >
+> > > > > Hmm, so I have a patch which I think will help with this situatio=
+n,
+> > > > > but I'm having some trouble reproducing the problem on 6.8-rc7 (s=
+o
+> > > > > then I can verify the patch fixes it).
+> > > >
+> > > > We encountered the same premature OOM issue caused by numerous dirt=
+y pages.
+> > > > The issue disappears after we revert the commit 14aa8b2d5c2e
+> > > > "mm/mglru: don't sync disk for each aging cycle"
+> > > >
+> > > > To aid in replicating the issue, we've developed a straightforward
+> > > > script, which consistently reproduces it, even on the latest kernel=
+.
+> > > > You can find the script provided below:
+> > > >
+> > > > ```
+> > > > #!/bin/bash
+> > > >
+> > > > MEMCG=3D"/sys/fs/cgroup/memory/mglru"
+> > > > ENABLE=3D$1
+> > > >
+> > > > # Avoid waking up the flusher
+> > > > sysctl -w vm.dirty_background_bytes=3D$((1024 * 1024 * 1024 *4))
+> > > > sysctl -w vm.dirty_bytes=3D$((1024 * 1024 * 1024 *4))
+> > > >
+> > > > if [ ! -d ${MEMCG} ]; then
+> > > >         mkdir -p ${MEMCG}
+> > > > fi
+> > > >
+> > > > echo $$ > ${MEMCG}/cgroup.procs
+> > > > echo 1g > ${MEMCG}/memory.limit_in_bytes
+> > > >
+> > > > if [ $ENABLE -eq 0 ]; then
+> > > >         echo 0 > /sys/kernel/mm/lru_gen/enabled
+> > > > else
+> > > >         echo 0x7 > /sys/kernel/mm/lru_gen/enabled
+> > > > fi
+> > > >
+> > > > dd if=3D/dev/zero of=3D/data0/mglru.test bs=3D1M count=3D1023
+> > > > rm -rf /data0/mglru.test
+> > > > ```
+> > > >
+> > > > This issue disappears as well after we disable the mglru.
+> > > >
+> > > > We hope this script proves helpful in identifying and addressing th=
+e
+> > > > root cause. We eagerly await your insights and proposed fixes.
+> > >
+> > > Thanks Yafang, I was able to reproduce the issue using this script.
+> > >
+> > > Perhaps interestingly, I was not able to reproduce it with cgroupv2
+> > > memcgs. I know writeback semantics are quite a bit different there, s=
+o
+> > > perhaps that explains why.
+> > >
+> > > Unfortunately, it also reproduces even with the commit I had in mind
+> > > (basically stealing the "if (all isolated pages are unqueued dirty) {
+> > > wakeup_flusher_threads(); reclaim_throttle(); }" from
+> > > shrink_inactive_list, and adding it to MGLRU's evict_folios()). So
+> > > I'll need to spend some more time on this; I'm planning to send
+> > > something out for testing next week.
+> >
+> > Hi Chris,
+> >
+> > My apologies for not getting back to you sooner.
+> >
+> > And thanks everyone for all the input!
+> >
+> > My take is that Chris' premature OOM kills were NOT really due to
+> > the flusher not waking up or missing throttling.
+> >
+> > Yes, these two are among the differences between the active/inactive
+> > LRU and MGLRU, but their roles, IMO, are not as important as the LRU
+> > positions of dirty pages. The active/inactive LRU moves dirty pages
+> > all the way to the end of the line (reclaim happens at the front)
+> > whereas MGLRU moves them into the middle, during direct reclaim. The
+> > rationale for MGLRU was that this way those dirty pages would still
+> > be counted as "inactive" (or cold).
+> >
+> > This theory can be quickly verified by comparing how much
+> > nr_vmscan_immediate_reclaim grows, i.e.,
+> >
+> >   Before the copy
+> >     grep nr_vmscan_immediate_reclaim /proc/vmstat
+> >   And then after the copy
+> >     grep nr_vmscan_immediate_reclaim /proc/vmstat
+> >
+> > The growth should be trivial for MGLRU and nontrivial for the
+> > active/inactive LRU.
+> >
+> > If this is indeed the case, I'd appreciate very much if anyone could
+> > try the following (I'll try it myself too later next week).
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 4255619a1a31..020f5d98b9a1 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -4273,10 +4273,13 @@ static bool sort_folio(struct lruvec *lruvec, s=
+truct folio *folio, struct scan_c
+> >       }
+> >
+> >       /* waiting for writeback */
+> > -     if (folio_test_locked(folio) || folio_test_writeback(folio) ||
+> > -         (type =3D=3D LRU_GEN_FILE && folio_test_dirty(folio))) {
+> > -             gen =3D folio_inc_gen(lruvec, folio, true);
+> > -             list_move(&folio->lru, &lrugen->folios[gen][type][zone]);
+> > +     if (folio_test_writeback(folio) || (type =3D=3D LRU_GEN_FILE && f=
+olio_test_dirty(folio))) {
+> > +             DEFINE_MAX_SEQ(lruvec);
+> > +             int old_gen, new_gen =3D lru_gen_from_seq(max_seq);
+> > +
+> > +             old_gen =3D folio_update_gen(folio, new_gen);
+> > +             lru_gen_update_size(lruvec, folio, old_gen, new_gen);
+> > +             list_move(&folio->lru, &lrugen->folios[new_gen][type][zon=
+e]);
+>
+> Sorry missing one line here:
+>
+>  +              folio_set_reclaim(folio);
+>
+> >               return true;
+> >       }
+
+Hi Yu,
+
+I have validated it using the script provided for Axel, but
+unfortunately, it still triggers an OOM error with your patch applied.
+Here are the results with nr_vmscan_immediate_reclaim:
+
+- non-MGLRU
+  $ grep nr_vmscan_immediate_reclaim /proc/vmstat
+  nr_vmscan_immediate_reclaim 47411776
+
+  $ ./test.sh 0
+  1023+0 records in
+  1023+0 records out
+  1072693248 bytes (1.1 GB, 1023 MiB) copied, 0.538058 s, 2.0 GB/s
+
+  $ grep nr_vmscan_immediate_reclaim /proc/vmstat
+  nr_vmscan_immediate_reclaim 47412544
+
+- MGLRU
+  $ grep nr_vmscan_immediate_reclaim /proc/vmstat
+  nr_vmscan_immediate_reclaim 47412544
+
+  $ ./test.sh 1
+  Killed
+
+  $ grep nr_vmscan_immediate_reclaim /proc/vmstat
+  nr_vmscan_immediate_reclaim 115455600
+
+
+The detailed OOM info as follows,
+
+[Wed Mar 13 11:16:48 2024] dd invoked oom-killer:
+gfp_mask=3D0x101c4a(GFP_NOFS|__GFP_HIGHMEM|__GFP_HARDWALL|__GFP_MOVABLE|__G=
+FP_WRITE),
+order=3D3, oom_score_adj=3D0
+[Wed Mar 13 11:16:48 2024] CPU: 12 PID: 6911 Comm: dd Not tainted 6.8.0-rc6=
++ #24
+[Wed Mar 13 11:16:48 2024] Hardware name: Tencent Cloud CVM, BIOS
+seabios-1.9.1-qemu-project.org 04/01/2014
+[Wed Mar 13 11:16:48 2024] Call Trace:
+[Wed Mar 13 11:16:48 2024]  <TASK>
+[Wed Mar 13 11:16:48 2024]  dump_stack_lvl+0x6e/0x90
+[Wed Mar 13 11:16:48 2024]  dump_stack+0x10/0x20
+[Wed Mar 13 11:16:48 2024]  dump_header+0x47/0x2d0
+[Wed Mar 13 11:16:48 2024]  oom_kill_process+0x101/0x2e0
+[Wed Mar 13 11:16:48 2024]  out_of_memory+0xfc/0x430
+[Wed Mar 13 11:16:48 2024]  mem_cgroup_out_of_memory+0x13d/0x160
+[Wed Mar 13 11:16:48 2024]  try_charge_memcg+0x7be/0x850
+[Wed Mar 13 11:16:48 2024]  ? get_mem_cgroup_from_mm+0x5e/0x420
+[Wed Mar 13 11:16:48 2024]  ? rcu_read_unlock+0x25/0x70
+[Wed Mar 13 11:16:48 2024]  __mem_cgroup_charge+0x49/0x90
+[Wed Mar 13 11:16:48 2024]  __filemap_add_folio+0x277/0x450
+[Wed Mar 13 11:16:48 2024]  ? __pfx_workingset_update_node+0x10/0x10
+[Wed Mar 13 11:16:48 2024]  filemap_add_folio+0x3c/0xa0
+[Wed Mar 13 11:16:48 2024]  __filemap_get_folio+0x13d/0x2f0
+[Wed Mar 13 11:16:48 2024]  iomap_get_folio+0x4c/0x60
+[Wed Mar 13 11:16:48 2024]  iomap_write_begin+0x1bb/0x2e0
+[Wed Mar 13 11:16:48 2024]  iomap_write_iter+0xff/0x290
+[Wed Mar 13 11:16:48 2024]  iomap_file_buffered_write+0x91/0xf0
+[Wed Mar 13 11:16:48 2024]  xfs_file_buffered_write+0x9f/0x2d0 [xfs]
+[Wed Mar 13 11:16:48 2024]  ? vfs_write+0x261/0x530
+[Wed Mar 13 11:16:48 2024]  ? debug_smp_processor_id+0x17/0x20
+[Wed Mar 13 11:16:48 2024]  xfs_file_write_iter+0xe9/0x120 [xfs]
+[Wed Mar 13 11:16:48 2024]  vfs_write+0x37d/0x530
+[Wed Mar 13 11:16:48 2024]  ksys_write+0x6d/0xf0
+[Wed Mar 13 11:16:48 2024]  __x64_sys_write+0x19/0x20
+[Wed Mar 13 11:16:48 2024]  do_syscall_64+0x79/0x1a0
+[Wed Mar 13 11:16:48 2024]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+[Wed Mar 13 11:16:48 2024] RIP: 0033:0x7f63ea33e927
+[Wed Mar 13 11:16:48 2024] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff
+ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10
+b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54
+24 18 48 89 74 24
+[Wed Mar 13 11:16:48 2024] RSP: 002b:00007ffc0e874768 EFLAGS: 00000246
+ORIG_RAX: 0000000000000001
+[Wed Mar 13 11:16:48 2024] RAX: ffffffffffffffda RBX: 0000000000100000
+RCX: 00007f63ea33e927
+[Wed Mar 13 11:16:48 2024] RDX: 0000000000100000 RSI: 00007f63dcafe000
+RDI: 0000000000000001
+[Wed Mar 13 11:16:48 2024] RBP: 00007f63dcafe000 R08: 00007f63dcafe000
+R09: 0000000000000000
+[Wed Mar 13 11:16:48 2024] R10: 0000000000000022 R11: 0000000000000246
+R12: 0000000000000000
+[Wed Mar 13 11:16:48 2024] R13: 0000000000000000 R14: 0000000000000000
+R15: 00007f63dcafe000
+[Wed Mar 13 11:16:48 2024]  </TASK>
+[Wed Mar 13 11:16:48 2024] memory: usage 1048556kB, limit 1048576kB, failcn=
+t 153
+[Wed Mar 13 11:16:48 2024] memory+swap: usage 1048556kB, limit
+9007199254740988kB, failcnt 0
+[Wed Mar 13 11:16:48 2024] kmem: usage 200kB, limit
+9007199254740988kB, failcnt 0
+[Wed Mar 13 11:16:48 2024] Memory cgroup stats for /mglru:
+[Wed Mar 13 11:16:48 2024] cache 1072365568
+[Wed Mar 13 11:16:48 2024] rss 1150976
+[Wed Mar 13 11:16:48 2024] rss_huge 0
+[Wed Mar 13 11:16:48 2024] shmem 0
+[Wed Mar 13 11:16:48 2024] mapped_file 0
+[Wed Mar 13 11:16:48 2024] dirty 1072365568
+[Wed Mar 13 11:16:48 2024] writeback 0
+[Wed Mar 13 11:16:48 2024] workingset_refault_anon 0
+[Wed Mar 13 11:16:48 2024] workingset_refault_file 0
+[Wed Mar 13 11:16:48 2024] swap 0
+[Wed Mar 13 11:16:48 2024] swapcached 0
+[Wed Mar 13 11:16:48 2024] pgpgin 2783
+[Wed Mar 13 11:16:48 2024] pgpgout 1444
+[Wed Mar 13 11:16:48 2024] pgfault 885
+[Wed Mar 13 11:16:48 2024] pgmajfault 0
+[Wed Mar 13 11:16:48 2024] inactive_anon 1146880
+[Wed Mar 13 11:16:48 2024] active_anon 4096
+[Wed Mar 13 11:16:48 2024] inactive_file 802357248
+[Wed Mar 13 11:16:48 2024] active_file 270008320
+[Wed Mar 13 11:16:48 2024] unevictable 0
+[Wed Mar 13 11:16:48 2024] hierarchical_memory_limit 1073741824
+[Wed Mar 13 11:16:48 2024] hierarchical_memsw_limit 9223372036854771712
+[Wed Mar 13 11:16:48 2024] total_cache 1072365568
+[Wed Mar 13 11:16:48 2024] total_rss 1150976
+[Wed Mar 13 11:16:48 2024] total_rss_huge 0
+[Wed Mar 13 11:16:48 2024] total_shmem 0
+[Wed Mar 13 11:16:48 2024] total_mapped_file 0
+[Wed Mar 13 11:16:48 2024] total_dirty 1072365568
+[Wed Mar 13 11:16:48 2024] total_writeback 0
+[Wed Mar 13 11:16:48 2024] total_workingset_refault_anon 0
+[Wed Mar 13 11:16:48 2024] total_workingset_refault_file 0
+[Wed Mar 13 11:16:48 2024] total_swap 0
+[Wed Mar 13 11:16:48 2024] total_swapcached 0
+[Wed Mar 13 11:16:48 2024] total_pgpgin 2783
+[Wed Mar 13 11:16:48 2024] total_pgpgout 1444
+[Wed Mar 13 11:16:48 2024] total_pgfault 885
+[Wed Mar 13 11:16:48 2024] total_pgmajfault 0
+[Wed Mar 13 11:16:48 2024] total_inactive_anon 1146880
+[Wed Mar 13 11:16:48 2024] total_active_anon 4096
+[Wed Mar 13 11:16:48 2024] total_inactive_file 802357248
+[Wed Mar 13 11:16:48 2024] total_active_file 270008320
+[Wed Mar 13 11:16:48 2024] total_unevictable 0
+[Wed Mar 13 11:16:48 2024] Tasks state (memory values in pages):
+[Wed Mar 13 11:16:48 2024] [  pid  ]   uid  tgid total_vm      rss
+rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+[Wed Mar 13 11:16:48 2024] [   6911]     0  6911    55506      640
+ 256      384         0    73728        0             0 dd
+[Wed Mar 13 11:16:48 2024]
+oom-kill:constraint=3DCONSTRAINT_MEMCG,nodemask=3D(null),cpuset=3D/,mems_al=
+lowed=3D0-1,oom_memcg=3D/mglru,task_memcg=3D/mglru,task=3Ddd,pid=3D6911,uid=
+=3D0
+
+The key information extracted from the OOM info is as follows:
+
+[Wed Mar 13 11:16:48 2024] cache 1072365568
+[Wed Mar 13 11:16:48 2024] dirty 1072365568
+
+This information reveals that all file pages are dirty pages.
+
+As of now, it appears that the most effective solution to address this
+issue is to revert the commit 14aa8b2d5c2e. Regarding this commit
+14aa8b2d5c2e,  its original intention was to eliminate potential SSD
+wearout, although there's no concrete data available on how it might
+impact SSD longevity. If the concern about SSD wearout is purely
+theoretical, it might be reasonable to consider reverting this commit.
 
