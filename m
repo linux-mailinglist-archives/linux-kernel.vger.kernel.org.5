@@ -1,134 +1,223 @@
-Return-Path: <linux-kernel+bounces-101213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6146587A415
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:26:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B42387A416
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A4C3B218A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:26:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC09A28219F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B748619475;
-	Wed, 13 Mar 2024 08:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A15A1B819;
+	Wed, 13 Mar 2024 08:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jy7pPcWB";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kPllyf/N"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="hkHXR9nF"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFE61428A
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1C31B7F1
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710318356; cv=none; b=cx14gMD5J8M0P+OAR22Sl6oH67CZ2falP1X4y/amjcMaEKnkh38ZB2iQ7hpcfdCs25OOaQHwjcATK0ZAWUOEgDVL9mQ3DKafOG3qDnHvdxMy9pRO7NbBzHNpFceIWB5Jsoubf0yg/fIzIrRmypjm7IOYK7NN8XXhNNVH59D8fMw=
+	t=1710318376; cv=none; b=di/exep01b+5QLMs5nxa4fjMHDVRJMfN0Xfovz2hGzs9JlO4uZJSdCaejRIzVO6Uy5N2/mNOVloO4GP4WlrOxBJNBwNNCYeJSfLZHHsJvXOfpCTOcAek6lYuNF8UBejGXL4Xk9UK8law0uKvqlq9LdpYw+vKHBBxgDoIkEQOAG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710318356; c=relaxed/simple;
-	bh=b7Tnp/Yse8g4h03H59s1KXPCgkVcxgZsLUGUxUbjJxE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=KUL3oxXtcyyRL9dO6ROFZiDZmXn9n4+CssCIMLFaQteyti4191ArbRrw74G/151+g+xLB31R2zCaB0w6NMopLPnvxAR5HhJq45GgiI3c6IdhgU9F7hqbCpX2pslJr/8m8U0Mk6FzuNCxar2ScdiGmkLHmHMUWAOz/QdQcELY8iA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Jy7pPcWB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kPllyf/N; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710318352;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2qmDJo6fzPhBsNX/lp9m4dC3u9FOBCYDlZ4df3GKyEY=;
-	b=Jy7pPcWBk013DFJwQ3yEQ60pnAG5sQXoYL1Va1ljMEowzlVxHuzeuA7zW+x+/YKdc7IaXy
-	JV6b0tRnaZl5LLw+WAqKozdA0UuWMzHqYS1yt/CJcDhALEeKnnuxswujtUnRoyCg263MqP
-	5peXiJBkuBdbNu873c15iYFMtkmP4JOzdcb3TOhal3UnOBgnFYC1DsukIaWTi3RPTXMKsm
-	xiXOBLqMKATTifgdXLitIriA0pszaDowTuAQyDb0BgGMGQ7geY0bMrNyu6e6gW0fFWg0Zs
-	2TWKso8X2uQ/DmCNJtAOTtqSRXlABJbaOVdVm5gW57+TDlRhEDWy9cxViilABw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710318352;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2qmDJo6fzPhBsNX/lp9m4dC3u9FOBCYDlZ4df3GKyEY=;
-	b=kPllyf/NWwBadhYPR26w1HrFbuQ/COKEacMoWt9eN4o3RlwbVW32izhgAYCtOEA07lAFF2
-	X1yhR0VdSoAtwCCw==
-To: Frederic Weisbecker <frederic@kernel.org>, kernel test robot
- <oliver.sang@intel.com>
-Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>, oe-lkp@lists.linux.dev,
- lkp@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
- ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [tip:timers/core] [timers]  7ee9887703:
-  netperf.Throughput_Mbps -1.2% regression
-In-Reply-To: <ZfDr6qOaMVnyoB8W@pavilion.home>
-References: <202403011511.24defbbd-oliver.sang@intel.com>
- <ZfDr6qOaMVnyoB8W@pavilion.home>
-Date: Wed, 13 Mar 2024 09:25:51 +0100
-Message-ID: <87y1amo7w0.ffs@tglx>
+	s=arc-20240116; t=1710318376; c=relaxed/simple;
+	bh=s6ezIv9XOh2FoSZX6uyY6j/aZ2J5gY30ndJwxx0zGrU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l9ybvch0jgEPkFh49RHRBjtUP9fGjCbGnCqKw8oVBqb3aEFcXz934AKV23s3MnNw2M8VS/wYq4T6NBzqyhPV8F6PQM7JVRJWKaLe3kf/bozjb8CTiTya2fn0G6lRwrNTBpF71GPtk8wHX15lEfBa+h62lvgvoi9eK0BekW/rhww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=hkHXR9nF; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a466381b411so9360866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1710318373; x=1710923173; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hri4+azNxswF/lCLy2l2dIDWQtsRG26PT3v1sxIitRA=;
+        b=hkHXR9nFHulPAXxEjSH8n0TnAS+rZIG95/ZlKRfWIxErJvNKw0KEZCOOSIbFsJN8ys
+         ro11hVYfaztHyELPTZ8qmZZmSo4bKpAsX8y1OEJOkkY+lyMDapEdM6v5+5LY/b4XkebO
+         9Rem1AaeQ2gqfocz2BNf1xEKU1GNViP5hCIo2D02dQZIrsrePKV7wkivxKabey5uw9Pe
+         7aoND3s1oN5HOCWZMLQTp3kGiDAYV1mlW6MIKci/WviTBnxl0BKTv6uNZx49DpRpTrRR
+         pRUnXFXgG3FQGcuxspBXQ2+sKz621Y4huKbD6694Pw6UL/uVq6NzIJlCZu5/waFVjnVQ
+         PuEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710318373; x=1710923173;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hri4+azNxswF/lCLy2l2dIDWQtsRG26PT3v1sxIitRA=;
+        b=XvoKzQfOhREvP5w5CRONi5En01AD+mCtIxk+HzPmGCej5zPh8ScxVRu/P9ZMrKwsBG
+         ppUb460SlzFi6TxXPvybab0G6TdTy2lIGetMzVz66zL3nn+U+Wiz4dn8yfpAg58jVtdH
+         gTX3j96km/9ZoLgSMPhPLkL/TI5nMBxinPnvoF/uBFx4AKqvLscWGJYKJPac+j59E8Yc
+         isl7bMC6nkfEYqpOqFRuzslybjf0uiwFH7vqtqnqtd8bgoxNXDkpkS9vU13lRAxEpnpa
+         D3ST4v8DgysV4fdfGKIR6EAPRPEeQTKmwk5Gp8n/0fx8aV9/eEug4Gr9/ed4jmQ3TZIq
+         Bp9g==
+X-Forwarded-Encrypted: i=1; AJvYcCVlj2aGxIiZ0G7YLxFlW4Qn5cpM3zhj9f6oNJd9XZ+ujF526L4qBSS5zUdEnSb+mxf/LbDEUDCYhDgVNwNLWjQKPquf2dM7F94kI+Gq
+X-Gm-Message-State: AOJu0YxEsuh7CruxoChRqJc6FjLWN6vGRFkRmQBwTn9iM9LKcnZ6A7zf
+	5AMGe0ftvBPObNj7OUlEUeU/+XQLYqUc0G3UruQayKTNcZ6R1xUKkok7qK/6Lbs=
+X-Google-Smtp-Source: AGHT+IHtxiEmmNAi5sUeGu3QBF2Eg4/lY2B9EQqXkzMSK0yhddDBx1+t4mL7MGc44NoiNyNet13ZOw==
+X-Received: by 2002:a17:906:bf4a:b0:a45:bf67:bab2 with SMTP id ps10-20020a170906bf4a00b00a45bf67bab2mr8170186ejb.59.1710318373006;
+        Wed, 13 Mar 2024 01:26:13 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id gq14-20020a170906e24e00b00a3d2d81daafsm4686757ejb.172.2024.03.13.01.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 01:26:11 -0700 (PDT)
+Date: Wed, 13 Mar 2024 09:26:10 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Anup Patel <apatel@ventanamicro.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: Add tracepoints for SBI calls and returns
+Message-ID: <20240313-d0cf274ace35c0f54c66f7fa@orel>
+References: <20240312212441.2322765-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312212441.2322765-1-samuel.holland@sifive.com>
 
-On Wed, Mar 13 2024 at 00:57, Frederic Weisbecker wrote:
-> So I can reproduce. And after hours staring at traces I haven't really fo=
-und
-> the real cause of this. 1% difference is not always easy to track down.
-> But here are some sort of conclusion so far:
+On Tue, Mar 12, 2024 at 02:23:34PM -0700, Samuel Holland wrote:
+> These are useful for measuring the latency of SBI calls. The SBI HSM
+> extension is excluded because those functions are called from contexts
+> such as cpuidle where instrumentation is not allowed.
+
+Thanks for this. These will be nice to have.
+
+> 
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+> 
+>  arch/riscv/include/asm/trace.h | 60 ++++++++++++++++++++++++++++++++++
+>  arch/riscv/kernel/sbi.c        |  7 ++++
+>  2 files changed, 67 insertions(+)
+>  create mode 100644 arch/riscv/include/asm/trace.h
+> 
+> diff --git a/arch/riscv/include/asm/trace.h b/arch/riscv/include/asm/trace.h
+> new file mode 100644
+> index 000000000000..f96091f83c25
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/trace.h
+> @@ -0,0 +1,60 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM riscv
+> +
+> +#if !defined(_TRACE_RISCV_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_RISCV_H
+> +
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT_CONDITION(sbi_call,
+> +
+> +	TP_PROTO(int ext, int fid),
+> +
+> +	TP_ARGS(ext, fid),
+> +
+> +	TP_CONDITION(ext != SBI_EXT_HSM),
+
+nit: Can we remove the three blank lines above?
+
+TRACE_EVENT_CONDITION(sbi_call,
+     TP_PROTO(int ext, int fid),
+     TP_ARGS(ext, fid),
+     TP_CONDITION(ext != SBI_EXT_HSM),
+
+> +
+> +	TP_STRUCT__entry(
+> +		__field(int, ext)
+> +		__field(int, fid)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->ext = ext;
+> +		__entry->fid = fid;
+> +	),
+> +
+> +	TP_printk("ext=0x%x fid=%d", __entry->ext, __entry->fid)
+> +);
+> +
+> +TRACE_EVENT_CONDITION(sbi_return,
+> +
+> +	TP_PROTO(int ext, long error, long value),
+> +
+> +	TP_ARGS(ext, error, value),
+> +
+> +	TP_CONDITION(ext != SBI_EXT_HSM),
+
+Same nit as above.
+
+> +
+> +	TP_STRUCT__entry(
+> +		__field(long, error)
+> +		__field(long, value)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->error = error;
+> +		__entry->value = value;
+> +	),
+> +
+> +	TP_printk("error=%ld value=0x%lx", __entry->error, __entry->value)
+> +);
+> +
+> +#endif /* _TRACE_RISCV_H */
+> +
+> +#undef TRACE_INCLUDE_PATH
+> +#undef TRACE_INCLUDE_FILE
+> +
+> +#define TRACE_INCLUDE_PATH asm
+> +#define TRACE_INCLUDE_FILE trace
+> +
+> +#include <trace/define_trace.h>
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index e66e0999a800..a1d21d8f5293 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -14,6 +14,9 @@
+>  #include <asm/smp.h>
+>  #include <asm/tlbflush.h>
+>  
+> +#define CREATE_TRACE_POINTS
+> +#include <asm/trace.h>
+> +
+>  /* default SBI version is 0.1 */
+>  unsigned long sbi_spec_version __ro_after_init = SBI_SPEC_VERSION_DEFAULT;
+>  EXPORT_SYMBOL(sbi_spec_version);
+> @@ -31,6 +34,8 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+>  {
+>  	struct sbiret ret;
+>  
+> +	trace_sbi_call(ext, fid);
+> +
+>  	register uintptr_t a0 asm ("a0") = (uintptr_t)(arg0);
+>  	register uintptr_t a1 asm ("a1") = (uintptr_t)(arg1);
+>  	register uintptr_t a2 asm ("a2") = (uintptr_t)(arg2);
+> @@ -46,6 +51,8 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+>  	ret.error = a0;
+>  	ret.value = a1;
+>  
+> +	trace_sbi_return(ext, ret.error, ret.value);
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(sbi_ecall);
+> -- 
+> 2.43.1
 >
-> _ There is an increase of ksoftirqd use (+13%) but if I boot with threadi=
-rqs
->   before and after the patch (which means that ksoftirqd is used all the =
-time
->   for softirq handling) I still see the performance regression. So this
->   shouldn't play a role here.
->
-> _ I suspected that timer migrators handling big queues of timers on behal=
-f of
->   idle CPUs would delay NET_RX softirqs but it doesn't seem to be the cas=
-e. I
->   don't see TIMER vector delaying NET_RX vector after the hierarchical pu=
-ll
->   model, quite the opposite actually, they are less delayed overall.
->
-> _ I suspected that timer migrators handling big queues would add scheduli=
-ng
->   latency. But it doesn't seem to be the case. Quite the opposite again,
->   surprisingly.
->
-> _ I have observed that, in average, timers execute later with the hierarc=
-hical
->   pull model. The following delta:
->        time of callback execution - bucket_expiry
->   is 3 times higher with the hierarchical pull model. Whether that plays =
-a role
->   is unclear. It might still be interesting to investigate.
->
-> _ The initial perf profile seem to suggest a big increase of task migrati=
-on. Is
->   it the result of ping-pong wakeup? Does that play a role?
 
-Migration is not cheap. The interesting question is whether this is
-caused by remote timer expiry.
+Other than the blank line nits,
 
-Looking at the perf data there are significant changes vs. idle too:
-
-    perf-profile.calltrace.cycles-pp.poll_idle.cpuidle_enter_state.cpuidle_=
-enter.cpuidle_idle_call.do_idle
-	 36.91 =C2=B1  2%     -12.6       24.32 =C2=B1 10%     -12.3       24.63 =
-=C2=B1  5%=20
-
-That indicates that cpuidle is spending less time in idle polling, which
-means that wakeup latency increases. That obviously might be a result of
-the timer migration properties.
-
-Do you have traces (before and after) handy to share?
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
 Thanks,
-
-        tglx
+drew
 
