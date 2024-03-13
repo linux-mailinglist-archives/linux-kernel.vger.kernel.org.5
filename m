@@ -1,130 +1,186 @@
-Return-Path: <linux-kernel+bounces-101622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC9187A992
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:36:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 381B787A98B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:35:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFAB31F22DCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:36:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CC911C22713
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A010433F9;
-	Wed, 13 Mar 2024 14:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C899A6ABA;
+	Wed, 13 Mar 2024 14:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CB9hh7OY"
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ebqOZkqA";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="orfYLnID";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YR/kwdkQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oK4wgZO5"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794294A04
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B4517C8;
+	Wed, 13 Mar 2024 14:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710340569; cv=none; b=LfQhJgG0npRSGEDKQddWBNi+TCrteqdjipfM1OGAlO2ImiXZEtWM8L6Bnh4p9ZM4s25ggWm6+ZphNsAOIkgmqKZGeZ4mG8DMG3kIjv00uMNtC0iX0ehvaqv05/3AdeFY0LBd6dzsM8npgOFSVmt59AmcXSFJ0U/xrY5dsyaqhZU=
+	t=1710340514; cv=none; b=oINsbf0kwrqo0k6484JkRIZC+6Aym91t2KtRTqFNU0/oD/KmzTQGF6JZP+ZhSGQoWtjksowP5ea1g4flCkB53L4haj9B3LP/B4sdrP0pJwhSX5EKCzH2buccZd0LN7LUYFWYct09CCSqxNw9jf9S4mzWJDcm5zbXUi4ULf9z/QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710340569; c=relaxed/simple;
-	bh=4Jx1cNbMOR6HZAyGd5CeOFh2DVlmrzbJXauFBEFoIMs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lN3+Yu+nBFLUmkA7tfFrAqTG6n7+J7MF0ksG66LagV1GhfFO9VHr7HH0fMDJ11yh++ejVB4JuSK4YvmrJMWHNcXuYV2TKgoHPFXbYiJeejLnqvDSqsTU8XCwZ0XH+nN5xN+/bYKpgtLtcp7YM+73QMH6ws0FfM1/blmrGyvUElQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CB9hh7OY; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7dc1d027ca8so545825241.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:36:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710340566; x=1710945366; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=io/s7dHkAHb6RnVIc6UpS8ZjyV6CjdJnMEpaFNKkOk0=;
-        b=CB9hh7OY7Yfs8eYc26IMPLpA/br1aHTeIblqsbOScREiENxYFOnfvS0MU73it9X43L
-         PSsUls3a5OGaMKDIzZ0NuJ/sVlcNsVvpKHvEa7zexatqQI57QROVccSpinwVprvBElan
-         99U+hq1TemdLEUhArr4G7XipYGy2xvfkBdzF7E1BML+zHh1bQM9GJSUJ6InYPwVBT6CJ
-         geUL21Wd3HlTaJNlDm70vuONHbplsXwYLqzBT+hQvYEuWDwoq8IohD2lIyER3ExWvu3J
-         V6OUObmB6c6RpeplhySAzqoBo4j1EaRQ6DiUGkbpzR+w+K8Gqj5haZVJ+voLbVkDczpz
-         j0eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710340566; x=1710945366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=io/s7dHkAHb6RnVIc6UpS8ZjyV6CjdJnMEpaFNKkOk0=;
-        b=eNkXQ2g/5bxUdZqIHFpDdFUcDr8Ux0RtG/CCbfqkuskMNoyzdH0YALO7KIIb307ivZ
-         ODX5kF7TJsZhyUpnt/o7LyoxHsojaLKI0/FrODJcuKdW9GvPz/8qkX/lf/OR3Q8XhkmI
-         VcSC89zFjliHF/gnOxLcs91NPLKSu62Ky92iRMlwdBsKKEMZ5bDQ0S9LZ1S0kcPc9uEY
-         reUiMgP8WuKXen7zCOXFiDgSj0J1GPTlNMwH+LHCIItCV37usckhVEbYS8mcZureMHTI
-         H6lxfSi9X3sYHoWsyqvHx7PisD39EwerRtiqMVSny1cml3Bmz5cvrRQdVhOeL6A/Po24
-         XfSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlJux9hm7B1buRKkeELTytpYhuc76XBWYgtW3ISex0IgubEiHLHAaMckXj/h3FFW9G63uc7MeW2BfUCApe7geAbVQl01otH6punyqz
-X-Gm-Message-State: AOJu0YzS8xVrJsWd7ri6Qg4kSfwIbx13PzE/31DTW4ApUg3DPLOVO9Oz
-	IAo8v6palWq7ItFTi4Ln6QfaiALtXxwltY+9cxz8rKkvyLAB2yOCIjvR5RGmHF6cImgIPE0BDuq
-	k4inQi2kfKdiQouPM9uhBBIucBoliuCgzMQaf
-X-Google-Smtp-Source: AGHT+IHX75N/xEME3Jbch1ablQ6YKeO5GzIiVXWx6yrQ/uhbTXuIPc/BaiDtToAke2hvqcVRaoRDftJpHvYD5DPZ/mc=
-X-Received: by 2002:a05:6122:4d18:b0:4d4:be1:8196 with SMTP id
- fi24-20020a0561224d1800b004d40be18196mr181745vkb.11.1710340566173; Wed, 13
- Mar 2024 07:36:06 -0700 (PDT)
+	s=arc-20240116; t=1710340514; c=relaxed/simple;
+	bh=7Ggb48mfmQd0gjOutcISKertiP5xCb7jo8IBrz/yYb4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ELaSWbQXY/6gTGHr5gueBuWiOJXFHtM7SQ15p9n0R03j5gPkO/WpyqDvZ/IiQYzfScWbhKmx3WThXnrOJq8usqkjpHGCL10kRviAqzTPwFM5CGVULBFKRhg6vYJlRQeAsWWMBZDP9ugUGN6rioZuUILyECno8NI8GItTA8O6gA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ebqOZkqA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=orfYLnID; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YR/kwdkQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oK4wgZO5; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DBFE521C8A;
+	Wed, 13 Mar 2024 14:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710340509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2RSlYwqGCgMw8Oen4eBYJ9RLkQu5lewBFTm9qigzA78=;
+	b=ebqOZkqAlbIlDLeZr4Wx03fKNo+nawtibfpLCg6+Q4I7xn3k08nxpk38v/9P/pN6HBlVLE
+	3oN18aptixVZ5j+P5h72hzEUzaXWZ656RUhLV1KaVn/ULJrY+obEL6+u6Z0V2ret8kxkwt
+	VHQD3v2is9dCEKZ3js1jUs5GFFcZTkw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710340509;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2RSlYwqGCgMw8Oen4eBYJ9RLkQu5lewBFTm9qigzA78=;
+	b=orfYLnIDxWPQOxAfsZDtFE7rUGJ7oQQsqo0/Mtoyh5mM9gWh6I8HNu8RMZE5fyxkhzYb7o
+	+afMySU81XMXiDCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710340508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2RSlYwqGCgMw8Oen4eBYJ9RLkQu5lewBFTm9qigzA78=;
+	b=YR/kwdkQ7oo6g7nxLjQEGunx8N1zRLdauP7333MQMKOmV37zmdpkCuHXpEOFHPrfAZFfGZ
+	X549edAXo2lu//nDJxpSA2Qvk5PQ3E2f5gkbvL0/6Fyudo9p+tRUWFD7Ec0mUZvV7263xF
+	b/I66AohdibWQLMZ4PTajURL7FkKLT8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710340508;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2RSlYwqGCgMw8Oen4eBYJ9RLkQu5lewBFTm9qigzA78=;
+	b=oK4wgZO5wOrJ1EG1VHXjpbFCBihJFze1f72GbydqVyebG0uzplJ2FIO5uCcOLhU42giqBe
+	aQInfrj0PvfH4GCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8145F13977;
+	Wed, 13 Mar 2024 14:35:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id WfP0Hpy58WX6YwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 13 Mar 2024 14:35:08 +0000
+Message-ID: <ef836dd3-0b65-485e-84a2-dd5cb9ecdff1@suse.cz>
+Date: Wed, 13 Mar 2024 15:35:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312180814.3373778-1-bigeasy@linutronix.de>
-In-Reply-To: <20240312180814.3373778-1-bigeasy@linutronix.de>
-From: Marco Elver <elver@google.com>
-Date: Wed, 13 Mar 2024 15:35:27 +0100
-Message-ID: <CANpmjNMYGa46pRQUOfzTa_FRvftOGqg+UDeD_B-tbZgYw-MWww@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
- on RT.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Adrian Hunter <adrian.hunter@intel.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 15/37] lib: introduce early boot parameter to avoid
+ page_ext memory overhead
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
+ muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+ pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+ dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+ keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+ gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+ penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+ glider@google.com, elver@google.com, dvyukov@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+ rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+ kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-16-surenb@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240306182440.2003814-16-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.59 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 URIBL_BLOCKED(0.00)[suse.cz:email];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_GT_50(0.00)[75];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,nvidia.com,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -1.59
+X-Spam-Flag: NO
 
-On Tue, 12 Mar 2024 at 19:08, Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> Hi,
->
-> Arnaldo reported that "perf test sigtrap" fails on PREEMPT_RT. Sending
-> the signal gets delayed until event_sched_out() which then uses
-> task_work_add() for its delivery. This breaks on PREEMPT_RT because the
-> signal is delivered with disabled preemption.
->
-> While looking at this, I also stumbled upon __perf_pending_irq() which
-> requires disabled interrupts but this is not the case on PREEMPT_RT.
->
-> This series aim to address both issues while not introducing a new issue
-> at the same time ;)
-> Any testing is appreciated.
->
-> v1=E2=80=A6v2: https://lore.kernel.org/all/20240308175810.2894694-1-bigea=
-sy@linutronix.de/
->     - Marco pointed me to the testsuite that showed two problems:
->       - Delayed task_work from NMI / missing events.
->         Fixed by triggering dummy irq_work to enforce an interrupt for
->         the exit-to-userland path which checks task_work
->       - Increased ref-count on clean up/ during exec.
->         Mostly addressed by the former change. There is still a window
->         if the NMI occurs during execve(). This is addressed by removing
->         the task_work before free_event().
->       The testsuite (remove_on_exec) fails sometimes if the event/
->       SIGTRAP is sent before the sighandler is installed.
+On 3/6/24 19:24, Suren Baghdasaryan wrote:
+> The highest memory overhead from memory allocation profiling comes from
+> page_ext objects. This overhead exists even if the feature is disabled
+> but compiled-in. To avoid it, introduce an early boot parameter that
+> prevents page_ext object creation. The new boot parameter is a tri-state
+> with possible values of 0|1|never. When it is set to "never" the
+> memory allocation profiling support is disabled, and overhead is minimized
+> (currently no page_ext objects are allocated, in the future more overhead
+> might be eliminated). As a result we also lose ability to enable memory
+> allocation profiling at runtime (because there is no space to store
+> alloctag references). Runtime sysctrl becomes read-only if the early boot
+> parameter was set to "never". Note that the default value of this boot
+> parameter depends on the CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
+> configuration. When CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=n
+> the boot parameter is set to "never", therefore eliminating any overhead.
+> CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=y results in boot parameter
+> being set to 1 (enabled). This allows distributions to avoid any overhead
+> by setting CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=n config and
+> with no changes to the kernel command line.
+> We reuse sysctl.vm.mem_profiling boot parameter name in order to avoid
+> introducing yet another control. This change turns it into a tri-state
+> early boot parameter.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Tested-by: Marco Elver <elver@google.com>
-
-It does pass the tests in tools/testing/selftests/perf_events (non-RT
-kernel, lockdep enabled). But I do recall this being a particularly
-sharp corner of perf, so any additional testing and review here is
-useful.
-
-Thanks,
--- Marco
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
