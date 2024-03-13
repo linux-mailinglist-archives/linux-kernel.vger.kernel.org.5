@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-101981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475CA87AD4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:31:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8048587AD50
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:31:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CED3BB25375
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:31:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B4AA280C8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648511474AE;
-	Wed, 13 Mar 2024 16:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F7D1474C6;
+	Wed, 13 Mar 2024 16:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZF6Ude33"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPCF5RZW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DD8146E9C;
-	Wed, 13 Mar 2024 16:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41441474B5;
+	Wed, 13 Mar 2024 16:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348191; cv=none; b=EFsWVYTLXWpgRvKJ8VrMLUB2AnE3qriNC16x9YR0VxWF4EKXP2cEcz1wH4nlno7XELYsmzLNwkgS05+cPJZqVUG7ovwhM1u83WcNXiEHDoDgySOjz29XHOchKRvN7SUN432RPmpaIWcnhFT0azFAzdG6+NdLWs4EJ9nCusrOFGY=
+	t=1710348193; cv=none; b=rz+U95dVfoDrc9IiQat8RKBzzAwoTEnXqq2NWvwEUZ9avc/Qi+Gxjk06dOwqFu8hU8hkhBqWssOd/uzpMbt5CrbKfD4k7lnNWi7F+TI2it1QjstisuXqIAGRDsGBrabHbW232A/7pDKRe+/cBqsWUsAeXC5U/BBa6ENson/VbK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348191; c=relaxed/simple;
-	bh=ognCZaFS6GdMBlOCUFY4jl2BZglCYU4E6QLhPCdkh8Q=;
+	s=arc-20240116; t=1710348193; c=relaxed/simple;
+	bh=LxXgNAae7E20TE67ywM3grU9vzZlJD5fGIwAgR5pvE8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s5p6E7Fw5L+gyTmAz0Bwdm3wVmzTBApXqVoGBHCxtK5VSeqkFL8jh3w+sD00zK32O4kJwx8Li3HUo4yboL+EKowl1nB2mVgMo/S7YpWsEH2NBkvijCGADDdKHtql3HibUZEH5eNGhFe6+3uCcmhK6J2Qmy3rMFE3yQJDkT1FiSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZF6Ude33; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CF63C43609;
-	Wed, 13 Mar 2024 16:43:10 +0000 (UTC)
+	 MIME-Version; b=VKDq0NFzg2BEG5OfH1nkxXcCBKnr3tH5WyDRzuDc5Ocnj1OD4mlHjMmYp1LU+NnQzhBSrmB3nCg4ZKQrQS05QP+FmKm4LdZhqzHeQkE09qBXV71q8WSdXkvTGGvIQ0afhsb9evalNOnK9uQBUtIcsGtNvuZ3Xxxamq7qcyEJH4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPCF5RZW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF0DC433F1;
+	Wed, 13 Mar 2024 16:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348191;
-	bh=ognCZaFS6GdMBlOCUFY4jl2BZglCYU4E6QLhPCdkh8Q=;
+	s=k20201202; t=1710348192;
+	bh=LxXgNAae7E20TE67ywM3grU9vzZlJD5fGIwAgR5pvE8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZF6Ude339PnGDq7O0XpMkn2SIXW9yth6sOYrNZW/84AHiomvuJS40t2cxI9S/gsCA
-	 88lobIs4+6io/m3uChaXuoaeJO3Xxee54GNiBmNIJ+GRgkq0GZF9srFJwuvM6+KPrO
-	 Y4MpjIL+zmMfhBI5H54fo4JJgc32tqMQb1RoOxQusCZHNi9L+lUUgZQLFRN/xaIAZ5
-	 U4+u7yBbwt7guc041KqmeiEfaulUkjNPpQ0oIWdy57NAdC7SDREBAG3ubgA/gvImdq
-	 t4d1UjJy1I5VWGYiRqGakd6mzKFEdhG7465Un3gL6hOl+3b9xOAkNW8nV8WrzRfENH
-	 cBQaTn/IHooVg==
+	b=BPCF5RZW2Hxelib63FpQp2W+0kycu9K6rDklIRiz7D4FSU6WiQW5zHxeLAA4oHy7S
+	 szDXFk+J6EBC4XI/2lVWtFBbWv2SLQOJ6bv37QrOCC2zBYnQmovUBQMntkKaiuUDrK
+	 QdvLBcEv0o2J5V6qRUeDhmzrpImw59fOCaBz9ahybtQhn4KMJ2mCxwc9oURMVgEuK3
+	 Vv/4LEsIg58IkwxeqIPN2WCY3U256VD1QBu/JZPcysl+ygjoOliT6m2jUnDPJDe7Hq
+	 t7/BvMSPGz4MfvzVO3oCLwiHhkX1Kb+u/+FRlTZAxdCM/yXy7b72CvuWUONMvVqjHc
+	 8cNLV7CwOQnAg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hui Zhou <hui.zhou@corigine.com>,
-	Louis Peens <louis.peens@corigine.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Shuah Khan <shuah@kernel.org>,
+	David Laight <David.Laight@ACULAB.COM>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 41/76] nfp: flower: add hardware offload check for post ct entry
-Date: Wed, 13 Mar 2024 12:41:48 -0400
-Message-ID: <20240313164223.615640-42-sashal@kernel.org>
+Subject: [PATCH 5.15 42/76] selftests/mm: switch to bash from sh
+Date: Wed, 13 Mar 2024 12:41:49 -0400
+Message-ID: <20240313164223.615640-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
 References: <20240313164223.615640-1-sashal@kernel.org>
@@ -69,66 +70,56 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hui Zhou <hui.zhou@corigine.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-[ Upstream commit cefa98e806fd4e2a5e2047457a11ae5f17b8f621 ]
+[ Upstream commit bc29036e1da1cf66e5f8312649aeec2d51ea3d86 ]
 
-The nfp offload flow pay will not allocate a mask id when the out port
-is openvswitch internal port. This is because these flows are used to
-configure the pre_tun table and are never actually send to the firmware
-as an add-flow message. When a tc rule which action contains ct and
-the post ct entry's out port is openvswitch internal port, the merge
-offload flow pay with the wrong mask id of 0 will be send to the
-firmware. Actually, the nfp can not support hardware offload for this
-situation, so return EOPNOTSUPP.
+Running charge_reserved_hugetlb.sh generates errors if sh is set to
+dash:
 
-Fixes: bd0fe7f96a3c ("nfp: flower-ct: add zone table entry when handling pre/post_ct flows")
-CC: stable@vger.kernel.org # 5.14+
-Signed-off-by: Hui Zhou <hui.zhou@corigine.com>
-Signed-off-by: Louis Peens <louis.peens@corigine.com>
-Link: https://lore.kernel.org/r/20240124151909.31603-2-louis.peens@corigine.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+/charge_reserved_hugetlb.sh: 9: [[: not found
+/charge_reserved_hugetlb.sh: 19: [[: not found
+/charge_reserved_hugetlb.sh: 27: [[: not found
+/charge_reserved_hugetlb.sh: 37: [[: not found
+/charge_reserved_hugetlb.sh: 45: Syntax error: "(" unexpected
+
+Switch to using /bin/bash instead of /bin/sh.  Make the switch for
+write_hugetlb_memory.sh as well which is called from
+charge_reserved_hugetlb.sh.
+
+Link: https://lkml.kernel.org/r/20240116090455.3407378-1-usama.anjum@collabora.com
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/netronome/nfp/flower/conntrack.c | 22 ++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ tools/testing/selftests/vm/charge_reserved_hugetlb.sh | 2 +-
+ tools/testing/selftests/vm/write_hugetlb_memory.sh    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/flower/conntrack.c b/drivers/net/ethernet/netronome/nfp/flower/conntrack.c
-index 0a5592b12e2d1..03a2dbcfbe566 100644
---- a/drivers/net/ethernet/netronome/nfp/flower/conntrack.c
-+++ b/drivers/net/ethernet/netronome/nfp/flower/conntrack.c
-@@ -1471,10 +1471,30 @@ int nfp_fl_ct_handle_post_ct(struct nfp_flower_priv *priv,
- {
- 	struct flow_rule *rule = flow_cls_offload_flow_rule(flow);
- 	struct nfp_fl_ct_flow_entry *ct_entry;
-+	struct flow_action_entry *ct_goto;
- 	struct nfp_fl_ct_zone_entry *zt;
-+	struct flow_action_entry *act;
- 	bool wildcarded = false;
- 	struct flow_match_ct ct;
--	struct flow_action_entry *ct_goto;
-+	int i;
-+
-+	flow_action_for_each(i, act, &rule->action) {
-+		switch (act->id) {
-+		case FLOW_ACTION_REDIRECT:
-+		case FLOW_ACTION_REDIRECT_INGRESS:
-+		case FLOW_ACTION_MIRRED:
-+		case FLOW_ACTION_MIRRED_INGRESS:
-+			if (act->dev->rtnl_link_ops &&
-+			    !strcmp(act->dev->rtnl_link_ops->kind, "openvswitch")) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "unsupported offload: out port is openvswitch internal port");
-+				return -EOPNOTSUPP;
-+			}
-+			break;
-+		default:
-+			break;
-+		}
-+	}
+diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+index 0899019a7fcb4..e14bdd4455f2d 100644
+--- a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
++++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
  
- 	flow_rule_match_ct(rule, &ct);
- 	if (!ct.mask->ct_zone) {
+ # Kselftest framework requirement - SKIP code is 4.
+diff --git a/tools/testing/selftests/vm/write_hugetlb_memory.sh b/tools/testing/selftests/vm/write_hugetlb_memory.sh
+index 70a02301f4c27..3d2d2eb9d6fff 100644
+--- a/tools/testing/selftests/vm/write_hugetlb_memory.sh
++++ b/tools/testing/selftests/vm/write_hugetlb_memory.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ set -e
 -- 
 2.43.0
 
