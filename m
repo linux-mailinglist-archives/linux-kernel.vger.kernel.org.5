@@ -1,154 +1,79 @@
-Return-Path: <linux-kernel+bounces-101043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CE9287A158
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:07:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFCF887A14A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 043352834E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:07:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 982681F21CCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:04:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41383FC16;
-	Wed, 13 Mar 2024 02:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="zXj8LJnX"
-Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCC9BE65;
+	Wed, 13 Mar 2024 02:04:30 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F58D51B;
-	Wed, 13 Mar 2024 02:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93431BA27;
+	Wed, 13 Mar 2024 02:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710295653; cv=none; b=Dj9HnS4lJF2jQVPhhb+DgbS5UJfY5b6WXdGlnxGj3YpV78sxK8MAECIarjsO/Ll2KDjy3mY8jYjsLrt4ztKJu1s/rd3EVSr/VfPSrVKaynNoGA87Ug8LWK5GrIG0T2pnm4RgBxRSzzNw9B71NHGCY9bp/8RmBjWxj+J9C0S9+/0=
+	t=1710295469; cv=none; b=E2F4ebrVV5Dxr0WAmw6OL6c6UjcrKIX3LefdCwnWWhsTk28qDk0h2ZWsDVyAuHRkXtX4QeMAlmuUDG62CBL+ywuWCzCUhM9os5pWzdQ5Vg/nECMvGTWLGnVbfQWrmcJmppjogJFpcyUFu3LZJ/RkAm+fhm4RE5MGLByuOHFbDzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710295653; c=relaxed/simple;
-	bh=gKwwcvUxoUfiRZgtmQ2NL3a3X4Bit9aEPZb/w5hi4Kw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iXjw/IGniN/dfg0u3hEZ8ABRphBBiYBShmCqrSSiGOAFdIiweeZ9oTNFWdkmV3pUG5g9Yqd/gHUL1sNEh8XCc6bfh57xKZFqzodP3NOEsng/scTOV1pYjeVaubBjx8lULS5nyFkiuwpyOJx1hIuINuJWo2uLZoNpaRyEAKx2e0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=zXj8LJnX; arc=none smtp.client-ip=162.62.58.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1710295640;
-	bh=XFmy5qLFjf2ks+5NUTUH+n2hvFSsq9w+oqbAfXiCgEw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=zXj8LJnXvd7ntd71Jpb0DG83WNa85l/b9bdtyvYwPGWQfkL3b+sVRrwXPTEO6fRIW
-	 xayHJ2CCAJrek33vCXv2G89vK0+XjQQmn+K6SNXuU/bhSYZM2gZGBHsaHGdoAbPayw
-	 6o95DlD9eCV1fDeT+n4EdFtjaoHmwBb4XN09e9/I=
-Received: from [172.17.78.110] ([58.208.182.212])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 4F08A3D; Wed, 13 Mar 2024 10:01:15 +0800
-X-QQ-mid: xmsmtpt1710295275t00qd39pu
-Message-ID: <tencent_DDDFB09AF2B2DC73F9570E5A02D929004609@qq.com>
-X-QQ-XMAILINFO: MR/iVh5QLeieDm8r7gyCqMZkbJNGCHLkFir2u0+j1lEOROSGz/03/07Lvs3KuN
-	 y4tscX5UYggiqcgKQvpdkDjQPyz0mcMw+aqjms661Ixbki+Gb3UN+6+bLMNWTuj8/UhzFjgZr3XK
-	 OKiCjfLsiwJqjneHLY8fwexbH9EjT2PeCNa7Qawv3gxsJW/zSimhWCikZOsFzk3r+8W3OIbKR8ko
-	 TjjeiOoQJHnzSbdU4jfs7DkiyPN6kP4xB2yI24YU0+JX6qB9ej6nWDx+WE4v51o4/fH0Vq0814be
-	 01GfIfffZmio5y65cvQK6Rre/Uklns0/bRJafZcbkWR1lkMZ5f8TYgoLZTxsw5x8PC/mzAyVRv2T
-	 RtXPVu1nUMfvtGiRRDMn9D/bieUgyuLkCPLeJgo5kno7Ugx0ol7jh7FSh9s1MtWYvn9YDO4vayW0
-	 G1qRq6T4coN6hwfP5/OXy+SG81eD5E3AwMl5GPDXV+tfYKri9mB7Y3HNBq1rfhWzGa8f/3WJFnh6
-	 QglGrQ3lP7prXkd2iPKbLmqLdPBdN0ncPIrSoC2hw4P5hTnURryw7G8OOIyNg/KF18GKMoOw3o81
-	 F/HSTfdJ+3USvIMYvosUaN7BlivdvSH/aX+5HUJnIRjE5+SXEF7zI7YgmxWAwrp6JJag5xKuLH22
-	 n1wpwx/6A8WMUAL8pOM0ZPKZ+3OnxzUVGkGN6WjxbdlO0A8h22WVXQaI6aTLXyh3EoNf/UxiwkF4
-	 bdhSNTEY/bnqkvKX/V0U1+RCpQUxyYbF15YGgTkA4N/HLzzKJhig3UN6obX/e1REz1X/FIgaEny4
-	 mx6Dj/sC2uM1NVEDT9J08A7DF0K3TLd99m8jVacqT3F3fjSfsnIMrBNlhrVLK0RJ+Ri1NuIHuEsD
-	 rRT7CK5JR206JdN3DU66xVrLcyZTkjRr/sAenV5rGU91uHXu9FlrNRn5epe9CMi8Hf2pPq/dbZH/
-	 pS/A6Jbox9QXpBZMnUjEio1AT3DPpL6rFcGG1iuXQ=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-X-OQ-MSGID: <1cffd0fd-c8a1-4e12-b2c9-42ace78c44ed@foxmail.com>
-Date: Wed, 13 Mar 2024 10:01:14 +0800
+	s=arc-20240116; t=1710295469; c=relaxed/simple;
+	bh=wDULuzZl+P6j63jB/yqzoKOth+kn4G3RbXkhT9MytsM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NY11T9SBW2O6ncZg9MOWqDQCpf7m0FsoNgXSRFK9ni7LvMWY472SqepE2w4FKdEw6WiA1H0RnjiiP3nU985jKfWSVYznG0QoiyjEC27jKaeoorqgOgOZb06lVbm0HwUmxIqnTju7/U5IgBjF925UjD/gTdpaNGH+6O7Vp9Stva8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rkDyW-006LQl-Fp; Wed, 13 Mar 2024 10:04:13 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 13 Mar 2024 10:04:28 +0800
+Date: Wed, 13 Mar 2024 10:04:28 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Barry Song <v-songbaohua@oppo.com>,
+	Linux Crypto List <linux-crypto@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the crypto tree
+Message-ID: <ZfEJrBefjrvPxaIg@gondor.apana.org.au>
+References: <20240313115751.36b01158@canb.auug.org.au>
+ <ZfEE2GDznBOZDXs4@gondor.apana.org.au>
+ <ZfEFKxl8/42oXv0i@gondor.apana.org.au>
+ <20240313020112.GB1148@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/mmu: treat WC memory as MMIO
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
- hpa@zytor.com, rdunlap@infradead.org, akpm@linux-foundation.org,
- bhelgaas@google.com, mawupeng1@huawei.com, linux-kernel@vger.kernel.org,
- pbonzini@redhat.com, kvm@vger.kernel.org
-References: <tencent_4B50D08D2E6211E4F9B867F0531F2C05BA0A@qq.com>
- <Ze8vM6HcU4vnXVSS@google.com>
- <tencent_AA5D14EAA36D58807959EE9AFC9E07548108@qq.com>
- <ZfBzBUbxpF9MpII-@google.com>
-From: francisco flynn <francisco_flynn@foxmail.com>
-In-Reply-To: <ZfBzBUbxpF9MpII-@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313020112.GB1148@sol.localdomain>
 
-On 2024/3/12 23:21, Sean Christopherson wrote:
-> On Tue, Mar 12, 2024, francisco flynn wrote:
->> On 2024/3/12 00:20, Sean Christopherson wrote:
->>> On Mon, Mar 11, 2024, francisco_flynn wrote:
->>>> when doing kvm_tdp_mmu_map for WC memory, such as pages
->>>> allocated by amdgpu ttm driver for ttm_write_combined
->>>> caching mode(e.g. host coherent in vulkan),
->>>> the spte would be set to WB, in this case, vcpu write
->>>> to these pages would goes to cache first, and never
->>>> be write-combined and host-coherent anymore. so
->>>> WC memory should be treated as MMIO, and the effective
->>>> memory type is depending on guest PAT.
->>>
->>> No, the effective memtype is not fully guest controlled.  By forcing the EPT memtype
->>> to UC, the guest can only use UC or WC.  I don't know if there's a use case for
->>
->> Well,it's actually the host mapping memory WC and guest uses WC,
+On Tue, Mar 12, 2024 at 07:01:12PM -0700, Eric Biggers wrote:
+>
+> The only user of comp_alg_common was the crypto stats, and it was introduced by
+> a refactoring of the crypto stats (commit 0a742389bcc0, "crypto: acomp - Count
+> error stats differently"), so it seems appropriate to remove it for now.
 > 
-> No, when the guest is running, the host, i.e. KVM, sets the EPT memory type to UC
-> 
->   static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
->   {
-> 	if (is_mmio)
-> 		return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
-> 
-> which effectively makes the guest "MTRR" memtype UC, and thus restricts the guest
-> to using UC or WC.
-> 
-> Your use case wants to map the memory as WC in the guest, but there are zero
-> guarantees that *every* use case wants to access such memory as WC (or UC),
-> i.e. forcing UC could cause performance regressions for existing use cases.
-> 
+> If you could go through my patch and explain what other unused code related to
+> the crypto stats you might consider to be "infrastructure" that should not be
+> removed, that would be helpful.
 
-yes, this may cause performance regressions in some cases.
+The first patch should only remove code directly related to
+STATS.  Any removal of code that is rendered useless should
+be done in one or more subsequent patches.
 
-> Ideally, KVM would force the EPT memtype to match the host PAT memtype while still
-> honoring guest PAT, but if we wanted to go that route, then KVM should (a) stuff
-> the exact memtype, (b) stuff the memtype for all of guest memory, and (c) do so
-> for all flavors of KVM on x86, not just EPT on VMX.
-> 
-
-it's true.
-
-> Unfortunatley, making that change now risks breaking 15+ years of KVM ABI.  And
-> there's also the whole "unsafe on Intel CPUs without self-snoop" problem.
-> 
->> one use case is virtio-gpu host blob, which is to map physical GPU buffers into guest
->>
->>> the host mapping memory WC while the guest uses WB, but it should be a moot point,
->>> because this this series should do what you want (allow guest to map GPU buffers
->>> as WC).
->>>
->>> https://lore.kernel.org/all/20240309010929.1403984-1-seanjc@google.com
->>>
->>
->> yes, this is what i want, but for virtio-gpu device, if we mapping WC typed 
->> GPU buffer into guest, kvm_arch_has_noncoherent_dma would return false, 
->> so on cpu without self-snoop support, guest PAT will be ignored, the effective
->> memory type would be set to WB, causing data inconsistency.
-> 
-> My understanding is that every Intel CPU released in the last 8+ years supports
-> self-snoop.  See check_memory_type_self_snoop_errata().
-> 
-> IMO, that's a perfectly reasonable line to draw: if you want virtio-gpu support,
-> upgrade to Ivy Bridge or later.
-
-it make sense.
-
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
