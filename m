@@ -1,111 +1,133 @@
-Return-Path: <linux-kernel+bounces-101451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD1587A74D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B48E87A75C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:00:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEE5A1F23EBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:55:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE1431F23D96
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AD03FB17;
-	Wed, 13 Mar 2024 11:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E023FB31;
+	Wed, 13 Mar 2024 12:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IJ1WbaKW"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b5KbJ7PR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E79E3F9E8
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648623F9D5;
+	Wed, 13 Mar 2024 12:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710330917; cv=none; b=C/EJZtuFjId5ZR9GL+97fJGtBLRwbCF4YdDT34JHH9PtUenhqgdcLz7PFYB3RSMUjiyQYYaqdTRRmba3Nx804wPdfGMEiYmdQGAiw4/JXJ2IilK+fVQJIgWjFPhaehjgNKQBsJcTA5g0Bf1BRD9r3zIO0PUMAWdMj4KD/P6GeOo=
+	t=1710331231; cv=none; b=HrXwvfzxf6sgRzSkGI2vuO5hSftOH+XPSGglHTD7jeHjh6dnjHSiqHnDAR75lwwTAWVEI3u6Kudnc4LjRmfYrvouoXVufo+jsqBDBaJeJDUs1U9jpp8y081iz9DGxxOWR8Ik+ZY1BBbKjY4sKFswyreC6K2cBbz1iearB/OrTYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710330917; c=relaxed/simple;
-	bh=xYQb+BQulrZxxo772iQeUy5dIlvaSIgJg4G59zCwYxw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G6QipWB36I4nt0Qw2FtXDFr4ABFUTamQvmMhOktzptVL4spmHfzBjhQxE8K3CE1fFAA19nEP5Xn7+bTbEiJoMAJgC+iCCGbe4QPqPNbm0mgric6qVELZfaUoxiiqE1eemfiTodIRKakbkYG06Gm4KjON0wfnaWSA6X0Q9XLsA/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IJ1WbaKW; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3122b70439so835608966b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 04:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710330914; x=1710935714; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XY8Gauun/KCCuJd3rvfN1BqCAqZcqM1FwxPVTr0A7jA=;
-        b=IJ1WbaKW2X7pA6IF3fW+Kyv72ov9fZ4UYS5Gn/T9t/wo+YAhLm8rHXONyWZRruKO8l
-         nRXAW+AaqtDID991AQFhS4aTwKWzyWPokTIU1LNT95lj8hz8qrlJHZssTBtP1PMkEnnK
-         4+H2jL6U9kYxkbB3L760Wj36e6WAjOTcPnoE/cd9fDb5eJzx/2m2veqApaxISUMF+3QN
-         svU94NCaHpZzzMBT8uc/xuLRkq6Ip3VroNPlKBhZoDhi8gsVFo+lKY1sKn6lxy1Oa5s4
-         2SpdshtfMEQVbGP5u8c3P9kq8TOe4kBCSyItxC0hPNZT0iFN1t7Bxw3Kr9JP7NueVKcR
-         rz2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710330914; x=1710935714;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XY8Gauun/KCCuJd3rvfN1BqCAqZcqM1FwxPVTr0A7jA=;
-        b=c1KPYPZX/YHsmmuCG8lCUpd1CemkDoi5F5Xj8XZb+RIO5M15VHOkeDz8oWyNaawjaV
-         GYU8XWBGVB0l59DlhsFG5sPFqeA/pWSYlca0cK/mXwIzTL5IN/joWmHFAH0zkT2Me+by
-         ohog5W4DETAoMX3BvzPb5KgTwofq74j8gnR4JZbc2E1Z05AShX674HMQLgD0MmDm3edw
-         PYDKaUfcPMCjcgabNoqsg9eIKtLvPNBdcSUQl5iEhDZe/8ZAlZGV/c5WUa0oTybwJ1Xf
-         jCNIrmpmQltwQUyRbt6uiEKRyBnYSkV63gGX3rSt/YztvvnOE9Bjx17wIhaBnXBttJ1K
-         hd8A==
-X-Forwarded-Encrypted: i=1; AJvYcCXOKbNAQhpvgHkKb0liu/jI7KKoQDxupTKvtN3UrjCH1Mmg5YsRM595XVHD8nuwmlkYeriWbU1A8BIev+eUuuYTThtfUN24MP3vULMZ
-X-Gm-Message-State: AOJu0YxfdyvTeqmagS2MeXtn9gQUcGV7CFD8T3nX6y5a+VTf79jWHxJu
-	cDN1DXCHDa+2A3SoL+Z/CdiJl0GGQjHrWHHA6zNruMMv1iD3UgDmHBo6yQgXLSw=
-X-Google-Smtp-Source: AGHT+IHzBdFBrOL1CjRXO7Wb5LRYPoTHhkJHvpPJm4Lz3kGYGnrSb0QF0pr6U7kKl6sQkdlibLujiw==
-X-Received: by 2002:a17:906:c784:b0:a46:61ef:2846 with SMTP id cw4-20020a170906c78400b00a4661ef2846mr622937ejb.66.1710330914218;
-        Wed, 13 Mar 2024 04:55:14 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id be10-20020a1709070a4a00b00a461d2a3374sm3442380ejc.47.2024.03.13.04.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 04:55:13 -0700 (PDT)
-Date: Wed, 13 Mar 2024 14:55:10 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Prasad Pandit <ppandit@redhat.com>
-Cc: florian.fainelli@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-	linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-	rjui@broadcom.com, sbranden@broadcom.com,
-	linux-staging@lists.linux.dev, linux-rpi-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Prasad Pandit <pjp@fedoraproject.org>
-Subject: Re: [PATCH v3] staging: bcm2835-audio: add terminating new line to
- Kconfig
-Message-ID: <15b3644f-f83e-4c7a-8b58-9d4b87f5af1e@moroto.mountain>
-References: <20240313114126.1418453-1-ppandit@redhat.com>
+	s=arc-20240116; t=1710331231; c=relaxed/simple;
+	bh=oTmsZxsDwI243Hwkzpf2lxroCsnB9x2YChpMLaPvfP4=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=VwpajFPYW7rB2Yu8lyjDpredr9UdaIRzUgXeDqUYEFxklMceDIHdFyX57oueQDdE9x30nIwWNkGiFtOMuLE3dcHtSIGOwIcZh5r0thWbFuhgMwL6tia4269R33cr7nGnjUcqPsGNqnxDBWmDbj4VPweodJiixSOIpren9bAVwO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b5KbJ7PR; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710331229; x=1741867229;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=oTmsZxsDwI243Hwkzpf2lxroCsnB9x2YChpMLaPvfP4=;
+  b=b5KbJ7PR4YhP7VjpgLL9jPxlb1F4zSCvuUy4jeoekSs8keTmG/YFWJyt
+   czG+HFVLyFr6ZmkhoZ2Oom+G44IyU414S4tiVRZsHg2MvBaGVjoNa+HO6
+   jhkaaBSOyz5BMyjRS+7Cbxru+ftMLDBYYiDKMCzLulpnLmdYRpKWdGnY1
+   fCR6NE46O7UQNH7QCmnDjVKKdWvSxA10dSMp/KApqB3IhwyeiZXPCxC65
+   owX+bA48w9MiDXpnKH4OO4aDdnTuYGBRwpXVOLTsxuH2U2CgB0Optu+20
+   pf1Zqia0w6grQyJB/N0znBRHDYknqsgTBiCQnZt4CdJ+F1R25xCIdkHVS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4954283"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="4954283"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 05:00:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="11782605"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.7])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 05:00:25 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 13 Mar 2024 14:00:21 +0200 (EET)
+To: Simon Guinot <simon.guinot@seagate.com>, 
+    Bjorn Helgaas <bhelgaas@google.com>
+cc: "Maciej W . Rozycki" <macro@orcam.me.uk>, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH] PCI: fix link retrain status in
+ pcie_wait_for_link_delay()
+In-Reply-To: <20240313094938.484113-1-simon.guinot@seagate.com>
+Message-ID: <53b2239b-4a23-a948-a422-4005cbf76148@linux.intel.com>
+References: <20240313094938.484113-1-simon.guinot@seagate.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313114126.1418453-1-ppandit@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Mar 13, 2024 at 05:11:26PM +0530, Prasad Pandit wrote:
-> From: Prasad Pandit <pjp@fedoraproject.org>
+On Wed, 13 Mar 2024, Simon Guinot wrote:
+
+> The current code in pcie_wait_for_link_delay() handles the value
+> returned by pcie_failed_link_retrain() as an integer, expecting 0
+> when the link has been successfully retrained. The issue is that
+> pcie_failed_link_retrain() returns a boolean: "true" if the link
+> has been successfully retrained and "false" otherwise. This leads
+> pcie_wait_for_link_delay() to return an incorrect "active link"
+> status when pcie_failed_link_retrain() is called.
 > 
-> Add terminating new line to the Kconfig file. It helps
-> Kconfig parsers to read file without error.
+> This patch fixes the check of the value returned by
+> pcie_failed_link_retrain() in pcie_wait_for_link_delay().
 > 
-> Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
+> Note that this bug induces abnormal timeout delays when a PCI device
+> is unplugged (around 60 seconds per bridge / secondary bus removed).
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 1abb47390350 ("Merge branch 'pci/enumeration'")
+> Signed-off-by: Simon Guinot <simon.guinot@seagate.com>
+
+Hi Simon,
+
+Thanks for your patch. There's, however, already a better series to fix 
+this and other related issues. Bjorn just hasn't gotten into applying them 
+yet:
+
+https://patchwork.kernel.org/project/linux-pci/list/?series=824858
+
+(I proposed a patch very similar to yours month ago, but Maciej came up 
+a better way to fix all the issues.)
+
+--
+ i.
+
 > ---
->  drivers/staging/vc04_services/bcm2835-audio/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/pci/pci.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> v3: fix typo and note about parsing errors.
->   -> https://lore.kernel.org/lkml/CAE8KmOzcD+__7xdC7tegbHO9HEP48s7=reA4j-tvqVDwzHr+8Q@mail.gmail.com/T/#t
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index ccee56615f78..7ec91b4c5d03 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -5101,9 +5101,7 @@ static bool pcie_wait_for_link_delay(struct pci_dev *pdev, bool active,
+>  		msleep(20);
+>  	rc = pcie_wait_for_link_status(pdev, false, active);
+>  	if (active) {
+> -		if (rc)
+> -			rc = pcie_failed_link_retrain(pdev);
+> -		if (rc)
+> +		if (rc && !pcie_failed_link_retrain(pdev))
+>  			return false;
+>  
+>  		msleep(delay);
+> 
 
-Normally this would go about the diffstat but no stress...
-
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-
-regards,
-dan carpenter
+-- 
+ i.
 
 
