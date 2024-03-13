@@ -1,125 +1,120 @@
-Return-Path: <linux-kernel+bounces-102385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF6687B178
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F395787B179
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7EAE1F281D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:16:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CDEA1F26630
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC946657CD;
-	Wed, 13 Mar 2024 18:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603E765BB0;
+	Wed, 13 Mar 2024 18:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LfllGhln"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bas1vNSp"
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D6C604B8;
-	Wed, 13 Mar 2024 18:52:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FD04F88A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:53:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710355953; cv=none; b=LFLPeifyX0vr8zpSPO3FDTWSsNW7RRR7XJLk5HbdRoid/RBMLAmtGSF/jfTkes5Gi6k3IynFxA9iNN/QSzKBZI6QR12oxpo7AA9sWhE35WUIlE/MHToVsSjUmH3E7EqSfAQiHlIvih7EuBhMdM1BAqcoTXxn4FyejLdprl9eJN4=
+	t=1710355984; cv=none; b=nD7spFMdR1ph7pwWr9LyIub2MlHQ/j27xesfpfnN1NXUAZCrkyss6L26bv2+6QaNSN9kgbhKQ9JXHlNVq3c/RXTxmk9S7FXo5HG+ckjQJfgTngP9cxx8ZSYZntg/Mxs/raUHSBz4+yZ/CZnww/GW15SVVzSm2/ik7PFCjhGJq/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710355953; c=relaxed/simple;
-	bh=uiOhDb2aI1GM9s1bqPmkWJ30LvgnRIJ1fB5938Y3rig=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SdqL64/DKRcJ2chCsNyn37DoptEYbBaQrIp2EKu05VYOj9BaE/9xA2a2a0et0CJFuKCgsh/WUi//4pibP5J4lTN1FrSBvqXzy3xGiqLDTVAxJlsRnE2GWs3L5vEgaoicaJ+3UVXAUf7EQ9nYRqscnyao292OOs1bGyNQS/uZ5L4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LfllGhln; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=w1PC9u+vdjtH+/OhAVuI9GgnMz4d8ZzYulX30ZT4Frs=; b=LfllGhln8mFk5kHvFr4qv6qvw8
-	3Hp//2EKrunOZrdPkG3WMnlzSNDRB1ZUZNXoLbdYy1A/FwSt04d+dzRBx9an783YtmcVD7oZOkk3w
-	Se2KWmjIDcj+BILbBgCDkufKBj2szXpX4YqfI9C3en1RPT31S3hV5uaXtvDcsWwiJ9szFrnj+aB7h
-	LQP0Ma7MPVK8JXLgr/0B1TnWcPbTjFrqnyrmo5PiRbhjkY6hG13y0x267TdnZYkpJGXhOZ3riwrO/
-	+qxO2AQ22ni4XY92Z0DkdTEOalDAloS+i6DZKxOyM0Cp/w5gPBXIbk4QvRC3ZJ4gHs3j/DvDpEjhG
-	eyKGfIow==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkTiI-0000000BRE6-1pL4;
-	Wed, 13 Mar 2024 18:52:30 +0000
-Message-ID: <33aee996-8bc8-4063-86ee-e8ffff69000c@infradead.org>
-Date: Wed, 13 Mar 2024 11:52:29 -0700
+	s=arc-20240116; t=1710355984; c=relaxed/simple;
+	bh=YVcQq+dmsP/qAi9rtaqS5+Tz53AiNYC2GGqYJEr+tZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XaEFVN5rclROEZ/CTgCRQItyG3CfsNWdq9YsvYc2JqIdO3yDmB+rUCq/AuEI8lYOx5CVCTFEPZI947/JuBRmIkpEpqM2pZ914UJJRNT977iJtNQ+4o5lbr0fySV/1pGd1ObZPL0Q7RqQlSvP3ixiG/dI00+xA0cC6SVRyMtAwSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bas1vNSp; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 13 Mar 2024 14:52:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710355980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GXEAy3+toOLXEJR1J0N7Y1UVgbk2sOpxJGCRr43PliU=;
+	b=bas1vNSp4Dz15sjAd2Ox31F6Q6ohP/hMPu8I8x8i7ykp8w3hvyVMAVewpjnHpW6gXe6hps
+	4JCUFLi3ps16cs+jJFFJZp3lUYffsq20Mlv17kZJGot0kNQFeq/AqqZOpL1/QmYKzX07BV
+	hNWXMqaA09b1DtCqhqecV1zuMsxD7c0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.7.y
+Message-ID: <qffolwx7uqvvmvjy6ga37fp2xcefqhtqmavgy2olkoi7kzgpdc@w2awisbf6unk>
+References: <2zaqetj6wlxgpbxgex643dnudgwhcrz23xgfuai3t3hgavjb2d@vwhyha3hlg5y>
+ <zneppz2ohlalk2qeitdkzxvtexuqgfbhx6sxocgiasuuwsbopl@cr4d3wve2sot>
+ <2024031352-valuables-handling-cec3@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] docs: submitting-patches: divert focus from PATCH in
- the subject line
-Content-Language: en-US
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240301134637.27880-1-lukas.bulwahn@gmail.com>
- <20240301134637.27880-2-lukas.bulwahn@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240301134637.27880-2-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024031352-valuables-handling-cec3@gregkh>
+X-Migadu-Flow: FLOW_OUT
 
-Hi--
-
-On 3/1/24 05:46, Lukas Bulwahn wrote:
-> Submitting-patches is already assuming that git is used to prepare
-> patches. So, developers will use git format-patch and git send-email, and
-> this will take care that PATCH is usually in the subject line. Hence, the
-> 'include PATCH in the subject' does not deserve be an own section.
+On Wed, Mar 13, 2024 at 07:20:44PM +0100, Greg Kroah-Hartman wrote:
+> On Tue, Mar 12, 2024 at 08:54:24PM -0400, Kent Overstreet wrote:
+> > On Sun, Mar 10, 2024 at 03:43:38PM -0400, Kent Overstreet wrote:
+> > > The following changes since commit 2e7cdd29fc42c410eab52fffe5710bf656619222:
+> > > 
+> > >   Linux 6.7.9 (2024-03-06 14:54:01 +0000)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-for-v6.7-stable-20240310
+> > > 
+> > > for you to fetch changes up to 560ceb6a4d9e3bea57c29f5f3a7a1d671dfc7983:
+> > > 
+> > >   bcachefs: Fix BTREE_ITER_FILTER_SNAPSHOTS on inodes btree (2024-03-10 14:36:57 -0400)
+> > > 
+> > > ----------------------------------------------------------------
+> > > bcachefs fixes for 6.7 stable
+> > > 
+> > > "bcachefs: fix simulateously upgrading & downgrading" is the important
+> > > one here. This fixes a really nasty bug where in a rare situation we
+> > > wouldn't downgrade; we'd write a superblock where the version number is
+> > > higher than the currently supported version.
+> > > 
+> > > This caused total failure to mount multi device filesystems with the
+> > > splitbrain checking in 6.8, since now we wouldn't be updating the member
+> > > sequence numbers used for splitbrain checking, but the version number
+> > > said we would be - and newer versions would attempt to kick every device
+> > > out of the fs.
+> > > 
+> > > ----------------------------------------------------------------
+> > > Helge Deller (1):
+> > >       bcachefs: Fix build on parisc by avoiding __multi3()
+> > > 
+> > > Kent Overstreet (3):
+> > >       bcachefs: check for failure to downgrade
+> > >       bcachefs: fix simulateously upgrading & downgrading
+> > >       bcachefs: Fix BTREE_ITER_FILTER_SNAPSHOTS on inodes btree
+> > > 
+> > > Mathias Krause (1):
+> > >       bcachefs: install fd later to avoid race with close
+> > > 
+> > >  fs/bcachefs/btree_iter.c        |  4 +++-
+> > >  fs/bcachefs/chardev.c           |  3 +--
+> > >  fs/bcachefs/errcode.h           |  1 +
+> > >  fs/bcachefs/mean_and_variance.h |  2 +-
+> > >  fs/bcachefs/super-io.c          | 27 ++++++++++++++++++++++++---
+> > >  5 files changed, 30 insertions(+), 7 deletions(-)
+> > 
+> > Why wasn't this applied?
 > 
-> Move this note into 'the canonical patch format' section, where it
-> currently fits best.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  Documentation/process/submitting-patches.rst | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> index 66029999b587..2ec0c0d7d68f 100644
-> --- a/Documentation/process/submitting-patches.rst
-> +++ b/Documentation/process/submitting-patches.rst
-> @@ -384,16 +384,6 @@ patch or patch series which have not been modified in any way from the
->  previous submission.
->  
->  
-> -Include PATCH in the subject
-> ------------------------------
-> -
-> -Due to high e-mail traffic to Linus, and to linux-kernel, it is common
-> -convention to prefix your subject line with [PATCH].  This lets Linus
-> -and other kernel developers more easily distinguish patches from other
-> -e-mail discussions.
-> -
-> -``git send-email`` will do this for you automatically.
-> -
->  
->  Sign your work - the Developer's Certificate of Origin
->  ------------------------------------------------------
-> @@ -616,6 +606,10 @@ The canonical patch subject line is::
->  
->      Subject: [PATCH 001/123] subsystem: summary phrase
->  
-> +Prefix your subject line with [PATCH]. This allows to distinguish patches
-> +from other e-mail discussions. ``git send-email`` will do this for you
-> +automatically.
+> Because our queue is huge and 1/2 of the stable team is finally taking
+> his first vacation in years (and regretting reading email during it
+> right now)?  Relax, it will get there, backport requests like this not
+> being handled in 48 hours seems like a big ask, don't you think?
 
-Is this perhaps 'git format-patch' will do this for you automatically.
-?  I don't know, just asking.
-
-> +
->  The canonical patch message body contains the following:
->  
->    - A ``from`` line specifying the patch author, followed by an empty
-
-thanks.
--- 
-#Randy
+Ok - sorry for bothering you then :)
 
