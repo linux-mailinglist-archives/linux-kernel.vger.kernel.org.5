@@ -1,117 +1,114 @@
-Return-Path: <linux-kernel+bounces-101440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CD7187A71B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:29:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A4587A721
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D7121C218DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:29:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBB01281664
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0344D3F8EA;
-	Wed, 13 Mar 2024 11:29:49 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965033F8FB;
+	Wed, 13 Mar 2024 11:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="r4MeLfxn"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770C73EA72
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD2730648;
+	Wed, 13 Mar 2024 11:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710329388; cv=none; b=cX9eoUqurFtA5Iw68dacL3SqO7gtqCT8FWNWnZyBJ8jYd8Q9/qWevzw9uo0MKNnMUV5g36oRKF46bwY8Wxz+5cewW2i9VyXGn4GG6ZviB4hIcrRA/WXgP3+l3C9e9gq4/EBhsSt4+b5NV9HmiQgkqstOm5uP7BqGgyunDOIo1ic=
+	t=1710329525; cv=none; b=N2y5Kn+ROKoyPwiUmzMV5R8zguROYqMWSY1fLK1hu5IHPamZJrWgcGdpl4p69Fo9KAnPcSJK3FlG1i7vNej//+eL820nxbdKkDYJMRsnPSV8XAsyuJKYRFU/eae1v7Pb4RATjy1RXRHjA377djHs+z7ln42Zaqemo7rhpxkxtmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710329388; c=relaxed/simple;
-	bh=+M4vOnXj0M2RgtFF7frjumuLMimGscLOlrpd0V80u7k=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=W5jxhbu4TPeNRfizGKY0jtJrt5Yn/j+sPR2NHo90HUF0THpkeFOjXdsyRgSMWPq/nGgENSx1lRR+6ev+0SN8Bj7vpBZlZRzHht+Y6JauRCuQM3QPgWNFX1NJZOGPs5F8g9JaBkozZI9HqqpF+Cch89ttXrYoeVMy79i+x33m4vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TvpFM0Pr2z1FMLH;
-	Wed, 13 Mar 2024 19:29:27 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id C2CAB1A018A;
-	Wed, 13 Mar 2024 19:29:42 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Mar 2024 19:29:41 +0800
-Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
-To: Arnd Bergmann <arnd@kernel.org>, Richard Weinberger <richard@nod.at>,
-	Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Daniel Golle <daniel@makrotopia.org>
-CC: Arnd Bergmann <arnd@arndb.de>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240313084707.3292300-1-arnd@kernel.org>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
-Date: Wed, 13 Mar 2024 19:29:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1710329525; c=relaxed/simple;
+	bh=OpL4rxyz+uZrgVukUOb6VwUmnNshzynbyZBUIQpZkZE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SvsQXgTip3rqxtRr/+WcIjBkVJSWvDhRsXb1dXDLpucZkO1VIlnxRrqQjAtQhbcW96DYidlnqzFw48bSLgCd+GpC99B0mrnKHxwAxDfPZoByAQY0bDIwy+EdoL0qlmQiTGW04LZba8h6EV45QOszA9Oxzg0qSQXRR8Z7wMoRVpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=r4MeLfxn; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=aGMqMAeJ9vQmIq+ADPBMsdeHkP5+Lwi6g6pE/7mo7uE=;
+	t=1710329523; x=1710761523; b=r4MeLfxncjrhMDp94g1Dls6yYDgPZBmGszAgpA4x72fzdTa
+	UURKR8LTx74E1uK5cCd9DlGIp4MMqEX38pzBjOb2l6hxM7z+XOs9M38WBKLdNRc051d1JMtSI10UY
+	tdcs9drNRgMxz0fCWQ33mJmsmsXNPXLcaXnln6RjwA7F+YD8SCwexYsM/GsP2oyxtTYeCntUvMgXq
+	Xs86pWlr/5kZnBLNJxPcsShybKEEwi2IWAWxyCHxZzqsU1Lr+qG5hYCX7DIgbAKqubtjhmU7+S+1S
+	oyeOh2A+FQ6fFiAX1E8jmtUoQfNdA2+oEVkQ8VWu2cJvHiZeh+mYo0p3KZ59CepQ==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rkMq1-0003K9-BU; Wed, 13 Mar 2024 12:32:01 +0100
+Message-ID: <8086dce0-11d2-4bad-be47-e16bbc0800d9@leemhuis.info>
+Date: Wed, 13 Mar 2024 12:32:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240313084707.3292300-1-arnd@kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+User-Agent: Mozilla Thunderbird
+Subject: Re: Regressions can bus with MCP2515 on sama5d3 connected over SPI
+ stop working on kernel > 5.4.271
+Content-Language: en-US, de-DE
+To: Daniel Smolik <smolik@mydatex.cz>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz>
+ <a2e64be0-e07d-4c55-aba7-87c7e4c876e0@leemhuis.info>
+ <734cf096-3769-4610-b72f-394c31a8d942@mydatex.cz>
+ <91d8a6b6-6186-4aa0-8462-56b4751854e9@leemhuis.info>
+ <6918321b-038d-40b9-8149-d535bf9d3d52@mydatex.cz>
+ <5f69d6ee-a07a-42a9-a238-7dbe1f82cc3f@mydatex.cz>
+ <3e46d70b-196d-45c7-bfdf-869c78cdc81f@leemhuis.info>
+ <20240313-polio-jinx-bc5fd5df7c06-mkl@pengutronix.de>
+ <b6c9b015-86bc-475b-a190-e35fa76c1ceb@mydatex.cz>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <b6c9b015-86bc-475b-a190-e35fa76c1ceb@mydatex.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710329523;7299a015;
+X-HE-SMSGID: 1rkMq1-0003K9-BU
 
-ÔÚ 2024/3/13 16:46, Arnd Bergmann Ð´µÀ:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 13.03.24 12:22, Daniel Smolik wrote:
 > 
-> The use of do_div() in ubi_nvmem_reg_read() makes calling it on
-> 32-bit machines rather expensive. Since the 'from' variable is
-> known to be a 32-bit quantity, it is clearly never needed and
-> can be optimized into a regular division operation.
+> this is my first bisection please be lenient :-) Threse is a result:
 > 
-Do you meet a performance problem on a 32-bit machine? There are too 
-many places invoking do_div, why do you optimize this one?
-Have you tested the influence on a x86_64 platform after this patch 
-applied? Looks like that do_div is more efficient in x86.
+> marvin@marvin:/usr/src/linux$ git bisect good
+> Bisecting: 0 revisions left to test after this (roughly 0 steps)
+> [52f96cd135b160d44db4cb62a5b614b3bca20fbc] net: stmmac: xgmac: Remove
+> uneeded computation for RFA/RFD
 
-> Fixes: b8a77b9a5f9c ("mtd: ubi: fix NVMEM over UBI volumes on 32-bit systems")
-> Fixes: 3ce485803da1 ("mtd: ubi: provide NVMEM layer over UBI volumes")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/mtd/ubi/nvmem.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-> index 8aeb9c428e51..a94a1a9aaec1 100644
-> --- a/drivers/mtd/ubi/nvmem.c
-> +++ b/drivers/mtd/ubi/nvmem.c
-> @@ -6,7 +6,6 @@
->   /* UBI NVMEM provider */
->   #include "ubi.h"
->   #include <linux/nvmem-provider.h>
-> -#include <asm/div64.h>
->   
->   /* List of all NVMEM devices */
->   static LIST_HEAD(nvmem_devices);
-> @@ -27,14 +26,15 @@ static int ubi_nvmem_reg_read(void *priv, unsigned int from,
->   	struct ubi_nvmem *unv = priv;
->   	struct ubi_volume_desc *desc;
->   	uint32_t offs;
-> -	uint64_t lnum = from;
-> +	uint32_t lnum;
->   	int err = 0;
->   
->   	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
->   	if (IS_ERR(desc))
->   		return PTR_ERR(desc);
->   
-> -	offs = do_div(lnum, unv->usable_leb_size);
-> +	offs = from % unv->usable_leb_size;
-> +	lnum = from / unv->usable_leb_size;
->   	while (bytes_left) {
->   		to_read = unv->usable_leb_size - offs;
->   
-> 
+Have you tried reverting that commit on-top of 5.5 and/or 6.8 to see if
+this fixes the problem, as advised by the bisection guide I mentioned?
 
+Ciao, Thorsten
+
+> Dne 13. 03. 24 v 11:35 Marc Kleine-Budde napsal(a):
+> 
+>> On 13.03.2024 10:16:47, Linux regression tracking (Thorsten Leemhuis)
+>> wrote:
+>>> Hi! Mark and Manivannan, do you by chance have an idea what might be
+>>> wrong with Daniel's system or can point us in the direction of people
+>>> that might be able to help? See
+>>> https://lore.kernel.org/all/2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz/
+>>> for the initial report (but it is in the quote below, too).
+>> At the first glance the mcp251x.c changes between v5.4 and v5.5 look
+>> unrelated.
+>>
+>> I try to find some time to setup bisecting on an imx6.
+>>
+>> Marc
+>>
+> 
+> 
+> 
 
