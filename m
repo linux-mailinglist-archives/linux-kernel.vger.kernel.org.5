@@ -1,362 +1,132 @@
-Return-Path: <linux-kernel+bounces-101410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 905DB87A6C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:10:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9449787A6D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:10:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F8E21F23BCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:10:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35C1E1F23B67
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449D03F8EA;
-	Wed, 13 Mar 2024 11:08:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067B83EA6F
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0282D47781;
+	Wed, 13 Mar 2024 11:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aFofx7of"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC4D40C15;
+	Wed, 13 Mar 2024 11:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710328113; cv=none; b=RO8gRFkCv3BYDn3cRXWL3Qb0BXKG+LKHnN8PKYsXSOu0diIq2t28L7srByXcWmSu4k8bQmIeTZHNmsPIKWg/yBFAd5cEq5+SbYytfdz+oVD+Puz0xPB5bPv962LjmxZja6IUrcKfEbb+VrmtiiEHb2OYlzuVW5aeIg3L3HVuDBE=
+	t=1710328152; cv=none; b=DZY59NIzfR0o0/oI9dE/td/04Cgf4LqnA3kv1UpA4Ovpy9EKRcTexCOgFlu9KJQOQNpC4EAGYI+xXn1qmPU+/sCEP9zz47sLAqs4rKCAQYsKFjhja9EwYbXHg2Zmlohd4QPzKyZMNgW2ovOeX+nA7lQJN1qUhXRDWwc9euN5fic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710328113; c=relaxed/simple;
-	bh=1PHc/u2mJEdvgbYhvzmTyYUUxshRXat0yJodT1iKvfI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ecbCYh1bXRSzy7tpgeOWXATtCi1+aWi77YlZLd5eHi1OoZl388EFvYpcQux3n+L+zL+LprwbgOinoHd2hhsdsQbW6zcSShVWKeFZoqeg/m4XbE4wGgpZrpCU3NWNS4FVpdwc7JicU9judwx71m/Gp3fwwT1rcMqn0eiBorkqQkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DDEBA1007;
-	Wed, 13 Mar 2024 04:09:06 -0700 (PDT)
-Received: from [10.57.67.164] (unknown [10.57.67.164])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41EB93F73F;
-	Wed, 13 Mar 2024 04:08:27 -0700 (PDT)
-Message-ID: <f83d30ff-fe31-48c3-9c59-514f39c702f4@arm.com>
-Date: Wed, 13 Mar 2024 11:08:24 +0000
+	s=arc-20240116; t=1710328152; c=relaxed/simple;
+	bh=GdaNCXq0HLFb4IL9/uyDoTiLk6PDxVDs6bXsCPqOz60=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=pMKYp+nrzpnPCBmYPirM0ubnSYRghluNgBcmCMwyUN7s5a1V8ik6oSDi9dEj4xaXtzGdAQPnhO89/hwyC5IPxUpSMa5adZo1a2BT+7qXVpiUosjcwAYovxeB4oiVt6mcLWJwU5r6b1CF650arm7jao7uVL8tC1wiS29TCTy9FoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aFofx7of; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42DAkvI6020880;
+	Wed, 13 Mar 2024 11:09:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=qyPDOYgs3/5W27
+	Ag5hEy2zRW2QCFYTxLo4jyReBXbLQ=; b=aFofx7ofiRZ9W6sG6boF9w4XFOw+V0
+	Glej0wfzjf/KeBT9wp/yHCOM9qlIj8QiQsoTnzoQkEIFTKsWyCoxdmBzfLXj1bwK
+	lvN+F6vASvb1WM3+HDhSCFsNgyzFFYFxk/P2rSCk6WHPzkeOQSJWNXv9Gh74L6pG
+	isOVKK+3icl1860ZWniM69JweW3Hu1lzDE9Q6SJA7j4ku70oSPWC9i1ttisLiiEJ
+	4EcM2rQzgJj3dwij70jbErxfXNEh7vnOhGuwxs8R0On+71SVWt49rCItLwiycr7/
+	o4u+SED+NQUvJ8cqS0Vw4TIMuOCPzUWLLkE1uN3qlgo/fctp3m/r7yGg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wuapeg1cv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 11:09:05 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42DB95Vm017940
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 11:09:05 GMT
+Received: from hu-skakitap-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 13 Mar 2024 04:09:00 -0700
+From: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+Subject: [PATCH 0/3] Add DT support for video clock controller on SM8150
+Date: Wed, 13 Mar 2024 16:38:26 +0530
+Message-ID: <20240313-videocc-sm8150-dt-node-v1-0-ae8ec3c822c2@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and
- MADV_COLD
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: Lance Yang <ioworker0@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
- Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>,
- Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
- Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
- Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
- <20240311150058.1122862-7-ryan.roberts@arm.com>
- <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
- <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
- <CAGsJ_4wodFkL4YZ1iQveUjK6QL7sNajyayBq4hJ3-GPoWJ6foQ@mail.gmail.com>
- <00a3ba1d-98e1-409b-ae6e-7fbcbdcd74d5@arm.com>
- <CAGsJ_4xpiyCaNmSK4P3PitKeOsDBmOzf-4AZPnHcv4S=-TmtzQ@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4xpiyCaNmSK4P3PitKeOsDBmOzf-4AZPnHcv4S=-TmtzQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACqJ8WUC/x3MTQqAIBBA4avErBtQ++8q0aJ0rFmkoSFBdPek5
+ bd474FIgSnCWDwQKHFk7zJkWYDeF7cRsskGJVQtKtFjYkNea4xHLxuB5kLnDWFrZVut9aBspyH
+ HZyDL9z+e5vf9ADbQOndoAAAA
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "Stephen
+ Boyd" <sboyd@kernel.org>
+CC: Ajit Pandey <quic_ajipan@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        "Jagadeesh
+ Kona" <quic_jkona@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        Satya Priya Kakitapalli
+	<quic_skakitap@quicinc.com>
+X-Mailer: b4 0.12.4
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: YISqd6W2NvhviUXcEwrLzB8IWin0pvms
+X-Proofpoint-GUID: YISqd6W2NvhviUXcEwrLzB8IWin0pvms
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-13_07,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=703 spamscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403130083
 
-On 13/03/2024 10:37, Barry Song wrote:
-> On Wed, Mar 13, 2024 at 10:36 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 13/03/2024 09:16, Barry Song wrote:
->>> On Wed, Mar 13, 2024 at 10:03 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> On 13/03/2024 07:19, Barry Song wrote:
->>>>> On Tue, Mar 12, 2024 at 4:01 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>
->>>>>> Rework madvise_cold_or_pageout_pte_range() to avoid splitting any large
->>>>>> folio that is fully and contiguously mapped in the pageout/cold vm
->>>>>> range. This change means that large folios will be maintained all the
->>>>>> way to swap storage. This both improves performance during swap-out, by
->>>>>> eliding the cost of splitting the folio, and sets us up nicely for
->>>>>> maintaining the large folio when it is swapped back in (to be covered in
->>>>>> a separate series).
->>>>>>
->>>>>> Folios that are not fully mapped in the target range are still split,
->>>>>> but note that behavior is changed so that if the split fails for any
->>>>>> reason (folio locked, shared, etc) we now leave it as is and move to the
->>>>>> next pte in the range and continue work on the proceeding folios.
->>>>>> Previously any failure of this sort would cause the entire operation to
->>>>>> give up and no folios mapped at higher addresses were paged out or made
->>>>>> cold. Given large folios are becoming more common, this old behavior
->>>>>> would have likely lead to wasted opportunities.
->>>>>>
->>>>>> While we are at it, change the code that clears young from the ptes to
->>>>>> use ptep_test_and_clear_young(), which is more efficent than
->>>>>> get_and_clear/modify/set, especially for contpte mappings on arm64,
->>>>>> where the old approach would require unfolding/refolding and the new
->>>>>> approach can be done in place.
->>>>>>
->>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>
->>>>> This looks so much better than our initial RFC.
->>>>> Thank you for your excellent work!
->>>>
->>>> Thanks - its a team effort - I had your PoC and David's previous batching work
->>>> to use as a template.
->>>>
->>>>>
->>>>>> ---
->>>>>>  mm/madvise.c | 89 ++++++++++++++++++++++++++++++----------------------
->>>>>>  1 file changed, 51 insertions(+), 38 deletions(-)
->>>>>>
->>>>>> diff --git a/mm/madvise.c b/mm/madvise.c
->>>>>> index 547dcd1f7a39..56c7ba7bd558 100644
->>>>>> --- a/mm/madvise.c
->>>>>> +++ b/mm/madvise.c
->>>>>> @@ -336,6 +336,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>>>         LIST_HEAD(folio_list);
->>>>>>         bool pageout_anon_only_filter;
->>>>>>         unsigned int batch_count = 0;
->>>>>> +       int nr;
->>>>>>
->>>>>>         if (fatal_signal_pending(current))
->>>>>>                 return -EINTR;
->>>>>> @@ -423,7 +424,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>>>                 return 0;
->>>>>>         flush_tlb_batched_pending(mm);
->>>>>>         arch_enter_lazy_mmu_mode();
->>>>>> -       for (; addr < end; pte++, addr += PAGE_SIZE) {
->>>>>> +       for (; addr < end; pte += nr, addr += nr * PAGE_SIZE) {
->>>>>> +               nr = 1;
->>>>>>                 ptent = ptep_get(pte);
->>>>>>
->>>>>>                 if (++batch_count == SWAP_CLUSTER_MAX) {
->>>>>> @@ -447,55 +449,66 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>>>                         continue;
->>>>>>
->>>>>>                 /*
->>>>>> -                * Creating a THP page is expensive so split it only if we
->>>>>> -                * are sure it's worth. Split it if we are only owner.
->>>>>> +                * If we encounter a large folio, only split it if it is not
->>>>>> +                * fully mapped within the range we are operating on. Otherwise
->>>>>> +                * leave it as is so that it can be swapped out whole. If we
->>>>>> +                * fail to split a folio, leave it in place and advance to the
->>>>>> +                * next pte in the range.
->>>>>>                  */
->>>>>>                 if (folio_test_large(folio)) {
->>>>>> -                       int err;
->>>>>> -
->>>>>> -                       if (folio_estimated_sharers(folio) > 1)
->>>>>> -                               break;
->>>>>> -                       if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>>>> -                               break;
->>>>>> -                       if (!folio_trylock(folio))
->>>>>> -                               break;
->>>>>> -                       folio_get(folio);
->>>>>> -                       arch_leave_lazy_mmu_mode();
->>>>>> -                       pte_unmap_unlock(start_pte, ptl);
->>>>>> -                       start_pte = NULL;
->>>>>> -                       err = split_folio(folio);
->>>>>> -                       folio_unlock(folio);
->>>>>> -                       folio_put(folio);
->>>>>> -                       if (err)
->>>>>> -                               break;
->>>>>> -                       start_pte = pte =
->>>>>> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
->>>>>> -                       if (!start_pte)
->>>>>> -                               break;
->>>>>> -                       arch_enter_lazy_mmu_mode();
->>>>>> -                       pte--;
->>>>>> -                       addr -= PAGE_SIZE;
->>>>>> -                       continue;
->>>>>> +                       const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
->>>>>> +                                               FPB_IGNORE_SOFT_DIRTY;
->>>>>> +                       int max_nr = (end - addr) / PAGE_SIZE;
->>>>>> +
->>>>>> +                       nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
->>>>>> +                                            fpb_flags, NULL);
->>>>>
->>>>> I wonder if we have a quick way to avoid folio_pte_batch() if users
->>>>> are doing madvise() on a portion of a large folio.
->>>>
->>>> Good idea. Something like this?:
->>>>
->>>>         if (pte_pfn(pte) == folio_pfn(folio)
->>>
->>> what about
->>>
->>> "If (pte_pfn(pte) == folio_pfn(folio) && max_nr >= nr_pages)"
->>>
->>>  just to account for cases where the user's end address falls within
->>> the middle of a large folio?
->>
->> yes, even better. I'll add this for the next version.
->>
->>>
->>>
->>> BTW, another minor issue is here:
->>>
->>>                 if (++batch_count == SWAP_CLUSTER_MAX) {
->>>                         batch_count = 0;
->>>                         if (need_resched()) {
->>>                                 arch_leave_lazy_mmu_mode();
->>>                                 pte_unmap_unlock(start_pte, ptl);
->>>                                 cond_resched();
->>>                                 goto restart;
->>>                         }
->>>                 }
->>>
->>> We are increasing 1 for nr ptes, thus, we are holding PTL longer
->>> than small folios case? we used to increase 1 for each PTE.
->>> Does it matter?
->>
->> I thought about that, but the vast majority of the work is per-folio, not
->> per-pte. So I concluded it would be best to continue to increment per-folio.
-> 
-> Okay. The original patch commit b2f557a21bc8 ("mm/madvise: add
-> cond_resched() in madvise_cold_or_pageout_pte_range()")
-> primarily addressed the real-time wake-up latency issue. MADV_PAGEOUT
-> and MADV_COLD are much less critical compared
-> to other scenarios where operations like do_anon_page or do_swap_page
-> necessarily need PTL to progress. Therefore, adopting
-> an approach that relatively aggressively releases the PTL seems to
-> neither harm MADV_PAGEOUT/COLD nor disadvantage
-> others.
-> 
-> We are slightly increasing the duration of holding the PTL due to the
-> iteration of folio_pte_batch() potentially taking longer than
-> the case of small folios, which do not require it. 
+Also, add the index based lookup support and update the device tree
+bindings as per latest convention.
 
-If we can't scan all the PTEs in a page table without dropping the PTL
-intermittently we have bigger problems. This all works perfectly fine in all the
-other PTE iterators; see zap_pte_range() for example.
+Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+---
+Satya Priya Kakitapalli (3):
+      dt-bindings: clock: qcom: Update SM8150 videocc bindings
+      clk: qcom: videocc-sm8150: Add index based clk lookup
+      arm64: dts: qcom: sm8150: Add video clock controller node
 
-> However, compared
-> to operations like folio_isolate_lru() and folio_deactivate(),
-> this increase seems negligible. Recently, we have actually removed
-> ptep_test_and_clear_young() for MADV_PAGEOUT,
-> which should also benefit real-time scenarios. Nonetheless, there is a
-> small risk with large folios, such as 1 MiB mTHP, where
-> we may need to loop 256 times in folio_pte_batch().
+ .../devicetree/bindings/clock/qcom,sm8450-videocc.yaml      |  1 +
+ Documentation/devicetree/bindings/clock/qcom,videocc.yaml   |  3 ---
+ arch/arm64/boot/dts/qcom/sa8155p.dtsi                       |  4 ++++
+ arch/arm64/boot/dts/qcom/sm8150.dtsi                        | 13 +++++++++++++
+ drivers/clk/qcom/videocc-sm8150.c                           |  8 ++++++--
+ 5 files changed, 24 insertions(+), 5 deletions(-)
+---
+base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+change-id: 20240308-videocc-sm8150-dt-node-6f163b492f7c
 
-As I understand it, RT and THP are mutually exclusive. RT can't handle the extra
-latencies THPs can cause in allocation path, etc. So I don't think you will see
-a problem here.
-
-> 
-> I would vote for increasing 'nr' or maybe max(log2(nr), 1) rather than
-> 1 for two reasons:
-> 
-> 1. We are not making MADV_PAGEOUT/COLD worse; in fact, we are
-> improving them by reducing the time taken to put the same
-> number of pages into the reclaim list.
-> 
-> 2. MADV_PAGEOUT/COLD scenarios are not urgent compared to others that
-> genuinely require the PTL to progress. Moreover,
-> the majority of time spent on PAGEOUT is actually reclaim_pages().
-
-I understand your logic. But I'd rather optimize for fewer lock acquisitions for
-the !RT+THP case, since RT+THP is not supported.
-
-> 
->>>
->>>>                 nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
->>>>                                      fpb_flags, NULL);
->>>>
->>>> If we are not mapping the first page of the folio, then it can't be a full
->>>> mapping, so no need to call folio_pte_batch(). Just split it.
->>>>
->>>>>
->>>>>> +
->>>>>> +                       if (nr < folio_nr_pages(folio)) {
->>>>>> +                               int err;
->>>>>> +
->>>>>> +                               if (folio_estimated_sharers(folio) > 1)
->>>>>> +                                       continue;
->>>>>> +                               if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>>>> +                                       continue;
->>>>>> +                               if (!folio_trylock(folio))
->>>>>> +                                       continue;
->>>>>> +                               folio_get(folio);
->>>>>> +                               arch_leave_lazy_mmu_mode();
->>>>>> +                               pte_unmap_unlock(start_pte, ptl);
->>>>>> +                               start_pte = NULL;
->>>>>> +                               err = split_folio(folio);
->>>>>> +                               folio_unlock(folio);
->>>>>> +                               folio_put(folio);
->>>>>> +                               if (err)
->>>>>> +                                       continue;
->>>>>> +                               start_pte = pte =
->>>>>> +                                       pte_offset_map_lock(mm, pmd, addr, &ptl);
->>>>>> +                               if (!start_pte)
->>>>>> +                                       break;
->>>>>> +                               arch_enter_lazy_mmu_mode();
->>>>>> +                               nr = 0;
->>>>>> +                               continue;
->>>>>> +                       }
->>>>>>                 }
->>>>>>
->>>>>>                 /*
->>>>>>                  * Do not interfere with other mappings of this folio and
->>>>>> -                * non-LRU folio.
->>>>>> +                * non-LRU folio. If we have a large folio at this point, we
->>>>>> +                * know it is fully mapped so if its mapcount is the same as its
->>>>>> +                * number of pages, it must be exclusive.
->>>>>>                  */
->>>>>> -               if (!folio_test_lru(folio) || folio_mapcount(folio) != 1)
->>>>>> +               if (!folio_test_lru(folio) ||
->>>>>> +                   folio_mapcount(folio) != folio_nr_pages(folio))
->>>>>>                         continue;
->>>>>
->>>>> This looks so perfect and is exactly what I wanted to achieve.
->>>>>
->>>>>>
->>>>>>                 if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>>>>                         continue;
->>>>>>
->>>>>> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
->>>>>> -
->>>>>> -               if (!pageout && pte_young(ptent)) {
->>>>>> -                       ptent = ptep_get_and_clear_full(mm, addr, pte,
->>>>>> -                                                       tlb->fullmm);
->>>>>> -                       ptent = pte_mkold(ptent);
->>>>>> -                       set_pte_at(mm, addr, pte, ptent);
->>>>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>>>> +               if (!pageout) {
->>>>>> +                       for (; nr != 0; nr--, pte++, addr += PAGE_SIZE) {
->>>>>> +                               if (ptep_test_and_clear_young(vma, addr, pte))
->>>>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>>>> +                       }
->>>>>
->>>>> This looks so smart. if it is not pageout, we have increased pte
->>>>> and addr here; so nr is 0 and we don't need to increase again in
->>>>> for (; addr < end; pte += nr, addr += nr * PAGE_SIZE)
->>>>>
->>>>> otherwise, nr won't be 0. so we will increase addr and
->>>>> pte by nr.
->>>>
->>>> Indeed. I'm hoping that Lance is able to follow a similar pattern for
->>>> madvise_free_pte_range().
->>>>
->>>>
->>>>>
->>>>>
->>>>>>                 }
->>>>>>
->>>>>>                 /*
->>>>>> --
->>>>>> 2.25.1
->>>>>>
->>>>>
->>>>> Overall, LGTM,
->>>>>
->>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
->>>>
->>>> Thanks!
->>>>
-> 
-> Thanks
-> Barry
+Best regards,
+-- 
+Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
 
 
