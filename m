@@ -1,59 +1,82 @@
-Return-Path: <linux-kernel+bounces-101114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61FF687A29D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:22:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A91BD87A29F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 06:23:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEFA11F21D1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:22:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13CCD2824F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 05:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4691312B93;
-	Wed, 13 Mar 2024 05:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A865E12B93;
+	Wed, 13 Mar 2024 05:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="j4gXjK/q"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08B7111A9;
-	Wed, 13 Mar 2024 05:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IIKu5lI5"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84DC14005
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 05:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710307338; cv=none; b=QrttQSHwJQaXsxkUN+tlujuQ6EN+ZFkvHjNtjZBaGxo8l/31cxnNxfZwLZWCPyqsxrR3L8nlqfmsbaPpGcp05SMjxFN1H5Buj+5K/WWaSIy+5UMN2nMGi2DEFDCq+XBq/k2L50dbeYnLkRbM6qf/Cf51prqoHX7frMTq1HFX5us=
+	t=1710307426; cv=none; b=KGvmNKF/uvV9ypU0kPL7ezTtfysAAjTLOhrOxKg3TG/V2QNvtKChszg6Yu5Xs9TA7WmSTUqRrSQHo3ma7kgzMJ0SYNf7igvPyv53Qbjb0/ErSPdcEmh8GS7DZykoY5Wc2/UEBKSMQ25zMZiQPSiIRI+B7LWGR75BXSZk6VumT78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710307338; c=relaxed/simple;
-	bh=TDLZ8JzOACQCQokCdWVJIRKElg5w9ZfrCTFI5yrtP1A=;
+	s=arc-20240116; t=1710307426; c=relaxed/simple;
+	bh=zYil7VB1TCYdWVBYlwEPEVqd8EWzj5DvATtjlgOwLv0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HrC3Pb4dfuiRpGz3IrfYLCfpT0LthRGBUlue6Fhv2TAr+5VAXMnM+Qf8tbzUJeTbKU0CTfMOuzidLX7r29Z6ydNBrUwCFkv6vC451vEpkV09jO9p/9/Regm6WS0hOX6aHDXZN1f62qRJTi8shD2itWnCI3dBtaD1TLGi+tcV+ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=j4gXjK/q; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id A662D20B74C0; Tue, 12 Mar 2024 22:22:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A662D20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710307332;
-	bh=GUTohkD5BgI6P+4EcgS2Ta5LLd+OYJcdqIU+ix7d/sA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j4gXjK/qwYqjFw4v2jYwOhml2b/zXf3JrPggLUnLAhyd9+v/17d1/9SmnC60SlG0f
-	 SSjm+Fs0UX1fJuN8H9KAnOzI9OIRNP3XyjHs5DcJxCTEO70Gi6lmWUAaYVpPh+YeTT
-	 ofzHJY08lt1UItU/ZApQemK002xjVdvj2HljjPAE=
-Date: Tue, 12 Mar 2024 22:22:12 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Olaf Hering <olaf@aepfle.de>, Ani Sinha <anisinha@redhat.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination
- for keyfile format
-Message-ID: <20240313052212.GB22465@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
- <3bf8844a-3e19-4105-8cce-2b1f8f98d3bc@linux.microsoft.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=U27AjPQwL9WQWZ96PueKpE089m63QdyNUkmMEAHIi/9g9mR3k5vjkSVSDR8Sjr03zd1FLHv1dhTy5b1cRvWMewaL+lBDDpfE/+DefN4ZAJwJbKlBaRRuhENalvx0f4QI6dYL92lJ4hvYw0BbSoSUsZReoXej0ODk4BGb7ri5vPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IIKu5lI5; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6b5831bc8so488705b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710307424; x=1710912224; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JCdhNj8nwtztGikhrapa3sVqt7Ox4agy0aN+y1rOFmw=;
+        b=IIKu5lI5PCyZ4r7I1/i2o0/e6NVIghYcyIlxqGToNBYfXUYFdFC1xLymwLzB3SqrYc
+         bhS96H8PRMOtA7qc2ddD89jbv+rsl8e5KdWAMZpGZnUUOM9qaH5LRtyZi1ukJ6s9TSz3
+         DPI1pNZxs2iy9EZQNu8NqF9CTnd6SFtfhgceU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710307424; x=1710912224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JCdhNj8nwtztGikhrapa3sVqt7Ox4agy0aN+y1rOFmw=;
+        b=Auna8tVCzkROWPt+D7m9Dz/2rLaOCRSaB8Ob/rLcQFe91A1ApjuYssbGN6VsQOxAGi
+         mm6YSKDBZ8SKmgsA6VnugDR0Uj4fo+wf1QvtmujVxrcYdOs1bkfoKsjFv88IR7S+n5Ij
+         6fCGxZty9JKDrsSYmxSVf/gBGCD4fP5cE+T9oesjdaBks7CXvozrYgZ8iag510kD7GVw
+         Jwri1bRH9lNLrKM0XKUaSxLT86az+mlLDTkGcg6fb+PzYa/Z+CHjJXXrZH6E03yHTNJU
+         poEcJau7jCei9bN9iJK3bFSn3LO/BDAkOSI4n9bDcS2PZYz5DhKlh3BFP7CqlhHLAyNR
+         9ZNg==
+X-Forwarded-Encrypted: i=1; AJvYcCVaXOYS3+UNnd8Q8OeyvpWHyMorH6KK+yCpynKKBELTRfir4ltrGrlLEOE9Ret7vlTozToeoiHdlpc+euR6cAhl4yJ4RkMbcN4aNYhO
+X-Gm-Message-State: AOJu0YwU3KT7GKx1sEGkqfQdwdB5Np+fGx3lAjJ/Iy6rSkDiP7dH6KKV
+	mm4JXYojWdYOGlnZRzf7n3PXw3+EhqV/IN/6HUMz+KVW7oT1/xbzvRjGKSNXIcqA2C1d23o5pgY
+	=
+X-Google-Smtp-Source: AGHT+IH9R+us6nR+IwvQwvyyM4nIyZhEcwNSG04D99omPj917ht3+knS4iZkhrRYBAUX2jm+JhbjcA==
+X-Received: by 2002:a05:6a20:d904:b0:1a1:5039:afe2 with SMTP id jd4-20020a056a20d90400b001a15039afe2mr2559506pzb.19.1710307423947;
+        Tue, 12 Mar 2024 22:23:43 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a5-20020a170902ecc500b001db5bdd5e33sm2169948plh.48.2024.03.12.22.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 22:23:43 -0700 (PDT)
+Date: Tue, 12 Mar 2024 22:23:42 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Eric Biederman <ebiederm@xmission.com>, Shuah Khan <shuah@kernel.org>,
+	Mark Brown <broonie@kernel.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	"kernel@collabora.com" <kernel@collabora.com>
+Subject: Re: [Test Failure Report] exec: Test failures in execveat
+Message-ID: <202403122219.F96418D@keescook>
+References: <02c8bf8e-1934-44ab-a886-e065b37366a7@collabora.com>
+ <202403051256.7A50FE28E7@keescook>
+ <fd210d04-cc98-4e29-a051-bdb7e1367494@collabora.com>
+ <202403071238.AC7BD90@keescook>
+ <cf98ff2f-66a8-4800-855f-5c03c952b514@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,212 +85,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3bf8844a-3e19-4105-8cce-2b1f8f98d3bc@linux.microsoft.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <cf98ff2f-66a8-4800-855f-5c03c952b514@collabora.com>
 
-On Tue, Mar 12, 2024 at 09:58:03AM -0700, Easwar Hariharan wrote:
-> On 3/12/2024 5:38 AM, Shradha Gupta wrote:
-> > If the network configuration strings are passed as a combination of IPv and
-> 
->                                                                       *IPv4*
-> 
-> > IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
->                                          *does not/doesn't*
-> > configuration format.
-> > With these changes, the keyfile config generation logic scans through the
-> > list twice to generate IPv4 and IPv6 sections for the configuration files
-> > to handle this support.
+On Mon, Mar 11, 2024 at 10:08:36PM +0500, Muhammad Usama Anjum wrote:
+> On 3/8/24 1:39 AM, Kees Cook wrote:
+> > On Thu, Mar 07, 2024 at 02:22:27PM +0500, Muhammad Usama Anjum wrote:
+> >> I've tested this patch. Still getting same failures.
 > > 
-> > Built-on: Rhel9
-> > Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> 
-> As mentioned by Jakub[1], what value does this information provide?
-> Please follow Haiyang's suggestion [2] and put SKU and test information, or just
-> skip it.
-> 
-> [1] https://lore.kernel.org/all/20240307072923.6cc8a2ba@kernel.org/
-> [2] https://lore.kernel.org/all/DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com/
-Hi Easwar, unlike the other patch this one has details about the tests that were performed.
-Since this is Hyper-v VMs specific, I could not add details around SKU or LISA tests(as it
-could not be tested using LISA). In the last patch we had missed the IPv4, IPv6 combination
-testing(which had some design issues). That's why I feel it is important to call it out in
-this patch.
-> 
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > ---
-> >  Changes in v2
-> >  * Use calloc to avoid initialization later
-> >  * Return standard error codes
-> >  * Free the output_str pointer on completion
-> >  * Add out-of bound checks while writing to buffers
-> > ---
-> >  tools/hv/hv_kvp_daemon.c | 173 +++++++++++++++++++++++++++++----------
-> >  1 file changed, 132 insertions(+), 41 deletions(-)
+> > Okay, thanks for testing!
 > > 
-> > diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> > index 318e2dad27e0..ae65be004eb1 100644
-> > --- a/tools/hv/hv_kvp_daemon.c
-> > +++ b/tools/hv/hv_kvp_daemon.c
-> > @@ -76,6 +76,12 @@ enum {
-> >  	DNS
-> >  };
-> >  
-> > +enum {
-> > +	IPV4 = 1,
-> > +	IPV6,
-> > +	IP_TYPE_MAX
-> > +};
-> > +
-> >  static int in_hand_shake;
-> >  
-> >  static char *os_name = "";
-> > @@ -102,6 +108,7 @@ static struct utsname uts_buf;
-> >  
-> >  #define MAX_FILE_NAME 100
-> >  #define ENTRIES_PER_BLOCK 50
-> > +#define MAX_IP_ENTRIES 64
-> 
-> Is this a limitation defined by hv_kvp? If so, is it possible it may change in a later
-> version? A comment would help here
-Sure, would update accordingly
-> 
-> >  
-> >  struct kvp_record {
-> >  	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
-> > @@ -1171,6 +1178,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
-> >  	return 0;
-> >  }
-> >  
-> > +int ip_version_check(const char *input_addr)
-> > +{
-> > +	struct in6_addr addr;
-> > +
-> > +	if (inet_pton(AF_INET, input_addr, &addr))
-> > +		return IPV4;
-> > +	else if (inet_pton(AF_INET6, input_addr, &addr))
-> > +		return IPV6;
-> 
-> You can skip the else here...
-> 
-> > +	else
-> > +		return -EINVAL;
-> 
-> ...and you can skip the else here as well and just return -EINVAL
-right, will change this in the next version.
-> 
-> > +}
-> > +
-> >  /*
-> >   * Only IPv4 subnet strings needs to be converted to plen
-> >   * For IPv6 the subnet is already privided in plen format
-> > @@ -1197,14 +1216,71 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
-> >  	return plen;
-> >  }
-> >  
-> > +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-> > +				  int ip_sec)
-> > +{
-> > +	char addr[INET6_ADDRSTRLEN], *output_str;
-> > +	int ip_offset = 0, error = 0, ip_ver;
-> > +	char *param_name;
-> > +
-> > +	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
-> > +				    sizeof(char));
-> > +
-> > +	if (!output_str)
-> > +		return -ENOMEM;
-> > +
-> > +	memset(addr, 0, sizeof(addr));
-> > +
-> > +	if (type == DNS) {
-> > +		param_name = "dns";
-> > +	} else if (type == GATEWAY) {
-> > +		param_name = "gateway";
-> > +	} else {
-> > +		error = -EINVAL;
-> > +		goto cleanup;
-> > +	}
-> > +
-> > +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> > +				   (MAX_IP_ADDR_SIZE * 2))) {
-> > +		ip_ver = ip_version_check(addr);
-> > +		if (ip_ver < 0)
-> > +			continue;
-> > +
-> > +		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
-> > +		    (ip_ver == IPV6 && ip_sec == IPV6)) {
-> > +			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
-> > +			    (strlen(addr))) {
-> > +				strcat(output_str, addr);
-> > +				strcat(output_str, ",");
-> 
-> Prefer strncat() here
-> 
-> > +			}
-> > +			memset(addr, 0, sizeof(addr));
-> > +
-> > +		} else {
-> > +			memset(addr, 0, sizeof(addr));
-> > +			continue;
-> > +		}
-> > +	}
-> > +
-> > +	if (strlen(output_str)) {
-> > +		output_str[strlen(output_str) - 1] = '\0';
-> > +		error = fprintf(f, "%s=%s\n", param_name, output_str);
-> > +		if (error <  0)
-> > +			goto cleanup;
-> > +	}
-> > +
-> > +cleanup:
-> > +	free(output_str);
-> > +	return error;
-> > +}
-> > +
-> >  static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> > -				int is_ipv6)
-> > +				int ip_sec)
-> >  {
-> >  	char addr[INET6_ADDRSTRLEN];
-> >  	char subnet_addr[INET6_ADDRSTRLEN];
-> >  	int error, i = 0;
-> >  	int ip_offset = 0, subnet_offset = 0;
-> > -	int plen;
-> > +	int plen, ip_ver;
-> >  
-> >  	memset(addr, 0, sizeof(addr));
-> >  	memset(subnet_addr, 0, sizeof(subnet_addr));
-> > @@ -1216,10 +1292,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> >  						       subnet_addr,
-> >  						       (MAX_IP_ADDR_SIZE *
-> >  							2))) {
-> > -		if (!is_ipv6)
-> > +		ip_ver = ip_version_check(addr);
-> > +		if (ip_ver < 0)
-> > +			continue;
-> > +
-> > +		if (ip_ver == IPV4 && ip_sec == IPV4)
-> >  			plen = kvp_subnet_to_plen((char *)subnet_addr);
-> > -		else
-> > +		else if (ip_ver == IPV6 && ip_sec == IPV6)
-> >  			plen = atoi(subnet_addr);
-> > +		else
-> > +			continue;
-> >  
-> >  		if (plen < 0)
-> >  			return plen;
-> > @@ -1238,12 +1320,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> >  
-> >  static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
-> >  {
-> > -	int error = 0;
-> > +	int error = 0, ip_type;
-> 
-> nit: Can we keep ip_ver through all the functions for consistency
-sure.
-> 
-> <snip>
-> 
-> Thanks,
-> Easwar
+> > What environment are you testing under? It would seem like some unexpected
+> > userspace conditions exist that the test isn't prepared for. (I was able
+> > to reproduce one error with /bin/dash, for example, but not the others,
+> > so something must be different in the set up.)
+> I'm testing on Debian Bookworm with v6.1, v6.7 and next-20240304 kernels.
+> I've tested it on another VM which is also Debian Bookworm. The default
+> shell is dash on Debian as well.
+
+Thanks! Okay, I can reproduce these failures now under a Bookworm
+install. I'll keep investigating...
+
+-- 
+Kees Cook
 
