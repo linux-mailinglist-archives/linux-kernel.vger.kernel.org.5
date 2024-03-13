@@ -1,183 +1,277 @@
-Return-Path: <linux-kernel+bounces-101063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E79187A1CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:05:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49AC587A1CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF42B1F22EFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:05:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAD6EB21C7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6869DDA2;
-	Wed, 13 Mar 2024 03:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306CB101C1;
+	Wed, 13 Mar 2024 03:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="KXWf/hiA"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="cbZ+4SU0"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2060.outbound.protection.outlook.com [40.107.22.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E8CC13D
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 03:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710299142; cv=none; b=Cg3k51Krhro2u4moWjhURsGlbYP9jevGUkP7fruNQa4PGW2fvQyqoQXvlpluWbxDNPRBirEQ+tE172DNz5Ll3QB3T1v++1d52/T6GAZr6GxarU3i6DgV9QYLZx/TNWPIdX5uA3uEZ3ltlWwJApIMzmFCmIQfVQXh/GWudICE0IE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710299142; c=relaxed/simple;
-	bh=5AQVABSCCPA3GxKzRQmLPhnBYQjFMLEJmUur/wYzlLI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HHogJ2KIpN9xVBOJ4S1u7EM0L6+sVs/jeMNku/HdbZx7XWiFc2hXPAYwDfzQHimzfvqqvvcrBdnrYtxpBpxiCaNxOj5AhsmO3RTrA4lfupRBhCvibcbvQ3S0tcem/3cm836EfvNBQPTxyNLTPynJ4rPxS6dTrE66bHiGNSDoWz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=KXWf/hiA; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7810827e54eso462997885a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710299139; x=1710903939; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Kbf82l7XAPAahjc9O+Lns4/hY3cNPQ6gdkwG4sxvUl4=;
-        b=KXWf/hiAgPhAg7RsRLiDIUDtk35k7JBDA2mZZ4tXMCv6fAEeKjQSlyIx/ND7e5z79p
-         bYH/7CeOztnMA6UsLu8mnxJW1585NIzgGqTNY0U3C0xy1jvnLRA+G84zFxmeZ/7dck4y
-         6v8dRkIMoqQJgKZtXIllrHSrmGHpj1yirtUnpjZUVnpSkCN1kSciwza+oMnnS760rkwz
-         2YIifbIAnXG22TflrIjkAXUII7A0vhxJU2WWb7y5CfdfeTim1PpLe0yPK0/z6YJcPSv5
-         7sBVVXNSk9/S9IjIROpCfoqBx4Tmw85dqRDgAbg9PiJJiVfc2acGGAGIupdT3ItI2TiM
-         VwbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710299139; x=1710903939;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kbf82l7XAPAahjc9O+Lns4/hY3cNPQ6gdkwG4sxvUl4=;
-        b=PkAL9Z4ZIZXKDAk/Gk//UFti21lDO4UmZFwEs2+49uIfZAzCCB2zxzh+7msNnIQjvg
-         O2/TJ1XF1pcQvl0XoWQ6cjAkfBEr3iUVZaG3l+E0/H+sjVWH7LyAaSZ7DE55GnF//zJ+
-         UGrQtyytIYno8JWjLmK7geRs6wvUHH0KYf5uMLQFvunwV1HdEEs3mM0kK9rCb2FdEjP0
-         vb+g9XJj/q5gVh6s/aAH7Y2cfpABvNnUyhCCCST/06Je6eyYXDa//BpkdluPwHHa53DN
-         ggK3+Nj+0+8oS3gIKAGLYeQzuNgMC/Rkgg6H23FhFljedpw0JBbASQwDIb0yApOWxv/r
-         LdBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGItUZeUv3fSrARJSuJc55Tuj8E5VOXrxuR+dGRggZ44CD6SQC9uOw77PvrtKxFSuPB+4HQPqLCdATf2J1ZD3QDC1VFVSmBkXAW1hB
-X-Gm-Message-State: AOJu0YyWAKDaabpLZTAnFu+2W/CcDnTI38MkGt+pCb7YLq9Q1HurUHbA
-	uvtSKDMOHu97ae2MfXnl0wNfRa1wms+iIVfdzuKEyHJlJf4MXMEGlUgxryg+qUk=
-X-Google-Smtp-Source: AGHT+IGFDeMhxikLP+fXFmb/qaz+LTzsQ4Ifr2IOlIDzBr+zLzd26Ujac9cPg6+HSOdBcVSQtUKFiQ==
-X-Received: by 2002:ae9:c202:0:b0:788:7299:e79a with SMTP id j2-20020ae9c202000000b007887299e79amr5796096qkg.28.1710299139369;
-        Tue, 12 Mar 2024 20:05:39 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.8.176])
-        by smtp.gmail.com with ESMTPSA id i11-20020a05620a248b00b0078874151152sm1943779qkn.18.2024.03.12.20.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 20:05:39 -0700 (PDT)
-Message-ID: <06ebe952-c872-4406-bcb9-00b0b892fb6c@sifive.com>
-Date: Tue, 12 Mar 2024 22:05:37 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23251C13D;
+	Wed, 13 Mar 2024 03:07:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710299282; cv=fail; b=QwzciKQcS7xDBM5xiHjn1VwmX3aQX20ttnO2lxh6JftHhve5fk4treuHF284DAyi1Yx+70YLSYnRuA4YwnVPfa4mVt7HTRJW/aMFc+/glONEP7dYMR4wXr8UBISMmHEcgHexInnlyjE3sUs7EV4GE5x+P+GoU98i+x0udyyjgkk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710299282; c=relaxed/simple;
+	bh=6N+UWN0w/w05HcbygYq+cXFnePxiZqRiUjf2F3TM+zk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=sycAut4weplRQAZBMK3ROZigvpbEy/miIgNszlAuZ3EPeqRj9KoqJVY+oFgtrKOTkcE6uvg/haZgsN58cMc94O/Y4nem8UFa2DIRdeRSNUnQeAa9DZ0R3SV1XZ0a30DR3Gfy3An3SQY8LfVu0ro4p4mrA+5mJuvpN2eRSsAqfiQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=cbZ+4SU0; arc=fail smtp.client-ip=40.107.22.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QY0TPYJW/fSZvjowQNtsmLy9IWT93/oOoYMx3eiCkFo6+oKJUZ/Qwt5qdBpCJx7e8oQEAGm1xShSqJbyTN4Vn7NpS7Xdw7k2UKE6VlXVo1gWaSlJkgJSQjwLS8UyhG+2KEB16Gn2dF7aadstIcXyRDYXdMm8wYjKXoz2bcczph20z7ujo4Dy6OXOSci4FGUu5eVDAC/ISntBykJ0Xbhc8TPL2L5G6S7Bc/Wbp5mWHhwXRIFsxzC77GCD50RjqOdjfnkVj1DTjvjQL2rUFUdeVQq4gGpWEeZZqaZtg34stqbb/yKgZ41WxF9n/mOyMw11Z3KpjjQ9Inhn0Hvf3SAN8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7Y2+63qkamibIHazfBZkZgLlhqpjaHiCav9zP1+riYk=;
+ b=Lhodr49hADEzJfUYPvrYLnBUwmlBQlBmn42EjU3t2RVDAryANOMDSOlXOSbWfyvXKehCEScWI2yCtnykaRPURITT+hOXpPRagMzefgMcD3nlFZjJ4zvAzhBPx9zVwFdtdaseS1Z+yxGVPMp1v8yFlTCSVZ0S6iY6amHV4LobY7MBeHO+oxVIN8jGU0cUK4G27EYKYNuZyuF2wi1Rao+GygtYUh9+1110vkPGCTbfl2U0HFZ/zQNSjN2rniYLTAdcIT5lBAJ2hrOk/Rkaw7gtmufQgo88ejs4XOMk9w3tcVcisCuOy+qy28zWBCyHXOOHfSKE/DvKmEfal297LBpECA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7Y2+63qkamibIHazfBZkZgLlhqpjaHiCav9zP1+riYk=;
+ b=cbZ+4SU0lHBri5vu8M77RuiO54uVEGw8IKuc7flzITUL9jD6QEsK++QUBUqPamRjhzFGCA8zpOFPNXyxNHoCZjnjvIpwJsli5ggGCSJbKcemB/PlXmA4RqZaciIMJVCTl7uKnw/B+/kSjMOUgSaKv480hyLY5hzgznmHruNkt6M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM9PR04MB8523.eurprd04.prod.outlook.com (2603:10a6:20b:432::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Wed, 13 Mar
+ 2024 03:07:57 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
+ 03:07:57 +0000
+Date: Tue, 12 Mar 2024 23:07:47 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Xu Yang <xu.yang_2@nxp.com>
+Cc: Rob Herring <robh@kernel.org>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"shawnguo@kernel.org" <shawnguo@kernel.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"kernel@pengutronix.de" <kernel@pengutronix.de>,
+	"festevam@gmail.com" <festevam@gmail.com>,
+	dl-linux-imx <linux-imx@nxp.com>,
+	"peter.chen@kernel.org" <peter.chen@kernel.org>,
+	Jun Li <jun.li@nxp.com>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXT] Re: [PATCH v8 05/10] dt-bindings: usb: ci-hdrc-usb2-imx:
+ add restrictions for reg, interrupts, clock and clock-names properties
+Message-ID: <ZfEYg1BVTVMGAUJX@lizhi-Precision-Tower-5810>
+References: <20240312091703.1220649-1-xu.yang_2@nxp.com>
+ <20240312091703.1220649-5-xu.yang_2@nxp.com>
+ <20240312145035.GA2204647-robh@kernel.org>
+ <DU2PR04MB8822976F9F052E18D7951FA48C2A2@DU2PR04MB8822.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DU2PR04MB8822976F9F052E18D7951FA48C2A2@DU2PR04MB8822.eurprd04.prod.outlook.com>
+X-ClientProxiedBy: BYAPR05CA0002.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::15) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Fix spurious errors from __get/put_kernel_nofault
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240312022030.320789-1-samuel.holland@sifive.com>
- <ZfEVNbt9AMeVJS0k@ghost>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <ZfEVNbt9AMeVJS0k@ghost>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM9PR04MB8523:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4ef1b783-9229-4de1-5ceb-08dc430ac877
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	gS5uti5P1r4zrFdrIKFwTLZC3UM/+FjdhHwHG3cSzLucKrdBSJI6vBAnwm2QvdlkDGDKUVdLIqgaCxysO5X+qPc7xcFBSmb4x7Vc09sDt2Q8dE/7fbqiN6xOWJL4Y4WYT5Xr8aeo9cTxTGEiAIAqkcVQDstdDYmqAV0irSzEdMAMAM3kMOh+ZdJdlTna0BrdIr86hLK0tMWN9NQagh5+nOcbsylxin4VxjMVH0b0QkmMK1+6XlhDC20D/9x0LfK1wM40FIXb4AFVblUJk2Zd3CPugi1gTu7GhAP8qJNTlXM05R/YsYhbu83+LZU3yCpibZ3G+I8+57/Nkl6Jxkb30gtzq+2hgHF/mReQuN2nqLjO+K64Xt59au+JuiluV8S3mRTumP8R+r6abbPoVhHSLQNhSTxpmWR7xP8nhhZot2fg5BZOGs0txBa/lopUPqXmvF+vig/FOgK7j7uLI0ll6ueGqKNHSvvlEcEnlSVqg8NVyOkp1h9AljN5sJwEeD4OMAX3WGIeF0k1lbc5+o7T6oBx/O00u06arSsFsxmWWJdo53lhKcbFxZ65ZpvMhUONvD9WjfmOAssOua2MFfAjlHQC0ivokQ6iBmU+/OeASParzHtfXxT5a8tmRQoU+9O2oPmdUN379U8bNmNHVO8q6pfnXqxVwRPO3Ju3Zij6Hn+nJgWdfHaxVel9yKdB+88mFWJVSTR4OMzabg/0jTDeHRIanqM8FCLKcNrVPvL0Uxs=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(52116005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?cdFVkxvAeRw8vMZFHtsc4xAMArMGALauZxe8sR/pabG3BVrvwUVvWaX2Lk5O?=
+ =?us-ascii?Q?R90GWXHhKcYlnpgiLu1lmLz7UZtyJxQ4rGnTcK+cHJAGkKOI1P045/WS/2yV?=
+ =?us-ascii?Q?bj54n326Mn6zfOwy98TwmGRtehiuxMIygP30am5IvjrjDjaEUMCni8EK9Bi5?=
+ =?us-ascii?Q?gpLikAJ+OuSDn7NIX43XGLI5IQKBtMZ4BovyQ7nAPijdxIZsclfsimJP/mJm?=
+ =?us-ascii?Q?Qc2HnFPNggQ+EfVMbPMiZynnRZGBBJnLNN70acsrieSgqB0u2vMlylNm/qsT?=
+ =?us-ascii?Q?oK59FcVp0gbuGTdjVHuHyYMHkgfj/HVRpf8+YkdViOAOhPGzaqTiNXeI+iNo?=
+ =?us-ascii?Q?Zhe0XycXvvtxWcn8RRfiPx/mkA2OEvbP8FErHj/3x2QnuZet8efUQm2c9Q/N?=
+ =?us-ascii?Q?HFbHdi0UmWFJu38cXTifC7aZsFz0DsE7d1xrMZ37sTglTXFDnrM7yMaxx9Y+?=
+ =?us-ascii?Q?j031aacIUXI2040iH8zoc5H1BhbqXWn32i+ZR9MWT+qaxGdzT+8jRhBoa6uY?=
+ =?us-ascii?Q?BAZnP3UJEzJyLYr/Dtvoi/xGRLQralqfBNgRffudd16aJMOfhDKzIYjeWsm5?=
+ =?us-ascii?Q?iaMIlkqbT7QJSsOPzh1lZ/ONXsx7MqC1jCbaiKYi7VqSlnp4iv+PR6DUPiHz?=
+ =?us-ascii?Q?j+wXTQGHr1pKIvOwLNiE2yJTu4qvbgkflYtTdSqRzZ0LLMA36lVyCgIttXOI?=
+ =?us-ascii?Q?u9jT1gfZygsRZXmo/43xpV69LxuL6QBWdRKET6jgKANpF5A1GZu4Ga09MDpE?=
+ =?us-ascii?Q?QEzEhf6xGiFhiOtH/knNH86Ba0LV9DIUm6BxTJHyyyotJmeADvvdUIXFi7h/?=
+ =?us-ascii?Q?9nXK9XTA88AAdv01iu8ZfmWpWnUk56gOigZyEIvhFRdCpBs7GX4lT4urc6n5?=
+ =?us-ascii?Q?XpBvsUzBKvgcdGcqUGzU3rDqlnwZvxrBKW31e/Bc9elv/4vqkqeCLewV8Alx?=
+ =?us-ascii?Q?Gh+/ELw120Z3bNZkTa/Qcfu/r7P+1zNCM52fao7F3v5YmVTWZUQY2xdwxHKr?=
+ =?us-ascii?Q?pqY/EI29ZxJzJfBaGcjeBD9TnbIECoeeJMv1ebRBVW583OLUfKtuZshDlmK5?=
+ =?us-ascii?Q?FWfhdG13QUQ5tKcx6Uz7afp6hcTYTIKUrcEDKnwpkEluNSm+S2WzzGZoQWlF?=
+ =?us-ascii?Q?oKGJIIEG4Anw0aUZh2+pp5W07RNRrfFHomz/qBYC/amTbuV2+SVJwMm61iGQ?=
+ =?us-ascii?Q?6SysnL100zjPwGCPtnMuSkt9JJi+cVFakuq6IdaFsYkzaz0/WDTQDdxE5YE2?=
+ =?us-ascii?Q?2fUFNDcgcIQJ64QgRw7sIAzWFFoCUyv3wXcyBROJ6PXEElk5lOEY3xa6rhYC?=
+ =?us-ascii?Q?33BV5Rz+DRPSRgF10npP4Er2U2027goyr/I8iO8u2sd04UoJ7iqcRqW0/eDt?=
+ =?us-ascii?Q?HsAm25lvdPRunfDp3m+9kVlb6JymdWwuK7L1Zzz4HaR47Ajfugku5op6wSAs?=
+ =?us-ascii?Q?+TuD09FJrTIqQJ98jnBxm5sI+V4MahaMH29YeAMMmSoUmlCkJ+X3ayQ1GDGj?=
+ =?us-ascii?Q?QyfljjqDtDRQHkER/LSEL1WPvwdlTW54z1Ab4aZ5741AMW1dnpsgK4Hq5tkJ?=
+ =?us-ascii?Q?eqsZP1bNmkvgTQgNaX/ZWTrstZOXXqUzoXLFOsXI?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef1b783-9229-4de1-5ceb-08dc430ac877
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 03:07:57.3140
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mzAK4Uhb2okolClas4YUmYp/4HAIf6OFxb0JqfQb7DE8sL3qrtQfN/H/v5tX2LumYINlUGnq5f8kNWfBF+RV6Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8523
 
-On 2024-03-12 9:53 PM, Charlie Jenkins wrote:
-> On Mon, Mar 11, 2024 at 07:19:13PM -0700, Samuel Holland wrote:
->> These macros did not initialize __kr_err, so they could fail even if
->> the access did not fault.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: d464118cdc41 ("riscv: implement __get_kernel_nofault and __put_user_nofault")
->> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->> ---
->> Found while testing the unaligned access speed series[1]. The observed
->> behavior was that with RISCV_EFFICIENT_UNALIGNED_ACCESS=y, the
->> copy_from_kernel_nofault() in prepend_copy() failed every time when
->> filling out /proc/self/mounts, so all of the mount points were "xxx".
->>
->> I'm surprised this hasn't been seen before. For reference, I'm compiling
->> with clang 18.
->>
->> [1]: https://lore.kernel.org/linux-riscv/20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com/
->>
->>  arch/riscv/include/asm/uaccess.h | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
->> index ec0cab9fbddd..72ec1d9bd3f3 100644
->> --- a/arch/riscv/include/asm/uaccess.h
->> +++ b/arch/riscv/include/asm/uaccess.h
->> @@ -319,7 +319,7 @@ unsigned long __must_check clear_user(void __user *to, unsigned long n)
->>  
->>  #define __get_kernel_nofault(dst, src, type, err_label)			\
->>  do {									\
->> -	long __kr_err;							\
->> +	long __kr_err = 0;						\
->>  									\
->>  	__get_user_nocheck(*((type *)(dst)), (type *)(src), __kr_err);	\
->>  	if (unlikely(__kr_err))						\
->> @@ -328,7 +328,7 @@ do {									\
->>  
->>  #define __put_kernel_nofault(dst, src, type, err_label)			\
->>  do {									\
->> -	long __kr_err;							\
->> +	long __kr_err = 0;						\
->>  									\
->>  	__put_user_nocheck(*((type *)(src)), (type *)(dst), __kr_err);	\
->>  	if (unlikely(__kr_err))						\
->> -- 
->> 2.43.1
->>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+On Wed, Mar 13, 2024 at 02:48:00AM +0000, Xu Yang wrote:
 > 
-> I am not able to reproduce this using Clang 18 with
-> RISCV_EFFICIENT_UNALIGNED_ACCESS=y on 6.8. However I can see how this
-> could be an issue.
+> > 
+> > On Tue, Mar 12, 2024 at 05:16:58PM +0800, Xu Yang wrote:
+> > > Add restrictions for reg, interrupts, clock and clock-names properties
+> > > for imx Socs.
+> > >
+> > > Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> > >
+> > > ---
+> > > Changes in v4:
+> > >  - new patch since v3's discussion
+> > >  - split the reg, interrupts, clock and clock-names properties into
+> > >    common part and device-specific
+> > > Changes in v5:
+> > >  - keep common property unchanged
+> > >  - make if-then more readable
+> > >  - remove non imx part
+> > > Changes in v6:
+> > >  - new patch based on ci-hdrc-usb2-imx.yaml
+> > > Changes in v7:
+> > >  - no changes
+> > > Changes in v8:
+> > >  - remove if:else:if:else:if:else block
+> > > ---
+> > >  .../bindings/usb/chipidea,usb2-imx.yaml       | 80 +++++++++++++++++++
+> > >  1 file changed, 80 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.yaml
+> > b/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.yaml
+> > > index cdbb224e9f68..fb1c378dfe88 100644
+> > > --- a/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.yaml
+> > > +++ b/Documentation/devicetree/bindings/usb/chipidea,usb2-imx.yaml
+> > > @@ -49,6 +49,12 @@ properties:
+> > >            - const: fsl,imx6ul-usb
+> > >            - const: fsl,imx27-usb
+> > >
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  interrupts:
+> > > +    maxItems: 1
+> > > +
+> > >    clocks:
+> > >      minItems: 1
+> > >      maxItems: 3
+> > > @@ -144,6 +150,80 @@ allOf:
+> > >              - const: idle
+> > >              - const: active
+> > >
+> > > +  # imx27 Soc needs three clocks
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          const: fsl,imx27-usb
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          minItems: 3
+> > > +          maxItems: 3
+> > 
+> > The max is already 3, so drop maxItems.
 > 
-> Going down the rabbit hold of macros here, I end up at
-> arch/riscv/include/asm/asm-extable.h where the register that hold 'err'
-> is written into the __ex_table section:
+> Okay.
 > 
-> #define EX_DATA_REG(reg, gpr)						\
-> 	"((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
+> > 
+> > > +        clock-names:
+> > > +          items:
+> > > +            - const: ipg
+> > > +            - const: ahb
+> > > +            - const: per
+> > > +
+> > > +  # imx25 and imx35 Soc need three clocks
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            enum:
+> > > +              - fsl,imx25-usb
+> > > +              - fsl,imx35-usb
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          minItems: 3
+> > > +          maxItems: 3
+> > 
+> > Same here.
 > 
-> #define _ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)		\
-> 	__DEFINE_ASM_GPR_NUMS						\
-> 	__ASM_EXTABLE_RAW(#insn, #fixup, 				\
-> 			  __stringify(EX_TYPE_UACCESS_ERR_ZERO),	\
-> 			  "("						\
-> 			    EX_DATA_REG(ERR, err) " | "			\
-> 			    EX_DATA_REG(ZERO, zero)			\
-> 			  ")")
+> Okay.
 > 
-> I am wondering if setting this value to zero solves the problem by
-> hiding another issue. It seems like this shouldn't need to be
-> initialized to zero, however I am lost as to how this extable setup
-> works so perhaps this is the proper solution.
+> > 
+> > > +        clock-names:
+> > > +          items:
+> > > +            - const: ipg
+> > > +            - const: ahb
+> > > +            - const: per
+> > > +
+> > > +  # imx7d Soc need one clock
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          items:
+> > > +            - const: fsl,imx7d-usb
+> > > +            - const: fsl,imx27-usb
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          maxItems: 1
+> > > +        clock-names:
+> > > +          maxItems: 1
+> > 
+> > What's the name?
+> 
+> Can I not specify the name since the macro definition for USB
+> controller clock in clock.h is recognizable and the driver doesn't
+> get this clock by name rather index?
 
-extable works by running the handler (selected by EX_TYPE_*) if some exception
-occurs while executing that instruction -- see the calls to fixup_exception() in
-fault.c and traps.c. If there is no exception, then the handler does not run,
-and the err register is not written by ex_handler_uaccess_err_zero().
+If clock-names is not required for fsl,imx7d-usb, 
 
-If you look at __get_user_asm(), you can see that the err register is not
-touched by the assembly code at all -- the only reference to %0 is in the
-extable entry. So if the macro that declares the error variable doesn't
-initialize it, nothing will.
+clock-names: false
 
-Compare __get_user() and __put_user() which do initialize their error variable.
+If driver use index to get clock, why need clock-names at other platform?
+I supposed these should be the same for all chips.
 
-Regards,
-Samuel
+Frank
 
+> 
+> Thanks,
+> Xu Yang
+> 
 
