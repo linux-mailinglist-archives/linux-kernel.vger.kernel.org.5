@@ -1,134 +1,105 @@
-Return-Path: <linux-kernel+bounces-101327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2089987A592
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:09:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD48087A59F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 603E2B22107
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:09:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D895B1C21E7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AF4939867;
-	Wed, 13 Mar 2024 10:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C5A39854;
+	Wed, 13 Mar 2024 10:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Qwx0mRY4"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itFTvRxf"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D86E39860;
-	Wed, 13 Mar 2024 10:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA421CF87;
+	Wed, 13 Mar 2024 10:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710324555; cv=none; b=tBK+fOMm5Uaoz+PM8pAO5GwhyUK5P2nj7pxSw8p1f6UEFkqpTEyXr14yojFNcs4EgqvyibbXs44zCSMt9N/TV/fp2WRcBiCqdlJ7n9p5E1cLww9l1l0jTnm2EMt8L9je1TZAukTgraCLZpsqWFw8Mg1ckzqH9nnczsPFBECT4ck=
+	t=1710324919; cv=none; b=UO7MhiwyK/LHPp9D5aC/RD++oWlVSE91TqfeXnG/5JtZbi5e8OM420P1PCeT2ABXvK8BJljtcZK2IwjED1cjR2/8CimnDOI/JiIouzT3dsSwV62XKGhM8vdc5XMUqB/DQTDdrcQxWyrR9N6AOBVdh9Ur4EMqDmMjgHNKG6G8yUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710324555; c=relaxed/simple;
-	bh=fWGLhnxLEh7eGyNf4dii+sqAe5pXpPJ9tpcuMouGdHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cq9XIrJU30oLPkxgMFH4ruGfb0ppsCvtASm00Dn0fRG8GSmIhXNhmijq9TS04EZmyKlZRhyAsAl7qERinbpaTWtbJ2b5ewOZwVPI+7dSi2eFYc/cde3kJvX8d/69AVCOq4Qru0iLaRZ2kWlwHz418/bi3jFRqi1bKx25iLOje4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Qwx0mRY4; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=dqscFof3UIk2f9tQdsmkjOVmktSh5/Fa3QHjZqZqyQQ=; b=Qwx0mRY4Q4QHwU75DoBroYRY8q
-	FFLCzsbtgdqoG2GoFm/PbyH3Aln5E+hgpBN9cgAGb39bcabXs7J5s6EMJsitA6hoHC7tC7pu1YAyB
-	geD/7sVzA9qXD/MV3lHiHuNJVY4aa5ziK69BPhnPqfo4f6BRNe/HOKpDUrLnsKbdcGf0/tuaLXvYl
-	vpIV/Id/Y1CHel5mzYm69GJrHkODL0iQ4URqFUWdLPWStVbIyER+OUwzBrxpsCPI+uvynp15Ogv9W
-	at6YrOyQxED8ZiPO5pp9XZF+/QcjsI1QDPwyeUZ/Gdh8s1ApS4pEvkqnR60Y4DW+22GAoAME911Gl
-	+Vaoi/Ow==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33378)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rkLXn-0007X4-1k;
-	Wed, 13 Mar 2024 10:09:07 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rkLXk-0004Pg-F8; Wed, 13 Mar 2024 10:09:04 +0000
-Date: Wed, 13 Mar 2024 10:09:04 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Duanqiang Wen <duanqiangwen@net-swift.com>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH clk] clk: clkdev: add error messages for name exceeding
- maximum length
-Message-ID: <ZfF7QE0Jqok2uKrL@shell.armlinux.org.uk>
-References: <20240313064252.50233-1-duanqiangwen@net-swift.com>
+	s=arc-20240116; t=1710324919; c=relaxed/simple;
+	bh=aXTCLlS4y4QEhlbLUhInaMoXhFqY3QaANvShb1ApMks=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hoy0e+bVhtySffYrLAq1x+ftEt1xQ2P/KdYKZyy8e2O/yr1SLR5lu5nUnMHfY0MKBbg+20mKeftXir39v3PntVaNr9BVDjVHWQH/QqUQSifRFfnUtjoanaOjNqVKGGtw1Ck8JON/FyYk8i6hsO4XsmLGZw9Ad0CsiqEQatued8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itFTvRxf; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29a5f5ea920so857915a91.1;
+        Wed, 13 Mar 2024 03:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710324917; x=1710929717; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NQiuGj7PdiBNl0+f5A7u09zOwXRzHIjc9Zi58L9ZCcU=;
+        b=itFTvRxfAeQ1DK6pN88wNWdkvu8O3xrSg14bCgtWKroZyhaKeqgTbhKdTQ4fr3N+zE
+         y50eZAHAe5/bMDSSReRMw3CofkE+9B53RwLejOWFncUhcLNrWWZHKcswj69L0KFZmeFM
+         RJTsVDJkZOFs/Ir5v8UFtKk0KW8t6qbUa2PQNLEHkPYCcqKna1Bd0b5Bto/MCtbg5NsD
+         flsd9HKvru+hMlbQ0ixB58WonQPYmZdAUGUbKVNpVUit7SkcI60mBzyScO5yYe+8RP+e
+         6SI3H4SaZ6GJDlohLpnb1GESQJGjs3ZZ0WX+eWeHTOQlJvtOzXUjpeBOlQzAHPOYI+Dy
+         BgLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710324917; x=1710929717;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NQiuGj7PdiBNl0+f5A7u09zOwXRzHIjc9Zi58L9ZCcU=;
+        b=SYfDlImS+49RnoVIMHKZeD8mF7s6AQzmwN7LmfLZSVcoYVfyi0lgspF25jvDv6wBrK
+         b1U2zHfboBkj1McMvVq7waQCMyLYktw5QQop1hJidT7L6Hc1cYwPyKcgPylFXjskFbPW
+         Uf1TbF62SksgQthRFccqunpiDTwvOdKVw2fiAgH9XkinJVPKpHkdrLpMxAYI0ohc6iQC
+         +rtvd9eVbJUCFVonrszcoXqAVQCI4Tf25J/wj0Tiq59V7tZJkzvwJMDGpEKODSPzLkFB
+         HKXhiwzFuICejJIekrrsJ9nvgg+IkzyetgHp1f/Fm7+5utxTctYRGRDG4D2fLq7xHb0j
+         wKpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVgmm652KCXwFcIql+U8hWg56tzH5OMyo1lSh9a/SEr7GWLzeXMc45fbJ1K2gbqv9gafKUJMjupkxw0LauRASz1J6kIECrnBY+ig5XUYp2NcC9AFiabpJACphM+hD+iRDfs2ZW6KTT6
+X-Gm-Message-State: AOJu0YyUwAYVW0RpU1IRF27CvxKvn2Yak8+9UUt/WhlcXAdjsfn1zvDs
+	JDoBnz/4+34Zho7qUtNPRZHUW20CIAyuReCnBQktFZOd+9V/gFNmmRaBRuLLeLZCex8eiZsbE8L
+	M/gQyi6uljz2sjN6cRFt8G1ve6Y0=
+X-Google-Smtp-Source: AGHT+IFdJFcl/SekdaJH+/L4KOclnX+rJ0Kbf80hXyVdh/bz4CV/ejFTQkgi9XmXAQjX0FJCQ+yCTkyB9cnpDtcMmME=
+X-Received: by 2002:a17:90a:7186:b0:29b:ff24:4426 with SMTP id
+ i6-20020a17090a718600b0029bff244426mr1061401pjk.2.1710324916981; Wed, 13 Mar
+ 2024 03:15:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313064252.50233-1-duanqiangwen@net-swift.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240307-sdma_upstream-v2-0-e97305a43cf5@nxp.com> <20240307-sdma_upstream-v2-4-e97305a43cf5@nxp.com>
+In-Reply-To: <20240307-sdma_upstream-v2-4-e97305a43cf5@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Wed, 13 Mar 2024 07:15:04 -0300
+Message-ID: <CAOMZO5ARM2pS93jLjpYZRfLU-tohuDXUZxDrWFjvVBGtH2t_aQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] dmaengine: imx-sdma: Add i2c dma support
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	NXP Linux Team <linux-imx@nxp.com>, dmaengine@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	imx@lists.linux.dev, Robin Gong <yibin.gong@nxp.com>, 
+	Clark Wang <xiaoning.wang@nxp.com>, Joy Zou <joy.zou@nxp.com>, 
+	Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 13, 2024 at 02:42:52PM +0800, Duanqiang Wen wrote:
-> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-> index ee37d0be6877..620dc1e80b48 100644
-> --- a/drivers/clk/clkdev.c
-> +++ b/drivers/clk/clkdev.c
-> @@ -158,6 +158,9 @@ vclkdev_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
->  	va_list ap)
->  {
->  	struct clk_lookup_alloc *cla;
-> +	struct device *dev;
-> +
-> +	dev = clk_hw_get_dev(hw);
+On Thu, Mar 7, 2024 at 2:33=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
+>
+> From: Robin Gong <yibin.gong@nxp.com>
+>
+> New sdma script (sdma-6q: v3.5, sdma-7d: v4.5) support i2c at imx8mp and
 
-Sorry, but no, clkdev should have minimal dependencies on CCF (it was
-designed to be completely independent). I'd prefer not to add this.
-Just print the formatted dev_fmt+ap and the con_id when reporting
-errors.
+v3.5/ v4.5 is from 2019, so not "new".
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git=
+/commit/imx/sdma/sdma-imx6q.bin?id=3D55edf5202154de59ee1c6a5b6b6ba6fa545715=
+15
 
->  
->  	cla = kzalloc(sizeof(*cla), GFP_KERNEL);
->  	if (!cla)
-> @@ -165,11 +168,19 @@ vclkdev_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
->  
->  	cla->cl.clk_hw = hw;
->  	if (con_id) {
-> +		if (strlen(dev_fmt) >= MAX_CON_ID) {
+I think you meant  v3.6/v4.6 that Joy Zou has just submitted:
 
-This is wrong (uses dev_fmt not con_id). Also, use sizeof(cla->con_id)
-to test against.
-
-> +			pr_err("%s:con_id string cannot be greater than 16 characters\n", dev_fmt);
-
-Cleanup?
-
-> +			return NULL;
-> +		}
->  		strscpy(cla->con_id, con_id, sizeof(cla->con_id));
->  		cla->cl.con_id = cla->con_id;
->  	}
->  
->  	if (dev_fmt) {
-> +		if (strlen(dev_fmt) >= MAX_DEV_ID) {
-
-This is also wrong. The length of the format string does not give any
-information on how long the resulting string actually is.
-
-> +			pr_err("%s:dev_id string cannot be greater than 20 characters\n", dev_fmt);
-
-Cleanup?
-
-> +			return NULL;
-> +		}
->  		vscnprintf(cla->dev_id, sizeof(cla->dev_id), dev_fmt, ap);
-
-Using vsnprintf() here and checking whether the return value is larger
-than sizeof(cla->dev_id) would be better.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+https://lore.kernel.org/linux-firmware/20240313071332.1784885-1-joy.zou@nxp=
+com/T/#u
 
