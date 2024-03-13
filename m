@@ -1,140 +1,129 @@
-Return-Path: <linux-kernel+bounces-101624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5383C87A996
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:36:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8C6987A99A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:37:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A4C01F23ECF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:36:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 067E21C2204C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57B03C488;
-	Wed, 13 Mar 2024 14:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2CA79DD;
+	Wed, 13 Mar 2024 14:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZEzqcJeG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="wV45Rr4v"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10166290A;
-	Wed, 13 Mar 2024 14:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F814A07;
+	Wed, 13 Mar 2024 14:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710340577; cv=none; b=lIM8F4iw7d6eomWf8lL9/dz7BW0X1dkHzh3g1zfWo7vTqqcLXCOEMPo/x9Pfx2rQNWTzVVdGhLn1HYjBgJ9Yr+/MBXRS7wvBVbgKT176zNdlYQ8jG4lhf98nOQRoYwrJ6rKbEcHj6Ho2xTYiDF0864eT8ZHpxpgKVde5KWNYdk0=
+	t=1710340615; cv=none; b=lGraK+qijlyPcSHMvPS0K8le/63rAFsBxgc2bI8K4VKE6GZ/b/p4QkYGOt/cvMZQhunmZySPzhiOtOFGtirxQzLtgyTMplPVN90czdnEr34mnVoJrPeOTnm5R46MQdW6YrpjgPeMhBKYvLRjvyA6vJhbA9Jttm16SCRIdSh5TGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710340577; c=relaxed/simple;
-	bh=XFDXYmXdUS9RT2lDf6b0r0Sb31orMCrxt5jtIkbRWKA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=gtWU/utdAouDEUW/5g1K9SuiZgVbXbHlSlnSIyN6zebr8ufxZs7pxXaGluO0V1AIC9EWTSAiQrnlWBxF99cacrybZ+DQEzK9jE8PactcFXytzPPE1tkl4PpI5AIe8zxNL/Gug4ANuTI62uGBTxoMVX9NMbvMgRggKF0KcGC5Oc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZEzqcJeG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41A6CC433F1;
-	Wed, 13 Mar 2024 14:36:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710340576;
-	bh=XFDXYmXdUS9RT2lDf6b0r0Sb31orMCrxt5jtIkbRWKA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ZEzqcJeGxPPNYFIZRysA/arw8xKmCsgFAtuJNh6CcaGinac4jHPx0j8sRkhwKjbeG
-	 2K66SzJFHUpMdstY/bqu5mF7jniMbPjEs6OsS2AO+4KMoqx9Z00vF4N243TSn7RK//
-	 LDGvlE//xarvy1U0wLhCPnEWUMDbs+ySoXgXfs6LNUEisMlEYFpeELOwDhChL49fJc
-	 66pD5Fz0GtUEGh11BON/V1DjMBIYNy7WUCvoEh7Zw75IJFqYCGfoirAOHQcZdUBZ+w
-	 g4eAR37hfXwlKzswREpP7UkjTykH6a7nFsIOnZeEFHUXkyrxX6XZpXzUMExEOFyY50
-	 v7uwsn4hsoyvA==
-Date: Wed, 13 Mar 2024 09:36:14 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: Implement shutdown() callback to properly
- reset the endpoint devices
-Message-ID: <20240313143614.GA916555@bhelgaas>
+	s=arc-20240116; t=1710340615; c=relaxed/simple;
+	bh=aBISMkyzcuXC4tndXkf0VYcmI9kprzzcj/ehlqHMdAQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CrJxc8VdFGc0tfJXf3KQviAC2BKw5mQ3bkbX6pT2yuBOOXbc9CNtxX62X/xLdXRGFosMuDgRZGbUBDfRdlsv/AkM3pGQhwPF6U4BTb7NVvpEzf7hL7vTpIO55dYyYh3TnRt8hVVX7o6L1fvJt0osuoQsgsEqoZ4uknNANYUvRSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=wV45Rr4v; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710340612;
+	bh=aBISMkyzcuXC4tndXkf0VYcmI9kprzzcj/ehlqHMdAQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=wV45Rr4voGJHrKXICE5+Eye7hrS2Pjf//lLfPMsweUmrMtaGowHMg8I1ftEp0aoc6
+	 vVBZcOLf4o11Mg5tTnufw6SyfR0TmnYh7euYN5U/mbmh4D+veduK3L1cVcQzJtfwf8
+	 3xTrl9JpUKtiEXdqBnujwEENhAYfYbBGvY78+vuV4+LxRKjiguO64XhrhCNeecyRoN
+	 QZR3ZhhDixM01wErO5qokiWMlKaRyx4SfSpnoi9s4eVgvGyGB75R5QPDv7h5kpVTPk
+	 4auppMOqkpTTs4wsJ/OuuvWTViAs6wdbnrHFPzTu7gtp0SfvfQWyasvBTJhcjCEcls
+	 O/G14egc519mg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9A15437813C4;
+	Wed, 13 Mar 2024 14:36:51 +0000 (UTC)
+Message-ID: <d1bdf9a6-3082-4076-99de-e49d59843244@collabora.com>
+Date: Wed, 13 Mar 2024 15:36:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313-pci-qcom-shutdown-v1-1-fb1515334bfa@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8192-asurada: Update min voltage
+ constraint for Vgpu
+Content-Language: en-US
+To: Pin-yen Lin <treapking@chromium.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ devicetree@vger.kernel.org
+References: <20240313135157.98989-1-treapking@chromium.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240313135157.98989-1-treapking@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 13, 2024 at 05:39:22PM +0530, Manivannan Sadhasivam wrote:
-> PCIe host controller drivers are supposed to properly reset the endpoint
-> devices during host shutdown/reboot. Currently, Qcom driver doesn't do
-> anything during host shutdown/reboot, resulting in both PERST# and refclk
-> getting disabled at the same time. This prevents the endpoint device
-> firmware to properly reset the state machine. Because, if the refclk is
-> cutoff immediately along with PERST#, access to device specific registers
-> within the endpoint will result in a firmware crash.
+Il 13/03/24 14:51, Pin-yen Lin ha scritto:
+> Although the minimum voltage listed on the GPU OPP table is 606250 uV,
+> the actual requested voltage could be even lower when the MTK Smart
+> Voltage Scaling (SVS) driver is enabled.
 > 
-> To address this issue, let's call qcom_pcie_host_deinit() inside the
-> shutdown callback, that asserts PERST# and then cuts off the refclk with a
-> delay of 1ms, thus allowing the endpoint device firmware to properly
-> cleanup the state machine.
+> Set the minimum voltage to 300000 uV because it's supported by the
+> regulator.
+> 
+> Fixes: 3183cb62b033 ("arm64: dts: mediatek: asurada: Add SPMI regulators")
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
 
-I guess this 1ms delay is the PERST_DELAY_US hidden inside
-qcom_ep_reset_assert()?  I assume the refclk disable is done by
-clk_bulk_disable_unprepare()?
+Okay, that makes sense, I agree.
 
-  #define PERST_DELAY_US 1000
+..but.
 
-  qcom_pcie_shutdown
-    qcom_pcie_host_deinit
-      qcom_ep_reset_assert
-        gpiod_set_value_cansleep(pcie->reset, 1);
-        usleep_range(PERST_DELAY_US, PERST_DELAY_US + 500);  <--
-      phy_power_off(pcie->phy)
-      pcie->cfg->ops->deinit()
-        qcom_pcie_deinit_...
-          clk_bulk_disable_unprepare                         <--
+The datasheet never mentions 0.3V as vmin - infact, it does mention that the
+vsel is selected as (0V +) 6250 * Vsel, but the brief spec says that for the
+standard configuration (in terms of HW), the Vmin is 0.4V and not 0.3.
 
-Is there a spec citation for this delay requirement?  If not, how do
-we know 1ms is enough for whatever the firmware needs to do?
+Reading through makes me think that it's not much about the buck providing an
+unstable output, but more about it starting to become inefficient under that
+value.
 
-Do other drivers require similar changes?
+This means that it is sensible to set, instead:
 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+	regulator-min-microvolt = <400000>;
+
+Also, this is repeated on multiple platforms: can you please perform the same
+change also on MT8183, MT8186 and MT8195?
+
+P.S.: For MT6358, the Vmin for VGPU is 0.5V :-)
+
+Cheers,
+Angelo
+
 > ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 2ce2a3bd932b..41434bc4761a 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -1618,6 +1618,13 @@ static int qcom_pcie_resume_noirq(struct device *dev)
->  	return 0;
->  }
->  
-> +static void qcom_pcie_shutdown(struct platform_device *pdev)
-> +{
-> +	struct qcom_pcie *pcie = platform_get_drvdata(pdev);
-> +
-> +	qcom_pcie_host_deinit(&pcie->pci->pp);
-> +}
-> +
->  static const struct of_device_id qcom_pcie_match[] = {
->  	{ .compatible = "qcom,pcie-apq8064", .data = &cfg_2_1_0 },
->  	{ .compatible = "qcom,pcie-apq8084", .data = &cfg_1_0_0 },
-> @@ -1670,5 +1677,6 @@ static struct platform_driver qcom_pcie_driver = {
->  		.pm = &qcom_pcie_pm_ops,
->  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
->  	},
-> +	.shutdown = qcom_pcie_shutdown,
->  };
->  builtin_platform_driver(qcom_pcie_driver);
+>   arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> ---
-> base-commit: 51459eb30f88651d3688b9e95fed0f97767ececb
-> change-id: 20240313-pci-qcom-shutdown-d86298186560
-> 
-> Best regards,
-> -- 
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+> index 43d80334610a..5cc5100a7c40 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+> @@ -1448,7 +1448,7 @@ regulators {
+>   			mt6315_7_vbuck1: vbuck1 {
+>   				regulator-compatible = "vbuck1";
+>   				regulator-name = "Vgpu";
+> -				regulator-min-microvolt = <606250>;
+> +				regulator-min-microvolt = <300000>;
+>   				regulator-max-microvolt = <800000>;
+>   				regulator-enable-ramp-delay = <256>;
+>   				regulator-allowed-modes = <0 1 2>;
+
+
 
