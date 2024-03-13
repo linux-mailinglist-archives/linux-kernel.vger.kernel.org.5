@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-102065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B080787AE1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:49:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B622C87AE1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:50:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2398EB22353
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 517EBB21451
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC4815959A;
-	Wed, 13 Mar 2024 16:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5D915A4A2;
+	Wed, 13 Mar 2024 16:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ce/riHKT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMmSysbq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA5A15957E;
-	Wed, 13 Mar 2024 16:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A40F15A482;
+	Wed, 13 Mar 2024 16:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348445; cv=none; b=GeUgRdQoHx8oPxEQzHLSk5/FdkWXYkvumfsax9gU/zsfag/hmYDIsSD4tcNUKGP5zcl5GKTngYHG3DbzblMQAGZZI1Q0NOSxVGJ3cjgNhmStR1fjmrJovrh18r8tVvrLSQUIwt2d5CEqfxJFfdhAabus929RsaTDJIeNnB7d1rI=
+	t=1710348446; cv=none; b=Rgor2NYssGxZmgGB5htKod1fsp9hs8SppT0/ae7lBxjGH/L57yTxKWYtobrM9k4kUr6+NpwYCPMcIIMaqLj1xz6TvzihXXrdhaAjfmlb2JFVISHKq0KyxizYn4RIMlK3irR+S9MvthSLCjINph/lOJLmQzJZjroQmLeyMuq9MYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348445; c=relaxed/simple;
-	bh=+gJvZK5uEADMDRO1Qiqp9iXZojO0nQHMf8DGFsBi2kE=;
+	s=arc-20240116; t=1710348446; c=relaxed/simple;
+	bh=ZVWAyljY+AhMX/8zChvX3ogQPcRmys9NtaHqrY/ZiWg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G+E0Ngvt2KYTSUNJOSvSz3LjkTcgBHqVSluDny7g+HLJ2Luaas4emUS+sgFvD6Uko3vqqdDg9vDl8e7nWCyxjD6b+6a/5ubIqX1XQflywvqf3jAAehT5hkpQIKCPtIasqbg3VESD9vzk3UIoCo5BHNyDJzdKJ3MtFv4SMyjghiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ce/riHKT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F53CC43399;
-	Wed, 13 Mar 2024 16:47:24 +0000 (UTC)
+	 MIME-Version; b=ZG/jSv6kkXfDGkOsA/yEe55GZChKDBtfPUpD79SUFA7H9dhgKv9EYb3M4a2NVotj4cNB68VCh+lp8V/d7KJ+n+wK2m4h1RDzoAYK/kssCRBhto53WWlFL/4aJLmPF21nviV+CY4tEx/sL3ClN7R52uur7SATrx3ZvHBxic/fQhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UMmSysbq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 866D9C433F1;
+	Wed, 13 Mar 2024 16:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348445;
-	bh=+gJvZK5uEADMDRO1Qiqp9iXZojO0nQHMf8DGFsBi2kE=;
+	s=k20201202; t=1710348446;
+	bh=ZVWAyljY+AhMX/8zChvX3ogQPcRmys9NtaHqrY/ZiWg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ce/riHKTpWXcBiIEqQCGbhixYP5AhRf1W69q6Ru12WZEofi2vixnFVE6gVuHHfhrj
-	 5vyzFAbCsK2Os2plUW93pusofc25IlQfhRYJCs7dBI8+JX+7p2+a5mjLsiXZrpNfrT
-	 itm8bOwssN8iGkiGc03LJo95hMovCaCV6Nxd2iEymCc1CR5PZfVEn15FbpN1xo7TeO
-	 WD5OHi5SYD9aEvd67SQx22V0+ofnPRg9GsshiacgzCxIYNCx3nKpI0ZCx1TzNhZZ2T
-	 Z1PHlpckXV2MOwpRAEbMqMrzHYOXdpH0bp+ZV8ekKZmk3MHgY6Wil1W+nCPQypsOQk
-	 azhizZGBT8o4g==
+	b=UMmSysbq2x8wHUoE7Hdgj2ieGF2c6qkM1keO2LK+aJVtzdUaAerSaBmSrGhT4H0zP
+	 QPAiMo5x3f0vQemsPaHk8/fGpe8afq5wZ52hyqZG+uwEutP+tt+ycYzVWXrGM+G/J1
+	 egigXoFi3HQjN1cYCmzfRqQFYF5zO1v5BrxUMItoLEc5ZqR5d94Z54Hk8p8ADoj50r
+	 fmtgLisYyn84Jvju8wwaGpNGXv3H5LC3I2RvccIFnSQjEejWgoIH5gKlBEYXA7c20y
+	 bgMDDP7pQdYWVqHNcPROdiDc0Ct1d2SFa/AuoOb1Mg9dXkMxub2MXPzhyvwRpW9Xq0
+	 miUC0zlImJy+w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	=?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 39/73] serial: max310x: fail probe if clock crystal is unstable
-Date: Wed, 13 Mar 2024 12:46:06 -0400
-Message-ID: <20240313164640.616049-40-sashal@kernel.org>
+Subject: [PATCH 5.10 40/73] serial: max310x: Make use of device properties
+Date: Wed, 13 Mar 2024 12:46:07 -0400
+Message-ID: <20240313164640.616049-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -59,7 +58,6 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.213-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-5.10.y
@@ -70,70 +68,95 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-[ Upstream commit 8afa6c6decea37e7cb473d2c60473f37f46cea35 ]
+[ Upstream commit c808fab604ca62cff19ee6b261211483830807aa ]
 
-A stable clock is really required in order to use this UART, so log an
-error message and bail out if the chip reports that the clock is not
-stable.
+Device property API allows to gather device resources from different sources,
+such as ACPI. Convert the drivers to unleash the power of device property API.
 
-Fixes: 4cf9a888fd3c ("serial: max310x: Check the clock readiness")
-Cc: stable@vger.kernel.org
-Suggested-by: Jan Kundrát <jan.kundrat@cesnet.cz>
-Link: https://www.spinics.net/lists/linux-serial/msg35773.html
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Link: https://lore.kernel.org/r/20240116213001.3691629-4-hugo@hugovil.com
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20201007084635.594991-1-andy.shevchenko@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Stable-dep-of: b35f8dbbce81 ("serial: max310x: prevent infinite while() loop in port startup")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/tty/serial/max310x.c | 27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 0e0f778d75cd4..bbf45c0626681 100644
+index bbf45c0626681..8d42c537ee5ea 100644
 --- a/drivers/tty/serial/max310x.c
 +++ b/drivers/tty/serial/max310x.c
-@@ -556,7 +556,7 @@ static int max310x_update_best_err(unsigned long f, long *besterr)
- 	return 1;
+@@ -15,8 +15,8 @@
+ #include <linux/device.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/module.h>
+-#include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/mod_devicetable.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <linux/serial_core.h>
+ #include <linux/serial.h>
+@@ -271,7 +271,7 @@ struct max310x_one {
+ 	container_of(_port, struct max310x_one, port)
+ 
+ struct max310x_port {
+-	struct max310x_devtype	*devtype;
++	const struct max310x_devtype *devtype;
+ 	struct regmap		*regmap;
+ 	struct clk		*clk;
+ #ifdef CONFIG_GPIOLIB
+@@ -1262,7 +1262,7 @@ static int max310x_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
  }
+ #endif
  
--static u32 max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
-+static s32 max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
- 			       unsigned long freq, bool xtal)
- {
- 	unsigned int div, clksrc, pllcfg = 0;
-@@ -626,7 +626,8 @@ static u32 max310x_set_ref_clk(struct device *dev, struct max310x_port *s,
- 		} while (!stable && (++try < MAX310X_XTAL_WAIT_RETRIES));
- 
- 		if (!stable)
--			dev_warn(dev, "clock is not stable yet\n");
-+			return dev_err_probe(dev, -EAGAIN,
-+					     "clock is not stable\n");
- 	}
- 
- 	return bestfreq;
-@@ -1266,7 +1267,7 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
+-static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
++static int max310x_probe(struct device *dev, const struct max310x_devtype *devtype,
+ 			 struct regmap *regmap, int irq)
  {
  	int i, ret, fmin, fmax, freq;
- 	struct max310x_port *s;
--	u32 uartclk = 0;
-+	s32 uartclk = 0;
- 	bool xtal;
+@@ -1488,7 +1488,7 @@ static struct regmap_config regcfg = {
+ #ifdef CONFIG_SPI_MASTER
+ static int max310x_spi_probe(struct spi_device *spi)
+ {
+-	struct max310x_devtype *devtype;
++	const struct max310x_devtype *devtype;
+ 	struct regmap *regmap;
+ 	int ret;
  
- 	if (IS_ERR(regmap))
-@@ -1350,6 +1351,11 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
- 	}
+@@ -1500,18 +1500,9 @@ static int max310x_spi_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
  
- 	uartclk = max310x_set_ref_clk(dev, s, freq, xtal);
-+	if (uartclk < 0) {
-+		ret = uartclk;
-+		goto out_uart;
-+	}
-+
- 	dev_dbg(dev, "Reference clock set to %i Hz\n", uartclk);
+-	if (spi->dev.of_node) {
+-		const struct of_device_id *of_id =
+-			of_match_device(max310x_dt_ids, &spi->dev);
+-		if (!of_id)
+-			return -ENODEV;
+-
+-		devtype = (struct max310x_devtype *)of_id->data;
+-	} else {
+-		const struct spi_device_id *id_entry = spi_get_device_id(spi);
+-
+-		devtype = (struct max310x_devtype *)id_entry->driver_data;
+-	}
++	devtype = device_get_match_data(&spi->dev);
++	if (!devtype)
++		devtype = (struct max310x_devtype *)spi_get_device_id(spi)->driver_data;
  
- 	for (i = 0; i < devtype->nr; i++) {
+ 	regcfg.max_register = devtype->nr * 0x20 - 1;
+ 	regmap = devm_regmap_init_spi(spi, &regcfg);
+@@ -1536,7 +1527,7 @@ MODULE_DEVICE_TABLE(spi, max310x_id_table);
+ static struct spi_driver max310x_spi_driver = {
+ 	.driver = {
+ 		.name		= MAX310X_NAME,
+-		.of_match_table	= of_match_ptr(max310x_dt_ids),
++		.of_match_table	= max310x_dt_ids,
+ 		.pm		= &max310x_pm_ops,
+ 	},
+ 	.probe		= max310x_spi_probe,
 -- 
 2.43.0
 
