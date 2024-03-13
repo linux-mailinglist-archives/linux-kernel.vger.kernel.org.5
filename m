@@ -1,178 +1,78 @@
-Return-Path: <linux-kernel+bounces-101066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A870187A1D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:13:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C43C87A1D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 04:15:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD3B31C21AC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:13:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 994D3B2033E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CBFF9D9;
-	Wed, 13 Mar 2024 03:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8427E10953;
+	Wed, 13 Mar 2024 03:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cnZbTn06"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iLH7gfOp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C65AC13D;
-	Wed, 13 Mar 2024 03:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6645DDD1;
+	Wed, 13 Mar 2024 03:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710299614; cv=none; b=X631Q6WorWqQbNu6+tM7MnnioderjIl5LsKuYAq05XzrB6krmQB1k9Imv2kB7Bf35W1LLz7AOawfXwadPO2fbZlp9KPMKjqNTd8zPnwYQO9WR16entO5jsI4ErWIUQJ6vx8ykFCVzyVs8wO3+CMp8AHAi1KfQsj08pCZbBOuXTI=
+	t=1710299688; cv=none; b=r9QAdNGraP7d/b03gdGLx7GUhRUYtxHHqh2EtEVfgRTbQsz8sqSLnrBhTPVvsH/eNPnuWYLwtXqCkeYcRu9MRiiPBsRkBm306GCKsHstzJr6kcK0BvXxEAm6Ye1J3Yh+fS3K3Z3x1UgrYKODd8oAqizjPCvyM/g5S1pGjzaJTQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710299614; c=relaxed/simple;
-	bh=n2YjBU/qs6IdWcXohPVlN+e053Y/IEgAwN4JCjsR9HI=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eEJ8y7xhpZIpmLmOm/RLfgxANrdes/Yh0URfByaTVQwBP4III58vbwvmYqhK7A1YYSm+TnYaoUdyWe9Ou1fR7VyNKazPOq/LLKgjmQ+O5NYsRFN2X38yimqz4W6XXJZG4GYxwwGhnMBGTb5kiWD2WQTXdfdvuYDMYRP/Qs6O9lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cnZbTn06; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710299613; x=1741835613;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=n2YjBU/qs6IdWcXohPVlN+e053Y/IEgAwN4JCjsR9HI=;
-  b=cnZbTn06j9fL7Uc9GrbEFm46PaPp+4qm5ALIOwpIZqjEqeCU/AH7xvwM
-   Dl6ehvlKNdtbMao3qoZXNLA4wX3VkDP53+60dVORsJhf8rcTTUmN/rVbG
-   7WaBi8qgHk9ztiijbNvCutRreEy1Nh//UCMGWKyv9thd5b6cowX5iw0Tm
-   wtkpHvVSQfdbaqeYgRWL9g2Dq+iv9yfiu9H0mus0uIf5yJRQeP+spO2/U
-   O+p44Ak39/FpN32yWrhr9WQ5XYb8HgB97CVpKxCfJsC/Ymhp2BKtexbP7
-   3v9LvUWffu7x+Wf4SO5wbvrHeYujLIHvrhNj9U4+NRN9VAttDHvt7cc3f
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="15598662"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="15598662"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 20:13:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="49197836"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.116]) ([10.254.214.116])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 20:13:26 -0700
-Message-ID: <87a2be0d-6a24-4ca8-be30-35287072dda4@linux.intel.com>
-Date: Wed, 13 Mar 2024 11:13:23 +0800
+	s=arc-20240116; t=1710299688; c=relaxed/simple;
+	bh=fMzuWh39HrSr6LJuUun9tILqEcsZfaAZv5ySGOklm9o=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=PaLf9+n5yvV8oRWcs1ZYKcpwIar7izfL5N47GF1lQvK85ThDPv9OtyeRZkum0mJ/1yS4s+VJl8pfq50TOFaj6r1HYrTrRAaxlADRTizrBeLrpj1DESayqdnzf4pMX3zr8DBJuNSWHkWRNbUARr0kv2BYPIdTm3xGzf2rSE0CemY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iLH7gfOp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 52F5AC433C7;
+	Wed, 13 Mar 2024 03:14:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710299688;
+	bh=fMzuWh39HrSr6LJuUun9tILqEcsZfaAZv5ySGOklm9o=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=iLH7gfOpL8ofKE0feNTzJQA+LbSowAmIJVOs22XPptKvF/gEpdhDJ03NEbhHPbrLK
+	 FqRY4txDQUsWcRHlBYlTuvo+5Sz3iJxB5Z+YICqkXaycTG1tY86MA1KpAtJPEqLOSd
+	 UM7HdTPBHwPreeanJUbQaJqdcxQI9uOYOOhNtriBnVZ0LMByC1JGmzdBOM6Z6420ij
+	 H1xdlMbqkBpThPLOgZXT9Tj5jRr7vG/5Vg7PP+nCU5idv2xvkd0oSdyHNTsXzAa2uk
+	 OpqloCpcWRyEEMSpX1nH7zXHC6xumZYQ0xSWeQRtBKapCRf1AOe8Otj+f2semEHIC9
+	 /EF9ZzNO9i/ng==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 419D4D95057;
+	Wed, 13 Mar 2024 03:14:48 +0000 (UTC)
+Subject: Re: [GIT PULL] selinux/selinux-pr-20240312
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <f584f8da8096351cc7e941d0586b2fa3@paul-moore.com>
+References: <f584f8da8096351cc7e941d0586b2fa3@paul-moore.com>
+X-PR-Tracked-List-Id: <linux-security-module.vger.kernel.org>
+X-PR-Tracked-Message-Id: <f584f8da8096351cc7e941d0586b2fa3@paul-moore.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20240312
+X-PR-Tracked-Commit-Id: a1fc79343abbdc5bebb80c2a9032063442df8b59
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ca661c5e1d89a65642d7de5ad3edc00b5666002a
+Message-Id: <171029968825.23890.18315375045795766853.pr-tracker-bot@kernel.org>
+Date: Wed, 13 Mar 2024 03:14:48 +0000
+To: Paul Moore <paul@paul-moore.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, selinux@vger.kernel.org, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "joro@8bytes.org" <joro@8bytes.org>,
- "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>,
- "cohuck@redhat.com" <cohuck@redhat.com>,
- "eric.auger@redhat.com" <eric.auger@redhat.com>,
- "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
- "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
- "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
- "peterx@redhat.com" <peterx@redhat.com>,
- "jasowang@redhat.com" <jasowang@redhat.com>,
- "shameerali.kolothum.thodi@huawei.com"
- <shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
- "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
- "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
- "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH 1/8] iommu: Introduce a replace API for device pasid
-Content-Language: en-US
-To: Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- Jason Gunthorpe <jgg@nvidia.com>
-References: <20231127063428.127436-1-yi.l.liu@intel.com>
- <20231127063428.127436-2-yi.l.liu@intel.com>
- <20240115171950.GL734935@nvidia.com>
- <c831bf5e-f623-402d-9347-8718987d1610@intel.com>
- <BN9PR11MB52766161477C2540969C83568C242@BN9PR11MB5276.namprd11.prod.outlook.com>
- <585423de-9173-4c97-b596-71e1564d8b4e@intel.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <585423de-9173-4c97-b596-71e1564d8b4e@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 2024/3/12 11:07, Yi Liu wrote:
-> On 2024/3/11 17:26, Tian, Kevin wrote:
->>> From: Liu, Yi L <yi.l.liu@intel.com>
->>> Sent: Sunday, March 10, 2024 9:06 PM
->>>
->>> On 2024/1/16 01:19, Jason Gunthorpe wrote:
->>>> On Sun, Nov 26, 2023 at 10:34:21PM -0800, Yi Liu wrote:
->>>>> +int iommu_replace_device_pasid(struct iommu_domain *domain,
->>>>> +                   struct device *dev, ioasid_t pasid)
->>>>> +{
->>>>> +    struct iommu_group *group = dev->iommu_group;
->>>>> +    struct iommu_domain *old_domain;
->>>>> +    int ret;
->>>>> +
->>>>> +    if (!domain)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    if (!group)
->>>>> +        return -ENODEV;
->>>>> +
->>>>> +    mutex_lock(&group->mutex);
->>>>> +    __iommu_remove_group_pasid(group, pasid);
->>>>
->>>> It is not replace if you do remove first.
->>>>
->>>> Replace must just call set_dev_pasid and nothing much else..
->>>
->>> Seems uneasy to do it so far. The VT-d driver needs to get the old 
->>> domain
->>> first in order to do replacement. However, VT-d driver does not track 
->>> the
->>> attached domains of pasids. It gets domain of a pasid
->>> by iommu_get_domain_for_dev_pasid(). Like
->>> intel_iommu_remove_dev_pasid)
->>> in link [1]. While the iommu layer exchanges the domain in the
->>> group->pasid_array before calling into VT-d driver. So when calling into
->>> VT-d driver, the domain got by iommu_get_domain_for_dev_pasid() is
->>> already
->>> the new domain. To solve it, we may need to let VT-d driver have its
->>> own tracking on the domains. How about your thoughts? @Jason, @Kevin,
->>> @Baoplu?
->>>
->>> [1]
->>> https://github.com/torvalds/linux/blob/master/drivers/iommu/intel/iommu
->>> .c#L4621C19-L4621C20
->>>
->>
->> Jason's point was that the core helper should directly call set_dev_pasid
->> and underlying iommu driver decides whether atomic replacement
->> can be implemented inside the callback. If you first remove in the core
->> then one can never implement a replace semantics.
-> 
-> yeah, I got Jason's point. I'm raising an open to make the set_dev_pasid
-> callback to handle domain replacement. The existing intel iommu driver
-> does not track attached domains for pasid. But it's needed to know the
-> attached domain of a pasid and find the dev_pasid under the domain, hence
-> be able to clean up the old attachment and do the new attachment. Existing
-> code cannot work as I mentioned above. The group->pasid_xarray is updated
-> before calling set_dev_pasid callback. This means the underlying iommu
-> driver cannot get the old domain in the set_dev_pasid callback by the
-> iommu_get_domain_for_dev_pasid() helper.
-> 
-> As above, I'm considering the possibility to track attached domains for
-> pasid by an xarray in the struct device_domain_info. Hence, intel iommu
-> driver could store/retrieve attached domain for pasids. If it's
-> replacement, the set_dev_pasid callback could find the attached domain and
-> the dev_pasid instance in the domain. Then be able to do detach and clean
-> up the tracking structures (e.g. dev_pasid).
+The pull request you sent on Tue, 12 Mar 2024 19:18:26 -0400:
 
-Maintaining the same data structure in both core and individual iommu
-drivers seems to be duplicate effort. It appears that what you want here
-is just to get the currently used domain in the set_dev_pasid path. Is
-it possible to adjust the core code so that the pasid array is updated
-after the driver's set_dev_pasid callback returns success?
+> https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20240312
 
-Best regards,
-baolu
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ca661c5e1d89a65642d7de5ad3edc00b5666002a
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
