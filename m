@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-102145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C13BD87AECC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:09:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2963587AECE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:09:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D2F12842CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:09:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A26E7B26EDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57D6745D5;
-	Wed, 13 Mar 2024 17:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A80274404;
+	Wed, 13 Mar 2024 17:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="up+/lUsU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKxI7dkv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7547442F;
-	Wed, 13 Mar 2024 17:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67635745E4;
+	Wed, 13 Mar 2024 17:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349361; cv=none; b=Av3sL9/73TizwbuaXs3M1aja8NnPk3CnsIxRHC9sV0kmlPrcIInlzjmvvKXZxAH94yz+pR42yq3i86RLWK9pwZNcDORwmU/6LS1YOj1EB7ybwrVtx8nJMJQ4C+svOrZYF1GAFjKqbZ+ZohCni3Nq/ahZ/z8aS05f7ht0WLBDyKc=
+	t=1710349362; cv=none; b=m+ozlaYMqjC/tW346r2BYKPU9smmnY35k3qGnZiRxaGe+rNx9dgjVxmSbJA8RoHSeiy5wT2lUIitxSZQqzX3ZZc3/y4k2U/DddPLIkxn6bxm75tlEvDhg9myqfNtKFuN/0TNLD2EnzjdcyzViIrClMh3dWPMCO2+Ini4kxGsu40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349361; c=relaxed/simple;
-	bh=czvRIDeSrj7wwrFEdr0oP/W3xIJ/FE8CNCPsTfV2OgU=;
+	s=arc-20240116; t=1710349362; c=relaxed/simple;
+	bh=LyeZc5QveyggAQYPY/hrck83W9yX91L3yriLGxrzjlU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ixieBzKwD6CbZdJfF85an5J2A+B+NGSGB5ZnOM3wNCwdrpiNKos4wr88UybxP1DUyp8Qmyr+lIqH9fUh4lZCoacQ6LFs9jh/ZOaqLBoQXDql8D2HUXlhcGLx4C3YG5aeDBF0s/1ca5CHaIQ6qx6edzrnDMAV2vi/BdSPMMPY6fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=up+/lUsU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5D66C433C7;
-	Wed, 13 Mar 2024 17:02:39 +0000 (UTC)
+	 MIME-Version; b=hmDXU9LJbXLgD9104R2HOd4CzyctcH4iG+d/1jkMeKbupX2v28nPnzXwGN0szYdNuC7RywNfoqhAX/fBg/wd3gNq6oIKoLt9n1YrBCA7Mw1B/IhoPBOSnndMyXYMND2rIvqxibmkiGnEnj4DUoWkmPm0xO7gsFUJwy4CborLua8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKxI7dkv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39DCC43399;
+	Wed, 13 Mar 2024 17:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349360;
-	bh=czvRIDeSrj7wwrFEdr0oP/W3xIJ/FE8CNCPsTfV2OgU=;
+	s=k20201202; t=1710349362;
+	bh=LyeZc5QveyggAQYPY/hrck83W9yX91L3yriLGxrzjlU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=up+/lUsU9NEj81VVekISqzp/++ExEJJ0ZgFTMqsiUvTxqseaWgSwnJMdn3nY2XHAe
-	 1M/Ay4TBJ6e0Vo+19nqIc2+U0DEN+Woj+RQaTcXrDFv6jy81sINHD0uXe+3OIoyC6z
-	 yb8igoUGlrOrsDBOiAmL4zdAyvmH/vUY9XCs3kjF4YgbQsyXBEjM7DZvOTqUMOCGgS
-	 d9zCnO/Hi5WDkYA2DJCgKbaAv1jG8YEpfwK+bIY7PD9K/UnVrQYkhFNb6j9BFfupwa
-	 gltkQGKPrp8gkjUulkL5KZ0HS+nwmtgbT3njP2vZYXMHc5zPPuk1qACQr2K5bTZqfk
-	 zYTwSPkbrkojw==
+	b=XKxI7dkvZYxPRHIXro8P1rmohz1NXiATrqQ5lN9nToO5OgLEiExQDKRv3wc7oydrE
+	 PqFIPieLTxrKPkWs0/8rKiljsqXazK2M1YmApJCPEG92yPKTuLelkoMPOetpD3nx6x
+	 yrPNrwQMiCgQ4ccrauwbyQRIjHf2fgKYZ7x7hH3U5VMPOyqw5eGpx7a0Se6pUGaKj9
+	 m7F+GU2hL2VEkE7H86FGwaiwzjRbzYBzcU0b2+GVL1oIVp/GEePbwp0MVxVNerHwxk
+	 8DOCzGvWXPbOHMzbW5hlDgZLi2iTIWVkXHZTdGT00crH0ZArcR6Fn+/pbvXfabq8+a
+	 nYVsw2sxR9JdA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jason Xing <kernelxing@tencent.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Nico Pache <npache@redhat.com>,
+	Donet Tom <donettom@linux.vnet.ibm.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Christophe Leroy <christophe.leroy@c-s.fr>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 24/51] netrom: Fix data-races around sysctl_net_busy_read
-Date: Wed, 13 Mar 2024 13:01:45 -0400
-Message-ID: <20240313170212.616443-25-sashal@kernel.org>
+Subject: [PATCH 5.4 25/51] selftests: mm: fix map_hugetlb failure on 64K page size systems
+Date: Wed, 13 Mar 2024 13:01:46 -0400
+Message-ID: <20240313170212.616443-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170212.616443-1-sashal@kernel.org>
 References: <20240313170212.616443-1-sashal@kernel.org>
@@ -68,66 +72,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jason Xing <kernelxing@tencent.com>
+From: Nico Pache <npache@redhat.com>
 
-[ Upstream commit d380ce70058a4ccddc3e5f5c2063165dc07672c6 ]
+[ Upstream commit 91b80cc5b39f00399e8e2d17527cad2c7fa535e2 ]
 
-We need to protect the reader reading the sysctl value because the
-value can be changed concurrently.
+On systems with 64k page size and 512M huge page sizes, the allocation and
+test succeeds but errors out at the munmap.  As the comment states, munmap
+will failure if its not HUGEPAGE aligned.  This is due to the length of
+the mapping being 1/2 the size of the hugepage causing the munmap to not
+be hugepage aligned.  Fix this by making the mapping length the full
+hugepage if the hugepage is larger than the length of the mapping.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Link: https://lkml.kernel.org/r/20240119131429.172448-1-npache@redhat.com
+Signed-off-by: Nico Pache <npache@redhat.com>
+Cc: Donet Tom <donettom@linux.vnet.ibm.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netrom/af_netrom.c | 2 +-
- net/netrom/nr_in.c     | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ tools/testing/selftests/vm/map_hugetlb.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
-index e25bb0fe6d13c..abb69c149644a 100644
---- a/net/netrom/af_netrom.c
-+++ b/net/netrom/af_netrom.c
-@@ -932,7 +932,7 @@ int nr_rx_frame(struct sk_buff *skb, struct net_device *dev)
- 		 * G8PZT's Xrouter which is sending packets with command type 7
- 		 * as an extension of the protocol.
- 		 */
--		if (sysctl_netrom_reset_circuit &&
-+		if (READ_ONCE(sysctl_netrom_reset_circuit) &&
- 		    (frametype != NR_RESET || flags != 0))
- 			nr_transmit_reset(skb, 1);
+diff --git a/tools/testing/selftests/vm/map_hugetlb.c b/tools/testing/selftests/vm/map_hugetlb.c
+index 312889edb84ab..c65c55b7a789f 100644
+--- a/tools/testing/selftests/vm/map_hugetlb.c
++++ b/tools/testing/selftests/vm/map_hugetlb.c
+@@ -15,6 +15,7 @@
+ #include <unistd.h>
+ #include <sys/mman.h>
+ #include <fcntl.h>
++#include "vm_util.h"
  
-diff --git a/net/netrom/nr_in.c b/net/netrom/nr_in.c
-index 2bef3779f8935..8cbb57678a9ea 100644
---- a/net/netrom/nr_in.c
-+++ b/net/netrom/nr_in.c
-@@ -97,7 +97,7 @@ static int nr_state1_machine(struct sock *sk, struct sk_buff *skb,
- 		break;
+ #define LENGTH (256UL*1024*1024)
+ #define PROTECTION (PROT_READ | PROT_WRITE)
+@@ -70,10 +71,16 @@ int main(int argc, char **argv)
+ {
+ 	void *addr;
+ 	int ret;
++	size_t hugepage_size;
+ 	size_t length = LENGTH;
+ 	int flags = FLAGS;
+ 	int shift = 0;
  
- 	case NR_RESET:
--		if (sysctl_netrom_reset_circuit)
-+		if (READ_ONCE(sysctl_netrom_reset_circuit))
- 			nr_disconnect(sk, ECONNRESET);
- 		break;
- 
-@@ -128,7 +128,7 @@ static int nr_state2_machine(struct sock *sk, struct sk_buff *skb,
- 		break;
- 
- 	case NR_RESET:
--		if (sysctl_netrom_reset_circuit)
-+		if (READ_ONCE(sysctl_netrom_reset_circuit))
- 			nr_disconnect(sk, ECONNRESET);
- 		break;
- 
-@@ -263,7 +263,7 @@ static int nr_state3_machine(struct sock *sk, struct sk_buff *skb, int frametype
- 		break;
- 
- 	case NR_RESET:
--		if (sysctl_netrom_reset_circuit)
-+		if (READ_ONCE(sysctl_netrom_reset_circuit))
- 			nr_disconnect(sk, ECONNRESET);
- 		break;
- 
++	hugepage_size = default_huge_page_size();
++	/* munmap with fail if the length is not page aligned */
++	if (hugepage_size > length)
++		length = hugepage_size;
++
+ 	if (argc > 1)
+ 		length = atol(argv[1]) << 20;
+ 	if (argc > 2) {
 -- 
 2.43.0
 
