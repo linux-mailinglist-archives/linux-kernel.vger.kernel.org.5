@@ -1,47 +1,67 @@
-Return-Path: <linux-kernel+bounces-102546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA45C87B3B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1916787B3B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 181571C22C26
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:43:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AD561C21FA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A424554BCF;
-	Wed, 13 Mar 2024 21:43:51 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 0D8B053E07
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DE856B7F;
+	Wed, 13 Mar 2024 21:44:33 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8863C53E07;
+	Wed, 13 Mar 2024 21:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710366231; cv=none; b=EoNjfqqR9alP0Yj0+hltyGypwh+jBhcm8jT5hdsIVR9BY4h5n/zVEpUyTpofnSwf6bULnj5D9Km7g1XiAtD1QKq9oYlS+8T3n9GIANWQ2doOpquHngQQp2ThSQ6BCCpmNTXrrwhO4CLkQ8wToqBY3SQiKqo5LXC9jolCz1u6scI=
+	t=1710366273; cv=none; b=Zp5ZBt5d1sKsBcn7AmDBluPf+bbW5sofsIvO3QDNsLWWwXB2M1PoZwbym8rp7wFY9grFwA8RA3pwR7jGx9eWY4bWxptERXLcUsgliHcrK+WoyNuQ9CQQCa8Gfwm77/T+DbRdFas66nP/HhYZTflWMEA1Jl3FL+BiCorWFbWWytU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710366231; c=relaxed/simple;
-	bh=r4i5ta+jYDvR8K3Bx4rs272ug04BSW8OU6QwJrAcKeA=;
+	s=arc-20240116; t=1710366273; c=relaxed/simple;
+	bh=fHUHblIM4Ym+Lz04JBq2RDtEh1L4l5ZqXeh2B8Xe0mo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pOwrKCtaM/f4Q7CBB5+SvGenHeJz+ltuc6s/rwd0uoLBzYqB6eXtR1S8S9guqrAsYmzgUt8S1ZXvCqFzDOj2DTgTg4xsfzGYHvSKCup02qdew34kQO4MjslrMBZ+BD8NexSksT1xDoQWXzE/lq6LDNWi5+SqrR96e1b1G8IuzrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 430978 invoked by uid 1000); 13 Mar 2024 17:43:41 -0400
-Date: Wed, 13 Mar 2024 17:43:41 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Tejun Heo <tj@kernel.org>
-Cc: Bart Van Assche <bvanassche@acm.org>,
-  Greg KH <gregkh@linuxfoundation.org>,
-  Kernel development list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] fs: sysfs: Fix reference leak in
- sysfs_break_active_protection()
-Message-ID: <8a4d3f0f-c5e3-4b70-a188-0ca433f9e6f9@rowland.harvard.edu>
-References: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
- <e9d710fc-eace-44de-b3cc-1117c3575ef7@rowland.harvard.edu>
- <2024030428-graph-harmful-1597@gregkh>
- <416a8311-c725-419a-8b22-74c80207347f@rowland.harvard.edu>
- <9c2484f4-df62-4d23-97a2-55a160eba55f@rowland.harvard.edu>
- <ZfIKwFSmw-ACj_jO@slm.duckdns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e6/KMea9e6puisxxWLSPC/vJeVAu6/QbaBvaLFyDp+9FvF8E77U3FX9yKud80Yi86BqU5raNoF8yXfI7GwRWJ5Vyz5CL+QJl3xfNZYCMKxeBjgiGUCyUK42fIpGjUlTAvQUho1sycFZboeV+4eN6F0611KjQ2vVJUI0gj5wAA2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 8161568BFE; Wed, 13 Mar 2024 22:44:18 +0100 (CET)
+Date: Wed, 13 Mar 2024 22:44:18 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
+ steps
+Message-ID: <20240313214418.GA9129@lst.de>
+References: <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca> <20240307150505.GA28978@lst.de> <20240307210116.GQ9225@ziepe.ca> <20240308164920.GA17991@lst.de> <20240308202342.GZ9225@ziepe.ca> <20240309161418.GA27113@lst.de> <20240310093513.GB12921@unreal> <20240312212844.GA3018@lst.de> <20240313074636.GV12921@unreal>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,39 +70,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZfIKwFSmw-ACj_jO@slm.duckdns.org>
+In-Reply-To: <20240313074636.GV12921@unreal>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-The sysfs_break_active_protection() routine has an obvious reference
-leak in its error path.  If the call to kernfs_find_and_get() fails then
-kn will be NULL, so the companion sysfs_unbreak_active_protection()
-routine won't get called (and would only cause an access violation by
-trying to dereference kn->parent if it was called).  As a result, the
-reference to kobj acquired at the start of the function will never be
-released.
+On Wed, Mar 13, 2024 at 09:46:36AM +0200, Leon Romanovsky wrote:
+> On Tue, Mar 12, 2024 at 10:28:44PM +0100, Christoph Hellwig wrote:
+> > On Sun, Mar 10, 2024 at 11:35:13AM +0200, Leon Romanovsky wrote:
+> > > And you will need to have a way to instruct that pin_user_pages() variant
+> > > to continue anyway, because you asked for FOLL_PCI_P2PDMA. Without that
+> > > force, you will have !FOLL_PCI_P2PDMA behaviour.
+> > 
+> > I don't understand what you mean.
+> 
+> Jason talked about the need to call to pin_user_pages(..., gup_flags | FOLL_PCI_P2PDMA, ...),
+> but in your proposal this call won't be possible anymore.
 
-Fix the leak by adding an explicit kobject_put() call when kn is NULL.
+Why?
 
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Fixes: 2afc9166f79b ("scsi: sysfs: Introduce sysfs_{un,}break_active_protection()")
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: <stable@vger.kernel.org>
-
----
-
- fs/sysfs/file.c |    2 ++
- 1 file changed, 2 insertions(+)
-
-Index: usb-devel/fs/sysfs/file.c
-===================================================================
---- usb-devel.orig/fs/sysfs/file.c
-+++ usb-devel/fs/sysfs/file.c
-@@ -463,6 +463,8 @@ struct kernfs_node *sysfs_break_active_p
- 	kn = kernfs_find_and_get(kobj->sd, attr->name);
- 	if (kn)
- 		kernfs_break_active_protection(kn);
-+	else
-+		kobject_put(kobj);
- 	return kn;
- }
- EXPORT_SYMBOL_GPL(sysfs_break_active_protection);
 
