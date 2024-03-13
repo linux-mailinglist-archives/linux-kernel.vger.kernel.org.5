@@ -1,215 +1,258 @@
-Return-Path: <linux-kernel+bounces-101688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1B5587AA87
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 009CA87AA89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21B571C20F6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:39:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22D001C22588
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B3647A62;
-	Wed, 13 Mar 2024 15:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D009147A53;
+	Wed, 13 Mar 2024 15:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="C8kd2jv3"
-Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Eh81JhO3"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8556345C10;
-	Wed, 13 Mar 2024 15:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C93290A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710344333; cv=none; b=YPi7CW+RME5G9oE8TZteGOsxUFuveL04tdQm0o0RPAbYwjPpiVyuM54z6QEjo6kfMMA0Am13anwYFSKinCu43wW7IM0L4GsVuN5FpcS+qpkx8QcHf3XIQQICnBxbxnG1IJna8V2I2ThKxtIZ2D1C0OB826uv/zONFqgcsM8VUPk=
+	t=1710344416; cv=none; b=FD0gkd/YkGthdrubaMNCYG0DL4s8hBMqnl6Dyx+u0sTkmHSruzgOr1X2EAK71SScgq31ImDqcixQdLdr8evl+tTmyui47UILDUjJud4pz15MekRQET3RVJxsjIKhwOlJc6IkiunEb6NZkZqnxgrW8RM4KaBy6NbkSS3Q+dsEjdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710344333; c=relaxed/simple;
-	bh=tZaSYOA5Sqr0R3HTX+qBFadHyYoG3rbkZTOfznRjIrg=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=aO5pL0gqksN7XNrTpEh+zu1SpTN2sDEMr65bjw5ELcecaxU99Xm03pLScKahq4L5VlNLeZESg4acaf6882uwwTKyVjxQuUM1+M1rI9fsJ9D2CoMs5hexLrDuT+oryZhMf3JcmXu+fqt+dvsqD6Qf3lBMl/EB//PaJvLbsYdRMsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=C8kd2jv3; arc=none smtp.client-ip=188.40.0.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
-	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
-	sender:bcc; bh=oKGkz+5yG2rxE8g4ISa2cT/1YcQdAFQoNiwBx3QyI0I=; b=C8kd2jv3ZOQYnC
-	Ei8vdK0ciGe8+LTwhqUnmaLxBr49zBTG6U+FzFo4U1tbD/3tcKSrFkC4WsOxHzWX15p7DOKWBWv1r
-	lwW4wzdFK2Be3a38gruQF2YXZDEYlDO2q56Zdcryg/xhFaP1bpaj4OOoqeIUEVswmAQHwHCeUf97q
-	X6Z/JYOBGmAYOOoWCq5kFiVJK+MlrhFix1urbLo/ckEmsZfU/CkahAgK5y0UIwVZdtxSg5GJXdeuc
-	EmLWXs7URR1fdTsBcT5ouH1tpzDIxG1APEku/BNrLaVmKl6B/nkPxl5xfghn7jOIenh+ASqPKA2G7
-	uILULVi1KX67NBi9peiQ==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rkQgg-0021r6-Of; Wed, 13 Mar 2024 17:38:42 +0200
-Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
-	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rkQge-0006Bo-8W; Wed, 13 Mar 2024 17:38:36 +0200
+	s=arc-20240116; t=1710344416; c=relaxed/simple;
+	bh=hJTC5dpRrhm+5Vd+qHVgrTr0i/mK/OHF2t/BbXFLMew=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=budSpbSwKRyPU1ienNCo35sGWGLD+R/jjy6KOGOX1uZrEjoZH+g+ThMOkshe4OMXWKtleAIW936xSOH93ehypQ8d/ZgRRJSY1egf24PvmF3Uny4uAbMteszbiizoq/wd8D9ZopWXcjmxp+ekN42i0EkpbhABsBkhDKLBld/eCmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Eh81JhO3; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-789cd43c77dso25859785a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1710344413; x=1710949213; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S0mYJ2MDjU6cwUCbjlHhecTmI74Lir/gQGAcvEHcIEY=;
+        b=Eh81JhO3vToxfFLV9YonnVAIat8nu+w6Mv+Ot0LLgc/TB1nFXATwOjASG2ax5qlrQ1
+         abn6xjzDh7hupE54JJ4NMFDKVBm01LtAaDWtXx4UA3hlIDV5ZWFD59XySWbIO85xvuL/
+         zl9z+991IxjculsJBx5CeyZ8rZjh0a9Vdhrwg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710344413; x=1710949213;
+        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S0mYJ2MDjU6cwUCbjlHhecTmI74Lir/gQGAcvEHcIEY=;
+        b=K1jzoz2c/UcmurLYblkE55LWg/LQ/8Za2g0cv7cF1vSKdmCejcwNZYgi8jrkdVKcD+
+         hvJlopaxQ8CHktqD0KJBLdnCo2sKrkNFIQTfFXLWZX4Y83uwHgKqSiR704erOrSSrRXa
+         dwoCyO3iMlCT1qsGWfuhGgnQelQ5Oak2qlauITq1TWixM8/smQzpZXO0T0oZwM0EZTI+
+         0zuPYMJVcnDNDPgR6NW+LL4hYTOepNSD99OwOIsjF272VNkTYO0g4LWnA4NugdZqYjiZ
+         OVgM9n54MrlXz52j8nyETAZbiKP6MbQ3wZDG2jJkLcPYjmLdB1wL0GIlQH2HmkLAutlF
+         7HZw==
+X-Forwarded-Encrypted: i=1; AJvYcCXSMEGv0IYewZCCv0Lvtp3MylUdLDR4mbBSPiI0QKF1o4pGSxvHeh8gchTtl58ybbHr9g5D5wLu0WByj9Y9Xz0BR0FJttycucyAyo4f
+X-Gm-Message-State: AOJu0YwY4rX8ueFVuYb1ORJcn+/aoe377StfLHgchOt4HiCDsxsK5wEf
+	luDB4ZOQfkotAC29oQslL3WEJasBghFMW3EJ7rGjJUOTp0rm6tS0lJori0YasA==
+X-Google-Smtp-Source: AGHT+IHXeDPH6sYlQIIXq1VXK/QmzEcX7aMA9KmD3XB8fOE/tOSjMMwJLpSvPIRsByb2udrNwmV1VA==
+X-Received: by 2002:a05:6214:4a49:b0:690:d5ad:2b88 with SMTP id ph9-20020a0562144a4900b00690d5ad2b88mr186879qvb.19.1710344413221;
+        Wed, 13 Mar 2024 08:40:13 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id kl30-20020a056214519e00b00690f9ea30aesm1487440qvb.26.2024.03.13.08.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 08:40:11 -0700 (PDT)
+Message-ID: <0e06cf32-7ef9-41bb-827f-3b9ab3269dec@broadcom.com>
+Date: Wed, 13 Mar 2024 08:40:07 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Wed, 13 Mar 2024 17:38:35 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, Florian
- Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] net: dsa: mt7530: increase reset hold time
-In-Reply-To: <997db446-030b-4e6a-beea-0ae7d990e7e2@arinc9.com>
-References: <f594a72a91d12f1d027a06962caa9750@risingedge.co.za>
- <20240312192117.7789-1-justin.swartz@risingedge.co.za>
- <bf0ed70f-e106-4a7f-a98c-de34658feb4d@arinc9.com>
- <e6525cac666a033a5866465abb3e63f1@risingedge.co.za>
- <2640a495-97a0-4669-a53a-e367af956a78@arinc9.com>
- <c4590e9519d0cd788d157a1e1510cc45@risingedge.co.za>
- <997db446-030b-4e6a-beea-0ae7d990e7e2@arinc9.com>
-Message-ID: <3146df060620f08a620417cfcf2b2179@risingedge.co.za>
-X-Sender: justin.swartz@risingedge.co.za
-User-Agent: Roundcube Webmail/1.3.17
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.21)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT/2O3gPR4g/CqkfWst+Ku0pPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIv+fXqqb3FJ1Z7kkAIev0U9CKH/oA07tJunDPm536TODb5GPR
- oyaaXp1VNA9dXvxV+mFktoWo3CKg4C3LDJ75vu2U4GT70q7ZqN/P49BncZ5XB7lfx9K88uL/WnJE
- LAEP514Y/yfAEbrTclu3OeNcbACmFr3ts0d2E6vXySsvfMaT9Bjf4etJ827HW1/sdZ81dz6BqXHU
- oYg+nmOeSIjjxA24TPuOyBrko5yKpcR03QEJ9DjWmjcfK/FpTD0spWG+rMYoj8CdNq4vLYsMDbt4
- 2oUP1Ae/eGZl2OLANHAHEjHENEhX9cq65nsXPA0MIFDIPOMDW/6+MC+5Mq5RH9OoW0W22an/ubzj
- InB/ImqScRfGyrhHVstPeAuxsRhUFJC4TtSvIahFt3uEpT0304dV2Yoz1SesQUA6bnjJZT6m9lal
- 9vikoy50DqR3hu/rL5PGAoTDzn0QdoxFeruM0Uhu+b+DV6LvumMBiTpVm+SuIysihnVW8zB2Qi26
- vkVALycwzSdeC1kd8cXa71WqOc72jXbRpMw6Agze1f399OurHEyYS7nq+EBNvgiWKNNSkdVDZOrL
- 5kxgO94lq2025NSImfKeGaSpuwkt9kMFaoxOFH3nT6Zph4wUZj+IQLUKRJzeMs4VIrisX+dtrxYn
- /0jYEvj5QBAPtzfeVlNHdCJmwgf0M7fnqgzRvCMiN68tcHQey84mBB4XoB473XOJmIRPynE3O7YZ
- oFBs6I7QuC1BjGNT52hVLEr/9PrrMm81h6IAYzikeIJfw26MB/V1E5BP9Gv0xI1YXOxC1lZqyFpL
- AwQr6muMti2YanICQnMITeB2fd0UyjU/MIq3Vtx6CgQGHtezYqxGMqsKjARq8PBC4qgGsfAERwCB
- JFs7XjZYbJPBsmpIto2O4JO2fx1gIuNHgi11AwJSTGCrOFs22K1ZnDqAw3gLmOBPHazhChxq9nGW
- aSi6bFHidB1VgzDzDZn/+QEiRQv+PVjjwa+Z5RFCOMRmYvGVP5J/K7tDFQHNyAqzdfFYVDBYJee7
- gx/u82RtU4hygYFW3IzBm5Ionz3C0cE0mVfWLKEgol9rYV4JEcNP1rJoln/cD8h/RIvkzXRTCYvX
- WLQhlD92+1l+zHfJg1FMwntsduNBxKPaTpE5L8d4VqFy6yKUFQtzhTlGiGL9B13u48a8ZFhRnJqB
- D+KeQursqcSfLN3+f9txz8J8C1oTIIDSVMZhrIoAWTF5tIdhy/UIEBYDcZg+Q8UhuRLyBn1+pvlH
- hV6a5QjptwQBGybQyDQ2/GYwPjlMcE57ESN6G+kn87CtwPdB/10jfVNpDbYnXJdSRQj8460WHJib
- IxmU2pb4i4DTkMZeMiNI9JSIyUbtnrlbG4BI8o81FOo91axhCaqPShJzgHH7y4ZfQxML
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 1/2] spi: Unify error codes by replacing -ENOTSUPP with
+ -EOPNOTSUPP
+To: AceLan Kao <acelan.kao@canonical.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, Kamal Dasu <kamal.dasu@broadcom.com>,
+ =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+ Mario Kicherer <dev@kicherer.org>, Chuanhong Guo <gch981213@gmail.com>,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231129064311.272422-1-acelan.kao@canonical.com>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <20231129064311.272422-1-acelan.kao@canonical.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000381e5f06138c97cc"
 
-On 2024-03-13 17:04, Arınç ÜNAL wrote:
-> On 13.03.2024 16:13, Justin Swartz wrote:
->> On 2024-03-13 14:06, Arınç ÜNAL wrote:
->>> On 13.03.2024 14:52, Justin Swartz wrote:
->>>> 
->>>> On 2024-03-13 10:59, Arınç ÜNAL wrote:
->>>>> This ship has sailed anyway. Now the changes the first patch did 
->>>>> must be
->>>>> reverted too. I will deal with this from now on, you can stop 
->>>>> sending
->>>>> patches regarding this.
->>>> 
->>>> At least if the first patch isn't reverted, the approach used is
->>>> less likely to result in the problem occuring, IMHO.
->>> 
->>> I disagree that the previous approach is less likely to result in the
->>> problem occurring. If you don't like the delay amount we agreed on, 
->>> feel
->>> free to express a higher amount.
->> 
->> I created and tested a patch to entertain your input about what you
->> thought could be a suitable hold period to address the problem, and it
->> appeared to work. The criteria being that the crystal frequency 
->> selection
->> was correct over 20 tests.
->> 
->> So if only the reset hold period is going to change, I'm good with 
->> what
->> you had suggested: 5000 - 5100 usec.
->> 
->> Ultimately the selection of this period should be guided by the timing
->> information provided in a datasheet or design guide from the 
->> manufacturer.
-> 
-> That's a good point, I agree.
-> 
->> 
->> If you, or anyone else, has such a document that provides this 
->> information
->> and is able to confirm or deny speculation about any/all timing 
->> periods
->> related to reset, please do so.
-> 
-> These are the documents I use to program this switch family. I did not
-> stumble upon a page going over this.
-> 
-> MT7621 Giga Switch Programming Guide v0.3:
-> 
-> https://github.com/vschagen/documents/blob/main/MT7621_ProgrammingGuide_GSW_v0_3.pdf
-> 
-> MT7531 switch chip datasheet:
-> 
-> https://wiki.banana-pi.org/Banana_Pi_BPI-R64#Documents
+--000000000000381e5f06138c97cc
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thanks for the links.
-
-Have you encountered this one?
-
-MT7530 Giga Switch Programming Guide v0.1:
-https://github.com/libc0607/arduino_mt7530/blob/master/MT7530_programming_guide_V00.pdf
-
-It has some timing diagrams, but nothing I found for reset.
-
-The HWTRAP description has some bits swapped, so I guess those were 
-typos,
-in the case of XTAL_SELECT.
-
-
->>> I also disagree on introducing a solution that is in addition to 
->>> another
->>> solution, both of which fix the same problem.
->> 
->> I'm not sure I understand why you say that. These patches were 
->> intended
->> to be applied exclusively, or in other words: in isolation - not 
->> together.
->> 
->> Although if they were applied together, it wouldn't really matter.
->> 
->> For the record, I've only continued to keep this thread alive in the
->> hope that some solution to this problem will make it into mainline
->> eventually.
->> 
->> I don't care if it was my original patch, the subsequent patch, or a
->> later patch provided by you or someone else. :)
+On 11/28/2023 10:43 PM, AceLan Kao wrote:
+> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 > 
-> I think you've missed that your patch is already applied. And it won't 
-> be
-> reverted for reasons explained by Paolo in this mail thread.
+> This commit updates the SPI subsystem, particularly affecting "SPI MEM"
+> drivers and core parts, by replacing the -ENOTSUPP error code with
+> -EOPNOTSUPP.
 > 
-> https://git.kernel.org/netdev/net-next/c/2920dd92b980
+> The key motivations for this change are as follows:
+> 1. The spi-nor driver currently uses EOPNOTSUPP, whereas calls to spi-mem
+> might return ENOTSUPP. This update aims to unify the error reporting
+> within the SPI subsystem for clarity and consistency.
 > 
-> So if your patch here were to be applied too, the final mt7530.c would 
-> have
-> the LEDs disabled AND before reset deassertion delay increased.
+> 2. The use of ENOTSUPP has been flagged by checkpatch as inappropriate,
+> mainly being reserved for NFS-related errors. To align with kernel coding
+> standards and recommendations, this change is being made.
+> 
+> 3. By using EOPNOTSUPP, we provide more specific context to the error,
+> indicating that a particular operation is not supported. This helps
+> differentiate from the more generic ENOTSUPP error, allowing drivers to
+> better handle and respond to different error scenarios.
+> 
+> Risks and Considerations:
+> While this change is primarily intended as a code cleanup and error code
+> unification, there is a minor risk of breaking user-space applications
+> that rely on specific return codes for unsupported operations. However,
+> this risk is considered low, as such use-cases are unlikely to be common
+> or critical. Nevertheless, developers and users should be aware of this
+> change, especially if they have scripts or tools that specifically handle
+> SPI error codes.
+> 
+> This commit does not introduce any functional changes to the SPI subsystem
+> or the affected drivers.
+> 
+> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
 
-Yes, I seem to have missed that. I thought your request for the
-patch to be reverted definitely would have been performed, or at
-least queued, seeing as you're the maintainer.
+This patch breaks SPI probing with spi-bcm-qspi.c on v6.8 and beyond:
+
+[    2.196300] brcmstb_qspi f0440920.qspi: using bspi-mspi mode
+[    2.210295] spi-nor: probe of spi1.0 failed with error -95
+
+I am still going down drivers/mtd/spi-nor/core.c to figure out where 
+this broke.
+-- 
+Florian
+
+--000000000000381e5f06138c97cc
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIE3acwLqWDOzfkOi
+6/QjPptpBSmgQZK3oNg1jlRca96WMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDMxMzE1NDAxM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA/17cTMOxuSGlRJEKr/1n2lFDcrlYnya4q
+0aeDQNuWo6IBmdvRbdSNOEr7nABIS5+6alVLfHySslPV0gwlLSM+BuazwhmvwiPMLe9hJ4R73zCt
+zqjcAs6EBNVerWiPF4eSK5vq2+3XQdd/I3DpjthL+1Lr0HdjVUVqnp39NgIBk9fdbFEYxcGJJVHq
+q3VPp4DjFtpTjMYkhivL2p9H5kV9h/Y79nyGRu0mA/h7oSiWDyJGbof+KTHZ5/XYT419JSmfcwHC
+04OJQZQvuNSvb74E79Bf5bAdS17fBidquXiUv/f0cWGhOp5b9eHsdtRcTpQ9ZDxqWsUyfmbQHKoc
+KpZM
+--000000000000381e5f06138c97cc--
 
