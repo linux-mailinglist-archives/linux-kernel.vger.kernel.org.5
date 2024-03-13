@@ -1,98 +1,53 @@
-Return-Path: <linux-kernel+bounces-101015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4848787A0BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:28:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 205F787A0BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3DE3281494
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:28:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAFD61F22352
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8412556F;
-	Wed, 13 Mar 2024 01:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yZn9k/Hm"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41178B67D;
+	Wed, 13 Mar 2024 01:29:33 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095FE225CD
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC350B652
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710293139; cv=none; b=WXpYQfw6qi5hMpUHhtq++Q9u5CqdP714gc57VYjihYkpTdlGVxPLE5lD6nRcO/puV+/7MKJWNz6WKYXISMTzKQSBMqgt/lgFC9UTdIvM7jt3O1LQcDpeD3muEcUmJsBsLEZtp57/lFmrpcOImEStT/AUuyj6fBok+i17hxXfjhg=
+	t=1710293372; cv=none; b=i90FSQ/L4GRQeOMGUx7WBvvPqNfVd1c1pzqEUPA1KRTn9qATUL3WdBAmCvVMYw0Hw7k4jYDWepIDwh/xC4mbWOqpvrGzYEss4Hqrgfpv8IPTV+ZQGhXpD2vVW/CtRGzzOMm8chMJmpve9FwFYyXDB2I1xDmb/qH7MGM3z/CISGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710293139; c=relaxed/simple;
-	bh=7fIBSHLdyRr253VoUz32d0lGxdCPuDKV5UA70PG7VVA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bIAIAHJIvechjqxBaGbTNI5p8gzjv/5P5vb9gLZJcBIAillu17FJhs1l2d+9Ih5yihhOgj3JWtzbOqGEU5bKJlsgnETuL9vM8nx/AA9fV6wZPUidREOFWzyuXALnXaRpcTUCSUEpPbSgqzRfuKW15FCRzgWBhUeHns2PRZ8Y/WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yZn9k/Hm; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7dc3a92c4b8so7151241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710293136; x=1710897936; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tFP3nhe5u/vPdDQ2418/fxPClwHL82o3qm5dzpjWd74=;
-        b=yZn9k/Hm4weqkCzGR8/8pL9kq4SMqZEEEH0yeI5hQ9mqV63MDGWsyzhXvFQnz/eaD8
-         aLIhN2EsxklhTKIh0SJ1NCFzPLa7CH6mt8MaprvyrCwE+SYqCiURTotnGdwUY/rdhYg5
-         yuYmavtUg2jJ6Ra043CwPDYJEdGcW0G4PgVQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710293136; x=1710897936;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tFP3nhe5u/vPdDQ2418/fxPClwHL82o3qm5dzpjWd74=;
-        b=h3GbJXRep4T4WuX/omifU8IcDHVslZB1N4zsikGdY8lTQarHuk2gFcANTsFMyhw7No
-         EHN0q4RhvZzisCkzU7F+s/jfuTVT7mdyjEOu/8xtlX1eVqwiXKukFSPNeYe87tiDFBx3
-         Mc4gtLdRar/fo3VoJnSDFBGtIB/ANzmwv+ModQc7W0P263NIjHqfCwTmJOrE1xaUFIMl
-         p+4kTTA+o5iYRutDH2HKNbSTixdWq64FFmLLkmYRZejzTwZy83WzTWvWv058Wu/cjnna
-         mEcEgU+ET2amyBVq1rto168EZlhWVIT4xwpHYAEwpO+CPk111e6d1JEOD+q/L5KoVYEA
-         39fw==
-X-Gm-Message-State: AOJu0YxT+SbqmJOYs7+srbUidtFA8NTsIuG8VzH5COBKcpYYGSsIWaGj
-	w1gMJSB5+LnLL272UA+W6mhJUvB5JLw9bQaKVBL48xw0HKX0Wuxb3QC3vn1HB76NV2Yr7fjdyfE
-	S
-X-Google-Smtp-Source: AGHT+IHFyfYpc9INhRrW5wM3R5KSsVt91M/yg0XSiM2yIflnqcoaTMBRvEN1d1qEZiPy/gNCwjWcjA==
-X-Received: by 2002:a05:6122:1dab:b0:4d3:3b1b:aa92 with SMTP id gg43-20020a0561221dab00b004d33b1baa92mr8166193vkb.11.1710293136009;
-        Tue, 12 Mar 2024 18:25:36 -0700 (PDT)
-Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 18:25:35 -0700 (PDT)
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Cc: Suleiman Souhlal <suleiman@google.com>,
-	Youssef Esmat <youssefesmat@google.com>,
-	David Vernet <void@manifault.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	joseph.salisbury@canonical.com,
-	Luca Abeni <luca.abeni@santannapisa.it>,
-	Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-	Vineeth Pillai <vineeth@bitbyteword.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Phil Auld <pauld@redhat.com>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH v2 15/15] sched/deadline: Always start a new period if CFS exceeded DL runtime
-Date: Tue, 12 Mar 2024 21:24:51 -0400
-Message-Id: <20240313012451.1693807-16-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240313012451.1693807-1-joel@joelfernandes.org>
-References: <20240313012451.1693807-1-joel@joelfernandes.org>
+	s=arc-20240116; t=1710293372; c=relaxed/simple;
+	bh=UJlpHkjPoNvC6jxkYpAzHDrDK0oNnOtTFuq6EhLz/48=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XLfysyIZssQs5AK9r4l4dZmzJ3wG3KqrP4PYIDSq6e/oBEY36V1yhb2HDlctgNIyeHisy33Ba0S07T4SWLS/f+fZZ95TXgCJVdDJ8W6kvVdFZ5wLjyL/qJ3ehBqcQ/bjQxD8L1YsQtaZB01JA3Ytbt0E9lzwXcIc9eWimLS5l1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TvXt75qYSzXj3j;
+	Wed, 13 Mar 2024 09:26:55 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3C9FF18007B;
+	Wed, 13 Mar 2024 09:29:21 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Mar 2024 09:29:20 +0800
+From: Peng Zhang <zhangpeng362@huawei.com>
+To: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC: <akpm@linux-foundation.org>, <willy@infradead.org>,
+	<ying.huang@intel.com>, <fengwei.yin@intel.com>, <david@redhat.com>,
+	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
+	<wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>,
+	<zhangpeng362@huawei.com>
+Subject: [PATCH] filemap: replace pte_offset_map() with pte_offset_map_nolock()
+Date: Wed, 13 Mar 2024 09:29:13 +0800
+Message-ID: <20240313012913.2395414-1-zhangpeng362@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,51 +55,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
 
-We believe that this is the right thing to do. The unit test
-(cs_dlserver_test) also agrees. If we let the CFS run without starting a
-new period, while the server is regularly throttled, then the test fails
-because CFS does not appear to get enough bandwidth.
+From: ZhangPeng <zhangpeng362@huawei.com>
 
-Intuitively, this makes sense to do as well. If CFS used up all the CFS
-bandwidth, while the DL server was in a throttled state, it got the
-bandwidth it wanted and some. Now, we can start all over from scratch to
-guarantee it a minimum bandwidth.
+The vmf->ptl in filemap_fault_recheck_pte_none() is still set from
+handle_pte_fault(). But at the same time, we did a pte_unmap(vmf->pte).
+After a pte_unmap(vmf->pte) unmap and rcu_read_unlock(), the page table
+may be racily changed and vmf->ptl maybe fails to protect the actual
+page table.
+Fix this by replacing pte_offset_map() with pte_offset_map_nolock().
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Fixes: 58f327f2ce80 ("filemap: avoid unnecessary major faults in filemap_fault()")
+Suggested-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
 ---
- kernel/sched/deadline.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ mm/filemap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 179369d27f66..a0ea668ac1bf 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1454,23 +1454,6 @@ static void update_curr_dl_se(struct rq *rq, struct sched_dl_entity *dl_se, s64
- 	 * starting a new period, pushing the activation to the zero-lax time.
- 	 */
- 	if (dl_se->dl_defer && dl_se->dl_throttled && dl_runtime_exceeded(dl_se)) {
--		s64 runtime_diff = dl_se->runtime + dl_se->dl_runtime;
--
--		/*
--		 * If this is a regular throttling case, let it run negative until
--		 * the dl_runtime - runtime > 0. The reason being is that the next
--		 * replenishment will result in a positive runtime one period ahead.
--		 *
--		 * Otherwise, the deadline will be pushed more than one period, not
--		 * providing runtime/period anymore.
--		 *
--		 * If the dl_runtime - runtime < 0, then the server was able to get
--		 * the runtime/period before the replenishment. So it is safe
--		 * to start a new deffered period.
--		 */
--		if (!dl_se->dl_defer_armed && runtime_diff > 0)
--			return;
--
- 		hrtimer_try_to_cancel(&dl_se->dl_timer);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 31ab455c4537..222adac7c9c5 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3207,7 +3207,8 @@ static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault *vmf)
+ 	if (!(vmf->flags & FAULT_FLAG_ORIG_PTE_VALID))
+ 		return 0;
  
- 		replenish_dl_new_period(dl_se, dl_se->rq);
+-	ptep = pte_offset_map(vmf->pmd, vmf->address);
++	ptep = pte_offset_map_nolock(vma->vm_mm, vmf->pmd, vmf->address,
++				     &vmf->ptl);
+ 	if (unlikely(!ptep))
+ 		return VM_FAULT_NOPAGE;
+ 
 -- 
-2.34.1
+2.25.1
 
 
