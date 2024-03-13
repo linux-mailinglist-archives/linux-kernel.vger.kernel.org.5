@@ -1,97 +1,143 @@
-Return-Path: <linux-kernel+bounces-101700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E967C87AAC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:51:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DDAB87AAC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:54:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DF6E1C2176C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:51:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95E98B22A56
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 15:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B31C47F54;
-	Wed, 13 Mar 2024 15:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8E447F73;
+	Wed, 13 Mar 2024 15:54:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="IE1pXpb7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mxj88dHc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2596F45028
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 15:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13BA47A7A;
+	Wed, 13 Mar 2024 15:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710345106; cv=none; b=qj1Y6f/AGhbewzWvVooG3TdEU74iPvZjkzEIi+DujHJOPCAyZDeB6zA5OGvJXfXonX+yYmlpcEa0QyI6gk0P7yzrAdYfTxuA9EC6ShwT62K46/2AbIOAThu9Rol6LhJdUSEq+wGPJ3byNnO4v2lUS/1J2Cq8U4ldZltkfwpgQVs=
+	t=1710345257; cv=none; b=juxnr7g6q92HWVoU1W4/y3bZeJMy5UhnFb9RS8HsiCg+yp91A412J8cadCKd+tFr7Ha9vyWZmXZvM+MNsWQAhTcqKcg37DpO+rR0cmwGp/TpQCbpPYHRAHGwXa1I4I5fdGF6CbpGLJHqul/3uOmxRpXDi+O+5L0n6r4QH3e4ujA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710345106; c=relaxed/simple;
-	bh=mI7fSNRhjdc1x/5jXUqFrblmXVZD1jsPOX+je1rOPJs=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=W2aPRrDqyNztlOA3r6YbHqvIHN6aEzAIuEOPzUGUVi80rmp0+3cdMu1z+pZ2m3GaqyseKxZHxUoAqz+4NVDrt8L1+daNyfUw40iPUyfKNqErpGwUnzOroHHwtkCpNNxwNpqWUzldO0gB5Lo8289U/q+t8qMqw84KP0jWaikcmwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=IE1pXpb7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14731C433C7;
-	Wed, 13 Mar 2024 15:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1710345105;
-	bh=mI7fSNRhjdc1x/5jXUqFrblmXVZD1jsPOX+je1rOPJs=;
+	s=arc-20240116; t=1710345257; c=relaxed/simple;
+	bh=yCPcm0HuACe7Ylcl84l9GUNnikcf7P+tj8+cPMTT1gw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dGOrxS2byWp/Cff+L4H4hLvg/zt7+BMmnzgvOweKy5j+rg5hbbkMyBi0KkU4PcquVgmK1WaITT68FywKUi9qipkLxj5RiPxXnm58CxzBBbAlh4eZQ9QHjMkeenlGY+TuV4lFV4KAgC/3DbsGoKxzL5GNGmEzRkp959SHvIvrxR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mxj88dHc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66BA9C433C7;
+	Wed, 13 Mar 2024 15:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710345256;
+	bh=yCPcm0HuACe7Ylcl84l9GUNnikcf7P+tj8+cPMTT1gw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=IE1pXpb7tEtDPJb1XPIB8Qu0S2GzmepwH2QCl5imqd4uVrjQ6FOIaKUEilPkEvxvf
-	 8xkpZBwuPD2joCO0YlGF61cyqD55UJYIV8W9ya1CD5oXdVR7zS/ZCbPF3+6GNnNTGc
-	 pey9QOPoFuxqaAqcT4v1qyyDZDa+7k3k4RllX9m0=
-Date: Wed, 13 Mar 2024 08:51:44 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Donet Tom <donettom@linux.ibm.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Aneesh Kumar <aneesh.kumar@kernel.org>,
- Michal Hocko <mhocko@kernel.org>, Dave Hansen
- <dave.hansen@linux.intel.com>, Mel Gorman <mgorman@suse.de>, Feng Tang
- <feng.tang@intel.com>, Andrea Arcangeli <aarcange@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Rik van
- Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>, Matthew
- Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, Dan
- Williams <dan.j.williams@intel.com>, Hugh Dickins <hughd@google.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Suren Baghdasaryan
- <surenb@google.com>
-Subject: Re: [PATCH v2 2/2] mm/numa_balancing:Allow migrate on protnone
- reference with MPOL_PREFERRED_MANY policy
-Message-Id: <20240313085144.13b37a79c688b6126af0bd07@linux-foundation.org>
-In-Reply-To: <874jdd5z1b.fsf@yhuang6-desk2.ccr.corp.intel.com>
-References: <cover.1709909210.git.donettom@linux.ibm.com>
-	<369d6a58758396335fd1176d97bbca4e7730d75a.1709909210.git.donettom@linux.ibm.com>
-	<874jdd5z1b.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	b=mxj88dHc33oAxVBxSHr88C5zoxchwh2o2neCu/oC/+61SIFU/4RmGQ+A1DG8z5YJn
+	 fKvYkA8piLJN2vAye9c8K2mulAYh7BB62yMwlLRsd2hBByg8r/2ehaHOwb+k6KrPa+
+	 RamzaIzG7oNKH0YdXZTNgXkFAHniAsk+Hb6nDT6Ebg5kAHmCaLgBslSZMaTciVf+Su
+	 3bGr9hxMttOWS/IqAMhp9g1SXvJoZbCL4aQv2rBG2dxi2FSo2/qtHLlfJb91hHrVmI
+	 Xf4MosYqY69TwWn5EVoB1zVKLYw+/1LI3JAQOTG4JiJN8A5qHwNPKqVbDv9S79K9hc
+	 RgGZa7geV9heA==
+Received: from [209.214.232.173] (helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rkQvl-00C75Z-IU;
+	Wed, 13 Mar 2024 15:54:14 +0000
+Date: Wed, 13 Mar 2024 15:54:07 +0000
+Message-ID: <87ttlap1pc.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: cheung wall <zzqq0103.hey@gmail.com>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: memory leak in kvm_init_stage2_mmu
+In-Reply-To: <CAKHoSAtTA7pTi5T7oYZkNdVwt79sXbW+1=V=LZxpKdJGRSk0Eg@mail.gmail.com>
+References: <CAKHoSAtTA7pTi5T7oYZkNdVwt79sXbW+1=V=LZxpKdJGRSk0Eg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 209.214.232.173
+X-SA-Exim-Rcpt-To: zzqq0103.hey@gmail.com, oliver.upton@linux.dev, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Mon, 11 Mar 2024 09:37:36 +0800 "Huang, Ying" <ying.huang@intel.com> wrote:
-
-> > @@ -2515,15 +2516,26 @@ int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
-> >  		break;
-> >  
-> >  	case MPOL_BIND:
-> > -		/* Optimize placement among multiple nodes via NUMA balancing */
-> > +	case MPOL_PREFERRED_MANY:
-> > +		/*
-> > +		 * Even though MPOL_PREFERRED_MANY can allocate pages outside
-> > +		 * policy nodemask we don't allow numa migration to nodes
-> > +		 * outside policy nodemask for now. This is done so that if we
-> > +		 * want demotion to slow memory to happen, before allocating
-> > +		 * from some DRAM node say 'x', we will end up using a
-> > +		 * MPOL_PREFERRED_MANY mask excluding node 'x'. In such scenario
-> > +		 * we should not promote to node 'x' from slow memory node.
-> > +		 */
+On Wed, 13 Mar 2024 04:53:52 +0000,
+cheung wall <zzqq0103.hey@gmail.com> wrote:
 > 
-> This is a little hard to digest for me.  And, I don't think that we need
-> to put this policy choice in code comments.  It's better to put it in
-> patch description.  Where we can give more background, for example, to
-> avoid cross-socket traffic, etc.
+> Hello,
+> 
+> when using Syzkaller to fuzz the latest Linux Kernel arm64 version,
+> the following crash
+> 
+> was triggered on:
+> 
+> 
+> HEAD commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a  (tag: v6.7)
+> 
+> git tree: upstream
+> 
+> console output: https://pastebin.com/raw/MLVZbN01
 
-Oh.  I like the comment.  We could perhaps put additional detail in the
-changelog, but using changelogs to understand the code is so darned
-inconvenient.
+This reports "Forbidden".
+
+> kernel config: https://pastebin.com/raw/PFD96ZwE
+
+# CONFIG_KVM is not set
+
+How do you expect this to work?
+
+> 
+> C reproducer: https://pastebin.com/raw/rHmMzvGt
+> 
+> Syzlang reproducer: https://pastebin.com/raw/dAt714WD
+> 
+> 
+> If you fix this issue, please add the following tag to the commit:
+> 
+> Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
+> 
+> ----------------------------------------------------------
+> 
+> 2024/03/05 18:24:34 executed programs: 0
+> 2024/03/05 18:26:41 executed programs: 8
+> BUG: memory leak
+> unreferenced object 0xffff023ad74b8100 (size 128):
+>   comm "syz-executor.3", pid 3911, jiffies 4295149819 (age 22.132s)
+>   hex dump (first 32 bytes):
+>     28 00 00 00 01 00 00 00 00 40 4e d7 3a 02 ff ff  (........@N.:...
+>     80 d9 5f a4 48 d3 ff ff c8 69 46 d7 3a 02 ff ff  .._.H....iF.:...
+>   backtrace:
+>     [<000000008d295845>] kmemleak_alloc_recursive
+> data/embfuzz/emblinux/linux-4a61839152cc3e9e00ac059d73a28d148d622b30/./include/linux/kmemleak.h:42
+
+[...]
+
+I suspect this report suffers from the same problem as the other one,
+where this is actually against 6.1.61 rather than 6.7 as advertised?
+
+I ran the reproducer locally on 6.8, and didn't observe any failure. I
+had to modify the it though, as I'm using a host with 16kB page size.
+
+Please let me know if I'm missing something.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
