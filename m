@@ -1,86 +1,67 @@
-Return-Path: <linux-kernel+bounces-101037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F0CF87A129
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:59:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABC7987A12F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 172C9B22148
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:59:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33D69B2223F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BC8BE65;
-	Wed, 13 Mar 2024 01:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2E9BA3F;
+	Wed, 13 Mar 2024 02:00:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="inh6CyaI"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=jwang.link header.i=@jwang.link header.b="IhD+07LW"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B003BA27;
-	Wed, 13 Mar 2024 01:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8794AD56
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710295145; cv=none; b=KQt9oQ1fFBJg0HcP/+HUC00xt/+zl+YqIRtshECJtfCrnYgRBaVFkU/caitj5EHbihRA8Pfxn60yaz5oPwLMuE0PhTQnKycax9iSy3/XVjOIvO/PsQu8W+38F6tOtPHRfypO8WL99epADKmysMZex6Ai1z7NAQvp8N2CDALcSzo=
+	t=1710295207; cv=none; b=r1+yz/wJ5PUmZknt6m3bmBJM1t+bcVcjGuw0+iD2lO3w6vzRWG/U0H6IcEXEKldNIuYsB6EgqYQz3NIIYvS1MPptfPQsTGs0rVLEX37wC117Kp0R/K4G/1lXIYRxZCjMt8PQ4V5ety0KdK6kZygwkEC4H9cCTAw2lD9b5lpGsB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710295145; c=relaxed/simple;
-	bh=yCzLfMCERzhpmQeaZQp12W9PWBfBNEBGbVM8t/X5y7k=;
+	s=arc-20240116; t=1710295207; c=relaxed/simple;
+	bh=APTa/8Fhdr3cFmkiQSmv4Cee2OoQldd7OYx7dwB+9ts=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aP4fjZI+GqdetuXTROIhH2JEbtKL60MoN3xByGP7TCoFmCxVnNFULsSvLEo8kDrwYOQ4NXU3djla2ZrVDCaoRBwlWZKC9vDOgG6vsJ3vwqx2Zy9jUzyvQw5jSltq87syPcS0f15pGM4EeMaq2NyUVraWjzSAc0oKnzK5m4kFOx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=inh6CyaI; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd5df90170so3908725ad.0;
-        Tue, 12 Mar 2024 18:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710295142; x=1710899942; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7oP2K1n1X+9DGLWdItTeWuFNvDflUz+Ie9+tyKphc+M=;
-        b=inh6CyaI8DqEet8BcqW391Z+YwmMgUgXgFFidpiidkdqk5u7WabbQZ3BRkkjcSnwpx
-         uKalBivGdtVl625id3ciTSC+aOwOzkhrbBEoVNWAQekCnXnGOFqBGgyODdoSI9rZpRLS
-         LmzAz5PQtJXfrfcboCq+QGPyyp9j/G5LEsCdfvN80mzPeYpt44/Jsom5MWtkbGVF+tuG
-         /fwk83rBR3fi+rmxH0dijkWIwx47ZHSRXEy+0BUUPN50f73/14rFPMY1UclyFNLNdHPU
-         aru1v50enqSr+oKZzwqun1A94BOQzF/lZxoBBwvGKjgqNc4aLI/KL0fseNlokjfeY/Uy
-         L1tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710295142; x=1710899942;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7oP2K1n1X+9DGLWdItTeWuFNvDflUz+Ie9+tyKphc+M=;
-        b=A50q9PBybU4fUgRpMCFmKqej9ISTPw89H7ndnMCt666E6DKWh67c/ji8U8ypmw7ZGa
-         /Aypx+iybL0Utu/tJemPVlFKQCak78SiqYpsJPceNZ0qMplfEpX1MRGCHwBW9EMNtkcf
-         hpr5MI9+6ueZoS62k8L6FdllxQRVZHRdHvj5GMiK+clgzr2B/m0cvyhEQq4KPTUH1t7d
-         7VshSgSVQCDK/juqAef/OmY3sb4iepQRjqyd05H4eqzHuLLEGdLE6Z1rjHXpeo/MmeOl
-         TjhhMUQAp38f3R1JAWCnU7EjLTsMq5Z0klYeh+w9SzCGFyGVjc/y7yEdYkOyn0g65up1
-         Dn5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWPmmQbSFJPSev/oR9p4uQ0Vkv2yypCCN5BH2gQUETmvlBDHPCkFILm06xBcPWSiD7dQurz59qH1y0HF9SMq/u/wqVj1I//FVCDs23qf48Fc+UzRqtpC9ovoXWAIibXA8tjcP1oU+Vk3ugLotv9++mSCCLSjPUEFZpvGkXQKseM9VgqeP0tdA==
-X-Gm-Message-State: AOJu0YyQ2QseG+bLiqStI7cRfnCkfFJr34z3mQxIzULIXNuy51MYW1tt
-	MWhueSLIXC4WgZZjbjUSq7RZue5QyXmo7fpErrbeRDZp9AqUoQqC5Pynfqh0
-X-Google-Smtp-Source: AGHT+IFoaK2nyB0YllAD/6xrr9CDFunZOFx5tDZ5MLCtIAJWBd60MjCREHvWoImGTRNeicYeJiRH+A==
-X-Received: by 2002:a17:902:da91:b0:1d9:4106:b8b5 with SMTP id j17-20020a170902da9100b001d94106b8b5mr1935151plx.11.1710295142505;
-        Tue, 12 Mar 2024 18:59:02 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id u5-20020a170902e5c500b001dd88a5dc47sm6273813plf.290.2024.03.12.18.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 18:59:02 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: herbert@gondor.apana.org.au,
-	akpm@linux-foundation.org,
-	sfr@canb.auug.org.au
-Cc: ebiggers@google.com,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-next@vger.kernel.org,
-	v-songbaohua@oppo.com
-Subject: Re: linux-next: build failure after merge of the crypto tree
-Date: Wed, 13 Mar 2024 14:58:48 +1300
-Message-Id: <20240313015848.46765-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <ZfEFKxl8/42oXv0i@gondor.apana.org.au>
-References: <ZfEFKxl8/42oXv0i@gondor.apana.org.au>
+	 MIME-Version; b=P8ztl64yM5STjMxcWUkWHPZ+yZw7dv4KVM0PwavjywNoAolZCMs4ug52ftrygBeOyCwre/zqux6yMxNFhwCWIc5vcxtAuCtgbkIqU5f8S4pLHDfHvj5G2egmdOvt9d7DLOrSvBr+CiR5PmQYu9CzREmKAIBztcceN+Cgiw3hmlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jwang.link; spf=pass smtp.mailfrom=jwang.link; dkim=pass (2048-bit key) header.d=jwang.link header.i=@jwang.link header.b=IhD+07LW; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jwang.link
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jwang.link
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jwang.link; s=key1;
+	t=1710295200;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HzuNIXQtvXRiIKbJM4BL72narhpcWuIm7CcPK5xNzYk=;
+	b=IhD+07LWuE8n0mizyzeA9pjIMSYV5hJtfcE3qngeG3/I3wtWC06UZecV8Q0IdEZA7htUxs
+	jR4Zjqozvk0QV4SzZn4GzGCFQFoYpw0Zpc1C+++QCjQUNdBbIdNHx6JYbgy2wZK/xj+GA1
+	+SYd4AAWg2fkjWj4QTAkHj4D8mvGKVpEuNlZip8sUJN8zELOv7b4GiPCPIMUAkFxoz7pZE
+	wK8UerrX0KFagT28X4IvRNFJ+FSHZ0ie+pwJMqjFWGeciKzqpyoUR09ly5evNfqbB0CdAV
+	r6UgiLDFmSMnDD4tiZ2HbP/2XvHCtpjXDkJtOwJo1IRab0xsfvK+Fy/FWH/FrQ==
+From: Jiawei Wang <me@jwang.link>
+To: broonie@kernel.org
+Cc: linux-sound@vger.kernel.org,
+	me@jwang.link,
+	sashal@kernel.org,
+	vijendar.mukunda@amd.com,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Jeremy Soller <jeremy@system76.com>,
+	August Wikerfors <git@augustwikerfors.se>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/2] ASoC: amd: yc: Revert "Fix non-functional mic on Lenovo 21J2"
+Date: Wed, 13 Mar 2024 09:58:52 +0800
+Message-Id: <20240313015853.3573242-2-me@jwang.link>
+In-Reply-To: <20240313015853.3573242-1-me@jwang.link>
+References: <a127404b-a071-4917-8ddb-d7371c721827@sirena.org.uk>
+ <20240313015853.3573242-1-me@jwang.link>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,32 +69,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-> On Wed, Mar 13, 2024 at 09:43:52AM +0800, Herbert Xu wrote:
->>
->> Instead of using the non-existent crypto_comp_alg_common, it
->> should do something like
->> 
->> 		return crypto_acomp_tfm(tfm)->__crt_alg->cra_flags & ...
-> 
-> Nevermind, the stats revert should not have removed acomp infrastructure
-> like this.
->
-> I'll revert it.
-> 
+This reverts commit ed00a6945dc32462c2d3744a3518d2316da66fcc,
+which added a quirk entry to enable the Yellow Carp (YC)
+driver for the Lenovo 21J2 laptop.
 
-I assume mm-unstable doesn't need to do anything since Herbert is going
-to revert the crypto commit "crypto: remove CONFIG_CRYPTO_STATS" which
-accidently removed the API. once that is done, linux-next is going to
-be ok.
+Although the microphone functioned with the YC driver, it
+resulted in incorrect driver usage. The Lenovo 21J2 is not a
+Yellow Carp platform, but a Pink Sardine platform, which
+already has an upstreamed driver.
 
-> Thanks,
-> -- 
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+The microphone on the Lenovo 21J2 operates correctly with the
+CONFIG_SND_SOC_AMD_PS flag enabled and does not require the
+quirk entry. So this patch removes the quirk entry.
 
-Thanks
-Barry
+Thanks to Mukunda Vijendar [1] for pointing this out.
+
+Link: https://lore.kernel.org/linux-sound/023092e1-689c-4b00-b93f-4092c3724fb6@amd.com/ [1]
+
+Signed-off-by: Jiawei Wang <me@jwang.link>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 1ab69a53174e..69c68d8e7a6b 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -199,13 +199,6 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21HY"),
+ 		}
+ 	},
+-	{
+-		.driver_data = &acp6x_card,
+-		.matches = {
+-			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "21J2"),
+-		}
+-	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+-- 
+2.39.2
 
 
