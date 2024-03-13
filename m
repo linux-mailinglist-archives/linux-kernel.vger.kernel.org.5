@@ -1,140 +1,94 @@
-Return-Path: <linux-kernel+bounces-102465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0441287B27C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:04:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48DA87B27F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F87E1F2612F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:04:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B1E81F254F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA6E4CE04;
-	Wed, 13 Mar 2024 20:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IykUHfmR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC69B4CE11;
+	Wed, 13 Mar 2024 20:05:09 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F54950261;
-	Wed, 13 Mar 2024 20:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1F64CB38;
+	Wed, 13 Mar 2024 20:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710360253; cv=none; b=EUPSZAShhjZBdBXze+sLfPCilmsVCjW9SHuQJIzJGoOD1Vn37L5rx8A5mwmT66EAFPaI3/icwdVFjJ1cBKkgV9z7xO0yg2x3w/2ug/nl9+83piu/GRGQrq1dfa8Y6/XzpddgyQd8fbHipZCElXvW6090Xr86X8XoqslXNBwXrVk=
+	t=1710360309; cv=none; b=cq8O0bHXwP2NKAGFWVuvTwaGQ+ActMtPiegFAzyCFRtV3DYk+Y6o7aO6IRaQrjmVoaSkK4aciqBOcnpvnGswbXkCj18R570hoAKJeJe56iwB46xrpj+mqIfGzP9UBNCaO5WjaYVRgXWU1r+fuk4AWQYx5arbt20SGGUsdDGN5/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710360253; c=relaxed/simple;
-	bh=1isCJ/HiRQqsOQID7hdC+OE/BFsB1DwZ8Ioqspcdcsk=;
+	s=arc-20240116; t=1710360309; c=relaxed/simple;
+	bh=JgPqcu/LPBg4sb+rys/yp1+1I440j2JiV/QK5JrmWIc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UshDd1En+1z3YNPMECa9Kt2Op7Y+oA9cKWn39xL3Rnw98bZ6g99lAcN5XmFbvDQDHnnbpTJzckRJ40B3PGCVBVzoVrCmNeRTnHCYfjBvAaHbpA87MP1oIxCVHZbPAJfQTuhBlaaHrxOa9wtV5KsWfmUCdTFFTupqo2mF0ZXmyeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IykUHfmR; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710360252; x=1741896252;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1isCJ/HiRQqsOQID7hdC+OE/BFsB1DwZ8Ioqspcdcsk=;
-  b=IykUHfmRmQZuQEI0EKY2o/GdzjDbmuzVJRzoifaCUlBrpo5HjgYVxDrA
-   39b14ya611PcooA6D/PCVxbFCIrDiwRbq/B/iu1NPH5j4Btm0J8u5O5Xq
-   1qZz+WQw/W4Ra6VilQwkqpMNwMXoCHW6D0Oa5QiO4s29r6ndBhPMtdFBp
-   kM9D87gHreoalgQsi6RW9k+Pmj1eg1TCw9fsbRnx8Ppn1kWQYoRx6fhvn
-   cDUUkBXwP+FYjR0zJ5TFYbh7ZmoOEs+eIJUMRBs0gQEVpPbwUj7CU/bI5
-   NW2+OOTuOrlP9u0+Fuqw0tOSkeD8bDPCu91URkoVgeP0t5NK7zhIz4J3o
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="15880485"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="15880485"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 13:04:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="914440421"
-X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
-   d="scan'208";a="914440421"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 13:04:08 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rkUpa-0000000CJiw-0kRb;
-	Wed, 13 Mar 2024 22:04:06 +0200
-Date: Wed, 13 Mar 2024 22:04:05 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
-	mazziesaccount@gmail.com, ak@it-klinger.de,
-	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
-	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] iio: pressure: add SCALE and RAW values for
- channels
-Message-ID: <ZfIGtUPZpyDBnWwz@smile.fi.intel.com>
-References: <20240313174007.1934983-1-vassilisamir@gmail.com>
- <20240313174007.1934983-4-vassilisamir@gmail.com>
- <ZfH4bET-HX0e3PO_@smile.fi.intel.com>
- <20240313195110.GB1938985@vamoiridPC>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JTgW5dQipyGUHa5qthldivs/z++ED+BltZ+eZ+E2jPQMg0Ptqlj2FT1AnfRWc6aqtvjRZJjBi+PO2qAoBOPw5fzos9jvJ20L3U+B9BdLkGJvrZ0XW0fEDkYRrjbX5gVLXdBbUz59hF4/Wp1C0oxUDWCnmqIgb2XZmiNrx5Z4Fm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 9B51A1C007B; Wed, 13 Mar 2024 21:04:58 +0100 (CET)
+Date: Wed, 13 Mar 2024 21:04:58 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 6.1 00/71] 6.1.82-rc1 review
+Message-ID: <ZfIG6lrASgIoioWG@duo.ucw.cz>
+References: <20240313163957.615276-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="W0JFReOkKwLYrKMl"
+Content-Disposition: inline
+In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
+
+
+--W0JFReOkKwLYrKMl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240313195110.GB1938985@vamoiridPC>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 13, 2024 at 08:51:10PM +0100, Vasileios Amoiridis wrote:
-> On Wed, Mar 13, 2024 at 09:03:08PM +0200, Andy Shevchenko wrote:
-> > On Wed, Mar 13, 2024 at 06:40:04PM +0100, Vasileios Amoiridis wrote:
-> > > Add extra IIO_CHAN_INFO_SCALE and IIO_CHAN_INFO_RAW in order to be
-> > > able to calculate the processed value with standard userspace IIO
-> > > tools. Can be used for triggered buffers as well.
+Hi!
 
-..
+> This is the start of the stable review cycle for the 6.1.82 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-> > > +	case IIO_CHAN_INFO_RAW:
-> > > +		switch (chan->type) {
-> > > +		case IIO_HUMIDITYRELATIVE:
-> > > +			*val = data->chip_info->read_humid(data);
-> > > +			ret = IIO_VAL_INT;
-> > > +			break;
-> > > +		case IIO_PRESSURE:
-> > > +			*val = data->chip_info->read_press(data);
-> > > +			ret = IIO_VAL_INT;
-> > > +			break;
-> > > +		case IIO_TEMP:
-> > > +			*val = data->chip_info->read_temp(data);
-> > > +			ret = IIO_VAL_INT;
-> > > +			break;
-> > > +		default:
-> > > +			ret = -EINVAL;
-> > > +			break;
-> > 
-> > Is it mutex that prevents us from returning here?
-> > If so, perhaps switching to use cleanup.h first?
-> 
-> I haven't seen cleanup.h used in any file and now that I searched,
-> only 5-6 are including it.
+CIP testing did not find any problems here:
 
-Hmm... Which repository you are checking with?
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+6.1.y
 
-$ git grep -lw cleanup.h -- drivers/ | wc -l
-47
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-(Today's Linux Next)
+It would be good to quote sha1 of the release, so that we could check
+it against our build system.
 
-> I am currently thinking if the mutex
-> that already exists is really needed since most of the drivers
-> don't have it + I feel like this is something that should be done
-> by IIO, thus maybe it's not even needed here.
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-> > > +		}
-> > > +		break;
+--W0JFReOkKwLYrKMl
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-With Best Regards,
-Andy Shevchenko
+-----BEGIN PGP SIGNATURE-----
 
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZfIG6gAKCRAw5/Bqldv6
+8ndVAKCgIBbBwI1OphrxdwxOnpYt43HqMQCgpXd5FUyPljUV+RKAqQ/d360R4/w=
+=Qo9h
+-----END PGP SIGNATURE-----
 
+--W0JFReOkKwLYrKMl--
 
