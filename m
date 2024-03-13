@@ -1,209 +1,191 @@
-Return-Path: <linux-kernel+bounces-102376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9A587B15F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 77AF787B163
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:14:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE2841F27D74
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:14:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F18DA1F248EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E2D762D3;
-	Wed, 13 Mar 2024 18:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A3F763E8;
+	Wed, 13 Mar 2024 18:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="flm0orjv";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qhC4Ji5v"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tgdjjBVW"
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2121A38C3;
-	Wed, 13 Mar 2024 18:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710355291; cv=fail; b=clpJZtJOzaMJcL4rE1sFt/uchZMe4Cu+5BKk5foCoangiIwKPflZ8ZWUQVbd/bpnXxHVdmaAqKHG775jKqKTH2/Efa91veEpbozxV22PYlHPZXB4UdW+izXOSp/zeiby/gUQmGgC8sG+X07mV6HfYzNCozrq94uekLVcXiEmA2s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710355291; c=relaxed/simple;
-	bh=zXNgd5vL0dE0Cj5OTcrUqOTeHkkOH/3PcOduUM0yy7I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ryRHl3M7p6/OvgiBISjV89Dh4zYjAO/MhblEUEGhTSiCLAEhDlboeEImNZ0eMYdcSwmVcROrE2TAlpeUfSayR9tHdmxa/kknKDAlPwGJpxp/sfeOFijWbH104hM6uPfHhiNAyXxquC7QCyCpXy7ap/pGe0FnmUUxeteTpH/wNYM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=flm0orjv; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=qhC4Ji5v; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42DHxd4r022142;
-	Wed, 13 Mar 2024 18:41:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=lJkY/+T6J/1Fyz2mB8gOdqFRsQ0HJYrFjwY+9sK/HMA=;
- b=flm0orjvrGnSX+Ppp8+ij1PZdMamp7WRWPpMqxYSuTjwBBw/llMIX0/A0deTIagEmpgm
- XKQzFJ9WmnQv9xtH4Yo17ncpoobwyqI8pM1YWG7jOZoZrAK+NIVB/uYZlqtSyxCG++eg
- WoklbLvXh0jiaQV3ghJk8anMnGrECCelr1qsJ6O+sDvR16GZuA/I4Pxu9VcFo+3blWYa
- lNf5v1k2tuRHWJtQDXo4yMi8bQRN5auQUXiMhIwemPZuaLxFgOCJWonAnG/Y53Ykh6z8
- 1KBqWVntkR0rFd+GUa6T/4EKQIeoaPlJOyvTPuAjT3oo3Hw/5kWYO+wqrSAPaMXz9uR8 ug== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrepd1meh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Mar 2024 18:41:01 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42DH5ul7038449;
-	Wed, 13 Mar 2024 18:41:00 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre798p6s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Mar 2024 18:41:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GMRUqHwwXM71onhXJ0hNgyCnNX85GeqWP5xBL0/B2NsNscFmQ94Od0ziZUUt99yfW+ImSlQN2PuDhEpBI4ODfV+tlaoasTxV+eodYE9rgJx+i3Rb0l1bEPenieS4JOvML+wbD3zKwzQGNjNPPocjP61Myg39NuCU2hPp4M2WMU/wyNZID5g3fUohvSD8zcTtpkoQvJ2V7MHBkLDtosOFcRRbKwxYY1Nab30kFnvb4li1AUu1U9xAOyEx+DtSG2CIDlPpI2PuYWDrkMeeTgpnkYvJOGmmP+KREanG72adxBi0vWLuvwiZRleR6SvijVryV5rXh00Jf4TfVR50r7kvUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lJkY/+T6J/1Fyz2mB8gOdqFRsQ0HJYrFjwY+9sK/HMA=;
- b=Q178uYZannbZGabA75lzPV3gGtVqRj6ISaghXpHgwy+4kja/Mg8Qu3giH0zd2geJvxDOq+Rijv9NZgwQmNcIpyGw8UvjjGKod++OQp0JrJuQaFdHXaHZWh3o2YI+49JiQliTCv9KTiF2/WHYV+1KI04RjoEvLOwV8EWhdEK1rpyL08ZaAebd975IfCNvaTvQmSDJZQI8M2YX0MXrCvJPlM9f4pC3UEhTM2RTT8Pg2RbgfgrWWPbqsTFG0YlDBESuoxAGGtgTORoCUafVLXKZk/Qsp59qzm3sIelojr73VlcXedwji64lD+xEjVfHKNQ6scCJzYiGjgoGuZbCfGvLvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lJkY/+T6J/1Fyz2mB8gOdqFRsQ0HJYrFjwY+9sK/HMA=;
- b=qhC4Ji5vX4ZAulKdIZkhvUW/YT1C6wstpdyjxwqCXe8qhk/L2YMy+3qEHJHI8tZI8AlTYDlpXbQ9mSqnWuANas2bcBdGLmcrlNky8YAhXlAe2yCbXSnh96Rlapctvzn3MshjsPVf5l/+LR+nE+HlFYZrthdlggOnc+VvGU8JN/A=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by BLAPR10MB5139.namprd10.prod.outlook.com (2603:10b6:208:307::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Wed, 13 Mar
- 2024 18:40:58 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
- 18:40:58 +0000
-Message-ID: <9fdf92e9-ad77-4184-9418-8a209e24ec20@oracle.com>
-Date: Wed, 13 Mar 2024 18:40:53 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] ext4: Add support for ext4_map_blocks_atomic()
-Content-Language: en-US
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Luis Chamberlain
- <mcgrof@kernel.org>, linux-kernel@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>
-References: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
- <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR02CA0223.eurprd02.prod.outlook.com
- (2603:10a6:20b:28f::30) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C2C6216C
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710355356; cv=none; b=BObToRSwqsnZU9heV2XsezTfSg+zOB7v1PY3hNlYtMr8RlGNX88b9T0HFkPVA1v38/d6dDgpxki6rTBFEogr/uO2Xo/Ir8tvY88uPBEH7tE55fEk6bPgBBK3lDu8XcDpFCVA8PuELT5+Wm6qJyBpBYAsLQIIByZOlwE0FCFnjFc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710355356; c=relaxed/simple;
+	bh=h2s/HeHGv2cjNU9NqXHxp66hRlwq9Ft3Pc/wOqKN1sE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q5gVqqXcULiIOAe4ec4UWgdExwQNbSfcPK303r93E9ui/HLg4m5wnPJESRqx6fnDj+UOVOnn1Qri8pQj5evsrefd008OiyL/p4eduR+rqwZuaz/PFxxCSbAY3N0vi6V/AWckXSJOnXEKyRKrebh4bIP2XEbyhjvfmx4nVJtPA0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tgdjjBVW; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710355352;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WxQDoEE3/Fbbj9TMadguG+N8bpicfYLRU/3GYTYKZFs=;
+	b=tgdjjBVWjrWjp3qvXPEIbMRp5/xMrXSwJYp0emYEWOK4qEUQocB3Zdd7/jzlyvyjW1Uelz
+	KBEgQfwM4NUt9cdHJu/daDs2jW2/Ic5tsnVnIAXYP+o0+XuNgdLFSqD4sLKl5A6GAp6s3z
+	8sXV7P05yxegPG63+chPkFQmAoNdFZI=
+Date: Wed, 13 Mar 2024 11:42:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|BLAPR10MB5139:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7cd0f647-77a3-47c8-b682-08dc438d1f72
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	q9WEEfRZ/JpJ6e1DIvTkG9E3KJFCd0WPpl3U/k6axKC8wFoGFrgeefEKv9MwvTi0xKkmwxquZ3XvPOl1jHtO664TUi3o1zGATm7Q+Eb0ARuCiq7LVFO6ckvfnEWWZO0hyIEci/20cJ3i+dC4m+Igb4DjFx9xtW+D74ZnXsqWJsQaFfXQP+K/zkeEEKEZBzezsd4rMktGBKPdzNYoYqzW1cJUFisWsJ0+QWGZylOWOg1OMsQ+1rHO4jkMSQoJy61TOQG26wMvyLk68e3qe/GJ9GMC8wYNDPlXwhR5jBPZB7KTrLDBA2aBNHdh6NARLKczjOCyi9ZlcgKFVkYU0jzz5WtuYu+auoMkqGA6MxzLfLdNDlIuG9HU9LQtuih1kmxupw6mD6DpgR5JkMnHQScmmpEy3bKeYV9NSpArwcn6qVfWLxfc4YSkBKHvr9UOqIff30BpFyOl+gv7OJweg7kkKP8WsWWKuOXARMF28826Qc23+AUClcRHKHyDufMJxnBs4HETRPw/xUe+cCW0FGFnuXyfMEOTfyh3gfrNGQpvH+hgjll0tM18YGlLV+bBA26hsMC7TAxQInypqJRmbPhAk7JGyXSWblEy29bz9ci+LvtHBxqUjztdvu8BvcJDNMPb
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?QTR0ZjRrN1djM256RDRpT0UrdzlTOUVnTmNhVkZ1c0pNQjUxVTZWYndBZXJk?=
- =?utf-8?B?OWpCNGIxY0VLNUhYSXk5RDM4UlBsM1BMVTJIK2xlbFA4Ky9ZUlkrWjkyY1Ir?=
- =?utf-8?B?WTd0ZTBCVmtScXpRWXYxOXBwTkFKZEVGWnlGNVVsQ0Y2eWwwNWRrR2wvVkcr?=
- =?utf-8?B?N1VvcFQyL3l0MGY5YXFaaFBQYTJSdURCZ1QzRFpBODNBcW9TOVViQUYrT1Az?=
- =?utf-8?B?NUJ5cUxzN2ZZYzJXcG9NaFdxWDBjZG5rdGJQUjdEb3hGY2JNMzlyeS9qRFFF?=
- =?utf-8?B?Y1h6OUlIRm42NThTOHJYR1FnSEwyRlVtei8zNWlxSjZJUW4xRDRxK1lRNzE1?=
- =?utf-8?B?N1dkdlE0Uis4cjN5ZHh1QnpkemlEU2hZKzNLclpGb0Q3OGVKMDgwL1Bud29a?=
- =?utf-8?B?R0ZtNzAvL0d1ZXVoYlFRRFJQZEdzMnJWSkpaRWR1YTNOdkttRjNJQzBySU9L?=
- =?utf-8?B?TGZ1VTZ6V2JBQXVtSUxXM21mSVh6dlpNbC9TWmpvWm95SEpmWnRkS0kwVlEw?=
- =?utf-8?B?dHhna1JNVEpUcGpyODZDNlpaU0lYK3djSlA2QlRrbHNRUGNkZnpNMmh1VUJI?=
- =?utf-8?B?bzdRd0orWFk4d2h5NWQ2UVc4cmFnVExaY1gydDJKV3ZjNmM3aVB4dUZQblFv?=
- =?utf-8?B?bFZ3WkJIMmYvL1lVM0xoeUQ0clU0UGphTVI2cDdxSnNGMFhxMnVlOGtJNG43?=
- =?utf-8?B?U3RTTUw5VXdXMUo3SGZ6QWdmcDMxcGNVbjNIT2VzZTdWOWZhR0FPQnBTdlJq?=
- =?utf-8?B?a0FwVzZ5Ti9HVUxIMU1XUWxUWWZMWGxES1FKM1RYenJzejVSUm9LNVJXNjB6?=
- =?utf-8?B?NmQwZTNEd0d4VmhHcVY0WGVrNzY3UzdiY3B4c1ZPTnhiZlhVeEhPc25MQm1o?=
- =?utf-8?B?UThkZ0pDMkNKVUVFeXZTMGYybS82bVhrVmV2Nml6Y3dvcGRrRzVkSGNxVThq?=
- =?utf-8?B?eU9jQnVPckNCZnh2ZHJiZ1JQbksrbU9zM2luRGFIbm0vSGdQY3JpMzd6ZFh0?=
- =?utf-8?B?cWxWYndKUlZLQ05XSEkzVGlCNld5bGpBRlFQVUtTOFlEWmdrZzFGbmhVSTlh?=
- =?utf-8?B?QUsydnlqNStvQWRyOEM1Wkxhb0U4SzVBbHhvL2ozVVlIY3ZVa1k4Q2t3RERI?=
- =?utf-8?B?QTd3NDJUc3FmZDBHaTROUTNVREc1R1duRTFyRU1oTGMxQnozRlprMWNUS3Ey?=
- =?utf-8?B?MXdHSGJWa1lUeVdFQng4UXRZMHpxVXlkaGxYaWxZcWZvYUQ5UklDU3pTamZI?=
- =?utf-8?B?NzlBV2xOS1hIM21RN2pwTElFZmJrWU5WSWNQdnJoTW5ndXVOOTJVYUs2REU1?=
- =?utf-8?B?S2MxRWNObTRSNGNRZzRyVnd4bTNyWDIvTjcrZ3pVQUs3ZjdsWTFidmlZZVI3?=
- =?utf-8?B?UkZiMkNHQTI5ekYvSldGOW53RzBZeXd6LzJDQzgvVnVEeDRnZ3hFMFEvb29O?=
- =?utf-8?B?Zkh0VHY2QjFoZmdZUzVhdUFFak9tVUdjZzdFR05lRlRmL0FBWjVMUVc2OEoz?=
- =?utf-8?B?YVkwZmdpYUpLd00vNWNmQSt3Zmo1bVVnMFVRVVBUaTVWWkRjbW55aisrT2Zk?=
- =?utf-8?B?T05INnUyQ2hQVUZoUHFhMGRxcnBvaXQ4MVNGNzZnL0NiemtXWHdtcmp1bXl5?=
- =?utf-8?B?VDRYZkN4WlZyVjM1Rnp0ZXhPcUJUZUxSdlU5V1ZiaE1KWGNNU0F6T0t6VG5k?=
- =?utf-8?B?cE9IQ0NlMkhERHB6cGdlNVJjWGNrU2xvdTF2Z2Q4aGNCM2laVURUYVd6Rk4w?=
- =?utf-8?B?Y2lNVlhDblNSSWlGdUxNdG50ekNSblNIUmhyZmlsQTh0TjNnVEtRdnAyZjI2?=
- =?utf-8?B?UVRiT09wbkFpZXdJUWVqSHd3T1NTekpVKzVZYTJFVTV6b0dqRXI0RkdFcmlO?=
- =?utf-8?B?bXlOZFhHaWlzN0k0S0dEU0NXSkRDZjFXS1FCV0l0b3B5OTNRcjQ4Qm1VS0g3?=
- =?utf-8?B?SklTenZpMUVuZXRKbTA1Q3lTRnZmMlVvckFCY0l5eEtLdlNHaGVTbnRDbk9J?=
- =?utf-8?B?bXhBcmg4SitrSFR0S0dYb3c0N0ZIRUF0WHFPZGkyQnJ1TnpPUVVRV2EyeUgx?=
- =?utf-8?B?b3o1QUQ3TmZ3N2E2STFDOFhhR1A2MHZwZTQ2QTNpb29MWWo3SHJvN1RPdEx5?=
- =?utf-8?B?NG8xNEQ0MGNoVjA1RWh6Wk43Z2tCTVBSdG5hMTQvU2dBQzNtWlVaSXE0dHVH?=
- =?utf-8?B?ekE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	f9Y4crBH3OjBspOIv82bY4SdR5iqb2QlLBvQD1F5P7F5pqGtqEsVojP0rjYl4/ZnX6glURO7eUL+XelIYmFezrxJ1lZtBLCDXldFr9bBjOR3M4QsbOXcQ3iUSSifINO9RUG+mEHQW3SC7ldv04boE/hQGQHDHBP4S1WC59IHPfIsc47Be7e4VDDxnByc3vvD341Q3dGO4omL1LcUXDNHnRkOkDpzwZLgf6aGy+OcbMlpHW/CvOFfyrEpd1xm0LAioQNNtl92548b3NAeuBREI6RQq3KozAyrSLrQapF+9jIqqxcBng/sF3Tlgq+ANH75W4Bt+HlzF3mdzeu7LOBOtF/yrDpReigklbZ964QdTHYlKguYiYv9rs4fGybEAixJfxMOS/xpeUnw+K2iA+dSmMeXPbmWSZVBMXuIuinUV2DzP+7lW1VD/0ty/5BltXg6hOJerzJtG7iTNlNJFvIXra+OebivYe2GvN9CPeWhAH2moJFsdAGRb/o+8kKCWSaEnjUF6TxnassmUV9D5uQggg/KIO14AF/86HOlKXRi3atIV+KuiLtwd4EttLTldAh0a17xpOIUlCnnH7TMOOBRHI4HbDqjr5KnnGomDHhF9G4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cd0f647-77a3-47c8-b682-08dc438d1f72
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 18:40:57.9966
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IT9aGkXAkvoJEiejJjCanUOURo/waghsV+emYmX5HnHKwwYVsJO78kavDzSQf2FrUheUA77tD8cbA6/A+v3qKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5139
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_09,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- malwarescore=0 spamscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403130143
-X-Proofpoint-ORIG-GUID: GRwdCk6eRfdZCC-IUFDrl4KfNjT7CSXL
-X-Proofpoint-GUID: GRwdCk6eRfdZCC-IUFDrl4KfNjT7CSXL
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Abhishek Chauhan <quic_abchauha@quicinc.com>
+Cc: kernel@quicinc.com, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 08/03/2024 20:25, Ritesh Harjani (IBM) wrote:
-
-Hi Ritesh,
-
-> Currently ext4 exposes [fsawu_min, fsawu_max] size as
-> [blocksize, clustersize] (given the hw block device constraints are
-> larger than FS atomic write units).
+On 3/13/24 1:52 AM, Willem de Bruijn wrote:
+> Martin KaFai Lau wrote:
+>> On 3/1/24 12:13 PM, Abhishek Chauhan wrote:
+>>> Bridge driver today has no support to forward the userspace timestamp
+>>> packets and ends up resetting the timestamp. ETF qdisc checks the
+>>> packet coming from userspace and encounters to be 0 thereby dropping
+>>> time sensitive packets. These changes will allow userspace timestamps
+>>> packets to be forwarded from the bridge to NIC drivers.
+>>>
+>>> Setting the same bit (mono_delivery_time) to avoid dropping of
+>>> userspace tstamp packets in the forwarding path.
+>>>
+>>> Existing functionality of mono_delivery_time remains unaltered here,
+>>> instead just extended with userspace tstamp support for bridge
+>>> forwarding path.
+>>
+>> The patch currently broke the bpf selftest test_tc_dtime:
+>> https://github.com/kernel-patches/bpf/actions/runs/8242487344/job/22541746675
+>>
+>> In particular, there is a uapi field __sk_buff->tstamp_type which currently has
+>> BPF_SKB_TSTAMP_DELIVERY_MONO to mean skb->tstamp has the MONO "delivery" time.
+>> BPF_SKB_TSTAMP_UNSPEC means everything else (this could be a rx timestamp at
+>> ingress or a delivery time set by user space).
+>>
+>> __sk_buff->tstamp_type depends on skb->mono_delivery_time which does not
+>> necessarily mean mono after this patch. I thought about fixing it on the bpf
+>> side such that reading __sk_buff->tstamp_type only returns
+>> BPF_SKB_TSTAMP_DELIVERY_MONO when the skb->mono_delivery_time is set and skb->sk
+>> is IPPROTO_TCP. However, it won't work because of bpf_skb_set_tstamp().
+>>
+>> There is a bpf helper, bpf_skb_set_tstamp(skb, tstamp,
+>> BPF_SKB_TSTAMP_DELIVERY_MONO). This helper changes both the skb->tstamp and the
+>> skb->mono_delivery_time. The expectation is this could change skb->tstamp in the
+>> ingress skb and redirect to egress sch_fq. It could also set a mono time to
+>> skb->tstamp where the udp sk->sk_clockid may not be necessary in mono and then
+>> bpf_redirect to egress sch_fq. When bpf_skb_set_tstamp(skb, tstamp,
+>> BPF_SKB_TSTAMP_DELIVERY_MONO) succeeds, reading __sk_buff->tstamp_type expects
+>> BPF_SKB_TSTAMP_DELIVERY_MONO also.
+>>
+>> I ran out of idea to solve this uapi breakage.
+>>
+>> I am afraid it may need to go back to v1 idea and use another bit
+>> (user_delivery_time) in the skb.
 > 
-> That means a user should be allowed to -
-> 1. pwrite 0 4k /mnt/test/f1
-> 2. pwrite 0 16k /mnt/test/f1
+> Is the only conflict when bpf_skb_set_tstamp is called for an skb from
+> a socket with sk_clockid set (and thus SO_TXTIME called)?
+
+Right, because skb->mono_delivery_time does not mean skb->tstamp is mono now and 
+its interpretation depends on skb->sk->sk_clockid.
+
+> Interpreting skb->tstamp as mono if skb->mono_delivery_time is set and
+> skb->sk is NULL is fine. This is the ingress to egress redirect case.
+
+skb->sk == NULL is fine. I tried something like this in 
+bpf_convert_tstamp_type_read() for reading __sk_buff->tstamp_type:
+
+__sk_buff->tstamp_type is BPF_SKB_TSTAMP_DELIVERY_MONO when:
+
+	skb->mono_delivery_time == 1 &&
+	(!skb->sk ||
+	 !sk_fullsock(skb->sk) /* tcp tw or req sk */ ||
+	 skb->sk->sk_protocol == IPPROTO_TCP)
+
+Not a small bpf instruction addition to bpf_convert_tstamp_type_read() but doable.
+
 > 
+> I don't see an immediate use for this BPF function on egress where it
+> would overwrite an SO_TXTIME timestamp and now skb->tstamp is mono,
+> but skb->sk != NULL and skb->sk->sk_clockid != CLOCK_MONOTONIC.
 
-Previously you have mentioned 2 or 3 methods in which ext4 could support 
-atomic writes. To avoid doubt, is this patch for the "Add intelligence 
-in multi-block allocator of ext4 to provide aligned allocations (this 
-option won't require any formatting)" method mentioned at 
-https://lore.kernel.org/linux-fsdevel/8734tb0xx7.fsf@doe.com/
+The bpf prog may act as a traffic shaper that limits the bandwidth usage of all 
+outgoing packets (tcp/udp/...) by setting the mono EDT in skb->tstamp before 
+sending to the sch_fq.
 
-and same as method 3 at 
-https://lore.kernel.org/linux-fsdevel/cover.1709356594.git.ritesh.list@gmail.com/? 
+I currently also don't have a use case for skb->sk->sk_clockid != 
+CLOCK_MONOTONIC. However, it is something that bpf_skb_set_tstamp() can do now 
+before queuing to sch_fq.
 
+The container (in netns + veth) may use other sk_clockid/qdisc (e.g. sch_etf) 
+setup and the non mono skb->tstamp is not cleared now during dev_forward_skb() 
+between the veth pair.
 
-Thanks,
-John
+> 
+> Perhaps bpf_skb_set_tstamp() can just fail if another delivery time is
+> already explicitly programmed?
+
+This will change the existing bpf_skb_set_tstamp() behavior, so probably not 
+acceptable.
+
+> 
+>      skb->sk &&
+>      sock_flag(sk, SOCK_TXTIME) &&
+>      skb->sk->sk_clockid != CLOCK_MONOTONIC
+
+> Either that, or unset SOCK_TXTIME to make sk_clockid undefined and
+> fall back on interpreting as monotonic.
+
+Change sk->sk_flags in tc bpf prog? hmm... I am not sure this will work well also.
+
+sock_valbool_flag(SOCK_TXTIME) should require a lock_sock() to make changes. The 
+tc bpf prog cannot take the lock_sock, so bpf_skb_set_tstamp() currently only 
+changes skb and does not change skb->sk.
+
+I think changing sock_valbool_flag(SOCK_TXTIME) will also have a new user space 
+visible side effect. The sendmsg for cmsg with SCM_TXTIME will start failing 
+from looking at __sock_cmsg_send().
+
+There may be a short period of disconnect between what is in sk->sk_flags and 
+what is set in skb->tstamp. e.g. what if user space does setsockopt(SO_TXTIME) 
+again after skb->tstamp is set by bpf. This could be considered a small glitch 
+for some amount of skb(s) until the user space settled on setsockopt(SO_TXTIME).
+
+I think all this is crying for another bit in skb to mean user_delivery_time 
+(skb->tstamp depends on skb->sk->sk_clockid) while mono_delivery_time is the 
+mono time either set by kernel-tcp or bpf. If we need to revert the 
+mono_delivery_time reuse patch later, we will need to revert the netdev patch 
+and the (to-be-made) bpf patch.
+
 
