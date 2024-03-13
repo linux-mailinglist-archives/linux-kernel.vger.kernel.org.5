@@ -1,167 +1,128 @@
-Return-Path: <linux-kernel+bounces-101228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C58087A449
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:53:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE1C087A44C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:53:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C8BFB21A16
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:53:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA34F282977
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A61D21111;
-	Wed, 13 Mar 2024 08:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D669C1B5BA;
+	Wed, 13 Mar 2024 08:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="brZqD1Xh"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hM2RGjQa"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9061F93F;
-	Wed, 13 Mar 2024 08:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA72D125C0;
+	Wed, 13 Mar 2024 08:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710319947; cv=none; b=qd8l+eFjvnEydkbuHKTYBedLNJDFH37xVQHpaVfc/funS3KZWnemBWbRpiwDTMnyT354HoWOG/V5hPJir0H9dil+4pOZXwmVF6Amp43LQAj3qjN7mYFcwvk3GgaMJvCoHxrSmyJHM9+I7yLb+GQKQ2+2CU1YugpmY9AnoDjKHsM=
+	t=1710319999; cv=none; b=dqGVFRr3hlv9ULeV0nB4BKIsHajf5Pz3TUNWw/zT+74q+2HHb9BPdPLX7dgDP8Shxqy0KcQ97VcLihTSP9omNRKaB36IMtEaAU1FAIre40rIqIcBE2dbpHDiTUWw1rWEWZ3YlGop5MHd+qwUEPBwrDk7p3KP8YoucnPIQ1N/xBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710319947; c=relaxed/simple;
-	bh=MBGoPePJfGD927BQzBl+0QOCTgtJGQa5eqdTJMY7LcM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=UtJgmrPPcqrdctG71G8qIFf6w3QBX0fj2oElYA9JhnA8IK9uK9mOPbu9kX5hSnv7fsH/WBPY6qgng6b/mu3sown17Y9P9Wxtf5vQf4kJFYKM4wI0FRx6MUd1tsMvLsC0+I9xrx+o5f69to7LlnuAffUqDcHNSTIUs17NjE8SBTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=brZqD1Xh; arc=none smtp.client-ip=209.85.222.173
+	s=arc-20240116; t=1710319999; c=relaxed/simple;
+	bh=a+rieUB3nCzUaqhZqKUxS2ElDgV7a9OYdadPfRgXx1I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MQV/dwNDb3hN9biJEweiAmJOCgWyLMVwr65OjUmRwujVzsJvg1VEbwjg0m87WpKaXhZgVB8p0o3T2wbehNOhjzwOAku82iHP0w3VuM3LvxmtDzqh+vpp7R9fcv6/PiqNrRnry6n7W1Tg5gIaucD/4uE0h7N2ni9Q4EazqacVv+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hM2RGjQa; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78810ba2ff1so233169485a.3;
-        Wed, 13 Mar 2024 01:52:24 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56847d9b002so5173080a12.1;
+        Wed, 13 Mar 2024 01:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710319943; x=1710924743; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1710319996; x=1710924796; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NiyXUYdI9F2JA3CsusbHXE/Pdh1jVbsVBwhd+PEGfCY=;
-        b=brZqD1Xh35m0etdW7y9eHKDAVI92YU6Gx/ZIIgyLvtP7k9nTkinahOu6WE2zx3UzPV
-         Y9dMBKQ72PRQIxmqVb8G9AYaiAWLgMbyxVsvoXssdrn14AG6umc/hOqd6A0kf6qpwsoQ
-         UTEgYT0AA7wTTQTTSCvChmGZlhS80TAsARxYDDULolzA8mxbqBZBU+oNic+tdPcWlI4H
-         fow2nJmtxpzq4VX+7Ah8oq6F4c1Ioqn+KNxuwBNDzZg1hoowVaS4pQpd0V63/r6Ab3zq
-         8R+qI8QekRDvkI1xe2yIUeiVBOWoeHefYdlfpkkpvCYxIYnhxrO929UUUNwL2efMsV11
-         Y7Xw==
+        bh=yweG9hIRFKQyYo1fdZnUFpZABdTF+shxA3D5c1UT5oQ=;
+        b=hM2RGjQanKyHGkr1y+XokjOPQHbHDFiQ5FbvTMwzCBh8+VlOmVQ6GW8gW7gp8Ivub3
+         fjK2++IzXLgvcEKCMIoPW0Hou55buVOwk8ZgqO8haxlKtsuOTHT2EzeoPrkBm5dhVJ00
+         s05PBx1eRJR9ZMCCsehPSOGFkyXqWUWurZ5RvnItAlx4CcPeSt1EVFs5aFX5t7dMkA1I
+         aMNcYNEFziWeqVb30cqOBEK+PVFZd60Y6k2neBtjB5IIy3GjLR14Tp8lvS3kSyIMYO4r
+         uxO3l7FA65AcBYQBdXuUJAkWem3xpF9NAJomKihYfInN92xt+1m9tl6qFa6zbbS4uPgw
+         3cVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710319943; x=1710924743;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NiyXUYdI9F2JA3CsusbHXE/Pdh1jVbsVBwhd+PEGfCY=;
-        b=WA98mBItfk7aYRCSpEWQmFPLgyqWE9fb9Fcv5r5fU+Y96wZ637Tm6c8jV/srqVi9M/
-         renkJ4lkqvul6JR9sikgIQ3nlKt+rbROH/dUaITIpVXcZ7MkbD58dIwiQsIHIL5L9rOu
-         YOC0sNXSwY/dSTuxMuI333xdEr7c85oXKhyBhFK12RfbJsIzAyClkOvD19/4hIzhpGIs
-         8kG6Y4GddkFvNp7wGICH+smwgXa+hBWBdGuo6Vq73rO+BUkEPrn17cdZ/cA33Bdqtt0t
-         qXDORqBU82VNSz7LnSa1mEaqwqo8AURcL0QIfRoy8j/SOyw/7SpYsJit5+osZfbHDOiN
-         sKkw==
-X-Forwarded-Encrypted: i=1; AJvYcCWhS+UUMqnMtEo6eaGWOihlAiOeqOwJlZlpnm8BD/jMWVNry/Y1KXQ0cRl7nXP9RMBk96+lAldxeApGXUGUuXZpDlqNe5cWAsE4Lf0hLxy1xRei4HnsNvWtMAEizt05F184TWzgHWhWW7peppZUeVDPcoRMVteja4HF
-X-Gm-Message-State: AOJu0YykB6Et1lGdkw7uhF2SzewKhkC3pjj1K4BXQMmdiLWDY0ECbJxO
-	hYdTaELXxC1413MAkLB5hT/3AMzHX1GsbAcIxkloNhvwXw/CkCmb
-X-Google-Smtp-Source: AGHT+IENqpNPUVCBD2bYLTHTCzOlVlxtqfauB/mV5DQpC8fHVxO4vHszbRwC1Xogc4MtuxBvNUDr+g==
-X-Received: by 2002:a05:620a:1a0f:b0:788:5866:788a with SMTP id bk15-20020a05620a1a0f00b007885866788amr15818667qkb.9.1710319943582;
-        Wed, 13 Mar 2024 01:52:23 -0700 (PDT)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id 26-20020a05620a04da00b0078838695dfasm4466818qks.59.2024.03.13.01.52.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 01:52:23 -0700 (PDT)
-Date: Wed, 13 Mar 2024 04:52:22 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, 
- Abhishek Chauhan <quic_abchauha@quicinc.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: kernel@quicinc.com, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- bpf <bpf@vger.kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>
-Message-ID: <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
-In-Reply-To: <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
-References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
- <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
-Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
- for userspace tstamp packets
+        d=1e100.net; s=20230601; t=1710319996; x=1710924796;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yweG9hIRFKQyYo1fdZnUFpZABdTF+shxA3D5c1UT5oQ=;
+        b=KKkeSIaCU8FFlB8SZ5EvUMO39ZqFzo4NcYm+WnRfw4utC55vNFEFUfu/4uYNSR7vFO
+         /+kBwdC8DBcUGaUxIXB/gI0VtdMVqujDrpKVfyLwMko3ZeJYnaLVJmi4fgwx2WzlrzUM
+         WmyNuWGScJxqFcJYQnhpmltL0FssL05Yk8E8JhE/09mUGjs2gjv4uhwryDLIXIxF12sM
+         oeH7b+k6fmatWlnhsyOOyxvfNokoiPwJiQmJzvmNsLv/HIYDirKHxeN5Z9Jg1cGDveb5
+         x4PGgBtlwlHu2yME1jlJnVzIJKCqvcEr52jhYSWtyfzwOtHxdUjzQkQYB6QWJ/jhSVa2
+         jf6g==
+X-Forwarded-Encrypted: i=1; AJvYcCXMUI2FtQtkuWdEJ6d2uDnZNCwN/411G2KzpaXoqjGGttI+6YcD3O8chNn9gIE7ci7+G7cAN2uyKhh7FAFRTpJQxCdzYe+7AfRIZAe531IU7lzT1lLrB2i1hvqNhmWCSUZuj3ulRRwvLtImkAsOGfD0ctxVZZzK5+6fisKXeujqiA5+BnGP
+X-Gm-Message-State: AOJu0YwRgRvbNTSrXPBBr5pci/lokWyKILiKCodmn0y99TqTh2SQFlPq
+	v7fKnQWJFrUYDi6HSVkV3oWAYeIuIvxDLHdegXCQELlvYsu6gEH1g004FoYC+aAtlk16JzFurRF
+	csuHvfK5b75wYeyuD8mBAsv2XxVs=
+X-Google-Smtp-Source: AGHT+IHd7J08pBgHLCf0ztlZ+XbOs+MP1ljuQd/tESI75Rxy4WQcrvNZX9ixvTusQ+jNH4dl3fGrVimzFVut5HkR/UA=
+X-Received: by 2002:a17:907:7d8f:b0:a46:3ce4:5acb with SMTP id
+ oz15-20020a1709077d8f00b00a463ce45acbmr2346152ejc.75.1710319995868; Wed, 13
+ Mar 2024 01:53:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240313054409.8073-1-zhi.mao@mediatek.com>
+In-Reply-To: <20240313054409.8073-1-zhi.mao@mediatek.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 13 Mar 2024 10:52:39 +0200
+Message-ID: <CAHp75VeHVJpiaCTdQHWQocE9PFLsGhu+a2TP7VSV34i02v-ksA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] media: i2c: Add support for GC05A2 sensor
+To: Zhi Mao <zhi.mao@mediatek.com>
+Cc: mchehab@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, 
+	shengnan.wang@mediatek.com, yaya.chang@mediatek.com, 
+	Project_Global_Chrome_Upstream_Group@mediatek.com, yunkec@chromium.org, 
+	conor+dt@kernel.org, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, jacopo.mondi@ideasonboard.com, 
+	10572168@qq.com, hverkuil-cisco@xs4all.nl, heiko@sntech.de, 
+	jernej.skrabec@gmail.com, macromorgan@hotmail.com, linus.walleij@linaro.org, 
+	hdegoede@redhat.com, tomi.valkeinen@ideasonboard.com, 
+	gerald.loacker@wolfvision.net, bingbu.cao@intel.com, 
+	dan.scally@ideasonboard.com, linux-media@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Martin KaFai Lau wrote:
-> On 3/1/24 12:13 PM, Abhishek Chauhan wrote:
-> > Bridge driver today has no support to forward the userspace timestamp
-> > packets and ends up resetting the timestamp. ETF qdisc checks the
-> > packet coming from userspace and encounters to be 0 thereby dropping
-> > time sensitive packets. These changes will allow userspace timestamps
-> > packets to be forwarded from the bridge to NIC drivers.
-> > 
-> > Setting the same bit (mono_delivery_time) to avoid dropping of
-> > userspace tstamp packets in the forwarding path.
-> > 
-> > Existing functionality of mono_delivery_time remains unaltered here,
-> > instead just extended with userspace tstamp support for bridge
-> > forwarding path.
-> 
-> The patch currently broke the bpf selftest test_tc_dtime: 
-> https://github.com/kernel-patches/bpf/actions/runs/8242487344/job/22541746675
-> 
-> In particular, there is a uapi field __sk_buff->tstamp_type which currently has 
-> BPF_SKB_TSTAMP_DELIVERY_MONO to mean skb->tstamp has the MONO "delivery" time. 
-> BPF_SKB_TSTAMP_UNSPEC means everything else (this could be a rx timestamp at 
-> ingress or a delivery time set by user space).
-> 
-> __sk_buff->tstamp_type depends on skb->mono_delivery_time which does not 
-> necessarily mean mono after this patch. I thought about fixing it on the bpf 
-> side such that reading __sk_buff->tstamp_type only returns 
-> BPF_SKB_TSTAMP_DELIVERY_MONO when the skb->mono_delivery_time is set and skb->sk 
-> is IPPROTO_TCP. However, it won't work because of bpf_skb_set_tstamp().
-> 
-> There is a bpf helper, bpf_skb_set_tstamp(skb, tstamp, 
-> BPF_SKB_TSTAMP_DELIVERY_MONO). This helper changes both the skb->tstamp and the 
-> skb->mono_delivery_time. The expectation is this could change skb->tstamp in the 
-> ingress skb and redirect to egress sch_fq. It could also set a mono time to 
-> skb->tstamp where the udp sk->sk_clockid may not be necessary in mono and then 
-> bpf_redirect to egress sch_fq. When bpf_skb_set_tstamp(skb, tstamp, 
-> BPF_SKB_TSTAMP_DELIVERY_MONO) succeeds, reading __sk_buff->tstamp_type expects 
-> BPF_SKB_TSTAMP_DELIVERY_MONO also.
-> 
-> I ran out of idea to solve this uapi breakage.
-> 
-> I am afraid it may need to go back to v1 idea and use another bit 
-> (user_delivery_time) in the skb.
+On Wed, Mar 13, 2024 at 7:54=E2=80=AFAM Zhi Mao <zhi.mao@mediatek.com> wrot=
+e:
+>
+> This series adds YAML DT binding and V4L2 sub-device driver for Galaxycor=
+e's
+> GC05A2 5-megapixel 10-bit RAW CMOS 1/5" sensor, with an MIPI CSI-2 image =
+data
+> interface and the I2C control bus.
+>
+> The driver is implemented with V4L2 framework.
+>  - Async registered as a V4L2 sub-device.
+>  - As the first component of camera system including Seninf, ISP pipeline=
+.
+>  - A media entity that provides one source pad in common.
+>  - Used in camera features on ChromeOS application.
+>
+> Also this driver supports following features:
+>  - manual exposure and analog gain control support
+>  - vertical blanking control support
+>  - test pattern support
+>  - media controller support
+>  - runtime PM support
+>  - support resolution: 2592x1944@30fps, 1280x720@60fps
 
-Is the only conflict when bpf_skb_set_tstamp is called for an skb from
-a socket with sk_clockid set (and thus SO_TXTIME called)?
+Not even going to do a thorough review as one should learn on the
+previous reviews. Most of the comments that I had given to another
+driver submission are applicable here. So, waiting for v2 with all
+applicable being addressed.
 
-Interpreting skb->tstamp as mono if skb->mono_delivery_time is set and
-skb->sk is NULL is fine. This is the ingress to egress redirect case.
-
-I don't see an immediate use for this BPF function on egress where it
-would overwrite an SO_TXTIME timestamp and now skb->tstamp is mono,
-but skb->sk != NULL and skb->sk->sk_clockid != CLOCK_MONOTONIC.
-
-Perhaps bpf_skb_set_tstamp() can just fail if another delivery time is
-already explicitly programmed?
-
-    skb->sk &&
-    sock_flag(sk, SOCK_TXTIME) &&
-    skb->sk->sk_clockid != CLOCK_MONOTONIC
-
-Either that, or unset SOCK_TXTIME to make sk_clockid undefined and
-fall back on interpreting as monotonic.
-
-
+--=20
+With Best Regards,
+Andy Shevchenko
 
