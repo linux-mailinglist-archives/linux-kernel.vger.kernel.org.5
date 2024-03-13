@@ -1,149 +1,102 @@
-Return-Path: <linux-kernel+bounces-101371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53EC287A629
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:55:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D17587A630
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:56:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8521A1C216AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:55:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47316282E43
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28043EA77;
-	Wed, 13 Mar 2024 10:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D603D548;
+	Wed, 13 Mar 2024 10:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TIBstJiO";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XAcpwtoU"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zPkOCJKW"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F723EA66;
-	Wed, 13 Mar 2024 10:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243A13D3B1
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 10:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710327350; cv=none; b=utiBpcwr/R7Gie83ZrAYfHkjeAfgnTBxux/52tF9M0In4SNLgdAz/ECbLFiOKm9hlFg11R45mmyA+8BlQMHoPiwzvOBuJ7OyRDBZDOi63J2r5D5axmIsCXehpUiiRDeV7inlfwUNBSg5c0YA5fWzUd/pjfjzOTWMj+y9batEFSA=
+	t=1710327382; cv=none; b=Vi1RXoXg8xzX5a2FPGhnN30fzvgX+BJFCTLW+ez65g5YjdWXYRgOgkOATf7g3T7DcX0ls3//JJQsQXM2dhmBhk1UF4Jg8hOkt12METqwGjkVx4isRFl6TEkKEW51D/msrJgusg09VwhnAt4frnD+SXxTYuwbTRVTCNrFvBXWFfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710327350; c=relaxed/simple;
-	bh=UUNsX9/ItJg6db3U4H5dMXslJ9T0zc2L/ER7GrzlVEI=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=I08+OGScfha7ugMG5BbUFU0XC6m4UJwU4pYyAOCqSeaP4DcMrbNNXEXNek7QF1nSwk0jfe2pc6ufnJfRpfc7y86qdUKThAV50dcetcYanqCt/xiOl7my2NvnGx2tJdsNSOA3aSlBBimxFyWSvuHCRWx2oodmYpdyABtWrBVkGB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TIBstJiO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XAcpwtoU; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 13 Mar 2024 10:55:46 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710327347;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f0SKrjf1B+cuGJlUUAjW+HNdsWy3Qcniw+d3IjuhWFg=;
-	b=TIBstJiOs+Dcz2r3PgZwFsOnwlqqNrwv3+NuwMw01C4fX1KuARpcpniaea/MMeSXdMt6WW
-	zVCJ96bw4mM/VauHuzU4M1CObrFas194jOVG0ZUPG32vRGGAkq1t2yjdtbrGkV3OkVSFuT
-	Tl/r9iTgcV8cPCfT/QaAPCNJnboGCD0G6AdOUh6v2nMkro0n3tR6U1oZypiCbipIUmFBfL
-	yGvNRkvqOS4sxHvGIMIKpmVaoLKv3hlu+BbIONEibET8Nu7wU2wBqP0319vWUPKwsdp7bH
-	P7LVmlaj/Ujrh5UMD1S6oajFpP4jZvoav8lh0mD2thQT8/GBXxPOnRIQ9gDvCw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710327347;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f0SKrjf1B+cuGJlUUAjW+HNdsWy3Qcniw+d3IjuhWFg=;
-	b=XAcpwtoUv2HG3gDeIqWSjZ+bKttkIIwhBkK5b7WtUl9kM0JyBleHMOiOMTT4b/B9wViJdP
-	gJt8ze98LJ++8GDA==
-From: "tip-bot2 for Samuel Holland" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] irqchip/riscv-intc: Fix use of AIA interrupts 32-63
- on riscv32
-Cc: Samuel Holland <samuel.holland@sifive.com>,
- Thomas Gleixner <tglx@linutronix.de>, Anup Patel <anup@brainfault.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240312212813.2323841-1-samuel.holland@sifive.com>
-References: <20240312212813.2323841-1-samuel.holland@sifive.com>
+	s=arc-20240116; t=1710327382; c=relaxed/simple;
+	bh=eo6Olp6DkFH1hTS08SAUUTwMlw8ID8eXArpvrsF8OQA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Chjp/sTc37J8zlEKHGyUv4WTxPaIFf09csA/z7NqwzRzHuSbSipncgkW8rDi59AlJ9c1Hz4ou0iAVdP3jQ3N5r5NpDN+qdfIyuK4R4UtxSrq175KfE39w7LU0NwJQUuNnBGFu6A2TPastsZ462gcHH+kawCrOekGttrLUrzgDcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zPkOCJKW; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a46644fee93so24927866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 03:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710327379; x=1710932179; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kp1Qu7oS00nm2b4G6O+KsRITn8FkEaWnzYBogvV+lq0=;
+        b=zPkOCJKWOuCK0a0Ruar9qG3iUjn8WA1+hraT7EKzotuStGtdLVjXeIqItdgUox71yT
+         xP5wHlfYSVWlfE1AQlxaIb31/+OTYT4rhsAXUfXYJ3MimRLYU+1BmE4bi76uPBj6sqne
+         WLxDMqDwyJKNraOEU/G7hhsJx38vjw84seaquUiM/qnLDbT5nCQMQgFh5HHSqMJ+AtUj
+         vh8zSzqcOLUjoNgThqLba8bHl+wwCfTESARcE3kl04woyykHWZLkcZYk54MMGu+wLitW
+         wbln23l3cVmxFRoJZ7VnCzq2jtSpafmP0rGY5FAtrli0neXHqEZAkNgOezjM6xAwe6VD
+         QAoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710327379; x=1710932179;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kp1Qu7oS00nm2b4G6O+KsRITn8FkEaWnzYBogvV+lq0=;
+        b=NN5tKROOu/NwhALJBg0eA48XR9H60WWQIgoT4Nw0jbbBJ0fYVhywVw5s2X1rqg9guQ
+         4knbEmNTEXjtQsNTaKKOAupQSYTSPzidFlBssdn8VPKtbrHsW6xygkO8tpXiWFQa+lhT
+         xPc+QboaNBg1nN8LAM5uv8AqtNUi3NpVGsErqR27hWHbs2NKFnTwVRMKv5JS3l5E8Qtx
+         IAO7ySMiaLDTWF3Keh/9L9XWgjJGINa/QU1Rx/5gTozFzqaKPLTR0FPBEfGb+DYNlIUD
+         MQwfdZiyGoNh0pYyaXYkDSpMyvsOuJudIauTSv6PNkBld86d47pvFKV3N/XqO3N5/zaS
+         uFyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUrHn04vGZG1IqD6TPuOEGjX5nN0FC18fV14cASAm2nt5v+hJleZb9Z2kSCaED+w3CrrUG8LP/x7VGeoMc7CCh2rQPWPEVWj9RM78Hg
+X-Gm-Message-State: AOJu0Ywe/6Y4sBbl8pGLV2U4kTs2MmccuNaLS1KsGHWERjdCkTT6XWJt
+	a+2bjBJMrBY6h9HQ4/GOe6aZgWFN9w2MNpRrYXdvGISjaIC7kyNYpdfZbcLJRq8=
+X-Google-Smtp-Source: AGHT+IFcWQ2Zi/DdKucg2E3du26n6+4lKJjQpV7nddGbL5B8Yf4ZoRT91X84suPdCHuI9Iug7G35gg==
+X-Received: by 2002:a17:906:6815:b0:a45:98f3:997e with SMTP id k21-20020a170906681500b00a4598f3997emr7285651ejr.7.1710327379218;
+        Wed, 13 Mar 2024 03:56:19 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id n18-20020a1709061d1200b00a46478fbbbesm1368893ejh.153.2024.03.13.03.56.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 03:56:19 -0700 (PDT)
+Date: Wed, 13 Mar 2024 13:56:15 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v6] staging: rtl8712: rename tmpVal to avg_val
+Message-ID: <b2044a45-e46b-4215-9494-4864cd0e7eb5@moroto.mountain>
+References: <ZfF+qu+CGHlpHrtY@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171032734600.398.4666803374287322577.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfF+qu+CGHlpHrtY@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Wed, Mar 13, 2024 at 03:53:38PM +0530, Ayush Tiwari wrote:
+> Rename tmpVal to avg_val in process_link_qual() to reflect the intended use of
+> the variable and conform to the kernel coding style.
+> 
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+> ---
+> 
 
-Commit-ID:     4ce937160ba053789f96d5130d5de4deaee2ad23
-Gitweb:        https://git.kernel.org/tip/4ce937160ba053789f96d5130d5de4deaee2ad23
-Author:        Samuel Holland <samuel.holland@sifive.com>
-AuthorDate:    Tue, 12 Mar 2024 14:28:08 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 13 Mar 2024 11:50:11 +01:00
+Thanks!
 
-irqchip/riscv-intc: Fix use of AIA interrupts 32-63 on riscv32
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-riscv_intc_custom_base is initialized to BITS_PER_LONG, so the second
-check passes even though AIA provides 64 interrupts. Adjust the condition to
-only check the custom range for interrupts outside the standard range, and
-adjust the standard range when AIA is available.
+regards,
+dan carpenter
 
-Fixes: bb7921cdea12 ("irqchip/riscv-intc: Add support for RISC-V AIA")
-Fixes: e6bd9b966dc8 ("irqchip/riscv-intc: Fix low-level interrupt handler setup for AIA")
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Anup Patel <anup@brainfault.org> 
-Link: https://lore.kernel.org/r/20240312212813.2323841-1-samuel.holland@sifive.com
----
- drivers/irqchip/irq-riscv-intc.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-index f87aeab..9e71c44 100644
---- a/drivers/irqchip/irq-riscv-intc.c
-+++ b/drivers/irqchip/irq-riscv-intc.c
-@@ -149,8 +149,9 @@ static int riscv_intc_domain_alloc(struct irq_domain *domain,
- 	 * Only allow hwirq for which we have corresponding standard or
- 	 * custom interrupt enable register.
- 	 */
--	if ((hwirq >= riscv_intc_nr_irqs && hwirq < riscv_intc_custom_base) ||
--	    (hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
-+	if (hwirq >= riscv_intc_nr_irqs &&
-+	    (hwirq < riscv_intc_custom_base ||
-+	     hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
- 		return -EINVAL;
- 
- 	for (i = 0; i < nr_irqs; i++) {
-@@ -183,10 +184,12 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
- 		return -ENXIO;
- 	}
- 
--	if (riscv_isa_extension_available(NULL, SxAIA))
-+	if (riscv_isa_extension_available(NULL, SxAIA)) {
-+		riscv_intc_nr_irqs = 64;
- 		rc = set_handle_irq(&riscv_intc_aia_irq);
--	else
-+	} else {
- 		rc = set_handle_irq(&riscv_intc_irq);
-+	}
- 	if (rc) {
- 		pr_err("failed to set irq handler\n");
- 		return rc;
-@@ -195,7 +198,7 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
- 	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
- 
- 	pr_info("%d local interrupts mapped%s\n",
--		riscv_isa_extension_available(NULL, SxAIA) ? 64 : riscv_intc_nr_irqs,
-+		riscv_intc_nr_irqs,
- 		riscv_isa_extension_available(NULL, SxAIA) ? " using AIA" : "");
- 	if (riscv_intc_custom_nr_irqs)
- 		pr_info("%d custom local interrupts mapped\n", riscv_intc_custom_nr_irqs);
 
