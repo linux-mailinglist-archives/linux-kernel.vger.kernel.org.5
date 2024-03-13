@@ -1,79 +1,85 @@
-Return-Path: <linux-kernel+bounces-101046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B00687A17B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:13:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2F3587A193
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1184C282941
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:12:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D311282DD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A219710A28;
-	Wed, 13 Mar 2024 02:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F7FBE66;
+	Wed, 13 Mar 2024 02:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="SwKQwNDP"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2108.outbound.protection.outlook.com [40.107.237.108])
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="BPLAt505"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2114.outbound.protection.outlook.com [40.107.117.114])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B685010A13
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FB2A93C
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.114
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710295974; cv=fail; b=qTFYNOeX68CZa0fZ/0gQYaFYIfyoXlrZcSRzNQRKQSiLwQvz+MrOD/9mfDRy7q1MZ3aTOFF2qouclJA5q6QpTbsca36X/fQcKV9gi8hWAFr8dv4OWntRCNLCbDAP2iX1Mkq6Q8SF/TBJLdTta6UQZ2VoKpe7RlviEgNC7U/422Q=
+	t=1710296512; cv=fail; b=au4pr662LqTg6y1fK1/9hJdMl/Ok2sqlx3IDr302g+oBlIlmRiAgUswxHrf2eKtRw5CMS5wqM2IWIigimwBrd4LCSLGMFfvExmmPR/zbGlgn0XZWBO4ED1iySmg5NvnUNBLeFPGMT1XM1OqGLY8kK8UAIQLknwh3bm2qQf9xFM8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710295974; c=relaxed/simple;
-	bh=JMTFNYLTaqkdiWJ6HRvNTENsdOrREx7ouKMJjOemL0c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=iwpk7wt0MWXwDD+OifVoozFuDTJjSC0eVcILjM2CXtufi1OUnA6PQ94dRocPoUSYj+qUGuIHEIsxEme8AA17kJN+selRj9DOxfMT8PixjgxDJhSR0OhplX5i5A6+aEW/2z7Lm2Mn5RnEvfybw8rvxMfZRFAkCxTv0j3SMY/8SKQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=SwKQwNDP; arc=fail smtp.client-ip=40.107.237.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+	s=arc-20240116; t=1710296512; c=relaxed/simple;
+	bh=LSrM7qcc8Ya2eWifx7L/EfQ3MSGfb4GRJWsacN9s2lY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=PAEHO4IGCJPhbI8TFZZEOzEt9dRayqaiAW4NwLrXyz/UX9HME312El8hQq2JgQRb2fR631lnrGRRl1hZyUPvtDpdsKAmkWeIWXoSi176IMh5ZGmxnmgkIRjWqH75f5E0RBvBFb7rhDJL0jXtV+H7MFORJvk8/4eZYzEordwTLQA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=BPLAt505; arc=fail smtp.client-ip=40.107.117.114
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NZvWuuabvog/nTsqSC0qVVcCfM+bPVlUi56P9SIH4XKdAepESJC/mh/G/6SaEW/qGPD93eCgGzGi9FbcqtK6rlen07qP0yE7zq/FYukH7nk8WIQ86UasFugqCSel2X8f4DbBsMEo+c83Kw8R7xsFNRS7O3pmP2/bkcDOX1YZ5F0HKXCPuJjUbSqbxBgRIQBf1VP50h+Lr8XCrGU7oRCQp/AuVcdAMgWl9Ist9/myuYw2CeG2hKu2heCru5MDFse5ZpkBODSBAvPPSzZhLI400jI8epozO6QsA7kGes/YiCF4kwdxbd71mJcDp4sY6HSltBcyD+HGanoG7sMCfkKwNQ==
+ b=C4OtPPwhW316t3HVWJ68w0+nhhXvx5K2MCqGBiqtv/VS1WuVuOGlMfoxz/gH2FESIR+EX42GqEWiLNxEnqt15Pir5oC8SYeEQYjYNx0Wo3qUuTUoe2+nLLsEhXSRGLGIR9YdU7GY0IV3fBirXpDJmo/sXhdGST6ZgztmpYURuLsT8eMOW4E828JGvk4neagikE8Th2tXLELI5d1BsDE5/O+8akj8OYVyyfuqFv0b69jE5rR+SGNPf2N2SP8W7XEMddp1ks8OCc1lsFz8pmrTSX3WGFRHYFP5vTonF3RYdBBoCtTKNIhg5WDlqR1IeTngtjUNpT3yay22eLmZEJXtug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0peciEaaVXNBUsfkF/gRbxkPbOTGa1No07Fr4mW9sqc=;
- b=ak4aL/RLQ/sTsQOYz9REJH91VZkcDx7fpSiwc5pWYN+cgrADwz4mK7LODGeZ03PqbMdM8Gl/knR/KaJr+Hl2/yMT3MYpzj6nWmGTNnqj2sh2KUR71nTyQ2llau02FpqVKiMNsPtAghDoz3FAMYnBA2ydz5D9kR3OxiUGwa5SLiQPNGlbqrZX0AuxXxb6cGHRcnGbOQFvgw/wmy2m16j8V76W8OYAOcVc2ytKJpfcszo4Msd958TMj7ms9U1gTGUy0Zbc77Hzh0jCPeeRn2PX6Njtq+UhqSuURMnU6gXlWIqXs9rw3zz/hGq2S0Ze/CTstNj1J0tFeFstOynamqpnDg==
+ bh=0vaZukkDp9co5SInJKdHik64MwM4f/k/Kl1Mu3M6RjU=;
+ b=nULSovSBD1H695hjMnofFg3L7jk6byLIBk7zotc+tP+TA5bFNOFi+pQxPYNH6VpgB9Amhaxo9gfBCCHEI/4454kEvU7ZK1s+gbc3U0Dfrg40KAaIkzAt5EFQnpam3vgJ/0EGMFqDRCEsxQr2l2kyV4isW4dQOiztrw7/k9lUv9GpAR85zshix+A9Q9FLEROgpTWstAXje7SElic/hm4huMx6eM6ETUY3ZxXjI4DE8pbam3FpMuyJL9cUo+gnAbCDfQAzdrVJHF3vobqajgnRdsL0YuDBlixVE9DYJsOIDUc/0vWWf/f0fQ2mWQq6uEfvJYcHCeh6F/JYfMejk1qXQQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0peciEaaVXNBUsfkF/gRbxkPbOTGa1No07Fr4mW9sqc=;
- b=SwKQwNDPxgsPem4hvsFfzzBAzPuKksADaqRKHJ5tF0v9WZZuy/H6/XsXEHoEMbUjiy+ULDb2K7Q+C07MDYKO91BDoTERFMIqE36XYtba1IHGwJFe9BGo3/g2BYhIQick9VuupZq3pDMRQTjxT79/etvhG7VklnsmJtAzZ6+KWI0=
+ bh=0vaZukkDp9co5SInJKdHik64MwM4f/k/Kl1Mu3M6RjU=;
+ b=BPLAt505pYpkqzz71nmFfZrXVjgz++TAqLiPxKWlGrDdNzNdOO89A7uT48XxNaObrk3LABehmN6z1OsJwk311EhcOAlJljp9JahA8/5gG8b4Q+hswd5ZrE6e1FcRAdH16E7pbZlM8rPUn3+OpujeLATGCx5uirmQWVqqtnNZsrQ=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from MW4PR01MB6498.prod.exchangelabs.com (2603:10b6:303:79::19) by
- PH7PR01MB8544.prod.exchangelabs.com (2603:10b6:510:2e9::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7362.36; Wed, 13 Mar 2024 02:12:44 +0000
-Received: from MW4PR01MB6498.prod.exchangelabs.com
- ([fe80::4fc3:132:87ac:c13b]) by MW4PR01MB6498.prod.exchangelabs.com
- ([fe80::4fc3:132:87ac:c13b%5]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
- 02:12:44 +0000
-Date: Tue, 12 Mar 2024 19:12:37 -0700
-From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-To: Beata Michalska <beata.michalska@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	ionela.voinescu@arm.com, sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com, 
-	vincent.guittot@linaro.org, sumitg@nvidia.com, yang@os.amperecomputing.com, 
-	lihuisong@huawei.com
-Subject: Re: [PATCH v3 2/3] arm64: Provide an AMU-based version of
- arch_freq_get_on_cpu
-Message-ID: <q4pc63l43mtp56qim6s5riwu25cgvdqfchg7jbqhhcixkyqs7i@mlqqgd5hxnec>
-References: <20240312083431.3239989-1-beata.michalska@arm.com>
- <20240312083431.3239989-3-beata.michalska@arm.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240312083431.3239989-3-beata.michalska@arm.com>
-X-ClientProxiedBy: CH0PR03CA0061.namprd03.prod.outlook.com
- (2603:10b6:610:cc::6) To MW4PR01MB6498.prod.exchangelabs.com
- (2603:10b6:303:79::19)
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+Received: from TYZPR02MB7988.apcprd02.prod.outlook.com (2603:1096:405:aa::5)
+ by SEZPR02MB5614.apcprd02.prod.outlook.com (2603:1096:101:39::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Wed, 13 Mar
+ 2024 02:21:47 +0000
+Received: from TYZPR02MB7988.apcprd02.prod.outlook.com
+ ([fe80::9aeb:5c84:e751:1bad]) by TYZPR02MB7988.apcprd02.prod.outlook.com
+ ([fe80::9aeb:5c84:e751:1bad%5]) with mapi id 15.20.7362.031; Wed, 13 Mar 2024
+ 02:21:47 +0000
+Message-ID: <24dc6251-8582-790f-bbd3-465deed946f5@oppo.com>
+Date: Wed, 13 Mar 2024 10:21:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v3 3/5] mm: swap: make should_try_to_free_swap()
+ support large-folio
+To: Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>,
+ akpm@linux-foundation.org, linux-mm@kvack.org
+Cc: chengming.zhou@linux.dev, chrisl@kernel.org, david@redhat.com,
+ hannes@cmpxchg.org, kasong@tencent.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
+ steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, Barry Song <v-songbaohua@oppo.com>
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+ <20240304081348.197341-4-21cnbao@gmail.com>
+ <e73c12ff-5234-44d5-a2b3-99cdc61a9c37@arm.com>
+From: Chuanhua Han <hanchuanhua@oppo.com>
+In-Reply-To: <e73c12ff-5234-44d5-a2b3-99cdc61a9c37@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI1PR02CA0001.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::15) To TYZPR02MB7988.apcprd02.prod.outlook.com
+ (2603:1096:405:aa::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,254 +87,149 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR01MB6498:EE_|PH7PR01MB8544:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1beeb29f-1fb9-4c79-fb76-08dc4303100c
+X-MS-TrafficTypeDiagnostic: TYZPR02MB7988:EE_|SEZPR02MB5614:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6b548685-16f1-427f-9b66-08dc4304559b
+X-LD-Processed: f1905eb1-c353-41c5-9516-62b4a54b5ee6,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	OpMIuKITwkvkcWgu0YuktM8/VdTTpUMd2YWa4TJLE863/qzT2L1GBsLQ1PbRbJWvnOa0dmXPqTHBN80QQJI6AW7cJZZAU/qie+4eptLWX4Y9KHBZTZsNsAcEAg4MYaGYwSMim5JIljugawxGFYWvKliuMvJB0xpgoXVQgRrEOq09sGKIDHrRcg+458xCbZjbeWL4bJJQ8cKYnk6GutgQ7SHJUg1aDm0DQrh/n8AmxuleVP28RfoIp9JDxyRYymFwy1UZW7bdo2Y9QBHREV2OGL9Set6n4o/F3rODIsUf0WLLV9YI/q0vrnhIjf9j/qZgbAat5izvhqc512gQRvJ0PH9dLcDsCXeZiBFafBeERUMqHvz5mdC2jlie9D5La4X4arf33lRGorH8VUtcxI9iE1RpE20XIpgIi0x82ajY4RQ47IfDE7KAkqv5Mus3lkHXhO9KikU9fGNjHnzlpNAbD8RWg080q4B4izsMqWQzQ7rP1VYggCFUDsFRdQSAfA+HFlHUpOmeJGFUqlKnB11yY9mRDJavQpV+dcLl0ciibRAz69fid+f74hc8WPe079sj4xfMEjrY/SgiYdlJN4NTqRu4e2ZQff5Ej4kU/H/dIRUiUGeSr/OPZ3XtQplNllLILSG3RkV2e3EPjmzPbtSaNPW8xM+wFJUsQgzFDHOKttw=
+	YHleEcUbHnfPNjsdxFnc69X/Vlf1i6Bqam8+e3QxrvBtaoMAhOJJN1f3zirruShEeeZZIBz4bNj5nRwiR9zjdPa9klJPexaqcSjKL2sdclb0zcsXrWcE97q+Dw0kamHjaD5BRHPfB9VDEBX1CgyxmaCBiYB2gEpdDpZH2GoFtVjPBEd4zwKOhJZD2vqFq//NsAxv9qAvGowSq0vAkE6cBs5lAKH8VNrfjOM29kiD9qRQ45P1NXg7AIRiXLZSjZbtuOwTs6v5caW8Z0IWcZK0/lhcJ9wXG6+E3wUzJq9sDLmIsd0EvrDVX8t3g6/621Fez9clk6urRl0sbAp95eUKyuPN6mt1otBt8McYwQ1aZSi7qUPOwREXNRv8qnehmFqcWBuLosOFg0lNEwBHn/0AKNimtEbmQ2Zg6FuH66+Ydg3FhZM4nT76TefAA+7jeYdlAJVE8vdKdYWaR9owfzy2uTcay90rsIOmKq8YFoV51hbCflpW4JC+/BuPcmte1cL/RBI7DIDyO0l3Ed90seC9ltfMSf3KWSmisOPxhKlJ0MitvnjXMEw423ZP9THo8rj+TX3nCxGvRzmowE9VxPmzigdtz6DXRzypr1VIDoFWb465KC3zdnKHRG8SuXmXvMZKQ5UBHq4Fcytl0MvyHZ+HGlelf++52afFzZJo/pYWon8=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR01MB6498.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR02MB7988.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/sqJs/rh0gxfmrVVuwWCgq7UR4Pwam2wbTdbPLfAMKjE8rKMijiE3+iD4DIF?=
- =?us-ascii?Q?+m460CMNgIWH3dz0B3Mgib6G2jA9eDw+WjmBml50TixKn2eImkHFnCEQ7dlC?=
- =?us-ascii?Q?UcyVxlSynYY83PQn8LaqZ9cdx3GFE4denIsv2PU21OavLbUMaj28pw0oXUBq?=
- =?us-ascii?Q?Ba96jDTNTQ3fICfx91VXeKw+aCyVcuKuthIV0QwmoRqyP3bvW07t/vrCo1Co?=
- =?us-ascii?Q?lsGLQZtdft7ETIBZCU3NkK6XfqSzR0hH7rc9cToo4z34J27Pfc1+Skcv2BD/?=
- =?us-ascii?Q?GrO0NqcuVvbUIVbIbXEWrw79WzX0bMFt96HY/6TAqRFYfWFJhXCqXkZ86xi5?=
- =?us-ascii?Q?FSTxgfrWVId5ZVKuRPo/rvDZkHwD9lFXXVcOduc+iLkvMXoXW0QkaT5QEdTJ?=
- =?us-ascii?Q?idOnemEXZVohKO4WR8MqhfTCiup1Rxpg7qKyCsQ+rG7WvYecfQxmuBgyvBMD?=
- =?us-ascii?Q?rZzg+YwnQh1dygsuY94iHtepMWmT7MbLWwrDC4WxcpZKTr5BTwH7CZh1xgNR?=
- =?us-ascii?Q?zmZyvCUsxTMd36tBGw/wRW/NVF8bx/91llqpgIxscQ0zJq6x1WqhqPExRQAE?=
- =?us-ascii?Q?cz4bFs8eqytkBNZ8M3odtbuvmsRZOiobNbtlSfu0nnE5FbVnH1nahD0tzO3c?=
- =?us-ascii?Q?/WMu9S4CdoNABa9wB08V68196mgJfr4jrEG3odXLR40QpkDui3EtaxqjzsFZ?=
- =?us-ascii?Q?qTZNHU+N8C7XNEbv3wP3ubkh8a8E5PS9ERKjh5H0JVxgQilmoBKh5RhjW+mc?=
- =?us-ascii?Q?fyoCDIZc7yVXtjliEq9Z8tYZujqFhPpCmdyN20Ka35zaJOCUhkF/4HbZaW2s?=
- =?us-ascii?Q?sFXpZBF6sgcsWqqRIlv+VLEiSjWkDEId4WR8PfvpyiL7ltk47z4jATL0UUwz?=
- =?us-ascii?Q?fYM6vjW4EXMgAMh9jlmDK3nEn5v5CouO2Et5D0NCTMe3uSWtG3462JCT3/Bx?=
- =?us-ascii?Q?qguFiKnXSm43bnRnjmH0bbrgbey04jFgQHO6HnDrUsZW+cXS4Al+HWznzIxA?=
- =?us-ascii?Q?FJhc9BTRMDGUEAWUxo/pnaxeiwPM7GrzHyIIq31Ps9VqCf2fugFILhxU+hl4?=
- =?us-ascii?Q?RZieqGuByT5bZToNJ+aMiZHVnW04k4H6EWMUgeny4bIuGj/nmGAqdKQ8MZ+p?=
- =?us-ascii?Q?ptdvtQdFBRqvOv7NCCcnDzUvgoZ1ce7ITrAN2E1ub3SIOQfwr5GimRcLck5J?=
- =?us-ascii?Q?UHhVewEIdjkQ2IhHCijgSsaOYORG3tLV07Ehuxt8arwbF9jS+qP3nXWBpQik?=
- =?us-ascii?Q?+/U90u5J31SRdVsZNHzoOpPvkXGdKPCXQuiEveVX6xFSUuk1OFQNXeU5dLe+?=
- =?us-ascii?Q?DRqocVYWySIs99o6BdxB38ox5swe9ieU93WfFt9ek+U9askaYGCQG3uDFm7n?=
- =?us-ascii?Q?o+rePji2ye6ELEbRVLMtJg3Lc/cwNQ/r1YuXzIyRPo4oz/mF7SsNHO7B284H?=
- =?us-ascii?Q?RzdP6VeV+DWBnkB0yeeNrOqSDciXeJWcjCAw5OXFHho4nqcH+diAR3tv/PBU?=
- =?us-ascii?Q?pxCqD8ZPD4SL+ZuD4bALRLV2GWNtWwtsNouHC5syYRY5PalTwSGOAGEHVrXX?=
- =?us-ascii?Q?BTx1iF21l4Dcsc62zyoAiUZqx+4aOcL8pBB5KjAjtIDS+ZPLU0pE0lcohdl2?=
- =?us-ascii?Q?sNEJ6e5znoTOalYvLPnfpuQ=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1beeb29f-1fb9-4c79-fb76-08dc4303100c
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR01MB6498.prod.exchangelabs.com
+	=?utf-8?B?dmlTcGYwOFIwc01xazNwb096cXZYZkJ2emVzSEc1WjQ3K29Mb2E3V0lJeXhP?=
+ =?utf-8?B?UE4ydmY1aFBqZjJpMkx5RC9jWXJ4SXRsWnlndzlxTXc5bDFvRk9YY010cWpL?=
+ =?utf-8?B?UERkNWV0Mk9PSjQ0UkRUSU9XMmxsY1BEWU5oSnEyUXR0aUpIaTh2Sy9tNUxs?=
+ =?utf-8?B?dHJTMkNaRlhiaDNKMjh4cGF1dmFtNnoyZUpyWnlPaTh4R2NoNHZPNE5rdHRM?=
+ =?utf-8?B?VVB3WlU1ZmhWNndjT0VTUFhNQ3o3SFk4K2ZrTFBBaWpkYUVOVSt0UE5heThV?=
+ =?utf-8?B?RTNuTDBpNlNoWllqZEFraEFtRHduaWdBVXQwU1N2RTZsSU9NNWZ1UGhFS3FC?=
+ =?utf-8?B?Vno5NlJONVNUMmxxS1NMTEc1ZHNROFJXTHpLUEZTQ2x1Z3owNTdENmUwU3pF?=
+ =?utf-8?B?RjA4anpXcHJ3aDRaU1pTSmZLcXNWeHBITDNFRkpWdUpGNFJNUzZRZ05PZDNt?=
+ =?utf-8?B?dDBTaVgyWGcrcDBWdHpZMjVNcFRVN2wxdnpvN3hoWHZuZ3lEKyt6cGJNVEI0?=
+ =?utf-8?B?T1BjY3ptMGptQlord1hpSVNuRzN3Q1RJcU85dHJKTEhyOC9zbGdLYk1TbjJT?=
+ =?utf-8?B?Z2xXTXNoTDZSd2ZhY1VRKzFvaklKRXBLR1pjVTJtd1puOWJtSVMwWHdWS2Np?=
+ =?utf-8?B?T2c1Zys3STN5RndQcWhvbHRyYnpyTnpqUFY5MEVUMHhWRk1GOS9aUWhOVkNz?=
+ =?utf-8?B?bllORjRlQ3BKSTRPd0xhZ2NKeVRMNlh5UExKTmhDMndPTnIrbTlpUWkxOElG?=
+ =?utf-8?B?S0dlMHVHeElHZXlBMVZJOVJwVHdxRVorbld1NGZ3Vi84VVhNb2ZLb2RGQUNQ?=
+ =?utf-8?B?SHpLRENTaThGM3hFalQ0VkZWRDNpZW5Cc1ZuVFhHRldRcHg3dmJ1bmVsWG5H?=
+ =?utf-8?B?amRjM3ZZT0h6ZkJ5OGtqZWdiVUIvbVlhTWtySGJkdkJjZU5jVGFOTjhNYlhz?=
+ =?utf-8?B?cG5DNUVRaDN3VjlDbE5ENHNGZkhOSjNOdVVwdTdxSmV1aURZKzMyeXErUlpx?=
+ =?utf-8?B?NzMrdm5IQ1BWSW9uUGhZNTcyYU12K2VRM2hJVGpad0RCbnA3YnNSUG51QVVG?=
+ =?utf-8?B?S2tzYTliQVJtU1EvRW4yeDh1STBBeHd5a0dpdjc1aFJXYTUrck9LeTI4Lzdo?=
+ =?utf-8?B?em10N2d4bmdBSldlV3UxQUV6WHE2VkU3RzJaMFdjNEFFTy9mNHZtU3puaTdu?=
+ =?utf-8?B?Z1BsR1lWTU1nc3R4K01vSlFnd2ZmZlNyd1FmTTcySFlzVmJHc2xzbnpGeW9i?=
+ =?utf-8?B?cm02SlREdmpHWlNKMmNWdlMxSklvaFpQUXdmNjFaMEE2NitlUEFRdTdvLy90?=
+ =?utf-8?B?d2xCbHh6RGNWNzJVcEhNLy9qWExXMmVvTFZPRE5SWUJhQXkyMHhKNlBGTldm?=
+ =?utf-8?B?MmpSbEpucW45bStZem1LMmc3Vks3QU8zaXRXenU3bFVkSWVENjVERlhoQWgr?=
+ =?utf-8?B?Y1I1RlZVR1pOTXRJMTZhV1FwWXE4aTlrRDg0MTlhK0xJZEpJNlg4M1BPZ055?=
+ =?utf-8?B?SGpNOVdGbWkyem9hajJrc3I0aHRWUmlGZ0hnZENCdzZOeGNpMjhDbkhISGU5?=
+ =?utf-8?B?VUpRdXpLRXkvRVZWSXo5elJ1R0daVVVWSFpqNnp3SFhiQ3dQWVlqU0JSVUVv?=
+ =?utf-8?B?STlDMlJpdnNTMHdrOUZjT000UzJiQVZvVWk5dDlxNWk0MENleHF0YkRVTGd3?=
+ =?utf-8?B?SHArMTVjM2Jsc29NeElEdWRXSEdZczJKSENBeUVDd3d5NTZ6WG16UnVyTWxr?=
+ =?utf-8?B?RHlmQlRrN2pNMFJIL0diVEpXc29rOWpwM3FUdHhIWHg4VjMwRkhoL0E0V2pO?=
+ =?utf-8?B?TlROYS9KZTlNMEhPaTAxNkRnSnJlZ0J1Tis4R1NnQzBBMUFFZ3ZkSFo4dmh1?=
+ =?utf-8?B?bng3NytZbmtNYzVqc2dIdVdDajZ3Ni9tNXByK3RpUFhLRVZqVUJjVFVCS3pS?=
+ =?utf-8?B?YkZsaWtSejJ4dGR3S1J3ckpNbzdaTW9kdFo3Z2lOaEkrV0FRYkdEM0EzSzl6?=
+ =?utf-8?B?YytuVE9ia2FvTTZ1WCtkVzZ3WERyV0llMWw3M0F6RGJmSUV6VHlHWHl3OTJw?=
+ =?utf-8?B?UlNaOWVWVjVsd21nVzRZOVYzZDJTSEt2d3RLODc0cmhEbXZ1bVFOb3ZpWFgy?=
+ =?utf-8?B?VXRKTFFhNHNLS2JwQStXZ1pTRkJDazZ0WituVWxsM2JOczBSRU9zeUpRZU9K?=
+ =?utf-8?B?UXc9PQ==?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b548685-16f1-427f-9b66-08dc4304559b
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR02MB7988.apcprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 02:12:44.0134
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 02:21:47.7028
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WsNLD162PZR+uQIWIu+JbT1vCfNGSrgu6dfWIBqWaClNJU0sNQRVeDIXAf7YPhqrI1DELKrwptSwbk5y/EsMDnwpT9w3nwFSlUX5KvsMz015wEj/Srn+p4RcfJ7DMLsY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR01MB8544
+X-MS-Exchange-CrossTenant-UserPrincipalName: WepdixPbOqA1MWeonBIFx3Klz6sYfZiTEIp7haz4PC60o0IVBEqUD2HrLZOnh+UwUCp4sLVz0UnayNFxixpC1w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR02MB5614
 
-On Tue, Mar 12, 2024 at 08:34:30AM +0000, Beata Michalska wrote:
->With the Frequency Invariance Engine (FIE) being already wired up with
->sched tick and making use of relevant (core counter and constant
->counter) AMU counters, getting the current frequency for a given CPU
->on supported platforms can be achieved by utilizing the frequency scale
->factor which reflects an average CPU frequency for the last tick period
->length.
->
->The solution is partially based on APERF/MPERF implementation of
->arch_freq_get_on_cpu.
->
->Suggested-by: Ionela Voinescu <ionela.voinescu@arm.com>
->Signed-off-by: Beata Michalska <beata.michalska@arm.com>
->---
-> arch/arm64/kernel/topology.c | 103 +++++++++++++++++++++++++++++++----
-> 1 file changed, 92 insertions(+), 11 deletions(-)
->
->diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
->index 1a2c72f3e7f8..42cb19c31719 100644
->--- a/arch/arm64/kernel/topology.c
->+++ b/arch/arm64/kernel/topology.c
->@@ -17,6 +17,8 @@
-> #include <linux/cpufreq.h>
-> #include <linux/init.h>
-> #include <linux/percpu.h>
->+#include <linux/sched/isolation.h>
->+#include <linux/seqlock_types.h>
->
-> #include <asm/cpu.h>
-> #include <asm/cputype.h>
->@@ -88,18 +90,31 @@ int __init parse_acpi_topology(void)
->  * initialized.
->  */
-> static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
->-static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
->-static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
-> static cpumask_var_t amu_fie_cpus;
->
->+struct amu_cntr_sample {
->+	u64		arch_const_cycles_prev;
->+	u64		arch_core_cycles_prev;
->+	unsigned long	last_update;
->+	seqcount_t	seq;
->+};
->+
->+static DEFINE_PER_CPU_SHARED_ALIGNED(struct amu_cntr_sample, cpu_amu_samples) = {
->+	.seq = SEQCNT_ZERO(cpu_amu_samples.seq)
->+};
->+
-> void update_freq_counters_refs(void)
-> {
->-	this_cpu_write(arch_core_cycles_prev, read_corecnt());
->-	this_cpu_write(arch_const_cycles_prev, read_constcnt());
->+	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
->+
->+	amu_sample->arch_core_cycles_prev = read_corecnt();
->+	amu_sample->arch_const_cycles_prev = read_constcnt();
-> }
->
-> static inline bool freq_counters_valid(int cpu)
-> {
->+	struct amu_cntr_sample *amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
->+
-> 	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
-> 		return false;
->
->@@ -108,8 +123,8 @@ static inline bool freq_counters_valid(int cpu)
-> 		return false;
-> 	}
->
->-	if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
->-		     !per_cpu(arch_core_cycles_prev, cpu))) {
->+	if (unlikely(!amu_sample->arch_const_cycles_prev ||
->+		     !amu_sample->arch_core_cycles_prev)) {
-> 		pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
-> 		return false;
-> 	}
->@@ -152,20 +167,27 @@ void freq_inv_set_max_ratio(int cpu, u64 max_rate)
->
-> static void amu_scale_freq_tick(void)
-> {
->+	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
-> 	u64 prev_core_cnt, prev_const_cnt;
-> 	u64 core_cnt, const_cnt, scale;
->
->-	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
->-	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
->+	prev_const_cnt = amu_sample->arch_const_cycles_prev;
->+	prev_core_cnt = amu_sample->arch_core_cycles_prev;
->+
->+	write_seqcount_begin(&amu_sample->seq);
->
-> 	update_freq_counters_refs();
->
->-	const_cnt = this_cpu_read(arch_const_cycles_prev);
->-	core_cnt = this_cpu_read(arch_core_cycles_prev);
->+	const_cnt = amu_sample->arch_const_cycles_prev;
->+	core_cnt = amu_sample->arch_core_cycles_prev;
->
->+	/*
->+	 * This should not happen unless the AMUs have been reset and the
->+	 * counter values have not been resroted - unlikely
+hi, Ryan Roberts
 
-/resroted/restored
+在 2024/3/12 20:34, Ryan Roberts 写道:
+> On 04/03/2024 08:13, Barry Song wrote:
+>> From: Chuanhua Han <hanchuanhua@oppo.com>
+>>
+>> should_try_to_free_swap() works with an assumption that swap-in is always done
+>> at normal page granularity, aka, folio_nr_pages = 1. To support large folio
+>> swap-in, this patch removes the assumption.
+>>
+>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>> Acked-by: Chris Li <chrisl@kernel.org>
+>> ---
+>>  mm/memory.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index abd4f33d62c9..e0d34d705e07 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -3837,7 +3837,7 @@ static inline bool should_try_to_free_swap(struct folio *folio,
+>>  	 * reference only in case it's likely that we'll be the exlusive user.
+>>  	 */
+>>  	return (fault_flags & FAULT_FLAG_WRITE) && !folio_test_ksm(folio) &&
+>> -		folio_ref_count(folio) == 2;
+>> +		folio_ref_count(folio) == (1 + folio_nr_pages(folio));
+> I don't think this is correct; one reference has just been added to the folio in
+> do_swap_page(), either by getting from swapcache (swap_cache_get_folio()) or by
+> allocating. If it came from the swapcache, it could be a large folio, because we
+> swapped out a large folio and never removed it from swapcache. But in that case,
+> others may have partially mapped it, so the refcount could legitimately equal
+> the number of pages while still not being exclusively mapped.
+>
+> I'm guessing this logic is trying to estimate when we are likely exclusive so
+> that we remove from swapcache (release ref) and can then reuse rather than CoW
+> the folio? The main CoW path currently CoWs page-by-page even for large folios,
+> and with Barry's recent patch, even the last page gets copied. So not sure what
+> this change is really trying to achieve?
+>
+First, if it is a large folio in the swap cache, then its refcont is at
+least folio_nr_pages(folio) :  
 
->+	 */
-> 	if (unlikely(core_cnt <= prev_core_cnt ||
-> 		     const_cnt <= prev_const_cnt))
->-		return;
->+		goto leave;
->
-> 	/*
-> 	 *	    /\core    arch_max_freq_scale
->@@ -182,6 +204,10 @@ static void amu_scale_freq_tick(void)
->
-> 	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
-> 	this_cpu_write(arch_freq_scale, (unsigned long)scale);
->+
->+	amu_sample->last_update = jiffies;
->+leave:
->+	write_seqcount_end(&amu_sample->seq);
-> }
->
-> static struct scale_freq_data amu_sfd = {
->@@ -189,6 +215,61 @@ static struct scale_freq_data amu_sfd = {
-> 	.set_freq_scale = amu_scale_freq_tick,
-> };
->
->+#define AMU_SAMPLE_EXP_MS	20
->+
->+unsigned int arch_freq_get_on_cpu(int cpu)
->+{
->+	struct amu_cntr_sample *amu_sample;
->+	unsigned long last_update;
->+	unsigned int seq;
->+	unsigned int freq;
->+	u64 scale;
->+
->+	if (!cpumask_test_cpu(cpu, amu_fie_cpus) || !arch_scale_freq_ref(cpu))
->+		return 0;
->+
->+retry:
->+	amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
->+
->+	do {
->+		seq = raw_read_seqcount_begin(&amu_sample->seq);
->+		last_update = amu_sample->last_update;
->+	} while (read_seqcount_retry(&amu_sample->seq, seq));
->+
->+	/*
->+	 * For those CPUs that are in full dynticks mode,
->+	 * and those that have not seen tick for a while
->+	 * try an alternative source for the counters (and thus freq scale),
->+	 * if available for given policy
->+	 */
->+	if (time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
->+		struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
->+		int ref_cpu = nr_cpu_ids;
->+
->+		if (cpumask_intersects(housekeeping_cpumask(HK_TYPE_TICK),
->+				       policy->cpus))
->+			ref_cpu = cpumask_nth_and(cpu, policy->cpus,
->+						  housekeeping_cpumask(HK_TYPE_TICK));
->+
 
-Could you help me understand why getting the frequency from another
-housekeeping cpu would be a better than returning 0? Wouldn't different
-CPUs in the HK_TYPE_TICK domain be running at independent frequencies?
-May be adding this explanation to the patch commit message would help
-people who look at this in the future?
+For example, in add_to_swap_cache path:
+
+int add_to_swap_cache(struct folio *folio, swp_entry_t entry,
+                        gfp_t gfp, void **shadowp)
+{
+        struct address_space *address_space = swap_address_space(entry);
+        pgoff_t idx = swp_offset(entry);
+        XA_STATE_ORDER(xas, &address_space->i_pages, idx,
+folio_order(folio));
+        unsigned long i, nr = folio_nr_pages(folio); <---
+        void *old;
+        ...
+        folio_ref_add(folio, nr); <---
+        folio_set_swapcache(folio);
+        ...
+}
+
+
+  *
+
+    Then in the do_swap_page path:
+
+  * if (should_try_to_free_swap(folio, vma, vmf->flags))
+            folio_free_swap(folio);
+  *
+
+  * It also indicates that only folio in the swap cache will call
+    folio_free_swap
+  * to delete it from the swap cache, So I feel like this patch is
+    necessary!? 😁
+
+>>  }
+>>  
+>>  static vm_fault_t pte_marker_clear(struct vm_fault *vmf)
 
 Thanks,
-Vanshi
 
->+		cpufreq_cpu_put(policy);
->+		if (ref_cpu >= nr_cpu_ids || ref_cpu == cpu)
->+			/* No alternative to pull info from */
->+			return 0;
->+		cpu = ref_cpu;
->+		goto retry;
->+	}
->+	/*
->+	 * Reversed computation to the one used to determine
->+	 * the arch_freq_scale value
->+	 * (see amu_scale_freq_tick for details)
->+	 */
->+	scale = arch_scale_freq_capacity(cpu);
->+	freq = scale * arch_scale_freq_ref(cpu);
->+	freq >>= SCHED_CAPACITY_SHIFT;
->+
->+	return freq;
->+}
->+
-> static void amu_fie_setup(const struct cpumask *cpus)
-> {
-> 	int cpu;
->-- 
->2.25.1
->
+Chuanhua
+
 
