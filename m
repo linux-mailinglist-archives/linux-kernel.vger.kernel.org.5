@@ -1,83 +1,135 @@
-Return-Path: <linux-kernel+bounces-101054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 746C287A1AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:36:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 086C287A1B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 03:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08A52283FEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:36:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AED01C21CD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5A6CA4A;
-	Wed, 13 Mar 2024 02:36:45 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1CBD51C;
+	Wed, 13 Mar 2024 02:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KgQ0JuPg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5D68BE0;
-	Wed, 13 Mar 2024 02:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05648AD25
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 02:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710297405; cv=none; b=WPgEKfhHCVx0yK8xr5oSX/2fQhXF1j5/rEkjZH/90Yy5q+kRW5wfoVO8wgI0Kf7aiLt3N7vQyZ3GNcx0XU+7go0zAeIqmNj7qaKThL+BnaTpeN8xCgO9CrBnQ6CAcUJJlPYSqUm9Fp3Bl5J7+3v5P8RI9Fcor3y1kxhYd2Ghib4=
+	t=1710297621; cv=none; b=mD6HnbLKtAs/MeGwBz9pb9oxiQeMXFiBS6KQ+DamxkMLfZp/o8pYTRynrRBN41wGRF4T2eaESr3O7/wxeL4GVkB0BjDlFnSSb7ba63JPO7eZPK7JJ6grbabrtIfAM70h0Elw8cSRhlypamg37aFNPl4b0ZcnCktnTvjpOmLMmDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710297405; c=relaxed/simple;
-	bh=vToj1SDcQ5FWOlZxXSiSLuJoDPYHXowSsrEx30s2VNQ=;
+	s=arc-20240116; t=1710297621; c=relaxed/simple;
+	bh=bT9cgD9xoMLhqt3/eDR3nr6SSI/CyX28YEwHte2GLxU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rt60yLPa5uYYDEBrINufA4qqkV5Xk/bDbmOB3pchw0EZUx+NsGlXCYGhDK/x6c8PhiezknrpuVDRg0TchEHYPmoB578aabamjfDKYefGiyxjoEV0I29E7pyO8hndqi0ycaBuxdQd7ym9PrYfxvaq5xDipMX4XAbQKznJNiRDH2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rkETn-006Lnk-HI; Wed, 13 Mar 2024 10:36:32 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 13 Mar 2024 10:36:47 +0800
-Date: Wed, 13 Mar 2024 10:36:47 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Linux Crypto List <linux-crypto@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the crypto tree
-Message-ID: <ZfERP1LK8q+CsoSo@gondor.apana.org.au>
-References: <20240313115751.36b01158@canb.auug.org.au>
- <ZfEE2GDznBOZDXs4@gondor.apana.org.au>
- <ZfEFKxl8/42oXv0i@gondor.apana.org.au>
- <20240313020112.GB1148@sol.localdomain>
- <ZfEJrBefjrvPxaIg@gondor.apana.org.au>
- <20240313022912.GD1148@sol.localdomain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QTzlNWwo2Vt6X6zfYI5xqiNwQmOoDuDcHq2hMJzudGg9SHGT9o+RPU350fxgQs+k9kVN8bEYr/C2lhGAWbLALkPpUzHnruXKi7JenkITFZAuzCqLp1aPKQzOwqqEgim3K85gnKvcOJWdiebDubs3yOtWLcziDDeva1qUSUZOlkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KgQ0JuPg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710297618;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xLDKnplj27bk7XMdJMqwJSbyHYnIPFsAuwJfX8G+gAU=;
+	b=KgQ0JuPgHoV0+clD26G82HuMpE4ngpdzpP0TjxxeA0awucPpCX+y1Zt2W0+a4Pk+yanpWX
+	w/3kg40JJYYTmtXDzD5HkRluFZVH9Xm/ldjNB3pa4Eg3EA44qrxr+Q3TXYpmocDKiAqK/p
+	Na//6sVb8nuTXjZDV09dDTfCg6w5xQs=
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
+ [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-511-spDBxL5wPfKT23XBBG_7dg-1; Tue, 12 Mar 2024 22:40:16 -0400
+X-MC-Unique: spDBxL5wPfKT23XBBG_7dg-1
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-2219ad32ab9so6099555fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:40:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710297616; x=1710902416;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xLDKnplj27bk7XMdJMqwJSbyHYnIPFsAuwJfX8G+gAU=;
+        b=KsIAKvyOwDieym24EclROEw3tnw74H36OB2r7x7nUDEV2vntlSOiNoVw5i9T4vjtd3
+         5tyUwWPDn31k0ua9V9+T01hsqSb2J6RE8vaQ1XyCLZARkbEsXC8/UCmseewiS42xxA9A
+         HGsd4LKiW6XdhuWTd0SiNtt8ZvTv1JH/u3+EC+OCFEVWo8J79xAMvXR8HNT9Gq5ujm1u
+         kVq1CIPZKZIAyXxkbQqHrc3zGIgoHi7SiGF+hHcV3D2NbG/fhOB7BAW7GGvYuFm763gB
+         GhQPwdvRQl94TYM1F2D39lEl5NqFycDBvjnwOoAEj+kuUQYP6KSARL2eRpPNcL5lXwxI
+         Lv1g==
+X-Forwarded-Encrypted: i=1; AJvYcCX0C7hT+YWY7t3uixJHvga8vrfYsGDvQQG4Be/X8CgXDCJl58qXKfy29b+Ao+4LHD58xbB5Db1j50IGtgmCkxTplTWYzlXJCgN1Wg1P
+X-Gm-Message-State: AOJu0Yw6QIFNs9EeZSalY72gxlXwJDSDY3O1hR63uVTf5hTSabkQI7dz
+	x7j3ndPalbToyzEZP/Nw9P2zeGJWXxCqNBs4h5r5RYyQ4HIQ9XsZHVzHTycFm8ctAAeAtt2FVcQ
+	VrqUfeJPELU7xnDmYsQXpHo9irRWG8mLUZ/Z1bNKN6I/7iEuqmEJNtHAAyCZUKw==
+X-Received: by 2002:a05:6358:3401:b0:17b:f4a1:b626 with SMTP id h1-20020a056358340100b0017bf4a1b626mr14909055rwd.13.1710297615391;
+        Tue, 12 Mar 2024 19:40:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH2czkJxHHK8iTWoJP2+GXQgOSzrR8EUnlqBRIqzbEfeFRiTVhU4BFfN2MY00qNUPEEuj0R+A==
+X-Received: by 2002:a05:6358:3401:b0:17b:f4a1:b626 with SMTP id h1-20020a056358340100b0017bf4a1b626mr14909016rwd.13.1710297614481;
+        Tue, 12 Mar 2024 19:40:14 -0700 (PDT)
+Received: from localhost ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d12-20020a63d64c000000b005dcaa45d87esm5975622pgj.42.2024.03.12.19.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 19:40:14 -0700 (PDT)
+Date: Wed, 13 Mar 2024 10:37:29 +0800
+From: Coiby Xu <coxu@redhat.com>
+To: Maxime Ripard <mripard@redhat.com>
+Cc: Mimi Zohar <zohar@linux.ibm.com>, 
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	linux-integrity@vger.kernel.org, itrymybest80@protonmail.com, 
+	Eric Snowberg <eric.snowberg@oracle.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
+	"open list:SECURITY SUBSYSTEM" <linux-security-module@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] integrity: eliminate unnecessary "Problem loading
+ X.509 certificate" msg
+Message-ID: <gucfr7sxmv4hiowr6dokx7r7nf6wdiqdm577arnwe5yua5z24b@3sljt73mpjke>
+References: <20231227044156.166009-1-coxu@redhat.com>
+ <20240109002429.1129950-1-coxu@redhat.com>
+ <20240306-humongous-nuthatch-of-science-00e58b@houat>
+ <a677a9cd8eda40e5529094ba2a6ad2f7c0c927fa.camel@linux.ibm.com>
+ <20240306-large-lush-catfish-e75cb2@houat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240313022912.GD1148@sol.localdomain>
+In-Reply-To: <20240306-large-lush-catfish-e75cb2@houat>
 
-On Tue, Mar 12, 2024 at 07:29:12PM -0700, Eric Biggers wrote:
-> 
-> comp_alg_common was part of the implementation of STATS.
+On Wed, Mar 06, 2024 at 01:40:01PM +0100, Maxime Ripard wrote:
+>On Wed, Mar 06, 2024 at 06:55:00AM -0500, Mimi Zohar wrote:
+>> On Wed, 2024-03-06 at 11:57 +0100, Maxime Ripard wrote:
+>> > Hi Dmitry, Eric, James, Mimi, Paul, Serge,
+>> >
+>> > On Tue, Jan 09, 2024 at 08:24:28AM +0800, Coiby Xu wrote:
+>> > > Currently when the kernel fails to add a cert to the .machine keyring,
+>> > > it will throw an error immediately in the function integrity_add_key.
+>> > >
+>> > > Since the kernel will try adding to the .platform keyring next or throw
+>> > > an error (in the caller of integrity_add_key i.e. add_to_machine_keyring),
+>> > > so there is no need to throw an error immediately in integrity_add_key.
+>> > >
+>> > > Reported-by: itrymybest80@protonmail.com
+>> > > Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2239331
+>> > > Fixes: d19967764ba8 ("integrity: Introduce a Linux keyring called machine")
+>> > > Reviewed-by: Eric Snowberg <eric.snowberg@oracle.com>
+>> > > Signed-off-by: Coiby Xu <coxu@redhat.com>
+>> >
+>> > Any chance this patch can be merged? This is breaking (at least) Fedora
+>> > at the moment.
+>>
+>> https://git.kernel.org/torvalds/c/29cd507cbec282e13dcf8f38072a100af96b2bb7
+>
+>Oh, awesome, we missed it.
 
-I understand that comp_alg_common becomes trivial without stats,
-but it is still something that is useful in the API because for
-a given acomp tfm, we don't know whether it's an acomp_alg or
-scomp_alg.
+Oh, I missed the emails about Mimi's PR sent to Linus as well. Btw, I'm
+curious to ask why you used the word "breaking" because I thought these KERN_ERR
+errors shouldn't cause any real problem.
 
-> I'll do the best I can to interpret your request, but if you could actually
-> review my original patch and let me know if there are any other specific changes
-> you'd like besides keeping comp_alg_common, that would be helpful as then maybe
-> the next version won't get reverted.
-
-I think comp_alg_common is the only part that should be excised.
-
-Thanks,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Best regards,
+Coiby
+
 
