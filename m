@@ -1,133 +1,402 @@
-Return-Path: <linux-kernel+bounces-101453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B48E87A75C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:00:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBF8287A75E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE1431F23D96
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:00:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBE2A1C224E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E023FB31;
-	Wed, 13 Mar 2024 12:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b5KbJ7PR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648623F9D5;
-	Wed, 13 Mar 2024 12:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7028A3FB19;
+	Wed, 13 Mar 2024 12:02:53 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB713F9D5
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:02:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710331231; cv=none; b=HrXwvfzxf6sgRzSkGI2vuO5hSftOH+XPSGglHTD7jeHjh6dnjHSiqHnDAR75lwwTAWVEI3u6Kudnc4LjRmfYrvouoXVufo+jsqBDBaJeJDUs1U9jpp8y081iz9DGxxOWR8Ik+ZY1BBbKjY4sKFswyreC6K2cBbz1iearB/OrTYw=
+	t=1710331372; cv=none; b=UqiDiltMQDPY7tXmbovXm66guGotgun6p0opYGkRxceq6oLq+53VKOZbrKWxAtRqE62qdyljl+OiwuXoJx3tddtN52EoJz+G2u9QVTiebcxIqxlQx9VjQ91U7jZVugYnq3c1QRlzsAKbwXoDIC8Ky5yg2IL5Y8PR035U6j85RIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710331231; c=relaxed/simple;
-	bh=oTmsZxsDwI243Hwkzpf2lxroCsnB9x2YChpMLaPvfP4=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=VwpajFPYW7rB2Yu8lyjDpredr9UdaIRzUgXeDqUYEFxklMceDIHdFyX57oueQDdE9x30nIwWNkGiFtOMuLE3dcHtSIGOwIcZh5r0thWbFuhgMwL6tia4269R33cr7nGnjUcqPsGNqnxDBWmDbj4VPweodJiixSOIpren9bAVwO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b5KbJ7PR; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710331229; x=1741867229;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=oTmsZxsDwI243Hwkzpf2lxroCsnB9x2YChpMLaPvfP4=;
-  b=b5KbJ7PR4YhP7VjpgLL9jPxlb1F4zSCvuUy4jeoekSs8keTmG/YFWJyt
-   czG+HFVLyFr6ZmkhoZ2Oom+G44IyU414S4tiVRZsHg2MvBaGVjoNa+HO6
-   jhkaaBSOyz5BMyjRS+7Cbxru+ftMLDBYYiDKMCzLulpnLmdYRpKWdGnY1
-   fCR6NE46O7UQNH7QCmnDjVKKdWvSxA10dSMp/KApqB3IhwyeiZXPCxC65
-   owX+bA48w9MiDXpnKH4OO4aDdnTuYGBRwpXVOLTsxuH2U2CgB0Optu+20
-   pf1Zqia0w6grQyJB/N0znBRHDYknqsgTBiCQnZt4CdJ+F1R25xCIdkHVS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4954283"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="4954283"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 05:00:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="11782605"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.7])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 05:00:25 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 13 Mar 2024 14:00:21 +0200 (EET)
-To: Simon Guinot <simon.guinot@seagate.com>, 
-    Bjorn Helgaas <bhelgaas@google.com>
-cc: "Maciej W . Rozycki" <macro@orcam.me.uk>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] PCI: fix link retrain status in
- pcie_wait_for_link_delay()
-In-Reply-To: <20240313094938.484113-1-simon.guinot@seagate.com>
-Message-ID: <53b2239b-4a23-a948-a422-4005cbf76148@linux.intel.com>
-References: <20240313094938.484113-1-simon.guinot@seagate.com>
+	s=arc-20240116; t=1710331372; c=relaxed/simple;
+	bh=f/3QvJQ2oIN6gkYumPPjJYeGXu728/XxbMELUwrE7Pc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QZBweWygyiWaPw5HwXx9OxJ9/vfye2Tgqm+zNA++U79QxV3ta41cOFG5SXIk02H4+7DdipaGmAMKK32kzvXFiHXlzpXtLXKHoWL24e4LU/A89ou+/0H2tqEJqTEu4SZpse4ocakgEwLTFBuDfcEEn/wjRfJBl1j1Uxd7YGj/tSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BCA31007;
+	Wed, 13 Mar 2024 05:03:25 -0700 (PDT)
+Received: from [10.57.67.164] (unknown [10.57.67.164])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E58F33F762;
+	Wed, 13 Mar 2024 05:02:44 -0700 (PDT)
+Message-ID: <c76b402e-c3d4-415c-b376-ed25a4b90362@arm.com>
+Date: Wed, 13 Mar 2024 12:02:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and
+ MADV_COLD
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: Lance Yang <ioworker0@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
+ Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>,
+ Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+ Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+ Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-7-ryan.roberts@arm.com>
+ <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
+ <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
+ <CAGsJ_4wodFkL4YZ1iQveUjK6QL7sNajyayBq4hJ3-GPoWJ6foQ@mail.gmail.com>
+ <00a3ba1d-98e1-409b-ae6e-7fbcbdcd74d5@arm.com>
+ <CAGsJ_4xpiyCaNmSK4P3PitKeOsDBmOzf-4AZPnHcv4S=-TmtzQ@mail.gmail.com>
+ <f83d30ff-fe31-48c3-9c59-514f39c702f4@arm.com>
+ <CAGsJ_4yFzCW1s=UGu2yT7Zh75_9awo9+Rwxeu3JHkAm=nEoRRQ@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4yFzCW1s=UGu2yT7Zh75_9awo9+Rwxeu3JHkAm=nEoRRQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, 13 Mar 2024, Simon Guinot wrote:
-
-> The current code in pcie_wait_for_link_delay() handles the value
-> returned by pcie_failed_link_retrain() as an integer, expecting 0
-> when the link has been successfully retrained. The issue is that
-> pcie_failed_link_retrain() returns a boolean: "true" if the link
-> has been successfully retrained and "false" otherwise. This leads
-> pcie_wait_for_link_delay() to return an incorrect "active link"
-> status when pcie_failed_link_retrain() is called.
+On 13/03/2024 11:37, Barry Song wrote:
+> On Wed, Mar 13, 2024 at 7:08 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 13/03/2024 10:37, Barry Song wrote:
+>>> On Wed, Mar 13, 2024 at 10:36 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> On 13/03/2024 09:16, Barry Song wrote:
+>>>>> On Wed, Mar 13, 2024 at 10:03 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>
+>>>>>> On 13/03/2024 07:19, Barry Song wrote:
+>>>>>>> On Tue, Mar 12, 2024 at 4:01 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>
+>>>>>>>> Rework madvise_cold_or_pageout_pte_range() to avoid splitting any large
+>>>>>>>> folio that is fully and contiguously mapped in the pageout/cold vm
+>>>>>>>> range. This change means that large folios will be maintained all the
+>>>>>>>> way to swap storage. This both improves performance during swap-out, by
+>>>>>>>> eliding the cost of splitting the folio, and sets us up nicely for
+>>>>>>>> maintaining the large folio when it is swapped back in (to be covered in
+>>>>>>>> a separate series).
+>>>>>>>>
+>>>>>>>> Folios that are not fully mapped in the target range are still split,
+>>>>>>>> but note that behavior is changed so that if the split fails for any
+>>>>>>>> reason (folio locked, shared, etc) we now leave it as is and move to the
+>>>>>>>> next pte in the range and continue work on the proceeding folios.
+>>>>>>>> Previously any failure of this sort would cause the entire operation to
+>>>>>>>> give up and no folios mapped at higher addresses were paged out or made
+>>>>>>>> cold. Given large folios are becoming more common, this old behavior
+>>>>>>>> would have likely lead to wasted opportunities.
+>>>>>>>>
+>>>>>>>> While we are at it, change the code that clears young from the ptes to
+>>>>>>>> use ptep_test_and_clear_young(), which is more efficent than
+>>>>>>>> get_and_clear/modify/set, especially for contpte mappings on arm64,
+>>>>>>>> where the old approach would require unfolding/refolding and the new
+>>>>>>>> approach can be done in place.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>>>>
+>>>>>>> This looks so much better than our initial RFC.
+>>>>>>> Thank you for your excellent work!
+>>>>>>
+>>>>>> Thanks - its a team effort - I had your PoC and David's previous batching work
+>>>>>> to use as a template.
+>>>>>>
+>>>>>>>
+>>>>>>>> ---
+>>>>>>>>  mm/madvise.c | 89 ++++++++++++++++++++++++++++++----------------------
+>>>>>>>>  1 file changed, 51 insertions(+), 38 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/mm/madvise.c b/mm/madvise.c
+>>>>>>>> index 547dcd1f7a39..56c7ba7bd558 100644
+>>>>>>>> --- a/mm/madvise.c
+>>>>>>>> +++ b/mm/madvise.c
+>>>>>>>> @@ -336,6 +336,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>>>>>>>>         LIST_HEAD(folio_list);
+>>>>>>>>         bool pageout_anon_only_filter;
+>>>>>>>>         unsigned int batch_count = 0;
+>>>>>>>> +       int nr;
+>>>>>>>>
+>>>>>>>>         if (fatal_signal_pending(current))
+>>>>>>>>                 return -EINTR;
+>>>>>>>> @@ -423,7 +424,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>>>>>>>>                 return 0;
+>>>>>>>>         flush_tlb_batched_pending(mm);
+>>>>>>>>         arch_enter_lazy_mmu_mode();
+>>>>>>>> -       for (; addr < end; pte++, addr += PAGE_SIZE) {
+>>>>>>>> +       for (; addr < end; pte += nr, addr += nr * PAGE_SIZE) {
+>>>>>>>> +               nr = 1;
+>>>>>>>>                 ptent = ptep_get(pte);
+>>>>>>>>
+>>>>>>>>                 if (++batch_count == SWAP_CLUSTER_MAX) {
+>>>>>>>> @@ -447,55 +449,66 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>>>>>>>>                         continue;
+>>>>>>>>
+>>>>>>>>                 /*
+>>>>>>>> -                * Creating a THP page is expensive so split it only if we
+>>>>>>>> -                * are sure it's worth. Split it if we are only owner.
+>>>>>>>> +                * If we encounter a large folio, only split it if it is not
+>>>>>>>> +                * fully mapped within the range we are operating on. Otherwise
+>>>>>>>> +                * leave it as is so that it can be swapped out whole. If we
+>>>>>>>> +                * fail to split a folio, leave it in place and advance to the
+>>>>>>>> +                * next pte in the range.
+>>>>>>>>                  */
+>>>>>>>>                 if (folio_test_large(folio)) {
+>>>>>>>> -                       int err;
+>>>>>>>> -
+>>>>>>>> -                       if (folio_estimated_sharers(folio) > 1)
+>>>>>>>> -                               break;
+>>>>>>>> -                       if (pageout_anon_only_filter && !folio_test_anon(folio))
+>>>>>>>> -                               break;
+>>>>>>>> -                       if (!folio_trylock(folio))
+>>>>>>>> -                               break;
+>>>>>>>> -                       folio_get(folio);
+>>>>>>>> -                       arch_leave_lazy_mmu_mode();
+>>>>>>>> -                       pte_unmap_unlock(start_pte, ptl);
+>>>>>>>> -                       start_pte = NULL;
+>>>>>>>> -                       err = split_folio(folio);
+>>>>>>>> -                       folio_unlock(folio);
+>>>>>>>> -                       folio_put(folio);
+>>>>>>>> -                       if (err)
+>>>>>>>> -                               break;
+>>>>>>>> -                       start_pte = pte =
+>>>>>>>> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
+>>>>>>>> -                       if (!start_pte)
+>>>>>>>> -                               break;
+>>>>>>>> -                       arch_enter_lazy_mmu_mode();
+>>>>>>>> -                       pte--;
+>>>>>>>> -                       addr -= PAGE_SIZE;
+>>>>>>>> -                       continue;
+>>>>>>>> +                       const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
+>>>>>>>> +                                               FPB_IGNORE_SOFT_DIRTY;
+>>>>>>>> +                       int max_nr = (end - addr) / PAGE_SIZE;
+>>>>>>>> +
+>>>>>>>> +                       nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
+>>>>>>>> +                                            fpb_flags, NULL);
+>>>>>>>
+>>>>>>> I wonder if we have a quick way to avoid folio_pte_batch() if users
+>>>>>>> are doing madvise() on a portion of a large folio.
+>>>>>>
+>>>>>> Good idea. Something like this?:
+>>>>>>
+>>>>>>         if (pte_pfn(pte) == folio_pfn(folio)
+>>>>>
+>>>>> what about
+>>>>>
+>>>>> "If (pte_pfn(pte) == folio_pfn(folio) && max_nr >= nr_pages)"
+>>>>>
+>>>>>  just to account for cases where the user's end address falls within
+>>>>> the middle of a large folio?
+>>>>
+>>>> yes, even better. I'll add this for the next version.
+>>>>
+>>>>>
+>>>>>
+>>>>> BTW, another minor issue is here:
+>>>>>
+>>>>>                 if (++batch_count == SWAP_CLUSTER_MAX) {
+>>>>>                         batch_count = 0;
+>>>>>                         if (need_resched()) {
+>>>>>                                 arch_leave_lazy_mmu_mode();
+>>>>>                                 pte_unmap_unlock(start_pte, ptl);
+>>>>>                                 cond_resched();
+>>>>>                                 goto restart;
+>>>>>                         }
+>>>>>                 }
+>>>>>
+>>>>> We are increasing 1 for nr ptes, thus, we are holding PTL longer
+>>>>> than small folios case? we used to increase 1 for each PTE.
+>>>>> Does it matter?
+>>>>
+>>>> I thought about that, but the vast majority of the work is per-folio, not
+>>>> per-pte. So I concluded it would be best to continue to increment per-folio.
+>>>
+>>> Okay. The original patch commit b2f557a21bc8 ("mm/madvise: add
+>>> cond_resched() in madvise_cold_or_pageout_pte_range()")
+>>> primarily addressed the real-time wake-up latency issue. MADV_PAGEOUT
+>>> and MADV_COLD are much less critical compared
+>>> to other scenarios where operations like do_anon_page or do_swap_page
+>>> necessarily need PTL to progress. Therefore, adopting
+>>> an approach that relatively aggressively releases the PTL seems to
+>>> neither harm MADV_PAGEOUT/COLD nor disadvantage
+>>> others.
+>>>
+>>> We are slightly increasing the duration of holding the PTL due to the
+>>> iteration of folio_pte_batch() potentially taking longer than
+>>> the case of small folios, which do not require it.
+>>
+>> If we can't scan all the PTEs in a page table without dropping the PTL
+>> intermittently we have bigger problems. This all works perfectly fine in all the
+>> other PTE iterators; see zap_pte_range() for example.
 > 
-> This patch fixes the check of the value returned by
-> pcie_failed_link_retrain() in pcie_wait_for_link_delay().
+> I've no doubt about folio_pte_batch(). was just talking about the
+> original rt issue
+> it might affect.
 > 
-> Note that this bug induces abnormal timeout delays when a PCI device
-> is unplugged (around 60 seconds per bridge / secondary bus removed).
+>>
+>>> However, compared
+>>> to operations like folio_isolate_lru() and folio_deactivate(),
+>>> this increase seems negligible. Recently, we have actually removed
+>>> ptep_test_and_clear_young() for MADV_PAGEOUT,
+>>> which should also benefit real-time scenarios. Nonetheless, there is a
+>>> small risk with large folios, such as 1 MiB mTHP, where
+>>> we may need to loop 256 times in folio_pte_batch().
+>>
+>> As I understand it, RT and THP are mutually exclusive. RT can't handle the extra
+>> latencies THPs can cause in allocation path, etc. So I don't think you will see
+>> a problem here.
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 1abb47390350 ("Merge branch 'pci/enumeration'")
-> Signed-off-by: Simon Guinot <simon.guinot@seagate.com>
+> I was actually taking a different approach on the phones as obviously
+> we have some
+> UX(user-experience)/UI/audio related tasks which cannot tolerate
+> allocation latency. with
+> a TAO-similar optimization(we did it by ext_migratetype for some pageblocks), we
+> actually don't push buddy to do compaction or reclamation for forming
+> 64KiB folio.
+> We immediately fallback to small folios if a zero-latency 64KiB
+> allocation can't be
+> obtained from some kinds of pools - ext_migratetype pageblocks.
 
-Hi Simon,
+You can opt-in to avoiding latency due to compaction, etc. with various settings
+in /sys/kernel/mm/transparent_hugepage/defrag. That applies to mTHP as well. See
+Documentation/admin-guide/mm/transhuge.rst. Obviously this is not as useful as
+the TAO approach because it does nothing to avoid fragmentation in the first place.
 
-Thanks for your patch. There's, however, already a better series to fix 
-this and other related issues. Bjorn just hasn't gotten into applying them 
-yet:
+The other source of latency for THP allocation, which I believe RT doesn't like,
+is the cost of zeroing the huge page, IIRC.
 
-https://patchwork.kernel.org/project/linux-pci/list/?series=824858
-
-(I proposed a patch very similar to yours month ago, but Maciej came up 
-a better way to fix all the issues.)
-
---
- i.
-
-> ---
->  drivers/pci/pci.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index ccee56615f78..7ec91b4c5d03 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -5101,9 +5101,7 @@ static bool pcie_wait_for_link_delay(struct pci_dev *pdev, bool active,
->  		msleep(20);
->  	rc = pcie_wait_for_link_status(pdev, false, active);
->  	if (active) {
-> -		if (rc)
-> -			rc = pcie_failed_link_retrain(pdev);
-> -		if (rc)
-> +		if (rc && !pcie_failed_link_retrain(pdev))
->  			return false;
->  
->  		msleep(delay);
+>>
+>>>
+>>> I would vote for increasing 'nr' or maybe max(log2(nr), 1) rather than
+>>> 1 for two reasons:
+>>>
+>>> 1. We are not making MADV_PAGEOUT/COLD worse; in fact, we are
+>>> improving them by reducing the time taken to put the same
+>>> number of pages into the reclaim list.
+>>>
+>>> 2. MADV_PAGEOUT/COLD scenarios are not urgent compared to others that
+>>> genuinely require the PTL to progress. Moreover,
+>>> the majority of time spent on PAGEOUT is actually reclaim_pages().
+>>
+>> I understand your logic. But I'd rather optimize for fewer lock acquisitions for
+>> the !RT+THP case, since RT+THP is not supported.
 > 
+> Fair enough. I agree we can postpone this until RT and THP become an
+> available option.
+> For now, keeping this patch simpler seems to be better.
 
--- 
- i.
+OK thanks.
+
+> 
+>>
+>>>
+>>>>>
+>>>>>>                 nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
+>>>>>>                                      fpb_flags, NULL);
+>>>>>>
+>>>>>> If we are not mapping the first page of the folio, then it can't be a full
+>>>>>> mapping, so no need to call folio_pte_batch(). Just split it.
+>>>>>>
+>>>>>>>
+>>>>>>>> +
+>>>>>>>> +                       if (nr < folio_nr_pages(folio)) {
+>>>>>>>> +                               int err;
+>>>>>>>> +
+>>>>>>>> +                               if (folio_estimated_sharers(folio) > 1)
+>>>>>>>> +                                       continue;
+>>>>>>>> +                               if (pageout_anon_only_filter && !folio_test_anon(folio))
+>>>>>>>> +                                       continue;
+>>>>>>>> +                               if (!folio_trylock(folio))
+>>>>>>>> +                                       continue;
+>>>>>>>> +                               folio_get(folio);
+>>>>>>>> +                               arch_leave_lazy_mmu_mode();
+>>>>>>>> +                               pte_unmap_unlock(start_pte, ptl);
+>>>>>>>> +                               start_pte = NULL;
+>>>>>>>> +                               err = split_folio(folio);
+>>>>>>>> +                               folio_unlock(folio);
+>>>>>>>> +                               folio_put(folio);
+>>>>>>>> +                               if (err)
+>>>>>>>> +                                       continue;
+>>>>>>>> +                               start_pte = pte =
+>>>>>>>> +                                       pte_offset_map_lock(mm, pmd, addr, &ptl);
+>>>>>>>> +                               if (!start_pte)
+>>>>>>>> +                                       break;
+>>>>>>>> +                               arch_enter_lazy_mmu_mode();
+>>>>>>>> +                               nr = 0;
+>>>>>>>> +                               continue;
+>>>>>>>> +                       }
+>>>>>>>>                 }
+>>>>>>>>
+>>>>>>>>                 /*
+>>>>>>>>                  * Do not interfere with other mappings of this folio and
+>>>>>>>> -                * non-LRU folio.
+>>>>>>>> +                * non-LRU folio. If we have a large folio at this point, we
+>>>>>>>> +                * know it is fully mapped so if its mapcount is the same as its
+>>>>>>>> +                * number of pages, it must be exclusive.
+>>>>>>>>                  */
+>>>>>>>> -               if (!folio_test_lru(folio) || folio_mapcount(folio) != 1)
+>>>>>>>> +               if (!folio_test_lru(folio) ||
+>>>>>>>> +                   folio_mapcount(folio) != folio_nr_pages(folio))
+>>>>>>>>                         continue;
+>>>>>>>
+>>>>>>> This looks so perfect and is exactly what I wanted to achieve.
+>>>>>>>
+>>>>>>>>
+>>>>>>>>                 if (pageout_anon_only_filter && !folio_test_anon(folio))
+>>>>>>>>                         continue;
+>>>>>>>>
+>>>>>>>> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
+>>>>>>>> -
+>>>>>>>> -               if (!pageout && pte_young(ptent)) {
+>>>>>>>> -                       ptent = ptep_get_and_clear_full(mm, addr, pte,
+>>>>>>>> -                                                       tlb->fullmm);
+>>>>>>>> -                       ptent = pte_mkold(ptent);
+>>>>>>>> -                       set_pte_at(mm, addr, pte, ptent);
+>>>>>>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
+>>>>>>>> +               if (!pageout) {
+>>>>>>>> +                       for (; nr != 0; nr--, pte++, addr += PAGE_SIZE) {
+>>>>>>>> +                               if (ptep_test_and_clear_young(vma, addr, pte))
+>>>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
+>>>>>>>> +                       }
+>>>>>>>
+>>>>>>> This looks so smart. if it is not pageout, we have increased pte
+>>>>>>> and addr here; so nr is 0 and we don't need to increase again in
+>>>>>>> for (; addr < end; pte += nr, addr += nr * PAGE_SIZE)
+>>>>>>>
+>>>>>>> otherwise, nr won't be 0. so we will increase addr and
+>>>>>>> pte by nr.
+>>>>>>
+>>>>>> Indeed. I'm hoping that Lance is able to follow a similar pattern for
+>>>>>> madvise_free_pte_range().
+>>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>>                 }
+>>>>>>>>
+>>>>>>>>                 /*
+>>>>>>>> --
+>>>>>>>> 2.25.1
+>>>>>>>>
+>>>>>>>
+>>>>>>> Overall, LGTM,
+>>>>>>>
+>>>>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+>>>>>>
+>>>>>> Thanks!
+>>>>>>
+>>>
+>>> Thanks
+>>> Barry
+>>
 
 
