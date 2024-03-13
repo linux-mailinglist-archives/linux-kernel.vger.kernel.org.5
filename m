@@ -1,100 +1,131 @@
-Return-Path: <linux-kernel+bounces-101811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BBA187ABCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:49:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB43587AC29
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D3721C208C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:49:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A64B1F2721B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2905D72F;
-	Wed, 13 Mar 2024 16:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B681C74C0E;
+	Wed, 13 Mar 2024 16:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QcFccfP0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rSCagq5N"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7016F5D460;
-	Wed, 13 Mar 2024 16:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA34174BFC;
+	Wed, 13 Mar 2024 16:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347841; cv=none; b=jnV4OHajy6eCbSVMUr9yfzxbqb26jLmk4ymdmWl8gARcYFtKTD0lbno4NwASSvZPQ1cyLk76gOzPdhxdaO1RbI5vOWPAXq05ixJWIy/WzOzOuhrtbJpXs1TuF2pujkXrvBbECCWnMKsBMy4mHrymstqmQgotJq9Ft0UdJ9XmW0w=
+	t=1710347890; cv=none; b=EoTnvbHOXBSUFNLDVzpq5Y/UZ2mQCEyzuy0HSMDeVc07ej4pT+6HGN7J1p1Uf2xaWkHJ6WqG1uaSm0mqOyQ5WrTb5Acp2zFOs3dOen8Sw6MGv0wWLRjtI0YIXSbCxG5tkh2oE/HKrwGOUMrVCJYDNbBa7hHFrTMp4sZwicxPaTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347841; c=relaxed/simple;
-	bh=KQvW4QLqr7rEMfi/hFQOWFcSE+Lk/YdZwM/sAdZU8Ec=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l/8xOwwi9p/siTm31mLL0hG1LdBEN7KccuMveJQNh3nDjvIDMpQvjOYdLf4PFEdrd3Vxn29MNWU4d3KHkcWWQH0vJjQypzDlzuDfMF13TWAUSsTEmfoUN7HmiF+ODi2VX8qpbp0V8PgN+dm0TDnrn00QDq+a7QWNbzIAkTD/vB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QcFccfP0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80E82C43394;
-	Wed, 13 Mar 2024 16:37:19 +0000 (UTC)
+	s=arc-20240116; t=1710347890; c=relaxed/simple;
+	bh=EFcoG789kOXcScPJkWGmK574qeWaFYOL+39to9lgwH8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cLBYNyvFzRzn13BZNkjcQjMX4y4Qf5jNOnxCtFzMewWyWPxg4D4fSca9W4WuxxDhsgAZh0F/pyH8CGH//h9cwd6ON0LNO/i2Q0jeO4ITlRjMhV7Q033bFQS2HFO75mqvZAmfeXXcmEy2S2bVRbpIS4x5mUoy/I2+RoUEWzbcszQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rSCagq5N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AF0EC433B1;
+	Wed, 13 Mar 2024 16:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347841;
-	bh=KQvW4QLqr7rEMfi/hFQOWFcSE+Lk/YdZwM/sAdZU8Ec=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QcFccfP0iWyuyg7dmYSxeMED1MJH9zJ5I13qdTMpm9k+gBLWKyBb+9/mOB2KcfRh1
-	 dGhjb9W/4N+EdKcUS06eR55r9U0S8mzyfKb8b0WFux1jA6YamOwOIkVSc08H5Y0+ei
-	 5zYu2a2uLnMexXRWo1UTiwAn+gXmGL2KIdz73bUcJQ2fX61d8N7a9/by2Y7lSR4pHO
-	 QwFUlknS67JXAADwfnpFFhUX50hQhSq2q/rKT/TU++YuNB2FW18cOVde+ClYZbs2kW
-	 n40Y9/7SY5DtcSfsTJqg1PwTYbbfI0pqSU9J1AUR/mgG90A5sqpl8eknByDXrK8ooo
-	 UP3iMh+Rryv+w==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vc04_services: changen strncpy() to strscpy_pad()
-Date: Wed, 13 Mar 2024 17:36:56 +0100
-Message-Id: <20240313163712.224585-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=k20201202; t=1710347889;
+	bh=EFcoG789kOXcScPJkWGmK574qeWaFYOL+39to9lgwH8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=rSCagq5N1vxdkoHAcpUx4fL9f5fteYDaVJIGHKz02XkRXINcJ4a+c+J/XRADn9bOu
+	 yerE5j+QK0CnuLdRr9QOyHwCOs32Q6bkrd+ON9fPSNIeD1TVwpcQe9PkVnmGJbk066
+	 mmvHFow58wxRIfZwzyshJYDg+4ukf9UcUogxcMrUdg7FpIYVglgXPV5ItJY0CfIB4h
+	 qiLs3ZM9ZQY7IirNTb45P7nh3cidgErtbb2xH3R/ffMvmtw3JhrB3bC3AJsVhm7F+N
+	 7Or2Rzn2cYb/BN53Hygg+oDWRDq1W2FIsbF8egfwG9jrmgXyC5VH+wqxiK6UrO8fLC
+	 BddqX2gcLZAQA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Yongzhi Liu <hyperlyzcs@gmail.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Shannon Nelson <shannon.nelson@amd.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.6 50/60] net: pds_core: Fix possible double free in error handling path
+Date: Wed, 13 Mar 2024 12:36:57 -0400
+Message-ID: <20240313163707.615000-51-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
+References: <20240313163707.615000-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.22-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-6.6.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 6.6.22-rc1
+X-KernelTest-Deadline: 2024-03-15T16:36+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Yongzhi Liu <hyperlyzcs@gmail.com>
 
-gcc-14 warns about this strncpy() that results in a non-terminated
-string for an overflow:
+[ Upstream commit ba18deddd6d502da71fd6b6143c53042271b82bd ]
 
-In file included from include/linux/string.h:369,
-                 from drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c:20:
-In function 'strncpy',
-    inlined from 'create_component' at drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c:940:2:
-include/linux/fortify-string.h:108:33: error: '__builtin_strncpy' specified bound 128 equals destination size [-Werror=stringop-truncation]
+When auxiliary_device_add() returns error and then calls
+auxiliary_device_uninit(), Callback function pdsc_auxbus_dev_release
+calls kfree(padev) to free memory. We shouldn't call kfree(padev)
+again in the error handling path.
 
-Change it to strscpy_pad(), which produces a properly terminated and
-zero-padded string.
+Fix this by cleaning up the redundant kfree() and putting
+the error handling back to where the errors happened.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 4569cce43bc6 ("pds_core: add auxiliary_bus devices")
+Signed-off-by: Yongzhi Liu <hyperlyzcs@gmail.com>
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+Link: https://lore.kernel.org/r/20240306105714.20597-1-hyperlyzcs@gmail.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/amd/pds_core/auxbus.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-index 258aa0e37f55..6ca5797aeae5 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-@@ -937,8 +937,8 @@ static int create_component(struct vchiq_mmal_instance *instance,
- 	/* build component create message */
- 	m.h.type = MMAL_MSG_TYPE_COMPONENT_CREATE;
- 	m.u.component_create.client_component = component->client_component;
--	strncpy(m.u.component_create.name, name,
--		sizeof(m.u.component_create.name));
-+	strscpy_pad(m.u.component_create.name, name,
-+		    sizeof(m.u.component_create.name));
+diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
+index 11c23a7f3172d..fd1a5149c0031 100644
+--- a/drivers/net/ethernet/amd/pds_core/auxbus.c
++++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
+@@ -160,23 +160,19 @@ static struct pds_auxiliary_dev *pdsc_auxbus_dev_register(struct pdsc *cf,
+ 	if (err < 0) {
+ 		dev_warn(cf->dev, "auxiliary_device_init of %s failed: %pe\n",
+ 			 name, ERR_PTR(err));
+-		goto err_out;
++		kfree(padev);
++		return ERR_PTR(err);
+ 	}
  
- 	ret = send_synchronous_mmal_msg(instance, &m,
- 					sizeof(m.u.component_create),
+ 	err = auxiliary_device_add(aux_dev);
+ 	if (err) {
+ 		dev_warn(cf->dev, "auxiliary_device_add of %s failed: %pe\n",
+ 			 name, ERR_PTR(err));
+-		goto err_out_uninit;
++		auxiliary_device_uninit(aux_dev);
++		return ERR_PTR(err);
+ 	}
+ 
+ 	return padev;
+-
+-err_out_uninit:
+-	auxiliary_device_uninit(aux_dev);
+-err_out:
+-	kfree(padev);
+-	return ERR_PTR(err);
+ }
+ 
+ int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
 -- 
-2.39.2
+2.43.0
 
 
