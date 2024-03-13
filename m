@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-101928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDF287ACCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A783E87ACCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:18:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE5AF1C21626
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:17:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9E321C20A1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDEFD12E1EE;
-	Wed, 13 Mar 2024 16:41:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F0B12F586;
+	Wed, 13 Mar 2024 16:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0JX+tY9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="drnbZma7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3F812E1CE;
-	Wed, 13 Mar 2024 16:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B63512EBCE;
+	Wed, 13 Mar 2024 16:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348071; cv=none; b=jQIsARx6Zyd4ijAF75O0nACR7Go1WZvH96FZGvDA+5wAvjGY0O76dzCBDTPSB6QDJLgoja7DgEe6tYDLScZlFNDmC8Gqla2isi6skAo+KNYsLs2PZErSDyANG/Qfl3l4YXRnIItJJIemseiUu0pltNu5tkw8NFXMh6dvTNTsCU8=
+	t=1710348072; cv=none; b=OEiYoJ5SnWa5kISfkwEF+ANosGMgnCENfh9I9Fe7nX7iXPn50Q2PrStUrP4JjcBS/sqC2Cpe79X+etzRZqQxjINKDmF+d6sG5sTKxZ6d4GR5b/t5rfkKc4HTy3qYFlc3Ux29/hcq9A/hXJc5NDPPO7onf5xrTXXUuASuk6RdIEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348071; c=relaxed/simple;
-	bh=FzwpHjy6WjmSc7qANlKnuOG3K9jOS54LN9DawrGFtp4=;
+	s=arc-20240116; t=1710348072; c=relaxed/simple;
+	bh=x1MUNwlR05u6tpJDAfOSrn03LZj6AY13SgZMvD4Q3Ik=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=STdAX/HAdzCuQn3GPoW7rUDsxTi7AOzsbDOCAE4ehy7NSkWT5AcHcv6Uyxnzn1s/gZWuKunobwc33JQ9EGhjMLOnBpF6ouLRkjIdrDwygN6dC4rgAJ5DS6oLCghcAgwJdKzzsci11FRtCxcNqDyrAweVObkbiPp3FSXDMBcOFG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n0JX+tY9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC391C433F1;
-	Wed, 13 Mar 2024 16:41:09 +0000 (UTC)
+	 MIME-Version; b=W+jgLvpWQBSfYY1pyC+yOC1SDOPHP8CROlGyZzAZiiE8+0aHrE9M/uTfd7SprDePScG5H6DTiszNopJnPpm3hYYJ4YKnzIIBgvMS+8iIxJvV+V0C4Jwh3z4023N0LwiAvxn37s9ff4iBDTvwaY2A0H2ujUK68d+m64gxKfLtfwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=drnbZma7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F083C433C7;
+	Wed, 13 Mar 2024 16:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348070;
-	bh=FzwpHjy6WjmSc7qANlKnuOG3K9jOS54LN9DawrGFtp4=;
+	s=k20201202; t=1710348072;
+	bh=x1MUNwlR05u6tpJDAfOSrn03LZj6AY13SgZMvD4Q3Ik=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n0JX+tY9OM2uP0kY+45bL839vEiY/9nlKxEt2c4tw/Q2BrWtgJ29IiAJqJ9flfPlb
-	 OUref2SlzXtWw9KpEWOljjQdXa5T1oTHq+1q511fkTkFw5SHKaWaUWdweo8Yo5ABwb
-	 AsOvM4FP4JrrsUWB2BIY/vsfjAOmKI29UfLLt6ScFk9vyKr7rbu/4NSH1Ez1fonBqa
-	 P8V/XQ+diuZbwvsGQTbKkWXhUnOZbHreuY8lWH+hYrYRnb7pSA+ZiJvAzKs0QoQ70s
-	 Wznm0YGrsI6etPMrA2rNOLiyLzLU+Uh6Euoddkk8hIXog7CTVLrdyLh5JTjG35LEz9
-	 adLV+4Z7OVVuw==
+	b=drnbZma7rOp+ol13PTaPH2w1ILPHVlwGhY3Eg8rFC9YYG7sghstwTmEeYM6TjzRDW
+	 AWyRroLVOYDHvm4CSuQNzbs51XSGhwLP1sBohg23+2mPOf5l164HrT376Py3+qUs/M
+	 cJO41nj3W7T6xP5KC06cfYC1tHREuRKyemNyjAkWbzTzzpD4yXjldqPOyx9X6LSX2g
+	 ZDchwfAFDdTI+IucNU7sEwM7cd00GM0zkYPsG2/5gAEGt5T/EYDLqkSw9D5MNMG6Zv
+	 p/Mdse8QNDvnoNjR11NJB4Aev+505BhWtTlMI1r6n8X8PvYmTHVWtQVEIYjEkPgcVV
+	 E4ZhL2tB6naPg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ma Hanghong <hanghong.ma@amd.com>,
-	Mark Broadworth <mark.broadworth@amd.com>,
-	Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+Cc: Fangzhi Zuo <jerry.zuo@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 60/71] drm/amd/display: Wrong colorimetry workaround
-Date: Wed, 13 Mar 2024 12:39:46 -0400
-Message-ID: <20240313163957.615276-61-sashal@kernel.org>
+Subject: [PATCH 6.1 61/71] drm/amd/display: Fix MST Null Ptr for RV
+Date: Wed, 13 Mar 2024 12:39:47 -0400
+Message-ID: <20240313163957.615276-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
 References: <20240313163957.615276-1-sashal@kernel.org>
@@ -71,117 +70,124 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ma Hanghong <hanghong.ma@amd.com>
+From: Fangzhi Zuo <jerry.zuo@amd.com>
 
-[ Upstream commit b1a98cf89a695d36c414653634ea7ba91b6e701f ]
+[ Upstream commit e6a7df96facdcf5b1f71eb3ec26f2f9f6ad61e57 ]
 
-[Why]
-For FreeSync HDR, native color space flag in AMD VSIF(BT.709) should be
-used when intepreting content and color space flag in VSC or AVI
-infoFrame should be ignored. However, it turned out some userspace
-application still use color flag in VSC or AVI infoFrame which is
-incorrect.
+The change try to fix below error specific to RV platform:
 
-[How]
-Transfer function is used when building the VSC and AVI infoFrame. Set
-colorimetry to BT.709 when all the following match:
+BUG: kernel NULL pointer dereference, address: 0000000000000008
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 4 PID: 917 Comm: sway Not tainted 6.3.9-arch1-1 #1 124dc55df4f5272ccb409f39ef4872fc2b3376a2
+Hardware name: LENOVO 20NKS01Y00/20NKS01Y00, BIOS R12ET61W(1.31 ) 07/28/2022
+RIP: 0010:drm_dp_atomic_find_time_slots+0x5e/0x260 [drm_display_helper]
+Code: 01 00 00 48 8b 85 60 05 00 00 48 63 80 88 00 00 00 3b 43 28 0f 8d 2e 01 00 00 48 8b 53 30 48 8d 04 80 48 8d 04 c2 48 8b 40 18 <48> 8>
+RSP: 0018:ffff960cc2df77d8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff8afb87e81280 RCX: 0000000000000224
+RDX: ffff8afb9ee37c00 RSI: ffff8afb8da1a578 RDI: ffff8afb87e81280
+RBP: ffff8afb83d67000 R08: 0000000000000001 R09: ffff8afb9652f850
+R10: ffff960cc2df7908 R11: 0000000000000002 R12: 0000000000000000
+R13: ffff8afb8d7688a0 R14: ffff8afb8da1a578 R15: 0000000000000224
+FS:  00007f4dac35ce00(0000) GS:ffff8afe30b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000008 CR3: 000000010ddc6000 CR4: 00000000003506e0
+Call Trace:
+ <TASK>
+ ? __die+0x23/0x70
+ ? page_fault_oops+0x171/0x4e0
+ ? plist_add+0xbe/0x100
+ ? exc_page_fault+0x7c/0x180
+ ? asm_exc_page_fault+0x26/0x30
+ ? drm_dp_atomic_find_time_slots+0x5e/0x260 [drm_display_helper 0e67723696438d8e02b741593dd50d80b44c2026]
+ ? drm_dp_atomic_find_time_slots+0x28/0x260 [drm_display_helper 0e67723696438d8e02b741593dd50d80b44c2026]
+ compute_mst_dsc_configs_for_link+0x2ff/0xa40 [amdgpu 62e600d2a75e9158e1cd0a243bdc8e6da040c054]
+ ? fill_plane_buffer_attributes+0x419/0x510 [amdgpu 62e600d2a75e9158e1cd0a243bdc8e6da040c054]
+ compute_mst_dsc_configs_for_state+0x1e1/0x250 [amdgpu 62e600d2a75e9158e1cd0a243bdc8e6da040c054]
+ amdgpu_dm_atomic_check+0xecd/0x1190 [amdgpu 62e600d2a75e9158e1cd0a243bdc8e6da040c054]
+ drm_atomic_check_only+0x5c5/0xa40
+ drm_mode_atomic_ioctl+0x76e/0xbc0
+ ? _copy_to_user+0x25/0x30
+ ? drm_ioctl+0x296/0x4b0
+ ? __pfx_drm_mode_atomic_ioctl+0x10/0x10
+ drm_ioctl_kernel+0xcd/0x170
+ drm_ioctl+0x26d/0x4b0
+ ? __pfx_drm_mode_atomic_ioctl+0x10/0x10
+ amdgpu_drm_ioctl+0x4e/0x90 [amdgpu 62e600d2a75e9158e1cd0a243bdc8e6da040c054]
+ __x64_sys_ioctl+0x94/0xd0
+ do_syscall_64+0x60/0x90
+ ? do_syscall_64+0x6c/0x90
+ entry_SYSCALL_64_after_hwframe+0x72/0xdc
+RIP: 0033:0x7f4dad17f76f
+Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <89> c>
+RSP: 002b:00007ffd9ae859f0 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000055e255a55900 RCX: 00007f4dad17f76f
+RDX: 00007ffd9ae85a90 RSI: 00000000c03864bc RDI: 000000000000000b
+RBP: 00007ffd9ae85a90 R08: 0000000000000003 R09: 0000000000000003
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000c03864bc
+R13: 000000000000000b R14: 000055e255a7fc60 R15: 000055e255a01eb0
+ </TASK>
+Modules linked in: rfcomm snd_seq_dummy snd_hrtimer snd_seq snd_seq_device ccm cmac algif_hash algif_skcipher af_alg joydev mousedev bnep >
+ typec libphy k10temp ipmi_msghandler roles i2c_scmi acpi_cpufreq mac_hid nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_mas>
+CR2: 0000000000000008
+---[ end trace 0000000000000000 ]---
+RIP: 0010:drm_dp_atomic_find_time_slots+0x5e/0x260 [drm_display_helper]
+Code: 01 00 00 48 8b 85 60 05 00 00 48 63 80 88 00 00 00 3b 43 28 0f 8d 2e 01 00 00 48 8b 53 30 48 8d 04 80 48 8d 04 c2 48 8b 40 18 <48> 8>
+RSP: 0018:ffff960cc2df77d8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff8afb87e81280 RCX: 0000000000000224
+RDX: ffff8afb9ee37c00 RSI: ffff8afb8da1a578 RDI: ffff8afb87e81280
+RBP: ffff8afb83d67000 R08: 0000000000000001 R09: ffff8afb9652f850
+R10: ffff960cc2df7908 R11: 0000000000000002 R12: 0000000000000000
+R13: ffff8afb8d7688a0 R14: ffff8afb8da1a578 R15: 0000000000000224
+FS:  00007f4dac35ce00(0000) GS:ffff8afe30b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000008 CR3: 000000010ddc6000 CR4: 00000000003506e0
 
-1. Pixel format is YCbCr;
-2. In FreeSync 2 HDR, color is COLOR_SPACE_2020_YCBCR;
-3. Transfer function is TRANSFER_FUNC_GAMMA_22;
+With a second DP monitor connected, drm_atomic_state in dm atomic check
+sequence does not include the connector state for the old/existing/first
+DP monitor. In such case, dsc determination policy would hit a null ptr
+when it tries to iterate the old/existing stream that does not have a
+valid connector state attached to it. When that happens, dm atomic check
+should call drm_atomic_get_connector_state for a new connector state.
+Existing dm has already done that, except for RV due to it does not have
+official support of dsc where .num_dsc is not defined in dcn10 resource
+cap, that prevent from getting drm_atomic_get_connector_state called.
+So, skip dsc determination policy for ASICs that don't have DSC support.
 
-Tested-by: Mark Broadworth <mark.broadworth@amd.com>
-Reviewed-by: Krunoslav Kovac <Krunoslav.Kovac@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Ma Hanghong <hanghong.ma@amd.com>
+Cc: stable@vger.kernel.org # 6.1+
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2314
+Reviewed-by: Wayne Lin <wayne.lin@amd.com>
+Acked-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Signed-off-by: Fangzhi Zuo <jerry.zuo@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Stable-dep-of: e6a7df96facd ("drm/amd/display: Fix MST Null Ptr for RV")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c           | 5 ++++-
- drivers/gpu/drm/amd/display/dc/core/dc_resource.c           | 6 ++++++
- drivers/gpu/drm/amd/display/modules/inc/mod_info_packet.h   | 3 ++-
- .../gpu/drm/amd/display/modules/info_packet/info_packet.c   | 6 +++++-
- 4 files changed, 17 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index da16048bf1004..bea49befdcacc 100644
+index bea49befdcacc..a6c6f286a5988 100644
 --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
 +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -5938,6 +5938,7 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
- 	bool scale = dm_state ? (dm_state->scaling != RMX_OFF) : false;
- 	int mode_refresh;
- 	int preferred_refresh = 0;
-+	enum color_transfer_func tf = TRANSFER_FUNC_UNKNOWN;
- #if defined(CONFIG_DRM_AMD_DC_DCN)
- 	struct dsc_dec_dpcd_caps dsc_caps;
- #endif
-@@ -6071,7 +6072,9 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
- 			if (stream->link->dpcd_caps.dprx_feature.bits.VSC_SDP_COLORIMETRY_SUPPORTED)
- 				stream->use_vsc_sdp_for_colorimetry = true;
+@@ -10123,11 +10123,13 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
  		}
--		mod_build_vsc_infopacket(stream, &stream->vsc_infopacket, stream->output_color_space);
-+		if (stream->out_transfer_func->tf == TRANSFER_FUNCTION_GAMMA22)
-+			tf = TRANSFER_FUNC_GAMMA_22;
-+		mod_build_vsc_infopacket(stream, &stream->vsc_infopacket, stream->output_color_space, tf);
- 		aconnector->psr_skip_count = AMDGPU_DM_PSR_ENTRY_DELAY;
  
- 	}
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-index 66923f51037a3..e2f80cd0ca8cb 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-@@ -3038,6 +3038,12 @@ static void set_avi_info_frame(
- 		hdmi_info.bits.C0_C1   = COLORIMETRY_EXTENDED;
- 	}
+ #if defined(CONFIG_DRM_AMD_DC_DCN)
+-		ret = compute_mst_dsc_configs_for_state(state, dm_state->context, vars);
+-		if (ret) {
+-			DRM_DEBUG_DRIVER("compute_mst_dsc_configs_for_state() failed\n");
+-			ret = -EINVAL;
+-			goto fail;
++		if (dc_resource_is_dsc_encoding_supported(dc)) {
++			ret = compute_mst_dsc_configs_for_state(state, dm_state->context, vars);
++			if (ret) {
++				DRM_DEBUG_DRIVER("compute_mst_dsc_configs_for_state() failed\n");
++				ret = -EINVAL;
++				goto fail;
++			}
+ 		}
  
-+	if (pixel_encoding && color_space == COLOR_SPACE_2020_YCBCR &&
-+			stream->out_transfer_func->tf == TRANSFER_FUNCTION_GAMMA22) {
-+		hdmi_info.bits.EC0_EC2 = 0;
-+		hdmi_info.bits.C0_C1 = COLORIMETRY_ITU709;
-+	}
-+
- 	/* TODO: un-hardcode aspect ratio */
- 	aspect = stream->timing.aspect_ratio;
- 
-diff --git a/drivers/gpu/drm/amd/display/modules/inc/mod_info_packet.h b/drivers/gpu/drm/amd/display/modules/inc/mod_info_packet.h
-index 1d8b746b02f24..edf5845f6a1f7 100644
---- a/drivers/gpu/drm/amd/display/modules/inc/mod_info_packet.h
-+++ b/drivers/gpu/drm/amd/display/modules/inc/mod_info_packet.h
-@@ -35,7 +35,8 @@ struct mod_vrr_params;
- 
- void mod_build_vsc_infopacket(const struct dc_stream_state *stream,
- 		struct dc_info_packet *info_packet,
--		enum dc_color_space cs);
-+		enum dc_color_space cs,
-+		enum color_transfer_func tf);
- 
- void mod_build_hf_vsif_infopacket(const struct dc_stream_state *stream,
- 		struct dc_info_packet *info_packet);
-diff --git a/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c b/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
-index 27ceba9d6d658..69691058ab898 100644
---- a/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
-+++ b/drivers/gpu/drm/amd/display/modules/info_packet/info_packet.c
-@@ -132,7 +132,8 @@ enum ColorimetryYCCDP {
- 
- void mod_build_vsc_infopacket(const struct dc_stream_state *stream,
- 		struct dc_info_packet *info_packet,
--		enum dc_color_space cs)
-+		enum dc_color_space cs,
-+		enum color_transfer_func tf)
- {
- 	unsigned int vsc_packet_revision = vsc_packet_undefined;
- 	unsigned int i;
-@@ -382,6 +383,9 @@ void mod_build_vsc_infopacket(const struct dc_stream_state *stream,
- 				colorimetryFormat = ColorimetryYCC_DP_AdobeYCC;
- 			else if (cs == COLOR_SPACE_2020_YCBCR)
- 				colorimetryFormat = ColorimetryYCC_DP_ITU2020YCbCr;
-+
-+			if (cs == COLOR_SPACE_2020_YCBCR && tf == TRANSFER_FUNC_GAMMA_22)
-+				colorimetryFormat = ColorimetryYCC_DP_ITU709;
- 			break;
- 
- 		default:
+ 		ret = dm_update_mst_vcpi_slots_for_dsc(state, dm_state->context, vars);
 -- 
 2.43.0
 
