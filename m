@@ -1,94 +1,143 @@
-Return-Path: <linux-kernel+bounces-102271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFBA87B00D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:42:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B86BD87B02A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B0DB1F22DF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:42:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7979BB2903E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A8912B14C;
-	Wed, 13 Mar 2024 17:33:49 +0000 (UTC)
-Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB1612C528;
+	Wed, 13 Mar 2024 17:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i9O5fi+S"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27CF812AACA;
-	Wed, 13 Mar 2024 17:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.201.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA28264A9A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 17:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710351229; cv=none; b=V0oK+khyf3Y/PkMppEavlp8EIFnHQXLbrqtBXvreV2WeI8fGKmWXf6/hZhMYtfiDhsyWfCqY/jbepUjWyPIds4VjTNma5JX8E53Gy2PrR3xYXdHQoBbRLDIJvgavhs9cIqcR0ZMfPgTuTAi99nF51KDTSLw3EFO1Cbeo5y1fXcs=
+	t=1710351254; cv=none; b=Zg/ypXGFbxBcTd1+kXHlpxunV/h3LJbFu7XMM4TiP2BuvjvfoMmYbQwhnWBRfSZTAKn5arynZus4UgxFsku3fPOldN850X4iLQSTllIkeDlZoP/dOBKL0B2LwnxWJBLaVldh3P5rNyba0HajjQEkBfQ+/+qYYdBUg1pLmoC6kLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710351229; c=relaxed/simple;
-	bh=CfE1Qa7B1pDeJJVcPNq/eHR71qDGkenzEfw4ps12Zd4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:From:To:
-	 References:In-Reply-To; b=k4M2Klp7FhlbvgpHCNthAbe/QKjQxAsy1EWPbD/3kV7hnxQ2aWVMxWblM2EHVxNMeUEimhtsXnaDCjqukqw8tvpWk3Pa9VrZCX/9p0DIZgUQK5n02NP1dv65OEt1V0Cn+yA0wUg3bzzYSEMRF6zj4NfFEX/XyqmIMT1xayqMBZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=walle.cc; arc=none smtp.client-ip=159.69.201.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=walle.cc
-Received: from localhost (unknown [IPv6:2a02:810b:4340:6430:4685:ff:fe12:5967])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 3D3685E6;
-	Wed, 13 Mar 2024 18:33:44 +0100 (CET)
+	s=arc-20240116; t=1710351254; c=relaxed/simple;
+	bh=ppg7LETEv608reOT2Zj9XxQBtbO706NvbrnIiSiiOGM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aPfvG1bbpx9RUgOLSWHILFOSalCNs0EiWZKRNBan7ciQK2PC08xT7t12i3mKPcG3OWmFQu9jKgWzDrcF71E/UGngThGezdcVlf53rCQpCsT3bvnWrutAiL9sfCZa2ashoFSY6Z63W5PbUSIb/ITYyFFkemB7hDQlUm+lDgpgICM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i9O5fi+S; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 13 Mar 2024 10:34:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710351249;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wol+p/8LL2LDmxvbQ9tqtsHeVEpgewKE43vwTQIQciI=;
+	b=i9O5fi+SXWvJdxW5Y+LAyDuRwOq8j5mxhExsiND2GKS/paYNKMzxa8ft6bhjUogbgbM/k6
+	rNA6LgBgasXbGfI1+VcTZUQH8VlOXLZs1sFopHRnBTidvxUOvmqdZUMEdvGbeuER3AyX9J
+	3g5ZwMx3uU/mQrxbBF1Fh7x7Jgyzo+0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 1/4] mm, slab: move memcg charging to post-alloc hook
+Message-ID: <ZfHjivosHTM2xLfU@P9FQF9L96D>
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
+ <20240301-slab-memcg-v1-1-359328a46596@suse.cz>
+ <ZfCkfpogPQVMZnIG@P9FQF9L96D>
+ <bd05d62d-9f46-46b5-b444-6c4814526459@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 13 Mar 2024 18:33:43 +0100
-Message-Id: <CZSSWP7A9UM7.1R20796VHLU0F@kernel.org>
-Subject: Re: [PATCH] spi: Fix error code checking in spi_mem_exec_op()
-Cc: "Mark Brown" <broonie@kernel.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Mika Westerberg"
- <mika.westerberg@linux.intel.com>, "Chia-Lin Kao (AceLan)"
- <acelan.kao@canonical.com>, "open list" <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Florian Fainelli" <florian.fainelli@broadcom.com>,
- <linux-spi@vger.kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20240313171050.3505620-1-florian.fainelli@broadcom.com>
-In-Reply-To: <20240313171050.3505620-1-florian.fainelli@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd05d62d-9f46-46b5-b444-6c4814526459@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed Mar 13, 2024 at 6:10 PM CET, Florian Fainelli wrote:
-> After commit cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP=
- with
-> -EOPNOTSUPP"), our SPI NOR flashes would stop probing with the following
-> visible in the kernel log:
->
-> [    2.196300] brcmstb_qspi f0440920.qspi: using bspi-mspi mode
-> [    2.210295] spi-nor: probe of spi1.0 failed with error -95
->
-> It turns out that the check in spi_mem_exec_op() was changed to check
-> for -ENOTSUPP (old error code) or -EOPNOTSUPP (new error code), but this
-> means that for drivers that were converted, the second condition is now
-> true, and we stop falling through like we used to. Fix the error to
-> check for neither error being neither -ENOTSUPP *nor* -EOPNOTSUPP.
->
-> Fixes: cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP with =
--EOPNOTSUPP")
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> Change-Id: I4159811f6c582c4de2143382473d2000b8755872
+On Wed, Mar 13, 2024 at 11:55:04AM +0100, Vlastimil Babka wrote:
+> On 3/12/24 19:52, Roman Gushchin wrote:
+> > On Fri, Mar 01, 2024 at 06:07:08PM +0100, Vlastimil Babka wrote:
+> >> The MEMCG_KMEM integration with slab currently relies on two hooks
+> >> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
+> >> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
+> >> to the allocated object(s).
+> >>
+> >> As Linus pointed out, this is unnecessarily complex. Failing to charge
+> >> due to memcg limits should be rare, so we can optimistically allocate
+> >> the object(s) and do the charging together with assigning the objcg
+> >> pointer in a single post_alloc hook. In the rare case the charging
+> >> fails, we can free the object(s) back.
+> >>
+> >> This simplifies the code (no need to pass around the objcg pointer) and
+> >> potentially allows to separate charging from allocation in cases where
+> >> it's common that the allocation would be immediately freed, and the
+> >> memcg handling overhead could be saved.
+> >>
+> >> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> >> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
+> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > 
+> > Nice cleanup, Vlastimil!
+> > Couple of small nits below, but otherwise, please, add my
+> > 
+> > Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+> 
+> Thanks!
+> 
+> >>  	/*
+> >>  	 * The obtained objcg pointer is safe to use within the current scope,
+> >>  	 * defined by current task or set_active_memcg() pair.
+> >>  	 * obj_cgroup_get() is used to get a permanent reference.
+> >>  	 */
+> >> -	struct obj_cgroup *objcg = current_obj_cgroup();
+> >> +	objcg = current_obj_cgroup();
+> >>  	if (!objcg)
+> >>  		return true;
+> >>  
+> >> +	/*
+> >> +	 * slab_alloc_node() avoids the NULL check, so we might be called with a
+> >> +	 * single NULL object. kmem_cache_alloc_bulk() aborts if it can't fill
+> >> +	 * the whole requested size.
+> >> +	 * return success as there's nothing to free back
+> >> +	 */
+> >> +	if (unlikely(*p == NULL))
+> >> +		return true;
+> > 
+> > Probably better to move this check up? current_obj_cgroup() != NULL check is more
+> > expensive.
+> 
+> It probably doesn't matter in practice anyway, but my thinking was that
+> *p == NULL is so rare (the object allocation failed) it shouldn't matter
+> that we did current_obj_cgroup() uselessly in case it happens.
+> OTOH current_obj_cgroup() returning NULL is not that rare (?) so it
+> could be useful to not check *p in those cases?
 
-Ha, thank you!
-
-Reviewed-by: Michael Walle <mwalle@kernel.org>
-
-FWIW in next, there is commit
-e63aef9c9121e ("spi: spi-mem: add statistics support to ->exec_op() calls")
-that probably will conflict with this one.
-
-Also, - not for this patch - but with that logic, spi_mem_exec_op()
-might return EOPNOTSUPP *or* ENOTSUPP, even for drivers which might
-still return ENOTSUPP, because there is one condition in
-spi_mem_exec_op() which will always return EOPNOTSUPP. That is
-somewhat confusing, no?
-
--michael
+I see... Hm, I'd generally expect a speculative execution of the second check
+anyway (especially with an unlikely() hint for the first one), and because as
+you said p == NULL is almost never true, the additional cost is zero.
+But the same is true otherwise, so it really doesn't matter that much.
+Thanks for explaining your logic, it wasn't obvious to me.
 
