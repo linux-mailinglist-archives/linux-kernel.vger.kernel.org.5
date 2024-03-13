@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-101776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F423C87AB79
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:41:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 786EF87AB7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B00AB28ED5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:41:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39CEE28ED5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F216215F;
-	Wed, 13 Mar 2024 16:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6644B626A2;
+	Wed, 13 Mar 2024 16:33:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qc/Gyr1G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="djBkTlkO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC5F62140;
-	Wed, 13 Mar 2024 16:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A5662168;
+	Wed, 13 Mar 2024 16:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347604; cv=none; b=ZopC52ivXnkd+2pzVqpfy5t29vxI3JPHLtx6+AK6YUtaDoZGMaEb8S8ASrTHQMZwYJm5XyQ7G8I/x3Ro8LtzYoIQfw4QWoGeCrx6gWSdmjlyDw9c6S8LC4zhfoXQC6iiSr3QcHbjOySHVR4TDQOav7OHCmVyQ8kXrdKy3DDAkt8=
+	t=1710347605; cv=none; b=EJSOTB1RNXJUo/CAvRJBPrr/SQkfy9Q6xdY4WuGjqAP3nSWXIe9yYzPDY/sggVIhKISYunjRP0E/gslWMyM+q2SmONJ849sdc/NY7+vvDXFkzgxZAqrgHLjvT8DYiz8biQ72bU36j/dVdlFY1yY/B1cuj4uvFhTfqvDs5m6nHZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347604; c=relaxed/simple;
-	bh=UY2a1ds5pIif1hu36k0hBJ9Lt+EN8fYHOb1ZFw9/1aY=;
+	s=arc-20240116; t=1710347605; c=relaxed/simple;
+	bh=NYr2Ltq/OsfLmNs7jVfPR5NqFaGjW2qIWgPwLQAP4rY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pI9PAKg3qXgheAugfqvcR2lpcwDvKHPxRW/G7dH/0eDyX+KwWXGei4F3EEOgWgJqokboHbOp4DDThwmHlhs3SAddo3arxqOLACi/VgArp8vjGWoZZiXkLqpbIrP08r8inqVCm+p5haCpMW3WSIodnMpgRZSwehfxAOj/bxD2Vfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qc/Gyr1G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 665B2C433B1;
-	Wed, 13 Mar 2024 16:33:23 +0000 (UTC)
+	 MIME-Version; b=CT7a8vuGjjoUA+Kg/R+pqMloEbTr01dJ/T5ZPm+oOP/jd0v3JsdjtzMGdkWCGZgHNy9gO4O/Mwe4rNT/zep1V8EeWMK17iBI28MjeQ9voTnmGGsK8JzIuRK/WO38cDqQbdNilk2qgJJc+UdqryYsVaCF3iCe1b1KDS1Tb55jiyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=djBkTlkO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DF34C433C7;
+	Wed, 13 Mar 2024 16:33:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347604;
-	bh=UY2a1ds5pIif1hu36k0hBJ9Lt+EN8fYHOb1ZFw9/1aY=;
+	s=k20201202; t=1710347605;
+	bh=NYr2Ltq/OsfLmNs7jVfPR5NqFaGjW2qIWgPwLQAP4rY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qc/Gyr1G2vtskdFROmUq6JmYxKHz3HzApB5orQJCfDbatrC+Z72hb9EgOW1+4G1Oq
-	 TiT1DoFgsXNrJRuiNDn7CsZiz7gVf+pHg0TOrpbSDbzp8J2AjKkH0yXvQ1/wrymAz0
-	 Q5PuBoCcit9TGtoTuBbCdsnB0KQEKma8J/nqyDuOtjGvpJQFrpPqeWozULbCc1wXip
-	 6M0vr1Yxrlw5m3Dtp4+taQ0fW3dYG/XX/h7IFs6t8gB9uR+DPs8vZ2HM1JiKHo2AvC
-	 HTTEiBv/RATmN2bkvXSn7b90MyKBHdyVV3Q8tqyNEqNdZHsmEvgkV4UXM3+92hXpJ9
-	 oZdKfFgCtMF3g==
+	b=djBkTlkOS7bTxrISKm/MMNm9g4mzmVBYhZmMSH3Y0KXrJHCfNLaj+kpVQqpnboFE/
+	 I/A3AdsG//CNnTU9H93+yMyFjOpZvnnlb9QzwzrceBwwmsvr1vn6Ma+Ge97aqkZl+s
+	 G8CeVTOYZeYSxWV8OrC0avpgWIeukeLwtXNsKefgqXg9RHb9okjiF9zZiZkRAs8gwW
+	 kCKO7oSfQgZFKgQlrlkN1JiqBLCGLOH2t+GcraarEl/kbbDwUwAIvUNP4ixQcCN99F
+	 OjY5aPULmpSOkPXmmAn1d6M7hb5u2tLqcSeK6hzOU9x4GTrdSBkz1/Wv9iWyLU0OJ5
+	 e8pX4/YZDvV6A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	=?UTF-8?q?Tobias=20B=C3=B6hm?= <tobias@aibor.de>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
+Cc: "Tobias Jakobi (Compleo)" <tobias.jakobi.compleo@gmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 37/61] cpumap: Zero-initialise xdp_rxq_info struct before running XDP program
-Date: Wed, 13 Mar 2024 12:32:12 -0400
-Message-ID: <20240313163236.613880-38-sashal@kernel.org>
+Subject: [PATCH 6.7 38/61] net: dsa: microchip: fix register write order in ksz8_ind_write8()
+Date: Wed, 13 Mar 2024 12:32:13 -0400
+Message-ID: <20240313163236.613880-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -59,7 +59,6 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.10-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-6.7.y
@@ -70,42 +69,58 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: "Tobias Jakobi (Compleo)" <tobias.jakobi.compleo@gmail.com>
 
-[ Upstream commit 2487007aa3b9fafbd2cb14068f49791ce1d7ede5 ]
+[ Upstream commit b7fb7729c94fb2d23c79ff44f7a2da089c92d81c ]
 
-When running an XDP program that is attached to a cpumap entry, we don't
-initialise the xdp_rxq_info data structure being used in the xdp_buff
-that backs the XDP program invocation. Tobias noticed that this leads to
-random values being returned as the xdp_md->rx_queue_index value for XDP
-programs running in a cpumap.
+This bug was noticed while re-implementing parts of the kernel
+driver in userspace using spidev. The goal was to enable some
+of the errata workarounds that Microchip describes in their
+errata sheet [1].
 
-This means we're basically returning the contents of the uninitialised
-memory, which is bad. Fix this by zero-initialising the rxq data
-structure before running the XDP program.
+Both the errata sheet and the regular datasheet of e.g. the KSZ8795
+imply that you need to do this for indirect register accesses:
+- write a 16-bit value to a control register pair (this value
+  consists of the indirect register table, and the offset inside
+  the table)
+- either read or write an 8-bit value from the data storage
+  register (indicated by REG_IND_BYTE in the kernel)
 
-Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
-Reported-by: Tobias Böhm <tobias@aibor.de>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Link: https://lore.kernel.org/r/20240305213132.11955-1-toke@redhat.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+The current implementation has the order swapped. It can be
+proven, by reading back some indirect register with known content
+(the EEE register modified in ksz8_handle_global_errata() is one of
+these), that this implementation does not work.
+
+Private discussion with Oleksij Rempel of Pengutronix has revealed
+that the workaround was apparantly never tested on actual hardware.
+
+[1] https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/Errata/KSZ87xx-Errata-DS80000687C.pdf
+
+Signed-off-by: Tobias Jakobi (Compleo) <tobias.jakobi.compleo@gmail.com>
+Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Fixes: 7b6e6235b664 ("net: dsa: microchip: ksz8795: handle eee specif erratum")
+Link: https://lore.kernel.org/r/20240304154135.161332-1-tobias.jakobi.compleo@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/cpumap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/microchip/ksz8795.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 8a0bb80fe48a3..ef82ffc90cbe9 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -178,7 +178,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- 				    void **frames, int n,
- 				    struct xdp_cpumap_stats *stats)
- {
--	struct xdp_rxq_info rxq;
-+	struct xdp_rxq_info rxq = {};
- 	struct xdp_buff xdp;
- 	int i, nframes = 0;
+diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+index 4bf4d67557dcf..9048d1f196110 100644
+--- a/drivers/net/dsa/microchip/ksz8795.c
++++ b/drivers/net/dsa/microchip/ksz8795.c
+@@ -49,9 +49,9 @@ static int ksz8_ind_write8(struct ksz_device *dev, u8 table, u16 addr, u8 data)
+ 	mutex_lock(&dev->alu_mutex);
+ 
+ 	ctrl_addr = IND_ACC_TABLE(table) | addr;
+-	ret = ksz_write8(dev, regs[REG_IND_BYTE], data);
++	ret = ksz_write16(dev, regs[REG_IND_CTRL_0], ctrl_addr);
+ 	if (!ret)
+-		ret = ksz_write16(dev, regs[REG_IND_CTRL_0], ctrl_addr);
++		ret = ksz_write8(dev, regs[REG_IND_BYTE], data);
+ 
+ 	mutex_unlock(&dev->alu_mutex);
  
 -- 
 2.43.0
