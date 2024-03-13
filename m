@@ -1,128 +1,128 @@
-Return-Path: <linux-kernel+bounces-101230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE1C087A44C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:53:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F293E87A44A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA34F282977
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:53:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92BD11F2243C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D669C1B5BA;
-	Wed, 13 Mar 2024 08:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3868225DC;
+	Wed, 13 Mar 2024 08:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hM2RGjQa"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aO11pcjX"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA72D125C0;
-	Wed, 13 Mar 2024 08:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8A9225AD
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710319999; cv=none; b=dqGVFRr3hlv9ULeV0nB4BKIsHajf5Pz3TUNWw/zT+74q+2HHb9BPdPLX7dgDP8Shxqy0KcQ97VcLihTSP9omNRKaB36IMtEaAU1FAIre40rIqIcBE2dbpHDiTUWw1rWEWZ3YlGop5MHd+qwUEPBwrDk7p3KP8YoucnPIQ1N/xBo=
+	t=1710319970; cv=none; b=UHHBRvnLUjcwjds3VEBeJbKK+hbfmxMSyiv06LRNfBQRKwCN9NJbL+JGukpHf25zDQlVab8+pi3mTDHspZkWZry1H41DiSDsFw/p95YjlKJAZ1+RuEJJhK0EekjlbNfsKlA8uoFCcmsXAz2mYuaIufF/Wq0nWgsndMGw9t9J9gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710319999; c=relaxed/simple;
-	bh=a+rieUB3nCzUaqhZqKUxS2ElDgV7a9OYdadPfRgXx1I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MQV/dwNDb3hN9biJEweiAmJOCgWyLMVwr65OjUmRwujVzsJvg1VEbwjg0m87WpKaXhZgVB8p0o3T2wbehNOhjzwOAku82iHP0w3VuM3LvxmtDzqh+vpp7R9fcv6/PiqNrRnry6n7W1Tg5gIaucD/4uE0h7N2ni9Q4EazqacVv+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hM2RGjQa; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1710319970; c=relaxed/simple;
+	bh=oAAfuMysAgf/2POpxw/i0V2U97beoIz8zYh2XeHhPBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Bdgc5kHQ7EAAsiwZf20mR0OaRT6aZiq+ItgqC1w8BvE7/BUZx8PEmpRzlBJqxscbewGrMs+RQoEQjrAiKGMKMV54BcyBjEuyWGyOmXw1g/5amkWnU2Nc1XQ7y63fSPMTaW+VDosrK3AfgVWC4f+v0WOhvzKJMegNLwZEhVwApdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aO11pcjX; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56847d9b002so5173080a12.1;
-        Wed, 13 Mar 2024 01:53:17 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so4454290a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:52:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710319996; x=1710924796; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yweG9hIRFKQyYo1fdZnUFpZABdTF+shxA3D5c1UT5oQ=;
-        b=hM2RGjQanKyHGkr1y+XokjOPQHbHDFiQ5FbvTMwzCBh8+VlOmVQ6GW8gW7gp8Ivub3
-         fjK2++IzXLgvcEKCMIoPW0Hou55buVOwk8ZgqO8haxlKtsuOTHT2EzeoPrkBm5dhVJ00
-         s05PBx1eRJR9ZMCCsehPSOGFkyXqWUWurZ5RvnItAlx4CcPeSt1EVFs5aFX5t7dMkA1I
-         aMNcYNEFziWeqVb30cqOBEK+PVFZd60Y6k2neBtjB5IIy3GjLR14Tp8lvS3kSyIMYO4r
-         uxO3l7FA65AcBYQBdXuUJAkWem3xpF9NAJomKihYfInN92xt+1m9tl6qFa6zbbS4uPgw
-         3cVA==
+        d=gmail.com; s=20230601; t=1710319968; x=1710924768; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jx0AltY2QNKpaAAdAZ/gjTEC4Fp9z47uP1Pk84TlNLw=;
+        b=aO11pcjXZ3jQ1W8jYZT6/xRqOpOj9VOq4n3XaEiA7gKHdeOC7ua/vAApXuxV6r2bCO
+         zsE5zIiBbc4TFBACEQUO3CG5rMyyguIpUSf2skUP2uDCHHCoAaUBFb3uB5kX0C3qEq63
+         kK/bjHq/W7xGIWNd1CmRJT5v3Wq/qE/C68rccjyMxGj5zSPbd2BGx98Gmv7/s0CjsGu4
+         wUBBHT3Tw5Tl88BR0QiOYEbQeOp/80+yCpd0RxhYcl/YOxGKhTP6y4Qkgi+pnSax2UUJ
+         hZwrqXt9mkFMMZ/yvgaFnAgOB5glHqIz55yHCWGQ531ORBeqkPJfZTer/D8i/yB0PppV
+         mjgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710319996; x=1710924796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yweG9hIRFKQyYo1fdZnUFpZABdTF+shxA3D5c1UT5oQ=;
-        b=KKkeSIaCU8FFlB8SZ5EvUMO39ZqFzo4NcYm+WnRfw4utC55vNFEFUfu/4uYNSR7vFO
-         /+kBwdC8DBcUGaUxIXB/gI0VtdMVqujDrpKVfyLwMko3ZeJYnaLVJmi4fgwx2WzlrzUM
-         WmyNuWGScJxqFcJYQnhpmltL0FssL05Yk8E8JhE/09mUGjs2gjv4uhwryDLIXIxF12sM
-         oeH7b+k6fmatWlnhsyOOyxvfNokoiPwJiQmJzvmNsLv/HIYDirKHxeN5Z9Jg1cGDveb5
-         x4PGgBtlwlHu2yME1jlJnVzIJKCqvcEr52jhYSWtyfzwOtHxdUjzQkQYB6QWJ/jhSVa2
-         jf6g==
-X-Forwarded-Encrypted: i=1; AJvYcCXMUI2FtQtkuWdEJ6d2uDnZNCwN/411G2KzpaXoqjGGttI+6YcD3O8chNn9gIE7ci7+G7cAN2uyKhh7FAFRTpJQxCdzYe+7AfRIZAe531IU7lzT1lLrB2i1hvqNhmWCSUZuj3ulRRwvLtImkAsOGfD0ctxVZZzK5+6fisKXeujqiA5+BnGP
-X-Gm-Message-State: AOJu0YwRgRvbNTSrXPBBr5pci/lokWyKILiKCodmn0y99TqTh2SQFlPq
-	v7fKnQWJFrUYDi6HSVkV3oWAYeIuIvxDLHdegXCQELlvYsu6gEH1g004FoYC+aAtlk16JzFurRF
-	csuHvfK5b75wYeyuD8mBAsv2XxVs=
-X-Google-Smtp-Source: AGHT+IHd7J08pBgHLCf0ztlZ+XbOs+MP1ljuQd/tESI75Rxy4WQcrvNZX9ixvTusQ+jNH4dl3fGrVimzFVut5HkR/UA=
-X-Received: by 2002:a17:907:7d8f:b0:a46:3ce4:5acb with SMTP id
- oz15-20020a1709077d8f00b00a463ce45acbmr2346152ejc.75.1710319995868; Wed, 13
- Mar 2024 01:53:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710319968; x=1710924768;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jx0AltY2QNKpaAAdAZ/gjTEC4Fp9z47uP1Pk84TlNLw=;
+        b=KtLnQhxXA6ZkCEAzJEjakEsiGGPRE+E3FGfyodH3CteLBRTsjde/X4UTmACnq8kNiH
+         7H0n72l6qk5u1YcbR5iv8s2UduvtYb+9kwHkhtE4hc+ZZtGyh8cIfwI7Z/V6K+kvF1Ue
+         Ab1Ya32824hdIlo3zog3dH6GUPGOqGBVTux0YFSzPIDAKkG6G7jG389FYN3JxfJzgKx+
+         X6441j3/BOAhywaZyBElyME4IV3Ax2auEJ0mkrjNAJhE7XOImLwOABg7nFGJix7Bx+3N
+         9VVP/KUlstDKSXcG5Nck7UnQ0FKu3cznS8gEkgKAT94mJLCsyWvnKyJVc+L6d0FcFt75
+         QgOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWlMgDqDsEK/6IhsfYhzzGpmiNOaw3NJBezt4XjWteLRecWBG9y8a2oL0gInBkZngrf8A8LZMeuHeS4WfGZU/qK7dnLHJk3l4khD7n4
+X-Gm-Message-State: AOJu0Yz4KHcwGVC6r7oGQ147w3fwG1B/NoB3rSLlJxfQA4eTrGmikiDs
+	A/cFcFeXqRdtWYmvM7wU4Yd12wZJ/zNnrw9Kv6X6UllUHjiWbwR9
+X-Google-Smtp-Source: AGHT+IEwYs75iaQ7RhsHEIN/sybdvTkOf+Jn6DErYGQZv1YHreUyygA89jUbcVXZdegh3h1IxBxR5A==
+X-Received: by 2002:a05:6a20:9591:b0:1a0:cd54:6d9f with SMTP id iu17-20020a056a20959100b001a0cd546d9fmr11557984pzb.23.1710319967775;
+        Wed, 13 Mar 2024 01:52:47 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.67])
+        by smtp.gmail.com with ESMTPSA id im22-20020a170902bb1600b001ddd0eb63f4sm715917plb.105.2024.03.13.01.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 01:52:47 -0700 (PDT)
+Date: Wed, 13 Mar 2024 14:22:43 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH v5] staging: rtl8712: rename tmpVal to avg_val
+Message-ID: <ZfFpW9XvHhUkcspq@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313054409.8073-1-zhi.mao@mediatek.com>
-In-Reply-To: <20240313054409.8073-1-zhi.mao@mediatek.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 13 Mar 2024 10:52:39 +0200
-Message-ID: <CAHp75VeHVJpiaCTdQHWQocE9PFLsGhu+a2TP7VSV34i02v-ksA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] media: i2c: Add support for GC05A2 sensor
-To: Zhi Mao <zhi.mao@mediatek.com>
-Cc: mchehab@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, 
-	shengnan.wang@mediatek.com, yaya.chang@mediatek.com, 
-	Project_Global_Chrome_Upstream_Group@mediatek.com, yunkec@chromium.org, 
-	conor+dt@kernel.org, matthias.bgg@gmail.com, 
-	angelogioacchino.delregno@collabora.com, jacopo.mondi@ideasonboard.com, 
-	10572168@qq.com, hverkuil-cisco@xs4all.nl, heiko@sntech.de, 
-	jernej.skrabec@gmail.com, macromorgan@hotmail.com, linus.walleij@linaro.org, 
-	hdegoede@redhat.com, tomi.valkeinen@ideasonboard.com, 
-	gerald.loacker@wolfvision.net, bingbu.cao@intel.com, 
-	dan.scally@ideasonboard.com, linux-media@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Mar 13, 2024 at 7:54=E2=80=AFAM Zhi Mao <zhi.mao@mediatek.com> wrot=
-e:
->
-> This series adds YAML DT binding and V4L2 sub-device driver for Galaxycor=
-e's
-> GC05A2 5-megapixel 10-bit RAW CMOS 1/5" sensor, with an MIPI CSI-2 image =
-data
-> interface and the I2C control bus.
->
-> The driver is implemented with V4L2 framework.
->  - Async registered as a V4L2 sub-device.
->  - As the first component of camera system including Seninf, ISP pipeline=
-.
->  - A media entity that provides one source pad in common.
->  - Used in camera features on ChromeOS application.
->
-> Also this driver supports following features:
->  - manual exposure and analog gain control support
->  - vertical blanking control support
->  - test pattern support
->  - media controller support
->  - runtime PM support
->  - support resolution: 2592x1944@30fps, 1280x720@60fps
+Rename local variable tmpVal back to avg_val in function process_link_qual
+to give intuitive meaning to variable and match the common kernel
+coding style.
 
-Not even going to do a thorough review as one should learn on the
-previous reviews. Most of the comments that I had given to another
-driver submission are applicable here. So, waiting for v2 with all
-applicable being addressed.
+Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+---
 
---=20
-With Best Regards,
-Andy Shevchenko
+Changes in v5: changed variable name pct_val back to avg_val, as agreed by
+Julia and Dan
+Changes in v4: changed variable name avg_val to pct_val, as suggested by
+Dan
+Changes in v3: changed variable name tmpVal to avg_val
+Changes in v2: added a period in message
+
+ drivers/staging/rtl8712/rtl8712_recv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/rtl8712/rtl8712_recv.c b/drivers/staging/rtl8712/rtl8712_recv.c
+index 0b13d0a04304..1fabc5137a4c 100644
+--- a/drivers/staging/rtl8712/rtl8712_recv.c
++++ b/drivers/staging/rtl8712/rtl8712_recv.c
+@@ -861,7 +861,7 @@ static void query_rx_phy_status(struct _adapter *padapter,
+ static void process_link_qual(struct _adapter *padapter,
+ 			      union recv_frame *prframe)
+ {
+-	u32	last_evm = 0, pct_val;
++	u32	last_evm = 0, avg_val;
+ 	struct rx_pkt_attrib *pattrib;
+ 	struct smooth_rssi_data *sqd = &padapter->recvpriv.signal_qual_data;
+ 
+@@ -883,8 +883,8 @@ static void process_link_qual(struct _adapter *padapter,
+ 			sqd->index = 0;
+ 
+ 		/* <1> Showed on UI for user, in percentage. */
+-		pct_val = sqd->total_val / sqd->total_num;
+-		padapter->recvpriv.signal = (u8)pct_val;
++		avg_val = sqd->total_val / sqd->total_num;
++		padapter->recvpriv.signal = (u8)avg_val;
+ 	}
+ }
+ 
+-- 
+2.40.1
+
 
