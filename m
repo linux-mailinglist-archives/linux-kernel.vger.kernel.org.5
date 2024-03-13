@@ -1,201 +1,163 @@
-Return-Path: <linux-kernel+bounces-101306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71EE187A553
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:55:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB8487A559
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:58:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951CE1C210E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:55:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB3C1F22078
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7677D38DF7;
-	Wed, 13 Mar 2024 09:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5840D38DCC;
+	Wed, 13 Mar 2024 09:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wysOCko2"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2049.outbound.protection.outlook.com [40.107.244.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="IJcz0Z64"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40BC20B02;
-	Wed, 13 Mar 2024 09:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710323747; cv=fail; b=FSVcKiQtrrACUj+aoEXFYoYv+yDgnE0wVvdt+KXnr7dVFbA5SNP4zAsFXLk/T2JF/9IYZRBuWFQftEAL6SbodSM9PCi+ojlcyRxxD3gfe3mwatcR2a8g0SXzqRVX3b9blPW48KcvZN+X89I1/CUciBoV7rZRo0MdTqujmBLcIHQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710323747; c=relaxed/simple;
-	bh=s33k/v+Wm30obHB6Vj8dynsDZSdwhhj7wvveWRl5590=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=FIXRzUXk1e4FIYN/42EJ19hoN3suFvbaiLiFEylGNUxK3xw4XAbHylLMUHUSELzfcEOmkxk6NoaZmodt6rugfdacq+s/bHDaIUkbC61EwBkly5Qw4Q5WpdZsOkqZYW3aeCAKXVK91LWzltap+qN+hXfJNfz+UgXV85iXb095/tY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wysOCko2; arc=fail smtp.client-ip=40.107.244.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CURiuy2nDq5XZOKY+tiAhBMH6XkB+Z1wC5AzqambayF8V/2f2SgySpnvrMvpS/+Wk4Yz5iZdUvL6cFIvksOmpvvwCStaEARNuMvJj1a9gMRRJCH3TDD5+OpVf3EpP1wimq6G+yFpgVVGR5tZUEgwH2JG/DAFw0X773lerH1rmiMRgbluHUoeF5mjQCK6hOr83LqP4wgas4J7rtpzeQzxsMTIeNZavleL8IV8daAT0zEYojjMC7QPFTGdl8peIq+HNuVUhpSYanMuEsxFZOITkeU8uPuGVKUqSw1NHvMXiRPLvNz7N1syAT+VGzFhkESJZ5EhJf2Z53vXENG4Tdzwnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vaSIvjuX1uY1dr5j7vaX4VGM9ebFhj4HmhIXJ2NjAhs=;
- b=R2wmUu1k4grjVxspPt8DUfE/Qsjf4xoZcL236chkwb7JfD6aYMQQHx7ATMJPRy6R7dYEfl8XyyHJEy4cfSYb+Rj3jG2Qow/jhJJglTQt18/A71AlRHLWzsLYl9y7elkCtpCd935Mu1A3U+S1KyPwHnhfKQkJ0E8i5KhptXH6u8rxYubMqtBVUcnbO4x7d/Qoi3mVqwKlTu5s6aodbuJt+BSyG7EvFZDK/9MyREJfF1vr68+aqaR2Vs3HcGggsiy+7BYh87y4orGb6ZhJr1+3K7Y71kxa6MyHa5UdIqHxgB0Dg7gfDxYwccEsa5tz9vriU1T7PIpE9dxzXkN5mzk0mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vaSIvjuX1uY1dr5j7vaX4VGM9ebFhj4HmhIXJ2NjAhs=;
- b=wysOCko2dNvY78ywWMb8hgDTgiYB30WWZR7Y8aMh7ScbuSHGZI5ZR2TXsB+MzFP+Gkx0MIB0K3I3G7nPleyx62WyYdDctb/F1K3VqS+K3jKutZT31jvRPt8tW3/6p9sNSgLpY1tURJ4gj6Fc15izKZ62MTzsLGaletCW93OsURA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by PH0PR12MB7959.namprd12.prod.outlook.com (2603:10b6:510:282::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Wed, 13 Mar
- 2024 09:55:43 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7362.031; Wed, 13 Mar 2024
- 09:55:43 +0000
-Message-ID: <72285e50-6ffc-4f24-b97b-8c381b1ddf8e@amd.com>
-Date: Wed, 13 Mar 2024 10:55:35 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
-Content-Language: en-US
-To: David Stevens <stevensd@chromium.org>,
- Christoph Hellwig <hch@infradead.org>
-Cc: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Yu Zhang <yu.c.zhang@linux.intel.com>,
- Isaku Yamahata <isaku.yamahata@gmail.com>,
- Zhi Wang <zhi.wang.linux@gmail.com>, Maxim Levitsky <mlevitsk@redhat.com>,
- kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20240229025759.1187910-1-stevensd@google.com>
- <ZeCIX5Aw5s1L0YEh@infradead.org>
- <CAD=HUj7fT2CVXLfi5mty0rSzpG_jK9fhcKYGQnTf_H8Hg-541Q@mail.gmail.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CAD=HUj7fT2CVXLfi5mty0rSzpG_jK9fhcKYGQnTf_H8Hg-541Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR2P281CA0045.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:92::17) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443522E648;
+	Wed, 13 Mar 2024 09:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710323916; cv=none; b=EdKFTmBoZH1GKP1c6gen2yAb7cdBBnkfaTBXloRdvEI9QmxI2Mj+dU4Bd8yqsuRXRN5j9oBF/QtTNC2CtkoJWr3Tuy0U2nc/YiZfnPfKcx1IOL44iYp/rqq+kE+wmSkM7o4D1HEIG/M4WqQXZvYA8/3HZ9uaC8DPFS3AHdsr2u8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710323916; c=relaxed/simple;
+	bh=Pyr6sbLta6XA/WwgDcBt1QEtNKQ7PBqMIdcmu+Jw+vg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TP/k20CgqymVMvc1DxtDZyfQ+dxp7MPxySTZpfEd7xgVx1oVqkaNmSXRlSpN+xfLW7lYUsnYMft5HDbIEYs8odFeXXjHWllN0ULyoKe+nhKzi6pW9ZttJx9+wLCeIYA1WbQCujSceREO/vPLKA/ucHE0ptI4YhWMQK00ktVZ+5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=IJcz0Z64; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=mdJE7f/PnZ2smKA3WG77nKatpIAuwm7s48XuayRiTKA=; b=IJcz0Z64AzrH70rSuvSDklejym
+	Cw8MHGmobcoQvs0jo+e5bwJIV5ZZwfwiKPzwVpl25xkKBAzMyxuh7dGiL6iL4DCxbqDvpPV45S+9a
+	+QSFBbAW2r6WhcUGy+yGBXCaK1vtASWT7BUiQS9UtG2XMHL6t1TvlrrEP+YsCKSVWluhZh4mascDE
+	vo23qcJv19DBe0Ya5kIcLxeb6MESUPJIHQTjB4nui9GAx3inlYNSp8m/UMw9SAEBjlDBNwZjJH32Z
+	sjtwkoc5RCboV0zb/x6J5l/yvbrjYKqvO88fG5Ya9Y0o5fN8TKOOMNDGuK+tNwjdwdhi2g3g88CJY
+	XFEja1cw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43656)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rkLNL-0007WT-2D;
+	Wed, 13 Mar 2024 09:58:19 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rkLNH-0004PW-P0; Wed, 13 Mar 2024 09:58:15 +0000
+Date: Wed, 13 Mar 2024 09:58:15 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Will Deacon <will@kernel.org>
+Cc: Stefan Wiehler <stefan.wiehler@nokia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+Message-ID: <ZfF4t74OD4CgVaGV@shell.armlinux.org.uk>
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+ <bce79497-52c5-4241-aaf6-2a95dc459041@joelfernandes.org>
+ <66fdce3a-c7f6-4ef4-ab56-7c9ece0b00e2@nokia.com>
+ <ZewycILled+mZhwe@shell.armlinux.org.uk>
+ <20240312221440.GA29419@willie-the-truck>
+ <ZfDZolTDQa76hhaS@shell.armlinux.org.uk>
+ <20240313003244.GA29568@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|PH0PR12MB7959:EE_
-X-MS-Office365-Filtering-Correlation-Id: 958297a2-cca4-4905-74d9-08dc4343bf69
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	pRXqycJTw4dO1RcUIlUtUUkKcSvDkpT7ymkmdORWo0EwBh2C/4S3/MYjABbNOkaS/vhV9zLMPwtFl2SQS+XaWxwgbHa5bTPAgwwH/2+gaXj4GiLrV29L7CRKT8dj/eUhHvRHbDY6sASr4YNZzl+F4PXE6XhrX/Yey9P5pP6CvkpjcDTXd6WrfeFCw0h1dRq0UvgIXvW5aB7VIyAJUCoxlcunPIyP7eW4CmEl8zvtQyRrrhPruTw0EGi4d3s6suaFG/Yne05fTSz5dgvOKuVWvlr0Sjx+4+BYxlDUuzC9ogyE4oHkMtgMjxGs8QwICnRsfQs0xdsXZywTj/yytLmVxOOKaoBzeLLS80jFEnG4A8Gh1wfTIaTwPL4FlumoDad5SQj5NF9CaQTQuOKr9EXGFvhrSQ16ykv0XUu75PsBEAJ8Rzl7khb6b2qNeGYqyuNM62XetMwDTdQT42mMI4zbh1JROmsZlsppQRb6E0tPUW3rfOA3IIqXOvInbVD0U/6F9MuYjYMlGJF+WGUNzfZo0OOkgviviAwkmiuKOSfNIQeWo7wE/0Ad1evIfE0ojul2lWXsWLc1ZrQMAveNpSCAyhJva3JNCzwzx0WHbq/ls78XCFMbTmDbtTTvoNL5+ZxU
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SHRiaHRjTytkcWdjMXplcVg4QzNSTUVBaC9EdWJOWSswTGUvNDJ2NXA3WXZG?=
- =?utf-8?B?NlN1L0JlV1ZuZ2k3ZFlpMFRDQWdzdGR0clpCdmYvOVdtZHE2bEpHZTlLbXVJ?=
- =?utf-8?B?bUxmc0Jsdm80TEZRUUwreWtlK3NnL0NObm1WV3Fzbkk2eGx2NGlMOUZJUzY3?=
- =?utf-8?B?aG40OUNtL3dxWDRZT1UxVU9uODR2R3llUkVIZkZHYkRpc0pTcHcwLzQ0UG4x?=
- =?utf-8?B?WnpHdncxNm8rK3dpK1pUOG9MMEhTcW1hM3NncllObmI2N1JEVlJZdlRJZUYw?=
- =?utf-8?B?SHo3OFY2WXpOTFovbGpQYWFyWEpPNFE5YXV1UVd2ZmZBMnhnM0xXcTJTVnlN?=
- =?utf-8?B?YjhjQzcvVjVndUVEN2VIak5mV0RwTDlMbDNsTlkrRmhvZFVGY1pVbk02Y2xu?=
- =?utf-8?B?WVFvUmZ1NSs5K0R2MHFmNjYxZ0JsSVBMUGpBOUg1c1NzbnBXU2o5blh6cTFF?=
- =?utf-8?B?WGxQTzVBODNtelkzSWtBdjRCcGVMWlI2cm5Dd2pIK1c2Y29vTXBPbHNUSEpl?=
- =?utf-8?B?VloxR2VOQk82eTgvT3lLYVVLWTRuWEVrUXFISWJ4T0dvUi9SZEh4c0VNb2Q0?=
- =?utf-8?B?bVMrem5DZUFrUXlqdmsrK0ZUY1pDenc5amNZeHErOC9rWlF3YWU2VXl1M0VJ?=
- =?utf-8?B?R1BNaG1ocCsxSUtHOVRTMzRHRmhMMEoxa29sdTZqSXdYNW9rdmhUdUJBdzJr?=
- =?utf-8?B?VFpHSzY4SE9SaXVRY1RyZnljSFBkc0d1L3g1S2NVVkVnT2l0cHFud1JXUjYr?=
- =?utf-8?B?SlI4TDVGeGFscGx0eVNQejJtRWJiY3dmNjJlV2RxaldFS0QzMzJQTTVCZGVK?=
- =?utf-8?B?VEJGSGE1VlBZbCs3dUpnTk82N0dDOWpSYVVkNjQ0d3MzTFF4MVNwaU1aeGhq?=
- =?utf-8?B?d0p6UHl0dUZUd0FmOCt3M3kwdW02SVdHdXJYR3lNd1pLVktRTHZIa2xMZDVV?=
- =?utf-8?B?K3NteXUvNmtRNGkxU1dsZzV4Y21NMFdzSURSWlhMbmFScUlDWk9LVUVlQ0gr?=
- =?utf-8?B?ak1OTVpoTHpjYW1QOWphZFdaUWc4Zm10SjhFUm9NYWJaaVA1QSttZ1J5cERL?=
- =?utf-8?B?RGN5eEdjL29nT0VRODNPdU1ld2xLTGNYL2FaNTJkdDd0b054SXBZODVKVlF1?=
- =?utf-8?B?T1lKaWdPeDhGL0xVQXJFNUZzV3ZyRGFlVUxSa203L055b3orT2NaTnVTVXBY?=
- =?utf-8?B?TzI3SUhHYVRERmp4bVhyd081NGNGZm5DbURlejRxeU8rRTB5ZitTV1FOMmNh?=
- =?utf-8?B?bEk1SnR3c0M1Y1RaTmtwNCtlMVpYNU9Wa29kRG0vOUxaWlIwZGF3dlFtcFBy?=
- =?utf-8?B?cGpxZXFjYjJnVW9kODJLSUZ4a1huV1hBR2JQWHlFK3hzZ1JFWUZQL0xjNWUr?=
- =?utf-8?B?bDd3OWpsVk51N1VXVUxOSVcvUzNrU0ptRVBITHY4eVdHdDEzSmNwQlJnWFhS?=
- =?utf-8?B?a0RpTzdQQldvczdDeHRGeGR6am1yVzJkZnFERFRtK3BYdVBMT3FZVzBSRXVK?=
- =?utf-8?B?NWJOTnJSb1BpeTN0TmJMZ1RjN2Yyd2lUYmZ6Q1BteUNTOGVtTCtWNjNKZzFl?=
- =?utf-8?B?QllMT0pLdTFwK3VScUpaazdnRkpkZHBSYkhZZTYxZ3Q1c2Q2L0tNK3pqYUsz?=
- =?utf-8?B?TFBaK0dHS2NydEJLZ3duWUZwWFlEcHJIbGdIWFJWZG1pTVNrU0NtS3VEMEhz?=
- =?utf-8?B?VmNqejUvTnFjbEMwcXgxb0swUlVGcjBpRFVHRDJ2anBieWNoQVNjemNBWFRK?=
- =?utf-8?B?VEdZNDhDY2ZNVm5ZVjBOUHlKdHdSc09zQW1KSzhHY1lRN2poOE1wLytOSDdu?=
- =?utf-8?B?YVl3R00vS1JRTkc5UkxPTFpMRmVudi9UUXpmR1V1dEdWd21iM29FZDhZV3JH?=
- =?utf-8?B?c09pUUNSSDNvTDVtVnl4L0VwNG5KbDF4M0t0K3llUC9HcklKVnRrMm5DYzJQ?=
- =?utf-8?B?NG14Y3ErMEpmV21VaU40R2xoUXJmbE90WHpxbVFWSlB4dmEzNDFESUwwdGdE?=
- =?utf-8?B?QW9lZ29HejI5czMxT21CTTZhZStwK250QTd4UEtYbWp1WGcwQ2kvbkRodWZQ?=
- =?utf-8?B?UU9RTHhhNUNrdXg1NFFCNzJuQkFvMFR3S0MrWkZwSWdIRjd5KzIzTnROelh0?=
- =?utf-8?Q?j1L2ioa5DD5iqwy56tDJUx0Ix?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 958297a2-cca4-4905-74d9-08dc4343bf69
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 09:55:43.5386
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y6pLEz/Y8P1swhmWPx0Ho3jN4AZfbBwluX9hxWWSDAVxW3jrZCrKgIxeQ9tiEX93
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7959
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313003244.GA29568@willie-the-truck>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Am 13.03.24 um 05:55 schrieb David Stevens:
-> On Thu, Feb 29, 2024 at 10:36 PM Christoph Hellwig <hch@infradead.org> wrote:
->> On Thu, Feb 29, 2024 at 11:57:51AM +0900, David Stevens wrote:
->>> Our use case is virtio-gpu blob resources [1], which directly map host
->>> graphics buffers into the guest as "vram" for the virtio-gpu device.
->>> This feature currently does not work on systems using the amdgpu driver,
->>> as that driver allocates non-compound higher order pages via
->>> ttm_pool_alloc_page().
->> .. and just as last time around that is still the problem that needs
->> to be fixed instead of creating a monster like this to map
->> non-refcounted pages.
->>
-> Patches to amdgpu to have been NAKed [1] with the justification that
-> using non-refcounted pages is working as intended and KVM is in the
-> wrong for wanting to take references to pages mapped with VM_PFNMAP
-> [2].
->
-> The existence of the VM_PFNMAP implies that the existence of
-> non-refcounted pages is working as designed. We can argue about
-> whether or not VM_PFNMAP should exist, but until VM_PFNMAP is removed,
-> KVM should be able to handle it. Also note that this is not adding a
-> new source of non-refcounted pages, so it doesn't make removing
-> non-refcounted pages more difficult, if the kernel does decide to go
-> in that direction.
+On Wed, Mar 13, 2024 at 12:32:44AM +0000, Will Deacon wrote:
+> On Tue, Mar 12, 2024 at 10:39:30PM +0000, Russell King (Oracle) wrote:
+> > On Tue, Mar 12, 2024 at 10:14:40PM +0000, Will Deacon wrote:
+> > > On Sat, Mar 09, 2024 at 09:57:04AM +0000, Russell King (Oracle) wrote:
+> > > > On Sat, Mar 09, 2024 at 08:45:35AM +0100, Stefan Wiehler wrote:
+> > > > > diff --git a/arch/arm/mm/context.c b/arch/arm/mm/context.c
+> > > > > index 4204ffa2d104..4fc2c559f1b6 100644
+> > > > > --- a/arch/arm/mm/context.c
+> > > > > +++ b/arch/arm/mm/context.c
+> > > > > @@ -254,7 +254,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
+> > > > >             && atomic64_xchg(&per_cpu(active_asids, cpu), asid))
+> > > > >                 goto switch_mm_fastpath;
+> > > > > 
+> > > > > -       raw_spin_lock_irqsave(&cpu_asid_lock, flags);
+> > > > > +       local_irq_save(flags);
+> > > > > +       arch_spin_lock(&cpu_asid_lock.raw_lock);
+> > > > >         /* Check that our ASID belongs to the current generation. */
+> > > > >         asid = atomic64_read(&mm->context.id);
+> > > > >         if ((asid ^ atomic64_read(&asid_generation)) >> ASID_BITS) {
+> > > > > @@ -269,7 +270,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
+> > > > > 
+> > > > >         atomic64_set(&per_cpu(active_asids, cpu), asid);
+> > > > >         cpumask_set_cpu(cpu, mm_cpumask(mm));
+> > > > > -       raw_spin_unlock_irqrestore(&cpu_asid_lock, flags);
+> > > > > +       arch_spin_unlock(&cpu_asid_lock.raw_lock);
+> > > > > +       local_irq_restore(flags);
+> > > > > 
+> > > > >  switch_mm_fastpath:
+> > > > >         cpu_switch_mm(mm->pgd, mm);
+> > > > > 
+> > > > > @Russell, what do you think?
+> > > > 
+> > > > I think this is Will Deacon's code, so we ought to hear from Will...
+> > > 
+> > > Thanks for adding me in.
+> > > 
+> > > Using arch_spin_lock() really feels like a bodge to me. This code isn't
+> > > run only on the hot-unplug path, but rather this is part of switch_mm()
+> > > and we really should be able to have lockdep work properly there for
+> > > the usual case.
+> > > 
+> > > Now, do we actually need to worry about the ASID when switching to the
+> > > init_mm? I'd have thought that would be confined to global (kernel)
+> > > mappings, so I wonder whether we could avoid this slow path code
+> > > altogether like we do on arm64 in __switch_mm(). But I must confess that
+> > > I don't recall the details of the pre-LPAE MMU configuration...
+> > 
+> > As the init_mm shouldn't have any userspace mappings, isn't the ASID
+> > entirely redundant? Couldn't check_and_switch_context() just simply
+> > do the vmalloc seq check, set the reserved ASID, and then head to
+> > switch_mm_fastpath to call the mm switch code?
+> 
+> Right, that's what I was thinking too, but I have some distant memories
+> of the module space causing potential issues in some configurations. Does
+> that ring a bell with you?
 
-Well, the meaning of VM_PFNMAP is that you should not touch the 
-underlying struct page the PTE is pointing to. As far as I can see this 
-includes grabbing a reference count.
+For 32-bit non-LPAE, I can't recall any issues, nor can I think of any
+because module space is just another few entries in the L1 page tables
+below the direct mapping (which isn't a problem because we don't use
+anything in hardware to separate the kernel space from user space in
+the page tables.) TTBCR is set to 0.
 
-But that isn't really the problem here. The issue is rather that KVM 
-assumes that by grabbing a reference count to the page that the driver 
-won't change the PTE to point somewhere else.. And that is simply not true.
+For LPAE, there may be issues there because TTBR0 and TTBR1 are both
+used, and TTBCR.T1SZ is set non-zero to:
 
-So what KVM needs to do is to either have an MMU notifier installed so 
-that updates to the PTEs on the host side are reflected immediately to 
-the PTEs on the guest side.
+arch/arm/include/asm/pgtable-3level-hwdef.h:#define TTBR1_SIZE (((PAGE_OFFSET >> 30) - 1) << 16)
 
-Or (even better) you use hardware functionality like nested page tables 
-so that we don't actually need to update the guest PTEs when the host 
-PTEs change.
+so I suspect that's where the problems may lie - but then module
+mappings should also exist in init_mm (swapper_pg_dir) and should
+be global.
 
-And when you have either of those two functionalities the requirement to 
-add a long term reference to the struct page goes away completely. So 
-when this is done right you don't need to grab a reference in the first 
-place.
-
-Regards,
-Christian.
-
->
-> -David
->
-> [1] https://lore.kernel.org/lkml/8230a356-be38-f228-4a8e-95124e8e8db6@amd.com/
-> [2] https://lore.kernel.org/lkml/594f1013-b925-3c75-be61-2d649f5ca54e@amd.com/
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
