@@ -1,100 +1,107 @@
-Return-Path: <linux-kernel+bounces-102048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507DA87ADF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:46:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA7187ADD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 068761F2BAD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:46:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D89B1C22AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF79153BFF;
-	Wed, 13 Mar 2024 16:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2162151CCF;
+	Wed, 13 Mar 2024 16:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cDqMVQ3g"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwUoKOhd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0521534E7;
-	Wed, 13 Mar 2024 16:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAF1151CE9;
+	Wed, 13 Mar 2024 16:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348428; cv=none; b=h/bjZ1tzIejTHuv8qlgWaiCrrsrTbQyF6TYXOnCZHubx1WsmsfZgDW9X+9wYS9bw+VqjquRCrCY+R3UhazsPTv0jeojUQ8rcafXunX20buzuq2YFfYtleMrF6nGsXCBzmoVLZDFCcmD9H0z4sXGgXzfzp3l7ZAnfdk9l7GHQXpU=
+	t=1710348421; cv=none; b=s64O75QPd68f21ZvAbgDEgdVJ7Pk0PK7iNJ5I0BYqAH/iwWPVEh20jlRkVe7m2PtwxV3RJV2d0tCQ3p1K+fxpdVy41bXaAUagRe/YRD3b2uRZRitYwPHb0yEuA+PyKEpxWDL4mNqQjeETrEdQhnnFGBMIty/9DWgDySwjLvRrMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348428; c=relaxed/simple;
-	bh=SOZ7SCjHT+oG5ANBLg9w5L3CwtTlMcNg+9Ltr/PWxwE=;
+	s=arc-20240116; t=1710348421; c=relaxed/simple;
+	bh=+jwr+E1e7wjKU4lCYHP4hUUWX5Os8W7OxhqpQQ3L72Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fIDhA5CfKc0sRrfDnRDFxgcRyPSxaZ4C6PphjCeUNnZrXdSz6A2+aWzRnD5jNXBXkb7Mzs1ybIfH4JSOFr9lp5CCjFqgdZMYcrVEfFa00scOPRxyxMhS92epFSRMwWpdYdnBoaMGx/uH19Wc2/F3ik5e8TzU+7iPIz+U/aAwnjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cDqMVQ3g; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8CA6A40E0028;
-	Wed, 13 Mar 2024 16:47:02 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id kpc4JpKKqXNJ; Wed, 13 Mar 2024 16:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1710348420; bh=fUn8lg6sJ972ZUHX8qbessMcsE7w3gCgvfzJZ7LzHsI=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=Aslq9DYmAjHHDgeuooNKvxcsHqgEX90luWZgJBDkxeMGLNR3TP7MTmBH+55L3Rw0k8q8GI4blFANCoAakcm3qtNo1HqsmxScPWg1y7+3dvTgDJ0H1rKHGAVjVVauDnEK7BLvpwqTGeJRNnzQP/Ax8cfypggY5HF3CKc3LyF/q2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwUoKOhd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F29FEC433B1;
+	Wed, 13 Mar 2024 16:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710348420;
+	bh=+jwr+E1e7wjKU4lCYHP4hUUWX5Os8W7OxhqpQQ3L72Q=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cDqMVQ3gQ38ZcicNunGtnHy/3owSTvOBhB3f2oG7xn/z2RBj2BJQgxlyxwFS1/kI4
-	 x/yM5Xp6+MiW1fAb1ObkUx1xY9dV2smzX07a3HjVQbMko4yn4Nbgf5a1cCuaiFmUYn
-	 6nlg67x6hAIt1JMyLMD0BLZHist5wVADUAbztj1filjxChhy6o3CplVlDGuOrr1Ojm
-	 puDFNOxkIcbJnre3/aqTJMZlsiOGKitE3k2k6Wu5COi7oSTjf47xgRCCYbAQtL4tgb
-	 U4EbP8WlH/xdRA3Qh0LcoSZqYnFVedW+uksihkFmUQSM0mupdqkeg0tFw7ea4taWTM
-	 mPzyBCkOXvvSivjIs0EsvN51jXcMaJmzibBjuKBS2fsg8TDEAB5yDqjWOn1fGXG5XL
-	 Ep2aLXE0CcAaYAtSLqtsWUoHB5CeehXjZ8+hnjZEmglR4go42utV0GbleOD2vrshw+
-	 eI1ae/MXS+kKulhxN81VwbZRhvaxLBAquZKI+YhLHcPX9Gb2CkwqxIvMdYCy5b32ZR
-	 /ydJ5UVim4pEJA/oMoTdSJ83t3Kv/rLa2r9fuEZnZGrAV1dn5iwX+7di5TXV+7r4Hq
-	 9pkQoeL2UjHuPnM3hwBkTUUkQvQnc4qa2u5kfh2ubZ6ad4er6rKm/347WbtQ1OPiVM
-	 qco6rckr1kJoXBXzHEmE/PZM=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 59EFD40E0196;
-	Wed, 13 Mar 2024 16:46:49 +0000 (UTC)
-Date: Wed, 13 Mar 2024 17:46:44 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Sam Sun <samsun1006219@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	"xrivendell7@gmail.com" <xrivendell7@gmail.com>,
-	syzkaller@googlegroups.com, linux-edac@vger.kernel.org,
-	hpa@zytor.com, x86@kernel.org, dave.hansen@linux.intel.com,
-	mingo@redhat.com, tglx@linutronix.de, tony.luck@intel.com
-Subject: Re: [Bug] WARNING: ODEBUG bug in __mcheck_cpu_init_timer
-Message-ID: <20240313164644.GDZfHYdAORMso4b-Xx@fat_crate.local>
-References: <CAEkJfYNiENwQY8yV1LYJ9LjJs+x_-PqMv98gKig55=2vbzffRw@mail.gmail.com>
- <20240313145218.GCZfG9ovrh2ukJ9uAO@fat_crate.local>
- <CAEkJfYPzStpPfnNkojU-KvVP2GLxqPOiZ3=1DViPTyNUUQ0-1w@mail.gmail.com>
+	b=dwUoKOhdXe4FseNs+S7XWJGKhWSMSKg7T/KSJliml6a0KSPPDHP7JLVnGGY+t18xG
+	 1Fdb+vsEd5iGgmcVZrnwas/Zjjq/d3rvy0Nl1YhGDegsGFZC1lFOW9jfwyq+1gF/XO
+	 /S25fZwxkyHDfn8qKuz2y8bimUIJ5OGD5fv09tscft7nbTLnqVV7v2RQyQ/NMeZ0QF
+	 yiT4RT4B5mAnJIYEoB+BRiRNMgek46pO6JsFnFvB00nJDwpbsT1l39f4qLW/Lu+dLR
+	 tYEyGDz3oh0mwmd4EAoTyLAlw46AEJ4v7I+hlZaqF5ssJ+TDuz4aFkvoYjWtAjk8Ig
+	 EcqXaww2UUF7w==
+Date: Wed, 13 Mar 2024 16:46:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Marek Vasut <marex@denx.de>,
+	Jagan Teki <jagan@amarulasolutions.com>,
+	Maxime Ripard <maxime@cerno.tech>,
+	Robert Foss <robert.foss@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 5.15 73/76] regmap: Add bulk read/write callbacks into
+ regmap_config
+Message-ID: <8bcd85fb-401f-4a3b-b10e-633a0478c0da@sirena.org.uk>
+References: <20240313164223.615640-1-sashal@kernel.org>
+ <20240313164223.615640-74-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3+1Eqv4y7vYH/W56"
 Content-Disposition: inline
-In-Reply-To: <CAEkJfYPzStpPfnNkojU-KvVP2GLxqPOiZ3=1DViPTyNUUQ0-1w@mail.gmail.com>
+In-Reply-To: <20240313164223.615640-74-sashal@kernel.org>
+X-Cookie: It's later than you think.
 
-On Thu, Mar 14, 2024 at 12:32:20AM +0800, Sam Sun wrote:
-> I applied this patch on the latest kernel mainline commit, and the C
-> repro could not trigger this bug. I think this bug is fixed by this
-> patch.
 
-Yap, it doesn't trigger anymore here too with your reproducer but thanks
-for confirming. I'll queue it after the merge window is over.
+--3+1Eqv4y7vYH/W56
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thx.
+On Wed, Mar 13, 2024 at 12:42:20PM -0400, Sasha Levin wrote:
+> From: Marek Vasut <marex@denx.de>
+>=20
+> [ Upstream commit d77e745613680c54708470402e2b623dcd769681 ]
+>=20
+> Currently the regmap_config structure only allows the user to implement
+> single element register read/write using .reg_read/.reg_write callbacks.
+> The regmap_bus already implements bulk counterparts of both, and is being
+> misused as a workaround for the missing bulk read/write callbacks in
+> regmap_config by a couple of drivers. To stop this misuse, add the bulk
+> read/write callbacks to regmap_config and call them from the regmap core
+> code.
 
--- 
-Regards/Gruss,
-    Boris.
+This fairly clearly new functionality.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--3+1Eqv4y7vYH/W56
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXx2H8ACgkQJNaLcl1U
+h9AqFQf/WwV/cfcvn0xEPiR1Iu4kGZrxV+FEqIJx2I/a9DFvGuJ4MZVtStbeJSE2
+wbbtPFkwrF0CStlUJ6YduFszBdZKVWhYa9WX47VgNnZTuJYRV05P1aus5tdxpBWz
+yWr0wux8hXOcMppDU4j8IrqTAmC5viR8bE45PhoHPjBMgpDMmag5kDV8Vjz13wlj
+vQDuDIwunF38LGlWzkZHTZqBSNLmOcVmh/Odf2hEz2gOWlyK0vSS2U+HI+Xc95yP
+dpC386MsF1DYwGpJdwKKUK6OBFHvs7S9Ij/5/M4M4zpdPgCsrbEYkHaSTMzqYOq4
+zKbh6AXrmFb4x52I16OI9saNlxCxqg==
+=EWp9
+-----END PGP SIGNATURE-----
+
+--3+1Eqv4y7vYH/W56--
 
