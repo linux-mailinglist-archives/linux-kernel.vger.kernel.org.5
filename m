@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-101747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 102EF87AB3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:34:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E3AA87AB40
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 423971C2107F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:34:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2C251F2176D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79BB24C61B;
-	Wed, 13 Mar 2024 16:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03DE34C62B;
+	Wed, 13 Mar 2024 16:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLuuTpmq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFniQbpM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93EA56B7F;
-	Wed, 13 Mar 2024 16:32:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465B65914B;
+	Wed, 13 Mar 2024 16:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347568; cv=none; b=dCILSCHHC4yqRn4HmIrlJifbz9l90xHQ97swsrQrwJzwkg06fKDw1SBivmeFtoJs3NIPBwI2iN7xGhLW/52I3QA5x7MTn8D7HCSd7hibS+1e8Q9bwxYtiEr6FM7ybQ+nktu2sGkQLXhnrrZF2T9Jf1KDosgEixYoEPJOqo1GwGU=
+	t=1710347570; cv=none; b=FSU6Mv/7G7J595dozJOYzQP+bHcG/Y8trS1Tb8zFlLYayWeW5iQQTJ6nsrTlRpzncYoXXIqyk8iPhfvIHNlWoE5roG00IJBgCFwyVwl6BO9nDLlCstoUfsLbk6xswpipgzSMmxJggZ5H3cenR4KtXeP0VXytdXiJtDCfy8bV688=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347568; c=relaxed/simple;
-	bh=7S7HCJW9mvbBTxHyz3ldQDTtoUXg6JT0YPDvWToakec=;
+	s=arc-20240116; t=1710347570; c=relaxed/simple;
+	bh=mER1yfa1dH9o/9mw+NAa4OwuQlcgdGWtxZnPh2QN7k0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k+FZ6GfvK6fq/UBqLdRGqFykFFRgoe8LU5Svonp8uJhYwuxaldunvwgNq5KSl4QYhdCajVDQdIJaSAlvND1uT2dNjTDGyzEF0yx1u3uti9vgU6wmW9VIpEb8ug7+7q5VOlwim2H7v3xNk5xTPgMxo4cImwdpiph1WvEMT0kiaaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dLuuTpmq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAA1DC433F1;
-	Wed, 13 Mar 2024 16:32:47 +0000 (UTC)
+	 MIME-Version; b=H64VD8WqH8qFisSBOGJ9hiButr05T9+AjOiOUqHCvd/FRXuCaGHnMqwSPG+JBRLO3yCjwO3d3SZl1tOA5fx2PhMRwJuB+rMtYRrvrqeFmnWqdQQdjZWVgZBeA9pWlhQmcKHv3rL1Gurkm6g1vsFTbID6k7QsD5jpMSFLQ2N9kIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFniQbpM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E53B0C433F1;
+	Wed, 13 Mar 2024 16:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347568;
-	bh=7S7HCJW9mvbBTxHyz3ldQDTtoUXg6JT0YPDvWToakec=;
+	s=k20201202; t=1710347569;
+	bh=mER1yfa1dH9o/9mw+NAa4OwuQlcgdGWtxZnPh2QN7k0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dLuuTpmqaNfwVBZ7xKyfYx9CtVriA/dzBwonN1Oh6j5+6tbmbMZmRgGGiLDL1mJ2m
-	 8sKEw9B34a6b2EVL3kSb0YnqkObPYSVrp34DPjNdqrgtFBLtSEQYQAjk7R3iv2PtOK
-	 fnfSf9cxITd0j08bCUpEkI+nMHEmGg2Eo6mECnf2ttYat7QJ/AcjB9tbxQNboSY1GK
-	 ceWkLywkeCPdOByEbRBLmUqv6Zu7doKwWKBuP1kv7oKTlGK+uHWIqw+t5pSatw8ytv
-	 DOzNZnA8hyEAiA7Wx3KrAWcTO3zs/YBRHrlL9c+qq2fqcJfYOnUs1Wk9V43qlBiDHm
-	 UHr/RzamSM5/w==
+	b=HFniQbpMy28SxrVYYCxhFkXOrTh3sFNnzgZI7d3H2qF8hpLEDHDFdLNtPlAYB/Ehs
+	 vQe9Ov1Qj5Rc9gfSKg5oYISJMtUZ1XgtcxISIwH3P9a+j9znRg9gtX1B7YG6XSi5pS
+	 X11+Pv1St36SydMMIhQ3mNy9QjsBanOTgzXAaiWvpWrDHRsjTuu4SF4TY5hZ8HkdRX
+	 ozjuFbkFyFcSc2nJ2V9eaKtyOoqge6l7ooK2dPav4b4CfxBnR2w4X3NeOz4c+emup1
+	 VnvIWgH9uCu56XYAGFU0hcA01q/tTmOOSE+LokeMFUU4qtaxrNj2rUlrAUgeQJeF+J
+	 EBPk6Sx8xHDEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Guillaume Nault <gnault@redhat.com>,
+Cc: Leon Romanovsky <leonro@nvidia.com>,
 	Steffen Klassert <steffen.klassert@secunet.com>,
+	Mike Yu <yumike@google.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 08/61] xfrm: Clear low order bits of ->flowi4_tos in decode_session4().
-Date: Wed, 13 Mar 2024 12:31:43 -0400
-Message-ID: <20240313163236.613880-9-sashal@kernel.org>
+Subject: [PATCH 6.7 09/61] xfrm: Pass UDP encapsulation in TX packet offload
+Date: Wed, 13 Mar 2024 12:31:44 -0400
+Message-ID: <20240313163236.613880-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -68,40 +70,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Guillaume Nault <gnault@redhat.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 1982a2a02c9197436d4a8ea12f66bafab53f16a0 ]
+[ Upstream commit 983a73da1f996faee9997149eb05b12fa7bd8cbf ]
 
-Commit 23e7b1bfed61 ("xfrm: Don't accidentally set RTO_ONLINK in
-decode_session4()") fixed a problem where decode_session4() could
-erroneously set the RTO_ONLINK flag for IPv4 route lookups. This
-problem was reintroduced when decode_session4() was modified to
-use the flow dissector.
+In addition to citied commit in Fixes line, allow UDP encapsulation in
+TX path too.
 
-Fix this by clearing again the two low order bits of ->flowi4_tos.
-Found by code inspection, compile tested only.
-
-Fixes: 7a0207094f1b ("xfrm: policy: replace session decode with flow dissector")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Fixes: 89edf40220be ("xfrm: Support UDP encapsulation in packet offload mode")
+CC: Steffen Klassert <steffen.klassert@secunet.com>
+Reported-by: Mike Yu <yumike@google.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_policy.c | 2 +-
+ net/xfrm/xfrm_device.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index c13dc3ef79107..e69d588caa0c6 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -3416,7 +3416,7 @@ decode_session4(const struct xfrm_flow_keys *flkeys, struct flowi *fl, bool reve
- 	}
+diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
+index 3784534c91855..653e51ae39648 100644
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -407,7 +407,7 @@ bool xfrm_dev_offload_ok(struct sk_buff *skb, struct xfrm_state *x)
+ 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
+ 	struct net_device *dev = x->xso.dev;
  
- 	fl4->flowi4_proto = flkeys->basic.ip_proto;
--	fl4->flowi4_tos = flkeys->ip.tos;
-+	fl4->flowi4_tos = flkeys->ip.tos & ~INET_ECN_MASK;
- }
+-	if (!x->type_offload || x->encap)
++	if (!x->type_offload)
+ 		return false;
  
- #if IS_ENABLED(CONFIG_IPV6)
+ 	if (x->xso.type == XFRM_DEV_OFFLOAD_PACKET ||
 -- 
 2.43.0
 
