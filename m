@@ -1,106 +1,125 @@
-Return-Path: <linux-kernel+bounces-101445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1038A87A729
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:41:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4E587A72B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 12:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A5371C220F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:41:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1E2EB22F96
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 11:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4563F8FB;
-	Wed, 13 Mar 2024 11:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XomIDXYv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADF13F8FF;
+	Wed, 13 Mar 2024 11:43:20 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684F83D0DD
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4533F8E2
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710330109; cv=none; b=p3knTxDxJcbZT7Qaka9uiNjpqODjWJMgS//YBIUy00MtubCRlF00mYWJd2ef1f56nS0UH0/mBVqR13+z+fqpsTjRVWf0BlIKntfVoYWENX9ZzFVWKhkSizqNa4kC0uVEK2YV09vGqtlzijNFpXUSp4aW0YIukHxw+OyIIfgZnQM=
+	t=1710330200; cv=none; b=djvdvBRqeGO8FsQkMRdr/ikdvHfLm4kaICRu8qdafsqZOP9rNlxq4ykHFWCKy/W4EH7b/HIwwUNfVhAHRF9/AyKSiucdi0rflHQn2tOdDcC+PGfVv75O74L7upf3Pl/q9tLv/KGrWNT3gy3dkVsSL0exewmfQJG0glxVTwBetKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710330109; c=relaxed/simple;
-	bh=EP+UBSw06WyqmjbcslJ6kU71eJXTJxmwhp+wzAOZGc8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GCvxHpNRFyCFnfoumjurq9ofLm1xeiA2odsU0/rlYDgUiqiLK44YRKZ7CidbEBswUsYS7xSijJqtp9JziiQV8lXNhgcZfdR6A58qOf6TRQmtpOoJID8yIlCK/3Roy0K/KMP+5SJrD3bHlbxH3VbsjAucrQTwvnhxf3qD/AmGwcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XomIDXYv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710330105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=phzUMfeINh6dbuyeZg9sPFnUlzhipZ5AmTkMI6GYbLo=;
-	b=XomIDXYvGcOkFQXTV8Exls+y4/VTypDEyXyxt0LP8LcRV8dCk9rlXdyw+ypzdlI2RiUE1H
-	fgPu/Q8BxyyAJC1lfXiehq07591Rk32JVYHpH8f6jIOABmChNILg80Zfk9zSnZ51Heu6sw
-	FCRmuC6/rwjZXN1OxY5k/JTWSGKH4Yk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-313-yCpaULeNMjO4ZqHSiwzyAA-1; Wed, 13 Mar 2024 07:41:40 -0400
-X-MC-Unique: yCpaULeNMjO4ZqHSiwzyAA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	s=arc-20240116; t=1710330200; c=relaxed/simple;
+	bh=ad8rTVaHct8urLSLHqtatS9UKpznhESWblE/bc49dsk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cS1nPOp9HnA7a0lTAlLBfsyr8We/7ZoKDUsKFmSo3ofgn4zajwdiYkLFNjhJNVBwfoUsUmx1DvCIfU/YSbEWy0RPdyCjpOXsxzYLLTfl59mP/tptlXfQpRypWTbLLr017ncmerVe6ilcGJvDMHEHZCpLi52KykNgg9nwMJTNzFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rkN0m-00052U-PD; Wed, 13 Mar 2024 12:43:08 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rkN0l-0066XC-Ph; Wed, 13 Mar 2024 12:43:07 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8039A89C56B;
-	Wed, 13 Mar 2024 11:41:39 +0000 (UTC)
-Received: from kaapi.redhat.com (unknown [10.67.24.5])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id A7339C44421;
-	Wed, 13 Mar 2024 11:41:33 +0000 (UTC)
-From: Prasad Pandit <ppandit@redhat.com>
-To: dan.carpenter@linaro.org
-Cc: florian.fainelli@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com,
-	linux-arm-kernel@lists.infradead.org,
-	gregkh@linuxfoundation.org,
-	rjui@broadcom.com,
-	sbranden@broadcom.com,
-	linux-staging@lists.linux.dev,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Prasad Pandit <pjp@fedoraproject.org>
-Subject: [PATCH v3] staging: bcm2835-audio: add terminating new line to Kconfig
-Date: Wed, 13 Mar 2024 17:11:26 +0530
-Message-ID: <20240313114126.1418453-1-ppandit@redhat.com>
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 7371E2A4103;
+	Wed, 13 Mar 2024 11:43:07 +0000 (UTC)
+Date: Wed, 13 Mar 2024 12:43:06 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Daniel Smolik <smolik@mydatex.cz>
+Cc: 
+	"Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Regressions can bus with MCP2515 on sama5d3 connected over SPI
+ stop working on kernel > 5.4.271
+Message-ID: <20240313-overload-eloquence-3e504ee0d00b-mkl@pengutronix.de>
+References: <2ede8f49-41f8-4d9a-83e4-ea5d4d1677fe@mydatex.cz>
+ <a2e64be0-e07d-4c55-aba7-87c7e4c876e0@leemhuis.info>
+ <734cf096-3769-4610-b72f-394c31a8d942@mydatex.cz>
+ <91d8a6b6-6186-4aa0-8462-56b4751854e9@leemhuis.info>
+ <6918321b-038d-40b9-8149-d535bf9d3d52@mydatex.cz>
+ <5f69d6ee-a07a-42a9-a238-7dbe1f82cc3f@mydatex.cz>
+ <3e46d70b-196d-45c7-bfdf-869c78cdc81f@leemhuis.info>
+ <20240313-polio-jinx-bc5fd5df7c06-mkl@pengutronix.de>
+ <b6c9b015-86bc-475b-a190-e35fa76c1ceb@mydatex.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="e3a7udsf47bt22ng"
+Content-Disposition: inline
+In-Reply-To: <b6c9b015-86bc-475b-a190-e35fa76c1ceb@mydatex.cz>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-From: Prasad Pandit <pjp@fedoraproject.org>
 
-Add terminating new line to the Kconfig file. It helps
-Kconfig parsers to read file without error.
+--e3a7udsf47bt22ng
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
----
- drivers/staging/vc04_services/bcm2835-audio/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 13.03.2024 12:22:25, Daniel Smolik wrote:
+> this is my first bisection please be lenient :-) Threse is a result:
+>=20
+> marvin@marvin:/usr/src/linux$ git bisect good
+> Bisecting: 0 revisions left to test after this (roughly 0 steps)
+> [52f96cd135b160d44db4cb62a5b614b3bca20fbc] net: stmmac: xgmac: Remove
+> uneeded computation for RFA/RFD
 
-v3: fix typo and note about parsing errors.
-  -> https://lore.kernel.org/lkml/CAE8KmOzcD+__7xdC7tegbHO9HEP48s7=reA4j-tvqVDwzHr+8Q@mail.gmail.com/T/#t
+I think you still miss a bisection step.
 
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/Kconfig b/drivers/staging/vc04_services/bcm2835-audio/Kconfig
-index 7f22f6c85067..7fbb29d3c34d 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/Kconfig
-+++ b/drivers/staging/vc04_services/bcm2835-audio/Kconfig
-@@ -8,4 +8,4 @@ config SND_BCM2835
- 	  Say Y or M if you want to support BCM2835 built in audio.
- 	  This driver handles both 3.5mm and HDMI audio, by leveraging
- 	  the VCHIQ messaging interface between the kernel and the firmware
--	  running on VideoCore.
-\ No newline at end of file
-+	  running on VideoCore.
--- 
-2.44.0
+The commit 52f96cd135b1 ("net: stmmac: xgmac: Remove uneeded computation
+for RFA/RFD") is unrelated to CAN problem you described. It's in the
+stmmac Ethernet driver.
 
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--e3a7udsf47bt22ng
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXxkUgACgkQKDiiPnot
+vG8JGAf+LdzIqEkeVo4hYrxhHNp/mqLZ9kikzdmydSKIQdZjQT0MNca5MVLa/Uan
+hcGTGeiSQoOa2MUYAZsUdUY/G4mSddDjNzJ5J/FtGrrrfnPcaYzu+OUeR5Rk+iAu
+JzUSd15Bf9NLaTTs9D8+rw50WJq4Irqc9rmek54lOx2QiCveBEbH9H7KLsXpdkVW
+jG31+k/0VICxHJQbnBtnE6t2ZJMNP9VKqx7YwM1/ue3e29X+DNIXpj+BB8rRrGtg
+mawWyA+wyartjJYuMnTbUiwopp55QeQfhRppJ/hKjKUmcIQPFbYOMtxOYl5ktSPT
+3oeQfU2ngbn1qQA2sO5xmI29es8j/w==
+=Dqj4
+-----END PGP SIGNATURE-----
+
+--e3a7udsf47bt22ng--
 
