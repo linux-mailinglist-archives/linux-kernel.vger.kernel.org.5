@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-101797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CF0787ABB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:46:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DA8387ABB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:46:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B81B1C21C9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:46:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9935CB21BD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DC6679E0;
-	Wed, 13 Mar 2024 16:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A03B55C0A;
+	Wed, 13 Mar 2024 16:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qBfCKnqv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxATb1Hk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988D166B58;
-	Wed, 13 Mar 2024 16:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA7B679E5;
+	Wed, 13 Mar 2024 16:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347652; cv=none; b=lXDEQUjx2Q/EGaIWhNZM75seL18UOlSzFzYIYQNo63Xp45evQ6Wn9PP/nJuTOw5M+mP0m0SjVbsS8BVKlbwecug99QYsiT7s0O10l2lLBN7or3rMNK66AbaHe0N5ta6iRjdHa7xMRk/Llb2fP1pOZ2fTzpsmVVjqNnOP5Ih2wts=
+	t=1710347653; cv=none; b=p0WBZ2eBQH3bgJSWVsHgah/8dKnBYA93oWC7pq/7O6bsl4YQKyYFSCE/9/uj/L8yvZc9HMn2jeT92j9dCQ6ywrv5b/km6aIJZ5fEb9TfqAV7qFHtMHGPlhE+Jd3HQgeE/mjZlkunz2ye8qASVihRfSVUIgoXhzkVLkLNB0BwloE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347652; c=relaxed/simple;
-	bh=+zpnvbgbJoMuGiubEtCUgstrHKkcjtrnNQjXlz0JhXQ=;
+	s=arc-20240116; t=1710347653; c=relaxed/simple;
+	bh=ZSH7c0tRBNY1VUnSgllirALDthxqB+zfxFAgGUjdakE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n2BkMPCJuunvzI3xRRVcywoUqTPkUV6BRDM7oEMxhWswjbyMs5ZcPmcc6U0Bkr3XNHM0yd4pB0CYlqfmpLACKn7y65aOAcesRfPxnVA6T7zJYfstDKXpR3v/0QcWp2xp42JsN9s8NrmvTQ0vUnDWlzSa6V+aCvkTOnSPF7wZCW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qBfCKnqv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3085AC43390;
-	Wed, 13 Mar 2024 16:34:11 +0000 (UTC)
+	 MIME-Version; b=UAHFk8i2eWKYQlsjcEqiJM99DMQZCkWycp10eJcPdnmohI3vdm273IZqbXUUtAUxXer0Cg5paKlop+FuxgKsEHLs66Rh5C83u8PO0+ma08LjC9+NAHs5VZ4Itt1zzBmm7Wi/VoRMrlLn6GHe51yzvP0ah6rV4gJuqpIp0CKrf4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxATb1Hk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A917C433F1;
+	Wed, 13 Mar 2024 16:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347652;
-	bh=+zpnvbgbJoMuGiubEtCUgstrHKkcjtrnNQjXlz0JhXQ=;
+	s=k20201202; t=1710347653;
+	bh=ZSH7c0tRBNY1VUnSgllirALDthxqB+zfxFAgGUjdakE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qBfCKnqvLFTOOKZl66IK2+boE5tbbv3P5TO12TV224OA00ayyQxLTg+C48RFl7kyM
-	 OM04akp0bziHJN0tlIsDDHQAl+stz0v3eUoWkh/Ct7N/rgJkV9eVygBOPvWu3nGWX+
-	 GyVUidwDoxojjh4ju2pmgyYP0QrZE/WldOQI7WlmdJwa0xTuO1Se9cPqAUYIpilRG6
-	 Lffxt7zHf77u1KuySnPRNoAmiuocnzxdWfPMepPywQEZwlaw/3tAaQie+d2sa/y/3n
-	 3J568Cu17zcTnIulmpJt+3ua6tP06Lpi5Yv44BwJ36JdUzVMJKbLEyhImDvq26zxsF
-	 kou1dlliJW5Xg==
+	b=jxATb1Hk4iFsyAmt+0sj4dXCHDe8GoSXUvoI8TAy6heXRnhvv/vo5Z8vc9xVoU68Z
+	 3ceqg+gepzABosVqAbfl+sMqT6uxsVc8wHvDEmT2qkbl8Nhms9UG5a9FEPGF+LIFh/
+	 M1LB1kMHhebyVuXoEhEX1+BZXVHzYN5tHVEO8chr/MBpo4yROYyWPTD2fGkjEtFkZ0
+	 tL0k9vlngNqBWlxoDx0BlnMt+QBh9UdDF9le8fLYk/Ago7MO7jXJF1aBLGlXgSO1/E
+	 yKVuZFncg3rF37Qx9G4M84TBK8IdxZIkuHey5Vl5FSvJBdyrCo0o0uiyc5xojzVExS
+	 uDoYGttCWMeyQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Oleg Nesterov <oleg@redhat.com>,
-	Dylan Hatch <dylanbhatch@google.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
+Cc: Wang Kefeng <wangkefeng.wang@huawei.com>,
+	Russell King <rmk+kernel@armlinux.org.uk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 58/61] exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)
-Date: Wed, 13 Mar 2024 12:32:33 -0400
-Message-ID: <20240313163236.613880-59-sashal@kernel.org>
+Subject: [PATCH 6.7 59/61] ARM: 9328/1: mm: try VMA lock-based page fault handling first
+Date: Wed, 13 Mar 2024 12:32:34 -0400
+Message-ID: <20240313163236.613880-60-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -70,62 +68,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Wang Kefeng <wangkefeng.wang@huawei.com>
 
-[ Upstream commit c1be35a16b2f1fe21f4f26f9de030ad6eaaf6a25 ]
+[ Upstream commit c16af1212479570454752671a170a1756e11fdfb ]
 
-After the recent changes nobody use siglock to read the values protected
-by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
-update the comment.
+Attempt VMA lock-based page fault handling first, and fall back to the
+existing mmap_lock-based handling if that fails, the ebizzy benchmark
+shows 25% improvement on qemu with 2 cpus.
 
-With this patch only __exit_signal() and thread_group_start_cputime() take
-stats_lock under siglock.
-
-Link: https://lkml.kernel.org/r/20240123153359.GA21866@redhat.com
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Stable-dep-of: e870920bbe68 ("arch/arm/mm: fix major fault accounting when retrying under per-VMA lock")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/exit.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ arch/arm/Kconfig    |  1 +
+ arch/arm/mm/fault.c | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index aedc0832c9f4d..0c4858581c98c 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1125,17 +1125,14 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
- 		 * and nobody can change them.
- 		 *
- 		 * psig->stats_lock also protects us from our sub-threads
--		 * which can reap other children at the same time. Until
--		 * we change k_getrusage()-like users to rely on this lock
--		 * we have to take ->siglock as well.
-+		 * which can reap other children at the same time.
- 		 *
- 		 * We use thread_group_cputime_adjusted() to get times for
- 		 * the thread group, which consolidates times for all threads
- 		 * in the group including the group leader.
- 		 */
- 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
--		spin_lock_irq(&current->sighand->siglock);
--		write_seqlock(&psig->stats_lock);
-+		write_seqlock_irq(&psig->stats_lock);
- 		psig->cutime += tgutime + sig->cutime;
- 		psig->cstime += tgstime + sig->cstime;
- 		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
-@@ -1158,8 +1155,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
- 			psig->cmaxrss = maxrss;
- 		task_io_accounting_add(&psig->ioac, &p->ioac);
- 		task_io_accounting_add(&psig->ioac, &sig->ioac);
--		write_sequnlock(&psig->stats_lock);
--		spin_unlock_irq(&current->sighand->siglock);
-+		write_sequnlock_irq(&psig->stats_lock);
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index f8567e95f98be..8f47d6762ea4b 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -35,6 +35,7 @@ config ARM
+ 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT if CPU_V7
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_HUGETLBFS if ARM_LPAE
++	select ARCH_SUPPORTS_PER_VMA_LOCK
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF
+ 	select ARCH_USE_MEMTEST
+diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
+index fef62e4a9edde..e96fb40b9cc32 100644
+--- a/arch/arm/mm/fault.c
++++ b/arch/arm/mm/fault.c
+@@ -278,6 +278,35 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 
+ 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+ 
++	if (!(flags & FAULT_FLAG_USER))
++		goto lock_mmap;
++
++	vma = lock_vma_under_rcu(mm, addr);
++	if (!vma)
++		goto lock_mmap;
++
++	if (!(vma->vm_flags & vm_flags)) {
++		vma_end_read(vma);
++		goto lock_mmap;
++	}
++	fault = handle_mm_fault(vma, addr, flags | FAULT_FLAG_VMA_LOCK, regs);
++	if (!(fault & (VM_FAULT_RETRY | VM_FAULT_COMPLETED)))
++		vma_end_read(vma);
++
++	if (!(fault & VM_FAULT_RETRY)) {
++		count_vm_vma_lock_event(VMA_LOCK_SUCCESS);
++		goto done;
++	}
++	count_vm_vma_lock_event(VMA_LOCK_RETRY);
++
++	/* Quick path to respond to signals */
++	if (fault_signal_pending(fault, regs)) {
++		if (!user_mode(regs))
++			goto no_context;
++		return 0;
++	}
++lock_mmap:
++
+ retry:
+ 	vma = lock_mm_and_find_vma(mm, addr, regs);
+ 	if (unlikely(!vma)) {
+@@ -316,6 +345,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
  	}
  
- 	if (wo->wo_rusage)
+ 	mmap_read_unlock(mm);
++done:
+ 
+ 	/*
+ 	 * Handle the "normal" case first - VM_FAULT_MAJOR
 -- 
 2.43.0
 
