@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-102192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3164587AF48
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:21:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3928487AF4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 622271C2565F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:21:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B95BD1F27D70
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4341019C41B;
-	Wed, 13 Mar 2024 17:04:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE2519CF42;
+	Wed, 13 Mar 2024 17:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YLaKs0uR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vJf9WDr3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBA819C3FD;
-	Wed, 13 Mar 2024 17:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934FA82D49;
+	Wed, 13 Mar 2024 17:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349486; cv=none; b=bkuROFDQT4xH6MVicuWR/SkK/fenzhn4ExhG6fJ2K5yYzRa56uh3U1m30rqQbAW+xxxUjUmKLoOa/V8fVaDruLbp2EX2zxAs9rqNBEauCaABHW8w2cWp6jBZU7wCxxLNSIxENJVVs6hum57gm+2tRC0XGvLnA3HZLf8rAmyvU4c=
+	t=1710349487; cv=none; b=qVpdebhLfDFltJeo4PtqP6gjHxmzFdVN6kqherTZ/P8ovRnQnz8JK1AWUkg+rZgAFs/D2kn7gvyQ0r9hw2yr+yQl9bF4is5NkV24UfxNFs6pwPtUr9jGF4zXgVk/23mJrX2iv6wxFChiYnC9G8QX7rkDRx8c90cg+Yj0A1HGdEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349486; c=relaxed/simple;
-	bh=3kgDSuFyXAW8sJnXODkw0rGdaC6EWFrWZog2gTwQNlc=;
+	s=arc-20240116; t=1710349487; c=relaxed/simple;
+	bh=OsRF5eg9/D/yYCfXERF2k5eeJhQ96fC4uTBg7ASB14Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=udG8oKBdVoYV3blXdhaEe5iUqOpAKa6FVxhpeqDDiNXGC4ZsuVNAlg3rfFAjHW7YqDlFaFcNyGxHlwJ/J3kYEBNEyGJrRTKns2aw7UDrczze5S0+mfb57iy8z/pKkGqaForzUh4ScHPjIe0G3tMFLfJr23A7R/j3etBhzan6wwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YLaKs0uR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EFDCC433F1;
-	Wed, 13 Mar 2024 17:04:45 +0000 (UTC)
+	 MIME-Version; b=UOn4X2RTvAzXZv4O2Rx1ZoDF3+Gz7DaLbW5ff+O7VAn3Jibd2WgZlx5J5lx6sipOzY5tmufS0s6EXPnpxAM33yfqn+LJdmcpWf9CL0IcgBcmQmarkRU/KvC3Z6TkbVQjMX5jrfm7P/Y9CPYMCmmERa+4fVQDd4UQofOHQ82kQOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vJf9WDr3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837D2C433C7;
+	Wed, 13 Mar 2024 17:04:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349486;
-	bh=3kgDSuFyXAW8sJnXODkw0rGdaC6EWFrWZog2gTwQNlc=;
+	s=k20201202; t=1710349487;
+	bh=OsRF5eg9/D/yYCfXERF2k5eeJhQ96fC4uTBg7ASB14Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YLaKs0uR6D4GIc87hEeLFfAsx4F/2ZeOeSucwIFFcOwZtb5r3E9frUCIm+evmamAx
-	 85fLnKJeWa+X5v8J3UdWW7ExWCEuw+mJSx4CrCli3E/Cq0/jLEREnaEIhdhtZnU3J0
-	 cKGWKna+4E1CahoZE/EpkcSVxMeYh/j1YZz0R95aqshc3PeVVRk1YP+3tcfCZ8IqbO
-	 k7isj4XjMvWTXD9ji0NA6RLC79X1iJtvcwTKaLhCoe7UyAfQ5NhiEuZ0iE1VuWB/nr
-	 Pepzi84Md0lxv4hjI2UW+tBVMxWqGCSzX/ozOpT4hZ1oHL93CJw7N9QAzyf9o9yZYT
-	 7PMwSJxEChh+g==
+	b=vJf9WDr3Gd/dXcNE1nk6OWQMiNLKPgp/1+FTV5Gro24UYsEsRem0tmk+sCvcI/H+H
+	 Iu0aQaknbLZEr7dMoLZz8ptXmJAImZkOxQQu9TvScv2ijQH4BG7siwxRCTH3IhEuTj
+	 OsGcMV4wFU8pKnvnVWuGjdFZ15PNfzOm7BeFQf2VTAXmlk/kdawKJmSoASL5t3C5Xk
+	 Cagox6y13KqSwQRUL9i/yeRlbbhklmCI3vSM+LLoRKwundn5XhApC2lV5sIW2y+FUR
+	 sLBDjUv8Y4uhcB1xk8gaVZayM0lTbS7yOWY9xanDNqLT2WVy5GJgRsI6R0GzUMNgZB
+	 FMrjAHnE+Uxww==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Li RongQing <lirongqing@baidu.com>,
-	Zhang Yu <zhangyu31@baidu.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	syzbot+6a1423ff3f97159aae64@syzkaller.appspotmail.com,
+	Jiri Pirko <jiri@nvidia.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 07/41] net: move definition of pcpu_lstats to header file
-Date: Wed, 13 Mar 2024 13:04:01 -0400
-Message-ID: <20240313170435.616724-8-sashal@kernel.org>
+Subject: [PATCH 4.19 08/41] geneve: make sure to pull inner header in geneve_rx()
+Date: Wed, 13 Mar 2024 13:04:02 -0400
+Message-ID: <20240313170435.616724-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170435.616724-1-sashal@kernel.org>
 References: <20240313170435.616724-1-sashal@kernel.org>
@@ -69,115 +70,137 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Li RongQing <lirongqing@baidu.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 52bb6677d530d37055092d86b4eab69dce6c166a ]
+[ Upstream commit 1ca1ba465e55b9460e4e75dec9fff31e708fec74 ]
 
-pcpu_lstats is defined in several files, so unify them as one
-and move to header file
+syzbot triggered a bug in geneve_rx() [1]
 
-Signed-off-by: Zhang Yu <zhangyu31@baidu.com>
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Issue is similar to the one I fixed in commit 8d975c15c0cd
+("ip6_tunnel: make sure to pull inner header in __ip6_tnl_rcv()")
+
+We have to save skb->network_header in a temporary variable
+in order to be able to recompute the network_header pointer
+after a pskb_inet_may_pull() call.
+
+pskb_inet_may_pull() makes sure the needed headers are in skb->head.
+
+[1]
+BUG: KMSAN: uninit-value in IP_ECN_decapsulate include/net/inet_ecn.h:302 [inline]
+ BUG: KMSAN: uninit-value in geneve_rx drivers/net/geneve.c:279 [inline]
+ BUG: KMSAN: uninit-value in geneve_udp_encap_recv+0x36f9/0x3c10 drivers/net/geneve.c:391
+  IP_ECN_decapsulate include/net/inet_ecn.h:302 [inline]
+  geneve_rx drivers/net/geneve.c:279 [inline]
+  geneve_udp_encap_recv+0x36f9/0x3c10 drivers/net/geneve.c:391
+  udp_queue_rcv_one_skb+0x1d39/0x1f20 net/ipv4/udp.c:2108
+  udp_queue_rcv_skb+0x6ae/0x6e0 net/ipv4/udp.c:2186
+  udp_unicast_rcv_skb+0x184/0x4b0 net/ipv4/udp.c:2346
+  __udp4_lib_rcv+0x1c6b/0x3010 net/ipv4/udp.c:2422
+  udp_rcv+0x7d/0xa0 net/ipv4/udp.c:2604
+  ip_protocol_deliver_rcu+0x264/0x1300 net/ipv4/ip_input.c:205
+  ip_local_deliver_finish+0x2b8/0x440 net/ipv4/ip_input.c:233
+  NF_HOOK include/linux/netfilter.h:314 [inline]
+  ip_local_deliver+0x21f/0x490 net/ipv4/ip_input.c:254
+  dst_input include/net/dst.h:461 [inline]
+  ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
+  NF_HOOK include/linux/netfilter.h:314 [inline]
+  ip_rcv+0x46f/0x760 net/ipv4/ip_input.c:569
+  __netif_receive_skb_one_core net/core/dev.c:5534 [inline]
+  __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5648
+  process_backlog+0x480/0x8b0 net/core/dev.c:5976
+  __napi_poll+0xe3/0x980 net/core/dev.c:6576
+  napi_poll net/core/dev.c:6645 [inline]
+  net_rx_action+0x8b8/0x1870 net/core/dev.c:6778
+  __do_softirq+0x1b7/0x7c5 kernel/softirq.c:553
+  do_softirq+0x9a/0xf0 kernel/softirq.c:454
+  __local_bh_enable_ip+0x9b/0xa0 kernel/softirq.c:381
+  local_bh_enable include/linux/bottom_half.h:33 [inline]
+  rcu_read_unlock_bh include/linux/rcupdate.h:820 [inline]
+  __dev_queue_xmit+0x2768/0x51c0 net/core/dev.c:4378
+  dev_queue_xmit include/linux/netdevice.h:3171 [inline]
+  packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
+  packet_snd net/packet/af_packet.c:3081 [inline]
+  packet_sendmsg+0x8aef/0x9f10 net/packet/af_packet.c:3113
+  sock_sendmsg_nosec net/socket.c:730 [inline]
+  __sock_sendmsg net/socket.c:745 [inline]
+  __sys_sendto+0x735/0xa10 net/socket.c:2191
+  __do_sys_sendto net/socket.c:2203 [inline]
+  __se_sys_sendto net/socket.c:2199 [inline]
+  __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was created at:
+  slab_post_alloc_hook mm/slub.c:3819 [inline]
+  slab_alloc_node mm/slub.c:3860 [inline]
+  kmem_cache_alloc_node+0x5cb/0xbc0 mm/slub.c:3903
+  kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
+  __alloc_skb+0x352/0x790 net/core/skbuff.c:651
+  alloc_skb include/linux/skbuff.h:1296 [inline]
+  alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6394
+  sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2783
+  packet_alloc_skb net/packet/af_packet.c:2930 [inline]
+  packet_snd net/packet/af_packet.c:3024 [inline]
+  packet_sendmsg+0x70c2/0x9f10 net/packet/af_packet.c:3113
+  sock_sendmsg_nosec net/socket.c:730 [inline]
+  __sock_sendmsg net/socket.c:745 [inline]
+  __sys_sendto+0x735/0xa10 net/socket.c:2191
+  __do_sys_sendto net/socket.c:2203 [inline]
+  __se_sys_sendto net/socket.c:2199 [inline]
+  __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Fixes: 2d07dc79fe04 ("geneve: add initial netdev driver for GENEVE tunnels")
+Reported-and-tested-by: syzbot+6a1423ff3f97159aae64@syzkaller.appspotmail.com
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Stable-dep-of: 1ca1ba465e55 ("geneve: make sure to pull inner header in geneve_rx()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/loopback.c    |  6 ------
- drivers/net/nlmon.c       |  6 ------
- drivers/net/vsockmon.c    | 14 ++++----------
- include/linux/netdevice.h |  6 ++++++
- 4 files changed, 10 insertions(+), 22 deletions(-)
+ drivers/net/geneve.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/loopback.c b/drivers/net/loopback.c
-index 7863918592db9..954935a38f186 100644
---- a/drivers/net/loopback.c
-+++ b/drivers/net/loopback.c
-@@ -59,12 +59,6 @@
- #include <net/net_namespace.h>
- #include <linux/u64_stats_sync.h>
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index a19e04f8bcc8f..8aa04b37c5fe0 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -217,7 +217,7 @@ static void geneve_rx(struct geneve_dev *geneve, struct geneve_sock *gs,
+ 	struct metadata_dst *tun_dst = NULL;
+ 	struct pcpu_sw_netstats *stats;
+ 	unsigned int len;
+-	int err = 0;
++	int nh, err = 0;
+ 	void *oiph;
  
--struct pcpu_lstats {
--	u64			packets;
--	u64			bytes;
--	struct u64_stats_sync	syncp;
--};
--
- /* The higher levels take care of making this non-reentrant (it's
-  * called with bh's disabled).
-  */
-diff --git a/drivers/net/nlmon.c b/drivers/net/nlmon.c
-index 4b22955de1918..dd0db7534cb32 100644
---- a/drivers/net/nlmon.c
-+++ b/drivers/net/nlmon.c
-@@ -6,12 +6,6 @@
- #include <linux/if_arp.h>
- #include <net/rtnetlink.h>
+ 	if (ip_tunnel_collect_metadata() || gs->collect_md) {
+@@ -261,9 +261,23 @@ static void geneve_rx(struct geneve_dev *geneve, struct geneve_sock *gs,
+ 		goto drop;
+ 	}
  
--struct pcpu_lstats {
--	u64 packets;
--	u64 bytes;
--	struct u64_stats_sync syncp;
--};
--
- static netdev_tx_t nlmon_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	int len = skb->len;
-diff --git a/drivers/net/vsockmon.c b/drivers/net/vsockmon.c
-index c28bdce14fd5e..7bad5c95551fd 100644
---- a/drivers/net/vsockmon.c
-+++ b/drivers/net/vsockmon.c
-@@ -11,12 +11,6 @@
- #define DEFAULT_MTU (VIRTIO_VSOCK_MAX_PKT_BUF_SIZE + \
- 		     sizeof(struct af_vsockmon_hdr))
- 
--struct pcpu_lstats {
--	u64 rx_packets;
--	u64 rx_bytes;
--	struct u64_stats_sync syncp;
--};
--
- static int vsockmon_dev_init(struct net_device *dev)
- {
- 	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
-@@ -56,8 +50,8 @@ static netdev_tx_t vsockmon_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct pcpu_lstats *stats = this_cpu_ptr(dev->lstats);
- 
- 	u64_stats_update_begin(&stats->syncp);
--	stats->rx_bytes += len;
--	stats->rx_packets++;
-+	stats->bytes += len;
-+	stats->packets++;
- 	u64_stats_update_end(&stats->syncp);
- 
- 	dev_kfree_skb(skb);
-@@ -80,8 +74,8 @@ vsockmon_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats)
- 
- 		do {
- 			start = u64_stats_fetch_begin_irq(&vstats->syncp);
--			tbytes = vstats->rx_bytes;
--			tpackets = vstats->rx_packets;
-+			tbytes = vstats->bytes;
-+			tpackets = vstats->packets;
- 		} while (u64_stats_fetch_retry_irq(&vstats->syncp, start));
- 
- 		packets += tpackets;
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index ac87fcc4d44b4..89155d171b567 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -2383,6 +2383,12 @@ struct pcpu_sw_netstats {
- 	struct u64_stats_sync   syncp;
- };
- 
-+struct pcpu_lstats {
-+	u64 packets;
-+	u64 bytes;
-+	struct u64_stats_sync syncp;
-+};
+-	oiph = skb_network_header(skb);
++	/* Save offset of outer header relative to skb->head,
++	 * because we are going to reset the network header to the inner header
++	 * and might change skb->head.
++	 */
++	nh = skb_network_header(skb) - skb->head;
 +
- #define __netdev_alloc_pcpu_stats(type, gfp)				\
- ({									\
- 	typeof(type) __percpu *pcpu_stats = alloc_percpu_gfp(type, gfp);\
+ 	skb_reset_network_header(skb);
+ 
++	if (!pskb_inet_may_pull(skb)) {
++		DEV_STATS_INC(geneve->dev, rx_length_errors);
++		DEV_STATS_INC(geneve->dev, rx_errors);
++		goto drop;
++	}
++
++	/* Get the outer header. */
++	oiph = skb->head + nh;
++
+ 	if (geneve_get_sk_family(gs) == AF_INET)
+ 		err = IP_ECN_decapsulate(oiph, skb);
+ #if IS_ENABLED(CONFIG_IPV6)
 -- 
 2.43.0
 
