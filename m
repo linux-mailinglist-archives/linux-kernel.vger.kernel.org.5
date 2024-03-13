@@ -1,135 +1,140 @@
-Return-Path: <linux-kernel+bounces-102535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2848E87B37A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:31:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D934887B380
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1FE1F24C24
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:31:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F5C51F24443
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F0756770;
-	Wed, 13 Mar 2024 21:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A3F53E3E;
+	Wed, 13 Mar 2024 21:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fRXPGmQQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fUgkPu16"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6DA85644A
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF0653815
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710365475; cv=none; b=jB+uOw7WELD73fHoSWPrNmiXN7pfRfze+Vuy+yG6wS9fyaKNGJyuJRbbhZiw9PljLyVAzb6dWWYkXnmsBPNhb8QkkUh+xZ7fif7K5rHW9emik6oD39vflsI1ZQdRq4nEhoVoNVdE8sukQkg9ftmirhQ9l8Ir7wHqh1Opz7q/PXc=
+	t=1710365676; cv=none; b=D+HAA1wuEQD9Z1dbG/3Jmsyul7Yfgx9ww5J1sC+zRJAp6iXq2LdkiLz/eAvs0phw0j7YWrytKzDqACO4Wsk6ix1PnctVrRg9xi0kDR1F29u+kwT2m4DZpwlDbkx7rXEUBRDqn8ziiX9YHoRQCMZvX3X+hsDFG5Fr/zN6DP5NzZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710365475; c=relaxed/simple;
-	bh=C4SiVF7VAkuKfOAhkvM2NmHIdqvfL77sde5+3WxGz8o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JVRxsTwHackFuQLCGObWKLsuOLGe/5qi/3+83g+iAmN4LXpyHns58DUDj6AVv712ZE2sTKmIzxw2VfnYuZnrsYHjgA84AsrfmIdCVP4k+LkFF5ZBpAbyEMZDxHaujgPGWazArUFKIzBAuznfQZyIxC9IBT1VbHayFTwsAuQzjIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fRXPGmQQ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710365472;
+	s=arc-20240116; t=1710365676; c=relaxed/simple;
+	bh=78PW4X14ihC5fEleCYrPCzpp+cNooZ+uZ4kgdRyzCH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aPpqsMxSqtB01ULvo2yygXNBjy8KDMhcAkv17xeNXnNQm/h0adDe/Fd4R+nJ55+65LcCEm/0BtVp25VAmqT6krTxt3PmdCbW5b5nJCwUtCc5S2RdX8WGtWBgsqxvp9HQxzwwf+z5cl0tFfG63oMMhx+Nt4JbLarc3dNMzl65x3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fUgkPu16; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 13 Mar 2024 17:34:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710365672;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zSHMA3F9Ys9+S9b2CLlCHNAI2GjKD9Vh5g00AYRvICU=;
-	b=fRXPGmQQzO10p4KXye30H6T33KEQMmVJfqy4V/7NyZr3lidw+bGj/dTyXJzvoKbwmumlL0
-	sxOuoHhqqSllsgYsfAqaAoOt84bHyO9+OTe5Hg1N3nwGVNdXxklLt1QbzONSKPWB05L+YL
-	I8h2KC7YwOeEwdF0s/ojxIavR+ALjDE=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-134-jSviFq-aPSi9QHj-6V6vfQ-1; Wed, 13 Mar 2024 17:31:10 -0400
-X-MC-Unique: jSviFq-aPSi9QHj-6V6vfQ-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-690c19ee50bso948116d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 14:31:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710365470; x=1710970270;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zSHMA3F9Ys9+S9b2CLlCHNAI2GjKD9Vh5g00AYRvICU=;
-        b=EI8jO/THmOwh+5KlE6Qxrio8g+EGnQiev6B5zWFDw4zdCJCl/aPsX6YlUVQWWdu6Hn
-         6m3D3deK1U1m8QaUly3/96qyOrHEE3FNmvOtRaSkiYAAGK9CVjsiR12HUkgZ9UN8ZWfM
-         WigX/AtuzrMSIBbMSx1qONuuIYfzzC8GFyHIqKJNG9fDuJqK9a2PqgH/l1CJ6SsEey2x
-         k9JoUwJFANVXFtkzo+qevSQ0k3JySAVVGPs+SFz4XEReir0UFe5WqUCnUBJ6zUyP10jJ
-         ICanLHCocxsjSlAJCiu8/mNGFqJgSg9zyx7FJiOK/P0dJid+p84M4FyuBuD3aE8vVaSr
-         CilQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWg9s+YFjDdcId7wonTbegJCiwg87YqO9docMed2q9TkvcBnKW3o+9sVqh1x7ZqSAz8B1jHunVehLUC5MFDJslOdz2i06MY9BIzqxNb
-X-Gm-Message-State: AOJu0Yz8V+ap/t6o0NFw9hl4NYM7TVp+nnmVNBVcQfL4XYBJYdT3p++6
-	yIA7hALJE67mGq54bh2CsgVSZywQ/CloN7ce9LuSaO7uZ73CWRiZj3aqyVlG+kHDMeYpMa+Cy3M
-	5lY9ZGdNMCEWCDQQlAIEjyTT8HLFIkHOgfbr71actO6+i1n/b3En7WXN4hxDrXblgaNWcVQ==
-X-Received: by 2002:a0c:eac3:0:b0:691:2524:2d87 with SMTP id y3-20020a0ceac3000000b0069125242d87mr2283295qvp.2.1710365469660;
-        Wed, 13 Mar 2024 14:31:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHsLh8aQhtPreOjP5bc4Hiwu2Giqo97Es+TwECM0aBYGuG0Rd6UIY+m2f6qoD6cxMewmR3UBA==
-X-Received: by 2002:a0c:eac3:0:b0:691:2524:2d87 with SMTP id y3-20020a0ceac3000000b0069125242d87mr2283267qvp.2.1710365469157;
-        Wed, 13 Mar 2024 14:31:09 -0700 (PDT)
-Received: from x1n.redhat.com ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id f7-20020a0562141d2700b00690f23c8605sm57087qvd.23.2024.03.13.14.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 14:31:08 -0700 (PDT)
-From: peterx@redhat.com
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	peterx@redhat.com,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	David Hildenbrand <david@redhat.com>
-Subject: [PATCH] mm/memory: Fix missing pte marker for !page on pte zaps
-Date: Wed, 13 Mar 2024 17:31:07 -0400
-Message-ID: <20240313213107.235067-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.44.0
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L6S/o0D2CMop6/QZVenetyqvM7me+8gNVf+Uyf/+tF8=;
+	b=fUgkPu161w2XGctM6Q8jSdDM/+AiXHZGukaq16SZsbl/Rl+X/9FPrlhzRrXR2f3fBxSD+d
+	fnQWYZw5eZNIh6DZmY5fuBr+tIWvZ6QOYEpswJcnxDIuIboKvcHR5boJfHyZ5XE5BOGiuC
+	u1Vv4kyf46M8x1wEbIuBj453OemYWA0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs updates for 6.9
+Message-ID: <bqlnihgtaxv4gq2k6nah33hq7f3vk73x2sd6mlbdvxln2nbfu6@ypoukdqdqbtb>
+References: <lfypw4vqq3rkohlh2iwhub3igjopdy26lfforfcjws2dfizk7d@32yk5dnemi4u>
+ <CAHk-=wg3djFJMeN3L_zx3P-6eN978Y1JTssxy81RhAbxB==L8Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg3djFJMeN3L_zx3P-6eN978Y1JTssxy81RhAbxB==L8Q@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-From: Peter Xu <peterx@redhat.com>
+On Wed, Mar 13, 2024 at 01:47:59PM -0700, Linus Torvalds wrote:
+> On Tue, 12 Mar 2024 at 18:10, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > Hi Linus, few patches for you - plus a simple merge conflict with VFS
+> > changes:
+> 
+> The conflicts are trivial.
+> 
+> The "make random bcachefs code be a library function" stuff I looked
+> at, decided is senseless, and ended up meaning that I'm not pulling
+> this without a lot more explanation (and honestly, I don't think the
+> explanations would hold water).
+> 
+> That "stdio_redirect_printf()" and darray_char stuff is just
+> horrendous interfaces with no explanations. The interfaces are
+> disgusting.
 
-Commit 0cf18e839f64 of large folio zap work broke uffd-wp.  Now mm's uffd
-unit test "wp-unpopulated" will trigger this WARN_ON_ONCE().
+It's a bidirectional pipe between a kthread and an fd. Not sure what's
+complicated about that?
 
-The WARN_ON_ONCE() asserts that an VMA cannot be registered with
-userfaultfd-wp if it contains a !normal page, but it's actually possible.
-One example is an anonymous vma, register with uffd-wp, read anything will
-install a zero page.  Then when zap on it, this should trigger.
+> And if you *do* make it a library thing, it needs to be
+> 
+>  (a) much more explained
+> 
+>  (b) have much saner naming, and fewer disgusting and completely
+> nonsensical interfaces ("DARRAY()").
 
-What's more, removing that WARN_ON_ONCE may not be enough either, because
-we should also not rely on "whether it's a normal page" to decide whether
-pte marker is needed.  For example, one can register wr-protect over some
-DAX regions to track writes when UFFD_FEATURE_WP_ASYNC enabled, in which
-case it can have page==NULL for a devmap but we may want to keep the marker
-around.
+DARRAY() is just a dynamic array, aka a c++ vector; we open code those so
+much it's _stupid_. I wouldn't be opposed to changing the name to
+something more standard (Rust calls it a vector too); I started out with
+the CCAN version and rewrote it later for hte kernel.
 
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: David Hildenbrand <david@redhat.com>
-Fixes: 0cf18e839f64 ("mm/memory: handle !page case in zap_present_pte() separately")
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/memory.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> And no, finding one other filesystem to share this kind of code is not
+> sufficient to try to claim it's a sane interface and sane naming.
+> 
+> But the main dealbreaker is the insane math.
+> 
+> And dammit, we talked about the idiotic "mean and variance" garbage
+> long ago. It was wrong back then, it's *still* wrong.
+> 
+> You didn't explain why it couldn't use the *much* simpler MAD (median
+> absolute deviation) instead of using variance.
 
-diff --git a/mm/memory.c b/mm/memory.c
-index f2bc6dd15eb8..904f70b99498 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1536,7 +1536,9 @@ static inline int zap_present_ptes(struct mmu_gather *tlb,
- 		ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
- 		arch_check_zapped_pte(vma, ptent);
- 		tlb_remove_tlb_entry(tlb, pte, addr);
--		VM_WARN_ON_ONCE(userfaultfd_wp(vma));
-+		if (userfaultfd_pte_wp(vma, ptent))
-+			zap_install_uffd_wp_if_needed(vma, addr, pte, 1,
-+						      details, ptent);
- 		ksm_might_unmap_zero_page(mm, ptent);
- 		return 1;
- 	}
--- 
-2.44.0
+I most certainly did.
 
+I liked your MAD suggestion, but the catch was that we need an
+exponentially weighted version, not just the standard version, and I
+haven't seen an derivation of exponentially weighted MAD and doing that
+is a bit above my statistical pay grade. I explained all this at the
+time.
+
+Besides that, the existing code works fine, the u128 stuff is right out
+of Knuth (divide is the only even vaguely tricky one), and it's nicely
+self contained. It's fine.
+
+> I called it insanely over-engineered back then, and as far as I can
+> tell, absolutely *NOTHING* has changed apart from some slight type
+> name details.
+> 
+> As long as you made it some kind of bcachefs-only thing, I don't mind.
+> 
+> But now you're trying to push this garbage as some kind of generic
+> library code that others would use, and that immediately means that I
+> *do* mind insanely overengineered interfaces.
+> 
+> The time_stats stuff otherwise looks at leask like a sane interface
+> with names and uses, but the use of that horrendous infrastructure
+> scuttles it.
+
+Well, that leaves us at a bit of an impasse then because Darrick wants
+this stuff for XFS (he was discovering useful stuff with it pretty much
+right away) and I'm just not doing a MAD conversion, sorry. I'm just
+being practical here, I like MAD in principle but that's too far outside
+my wheelhouse.
+
+Maybe we can get someone else interested? I have a feeling Peter could
+whip it out in about 5 minutes...
 
