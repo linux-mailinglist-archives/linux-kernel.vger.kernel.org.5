@@ -1,152 +1,290 @@
-Return-Path: <linux-kernel+bounces-101171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC09087A35F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2475987A360
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:20:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 112F91F22373
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:19:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 917301F22390
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDE6168D0;
-	Wed, 13 Mar 2024 07:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35C018EB2;
+	Wed, 13 Mar 2024 07:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tE3wuov3"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MTtYL+lv"
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D816715AD9
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B48E1798C
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710314384; cv=none; b=vB3xaYahICMysx35u6AUHn8Wyp0aQXuhuT8r4JPGQM87Ypja2EzAcqgH6m4/tz8R1jo89CGAu2U3A2/OMgv2Ckm4pOzLQH8qI/5JqfizrBtrazmv6ih0TnUDTbin4PLMz9vbw2l0kfVX2+KIM3STCY4/uOoopDLC64uhOvEaquY=
+	t=1710314403; cv=none; b=SXJ2UmwuwfgcIjiHos4n2nk46ttxcfl3Yyu2+kkHxOc8tA9IL/T+IqRZLhVyxuCIJV18u8gTTYLRZF+qRGNhkp7qf8wqHVCU8+Gdq96/VHMhLb7NCZteZlxZnUWJEY/ksYu9aHUS3KD2xSh88g6yKz77hEoMy72+FXXESUtVlrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710314384; c=relaxed/simple;
-	bh=v/hAU6PW6wjEt1e3ChheYiVgHPEB1gLGZWPraFPzoNE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pKrNUiqhrtdMNp4emEj/ENi/0jE25HGMTib2uYVB9VOMT1doS6kd/xvwFPKuU+4I1gyWc2B3s1/mENYLWoEeiaZI1flYXWYBKvacKaMvSnl9EBsK2/TNWBbrZCzXYVW6dezU5lko7x89mojtqhYCTzrG48VC9GRRrJrQW7G7iII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tE3wuov3; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33e672e10cfso3201314f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:19:41 -0700 (PDT)
+	s=arc-20240116; t=1710314403; c=relaxed/simple;
+	bh=kNOdDPPwtvmufK2unmHXn0dJGSWEQRrI4Mp45ogMocU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GHISoRaBLDc+HgOjwvXH4dS5W/EFop+R7dtjnWn5ytAidhNOZGoJ8gGXrr5xcNbAhU/2r3NqgH2BlzaEAGDTanmDrJOKCltmIo+MOFWL+xm/z4sJ9G4mRzbNyFVKbQrGXHKqrenBGX4raJx4Ag23Y/R4YV0OqOMVf3eHPlKeJjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MTtYL+lv; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4d4191ea252so133761e0c.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:20:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710314380; x=1710919180; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=vqjXaFj1OBGQuRnQ9ukBQMjSSkwKWQBdwlni2rHBJFo=;
-        b=tE3wuov33fYsg2Ek/sVlTaW+B5eoPbmb3n1D030n+1wXfATWrsPwpGPp+EADtPG74U
-         FBhhOL4Jj6kv2wvqNGvIhh6k2H3gd0b2d5NikHGhF9uOHQTdMigtFgKsMq1pkXZx/11U
-         dgJ8xS8rBjiGABbCJPtUaA+7W0pkg6rqhDToXmYWJ0JE3IW8I7ddeDELW7dQq5hFq17/
-         ne5AvDTvlCt1lhDWrLJUgrxDQF9PGklW5v5I7cY+s0UisxVGfMWTFOkDGqOud8EvV8gs
-         dQ8YDwnXW2+Cv3SnygpdyrCb93Szo2e/Lj6JuJOKh4IhhgD0q0ledrrAEoaBQuMyG/5p
-         2+uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710314380; x=1710919180;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1710314401; x=1710919201; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vqjXaFj1OBGQuRnQ9ukBQMjSSkwKWQBdwlni2rHBJFo=;
-        b=MXfeSl875eVxvmF8XzvF6Hd86AomAmdfWD+pIO2+KKiUjYfM1/KzF5amzkygW8+4S5
-         m+UOagztyX7rKNovzECFKpTFqMhihDV6Oci1hQO4QtTOEyDFKUMcI2dNeK3pp78f+bkU
-         iZJdSdRLvM5P1rZ5XfJU0nOWfImNuonkJDi3MuYrkHg4Vl6XnER2Bf0Z844TAu/ApUKd
-         6rEmjgnoxb/etgk/Ne40viyfLIYzgyrEZO50w0QqXFKDYlMTdyx+ts1hi+REDJ03v+Y6
-         03mTsCTrqgIlHVXkKcMA4SfMO99X8uaHdL9RuiRJrkIvdwmsvznNOsbpgCMeFsm0MaMt
-         k3uw==
-X-Forwarded-Encrypted: i=1; AJvYcCVSxVZ+TC2MPE1GCvPIS4XuL8741iZGnZjX0oG9NRlGN8kF59JfKOtQKcrWATvZCGxr2HIKSQQptePHs1oQ469AB7WP0tHb7BKFYBT6
-X-Gm-Message-State: AOJu0YzaSRSHjv/qw5sXGWNJiV01Jx+lWMpLG7Hm5ZoMbFLrEQQ8/SS+
-	qCCvZLlA61kf/PJNfXpil/bCF4sIjBDG64wXH6P9PRcBUdoSbCG8pJTntm29R7k=
-X-Google-Smtp-Source: AGHT+IGyQioiiDIf29Z761cLxYehFyDDnT3QH2/d0gCGuPrcIO5UP7XJoVEilHt+ZiKL0Z1Tbi4IXQ==
-X-Received: by 2002:a5d:654e:0:b0:33e:73f7:adac with SMTP id z14-20020a5d654e000000b0033e73f7adacmr961716wrv.1.1710314380067;
-        Wed, 13 Mar 2024 00:19:40 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id q17-20020adffed1000000b0033cf5094fcesm10898039wrs.36.2024.03.13.00.19.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 00:19:39 -0700 (PDT)
-Message-ID: <a3a8cb76-b6c4-47e9-a448-781225d93d84@linaro.org>
-Date: Wed, 13 Mar 2024 08:19:37 +0100
+        bh=6LqyRUsa9L8DlGv8vpJo8mQwj+3mx3nz1YNWYDzK03k=;
+        b=MTtYL+lvXCC1Z2TvXTffZ8FwGZIbVU0IYPMjH3UF+VNVZasNLgaSIhR2gFRZpfARfu
+         L+SVT3UHZUwMfFQFJJk+rEux0UAsFrGGYHntJUXaVdErcphAuyYAkquDiLmJ3tcFof6h
+         W4sTXNrnzU087WaBYIN513UZpGqSBsuTMguUDMizXbOvv4mJ1HEeEuGvuqLQwtKUmktB
+         ZqqhGqOxHcAASFsDMzCVjdrOe8nJ+06BCXyGLSkRI9Wd/ypOndELVRW3dbBeiO9Qgj+u
+         OG3YWmBYzyism702jzTUSRJxWviat7iM2oUFrde6293mRNRgpis5KuNyOFbIwouAeUP9
+         0IHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710314401; x=1710919201;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6LqyRUsa9L8DlGv8vpJo8mQwj+3mx3nz1YNWYDzK03k=;
+        b=fqeHZ2UlaMKgEL8ESWh4UXTjcYeasKT1Q6sB9wTXK89SI6c28itE9RetrbUItlvCji
+         4Xuo/tHAwGZCxw96VhaTlMvo7z8a18WabCc2S4wLUIFAVLzZ8/c/fSgcMFsRhiI+ihi+
+         Ju+WgdT3S6n6Ij8wkd62vPE97EXaOG+/kevS3gpc7suuUtNZMKX7Pl2dB4mnCeC9KsNV
+         gAWCeeQCwvR9+Sq0am2hlnqwT8ETvFbs0RNrceCJ4yJsCub+1HvUk4HAeF7Pro1jgy8A
+         wopmPbuT1Xz9RVgH2fRfw3tZPNCA1Yk1muG2JFMVOtODKlKNqQ4ZdlnLaL/fua2uKm/r
+         z3zg==
+X-Forwarded-Encrypted: i=1; AJvYcCUXplVDakMcMmPLYy9wNNX3I8nvFiA8vLtIWX+OC4yitUF0qJbgheIPEctLVvIpi1OMrzBu/Yans+iT33DdUteNUP+r3g9CM2Y+6tFO
+X-Gm-Message-State: AOJu0YzzRVbTEupMc14VNz+Kl7Ba38ok1RejTRF/occ+5yI4wVpFwAIj
+	YELUP7aGiWOj/kOz5dAqGkJwfo9NJA/2y9nujcdIYZ1t41avtMv+H1TMhVMpeov7clJXBIgAvOU
+	+KTIwr4rMuRf1PpYPsPj4EDQAE3c=
+X-Google-Smtp-Source: AGHT+IHWB0vh+0pWHZmCw+JFWove1J03Z0sz+NvVh+uQ6phJ4FWYD2xq4wYTZbftNACxPOY1w/ROcxsspkjMBem8NAc=
+X-Received: by 2002:a05:6122:e5c:b0:4c9:98f8:83cc with SMTP id
+ bj28-20020a0561220e5c00b004c998f883ccmr6797237vkb.3.1710314400877; Wed, 13
+ Mar 2024 00:20:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] dt-bindings: arm: qcom: Document rb5gen2 board
-To: Wasim Nazir <quic_wasimn@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@quicinc.com
-References: <20240313071238.3290-1-quic_wasimn@quicinc.com>
- <20240313071238.3290-2-quic_wasimn@quicinc.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240313071238.3290-2-quic_wasimn@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240311150058.1122862-1-ryan.roberts@arm.com> <20240311150058.1122862-7-ryan.roberts@arm.com>
+In-Reply-To: <20240311150058.1122862-7-ryan.roberts@arm.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 13 Mar 2024 20:19:49 +1300
+Message-ID: <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
+Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and MADV_COLD
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>, 
+	Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 13/03/2024 08:12, Wasim Nazir wrote:
-> Document board bindings for Rb5gen2.
-> Rb5gen2 is using Rb5 gen2 SOM which is based on QCS8550 SoC.
-> RB5gen2 is development kit used for IOT solutions.
-> 
-> Signed-off-by: Wasim Nazir <quic_wasimn@quicinc.com>
-> 
+On Tue, Mar 12, 2024 at 4:01=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
+>
+> Rework madvise_cold_or_pageout_pte_range() to avoid splitting any large
+> folio that is fully and contiguously mapped in the pageout/cold vm
+> range. This change means that large folios will be maintained all the
+> way to swap storage. This both improves performance during swap-out, by
+> eliding the cost of splitting the folio, and sets us up nicely for
+> maintaining the large folio when it is swapped back in (to be covered in
+> a separate series).
+>
+> Folios that are not fully mapped in the target range are still split,
+> but note that behavior is changed so that if the split fails for any
+> reason (folio locked, shared, etc) we now leave it as is and move to the
+> next pte in the range and continue work on the proceeding folios.
+> Previously any failure of this sort would cause the entire operation to
+> give up and no folios mapped at higher addresses were paged out or made
+> cold. Given large folios are becoming more common, this old behavior
+> would have likely lead to wasted opportunities.
+>
+> While we are at it, change the code that clears young from the ptes to
+> use ptep_test_and_clear_young(), which is more efficent than
+> get_and_clear/modify/set, especially for contpte mappings on arm64,
+> where the old approach would require unfolding/refolding and the new
+> approach can be done in place.
+>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This looks so much better than our initial RFC.
+Thank you for your excellent work!
 
-Best regards,
-Krzysztof
+> ---
+>  mm/madvise.c | 89 ++++++++++++++++++++++++++++++----------------------
+>  1 file changed, 51 insertions(+), 38 deletions(-)
+>
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 547dcd1f7a39..56c7ba7bd558 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -336,6 +336,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *p=
+md,
+>         LIST_HEAD(folio_list);
+>         bool pageout_anon_only_filter;
+>         unsigned int batch_count =3D 0;
+> +       int nr;
+>
+>         if (fatal_signal_pending(current))
+>                 return -EINTR;
+> @@ -423,7 +424,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *p=
+md,
+>                 return 0;
+>         flush_tlb_batched_pending(mm);
+>         arch_enter_lazy_mmu_mode();
+> -       for (; addr < end; pte++, addr +=3D PAGE_SIZE) {
+> +       for (; addr < end; pte +=3D nr, addr +=3D nr * PAGE_SIZE) {
+> +               nr =3D 1;
+>                 ptent =3D ptep_get(pte);
+>
+>                 if (++batch_count =3D=3D SWAP_CLUSTER_MAX) {
+> @@ -447,55 +449,66 @@ static int madvise_cold_or_pageout_pte_range(pmd_t =
+*pmd,
+>                         continue;
+>
+>                 /*
+> -                * Creating a THP page is expensive so split it only if w=
+e
+> -                * are sure it's worth. Split it if we are only owner.
+> +                * If we encounter a large folio, only split it if it is =
+not
+> +                * fully mapped within the range we are operating on. Oth=
+erwise
+> +                * leave it as is so that it can be swapped out whole. If=
+ we
+> +                * fail to split a folio, leave it in place and advance t=
+o the
+> +                * next pte in the range.
+>                  */
+>                 if (folio_test_large(folio)) {
+> -                       int err;
+> -
+> -                       if (folio_estimated_sharers(folio) > 1)
+> -                               break;
+> -                       if (pageout_anon_only_filter && !folio_test_anon(=
+folio))
+> -                               break;
+> -                       if (!folio_trylock(folio))
+> -                               break;
+> -                       folio_get(folio);
+> -                       arch_leave_lazy_mmu_mode();
+> -                       pte_unmap_unlock(start_pte, ptl);
+> -                       start_pte =3D NULL;
+> -                       err =3D split_folio(folio);
+> -                       folio_unlock(folio);
+> -                       folio_put(folio);
+> -                       if (err)
+> -                               break;
+> -                       start_pte =3D pte =3D
+> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
+> -                       if (!start_pte)
+> -                               break;
+> -                       arch_enter_lazy_mmu_mode();
+> -                       pte--;
+> -                       addr -=3D PAGE_SIZE;
+> -                       continue;
+> +                       const fpb_t fpb_flags =3D FPB_IGNORE_DIRTY |
+> +                                               FPB_IGNORE_SOFT_DIRTY;
+> +                       int max_nr =3D (end - addr) / PAGE_SIZE;
+> +
+> +                       nr =3D folio_pte_batch(folio, addr, pte, ptent, m=
+ax_nr,
+> +                                            fpb_flags, NULL);
 
+I wonder if we have a quick way to avoid folio_pte_batch() if users
+are doing madvise() on a portion of a large folio.
+
+> +
+> +                       if (nr < folio_nr_pages(folio)) {
+> +                               int err;
+> +
+> +                               if (folio_estimated_sharers(folio) > 1)
+> +                                       continue;
+> +                               if (pageout_anon_only_filter && !folio_te=
+st_anon(folio))
+> +                                       continue;
+> +                               if (!folio_trylock(folio))
+> +                                       continue;
+> +                               folio_get(folio);
+> +                               arch_leave_lazy_mmu_mode();
+> +                               pte_unmap_unlock(start_pte, ptl);
+> +                               start_pte =3D NULL;
+> +                               err =3D split_folio(folio);
+> +                               folio_unlock(folio);
+> +                               folio_put(folio);
+> +                               if (err)
+> +                                       continue;
+> +                               start_pte =3D pte =3D
+> +                                       pte_offset_map_lock(mm, pmd, addr=
+, &ptl);
+> +                               if (!start_pte)
+> +                                       break;
+> +                               arch_enter_lazy_mmu_mode();
+> +                               nr =3D 0;
+> +                               continue;
+> +                       }
+>                 }
+>
+>                 /*
+>                  * Do not interfere with other mappings of this folio and
+> -                * non-LRU folio.
+> +                * non-LRU folio. If we have a large folio at this point,=
+ we
+> +                * know it is fully mapped so if its mapcount is the same=
+ as its
+> +                * number of pages, it must be exclusive.
+>                  */
+> -               if (!folio_test_lru(folio) || folio_mapcount(folio) !=3D =
+1)
+> +               if (!folio_test_lru(folio) ||
+> +                   folio_mapcount(folio) !=3D folio_nr_pages(folio))
+>                         continue;
+
+This looks so perfect and is exactly what I wanted to achieve.
+
+>
+>                 if (pageout_anon_only_filter && !folio_test_anon(folio))
+>                         continue;
+>
+> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
+> -
+> -               if (!pageout && pte_young(ptent)) {
+> -                       ptent =3D ptep_get_and_clear_full(mm, addr, pte,
+> -                                                       tlb->fullmm);
+> -                       ptent =3D pte_mkold(ptent);
+> -                       set_pte_at(mm, addr, pte, ptent);
+> -                       tlb_remove_tlb_entry(tlb, pte, addr);
+> +               if (!pageout) {
+> +                       for (; nr !=3D 0; nr--, pte++, addr +=3D PAGE_SIZ=
+E) {
+> +                               if (ptep_test_and_clear_young(vma, addr, =
+pte))
+> +                                       tlb_remove_tlb_entry(tlb, pte, ad=
+dr);
+> +                       }
+
+This looks so smart. if it is not pageout, we have increased pte
+and addr here; so nr is 0 and we don't need to increase again in
+for (; addr < end; pte +=3D nr, addr +=3D nr * PAGE_SIZE)
+
+otherwise, nr won't be 0. so we will increase addr and
+pte by nr.
+
+
+>                 }
+>
+>                 /*
+> --
+> 2.25.1
+>
+
+Overall, LGTM,
+
+Reviewed-by: Barry Song <v-songbaohua@oppo.com>
 
