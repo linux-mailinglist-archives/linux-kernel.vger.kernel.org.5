@@ -1,170 +1,172 @@
-Return-Path: <linux-kernel+bounces-101575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A57ED87A8E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:59:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF7287A8DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 14:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 340B9282A48
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:59:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 431351F21871
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 13:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D0B4436C;
-	Wed, 13 Mar 2024 13:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACBD4502E;
+	Wed, 13 Mar 2024 13:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PreT5Nxn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EXHDhthA";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v2DZR+Pn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KRdmYukr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+EHiFIIa"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B916E45C16;
-	Wed, 13 Mar 2024 13:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FB541A80;
+	Wed, 13 Mar 2024 13:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710338364; cv=none; b=mc2GBUc3HKWDXAJ6ALoq6OmageU8JH4IiS4PqGbN24Dub1U3hwK48UYMTzxHLgUFPbZk5xtht/hSQ839HAy4A6THs/+zx+QM20DrzMSkZOiwJt/bXs6FcszYqeX6+damSA8Jh/u66bM0aRyaJLJ7Q0ShbIyNiYlDrIpTeD9/Mm4=
+	t=1710338321; cv=none; b=QrVmd1vYUi+YgOXN0drleWa0wS4VNB1CJcpvqMgN3g4w3ATehEsTCH1QdUa6SZfrWakLu6uMDFaVfaFroJOv9VJbBsJ65EwxVUJAYvMp2k3GFWtULG0BBqv1ZKn9MoNVjrm/FMa3ijuOoSWXH9kKyI67WoCc60mE6Af3Iqa7SGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710338364; c=relaxed/simple;
-	bh=8To7s1BkpoHH43Z7zCeEevEwDp5/ljmw+7PZOfYTgl8=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=hNoxobwlQxJ6gCaMBClMWb71WHPottemFoNENvZ/AZMMMqrNkHFQxbdAa+vWxHuhUQ3pw1ulEguPcqJ3W0Kn25rwu9eBVKVRP1yuLeGDeQYCWyn2Jo/2F8LZrJp7+7Teilh60U3/ChOQ06LN5Z8AjNMbIVeKEyQwjQ5xJY8ymAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PreT5Nxn; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710338363; x=1741874363;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=8To7s1BkpoHH43Z7zCeEevEwDp5/ljmw+7PZOfYTgl8=;
-  b=PreT5NxnIIb7Nazl/hkgmo7z5lSYa+/xRAXjhw3g8iEICBbhHDQa18LK
-   iyUPPczM4NQ3V8GMycItEkqYmXZWN8Vb3xGYxTsaa1EaGP+Va/nTnQKM8
-   uBikN957pBgDdj2k8Me5Dk5mNvQ7n6j6LOXJzYwdMLeWQWvtM9L1tkJ4B
-   PDZfn3Cz1zSJ1E7uAQHQ5O3qMg1J54ZSPnL3PoJnKEJqcO4o9SGKOSBpc
-   x60PCvZBJhPSUyVfwoc/neQmT6RLyNmLLzjbMOBUo+tuDCVY7sVnZpkAx
-   pnPr1MqciazXjFnHIrJWkTtZYngXKIymGHDwdCS/Z4/a6umYVMMk2zm8e
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="16253120"
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="16253120"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 06:59:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
-   d="scan'208";a="11854306"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.7])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 06:59:19 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 13 Mar 2024 15:59:15 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: linux-kselftest@vger.kernel.org, 
-    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
-    Babu Moger <babu.moger@amd.com>, Fenghua Yu <fenghua.yu@intel.com>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 08/13] selftests/resctrl: Add ->init() callback into
- resctrl_val_param
-In-Reply-To: <7zhdrvbb2w2ytyhbr2pl22exkzktqhv4ykb5pht6wsefg3yfyz@72xhgz3uyawo>
-Message-ID: <5105ab0f-a90e-1770-1a67-db48f74b427f@linux.intel.com>
-References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-9-ilpo.jarvinen@linux.intel.com> <zxrd5yzgtbet3d42c77ifgu5t2guyhwbz76zhk7zhrp6hnamrb@pl72dxisxax6> <vzluzxmks6bqfszwoib72ufbanxucxk5xzilavp3wrwoh7fqxh@rugv6wcptofu>
- <511bb602-e29d-0a2c-3076-81fdd5a5955f@linux.intel.com> <7zhdrvbb2w2ytyhbr2pl22exkzktqhv4ykb5pht6wsefg3yfyz@72xhgz3uyawo>
+	s=arc-20240116; t=1710338321; c=relaxed/simple;
+	bh=Z3KhrC/EIoz1PvYW1+d/mVEz0BhSAC14Uol/lITTdSg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fo0foCtcM5itQCCiORRwpIcPPMVU3E+VB9+7FUInaOOQePnDZBwupXu3grx0tQ2w4GgRsQLwlSa/HmXPfbrQ+mcoUDKu7LfAK4J7FZK2Cs3zhuF/0cfUO3s0SLB/X9JCuSAOJr7isPiotGqZN4S+x6Ye1Ktxr2BCygHMf2i0DYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EXHDhthA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v2DZR+Pn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KRdmYukr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+EHiFIIa; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4BE9B1F7A5;
+	Wed, 13 Mar 2024 13:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710338318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TpodtcSm7Y+i7tvMHn/lmmFNHmbivL/zCj7us76Dghg=;
+	b=EXHDhthAOdTF/4FiRpRhjSsn/UE0TiNFcqw0j9akuMcppPb7qHAgmMTT2HD+bDZY5wPm34
+	62sdPpIfJC6heEh9NE+cs2NhmRyMq0PQNOuESvdoT3S46/KMLFA9BooHU/nno+blqr7BuH
+	1uAERRy2p2lLFM9Zh3YvpxwT3G2AFS8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710338318;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TpodtcSm7Y+i7tvMHn/lmmFNHmbivL/zCj7us76Dghg=;
+	b=v2DZR+Pn7qXslcaUG1+J/su73lDW9lBtfhgb4rSZhUB7VQhNUaGlniU4AdmxS5p40pzH6M
+	VmSwv1UMhZEniOCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710338316; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TpodtcSm7Y+i7tvMHn/lmmFNHmbivL/zCj7us76Dghg=;
+	b=KRdmYukr4SWjt2WXSOz3A1xvV873TgzgS0CFzsS9B9hVTWEDp9Jd97iqsbwPgqFsw9xA0Z
+	CD6vP5+Ix+Vyz98ZBr28pJVWq7/LDHlHFzQI5uO24AA98ul0nrXa6Uze/o/CGMTVbRxdHa
+	93nVw97wMt31ZvvUvUg2QoEpr5svL3Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710338316;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TpodtcSm7Y+i7tvMHn/lmmFNHmbivL/zCj7us76Dghg=;
+	b=+EHiFIIayv4RJr/ipvCSGM2nc+YOipoKwBxBfaaHATdoE/s0MyUg0I5cdZJkbkFoy5aCXR
+	5OgSulYDclpmrFAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A23021397F;
+	Wed, 13 Mar 2024 13:58:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aqbWJgux8WUXVwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 13 Mar 2024 13:58:35 +0000
+Message-ID: <6dbd1faa-16ec-4058-b01c-98f25053303e@suse.cz>
+Date: Wed, 13 Mar 2024 14:59:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-518787328-1710338233=:1167"
-Content-ID: <cdf611ef-34ee-201b-da68-72df17a42dbd@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 06/37] mm: introduce slabobj_ext to support slab object
+ extensions
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
+ muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+ pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+ dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+ keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+ gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+ penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+ glider@google.com, elver@google.com, dvyukov@google.com,
+ shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
+ aliceryhl@google.com, rientjes@google.com, minchan@google.com,
+ kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-7-surenb@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240306182440.2003814-7-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.77
+X-Spamd-Result: default: False [-2.77 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-2.98)[99.92%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_GT_50(0.00)[76];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[soleen.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,nvidia.com,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 3/6/24 19:24, Suren Baghdasaryan wrote:
+> Currently slab pages can store only vectors of obj_cgroup pointers in
+> page->memcg_data. Introduce slabobj_ext structure to allow more data
+> to be stored for each slab object. Wrap obj_cgroup into slabobj_ext
+> to support current functionality while allowing to extend slabobj_ext
+> in the future.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
---8323328-518787328-1710338233=:1167
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <22bde3bc-d109-63f6-bed5-ff50d2bc2f9f@linux.intel.com>
-
-On Wed, 13 Mar 2024, Maciej Wieczor-Retman wrote:
-
-> On 2024-03-13 at 13:37:51 +0200, Ilpo J=E4rvinen wrote:
-> >On Wed, 13 Mar 2024, Maciej Wieczor-Retman wrote:
-> >> On 2024-03-13 at 11:15:30 +0100, Maciej Wieczor-Retman wrote:
-> >> >On 2024-03-11 at 15:52:25 +0200, Ilpo J=E4rvinen wrote:
-> >> >>diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/test=
-ing/selftests/resctrl/cmt_test.c
-> >> >>index 241c0b129b58..e79eca9346f3 100644
-> >> >>--- a/tools/testing/selftests/resctrl/cmt_test.c
-> >> >>+++ b/tools/testing/selftests/resctrl/cmt_test.c
-> >> >>@@ -16,6 +16,17 @@
-> >> >> #define MAX_DIFF=09=092000000
-> >> >> #define MAX_DIFF_PERCENT=0915
-> >> >>=20
-> >> >>+#define CON_MON_LCC_OCCUP_PATH=09=09\
-> >> >>+=09"%s/%s/mon_groups/%s/mon_data/mon_L3_%02d/llc_occupancy"
-> >> >>+
-> >> >>+static int set_cmt_path(const struct resctrl_val_param *param, int =
-domain_id)
-> >> >>+{
-> >> >>+=09sprintf(llc_occup_path,=09CON_MON_LCC_OCCUP_PATH,=09RESCTRL_PATH=
-,
-> >> >>+=09=09param->ctrlgrp, param->mongrp, domain_id);
-> >> >>+
-> >> >>+=09return 0;
-> >> >>+}
-> >> >>+
-> >> >
-> >> >Is there an option to make this function (and the set_mbm_path()) glo=
-bal through
-> >> >the resctrl.h?
-> >> >
-> >> >I'd like to use it in my SNC series [1] for looping over different no=
-des and
-> >> >that requires changing the paths during the measure phase of the test=
-s and that
-> >> >part is currently in cache.c:measure_llc_resctrl().
-> >> >
-> >> >Or would you suggest some other way of changing these paths in cache?
-> >> >
-> >>=20
-> >> +forgot to add the link :b
-> >>=20
-> >> [1] https://lore.kernel.org/all/cover.1709721159.git.maciej.wieczor-re=
-tman@intel.com/
-> >
-> >Perhaps ->init() should just prepare an array of filenames to read from=
-=20
-> >to support SNC. That would keep the filename preparations out of the=20
-> >measurement period.
-> >
-> >It feels slightly hacky to have an array of files but I cannot think of=
-=20
-> >anything else that would be cleaner and would not require creating the=
-=20
-> >filenames during the actual test.
->=20
-> So the array of names would be a part of "struct resctrl_val_param"?
-
-This series has in independent of resctrl_val_param because resctrl_val()=
-=20
-itself doesn't care after the separation of generic and per test logic.=20
-
-But that meant making it globals into the per test files which I didn't=20
-like that much either. So perhaps having it in resctrl_val_param is=20
-still better.
-
---=20
- i.
-
-> It would have to be dynamically allocated too before running the tests.
->=20
-> I kinda agree, creating filenames during measurements messes the whole
-> separation idea between setup and measuring. And as you said there are li=
-ke 4
-> nodes max so not much memory would be wasted there.
->=20
-> I can experiment with it and try to add it in my series - since it's much=
- more
-> tied to SNC. Unless you see it'd better fit here then that's fine with me=
- too.
-
---8323328-518787328-1710338233=:1167--
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
