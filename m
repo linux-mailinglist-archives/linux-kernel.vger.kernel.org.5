@@ -1,154 +1,175 @@
-Return-Path: <linux-kernel+bounces-102388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10B0287B17F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E27A187B184
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:18:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9312E282614
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:17:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96CF528C184
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:17:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2474657330;
-	Wed, 13 Mar 2024 18:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B91559158;
+	Wed, 13 Mar 2024 18:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lNilWqOq"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="rjBx5ITD"
+Received: from sonic315-26.consmr.mail.ne1.yahoo.com (sonic315-26.consmr.mail.ne1.yahoo.com [66.163.190.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E259556B64
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC1A524BE
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.190.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710356177; cv=none; b=Lg4HpbD72+qwoDkl70N+0q4rOUI9QLpV8SiXsmPO5vrAS3Znl7/AJxroBBf12N9A1fF8A+NLly4iwxxPkFnwxOs7eR7Q3gypn5Lbovyvcf8xXNFo5T9feNPLIaUTkNknBbr2gJVsDs20CodlF8pWE846LdUmXkI1RkfjgTjC0n8=
+	t=1710356285; cv=none; b=aqQBiq9SaXSKrK3jE7lT21YikIqsfbAfmRX+9MzbzUZqwG0VbrqcGbcfCWR/0zftEPOgwyFq1jZvoEYs+no0Iv4rJb2hENUhRMsezm/32eYAxfUlhvkGhRTAHQ/s7UdUMWOz44DmPMyU0Cc5S/A0vcQS+juYMwuksk1PlhiJ8lE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710356177; c=relaxed/simple;
-	bh=SQS+ov8yIW6DEKRzVTZuSjdygsQnSqtlsD90R8giz/g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UC8z5Wqlci5LZdSPSQMw+FDY+wOCNPdqQlNGH+r8sMdRZzdC9eaZF8TBAHTodK3gvcDOGn4bTlyOjb7/59ThhPTCDoJqh3hDrB6qig8jD5yrK92fcmG7ykci5oJIvGtCHUQOVSR2Yxj8X97RB/r2BpAqqjiFPmh834gTMrHGA0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lNilWqOq; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e6b22af648so1067959b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 11:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710356175; x=1710960975; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XAsXiIDC6OwZ+FdvxFgNYuLvw56oPhd3QbM/5nEMps=;
-        b=lNilWqOq79hDVuTSXdXMCtyCBN5Y44x1C3HI1ZG5tM+vaIi/TovEVpgV4HgpMyXMCq
-         rFfPx/UcBaonZNS+uqlgFkL8ha9R7ZOsPDz2gF848r/N/IoyVNZBBjYlJNIeSARrqWqu
-         AMpnOaqHZi3QhH9hVOU2sw6HRaSJmCE5Avrew=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710356175; x=1710960975;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5XAsXiIDC6OwZ+FdvxFgNYuLvw56oPhd3QbM/5nEMps=;
-        b=w9yhaLTNKeh/oohUUBLALbv2KTmXHQvZrezS5TP3DEP7xEygHqcZ2vWL8XY0cyprpc
-         LNr2xXG3cTG61h/pQOb5Pj5rRlQCkLsan3kAwoRqKa6LkelCFt7hKgAGMoYXpZJQjED+
-         +iW4blfjg1apPMcdpSvDhDn53Aw949v8QJRhOG8ZmKe5gXB431lsEu67zP1rbPr4dy+I
-         gEcOlCD3oIMQ14niFlN+h+/jYYxVlvhMLi5H1E/PGXpnMjO1wgqUzvy9+QzyyUfp9Vr9
-         mv5fvm0ZP2BiBp3vmMP7wZ7w12Gkzt3auh4Kkee9WfwHHzn1o7DBMijLWYn6P9cORyDs
-         hr8w==
-X-Forwarded-Encrypted: i=1; AJvYcCV38NyJU91jRa/Ugc4JfHj88PkOTEIzaZPgLLGFmHptdrn1ghc/UWBoUsVULz+qxYUF3Fyh4fgEqcQpipfgH6i581TEXU/45dlNXrZa
-X-Gm-Message-State: AOJu0YySo4Xc5mGoBQ5DceSZzI0+vvQNJHcpGd8sr0gFZY7ZH86XtIVS
-	qxKQDpLR803/3NIhJbJDlL26nUoN8yeLFVXCte8ZzIMA4aFa744dIGx3Y4w8oA==
-X-Google-Smtp-Source: AGHT+IGA4JGKwWWNLHCxq7izlVfvB2QGsE/36UJ5ZjuTNx2RCIULRNshQCd+NPhnH7MmJe3JVpwZYA==
-X-Received: by 2002:a05:6a20:12c5:b0:1a1:87b5:4b28 with SMTP id v5-20020a056a2012c500b001a187b54b28mr4995408pzg.0.1710356175280;
-        Wed, 13 Mar 2024 11:56:15 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id z3-20020aa79903000000b006e6b959b636sm1615689pff.53.2024.03.13.11.56.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 11:56:14 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Eric Biederman <ebiederm@xmission.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] selftests/exec: execveat: Improve debug reporting
-Date: Wed, 13 Mar 2024 11:56:10 -0700
-Message-Id: <20240313185606.work.073-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710356285; c=relaxed/simple;
+	bh=Vf9Ih6YnOrcj0la+uGb2Y6VUBox2tLzmIeU6nmWBAXo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sSNvSVoU/LcfPgnDjbp0UjtwjG4255rrOPw0zKBrjQ53jT8qEBPpokjijug+fzSLINCbEelL18OzldfYD8wJ68qfJlCzlkfbeJp7R7NJB53qD5nPpRsjByd+D3EujNIVmw80vbmo663QsrH5PhOYQMyL79B1G9/LgFBRXWArF2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=rjBx5ITD; arc=none smtp.client-ip=66.163.190.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710356277; bh=YyE0bpo7mkqejegnuc3LP+oOeUfGoXtaAdtgfPEkH6U=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=rjBx5ITDaaI0emvhuR1Y3x1yDZuoarCmeWzUWGTasMkSFUyT6zbwOfBzIu16AlSvz4Lb7dKgUhM2cRipxMT8UmkRprUXWTLsUlHS/VMnoYCUFF0ka2/ardWHN6kokM6NjvHV0CpKroOZ/s8glV36cCiRX9OJj4wgvEnsKptRz+mvjrtPJrp24laP03iVi/20zqfSKKN886QdeYjWsXmyt8IV47qtS6CRj/jTMf8Kcu2vYaNlutIbQOudhb/6erpAnef8vaf2l9J5MzIdR6VA+h7nFTKIFuV1rwGU+p7EA+QXE6cQtR1Z+Yc1FoUE9Dd1IwCQLGTr/JqtiYCH9shZjg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710356277; bh=hbwNGNagOIBnzhTRpQZ/bX6erCK3e/FqBKFyEzil0R5=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=WwbDlYdpJjI4K7sxLa/AO4oth90ILwPC3m+PVVGjf+V6HiI8bpnobb7y/kgnxac83jdHvnkI8AYvA8GYEdUNhbhloK/mmbHlynIGzmY3M5hVQNCZJJxoShjnBFmdFLkZFI4TU66BVxGSDJfkzSGAUfGzdY33Sd0V0GCssBWnztk7SuKYs2Rm9/cDWlaEciVIpo5YERCORf28Z5TT8dMKjBUXEP4yKxGSlOe4qp5k+7RBmcPrQtmg/pBE6KQglEz3dP9nddfAqqi8X0tqoHrnfUZy8SRvwRFmREuUr9uzL9yRfRIk7lVA+6hUWCPd5UaqjHVH4VzbKt3ySVTyVZEeSg==
+X-YMail-OSG: et4lEBUVM1lN3hT.k0bD4MlXn7LnCKaA54TMjd0UF6K7xAjOc8yIM6qRd3O6Mbq
+ BLOZIzwNXIvRrMANj01GQaHHI0QG86L_dTlnGQRj7lPqr8fIPYzpkOWO4.hsi8fJlwVd9wAy33jO
+ rPHrK.PVdgoKpLFHLrqdJv4gcpf8KaGmTZsDJE4mJL_CCY8JVPG0Tex85TgP8zrNz34H2U09VpX6
+ B8hknuJr8GEyZvXBEOPYl_t3IiQYpHhhisTJD7i_gfOKJo3Rm7_jj7fOmIM0oVQx.XgjJumHxmX7
+ Hwcr7FTZgcgeXe0raVmQWP4448fXKBjykw7PdLaN95FtXOxuE4lvuoGNw.bGGxI_hyRR7vSJ8xHh
+ uyIEeBIXI3HgwqdsB_Ju0QSRXCS9AH1fJeP.GwB7OaDQ43J_K_X_BGleUW.ZW0I6ymVFTYRXRWNt
+ wwMcv5LSjS55jKRQ1MP5gXmr4APBHSa2bk1lurdJQVhGFKBet3RcgNg3VHn7_0dnQ9D2aV6MLDgM
+ a8m_ioKPpLbIHIMf7xq5ajQgFYrxiRr9diA155PO7ZqdeNKNg2IdBLN8xkhRfFS2rH9Vgn7F1mEY
+ Ikyy2wpIKsobVS.DemUAI.2Uk.WdI.kxAsjiPWUWJCuXZheHmGtuPyyXi.fFLen4E7IoZcb3yRKz
+ mcrTJ_5Ur72Lgh5nbEIPkwC4wq.8rD__abd3JMPXUKJS43bbAIykOHeF66cfm343FMB_7WvbfJfk
+ EW9iH.43ZBQl55g7EcCq_lq.6_2vdEOLEIXVti.1uKl4ngUo7shRricSi5OFiPzoLfoLH251a1px
+ qVZs_vPto1Kbbs.9FfRtuWHplli8FX5kJ0StMl4zEMInLlu8Z2jR4LqIBD3r200Jp6y7P_0GZvIP
+ 3RmX__hb23ADotgwsdhScfYou0_BIRlS3XHWB6IRahuGjePVOL3Aj7s54FwDwDXWNqwkeWCBjf5B
+ JtDe_.xKsUsh3xg_UTjpq1I4goOGCLRitj13byb68cn68jZQ24PH2C1J_Uil_nTtFOyl84rPw987
+ AFpVtIAlM9ZsImDKCudUDfpCS.JI6qLrRDeIvk0urB9bbzAsZna9.V.TMPNLV7S8QsIuT_iLyw_R
+ tJHGJ.wwn9NfZhxg1s1Trx4xGcTEOhC0NLq1zKGSzdTXZqfVTGaJtnEPET9bY9FvYdAkgDQ76WWz
+ 6NeNJ_v667zTRdiz3ltxtfg8bn.9uj0kN8ZRLEP8RyCfD0yRLXlyPrC9jndTfSfLBPGTgvAmZ0VQ
+ IUy9YJyiSWGRAxuxtElc_nDbKQYgiMvOB0ogsDnRaXSo4U4HN4_ArvOqOub8i96P01K_QDOx54U_
+ qZuw_l5fCQAFmiKKdlHHol9Jx2vWx7fWnM4tNvceeVVAup2oXYwAU4ETzsBPPtKu76FZXyfxTAMv
+ wfz1_9GB7yq_cbM25XvNkPRDiyl1cDZx.oArOAYYzAuYfSeA.8nvDqJBYgKn2ehlFe7OL6NkwnJk
+ 5bjVfw3072oWMwh.nQ21cuipaWu3U17E1MO8grLWff_retZJ8jsRpoihMPKe3yumhiyrLuDKTEBi
+ 47gjwDxejt8dvdCkYUM4yMlLPrQaIlfbgJevjINBYjJunpoWk_vTcTHdYR_pkKPRsm_J9uDn9Rak
+ CdWH9Sg95rxqChTcZvGdD90L3HHx6mxMnr6.KWDRw1zXJBCvrQRUYGrgFBj6hlF1qbI4huMQvW1v
+ 7wzaynADtoMDMhp_pAV9V9B8rtdRKs0MhAaRVQ3N9p35jqX9CSdE24hhZCeN6HrWJlS4ER0lBDt9
+ I8ntmIdg7V1Sh4UHaGrJkg28K86wXTXazK25B2RXaalyb208ahUjfS5gNZsTtOPhVIrcHxhYVqZU
+ CV8DI_LwZdMJEVh7Oe1nqJwMwCZTKxux2BhzTfJTsarV5f1cCaKtj4reLWD0NHO7OSr0CBgnTETh
+ iOGYNrvULDd0GUHsPQSUs.1lA1cNIsOP3GVzmKW7PO6Wpuki4m0xAObUx414Ay4VFd2Le.ow_wdZ
+ fFFx4Br0L5XDsI0rW.HogpQYLC1JEfb2reZtfoVPQH9dej9dCjVpZwG59NYlgKsLMzKkRRLa5NAc
+ kVftwrdUD2ITKLu3ny8HSbNtAOiU853_IYbimDHppcffYiAoaULf.9KZcFHV0H_X0P2KcEnmRLUF
+ U.YanBqq2cMybMHm4UW2.v8LCqvLt5P0IRuANbvrjX6_e8WFAnRcIanDy0kipVq31MfMGI3WEL7O
+ 5NgOb1HWxasp5jAyielmhcl5Coa8FU5459nkZUEdApcWM668fttchwZrxmSxyR8nbuna.rH.1Enu
+ oucfzmuqrPiqXZW43sQU-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 491f6f51-7db3-4805-871c-f68815c1f07a
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Wed, 13 Mar 2024 18:57:57 +0000
+Received: by hermes--production-gq1-5c57879fdf-vxz7c (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 0a4b546e8a707589b2da10e2ab30b66d;
+          Wed, 13 Mar 2024 18:57:52 +0000 (UTC)
+Message-ID: <5a1cf6bc-ac51-44e3-b3d3-ade727781cf6@schaufler-ca.com>
+Date: Wed, 13 Mar 2024 11:57:52 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1980; i=keescook@chromium.org;
- h=from:subject:message-id; bh=SQS+ov8yIW6DEKRzVTZuSjdygsQnSqtlsD90R8giz/g=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl8fbKt7Aicr2v1jL2D5Cbtq5T6AALRK5Ut0QjW
- yJY662adQiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZfH2ygAKCRCJcvTf3G3A
- JhdZEACO826i+YbxlErFkdeBoatgCSeytNdOJhvq9RSnhz1h6CSrIOdrAzqhfHWtRFO1b/4Q4k/
- bfZpBWeYDrreNjcB4+axQl0dBlBLpcvZD/XhhZWF/q2qXA8G4R8sL+IQgxvbC1SfY43m4voENz/
- S11w3mMf4mhfsGrUCfSLJXUhkRSrw/uqmjZ2/158F5SiTU+x8c2QpqpXfd5nujAZQcLQefx3oji
- k68TQcM3f3oQeiAO0p011Bh9gHe92BSnjZB2Pfh3JJWeEOCOxR5/BEAQGF+Xwstsdc1gf5W2x47
- maW249sTvbIujyJMudbFe6ADnOxYZzMxcNzsg8f7Xm67xyv/pUv3PMMisH/FC5a5xDuOcuM56NJ
- M7qkV5lAuGdGpFWQgrZ9vrPqSWsnE/fl0u44X6E9CTRaboDIU0if+uAm24IYm/e4HaXu5L31l+1
- 7OWMd0275j+zKuT5THdsQOMFsiP/Kl0jIChgbDt7IoViRJPOIsK2zLa6yzTrWCl85krYW/a2Gj5
- YetE0h8hI10kXC8d/ynnF3syoaeTcRxOOd/CYVx6MfouycA3E5sMntsQGGqDvnxnQLh+ZoSDoaJ
- zqDad87A49h4QoM2nZYN1m5WfK4xlatrRK0ZHnPBwQYV8X7BzT8LEGyHaT6OCqDmfVsCdSPNfE3
- cjjEus9 TFgxnctA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] LSM: use 32 bit compatible data types in LSM syscalls.
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>, "Dmitry V. Levin" <ldv@strace.io>,
+ LSM List <linux-security-module@vger.kernel.org>
+Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+ linux-api@vger.kernel.org, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>, James Morris <jmorris@namei.org>,
+ Serge Hallyn <serge@hallyn.com>, John Johansen
+ <john.johansen@canonical.com>,
+ Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+ Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <045f54ea-4057-43b8-81e2-5cc1b3966d04@schaufler-ca.com>
+ <6353ba2abd868cd83186f54e7b71c840@paul-moore.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <6353ba2abd868cd83186f54e7b71c840@paul-moore.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.22129 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Children processes were reporting their status, duplicating the
-parent's. Remove that, and add some additional details about the test
-execution.
+On 3/13/2024 11:46 AM, Paul Moore wrote:
+> On Mar 13, 2024 Casey Schaufler <casey@schaufler-ca.com> wrote:
+>> LSM: use 32 bit compatible data types in LSM syscalls.
+>>
+>> Change the size paramters in lsm_list_modules(), lsm_set_self_attr()
+> s/paramters/parameters/
+>
+>> and lsm_get_self_attr() from size_t to u32. This avoids the need to
+>> have different interfaces for 32 and 64 bit systems.
+>>
+>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> We should add the following 'Fixes:' tags as well as a stable marking:
+>
+>   Cc: stable@vger.kernel.org
+>   Fixes: a04a1198088a ("LSM: syscalls for current process attributes")
+>   Fixes: ad4aff9ec25f ("LSM: Create lsm_list_modules system call")
+>
+>> ---
+>>  include/linux/lsm_hook_defs.h                        |  4 ++--
+>>  include/linux/security.h                             |  8 ++++----
+>>  security/apparmor/lsm.c                              |  4 ++--
+>>  security/lsm_syscalls.c                              | 10 +++++-----
+>>  security/security.c                                  | 14 +++++++-------
+>>  security/selinux/hooks.c                             |  4 ++--
+>>  security/smack/smack_lsm.c                           |  4 ++--
+>>  tools/testing/selftests/lsm/common.h                 |  6 +++---
+>>  tools/testing/selftests/lsm/lsm_get_self_attr_test.c | 12 ++++++------
+>>  tools/testing/selftests/lsm/lsm_list_modules_test.c  |  8 ++++----
+>>  tools/testing/selftests/lsm/lsm_set_self_attr_test.c |  6 +++---
+>>  11 files changed, 40 insertions(+), 40 deletions(-)
+> ..
+>
+>> diff --git a/security/security.c b/security/security.c
+>> index 7035ee35a393..a0f9caf89ae1 100644
+>> --- a/security/security.c
+>> +++ b/security/security.c
+>> @@ -810,7 +810,7 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, size_t *uctx_len,
+>>  	nctx->ctx_len = val_len;
+>>  	memcpy(nctx->ctx, val, val_len);
+>>  
+>> -	if (copy_to_user(uctx, nctx, nctx_len))
+>> +	if (uctx && copy_to_user(uctx, nctx, nctx_len))
+>>  		rc = -EFAULT;
+> Hey, where did that @uctx check come from?
+>
+> I'm trying to work through if that is a good/bad change, but regardless
+> of if we want to make that change, it really should be in a separate
+> patch as it has nothing to do with the syscall parameter changes.
+>
+>> diff --git a/tools/testing/selftests/lsm/lsm_get_self_attr_test.c b/tools/testing/selftests/lsm/lsm_get_self_attr_test.c
+>> index e0e313d9047a..288302a444e0 100644
+>> --- a/tools/testing/selftests/lsm/lsm_get_self_attr_test.c
+>> +++ b/tools/testing/selftests/lsm/lsm_get_self_attr_test.c
+>> @@ -76,8 +76,8 @@ TEST(flags_zero_lsm_get_self_attr)
+>>  {
+>>  	const long page_size = sysconf(_SC_PAGESIZE);
+>>  	struct lsm_ctx *ctx = calloc(page_size, 1);
+>> -	__u64 *syscall_lsms = calloc(page_size, 1);
+>> -	size_t size;
+>> +	__u32 *syscall_lsms = calloc(page_size, 1);
+> I believe that should remain a __u64 pointer as we didn't change the
+> first parameter to lsm_list_modules().  I'm guessing this was an victim
+> of an overzealous /u64/u32/ search-n-replace going from v1 to v2.
+>
+>> +	__u32 size;
+>>  	int lsmcount;
+>>  	int i;
+>>  
+> In the interest of speeding things along, I'm happy to make the above
+> changes while merging Casey, but if you would prefer to do a respin
+> that's fine with me - let me know either way so I can plan accordingly.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Cc: Eric Biederman <ebiederm@xmission.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: linux-mm@kvack.org
-Cc: linux-kselftest@vger.kernel.org
----
- tools/testing/selftests/exec/execveat.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/exec/execveat.c b/tools/testing/selftests/exec/execveat.c
-index 0546ca24f2b2..6418ded40bdd 100644
---- a/tools/testing/selftests/exec/execveat.c
-+++ b/tools/testing/selftests/exec/execveat.c
-@@ -98,10 +98,9 @@ static int check_execveat_invoked_rc(int fd, const char *path, int flags,
- 	if (child == 0) {
- 		/* Child: do execveat(). */
- 		rc = execveat_(fd, path, argv, envp, flags);
--		ksft_print_msg("execveat() failed, rc=%d errno=%d (%s)\n",
-+		ksft_print_msg("child execveat() failed, rc=%d errno=%d (%s)\n",
- 			       rc, errno, strerror(errno));
--		ksft_test_result_fail("%s\n", test_name);
--		exit(1);  /* should not reach here */
-+		exit(errno);
- 	}
- 	/* Parent: wait for & check child's exit status. */
- 	rc = waitpid(child, &status, 0);
-@@ -226,11 +225,14 @@ static int check_execveat_pathmax(int root_dfd, const char *src, int is_script)
- 	 * "If the command name is found, but it is not an executable utility,
- 	 * the exit status shall be 126."), so allow either.
- 	 */
--	if (is_script)
-+	if (is_script) {
-+		ksft_print_msg("Invoke script via root_dfd and relative filename\n");
- 		fail += check_execveat_invoked_rc(root_dfd, longpath + 1, 0,
- 						  127, 126);
--	else
-+	} else {
-+		ksft_print_msg("Invoke exec via root_dfd and relative filename\n");
- 		fail += check_execveat(root_dfd, longpath + 1, 0);
-+	}
- 
- 	return fail;
- }
--- 
-2.34.1
+I'll respin. Shouldn't take very long.
 
 
