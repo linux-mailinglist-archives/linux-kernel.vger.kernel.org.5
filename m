@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-101743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFABD87AB34
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:33:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4198F87AB37
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:34:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BA59287EBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:33:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0107BB22638
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3684A52F8C;
-	Wed, 13 Mar 2024 16:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B2253E0E;
+	Wed, 13 Mar 2024 16:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4WMCU1Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SKEV1r1G"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B3C51037;
-	Wed, 13 Mar 2024 16:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60D053399;
+	Wed, 13 Mar 2024 16:32:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347564; cv=none; b=TzeZbLpLfAoAFGfsiHF0ze3swtpLMuE9rujVz9tsSQrTXu3MIRKK59YPHjJAccYGz5dCj+OFCYNl6dcfV02lFt5u2yYWSS2H7Qm1tFJJZZRp1iAQFFgC1cNCVNxuHmqAIeaBlyf5o8ntKL+edGqMAJZYgtGCQgKb0HAm0sGxb00=
+	t=1710347565; cv=none; b=tLD6ErLtUnJuIgS4QD0gUU+8fDqdsEEAH93a5JfrCTbfHYiYkX5FA21DDFxFbnsLdBSd3sO3FoJ3fUD5cZWwc3kKU1f3jMlFL1gcAcqkJI4g8CbVgVKD6EH13P7Kfm1dwHQnO65JQX2hFqQPuWODZAf0v/AGh1VgeXRRahDULLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347564; c=relaxed/simple;
-	bh=5itnuw8rkfFsHoEsvM+/W5bVCEbxe4whwlPwsjtLUOo=;
+	s=arc-20240116; t=1710347565; c=relaxed/simple;
+	bh=X5evWfXM8GEHuGV4oJwMVCIjy8InSOaQVoAvsiB2kBw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TGbz6CWnZA71T/tZIdnoBP9Y4DXXM/1JeWxv09vN/1c1h6z4+qmPhSEBncFbVUAm18J0XAv4evTKYSMGwrXi9JFP7ohCUUFJ5z6UfyTSfqe30HqQVUamp2MGid/9zOTu2k5lxhwpxd9LMn/SoMCydnOBC+7Vg1J7lx50JJZgfNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4WMCU1Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 551B6C433F1;
-	Wed, 13 Mar 2024 16:32:43 +0000 (UTC)
+	 MIME-Version; b=RXLwczi4ov8OPR4zjdjYFWHIP3uM9EQaPR8qEQ/WmDSaguyQwOfklDrK8A6fzglAooJLKgVtktyZNwEZixUnOnKQPuenhQT1x7d3Ey33D/6niOhSZQTiLaNPVZjeied18mOO3pDdE6hUXTcb/25lsg36KlrRcXMDJ+1eIjkd2ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SKEV1r1G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D351C433C7;
+	Wed, 13 Mar 2024 16:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347564;
-	bh=5itnuw8rkfFsHoEsvM+/W5bVCEbxe4whwlPwsjtLUOo=;
+	s=k20201202; t=1710347565;
+	bh=X5evWfXM8GEHuGV4oJwMVCIjy8InSOaQVoAvsiB2kBw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A4WMCU1QGdIKHISLwwUqyKTtieJg7x8Wq8CBf8OLNiBkcIMbTSVT6FDPPj+d9a/rA
-	 7c5wL5ECSnQo24p8nhFFP2dXtdYjVHRMXllx/oYeAZ8WXvVgVugSwoii1J3dK3tC6l
-	 8ngX1INYOj2b4ARejjGpbT+QxlLKAasFkaejdVSIyPy7EzK6Xsj1wCuXZRSJqVKVrE
-	 5SvtdgpZelQP0R+zCdnHs0bp4qO5LVcPT8dlrBftbX+eadl5yQCWiQGrDGe9FMafA2
-	 35ZEE1t/41/CLA5jLMvijvk/nkhAhPHxpMuuLH4l01Tz5C7llBMs1kvsTsEWgxHRcr
-	 bSFZdTdilcCSw==
+	b=SKEV1r1Go4X59ogJTxQF1uJdKbDhGTD0dRo3NcNxXN//bemuKfIet7Vn3BzjrOB9M
+	 8Ht1/qcUehr2Oe+RvLhVlR3EHaTZPhP8U9zOZSIW28M6ZmsG9cw0TcJuAQ+pjgO0lj
+	 gIV4261xcxhf3fWcBqkM3uZezMGm1Uq/ilbmyWzfd8EcXPrTKvGUu1XOdNGRklOGGU
+	 4I051tSf1ZWM54eiw09HQJpIZ8OPHLHWRUl1MObmG9mNFN8oevdHuCGdAWPHqrrUx/
+	 jQXjm6w9a6RW22CTZhx1SuPkLgWFx5z2ES0mFC41VLz9V0gBNi7yhP4tV6ltpN6n4W
+	 rHgO3B5qsWN9Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 6.7 04/61] KVM/x86: Export RFDS_NO and RFDS_CLEAR to guests
-Date: Wed, 13 Mar 2024 12:31:39 -0400
-Message-ID: <20240313163236.613880-5-sashal@kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>,
+	Rob Herring <robh@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.7 05/61] dt-bindings: dma: fsl-edma: Add fsl-edma.h to prevent hardcoding in dts
+Date: Wed, 13 Mar 2024 12:31:40 -0400
+Message-ID: <20240313163236.613880-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -70,51 +69,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+From: Frank Li <Frank.Li@nxp.com>
 
-commit 2a0180129d726a4b953232175857d442651b55a0 upstream.
+[ Upstream commit 1e9b05258271b76ccc04a4b535009d2cb596506a ]
 
-Mitigation for RFDS requires RFDS_CLEAR capability which is enumerated
-by MSR_IA32_ARCH_CAPABILITIES bit 27. If the host has it set, export it
-to guests so that they can deploy the mitigation.
+Introduce a common dt-bindings header file, fsl-edma.h, shared between
+the driver and dts files. This addition aims to eliminate hardcoded values
+in dts files, promoting maintainability and consistency.
 
-RFDS_NO indicates that the system is not vulnerable to RFDS, export it
-to guests so that they don't deploy the mitigation unnecessarily. When
-the host is not affected by X86_BUG_RFDS, but has RFDS_NO=0, synthesize
-RFDS_NO to the guest.
+DTS header file not support BIT() macro yet. Directly use 2^n number.
 
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20231114154824.3617255-3-Frank.Li@nxp.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Stable-dep-of: a79f949a5ce1 ("dmaengine: fsl-edma: correct max_segment_size setting")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/dt-bindings/dma/fsl-edma.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+ create mode 100644 include/dt-bindings/dma/fsl-edma.h
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 468870450b8ba..8021c62b0e7b0 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1620,7 +1620,8 @@ static bool kvm_is_immutable_feature_msr(u32 msr)
- 	 ARCH_CAP_SKIP_VMENTRY_L1DFLUSH | ARCH_CAP_SSB_NO | ARCH_CAP_MDS_NO | \
- 	 ARCH_CAP_PSCHANGE_MC_NO | ARCH_CAP_TSX_CTRL_MSR | ARCH_CAP_TAA_NO | \
- 	 ARCH_CAP_SBDR_SSDP_NO | ARCH_CAP_FBSDP_NO | ARCH_CAP_PSDP_NO | \
--	 ARCH_CAP_FB_CLEAR | ARCH_CAP_RRSBA | ARCH_CAP_PBRSB_NO | ARCH_CAP_GDS_NO)
-+	 ARCH_CAP_FB_CLEAR | ARCH_CAP_RRSBA | ARCH_CAP_PBRSB_NO | ARCH_CAP_GDS_NO | \
-+	 ARCH_CAP_RFDS_NO | ARCH_CAP_RFDS_CLEAR)
- 
- static u64 kvm_get_arch_capabilities(void)
- {
-@@ -1652,6 +1653,8 @@ static u64 kvm_get_arch_capabilities(void)
- 		data |= ARCH_CAP_SSB_NO;
- 	if (!boot_cpu_has_bug(X86_BUG_MDS))
- 		data |= ARCH_CAP_MDS_NO;
-+	if (!boot_cpu_has_bug(X86_BUG_RFDS))
-+		data |= ARCH_CAP_RFDS_NO;
- 
- 	if (!boot_cpu_has(X86_FEATURE_RTM)) {
- 		/*
+diff --git a/include/dt-bindings/dma/fsl-edma.h b/include/dt-bindings/dma/fsl-edma.h
+new file mode 100644
+index 0000000000000..fd11478cfe9cc
+--- /dev/null
++++ b/include/dt-bindings/dma/fsl-edma.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
++
++#ifndef _FSL_EDMA_DT_BINDING_H_
++#define _FSL_EDMA_DT_BINDING_H_
++
++/* Receive Channel */
++#define FSL_EDMA_RX		0x1
++
++/* iMX8 audio remote DMA */
++#define FSL_EDMA_REMOTE		0x2
++
++/* FIFO is continue memory region */
++#define FSL_EDMA_MULTI_FIFO	0x4
++
++/* Channel need stick to even channel */
++#define FSL_EDMA_EVEN_CH	0x8
++
++/* Channel need stick to odd channel */
++#define FSL_EDMA_ODD_CH		0x10
++
++#endif
 -- 
 2.43.0
 
