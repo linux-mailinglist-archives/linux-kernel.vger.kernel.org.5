@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-102091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDD4E87AE51
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:55:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 686D887AE53
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B58B1C23487
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:55:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24271282C97
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF8D18C6F7;
-	Wed, 13 Mar 2024 16:47:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDCF18CEA0;
+	Wed, 13 Mar 2024 16:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lG0jEBNT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DgwFB9ta"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB76C18C6EE;
-	Wed, 13 Mar 2024 16:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C589A18CE88;
+	Wed, 13 Mar 2024 16:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348475; cv=none; b=K3yCj8KPB3qzyHN0E7ei+ileeaLvqimOsujSkfRHX9DhuVv8QeoRvJbnDrVnhEDhttUvRejWmVMfMLvJMUl79x+bBlbwO3rpmDXmkSf1YALQVSA9rvMBavLS0CX5MmUSo6Lxj69PSJueoaFzj8Cyw9GF+mqLadRrqBjvSqQujYc=
+	t=1710348476; cv=none; b=nhfQgvedj04YMCRqWAsLvSRhflx576g05jIYZsvPGmF3xa3qe4Z0vwBmsaGIIL+Uv7wFctWLBMDvzegilNMWE/tlqL5pDW8eJUmQitkEvooLJNnNO5g/PgfmZWrsTXYfHv0/SGq5TGB4K2SRMHbUYVcawKHL+DKwrUQn0x47yN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348475; c=relaxed/simple;
-	bh=Chwo63+CUgFsse9hE2Vrekasq4uLyH88xEX6ey5kJcU=;
+	s=arc-20240116; t=1710348476; c=relaxed/simple;
+	bh=AwSfW00Oqx1S8JYMbz0iz8+zYd9ifGgR8q1OwaY3Cls=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MLQgHQVQJo2NdzRSxMRyJWSBaSASJskW4dzDmTcZ7hlrqAqqtRxswLH3VMmme8unY/yAqIskk8LJ3RcUFllwmeuS79+g3hrksNEHzIAHeo4HMIOD2S1IOwQXdWKsQy9dZQB2HlTMXGNj8IZIAKLtAq/6ZzJErmtFmjak0FpMRVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lG0jEBNT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A82B5C433F1;
-	Wed, 13 Mar 2024 16:47:54 +0000 (UTC)
+	 MIME-Version; b=CZDDeAEKakrGhY++ChLja+dpOLOYBgvkSCZe9Tnl76htq8t1lGJ9UGYByotW1eExugBOt84WU93MSZpAHgTS5nTfVmj1gHwAsVyGHotbXlPvZh/sb3xAB6orE9i6GRg/7yxhSeKKk12D8CP9Vl7Kx/zz1JdJr61jKcNW1nQkIjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DgwFB9ta; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7524C43399;
+	Wed, 13 Mar 2024 16:47:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348475;
-	bh=Chwo63+CUgFsse9hE2Vrekasq4uLyH88xEX6ey5kJcU=;
+	s=k20201202; t=1710348476;
+	bh=AwSfW00Oqx1S8JYMbz0iz8+zYd9ifGgR8q1OwaY3Cls=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lG0jEBNTmzTkB+KN+QGY2tNmL3atzF3hneXDsiNymN7Bv+C77/gGt1WSgtld+2CpV
-	 sm6S2Yb6vn8qXY49xoos9kY0Dq0h82S7hsWVJmJWxMdjH1DlTbHPRlVZJKScxcQEWQ
-	 IE9/i9HBO608j0er31eRg6by3YIeAZ0mA8GZLfwvBuR/t0SU4z/yxZZWQ8gfZipaxG
-	 L3ptvEHz09qQxlMvldz8WwQ+DnfxkX/RVDQsrjxgv1pLxaMJvcui5b370ejxrxh1/P
-	 NATLhdftlnb8TWH2jSDq0VanxRnU2HoA5ERkZ9YOqfbPWfRZo68LHeFpJntw67Lmj1
-	 keU36DFJ/dktg==
+	b=DgwFB9tamHTJ+uJE7KVFyTfnoKR52mhVZYldsYgTRlzq/OeYNtDfeSOS14IS14/YA
+	 brXueKtAApPJSyhuipGfcapgqLZXYPCScPTKtLreMHrnD/s2MxhyXUZX8V7OFFdEXI
+	 dM383uYYBClCZydgBPSJce6I1ltPrXvJ+nGoZYyK/5pxWVkhO44b+DwKtsjMRTJtI1
+	 h3IP8H993omHy2fOcNJsX9AEbiIprgoml5WYGtkZ6F9wtjvURNI37jVzeutfzfzlf6
+	 EzdUdSZG34mYQdUApgKMpM31RKbTTsNPMPDsVtuWeBRCWEo75ko3oI2o2YWScf0WyM
+	 MiR2tsT4Ssm+Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Oleg Nesterov <oleg@redhat.com>,
-	Dylan Hatch <dylanbhatch@google.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Dan Carpenter <dan.carpenter@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 65/73] exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)
-Date: Wed, 13 Mar 2024 12:46:32 -0400
-Message-ID: <20240313164640.616049-66-sashal@kernel.org>
+Subject: [PATCH 5.10 66/73] serial: max310x: Unprepare and disable clock in error path
+Date: Wed, 13 Mar 2024 12:46:33 -0400
+Message-ID: <20240313164640.616049-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -70,62 +69,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit c1be35a16b2f1fe21f4f26f9de030ad6eaaf6a25 ]
+[ Upstream commit 61acabaae5ba58b3c32e6e90d24c2c0827fd27a8 ]
 
-After the recent changes nobody use siglock to read the values protected
-by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
-update the comment.
+In one error case the clock may be left prepared and enabled.
+Unprepare and disable clock in that case to balance state of
+the hardware.
 
-With this patch only __exit_signal() and thread_group_start_cputime() take
-stats_lock under siglock.
-
-Link: https://lkml.kernel.org/r/20240123153359.GA21866@redhat.com
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Fixes: d4d6f03c4fb3 ("serial: max310x: Try to get crystal clock rate from property")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210625153733.12911-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/exit.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/tty/serial/max310x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index c41bdc0a7f06b..8f25abdd5fa7d 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1106,17 +1106,14 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
- 		 * and nobody can change them.
- 		 *
- 		 * psig->stats_lock also protects us from our sub-threads
--		 * which can reap other children at the same time. Until
--		 * we change k_getrusage()-like users to rely on this lock
--		 * we have to take ->siglock as well.
-+		 * which can reap other children at the same time.
- 		 *
- 		 * We use thread_group_cputime_adjusted() to get times for
- 		 * the thread group, which consolidates times for all threads
- 		 * in the group including the group leader.
- 		 */
- 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
--		spin_lock_irq(&current->sighand->siglock);
--		write_seqlock(&psig->stats_lock);
-+		write_seqlock_irq(&psig->stats_lock);
- 		psig->cutime += tgutime + sig->cutime;
- 		psig->cstime += tgstime + sig->cstime;
- 		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
-@@ -1139,8 +1136,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
- 			psig->cmaxrss = maxrss;
- 		task_io_accounting_add(&psig->ioac, &p->ioac);
- 		task_io_accounting_add(&psig->ioac, &sig->ioac);
--		write_sequnlock(&psig->stats_lock);
--		spin_unlock_irq(&current->sighand->siglock);
-+		write_sequnlock_irq(&psig->stats_lock);
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 978d9d93127e5..a09ec46e0310d 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1293,7 +1293,8 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 		freq = uartclk;
+ 	if (freq == 0) {
+ 		dev_err(dev, "Cannot get clock rate\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto out_clk;
  	}
  
- 	if (wo->wo_rusage)
+ 	if (xtal) {
 -- 
 2.43.0
 
