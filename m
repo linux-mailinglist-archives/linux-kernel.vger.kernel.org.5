@@ -1,174 +1,149 @@
-Return-Path: <linux-kernel+bounces-102539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C078887B393
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:37:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63EAA87B3A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:41:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FBC3284448
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:37:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 057611F235D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 21:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4166353E2B;
-	Wed, 13 Mar 2024 21:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0622B59B67;
+	Wed, 13 Mar 2024 21:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=infradead.org header.i=@infradead.org header.b="GiBhUP0A"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IPWqatkV"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3431A38DC
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5707859168;
+	Wed, 13 Mar 2024 21:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710365853; cv=none; b=bR9RNNt4GLYqSuY07MmS6V3hL2pFLs2ROOmbPgA3l56fp93Mo9niBKQudKyI4SbPVYVXIhZbXY5Tv0J0sdP/UEnO6/4VNkHeGMYOhyq5uNjFvRrJ8gvUfNnbRH0ctU3ekKWoSIQJKqWulsZc9XGLoOE4nUeie9JCwV4cJlPucGE=
+	t=1710366065; cv=none; b=WjXfr3J/6mNbyzLgdoFlKv1fhWO9IWYTwBtd0z7mgFNaM19moBtRpt0i4pas8XXC1vUGnu3i8Ig/d44R0qdOaQDa7qBPKlhoX28WnPLqK+k6gmw3X095phIKqow48F69eCna07hDsA2NIEwa5e3CH6O8rPgu+sahx4VJeqkhkqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710365853; c=relaxed/simple;
-	bh=5yHraXVDQFk+w5OJkjMBnM5b16oeNXRmUoLOQD+vJ9c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OL1ESdMaWePcr/GNctIOs3irOxglz9T32p1ufRLsiX4Z2DS9Cy7bDAH/bBK1glCpvj/AnNk/fXuY1lE++lkQwnMphWDB0r6qtWR3E8+XhP7AwnsnG0sYjaPWlHxNj6YElS6ozAMtxjAZ8cluqLsK3k/HAOGa6Bhwt2n5qMnr6Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=evilplan.org; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=fail (0-bit key) header.d=infradead.org header.i=@infradead.org header.b=GiBhUP0A reason="key not found in DNS"; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=evilplan.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=oUWr+l/7P22mnFeHOehcZrsbMwGybiUWqyX8/H/bx60=; b=GiBhUP0AA7Oa7ZLMa+/XHji2jy
-	N2Cy2rUYTUIS098VKTjXvdDuLmXt971V8YDd491TFNLqrnMpRHAIQFpSjhjORY0/wii5bRdTBPGWG
-	c5ocTLE196iRz8lxnTWA5LkcoQ1J/fRY4IojUcnk9J2u5ajr2TrA3QZe0c/5dUDgSYKUMfo6+ceBd
-	hV0Uy7JX3lkHYZGXdwXxF8EuU3wJkUULmV3hHMwx4XkfKS0zT6bc6nmXc/76Gx6e2B3OcsF5vP4Rp
-	EzeuUp5+Z52RcIZQcgcOw4DnCThfddlBiV0q1vfopb49OmujSO84OHpSMy32fPqpB9tMOxAalk9Ax
-	lP6zokOA==;
-Received: from jlbec by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rkWHo-008ThA-2F;
-	Wed, 13 Mar 2024 21:37:20 +0000
-Date: Wed, 13 Mar 2024 14:37:17 -0700
-From: Joel Becker <jlbec@evilplan.org>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 12/14] fs/configfs: Add a callback to determine
- attribute visibility
-Message-ID: <ZfIcjeIWaB5RzNye@google.com>
-Mail-Followup-To: Tom Lendacky <thomas.lendacky@amd.com>,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>, Christoph Hellwig <hch@lst.de>
-References: <cover.1709922929.git.thomas.lendacky@amd.com>
- <b851e5f74398141bda2f5e6e1f0308cd13b39aa1.1709922929.git.thomas.lendacky@amd.com>
+	s=arc-20240116; t=1710366065; c=relaxed/simple;
+	bh=e9/aE3W+B9fWGEJ7kuuXfT+sZG0KdOCHiiwPjqy9t1M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZYHXgq/cdQe38bUkeNLgmmwUSeRTEacEGtGfpUueKXozTXed+RLbztdj0peT+A2PeF6LhBlDdLA/5+VzMojKRD9yJwClfJWC1F2Ck3bnG/z+ZqZZOmrXExFRVC85sDGeC07K4DWyO3DSEXrWfkXn3aOb+5UTi8BUtiBA7xOKpDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IPWqatkV; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710366063; x=1741902063;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=e9/aE3W+B9fWGEJ7kuuXfT+sZG0KdOCHiiwPjqy9t1M=;
+  b=IPWqatkVU+/r4ouTQVHuxd3ShTgVyRats5ImrrkHS7H4BFn12JE49WVR
+   qV+GHIW0YUl9LjObFSDIJbGwvP5fQLR3jLhbrLvsPumMJ45/C8o7C4Z+G
+   EmuAXT93+pF/ylXaqh1tTUjDXg3cXLtW+mqOXcAceZADKuZI+h34IJNXH
+   X/KPTkeS04RO3tyJ8A63jQz9g0TJqqohYsml3BArlY1gGxI3/H6f/2SKN
+   +oAq3WVAsYCjKAR1CNetWiFI9jUo4dvp8WuYcXGwYa5tW/paI7HH9a/4Z
+   hYHV2vHnBpqr5U8IgGkdTUBBICM/+zSxKstCT3wlm0tYCRRdlVAIzdSGN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="22678477"
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="22678477"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 14:41:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,123,1708416000"; 
+   d="scan'208";a="12522193"
+Received: from fyu1.sc.intel.com ([172.25.103.126])
+  by orviesa007.jf.intel.com with ESMTP; 13 Mar 2024 14:41:02 -0700
+From: Fenghua Yu <fenghua.yu@intel.com>
+To: "Vinod Koul" <vkoul@kernel.org>,
+	"Dave Jiang" <dave.jiang@intel.com>
+Cc: dmaengine@vger.kernel.org,
+	"linux-kernel" <linux-kernel@vger.kernel.org>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Terrence Xu <terrence.xu@intel.com>
+Subject: [PATCH] dmaengine: idxd: Fix oops during rmmod on single-CPU platforms
+Date: Wed, 13 Mar 2024 14:40:31 -0700
+Message-Id: <20240313214031.1658045-1-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.37.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b851e5f74398141bda2f5e6e1f0308cd13b39aa1.1709922929.git.thomas.lendacky@amd.com>
-X-Burt-Line: Trees are cool.
-X-Red-Smith: Ninety feet between bases is perhaps as close as man has ever
- come to perfection.
-Sender: Joel Becker <jlbec@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 08, 2024 at 12:35:27PM -0600, Tom Lendacky wrote:
-> In order to support dynamic decisions as to whether an attribute should be
-> created, add a callback that returns a bool to indicate whether the
-> attribute should be display. If no callback is registered, the attribute
-> is displayed by default.
+During the removal of the idxd driver, registered offline callback is
+invoked as part of the clean up process. However, on systems with only
+one CPU online, no valid target is available to migrate the
+perf context, resulting in a kernel oops:
 
-I'm curious what the strong value is in this extra callback.  As opposed
-to not generating the attribute in the absence of a TPM (why create a
-config_item at all?), merely having an empty response from the attribute,
-or having `->show()` return -ENODEV or similar.
+    BUG: unable to handle page fault for address: 000000000002a2b8
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0002) - not-present page
+    PGD 1470e1067 P4D 0 
+    Oops: 0002 [#1] PREEMPT SMP NOPTI
+    CPU: 0 PID: 20 Comm: cpuhp/0 Not tainted 6.8.0-rc6-dsa+ #57
+    Hardware name: Intel Corporation AvenueCity/AvenueCity, BIOS BHSDCRB1.86B.2492.D03.2307181620 07/18/2023
+    RIP: 0010:mutex_lock+0x2e/0x50
+    ...
+    Call Trace:
+    <TASK>
+    __die+0x24/0x70
+    page_fault_oops+0x82/0x160
+    do_user_addr_fault+0x65/0x6b0
+    __pfx___rdmsr_safe_on_cpu+0x10/0x10
+    exc_page_fault+0x7d/0x170
+    asm_exc_page_fault+0x26/0x30
+    mutex_lock+0x2e/0x50
+    mutex_lock+0x1e/0x50
+    perf_pmu_migrate_context+0x87/0x1f0
+    perf_event_cpu_offline+0x76/0x90 [idxd]
+    cpuhp_invoke_callback+0xa2/0x4f0
+    __pfx_perf_event_cpu_offline+0x10/0x10 [idxd]
+    cpuhp_thread_fun+0x98/0x150
+    smpboot_thread_fn+0x27/0x260
+    smpboot_thread_fn+0x1af/0x260
+    __pfx_smpboot_thread_fn+0x10/0x10
+    kthread+0x103/0x140
+    __pfx_kthread+0x10/0x10
+    ret_from_fork+0x31/0x50
+    __pfx_kthread+0x10/0x10
+    ret_from_fork_asm+0x1b/0x30
+    <TASK>
 
-> 
-> Cc: Joel Becker <jlbec@evilplan.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  fs/configfs/file.c       |  13 +++++
->  include/linux/configfs.h | 114 +++++++++++++++++++++++++++------------
->  2 files changed, 93 insertions(+), 34 deletions(-)
-> 
-> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-> index 0ad32150611e..c758bcc11235 100644
-> --- a/fs/configfs/file.c
-> +++ b/fs/configfs/file.c
-> @@ -451,6 +451,12 @@ int configfs_create_file(struct config_item * item, const struct configfs_attrib
->  	umode_t mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
->  	int error = 0;
->  
-> +	if (attr->ca_is_visible) {
-> +		mode = attr->ca_is_visible(item, attr);
-> +		if (!mode)
-> +			return 0;
+Fix the issue by preventing the migration of the perf context to an
+invalid target.
 
-What value do we get from carrying the mode through here?  The API
-proposed is "visible or not", which is a boolean.  Overloading that with
-"also set the mode" is confusing, and it also can lead to the divergent
-codepath problem you mentioned in your response, where
-`->ca_is_visible()` fails to return the mode correctly.  If this was simpl
-a boolean hook, the code could read like so:
+Fixes: 81dd4d4d6178 ("dmaengine: idxd: Add IDXD performance monitor support")
+Reported-by: Terrence Xu <terrence.xu@intel.com>
+Tested-by: Terrence Xu <terrence.xu@intel.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+---
+ drivers/dma/idxd/perfmon.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-
-```
-	umode_t mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
-	int error = 0;
-
-	if (attr->ca_is_visible && !attr->ca_is_visible(item, attr))
-   		return 0;
-```
-
-> diff --git a/include/linux/configfs.h b/include/linux/configfs.h
-> index 2606711adb18..18011f78ffde 100644
-> --- a/include/linux/configfs.h
-> +++ b/include/linux/configfs.h
-> @@ -112,39 +112,64 @@ static inline void configfs_add_default_group(struct config_group *new_group,
->  	list_add_tail(&new_group->group_entry, &group->default_groups);
->  }
->  
-> +typedef umode_t (*configfs_is_visible_t)(const struct config_item *item,
-> +					 const struct configfs_attribute *attr);
-> +
-
-We don't use typedefs of op functions anywhere else in configfs or
-frankly the entire filesystem API.  Adding one here would just introduce
-confusion.
-
->  struct configfs_attribute {
->  	const char		*ca_name;
->  	struct module 		*ca_owner;
->  	umode_t			ca_mode;
-> +	configfs_is_visible_t	ca_is_visible;
->  	ssize_t (*show)(struct config_item *, char *);
->  	ssize_t (*store)(struct config_item *, const char *, size_t);
->  };
->  
-
-Thanks,
-Joel
-
-
+diff --git a/drivers/dma/idxd/perfmon.c b/drivers/dma/idxd/perfmon.c
+index fdda6d604262..5e94247e1ea7 100644
+--- a/drivers/dma/idxd/perfmon.c
++++ b/drivers/dma/idxd/perfmon.c
+@@ -528,14 +528,11 @@ static int perf_event_cpu_offline(unsigned int cpu, struct hlist_node *node)
+ 		return 0;
+ 
+ 	target = cpumask_any_but(cpu_online_mask, cpu);
+-
+ 	/* migrate events if there is a valid target */
+-	if (target < nr_cpu_ids)
++	if (target < nr_cpu_ids) {
+ 		cpumask_set_cpu(target, &perfmon_dsa_cpu_mask);
+-	else
+-		target = -1;
+-
+-	perf_pmu_migrate_context(&idxd_pmu->pmu, cpu, target);
++		perf_pmu_migrate_context(&idxd_pmu->pmu, cpu, target);
++	}
+ 
+ 	return 0;
+ }
 -- 
+2.37.1
 
-Life's Little Instruction Book #306
-
-	"Take a nap on Sunday afternoons."
-
-			http://www.jlbec.org/
-			jlbec@evilplan.org
 
