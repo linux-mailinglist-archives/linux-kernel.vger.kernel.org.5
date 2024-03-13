@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-102617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FEE887B49B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:50:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2F987B49E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0227286342
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:50:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFF2E1F23AC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893025C90B;
-	Wed, 13 Mar 2024 22:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC8C5CDF2;
+	Wed, 13 Mar 2024 22:50:57 +0000 (UTC)
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815E75A0EB;
-	Wed, 13 Mar 2024 22:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0075A10A;
+	Wed, 13 Mar 2024 22:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710370240; cv=none; b=IlmRzGdXzyUmQGpk11cAHxIA4zTwuVe+IOO+E9dz69g0hICNMmKwPKA1DCKYi+neE7WC5kLnl3LHF3Ym8wGOySqQa59hL/2Vurg7hI7qLqoF0v2HqsweKmHFsA9HqRPcM2vECJLiFYGP51EuVC8VEZbnnbopNYKfueweNITxguQ=
+	t=1710370257; cv=none; b=UKV/zAVMFDV/GZsOcjG8ftNenJM4xBZJ9jtWvYPuUTKJiJp9dIqXSinXogjdFmUnWtl+nZ5iYi2aD3Cs/5x0ZEE3uTHMa3B3SeEtv3TFsz5/xMp8PBg8hTRimSd2HRHWLJUw2gy3xrAvrtSo/npaTYzMDPb6ovfiGAkZ1awcZlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710370240; c=relaxed/simple;
-	bh=VhXI6Tbpl3AZsnazfNEHwBdSWsCEKk+kCm2tgvK17Ug=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RW0zEP2iY+DGs73yjAxulamXsssKTiXteS3+WuxRDWZc/wtFcYZSo5WxQWV0KHr61ntizJPF1kvrKzVZ+jPekMBlquH3ohE82wo5qRYHk32yfm2xrm3s6i0s7D006o5CaiTeqBa7hmmxKUwmNjvmtsCSJn5jnfcLjJG48uRZxp0=
+	s=arc-20240116; t=1710370257; c=relaxed/simple;
+	bh=LzUMRu+d7NikfjMCKwk8dTKXUjge8nRIf7hSNqMRLIM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nP8d2GEwL23lW9TCCtdsfDgTGlnzVRjo/9n/kIN3R3zn6wkwzR83grxPWuZNxUwO76L9j5gZz9JJtleIqXbrvZDXAu604vSkCTf+IYWceGpxpRd1lHFZR3gbEz0OtjL93uFaMviPYiAalCmjoKU4/2NhvHYiRdzdqZPhnf4cYeA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
@@ -32,9 +32,9 @@ Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1rkXQX-0003yP-1H;
-	Wed, 13 Mar 2024 22:50:25 +0000
-Date: Wed, 13 Mar 2024 22:50:18 +0000
+	id 1rkXQp-0003yg-2i;
+	Wed, 13 Mar 2024 22:50:43 +0000
+Date: Wed, 13 Mar 2024 22:50:40 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Felix Fietkau <nbd@nbd.name>, Sean Wang <sean.wang@mediatek.com>,
 	Mark Lee <Mark-MC.Lee@mediatek.com>,
@@ -51,9 +51,9 @@ To: Felix Fietkau <nbd@nbd.name>, Sean Wang <sean.wang@mediatek.com>,
 Cc: Chad Monroe <chad.monroe@adtran.com>,
 	Steven Liu <steven.liu@mediatek.com>,
 	John Crispin <john@phrozen.org>
-Subject: [PATCH net 1/2] net: mediatek: mtk_eth_soc: clear MAC_MCR_FORCE_LINK
- only when MAC is up
-Message-ID: <7205ca7d3c5433214256df4672f7c1a49815a5a5.1710367570.git.daniel@makrotopia.org>
+Subject: [PATCH net 2/2] net: ethernet: mtk_eth_soc: fix PPE hanging issue
+Message-ID: <82fd25be48f869969b22ef439b8ea403f7e188a0.1710367570.git.daniel@makrotopia.org>
+References: <7205ca7d3c5433214256df4672f7c1a49815a5a5.1710367570.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,52 +62,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <7205ca7d3c5433214256df4672f7c1a49815a5a5.1710367570.git.daniel@makrotopia.org>
 
-Clearing bit MAC_MCR_FORCE_LINK which forces the link down too early
-can result in MAC ending up in a broken/blocked state.
+A patch to resolve an issue was found in MediaTek's GPL-licensed SDK:
+In the mtk_ppe_stop() function, the PPE scan mode is not disabled before
+disabling the PPE. This can potentially lead to a hang during the process
+of disabling the PPE.
 
-Fix this by handling this bit in the .mac_link_up and .mac_link_down
-calls instead of in .mac_finish.
+Without this patch, the PPE may experience a hang during the reboot test.
 
-Fixes: b8fc9f30821e ("net: ethernet: mediatek: Add basic PHYLINK support")
-Suggested-by: Mason-cw Chang <Mason-cw.Chang@mediatek.com>
+Link: https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/b40da332dfe763932a82f9f62a4709457a15dd6c
+Fixes: ba37b7caf1ed ("net: ethernet: mtk_eth_soc: add support for initializing the PPE")
+Suggested-by: Bc-bocun Chen <bc-bocun.chen@mediatek.com>
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mediatek/mtk_ppe.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index de123350bd46b..caa13b9cedff0 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -677,8 +677,7 @@ static int mtk_mac_finish(struct phylink_config *config, unsigned int mode,
- 	mcr_cur = mtk_r32(mac->hw, MTK_MAC_MCR(mac->id));
- 	mcr_new = mcr_cur;
- 	mcr_new |= MAC_MCR_IPG_CFG | MAC_MCR_FORCE_MODE |
--		   MAC_MCR_BACKOFF_EN | MAC_MCR_BACKPR_EN | MAC_MCR_FORCE_LINK |
--		   MAC_MCR_RX_FIFO_CLR_DIS;
-+		   MAC_MCR_BACKOFF_EN | MAC_MCR_BACKPR_EN | MAC_MCR_RX_FIFO_CLR_DIS;
+diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.c b/drivers/net/ethernet/mediatek/mtk_ppe.c
+index b2a5d9c3733d4..6ce0db3a1a920 100644
+--- a/drivers/net/ethernet/mediatek/mtk_ppe.c
++++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
+@@ -994,7 +994,7 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
+ 			 MTK_PPE_KEEPALIVE_DISABLE) |
+ 	      FIELD_PREP(MTK_PPE_TB_CFG_HASH_MODE, 1) |
+ 	      FIELD_PREP(MTK_PPE_TB_CFG_SCAN_MODE,
+-			 MTK_PPE_SCAN_MODE_KEEPALIVE_AGE) |
++			 MTK_PPE_SCAN_MODE_CHECK_AGE) |
+ 	      FIELD_PREP(MTK_PPE_TB_CFG_ENTRY_NUM,
+ 			 MTK_PPE_ENTRIES_SHIFT);
+ 	if (mtk_is_netsys_v2_or_greater(ppe->eth))
+@@ -1090,17 +1090,21 @@ int mtk_ppe_stop(struct mtk_ppe *ppe)
  
- 	/* Only update control register when needed! */
- 	if (mcr_new != mcr_cur)
-@@ -694,7 +693,7 @@ static void mtk_mac_link_down(struct phylink_config *config, unsigned int mode,
- 					   phylink_config);
- 	u32 mcr = mtk_r32(mac->hw, MTK_MAC_MCR(mac->id));
+ 	mtk_ppe_cache_enable(ppe, false);
  
--	mcr &= ~(MAC_MCR_TX_EN | MAC_MCR_RX_EN);
-+	mcr &= ~(MAC_MCR_TX_EN | MAC_MCR_RX_EN | MAC_MCR_FORCE_LINK);
- 	mtk_w32(mac->hw, mcr, MTK_MAC_MCR(mac->id));
+-	/* disable offload engine */
+-	ppe_clear(ppe, MTK_PPE_GLO_CFG, MTK_PPE_GLO_CFG_EN);
+-	ppe_w32(ppe, MTK_PPE_FLOW_CFG, 0);
+-
+ 	/* disable aging */
+ 	val = MTK_PPE_TB_CFG_AGE_NON_L4 |
+ 	      MTK_PPE_TB_CFG_AGE_UNBIND |
+ 	      MTK_PPE_TB_CFG_AGE_TCP |
+ 	      MTK_PPE_TB_CFG_AGE_UDP |
+-	      MTK_PPE_TB_CFG_AGE_TCP_FIN;
++	      MTK_PPE_TB_CFG_AGE_TCP_FIN |
++		  MTK_PPE_TB_CFG_SCAN_MODE;
+ 	ppe_clear(ppe, MTK_PPE_TB_CFG, val);
+ 
+-	return mtk_ppe_wait_busy(ppe);
++	if (mtk_ppe_wait_busy(ppe))
++		return -ETIMEDOUT;
++
++	/* disable offload engine */
++	ppe_clear(ppe, MTK_PPE_GLO_CFG, MTK_PPE_GLO_CFG_EN);
++	ppe_w32(ppe, MTK_PPE_FLOW_CFG, 0);
++
++	return 0;
  }
- 
-@@ -803,7 +802,7 @@ static void mtk_mac_link_up(struct phylink_config *config,
- 	if (rx_pause)
- 		mcr |= MAC_MCR_FORCE_RX_FC;
- 
--	mcr |= MAC_MCR_TX_EN | MAC_MCR_RX_EN;
-+	mcr |= MAC_MCR_TX_EN | MAC_MCR_RX_EN | MAC_MCR_FORCE_LINK;
- 	mtk_w32(mac->hw, mcr, MTK_MAC_MCR(mac->id));
- }
- 
 -- 
 2.44.0
 
