@@ -1,136 +1,122 @@
-Return-Path: <linux-kernel+bounces-101731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA0D987AB1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:28:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC2787AB1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77A5E1F22554
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:28:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0BD61F227A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A38482DA;
-	Wed, 13 Mar 2024 16:27:56 +0000 (UTC)
-Received: from relay161.nicmail.ru (relay161.nicmail.ru [91.189.117.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D6638DC8;
+	Wed, 13 Mar 2024 16:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VoWXnZHA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711F54596D
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 16:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE914A9BF;
+	Wed, 13 Mar 2024 16:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347276; cv=none; b=tVXA8XU+pWHqFTz+EQ3tVIUXjECNskV0HZavqLqB4juWgxDilwGMoL421QmB/9T/C9Hfsw5hP1aCiLQkpIglsOgbH9HeHotiPRFPrGjrMqwu0DEhKecJvLQpJEE2O/Syyoe/CyMJziwLCacKesNaiNwBWX56pZm2QAHZqvVZyDU=
+	t=1710347423; cv=none; b=LjgiXYIL0JbhWFSjTJSB/IvGKTOtjI/octtY2TQ0PHR9t6whuMhip3IB2dvA0sMWhQH5ihO7Ip1aAlcwfQ5yZjMXIYP1mYHm0dNXf3MV3xyu5rAEziXlTCZ1fE9Ku2o1q796j5PtqbGI9ChY6/981IVh0b5prmL6W2KzI9NK0LQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347276; c=relaxed/simple;
-	bh=YU11scXvmpPysOaCdp11+qR9MQxZXWdTxoxTQCHZTaI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:References:To:Cc:
-	 In-Reply-To:Content-Type; b=tw1TZce76dskmQEiIzCH+EUftNIQCo7qFm+XYg1KvjKsM2jtrbKe6PSsniQNCwUm/PDk6o+jWB496rZf/kKyFlvczmP4zUTJf1I8L7vwAnyxFpCzceWBaixs43s/NysDI21ij0CsAgZ/LESwRU0zSJgyxLvzJK3d8NVAOY7xouk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
-Received: from [10.28.138.152] (port=35910 helo=[192.168.95.111])
-	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
-	(envelope-from <kiryushin@ancud.ru>)
-	id 1rkRS6-0000rC-68;
-	Wed, 13 Mar 2024 19:27:39 +0300
-Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO [192.168.95.111])
-	by incarp1104.mail.hosting.nic.ru (Exim 5.55)
-	with id 1rkRS6-00GwOs-2f;
-	Wed, 13 Mar 2024 19:27:38 +0300
-Message-ID: <2931c3e3-054d-4085-9bd9-3b8414788675@ancud.ru>
-Date: Wed, 13 Mar 2024 19:27:36 +0300
+	s=arc-20240116; t=1710347423; c=relaxed/simple;
+	bh=qOlJqIzqMFXRvIV9QUgDbr119e1LZbmHCf8TLLDruzM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JNeEI+bNuluwLfXMJAqYoOuGv3uOqc7TV7D6TkeBNig1fTi9Flb3slbnvx4fgpxc+DydMbyk+smIfFt/NMiz/ChmeAIErsCRsBMTpypiq8BDBRAziXFguawPrPgMCVYNWeHcxqbJHNiZB3E8rae8OyIMXR2p56N3S6qfqrus6/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VoWXnZHA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B5C2C433C7;
+	Wed, 13 Mar 2024 16:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710347422;
+	bh=qOlJqIzqMFXRvIV9QUgDbr119e1LZbmHCf8TLLDruzM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VoWXnZHAcIkvO+6FwPGkoSMNfeKspeoKds+XFcJU3xVGfi1JkBk84eDMw2tGDzWWg
+	 SFL7LowLazEGYyRN9phfXSGrmQ/Dxo4DWLGgQFfNVhhKEDt9M0c7Os66mwkWUZ/BJo
+	 Qkq9mNx8YCSghVCZwryWG+hKu0kifN4AwC/U4r5LXcUjRP3F+R3Qa7iKXm4Nh+/A8k
+	 r4oMrq9yDo440MMK1jnzdf2khjzL41UjX9+QLPPGyOJe8ab+XOPXiSrIDTzIlXaVL5
+	 bD7RLTOHXmQPJF6WbGSywtu7otSeJk24giRAwYnkpXNgo5RziDPh3gfSfPbbRjPxez
+	 RNGii+Ssl9FOA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de
+Subject: [PATCH 6.8 0/5] 6.8.1-rc1 review
+Date: Wed, 13 Mar 2024 12:30:14 -0400
+Message-ID: <20240313163019.613705-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Nikita Kiryushin <kiryushin@ancud.ru>
-Subject: [PATCH] drm/i915: remove platform checks in platform-specific
- handlers
-References: <>
-Content-Language: en-US
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
- <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Matt Roper <matthew.d.roper@intel.com>,
- Radhakrishna Sripada <radhakrishna.sripada@intel.com>,
- Andi Shyti <andi.shyti@linux.intel.com>,
- Gustavo Sousa <gustavo.sousa@intel.com>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- Dnyaneshwar Bhadane <dnyaneshwar.bhadane@intel.com>,
- Shekhar Chauhan <shekhar.chauhan@intel.com>,
- Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
- intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MS-Exchange-Organization-SCL: -1
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.1-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-6.8.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 6.8.1-rc1
+X-KernelTest-Deadline: 2024-03-15T16:28+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 
 
-Remove IS_KABYLAKE and IS_SKYLAKE in special handlers for
-skylake and kabylake: the checks are done at hook initialization and are
-always true in corresponding handlers.
+This is the start of the stable review cycle for the 6.8.1 release.
+There are 5 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
----
-  drivers/gpu/drm/i915/gt/intel_workarounds.c | 6 +++---
-  drivers/gpu/drm/i915/intel_clock_gating.c   | 4 ++--
-  2 files changed, 5 insertions(+), 5 deletions(-)
+Responses should be made by Fri Mar 15 04:28:11 PM UTC 2024.
+Anything received after that time might be too late.
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_workarounds.c 
-b/drivers/gpu/drm/i915/gt/intel_workarounds.c
-index 3eacbc50caf8..8eff6be9d74c 100644
---- a/drivers/gpu/drm/i915/gt/intel_workarounds.c
-+++ b/drivers/gpu/drm/i915/gt/intel_workarounds.c
-@@ -601,7 +601,7 @@ static void kbl_ctx_workarounds_init(struct 
-intel_engine_cs *engine,
-  	gen9_ctx_workarounds_init(engine, wal);
-   	/* WaToEnableHwFixForPushConstHWBug:kbl */
--	if (IS_KABYLAKE(i915) && IS_GRAPHICS_STEP(i915, STEP_C0, STEP_FOREVER))
-+	if (IS_GRAPHICS_STEP(i915, STEP_C0, STEP_FOREVER))
-  		wa_masked_en(wal, COMMON_SLICE_CHICKEN2,
-  			     GEN8_SBE_DISABLE_REPLAY_BUF_OPTIMIZATION);
-  @@ -1169,7 +1169,7 @@ skl_gt_workarounds_init(struct intel_gt *gt, 
-struct i915_wa_list *wal)
-  		    GEN8_EU_GAUNIT_CLOCK_GATE_DISABLE);
-   	/* WaInPlaceDecompressionHang:skl */
--	if (IS_SKYLAKE(gt->i915) && IS_GRAPHICS_STEP(gt->i915, STEP_A0, STEP_H0))
-+	if (IS_GRAPHICS_STEP(gt->i915, STEP_A0, STEP_H0))
-  		wa_write_or(wal,
-  			    GEN9_GAMT_ECO_REG_RW_IA,
-  			    GAMT_ECO_ENABLE_IN_PLACE_DECOMPRESS);
-@@ -1181,7 +1181,7 @@ kbl_gt_workarounds_init(struct intel_gt *gt, 
-struct i915_wa_list *wal)
-  	gen9_gt_workarounds_init(gt, wal);
-   	/* WaDisableDynamicCreditSharing:kbl */
--	if (IS_KABYLAKE(gt->i915) && IS_GRAPHICS_STEP(gt->i915, 0, STEP_C0))
-+	if (IS_GRAPHICS_STEP(gt->i915, 0, STEP_C0))
-  		wa_write_or(wal,
-  			    GAMT_CHKN_BIT_REG,
-  			    GAMT_CHKN_DISABLE_DYNAMIC_CREDIT_SHARING);
-diff --git a/drivers/gpu/drm/i915/intel_clock_gating.c 
-b/drivers/gpu/drm/i915/intel_clock_gating.c
-index 9c21ce69bd98..977251bcbf42 100644
---- a/drivers/gpu/drm/i915/intel_clock_gating.c
-+++ b/drivers/gpu/drm/i915/intel_clock_gating.c
-@@ -413,12 +413,12 @@ static void kbl_init_clock_gating(struct 
-drm_i915_private *i915)
-  	intel_uncore_rmw(&i915->uncore, FBC_LLC_READ_CTRL, 0, 
-FBC_LLC_FULLY_OPEN);
-   	/* WaDisableSDEUnitClockGating:kbl */
--	if (IS_KABYLAKE(i915) && IS_GRAPHICS_STEP(i915, 0, STEP_C0))
-+	if (IS_GRAPHICS_STEP(i915, 0, STEP_C0))
-  		intel_uncore_rmw(&i915->uncore, GEN8_UCGCTL6,
-  				 0, GEN8_SDEUNIT_CLOCK_GATE_DISABLE);
-   	/* WaDisableGamClockGating:kbl */
--	if (IS_KABYLAKE(i915) && IS_GRAPHICS_STEP(i915, 0, STEP_C0))
-+	if (IS_GRAPHICS_STEP(i915, 0, STEP_C0))
-  		intel_uncore_rmw(&i915->uncore, GEN6_UCGCTL1,
-  				 0, GEN6_GAMUNIT_CLOCK_GATE_DISABLE);
-  -- 2.34.1
+The whole patch series can be found in one patch at:
+        https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.8.y&id2=v6.8
+or in the git tree and branch at:
+        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+and the diffstat can be found below.
+
+Thanks,
+Sasha
+
+-------------
+Pseudo-Shortlog of commits:
+
+Pawan Gupta (4):
+  x86/mmio: Disable KVM mitigation when X86_FEATURE_CLEAR_CPU_BUF is set
+  Documentation/hw-vuln: Add documentation for RFDS
+  x86/rfds: Mitigate Register File Data Sampling (RFDS)
+  KVM/x86: Export RFDS_NO and RFDS_CLEAR to guests
+
+Sasha Levin (1):
+  Linux 6.8.1-rc1
+
+ .../ABI/testing/sysfs-devices-system-cpu      |   1 +
+ Documentation/admin-guide/hw-vuln/index.rst   |   1 +
+ .../hw-vuln/reg-file-data-sampling.rst        | 104 ++++++++++++++++++
+ .../admin-guide/kernel-parameters.txt         |  21 ++++
+ Makefile                                      |   4 +-
+ arch/x86/Kconfig                              |  11 ++
+ arch/x86/include/asm/cpufeatures.h            |   1 +
+ arch/x86/include/asm/msr-index.h              |   8 ++
+ arch/x86/kernel/cpu/bugs.c                    |  92 +++++++++++++++-
+ arch/x86/kernel/cpu/common.c                  |  38 ++++++-
+ arch/x86/kvm/x86.c                            |   5 +-
+ drivers/base/cpu.c                            |   3 +
+ include/linux/cpu.h                           |   2 +
+ 13 files changed, 280 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/admin-guide/hw-vuln/reg-file-data-sampling.rst
+
+-- 
+2.43.0
 
 
