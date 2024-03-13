@@ -1,76 +1,80 @@
-Return-Path: <linux-kernel+bounces-101008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB1B187A0B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:26:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E39A487A0B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:27:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE8B71C206A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:26:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 218951C20952
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BBCC134BE;
-	Wed, 13 Mar 2024 01:25:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED8F61946B;
+	Wed, 13 Mar 2024 01:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="uRyUeg6m"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Rqssngnl"
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC859B664
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C984CBE5A
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710293124; cv=none; b=nQnjHpzHlMLk9SoNLpQzgi7oc03qPh1jxyBoq/xRfsY9n28/k+dmVIigFULMJ7Iu0BukWLUO4/8bVcDI8dke3pLtdEsy0OXH/uR9anM+TNlOFwqobKnTMbMJGVFr5/QXH/7wv3PjQZSri6KgjW+wICo3RO6dxQ6aGFFbUMmXF8I=
+	t=1710293126; cv=none; b=LakwxtzQqtq4aP2iD76WPJ1Rz1HD+XUMQqbDZAJQ6D2ScInj9kwabZttcKAacLu0UrzHj5K9FTFN/WnhOi5C6AVnoJSTE3MCYgpLdkxVZEVRD020DxUkoBEljzROFqbaHMgYtHSjHrSznUH4GNGyl1e5w+rwVhcyLD/BILvaiRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710293124; c=relaxed/simple;
-	bh=mZ2gOIXcUxYPUWs6+iWh+plbgTcX3Uoy+H9V33hkCIo=;
+	s=arc-20240116; t=1710293126; c=relaxed/simple;
+	bh=cu3MMzOHuWJKImjKqYJ4/NXYAdw+8BhcKEGy95D0Imk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kFyN9CU7S3KYjR5V1u0sHtlTcmqwJyM7gHMxPKMeLhD59TEFODqhFKyTQ+Evusm/LihcfNxGTcXOOL4Ta21RbWGBZDjKmmfHYDz3dpGZHabhKDSRvQ4uiK6VyeUA0krhZ1lQXnh2ncG0ioj1SEP+T9X4xjPJrmO08ENjCol/BGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=uRyUeg6m; arc=none smtp.client-ip=209.85.219.47
+	 MIME-Version; b=kcBOFGI2QOEsPwx0Nxc22JyxEnCGiVWB8mpoeVoqlUL9x6woQl4JlapgrhGt/kQAZH96jxPLCaa6M2WyYCEIoCho8nq1GWG1K4euPPdYnP8oMt53wsVjYrwp1Nc1Lm7MJOOZwpQXMwZe0jlHPSIOcwJcgoAp2pB8qQjfkYDvVzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Rqssngnl; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-690d054fff2so21045056d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:22 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-68f41af71ebso4405436d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710293120; x=1710897920; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1710293123; x=1710897923; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CDhDd9Kfjsqh4jLKpVf7J36w/JnuAi2f5V71QMuGAEk=;
-        b=uRyUeg6mq6wGU32l6MxYSiTZqgw6xdBruInJR55ukKU4OudSjzGrWvmc7BTi0iGU7a
-         r1yxcXLtap7K8ZovCrlYbRFxR6Ivv3ofQcR8hc1yOY8cpbEDErChwilRnKhPO6ao4pbW
-         n6RdtUnnr9BKqahguNNeaxxNdch24fjAFd8Ko=
+        bh=+jDrn7wgy/ve0lPoR/xKtbF/cZLSIaETTt3wbkL2858=;
+        b=RqssngnlyfPfkO1M7NSQ7hg3w1o+3ugwNj8VifSkFo1gE1VncEZG/qRGwEVRuwk5dR
+         /Q+q98uVy6tOx2QCuE1fpom5WUFBjIhgylb2lQOzjzRdLS6sJVxiBy5mUS4YPmZZPn/4
+         i8CkPjqp+1KWYqvNEOhxS2kbqfgX4IsZwjc7g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710293120; x=1710897920;
+        d=1e100.net; s=20230601; t=1710293123; x=1710897923;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CDhDd9Kfjsqh4jLKpVf7J36w/JnuAi2f5V71QMuGAEk=;
-        b=X3nDFC1+VuExbqOL6Sd1OfSlA25q7V4tGxq8tpsT325JhcP+Z23v2X7W+Ja2Pybr9z
-         QLwFrlljEkUJJnZUX5B0DapnKmrrT7SWy6G8QbAIF62wkrTJcY20UqFQ0GIuFNcXW2Wu
-         A0TVLbJT7aWl8qpISM9eggAEChK9t6escdUtZOuLn+GrVY7VFbRyLLLC5MlVGpUnuf4p
-         mcRmCnf+HRdXzFNVB+cCJWODogMZyartScp7Fy+qEx/f+34stU5HSK1xZLN0FomM2S2C
-         nCgAd7nJWc8+sYnfCqxNdGj2yiH375hYQXtMpY3xbg7BklRe7Qro0Kn0kYOB1dSVDGJq
-         lvkQ==
-X-Gm-Message-State: AOJu0YxMVewCXEpnjIVTklFzceL5AmtJx4WZ3Fr32GI0GvK2rbiYhhUz
-	yOahx7CoOvr6VsCOCyVTStMGgtqr9qYkFvPZHIFKX2qGtgbL7uJjRuG+jgmWBxCFv8Ablrbv/Hy
-	m
-X-Google-Smtp-Source: AGHT+IEQH9hW6ZLKUNZbHpb/tPDT6brgu43x+Rcv6hHFE3facBemyF7mOFSe8xs2p97QGgaE6gVu9w==
-X-Received: by 2002:a05:6214:1398:b0:68f:3c36:1b74 with SMTP id pp24-20020a056214139800b0068f3c361b74mr12801088qvb.41.1710293120342;
-        Tue, 12 Mar 2024 18:25:20 -0700 (PDT)
+        bh=+jDrn7wgy/ve0lPoR/xKtbF/cZLSIaETTt3wbkL2858=;
+        b=DdkM5kMYFqEx63wnpciUP7UwGr5AXYnH3Q2BsNeJs66payhbMw8Oq+xEwj+3cZRRua
+         2XqC/mRry0/bU6dLE+j3DsRUPDir63XitraVn3smTkVoIfZTzYlt5boxkaWxMpeZQ3RZ
+         zUeDVhlWH7sKlnP8kLVB4adXBCqaGKGJ2uYVBMSv2TKxz4JE29qStZHMjcK8JY/gyT7h
+         ZqAJBtgUkp/KDUDGj3rQmx18qO6MehgOgCwLLKdYUYfLkZ5epQTg/aNSd6cyLfsAttd9
+         qkgmxrUsqZIe6WQK2iJ3fPO56dkdnB8ufoRKToCB+4bhvu0VDskRR3dmwQ1/Sw66INCI
+         Zr4w==
+X-Gm-Message-State: AOJu0YzpIrfLuz2FlgpQE2dmic7aQxs0HrqLvUsmFb1osyiLma8F5S5R
+	dx/TUM17EB4aebhCvv/eW6JskXnVL7q2jRrA50ts6kVUti9YDMsv4mcF/qxFJwrvtg28nxkySiT
+	E
+X-Google-Smtp-Source: AGHT+IEbJtuWeR15hakVbXEMMZTuDPev36PD/22XP5I3KXlRLbjFh9A2AyTmrw6JNT7mBOc3CUEd2A==
+X-Received: by 2002:a05:6214:238a:b0:691:907:f9e5 with SMTP id fw10-20020a056214238a00b006910907f9e5mr1929870qvb.12.1710293123162;
+        Tue, 12 Mar 2024 18:25:23 -0700 (PDT)
 Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.19
+        by smtp.gmail.com with ESMTPSA id u9-20020a05621411a900b00690314356a4sm4162132qvv.80.2024.03.12.18.25.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 18:25:19 -0700 (PDT)
+        Tue, 12 Mar 2024 18:25:21 -0700 (PDT)
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To: linux-kernel@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Jonathan Corbet <corbet@lwn.net>
 Cc: Suleiman Souhlal <suleiman@google.com>,
 	Youssef Esmat <youssefesmat@google.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	David Vernet <void@manifault.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	joseph.salisbury@canonical.com,
 	Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -84,10 +88,10 @@ Cc: Suleiman Souhlal <suleiman@google.com>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Phil Auld <pauld@redhat.com>,
 	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 08/15] selftests/sched: Migrate cs_prctl_test to kselfttest
-Date: Tue, 12 Mar 2024 21:24:44 -0400
-Message-Id: <20240313012451.1693807-9-joel@joelfernandes.org>
+	linux-doc@vger.kernel.org
+Subject: [PATCH v2 09/15] admin-guide/hw-vuln: Correct prctl() argument description
+Date: Tue, 12 Mar 2024 21:24:45 -0400
+Message-Id: <20240313012451.1693807-10-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240313012451.1693807-1-joel@joelfernandes.org>
 References: <20240313012451.1693807-1-joel@joelfernandes.org>
@@ -99,261 +103,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This test begs to be a kselftest, is in the kselftest hierarchy and does
-not even use a single kselftest API. Convert it.
-
-It simplifies some of the code and the output also looks much nicer now:
-
- Totals: pass:17 fail:0 xfail:0 xpass:0 skip:0 error:0
+Correct the description for arg4 which appears to be outdated.
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- tools/testing/selftests/sched/Makefile        |  6 +-
- tools/testing/selftests/sched/cs_prctl_test.c | 74 ++++++++++---------
- 2 files changed, 43 insertions(+), 37 deletions(-)
+ Documentation/admin-guide/hw-vuln/core-scheduling.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/sched/Makefile b/tools/testing/selftests/sched/Makefile
-index f491d741cb45..90c53bc1337e 100644
---- a/tools/testing/selftests/sched/Makefile
-+++ b/tools/testing/selftests/sched/Makefile
-@@ -1,9 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0+
- TEST_GEN_PROGS := cs_dlserver_test
--
--cs_dlserver_test: cs_dlserver_test.c common.c
-+TEST_GEN_PROGS += cs_prctl_test
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+index cf1eeefdfc32..338d639a8127 100644
+--- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -62,8 +62,8 @@ arg3:
  
- CFLAGS += $(KHDR_INCLUDES)
- CFLAGS += -Wall
+ arg4:
+     ``pid_type`` for which the operation applies. It is one of
+-    ``PR_SCHED_CORE_SCOPE_``-prefixed macro constants.  For example, if arg4
+-    is ``PR_SCHED_CORE_SCOPE_THREAD_GROUP``, then the operation of this command
++    ``PIDTIME_``-prefixed macro constants.  For example, if arg4
++    is ``PIDTYPE_TGID``, then the operation of this command
+     will be performed for all tasks in the task group of ``pid``.
  
- include ../lib.mk
-+
-+$(OUTPUT)/cs_dlserver_test: cs_dlserver_test.c common.c
-+$(OUTPUT)/cs_prctl_test: cs_prctl_test.c common.c
-diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
-index 7ba057154343..bb7aee703cdf 100644
---- a/tools/testing/selftests/sched/cs_prctl_test.c
-+++ b/tools/testing/selftests/sched/cs_prctl_test.c
-@@ -28,10 +28,11 @@
- #include <unistd.h>
- #include <time.h>
- #include <errno.h>
--#include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- 
-+#include "common.h"
-+
- #if __GLIBC_PREREQ(2, 30) == 0
- #include <sys/syscall.h>
- static pid_t gettid(void)
-@@ -80,7 +81,7 @@ static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned l
- 	int res;
- 
- 	res = prctl(option, arg2, arg3, arg4, arg5);
--	printf("%d = prctl(%d, %ld, %ld, %ld, %lx)\n", res, option, (long)arg2, (long)arg3,
-+	ksft_print_msg("%d = prctl(%d, %ld, %ld, %ld, %lx)\n", res, option, (long)arg2, (long)arg3,
- 	       (long)arg4, arg5);
- 	return res;
- }
-@@ -91,21 +92,20 @@ static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned l
- static void __handle_error(char *fn, int ln, char *msg)
- {
- 	int pidx;
--	printf("(%s:%d) - ", fn, ln);
-+	ksft_print_msg("(%s:%d) - ", fn, ln);
- 	perror(msg);
- 	if (need_cleanup) {
- 		for (pidx = 0; pidx < num_processes; ++pidx)
- 			kill(procs[pidx].cpid, 15);
- 		need_cleanup = 0;
- 	}
--	exit(EXIT_FAILURE);
-+	ksft_exit_fail();
- }
- 
- static void handle_usage(int rc, char *msg)
- {
--	puts(USAGE);
--	puts(msg);
--	putchar('\n');
-+	ksft_print_msg("%s\n", USAGE);
-+	ksft_print_msg("%s\n\n", msg);
- 	exit(rc);
- }
- 
-@@ -117,7 +117,7 @@ static unsigned long get_cs_cookie(int pid)
- 	ret = prctl(PR_SCHED_CORE, PR_SCHED_CORE_GET, pid, PIDTYPE_PID,
- 		    (unsigned long)&cookie);
- 	if (ret) {
--		printf("Not a core sched system\n");
-+		ksft_print_msg("Not a core sched system\n");
- 		return -1UL;
- 	}
- 
-@@ -160,7 +160,7 @@ static int child_func_process(void *arg)
- 
- 	ret = write(ca->pfd[1], &ca->thr_tids, sizeof(int) * ca->num_threads);
- 	if (ret == -1)
--		printf("write failed on pfd[%d] - error (%s)\n",
-+		ksft_print_msg("write failed on pfd[%d] - error (%s)\n",
- 			ca->pfd[1], strerror(errno));
- 
- 	close(ca->pfd[1]);
-@@ -192,7 +192,7 @@ void create_processes(int num_processes, int num_threads, struct child_args proc
- 	for (i = 0; i < num_processes; ++i) {
- 		ret = read(proc[i].pfd[0], &proc[i].thr_tids, sizeof(int) * proc[i].num_threads);
- 		if (ret == -1)
--			printf("read failed on proc[%d].pfd[0] error (%s)\n",
-+			ksft_print_msg("read failed on proc[%d].pfd[0] error (%s)\n",
- 				i, strerror(errno));
- 		close(proc[i].pfd[0]);
- 	}
-@@ -202,30 +202,29 @@ void disp_processes(int num_processes, struct child_args proc[])
- {
- 	int i, j;
- 
--	printf("tid=%d, / tgid=%d / pgid=%d: %lx\n", gettid(), getpid(), getpgid(0),
-+	ksft_print_msg("tid=%d, / tgid=%d / pgid=%d: %lx\n", gettid(), getpid(), getpgid(0),
- 	       get_cs_cookie(getpid()));
- 
- 	for (i = 0; i < num_processes; ++i) {
--		printf("    tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].cpid, proc[i].cpid,
-+		ksft_print_msg("    tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].cpid, proc[i].cpid,
- 		       getpgid(proc[i].cpid), get_cs_cookie(proc[i].cpid));
- 		for (j = 0; j < proc[i].num_threads; ++j) {
--			printf("        tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].thr_tids[j],
-+			ksft_print_msg("        tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].thr_tids[j],
- 			       proc[i].cpid, getpgid(0), get_cs_cookie(proc[i].thr_tids[j]));
- 		}
- 	}
- 	puts("\n");
- }
- 
--static int errors;
--
- #define validate(v) _validate(__LINE__, v, #v)
- void _validate(int line, int val, char *msg)
- {
- 	if (!val) {
--		++errors;
--		printf("(%d) FAILED: %s\n", line, msg);
-+		ksft_print_msg("(%d) FAILED: %s\n", line, msg);
-+		ksft_inc_fail_cnt();
- 	} else {
--		printf("(%d) PASSED: %s\n", line, msg);
-+		ksft_print_msg("(%d) PASSED: %s\n", line, msg);
-+		ksft_inc_pass_cnt();
- 	}
- }
- 
-@@ -254,13 +253,17 @@ int main(int argc, char *argv[])
- 			keypress = 1;
- 			break;
- 		case 'h':
--			printf(USAGE);
-+			ksft_print_msg(USAGE);
- 			exit(EXIT_SUCCESS);
- 		default:
- 			handle_usage(20, "unknown option");
- 		}
- 	}
- 
-+	if (!hyperthreading_enabled()) {
-+		ksft_exit_skip("This test requires hyperthreading to be enabled\n");
-+	}
-+
- 	if (num_processes < 1 || num_processes > MAX_PROCESSES)
- 		handle_usage(1, "Bad processes value");
- 
-@@ -272,17 +275,22 @@ int main(int argc, char *argv[])
- 
- 	srand(time(NULL));
- 
--	/* put into separate process group */
-+	/* Put into separate process group */
- 	if (setpgid(0, 0) != 0)
- 		handle_error("process group");
- 
--	printf("\n## Create a thread/process/process group hiearchy\n");
-+	ksft_print_header();
-+
-+	/* Increase the count if adding more validate() statements. */
-+	ksft_set_plan(17);
-+
-+	ksft_print_msg("\n## Create a thread/process/process group hiearchy\n");
- 	create_processes(num_processes, num_threads, procs);
- 	need_cleanup = 1;
- 	disp_processes(num_processes, procs);
- 	validate(get_cs_cookie(0) == 0);
- 
--	printf("\n## Set a cookie on entire process group\n");
-+	ksft_print_msg("\n## Set a cookie on entire process group\n");
- 	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, 0, PIDTYPE_PGID, 0) < 0)
- 		handle_error("core_sched create failed -- PGID");
- 	disp_processes(num_processes, procs);
-@@ -296,7 +304,7 @@ int main(int argc, char *argv[])
- 	validate(get_cs_cookie(0) == get_cs_cookie(pid));
- 	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
- 
--	printf("\n## Set a new cookie on entire process/TGID [%d]\n", pid);
-+	ksft_print_msg("\n## Set a new cookie on entire process/TGID [%d]\n", pid);
- 	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, pid, PIDTYPE_TGID, 0) < 0)
- 		handle_error("core_sched create failed -- TGID");
- 	disp_processes(num_processes, procs);
-@@ -305,7 +313,7 @@ int main(int argc, char *argv[])
- 	validate(get_cs_cookie(pid) != 0);
- 	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
- 
--	printf("\n## Copy the cookie of current/PGID[%d], to pid [%d] as PIDTYPE_PID\n",
-+	ksft_print_msg("\n## Copy the cookie of current/PGID[%d], to pid [%d] as PIDTYPE_PID\n",
- 	       getpid(), pid);
- 	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, pid, PIDTYPE_PID, 0) < 0)
- 		handle_error("core_sched share to itself failed -- PID");
-@@ -315,7 +323,7 @@ int main(int argc, char *argv[])
- 	validate(get_cs_cookie(pid) != 0);
- 	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
- 
--	printf("\n## Copy cookie from a thread [%d] to current/PGID [%d] as PIDTYPE_PID\n",
-+	ksft_print_msg("\n## Copy cookie from a thread [%d] to current/PGID [%d] as PIDTYPE_PID\n",
- 	       procs[pidx].thr_tids[0], getpid());
- 	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_FROM, procs[pidx].thr_tids[0],
- 		   PIDTYPE_PID, 0) < 0)
-@@ -325,7 +333,7 @@ int main(int argc, char *argv[])
- 	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
- 	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
- 
--	printf("\n## Copy cookie from current [%d] to current as pidtype PGID\n", getpid());
-+	ksft_print_msg("\n## Copy cookie from current [%d] to current as pidtype PGID\n", getpid());
- 	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, 0, PIDTYPE_PGID, 0) < 0)
- 		handle_error("core_sched share to self failed -- PGID");
- 	disp_processes(num_processes, procs);
-@@ -340,20 +348,16 @@ int main(int argc, char *argv[])
- 	validate(_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, 0, PIDTYPE_PGID, 1) < 0
- 		&& errno == EINVAL);
- 
--	if (errors) {
--		printf("TESTS FAILED. errors: %d\n", errors);
--		res = 10;
--	} else {
--		printf("SUCCESS !!!\n");
--	}
--
--	if (keypress)
-+	if (keypress) {
-+		ksft_print_msg("Waiting for keypress to exit\n");
- 		getchar();
--	else
-+	} else {
- 		sleep(delay);
-+	}
- 
- 	for (pidx = 0; pidx < num_processes; ++pidx)
- 		kill(procs[pidx].cpid, 15);
- 
-+	ksft_finished();
- 	return res;
- }
+ arg5:
 -- 
 2.34.1
 
