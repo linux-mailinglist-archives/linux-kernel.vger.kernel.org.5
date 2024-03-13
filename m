@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-101296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B235687A533
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:50:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D30DC87A535
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 10:50:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 107E4B20F56
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 897E028188F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FCDA24A1F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB59F33CFC;
 	Wed, 13 Mar 2024 09:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KVilyQ2Q"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="BZzLf2PN"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5922C689;
-	Wed, 13 Mar 2024 09:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CE12C6B3;
+	Wed, 13 Mar 2024 09:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710323405; cv=none; b=lI5bXilsPed9ZGXJMrnIHRhZis7+C5/23e+03OobIqkOLs/JxYRrrFusHF6a79uogrRLCoON6P+qtiyjv2jGG+dyrg8/k5PTkudkQ1Vkz1rWN17t0hu4MgDsfTuOnWATSBg4WzL6v4Tnqd2o7Bj58BzwSqVSk4lPAo4Rp7fKPBc=
+	t=1710323405; cv=none; b=BVTLucNOAAJdtuU96QZ7SRGKbRmh7wXufR3irsVeZL9Y7AzDG8Z/8uAUA1Y5GVKRI2FLNbQh75ILrXBk/HenG7mumqat2kEFjPyEQZATCoKx02iC1xfqzNRWZznyEdG7MtlJW4keZqydG0X5iyihPGebDyheTsc4b2mvEyc5/e8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710323405; c=relaxed/simple;
-	bh=fhWIqSz6O6JKDHOrZiy8mAOL3NpEmfUPAA2euiBhWqc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YHvWA/bCVxkc/OFzB9Qz+37ctSBerxNnzOzBAdXJXytZ1+wZgvTl7rn1Ea+29Y4+iSrAlOgHt5BOYMiRL9za9lyvVyGTMbADMcVpCzxRe7SnwNpRLBF/JQHJUYuzVDeVvIjRFibLFwiR+3RGtVBwAQPZvT6xH+LwkPhtYQXm8Ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KVilyQ2Q; arc=none smtp.client-ip=46.235.227.194
+	bh=r3FgjHieRHvmPvUhf7DHkS8OZOnqayUYxYf3X+g8UPI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=n1W4OcQF75xVppoQlfkZh45rrfIyZwqKbUNH/2STuNOSOeEGChZJRZcqhaPswGq0ViEhdyXNYIBb6Os10zAYo/kiPp3wUO4cz/UGv58tvg9xff7VhkcLG6Jfz7ck/Vf/J4DKtAHMSM2xiM4JY6aYSlcAxzwgd56NzmIHe1HVrG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=BZzLf2PN; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710323396;
-	bh=fhWIqSz6O6JKDHOrZiy8mAOL3NpEmfUPAA2euiBhWqc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=KVilyQ2QR/MgxSloYgIHZfjUO0r8ud9BP6W3C08RCGuszfMiQzbCZqqqP6EVoHUsu
-	 DnuMKGC2v0Lci7gcXgNiVVYD3NOCSRbqaO2hbWZrMSN0NJlFJk2aJeMCO609if4Ut3
-	 Q5BQp34laPc0N8KN9/VTIllulKkOzOISbVwZGlaWL0pMxpAuB5haqd8npdXQW43Cbw
-	 LaTLJU1CPgX/jUwm3LUDBJiDIkY/sEDIQQ/W+u6sxlt6LkOxaOj80kKj+aAudTaX6Y
-	 qSGTCL2RGHS/1FQ1YiknwXvV408R/XTikGvpAw7EJWdy0DAv7htOL4BIYtWW083ExV
-	 UZIQu+8z87NLg==
+	s=mail; t=1710323397;
+	bh=r3FgjHieRHvmPvUhf7DHkS8OZOnqayUYxYf3X+g8UPI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=BZzLf2PNPWyaAIir1fvCNPxDpDlfdMjBgiAzyH7ffkyfXFFsy+hW40H36bfXJof8a
+	 z200dqnWQ7nvJkIVhcBaMJU+HRl8VXXgM6S7hilv99C0yAk19GBX+YgmdbKzG2P2JA
+	 rw+VoIaKF32VhAzKr7rMp49VLc/LLwxMoYdgDjjmRnkTFBdEa/LQdA26OF0JR6gui+
+	 D6sLTqY6Ps4KO/Np2l/3A9GdG/ORMCk1K9ccyshVJlrgt303OH8RhPtWcPF9BwGfpM
+	 jlYGX9Hck6/FT/cTKcLeLhgu+YYtRSHnHWdIzw5t/S9o57Qaglo4PrJ1aLiCICqJSK
+	 l4CKBoSLSKgjw==
 Received: from stla-brain-8255-1.home (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: jmassot)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D71D137813C4;
-	Wed, 13 Mar 2024 09:49:55 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B87D837820BB;
+	Wed, 13 Mar 2024 09:49:56 +0000 (UTC)
 From: Julien Massot <julien.massot@collabora.com>
 To: linux-media@vger.kernel.org
 Cc: devicetree@vger.kernel.org,
@@ -57,10 +58,12 @@ Cc: devicetree@vger.kernel.org,
 	conor+dt@kernel.org,
 	sakari.ailus@iki.fi,
 	Julien Massot <julien.massot@collabora.com>
-Subject: [PATCH v5 0/4]  Add support for MAX96714/F and MAX96717/F GMSL2 ser/des
-Date: Wed, 13 Mar 2024 10:49:18 +0100
-Message-ID: <20240313094922.311743-1-julien.massot@collabora.com>
+Subject: [PATCH v5 1/4] dt-bindings: media: add Maxim MAX96717 GMSL2 Serializer
+Date: Wed, 13 Mar 2024 10:49:19 +0100
+Message-ID: <20240313094922.311743-2-julien.massot@collabora.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240313094922.311743-1-julien.massot@collabora.com>
+References: <20240313094922.311743-1-julien.massot@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,62 +72,199 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+Add DT bindings for Maxim MAX96717 GMSL2 Serializer.
+
+Signed-off-by: Julien Massot <julien.massot@collabora.com>
+---
 Change since v4:
- - Add support for MAX96717 and MAX96714 and use them as a fallback for MAX96717F and MAX96714F respectively
- - The drivers are now compatible with MAX96717 and MAX96714 since no change in the logic is needed
- - Reference 'i2c-gate' instead of 'i2c-controller' in the bindings
+ - Add compatible for MAX96717 and use it as a fallback for MAX96717F
+ - Remove extra '|' for decriptions
+ - Reference 'i2c-gate' instead of 'i2c-controller'
 
 Change since v3:
-- bindings
-  - Renamed bindings to drop the 'f' suffix
-  - Add bus type to MAX96717 and remove from MAX9674
-  - Add lane-polarities to both bindings
-
-- drivers
-  - Address changes requested by Sakari in v3
-  - use v4l2_subdev_s_stream_helper for MAX96714
-  - do not init regmap twice in the MAX96714 driver
-  - Fix compilations on 32 bits platforms
+ - Renamed file to maxim,max96717.yaml dropped the 'f' suffix
+ - Added lane-polarities and bus type properties to the CSI endpoint
 
 Change since v2:
-- Convert drivers to use CCI helpers
-- Use generic node name
-- Use 'powerdown' as gpio name instead of 'enable'
-- Add pattern generator support for MAX96714
-
-These patches add support for Maxim MAX96714F deserializer and
-MAX96717F serializer.
-
-MAX96714F has one GMSL2 input port and one CSI2 4 lanes output port,
-MAX96717F has one CSI2 input port and one GMSL2 output port.
-
-The drivers support the tunnel mode where all the
-CSI2 traffic coming from an imager is replicated through the deserializer
-output port.
-
-Both MAX96714F and MAX96717F are limited to a 3Gbps forward link rate
-leaving a maximum of 2.6Gbps for the video payload.
-
-
-Julien Massot (4):
-  dt-bindings: media: add Maxim MAX96717 GMSL2 Serializer
-  dt-bindings: media: add Maxim MAX96714 GMSL2 Deserializer
-  media: i2c: add MAX96717 driver
-  media: i2c: add MAX96714 driver
-
- .../bindings/media/i2c/maxim,max96714.yaml    |  176 +++
- .../bindings/media/i2c/maxim,max96717.yaml    |  165 +++
- MAINTAINERS                                   |   14 +
- drivers/media/i2c/Kconfig                     |   28 +
- drivers/media/i2c/Makefile                    |    2 +
- drivers/media/i2c/max96714.c                  | 1029 +++++++++++++++++
- drivers/media/i2c/max96717.c                  |  934 +++++++++++++++
- 7 files changed, 2348 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/maxim,max96714.yaml
+ - remove reg description
+ - add data lanes min/maxItems
+ - Use generic node name 
+---
+ .../bindings/media/i2c/maxim,max96717.yaml    | 165 ++++++++++++++++++
+ 1 file changed, 165 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml
- create mode 100644 drivers/media/i2c/max96714.c
- create mode 100644 drivers/media/i2c/max96717.c
 
+diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml
+new file mode 100644
+index 000000000000..0942d8c7c5c9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml
+@@ -0,0 +1,165 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2024 Collabora Ltd.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/maxim,max96717.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MAX96717 CSI-2 to GMSL2 Serializer
++
++maintainers:
++  - Julien Massot <julien.massot@collabora.com>
++
++description:
++  The MAX96717 serializer converts MIPI CSI-2 D-PHY or C-PHY formatted input
++  into GMSL2 serial outputs. The device allows the GMSL2 link to
++  simultaneously transmit bidirectional control-channel data while forward
++  video transmissions are in progress. The MAX96717 can connect to one
++  remotely located deserializer using industry-standard coax or STP
++  interconnects. The device cans operate in pixel or tunnel mode. In pixel mode
++  the MAX96717 can select the MIPI datatype, while the tunnel mode forward all the MIPI
++  data received by the serializer.
++  The MAX96717 supports Reference Over Reverse (channel),
++  to generate a clock output for the sensor from the GMSL reverse channel.
++
++  The GMSL2 serial link operates at a fixed rate of 3Gbps or 6Gbps in the
++  forward direction and 187.5Mbps in the reverse direction.
++  MAX96717F only supports a fixed rate of 3Gbps in the forward direction.
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - maxim,max96717
++      - items:
++          - enum:
++              - maxim,max96717f
++          - const: maxim,max96717 # fallback for 'f' variant
++
++  '#gpio-cells':
++    const: 2
++    description:
++      First cell is the GPIO pin number, second cell is the flags. The GPIO pin
++      number must be in range of [0, 10].
++
++  gpio-controller: true
++
++  '#clock-cells':
++    const: 0
++
++  reg:
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/$defs/port-base
++        unevaluatedProperties: false
++        description: CSI-2 Input port
++
++        properties:
++          endpoint:
++            $ref: /schemas/media/video-interfaces.yaml#
++            unevaluatedProperties: false
++
++            properties:
++              data-lanes:
++                minItems: 1
++                maxItems: 4
++
++              lane-polarities:
++                minItems: 1
++                maxItems: 5
++
++              bus-type:
++                enum:
++                  - 1 # MEDIA_BUS_TYPE_CSI2_CPHY
++                  - 4 # MEDIA_BUS_TYPE_CSI2_DPHY
++
++            required:
++              - data-lanes
++              - bus-type
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        unevaluatedProperties: false
++        description: GMSL Output port
++
++    required:
++      - port@1
++
++  i2c-gate:
++    $ref: /schemas/i2c/i2c-gate.yaml
++    unevaluatedProperties: false
++    description:
++      The MAX96717 will forward the I2C requests from the
++      incoming GMSL2 link. Therefore, it supports an i2c-gate
++      subnode to configure a sensor.
++
++required:
++  - compatible
++  - reg
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/media/video-interfaces.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        serializer: serializer@40 {
++            compatible = "maxim,max96717f", "maxim,max96717";
++            reg = <0x40>;
++            gpio-controller;
++            #gpio-cells = <2>;
++            #clock-cells = <0>;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0>;
++                    max96717f_csi_in: endpoint {
++                        bus-type = <MEDIA_BUS_TYPE_CSI2_DPHY>;
++                        data-lanes = <1 2 3 4>;
++                        remote-endpoint = <&sensor_out>;
++                    };
++                };
++
++                port@1 {
++                    reg = <1>;
++                    max96917f_gmsl_out: endpoint {
++                        remote-endpoint = <&deser_gmsl_in>;
++                    };
++                };
++            };
++
++            i2c-gate {
++                #address-cells = <1>;
++                #size-cells = <0>;
++                sensor@10 {
++                    compatible = "st,st-vgxy61";
++                    reg = <0x10>;
++                    reset-gpios = <&serializer 0 GPIO_ACTIVE_LOW>;
++                    clocks = <&serializer>;
++                    VCORE-supply = <&v1v2>;
++                    VDDIO-supply = <&v1v8>;
++                    VANA-supply = <&v2v8>;
++                    port {
++                        sensor_out: endpoint {
++                            data-lanes = <1 2 3 4>;
++                            remote-endpoint = <&max96717f_csi_in>;
++                        };
++                    };
++                };
++            };
++        };
++    };
++...
 -- 
 2.44.0
 
