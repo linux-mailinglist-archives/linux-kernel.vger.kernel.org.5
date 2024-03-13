@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A8687AF3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:20:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A3C87AF3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 227E6288E07
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:20:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9ED2FB264A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991C776C63;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00025199F09;
 	Wed, 13 Mar 2024 17:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ihrheryJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oPNchxku"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C7860EDB;
-	Wed, 13 Mar 2024 17:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7AF60EF7;
+	Wed, 13 Mar 2024 17:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710349480; cv=none; b=MAoTDFYuw6UZYFSFevRW3geRni1j3/x/T1SpWkYRQSWetw4iHpWGBsl7PDakvGLcRdcx/og1X31utcBpFmXSNSxnPi3arLJ9graVKAVh83Yum7nICWKFyAQeCvxAWOeF96YRIFHDlfmVkY2OxFr3wuW5//hdw6yY93qEaCvm470=
+	t=1710349481; cv=none; b=TcutEnHc5Wya8QfIY1MK+qJrLZ27538hux7u59zTHmtknXd21VpUCwhwr8CK++Wwat7yl4Or/UEfppZxUdLgxYBgTwYTs4lJ0/G/1vSBWheyja/sbXLqt9sDg1Qqx/0W8kJZQx0dkmn2M/eDnGuHl+jNj446Zs3akNz20ikS8rk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710349480; c=relaxed/simple;
-	bh=LqmNTwql1q0D/a6YWkuSr2MWBICkldUD1Tt7qIQlhbM=;
+	s=arc-20240116; t=1710349481; c=relaxed/simple;
+	bh=4Abb+MVNgzXfSodg8DfPY0g6C3fckhgqfbQVzxu5Ytw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o5Nvf7xqFXI0Y1gSAJ4le4hxgH1YcZXg2q9sCGEewYlBt8FjQtzQ9UnD+7TAYIrGiOjqmwYjdvP+9lsl4jdFWeRq9p95iD0BeoA2pCLgP9wxstlRZKt7tL8uFO8n85jR2FegiCWd3hNb87vQehyNCpR4D2pdL83WhgL+jnrFuNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ihrheryJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C0FC43399;
-	Wed, 13 Mar 2024 17:04:38 +0000 (UTC)
+	 MIME-Version; b=S/8cPZcO6GWIuvNyIR+/O/qA573uG+6fNfO2IRttfyUKzSLaeN8ub1FdRohnFFcyjcNfO8+0bSPYdMWg7r6sFiLnyaQLuwcA2YzLT0E0c72WbkuSzFgcIdSNh1RCLlmC4Mqeatvzy6CS72BpEZMGyu9BeiGdUMcOjjygqlf3uvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oPNchxku; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21BDAC433B2;
+	Wed, 13 Mar 2024 17:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710349479;
-	bh=LqmNTwql1q0D/a6YWkuSr2MWBICkldUD1Tt7qIQlhbM=;
+	s=k20201202; t=1710349480;
+	bh=4Abb+MVNgzXfSodg8DfPY0g6C3fckhgqfbQVzxu5Ytw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ihrheryJ+vLm+tSnsoTpEKy8vyNgl6wXo+FlX/LP0dYIQ9owiPSwlmkkO2cfaqr4g
-	 WpglWSFdYlvjfL+Nit/5EhXc9lx8ZuHfTgpxcI6ow8M0MGLTmaNvTMl3XfAq9dyOgV
-	 R5l33RgOginNzzBQrTI0GHOSsu75mskGuojugMg8xHhcHm2CTv9f+3yY66hvx/1/ni
-	 pF9r0kYsnQA51sTaLjzplMaqu2T21KnMFhNeke6me5f6NKg0syFKbt1uBF8+xJ97sQ
-	 a0w0EGMxI0Q6UudTcjQO3WMQbayPd6r2Xnd7QKLr/pcvKE0X01N/RHMfZwgt+hgPrC
-	 PkOwX795nw8KQ==
+	b=oPNchxku+GoDhA4XDJ56gIviws+FWrVoqyKzAD9ukAP6aELjkPnxJyKvhNlsBf9Jb
+	 tXdah/LU4bJubG+ES7TluI04LpgSfCN2zFW45Cl66K1SzM8yD/zV6nSrvLicQ6lDO5
+	 vYYpNPh9u5hYYeZVYPhH6QCUHzB6NIsUX3Kq9COBC7x0R1Z3v5gwvkA/rpqtNvZnRF
+	 5RNepV5fvdkE/nbX74gG1ImRxVjIw9vPgSZTlmBrnXZSQdalQnBAknutwkZblP2aYw
+	 Nx6dGR42Cls5T+YRR2ATdTayQCBxRGFvMp0KbXoPLmbu1ZIlTTnAXxt7vw7U6u36I1
+	 yAN17B04VVcIQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lee Jones <lee.jones@linaro.org>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: John Efstathiades <john.efstathiades@pebblebay.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 01/41] net: usb: lan78xx: Remove lots of set but unused 'ret' variables
-Date: Wed, 13 Mar 2024 13:03:55 -0400
-Message-ID: <20240313170435.616724-2-sashal@kernel.org>
+Subject: [PATCH 4.19 02/41] lan78xx: Fix white space and style issues
+Date: Wed, 13 Mar 2024 13:03:56 -0400
+Message-ID: <20240313170435.616724-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313170435.616724-1-sashal@kernel.org>
 References: <20240313170435.616724-1-sashal@kernel.org>
@@ -58,7 +58,6 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.310-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-4.19.y
@@ -69,535 +68,253 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Lee Jones <lee.jones@linaro.org>
+From: John Efstathiades <john.efstathiades@pebblebay.com>
 
-[ Upstream commit 06cd7c46b3ab3f2252c61bf85b191236cf0254e1 ]
+[ Upstream commit 9ceec7d33adf9647293f24d2fd9a055b89c63864 ]
 
-Fixes the following W=1 kernel build warning(s):
+Fix white space and code style issues identified by checkpatch.
 
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_read_raw_otp’:
- drivers/net/usb/lan78xx.c:825:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_write_raw_otp’:
- drivers/net/usb/lan78xx.c:879:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_deferred_multicast_write’:
- drivers/net/usb/lan78xx.c:1041:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_update_flowcontrol’:
- drivers/net/usb/lan78xx.c:1127:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_init_mac_address’:
- drivers/net/usb/lan78xx.c:1666:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_link_status_change’:
- drivers/net/usb/lan78xx.c:1841:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_irq_bus_sync_unlock’:
- drivers/net/usb/lan78xx.c:1920:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan8835_fixup’:
- drivers/net/usb/lan78xx.c:1994:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_set_rx_max_frame_length’:
- drivers/net/usb/lan78xx.c:2192:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_change_mtu’:
- drivers/net/usb/lan78xx.c:2270:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_set_mac_addr’:
- drivers/net/usb/lan78xx.c:2299:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_set_features’:
- drivers/net/usb/lan78xx.c:2333:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/net/usb/lan78xx.c: In function ‘lan78xx_set_suspend’:
- drivers/net/usb/lan78xx.c:3807:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20201102114512.1062724-25-lee.jones@linaro.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: John Efstathiades <john.efstathiades@pebblebay.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Stable-dep-of: 1eecc7ab82c4 ("net: lan78xx: fix runtime PM count underflow on link stop")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/lan78xx.c | 168 ++++++++++++++++++--------------------
- 1 file changed, 78 insertions(+), 90 deletions(-)
+ drivers/net/usb/lan78xx.c | 80 ++++++++++++++++++++-------------------
+ 1 file changed, 42 insertions(+), 38 deletions(-)
 
 diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index c0fff40a98bb8..4d94af63cf190 100644
+index 4d94af63cf190..2f4f85e03df2c 100644
 --- a/drivers/net/usb/lan78xx.c
 +++ b/drivers/net/usb/lan78xx.c
-@@ -835,20 +835,19 @@ static int lan78xx_read_raw_otp(struct lan78xx_net *dev, u32 offset,
- 				u32 length, u8 *data)
- {
- 	int i;
--	int ret;
- 	u32 buf;
- 	unsigned long timeout;
+@@ -396,7 +396,7 @@ struct lan78xx_net {
+ 	struct usb_anchor	deferred;
  
--	ret = lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
-+	lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
+ 	struct mutex		phy_mutex; /* for phy access */
+-	unsigned		pipe_in, pipe_out, pipe_intr;
++	unsigned int		pipe_in, pipe_out, pipe_intr;
  
- 	if (buf & OTP_PWR_DN_PWRDN_N_) {
- 		/* clear it and wait to be cleared */
--		ret = lan78xx_write_reg(dev, OTP_PWR_DN, 0);
-+		lan78xx_write_reg(dev, OTP_PWR_DN, 0);
+ 	u32			hard_mtu;	/* count any extra framing */
+ 	size_t			rx_urb_size;	/* size for rx urbs */
+@@ -406,7 +406,7 @@ struct lan78xx_net {
+ 	wait_queue_head_t	*wait;
+ 	unsigned char		suspend_count;
  
- 		timeout = jiffies + HZ;
- 		do {
- 			usleep_range(1, 10);
--			ret = lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
-+			lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
- 			if (time_after(jiffies, timeout)) {
- 				netdev_warn(dev->net,
- 					    "timeout on OTP_PWR_DN");
-@@ -858,18 +857,18 @@ static int lan78xx_read_raw_otp(struct lan78xx_net *dev, u32 offset,
- 	}
+-	unsigned		maxpacket;
++	unsigned int		maxpacket;
+ 	struct timer_list	delay;
+ 	struct timer_list	stat_monitor;
  
- 	for (i = 0; i < length; i++) {
--		ret = lan78xx_write_reg(dev, OTP_ADDR1,
-+		lan78xx_write_reg(dev, OTP_ADDR1,
- 					((offset + i) >> 8) & OTP_ADDR1_15_11);
--		ret = lan78xx_write_reg(dev, OTP_ADDR2,
-+		lan78xx_write_reg(dev, OTP_ADDR2,
- 					((offset + i) & OTP_ADDR2_10_3));
+@@ -515,7 +515,7 @@ static int lan78xx_read_stats(struct lan78xx_net *dev,
+ 	if (likely(ret >= 0)) {
+ 		src = (u32 *)stats;
+ 		dst = (u32 *)data;
+-		for (i = 0; i < sizeof(*stats)/sizeof(u32); i++) {
++		for (i = 0; i < sizeof(*stats) / sizeof(u32); i++) {
+ 			le32_to_cpus(&src[i]);
+ 			dst[i] = src[i];
+ 		}
+@@ -529,10 +529,11 @@ static int lan78xx_read_stats(struct lan78xx_net *dev,
+ 	return ret;
+ }
  
--		ret = lan78xx_write_reg(dev, OTP_FUNC_CMD, OTP_FUNC_CMD_READ_);
--		ret = lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
-+		lan78xx_write_reg(dev, OTP_FUNC_CMD, OTP_FUNC_CMD_READ_);
-+		lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
+-#define check_counter_rollover(struct1, dev_stats, member) {	\
+-	if (struct1->member < dev_stats.saved.member)		\
+-		dev_stats.rollover_count.member++;		\
+-	}
++#define check_counter_rollover(struct1, dev_stats, member)		\
++	do {								\
++		if ((struct1)->member < (dev_stats).saved.member)	\
++			(dev_stats).rollover_count.member++;		\
++	} while (0)
  
- 		timeout = jiffies + HZ;
- 		do {
- 			udelay(1);
--			ret = lan78xx_read_reg(dev, OTP_STATUS, &buf);
-+			lan78xx_read_reg(dev, OTP_STATUS, &buf);
- 			if (time_after(jiffies, timeout)) {
- 				netdev_warn(dev->net,
- 					    "timeout on OTP_STATUS");
-@@ -877,7 +876,7 @@ static int lan78xx_read_raw_otp(struct lan78xx_net *dev, u32 offset,
- 			}
- 		} while (buf & OTP_STATUS_BUSY_);
- 
--		ret = lan78xx_read_reg(dev, OTP_RD_DATA, &buf);
-+		lan78xx_read_reg(dev, OTP_RD_DATA, &buf);
- 
- 		data[i] = (u8)(buf & 0xFF);
- 	}
-@@ -889,20 +888,19 @@ static int lan78xx_write_raw_otp(struct lan78xx_net *dev, u32 offset,
- 				 u32 length, u8 *data)
- {
- 	int i;
--	int ret;
- 	u32 buf;
- 	unsigned long timeout;
- 
--	ret = lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
-+	lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
- 
- 	if (buf & OTP_PWR_DN_PWRDN_N_) {
- 		/* clear it and wait to be cleared */
--		ret = lan78xx_write_reg(dev, OTP_PWR_DN, 0);
-+		lan78xx_write_reg(dev, OTP_PWR_DN, 0);
- 
- 		timeout = jiffies + HZ;
- 		do {
- 			udelay(1);
--			ret = lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
-+			lan78xx_read_reg(dev, OTP_PWR_DN, &buf);
- 			if (time_after(jiffies, timeout)) {
- 				netdev_warn(dev->net,
- 					    "timeout on OTP_PWR_DN completion");
-@@ -912,21 +910,21 @@ static int lan78xx_write_raw_otp(struct lan78xx_net *dev, u32 offset,
- 	}
- 
- 	/* set to BYTE program mode */
--	ret = lan78xx_write_reg(dev, OTP_PRGM_MODE, OTP_PRGM_MODE_BYTE_);
-+	lan78xx_write_reg(dev, OTP_PRGM_MODE, OTP_PRGM_MODE_BYTE_);
+ static void lan78xx_check_stat_rollover(struct lan78xx_net *dev,
+ 					struct lan78xx_statstage *stats)
+@@ -858,9 +859,9 @@ static int lan78xx_read_raw_otp(struct lan78xx_net *dev, u32 offset,
  
  	for (i = 0; i < length; i++) {
--		ret = lan78xx_write_reg(dev, OTP_ADDR1,
-+		lan78xx_write_reg(dev, OTP_ADDR1,
- 					((offset + i) >> 8) & OTP_ADDR1_15_11);
--		ret = lan78xx_write_reg(dev, OTP_ADDR2,
-+		lan78xx_write_reg(dev, OTP_ADDR2,
- 					((offset + i) & OTP_ADDR2_10_3));
--		ret = lan78xx_write_reg(dev, OTP_PRGM_DATA, data[i]);
--		ret = lan78xx_write_reg(dev, OTP_TST_CMD, OTP_TST_CMD_PRGVRFY_);
--		ret = lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
-+		lan78xx_write_reg(dev, OTP_PRGM_DATA, data[i]);
-+		lan78xx_write_reg(dev, OTP_TST_CMD, OTP_TST_CMD_PRGVRFY_);
-+		lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
+ 		lan78xx_write_reg(dev, OTP_ADDR1,
+-					((offset + i) >> 8) & OTP_ADDR1_15_11);
++				  ((offset + i) >> 8) & OTP_ADDR1_15_11);
+ 		lan78xx_write_reg(dev, OTP_ADDR2,
+-					((offset + i) & OTP_ADDR2_10_3));
++				  ((offset + i) & OTP_ADDR2_10_3));
  
- 		timeout = jiffies + HZ;
- 		do {
- 			udelay(1);
--			ret = lan78xx_read_reg(dev, OTP_STATUS, &buf);
-+			lan78xx_read_reg(dev, OTP_STATUS, &buf);
- 			if (time_after(jiffies, timeout)) {
- 				netdev_warn(dev->net,
- 					    "Timeout on OTP_STATUS completion");
-@@ -1051,7 +1049,6 @@ static void lan78xx_deferred_multicast_write(struct work_struct *param)
- 			container_of(param, struct lan78xx_priv, set_multicast);
- 	struct lan78xx_net *dev = pdata->dev;
- 	int i;
--	int ret;
+ 		lan78xx_write_reg(dev, OTP_FUNC_CMD, OTP_FUNC_CMD_READ_);
+ 		lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
+@@ -914,9 +915,9 @@ static int lan78xx_write_raw_otp(struct lan78xx_net *dev, u32 offset,
  
- 	netif_dbg(dev, drv, dev->net, "deferred multicast write 0x%08x\n",
- 		  pdata->rfe_ctl);
-@@ -1060,14 +1057,14 @@ static void lan78xx_deferred_multicast_write(struct work_struct *param)
- 			       DP_SEL_VHF_HASH_LEN, pdata->mchash_table);
+ 	for (i = 0; i < length; i++) {
+ 		lan78xx_write_reg(dev, OTP_ADDR1,
+-					((offset + i) >> 8) & OTP_ADDR1_15_11);
++				  ((offset + i) >> 8) & OTP_ADDR1_15_11);
+ 		lan78xx_write_reg(dev, OTP_ADDR2,
+-					((offset + i) & OTP_ADDR2_10_3));
++				  ((offset + i) & OTP_ADDR2_10_3));
+ 		lan78xx_write_reg(dev, OTP_PRGM_DATA, data[i]);
+ 		lan78xx_write_reg(dev, OTP_TST_CMD, OTP_TST_CMD_PRGVRFY_);
+ 		lan78xx_write_reg(dev, OTP_CMD_GO, OTP_CMD_GO_GO_);
+@@ -973,7 +974,7 @@ static int lan78xx_dataport_wait_not_busy(struct lan78xx_net *dev)
+ 		usleep_range(40, 100);
+ 	}
  
+-	netdev_warn(dev->net, "lan78xx_dataport_wait_not_busy timed out");
++	netdev_warn(dev->net, "%s timed out", __func__);
+ 
+ 	return -EIO;
+ }
+@@ -986,7 +987,7 @@ static int lan78xx_dataport_write(struct lan78xx_net *dev, u32 ram_select,
+ 	int i, ret;
+ 
+ 	if (usb_autopm_get_interface(dev->intf) < 0)
+-			return 0;
++		return 0;
+ 
+ 	mutex_lock(&pdata->dataport_mutex);
+ 
+@@ -1059,9 +1060,9 @@ static void lan78xx_deferred_multicast_write(struct work_struct *param)
  	for (i = 1; i < NUM_OF_MAF; i++) {
--		ret = lan78xx_write_reg(dev, MAF_HI(i), 0);
--		ret = lan78xx_write_reg(dev, MAF_LO(i),
-+		lan78xx_write_reg(dev, MAF_HI(i), 0);
-+		lan78xx_write_reg(dev, MAF_LO(i),
- 					pdata->pfilter_table[i][1]);
--		ret = lan78xx_write_reg(dev, MAF_HI(i),
-+		lan78xx_write_reg(dev, MAF_HI(i),
- 					pdata->pfilter_table[i][0]);
+ 		lan78xx_write_reg(dev, MAF_HI(i), 0);
+ 		lan78xx_write_reg(dev, MAF_LO(i),
+-					pdata->pfilter_table[i][1]);
++				  pdata->pfilter_table[i][1]);
+ 		lan78xx_write_reg(dev, MAF_HI(i),
+-					pdata->pfilter_table[i][0]);
++				  pdata->pfilter_table[i][0]);
  	}
  
--	ret = lan78xx_write_reg(dev, RFE_CTL, pdata->rfe_ctl);
-+	lan78xx_write_reg(dev, RFE_CTL, pdata->rfe_ctl);
- }
+ 	lan78xx_write_reg(dev, RFE_CTL, pdata->rfe_ctl);
+@@ -1080,11 +1081,12 @@ static void lan78xx_set_multicast(struct net_device *netdev)
+ 			    RFE_CTL_DA_PERFECT_ | RFE_CTL_MCAST_HASH_);
  
- static void lan78xx_set_multicast(struct net_device *netdev)
-@@ -1137,7 +1134,6 @@ static int lan78xx_update_flowcontrol(struct lan78xx_net *dev, u8 duplex,
- 				      u16 lcladv, u16 rmtadv)
- {
- 	u32 flow = 0, fct_flow = 0;
--	int ret;
- 	u8 cap;
- 
- 	if (dev->fc_autoneg)
-@@ -1160,10 +1156,10 @@ static int lan78xx_update_flowcontrol(struct lan78xx_net *dev, u8 duplex,
- 		  (cap & FLOW_CTRL_RX ? "enabled" : "disabled"),
- 		  (cap & FLOW_CTRL_TX ? "enabled" : "disabled"));
- 
--	ret = lan78xx_write_reg(dev, FCT_FLOW, fct_flow);
-+	lan78xx_write_reg(dev, FCT_FLOW, fct_flow);
- 
- 	/* threshold value should be set before enabling flow */
--	ret = lan78xx_write_reg(dev, FLOW, flow);
-+	lan78xx_write_reg(dev, FLOW, flow);
- 
- 	return 0;
- }
-@@ -1694,11 +1690,10 @@ static int lan78xx_ioctl(struct net_device *netdev, struct ifreq *rq, int cmd)
- static void lan78xx_init_mac_address(struct lan78xx_net *dev)
- {
- 	u32 addr_lo, addr_hi;
--	int ret;
- 	u8 addr[6];
- 
--	ret = lan78xx_read_reg(dev, RX_ADDRL, &addr_lo);
--	ret = lan78xx_read_reg(dev, RX_ADDRH, &addr_hi);
-+	lan78xx_read_reg(dev, RX_ADDRL, &addr_lo);
-+	lan78xx_read_reg(dev, RX_ADDRH, &addr_hi);
- 
- 	addr[0] = addr_lo & 0xFF;
- 	addr[1] = (addr_lo >> 8) & 0xFF;
-@@ -1731,12 +1726,12 @@ static void lan78xx_init_mac_address(struct lan78xx_net *dev)
- 			  (addr[2] << 16) | (addr[3] << 24);
- 		addr_hi = addr[4] | (addr[5] << 8);
- 
--		ret = lan78xx_write_reg(dev, RX_ADDRL, addr_lo);
--		ret = lan78xx_write_reg(dev, RX_ADDRH, addr_hi);
-+		lan78xx_write_reg(dev, RX_ADDRL, addr_lo);
-+		lan78xx_write_reg(dev, RX_ADDRH, addr_hi);
+ 	for (i = 0; i < DP_SEL_VHF_HASH_LEN; i++)
+-			pdata->mchash_table[i] = 0;
++		pdata->mchash_table[i] = 0;
++
+ 	/* pfilter_table[0] has own HW address */
+ 	for (i = 1; i < NUM_OF_MAF; i++) {
+-			pdata->pfilter_table[i][0] =
+-			pdata->pfilter_table[i][1] = 0;
++		pdata->pfilter_table[i][0] = 0;
++		pdata->pfilter_table[i][1] = 0;
  	}
  
--	ret = lan78xx_write_reg(dev, MAF_LO(0), addr_lo);
--	ret = lan78xx_write_reg(dev, MAF_HI(0), addr_hi | MAF_HI_VALID_);
-+	lan78xx_write_reg(dev, MAF_LO(0), addr_lo);
-+	lan78xx_write_reg(dev, MAF_HI(0), addr_hi | MAF_HI_VALID_);
- 
- 	ether_addr_copy(dev->net->dev_addr, addr);
- }
-@@ -1870,7 +1865,7 @@ static void lan78xx_remove_mdio(struct lan78xx_net *dev)
- static void lan78xx_link_status_change(struct net_device *net)
- {
- 	struct phy_device *phydev = net->phydev;
--	int ret, temp;
-+	int temp;
- 
- 	/* At forced 100 F/H mode, chip may fail to set mode correctly
- 	 * when cable is switched between long(~50+m) and short one.
-@@ -1881,7 +1876,7 @@ static void lan78xx_link_status_change(struct net_device *net)
- 		/* disable phy interrupt */
- 		temp = phy_read(phydev, LAN88XX_INT_MASK);
- 		temp &= ~LAN88XX_INT_MASK_MDINTPIN_EN_;
--		ret = phy_write(phydev, LAN88XX_INT_MASK, temp);
-+		phy_write(phydev, LAN88XX_INT_MASK, temp);
- 
- 		temp = phy_read(phydev, MII_BMCR);
- 		temp &= ~(BMCR_SPEED100 | BMCR_SPEED1000);
-@@ -1895,7 +1890,7 @@ static void lan78xx_link_status_change(struct net_device *net)
- 		/* enable phy interrupt back */
- 		temp = phy_read(phydev, LAN88XX_INT_MASK);
- 		temp |= LAN88XX_INT_MASK_MDINTPIN_EN_;
--		ret = phy_write(phydev, LAN88XX_INT_MASK, temp);
-+		phy_write(phydev, LAN88XX_INT_MASK, temp);
- 	}
+ 	pdata->rfe_ctl |= RFE_CTL_BCAST_EN_;
+@@ -1279,9 +1281,10 @@ static void lan78xx_status(struct lan78xx_net *dev, struct urb *urb)
+ 			generic_handle_irq(dev->domain_data.phyirq);
+ 			local_irq_enable();
+ 		}
+-	} else
++	} else {
+ 		netdev_warn(dev->net,
+ 			    "unexpected interrupt: 0x%08x\n", intdata);
++	}
  }
  
-@@ -1949,14 +1944,13 @@ static void lan78xx_irq_bus_sync_unlock(struct irq_data *irqd)
- 	struct lan78xx_net *dev =
- 			container_of(data, struct lan78xx_net, domain_data);
- 	u32 buf;
--	int ret;
+ static int lan78xx_ethtool_get_eeprom_len(struct net_device *netdev)
+@@ -1370,7 +1373,7 @@ static void lan78xx_get_wol(struct net_device *netdev,
+ 	struct lan78xx_priv *pdata = (struct lan78xx_priv *)(dev->data[0]);
  
- 	/* call register access here because irq_bus_lock & irq_bus_sync_unlock
- 	 * are only two callbacks executed in non-atomic contex.
- 	 */
--	ret = lan78xx_read_reg(dev, INT_EP_CTL, &buf);
-+	lan78xx_read_reg(dev, INT_EP_CTL, &buf);
- 	if (buf != data->irqenable)
--		ret = lan78xx_write_reg(dev, INT_EP_CTL, data->irqenable);
-+		lan78xx_write_reg(dev, INT_EP_CTL, data->irqenable);
+ 	if (usb_autopm_get_interface(dev->intf) < 0)
+-			return;
++		return;
  
- 	mutex_unlock(&data->irq_lock);
- }
-@@ -2023,7 +2017,6 @@ static void lan78xx_remove_irq_domain(struct lan78xx_net *dev)
- static int lan8835_fixup(struct phy_device *phydev)
- {
- 	int buf;
--	int ret;
- 	struct lan78xx_net *dev = netdev_priv(phydev->attached_dev);
- 
- 	/* LED2/PME_N/IRQ_N/RGMII_ID pin to IRQ_N mode */
-@@ -2033,11 +2026,11 @@ static int lan8835_fixup(struct phy_device *phydev)
- 	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8010, buf);
+ 	ret = lan78xx_read_reg(dev, USB_CFG0, &buf);
+ 	if (unlikely(ret < 0)) {
+@@ -2027,7 +2030,7 @@ static int lan8835_fixup(struct phy_device *phydev)
  
  	/* RGMII MAC TXC Delay Enable */
--	ret = lan78xx_write_reg(dev, MAC_RGMII_ID,
-+	lan78xx_write_reg(dev, MAC_RGMII_ID,
- 				MAC_RGMII_ID_TXC_DELAY_EN_);
+ 	lan78xx_write_reg(dev, MAC_RGMII_ID,
+-				MAC_RGMII_ID_TXC_DELAY_EN_);
++			  MAC_RGMII_ID_TXC_DELAY_EN_);
  
  	/* RGMII TX DLL Tune Adjust */
--	ret = lan78xx_write_reg(dev, RGMII_TX_BYP_DLL, 0x3D00);
-+	lan78xx_write_reg(dev, RGMII_TX_BYP_DLL, 0x3D00);
- 
- 	dev->interface = PHY_INTERFACE_MODE_RGMII_TXID;
- 
-@@ -2217,28 +2210,27 @@ static int lan78xx_phy_init(struct lan78xx_net *dev)
- 
- static int lan78xx_set_rx_max_frame_length(struct lan78xx_net *dev, int size)
- {
--	int ret = 0;
- 	u32 buf;
- 	bool rxenabled;
- 
--	ret = lan78xx_read_reg(dev, MAC_RX, &buf);
-+	lan78xx_read_reg(dev, MAC_RX, &buf);
- 
- 	rxenabled = ((buf & MAC_RX_RXEN_) != 0);
- 
- 	if (rxenabled) {
- 		buf &= ~MAC_RX_RXEN_;
--		ret = lan78xx_write_reg(dev, MAC_RX, buf);
-+		lan78xx_write_reg(dev, MAC_RX, buf);
- 	}
- 
- 	/* add 4 to size for FCS */
- 	buf &= ~MAC_RX_MAX_SIZE_MASK_;
- 	buf |= (((size + 4) << MAC_RX_MAX_SIZE_SHIFT_) & MAC_RX_MAX_SIZE_MASK_);
- 
--	ret = lan78xx_write_reg(dev, MAC_RX, buf);
-+	lan78xx_write_reg(dev, MAC_RX, buf);
- 
- 	if (rxenabled) {
- 		buf |= MAC_RX_RXEN_;
--		ret = lan78xx_write_reg(dev, MAC_RX, buf);
-+		lan78xx_write_reg(dev, MAC_RX, buf);
- 	}
- 
- 	return 0;
-@@ -2295,13 +2287,12 @@ static int lan78xx_change_mtu(struct net_device *netdev, int new_mtu)
- 	int ll_mtu = new_mtu + netdev->hard_header_len;
- 	int old_hard_mtu = dev->hard_mtu;
- 	int old_rx_urb_size = dev->rx_urb_size;
--	int ret;
- 
- 	/* no second zero-length packet read wanted after mtu-sized packets */
- 	if ((ll_mtu % dev->maxpacket) == 0)
- 		return -EDOM;
- 
--	ret = lan78xx_set_rx_max_frame_length(dev, new_mtu + VLAN_ETH_HLEN);
-+	lan78xx_set_rx_max_frame_length(dev, new_mtu + VLAN_ETH_HLEN);
- 
- 	netdev->mtu = new_mtu;
- 
-@@ -2324,7 +2315,6 @@ static int lan78xx_set_mac_addr(struct net_device *netdev, void *p)
- 	struct lan78xx_net *dev = netdev_priv(netdev);
- 	struct sockaddr *addr = p;
- 	u32 addr_lo, addr_hi;
--	int ret;
- 
- 	if (netif_running(netdev))
- 		return -EBUSY;
-@@ -2341,12 +2331,12 @@ static int lan78xx_set_mac_addr(struct net_device *netdev, void *p)
- 	addr_hi = netdev->dev_addr[4] |
- 		  netdev->dev_addr[5] << 8;
- 
--	ret = lan78xx_write_reg(dev, RX_ADDRL, addr_lo);
--	ret = lan78xx_write_reg(dev, RX_ADDRH, addr_hi);
-+	lan78xx_write_reg(dev, RX_ADDRL, addr_lo);
-+	lan78xx_write_reg(dev, RX_ADDRH, addr_hi);
- 
- 	/* Added to support MAC address changes */
--	ret = lan78xx_write_reg(dev, MAF_LO(0), addr_lo);
--	ret = lan78xx_write_reg(dev, MAF_HI(0), addr_hi | MAF_HI_VALID_);
-+	lan78xx_write_reg(dev, MAF_LO(0), addr_lo);
-+	lan78xx_write_reg(dev, MAF_HI(0), addr_hi | MAF_HI_VALID_);
- 
- 	return 0;
+ 	lan78xx_write_reg(dev, RGMII_TX_BYP_DLL, 0x3D00);
+@@ -3383,9 +3386,10 @@ static void lan78xx_tx_bh(struct lan78xx_net *dev)
+ 		if (skb)
+ 			dev_kfree_skb_any(skb);
+ 		usb_free_urb(urb);
+-	} else
++	} else {
+ 		netif_dbg(dev, tx_queued, dev->net,
+ 			  "> tx, len %d, type 0x%x\n", length, skb->protocol);
++	}
  }
-@@ -2358,7 +2348,6 @@ static int lan78xx_set_features(struct net_device *netdev,
- 	struct lan78xx_net *dev = netdev_priv(netdev);
- 	struct lan78xx_priv *pdata = (struct lan78xx_priv *)(dev->data[0]);
- 	unsigned long flags;
--	int ret;
  
- 	spin_lock_irqsave(&pdata->rfe_ctl_lock, flags);
+ static void lan78xx_rx_bh(struct lan78xx_net *dev)
+@@ -3486,7 +3490,7 @@ static void lan78xx_delayedwork(struct work_struct *work)
+ 		unlink_urbs(dev, &dev->rxq);
+ 		status = usb_autopm_get_interface(dev->intf);
+ 		if (status < 0)
+-				goto fail_halt;
++			goto fail_halt;
+ 		status = usb_clear_halt(dev->udev, dev->pipe_in);
+ 		usb_autopm_put_interface(dev->intf);
+ 		if (status < 0 &&
+@@ -3659,8 +3663,8 @@ static int lan78xx_probe(struct usb_interface *intf,
+ 	struct net_device *netdev;
+ 	struct usb_device *udev;
+ 	int ret;
+-	unsigned maxp;
+-	unsigned period;
++	unsigned int maxp;
++	unsigned int period;
+ 	u8 *buf = NULL;
  
-@@ -2382,7 +2371,7 @@ static int lan78xx_set_features(struct net_device *netdev,
- 
- 	spin_unlock_irqrestore(&pdata->rfe_ctl_lock, flags);
- 
--	ret = lan78xx_write_reg(dev, RFE_CTL, pdata->rfe_ctl);
-+	lan78xx_write_reg(dev, RFE_CTL, pdata->rfe_ctl);
- 
- 	return 0;
- }
-@@ -3846,7 +3835,6 @@ static u16 lan78xx_wakeframe_crc16(const u8 *buf, int len)
- static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
- {
- 	u32 buf;
--	int ret;
- 	int mask_index;
- 	u16 crc;
- 	u32 temp_wucsr;
-@@ -3855,26 +3843,26 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
- 	const u8 ipv6_multicast[3] = { 0x33, 0x33 };
- 	const u8 arp_type[2] = { 0x08, 0x06 };
- 
--	ret = lan78xx_read_reg(dev, MAC_TX, &buf);
-+	lan78xx_read_reg(dev, MAC_TX, &buf);
- 	buf &= ~MAC_TX_TXEN_;
--	ret = lan78xx_write_reg(dev, MAC_TX, buf);
--	ret = lan78xx_read_reg(dev, MAC_RX, &buf);
-+	lan78xx_write_reg(dev, MAC_TX, buf);
-+	lan78xx_read_reg(dev, MAC_RX, &buf);
- 	buf &= ~MAC_RX_RXEN_;
--	ret = lan78xx_write_reg(dev, MAC_RX, buf);
-+	lan78xx_write_reg(dev, MAC_RX, buf);
- 
--	ret = lan78xx_write_reg(dev, WUCSR, 0);
--	ret = lan78xx_write_reg(dev, WUCSR2, 0);
--	ret = lan78xx_write_reg(dev, WK_SRC, 0xFFF1FF1FUL);
-+	lan78xx_write_reg(dev, WUCSR, 0);
-+	lan78xx_write_reg(dev, WUCSR2, 0);
-+	lan78xx_write_reg(dev, WK_SRC, 0xFFF1FF1FUL);
- 
- 	temp_wucsr = 0;
- 
- 	temp_pmt_ctl = 0;
--	ret = lan78xx_read_reg(dev, PMT_CTL, &temp_pmt_ctl);
-+	lan78xx_read_reg(dev, PMT_CTL, &temp_pmt_ctl);
- 	temp_pmt_ctl &= ~PMT_CTL_RES_CLR_WKP_EN_;
- 	temp_pmt_ctl |= PMT_CTL_RES_CLR_WKP_STS_;
- 
- 	for (mask_index = 0; mask_index < NUM_OF_WUF_CFG; mask_index++)
--		ret = lan78xx_write_reg(dev, WUF_CFG(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_CFG(mask_index), 0);
- 
- 	mask_index = 0;
- 	if (wol & WAKE_PHY) {
-@@ -3903,30 +3891,30 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
- 
+ 	udev = interface_to_usbdev(intf);
+@@ -3892,10 +3896,10 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
  		/* set WUF_CFG & WUF_MASK for IPv4 Multicast */
  		crc = lan78xx_wakeframe_crc16(ipv4_multicast, 3);
--		ret = lan78xx_write_reg(dev, WUF_CFG(mask_index),
-+		lan78xx_write_reg(dev, WUF_CFG(mask_index),
- 					WUF_CFGX_EN_ |
- 					WUF_CFGX_TYPE_MCAST_ |
- 					(0 << WUF_CFGX_OFFSET_SHIFT_) |
- 					(crc & WUF_CFGX_CRC16_MASK_));
+ 		lan78xx_write_reg(dev, WUF_CFG(mask_index),
+-					WUF_CFGX_EN_ |
+-					WUF_CFGX_TYPE_MCAST_ |
+-					(0 << WUF_CFGX_OFFSET_SHIFT_) |
+-					(crc & WUF_CFGX_CRC16_MASK_));
++				  WUF_CFGX_EN_ |
++				  WUF_CFGX_TYPE_MCAST_ |
++				  (0 << WUF_CFGX_OFFSET_SHIFT_) |
++				  (crc & WUF_CFGX_CRC16_MASK_));
  
--		ret = lan78xx_write_reg(dev, WUF_MASK0(mask_index), 7);
--		ret = lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
--		ret = lan78xx_write_reg(dev, WUF_MASK2(mask_index), 0);
--		ret = lan78xx_write_reg(dev, WUF_MASK3(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 7);
-+		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK2(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK3(mask_index), 0);
- 		mask_index++;
- 
+ 		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 7);
+ 		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
+@@ -3906,10 +3910,10 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
  		/* for IPv6 Multicast */
  		crc = lan78xx_wakeframe_crc16(ipv6_multicast, 2);
--		ret = lan78xx_write_reg(dev, WUF_CFG(mask_index),
-+		lan78xx_write_reg(dev, WUF_CFG(mask_index),
- 					WUF_CFGX_EN_ |
- 					WUF_CFGX_TYPE_MCAST_ |
- 					(0 << WUF_CFGX_OFFSET_SHIFT_) |
- 					(crc & WUF_CFGX_CRC16_MASK_));
+ 		lan78xx_write_reg(dev, WUF_CFG(mask_index),
+-					WUF_CFGX_EN_ |
+-					WUF_CFGX_TYPE_MCAST_ |
+-					(0 << WUF_CFGX_OFFSET_SHIFT_) |
+-					(crc & WUF_CFGX_CRC16_MASK_));
++				  WUF_CFGX_EN_ |
++				  WUF_CFGX_TYPE_MCAST_ |
++				  (0 << WUF_CFGX_OFFSET_SHIFT_) |
++				  (crc & WUF_CFGX_CRC16_MASK_));
  
--		ret = lan78xx_write_reg(dev, WUF_MASK0(mask_index), 3);
--		ret = lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
--		ret = lan78xx_write_reg(dev, WUF_MASK2(mask_index), 0);
--		ret = lan78xx_write_reg(dev, WUF_MASK3(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 3);
-+		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK2(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK3(mask_index), 0);
- 		mask_index++;
- 
- 		temp_pmt_ctl |= PMT_CTL_WOL_EN_;
-@@ -3947,16 +3935,16 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
- 		 * for packettype (offset 12,13) = ARP (0x0806)
+ 		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 3);
+ 		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
+@@ -3936,10 +3940,10 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
  		 */
  		crc = lan78xx_wakeframe_crc16(arp_type, 2);
--		ret = lan78xx_write_reg(dev, WUF_CFG(mask_index),
-+		lan78xx_write_reg(dev, WUF_CFG(mask_index),
- 					WUF_CFGX_EN_ |
- 					WUF_CFGX_TYPE_ALL_ |
- 					(0 << WUF_CFGX_OFFSET_SHIFT_) |
- 					(crc & WUF_CFGX_CRC16_MASK_));
+ 		lan78xx_write_reg(dev, WUF_CFG(mask_index),
+-					WUF_CFGX_EN_ |
+-					WUF_CFGX_TYPE_ALL_ |
+-					(0 << WUF_CFGX_OFFSET_SHIFT_) |
+-					(crc & WUF_CFGX_CRC16_MASK_));
++				  WUF_CFGX_EN_ |
++				  WUF_CFGX_TYPE_ALL_ |
++				  (0 << WUF_CFGX_OFFSET_SHIFT_) |
++				  (crc & WUF_CFGX_CRC16_MASK_));
  
--		ret = lan78xx_write_reg(dev, WUF_MASK0(mask_index), 0x3000);
--		ret = lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
--		ret = lan78xx_write_reg(dev, WUF_MASK2(mask_index), 0);
--		ret = lan78xx_write_reg(dev, WUF_MASK3(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 0x3000);
-+		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK2(mask_index), 0);
-+		lan78xx_write_reg(dev, WUF_MASK3(mask_index), 0);
- 		mask_index++;
+ 		lan78xx_write_reg(dev, WUF_MASK0(mask_index), 0x3000);
+ 		lan78xx_write_reg(dev, WUF_MASK1(mask_index), 0);
+@@ -4087,7 +4091,7 @@ static int lan78xx_resume(struct usb_interface *intf)
+ 	if (!--dev->suspend_count) {
+ 		/* resume interrupt URBs */
+ 		if (dev->urb_intr && test_bit(EVENT_DEV_OPEN, &dev->flags))
+-				usb_submit_urb(dev->urb_intr, GFP_NOIO);
++			usb_submit_urb(dev->urb_intr, GFP_NOIO);
  
- 		temp_pmt_ctl |= PMT_CTL_WOL_EN_;
-@@ -3964,7 +3952,7 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
- 		temp_pmt_ctl |= PMT_CTL_SUS_MODE_0_;
- 	}
- 
--	ret = lan78xx_write_reg(dev, WUCSR, temp_wucsr);
-+	lan78xx_write_reg(dev, WUCSR, temp_wucsr);
- 
- 	/* when multiple WOL bits are set */
- 	if (hweight_long((unsigned long)wol) > 1) {
-@@ -3972,16 +3960,16 @@ static int lan78xx_set_suspend(struct lan78xx_net *dev, u32 wol)
- 		temp_pmt_ctl &= ~PMT_CTL_SUS_MODE_MASK_;
- 		temp_pmt_ctl |= PMT_CTL_SUS_MODE_0_;
- 	}
--	ret = lan78xx_write_reg(dev, PMT_CTL, temp_pmt_ctl);
-+	lan78xx_write_reg(dev, PMT_CTL, temp_pmt_ctl);
- 
- 	/* clear WUPS */
--	ret = lan78xx_read_reg(dev, PMT_CTL, &buf);
-+	lan78xx_read_reg(dev, PMT_CTL, &buf);
- 	buf |= PMT_CTL_WUPS_MASK_;
--	ret = lan78xx_write_reg(dev, PMT_CTL, buf);
-+	lan78xx_write_reg(dev, PMT_CTL, buf);
- 
--	ret = lan78xx_read_reg(dev, MAC_RX, &buf);
-+	lan78xx_read_reg(dev, MAC_RX, &buf);
- 	buf |= MAC_RX_RXEN_;
--	ret = lan78xx_write_reg(dev, MAC_RX, buf);
-+	lan78xx_write_reg(dev, MAC_RX, buf);
- 
- 	return 0;
- }
+ 		spin_lock_irq(&dev->txq.lock);
+ 		while ((res = usb_get_from_anchor(&dev->deferred))) {
 -- 
 2.43.0
 
