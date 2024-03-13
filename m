@@ -1,51 +1,74 @@
-Return-Path: <linux-kernel+bounces-102417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 632B187B1C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:25:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0384387B1C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 20:26:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 947EB1C28242
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:25:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C654A1C20B17
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 19:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D801C59B64;
-	Wed, 13 Mar 2024 19:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6B9482DA;
+	Wed, 13 Mar 2024 19:21:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oqeT8VHO"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RyU4OZqh"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21AC59B56
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2325A0F6
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710357662; cv=none; b=jPgSD+rlsm+eKJ1MQcRngAA9NgOidXBwXSQpLH1JNsnErfAJTMIyi5qbzOrueZKB66G5FjbcZmBK4asffO5QB0yVg3NIdGvSrxLHvrdiFqmVCUac+VN+XR1dSU8pZbdp+BCG5oqd7u5HAqQMP3mzemQOWzYaboMzmyHLa6uSzsE=
+	t=1710357688; cv=none; b=QK7txOHaxHu4WHfkPiWpO2L7PZi/xmDbiUMG7j9SN7yYFs4KM7OIVTdrilCYtvHcReRUhzaQwVttryDOiPpjS6eHR5KrZ7VrAeYDO54wkIDs+tLr9PZMSNCx+RKvcLVYUKix6f7fIDuMNjuJJo0fyL6K/l7VTuigb0lyqO7khy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710357662; c=relaxed/simple;
-	bh=sJAi3yRoC641aj/7aZ+N27cqQw6Y+OQSeV/UsdjL9Yk=;
+	s=arc-20240116; t=1710357688; c=relaxed/simple;
+	bh=iZYmwsM238XNM8Ka0wxu6uYfCPdbHZABFgW2AEZ2A5A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gbq8pzAMhpkG+mHLxcUIPf7oK2BD5FISdTOT6EcRNC9v69TA6wxGE4D6uI/rOh3gGexh69u3KW7vc/FHbpvxrwDPBSIQqFK38lFwoPS1m+VPrN/K98v/L1gC0Kc8sjBL7HFCwb7g6aUS88U53WSDoqU2VqUb3GJ3SkPiw80uzwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oqeT8VHO; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=75WVLbdwI+iDn1zwGEAUGq3py3zyrknBJPOCRtfKgus=; b=oqeT8VHOM5Ys7DVNGOQYq9T/Qa
-	pQoxGa3NprcqJtXMbujtg5idZDjeTniP60jiiC2TiCTOx1D4CO5Qt/SajoAHJg+Xk4fQeaxMLJz27
-	JgvpxyjHawliDFL+XKyBeh+l3o/Gb1ZeoMoirQv+DpWxk7qb9Is+wOS6kD2hhYGDydLprhJG3An0p
-	0NSwjmn/ISlGvXM80dvpc6BXrkuhTpQk1wEukj8RXpsEeCuOEOdiSzPqPh8huOCbiCxv2ez5QgsEj
-	vOJp6bQztpJURPz9GtYin1eeRQmwj4Q6NAu1dAxO2ioQ2FZvlggyYD3H54s/ZoNaEblA/+7623R2e
-	V61Gn5xA==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkU9p-0000000BZfK-0aN9;
-	Wed, 13 Mar 2024 19:20:57 +0000
-Message-ID: <f0fe1d62-ee99-4576-ad27-62de98f9ad39@infradead.org>
-Date: Wed, 13 Mar 2024 12:20:56 -0700
+	 In-Reply-To:Content-Type; b=jQJwLZ5FwcUwVCdzXdbIw+uL2Y3JDjl5p84Qe8Ycxz0B/QbI2CkuIH3kVL+w4y48lIr4tNk8fiFy7fU0RUD2B545DlYuj3DJe09AWNj3XIJ5/kQ0LFg4uSU7cJ12F8rovg49qizXkLnKgQ1lmK2vpEcdJuGnNbJjpvxt7grvpyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RyU4OZqh; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-22215ccbafeso136931fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 12:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710357684; x=1710962484; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0nX9WeXEjo5PIfyS44ffFidwlQU53WgsdSl+O4sm0lo=;
+        b=RyU4OZqhbaquR1sr2ajJpKrbFz+23Nk48Eq+U4r+jm9lOt0t2ai/D3MVC22VcBZAVO
+         6BQopXT1cnK/cm009vnw8wMhDAMdHBV6yQKnpbhNKW/QZuxCQdUwlWR3tHRHWSz6O0tU
+         C3wF7k22b4p0mLCrDEHZhlA1Ig84BaOgdpHAyAGXqzU4AHw+z07Zcc1rguxcNEWorVMW
+         sWGoWrjlWUXy+03lc77tWTpRYpCyySUL8H2PK1/PK3u2XSR7PKqv3MWwehxoAWVe+UNS
+         ac8gIHqpd2U67Z9cD8MoOq4AllGAv1VQ0//Ro5mts2GL9wj0SsmJI7uDtpeSGK9poksX
+         1i/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710357684; x=1710962484;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0nX9WeXEjo5PIfyS44ffFidwlQU53WgsdSl+O4sm0lo=;
+        b=fg+BVrFlozILPCWqTPBmdk1ikVbGhkoaKTLHxc9pWS3ph4hQUrSHcztKNtr0smC7Lg
+         H2eU9/qduO7adT07LlxlB/yD1vC1n72FVpzIXrYbTUZOOFCu2zJKsiFWo/+VlbkCQMeA
+         Y7MrsDCFCSLMpwDivEV1X1KZRVL/ANNHrlik/cfkVB32P2w9SqPLkFbgaAQkT1iOQf2m
+         gAcjNJw2S9Zvx40T+9O9kNCweV6RnVjPNDEPWSU5m7bwXLlPvVxe7Z4cLcSHJmZTzIUk
+         fBhNWZqktq2gzoaBs5Sg8Qes3NPZ9HL3V+dixj34L8EXaN54kq2kd7mziqeKTnd56PDL
+         UbVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEi76bHNKonrhSRDGswAfOnuKvCSynknlZERpfgnidoOAJ3fGyuY+2pW/MKc2/rLoPnPOgs13a99a4yU108YphwbbdRL+f1c5gmnS1
+X-Gm-Message-State: AOJu0YzveFJ3q0IMLBUKYNnVe9Z7WjomJK1IlPp8Yolhq7y4gobkNOL7
+	9o6cGDu925Wr+5BeCA9nraRyvRntfKQCgvyxQC4hX3NAhdFQa1pBNNBZvKssnziLTL1+BQ47Ygw
+	z3T4=
+X-Google-Smtp-Source: AGHT+IEtnW1J7GXHGOqaIzmbtOjHec4OFcEwDYVWwXFNvZ5VPNlUHz9si/ANbbnG1Y+dvgioohgMcg==
+X-Received: by 2002:a05:6870:210f:b0:21e:fc35:73ef with SMTP id f15-20020a056870210f00b0021efc3573efmr8191998oae.38.1710357684512;
+        Wed, 13 Mar 2024 12:21:24 -0700 (PDT)
+Received: from [192.168.17.16] ([149.19.169.183])
+        by smtp.gmail.com with ESMTPSA id gk17-20020a0568703c1100b00221b5fb8a3csm2874235oab.27.2024.03.13.12.21.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 12:21:24 -0700 (PDT)
+Message-ID: <2f15e804-a2d7-4ad0-9b84-02db8c89985d@linaro.org>
+Date: Wed, 13 Mar 2024 13:21:21 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,135 +76,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 11/16] drm/vkms: Add YUV support
+Subject: Re: [PATCH 5.15 00/76] 5.15.152-rc1 review
 Content-Language: en-US
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
- Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
- <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, nathan@kernel.org
+References: <20240313164223.615640-1-sashal@kernel.org>
+From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20240313164223.615640-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Hello!
 
-On 3/13/24 10:45, Louis Chauvet wrote:
-> From: Arthur Grillo <arthurgrillo@riseup.net>
+On 13/03/24 10:41 a. m., Sasha Levin wrote:
+> This is the start of the stable review cycle for the 5.15.152 release.
+> There are 76 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-
+> Responses should be made by Fri Mar 15 04:42:22 PM UTC 2024.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> [Louis Chauvet:
-> - Adapted Arthur's work
-> - Implemented the read_line_t callbacks for yuv
-> - add struct conversion_matrix
-> - remove struct pixel_yuv_u8
-> - update the commit message
-> - Merge the modifications from Arthur]
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_drv.h     |  22 ++
->  drivers/gpu/drm/vkms/vkms_formats.c | 431 ++++++++++++++++++++++++++++++++++++
->  drivers/gpu/drm/vkms/vkms_formats.h |   4 +
->  drivers/gpu/drm/vkms/vkms_plane.c   |  17 +-
->  4 files changed, 473 insertions(+), 1 deletion(-)
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.15.y&id2=v5.15.151
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index 23e1d247468d..f3116084de5a 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -99,6 +99,27 @@ typedef void (*pixel_read_line_t)(const struct vkms_plane_state *plane, int x_st
->  				  int y_start, enum pixel_read_direction direction, int count,
->  				  struct pixel_argb_u16 out_pixel[]);
->  
-> +/**
-> + * CONVERSION_MATRIX_FLOAT_DEPTH - Number of digits after the point for conversion matrix values
+> Thanks,
+> Sasha
 
-This should be
+We see new warnings everywhere:
 
-+ * define CONVERSION_MATRIX_FLOAT_DEPTH - Number of digits after the point for conversion matrix values
+-----8<-----
+   /builds/linux/scripts/mod/modpost.c:1123:44: warning: excess elements in array initializer
+    1123 |         .good_tosec = {ALL_TEXT_SECTIONS , NULL},
+         |                                            ^~~~
+----->8-----
 
-to conform to kernel-doc format.
+Bisection points to:
 
-> + */
-> +#define CONVERSION_MATRIX_FLOAT_DEPTH 32
-> +
+   commit 4060bae9dab232eb15bc7ddaaeb278b39456adf9
+   Author: Nathan Chancellor <nathan@kernel.org>
+   Date:   Tue Jan 23 15:59:55 2024 -0700
 
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> index 1449a0e6c706..edbf4b321b91 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+       modpost: Add '.ltext' and '.ltext.*' to TEXT_SECTIONS
+       
+       [ Upstream commit 397586506c3da005b9333ce5947ad01e8018a3be ]
 
-> +/**
-> + * get_conversion_matrix_to_argb_u16() - Retrieve the correct yuv to rgb conversion matrix for a
-> + * given encoding and range.
-> + *
-> + * If the matrix is not found, return a null pointer. In all other cases, it return a simple
-> + * diagonal matrix, which act as a "no-op".
-> + *
-> + * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
-> + * @encoding: DRM_COLOR_* value for which to obtain a conversion matrix
-> + * @range: DRM_COLOR_*_RANGE value for which to obtain a conversion matrix
-> + */
-> +struct conversion_matrix *
-> +get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
-> +				  enum drm_color_range range)
-> +{
-> +	static struct conversion_matrix no_operation = {
-> +		.matrix = {
-> +			{ 4294967296, 0,          0, },
-> +			{ 0,          4294967296, 0, },
-> +			{ 0,          0,          4294967296, },
-> +		},
-> +		.y_offset = 0,
-> +	};
-> +
-> +	/*
-> +	 * Those matrixies were generated using the colour python framework
+Reverting that commits makes the warning go away.
 
-	         matrices
+One reproducer:
 
-> +	 *
-> +	 * Below are the function calls used to generate eac matrix, go to
+   tuxmake --runtime podman --target-arch arm64 --toolchain gcc-12 --kconfig tinyconfig
 
-	                                                 each
-
-> +	 * https://colour.readthedocs.io/en/develop/generated/colour.matrix_YCbCr.html
-> +	 * for more info:
-> +	 *
-> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.601"],
-> +	 *                                  is_legal = False,
-> +	 *                                  bits = 8) * 2**32).astype(int)
-> +	 */
-
-> +
->  /**
-
-Please convert this comment to kernel-doc format or just use "/*" to begin
-the comment.
-
->   * Retrieve the correct write_pixel function for a specific format.
->   * If the format is not supported by VKMS a warn is emitted and a dummy "don't do anything"
-
-> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
-> index 8875bed76410..987dd2b686a8 100644
-> --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
-thanks.
--- 
-#Randy
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
 
