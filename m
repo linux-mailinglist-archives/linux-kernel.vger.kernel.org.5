@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-101752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F05C887AB48
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:35:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7789D87AB4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:36:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB82728A1A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:35:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F10481F2149A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD2D5B5DD;
-	Wed, 13 Mar 2024 16:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3656C5C8F8;
+	Wed, 13 Mar 2024 16:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qbSFt1RR"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aHgRohfR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3595D5A7BB;
-	Wed, 13 Mar 2024 16:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493425B697;
+	Wed, 13 Mar 2024 16:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347575; cv=none; b=f7PhkJV/NWtt5ni/P4wVMmOBMN/l6qKyVrmbLtsa0txjdfqf2wZyJ9X71qKghY9mBcdR4kGL7T9VD+YfrWETcr+YVEk/S0G7eERGKzlANK0WSBA3B2LBkCrcyocvH/1ngroErmt+hkh58urKrb0tUefwE8jGOSyqrPC1YKeSxWI=
+	t=1710347576; cv=none; b=JQCUTaOtWQd+udLo5WrFHwAEokiaxSbva7uwcY/PsrB9e6pNAAK4qEMh0ycKJmko/j7NzvZIR7iMGEXSw16hLBk85Ql1zH38U+8XTLrhiKojPQD8TAMBjJ/BpR/x8DnAzGXijbD0tT1n9tTI6WiKcolNTCa3o1fLY7Fife6e3/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347575; c=relaxed/simple;
-	bh=3byDPYlkwxVV+C00ILl4INWk3sLQb2R+fROVXIniFyk=;
+	s=arc-20240116; t=1710347576; c=relaxed/simple;
+	bh=iwV/fblvI1VOEpcS3mFyNF4i49FmQMh+toJyOiB6s3U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QFT0hMMCzmOP0hux6tCALpgz7QjHHPkvrwqXVamXkms+BxN7GB5bZM56BJ9b1572F0ebEgmLQ5fNcJ4AMuXfUda6z3o0S3dX4mZydl53GfdiRN4jxWk+CLAeYYZB95sl60c1i2QobLUTS3fzkwjHyzn6A0rh8Hzn3NHGculrbTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qbSFt1RR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F95C43394;
-	Wed, 13 Mar 2024 16:32:53 +0000 (UTC)
+	 MIME-Version; b=Qd1Q5sh6X6jeex8ZRfwWxHBckky9fmrMZ0CpjKd9xRB3ZrHJz2jmGO3Ux0iUkePj8BQvMHYMKXimlHhePI6gx2lbLhPKAFd1cOpjX3O42jcxwubnbNflpfflAdI3rcfMXit+6yJKMBC3ECLfdmBBChe89tcxtmQyhd1jJ8y+Wmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aHgRohfR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D6F8C43399;
+	Wed, 13 Mar 2024 16:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347574;
-	bh=3byDPYlkwxVV+C00ILl4INWk3sLQb2R+fROVXIniFyk=;
+	s=k20201202; t=1710347576;
+	bh=iwV/fblvI1VOEpcS3mFyNF4i49FmQMh+toJyOiB6s3U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qbSFt1RR7UjDQPWRVJpeqrT+x/QeAW0KmX4UOHaWQdqxkfWTc/3fmKsttDh41kdnQ
-	 JdqwxNNM3SzPGDoovm8dXHVq2bsFPLrr5awgjW7nabboNAmyObC7vI6H4shcTnNYlt
-	 2Dgb1zeoTCWET75Z3GqtMfNEvBN70csB/KQjIBPKct5x1Ceu9ay25U1KnlOo83oSqd
-	 v7nstUQD35PKrh0WF74HtoEyu/3ZZYj3avCB18VVLruYEO7IpOlnK6Lp7QJikNDyM1
-	 7Nn70JUE3iuOqQ2ImrQsPxwGPOmrJ2f1vJLH+XkXz6QCxOEvcU7Ow6VLVRO1WRp77g
-	 f6vJgCXqVVg+g==
+	b=aHgRohfRdh6l9E6o0lbYdkD57KTOfX3ff0bZFg0UUsCTjqHk/6NAQbYtZURqa+QK1
+	 b7O/GH5TyFfXPve3YITSB3opnyZR3iDIcpy63b8P9MrpmENMc586lNpwZwrKwdF1rW
+	 W8oinIA3Ou3VioeJB4yKWaLTtrKWjQ4vTXPkHvDX2QqpPiOgl4wLSXM9K6O4MMDsZu
+	 Ey2eouUuG+LXQxc1qvBmBuTjtN+Wf8kiR6IReGaBWS2F+PIPulJjmTdApHQIK/zKWv
+	 ydJZdxAgUU9+gyUxsoYiSYm9p9vtyAypkgqON0wRNe8vMb6mIB1pYI7N9n+Fdk2O95
+	 iMFsBydC3rWjg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Chandan Kumar Rout <chandanx.rout@intel.com>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
+Cc: Jacob Keller <jacob.e.keller@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Petr Oros <poros@redhat.com>,
+	Rafal Romanowski <rafal.romanowski@intel.com>,
 	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 13/61] ice: reorder disabling IRQ and NAPI in ice_qp_dis
-Date: Wed, 13 Mar 2024 12:31:48 -0400
-Message-ID: <20240313163236.613880-14-sashal@kernel.org>
+Subject: [PATCH 6.7 14/61] ice: replace ice_vf_recreate_vsi() with ice_vf_reconfig_vsi()
+Date: Wed, 13 Mar 2024 12:31:49 -0400
+Message-ID: <20240313163236.613880-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -70,72 +71,201 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-[ Upstream commit 99099c6bc75a30b76bb5d6774a0509ab6f06af05 ]
+[ Upstream commit 2a2cb4c6c18130e9f14d2e39deb75590744d98ef ]
 
-ice_qp_dis() currently does things in very mixed way. Tx is stopped
-before disabling IRQ on related queue vector, then it takes care of
-disabling Rx and finally NAPI is disabled.
+The ice_vf_create_vsi() function and its VF ops helper introduced by commit
+a4c785e8162e ("ice: convert vf_ops .vsi_rebuild to .create_vsi") are used
+during an individual VF reset to re-create the VSI. This was done in order
+to ensure that the VSI gets properly reconfigured within the hardware.
 
-Let us start with disabling IRQs in the first place followed by turning
-off NAPI. Then it is safe to handle queues.
+This is somewhat heavy handed as we completely release the VSI memory and
+structure, and then create a new VSI. This can also potentially force a
+change of the VSI index as we will re-use the first open slot in the VSI
+array which may not be the same.
 
-One subtle change on top of that is that even though ice_qp_ena() looks
-more sane, clear ICE_CFG_BUSY as the last thing there.
+As part of implementing devlink reload, commit 6624e780a577 ("ice: split
+ice_vsi_setup into smaller functions") split VSI setup into smaller
+functions, introducing both ice_vsi_cfg() and ice_vsi_decfg() which can be
+used to configure or deconfigure an existing software VSI structure.
 
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent Worker at Intel)
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Rather than completely removing the VSI and adding a new one using the
+create_vsi() VF operation, simply use ice_vsi_decfg() to remove the
+current configuration. Save the VSI type and then call ice_vsi_cfg() to
+reconfigure the VSI as the same type that it was before.
+
+The existing reset logic assumes that all hardware filters will be removed,
+so also call ice_fltr_remove_all() before re-configuring the VSI.
+
+This new operation does not re-create the VSI, so rename it to
+ice_vf_reconfig_vsi().
+
+The new approach can safely share the exact same flow for both SR-IOV VFs
+as well as the Scalable IOV VFs being worked on. This uses less code and is
+a better abstraction over fully deleting the VSI and adding a new one.
+
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Reviewed-by: Petr Oros <poros@redhat.com>
+Tested-by: Rafal Romanowski <rafal.romanowski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Stable-dep-of: 4035c72dc1ba ("ice: reconfig host after changing MSI-X on VF")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_sriov.c    | 24 ++-----------
+ drivers/net/ethernet/intel/ice/ice_vf_lib.c   | 35 +++++++++++++------
+ drivers/net/ethernet/intel/ice/ice_vf_lib.h   |  1 -
+ .../ethernet/intel/ice/ice_vf_lib_private.h   |  1 +
+ 4 files changed, 28 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index f3663b3f6390e..0fd5551b108ce 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -179,6 +179,10 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 			return -EBUSY;
- 		usleep_range(1000, 2000);
- 	}
-+
-+	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
-+	ice_qvec_toggle_napi(vsi, q_vector, false);
-+
- 	netif_tx_stop_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
+diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.c b/drivers/net/ethernet/intel/ice/ice_sriov.c
+index e1494f24f661d..c4caa9df473b5 100644
+--- a/drivers/net/ethernet/intel/ice/ice_sriov.c
++++ b/drivers/net/ethernet/intel/ice/ice_sriov.c
+@@ -762,24 +762,6 @@ static void ice_sriov_clear_reset_trigger(struct ice_vf *vf)
+ 	ice_flush(hw);
+ }
  
- 	ice_fill_txq_meta(vsi, tx_ring, &txq_meta);
-@@ -195,13 +199,10 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 		if (err)
- 			return err;
- 	}
--	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
+-/**
+- * ice_sriov_create_vsi - Create a new VSI for a VF
+- * @vf: VF to create the VSI for
+- *
+- * This is called by ice_vf_recreate_vsi to create the new VSI after the old
+- * VSI has been released.
+- */
+-static int ice_sriov_create_vsi(struct ice_vf *vf)
+-{
+-	struct ice_vsi *vsi;
 -
- 	err = ice_vsi_ctrl_one_rx_ring(vsi, false, q_idx, true);
- 	if (err)
+-	vsi = ice_vf_vsi_setup(vf);
+-	if (!vsi)
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
+ /**
+  * ice_sriov_post_vsi_rebuild - tasks to do after the VF's VSI have been rebuilt
+  * @vf: VF to perform tasks on
+@@ -799,7 +781,6 @@ static const struct ice_vf_ops ice_sriov_vf_ops = {
+ 	.poll_reset_status = ice_sriov_poll_reset_status,
+ 	.clear_reset_trigger = ice_sriov_clear_reset_trigger,
+ 	.irq_close = NULL,
+-	.create_vsi = ice_sriov_create_vsi,
+ 	.post_vsi_rebuild = ice_sriov_post_vsi_rebuild,
+ };
+ 
+@@ -1147,8 +1128,7 @@ int ice_sriov_set_msix_vec_count(struct pci_dev *vf_dev, int msix_vec_count)
+ 	if (vf->first_vector_idx < 0)
+ 		goto unroll;
+ 
+-	ice_vf_vsi_release(vf);
+-	if (vf->vf_ops->create_vsi(vf)) {
++	if (ice_vf_reconfig_vsi(vf)) {
+ 		/* Try to rebuild with previous values */
+ 		needs_rebuild = true;
+ 		goto unroll;
+@@ -1175,7 +1155,7 @@ int ice_sriov_set_msix_vec_count(struct pci_dev *vf_dev, int msix_vec_count)
+ 		return -EINVAL;
+ 
+ 	if (needs_rebuild)
+-		vf->vf_ops->create_vsi(vf);
++		ice_vf_reconfig_vsi(vf);
+ 
+ 	ice_ena_vf_mappings(vf);
+ 	ice_put_vf(vf);
+diff --git a/drivers/net/ethernet/intel/ice/ice_vf_lib.c b/drivers/net/ethernet/intel/ice/ice_vf_lib.c
+index b7ae099521566..88e3cd09f8d0c 100644
+--- a/drivers/net/ethernet/intel/ice/ice_vf_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_vf_lib.c
+@@ -248,29 +248,44 @@ static void ice_vf_pre_vsi_rebuild(struct ice_vf *vf)
+ }
+ 
+ /**
+- * ice_vf_recreate_vsi - Release and re-create the VF's VSI
+- * @vf: VF to recreate the VSI for
++ * ice_vf_reconfig_vsi - Reconfigure a VF VSI with the device
++ * @vf: VF to reconfigure the VSI for
+  *
+- * This is only called when a single VF is being reset (i.e. VVF, VFLR, host
+- * VF configuration change, etc)
++ * This is called when a single VF is being reset (i.e. VVF, VFLR, host VF
++ * configuration change, etc).
+  *
+- * It releases and then re-creates a new VSI.
++ * It brings the VSI down and then reconfigures it with the hardware.
+  */
+-static int ice_vf_recreate_vsi(struct ice_vf *vf)
++int ice_vf_reconfig_vsi(struct ice_vf *vf)
+ {
++	struct ice_vsi *vsi = ice_get_vf_vsi(vf);
++	struct ice_vsi_cfg_params params = {};
+ 	struct ice_pf *pf = vf->pf;
+ 	int err;
+ 
+-	ice_vf_vsi_release(vf);
++	if (WARN_ON(!vsi))
++		return -EINVAL;
++
++	params = ice_vsi_to_params(vsi);
++	params.flags = ICE_VSI_FLAG_NO_INIT;
+ 
+-	err = vf->vf_ops->create_vsi(vf);
++	ice_vsi_decfg(vsi);
++	ice_fltr_remove_all(vsi);
++
++	err = ice_vsi_cfg(vsi, &params);
+ 	if (err) {
+ 		dev_err(ice_pf_to_dev(pf),
+-			"Failed to recreate the VF%u's VSI, error %d\n",
++			"Failed to reconfigure the VF%u's VSI, error %d\n",
+ 			vf->vf_id, err);
  		return err;
+ 	}
  
--	ice_qvec_toggle_napi(vsi, q_vector, false);
- 	ice_qp_clean_rings(vsi, q_idx);
- 	ice_qp_reset_stats(vsi, q_idx);
- 
-@@ -259,11 +260,11 @@ static int ice_qp_ena(struct ice_vsi *vsi, u16 q_idx)
- 	if (err)
- 		return err;
- 
--	clear_bit(ICE_CFG_BUSY, vsi->state);
- 	ice_qvec_toggle_napi(vsi, q_vector, true);
- 	ice_qvec_ena_irq(vsi, q_vector);
- 
- 	netif_tx_start_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
-+	clear_bit(ICE_CFG_BUSY, vsi->state);
- 
++	/* Update the lan_vsi_num field since it might have been changed. The
++	 * PF lan_vsi_idx number remains the same so we don't need to change
++	 * that.
++	 */
++	vf->lan_vsi_num = vsi->vsi_num;
++
  	return 0;
  }
+ 
+@@ -929,7 +944,7 @@ int ice_reset_vf(struct ice_vf *vf, u32 flags)
+ 
+ 	ice_vf_pre_vsi_rebuild(vf);
+ 
+-	if (ice_vf_recreate_vsi(vf)) {
++	if (ice_vf_reconfig_vsi(vf)) {
+ 		dev_err(dev, "Failed to release and setup the VF%u's VSI\n",
+ 			vf->vf_id);
+ 		err = -EFAULT;
+diff --git a/drivers/net/ethernet/intel/ice/ice_vf_lib.h b/drivers/net/ethernet/intel/ice/ice_vf_lib.h
+index 93c774f2f4376..6b41e0f3d37ed 100644
+--- a/drivers/net/ethernet/intel/ice/ice_vf_lib.h
++++ b/drivers/net/ethernet/intel/ice/ice_vf_lib.h
+@@ -62,7 +62,6 @@ struct ice_vf_ops {
+ 	bool (*poll_reset_status)(struct ice_vf *vf);
+ 	void (*clear_reset_trigger)(struct ice_vf *vf);
+ 	void (*irq_close)(struct ice_vf *vf);
+-	int (*create_vsi)(struct ice_vf *vf);
+ 	void (*post_vsi_rebuild)(struct ice_vf *vf);
+ };
+ 
+diff --git a/drivers/net/ethernet/intel/ice/ice_vf_lib_private.h b/drivers/net/ethernet/intel/ice/ice_vf_lib_private.h
+index 0c7e77c0a09fa..91ba7fe0eaee1 100644
+--- a/drivers/net/ethernet/intel/ice/ice_vf_lib_private.h
++++ b/drivers/net/ethernet/intel/ice/ice_vf_lib_private.h
+@@ -23,6 +23,7 @@
+ #warning "Only include ice_vf_lib_private.h in CONFIG_PCI_IOV virtualization files"
+ #endif
+ 
++int ice_vf_reconfig_vsi(struct ice_vf *vf);
+ void ice_initialize_vf_entry(struct ice_vf *vf);
+ void ice_dis_vf_qs(struct ice_vf *vf);
+ int ice_check_vf_init(struct ice_vf *vf);
 -- 
 2.43.0
 
