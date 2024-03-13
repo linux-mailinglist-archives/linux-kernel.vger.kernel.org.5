@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-102038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36F0D87ADCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:44:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD26187ADD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:44:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC8A11F27BD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:44:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FFD31F27E4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF703151CCD;
-	Wed, 13 Mar 2024 16:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8FD151CE7;
+	Wed, 13 Mar 2024 16:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9HaoHOs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhEc8GQ3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEAA151779;
-	Wed, 13 Mar 2024 16:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2178D151CD4;
+	Wed, 13 Mar 2024 16:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348419; cv=none; b=ZMOUVUrkz2A7U5RRJ/xP/RHiAN93JoxSmAcxZm5diwQPtRB/kByVyrluEA7EcFg8emm0KXyFlypHxlXmzKtw8aeOj/zqZ9C1bkhwMr6dn+bk/zkdb62KYmAWjkRJCrKeEaYqbwZvMS+7xZYyVWO0Dt0SJGWM4epQwbM+veE/S1Y=
+	t=1710348420; cv=none; b=iYiuJMLH2mpyovqxJnLZ2ttKozrBgokWY8CM1/DmsFndmyK6QWRkgnu5S/jtiXAcLWE/hVCkSHsM2qMGHnim36MLJqtYgw9aTpDMlllGL2oRxNRTfo4iL/67QX8AS/dhllOF+Qu7THDFvaLEvS9mP9+WOT0tB2tB2u333yg80X4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348419; c=relaxed/simple;
-	bh=zlG8DVa0z/JC9OL++FL1QnHN99NG2yDrykYETr5qrCs=;
+	s=arc-20240116; t=1710348420; c=relaxed/simple;
+	bh=2X0S2vvszqlOoS3sCZkbGf3s1JKi2aR5XwTcWPgOZXw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QISXZb1GDSrj4i3e5mEQO43nn+Bh6kCJ4LLwqdxKSELkGjxz91Fwx/4+UPqB4yCgaBhYZQobWJUfMhQ6QOUC0LsHQlNTmjVKEYRQabY1bifqfV9YIQ7uMmkMUdgDUS9okGAhHz4cPXlKB1CBjK142VpfJmIgUAgUWtIzq/AoEQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9HaoHOs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17595C433A6;
-	Wed, 13 Mar 2024 16:46:57 +0000 (UTC)
+	 MIME-Version; b=e1+9W3AOp1jXKJg3PwOnTR4ySDWmYRwcRAcDS6kszh3jcvrl6cv/AOAhy2Py/USHZ1vtrHVSNF0kKyiPesB0aZ/n/Kh94xVl1jQO2otgNIyEVRubal2z5dFIILz2ib6rTF+9nWEqWFv0rUryq2U0cawen7k7Q4ZTTBonkXmLL6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhEc8GQ3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32484C433C7;
+	Wed, 13 Mar 2024 16:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348418;
-	bh=zlG8DVa0z/JC9OL++FL1QnHN99NG2yDrykYETr5qrCs=;
+	s=k20201202; t=1710348420;
+	bh=2X0S2vvszqlOoS3sCZkbGf3s1JKi2aR5XwTcWPgOZXw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C9HaoHOs8WDHW/WklbsLptRQToHCVxXhc3VE/bIfVrLlvORzeMpS591Y0Z5hZlQRy
-	 9k2G8SMo/vk1sP2wUNs9QcFNRy+6qNW8huB/+CLxNrCXvRBXUSppn+bTUp8rsjVDht
-	 OsUXT758P1ANRpTf2oL9a1gKlFZmIVg5GFh8eBJHuS0WHs7+ddxMmgXJaa0gTnREak
-	 57Bnfh+QZuGObwXfN2l25A0Ds6W3jyZy8af9pIN1R9vReF7MLfAkk+CdsJcbcF8Z78
-	 s/5HOOpQg+FWYaxI8/rBb6TFYDlOK2iFTP3ALVqOOqoFX35AVjFVgyDdR+GSnUysFB
-	 VzkhoOzlbNq3g==
+	b=bhEc8GQ3ehymbiNKNKPz1bUPkN0NpghO66y8FF6ewfEXv8DHNqfprA4U8RR90v33B
+	 /o9+VufgkYUXxjpjgax/eWdKgdNkqux/qiwLYC3R0c5ugk8Q5sdES9ABpH/63DdNzw
+	 dVcA7Vh5wZi2otB5VNz/FGF4CejRv+QvB5CvV8n6oDsdZPFH3fTL9L4uBr9Od0xW4O
+	 wHpi9CojA8OeW5PzFTpvtAFY2lpSbRnz4sRQXRYOOC2IJNPjFZfi0BIfFc9kfB2GdT
+	 X8+klLq09iGYAUnPWLLtcBTxK72qQlkDmKxn1IicLzS7XuIEZSBj0LnJGCJVlZ9471
+	 idu96C2TUfL3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	=?UTF-8?q?Tobias=20B=C3=B6hm?= <tobias@aibor.de>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
+Cc: Edward Adam Davis <eadavis@qq.com>,
+	syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 14/73] cpumap: Zero-initialise xdp_rxq_info struct before running XDP program
-Date: Wed, 13 Mar 2024 12:45:41 -0400
-Message-ID: <20240313164640.616049-15-sashal@kernel.org>
+Subject: [PATCH 5.10 15/73] net/rds: fix WARNING in rds_conn_connect_if_down
+Date: Wed, 13 Mar 2024 12:45:42 -0400
+Message-ID: <20240313164640.616049-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -59,7 +59,6 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.213-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-5.10.y
@@ -70,43 +69,55 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Edward Adam Davis <eadavis@qq.com>
 
-[ Upstream commit 2487007aa3b9fafbd2cb14068f49791ce1d7ede5 ]
+[ Upstream commit c055fc00c07be1f0df7375ab0036cebd1106ed38 ]
 
-When running an XDP program that is attached to a cpumap entry, we don't
-initialise the xdp_rxq_info data structure being used in the xdp_buff
-that backs the XDP program invocation. Tobias noticed that this leads to
-random values being returned as the xdp_md->rx_queue_index value for XDP
-programs running in a cpumap.
+If connection isn't established yet, get_mr() will fail, trigger connection after
+get_mr().
 
-This means we're basically returning the contents of the uninitialised
-memory, which is bad. Fix this by zero-initialising the rxq data
-structure before running the XDP program.
-
-Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
-Reported-by: Tobias Böhm <tobias@aibor.de>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Link: https://lore.kernel.org/r/20240305213132.11955-1-toke@redhat.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Fixes: 584a8279a44a ("RDS: RDMA: return appropriate error on rdma map failures")
+Reported-and-tested-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/cpumap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/rds/rdma.c | 3 +++
+ net/rds/send.c | 6 +-----
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index c61a23b564aa5..2dcc04b2f330e 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -229,7 +229,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- 				    void **frames, int n,
- 				    struct xdp_cpumap_stats *stats)
- {
--	struct xdp_rxq_info rxq;
-+	struct xdp_rxq_info rxq = {};
- 	struct xdp_buff xdp;
- 	int i, nframes = 0;
+diff --git a/net/rds/rdma.c b/net/rds/rdma.c
+index 6f1a50d50d06d..c29c7a59f2053 100644
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -301,6 +301,9 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
+ 			kfree(sg);
+ 		}
+ 		ret = PTR_ERR(trans_private);
++		/* Trigger connection so that its ready for the next retry */
++		if (ret == -ENODEV)
++			rds_conn_connect_if_down(cp->cp_conn);
+ 		goto out;
+ 	}
  
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 985d0b7713acc..65eeb82cb5de5 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1314,12 +1314,8 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+ 
+ 	/* Parse any control messages the user may have included. */
+ 	ret = rds_cmsg_send(rs, rm, msg, &allocated_mr, &vct);
+-	if (ret) {
+-		/* Trigger connection so that its ready for the next retry */
+-		if (ret ==  -EAGAIN)
+-			rds_conn_connect_if_down(conn);
++	if (ret)
+ 		goto out;
+-	}
+ 
+ 	if (rm->rdma.op_active && !conn->c_trans->xmit_rdma) {
+ 		printk_ratelimited(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
 -- 
 2.43.0
 
