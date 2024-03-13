@@ -1,268 +1,123 @@
-Return-Path: <linux-kernel+bounces-101160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A46CC87A346
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:13:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AAB987A34B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:14:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A81231C215EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:13:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85D8A1F22222
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 07:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED9F1756B;
-	Wed, 13 Mar 2024 07:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FDB1CF9C;
+	Wed, 13 Mar 2024 07:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MRm0aGKP"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f0D0WAzO"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06328DDD1;
-	Wed, 13 Mar 2024 07:12:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DCCA1CA94
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 07:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710313979; cv=none; b=tHRZr+B7emPKVTynoxsQK6phykJyzguaPBAUvaXD/35lL1BQARwyRFCbx63kMVZqdUCGN5/ddqmgjOJfqvHQX7Yw2SXcRr5mVaxJ+40ZuKEWMEdzNzM9HrFw9dCjAz//z9VntGUog5wqef50WiQSN5KSYOsym9FPRY4k0/yZMQw=
+	t=1710314002; cv=none; b=KPw5vDRyDghBc+Ag1qmf9ig3FHIGjQfJP/yWsHMvY5NAgukf9lxMuRxHTteYHMrWxJtJzM5YR4sBLT1nhDeviLzHH8Wr6yJUdimp2JKEezKbA0YB09L+2ryqp6dapmePtKaBs6lH1uYdP+2A2C4sZW0P2aGY1myYzbvuNaE95+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710313979; c=relaxed/simple;
-	bh=mq7TXZio7/RiS+CzlqRoYNx2kIW5aRL1dfqJKXxlyhc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EK9k09g799H+Ct5xnmYarclvAxEbSOabF8s1jqe/Jz2s+muAwm80RphfF2KLKOS/QVe2tqZReKky7fehvDCgjfbsl3468DJKyi/wm97EvZTPCAWDdXHFT2gl3jCTIbYUJkE6shtq7e9Gft1tIwnlEBpbMkv/VetYTeQt2oIv6XY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MRm0aGKP; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42D68b0I025538;
-	Wed, 13 Mar 2024 07:12:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=qcppdkim1; bh=6rDCeTT
-	ETG1od6jjW0uQ/pSuXaAVw8UI/PnLswPNZME=; b=MRm0aGKPDkl9sA+JZfplk7j
-	+nzGxYYYVkVhJyiBjXKY2QiUnD8xS/bjKCWJPEhO5d/jwD5SQISdrM+B4V1/Szon
-	xUDvMrYZlPcovHWgvu6VOZgnbPAa9yGO91vLMSro4JSkDst844c1JUyN+Vv9fnFr
-	K3Aqek7uWOvjfzJv2p2sq39qwcnKf0H8CfserS4ZGeUZcS5zx6t+rjMyjYc7zAYF
-	x4r3ac6udZkBuVvzkqy1YeQprIESgpdVBIVlvhTlsqzRqq6lgjs6IviQoQ7JqPuK
-	WPEyRTlDrj36ys79W1xkCRXGMBB5X/VBoQ5blQV59JJ2x3U+eJ4z2SMNSgAPVhQ=
-	=
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wu62w85fd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 07:12:53 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 42D7CoxW021191;
-	Wed, 13 Mar 2024 07:12:50 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3wrgum5nrv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 13 Mar 2024 07:12:50 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42D7CoxH021172;
-	Wed, 13 Mar 2024 07:12:50 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-wasimn-hyd.qualcomm.com [10.147.242.220])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 42D7Cn75021168;
-	Wed, 13 Mar 2024 07:12:50 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 3944840)
-	id BD2EC500976; Wed, 13 Mar 2024 12:42:48 +0530 (+0530)
-From: Wasim Nazir <quic_wasimn@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        Wasim Nazir <quic_wasimn@quicinc.com>
-Subject: [PATCH v3 3/3] arm64: dts: qcom: Add initial support for rb5gen2 board
-Date: Wed, 13 Mar 2024 12:42:38 +0530
-Message-ID: <20240313071238.3290-4-quic_wasimn@quicinc.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240313071238.3290-1-quic_wasimn@quicinc.com>
-References: <20240313071238.3290-1-quic_wasimn@quicinc.com>
+	s=arc-20240116; t=1710314002; c=relaxed/simple;
+	bh=NswmWCAg+kMRO6U9D0wl7waRlD6nXsRyQ2PxmrtRxow=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ljuXHFnJgMzlB48Xd7FibR+C+qbcrofgI9HqM/rnczttcXcDBMlxZpyIfQ+vD1oFPv05OXVjslkBXZtkKpIN1/n4E6QgCZyd8xeUGeCJ71Vo1a/8WbUziZXg0NNtQgYLSi/E9ODAGTY3nRQ0AFfmvNHStEdFckoKC5Zh1phRD3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f0D0WAzO; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc13fb0133so34078055ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 00:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710314000; x=1710918800; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oBO1QyjEKgY+z+cbFw6h6LK60G04OlYaLIToSeOvUhY=;
+        b=f0D0WAzOmGZ8xHDIr6Eh2zZIUT0GxMuQ0vsQLWtdL0ytyXuhrgAQXjzR6AxSW7FvEr
+         XDVZbFkxkZTImC7HrNkrlhx9e5bBVi9HPLMemTJA0XXt/dcQlSWDFEpBQUo2iMQ6f8hK
+         44xrlNLeD5IPkhbp8OfXxsHJC+MWTRC0xzZfYUt1ZL9GCUNJvuSXMEyzJbkYdjzkYAXz
+         mfHzsMiq2R8PpNT9xfUQmZUGYZ8fsooXW2fj4Fv4EeunrsGFzz/RCN13INbvUWboOcRs
+         Xqy3LY2sZS3FE4FFf5VR+4q5RHPHkNfV+ARKipcYEoabfWgqB25fHdAyty3egCXHHmia
+         afyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710314000; x=1710918800;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oBO1QyjEKgY+z+cbFw6h6LK60G04OlYaLIToSeOvUhY=;
+        b=WR83PtWxN+lEEPauKw1ByywMb1hMgQVTeJFVGUDHpSEaAJK2GIhRjceTjR9Mz8PDTt
+         fnMmEDSnJ7uy4dehJizGZ65/U//vINO9m7TwIYa5TAeM76FQXnnBsxeFpXO2mfQDjv0B
+         z9lbpwuyx3qkEQU+1JM2V6SG2rsWMSnzt+dWVWOIHhE9NPc4OTcF6bnc0N8UP6f5f6MH
+         ziDUlAfSS4aRkOWzmierPvuai9dmFVvZUIGegH69udboS5+YHZkBP9YRuHYaJqJHbUtS
+         ZqwmFx7+5tvgLa+2E687SyHvHKc2CBFd/IIUU1IOT34SPIuL5o4D4xwTSDaGT5HOFi8P
+         M1GQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1pa13Peb3vAsV/NAGuR/IhEHLaOMQEm1kyIoBYTJhq2qehz/OO68cVR5RDHEalv2nFNXg+WgcBtqPXBAkqjIjKqu3svdbDRW5Mjct
+X-Gm-Message-State: AOJu0YwU21Xoq3jF4bYrB4gaEG+A7RIorPCOvk6DGg9GkjMhIvwyFq2k
+	w4cqUzTWvR3754QckRCPqaL8PzVNsRrzkEjS5EBGrc8xwfQ5X+f/
+X-Google-Smtp-Source: AGHT+IFblix/LUHDLSUUvpaHyyUSlGJQl+RzQPyKcxgsHFzN57XwW20vnlxtvFbGF30VidNwlzsWzg==
+X-Received: by 2002:a17:902:b691:b0:1dd:6eba:c592 with SMTP id c17-20020a170902b69100b001dd6ebac592mr8500687pls.56.1710314000537;
+        Wed, 13 Mar 2024 00:13:20 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.67])
+        by smtp.gmail.com with ESMTPSA id s2-20020a170902ea0200b001dc6b99af70sm7806180plg.108.2024.03.13.00.13.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 00:13:20 -0700 (PDT)
+Date: Wed, 13 Mar 2024 12:43:18 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH v3] staging: rtl8712: rename tmpVal to avg_val
+Message-ID: <ZfFSDoNPjQypC829@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: pqVGYvCSonVKBeczI2xOiaz4N6wa3vTW
-X-Proofpoint-ORIG-GUID: pqVGYvCSonVKBeczI2xOiaz4N6wa3vTW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_06,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- spamscore=0 phishscore=0 clxscore=1015 adultscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403130053
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-RB5gen2 is based on QCS8550-Rb5gen2 SOM for IOT solutions.
-This initial version describes VPH_PWR, UART & USB3.1(HS).
+Rename local variable tmpVal to avg_val in function process_link_qual
+to give intuitive meaning to variable and match the common kernel
+coding style.
 
-On-board PMICs:
-- PMR735D
-- PM8010
+Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 
-Signed-off-by: Wasim Nazir <quic_wasimn@quicinc.com>
+Changes in v3: changed variable name tmpVal to avg_val
+Changes in v2: added a period in message
+---
+ drivers/staging/rtl8712/rtl8712_recv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 02d9bc3bfce7..75f4fb5cc0a9 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -97,6 +97,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs6490-rb3gen2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs8550-aim300-aiot.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= qcs8550-rb5gen2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qdu1000-idp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qrb2210-rb1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qrb4210-rb2.dtb
-diff --git a/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2.dts b/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2.dts
-new file mode 100644
-index 000000000000..2affe188bd23
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2.dts
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include "qcs8550-rb5gen2-som.dtsi"
-+#include "pm8010.dtsi"
-+#include "pmr735d_a.dtsi"
-+#include "pmr735d_b.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. QCS8550 RB5Gen2";
-+	compatible = "qcom,qcs8550-rb5gen2", "qcom,qcs8550-rb5gen2-som",
-+			"qcom,qcs8550", "qcom,sm8550";
-+
-+	aliases {
-+		serial0 = &uart7;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	pmic-glink {
-+		compatible = "qcom,sm8550-pmic-glink", "qcom,pmic-glink";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		connector@0 {
-+			compatible = "usb-c-connector";
-+			reg = <0>;
-+			power-role = "dual";
-+			data-role = "dual";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+
-+					pmic_glink_hs_in: endpoint {
-+						remote-endpoint = <&usb_1_dwc3_hs>;
-+					};
-+				};
-+			};
-+		};
-+	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+};
-+
-+&apps_rsc {
-+	regulators-0 {
-+		vdd-bob1-supply = <&vph_pwr>;
-+		vdd-bob2-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-2 {
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-3 {
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-4 {
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-5 {
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+	};
-+};
-+
-+&pm8550b_eusb2_repeater {
-+	vdd18-supply = <&vreg_l15b_1p8>;
-+	vdd3-supply = <&vreg_l5b_3p1>;
-+};
-+
-+&uart7 {
-+	status = "okay";
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "otg";
-+	usb-role-switch;
-+};
-+
-+&usb_1_dwc3_hs {
-+	remote-endpoint = <&pmic_glink_hs_in>;
-+};
-+
-+&usb_1_hsphy {
-+	vdd-supply = <&vreg_l1e_0p88>;
-+	vdda12-supply = <&vreg_l3e_1p2>;
-+
-+	phys = <&pm8550b_eusb2_repeater>;
-+
-+	status = "okay";
-+};
-+
-+&usb_dp_qmpphy {
-+	vdda-phy-supply = <&vreg_l3e_1p2>;
-+	vdda-pll-supply = <&vreg_l3f_0p88>;
-+
-+	status = "okay";
-+};
---
-2.43.2
+diff --git a/drivers/staging/rtl8712/rtl8712_recv.c b/drivers/staging/rtl8712/rtl8712_recv.c
+index a3c4713c59b3..1fabc5137a4c 100644
+--- a/drivers/staging/rtl8712/rtl8712_recv.c
++++ b/drivers/staging/rtl8712/rtl8712_recv.c
+@@ -861,7 +861,7 @@ static void query_rx_phy_status(struct _adapter *padapter,
+ static void process_link_qual(struct _adapter *padapter,
+ 			      union recv_frame *prframe)
+ {
+-	u32	last_evm = 0, tmpVal;
++	u32	last_evm = 0, avg_val;
+ 	struct rx_pkt_attrib *pattrib;
+ 	struct smooth_rssi_data *sqd = &padapter->recvpriv.signal_qual_data;
+ 
+@@ -883,8 +883,8 @@ static void process_link_qual(struct _adapter *padapter,
+ 			sqd->index = 0;
+ 
+ 		/* <1> Showed on UI for user, in percentage. */
+-		tmpVal = sqd->total_val / sqd->total_num;
+-		padapter->recvpriv.signal = (u8)tmpVal;
++		avg_val = sqd->total_val / sqd->total_num;
++		padapter->recvpriv.signal = (u8)avg_val;
+ 	}
+ }
+ 
+-- 
+2.40.1
 
 
