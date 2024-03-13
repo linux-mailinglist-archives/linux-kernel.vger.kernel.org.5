@@ -1,162 +1,172 @@
-Return-Path: <linux-kernel+bounces-102626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8680987B507
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:02:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EDE587B4B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:58:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 782561C220BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 23:02:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF15628711E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 22:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C30F5CDDD;
-	Wed, 13 Mar 2024 23:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0505CDFA;
+	Wed, 13 Mar 2024 22:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="c1n9XKbH"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="B/JbgPi3"
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597915D724;
-	Wed, 13 Mar 2024 23:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FAD59175;
+	Wed, 13 Mar 2024 22:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710370944; cv=none; b=mA6eZuHWkEBmGMhT0GOVjemUjHuUDvTcghguKiFzzj52CbdWwROt8aVCcOU+9aV54auPkOHI6NFm/NCE6OsemR91+eLAR12UHcsQI0K+StPB7g5Lq8OhViJZJsAvFv7hiLe+oDKvQeEzjQ7BVP9WoCoWWhyWa/mN5q11vh+kdVg=
+	t=1710370691; cv=none; b=jE8FWfAOv8xDFjWq3QtNsNs38jYXqOm6KQBR2TQw1Gjy2jSAsZ7qzFyEZei0Nw0FFIkGj0kYs9lb3bF8ew14FLv3+6tAzn+oxdyUjUHziSFeEr9fBTP4UOFpFIfP4DCDsf2XHn1hTt6U2Ul4uZ9uMaud/wAy84P4PnENo+pfdzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710370944; c=relaxed/simple;
-	bh=ZqisyHPAaCe3163kWGwoa1mhVWgRXpSecMqV/caGAqs=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Syjl0jI+IhGs/psJ9vKM9lwh+UyIBbgUJYF4r4ESFZCH8c2EWjSP8CqccQ0uBvldg5DauMMyBrxSJPrw4SH/DigrVRsyGEThT1BX0wDzNZWDYGaIua6sc2wz1lyWw9GzPNTwZtBnfhS+t/MvweYMd3A1WkNbv6WJw1Hlwl4Suo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=c1n9XKbH; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (203-57-215-238.dyn.iinet.net.au [203.57.215.238])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id E87FF20016;
-	Thu, 14 Mar 2024 06:53:20 +0800 (AWST)
+	s=arc-20240116; t=1710370691; c=relaxed/simple;
+	bh=MGzW3vTOfokqdx/cZoJNIzCal/5eFO6bXNHdbJyhMyk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YNodzX5uB17XXIgybrO7fWp2qiqu/z33oNnmG9HBPsqrQheB8X6c3PUWnIzEtZYqRTt7X4RaDRzYmuMPtYdawMYrpxyrQTPWn3sT3QurpDEMXbXGgQuF84Nsbx2daaiPdmwRO0+DC44GJr/StoYqOWegNThnelhRWRQbtCMBUxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=B/JbgPi3; arc=none smtp.client-ip=208.88.110.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id E42799C5407;
+	Wed, 13 Mar 2024 18:58:05 -0400 (EDT)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id GQK12bhKmEjB; Wed, 13 Mar 2024 18:58:04 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id C84579C5408;
+	Wed, 13 Mar 2024 18:58:04 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com C84579C5408
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1710370403;
-	bh=cydJ+54ejYfm2ccD8VUDb0oN12f6pOX+IdLF5Scs4ZU=;
-	h=Subject:From:To:Date:In-Reply-To:References;
-	b=c1n9XKbH/6lW50DxBCP1ItTvWdZUdzXu80aKJMcl/eQXsVGJao7gTCPR0ZAtsspFM
-	 yaL9NCQUNariN9hQUNmQsdAPu6ZWyof8NAbYLW8AzZNg0JhWK2AxbKztzfmMlYGemg
-	 kPa4//0YoQ3W+sVBorHsl5oUjIpR/YoVax5y1WOhPuMujNkaYEp0ihl4FNwh8Xq8hY
-	 TPQfujU6ga2JshXEJFZjFXHLd1cIJa1Busv8hzy6NBIQDKicvQgXZwcRLeDHA8g4Fn
-	 ZPZSczdrSm/EScL244f8p5EuKO0gYUhBcUXOeAM5V/RBCyDpmusstUk1+SQGLvympv
-	 tM+NxB+/6AXjw==
-Message-ID: <d4e265ea19b14c3f76bc5ce8fdddae0783cb6cd1.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v2] pinctrl: pinctrl-aspeed-g6: Fix register offset for
- pinconf of GPIOR-T
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Billy Tsai <billy_tsai@aspeedtech.com>, linus.walleij@linaro.org, 
- joel@jms.id.au, johnny_huang@aspeedtech.com, linux-aspeed@lists.ozlabs.org,
-  openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- BMC-SW@aspeedtech.com, Ricky_CX_Wu@wiwynn.com
-Date: Thu, 14 Mar 2024 09:23:19 +1030
-In-Reply-To: <20240313092809.2596644-1-billy_tsai@aspeedtech.com>
-References: <20240313092809.2596644-1-billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
+	t=1710370684; bh=97KZ5z74c3lbzDnakMs1DMShyFWjem5Wy7L0iY46aP4=;
+	h=From:To:Date:Message-ID:MIME-Version;
+	b=B/JbgPi3B/ukHDPSMrFnDvgwqK3lJvqOyu8EIVDTaUrb1ynXEF2Zk6iG/OI5/aJ5x
+	 k4STfR+WFK1UuRA+ujM6r0RVcgL8+KmB5bmFjIaxx8O4DAard1f7TIRZZUUC3r6GuJ
+	 EFtcVvivpVEYpvcx1MxlN4XObnep6xA9GWRj8p3P22kFq8jO88sljoJepZcRSom3ib
+	 IvriScrkGWZ5wRWNill/0pDDSKW34BRhjkhqSCJhFrpl7QPkPB6XMZPOAAQ4P5GqTF
+	 VP3ia043aqlj1kSo8Jsr7aV9ElrzyaRpTj/LdhY7m9ahs/k9H/YYWwXeZUxciValwf
+	 3y6RbNjZfUDTQ==
+X-Virus-Scanned: amavis at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id L4cIaLZuadW8; Wed, 13 Mar 2024 18:58:04 -0400 (EDT)
+Received: from pcperry.mtl.sfl (unknown [192.168.51.254])
+	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 97A6E9C5407;
+	Wed, 13 Mar 2024 18:58:04 -0400 (EDT)
+From: Charles Perry <charles.perry@savoirfairelinux.com>
+To: mdf@kernel.org
+Cc: avandiver@markem-imaje.com,
+	bcody@markem-imaje.com,
+	Charles Perry <charles.perry@savoirfairelinux.com>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michal Simek <michal.simek@amd.com>,
+	linux-fpga@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 0/3] fpga: xilinx-selectmap: add new driver
+Date: Wed, 13 Mar 2024 18:57:34 -0400
+Message-ID: <20240313225746.489253-1-charles.perry@savoirfairelinux.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-03-13 at 17:28 +0800, Billy Tsai wrote:
-> The register offset to disable the internal pull-down of GPIOR~T is 0x630
-> instead of 0x620, as specified in the Ast2600 datasheet v15
-> The datasheet can download from the official Aspeed website.
+Hello,
 
-.. if you're a customer with an account enabled to access it :)
+This patchset adds a new driver for the 7 series FPGA's SelectMAP
+interface.
 
->=20
-> Fixes: 15711ba6ff19 ("pinctrl: aspeed-g6: Add AST2600 pinconf support")
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+The SelectMAP interface shares a common GPIO protocol with the SPI
+interface which is already in the kernel (drivers/fpga/xilinx-spi.c).
+The approach proposed in this patchset is to refactor xilinx-spi.c into
+xilinx-core.c which would handle the common GPIO protocol. This is then
+used to build two drivers, the already existing xilinx-spi.c driver and
+a newly added xilinx-selectmap.c driver.
 
-Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+The SelectMAP driver proposed only supports 8 bit mode. This is because
+the 16 and 32 bits mode have limitations with regards to compressed
+bitstream support as well as introducing endianness considerations.
 
-Not sure what the history is exactly. Could have been a typo or a
-change in the SCU register layout given it was likely written against
-A0 (A3 is mass-production).
+I'm testing xilinx-selectmap.c on a custom i.MX6 board connected to an
+Artix 7 FPGA. Flashing a 913K bitstream takes 0.44 seconds.
 
-Andrew
+Changes since v4: (from Yilun and Krzysztof review)
+ * xilinx-core: use sizeof() instead of hardcoded immediate
+ * xilinx-core: fix module compilation (EXPORT_SYMBOL_GPL, MODULE_LICENSE=
+,
+   MODULE_AUTHOR, MODULE_DESCRIPTION)
+ * xilinx-core: add private/public qualifiers for struct xilinx_fpga_core
+ * xilinx-spi: remove struct xilinx_spi_conf. This struct isn't needed as
+   the struct spi_device* can be retrieved from the struct device*.
+ * dt-bindings: remove usage of "_b" and "-b" for the new driver. We
+   agreed that the spi and selectmap driver will use different bindings
+   which will be handled by the driver core and that the legacy names wil=
+l
+   be used only for the spi compatible.
+ * xilinx-core: select between prog/init and prog_b/init-b
 
-> ---
->  drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 34 +++++++++++-----------
->  1 file changed, 17 insertions(+), 17 deletions(-)
->=20
-> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl=
-/aspeed/pinctrl-aspeed-g6.c
-> index d376fa7114d1..029efe16f8cc 100644
-> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> @@ -43,7 +43,7 @@
->  #define SCU614		0x614 /* Disable GPIO Internal Pull-Down #1 */
->  #define SCU618		0x618 /* Disable GPIO Internal Pull-Down #2 */
->  #define SCU61C		0x61c /* Disable GPIO Internal Pull-Down #3 */
-> -#define SCU620		0x620 /* Disable GPIO Internal Pull-Down #4 */
-> +#define SCU630		0x630 /* Disable GPIO Internal Pull-Down #4 */
->  #define SCU634		0x634 /* Disable GPIO Internal Pull-Down #5 */
->  #define SCU638		0x638 /* Disable GPIO Internal Pull-Down #6 */
->  #define SCU690		0x690 /* Multi-function Pin Control #24 */
-> @@ -2495,38 +2495,38 @@ static struct aspeed_pin_config aspeed_g6_configs=
-[] =3D {
->  	ASPEED_PULL_DOWN_PINCONF(D14, SCU61C, 0),
-> =20
->  	/* GPIOS7 */
-> -	ASPEED_PULL_DOWN_PINCONF(T24, SCU620, 23),
-> +	ASPEED_PULL_DOWN_PINCONF(T24, SCU630, 23),
->  	/* GPIOS6 */
-> -	ASPEED_PULL_DOWN_PINCONF(P23, SCU620, 22),
-> +	ASPEED_PULL_DOWN_PINCONF(P23, SCU630, 22),
->  	/* GPIOS5 */
-> -	ASPEED_PULL_DOWN_PINCONF(P24, SCU620, 21),
-> +	ASPEED_PULL_DOWN_PINCONF(P24, SCU630, 21),
->  	/* GPIOS4 */
-> -	ASPEED_PULL_DOWN_PINCONF(R26, SCU620, 20),
-> +	ASPEED_PULL_DOWN_PINCONF(R26, SCU630, 20),
->  	/* GPIOS3*/
-> -	ASPEED_PULL_DOWN_PINCONF(R24, SCU620, 19),
-> +	ASPEED_PULL_DOWN_PINCONF(R24, SCU630, 19),
->  	/* GPIOS2 */
-> -	ASPEED_PULL_DOWN_PINCONF(T26, SCU620, 18),
-> +	ASPEED_PULL_DOWN_PINCONF(T26, SCU630, 18),
->  	/* GPIOS1 */
-> -	ASPEED_PULL_DOWN_PINCONF(T25, SCU620, 17),
-> +	ASPEED_PULL_DOWN_PINCONF(T25, SCU630, 17),
->  	/* GPIOS0 */
-> -	ASPEED_PULL_DOWN_PINCONF(R23, SCU620, 16),
-> +	ASPEED_PULL_DOWN_PINCONF(R23, SCU630, 16),
-> =20
->  	/* GPIOR7 */
-> -	ASPEED_PULL_DOWN_PINCONF(U26, SCU620, 15),
-> +	ASPEED_PULL_DOWN_PINCONF(U26, SCU630, 15),
->  	/* GPIOR6 */
-> -	ASPEED_PULL_DOWN_PINCONF(W26, SCU620, 14),
-> +	ASPEED_PULL_DOWN_PINCONF(W26, SCU630, 14),
->  	/* GPIOR5 */
-> -	ASPEED_PULL_DOWN_PINCONF(T23, SCU620, 13),
-> +	ASPEED_PULL_DOWN_PINCONF(T23, SCU630, 13),
->  	/* GPIOR4 */
-> -	ASPEED_PULL_DOWN_PINCONF(U25, SCU620, 12),
-> +	ASPEED_PULL_DOWN_PINCONF(U25, SCU630, 12),
->  	/* GPIOR3*/
-> -	ASPEED_PULL_DOWN_PINCONF(V26, SCU620, 11),
-> +	ASPEED_PULL_DOWN_PINCONF(V26, SCU630, 11),
->  	/* GPIOR2 */
-> -	ASPEED_PULL_DOWN_PINCONF(V24, SCU620, 10),
-> +	ASPEED_PULL_DOWN_PINCONF(V24, SCU630, 10),
->  	/* GPIOR1 */
-> -	ASPEED_PULL_DOWN_PINCONF(U24, SCU620, 9),
-> +	ASPEED_PULL_DOWN_PINCONF(U24, SCU630, 9),
->  	/* GPIOR0 */
-> -	ASPEED_PULL_DOWN_PINCONF(V25, SCU620, 8),
-> +	ASPEED_PULL_DOWN_PINCONF(V25, SCU630, 8),
-> =20
->  	/* GPIOX7 */
->  	ASPEED_PULL_DOWN_PINCONF(AB10, SCU634, 31),
+Changes since v3: (from Rob Herring review)
+ * Fix an error in the DT binding example compatible.
+ * Drop the renaming of "prog_b" to "prog" and "init-b" to "init".
+   Patches 2 and 3 are removed.
 
+Changes since v2:
+ * Inserted patch 2 and 3 which rename "prog_b" and "init-b" into "prog"
+   and "init" for the SPI driver.
+ * From Krzysztof Kozlowski review's:
+   * Use more specific compatible names
+   * Remove other missing occurences of the slave word missed in v2.
+ * From Xu Yilun review's:
+   * Fix vertical whitespace in get_done_gpio().
+   * Combine write() and write_one_dummy_byte() together.
+   * Eliminate most of the xilinx_core_probe() arguments, the driver
+     needs to populate those directly into the xilinx_fpga_core struct.
+     Added some documentation to struct xilinx_fpga_core to clarify
+     this.
+   * Removed typedefs from xilinx-core.h.
+   * Moved null checks in xilinx_core_probe() to first patch.
+   * Move csi_b and rdwr_b out of xilinx_selectmap_conf as they are not
+     used out of the probe function.
+
+Changes since v1: (from Krzysztof Kozlowski review's)
+  * Use more conventional names for gpio DT bindings
+  * fix example in DT bindings
+  * add mc-peripheral-props.yaml to DT bindings
+  * fix various formatting mistakes
+  * Remove all occurences of the "slave" word.
+
+Charles Perry (3):
+  fpga: xilinx-spi: extract a common driver core
+  dt-bindings: fpga: xlnx,fpga-selectmap: add DT schema
+  fpga: xilinx-selectmap: add new driver
+
+ .../bindings/fpga/xlnx,fpga-selectmap.yaml    |  86 +++++++
+ drivers/fpga/Kconfig                          |  12 +
+ drivers/fpga/Makefile                         |   2 +
+ drivers/fpga/xilinx-core.c                    | 238 ++++++++++++++++++
+ drivers/fpga/xilinx-core.h                    |  30 +++
+ drivers/fpga/xilinx-selectmap.c               |  97 +++++++
+ drivers/fpga/xilinx-spi.c                     | 220 +---------------
+ 7 files changed, 478 insertions(+), 207 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,fpga-sele=
+ctmap.yaml
+ create mode 100644 drivers/fpga/xilinx-core.c
+ create mode 100644 drivers/fpga/xilinx-core.h
+ create mode 100644 drivers/fpga/xilinx-selectmap.c
+
+--
+2.43.0
 
