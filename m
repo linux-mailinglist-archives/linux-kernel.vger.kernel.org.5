@@ -1,205 +1,126 @@
-Return-Path: <linux-kernel+bounces-101026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC52687A0D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:33:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56CBC87A0E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 02:36:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 624731F2165A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:33:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13A852862D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 01:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A04AAD56;
-	Wed, 13 Mar 2024 01:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA4EAD54;
+	Wed, 13 Mar 2024 01:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kXRC9kdA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="chS61YAC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2019444
-	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A4B9444
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710293601; cv=none; b=rf64jrRScnM6343Kl40WlkfnwjsTX/buv6LOqMRhXhnELW2GOO5EcShRBQF3y31eqQUq1sxYfVVB5nrw0zd+bZNMS/uKZlOUKl3YNZM1vxgIN5BqqvIODtDJUWGYfgA5FDSS5mhFGJj+68gZtthg5BSBpb0KCHRQrP4px7vqziU=
+	t=1710293789; cv=none; b=GtNXvdemENpXdz+Ffp08IQUMSfLqDrE+iUjsDUtnr7kzPa2xQ1HUi00A405ZG1wrcc2yteCNDm3OPNZpMjpD0poXOjkEOZnBoYX47eZVwW+CkkT7qYrWckG1xbPjde1BQUhOCGN/QoBH68Je2+drX63VmsCtphYKDycxFUlzr5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710293601; c=relaxed/simple;
-	bh=j3ePOlDPwLMvVtp9Qk/UQW6OamydjdF2X9e8qHtDcwk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IJHZT14ddkfVk5TUiXdTIGwbce+8Y5NHRgFwczrSMs0AW05uPa5jLvrOSE3qHNhSVBEfWptpH+qmqCJ5NNwn5ofcGsnP274+PywrIpjeq7A54pb6tsavA9h16UN4wY4qyJH1koOCPPlvuEaIbP/ujQGJk/ygaKiWWXNEFPGhRkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kXRC9kdA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3ED8C433C7;
-	Wed, 13 Mar 2024 01:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710293601;
-	bh=j3ePOlDPwLMvVtp9Qk/UQW6OamydjdF2X9e8qHtDcwk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kXRC9kdAnXtqXkk8fT0FYLUb79JWdNMfjv53hk+lwLvlKHb4oAdDCwdaiwCsYNkaE
-	 YqNbPlCtLiVWMgMpfbTJc8Z/z6KxTFjAinY6L9pNNDuLhVOnA90YQ4OQiDcDNAr5ep
-	 ib2pCflpp1XpE6IgRXzEYuveoTmyOUo/uHVgphPYrzdb7imaOLvLC+SmwqspoJiAi5
-	 QMynKW8+uaS7zDRhCF6dYC1sjLM7HU7rwTn6tuhZz/Ma/i7GbFMD9op9VyhoOmdMxN
-	 7O/ZtJ4SK6wkh9JgZpdKCRRYGcyrD08ZKMo6AGBLUK5kfm+rBmSDXuqv/9Bi9eIk2e
-	 Us8nQVoJZo+5w==
-Date: Tue, 12 Mar 2024 18:33:19 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] f2fs: support .shutdown in f2fs_sops
-Message-ID: <ZfECXyBxrurHtMCn@google.com>
-References: <20240229143838.45149-1-chao@kernel.org>
- <63ece9a0-ccd1-43f7-ab51-cf5adc49be71@kernel.org>
+	s=arc-20240116; t=1710293789; c=relaxed/simple;
+	bh=oFDwWocpbPxkR5yivk+zblxm9GFLekim2vygWThKv48=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=mT/jV1Pm5iMIZ2cMK/NtNL6N28GHacSPGyGIqvGHMJNSkXeWr8Inbtjr0RHOtwsVU3O+EGl5i6mZaGN1ZrltW/Q7Mi+Js8nWN+xRfwMlZnpOaW8qcI+XtmN7SvlYNsrxArj6nTaJYMJlO9VRSNDOVTlhtdkodKkpESLxhP+E6qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=chS61YAC; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710293787; x=1741829787;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=oFDwWocpbPxkR5yivk+zblxm9GFLekim2vygWThKv48=;
+  b=chS61YAC8fi7Pc6amALYWOrYa8V5plOlTgAl335OJ0U6kywPJM5WB2MG
+   5s+hAejYgrlHcLbx1OAWBtKoQKphlZ880un1IBTYh2+8roPR7fWmfoEnM
+   5g0kN7z+UIIcpaPCygv+8EPeeBlQLdTLG4IZJ6oStbsCPRgO3RaSj7RdT
+   bt+q9/rcKgAeJ7b1626+KjfvIpye1olUCmgjMpXMn2r4OQ6VaC6WhKmK9
+   YLkrI4aKzue9sTTameIzZGEsa+MYJ3bJAvgrzfswAWJH9culGkq+ey3ZI
+   tEvPuntqzO6DkbTYWJ19uazTxHPZTAzTXuvv+AwWOAYZXyzLXa3lR5tg6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="22491013"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="22491013"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 18:36:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="12196777"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 18:36:24 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  David Hildenbrand
+ <david@redhat.com>,  Matthew Wilcox <willy@infradead.org>,  Gao Xiang
+ <xiang@kernel.org>,  Yu Zhao <yuzhao@google.com>,  Yang Shi
+ <shy828301@gmail.com>,  Michal Hocko <mhocko@suse.com>,  Kefeng Wang
+ <wangkefeng.wang@huawei.com>,  Barry Song <21cnbao@gmail.com>,  Chris Li
+ <chrisl@kernel.org>,  <linux-mm@kvack.org>,
+  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 3/6] mm: swap: Simplify struct percpu_cluster
+In-Reply-To: <2e236d6b-e6fc-428a-ad06-c2fb1dbf5c8b@arm.com> (Ryan Roberts's
+	message of "Tue, 12 Mar 2024 08:51:23 +0000")
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+	<20240311150058.1122862-4-ryan.roberts@arm.com>
+	<87cyrz51lj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<2e236d6b-e6fc-428a-ad06-c2fb1dbf5c8b@arm.com>
+Date: Wed, 13 Mar 2024 09:34:29 +0800
+Message-ID: <87r0ge3oey.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63ece9a0-ccd1-43f7-ab51-cf5adc49be71@kernel.org>
+Content-Type: text/plain; charset=ascii
 
-Will check this after merge window.
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-On 03/12, Chao Yu wrote:
-> Ping,
-> 
-> On 2024/2/29 22:38, Chao Yu wrote:
-> > Support .shutdown callback in f2fs_sops, then, it can be called to
-> > shut down the file system when underlying block device is marked dead.
-> > 
-> > Signed-off-by: Chao Yu <chao@kernel.org>
-> > ---
-> >   fs/f2fs/f2fs.h  |  2 ++
-> >   fs/f2fs/file.c  | 70 ++++++++++++++++++++++++++++++-------------------
-> >   fs/f2fs/super.c |  6 +++++
-> >   3 files changed, 51 insertions(+), 27 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index 85eb9a8a5ed3..80789255bf68 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -3506,6 +3506,8 @@ int f2fs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
-> >   		 struct iattr *attr);
-> >   int f2fs_truncate_hole(struct inode *inode, pgoff_t pg_start, pgoff_t pg_end);
-> >   void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count);
-> > +int f2fs_do_shutdown(struct f2fs_sb_info *sbi, unsigned int flag,
-> > +							bool readonly);
-> >   int f2fs_precache_extents(struct inode *inode);
-> >   int f2fs_fileattr_get(struct dentry *dentry, struct fileattr *fa);
-> >   int f2fs_fileattr_set(struct mnt_idmap *idmap,
-> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > index 4ca6c693b33a..d223175b3d5c 100644
-> > --- a/fs/f2fs/file.c
-> > +++ b/fs/f2fs/file.c
-> > @@ -2226,34 +2226,13 @@ static int f2fs_ioc_abort_atomic_write(struct file *filp)
-> >   	return ret;
-> >   }
-> > -static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
-> > +int f2fs_do_shutdown(struct f2fs_sb_info *sbi, unsigned int flag,
-> > +							bool readonly)
-> >   {
-> > -	struct inode *inode = file_inode(filp);
-> > -	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> >   	struct super_block *sb = sbi->sb;
-> > -	__u32 in;
-> >   	int ret = 0;
-> > -	if (!capable(CAP_SYS_ADMIN))
-> > -		return -EPERM;
-> > -
-> > -	if (get_user(in, (__u32 __user *)arg))
-> > -		return -EFAULT;
-> > -
-> > -	if (in != F2FS_GOING_DOWN_FULLSYNC) {
-> > -		ret = mnt_want_write_file(filp);
-> > -		if (ret) {
-> > -			if (ret == -EROFS) {
-> > -				ret = 0;
-> > -				f2fs_stop_checkpoint(sbi, false,
-> > -						STOP_CP_REASON_SHUTDOWN);
-> > -				trace_f2fs_shutdown(sbi, in, ret);
-> > -			}
-> > -			return ret;
-> > -		}
-> > -	}
-> > -
-> > -	switch (in) {
-> > +	switch (flag) {
-> >   	case F2FS_GOING_DOWN_FULLSYNC:
-> >   		ret = bdev_freeze(sb->s_bdev);
-> >   		if (ret)
-> > @@ -2292,6 +2271,9 @@ static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
-> >   		goto out;
-> >   	}
-> > +	if (readonly)
-> > +		goto out;
-> > +
-> >   	f2fs_stop_gc_thread(sbi);
-> >   	f2fs_stop_discard_thread(sbi);
-> > @@ -2300,10 +2282,44 @@ static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
-> >   	f2fs_update_time(sbi, REQ_TIME);
-> >   out:
-> > -	if (in != F2FS_GOING_DOWN_FULLSYNC)
-> > -		mnt_drop_write_file(filp);
-> > -	trace_f2fs_shutdown(sbi, in, ret);
-> > +	trace_f2fs_shutdown(sbi, flag, ret);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
-> > +{
-> > +	struct inode *inode = file_inode(filp);
-> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > +	__u32 in;
-> > +	int ret;
-> > +	bool need_drop = false, readonly = false;
-> > +
-> > +	if (!capable(CAP_SYS_ADMIN))
-> > +		return -EPERM;
-> > +
-> > +	if (get_user(in, (__u32 __user *)arg))
-> > +		return -EFAULT;
-> > +
-> > +	if (in != F2FS_GOING_DOWN_FULLSYNC) {
-> > +		ret = mnt_want_write_file(filp);
-> > +		if (ret) {
-> > +			if (ret != -EROFS)
-> > +				return ret;
-> > +
-> > +			/* fallback to nosync shutdown for readonly fs */
-> > +			in = F2FS_GOING_DOWN_NOSYNC;
-> > +			readonly = true;
-> > +		} else {
-> > +			need_drop = true;
-> > +		}
-> > +	}
-> > +
-> > +	ret = f2fs_do_shutdown(sbi, in, readonly);
-> > +
-> > +	if (need_drop)
-> > +		mnt_drop_write_file(filp);
-> >   	return ret;
-> >   }
-> > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > index 78a76583a4aa..0676c2dcbbf7 100644
-> > --- a/fs/f2fs/super.c
-> > +++ b/fs/f2fs/super.c
-> > @@ -2547,6 +2547,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
-> >   	return err;
-> >   }
-> > +static void f2fs_shutdown(struct super_block *sb)
-> > +{
-> > +	f2fs_do_shutdown(F2FS_SB(sb), F2FS_GOING_DOWN_NOSYNC, false);
-> > +}
-> > +
-> >   #ifdef CONFIG_QUOTA
-> >   static bool f2fs_need_recovery(struct f2fs_sb_info *sbi)
-> >   {
-> > @@ -3146,6 +3151,7 @@ static const struct super_operations f2fs_sops = {
-> >   	.unfreeze_fs	= f2fs_unfreeze,
-> >   	.statfs		= f2fs_statfs,
-> >   	.remount_fs	= f2fs_remount,
-> > +	.shutdown	= f2fs_shutdown,
-> >   };
-> >   #ifdef CONFIG_FS_ENCRYPTION
+> On 12/03/2024 07:52, Huang, Ying wrote:
+>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>> 
+>>> struct percpu_cluster stores the index of cpu's current cluster and the
+>>> offset of the next entry that will be allocated for the cpu. These two
+>>> pieces of information are redundant because the cluster index is just
+>>> (offset / SWAPFILE_CLUSTER). The only reason for explicitly keeping the
+>>> cluster index is because the structure used for it also has a flag to
+>>> indicate "no cluster". However this data structure also contains a spin
+>>> lock, which is never used in this context, as a side effect the code
+>>> copies the spinlock_t structure, which is questionable coding practice
+>>> in my view.
+>>>
+>>> So let's clean this up and store only the next offset, and use a
+>>> sentinal value (SWAP_NEXT_INVALID) to indicate "no cluster".
+>>> SWAP_NEXT_INVALID is chosen to be 0, because 0 will never be seen
+>>> legitimately; The first page in the swap file is the swap header, which
+>>> is always marked bad to prevent it from being allocated as an entry.
+>>> This also prevents the cluster to which it belongs being marked free, so
+>>> it will never appear on the free list.
+>>>
+>>> This change saves 16 bytes per cpu. And given we are shortly going to
+>>> extend this mechanism to be per-cpu-AND-per-order, we will end up saving
+>>> 16 * 9 = 144 bytes per cpu, which adds up if you have 256 cpus in the
+>>> system.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> 
+>> LGTM, Thanks!
+>
+> Thanks! What's a guy got to do to get Rb or Ack? :)
+
+Feel free to add
+
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+
+in the future version.
+
+--
+Best Regards,
+Huang, Ying
 
