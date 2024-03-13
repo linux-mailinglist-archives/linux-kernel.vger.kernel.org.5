@@ -1,68 +1,81 @@
-Return-Path: <linux-kernel+bounces-101220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1914887A42D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:41:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69AFA87A430
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 09:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A2091C21501
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:41:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5F0CB2199C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 08:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9361AAD9;
-	Wed, 13 Mar 2024 08:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBF51B277;
+	Wed, 13 Mar 2024 08:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="qK5AAVmH"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="EyI9Chw2"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E471387;
-	Wed, 13 Mar 2024 08:41:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314C5AD5C
+	for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 08:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710319305; cv=none; b=p2dF8urDTNbMJ+a2uFKjbDm2wgoUVnFCQqTO9hTQYH7gSPy/xU6jCuWJyQZIqy5rO+2DSQ4K0nJ/ldJ2wOi20r6ria86ltnNDyfD8kbl9h7sM8P+ErrSwuqu7y4+tffOg4dbTWXfBxkyhGBt83bCAE1Kwzov8iH0JjGDppG1ygA=
+	t=1710319462; cv=none; b=jgjj+jZYtamZss6old0h3dkN2OGlU9jJaKBOpnHxpm6S0IAC91IX5J26iJH1qV9sJhTYtOmXeXKO90wTp1DJEX7ZNqBFTI/Wzvd9hwoGn7KeYDEJxL6lfyjx1FyQPUpQ27PvoBGLj7IF3qm1SCdTXCqy9jKS+zK56hR8IhXAxnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710319305; c=relaxed/simple;
-	bh=MsMasDdN6r+3X0Wz41qXNgAS24bINb5kwJtcRvRsOzw=;
+	s=arc-20240116; t=1710319462; c=relaxed/simple;
+	bh=eIy4mFlgIwk3BsE7FfLoI0BF5bJWDglZzJAbRpqNT4s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JzAbmKJTChTSaCn7LcKPwGPnsQ6M6A9vOig6V+U6kfPvp6aU/fZvOIvFRK5XQ8QnR9jN9CHL2dFPn5rRYJIDkHCMtIOhUpR5kJCVspiKa322WDkOZXJvOcn2+on4PmWOOLMp2VLeMpWwO9MZIw/KRUnrrnKYkqM4r1ZABp3Cw8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=qK5AAVmH; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=splz9LqGAeewyrIB5UcXZJcELJXLMp1ha+ZaXYwZxgc=; b=qK5AAVmHGHDC8K+tZUIMJdP3Ko
-	KLA8qiPqLOUd1Vh2/PNVQVhbG6hEOpYDy4JN87XkYtPfpsKbsvt+lpyzMgpbDJe70tEUR+cwO/tCi
-	uQO2v0d05AUZvw8+qb5rGc6x0a55UywGqK5FebcuiNCm47WA8yCYMi7pUHgjykQinbQjOSUhGRRx+
-	e3ei4eXtcDPS/HB5+L8B8pmNHYM9fIQFxsbhJt7MS8pQRfMTPFGfC4D7XayYk97fRMrdNWvi23GF+
-	UrXCqAt5C2UCa6Oct/+x9zuP1TCjxuO4X7EMXEd7F/bJOyslG4G/aLZkCVWGzCKTu5ba663LwQSRE
-	FE7vnL3Q==;
-Received: from [179.93.183.242] (helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rkKB7-009lzb-QX; Wed, 13 Mar 2024 09:41:38 +0100
-Date: Wed, 13 Mar 2024 05:41:32 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-Message-ID: <ZfFmvGRlNR4ZiMMC@quatroqueijos.cascardo.eti.br>
-References: <ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
- <87v86fnz2o.fsf@mail.parknet.co.jp>
- <Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
- <87le75s1fg.fsf@mail.parknet.co.jp>
- <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
- <87h6hek50l.fsf@mail.parknet.co.jp>
- <Ze2IAnSX7lr1fZML@quatroqueijos.cascardo.eti.br>
- <87cys2jfop.fsf@mail.parknet.co.jp>
- <ZfFcpWRWdnWmtebd@quatroqueijos.cascardo.eti.br>
- <878r2mk14a.fsf@mail.parknet.co.jp>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qABgXqoAQjUSe6SQCl04J5s+P5sKS/SbzvBgdu0canyGYs5WY3CDhTEWOAusCoFZ2eidpcqPjvlCIN0GUp5aAAa86VfZbMe/7yPspfAevGvmMMQKNoiccPV6Ajle5A1SefyPJ7FyQ9XI+IKMGqx6I34976h2EeIwR6rql8mdfLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=EyI9Chw2; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33e9990da78so2520723f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 01:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1710319459; x=1710924259; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TVnlgrSA1iDIweojaV3vTulnCmsG1cIXseUx2d2oWFw=;
+        b=EyI9Chw2sez9sDIvSmfSFd3+xAF+apnpC0iTbgZOBzGU7D/cSbbI3v9fYlYRU27ti7
+         Jn2+ydNqMNLrQP1KakycGS5QNcunobqjnrwCavynMAg/meBwwnL5hF36tSetC5QuG/Yf
+         F1v1P5TtwBfmLJDqgNMnd25aKnhU0QLy3YQ3zrbBQuzCO0NINEfryzEOp60fdqKXLu2P
+         f3HmMYajBt3FS3okcGflpEGHNs9pehAmcfBMjI2P9vAFmHtGYhzAeC6egpa2nWF3tI9s
+         NYsD8WCM84y8E0ScpyivW4I3B1gL2+oqh6K33Zi+6hSAat1Q8hPamuFbxjvnmbwW9Ff3
+         dtmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710319459; x=1710924259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TVnlgrSA1iDIweojaV3vTulnCmsG1cIXseUx2d2oWFw=;
+        b=Da+EmsvEUb8tbuJ81aaJmSgjAXockr86De3KrRc/V+TNm7GJeEknnU70KFJ9l40Hwq
+         zpHOKBTgQK8uEN+Wn2uQ6dX+DEnjx0yeuKeS1O+UQMkD2BfVCN210QJ8UPGGODXEHgjo
+         IzzMn4nv/JHJv3B6h4PvW1RFFhfVJHL82FeZ5rCoTWNl+GhVMRE/cVYj7NcZLaAiEBDw
+         WtlrfW/wCZAllTD726LqPGStaHBk5pKAfyWFtkfpCxE3fngPOuwG2urP4yCtGnqZ9HMV
+         l94qHJj5F+5zF5e0ckGeO0hKehDl1i/n1L+wJFENcpaSQgUB7mSE2YBuGH3FL9ZnLjdI
+         l2pA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9NvZqEn+fKwo1NZwWhNT4EJAbCQglrMeIKetVz8CAHojsbX46NNlPmGEFwT8jYXABPkHPHHCnMqxxACWz/I8YlRJNvTosce+Mo3JH
+X-Gm-Message-State: AOJu0YwhulUDK5OjNOGSBuneR/2WPHaUDOg1WiNUI4K3iEyBMs5uQ6i4
+	w4o4VthuO5TGlVxmwWhrU4O6/rhB4rCi09m29V86/zznx7EXQMFpNCG7DYMAjtU=
+X-Google-Smtp-Source: AGHT+IF6PXsG6ZxE+60qwQnTwNT8NyXVLUagjQgwFnk02BeNPnrpuv1g9j6Sj2PCDpibbr6u0xH1bA==
+X-Received: by 2002:adf:ab12:0:b0:33e:b6a9:a7f7 with SMTP id q18-20020adfab12000000b0033eb6a9a7f7mr792595wrc.43.1710319459333;
+        Wed, 13 Mar 2024 01:44:19 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id bq7-20020a5d5a07000000b0033e95794186sm7787748wrb.83.2024.03.13.01.44.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 01:44:18 -0700 (PDT)
+Date: Wed, 13 Mar 2024 09:44:18 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor.dooley@microchip.com>, 
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Pavel Machek <pavel@ucw.cz>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Sia Jee Heng <jeeheng.sia@starfivetech.com>, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] riscv: Do not save the scratch CSR during suspend
+Message-ID: <20240313-a1837dd45cb20198ef5ceae6@orel>
+References: <20240312195641.1830521-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,41 +84,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878r2mk14a.fsf@mail.parknet.co.jp>
+In-Reply-To: <20240312195641.1830521-1-samuel.holland@sifive.com>
 
-On Wed, Mar 13, 2024 at 05:05:41PM +0900, OGAWA Hirofumi wrote:
-> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+On Tue, Mar 12, 2024 at 12:56:38PM -0700, Samuel Holland wrote:
+> While the processor is executing kernel code, the value of the scratch
+> CSR is always zero, so there is no need to save the value. Continue to
+> write the CSR during the resume flow, so we do not rely on firmware to
+> initialize it.
 > 
-> >> You are forgetting to count about normal dirs other than "." and ".."?
-> >> 
-> >
-> > Yes, I was not counting those. The patch simply ignores ".." when counting dirs
-> > (which is used only for determining the number of links), and always adds one
-> > link. Then, when validating the inode, it also only requires that at least one
-> > link exists instead of two.
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
 > 
-> So you break the mkdir/rmdir link counting, isn't it?
+>  arch/riscv/include/asm/suspend.h | 1 -
+>  arch/riscv/kernel/suspend.c      | 3 +--
+>  2 files changed, 1 insertion(+), 3 deletions(-)
 > 
-
-It is off by one on those images with directories without ".." subdir.
-Otherwise, everything else works fine. mkdir/rmdir inside such directories work
-without any issues as rmdir that same directory.
-
-If, on the other hand, we left everything as is and only skipped the
-validation, such directories would be created with a link count of 0. Then,
-doing a mkdir inside them would crash the kernel with a BUG as we cannot
-increment the link count of an inode with 0 links.
-
-So the idea of the fix here is that, independently of the existence of "..",
-the link count will always be at least 1.
-
-Cascardo.
-
-> Thanks.
-> 
-> > There is only one other instance of fat_subdirs being called and that's when
-> > the root dir link count is determined. I left that one unchanged, as usually
-> > "." and ".." does not exist there and we always add two links there.
+> diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
+> index 491296a335d0..6569eefacf38 100644
+> --- a/arch/riscv/include/asm/suspend.h
+> +++ b/arch/riscv/include/asm/suspend.h
+> @@ -13,7 +13,6 @@ struct suspend_context {
+>  	/* Saved and restored by low-level functions */
+>  	struct pt_regs regs;
+>  	/* Saved and restored by high-level functions */
+> -	unsigned long scratch;
+>  	unsigned long envcfg;
+>  	unsigned long tvec;
+>  	unsigned long ie;
+> diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
+> index 299795341e8a..3d306d8a253d 100644
+> --- a/arch/riscv/kernel/suspend.c
+> +++ b/arch/riscv/kernel/suspend.c
+> @@ -14,7 +14,6 @@
+>  
+>  void suspend_save_csrs(struct suspend_context *context)
+>  {
+> -	context->scratch = csr_read(CSR_SCRATCH);
+>  	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
+>  		context->envcfg = csr_read(CSR_ENVCFG);
+>  	context->tvec = csr_read(CSR_TVEC);
+> @@ -37,7 +36,7 @@ void suspend_save_csrs(struct suspend_context *context)
+>  
+>  void suspend_restore_csrs(struct suspend_context *context)
+>  {
+> -	csr_write(CSR_SCRATCH, context->scratch);
+> +	csr_write(CSR_SCRATCH, 0);
+>  	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
+>  		csr_write(CSR_ENVCFG, context->envcfg);
+>  	csr_write(CSR_TVEC, context->tvec);
 > -- 
-> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+> 2.43.1
+>
+
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
