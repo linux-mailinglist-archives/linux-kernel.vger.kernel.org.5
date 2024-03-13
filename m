@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-101764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 634C587AB61
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:38:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6950387AB63
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FF5828CB00
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:38:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20E0328CF9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 16:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399BD605D2;
-	Wed, 13 Mar 2024 16:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDF56087A;
+	Wed, 13 Mar 2024 16:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hthfsGtx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="McBDb8vf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED07604D1;
-	Wed, 13 Mar 2024 16:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0DF60868;
+	Wed, 13 Mar 2024 16:33:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710347589; cv=none; b=Qk4JTqdUdj0JZInD6LpMr5aQbicbRaMp4CgU5RlGYolCeu0Vq8PCY9a9OU+X5lUIPojWG8rGgLBjIgiXDXJccyR4CKy+yste0bmQFOmSx7m/wcr3JCWxu3wCi27DML0P+7aNU2RxlC+Q1ZoQO8IUPPw9DDp+YigS1OrqVD7wHtA=
+	t=1710347590; cv=none; b=oNn97tQIHXaNzZyB7+heCWmYlXJaO6idgMJP35KBMEMviuLpQeWQ66hMPs/OOT39KpvTRYwUIz37Vs9HDDI5Rj0vnWurNB0yckzfpYWWqNDUVz69XDeAlIeiKCJJ9crslw+X4z+n5LgIig2B0Zh07JW7dpt36+fIeQa6awlN7Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710347589; c=relaxed/simple;
-	bh=zVXcsojt3NoTCzwiD8lRVyRUKNBhxrBo3ee7NlCp+A4=;
+	s=arc-20240116; t=1710347590; c=relaxed/simple;
+	bh=mvGDqoFENuXISP41FAYxHtREhJLJrSL0HMmGWeEAX4U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FBtduCkeIYBbklR1oh2BLtdOoVqG8FmURzQOAGE1caiuTix505e+gLP5bY6rcBSUFDde378SaD5Pab1EsLnN72ldqtS1y/hAxdzmTQu3Bg+rrzKCjqChSdqERXCEWGtHorOxi1tNSdzRFbTvW5+I0FdEIIZQGh1O4prX9BY4TPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hthfsGtx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74A73C433F1;
-	Wed, 13 Mar 2024 16:33:08 +0000 (UTC)
+	 MIME-Version; b=JinMyhFSFg9DHjRQVs4PVAnnGXMY6hgNfGfwU8sddQ+zzsfYuBq+OUFuu40jnNOP9C+xNN8oLPk48T23/2rCHYvn22DGbKjTrId/r3WukQq/BzCu4dJBG8MHENMD+teCFpG+gsGu6tqNXV0lfBvp0xddLfTbA7GYdeu/5n2c3yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=McBDb8vf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AD07C433C7;
+	Wed, 13 Mar 2024 16:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710347589;
-	bh=zVXcsojt3NoTCzwiD8lRVyRUKNBhxrBo3ee7NlCp+A4=;
+	s=k20201202; t=1710347590;
+	bh=mvGDqoFENuXISP41FAYxHtREhJLJrSL0HMmGWeEAX4U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hthfsGtxGpG09PCNQ42mGFnp6XR1VG0jXWl6GVFbNFIh+iJsJ2kHycD4Ne2ZotVOn
-	 P/63kqiCqyQHEGGTbGXBTKq4QZH2xnUhAifXauWQ/PhfJnZMTDC6viN09yX+fLqUzK
-	 QDJ8JCRDwOZF7mC93/dlKllM0o9Pm02AliArcuM3SrkwPdrQhEzf5Z/TkdS0R98E/d
-	 R2TIur094+0xvGOAZ39fOQqsVb9VbZ0CsPJi7JaxwYo1721BHWTpbrirCl64dbUr+i
-	 bV2r0i1fNeV/6olpuE3wFA7Q1Zl2WX5A3C+5dgU7T6Svu0xuVCFNCay3Ujd8VIG7fg
-	 Gz4AMHs0TpeMA==
+	b=McBDb8vffKgn315LnAXK4ymNXY0MfHU9aPZTxtA6FYTNRhOF50UUmZPo1wATWeqnr
+	 m8UOQ41pAGd6MKlkAFNPr9TBZo7ECM4C8a1+HR4SXVK/p/Gp6gtwIKTeYgki8pSAqc
+	 czoZ5gSJCJnkM3oz88rjDUn7Nw9zMQXJ7961Hnw3oNdzJRZR/yJWsnrgKil7Bcj+Go
+	 9qnousPzCXtPJCnX6tEJhGmRkK/8rGqbeLN2KKpFer99cNZ2uHe90End5ryDfEvsNn
+	 v6GyM0eASCF+yfUIsArB+xi80S34hjtUPvbgswo5dq3k3tFqkypSx9bhOvsQDth0n4
+	 NTcxnZsQD2A/A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	syzbot+6a1423ff3f97159aae64@syzkaller.appspotmail.com,
+	Jiri Pirko <jiri@nvidia.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 25/61] tracing/net_sched: Fix tracepoints that save qdisc_dev() as a string
-Date: Wed, 13 Mar 2024 12:32:00 -0400
-Message-ID: <20240313163236.613880-26-sashal@kernel.org>
+Subject: [PATCH 6.7 26/61] geneve: make sure to pull inner header in geneve_rx()
+Date: Wed, 13 Mar 2024 12:32:01 -0400
+Message-ID: <20240313163236.613880-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
 References: <20240313163236.613880-1-sashal@kernel.org>
@@ -59,7 +60,6 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.10-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-6.7.y
@@ -70,87 +70,137 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 51270d573a8d9dd5afdc7934de97d66c0e14b5fd ]
+[ Upstream commit 1ca1ba465e55b9460e4e75dec9fff31e708fec74 ]
 
-I'm updating __assign_str() and will be removing the second parameter. To
-make sure that it does not break anything, I make sure that it matches the
-__string() field, as that is where the string is actually going to be
-saved in. To make sure there's nothing that breaks, I added a WARN_ON() to
-make sure that what was used in __string() is the same that is used in
-__assign_str().
+syzbot triggered a bug in geneve_rx() [1]
 
-In doing this change, an error was triggered as __assign_str() now expects
-the string passed in to be a char * value. I instead had the following
-warning:
+Issue is similar to the one I fixed in commit 8d975c15c0cd
+("ip6_tunnel: make sure to pull inner header in __ip6_tnl_rcv()")
 
-include/trace/events/qdisc.h: In function ‘trace_event_raw_event_qdisc_reset’:
-include/trace/events/qdisc.h:91:35: error: passing argument 1 of 'strcmp' from incompatible pointer type [-Werror=incompatible-pointer-types]
-   91 |                 __assign_str(dev, qdisc_dev(q));
+We have to save skb->network_header in a temporary variable
+in order to be able to recompute the network_header pointer
+after a pskb_inet_may_pull() call.
 
-That's because the qdisc_enqueue() and qdisc_reset() pass in qdisc_dev(q)
-to __assign_str() and to __string(). But that function returns a pointer
-to struct net_device and not a string.
+pskb_inet_may_pull() makes sure the needed headers are in skb->head.
 
-It appears that these events are just saving the pointer as a string and
-then reading it as a string as well.
+[1]
+BUG: KMSAN: uninit-value in IP_ECN_decapsulate include/net/inet_ecn.h:302 [inline]
+ BUG: KMSAN: uninit-value in geneve_rx drivers/net/geneve.c:279 [inline]
+ BUG: KMSAN: uninit-value in geneve_udp_encap_recv+0x36f9/0x3c10 drivers/net/geneve.c:391
+  IP_ECN_decapsulate include/net/inet_ecn.h:302 [inline]
+  geneve_rx drivers/net/geneve.c:279 [inline]
+  geneve_udp_encap_recv+0x36f9/0x3c10 drivers/net/geneve.c:391
+  udp_queue_rcv_one_skb+0x1d39/0x1f20 net/ipv4/udp.c:2108
+  udp_queue_rcv_skb+0x6ae/0x6e0 net/ipv4/udp.c:2186
+  udp_unicast_rcv_skb+0x184/0x4b0 net/ipv4/udp.c:2346
+  __udp4_lib_rcv+0x1c6b/0x3010 net/ipv4/udp.c:2422
+  udp_rcv+0x7d/0xa0 net/ipv4/udp.c:2604
+  ip_protocol_deliver_rcu+0x264/0x1300 net/ipv4/ip_input.c:205
+  ip_local_deliver_finish+0x2b8/0x440 net/ipv4/ip_input.c:233
+  NF_HOOK include/linux/netfilter.h:314 [inline]
+  ip_local_deliver+0x21f/0x490 net/ipv4/ip_input.c:254
+  dst_input include/net/dst.h:461 [inline]
+  ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
+  NF_HOOK include/linux/netfilter.h:314 [inline]
+  ip_rcv+0x46f/0x760 net/ipv4/ip_input.c:569
+  __netif_receive_skb_one_core net/core/dev.c:5534 [inline]
+  __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5648
+  process_backlog+0x480/0x8b0 net/core/dev.c:5976
+  __napi_poll+0xe3/0x980 net/core/dev.c:6576
+  napi_poll net/core/dev.c:6645 [inline]
+  net_rx_action+0x8b8/0x1870 net/core/dev.c:6778
+  __do_softirq+0x1b7/0x7c5 kernel/softirq.c:553
+  do_softirq+0x9a/0xf0 kernel/softirq.c:454
+  __local_bh_enable_ip+0x9b/0xa0 kernel/softirq.c:381
+  local_bh_enable include/linux/bottom_half.h:33 [inline]
+  rcu_read_unlock_bh include/linux/rcupdate.h:820 [inline]
+  __dev_queue_xmit+0x2768/0x51c0 net/core/dev.c:4378
+  dev_queue_xmit include/linux/netdevice.h:3171 [inline]
+  packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
+  packet_snd net/packet/af_packet.c:3081 [inline]
+  packet_sendmsg+0x8aef/0x9f10 net/packet/af_packet.c:3113
+  sock_sendmsg_nosec net/socket.c:730 [inline]
+  __sock_sendmsg net/socket.c:745 [inline]
+  __sys_sendto+0x735/0xa10 net/socket.c:2191
+  __do_sys_sendto net/socket.c:2203 [inline]
+  __se_sys_sendto net/socket.c:2199 [inline]
+  __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Use qdisc_dev(q)->name to save the device instead.
+Uninit was created at:
+  slab_post_alloc_hook mm/slub.c:3819 [inline]
+  slab_alloc_node mm/slub.c:3860 [inline]
+  kmem_cache_alloc_node+0x5cb/0xbc0 mm/slub.c:3903
+  kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
+  __alloc_skb+0x352/0x790 net/core/skbuff.c:651
+  alloc_skb include/linux/skbuff.h:1296 [inline]
+  alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6394
+  sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2783
+  packet_alloc_skb net/packet/af_packet.c:2930 [inline]
+  packet_snd net/packet/af_packet.c:3024 [inline]
+  packet_sendmsg+0x70c2/0x9f10 net/packet/af_packet.c:3113
+  sock_sendmsg_nosec net/socket.c:730 [inline]
+  __sock_sendmsg net/socket.c:745 [inline]
+  __sys_sendto+0x735/0xa10 net/socket.c:2191
+  __do_sys_sendto net/socket.c:2203 [inline]
+  __se_sys_sendto net/socket.c:2199 [inline]
+  __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Fixes: a34dac0b90552 ("net_sched: add tracepoints for qdisc_reset() and qdisc_destroy()")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Reviewed-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Fixes: 2d07dc79fe04 ("geneve: add initial netdev driver for GENEVE tunnels")
+Reported-and-tested-by: syzbot+6a1423ff3f97159aae64@syzkaller.appspotmail.com
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/trace/events/qdisc.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/net/geneve.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/include/trace/events/qdisc.h b/include/trace/events/qdisc.h
-index a3995925cb057..1f4258308b967 100644
---- a/include/trace/events/qdisc.h
-+++ b/include/trace/events/qdisc.h
-@@ -81,14 +81,14 @@ TRACE_EVENT(qdisc_reset,
- 	TP_ARGS(q),
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index acd9c615d1f4f..356da958ee81b 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -221,7 +221,7 @@ static void geneve_rx(struct geneve_dev *geneve, struct geneve_sock *gs,
+ 	struct genevehdr *gnvh = geneve_hdr(skb);
+ 	struct metadata_dst *tun_dst = NULL;
+ 	unsigned int len;
+-	int err = 0;
++	int nh, err = 0;
+ 	void *oiph;
  
- 	TP_STRUCT__entry(
--		__string(	dev,		qdisc_dev(q)	)
--		__string(	kind,		q->ops->id	)
--		__field(	u32,		parent		)
--		__field(	u32,		handle		)
-+		__string(	dev,		qdisc_dev(q)->name	)
-+		__string(	kind,		q->ops->id		)
-+		__field(	u32,		parent			)
-+		__field(	u32,		handle			)
- 	),
+ 	if (ip_tunnel_collect_metadata() || gs->collect_md) {
+@@ -272,9 +272,23 @@ static void geneve_rx(struct geneve_dev *geneve, struct geneve_sock *gs,
+ 		skb->pkt_type = PACKET_HOST;
+ 	}
  
- 	TP_fast_assign(
--		__assign_str(dev, qdisc_dev(q));
-+		__assign_str(dev, qdisc_dev(q)->name);
- 		__assign_str(kind, q->ops->id);
- 		__entry->parent = q->parent;
- 		__entry->handle = q->handle;
-@@ -106,14 +106,14 @@ TRACE_EVENT(qdisc_destroy,
- 	TP_ARGS(q),
+-	oiph = skb_network_header(skb);
++	/* Save offset of outer header relative to skb->head,
++	 * because we are going to reset the network header to the inner header
++	 * and might change skb->head.
++	 */
++	nh = skb_network_header(skb) - skb->head;
++
+ 	skb_reset_network_header(skb);
  
- 	TP_STRUCT__entry(
--		__string(	dev,		qdisc_dev(q)	)
--		__string(	kind,		q->ops->id	)
--		__field(	u32,		parent		)
--		__field(	u32,		handle		)
-+		__string(	dev,		qdisc_dev(q)->name	)
-+		__string(	kind,		q->ops->id		)
-+		__field(	u32,		parent			)
-+		__field(	u32,		handle			)
- 	),
- 
- 	TP_fast_assign(
--		__assign_str(dev, qdisc_dev(q));
-+		__assign_str(dev, qdisc_dev(q)->name);
- 		__assign_str(kind, q->ops->id);
- 		__entry->parent = q->parent;
- 		__entry->handle = q->handle;
++	if (!pskb_inet_may_pull(skb)) {
++		DEV_STATS_INC(geneve->dev, rx_length_errors);
++		DEV_STATS_INC(geneve->dev, rx_errors);
++		goto drop;
++	}
++
++	/* Get the outer header. */
++	oiph = skb->head + nh;
++
+ 	if (geneve_get_sk_family(gs) == AF_INET)
+ 		err = IP_ECN_decapsulate(oiph, skb);
+ #if IS_ENABLED(CONFIG_IPV6)
 -- 
 2.43.0
 
