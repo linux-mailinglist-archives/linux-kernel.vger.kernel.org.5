@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-101868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9608B87AC4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:03:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16E6587AC4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94901C21ED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:03:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8911F28E94
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECE860DC2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9488460DC9;
 	Wed, 13 Mar 2024 16:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="umSmsh3+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ML1mL0Hw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19D660BB5;
-	Wed, 13 Mar 2024 16:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44F160BBF;
+	Wed, 13 Mar 2024 16:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348001; cv=none; b=LL3mn7LAkBOOjQy11IQdFpiJ4c/Jml4JAL78O31e+6qDh/HB+pTfe0U9IcwUo5NfQVf/BD+waTSFvW5r7ZIBq5XsZf3HLMxAnNKAiG/z82DDamDmMq6n6u5nCOw4CDY4KXUODOUHfUehqmqHAC2mjswn0W/G0hWYidpEuEkbgs0=
+	t=1710348001; cv=none; b=jMsRW0DvDrOsu9Y7fQsOEc5/L9Kbtj+OZMIZ/FHGDW/z5gQ0VOV51UQsaa7BGSVB8QxnaBpcnu4f8fm+RysbM3n3auk9Gyfh+be1l2wGBw62DXEeKYTFABz0Y8tNzBtjQ17X6sfP3pFRnOnCVrLdyzo+m6kxHJGD3VQ+d5a7eoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710348001; c=relaxed/simple;
-	bh=94pM2mNQGCFIIfP+47hVQrtTAQs7EU8wfb5PtmR0k1Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OGPg/mlyiWJWt4v+hU/4aShBms+Yq0XyZCvwu3TGm2EpjzMJ7mj1fwnjquuoo+iOBM95lKIMJsWdQt6FjNjX3OlffS0Mq3q/mP/kcX9b3WUew+HZbZb+SE57+mdIi2M4kCfcyk5BGHz6zv47K6j+42w6wfWtzknOoOCdQCZSPFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=umSmsh3+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27132C43390;
-	Wed, 13 Mar 2024 16:39:59 +0000 (UTC)
+	bh=fetMmWKyXFJtuI4glze4+8J8cGiST54vLEbHQH2dG/s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=H/2xQxWkri3on6aPuH/DnHX18sPBsSNTm4/Osm6sUHzjQb8/pYkUGpz6lv0JQj991YYeLwG2iSTGrfPjVSPq5D0Dp9owA+jKme/SDRqtUJoJh5eLx+YcnYP9oHmbg711WiQRH79wUN558cNsxR4V4mrkupoPZN1IqkCYeZUIeq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ML1mL0Hw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1459C433C7;
+	Wed, 13 Mar 2024 16:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348000;
-	bh=94pM2mNQGCFIIfP+47hVQrtTAQs7EU8wfb5PtmR0k1Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=umSmsh3+j2R54xnDWjfbBnCA/K0uVeHW0cYrbLTbA2kCsKYvJvTYKLquovSh/jm+U
-	 0FHwx8PbagJ1u/HSmjAtg4RDBXD5ZGDECfZsfFvFXIcr+92cEEne9NsLLjBCIqBa/g
-	 pjK5rnBWMaXoNQq794FA2LYCejaMn+ulcyAPHaAEAo0zVvQlcddWHEK3GOOvz5117H
-	 8UszAYnS8wYd4IDQytYVkhZTl030NhHe/wUNNVxlZ7CmiTuWhEmAf7sQWToU+keorD
-	 w6Ian+purDrTu13xshkchnUXQMCqFzsDkYetMcI3XOGVWIPMFwwSdbJZR9038A4tzx
-	 xqLW9jrwfHIUA==
+	s=k20201202; t=1710348001;
+	bh=fetMmWKyXFJtuI4glze4+8J8cGiST54vLEbHQH2dG/s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ML1mL0HwFbqKNr1PPhBY5JqSw94yPHjsXT9IfxbWksgaDMgVrQxzq9HwbeBTlK73q
+	 SQKZMe77VU39NWh9h89X38bKsn2Szyd2CQ1R0wphIe4Q/71p/9Tcbu+G8XqMIivmMr
+	 ekhIHGIuzy/D3DHHFWqVpDhppC2BJHsqwz5J7N1537nFMhKQJkB0pejOrKaHo7YeKK
+	 w5sDuSyO4Ahkvv38ARHWlj9mWtoV3itYJtANk4nFYwQ6Am8G/LJOPHVv4AAAZFmwcb
+	 c61I3cf4WxnOXEHYZkI2qG4buH8P38G9U8mXbDktEer071O6PDsC8/OFad+dC2DQ/v
+	 5wWr+YxNX0yYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de
-Subject: [PATCH 6.1 00/71] 6.1.82-rc1 review
-Date: Wed, 13 Mar 2024 12:38:46 -0400
-Message-ID: <20240313163957.615276-1-sashal@kernel.org>
+Cc: Xiubo Li <xiubli@redhat.com>,
+	Patrick Donnelly <pdonnell@ibm.com>,
+	Venky Shankar <vshankar@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.1 01/71] ceph: switch to corrected encoding of max_xattr_size in mdsmap
+Date: Wed, 13 Mar 2024 12:38:47 -0400
+Message-ID: <20240313163957.615276-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
+References: <20240313163957.615276-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.82-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-6.1.y
@@ -71,272 +70,76 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
+From: Xiubo Li <xiubli@redhat.com>
 
-This is the start of the stable review cycle for the 6.1.82 release.
-There are 71 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+[ Upstream commit 51d31149a88b5c5a8d2d33f06df93f6187a25b4c ]
 
-Responses should be made by Fri Mar 15 04:39:56 PM UTC 2024.
-Anything received after that time might be too late.
+The addition of bal_rank_mask with encoding version 17 was merged
+into ceph.git in Oct 2022 and made it into v18.2.0 release normally.
+A few months later, the much delayed addition of max_xattr_size got
+merged, also with encoding version 17, placed before bal_rank_mask
+in the encoding -- but it didn't make v18.2.0 release.
 
-The whole patch series can be found in one patch at:
-        https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.81
-or in the git tree and branch at:
-        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-and the diffstat can be found below.
+The way this ended up being resolved on the MDS side is that
+bal_rank_mask will continue to be encoded in version 17 while
+max_xattr_size is now encoded in version 18.  This does mean that
+older kernels will misdecode version 17, but this is also true for
+v18.2.0 and v18.2.1 clients in userspace.
 
-Thanks,
-Sasha
+The best we can do is backport this adjustment -- see ceph.git
+commit 78abfeaff27fee343fb664db633de5b221699a73 for details.
 
--------------
-Pseudo-Shortlog of commits:
+[ idryomov: changelog ]
 
-Breno Leitao (1):
-  blk-iocost: Pass gendisk to ioc_refresh_params
+Cc: stable@vger.kernel.org
+Link: https://tracker.ceph.com/issues/64440
+Fixes: d93231a6bc8a ("ceph: prevent a client from exceeding the MDS maximum xattr size")
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Patrick Donnelly <pdonnell@ibm.com>
+Reviewed-by: Venky Shankar <vshankar@redhat.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ceph/mdsmap.c            | 7 ++++---
+ include/linux/ceph/mdsmap.h | 6 +++++-
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-Christian Borntraeger (1):
-  KVM: s390: vsie: fix race during shadow creation
-
-Christoph Hellwig (6):
-  blk-wbt: pass a gendisk to wbt_{enable,disable}_default
-  blk-wbt: pass a gendisk to wbt_init
-  blk-rq-qos: move rq_qos_add and rq_qos_del out of line
-  blk-rq-qos: make rq_qos_add and rq_qos_del more useful
-  blk-rq-qos: constify rq_qos_ops
-  blk-rq-qos: store a gendisk instead of request_queue in struct rq_qos
-
-Edward Adam Davis (1):
-  net/rds: fix WARNING in rds_conn_connect_if_down
-
-Eric Dumazet (2):
-  geneve: make sure to pull inner header in geneve_rx()
-  net/ipv6: avoid possible UAF in ip6_route_mpath_notify()
-
-Fangzhi Zuo (1):
-  drm/amd/display: Fix MST Null Ptr for RV
-
-Florian Kauer (1):
-  igc: avoid returning frame twice in XDP_REDIRECT
-
-Florian Westphal (1):
-  netfilter: nft_ct: fix l3num expectations with inet pseudo family
-
-Friedrich Vock (1):
-  drm/amdgpu: Reset IH OVERFLOW_CLEAR bit
-
-Gao Xiang (1):
-  erofs: apply proper VMA alignment for memory mapped files on THP
-
-Horatiu Vultur (1):
-  net: sparx5: Fix use after free inside sparx5_del_mact_entry
-
-Hui Zhou (1):
-  nfp: flower: add hardware offload check for post ct entry
-
-Jacob Keller (1):
-  ice: virtchnl: stop pretending to support RSS over AQ or registers
-
-Jan Kara (2):
-  readahead: avoid multiple marked readahead pages
-  blk-wbt: Fix detection of dirty-throttled tasks
-
-Jason Xing (12):
-  netrom: Fix a data-race around sysctl_netrom_default_path_quality
-  netrom: Fix a data-race around
-    sysctl_netrom_obsolescence_count_initialiser
-  netrom: Fix data-races around sysctl_netrom_network_ttl_initialiser
-  netrom: Fix a data-race around sysctl_netrom_transport_timeout
-  netrom: Fix a data-race around sysctl_netrom_transport_maximum_tries
-  netrom: Fix a data-race around
-    sysctl_netrom_transport_acknowledge_delay
-  netrom: Fix a data-race around sysctl_netrom_transport_busy_delay
-  netrom: Fix a data-race around
-    sysctl_netrom_transport_requested_window_size
-  netrom: Fix a data-race around
-    sysctl_netrom_transport_no_activity_timeout
-  netrom: Fix a data-race around sysctl_netrom_routing_control
-  netrom: Fix a data-race around sysctl_netrom_link_fails_count
-  netrom: Fix data-races around sysctl_net_busy_read
-
-Johan Hovold (1):
-  ASoC: codecs: wcd938x: fix headphones volume controls
-
-Lena Wang (1):
-  netfilter: nf_conntrack_h323: Add protection for bmp length out of
-    range
-
-Ma Hanghong (1):
-  drm/amd/display: Wrong colorimetry workaround
-
-Maciej Fijalkowski (3):
-  ixgbe: {dis, en}able irqs in ixgbe_txrx_ring_{dis, en}able
-  i40e: disable NAPI right after disabling irqs when handling xsk_pool
-  ice: reorder disabling IRQ and NAPI in ice_qp_dis
-
-Mathias Nyman (1):
-  xhci: process isoc TD properly when there was a transaction error mid
-    TD.
-
-Matthieu Baerts (NGI0) (1):
-  selftests: mptcp: decrease BW in simult flows
-
-Michal Pecio (1):
-  xhci: handle isoc Babble and Buffer Overrun events properly
-
-Muhammad Usama Anjum (1):
-  selftests/mm: switch to bash from sh
-
-Nico Boehr (1):
-  KVM: s390: add stat counter for shadow gmap events
-
-Nico Pache (1):
-  selftests: mm: fix map_hugetlb failure on 64K page size systems
-
-Oleg Nesterov (7):
-  getrusage: add the "signal_struct *sig" local variable
-  getrusage: move thread_group_cputime_adjusted() outside of
-    lock_task_sighand()
-  getrusage: use __for_each_thread()
-  getrusage: use sig->stats_lock rather than lock_task_sighand()
-  fs/proc: do_task_stat: use __for_each_thread()
-  fs/proc: do_task_stat: use sig->stats_lock to gather the
-    threads/children stats
-  exit: wait_task_zombie: kill the no longer necessary
-    spin_lock_irq(siglock)
-
-Oleksij Rempel (1):
-  net: lan78xx: fix runtime PM count underflow on link stop
-
-Pawan Gupta (4):
-  x86/mmio: Disable KVM mitigation when X86_FEATURE_CLEAR_CPU_BUF is set
-  Documentation/hw-vuln: Add documentation for RFDS
-  x86/rfds: Mitigate Register File Data Sampling (RFDS)
-  KVM/x86: Export RFDS_NO and RFDS_CLEAR to guests
-
-Rand Deeb (1):
-  net: ice: Fix potential NULL pointer dereference in
-    ice_bridge_setlink()
-
-Sasha Levin (1):
-  Linux 6.1.82-rc1
-
-Srinivasan Shanmugam (1):
-  drm/amd/display: Fix uninitialized variable usage in core_link_
-    'read_dpcd() & write_dpcd()' functions
-
-Steven Rostedt (Google) (1):
-  tracing/net_sched: Fix tracepoints that save qdisc_dev() as a string
-
-Tobias Jakobi (Compleo) (1):
-  net: dsa: microchip: fix register write order in ksz8_ind_write8()
-
-Toke Høiland-Jørgensen (1):
-  cpumap: Zero-initialise xdp_rxq_info struct before running XDP program
-
-Wentao Jia (1):
-  nfp: flower: add goto_chain_index for ct entry
-
-Xiubo Li (1):
-  ceph: switch to corrected encoding of max_xattr_size in mdsmap
-
-Yu Kuai (6):
-  blk-iocost: disable writeback throttling
-  elevator: remove redundant code in elv_unregister_queue()
-  blk-wbt: remove unnecessary check in wbt_enable_default()
-  elevator: add new field flags in struct elevator_queue
-  blk-wbt: don't enable throttling if default elevator is bfq
-  blk-wbt: fix that wbt can't be disabled by default
-
- .../ABI/testing/sysfs-devices-system-cpu      |   1 +
- Documentation/admin-guide/hw-vuln/index.rst   |   1 +
- .../hw-vuln/reg-file-data-sampling.rst        | 104 ++++++++++++++++++
- .../admin-guide/kernel-parameters.txt         |  21 ++++
- Makefile                                      |   4 +-
- arch/s390/include/asm/kvm_host.h              |   7 ++
- arch/s390/kvm/gaccess.c                       |   7 ++
- arch/s390/kvm/kvm-s390.c                      |   9 +-
- arch/s390/kvm/vsie.c                          |   6 +-
- arch/s390/mm/gmap.c                           |   1 +
- arch/x86/Kconfig                              |  11 ++
- arch/x86/include/asm/cpufeatures.h            |   1 +
- arch/x86/include/asm/msr-index.h              |   8 ++
- arch/x86/kernel/cpu/bugs.c                    |  92 +++++++++++++++-
- arch/x86/kernel/cpu/common.c                  |  38 ++++++-
- arch/x86/kvm/x86.c                            |   5 +-
- block/bfq-iosched.c                           |   6 +-
- block/blk-iocost.c                            |  51 +++++----
- block/blk-iolatency.c                         |  30 ++---
- block/blk-mq-debugfs.c                        |  10 +-
- block/blk-rq-qos.c                            |  67 +++++++++++
- block/blk-rq-qos.h                            |  66 +----------
- block/blk-sysfs.c                             |   4 +-
- block/blk-wbt.c                               |  50 +++++----
- block/blk-wbt.h                               |  12 +-
- block/elevator.c                              |   8 +-
- block/elevator.h                              |   5 +-
- drivers/base/cpu.c                            |   8 ++
- drivers/gpu/drm/amd/amdgpu/cik_ih.c           |   6 +
- drivers/gpu/drm/amd/amdgpu/cz_ih.c            |   5 +
- drivers/gpu/drm/amd/amdgpu/iceland_ih.c       |   5 +
- drivers/gpu/drm/amd/amdgpu/ih_v6_0.c          |   6 +
- drivers/gpu/drm/amd/amdgpu/navi10_ih.c        |   6 +
- drivers/gpu/drm/amd/amdgpu/si_ih.c            |   6 +
- drivers/gpu/drm/amd/amdgpu/tonga_ih.c         |   6 +
- drivers/gpu/drm/amd/amdgpu/vega10_ih.c        |   6 +
- drivers/gpu/drm/amd/amdgpu/vega20_ih.c        |   6 +
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  17 ++-
- .../drm/amd/display/dc/core/dc_link_dpcd.c    |   4 +-
- .../gpu/drm/amd/display/dc/core/dc_resource.c |   6 +
- .../amd/display/modules/inc/mod_info_packet.h |   3 +-
- .../display/modules/info_packet/info_packet.c |   6 +-
- drivers/net/dsa/microchip/ksz8795.c           |   4 +-
- drivers/net/ethernet/intel/i40e/i40e_main.c   |   2 +-
- drivers/net/ethernet/intel/ice/ice_main.c     |   2 +
- drivers/net/ethernet/intel/ice/ice_virtchnl.c |   9 +-
- .../intel/ice/ice_virtchnl_allowlist.c        |   2 -
- drivers/net/ethernet/intel/ice/ice_xsk.c      |   9 +-
- drivers/net/ethernet/intel/igc/igc_main.c     |  13 +--
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  56 ++++++++--
- .../microchip/sparx5/sparx5_mactable.c        |   4 +-
- .../ethernet/netronome/nfp/flower/conntrack.c |  28 ++++-
- .../ethernet/netronome/nfp/flower/conntrack.h |   2 +
- drivers/net/geneve.c                          |  18 ++-
- drivers/net/usb/lan78xx.c                     |   3 +-
- drivers/usb/host/xhci-ring.c                  |  80 +++++++++++---
- drivers/usb/host/xhci.h                       |   1 +
- fs/ceph/mdsmap.c                              |   7 +-
- fs/erofs/data.c                               |   1 +
- fs/proc/array.c                               |  57 +++++-----
- include/linux/backing-dev-defs.h              |   7 +-
- include/linux/ceph/mdsmap.h                   |   6 +-
- include/linux/cpu.h                           |   2 +
- include/trace/events/qdisc.h                  |  20 ++--
- kernel/bpf/cpumap.c                           |   2 +-
- kernel/exit.c                                 |  10 +-
- kernel/sys.c                                  |  91 ++++++++-------
- mm/backing-dev.c                              |   2 +-
- mm/page-writeback.c                           |   2 +-
- mm/readahead.c                                |   4 +-
- net/ipv6/route.c                              |  21 ++--
- net/netfilter/nf_conntrack_h323_asn1.c        |   4 +
- net/netfilter/nft_ct.c                        |  11 +-
- net/netrom/af_netrom.c                        |  14 +--
- net/netrom/nr_dev.c                           |   2 +-
- net/netrom/nr_in.c                            |   6 +-
- net/netrom/nr_out.c                           |   2 +-
- net/netrom/nr_route.c                         |   8 +-
- net/netrom/nr_subr.c                          |   5 +-
- net/rds/rdma.c                                |   3 +
- net/rds/send.c                                |   6 +-
- sound/soc/codecs/wcd938x.c                    |   2 +-
- .../selftests/net/mptcp/simult_flows.sh       |   8 +-
- .../selftests/vm/charge_reserved_hugetlb.sh   |   2 +-
- tools/testing/selftests/vm/map_hugetlb.c      |   7 ++
- .../selftests/vm/write_hugetlb_memory.sh      |   2 +-
- 86 files changed, 903 insertions(+), 365 deletions(-)
- create mode 100644 Documentation/admin-guide/hw-vuln/reg-file-data-sampling.rst
-
+diff --git a/fs/ceph/mdsmap.c b/fs/ceph/mdsmap.c
+index 3fbabc98e1f70..4a089d70ebd07 100644
+--- a/fs/ceph/mdsmap.c
++++ b/fs/ceph/mdsmap.c
+@@ -379,10 +379,11 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end, bool msgr2)
+ 		ceph_decode_skip_8(p, end, bad_ext);
+ 		/* required_client_features */
+ 		ceph_decode_skip_set(p, end, 64, bad_ext);
++		/* bal_rank_mask */
++		ceph_decode_skip_string(p, end, bad_ext);
++	}
++	if (mdsmap_ev >= 18) {
+ 		ceph_decode_64_safe(p, end, m->m_max_xattr_size, bad_ext);
+-	} else {
+-		/* This forces the usage of the (sync) SETXATTR Op */
+-		m->m_max_xattr_size = 0;
+ 	}
+ bad_ext:
+ 	dout("mdsmap_decode m_enabled: %d, m_damaged: %d, m_num_laggy: %d\n",
+diff --git a/include/linux/ceph/mdsmap.h b/include/linux/ceph/mdsmap.h
+index 4c3e0648dc277..fcc95bff72a57 100644
+--- a/include/linux/ceph/mdsmap.h
++++ b/include/linux/ceph/mdsmap.h
+@@ -25,7 +25,11 @@ struct ceph_mdsmap {
+ 	u32 m_session_timeout;          /* seconds */
+ 	u32 m_session_autoclose;        /* seconds */
+ 	u64 m_max_file_size;
+-	u64 m_max_xattr_size;		/* maximum size for xattrs blob */
++	/*
++	 * maximum size for xattrs blob.
++	 * Zeroed by default to force the usage of the (sync) SETXATTR Op.
++	 */
++	u64 m_max_xattr_size;
+ 	u32 m_max_mds;			/* expected up:active mds number */
+ 	u32 m_num_active_mds;		/* actual up:active mds number */
+ 	u32 possible_max_rank;		/* possible max rank index */
 -- 
 2.43.0
 
