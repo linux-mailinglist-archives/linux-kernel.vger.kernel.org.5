@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-102076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB6587AE32
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:52:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67D6887AE34
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 18:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 806D81C23026
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EAD7283347
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 17:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3B715B96C;
-	Wed, 13 Mar 2024 16:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F3215DBAE;
+	Wed, 13 Mar 2024 16:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MgDOTEr4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H7mZhO34"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B256515D5A9;
-	Wed, 13 Mar 2024 16:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A187F15D5C9;
+	Wed, 13 Mar 2024 16:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710348457; cv=none; b=AFZbLFCb2X2M2ouohYWnPyFcmw198yMKc3pOkTsKdqzesW+zQZgZ2bQehPxfsles+B6GDzLQ97NmD/sEN5q8jKnuS3H0X8IngaUtZnqj47KfNluKXfVduIAUIlBn+2wOEwMcGRKL1EcuuWdyO3sL0Gm/nVMYgkKOWp2iEueRlEY=
+	t=1710348458; cv=none; b=GJNcQzWd1VxvCXAZEvYe74RXNMGgd/+faAPy0hj+ptI7loY2t1Ksh7nA4q4G1N/AWXWRCLv9UuhsmqpcmcWdU34bR4HpDQzcy/jTglmXMxDTF4xj44HB75uJu183+dDvUHzeegFKNGDPfiwlddAfbS9KtXyfE7GxioBVBRFGnZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710348457; c=relaxed/simple;
-	bh=he7vDD0F7WTBM5sUNCP71TiC7WyKB9hFx2d1SuU2sR8=;
+	s=arc-20240116; t=1710348458; c=relaxed/simple;
+	bh=5O58s6UR/Yv7a5XWWOqdt7PsoVag5W8FH/r7YM6gtL0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rnJVsHAVgLIUzRLFgOKE5vwI0ptYcJpK6wb4Q4JkwJ8N1Z8Kn6OaORqYPNAG51aPe9mhHbZyXCkFI06bn/mSkF9kvEdbUuIQbQIZDor5B40mfz9r2iRrfqH7laTUKh+u/8daDa+Y7KDwvmB5iE1hCbmTKbrcSek+YRSpoC/t95c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MgDOTEr4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DF09C433F1;
-	Wed, 13 Mar 2024 16:47:36 +0000 (UTC)
+	 MIME-Version; b=pzEnNZjBKOwUT7mirmGiYy72xDivCCUXeJWDHZvcx5VW23m1Fk98B/WtvJtF2RsEUAS1EFjsck4UO+xLPomOn0JS21iMu5nTe/X7RlIImoRUQUKh41zypsF0HyarWBL03XJ9eh8LDxeApwVl5fpnZc3h3YPx4WAQYYKCP8wAjjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H7mZhO34; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90224C43394;
+	Wed, 13 Mar 2024 16:47:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710348457;
-	bh=he7vDD0F7WTBM5sUNCP71TiC7WyKB9hFx2d1SuU2sR8=;
+	s=k20201202; t=1710348458;
+	bh=5O58s6UR/Yv7a5XWWOqdt7PsoVag5W8FH/r7YM6gtL0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MgDOTEr4AzyTlbw+ZZoTdf07+dlAjVSD13ygwaSbFTiVs3Nl8G7Fr47+cjouG/hug
-	 9cCXywinTNnUS2qiWJ7UjD1/PFTuElpUcBsr8O3V4LaP+Zjmpa7/8XysTDw0H23Xcp
-	 y3OgbDsiJ7BIRgQ3NbdmmLqxNvcESK1OHuYOFZ5XO35aJWVeJ78Zm3uu4ADSklfnlM
-	 MUTK+MdgKJ7J1xjTn3ttSHO98DLrGQeA7pQfu4yirODEKlkHSPx2nEERXzdgHv3gjf
-	 7XcuTOvwlLpRBy3fHshXCLogdsuWL2p30NsYBbj07Ry6dJzlDdeYzUYpeZ1w/0ziCi
-	 3DO/A8zgX+5xA==
+	b=H7mZhO343l9YLrjHFhMV1uVanWyYTu+l3D1inIlm/VopuXbSDegU8iAWDtgXvP5dJ
+	 uR3HAakXaJQcWtPJ0nJQcahWUV1NNC37gF2hzQbfTlL2Xk00y1LYozcgMtOBPMi6b9
+	 5lXykb02JX+35aMZf6V5SAGKvssy2zEAD6mYmIZqRdAkgLWZvdhlxfwW32VOHf1erk
+	 yjlmgSclm5H9pFxEWf0MpIfkqDYnTK/ivZpLyxaw9bYln7Lq9OWo+WLJAvV3fN9EE7
+	 f2FLwBW0akz88elPXvrTZRzqVAmy2tvupRSnd0Lvha6flfQHR/2NOaCKJN/azfyerj
+	 TZwcW1QfU891Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhang Yi <yi.zhang@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+Cc: Andres Beltran <lkmlabelt@gmail.com>,
+	Andrea Parri <parri.andrea@gmail.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 50/73] ext4: convert to exclusive lock while inserting delalloc extents
-Date: Wed, 13 Mar 2024 12:46:17 -0400
-Message-ID: <20240313164640.616049-51-sashal@kernel.org>
+Subject: [PATCH 5.10 51/73] Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus hardening
+Date: Wed, 13 Mar 2024 12:46:18 -0400
+Message-ID: <20240313164640.616049-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
 References: <20240313164640.616049-1-sashal@kernel.org>
@@ -69,111 +70,404 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Andres Beltran <lkmlabelt@gmail.com>
 
-[ Upstream commit acf795dc161f3cf481db20f05db4250714e375e5 ]
+[ Upstream commit e8b7db38449ac5b950a3f00519171c4be3e226ff ]
 
-ext4_da_map_blocks() only hold i_data_sem in shared mode and i_rwsem
-when inserting delalloc extents, it could be raced by another querying
-path of ext4_map_blocks() without i_rwsem, .e.g buffered read path.
-Suppose we buffered read a file containing just a hole, and without any
-cached extents tree, then it is raced by another delayed buffered write
-to the same area or the near area belongs to the same hole, and the new
-delalloc extent could be overwritten to a hole extent.
+Currently, VMbus drivers use pointers into guest memory as request IDs
+for interactions with Hyper-V. To be more robust in the face of errors
+or malicious behavior from a compromised Hyper-V, avoid exposing
+guest memory addresses to Hyper-V. Also avoid Hyper-V giving back a
+bad request ID that is then treated as the address of a guest data
+structure with no validation. Instead, encapsulate these memory
+addresses and provide small integers as request IDs.
 
- pread()                           pwrite()
-  filemap_read_folio()
-   ext4_mpage_readpages()
-    ext4_map_blocks()
-     down_read(i_data_sem)
-     ext4_ext_determine_hole()
-     //find hole
-     ext4_ext_put_gap_in_cache()
-      ext4_es_find_extent_range()
-      //no delalloc extent
-                                    ext4_da_map_blocks()
-                                     down_read(i_data_sem)
-                                     ext4_insert_delayed_block()
-                                     //insert delalloc extent
-      ext4_es_insert_extent()
-      //overwrite delalloc extent to hole
-
-This race could lead to inconsistent delalloc extents tree and
-incorrect reserved space counter. Fix this by converting to hold
-i_data_sem in exclusive mode when adding a new delalloc extent in
-ext4_da_map_blocks().
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Suggested-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20240127015825.1608160-3-yi.zhang@huaweicloud.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
+Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
+Link: https://lore.kernel.org/r/20201109100402.8946-2-parri.andrea@gmail.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Stable-dep-of: 9cae43da9867 ("hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inode.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+ drivers/hv/channel.c      | 174 ++++++++++++++++++++++++++++++++++++--
+ drivers/hv/hyperv_vmbus.h |   3 +-
+ drivers/hv/ring_buffer.c  |  29 ++++++-
+ include/linux/hyperv.h    |  22 +++++
+ 4 files changed, 219 insertions(+), 9 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 64162470a7e6c..8b48ed351c4b9 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1728,10 +1728,8 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+index f064fa6ef181a..a59ab2f3d68e1 100644
+--- a/drivers/hv/channel.c
++++ b/drivers/hv/channel.c
+@@ -503,6 +503,70 @@ int vmbus_establish_gpadl(struct vmbus_channel *channel, void *kbuffer,
+ }
+ EXPORT_SYMBOL_GPL(vmbus_establish_gpadl);
  
- 	/* Lookup extent status tree firstly */
- 	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
--		if (ext4_es_is_hole(&es)) {
--			down_read(&EXT4_I(inode)->i_data_sem);
-+		if (ext4_es_is_hole(&es))
- 			goto add_delayed;
--		}
- 
- 		/*
- 		 * Delayed extent could be allocated by fallocate.
-@@ -1773,8 +1771,10 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
- 		retval = ext4_ext_map_blocks(NULL, inode, map, 0);
- 	else
- 		retval = ext4_ind_map_blocks(NULL, inode, map, 0);
--	if (retval < 0)
--		goto out_unlock;
-+	if (retval < 0) {
-+		up_read(&EXT4_I(inode)->i_data_sem);
-+		return retval;
++/**
++ * request_arr_init - Allocates memory for the requestor array. Each slot
++ * keeps track of the next available slot in the array. Initially, each
++ * slot points to the next one (as in a Linked List). The last slot
++ * does not point to anything, so its value is U64_MAX by default.
++ * @size The size of the array
++ */
++static u64 *request_arr_init(u32 size)
++{
++	int i;
++	u64 *req_arr;
++
++	req_arr = kcalloc(size, sizeof(u64), GFP_KERNEL);
++	if (!req_arr)
++		return NULL;
++
++	for (i = 0; i < size - 1; i++)
++		req_arr[i] = i + 1;
++
++	/* Last slot (no more available slots) */
++	req_arr[i] = U64_MAX;
++
++	return req_arr;
++}
++
++/*
++ * vmbus_alloc_requestor - Initializes @rqstor's fields.
++ * Index 0 is the first free slot
++ * @size: Size of the requestor array
++ */
++static int vmbus_alloc_requestor(struct vmbus_requestor *rqstor, u32 size)
++{
++	u64 *rqst_arr;
++	unsigned long *bitmap;
++
++	rqst_arr = request_arr_init(size);
++	if (!rqst_arr)
++		return -ENOMEM;
++
++	bitmap = bitmap_zalloc(size, GFP_KERNEL);
++	if (!bitmap) {
++		kfree(rqst_arr);
++		return -ENOMEM;
 +	}
- 	if (retval > 0) {
- 		unsigned int status;
++
++	rqstor->req_arr = rqst_arr;
++	rqstor->req_bitmap = bitmap;
++	rqstor->size = size;
++	rqstor->next_request_id = 0;
++	spin_lock_init(&rqstor->req_lock);
++
++	return 0;
++}
++
++/*
++ * vmbus_free_requestor - Frees memory allocated for @rqstor
++ * @rqstor: Pointer to the requestor struct
++ */
++static void vmbus_free_requestor(struct vmbus_requestor *rqstor)
++{
++	kfree(rqstor->req_arr);
++	bitmap_free(rqstor->req_bitmap);
++}
++
+ static int __vmbus_open(struct vmbus_channel *newchannel,
+ 		       void *userdata, u32 userdatalen,
+ 		       void (*onchannelcallback)(void *context), void *context)
+@@ -523,6 +587,12 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
+ 	if (newchannel->state != CHANNEL_OPEN_STATE)
+ 		return -EINVAL;
  
-@@ -1790,24 +1790,21 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
- 				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
- 		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
- 				      map->m_pblk, status);
--		goto out_unlock;
-+		up_read(&EXT4_I(inode)->i_data_sem);
-+		return retval;
++	/* Create and init requestor */
++	if (newchannel->rqstor_size) {
++		if (vmbus_alloc_requestor(&newchannel->requestor, newchannel->rqstor_size))
++			return -ENOMEM;
++	}
++
+ 	newchannel->state = CHANNEL_OPENING_STATE;
+ 	newchannel->onchannel_callback = onchannelcallback;
+ 	newchannel->channel_callback_context = context;
+@@ -626,6 +696,7 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
+ error_clean_ring:
+ 	hv_ringbuffer_cleanup(&newchannel->outbound);
+ 	hv_ringbuffer_cleanup(&newchannel->inbound);
++	vmbus_free_requestor(&newchannel->requestor);
+ 	newchannel->state = CHANNEL_OPEN_STATE;
+ 	return err;
+ }
+@@ -808,6 +879,9 @@ static int vmbus_close_internal(struct vmbus_channel *channel)
+ 		channel->ringbuffer_gpadlhandle = 0;
  	}
-+	up_read(&EXT4_I(inode)->i_data_sem);
  
- add_delayed:
--	/*
--	 * XXX: __block_prepare_write() unmaps passed block,
--	 * is it OK?
--	 */
-+	down_write(&EXT4_I(inode)->i_data_sem);
- 	retval = ext4_insert_delayed_block(inode, map->m_lblk);
-+	up_write(&EXT4_I(inode)->i_data_sem);
- 	if (retval)
--		goto out_unlock;
-+		return retval;
- 
- 	map_bh(bh, inode->i_sb, invalid_block);
- 	set_buffer_new(bh);
- 	set_buffer_delay(bh);
--
--out_unlock:
--	up_read((&EXT4_I(inode)->i_data_sem));
- 	return retval;
++	if (!ret)
++		vmbus_free_requestor(&channel->requestor);
++
+ 	return ret;
  }
  
+@@ -888,7 +962,7 @@ int vmbus_sendpacket(struct vmbus_channel *channel, void *buffer,
+ 	/* in 8-bytes granularity */
+ 	desc.offset8 = sizeof(struct vmpacket_descriptor) >> 3;
+ 	desc.len8 = (u16)(packetlen_aligned >> 3);
+-	desc.trans_id = requestid;
++	desc.trans_id = VMBUS_RQST_ERROR; /* will be updated in hv_ringbuffer_write() */
+ 
+ 	bufferlist[0].iov_base = &desc;
+ 	bufferlist[0].iov_len = sizeof(struct vmpacket_descriptor);
+@@ -897,7 +971,7 @@ int vmbus_sendpacket(struct vmbus_channel *channel, void *buffer,
+ 	bufferlist[2].iov_base = &aligned_data;
+ 	bufferlist[2].iov_len = (packetlen_aligned - packetlen);
+ 
+-	return hv_ringbuffer_write(channel, bufferlist, num_vecs);
++	return hv_ringbuffer_write(channel, bufferlist, num_vecs, requestid);
+ }
+ EXPORT_SYMBOL(vmbus_sendpacket);
+ 
+@@ -939,7 +1013,7 @@ int vmbus_sendpacket_pagebuffer(struct vmbus_channel *channel,
+ 	desc.flags = VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED;
+ 	desc.dataoffset8 = descsize >> 3; /* in 8-bytes granularity */
+ 	desc.length8 = (u16)(packetlen_aligned >> 3);
+-	desc.transactionid = requestid;
++	desc.transactionid = VMBUS_RQST_ERROR; /* will be updated in hv_ringbuffer_write() */
+ 	desc.reserved = 0;
+ 	desc.rangecount = pagecount;
+ 
+@@ -956,7 +1030,7 @@ int vmbus_sendpacket_pagebuffer(struct vmbus_channel *channel,
+ 	bufferlist[2].iov_base = &aligned_data;
+ 	bufferlist[2].iov_len = (packetlen_aligned - packetlen);
+ 
+-	return hv_ringbuffer_write(channel, bufferlist, 3);
++	return hv_ringbuffer_write(channel, bufferlist, 3, requestid);
+ }
+ EXPORT_SYMBOL_GPL(vmbus_sendpacket_pagebuffer);
+ 
+@@ -983,7 +1057,7 @@ int vmbus_sendpacket_mpb_desc(struct vmbus_channel *channel,
+ 	desc->flags = VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED;
+ 	desc->dataoffset8 = desc_size >> 3; /* in 8-bytes granularity */
+ 	desc->length8 = (u16)(packetlen_aligned >> 3);
+-	desc->transactionid = requestid;
++	desc->transactionid = VMBUS_RQST_ERROR; /* will be updated in hv_ringbuffer_write() */
+ 	desc->reserved = 0;
+ 	desc->rangecount = 1;
+ 
+@@ -994,7 +1068,7 @@ int vmbus_sendpacket_mpb_desc(struct vmbus_channel *channel,
+ 	bufferlist[2].iov_base = &aligned_data;
+ 	bufferlist[2].iov_len = (packetlen_aligned - packetlen);
+ 
+-	return hv_ringbuffer_write(channel, bufferlist, 3);
++	return hv_ringbuffer_write(channel, bufferlist, 3, requestid);
+ }
+ EXPORT_SYMBOL_GPL(vmbus_sendpacket_mpb_desc);
+ 
+@@ -1042,3 +1116,91 @@ int vmbus_recvpacket_raw(struct vmbus_channel *channel, void *buffer,
+ 				  buffer_actual_len, requestid, true);
+ }
+ EXPORT_SYMBOL_GPL(vmbus_recvpacket_raw);
++
++/*
++ * vmbus_next_request_id - Returns a new request id. It is also
++ * the index at which the guest memory address is stored.
++ * Uses a spin lock to avoid race conditions.
++ * @rqstor: Pointer to the requestor struct
++ * @rqst_add: Guest memory address to be stored in the array
++ */
++u64 vmbus_next_request_id(struct vmbus_requestor *rqstor, u64 rqst_addr)
++{
++	unsigned long flags;
++	u64 current_id;
++	const struct vmbus_channel *channel =
++		container_of(rqstor, const struct vmbus_channel, requestor);
++
++	/* Check rqstor has been initialized */
++	if (!channel->rqstor_size)
++		return VMBUS_NO_RQSTOR;
++
++	spin_lock_irqsave(&rqstor->req_lock, flags);
++	current_id = rqstor->next_request_id;
++
++	/* Requestor array is full */
++	if (current_id >= rqstor->size) {
++		spin_unlock_irqrestore(&rqstor->req_lock, flags);
++		return VMBUS_RQST_ERROR;
++	}
++
++	rqstor->next_request_id = rqstor->req_arr[current_id];
++	rqstor->req_arr[current_id] = rqst_addr;
++
++	/* The already held spin lock provides atomicity */
++	bitmap_set(rqstor->req_bitmap, current_id, 1);
++
++	spin_unlock_irqrestore(&rqstor->req_lock, flags);
++
++	/*
++	 * Cannot return an ID of 0, which is reserved for an unsolicited
++	 * message from Hyper-V.
++	 */
++	return current_id + 1;
++}
++EXPORT_SYMBOL_GPL(vmbus_next_request_id);
++
++/*
++ * vmbus_request_addr - Returns the memory address stored at @trans_id
++ * in @rqstor. Uses a spin lock to avoid race conditions.
++ * @rqstor: Pointer to the requestor struct
++ * @trans_id: Request id sent back from Hyper-V. Becomes the requestor's
++ * next request id.
++ */
++u64 vmbus_request_addr(struct vmbus_requestor *rqstor, u64 trans_id)
++{
++	unsigned long flags;
++	u64 req_addr;
++	const struct vmbus_channel *channel =
++		container_of(rqstor, const struct vmbus_channel, requestor);
++
++	/* Check rqstor has been initialized */
++	if (!channel->rqstor_size)
++		return VMBUS_NO_RQSTOR;
++
++	/* Hyper-V can send an unsolicited message with ID of 0 */
++	if (!trans_id)
++		return trans_id;
++
++	spin_lock_irqsave(&rqstor->req_lock, flags);
++
++	/* Data corresponding to trans_id is stored at trans_id - 1 */
++	trans_id--;
++
++	/* Invalid trans_id */
++	if (trans_id >= rqstor->size || !test_bit(trans_id, rqstor->req_bitmap)) {
++		spin_unlock_irqrestore(&rqstor->req_lock, flags);
++		return VMBUS_RQST_ERROR;
++	}
++
++	req_addr = rqstor->req_arr[trans_id];
++	rqstor->req_arr[trans_id] = rqstor->next_request_id;
++	rqstor->next_request_id = trans_id;
++
++	/* The already held spin lock provides atomicity */
++	bitmap_clear(rqstor->req_bitmap, trans_id, 1);
++
++	spin_unlock_irqrestore(&rqstor->req_lock, flags);
++	return req_addr;
++}
++EXPORT_SYMBOL_GPL(vmbus_request_addr);
+diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
+index 7845fa5de79e9..601660bca5d47 100644
+--- a/drivers/hv/hyperv_vmbus.h
++++ b/drivers/hv/hyperv_vmbus.h
+@@ -180,7 +180,8 @@ int hv_ringbuffer_init(struct hv_ring_buffer_info *ring_info,
+ void hv_ringbuffer_cleanup(struct hv_ring_buffer_info *ring_info);
+ 
+ int hv_ringbuffer_write(struct vmbus_channel *channel,
+-			const struct kvec *kv_list, u32 kv_count);
++			const struct kvec *kv_list, u32 kv_count,
++			u64 requestid);
+ 
+ int hv_ringbuffer_read(struct vmbus_channel *channel,
+ 		       void *buffer, u32 buflen, u32 *buffer_actual_len,
+diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
+index 7ed6fad3fa8ff..a0ba6ac487368 100644
+--- a/drivers/hv/ring_buffer.c
++++ b/drivers/hv/ring_buffer.c
+@@ -261,7 +261,8 @@ EXPORT_SYMBOL_GPL(hv_ringbuffer_spinlock_busy);
+ 
+ /* Write to the ring buffer. */
+ int hv_ringbuffer_write(struct vmbus_channel *channel,
+-			const struct kvec *kv_list, u32 kv_count)
++			const struct kvec *kv_list, u32 kv_count,
++			u64 requestid)
+ {
+ 	int i;
+ 	u32 bytes_avail_towrite;
+@@ -271,6 +272,8 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
+ 	u64 prev_indices;
+ 	unsigned long flags;
+ 	struct hv_ring_buffer_info *outring_info = &channel->outbound;
++	struct vmpacket_descriptor *desc = kv_list[0].iov_base;
++	u64 rqst_id = VMBUS_NO_RQSTOR;
+ 
+ 	if (channel->rescind)
+ 		return -ENODEV;
+@@ -313,6 +316,23 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
+ 						     kv_list[i].iov_len);
+ 	}
+ 
++	/*
++	 * Allocate the request ID after the data has been copied into the
++	 * ring buffer.  Once this request ID is allocated, the completion
++	 * path could find the data and free it.
++	 */
++
++	if (desc->flags == VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED) {
++		rqst_id = vmbus_next_request_id(&channel->requestor, requestid);
++		if (rqst_id == VMBUS_RQST_ERROR) {
++			spin_unlock_irqrestore(&outring_info->ring_lock, flags);
++			pr_err("No request id available\n");
++			return -EAGAIN;
++		}
++	}
++	desc = hv_get_ring_buffer(outring_info) + old_write;
++	desc->trans_id = (rqst_id == VMBUS_NO_RQSTOR) ? requestid : rqst_id;
++
+ 	/* Set previous packet start */
+ 	prev_indices = hv_get_ring_bufferindices(outring_info);
+ 
+@@ -332,8 +352,13 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
+ 
+ 	hv_signal_on_write(old_write, channel);
+ 
+-	if (channel->rescind)
++	if (channel->rescind) {
++		if (rqst_id != VMBUS_NO_RQSTOR) {
++			/* Reclaim request ID to avoid leak of IDs */
++			vmbus_request_addr(&channel->requestor, rqst_id);
++		}
+ 		return -ENODEV;
++	}
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index eada4d8d65879..4cb65a79d92f6 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -764,6 +764,22 @@ enum vmbus_device_type {
+ 	HV_UNKNOWN,
+ };
+ 
++/*
++ * Provides request ids for VMBus. Encapsulates guest memory
++ * addresses and stores the next available slot in req_arr
++ * to generate new ids in constant time.
++ */
++struct vmbus_requestor {
++	u64 *req_arr;
++	unsigned long *req_bitmap; /* is a given slot available? */
++	u32 size;
++	u64 next_request_id;
++	spinlock_t req_lock; /* provides atomicity */
++};
++
++#define VMBUS_NO_RQSTOR U64_MAX
++#define VMBUS_RQST_ERROR (U64_MAX - 1)
++
+ struct vmbus_device {
+ 	u16  dev_type;
+ 	guid_t guid;
+@@ -988,8 +1004,14 @@ struct vmbus_channel {
+ 	u32 fuzz_testing_interrupt_delay;
+ 	u32 fuzz_testing_message_delay;
+ 
++	/* request/transaction ids for VMBus */
++	struct vmbus_requestor requestor;
++	u32 rqstor_size;
+ };
+ 
++u64 vmbus_next_request_id(struct vmbus_requestor *rqstor, u64 rqst_addr);
++u64 vmbus_request_addr(struct vmbus_requestor *rqstor, u64 trans_id);
++
+ static inline bool is_hvsock_channel(const struct vmbus_channel *c)
+ {
+ 	return !!(c->offermsg.offer.chn_flags &
 -- 
 2.43.0
 
