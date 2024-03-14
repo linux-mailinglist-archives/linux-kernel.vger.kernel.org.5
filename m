@@ -1,134 +1,189 @@
-Return-Path: <linux-kernel+bounces-103618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B62187C200
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:17:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D726F87C1FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:16:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D6C81C20981
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:16:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 640BD1F2231C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6CA74E11;
-	Thu, 14 Mar 2024 17:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18CF74C08;
+	Thu, 14 Mar 2024 17:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mVU8DRaO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bLCoITag"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CB9745EF;
-	Thu, 14 Mar 2024 17:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DD7745EF;
+	Thu, 14 Mar 2024 17:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710436579; cv=none; b=KAouChoGunhqSPf0baDwSYOCB3X4vPjCvZaQbI0kFK0MEZvlcOH7Y3slM+nWF3HfKfAF/7jomL7wHkhV7zw4NvbCmiktjaukkQ8wtE32hgXuFW3H8Y0s2S+H0fgQG5fEoKDctMyvdRs9y8hH+X7JEpR9maqnSTSoW06SfxC73cQ=
+	t=1710436573; cv=none; b=pa5eWWCTUVu23gIu9DLdzyelcGH3Rdm1Spjc+ExPpMzA7qTQbSxpnT4ofO1PC+fKVGud2yCg/OcnzAPTGIxZLgYKdvQai7IXBJDjmsP8u4hjkoATW3L+5MqQtmISZrzIG5JJic7o6/yRIIYStNaGPevFBvJu2HA2R5AOvLScq74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710436579; c=relaxed/simple;
-	bh=pGyhDtx7U38/KEVxI7oHYe+wiEczizknyEbNsI4Y7yc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FQkthoVT5kXm4Vi8XXCelTG0YybVa75BR15iPuGg4wy6rRglwOaU7wc/YQ/zrYVx673+yNzsxTV9Y9PPEsX3km5RmPMFfHIu1t+vtJmPEq8AQ9hm1DHTIuha2oNDD4me4odfdtHNMH/B3GXd8bU62ZNOwAlgzma6bTaGadC/XvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mVU8DRaO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F910C43390;
+	s=arc-20240116; t=1710436573; c=relaxed/simple;
+	bh=L79tdLUwzaaRgRXL97CbprC3UX8xdukYNWJfNJ9rn8Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=eBmoVrhdHceeTiln6lyCinqE3bVDfq996CBG3VRinT4YLK99VnL1K/ar3uGeh3607Mr4uFXuNS8PTw4inT/hP6rfpCTCPQrJbTLfwqUY8204avPwyGdVzJURS7mhGENp4R3RFFBpd7SzKVEowT2uoM0UylC9mg0an/i43m3HP3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bLCoITag; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05C6BC433F1;
 	Thu, 14 Mar 2024 17:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710436578;
-	bh=pGyhDtx7U38/KEVxI7oHYe+wiEczizknyEbNsI4Y7yc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mVU8DRaOFCUY4k7U5k79+C+zLjmY6l1d31ADpOQkNocdVJ4iDCIuVqoeoxJKm56b6
-	 7sH9uuQqkv4BDr01c9D7pLz+3pvAQ+JEH6bgq+yzKTkQZh7OD3SPbz/UbHaWlDobiz
-	 RArtKW+vbBRzVDaewD8ItVe7CQFcqA/nz3sw7BPOpCU2ofOAis7G3wyIwh8TTNEhle
-	 T4Y1fVaw1fkl58IUO039KtyoPwBkpU4DJBqMi/JbRUNnT6lbEscsUExTe9eJQudta7
-	 aMGalX9wD8ETIk/acxc8aRMIuhlb1RXij3FRNPZRoVETAKRA0kj8WRpuhTiVsnWtaO
-	 T5239dJQfxdBw==
-Date: Thu, 14 Mar 2024 17:16:10 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Philipp Stanner <pstanner@redhat.com>,
-	Andreas Hindborg <nmi@metaspace.dk>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-	Damien Le Moal <Damien.LeMoal@wdc.com>,
-	Hannes Reinecke <hare@suse.de>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Niklas Cassel <Niklas.Cassel@wdc.com>,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Yexuan Yang <1182282462@bupt.edu.cn>,
-	Sergio =?iso-8859-1?Q?Gonz=E1lez?= Collado <sergio.collado@gmail.com>,
-	Joel Granados <j.granados@samsung.com>,
-	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
-	Daniel Gomez <da.gomez@samsung.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
-	"gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 0/5] Rust block device driver API and null block
- driver
-Message-ID: <20240314-capped-creole-7b11c1563f86@spud>
-References: <20240313110515.70088-1-nmi@metaspace.dk>
- <855a006d-5afc-4f70-90a9-ec94c0414d4f@acm.org>
- <c38358c418d4db11221093d7c38c080e4c2d737f.camel@redhat.com>
- <5f502f91-0450-454d-ae8f-36223920532e@acm.org>
+	s=k20201202; t=1710436573;
+	bh=L79tdLUwzaaRgRXL97CbprC3UX8xdukYNWJfNJ9rn8Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=bLCoITag/SuEtTrsO/sMEjHd4BnWeVtJvXB6210xjO0cdkxYMA8vA1JIb6pEd2Kfy
+	 Id8hEuP4GShaNC+PpogaxARWBhxMId5O2Cie8lL7/14MzwoABw+v7vAtpZtvsqvwVm
+	 j+7ReyKeR/gEjByLQxpMlRsVYXDEGyGeHFdCK6t+sjpJtjaZP9s/5wAN9lzVmWJr7r
+	 pLa+CQidixlNP3GHezj2k/ubGEQYBhmB8PMTnGZbFPbhqQ4aFXAmuJp6RUqrSv3XnA
+	 050p8/o022AJfkYOdhHhi7dvoS2VTcsuMhDFAH55Xucdvzdz4Rqw4PKJtaUCOfiv+R
+	 zUf5Dv5K5Grxg==
+Date: Thu, 14 Mar 2024 12:16:11 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	Oliver O'Halloran <oohall@gmail.com>,
+	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-edac@vger.kernel.org, Greg Rose <gvrose8192@gmail.com>,
+	Jeff Kirsher <tarbal@gmail.com>
+Subject: Re: [PATCH 2/4] PCI: Generalize TLP Header Log reading
+Message-ID: <20240314171611.GA958323@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Pk7WrlyY/BqNsZtB"
-Content-Disposition: inline
-In-Reply-To: <5f502f91-0450-454d-ae8f-36223920532e@acm.org>
-
-
---Pk7WrlyY/BqNsZtB
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240206135717.8565-3-ilpo.jarvinen@linux.intel.com>
 
-Just a passer-by here, but I noticed the link to Laurent's talk..
+[+cc Greg, Jeff -- ancient history, I know, sorry!]
 
-On Thu, Mar 14, 2024 at 10:03:28AM -0700, Bart Van Assche wrote:
-> On 3/14/24 05:14, Philipp Stanner wrote:
->=20
-> > The Kernel's C already has more memory safety than standardized C:
-> > There's devres, and since last year there's the __cleanup attribute.
-> > =E2=80=93 but the thing is, you can just ignore it and do it the old wa=
-y.
->=20
-> devres is controversial - see also Laurent Pinchart, "Why is
-> devm_kzalloc() harmful and what can we do about it", LPC, 2022
-> (https://lpc.events/event/16/contributions/1227/).
+On Tue, Feb 06, 2024 at 03:57:15PM +0200, Ilpo Järvinen wrote:
+> Both AER and DPC RP PIO provide TLP Header Log registers (PCIe r6.1
+> secs 7.8.4 & 7.9.14) to convey error diagnostics but the struct is
+> named after AER as the struct aer_header_log_regs. Also, not all places
+> that handle TLP Header Log use the struct and the struct members are
+> named individually.
+> 
+> Generalize the struct name and members, and use it consistently where
+> TLP Header Log is being handled so that a pcie_read_tlp_log() helper
+> can be easily added.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-I don't think that's a great thing to cite, that talk prompted a series
-of others with (AFAIK*) the most recent being from Bart at LPC this year:
-https://lpc.events/event/17/contributions/16f
-The TL;DR is that it's not actually problem caused by devres.
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index bd541527c8c7..5fdf37968b2d 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright(c) 1999 - 2018 Intel Corporation. */
+>  
+> +#include <linux/aer.h>
+>  #include <linux/types.h>
+>  #include <linux/module.h>
+>  #include <linux/pci.h>
+> @@ -391,22 +392,6 @@ u16 ixgbe_read_pci_cfg_word(struct ixgbe_hw *hw, u32 reg)
+>  	return value;
+>  }
+>  
+> -#ifdef CONFIG_PCI_IOV
+> -static u32 ixgbe_read_pci_cfg_dword(struct ixgbe_hw *hw, u32 reg)
+> -{
+> -	struct ixgbe_adapter *adapter = hw->back;
+> -	u32 value;
+> -
+> -	if (ixgbe_removed(hw->hw_addr))
+> -		return IXGBE_FAILED_READ_CFG_DWORD;
+> -	pci_read_config_dword(adapter->pdev, reg, &value);
+> -	if (value == IXGBE_FAILED_READ_CFG_DWORD &&
+> -	    ixgbe_check_cfg_remove(hw, adapter->pdev))
+> -		return IXGBE_FAILED_READ_CFG_DWORD;
+> -	return value;
+> -}
+> -#endif /* CONFIG_PCI_IOV */
+> -
+>  void ixgbe_write_pci_cfg_word(struct ixgbe_hw *hw, u32 reg, u16 value)
+>  {
+>  	struct ixgbe_adapter *adapter = hw->back;
+> @@ -11332,8 +11317,8 @@ static pci_ers_result_t ixgbe_io_error_detected(struct pci_dev *pdev,
+>  #ifdef CONFIG_PCI_IOV
+>  	struct ixgbe_hw *hw = &adapter->hw;
+>  	struct pci_dev *bdev, *vfdev;
+> -	u32 dw0, dw1, dw2, dw3;
+> -	int vf, pos;
+> +	struct pcie_tlp_log tlp_log;
+> +	int vf, pos, ret;
+>  	u16 req_id, pf_func;
+>  
+>  	if (adapter->hw.mac.type == ixgbe_mac_82598EB ||
+> @@ -11351,14 +11336,13 @@ static pci_ers_result_t ixgbe_io_error_detected(struct pci_dev *pdev,
+>  	if (!pos)
+>  		goto skip_bad_vf_detection;
+>  
+> -	dw0 = ixgbe_read_pci_cfg_dword(hw, pos + PCI_ERR_HEADER_LOG);
+> -	dw1 = ixgbe_read_pci_cfg_dword(hw, pos + PCI_ERR_HEADER_LOG + 4);
+> -	dw2 = ixgbe_read_pci_cfg_dword(hw, pos + PCI_ERR_HEADER_LOG + 8);
+> -	dw3 = ixgbe_read_pci_cfg_dword(hw, pos + PCI_ERR_HEADER_LOG + 12);
+> -	if (ixgbe_removed(hw->hw_addr))
+> +	ret = pcie_read_tlp_log(pdev, pos + PCI_ERR_HEADER_LOG, &tlp_log);
+> +	if (ret < 0) {
+> +		ixgbe_check_cfg_remove(hw, pdev);
+>  		goto skip_bad_vf_detection;
+> +	}
+>  
+> -	req_id = dw1 >> 16;
+> +	req_id = tlp_log.dw[1] >> 16;
+>  	/* On the 82599 if bit 7 of the requestor ID is set then it's a VF */
+>  	if (!(req_id & 0x0080))
+>  		goto skip_bad_vf_detection;
+> @@ -11369,9 +11353,8 @@ static pci_ers_result_t ixgbe_io_error_detected(struct pci_dev *pdev,
+>  
+>  		vf = FIELD_GET(0x7F, req_id);
+>  		e_dev_err("VF %d has caused a PCIe error\n", vf);
+> -		e_dev_err("TLP: dw0: %8.8x\tdw1: %8.8x\tdw2: "
+> -				"%8.8x\tdw3: %8.8x\n",
+> -		dw0, dw1, dw2, dw3);
+> +		e_dev_err("TLP: dw0: %8.8x\tdw1: %8.8x\tdw2: %8.8x\tdw3: %8.8x\n",
+> +			  tlp_log.dw[0], tlp_log.dw[1], tlp_log.dw[2], tlp_log.dw[3]);
+>  		switch (adapter->hw.mac.type) {
+>  		case ixgbe_mac_82599EB:
+>  			device_id = IXGBE_82599_VF_DEVICE_ID;
 
-* I think Wolfram also talked about it at an automotive conference, but
-  that seemed like a bit of a pitch for funding from the safety
-  conscious=20
+The rest of this patch is headed for v6.10, but I dropped this ixgbe
+change for now.
 
+These TLP Log registers are generic, not device-specific, and if
+there's something lacking in the PCI core that leads to ixgbe reading
+and dumping them itself, I'd rather improve the PCI core so all
+drivers will benefit without having to add code like this.
 
---Pk7WrlyY/BqNsZtB
-Content-Type: application/pgp-signature; name="signature.asc"
+83c61fa97a7d ("ixgbe: Add protection from VF invalid target DMA") [1]
+added the ixgbe TLP Log dumping way back in v3.2 (2012).  It does do
+some device-specific VF checking and so on, but even back then, it
+looks like the PCI core would have dumped the log itself [2], so I
+don't know why we needed the extra dumping in ixgbe.
 
------BEGIN PGP SIGNATURE-----
+So what I'd really like is to remove the TLP Log reading and printing
+from ixgbe completely, but keep the VF checking.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfMwxgAKCRB4tDGHoIJi
-0j+gAP9WfX58/nQt3jltC+8M270HUvjPJmZyrK0+DRah8vD2VgEA5wxGAnUDrSFD
-yKkVFD4fjcc2jhvn2r53fjz7GEACpwk=
-=z+PJ
------END PGP SIGNATURE-----
+Bjorn
 
---Pk7WrlyY/BqNsZtB--
+[1] https://git.kernel.org/linus/83c61fa97a7d
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pcie/aer/aerdrv_errprint.c?id=83c61fa97a7d#n181
 
