@@ -1,117 +1,111 @@
-Return-Path: <linux-kernel+bounces-103218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4890387BC82
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5800E87BC84
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514661C20CF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:08:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 898BD1C214DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297136F086;
-	Thu, 14 Mar 2024 12:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4136F507;
+	Thu, 14 Mar 2024 12:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="RBD3ucM4"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GkPyixCS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7011F2A1D1
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:08:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2C641C63;
+	Thu, 14 Mar 2024 12:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710418108; cv=none; b=Q+8ozQrKRyAZEaSqXCzX0prmU35ry6AMfY7Mx78oR12HPUtuBo2RK3EEBsfhpwN870M7eYW1JkBqShZNOovdoXSi8jVbKhXWcHkkFFFlAiErSeVsff8i/DQtnnKodkN51QSzuTNIV68DXfIHJfRRLzaD9v472nRJl3098t+HeJc=
+	t=1710418229; cv=none; b=q5JqpAAk7Ul7z8xq7VohZ8aBfZ24mCzdvN6AXUCgO0nK0NgUDoQ89q1v2gSITC4sRHe0rLoYzL7cpOuDi/lyRdZ7el3hOTInTOCssbG0gmMJlkX7IT5caWXPJhz0zYpQ4yOVmxMFEzOritunNHQ4X0/D+d6DcWC4S7wykCb0OnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710418108; c=relaxed/simple;
-	bh=87uP8oEYL3f2ij7QYXwCxHx44HENNcaMzXars/E0xg0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mdk9uwXFYrCYA4AWXVZ5OEObkVFJxs3KjxkOFuT0G+CJaAVwgIZ7xiwzOnPhafTEltRZIEhQ+9yXK6udnfBIp+K/bVH64szNHaOLAWAPI6rSv4D4OBNIzHdXjFl3WbgMbO7CdMFjsPIF7z/o/OU/9vqVCpEzpNlGRR60DbKi7Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=RBD3ucM4; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B455840E0174;
-	Thu, 14 Mar 2024 12:08:23 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id ZsZY8AkmAoD8; Thu, 14 Mar 2024 12:08:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1710418100; bh=zNtuTeS9qes33qsFVye1Oybb6j0XFIdSwIB4GsdgiDg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RBD3ucM4L85fB2p8bZDLPnfGrjiN5hhkK4WBEN+DVvBO0qYXAGs9RZ08krk+79nkC
-	 mbFiFHw5wnk7zS8Qwhed+xUebv2qwiLW19mI2bxHVsjMq5wxjXDiH8MhnhKOlYNdHr
-	 ER6j0xZvM8JbQvS8HlRQ4wq+uBJfiWglOffwamZkZ945sljNUOCSDPPdRpk3Cl40SH
-	 hHLMo6+KZijd7ua7VROxyZ62vQ/R71H6rl9wqEQrmViiBCu60xR2l8650N0ezoDDtu
-	 3QBAusX2IAXhfWsayzAEsdkqe/VIDNSHQ2NHG3JhIGlxpFS77muEf+8AtpsCH19MLG
-	 kVUkR6ce/Yu7IeIhdD5DTC20LLMcevcpo9y7rclWAXa5N7y13SDvb66xRkJcAfaciK
-	 2cwHLodnyJD0kh8SZFGmu80ND6F5L2FpPelpY4O4c03PYObnaAxlQ2HD2PmtNT4O2d
-	 NXgMwXmTkrH9qYJCu6NJMJxmw5lJ1byLNRSO3XKdu+OWt/6Y8N6y4tmE0N6TVmARct
-	 zvhZ5LyEw0OwOquh/e9ePGW0PUtA+hV8rDelSLs4suvhqQYAULt4w7AD43qLkmspxJ
-	 xUD5nCsLiXlPZqgJ5AngXqEqpf37L/1CAhN8mLCnWe+OHVXEUGhrSUsCTsmu/omc2K
-	 4sxPI6eRl1OTgR6R/w82eyRQ=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A3F6E40E0028;
-	Thu, 14 Mar 2024 12:08:00 +0000 (UTC)
-Date: Thu, 14 Mar 2024 13:07:55 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Yuezhang.Mo@sony.com" <Yuezhang.Mo@sony.com>
-Cc: "tglx@linutronix.de" <tglx@linutronix.de>,
-	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-	"andy@infradead.org" <andy@infradead.org>,
-	"arjan@linux.intel.com" <arjan@linux.intel.com>,
-	"dimitri.sivanich@hpe.com" <dimitri.sivanich@hpe.com>,
-	"feng.tang@intel.com" <feng.tang@intel.com>,
-	"jgross@suse.com" <jgross@suse.com>,
-	"kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-	"kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mhklinux@outlook.com" <mhklinux@outlook.com>,
-	"paulmck@kernel.org" <paulmck@kernel.org>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"ray.huang@amd.com" <ray.huang@amd.com>,
-	"rui.zhang@intel.com" <rui.zhang@intel.com>,
-	"sohil.mehta@intel.com" <sohil.mehta@intel.com>,
-	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-	"wendy.wang@intel.com" <wendy.wang@intel.com>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [patch V6 11/19] x86/cpu: Use common topology code for AMD
-Message-ID: <20240314120755.GCZfLom-s2D2uwleOc@fat_crate.local>
-References: <PUZPR04MB63168AC442C12627E827368581292@PUZPR04MB6316.apcprd04.prod.outlook.com>
+	s=arc-20240116; t=1710418229; c=relaxed/simple;
+	bh=xnyacxUsGH5RW5G5s6Q3bxHinA/BiKUTP9mCzN30/Uw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=e4ovITKaEIrOirm56vp+RdZzBEw61uU6eBgLpFwjuBPUBVFk/jv2QmNiXGtDj6qAuTA2oD9PYD7kEXUn8T4Lb4Ow4gMJwwEhusuLr2NrK19S/pzf6TDEkzHjQTvQHoBlMX5OtU/Y4yBxhDvlIIgfH64G4pYaqZudDS3QDlLqCxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GkPyixCS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B514AC433F1;
+	Thu, 14 Mar 2024 12:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710418228;
+	bh=xnyacxUsGH5RW5G5s6Q3bxHinA/BiKUTP9mCzN30/Uw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=GkPyixCSzTjdMQir/6UYnTNVFtIB2XndGyPI6OInz7UpmOtR4chi33P/TW3AP7clh
+	 BseKXGMwFA/pTdrD7Fc2MTnnoozfLr8UKD+QPDHbzQieezHjFvrKTehpyaudUod6lY
+	 qZRimTnUvfUotYr+rLgj90waJizPhyL44uAeIz/wBD9PcTWQ2nHwh2uoORo14f+LNB
+	 7q13a9FwxYIEgmC5Ea0OUXqOsFpa/eOuHyN34BJXiHGYG0zozDNC0lCevPN5IGlfyC
+	 dUd0v0Q26GyIctnDmxvaiuouogm2kgu+MI1r0FIEqDMGc/uKBQNK6qLgCBsg4kF7Kj
+	 n/2F/JG4kM0yw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9A888D95055;
+	Thu, 14 Mar 2024 12:10:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <PUZPR04MB63168AC442C12627E827368581292@PUZPR04MB6316.apcprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] hsr: Fix uninit-value access in hsr_get_node()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171041822862.15565.3799494375308403816.git-patchwork-notify@kernel.org>
+Date: Thu, 14 Mar 2024 12:10:28 +0000
+References: <20240312152719.724530-1-syoshida@redhat.com>
+In-Reply-To: <20240312152719.724530-1-syoshida@redhat.com>
+To: Shigeru Yoshida <syoshida@redhat.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com
 
-On Thu, Mar 14, 2024 at 10:21:34AM +0000, Yuezhang.Mo@sony.com wrote:
-> I ran xfstests generic/650 and found that it failed.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Wed, 13 Mar 2024 00:27:19 +0900 you wrote:
+> KMSAN reported the following uninit-value access issue [1]:
 > 
-> The reason for the failure is that this appears in dmesg:
+> =====================================================
+> BUG: KMSAN: uninit-value in hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
+>  hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
+>  fill_frame_info net/hsr/hsr_forward.c:577 [inline]
+>  hsr_forward_skb+0xe12/0x30e0 net/hsr/hsr_forward.c:615
+>  hsr_dev_xmit+0x1a1/0x270 net/hsr/hsr_device.c:223
+>  __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
+>  netdev_start_xmit include/linux/netdevice.h:4954 [inline]
+>  xmit_one net/core/dev.c:3548 [inline]
+>  dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3564
+>  __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4349
+>  dev_queue_xmit include/linux/netdevice.h:3134 [inline]
+>  packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
+>  packet_snd net/packet/af_packet.c:3087 [inline]
+>  packet_sendmsg+0x8b1d/0x9f30 net/packet/af_packet.c:3119
+>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>  __sock_sendmsg net/socket.c:745 [inline]
+>  __sys_sendto+0x735/0xa10 net/socket.c:2191
+>  __do_sys_sendto net/socket.c:2203 [inline]
+>  __se_sys_sendto net/socket.c:2199 [inline]
+>  __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> [...]
 
-Can you send - privately is fine too - from that machine:
+Here is the summary with links:
+  - [net] hsr: Fix uninit-value access in hsr_get_node()
+    https://git.kernel.org/netdev/net/c/ddbec99f5857
 
-* output of "cpuid -r"
-
-* full dmesg
-
-* output of "grep -r . /sys/kernel/debug/x86/topo/"
-
-Thx.
-
+You are awesome, thank you!
 -- 
-Regards/Gruss,
-    Boris.
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
 
