@@ -1,60 +1,79 @@
-Return-Path: <linux-kernel+bounces-103584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 918A187C16B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:40:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F5087C171
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 483562838FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:40:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 928451F21A03
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812D374415;
-	Thu, 14 Mar 2024 16:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926F67352C;
+	Thu, 14 Mar 2024 16:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jE2iJ8v+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XlFySStF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E321A38D3;
-	Thu, 14 Mar 2024 16:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE271E480
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710434395; cv=none; b=U/E7wj8yNJEb10vJCSUQ3mLGzUDPY2GJNO61ohJ5RUBhg2prdyeooE8vnrJFKoj414tarFhDdlucNpUuIcKzZtF4jrDCT+RTjCqizlTN3s1gRLgguRi6H19yD0ABs8YI6Ww1KnTB/7jyRiazsJou7bq/v5WjFUdmvYZiiFtLyPQ=
+	t=1710434547; cv=none; b=OP3SR+oNaMaQCDr5xt5wIa7qpUJqyFOGyMTkwafhU9f3pZHVyIEw9G258DXFCTJ+b/rPKtjN/rBwnotW2wsddzxCfKpBktTI9w/uHN/fzPlz26lga6oNP2bZt5T7qGwm4DtNhS8ZJgUL5rotFs9LsB/J2oL6xfWqUmcvppiFumk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710434395; c=relaxed/simple;
-	bh=djlTZ+NXt62CYBQD0EYVhAEkHu02AG1U5oefnk9Umf8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c2tNxHGNBfyGwCDT0qNtqtbNuvHbfZWkDkemDGKiKoOJ1RiJA5sjkKuWAC/ySR/WVDQRIOOvl8iYeyoDAqeRkdiOjTzkg4vKvEkiNIZCbc8oa3XnPvX4vD5d/4ldjHNTDGGOnTekZK2QjssMLWv4qJ74xk6Uv56PjGT2LTNjACk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jE2iJ8v+; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710434391; x=1741970391;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=djlTZ+NXt62CYBQD0EYVhAEkHu02AG1U5oefnk9Umf8=;
-  b=jE2iJ8v+RnZxI+9dwNOMY49xW9e5bLOrIDYw1Ktgc2dp8xHX4djC/u26
-   Dk3kapxAfZhao2YN9f66QrL9LODptiM4F7POxsLphyyCkfBkr+rwqE+3V
-   MLVftP2RpatR7piGMgGDGUkX06PRbFoET+XXtjkQP9fDN1aV5w5ZIG6/y
-   sBjMgx04mCkFABkolF93dAS4ntyVZxeqdM8YD1eFp+3aKKL+UGtSJ7D33
-   9iu3M/ubw/oezNYYBUG/j6hbj8gpWW6FZwEmejLy6ju7yhDgVCwtGN5tO
-   FYZ74ZGL8Ss9H7IVaULmoRta6J07iIbr98RU5Wpptz81D+9WyN0xGou1x
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5116165"
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="5116165"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 09:39:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="17014261"
-Received: from laallen-mobl.amr.corp.intel.com (HELO [10.209.21.198]) ([10.209.21.198])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 09:39:50 -0700
-Message-ID: <24f71d52-0891-4cfc-8dec-9f13ed618eee@intel.com>
-Date: Thu, 14 Mar 2024 09:39:51 -0700
+	s=arc-20240116; t=1710434547; c=relaxed/simple;
+	bh=YKzRMgIfzlyfRzInzCXhlKp56/llBAiBK342zYGkXkg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=BTjzaMUcAcOdCiJ66T4JPcYwnfTF98sgppXbwsb+M35ok8VbQW5r2zSymJ8S30Y7bW9FVhs+D2DLiDLVuMSvGg4wJ0G5YMNiyLeCeooIWb1mHyJ4XBD+IOD/QxWxkHCAuT13W1eSKnMExP+99h3JsEKGJzlZXNrQl9HBdO3R8po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XlFySStF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710434545;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Sixi7qBIO0KgmAD6JY5YHs0YPFdGVi8xhVX/DMw9B9s=;
+	b=XlFySStFYQEzzS0ROVLska/NLMhqeO+LeVoCP52JuYaWKT8M1GdRzQBRu85f3K5qHmJQIm
+	6H2eh4h/N+0GqqNNzl+10zeYodkamR7fLuzmbgT6NJFekyDSfisfFdgYfWY71eR3Ks6cCM
+	A+JnQK7u+CnqvJFeCZL6RMbinH1xSLM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-609-GqB_DhSSMPun3p9cDXA8Mg-1; Thu, 14 Mar 2024 12:42:23 -0400
+X-MC-Unique: GqB_DhSSMPun3p9cDXA8Mg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4130b4b6676so5918135e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:42:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710434542; x=1711039342;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Sixi7qBIO0KgmAD6JY5YHs0YPFdGVi8xhVX/DMw9B9s=;
+        b=om/Krjf8sCKf9SIrQ/5f+at67rTdsldgN3xy4uYZf1s2eTclvU6OJljHKH+3ws/3R1
+         0HIdvSfNIZv/zeas4uVzxsYoqAZgHcDZNI8HUNFDJXnaaor8W0qYEH2NNIn5YhOK2TtR
+         YW6+QlBXgmeqi+dXSl+Wl0uBNl8E2RQ9HYYcQuctqohImU0674L3IyjmNEIZ5f/8ZKmG
+         Do/fdXW9ilyB2gWr7ilTw29O6P0QMiVu5Rid9jO21jExMjz0kLBhSX/QQ6riZPICqO97
+         N3pV/rOnF34mKbvaUDHkT91ODB9p0R1WsI19ioFulCXKPWmEEFoahyiGm/exEAWzTQ4V
+         nl4A==
+X-Gm-Message-State: AOJu0Yy18NXMvs0pnZVnzcARLVWLMSyQzmzRgXdWHrPfygvX6tSC1qjM
+	rFPhIXCv6HhFppNikZDj/crQIGRCwU0wWWxfFjxKXx19cOcNxN+CXhg1TLrBluqDJrwIU27NTBp
+	aS9XlT843O8sNbeWheJvq0moCtYuJV3914DzztRL8UkhLOAHRr+eKvLvRLZpvJQ==
+X-Received: by 2002:a05:600c:1e0f:b0:413:f034:da6d with SMTP id ay15-20020a05600c1e0f00b00413f034da6dmr1973204wmb.33.1710434542152;
+        Thu, 14 Mar 2024 09:42:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH8h8Emg/Cpc1mQHtB+StYkxSmE284u93z+Kc7ACJqNEFqtWRWUp+0VCCHzVTIRDza+C44qzg==
+X-Received: by 2002:a05:600c:1e0f:b0:413:f034:da6d with SMTP id ay15-20020a05600c1e0f00b00413f034da6dmr1973187wmb.33.1710434541715;
+        Thu, 14 Mar 2024 09:42:21 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c709:a00:7d7d:3665:5fe4:7127? (p200300cbc7090a007d7d36655fe47127.dip0.t-ipconnect.de. [2003:cb:c709:a00:7d7d:3665:5fe4:7127])
+        by smtp.gmail.com with ESMTPSA id bi17-20020a05600c3d9100b00413f50e944fsm1814148wmb.45.2024.03.14.09.42.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 09:42:21 -0700 (PDT)
+Message-ID: <1f2a8ed4-aaff-4be7-b3b6-63d2841a2908@redhat.com>
+Date: Thu, 14 Mar 2024 17:42:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,113 +81,116 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] x86/elf: Add a new .note section containing Xfeatures
- information to x86 core files
+Subject: Re: [PATCH v1] x86/mm/pat: fix VM_PAT handling in COW mappings
 Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>
-Cc: Vignesh Balasubramanian <vigbalas@amd.com>, linux-kernel@vger.kernel.org,
- linux-toolchains@vger.kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com, ebiederm@xmission.com, keescook@chromium.org,
- x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- jinisusan.george@amd.com, matz@suse.de, binutils@sourceware.org,
- jhb@freebsd.org, felix.willgerodt@intel.com
-References: <20240314112359.50713-1-vigbalas@amd.com>
- <20240314112359.50713-2-vigbalas@amd.com>
- <dd54d6de-0bcc-4b2e-a420-b1a429b06246@intel.com>
- <20240314160824.GDZfMg-J1VOyjxIMiV@fat_crate.local>
- <6ce6aa20-25d2-4784-823f-2a18f592e002@intel.com>
- <20240314162954.GAZfMmAnYQoRjRbRzc@fat_crate.local>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240314162954.GAZfMmAnYQoRjRbRzc@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
+From: David Hildenbrand <david@redhat.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+ Wupeng Ma <mawupeng1@huawei.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+References: <20240312181118.318701-1-david@redhat.com>
+ <ZfCrkL-Aieer2EAg@casper.infradead.org>
+ <5bc9de2f-c3ba-46e7-a234-3d3a46e53ba1@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <5bc9de2f-c3ba-46e7-a234-3d3a46e53ba1@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 3/14/24 09:29, Borislav Petkov wrote:
+On 12.03.24 20:38, David Hildenbrand wrote:
+> On 12.03.24 20:22, Matthew Wilcox wrote:
+>> On Tue, Mar 12, 2024 at 07:11:18PM +0100, David Hildenbrand wrote:
+>>> PAT handling won't do the right thing in COW mappings: the first PTE
+>>> (or, in fact, all PTEs) can be replaced during write faults to point at
+>>> anon folios. Reliably recovering the correct PFN and cachemode using
+>>> follow_phys() from PTEs will not work in COW mappings.
+>>
+>> I guess the first question is: Why do we want to support COW mappings
+>> of VM_PAT areas?  What breaks if we just disallow it?
 > 
->> That argument breaks down a bit on the flags though:
->>
->> 	xc.xfeat_flags = xstate_flags[i];
->>
->> Because it comes _directly_ from CPUID with zero filtering:
->>
->> 	cpuid_count(XSTATE_CPUID, i, &eax, &ebx, &ecx, &edx);
->> 	...
->> 	xstate_flags[i] = ecx;
->>
->> So this layout is quite dependent on what's in x86's CPUID.
-> Yeah, no, this should not be copying CPUID flags - those flags should be
-> *translated* to independently defined flags which describe those
-> buffers.
+> Well, that was my first approach. Then I decided to be less radical (IOW
+> make my life easier by breaking less user space) and "fix it" with
+> minimal effort.
+> 
+> Chances of breaking some weird user space is possible, although I
+> believe for most such mappings MAP_PRIVATE doesn't make too much sense
+> sense.
+> 
+> Nasty COW support for VM_PFNMAP mappings dates back forever. So does PAT
+> support.
+> 
+> I can try finding digging through some possible user space users tomorrow.
 
-Ditto for:
+As discussed, MAP_PRIVATE doesn't make too much sense for most PFNMAP 
+mappings.
 
-	xc.xfeat_type = i;
+However, /dev/mem and /proc/vmcore are still used with MAP_PRIVATE in 
+some cases.
 
-Right now, that's bound to CPUID and XSAVE.  "feat_type==10" can only
-ever be PKRU and that's derived from the XSAVE architecture.
+Side note: /proc/vmcore is a bit weird: mmap_vmcore() sets VM_MIXEDMAP, 
+and then we might call remap_pfn_range(), which sets VM_PFNMAP. I'm not 
+so sure if that's what we want to happen ...
 
-If you want this to be extensible to things outside of the XSAVE
-architecture, it needs to be something actually extensible and not
-entangled with XSAVE.
+As far as I can see, makedumpfile always mmap's memory to be dumped 
+(/dev/mem, /proc/vmcore) using PROT_READ+MAP_PRIVATE, resulting in a COW 
+mapping.
 
-In other words "xc.xfeat_type" can enumerate XSAVE state components
-being in the dump, but it should not be limited to XSAVE.  Just as an
-example:
 
-enum feat_type {
-	FEATURE_XSAVE_PKRU,
-	FEATURE_XSAVE__YMM,
-	FEATURE_XSAVE_BNDREGS,
-	FEATURE_XSAVE_BNDCSR,
-	...
-	RANDOM_STATE_NOT_XSAVE
-};
+In my opinion, we should use this fairly simple fix to keep it working 
+for now and look into disabling any MAP_PRIVATE of VM_PFNMAP separately, 
+for all architectures.
 
-See how feat_type==1 is PKRU and *NOT* feat_type==10?  That opens the
-door to RANDOM_STATE_NOT_XSAVE or anything else you want.  This would be
-_actually_ extensible.
+But I'll leave the decision to x86 maintainers.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
