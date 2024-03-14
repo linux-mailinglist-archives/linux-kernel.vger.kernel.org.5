@@ -1,131 +1,191 @@
-Return-Path: <linux-kernel+bounces-103810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE1E387C4D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:46:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 311FA87C4D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671EDB21A35
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:46:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9624B1F20F9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D4C768F4;
-	Thu, 14 Mar 2024 21:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F74768E1;
+	Thu, 14 Mar 2024 21:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B6/0zVer"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U4DLrRAR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5471E76412;
-	Thu, 14 Mar 2024 21:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31827641B;
+	Thu, 14 Mar 2024 21:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710452802; cv=none; b=K8XZ31k4tz+XZXOXmSt5Hf4KJeX8j2GGyq6pcCrOvXer2sWeCXUqtLv1xTf0ePwJThGSDJT9ch5ZYrL0dnVVEODQYvI2n5F+9Xn7Jn4v+oFx8dJatlTWYm4AcxkLkgOSqQ1P/PztYND1oJE3jhEWAW2viSA87cexfEPCjD+GgP8=
+	t=1710452804; cv=none; b=RTIG5cfnRDLetp92eGXApT8804LY6wizXNRnwM1dml9DhQBsgEBVtjpVwNDWBx8nMq3ScLSopCx/z0iW8RGujz6x7XosOCeSBqyL5BZv+Ix8PcONHlJV1DwTgMEbn/ZWygziEC6tfFHf1LKZIVGZbFarNFk2aKuQNg5/XPm9Q70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710452802; c=relaxed/simple;
-	bh=024QBEVLTI+6kcoD7J49NoiaMMt3w6GMzvKHMg9E6rg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=EBOnSP75E5MnPtqOLJj4642d0e9+4DqXSq+gJkn5dq9/WvNXTqCU1W8GSRqRo7IHFtYpbt+f6i5A/mY2IBzbRg4+/8c0NmoBwteVvwLsM4CBrzBQhGvU3+S7fx6NNQIUTzueRJ+TrxHqe1A9Odgq/kOXQx5nEUfUeUuuE2khpDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B6/0zVer; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710452800; x=1741988800;
-  h=message-id:date:mime-version:subject:to:references:cc:
-   from:in-reply-to:content-transfer-encoding;
-  bh=024QBEVLTI+6kcoD7J49NoiaMMt3w6GMzvKHMg9E6rg=;
-  b=B6/0zVerh3uONZl4KPvBZ/l6fRcW//g/96B5cRs7iKJKwXbRmZqE/FN2
-   hARNnv3w6oZO5Kk8FZkgE/Fm4LBlN+WZBq/XWTAOkoS2Ud0k+QcDH3tSW
-   sW37fl2/2mza2TtYRAO+oc6/gnNpCxmepyDfoc5fznVIt9vYp6T6PeQVF
-   um7WxmQ19QPd9q+LQClnTH1QLf/IjokgFxmODGNpYflc35uG68aHbge3A
-   m0ARCqjA5HvEfMk13aKnF/ab9DtAjCtOFPykUcl5PpKN4kjSC/tFJoTxX
-   0SAMZdZH+FHJO0NTvriENhwB247ud9dfTEhfQq5QoUR2HoQ729kOM64q5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="15853634"
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="15853634"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 14:46:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="16918258"
-Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.77]) ([10.24.10.77])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 14:46:39 -0700
-Message-ID: <03592298-4390-4111-870b-129b6be98d3a@intel.com>
-Date: Thu, 14 Mar 2024 14:46:38 -0700
+	s=arc-20240116; t=1710452804; c=relaxed/simple;
+	bh=/2od1+DS2akp8OKCYAE5pl/cHr9uEBHeLESjE/2dc88=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WhQvHDm+x3OUiaN+BY/CagOV7/vRWgOPHoo43UnNXZa9VzcODLBvjqYsXwMEXebibARzsc+oZ+L+0jZqIoqCdWisNeRMiQVoav5R7VoGF6Hkkc7Dc1OOFPPiyEJFuqSw8MbdM07Ds7ZsgRD6OB3fSxCFk0Sf+J0gSIYtahNBx2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U4DLrRAR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3266C43394;
+	Thu, 14 Mar 2024 21:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710452804;
+	bh=/2od1+DS2akp8OKCYAE5pl/cHr9uEBHeLESjE/2dc88=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=U4DLrRARj2zmrrmzBtZx1Am32ATALTBimfIcBHdt8rBy+ZteyZkklbW6rQt4BUSBM
+	 qT+9SlGVguYxJSZX0MGlLy/ojp2P8phVeVU5rhKNFpCSQKWulO81Uosk0b12Sh5BHe
+	 WmltGWurLBW9XXlbYvEDETl3Cr7ycbj78CB3Q5sJK/1EJHXwvNXusUCwX8w/Or3UAx
+	 5GsVAFsThfyef6YLUqMs+xDxN6+HKb7fmRI6tJxAPFk1lexLvKbJ37qFGYKzIxPH5D
+	 kpDtS/avjYd7m56x5wekY5WlZMq9b62JYGc1LqSCpL9cQa+0fjAzPUlbRTqxgRTaPc
+	 0kftrIUf/Fh5A==
+Date: Thu, 14 Mar 2024 21:46:40 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Eva Kurchatova <nyandarknessgirl@gmail.com>
+Cc: linux-riscv <linux-riscv@lists.infradead.org>, bugs@lists.linux.dev,
+	linux-i2c@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org,
+	Samuel Holland <samuel.holland@sifive.com>
+Subject: Re: Boot hang with SiFive PLIC when routing I2C-HID level-triggered
+ interrupts
+Message-ID: <20240314-sublevel-jargon-4234df3fa614@spud>
+References: <CA+eeCSPUDpUg76ZO8dszSbAGn+UHjcyv8F1J-CUPVARAzEtW9w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 27/29] KVM: selftests: Propagate
- KVM_EXIT_MEMORY_FAULT to userspace
-Content-Language: en-US
-To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
- Ackerley Tng <ackerleytng@google.com>, "Afranji, Ryan" <afranji@google.com>,
- "Aktas, Erdem" <erdemaktas@google.com>, Sagi Shahar <sagis@google.com>,
- "Yamahata, Isaku" <isaku.yamahata@intel.com>
-References: <20231212204647.2170650-1-sagis@google.com>
- <20231212204647.2170650-28-sagis@google.com>
- <DS7PR11MB78860170A5FD77253573BC09F6292@DS7PR11MB7886.namprd11.prod.outlook.com>
-Cc: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- Peter Gonda <pgonda@google.com>, "Xu, Haibo1" <haibo1.xu@intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>,
- "Annapurve, Vishal" <vannapurve@google.com>,
- Roger Wang <runanwang@google.com>, Vipin Sharma <vipinsh@google.com>,
- jmattson@google.com, dmatlack@google.com, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org, linux-mm@kvack.org
-From: "Chen, Zide" <zide.chen@intel.com>
-In-Reply-To: <DS7PR11MB78860170A5FD77253573BC09F6292@DS7PR11MB7886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="iXQ/4Ga64dEQTg/D"
+Content-Disposition: inline
+In-Reply-To: <CA+eeCSPUDpUg76ZO8dszSbAGn+UHjcyv8F1J-CUPVARAzEtW9w@mail.gmail.com>
 
 
+--iXQ/4Ga64dEQTg/D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 12/12/2023 12:47 PM, Shashar, Sagi wrote:
-> 
-> 
-> -----Original Message-----
-> From: Sagi Shahar <sagis@google.com> 
-> Sent: Tuesday, December 12, 2023 12:47 PM
-> To: linux-kselftest@vger.kernel.org; Ackerley Tng <ackerleytng@google.com>; Afranji, Ryan <afranji@google.com>; Aktas, Erdem <erdemaktas@google.com>; Sagi Shahar <sagis@google.com>; Yamahata, Isaku <isaku.yamahata@intel.com>
-> Cc: Sean Christopherson <seanjc@google.com>; Paolo Bonzini <pbonzini@redhat.com>; Shuah Khan <shuah@kernel.org>; Peter Gonda <pgonda@google.com>; Xu, Haibo1 <haibo1.xu@intel.com>; Chao Peng <chao.p.peng@linux.intel.com>; Annapurve, Vishal <vannapurve@google.com>; Roger Wang <runanwang@google.com>; Vipin Sharma <vipinsh@google.com>; jmattson@google.com; dmatlack@google.com; linux-kernel@vger.kernel.org; kvm@vger.kernel.org; linux-mm@kvack.org
-> Subject: [RFC PATCH v5 27/29] KVM: selftests: Propagate KVM_EXIT_MEMORY_FAULT to userspace
-> 
-> Allow userspace to handle KVM_EXIT_MEMORY_FAULT instead of triggering TEST_ASSERT.
-> 
-> From the KVM_EXIT_MEMORY_FAULT documentation:
-> Note!  KVM_EXIT_MEMORY_FAULT is unique among all KVM exit reasons in that it accompanies a return code of '-1', not '0'!  errno will always be set to EFAULT or EHWPOISON when KVM exits with KVM_EXIT_MEMORY_FAULT, userspace should assume kvm_run.exit_reason is stale/undefined for all other error numbers.
+Hey,
 
-If KVM exits to userspace with KVM_EXIT_MEMORY_FAULT, most likely it's because the guest attempts to access the gfn in a way that is different from what the KVM is configured, in terms of private/shared property. I'd suggest to drop this patch and work on the selftests code to eliminate this exit.
+I'm not really all that familar with the plic driver itself, so adding
+Samuel and Thomas who will (hopefully) understand this better than me.
 
-If we need a testcase to catch this exit intentionally, we may call _vcpu_run() directly from the testcase and keep the common API vcpu_run() intact.
+On Thu, Mar 14, 2024 at 09:12:40AM +0200, Eva Kurchatova wrote:
+> If an I2C-HID controller level-triggered IRQ line is routed directly as
+> a PLIC IRQ, and we spam input early enough in kernel boot process
+> (Somewhere between initializing NET, ALSA subsystems and before
+> i2c-hid driver init), then there is a chance of kernel locking up
+> completely and not going any further.
+>=20
+> There are no kernel messages printed with all the IRQ, task hang
+> debugging enabled - other than (sometimes) it reports sched RT
+> throttling after a few seconds. Basic timer interrupt handling is
+> intact - fbdev tty cursor is still blinking.
+>=20
+> It appears that in such a case the I2C-HID IRQ line is raised; PLIC
+> notifies the (single) boot system hart, kernel claims the IRQ and
+> immediately completes it by writing to CLAIM/COMPLETE register.
+> No access to the I2C controller (OpenCores) or I2C-HID registers
+> is made,
 
-> 
-> Signed-off-by: Sagi Shahar <sagis@google.com>
-> ---
->  tools/testing/selftests/kvm/lib/kvm_util.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index d024abc5379c..8fb041e51484 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -1742,6 +1742,10 @@ void vcpu_run(struct kvm_vcpu *vcpu)  {
->  	int ret = _vcpu_run(vcpu);
->  
-> +	// Allow this scenario to be handled by the caller.
-> +	if (ret == -1 && errno == EFAULT)
-> +		return;
-> +
->  	TEST_ASSERT(!ret, KVM_IOCTL_ERROR(KVM_RUN, ret));  }
->  
-> --
-> 2.43.0.472.g3155946c3a-goog
-> 
+This immediately seemed odd to me, but I have no reason to disbelieve
+you, given you say this was discovered in RVVM which is an emulator and
+you should know whether or not registers are accessed.
+The very first action taken by the ocores i2c controller driver when it
+gets an interrupt though is to read a register:
+
+	u8 stat =3D oc_getreg(i2c, OCI2C_STATUS);
+
+I would expect that this handler would be called, and therefore you'd
+see the register read, had the probe function of that driver run to
+completion. I'd also expect that the interrupt would not even be
+unmasked if that probe function had failed.
+In your case though, you can see that the interrupt is not masked,
+since it is being raised and handled repeatedly by the PLIC driver.
+Has the i2c controller driver probed in the period of boot that you say
+this problem manifests?
+
+> so the HID report is never consumed and IRQ line stays
+> raised forever. The kernel endlessly claims & completes IRQs
+> without doing any work with the device. It doesn't always end up this
+> way; sometimes boot process completes and there are no signs of
+> interrupt storm or stuck IRQ processing afterwards.
+>=20
+> There was a suspicion this has to do with SiFive PLIC being
+> not-so-explicit about level triggered interrupts. The research of this
+> issue led this way: There is another DT PLIC binding; a THead one,
+> and it has a flag `PLIC_QUIRK_EDGE_INTERRUPT` which allows
+> to define IRQ source behavior as 2-cells in DT; and has some other
+> changes to the logic (more on that below).
+> When attempting to mimic a THead PLIC in kernel DT, and rewriting
+> all DT interrupt sources to use 2-cell description, the hang ceases to
+> happen. Curious as to what are the kernel side implications of this,
+> I went to see what `PLIC_QUIRK_EDGE_INTERRUPT` actually does and
+> bit-by-bit disabled the actual differences this flag makes in the
+> driver logic.
+>=20
+> This return path in irq-sifive-plic.c@223
+> (https://elixir.bootlin.com/linux/latest/source/drivers/irqchip/irq-sifiv=
+e-plic.c#L223)
+> is only enabled for SiFive PLIC, but not for THead one. Removing
+> those 2 lines of code from the driver (whilst keeping the DT binding
+> properly reporting a SiFive PLIC) fixes the hang. I am not an expert
+> on the PLIC driver to debug further or determine what would be a
+> proper fix to this, but this probably gets more experienced devs
+> somewhere (I hope).
+
+I'm not really familiar with this code either, but just checking what
+the affect of your changes are, AFAICT it just sets the handler to be
+handle_fasteoi_irq(), I noticed that that function has some code that
+will mask the irq if there's no handler registered for that particular
+interrupt:
+https://elixir.bootlin.com/linux/latest/source/kernel/irq/chip.c#L710
+
+It seems like in your case there might not be one registered (as the
+i2c controller's interrupt handler never performs it's first access),
+so I'm wondering if that masking of the interrupt when no action is
+registered is what solves the problem for you.
+
+That's mostly just speculation though, because I am not an expert on the
+PLIC driver either.
+
+> This is reproducible at least from Linux 6.4.1 to Linux 6.7.9 on RVVM;
+
+I clearly cannot make any definitive statements because I'm just
+speculating here after all based on this mail, as there's no logs and I
+have not tried to reproduce this, but this does seem like the interrupt
+is unmasked before the i2c controller driver has even requested it.
+Ordinarily (at least on the hardware I have done any testing of
+interrupts on) the interrupts are masked by default and only get
+unmasked when there's a user for it in the kernel.
+
+Are interrupts unmasked by default on RVVM?
+
+> Affects any hardware that would have SiFive PLIC + I2C-HID combination;
+
+Have you checked that this actually affects any actual hardware?
+
+Thanks,
+Conor.
+
+> Most likely this is reproducible on QEMU as well if it had i2c-hid emulat=
+ion,
+> or if we passthrough physical I2C-HID device & inject PLIC IRQs from
+> it's IRQ line.
+
+--iXQ/4Ga64dEQTg/D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfNwQAAKCRB4tDGHoIJi
+0j/gAP49veZAGuKcvAfq0Lh0oFqcH3fKhBfWU9XHTyak9/a5iwD9FrxTiWU0yMSf
+xQBVMWw1oap+RZ6q9cZRv422KdRtFAI=
+=jDN5
+-----END PGP SIGNATURE-----
+
+--iXQ/4Ga64dEQTg/D--
 
