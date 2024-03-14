@@ -1,203 +1,206 @@
-Return-Path: <linux-kernel+bounces-103519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26BEE87C086
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:39:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5457C87C08C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:41:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F0901C21500
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:39:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3F441F23826
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4637350D;
-	Thu, 14 Mar 2024 15:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F017073191;
+	Thu, 14 Mar 2024 15:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WzVrGnt/"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="COYmSUbX"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0900371B3C;
-	Thu, 14 Mar 2024 15:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7747D73180
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710430764; cv=none; b=jnPPrpQncOAhLn135ujHW89c0r9lUAwiJBeIxWhjYfgezmGfYDgtapAteX9tPejP7GWvp90VoIoeJn2Y/qgAYDmeGFDn3lnB1sjn2OWS8QLYic3mJf7IwI0TL+n6jhVNK+Iq2p44cWusXEQvndvmtUPgOgbb0nn/DU5ZQ58/Ous=
+	t=1710430868; cv=none; b=gmuMqjj8X6YlxCkDN6ybbc+vNPDGaQPMvSCGMYo7GJ3KJ4bRbKG6Htdog4v6gMu0CiIgpnGi+GGHTcuPOLT62mArSSqBMjjJNaO2m0LcAaxY7Zn4WBbPGVEmuUPwgAFXvJE2MZLLGas5OGpbr0uq/OPQIbv9GP4z+sX5BHyyVnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710430764; c=relaxed/simple;
-	bh=xCDgpHSzPYN7+5RfPDIivMyRKjRh1fwlgoWqlwjvqjI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OsepYIpLY9DWv10YoCIRaJC6riw+47rfQDtSdxIOVp/5k/X16yIrnmzVqPZ9Kt7GO3MjGC8bfOWDifB4YiN1VMyMdL/l20YFUgSxVla3yKFHZORXcP7TrQwlm3Jqf5/2aX6joLhX+LPPuCi+liNrkxT2TS36HeonYmj1V9KXWT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WzVrGnt/; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e6ca3fc613so952464b3a.3;
-        Thu, 14 Mar 2024 08:39:22 -0700 (PDT)
+	s=arc-20240116; t=1710430868; c=relaxed/simple;
+	bh=myByUEhYch6CQhdrpmC4r6CMq78FabyygvunZPUZQGM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=Oybt6lLsQu0mm+AfM/gl4VIY3VRp6JZfrkpx/Vb6vE6VMCERjJWxzqRI12gUDcz/+Ou9U5RvXT38iFuoYdkbS9DHZeStLQ/9AS5Qh69pj7lGZFMpK8X/iwayv9sI4j1ZXSmPBTqCZvtT9AsTJ/ErHu47QqcQxu+YrYlWeUawyhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=COYmSUbX; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5684ea117a3so1558533a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710430762; x=1711035562; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=IckUjOzGVOoR8xI7X+V33fEjGofxi6Lw3ExKVi2nyOg=;
-        b=WzVrGnt/clIsvA4KCD9k+otrzI6B+13ok813u/PUSyaPZyvysM8T2vy8lKEI8Voe/S
-         JEaYDa3XRf+T3ixp2i+sUT3iHw724e3ap7/QVv86oHVPlCwJ6tLKi7DIwuEayKO5Uw1L
-         Cn8mDoQCnRRQROUzBQIQTNIhK7hxGSJrTsECp1jwztYvhvohKPCTYBqhVxwRY+TMzrUa
-         4yiMjxH6bIU40LtbzbMYjMzceA9f5ba7qMBHkwDwai/+pofLbFOUlnyZbVZRuaVYOtZn
-         hz0zt3dHDtZ66EJ8Xv4fSaDSP4Dtrs7d8NicEQWDbnHNvGYHZ1pckN2uegZnjQzNALOi
-         VlDw==
+        d=szeredi.hu; s=google; t=1710430863; x=1711035663; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OJxAnGHqdudgFubRv83aDZanvuy3oP/f6CUVh38DB2c=;
+        b=COYmSUbXMkWsPwrpZT4TH/2UTd/yFexdiZvJfZmMrJCzH/PpbeFN0lOWjxn3CZT6ET
+         C91Mt/xoOOb5iJa8u7aeUJAKl/K04SFkZiynFYq1fF/Prawf2V2GS0zloUsfbsKeGXtl
+         FBuQ80YfXxecEqHXm6QWR4gw6ZpJNvWgpPHnk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710430762; x=1711035562;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IckUjOzGVOoR8xI7X+V33fEjGofxi6Lw3ExKVi2nyOg=;
-        b=ZSaFeQKvad5xuep+9UQrO9dnciwcrJfPjZVegEabIMhmsm4QWcA0UsYUybcpi/6bms
-         i5hR5Ad/HmtPGgtc1YGpp2ZdOxJtad6ylNczZLz2SeQ4UanxpANWehzMkTvyAyrN5SrV
-         AwTa619FiVom6lMdLDpa0XaRv5gBM7MLZAlbXgKjj98t8EbGrzqZ4IAjWti7YdWoNcRH
-         FmYPCDVFmmMwUDvV3b+8z4kyhArEGst7llTXOllqghcoV1c+Sel5lwNXxGerSUxXASvF
-         9rM2prgVZ2Y4a+5vRsMMWPQ4ydwc/O2w8KIaWVQxXnFnDv6SiSR3ArYB2cTT9O3m8H3E
-         ViUw==
-X-Forwarded-Encrypted: i=1; AJvYcCXMgBEFx1PHkECO4fQqWFqg6N6lbjwhjPg1o+cjRxQpYW8YnICGfpPxbYcmjDAb9Rfcnf6egnW14wwd5YPS1XNnCGvIqN59ZYVG8yB0Xv6+iyStswlOS2NDeRjT0VHnaQd57PH6LQAajO1Mm4u7pqGhVpqVfHwbE24hmVTDTQSj3Himwcnsb/QayfLbEbcIBm2wBBE7vqlAUcBTz8s=
-X-Gm-Message-State: AOJu0Yw/+T6xpVIsgWDkGAqlFANmz9am+mxM+buwZ66hrwuDUiKuaDKl
-	s/Tbo9h/Vdn3UDdfnon+hUsjKdFzO8+EYLn2y0h/vFgRqqOZ6Jf/
-X-Google-Smtp-Source: AGHT+IG+cFMIJ0mwrAnNQeQ19dYICYv5jzaC6OD8PkldbqMNOwnoigR+C+nVKrxCtIdHGl6KSmULKQ==
-X-Received: by 2002:a05:6a21:9998:b0:1a3:48c8:6858 with SMTP id ve24-20020a056a21999800b001a348c86858mr556664pzb.2.1710430762185;
-        Thu, 14 Mar 2024 08:39:22 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id fn15-20020a056a002fcf00b006e091a254adsm1620884pfb.30.2024.03.14.08.39.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 08:39:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <68c86ed9-e0db-4c90-be4c-8d1c5f102a51@roeck-us.net>
-Date: Thu, 14 Mar 2024 08:39:19 -0700
+        d=1e100.net; s=20230601; t=1710430863; x=1711035663;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OJxAnGHqdudgFubRv83aDZanvuy3oP/f6CUVh38DB2c=;
+        b=WIakP5KmaxNT03xG9hpD1GSOGOB29O6euWmEgIoQEZgV5jfB9qlztNo6TVpzEXJ8iz
+         oSYj6B2LVErgCJ1vrg35KhA6bNYLb+CgW7VAgjw0A1hW5vMIIo4KF7fYcxDJ94QnCul6
+         9/+0EZo+INPJmog7XQmvtqcYV5dSe5YIhNiwMhEBfvcSAqkpi9NsuTE5ILOELOmIORNd
+         x0bmsSsupKVBFrxLU+AzB/e+Q8OOGEqaTsr4fc6mvHyNx5HBE6VbBuGgKQcrWWTF6qua
+         hqMdlt4hyYfzQHXtfzK9oN0dwSElEpxUBOThlKq56I4hYV1A/jrozJ2rLIZpRa8TlVHU
+         BpFA==
+X-Gm-Message-State: AOJu0YwlMD/Yc4Cepp3bsJTHBRApOWpVZ7Rx7/pkTiEFTo0pfCWF0Lyz
+	rp0GxsGW7CoYPFCUT9hlcc27buCs/CaX1GuElHB6m0xP69yoBBUmnYSDI7uAmQklGs0QIqP0oIl
+	btqYH7NahTMwEttK5oaAkNWYTXFHC96RfJ8KWNw==
+X-Google-Smtp-Source: AGHT+IF1OehoWcgf5en6SfEzrgWomRDzET+/crPEJD7LgDqzJMfM3C0km2yuM5I+ogRx8MHNLAKyKzze8pHLL3ti+MI=
+X-Received: by 2002:a17:907:cbc4:b0:a46:5ac:dce2 with SMTP id
+ vk4-20020a170907cbc400b00a4605acdce2mr2029445ejc.51.1710430862614; Thu, 14
+ Mar 2024 08:41:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 07/27] net: wan: Add support for QMC HDLC
-Content-Language: en-US
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Herve Codina <herve.codina@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Qiang Zhao <qiang.zhao@nxp.com>,
- Li Yang <leoyang.li@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Simon Horman <horms@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20231115144007.478111-1-herve.codina@bootlin.com>
- <20231115144007.478111-8-herve.codina@bootlin.com>
- <bd7b7714-1e73-444a-a175-675039d4f6e4@roeck-us.net>
- <42504939-e423-4128-bb86-a40e7b7ae845@csgroup.eu>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <42504939-e423-4128-bb86-a40e7b7ae845@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 14 Mar 2024 16:40:50 +0100
+Message-ID: <CAJfpegsZoLMfcpBXBPr7wdAnuXfAYUZYyinru3jrOWWEz7DJPQ@mail.gmail.com>
+Subject: [GIT PULL] fuse update for 6.9
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000fadc420613a0b7f9"
 
-On 3/14/24 08:31, Christophe Leroy wrote:
-> 
-> 
-> Le 14/03/2024 à 16:21, Guenter Roeck a écrit :
->> On Wed, Nov 15, 2023 at 03:39:43PM +0100, Herve Codina wrote:
->>> The QMC HDLC driver provides support for HDLC using the QMC (QUICC
->>> Multichannel Controller) to transfer the HDLC data.
->>>
->>> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
->>> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> Acked-by: Jakub Kicinski <kuba@kernel.org>
->>> ---
->> [ ... ]
->>
->>> +
->>> +static const struct of_device_id qmc_hdlc_id_table[] = {
->>> +	{ .compatible = "fsl,qmc-hdlc" },
->>> +	{} /* sentinel */
->>> +};
->>> +MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
->>
->> I am a bit puzzled. How does this even compile ?
-> 
-> Because
-> 
-> #else  /* !MODULE */
-> #define MODULE_DEVICE_TABLE(type, name)
-> #endif
-> 
+--000000000000fadc420613a0b7f9
+Content-Type: text/plain; charset="UTF-8"
 
-Ah, makes sense. We live and learn.
+Hi Linus,
 
-> 
-> We should probably try to catch those errors when CONFIG_MODULE is not set.
-> 
-> By the way, a fix is available at
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20240314123346.461350-1-herve.codina@bootlin.com/
-> 
+Please pull from:
 
-Great, I'll add that to my testing branch for the time being.
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git
+tags/fuse-update-6.9
 
-Thanks!
-Guenter
+- Add passthrough mode for regular file I/O.  This allows performing
+read and write (also via memory maps) on a backing file without
+incurring the overhead of roundtrips to userspace.  For now this is
+only allowed to privileged servers, but this limitation will go away
+in the future.  (Amir Goldstein)
 
+- Fix interaction of direct I/O mode with memory maps (Bernd Schubert)
+
+- Export filesystem tags through sysfs for virtiofs (Stefan Hajnoczi)
+
+- Allow resending queued requests for server crash recovery (Zhao Chen)
+
+- Misc fixes and cleanups
+
+There's a conflict in fs/fuse/inode.c.  The resolution (attached) is
+to leave the fuse_backing_files_free() call in fuse_conn_put(), before
+call_rcu().
+
+Thanks,
+Miklos
+
+---
+Alexander Mikhalitsyn (2):
+      fuse: fix typo for fuse_permission comment
+      fuse: __kuid_val/__kgid_val helpers in fuse_fill_attr_from_inode()
+
+Amir Goldstein (14):
+      fuse: factor out helper fuse_truncate_update_attr()
+      fuse: allocate ff->release_args only if release is needed
+      fuse: break up fuse_open_common()
+      fuse: prepare for failing open response
+      fuse: introduce inode io modes
+      fuse: allow parallel dio writes with FUSE_DIRECT_IO_ALLOW_MMAP
+      fuse: factor out helper for FUSE_DEV_IOC_CLONE
+      fuse: introduce FUSE_PASSTHROUGH capability
+      fuse: implement ioctls to manage backing files
+      fuse: prepare for opening file in passthrough mode
+      fuse: implement open in passthrough mode
+      fuse: implement read/write passthrough
+      fuse: implement splice read/write passthrough
+      fuse: implement passthrough for mmap
+
+Bernd Schubert (3):
+      fuse: fix VM_MAYSHARE and direct_io_allow_mmap
+      fuse: create helper function if DIO write needs exclusive lock
+      fuse: add fuse_dio_lock/unlock helper functions
+
+Jiachen Zhang (1):
+      fuse: remove an unnecessary if statement
+
+Jingbo Xu (1):
+      fuse: add support for explicit export disabling
+
+Kemeng Shi (1):
+      fuse: remove unneeded lock which protecting update of congestion_threshold
+
+Lei Huang (1):
+      fuse: Fix missing FOLL_PIN for direct-io
+
+Li RongQing (1):
+      virtio_fs: remove duplicate check if queue is broken
+
+Matthew Wilcox (Oracle) (2):
+      fuse: Remove fuse_writepage
+      fuse: Convert fuse_writepage_locked to take a folio
+
+Miklos Szeredi (5):
+      fuse: replace remaining make_bad_inode() with fuse_make_bad()
+      fuse: fix root lookup with nonzero generation
+      fuse: don't unhash root
+      fuse: use FUSE_ROOT_ID in fuse_get_root_inode()
+      fuse: get rid of ff->readdir.lock
+
+Stefan Hajnoczi (4):
+      virtiofs: forbid newlines in tags
+      virtiofs: export filesystem tags through sysfs
+      virtiofs: emit uevents on filesystem events
+      virtiofs: drop __exit from virtio_fs_sysfs_exit()
+
+Zhao Chen (2):
+      fuse: Introduce a new notification type for resend pending requests
+      fuse: Use the high bit of request ID for indicating resend requests
+
+Zhou Jifeng (1):
+      fuse: Track process write operations in both direct and writethrough modes
+
+---
+ Documentation/ABI/testing/sysfs-fs-virtiofs |  11 +
+ fs/fuse/Kconfig                             |  11 +
+ fs/fuse/Makefile                            |   2 +
+ fs/fuse/control.c                           |   6 +-
+ fs/fuse/dev.c                               | 156 ++++++++--
+ fs/fuse/dir.c                               |  55 +++-
+ fs/fuse/file.c                              | 457 +++++++++++++++++-----------
+ fs/fuse/fuse_i.h                            | 153 ++++++++--
+ fs/fuse/inode.c                             |  55 +++-
+ fs/fuse/iomode.c                            | 254 ++++++++++++++++
+ fs/fuse/passthrough.c                       | 355 +++++++++++++++++++++
+ fs/fuse/readdir.c                           |   4 -
+ fs/fuse/virtio_fs.c                         | 141 +++++++--
+ include/uapi/linux/fuse.h                   |  39 ++-
+ 14 files changed, 1422 insertions(+), 277 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-fs-virtiofs
+ create mode 100644 fs/fuse/iomode.c
+ create mode 100644 fs/fuse/passthrough.c
+
+--000000000000fadc420613a0b7f9
+Content-Type: text/x-patch; charset="US-ASCII"; name="fuse-update-6.9.merge.diff"
+Content-Disposition: attachment; filename="fuse-update-6.9.merge.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ltreas4l0>
+X-Attachment-Id: f_ltreas4l0
+
+ZGlmZiAtLWNjIGZzL2Z1c2UvaW5vZGUuYwppbmRleCA1MTZlYTI5NzlhOTAsMDI4NjllZGY3MmYz
+Li4zYTVkODg4NzgzMzUKLS0tIGEvZnMvZnVzZS9pbm9kZS5jCisrKyBiL2ZzL2Z1c2UvaW5vZGUu
+YwpAQEAgLTk1NCw3IC05NTksOSArOTY2LDkgQEBAIHZvaWQgZnVzZV9jb25uX3B1dChzdHJ1Y3Qg
+ZnVzZV9jb25uICpmYwogIAkJCVdBUk5fT04oYXRvbWljX3JlYWQoJmJ1Y2tldC0+Y291bnQpICE9
+IDEpOwogIAkJCWtmcmVlKGJ1Y2tldCk7CiAgCQl9CisgCQlpZiAoSVNfRU5BQkxFRChDT05GSUdf
+RlVTRV9QQVNTVEhST1VHSCkpCisgCQkJZnVzZV9iYWNraW5nX2ZpbGVzX2ZyZWUoZmMpOwogLQkJ
+ZmMtPnJlbGVhc2UoZmMpOwogKwkJY2FsbF9yY3UoJmZjLT5yY3UsIGRlbGF5ZWRfcmVsZWFzZSk7
+CiAgCX0KICB9CiAgRVhQT1JUX1NZTUJPTF9HUEwoZnVzZV9jb25uX3B1dCk7Cg==
+--000000000000fadc420613a0b7f9--
 
