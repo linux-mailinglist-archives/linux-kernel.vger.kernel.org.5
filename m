@@ -1,182 +1,243 @@
-Return-Path: <linux-kernel+bounces-102778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0731387B731
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:01:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5025387B733
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:03:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B21421F225CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:01:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B3041C21979
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF1D8F55;
-	Thu, 14 Mar 2024 05:00:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B336127;
-	Thu, 14 Mar 2024 05:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5738F8F58;
+	Thu, 14 Mar 2024 05:03:38 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9F31C01;
+	Thu, 14 Mar 2024 05:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710392453; cv=none; b=G9oDa/OL4MglzLPC/AVZH+7S/+y1H3CgbfAdNnj3aqo8mJcOOyXNSOwOowlPZk3RqPoW19xpGWIzVyWWncKi4AHnp+saLF0XOxw9hrduDnOknyKogB7MarCYN7iOqXZc1uZOhr2dGe3U7iBUH67r0IDQ4cNKOYtwGSOkH4MXvl8=
+	t=1710392617; cv=none; b=HyXSKBsabVjqbIfk59k2sBa1bthfcQbdVRlVnhzupxxFLpBV9C59w7KjcQ/Bu9pIcVUXx43iXm+ytpUj48Nb5WoheXX1aFYe+4fvYRfL/DLQ2KZuU25OLW3lqZzf7mrhOvmlJDBhbx1TvhYNTG6rkDkfZs0DtTdDRniQMPx2K5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710392453; c=relaxed/simple;
-	bh=y6QaxWFqGnE5GaMe6rGX0u/jHox4nnL4G0s/sorQqV8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YMYbx9xq+UivdqNHUFLkUCgVT3cmczhneUeljO1DhPkcOaFlJlfoq5dmazH7eYIXEtaD1XgI/mz0/5RX8eufHcFPCpmHTYfkPHr/hlYBnM+DKiQSaltd5UPJc+hJRQa7vj9Pzq+uJELi4Um5tIb/do5Dl84w/8pzOUAJYhpEXv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FE671007;
-	Wed, 13 Mar 2024 22:01:25 -0700 (PDT)
-Received: from [10.162.40.27] (e116581.arm.com [10.162.40.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E78E03F73F;
-	Wed, 13 Mar 2024 22:00:46 -0700 (PDT)
-Message-ID: <12b0aa90-3b4f-4fb0-b4df-c677f496cb09@arm.com>
-Date: Thu, 14 Mar 2024 10:30:44 +0530
+	s=arc-20240116; t=1710392617; c=relaxed/simple;
+	bh=DEdgtwt6YpIXa/VkE2OuCUDpw818dQzh4Yz6C4bShp0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bOgLgYPX3Hy89sVBgNYBmd04/WWLp3Gt0PW6JjcBKo3kaauTHGRLSd+PzRzSj41FpPqmfZRo0tQYsFA7knqiIwacMEKZTfxh4ixcL1/W2scPLdERrC4XQTxgXJiSkHgJeQVX9bzqoCwEy6GqmlPLLqFJzJ4Z825I/JqcX7i5d9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: fb8d87a56db54e16b745b3fe8a1eb866-20240314
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:4f12d4e6-ae40-4eb1-b91f-7d26687c46e9,IP:10,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-10
+X-CID-INFO: VERSION:1.1.37,REQID:4f12d4e6-ae40-4eb1-b91f-7d26687c46e9,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-10
+X-CID-META: VersionHash:6f543d0,CLOUDID:603afc84-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:240314130324W0UW6HX5,BulkQuantity:0,Recheck:0,SF:17|19|44|66|38|24|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
+	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
+X-UUID: fb8d87a56db54e16b745b3fe8a1eb866-20240314
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+	(envelope-from <aichao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 2128324725; Thu, 14 Mar 2024 13:03:21 +0800
+From: Ai Chao <aichao@kylinos.cn>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org
+Cc: Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v8] platform/x86: add lenovo wmi camera button driver
+Date: Thu, 14 Mar 2024 13:03:19 +0800
+Message-Id: <20240314050319.171816-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 12/12] selftests/mm: virtual_address_range: conform to
- TAP format output
-Content-Language: en-US
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: kernel@collabora.com, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Anshuman.Khandual@arm.com
-References: <20240202113119.2047740-1-usama.anjum@collabora.com>
- <20240202113119.2047740-13-usama.anjum@collabora.com>
-From: Dev Jain <dev.jain@arm.com>
-In-Reply-To: <20240202113119.2047740-13-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Add lenovo generic wmi driver to support camera button.
+The Camera button is a GPIO device. This driver receives ACPI notifyi
+when the camera button is switched on/off. This driver is used in
+Lenovo A70, it is a Computer integrated machine.
 
-On 2/2/24 17:01, Muhammad Usama Anjum wrote:
-> Conform the layout, informational and status messages to TAP. No
-> functional change is intended other than the layout of output messages.
->
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
->   .../selftests/mm/virtual_address_range.c      | 44 +++++++++----------
->   1 file changed, 22 insertions(+), 22 deletions(-)
->
-> diff --git a/tools/testing/selftests/mm/virtual_address_range.c b/tools/testing/selftests/mm/virtual_address_range.c
-> index bae0ceaf95b13..7bcf8d48256a6 100644
-> --- a/tools/testing/selftests/mm/virtual_address_range.c
-> +++ b/tools/testing/selftests/mm/virtual_address_range.c
-> @@ -12,6 +12,7 @@
->   #include <errno.h>
->   #include <sys/mman.h>
->   #include <sys/time.h>
-> +#include "../kselftest.h"
->   
->   /*
->    * Maximum address range mapped with a single mmap()
-> @@ -68,23 +69,15 @@ static char *hind_addr(void)
->   	return (char *) (1UL << bits);
->   }
->   
-> -static int validate_addr(char *ptr, int high_addr)
-> +static void validate_addr(char *ptr, int high_addr)
->   {
->   	unsigned long addr = (unsigned long) ptr;
->   
-> -	if (high_addr) {
-> -		if (addr < HIGH_ADDR_MARK) {
-> -			printf("Bad address %lx\n", addr);
-> -			return 1;
-> -		}
-> -		return 0;
-> -	}
-> +	if (high_addr && addr < HIGH_ADDR_MARK)
-> +		ksft_exit_fail_msg("Bad address %lx\n", addr);
->   
-> -	if (addr > HIGH_ADDR_MARK) {
-> -		printf("Bad address %lx\n", addr);
-> -		return 1;
-> -	}
-> -	return 0;
-> +	if (addr > HIGH_ADDR_MARK)
-> +		ksft_exit_fail_msg("Bad address %lx\n", addr);
->   }
->   
->   static int validate_lower_address_hint(void)
-> @@ -107,23 +100,29 @@ int main(int argc, char *argv[])
->   	char *hint;
->   	unsigned long i, lchunks, hchunks;
->   
-> +	ksft_print_header();
-> +	ksft_set_plan(1);
-> +
->   	for (i = 0; i < NR_CHUNKS_LOW; i++) {
->   		ptr[i] = mmap(NULL, MAP_CHUNK_SIZE, PROT_READ | PROT_WRITE,
->   					MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->   
->   		if (ptr[i] == MAP_FAILED) {
-> -			if (validate_lower_address_hint())
-> -				return 1;
-> +			if (validate_lower_address_hint()) {
-> +				ksft_test_result_skip("Memory constraint not fulfilled\n");
-> +				ksft_finished();
-> +			}
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
+---
+v8: Dev_deb convert to dev_err.
+v7: Add dev_dbg and remove unused dev in struct.
+v6: Modify SW_CAMERA_LENS_COVER to KEY_CAMERA_ACCESS_ENABLE/KEY_CAMERA_ACCESS_DISABLE.
+v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_COVER.
+v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenovo_wmi_priv.
+v3: Remove lenovo_wmi_remove function.
+v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
 
-Hi,
+ drivers/platform/x86/Kconfig             |  12 +++
+ drivers/platform/x86/Makefile            |   1 +
+ drivers/platform/x86/lenovo-wmi-camera.c | 108 +++++++++++++++++++++++
+ 3 files changed, 121 insertions(+)
+ create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
 
-When validate_lower_address_hint() returns 1, it implies that despite 
-filling the lower
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index bdd302274b9a..9506a455b547 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
+ 	To compile this driver as a module, choose M here: the module
+ 	will be called inspur-platform-profile.
+ 
++config LENOVO_WMI_CAMERA
++	tristate "Lenovo WMI Camera Button driver"
++	depends on ACPI_WMI
++	depends on INPUT
++	help
++	  This driver provides support for Lenovo camera button. The Camera
++	  button is a GPIO device. This driver receives ACPI notify when the
++	  camera button is switched on/off.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called lenovo-wmi-camera.
++
+ source "drivers/platform/x86/x86-android-tablets/Kconfig"
+ 
+ config FW_ATTR_CLASS
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 1de432e8861e..217e94d7c877 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
+ obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
+ obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
+ obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
++obj-$(CONFIG_LENOVO_WMI_CAMERA)	+= lenovo-wmi-camera.o
+ 
+ # Intel
+ obj-y				+= intel/
+diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platform/x86/lenovo-wmi-camera.c
+new file mode 100644
+index 000000000000..f83e3ccd9189
+--- /dev/null
++++ b/drivers/platform/x86/lenovo-wmi-camera.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Lenovo WMI Camera Button Driver
++ *
++ * Author: Ai Chao <aichao@kylinos.cn>
++ * Copyright (C) 2024 KylinSoft Corporation.
++ */
++
++#include <linux/acpi.h>
++#include <linux/device.h>
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/wmi.h>
++
++#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
++
++struct lenovo_wmi_priv {
++	struct input_dev *idev;
++};
++
++enum {
++	SW_CAMERA_OFF	= 0,
++	SW_CAMERA_ON	= 1,
++};
++
++static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
++{
++	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
++	u8 camera_mode;
++
++	if (obj->type != ACPI_TYPE_BUFFER) {
++		dev_err(&wdev->dev, "Bad response type %u\n", obj->type);
++		return;
++	}
++
++	if (obj->buffer.length != 1) {
++		dev_err(&wdev->dev, "Invalid buffer length %u\n", obj->buffer.length);
++		return;
++	}
++
++	/* obj->buffer.pointer[0] is camera mode:
++	 *      0 camera close
++	 *      1 camera open
++	 */
++	camera_mode = obj->buffer.pointer[0];
++	if (camera_mode > SW_CAMERA_ON) {
++		dev_err(&wdev->dev, "Unknown camera mode %u\n", camera_mode);
++		return;
++	}
++
++	if (camera_mode == SW_CAMERA_ON) {
++		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 1);
++		input_sync(priv->idev);
++		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 0);
++	} else {
++		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 1);
++		input_sync(priv->idev);
++		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 0);
++	}
++	input_sync(priv->idev);
++}
++
++static int lenovo_wmi_probe(struct wmi_device *wdev, const void *context)
++{
++	struct lenovo_wmi_priv *priv;
++
++	priv = devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	dev_set_drvdata(&wdev->dev, priv);
++
++	priv->idev = devm_input_allocate_device(&wdev->dev);
++	if (!priv->idev)
++		return -ENOMEM;
++
++	priv->idev->name = "Lenovo WMI Camera Button";
++	priv->idev->phys = "wmi/input0";
++	priv->idev->id.bustype = BUS_HOST;
++	priv->idev->dev.parent = &wdev->dev;
++	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_ENABLE);
++	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_DISABLE);
++
++	return input_register_device(priv->idev);
++}
++
++static const struct wmi_device_id lenovo_wmi_id_table[] = {
++	{ .guid_string = WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
++	{  }
++};
++
++static struct wmi_driver lenovo_wmi_driver = {
++	.driver = {
++		.name = "lenovo-wmi-camera",
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
++	},
++	.id_table = lenovo_wmi_id_table,
++	.no_singleton = true,
++	.probe = lenovo_wmi_probe,
++	.notify = lenovo_wmi_notify,
++};
++
++module_wmi_driver(lenovo_wmi_driver);
++
++MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
++MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
++MODULE_DESCRIPTION("Lenovo WMI Camera Button Driver");
++MODULE_LICENSE("GPL");
+-- 
+2.25.1
 
-range, mmap succeeded. IMHO, ksft_exit_fail_msg() should be used 
-instead, with a
-
-more descriptive message indicating that the memory was unexpectedly 
-allocated.
-
-
-Regards
-
-Dev
-
->   			break;
->   		}
->   
-> -		if (validate_addr(ptr[i], 0))
-> -			return 1;
-> +		validate_addr(ptr[i], 0);
->   	}
->   	lchunks = i;
->   	hptr = (char **) calloc(NR_CHUNKS_HIGH, sizeof(char *));
-> -	if (hptr == NULL)
-> -		return 1;
-> +	if (hptr == NULL) {
-> +		ksft_test_result_skip("Memory constraint not fulfilled\n");
-> +		ksft_finished();
-> +	}
->   
->   	for (i = 0; i < NR_CHUNKS_HIGH; i++) {
->   		hint = hind_addr();
-> @@ -133,8 +132,7 @@ int main(int argc, char *argv[])
->   		if (hptr[i] == MAP_FAILED)
->   			break;
->   
-> -		if (validate_addr(hptr[i], 1))
-> -			return 1;
-> +		validate_addr(hptr[i], 1);
->   	}
->   	hchunks = i;
->   
-> @@ -145,5 +143,7 @@ int main(int argc, char *argv[])
->   		munmap(hptr[i], MAP_CHUNK_SIZE);
->   
->   	free(hptr);
-> -	return 0;
-> +
-> +	ksft_test_result_pass("Test\n");
-> +	ksft_finished();
->   }
 
