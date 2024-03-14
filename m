@@ -1,136 +1,94 @@
-Return-Path: <linux-kernel+bounces-103684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E1ED87C2F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:43:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E0C087C2F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:43:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E9991C218EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:43:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38F37285BAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC9D74E09;
-	Thu, 14 Mar 2024 18:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15E374E03;
+	Thu, 14 Mar 2024 18:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AEgdOeuc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f91HnRit"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58EC2757E2
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D42874C17
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:43:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710441816; cv=none; b=H44hAerNxbXr3M+YauTpcvRBnD6cjN2QeEPe2gwyYSDiDMZxLoMtalRCp+lfYM6ECHi1r6eH/ffn4Fg60SyeLOzO4+Lcn23Cg6SMas5CK4xVeEgxiSL8b2C2j0YY2Kqdg7ISpcdeALJECHco8itWI3qqwKG3DKzwOyTIU6YpUEE=
+	t=1710441806; cv=none; b=KvPJp8+ytoK57jZGrEFgfb3TQcBMN1nL0lFR84U1tTui93wcHV3wihSLajozRKQuhBDXUaKUAiBKLsz9D4eVyou7bK4bEEwAERIhsTVqeJm5DqPH5DzImSkp5kEihJZB+F2nuzwVUGiw0dcHjKbI8Ib/DfwTMj3mowpWwZbO+ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710441816; c=relaxed/simple;
-	bh=xutuD0LuXBxACIRdNt3ihtagRBXo4ZIXDrd2H0Q/LQM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=On8DG/kHw60zlOIMqoMbFDEMgq0CGqXwRjUGme7Qj1CpfC6YQIOc0E+om8Gr9ziQyYqVcTN8VxWe9TeCwN7eNkrt+6ANUFKaFR0L21sJPh5sCXsulO6As+YZcp/k8rOCyRDXbLZNWJ6fb41OzKSerJ5vBKHm/Ssj0Ka1f1n7kUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AEgdOeuc; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1710441806; c=relaxed/simple;
+	bh=nI9ljV1P4oULiL6aEE9RUXCmPt/OHU+mpJxQBdt5abk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=RFLNTp/MDCi/GkE2wsKHV7mq6HDwLxTR70IYkGJ9HZmUdI9+5fuHOPwLgCs3riLkkjbr4YqrO86BttwraMiVLaf4KMt9UvmF4UAXJ3lTpiVJsfMGhfN5SdQY8ano+lfSxEB9PiazKI0TGK46w59FIODfXtd18/LiHVYpjn4F42Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f91HnRit; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710441814;
+	s=mimecast20190719; t=1710441804;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=79OTvMl/2qzNCLG1xJnyizwsVJXyAUZTjESWoeWOxUM=;
-	b=AEgdOeucvhXlRJIifzHhzYX2GvneIFyBOQEZAPZD61QyOTxYDeZ6AyMbbUD5CTHH54zum1
-	Yu/50GONrmt6QZDJhT56aDmNDDtbhV7Tps/qTqg+3ENjODcy9mtNBG2O7IrrteQhisb1nP
-	hzK2HKTzIoyxB+gJeT/EG80R8bhXL9M=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=SOY7Ku6lBK1MUVkI3MgivQbxl+Npm8EWVdz/D2Q1yMo=;
+	b=f91HnRitKw/54dFXz0Q75KTJbncBbPUyJYhW+0CNzim/ihxwcPLhx1b7+kdQNljpHUdlQ8
+	9yywK9BRVbxnVY0GhWCl0BAOTYNHfxD6HO3Lwd6KTYINUw9e5TPaX47Gi1LVDULCJA0SQ5
+	lDIsjlg2JIPUBpJpWE5c+INa2eULO2E=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-265-jJA4hDxwMiS_lz9hzxXUzw-1; Thu, 14 Mar 2024 14:43:32 -0400
-X-MC-Unique: jJA4hDxwMiS_lz9hzxXUzw-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33ecc0f0c95so276116f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:43:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710441809; x=1711046609;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=79OTvMl/2qzNCLG1xJnyizwsVJXyAUZTjESWoeWOxUM=;
-        b=cXbyRT5018W+yJc5MYkhXIw4K2vUvuoOIhajS9VD15Ni/kojbF3A6qMW/Py8SbopHx
-         tGgYk8IJqMIrXed8wRlYamyOZP7nGDFSB6dJjs6tAFjPTtB9sA2m592BmPQKrMC2NLUx
-         pdnX4e1GRqobQziaj+UcFyefJ1X/vSBblvEaeGIQkItczP1IxCIdeOfw02WdN/Tv8EsY
-         y4Web3Am+iBZa+2/Ll426PtGHYrVQ+4OlNKHYplogq9ArfjXX+9UUTMX+dL6GpmyxoZZ
-         gSE0erKbTpAf4V4pzGJS2koxBCM1BWF4cd8VYGdqkZAtlQ5e7NMQIuAzAj2XSInm66Oq
-         tVug==
-X-Forwarded-Encrypted: i=1; AJvYcCXzAy5K7tUrgXsGmttfIYb1fNGBImlMvC8lN0/QvjC827TvArngNazcCzeoCVChhMr7g+o+PTr5xBzqv0PvKC1+406fjEk9f98iNcBT
-X-Gm-Message-State: AOJu0YxLbw7dRCDlCixXPI/LLZChO7A7Fl2+MDDeQzrpnXczt1R7wjld
-	PG5gvLEnaQkHbiQ/XXSQK4p8BY7EwLopccBRr1AmJdggPUZ1OYgvnHUAEUwM+SqUvEbQRWpU2va
-	TbKlptZpQLidmICgqPLOnRng13urSSXL1hfPM9KwT39bWqu6A4qBBrMMtz3AqQ5b//LIA5fsZPc
-	8CyXx0MnxYVBkV5ZwOLCJLIuuz4L4rcj143au4
-X-Received: by 2002:adf:f6ce:0:b0:33e:834:13d5 with SMTP id y14-20020adff6ce000000b0033e083413d5mr650958wrp.69.1710441809381;
-        Thu, 14 Mar 2024 11:43:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGVgF62Ke8pOwjKjvGfkCJkiiceS38TRH4H3quMvarHzkZsz2xQbaOU+Zu/5wq90DQPecnfTUDbw2wUmLwf+/w=
-X-Received: by 2002:adf:f6ce:0:b0:33e:834:13d5 with SMTP id
- y14-20020adff6ce000000b0033e083413d5mr650952wrp.69.1710441809069; Thu, 14 Mar
- 2024 11:43:29 -0700 (PDT)
+ us-mta-643-TlQBXOeOMpaGftmfF8WMkA-1; Thu, 14 Mar 2024 14:43:20 -0400
+X-MC-Unique: TlQBXOeOMpaGftmfF8WMkA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6BEEB8007A3;
+	Thu, 14 Mar 2024 18:43:20 +0000 (UTC)
+Received: from redhat.com (unknown [10.22.34.28])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id D5185C04129;
+	Thu, 14 Mar 2024 18:43:19 +0000 (UTC)
+Date: Thu, 14 Mar 2024 13:43:18 -0500
+From: David Teigland <teigland@redhat.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, gfs2@lists.linux.dev
+Subject: [GIT PULL] dlm fixes for 6.9
+Message-ID: <ZfNFRg-KxTCTPf92@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308223702.1350851-1-seanjc@google.com> <20240308223702.1350851-5-seanjc@google.com>
- <CABgObfa3By9GU9_8FmqHQK-AxWU3ocbBkQK0xXwx2XRDP828dg@mail.gmail.com> <ZfNEEFmTkx-RVuix@google.com>
-In-Reply-To: <ZfNEEFmTkx-RVuix@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 14 Mar 2024 19:43:17 +0100
-Message-ID: <CABgObfb7cc+q3qwr_zKk3SXec_3VtbJ5yWAkVwYXdsFQAB1X_Q@mail.gmail.com>
-Subject: Re: [GIT PULL] KVM: x86: MMU changes for 6.9
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On Thu, Mar 14, 2024 at 7:38=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Thu, Mar 14, 2024, Paolo Bonzini wrote:
-> > On Fri, Mar 8, 2024 at 11:37=E2=80=AFPM Sean Christopherson <seanjc@goo=
-gle.com> wrote:
-> > >
-> > >  - Zap TDP MMU roots at 4KiB granularity to minimize the delay in yie=
-lding if
-> > >    a reschedule is needed, e.g. if a high priority task needs to run.=
-  Because
-> > >    KVM doesn't support yielding in the middle of processing a zapped =
-non-leaf
-> > >    SPTE, zapping at 1GiB granularity can result in multi-millisecond =
-lag when
-> > >    attempting to schedule in a high priority.
-> > >
-> >
-> > Would 2 MiB provide a nice middle ground?
->
-> Not really?
->
-> Zapping at 2MiB definitely fixes the worst of the tail latencies, but the=
-re is
-> still a measurable difference between 2MiB and 4KiB.
+Hi Linus,
 
-Yeah, but you said multi millisecond so I guessed 5/512 is a 10
-microsecond latency, which should be pretty acceptable (for PREEMPT_RT
-tests at Red Hat we shoot at 10-15 worst case, so for CONFIG_PREEMPT
-it would be more than enough).
+Please pull dlm fixes from tag:
 
-> And on the other side of the
-> coing, I was unable to observe a meaningful difference in total runtime b=
-y zapping
-> at 2MiB, or even 1GiB, versus 4KiB.
+git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-6.9
 
-Ok, that's the answer.
+Fix two refcounting bugs from recent changes:
+- misuse of atomic_dec_and_test results in missed ref decrement
+- wrong variable assignment results in another missed ref decrement
 
-Paolo
+Thanks,
+Dave
 
-> In other words, AFAICT, there's no need to shoot for a middle ground beca=
-use trying
-> to zap at larger granularities doesn't buy us anything.
->
+
+ fs/dlm/lock.c | 10 ++++++----
+ fs/dlm/user.c | 10 +++++-----
+ 2 files changed, 11 insertions(+), 9 deletions(-)
+
+
+Alexander Aring (2):
+      dlm: fix user space lkb refcounting
+      dlm: fix off-by-one waiters refcount handling
 
 
