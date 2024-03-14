@@ -1,117 +1,117 @@
-Return-Path: <linux-kernel+bounces-103781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB72B87C466
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:45:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4D887C465
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42CED1F223F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:45:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D441F21A92
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5B176400;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F128763FD;
 	Thu, 14 Mar 2024 20:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GtShGde4"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ko/VWB/I";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tZR0FPOc"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6124574E21;
-	Thu, 14 Mar 2024 20:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 071F56FE28;
+	Thu, 14 Mar 2024 20:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710449140; cv=none; b=cuRRx3fxvnNHvknIZCxe06TROYagTb5VEv+JVRu82TQyzeUg1NWBhmUhmrX/iLjqmzpNfAYVXdNJoskHI7y5MVDEnkuz6xV+a5Wylpx+iQO6X1Doo/7mf9m9aqb3QUAPRZ2xgue0g2lr/voaR0JIE4VDsxuEpKi2O+6ouv6SzIY=
+	t=1710449140; cv=none; b=G8HWXB3SjLQl7v+ZH0N9krA21UnsRjExdW6qOBrZFfjqMstg4QUO3sgYcvREMxJ9OdzlXFV0S8dtMHMciEo1gWuoTw1jlXvGRX5sBGpwnPF73ULzFrC/7/Bd5DpOfyUcUI86w3zEirNMJT89uLYQ4ajGGUVRJZdzHfpEpvNF8gI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710449140; c=relaxed/simple;
-	bh=/wT9frV/hX7PE8jYRX5Wx4I3/dpgvF58kgRs2lTo14o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BYoTFLmTbA7ftYSgmMd6/X2L6XWZ3l9P/I1aMwuVTpQGMmE+GeCbojENpGqUR3hsFLJ5TzVFSPMlBsno3WUkvmpyYaQhfArfRFDUM3jAGDRTe7AlIMe0GGnazivf6JNbs/SF7JlJbmJB/Rky/RTF11OmLPSnH8+LCQMvdRCns+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GtShGde4; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dd8dd198d0so10629355ad.3;
-        Thu, 14 Mar 2024 13:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710449138; x=1711053938; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xnMrBa1zsNDJ8SxKjGn0mlGSVNeZ/wwefGNUMZ4JI0c=;
-        b=GtShGde476bOdiXp18DjLo7oUmkqXwggsEfNunputQzVZnU32fULk93D9W/5Kcs3Xv
-         BoD2izfUpWqnBOgu3C1X8/J5zLhUHjFLnaypO6A1sSD/ir8qn8tzRBWrWEEsGgZvBsam
-         9XgZGVcfbjs2aeSW3RVRs87R4vt1mKV6lBU+F4kb20PYoqubVoDSjT+stOXJW1JyeUAR
-         hgwhI4W1BUsCJhJbdtIT9h6HLlB4y/fBVW3Ffw+i3EX0cVQ7MeOmfUj+1rki4+1WF4/P
-         m4MYpOXL2hX0mcJYOI+9BTVwVivVs953uAHUP3eEtPF8soJjas7ifwh46+Uwxl/aq3GJ
-         PdZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710449138; x=1711053938;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xnMrBa1zsNDJ8SxKjGn0mlGSVNeZ/wwefGNUMZ4JI0c=;
-        b=d1hqok4UTrMTLb+Cipey9GH54U/4LM09ptnCkOIBv7KAJBGqJ2SqDXBlQF+o9gQCFB
-         ozdAkf/YivdevmhlAaZBpUtSi+9X2ixAFnSiJXx00I72kCHpZUtjqzGRD7gdnvBMqc40
-         oHBDRsA9Dy5sLFuaOPYv6QGUqAVj9tp4c3p2eOnboUYOeSHQ69FPbpIs2SPlYsaCHZgV
-         0JPdOBJZ+hxY390irDQAHsly8O/op1kOBcAkQf0i4e2W9qh/Wg0K/8F0BH7rv2n6vMky
-         BuAEHu6fnGRN095PQjXzIMgsFyYycgGaAn6YLOJSbcN6PnwS+GyxP92wldAZdQW/bFvU
-         EOxA==
-X-Forwarded-Encrypted: i=1; AJvYcCVnk2rGkZcfbj6JNbwyNOTnrFRc0xdw2WUhGTbV3Elz55xlVgI5sytYtyrq3iYR+kXj3q/zg1124Vc+DBMOrxzdkGrODSDaioMCt6Wa5xFFBD6COagCEBISokbF4yyb+Zt2oSah
-X-Gm-Message-State: AOJu0YzY8JfluEgXl75sSOLsvACOqjQfDP1ZC7qBoElMs0okXk3edF9s
-	uInUHlcidzMclYWQl+fPoy2fT7AJoBiEOF7VUNX6SFCGiOdeZzzYm66qHoDbLUE=
-X-Google-Smtp-Source: AGHT+IFdldRN4ysuGqhWosfpH5e5PWI3G6+kz2OSNsUOGetxsFlTjgUiIcLuVLcJ1USKUW+GMx7hsA==
-X-Received: by 2002:a17:902:7488:b0:1de:dd0d:69e with SMTP id h8-20020a170902748800b001dedd0d069emr1291794pll.35.1710449138563;
-        Thu, 14 Mar 2024 13:45:38 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id ki3-20020a170903068300b001dd02f4c2casm2186991plb.164.2024.03.14.13.45.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 13:45:37 -0700 (PDT)
-Message-ID: <571febef-186e-45f3-a894-26a6c5d7116a@gmail.com>
-Date: Thu, 14 Mar 2024 13:45:36 -0700
+	bh=O8DozmNrZ4VDRmyiSjzVDJqXlYrMmP08o1YadCXt0Ts=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=p/RtogEXBqMorT2nTLkbMfWyV4CJH6Zy9eB3zbCFZ2tOlFjsDAP3VnEtW1/465Wq0z8uzChjaa5zY+my5WQFVWQdKmIUb4xqWd47uLgMMvOPi2H/WGrNyc+OY8ci4r1y/v4sGsT4A+MHDLt3Vv5d1oB6GxqGohwCmJ8J9W4OfIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ko/VWB/I; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tZR0FPOc; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710449136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nJy+NUZ8ACD5J2EIR57tnDEqsbwNo2P7mRbaWsqp06E=;
+	b=Ko/VWB/IPyrGtliE6RtDoxypx/OyPJNFP+tpVuZcSyyChSkVkMYH+c30NGsI81y2yLLz4h
+	vfO0CQeaWKgjNfnMAwF5jhxU9UVfd2sMNbviuMGCQqyioEz/YddwSdSxNRfn/PmeNvab53
+	qGfV+FTpRDfMMcqL4TPmpdl7qtNkiunJjNomT7F94q0uFlJalFWCP+KbIGKq22zkWeSxPu
+	sa9X2DHVEIrwCJclgItzFEz+LJpD7u8JCVndFwgziqTc/N3XTG7SsdTBnVHQmNrEdpRWBr
+	WMQyxOoOLzy7OVlRsaV5f+ukgDtmV5XoM8ZHSrVWgC6kk37vMTcPXk/JBBh7og==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710449136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nJy+NUZ8ACD5J2EIR57tnDEqsbwNo2P7mRbaWsqp06E=;
+	b=tZR0FPOcg/7trlG4MSqmxmcjUH0dg+fEKfbsPJL/zePo5/iPlnYngA1mla48M07AQY4pFl
+	yLwQ1BU3pLB0DtDQ==
+To: Florian Fainelli <f.fainelli@gmail.com>, Boqun Feng <boqun.feng@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, "Russell King (Oracle)"
+ <linux@armlinux.org.uk>, Joel Fernandes <joel@joelfernandes.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Linus Torvalds
+ <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
+ rcu@vger.kernel.org, neeraj.upadhyay@amd.com, urezki@gmail.com,
+ qiang.zhang1211@gmail.com, bigeasy@linutronix.de, chenzhongjin@huawei.com,
+ yangjihong1@huawei.com, rostedt@goodmis.org, Justin Chen
+ <justin.chen@broadcom.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes
+ for v6.9]
+In-Reply-To: <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
+References: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+ <ZfDptafiK0jns050@boqun-archlinux>
+ <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
+ <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
+ <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
+ <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
+ <ZfIuRMo8oKbR08Af@lothringen>
+ <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+ <ZfLUU+XuQC7W79tf@lothringen>
+ <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
+ <ZfNHNvzpqf8DOZd8@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
+Date: Thu, 14 Mar 2024 21:45:36 +0100
+Message-ID: <87v85olez3.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 00/71] 6.1.82-rc1 review
-Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de
-References: <20240313163957.615276-1-sashal@kernel.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 3/13/24 09:38, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 6.1.82 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri Mar 15 04:39:56 PM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.81
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+On Thu, Mar 14 2024 at 12:09, Florian Fainelli wrote:
+> On 3/14/24 11:51, Boqun Feng wrote:
+>>>> 	trace_event=timer_migration:*,timer_start,timer_expire_entry,timer_cancel
+>>>>
+>>>> Though it's fairly possible that timer migration is not enabled at this point
+>>>> as it's a late initcall. But we better not miss its traces otherwise.
+>>>
+>>> Here is another log with timer_migration:
+>>>
+>>> https://gist.github.com/ffainelli/237a5f9928850d6d8900d1f36da45aee
+>> 
+>> FWIW, the trace point is still not enabled:
+>> 
+>> [    0.000000] Failed to enable trace event: timer_migration:*
+>> 
+>> you need this commit in master:
+>> 
+>> 	36e40df35d2c "timer_migration: Add tracepoints"
+>> 
+>> , which is one commit later than 7ee988770326 AFAICT
+>
+> Argh, thanks Boqun, here is a new capture:
+>
+> https://gist.github.com/ffainelli/cb562c1a60ef8e0e69e7d42143c48e8f
+>
+> this one is does include the tmigr events. Thanks!
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
-
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+You need 8ca1836769d758e4fbf5851bb81e181c52193f5d too.
 
