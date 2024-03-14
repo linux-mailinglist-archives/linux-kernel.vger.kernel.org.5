@@ -1,56 +1,64 @@
-Return-Path: <linux-kernel+bounces-103366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3482087BE9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:14:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874DA87BEA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61BA71C20BCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:14:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DA291F23A3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA99E6FE09;
-	Thu, 14 Mar 2024 14:14:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978476FE3E;
+	Thu, 14 Mar 2024 14:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WSSAhDw4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UTZo4JrG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17ECE58ACF;
-	Thu, 14 Mar 2024 14:14:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D388058ACF;
+	Thu, 14 Mar 2024 14:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425645; cv=none; b=kMDIDJENdNfkszhK9VXnn4B74BRmMXCpGwL0VNVooey9vxqRfZp/7LWV9EeR6wFmFhJo7Kw6mML3l5eJne/yhPyunxvnkeOCUkwyQqm5sKsH9Kb2jsZR5Y4CZcxhaVS4zJ/XfFre41SKaAzt+lZ/ce883IKydHxjzz4i31+lGjc=
+	t=1710425649; cv=none; b=umAGgmxEkhKJRqY1U8WysvQK2rCN2ucUF2A1ymrsy9eTgRh8EEU0P0TQbFila3l5T15Xih3ERU0Tu+O+O9GRsyt5szqcICyGNtQGnNc/42YumIcBEA5EBrtB5MSxMyEvOUrSk1rfbniGLtrUBhq0dtWmfIrdydPGLWtIA9Nl/ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425645; c=relaxed/simple;
-	bh=FerPbPo1b+6O/ruKqXQBtdgpigRD+nF5Ksu/pHN8ClU=;
+	s=arc-20240116; t=1710425649; c=relaxed/simple;
+	bh=lK23oJRJ/bA6d6jmZaBMLcWgOIERyQT1+j1cFBWNLd0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=JF9n6YnoKl6wFheGqQwPNM4Rddoz7VTT+B6sERw2TAXGh3oYeY4lgkLOsd8wxy8sXQNRgIBvyLfhDUIJCWw/WpYSFgmsFAfpXBnL4/43vgsCHg/xeu9DNuQdalE6OpHtQeWJBuPBz5nVoVGN++mqnNfcAYuacsThn3Yd+Jj6JaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WSSAhDw4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 302D1C433F1;
-	Thu, 14 Mar 2024 14:14:03 +0000 (UTC)
+	 MIME-Version:Content-Type; b=HMo8Hx4e7r13Fj45eqmtbvnzNPHN5FDcE2gbw7OTL4kk3AfF8yvHdKidonyLxnDtlZ6Buqu38QOSdDtHcaaNq4AU1m/36RJSQOk/epfmE5Gq7aHR6bfHxwzOG+czVfAm3lXSdBStL/ztSBg4GqsSliUItSdZ59of5fX1HlkXnjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UTZo4JrG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2362CC433C7;
+	Thu, 14 Mar 2024 14:14:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710425644;
-	bh=FerPbPo1b+6O/ruKqXQBtdgpigRD+nF5Ksu/pHN8ClU=;
+	s=k20201202; t=1710425648;
+	bh=lK23oJRJ/bA6d6jmZaBMLcWgOIERyQT1+j1cFBWNLd0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WSSAhDw4Z5ZLcJGAmyA6kxGlc7cihVc6++TE1MY35x74aM0e5T1V9MTrEt8ooq1og
-	 Krwp2N7XA2ZUuvKPFpENy9fzHKJSkaN0p/Ujcte4cG+Ea9YTJLV7lCPQbAzex6l2ii
-	 7PyPXnFULxciT0Jr+mLyMiWpIdBLaGY6A8w59okHeIOkkVzbwlQz9x2qYMmsyiakyx
-	 3wvlAHv9XY67wX7qt3wXd5NwLvPmxAKZH/Z/G5N9lbWWgenAzv3uYCk7a3qgzaSCik
-	 muKHwTHvBh8rHx7jOHIx5ql+0WD4B+dwjtYOYixeeyljtrphe3vPG/Vwobk7/vMgBw
-	 ZrsCCXNuQ3isA==
+	b=UTZo4JrGlYJvjvkqbKP9KYF2NnJrppTbDm9iTLI+SxMt0v4M0gEk8c9z8+Yae+S42
+	 IGyjW+5xOoI/1FE9ZQf0er/hcFd/jhLCVnyzqKoFxXsQ+euUTlqFvpTb5ar0AzhqzI
+	 OFelPUMUGPO0aWcHEZUkdYjj7HCYQwEdQ6FwKyMawyC8UoYfUvRvbV0+Cy1i4F7n4K
+	 RajFBL3gIlgNOG5RtqYyRzQOEWrTLkCEBdRH/u+5/tpjGo2/cP+adQIpRiXNrMe/2Y
+	 7kT9CkjUhLs/L853OBPVpzGxRiHvEG0IqaUnUPJF/gBfmFU6yaiWL+0zMnPUXGvEqv
+	 mbEEATbnr4zyw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, 
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Chancel Liu <chancel.liu@nxp.com>
-Cc: Zhipeng Wang <zhipeng.wang_1@nxp.com>
-In-Reply-To: <20240305065606.3778642-1-chancel.liu@nxp.com>
-References: <20240305065606.3778642-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH] ASoC: soc-core.c: Skip dummy codec when adding
- platforms
-Message-Id: <171042564292.33758.12106139288585646564.b4-ty@kernel.org>
-Date: Thu, 14 Mar 2024 14:14:02 +0000
+To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+ Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ linux-rockchip@lists.infradead.org, linux-sound@vger.kernel.org, 
+ alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ Rob Herring <robh@kernel.org>
+In-Reply-To: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
+References: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
+Subject: Re: (subset) [PATCH v4 0/7] Add support for the internal RK3308
+ audio codec
+Message-Id: <171042564484.33758.15956147423867309786.b4-ty@kernel.org>
+Date: Thu, 14 Mar 2024 14:14:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,13 +69,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-a684c
 
-On Tue, 05 Mar 2024 15:56:06 +0900, Chancel Liu wrote:
-> When pcm_runtime is adding platform components it will scan all
-> registered components. In case of DPCM FE/BE some DAI links will
-> configure dummy platform. However both dummy codec and dummy platform
-> are using "snd-soc-dummy" as component->name. Dummy codec should be
-> skipped when adding platforms otherwise there'll be overflow and UBSAN
-> complains.
+On Tue, 05 Mar 2024 15:36:27 +0100, Luca Ceresoli wrote:
+> This series adds a driver for the internal audio codec of the Rockchip
+> RK3308 SoC, along with some related patches. This codec is internally
+> connected to the I2S peripherals on the same chip, and it has some
+> peculiarities arising from that interconnection.
+> 
+> For proper bidirectional operation with the internal codec at any possible
+> combination of sampling rates, the I2S peripheral needs two clock sources
+> (tx and rx), while connection with an external codec commonly needs only
+> one.
 > 
 > [...]
 
@@ -77,8 +88,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-core.c: Skip dummy codec when adding platforms
-      commit: 23fb6bc2696119391ec3a92ccaffe50e567c515e
+[1/7] ASoC: rockchip: i2s-tdm: Fix inaccurate sampling rates
+      commit: 9e2ab4b18ebd46813fc3459207335af4d368e323
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
