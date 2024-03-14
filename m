@@ -1,112 +1,198 @@
-Return-Path: <linux-kernel+bounces-103562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD4F87C122
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:20:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1C5E87C129
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:22:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B4971F219B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:20:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AB721C21DAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 916B47352A;
-	Thu, 14 Mar 2024 16:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAEE373529;
+	Thu, 14 Mar 2024 16:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hF9pB5rw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="loHsxWyI"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1107319F
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAC373500
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710433231; cv=none; b=ZuI7U7OHF6k3l1atYz3f7uR/txImMNQNkaxkK1qm+JzP9bAV2Dy5+F9f80eNWvkNfMDivVK3F/rnML8DpjYQCV9XATOmxKW9LthpRZ28P1QUgeH2RKChKaxZeWnicOzSlEmtrW9LFbBPFe2iHnCtLHbFKsvtDYT1rVhafF+JrhQ=
+	t=1710433308; cv=none; b=ecukX5fASFhJkG7hg9sZf/4cLRO5pZcs+eEeukiSmAHSWbydpCNiyOfsIWcnMoiQbhfa6hvNDTbdIgLtIzs4gMtmcxdPJAbl62lQVGgTb5XX0tR9jIl/ZzP2VqP7zjrGN41jksU5KUl9eTpVtj7UupsHzh/JF2bI3paDCdKH2hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710433231; c=relaxed/simple;
-	bh=DiMMcNdh086cZ1dy2/SsqCOSR/rQG4XxC4tlfBQ3NIs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=b72HTOT29Sgn587XQFDYeCSE7LM8PH6xp0AJk3X9mPsgiyvmwpc9EH+pc10d3LH3ubcevyx47h3s0SqyJl1fS+nBUM1L4pgFxIKAgk4rSuvHIanYhDCeBcSO7WX3ryxWeM4JBeyxWbOSbmxFv5VjOmsAx0flCp8isvD9gcxQjZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hF9pB5rw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 82B05C43390;
-	Thu, 14 Mar 2024 16:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710433231;
-	bh=DiMMcNdh086cZ1dy2/SsqCOSR/rQG4XxC4tlfBQ3NIs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hF9pB5rwtQNKNi8cLb0VPwWDhJRtsUNAoHE5f7QVDsYRkJcE6GbiAalYTxtsxCK4t
-	 a2iCRcQV/nw/5PD8jhzND6x1NdqSNRm++a5mIWON6CAWt/oG0fb8kp3RDmqoRa0hf8
-	 5M15xbK3HaZkwSReUVEtfVLp9LnBXCTvjfbuVV0oCP9OA2yyCJ6fmWc8bjSvE51RhT
-	 S7Usmy2qDtd/ofd0YxIbJzehl/Dw98De1F2/79aKYY81H0VdkKXfcwMuBNph1NdIg+
-	 z0vhZp+fPlcITayDCK4gAo4Ot+kpj+UwaWLuV1uABpJjAc/2sA8yryinATt3sanklf
-	 JjVzGaxdcHmdw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6DCD3D95061;
-	Thu, 14 Mar 2024 16:20:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710433308; c=relaxed/simple;
+	bh=E0WHFlMETLpSJSDGXdITboRvbijf17hs+2XRjfCgCQs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TMdKR4/v/WgQbGqG+s6kldXngDMZnoZHwTkqdJLT/7inEIoHnVs2XbniLI2aE0PF6h93ahTv/zm0hpnIEtBWDhKP373PMx+oDmjGbZGTOeIxHYEm6u9ger7eIL5ksv7NeCZYY3nT/ewpSRzB9yHNKn+tffJ4p6R7UDssn/BCyb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=loHsxWyI; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1deddb82b43so108995ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710433306; x=1711038106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PJ68UZwVcoWaT5D2Sog/IJyxkieGnJ4JStLD6iUO2SQ=;
+        b=loHsxWyI5rYBPfLr2X1p0iPzcorW/aB+toK85giHSy5pD+hmyieamsfZJHqPRefrq/
+         kLxna13JZXs0LHUzJryzU21XqB34e9Tsy2wuWxtyBghou70MtUUWQdfhqsKw/4GzdtOG
+         rthXUj7+fiL+s2687tf68let7TuSF1MEGDVJSqZmSULeuCGF3dtpGlaxHR13U3h1Oe3f
+         VWK36uTtkqC8/ghVJxXhcOsbJaMVqja/RtN6qxy82wqz9jt69b4A5CEvHGQl9mNKwWyh
+         RvgpBOtjGp1rUEeu24K2E/Ub9roc8UM5tjeOVGxdWCi9I6UgfB4yQtPgDlgrwVVHauxW
+         a3wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710433306; x=1711038106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PJ68UZwVcoWaT5D2Sog/IJyxkieGnJ4JStLD6iUO2SQ=;
+        b=UR1Ze9Bit/SnAmVR3NtniZB1kqzH2eUXws413jkmRAbmrqgjhyBogbnUW61td5B4nO
+         0GEJKMx1o0PgBZ8M8PcIPBcwUMMDSvX4Axhg5FqjPNvmP3Pv61l9tkr+gstEcBDMb1N+
+         5cJQiJjGtvmT+umtPsfIGsyJJuPcY3BcnxOxqnGSAVFaku8VdyylfsnpC9aOPbPJWvTP
+         fBeeGrOCP50HythuSr5keyg33VeF5NmWUhZvUCj/PrCPithLd120/HarXknVMS4Pfpz2
+         Q4NX2IVz+ImMIQTJ8potkEzkLHhepYUQ9kBriMv0b3N7O/GIBCiHwETBsBeOhU1ep3Iv
+         ysag==
+X-Forwarded-Encrypted: i=1; AJvYcCWDtTzc/lV06YOktIF6yqJMtChbu7raDme0p7sTp2CUspDFuUOhu/JS7lmQQA4YmLcdbbhwPbT2xm6ZALfp6timeTQwpYRUFNfEYpec
+X-Gm-Message-State: AOJu0Yy48gTfnm/6j58o/ErvdeKWkuTsR703cmN5ERPy0PNsxSWhO6ve
+	SKe85tbWZLsYXl3H9Mft2olDQ1fMUB+XF/h9Xmv7W/BC9W9Rwzs4JqvZoUiDJrSFwqaooNPf7FN
+	wzoH5LiCvmw4TCqv1XCslMGRtlIFEe4Wt58pB
+X-Google-Smtp-Source: AGHT+IHH2Lvd0tJOnHJFMQBaGzTPMOuj5AlLMG9JVooxFFvkJa2rETmzm5H2FdQWDUGSrgJtHn6EzEC+i9SwF8/NTac=
+X-Received: by 2002:a17:903:2449:b0:1dd:7800:94e1 with SMTP id
+ l9-20020a170903244900b001dd780094e1mr236440pls.14.1710433306354; Thu, 14 Mar
+ 2024 09:21:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix to avoid use-after-free issue in
- f2fs_filemap_fault
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <171043323144.13516.1787617599417094605.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Mar 2024 16:20:31 +0000
-References: <20240314020528.3051533-1-chao@kernel.org>
-In-Reply-To: <20240314020528.3051533-1-chao@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: jaegeuk@kernel.org, hdanton@sina.com, linux-kernel@vger.kernel.org,
- Ed.Tsai@mediatek.com, linux-f2fs-devel@lists.sourceforge.net,
- syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com
+References: <000000000000fcfb4a05ffe48213@google.com> <0000000000009e1b00060ea5df51@google.com>
+ <20240111092147.ywwuk4vopsml3plk@quack3> <bbeeb617-6730-4159-80b1-182841925cce@I-love.SAKURA.ne.jp>
+ <20240314155417.aysvaktvvqxc34zb@quack3>
+In-Reply-To: <20240314155417.aysvaktvvqxc34zb@quack3>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Thu, 14 Mar 2024 17:21:30 +0100
+Message-ID: <CANp29Y6uevNW1SmXi_5muEeruP0TVh9Y9xwhgKO==J3fh8oa=w@mail.gmail.com>
+Subject: Re: [syzbot] [hfs] general protection fault in tomoyo_check_acl (3)
+To: Jan Kara <jack@suse.cz>
+Cc: syzbot <syzbot+28aaddd5a3221d7fd709@syzkaller.appspotmail.com>, axboe@kernel.dk, 
+	brauner@kernel.org, jmorris@namei.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	paul@paul-moore.com, serge@hallyn.com, syzkaller-bugs@googlegroups.com, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+Hi Jan,
 
-This patch was applied to jaegeuk/f2fs.git (dev)
-by Jaegeuk Kim <jaegeuk@kernel.org>:
+Yes, the CONFIG_BLK_DEV_WRITE_MOUNTED=3Dn change did indeed break our C
+executor code (and therefore our C reproducers). I posted a fix[1]
+soon afterwards, but the problem is that syzbot will keep on using old
+reproducers for old bugs. Syzkaller descriptions change over time, so
+during bisection and patch testing we have to use the exact syzkaller
+revision that detected the original bug. All older syzkaller revisions
+now neither find nor reproduce fs bugs on newer Linux kernel revisions
+with CONFIG_BLK_DEV_WRITE_MOUNTED=3Dn.
 
-On Thu, 14 Mar 2024 10:05:28 +0800 you wrote:
-> syzbot reports a f2fs bug as below:
-> 
-> BUG: KASAN: slab-use-after-free in f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
-> Read of size 8 at addr ffff88807bb22680 by task syz-executor184/5058
-> 
-> CPU: 0 PID: 5058 Comm: syz-executor184 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:377 [inline]
->  print_report+0x163/0x540 mm/kasan/report.c:488
->  kasan_report+0x142/0x170 mm/kasan/report.c:601
->  f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
->  __do_fault+0x131/0x450 mm/memory.c:4376
->  do_shared_fault mm/memory.c:4798 [inline]
->  do_fault mm/memory.c:4872 [inline]
->  do_pte_missing mm/memory.c:3745 [inline]
->  handle_pte_fault mm/memory.c:5144 [inline]
->  __handle_mm_fault+0x23b7/0x72b0 mm/memory.c:5285
->  handle_mm_fault+0x27e/0x770 mm/memory.c:5450
->  do_user_addr_fault arch/x86/mm/fault.c:1364 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1507 [inline]
->  exc_page_fault+0x456/0x870 arch/x86/mm/fault.c:1563
->  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-> 
-> [...]
+If the stream of such bisection results is already bothering you and
+other fs people, a very quick fix could be to ban this commit from the
+possible bisection results (it's just a one line change in the syzbot
+config). Then such bugs would just get gradually obsoleted by syzbot
+without any noise.
 
-Here is the summary with links:
-  - [f2fs-dev] f2fs: fix to avoid use-after-free issue in f2fs_filemap_fault
-    https://git.kernel.org/jaegeuk/f2fs/c/eb70d5a6c932
+[1] https://github.com/google/syzkaller/commit/551587c192ecb4df26fcdab775ed=
+145ee69c07d4
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+--=20
+Aleksandr
 
-
+On Thu, Mar 14, 2024 at 4:54=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+>
+> On Sun 10-03-24 09:52:01, Tetsuo Handa wrote:
+> > On 2024/01/11 18:21, Jan Kara wrote:
+> > > On Wed 10-01-24 22:44:04, syzbot wrote:
+> > >> syzbot suspects this issue was fixed by commit:
+> > >>
+> > >> commit 6f861765464f43a71462d52026fbddfc858239a5
+> > >> Author: Jan Kara <jack@suse.cz>
+> > >> Date:   Wed Nov 1 17:43:10 2023 +0000
+> > >>
+> > >>     fs: Block writes to mounted block devices
+> > >>
+> > >> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D15135=
+c0be80000
+> > >> start commit:   a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git://=
+git.ke..
+> > >> git tree:       upstream
+> > >> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D7406f415=
+f386e786
+> > >> dashboard link: https://syzkaller.appspot.com/bug?extid=3D28aaddd5a3=
+221d7fd709
+> > >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17b5bb=
+80a80000
+> > >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D10193ee7=
+280000
+> > >>
+> > >> If the result looks correct, please mark the issue as fixed by reply=
+ing with:
+> > >
+> > > Makes some sense since fs cannot be corrupted by anybody while it is
+> > > mounted. I just don't see how the reproducer would be corrupting the
+> > > image... Still probably:
+> > >
+> > > #syz fix: fs: Block writes to mounted block devices
+> > >
+> > > and we'll see if syzbot can find new ways to tickle some similar prob=
+lem.
+> > >
+> > >                                                             Honza
+> >
+> > Since the reproducer is doing open(O_RDWR) before switching loop device=
+s
+> > using ioctl(LOOP_SET_FD/LOOP_CLR_FD), I think that that commit converte=
+d
+> > a run many times, multi threaded program into a run once, single thread=
+ed
+> > program. That will likely hide all race bugs.
+> >
+> > Does that commit also affect open(3) (i.e. open for ioctl only) case?
+> > If that commit does not affect open(3) case, the reproducer could conti=
+nue
+> > behaving as run many times, multi threaded program that overwrites
+> > filesystem images using ioctl(LOOP_SET_FD/LOOP_CLR_FD), by replacing
+> > open(O_RDWR) with open(3) ?
+>
+> Hum, that's a good point. I had a look into details how syskaller sets up
+> loop devices and indeed it gets broken by CONFIG_BLK_DEV_WRITE_MOUNTED=3D=
+n.
+> Strace confirms that:
+>
+> openat(AT_FDCWD, "/dev/loop0", O_RDWR)  =3D 4
+> ioctl(4, LOOP_SET_FD, 3)                =3D 0
+> close(3)                                =3D 0
+> mkdir("./file0", 0777)                  =3D -1 EEXIST (File exists)
+> mount("/dev/loop0", "./file0", "reiserfs", 0, "") =3D -1 EBUSY (Device or=
+ resource busy)
+> ioctl(4, LOOP_CLR_FD)                   =3D 0
+> close(4)                                =3D 0
+>
+> which explains why syzbot was not able to reproduce some problems for whi=
+ch
+> CONFIG_BLK_DEV_WRITE_MOUNTED=3Dn should have made no difference (I wanted=
+ to
+> have a look into that but other things kept getting higher priority).
+>
+> It should be easily fixable by opening /dev/loop0 with O_RDONLY instead o=
+f
+> O_RDWR. Aleksandr?
+>
+>                                                                 Honza
+>
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
