@@ -1,168 +1,236 @@
-Return-Path: <linux-kernel+bounces-103755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D2987C406
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:06:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B042787C408
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 516AD1F22F55
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:06:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 273B71F21CB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E527762C6;
-	Thu, 14 Mar 2024 20:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C711676034;
+	Thu, 14 Mar 2024 20:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nHiMmBt2"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2059.outbound.protection.outlook.com [40.107.101.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Md6Z9Y6q"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8299574E31;
-	Thu, 14 Mar 2024 20:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710446777; cv=fail; b=UPWY/lHyNpJhfyLg5pg/IPu8OAInnbnQvJEv7BS3kge0+sFLVnB9WKqsu4aEGtBtDW18wdsXEvQwuOIxdPBOkv/6PunvJ5NXxxzg07hThSGX1oeme6NoCxmYhBm8O9jYSKI/0hTVWcNkJY3R7PVj4V+D5x83E8BqBGfd4I9EfPM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710446777; c=relaxed/simple;
-	bh=WthYkSqqRI1XlcktK7lICT7QYH7vKwbWB+8t5Xn+s3s=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=sdS4iyWKhpDHhdHXB7CqdfTLUfWZj139xiHJ+KLe5d1MZ+J8Qdb4Zcmy5WIoaWTQ6+2Q2Cniviitq7DklQevtzXLI+1hewF7m9vr3Sd8dnalN3hB9tkV7SMIZomCptJsP4YFCD6q9SSf9gHqU/auhiZmhWquOF6M9pd+ZjLd8lk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nHiMmBt2; arc=fail smtp.client-ip=40.107.101.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H8L0+zM1jbUTVJXFXe7h2o0TyipnUULq75agrDtS5jEn0BhEb/1br9vdSuXjVubT/gRLgOP+cjRyMceYabTH6BxR+1z6COHjgmruafy7hzxjjB6NRwhJbPtgQVr3U4XszJRANadCCMqYXgk1RWwz+RFFoO4r7dyTo/jSmEqu+uH70LlM7xK6EYYthFtGPGPGMI++2ECaomlzODOa6WWDy8nheg7NK7NkO+Kkog+DpsHKy7nd2ep4R/UdA3boUaK04kDaZgsK2jXtiZGIwN1BfOI2O+7WctFfxehDN2aKO9xSCOOooU7gvWs57aYH2Er/dKaTaK9da8pvBMY5XeUijg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7/SYwC8pJAoZD361Xmx35ejErKFFxxrdG3yPRvmok2k=;
- b=oKmwQzms9rcFrk1sJTqoxhz6pOqB/7I5BjL8ul2Q78zUQhAPSOGH8gvvDwkdIfQkEOMCjOglCGFK79uhvFdmUoqVGtE9ye28D4Uz5tqp7TapruMHiaKmiX4r8p/i2V6T+Nkv4GWVyxTzJx+P9HtMUW1V5+/7iIQLBQ0pTxNYd9i124xplIsBE/bNTP76x9mT+jfudS7PH4bJGKtgvxDuRsLngE21gpjVWSIr9Z3dkN2HCMT5i8g5NxdJTvDSiWnagFLi/ZErjVqmn1uV5XFt35CiFIletOLnXXDKFRx26V2tmMH24XfblPcHScSY3cWJAApPkEpjOVJLQdKqp62F3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7/SYwC8pJAoZD361Xmx35ejErKFFxxrdG3yPRvmok2k=;
- b=nHiMmBt2ilvY/cr8ipzqK6ETUbPdRYZoRHfJLFOOTaMRxNTgRztEdOtnQh68fR1l3ffgCrSu7UZeyGM9eln6vxdz9boFykAEgJjFnAoJm7WQvhOP0CpbSyCwyC6/8Lg77OHMWzs7CeQGQGjSchwYvSyQP4a2j4axU8N9td+NL9Cl69O/Cw70hA58hCbX40USvjp8+nOgxF8G5gm39ppKBBkr/96gs5YvjYia9zcJzYEA1Gf2F9+nSJMV5CTlaBnv4OlbclUwKR8rtGvthVz23kq0/VT5q7H71JZxVpKY4Ya/f0RFJh/x3lmmxkA31+CTDG2Qz8q7vc0EZbyjxK0KaA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by MN0PR12MB5810.namprd12.prod.outlook.com (2603:10b6:208:376::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26; Thu, 14 Mar
- 2024 20:06:11 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 20:06:11 +0000
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-7-rrameshbabu@nvidia.com>
- <20240312165544.75ced7e1@kernel.org> <87plvxbqwy.fsf@nvidia.com>
- <20240313174707.38a71c84@kernel.org> <20240314130436.1052c739@kernel.org>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
- alexandre.torgue@foss.st.com, andrew@lunn.ch, corbet@lwn.net,
- davem@davemloft.net, dtatulea@nvidia.com, edumazet@google.com,
- gal@nvidia.com, hkallweit1@gmail.com, jacob.e.keller@intel.com,
- jiri@resnulli.us, joabreu@synopsys.com, justinstitt@google.com,
- kory.maincent@bootlin.com, leon@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, liuhangbin@gmail.com,
- maxime.chevallier@bootlin.com, netdev@vger.kernel.org, pabeni@redhat.com,
- paul.greenwalt@intel.com, przemyslaw.kitszel@intel.com,
- rdunlap@infradead.org, richardcochran@gmail.com, saeed@kernel.org,
- tariqt@nvidia.com, vadim.fedorenko@linux.dev, vladimir.oltean@nxp.com,
- wojciech.drewek@intel.com
-Subject: Re: [PATCH RFC v2 6/6] tools: ynl: ethtool.py: Output timestamping
- statistics from tsinfo-get operation
-Date: Thu, 14 Mar 2024 13:05:40 -0700
-In-reply-to: <20240314130436.1052c739@kernel.org>
-Message-ID: <87bk7gvary.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR05CA0142.namprd05.prod.outlook.com
- (2603:10b6:a03:33d::27) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFD876020;
+	Thu, 14 Mar 2024 20:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710446798; cv=none; b=TNcpHBV9AGIsJs2sPlQUKZoUh4RMwCzU2ez7kbaPm1AcYmfOUXfvjqcYLEwXoLiCornO8zPRssNDphGwgoYvHyhoW7EpSzZ4+MPK18sGxKAZcq8m4gLJ9symG10pJ26F1evag0Rn+dVHWP9huDOYf6Yjw1lDY5gZxywzGTu14l4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710446798; c=relaxed/simple;
+	bh=uG6TRQMGLMiupX26itOp9SVRhnU7pyd5Vv1ntd0MO9Y=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CyoWPkxGzukRDe+o8K6rFF3gbxUKzDa7NQzgrBToCUOHoo9KkQR894FzCDXciL3+yDajDLX8vRmJH2nGgfapzia52MYVp7nU5iKE89YSpl7ffahC1zN4kafjpK7lI6ea85rPGPen48HZdVxKo/trXpN3Rpo6J8ud1VdMihYoWYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Md6Z9Y6q; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d28051376eso17068631fa.0;
+        Thu, 14 Mar 2024 13:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710446795; x=1711051595; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tMSMoF4sWu22K90iVg3HlWc7k64o9qa1vNgxWQ2mgsg=;
+        b=Md6Z9Y6q8oC0PeVcF7DKgDrzDY2AMFyc7QmjVMmz5tniMm/W/oSyom+xHQvmqijL9I
+         x70AR6whir/V4xyqrIgopvBi/ZCks+ZI5ECXWA1YZujh447a69+ZVdAfIYKj9Q5w5xs9
+         OfwLjY5fo/PPWYfoB/U3OGKs5baC1L1jlRyN15Wb25raJG4R4FdNuqWlRENeYhlPzYnw
+         lVB/8SVbOCDQj56TnxX1dXv7gv5IgWzFRrwcAOodnZXjJcRvT6BVgcFnJJ9bSUcm98IP
+         orVRa4MPPJwLfgOOibpSWzG1cU5bV8jmdvShudjFK9ir0xFzq0tApO/hoOtBOHcnI0iE
+         KYNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710446795; x=1711051595;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tMSMoF4sWu22K90iVg3HlWc7k64o9qa1vNgxWQ2mgsg=;
+        b=LzIatLLVkX3hi1ARySyYVlj5Z27VGQURSiRV7B2tOJTtPEzdggdbCw39fFpIGH7OKV
+         bWD9QlnlOd/w6jlaMIFRIiHO5/Pih1S3lm2NQEn86eyS3cFUcdfVb0CKJWNExeksogBd
+         p8BS9NYsF9L7YcPKrvEhApwDFuxqY1yolPzr5PwDBYtLQwSMeHXphCzbpgWTmGdFSKs8
+         oES8ddaEz2KU60NU+5pLW8YoxYamc4+Y6mHDrWKfkIDadd+g+mFwBDroEHKpHtI/Zho2
+         zUjLZU42WLgzbrzpUA1N6K+zDqd1+eqe+V+xEygIGQHqrzuZETH19cM0UkGCce3o2FSi
+         3+PA==
+X-Forwarded-Encrypted: i=1; AJvYcCW1UW05Ki1Jn1Fh+NNb4uK1vl7mxe4RIoskgzGOevRLjtOsuf7kOtnhKQdO2cGbyv1nXz6ebrJ7WI+Y1VZbFGrzVULLXPATgnwuyxxyfbDCyZUcjAYDrUL19JcxR4JdxybJJK9FsPi7
+X-Gm-Message-State: AOJu0Yw1Q1PrHE+Zy+ZKx6ddNRwIo+mordKTPz/Z32SKYua4R9KYVZP5
+	pfRKkgLBzxA5XdFukEMr7eqjVUPC+5zGEUmFGelZS+HaqLuwguRT
+X-Google-Smtp-Source: AGHT+IH7mQoMPG/bkAVKYsAzozgfN3o44fOKz16Tu25G2wZJcEEsy7/st9OjAYbYGNlMpkpd79o4vw==
+X-Received: by 2002:a2e:321a:0:b0:2d3:5020:17e5 with SMTP id y26-20020a2e321a000000b002d3502017e5mr846397ljy.36.1710446794701;
+        Thu, 14 Mar 2024 13:06:34 -0700 (PDT)
+Received: from vamoiridPC ([2a04:ee41:82:7577:3844:3925:f1c1:4bc5])
+        by smtp.gmail.com with ESMTPSA id v19-20020a1709060b5300b00a465f73df07sm1025024ejg.148.2024.03.14.13.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 13:06:34 -0700 (PDT)
+From: Vasileios Amoiridis <vassilisamir@gmail.com>
+X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
+Date: Thu, 14 Mar 2024 21:06:31 +0100
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: vamoirid <vassilisamir@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
+	ak@it-klinger.de, petre.rodan@subdimension.ro,
+	linus.walleij@linaro.org, phil@raspberrypi.com, 579lpy@gmail.com,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] iio: pressure: add SCALE and RAW values for
+ channels
+Message-ID: <20240314200631.GB1964894@vamoiridPC>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+ <20240313174007.1934983-4-vassilisamir@gmail.com>
+ <ZfH4bET-HX0e3PO_@smile.fi.intel.com>
+ <20240313195110.GB1938985@vamoiridPC>
+ <ZfIGtUPZpyDBnWwz@smile.fi.intel.com>
+ <20240313212812.GE1938985@vamoiridPC>
+ <ZfLYGL/vXMHUGghz@vamoirid-EDL-PC>
+ <20240314144647.291a1100@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|MN0PR12MB5810:EE_
-X-MS-Office365-Filtering-Correlation-Id: b2e136dc-b603-4576-0a4f-08dc44623193
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	dsruFFaBUShDxgc27y2YSztsjunVBkkoTPB4tJsqqMFOw6d7WOjJkdHNSvEK/mry0Cq9TBqskFDGIAh4Ecf5gWNEYihhW6d0YG+h3NpodVk1uKkB+gRloGfRhkRrv6NKBeb9/F9h2AUqkwWHodI4j0zcx1HukNkkH5odEUIWZlhO0cActb3wJzR3N99ml70u0Pzgzuf6x4re3YVwHHnyFTqPB/tV1vl+LJ8+cLIZTckvVQ/N/b26txUDimZQ0/wiiVaFoJMP8tcebdJr3qOQ66ybjULw4iAntEgIuFl/J//5x+iY5SK8z5jSIs0MB0UQiJ9Qa2ijyJ5hTQmRhvXjz6vPDO/huZNbfi1rXzHDhijnKOzpqAXloiPzOBlOYzlDpJhB3fWdRso+u9A/PyeI2NftVxDx5k0Fjp50tYqk3Wt4A0MU/Sv6t/mzz+2n1D8kHIHcWI6sbB0WN1jdrz+2YB3vSJx+PptBnQeS1y2rf4iPDLyJC/y6WdIyF2upU6QpdDEfoq2yxaJUCJAnlbNhg8QrXx4giOXZgiEtAIA4SRD0kDrWmW26890u4LH6L6VULJDojEZ+1bxORx2/mJ9P2uNR5QEeVlveIMxDqysZFpE4suiOywOAhnb67vj6f90tmp4rUClbSdeg3xj9VDA5YMFhjc1Wto3QtjThJkwNuNg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/ldnOkzgqJt/zkNgrJS/N8ITAZn7m4FOTZUJJ7FKGEENR9fyeqUUtx7KPISO?=
- =?us-ascii?Q?AawI5T5XyxqURVuaCroKFlNSn4SNbqLcxnlWtSFjWANiIWqh6MCbQpdCXudm?=
- =?us-ascii?Q?Txa9xwKsDYN81qdZuQYizdmPCEghss3TN8tBKIXTA/w1U2uFe4FWaRLkun88?=
- =?us-ascii?Q?cT/moNFcymLLTAI+7ptEMaBs1viGFa1hZRYZPvVpaPl4pDgI3dx8blwbNCPT?=
- =?us-ascii?Q?15eLf7OP83wSsrONDhK3dW3bbHvdw6bAqPwCn5Cx4hahrVp3GlBztMVBjV4d?=
- =?us-ascii?Q?gZ1zpsh4am3tqd7v+53nhq5jwNBwEqJWqzpmryM1bf7UzxkPahL2Oyn+T+GV?=
- =?us-ascii?Q?u2poOoARNRWS8WHAJw8oLj9bU4zfAiS0T9HUut6l9wNSkd3rd82ZkcoEH+e3?=
- =?us-ascii?Q?mxWo3Hht/8AzxMafRhlVEFVEkzeqxoUGTuxTRcn8zgVz1D/Io4yQy7U75dHe?=
- =?us-ascii?Q?bRtFEFDfHnhD6TZU1mkXy4Y05r50GBoGMUtmpbqcw5+Qd69QP1bFAgx/Niwp?=
- =?us-ascii?Q?uEYTl3wCpX8vLGwn+LUEctBAoeLYk0vYwJBcoTtI+YG6SbE/fGjnMvAWfd0B?=
- =?us-ascii?Q?lIe5weX2d0nWvUA7FDnWcvomJ0d51ArnzeBZrTwSs1Gqd9QORcLzxr5ADbF1?=
- =?us-ascii?Q?TNDf/WMX/Tsw/h7hOqJLGbV29a7Jw4KaZwKumV+aySC4VAujnfNjtHGkp/qC?=
- =?us-ascii?Q?FTKxdif57upPZVXiplPW7lfIRPXTJnCtb0d6SvAML1U+lROOMQCPAMQboszx?=
- =?us-ascii?Q?fjtpdxlmLRLtTHfc2uQtA/vDVWJgRX98/DpVp8n8rem/Ctb/iAXL2U7I5Ptw?=
- =?us-ascii?Q?ZGa+FPoHbwWuTlAzEhK82G24OEffaPp17mSVaBtFFb2+bpXFVK/E0n9S4b2o?=
- =?us-ascii?Q?LnKez5sz0WM+HraEeXNEH+BKN6RhoEicziUlf8wEGYjfBHZ8gsh54H0xxPf8?=
- =?us-ascii?Q?MkCE0O7Rs6WK1Z0+KEYjXNOPaiWFrsekp6cQq3ZITmIB6VYILjm2Qct7LD4+?=
- =?us-ascii?Q?tb71l9pk6ex2t4cJL9RY8B/Uh2RN4XQPYHjRpEsTSTOK+43WpVfu4AYfcsPa?=
- =?us-ascii?Q?FB2oGcwJlEvmyPP8R5OLCA/bBO2VzBRPxRVT7WOA7aImV2iVtgfKl1Hi9aOE?=
- =?us-ascii?Q?b7teDL705o3UHQ0UMCg9NCx6HHWEMf5ieR2QiSthBeQOYhHvHv15QuBS7TFR?=
- =?us-ascii?Q?ikmfxF1A4LGVl8fKqffWGe0Ose1Qj6449avURTvMDx+L22NLYeZIdV63SKkB?=
- =?us-ascii?Q?aIqC2QWWR6d6BD/mC+xIl+pfceeaT5/db4xkUGcFUJwCaEfwOyGD7IBNKf+J?=
- =?us-ascii?Q?/24sriYXOewdlWP8KbI2poQ/Dqa95VNytoJ7/wKkGnwzoj6+mqIAZmx5HSzw?=
- =?us-ascii?Q?g6drexEDkKvvBh+RpGCrjt/qqR4yX98Pi7UhmDWWuF0NJ/dikQfZGBOt4QUo?=
- =?us-ascii?Q?Boa3EFqdd46s+Fi/LHGrz2PbNrPZ5Ams466T1/wAm8qgIVZB2aIf5eZ8J+l8?=
- =?us-ascii?Q?CmacHQ9Q1D5BoNIKLWyd1dZJks5Ud4vZZWw1Mctgs2xD6UW3IVqv7vXPlDZT?=
- =?us-ascii?Q?qzEP/jY3So6ptPfi+gYWWIzmSpUbVMPadknuVd5qkENPO4PTHH9fSSndgRKz?=
- =?us-ascii?Q?/w=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2e136dc-b603-4576-0a4f-08dc44623193
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 20:06:11.0495
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8dGsAJG1z9ui2dTm3fN0je9V5hqUH1PnzZw4nnTYe2u8B9O6rujcQIAPje3eBKh3aCtmkE3w7ZfqNB9Two7sqw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5810
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240314144647.291a1100@jic23-huawei>
 
+On Thu, Mar 14, 2024 at 02:46:47PM +0000, Jonathan Cameron wrote:
+> On Thu, 14 Mar 2024 11:57:28 +0100
+> vamoirid <vassilisamir@gmail.com> wrote:
+> 
+> > On Wed, Mar 13, 2024 at 10:28:12PM +0100, Vasileios Amoiridis wrote:
+> > > On Wed, Mar 13, 2024 at 10:04:05PM +0200, Andy Shevchenko wrote:  
+> > > > On Wed, Mar 13, 2024 at 08:51:10PM +0100, Vasileios Amoiridis wrote:  
+> > > > > On Wed, Mar 13, 2024 at 09:03:08PM +0200, Andy Shevchenko wrote:  
+> > > > > > On Wed, Mar 13, 2024 at 06:40:04PM +0100, Vasileios Amoiridis wrote:  
+> > > > > > > Add extra IIO_CHAN_INFO_SCALE and IIO_CHAN_INFO_RAW in order to be
+> > > > > > > able to calculate the processed value with standard userspace IIO
+> > > > > > > tools. Can be used for triggered buffers as well.  
+> > > > 
+> > > > ...
+> > > >   
+> > > > > > > +	case IIO_CHAN_INFO_RAW:
+> > > > > > > +		switch (chan->type) {
+> > > > > > > +		case IIO_HUMIDITYRELATIVE:
+> > > > > > > +			*val = data->chip_info->read_humid(data);
+> > > > > > > +			ret = IIO_VAL_INT;
+> > > > > > > +			break;
+> > > > > > > +		case IIO_PRESSURE:
+> > > > > > > +			*val = data->chip_info->read_press(data);
+> > > > > > > +			ret = IIO_VAL_INT;
+> > > > > > > +			break;
+> > > > > > > +		case IIO_TEMP:
+> > > > > > > +			*val = data->chip_info->read_temp(data);
+> > > > > > > +			ret = IIO_VAL_INT;
+> > > > > > > +			break;
+> > > > > > > +		default:
+> > > > > > > +			ret = -EINVAL;
+> > > > > > > +			break;  
+> > > > > > 
+> > > > > > Is it mutex that prevents us from returning here?
+> > > > > > If so, perhaps switching to use cleanup.h first?  
+> > > > > 
+> > > > > I haven't seen cleanup.h used in any file and now that I searched,
+> > > > > only 5-6 are including it.  
+> > > > 
+> > > > Hmm... Which repository you are checking with?
+> > > > 
+> > > > $ git grep -lw cleanup.h -- drivers/ | wc -l
+> > > > 47
+> > > > 
+> > > > (Today's Linux Next)
+> > > >  
+> > > 
+> > > I am checking the drivers/iio of 6.8 (on sunday) and I can only find 7
+> > > drivers that use it.
+> 
+> Yes - but that's because it's new - most of the stuff in 6.8 was the proof
+> points for the patches originally introducing support for autocleanup (so typically
+> one or two cases for each type of handling) That doesn't mean we don't want it
+> in drivers that are being worked upon if it gives a significant advantage.
+> Some features we need will merge shortly, and a great deal more usage
+> of this autocleanup will occur.
+> 
+> > >   
+> > > > > I am currently thinking if the mutex
+> > > > > that already exists is really needed since most of the drivers
+> > > > > don't have it + I feel like this is something that should be done
+> > > > > by IIO, thus maybe it's not even needed here.  
+> > > >  
+> > 
+> > After some researching today, I realized that all the                           
+> > {read/write}_{raw/avail}_{multi/}() functions are in drivers/iio/inkern.c
+> > for channel mapping in the kernel and it looks like they are guarded by
+> > the mutex_{un}lock(&iio_dev_opaque->info_exist_lock).
+> 
+> Why is that relevant to this patch which isn't using that interface at all?
+> Those protections are to ensure that a consumer driver doesn't access a removed
+> IIO device, not accesses directly from userspace.
+> 
+> >so I feel that the
+> > mutexes in the aforementioned functions can be dropped. When you have the
+> > time please have a look, maybe the could be dropped.
+> 
+> Identify what your locks are protecting.  Those existence locks have
+> very specific purpose and should not be relied on for anything else.
+> 
+> If this driver is protecting state known only to itself, then it must
+> be responsible for appropriate locking.
+> 
+> > 
+> > In general, there is quite some cleaning that can be done in this driver
+> > but is it wise to include it in the triggered buffer support series??? 
+> 
+> Generally if working on a driver and you see cleanup that you think should
+> be done, it belongs before any series adding new features, precisely because
+> that code can typically end up simpler as a result.  This sounds like one
+> of those cases.  Normally that only includes things that are directly related
+> to resulting code for new features (or applying the same cleanup across a driver)
+> as we don't want to make people do a full scrub of a driver before adding
+> anything as it will just create too much noise.
+> 
+> So for this case, it does look like a quick use of guard(mutex) in
+> a precursor patch will simplify what you add here - hence that's a reasonable
+> request for Andy to make.
+> 
+> Jonathan
+> 
 
-On Thu, 14 Mar, 2024 13:04:36 -0700 Jakub Kicinski <kuba@kernel.org> wrote:
-> On Wed, 13 Mar 2024 17:47:07 -0700 Jakub Kicinski wrote:
->> +  -
->> +    name: header-flags
->> +    type: flags
->> +    entries: [ compact-bitset, omit-reply, stats ]
->
-> Ah. Throw in an empty:
->
-> 	enum-name:
->
-> into this, or change the uAPI so that an enum called
-> ethtool_header_flags actually exists :)
->
-> Otherwise make -C tools/net/ynl will break
+Hi Jonathan.
 
-Already handled this in my patches by making the enum for
-ethtool_header_flags. Thanks for double checking though.
+Thank you very much for the feedback once again. I didn't know that cleanup.h
+was a new thing. I also didn't understand it when Andy mentioned it. Now that
+I saw it better and I read about it, it certainly looks like a very good thing
+to add.
 
---
-Rahul Rameshbabu
+I don't know if I sounded like I didn't like that request, but just to clarify,
+I see it as a very good thing all the proposals that you do because first I
+get to learn and understand how to write better code and second the users will
+use a better driver! So please, the more requests, the better.
+
+So a precursor patch adding the new functionality of the guard(mutex) in this
+and possibly other places in the driver will be good indeed, thank you!
+
+Best regards,
+Vasilis
+> 
+> > I
+> > have noticed quite some things that could be improved but I am hesitating
+> > to do it now in order to not "pollute" this series with many cleanups and
+> > leave it for another cleanup series for example.
+> > 
+> > Best regards,
+> > Vasilis Amoiridis
+> > 
+> > > > > > > +		}
+> > > > > > > +		break;  
+> > > > 
+> > > > -- 
+> > > > With Best Regards,
+> > > > Andy Shevchenko
+> > > > 
+> > > >   
+> 
 
