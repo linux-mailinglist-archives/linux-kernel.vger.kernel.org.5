@@ -1,117 +1,128 @@
-Return-Path: <linux-kernel+bounces-103890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38BEC87C64C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:30:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3468B87C64D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:30:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBE301F25B47
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:30:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65E541C2185A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAA412B93;
-	Thu, 14 Mar 2024 23:23:46 +0000 (UTC)
-Received: from sraa.de (sraa.de [85.214.240.192])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3653D14AB0;
+	Thu, 14 Mar 2024 23:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Brh++XNl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490704F890;
-	Thu, 14 Mar 2024 23:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.240.192
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3BE14A89
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710458626; cv=none; b=bIbgmzwbmW51kFXyVKbjenO95FFoumsvNnV9DLMXwoFcD1unO8GvIhAI+w3lS6vqTfFGnxc3URBp6188EcseOmaylT32XCUxtOuoRe/mS43T9qnMrg/wjxvqvwM2gC+hD9Pg0ZGLsZK1y3Tg3yKB2lvqAyYMDl2MZ+PdDQZIBkw=
+	t=1710458751; cv=none; b=Hsi2cEGPtrN0JFlemSfwVWGuEdblQtZgUUUOKUbAPcVQ5tTXREQg8GQzCCmcM7Xg9J+RfxmQfnfFZhWLrp79n4blNhSndFbHBYoEJxky7GTZbox1TFQKIdJR9dpyPKMDUozkjDwWKg+PnB1mfFSez66APnlvtPaINPpQ3VHNJH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710458626; c=relaxed/simple;
-	bh=QCQRt6QFjp+EcBLspE+SST5PV3XYsmGPH97v7YTiZ4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hf8ebnvHiSaLSUvXKtMlTmGye2chfoeijEfQ9ADhngyorp2FAYlHU/znDMkrrsB8+BW5iZ6IsG1MGN+5K8jbH0mbzxrmC200B/8usnyTj6niAeGWwiAPRHxntMb1/O1Vg1JLiKQT1u6DUdcJWJsOn/VEEwRL1AkufQqpWce2e9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sraa.de; spf=pass smtp.mailfrom=sraa.de; arc=none smtp.client-ip=85.214.240.192
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sraa.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sraa.de
-Received: from c-bda170d5.017-30-6c756e3.bbcust.telenor.se ([213.112.161.189] helo=probook)
-	by sraa.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <basti@sraa.de>)
-	id 1rkuQG-006Tj1-HP; Fri, 15 Mar 2024 00:23:40 +0100
-Date: Fri, 15 Mar 2024 00:23:38 +0100
-From: Sebastian Raase <basti@sraa.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Sebastian Raase <linux@sraa.de>, marijn.suijten@somainline.org, Bjorn
- Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sdm630-nile: add pinctrl for camera
- key
-Message-ID: <20240315002338.3fe1dcfc@probook>
-In-Reply-To: <fc7bda50-279e-4afb-8c31-4fcda0e8b2ed@linaro.org>
-References: <20240314200037.549206-1-linux@sraa.de>
-	<fc7bda50-279e-4afb-8c31-4fcda0e8b2ed@linaro.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710458751; c=relaxed/simple;
+	bh=KJ+O+IzbDJBO+R6eeHjNGFN28Opkb5PBkbe5EXIa9Ec=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=UOfKIAP/vkgWs4JR0d7FQalxAa1AeBTaXxDPUNq+DpoeVfjvLPkzxCSvg/CbmJs1AvPlrXTGgDvqTLlZXnIUgXjtnEc0BDRxf0tJWa4X4twQyCxI2Yp1kzYSQ3qMf7GAQiQnhOgYpI94ynxV+CkiBFnr2HVKPQaI9nwc9ZsJf0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Brh++XNl; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710458749; x=1741994749;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=KJ+O+IzbDJBO+R6eeHjNGFN28Opkb5PBkbe5EXIa9Ec=;
+  b=Brh++XNlAQtYXUxkUY1hOE9rXY+7rDsKCpXDkoXhSSkaM/8z79D2JWmW
+   qr4oEVR3Mo9fNWL/rXNdl8zNw8x+54RdS16NgjS5cBdVKklNnObcVK/qB
+   q2bryLmQxYqiukIQvKcjS+KnTfe40QS09zxO7eL1u13dpzZI7//W0bEDB
+   jkNzRpdkoMq/R51ZTIUbd1o3r8k3o0YrHIB/mcY6sR4PU4nQlU76is78z
+   PxxcJiidxDCGxfBpcJgsuRxkHy8sPqhAQ0SQIHAqNYEUtMt9OzwnF2TnY
+   PA+rxWQihYgQt0xunwNwg/+CpayPqZueibnrgFRwQq161w7oo0FtVyd4v
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5513495"
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="5513495"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 16:25:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="12548300"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 14 Mar 2024 16:25:48 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rkuSH-000Dsb-1U;
+	Thu, 14 Mar 2024 23:25:45 +0000
+Date: Fri, 15 Mar 2024 07:25:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: sound/core/control.c:1409:5-11: inconsistent IS_ERR and PTR_ERR on
+ line 1410.
+Message-ID: <202403150720.IvePtxNs-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Krzysztof,
+Hi Takashi,
 
-On Thu, 14 Mar 2024 21:37:30 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-> On 14/03/2024 21:00, Sebastian Raase wrote:
-> > Add pinctrl configuration for gpio-keys. Without this,
-> > camera button half-presses are not detected.
-> > 
-> > Tested on discovery and pioneer.
-> > 
-> > Fixes: e781633b6067 ("arm64: dts: qcom: Add support for Sony Xperia XA2/Plus/Ultra (Nile platform)")
-> > Signed-off-by: Sebastian Raase <linux@sraa.de>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> > index 87d0293c728d..5eedca6f288f 100644
-> > --- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> > @@ -90,6 +90,8 @@ cam_vana_rear_vreg: cam-vana-rear-regulator {
-> >  
-> >  	gpio-keys {
-> >  		compatible = "gpio-keys";
-> > +		pinctrl-names = "default";
-> > +		pinctrl-0 = <&gpio_keys_default>;  
-> 
-> A nit: Please reverse the order: pinctrl-0 then names
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   fe46a7dd189e25604716c03576d05ac8a5209743
+commit: 1052d988226948493eb9730b3424308972eca5f4 ALSA: control: Use automatic cleanup of kfree()
+date:   3 weeks ago
+config: x86_64-randconfig-103-20240314 (https://download.01.org/0day-ci/archive/20240315/202403150720.IvePtxNs-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
 
-All existing pinctrl definitions use pinctrl-names first, so I followed the existing file. Is this still okay?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403150720.IvePtxNs-lkp@intel.com/
 
-> >  
-> >  		key-camera-focus {
-> >  			label = "Camera Focus";
-> > @@ -635,6 +637,13 @@ ts_lcd_id_active: ts-lcd-id-active-state {
-> >  		bias-disable;
-> >  	};
-> >  
-> > +	gpio_keys_default: gpio-keys-default {  
-> 
-> Looks missing suffix (state) and test, so:
-> 
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check W=1` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-> for instructions).
+cocci warnings: (new ones prefixed by >>)
+>> sound/core/control.c:1409:5-11: inconsistent IS_ERR and PTR_ERR on line 1410.
 
-I did add the suffix and ran the test, and the warning is gone now. Sent an updated patch.
+vim +1409 sound/core/control.c
 
-> Best regards,
-> Krzysztof
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1400  
+82e9bae6fd253a Takashi Iwai     2005-11-17  1401  static int snd_ctl_elem_write_user(struct snd_ctl_file *file,
+82e9bae6fd253a Takashi Iwai     2005-11-17  1402  				   struct snd_ctl_elem_value __user *_control)
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1403  {
+1052d988226948 Takashi Iwai     2024-02-22  1404  	struct snd_ctl_elem_value *control __free(kfree) = NULL;
+646494007b48e8 Giuliano Pochini 2006-03-13  1405  	struct snd_card *card;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1406  	int result;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1407  
+ef44a1ec6eeef1 Li Zefan         2009-04-10  1408  	control = memdup_user(_control, sizeof(*control));
+ef44a1ec6eeef1 Li Zefan         2009-04-10 @1409  	if (IS_ERR(control))
+1052d988226948 Takashi Iwai     2024-02-22 @1410  		return PTR_ERR(no_free_ptr(control));
+ef44a1ec6eeef1 Li Zefan         2009-04-10  1411  
+646494007b48e8 Giuliano Pochini 2006-03-13  1412  	card = file->card;
+646494007b48e8 Giuliano Pochini 2006-03-13  1413  	result = snd_ctl_elem_write(card, file, control);
+7d8e8292013ab7 Takashi Iwai     2017-08-30  1414  	if (result < 0)
+1052d988226948 Takashi Iwai     2024-02-22  1415  		return result;
+7d8e8292013ab7 Takashi Iwai     2017-08-30  1416  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1417  	if (copy_to_user(_control, control, sizeof(*control)))
+1052d988226948 Takashi Iwai     2024-02-22  1418  		return -EFAULT;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1419  	return result;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1420  }
+^1da177e4c3f41 Linus Torvalds   2005-04-16  1421  
 
-Best Regards,
-Sebastian
+:::::: The code at line 1409 was first introduced by commit
+:::::: ef44a1ec6eeef189998f84e7230e1d3535b01074 ALSA: sound/core: use memdup_user()
+
+:::::: TO: Li Zefan <lizf@cn.fujitsu.com>
+:::::: CC: Takashi Iwai <tiwai@suse.de>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
