@@ -1,294 +1,350 @@
-Return-Path: <linux-kernel+bounces-103630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0058787C229
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:37:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F85A87C22F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:44:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817A71F2125A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:37:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019EE1F21F53
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B35745FA;
-	Thu, 14 Mar 2024 17:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CC174BEC;
+	Thu, 14 Mar 2024 17:44:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=freebsd.org header.i=@freebsd.org header.b="sEhNz4ZB"
-Received: from mx2.freebsd.org (mx2.freebsd.org [96.47.72.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="g/s7Kuaq"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2D673510;
-	Thu, 14 Mar 2024 17:36:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=96.47.72.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710437814; cv=pass; b=iEykuBQluAQH/WnOK6ePzg/Q3ShK2iGZUiE+YXvTrsJ8WQPD4C2UArkk+LuJUh9LFW/AAcFNstlIRx8FZqtL9LXssLKlbwS5XJod6bM5tALLLi/tR+TMzEMrGGWjEK68Y225HZKSw75uq7uNB55+mk2mHqcGV+B9NVP3d9FphOQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710437814; c=relaxed/simple;
-	bh=CsK5s0+VbXMp/Uzr0NC2Vw2bo01xvjT7x2Lb4wK8GBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W2G0MAPzP6b8KqBUevjaZ1po1X/+lPDWqulVfxJD7ouRpGseI794HGKMR8fp1dqYZyc81c6lmK9SfQelGuflAWlPSW5r/X3lxZF/2wcOfOfY6ehakZH4cLh60K4tDeas7uxkNFuzmOEIxynXPLvmdAww15lBoM/5RwREYh1bUeU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=FreeBSD.org; spf=pass smtp.mailfrom=FreeBSD.org; dkim=pass (2048-bit key) header.d=freebsd.org header.i=@freebsd.org header.b=sEhNz4ZB; arc=pass smtp.client-ip=96.47.72.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=FreeBSD.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=FreeBSD.org
-Received: from mx1.freebsd.org (mx1.freebsd.org [IPv6:2610:1c1:1:606c::19:1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits)
-	 client-signature RSA-PSS (4096 bits))
-	(Client CN "mx1.freebsd.org", Issuer "R3" (verified OK))
-	by mx2.freebsd.org (Postfix) with ESMTPS id 4TwZLq2tq7z45qb;
-	Thu, 14 Mar 2024 17:36:51 +0000 (UTC)
-	(envelope-from jhb@FreeBSD.org)
-Received: from smtp.freebsd.org (smtp.freebsd.org [IPv6:2610:1c1:1:606c::24b:4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "smtp.freebsd.org", Issuer "R3" (verified OK))
-	by mx1.freebsd.org (Postfix) with ESMTPS id 4TwZLq0vlZz4G9m;
-	Thu, 14 Mar 2024 17:36:51 +0000 (UTC)
-	(envelope-from jhb@FreeBSD.org)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=freebsd.org; s=dkim;
-	t=1710437811;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2FRnGeCxFOtPEvgUPXcBs82NrDY5IYDYS2r+RYjKVpg=;
-	b=sEhNz4ZBuiVsXmcilCwowh42gWx/ujdNrhfQgF9MTZYFlTaPNgT6u6CtyovNZK0Ny3h9mr
-	CjC3HmvFbS3BkqOsuR2TOxuM6kBYn8pnaHaQ4RrKVpMDnPny1CpYXDZtxa1zLIZAcWi31H
-	dyjuNpYOqU0wNqbJ3lIuEYxHTtKYl6lUX7XIzF4UyvBMJHmpJcGNGO5SP24p0a9wo6wJTr
-	/P8LZAor9zCuZK2PUIk/anzVNzBpYTQTHb3pdXSzZZKKUACMsWvjUoJjy9IHsaA73UU1+z
-	F1KVTzacJkz7b2ZE1J2ENR/X/qDRR9YZ+z0Mdt6SGn+gwOTkDJJr6G8QZrsaoA==
-ARC-Seal: i=1; s=dkim; d=freebsd.org; t=1710437811; a=rsa-sha256; cv=none;
-	b=PJKOWliNE9sARysvn+5wbnE2O6//dmWKHXlV8KLUAGyZVL7ruhitf1Yv22v2SuiB1cOfv2
-	CFcknR6jm5Wd0uWqAkvHZx4OE9ppyXIYhWhOlJ3yaXvOGMYjqUbtzBa822N37nVaTHugkB
-	Yi5GnZJF9OPyqDUB2cPOrlns4sLcOTrLpYWPzzL0C4cakDQv3yboQLvsM0hNVys8Ca+FE1
-	cf72Qv++5EHsmMq4OYvmnXvM3KEcMWq7phQqb6jeImXXdUBzZUhVRq17uwqz/wLKZZXaIt
-	914d2ab+00tzpHGfMelNG8uVgQLWotKFY53gT6SN9L2qx2iXe8tZkd6K9nw+Rw==
-ARC-Authentication-Results: i=1;
-	mx1.freebsd.org;
-	none
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=freebsd.org;
-	s=dkim; t=1710437811;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2FRnGeCxFOtPEvgUPXcBs82NrDY5IYDYS2r+RYjKVpg=;
-	b=uNM9NnEpZukwPoUCmQi64Ps5+jKT7j+T+8xTlbM759DPqHIneuZ0wR4NKINoteUxbgJNvX
-	dZtg3U0tYZM/JNO3w6oSigr0i4OCzfbaHAY3HWy0iPKcLLMZJRfxPOmK2mFW5kEY+H28Yj
-	cTXHiLTARTTjEJPYbQnbR3jKkbC2I8tqB1XopkCpJRPzJbwHScQr6LG0KK/1NI+iWRAil7
-	LXRBkTUE/AsW9N36R/6ZBD4XeddWzpJiqzfiLQ9yZyMC/hM6exKzQ/J4Er3RdlfZQpgbGD
-	kUkj/Np/G7DTcG6hUeI3XuFFL8gEdgfQBOJzlcI1Fnyb0HIFW1GmpHR3oCTrfQ==
-Received: from [IPV6:2601:644:937f:4c50:9159:2009:aff7:887a] (unknown [IPv6:2601:644:937f:4c50:9159:2009:aff7:887a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: jhb)
-	by smtp.freebsd.org (Postfix) with ESMTPSA id 4TwZLn2VmVzMNv;
-	Thu, 14 Mar 2024 17:36:49 +0000 (UTC)
-	(envelope-from jhb@FreeBSD.org)
-Message-ID: <b86e4d31-70db-42de-bf54-4ffb03b5cba0@FreeBSD.org>
-Date: Thu, 14 Mar 2024 10:36:48 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC7E56B72
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710438249; cv=none; b=bGFmYjARdCi//2aFhhsqNMLLhW8vCYHuvtPEh2UWp3lOyR+kDq/3dkIda8EvKIe45iThHsEtK2M6PgEQkyZHwDgAL1oLdYW0Pj6L6KHfB9CKxGjY94KaR2GVxKP0fKnb9xPYU3vCa9Eaen5yj1fqQVMgjmPi2zowbDk/dnuxL7s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710438249; c=relaxed/simple;
+	bh=bMS7qno8XSHcHIJW0LJtjXJv9boRl6FZkAn8WIA0xYU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f+4rfeiJNK7jTJ2PCQ1Q+P03RBupO0scLlOy1uVZPnyxGLi7u0F1szaEKl3+Sc0skGU4JLo4pMMeHpjiqsyUTxOv/kEJvEVJz49qul42z/4hiZRZsUfgaQafhzttuku+MBeWgZFMt3Vg4Wi0wHdUQR+UteXtLKvvFnIVYsToI3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=g/s7Kuaq; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e0f43074edso754589a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710438245; x=1711043045; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nHqMVr9UoBNoXr00r6Tp/14yR/buvgklUKV5jTJKppk=;
+        b=g/s7Kuaq2Tsre3aOqhhurHu8KqpkJQIBZXh4ZW7KNQj0nB7xNXaxQsef1UHqIX5dqI
+         m3KHCa81hpAC0QD5Qgef4gkFxk3PYXihrhoZGPI0GvcsctTmCOoIH/NAj02IthZCERvR
+         ogloJ+OXTmtHKn+plaKNoSpE9Q3biy8DL8LnusGPwrDytDioVRqS1TjOtHStcZBMXJKB
+         i5lgp+yfN9fjGdDrjaE8dzsnFVo30hGlmor384VRNZH0CNzjEgw57Yy65eXQoMCZhdd2
+         pN1fMiv+ShODba2lFX8+RTDJvEhFKwqRKXks9PVpewK/bDyRYcRs/gtaVMhB05cvTDvN
+         frWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710438245; x=1711043045;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nHqMVr9UoBNoXr00r6Tp/14yR/buvgklUKV5jTJKppk=;
+        b=S+UoVdwSa2n/coeMXsWvbpu4himb6dg6XPVR7MNz5jqelEkJmKPgGOpCO21hECET+n
+         XzyD7Wyu7garLY5wN9JlHvjGJyIQWZ20zqUzzwUHsTrJKqOXySPkpNnoB2SCHpjewE1t
+         NsmGgUAzXzdt3vzXuO205eBT1qEA1JacCF6Z4xArkjjYenUMIcjZTjyD0mL2hlLUINYG
+         XJCamjeeW8DdopAP/f+7Ru3NwF0/fqDco6op6mj+gVHjAttGvsI1bL4kxNZBLcTUU421
+         wkuJ6xK67YT9d/BZTjMKEtX5SDYuAy+3pJDYw+uo0e4We2WH5PT8UABB6iKIDj2T6Ebj
+         KZiA==
+X-Forwarded-Encrypted: i=1; AJvYcCVp3ueBC8IDeN+ZTTrJ09Y4doJsjsvrsbC+BVKn173jxxZ1c++8BqEn+5yT/9nBjv6kNJZiiNq44x/oyUFSeeqZ0FdI0aGH/Fib6OIW
+X-Gm-Message-State: AOJu0Yx4vALvkTsJb47M5RJ8dZ8/Bktlg844c3XqSlQrXybiBnTChI2n
+	KpVhrQzCt3s7d0JxQsF2D+cSdSBQStLg7ZW+BFLTxQ5HDdinpYhQabSwOlQ1Oeo=
+X-Google-Smtp-Source: AGHT+IGdtktP+Xf4JI7z1bvWIBvxBKgA4BmXthfJugWlroQCdhg1pC5mQLDBnb9MxZXgmfeMA8sxOg==
+X-Received: by 2002:a9d:6b15:0:b0:6e5:42cc:8f21 with SMTP id g21-20020a9d6b15000000b006e542cc8f21mr1314207otp.6.1710438244854;
+        Thu, 14 Mar 2024 10:44:04 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id w1-20020a9d5381000000b006e5273c35e5sm358461otg.64.2024.03.14.10.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 10:44:04 -0700 (PDT)
+From: David Lechner <dlechner@baylibre.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
+Date: Thu, 14 Mar 2024 12:43:38 -0500
+Message-ID: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] x86/elf: Add a new .note section containing Xfeatures
- information to x86 core files
-Content-Language: en-US
-To: Dave Hansen <dave.hansen@intel.com>,
- Vignesh Balasubramanian <vigbalas@amd.com>, linux-kernel@vger.kernel.org,
- linux-toolchains@vger.kernel.org
-Cc: mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
- aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com, ebiederm@xmission.com,
- keescook@chromium.org, x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-mm@kvack.org, bpetkov@amd.com, jinisusan.george@amd.com, matz@suse.de,
- binutils@sourceware.org, felix.willgerodt@intel.com
-References: <20240314112359.50713-1-vigbalas@amd.com>
- <20240314112359.50713-2-vigbalas@amd.com>
- <dd54d6de-0bcc-4b2e-a420-b1a429b06246@intel.com>
- <971d21b7-0309-439e-91b6-234f84da959d@FreeBSD.org>
- <a789c10e-861e-48eb-96d6-aa129d352535@intel.com>
-From: John Baldwin <jhb@FreeBSD.org>
-In-Reply-To: <a789c10e-861e-48eb-96d6-aa129d352535@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.4
 Content-Transfer-Encoding: 8bit
 
-On 3/14/24 10:10 AM, Dave Hansen wrote:
-> On 3/14/24 09:45, John Baldwin wrote:
->> On 3/14/24 8:37 AM, Dave Hansen wrote:
->>> On 3/14/24 04:23, Vignesh Balasubramanian wrote:
->>>> Add a new .note section containing type, size, offset and flags of
->>>> every xfeature that is present.
->>>
->>> Mechanically, I'd much rather have all of that info in the cover letter
->>> in the actual changelog instead.
->>>
->>> I'd also love to see a practical example of what an actual example core
->>> dump looks like on two conflicting systems:
->>>
->>>      * Total XSAVE size
->>>      * XCR0 value
->>>      * XSTATE_BV from the core dump
->>>      * XFEATURE offsets for each feature
->>
->> I noticed this when I bought an AMD Ryzen 9 5900X based system for
->> my desktop running FreeBSD and found that the XSAVE core dump notes
->> were not recognized by GDB (FreeBSD dumps an XSAVE register set note
->> that matches the same layout of NT_X86_XSTATE used by Linux).
-> 
-> I just want to make sure that you heard what I asked.  I'd like to see a
-> practical example of how the real-world enumeration changes between two
-> real world systems.
-> 
-> Is that possible?
-> 
-> Here's the raw CPUID data from the XSAVE region on my laptop:
-> 
->>     0x0000000d 0x00: eax=0x000002e7 ebx=0x00000a88 ecx=0x00000a88 edx=0x00000000
->>     0x0000000d 0x01: eax=0x0000000f ebx=0x00000998 ecx=0x00003900 edx=0x00000000
->>     0x0000000d 0x02: eax=0x00000100 ebx=0x00000240 ecx=0x00000000 edx=0x00000000
->>     0x0000000d 0x05: eax=0x00000040 ebx=0x00000440 ecx=0x00000000 edx=0x00000000
->>     0x0000000d 0x06: eax=0x00000200 ebx=0x00000480 ecx=0x00000000 edx=0x00000000
->>     0x0000000d 0x07: eax=0x00000400 ebx=0x00000680 ecx=0x00000000 edx=0x00000000
->>     0x0000000d 0x08: eax=0x00000080 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
->>     0x0000000d 0x09: eax=0x00000008 ebx=0x00000a80 ecx=0x00000000 edx=0x00000000
->>     0x0000000d 0x0b: eax=0x00000010 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
->>     0x0000000d 0x0c: eax=0x00000018 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
->>     0x0000000d 0x0d: eax=0x00000008 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
-> 
-> Could we get that for an impacted AMD system, please?
-> 
-> 	cpuid -1 --raw | grep "   0x0000000d "
-> 
-> should do it.
+This adds support for AD7944 ADCs wired in "3-wire mode". (NOTE: 3-wire
+is the datasheet name for this wiring configuration and has nothing to
+do with SPI_3WIRE.)
 
-    0x0000000d 0x00: eax=0x00000207 ebx=0x00000988 ecx=0x00000988 edx=0x00000000
-    0x0000000d 0x01: eax=0x0000000f ebx=0x00000348 ecx=0x00001800 edx=0x00000000
-    0x0000000d 0x02: eax=0x00000100 ebx=0x00000240 ecx=0x00000000 edx=0x00000000
-    0x0000000d 0x09: eax=0x00000008 ebx=0x00000980 ecx=0x00000000 edx=0x00000000
-    0x0000000d 0x0b: eax=0x00000010 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
-    0x0000000d 0x0c: eax=0x00000018 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
+In the 3-wire mode, the SPI controller CS line can be wired to the CNV
+line on the ADC and used to trigger conversions rather that using a
+separate GPIO line.
 
-Here, I think the ebx value for the 0x09 leaf (PKRU) is the relevant difference
-here, it is 0xa80 on your laptop and 0x980 on the AMD CPU.  (This is the
-missing MPX gap on AMD.)
+The turbo/chain mode compatibility check at the end of the probe
+function is technically can't be triggered right now but adding it now
+anyway so that we don't forget to add it later when support for
+daisy-chaining is added.
 
->>> This is pretty close to just a raw dump of the XSAVE CPUID leaves.
->>> Rather than come up with an XSAVE-specific ABI that depends on CPUID
->>> *ANYWAY* (because it dumps the "flags" register aka. ECX), maybe we
->>> should just bite the bullet and dump out (some of) the raw CPUID space.
->>
->> So the current note I initially proposed and implemented for FreeBSD
->> (https://reviews.freebsd.org/D42136) and an initial patch set for GDB
->> (https://sourceware.org/pipermail/gdb-patches/2023-October/203083.html)
->> do indeed dump a raw set of CPUID leaves.  The version I have for FreeBSD
->> only dumps the raw leaf values for leaf 0x0d though the note format is
->> extensible should additional leaves be needed in the future.  One of the
->> questions if we wanted to use a CPUID leaf note is which leaves to dump
->> (e.g. do you dump all of them, or do you just dump the subset that is
->> currently needed).
-> 
-> You dump what is needed and add to the dump over time.
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+Changes in v2:
+- Use default: in case statements.
+- Remove redundant else.
+- Explain turbo/chain mode check in commit message.
+- Link to v1: https://lore.kernel.org/r/20240311-mainline-ad7944-3-wire-mode-v1-1-8e8199efa1f7@baylibre.com
+---
+ drivers/iio/adc/ad7944.c | 157 +++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 139 insertions(+), 18 deletions(-)
 
-That is what I started with, yes, but am attempting to anticipate future
-problems in my list of caveats.
+diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
+index adb007cdd287..d5ec6b5a41c7 100644
+--- a/drivers/iio/adc/ad7944.c
++++ b/drivers/iio/adc/ad7944.c
+@@ -32,8 +32,25 @@ struct ad7944_timing_spec {
+ 	unsigned int turbo_conv_ns;
+ };
+ 
++enum ad7944_spi_mode {
++	/* datasheet calls this "4-wire mode" */
++	AD7944_SPI_MODE_DEFAULT,
++	/* datasheet calls this "3-wire mode" (not related to SPI_3WIRE!) */
++	AD7944_SPI_MODE_SINGLE,
++	/* datasheet calls this "chain mode" */
++	AD7944_SPI_MODE_CHAIN,
++};
++
++/* maps adi,spi-mode property value to enum */
++static const char * const ad7944_spi_modes[] = {
++	[AD7944_SPI_MODE_DEFAULT] = "",
++	[AD7944_SPI_MODE_SINGLE] = "single",
++	[AD7944_SPI_MODE_CHAIN] = "chain",
++};
++
+ struct ad7944_adc {
+ 	struct spi_device *spi;
++	enum ad7944_spi_mode spi_mode;
+ 	/* Chip-specific timing specifications. */
+ 	const struct ad7944_timing_spec *timing_spec;
+ 	/* GPIO connected to CNV pin. */
+@@ -58,6 +75,9 @@ struct ad7944_adc {
+ 	 } sample __aligned(IIO_DMA_MINALIGN);
+ };
+ 
++/* quite time before CNV rising edge */
++#define T_QUIET_NS	20
++
+ static const struct ad7944_timing_spec ad7944_timing_spec = {
+ 	.conv_ns = 420,
+ 	.turbo_conv_ns = 320,
+@@ -110,6 +130,65 @@ AD7944_DEFINE_CHIP_INFO(ad7985, ad7944, 16, 0);
+ /* fully differential */
+ AD7944_DEFINE_CHIP_INFO(ad7986, ad7986, 18, 1);
+ 
++/*
++ * ad7944_3wire_cs_mode_conversion - Perform a 3-wire CS mode conversion and
++ *                                   acquisition
++ * @adc: The ADC device structure
++ * @chan: The channel specification
++ * Return: 0 on success, a negative error code on failure
++ *
++ * This performs a conversion and reads data when the chip is wired in 3-wire
++ * mode with the CNV line on the ADC tied to the CS line on the SPI controller.
++ *
++ * Upon successful return adc->sample.raw will contain the conversion result.
++ */
++static int ad7944_3wire_cs_mode_conversion(struct ad7944_adc *adc,
++					   const struct iio_chan_spec *chan)
++{
++	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
++						   : adc->timing_spec->conv_ns;
++	struct spi_transfer xfers[] = {
++		{
++			/*
++			 * NB: can get better performance from some SPI
++			 * controllers if we use the same bits_per_word
++			 * in every transfer.
++			 */
++			.bits_per_word = chan->scan_type.realbits,
++			/*
++			 * CS is tied to CNV and we need a low to high
++			 * transition to start the conversion, so place CNV
++			 * low for t_QUIET to prepare for this.
++			 */
++			.delay = {
++				.value = T_QUIET_NS,
++				.unit = SPI_DELAY_UNIT_NSECS,
++			},
++
++		},
++		{
++			.bits_per_word = chan->scan_type.realbits,
++			/*
++			 * CS has to be high for full conversion time to avoid
++			 * triggering the busy indication.
++			 */
++			.cs_off = 1,
++			.delay = {
++				.value = t_conv_ns,
++				.unit = SPI_DELAY_UNIT_NSECS,
++			},
++		},
++		{
++			/* Then we can read the data during the acquisition phase */
++			.rx_buf = &adc->sample.raw,
++			.len = BITS_TO_BYTES(chan->scan_type.storagebits),
++			.bits_per_word = chan->scan_type.realbits,
++		},
++	};
++
++	return spi_sync_transfer(adc->spi, xfers, ARRAY_SIZE(xfers));
++}
++
+ /*
+  * ad7944_4wire_mode_conversion - Perform a 4-wire mode conversion and acquisition
+  * @adc: The ADC device structure
+@@ -167,9 +246,22 @@ static int ad7944_single_conversion(struct ad7944_adc *adc,
+ {
+ 	int ret;
+ 
+-	ret = ad7944_4wire_mode_conversion(adc, chan);
+-	if (ret)
+-		return ret;
++	switch (adc->spi_mode) {
++	case AD7944_SPI_MODE_DEFAULT:
++		ret = ad7944_4wire_mode_conversion(adc, chan);
++		if (ret)
++			return ret;
++
++		break;
++	case AD7944_SPI_MODE_SINGLE:
++		ret = ad7944_3wire_cs_mode_conversion(adc, chan);
++		if (ret)
++			return ret;
++
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
+ 
+ 	if (chan->scan_type.storagebits > 16)
+ 		*val = adc->sample.raw.u32;
+@@ -230,9 +322,23 @@ static irqreturn_t ad7944_trigger_handler(int irq, void *p)
+ 	struct ad7944_adc *adc = iio_priv(indio_dev);
+ 	int ret;
+ 
+-	ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
+-	if (ret)
++	switch (adc->spi_mode) {
++	case AD7944_SPI_MODE_DEFAULT:
++		ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
++		if (ret)
++			goto out;
++
++		break;
++	case AD7944_SPI_MODE_SINGLE:
++		ret = ad7944_3wire_cs_mode_conversion(adc, &indio_dev->channels[0]);
++		if (ret)
++			goto out;
++
++		break;
++	default:
++		/* not supported */
+ 		goto out;
++	}
+ 
+ 	iio_push_to_buffers_with_timestamp(indio_dev, &adc->sample.raw,
+ 					   pf->timestamp);
+@@ -260,16 +366,9 @@ static int ad7944_probe(struct spi_device *spi)
+ 	struct ad7944_adc *adc;
+ 	bool have_refin = false;
+ 	struct regulator *ref;
++	const char *str_val;
+ 	int ret;
+ 
+-	/*
+-	 * driver currently only supports the conventional "4-wire" mode and
+-	 * not other special wiring configurations.
+-	 */
+-	if (device_property_present(dev, "adi,spi-mode"))
+-		return dev_err_probe(dev, -EINVAL,
+-				     "adi,spi-mode is not currently supported\n");
+-
+ 	indio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
+ 	if (!indio_dev)
+ 		return -ENOMEM;
+@@ -283,6 +382,22 @@ static int ad7944_probe(struct spi_device *spi)
+ 
+ 	adc->timing_spec = chip_info->timing_spec;
+ 
++	if (device_property_read_string(dev, "adi,spi-mode", &str_val) == 0) {
++		ret = sysfs_match_string(ad7944_spi_modes, str_val);
++		if (ret < 0)
++			return dev_err_probe(dev, -EINVAL,
++					     "unsupported adi,spi-mode\n");
++
++		adc->spi_mode = ret;
++	} else {
++		/* absence of adi,spi-mode property means default mode */
++		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
++	}
++
++	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN)
++		return dev_err_probe(dev, -EINVAL,
++				     "chain mode is not implemented\n");
++
+ 	/*
+ 	 * Some chips use unusual word sizes, so check now instead of waiting
+ 	 * for the first xfer.
+@@ -349,15 +464,17 @@ static int ad7944_probe(struct spi_device *spi)
+ 		adc->ref_mv = AD7944_INTERNAL_REF_MV;
+ 	}
+ 
+-	/*
+-	 * CNV gpio is required in 4-wire mode which is the only currently
+-	 * supported mode.
+-	 */
+-	adc->cnv = devm_gpiod_get(dev, "cnv", GPIOD_OUT_LOW);
++	adc->cnv = devm_gpiod_get_optional(dev, "cnv", GPIOD_OUT_LOW);
+ 	if (IS_ERR(adc->cnv))
+ 		return dev_err_probe(dev, PTR_ERR(adc->cnv),
+ 				     "failed to get CNV GPIO\n");
+ 
++	if (!adc->cnv && adc->spi_mode == AD7944_SPI_MODE_DEFAULT)
++		return dev_err_probe(&spi->dev, -EINVAL, "CNV GPIO is required\n");
++	if (adc->cnv && adc->spi_mode != AD7944_SPI_MODE_DEFAULT)
++		return dev_err_probe(&spi->dev, -EINVAL,
++				     "CNV GPIO in single and chain mode is not currently supported\n");
++
+ 	adc->turbo = devm_gpiod_get_optional(dev, "turbo", GPIOD_OUT_LOW);
+ 	if (IS_ERR(adc->turbo))
+ 		return dev_err_probe(dev, PTR_ERR(adc->turbo),
+@@ -369,6 +486,10 @@ static int ad7944_probe(struct spi_device *spi)
+ 		return dev_err_probe(dev, -EINVAL,
+ 			"cannot have both turbo-gpios and adi,always-turbo\n");
+ 
++	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN && adc->always_turbo)
++		return dev_err_probe(dev, -EINVAL,
++			"cannot have both chain mode and always turbo\n");
++
+ 	indio_dev->name = chip_info->name;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->info = &ad7944_iio_info;
 
->> Another quirky question is what to do about systems with hetergeneous
->> cores (E vs P for example).
-> That's irrelevant for now.  The cores may be heterogeneous but the
-> userspace ISA and (and thus XSAVE formats) are identical.  If they're
-> not, then we have bigger problems on our hands.
-
-Yes, I agree on the bigger problems and hope we don't have to solve
-them.
-
->> Currently those systems use the same XSAVE layout across all cores,
->> but other CPUID leaves do already vary across cores on those systems.
-> 
-> There shouldn't be any CPUID leaves that differ _and_ matter to
-> userspace and thus core dumps.
-
-Today that is true, yes.  I'm fine with making that tradeoff (along
-with only dumping a subset of leaves) so long as the consensus is that
-is an acceptable tradeoff to make.
-
->> However, there are other wrinkles with the leaf approach.  Namely, one
->> of the use cases that I currently have an ugly hack for in GDB is if
->> you are using gdb against a remote host running gdbserver and then use
->> 'gcore' to generate a core dump.  GDB needs to write out a NT_X86_XSTATE
->> note, but that note requires a layout.  What GDB does today is just pick
->> a known Intel layout based on the XCR0 mask.  However, GDB should ideally
->> start writing out whatever new note we adopt here, so if we dump raw
->> CPUID leaves it means extending the GDB remote protocol so we can query
->> the CPUID leaves from the remote host.  On the other hand, if we choose a
->> more abstract format as proposed in this patch, the local GDB (or LLDB
->> or whatever) can generate whatever synthetic layout it wants to write
->> the local NT_X86_XSTATE.  (NB: A relevant detail here is that the GDB
->> remote protocol does not pass the entire XSAVE state across as a block,
->> instead gdbserver parses individual register values for AVX, etc.
->> registers and those decoded register values are passed over the
->> protocol.)
-> 
-> So the gdb side says, "Give me PKRU" and the remote side parses the
-> XSAVE image, finds PKRU, and sends it over the wire?
-
-Yes.
-
->> Another question is potentially supporting compact XSAVE format in
->> for NT_X86_XSTATE.  Today Linux has some complicated code to re-expand
->> the compat XSAVE format back out to the standard layout for ptrace() and
->> process core dumps.
-> 
-> Yeah, but supporting the compacted format in NT_X86_XSTATE doesn't help
-> us at all.  We still intermingle user and supervisor state and that
-> needs to get repacked _anyway_.
-
-Fair enough.
-
-> In other words, no matter what we do, it's going to be complicated
-> because the userspace buffer can't have supervisor state and the kernel
-> buffer does have it.  The compacted format mismatch is the least of our
-> problems.
-> 
->>    (FreeBSD doesn't yet make use of XSAVEC so we
->> haven't yet dealt with that problem.)
-> 
-> ... or XSAVES, which is actually the most relevant here.
-> 
-> Backing up... there are two approaches here:
-> 
->   1. Dump out raw x86-specific gunk, aka. CPUID contents itself.  There
->      are a billion ways to do this and lots of complications, including
->      the remote protocol implications
-> or
->   2. Define an abstract format that works anywhere, not just on x86 and
->      not just for XSAVE.
-> 
-> There's no (sane) middle ground.  The implementation here (in this
-> patch) is fundamentally x86-specific and pretends to be some kind of
-> abstracted x86-independent format.
-
-Well, are there other register notes that could benefit from an approach
-like this?  Most other register notes I'm aware of on various architectures
-either have a fixed layout (like the typical general purpose register notes),
-or they have a fixed set of registers but the size of individual registers
-can vary (thinks like SME or RISC-V's vector extension).  XSAVE is the only
-one I'm aware of that packs multiple register sets into a single note.
-
-To step back a bit, another approach that could be taken (and I'm not sure
-it is worth it at this point) would to stop dumping a single XSAVE note
-and dump a separate register note for each feature.  That is, dump a note
-for AVX (the upper bits of ymmX), a note for PKRU, etc.  I think if I had
-to pick a strategy at the very beginning that's what I would choose now,
-but this isn't the very beginning and that sort of change is likely too
-disruptive.  (This approach is what happens on other arches today in effect,
-e.g. on AArch64.)
-
--- 
-John Baldwin
-
+---
+base-commit: bbafdb305d6b00934cc09a90ec1bb659d43e5171
+change-id: 20240311-mainline-ad7944-3-wire-mode-c240fe8af979
 
