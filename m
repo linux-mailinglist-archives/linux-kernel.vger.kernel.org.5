@@ -1,186 +1,213 @@
-Return-Path: <linux-kernel+bounces-103260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02CFF87BD20
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E89487BCF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C5E2281F69
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:59:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1550283FAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC8C59B6E;
-	Thu, 14 Mar 2024 12:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5050558AC5;
+	Thu, 14 Mar 2024 12:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Db4N6OYd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b="ipQkYC5y"
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [208.125.0.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2036266A7
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E865788B
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.125.0.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710421167; cv=none; b=ktCAYO1bmuetr113cpYHG7LruEyjWB3hXnPk3ikpKjeHPkKRyfIp9RLvktVqzHN19iL9bPmaSpTd4p7QeJS7VGbmsV5atbO73BDyz65KNBYMgug2IRYX3o38+blpgtDSSwQSTsBW3Rm7YapI7jtvoqZRvkfwLin0y2/Rq6qtqiw=
+	t=1710420439; cv=none; b=b70/+Sl1Q1wf3RVd2fLOmJnr3nGcL87NMFbV8mFddQa+0dwJEgqUssSz++M52rK89e1IcA6YIIN6QjcpwLud+9uFH1t4r71kwAu2Hn7zoYmtiVLGzxbjsysuxrEPr6LEKVbeiQCWv/C5qx1f5CRc3zUvgdVrb6kXmeM026BI7jI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710421167; c=relaxed/simple;
-	bh=cWpIcy1SqaH5FFzZ4VCvrLKwWceILonl7ADuV3qQTzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aWy2UIEb84wwrr0ND72cpwNh6JLvA1dn5uDF2YW3k4sQHmp2vDkDtUswRLaLYaCD+b7hbdvfOklOns8RhdjvC32arZv7Ph8AzwjrS0mD3z9W3gE8iOj2OePNAfraK2OsF8eDK+d7nHGEOwHn7DSFM2uhYMy/FanmT3TMYU0YEdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Db4N6OYd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2D8C433F1;
-	Thu, 14 Mar 2024 12:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710421167;
-	bh=cWpIcy1SqaH5FFzZ4VCvrLKwWceILonl7ADuV3qQTzQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Db4N6OYd6HcgE5gvGs25sIHBt5aeYgmOBMkbUxI0R9pqGL+dUPvOyyhQuDc7tTuCy
-	 UwW7iPmCT8YkLx8VUYMMauO09soSkb84Pzje9IkhJ8RLvNBKoNtRkaNQa2KRKYnh24
-	 z7sQAVSe0rM3cTvxsd0fQcap35dkGpOo+asJOuMmoKTm0MysMm6FTZeC0n9D79ErJe
-	 Q+HO6v2DIdWFm48zdAN/l+fmbZuOaWosr5/Jw0wA/Bh9EJU5wasMnz8lA8D/D51Tcc
-	 dRyLM6XWKY+md2H5Qgg89GfSqj2fu0HidXhWVw2f9XkTSHwM9c9zPppr+IP6DUa+QW
-	 lletP+/Z6BDpw==
-Date: Thu, 14 Mar 2024 20:46:02 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: cleger@rivosinc.com, lohr85@gmail.com, Conor Dooley <conor@kernel.org>,
-	samuel.holland@sifive.com, Paul Walmsley <paul.walmsley@sifive.com>,
-	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>, ajones@ventanamicro.com,
-	dlemoal@kernel.org, Bjorn Topel <bjorn@rivosinc.com>,
-	Atish Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH] riscv: deprecate CONFIG_MMU=n
-Message-ID: <ZfLxip96o5MVjHAF@xhacker>
-References: <a49546e8-6749-4458-98da-67fd37b7df18@rivosinc.com>
- <mhng-a3b495e6-aca6-4137-a3c1-8fcacafd8596@palmer-ri-x1c9a>
+	s=arc-20240116; t=1710420439; c=relaxed/simple;
+	bh=LVDAGLEHdDB4qSDqiUK7oDEa9Xe7FpISNiEDxuG6ZR4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W1PZsLDmmbjK1IiJXyBE88b2Ve0quYHNEbKccIKNp0lEd8xN2MHAHvukpvRzv1l+82mOe8pgNHM34Wb+cKAGiRcFY5RO1K1jPL4NrEJStlVOZBe3uvRw1Ongs2jLk+y5lvvbZW81CYeYMmVChKKhDMnzE2cpFyfgg8e65duEDjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com; spf=pass smtp.mailfrom=auristor.com; dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b=ipQkYC5y; arc=none smtp.client-ip=208.125.0.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=auristor.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+	d=auristor.com; s=MDaemon; r=y; t=1710420436; x=1711025236;
+	i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
+	MIME-Version:User-Agent:Subject:To:Cc:References:
+	Content-Language:From:Organization:In-Reply-To:Content-Type;
+	bh=hFnwA3X50QkpOEyA/fCQwpCIDCGVzalzZCaaxs5X2Ms=; b=ipQkYC5y4af56
+	4FLic2+ruILDEDFBWiOqIS0H3Zj4qfyCCV4/78EL0cxeThOy9b/0h4Bo3g4PcRSH
+	oQA/oAGVV9JAGep5P4qaBs7YEFHDiF+6p14FRXUrCwbEAlrCfiBn3yhCBjQc5MJe
+	gzOTXjbpuWdb099DbtLBrgF6nWuHhc=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 14 Mar 2024 08:47:16 -0400
+Received: from [IPV6:2603:7000:73c:bb00:857e:1338:aa49:4aa1] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.3) 
+	with ESMTPSA id md5001003826173.msg; Thu, 14 Mar 2024 08:47:14 -0400
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 14 Mar 2024 08:47:14 -0400
+	(not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2603:7000:73c:bb00:857e:1338:aa49:4aa1
+X-MDHelo: [IPV6:2603:7000:73c:bb00:857e:1338:aa49:4aa1]
+X-MDArrival-Date: Thu, 14 Mar 2024 08:47:14 -0400
+X-MDOrigin-Country: US, NA
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=1803a1fb3a=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Message-ID: <c8f0851a-780a-4265-8cf5-424f6cdbd071@auristor.com>
+Date: Thu, 14 Mar 2024 08:47:07 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <mhng-a3b495e6-aca6-4137-a3c1-8fcacafd8596@palmer-ri-x1c9a>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] afs: Revert "afs: Hide silly-rename files from userspace"
+To: David Howells <dhowells@redhat.com>,
+ Marc Dionne <marc.dionne@auristor.com>,
+ Markus Suvanto <markus.suvanto@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>, linux-afs@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <3085695.1710328121@warthog.procyon.org.uk>
+Content-Language: en-US
+From: Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+In-Reply-To: <3085695.1710328121@warthog.procyon.org.uk>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010909090106060105050900"
+X-MDCFSigsAdded: auristor.com
 
-On Tue, Feb 27, 2024 at 08:38:50AM -0800, Palmer Dabbelt wrote:
-> On Tue, 27 Feb 2024 01:11:41 PST (-0800), cleger@rivosinc.com wrote:
-> > 
-> > 
-> > On 26/02/2024 20:00, Charles Lohr wrote:
-> > > WOAH! Please DO NOT deprecate NOMMU. I use the NOMMU build constantly
-> > > and NOMMU Linux on RISC-V is the avenue used by many FPGA soft cores
-> > > for Linux, as well as some limited systems.
-> 
-> OK.
-> 
-> I just build test this stuff, as I don't really have a use for it
-> personally.  I figured if nobody's reporting bugs then probably it's broken
-> and nobody's noticed because nobody's using it.
-> 
-> > > I get new copies of the kernel when there are releases and test them
-> > > frequently to make sure everything is still working as expected.
-> 
-> I'd actually expected it to be broken, but I guess we managed to avoid
-> screwing things up ;)
-> 
-> > > For us we just don't care about XIP. I mean if someone did push it
+This is a cryptographically signed message in MIME format.
 
-I don't care XIP either, and IMHO the XIP's maintenance effort is much
-bigger than NOMMU(just check the various XIP_FIXUP* or CONFIG_XIP_KERNEL
-macros around lowlevel pgtable.h, page.h). If we can remove XIP, the
-code readability will be much better.
+--------------ms010909090106060105050900
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Or sending out a similar XIP deprecation patch to see whether there's
-any complain ? ;)
+On 3/13/2024 7:08 AM, David Howells wrote:
+>      
+> This reverts commit 57e9d49c54528c49b8bffe6d99d782ea051ea534.
+>
+> This undoes the hiding of .__afsXXXX silly-rename files.  The problem with
+> hiding them is that rm can't then manually delete them.
+>
+> This also reverts commit 5f7a07646655fb4108da527565dcdc80124b14c4 ("afs: Fix
+> endless loop in directory parsing") as that's a bugfix for the above.
+>
+> Fixes: 57e9d49c5452 ("afs: Hide silly-rename files from userspace")
+> Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
+> Link: https://lists.infradead.org/pipermail/linux-afs/2024-February/008102.html
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Marc Dionne <marc.dionne@auristor.com>
+> cc: linux-afs@lists.infradead.org
+> ---
+>   fs/afs/dir.c |   10 ----------
+>   1 file changed, 10 deletions(-)
+>
+> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+> index 8a67fc427e74..67afe68972d5 100644
+> --- a/fs/afs/dir.c
+> +++ b/fs/afs/dir.c
+> @@ -474,16 +474,6 @@ static int afs_dir_iterate_block(struct afs_vnode *dvnode,
+>   			continue;
+>   		}
+>   
+> -		/* Don't expose silly rename entries to userspace. */
+> -		if (nlen > 6 &&
+> -		    dire->u.name[0] == '.' &&
+> -		    ctx->actor != afs_lookup_filldir &&
+> -		    ctx->actor != afs_lookup_one_filldir &&
+> -		    memcmp(dire->u.name, ".__afs", 6) == 0) {
+> -			ctx->pos = blkoff + next * sizeof(union afs_xdr_dirent);
+> -			continue;
+> -		}
+> -
+>   		/* found the next entry */
+>   		if (!dir_emit(ctx, dire->u.name, nlen,
+>   			      ntohl(dire->u.vnode),
 
-> > > through to fruition, I'd also test and use it, but I urge you please
-> > > do not deprecate this.  While it's sometimes needed a bit of a
+Reviewed-by: Jeffrey E Altman<jaltman@auristor.com>
 
-+1 for urge the upstream please do not deprecate NOMMU.
 
-Besides the soft(FPGA) core mentioned by Charles, here is another real
-usage case: As is known, Sophgo CV1800B platforms such as Milk Duo
-contains two C906 core, one(a.k.a big core) with MMU another(a.k.a small
-core)w/o MMU. The vendor sdk runs freertos on the small core, but it
-doesn't prevent users to run other OS such as threadx, zephyr or nommu
-linux on the small core. In fact, I sucessfully brought up nommu linux
-on the small core. I didn't just send out the patches in time during this
-dev window duo to my personal career reason(I spent the time on hunting
-for a new job)
+--------------ms010909090106060105050900
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-I plan to send out NOMMU related patches once 6.9-rc1 is out.
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
+MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
+xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
+fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
+EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
+9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
+IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
+gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
+eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
+WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
+utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
+Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
+a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
+AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
+Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
+wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
+15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
+o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
+3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
+VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
+CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
+dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
+L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
+5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
+dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
+eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
+YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
+dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
+Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
+dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
+bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
+CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
+bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
+0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
+6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
+QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
+Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
+db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
+rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
+UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
+p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
+MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
+A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
+ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxNDEy
+NDcwN1owLwYJKoZIhvcNAQkEMSIEIPRB2J+uNLjDZUYP5S828B1Crf/Ts7YuYU6YDsaCZ4P2
+MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
+MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
+AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
+dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
+AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
+hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAImJw
+dZYtwsFvVh5mMOE69p8MMtgQfRuMAK0wDo8JfvJD0rXZFoJZah/OYBMxxrSIZ1aAZnCV7REO
+vwqL0i2+9ppGW1mfv9PZG8fgVRkhsBgGMb+aou7yOgwJoIOyve+9mRmhAxLJRuhX+dBDZmzA
+ydbroCBxN4nG3MvE7F9KPTRpxoU1X1/SgYHY4MNfzjNMsZj4upCgtP1ShbH/7vCaAt3DOdb9
+/ARBDtDFo9g1S3DdPndXC1+u4POEmWSE2vHagZESRfHNoGZAbmDsQ8HVj7iR1necTDrYLgqf
+p3NjRVC0BZtyYJR5662JEqCK4/UyaZw8pfeGbYHkt1FdgXcaEgAAAAAAAA==
+--------------ms010909090106060105050900--
 
-> > > creative build to get everything working, I've never needed to patch
-> > > anything in the kernel beyond patching in a custom console for serial
-> > > output.
-> > > 
-> > 
-> > Hey Charles,
-> > 
-> > No worries, we actually did not expected NOMMU to have *so many* users.
-> > I guess deprecating stuff is a good way to have immediate feedback ;).
-> > Having FDPIC psABI to be merged upstream could also probably be a
-> > positive point toward a better NOMMU support.
-> 
-> Ya, that's probably the right way to do it.  Touching anything in the psABI
-> is pretty miserable, though, so I don't really want to force people to do
-> it...
-> 
-> > > I am happy to discuss the possibility of me and or one of the other
-> > > RISC-V soft (FPGA) core people stepping up to try to be more active,
-> > > but so far we've just been very well serviced by the current NOMMU
-> > > Linux setup.
-> > 
-> > It could probably be nice to have some feedback/Tested-by: from NOMMU
-> > users for new releases then.
-> 
-> Having more upstream interaction from users is always appreciated, that's
-> the best way to prove people are using the code.  If you guys have the time
-> it'd be great to get this into some sort of CI, ideally running on some real
-> platform.
-
-As above, I'd also like to step up on the NOMMU stuff, at least test
-nommu on milkv duo's small core. And can be seen from my git commit
-histotry, I was active, and I belive I will still be active on riscv linux
-kernel development.
-
-> 
-> > Thanks,
-> > 
-> > Clément
-> > 
-> > > 
-> > > Charles
-> > > 
-> > > 
-> > > On Mon, Feb 26, 2024 at 8:03 AM Conor Dooley <conor@kernel.org> wrote:
-> > > > 
-> > > > On Mon, Feb 26, 2024 at 04:25:24PM +0100, Clément Léger wrote:
-> > > > > I guess I could also mark XIP as deprecated.
-> > > > 
-> > > > I'm not so sure, people recently added XIP support to QEMU (and sent
-> > > > kernel fixes in December). XIP is also not nearly as much of a problem
-> > > > to support, there's far less that it does differently, the main barrier
-> > > > was the inability to test it which is no longer the case.
-> > > > That said, XIP is gonna kill itself off I feel as it does not support
-> > > > runtime patching and therefore is extremely limited on extensions, given
-> > > > we use alternatives for all of that (although I suppose if someone has a
-> > > > usecase they could make nasty macros worse and implement a compiletime
-> > > > switch in the alternatives too).
-> > > > 
-> > > > Cheers,
-> > > > Conor.
-> > > > 
-> > > > _______________________________________________
-> > > > linux-riscv mailing list
-> > > > linux-riscv@lists.infradead.org
-> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
