@@ -1,130 +1,142 @@
-Return-Path: <linux-kernel+bounces-103448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0166087BF74
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAFC787BF76
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BEC6285938
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:01:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58F3C285CE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF6071740;
-	Thu, 14 Mar 2024 15:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B97971732;
+	Thu, 14 Mar 2024 15:01:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bAyIfEoI"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="NHNbP/sL";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="K1Ut0wJP"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B96E71734
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5BB7174A;
+	Thu, 14 Mar 2024 15:00:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710428457; cv=none; b=F5tsm+TjEtarDSEJWZdSuTvCcI0ViUj/PB+OOc8upieKtDHMeXb19KZy2BPfw8YaY7aZOZ3wHZ3O2cm5CH7y9acSIjIQh5wujgVu5p9Pp1gBoxIunSW6J4AKO2M1IGP6fqgRMlw0SNOoOqUxZ4h19B3i6FFu8vOZ43X/Qr15ak8=
+	t=1710428461; cv=none; b=UnPdIBJ7SKTH9ZSSvoVLh78N4QZg0WXI1LPTVC1tCVuC2a+Fm67iHe520OfLeZkn2THZ1kC8EZJzOQGfRlDZ9b1S04wx8+Kd5c5OtWYGePK+uwUDYlkqxPvNQlRC8by+GxayVzjvau2/VJ33LkItx5vqCARVCfB60WY8BQVobHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710428457; c=relaxed/simple;
-	bh=MScNp1nP9nUSyVDewm9QpHPiKVaNJLVtYQ3J+Fa+oLY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=koYXKTJyipCHap9+FVL69Pzq2JQvDr6a+05eZTRcVpV9cZmVSwgHDWNstzh3cEw79ls/DEeVk7+KzNMcVYORyoReqWdDjaEqZzo+73UqPsWrFv7mEt8WeVplgrOL+9ZISJHCdOVCymImTsHycWqKAdgBByw0NT6zFBmx4r6bIXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bAyIfEoI; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dddd1a8732so156605ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:00:56 -0700 (PDT)
+	s=arc-20240116; t=1710428461; c=relaxed/simple;
+	bh=Z2q6L5bDOTV52pQYpq4xIuEGVItpC1A8IOEPTT7B0N4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CBnJFxVgU60mGql8Hex1yQOXZTB2qReCckGFKoQPn5LminuLjBrdvPnC8sBsVb/cxhd7tyhp+C5u6RGlNtMCoUVWuQQ12uQ/l1jQbW6Vajk5I6TKLU66rigY2k8S8Ym9S5XxTladsN572H05tMF7d67TX8NXX8+QfTWDnUHXEKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=NHNbP/sL; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=K1Ut0wJP reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710428456; x=1711033256; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CH8RANQQT2jsR2s4b+7SiD1gGhZ0rPFRwfusn0ZxoXM=;
-        b=bAyIfEoIJ112xjtaSAc/KxxDyD7rwyM8WV1IEAevwA3fR8+ArQ4X7ZcQD3C0d38gX7
-         FWFt8XrYxIhZY0jDs2bJws3w4TxwCgoUxeJ2AdsutNQ7M/IEvnRDdYDCa4SyhEcRWe52
-         xLingU0s6EJ+fgWG3McloOUvOJ1G2RXgtcDWZS9qpAO0CtB8vV6l6s6ebVaouH4KYEhD
-         rl3r1Z3Ad3XtP+WVToI53jUW40bheFb3eE0OqAlhlWrbk1/o8/tvveWH1ieEXTWnvltQ
-         ahLppaAJniqCOlS7yhrFaCZi+Yu0Nz9jRagzasHro5MrsENKQNrgPLwT4r/mhX7X64eM
-         WTGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710428456; x=1711033256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CH8RANQQT2jsR2s4b+7SiD1gGhZ0rPFRwfusn0ZxoXM=;
-        b=CMsn/3V9Zw7luc5xQWtqGaksL9dZfOcTD4jNMnl4hA2ylCuak861xHfGD8rbDKTXwW
-         dl5kJyV/uord9LcqoF0tHnBZNj7E3I7oNGiXDv89d264qYX2C5p5OB0HPQWOq1G+yeVf
-         zbyI9kLtWJtU54+Hx8qurkK9IBqqjAaXf8BWa69eIihDFJTy9WCGwB+aT0/yVsNfDFnX
-         zHvrmlkyOgEYUFcILmXU23NWB62kXpWIlUxAKlLOOWaKEInJGfdvc5Nza1/MG6UpAtwv
-         bNKtvS3SHTVpWRLbBxCLSOfc/CncM0BYPNEhhZJuyugWQyCG/dfalX3P/NowcLnGNWY1
-         dj8w==
-X-Forwarded-Encrypted: i=1; AJvYcCWk2XZCPF0AJTNSaA6bXOOyff021tMBhM1uotYskCRPqEYKL+g9LPE7+Qi6A9HNHy106dV1hOaj+VExRHDxqiCUcVlvxixLg/NFn+CP
-X-Gm-Message-State: AOJu0YxWlN/giRo06ZjyRHPDLctrAeS7/pvOvZElnnCbOadLEF7SIi9F
-	2MjGSPysbzrzJCOaUUS57nFYfCZW0vOWqiXOVaCehfSuW+G+v5aMJGDkj8/7/Yx/baX+BvUFCym
-	vh0Tb468f0h9g4JRX2Zb/B2ORYAPjuSk4B1dXj49Fs3CKtGYTGs7+
-X-Google-Smtp-Source: AGHT+IEKpRXqG3a2vfe//6ITfZ7EAT+S4pM5b3IxGmmn6yNhIkazGMPT4qAGhWlGcQS+ZphOOFIgY1VsjYM7e8DbreU=
-X-Received: by 2002:a17:902:bcca:b0:1dc:dfd0:f3da with SMTP id
- o10-20020a170902bcca00b001dcdfd0f3damr211253pls.28.1710428455163; Thu, 14 Mar
- 2024 08:00:55 -0700 (PDT)
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1710428459; x=1741964459;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0GJAuHPiTFLqrorYeW+QRM2ROXrH5HYvFbiD+vQXabw=;
+  b=NHNbP/sLxwWIvqPW0+IWl/G1ctS3O9PoNDv+rtkv9Z3W4Hv32ZTmYmyD
+   ZfXM8+dCwvx+ElhiJBw9IM+p1taKS7LLo5FOuqXzqRTe+a4HvE+AKnCHu
+   evisz/GVNqHlM3ljSU/136/h15RsyZ/N2gf67KiepNGQceVDmVdODFqzs
+   9OgCn7WBO2gXNZxsJhK9b9mOx1fSaexlqbegRBIou16rEmieytV20iS5z
+   p8PqMObjxEpxIbOlLkPCwzkeNL8XrEEpP4HXYT9nV5j5nNzoEPxiMof7n
+   rsZ0qw4SX54j2gtzAngxHG5CQnmSSmulRxXzZjZCwAxqLGVMTLZVpOK/W
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.07,125,1708383600"; 
+   d="scan'208";a="35916708"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 14 Mar 2024 16:00:57 +0100
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7C60716E9E5;
+	Thu, 14 Mar 2024 16:00:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1710428452; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=0GJAuHPiTFLqrorYeW+QRM2ROXrH5HYvFbiD+vQXabw=;
+	b=K1Ut0wJPt9lUDfhNsqYEzGXv7UGeV+VMXA1DCGkx06nGwygmtJebkrEDUDaesNgqjXyLah
+	t/APkuvErrjc+C0IsywUZZHgmHRItQnEBhlHBv/p+4PvS1u6OxU2K+pz6YL/urrFAXXJai
+	4ugXm5E3kUi6X8mF90RaC1RRpKOb6zwUS6VnLy4gPNFOrzRZGJGt7wwWxIJL1wiEmcRaxF
+	1MHijXXmLn1OQZty97kgZpK6IhlQwKMblavlAK4k1ZAh0m8HwOxyJ+9+cpo9KFQb99sUyv
+	r3UQD+vpSKkxFqP7boq++WQgGTxi4Cu/blINU8DUsg/7Ix+CIYkzcZJAQ4KGPg==
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	linux@ew.tq-group.com,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] ARM: dts: imx6ul: tqma6ul + mba6ulx: Fix pinctrl node names
+Date: Thu, 14 Mar 2024 16:00:53 +0100
+Message-Id: <20240314150054.2957840-1-alexander.stein@ew.tq-group.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314144320.743217-1-acme@kernel.org>
-In-Reply-To: <20240314144320.743217-1-acme@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 14 Mar 2024 08:00:38 -0700
-Message-ID: <CAP-5=fX=UmW2iAQNfYcBG89Bv9LmLUtSmPOOH+3LN=r396sO1g@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Move some more header copies to tools/perf/trace/beauty/
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Thu, Mar 14, 2024 at 7:43=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> Hi,
->
->         Move a few more files that is used just by scrappers.
+imx6ul pinctrl nodes end with 'grp'. Fix node names.
 
-Thanks Arnaldo! A nit, could you change s/scrapp/scrap/g in the commit
-messages - scrapping is throwing away, you mean scraping :-)
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+---
+ arch/arm/boot/dts/nxp/imx/imx6ul-tqma6ul-common.dtsi | 2 +-
+ arch/arm/boot/dts/nxp/imx/mba6ulx.dtsi               | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Ian
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-tqma6ul-common.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-tqma6ul-common.dtsi
+index 57e647fc3237..f04c6f71f538 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6ul-tqma6ul-common.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-tqma6ul-common.dtsi
+@@ -202,7 +202,7 @@ MX6UL_PAD_UART2_RX_DATA__GPIO1_IO21	0x4001b8b0
+ 		>;
+ 	};
+ 
+-	pinctrl_pmic: pmic {
++	pinctrl_pmic: grp {
+ 		fsl,pins = <
+ 			/* PMIC irq */
+ 			MX6UL_PAD_CSI_DATA03__GPIO4_IO24	0x1b099
+diff --git a/arch/arm/boot/dts/nxp/imx/mba6ulx.dtsi b/arch/arm/boot/dts/nxp/imx/mba6ulx.dtsi
+index e78d0a7d8cd2..5258ef81e6c7 100644
+--- a/arch/arm/boot/dts/nxp/imx/mba6ulx.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/mba6ulx.dtsi
+@@ -505,7 +505,7 @@ MX6UL_PAD_CSI_HSYNC__UART6_DCE_CTS	0x1b0b1
+ 		>;
+ 	};
+ 
+-	pinctrl_uart6dte: uart6dte {
++	pinctrl_uart6dte: uart6dtegrp {
+ 		fsl,pins = <
+ 			MX6UL_PAD_CSI_PIXCLK__UART6_DTE_TX	0x1b0b1
+ 			MX6UL_PAD_CSI_MCLK__UART6_DTE_RX	0x1b0b1
+@@ -537,7 +537,7 @@ MX6UL_PAD_UART1_RTS_B__GPIO1_IO19	0x0001b099
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
++	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
+ 		fsl,pins = <
+ 			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x00017069
+ 			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x000170b9
+@@ -552,7 +552,7 @@ MX6UL_PAD_UART1_RTS_B__GPIO1_IO19	0x0001b099
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
++	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
+ 		fsl,pins = <
+ 			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x00017069
+ 			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x000170f9
+-- 
+2.34.1
 
-> - Arnaldo
->
-> Arnaldo Carvalho de Melo (3):
->   perf beauty: Move uapi/linux/usbdevice_fs.h copy out of the directory
->     used to build perf
->   perf beauty: Move uapi/sound/asound.h copy out of the directory used
->     to build perf
->   perf beauty: Move arch/x86/include/asm/irq_vectors.h copy out of the
->     directory used to build perf
->
->  tools/perf/Makefile.perf                      | 19 +++++++++++--------
->  tools/perf/check-headers.sh                   |  6 +++---
->  .../arch/x86/include/asm/irq_vectors.h        |  0
->  .../beauty}/include/uapi/linux/usbdevice_fs.h |  0
->  .../trace/beauty}/include/uapi/sound/asound.h |  0
->  tools/perf/trace/beauty/sndrv_ctl_ioctl.sh    |  4 ++--
->  tools/perf/trace/beauty/sndrv_pcm_ioctl.sh    |  4 ++--
->  .../beauty/tracepoints/x86_irq_vectors.sh     |  6 +++---
->  tools/perf/trace/beauty/usbdevfs_ioctl.sh     |  6 +++---
->  9 files changed, 24 insertions(+), 21 deletions(-)
->  rename tools/{ =3D> perf/trace/beauty}/arch/x86/include/asm/irq_vectors.=
-h (100%)
->  rename tools/{ =3D> perf/trace/beauty}/include/uapi/linux/usbdevice_fs.h=
- (100%)
->  rename tools/{ =3D> perf/trace/beauty}/include/uapi/sound/asound.h (100%=
-)
->
-> --
-> 2.43.2
->
 
