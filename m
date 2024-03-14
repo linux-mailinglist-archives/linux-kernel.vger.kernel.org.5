@@ -1,216 +1,180 @@
-Return-Path: <linux-kernel+bounces-102713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBAE587B661
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:19:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F39D87B666
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEDF71C21062
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE3BB1F237DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F349C2D0;
-	Thu, 14 Mar 2024 02:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486595C83;
+	Thu, 14 Mar 2024 02:25:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bt53jStA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="QXkGO1Hk"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FA2BA29;
-	Thu, 14 Mar 2024 02:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0AA4A08
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710382762; cv=none; b=n8ZZgA8cFLFnU+Hmex/VUB3C7HRZGIYHwyUocMY9GohnGH61dNL9OimJMYcTWBwOm7hH+dbUGZH6FXrIUAubgtnUCH14H7ry4NwqPmCNlZ+7nDpcYlL/tX5Y7NLcxj+eaMNlEmOQVw+ihtwKS1L/Gk9aPgQ2n8i2bVPYeRralkE=
+	t=1710383123; cv=none; b=mjFiZjkhMqjX1nhtrVfeJ11sv/js9J0FkK4KHAtVRuGxC3itJVlS2b85XyjIxmH9eJe14oTruE4G3QIJ7BT4U6EmHGZACmKC45O7lpQHVKo9Bpzmcl6z+NKNBsgVBqQ59EN2T2jVlYWNy9TyF66z7Y+t2Al91w8xsh13dUvAd9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710382762; c=relaxed/simple;
-	bh=oWUuvZfUPQK6oEv2SNRdLnr1fSGZ2Navf8pKF44wuBQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qjTwEFWThWBzpS5vMIrHy9W2ETU6gSyMOlKw3bnHFF5Z89i0lN9ZnnjhAFIhl+fk7KPrAbWwPATgcRjLnjJlatXxcjctH2OQvPA3XimGpQ8BWBE+rpyb+SwTezef1uqcQcIc6cWxoeOrvRnBssWmI3aF3dhoJV0Q4AgFqisKvc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bt53jStA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96671C433F1;
-	Thu, 14 Mar 2024 02:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710382762;
-	bh=oWUuvZfUPQK6oEv2SNRdLnr1fSGZ2Navf8pKF44wuBQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bt53jStAim4HB6IcDu03MYHYMJ46PzUngLFBLd1oskRUuhq+UPXNBEQXlwlqcATb2
-	 pO/Rh27gNTPP3m/nQVRsUCmmJaXBqxKtOUgWOI2QnhDhoIBAtiNaebSdi1x+tRn11P
-	 UrDBYggUeiLL5JIxzttTUsQg2OVGcbqX3PhOrs54o3LbIQ0wRmvn0VX2c7A36ckn9x
-	 Qv+pPLcUjP355J4txuWdYKSk5eb0axbSHmNhT/bkD11ZjuZDhLGORWNJeeqWwp302c
-	 +HfaZ5mIfSQozoWmsOq0mhGhDrjhh3WpQYLMUCvCSsKgmj5PrnqDNAVxb/GsDUuTst
-	 Mb7RLvQpRhBHA==
-Message-ID: <cd89a151-76f6-4f73-a109-72e0a7b758d3@kernel.org>
-Date: Thu, 14 Mar 2024 10:19:14 +0800
+	s=arc-20240116; t=1710383123; c=relaxed/simple;
+	bh=PHmfTRRkYa6+3QEXvykncYQCKKUVxK2Ttb/mRSpBw54=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N6p1e0XGRcswI3VZ5sjM0zW0gZx/ck8cTNSlqduhar4b7bs/RXI/21xHazy3YKrAxTIIrtVGsM+ofWh2PSFHOUJsXmvuoMZsVl0KN1tRiu3/g07VuY5e0ipO0qWjgJ7On7Pl7ggSqcClTD8bv7FgvzYoekEBqe5lJyMwLqCSEno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=QXkGO1Hk; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60a0579a955so6346887b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1710383121; x=1710987921; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K4DNWvDyLPzqbKX5chJvouBSguAJQvQnzDIEEajS5+s=;
+        b=QXkGO1HkrQ2dCi8vDoyLhEMDZjagXYXBXmtsN6u+Iu0tpF3hHI/0LujH4bqZdxr6hR
+         ErUKZGq/0VTmN9BMU8bPnPPcSa7YfiJKUig9c8DBBNOkxkHznHwTE+OgFL9Zm7kCKAXP
+         lkOAFhtMFNKUtd8/dSUPgz6OUcTPUkAan6HHNfmcgEWF66mslWQ/RL+K+TY6KxcPK9Ju
+         tmc584b7Z53bxshjljLnrlwyxUDB1Zg2dOuKVHIvZlfZ4gue6+yTovIvkqB9QovJWZCl
+         si0CFhgtBEBWHZ/KkC7M27DhWTIM6LNQMtLdUm4Vgw8rqTQeixD6x8B5CdY18Je69yL4
+         jV9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710383121; x=1710987921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K4DNWvDyLPzqbKX5chJvouBSguAJQvQnzDIEEajS5+s=;
+        b=Jg23HZRbfBUxR/REM2Plu/NAjK1nJ4Mgd5brhTqYvFvtLi+bvjZRVeutStpsiNxrwe
+         Irhn5AJJURacJ9rrHCqOadztkp1LiA5+P2L5PyyWW+k4o9NuQB7KtZWxSV6dGFLaNPkT
+         uSH4em84fxxsi/9DA7I7rRW+DIws8Sv/Jp6ar5v1HvsnzERrUwh+Nq4HkE8kTLWLMiUl
+         9l/aIMH6FxUw7NQlaaQ0AHjND/UK+L/UWfnkYgRgPwWsfWjqVdnEN5fxTFDyQojVNp8K
+         2OaGNSv/PcgJ+T66zgObwSfsnIRuGFAEeZl2eecD/ikfFgp9PO1AwHJLDpfhGBXdgZIv
+         wfEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJVcqNx5fJZSsVVsAu2ndQdpSdpo2aM8wWYIYINMV6yV8WVELOcXYmwgl/tZrt6oqtEJ973JLP4iPVO1ykyGzqD6tz6ay/ZLLs+m8R
+X-Gm-Message-State: AOJu0YxrbUsz7Pp4QduKL3yDjEFuTT53430zkeY0svbJYtW3VCWzFOdu
+	nRwnjabvGnoczVEMkvVNrvf2DRLbORnL6EEpPPXmcZuXAiGLlHnmrL1Ll+l4bsiivqzEQNGlV5Z
+	BJMFJaavAvFienG4OsRE721KI2nVg0VPCOWQl
+X-Google-Smtp-Source: AGHT+IEsVarLQU9mwOayWOcTGW13ALxEq5QxXZXNeaozHAcSEtdGxaGdGSmS0c6k1blKwlww0Pt9gRb56aKe4aH3Uns=
+X-Received: by 2002:a25:d044:0:b0:dc7:6192:c688 with SMTP id
+ h65-20020a25d044000000b00dc76192c688mr387595ybg.65.1710383120859; Wed, 13 Mar
+ 2024 19:25:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [syzbot] [f2fs?] KASAN: slab-use-after-free Read in
- f2fs_filemap_fault
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>, "hdanton@sina.com" <hdanton@sina.com>,
- =?UTF-8?B?RWQgVHNhaSAo6JSh5a6X6LuSKQ==?= <Ed.Tsai@mediatek.com>
-Cc: =?UTF-8?B?Q2h1bi1IdW5nIFd1ICjlt6vpp7/lro8p?= <Chun-hung.Wu@mediatek.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?UTF-8?B?TGlnaHQgSHNpZWggKOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>,
- "linux-f2fs-devel@lists.sourceforge.net"
- <linux-f2fs-devel@lists.sourceforge.net>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- =?UTF-8?B?RnJlZGR5IEhzaW4gKOi+m+aBkuixkCk=?= <Freddy.Hsin@mediatek.com>
-References: <0000000000000b4e27060ef8694c@google.com>
- <20240115120535.850-1-hdanton@sina.com>
- <4bbab168407600a07e1a0921a1569c96e4a1df31.camel@mediatek.com>
- <ZfEB3rPLQUjePNRz@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <ZfEB3rPLQUjePNRz@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <da4d181d-16b9-4e0f-a744-ac61702e0b63@schaufler-ca.com>
+ <ef972e0088964722adffc596d38b0463@paul-moore.com> <CAHC9VhTkvyWpvkejbFf-VJoTvUKVDGxBDYkKFdNrdgq4jy5i_w@mail.gmail.com>
+ <b5ebbb40-0dda-4595-a058-d5c3a6e800df@schaufler-ca.com> <CAHC9VhQyje1KdbXLKhZ3atgDbf2mNHB409BHtNyE_RSBACpB7g@mail.gmail.com>
+In-Reply-To: <CAHC9VhQyje1KdbXLKhZ3atgDbf2mNHB409BHtNyE_RSBACpB7g@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 13 Mar 2024 22:25:09 -0400
+Message-ID: <CAHC9VhTBOCUKva6ctOXx_E7+2nXMjR_eLaogMQNvEBJ4R_71gA@mail.gmail.com>
+Subject: Re: [PATCH v3] LSM: use 32 bit compatible data types in LSM syscalls.
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: "Dmitry V. Levin" <ldv@strace.io>, LSM List <linux-security-module@vger.kernel.org>, 
+	Linux kernel mailing list <linux-kernel@vger.kernel.org>, linux-api@vger.kernel.org, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	James Morris <jmorris@namei.org>, Serge Hallyn <serge@hallyn.com>, 
+	John Johansen <john.johansen@canonical.com>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/3/13 9:31, Jaegeuk Kim wrote:
-> On 03/12, Ed Tsai (蔡宗軒) wrote:
->> On Mon, 2024-01-15 at 20:05 +0800, Hillf Danton wrote:
->>>
->>> ...
->>>
->>> --- x/fs/f2fs/file.c
->>> +++ y/fs/f2fs/file.c
->>> @@ -39,6 +39,7 @@
->>>   static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
->>>   {
->>>          struct inode *inode = file_inode(vmf->vma->vm_file);
->>> +       vm_flags_t flags = vmf->vma->vm_flags;
->>>          vm_fault_t ret;
->>>   
->>>          ret = filemap_fault(vmf);
->>> @@ -46,7 +47,7 @@ static vm_fault_t f2fs_filemap_fault(str
->>>                  f2fs_update_iostat(F2FS_I_SB(inode), inode,
->>>                                          APP_MAPPED_READ_IO,
->>> F2FS_BLKSIZE);
->>>   
->>> -       trace_f2fs_filemap_fault(inode, vmf->pgoff, vmf->vma-
->>>> vm_flags, ret);
->>> +       trace_f2fs_filemap_fault(inode, vmf->pgoff, flags, ret);
->>>   
->>>          return ret;
->>>   }
->>> --
->>
->> Hi Jaegeuk,
->>
->> We recently encountered this slabe-use-after-free issue in KASAN as
->> well. Could you please review the patch above and merge it into f2fs?
-> 
-> Where is the patch?
+On Wed, Mar 13, 2024 at 9:44=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
+ote:
+> On Wed, Mar 13, 2024 at 6:48=E2=80=AFPM Casey Schaufler <casey@schaufler-=
+ca.com> wrote:
+> > On 3/13/2024 3:37 PM, Paul Moore wrote:
+> > > On Wed, Mar 13, 2024 at 4:07=E2=80=AFPM Paul Moore <paul@paul-moore.c=
+om> wrote:
+> > >> On Mar 13, 2024 Casey Schaufler <casey@schaufler-ca.com> wrote:
+> > >>> LSM: use 32 bit compatible data types in LSM syscalls.
+> > >>>
+> > >>> Change the size parameters in lsm_list_modules(), lsm_set_self_attr=
+()
+> > >>> and lsm_get_self_attr() from size_t to u32. This avoids the need to
+> > >>> have different interfaces for 32 and 64 bit systems.
+> > >>>
+> > >>> Cc: stable@vger.kernel.org
+> > >>> Fixes: a04a1198088a: ("LSM: syscalls for current process attributes=
+")
+> > >>> Fixes: ad4aff9ec25f: ("LSM: Create lsm_list_modules system call")
+> > >>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> > >>> Reported-and-reviewed-by: Dmitry V. Levin <ldv@strace.io>
+> > >>> ---
+> > >>>  include/linux/lsm_hook_defs.h                        |  4 ++--
+> > >>>  include/linux/security.h                             |  8 ++++----
+> > >>>  security/apparmor/lsm.c                              |  4 ++--
+> > >>>  security/lsm_syscalls.c                              | 10 +++++---=
+--
+> > >>>  security/security.c                                  | 12 ++++++--=
+----
+> > >>>  security/selinux/hooks.c                             |  4 ++--
+> > >>>  security/smack/smack_lsm.c                           |  4 ++--
+> > >>>  tools/testing/selftests/lsm/common.h                 |  6 +++---
+> > >>>  tools/testing/selftests/lsm/lsm_get_self_attr_test.c | 10 +++++---=
+--
+> > >>>  tools/testing/selftests/lsm/lsm_list_modules_test.c  |  8 ++++----
+> > >>>  tools/testing/selftests/lsm/lsm_set_self_attr_test.c |  6 +++---
+> > >>>  11 files changed, 38 insertions(+), 38 deletions(-)
+> > >> Okay, this looks better, I'm going to merge this into lsm/stable-6.9
+> > >> and put it through the usual automated testing as well as a kselftes=
+t
+> > >> run to make sure everything there is still okay.  Assuming all goes
+> > >> well and no one raises any objections, I'll likely send this up to
+> > >> Linus tomorrow.
+> > >>
+> > >> Thanks everyone!
+> > >
+> > > Unfortunately it looks like we have a kselftest failure (below).  I'm
+> > > pretty sure that this was working at some point, but it's possible I
+> > > missed it when I ran the selftests previously.  I've got to break for
+> > > a personal appt right now, but I'll dig into this later tonight.
+> >
+> > In v2:
+> >
+> > diff --git a/security/security.c b/security/security.c
+> > index 7035ee35a393..a0f9caf89ae1 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -810,7 +810,7 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, =
+size_t *uctx_len,
+> >         nctx->ctx_len =3D val_len;
+> >         memcpy(nctx->ctx, val, val_len);
+> >
+> > -       if (copy_to_user(uctx, nctx, nctx_len))
+> > +       if (uctx && copy_to_user(uctx, nctx, nctx_len))
+> >                 rc =3D -EFAULT;
+> >
+> >  out:
+> >
+> > This addresses the case where NULL is passed in the call to lsm_get_sel=
+f_attr()
+> > to get the buffer size required.
+>
+> Yeah, thanks.  I didn't get a chance to look at the failure before I
+> had to leave, but now that I'm looking at it I agree.  It looks like
+> it used to work prior to d7cf3412a9f6c, but I broke things when I
+> consolidated the processing into lsm_fill_user_ctx() - oops :/
+>
+> I'll start working on the patch right now and post it as soon as it
+> passes testing.
 
-Hi, all,
+The patch posted below passes the kselftests and all my other sanity checks=
+:
 
-I'd like to fix this issue in 6.9-rc1, so I submitted a formal patch based on
-above code, and the patch has been tested by syzbot.
+https://lore.kernel.org/linux-security-module/20240314022202.599471-2-paul@=
+paul-moore.com
 
-https://lore.kernel.org/linux-f2fs-devel/20240314020528.3051533-1-chao@kernel.org
-
-Hillf, may I change author of the patch to you? :)
-
-Thanks,
-
-> 
->>
->> Best,
->> Ed
->>
->> ==================================================================
->> [29195.369964][T31720] BUG: KASAN: slab-use-after-free in
->> f2fs_filemap_fault+0x50/0xe0
->> [29195.370971][T31720] Read at addr f7ffff80454ebde0 by task AsyncTask
->> #11/31720
->> [29195.371881][T31720] Pointer tag: [f7], memory tag: [f1]
->> [29195.372549][T31720]
->> [29195.372838][T31720] CPU: 2 PID: 31720 Comm: AsyncTask #11 Tainted:
->> G        W  OE      6.6.17-android15-0-gcb5ba718a525 #1
->> [29195.374862][T31720] Call trace:
->> [29195.375268][T31720]  dump_backtrace+0xec/0x138
->> [29195.375848][T31720]  show_stack+0x18/0x24
->> [29195.376365][T31720]  dump_stack_lvl+0x50/0x6c
->> [29195.376943][T31720]  print_report+0x1b0/0x714
->> [29195.377520][T31720]  kasan_report+0xc4/0x124
->> [29195.378076][T31720]  __do_kernel_fault+0xb8/0x26c
->> [29195.378694][T31720]  do_bad_area+0x30/0xdc
->> [29195.379226][T31720]  do_tag_check_fault+0x20/0x34
->> [29195.379834][T31720]  do_mem_abort+0x58/0x104
->> [29195.380388][T31720]  el1_abort+0x3c/0x5c
->> [29195.380899][T31720]  el1h_64_sync_handler+0x54/0x90
->> [29195.381529][T31720]  el1h_64_sync+0x68/0x6c
->> [29195.382069][T31720]  f2fs_filemap_fault+0x50/0xe0
->> [29195.382678][T31720]  __do_fault+0xc8/0xfc
->> [29195.383209][T31720]  handle_mm_fault+0xb44/0x10c4
->> [29195.383816][T31720]  do_page_fault+0x294/0x48c
->> [29195.384395][T31720]  do_translation_fault+0x38/0x54
->> [29195.385023][T31720]  do_mem_abort+0x58/0x104
->> [29195.385577][T31720]  el0_da+0x44/0x78
->> [29195.386057][T31720]  el0t_64_sync_handler+0x98/0xbc
->> [29195.386688][T31720]  el0t_64_sync+0x1a8/0x1ac
->> [29195.387249][T31720]
->> [29195.387534][T31720] Allocated by task 14784:
->> [29195.388085][T31720]  kasan_save_stack+0x40/0x70
->> [29195.388672][T31720]  save_stack_info+0x34/0x128
->> [29195.389259][T31720]  kasan_save_alloc_info+0x14/0x20
->> [29195.389901][T31720]  __kasan_slab_alloc+0x168/0x174
->> [29195.390530][T31720]  slab_post_alloc_hook+0x88/0x3a4
->> [29195.391168][T31720]  kmem_cache_alloc+0x18c/0x2c8
->> [29195.391771][T31720]  vm_area_alloc+0x2c/0xe8
->> [29195.392327][T31720]  mmap_region+0x440/0xa94
->> [29195.392888][T31720]  do_mmap+0x3d0/0x524
->> [29195.393399][T31720]  vm_mmap_pgoff+0x1a0/0x1f8
->> [29195.393980][T31720]  ksys_mmap_pgoff+0x78/0xf4
->> [29195.394557][T31720]  __arm64_sys_mmap+0x34/0x44
->> [29195.395138][T31720]  invoke_syscall+0x58/0x114
->> [29195.395727][T31720]  el0_svc_common+0x80/0xe0
->> [29195.396292][T31720]  do_el0_svc+0x1c/0x28
->> [29195.396812][T31720]  el0_svc+0x38/0x68
->> [29195.397302][T31720]  el0t_64_sync_handler+0x68/0xbc
->> [29195.397932][T31720]  el0t_64_sync+0x1a8/0x1ac
->> [29195.398492][T31720]
->> [29195.398778][T31720] Freed by task 0:
->> [29195.399240][T31720]  kasan_save_stack+0x40/0x70
->> [29195.399825][T31720]  save_stack_info+0x34/0x128
->> [29195.400412][T31720]  kasan_save_free_info+0x18/0x28
->> [29195.401043][T31720]  ____kasan_slab_free+0x254/0x25c
->> [29195.401682][T31720]  __kasan_slab_free+0x10/0x20
->> [29195.402278][T31720]  slab_free_freelist_hook+0x174/0x1e0
->> [29195.402961][T31720]  kmem_cache_free+0xc4/0x348
->> [29195.403544][T31720]  __vm_area_free+0x84/0xa4
->> [29195.404103][T31720]  vm_area_free_rcu_cb+0x10/0x20
->> [29195.404719][T31720]  rcu_do_batch+0x214/0x720
->> [29195.405284][T31720]  rcu_core+0x1b0/0x408
->> [29195.405800][T31720]  rcu_core_si+0x10/0x20
->> [29195.406348][T31720]  __do_softirq+0x120/0x3f4
->> [29195.406907][T31720]
->> [29195.407191][T31720] The buggy address belongs to the object at
->> ffffff80454ebdc0
->> [29195.407191][T31720]  which belongs to the cache vm_area_struct of
->> size 176
->> [29195.408978][T31720] The buggy address is located 32 bytes inside of
->> [29195.408978][T31720]  176-byte region [ffffff80454ebdc0,
->> ffffff80454ebe70)
->> [29195.410625][T31720]
->> [29195.410911][T31720] The buggy address belongs to the physical page:
->> [29195.411709][T31720] page:0000000058f0f2f1 refcount:1 mapcount:0
->> mapping:0000000000000000 index:0x0 pfn:0xc54eb
->> [29195.412980][T31720] anon flags:
->> 0x4000000000000800(slab|zone=1|kasantag=0x0)
->> [29195.413880][T31720] page_type: 0xffffffff()
->> [29195.414418][T31720] raw: 4000000000000800 f6ffff8002904500
->> fffffffe076fc8c0 dead000000000007
->> [29195.415488][T31720] raw: 0000000000000000 0000000000170017
->> 00000001ffffffff 0000000000000000
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+--=20
+paul-moore.com
 
