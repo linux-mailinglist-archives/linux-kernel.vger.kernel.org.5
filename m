@@ -1,155 +1,161 @@
-Return-Path: <linux-kernel+bounces-103256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD88087BD10
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:54:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E613987BD15
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A741284417
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:54:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 135B41C21DD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9CAC59149;
-	Thu, 14 Mar 2024 12:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFEA5A10A;
+	Thu, 14 Mar 2024 12:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GJEzbgW3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="R/p4zuCW"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFF718E20
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78DFB58AD2
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710420846; cv=none; b=tFOXJgVmccjESMnybmEDtshv8XmdkkEk+Yey96d11Zedp/xUvhtaxGYXLCnW8uW+nZgXtw8qcdCPnK2WjOSTOr5vyF1XXOoQfOevJ6kvsgsKSJB1PTpI6nUK9MBjLPVdLfDrwWaDo/4hscHfIpfFGTVE65pp6qJzgSfnHCk0PPs=
+	t=1710420994; cv=none; b=JP8yjYfPW5E1Qgx7GLyOATU1MpW3K3falEnEBdFQx77JQ/QxzNOT91ppWJRodeeVnjAlaIWNsMNkv5+YI6wKJj/N3Dj9ded1hAzwuEZIX2AMZFlgdovJlcAF9ItqDoGqU9OCsoKqe3pdH0zZ8IBKjVCnEwVUVI5nK/0h88rWVbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710420846; c=relaxed/simple;
-	bh=VP8+Z7Ov4O9DzuKaTY4W+WBGCtvu2iJHFLZOUXvTs0g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EDSpgET4ukpou0+qiRg2Orm0WhlNFbVMHvDCnlV4MZkNiEtko/eMlZpG/qQRmcNthTNXQS5s4Kb7TcVXw/4A6jeYHkpwZ0oEFcZzEIg6ol//wMvSWWAFTpqDQfTHY46FElgfeq3YAk4asq1tdTDx5VN3gVMwWFeo4gWAME6GXck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GJEzbgW3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710420843;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BZxWk5KkUQhQXZEGGdHKASVJGou5PrPdHxO3BmOv5tM=;
-	b=GJEzbgW3NvzdmOuKkHmVPPUVsRiQubmNeTj2O/0ogg6WFtLTnxBslrMsm31Rj0ZEXebe27
-	qNnmIj3BS0Ix3e20hgLqlk6KYJi/tG1ebFmMp+enVRKY3K21EfZktqbY454EMfuZxG4hva
-	8Zsyq8iBpU0qMHJASa6nOiJ07ssAjq8=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-287-Hshys6gbO3Kn1Q1Cd_XY6Q-1; Thu, 14 Mar 2024 08:54:02 -0400
-X-MC-Unique: Hshys6gbO3Kn1Q1Cd_XY6Q-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-690d3f5af86so3182926d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:54:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710420841; x=1711025641;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZxWk5KkUQhQXZEGGdHKASVJGou5PrPdHxO3BmOv5tM=;
-        b=WLY2Krna7xUjWSB9K8yZ5K2VqHiJPeNb63oUyqo3SLAuOBY7v4luDEy9p9TGgcf6g0
-         r0xooo7l0kO+3HsF/iQyU1IOzww7UrqmwUckl9VoVwNxx1YbJuvsLrnsHaThO88xMKRh
-         GgXsAe5Olxhvz4AEu8OiGm0dioj7L4ZvRU9bflDRSqglhgaYJTEL8HV9nMFx+SgxjHUJ
-         dZ+fXUGvNtWRQf0z582FmCYPtThOl5D72xGWegO9uoM2eqToCYbmTsZw0PKPgJybXcTi
-         fvlmEb8KbN80emoRk4chnJtgexqs2TyW6w4WvY135IFFYqwrefYqQ0fcVxpHvQazcvzW
-         6ukw==
-X-Gm-Message-State: AOJu0YwYxn9DeeomSAFVb/rBsNI7D8rgZSC0AMXh+qFNwU2MIx2PYJ6T
-	YMCMqv3xdY+SnKagPw1MwEWZFShqYN168TIK7lJoF1FqUu+OMAegkD5mid4Bb9v+9FJFsgSaS7W
-	a/eSS2Bnx+ZKFMRYZyRXp/Ec1ImoaMNKasoT0kNWJfrvvRtXhqndmYIIqoS1yIg==
-X-Received: by 2002:a05:6214:568b:b0:690:de72:316f with SMTP id qm11-20020a056214568b00b00690de72316fmr1649089qvb.1.1710420841568;
-        Thu, 14 Mar 2024 05:54:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFDKFAcy0D0RZIBzW/ijnDnKbSAtNbNy7aeKjfEkMPENW2gRJ/JKFObLbnjKUsRDl/qV6I7cQ==
-X-Received: by 2002:a05:6214:568b:b0:690:de72:316f with SMTP id qm11-20020a056214568b00b00690de72316fmr1649061qvb.1.1710420841118;
-        Thu, 14 Mar 2024 05:54:01 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id kd13-20020a056214400d00b0068ff79d8d97sm409217qvb.41.2024.03.14.05.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 05:54:00 -0700 (PDT)
-Date: Thu, 14 Mar 2024 08:53:57 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"x86@kernel.org" <x86@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Message-ID: <ZfLzZekFBp3J6JUy@x1n>
-References: <20240313214719.253873-1-peterx@redhat.com>
- <20240313214719.253873-10-peterx@redhat.com>
- <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu>
+	s=arc-20240116; t=1710420994; c=relaxed/simple;
+	bh=9Y/+hw0hgw9ADsFQLz0LPL3cLz0NNDauGYrral+Dtro=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 References; b=KoSlA4P2oSRECxYhrpePKQcAbGoccPjyuqsIt9JAfi88HFSbSIURu24Md97bPO/F8alzVxLHI/GflDqHrRWLhgh3hDccZDLzm1BLIH9JuO1CisGy3KC71WAtJyXb0HoCwWAjyCBnCd+XmIukGVJY9OAWcDkIl1VmjNQrqDrPnoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=R/p4zuCW; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240314125629euoutp010b19f517c9a9da2e6da08bcb3dc864f5~8otPQ2Yrm1041910419euoutp01a
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:56:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240314125629euoutp010b19f517c9a9da2e6da08bcb3dc864f5~8otPQ2Yrm1041910419euoutp01a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1710420989;
+	bh=AtiIPD1nd1BTHIsx1dMEytn/tsBihsCy+dwOY7jQpBY=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=R/p4zuCWtTO6I2S2SBVnoJM4D/03rroyRNjc6VN1uUfQYoV9rcRtFkqbqNIVLKN2E
+	 yST+G/UfoOeOU8ynRiUXYXFs4KrDKfJUi1GBYlX3rrYQr7n/hhpXrgCaKU79D6rnQf
+	 s2iu5gvtOGEOh+p/VydajeBDAGzE7WKyeSuAobgI=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240314125628eucas1p2e3ad48e936d6c53ce89ca5f2e02d474c~8otOyC5e32014220142eucas1p2m;
+	Thu, 14 Mar 2024 12:56:28 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id 46.99.09814.CF3F2F56; Thu, 14
+	Mar 2024 12:56:28 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240314125628eucas1p161af377a50fd957f445397bc1404978b~8otOP51sB1264712647eucas1p1m;
+	Thu, 14 Mar 2024 12:56:28 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240314125628eusmtrp157bb9d209f9df74e3c1ff96e3a790aaf~8otOPJAlG1799517995eusmtrp1O;
+	Thu, 14 Mar 2024 12:56:28 +0000 (GMT)
+X-AuditID: cbfec7f4-727ff70000002656-24-65f2f3fc65a2
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id D2.FA.09146.BF3F2F56; Thu, 14
+	Mar 2024 12:56:27 +0000 (GMT)
+Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240314125627eusmtip12f547f04dc25f77ebf9f2ed838088094~8otNdUPBP2067620676eusmtip1f;
+	Thu, 14 Mar 2024 12:56:27 +0000 (GMT)
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+To: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, Stephan Gerhold
+	<stephan@gerhold.net>, Catalin Marinas <catalin.marinas@arm.com>, Russell
+	King <linux@armlinux.org.uk>, Christoph Lameter <cl@gentwo.org>, Mark
+	Rutland <mark.rutland@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Will
+	Deacon <will@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] cpufreq: dt: always allocate zeroed cpumask
+Date: Thu, 14 Mar 2024 13:54:57 +0100
+Message-Id: <20240314125457.186678-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNKsWRmVeSWpSXmKPExsWy7djP87p/Pn9KNdj8Sc7i/bIeRovlc+Yy
+	WWx6fI3V4vKuOWwW99b8Z7X43HuE0eLQ1L2MFmuP3GW3WHr9IpPF3C9TmS0WbHzEaHFjronF
+	8lM7WCw2fvWwaLlj6sDvsWbeGkaPy9cuMnvsP1zk0bbA3mPTqk42j02fJrF73Lm2h81j85J6
+	j74tqxg9Pm+SC+CK4rJJSc3JLEst0rdL4MpYvGk3S0ETV8W/43/YGhj3cHQxcnJICJhIdF34
+	wNzFyMUhJLCCUeL37TOsEM4XRolL0zawQDifGSUubz7PBNNyctMJqMRyRolVU18ywbV8uNHD
+	BlLFJmAo0fW2C8wWESiT6P17CKyIWWAZs8Sse0+BNnJwCAvYSKztCQOpYRFQlZi95iNYPa+A
+	nUTzhVWMENvkJfYfPMsMEReUODnzCQuIzQwUb946mxmi5geHxMvFQSAjJQRcJL68YYEIC0u8
+	Or6FHcKWkTg9uQfsaAmBdkaJBb/vM0E4ExglGp7fglpmLXHn3C82kEHMApoS63fpQ4QdJf7e
+	f8ACMZ9P4sZbQYgT+CQmbZvODBHmlehoE4KoVpOYdXwd3NqDFy5BlXhIHL8kDhIWEoiVODPr
+	MMsERoVZSP6aheSvWQgnLGBkXsUonlpanJueWmyUl1quV5yYW1yal66XnJ+7iRGY3k7/O/5l
+	B+PyVx/1DjEycTAeYpTgYFYS4a1T/JgqxJuSWFmVWpQfX1Sak1p8iFGag0VJnFc1RT5VSCA9
+	sSQ1OzW1ILUIJsvEwSnVwJTyUnetpBmbEKeOSbXi4jvWt6z+8ymf0Kl3q/uSOFX88rlIbxWO
+	u/mW01/LcpdLGpx5a8FU2X3ErGijUPefloaSba8/HG+afv5bmcvPP0+YTr1KzfXMienaVV3h
+	sEB2oVxEvsq9q8r509nMorJzV+hKFJ6R+Xt0t04J7x63R4u2qoeun7t6Bm+qcsxB2R/ZX2+q
+	3Fmml9l825V1zq8pK3O+lpteKtqaoSwk/onxn3XnrtnsTnnXnz9YbvnC+oWWylP+C9v552ub
+	fo8p7TBTW2o2N4FlGcPcO435H1QXaK7r6Np+5NDxymh1n/SmiWHm/O/uFP5pS/O2OfHgydZP
+	QRpdM9W101fOmNgWWHtaWomlOCPRUIu5qDgRABqRgGreAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsVy+t/xu7q/P39KNbj9ydLi/bIeRovlc+Yy
+	WWx6fI3V4vKuOWwW99b8Z7X43HuE0eLQ1L2MFmuP3GW3WHr9IpPF3C9TmS0WbHzEaHFjronF
+	8lM7WCw2fvWwaLlj6sDvsWbeGkaPy9cuMnvsP1zk0bbA3mPTqk42j02fJrF73Lm2h81j85J6
+	j74tqxg9Pm+SC+CK0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXSt7NJSc3J
+	LEst0rdL0MtYvGk3S0ETV8W/43/YGhj3cHQxcnJICJhInNx0ggXEFhJYyijR/9MbIi4jcXJa
+	AyuELSzx51oXWxcjF1DNJ0aJAydfMoEk2AQMJbregiQ4OUQEqiT+NKxmAiliFtjALHHh3Hb2
+	LkYODmEBG4m1PWEgNSwCqhKz13wEq+cVsJNovrCKEWKBvMT+g2eZIeKCEidnPgE7iBko3rx1
+	NvMERr5ZSFKzkKQWMDKtYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECIysbcd+bt7BOO/VR71D
+	jEwcjIcYJTiYlUR46xQ/pgrxpiRWVqUW5ccXleakFh9iNAW6byKzlGhyPjC280riDc0MTA1N
+	zCwNTC3NjJXEeT0LOhKFBNITS1KzU1MLUotg+pg4OKUamFw/7E4v/uWZdV5549zwmvN8lR33
+	S+52fEn7ZP1bZ4l00qZn3f9za94Xf56jcqr7/KyMsPBZFoceStyo7VjsttjnfEPK3EO9yxI1
+	zoi4nG6VCVVezMOcfPbmwRN+wv8ydx98b/Uj4NKlyMtz4j5zr4sWvP9X/aqdTOaBMn1h4W99
+	v2Mt/qdo/bz9Im7j4eZz0vEnfBM7BWXavvAcdDa873uJ929W4tbE31+3bJK5sfvA0aKX4RuN
+	H+2q3STGIxTDbe35VUw62CCi+ymHuAaDuW1ym3YuwyZjlboL250ez/PoyHP0uyX7m8l2NtvN
+	r1aN86LNV3dKpe+1jNfQe81o7juFaS4nX0tZzMUPRdtXKrEUZyQaajEXFScCAG0BSGY1AwAA
+X-CMS-MailID: 20240314125628eucas1p161af377a50fd957f445397bc1404978b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240314125628eucas1p161af377a50fd957f445397bc1404978b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240314125628eucas1p161af377a50fd957f445397bc1404978b
+References: <CGME20240314125628eucas1p161af377a50fd957f445397bc1404978b@eucas1p1.samsung.com>
 
-On Thu, Mar 14, 2024 at 08:45:34AM +0000, Christophe Leroy wrote:
-> 
-> 
-> Le 13/03/2024 à 22:47, peterx@redhat.com a écrit :
-> > From: Peter Xu <peterx@redhat.com>
-> > 
-> > PowerPC book3s 4K mostly has the same definition on both, except pXd_huge()
-> > constantly returns 0 for hash MMUs.  As Michael Ellerman pointed out [1],
-> > it is safe to check _PAGE_PTE on hash MMUs, as the bit will never be set so
-> > it will keep returning false.
-> > 
-> > As a reference, __p[mu]d_mkhuge() will trigger a BUG_ON trying to create
-> > such huge mappings for 4K hash MMUs.  Meanwhile, the major powerpc hugetlb
-> > pgtable walker __find_linux_pte() already used pXd_leaf() to check hugetlb
-> > mappings.
-> > 
-> > The goal should be that we will have one API pXd_leaf() to detect all kinds
-> > of huge mappings.  AFAICT we need to use the pXd_leaf() impl (rather than
-> > pXd_huge() ones) to make sure ie. THPs on hash MMU will also return true.
-> 
-> All kinds of huge mappings ?
-> 
-> pXd_leaf() will detect only leaf mappings (like pXd_huge() ). There are 
-> also huge mappings through hugepd. On powerpc 8xx we have 8M huge pages 
-> and 512k huge pages. A PGD entry covers 4M so pgd_leaf() won't report 
-> those huge pages.
+Commit 0499a78369ad ("ARM64: Dynamically allocate cpumasks and increase
+supported CPUs to 512") changed the handling of cpumasks on ARM 64bit,
+what resulted in the strange issues and warnings during cpufreq-dt
+initialization on some big.LITTLE platforms.
 
-Ah yes, I should always mention this is in the context of leaf huge pages
-only.  Are the examples you provided all fall into hugepd category?  If so
-I can reword the commit message, as:
+This was caused by mixing OPPs between big and LITTLE cores, because
+OPP-sharing information between big and LITTLE cores is computed on
+cpumask, which in turn was not zeroed on allocation. Fix this by
+switching to zalloc_cpumask_var() call.
 
-        As a reference, __p[mu]d_mkhuge() will trigger a BUG_ON trying to
-        create such huge mappings for 4K hash MMUs.  Meanwhile, the major
-        powerpc hugetlb pgtable walker __find_linux_pte() already used
-        pXd_leaf() to check leaf hugetlb mappings.
+Fixes: dc279ac6e5b4 ("cpufreq: dt: Refactor initialization to handle probe deferral properly")
+CC: stable@vger.kernel.org # v5.10+
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/cpufreq/cpufreq-dt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-        The goal should be that we will have one API pXd_leaf() to detect
-        all kinds of huge mappings except hugepd.  AFAICT we need to use
-        the pXd_leaf() impl (rather than pXd_huge() ones) to make sure
-        ie. THPs on hash MMU will also return true.
-
-Does this look good to you?
-
-Thanks,
-
+diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+index 8bd6e5e8f121..2d83bbc65dd0 100644
+--- a/drivers/cpufreq/cpufreq-dt.c
++++ b/drivers/cpufreq/cpufreq-dt.c
+@@ -208,7 +208,7 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	if (!alloc_cpumask_var(&priv->cpus, GFP_KERNEL))
++	if (!zalloc_cpumask_var(&priv->cpus, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+ 	cpumask_set_cpu(cpu, priv->cpus);
 -- 
-Peter Xu
+2.34.1
 
 
