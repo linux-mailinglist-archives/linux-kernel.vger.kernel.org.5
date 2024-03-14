@@ -1,207 +1,127 @@
-Return-Path: <linux-kernel+bounces-103325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA4BA87BE1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:54:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D15D87BE2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE9961C21C7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:54:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87B8CB21FBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E136F50F;
-	Thu, 14 Mar 2024 13:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40C046FE1E;
+	Thu, 14 Mar 2024 13:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7EJN+DR"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="zNCPYhW3"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5785D8F8;
-	Thu, 14 Mar 2024 13:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8966FE0E
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710424478; cv=none; b=VxQwbX8LySOiWgdAQUcWP1T1GRTGCc+RnKkl6zV+eqy0RM+FOPKgFZeHCqPb8f59WjXUczRbuxuWGjJFVT+XB9omz4wAYh+NWPx3K2qTlL8SeAVSG6Yz5Ui57W1Kz20b2YtOxAvNCocOwDnfgKzNPP2Uk6m/YH0bw16lnKOXEp4=
+	t=1710424653; cv=none; b=tb86uGY7cl8+bKxuVvjn1bO2DED8trCbmkYzrXZM++y7lBFcqM7/7wvVhYXv08kNWcHymRXV3WHFDgSIs9vW5UlPEF4oqL59tC6R6g+dVDP2hOnA9J95t6+xvU/1Ea5XDkLTZwFnFMgVbvegVI3Poa5zOHPRDtaUhp0eYFKfCq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710424478; c=relaxed/simple;
-	bh=FNV5T9NIZtwTe7vw9OneotxdbKRbZTrJQVawh1BYalE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ve/jmCvGFjiUWTGjdSHETFGF2Ag1/v7+hjY6IrzWrBqbW9qDlsXQo1c2rTPfcxm6RqNAvq/osm9K6m3Vp1TYCQ4mLEEvovodZfa78/qMoB1Yj/5mDK+YKMc4S3YbozEl84deC511JMNMcjuhr024VjsUkuRM7GFlbkHqI6jqt2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A7EJN+DR; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dc09556599so7552825ad.1;
-        Thu, 14 Mar 2024 06:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710424476; x=1711029276; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=VYCoE6x/5FFdiDNbW6/F39BZo8+6Gfyjcn8t3LZwS0o=;
-        b=A7EJN+DRwst1iuoGfgDJhqxtHJOMVWAwe4dXYfIxhptr4KZ54TyfsPyJ72GZS/0KiT
-         2D3FXO5ERcV8JbDi/NyYroLrucfJhpt/1DZZTtIPTC+yvT2XKbH3ArzAYycBS9TRoqlf
-         dqPqI5Yc5h/Ffx76FFByVPe73lUr+Vnkw0KjjhX5R/GnmIKPwcNgGlvrlvMvF+6p2027
-         2SfMxW8ppo19TbQrYOQkG8BuStkzFfIDOA0k9eQgX+qg91E5sKVEIKZBTFWllLRE2Bum
-         Njnq//DmF/5AkYF0EpbvH2hAtjgCOlP5eofFxJ/IM2Q//hEDGYurwoJ1Lbip6eBgqJdt
-         /Uww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710424476; x=1711029276;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VYCoE6x/5FFdiDNbW6/F39BZo8+6Gfyjcn8t3LZwS0o=;
-        b=nohz5S2eFvlSN4uWI+9Vqe1qP2M5ZQRdHnu8y7jYPVPxkGUB/Xyj0tv4+w3jhm6FBP
-         BAOoV3MBNcDD/W1x2Yts+trFFqvZ1Hn7i0Riyy9iZPOdnZHy4HJ/g/fbPX9K+683MDjg
-         Bs5JuOk3yANDCP+QAWDoXXYQQ7jXCwqiSgYNavHSkDPMX3GBTloO+ohnqdDNeFBVgF4r
-         bFB3zk7vr0BWI5y5YAfIf0BKwe9jv/MO49bhXlt69hWYKJAgrRnpbzUvdGDIYd8XlWpA
-         0CmfYrfWPRugMjNnpb3UrKRvl3KBH++9dOv/KqBeyBVEOhW6hQD0RTSh3EszzRkXGtbC
-         nvZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWythKINyjROHuBP517XfvcZxPueLzgpyajvUaxMdumNfP3wpTYFkmsoO/CRc6SgSGQpVps1WRZ4ykqDHHb8u+zakFoUtxOS9i4vOAxvaV9+sPq9A3T54EVRFhB5NY/SYMxYoSArIdHrqFKggic9rnGzl7+Zu0KenSiOgj8jvvMs0YMeSxekryiRFbWEsL0p0jxRhNphwEVtrXG6Ju0JWUBk7Pg9jwWV/MFhpL1o0P3MP1HnjKUo+vFel1wTCcZZnsx/a+fJ9Ixjy1voinLv8eFzxwNuMZYsQ==
-X-Gm-Message-State: AOJu0YxfcUzQ0vD2YZuVb2Wlxpry/ffsTar9pgooFtcPFX2A+IrSL1I8
-	ABM65eO9dq2Eq+7LJnJ8rORVFSvUyDTRKSlI/Es73KUkJMgcGf82XE0ZKMmw
-X-Google-Smtp-Source: AGHT+IF1d/JjNvaUdlV4zt2IUW1FJQXeQEYCUkspAPTpUNljVFGhXPd+BPdq0X4tfzWPOphzi79Nzg==
-X-Received: by 2002:a17:902:d2d0:b0:1dc:6d64:dcff with SMTP id n16-20020a170902d2d000b001dc6d64dcffmr41795plc.37.1710424476027;
-        Thu, 14 Mar 2024 06:54:36 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u10-20020a170902e80a00b001dd95b5dd0fsm1700430plg.69.2024.03.14.06.54.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 06:54:35 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a4229dee-8a4b-488d-99de-84ed255583a5@roeck-us.net>
-Date: Thu, 14 Mar 2024 06:54:33 -0700
+	s=arc-20240116; t=1710424653; c=relaxed/simple;
+	bh=qak9nEqjPrRmrEJGCzU/m6RNSxSsO7lFq0sySveqSRM=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=PpsOJpiJSZ9o19JFzUZfGQBdIn9or8a3lFQrOckSCk4g4bN7hb9X0slNXJqyg6W3XWIAWwyyU63tzROCg9Oid9rUjqJbCFscTAjV+WqKz9bnZIu6JQeGiZhj7QX8DJIzK5Ii++YmKuIcoyehh2xBo7L6MlxKBH9fXR72nTnkwvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=zNCPYhW3; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-5007a.ext.cloudfilter.net ([10.0.29.141])
+	by cmsmtp with ESMTPS
+	id kl0PrGfPGPM1hklYoreDby; Thu, 14 Mar 2024 13:55:54 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id klYnro3uhPW7tklYnrWHjv; Thu, 14 Mar 2024 13:55:53 +0000
+X-Authority-Analysis: v=2.4 cv=bOAQIu+Z c=1 sm=1 tr=0 ts=65f301e9
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GuovT0Zf00DJfnP9eUQKgQ92jnL5mHj5XtG06nlFzjM=; b=zNCPYhW3IJmLhHb16XWy/wnmgM
+	KXAMHQ7vD/f7GyV8v2q7B5AFx79JBitNYvEra/xW/QWg5qYi7418xFLwUAZOE/+xFEUJ4rcemomPB
+	ICxG2p+/skkhH8+AJhzWWyv5AH2S6fVoikDnEdSm0FzK5C5xx5OJKNO4laZ12gCU210FQMdvEyNLU
+	AgbWziz0CuB0oYjOp4lOwdDAzl9rm6psTHxwIz4SGU62U16ZrdSQNSENOb2q/O6rZi3OoeW8WoKJp
+	PuqauEyK0coG+tFRnmANKl5V1WNd6pgeH9FIF+Z+9+53QlOVfjLpPugn9TbhJa+rbaJk6Amtv03nw
+	xvznP0Xg==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:51006 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rklYm-003xV5-1w;
+	Thu, 14 Mar 2024 07:55:52 -0600
+Subject: Re: [PATCH 6.8 0/5] 6.8.1-rc1 review
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de
+References: <20240313163019.613705-1-sashal@kernel.org>
+In-Reply-To: <20240313163019.613705-1-sashal@kernel.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <1217741e-51da-ba81-7680-30b8f7edd3b3@w6rz.net>
+Date: Thu, 14 Mar 2024 06:55:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/14] s390: Add support for suppressing warning
- backtraces
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mcanal@igalia.com>, Dan Carpenter <dan.carpenter@linaro.org>,
- Kees Cook <keescook@chromium.org>, Daniel Diaz <daniel.diaz@linaro.org>,
- David Gow <davidgow@google.com>, Arthur Grillo <arthurgrillo@riseup.net>,
- Brendan Higgins <brendan.higgins@linux.dev>,
- Naresh Kamboju <naresh.kamboju@linaro.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, Maxime Ripard
- <mripard@kernel.org>, =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?=
- <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
- Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
- kunit-dev@googlegroups.com, linux-arch@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- loongarch@lists.linux.dev, netdev@lists.linux.dev
-References: <20240312170309.2546362-1-linux@roeck-us.net>
- <20240312170309.2546362-12-linux@roeck-us.net>
- <CAMuHMdXHKfd8agPGx+MjvC4cjW5F6DEeVec3Moe-=LLkrT3CXQ@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAMuHMdXHKfd8agPGx+MjvC4cjW5F6DEeVec3Moe-=LLkrT3CXQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rklYm-003xV5-1w
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:51006
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 2
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfGMQDaDaQKJleKrhjGU/N9uKxyh0YsoATURdXSYdcFpxWVVyHmi+JOJ4zZwBPqDwQrP8A1u9wjpouucUuldb5GEgnYYrte2HLdb4AMQV/FsBUg3MCfWo
+ Agc5lEmeppq+X54ekQ70nb4kk1rpRtmZNEqMpZ8LGT+CJ3oaKvj/ba8KEijePgiJqUI2+6Ru4QqAvSIjeqGUPEikhCnI+4Bs9Nw=
 
-On 3/14/24 00:57, Geert Uytterhoeven wrote:
-> Hi Günter,
-> 
-> On Tue, Mar 12, 2024 at 6:06 PM Guenter Roeck <linux@roeck-us.net> wrote:
->> Add name of functions triggering warning backtraces to the __bug_table
->> object section to enable support for suppressing WARNING backtraces.
->>
->> To limit image size impact, the pointer to the function name is only added
->> to the __bug_table section if both CONFIG_KUNIT and CONFIG_DEBUG_BUGVERBOSE
->> are enabled. Otherwise, the __func__ assembly parameter is replaced with a
->> (dummy) NULL parameter to avoid an image size increase due to unused
->> __func__ entries (this is necessary because __func__ is not a define but a
->> virtual variable).
->>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> 
-> Thanks for your patch!
-> 
->> --- a/arch/s390/include/asm/bug.h
->> +++ b/arch/s390/include/asm/bug.h
->> @@ -8,19 +8,30 @@
->>
->>   #ifdef CONFIG_DEBUG_BUGVERBOSE
->>
->> +#if IS_ENABLED(CONFIG_KUNIT)
->> +# define HAVE_BUG_FUNCTION
->> +# define __BUG_FUNC_PTR        "       .long   %0-.\n"
->> +# define __BUG_FUNC    __func__
->> +#else
->> +# define __BUG_FUNC_PTR
->> +# define __BUG_FUNC    NULL
->> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
->> +
->>   #define __EMIT_BUG(x) do {                                     \
->>          asm_inline volatile(                                    \
->>                  "0:     mc      0,0\n"                          \
->>                  ".section .rodata.str,\"aMS\",@progbits,1\n"    \
->>                  "1:     .asciz  \""__FILE__"\"\n"               \
->>                  ".previous\n"                                   \
->> -               ".section __bug_table,\"awM\",@progbits,%2\n"   \
->> +               ".section __bug_table,\"awM\",@progbits,%3\n"   \
-> 
-> This change conflicts with commit 3938490e78f443fb ("s390/bug:
-> remove entry size from __bug_table section") in linus/master.
-> I guess it should just be dropped?
-> 
+On 3/13/24 9:30 AM, Sasha Levin wrote:
+> This is the start of the stable review cycle for the 6.8.1 release.
+> There are 5 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri Mar 15 04:28:11 PM UTC 2024.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.8.y&id2=v6.8
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
-Yes, I know. I'll send v2 rebased to v6.9-rc1 once it is available and,
-yes, the change will be gone after that.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Thanks,
-Guenter
-
+Tested-by: Ron Economos <re@w6rz.net>
 
 
