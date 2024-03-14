@@ -1,442 +1,215 @@
-Return-Path: <linux-kernel+bounces-103614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD5D087C1EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:15:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A49E87C1F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:15:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 832ED282C4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:15:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56401282D01
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69ECB745DC;
-	Thu, 14 Mar 2024 17:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E92745E1;
+	Thu, 14 Mar 2024 17:15:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iPBGqvyS"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="SYG6U/af"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9B86E610;
-	Thu, 14 Mar 2024 17:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE3BD74434
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710436495; cv=none; b=YBOUz1BbIZnAHi8jTewZwIDcMuJZnoDK/+dW5+SHwhHEUO7uKUPoCbiV1/Gm+ebBz0rwWH51sldiIOXzg2OWglGMi1w6gnCgmd7oOCGwzWs//YbowXeAB52rxn41TLHPgXW3UsCjBfoGGH9LSG65hmbdVY1K30dtd8M7diWZITg=
+	t=1710436536; cv=none; b=eV39Rw9ykTqzuoQ1Vf3KNseCDZiXwajozr5LVxYm5VHUQtYoN43cP48q2Pn+Ax1gybD+jCemUpnFxCAssciuCpoGDRMXTmLKqLXxJFccRNXhYJipAly7Ob6cwwC8CBPB+VdcxZVAObLnG++4y4OoRVaYKLIesaMEW/36emlPxHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710436495; c=relaxed/simple;
-	bh=Mk+rfA5+jt08mXa/s62cSWewQqyfYwi9QnmHD0NZdQc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aM2RmctST99KCP8UKo2fycRnMNMiJbQFDhiuYhSRDMsa3+0zZWIhYfG/yXSNUxiFaKBQetMxQgMThK7ksndxA4i7OicgBa1qaeRH6/jdoG84XnGnl+nNSJ1piYl2Uv/FoVwwlErAEzi8yh93kQUAi8xn91t0vd0QBs8/pQqqj1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iPBGqvyS; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5689b7e8387so1582592a12.2;
-        Thu, 14 Mar 2024 10:14:52 -0700 (PDT)
+	s=arc-20240116; t=1710436536; c=relaxed/simple;
+	bh=twfwIwv/zv/IkYMneJKoVYs7yj75wWjU7/p/yYsLBHk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RCHc7V1FBou5+2fNaWPp1PO8ODmiJjjH5QHoivGNN5sAOOYYrEJOEy1UwHsxvEIHBnSGZI0TFTWQZMwfR1XZxsnJmtd9Xwueitv4QRzsWCtOdTOFSt49pCcpgPUg+rOYAqkDF1c0I/lJDa4YYBVJZeAqbtSW1zSmV3d7v2Ou4lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=SYG6U/af; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-43095d80832so5051721cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710436491; x=1711041291; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lyQuvyZvWkNkevJje/qZfohSPwJGSD6MP76YZ0DXqFI=;
-        b=iPBGqvySqSZJneP3fo3HehzCAEKZElSEVCDbfzcWlBBMDc3cCc7pTQEjXjsHCYeQ9W
-         4l/1Hpe68808FozWCK3vHNRTPX1TZ8GkW8Iv5f66VKDjFJ6R7lyZpd6xw+ZMbLSKmK1Z
-         /jKsp78ZaYM6B8EC78Yi92Ij7Yf5hhUdKmu/z83fMxqHyvD27x9xxYictsWyOVx1X35l
-         CX9mKBDu6UwthFhv4iOembOseAaMp5CWKHHzoydbjRiqOcZYxe5gfTPKOWern2npKFuc
-         muNvmOnjf1rrjD5PVVUSXNc83jt+i346fKXCn+gMjwogXRNisS6q9i7HL6uniBI2Vvcv
-         uqsQ==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710436534; x=1711041334; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9B4CXRFsjej7KTIynVIuz7r6GJvXz0ei6DUmelRAZHg=;
+        b=SYG6U/afZC9nupoYqohQh++izfwcWhZlf2XzYuHm5bBOeytWhgPhjH3eTykjubeKET
+         PoVFIAiz1Ic4nCqT8y3OEnZRYjEMnWmwFmJmVp/ha0huRGktcQ8tURtpd7hrOpU2g8Ti
+         u7uwqxG4/S5TBaOizqYWg2OyZNG6eB7R/ZyeQvmQDwMCLD0eA+hW+XOeuyN3AXmAuiny
+         /smMZKwAxRVw+7qp1deiwSMDo6U88xzv4BotVOA0nQWQcQnjhIBDgv9EeIeQcpK1bCI9
+         yoKapOtF9trraaR0YcOqqfLxQ+5CchWHX8Ni16sa3qEBktmAsUDq7N2bDfHUNcUEhJi8
+         fY3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710436491; x=1711041291;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lyQuvyZvWkNkevJje/qZfohSPwJGSD6MP76YZ0DXqFI=;
-        b=HU8o9Td3NkqMKWPysoGqCN3iHG9SRjIwwrayj1bUQVKOIvxEjqHg9oUaKaGZJBWUVv
-         QRAm2DO9k24+pUESj2ohJoPM4/3qCUJmG2QvvkmPg0AESHvYkDKylUxoK8JvXHduQ1gA
-         NlHOvXjviDHZUYjoi3IQ3AM4TQXDIZsomkU5nhdt/8OurgyWv4J5HaxZn20yMiyUpL5K
-         CGAC/4ZP+pPPMNi7NTI0hf3j72fMEI/EHqUhHZlh6wbjrMZDC+LPbeyB8fwaxcNq4gse
-         A03AAMHECPjvsPR3C0MUlVVQBWEF8QnGAC5pGdOqCSDONb678q3HCs1b2tSV+vSgmGNy
-         NYDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWhPilnlI9ODMBJGY0RCWD1f76q8IoFrmLlT/Wzg5HdimbbRPJ8pXt3CWOhw+CyzRG9BamuOtntgYN/7C5211xTdD6IsX/PbU84xdHB5YD8xyM1Wftzblc5+g1wNoFlju/vksy2p+B+/g==
-X-Gm-Message-State: AOJu0YwiEtTmfb5kMwisv0rqKn2oQXIbvoViUmMYBp5gAgz3c0CEdPKD
-	DQhCnGRcrf4H6ned1tNpnU8WFlfc+b9urENfGKOFICp7kFH2F0kN
-X-Google-Smtp-Source: AGHT+IEMOp7WlFT+9NeLjuuuolSPGS9gEn8HXwALS4uZ7Hqf/VM5cxQ581uVXE7EOsb4JtgAAKOXNA==
-X-Received: by 2002:a17:906:ecfc:b0:a46:6557:716f with SMTP id qt28-20020a170906ecfc00b00a466557716fmr977154ejb.20.1710436490523;
-        Thu, 14 Mar 2024 10:14:50 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id p25-20020a1709061b5900b00a461d8335f2sm866369ejg.45.2024.03.14.10.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 10:14:49 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- Denis Burkov <hitechshell@mail.ru>
-Cc: Denis Burkov <hitechshell@mail.ru>
-Subject: Re: [PATCH 2/2] ARM: dts: sun5i: Add PocketBook 614 Plus support
-Date: Thu, 14 Mar 2024 18:14:48 +0100
-Message-ID: <2451572.jE0xQCEvom@jernej-laptop>
-In-Reply-To: <20240314155306.11521-2-hitechshell@mail.ru>
-References:
- <20240314155306.11521-1-hitechshell@mail.ru>
- <20240314155306.11521-2-hitechshell@mail.ru>
+        d=1e100.net; s=20230601; t=1710436534; x=1711041334;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9B4CXRFsjej7KTIynVIuz7r6GJvXz0ei6DUmelRAZHg=;
+        b=n9UrmMwWCD5/bDi7r5diP0Pfws+XwJu6Ho9S9kuPKZ1nq973QcaSOPYlYXIvYdZfVI
+         QPGzfCxwmJwT62VoMxgzuIsO2e8SezcQmOm442imZdjG273P6l9+c6ZGvcIRbiIqwryd
+         3jKmJltuL1fH/NEWjNlqlgLMLh0DGD5VZd1rG5WXaKbOvLaArDWyTePpSWD+E7ygowE8
+         BytZuv9P03ACMfSc/InUM8IyDN7i5Bik5F3CzyujONVspkHKW5hMaQgDWH9hA7Lkq+en
+         5LvJjCuQVJaX0OWhSJm1yCcutHZJN9/c03KdPWG1YpMMsWatQHpEykTlM478H6ag18Jk
+         kvZQ==
+X-Gm-Message-State: AOJu0Yxbc1dG4w50i8yMdnLddyAg4X/TCUjEtVKrGqLfq9pPiQ2zyAWd
+	LEtdeG/XnZYho/1dXW7/BdEForGSDaiRRbN36IvKKBNNb7bYHmACDsZlexx/rtX/1yiCRIBg7aI
+	Du8qyWQMW7UI0/QRiWVMppgOPnGaLkk4SVOfjVQ==
+X-Google-Smtp-Source: AGHT+IFcsQ5Nlg5NEiqBm3DwbkibUkhYMw9DyW8AcuUZ2SO3yMvSThREoaam/CVmQhCQlWZCaZqK8GR5uh9TcgEMS+I=
+X-Received: by 2002:ac8:5a0b:0:b0:42f:3093:b4bf with SMTP id
+ n11-20020ac85a0b000000b0042f3093b4bfmr2576867qta.37.1710436533416; Thu, 14
+ Mar 2024 10:15:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <20240311164638.2015063-9-pasha.tatashin@soleen.com> <CAEr6+EDfGyJG3481RUWTamGiG2aNPDWjqSGRJaKGova-Yj8SUw@mail.gmail.com>
+In-Reply-To: <CAEr6+EDfGyJG3481RUWTamGiG2aNPDWjqSGRJaKGova-Yj8SUw@mail.gmail.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 14 Mar 2024 13:14:56 -0400
+Message-ID: <CA+CK2bBZAVc8p04WAZy6yL5dZQuFqj89mGq3V4oxwLQ7Urc5Sw@mail.gmail.com>
+Subject: Re: [RFC 08/14] fork: separate vmap stack alloction and free calls
+To: Jeff Xie <xiehuan09@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
+	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
+	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
+	hca@linux.ibm.com, hch@infradead.org, hpa@zytor.com, 
+	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
+	jroedel@suse.de, juri.lelli@redhat.com, kent.overstreet@linux.dev, 
+	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
+	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
+	michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
+	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
+	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
+	tglx@linutronix.de, urezki@gmail.com, vincent.guittot@linaro.org, 
+	vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Denis!
+> I've discovered that the function free_vmap_stack() can trigger a warning.
+> It appears that free_vmap_stack() should handle interrupt context and
+> task context separately as vfree().
 
-Dne =C4=8Detrtek, 14. marec 2024 ob 16:53:06 CET je Denis Burkov napisal(a):
-> What works:
->=20
-> - Serial console
-> - mmc0, mmc2 (both microSD card slots on the board)
-> - All buttons (gpio and lradc based)
-> - Power LED
-> - PMIC
-> - RTC
-> - USB OTG/gadgets mode
->=20
-> Signed-off-by: Denis Burkov <hitechshell@mail.ru>
-> ---
->  arch/arm/boot/dts/allwinner/Makefile          |   2 +
->  .../sun5i-a13-pocketbook-614-plus.dts         | 254 ++++++++++++++++++
->  2 files changed, 256 insertions(+)
->  create mode 100644 arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-=
-plus.dts
->=20
-> diff --git a/arch/arm/boot/dts/allwinner/Makefile b/arch/arm/boot/dts/all=
-winner/Makefile
-> index 2d26c3397f14..fe321865beed 100644
-> --- a/arch/arm/boot/dts/allwinner/Makefile
-> +++ b/arch/arm/boot/dts/allwinner/Makefile
-> @@ -61,6 +61,7 @@ dtb-$(CONFIG_MACH_SUN5I) +=3D \
->  	sun5i-a13-olinuxino.dtb \
->  	sun5i-a13-olinuxino-micro.dtb \
->  	sun5i-a13-pocketbook-touch-lux-3.dtb \
-> +	sun5i-a13-pocketbook-614-plus.dtb \
->  	sun5i-a13-q8-tablet.dtb \
->  	sun5i-a13-utoo-p66.dtb \
->  	sun5i-gr8-chip-pro.dtb \
-> @@ -82,6 +83,7 @@ dtb-$(CONFIG_MACH_SUN5I) +=3D \
->  	sun5i-a13-olinuxino.dtb \
->  	sun5i-a13-olinuxino-micro.dtb \
->  	sun5i-a13-pocketbook-touch-lux-3.dtb \
-> +	sun5i-a13-pocketbook-614-plus.dtb \
->  	sun5i-a13-q8-tablet.dtb \
->  	sun5i-a13-utoo-p66.dtb \
->  	sun5i-gr8-chip-pro.dtb \
+Hi Jeff,
 
-This merge artefact. Can you add patch before this one and remove duplicate=
- definitions?
+Thank you for reporting this. Yes, it appears free_vmap_stack() may
+get called from the interrupt context, and yet we call
+remove_vm_area() that takes locks. I will fix it in the next version
+similar to the way you suggested by adding an in_interrupt() case.
 
-> diff --git a/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dt=
-s b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-> new file mode 100644
-> index 000000000000..89898fa16ff7
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-> @@ -0,0 +1,254 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright 2024 Denis Burkov <hitechshell@mail.ru>
-> + */
-> +
-> +/dts-v1/;
-> +#include "sun5i-a13.dtsi"
-> +#include "sunxi-common-regulators.dtsi"
+Thank you,
+Pasha
 
-Extra empty line here.
-
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +/ {
-> +	model =3D "PocketBook 614 Plus";
-> +	compatible =3D "pocketbook,614-plus", "allwinner,sun5i-a13";
-> +
-> +	aliases {
-> +		serial0 =3D &uart1;
-> +		i2c0 =3D &i2c0;
-> +		i2c1 =3D &i2c1;
-> +		i2c2 =3D &i2c2;
-> +		rtc0 =3D &pcf8563;
-
-Please drop aliases except serial0.
-
-> +	};
-> +
-> +	chosen {
-> +		stdout-path =3D "serial0:115200n8";
-> +	};
-> +
-> +	leds {
-> +		compatible =3D "gpio-leds";
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&led_pins_pocketbook>;
-
-Drop pinctrl nodes. GPIOs don't need them.
-
-> +
-> +		led {
-> +			gpios =3D <&pio 4 8 GPIO_ACTIVE_LOW>; /* PE8 */
-> +			default-state =3D "on";
-
-Add additional properties, like function and color.
-
-> +		};
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible =3D "gpio-keys";
-> +		autorepeat;
-
-Why is autorepeat needed?
-
-> +		label =3D "GPIO Keys";
-
-I guess label is self evident and not needed?
-
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&pocketbook_btn_pins>;
-
-Again, GPIOs don't need pinctrl nodes. I know that you specified pull up, b=
-ut
-please try without. Other boards have same design and it's not needed.
-
-> +
-> +		key-right {
-> +			label =3D "Right";
-> +			linux,code =3D <KEY_NEXT>;
-> +			gpios =3D <&pio 6 9 GPIO_ACTIVE_LOW>; /* PG9 */
-> +		};
-> +
-> +		key-left {
-> +			label =3D "Left";
-> +			linux,code =3D <KEY_PREVIOUS>;
-> +			gpios =3D <&pio 6 10 GPIO_ACTIVE_LOW>; /* PG10 */
-> +		};
-> +	};
-> +
-> +	reg_3v3_mmc0: regulator-mmc0 {
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "vdd-mmc0";
-> +		regulator-min-microvolt =3D <3300000>;
-> +		regulator-max-microvolt =3D <3300000>;
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&pocketbook_reg_mmc0_pins>;
-
-again, pinctrl not needed.
-
-> +		gpio =3D <&pio 4 4 GPIO_ACTIVE_LOW>; /* PE4 */
-> +		vin-supply =3D <&reg_vcc3v3>;
-> +	};
-> +};
-> +
-> +&cpu0 {
-> +	cpu-supply =3D <&reg_dcdc2>;
-> +};
-> +
-> +&ehci0 {
-> +	status =3D "okay";
-> +};
-> +
-> +&i2c0 {
-> +	status =3D "okay";
-> +
-> +	axp209: pmic@34 {
-> +		compatible =3D "x-powers,axp209";
-> +		reg =3D <0x34>;
-> +		interrupts =3D <0>;
-> +	};
-> +};
-> +
-> +#include "axp209.dtsi"
-> +
-> +&i2c1 {
-> +	status =3D "okay";
-> +
-> +	pcf8563: rtc@51 {
-> +		compatible =3D "nxp,pcf8563";
-> +		reg =3D <0x51>;
-> +		#clock-cells =3D <0>;
-> +	};
-> +};
-> +
-> +&i2c2 {
-> +	status =3D "okay";
-> +
-> +	/* Touchpanel is connected here. */
-
-Any reason why don't you specify touch panel device here?
-
-> +};
-> +
-> +&lradc {
-> +	vref-supply =3D <&reg_ldo2>;
-> +	status =3D "okay";
-> +
-> +	button-300 {
-> +		label =3D "Down";
-> +		linux,code =3D <KEY_DOWN>;
-> +		channel =3D <0>;
-> +		voltage =3D <300000>;
-> +	};
-> +
-> +	button-700 {
-> +		label =3D "Up";
-> +		linux,code =3D <KEY_UP>;
-> +		channel =3D <0>;
-> +		voltage =3D <700000>;
-> +	};
-> +
-> +	button-1000 {
-> +		label =3D "Left";
-> +		linux,code =3D <KEY_LEFT>;
-> +		channel =3D <0>;
-> +		voltage =3D <1000000>;
-> +	};
-> +
-> +	button-1200 {
-> +		label =3D "Menu";
-> +		linux,code =3D <KEY_MENU>;
-> +		channel =3D <0>;
-> +		voltage =3D <1200000>;
-> +	};
-> +
-> +	button-1500 {
-> +		label =3D "Right";
-> +		linux,code =3D <KEY_RIGHT>;
-> +		channel =3D <0>;
-> +		voltage =3D <1500000>;
-> +	};
-> +};
-> +
-> +&mmc0 {
-> +	vmmc-supply =3D <&reg_3v3_mmc0>;
-> +	bus-width =3D <4>;
-> +	cd-gpios =3D <&pio 6 0 GPIO_ACTIVE_LOW>; /* PG0 */
-> +	status =3D "okay";
-> +};
-> +
-> +&mmc2 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mmc2_4bit_pc_pins>;
-> +	vmmc-supply =3D <&reg_vcc3v3>;
-> +	bus-width =3D <4>;
-> +	non-removable;
-> +	status =3D "okay";
-> +};
-> +
-> +&ohci0 {
-> +	status =3D "okay";
-> +};
-> +
-> +&otg_sram {
-> +	status =3D "okay";
-> +};
-> +
-> +&pio {
-> +	led_pins_pocketbook: led-pin {
-> +		pins =3D "PE8";
-> +		function =3D "gpio_out";
-> +	};
-> +	pocketbook_btn_pins: btn-pins {
-> +		pins =3D "PG9", "PG10";
-> +		function =3D "gpio_in";
-> +		bias-pull-up;
-> +	};
-> +	pocketbook_reg_mmc0_pins: reg-mmc0-pins {
-> +		pins =3D "PE4";
-> +		function =3D "gpio_out";
-> +	};
-> +};
-
-Whole PIO node can be dropped.
-
-Best regards,
-Jernej
-
-> +
-> +&reg_dcdc2 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt =3D <1000000>;
-> +	regulator-max-microvolt =3D <1500000>;
-> +	regulator-name =3D "vdd-cpu";
-> +};
-> +
-> +&reg_dcdc3 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt =3D <1000000>;
-> +	regulator-max-microvolt =3D <1400000>;
-> +	regulator-name =3D "vdd-int-dll";
-> +};
-> +
-> +&reg_ldo1 {
-> +	regulator-name =3D "vdd-rtc";
-> +};
-> +
-> +&reg_ldo2 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt =3D <3000000>;
-> +	regulator-max-microvolt =3D <3000000>;
-> +	regulator-name =3D "avcc";
-> +};
-> +
-> +&reg_ldo3 {
-> +	regulator-min-microvolt =3D <3300000>;
-> +	regulator-max-microvolt =3D <3300000>;
-> +	regulator-name =3D "vcc-wifi";
-> +};
-> +
-> +&reg_usb0_vbus {
-> +	status =3D "okay";
-> +	gpio =3D <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
-> +};
-> +
-> +&reg_usb1_vbus {
-> +	gpio =3D <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
-> +	status =3D "okay";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&uart1_pg_pins>;
-> +	status =3D "okay";
-> +};
-> +
-> +&usb_otg {
-> +	dr_mode =3D "otg";
-> +	status =3D "okay";
-> +};
-> +
-> +&usb_power_supply {
-> +	status =3D "okay";
-> +};
-> +
-> +&battery_power_supply {
-> +	status =3D "okay";
-> +};
-> +
-> +&usbphy {
-> +	usb0_id_det-gpios =3D <&pio 6 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>; /* =
-PG2 */
-> +	usb0_vbus_det-gpios =3D <&axp_gpio 1 GPIO_ACTIVE_HIGH>;
-> +	usb0_vbus-supply =3D <&reg_usb0_vbus>;
-> +	usb1_vbus-supply =3D <&reg_usb1_vbus>;
-> +	status =3D "okay";
-> +};
->=20
-
-
-
-
+> [root@JeffXie ]# poweroff
+> [root@JeffXie ]# umount: devtmpfs busy - remounted read-only
+> [   93.036872] EXT4-fs (vda): re-mounted
+> 2e1f057b-471f-4c08-a7b8-611457b221f2 ro. Quota mode: none.
+> The system is going down NOW!
+> Sent SIGTERM to all processes
+> Sent SIGKILL to all processes
+> Requesting system poweroff
+> [   94.043540] ------------[ cut here ]------------
+> [   94.043977] WARNING: CPU: 0 PID: 0 at kernel/smp.c:786
+> smp_call_function_many_cond+0x4e5/0x550
+> [   94.044744] Modules linked in:
+> [   94.045024] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
+> 6.8.0-00014-g82270db6e1f0 #91
+> [   94.045697] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+> BIOS 1.15.0-1 04/01/2014
+> [   94.046399] RIP: 0010:smp_call_function_many_cond+0x4e5/0x550
+> [   94.046914] Code: 48 8b 78 08 48 c7 c1 a0 84 16 81 4c 89 f6 e8 22
+> 11 f6 ff 65 ff 0d 23 38 ec 7e 0f 85 a1 fc ff ff 0f 1f 44 00 00 e9 97
+> fc ff ff <0f> 0b e9 61
+> [   94.048509] RSP: 0018:ffffc90000003e48 EFLAGS: 00010206
+> [   94.048965] RAX: ffffffff82cb3fd0 RBX: ffff88811862cbc0 RCX: 0000000000000003
+> [   94.049598] RDX: 0000000000000100 RSI: 0000000000000000 RDI: 0000000000000000
+> [   94.050226] RBP: ffff8881052c5090 R08: 0000000000000000 R09: 0000000000000001
+> [   94.050861] R10: ffffffff82a060c0 R11: 0000000000008847 R12: ffff888102eb3500
+> [   94.051480] R13: ffff88811862b800 R14: ffff88811862cc38 R15: 0000000000000000
+> [   94.052109] FS:  0000000000000000(0000) GS:ffff888118600000(0000)
+> knlGS:0000000000000000
+> [   94.052812] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   94.053318] CR2: 00000000004759e0 CR3: 0000000002a2e000 CR4: 0000000000750ef0
+> [   94.053955] PKRU: 55555554
+> [   94.054203] Call Trace:
+> [   94.054433]  <IRQ>
+> [   94.054632]  ? __warn+0x84/0x140
+> [   94.054925]  ? smp_call_function_many_cond+0x4e5/0x550
+> [   94.055362]  ? report_bug+0x199/0x1b0
+> [   94.055697]  ? handle_bug+0x3c/0x70
+> [   94.056010]  ? exc_invalid_op+0x18/0x70
+> [   94.056350]  ? asm_exc_invalid_op+0x1a/0x20
+> [   94.056728]  ? smp_call_function_many_cond+0x4e5/0x550
+> [   94.057179]  ? __pfx_do_kernel_range_flush+0x10/0x10
+> [   94.057622]  on_each_cpu_cond_mask+0x24/0x40
+> [   94.057999]  flush_tlb_kernel_range+0x98/0xb0
+> [   94.058390]  free_unmap_vmap_area+0x2d/0x40
+> [   94.058768]  remove_vm_area+0x3a/0x70
+> [   94.059094]  free_vmap_stack+0x15/0x60
+> [   94.059427]  rcu_core+0x2bf/0x980
+> [   94.059735]  ? rcu_core+0x244/0x980
+> [   94.060046]  ? kvm_clock_get_cycles+0x18/0x30
+> [   94.060431]  __do_softirq+0xc2/0x292
+> [   94.060760]  irq_exit_rcu+0x6a/0x90
+> [   94.061074]  sysvec_apic_timer_interrupt+0x6e/0x90
+> [   94.061507]  </IRQ>
+> [   94.061704]  <TASK>
+> [   94.061903]  asm_sysvec_apic_timer_interrupt+0x1a/0x20
+> [   94.062367] RIP: 0010:default_idle+0xf/0x20
+> [   94.062746] Code: 4c 01 c7 4c 29 c2 e9 72 ff ff ff 90 90 90 90 90
+> 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa eb 07 0f 00 2d 33 b4 2a
+> 00 fb f4 <fa> c3 cc c0
+> [   94.064342] RSP: 0018:ffffffff82a03e70 EFLAGS: 00000212
+> [   94.064805] RAX: ffff888118628608 RBX: ffffffff82a0c980 RCX: 0000000000000000
+> [   94.065429] RDX: 4000000000000000 RSI: ffffffff82725be8 RDI: 000000000000a14c
+> [   94.066066] RBP: 0000000000000000 R08: 000000000000a14c R09: 0000000000000001
+> [   94.066705] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> [   94.067311] R13: 0000000000000000 R14: ffffffff82a0c030 R15: 00000000000000ac
+> [   94.067936]  default_idle_call+0x2c/0xd0
+> [   94.068284]  do_idle+0x1ce/0x210
+> [   94.068584]  cpu_startup_entry+0x2a/0x30
+> [   94.068931]  rest_init+0xc5/0xd0
+> [   94.069224]  arch_call_rest_init+0xe/0x30
+> [   94.069597]  start_kernel+0x58e/0x8d0
+> [   94.069929]  x86_64_start_reservations+0x18/0x30
+> [   94.070353]  x86_64_start_kernel+0xc6/0xe0
+> [   94.070725]  secondary_startup_64_no_verify+0x16d/0x17b
+> [   94.071189]  </TASK>
+> [   94.071392] ---[ end trace 0000000000000000 ]---
+> [   95.040718] e1000e: EEE TX LPI TIMER: 00000000
+> [   95.055005] ACPI: PM: Preparing to enter system sleep state S5
+> [   95.055619] reboot: Power down
+>
+>
+>  ./scripts/faddr2line ./vmlinux smp_call_function_many_cond+0x4e5/0x550
+> smp_call_function_many_cond+0x4e5/0x550:
+> smp_call_function_many_cond at kernel/smp.c:786 (discriminator 1)
+>
+>  756 static void smp_call_function_many_cond(const struct cpumask *mask,
+>  757                                         smp_call_func_t func, void *info,
+>  758                                         unsigned int scf_flags,
+>  759                                         smp_cond_func_t cond_func)
+> [...]
+>  781          * When @wait we can deadlock when we interrupt between
+> llist_add() and
+>  782          * arch_send_call_function_ipi*(); when !@wait we can
+> deadlock due to
+>  783          * csd_lock() on because the interrupt context uses the same csd
+>  784          * storage.
+>  785          */
+>  786         WARN_ON_ONCE(!in_task());
+> // <<< warning here
+> [...]
+>
+>
+>
+> --
+> Thanks,
+> JeffXie
 
