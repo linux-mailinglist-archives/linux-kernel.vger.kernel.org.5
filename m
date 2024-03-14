@@ -1,184 +1,132 @@
-Return-Path: <linux-kernel+bounces-103132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C494D87BB6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:37:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C57887BB6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519C01F22884
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:37:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DF591F216B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213726DCE3;
-	Thu, 14 Mar 2024 10:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50FF95D73C;
+	Thu, 14 Mar 2024 10:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="n+iGl1O1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BZx7Ptrm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="n+iGl1O1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BZx7Ptrm"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="STny6/aL"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994336E60E;
-	Thu, 14 Mar 2024 10:36:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B8F1A38FC;
+	Thu, 14 Mar 2024 10:37:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710412599; cv=none; b=VF9j2WSbfff1MQfXtwgj6eOye+082D4EEsQG1VFbHDVNOvfiAXbtt6jGG3AxUJufy4Le9nA15XHRagRxBy+o66YmMzMpWEz0C6JK1ENkDPb8QZqxUccgzDg1FoaFUSjC13jMrbWzsvCb29rqc/9YJa8SWg2Dm5iPogs5WLrbcgs=
+	t=1710412673; cv=none; b=ZAAeDC2jC0eBETaA/pCXKNdqrHvSqfapIN1f/LdSUT9OiA4yb+bTwEETff5RqFOp0mOmbjgHh1rgaNU08nXCay4ResCoKwxUNr39lSDyxe2kiUGdjk+oobNufrSMUPS7itBJcR6ug+fVOdjGcDmBK8wReibyqHmpI9qO/xhXTxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710412599; c=relaxed/simple;
-	bh=1sS4yvOcb7hSA7Oyqs+qwUa88zrXGRNvu3sd6wcwUGg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T3E74dPLerD2cuMWQrERaooDd6ETlHgthVHyR3W0gh4MFuiDwMJsgN37xvrbq4UhuClHGvxCSVBuUSM48+tYnYmUClOWjGTBTd7d45NW64ZFujwuvGLkSI+SFqyrz4sz4HFmKDH1eeKfS/T3tp8+gc+yCN7F/YA25wPLcElARzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=n+iGl1O1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BZx7Ptrm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=n+iGl1O1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BZx7Ptrm; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C86901F844;
-	Thu, 14 Mar 2024 10:36:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710412595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzkPi+J20GY+iWispN8Baja2fey3TzNDuqaBoZINMIs=;
-	b=n+iGl1O1xirGbyvvdt90aEoXk3rtEYZ5gy2QLwhAhPul92xXJzLU5v6pgHqAnsmGA/NgKT
-	zj3xg3RMFsc6l8FC8r/dGwpEf/mTHlXXr9qgBeYcKPD5kYFsshmO/bMtmlqyptkl/m5iyk
-	07yl/b4pdzluHnsGrmi6Fz8evDPaHB4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710412595;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzkPi+J20GY+iWispN8Baja2fey3TzNDuqaBoZINMIs=;
-	b=BZx7PtrmSVomVzzTr3ZAqL/8ZuFG2QZ82olCE9m9hhl/+dcvVK5VyHt5kdIrEj+debdwaw
-	i9GhKvSff7X4thBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710412595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzkPi+J20GY+iWispN8Baja2fey3TzNDuqaBoZINMIs=;
-	b=n+iGl1O1xirGbyvvdt90aEoXk3rtEYZ5gy2QLwhAhPul92xXJzLU5v6pgHqAnsmGA/NgKT
-	zj3xg3RMFsc6l8FC8r/dGwpEf/mTHlXXr9qgBeYcKPD5kYFsshmO/bMtmlqyptkl/m5iyk
-	07yl/b4pdzluHnsGrmi6Fz8evDPaHB4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710412595;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzkPi+J20GY+iWispN8Baja2fey3TzNDuqaBoZINMIs=;
-	b=BZx7PtrmSVomVzzTr3ZAqL/8ZuFG2QZ82olCE9m9hhl/+dcvVK5VyHt5kdIrEj+debdwaw
-	i9GhKvSff7X4thBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD66D139E7;
-	Thu, 14 Mar 2024 10:36:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id s6A8LjPT8mWQUQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 10:36:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 78B70A07D9; Thu, 14 Mar 2024 11:36:35 +0100 (CET)
-Date: Thu, 14 Mar 2024 11:36:35 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
-	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2 9/9] ext4: clean up s_mb_rb_lock to fix build warnings
- with C=1
-Message-ID: <20240314103635.fp2jab2ayfkph4td@quack3>
-References: <20240227091148.178435-1-libaokun1@huawei.com>
- <20240227091148.178435-10-libaokun1@huawei.com>
+	s=arc-20240116; t=1710412673; c=relaxed/simple;
+	bh=vzCmVzgk1A2WbwK3W/30teVzlmAUHDmYtHZ6Lsqwgus=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ngl/mKJ8mlCS0ar4AEMaJ2j7hOMe2/71GMoLhJvpBLEremgcGFp33kQNlDHEohbzv672QgNpKOk/4jk5fm3jGZjLFNAWx8tmKZvsy9GrxxOMC/pF0uVgON7TvPsuPV2/mV7b98X3nyS/xuOfCiM/QtitJNydUQDgdBryo+9EBNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=STny6/aL; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a44f2d894b7so75867566b.1;
+        Thu, 14 Mar 2024 03:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710412670; x=1711017470; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vzCmVzgk1A2WbwK3W/30teVzlmAUHDmYtHZ6Lsqwgus=;
+        b=STny6/aLVovMkFh8CXRIQiuhDHZXeqT5mWtcEljggGUSCWlerOfF3Jbg9a6K5dBJKE
+         OYpYCrip3uTNFiDCzdWgiXN3sQ4n9RVfHgdB7XC7Yn/VNIxj58s2smG48+x3R7KEA/LA
+         5RW0AD9L0CaiqP1TOWijbCtCqkpW9ty24EHiaS6c62jOp+zeyeynUMM9x8ksOK14qu6Q
+         5b/7BUv7a4aYg179YBHWErA8MoJwbLoSf8KLFaWZx/eosSotLPaV+kq20Jc8X3JiFD0z
+         OvYZibli2HWJLx7A0US3bLSiCeOLkLrUXvaHDfK2PeMMdBDfWjt+rzyDPjx/ArGa/74J
+         mGMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710412670; x=1711017470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vzCmVzgk1A2WbwK3W/30teVzlmAUHDmYtHZ6Lsqwgus=;
+        b=mziI605Gc/bQH8+2iKmfle3P85Q/h1tSAP8ZWiUf7PHE/FvXDlJxtJKtpymSzc6yno
+         i5PvS6uTPMPt8dmhXI5OF6XhANFDaMjIuR7QcwqFETHHZfKE7uPNOhEhnHCk0oQz0i2J
+         jBG1iBFwf2PtZz5cKCZAAqsPP+2h3sus9Y2URbiMV4WhbCTAaPtzxL0Lp/+9qi5/JSyN
+         0evwPGmNpLFyProOcTTIfcP6l9EZEPh+9I8aGxHTPwW2JokX2BfD/ELWNDbwmbqvXM2V
+         hnZUBfvuxTmX8hfJXiuOuWbMp3Up6oTvzjyAW3YtB2nFJ8CHAuuTP/F0KhywugDaAvQV
+         wHew==
+X-Forwarded-Encrypted: i=1; AJvYcCWyXIysNQqRwMm6YXCqBTuE/dDKllHPJ7MFMcWtYZswC/BaQkCFME4yk36HL7bH7DHdjM0nGA6LDJNArkt91YyFvi22QPchymQ/JdNf0NlIRBvb1lPUf/d5N3SrRPkPfoQKRoKg7fFdjA==
+X-Gm-Message-State: AOJu0Yw1SoQ1DWsFqYCTpqxdx0DBZ1X+watcIcODx2t5/FiQ4SKSKqIM
+	kk0bBEN4S5hSIhYj/UKVl/+9scGXRj0MWZiIj1SRy0UKHzvEdiCt1y4jPojpre+BnyeWo5HJ1r1
+	I0WBxQBQy8/bANxPlrsrL6QL1DGg=
+X-Google-Smtp-Source: AGHT+IHAgDyqVH7oGwixukT7CSGFbdDnW4TvuHEXAOyVQ/qRpBYbBxUZXwiLPNDdK50Y8a0SeFDblV5Sbfrs/AuuR+0=
+X-Received: by 2002:a17:906:5801:b0:a46:614f:f2be with SMTP id
+ m1-20020a170906580100b00a46614ff2bemr899128ejq.28.1710412670199; Thu, 14 Mar
+ 2024 03:37:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227091148.178435-10-libaokun1@huawei.com>
-X-Spamd-Bar: +
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=n+iGl1O1;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BZx7Ptrm
-X-Spamd-Result: default: False [1.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 URIBL_BLOCKED(0.00)[huawei.com:email,suse.com:email,suse.cz:email,suse.cz:dkim];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.00)[11.28%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.cz:email,suse.cz:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,linux.ibm.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: 1.69
-X-Spam-Level: *
-X-Rspamd-Queue-Id: C86901F844
-X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+References: <20240314084531.1935545-1-gnstark@salutedevices.com>
+In-Reply-To: <20240314084531.1935545-1-gnstark@salutedevices.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 14 Mar 2024 12:37:13 +0200
+Message-ID: <CAHp75VdM9GkogkeffY+0rwU3r2iWeTZ8-aj901MLteUmRfcLOA@mail.gmail.com>
+Subject: Re: [PATCH v6 0/9] devm_led_classdev_register() usage problem
+To: George Stark <gnstark@salutedevices.com>
+Cc: pavel@ucw.cz, lee@kernel.org, vadimp@nvidia.com, mpe@ellerman.id.au, 
+	npiggin@gmail.com, christophe.leroy@csgroup.eu, hdegoede@redhat.com, 
+	mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com, 
+	will@kernel.org, longman@redhat.com, boqun.feng@gmail.com, 
+	nikitos.tr@gmail.com, marek.behun@nic.cz, kabel@kernel.org, 
+	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, kernel@salutedevices.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 27-02-24 17:11:48, Baokun Li wrote:
-> Running sparse (make C=1) on mballoc.c we get the following warning:
-> 
->  fs/ext4/mballoc.c:3194:13: warning: context imbalance in
->   'ext4_mb_seq_structs_summary_start' - wrong count at exit
-> 
-> This is because __acquires(&EXT4_SB(sb)->s_mb_rb_lock) was called in
-> ext4_mb_seq_structs_summary_start(), but s_mb_rb_lock was removed in commit
-> 83e80a6e3543 ("ext4: use buckets for cr 1 block scan instead of rbtree"),
-> so remove the __acquires to silence the warning.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+On Thu, Mar 14, 2024 at 10:46=E2=80=AFAM George Stark <gnstark@salutedevice=
+s.com> wrote:
+>
+> This patch series fixes the problem of devm_led_classdev_register misusin=
+g.
+>
+> The basic problem is described in [1]. Shortly when devm_led_classdev_reg=
+ister()
+> is used then led_classdev_unregister() called after driver's remove() cal=
+lback.
+> led_classdev_unregister() calls driver's brightness_set callback and that=
+ callback
+> may use resources which were destroyed already in driver's remove().
+>
+> After discussion with maintainers [2] [3] we decided:
+> 1) don't touch led subsytem core code and don't remove led_set_brightness=
+() from it
 
-Looks good. Feel free to add:
+subsystem
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> but fix drivers
+> 2) don't use devm_led_classdev_unregister
+>
+> So the solution is to use devm wrappers for all resources
+> driver's brightness_set() depends on. And introduce dedicated devm wrappe=
+r
+> for mutex as it's often used resource.
 
-								Honza
+The leds related changes (except the last one) LGTM, hence FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+(for patches 2-8)
 
-> ---
->  fs/ext4/mballoc.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 7ad089df2408..7ae8e04d6ef4 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3192,7 +3192,6 @@ int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
->  }
->  
->  static void *ext4_mb_seq_structs_summary_start(struct seq_file *seq, loff_t *pos)
-> -__acquires(&EXT4_SB(sb)->s_mb_rb_lock)
->  {
->  	struct super_block *sb = pde_data(file_inode(seq->file));
->  	unsigned long position;
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> [1] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@sal=
+utedevices.com/T/
+> [2] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@sal=
+utedevices.com/T/#mc132b9b350fa51931b4fcfe14705d9f06e91421f
+> [3] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@sal=
+utedevices.com/T/#mdbf572a85c33f869a553caf986b6228bb65c8383
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
