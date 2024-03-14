@@ -1,202 +1,234 @@
-Return-Path: <linux-kernel+bounces-103277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 423D087BD5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:12:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF92987BD5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE6E8288820
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:12:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399891F216CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCBE15B200;
-	Thu, 14 Mar 2024 13:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621915B200;
+	Thu, 14 Mar 2024 13:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="jtUE/1dt"
-Received: from PAUP264CU001.outbound.protection.outlook.com (mail-francecentralazon11021011.outbound.protection.outlook.com [52.101.167.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dv84ZFji"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AC95813E;
-	Thu, 14 Mar 2024 13:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710421925; cv=fail; b=qdzGYt+7ple+TR6WGkukEdNnw3bhYioSZ60RUlwtf1DRxa9zeuRW5J7IolgRuC03JR3AeQt2h/7bhJE6UJwG2g56vZ9NHyIvjX/qL+I4ZsynFIoq2YXJPBF64zxcDEYS+9UCRxYl+ZwbkMUzDTdOwdLB2xRoqpSFdlNOAlieMBc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710421925; c=relaxed/simple;
-	bh=5LYjtinn5cYqmaPoN6hSvk3ywtRAlD/oWsyyviVanjU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=O957tBm++iRRQFoxeR7qNeqB+sEyPpTLwAFyrgit3hxoNPs2va/M7t2dNY7uw7t8lgOCpIbOP582usKcEBOZomi01g8sKOVoBZfoAovO/4kumTjt827f+JN1vpwiuDfX4Yv7hBjTYSdo7R4Sbx0kGGHKuRAbPHVo4gprp2Flut0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=jtUE/1dt; arc=fail smtp.client-ip=52.101.167.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hnuw3lh0S61LEYwPDbWahedTg9flpAg+ml8OlE2Ww2PTIyzyAdp2H9GTl+u4Uwqkazu2/2QSxiYtjhWB5pT1vHVunRJAyp1hX5hwhTvRAwxtGp+vxy+nECvi/QBWdsntkyui5TrdensPD0tmZSl32ZF06P1VlVG+XZEcjo18yh4VQrHuYAy71xWHp1h6fXjeDKEsZleCY7viuk6bWUhjULusZYWmp6M/qir+rZzHVk43gxtJAeKJbm0YWHR/N8MezOqFtQ+KoVecN/+DMQzyG2dxIlqkbUBdu4yqR/QFHMzKgmTaBqmbsSLLI6xo3ia5x/i6rx5/8LOctQyBZJVNAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5LYjtinn5cYqmaPoN6hSvk3ywtRAlD/oWsyyviVanjU=;
- b=SG4RPQVdPEFT5NW16ezPqL5tR+VlXuftAz4w5xUGDnRO6ZCvKxfKOXN7CxqEc7ueugQ9VH/r2zALs97vJ+mP9pg74+qf+rwQIWypINGWfYPa6xXH+v1xER7lQGLNK7cokxSjxo5xwfaCkMf4hsEk1L0QIKIAEkmAfPruPff+shayFQahHLHT4rO/cXdGPpbxHja6OKqYjmN5h+dFnp/6R+BnE/bolgjQSghq4KXbnw07p1tIvBbsy6ScDnZSDWU3Orc10fs4d2jAIkOLPpKPugjxVgqb5RYYCGBxLrszMdBQbdxWo++KwfYukElwAlmzY2wYJv6Dkb0jc8ZRT+8Kuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5LYjtinn5cYqmaPoN6hSvk3ywtRAlD/oWsyyviVanjU=;
- b=jtUE/1dtBzIabdtUZV/HM9ksoxFoGyohI/5+oWWo5KdTx/NivYASzEYxKNW5wu/Fqn1E9dAjqv0n6j/JSa9SUeESzdbKaJ2XimkazoycepHk5kqLnHjWpXSkaI5kKLj1OVcz9ED/1QYccZ8tgxDpDonJbgupQ6zJ/y1VWTWeLpUPfRDaMJ7t1BaoGlVKzgTqb5uQkVzimwYeSuVeThHK0uG9cN7yNewJ1sLR0MApiH8OrrhWO2mOidFQR2sKijWXqG5DG2vqH6XZ4o6w7EXvVcqljtsOapa/7cOXb/hYGv+JfsqqaVaJdsmnR4KuFQy1FOC5u0+mdHKF33rfjHAxFQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB1885.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b0::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Thu, 14 Mar
- 2024 13:11:59 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7386.020; Thu, 14 Mar 2024
- 13:11:59 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Peter Xu <peterx@redhat.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, Matthew Wilcox <willy@infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Andrew
- Morton <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, Mike
- Rapoport <rppt@kernel.org>, Muchun Song <muchun.song@linux.dev>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Jason Gunthorpe
-	<jgg@nvidia.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
-	<npiggin@gmail.com>, Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N.
- Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Topic: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Index: AQHadZASkAUcDDurK02wtpi3kLRmM7E27NOAgABFZ4CAAAUJAA==
-Date: Thu, 14 Mar 2024 13:11:59 +0000
-Message-ID: <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
-References: <20240313214719.253873-1-peterx@redhat.com>
- <20240313214719.253873-10-peterx@redhat.com>
- <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu> <ZfLzZekFBp3J6JUy@x1n>
-In-Reply-To: <ZfLzZekFBp3J6JUy@x1n>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB1885:EE_
-x-ms-office365-filtering-correlation-id: 22163883-e5dd-4220-c877-08dc442854ec
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- DGTC2JFS9v1rZCIpXGOAhslN8+UV1UZLPsjPN12TaYpiBwoeQsLMNa0bEJ/uPk5h1WPbfhjHp0cAHyNoIqLMZSkX7VIQkSMQepTCEoBGHKbUpyzm8FoIKv4+UzXNljLyOH35XgcZvh8uLZYCb39Sk/8JHFqDC2c6le+LJLVfQ5Rfwl03WyZ8EDfBAEabjxVudSIKmJlYwfE+Vaxbo0zDcKdbG3uWrCmYOHjSA21933vxZaTl73UScmLIcMDEOk9xDDKInPhXc0KqSdMP657PHvwJL67rnWqRhOmu5eTMaAL5+SeAuyoRxFpSyPh2Vg7jK0FA9aXKwn49dcAV3r/re47XSsK66nNP1H2HJHCACgptVjZTrv10/vXrFHyQ3yUHC73Y8hDY+uTcS06dWpqsUhEvl2qdrsoG5mlzBa367iyb+Iz55GYp1mpi+Pw+MfLKM9QJQD4f879cutEcFvMmNdmAby3yluLtKk0T2jJwV3YPahgBRdQ5ttFF7td8E8u0JoBWs0ackD5rfZwAgO3I6H4gbtb8fgIldVbi57OHRXOMRrjExgOeldvuUrIbIlE2/uPecRIaP73cgtWCLM0o97lnefJDN6S3dwgKPleHcNI+OKNU7vA39mMBqf/6Kb3I2gGNWDQ5Izc7QG0N+GoptobbXHPj5vlovt8KYtJ2PPy6q3ul3lo2YwaD9rnUIlA/UlOJUUYFb3Ed/GDp7PAqqMN41q3jHFzOWpPgTfy4tAM=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TnBmV3ZReHU4VHJ3bTRNQSsvVzFYbFpSRzYxYlZpMEdhZDJSVkhYYTV5T1hX?=
- =?utf-8?B?M2sxeXZ1dlRTUGdpaWZTM0NXUnFid0JwWGV0M0paTDBXejBWRkVodVp2bG9y?=
- =?utf-8?B?Nk5XdTNwTTBaLzJ3OUNETHVtOHYxWGRxZUhURnY2SDQzY2VtRmlXYjVWYlNU?=
- =?utf-8?B?R1JOTk9USTRldTdSU0gwMk1xcmRONjRNaHY4TFpPRkxCeFlSeUwrSkw2OHdO?=
- =?utf-8?B?Vm1jeGZ5cjM1ckFYM0h5WDhrSVFjZzIrZ1puQmo2eXlKOEh3OS9LOExuNkhW?=
- =?utf-8?B?alNwK1FndWJ5QUR1UG9LSEp5N3luVUtJdFFvRXM3R3J0a24vcTRwTDJEODNE?=
- =?utf-8?B?bndWMXpQWUF5enNHdGU1QnRtd0tqSmFWVG9nOVJDUFc0N0YxTHIrUm5rVk85?=
- =?utf-8?B?TVY1WHhSS2pxbmJLZXdXcCt2Wkk2c2gzUGtVSzVBS3BWcXhmWnVGeWRkZWZ2?=
- =?utf-8?B?QzFOLzQ0RzB4d1NVSlZndElBUHBUam9JTFhrZlRDWCszVG5GT083NFhBZHpq?=
- =?utf-8?B?SGVWeWhVU3lFbEV4aUlKQ09LUld5WGRmd3dZV2g5QU5WUlJwVWpFdTFjRlEy?=
- =?utf-8?B?TTFYMmozR2psWnAxWXBJc01yZ0l1YVcyRTZWajVWL1kzWHZjNkw5c1VTYUl3?=
- =?utf-8?B?ekdHeFkyckpJNXlyTDRVN2t5NzVERFAxQUJkRnN2bGZTZjFKbktSV3ozdXRJ?=
- =?utf-8?B?Mzh5K0hvUnhrWStGbUNlQko4RllNMVBEaDZmOEtyUVc4UWhXWVRxRmhCMW5j?=
- =?utf-8?B?WkpDNmtqcEgxUWRhSHlhSFdFbWZJajltcnJ4OEQ3cy9NVXpGRWdaS1FiS1RB?=
- =?utf-8?B?bUFSZFFvTGtiZmg5QjExYWhjRUJpYlBwY1BIZTZZTW04OUY5OVhDWEpJaXR5?=
- =?utf-8?B?cGlFMUhSMGlVQlpDVU5yZkNMMFhvcldKdHVITXk2blFlQm1tcjdvazJlWUV4?=
- =?utf-8?B?TjZWK2lqcEVNUmM0TXZmLzFWSHE2YkdHZ0EyU0R4QWh4VGhIbHhEait5ZW0w?=
- =?utf-8?B?ZDkxbWJiQWlTNVlDOW4xVUJQV0EwdVBHa2RBRUg2ZmxVejlSeU9OOEpTdlk5?=
- =?utf-8?B?OC9DTGZYMjE0dkNqeUpxL0svdnVSSEwyaXgwZXorSWF5MjRjbnlMZ0Nha2dM?=
- =?utf-8?B?b2YzN2R3c00ya2NGTXFLQmJ0ZFVLcnVkN1hxL2NSc1ROb0tnb2hJazc0bUha?=
- =?utf-8?B?NGE1d2R3RU40UFhWV1c0Nmg2cEd0M2FWQTRCdDVsaFJzemtwS0xuYXdnUlpp?=
- =?utf-8?B?cU40elI2SEQyMXlrTWNLNzV2WTVFRzVOaUE3elU3SW1jeldSc2ZOY2VkU3Rx?=
- =?utf-8?B?OHNscDdQNkV5OS9tZVFtMFNLZEtLVTJlM3N5OVhBWFJsZGE5VEhzVEJ1NlAw?=
- =?utf-8?B?Syt1YVBDdUs5MWFFMnBkS2lzSy9zZ1NFa1ZhL2tVSEFvenBQcGlpeDFDWDBr?=
- =?utf-8?B?REZPeVJUTHRYeFU0cUVyV1pGVjNLanVhdjNGNVpKcnIzeFZXcjhMRnlDQjFI?=
- =?utf-8?B?dWhzYjNZa3dUS0VWQS9vcS9YZ1VhcG1yL1hYWktqNG9sM3BvL3JTUXllN2pl?=
- =?utf-8?B?RmlVTFZCU3RjOGV0WlAxUUFzUTBsbjZFWGxSTElvMHcvcU9EL3BSdkd4UDBi?=
- =?utf-8?B?YVlCZHFsWnFxTTl5OUJxQjVlVlhLNmdDcm9XNHhnSEJUVkRsME1TeUJiNTRI?=
- =?utf-8?B?UWtZdHNYWHFsQW55U0FsOWg3ZEhDeG9QQXZCZVVsTmpJaHZHT1gzZ1VNc3hF?=
- =?utf-8?B?OWZURnV4KzE4VitHRU9NUlphTVUvZVMwTy9yTzc3aTV4OHFGQUlOa1JXN1BG?=
- =?utf-8?B?ZWMrbW14THZFVy9UNnh1TnZMTll1Yy9HWndIWFB2NnNRNXMvNVpDMXg1dkNO?=
- =?utf-8?B?ck1aOEg4bnpKdVYzRGZHb3VUWHJMZjJ1cExLa1hMVlZzOGVyemxwcVRUSlMr?=
- =?utf-8?B?NjNubjJuMlVzc21MWlZxNW5OV20vS2k0RnRkaFRyb1NXL25ad2txVVpRZnhN?=
- =?utf-8?B?Z0h4bkJtcHovU2owSWFQNjZ6WmZGbHEybHRGSjdKQ0o3ZzJkWG05V2FYSHc3?=
- =?utf-8?B?Y1dMV01kTndYN3RBS2xPVi9uSENqcm9GRFRnSWNVcURQeHZnRmVIc2syWGZI?=
- =?utf-8?B?YW8yaFE5b25oa215cjlwR0dZdlBzU3RUUmdXOG13bWhYdHdQL3FPVmMxc2Uy?=
- =?utf-8?B?bWNtTFBZa09GMSsrZEJ5RytFNVp1RnpsRS9JNXJpOTZ1eG9IZEJNZWdqMnRY?=
- =?utf-8?B?MFUraUN6ZWE5MVFSa0JGUnRTQzh3PT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9BBB8ADAB602D54087A433C82F663C9A@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21445811C
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710421960; cv=none; b=mVI8UeLhalptUoBng8BhZkF2LliUVxUoc9zLsYyilsoFCDMLsvHpW6P+L/B4oEpIgRzGaqJYdvT95yefb4DZMf2NBxMs7kX0YlkD+CS83ukRM1d1QdDp20pu7tYKRqXzFhLc5LE3/cvkAEWVBKtDNXdwZekN37sokvVPJwGKG9s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710421960; c=relaxed/simple;
+	bh=vEPrcEG4Y0Cc8YlvPQ1MDq6dRxjCwPX8a0r/4aKe/3c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WBcuxUe0WkRXlFC/r5CMAFFli9E6zO5GPEuGuoUTo1FAB9C+LUFb4vpiMBNGgG83Nt04EsYDTujdd4t3JvKdl3Od/D0ROiXt5cfd5DY2ycX6CoXRimxM1e27SEiUHjFLm00TGiDS7lDBA2fIW0sj/aGWkleUwprQus46CEu/iZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dv84ZFji; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso1231794a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710421957; x=1711026757; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H62lO+oi6cqZ8jJaBCDOw4WoFlGyuOK3o5bFL4QH/2Y=;
+        b=dv84ZFjihmlxRt5AL4tYLZvF+IHB5AHMYQdSedYRXxQn5RgriPdbHE8532vWJ2/0bZ
+         T3AHv05eNupTLreDa4B+hD1Xm2czl8pINcqh+UR26Il+dCyn1Dv5RzcEOmR2/h6r8AJN
+         tflx0sb48FM5VPtv1c2JdsbMLRXE2/d3fyUst6YVEAeNPC6X9zyh5BGH/R2b3tmiPyJ5
+         5FJLmiywNjn9JouvyCyp9LISQzIjSkalN0XLYDlbTpEM/IF6cI/23wlhuVNyvwWK6ShC
+         d4s334IBdRWu3vJnnDCbzcgyNfyqCoV8aESPh6qLpHIPsaIsyIVOyf7h/7iFXj/sRmdm
+         N4Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710421957; x=1711026757;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H62lO+oi6cqZ8jJaBCDOw4WoFlGyuOK3o5bFL4QH/2Y=;
+        b=kHPREWb35q1O9EaHxKIRfM5ws68S1CcUm3LPj1R7t6QbeUawAUA09HMdVRL0s8Xfiq
+         ASp5YiBofRObTLJ68qDaTGiQi5y2vCtD3shlgFf4FzOiCh9qKuPkHS3t+GxXZ9MGOeIe
+         z1jPd1CscaEJV2bpiTcHKJIEfd3OfGy0WY8QGFLFvWcrlw3awSNFyJYak1ZVFOVhRLW3
+         isv/c1qTrOAxlbGF6WYRttgBt05gRWTtcUZVYOOlIE2LS0WVQv+lxJ9YWj0id3c+XfrK
+         G9h2oOkWqZfcziSqZWJKpQyit6AMV/Vcdn+yoSdKafIcvnlIo5mynHrnSqI20Ilo7sHs
+         z1tg==
+X-Forwarded-Encrypted: i=1; AJvYcCUYcppfwxES9B9FZRCWQD64GF1CeF2AbzBwQSDLnf5KSpkk+aYYOgkC+CzcKoQAbEZ648FX4SBGQOn6H4BxO8RZ27fugGqgFIs28fum
+X-Gm-Message-State: AOJu0Yw9TTmvbTc1WeDZwEwcbzTkE78yUAsLBO1ehnu5lRuHQcNNbqkb
+	dFhWyEH9hEhLJy9lIpP5u1HaUFJnM/BjZ/GgIsnvLchQOVlHt47Kf6xr6SB6y40y59Qr8mxdxGE
+	aJSWG+4Y//EuRHMiaUbR6FfBQ2gQ=
+X-Google-Smtp-Source: AGHT+IGVeVLKvGGTbfxnWNv6CU4y+YUBNoogOO9HebA4vVKRVOECbhRQfqfq76ixhWrOIDUth6fTQBnfg3pOPg/Do64=
+X-Received: by 2002:a05:6402:2486:b0:566:4dc1:522c with SMTP id
+ q6-20020a056402248600b005664dc1522cmr1405949eda.15.1710421956967; Thu, 14 Mar
+ 2024 06:12:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22163883-e5dd-4220-c877-08dc442854ec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 13:11:59.3905
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RIkd5ATO0OCQTOdbEG9mHkZDV880pEv8gn9ulL/SEwh6jzcG05Pagy2fJm0yjddJ1cC2u3GbkpcW2EMnmiMkmDFS7gO6EAFTvWpsZ8bOEEw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB1885
+References: <20240304081348.197341-1-21cnbao@gmail.com> <20240304081348.197341-3-21cnbao@gmail.com>
+ <499a60c6-eeb8-4bbd-8563-9717c0d2e43d@arm.com>
+In-Reply-To: <499a60c6-eeb8-4bbd-8563-9717c0d2e43d@arm.com>
+From: Chuanhua Han <chuanhuahan@gmail.com>
+Date: Thu, 14 Mar 2024 21:12:25 +0800
+Message-ID: <CANzGp4+kSxc_JbOsOcvm6vXfu2KORaqqGyuKK_eJwCLTK5X__Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 2/5] mm: swap: introduce swap_nr_free() for batched swap_free()
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	chengming.zhou@linux.dev, chrisl@kernel.org, david@redhat.com, 
+	hannes@cmpxchg.org, kasong@tencent.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, mhocko@suse.com, nphamcs@gmail.com, 
+	shy828301@gmail.com, steven.price@arm.com, surenb@google.com, 
+	wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org, 
+	ying.huang@intel.com, yosryahmed@google.com, yuzhao@google.com, 
+	Chuanhua Han <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCkxlIDE0LzAzLzIwMjQgw6AgMTM6NTMsIFBldGVyIFh1IGEgw6ljcml0wqA6DQo+IE9uIFRo
-dSwgTWFyIDE0LCAyMDI0IGF0IDA4OjQ1OjM0QU0gKzAwMDAsIENocmlzdG9waGUgTGVyb3kgd3Jv
-dGU6DQo+Pg0KPj4NCj4+IExlIDEzLzAzLzIwMjQgw6AgMjI6NDcsIHBldGVyeEByZWRoYXQuY29t
-IGEgw6ljcml0wqA6DQo+Pj4gRnJvbTogUGV0ZXIgWHUgPHBldGVyeEByZWRoYXQuY29tPg0KPj4+
-DQo+Pj4gUG93ZXJQQyBib29rM3MgNEsgbW9zdGx5IGhhcyB0aGUgc2FtZSBkZWZpbml0aW9uIG9u
-IGJvdGgsIGV4Y2VwdCBwWGRfaHVnZSgpDQo+Pj4gY29uc3RhbnRseSByZXR1cm5zIDAgZm9yIGhh
-c2ggTU1Vcy4gIEFzIE1pY2hhZWwgRWxsZXJtYW4gcG9pbnRlZCBvdXQgWzFdLA0KPj4+IGl0IGlz
-IHNhZmUgdG8gY2hlY2sgX1BBR0VfUFRFIG9uIGhhc2ggTU1VcywgYXMgdGhlIGJpdCB3aWxsIG5l
-dmVyIGJlIHNldCBzbw0KPj4+IGl0IHdpbGwga2VlcCByZXR1cm5pbmcgZmFsc2UuDQo+Pj4NCj4+
-PiBBcyBhIHJlZmVyZW5jZSwgX19wW211XWRfbWtodWdlKCkgd2lsbCB0cmlnZ2VyIGEgQlVHX09O
-IHRyeWluZyB0byBjcmVhdGUNCj4+PiBzdWNoIGh1Z2UgbWFwcGluZ3MgZm9yIDRLIGhhc2ggTU1V
-cy4gIE1lYW53aGlsZSwgdGhlIG1ham9yIHBvd2VycGMgaHVnZXRsYg0KPj4+IHBndGFibGUgd2Fs
-a2VyIF9fZmluZF9saW51eF9wdGUoKSBhbHJlYWR5IHVzZWQgcFhkX2xlYWYoKSB0byBjaGVjayBo
-dWdldGxiDQo+Pj4gbWFwcGluZ3MuDQo+Pj4NCj4+PiBUaGUgZ29hbCBzaG91bGQgYmUgdGhhdCB3
-ZSB3aWxsIGhhdmUgb25lIEFQSSBwWGRfbGVhZigpIHRvIGRldGVjdCBhbGwga2luZHMNCj4+PiBv
-ZiBodWdlIG1hcHBpbmdzLiAgQUZBSUNUIHdlIG5lZWQgdG8gdXNlIHRoZSBwWGRfbGVhZigpIGlt
-cGwgKHJhdGhlciB0aGFuDQo+Pj4gcFhkX2h1Z2UoKSBvbmVzKSB0byBtYWtlIHN1cmUgaWUuIFRI
-UHMgb24gaGFzaCBNTVUgd2lsbCBhbHNvIHJldHVybiB0cnVlLg0KPj4NCj4+IEFsbCBraW5kcyBv
-ZiBodWdlIG1hcHBpbmdzID8NCj4+DQo+PiBwWGRfbGVhZigpIHdpbGwgZGV0ZWN0IG9ubHkgbGVh
-ZiBtYXBwaW5ncyAobGlrZSBwWGRfaHVnZSgpICkuIFRoZXJlIGFyZQ0KPj4gYWxzbyBodWdlIG1h
-cHBpbmdzIHRocm91Z2ggaHVnZXBkLiBPbiBwb3dlcnBjIDh4eCB3ZSBoYXZlIDhNIGh1Z2UgcGFn
-ZXMNCj4+IGFuZCA1MTJrIGh1Z2UgcGFnZXMuIEEgUEdEIGVudHJ5IGNvdmVycyA0TSBzbyBwZ2Rf
-bGVhZigpIHdvbid0IHJlcG9ydA0KPj4gdGhvc2UgaHVnZSBwYWdlcy4NCj4gDQo+IEFoIHllcywg
-SSBzaG91bGQgYWx3YXlzIG1lbnRpb24gdGhpcyBpcyBpbiB0aGUgY29udGV4dCBvZiBsZWFmIGh1
-Z2UgcGFnZXMNCj4gb25seS4gIEFyZSB0aGUgZXhhbXBsZXMgeW91IHByb3ZpZGVkIGFsbCBmYWxs
-IGludG8gaHVnZXBkIGNhdGVnb3J5PyAgSWYgc28NCj4gSSBjYW4gcmV3b3JkIHRoZSBjb21taXQg
-bWVzc2FnZSwgYXM6DQoNCk9uIHBvd2VycGMgOHh4LCBvbmx5IHRoZSA4TSBodWdlIHBhZ2VzIGZh
-bGwgaW50byB0aGUgaHVnZXBkIGNhc2UuDQoNClRoZSA1MTJrIGh1Z2VwYWdlcyBhcmUgYXQgUFRF
-IGxldmVsLCB0aGV5IGFyZSBoYW5kbGVkIG1vcmUgb3IgbGVzcyBsaWtlIA0KQ09OVF9QVEUgb24g
-QVJNLiBzZWUgZnVuY3Rpb24gc2V0X2h1Z2VfcHRlX2F0KCkgZm9yIG1vcmUgY29udGV4dC4NCg0K
-WW91IGNhbiBhbHNvIGxvb2sgYXQgcHRlX2xlYWZfc2l6ZSgpIGFuZCBwZ2RfbGVhZl9zaXplKCku
-DQoNCkJ5IHRoZSB3YXkgcGdkX2xlYWZfc2l6ZSgpIGxvb2tzIG9kZCBiZWNhdXNlIGl0IGlzIGNh
-bGxlZCBvbmx5IHdoZW4gDQpwZ2RfbGVhZl9zaXplKCkgcmV0dXJucyB0cnVlLCB3aGljaCBuZXZl
-ciBoYXBwZW5zIGZvciA4TSBwYWdlcy4NCg0KPiANCj4gICAgICAgICAgQXMgYSByZWZlcmVuY2Us
-IF9fcFttdV1kX21raHVnZSgpIHdpbGwgdHJpZ2dlciBhIEJVR19PTiB0cnlpbmcgdG8NCj4gICAg
-ICAgICAgY3JlYXRlIHN1Y2ggaHVnZSBtYXBwaW5ncyBmb3IgNEsgaGFzaCBNTVVzLiAgTWVhbndo
-aWxlLCB0aGUgbWFqb3INCj4gICAgICAgICAgcG93ZXJwYyBodWdldGxiIHBndGFibGUgd2Fsa2Vy
-IF9fZmluZF9saW51eF9wdGUoKSBhbHJlYWR5IHVzZWQNCj4gICAgICAgICAgcFhkX2xlYWYoKSB0
-byBjaGVjayBsZWFmIGh1Z2V0bGIgbWFwcGluZ3MuDQo+IA0KPiAgICAgICAgICBUaGUgZ29hbCBz
-aG91bGQgYmUgdGhhdCB3ZSB3aWxsIGhhdmUgb25lIEFQSSBwWGRfbGVhZigpIHRvIGRldGVjdA0K
-PiAgICAgICAgICBhbGwga2luZHMgb2YgaHVnZSBtYXBwaW5ncyBleGNlcHQgaHVnZXBkLiAgQUZB
-SUNUIHdlIG5lZWQgdG8gdXNlDQo+ICAgICAgICAgIHRoZSBwWGRfbGVhZigpIGltcGwgKHJhdGhl
-ciB0aGFuIHBYZF9odWdlKCkgb25lcykgdG8gbWFrZSBzdXJlDQo+ICAgICAgICAgIGllLiBUSFBz
-IG9uIGhhc2ggTU1VIHdpbGwgYWxzbyByZXR1cm4gdHJ1ZS4NCj4gDQo+IERvZXMgdGhpcyBsb29r
-IGdvb2QgdG8geW91Pw0KPiANCj4gVGhhbmtzLA0KPiANCg==
+Ryan Roberts <ryan.roberts@arm.com> =E4=BA=8E2024=E5=B9=B43=E6=9C=8812=E6=
+=97=A5=E5=91=A8=E4=BA=8C 02:51=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 04/03/2024 08:13, Barry Song wrote:
+> > From: Chuanhua Han <hanchuanhua@oppo.com>
+> >
+> > While swapping in a large folio, we need to free swaps related to the w=
+hole
+> > folio. To avoid frequently acquiring and releasing swap locks, it is be=
+tter
+> > to introduce an API for batched free.
+> >
+> > Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> > Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> > ---
+> >  include/linux/swap.h |  6 ++++++
+> >  mm/swapfile.c        | 35 +++++++++++++++++++++++++++++++++++
+> >  2 files changed, 41 insertions(+)
+> >
+> > diff --git a/include/linux/swap.h b/include/linux/swap.h
+> > index 2955f7a78d8d..d6ab27929458 100644
+> > --- a/include/linux/swap.h
+> > +++ b/include/linux/swap.h
+> > @@ -481,6 +481,7 @@ extern void swap_shmem_alloc(swp_entry_t);
+> >  extern int swap_duplicate(swp_entry_t);
+> >  extern int swapcache_prepare(swp_entry_t);
+> >  extern void swap_free(swp_entry_t);
+> > +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
+>
+> nit: In my swap-out v4 series, I've created a batched version of
+> free_swap_and_cache() and called it free_swap_and_cache_nr(). Perhaps it =
+is
+> preferable to align the naming schemes - i.e. call this swap_free_nr(). Y=
+our
+> scheme doesn't really work when applied to free_swap_and_cache().
+Thanks for your suggestions, and for the next version, we'll see which
+package is more appropriate!
+>
+> >  extern void swapcache_free_entries(swp_entry_t *entries, int n);
+> >  extern int free_swap_and_cache(swp_entry_t);
+> >  int swap_type_of(dev_t device, sector_t offset);
+> > @@ -561,6 +562,11 @@ static inline void swap_free(swp_entry_t swp)
+> >  {
+> >  }
+> >
+> > +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> > +{
+> > +
+> > +}
+> > +
+> >  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp=
+)
+> >  {
+> >  }
+> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > index 3f594be83b58..244106998a69 100644
+> > --- a/mm/swapfile.c
+> > +++ b/mm/swapfile.c
+> > @@ -1341,6 +1341,41 @@ void swap_free(swp_entry_t entry)
+> >               __swap_entry_free(p, entry);
+> >  }
+> >
+> > +/*
+> > + * Called after swapping in a large folio, batched free swap entries
+> > + * for this large folio, entry should be for the first subpage and
+> > + * its offset is aligned with nr_pages
+> > + */
+> > +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> > +{
+> > +     int i;
+> > +     struct swap_cluster_info *ci;
+> > +     struct swap_info_struct *p;
+> > +     unsigned type =3D swp_type(entry);
+>
+> nit: checkpatch.py will complain about bare "unsigned", preferring "unsig=
+ned
+> int" or at least it did for me when I did something similar in my swap-ou=
+t patch
+> set.
+Gee, thanks for pointing that out!
+>
+> > +     unsigned long offset =3D swp_offset(entry);
+> > +     DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) =3D { 0 };
+>
+> I don't love this, as it could blow the stack if SWAPFILE_CLUSTER ever
+> increases. But the only other way I can think of is to explicitly loop ov=
+er
+> fixed size chunks, and that's not much better.
+Is it possible to save kernel stack better by using bit_map here?  If
+SWAPFILE_CLUSTER=3D512, we consume only (512/64)*8=3D 64 bytes.
+>
+> > +
+> > +     /* all swap entries are within a cluster for mTHP */
+> > +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER=
+);
+> > +
+> > +     if (nr_pages =3D=3D 1) {
+> > +             swap_free(entry);
+> > +             return;
+> > +     }
+> > +
+> > +     p =3D _swap_info_get(entry);
+>
+> You need to handle this returning NULL, like swap_free() does.
+Yes, you're right! We did forget to judge NULL here.
+>
+> > +
+> > +     ci =3D lock_cluster(p, offset);
+>
+> The existing swap_free() calls lock_cluster_or_swap_info(). So if swap is=
+ backed
+> by rotating media, and clusters are not in use, it will lock the whole sw=
+ap
+> info. But your new version only calls lock_cluster() which won't lock any=
+thing
+> if clusters are not in use. So I think this is a locking bug.
+Again, you're right, it's bug!
+>
+> > +     for (i =3D 0; i < nr_pages; i++) {
+> > +             if (__swap_entry_free_locked(p, offset + i, 1))
+> > +                     __bitmap_set(usage, i, 1);
+> > +     }
+> > +     unlock_cluster(ci);
+> > +
+> > +     for_each_clear_bit(i, usage, nr_pages)
+> > +             free_swap_slot(swp_entry(type, offset + i));
+> > +}
+> > +
+> >  /*
+> >   * Called after dropping swapcache to decrease refcnt to swap entries.
+> >   */
+>
+> Thanks,
+> Ryan
+>
+>
+
+
+--=20
+Thanks,
+Chuanhua
 
