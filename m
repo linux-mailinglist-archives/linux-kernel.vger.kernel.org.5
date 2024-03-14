@@ -1,126 +1,181 @@
-Return-Path: <linux-kernel+bounces-103789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 612D687C481
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:57:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7566887C486
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C13FAB21DF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:56:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 981251C215BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E457641A;
-	Thu, 14 Mar 2024 20:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312A176419;
+	Thu, 14 Mar 2024 20:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ArR2IdJa"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VypaMdDu"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47176763F3;
-	Thu, 14 Mar 2024 20:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF31B763E4;
+	Thu, 14 Mar 2024 20:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710449805; cv=none; b=TXa9RnzJC1BpBik4so3sxnM7H+Z7sIJZQ1ufXVa7VXvgvzMvhAauhpkZtxiUoQP22iI1kU8R9VotaF5t1Et0XfJJcJwBSfEP26s5JWNiG3EB3HizcebcqF+pYIAdZXWglNLYQhHOf0cJPojhXEQWfMB0EYLcd504tYE1645O82Q=
+	t=1710449865; cv=none; b=Z6vxvILyVPabkfbz8PGZ/b9JTCRCtyBNwtaUYNfUTg2FEl92PEyQLGSGBhxP6bkuyzLcI79j54kcLsJKCYxfnAAiXTU1kqwJFH/ukxUaDJ6PE4Bj7FoFJV6vJGBe5PVB16lsKzrkm3nzXZQxKsMKNOMEuBVw0v/PAyCPOk/jMUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710449805; c=relaxed/simple;
-	bh=vVexG+y35tQ9uiNulQsBhDXB6JraRtnHZp6M/RG+asg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QEkMQuH5vGHB+zpmlDRkl9A+09NCb2Aqv9iKce2ckDFaQCuOWbh06WavVv0kGf0Vw193+PZLJvJD3J4ZbxjUILMyWB4aie25LW+fKwhjKrUk2dXNkZWbm0uQPjk0HvmUqkbA5jQ8HnhkqA1R6Xtf9e6TSZt4D0ZnnlFZoBQeabo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ArR2IdJa; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29c731ba369so1156382a91.3;
-        Thu, 14 Mar 2024 13:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710449803; x=1711054603; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vVexG+y35tQ9uiNulQsBhDXB6JraRtnHZp6M/RG+asg=;
-        b=ArR2IdJaBNB6LDskwV1CvU0y3BCddnsUJ15ZQea5mhdl7HVHeBJRHhocwskvkAvXXe
-         qBvoUfuOsQiVhjhHP5XviKFca454LBq9X+5i5tfeX6pumPU73Rs6TiNktmE3X0SgPRPS
-         DBt0/e9LJPsSZ8YXe3Bn4akZSlNtlusudo04KjDOGX2FrURlekhQbaGOJrAAenmEVya5
-         Z2ojscwHEZSjHMgVEQ84R1j4bw0YkDRjlPpGYPmH+NwS7lXYuXIgm+w1TWCEXRriM3B7
-         MN+5git9hsrT4varHBvm0kvKypVo57gH19mYR6zTX8C0KxX0WRkHfig1DeJV8P35RljF
-         8cvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710449803; x=1711054603;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vVexG+y35tQ9uiNulQsBhDXB6JraRtnHZp6M/RG+asg=;
-        b=ZyBysuIFfrncaJz1Il8NT2/4Iwrlynu6sez/MsZVzKrUmE0LuaJWgdhb5ZN9wsu7F2
-         dBdfKs0jpchXD7/cOVmEOAoQudOTcvk02gq0svwdjEhN/3EEHmGcp+DP3CvkuKnoTKEb
-         a8L+lTxfJ+4DiqFS5xyT0dvpm3JretDgD0PGAPyFMngnaSTUf54KGKnmVNIMlJajQf/i
-         P5aqCbwcS9VaDfNLW5KoW7oSXm1mKMInKO1/Tv3LV1Vzer178H/sPkQofem+P6lMWNlr
-         DCIHJwX8s4FZicC+R12/eHtj3AsErjhgoI7bngSIlSn4MCRZbF+4scZIMlbg0/eEGzo7
-         r1KA==
-X-Forwarded-Encrypted: i=1; AJvYcCWapOBqqoIcYdP6w4WpsOTttTH5uyaNdDMhwdtytTp76wLc4g+kUq5x05C6bzDlOce6H4qCTKehtonb+1f2RRpza6omA/KAiCM3BL9SMFNEHG9uaHNPDmsrRYRMwWzaUcGfjri0zLh/X4VJyDnHB3Xay2uzYJJxT1AoGy/j+xPff21+ZzN3Nv8ytg==
-X-Gm-Message-State: AOJu0YwvP3tjm8Y4kvTfixOqi/OPEsIp921MhOc4dzALu3kK68F6Vf0g
-	Lmkcp27Udat9h6os2GS8HSRkVKbrKSl7SC+83bBgx5UIRXnIVU5IOTEPXORFq/44JhDls2PnZSS
-	w2CtTDJ2sza1BqK+ZnoqDjy/Wvk8=
-X-Google-Smtp-Source: AGHT+IG4wxqkAxjdwKlg1zhlT5ni1nrZhArv7cmYlou+sBdAxdO9JwjEtP6sfS1qBKW4ZUbRHqGkBMyDjHAU8zKgLeM=
-X-Received: by 2002:a17:90a:ce12:b0:29b:f2b1:6973 with SMTP id
- f18-20020a17090ace1200b0029bf2b16973mr2930051pju.20.1710449803547; Thu, 14
- Mar 2024 13:56:43 -0700 (PDT)
+	s=arc-20240116; t=1710449865; c=relaxed/simple;
+	bh=i/In70euOucOu10Yn4mf9BZSNHDbmPI7QOVoNvr1wN0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=e/Nq4/TEwD36LnwfEosxO1zQ3fEEQQu2hvpwD77PaGFMO+LjfsxX6KHSBJKrSl2hr8ZP9fTazr4zEoVQFJx9K7VGDKH0ePaU0qZ+A0xzaLIyzQJX4fxAyyO8QWFpOS7978NHMkwWtjs7FpIBJE0UxqlhT9jTc6UZ5fB1u3YnI6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VypaMdDu; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42EKFsjk019502;
+	Thu, 14 Mar 2024 20:57:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=i1RRwlY+GSx5CIfYwtnNU1qLUiFuXaO9rJ+b19a99LU=; b=Vy
+	paMdDuLHTBjsvksPD2BnAdKbsOB51/5Li48ozD40T3l6rwY/B8nOD1KgUDng+sO3
+	aiaKBQRFPLsVhYNNk1dD3NVvrA2h3AJs8i3LKGOkWHs91I3yKQS6k6Z8jXZAblbZ
+	XnWX+kdgFjWTEj1sUGMlzP5+TQP0c3Ei+sRSCMdmlMD2M6GgRkigVqaZfBYHLpCA
+	LC2sZrKu/v4LCyVOXaLBWxaJT/9sDaOofQ9xNSObmdPran5eK+ggiUNcp9u0YLSr
+	gibSEaPxQ/pBdwBRDjOk/FkIOuSn23Ab+UZLXeuggME+SClx8erC9dBqmnIQtUZu
+	mn4R55nTAKEDQkQ5LqJg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wv81bg2qb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 20:57:21 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42EKvK31005345
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 20:57:20 GMT
+Received: from [10.71.112.106] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Mar
+ 2024 13:57:19 -0700
+Message-ID: <0e9f0f2f-a404-3b76-3c52-9eca7594efa3@quicinc.com>
+Date: Thu, 14 Mar 2024 13:57:19 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313110515.70088-1-nmi@metaspace.dk> <20240313110515.70088-2-nmi@metaspace.dk>
- <ZfI8-14RUqGqoRd-@boqun-archlinux> <87il1ptck0.fsf@metaspace.dk>
- <CANiq72mzBe2npLo=CVR=ShyMuDmr0+TW4Gy0coPFQOBQZ_VnwQ@mail.gmail.com>
- <87plvwsjn5.fsf@metaspace.dk> <CANiq72neNUL1m0AbY78eXWJMov4fgjnNcQ_16SoT=ikJ3K7bZQ@mail.gmail.com>
-In-Reply-To: <CANiq72neNUL1m0AbY78eXWJMov4fgjnNcQ_16SoT=ikJ3K7bZQ@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 14 Mar 2024 21:56:31 +0100
-Message-ID: <CANiq72noqwU9_wC28Emc2LNyD70JFcS+4MXWuwYUTUWq8ragCg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rust: block: introduce `kernel::block::mq` module
-To: Andreas Hindborg <nmi@metaspace.dk>
-Cc: Boqun Feng <boqun.feng@gmail.com>, Jens Axboe <axboe@kernel.dk>, 
-	Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, 
-	Bart Van Assche <bvanassche@acm.org>, Hannes Reinecke <hare@suse.de>, 
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Niklas Cassel <Niklas.Cassel@wdc.com>, 
-	Greg KH <gregkh@linuxfoundation.org>, Matthew Wilcox <willy@infradead.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Alice Ryhl <aliceryhl@google.com>, 
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Yexuan Yang <1182282462@bupt.edu.cn>, 
-	=?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, 
-	Joel Granados <j.granados@samsung.com>, 
-	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, Daniel Gomez <da.gomez@samsung.com>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, 
-	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>, 
-	"gost.dev@samsung.com" <gost.dev@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v18 20/41] ALSA: usb-audio: qcom: Introduce QC USB SND
+ offloading support
+Content-Language: en-US
+To: Albert Wang <albertccwang@google.com>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240228013619.29758-1-quic_wcheng@quicinc.com>
+ <20240228013619.29758-21-quic_wcheng@quicinc.com>
+ <CANqn-rjTgHgzssxZiuwvTKzOS31wzjS4Y9G-XacZN4a7c82MaA@mail.gmail.com>
+ <d97f635f-053b-70a7-5ffe-a1ae273091d1@quicinc.com>
+ <CANqn-ring2uf=A-F7VuRwnJ--n=FtFzSddCmR-=nfxCGcFAF2g@mail.gmail.com>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <CANqn-ring2uf=A-F7VuRwnJ--n=FtFzSddCmR-=nfxCGcFAF2g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: hogKYBgJv_8ag5r84EkBXjMbinIFbgfn
+X-Proofpoint-ORIG-GUID: hogKYBgJv_8ag5r84EkBXjMbinIFbgfn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_13,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2403140161
 
-On Thu, Mar 14, 2024 at 8:41=E2=80=AFPM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> In any case, if we really want to avoid exporting the original symbol
-> (perhaps so that "only Rust" can use it -- or someone trying hard to
-> bypass things on purpose), then we could still avoid the helper and
-> instead write a non-generic `kernel`-private Rust function instead.
+Hi Albert
 
-The advantages would be that we get the export done automatically and
-that we could write in Rust, e.g. with restricted visibility.
+On 3/14/2024 3:29 AM, Albert Wang wrote:
+> On Thu, Mar 14, 2024 at 3:18 AM Wesley Cheng <quic_wcheng@quicinc.com> wrote:
+>>
+>> Hi Albert,
+>>
+>> On 3/13/2024 1:03 AM, Albert Wang wrote:
+>>> Hi Wesley,
+>>>
+>>> The suspend function `qc_usb_audio_offload_suspend()` looks to stop
+>>> the traffic on the bus, so that the bus can be suspended. That allows
+>>> the application processor(AP) to enter suspend. There is a subtle
+>>> difference with our feature, which is to allow AP suspend with the
+>>> Host and USB controller active to continue the audio offloading. We
+>>> call this feature `allow AP suspend in playback`. So, I have some
+>>> points to clarify with you:
+>>
+>> Yes, I'm aware of that feature also.
+>>
+>>> 1. Will the suspend flow `usb_audio_suspend() -->
+>>> platform_ops->suspend_cb() --> qc_usb_audio_offload_suspend()` be
+>>> called when offloading is active?
+>>
+>> It can be.  This is why in our case, we are going to issue the
+>> disconnect event to the audio DSP to stop the session if it is currently
+>> in one.
+>>
+>>> 2. As my understanding, the suspend function is to allow AP suspend
+>>> when the offloading is IDLE, but it won't allow AP suspend when in
+>>> playback or capture. Please correct me if anything is wrong.
+>>
+>> As mentioned above, it will let apps go into PM suspend after forcing
+>> the audio stream to be idle.  We won't block PM suspend entry.
+>>
+> Right. Your design is to force the audio stream idle, or say, inform
+> the audio DSP
+> to stop the current offloading session first, then AP can go into PM
+> suspend as usual.
+> Then I can say the current design did not support the `allow AP
+> suspend in playback`
+> feature, right?
+> 
 
-But we could need `#[inline(never)]` (or ideally `#[used]` if it could
-go on functions) or `#[no_mangle]` (but we would lose the mangling).
+Correct, this series does not cover this mechanism.
 
-Anyway, the simplest is to export the original symbol, but we could
-consider to provide support one way or another for this kind of
-"helpers" (i.e. leaving the current helpers as those for macros and
-inline functions), so that it is clear what symbols are only exported
-for Rust use (and not other C code).
+>> Yes, I saw that patch as well.  I'll take a look once this series lands
+>> upstream.
+> 
+> That patch is rejected and archived now. So we need to find another
+> approach to do
+> that, even based on your framework.
+> 
 
-Cheers,
-Miguel
+We can discuss that offline and come up with an approach that is 
+reviewable by maintainers and the community.
+
+Thanks
+Wesley Cheng
+
+> Thanks,
+> Albert
+> 
+> 
+>>> 3. We would like to integrate the `allow AP suspend in playback`
+>>> feature with your framework to become one upstream offload solution.
+>>> Here is the patch:
+>>> https://patchwork.kernel.org/project/linux-pm/patch/20240223143833.1509961-1-guanyulin@google.com/
+>>> .
+>>
+>> Yes, I saw that patch as well.  I'll take a look once this series lands
+>> upstream.
+>>
+>> Thanks
+>> Wesley Cheng
 
