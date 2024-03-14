@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-102799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BCA287B76C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:51:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 348B087B76D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA232285330
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:51:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 815741F2357D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE25D271;
-	Thu, 14 Mar 2024 05:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1455DF59;
+	Thu, 14 Mar 2024 05:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OGF3dDZf"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CO9py+S1"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDF1947B
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:51:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98FCD267
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395480; cv=none; b=MR8V7FkOykJ0bdXD7/SD4c3wJa25V3xKWfS7lDaf5eUWOacby7591ab3VEB1vmxh5zNeixJTTmqQiXIa5gLeBs+Psl848GUiiqYU/mYXUqhrUnmWJjUX3OvhzSHPrQHoRK2t8tqiJcDbXv2Sy57BKB3JSe/syfdTE2+cE7Xt144=
+	t=1710395482; cv=none; b=UBJu9u+JdwFZzmO+Es7G08B4fS8j3HZsbSP+kGJDIvgDLQYdtBPZjHBM0TNDzA9ujQAVqYyWm7jfaznBHpcG3dtyoN+GbbGFeQYYxW5ryQil8GdstG7B+EjqSxw1/vQ7RYrlmj4otSv5rAPtU1WPMTkGbJV8f5FOFWE2uuquoJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395480; c=relaxed/simple;
-	bh=v0yqG1/eVUcfK+EPjUe4XPhP/J2eaY9fzjQzfVc6/H0=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=akn45jsc99QAiwCRf7AfQ5CmverI6SDWA3KDHqBRRFJCUzoA62NzD5H66g7ZrJ2Q1bPKpStSuW5/Xj/Uy6O5Z40LLw/Nifiga26Sbg500i+KkZSEcTeZs73d720nlso3xTm9K1UpeViNDg8r/At0UsyNpgIHNJ7X6prZspm2+Tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OGF3dDZf; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1710395482; c=relaxed/simple;
+	bh=pYwFBWamBieIdW9SZt9AVp6RucUVMKW9akUtx9h7loo=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=q/mgZWpn2PqkBQgkjoShUJGLcJQGPFDTxIB/zrRIiaj+9qBhDW5VeMVogvhMaGVVhQEXOd/AbopVoV0+ziJaVGNmrF/zKealf6vYthtdFIVe/ICkoiNfZfshWawtJc0YlA7oqTM4WFxFTo6QfigGNv1YAliSVliLxK10DWeGeHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CO9py+S1; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso645521276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:51:18 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b2682870so841172276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710395477; x=1711000277; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YCqK+HuTsy25M+g/yEFD0qCgc7u53JD83szShkckrSU=;
-        b=OGF3dDZf2gu95++gEz9cRV7zwm6TKcwJNKRZQUqnWplbCDTVE3q2wn8SgQhKO4jkZY
-         s08GfPEJEEVOEsyGkK6tFVIJutPfGTZwldy+H510Ji683cjGbj0F60Hr9M6XZcOa3Pw3
-         ah3owNM7fOvVrJAinZKT6Nxa0oHKjltFLisKWUloRhKVA/X9Yo/QKYZb7btHGZQPyLeJ
-         2zOdjWDXyeYzTTg1qyOFZgb73f6OPxT9gZPLnFHoS0Q4fwAcynr3lAaSjbayd93eBr7i
-         3fQNV0CR6eEBweNbmlQDP6AsEf/2dzB3bV9QOb0h044aJE6Yq7QyGQSPvVVbLIFPJyci
-         9Ung==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710395477; x=1711000277;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1710395480; x=1711000280; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YCqK+HuTsy25M+g/yEFD0qCgc7u53JD83szShkckrSU=;
-        b=GJHEWEkDjQjHdoHo4kiMmM3tFfbQFOIwM6gaNqJdUgh2gWNqrY8eKTbpfGL6l1M5FI
-         qKypT7/zDIpIErSsazFfv5lsSRGYcSBtMcWFfyfyvnv01s7i/7cAeOS0r6Leo79YUTV+
-         cJ0Xi2yx/r+ZEUnLZ9fGDJYtx1LXHtwiHyVFeTfWEl05qjk9oMSOQJcIaJHPM/aYz7D2
-         00L9TJ0N9mk/HpJ/+8oIOpA2Qzy8ldBv3i22iBDrVcLY17yzv6LCvIxIzVORRK8AuT1U
-         gi6gNCJHW1CBE++FK6iSj7ZZlxqDFFSTDpbW4NZP3yWERsxtLjrSgn9NQPT9onyGjujV
-         zI4g==
-X-Forwarded-Encrypted: i=1; AJvYcCVSzlMRBnp7AOg90an39vwXjLJb2W17Ahy0veMPSxNJLZ7MaQpSffXWqfaK5HS/Njx3X/wIDUMWiBXF01LGnYinZlyjJO1+bKt4e0o6
-X-Gm-Message-State: AOJu0YwZWIhxHWnWSCC9DFpG41552gZZ4neK69QuKDkx1JSDAq8ve4tl
-	i/tGRFpU5b8DEaCOc7D2RjLuX0PPfprNo4uxqvFSx25C8ph+dOq3ulnDEx77krvefwdH8KTuFva
-	nENQ0Zw==
-X-Google-Smtp-Source: AGHT+IFhxtG7mMRDTi6SM6yIa7u6l7RWObt1YAjc3sEUyr42CneABw1rvByHjjYv+EGuqN6cKrznog0AtTg2
+        bh=2Ycxt5yLzxCom5vbiObPBkTkTg6hjsPvowJcvLZ1CJY=;
+        b=CO9py+S16TCITvJ+syklCg+mB0n32HiRA+0gFeySmLSIzl53wuaezzVvag8TAxi83o
+         mC6TXaK7YEcAbKC9f4tNXmA+IOihaKqwAw1Y28+cWyFxDdxMtM7bVk+h/b5BLnK10Nju
+         f4TPF60EZh9W18en+4GnW4tyiMap3XxIvZ1QSDsWZDnW8+qhp8hqt19wC4Z1+glZqdz5
+         GP58P814iYmB9a0wFLW7WFF+xCXuC456XENaHkEwGZMf+jvbWUKkSBhTdAM/esRyXdZq
+         n3EOYKt6kpyGdsOrPuLig1rJS+Sjq2GBdLOiCQIUx8bsYKJPwJOziOUXnqL1usQP6AfS
+         1tQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710395480; x=1711000280;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Ycxt5yLzxCom5vbiObPBkTkTg6hjsPvowJcvLZ1CJY=;
+        b=D0UE4aF/s4kK52NWqo2JGyxkZcdw6zYwHRCIF1ptNyzIpVRKn+Ymo5lrhSW/ic6mGQ
+         doHs6Lk3GDDH22KiTFRaMLnYdwbrWWGNvCvb8/2cc8KW13rl58q4GiEooFDRIgS+VwCk
+         1nunZIf6oDbMLI02AliMYg6nOUvtAN+gFGXUsASq4ZSHwDnmwnMFRAuObJuLEEdq6hgb
+         IQ4oy5bCKt2xoWFAUjoJFnb0KRncrS3bpjTxS1/xrsyRMC9kJYLIW5uZxzxcIj+rB4bk
+         BYLfso41fZpQU0ImNSOEmJ4C4kWjLymcLaY6s9uRCdEeTefpPISB+3hZViZksbLHaApg
+         W4Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCXv3orUL8gN6uqg9qRtursEMQH8WCOSJ9bZ28bXYMcFYk/HcFt4pJSR59GiMloZX+0kMgWwekQFAX3mbsFYKWBOyEyY+bnIneYa5auT
+X-Gm-Message-State: AOJu0YwzAeM3EKtpm/57Hr6aRou8Z2B2g49pjHS8Ja/306vgc99cvjyU
+	4pKz7z0Wya4dWnqhfEqkBLTjZZ0bBN6Qo8ekFitUg0+8jZCPf/t6Z1yHEysMzkPRT4iFDoLWlPX
+	D/Qvm7Q==
+X-Google-Smtp-Source: AGHT+IHe1agMqsMATLFIo2OsHql0jl2X0vTCAH83A2XiKg/x3LK3+VtXRJBuf2uvfomEwPmpZr6WfAQkwEAE
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:449f:3bde:a4cd:806a])
- (user=irogers job=sendgmr) by 2002:a05:6902:2504:b0:dc2:3441:897f with SMTP
- id dt4-20020a056902250400b00dc23441897fmr212987ybb.6.1710395477631; Wed, 13
- Mar 2024 22:51:17 -0700 (PDT)
-Date: Wed, 13 Mar 2024 22:50:39 -0700
-Message-Id: <20240314055051.1960527-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6902:e04:b0:dc7:68b5:4f3d with SMTP id
+ df4-20020a0569020e0400b00dc768b54f3dmr250371ybb.11.1710395479705; Wed, 13 Mar
+ 2024 22:51:19 -0700 (PDT)
+Date: Wed, 13 Mar 2024 22:50:40 -0700
+In-Reply-To: <20240314055051.1960527-1-irogers@google.com>
+Message-Id: <20240314055051.1960527-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240314055051.1960527-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 00/12] Foundations for metric generation with Python
+Subject: [PATCH v3 01/12] perf jevents: Allow multiple metricgroups.json files
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -89,48 +92,36 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Metrics in the perf tool come in via json. Json doesn't allow
-comments, line breaks, etc. making it an inconvenient way to write
-metrics. Further, it is useful to detect when writing a metric that
-the event specified is supported within the event json for a model.
+Allow multiple metricgroups.json files by handling any file ending
+with metricgroups.json as a metricgroups file.
 
-These patches introduce infrastructure and fixes for the addition of
-metrics written in python for Arm64, AMD Zen and Intel CPUs. Later
-patches will introduce the metrics split apart by the vendor.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/pmu-events/jevents.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v3. Some code tidying, make the input directory a command line
-    argument, but no other functional or output changes.
-v2. Fixes two type issues in the python code but no functional or
-    output changes.
-
-Ian Rogers (12):
-  perf jevents: Allow multiple metricgroups.json files
-  perf jevents: Update metric constraint support
-  perf jevents: Add descriptions to metricgroup abstraction
-  perf jevents: Allow metric groups not to be named
-  perf jevents: Support parsing negative exponents
-  perf jevents: Term list fix in event parsing
-  perf jevents: Add threshold expressions to Metric
-  perf jevents: Move json encoding to its own functions
-  perf jevents: Drop duplicate pending metrics
-  perf jevents: Skip optional metrics in metric group list
-  perf jevents: Build support for generating metrics from python
-  perf jevents: Add load event json to verify and allow fallbacks
-
- tools/perf/.gitignore                  |   2 +
- tools/perf/Makefile.perf               |  17 ++-
- tools/perf/pmu-events/Build            |  60 ++++++++-
- tools/perf/pmu-events/amd_metrics.py   |  42 +++++++
- tools/perf/pmu-events/arm64_metrics.py |  43 +++++++
- tools/perf/pmu-events/intel_metrics.py |  42 +++++++
- tools/perf/pmu-events/jevents.py       |   6 +-
- tools/perf/pmu-events/metric.py        | 162 +++++++++++++++++++++----
- tools/perf/pmu-events/metric_test.py   |   4 +
- 9 files changed, 342 insertions(+), 36 deletions(-)
- create mode 100755 tools/perf/pmu-events/amd_metrics.py
- create mode 100755 tools/perf/pmu-events/arm64_metrics.py
- create mode 100755 tools/perf/pmu-events/intel_metrics.py
-
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index fc704a96ba0b..f68b0a60cdef 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -608,7 +608,7 @@ def preprocess_one_file(parents: Sequence[str], item: os.DirEntry) -> None:
+   if not item.is_file() or not item.name.endswith('.json'):
+     return
+ 
+-  if item.name == 'metricgroups.json':
++  if item.name.endswith('metricgroups.json'):
+     metricgroup_descriptions = json.load(open(item.path))
+     for mgroup in metricgroup_descriptions:
+       assert len(mgroup) > 1, parents
+@@ -658,7 +658,7 @@ def process_one_file(parents: Sequence[str], item: os.DirEntry) -> None:
+ 
+   # Ignore other directories. If the file name does not have a .json
+   # extension, ignore it. It could be a readme.txt for instance.
+-  if not item.is_file() or not item.name.endswith('.json') or item.name == 'metricgroups.json':
++  if not item.is_file() or not item.name.endswith('.json') or item.name.endswith('metricgroups.json'):
+     return
+ 
+   add_events_table_entries(item, get_topic(item.name))
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
