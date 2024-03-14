@@ -1,269 +1,210 @@
-Return-Path: <linux-kernel+bounces-103833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF83387C51F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:28:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2963587C523
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB8C1F2209A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:28:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 779EAB21C0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A02576909;
-	Thu, 14 Mar 2024 22:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED22D76914;
+	Thu, 14 Mar 2024 22:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VPQ7aYAF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mSRzgc5U"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079851A38EE;
-	Thu, 14 Mar 2024 22:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710455295; cv=fail; b=O6+GKbJu8QUJH4ZdpPpbELWmOkAC4rRdg8e9NFOzfZrokqStFLcEMIxn5ppT6oJypJIVNW1rV3GVxGpMoFIN9V907Oj1t8hS0JbRHftX0vtwKBDQXKmTogZM3Ut33jIdHyLgY+Qslu5JzpbpKfym/x7QCGo9LprFfWG9w+GmAv0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710455295; c=relaxed/simple;
-	bh=Dd/v8rPR1uU0kDwUW4NvB45cgVfJe4EXa+h+QUx8rDk=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=YD8Ci3DnoR0y5AiPX2uL9JOY9EB4OqD4dh94iVOozrLwhiRwcOV6rHrkaIbn3+Sap2xZpXTsVTb7YbVBRT97UcVgT5D76qM/XkPtTpHX+dl9lRy2GGhYgngT4Xju6waYya6UNMjJzhRUqZzMWYSfBAnoejKc6DnQb5en+a7dj7I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VPQ7aYAF; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710455293; x=1741991293;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Dd/v8rPR1uU0kDwUW4NvB45cgVfJe4EXa+h+QUx8rDk=;
-  b=VPQ7aYAFBrMQGDFNirxDhRQxtqEncWdVG7N6XUX3OQZqLf9LDLG7y2T9
-   2WPDrymIMMU8qf7+haXbGOH8RHlO1SopRn82pHR+FJn/995BphgBKzckf
-   93/SJ+QpJtUJ5lbunAcavaEb7lDU/zZiAqo08aySOCFriuncE8eTaQKFO
-   s5OIPGyk43/ihyCLN7nI7BYLHGuOoO0OEpK705v7HCwP3g4IuJubzzpH9
-   FGSJXGXaNDJp4lSNbPWSWq2MBzaPfpqcd7x93V2cQUlshd52dViw4WCOy
-   CmjwTvyo15hj434kkB68BIm8XnKuuMX5IvAC4mtJZ6efJmWk9gl14cTdw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5507293"
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="5507293"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 15:28:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="12358276"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 15:28:12 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 15:28:11 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 15:28:10 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 15:28:10 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Mar 2024 15:28:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hAO1SXb3xt3dmcWLarngXCON21CP5/lcpbEaqMrucrlYyRIc65YYP4Nb9OmQyxQCtJcPZ29PAeaXQl/u7+Og2XeM/BR8wPTUIwBSBArrbzawvdVGyE3gNKEQ7N8VIblp1d0A4gNNUgrEVQ6ZZ2AV434zwXvjksFVelXo/A4hMxnGtClukBd748DubetdpYmOPZMy9PjEiFZlIv48ue/6GTsGd1rzUJ4h5kmve35PNRiDWp+m+06ZsyZdwzZBi7JYptmtVsvepzEeCPgy4lbdIGuRzB6wabVPLKrCAX3ZjZfh0YNQ7McfIOvZur2NpUZNK3ZaqY6v7h8yGBqFSZIUqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Uysl5hWfdsDZyBPL1Jga3XwEnVUHMXkiPWJxkBWcBRY=;
- b=Pu2qlUQWPtBMGxnscmcTRa9M/4lJiJLK8Z1VVSjEvE5eA469Lw30wnjoP8ATvK25tM5DSNc8haHML/t3LSWbT/N0dptnoQkwj0fQaDEYSEQRzevEJ7Ig38GsFcm8HJ33ePPqsedKm7j1HWB2u1KSBFRHKiEjgpKkVMg4dpBGht+LBDGnjTaJvvlj6LFVo1Sxj77mEuiU80uLSlaDc1dXojFfh/6aLcNy78uqNO6hcRnJxk1Qo9gZCj3eHx1F8RdCbabvKybROXo8uqFFbSfHhdZKNFAKD2XHBtQ2PiFtVtgM+VDm8lHc5f9vBE7zGrt1+WDYQHy8pUtWA7ZBPo21DQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by SN7PR11MB6602.namprd11.prod.outlook.com (2603:10b6:806:272::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Thu, 14 Mar
- 2024 22:28:04 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7386.015; Thu, 14 Mar 2024
- 22:28:04 +0000
-Message-ID: <075d7013-6f5b-4446-a41c-d9ae754d4bd9@intel.com>
-Date: Fri, 15 Mar 2024 11:27:56 +1300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 033/130] KVM: TDX: Add helper function to read TDX
- metadata in array
-Content-Language: en-US
-To: <isaku.yamahata@intel.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
-	<sagis@google.com>, <chen.bo@intel.com>, <hang.yuan@intel.com>,
-	<tina.zhang@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <72b528863d14b322df553efa285ef4637ee67581.1708933498.git.isaku.yamahata@intel.com>
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <72b528863d14b322df553efa285ef4637ee67581.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0226.namprd03.prod.outlook.com
- (2603:10b6:303:b9::21) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9BF768F3;
+	Thu, 14 Mar 2024 22:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710455378; cv=none; b=nsPgmcQxV6l7P7zLCpkDV/NcYyFZ/Ws6yLjFhZJvIze6Px6gdoylHtp9SQ4vAr06I2D7/OopukKBl/qk90qodmliHg5rlX1ACDVHfNLPJdc+7fo65J74/IAVyTa67SdJjq2Dlw26FAZ3gxr2XcWgt0TUtgKvb3iMcmSFi0QovIQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710455378; c=relaxed/simple;
+	bh=mVfthxu8tHVEct71hEtyT2aI9z9fT34A0nFsHzLlNOg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AmHmnLP1d6j4DUOuCDY1HPlZn731jqVFqlU28Bly2fKwIR4RIPq6oejH+A2MFwI2iR+znLlQ4UdtO+ejQF/YeO1YZ6J09ol6kHC0eKHkQhVp11Pjj1ZkpWQ340d9tPTs8eYpVhHLqUfzjg/T2cn8HeF586R8zHyvpR/yPX3f5yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mSRzgc5U; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42EMNYQQ020001;
+	Thu, 14 Mar 2024 22:29:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=KojSjym7u6QhZhv9Z7jGq3n3K1D2+++zSehhP0d95Pw=; b=mS
+	Rzgc5Uzfgi/8/flB9EtZrys/ZidZPUABRnFuYBBK4wSpMUGqoY0K2Gyw6VIPZbGW
+	gIODgfDayGKMOhe0jU8tFB2UiBHp3VVKKA/CkYaWWGV22IVnL1+yjrpOmSm61wlF
+	di9BcxLDQTTybW0i5+06SfqHwyE6ctr/8RidcLfwuYacrXB1XJmpf0kauIIysHMa
+	EotQzAUo0Gi1/6pxqoePOjPtc++lgJi/KXCtK8u8Dsuz6vNR/xSyx1UrxhZPAjv7
+	9VIGYKxZVhvYLDgdnAUsKm4/tlq8urHnZGY3CiJlH4WhUmvElJv0VHJFU2enBeZ6
+	4kkZC8LLpiTLCPNTkoaQ==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wva09008a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 22:29:10 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42EMT9lx014532
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 22:29:09 GMT
+Received: from [10.110.112.81] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Mar
+ 2024 15:29:04 -0700
+Message-ID: <d10254cc-a908-4d81-98d2-2eed715e521f@quicinc.com>
+Date: Thu, 14 Mar 2024 15:29:04 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|SN7PR11MB6602:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1734418-03e9-4042-3fe5-08dc447603f7
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rkM4Ukv3FQry0oRHv1D2R4Ji+3+X+UiWASiy9RWqi3g7elu5cioOIVXPZE5ksn+H/GcIZXSGh2hyWgq5RzdqrMdSgxjBn12G7qKY/Ujetmsu3uwvHHNJ35+0M0CYYejCcUAvz94VYpaBEY7V9EhQtRAPoAefykHIf/Ff7Al5niUeJ+m5A5b4p2PWmrCdHxbKA8vVD27aHp5b4ccAzLHoEzPNn5buzN6agwgn8Ap8bjGIB/Vpp8IMEc8WxmLHHPkBVRVkeaVW2OLE+wg2pkzdyZqhdjJOGbmjYKZ4/U8p7g4MBJkI3B6hRIQgzatth2TCW4qY5jKtGarWNuroedg8ZFyhK2brcfzxIjx98cxlinV9qzQOA7aq8u47u90EyWkMuA1k2yovjvEzxFUW9vZjGPWJLxS4gp7lgdUJDUoOFSNvdtJWK8FTzSpS6ehWdAg1u9suLHUnUtSZu7rsNSgPXlbNdrKKww8mEfxXNVvNJNBV6nVe1IAlJzd93R96PzNbvNoE7W3zuC69LY7oUo6uEzr1b47Fe6aiJZKwfiNBhaRtP90KtCizcJ480NfVfexAzpmJSqUhue4TdhB5mp34jthRZ3+Ig56W9UYiTBPQah2hHLjh0lFFZpsYZ6q1GW88DRP+a1xMAbQjO1MlfXOLaTWeA4p6M1GqaciELQ8/89M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UDVjdGc5YWZlYUt0bXNTUkVzVWlSVDFuNFA2bGtNZzBMcVpWbXlES2NrOTFB?=
- =?utf-8?B?aWs5RERWWGZvWmpFVlhEYWxrR01IQjY1MWpzTU93ZXVLU2EzTlRWOGtnWG0y?=
- =?utf-8?B?V2FBb3N2Q0tNd0NQN3pVK2ljRnNKU3BJZXBFQ1FWaU9NNjkxdDl0dWdWTXdO?=
- =?utf-8?B?a0JQRW1oS3JmaGZFb2YvQzlvRUdmZXJqRGVhUzR3QXprc1hkSVJJNExRcXEx?=
- =?utf-8?B?cU1PSGxSRzc1Q3VPWkRQMEVWMDF2c0JrL0pQRDd2NnJSWkRsZ2hHWUNvUVlq?=
- =?utf-8?B?RWFXTHE5NUJRdjl4Mm1HeElKblN2SG1XbjNSbzA3Y2g0OWZDdHNyYlNwVHlM?=
- =?utf-8?B?ZjlmY3NLVkorYk5kdGRSMkNiZ283NDVXN2pmMURjZUNzZUZjMDJuL2RZamxi?=
- =?utf-8?B?ekRpQzhOWkRDN2lQZlBLd3doWHBkcDlsamo3U2JNVWdDQkR0RnFsUTl5S1Ux?=
- =?utf-8?B?M25ZNm9xRFRFSDRWRUc2K09lSmJyaWo5UGYwUVNpQzlnQVo0RkJZUFlVR0xJ?=
- =?utf-8?B?bnFELzBCbGZoOVJOdzkxWmRmY1N3OXJScUZ0bWNlUUpITG52TzUrUmJRUzdu?=
- =?utf-8?B?ODBET20rbWFJVFhtSDFkVFh5L3hueDNuZGVyd2Rwc2Z1ZmdWYk9NclYvbm5J?=
- =?utf-8?B?YkpmdDM1WnUxZmdSKzFrWVk2cU1qRW53UnZTZFUvalltN29tM1FrckZ1U0l6?=
- =?utf-8?B?bEtZYldNRm9vNHhiRU5PRW96dkpsdkhEWjZMUko1TTRXYlVCdzQwNk9DcUky?=
- =?utf-8?B?M3QyN3ZnbFNhUE91QVhwaWFiQVNsSFdBamlwRnhsdGZVMThoc1o1VjJRTmYy?=
- =?utf-8?B?YnB0KzNTUHVTQTN5QWwrMlQ0M0l6SHFKSCtQZzI0OW10cWMrdlZtWkhXQ2d1?=
- =?utf-8?B?TzRXcCtMU0V6eVF0ZHVyK3Y1Yy9hY0krQXpVM3hOUzM5cVJhcWVKYUFieDc5?=
- =?utf-8?B?V21LWGZQQ2tMTWxheTJ1MThXTTdCOTdMYksxcWtDazhEaEZyNVkrdHIvQ3B5?=
- =?utf-8?B?THJtWS9Qb1doSkZtVGFwVjFUQ3NoVTFwc0s1OFJlTlQzVzg2THNiNUU1WjBK?=
- =?utf-8?B?SkxOWUQ4OHE4TENDaWZvZUtQVkNlZzVCNEI1MzRGQWJSTSszaXQxclMyUDBr?=
- =?utf-8?B?aHYzenM1WEZ5MDlObWpneEpsR0pkTjNEc05PYmM4WitrTnZkOFkrMzVITmNk?=
- =?utf-8?B?RUlyZG1HV1l4UEpiK0E3UG9hc001TlYzNU9hQk1GaEFVRUNiTU5zZEdxVlgr?=
- =?utf-8?B?YWNVU2tOcWhqMVR4T3NoVTlYdXc1UytXc2tTTkdkVjFzQTNVeVJpNWpTM3p6?=
- =?utf-8?B?SXRqMXY4cTZLSm9LODFwQkZvT294TVdjUk9BYi96b1JNLzZDbnVjaTkyRmto?=
- =?utf-8?B?R2d3WE1DcHNibU51K3RKcjVMdlNmakd4eTVqNDNDNTVMcmE3U0tybkVQUkx4?=
- =?utf-8?B?b0kzQ3ZCNEpneXVoTHpWR3ZnZXZ2MHR3clNXZU1TbzZ1dHR0RmdoWmxDZ3NV?=
- =?utf-8?B?dVN0cHZyYjlna0NUQ1FIYkxMSlRkNlRtQ0NSNjNkZlhjenVnZ0w5cXg1ejFx?=
- =?utf-8?B?c2toL2ZsL216Ym91OTZNUFdzdmlFU1NnanB3L3hORVVncmhKVldGaXRiWTFC?=
- =?utf-8?B?LzhIcVRGbkVuM1Y2eGtqSXhDNG90VkxGVmsvSjN0KzFrdXUrL285ZHhvOElL?=
- =?utf-8?B?dWdlb1lqTFNkQk1iQzFYT0VyVVZwbVNuWCtyNmxhL0YxRFFWSHp3Ny9WSXNB?=
- =?utf-8?B?WjBXdW9aNVVPN1AzZUt2NGdOZGhMTXV2dzJCeXBIdVFXZ09ZM2d2RmJKVncw?=
- =?utf-8?B?TUkzelZLUXBKSy9mV0hCRndpUDQyUmR1UUVyNUdOcVp5VnFaYmxDNFJnUXF3?=
- =?utf-8?B?dk5ZdXowb3dZbWhYZG5vSjNzQ01ZdlZ5VDNULzNUWG42Y2xZNG8yTmtaTmpw?=
- =?utf-8?B?ZnUrZUl4eVBwczM3cDZkbHhEZUpua1UzeXN6M0VFRk1pbkZCMHZHeWZELzFl?=
- =?utf-8?B?dFdyS3N5b01mRG9MZjgwVGY3Qlp1K3V3dy9FT3JzaHpRRCtCRVcxT0JIL2hY?=
- =?utf-8?B?ZnByNm1hL3QxWXpNZVVKQWJMM2FUaXB2alZNSFVkaTBUbUFpVVFUZ1l2OEMv?=
- =?utf-8?Q?hVXQibJ3jBfs4Pc5YSU3HwGnx?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1734418-03e9-4042-3fe5-08dc447603f7
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 22:28:04.5181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JrOsbJ0aanigy1JR2UkYTeHfNZaPrNqTD6JtUxDDviJYIpMQ4KWz4hrAYdlROdVux7OXZbiXEXFdtFM8wAi+4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6602
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>
+CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, <kernel@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney
+	<ahalaney@redhat.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>, bpf
+	<bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Alexei
+ Starovoitov" <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+ <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+ <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
+ <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
+ <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
+ <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
+ <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
+ <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
+ <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
+ <65f35e00a83c0_2132294f5@willemb.c.googlers.com.notmuch>
+ <e270b646-dae0-41cf-9ef8-e991738b9c57@quicinc.com>
+ <8d245f5a-0c75-4634-9513-3d420eb2c88f@linux.dev>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <8d245f5a-0c75-4634-9513-3d420eb2c88f@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: RPmOXb7udbsKUzQltMBLnmHPtYnQ-3Ml
+X-Proofpoint-ORIG-GUID: RPmOXb7udbsKUzQltMBLnmHPtYnQ-3Ml
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_13,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ adultscore=0 mlxscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
+ impostorscore=0 clxscore=1015 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403140172
 
 
 
-On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On 3/14/2024 2:48 PM, Martin KaFai Lau wrote:
+> On 3/14/24 1:53 PM, Abhishek Chauhan (ABC) wrote:
+>>>> The bpf_convert_tstamp_{read,write} and the helper bpf_skb_set_tstamp need to be
+>>>> changed to handle the new "user_delivery_time" bit anyway, e.g.
+>>>> bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_MONO) needs to clear the
+>>>> "user_delivery_time" bit.
+>>>>
+>>>> I think the "struct inet_frag_queue" also needs a new "user_delivery_time"
+>>>> field. "mono_delivery_time" is already in there.
 > 
-> To read meta data in series, use table.
-> Instead of metadata_read(fid0, &data0); metadata_read(...); ...
-> table = { {fid0, &data0}, ...}; metadata-read(tables).
+> [ ... ]
+> 
+> I would think the first step is to revert this patch. I don't think much of the current patch can be reused.
+> 
+>> 1. I will raise one patch to introduce rename mono_delivery_time to
+>> tstamp_type
+> 
+> Right, I expect something like this:
+> 
+> struct sk_buff {
+>         /* ... */
+> -            __u8                    mono_delivery_time:1;
+> +        __u8            tstamp_type:1;
+>         /* ... */
+> };
+> 
 
-This explains nothing why the code introduced in patch 5 cannot be used.
+Okay ,This should be straight-forward. 
 
-> TODO: Once the TDX host code introduces its framework to read TDX metadata,
-> drop this patch and convert the code that uses this.
+>> 2. I will introduce setting of userspace timestamp type as the second bit
+>> whem transmit_time is set.
+> 
+> I expect the second patch should be introducing the enum first
+> 
+> enum skb_tstamp_type {
+>     SKB_TSTAMP_TYPE_RX_REAL = 0, /* A RX (receive) time in real */
+>     SKB_TSTAMP_TYPE_TX_MONO = 1, /* A TX (delivery) time in mono */
+> };
+> 
+> and start doing "skb->tstamp_type = SKB_TSTAMP_TYPE_TX_MONO;" instead of
+> "skb->tstamp_type = 1;"
+> 
+> and the same for "skb->tstamp_type = SKB_TSTAMP_TYPE_RX_REAL;" instead of
+> "skb->tstamp_type = 0;"
+> 
+> 
+> This one I am not sure but probably need to change the skb_set_delivery_time() function signature also:
+> 
+> static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+> -                                        bool mono)
+> +                     enum skb_tstamp_type tstamp_type)
+> 
+This should be straight-forward as well 
 
-Seriously, what is this?? Please treat your patches as "official" patches.
+> The third patch is to change tstamp_type from 1 bit to 2 bits and add SKB_TSTAMP_TYPE_TX_USER.
+> 
+> struct sk_buff {
+>         /* ... */
+> -        __u8            tstamp_type:1;
+> +        __u8            tstamp_type:2;
+>         /* ... */
+> };
+> 
+> enum skb_tstamp_type {
+>     SKB_TSTAMP_TYPE_RX_REAL = 0,    /* A RX (receive) time in real */
+>     SKB_TSTAMP_TYPE_TX_MONO = 1,    /* A TX (delivery) time in mono */
+> +    SKB_TSTAMP_TYPE_TX_USER = 2,    /* A TX (delivery) time and its clock
+>                      * is in skb->sk->sk_clockid.
+>                      */
+>                
+> };
+> 
+> This will shift a bit out of the byte where tstamp_type lives. It should be the "inner_protocol_type" bit by my hand count. Please check if it is directly used in bpf instruction (filter.c). As far as I look, it is not, so should be fine. Some details about bpf instruction accessible skb bit field here: https://lore.kernel.org/all/20230321014115.997841-1-kuba@kernel.org/
+This is where i would need thorough reviews from you and Willem as my area of expertise is limited to part of network stack and BPF is not one of them. 
+But i have plan on this and i know how to do it. 
+
+Expect patches to be arriving to your inboxes next week, as we have a long weekend in Qualcomm 
+Fingers crossed :) 
 
 > 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
-> v18:
-> - newly added
-> ---
->   arch/x86/kvm/vmx/tdx.c | 45 ++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 45 insertions(+)
 > 
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index cde971122c1e..dce21f675155 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -6,6 +6,7 @@
->   #include "capabilities.h"
->   #include "x86_ops.h"
->   #include "x86.h"
-> +#include "tdx_arch.h"
->   #include "tdx.h"
->   
->   #undef pr_fmt
-> @@ -39,6 +40,50 @@ static void __used tdx_guest_keyid_free(int keyid)
->   	ida_free(&tdx_guest_keyid_pool, keyid);
->   }
->   
-> +#define TDX_MD_MAP(_fid, _ptr)			\
-> +	{ .fid = MD_FIELD_ID_##_fid,		\
-> +	  .ptr = (_ptr), }
-> +
-> +struct tdx_md_map {
-> +	u64 fid;
-> +	void *ptr;
-> +};
-> +
-> +static size_t tdx_md_element_size(u64 fid)
-> +{
-> +	switch (TDX_MD_ELEMENT_SIZE_CODE(fid)) {
-> +	case TDX_MD_ELEMENT_SIZE_8BITS:
-> +		return 1;
-> +	case TDX_MD_ELEMENT_SIZE_16BITS:
-> +		return 2;
-> +	case TDX_MD_ELEMENT_SIZE_32BITS:
-> +		return 4;
-> +	case TDX_MD_ELEMENT_SIZE_64BITS:
-> +		return 8;
-> +	default:
-> +		WARN_ON_ONCE(1);
-> +		return 0;
-> +	}
-> +}
-> +
-> +static int __used tdx_md_read(struct tdx_md_map *maps, int nr_maps)
-> +{
-> +	struct tdx_md_map *m;
-> +	int ret, i;
-> +	u64 tmp;
-> +
-> +	for (i = 0; i < nr_maps; i++) {
-> +		m = &maps[i];
-> +		ret = tdx_sys_metadata_field_read(m->fid, &tmp);
-> +		if (ret)
-> +			return ret;
-> +
-> +		memcpy(m->ptr, &tmp, tdx_md_element_size(m->fid));
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-
-It's just insane to have two duplicated mechanism for metadata reading.
-
-This will only confuse people.
-
-If there's anything missing in patch 1-5, we can enhance them.
+>> 3. This will be a first step to make the design scalable.
+>> 4. Tomorrow if we have more timestamp to support, upstream community has to do is
+>> update the enum and increase the bitfield from 2=>3 and so on.
+>>
+>> I need help from Martin to test the patch which renames the mono_delivery_time
+>> to tstamp_type (Which i feel should be straight forward as the value of the bit is 1)
+> 
+> The bpf change is not a no-op rename of mono_delivery_time. It needs to take care of the new bit added to the tstamp_type. Please see the previous email (and I also left it in the beginning of this email).
+> 
+> Thus, you need to compile the selftests/bpf/ and run it to verify the changes when handling the new bit. The Documentation/bpf/bpf_devel_QA.rst has the howto details. You probably only need the newer llvm (newer gcc should work also as bpf CI has been using it) and the newer pahole. I can definitely help if there is issue in running the test_progs in selftests/bpf or you have question on making the changes in filter.c. To run the test: "./test_progs -t tc_redirect/tc_redirect_dtime"
+> 
 
