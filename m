@@ -1,69 +1,51 @@
-Return-Path: <linux-kernel+bounces-102884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9D1587B801
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:37:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4D8A87B802
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807051F21CCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:37:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D51BD1C22761
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C3B4A11;
-	Thu, 14 Mar 2024 06:37:31 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199334A11;
+	Thu, 14 Mar 2024 06:38:43 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4D34683;
-	Thu, 14 Mar 2024 06:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65BEB443D
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710398250; cv=none; b=drjMfVl0bUbfc9jBwcqWmaw7hJdjWV1aY/lyFveCU2I4rSusEdHqY0peBIMWWQUTSUqS2ddTZjHRQ+kPc6DZZXyNwBFVHVSMTjqe4Hi9eTbOGLDN7Gfgjzjhif75/+3UL12yKLqcurLu6QulXrdULKZXMDTCESqKQReKE8ZEcbs=
+	t=1710398322; cv=none; b=C1721Cbi8YBeXLRjrbNr9CktJMQpKg+zkIqcmO6lk4659uI10woqj8GJtrvRep63nHxQLrFGNkqDfaUnBi9ky+p6jBdfKpSsYEaXxCBYuzJU1d4uBkXCcj/83uj3L+x76vJLXRbmtsXJUJI4BdIiS2cF3vLAeWfCIsO8Wm2HN9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710398250; c=relaxed/simple;
-	bh=rYAKy0YwJE5ci82WZQpxeGINJPlfTTccgMae34B3AWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aGE7Pocu/F4GKabzyxp5RX7QkG78JSrBKaS+Jn/+nHD6amI84j3QIEe/iPTLqQ0ncUFWV08n4a2kcUHkwU3DHgiHGZy7C6D5OlHjYrLxPksRWl38MeBekf3woyAUResRZYmM2/7sW1M+duGlde7t+/nenCHOY2n1kgiqNRsl7ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 98ce9f10be844c369520d7c1404ded6f-20240314
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:e20e57c8-bb4e-4429-a4ac-d750caae4838,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:5
-X-CID-INFO: VERSION:1.1.37,REQID:e20e57c8-bb4e-4429-a4ac-d750caae4838,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-META: VersionHash:6f543d0,CLOUDID:f1ea7c81-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:2403141437215XVAHEKJ,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
-	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 98ce9f10be844c369520d7c1404ded6f-20240314
-X-User: aichao@kylinos.cn
-Received: from localhost.localdomain [(112.64.161.44)] by mailgw
-	(envelope-from <aichao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 887291583; Thu, 14 Mar 2024 14:37:19 +0800
-From: Ai Chao <aichao@kylinos.cn>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	u.kleine-koenig@pengutronix.de,
-	mario.limonciello@amd.com,
-	jes965@nyu.edu,
-	alexbelm48@gmail.com,
-	onenowy@gmail.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ai Chao <aichao@kylinos.cn>
-Subject: [PATCH v1] platform/x86: hp-wmi: use sysfs_emit() instead of sprintf()
-Date: Thu, 14 Mar 2024 14:37:03 +0800
-Message-Id: <20240314063703.315841-1-aichao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710398322; c=relaxed/simple;
+	bh=ncxPhRMMpfqp9OzQjoy4dcGCuf78mFoSFqMSDKndVh0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VRoHxDkbnK7um6yBztwLmZy1VuhrHxyn5jzPy8CN06tUpBgq0QTHZ/Pmp/UsDxqX5x0ZAoovYv3rHTITuDfFcjq5J1dK/ZHRlO+1kC/hH+XmsrUO4zFkMm6ARflGQbCBlNRMHBN1dPPSX2rJ1j3G9WWO+B+nGQMA0+HOXBcfj+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TwHkz0PqWz1FMPL;
+	Thu, 14 Mar 2024 14:38:19 +0800 (CST)
+Received: from kwepemi500008.china.huawei.com (unknown [7.221.188.139])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9EA7E1400DB;
+	Thu, 14 Mar 2024 14:38:35 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 14 Mar
+ 2024 14:38:35 +0800
+From: Jinjie Ruan <ruanjinjie@huawei.com>
+To: <catalin.marinas@arm.com>, <will@kernel.org>, <mark.rutland@arm.com>,
+	<suzuki.poulose@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <ruanjinjie@huawei.com>
+Subject: [PATCH] arm64: Remove unnecessary irqflags alternative.h include
+Date: Thu, 14 Mar 2024 14:38:19 +0800
+Message-ID: <20240314063819.2636445-1-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,75 +53,33 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
 
-Follow the advice in Documentation/filesystems/sysfs.rst:
-show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-the value to be returned to user space.
+Since commit 20af807d806d ("arm64: Avoid cpus_have_const_cap() for
+ARM64_HAS_GIC_PRIO_MASKING"), the alternative.h include is not used,
+so remove it.
 
-Signed-off-by: Ai Chao <aichao@kylinos.cn>
+Fixes: 20af807d806d ("arm64: Avoid cpus_have_const_cap() for ARM64_HAS_GIC_PRIO_MASKING")
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 ---
- drivers/platform/x86/hp/hp-wmi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/include/asm/irqflags.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/platform/x86/hp/hp-wmi.c b/drivers/platform/x86/hp/hp-wmi.c
-index 630519c08617..5fa553023842 100644
---- a/drivers/platform/x86/hp/hp-wmi.c
-+++ b/drivers/platform/x86/hp/hp-wmi.c
-@@ -681,7 +681,7 @@ static ssize_t display_show(struct device *dev, struct device_attribute *attr,
+diff --git a/arch/arm64/include/asm/irqflags.h b/arch/arm64/include/asm/irqflags.h
+index 0a7186a93882..d4d7451c2c12 100644
+--- a/arch/arm64/include/asm/irqflags.h
++++ b/arch/arm64/include/asm/irqflags.h
+@@ -5,7 +5,6 @@
+ #ifndef __ASM_IRQFLAGS_H
+ #define __ASM_IRQFLAGS_H
  
- 	if (value < 0)
- 		return value;
--	return sprintf(buf, "%d\n", value);
-+	return sysfs_emit(buf, "%d\n", value);
- }
- 
- static ssize_t hddtemp_show(struct device *dev, struct device_attribute *attr,
-@@ -691,7 +691,7 @@ static ssize_t hddtemp_show(struct device *dev, struct device_attribute *attr,
- 
- 	if (value < 0)
- 		return value;
--	return sprintf(buf, "%d\n", value);
-+	return sysfs_emit(buf, "%d\n", value);
- }
- 
- static ssize_t als_show(struct device *dev, struct device_attribute *attr,
-@@ -701,7 +701,7 @@ static ssize_t als_show(struct device *dev, struct device_attribute *attr,
- 
- 	if (value < 0)
- 		return value;
--	return sprintf(buf, "%d\n", value);
-+	return sysfs_emit(buf, "%d\n", value);
- }
- 
- static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
-@@ -711,7 +711,7 @@ static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
- 
- 	if (value < 0)
- 		return value;
--	return sprintf(buf, "%d\n", value);
-+	return sysfs_emit(buf, "%d\n", value);
- }
- 
- static ssize_t tablet_show(struct device *dev, struct device_attribute *attr,
-@@ -721,7 +721,7 @@ static ssize_t tablet_show(struct device *dev, struct device_attribute *attr,
- 
- 	if (value < 0)
- 		return value;
--	return sprintf(buf, "%d\n", value);
-+	return sysfs_emit(buf, "%d\n", value);
- }
- 
- static ssize_t postcode_show(struct device *dev, struct device_attribute *attr,
-@@ -732,7 +732,7 @@ static ssize_t postcode_show(struct device *dev, struct device_attribute *attr,
- 
- 	if (value < 0)
- 		return value;
--	return sprintf(buf, "0x%x\n", value);
-+	return sysfs_emit(buf, "0x%x\n", value);
- }
- 
- static ssize_t als_store(struct device *dev, struct device_attribute *attr,
+-#include <asm/alternative.h>
+ #include <asm/barrier.h>
+ #include <asm/ptrace.h>
+ #include <asm/sysreg.h>
 -- 
-2.25.1
+2.34.1
 
 
