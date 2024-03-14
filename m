@@ -1,296 +1,207 @@
-Return-Path: <linux-kernel+bounces-102876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2F187B7F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:28:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 355D687B7F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:29:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95113B203CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:28:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5916A1C21E8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BAD4FC05;
-	Thu, 14 Mar 2024 06:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E9A14A8D;
+	Thu, 14 Mar 2024 06:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UxAJg3a3"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fa0HQCZR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C04D27E;
-	Thu, 14 Mar 2024 06:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE4413FE0;
+	Thu, 14 Mar 2024 06:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710397681; cv=none; b=jz/hOO5+UFyK+iNWi4R9EUzxbiLuZ3pQLA+0brzYknFIv8nphiJIYsThX/lohlS8LvbOFFZ0YgDm86k+nMfl7QQoiOW203Y/LodLgPY2BIl2ZUzepPk47qp/qZxznTQzQkrElRp5k8wrs8XNGiEzDZGhJzJzHc23vWVEeFC9uEU=
+	t=1710397755; cv=none; b=oi9t/oN0aSIHyV4Q4wG2/vrNyq7pI9oBPvlXYjje2jbMkdJuseyHxTs4hs6tO9Cx1BXQAn+kl27MY942dtTxaPzzanJDuoVq/MZFrKPZ7ODCI9WOMBFFHDY0AwDzsH26nZoNpWuL+c128HzbWI6PFhNaMBWodFMTIW6Q566eW2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710397681; c=relaxed/simple;
-	bh=9PJKp5d07U4cqQ+doLFO1wV2FwDX/AFcq+h6mLuajhA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ik5ui+cXHlpMXwDYrvcJ97qBmaoNSjt7Hd8fEEwKAXU3dPJ7RkA5rB4UzfNyZBXNedBca7gAXuP1Sjyr6tNk4kv9nv5m7hCgCFkotRk2IMlGXcCRoc+4GL+lYSvT4Dou1aJ448uNSCLb832JBEc2gP5BkbtPGBduX5t62dJ5NDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UxAJg3a3; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a44f2d894b7so53194866b.1;
-        Wed, 13 Mar 2024 23:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710397676; x=1711002476; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Wy48BMq7k7tUA5PbAAKgjU/lgoVJFz6MN9TbVJQFsQM=;
-        b=UxAJg3a3Z+yT+HhNZCswgwLcX0lMVw/lOrUNh3ZZdeXorK0fIYY810Ti2siwbJb/x2
-         iQKD6YyHgbTXClQ7vpDG1py1frjvjmj1cn9L755waaoc5+8e1OiLbI3ppTDSnVyzjKpj
-         8jTK6JH8sxAH0qk0aWU47f2rUK1rZCoGLhtNvPDQMb5kR/DoR7cc3Ca3fbizS30nM90b
-         2jL4szJTzoLU7Qo2W3HIFTgGk7HrtUzWjqsdKEflBYzZ/kNVhyxc4ZZEluzHSDhgfSgs
-         9FSFHhJZZLB1s8aOrmFe1r4AtqDP1D5hE4hczL4IBB5AHm8ocTyz6QtBe96OFG2UZ2+D
-         weyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710397676; x=1711002476;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wy48BMq7k7tUA5PbAAKgjU/lgoVJFz6MN9TbVJQFsQM=;
-        b=oGF0xO9MUwF9x7XT86KBHYWcVeGVLRG2nWSS2pk0xJjoXMv8NTsXfViLmm7iRyWe6W
-         1nPu28XTXH7TAs/qJuza1nQyw56TniBZzZWHZobBKx5clPXFQbRDo4pa4wAV6vpSGYPw
-         aKGEA61xQOYYwh9Bv7h6NS7k+bQ/fi8bnMjNswX/rOWuKSvQoJHkjbvPubV5n7eu1vXH
-         7odE5kCNELPQlrryi3wQtvVFtT15EPx/jcNh2/35+lfh1do2knTz6RSqb2dUYphyoOBT
-         t+WvlVnPzcY8ahYcZs1oJX+eiDyWf/pyRYDvapi/nQSQO2WLsiYEePXZxSfootmLPgEt
-         DaSw==
-X-Forwarded-Encrypted: i=1; AJvYcCVS9QQXVZkbh6HjwVVx+tCiamGDoMwR3C50rjNo/jD4UJUvZ+fJAw1LJIMufTZdYRrceaQ2L2LCU71xOmgBkYSt/PXS1JOESxxatfca4/1UsmpB4FuoF3NDZuVUnov++Pjer/QCdKhPNSzfA/Yl+6sQzLisTm3CBDM8wQxBPJdFtcQKh5sxo65DzDftg21gxRVxzaNgsDqxOB5TF5Hl6Y3AkYINPFKceZyEd5p1xHi4OUhlcnhkzVnsmIx262h+5KlV6XGq9q5xeSgsN+RPkfJS/dQjgVI5cIvHnw==
-X-Gm-Message-State: AOJu0YyMhHEBNBmHbQxVeZX/yZ4CuzjY5UuYQfXbTfB2fHMvcJlJdMPz
-	3Y91Aw1uABMjgnAgA5Da48JScs492pEMjBwonp8f8tw/o6pLukBh
-X-Google-Smtp-Source: AGHT+IF0pnR3t8OP32CidAqcEwLWVf5pxREHuVK53gI8rH7KwaQf04P9Mb0+ZaiK2iVNQgj+ScQKXQ==
-X-Received: by 2002:a17:906:b899:b0:a3f:5ad2:1ff0 with SMTP id hb25-20020a170906b89900b00a3f5ad21ff0mr391041ejb.46.1710397675813;
-        Wed, 13 Mar 2024 23:27:55 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ld8-20020a170906f94800b00a46754900a4sm104587ejb.33.2024.03.13.23.27.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 23:27:55 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 14 Mar 2024 07:27:52 +0100
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: =?utf-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	linux-s390 <linux-s390@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
- to record and check the accessed args
-Message-ID: <ZfKY6E8xhSgzYL1I@krava>
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-2-dongmenglong.8@bytedance.com>
- <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
- <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
- <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
- <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
- <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
- <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
- <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
+	s=arc-20240116; t=1710397755; c=relaxed/simple;
+	bh=LetTxJcWQilZiAJb8Y1siIp9RZmyzzRYvYe9IgrPWqQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NA19KVe9gpI9mT0Gc4YfbDDvnYxKicvP7pTr0BVCApSmLUqeHSJmYeUGTGQ6Jt2iaZthJm4of4cLF9H8vEUpEHj46EhJxCFWAPH4SsRxBscyd4XmcLa8KvIQHQUyAZ+pas0WWIAAReyn4p1aiIOakCPQLg3CoB6pDgENqyHdgh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fa0HQCZR; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710397754; x=1741933754;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LetTxJcWQilZiAJb8Y1siIp9RZmyzzRYvYe9IgrPWqQ=;
+  b=fa0HQCZRbLGzGEemNnLtvO3I9w/NT/7Z8f+zvLVcrxzxBugJKGvbRBZN
+   uRU/auLjfsKGX76UpFA7uZlhFNbDPj7aKqFlVT/W8SZ8Wro3unCfVXWvr
+   EzjAj6HM98NhFsh5Ud4St/nTo6O6wWRdeGC5yMD/RJUeuSm6Goby+C+Je
+   jsoGA0yOIvMrQHTJ5L/zNt5oMD3jFUaq0Ytm8PL5EuYlgUUgvtVITi+ab
+   HADeAhF6J1KUzKtUEtO8OVBzIqhRfBwYUfghc2o5oTGBawzu+XjA2U0t4
+   UvykVQ5j+3YHd3B2YgdJIimF2UOHA0IQmJvYVFB4IcrjuYEwSAWGvOXEo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="5326201"
+X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
+   d="scan'208";a="5326201"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 23:29:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
+   d="scan'208";a="12582189"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 23:29:10 -0700
+Message-ID: <f4961c6d-aa67-4427-bcc7-17942b5f1a9b@linux.intel.com>
+Date: Thu, 14 Mar 2024 14:29:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
-
-On Wed, Mar 13, 2024 at 05:25:35PM -0700, Alexei Starovoitov wrote:
-> On Tue, Mar 12, 2024 at 6:53 PM 梦龙董 <dongmenglong.8@bytedance.com> wrote:
-> >
-> > On Wed, Mar 13, 2024 at 12:42 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Mar 11, 2024 at 7:42 PM 梦龙董 <dongmenglong.8@bytedance.com> wrote:
-> > > >
-> > [......]
-> > >
-> > > I see.
-> > > I thought you're sharing the trampoline across attachments.
-> > > (since bpf prog is the same).
-> >
-> > That seems to be a good idea, which I hadn't thought before.
-> >
-> > > But above approach cannot possibly work with a shared trampoline.
-> > > You need to create individual trampoline for all attachment
-> > > and point them to single bpf prog.
-> > >
-> > > tbh I'm less excited about this feature now, since sharing
-> > > the prog across different attachments is nice, but it won't scale
-> > > to thousands of attachments.
-> > > I assumed that there will be a single trampoline with max(argno)
-> > > across attachments and attach/detach will scale to thousands.
-> > >
-> > > With individual trampoline this will work for up to a hundred
-> > > attachments max.
-> >
-> > What does "a hundred attachments max" means? Can't I
-> > trace thousands of kernel functions with a bpf program of
-> > tracing multi-link?
-> 
-> I mean what time does it take to attach one program
-> to 100 fentry-s ?
-> What is the time for 1k and for 10k ?
-> 
-> The kprobe multi test attaches to pretty much all funcs in
-> /sys/kernel/tracing/available_filter_functions
-> and it's fast enough to run in test_progs on every commit in bpf CI.
-> See get_syms() in prog_tests/kprobe_multi_test.c
-> 
-> Can this new multi fentry do that?
-> and at what speed?
-> The answer will decide how applicable this api is going to be.
-> Generating different trampolines for every attach point
-> is an approach as well. Pls benchmark it too.
-> 
-> > >
-> > > Let's step back.
-> > > What is the exact use case you're trying to solve?
-> > > Not an artificial one as selftest in patch 9, but the real use case?
-> >
-> > I have a tool, which is used to diagnose network problems,
-> > and its name is "nettrace". It will trace many kernel functions, whose
-> > function args contain "skb", like this:
-> >
-> > ./nettrace -p icmp
-> > begin trace...
-> > ***************** ffff889be8fbd500,ffff889be8fbcd00 ***************
-> > [1272349.614564] [dev_gro_receive     ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614579] [__netif_receive_skb_core] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614585] [ip_rcv              ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614592] [ip_rcv_core         ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614599] [skb_clone           ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614616] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614629] [nft_do_chain        ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614635] [ip_rcv_finish       ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614643] [ip_route_input_slow ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614647] [fib_validate_source ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614652] [ip_local_deliver    ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614658] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614663] [ip_local_deliver_finish] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614666] [icmp_rcv            ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614671] [icmp_echo           ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614675] [icmp_reply          ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614715] [consume_skb         ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614722] [packet_rcv          ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> > [1272349.614725] [consume_skb         ] ICMP: 169.254.128.15 ->
-> > 172.27.0.6 ping request, seq: 48220
-> >
-> > For now, I have to create a bpf program for every kernel
-> > function that I want to trace, which is up to 200.
-> >
-> > With this multi-link, I only need to create 5 bpf program,
-> > like this:
-> >
-> > int BPF_PROG(trace_skb_1, struct *skb);
-> > int BPF_PROG(trace_skb_2, u64 arg0, struct *skb);
-> > int BPF_PROG(trace_skb_3, u64 arg0, u64 arg1, struct *skb);
-> > int BPF_PROG(trace_skb_4, u64 arg0, u64 arg1, u64 arg2, struct *skb);
-> > int BPF_PROG(trace_skb_5, u64 arg0, u64 arg1, u64 arg2, u64 arg3, struct *skb);
-> >
-> > Then, I can attach trace_skb_1 to all the kernel functions that
-> > I want to trace and whose first arg is skb; attach trace_skb_2 to kernel
-> > functions whose 2nd arg is skb, etc.
-> >
-> > Or, I can create only one bpf program and store the index
-> > of skb to the attachment cookie, and attach this program to all
-> > the kernel functions that I want to trace.
-> >
-> > This is my use case. With the multi-link, now I only have
-> > 1 bpf program, 1 bpf link, 200 trampolines, instead of 200
-> > bpf programs, 200 bpf link and 200 trampolines.
-> 
-> I see. The use case makes sense to me.
-> Andrii's retsnoop is used to do similar thing before kprobe multi was
-> introduced.
-> 
-> > The shared trampoline you mentioned seems to be a
-> > wonderful idea, which can make the 200 trampolines
-> > to one. Let me have a look, we create a trampoline and
-> > record the max args count of all the target functions, let's
-> > mark it as arg_count.
-> >
-> > During generating the trampoline, we assume that the
-> > function args count is arg_count. During attaching, we
-> > check the consistency of all the target functions, just like
-> > what we do now.
-> 
-> For one trampoline to handle all attach points we might
-> need some arch support, but we can start simple.
-> Make btf_func_model with MAX_BPF_FUNC_REG_ARGS
-> by calling btf_distill_func_proto() with func==NULL.
-> And use that to build a trampoline.
-> 
-> The challenge is how to use minimal number of trampolines
-> when bpf_progA is attached for func1, func2, func3
-> and bpf_progB is attached to func3, func4, func5.
-> We'd still need 3 trampolines:
-> for func[12] to call bpf_progA,
-> for func3 to call bpf_progA and bpf_progB,
-> for func[45] to call bpf_progB.
-> 
-> Jiri was trying to solve it in the past. His slides from LPC:
-> https://lpc.events/event/16/contributions/1350/attachments/1033/1983/plumbers.pdf
-> 
-> Pls study them and his prior patchsets to avoid stepping on the same rakes.
-
-yep, I refrained from commenting not to take you down the same path
-I did, but if you insist.. ;-) 
-
-I managed to forgot almost all of it, but the IIRC the main pain point
-was that at some point I had to split existing trampoline which caused
-the whole trampolines management and error paths to become a mess
-
-I tried to explain things in [1] changelog and the latest patchset is in [0]
-
-feel free to use/take anything, but I advice strongly against it ;-)
-please let me know if I can help
-
-jirka
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 025/130] KVM: TDX: Make TDX VM type supported
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <5159c2b6a23560e9d8252c1311dd91d328e58871.1708933498.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <5159c2b6a23560e9d8252c1311dd91d328e58871.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=bpf/batch
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=bpf/batch&id=52a1d4acdf55df41e99ca2cea51865e6821036ce
+
+On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> NOTE: This patch is in position of the patch series for developers to be
+> able to test codes during the middle of the patch series although this
+> patch series doesn't provide functional features until the all the patches
+> of this patch series.  When merging this patch series, this patch can be
+> moved to the end.
+
+Maybe at this point of time, you can consider to move this patch to the end?
+
+>
+> As first step TDX VM support, return that TDX VM type supported to device
+> model, e.g. qemu.  The callback to create guest TD is vm_init callback for
+> KVM_CREATE_VM.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/vmx/main.c    | 18 ++++++++++++++++--
+>   arch/x86/kvm/vmx/tdx.c     |  6 ++++++
+>   arch/x86/kvm/vmx/vmx.c     |  6 ------
+>   arch/x86/kvm/vmx/x86_ops.h |  3 ++-
+>   4 files changed, 24 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index e11edbd19e7c..fa19682b366c 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -10,6 +10,12 @@
+>   static bool enable_tdx __ro_after_init;
+>   module_param_named(tdx, enable_tdx, bool, 0444);
+>   
+> +static bool vt_is_vm_type_supported(unsigned long type)
+> +{
+> +	return __kvm_is_vm_type_supported(type) ||
+> +		(enable_tdx && tdx_is_vm_type_supported(type));
+> +}
+> +
+>   static __init int vt_hardware_setup(void)
+>   {
+>   	int ret;
+> @@ -26,6 +32,14 @@ static __init int vt_hardware_setup(void)
+>   	return 0;
+>   }
+>   
+> +static int vt_vm_init(struct kvm *kvm)
+> +{
+> +	if (is_td(kvm))
+> +		return -EOPNOTSUPP;	/* Not ready to create guest TD yet. */
+> +
+> +	return vmx_vm_init(kvm);
+> +}
+> +
+>   #define VMX_REQUIRED_APICV_INHIBITS				\
+>   	(BIT(APICV_INHIBIT_REASON_DISABLE)|			\
+>   	 BIT(APICV_INHIBIT_REASON_ABSENT) |			\
+> @@ -47,9 +61,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>   	.hardware_disable = vmx_hardware_disable,
+>   	.has_emulated_msr = vmx_has_emulated_msr,
+>   
+> -	.is_vm_type_supported = vmx_is_vm_type_supported,
+> +	.is_vm_type_supported = vt_is_vm_type_supported,
+>   	.vm_size = sizeof(struct kvm_vmx),
+> -	.vm_init = vmx_vm_init,
+> +	.vm_init = vt_vm_init,
+>   	.vm_destroy = vmx_vm_destroy,
+>   
+>   	.vcpu_precreate = vmx_vcpu_precreate,
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 14ef0ccd8f1a..a7e096fd8361 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -24,6 +24,12 @@ static int __init tdx_module_setup(void)
+>   	return 0;
+>   }
+>   
+> +bool tdx_is_vm_type_supported(unsigned long type)
+> +{
+> +	/* enable_tdx check is done by the caller. */
+> +	return type == KVM_X86_TDX_VM;
+> +}
+> +
+>   struct tdx_enabled {
+>   	cpumask_var_t enabled;
+>   	atomic_t err;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 2fb1cd2e28a2..d928acc15d0f 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7531,12 +7531,6 @@ int vmx_vcpu_create(struct kvm_vcpu *vcpu)
+>   	return err;
+>   }
+>   
+> -bool vmx_is_vm_type_supported(unsigned long type)
+> -{
+> -	/* TODO: Check if TDX is supported. */
+> -	return __kvm_is_vm_type_supported(type);
+> -}
+> -
+>   #define L1TF_MSG_SMT "L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.\n"
+>   #define L1TF_MSG_L1D "L1TF CPU bug present and virtualization mitigation disabled, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.\n"
+>   
+> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
+> index 346289a2a01c..f4da88a228d0 100644
+> --- a/arch/x86/kvm/vmx/x86_ops.h
+> +++ b/arch/x86/kvm/vmx/x86_ops.h
+> @@ -28,7 +28,6 @@ void vmx_hardware_unsetup(void);
+>   int vmx_check_processor_compat(void);
+>   int vmx_hardware_enable(void);
+>   void vmx_hardware_disable(void);
+> -bool vmx_is_vm_type_supported(unsigned long type);
+>   int vmx_vm_init(struct kvm *kvm);
+>   void vmx_vm_destroy(struct kvm *kvm);
+>   int vmx_vcpu_precreate(struct kvm *kvm);
+> @@ -137,8 +136,10 @@ void vmx_setup_mce(struct kvm_vcpu *vcpu);
+>   
+>   #ifdef CONFIG_INTEL_TDX_HOST
+>   int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
+> +bool tdx_is_vm_type_supported(unsigned long type);
+>   #else
+>   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
+> +static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
+>   #endif
+>   
+>   #endif /* __KVM_X86_VMX_X86_OPS_H */
+
 
