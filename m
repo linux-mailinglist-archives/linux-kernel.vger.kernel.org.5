@@ -1,253 +1,257 @@
-Return-Path: <linux-kernel+bounces-103428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF33487BF38
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:44:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F86987BF3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B320B2062C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:44:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0AC81F22296
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F93071724;
-	Thu, 14 Mar 2024 14:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7CB6FE1E;
+	Thu, 14 Mar 2024 14:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VM0/JHWK"
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ESTLBBcf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2675770CD0
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007A85D75A
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710427444; cv=none; b=W26wLUCH2hj4xgJ8fdVDoJ0yZJuNhoCJv6fQ+G2lc3i/zjz4sMaqo056uWaaWcaRF01SypoLuqo6zb4l5gxoBuiaY/0wdEWSSp/xBoeDM1J+n6dyJ3udFr3SN/JcIN5n/e+GD+sQpXIMpqK3geCpVnN4nTvqgyxknEexOoZbpEs=
+	t=1710427528; cv=none; b=tFIjMU3/c0UO0hOhrONuFP8SCXB0ZCwG+x/vZrOsFjxebHv+Kyky8BniOOYOPptuQsRt9C6kTCfqTRBjp8wfJMx4xO4OzBRqzkLZskwYg/5310AN1Nl96YmO3gMBZAWUdcgcPD1sNgL5boW8/Sokxa7v6ivW2aLBkjtkJtlElIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710427444; c=relaxed/simple;
-	bh=KaUZBuua3cHFQbB5Ar3/493ogtAjURGu62Zg++T1rT0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ePCTCBaYYkxNy00e8VVBGzg/tSYRQoDYDQ4vFi4WbeJmffv3Vhhn/zMv/2yWnWmiCvoPoENtIQZC5Husm/NMmkNyr0Y8JBvAWwgJPV+YXQ1ZhOXLeO0eKIdpD3sA6khjPWuw6mmXex/IusXNRvKCg18+VXB94hHDnitve6ITYdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VM0/JHWK; arc=none smtp.client-ip=209.85.217.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-4765c38fbc0so46435137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:44:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710427442; x=1711032242; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gZ0vhyV53szTb7w9jaKeRoeaQJrtq9vkjVfIvYSP66s=;
-        b=VM0/JHWKFsse4yFnhfn9re+/OB2NmIwD2a4pZdSrldOwFkLM4Vol9lU2JnB7PuUmCh
-         ygm/5o5HlFfg40J4lBTXoUxuNJ4D7ClQ0lSwsLmEB8lt/ls+Oklniscff9mbg914wstl
-         9tKplTQve+47F+UVAWIh6RGE2gaV/0dPELa+ENMZatpOxgYbvI1pwwBqG8OyEWMko4f/
-         wdeHDnNXqa2bzHnPwvtahDRAgRTxBTMP29Qh06yjx2wWM7qm3kMH0gcSZAD5lviDMrVL
-         GP6k4Jd9LYirceIDR6JxSJPvKfb3eNVhfO8imcsJ75UaieSvX0XNtMMULgLSg7ESq5Rj
-         gXhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710427442; x=1711032242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gZ0vhyV53szTb7w9jaKeRoeaQJrtq9vkjVfIvYSP66s=;
-        b=gxG1xD7oIqcnNiPJmSYEp3PSoXXeC77IY+c/I6Aw0pJZwMt3kV0TEWGWKBI9wib5CQ
-         XDPpFiRCH4f4Y68qqEUINSdu4ofCg8ISRoyLo08J6Ke0+3ZMEne43WAAJ1XHZ1Jw/nh7
-         ZlMDMvckdXkwmF/eMM3J62vZqH2CSk2+acKCyi9Yja+MWW3na+EcnCz95vGcZHRdoLTn
-         7AIMcq0YkuZKMZZqkItIpgOBKE+oUgQuCx9m5vpuAxJVGC7LGhdGtievxljJHV0nP2wS
-         D39WZ15l+xM0Nzvo1QxjM/2Xf3KbzL0NjHnyh4sBxjcYIdLe2zHjTPLBC9cHQaN7SNAY
-         d1Ew==
-X-Gm-Message-State: AOJu0Yy4Jqjf+xgDnwV9TJhKhGWQg//eolJgsQoYSox7shueYMvRpkmv
-	n+ozi3VC4Kuw6PGBcvERxd0Dpim4l7fr5sknS/zGetY1XAHn3kGvR223deXFRUIOqI5c7JPVRTT
-	GEdrCS+B4+unGwxhgLexN4WM6S9drHNk5Hk4jOg==
-X-Google-Smtp-Source: AGHT+IHrDEmKBBSZm1UaOFIh4tK9joSM+T4Gukm59QEKWw5UvFiuPJmEyQrdMHtQjI6fYkqOr8KrxPSvl9VQyRckVlY=
-X-Received: by 2002:a05:6102:21b2:b0:473:2686:3105 with SMTP id
- i18-20020a05610221b200b0047326863105mr2023283vsb.19.1710427441890; Thu, 14
- Mar 2024 07:44:01 -0700 (PDT)
+	s=arc-20240116; t=1710427528; c=relaxed/simple;
+	bh=jQBit6dGUGPRkGxYS3X4arSuwPg6sJP8CFGPWKBlQ18=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=e0ZYsIfeRPepN8B+/EPu5xZaei7yZELs3elETf7HQpj8nClkqTiZ7ixdqH4C19O5xykzyIvcSth8+Fkeuavuy3sato0XrdtD0+QPgdzE2wUYV5gBRfCCeLpfuP+TCpNw1JBEO54QQiL4CyljlOzlvHmC1Mo0hcb8ybFmG9EgxCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ESTLBBcf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C47CC433C7;
+	Thu, 14 Mar 2024 14:45:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710427527;
+	bh=jQBit6dGUGPRkGxYS3X4arSuwPg6sJP8CFGPWKBlQ18=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ESTLBBcfY1xPdEB5upO45T5ShJ3RCp5u4ILga34kD6UH0PXIMsWZBHBv5x+9u7wa6
+	 JT5DwQxllcONaa0R/vJS3bIVT2Ac0/pjTS5W8pdq8pfDvPEd20tYCVrBr+eywvdGX5
+	 0cdSPEekrOzgu1DPjiEAvrtOHwizhnjqjsp7OcvSbUDjiif7MkdQbA32vQikG3HLFc
+	 vunSQP3Al7KLc10Xu62qFplMnJQaj5EIVMAOHM3QFd5pqnirb5wzinurUxToNLeeP1
+	 17ogNaag+4lNG7M1Q75XWIauFRHv/oIqsyC16LupjugtqJMkYJGgpPDHUXLQ+Bzrxq
+	 i0daaoVPATcPQ==
+Date: Thu, 14 Mar 2024 14:45:23 +0000
+From: Lee Jones <lee@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Lee Jones <lee@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Pavel Machek <pavel@ucw.cz>
+Subject: [GIT PULL] LEDs for v6.9
+Message-ID: <20240314144523.GQ1522089@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313163957.615276-1-sashal@kernel.org>
-In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 14 Mar 2024 20:13:50 +0530
-Message-ID: <CA+G9fYuUWKU=T8DE7=v_h2GXBHnkfPArr5JSQnG_WonyCNWNxA@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/71] 6.1.82-rc1 review
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
-	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
-	pavel@denx.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-On Wed, 13 Mar 2024 at 22:10, Sasha Levin <sashal@kernel.org> wrote:
->
->
-> This is the start of the stable review cycle for the 6.1.82 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri Mar 15 04:39:56 PM UTC 2024.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git/patch/?id=3Dlinux-6.1.y&id2=3Dv6.1.81
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> Thanks,
-> Sasha
+Good afternoon Linus,
 
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+are available in the Git repository at:
 
-## Build
-* kernel: 6.1.82-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: 27d7d4053a11de9e6fbdbc6b6cc3f8f5937e4f2b
-* git describe: v6.1.81-71-g27d7d4053a11
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.8=
-1-71-g27d7d4053a11
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/lee/leds tags/leds-next-6.9
 
-## Test Regressions (compared to v6.1.81)
+for you to fetch changes up to 45066c4bbe8ca25f9f282245b84568116c783f1d:
 
-## Metric Regressions (compared to v6.1.81)
+  leds: ncp5623: Add MS suffix to time defines (2024-03-07 08:48:20 +0000)
 
-## Test Fixes (compared to v6.1.81)
+----------------------------------------------------------------
+ - Core Frameworks
+   - Introduce ExpressWire library
 
-## Metric Fixes (compared to v6.1.81)
+ - New Drivers
+   - Add support for ON Semiconductor NCP5623 RGB LED Driver
 
-## Test result summary
-total: 134217, pass: 114741, fail: 1989, skip: 17348, xfail: 139
+ - New Device Support
+   - Add support for PM660L to Qualcomm's LPG driver
 
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 139 total, 139 passed, 0 failed
-* arm64: 41 total, 41 passed, 0 failed
-* i386: 31 total, 31 passed, 0 failed
-* mips: 26 total, 26 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 34 passed, 2 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 16 total, 16 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 37 total, 36 passed, 1 failed
+ - New Functionality
+   - Dynamically load modules required for the default-trigger
+   - Add some support for suspend and resume
+   - Allow LEDs to remain lit during suspend
 
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
+ - Fix-ups
+   - Device Tree binding adaptions/conversions/creation
+   - Fix include lists; alphabetise, remove unused, explicitly add used
+   - Add new led_match_default_trigger to avoid duplication
+   - Add module alias' to aid auto-loading
+   - Default to hw_control if no others are specified
+   - De-bloat the supported link speed attribute lists
+   - Remove superfluous code and simplify overall
+   - Constify some variables
 
---
-Linaro LKFT
-https://lkft.linaro.org
+ - Bug Fixes
+   - Prevent kernel panic when renaming the net interface
+   - Fix Kconfig related build errors
+   - Ensure mutexes are unlocked prior to destroying them
+   - Provide clean-up between state changes to avoid invalid state
+   - Fix some broken kernel-doc headers
+
+----------------------------------------------------------------
+Abdel Alkuor (3):
+      dt-bindings: leds: Add NCP5623 multi-LED Controller
+      leds: Add NCP5623 multi-led driver
+      leds: ncp5623: Add MS suffix to time defines
+
+Amitesh Singh (1):
+      leds: pca963x: Add support for suspend and resume
+
+Andy Shevchenko (1):
+      leds: expresswire: Don't use "proxy" headers
+
+Anjelique Melendez (7):
+      dt-bindings: soc: qcom: Add qcom,pbs bindings
+      soc: qcom: add QCOM PBS driver
+      dt-bindings: leds: leds-qcom-lpg: Add support for LPG PPG
+      leds: rgb: leds-qcom-lpg: Add support for PPG through single SDAM
+      leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data to support PPG
+      leds: rgb: leds-qcom-lpg: Include support for PPG with dedicated LUT SDAM
+      leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
+
+Aren Moynihan (1):
+      leds: rgb: leds-group-multicolor: Allow LEDs to stay on in suspend
+
+Arnd Bergmann (5):
+      leds: ktd2692: Add GPIOLIB dependency
+      leds: Remove led_init_default_state_get() and devm_led_classdev_register_ext() stubs
+      leds: Make flash and multicolor dependencies unconditional
+      leds: qcom-lpg: Add QCOM_PBS dependency
+      leds: Fix ifdef check for gpio_led_register_device()
+
+Christian Marangi (3):
+      leds: trigger: netdev: Display only supported link speed attribute
+      docs: ABI: sysfs-class-led-trigger-netdev: Document now hidable link_*
+      leds: trigger: netdev: Fix kernel panic on interface rename trig notify
+
+Colin Ian King (1):
+      leds: aw200xx: Make read-only array coeff_table static const
+
+Duje Mihanović (7):
+      leds: Introduce ExpressWire library
+      leds: ktd2692: Convert to use ExpressWire library
+      dt-bindings: backlight: Add Kinetic KTD2801 binding
+      backlight: Add Kinetic KTD2801 Backlight support
+      backlight: ktd2801: Make timing struct static
+      Revert "leds: Only descend into leds directory when CONFIG_NEW_LEDS is set"
+      leds: expresswire: Don't depend on NEW_LEDS
+
+Florian Eckert (1):
+      Documentation: leds: Update led-trigger-tty ABI description
+
+George Stark (1):
+      leds: aw2013: Unlock mutex before destroying it
+
+Heiner Kallweit (9):
+      leds: trigger: netdev: Skip setting baseline state in activate if hw-controlled
+      leds: trigger: Load trigger modules on-demand if used as default trigger
+      leds: trigger: netdev: Add module alias ledtrig:netdev
+      leds: class: If no default trigger is given, make hw_control trigger the default trigger
+      leds: trigger: audio: Set module alias for module auto-loading
+      leds: triggers: default-on: Add module alias for module auto-loading
+      leds: trigger: panic: Simplify led_trigger_set_panic
+      leds: trigger: Stop exporting trigger_list
+      leds: triggers: Add helper led_match_default_trigger
+
+Krzysztof Kozlowski (2):
+      dt-bindings: leds: qcom-lpg: Drop redundant qcom,pm8550-pwm in if:then:
+      dt-bindings: leds: qcom-lpg: Narrow nvmem for other variants
+
+Lee Jones (1):
+      Merge branches 'ib-qcom-leds-6.9' and 'ib-leds-backlight-6.9' into ibs-for-leds-merged
+
+Marijn Suijten (1):
+      leds: qcom-lpg: Add PM660L configuration and compatible
+
+Ondrej Jirman (1):
+      leds: sgm3140: Add missing timer cleanup and flash gpio control
+
+Rafał Miłecki (2):
+      dt-bindings: leds: Add FUNCTION defines for per-band WLANs
+      dt-bindings: leds: Add LED_FUNCTION_WAN_ONLINE for Internet access
+
+Randy Dunlap (3):
+      leds: lm3601x: Fix struct lm3601_led kernel-doc warnings
+      leds: leds-mlxcpld: Fix struct mlxcpld_led_priv member name
+      leds: mlxreg: Drop an excess struct mlxreg_led_data member
+
+Stefan Kalscheuer (1):
+      leds: spi-byte: Use devm_led_classdev_register_ext()
+
+ .../ABI/testing/sysfs-class-led-trigger-netdev     |  12 +
+ .../ABI/testing/sysfs-class-led-trigger-tty        |  14 +-
+ .../bindings/leds/backlight/kinetic,ktd2801.yaml   |  46 +++
+ .../devicetree/bindings/leds/leds-qcom-lpg.yaml    | 102 +++++-
+ .../devicetree/bindings/leds/onnn,ncp5623.yaml     |  96 ++++++
+ .../devicetree/bindings/soc/qcom/qcom,pbs.yaml     |  46 +++
+ MAINTAINERS                                        |  13 +
+ drivers/Makefile                                   |   2 +-
+ drivers/leds/Kconfig                               |  14 +-
+ drivers/leds/Makefile                              |   3 +
+ drivers/leds/flash/Kconfig                         |   7 +-
+ drivers/leds/flash/leds-ktd2692.c                  | 116 ++-----
+ drivers/leds/flash/leds-lm3601x.c                  |   3 +-
+ drivers/leds/flash/leds-sgm3140.c                  |   3 +
+ drivers/leds/led-class.c                           |   6 +
+ drivers/leds/led-triggers.c                        |  38 ++-
+ drivers/leds/leds-aw200xx.c                        |   2 +-
+ drivers/leds/leds-aw2013.c                         |   1 +
+ drivers/leds/leds-expresswire.c                    |  72 ++++
+ drivers/leds/leds-mlxcpld.c                        |   2 +-
+ drivers/leds/leds-mlxreg.c                         |   1 -
+ drivers/leds/leds-pca963x.c                        |  28 ++
+ drivers/leds/leds-spi-byte.c                       |  11 +-
+ drivers/leds/leds.h                                |   1 -
+ drivers/leds/rgb/Kconfig                           |  12 +
+ drivers/leds/rgb/Makefile                          |   1 +
+ drivers/leds/rgb/leds-group-multicolor.c           |   8 +-
+ drivers/leds/rgb/leds-ncp5623.c                    | 271 +++++++++++++++
+ drivers/leds/rgb/leds-qcom-lpg.c                   | 366 +++++++++++++++++++--
+ drivers/leds/trigger/ledtrig-audio.c               |   2 +
+ drivers/leds/trigger/ledtrig-default-on.c          |   1 +
+ drivers/leds/trigger/ledtrig-netdev.c              | 102 +++++-
+ drivers/leds/trigger/ledtrig-panic.c               |  23 +-
+ drivers/soc/qcom/Kconfig                           |   9 +
+ drivers/soc/qcom/Makefile                          |   1 +
+ drivers/soc/qcom/qcom-pbs.c                        | 236 +++++++++++++
+ drivers/staging/greybus/Kconfig                    |   2 +-
+ drivers/staging/greybus/light.c                    |  21 --
+ drivers/video/backlight/Kconfig                    |   7 +
+ drivers/video/backlight/Makefile                   |   1 +
+ drivers/video/backlight/ktd2801-backlight.c        | 128 +++++++
+ include/dt-bindings/leds/common.h                  |   4 +
+ include/linux/led-class-flash.h                    |  24 --
+ include/linux/led-class-multicolor.h               |  29 --
+ include/linux/leds-expresswire.h                   |  38 +++
+ include/linux/leds.h                               |  21 +-
+ include/linux/soc/qcom/qcom-pbs.h                  |  30 ++
+ 47 files changed, 1697 insertions(+), 279 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
+ create mode 100644 Documentation/devicetree/bindings/leds/onnn,ncp5623.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
+ create mode 100644 drivers/leds/leds-expresswire.c
+ create mode 100644 drivers/leds/rgb/leds-ncp5623.c
+ create mode 100644 drivers/soc/qcom/qcom-pbs.c
+ create mode 100644 drivers/video/backlight/ktd2801-backlight.c
+ create mode 100644 include/linux/leds-expresswire.h
+ create mode 100644 include/linux/soc/qcom/qcom-pbs.h
+
+-- 
+Lee Jones [李琼斯]
 
