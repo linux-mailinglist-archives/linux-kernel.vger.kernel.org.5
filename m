@@ -1,245 +1,182 @@
-Return-Path: <linux-kernel+bounces-103131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA89687BB67
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F028887BB65
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1604282B7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:36:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABFDB284B00
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E836F07E;
-	Thu, 14 Mar 2024 10:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815BA6EB7A;
+	Thu, 14 Mar 2024 10:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="s4aPRkEn"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JdnhuirQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4cSqTFJ+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JdnhuirQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4cSqTFJ+"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27F06EB45;
-	Thu, 14 Mar 2024 10:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F9060ED0;
+	Thu, 14 Mar 2024 10:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710412553; cv=none; b=gCIzNqMtytKQ25B5ysHIsWBOMQ4IJgqT/2dUe6aqArzdkSEyEezADnLCqD5J5P90SfCCBamphDGlS82PBl6Gnt+hqf5a+HEnBBqX9uFYWLOv2ayJTI9e05C6vEA9U3B6WHCL9r/JThLSGe4YMcN7dKZH5wYIZM3zMt+oNXH1v3U=
+	t=1710412552; cv=none; b=ZiaAMjCd5JsdB7YNqxBdWnmOpJgsyEYWUHeKs19clwl5DQrw2TpDeCaleBUzdHpQw21AJZRm8xx+pd6/HAtR8uOurWujs9PSyQQjJ/w9Jr13U1DVRt6HtYoz4zXhYsc9IETjyvc6L7m0u6FIn05RMgzk50Tr0YjGPmkUiGmgLgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710412553; c=relaxed/simple;
-	bh=PAcMexfqwBWbLZd/LVY9KnzueSvjkoUiTVkXsqRNZvM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=phQEse3tueZu5idpAIR8BRD1DK97gloPA+A9A5ALeFacLaIaQMgqnqJsVlxPAYMyDQgaqhqaRal9XXu2FZlcHoZBX/ItpyXvUSwiaXKm5QQUq9IVOgjBZSjchFEMjDYxFkR4e6YkJerlDnfEbvP/QKA5rio+ddrEUwdkaPEuy98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=s4aPRkEn; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710412550;
-	bh=PAcMexfqwBWbLZd/LVY9KnzueSvjkoUiTVkXsqRNZvM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=s4aPRkEnoi0FIACES1g3GTlSgksGqTvqAD/tWr/IY2YO+y6MCcO4INqTGjn/27bTa
-	 oxrYzRPK5lAJrU69bwizZE7cF/fhWX/P8QbyYahyS20gK5XTqdJyirtDOy14PXCb6l
-	 zesuUDIVssdWiowwq6YM/BiIayU8G5pJRRXLtNO28Hvmlb8xGL5bUsL9UzkSyS3t2p
-	 C/nGyQUMzqNgXiD22swGkwixeWBV0ygdnd/dqz2T4bO/m/La2K54um6U1D+oysFvyJ
-	 oesf7JkBXB9qJ9qAgzIKGxrt+LsV3WrYao0VE+KSHZ0cYzckD2qn+FhYt/t8/7L6W2
-	 1MLh4CMY0baMQ==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	s=arc-20240116; t=1710412552; c=relaxed/simple;
+	bh=iVQmHZfRSgFp372oTb5qte+arj20Azd4hof81HMijXs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r+IochszdnbZfRIWMNznIyid5ekhx56irk9nMyN6Mnrg3zyCK0eMugIaY21yRkpotm/tuZKJZ8fsNTwAErlTkBjiVxN8NBAj4AUFgDCkKXz0ec67kDzqQ9B028Jtoxy6qElqJT/zssTayemqvgM0msURecwlGfo04ihyV/7KkIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JdnhuirQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4cSqTFJ+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JdnhuirQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4cSqTFJ+; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 23EEE37820F5;
-	Thu, 14 Mar 2024 10:35:49 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: linux-mediatek@lists.infradead.org
-Cc: robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	wenst@chromium.org,
-	jenneron@protonmail.com,
-	kernel@collabora.com
-Subject: [PATCH 2/2] arm64: mediatek: mt8195-cherry: Introduce the MT8195 Dojo Chromebook
-Date: Thu, 14 Mar 2024 11:35:00 +0100
-Message-ID: <20240314103500.93158-3-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240314103500.93158-1-angelogioacchino.delregno@collabora.com>
-References: <20240314103500.93158-1-angelogioacchino.delregno@collabora.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B33C11F844;
+	Thu, 14 Mar 2024 10:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710412548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+IbSwf0kLlVY+YSGAOOWzTXEUUs73aDovUc6HyI5Ht0=;
+	b=JdnhuirQrz06DyYXYlRHNT80qG53FDfvwEgjgor/f8Yowq3cham85um5vUJR0os1RFup4v
+	v+lPSA7yG2fGjEeKbIN3NIOytoTaJT/NPuZxJpWCbDCPCJa4zpw0IKHnadfG08XcmBusi1
+	t+lexVX5oFHnYeuICsd6ECfhUwTVxiQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710412548;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+IbSwf0kLlVY+YSGAOOWzTXEUUs73aDovUc6HyI5Ht0=;
+	b=4cSqTFJ+6nZERUOZLOn3wjZH9wJ/hNZq4N/WUWY5XANLs2frwKc14DsxrkAGhZdJTGRY9o
+	XM/UQGjgqAv3AfCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710412548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+IbSwf0kLlVY+YSGAOOWzTXEUUs73aDovUc6HyI5Ht0=;
+	b=JdnhuirQrz06DyYXYlRHNT80qG53FDfvwEgjgor/f8Yowq3cham85um5vUJR0os1RFup4v
+	v+lPSA7yG2fGjEeKbIN3NIOytoTaJT/NPuZxJpWCbDCPCJa4zpw0IKHnadfG08XcmBusi1
+	t+lexVX5oFHnYeuICsd6ECfhUwTVxiQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710412548;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+IbSwf0kLlVY+YSGAOOWzTXEUUs73aDovUc6HyI5Ht0=;
+	b=4cSqTFJ+6nZERUOZLOn3wjZH9wJ/hNZq4N/WUWY5XANLs2frwKc14DsxrkAGhZdJTGRY9o
+	XM/UQGjgqAv3AfCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A84E2139E7;
+	Thu, 14 Mar 2024 10:35:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id F1cVKQTT8mVFUQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 10:35:48 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 65702A07D9; Thu, 14 Mar 2024 11:35:44 +0100 (CET)
+Date: Thu, 14 Mar 2024 11:35:44 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v2 8/9] ext4: set the type of max_zeroout to unsigned int
+ to avoid overflow
+Message-ID: <20240314103544.s37lbhwrkhwx6l3j@quack3>
+References: <20240227091148.178435-1-libaokun1@huawei.com>
+ <20240227091148.178435-9-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227091148.178435-9-libaokun1@huawei.com>
+X-Spamd-Bar: +
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JdnhuirQ;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4cSqTFJ+
+X-Spamd-Result: default: False [1.46 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-0.23)[72.66%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,suse.cz:dkim,huawei.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,linux.ibm.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: 1.46
+X-Spam-Level: *
+X-Rspamd-Queue-Id: B33C11F844
+X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-Add a devicetree for the Cherry Dojo (HP Chromebook x360 13b-ca0002sa)
-convertible type machine.
+On Tue 27-02-24 17:11:47, Baokun Li wrote:
+> The max_zeroout is of type int and the s_extent_max_zeroout_kb is of
+> type uint, and the s_extent_max_zeroout_kb can be freely modified via
+> the sysfs interface. When the block size is 1024, max_zeroout may
+> overflow, so declare it as unsigned int to avoid overflow.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Differences with the already supported Tomato machines include:
- - Different speaker amplifiers (Dual MAX98380, one per channel)
- - I2C Touchscreen is on a different address (though still a HID device)
- - Has NVMe storage on the PCIe0 controller
- - Slightly different keyboard top row keymap
+Indeed. The patch looks good. Feel free to add:
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/boot/dts/mediatek/Makefile         |   1 +
- .../dts/mediatek/mt8195-cherry-dojo-r1.dts    | 114 ++++++++++++++++++
- .../boot/dts/mediatek/mt8195-cherry.dtsi      |   5 +
- 3 files changed, 120 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dts
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 37b4ca3a87c9..91853402e0da 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -69,6 +69,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r5-sku2.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-spherion-r0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-spherion-r4.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-evb.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-dojo-r1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-tomato-r1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-tomato-r2.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-tomato-r3.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dts
-new file mode 100644
-index 000000000000..b3f86179bfff
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dts
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2022 MediaTek Inc.
-+ */
-+/dts-v1/;
-+#include "mt8195-cherry.dtsi"
-+
-+/ {
-+	model = "HP Dojo (sku 1, 3, 5, 7) board";
-+	chassis-type = "convertible";
-+	compatible = "google,dojo-sku7", "google,dojo-sku5",
-+		     "google,dojo-sku3", "google,dojo-sku1",
-+		     "google,dojo", "mediatek,mt8195";
-+};
-+
-+&audio_codec {
-+	compatible = "realtek,rt5682s";
-+	realtek,amic-delay-ms = <250>;
-+};
-+
-+&i2c2 {
-+	spk_r_amp: amplifier@38 {
-+		compatible = "maxim,max98390";
-+		reg = <0x38>;
-+		reset-gpios = <&pio 100 GPIO_ACTIVE_LOW>;
-+		sound-name-prefix = "Right";
-+		#sound-dai-cells = <0>;
-+	};
-+
-+	spk_l_amp: amplifier@39 {
-+		compatible = "maxim,max98390";
-+		reg = <0x39>;
-+		sound-name-prefix = "Left";
-+		#sound-dai-cells = <0>;
-+	};
-+};
-+
-+&i2c4 {
-+	touchscreen@15 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x15>;
-+		hid-descr-addr = <0x0001>;
-+		interrupts-extended = <&pio 92 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&touchscreen_pins>;
-+		post-power-on-delay-ms = <10>;
-+		vdd-supply = <&pp3300_s3>;
-+	};
-+};
-+
-+&keyboard_controller {
-+	linux,keymap = <
-+		CROS_STD_MAIN_KEYMAP
-+
-+		MATRIX_KEY(0x00, 0x02, KEY_BACK)
-+		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
-+		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
-+		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
-+		MATRIX_KEY(0x03, 0x04, KEY_SYSRQ)
-+		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSDOWN)
-+		MATRIX_KEY(0x01, 0x04, KEY_BRIGHTNESSUP)
-+		MATRIX_KEY(0x02, 0x09, KEY_KBDILLUMTOGGLE)
-+		MATRIX_KEY(0x01, 0x09, KEY_PLAYPAUSE)
-+		MATRIX_KEY(0x00, 0x04, KEY_MICMUTE)
-+		MATRIX_KEY(0x00, 0x01, KEY_MUTE)
-+		MATRIX_KEY(0x01, 0x05, KEY_VOLUMEDOWN)
-+		MATRIX_KEY(0x03, 0x05, KEY_VOLUMEUP)
-+	>;
-+};
-+
-+&pcie0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pcie0_pins_default>;
-+	status = "okay";
-+};
-+
-+&pciephy {
-+	status = "okay";
-+};
-+
-+&pio_default {
-+	pins-low-power-hdmi-disable {
-+		pinmux = <PINMUX_GPIO31__FUNC_GPIO31>,
-+			 <PINMUX_GPIO32__FUNC_GPIO32>,
-+			 <PINMUX_GPIO33__FUNC_GPIO33>,
-+			 <PINMUX_GPIO34__FUNC_GPIO34>,
-+			 <PINMUX_GPIO35__FUNC_GPIO35>;
-+		input-enable;
-+		bias-pull-down;
-+	};
-+};
-+
-+&sound {
-+	compatible = "mediatek,mt8195_mt6359_max98390_rt5682";
-+	model = "m8195_m98390_5682s";
-+
-+	audio-routing =
-+		"Headphone", "HPOL",
-+		"Headphone", "HPOR",
-+		"IN1P", "Headset Mic",
-+		"Right Spk", "Right BE_OUT",
-+		"Left Spk", "Left BE_OUT";
-+
-+	spk-playback-dai-link {
-+		codec {
-+			sound-dai = <&spk_r_amp>, <&spk_l_amp>;
-+		};
-+	};
-+};
-+
-+&spk_amplifier {
-+	/* Disable RT1019P, not present on Dojo */
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-index 843771078794..86d283ffe807 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-@@ -1404,6 +1404,11 @@ MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
- 		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
- 		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
- 		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
-+
-+		/* T11 to T13 are present only on Dojo */
-+		MATRIX_KEY(0x00, 0x01, 0)	/* T11 */
-+		MATRIX_KEY(0x01, 0x05, 0)	/* T12 */
-+		MATRIX_KEY(0x03, 0x05, 0)	/* T13 */
- 	>;
- 
- 	linux,keymap = <
+								Honza
+
+> ---
+>  fs/ext4/extents.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index e57054bdc5fd..e067f2dd0335 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3402,9 +3402,10 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+>  	struct ext4_extent *ex, *abut_ex;
+>  	ext4_lblk_t ee_block, eof_block;
+>  	unsigned int ee_len, depth, map_len = map->m_len;
+> -	int allocated = 0, max_zeroout = 0;
+>  	int err = 0;
+>  	int split_flag = EXT4_EXT_DATA_VALID2;
+> +	int allocated = 0;
+> +	unsigned int max_zeroout = 0;
+>  
+>  	ext_debug(inode, "logical block %llu, max_blocks %u\n",
+>  		  (unsigned long long)map->m_lblk, map_len);
+> -- 
+> 2.31.1
+> 
 -- 
-2.44.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
