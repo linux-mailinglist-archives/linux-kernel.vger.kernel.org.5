@@ -1,475 +1,384 @@
-Return-Path: <linux-kernel+bounces-103719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12F4187C35F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:18:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EF6887C3A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B914B282E42
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:18:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7F322833AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA887580B;
-	Thu, 14 Mar 2024 19:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E197976C6A;
+	Thu, 14 Mar 2024 19:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T70JdNY4"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IgQZIuw7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE1274BED;
-	Thu, 14 Mar 2024 19:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27374757F9;
+	Thu, 14 Mar 2024 19:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710443898; cv=none; b=ePi5++tCshcGdBKR8LPisyL76m0Skqg6TIMSaG1oykxp9PdNeiBwhUdkDytnwe2nIHzzgOuVqwV0hy40PKPF8CESzGcTTsqw4M+txrrX5sFlq+m9x6Suo5PqfZoIqgIAxPoA4kEOYlTQb1Bf1Im2NjQ2sYRo9pyfcqrcXP0BBqQ=
+	t=1710444059; cv=none; b=mkjXZFPTL1Hc4QqeJC49Hiea/L8EQzHUVR01UzaCRFx3L5wzFVOgEyQ5v7DKtzA8ArfqMXia9/XzCPDQOcvVbi5JW/p5xzeScizH9fEKrEOrdcZZT3xDIL1TiGhVU4Smlsynbd/9KDH5VSk6+W84D2iOJKTJ1U2xSleqU7cZsKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710443898; c=relaxed/simple;
-	bh=CpbdFfegw5dLM8f8I3A4plsin3V1YClG2u4d9P9hpeM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=U5e/Tf3lAMd2xs513Err/gx2XuD57Hlc6Yloc8Ka5Hv1eEyErwkC/KVEo1Pp29PV5ZJhRWG8eill/O/vDQhoer2Hwi94aHkMPq3iHSMWYyGrx54uv8BmviUqeoQKGbzu9rSdy+5c52eOhEWuZv0MasgQmsI/mKm6i4B19irzkko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T70JdNY4; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512e4f4e463so1558817e87.1;
-        Thu, 14 Mar 2024 12:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710443895; x=1711048695; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HpNg02cIhm8koxG98iFwN9dy+0CNxfdd1E7AGL6M4N0=;
-        b=T70JdNY4vIzmdhTn7UiYQuK7uzUpfa9p0+ahK9awsEOgfji28GrkZPg0Gj0fHPmI8H
-         8GwPc1RwBn1fYgFQ909XGGcKDGIGEXldjNEXozge33opgsJDq6wEO+EEbJCXtEaxp3I7
-         qfJGCxLN9xedcyvpSSG81ZP8Qil+dQv8503/oVcGRgjUDibQamPLWHURj6fDaQt6ASmY
-         FcMB06p6iwnGYh5tsZ5xrri0SSbfmoqsSdpKcAF9AetC4K2FXX0zAOQ33YIo1JMTiTVZ
-         25AoyVxoUVqeJWmS0jR+lbITeulGUMDb+Fq2ByA5hIqGkoCxRBzQTbHoQdjYspAqeQMi
-         gAfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710443895; x=1711048695;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HpNg02cIhm8koxG98iFwN9dy+0CNxfdd1E7AGL6M4N0=;
-        b=F/5GaqCGeqUMNqjnCU9eH8dRCMznyp0M7sWrJM3w3UzdBCs++7ZTDDsfGgljqiDKMM
-         C8S7kc+pNuaBiy10kJ1dKaEzulEypBIBU0NhhXJx9nXDoSg3FafZ2MYmeg3sK7BHxXlB
-         Ws3BN4sZtQr+Sz4WyqYMFWWtkeMLeCHuMelaQiDPYC+N39aSs5rYmGvI/JmrJg0U4pMc
-         yxUzhl5q19nl3Ik2GPk+lisA7zBLvntjmcn44HD6mbNdSeS0Qkx1F6g2JOACCuaGx3vG
-         6lGpWz9U7FskL/+fubVYwesHMIpNEHhGEwRoBo6USXzk0DNZo4rK1ZCShfD38NG6CFAA
-         +g3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUikhDCjCYXNA0AWut+pDwt8NcV2Hq63l7kYheOUBwQmA9eNEsxxymENSHLgejk/+WdTs14JcxaLuOsZ99GOqEWNmlBHnXCU7UeWrTWbm+SLRassz/DWwnoPdSMqcEX5Hds14L454MRmw==
-X-Gm-Message-State: AOJu0YygEzh0VFBOMmNwbD5A4sTkXmwCmpJBrYRcwbfWKSka/CmmvwPg
-	HGxvULBR1v3N9DmGjjIZbqPhOFCR7p+UgeUv8C/X+uFxtzmkQCMH
-X-Google-Smtp-Source: AGHT+IFc6aloMTsh2ISBLTsjCt71++MriTrbDTOTaYvsFlBwDspWwYgqaPfgPJmyzSatiWotn3h94Q==
-X-Received: by 2002:ac2:4db7:0:b0:513:cc4f:52b8 with SMTP id h23-20020ac24db7000000b00513cc4f52b8mr2046150lfe.12.1710443894370;
-        Thu, 14 Mar 2024 12:18:14 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id l12-20020a1709066b8c00b00a4605a343ffsm965896ejr.21.2024.03.14.12.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 12:18:13 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: hitechshell@mail.ru
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ARM: dts: sun5i: Add PocketBook 614 Plus support
-Date: Thu, 14 Mar 2024 20:18:12 +0100
-Message-ID: <4203654.1IzOArtZ34@jernej-laptop>
-In-Reply-To: <20240314181858.2mhw62qfiie6mqg5@hitech>
-References:
- <20240314155306.11521-1-hitechshell@mail.ru>
- <2451572.jE0xQCEvom@jernej-laptop> <20240314181858.2mhw62qfiie6mqg5@hitech>
+	s=arc-20240116; t=1710444059; c=relaxed/simple;
+	bh=q0jqW80rMlkH7Gjc1NoHoHwIuo1AK4KE0S7RaQ0u9l0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ORX1NpaPa3XpjN6f6NOvOEBYS/YanLYg6JZSD1BJC3/7IR8b5FR6wuqN2gwEYlnmdklJJk2Co5KtVv1q0V/EHcIVfTIM0Q/jZOqohJwAFclVhGMCsHMG8VXITBIV1sb9QFqvQ1GPWL5c1w2iz/Xqmu8i3rk5TD42ntHUr0pomTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IgQZIuw7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ADFBCC43390;
+	Thu, 14 Mar 2024 19:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710444058;
+	bh=q0jqW80rMlkH7Gjc1NoHoHwIuo1AK4KE0S7RaQ0u9l0=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=IgQZIuw75KASuhxThQTAWnUbF+VuBV5lZs+pbVfa/O6lYjK5/0G9Lr7nqoO3H2Ozk
+	 jmsYW9CJJm2JGS2zKUmOqWPa1h2nAo2HVOuKZf1TPQ/wD83IOfs4FxN+V1I3rGiZHI
+	 AeHoJV/90lUB1/OHrYZ5An/nV53vvMXHuW4NaOvJi/aC89XNTMGjO/et35YKNll/rg
+	 x0x2b4vP6bPHwKpE9zyob9SShLov6EZIXIVuFqrfn+a6Ae1BBKgg2mQctwFIQ+bb+t
+	 itI2mOpKTAkQDjkh/7FGJBKjC7Ludlt/Rv6EJkNjDb0vvthwaDx89K96RzTVQmCXmM
+	 Wsoij9oNExvOw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 901D8C54E60;
+	Thu, 14 Mar 2024 19:20:58 +0000 (UTC)
+From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
+Subject: [PATCH 0/4] sysctl: Remove sentinel elements from networking
+Date: Thu, 14 Mar 2024 20:20:40 +0100
+Message-Id: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAhO82UC/x2M0QpAMBRAf0X32cpMil+RNNs1V4x2l0j+3fJ4O
+ p3zAGMgZGizBwKexLT7BDLPwMzaOxRkE0NZlFWhpBSLdoJvNnEdAm6McfAYhU1SS90oW4+Q2iP
+ gRNf/7fr3/QDb4fp4ZwAAAA==
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, 
+ Stefan Schmidt <stefan@datenfreihafen.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, 
+ Steffen Klassert <steffen.klassert@secunet.com>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, 
+ Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, 
+ Remi Denis-Courmont <courmisch@gmail.com>, 
+ Allison Henderson <allison.henderson@oracle.com>, 
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
+ Xin Long <lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
+ Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, 
+ Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
+ Trond Myklebust <trond.myklebust@hammerspace.com>, 
+ Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+ Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
+ Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+ Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, 
+ Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, 
+ Pablo Neira Ayuso <pablo@netfilter.org>, 
+ Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, 
+ Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
+ Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, 
+ Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, 
+ Kees Cook <keescook@chromium.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.linux.dev, 
+ linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, 
+ linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org, 
+ linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net, 
+ linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+ coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
+ Joel Granados <j.granados@samsung.com>
+X-Mailer: b4 0.13-dev-2d940
+X-Developer-Signature: v=1; a=openpgp-sha256; l=13626;
+ i=j.granados@samsung.com; h=from:subject:message-id;
+ bh=hH00GU1a2i6HnTxT1pllZZO38CA3VQjq1YU7KPoWsxI=;
+ b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBl804W8HhgMAjPsn6aV0VGSNd2m5erfUm7I3aAW
+ L96N2FH5seJAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZfNOFgAKCRC6l81St5ZB
+ T3wrDACE95aR0PSeBi8Av0Hhk47UPniVHSUFLYovrhnzT+M2J/8yA2syuPmoqTw3iWKfb9Rm7lI
+ z3i86OoseQEZ+XsPScv7T/c4r4UCqg+nIBR98ZNzY9GnOtKFglKEru2C06De4TZVeKrP6dFQuz/
+ 32s48caak1BK7EG8m2W7r/4XEZET78Q2G9z+PxTgfK7RDJynBs+W3cylSQenHsTzzw7wlDPLahS
+ KFwsmB8aLw5ikvwkbpXrofpzWajhxgsfAB3uxdKkGdR18m7B5v78pRhcX/iyiRh0SUyxYnc4oh6
+ dXnRzuyZub4WrBn/nbUBjENnMd3S8n5XdMSIze55bcZizyM/bPZ1BPn11e9h8FIpacXqZTic+9S
+ 2uKaqGHEF18hyD1A1uxy7tbOAOFFWGuUX3HFomIu5SWhPFPnobbtdaoDmpkAYg3XOcbHtPLKOF6
+ dmufKhVe11FReOXte/y7hJLGXCGddlV4hN6/P2g3oMPK9VKyPRxWa8XPbnLGtwlzAjTpU=
+X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
+ fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
+X-Endpoint-Received:
+ by B4 Relay for j.granados@samsung.com/default with auth_id=70
+X-Original-From: Joel Granados <j.granados@samsung.com>
+Reply-To: <j.granados@samsung.com>
 
-Dne =C4=8Detrtek, 14. marec 2024 ob 19:18:58 CET je hitechshell@mail.ru nap=
-isal(a):
-> On Thu, Mar 14, 2024 at 06:14:48PM +0100, Jernej =C5=A0krabec wrote:
-> > Hi Denis!
-> >=20
-> > Dne =C4=8Detrtek, 14. marec 2024 ob 16:53:06 CET je Denis Burkov napisa=
-l(a):
-> > > What works:
-> > >=20
-> > > - Serial console
-> > > - mmc0, mmc2 (both microSD card slots on the board)
-> > > - All buttons (gpio and lradc based)
-> > > - Power LED
-> > > - PMIC
-> > > - RTC
-> > > - USB OTG/gadgets mode
-> > >=20
-> > > Signed-off-by: Denis Burkov <hitechshell@mail.ru>
-> > > ---
-> > >  arch/arm/boot/dts/allwinner/Makefile          |   2 +
-> > >  .../sun5i-a13-pocketbook-614-plus.dts         | 254 ++++++++++++++++=
-++
-> > >  2 files changed, 256 insertions(+)
-> > >  create mode 100644 arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-=
-614-plus.dts
-> > >=20
-> > > diff --git a/arch/arm/boot/dts/allwinner/Makefile b/arch/arm/boot/dts=
-/allwinner/Makefile
-> > > index 2d26c3397f14..fe321865beed 100644
-> > > --- a/arch/arm/boot/dts/allwinner/Makefile
-> > > +++ b/arch/arm/boot/dts/allwinner/Makefile
-> > > @@ -61,6 +61,7 @@ dtb-$(CONFIG_MACH_SUN5I) +=3D \
-> > >  	sun5i-a13-olinuxino.dtb \
-> > >  	sun5i-a13-olinuxino-micro.dtb \
-> > >  	sun5i-a13-pocketbook-touch-lux-3.dtb \
-> > > +	sun5i-a13-pocketbook-614-plus.dtb \
-> > >  	sun5i-a13-q8-tablet.dtb \
-> > >  	sun5i-a13-utoo-p66.dtb \
-> > >  	sun5i-gr8-chip-pro.dtb \
-> > > @@ -82,6 +83,7 @@ dtb-$(CONFIG_MACH_SUN5I) +=3D \
-> > >  	sun5i-a13-olinuxino.dtb \
-> > >  	sun5i-a13-olinuxino-micro.dtb \
-> > >  	sun5i-a13-pocketbook-touch-lux-3.dtb \
-> > > +	sun5i-a13-pocketbook-614-plus.dtb \
-> > >  	sun5i-a13-q8-tablet.dtb \
-> > >  	sun5i-a13-utoo-p66.dtb \
-> > >  	sun5i-gr8-chip-pro.dtb \
-> >=20
-> > This merge artefact. Can you add patch before this one and remove dupli=
-cate definitions?
-> >=20
-> Sorry, I didn't quite understand. Should I remove the duplicate block in =
-a separate commit? or enable this one?
+From: Joel Granados <j.granados@samsung.com>
 
-Yes, remove block in a separate patch, which should be positioned before th=
-is one.
+What?
+These commits remove the sentinel element (last empty element) from the
+sysctl arrays of all the files under the "net/" directory that register
+a sysctl array. The merging of the preparation patches [4] to mainline
+allows us to just remove sentinel elements without changing behavior.
+This is safe because the sysctl registration code (register_sysctl() and
+friends) use the array size in addition to checking for a sentinel [1].
 
-> > > diff --git a/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plu=
-s.dts b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-> > > new file mode 100644
-> > > index 000000000000..89898fa16ff7
-> > > --- /dev/null
-> > > +++ b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-> > > @@ -0,0 +1,254 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +/*
-> > > + * Copyright 2024 Denis Burkov <hitechshell@mail.ru>
-> > > + */
-> > > +
-> > > +/dts-v1/;
-> > > +#include "sun5i-a13.dtsi"
-> > > +#include "sunxi-common-regulators.dtsi"
-> >=20
-> > Extra empty line here.
-> >=20
-> > > +#include <dt-bindings/gpio/gpio.h>
-> > > +#include <dt-bindings/input/input.h>
-> > > +#include <dt-bindings/interrupt-controller/irq.h>
-> > > +
-> > > +/ {
-> > > +	model =3D "PocketBook 614 Plus";
-> > > +	compatible =3D "pocketbook,614-plus", "allwinner,sun5i-a13";
-> > > +
-> > > +	aliases {
-> > > +		serial0 =3D &uart1;
-> > > +		i2c0 =3D &i2c0;
-> > > +		i2c1 =3D &i2c1;
-> > > +		i2c2 =3D &i2c2;
-> > > +		rtc0 =3D &pcf8563;
-> >=20
-> > Please drop aliases except serial0.
-> >=20
-> > > +	};
-> > > +
-> > > +	chosen {
-> > > +		stdout-path =3D "serial0:115200n8";
-> > > +	};
-> > > +
-> > > +	leds {
-> > > +		compatible =3D "gpio-leds";
-> > > +		pinctrl-names =3D "default";
-> > > +		pinctrl-0 =3D <&led_pins_pocketbook>;
-> >=20
-> > Drop pinctrl nodes. GPIOs don't need them.
-> >=20
-> > > +
-> > > +		led {
-> > > +			gpios =3D <&pio 4 8 GPIO_ACTIVE_LOW>; /* PE8 */
-> > > +			default-state =3D "on";
-> >=20
-> > Add additional properties, like function and color.
-> >=20
-> > > +		};
-> > > +	};
-> > > +
-> > > +	gpio-keys {
-> > > +		compatible =3D "gpio-keys";
-> > > +		autorepeat;
-> >=20
-> > Why is autorepeat needed?
-> >=20
-> > > +		label =3D "GPIO Keys";
-> >=20
-> > I guess label is self evident and not needed?
-> >=20
-> > > +		pinctrl-names =3D "default";
-> > > +		pinctrl-0 =3D <&pocketbook_btn_pins>;
-> >=20
-> > Again, GPIOs don't need pinctrl nodes. I know that you specified pull u=
-p, but
-> > please try without. Other boards have same design and it's not needed.
-> >=20
-> > > +
-> > > +		key-right {
-> > > +			label =3D "Right";
-> > > +			linux,code =3D <KEY_NEXT>;
-> > > +			gpios =3D <&pio 6 9 GPIO_ACTIVE_LOW>; /* PG9 */
-> > > +		};
-> > > +
-> > > +		key-left {
-> > > +			label =3D "Left";
-> > > +			linux,code =3D <KEY_PREVIOUS>;
-> > > +			gpios =3D <&pio 6 10 GPIO_ACTIVE_LOW>; /* PG10 */
-> > > +		};
-> > > +	};
-> > > +
-> > > +	reg_3v3_mmc0: regulator-mmc0 {
-> > > +		compatible =3D "regulator-fixed";
-> > > +		regulator-name =3D "vdd-mmc0";
-> > > +		regulator-min-microvolt =3D <3300000>;
-> > > +		regulator-max-microvolt =3D <3300000>;
-> > > +		pinctrl-names =3D "default";
-> > > +		pinctrl-0 =3D <&pocketbook_reg_mmc0_pins>;
-> >=20
-> > again, pinctrl not needed.
-> >=20
-> > > +		gpio =3D <&pio 4 4 GPIO_ACTIVE_LOW>; /* PE4 */
-> > > +		vin-supply =3D <&reg_vcc3v3>;
-> > > +	};
-> > > +};
-> > > +
-> > > +&cpu0 {
-> > > +	cpu-supply =3D <&reg_dcdc2>;
-> > > +};
-> > > +
-> > > +&ehci0 {
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&i2c0 {
-> > > +	status =3D "okay";
-> > > +
-> > > +	axp209: pmic@34 {
-> > > +		compatible =3D "x-powers,axp209";
-> > > +		reg =3D <0x34>;
-> > > +		interrupts =3D <0>;
-> > > +	};
-> > > +};
-> > > +
-> > > +#include "axp209.dtsi"
-> > > +
-> > > +&i2c1 {
-> > > +	status =3D "okay";
-> > > +
-> > > +	pcf8563: rtc@51 {
-> > > +		compatible =3D "nxp,pcf8563";
-> > > +		reg =3D <0x51>;
-> > > +		#clock-cells =3D <0>;
-> > > +	};
-> > > +};
-> > > +
-> > > +&i2c2 {
-> > > +	status =3D "okay";
-> > > +
-> > > +	/* Touchpanel is connected here. */
-> >=20
-> > Any reason why don't you specify touch panel device here?
-> >=20
-> My mistake, I copied this node from another device. This device does not =
-have a touchpanel at all.
-> > > +};
-> > > +
-> > > +&lradc {
-> > > +	vref-supply =3D <&reg_ldo2>;
-> > > +	status =3D "okay";
-> > > +
-> > > +	button-300 {
-> > > +		label =3D "Down";
-> > > +		linux,code =3D <KEY_DOWN>;
-> > > +		channel =3D <0>;
-> > > +		voltage =3D <300000>;
-> > > +	};
-> > > +
-> > > +	button-700 {
-> > > +		label =3D "Up";
-> > > +		linux,code =3D <KEY_UP>;
-> > > +		channel =3D <0>;
-> > > +		voltage =3D <700000>;
-> > > +	};
-> > > +
-> > > +	button-1000 {
-> > > +		label =3D "Left";
-> > > +		linux,code =3D <KEY_LEFT>;
-> > > +		channel =3D <0>;
-> > > +		voltage =3D <1000000>;
-> > > +	};
-> > > +
-> > > +	button-1200 {
-> > > +		label =3D "Menu";
-> > > +		linux,code =3D <KEY_MENU>;
-> > > +		channel =3D <0>;
-> > > +		voltage =3D <1200000>;
-> > > +	};
-> > > +
-> > > +	button-1500 {
-> > > +		label =3D "Right";
-> > > +		linux,code =3D <KEY_RIGHT>;
-> > > +		channel =3D <0>;
-> > > +		voltage =3D <1500000>;
-> > > +	};
-> > > +};
-> > > +
-> > > +&mmc0 {
-> > > +	vmmc-supply =3D <&reg_3v3_mmc0>;
-> > > +	bus-width =3D <4>;
-> > > +	cd-gpios =3D <&pio 6 0 GPIO_ACTIVE_LOW>; /* PG0 */
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&mmc2 {
-> > > +	pinctrl-names =3D "default";
-> > > +	pinctrl-0 =3D <&mmc2_4bit_pc_pins>;
-> > > +	vmmc-supply =3D <&reg_vcc3v3>;
-> > > +	bus-width =3D <4>;
-> > > +	non-removable;
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&ohci0 {
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&otg_sram {
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&pio {
-> > > +	led_pins_pocketbook: led-pin {
-> > > +		pins =3D "PE8";
-> > > +		function =3D "gpio_out";
-> > > +	};
-> > > +	pocketbook_btn_pins: btn-pins {
-> > > +		pins =3D "PG9", "PG10";
-> > > +		function =3D "gpio_in";
-> > > +		bias-pull-up;
-> > > +	};
-> > > +	pocketbook_reg_mmc0_pins: reg-mmc0-pins {
-> > > +		pins =3D "PE4";
-> > > +		function =3D "gpio_out";
-> > > +	};
-> > > +};
-> >=20
-> > Whole PIO node can be dropped.
-> >=20
-> > Best regards,
-> > Jernej
-> >=20
-> > > +
-> > > +&reg_dcdc2 {
-> > > +	regulator-always-on;
-> > > +	regulator-min-microvolt =3D <1000000>;
-> > > +	regulator-max-microvolt =3D <1500000>;
-> > > +	regulator-name =3D "vdd-cpu";
-> > > +};
-> > > +
-> > > +&reg_dcdc3 {
-> > > +	regulator-always-on;
-> > > +	regulator-min-microvolt =3D <1000000>;
-> > > +	regulator-max-microvolt =3D <1400000>;
-> > > +	regulator-name =3D "vdd-int-dll";
-> > > +};
-> > > +
-> > > +&reg_ldo1 {
-> > > +	regulator-name =3D "vdd-rtc";
-> > > +};
-> > > +
-> > > +&reg_ldo2 {
-> > > +	regulator-always-on;
-> > > +	regulator-min-microvolt =3D <3000000>;
-> > > +	regulator-max-microvolt =3D <3000000>;
-> > > +	regulator-name =3D "avcc";
-> > > +};
-> > > +
-> > > +&reg_ldo3 {
-> > > +	regulator-min-microvolt =3D <3300000>;
-> > > +	regulator-max-microvolt =3D <3300000>;
-> > > +	regulator-name =3D "vcc-wifi";
-> > > +};
-> > > +
-> > > +&reg_usb0_vbus {
-> > > +	status =3D "okay";
-> > > +	gpio =3D <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
-> > > +};
-> > > +
-> > > +&reg_usb1_vbus {
-> > > +	gpio =3D <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&uart1 {
-> > > +	pinctrl-names =3D "default";
-> > > +	pinctrl-0 =3D <&uart1_pg_pins>;
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&usb_otg {
-> > > +	dr_mode =3D "otg";
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&usb_power_supply {
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&battery_power_supply {
-> > > +	status =3D "okay";
-> > > +};
-> > > +
-> > > +&usbphy {
-> > > +	usb0_id_det-gpios =3D <&pio 6 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;=
- /* PG2 */
+Why?
+By removing the sysctl sentinel elements we avoid kernel bloat as
+ctl_table arrays get moved out of kernel/sysctl.c into their own
+respective subsystems. This move was started long ago to avoid merge
+conflicts; the sentinel removal bit came after Mathew Wilcox suggested
+it to avoid bloating the kernel by one element as arrays moved out. This
+patchset will reduce the overall build time size of the kernel and run
+time memory bloat by about ~64 bytes per declared ctl_table array (more
+info here [5]).
 
-I missed this before, but is pull up property really needed? It doesn't make
-much sense.
+When are we done?
+There are 4 patchest (25 commits [2]) that are still outstanding to
+completely remove the sentinels: files under "net/" (this patchset),
+files under "kernel/" dir, misc dirs (files under mm/ security/ and
+others) and the final set that removes the unneeded check for ->procname
+== NULL.
 
-> > > +	usb0_vbus_det-gpios =3D <&axp_gpio 1 GPIO_ACTIVE_HIGH>;
-> > > +	usb0_vbus-supply =3D <&reg_usb0_vbus>;
-> > > +	usb1_vbus-supply =3D <&reg_usb1_vbus>;
-> > > +	status =3D "okay";
-> > > +};
-> > >=20
-> >=20
-> >=20
-> >=20
-> >=20
-> Yes, everything works without pincrtl. One guy told me that I need to spe=
-cify pinctrl for each pin used.
+Testing:
+* Ran sysctl selftests (./tools/testing/selftests/sysctl/sysctl.sh)
+* Ran this through 0-day with no errors or warnings
 
-pinctrl node is only needed when multiplexed pin is used for something else=
- than GPIO.
+Savings in vmlinux:
+  A total of 64 bytes per sentinel is saved after removal; I measured in
+  x86_64 to give an idea of the aggregated savings. The actual savings
+  will depend on individual kernel configuration.
+    * bloat-o-meter
+        - The "yesall" config saves 3976 bytes (bloat-o-meter output [6])
+        - A reduced config [3] saves 1263 bytes (bloat-o-meter output [7])
+
+Savings in allocated memory:
+  None in this set but will occur when the superfluous allocations are
+  removed from proc_sysctl.c. I include it here for context. The
+  estimated savings during boot for config [3] are 6272 bytes. See [8]
+  for how to measure it.
+
+Comments/feedback greatly appreciated
+
+Best
+Joel
+
+[1] https://lore.kernel.org/all/20230809105006.1198165-1-j.granados@samsung.com/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux.git/tag/?h=sysctl_remove_empty_elem_v5
+[3] https://gist.github.com/Joelgranados/feaca7af5537156ca9b73aeaec093171
+[4] https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/
+
+[5]
+Links Related to the ctl_table sentinel removal:
+* Good summaries from Luis:
+  https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/
+  https://lore.kernel.org/all/ZMFizKFkVxUFtSqa@bombadil.infradead.org/
+* Patches adjusting sysctl register calls:
+  https://lore.kernel.org/all/20230302204612.782387-1-mcgrof@kernel.org/
+  https://lore.kernel.org/all/20230302202826.776286-1-mcgrof@kernel.org/
+* Discussions about expectations and approach
+  https://lore.kernel.org/all/20230321130908.6972-1-frank.li@vivo.com
+  https://lore.kernel.org/all/20220220060626.15885-1-tangmeng@uniontech.com
+
+[6]
+add/remove: 0/1 grow/shrink: 2/67 up/down: 76/-4052 (-3976)
+Function                                     old     new   delta
+llc_sysctl_init                              306     377     +71
+nf_log_net_init                              866     871      +5
+sysctl_core_net_init                         375     366      -9
+lowpan_frags_init_net                        618     598     -20
+ip_vs_control_net_init_sysctl               2446    2422     -24
+sysctl_route_net_init                        521     493     -28
+__addrconf_sysctl_register                   678     650     -28
+xfrm_sysctl_init                             405     374     -31
+mpls_net_init                                367     334     -33
+sctp_sysctl_net_register                     386     346     -40
+__ip_vs_lblcr_init                           546     501     -45
+__ip_vs_lblc_init                            546     501     -45
+neigh_sysctl_register                       1011     958     -53
+mpls_dev_sysctl_register                     475     419     -56
+ipv6_route_sysctl_init                       450     394     -56
+xs_tunables_table                            448     384     -64
+xr_tunables_table                            448     384     -64
+xfrm_table                                   320     256     -64
+xfrm6_policy_table                           128      64     -64
+xfrm4_policy_table                           128      64     -64
+x25_table                                    448     384     -64
+vs_vars                                     1984    1920     -64
+unix_table                                   128      64     -64
+tipc_table                                   448     384     -64
+svcrdma_parm_table                           832     768     -64
+smc_table                                    512     448     -64
+sctp_table                                   256     192     -64
+sctp_net_table                              2304    2240     -64
+rxrpc_sysctl_table                           704     640     -64
+rose_table                                   704     640     -64
+rds_tcp_sysctl_table                         192     128     -64
+rds_sysctl_rds_table                         384     320     -64
+rds_ib_sysctl_table                          384     320     -64
+phonet_table                                 128      64     -64
+nr_table                                     832     768     -64
+nf_log_sysctl_table                          768     704     -64
+nf_log_sysctl_ftable                         128      64     -64
+nf_ct_sysctl_table                          3200    3136     -64
+nf_ct_netfilter_table                        128      64     -64
+nf_ct_frag6_sysctl_table                     256     192     -64
+netns_core_table                             320     256     -64
+net_core_table                              2176    2112     -64
+neigh_sysctl_template                       1416    1352     -64
+mptcp_sysctl_table                           576     512     -64
+mpls_dev_table                               128      64     -64
+lowpan_frags_ns_ctl_table                    256     192     -64
+lowpan_frags_ctl_table                       128      64     -64
+llc_station_table                             64       -     -64
+llc2_timeout_table                           320     256     -64
+ipv6_table_template                         1344    1280     -64
+ipv6_route_table_template                    768     704     -64
+ipv6_rotable                                 320     256     -64
+ipv6_icmp_table_template                     448     384     -64
+ipv4_table                                  1024     960     -64
+ipv4_route_table                             832     768     -64
+ipv4_route_netns_table                       320     256     -64
+ipv4_net_table                              7552    7488     -64
+ip6_frags_ns_ctl_table                       256     192     -64
+ip6_frags_ctl_table                          128      64     -64
+ip4_frags_ns_ctl_table                       320     256     -64
+ip4_frags_ctl_table                          128      64     -64
+devinet_sysctl                              2184    2120     -64
+debug_table                                  384     320     -64
+dccp_default_table                           576     512     -64
+ctl_forward_entry                            128      64     -64
+brnf_table                                   448     384     -64
+ax25_param_table                             960     896     -64
+atalk_table                                  320     256     -64
+addrconf_sysctl                             3904    3840     -64
+vs_vars_table                                256     128    -128
+Total: Before=440631035, After=440627059, chg -0.00%
+
+[7]
+add/remove: 0/0 grow/shrink: 1/22 up/down: 8/-1263 (-1255)
+Function                                     old     new   delta
+sysctl_route_net_init                        189     197      +8
+__addrconf_sysctl_register                   306     294     -12
+ipv6_route_sysctl_init                       201     185     -16
+neigh_sysctl_register                        385     366     -19
+unix_table                                   128      64     -64
+netns_core_table                             256     192     -64
+net_core_table                              1664    1600     -64
+neigh_sysctl_template                       1416    1352     -64
+ipv6_table_template                         1344    1280     -64
+ipv6_route_table_template                    768     704     -64
+ipv6_rotable                                 192     128     -64
+ipv6_icmp_table_template                     448     384     -64
+ipv4_table                                   768     704     -64
+ipv4_route_table                             832     768     -64
+ipv4_route_netns_table                       320     256     -64
+ipv4_net_table                              7040    6976     -64
+ip6_frags_ns_ctl_table                       256     192     -64
+ip6_frags_ctl_table                          128      64     -64
+ip4_frags_ns_ctl_table                       320     256     -64
+ip4_frags_ctl_table                          128      64     -64
+devinet_sysctl                              2184    2120     -64
+ctl_forward_entry                            128      64     -64
+addrconf_sysctl                             3392    3328     -64
+Total: Before=8523801, After=8522546, chg -0.01%
+
+[8]
+To measure the in memory savings apply this on top of this patchset.
+
+"
+diff --git i/fs/proc/proc_sysctl.c w/fs/proc/proc_sysctl.c
+index 37cde0efee57..896c498600e8 100644
+--- i/fs/proc/proc_sysctl.c
++++ w/fs/proc/proc_sysctl.c
+@@ -966,6 +966,7 @@ static struct ctl_dir *new_dir(struct ctl_table_set *set,
+        table[0].procname = new_name;
+        table[0].mode = S_IFDIR|S_IRUGO|S_IXUGO;
+        init_header(&new->header, set->dir.header.root, set, node, table, 1);
++       printk("%ld sysctl saved mem kzalloc\n", sizeof(struct ctl_table));
+
+        return new;
+ }
+@@ -1189,6 +1190,7 @@ static struct ctl_table_header *new_links(struct ctl_dir *dir, s>
+                link_name += len;
+                link++;
+        }
++       printk("%ld sysctl saved mem kzalloc\n", sizeof(struct ctl_table));
+        init_header(links, dir->header.root, dir->header.set, node, link_table,
+                    head->ctl_table_size);
+        links->nreg = nr_entries;
+"
+and then run the following bash script in the kernel:
+
+accum=0
+for n in $(dmesg | grep kzalloc | awk '{print $3}') ; do
+    accum=$(calc "$accum + $n")
+done
+echo $accum
+
+Signed-off-by: Joel Granados <j.granados@samsung.com>
+
+--
+
+---
+Joel Granados (4):
+      networking: Remove the now superfluous sentinel elements from ctl_table array
+      netfilter: Remove the now superfluous sentinel elements from ctl_table array
+      appletalk: Remove the now superfluous sentinel elements from ctl_table array
+      ax.25: Remove the now superfluous sentinel elements from ctl_table array
+
+ net/appletalk/sysctl_net_atalk.c        | 1 -
+ net/ax25/sysctl_net_ax25.c              | 5 ++---
+ net/bridge/br_netfilter_hooks.c         | 1 -
+ net/core/neighbour.c                    | 5 +----
+ net/core/sysctl_net_core.c              | 9 ++++-----
+ net/dccp/sysctl.c                       | 2 --
+ net/ieee802154/6lowpan/reassembly.c     | 6 +-----
+ net/ipv4/devinet.c                      | 5 ++---
+ net/ipv4/ip_fragment.c                  | 2 --
+ net/ipv4/route.c                        | 8 ++------
+ net/ipv4/sysctl_net_ipv4.c              | 7 +++----
+ net/ipv4/xfrm4_policy.c                 | 1 -
+ net/ipv6/addrconf.c                     | 5 +----
+ net/ipv6/icmp.c                         | 1 -
+ net/ipv6/netfilter/nf_conntrack_reasm.c | 1 -
+ net/ipv6/reassembly.c                   | 2 --
+ net/ipv6/route.c                        | 5 -----
+ net/ipv6/sysctl_net_ipv6.c              | 4 +---
+ net/ipv6/xfrm6_policy.c                 | 1 -
+ net/llc/sysctl_net_llc.c                | 8 ++------
+ net/mpls/af_mpls.c                      | 3 +--
+ net/mptcp/ctrl.c                        | 1 -
+ net/netfilter/ipvs/ip_vs_ctl.c          | 5 +----
+ net/netfilter/ipvs/ip_vs_lblc.c         | 5 +----
+ net/netfilter/ipvs/ip_vs_lblcr.c        | 5 +----
+ net/netfilter/nf_conntrack_standalone.c | 6 +-----
+ net/netfilter/nf_log.c                  | 3 +--
+ net/netrom/sysctl_net_netrom.c          | 1 -
+ net/phonet/sysctl.c                     | 1 -
+ net/rds/ib_sysctl.c                     | 1 -
+ net/rds/sysctl.c                        | 1 -
+ net/rds/tcp.c                           | 1 -
+ net/rose/sysctl_net_rose.c              | 1 -
+ net/rxrpc/sysctl.c                      | 1 -
+ net/sctp/sysctl.c                       | 6 +-----
+ net/smc/smc_sysctl.c                    | 1 -
+ net/sunrpc/sysctl.c                     | 1 -
+ net/sunrpc/xprtrdma/svc_rdma.c          | 1 -
+ net/sunrpc/xprtrdma/transport.c         | 1 -
+ net/sunrpc/xprtsock.c                   | 1 -
+ net/tipc/sysctl.c                       | 1 -
+ net/unix/sysctl_net_unix.c              | 1 -
+ net/x25/sysctl_net_x25.c                | 1 -
+ net/xfrm/xfrm_sysctl.c                  | 5 +----
+ 44 files changed, 27 insertions(+), 106 deletions(-)
+---
+base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+change-id: 20240311-jag-sysctl_remset_net-d403a1a93d6b
 
 Best regards,
-Jernej
-
-> Thanks for the review.
-> Best regards,
-> Denis
->=20
-
-
-
+-- 
+Joel Granados <j.granados@samsung.com>
 
 
