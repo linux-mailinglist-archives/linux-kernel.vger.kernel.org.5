@@ -1,151 +1,134 @@
-Return-Path: <linux-kernel+bounces-103725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92DDF87C3A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:23:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A857887C3AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A25B1F221C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:23:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D89D1F222B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975CB7603A;
-	Thu, 14 Mar 2024 19:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2D8762EB;
+	Thu, 14 Mar 2024 19:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SHTRgcz6"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="zJaYdoR6"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049FC757FE
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DE8762D3
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710444132; cv=none; b=k+BWS4aav1dguSYS6kDqfXX9J/pniy7Em3ONNhmZSdHD//EBONXU5kgwo0n6f4EsCwAfF2XNLly3gmXBnPAouJK+HMDUEvMEiR6moP3UhEXNMx2qx5gTH9ALk4830n5PgaTEi86bxdyBI5jEFh76RpIqdot02CWED48w7Nd3UVM=
+	t=1710444187; cv=none; b=av8iAQ4HjRkmhx0bkS3OVO9yNWYVUoSf7iTKiENRbpU87afZBzpEMmJ/lpF29aWPDHNZwmBCjt5MyHGljxSt3yK1no9u/P98nuYSVo6EbURNQWdnFnvEzKj0HzTvYl2+WfPjx1S9RYYoOVHTnDyq/CCCes4eSm0JcrxgWrMZfPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710444132; c=relaxed/simple;
-	bh=PE2W/o/UvsErg2b4BmQSjXcvDafvNWS0TOx8wjbfou8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JnCZeRIrnhNplsONSzBZLCuvjH6oNGWDnFbHkYXMMkFXGE8HSkHHuIl2oiTj4Z3dvb47NQWthmYUlC37RQtCTJn5CsDXiQRcRtF5bwZuAoGLT4pDcfa8Y2Fst9Nla2y13ChbuKalDUkYND4+GiglpubTpyOLqGWnmKxh8neMjQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SHTRgcz6; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710444129;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wk6LUIISIZc8BBteqHZvf6DKngdRbzsCGc5VN6J1OYo=;
-	b=SHTRgcz6utQlrtEABb4ur0hnuXJiD/bp6XlDbQ07vYilrLmBuj2/dQ8cpWz4e6Gq6krw+q
-	y4YCzuZdmY8K0Qea+0k7ENAjXbeKuILtMhoZzv9alpgfCLMknNC2vuPZh1VgJqHylO0FpG
-	QvpGco4nPjJ/VC+MJu8fQehU02yBufg=
-Date: Thu, 14 Mar 2024 12:21:58 -0700
+	s=arc-20240116; t=1710444187; c=relaxed/simple;
+	bh=UZknqzvQ4FXnNpri558VcyxPoGTUJkGKM/XaMZJUDBU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=mRG98Y7Ln37d4w6PJA5HTu9lHsfY/6rMAnvIARsbQ9LkpPTiNze1oXpDedeU6POaTOIJedZ7Bd84qmHeeCulTg8G67mZ2jV28QVIiP3UBrl7GXco7zhnez5HMj6KpzrlCdKWGxNqdO5HXd9u1X5f+0Ht3qpgx0fwi0byuQF2/00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=zJaYdoR6; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5684073ab38so2470356a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1710444183; x=1711048983; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UZknqzvQ4FXnNpri558VcyxPoGTUJkGKM/XaMZJUDBU=;
+        b=zJaYdoR62LpQZ4gmNRiW90HBcvll6kmkTT0I8yiYizL+rgm1f1h4XvDJDWfVbvVfs9
+         esDRZVRZzuOaGHudRXs1mK796AoaHv9qfKxFDCMe/0m9vKPx9FCx4y+XffTxMMk1VYcy
+         QvsFIIWRfGERdJhPGSujmoYhnU2g9Hpl1KRlD06yUzjYOUGkvvPrd23xHZCi9DT3fKie
+         f1EaIgQ/HuXV4PgDSc9d7T2RHRYeIL5LAacRvrjgZT8XDlL6061WKUFehGSGtmB1tuUE
+         bBuzON26u2FJx+fgX6U2aQDufjqwUaZDwxsYK64lyATFA0GgcMgIeRc8SrYRi1z8m5PA
+         LfWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710444183; x=1711048983;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=UZknqzvQ4FXnNpri558VcyxPoGTUJkGKM/XaMZJUDBU=;
+        b=unDdtaTqKt56BgRQltm+oxDhaSe9gucqArY8u76kOy+4zBYQAJY87jhCFiew7TSjs2
+         tAn/C6O5Nrmkm6n4pwEdbUpA04o2nRuXcpRpgaycJc5+DCmFZ7kQ/Y6s4ABD1/bUF62h
+         xmMRVRQ4Lk3YnNV0mxGL0gY22k/rWUDoL2CYYd2I95stvEwWNqCe3oGrSl7itsaqdAki
+         VKZ6zaJxwXlrLA51Bf1arntITnc5vD9wSQ/pNF6GKLuSEt3v2acvA+MWdLKfWTN9g9Cj
+         mNpGVQN16+8QMqYiOOHT+6cEbtH89nsYOyliEKUrEBWf7CfRMMfw2fMqkWz8mzA2wveq
+         zisg==
+X-Forwarded-Encrypted: i=1; AJvYcCWY2bvUSUp9CMxAh+5qchNarDGb/hjA3cdaQMiQRXEAQh4cnd9x7FKthzkO7ANOQwxJ9HXJmAwZBGeCIpsjzCGh/Iyxp0GgAP9nwmc1
+X-Gm-Message-State: AOJu0YwNDmTjN5TnIxs9ba4w5bMHLhfnd7obGj7AkVhSvoKypll1wOEw
+	93xFvFFVwmG9Es9gJCzuWifDiJk4vtvF5X5sKgmVO81HNWn3ipTMFATnHJ9GtSg=
+X-Google-Smtp-Source: AGHT+IEQiBoHqZGzF80uJgL2VLJfYI3sQXzz6qKOOI7PtZ2ZTkI1WY3DSt46ADJnk/nmochY/RgTWQ==
+X-Received: by 2002:a05:6402:4493:b0:567:80c7:33bf with SMTP id er19-20020a056402449300b0056780c733bfmr3038848edb.7.1710444183353;
+        Thu, 14 Mar 2024 12:23:03 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id et4-20020a056402378400b00568a15b063csm799503edb.2.2024.03.14.12.23.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 12:23:02 -0700 (PDT)
+From: Andreas Hindborg <nmi@metaspace.dk>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>,  Jens Axboe <axboe@kernel.dk>,
+  Christoph Hellwig <hch@lst.de>,  Keith Busch <kbusch@kernel.org>,  Damien
+ Le Moal <Damien.LeMoal@wdc.com>,  Bart Van Assche <bvanassche@acm.org>,
+  Hannes Reinecke <hare@suse.de>,  "linux-block@vger.kernel.org"
+ <linux-block@vger.kernel.org>,  Andreas Hindborg <a.hindborg@samsung.com>,
+  Wedson Almeida Filho <wedsonaf@gmail.com>,  Niklas Cassel
+ <Niklas.Cassel@wdc.com>,  Greg KH <gregkh@linuxfoundation.org>,  Matthew
+ Wilcox <willy@infradead.org>,  Miguel Ojeda <ojeda@kernel.org>,  Alex
+ Gaynor <alex.gaynor@gmail.com>,  Gary Guo <gary@garyguo.net>,
+  =?utf-8?Q?Bj=C3=B6rn?= Roy
+ Baron <bjorn3_gh@protonmail.com>,  Benno Lossin <benno.lossin@proton.me>,
+  Alice Ryhl <aliceryhl@google.com>,  Chaitanya Kulkarni
+ <chaitanyak@nvidia.com>,  Luis Chamberlain <mcgrof@kernel.org>,  Yexuan
+ Yang <1182282462@bupt.edu.cn>,  Sergio =?utf-8?Q?Gonz=C3=A1lez?= Collado
+ <sergio.collado@gmail.com>,  Joel Granados <j.granados@samsung.com>,
+  "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,  Daniel Gomez
+ <da.gomez@samsung.com>,  open list <linux-kernel@vger.kernel.org>,
+  "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+  "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+  "gost.dev@samsung.com" <gost.dev@samsung.com>
+Subject: Re: [RFC PATCH 1/5] rust: block: introduce `kernel::block::mq` module
+In-Reply-To: <CANiq72mzBe2npLo=CVR=ShyMuDmr0+TW4Gy0coPFQOBQZ_VnwQ@mail.gmail.com>
+ (Miguel
+	Ojeda's message of "Thu, 14 Mar 2024 19:55:49 +0100")
+References: <20240313110515.70088-1-nmi@metaspace.dk>
+	<20240313110515.70088-2-nmi@metaspace.dk> <ZfI8-14RUqGqoRd-@boqun-archlinux>
+	<87il1ptck0.fsf@metaspace.dk>
+	<CANiq72mzBe2npLo=CVR=ShyMuDmr0+TW4Gy0coPFQOBQZ_VnwQ@mail.gmail.com>
+User-Agent: mu4e 1.12.0; emacs 29.2
+Date: Thu, 14 Mar 2024 20:22:54 +0100
+Message-ID: <87plvwsjn5.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
- for userspace tstamp packets
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: kernel@quicinc.com, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
- Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>
-References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
- <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
- <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
- <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
- <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
- <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
- <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
- <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
- <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
- <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 3/14/24 2:49 AM, Willem de Bruijn wrote:
->> The two bits could potentially only encode the delivery time that is allowed to
->> be forwarded without reset. 0 could mean refering back to sk_clockid and don't
->> forward. The final consumer of the forwarded skb->tstamp is the qdisc which
->> currently only has mono and tai.
-> 
-> So the followinng meaning of bit pair
-> { skb->mono_delivery_time, skb->user_delivery_time } ?
->   
-> - { 0, 0 } legacy skb->tstamp: realtime on rx
-> - { 1, 0 } skb->tstamp is mono: existing behavior of mono_delivery_time bit
-> - { 0, 1 } skb->tstamp is tai: analogous to mono case
-> - { 1, 1 } skb->tstamp defined by skb->sk->sk_clockid
+Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> writes:
 
-I was thinking only forward mono and tai until it is clearer how other clocks 
-will be useful for forwarding between e/ingress. By resetting all skb->tstamp 
-other than mono and tai, { 0, 0 } at ingress will mean realtime on rx and { 0, 0 
-} at egress will mean go look skb->sk->sk_clockid.
+> On Thu, Mar 14, 2024 at 9:58=E2=80=AFAM Andreas Hindborg <nmi@metaspace.d=
+k> wrote:
+>>
+>> Yes, good point. Another option suggested by Miguel is that
+>> `__blk_mq_free_request` need not be exported at all. We can make it
+>> non-static and then call it from
+>> `rust_helper_blk_mq_free_request_internal()`. Then only the latter will
+>> be in the kernel image symbol table, which might be better in terms of
+>> not exposing `__blk_mq_free_request()` directly.
+>
+> The helper is not needed, i.e. what I meant was to make it non-static
+> and add it to `include/linux/blk-mq.h`.
 
-I do like your scheme such that it is much clearer what is in skb->tstamp 
-without depending on other bits like tc_at_ingress or not.
+The way the current code compiles, <kernel::block::mq::Request as
+kernel::types::AlwaysRefCounted>::dec_ref` is inlined into the `rnull`
+module. A relocation for `rust_helper_blk_mq_free_request_internal`
+appears in `rnull_mod.ko`. I didn't test it yet, but if
+`__blk_mq_free_request` (or the helper) is not exported, I don't think
+this would be possible?
 
-"{ 0, 1 } skb->tstamp is tai: analogous to mono case" can probably be dropped 
-for now until bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_TAI) is needed.
-Otherwise, it is mostly a duplicate of "{ 1, 1 } skb->tstamp defined by 
-skb->sk->sk_clockid".
-
-The bpf_convert_tstamp_{read,write} and the helper bpf_skb_set_tstamp need to be 
-changed to handle the new "user_delivery_time" bit anyway, e.g. 
-bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_MONO) needs to clear the 
-"user_delivery_time" bit.
-
-I think the "struct inet_frag_queue" also needs a new "user_delivery_time" 
-field. "mono_delivery_time" is already in there.
-
-It may as well be cleaner to combine mono_delivery_time and user_delivery_time 
-into a 2 bits field like:
-
-struct sk_buff {
-	__u8 tstamp_type:2;
-};
-
-enum {
-	SKB_TSTAMP_TYPE_RX_REAL = 0, /* A RX (receive) time in real */
-	SKB_TSTAMP_TYPE_TX_MONO = 1, /* A TX (delivery) time in mono */
-
-	/* A TX (delivery) time and its clock is in skb->sk->sk_clockid.
-	 *
-	 * BPF_SKB_TSTAMP_DELIVERY_USER should be added
-	 * such that reading __sk_buff->tstamp_type will match the
-	 * SKB_TSTAMP_TYPE_TX_USER.
-	 *
-	 * The bpf program can learn the clockid by
-	 * reading skb->sk->sk_clockid.
-	 *
-	 * bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_USER)
-	 * should be disallowed for now until the use case
-	 * is more clear. Potentially, we could allow it
-	 * in the future as long as
-	 * the sock_flag(sk, SOCK_TXTIME) is true at that moment.
-	 */
-	SKB_TSTAMP_TYPE_TX_USER = 2,
-
-	/* UNUSED_FOR_FUTURE = 3, */
-};
-
-It will have more code churns in the first patch to rename 
-s/mono_delivery_time/tstamp_type/.
-
-wdyt?
-
+BR Andreas
 
