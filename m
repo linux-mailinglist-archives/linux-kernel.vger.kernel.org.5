@@ -1,158 +1,199 @@
-Return-Path: <linux-kernel+bounces-103822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383B287C4F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:05:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E67EF87C4F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B5AD1C214EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:05:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EF0F283002
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16371768F8;
-	Thu, 14 Mar 2024 22:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371DB768F6;
+	Thu, 14 Mar 2024 22:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="mSmRrKTt"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d+QEoTMq"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C8F74BE8
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 22:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C485B74BE8;
+	Thu, 14 Mar 2024 22:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710453906; cv=none; b=H/sQpGiN+5nqiTrOpmPuI38H+ljV2BarRxBXUVeHBahIEL1tRSfABwpEb/zDDPA4yqjOXcqxNPX4bbzcyv2tnrNf/X5xlKgou4C4wYcV3ru/LMKa5VBl12m5tHO4LI7Po/Meis3B9NxIYcpQlyzaCx32GywUdkc/U+BBP/9us0U=
+	t=1710453965; cv=none; b=plwbk18qFQ1bQfTDaQ5ulhMvC7CCftm9r6dpe5x7JAR++kgR75DKqhm7mEA8T5YbtyHvOSnRyYXfqFFfuwugK3zEA0kC+YABT0uFsIx877u1vXvlPLJ3thSXbCUXwo9DLaHd2MrFyVYsbZmjwA/lpMrnpn2oMZxeMp/gd3YAuBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710453906; c=relaxed/simple;
-	bh=0ta4xpsyXn+IlOMSksA4Z72gxeLEkm+CyK+rbVbJyq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=evxl6b5NRrcCVsw609zN2uKVfuOjipEnvRh1vIkA3b6NNuck1Oy3Phcmfpg6NLGSNeMOFOTSaoDicWbgItyBVspXm6zLxQthr9luC01DNKr4Mhl41m1by22EfOFIm9U3cCyo47d0oS2FcWm1kVZ40fBNyfBUBYCnzgV8FuW2ZvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=mSmRrKTt; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29c58ba3b16so98309a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:05:02 -0700 (PDT)
+	s=arc-20240116; t=1710453965; c=relaxed/simple;
+	bh=4ZRIE5FJRimKlsJb/xC2JmvT2j6RzX+plSbhnmqaJLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d3RKHVWPzPABdHVCsfircUt0xWI4gRZzY8suOpu2/K3nJ6hwlVKSbSGl3MPnwaAAfapEUU+1UGwznpuPxF/U4uREcDlKVrAjWL2n54f6UjC+/+nR6oBzDfbjVBF2mzs9bdBnkjkzgA57fz38CVkR9UmFYkMNgIg7fUOb2gatJs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d+QEoTMq; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-789ddcd57f4so51858185a.2;
+        Thu, 14 Mar 2024 15:06:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710453902; x=1711058702; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hm8d1Hcbvrz1Xm7p+pPzVG8m/S18y76QUC/hnjvuXiE=;
-        b=mSmRrKTtj8YuvZn5LGlwN+a1DCw56wtG6HOqtG8hpb6F9kU3IaUNVHo5APSC8dzf1E
-         qJYva4U5I357foxSVx3Z6Caav2yKFoN/BHmidt6nsBos/EzT0nNOry6yvg1y0yMrD1fh
-         cW+C+jF00sfRKcWYQW+61ePmAw4O2iCKE7O1xepk/nn3t1Y6Oq2gwsbnNhCu0wXDY70E
-         lGrGP6lQGtJw8KIQYYRMt+S6/K7LfQVvUmWSQ135AsbXqhszB0In3Xag1DSem6kgLV4i
-         uWPyu4GtRFLRkBrWMVH8oMIfmbibJcU/hxAZI8rScyGtmY1xKOkMoDbyceoa58/7A/m9
-         Iffg==
+        d=gmail.com; s=20230601; t=1710453962; x=1711058762; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sxBegbp65VoxmdJchaOKK867ELuE8/4w/6ms8j3UImE=;
+        b=d+QEoTMq1k7JNXXKLZO/bynPeh65oV7XL8j6fn+sTq2qM2le9UoHB5Xla7YcGUMzNv
+         Tfa8Y3nSq8gaTxQH+i9N9gRIwoaz4JnQUg9gaT2YOMNdxWfBajVsGTaCgDknIlB3ng3M
+         cwdVevpNe1x46BzygceWPugNnNrLFTKSpH2VhhFsE8szDeYjr+h1tratCCGAlcJazsRJ
+         45xqB7ja1mIW7u1qf/T96aPSbVYZz/7Grgd/nTAgSNbFWOOoOUVXiBXAni+sbHVfH/hJ
+         ixNA+EtFpAaGrEaAxfCFun15h+bBYNyNRSjtWNV213vGgTkbTsYDjbhQF/O/6IKAWxS/
+         eOKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710453902; x=1711058702;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hm8d1Hcbvrz1Xm7p+pPzVG8m/S18y76QUC/hnjvuXiE=;
-        b=aTNPk+A8B6k8ih7fLe+CUMUwwYUu5MAT8qaQiI8LRFzn7S+93WjXJ3NqjYQQhcJBHA
-         wDQLTBMijgJdN8WBt/y5NQ8aIhrjksedc0x2lxQEZF69vY8E9Xa1imKshH2vhvsuLFlr
-         YxOsdZWKHA5b2O0IXP9FKZSJ2pBEP1FGkfp59MhUkbqs2DwvxwJK0JwwRebM/exAIl49
-         aKpHD97ybun705YQriVqhGC6EfHTwfGKOvDqbm4AiEJ2BN2s4LTCXf9/uWY0JO7ELnei
-         1UbBZPgLYk7uvoRTrMIxhA6Jj4/9112Q7D1kailbsGEWeqW7ARvkD2gbZF3x3IQFKAjE
-         xDqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkpk/tTcEOxASp2zYcaxHQfNJdxsPavhsx0yQloTepSp6TKlPeEBzS2LfEiGLQmcmesJwuEJ15onmoiPCVFB/m9/PhkSUQ5AvYyLTr
-X-Gm-Message-State: AOJu0YwUFrM1bLR32Tp6JS54ok3rLjrYgwmQlcZAiZYFn3gR4FkXzLvP
-	lHQuxz01nXVKkv0Axm6DQhuWHiow4PQu4iz8NzPaEBLWKnWGnHImuRYNmhV2IBySJqomGfWQfQs
-	H
-X-Google-Smtp-Source: AGHT+IHxRLhscRlIUF7ruwUsmYgw/7D+idYOlWQ7Z5GDHDpFmoiNfIb8D5q0I/tt8qoaZ6Mab7ztZQ==
-X-Received: by 2002:a17:90a:b890:b0:29b:cc5a:c00a with SMTP id o16-20020a17090ab89000b0029bcc5ac00amr2858259pjr.3.1710453902350;
-        Thu, 14 Mar 2024 15:05:02 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id ss3-20020a17090b2ec300b0029de7f89d96sm736417pjb.36.2024.03.14.15.05.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 15:05:01 -0700 (PDT)
-Message-ID: <38563683-300a-487b-81c6-b2ea4dbb925c@kernel.dk>
-Date: Thu, 14 Mar 2024 16:04:59 -0600
+        d=1e100.net; s=20230601; t=1710453962; x=1711058762;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sxBegbp65VoxmdJchaOKK867ELuE8/4w/6ms8j3UImE=;
+        b=EHw6Ocalz1AnuKfdaMS59NTFPUWA5Ex5BrwFGsvzSIpRkpstIl7U7YsdEG6PvZ278H
+         hpNHMSsqWPlnMidqOUCo/xtrh4XSuUz1b4VqUvYnDNmUwez3M5fZRwQA4BvhvzUHnN+K
+         jxM/mK2+yaDSR3nYK1an2all2BAurHi6SWUqzMRI4PA0L9ub9pqyBo219k7yZrmsuVXR
+         PeVcnOL31RO2HKyWZzjUKStz0vgfWdi5DecYApWW/8Vpk4/S9LQqegk2D2JQw99yCMQ2
+         hS5/Y5f+oBSLP75zFUj330Z06TMBB0qd9y4Zn/fCEzjEBRvnxzn+ML6d/AV+D7ynrHsE
+         AFrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWglI8C1w57efNXCFT+qA7oDmGNyfihaeeV/wZ1XAtnjQ8SeOIjJRnuRVS9mA/IwSTr1IDH4XvusJXeDxB0rmvkB0qt+dW1rngQqvOlGYIJIzRPunxSetxwsrF62+O58JhG
+X-Gm-Message-State: AOJu0YywQASUNB2PtvrbFL1L3LNPh0r/BCRg52QCfTACmzANTTp1AcmM
+	Qk3DZ7U7eiQCTr6fDK+jOFRXawhm1PldtBDvPkd6Zbehw87tdY1L
+X-Google-Smtp-Source: AGHT+IExYCtsOXnnvxVyoRLOWo1Tmw+uieBz33fwgpebJPikFDxVIA0xelkvCmIZX/4fcqN0scpngg==
+X-Received: by 2002:a05:620a:370d:b0:789:c716:b5da with SMTP id de13-20020a05620a370d00b00789c716b5damr4052517qkb.56.1710453962483;
+        Thu, 14 Mar 2024 15:06:02 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id b15-20020a05620a126f00b0078870b3ad29sm1296839qkl.126.2024.03.14.15.06.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 15:06:02 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 616571200043;
+	Thu, 14 Mar 2024 18:06:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 14 Mar 2024 18:06:01 -0400
+X-ME-Sender: <xms:yHTzZVGOidw7_LYqLnArTwp14uHWkjcOzR3nLTIij2RmtySWm82lXQ>
+    <xme:yHTzZaV6EDW5PDzPh7ZkwBMTgyTp0U8mA-Mp5eVdroVy_SLMT3dzfsc21VVD-jFPv
+    Fc3_PTylCfsCMdNGA>
+X-ME-Received: <xmr:yHTzZXLOsINPqmuL9erCAMUqQU_fIzACt8i8pYGS7B8VvUguui8W2vCgR31eNA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeejgdduheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpefftdeihfeigedtvdeuueffieetvedtgeejuefhhffgudfgfeeggfeftdei
+    geehvdenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:yHTzZbG-vV3whK-_t1ifa_t8MKntIQRpzU4qrNtA9EWg8DF8uT662g>
+    <xmx:yHTzZbX7jOglmCtD_jueMwXEBVhqKqpQA0CONVTG-P_pul6jbJJmjA>
+    <xmx:yHTzZWNm7i_FxLA-iepburKH4tUXr164kTyxtCHeb-TMQCtFxP3N5A>
+    <xmx:yHTzZa0bYEhvBjZ2t-tIUZo4A2uTYaW6UIO-zzx_-75glFoIJrjBlw>
+    <xmx:yXTzZYfHyKUmFhg_XN2gzDZxbgkGKzqWnfBY2PisHUIGlUCF8n-FVoFEfV4>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Mar 2024 18:05:59 -0400 (EDT)
+Date: Thu, 14 Mar 2024 15:05:53 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	paulmck@kernel.org, mingo@kernel.org, rcu@vger.kernel.org,
+	neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
+	chenzhongjin@huawei.com, yangjihong1@huawei.com,
+	rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
+ v6.9]
+Message-ID: <ZfN0wY41pU5UjP8T@boqun-archlinux>
+References: <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
+ <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
+ <ZfIuRMo8oKbR08Af@lothringen>
+ <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+ <ZfLUU+XuQC7W79tf@lothringen>
+ <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
+ <ZfNHNvzpqf8DOZd8@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
+ <87v85olez3.ffs@tglx>
+ <87sf0sldbi.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 00/71] 6.1.82-rc1 review
-Content-Language: en-US
-To: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
- Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de,
- Andreas Herrmann <aherrmann@suse.de>, Tejun Heo <tj@kernel.org>
-References: <20240313163957.615276-1-sashal@kernel.org>
- <73072bdd-590a-44b4-8e6d-34bd17073bb5@o2.pl>
- <ecb0b6a1-a8e7-4645-9a2c-56ada368f733@o2.pl>
- <ba297ed4-a74a-4786-a303-ce617b2de09b@o2.pl>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ba297ed4-a74a-4786-a303-ce617b2de09b@o2.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sf0sldbi.ffs@tglx>
 
-On 3/14/24 3:12 PM, Mateusz Jończyk wrote:
-> W dniu 13.03.2024 o 22:27, Mateusz Jończyk pisze:
->> W dniu 13.03.2024 o 21:13, Mateusz Jończyk pisze:
->>> W dniu 13.03.2024 o 17:38, Sasha Levin pisze:
->>>> This is the start of the stable review cycle for the 6.1.82 release.
->>>> There are 71 patches in this series, all will be posted as a response
->>>> to this one.  If anyone has any issues with these being applied, please
->>>> let me know.
->>>>
->>>> Responses should be made by Fri Mar 15 04:39:56 PM UTC 2024.
->>>> Anything received after that time might be too late.
->>>>
->>>> The whole patch series can be found in one patch at:
->>>>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.81
->>>> or in the git tree and branch at:
->>>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
->>>> and the diffstat can be found below.
->>>>
->>>> Thanks,
->>>> Sasha
->>>>
->>> Hello,
->>>
->>> Kernel hangs during early boot. No console messages, nothing in pstore.
->>>
->>> Tested on a HP 17-by0001nw laptop with an Intel Kaby Lake CPU (Intel i3-7020U) and Ubuntu 20.04.
->>>
->>> This CPU is not affected by RFDS (at least according to the Kconfig message), so I have set
->>>
->>> CONFIG_MITIGATION_RFDS=n
->>>
->>> in Kconfig. I do not have any updated microcode (if any will be provided at all for this CPU).
->>>
->>> Greetings,
->>>
->>> Mateusz
->>>
->> [snip]
+On Thu, Mar 14, 2024 at 10:21:21PM +0100, Thomas Gleixner wrote:
+> On Thu, Mar 14 2024 at 21:45, Thomas Gleixner wrote:
+> > On Thu, Mar 14 2024 at 12:09, Florian Fainelli wrote:
+> >> https://gist.github.com/ffainelli/cb562c1a60ef8e0e69e7d42143c48e8f
+> >>
+> >> this one is does include the tmigr events. Thanks!
+> >
+> > You need 8ca1836769d758e4fbf5851bb81e181c52193f5d too.
 > 
-> Bisected down to
+> So from the above trace it's clear where it goes south:
 > 
-> commit d3d517a95e83a7d89e1ff511da1a0a31c9234155
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Fri Feb 3 16:03:54 2023 +0100
+> [  236.318158]   <idle>-0         3..s.. 2928466us : tmigr_handle_remote: group=aecb05cb lvl=0
+> [  236.326526]   <idle>-0         3d.s.. 2928467us : tmigr_handle_remote_cpu: cpu=0 parent=aecb05cb wakeup=9223372036854775807
+> [  236.357809]   <idle>-0         3d.s.. 2928469us : tmigr_update_events: child=00000000 group=aecb05cb group_lvl=0 child_active=0 group_active=8 nextevt=3103000000 next_expiry=2934000000 child_evt_expiry=0 child_evtcpu=0
 > 
->     blk-rq-qos: make rq_qos_add and rq_qos_del more useful
+> [  236.377222]   <idle>-0         0dn... 2928471us : tmigr_cpu_active: cpu=0 parent=aecb05cb wakeup=9223372036854775807
+> [  236.387765]   <idle>-0         0dn... 2928471us : tmigr_group_set_cpu_active: group=aecb05cb lvl=0 numa=0 active=9 migrator=8 parent=00000000 childmask=1
+> 
+> [  236.401526]   <idle>-0         0d.... 2928477us : tmigr_update_events: child=00000000 group=aecb05cb group_lvl=0 child_active=0 group_active=8 nextevt=3103000000 next_expiry=2934000000 child_evt_expiry=0 child_evtcpu=0
+> [  236.420940]   <idle>-0         0d.... 2928478us : tmigr_group_set_cpu_inactive: group=aecb05cb lvl=0 numa=0 active=8 migrator=8 parent=00000000 childmask=1
+> [  236.434874]   <idle>-0         0d.... 2928478us : tmigr_cpu_idle: cpu=0 parent=aecb05cb nextevt=3103000000 wakeup=9223372036854775807
+> 
+> [  236.446896]   <idle>-0         3d.... 2929469us : tmigr_group_set_cpu_inactive: group=aecb05cb lvl=0 numa=0 active=0 migrator=ff parent=00000000 childmask=8
+> [  236.460916]   <idle>-0         3d.... 2929470us : tmigr_cpu_idle: cpu=3 parent=aecb05cb nextevt=9223372036854775807 wakeup=9223372036854775807
+> [  236.473721]   <idle>-0         3d.... 2934471us : tmigr_cpu_new_timer_idle: cpu=3 parent=aecb05cb nextevt=9223372036854775807 wakeup=9223372036854775807
+> 
+> CPU3 is the last active CPU and goes idle. So it should take care of the
+> pending events, but it does not.
+> 
 
-Do you have:
+I notice CPU3 didn't have its own non-deferrable timer queued (local or
+global), so could the following happen?
 
-commit e33b93650fc5364f773985a3e961e24349330d97
-Author: Breno Leitao <leitao@debian.org>
-Date:   Tue Feb 28 03:16:54 2023 -0800
+	timer_base_try_to_set_idle():
+	  __get_next_timer_interrupt():
+	    fetch_next_timer_interrupt():
+	      // nextevt_local == nextevt_global == basej + NEXT_TIMER_MAX_DELTA
+	      // tevt->local == tevt->gloabl = KTIME_MAX
+	    timer_use_tmigr():
+	      tmigr_cpu_deactivate():
+	        __tmigr_cpu_deactivate():
+		  // tmc->cpuevt.ignore untouched still == true
+		  walk_groups(&tmigr_inactive_up, ...):
+		    tmigr_inactive_up():
+		      data->remote = true;
+		      tmigr_update_events():
+		        if (child) { // child is NULL
+			  ...
+			} else {
+			  first_childevt = evt = data->evt;
 
-    blk-iocost: Pass gendisk to ioc_refresh_params
+			  if (evt->ignore && !remote)
+			    return true; // no remote tick is picked.
+			  ...
+			}
 
-in there?
+Regards,
+Boqun
 
--- 
-Jens Axboe
-
-
+> This is the next trace entry where CPU0 magically comes back to life.
+> 
+> [  236.487393]   <idle>-0         0d.s.. 162001359us : timer_cancel: timer=8c725d84
+> 
+> 8ca1836769d758e4fbf5851bb81e181c52193f5d is related, but dos not fully
+> explain the fail. I haven't yet spotted where this goes into lala land.
 
