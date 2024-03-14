@@ -1,86 +1,306 @@
-Return-Path: <linux-kernel+bounces-102727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33D6A87B699
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C47E087B69D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:57:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C140A1F21615
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:56:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A21E1F24529
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955B74A1B;
-	Thu, 14 Mar 2024 02:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF6853A0;
+	Thu, 14 Mar 2024 02:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ORCgY96V"
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD9C1362;
-	Thu, 14 Mar 2024 02:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="h881D/6v"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942AC8BE5;
+	Thu, 14 Mar 2024 02:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710384996; cv=none; b=Hw5ZZcLymqE1U5CM4GrikLituQQCNuuGsD31LDvVYy++SQ9TMoJwZlR0DczzwKnnS86jlQxpBVLmoWBnT78KLWP2H/R5bdedxeNvDKm26+pxY6vCaIDVrzhvhuJPiiL1kDtcQh3+qgnhadQ2joMYqJxWNGLvVrAWhEzQ4yxYbGg=
+	t=1710385042; cv=none; b=B0OmVNzwMpfVXoRhXIXr5Vt4tyGUo41fhsuNZ/QBovB8sekoInCvG3l9Dt4GJ4PnnGfGnIM5QBWMrlR/ekwKGRQ89cXDGSFUc0/HLvuYkiBp5xkXkiu6ZzegkFDFzxcL4ErSxSkkD5l8CnRxnDQ5A6i21fNtCrbWQdc98PZG0Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710384996; c=relaxed/simple;
-	bh=P4L/R3Z6taJQ4cFhubaO8XQxOL25MaJ3X+jEbvQcZI4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D6s0F4yY6Ly0ESzncdLQdxCOHEs5Se+ePs7nrmxhfL8UlMHl84ZV02Obyr+jNfvX9HV7unpUys1UABORhy9EBRLizSBQS1xZyHk5eQd7Zf+vvYV68sfR9po+MNF/eEk+ktyIZmySxiGAYS58vtufR7VLJCEVk1FE9NGeptzRK64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ORCgY96V; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1710384984; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=jdBOxt3A/EGAWmN/HaDrvWHJ81z6D/o/C6IFxVNk5vc=;
-	b=ORCgY96VNWWMP9+gCpUgTWeehhQ9QAIz4dU0HcVjYxK8f8oP9FF0LrdS8bYnTGvD2F24CTlwH96t9l4HisfcwKabOY+oRXY9O8FTOoxxRtrkI5RlM47jFbBWtAXDiMQEc2cAC/m2fVdqxMl2ChLcNxIXpWb+E8dRHfAltbbk61w=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W2Qo4a7_1710384976;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W2Qo4a7_1710384976)
-          by smtp.aliyun-inc.com;
-          Thu, 14 Mar 2024 10:56:24 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: axboe@kernel.dk
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] block: Modify mismatched function name
-Date: Thu, 14 Mar 2024 10:56:15 +0800
-Message-Id: <20240314025615.71269-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1710385042; c=relaxed/simple;
+	bh=6UGr1FCB/DQlxlKdXDcKgaFfLxkGBqfSY1r+CIlhATw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0rNcBROjvzFEHKgaktoanDlXXLjXPgF018BnCUo16/jATfYXKOMxTchqO3cXlmNbjSd3w8wcVkRswBloNZJOKsIZii5+QDYntVAJxJc7pg7/wZEqvevWdPsxSnY60VvcXTYczHE4nndrJwi3xsMRZ+1pjH/KeLUrxUbmKBj4oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=h881D/6v; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 1C3AF20B74C0; Wed, 13 Mar 2024 19:57:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1C3AF20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710385040;
+	bh=66P25FXNgIs5HQWvc3vNtZYJsw5/Od+QnPZTiotxhoc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h881D/6vJeZSZkW42zfwWokQkqJ4RGf7RqqzkGXVWMLY5LIYJoEa5o0niT2gscsut
+	 Xz9YIG7S8W6WsYg1EGLOKn14lnppimejl/1grxQYynfq0YfccUTUDxFo+73/oVm/qe
+	 WoyVzGuEKY1O0enfLM5SgcFagZqYTYhbwgbI/uGw=
+Date: Wed, 13 Mar 2024 19:57:20 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
+Message-ID: <20240314025720.GA13853@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240307072923.6cc8a2ba@kernel.org>
+ <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
+ <20240307090145.2fc7aa2e@kernel.org>
+ <CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+ <20240308112244.391b3779@kernel.org>
+ <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-No functional modification involved.
+On Sun, Mar 10, 2024 at 09:19:50PM -0700, Shradha Gupta wrote:
+> On Fri, Mar 08, 2024 at 11:22:44AM -0800, Jakub Kicinski wrote:
+> > On Fri, 8 Mar 2024 18:51:58 +0000 Haiyang Zhang wrote:
+> > > > Dynamic is a bit of an exaggeration, right? On a well-configured system
+> > > > each CPU should use a single queue assigned thru XPS. And for manual
+> > > > debug bpftrace should serve the purpose quite well.  
+> > > 
+> > > Some programs, like irqbalancer can dynamically change the CPU affinity, 
+> > > so we want to add the per-CPU counters for better understanding of the CPU 
+> > > usage.
+> > 
+> > Do you have experimental data showing this making a difference
+> > in production?
+> Sure, will try to get that data for this discussion
+> > 
+> > Seems unlikely, but if it does work we should enable it for all
+> > devices, no driver by driver.
+> You mean, if the usecase seems valid we should try to extend the framework
+> mentioned by Rahul (https://lore.kernel.org/lkml/20240307072923.6cc8a2ba@kernel.org/)
+> to include these stats as well?
+> Will explore this a bit more and update. Thanks.
 
-block/blk-settings.c:281: warning: expecting prototype for queue_limits_commit_set(). Prototype was for queue_limits_set() instead.
+Following is the data we can share:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8539
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- block/blk-settings.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Default interrupts affinity for each queue:
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index e160d56e8eda..3c7d8d638ab5 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -267,7 +267,7 @@ int queue_limits_commit_update(struct request_queue *q,
- EXPORT_SYMBOL_GPL(queue_limits_commit_update);
+ 25:          1        103          0    2989138  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
+ 26:          0          1    4005360          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
+ 27:          0          0          1    2997584  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
+ 28:    3565461          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3
+@pci:7870:00:00.0
+
+As seen the CPU-queue mapping is not 1:1, Queue 0 and Queue 2 are both mapped 
+to cpu3. From this knowledge we can figure out the total RX stats processed by
+each CPU by adding the values of mana_q0 and mana_q2 stats for cpu3. But if
+this data changes dynamically using irqbalance or smp_affinity file edits, the
+above assumption fails. 
+
+Interrupt affinity for mana_q2 changes and the affinity table looks as follows
+ 25:          1        103          0    3038084  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
+ 26:          0          1    4012447          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
+ 27:     157181         10          1    3007990  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
+ 28:    3593858          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3@pci:7870:00:00.0 
+
+And during this time we might end up calculating the per-CPU stats incorrectly,
+messing up the understanding of CPU usage by MANA driver that is consumed by 
+monitoring services. 
  
- /**
-- * queue_limits_commit_set - apply queue limits to queue
-+ * queue_limits_set - apply queue limits to queue
-  * @q:		queue to update
-  * @lim:	limits to apply
-  *
--- 
-2.20.1.7.g153144c
+
+Also sharing the existing per-queue stats during this experiment, in case needed
+
+Per-queue stats before changing CPU-affinities:
+     tx_cq_err: 0
+     tx_cqe_unknown_type: 0
+     rx_coalesced_err: 0
+     rx_cqe_unknown_type: 0
+     rx_0_packets: 4230152
+     rx_0_bytes: 289545167
+     rx_0_xdp_drop: 0
+     rx_0_xdp_tx: 0
+     rx_0_xdp_redirect: 0
+     rx_1_packets: 4113017
+     rx_1_bytes: 314552601
+     rx_1_xdp_drop: 0
+     rx_1_xdp_tx: 0
+     rx_1_xdp_redirect: 0
+     rx_2_packets: 4458906
+     rx_2_bytes: 305117506
+     rx_2_xdp_drop: 0
+     rx_2_xdp_tx: 0
+     rx_2_xdp_redirect: 0
+     rx_3_packets: 4619589
+     rx_3_bytes: 315445084
+     rx_3_xdp_drop: 0
+     rx_3_xdp_tx: 0
+     rx_3_xdp_redirect: 0
+     hc_tx_err_vport_disabled: 0
+     hc_tx_err_inval_vportoffset_pkt: 0
+     hc_tx_err_vlan_enforcement: 0
+     hc_tx_err_eth_type_enforcement: 0
+     hc_tx_err_sa_enforcement: 0
+     hc_tx_err_sqpdid_enforcement: 0
+     hc_tx_err_cqpdid_enforcement: 0
+     hc_tx_err_mtu_violation: 0
+     hc_tx_err_inval_oob: 0
+     hc_tx_err_gdma: 0
+     hc_tx_bytes: 126336708121
+     hc_tx_ucast_pkts: 86748013
+     hc_tx_ucast_bytes: 126336703775
+     hc_tx_bcast_pkts: 37
+     hc_tx_bcast_bytes: 2842
+     hc_tx_mcast_pkts: 7
+     hc_tx_mcast_bytes: 1504
+     tx_cq_err: 0
+     tx_cqe_unknown_type: 0
+     rx_coalesced_err: 0
+     rx_cqe_unknown_type: 0
+     rx_0_packets: 4230152
+     rx_0_bytes: 289545167
+     rx_0_xdp_drop: 0
+     rx_0_xdp_tx: 0
+     rx_0_xdp_redirect: 0
+     rx_1_packets: 4113017
+     rx_1_bytes: 314552601
+     rx_1_xdp_drop: 0
+     rx_1_xdp_tx: 0
+     rx_1_xdp_redirect: 0
+     rx_2_packets: 4458906
+     rx_2_bytes: 305117506
+     rx_2_xdp_drop: 0
+     rx_2_xdp_tx: 0
+     rx_2_xdp_redirect: 0
+     rx_3_packets: 4619589
+     rx_3_bytes: 315445084
+     rx_3_xdp_drop: 0
+     rx_3_xdp_tx: 0
+     rx_3_xdp_redirect: 0
+     tx_0_packets: 5995507
+     tx_0_bytes: 28749696408
+     tx_0_xdp_xmit: 0
+     tx_0_tso_packets: 4719840
+     tx_0_tso_bytes: 26873844525
+     tx_0_tso_inner_packets: 0
+     tx_0_tso_inner_bytes: 0
+     tx_0_long_pkt_fmt: 0
+     tx_0_short_pkt_fmt: 5995507
+     tx_0_csum_partial: 1275621
+     tx_0_mana_map_err: 0
+     tx_1_packets: 6653598
+     tx_1_bytes: 38318341475
+     tx_1_xdp_xmit: 0
+     tx_1_tso_packets: 5330921
+     tx_1_tso_bytes: 36210150488
+     tx_1_tso_inner_packets: 0
+     tx_1_tso_inner_bytes: 0
+     tx_1_long_pkt_fmt: 0
+     tx_1_short_pkt_fmt: 6653598
+     tx_1_csum_partial: 1322643
+     tx_1_mana_map_err: 0
+     tx_2_packets: 5715246
+     tx_2_bytes: 25662283686
+     tx_2_xdp_xmit: 0
+     tx_2_tso_packets: 4619118
+     tx_2_tso_bytes: 23829680267
+     tx_2_tso_inner_packets: 0
+     tx_2_tso_inner_bytes: 0
+     tx_2_long_pkt_fmt: 0
+     tx_2_short_pkt_fmt: 5715246
+     tx_2_csum_partial: 1096092
+     tx_2_mana_map_err: 0
+     tx_3_packets: 6175860
+     tx_3_bytes: 29500667904
+     tx_3_xdp_xmit: 0
+     tx_3_tso_packets: 4951591
+     tx_3_tso_bytes: 27446937448
+     tx_3_tso_inner_packets: 0
+     tx_3_tso_inner_bytes: 0
+     tx_3_long_pkt_fmt: 0
+     tx_3_short_pkt_fmt: 6175860
+     tx_3_csum_partial: 1224213
+     tx_3_mana_map_err: 0
+
+Per-queue stats after changing CPU-affinities:
+     rx_0_packets: 4781895
+     rx_0_bytes: 326478061
+     rx_0_xdp_drop: 0
+     rx_0_xdp_tx: 0
+     rx_0_xdp_redirect: 0
+     rx_1_packets: 4116990
+     rx_1_bytes: 315439234
+     rx_1_xdp_drop: 0
+     rx_1_xdp_tx: 0
+     rx_1_xdp_redirect: 0
+     rx_2_packets: 4528800
+     rx_2_bytes: 310312337
+     rx_2_xdp_drop: 0
+     rx_2_xdp_tx: 0
+     rx_2_xdp_redirect: 0
+     rx_3_packets: 4622622
+     rx_3_bytes: 316282431
+     rx_3_xdp_drop: 0
+     rx_3_xdp_tx: 0
+     rx_3_xdp_redirect: 0
+     tx_0_packets: 5999379
+     tx_0_bytes: 28750864476
+     tx_0_xdp_xmit: 0
+     tx_0_tso_packets: 4720027
+     tx_0_tso_bytes: 26874344494
+     tx_0_tso_inner_packets: 0
+     tx_0_tso_inner_bytes: 0
+     tx_0_long_pkt_fmt: 0
+     tx_0_short_pkt_fmt: 5999379
+     tx_0_csum_partial: 1279296
+     tx_0_mana_map_err: 0
+     tx_1_packets: 6656913
+     tx_1_bytes: 38319355168
+     tx_1_xdp_xmit: 0
+     tx_1_tso_packets: 5331086
+     tx_1_tso_bytes: 36210592040
+     tx_1_tso_inner_packets: 0
+     tx_1_tso_inner_bytes: 0
+     tx_1_long_pkt_fmt: 0
+     tx_1_short_pkt_fmt: 6656913
+     tx_1_csum_partial: 1325785
+     tx_1_mana_map_err: 0
+     tx_2_packets: 5906172
+     tx_2_bytes: 36758032245
+     tx_2_xdp_xmit: 0
+     tx_2_tso_packets: 4806348
+     tx_2_tso_bytes: 34912213258
+     tx_2_tso_inner_packets: 0
+     tx_2_tso_inner_bytes: 0
+     tx_2_long_pkt_fmt: 0
+     tx_2_short_pkt_fmt: 5906172
+     tx_2_csum_partial: 1099782
+     tx_2_mana_map_err: 0
+     tx_3_packets: 6202399
+     tx_3_bytes: 30840325531
+     tx_3_xdp_xmit: 0
+     tx_3_tso_packets: 4973730
+     tx_3_tso_bytes: 28784371532
+     tx_3_tso_inner_packets: 0
+     tx_3_tso_inner_bytes: 0
+     tx_3_long_pkt_fmt: 0
+     tx_3_short_pkt_fmt: 6202399
+     tx_3_csum_partial: 1228603
+     tx_3_mana_map_err: 0
 
 
