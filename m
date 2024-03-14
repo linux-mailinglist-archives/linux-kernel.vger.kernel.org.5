@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-103053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E711087BA6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:31:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9E887BA70
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:31:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1643D1C214F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:31:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7823A1F22673
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903EB6CDBD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9633F6D1A4;
 	Thu, 14 Mar 2024 09:31:27 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C106CDBA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062066CDB9
 	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710408686; cv=none; b=dqyomlvxPQzxYDNGdcxI7QYc2xDG8VeesOzOMNjYe+VDwJGGYBulwJRMZZZDoANR+/KiYuwKqDX7772C7h6ZRRa0NL38WHgG2vUsIhdYCfWb2kdNPX9qaQKxr3voS9JxGbkQZp2VUbsEjyef1GX6nuYHy5t8zyAep0onEp9nP24=
+	t=1710408686; cv=none; b=ZuFrr3CvQepMxcVg4wgjQI7WSstPb+5JbEg/nc/X/IBF8wuw/fsL5CBHrSDvPnmn2hq3Sb4nlehmhEj63j/UGKfmWWOw+MVxRSsAtwU0Cmloc8XEvbJ7HFnZQFhNmwQuQP7Emm38ETiY2ha6H6EJq9bXVr5/u0GAPLqX+1QThrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710408686; c=relaxed/simple;
-	bh=hMKxZ5S7+ZBl00klWulG1PpgRzwMfKsTjpUQ7uBdNrM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=h6wThAKxiJwHP95up+P/WEdfaQsNI+ZVc0xPKAwV72x9H8exh4C/FKrCQdPa2SKh9NRzr+cBaS8ABYjBk1LNM/P0Da2VaD5PGCgVUxUeB4R+TbckklmB1Jlki7owCNdFcelXxreqEuSUnLopTY0ek0PuhaT1jsvnYvxz4JOVGfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+	bh=tctNCO0iNDPBNbbPZV7XQSOjqTpL4C0GDrvGQioh7WQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=C4zs4Dwpzw8QHpHMEEB36LFxMmbXJdn4etKjJzHcVIt6x496w7WG1cYTl0dgHNVRvcqKSuRfwgX5xHPBQ+dlgLzYC/Q26wmuGgsoLllKp27bhEYDgih0zDdnW1yVAgWvMk1NxYy7B7T9dva4FygeiArtSZmCk66ohBd/+liUGsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3667d966d40so6843925ab.0
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8a6a122b5so54318939f.2
         for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:31:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1710408684; x=1711013484;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gll4Ztt7M0UGElLQXVLWEpzqDUUYuPg1P4YvKq0ZUe4=;
-        b=TSubcBgPhpeditRF2CBtgvTT+fg814R+9AJkH/RKYgoRjKRn+wiBfZHiuchDLsoA9s
-         2O6WUoAOVs0CNQR7CzyEbaEv0KtYI/pbpfidXfwsmLpn/v86ZPj9y+NYffYR7FyIJx1Q
-         IiSQTtbVjG9MxT8n9RmZaO5rKH6ea4L21kb3RbhLrnqT8gffBm7xwpKn9LVwL4/UEF5U
-         vORwP6HJoBTqDRABLlGOuLoJcNodu3WoB+fL+111lBIVq5AidIWY3Qhc/2lXLcYPMQ/h
-         5IpkmxgP+V9GYwscLu5/L7wvkmLG1xiguLkZ8nsTmjWfE21v1L6/TSr9zp9Q25lxXKVg
-         TXGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpG+9aAmrOuu3lh9bpfseqer+U9M0//dmG8B4WEYD/1QmOWS7LnOqyi1fNr9Ue3sqNVUsIkZ04+/SpqMSZiKL9aTtau1VdhRxT420y
-X-Gm-Message-State: AOJu0Yw7ltFVcWfpZJCgMPU9xfanYSRfCr5sd8nJ/Mv1NEXVD9vq1YXs
-	vVsyZIBpe6DJVj2D3jgtamv4lUePsLBKzZ4rgcjfe3bihMW5zU3YiaZvZ99U2ME5cEHmUbyNFAb
-	yFpFjeLYBl26pt+bRrPSwtRCoCClEgtuy9hOrtjOKFbduceL53j5lATU=
-X-Google-Smtp-Source: AGHT+IFWrX0NsTpryB9bD1F2qhaXzg46a4KylBy4kxp5SE7W9VCzIsXMjDXE7FqQt8+Z7CjpAYUbV4X8T41mS8EPgv+ku+Ex28YU
+        bh=UyOGv0mDGqitQD3NP/hm9ku/8l83Ts1p+Vr5MaZs2Ug=;
+        b=J+S6rv3R4I0apxMt0kWUa1TDthadNjNLl22HROFlld7BOyBHGAoStxPLgUqWT1Kblh
+         9UWqjZweOGdwpd9kUNR4DEvJ+4a7TrHpyKhk0M4sb7ykQwQ0IQT4e1YUcP4x7kqTrjDB
+         BzgFrEneycHHjIiCKabNaXMNjitXKJLR6aNKxPvlNNTRo+6Ym+QUmEzIQxHTBv7fo4N4
+         gqTLj5WyLBLzQd8gkUunW9s10Z5gz4GLkJxBLR1Wi1OC0YigjFweuRCDcHJSq1W8U+Kv
+         qRAsuiFV+8AekAgbIJjA43n+CmvXUZ0RVNYVADRIrsQSXiYrr3TB/uSQ5nhYit5ibXT9
+         LM2g==
+X-Forwarded-Encrypted: i=1; AJvYcCUnoRvlhIOc5HpKeQAGE5Lu4G9CdLo4Bin+EccayoMEv/snKgYVJ6a8LoMFPVvPKHOSafm75y8h4xmEz5TuZWU0L0H0zXMAMiyIYjpQ
+X-Gm-Message-State: AOJu0Ywq2115HwCHxv5lGI1kF3Wwqs/LA74O+8YvlHBS5uSS78I8i/Rw
+	RtZ60/DwhzfDCApamVc/9COlK0PgwNjJtO3os4iJGm7lji2L33AiLFGRbzW8dTaC38J4fVaYhFB
+	NWQf3WNbgizwYGQaRkJWbyGeDOmmB17py2a2hU1TWAduOy4PdY5a6JdE=
+X-Google-Smtp-Source: AGHT+IHy2QCuihHNWNBuP86d2l8YZBecoXPOMm9wJpMo4eFdypfJAcBwptAW+Mba6xUzy4Bq7G6u2+nrZvYNcZDQGr1zMiukokPi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12e7:b0:366:725b:57a5 with SMTP id
- l7-20020a056e0212e700b00366725b57a5mr15747iln.3.1710408684433; Thu, 14 Mar
+X-Received: by 2002:a05:6638:272b:b0:476:7265:9bfc with SMTP id
+ m43-20020a056638272b00b0047672659bfcmr70416jav.6.1710408684222; Thu, 14 Mar
  2024 02:31:24 -0700 (PDT)
 Date: Thu, 14 Mar 2024 02:31:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000e826906139b8e88@google.com>
-Subject: [syzbot] [xfs?] possible deadlock in xfs_ilock
-From: syzbot <syzbot+d247769793ec169e4bf9@syzkaller.appspotmail.com>
+Message-ID: <0000000000000b4e8806139b8e72@google.com>
+Subject: [syzbot] [xfs?] possible deadlock in xfs_qm_dqget_cache_insert
+From: syzbot <syzbot+8fdff861a781522bda4d@syzkaller.appspotmail.com>
 To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
@@ -71,9 +71,9 @@ syzbot found the following issue on:
 
 HEAD commit:    e5e038b7ae9d Merge tag 'fs_for_v6.9-rc1' of git://git.kern..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1276d246180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1629d9d1180000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=6ce8d253b68e67fe
-dashboard link: https://syzkaller.appspot.com/bug?extid=d247769793ec169e4bf9
+dashboard link: https://syzkaller.appspot.com/bug?extid=8fdff861a781522bda4d
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 userspace arch: i386
 
@@ -85,88 +85,31 @@ vmlinux: https://storage.googleapis.com/syzbot-assets/82ab7eda09bc/vmlinux-e5e03
 kernel image: https://storage.googleapis.com/syzbot-assets/bda17336e65d/bzImage-e5e038b7.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d247769793ec169e4bf9@syzkaller.appspotmail.com
+Reported-by: syzbot+8fdff861a781522bda4d@syzkaller.appspotmail.com
 
 ======================================================
 WARNING: possible circular locking dependency detected
 6.8.0-syzkaller-06619-ge5e038b7ae9d #0 Not tainted
 ------------------------------------------------------
-kswapd1/112 is trying to acquire lock:
-ffff88804a8f6d98 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_ilock+0x2ef/0x3e0 fs/xfs/xfs_inode.c:206
+syz-executor.0/10102 is trying to acquire lock:
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:303 [inline]
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3746 [inline]
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3827 [inline]
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
 
 but task is already holding lock:
-ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x15f/0x1a90 mm/vmscan.c:6774
+ffff88802712c958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqget_cache_insert.constprop.0+0x2a/0x2c0 fs/xfs/xfs_dquot.c:825
 
 which lock already depends on the new lock.
 
 
 the existing dependency chain (in reverse order) is:
 
--> #2 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
-       fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3706
-       might_alloc include/linux/sched/mm.h:303 [inline]
-       slab_pre_alloc_hook mm/slub.c:3746 [inline]
-       slab_alloc_node mm/slub.c:3827 [inline]
-       kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
-       radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:276
-       radix_tree_extend+0x1a2/0x4d0 lib/radix-tree.c:425
-       __radix_tree_create lib/radix-tree.c:613 [inline]
-       radix_tree_insert+0x499/0x630 lib/radix-tree.c:712
-       xfs_qm_dqget_cache_insert.constprop.0+0x38/0x2c0 fs/xfs/xfs_dquot.c:826
-       xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:901
-       xfs_qm_vop_dqalloc+0x49a/0xe10 fs/xfs/xfs_qm.c:1755
-       xfs_setattr_nonsize+0x8ca/0xca0 fs/xfs/xfs_iops.c:707
-       xfs_vn_setattr+0x209/0x260 fs/xfs/xfs_iops.c:1027
-       notify_change+0x742/0x11c0 fs/attr.c:497
-       chown_common+0x598/0x660 fs/open.c:790
-       do_fchownat+0x1af/0x210 fs/open.c:821
-       ksys_lchown include/linux/syscalls.h:1243 [inline]
-       __do_sys_lchown16 kernel/uid16.c:30 [inline]
-       __se_sys_lchown16 kernel/uid16.c:28 [inline]
-       __ia32_sys_lchown16+0xe6/0x120 kernel/uid16.c:28
-       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
-       __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
-       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
-       entry_SYSENTER_compat_after_hwframe+0x7a/0x84
-
 -> #1 (&qinf->qi_tree_lock){+.+.}-{3:3}:
        __mutex_lock_common kernel/locking/mutex.c:608 [inline]
        __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
-       xfs_qm_dqget_cache_lookup+0x66/0x820 fs/xfs/xfs_dquot.c:784
-       xfs_qm_dqget_inode+0x1e7/0x6d0 fs/xfs/xfs_dquot.c:986
-       xfs_qm_dqattach_one+0x26f/0x530 fs/xfs/xfs_qm.c:278
-       xfs_qm_dqattach_locked+0x1c6/0x2d0 fs/xfs/xfs_qm.c:337
-       xfs_qm_vop_dqalloc+0x344/0xe10 fs/xfs/xfs_qm.c:1710
-       xfs_setattr_nonsize+0x8ca/0xca0 fs/xfs/xfs_iops.c:707
-       xfs_vn_setattr+0x209/0x260 fs/xfs/xfs_iops.c:1027
-       notify_change+0x742/0x11c0 fs/attr.c:497
-       chown_common+0x598/0x660 fs/open.c:790
-       do_fchownat+0x1af/0x210 fs/open.c:821
-       ksys_lchown include/linux/syscalls.h:1243 [inline]
-       __do_sys_lchown16 kernel/uid16.c:30 [inline]
-       __se_sys_lchown16 kernel/uid16.c:28 [inline]
-       __ia32_sys_lchown16+0xe6/0x120 kernel/uid16.c:28
-       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
-       __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
-       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
-       entry_SYSENTER_compat_after_hwframe+0x7a/0x84
-
--> #0 (&xfs_dir_ilock_class){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-       down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
-       xfs_ilock+0x2ef/0x3e0 fs/xfs/xfs_inode.c:206
-       xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
-       xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
-       xfs_icwalk_ag+0xca6/0x1740 fs/xfs/xfs_icache.c:1713
-       xfs_icwalk+0x57/0x100 fs/xfs/xfs_icache.c:1762
-       xfs_reclaim_inodes_nr+0x182/0x250 fs/xfs/xfs_icache.c:1011
-       super_cache_scan+0x409/0x550 fs/super.c:227
+       xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
+       xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
        do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
        shrink_slab+0x18a/0x1310 mm/shrinker.c:662
        shrink_one+0x493/0x7b0 mm/vmscan.c:4767
@@ -180,29 +123,65 @@ the existing dependency chain (in reverse order) is:
        ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
        ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
 
-other info that might help us debug this:
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+       __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
+       fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3706
+       might_alloc include/linux/sched/mm.h:303 [inline]
+       slab_pre_alloc_hook mm/slub.c:3746 [inline]
+       slab_alloc_node mm/slub.c:3827 [inline]
+       kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
+       radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:276
+       radix_tree_extend+0x1a2/0x4d0 lib/radix-tree.c:425
+       __radix_tree_create lib/radix-tree.c:613 [inline]
+       radix_tree_insert+0x499/0x630 lib/radix-tree.c:712
+       xfs_qm_dqget_cache_insert.constprop.0+0x38/0x2c0 fs/xfs/xfs_dquot.c:826
+       xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:901
+       xfs_qm_vop_dqalloc+0x49a/0xe10 fs/xfs/xfs_qm.c:1755
+       xfs_create+0x422/0x1140 fs/xfs/xfs_inode.c:1041
+       xfs_generic_create+0x631/0x7c0 fs/xfs/xfs_iops.c:199
+       lookup_open.isra.0+0x10a1/0x13c0 fs/namei.c:3497
+       open_last_lookups fs/namei.c:3566 [inline]
+       path_openat+0x92f/0x2990 fs/namei.c:3796
+       do_filp_open+0x1dc/0x430 fs/namei.c:3826
+       do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+       do_sys_open fs/open.c:1421 [inline]
+       __do_compat_sys_openat fs/open.c:1481 [inline]
+       __se_compat_sys_openat fs/open.c:1479 [inline]
+       __ia32_compat_sys_openat+0x16e/0x210 fs/open.c:1479
+       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+       __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
+       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+       entry_SYSENTER_compat_after_hwframe+0x7a/0x84
 
-Chain exists of:
-  &xfs_dir_ilock_class --> &qinf->qi_tree_lock --> fs_reclaim
+other info that might help us debug this:
 
  Possible unsafe locking scenario:
 
        CPU0                    CPU1
        ----                    ----
-  lock(fs_reclaim);
-                               lock(&qinf->qi_tree_lock);
+  lock(&qinf->qi_tree_lock);
                                lock(fs_reclaim);
-  lock(&xfs_dir_ilock_class);
+                               lock(&qinf->qi_tree_lock);
+  lock(fs_reclaim);
 
  *** DEADLOCK ***
 
-2 locks held by kswapd1/112:
- #0: ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x15f/0x1a90 mm/vmscan.c:6774
- #1: ffff8880680100e0 (&type->s_umount_key#81){++++}-{3:3}, at: super_trylock_shared fs/super.c:561 [inline]
- #1: ffff8880680100e0 (&type->s_umount_key#81){++++}-{3:3}, at: super_cache_scan+0x96/0x550 fs/super.c:196
+3 locks held by syz-executor.0/10102:
+ #0: ffff88801e4f0420 (sb_writers#21){.+.+}-{0:0}, at: open_last_lookups fs/namei.c:3555 [inline]
+ #0: ffff88801e4f0420 (sb_writers#21){.+.+}-{0:0}, at: path_openat+0x19a7/0x2990 fs/namei.c:3796
+ #1: ffff88804c060338 (&inode->i_sb->s_type->i_mutex_dir_key){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
+ #1: ffff88804c060338 (&inode->i_sb->s_type->i_mutex_dir_key){+.+.}-{3:3}, at: open_last_lookups fs/namei.c:3563 [inline]
+ #1: ffff88804c060338 (&inode->i_sb->s_type->i_mutex_dir_key){+.+.}-{3:3}, at: path_openat+0x8c7/0x2990 fs/namei.c:3796
+ #2: ffff88802712c958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqget_cache_insert.constprop.0+0x2a/0x2c0 fs/xfs/xfs_dquot.c:825
 
 stack backtrace:
-CPU: 2 PID: 112 Comm: kswapd1 Not tainted 6.8.0-syzkaller-06619-ge5e038b7ae9d #0
+CPU: 3 PID: 10102 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-06619-ge5e038b7ae9d #0
 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
 Call Trace:
  <TASK>
@@ -215,27 +194,67 @@ Call Trace:
  __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
  lock_acquire kernel/locking/lockdep.c:5754 [inline]
  lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
- down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
- xfs_ilock+0x2ef/0x3e0 fs/xfs/xfs_inode.c:206
- xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
- xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
- xfs_icwalk_ag+0xca6/0x1740 fs/xfs/xfs_icache.c:1713
- xfs_icwalk+0x57/0x100 fs/xfs/xfs_icache.c:1762
- xfs_reclaim_inodes_nr+0x182/0x250 fs/xfs/xfs_icache.c:1011
- super_cache_scan+0x409/0x550 fs/super.c:227
- do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
- shrink_slab+0x18a/0x1310 mm/shrinker.c:662
- shrink_one+0x493/0x7b0 mm/vmscan.c:4767
- shrink_many mm/vmscan.c:4828 [inline]
- lru_gen_shrink_node mm/vmscan.c:4929 [inline]
- shrink_node+0x2191/0x3770 mm/vmscan.c:5888
- kswapd_shrink_node mm/vmscan.c:6696 [inline]
- balance_pgdat+0x9d0/0x1a90 mm/vmscan.c:6886
- kswapd+0x5c1/0xc10 mm/vmscan.c:7146
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
+ fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3706
+ might_alloc include/linux/sched/mm.h:303 [inline]
+ slab_pre_alloc_hook mm/slub.c:3746 [inline]
+ slab_alloc_node mm/slub.c:3827 [inline]
+ kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
+ radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:276
+ radix_tree_extend+0x1a2/0x4d0 lib/radix-tree.c:425
+ __radix_tree_create lib/radix-tree.c:613 [inline]
+ radix_tree_insert+0x499/0x630 lib/radix-tree.c:712
+ xfs_qm_dqget_cache_insert.constprop.0+0x38/0x2c0 fs/xfs/xfs_dquot.c:826
+ xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:901
+ xfs_qm_vop_dqalloc+0x49a/0xe10 fs/xfs/xfs_qm.c:1755
+ xfs_create+0x422/0x1140 fs/xfs/xfs_inode.c:1041
+ xfs_generic_create+0x631/0x7c0 fs/xfs/xfs_iops.c:199
+ lookup_open.isra.0+0x10a1/0x13c0 fs/namei.c:3497
+ open_last_lookups fs/namei.c:3566 [inline]
+ path_openat+0x92f/0x2990 fs/namei.c:3796
+ do_filp_open+0x1dc/0x430 fs/namei.c:3826
+ do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_compat_sys_openat fs/open.c:1481 [inline]
+ __se_compat_sys_openat fs/open.c:1479 [inline]
+ __ia32_compat_sys_openat+0x16e/0x210 fs/open.c:1479
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+ entry_SYSENTER_compat_after_hwframe+0x7a/0x84
+RIP: 0023:0xf7328579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f5f225ac EFLAGS: 00000292 ORIG_RAX: 0000000000000127
+RAX: ffffffffffffffda RBX: 00000000ffffff9c RCX: 00000000200002c0
+RDX: 000000000000275a RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
  </TASK>
+syz-executor.0 (10102) used greatest stack depth: 20032 bytes left
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
 
 
 ---
