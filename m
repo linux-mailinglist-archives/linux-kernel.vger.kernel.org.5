@@ -1,284 +1,213 @@
-Return-Path: <linux-kernel+bounces-103824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FE8487C4FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:07:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38CEB87C4FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A50D41F22185
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:07:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CF9A282515
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463DE76900;
-	Thu, 14 Mar 2024 22:07:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA81768F5;
+	Thu, 14 Mar 2024 22:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QQQe5nnn"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QWHWygN2"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A84E74BE8;
-	Thu, 14 Mar 2024 22:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710454056; cv=fail; b=jQK62olY9ZZkbptAKlV1qa92KlG4wRyBNNF6hd2IEQrFuhQYGdRGF+1bMlWCHF7kNyOogQibvUk1aJnVhSzPwEvVgcPDuzIrTii31BTyWJGxeWOyO27wmnm4h7uLBh9f3kTiDTGAXfwKH3u5xFPLW3Pwa5r17boHBkzuB+IEfhE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710454056; c=relaxed/simple;
-	bh=db3Qid7BKPlxfQZmwyniMSepdtk0gpbn/m4ZkuISdgo=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=I+kpxwDA+By3IuCm4RnGjg1SwEEfA+fNBHUqcLf/pGVK6PXSTGeqfkQfwftAg9J1eTRQECHww9gKf7JF9gLEKlFfBnIRV47iEP4tJ5Q9x2j51V5L7/q3KKLnVhvZw6yGOSAm8Ov0255R8fSqcv1/V1guk4mjgcyLuCYU8OZdNZE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QQQe5nnn; arc=fail smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710454054; x=1741990054;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=db3Qid7BKPlxfQZmwyniMSepdtk0gpbn/m4ZkuISdgo=;
-  b=QQQe5nnnCXYOMr6o+BkxkIQcdOHZzXR6aoOBIkXYpYbBvtefSk1vPobo
-   cgkmelRL9Y1Xf6EyiHFmKt7fBxAcHoPP65NtPLNHx+XHLt9+UY8hEA2sZ
-   x5czAH2hwT9W0SV5ePColsDLN8tOlK1BH/vELRsnJcfXTK3IxHwjleHNi
-   gmJrxLeveb0+ZUEhjD8UBPcJV+CUlzlAiboBoxiLmD1Zn14iEjI9IFWpN
-   Wm+Aael11ONwC04mb2qMWHu9cAy4KfAgOaVTjaDw3vb/BKfuH0VdoEL5n
-   eGCzm85sB3GkBnH+7LVEeEDo/mTZN3TJs3wwT43jvrHCUfiYXST4Q/Rbo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="8241979"
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="8241979"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 15:07:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="12363799"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 15:07:32 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 15:07:31 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 15:07:31 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 15:07:31 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Mar 2024 15:07:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gxs5krIHfXS8Clk00eGw+qhDr7tvGuikeKKq3n9s6aQ6bfTFOfbdGX50D+pPGbjVO/1ncnMXrX7Y1fSH+zZ+TzWtWEhyFQU8kHujoLWtBVQcRSiSmB7jlmoOOaXWbL+SHPRhkgI6gNA0gncl08ngp2WcMIZCbJFM8GNHOyFreMNt44ym+M0H+apEhmRJoXYq3MmttTMIqd+tDdvt1qo/tYDd0iesGu49pLQNZBkY1hndr5gWxvxzvFpNeCyoGk8GG+Kms1+i1kuUaHYBSzU/2v5XUoHhnYrQb+xRj+lzZOOklhyLHJD81DRh5+o0j8gU0AaP2rQkhCLQv7D8bROT1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bPtctFigCcoR+2p2apDHmeXYl+1WGDgDFqdXGLCpLeY=;
- b=VQwDkjlMdioKtBSVNPHcEHEb3nxd0Ik+8Nw4tUntM6EZU47yi5vrprIMN/tujMp934QAL1nk3SllJCOhEV8R7m6c/mJ9VVH2Kr2FjgsC3fTug+bewa4n8BIE0JMqbx4Q3FAZxi8zNYjoz+3lhx4m8fAc7eTRnwAHydiOCthzy6DgWGiZC7FDedTBF3/JisGdNIa1ndLPzd+ABF1cmJ8zbPqWRLKzVJAARob++XpjQw5if/L/2KVaJOEUMHPha5QqkWjqgU7dbYI8t+mMxSBGcp6mqdFupFY3josyPHVgsXsF6pMyEoD0rB3dxRgwYN1ejoW1Xen6tqiNdSNrCgAZ2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by CH3PR11MB7722.namprd11.prod.outlook.com (2603:10b6:610:122::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Thu, 14 Mar
- 2024 22:07:27 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7386.015; Thu, 14 Mar 2024
- 22:07:27 +0000
-Message-ID: <8f6d7c14-5341-4d13-9538-d34a18d3c117@intel.com>
-Date: Fri, 15 Mar 2024 11:07:18 +1300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] KVM: x86/mmu: x86: Don't overflow lpage_info when
- checking attributes
-Content-Language: en-US
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>, <seanjc@google.com>,
-	<pbonzini@redhat.com>, <chao.p.peng@linux.intel.com>,
-	<isaku.yamahata@intel.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240314212902.2762507-1-rick.p.edgecombe@intel.com>
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <20240314212902.2762507-1-rick.p.edgecombe@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR04CA0313.namprd04.prod.outlook.com
- (2603:10b6:303:82::18) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CD61A38EE
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 22:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710454140; cv=none; b=eCXLb7wz2yRb1ncHShtrc1bmdZLfP8Llz/y0GcwqVS8FHq/cE8sRaM87f1KM8j+gAnoXEPrK87wqw2LWE7GsLgoDWpsC17z6qBcmyY8CEXDfgHqaZY11xGR2zZh3hUpHLPWXGN1aHqIo71gY2TxCfhPXe3QA0Qjz5Z2iZbMEnw0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710454140; c=relaxed/simple;
+	bh=BS4+zGyy1SAtljdcH98UwKV8Qv5xcKz3I1tHZ9RDz8I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sMtzxHhZjQAfGNgOg85s2Vz1vtdMq/UcAdgvhTOmmVTF01AqJ4NRL6ThzIqT+5/MRanqN+OA8LpKDxFORqEMhfENMNr0vsRICufugGePTgHGDNp2/85Y3vIAOCxW0ZlX5gSOAk6RQsLHAmU+KpOwvJuRk9dJvvHlHr5RwD/NVds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QWHWygN2; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-29aa91e173dso1237048a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:08:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710454138; x=1711058938; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=ADAX/gLuChDkq22XdeuwV1gLf5BKryshAQvMkVQ0/UY=;
+        b=QWHWygN2AqCbFcAweEwU80xCmHl8DruwdtuKhFsWdhA/FsgCGA6cxyo9kbygpWQkCf
+         mYjZY6rfG6x283jY0ELG2WLkGSRo/fyYwhwGtnlkkr678grpKjPlH38RcQ8nOrCApywR
+         sAc4Xc1kBQ/ttUZ/SwRaFfTj/PbrhshblgAYgXBfVCozcjEJYidR2CbZ2f5LizXujTAm
+         M4Ejv5PmtGYs6sGLDxCD7Jqj88X9l5FEU0EmjDVZM25Zeg4D0koflxwpH2cKcQ8iG+UM
+         ngme0HR+qmQbfU2dx4+TLSVOfNiCz0MPjpBgyK88D3Ul9L1Ebsc3zKkcYqxfdHSQ0UPn
+         H5jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710454138; x=1711058938;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ADAX/gLuChDkq22XdeuwV1gLf5BKryshAQvMkVQ0/UY=;
+        b=CeKsDp8OZ0gz/hPlL+2awKHNeLbje784+7z4ixi127zqwLWFE+EeZqaL5Wt7JL1Tpw
+         Fjq/6vwE36ROc1TWQ3kxAh0C0VWWPWhCzIqF4O6/fcgUi0pgRH09LA1cQWl2uyXauIhG
+         HNyEPpqsGI9vuKsjnnWt7lY8Bk/yz4T+0q03D630c2shTZZIVaqDKAwrBnvMKti71tLC
+         41Juhly9/I6iMB5go1EyfeMNMfOLxFqV/RFpEs+P6oP/DmnzcdSutxXid9Mu8/zB6fdZ
+         ljGHLheHA0uzmcwpCxb6yN7HWWy3iBgBeS23ZLoZFBpn9RA4oOgOu+65diTcL9SPLZSt
+         k44g==
+X-Forwarded-Encrypted: i=1; AJvYcCVmWbMeWtwfONYbFp1zRorTkEiB4BZEdQAMm4wdNhtc5xR6/iY/n74zScwmxfVpNlfWtncUhSvqju7GJk2CCjIciyByzt67pD8NY2O5
+X-Gm-Message-State: AOJu0YyHA7gUPHu1n71aSVfBAXvFMI3uAeMvLnxreHsZ053OFN2j0tXX
+	4VGPOhb/Q1VgUj/cE4iGjy16MA3RxHP37HxE116JzZW1pKb8kUAAGixoiOvt
+X-Google-Smtp-Source: AGHT+IEN6BX/mU/+XDKnXGfLmiO8P2eX6nnmdI+mNGJF77cTA/2aaRScR+x1ifPl7lCztngiokBlvg==
+X-Received: by 2002:a17:90a:68c4:b0:29d:f343:5972 with SMTP id q4-20020a17090a68c400b0029df3435972mr135531pjj.5.1710454138142;
+        Thu, 14 Mar 2024 15:08:58 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id sr7-20020a17090b4e8700b0029de4e332e7sm933349pjb.57.2024.03.14.15.08.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 15:08:57 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <94888143-42b0-4601-bee3-af17f244f831@roeck-us.net>
+Date: Thu, 14 Mar 2024 15:08:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|CH3PR11MB7722:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9588ce74-dd37-4783-42f0-08dc4473224e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RTfX8srEImvQsn9qPSUsLDQvz4Vkvd88LlIcP/cnfZoVS8RG2x0GrwefjfyG9V1T5+HtB1fUQQRUyhhXzSBjcnSuyJdI64ZmafkVwkJSF2U8E6p/FoICk7buivwwwfGgbTyFJNTk2HW6T8vQaWa5tRrjelTHMNZDLz00Za64hrGoWdsKvxV6VDcz4z/yW/VbltmnQ+Uh8VrYDzt1GI3H7lq8W9hwDqngTrZ3/YSiiXlM+IUpz8yhq7euNoOuMgUT7iIVfoo63E5WYAy9isp/yhb2NdHREr3LDLXruiTPHL13/hY0TgoL3skT9gdDAkhl2Dh6tdVkuot4M5ezniSisL3OdoVZVNcKXaJf6voIXVhXYiSzB8cDs94h4uPRjB5SjPaBsYpyCVhFHUfJgmCIDs7ZZfH8Tpj4KIqDmZ0Ss9DFmEPBXgi1HoFVlHnOSKBEfEXwEOvlQHjqQGnLG/m1HC79FnC/8IMGpviF3YEA57QZy9/bHvneZboEZ1LnHruvd1JpQQjLbmDilWGjsD6PpYYQMCFB57ryqRI72lP3TopY1wfynHe8QklF0WxiPBbs6/jT/j38YqYA2zsrN7Q1BX2COjlIUddZK+SHjFG4sTVZLkqCr/m6PpVRrlet3X7MGMsnF9CB0yyVfedQ6ULajcYPUD0gBQ0spZdMyNwfmds=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OXF5RWF6S2ZjRWtnUklwNW1vRmw5YjUzM1dka0NjdEYveXBYZmJwSGRqNTda?=
- =?utf-8?B?cSthMEc5T1F5MkFhTnZ2cUVzVkwwOUF5QVpEUWNRNXhES1ZuTzVZeE93ektS?=
- =?utf-8?B?Q0dRek1UY3JyZFloSGhZQXBxTFY2VmticHZIMnZqZVRJUUkvbkFFUTJGejYv?=
- =?utf-8?B?ZkdQQ21nbTNLOEpTMkxrZlJ6cE9CZ2FFdGsyZEptZkFzbUhRa2FlUVpnclM2?=
- =?utf-8?B?VytVZWR6WXdaRjNkd1RtbE1Takk0OG5BeUhQK2xyenlTaVJzcmtYNHpZeFY0?=
- =?utf-8?B?bDhaNGFxT3F5bUtmcnZYZnYzOVFaVTIrR1Z2QzVBZDhYRmtwZGdSTHg0NnVD?=
- =?utf-8?B?Y3kvakxOYXZ3UzRTYTV5WTNhOEV6VnJQMW1Dd1RVREZCQ3dIR1VXLzdWRDNr?=
- =?utf-8?B?Y0ZQNzBHMER3SnBaMXM3bWdSdG1DaEZLWTVHbWFQa1Jub2p1WTkzcm10Ykxv?=
- =?utf-8?B?Qm1JR3krUEI3TG1xenZvcTZ4WUVCTDRxMEhiUU1kdkRtNkhCWWxrcUtUckJ3?=
- =?utf-8?B?YUwyVDh0S09oK2ZHN2JrN0Y3OGpwSUVBNy8xSWZBemZnQjBhL0pXampoTGl3?=
- =?utf-8?B?WDFmeE1qRmNobUhxMHhWT29OSHYyK0dEc2xpT3VUU25kWHhETVREL2p0OVRZ?=
- =?utf-8?B?Z0RHNElnT2hUZlFwcHlpYTZEMW5OS0MvNHVGMTZkTWFobDdQZzd2ZFMwVW5s?=
- =?utf-8?B?RWFISVFtRU9sRTF5dlFrbWNZdGJRVnRTdGRDVkdqODhLVGJOOGVZdmhQbHF0?=
- =?utf-8?B?QTdvUStoVWxoSTdCczRXcklTVEJzbnpZTUx1bG5QOEJiVkZhSjUxbXNBR0U5?=
- =?utf-8?B?eGt2NVdhTzNZYlo1L01oeUlTbUhLM1FsSE1LM2pwclN1SVovWmg3L0tSZzdJ?=
- =?utf-8?B?dWxvNGdxNitiUW15N1Nta0JXall1aGViYW5UbHNINTh5bXVjeGhJc2Y4QmJ1?=
- =?utf-8?B?anowQlFjYnFWQmszY0ROV29BS0ZNMHJiRWxkUEV5Z3c1SlNxYS8wUXovbEdK?=
- =?utf-8?B?Q1Aza0ZGbzZmSE9ZeFRYenVDQ3VtRXZYdTVsNlc5YkpIU3R6NzZkRGFrS1dJ?=
- =?utf-8?B?anZxMmtCZkVFUjhsSE5lY3o4QkFaSUliQVA0R2hyWUcwZkRscXc2c0xRazFj?=
- =?utf-8?B?OWNDN0JmcXVOWVdObDc3NFNaQUkxY2NiNUl1bmJyZ3pQZU5ZVzZOV0loWG1Z?=
- =?utf-8?B?bDJ6Y0lEN0FocEl0dmZNVm1POFlYb1hTY3NKL3pnUUJnSG9DdGVSeS9iQlFE?=
- =?utf-8?B?QnhCbUVjNzlXaVUwUWpHN2o5SjUzWGdVUlZJR0ZqVnR3WG5CTWMvMndEYUcz?=
- =?utf-8?B?OXFJemIvQ3lBaXF0UUFkZUY1SzMxd0xDcUdNQUZSZmdGaklTSUY0T1Z3UWh1?=
- =?utf-8?B?QjhEejllZTEzdThBV2oyZk44RjRHeGJBVktZT3RGQkY5TmNMVDUxZjRIUG1w?=
- =?utf-8?B?akYyWW5zaktsVnlXSEF1RXBndE1Yb0had2c4dUhjRVRSYWNrOEMyeUVqd050?=
- =?utf-8?B?ZDBWOEtDZ0s0b1hwZ2daQmJvWWdLanpIdlptc3VQMW9URnYxdC9lWHVpNjZt?=
- =?utf-8?B?TXE2eGtCQTEvbVZ5ZktOTXFTSGdqVlVpSlNTVE15SEFBelg3V0VoTmZrWFVM?=
- =?utf-8?B?T1FsYXNBbGpIdGlKT2RQTDhEalM1SzB6V2o2Q3l5YjB5V1FiTHR1Y2MrTnB6?=
- =?utf-8?B?VThxeGIzOXZOUUh4OTU3ZUExSnk2eXVBN2xTbWZYT05HUmJEdE12ci9hVXpo?=
- =?utf-8?B?cTVsdWJrUnQ1Q1FOSUVkcHU4SENKTTQwQ1B4MVoxdXBsZ0Nmc3FZMlNubnhD?=
- =?utf-8?B?ajBFTEhxczJZdXlPTkJoZzRKL0VoLzhNNlZkMDQvSFN0Vk0yOVNtb0JtYmZS?=
- =?utf-8?B?V2k2K0x1N2ZFYWRHdzh3T1RDY0UyU3BLaGJzWGZtY2RuMWx6S1NUQm5LeU1j?=
- =?utf-8?B?Q00xK2cwQkxzVmpkZnorM002YjY4aThrWjNGeWVOWlhHeWhHQTl2RkJ5VjFF?=
- =?utf-8?B?dEZXVTdISTErdG1od2ZmZnJJbXVKRGdZM2pRWXpLd3lqUWkxZ0hyUUdwcjBQ?=
- =?utf-8?B?YnpGZyt1MDZ5RDZUSEdzWlV4RUcvQ05GcGw5SzhOYjNDQ0dkUmZKK3JwOG5v?=
- =?utf-8?Q?buEqTBk9yQwQBw1mXNAmay2Gr?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9588ce74-dd37-4783-42f0-08dc4473224e
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 22:07:26.9035
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2mcApI6P4u+hg16xpspfSKE+pPWfKeyZc6ua4rElXT2WQZCHyAGxyJeTCPppLVqLSZLspkCUe+wMgyGJnyaH4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7722
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] kunit: time: Add faster unit test with shorter time range
+Content-Language: en-US
+To: Rae Moar <rmoar@google.com>
+Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+ Daniel Diaz <daniel.diaz@linaro.org>, Shuah Khan <skhan@linuxfoundation.org>
+References: <20240313210124.2858729-1-linux@roeck-us.net>
+ <CA+GJov5V5+X9FY7MD1Q+eBeEcJeUjQEuK3Qw8LJ0Oho9KtuXtQ@mail.gmail.com>
+ <c34e1c68-254f-489b-925f-0e7906b3a89f@roeck-us.net>
+ <CA+GJov6j7Spi2bPki2Z2rDp+AarkM0dwrXjPKrVksDw0Uo2D0g@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <CA+GJov6j7Spi2bPki2Z2rDp+AarkM0dwrXjPKrVksDw0Uo2D0g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+On 3/14/24 12:44, Rae Moar wrote:
+> On Thu, Mar 14, 2024 at 3:30 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> On 3/14/24 12:05, Rae Moar wrote:
+>>> On Wed, Mar 13, 2024 at 5:01 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>>>
+>>>> Commit a547c4ce10bd ("kunit: time: Mark test as slow using test
+>>>> attributes") marked the time unit test as slow. This means it does not
+>>>> run anymore if slow tests are disabled. This reduces test coverage and
+>>>> is thus undesirable. At the same time, the test currently covers a range
+>>>> of 160,000 years, which has limited value.
+>>>>
+>>>> Add additional test case covering a total range of 1,600 years. This test
+>>>> takes less than a second to run even on slow systems while still covering
+>>>> twice the leap year calculation range of 400 years around the center date.
+>>>> This test can run even with slow tests disabled.
+>>>
+>>> Hello!
+>>>
+>>> I really like this addition of another time range test. This looks good to me.
+>>>
+>>> Thanks!
+>>> -Rae
+>>>
+>>> Reviewed-by: Rae Moar <rmoar@google.com>
+>>>
+>>>>
+>>>> Cc: Rae Moar <rmoar@google.com>
+>>>> Cc: Shuah Khan <skhan@linuxfoundation.org>
+>>>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>>>> ---
+>>>>    kernel/time/time_test.c | 35 +++++++++++++++++++++++++++--------
+>>>>    1 file changed, 27 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
+>>>> index 3e5d422dd15c..15c6f3a5e73c 100644
+>>>> --- a/kernel/time/time_test.c
+>>>> +++ b/kernel/time/time_test.c
+>>>> @@ -47,18 +47,18 @@ static void advance_date(long *year, int *month, int *mday, int *yday)
+>>>>    }
+>>>>
+>>>>    /*
+>>>> - * Checks every day in a 160000 years interval centered at 1970-01-01
+>>>> + * Checks every day in a specified interval centered at 1970-01-01
+>>>>     * against the expected result.
+>>>>     */
+>>>> -static void time64_to_tm_test_date_range(struct kunit *test)
+>>>> +static void time64_to_tm_test_date_range(struct kunit *test, int years)
+>>>>    {
+>>>>           /*
+>>>> -        * 80000 years  = (80000 / 400) * 400 years
+>>>> -        *              = (80000 / 400) * 146097 days
+>>>> -        *              = (80000 / 400) * 146097 * 86400 seconds
+>>>> +        * years        = (years / 400) * 400 years
+>>>
+>>> This is tiny but if there is another version, I find this comment a
+>>> bit confusing. Could you change this to maybe be "total seconds ="
+>>> instead of "years =" because years is used as a unit on the right side
+>>> of the equation?
+>>>
+>>
+>> Good point. "total seconds" might be just as confusing, though.
+>> How about "total range", "time range", or just "range" ?
+>>
+> 
+> I see that. Any of those options look fine to me, maybe just "range"?
+> Whatever you think is best of those.
+> 
 
+Let's just use "range". I'll wait a couple of days for additional feedback before
+submitting v2.
 
-On 15/03/2024 10:29 am, Rick Edgecombe wrote:
-> Fix KVM_SET_MEMORY_ATTRIBUTES to not overflow lpage_info array and trigger
-> KASAN splat, as seen in the private_mem_conversions_test selftest.
-> 
-> When memory attributes are set on a GFN range, that range will have
-> specific properties applied to the TDP. A huge page cannot be used when
-> the attributes are inconsistent, so they are disabled for those the
-> specific huge pages. For internal KVM reasons, huge pages are also not
-> allowed to span adjacent memslots regardless of whether the backing memory
-> could be mapped as huge.
-> 
-> What GFNs support which huge page sizes is tracked by an array of arrays
-> 'lpage_info' on the memslot, of ‘kvm_lpage_info’ structs. Each index of
-> lpage_info contains a vmalloc allocated array of these for a specific
-> supported page size. The kvm_lpage_info denotes whether a specific huge
-> page (GFN and page size) on the memslot is supported. These arrays include
-> indices for unaligned head and tail huge pages.
-> 
-> Preventing huge pages from spanning adjacent memslot is covered by
-> incrementing the count in head and tail kvm_lpage_info when the memslot is
-> allocated, but disallowing huge pages for memory that has mixed attributes
-> has to be done in a more complicated way. During the
-> KVM_SET_MEMORY_ATTRIBUTES ioctl KVM updates lpage_info for each memslot in
-> the range that has mismatched attributes. KVM does this a memslot at a
-> time, and marks a special bit, KVM_LPAGE_MIXED_FLAG, in the kvm_lpage_info
-> for any huge page. This bit is essentially a permanently elevated count.
-> So huge pages will not be mapped for the GFN at that page size if the
-> count is elevated in either case: a huge head or tail page unaligned to
-> the memslot or if KVM_LPAGE_MIXED_FLAG is set because it has mixed
-> attributes.
-> 
-> To determine whether a huge page has consistent attributes, the
-> KVM_SET_MEMORY_ATTRIBUTES operation checks an xarray to make sure it
-> consistently has the incoming attribute. Since level - 1 huge pages are
-> aligned to level huge pages, it employs an optimization. As long as the
-> level - 1 huge pages are checked first, it can just check these and assume
-> that if each level - 1 huge page contained within the level sized huge
-> page is not mixed, then the level size huge page is not mixed. This
-> optimization happens in the helper hugepage_has_attrs().
-> 
-> Unfortunately, although the kvm_lpage_info array representing page size
-> 'level' will contain an entry for an unaligned tail page of size level,
-> the array for level - 1  will not contain an entry for each GFN at page
-> size level. The level - 1 array will only contain an index for any
-> unaligned region covered by level - 1 huge page size, which can be a
-> smaller region. So this causes the optimization to overflow the level - 1
-> kvm_lpage_info and perform a vmalloc out of bounds read.
-> 
-> In some cases of head and tail pages where an overflow could happen,
-> callers skip the operation completely as KVM_LPAGE_MIXED_FLAG is not
-> required to prevent huge pages as discussed earlier. But for memslots that
-> are smaller than the 1GB page size, it does call hugepage_has_attrs(). In
-> this case the huge page is both the head and tail page. The issue can be
-> observed simply by compiling the kernel with CONFIG_KASAN_VMALLOC and
-> running the selftest “private_mem_conversions_test”, which produces the
-> output like the following:
-> 
-> BUG: KASAN: vmalloc-out-of-bounds in hugepage_has_attrs+0x7e/0x110
-> Read of size 4 at addr ffffc900000a3008 by task private_mem_con/169
-> Call Trace:
->    dump_stack_lvl
->    print_report
->    ? __virt_addr_valid
->    ? hugepage_has_attrs
->    ? hugepage_has_attrs
->    kasan_report
->    ? hugepage_has_attrs
->    hugepage_has_attrs
->    kvm_arch_post_set_memory_attributes
->    kvm_vm_ioctl
-> 
-> It is a little ambiguous whether the unaligned head page (in the bug case
-> also the tail page) should be expected to have KVM_LPAGE_MIXED_FLAG set.
-> It is not functionally required, as the unaligned head/tail pages will
-> already have their kvm_lpage_info count incremented. The comments imply
-> not setting it on unaligned head pages is intentional, so fix the callers
-> to skip trying to set KVM_LPAGE_MIXED_FLAG in this case, and in doing so
-> not call hugepage_has_attrs().
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 90b4fe17981e ("KVM: x86: Disallow hugepages when memory attributes are mixed")
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Thanks,
+Guenter
 
-Reviewed-by: Kai Huang <kai.huang@intel.com>
-
-> ---
-> v2:
->   - Drop function rename (Sean)
->   - Clarify in commit log that this is only head pages that are also tail
->     pages (Sean)
-> ---
->   arch/x86/kvm/mmu/mmu.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 0544700ca50b..42e7de604bb6 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -7388,7 +7388,8 @@ bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
->   			 * by the memslot, KVM can't use a hugepage due to the
->   			 * misaligned address regardless of memory attributes.
->   			 */
-> -			if (gfn >= slot->base_gfn) {
-> +			if (gfn >= slot->base_gfn &&
-> +			    gfn + nr_pages <= slot->base_gfn + slot->npages) {
->   				if (hugepage_has_attrs(kvm, slot, gfn, level, attrs))
->   					hugepage_clear_mixed(slot, gfn, level);
->   				else
 
