@@ -1,165 +1,91 @@
-Return-Path: <linux-kernel+bounces-103309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DAF787BDD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:37:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB94F87BDF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:47:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2E81B213EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:37:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 816FB1F2241C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D0E6CDC9;
-	Thu, 14 Mar 2024 13:37:09 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15CA56EB45;
+	Thu, 14 Mar 2024 13:46:59 +0000 (UTC)
+Received: from relay164.nicmail.ru (relay164.nicmail.ru [91.189.117.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC6A4691;
-	Thu, 14 Mar 2024 13:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FB85A4E0;
+	Thu, 14 Mar 2024 13:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710423429; cv=none; b=K5lQNPg2Mm9aRrqlPzJJ3GPmqOxFeOpSpnkd/C/+mC6O82qY+9uJRM8UkJSK9oMc4jlTaKbZm8Eqj/pyhtrnceN4rwAVuXiXu5c217yuAWc1mZ3x64P/QpAxxS7Ome0eZd3xh1K7TDvVdAlb69dMhaW504T3gVUXjhwHkWitPs8=
+	t=1710424018; cv=none; b=PNawFYe+eteJZBvYrBB9xCXQimcu7L4ca5M7aWOs0IdSRmJVGHtvqqTtKyotPpmf4fIKgw7rvKSeF9vRt7kqc8n+VlRgRjo4A58i8MRBpv3Ccia7n/ZD4qjzWTQPNHgnHE8wpodq/pw7Pr+JQ5+ITf3qJwPLbwR00H/3LT+VRIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710423429; c=relaxed/simple;
-	bh=Or0S+WGOwSC7Ncr7HBViZVdDj7Z438Sy1P38x9okT/4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZbT9qmaVXQokfULjrlaeqp+DSIZha9VX6+3QEJr+MjPevSpIZvbNFWT7CYJ+UH2m3nkRfSNI25l5HeoKWBNA56QR5CkypK1o+VKtmbqAZi78nsXTGphpxnX3WlfjGbGKFJJ2H6TOlFvhoiFMWv48MR0bg3CrOdQImBBY5jHRQ8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-60cbcd04de8so7768937b3.0;
-        Thu, 14 Mar 2024 06:37:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710423426; x=1711028226;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QDiARA/24cHYG8FRrouoTvUxwp5WbH/hNpGJ/9ezCCU=;
-        b=s5JPDoZeDGE/oGf4oYHWBqKGgczx8RjbET7PsqqVtjXwo0vfz0ufbDy6yp7Ehf+23b
-         T/ERoUCgoQzRhuwWRMGFSW/zgOq5ofSA0ikZyasRnERlG3RKO+FQDx/c4nqrLfiNBfud
-         Cs4SoT7xJpnzTzwNTELWh8/64X/jzbXYzYPHUqcw9iTTSe82JIUu7GVDiULbBQ0UWHWt
-         q51Ay2zjkvagRLKlTryz3BzG8bk0zCPKfZGw2qbEg/P20okk1S5hmHragNUrb8NSppPR
-         PrOGhbT5bmwHg3iy1pV6slnrfF5htbWW9K0EcNxheQud+0KabVHmrtsXTqlgKUGY/2vb
-         RXBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVNh6DgcTTxhwkthKfAOSeu46OAeOlhlexg4rfOMAVW7j0Kmie2JQvsQwmrm5qtmV0zLEt/VGFhSsGobfIDnjDzNV7y+SLe23K60bZKAiO0CanP6EJ4Dacooob9WhgOtCAEKPnTCu46JwKs7VANWSDJC1ZwnSQTfmWcWy7Wx3xJBjOEunF7R6RiOz5akQVTo5ZjrL6CqSW0F9iu6OYNhaU7i/8xt+Zq6eZVkaZLJclfvA6npr7+taO6Ldtuvz3fnYkeaWdTiW3QraerJinW1SCS1Rdzs6PGGA==
-X-Gm-Message-State: AOJu0YwwXzwZA32OVxZHf4BBJ5QyQHBprtt8uEMJTBqLqsIRH7jlY9OI
-	YhAFUI3PSWQn4kSzAJMbkTgcnjlgdcH8ivED/9yhN4VePuPrS1GNic9gBoxCkd0=
-X-Google-Smtp-Source: AGHT+IHpbRdqhvkeW3yEZiafjfhXDt8oLhV8fyLnuqyM3qDFXm4ih/lEQNaxgFvSfyhIP3k4ZgIwYw==
-X-Received: by 2002:a0d:f7c2:0:b0:60c:d640:33b3 with SMTP id h185-20020a0df7c2000000b0060cd64033b3mr124473ywf.13.1710423425769;
-        Thu, 14 Mar 2024 06:37:05 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id l64-20020a815743000000b006040d34e58csm276913ywb.74.2024.03.14.06.37.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 06:37:04 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60a0a54869bso8984367b3.1;
-        Thu, 14 Mar 2024 06:37:04 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUzbzvJtnG/So4NbXl0uO6e1Sah/zc6LKF/hm2221JU8Xh1+RdPa+w3oLqPpQQhg1zqvE51N0N1gBd9yqWhTi2Hdplo8R49KvlfSygsv0SLdc5xg0SZm6Y9gKfE4kkPBJ7hB2KV3nsnhLLeE3ArpnrwGENL++tu32X7+C/YbXn3A1nIc/0CZBq9mdlpLK2t2/MyCgortevYHCSt+ENGfkH/sO0Kt9Jl6MhqzkC5pJsb+2uRc7eAiY6GBd7Hgs+rHsheJmJW5YEpdUoxyw3547G9pHaVs6wK1g==
-X-Received: by 2002:a0d:fe04:0:b0:60a:4930:5bb1 with SMTP id
- o4-20020a0dfe04000000b0060a49305bb1mr1000757ywf.5.1710423424398; Thu, 14 Mar
- 2024 06:37:04 -0700 (PDT)
+	s=arc-20240116; t=1710424018; c=relaxed/simple;
+	bh=mWnJcYVexJMfzwrrd4FxMxgxlZ0IYRDe5jxh+xgWppc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:References:To:Cc:
+	 In-Reply-To:Content-Type; b=TVqUykKbglH27ecyJ7OQkX3ruvMv7mrzDFm9iT+Y+lumcgOmGtkKmReE85oZ4ZC7+p6fckMBMtpiu63MCUucfPocfuZt8kIqLfJ+NmRk0ORyYQpsUTWbu/mBo5QWTiL2E/sXIyZ2pqr5pV3Yb4ferHoUkuIshx+5M7fJMuBQF8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
+Received: from [10.28.138.148] (port=33962 helo=[192.168.95.111])
+	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
+	(envelope-from <kiryushin@ancud.ru>)
+	id 1rklGY-0000IY-G1;
+	Thu, 14 Mar 2024 16:37:03 +0300
+Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO [192.168.95.111])
+	by incarp1101.mail.hosting.nic.ru (Exim 5.55)
+	with id 1rklGY-003CBJ-0Q;
+	Thu, 14 Mar 2024 16:37:02 +0300
+Message-ID: <d296ff1c-dcf7-4813-994b-3c4369debb7d@ancud.ru>
+Date: Thu, 14 Mar 2024 16:36:56 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312170309.2546362-1-linux@roeck-us.net>
-In-Reply-To: <20240312170309.2546362-1-linux@roeck-us.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Mar 2024 14:36:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUkvagJVEfnhq=Nx2jnmdS0Ax+zy1CvyN0k7k1EwUpu+g@mail.gmail.com>
-Message-ID: <CAMuHMdUkvagJVEfnhq=Nx2jnmdS0Ax+zy1CvyN0k7k1EwUpu+g@mail.gmail.com>
-Subject: Re: [PATCH 00/14] Add support for suppressing warning backtraces
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>, 
-	Arnd Bergmann <arnd@arndb.de>, =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Kees Cook <keescook@chromium.org>, 
-	Daniel Diaz <daniel.diaz@linaro.org>, David Gow <davidgow@google.com>, 
-	Arthur Grillo <arthurgrillo@riseup.net>, Brendan Higgins <brendan.higgins@linux.dev>, 
-	Naresh Kamboju <naresh.kamboju@linaro.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Maxime Ripard <mripard@kernel.org>, 
-	=?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org, 
-	kunit-dev@googlegroups.com, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	loongarch@lists.linux.dev, netdev@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Nikita Kiryushin <kiryushin@ancud.ru>
+Subject: [PATCH] fanotify: remove unneeded sub-zero check for unsigned value
+References: <>
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>
+Cc: Amir Goldstein <amir73il@gmail.com>, Matthew Bobrowski
+ <repnop@google.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+In-Reply-To: <>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MS-Exchange-Organization-SCL: -1
 
-Hi G=C3=BCnter,
 
-On Tue, Mar 12, 2024 at 6:03=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
-wrote:
-> Some unit tests intentionally trigger warning backtraces by passing bad
-> parameters to kernel API functions. Such unit tests typically check the
-> return value from such calls, not the existence of the warning backtrace.
->
-> Such intentionally generated warning backtraces are neither desirable
-> nor useful for a number of reasons.
-> - They can result in overlooked real problems.
-> - A warning that suddenly starts to show up in unit tests needs to be
->   investigated and has to be marked to be ignored, for example by
->   adjusting filter scripts. Such filters are ad-hoc because there is
->   no real standard format for warnings. On top of that, such filter
->   scripts would require constant maintenance.
->
-> One option to address problem would be to add messages such as "expected
-> warning backtraces start / end here" to the kernel log.  However, that
-> would again require filter scripts, it might result in missing real
-> problematic warning backtraces triggered while the test is running, and
-> the irrelevant backtrace(s) would still clog the kernel log.
->
-> Solve the problem by providing a means to identify and suppress specific
-> warning backtraces while executing test code. Support suppressing multipl=
-e
-> backtraces while at the same time limiting changes to generic code to the
-> absolute minimum. Architecture specific changes are kept at minimum by
-> retaining function names only if both CONFIG_DEBUG_BUGVERBOSE and
-> CONFIG_KUNIT are enabled.
->
-> The first patch of the series introduces the necessary infrastructure.
-> The second patch introduces support for counting suppressed backtraces.
-> This capability is used in patch three to implement unit tests.
-> Patch four documents the new API.
-> The next two patches add support for suppressing backtraces in drm_rect
-> and dev_addr_lists unit tests. These patches are intended to serve as
-> examples for the use of the functionality introduced with this series.
-> The remaining patches implement the necessary changes for all
-> architectures with GENERIC_BUG support.
+Unsigned size_t len in copy_fid_info_to_user is checked
+for negative value. This check is redundant as it is
+always false.
 
-Thanks for your series!
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-I gave it a try on m68k, just running backtrace-suppression-test,
-and that seems to work fine.
+Fixes: 5e469c830fdb ("fanotify: copy event fid info to user")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+---
+  fs/notify/fanotify/fanotify_user.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Design note:
->   Function pointers are only added to the __bug_table section if both
->   CONFIG_KUNIT and CONFIG_DEBUG_BUGVERBOSE are enabled to avoid image
->   size increases if CONFIG_KUNIT=3Dn. There would be some benefits to
->   adding those pointers all the time (reduced complexity, ability to
->   display function names in BUG/WARNING messages). That change, if
->   desired, can be made later.
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index fbdc63cc10d9..4201723357cf 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -502,7 +502,7 @@ static int copy_fid_info_to_user(__kernel_fsid_t *fsid, struct fanotify_fh *fh,
+  	}
+  
+  	/* Pad with 0's */
+-	WARN_ON_ONCE(len < 0 || len >= FANOTIFY_EVENT_ALIGN);
++	WARN_ON_ONCE(len >= FANOTIFY_EVENT_ALIGN);
+  	if (len > 0 && clear_user(buf, len))
+  		return -EFAULT;
+  
+-- 
+2.34.1
 
-Unfortunately this also increases kernel size in the CONFIG_KUNIT=3Dm
-case (ca. 80 KiB for atari_defconfig), making it less attractive to have
-kunit and all tests enabled as modules in my standard kernel.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
