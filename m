@@ -1,182 +1,180 @@
-Return-Path: <linux-kernel+bounces-103775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5D187C459
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:37:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD8387C45F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:41:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD8A6B22B65
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:37:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D17AB21FBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5742D763ED;
-	Thu, 14 Mar 2024 20:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F960763EC;
+	Thu, 14 Mar 2024 20:41:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OzA0bQzQ"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5j0NKIg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA73675812
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8EE74E31
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710448656; cv=none; b=JOdBHxcmUdh3ABQF+cG+QPXj3aeIBB/kHnqScan4/QtO3/st7pko2dj8jNqAi1j3ruHChUtIOBClDc7Qdrc++rs5Yr+P/RquGCt6Mqcv+RvjxxO3+otCkrKHyd071cOW1DSEQpoZ/YPiH60esYR/saO227opNoGp/C3YYU7enOI=
+	t=1710448880; cv=none; b=GsTIT/+XedXF8FRGYN3aMkzz45QAsZLhhQrV16lynqzQJ41XlEp1xrlVJE349tqHZUhh6xW0DJEcSNtDq2jWHNfjfSyxq5m8jjwLs1EGBXf1x6dBwxmNjKJqcFo5KetOqwhdCiOrJ1AEc5NDpLkDRJ9w9YLdOGRdWpfCYAxjt0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710448656; c=relaxed/simple;
-	bh=VCh7PcIjSIdoiYHmmCV7KKa0WbmYYsKJts4kc1dCbp8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XWMPNGKGB7jdOn/WttVqkKqzYRJILFLidzw8PxSffC33iZIfot0WuDAk2KW3x3h5CiAXRYGvvX6TRWgwjs3iZun2wOwYV5Y7sTwWXcmo7+SXKuDJ1pNwfdlQeLY9lR5XX9k8uc/Dbi35g3PBeaVWku0cQjm7RDQ3aFArggduwXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OzA0bQzQ; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so186524366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710448653; x=1711053453; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=9f5lPvgLSiEoPXA2pIrXRDNGYkgn1Z0t8XOUQTE/qHg=;
-        b=OzA0bQzQsj15UTFYjmvOMosfUOMb1z1rpQxzVTvqGlFd4LQX3Dq+YK8dzEURi48IiU
-         5Mk/R60G4IfYE+mDnngcTZv4nngtqUgc2F9APY0dlZh8NT2S/rQj5XPeWwuUnxW7g4XQ
-         4022piUmIiwjhfIGwRVIZNhWYf1wW+EHdT3QomR5UZW93kn4UHS7D6/wenUq83Bs9tt4
-         +s2zrmvGgd+0t8M5xzSq+cpyK2cxVOfAFcTkswaLYAq02ZSvoZ8G5Ph3KG7DtILSuHkb
-         +JWSF7XXzeGmjsJ1rYsZYT++MaixG1ed4mZFkfB7mOkqMSIz8xt1lTTCGGN1MaubzADo
-         AnqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710448653; x=1711053453;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9f5lPvgLSiEoPXA2pIrXRDNGYkgn1Z0t8XOUQTE/qHg=;
-        b=UmsybmZOBcOd3OM+mbKwBNr60alWyHBcViA5OWsaKoPTPT7LUmXllCSRon+sDjpFtp
-         kAmvQjuWhO8Owx70lQs86sFfmqF9stvG0aFLoJNNW9XvV8NUBXwJky+SMo0yuy5ZF8hf
-         BAB072nwjwm0nANcX/SrGGblHxMU1udj5DuaYKBdXZzebVoHlKpUhjYG24eXZ7Nv9Ajw
-         uioUs25SjqGBjhUvpBt3cb5pXXbJfE9ACQez9g+vYV9d91tFNl3alPHvZPG0RpA6bpMJ
-         3fwyHOtHglWqtsumMNpqucJfCmqMRwA54ZOhPutAqcwtuoxiNIeAvaVZM3Xaa48W5OWU
-         G4eQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWDG/PAxEP0efgUkI3uIXzrM+8wG+uCRxQSXVopO+Ex8lIEsWd+4+8rtJYXhBYe1HSoJKvg5dgQ/GyujXFcpmF+Olt5mez5XnvUgd8B
-X-Gm-Message-State: AOJu0Yxsf4HE6bZdfOIzjLYEalZHohQ5cqcbNfT1WD3PBl3seQHVZ2wC
-	jSjL+D610QuLjfa814uYxY+qkp65/4adI/rgOIKYR5P5R31cpqdq1+BGl9rAXfybxXgnqBQD8Yq
-	M
-X-Google-Smtp-Source: AGHT+IHABuF+3TGwPMBOQxRbsETqBWyStRv86WQgRajyIkuZeueQPHNwPt5lg4PgDiUC2YQC3T/PnA==
-X-Received: by 2002:a17:906:cd1a:b0:a46:6ba2:8168 with SMTP id oz26-20020a170906cd1a00b00a466ba28168mr2025151ejb.17.1710448652813;
-        Thu, 14 Mar 2024 13:37:32 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id ox12-20020a170907100c00b00a46203a86basm1019849ejb.27.2024.03.14.13.37.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 13:37:32 -0700 (PDT)
-Message-ID: <fc7bda50-279e-4afb-8c31-4fcda0e8b2ed@linaro.org>
-Date: Thu, 14 Mar 2024 21:37:30 +0100
+	s=arc-20240116; t=1710448880; c=relaxed/simple;
+	bh=D8dmCbnX6rijB2nPz1wQDTif25zMAHPrUq0OSfJuNeI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vr8jeByTT+2qwF71TFcRFtkZLR5S6kC7CnF7JNVRZQz2jgd8hpBuBQhaicSAl/oK4A+hAMfbH81W3/stOeGOY54EFnSirdYTVQSP3aXRUzgo9GD02WFd3APjfJs4bV8vQ+GkrV7ldJthu0tcakbx0Unppb59QrvbFiKxl5k1gYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r5j0NKIg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 652ACC433F1;
+	Thu, 14 Mar 2024 20:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710448880;
+	bh=D8dmCbnX6rijB2nPz1wQDTif25zMAHPrUq0OSfJuNeI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r5j0NKIgtC9wYzEQDR7OqXRqnqwvYIK6xaMMZELt10g+TDIYs2sG/ZzPOC0RfzHLr
+	 3d6iDw4Vn4IP8s8zK97INEis4zXyGyisQKNUnbfFoQh/eNtf9IkXAQCdn859mbKGNY
+	 m2tHSJI4S/X1A/bxniT3FSCKD5w6I/0z6Yh0StWCLl8D/+4ojCS3V2fOEAAw4ICCim
+	 LzOplpM0A0NYvBM+dbgg0f+rOd0AE8Bo2vZdBB90d5o0trWYOj5i+VgoE/uBiCbfup
+	 SDpJkdBDWtb1TyvT08xT+mOwXXLKda6UdycdcRGdiFYXWrR9jRuxjg5iLObCjSZ48b
+	 NSq7SnRX42hug==
+Date: Thu, 14 Mar 2024 20:41:15 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Qingfang Deng <dqfext@gmail.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Atish Patra <atishp@atishpatra.org>,
+	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
+Message-ID: <20240314-pep-announcer-2d7f10ff8b65@spud>
+References: <20240311063018.1886757-1-dqfext@gmail.com>
+ <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <CALW65jZ+q8sDiRKgsRL9n+939HNUCnkKuO=YJjHB5Js=WYQeOg@mail.gmail.com>
+ <20240312-evil-resource-66370b68b9b4@spud>
+ <IA1PR20MB4953CE8999960BA71B46DE6CBB2A2@IA1PR20MB4953.namprd20.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sdm630-nile: add pinctrl for camera key
-To: Sebastian Raase <linux@sraa.de>
-Cc: marijn.suijten@somainline.org, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240314200037.549206-1-linux@sraa.de>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240314200037.549206-1-linux@sraa.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7VnajYQ5dXc+P0Cg"
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB4953CE8999960BA71B46DE6CBB2A2@IA1PR20MB4953.namprd20.prod.outlook.com>
 
-On 14/03/2024 21:00, Sebastian Raase wrote:
-> Add pinctrl configuration for gpio-keys. Without this,
-> camera button half-presses are not detected.
-> 
-> Tested on discovery and pioneer.
-> 
-> Fixes: e781633b6067 ("arm64: dts: qcom: Add support for Sony Xperia XA2/Plus/Ultra (Nile platform)")
-> Signed-off-by: Sebastian Raase <linux@sraa.de>
-> ---
->  arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> index 87d0293c728d..5eedca6f288f 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> @@ -90,6 +90,8 @@ cam_vana_rear_vreg: cam-vana-rear-regulator {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&gpio_keys_default>;
 
-A nit: Please reverse the order: pinctrl-0 then names
->  
->  		key-camera-focus {
->  			label = "Camera Focus";
-> @@ -635,6 +637,13 @@ ts_lcd_id_active: ts-lcd-id-active-state {
->  		bias-disable;
->  	};
->  
-> +	gpio_keys_default: gpio-keys-default {
+--7VnajYQ5dXc+P0Cg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Looks missing suffix (state) and test, so:
+On Wed, Mar 13, 2024 at 09:31:26AM +0800, Inochi Amaoto wrote:
+> On Tue, Mar 12, 2024 at 02:07:31PM +0000, Conor Dooley wrote:
+> > On Mon, Mar 11, 2024 at 03:56:29PM +0800, Qingfang Deng wrote:
+> > > Hi Inochi,
+> > >=20
+> > > On Mon, Mar 11, 2024 at 3:13=E2=80=AFPM Inochi Amaoto <inochiama@outl=
+ook.com> wrote:
+> > > >
+> > > > On Mon, Mar 11, 2024 at 02:30:18PM +0800, Qingfang Deng wrote:
+> > > > > T-Head C908 has the same IRQ num and CSR as previous C9xx cores, =
+but
+> > > > > reports non-zero marchid and mimpid. Remove the ID checks.
+> > > > >
+> > > >
+> > > > Hi, Qingfang,
+> > > >
+> > > > IIRC, the existed C908 SoC (such as K230) have an early version
+> > > > of C908 core. But C908 core itself may support Sscofpmf.
+> > > > So I do not think removing the ID checks is a good idea. Instead,
+> > > > I suggest adding CPUID of your SoC to this check.
+> > >=20
+> > > As of Feb 2024, the latest C908 revision does not support Sscofpmf.
+> > > You may Google "C908R1S0" to see its user manual.
+> > > But I think you're right. Even though C908 does not have Sscofpmf,
+> > > T-Head may release new SoCs which do have Sscofpmf, and the check will
+> > > break. I will submit a new patch with your suggested changes.
+> >=20
+> > If on an SoC where they have updated vector to 1.0 and implemented both
+> > Zicbom and Svpbmt instead of their custom stuff they did not implement
+> > Sscofpmf I think we can expect they won't move away from their custom
+> > implementation soon.
+> > I do agree that we should not remove the ID checks entirely, but I also
+> > do not want to be adding an ID for every SoC that needs this. I think we
+> > should be getting this information from DT going forward.
+> > The DT parsing is done prior to the application of boot time
+> > alternatives, so I think we could apply the "erratum" based on the DT.
+> >=20
+> > I'm also pretty sure that we can also modify the existing code for the
+> > archid =3D=3D impid =3D=3D 0x0 case to set a pseudo isa extension so th=
+at the
+> > perf driver could do call riscv_isa_eextension_available() and not worry
+> > about the specfic conditions in which that is true. It'd be something
+> > like this patch:
+> > https://lore.kernel.org/linux-riscv/20240110073917.2398826-8-peterlin@a=
+ndestech.com/
+> > Just without removing the archid =3D=3D impid =3D=3D 0x0 case from the =
+errata
+> > code. If you're lost after reading that, I can probably throw together
+> > some untested code for it.
+>=20
+> I agree to use something to replace the existing check, but using a pseudo
+> isa extension is not a good idea. There are two reasons:=20
+>=20
+> 1. Pseudo isa is misleading. As it is not the real isa, setting this in i=
+sa
+> list may make userspace think errata a feather.
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+If we wanted to suppress sharing this information to userspace we could,
+but I don't even see what the harm is in userspace knowing.
+I also disagree with this even really being an erratum in the first place
+as they implemented something before a spec was created. It's not an
+implementation of Sscofpmf with a bug. I don't think that calling it a
+"real" vendor extension is problematic either, just I am the one calling
+it that, not T-Head themselves.
 
-Best regards,
-Krzysztof
+> 2. Using pseudo isa is more like an abuse of reserved isa bits, which mea=
+ns
+> kernel may need infinite bits to handle the errata.
 
+What makes it an abuse of a "reserved" bit? There's no rule on
+disallowing something vendor-specific there. Given the amount of standard
+ISA extensions that are being created compared to CPU errata, I don't
+think that I'm particularly worried about vendor specific stuff being
+the reason for infinite bits being needed either.
+
+If there do come to be issues with the number of extensions we care
+about, we could split things per vendor I suppose.
+
+> IMHO, it may be better to use a new DT property like "riscv,cpu-errata" or
+> "<vendor>,cpu-errata". It can achieve almost everything like using pseudo
+> isa. And the only cost I think is a small amount code to parse this.
+
+I suppose we could do that, but accounting for vendor specifics was one
+of the goals for the property I only just added and that I am suggesting
+to use here.
+
+--7VnajYQ5dXc+P0Cg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfNg6wAKCRB4tDGHoIJi
+0pvxAP9f5n67FdcXaDeJLe8wvqIkMnLvLHJt1Uimlhexcor/lgEAkHeDx1gCVOz4
+gSFJsa/+ha0YnGA/h8Ili4wHIx6rhA0=
+=9+If
+-----END PGP SIGNATURE-----
+
+--7VnajYQ5dXc+P0Cg--
 
