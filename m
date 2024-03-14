@@ -1,127 +1,94 @@
-Return-Path: <linux-kernel+bounces-103134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC9A087BB73
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:40:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7ED87BB78
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51C1BB21474
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:40:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE8091F21583
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5EA5DF0E;
-	Thu, 14 Mar 2024 10:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361AF60EDE;
+	Thu, 14 Mar 2024 10:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MSw8VGoo"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H648jIk3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A411A38FC
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772746EB7A;
+	Thu, 14 Mar 2024 10:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710412799; cv=none; b=gcFeJvbssuGPej55EY3kGwiekwU22+T3KJQoycoc/JJjdewU4p9dl+NKmOOgg0JRnaQVzaWbVXGmYNsOcHQpgwiUf5QDlwlhRLCDnBVKboEFUkjQNFepSBKNvRsAm1m195MYnjlMYdEP+EKTiafRkhe8CO+9H5Z7XC8n+zOl1b8=
+	t=1710412810; cv=none; b=dYI72CfWdnJVQdrmZ88eEw/Q0jMDSN2ZuX6wDm2fpO5K8YMXyXHRNoD1V+oLuidt4lWYwvW+iNLd7ine6+vfx6AsCkiCmgesfAV+Pnx7Wn18eHvAlgddtIkKEVh8vtNtuJPx3ibZukYi+KDl1lKd32Fot+56vYPev9eJX/EHRVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710412799; c=relaxed/simple;
-	bh=WA/d7U+qMBdpAtL/JkS2HGf9X4mCPAEE0NoMZUmak6M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-type; b=irN99MOg/h4jAaq5Ecw4tUMrSJ/SjuLjyol3aTmTA7xk25kTlc7S8vod9wd5QK4dCt9cYG/7HpuT7fCQyYookwvQKx/7kXqRK3wpvdzhjjTynHloThMgQcsdQ1UPH8U3bSRYchZu3MnnKBDd7HgrWhk++ODnJ+KSKLIY/AeTsDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MSw8VGoo; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710412797;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=h1t6v9xZW/pkiF5v9nyuhZFPcP+Pb9Nu3++MFe0FI4s=;
-	b=MSw8VGoowUqdf2PIWFzqWYaqXnoUqmxZTGa6u1UMsw7vuIx7eKi6II3JYTFhfTTEDv9Crr
-	3AKXlO21odCDnrkCih0stR0XQG8LOnSJSxvrSIQqztwb5UVLG9gIH0j7VdqL+uUlGZsrMh
-	5ZWNqyN/J0MKvVxwOuE6aNI3evpx6+o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-204-Nvm8_iUWOYO1Tcub9tdI1Q-1; Thu, 14 Mar 2024 06:39:55 -0400
-X-MC-Unique: Nvm8_iUWOYO1Tcub9tdI1Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 03F2784B061;
-	Thu, 14 Mar 2024 10:39:55 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 459FF16A9C;
-	Thu, 14 Mar 2024 10:39:50 +0000 (UTC)
-From: Baoquan He <bhe@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: kexec@lists.infradead.org,
-	jirislaby@kernel.org,
-	akpm@linux-foundation.org,
-	joe@perches.com,
-	dyoung@redhat.com,
-	Baoquan He <bhe@redhat.com>
-Subject: [PATCH] kexec: fix the unexpected kexec_dprintk() macro
-Date: Thu, 14 Mar 2024 18:39:47 +0800
-Message-ID: <20240314103947.717991-1-bhe@redhat.com>
+	s=arc-20240116; t=1710412810; c=relaxed/simple;
+	bh=c4J7TAHcx++DxMeKEfMzpwWlcM8HgZRjo1aIWTMX0T8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CmahT6/lP57PIg/q4x2GM6vDilPbdMDmpWrXqVCGmiSmSM5rLXXi9iy0K0T4djV2LlVs2Spzc/FqP889di9zeyNg6C6CxeXGr9LAhODQYckFBMQ4R7/bWoLPqi8MSqrgT+jxWJuwykV6mjv8PcA28DzHJttBhx3IW3EqIIwPpxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H648jIk3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D7CC43399;
+	Thu, 14 Mar 2024 10:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710412809;
+	bh=c4J7TAHcx++DxMeKEfMzpwWlcM8HgZRjo1aIWTMX0T8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=H648jIk3Ql7cXi/pjB0JMa/jLn7TkBiUqTvdQ623gjNtaz9sC7anE41WVWe6Jx+bB
+	 r+Y2MdID87ILDP91BvGCUnnGDvU7oPrfIy0w8HMNsmSXkBZ2MKBoKbCapAXbUX0Ke5
+	 eT1WUMZDPPrRa/Mvn9XA1B6Zf2paPSmHoX3zpXx/pKQSDnD27SZyU0yiRguncpCjUT
+	 TwxrkbL3gns50MSsjPDOxQurs+gpGctcw8Gy0YGnWqxiCaQ33S2lA/BUcaUqB6aseQ
+	 UJFcdvTBTJPWW6lJcgpxSTHU9NWKjBBW+9QvYXSDmKT74cUdGFP4sZ0jZQ+lgMEusi
+	 pkphCrAn8MdAQ==
+Message-ID: <cd8ffd86-841d-4b1e-9067-c5f0bc3d9244@kernel.org>
+Date: Thu, 14 Mar 2024 18:39:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] f2fs: truncate page cache before clearing flags when
+ aborting atomic write
+Content-Language: en-US
+To: Sunmin Jeong <s_min.jeong@samsung.com>, jaegeuk@kernel.org,
+ daehojeong@google.com
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Sungjong Seo <sj1557.seo@samsung.com>,
+ Yeongjin Gil <youngjin.gil@samsung.com>
+References: <20240313112620.1061463-1-s_min.jeong@samsung.com>
+ <CGME20240313112706epcas1p2ee50d07f603422b0193f0b71bf1a75e6@epcas1p2.samsung.com>
+ <20240313112620.1061463-2-s_min.jeong@samsung.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240313112620.1061463-2-s_min.jeong@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Jiri reported that the current kexec_dprintk() always prints out
-debugging message whenever kexec/kdmmp loading is triggered. That is
-not wanted. The debugging message is supposed to be printed out when
-'kexec -s -d' is specified for kexec/kdump loading.
+On 2024/3/13 19:26, Sunmin Jeong wrote:
+> In f2fs_do_write_data_page, FI_ATOMIC_FILE flag selects the target inode
+> between the original inode and COW inode. When aborting atomic write and
+> writeback occur simultaneously, invalid data can be written to original
+> inode if the FI_ATOMIC_FILE flag is cleared meanwhile.
+> 
+> To prevent the problem, let's truncate all pages before clearing the flag
+> 
+> Atomic write thread              Writeback thread
+>    f2fs_abort_atomic_write
+>      clear_inode_flag(inode, FI_ATOMIC_FILE)
+>                                    __writeback_single_inode
+>                                      do_writepages
+>                                        f2fs_do_write_data_page
+>                                          - use dn of original inode
+>      truncate_inode_pages_final
+> 
+> Fixes: 3db1de0e582c ("f2fs: change the current atomic write way")
+> Cc: stable@vger.kernel.org #v5.19+
+> Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
+> Reviewed-by: Yeongjin Gil <youngjin.gil@samsung.com>
+> Signed-off-by: Sunmin Jeong <s_min.jeong@samsung.com>
 
-After investigating, the reason is the current kexec_dprintk() takes
-printk(KERN_INFO) or printk(KERN_DEBUG) depending on whether '-d' is
-specified. However, distros usually have defaulg log level like below:
+Reviewed-by: Chao Yu <chao@kernel.org>
 
- [~]# cat /proc/sys/kernel/printk
- 7	 4	1	7
-
-So, even though '-d' is not specified, printk(KERN_DEBUG) also always
-prints out. I thought printk(KERN_DEBUG) is equal to pr_debug(), it's
-not.
-
-Fix it by changing to use pr_info() and pr_debug() instead which are
-expected to work.
-
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Closes: https://lore.kernel.org/all/4c775fca-5def-4a2d-8437-7130b02722a2@kernel.org
----
- include/linux/kexec.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 400cb6c02176..09688e681bf7 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -502,10 +502,13 @@ static inline unsigned int crash_get_elfcorehdr_size(void) { return 0; }
- 
- extern bool kexec_file_dbg_print;
- 
--#define kexec_dprintk(fmt, ...)					\
--	printk("%s" fmt,					\
--	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
--	       ##__VA_ARGS__)
-+#define kexec_dprintk(fmt, args...)				\
-+	do {							\
-+		if (kexec_file_dbg_print)			\
-+			pr_info(fmt, ##args);			\
-+		else						\
-+			pr_debug(fmt, ##args);			\
-+	} while (0)
- 
- #else /* !CONFIG_KEXEC_CORE */
- struct pt_regs;
--- 
-2.41.0
-
+Thanks,
 
