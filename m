@@ -1,147 +1,139 @@
-Return-Path: <linux-kernel+bounces-103507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA78387C05E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:35:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1943487C064
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807021F2366E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:35:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BD63B21F93
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:35:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76D871B54;
-	Thu, 14 Mar 2024 15:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3153B73519;
+	Thu, 14 Mar 2024 15:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n1H/v/ft"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WO4zFE6l"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C91E71B56
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6553C7175B;
+	Thu, 14 Mar 2024 15:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710430387; cv=none; b=P4OAVOZ1IKq74UM8EVPOd8s/mzmyM2TgsQWi5l6iWEwDya48C4Arp+QtT1o0XELq2q0LN09/HfxTp6kpFlUqMvFMuw2x93NBhku6l3croZ7E1oH9rwpw3yylwtSWAZMMFr5W9HAOaaAgnli4X/ghauCvHcKpZTX0iFloYsnHZYY=
+	t=1710430421; cv=none; b=cQrjj5AYkwJg7krFqOzSX6lbbDSK2ZqCDl4duRFP5zISvxRqes1H72mUsD4Z6M9jViS5lkBH7UycVDTx51tkpwbduNug7tcrtB04KbzJLya7pv6sz1XtSO41nP31OrG3HzauMt7FweYfAckvdl1WgL1yuABGn/D+RBbAQGJe6iI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710430387; c=relaxed/simple;
-	bh=o1OdgC7p5Fjbh1yGz4D8klND3WPdQELLcIADzhaB1AY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WyC7xjGbEnzsmTs/PWmZGC0JxWvZPQT0aIaVdwI7i2UjSuGMUQCf6TAZAAemFotudkg8s5hUqqIfUWRIHRMDENkuILrN4qYuVsDR39Id10mYQG0Cclo2BjYAlT8VVn0E/keSqbM4KebgJheKP0xxaQEZjfzjKQt2T98nCXwV/9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n1H/v/ft; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513a81b717cso1423835e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710430383; x=1711035183; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OfZ44noiqcLfjfF8Ywh0SOVK7cdHIhTKcL05schUTKQ=;
-        b=n1H/v/ftZpIMrmg8EPUbvZ7aKCfUauVWz6FjYMUW/BEqbz1TNtSd29RC5z4xr8D7Tg
-         aPdxJtAvokq9XmXxzY5kMhugS/LV3HLyBfvzjkn2qh9ObC4A2DR5GdxuiGJ4dXcyFYNh
-         6Gyh5vaM0PLFLXUGVVipPnJ017+m8M2JH4HS5NwBKG+3Jji9QpV+LWvI6IlZZwmOTq/4
-         vzJ2SiJozoI0B2eUK+L4SLGIbAmoU+CRCWnieD5ZWS41vTIQ4b4TFKRtCtiO9gd/68Hg
-         4qAe7Iv2XsEbaGyG7yJQ/x31QFG+IryJpVF/Ae+NHQgcAV4VcF7boz6Fm56g6MPIIQrk
-         fquQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710430383; x=1711035183;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OfZ44noiqcLfjfF8Ywh0SOVK7cdHIhTKcL05schUTKQ=;
-        b=USvlm3XPtSraeZo5t3IBlWV/kbQoOHQSlr4Dzx5/fR/7dndszBOQfg0dyatfTCFIHZ
-         pRQpnBMNcmSCLAVHcdrZJ4/Zf4/oTW/C6jCsw3NIP4LPztwEIKbEZKBON3luvjuj41us
-         +g351fYej00di5LCA6Pq67Wgp9HF84HyZQCvH9DaLdjL5F5ihElRosR6HEhH1kFKSR7O
-         P+doWDEog+iwO5nJhtkmJu+CXI2JzW9hHpndolvMy4YtZ0U5A+V8H+sFs9bzEX3e11Jp
-         kqwmPsoXR/P9pnVaVga1U02bCmvFSozYN7PC6nPRZStAWD7KK2pXeHcJ15zgbLGJzIxe
-         0HGA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7SPIHGkvceF6lz9dmVfF1QeoPbpTi7oPcnwdRYJu9h1UJ+mWGawLAdmeJJLNkOWr8So1plasLfcvsj4EY1d460PJH5rcM7j5NVuRv
-X-Gm-Message-State: AOJu0YzwltcjPgY4+0k5SQ61t7M7180/c6Jf4G14NgMWhqs3raFInJeq
-	4HuePDMFasSYrvdNNSqRXffJOMwpr4SmJ5bd4Q5in4xtu4B94pPQcdXflQ3Uv1M=
-X-Google-Smtp-Source: AGHT+IFTuAHUe3ZaxXllTu7l+7uVOWOjoymsRTxe6uGqOcnWjiy8UUNDfx+uS3Z+t2fZZ9Be4d9tQQ==
-X-Received: by 2002:ac2:5bcd:0:b0:513:b90f:f4dd with SMTP id u13-20020ac25bcd000000b00513b90ff4ddmr403922lfn.49.1710430383342;
-        Thu, 14 Mar 2024 08:33:03 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id j3-20020a05600c1c0300b004131310a29fsm2821478wms.15.2024.03.14.08.33.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 08:33:03 -0700 (PDT)
-Date: Thu, 14 Mar 2024 18:32:59 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	AKASHI Takahiro <takahiro.akashi@linaro.org>,
-	Peng Fan <peng.fan@nxp.com>, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 2/4] dt-bindings: firmware: arm,scmi: support pinctrl
- protocol
-Message-ID: <cade37a8-eca5-4d42-aadd-e6b7b2d40ee1@moroto.mountain>
-References: <20240314-pinctrl-scmi-v5-0-b19576e557f2@nxp.com>
- <20240314-pinctrl-scmi-v5-2-b19576e557f2@nxp.com>
+	s=arc-20240116; t=1710430421; c=relaxed/simple;
+	bh=aCDonrkKYBPwiH8R2bMD582lXFzDsl0VVpShAkgDxdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rx3E4FjTqxAsPRARcRfZclKYoJtRfrZZt+nbAl/XMo0nDOQbe/gtOMsddLcCZ8lnnaT6kMhPBEXEk/KwnvZ6dRBYnniCwaM6abORbX5b64kzysT2F4ZN2ryiT6n4jQshzqOrI9lJmrYdMm+0Lzv6mi9DYctvwP3xHuxBl/joaG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WO4zFE6l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2783EC433F1;
+	Thu, 14 Mar 2024 15:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710430421;
+	bh=aCDonrkKYBPwiH8R2bMD582lXFzDsl0VVpShAkgDxdQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WO4zFE6l0q3diFd5YdMxGJymp+DtRSFJ0f/VuXvm56UlZuAIBWndg8n91L0PeH1px
+	 AFAdRDau5Y4nedRpjHWd4atk8FrhZT4MMq4/lDYy8C/RveYRfl9wFyBS7/ZYfgkep+
+	 3nZO0GZJxb3GwTEzGaER4ayeBiWcKI+naAm3lxVq/edC2xsgmfnORe9+dmBks5SmrS
+	 Xym6FcxFXw2aiBQirXqOQeP8Gg+58iz7fzXe/VzcxlwMXYVxTcGNjJexH0V7uOXZ8S
+	 4ljz2IYlI56V6C7jiO7HNPq0O4mqmcZULEsi/qAPk5VKGB4ehflOXyXAL6Q1d48Kmy
+	 wXHbn691YoVZg==
+Date: Thu, 14 Mar 2024 15:33:26 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Li Zhijian <lizhijian@fujitsu.com>
+Cc: linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>, Srinivas
+ Pandruvada <srinivas.pandruvada@linux.intel.com>, Benjamin Tissoires
+ <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org,
+ linux-iio@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] HID: hid-sensor-custom: Convert sprintf/snprintf
+ to sysfs_emit
+Message-ID: <20240314153326.2126d3df@jic23-huawei>
+In-Reply-To: <20240314084753.1322110-2-lizhijian@fujitsu.com>
+References: <20240314084753.1322110-1-lizhijian@fujitsu.com>
+	<20240314084753.1322110-2-lizhijian@fujitsu.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314-pinctrl-scmi-v5-2-b19576e557f2@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 09:35:19PM +0800, Peng Fan (OSS) wrote:
-> +  protocol@19:
-> +    type: object
-> +    allOf:
-> +      - $ref: '#/$defs/protocol-node'
-> +      - $ref: /schemas/pinctrl/pinctrl.yaml
-> +
-> +    unevaluatedProperties: false
-> +
-> +    properties:
-> +      reg:
-> +        const: 0x19
-> +
-> +    patternProperties:
-> +      '-pins$':
-> +        type: object
-> +        allOf:
-> +          - $ref: /schemas/pinctrl/pincfg-node.yaml#
-> +          - $ref: /schemas/pinctrl/pinmux-node.yaml#
-> +        unevaluatedProperties: false
-> +
-> +        description:
-> +          A pin multiplexing sub-node describe how to configure a
+On Thu, 14 Mar 2024 16:47:51 +0800
+Li Zhijian <lizhijian@fujitsu.com> wrote:
 
-describe[s]
+> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+> or sysfs_emit_at() when formatting the value to be returned to user space.
+> 
+> coccinelle complains that there are still a couple of functions that use
+> snprintf(). Convert them to sysfs_emit().
+> 
+> sprintf() will be converted as weel if they have.
+> 
+> Generally, this patch is generated by
+> make coccicheck M=<path/to/file> MODE=patch \
+> COCCI=scripts/coccinelle/api/device_attr_show.cocci
+> 
+> No functional change intended
+> 
+> CC: Jiri Kosina <jikos@kernel.org>
+> CC: Jonathan Cameron <jic23@kernel.org>
+> CC: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> CC: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> CC: linux-input@vger.kernel.org
+> CC: linux-iio@vger.kernel.org
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+Hi Li Zhijian,
 
-> +          set of pins is some desired function.
+One trivial comment inline.
+Otherwise straight forward so
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-s/is/in/
+> ---
+> This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+> Split them per subsystem so that the maintainer can review it easily
+> [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+> ---
+>  drivers/hid/hid-sensor-custom.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-sensor-custom.c b/drivers/hid/hid-sensor-custom.c
+> index d85398721659..ee1a118834f0 100644
+> --- a/drivers/hid/hid-sensor-custom.c
+> +++ b/drivers/hid/hid-sensor-custom.c
+> @@ -155,7 +155,7 @@ static ssize_t enable_sensor_show(struct device *dev,
+>  {
+>  	struct hid_sensor_custom *sensor_inst = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", sensor_inst->enable);
+> +	return sysfs_emit(buf, "%d\n", sensor_inst->enable);
+>  }
+>  
+>  static int set_power_report_state(struct hid_sensor_custom *sensor_inst,
+> @@ -372,14 +372,14 @@ static ssize_t show_value(struct device *dev, struct device_attribute *attr,
+>  				     sizeof(struct hid_custom_usage_desc),
+>  				     usage_id_cmp);
+>  		if (usage_desc)
+> -			return snprintf(buf, PAGE_SIZE, "%s\n",
+> -					usage_desc->desc);
+> +			return sysfs_emit(buf, "%s\n",
+> +					  usage_desc->desc);
+rewrap the line as will be under 80 chars.
 
-> +          A single sub-node may define several pin configurations.
-> +          This sub-node is using default pinctrl bindings to configure
-> +          pin multiplexing and using SCMI protocol to apply specified
-> +          configuration using SCMI protocol.
-
-
-This sub-node is using [the] default pinctrl bindings to configure
-pin multiplexing and using SCMI protocol to apply [a] specified
-configuration.
-
-(Delete the duplicate "using SCMI protocol").
-
-regards,
-dan carpenter
+>  		else
+> -			return sprintf(buf, "not-specified\n");
+> +			return sysfs_emit(buf, "not-specified\n");
+>  	 } else
+>  		return -EINVAL;
+>  
+> -	return sprintf(buf, "%d\n", value);
+> +	return sysfs_emit(buf, "%d\n", value);
+>  }
+>  
+>  static ssize_t store_value(struct device *dev, struct device_attribute *attr,
 
 
