@@ -1,101 +1,140 @@
-Return-Path: <linux-kernel+bounces-103829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFAC887C506
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 822F987C516
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5788D1F22181
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:13:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16B2C1F21D05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AF19768FB;
-	Thu, 14 Mar 2024 22:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 083E8768FF;
+	Thu, 14 Mar 2024 22:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="IECZdPuB"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bmCxUNlU"
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A545776416;
-	Thu, 14 Mar 2024 22:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E38AC73196;
+	Thu, 14 Mar 2024 22:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710454405; cv=none; b=g22MWP/9m+VQJsuTUQKDnhpMIYAael+TOGVw5XylSVVVUgDOdiV3EyDOsdU9SV1IOd/wpglaIzS8I3zLEfRI4JzjL9XJCg+Of6eq832J2sm1/+TuG+XqxQgNQgERoTCQ7K6JidLy2fo/38WXJh4AUkHDk7I5T7lNElRiJeW5dX0=
+	t=1710454820; cv=none; b=arRZDIoRyayP916q7qvI/uEtuxqTSiUsvESZF0u8DuXe6GwbyfN50KlJ0iuRHLVXY1wIlN8n0OsI67VpdloYpf+CdKN2figDOOFsi5EgX0URiNlp7+ebCQIj1YuxlCMgQQazZQuf/xm67TsiGuVixMiWWmwbEYONqZdhPSpOCdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710454405; c=relaxed/simple;
-	bh=4uEGNnBZilbuF8qy88AEM2K2bNF+K77tHLHrcoHCr/s=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=bBG0S9iBIZYV55sNpcI9ZYNUfMTFz9y6YMTSEdQ8IV4QEe2cYOJF5tFP+pHNljB0PcPDXuQ8lHOe5YRRM406sT5gT6t45Gz+iCxl7ULqDiSSnv7LwoVNiFy2H/Ztlx6ZH8NcH/NYtNcMzvSpDKdVTIxBUzAjFDfcQbfrerZqRdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=IECZdPuB; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1710454394;
-	bh=gEhbEPH5aj2Z/7UOp7mkhRqYJQi1PvcDq1cmOaQVYNc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=IECZdPuB8mxs6KEW1DJaf4Mttp7mFL0NZ4N9gwYMd8u8af4NOt/CKMzgfbF1EJlJt
-	 g2fBzevj2IyWMk/Wvine73Ph8/V8tnlaPGIHrgwuRsSWGNcXy/JoNZaYuVMi7GX2dm
-	 XQuHo4uWY1NMN/BUYgRRxkA65k/hMND4FElAW7HttCDds2lDFL5ZfDv7EhnvSltRxq
-	 vtUYgm28mPyTxy/DixOS/DaWwkAXYvBqDQ1Jk8HLLx5k8TrH8abfyOF9k1Ay1Dz+Ct
-	 5+eR2AIx24QXmDWnEmOPGHmha5eNPNPpz6wyOhcsmXRm6Ara/4t5k5SZpvyVevZt4q
-	 ByD5XMiLCnovw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TwhTh47qDz4wcR;
-	Fri, 15 Mar 2024 09:13:12 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Vignesh Balasubramanian <vigbalas@amd.com>,
- linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org
-Cc: npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com, ebiederm@xmission.com, keescook@chromium.org,
- x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- bpetkov@amd.com, jinisusan.george@amd.com, matz@suse.de,
- binutils@sourceware.org, jhb@FreeBSD.org, felix.willgerodt@intel.com,
- Vignesh Balasubramanian <vigbalas@amd.com>
-Subject: Re: [PATCH 1/1] x86/elf: Add a new .note section containing
- Xfeatures information to x86 core files
-In-Reply-To: <20240314112359.50713-2-vigbalas@amd.com>
-References: <20240314112359.50713-1-vigbalas@amd.com>
- <20240314112359.50713-2-vigbalas@amd.com>
-Date: Fri, 15 Mar 2024 09:13:10 +1100
-Message-ID: <87o7bg31jd.fsf@mail.lhotse>
+	s=arc-20240116; t=1710454820; c=relaxed/simple;
+	bh=ncDx4rsB+pbrxuiP8gaQoYKHQO769X5h2FCKQ5CP22g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jWcTGCM8x5MPtVBxJ5mx+Wii3bxaNju+nRz7oUkYs7q6KY/AL331UFkdQxQJJzQg5ru7nQUSPKWWzet5NhwpOCwg7vy//+f3ZOi8Pwa1mU2UR1O3y6ZM6t0RTNvTItSdQFwYk+gb4AXVnagev0K03rN3/BPxGD82Gs1anziqZvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bmCxUNlU; arc=none smtp.client-ip=209.85.160.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2219ed4e2d9so893112fac.1;
+        Thu, 14 Mar 2024 15:20:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710454818; x=1711059618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sGh/a0FjaaqhWt72exyFQnoUZiMKDdsCOSQoVbQhpF8=;
+        b=bmCxUNlUHmxAJdVXv8L9RsMAn3P8aEugbwGg744ms7oCkugyJKaArcviCPEY0mgnTp
+         Ak0IDYlmwDwVWeSFK9vWe4XNedXet3wxtj5eevPDVB2tBjLZXhkTE4gh41GQsQqvGIQZ
+         kK0n95Wrn2aj+T9YaB/g8Y+lQhSJrlr9gBsikJ4Wq3KRuPvenUPppyRmhn+sQ6aHQJot
+         ZpqOFewAA0BU3ERjcO581NpWHUxucPJKRyIwQIB5Vd6IaL2oqAT3wNXS5Fhr1iDvHrn2
+         aTNMSNDLK5TMPQeZyt48XG6RpJhnIC+0Z+69kAOEn2eWti9+msf03kqgtbDalEo1+rhF
+         wKFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710454818; x=1711059618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sGh/a0FjaaqhWt72exyFQnoUZiMKDdsCOSQoVbQhpF8=;
+        b=Sssl237UYekLUQrsOSGmHe8LlgwA9DbmejpFFSfaAWIOCbgvQD5tv7q119utkvhTWH
+         cvq2Je/XRHWon9DYFE1f0/EduLyUIcEfe07Z0H0IVQpml/5x2HXexlnCYQU0D7AvvHIb
+         dRcdQY3cBQ6IT4OuI0BaCA58R4pMz6vKuSmfGrRARb5diBCFq4y92Zkd+l+UxJNNu7oG
+         sseBS/grqoo/rGF5Vaz/H1diRMzFlWmYIxKN0r5TPVwkqakKISR5irwLbLnzjblIvvJf
+         1DMzXdv+TuW5NBBpioNqAH30R7z0DyzY9XbvfYX/ukQXDFiWZb3fGbfE4m0ouGXI5aAy
+         wl9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWf9GCD2RQv6hBvlAiaJHmos6HIWfFnv7L6q0yo+eCh6fmGB+5zx94OQBu3Fpn8obDtHsASUxBaof3nbZThtUxoSInG3lRE/WyoK2fg/0wM2h6MJCuv8QdfhlgN6h1VCI6Ky1lGMN1iM3f7InC3tA==
+X-Gm-Message-State: AOJu0YyM9UYc1at4FlApM7Dy7lru2M0F3+AV7Mc3cquaAZdXFJu24YOB
+	HzaTUUnok5/kM4lwwtMSryHV+7OZ1zyK+2kZtJmUHkVPrbzC/0yK
+X-Google-Smtp-Source: AGHT+IExOWj5lAsmVjxruHjura7sadZXu4+15WI0M4zheCidFt5dk5nW42Jn4z4RNizJzdiCGhtmEw==
+X-Received: by 2002:a05:6871:289b:b0:221:c8a9:563d with SMTP id bq27-20020a056871289b00b00221c8a9563dmr2614098oac.3.1710454817885;
+        Thu, 14 Mar 2024 15:20:17 -0700 (PDT)
+Received: from localhost.localdomain ([2601:646:481:c7c0:d8ee:20e4:a0de:ff0c])
+        by smtp.gmail.com with ESMTPSA id py27-20020a056871e41b00b002227a590258sm160181oac.26.2024.03.14.15.20.16
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 14 Mar 2024 15:20:17 -0700 (PDT)
+From: Ethan Adams <j.ethan.adams@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Ethan Adams <j.ethan.adams@gmail.com>,
+	Tycho Andersen <tycho@tycho.pizza>
+Subject: [PATCH] perf build: fix out of tree build
+Date: Thu, 14 Mar 2024 15:20:12 -0700
+Message-ID: <20240314222012.47193-1-j.ethan.adams@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Hi Vignesh,
+It seems that a previous modification to sysreg-defs, which corrected
+emitting the headaer to the specified output directory, exposed missing
+subdir, prefix variables. This breaks out of tree builds of perf as the
+file is now built into the output directory, but still tries to descend
+into output directory as a subdir.
 
-Vignesh Balasubramanian <vigbalas@amd.com> writes:
-> Add a new .note section containing type, size, offset and flags of
-> every xfeature that is present.
->
-> This information will be used by the debuggers to understand the XSAVE
-> layout of the machine where the core file is dumped, and to read XSAVE
-> registers, especially during cross-platform debugging.
->
-> Co-developed-by: Jini Susan George <jinisusan.george@amd.com>
-> Signed-off-by: Jini Susan George <jinisusan.george@amd.com>
-> Signed-off-by: Vignesh Balasubramanian <vigbalas@amd.com>
-> ---
->  arch/Kconfig                   |   9 +++
->  arch/powerpc/Kconfig           |   1 +
->  arch/powerpc/include/asm/elf.h |   2 -
->  arch/x86/Kconfig               |   1 +
->  arch/x86/include/asm/elf.h     |   7 +++
->  arch/x86/kernel/fpu/xstate.c   | 101 +++++++++++++++++++++++++++++++++
->  include/linux/elf.h            |   2 +-
->  include/uapi/linux/elf.h       |   1 +
->  8 files changed, 121 insertions(+), 3 deletions(-)
+Fixes: a29ee6aea703 ("perf build: Ensure sysreg-defs Makefile respects output dir")
+Tested-by: Tycho Andersen <tycho@tycho.pizza>
+Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
+Signed-off-by: Ethan Adams <j.ethan.adams@gmail.com>
+---
+ tools/perf/Makefile.perf | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-IMHO you should split the changes to replace ARCH_HAVE_EXTRA_ELF_NOTES
-with CONFIG_ARCH_HAVE_EXTRA_ELF_NOTES into a lead-up patch.
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 058c9aecf608..63a8b4be5075 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -436,18 +436,19 @@ SHELL = $(SHELL_PATH)
+ 
+ arm64_gen_sysreg_dir := $(srctree)/tools/arch/arm64/tools
+ ifneq ($(OUTPUT),)
+-  arm64_gen_sysreg_outdir := $(OUTPUT)
++  arm64_gen_sysreg_outdir := $(abspath $(OUTPUT))
+ else
+   arm64_gen_sysreg_outdir := $(CURDIR)
+ endif
+ 
+ arm64-sysreg-defs: FORCE
+-	$(Q)$(MAKE) -C $(arm64_gen_sysreg_dir) O=$(arm64_gen_sysreg_outdir)
++	$(Q)$(MAKE) -C $(arm64_gen_sysreg_dir) O=$(arm64_gen_sysreg_outdir) \
++		prefix= subdir=
+ 
+ arm64-sysreg-defs-clean:
+ 	$(call QUIET_CLEAN,arm64-sysreg-defs)
+ 	$(Q)$(MAKE) -C $(arm64_gen_sysreg_dir) O=$(arm64_gen_sysreg_outdir) \
+-		clean > /dev/null
++		prefix= subdir= clean > /dev/null
+ 
+ beauty_linux_dir := $(srctree)/tools/perf/trace/beauty/include/linux/
+ linux_uapi_dir := $(srctree)/tools/include/uapi/linux
 
-cheers
+base-commit: e365762bb26770b53d2475852453bed76c0d85f9
+-- 
+2.43.2
+
 
