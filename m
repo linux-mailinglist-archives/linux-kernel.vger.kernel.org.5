@@ -1,243 +1,377 @@
-Return-Path: <linux-kernel+bounces-103164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23CC187BBCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:17:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACD0E87BBCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54F601C21DD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:17:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63FED284148
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:17:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9C66EB57;
-	Thu, 14 Mar 2024 11:17:24 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E700A6EB5A;
+	Thu, 14 Mar 2024 11:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NescIGjE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0jbwCIgt"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AB719473
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91571A38DD;
+	Thu, 14 Mar 2024 11:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710415044; cv=none; b=f12iypZCPNGOLIFZh4BVZNKmGlixZ7zik6wAerYuEEonJNYoXywZ1Nk0mH+XSu305GiydsQBou0i1tuoLuK8rBQQTd3niHpEbfDhT8vi8R5W/ch+afW986hJgLmRR6wcO6QPcYWA35lgtMyixPNQAakjJS2fKfRwi9GmgtOYbIo=
+	t=1710415057; cv=none; b=i+R6hc11Yve9wLtahtPf8XtF0TdBsB6CtE3tsqzQWJ9KI+7ED7rbiIV7E0cI3YSwnky083DuSmaHzP+scToDgB2FmZOio539vNWLuIMpt/V5awojsmzV0InHQhFWb8yTeYVzuOjOFfCoBEvUedUeOsu0IRsDOWvncBhbFbW1kIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710415044; c=relaxed/simple;
-	bh=6AB0v5jCGzQvB/gar0/+UXUmnAOeY8a1E1HcfqGV0c8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=cdfvZZs9ZbsM/gqXasLqt3KO/hlbDHY4Bd60IWQ5/NtYRgCb0LQF9v1TG8kf0LoMC25dIkzbrB82UiaeszM52IGcC+eYUnp0U28He9JtAvvncSuzBR8/1T5G63kJrqXGMBa8ENFrcNCNId7XT6CTV5NKcXyQpHvv1IAZd4r/1N4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c8ac4c3c22so56735439f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 04:17:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710415041; x=1711019841;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n3SqBHAySxd1B2DGXt3MWJOppfcwh7UiW1rbRo/WCxc=;
-        b=XPlS2qQG5qAcN1Nz5hmJ4KYw4TVPO4dD22JMsxxuOPSSewsMgYV6JH+eOM+/n5KK0B
-         /fkc9ma7wmbO3cQ5HOz527LtbzPib5jF44cM+J+9ayLendzr9CeG9rYN4Vlg42Tb+f71
-         o9EamCoJ9GYpDVCGShExtUZU0BIiuqfL8IApSQsN3V/McKDwqsAaa2/rc+c2YzR+Rskt
-         GHXDfbxMLjiE+7tDpBLj+XaQAg7i0d/EJUK9OPG4AjeFaVDxgaoN+OXBm0YsQffU0EUp
-         IKr2trY5L9nTRseWgMzJJVcBQ24d4rP7Flxum8SSTgnqpokorHz4em5PhgwMyqUirlX3
-         BjRA==
-X-Forwarded-Encrypted: i=1; AJvYcCU//L+0r2Bnn2zZwArOIN4+wjtND+tsKUOv+NnAwZMW+GbZdaPJhTDbPq2G+NivH2jv8pGlTGTbFKZlhrXYlFjiYJVIJ2G8Q8xS3Xv1
-X-Gm-Message-State: AOJu0Ywtl9+kOxlIjPmSkoPNiL3x9EODmBuzq6XIl42p2jBemVQP+azp
-	axR8BnTL+g6qxy1avjqMnhbc5P72aG8lpM20ii8QruiRrRihfyBKrPkCN0T+CwQtWu+vGmFGK2l
-	gWnBQd2nBGieuKSPKyA5XgWWhprwAh9BRIliraOkgsx/r3gRTab+5PsI=
-X-Google-Smtp-Source: AGHT+IFE3QIyveq7XYbXZuOyV98VccdnczMQ//USqqud0KpxKY/wr4lweFl2KHDNdvuZoPfJnBWzqwPYFgunnZoR5bqXHhR8dtSu
+	s=arc-20240116; t=1710415057; c=relaxed/simple;
+	bh=nZMyTibL97qria2xhMumMQikMnIJutgZUAgvf+5WC+Q=;
+	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=odGGQl7f3ni+jd4vgupVYunWGZAZ5DyO/VbsgW3KrdCzX3ueKMHydO3P/a4uSECF1gtw+vBAkozCQYzKuRjZ9BlN4LR2q02ucYSZDxQj6xAlj3EwtQ+JNo5SckqzzJOY+/EyAVg+OylW85ruL/2E3BWOxC6LAYPJOABMHPLe+/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NescIGjE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0jbwCIgt; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 14 Mar 2024 11:17:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710415054;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=EIzuRjlyBheRR+e3Vbik81p31zl5BG6j6afsDm4MPhk=;
+	b=NescIGjE3O6wmdJ9snPhdVkV5PYk7nG1G7cW+Ja8jk5OipUvosoKjALpwt9JjVjug7Z/TC
+	RP24P4cgCzjEloxDVhxgcWDJf3Y2Batfg8pkWvqDG7j49M2wZTm/cxe7rPnz1mRxNCsHFu
+	TJYEJ4PTztzZnFA2QOIuUDvAtv2CREFDT2apwy1WQpZA25tTFPhqEmE9k/hbMA3QtqGOQy
+	n0EkZw6bCsEeJ7b3oXIFYcw6qbK3oHdQJMNCGFbBbvHt97x/lf3qsY/XR+Yqc6wvlgJwq4
+	jJ1gMwe5gLpeAyPtrmEdZ6y+c+QWmFT9nEfFPL12QRhrDEfVnh9H2niT6Uzuqg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710415054;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=EIzuRjlyBheRR+e3Vbik81p31zl5BG6j6afsDm4MPhk=;
+	b=0jbwCIgtD6/nVQNFq79WJhRtW2KM5UtgaTvK3vGDDzwOS7NtckBV+Tx/wEXHzq5usaPF9u
+	3rQBOWR02CQ2i0Cg==
+From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Fix typos in comments
+Cc:
+ Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:378e:b0:476:d061:a34a with SMTP id
- w14-20020a056638378e00b00476d061a34amr67300jal.6.1710415041756; Thu, 14 Mar
- 2024 04:17:21 -0700 (PDT)
-Date: Thu, 14 Mar 2024 04:17:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fb929e06139d0879@google.com>
-Subject: [syzbot] [i2c?] KASAN: stack-out-of-bounds Write in i801_isr (3)
-From: syzbot <syzbot+554a57aa65b47aa16a47@syzkaller.appspotmail.com>
-To: andi.shyti@kernel.org, jdelvare@suse.com, linux-i2c@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <171041505306.398.3446887943610854641.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hello,
+The following commit has been merged into the sched/core branch of tip:
 
-syzbot found the following issue on:
+Commit-ID:     b9e6e28663928cab836a19abbdec3d036a07db3b
+Gitweb:        https://git.kernel.org/tip/b9e6e28663928cab836a19abbdec3d036a07db3b
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Thu, 14 Mar 2024 12:06:03 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 14 Mar 2024 12:08:23 +01:00
 
-HEAD commit:    005f6f34bd47 Merge tag 'i2c-for-6.8-rc8' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b0d556180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9711c6169c49ef10
-dashboard link: https://syzkaller.appspot.com/bug?extid=554a57aa65b47aa16a47
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+sched/fair: Fix typos in comments
 
-Unfortunately, I don't have any reproducer for this issue yet.
+So I made all speling mistakes / typos red in my editor. Big mistake...
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-005f6f34.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8a1e40858f35/vmlinux-005f6f34.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9629bd1252c4/bzImage-005f6f34.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+554a57aa65b47aa16a47@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: stack-out-of-bounds in i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:550 [inline]
-BUG: KASAN: stack-out-of-bounds in i801_isr drivers/i2c/busses/i2c-i801.c:617 [inline]
-BUG: KASAN: stack-out-of-bounds in i801_isr+0xcfe/0xd10 drivers/i2c/busses/i2c-i801.c:598
-Write of size 1 at addr ffffc900070dfd98 by task swapper/3/0
-
-CPU: 3 PID: 0 Comm: swapper/3 Not tainted 6.8.0-rc7-syzkaller-00238-g005f6f34bd47 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:550 [inline]
- i801_isr drivers/i2c/busses/i2c-i801.c:617 [inline]
- i801_isr+0xcfe/0xd10 drivers/i2c/busses/i2c-i801.c:598
- __handle_irq_event_percpu+0x22a/0x750 kernel/irq/handle.c:158
- handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
- handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
- handle_fasteoi_irq+0x233/0xc20 kernel/irq/chip.c:720
- generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
- handle_irq arch/x86/kernel/irq.c:238 [inline]
- __common_interrupt+0xde/0x250 arch/x86/kernel/irq.c:257
- common_interrupt+0x52/0xd0 arch/x86/kernel/irq.c:247
- asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:640
-RIP: 0010:__do_softirq+0x1e0/0x8e7 kernel/softirq.c:539
-Code: 89 44 24 18 44 88 74 24 3b 48 c7 c7 c0 59 0b 8b e8 65 31 fc ff 65 66 c7 05 73 ac 3b 75 00 00 e8 d6 47 ca f6 fb bb ff ff ff ff <49> c7 c6 c0 a0 40 8d 41 0f bc dc 83 c3 01 0f 85 a7 00 00 00 e9 70
-RSP: 0018:ffffc900008e8f30 EFLAGS: 00000206
-RAX: 00000000007499e4 RBX: 00000000ffffffff RCX: 1ffffffff1f3a679
-RDX: 0000000000000000 RSI: ffffffff8b0cb3c0 RDI: ffffffff8b6e9980
-RBP: 0000000100013d6f R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8f9d6657 R11: 0000000000000000 R12: 0000000000000280
-R13: 000000000000000a R14: 0000000000000001 R15: 0000000000000000
- invoke_softirq kernel/softirq.c:427 [inline]
- __irq_exit_rcu kernel/softirq.c:632 [inline]
- irq_exit_rcu+0xbb/0x120 kernel/softirq.c:644
- sysvec_apic_timer_interrupt+0x95/0xb0 arch/x86/kernel/apic/apic.c:1076
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
-RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
-RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
-RIP: 0010:default_idle+0xf/0x20 arch/x86/kernel/process.c:743
-Code: 4c 01 c7 4c 29 c2 e9 72 ff ff ff 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 0f 00 2d b3 5d 42 00 fb f4 <fa> c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-RSP: 0018:ffffc90000187e08 EFLAGS: 00000246
-RAX: 00000000007499dd RBX: 0000000000000003 RCX: ffffffff8ac43eab
-RDX: 0000000000000000 RSI: ffffffff8b0cb3c0 RDI: ffffffff8b6e9980
-RBP: ffffed1002f51900 R08: 0000000000000001 R09: ffffed100d6a6ded
-R10: ffff88806b536f6b R11: 0000000000000000 R12: 0000000000000003
-R13: ffff888017a8c800 R14: ffffffff8f9d6650 R15: 0000000000000000
- default_idle_call+0x69/0xa0 kernel/sched/idle.c:97
- cpuidle_idle_call kernel/sched/idle.c:170 [inline]
- do_idle+0x336/0x400 kernel/sched/idle.c:312
- cpu_startup_entry+0x50/0x60 kernel/sched/idle.c:410
- start_secondary+0x220/0x2b0 arch/x86/kernel/smpboot.c:336
- secondary_startup_64_no_verify+0x170/0x17b
- </TASK>
-
-The buggy address belongs to the virtual mapping at
- [ffffc900070d8000, ffffc900070e1000) created by:
- kernel_clone+0xfd/0x930 kernel/fork.c:2902
-
-The buggy address belongs to the physical page:
-page:ffffea0000c2b400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x30ad0
-memcg:ffff88810914d102
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff ffff88810914d102
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x102dc2(GFP_HIGHUSER|__GFP_NOWARN|__GFP_ZERO), pid 11717, tgid 11717 (syz-executor.2), ts 1114592091976, free_ts 1114514350228
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3311
- __alloc_pages+0x22c/0x2430 mm/page_alloc.c:4569
- alloc_pages_mpol+0x258/0x600 mm/mempolicy.c:2133
- vm_area_alloc_pages mm/vmalloc.c:3063 [inline]
- __vmalloc_area_node mm/vmalloc.c:3139 [inline]
- __vmalloc_node_range+0xa6e/0x1540 mm/vmalloc.c:3320
- alloc_thread_stack_node kernel/fork.c:307 [inline]
- dup_task_struct kernel/fork.c:1112 [inline]
- copy_process+0x150b/0x97b0 kernel/fork.c:2327
- kernel_clone+0xfd/0x930 kernel/fork.c:2902
- __do_sys_clone3+0x1f5/0x270 kernel/fork.c:3203
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-page last free pid 5219 tgid 5219 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2346
- free_unref_page+0x33/0x3c0 mm/page_alloc.c:2486
- __folio_put_small mm/swap.c:106 [inline]
- __folio_put+0xc3/0x110 mm/swap.c:129
- folio_put include/linux/mm.h:1494 [inline]
- put_page include/linux/mm.h:1563 [inline]
- free_page_and_swap_cache+0x25a/0x2d0 mm/swap_state.c:304
- __tlb_remove_table arch/x86/include/asm/tlb.h:34 [inline]
- __tlb_remove_table_free mm/mmu_gather.c:154 [inline]
- tlb_remove_table_rcu+0x89/0xe0 mm/mmu_gather.c:209
- rcu_do_batch kernel/rcu/tree.c:2190 [inline]
- rcu_core+0x819/0x1680 kernel/rcu/tree.c:2465
- __do_softirq+0x21c/0x8e7 kernel/softirq.c:553
-
-Memory state around the buggy address:
- ffffc900070dfc80: 00 00 00 00 f1 f1 f1 f1 f1 f1 00 00 00 00 00 00
- ffffc900070dfd00: 00 00 00 f3 f3 f3 f3 f3 00 00 00 00 00 00 00 00
->ffffc900070dfd80: 00 00 00 00 00 f1 f1 f1 f1 04 f3 f3 f3 00 00 00
-                            ^
- ffffc900070dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1
- ffffc900070dfe80: f1 f1 00 f2 f2 f2 00 00 f3 f3 00 00 00 00 00 00
-==================================================================
-----------------
-Code disassembly (best guess):
-   0:	89 44 24 18          	mov    %eax,0x18(%rsp)
-   4:	44 88 74 24 3b       	mov    %r14b,0x3b(%rsp)
-   9:	48 c7 c7 c0 59 0b 8b 	mov    $0xffffffff8b0b59c0,%rdi
-  10:	e8 65 31 fc ff       	call   0xfffc317a
-  15:	65 66 c7 05 73 ac 3b 	movw   $0x0,%gs:0x753bac73(%rip)        # 0x753bac92
-  1c:	75 00 00
-  1f:	e8 d6 47 ca f6       	call   0xf6ca47fa
-  24:	fb                   	sti
-  25:	bb ff ff ff ff       	mov    $0xffffffff,%ebx
-* 2a:	49 c7 c6 c0 a0 40 8d 	mov    $0xffffffff8d40a0c0,%r14 <-- trapping instruction
-  31:	41 0f bc dc          	bsf    %r12d,%ebx
-  35:	83 c3 01             	add    $0x1,%ebx
-  38:	0f 85 a7 00 00 00    	jne    0xe5
-  3e:	e9                   	.byte 0xe9
-  3f:	70                   	.byte 0x70
-
-
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/sched/fair.c | 68 ++++++++++++++++++++++----------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index a19ea29..c8e50fb 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -388,8 +388,8 @@ static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+ 
+ 		/*
+ 		 * With cfs_rq being unthrottled/throttled during an enqueue,
+-		 * it can happen the tmp_alone_branch points the a leaf that
+-		 * we finally want to del. In this case, tmp_alone_branch moves
++		 * it can happen the tmp_alone_branch points to the leaf that
++		 * we finally want to delete. In this case, tmp_alone_branch moves
+ 		 * to the prev element but it will point to rq->leaf_cfs_rq_list
+ 		 * at the end of the enqueue.
+ 		 */
+@@ -406,7 +406,7 @@ static inline void assert_list_leaf_cfs_rq(struct rq *rq)
+ 	SCHED_WARN_ON(rq->tmp_alone_branch != &rq->leaf_cfs_rq_list);
+ }
+ 
+-/* Iterate thr' all leaf cfs_rq's on a runqueue */
++/* Iterate through all leaf cfs_rq's on a runqueue */
+ #define for_each_leaf_cfs_rq_safe(rq, cfs_rq, pos)			\
+ 	list_for_each_entry_safe(cfs_rq, pos, &rq->leaf_cfs_rq_list,	\
+ 				 leaf_cfs_rq_list)
+@@ -595,13 +595,13 @@ static inline s64 entity_key(struct cfs_rq *cfs_rq, struct sched_entity *se)
+  *
+  * [[ NOTE: this is only equal to the ideal scheduler under the condition
+  *          that join/leave operations happen at lag_i = 0, otherwise the
+- *          virtual time has non-continguous motion equivalent to:
++ *          virtual time has non-contiguous motion equivalent to:
+  *
+  *	      V +-= lag_i / W
+  *
+  *	    Also see the comment in place_entity() that deals with this. ]]
+  *
+- * However, since v_i is u64, and the multiplcation could easily overflow
++ * However, since v_i is u64, and the multiplication could easily overflow
+  * transform it into a relative form that uses smaller quantities:
+  *
+  * Substitute: v_i == (v_i - v0) + v0
+@@ -671,7 +671,7 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+ 	}
+ 
+ 	if (load) {
+-		/* sign flips effective floor / ceil */
++		/* sign flips effective floor / ceiling */
+ 		if (avg < 0)
+ 			avg -= (load - 1);
+ 		avg = div_s64(avg, load);
+@@ -721,7 +721,7 @@ static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
+  *
+  * lag_i >= 0 -> \Sum (v_i - v)*w_i >= (v_i - v)*(\Sum w_i)
+  *
+- * Note: using 'avg_vruntime() > se->vruntime' is inacurate due
++ * Note: using 'avg_vruntime() > se->vruntime' is inaccurate due
+  *       to the loss in precision caused by the division.
+  */
+ static int vruntime_eligible(struct cfs_rq *cfs_rq, u64 vruntime)
+@@ -1024,7 +1024,7 @@ void init_entity_runnable_average(struct sched_entity *se)
+ 	if (entity_is_task(se))
+ 		sa->load_avg = scale_load_down(se->load.weight);
+ 
+-	/* when this task enqueue'ed, it will contribute to its cfs_rq's load_avg */
++	/* when this task is enqueued, it will contribute to its cfs_rq's load_avg */
+ }
+ 
+ /*
+@@ -1616,7 +1616,7 @@ static unsigned long score_nearby_nodes(struct task_struct *p, int nid,
+ 	max_dist = READ_ONCE(sched_max_numa_distance);
+ 	/*
+ 	 * This code is called for each node, introducing N^2 complexity,
+-	 * which should be ok given the number of nodes rarely exceeds 8.
++	 * which should be OK given the number of nodes rarely exceeds 8.
+ 	 */
+ 	for_each_online_node(node) {
+ 		unsigned long faults;
+@@ -3284,7 +3284,7 @@ retry_pids:
+ 		/*
+ 		 * Shared library pages mapped by multiple processes are not
+ 		 * migrated as it is expected they are cache replicated. Avoid
+-		 * hinting faults in read-only file-backed mappings or the vdso
++		 * hinting faults in read-only file-backed mappings or the vDSO
+ 		 * as migrating the pages will be of marginal benefit.
+ 		 */
+ 		if (!vma->vm_mm ||
+@@ -3295,7 +3295,7 @@ retry_pids:
+ 
+ 		/*
+ 		 * Skip inaccessible VMAs to avoid any confusion between
+-		 * PROT_NONE and NUMA hinting ptes
++		 * PROT_NONE and NUMA hinting PTEs
+ 		 */
+ 		if (!vma_is_accessible(vma)) {
+ 			trace_sched_skip_vma_numa(mm, vma, NUMAB_SKIP_INACCESSIBLE);
+@@ -3327,7 +3327,7 @@ retry_pids:
+ 		}
+ 
+ 		/*
+-		 * Scanning the VMA's of short lived tasks add more overhead. So
++		 * Scanning the VMAs of short lived tasks add more overhead. So
+ 		 * delay the scan for new VMAs.
+ 		 */
+ 		if (mm->numa_scan_seq && time_before(jiffies,
+@@ -3371,7 +3371,7 @@ retry_pids:
+ 			/*
+ 			 * Try to scan sysctl_numa_balancing_size worth of
+ 			 * hpages that have at least one present PTE that
+-			 * is not already pte-numa. If the VMA contains
++			 * is not already PTE-numa. If the VMA contains
+ 			 * areas that are unused or already full of prot_numa
+ 			 * PTEs, scan up to virtpages, to skip through those
+ 			 * areas faster.
+@@ -4733,7 +4733,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+ 
+ 	/*
+ 	 * Track task load average for carrying it to new CPU after migrated, and
+-	 * track group sched_entity load average for task_h_load calc in migration
++	 * track group sched_entity load average for task_h_load calculation in migration
+ 	 */
+ 	if (se->avg.last_update_time && !(flags & SKIP_AGE_LOAD))
+ 		__update_load_avg_se(now, cfs_rq, se);
+@@ -5014,14 +5014,14 @@ static inline int util_fits_cpu(unsigned long util,
+ 	 *   |     |   |       |   |      |   |
+ 	 *   |     |   |       |   |      |   |
+ 	 *   +----------------------------------------
+-	 *         cpu0        cpu1       cpu2
++	 *         CPU0        CPU1       CPU2
+ 	 *
+ 	 *   In the above example if a task is capped to a specific performance
+ 	 *   point, y, then when:
+ 	 *
+-	 *   * util = 80% of x then it does not fit on cpu0 and should migrate
+-	 *     to cpu1
+-	 *   * util = 80% of y then it is forced to fit on cpu1 to honour
++	 *   * util = 80% of x then it does not fit on CPU0 and should migrate
++	 *     to CPU1
++	 *   * util = 80% of y then it is forced to fit on CPU1 to honour
+ 	 *     uclamp_max request.
+ 	 *
+ 	 *   which is what we're enforcing here. A task always fits if
+@@ -5052,7 +5052,7 @@ static inline int util_fits_cpu(unsigned long util,
+ 	 *   |     |   |       |   |      |   |
+ 	 *   |     |   |       |   |      |   |      (region c, boosted, util < uclamp_min)
+ 	 *   +----------------------------------------
+-	 *         cpu0        cpu1       cpu2
++	 *         CPU0        CPU1       CPU2
+ 	 *
+ 	 * a) If util > uclamp_max, then we're capped, we don't care about
+ 	 *    actual fitness value here. We only care if uclamp_max fits
+@@ -5242,7 +5242,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	se->vruntime = vruntime - lag;
+ 
+ 	/*
+-	 * When joining the competition; the exisiting tasks will be,
++	 * When joining the competition; the existing tasks will be,
+ 	 * on average, halfway through their slice, as such start tasks
+ 	 * off with half a slice to ease into the competition.
+ 	 */
+@@ -5391,7 +5391,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 * Now advance min_vruntime if @se was the entity holding it back,
+ 	 * except when: DEQUEUE_SAVE && !DEQUEUE_MOVE, in this case we'll be
+ 	 * put back on, and if we advance min_vruntime, we'll be placed back
+-	 * further than we started -- ie. we'll be penalized.
++	 * further than we started -- i.e. we'll be penalized.
+ 	 */
+ 	if ((flags & (DEQUEUE_SAVE | DEQUEUE_MOVE)) != DEQUEUE_SAVE)
+ 		update_min_vruntime(cfs_rq);
+@@ -5427,7 +5427,7 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 
+ 	/*
+ 	 * Track our maximum slice length, if the CPU's load is at
+-	 * least twice that of our own weight (i.e. dont track it
++	 * least twice that of our own weight (i.e. don't track it
+ 	 * when there are only lesser-weight tasks around):
+ 	 */
+ 	if (schedstat_enabled() &&
+@@ -7503,7 +7503,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 
+ 	/*
+ 	 * On asymmetric system, update task utilization because we will check
+-	 * that the task fits with cpu's capacity.
++	 * that the task fits with CPU's capacity.
+ 	 */
+ 	if (sched_asym_cpucap_active()) {
+ 		sync_entity_load_avg(&p->se);
+@@ -8027,7 +8027,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 			if (uclamp_is_used() && !uclamp_rq_is_idle(rq)) {
+ 				/*
+ 				 * Open code uclamp_rq_util_with() except for
+-				 * the clamp() part. Ie: apply max aggregation
++				 * the clamp() part. I.e.: apply max aggregation
+ 				 * only. util_fits_cpu() logic requires to
+ 				 * operate on non clamped util but must use the
+ 				 * max-aggregated uclamp_{min, max}.
+@@ -8586,7 +8586,7 @@ static bool yield_to_task_fair(struct rq *rq, struct task_struct *p)
+ 	if (!se->on_rq || throttled_hierarchy(cfs_rq_of(se)))
+ 		return false;
+ 
+-	/* Tell the scheduler that we'd really like pse to run next. */
++	/* Tell the scheduler that we'd really like se to run next. */
+ 	set_next_buddy(se);
+ 
+ 	yield_task_fair(rq);
+@@ -8924,7 +8924,7 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+ 		return 0;
+ 
+-	/* Disregard pcpu kthreads; they are where they need to be. */
++	/* Disregard percpu kthreads; they are where they need to be. */
+ 	if (kthread_is_per_cpu(p))
+ 		return 0;
+ 
+@@ -10076,7 +10076,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ has_spare:
+ 
+ 		/*
+-		 * Select not overloaded group with lowest number of idle cpus
++		 * Select not overloaded group with lowest number of idle CPUs
+ 		 * and highest number of running tasks. We could also compare
+ 		 * the spare capacity which is more stable but it can end up
+ 		 * that the group has less spare capacity but finally more idle
+@@ -10715,7 +10715,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+ 
+ 			/*
+ 			 * If there is no overload, we just want to even the number of
+-			 * idle cpus.
++			 * idle CPUs.
+ 			 */
+ 			env->migration_type = migrate_task;
+ 			env->imbalance = max_t(long, 0,
+@@ -11900,7 +11900,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 * currently idle; in which case, kick the ILB to move tasks
+ 		 * around.
+ 		 *
+-		 * When balancing betwen cores, all the SMT siblings of the
++		 * When balancing between cores, all the SMT siblings of the
+ 		 * preferred CPU must be idle.
+ 		 */
+ 		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
+@@ -12061,7 +12061,7 @@ void nohz_balance_enter_idle(int cpu)
+ out:
+ 	/*
+ 	 * Each time a cpu enter idle, we assume that it has blocked load and
+-	 * enable the periodic update of the load of idle cpus
++	 * enable the periodic update of the load of idle CPUs
+ 	 */
+ 	WRITE_ONCE(nohz.has_blocked, 1);
+ }
+@@ -12085,7 +12085,7 @@ static bool update_nohz_stats(struct rq *rq)
+ }
+ 
+ /*
+- * Internal function that runs load balance for all idle cpus. The load balance
++ * Internal function that runs load balance for all idle CPUs. The load balance
+  * can be a simple update of blocked load or a complete load balance with
+  * tasks movement depending of flags.
+  */
+@@ -12190,7 +12190,7 @@ abort:
+ 
+ /*
+  * In CONFIG_NO_HZ_COMMON case, the idle balance kickee will do the
+- * rebalancing for all the cpus for whom scheduler ticks are stopped.
++ * rebalancing for all the CPUs for whom scheduler ticks are stopped.
+  */
+ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
+ {
+@@ -12221,7 +12221,7 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
+  * called from this function on (this) CPU that's not yet in the mask. That's
+  * OK because the goal of nohz_run_idle_balance() is to run ILB only for
+  * updating the blocked load of already idle CPUs without waking up one of
+- * those idle CPUs and outside the preempt disable / irq off phase of the local
++ * those idle CPUs and outside the preempt disable / IRQ off phase of the local
+  * cpu about to enter idle, because it can take a long time.
+  */
+ void nohz_run_idle_balance(int cpu)
+@@ -12232,7 +12232,7 @@ void nohz_run_idle_balance(int cpu)
+ 
+ 	/*
+ 	 * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
+-	 * (ie NOHZ_STATS_KICK set) and will do the same.
++	 * (i.e. NOHZ_STATS_KICK set) and will do the same.
+ 	 */
+ 	if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
+ 		_nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK);
 
