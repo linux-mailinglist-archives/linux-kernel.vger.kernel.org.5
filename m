@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-103373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBFA187BEAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:17:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C11087BEB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BA9A1F22BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:17:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 778991C21164
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2946FE08;
-	Thu, 14 Mar 2024 14:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7266FE10;
+	Thu, 14 Mar 2024 14:17:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="Lbfzo5sq";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="AueD9i4M"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="WDDJTn3o";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="HEv9ioSx"
 Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BBA6CDD7;
-	Thu, 14 Mar 2024 14:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2473D6EB75;
+	Thu, 14 Mar 2024 14:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425823; cv=none; b=Fo9pLqVkavV1moxel7VbFHTS/Oxcvb3Oh2ROP8QOuJlZrC+BzsAeOTNcB+QDstjJ0IPa0QF69FRpD+oJiHGrMnJxiOzBstdXmEv94AKQUdTh2X6I1wRkdOiEUaSYFbzrRFnzJ2fy7gFXp0gcMLidRs8VszG8szowo1/9alaLKSA=
+	t=1710425865; cv=none; b=eM8wvuew8Acbsn4GeYh3XJPFQWcsx4HOA1cpV0oNTUkm2ZrhgyatoX49dkCnmPKWv5FMOo2/RAD/FpIRzrGuzYsjohFVod16GT5uOuC7tENW5kAFdDHgMszturR+FCl98NR0wY+4ND3MwaV/NG75ZZ5xzdGF79Ehc4VpFrkmUE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425823; c=relaxed/simple;
-	bh=t3Fhm82IA3qEn//L6TADwfZ/ubG1FO2YvkjqhDWU4X0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tqZm9UAST/rMN/YnalyY3avzJtTYRbAqxB5ZHtCnAg6WMbp0ftBu/3chukERIkmV/IZrp18GNq7sA6j0wPDVAjKZHF99ycHWZiVHPSGi604vQUvz8CsRKOhH+yqCA1nH1MzEiq59NgX5DaajgT9tQmY4Ai/yVBIw5jxUHHbAjig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=Lbfzo5sq; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=AueD9i4M reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+	s=arc-20240116; t=1710425865; c=relaxed/simple;
+	bh=jWYS2mbqsaQjwLI0uyHB/By8ZNQs56ApU/CtwXPEKwE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UAnv0sJc3HsRAVufZjCKFLtyADLr9J8RcDGuUEl3IOpqr7esinLYcNjWXBb8/tcEFVTV47dcawyaf6bPqX8gHiMQl5EAhJVI4vmDCKkuBN0cPEdtpVXYSObcERRhIIL9QECXpCkldpubWGZjeUH3B1eBKzY60lv+rtsS4tVeOXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=WDDJTn3o; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=HEv9ioSx reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1710425820; x=1741961820;
+  t=1710425862; x=1741961862;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=8iPlLmUMgTAPqy90kGRd7xSvJIZZRBMTH99jyn15Q1U=;
-  b=Lbfzo5sqQaRYNEsGK/vJK2TF+/4WznGjUTdVffhXYc7CkQJo4WU2HHC8
-   gSZL3eoXd9sRGB4t61M9r6c+LkvBVTJ566p7TO512ibRJEyYeo+RFYp39
-   JbqZSYvRZ7E1jaM09rs+89nz8WA1DDG/fHyyFyBixHRcbFBeJA2pDUwgt
-   oZsUzSuhJKs6YUj6eFWliARfVS/kDP3yZna1asQ+IzuWgBiG9Y/2353ZO
-   tzPEC7ukXjOXd/XZI342qRE/C6GA94XM2A8CKKHwLaiiPtZAjJkD/QlYA
-   6Gj73NsyBUICpoNetqaPl4I5c2v4qx9HhX1YzHXpQVKONefDHjVni5JKz
-   A==;
+  bh=OdU6t0tVGQtkwjP8lExFoZTBmDQ+ixss7zrTzXEpQSA=;
+  b=WDDJTn3oXw9jU1w1CcOrndHzGHD3cgTkION5ON+/cKacTBVvI8ARtIn0
+   PtP8bbbGgh5khGWoS09nccBJzUvMqeBgQiLgWTDSN7y6HuQnDV6rHBzrY
+   bodeVLhBIwyhUrNH4N/oOH0DcjjJOdlfCI5+fsVlcCkJynmyPOHt0upwn
+   Jhu9a9oS40XKOHK1OzD6X6OfXvMKXUq/iBVoTVrzZTFY6E0uXqDc+pcZx
+   MtWVlPNC2lv+sMQew3mGjRXCfHykKri+BN/O+TNkDUJxnpWRiB2mtxSAw
+   uCvJFBlTLVnx4hmGbti5wjOXfevGIBu4eVUIRLQtpmN0yXwXSnGdOIpYl
+   Q==;
 X-IronPort-AV: E=Sophos;i="6.07,125,1708383600"; 
-   d="scan'208";a="35915593"
+   d="scan'208";a="35915606"
 Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 14 Mar 2024 15:16:57 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BDCBA16EA37;
-	Thu, 14 Mar 2024 15:16:51 +0100 (CET)
+  by mx1.tq-group.com with ESMTP; 14 Mar 2024 15:17:40 +0100
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3497616EB55;
+	Thu, 14 Mar 2024 15:17:35 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1710425813; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=8iPlLmUMgTAPqy90kGRd7xSvJIZZRBMTH99jyn15Q1U=;
-	b=AueD9i4MSbWj8uDoyxhJnFzJjBepny7VkKEApYcIw7tTFraO68yvuhq/FmEgRpDxcKT8EX
-	j66+6KUj9UlkVXTFnfoTttuazt9UfiAMkfytU9h2+TG/6S7xsbjKfo47je+NGIqqy3irHU
-	Zg3EnXFNQ5IrfIXzV1orSYS7KfpyTneJF+ZmwdhSbdiQR9iwnQta/Nh5gv+NUAPF4rkAmq
-	sn9Dk5dN1uPtjvM+J9OPJMm3x4DIOGnBn7r63YtQgE+L+0jMeHbYAOSZmXuTBx0VHe18x3
-	u/c8Bt64qTcdfJKQNtaMubrpFyZwYJ2RVM4z+PEF+GMUI1NPI+oXIronXfbNZg==
+	s=dkim; t=1710425855; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=OdU6t0tVGQtkwjP8lExFoZTBmDQ+ixss7zrTzXEpQSA=;
+	b=HEv9ioSxwg0rJay/2sMzYhSRLf+GkDo2Vb3bfEcOdQuK8+UVAgUulUQ+dRYAf2d9O8Gdra
+	9DnnIA7qGSZ/5mzRjTiIneJkJv0pr+u7DWF5WOhXE7Nvun4ilYCrKgdEK2zQ0kxIzdC8aX
+	MNGr78ULvBdAGQ80hE9EqtwCpfLKHyrHYDdNF52C05FGZpL2pkDBC5hL43DLzCevkeHD6I
+	1ayQ+ew2Rx2pqVZ3lp97ZgV0WpJ9ydJJYj5ZYHcpTIj50w2/+7Fs+fDR8Urj8AFj8b8UT6
+	H5xOdWauNuIxoPlgmIVaPrk5d0OgxAnZ9lcuXC5nUIe4wPAgUrKAt0jxRNqQuw==
 From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>
 Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org,
+	linux@ew.tq-group.com,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] ASoC: fsl: fsl_ssi: Add dev_err_probe if PCM DMA init fails
-Date: Thu, 14 Mar 2024 15:16:42 +0100
-Message-Id: <20240314141642.2943605-1-alexander.stein@ew.tq-group.com>
+Subject: [PATCH 1/2] ARM: dts: imx6qdl: mba6: Add missing vdd-supply for on-board USB hub
+Date: Thu, 14 Mar 2024 15:17:35 +0100
+Message-Id: <20240314141736.2943858-1-alexander.stein@ew.tq-group.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -84,30 +84,25 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-This happens especially if this driver is built-in, but SDMA driver
-is configured as module.
+This adds vdd-supply powering the USB hub.
 
 Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/nxp/imx/imx6qdl-mba6.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index ab6ec1974807..4ca3a16f7ac0 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1401,8 +1401,10 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 			goto error_pcm;
- 	} else {
- 		ret = imx_pcm_dma_init(pdev);
--		if (ret)
-+		if (ret) {
-+			dev_err_probe(dev, ret, "Failed to init PCM DMA\n");
- 			goto error_pcm;
-+		}
- 	}
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6qdl-mba6.dtsi b/arch/arm/boot/dts/nxp/imx/imx6qdl-mba6.dtsi
+index 4d2abcd44eff..9bf1cc6f508d 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6qdl-mba6.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6qdl-mba6.dtsi
+@@ -298,6 +298,7 @@ hub@1 {
+ 		reg = <1>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++		vdd-supply = <&reg_mba6_3p3v>;
  
- 	return 0;
+ 		ethernet@1 {
+ 			compatible = "usb424,9e00";
 -- 
 2.34.1
 
