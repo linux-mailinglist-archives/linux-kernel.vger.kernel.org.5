@@ -1,158 +1,116 @@
-Return-Path: <linux-kernel+bounces-103336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D8F87BE37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:00:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C34687BE3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7562C1F23220
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:00:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ECB1288AD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826886EB79;
-	Thu, 14 Mar 2024 14:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ri8Mz3cH"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22326F53E;
+	Thu, 14 Mar 2024 14:01:51 +0000 (UTC)
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EB66EB6E
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:00:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3115C6EB73;
+	Thu, 14 Mar 2024 14:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710424811; cv=none; b=jPWiHa75X2qp8NayuoAdRwY1CpQWEP6+bYznrNUTGwV1dM8V74aosZPy7i+qjooDcdMsOL7OERtS6lgul38WxjlH4LdpR15VpRNBTn7M196Zk9sqJ+nVubV44djegaFiu27Rhla16I4J5wpdeULRw2MUOV1SagmbT03XKepppCM=
+	t=1710424911; cv=none; b=gYkYRj8slvAQepHyOg3LPcztDpa0+CjnznOf8f+S1xgsM++ocs9YNqNIOlvxlBZZoWJwlmxb+rxgPw0xB4rrknKup3JACgyrqswhhObABSyp8KMN61eRDuWiU+k6yGpMU4pbq08E4gtfm2hj7RXsW7EC6PWZtbEc5jVdg2SeL+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710424811; c=relaxed/simple;
-	bh=hIlmhR3AzpmS8Vgf5z1Vc+JUV312hQfTQ06lv4JjRys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hAr8xq4CrDwthvvYw0cWYKgBx8TKcdbBYxAD4nZDMA2boQGptgwRBfiSludY4rESuja5tMD7o3ltdFhUbGWquXQpm9odrh4Qkibl2lrdtAvjG8wH5L33WTiDcBv5VMeSevuA7IqhxHVqdZKvSMoXV5bpOSFLyo5pw0wlankJTLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ri8Mz3cH; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51331634948so1959698e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710424808; x=1711029608; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FxNLG3KW46YsRyLUDeirw2sQ0+ONikiBJMDP2FhU0UA=;
-        b=ri8Mz3cH4KNRQiNXdJLBe2OMCeyhWFnRIub4ycboIIJeBmxtYs3PPyqukoH1y5rAfC
-         ni2sSkNc10D4ioy96BjG6X5rAQBywoLV8gQ1kT12px8d3AqAyzoHZSaqaUZImtYGZOiV
-         H3hensV7O4fxyxNh/YQQb48kSg2sIAOhAEIp6F6QCuhFxPA6uKIjDl8QsjISaZgMT8Zz
-         i+o94YVumapeOZ/PMlAO4jWAd8KGRn3blVXDX9rkypCf0jVS6s8uUAfoxpSZFBrGZek9
-         Vw6YFYWUGT63QwYd4Gqx8J9NVbGLMEbbpu1GT5ijew/2JCdixKhsgrFNqz7ygMZKXBdC
-         qslQ==
+	s=arc-20240116; t=1710424911; c=relaxed/simple;
+	bh=26IvTvQg8Q1DCffM7XYqhRz02vATkODwSLqGA4wHP1I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xqxp6agzEg0DmylYT9CrAh02wL5rbFZ94TtdFUxh+BCt3p4nparkaEBfETQ3OBSwAP/pE0ZoOC/8CMEabnwE1pjnA2saIxHbRorH7wfgw08ZWnh7tCEfv6FcjxdL43hmCktRlo5A+Fj8iD+BpyYFsV8WY941c/jENCzzJlhZJZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a46ad0d981so39491eaf.1;
+        Thu, 14 Mar 2024 07:01:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710424808; x=1711029608;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FxNLG3KW46YsRyLUDeirw2sQ0+ONikiBJMDP2FhU0UA=;
-        b=jHjpBgT5cweUHiAvh9KTOjsSzz7B2nuqxFUp+c07a7cj77AtLOdILUTo5ureIt2r9H
-         GT7peErO3nG0DfgXZRgPRo9w6Wh5D9v6n+kZmzqSyn6XnFcB+0k1VFgcvd/xDPzwmcAR
-         EbZoQkqYtIkFWv/HwrPR+s4na/FePey5aucmylWe82QqiZkvTD16XSbBTJshKMRVnL9i
-         gbwuxHPwwdTHnFTCQLCUyV/l/fME0qPdheRDqzIuv2RueocFzNTKoWA5xt9QvHJBoYtY
-         2jNkMY/HpOo7C1GaUf5I4xKiTimIy94FyMb5ycy4s1I6Q3RMym8y2i30w8R5Exu7fxug
-         JA4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWXjRgPnR5ChQ3IgUhpJFZI6yr0s30euXSpPN5TFef5qxGi/zgcwezhp90l2Mn6BKkF6napVYpT9/C4FsZ+UXxPrzSkg6MfYJEXJCSX
-X-Gm-Message-State: AOJu0YxMT8OeFZkzr3QDdBtoqSGwGNKQX1kNW9fdjOG/mytdib93/1aQ
-	yvd//OEm8oRpF/PnfC4ggGu2j0KeN0w5fxWyQWmjnVNTw4FMBjc9DpgfkSCYSSg=
-X-Google-Smtp-Source: AGHT+IHue9gaD3zPtJZnyQCeG7GuQwFP18YfHf0KLTKt0TTAlkcgMAoYq0PpAFe1/h3NaSxXwr70dQ==
-X-Received: by 2002:a19:e056:0:b0:513:c5d1:a537 with SMTP id g22-20020a19e056000000b00513c5d1a537mr792222lfj.10.1710424808071;
-        Thu, 14 Mar 2024 07:00:08 -0700 (PDT)
-Received: from [172.30.204.13] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id a19-20020a19ca13000000b00513d10789easm263158lfg.180.2024.03.14.07.00.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 07:00:07 -0700 (PDT)
-Message-ID: <8affb3d8-6210-43e6-8cbb-de28bdcf326a@linaro.org>
-Date: Thu, 14 Mar 2024 15:00:02 +0100
+        d=1e100.net; s=20230601; t=1710424909; x=1711029709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nlUOEVdCSeBaOUnlZslF3hthRjVOvINmoadUntekmTA=;
+        b=uDmmcDMxOa8z8gsB7teoQvAwNl3CQVl9SJsZK5ZV+snqPDoSrPV5KMk3z9DWzh2gJa
+         r4YxdH3CLldyov2W0QutB7Jhjm6yeEgmgnfmaHwwpAXpfF6Sy1/MspdZO01dDAyifsQL
+         2bX2VjlElJL2lkhQPBRBjfLP1SA6KM+RxdnJBPlrusfAFfWy0dTv4X1/rH/iYAawptlQ
+         aNwDNruKCIjh2On+a/G/vCd6ClN6Hg2c2c1Qzy2aJDqOqcC0DuzduUjD1WDkoZfLRTq/
+         CRH8nrON+mYDuR7S0uIZPtdcvYRaI+l4SjncXDCA1Z3QKJqaL2pqaFbBwT/rHVDCVgUa
+         Gg1A==
+X-Forwarded-Encrypted: i=1; AJvYcCW1ScvB5m8yIoB6hUdE/4QtoFEeDpUbMCbcknGPx6nrMKNITECPG9CpqcUQscQ+7NdnXiPpl5lqyLxMsA1QEkNb+ekxHfPiHJUQ/WqwgUyDLZjFtg54ZPuxoAZzEgfkpG7HcUmZH2U=
+X-Gm-Message-State: AOJu0YzqBhcLfrz70LtNBYC4LNGEMm7GfjzDOymbe5CwAzeMOlqfWew+
+	9l0gW3fxQt16IE1qP33q6P+qS7WZ6wbQn7Zbs8/0tBv3PfS9lJWpglemwSprHwSBkPFNnSFaqR1
+	Bs1Y+TrbKygYTSpWVMzeew5N9dv8=
+X-Google-Smtp-Source: AGHT+IHgkJcz+tkEM2LlBM12CUpHuGpPaw+WbJZ9d5/mHiTfNKztnU4wt3pT0Ity3gbnnDlYPANT7N4C9ObuOS2h6RQ=
+X-Received: by 2002:a05:6870:9209:b0:222:4480:6577 with SMTP id
+ e9-20020a056870920900b0022244806577mr1953757oaf.0.1710424909035; Thu, 14 Mar
+ 2024 07:01:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to
- fix boot failure
-To: Gabor Juhos <j4g8y7@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Sricharan Ramabadhran <quic_srichara@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240311-apss-ipq-pll-ipq5018-hang-v1-1-8ed42b7a904d@gmail.com>
- <58f07908-127a-438d-84e2-e059f269859b@linaro.org>
- <2b95a593-225e-47b1-8bda-03240eb0f81e@gmail.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <2b95a593-225e-47b1-8bda-03240eb0f81e@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240314075429.1164810-1-d-gole@ti.com>
+In-Reply-To: <20240314075429.1164810-1-d-gole@ti.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 14 Mar 2024 15:01:36 +0100
+Message-ID: <CAJZ5v0iUt+tudMV-rJ80GR6iNQVv06+054h0UyNgpEOUF6QLRQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: wakeup: Add a missing return case in init_wakeup
+To: Dhruva Gole <d-gole@ti.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Tony Lindgren <tony@atomide.com>, theo.lebrun@bootlin.com, 
+	Sibi Sankar <quic_sibis@quicinc.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Mar 14, 2024 at 8:55=E2=80=AFAM Dhruva Gole <d-gole@ti.com> wrote:
+>
+> The device_wakeup_disable call can return an error if no dev exists
+> however this was being ignored. Catch this return value and propagate it
+> onward in device_init_wakeup.
 
+Why does this matter to the callers of device_init_wakeup()?
 
-On 3/14/24 14:50, Gabor Juhos wrote:
-> 2024. 03. 13. 19:36 keltezéssel, Konrad Dybcio írta:
->>
->>
->> On 3/11/24 16:06, Gabor Juhos wrote:
->>> Booting v6.8 results in a hang on various IPQ5018 based boards.
->>> Investigating the problem showed that the hang happens when the
->>> clk_alpha_pll_stromer_plus_set_rate() function tries to write
->>> into the PLL_MODE register of the APSS PLL.
->>>
->>> Checking the downstream code revealed that it uses [1] stromer
->>> specific operations for IPQ5018, whereas in the current code
->>> the stromer plus specific operations are used.
->>>
->>> The ops in the 'ipq_pll_stromer_plus' clock definition can't be
->>> changed since that is needed for IPQ5332, so add a new alpha pll
->>> clock declaration which uses the correct stromer ops and use this
->>> new clock for IPQ5018 to avoid the boot failure.
->>>
->>> 1.
->>> https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4/drivers/clk/qcom/apss-ipq5018.c#L67
->>>
->>> Cc: stable@vger.kernel.org
->>> Fixes: 50492f929486 ("clk: qcom: apss-ipq-pll: add support for IPQ5018")
->>> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
->>> ---
->>> Based on v6.8.
->>> ---
->>>    drivers/clk/qcom/apss-ipq-pll.c | 20 +++++++++++++++++++-
->>>    1 file changed, 19 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
->>> index 678b805f13d45..11f1ae59438f7 100644
->>> --- a/drivers/clk/qcom/apss-ipq-pll.c
->>> +++ b/drivers/clk/qcom/apss-ipq-pll.c
->>> @@ -55,6 +55,24 @@ static struct clk_alpha_pll ipq_pll_huayra = {
->>>        },
->>>    };
->>>    +static struct clk_alpha_pll ipq_pll_stromer = {
->>> +    .offset = 0x0,
->>> +    .regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
->>
->> CLK_ALPHA_PLL_TYPE_STROMER?
-> 
-> I admit that using CLK_ALPHA_PLL_TYPE_STROMER would be less confusing. However
-> 'ipq_pll_offsets' array has no entry for that enum, and given the fact that the
-> CLK_ALPHA_PLL_TYPE_STROMER_PLUS entry uses the correct register offsets it makes
->   little sense to add another entry with the same offsets.
-> 
-> Although the 'clk_alpha_pll_regs' in clk-alpha-pll.c has an entry for
-> CLK_ALPHA_PLL_TYPE_STROMER, but the offsets defined there are not 'exactly' the
-> same as the ones defined locally in 'ipq_pll_offsets'. They will be identical if
-> [1] gets accepted but we are not there yet.
-
-Oh, I completely overlooked that this driver has its own array.. Hm..
-
-I suppose it would make sense to rename these indices to IPQ_PLL_x to
-help avoid such confusion..
-
-Konrad
+>
+> Signed-off-by: Dhruva Gole <d-gole@ti.com>
+> ---
+>  include/linux/pm_wakeup.h | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/pm_wakeup.h b/include/linux/pm_wakeup.h
+> index 6eb9adaef52b..64c7db35e693 100644
+> --- a/include/linux/pm_wakeup.h
+> +++ b/include/linux/pm_wakeup.h
+> @@ -232,14 +232,15 @@ static inline void pm_wakeup_hard_event(struct devi=
+ce *dev)
+>   */
+>  static inline int device_init_wakeup(struct device *dev, bool enable)
+>  {
+> +       int ret;
+>         if (enable) {
+>                 device_set_wakeup_capable(dev, true);
+> -               return device_wakeup_enable(dev);
+> +               ret =3D device_wakeup_enable(dev);
+>         } else {
+> -               device_wakeup_disable(dev);
+> +               ret =3D device_wakeup_disable(dev);
+>                 device_set_wakeup_capable(dev, false);
+> -               return 0;
+>         }
+> +       return ret;
+>  }
+>
+>  #endif /* _LINUX_PM_WAKEUP_H */
+>
+> base-commit: 9bb9b28d0568991b1d63e66fe75afa5f97ad1156
+> --
+> 2.34.1
+>
 
