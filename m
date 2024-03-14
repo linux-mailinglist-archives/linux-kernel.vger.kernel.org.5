@@ -1,121 +1,183 @@
-Return-Path: <linux-kernel+bounces-102831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D16587B79C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:02:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7954887B793
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BDDE1C2032B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:02:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CD15B2205C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA4211C85;
-	Thu, 14 Mar 2024 05:59:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54757241F9;
-	Thu, 14 Mar 2024 05:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D2D17C7B;
+	Thu, 14 Mar 2024 05:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SCUOzZEI"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3668117BC9
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395964; cv=none; b=kihfH7YQQceKwsxLNQ3+qjoiAiWt5zgQgTyPb1Kd3A/wpwG4JCzFLuqJ+kwyQ3W4I3RRyqBLzdbBOvW5XqdanTl9/mdHnKt6Ss7Cx8oVWis5DxNBHow9q0nqddbzXfMPMSLxIz35rhgEk9deqUDZTIL0HfkNYEnK45hbYCaa/MQ=
+	t=1710395940; cv=none; b=YYhvWiFa2KhpnEHQdxX0fZMvYHmblNKZ5QHNEz2kR3eoWUWvYabM/Fpgnt0FiqKrvJqJA5SDF0KJs2dgIRbVj/iJkxsnlzBLJkZd8e0WPbytJ4NYiMPfT87+NFY6Kod/eGaYQWNTV7ItXfEbbMv+tMRcJw0WG/WKtKzdBExM2Ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395964; c=relaxed/simple;
-	bh=KwfhyoWqVtNfejQX5OWX8JcdEe04vFs6xiI5GVCF60s=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r5OXNqH+C/ZeOCJFkv5A8gWZC5SLSyKzjLhcASefnsz5/rCBuxXTNfoeFIU8sJ5earf7OQvfupK7qG5Qb9CKd9/1rb6s/PVJZRGjEjgokQQwjayBdCxllreEYmAEWwvpispWbXEEMC+TPsk67dnUTBcH8xXhRpeBAJMds1Mh8xU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6BBB1063;
-	Wed, 13 Mar 2024 22:59:57 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.53.138])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C58503F73F;
-	Wed, 13 Mar 2024 22:59:15 -0700 (PDT)
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: linux-arm-kernel@lists.infradead.org,
-	suzuki.poulose@arm.com
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	coresight@lists.linaro.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Hanjun Guo <guohanjun@huawei.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH V7 01/11] coresight: etm4x: Fix unbalanced pm_runtime_enable()
-Date: Thu, 14 Mar 2024 11:28:33 +0530
-Message-Id: <20240314055843.2625883-2-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240314055843.2625883-1-anshuman.khandual@arm.com>
-References: <20240314055843.2625883-1-anshuman.khandual@arm.com>
+	s=arc-20240116; t=1710395940; c=relaxed/simple;
+	bh=WOWe+5ZwJjFtAMO5LixHT9n3OypFjRwiFMl5aR4Ng6M=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=L66/l8AwMehWCgzlWmMqlWCpJPMTLwxz+PNQWHTR0ZdvPVsMM2oeN4Y/sEh2RgLFv1JXT8k9h9kRFTwwQ+bp19tW999yaLYXat4g+46Zi7+uJee4IymccZdhhcQ3zjJao3m86njjNB6nd2tJ1PTEG8A/P0R5ot9Rlob9yq69s00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SCUOzZEI; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc4563611cso751561276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710395938; x=1711000738; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a6qdDgoIQxn8fAzaUEAV7cPE0zy3zkq2eTruom8IDPQ=;
+        b=SCUOzZEIdO8gDjkgOpgAJOUpsl1206R4nxH31TmYCH3fL/Xbp7URZAvuZEFzyouVvW
+         LKOn4JEZ+hv+yp9iQbNkZmGgIjpcwRT60brAXUVRZcP7+9v8DKxDhsIMRD+9LBm5PPGZ
+         5Cr8XDY7/42QqROTJFHsxisFhmcDYBx7WIL7FwYpULwILyBNGjHGpgzSzlYCrwyme5oW
+         HHMsz+FwVo0enu9zYl0d6/BUHVvtUci0T+RREjoDJk9sUouL9/vxexO5p6kWRRoFMbQY
+         ONhNQjEPno0e0q0TU3K4eXQO6qIpnRJi5GJ+CwogBk0ni0EZzvgviNdFJ7rSDpUGPtYD
+         Md8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710395938; x=1711000738;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a6qdDgoIQxn8fAzaUEAV7cPE0zy3zkq2eTruom8IDPQ=;
+        b=Zqv7oDuSDzNXSjoQnTSH3urS/glUuCNhOcc5Q/7KaeyInxzVSCskuEG19A8wHDB/bb
+         qSC8+A/QbiNPXOian5jqV9MRu+uQLElnYTQvXZ2MtUS++kfj5ERwRVri/G/JmFjnkCMA
+         oXbLL/Pm7dvwq/e/AtgXWQ97keM13qpZL1oJTR0CAq3EbnD77dwG14UJvsfgLEZmg7X+
+         n4VcvxkgbVZ1hJ70yQFZNkbmyGkJ1cgbwfrf2y+lydrtjEab5JboYCbprVCKX750F0WZ
+         IltRhyjNY8rbe/4xpmRO29ruPHtLBZPacUJdpJHKX7DJww9qOJosGVJrStB3dku5I3jh
+         6EEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnqmVJ9wE+UpTLQUOCGACjlitN60AxWyFFYb6S9JZzR7iustzBAjjVDI6qq6nFW0grb8zW/KG14PuOA4zlX7Akx1Sj1tKTWigmIlTc
+X-Gm-Message-State: AOJu0Yz7rpFWfd4jjvDgQyrMDTwLA7PH7t1AcaZQYw8Wzwbe2Bsa5aLs
+	kLTOZDhkaOE6w6gK6clkL/PPK5M95gO2bx4jUbATGmU1tJ9tmwflC8DwFc+lwN5GE8bsTYxcBkl
+	VBpOQ2w==
+X-Google-Smtp-Source: AGHT+IFwr9ZZkG4/Fh7fUI8lDx9QV/iU/l1lXRZYsYunk9OLcTNKwFWK1vfmVkvaph3bP0KvJ/sxfqbBwcRZ
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:449f:3bde:a4cd:806a])
+ (user=irogers job=sendgmr) by 2002:a05:6902:2603:b0:dcc:54d0:85e0 with SMTP
+ id dw3-20020a056902260300b00dcc54d085e0mr256664ybb.11.1710395938388; Wed, 13
+ Mar 2024 22:58:58 -0700 (PDT)
+Date: Wed, 13 Mar 2024 22:58:33 -0700
+In-Reply-To: <20240314055839.1975063-1-irogers@google.com>
+Message-Id: <20240314055839.1975063-7-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240314055839.1975063-1-irogers@google.com>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v3 06/12] perf jevents: Add hardware prefetch (hwpf) metric
+ group for AMD
+From: Ian Rogers <irogers@google.com>
+To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-There is an unbalanced pm_runtime_enable() in etm4_probe_platform_dev()
-when etm4_probe() fails. This problem can be observed via the coresight
-etm4 module's (load -> unload -> load) sequence when etm4_probe() fails
-in etm4_probe_platform_dev().
+Add metrics that give the utility of hardware prefetches on zen2, zen3
+and zen4.
 
-[   63.379943] coresight-etm4x 7040000.etm: Unbalanced pm_runtime_enable!
-[   63.393630] coresight-etm4x 7140000.etm: Unbalanced pm_runtime_enable!
-[   63.407455] coresight-etm4x 7240000.etm: Unbalanced pm_runtime_enable!
-[   63.420983] coresight-etm4x 7340000.etm: Unbalanced pm_runtime_enable!
-[   63.420999] coresight-etm4x 7440000.etm: Unbalanced pm_runtime_enable!
-[   63.441209] coresight-etm4x 7540000.etm: Unbalanced pm_runtime_enable!
-[   63.454689] coresight-etm4x 7640000.etm: Unbalanced pm_runtime_enable!
-[   63.474982] coresight-etm4x 7740000.etm: Unbalanced pm_runtime_enable!
-
-This fixes the above problem - with an explicit pm_runtime_disable() call
-when etm4_probe() fails during etm4_probe_platform_dev().
-
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: linux-acpi@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: coresight@lists.linaro.org
-Fixes: 5214b563588e ("coresight: etm4x: Add support for sysreg only devices")
-Reviewed-by: James Clark <james.clark@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/pmu-events/amd_metrics.py | 62 ++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index c2ca4a02dfce..06a9b94b8c13 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -2213,6 +2213,9 @@ static int etm4_probe_platform_dev(struct platform_device *pdev)
- 	ret = etm4_probe(&pdev->dev);
+diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
+index 9551b44dbbaf..5c91e97ae6c4 100755
+--- a/tools/perf/pmu-events/amd_metrics.py
++++ b/tools/perf/pmu-events/amd_metrics.py
+@@ -120,6 +120,67 @@ def AmdBr():
+                      description="breakdown of retired branch instructions")
  
- 	pm_runtime_put(&pdev->dev);
-+	if (ret)
-+		pm_runtime_disable(&pdev->dev);
+ 
++def AmdHwpf():
++  """Returns a MetricGroup representing AMD hardware prefetch metrics."""
++  global _zen_model
++  if _zen_model <= 1:
++      return None
 +
- 	return ret;
- }
++  hwp_ld = Event("ls_dispatch.ld_dispatch")
++  hwp_l2 = Event("ls_hw_pf_dc_fills.local_l2",
++                 "ls_hw_pf_dc_fills.lcl_l2",
++                 "ls_hw_pf_dc_fill.ls_mabresp_lcl_l2")
++  hwp_lc = Event("ls_hw_pf_dc_fills.local_ccx",
++                 "ls_hw_pf_dc_fills.int_cache",
++                 "ls_hw_pf_dc_fill.ls_mabresp_lcl_cache")
++  hwp_lm = Event("ls_hw_pf_dc_fills.dram_io_near",
++                 "ls_hw_pf_dc_fills.mem_io_local",
++                 "ls_hw_pf_dc_fill.ls_mabresp_lcl_dram")
++  hwp_rc = Event("ls_hw_pf_dc_fills.far_cache",
++                 "ls_hw_pf_dc_fills.ext_cache_remote",
++                 "ls_hw_pf_dc_fill.ls_mabresp_rmt_cache")
++  hwp_rm = Event("ls_hw_pf_dc_fills.dram_io_far",
++                 "ls_hw_pf_dc_fills.mem_io_remote",
++                 "ls_hw_pf_dc_fill.ls_mabresp_rmt_dram")
++
++  loc_pf = hwp_l2 + hwp_lc + hwp_lm
++  rem_pf = hwp_rc + hwp_rm
++  all_pf = loc_pf + rem_pf
++
++  r1 = d_ratio(ins, all_pf)
++  r2 = d_ratio(hwp_ld, all_pf)
++  r3 = d_ratio(all_pf, interval_sec)
++
++  overview = MetricGroup("hwpf_overview", [
++      Metric("hwpf_ov_insn_bt_hwpf", "Insn between HWPF", r1, "insns"),
++      Metric("hwpf_ov_loads_bt_hwpf", "Loads between HWPF", r2, "loads"),
++      Metric("hwpf_ov_rate", "HWPF per second", r3, "hwpf/s"),
++  ])
++  r1 = d_ratio(hwp_l2, all_pf)
++  r2 = d_ratio(hwp_lc, all_pf)
++  r3 = d_ratio(hwp_lm, all_pf)
++  data_src_local = MetricGroup("hwpf_data_src_local", [
++      Metric("hwpf_data_src_local_l2", "Data source local l2", r1, "100%"),
++      Metric("hwpf_data_src_local_ccx_l3_loc_ccx",
++             "Data source local ccx l3 loc ccx", r2, "100%"),
++      Metric("hwpf_data_src_local_memory_or_io",
++             "Data source local memory or IO", r3, "100%"),
++  ])
++
++  r1 = d_ratio(hwp_rc, all_pf)
++  r2 = d_ratio(hwp_rm, all_pf)
++  data_src_remote = MetricGroup("hwpf_data_src_remote", [
++      Metric("hwpf_data_src_remote_cache", "Data source remote cache", r1,
++             "100%"),
++      Metric("hwpf_data_src_remote_memory_or_io",
++             "Data source remote memory or IO", r2, "100%"),
++  ])
++
++  data_src = MetricGroup("hwpf_data_src", [data_src_local, data_src_remote])
++  return MetricGroup("hwpf", [overview, data_src],
++                     description="Hardware prefetch breakdown (CCX L3 = L3 of current thread, Loc CCX = CCX cache on some socket)")
++
++
+ def AmdSwpf() -> Optional[MetricGroup]:
+   """Returns a MetricGroup representing AMD software prefetch metrics."""
+   global _zen_model
+@@ -278,6 +339,7 @@ def main() -> None:
  
+   all_metrics = MetricGroup("", [
+       AmdBr(),
++      AmdHwpf(),
+       AmdSwpf(),
+       AmdUpc(),
+       Idle(),
 -- 
-2.25.1
+2.44.0.278.ge034bb2e1d-goog
 
 
