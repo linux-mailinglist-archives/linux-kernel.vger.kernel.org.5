@@ -1,134 +1,96 @@
-Return-Path: <linux-kernel+bounces-103422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56A7387BF2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:42:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CCAF87BF31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:43:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 876851C210AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:42:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56FBA28286B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578E170CD7;
-	Thu, 14 Mar 2024 14:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03F270CAB;
+	Thu, 14 Mar 2024 14:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/F+lDGS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NNyTc1Wl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5045D756;
-	Thu, 14 Mar 2024 14:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1120D5D75A;
+	Thu, 14 Mar 2024 14:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710427347; cv=none; b=jIkapjRFRUQj1Mp8iz6RqJF69JqwunoBuzmnW3FTCvAmo9cBPg0qoXQ11xNJP9EP+bTxhJ7K6YBazEQFFpS3YaMhxoWkRbIvEHmymwKAEZNW8QAKKubp5bTccffFptETenqyQSgobCiS7dYugWyeEv01DWH2A3mQPNZRDkO+Yow=
+	t=1710427408; cv=none; b=L4DZvbeRTUEFxgk+7hFSeC+0JLoK5d/uX+5cyGIlU6dzyegfMbYUzzPjTYfDlnX9/9MlsNq6jodfUkXU/4hrVkievy9IqNhCcgOXAA0WcN8R52RLobyyo5yWE8Sz3fJ/BPuO7kteMd38vrrALNc8KkYkHYDXlHapCxjqRWPoCDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710427347; c=relaxed/simple;
-	bh=t15/fUG8eEoCH9k/jfp6Z2u74HuUtlgqyLfEcx09Zp4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M9KUlO8kvmyWiaX7atqKzF54erh5xaoAa0DckbcwP7TBICcXWV1+g0Mjv0kpNrCEBv07XEbzHpqjEg+pUdLpfLLHr9wvrCqQIEZ+dLtKq76bPVO4Onfk5h9DYD0vTwoD5hmjx+dEqYNMipxkYsccR2Qri2c2gNRXOr7E2S1bkg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/F+lDGS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA74DC433C7;
-	Thu, 14 Mar 2024 14:42:26 +0000 (UTC)
+	s=arc-20240116; t=1710427408; c=relaxed/simple;
+	bh=p6OB1jptEvWyAVFOR0SPMeWm5Yd+w9YyWXJOnwztUyM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U5dPHH5o3bMpiikhX8on1bm3lNWbl3PcL7ceZI4UHkSlYv6vPmf4A3jDt6uh2zz18J20r66pLSS84ppDfUjw1wxP5YF9nDmhGxSGcb7GoNvKbLoc5PoYeR0jepB38uE3HXBT/QfjTBA+h1Q6aChqOAykZQvhECueKAPVeGKEQQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NNyTc1Wl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E0BC433F1;
+	Thu, 14 Mar 2024 14:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710427347;
-	bh=t15/fUG8eEoCH9k/jfp6Z2u74HuUtlgqyLfEcx09Zp4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I/F+lDGS2y5xE5a5YA7GzDQLaThIZmXKLcUXFYPQFaGsCyeslKqQd7z1bZgb+ttps
-	 p5mDSY9dX7k5N4dsQUhv1iOtQsRWuHo8AEQwqNHtJvj8iWE+28xfJ6cLUgkfpw5Dy6
-	 FbdjrkPuMlr12cVAvOmggmYlSPsWGdjjeyY6KKSz6ONecqBDXb7gNac7Wp4FoC3dLc
-	 6ZNoHDmv98FB+bCPD3Uy/z4vuqh9rh69Qy3RDzDbAMxENPSBF4hFT2fC09ubBRpWbv
-	 ZDZoRRNkfMhzvDAdhzqCrY2AYJmjVfor08S+wsnhihdijuUoj0jTst4SswmtBSPxBn
-	 G4RFR8dxu6BwA==
-Date: Thu, 14 Mar 2024 15:42:24 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Frank Oltmanns <frank@oltmanns.dev>
-Cc: Chen-Yu Tsai <wens@csie.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Icenowy Zheng <uwu@icenowy.me>, Ondrej Jirman <x@xnux.eu>, dri-devel@lists.freedesktop.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/sun4i: tcon: Support keeping dclk rate upon ancestor
- clock changes
-Message-ID: <20240314-careful-silky-bear-8ee43f@houat>
-References: <20240310-tcon_keep_stable_rate-v1-1-0296b0a85c02@oltmanns.dev>
+	s=k20201202; t=1710427407;
+	bh=p6OB1jptEvWyAVFOR0SPMeWm5Yd+w9YyWXJOnwztUyM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NNyTc1WlVF/xZIfvUUmx6pE/v1b7VdpMgwkzsXC8/uO/ZY/cASIKcxB3YKWlLIhYA
+	 AWdKllZrGt1tmlEureu1Q0GnkWR5qN/vW+IeksM/PeoRV7CmW12d+9IJtnq46iF4iK
+	 uoMiBP0RHNnZvnwJkEap6vLUjw0o0nmcAPLc7EbiHBMmAvQkrBeVXZneA/xdeg0hRU
+	 B3v5Ilj5ViipP0r300TKazGZ4hnMjaN1PcXU/lDKj/jOjLkgssJPXc+JHfeezAMQC+
+	 /RZOk4lGOQeZNh3bM2uNBzbIkwDp9bEkKcw9zl6/6f2+B4XxolkZ+KqvKtiMJCqdJk
+	 B3gWQO86h7+lw==
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 0/3] Move some more header copies to tools/perf/trace/beauty/
+Date: Thu, 14 Mar 2024 11:43:17 -0300
+Message-ID: <20240314144320.743217-1-acme@kernel.org>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nskffof7joxt6vlb"
-Content-Disposition: inline
-In-Reply-To: <20240310-tcon_keep_stable_rate-v1-1-0296b0a85c02@oltmanns.dev>
+X-Mailer: git-send-email 2.44.0
+Content-Transfer-Encoding: 8bit
 
-
---nskffof7joxt6vlb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
 Hi,
 
-On Sun, Mar 10, 2024 at 02:32:29PM +0100, Frank Oltmanns wrote:
-> Allow the dclk to reset its rate when a rate change is initiated from an
-> ancestor clock. This makes it possible to no longer to get an exclusive
-> lock. As a consequence, it is now possible to set new rates if
-> necessary, e.g. when an external display is connected.
->=20
-> The first user of this functionality is the A64 because PLL-VIDEO0 is an
-> ancestor for both HDMI and TCON0. This allows to select an optimal rate
-> for TCON0 as long as there is no external HDMI connection. Once a change
-> in PLL-VIDEO0 is performed when an HDMI connection is established, TCON0
-> can react gracefully and select an optimal rate based on this the new
-> constraint.
->=20
-> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-> ---
-> I would like to make the Allwinner A64's data-clock keep its rate
-> when its ancestor's (pll-video0) rate changes. Keeping data-clock's rate
-> is required, to let the A64 drive both an LCD and HDMI display at the
-> same time, because both have pll-video0 as an ancestor.
->=20
-> TCONs that use this flag store the ideal rate for their data-clock and
-> subscribe to be notified when data-clock changes. When rate setting has
-> finished (indicated by a POST_RATE_CHANGE event) the call back function
-> schedules delayed work to set the data-clock's rate to the initial value
-> after 100 ms. Using delayed work maks sure that the clock setting is
-> finished.
->=20
-> I've implemented this functionality as a quirk, so that it is possible
-> to use it only for the A64.
->=20
-> This patch supersedes [1].
->=20
-> This work is inspired by an out-of-tree patchset [2] [3] [4].
-> Unfortunately, the patchset uses clk_set_rate() directly in a notifier
-> callback, which the following comment on clk_notifier_register()
-> forbids: "The callbacks associated with the notifier must not re-enter
-> into the clk framework by calling any top-level clk APIs." [5]
-> Furthermore, that out-of-tree patchset no longer works since 6.6,
-> because setting pll-mipi is now also resetting pll-video0 and therefore
-> causes a race condition.
+   	Move a few more files that is used just by scrappers.
 
-Workqueues don't have an upper boundary on when they execute. As we
-discussed multiple times, this should be solved in the clock framework
-itself, not bypassing it.
+- Arnaldo
 
-Maxime
+Arnaldo Carvalho de Melo (3):
+  perf beauty: Move uapi/linux/usbdevice_fs.h copy out of the directory
+    used to build perf
+  perf beauty: Move uapi/sound/asound.h copy out of the directory used
+    to build perf
+  perf beauty: Move arch/x86/include/asm/irq_vectors.h copy out of the
+    directory used to build perf
 
---nskffof7joxt6vlb
-Content-Type: application/pgp-signature; name="signature.asc"
+ tools/perf/Makefile.perf                      | 19 +++++++++++--------
+ tools/perf/check-headers.sh                   |  6 +++---
+ .../arch/x86/include/asm/irq_vectors.h        |  0
+ .../beauty}/include/uapi/linux/usbdevice_fs.h |  0
+ .../trace/beauty}/include/uapi/sound/asound.h |  0
+ tools/perf/trace/beauty/sndrv_ctl_ioctl.sh    |  4 ++--
+ tools/perf/trace/beauty/sndrv_pcm_ioctl.sh    |  4 ++--
+ .../beauty/tracepoints/x86_irq_vectors.sh     |  6 +++---
+ tools/perf/trace/beauty/usbdevfs_ioctl.sh     |  6 +++---
+ 9 files changed, 24 insertions(+), 21 deletions(-)
+ rename tools/{ => perf/trace/beauty}/arch/x86/include/asm/irq_vectors.h (100%)
+ rename tools/{ => perf/trace/beauty}/include/uapi/linux/usbdevice_fs.h (100%)
+ rename tools/{ => perf/trace/beauty}/include/uapi/sound/asound.h (100%)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.43.2
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZfMMzwAKCRDj7w1vZxhR
-xQ1CAQDtICAPI7t6iHcGTsvHtbMc/Xou8mIobymUHWIa2ywO5QEAyvQlO/lPQtZc
-I6gmabMvtrOKzIunluaotAq5NsaVYQY=
-=IRk2
------END PGP SIGNATURE-----
-
---nskffof7joxt6vlb--
 
