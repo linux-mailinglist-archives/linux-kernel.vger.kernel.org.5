@@ -1,137 +1,110 @@
-Return-Path: <linux-kernel+bounces-103851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B574F87C5B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:04:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0283E87C5BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7162A2819F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:04:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93054B21BCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB4DFC09;
-	Thu, 14 Mar 2024 23:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCA9FC0B;
+	Thu, 14 Mar 2024 23:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cahI+a5h"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UsCPAoCf"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13CC6FC02;
-	Thu, 14 Mar 2024 23:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AA623BE
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710457444; cv=none; b=rVIiznBfQN+yFKDyDceJcwlIz3Qc6Zp13q4Mwc/zE1TFn2o+PdrdOtdl5gj/eyIBHwhXS3FIWVVZwaRWk2A150MphGUa4JA1kPmSxxktuGgkk1SPluH5hswloYgwYzvXJLH4qSY2f43Y0nAd96p/bV9x2ctWUWOc4/fg3eLiuw0=
+	t=1710457528; cv=none; b=jlv7EMUcYzPlMrrrD2jJ0WY6ofEpD514u2AIwqF24Yt/TF+SVD8MF3w3pZRcptpseGlllv+oqlkOyUMdorFTOzH9M9RjMQQeVqEm5ePFDRdzB/avl/wsZ12TVn6bMtJgicXUZhN4Mz6TcXwmKHE3XCNaznkQzGaBablzfqQaozw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710457444; c=relaxed/simple;
-	bh=unEWSBHMmHpgZhaHuZAnj8KkOfObLBKQC0NwtECu18w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A+4CrM1LWj80BkwWsuQSwXP4yVgaDNhl5UE7rca/i8Ww1Ycet/8oLquxoHyvHG2vN+vLT9J5y4xcfBztiS6HMD7cFwd/y7qd2Cy6s6xcjWxGCyjv8QAG3AWcZHXIR2mx4IXvN4NzRllg78SerOn6iXZ81PR1/ll8aEBlkQSaxC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cahI+a5h; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 80A7C1C0003;
-	Thu, 14 Mar 2024 23:03:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710457433;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=unEWSBHMmHpgZhaHuZAnj8KkOfObLBKQC0NwtECu18w=;
-	b=cahI+a5hBJzOfDEYgrR2KyOvSqJmsXoxLVI82kgnk8R1TSQ5xQvwx10sKl0hxuWKlq8pQo
-	osvjm01aoyslbo1pcCuJQYayrxn1XDW0FHIZciU01P5YEZk0W54RYDb5qx5M7mOhoTRq2k
-	QfMJOsG24JkMDkQZB2evW3L2vqsLBx99ecWibrR6H/WufUlbjGkQOaVgo8mTalcz9Og2FR
-	K5a/yYD0C/TDewzy4WEvB3PVk76GUYtWmJQgqHGHGargunVeIAquBoB77hGnsEy964hkeB
-	25PnhmAij03G/ng+jlsSTg4WSssKIFnZcg42GCnrCsag6jiYL5x1G/0QvpcWng==
-Date: Fri, 15 Mar 2024 00:03:46 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>, William Zhang
- <william.zhang@broadcom.com>, Linux MTD List
- <linux-mtd@lists.infradead.org>, Linux ARM List
- <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
- <bcm-kernel-feedback-list@broadcom.com>, kursad.oney@broadcom.com,
- joel.peshkin@broadcom.com, anand.gore@broadcom.com, dregan@mail.com,
- kamal.dasu@broadcom.com, tomer.yacoby@broadcom.com,
- dan.beygelman@broadcom.com, Andre Przywara <andre.przywara@arm.com>, Rob
- Herring <robh+dt@kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>, Conor
- Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, David Regan <dregan@broadcom.com>,
- devicetree@vger.kernel.org, Alexandre TORGUE <alexandre.torgue@st.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Brian Norris
- <computersforpeace@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v6 00/13] mtd: rawnand: brcmnand: driver and doc updates
-Message-ID: <20240315000346.6fad883e@xps-13>
-In-Reply-To: <d3c66783-b71f-431f-9028-45897f12f2a0@gmail.com>
-References: <20240223034758.13753-1-william.zhang@broadcom.com>
-	<90ecf4d2-0eee-48e6-8222-7d3b5fd52b2f@broadcom.com>
-	<20240229101101.5208195c@xps-13>
-	<20240314230402.5fc7bbf3@xps-13>
-	<d3c66783-b71f-431f-9028-45897f12f2a0@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710457528; c=relaxed/simple;
+	bh=EQZ/45evtuO+++qaNfNIk3sxSnAYQotM6BezQU2ECFc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a+ITMd5EMvg0Cny5Zf4Ha6vbA7CBftkWISjxJP+Xj2PvYNBZ1rhMgUaggqgSgXPyBsxexu5hRpZKV7zg1QVJTwAznUji4jWppnOcOFuIDYCvtNNQe9zkCvqboaw1EtChhNzt5hrYB+d0vDABsRKAPjRpsy0JvthNsjtDI7Xp6V0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UsCPAoCf; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso19122361fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1710457524; x=1711062324; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eOLqBJYl+Zv2uwlXW3yqDcamvgCQRPjZY652QVEqHVk=;
+        b=UsCPAoCfBOPZYHUTjgPdFz5ccAlp8B4IlngO3ur60FqxQx9E48nV1Xrmb+k+CvbLkJ
+         3Js6071GDxmiKfTYtc4M+DNnXSDKeQBqhlLN/hTAgH/6SJVspDmO+0uWK4lfcXrkaM1F
+         vJ8FDd+4F/aN6C1a9ox9H6fikS1JqkTsfIGbw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710457524; x=1711062324;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eOLqBJYl+Zv2uwlXW3yqDcamvgCQRPjZY652QVEqHVk=;
+        b=W2AWV0i6K9tkmgLtoiNp4lERAUyUvrFi0A3DN7qFid5/Zab/3uMAlpX7DrTyg++ubj
+         ER5g45DS98Z+vbWfHL6rBbGybuj3WVEfaj5cG5FqqkdZ3KG4pVM5tt9iPBJXR/tzA9d2
+         kz0W9M+vKPENz1VcdgbULU/UgH014Y4IK4LhkOcavMtTUQQrSSvV1MESw1obEsCvZj5x
+         5T5CFv8bWsszsSLXtymdHyGCpYZ7x32dAQ8K07Wvf9zHbYxjbwOxBfDrWcVE/JPoUcFQ
+         kgnOVytnpzLxuSQO1bQ4lAK2fRTFOpmx/PttISK0pfKfyuWv25fCaGhzetJfDiPay1B6
+         KIeA==
+X-Forwarded-Encrypted: i=1; AJvYcCXLNdPfFx1NtyXY3JZX4UfoQoTQ26wwHx/sCJG0bmBgCDAsDGzefoLxR4sZT9s1XXa+ckuoJRdWFRiT+p0VscpzRp6nvp1QVtKO7HKX
+X-Gm-Message-State: AOJu0YzZDUUa24u4hIvWlLDOkhe8c3TRASV5krhgLzMbArLGACBrGuVz
+	Et0KMSQV7Ijxi4W3uVYngDiTwhGAGnAGu+l+Ea8YVvr2UUHXZH98joAXNkESklourV6p1T+1GXK
+	91GY8dQ==
+X-Google-Smtp-Source: AGHT+IEItCpajb3qCby/62GwdN3F15gqmiNAJx0DVeFCMYVdFSWYYdrM2tNl8KxisuMPtLASmthT0Q==
+X-Received: by 2002:a2e:8ecc:0:b0:2d4:422a:3ad1 with SMTP id e12-20020a2e8ecc000000b002d4422a3ad1mr853981ljl.27.1710457523639;
+        Thu, 14 Mar 2024 16:05:23 -0700 (PDT)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id cx14-20020a05640222ae00b00568af798c9esm17206edb.90.2024.03.14.16.05.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 16:05:23 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-563c595f968so1957919a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:05:23 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXxCXpMWT4B8ztnQg/LwYG3QzYrQlliJHZ6IbJfb+DSAIFx0VFOY57P30WKKgMdFke/M56GXdxeIWcGnd/2FfB8FK8+eCa2oiBncEsd
+X-Received: by 2002:a17:906:6858:b0:a46:5f1d:f357 with SMTP id
+ a24-20020a170906685800b00a465f1df357mr756853ejs.10.1710457522597; Thu, 14 Mar
+ 2024 16:05:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+References: <3f2a695a148db9e1daae8c07d9ce5c85@paul-moore.com>
+In-Reply-To: <3f2a695a148db9e1daae8c07d9ce5c85@paul-moore.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 14 Mar 2024 16:05:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjXK3ZDtCM754mQVWzcZdQd50dBU5Y+AoATWcCGCMWzgg@mail.gmail.com>
+Message-ID: <CAHk-=wjXK3ZDtCM754mQVWzcZdQd50dBU5Y+AoATWcCGCMWzgg@mail.gmail.com>
+Subject: Re: [GIT PULL] lsm/lsm-pr-20240314
+To: Paul Moore <paul@paul-moore.com>
+Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 14 Mar 2024 at 13:31, Paul Moore <paul@paul-moore.com> wrote:
+>
+> I would like if you could merge these patches, I believe fixing the
+> syscall signature problem now poses very little risk and will help us
+> avoid the management overhead of compat syscall variants in the future.
+> However, I'll understand if you're opposed, just let me know and I'll
+> get you a compat version of this pull request as soon as we can get
+> something written/tested/verfified.
 
-> >> I'm sorry for not thinking about this ahead of time, I was also not
-> >> Cced on the other patches, I noticed it (told Willliam) and just forgot
-> >> about this when I applied the series.
-> >>
-> >> It is currently living in -next so if there is any problem I can still
-> >> act.
-> >>
-> >> However for this kind of change I usually apply the bindings and .c
-> >> changes independently from the DT patches. I believe there is no
-> >> problem having one or the other being merged first, or do I overlook
-> >> something? =20
-> >=20
-> > What the heck /o\ I just understand now my mistake, I am very truly
-> > sorry for that...
-> >=20
-> > You were telling me I should sync with you before taking DT changes,
-> > and I was so convinced I _did_not_ take the DT, when I looked at the
-> > branch I did not understand your point. But I am totally sorry I
-> > actually did take the DTs by mistake and I truly did not notice it.
-> > Confirmation bias I suppose. My very sincere apologies.
-> >=20
-> > As mentioned previously, I was not CC'ed on the DT patches, but I
-> > believe the linux-mtd list was, so the patches didn't appear in my
-> > inbox, and once I was happy with the binding/driver changes I applied
-> > it all without noticing the DT changes had sneaked in.
-> >=20
-> > I'm finally preparing the PR for Linus and I see it now...
-> >=20
-> > I believe the SoC tree is closed now so it's up to you what I should do
-> > with them. Let me know if you want me to keep them in my tree and
-> > forward them to Linus or if I should drop them and you'll take them for
-> > the next cycle. Also, if I keep them, shall I add some tag of yours on
-> > these 3 patches? For the record I did not review them. =20
->=20
-> Yes please add my:
->=20
-> Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
->=20
-> tag, and it's fine I don't expect that we will get conflicts for those fi=
-les.
->=20
-> >=20
-> > Thanks and again, I'm confused. I never apply DT patches like that,
-> > your initial remark was more than legitimate. =20
->=20
-> Not a problem!
+No, attempting to just fix it after-the-fact in the hopes that nobody
+actually uses the new system call yet sounds like the right thing to
+do.
 
-Thanks :-)
+6.8 has been out for just days, and I see it's marked for stable, so
+hopefully nobody ever even sees the mistake. I can't imagine that the
+new system call is that eagerly used.
 
-Miqu=C3=A8l
+Famous last wods.
+
+               Linus
 
