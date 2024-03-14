@@ -1,126 +1,114 @@
-Return-Path: <linux-kernel+bounces-103442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD11B87BF68
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:59:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 505BC87BF6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:00:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 986B9284B2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:59:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E07631F232A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53697173E;
-	Thu, 14 Mar 2024 14:59:28 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3361D6EB6E;
-	Thu, 14 Mar 2024 14:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC2471741;
+	Thu, 14 Mar 2024 15:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="IGPAsmka";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="hn+BT1yA"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F2871732;
+	Thu, 14 Mar 2024 15:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710428368; cv=none; b=cGxAAM6WH4YgVEJgKAQRULgsJHAMO4N+zOP4DIz7+Ff61AEUVt1kh7j6K2LEi9fivhOTt9ah86OxCYj2Lz22Yjt+nCK/WzEz2d6rPDt4ZM1BIadxgUMWDCInSqvukyG34sLfv505BR62bjb3LyBN0lBfiqQiGKPCA1Zb2ikZMKc=
+	t=1710428406; cv=none; b=pGnPh9+glEH6nvryWq/CTZ1hooyFgoD9XYwRayHB3u8MoOOHh/yf2LBiLLWckSKKKEl0+hjl69I8EU5c8DXrnhCGAIPh8V25z1WrGi1d4bylOvDJX1QMzxt1dJviSpVQEfQa+lFXeTMtOrix73xtV7bMARok/ZKdBXGaB8raEyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710428368; c=relaxed/simple;
-	bh=XJdEeratGaF+uMHUKGSH/y0MHkuF8kvwtElHPYuGgKw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ac7InEbMYW/htteohwufrtaqnn6rSC9Q7S3xth3pzXjbsE1xwJRa21PjDtNCl4+jCc+349O7W+M8yROsF4XMHCLm3IVYd5878xMAtPVb7U3z55N+nEoYb4NVyFHTx5lhKctKXP4+t2YtOWPfhUjTg1pSMrc+9rm71999I+2R7k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 535281007;
-	Thu, 14 Mar 2024 08:00:01 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 147DD3F762;
-	Thu, 14 Mar 2024 07:59:22 -0700 (PDT)
-Date: Thu, 14 Mar 2024 14:59:20 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Rob Herring <robh+dt@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	s=arc-20240116; t=1710428406; c=relaxed/simple;
+	bh=5mrcYhUAuS8aHhbp+4i2PfKP1o71+XwEUwhBGn4mANw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DISLOm7xsMxB1qGn7OFSoOST0cN4sZxMdszoHGumxMkAbgRUXU4rsB9IZ1g5OcuL/McQA9fdxEh2++LeP8OlOrG8JUUEmA7kl+W6AUM88LWfH0C4FbDY8qVw8CILapAg7PeJD6wFpHjFPr9pB5II2KYMIE1Sla9zt/ajIPKXruc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=IGPAsmka; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=hn+BT1yA reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1710428403; x=1741964403;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=X86tydP3lQzpr8Ze9mLK2TNuTfB1VCl0UWZMPMko9c8=;
+  b=IGPAsmkaBrCSopFoKVNWslZ0fTBvXHLI6rbdwOI32cN6ai+Iwu7bBjlS
+   1j/cfh9j3LTj2PxyBDM8uWMPSrWoiCk/RapIaBN3qoyqAlnqEKmkm+aEE
+   qPJ8hYD9CN0n88XaEpWX8MMc/trLynEmE2Qoz6p0++r99yv8SfDIu4LJ0
+   i1LQO0p5568S4MEOUUxjeDKFX6GD7Euc47QFmnXOcyLTgigVFU3OXQDbl
+   jBi1zbui/D7VJhq1yUgYBoWl03yi3qX+ZDv2zAlfCXNE7cI70rDdZI0Qi
+   ydmFaIgyuXX8jOJiLtIl6K27W5CJAxyH3fOJxewkHwH1UNJJnrXhq7+fL
+   w==;
+X-IronPort-AV: E=Sophos;i="6.07,125,1708383600"; 
+   d="scan'208";a="35916670"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 14 Mar 2024 16:00:00 +0100
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 72D0116FB2A;
+	Thu, 14 Mar 2024 15:59:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1710428396; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=X86tydP3lQzpr8Ze9mLK2TNuTfB1VCl0UWZMPMko9c8=;
+	b=hn+BT1yA0G4BV4/sU+yZ4GiwUyBiwwnNIGDOjgGdJb5KHAtP0ubJrUwEqyG/8e6w9G3nsZ
+	26lqIJLLfEDp+l2cwZWlMAuP4uzthvGYt5X3F13M5FMY7FIA9S5/f/L6qPWYvIEZRzh5Mm
+	foCuNDfYgU8O4jj/dJMEJ4IM3X87fI+2IfyTPXj3JxDR+0xp/sfuST4UltH0LGwjucsrk8
+	H1l18SWE8fJ1sX5Ur74Kf8JWjDS5nPAJK+VzFwudvIabGIzEnfGR3G0t31aZUWoITUYIsT
+	ZJsQNZS41oCTipaINvMADsawJRcwhAV35wHL/fNtj8zWpxwXb69fEhssqBt/cw==
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Drew.Reed@arm.com,
-	Adam.Johnston@arm.com, linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH 1/3] remoteproc: Add Arm remoteproc driver
-Message-ID: <ZfMQyJWTh15P7Ru3@bogus>
-References: <20240301164227.339208-2-abdellatif.elkhlifi@arm.com>
- <ZeYWKVpeFm1+4mlT@p14s>
- <20240307194026.GA355455@e130802.arm.com>
- <CANLsYkzA20rQdTM6AOvFK=3o28GvcoRbckL=ri8RegHqyHaiCw@mail.gmail.com>
- <20240311114442.GA82865@e130802.arm.com>
- <CANLsYkwReJvB1UWvR5TwtSs-w_VqU45kDSUzuQ0k+waetEn6Yw@mail.gmail.com>
- <20240312173252.GA38992@e130802.arm.com>
- <ZfHTfNx4um8koTlY@p14s>
- <20240313171756.GA82165@e130802.arm.com>
- <ZfMPS+qn0lh5IrS7@p14s>
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] dt-bindings: soc: imx: fsl,imx-anatop: add imx6q regulators
+Date: Thu, 14 Mar 2024 15:59:53 +0100
+Message-Id: <20240314145953.2957313-1-alexander.stein@ew.tq-group.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfMPS+qn0lh5IrS7@p14s>
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Thu, Mar 14, 2024 at 08:52:59AM -0600, Mathieu Poirier wrote:
-> On Wed, Mar 13, 2024 at 05:17:56PM +0000, Abdellatif El Khlifi wrote:
-> > Hi Mathieu,
-> >
-> > On Wed, Mar 13, 2024 at 10:25:32AM -0600, Mathieu Poirier wrote:
-> > > On Tue, Mar 12, 2024 at 05:32:52PM +0000, Abdellatif El Khlifi wrote:
-> > > > Hi Mathieu,
-> > > >
-> > > > On Tue, Mar 12, 2024 at 10:29:52AM -0600, Mathieu Poirier wrote:
-> > > > > > This is an initial patchset for allowing to turn on and off the remote processor.
-> > > > > > The FW is already loaded before the Corstone-1000 SoC is powered on and this
-> > > > > > is done through the FPGA board bootloader in case of the FPGA target. Or by the Corstone-1000 FVP model
-> > > > > > (emulator).
-> > > > > >
-> > > > > >From the above I take it that booting with a preloaded firmware is a
-> > > > > scenario that needs to be supported and not just a temporary stage.
-> > > >
-> > > > The current status of the Corstone-1000 SoC requires that there is
-> > > > a preloaded firmware for the external core. Preloading is done externally
-> > > > either through the FPGA bootloader or the emulator (FVP) before powering
-> > > > on the SoC.
-> > > >
-> > >
-> > > Ok
-> > >
-> > > > Corstone-1000 will be upgraded in a way that the A core running Linux is able
-> > > > to share memory with the remote core and also being able to access the remote
-> > > > core memory so Linux can copy the firmware to. This HW changes are still
-> > > > This is why this patchset is relying on a preloaded firmware. And it's the step 1
-> > > > of adding remoteproc support for Corstone.
-> > > >
-> > >
-> > > Ok, so there is a HW problem where A core and M core can't see each other's
-> > > memory, preventing the A core from copying the firmware image to the proper
-> > > location.
-> > >
-> > > When the HW is fixed, will there be a need to support scenarios where the
-> > > firmware image has been preloaded into memory?
-> >
-> > No, this scenario won't apply when we get the HW upgrade. No need for an
-> > external entity anymore. The firmware(s) will all be files in the linux filesystem.
-> >
->
-> Very well.  I am willing to continue with this driver but it does so little that
-> I wonder if it wouldn't simply be better to move forward with upstreaming when
-> the HW is fixed.  The choice is yours.
->
+imx6q has additional regulators compared to imx6ul. Add them to the list
+of allowed patterns.
 
-I think Robin has raised few points that need clarification. I think it was
-done as part of DT binding patch. I share those concerns and I wanted to
-reaching to the same concerns by starting the questions I asked on corstone
-device tree changes.
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+---
+Commit 465c7756d1ff ("dt-bindings: soc: imx: fsl,imx-anatop: add binding")
+only added regulators for imx6ul. I'm not sure if this warrants a Fixes
+tag.
 
---
-Regards,
-Sudeep
+ Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml b/Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
+index 5a59e3470510..c4ae4f28422b 100644
+--- a/Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
++++ b/Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
+@@ -43,7 +43,7 @@ properties:
+     $ref: /schemas/thermal/imx-thermal.yaml
+ 
+ patternProperties:
+-  "regulator-((3p0)|(vddcore)|(vddsoc))$":
++  "regulator-((1p1)|(2p5)|(3p0)|(vddcore)|(vddpu)|(vddsoc))$":
+     type: object
+     unevaluatedProperties: false
+     $ref: /schemas/regulator/anatop-regulator.yaml
+-- 
+2.34.1
+
 
