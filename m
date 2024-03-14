@@ -1,136 +1,131 @@
-Return-Path: <linux-kernel+bounces-103809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2F087C4D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:46:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE1E387C4D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E29481F221E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:46:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671EDB21A35
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E84C2768E7;
-	Thu, 14 Mar 2024 21:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D4C768F4;
+	Thu, 14 Mar 2024 21:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eyZOpcKj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B6/0zVer"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AF47353C;
-	Thu, 14 Mar 2024 21:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5471E76412;
+	Thu, 14 Mar 2024 21:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710452785; cv=none; b=p5NHG2XTCmoeebV0jWKcJynkrmrgdzTX7t6ykWidLkFxAbg3hyLL2tbiewmcYxNqp4XxsqU3dBS/d6symJ9xDml3+iNdxYQrg3qM9h2Kvwl25WEFRJXxO834oHW9WZON2hXlQst3yS63T7QRoNQHWbb29KArnOJvh/Bv2H5zAMQ=
+	t=1710452802; cv=none; b=K8XZ31k4tz+XZXOXmSt5Hf4KJeX8j2GGyq6pcCrOvXer2sWeCXUqtLv1xTf0ePwJThGSDJT9ch5ZYrL0dnVVEODQYvI2n5F+9Xn7Jn4v+oFx8dJatlTWYm4AcxkLkgOSqQ1P/PztYND1oJE3jhEWAW2viSA87cexfEPCjD+GgP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710452785; c=relaxed/simple;
-	bh=K5BilDS17Npbpc53Aqd9Cf2INMeiMyEyXLe6XjTz3M4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cBcJnb822U2Y0yXLRM6g74dqq7rgQQ33H+yjc/bTxDo4X8E/EC48B24Bm5HKyIc45GqztmdCilEjdmGi3dR3wEjhj/HeKsR+gy6htpp1akAGh/pGvGYK6zSEhD7Ma+a4PUhxvrGsaux36I2+TtH812o+6YaTuQEzwUWTgeQs/cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eyZOpcKj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22E7AC433C7;
-	Thu, 14 Mar 2024 21:46:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710452784;
-	bh=K5BilDS17Npbpc53Aqd9Cf2INMeiMyEyXLe6XjTz3M4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eyZOpcKjip1OkLA5JpYNrlgh9e4GrDPk4POBs7RKVL9p6opHxyFSFGIbL0MeXk7Bf
-	 OQPksKWwuIJco5ESo6+j6msYm3+KBbRc5c+xvWWYOhZBtgwftKYPu0J4MFjZ6cpTmV
-	 FW3W/GtCV6sTh5czOjTUjU3glMfJc3BJcoVVTtLAWFHDzwVjzycCiL8Ci5NvjKXDgC
-	 FdUYXSDK8+TWFA12NtcT7/gUAWHLzAZa28nxnCY8OJqomhxyMqmD1I+CIJXMaO/pUY
-	 PJjuqeZ7BSjZqoN4jJ9IPU6ZPO4Tm1RoUecsDth+pLDx+oHpg6v+JGl0U+5LJi25nh
-	 AUCH9QxERI0kQ==
-Date: Thu, 14 Mar 2024 18:46:21 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Marco Elver <elver@google.com>, Vince Weaver <vincent.weaver@maine.edu>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
- on RT.
-Message-ID: <ZfNwLfdOLBytjF06@x1>
-References: <20240312180814.3373778-1-bigeasy@linutronix.de>
- <CANpmjNMYGa46pRQUOfzTa_FRvftOGqg+UDeD_B-tbZgYw-MWww@mail.gmail.com>
- <ZfHE9Ev5T3Lq7o34@x1>
- <ZfHtBB5_-3RByE8p@x1>
- <ZfHw3J5PY6qy4mXn@x1>
- <ZfIIqcmRlrxwUFTn@x1>
- <ZfIJIfqeI9tWnnS5@x1>
- <20240314091033.woaK8h83@linutronix.de>
- <ZfMK_yTzxTQCMGZ1@x1>
- <ZfNqnjdR-0YEsSnb@x1>
+	s=arc-20240116; t=1710452802; c=relaxed/simple;
+	bh=024QBEVLTI+6kcoD7J49NoiaMMt3w6GMzvKHMg9E6rg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=EBOnSP75E5MnPtqOLJj4642d0e9+4DqXSq+gJkn5dq9/WvNXTqCU1W8GSRqRo7IHFtYpbt+f6i5A/mY2IBzbRg4+/8c0NmoBwteVvwLsM4CBrzBQhGvU3+S7fx6NNQIUTzueRJ+TrxHqe1A9Odgq/kOXQx5nEUfUeUuuE2khpDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B6/0zVer; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710452800; x=1741988800;
+  h=message-id:date:mime-version:subject:to:references:cc:
+   from:in-reply-to:content-transfer-encoding;
+  bh=024QBEVLTI+6kcoD7J49NoiaMMt3w6GMzvKHMg9E6rg=;
+  b=B6/0zVerh3uONZl4KPvBZ/l6fRcW//g/96B5cRs7iKJKwXbRmZqE/FN2
+   hARNnv3w6oZO5Kk8FZkgE/Fm4LBlN+WZBq/XWTAOkoS2Ud0k+QcDH3tSW
+   sW37fl2/2mza2TtYRAO+oc6/gnNpCxmepyDfoc5fznVIt9vYp6T6PeQVF
+   um7WxmQ19QPd9q+LQClnTH1QLf/IjokgFxmODGNpYflc35uG68aHbge3A
+   m0ARCqjA5HvEfMk13aKnF/ab9DtAjCtOFPykUcl5PpKN4kjSC/tFJoTxX
+   0SAMZdZH+FHJO0NTvriENhwB247ud9dfTEhfQq5QoUR2HoQ729kOM64q5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="15853634"
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="15853634"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 14:46:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="16918258"
+Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.77]) ([10.24.10.77])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 14:46:39 -0700
+Message-ID: <03592298-4390-4111-870b-129b6be98d3a@intel.com>
+Date: Thu, 14 Mar 2024 14:46:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfNqnjdR-0YEsSnb@x1>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v5 27/29] KVM: selftests: Propagate
+ KVM_EXIT_MEMORY_FAULT to userspace
+Content-Language: en-US
+To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
+ Ackerley Tng <ackerleytng@google.com>, "Afranji, Ryan" <afranji@google.com>,
+ "Aktas, Erdem" <erdemaktas@google.com>, Sagi Shahar <sagis@google.com>,
+ "Yamahata, Isaku" <isaku.yamahata@intel.com>
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-28-sagis@google.com>
+ <DS7PR11MB78860170A5FD77253573BC09F6292@DS7PR11MB7886.namprd11.prod.outlook.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Peter Gonda <pgonda@google.com>, "Xu, Haibo1" <haibo1.xu@intel.com>,
+ Chao Peng <chao.p.peng@linux.intel.com>,
+ "Annapurve, Vishal" <vannapurve@google.com>,
+ Roger Wang <runanwang@google.com>, Vipin Sharma <vipinsh@google.com>,
+ jmattson@google.com, dmatlack@google.com, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org, linux-mm@kvack.org
+From: "Chen, Zide" <zide.chen@intel.com>
+In-Reply-To: <DS7PR11MB78860170A5FD77253573BC09F6292@DS7PR11MB7886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 06:22:38PM -0300, Arnaldo Carvalho de Melo wrote:
-> On Thu, Mar 14, 2024 at 11:34:39AM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Thu, Mar 14, 2024 at 10:10:33AM +0100, Sebastian Andrzej Siewior wrote:
-> > > On 2024-03-13 17:14:25 [-0300], Arnaldo Carvalho de Melo wrote:
-> > > > > tldr; No dmesg activity, no kernel splats, most tests passed, nothing
-> > > > > noticeable when running with/without the patch with Vince's regression
-> > > > > tests. So:
+
+
+On 12/12/2023 12:47 PM, Shashar, Sagi wrote:
 > 
-> > > > > Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > > > Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > 
-> > > > Too quick, now I'm testing it on top of torvalds/master, no PREEMPT_RT.
+> -----Original Message-----
+> From: Sagi Shahar <sagis@google.com> 
+> Sent: Tuesday, December 12, 2023 12:47 PM
+> To: linux-kselftest@vger.kernel.org; Ackerley Tng <ackerleytng@google.com>; Afranji, Ryan <afranji@google.com>; Aktas, Erdem <erdemaktas@google.com>; Sagi Shahar <sagis@google.com>; Yamahata, Isaku <isaku.yamahata@intel.com>
+> Cc: Sean Christopherson <seanjc@google.com>; Paolo Bonzini <pbonzini@redhat.com>; Shuah Khan <shuah@kernel.org>; Peter Gonda <pgonda@google.com>; Xu, Haibo1 <haibo1.xu@intel.com>; Chao Peng <chao.p.peng@linux.intel.com>; Annapurve, Vishal <vannapurve@google.com>; Roger Wang <runanwang@google.com>; Vipin Sharma <vipinsh@google.com>; jmattson@google.com; dmatlack@google.com; linux-kernel@vger.kernel.org; kvm@vger.kernel.org; linux-mm@kvack.org
+> Subject: [RFC PATCH v5 27/29] KVM: selftests: Propagate KVM_EXIT_MEMORY_FAULT to userspace
 > 
-> > > Just to be clear: You revert your Tested-by because now you test this on
-> > > torvalds/master but not because you reported a regression which I
-> > > missed.
+> Allow userspace to handle KVM_EXIT_MEMORY_FAULT instead of triggering TEST_ASSERT.
 > 
-> > You got it right. No regressions, the code is good, I just need to test
-> > it a bit further, with torvalds/master, without PREEMPT_RT.
+> From the KVM_EXIT_MEMORY_FAULT documentation:
+> Note!  KVM_EXIT_MEMORY_FAULT is unique among all KVM exit reasons in that it accompanies a return code of '-1', not '0'!  errno will always be set to EFAULT or EHWPOISON when KVM exits with KVM_EXIT_MEMORY_FAULT, userspace should assume kvm_run.exit_reason is stale/undefined for all other error numbers.
+
+If KVM exits to userspace with KVM_EXIT_MEMORY_FAULT, most likely it's because the guest attempts to access the gfn in a way that is different from what the KVM is configured, in terms of private/shared property. I'd suggest to drop this patch and work on the selftests code to eliminate this exit.
+
+If we need a testcase to catch this exit intentionally, we may call _vcpu_run() directly from the testcase and keep the common API vcpu_run() intact.
+
 > 
-> Tests performed, no regressions detected, same behaviour when killing
-> the remove_on_exec selftests midway:
- 
-> [acme@nine linux]$ uname -a
-> Linux nine 6.8.0-rc7.sebastian-rt6+ #2 SMP PREEMPT_RT Tue Mar 12 18:01:31 -03 2024 x86_64 x86_64 x86_64 GNU/Linux
-
-Re-reading this I noticed I really retested with the rt kernel, d0h, so
-here it goes again:
-
-[acme@nine ~]$ uname -r
-6.8.0.sigtrapfix+
-[acme@nine ~]$ set -o vi
-[acme@nine ~]$ perf test sigtrap
- 68: Sigtrap                                                         : Ok
-[acme@nine ~]$ cd ~acme/git/linux
-[acme@nine linux]$ cd tools/testing/selftests/perf_events && make
-make: Nothing to be done for 'all'.
-[acme@nine perf_events]$ for x in {0..100}; do (./remove_on_exec &); done
-<snip>
-ok 4 remove_on_exec.exec_stress
-# PASSED: 4 / 4 tests passed.
-# Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
-#            OK  remove_on_exec.exec_stress
-ok 4 remove_on_exec.exec_stress
-# PASSED: 4 / 4 tests passed.
-# Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
-#            OK  remove_on_exec.exec_stress
-ok 4 remove_on_exec.exec_stress
-# PASSED: 4 / 4 tests passed.
-# Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
-[acme@nine perf_events]$
-
-So despite this mistake all is well, torvalds/master + your patchkit
-seems ok.
-
-Sorry for the noise :-\
-
-- Arnaldo
+> Signed-off-by: Sagi Shahar <sagis@google.com>
+> ---
+>  tools/testing/selftests/kvm/lib/kvm_util.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index d024abc5379c..8fb041e51484 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -1742,6 +1742,10 @@ void vcpu_run(struct kvm_vcpu *vcpu)  {
+>  	int ret = _vcpu_run(vcpu);
+>  
+> +	// Allow this scenario to be handled by the caller.
+> +	if (ret == -1 && errno == EFAULT)
+> +		return;
+> +
+>  	TEST_ASSERT(!ret, KVM_IOCTL_ERROR(KVM_RUN, ret));  }
+>  
+> --
+> 2.43.0.472.g3155946c3a-goog
+> 
 
