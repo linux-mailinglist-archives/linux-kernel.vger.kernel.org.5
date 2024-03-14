@@ -1,142 +1,130 @@
-Return-Path: <linux-kernel+bounces-103396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E2087BEDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:27:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D380187BEDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:27:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7CB3B219C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:27:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03A411C20ABC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796F06FE30;
-	Thu, 14 Mar 2024 14:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31BA6FE24;
+	Thu, 14 Mar 2024 14:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fw43UPCC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03BFE6FE0E;
-	Thu, 14 Mar 2024 14:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2191F5D8F8;
+	Thu, 14 Mar 2024 14:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710426466; cv=none; b=eS5pB4ImN9QaNrXiElX7iGLyE0Vpkxve6VbyyQ7P9d9LT9qvkJA6yGd/VHW+V+rvqi5+j86/qqC0pYkYByhx4EiBpFcu5r3D17WCZG7N7bgG65dpxPNbrXzPKe3y13Hw0oVc1ktTx+AGdNk6LK6WypNcnzhACMP+YiEOZbWreH8=
+	t=1710426437; cv=none; b=BOaY5/ro0hQi7L6/Cad+oxQjf7KQWdBHlUtIAC/NWfcgRqChTLU8zqpAwv9nGAzoPl+xL6Ivc8d0UOzSngC5TPTNsSOv0go/nALkQinB3BVIEtis4d4aRvs6YuMWG3WOJCfVqU+zsiDPm9evUsqb13PDA/wNi3Nm3Fm3Gu31ChA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710426466; c=relaxed/simple;
-	bh=QQT9AA2zZonsQUQxARfHUwH+9Hy/0C//Drq/MOzR3pg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sU28tDgfFBjuNU9zNyvV+bWkq1KVUnWknDz4HMUkXmDyUZNNqySaMCv9gBooEth3afk08BVwd7J5E99chAj8uWUqYF+ozhpxtN9MeU+GqvhHbM1zP2+Uh8CEx/dU+xOTwIg2exCL9yUkOWNVD1/3ZywK92Y/tuO7Z9NEAz9iucg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0086C433C7;
-	Thu, 14 Mar 2024 14:27:41 +0000 (UTC)
-From: Anton Altaparmakov <anton@tuxera.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Chen Yu <yu.c.chen@intel.com>
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	linux-mm@kvack.org,
-	Matthieu Baerts <matthieu.baerts@tessares.net>,
-	Mat Martineau <mathew.j.martineau@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Anton Altaparmakov <anton@tuxera.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] x86/pm: Fix false positive kmemleak report in msr_build_context().
-Date: Thu, 14 Mar 2024 14:26:56 +0000
-Message-Id: <20240314142656.17699-1-anton@tuxera.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+	s=arc-20240116; t=1710426437; c=relaxed/simple;
+	bh=x8duBZfq2CwdbVtYRgrRjeErlATVcK0LqzfKY/hrrRs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aAsqo8Y3S2w4JWcTgTIr6vigG6g/HrA3pTOG+crBBuowMtMDJG72zbNly6oWI9ciNhF2XEvkr9DMgbxyU9JiT55Nn1IsgHGHm2Uoq2alfFd5AHJGA0sKuQ2NdYst/6UQYUkr6EYybAdkwdl/EUx6626vXF9kHC58xJSoN9j4u2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fw43UPCC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1FCC433C7;
+	Thu, 14 Mar 2024 14:27:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710426436;
+	bh=x8duBZfq2CwdbVtYRgrRjeErlATVcK0LqzfKY/hrrRs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Fw43UPCCPAUskpMLXmkzS+5p+FnIUsZEfgNHQhEu3mU8R17Ld+KbLbSm5JYWmbT0S
+	 X3qsH3lY/DxgvcEKoHl8ylTfb0eOVCVYAOnkRlLzIZAk4Me3S7XjsBlJhxRyCEfDrv
+	 tjYRK/K/uE1+jAe+BnZ5aeiTMBL8nURHuEqibAcXBjpMzR8Dfx9xtnmzFz6BHNVH8Q
+	 El/C5e6llmytVWSDRJe1+lpU28xS3q009KppF1tbsuk3C/Zp7ybfRxSXrTgXJN3+kB
+	 2n9OqA1uYgHsCJSDYrrQzG26QAsc87taVyIPd8zIHl1diCfcAvZh52SVjyWCfpVKJu
+	 EskIxOdPDwXUw==
+Date: Thu, 14 Mar 2024 14:27:00 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: lars@metafoo.de, andriy.shevchenko@linux.intel.com,
+ ang.iglesiasg@gmail.com, phil@raspberrypi.com, 579lpy@gmail.com,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: pressure: Fixes SPI support for BMP3xx devices
+Message-ID: <20240314142700.32df91a2@jic23-huawei>
+In-Reply-To: <20240311005432.1752853-1-vassilisamir@gmail.com>
+References: <20240311005432.1752853-1-vassilisamir@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Since
+On Mon, 11 Mar 2024 01:54:32 +0100
+Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
 
-  7ee18d677989 ("x86/power: Make restore_processor_context() sane")
+> Bosch does not use unique BMPxxx_CHIP_ID for the different versions of
+> the device which leads to misidentification of devices if their ID is
+> used. Use a new value in the chip_info structure instead of the
+> BMPxxx_CHIP_ID, in order to choose the regmap_bus to be used.
+> 
+> Fixes: a9dd9ba32311 ("iio: pressure: Fixes BMP38x and BMP390 SPI support")
+> Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
+Other than switching to a bool as Andy suggested, this looks fine to me.
 
-kmemleak reports this issue:
+Jonathan
 
-unreferenced object 0xf68241e0 (size 32):
-  comm "swapper/0", pid 1, jiffies 4294668610 (age 68.432s)
-  hex dump (first 32 bytes):
-    00 cc cc cc 29 10 01 c0 00 00 00 00 00 00 00 00  ....)...........
-    00 42 82 f6 cc cc cc cc cc cc cc cc cc cc cc cc  .B..............
-  backtrace:
-    [<461c1d50>] __kmem_cache_alloc_node+0x106/0x260
-    [<ea65e13b>] __kmalloc+0x54/0x160
-    [<c3858cd2>] msr_build_context.constprop.0+0x35/0x100
-    [<46635aff>] pm_check_save_msr+0x63/0x80
-    [<6b6bb938>] do_one_initcall+0x41/0x1f0
-    [<3f3add60>] kernel_init_freeable+0x199/0x1e8
-    [<3b538fde>] kernel_init+0x1a/0x110
-    [<938ae2b2>] ret_from_fork+0x1c/0x28
-
-Reproducer:
-
-- Run rsync of whole kernel tree (multiple times if needed).
-- start a kmemleak scan
-- Note this is just an example: a lot of our internal tests hit these.
-
-The root cause is we expect the same as the equivalent fix in commit
-b0b592cf0836, i.e. the alignment within the packed struct saved_context
-which has everything unaligned as there is only "u16 gs;" at start of
-struct where in the past there were four u16 there thus aligning
-everything afterwards.  The issue is with the fact that Kmemleak only
-searches for pointers that are aligned (see how pointers are scanned in
-kmemleak.c) so when the struct members are not aligned it doesn't see
-them.
-
-Note we have picked this up on 5.4, 6.1 and 6.6 kernels but we expect it
-is the same on all kernels >= 4.15 as the commit 7ee18d677989 which
-changed from having four u16 to a single u16 at the start of the struct
-was introduced in 4.15.
-
-Fixes: 7ee18d677989 ("x86/power: Make restore_processor_context() sane")
-Signed-off-by: Anton Altaparmakov <anton@tuxera.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/include/asm/suspend_32.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/suspend_32.h b/arch/x86/include/asm/suspend_32.h
-index a800abb1a992..d8416b3bf832 100644
---- a/arch/x86/include/asm/suspend_32.h
-+++ b/arch/x86/include/asm/suspend_32.h
-@@ -12,11 +12,6 @@
- 
- /* image of the saved processor state */
- struct saved_context {
--	/*
--	 * On x86_32, all segment registers except gs are saved at kernel
--	 * entry in pt_regs.
--	 */
--	u16 gs;
- 	unsigned long cr0, cr2, cr3, cr4;
- 	u64 misc_enable;
- 	struct saved_msrs saved_msrs;
-@@ -27,6 +22,11 @@ struct saved_context {
- 	unsigned long tr;
- 	unsigned long safety;
- 	unsigned long return_address;
-+	/*
-+	 * On x86_32, all segment registers except gs are saved at kernel
-+	 * entry in pt_regs.
-+	 */
-+	u16 gs;
- 	bool misc_enable_saved;
- } __attribute__((packed));
- 
--- 
-2.39.3 (Apple Git-146)
+> ---
+>  drivers/iio/pressure/bmp280-core.c | 1 +
+>  drivers/iio/pressure/bmp280-spi.c  | 9 ++-------
+>  drivers/iio/pressure/bmp280.h      | 1 +
+>  3 files changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+> index fe8734468ed3..5ea9039caf75 100644
+> --- a/drivers/iio/pressure/bmp280-core.c
+> +++ b/drivers/iio/pressure/bmp280-core.c
+> @@ -1233,6 +1233,7 @@ const struct bmp280_chip_info bmp380_chip_info = {
+>  	.chip_id = bmp380_chip_ids,
+>  	.num_chip_id = ARRAY_SIZE(bmp380_chip_ids),
+>  	.regmap_config = &bmp380_regmap_config,
+> +	.spi_read_extra_byte = 1,
+>  	.start_up_time = 2000,
+>  	.channels = bmp380_channels,
+>  	.num_channels = 2,
+> diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
+> index a444d4b2978b..3a5fec5d47fd 100644
+> --- a/drivers/iio/pressure/bmp280-spi.c
+> +++ b/drivers/iio/pressure/bmp280-spi.c
+> @@ -96,15 +96,10 @@ static int bmp280_spi_probe(struct spi_device *spi)
+>  
+>  	chip_info = spi_get_device_match_data(spi);
+>  
+> -	switch (chip_info->chip_id[0]) {
+> -	case BMP380_CHIP_ID:
+> -	case BMP390_CHIP_ID:
+> +	if (chip_info->spi_read_extra_byte)
+>  		bmp_regmap_bus = &bmp380_regmap_bus;
+> -		break;
+> -	default:
+> +	else
+>  		bmp_regmap_bus = &bmp280_regmap_bus;
+> -		break;
+> -	}
+>  
+>  	regmap = devm_regmap_init(&spi->dev,
+>  				  bmp_regmap_bus,
+> diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.h
+> index 4012387d7956..70bceaccf447 100644
+> --- a/drivers/iio/pressure/bmp280.h
+> +++ b/drivers/iio/pressure/bmp280.h
+> @@ -423,6 +423,7 @@ struct bmp280_chip_info {
+>  	int num_chip_id;
+>  
+>  	const struct regmap_config *regmap_config;
+> +	int spi_read_extra_byte;
+>  
+>  	const struct iio_chan_spec *channels;
+>  	int num_channels;
 
 
