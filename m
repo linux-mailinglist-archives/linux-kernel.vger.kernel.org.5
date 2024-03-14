@@ -1,111 +1,145 @@
-Return-Path: <linux-kernel+bounces-103219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5800E87BC84
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:10:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611E287BC87
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:13:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 898BD1C214DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:10:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E05A51F21FE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4136F507;
-	Thu, 14 Mar 2024 12:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCCD6F513;
+	Thu, 14 Mar 2024 12:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GkPyixCS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Z3go+nSU"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2C641C63;
-	Thu, 14 Mar 2024 12:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676D96DCF5;
+	Thu, 14 Mar 2024 12:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710418229; cv=none; b=q5JqpAAk7Ul7z8xq7VohZ8aBfZ24mCzdvN6AXUCgO0nK0NgUDoQ89q1v2gSITC4sRHe0rLoYzL7cpOuDi/lyRdZ7el3hOTInTOCssbG0gmMJlkX7IT5caWXPJhz0zYpQ4yOVmxMFEzOritunNHQ4X0/D+d6DcWC4S7wykCb0OnI=
+	t=1710418395; cv=none; b=KlsKAAUSnFcnKxwqyuRnN9NJki762hU5aYNmvvlAFb6pId8eGK+n5qgjio537CkDq08XNnjW8VlwUm7LFJ5hhqtMmoU8PiObXchNH3CZYss9HDpzW2kf0xA0wDd/LVbMaZQmjAqhRlcqVJKnQdH9M6CXvPCHPrWQUcIDj2UyKxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710418229; c=relaxed/simple;
-	bh=xnyacxUsGH5RW5G5s6Q3bxHinA/BiKUTP9mCzN30/Uw=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=e4ovITKaEIrOirm56vp+RdZzBEw61uU6eBgLpFwjuBPUBVFk/jv2QmNiXGtDj6qAuTA2oD9PYD7kEXUn8T4Lb4Ow4gMJwwEhusuLr2NrK19S/pzf6TDEkzHjQTvQHoBlMX5OtU/Y4yBxhDvlIIgfH64G4pYaqZudDS3QDlLqCxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GkPyixCS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B514AC433F1;
-	Thu, 14 Mar 2024 12:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710418228;
-	bh=xnyacxUsGH5RW5G5s6Q3bxHinA/BiKUTP9mCzN30/Uw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=GkPyixCSzTjdMQir/6UYnTNVFtIB2XndGyPI6OInz7UpmOtR4chi33P/TW3AP7clh
-	 BseKXGMwFA/pTdrD7Fc2MTnnoozfLr8UKD+QPDHbzQieezHjFvrKTehpyaudUod6lY
-	 qZRimTnUvfUotYr+rLgj90waJizPhyL44uAeIz/wBD9PcTWQ2nHwh2uoORo14f+LNB
-	 7q13a9FwxYIEgmC5Ea0OUXqOsFpa/eOuHyN34BJXiHGYG0zozDNC0lCevPN5IGlfyC
-	 dUd0v0Q26GyIctnDmxvaiuouogm2kgu+MI1r0FIEqDMGc/uKBQNK6qLgCBsg4kF7Kj
-	 n/2F/JG4kM0yw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9A888D95055;
-	Thu, 14 Mar 2024 12:10:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710418395; c=relaxed/simple;
+	bh=PpE8/N8Z7gYGhDFsaMRzo30xMlzjdV5Uu8+je0vp18U=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=igjxXKzKlZr/0jBy4tVXaLOVaHvJj2GVPBatxMM9W8UZOdpYzIOx7tcIWJEVvwGZ5EhG7QybeHZMS9U0GD1Neiy1G88yv22tFK3uqTSOEYv2vjH90r9wrhnRNft8zPO71noDQVLSLswpgr8rz3uJk980Wdkgiyg5ckC7sNDoJn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Z3go+nSU; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42E9Mwas025880;
+	Thu, 14 Mar 2024 12:13:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=i/6eJM3fOsriNYf7PCVpfDjiGc5hnm60G2hUzvC/N6I=; b=Z3
+	go+nSUMEy+ifZFMzTHvBm3U7UubnuJkH2aD08XDdfLhIgyqOJJV59W50cvPvHyj0
+	pf1rm1W/BmQ+VLuqlLvGXjHclrDQ2w2IUo7rh68lqzvSnd8XUFwuSm4mn+eAmexR
+	HpbUCaRtC0P3Tee7p7Y9A2LAXNSvJhHAF3rNsPN+lw7m1ub5GuixkhSnEvJKw0uu
+	s+Zh3mXugqVQ0vROmoRzq4fKOewbLYDLt2NGCf6YCaLGcvmUGEgPTR77OCPzu/gz
+	+CxNVkSJZK7KOvTGhYNSF9Dp9qy6n6GaSy1py29imbINg6XXYCJRTgAY207MjswM
+	Jwab3fYSnOGLwmHauGXg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wusxggy9u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 12:13:03 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42ECD24C018568
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 12:13:02 GMT
+Received: from hu-amrianan-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Mar 2024 05:12:55 -0700
+From: Amrit Anand <quic_amrianan@quicinc.com>
+To: <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        <peter.griffin@linaro.org>, <caleb.connolly@linaro.org>,
+        <linux-riscv@lists.infradead.org>, <chrome-platform@lists.linux.dev>,
+        <linux-mediatek@lists.infradead.org>,
+        Amrit Anand <quic_amrianan@quicinc.com>
+Subject: [PATCH v2 0/2] Add board-id support for multiple DT selection
+Date: Thu, 14 Mar 2024 17:41:50 +0530
+Message-ID: <1710418312-6559-1-git-send-email-quic_amrianan@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] hsr: Fix uninit-value access in hsr_get_node()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171041822862.15565.3799494375308403816.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Mar 2024 12:10:28 +0000
-References: <20240312152719.724530-1-syoshida@redhat.com>
-In-Reply-To: <20240312152719.724530-1-syoshida@redhat.com>
-To: Shigeru Yoshida <syoshida@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 9HbCtnvwlODWwAfE7hgXH8kYgPgf3f1C
+X-Proofpoint-GUID: 9HbCtnvwlODWwAfE7hgXH8kYgPgf3f1C
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_10,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=3 impostorscore=0
+ malwarescore=0 clxscore=1011 mlxscore=0 phishscore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403140088
 
-Hello:
+The software packages are shipped with multiple device tree blobs supporting
+multiple boards. For instance, suppose we have 3 SoC, each with 4 boards supported,
+along with 2 PMIC support for each case which would lead to total of 24 DTB files.
+Along with these configurations, OEMs may also add certain additional board variants.
+Hence, a mechanism is required to pick the correct DTB for the board on which the
+software package is deployed. Introduce a unique property for adding board identifiers
+to device trees. Here, board-id property provides a mechanism for Qualcomm based
+bootloaders to select the appropriate DTB.
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Isn't that what the compatible property is for?
+-----------------------------------------------
+The compatible property can be used for board matching, but requires
+bootloaders and/or firmware to maintain a database of possible strings
+to match against or have complex compatible string parsing and matching.
+Compatible string matching becomes complicated when there are multiple
+versions of the same board. It becomes difficult for the device tree
+selection mechanism to recognize the right DTB to pick, with minor
+differences in compatible strings.
 
-On Wed, 13 Mar 2024 00:27:19 +0900 you wrote:
-> KMSAN reported the following uninit-value access issue [1]:
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
->  hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
->  fill_frame_info net/hsr/hsr_forward.c:577 [inline]
->  hsr_forward_skb+0xe12/0x30e0 net/hsr/hsr_forward.c:615
->  hsr_dev_xmit+0x1a1/0x270 net/hsr/hsr_device.c:223
->  __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
->  netdev_start_xmit include/linux/netdevice.h:4954 [inline]
->  xmit_one net/core/dev.c:3548 [inline]
->  dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3564
->  __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4349
->  dev_queue_xmit include/linux/netdevice.h:3134 [inline]
->  packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
->  packet_snd net/packet/af_packet.c:3087 [inline]
->  packet_sendmsg+0x8b1d/0x9f30 net/packet/af_packet.c:3119
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg net/socket.c:745 [inline]
->  __sys_sendto+0x735/0xa10 net/socket.c:2191
->  __do_sys_sendto net/socket.c:2203 [inline]
->  __se_sys_sendto net/socket.c:2199 [inline]
->  __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> 
-> [...]
+The solution proposed here is simpler to implement and doesn't require the need
+to update bootloader for every new board.
 
-Here is the summary with links:
-  - [net] hsr: Fix uninit-value access in hsr_get_node()
-    https://git.kernel.org/netdev/net/c/ddbec99f5857
+How is this better than Qualcomm's qcom,msm-id/qcom,board-id?
+-------------------------------------------------------------
+Qualcomm's qcom,msm-id/qcom,board-id are not scalable for other distinguishing
+features as we need to add a new property every time. Board-id property provide
+a solution that the bootloader can use to select appropriate device tree. Board-id
+encapsulates soc, board, pmic and oem identifiers. Qualcomm based bootloader can use
+these key-value pairs to uniquely identify the device tree. This solution scales well
+for cases where additional identifiers would be needed for device tree selection
+criteria. Adding a new tuple in "board-id" along with "board-id-type" will help support it.
+				      
+Changes in V2:
+ - Based on comment on V1 related to challenges on designing common bootloader for all
+   the vendors, where different vendors can have different representation of board-id
+   and the best and exact match logic can also be different for different vendors, moving
+   the board-id definition in qcom specific binding.
+ - Adding support for board IDs for all the boards that are in kernel.org.
+ - Adding Qualcomm bootloader best/exact match logic for multi DT selection. 
+ - Keeping list of other vendors in CC for comment/awareness related to this requirement 
+ - Link to V1: https://lore.kernel.org/all/1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com/
 
-You are awesome, thank you!
+Amrit Anand (2):
+  dt-bindings: arm: qcom: Update Devicetree identifiers
+  dt-bindings: qcom: Update DT bindings for multiple DT
+
+ Documentation/devicetree/bindings/arm/qcom.yaml | 90 +++++++++++++++++++++++++
+ include/dt-bindings/arm/qcom,ids.h              | 86 ++++++++++++++++++++---
+ 2 files changed, 167 insertions(+), 9 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.7.4
 
 
