@@ -1,113 +1,77 @@
-Return-Path: <linux-kernel+bounces-103666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99E087C2A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:27:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93BE987C2A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4871BB21B32
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:27:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B1BC1F2209A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8162974C0F;
-	Thu, 14 Mar 2024 18:27:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC27474C0F;
+	Thu, 14 Mar 2024 18:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pcgIDNo6"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SFJsvWAK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66FD1A38D0;
-	Thu, 14 Mar 2024 18:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F1874BFA;
+	Thu, 14 Mar 2024 18:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710440856; cv=none; b=uEMakciQGoqU96NluZsVAosGoACRx+mI9vMfM7NJeFG+TojDvQYNZhkcWnj03SwKyA0OBW9Ipa+tdsCVqxTrs/acGoVl1s+uDvKIhxLhbKEM3tyxHOafQAqi/WwVl8wpn+NLJfT7UuadOVUOuBZOO76vKf18KoxwXlUrR1DytLc=
+	t=1710440912; cv=none; b=mZ4BAwaWAjbPWaRcdaZgCINyH42JBpIqASiywkx+gZ/bTQoh6xf6Aapc8FLwaEJ65FYiVGsdqoTJ49D8LDP76E77jUFDkZu9/DbsHvUinbtd8P1flEX70o8RVf3Ih/5FFOoc8TL60LYl+9+83M0PrBFBjVtmmyT28B66Otq/Y+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710440856; c=relaxed/simple;
-	bh=wvZQ6EkK3Zr78gZKY6mbHSxOYjMQ/6C07pm5tHfcalc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PPG6gHrMruWzQSGGUi2CRrahFsAQjZChMQUDwgvtCpIRtmSZ6DfWFhzJ4BUViennWyiRskm9HBiAwVsCwCJfkGax/xMHEyJM309smc7JfhqW2K//wFBo+02pMZTFneYCgg2ujxD4KmYJxSNWte8thVXU3pv/Xa/xbIL4HsY6J/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pcgIDNo6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FD3CC433C7;
-	Thu, 14 Mar 2024 18:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710440856;
-	bh=wvZQ6EkK3Zr78gZKY6mbHSxOYjMQ/6C07pm5tHfcalc=;
+	s=arc-20240116; t=1710440912; c=relaxed/simple;
+	bh=AFztmRQ7od/p16ks6Y4lRSBnAMBr/FxYYEhI7aUOTwU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=M1fPpjxGps5Ss1Zwy34E5P0WZmp8tkLbweKvJHnGMckro9uJIWEmgqAadngT8echOkCVBAJfpSB8IxsiMpzdAqFrRxfFyv+7KaOvVyrVoNcQ/EuupepyC8fyTcWgJem8/bzgWh49fBLOpLr3BrBKozPdUYCrRuW0on4IJzrH2l0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SFJsvWAK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E117C433C7;
+	Thu, 14 Mar 2024 18:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1710440911;
+	bh=AFztmRQ7od/p16ks6Y4lRSBnAMBr/FxYYEhI7aUOTwU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pcgIDNo6+Jx9g1FVdyq37yqerQyrpShtUOjQ9n27jtT7YMvFQeCuV1qZCgb3XcWQK
-	 Q/v3tSCHmPIW56Zim33p+Env+4YdDQ5ztgPOHSZblgNt+Rv3GNKuzlRGtbcyC6jgj4
-	 /af/RGyDWDWZirAiycP/RBEe58UHQvEe45XUragt5UhSnnTk3kM0COQ25ickIbMGkP
-	 EGQ5Mq8rpuCWU09X2cKeOeJiuTCSnT6SdndVccRrpIm9eGM15t5TpZmzKZ8ANms1Om
-	 3nW5JwaAM1NxFDPdn05JGGb0VsDv2KFc3PU+Z+qi0kPracqutTqUlTyvdwEtCHres0
-	 BA13Ud52d9jNA==
-Date: Thu, 14 Mar 2024 11:27:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>, Shradha Gupta
- <shradhagupta@microsoft.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-hyperv@vger.kernel.org"
- <linux-hyperv@vger.kernel.org>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Ajay Sharma <sharmaajay@microsoft.com>, Leon
- Romanovsky <leon@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, KY Srinivasan
- <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
- <decui@microsoft.com>, Long Li <longli@microsoft.com>, Michael Kelley
- <mikelley@microsoft.com>
-Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
-Message-ID: <20240314112734.5f1c9f7e@kernel.org>
-In-Reply-To: <20240314025720.GA13853@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
-	<20240307072923.6cc8a2ba@kernel.org>
-	<DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
-	<20240307090145.2fc7aa2e@kernel.org>
-	<CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
-	<20240308112244.391b3779@kernel.org>
-	<20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-	<20240314025720.GA13853@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	b=SFJsvWAKQCtaSc907suY5pXQrbS9T//BJF64zLAbsd7OiYiE7ATJaRMjr/npHf+wR
+	 IF9QHkRLJPzygSc9CaWzlmoe4NKt1Iu7KT8nv6dIHU15LtZGmFXx/E0EcQJp0H4K86
+	 sCb7t9gKdh1bNkER8CmjHBTZbPaD18XlSs73q0Lc=
+Date: Thu, 14 Mar 2024 11:28:30 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Cong Liu <liucong2@kylinos.cn>
+Cc: Dmitry Rokosov <ddrokosov@salutedevices.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] tools/Makefile: Remove cgroup target
+Message-Id: <20240314112830.29807b1fe2905929b00ca39c@linux-foundation.org>
+In-Reply-To: <20240314122533.419754-1-liucong2@kylinos.cn>
+References: <20240314122533.419754-1-liucong2@kylinos.cn>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 13 Mar 2024 19:57:20 -0700 Shradha Gupta wrote:
-> Default interrupts affinity for each queue:
-> 
->  25:          1        103          0    2989138  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
->  26:          0          1    4005360          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
->  27:          0          0          1    2997584  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
->  28:    3565461          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3
-> @pci:7870:00:00.0
-> 
-> As seen the CPU-queue mapping is not 1:1, Queue 0 and Queue 2 are both mapped 
-> to cpu3. From this knowledge we can figure out the total RX stats processed by
-> each CPU by adding the values of mana_q0 and mana_q2 stats for cpu3. But if
-> this data changes dynamically using irqbalance or smp_affinity file edits, the
-> above assumption fails. 
-> 
-> Interrupt affinity for mana_q2 changes and the affinity table looks as follows
->  25:          1        103          0    3038084  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
->  26:          0          1    4012447          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
->  27:     157181         10          1    3007990  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
->  28:    3593858          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3@pci:7870:00:00.0 
-> 
-> And during this time we might end up calculating the per-CPU stats incorrectly,
-> messing up the understanding of CPU usage by MANA driver that is consumed by 
-> monitoring services. 
+On Thu, 14 Mar 2024 20:25:32 +0800 Cong Liu <liucong2@kylinos.cn> wrote:
 
-Like Stephen said, forget about irqbalance for networking.
+> The tools/cgroup directory no longer contains a Makefile.  This patch
+> updates the top-level tools/Makefile to remove references to building
+> and installing cgroup components. This change reflects the current
+> structure of the tools directory and fixes the build failure when
+> building tools in the top-level directory.
 
-Assume that the IRQs are affinitized and XPS set, correctly.
+Please provide a copy of the error messages for the changelog?
 
-Now, presumably you can use your pcpu stats to "trade queues",
-e.g. 4 CPUs / 4 queues, if CPU 0 insists on using queue 1
-instead of queue 0, you can swap the 0 <> 1 assignment.
-That's just an example of an "algorithm", maybe you have other
-use cases. But if the problem is "user runs broken irqbalance"
-the solution is not in the kernel...
+I think it's this?
+
+hp2:/usr/src/25/tools> make cgroup
+  DESCEND cgroup
+make[1]: *** No targets specified and no makefile found.  Stop.
+make: *** [Makefile:73: cgroup] Error 2
+
+
 
