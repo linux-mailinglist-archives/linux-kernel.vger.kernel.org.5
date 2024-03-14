@@ -1,288 +1,162 @@
-Return-Path: <linux-kernel+bounces-103439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBCA87BF57
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:55:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A378087BF5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ABA91F22720
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:55:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52DDD28579B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1478971726;
-	Thu, 14 Mar 2024 14:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205D571733;
+	Thu, 14 Mar 2024 14:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="vgTQzZaO"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="I000Ktnl"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BBC6FE11
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975137172A
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710428113; cv=none; b=pgalm/zq8x5cHI8U8E70m6DI2gBV4jLT7GkiyUoOcuE3bZRJeb9s+R4wCOO7nWt39NOBswAvWVz1thDLLhfaeGnjQgBl0+pVJJRvKCP1DTDM3sKg08Q6TDSKkQ3LE3kd2lAMwcl9orWsAN74B1Ce1sig2EtlsJ6/x3jMc4wlBx0=
+	t=1710428219; cv=none; b=oxhZnJskBWAiVRLc7irfYM5XM3GsrqLq+1Mq7VsovbqiTWIjyEHYECYDyeuRxkUJ5dJZFvB4f7qLu/dRadzP772c7i0iWhLlT9J6tOZpe+bKwRektwKps41VIN4i3S2sZ4C7403g7hEMVUWckxF0U9L3cl8f2jn5NT5CwKNmfwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710428113; c=relaxed/simple;
-	bh=No3CcZI0R4w6avOsnxeH0/5MK3Se1i3ukG4F2P0PWMY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=LWBAGV4UWiH3UnoHmlVMcvqbOEbbzVtDQ/89t30Prl3po0MdbsNWua1w0VQsccQxN8PZgEkbOr/MM2rRUXUr10m3KsQXdqe9lmz0lYE1Tt38dJwKW8ATcwR9Ucn1EB8xQjhEZIxZUPwfX5Y0Dz/+PW6Ve+wAj6s7CoJg4Mwfm4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=vgTQzZaO; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-788303f317eso48169885a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:55:10 -0700 (PDT)
+	s=arc-20240116; t=1710428219; c=relaxed/simple;
+	bh=mEjE8q+E2HjRI9XzAhQ/CrCkar6G2FE6iHbSsPc+Gyk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TjrsueRGDE7N92u9H9ycqTFTEfc3YTO4BpAdbEjuFFhCqh9fzk0sa/yiACT95uZYbHpGusGSr3Ta7ZlJ4Sjhp6eaPZzwubYYjY1HehiGnz55xc2xrdsENAp9JnZdCd1pSSYatseq6dbr0dRONyohOsBg4V5tBNs+q7CGMmCDag8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=I000Ktnl; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-690b24973beso16952486d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:56:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710428110; x=1711032910; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wW+2zHFZQjqfYIpLd4QibSf5RSIcFb17pxrKGVZfg7k=;
-        b=vgTQzZaO7QxySNh5iuvzWZw7klEAYZButavIHT3qd1Z71MEZaynC7F4ddmAESF+j7f
-         1rs4A57TtEFemy7CDRs3NLg5kv/IhNRspbEfVfrmzdfzUzv8vn7uorhAX3rNp/We3+aE
-         A8B78+cRJPn9rVov88eWqHmQR2VGYm76OmcR4QHolr5gUflwUJI1v6mTGL1Ey056De0f
-         VXAZSEC2yEol/ytOz0KEB0SgGnqqG18TTTOZJW0+Cr3u4LWDvcF0d3PVYfkOlKNSzmj2
-         zjPmlViQrvTXld2jgHJWGCjLUJlRorWTbkA4OZMBmNNS57ZYmbPoxn2d3wLmb2ncRvA1
-         8S/g==
+        d=sifive.com; s=google; t=1710428216; x=1711033016; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lxoX+O1GlcPWe1RQwrLpQvGT+Ve/nhPsRMUh8z8RZIw=;
+        b=I000KtnlC+WQPyt2sorMY+b4lwHBUhE//+e65JTuH3bh7+kKKHwHsplZctFU44KbvN
+         MhwUpij8VB2qQ5pTUELjtdJKi9WCtnDIRRLs5jXRXPjM0nzB1NxvhrKybvOs1vITArdE
+         /hbcQQyaoJFIglEtcD/4bHRGr78L1/6nxEXfuhv9FW25xuwLd/bY/R9OIFeQj2AvSU33
+         QnKhDEm3gHxflRvyIhPJdBtH9yI3MZgPOd4EwqzSJ9qAym/C3xP+q53sTyO0PTAQ3xXd
+         U8qkc3mya5+Bd869q3x3skwHmVujYfHbfECs9ABpBht/yg0Hc1aVEN+A2PRW2gNRbfMP
+         Mwjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710428110; x=1711032910;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wW+2zHFZQjqfYIpLd4QibSf5RSIcFb17pxrKGVZfg7k=;
-        b=RiIJj2RS2fmuqjmfX9S3zYWHx4D/7lODspaCbyF1uehAT8xbL7c1huBYK0XJmzUKEr
-         VS3QOW5dpBvgv/In4hEEebyAjtignV4SVtmR/S/4qIwmT1UHdox7n6ABSNJcrzcyXE6d
-         8epkw8DP+fUB/6/VgMvnG4CUlTS/bppNA72p7T195KZVhcb1fmCJvVNP8r5/id00/AtN
-         oGL8AB0xnOXdYyVo4b/6vPXYanhJPJOskk4wTO31VW2ql36rifGjwLrfBzcVRfZXj4a6
-         +Pd1hZYmUmUBPQLvuROCMMUNEWJsohAWAm0Cd5zOASLUfzK5KG/6zZh0I3hXHGcXBKNx
-         Rkyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUWvcXHPQcscMREKXRxpWaxXweFtrbbd2VHnnDgIZ0rVGQfI0ErJyVeCnOLMDye5TK5wm43MZdEOqqvZ3p+iFXTfwNS7Q4YwZKsidyI
-X-Gm-Message-State: AOJu0YyE/rlpevyMjhFJvKJoxb803Bi0fOY72dfeeJU6sdllhjo+bB9W
-	ZTdvu0Zg9jVvICIDcS+UMnpz27h2912Ptktak7L/BZO7ltLoqUK51LjQeeIl8mE=
-X-Google-Smtp-Source: AGHT+IFRyx8KYheppMcuTmknKZnIAQURRHVD3bqUb92bxpaPUbwp7dA3a4520rhwKxXGDEt+IFhD8g==
-X-Received: by 2002:a05:620a:2943:b0:789:e044:eb08 with SMTP id n3-20020a05620a294300b00789e044eb08mr739775qkp.24.1710428110047;
-        Thu, 14 Mar 2024 07:55:10 -0700 (PDT)
-Received: from soleen.c.googlers.com (150.254.86.34.bc.googleusercontent.com. [34.86.254.150])
-        by smtp.gmail.com with ESMTPSA id pi20-20020a05620a379400b00788406f9c7dsm904821qkn.101.2024.03.14.07.55.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 07:55:09 -0700 (PDT)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: akpm@linux-foundation.org,
-	jpoimboe@kernel.org,
-	pasha.tatashin@soleen.com,
-	kent.overstreet@linux.dev,
-	peterz@infradead.org,
-	nphamcs@gmail.com,
-	cerasuolodomenico@gmail.com,
-	surenb@google.com,
-	lizhijian@fujitsu.com,
-	willy@infradead.org,
-	shakeel.butt@linux.dev,
-	vbabka@suse.cz,
-	ziy@nvidia.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH v2] vmstat: Keep count of the maximum page reached by the kernel stack
-Date: Thu, 14 Mar 2024 14:54:57 +0000
-Message-ID: <20240314145457.1106299-1-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+        d=1e100.net; s=20230601; t=1710428216; x=1711033016;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lxoX+O1GlcPWe1RQwrLpQvGT+Ve/nhPsRMUh8z8RZIw=;
+        b=QLis0jbhpWZl8hWMLdIHUzSyd1mThWeQ0nO9rqlgBGk7McnRB+fcklW+7rdxU59n8v
+         YpT2SIGZlMEa1bpOeHXwKpdRR1FHqdPUZp7pud9xZmpaB65x3rgylS9v7Qn37hfPMEL5
+         21P4fxPXSNnLjjoqEsCybhIGue033ywKQJV3Py3TBbL5CYp6mtvnpBmiSFkdoqIHA83B
+         mPYIqEDZz50vzxJ2bz6idYaRao/jr2UzViv0eAmlF3V6Axha6RRpo6Wepv+Flqb9HSIj
+         TdVmk3xdllTLmW/2R/uSRX9LiKKubayn5/E7A3RM6txpPmGkH/gKDisGTfbSLRzVy15U
+         g6Kw==
+X-Forwarded-Encrypted: i=1; AJvYcCXnGcnjF7tKU1nCGYbGr3QzvI7FJjMQn5TTCgDP1jiBfuqT/a3jLrfDafEIBN7EOc3hYJgD0PZhTASmQbaKbIVOx7VyhdeBin/x9oYa
+X-Gm-Message-State: AOJu0YwsHIG3cEsKAbqiM+WGd4tuPkQKrE7BnPMYArumqQnSZWH4WSI8
+	woHdgcEe6LwPE6R9UIOxVPWwdJrJAOQo1IN+p+8b276KcFYmSsrrvm84wI8AdNY=
+X-Google-Smtp-Source: AGHT+IFH2laVemU8OwQ32YK+QaEsKZgxeEvMnGkMRQp09IuyzZ5ZeOZGACdxlplPgoNSEue7cq6fGw==
+X-Received: by 2002:ad4:4ea1:0:b0:68f:dde4:fb12 with SMTP id ed1-20020ad44ea1000000b0068fdde4fb12mr4915051qvb.9.1710428216556;
+        Thu, 14 Mar 2024 07:56:56 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.8.192])
+        by smtp.gmail.com with ESMTPSA id s12-20020a05622a018c00b0042f068d3d8asm871706qtw.43.2024.03.14.07.56.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 07:56:56 -0700 (PDT)
+Message-ID: <42c3d591-abe5-4343-9a94-f1705430dcea@sifive.com>
+Date: Thu, 14 Mar 2024 09:56:54 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: starfive: jh7100: Use provided clocks instead of
+ hardcoded names
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Albert Ou <aou@eecs.berkeley.edu>, linux-clk@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Emil Renner Berthing <kernel@esmil.dk>, Hal Feng
+ <hal.feng@starfivetech.com>, Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <898aa0925a9598d44721d00145015b215434cb3b.1710414195.git.geert@linux-m68k.org>
+ <695ebdde-3dc3-41b1-b20b-f02c4ba1ae5d@sifive.com>
+ <CAMuHMdURtL1u-MDXBhiwOfX+zBnuunZYvjt+3GMOp6Y6pj1Efw@mail.gmail.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <CAMuHMdURtL1u-MDXBhiwOfX+zBnuunZYvjt+3GMOp6Y6pj1Efw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-CONFIG_DEBUG_STACK_USAGE provides a mechanism to determine the minimum
-amount of memory left in a stack. Every time a new low-memory record is
-reached, a message is printed to the console.
+Hi Geert,
 
-However, this doesn't reveal how many pages within each stack were
-actually used. Introduce a mechanism that keeps count the number of
-times each of the stack's pages were reached:
+On 2024-03-14 9:48 AM, Geert Uytterhoeven wrote:
+> On Thu, Mar 14, 2024 at 3:32 PM Samuel Holland
+> <samuel.holland@sifive.com> wrote:
+>> On 2024-03-14 6:05 AM, Geert Uytterhoeven wrote:
+>>> The Starfive JH7100 clock driver does not use the DT "clocks" property
+>>> to find its external input clocks, but instead relies on the names of
+>>> the actual external clock providers.  This is fragile, and caused
+>>> breakage when sanitizing clock names in DT.
+>>>
+>>> Fix this by obtaining the external input clocks through the DT "clocks"
+>>> property, and using their clk_hw objects or corresponding name.
+>>>
+>>> Fixes: f03606470886 ("riscv: dts: starfive: replace underscores in node names")
+>>> Fixes: 4210be668a09ee20 ("clk: starfive: Add JH7100 clock generator driver")
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+>>> --- a/drivers/clk/starfive/clk-starfive-jh7100.c
+>>> +++ b/drivers/clk/starfive/clk-starfive-jh7100.c
+> 
+>>> @@ -298,13 +311,23 @@ static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
+>>>       if (IS_ERR(priv->base))
+>>>               return PTR_ERR(priv->base);
+>>>
+>>> +     for (idx = 0; idx < EXT_NUM_CLKS; idx++) {
+>>> +             clk = devm_clk_get(&pdev->dev, jh7100_ext_clk[idx]);
+>>> +             if (IS_ERR(clk))
+>>> +                     return PTR_ERR(clk);
+>>> +
+>>> +             priv->ext[idx] = __clk_get_hw(clk);
+>>> +     }
+>>> +
+>>> +     osc_sys = clk_hw_get_name(priv->ext[EXT_CLK_OSC_SYS]);
+>>> +
+>>>       priv->pll[0] = devm_clk_hw_register_fixed_factor(priv->dev, "pll0_out",
+>>> -                                                      "osc_sys", 0, 40, 1);
+>>> +                                                      osc_sys, 0, 40, 1);
+>>>       if (IS_ERR(priv->pll[0]))
+>>>               return PTR_ERR(priv->pll[0]);
+>>>
+>>>       priv->pll[1] = devm_clk_hw_register_fixed_factor(priv->dev, "pll1_out",
+>>> -                                                      "osc_sys", 0, 64, 1);
+>>> +                                                      osc_sys, 0, 64, 1);
+>>
+>> These should use devm_clk_hw_register_fixed_factor_parent_hw(). (Or you could
+> 
+> Thanks, I didn't know about that function!
+> 
+>> define a devm_clk_hw_register_fixed_factor_fw_name() and drop the other changes.)
+> 
+> Sorry, I don't understand what you mean here?
 
-	$ grep kstack /proc/vmstat
-	kstack_page_1 19974
-	kstack_page_2 94
-	kstack_page_3 0
-	kstack_page_4 0
+In the loop below, the parents are already referenced via .fw_name. That means
+the string is the DT clock-names property value, not the Linux-internal clock
+name (see clk_core_get()). These two function calls are the only ones that
+depend on the internal clock name. If you change them to use .fw_name as well,
+the clk_core_get() will do the right thing, and you don't need to manually call
+devm_clk_get().
 
-In the above example, out of 20,068 threads that exited on this
-machine, only 94 reached the second page of their stack, and none
-touched pages three or four.
-
-In fleet environments with millions of machines, this data can help
-optimize kernel stack sizes.
-
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
----
-Changelog:
-v2:
-- Fixed enum name KSTACK_PAGE_5 ->KSTACK_PAGE_REST.
-- Improved commit message based on Christophe Leroy
-  comment.
-
- include/linux/sched/task_stack.h | 40 ++++++++++++++++++++++++++++++--
- include/linux/vm_event_item.h    | 29 +++++++++++++++++++++++
- include/linux/vmstat.h           | 16 -------------
- mm/vmstat.c                      | 11 +++++++++
- 4 files changed, 78 insertions(+), 18 deletions(-)
-
-diff --git a/include/linux/sched/task_stack.h b/include/linux/sched/task_stack.h
-index ccd72b978e1f..09e6874c2ced 100644
---- a/include/linux/sched/task_stack.h
-+++ b/include/linux/sched/task_stack.h
-@@ -95,9 +95,42 @@ static inline int object_is_on_stack(const void *obj)
- extern void thread_stack_cache_init(void);
- 
- #ifdef CONFIG_DEBUG_STACK_USAGE
-+#ifdef CONFIG_VM_EVENT_COUNTERS
-+#include <linux/vm_event_item.h>
-+
-+/* Count the maximum pages reached in kernel stacks */
-+static inline void count_kstack_page(int stack_max_page)
-+{
-+	switch (stack_max_page) {
-+	case 1:
-+		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_1]);
-+		break;
-+	case 2:
-+		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_2]);
-+		break;
-+#if THREAD_SIZE >= (4 * PAGE_SIZE)
-+	case 3:
-+		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_3]);
-+		break;
-+	case 4:
-+		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_4]);
-+		break;
-+#endif
-+#if THREAD_SIZE > (4 * PAGE_SIZE)
-+	default:
-+		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_REST]);
-+		break;
-+#endif
-+	}
-+}
-+#else /* !CONFIG_VM_EVENT_COUNTERS */
-+static inline void count_kstack_page(int stack_max_page) {}
-+#endif /* CONFIG_VM_EVENT_COUNTERS */
-+
- static inline unsigned long stack_not_used(struct task_struct *p)
- {
- 	unsigned long *n = end_of_stack(p);
-+	unsigned long unused_stack;
- 
- 	do { 	/* Skip over canary */
- # ifdef CONFIG_STACK_GROWSUP
-@@ -108,10 +141,13 @@ static inline unsigned long stack_not_used(struct task_struct *p)
- 	} while (!*n);
- 
- # ifdef CONFIG_STACK_GROWSUP
--	return (unsigned long)end_of_stack(p) - (unsigned long)n;
-+	unused_stack = (unsigned long)end_of_stack(p) - (unsigned long)n;
- # else
--	return (unsigned long)n - (unsigned long)end_of_stack(p);
-+	unused_stack = (unsigned long)n - (unsigned long)end_of_stack(p);
- # endif
-+	count_kstack_page(((THREAD_SIZE - unused_stack) >> PAGE_SHIFT) + 1);
-+
-+	return unused_stack;
- }
- #endif
- extern void set_task_stack_end_magic(struct task_struct *tsk);
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 747943bc8cc2..1dbfe47ff048 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -153,10 +153,39 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- 		VMA_LOCK_ABORT,
- 		VMA_LOCK_RETRY,
- 		VMA_LOCK_MISS,
-+#endif
-+#ifdef CONFIG_DEBUG_STACK_USAGE
-+		KSTACK_PAGE_1,
-+		KSTACK_PAGE_2,
-+#if THREAD_SIZE >= (4 * PAGE_SIZE)
-+		KSTACK_PAGE_3,
-+		KSTACK_PAGE_4,
-+#endif
-+#if THREAD_SIZE > (4 * PAGE_SIZE)
-+		KSTACK_PAGE_REST,
-+#endif
- #endif
- 		NR_VM_EVENT_ITEMS
- };
- 
-+#ifdef CONFIG_VM_EVENT_COUNTERS
-+/*
-+ * Light weight per cpu counter implementation.
-+ *
-+ * Counters should only be incremented and no critical kernel component
-+ * should rely on the counter values.
-+ *
-+ * Counters are handled completely inline. On many platforms the code
-+ * generated will simply be the increment of a global address.
-+ */
-+
-+struct vm_event_state {
-+	unsigned long event[NR_VM_EVENT_ITEMS];
-+};
-+
-+DECLARE_PER_CPU(struct vm_event_state, vm_event_states);
-+#endif
-+
- #ifndef CONFIG_TRANSPARENT_HUGEPAGE
- #define THP_FILE_ALLOC ({ BUILD_BUG(); 0; })
- #define THP_FILE_FALLBACK ({ BUILD_BUG(); 0; })
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 343906a98d6e..18d4a97d3afd 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -41,22 +41,6 @@ enum writeback_stat_item {
- };
- 
- #ifdef CONFIG_VM_EVENT_COUNTERS
--/*
-- * Light weight per cpu counter implementation.
-- *
-- * Counters should only be incremented and no critical kernel component
-- * should rely on the counter values.
-- *
-- * Counters are handled completely inline. On many platforms the code
-- * generated will simply be the increment of a global address.
-- */
--
--struct vm_event_state {
--	unsigned long event[NR_VM_EVENT_ITEMS];
--};
--
--DECLARE_PER_CPU(struct vm_event_state, vm_event_states);
--
- /*
-  * vm counters are allowed to be racy. Use raw_cpu_ops to avoid the
-  * local_irq_disable overhead.
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index db79935e4a54..737c85689251 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1413,6 +1413,17 @@ const char * const vmstat_text[] = {
- 	"vma_lock_retry",
- 	"vma_lock_miss",
- #endif
-+#ifdef CONFIG_DEBUG_STACK_USAGE
-+	"kstack_page_1",
-+	"kstack_page_2",
-+#if THREAD_SIZE >= (4 * PAGE_SIZE)
-+	"kstack_page_3",
-+	"kstack_page_4",
-+#endif
-+#if THREAD_SIZE > (4 * PAGE_SIZE)
-+	"kstack_page_rest",
-+#endif
-+#endif
- #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
- };
- #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA || CONFIG_MEMCG */
--- 
-2.44.0.278.ge034bb2e1d-goog
+Regards,
+Samuel
 
 
