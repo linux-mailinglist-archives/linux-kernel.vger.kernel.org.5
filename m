@@ -1,160 +1,143 @@
-Return-Path: <linux-kernel+bounces-103026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F91087BA15
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:13:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF7BC87BA2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E6B1F239CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:13:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66B67B2292C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A556BFB7;
-	Thu, 14 Mar 2024 09:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11766CDAD;
+	Thu, 14 Mar 2024 09:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GcuPoVlo"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="ipJKBy2Z"
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com [207.54.90.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B79EEC4;
-	Thu, 14 Mar 2024 09:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9B36CDAA
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710407605; cv=none; b=aeSXeHTzC1Np44UdpQO03vl3DeK4/1U/Ya/LROAOGE2LohpNBVHMOhmrMOkURMh8Uv6CRPne32y9MSzWBMOG1n5I3Q2Aypvlw4U/nInkhJaIgC/b/PW9lMqNMWMghkaRXZ+NfQb/u5zbOEYqLtpEBbtbv7GjpUxbBeZwCoJcQp8=
+	t=1710407695; cv=none; b=JKozu8qhJ0pWbEvV/6HC8FTK1tW57FxT30Z4DSiCkP4yl1IE9ujsXub3NITF7h4xs5N1DXnFbv1gfVjc7tyXK+/Cn3Wtkr+ROgD2ZAysexkEHADS9uR50sqpLRb1BdlsUIBRpQ78tLdzXo2ZMdUzEq/zrqBRrNA46OqRnJ4rsLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710407605; c=relaxed/simple;
-	bh=BgurNZq4ZEkhsrJqAie62GBHUDuak0mFgu1fBlM7rZA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KnmnT+rv7h9kUGmxRyNh+FkNigN2w3SrhcDQ0+v3F3IDF7Km7rGzCIfgm6X1cSpUYfubX4DRA/UsH18nqgup0U3fraP6YVa90tFM0XcATAgrcDoA5GHcRdfkq2wvPcN1tomjQ0yvqaQDA7opbYpJR0Vyc+OTzoKdnhYHCyz8ows=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GcuPoVlo; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42E5GeU3021620;
-	Thu, 14 Mar 2024 09:13:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=hHnHHxoibt7V1jPUG53jjF/kyVu5rUCZMOCFak+vHhg=; b=Gc
-	uPoVlo5PBjUpGBtECuLFXYYJM0GTUcENFXCRpTSXbKJmehc8LKzHeTBk+BmbUWfD
-	PKJZFr4Dvgr8vsIiZOlJx8lg/yBDNA1KAOIGfGkBpRebwWEt2ThClAXWMhUNfH9A
-	OYyRnzj85UllH6mphVKJjfLvEea/EMW3nX6duMgFyEoJNL9v+pdfu80/PcE+J4rh
-	WAKx0hBhErNXL1AX48fPsufFA+qb3TA3TlKrSeDALT3QfB/TPjC59IOHRkUWcf1X
-	WNqsTQZBmawOwUcMN4B3KGa2lTiVmw39bcX8n+1r7972CuSQVgRwS3ys4zgW65nf
-	MtQ0fJERPY1ZI9cGYM1Q==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wugq19tgs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 09:13:19 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42E9DIut024475
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 09:13:18 GMT
-Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Mar
- 2024 02:13:12 -0700
-Message-ID: <a69f6dda-f488-a1be-803d-258fb8c6cb7b@quicinc.com>
-Date: Thu, 14 Mar 2024 14:43:09 +0530
+	s=arc-20240116; t=1710407695; c=relaxed/simple;
+	bh=+M6Ia1pC6W9VmZp+4ZgiLGoiDoNAJCIK6ngh7x2MqCo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YwYnuUxZTjfW7nNOD/V5N3mDavIAltjZ/NNXr+W39aSy4ih9OVAiusMJCokhJxlvFRe9z+R/vWyqGNlQ5yFmAfbTaOOqJ3GeykmvUr4IrhxzHkGu7tHBPGqSYyPZ7KGYXUnaSRcpljfn55E1Vhzky/oHfXoQpf0fF781hFj0nPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=ipJKBy2Z; arc=none smtp.client-ip=207.54.90.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1710407693; x=1741943693;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+M6Ia1pC6W9VmZp+4ZgiLGoiDoNAJCIK6ngh7x2MqCo=;
+  b=ipJKBy2ZlFfTEN880MTmlco0LGqnibgWR3XIR5QI5yYei+A1atkiymF/
+   98woSHgkOa8AWBW5o5G5Uqvl+5UddOGfFey+yNdGrSzjH7IpSvUZmMNcP
+   3hG27D5uB73w8KmPqRqIJgIx4kh4Qtqu4a+dBaI1AlhXalThzrk+JLo+m
+   gHgY7RvZOs/52P5dyuXVhGUbSRPU7Jgbdnx6iEth4t9qnHhD+Bvv9sIhm
+   gnggp6JuTXyxsNYxG6B/q1tTSE9qVUZkCBiknoSayApTtO9Z2kghIFe4o
+   u6JgPt0W2EV9+zdRjPlODuuiaNkM6FRxPg8GCg9Fe34AbqoiDKugnCcnG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="152237945"
+X-IronPort-AV: E=Sophos;i="6.07,124,1708354800"; 
+   d="scan'208";a="152237945"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:13:37 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
+	by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id BD597FBD88
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:13:34 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 0B7933483D
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:13:34 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 9E2C16B4CF
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:13:33 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 44C671A006B;
+	Thu, 14 Mar 2024 17:13:33 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: [PATCH] intel_th: Convert sprintf/snprintf to sysfs_emit
+Date: Thu, 14 Mar 2024 17:13:26 +0800
+Message-Id: <20240314091326.1323492-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 1/3] dt-bindings: clock: qcom: Update SM8150 videocc
- bindings
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette
-	<mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-CC: Ajit Pandey <quic_ajipan@quicinc.com>,
-        Imran Shaik
-	<quic_imrashai@quicinc.com>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        "Jagadeesh
- Kona" <quic_jkona@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
-References: <20240313-videocc-sm8150-dt-node-v1-0-ae8ec3c822c2@quicinc.com>
- <20240313-videocc-sm8150-dt-node-v1-1-ae8ec3c822c2@quicinc.com>
- <e8037775-78cf-4d18-9f8b-9dc5f497ad14@linaro.org>
-From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <e8037775-78cf-4d18-9f8b-9dc5f497ad14@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 2Ih2D024hcpEwhSu3KL4vgBCWXaBshrV
-X-Proofpoint-GUID: 2Ih2D024hcpEwhSu3KL4vgBCWXaBshrV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_07,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 adultscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403140062
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28250.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28250.006
+X-TMASE-Result: 10--7.667100-10.000000
+X-TMASE-MatchedRID: ebEStOsB1eE4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfDqO6/8R69QE8U
+	roFNOGp7a6aAZTOwtJmRloiW1Kgftd2ZdKe8BPbS/sUSFaCjTLxN8rmPQRlvK7oFQ8GRC1Prs1w
+	waYBQLgs9/vFVBxxqgB0XJlVTsEsboYY7KoErjW8ReM8i8p3vgEyQ5fRSh2656hUULKzHRgRjST
+	BlHEhAJovs2FqH/pE7hKK/bK+QypCR9GF2J2xqMxRFJJyf5BJeGEkIgdGU7nX6C0ePs7A07b4iO
+	wQQ4jNiGscX1rQ4Fn/mg7+nvJVJ8qbDNweYTUPQFW3EAdm/C5k=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
+Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+or sysfs_emit_at() when formatting the value to be returned to user space.
 
-On 3/13/2024 10:21 PM, Krzysztof Kozlowski wrote:
-> On 13/03/2024 12:08, Satya Priya Kakitapalli wrote:
->> Update the videocc device tree bindings for sm8150 to align with the
->> latest convention.
-> Everything is an update. Please explain what you did and why. The "why"
-> part you tried to cover but I just don't understand what is "align with
-> the latest convention". What convention?
+coccinelle complains that there are still a couple of functions that use
+snprintf(). Convert them to sysfs_emit().
 
+sprintf() will be converted as weel if they have.
 
-As per the recent upstream discussions, it is recommended to use 
-index-based lookup instead of using clock names. The current bindings is 
-not aligned with this, hence updating. I'll add the details to commit text.
+Generally, this patch is generated by
+make coccicheck M=<path/to/file> MODE=patch \
+COCCI=scripts/coccinelle/api/device_attr_show.cocci
 
+No functional change intended
 
->> Fixes: 35d26e9292e2 ("dt-bindings: clock: Add YAML schemas for the QCOM VIDEOCC clock bindings")
-> What is the bug being fixed here?
+CC: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+Split them per subsystem so that the maintainer can review it easily
+[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+---
+ drivers/hwtracing/intel_th/gth.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/hwtracing/intel_th/gth.c b/drivers/hwtracing/intel_th/gth.c
+index b3308934a687..3883f99fd5d5 100644
+--- a/drivers/hwtracing/intel_th/gth.c
++++ b/drivers/hwtracing/intel_th/gth.c
+@@ -154,9 +154,9 @@ static ssize_t master_attr_show(struct device *dev,
+ 	spin_unlock(&gth->gth_lock);
+ 
+ 	if (port >= 0)
+-		count = snprintf(buf, PAGE_SIZE, "%x\n", port);
++		count = sysfs_emit(buf, "%x\n", port);
+ 	else
+-		count = snprintf(buf, PAGE_SIZE, "disabled\n");
++		count = sysfs_emit(buf, "disabled\n");
+ 
+ 	return count;
+ }
+@@ -332,8 +332,8 @@ static ssize_t output_attr_show(struct device *dev,
+ 	pm_runtime_get_sync(dev);
+ 
+ 	spin_lock(&gth->gth_lock);
+-	count = snprintf(buf, PAGE_SIZE, "%x\n",
+-			 gth_output_parm_get(gth, oa->port, oa->parm));
++	count = sysfs_emit(buf, "%x\n",
++			   gth_output_parm_get(gth, oa->port, oa->parm));
+ 	spin_unlock(&gth->gth_lock);
+ 
+ 	pm_runtime_put(dev);
+-- 
+2.29.2
 
-There are 2 clocks required for this, AHB and XO. Only one clock is 
-mentioned in the bindings for SM8150, this is one of the reasons to move 
-to latest sm8450 bindings apart from clock names. Hence added a Fixes tag.
-
-
->> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
->> ---
->>   Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml | 1 +
->>   Documentation/devicetree/bindings/clock/qcom,videocc.yaml        | 3 ---
->>   2 files changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->> index bad8f019a8d3..e00fdc8ceaa4 100644
->> --- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->> +++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->> @@ -20,6 +20,7 @@ properties:
->>       enum:
->>         - qcom,sm8450-videocc
->>         - qcom,sm8550-videocc
->> +      - qcom,sm8150-videocc
-> Wrong order. Look at the place from where you copied it.
-
-
-Sure, will correct it.
-
-
-> Best regards,
-> Krzysztof
->
 
