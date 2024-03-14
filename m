@@ -1,387 +1,452 @@
-Return-Path: <linux-kernel+bounces-103075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D85BB87BAB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:49:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C787F87BAC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:52:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B895B20401
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:49:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397E01F22EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176BE6D1CE;
-	Thu, 14 Mar 2024 09:49:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70106D1AB;
+	Thu, 14 Mar 2024 09:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gH3ZkXNd"
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3/MbDwHq"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2066.outbound.protection.outlook.com [40.107.244.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E186CDCF;
-	Thu, 14 Mar 2024 09:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710409764; cv=none; b=UKa3cz1fzPhLmrxDgKdSP39p0cbExwrMla4bMKA8MV7nUOrxu9vkIRNCu1srD6Mk2sYcGrpYXO95IF3LUEOjVZednVp9Tdy4hvwDK35tLQe17L1cF2ybmxPbVRalstizoXfAa1XhQ6Km2X98JiqgNYO27CP4S704nfjLJ00/acA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710409764; c=relaxed/simple;
-	bh=6jW8WvoBb9wnl4rF0HP+FMfrhWatOEpXT131Muyel6g=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=aNECf2cXLREm52uA95Jd3t6gMBzkBlYHLHNgi9i399OalBZOELCONC80MOGizyIH/WKOnhAhGwMQy0x5XTI8H7ngV5J6S10z/zWW6L4czPVIKBSX0OK7D6hS8aYRSRfssG1gGz/vlX7J56CSWfq47GqFjAB064g61Y5ikVG9uIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gH3ZkXNd; arc=none smtp.client-ip=209.85.221.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4d3634a8015so136266e0c.1;
-        Thu, 14 Mar 2024 02:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710409761; x=1711014561; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ELTnMRNj07Si2m282wRHa22PPeZIfWu9K59oGBotkzg=;
-        b=gH3ZkXNdccGfSlXty8ndU4fwt2jwXYnFtDNO+G19UFgAmMsa+ZtCVAqZaVu1iSCktH
-         RbZImDR9g5yK/6/xasnmMbuge4EFhDDs+TuOOMiBhnelEzjrjW5nx5D7cTENTU65ZfV0
-         SdQr52AoKjSGVcmitIxEc0fK/is9J2SbXgBlWMMl8s8RVw/WeI7rdqBSni4uiqfTt87G
-         ICIISQTvUzyrS9U2fp6jrhDItQs40VIUSS/anxdtX2eg3GL6dtIIK0i1zkt8lae3s0M4
-         30Kw+FMOqh5RSoZQUwlZ2+R78VnptPs0BPJqz+4rOe7BJDlsCgTaPqbUFiLVOnxuha24
-         hM9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710409761; x=1711014561;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ELTnMRNj07Si2m282wRHa22PPeZIfWu9K59oGBotkzg=;
-        b=CKjFTQuZ56B3Y0+FxpkSiElI+sYMIkM5J/UX2RpZbLdhLyCjdzDGBDk7xukuZYTo7J
-         C7Mr6tAaNA0oRPg1B2aaRVrzU4PrdpjbRZidOPdGUbkjHvF0oNjqXltG6G5E0zzvkAjR
-         xPB70576qmSR8rlKUnQopdebylkJHa1Ilxt/B5hJOMISFeADkqwqFnDuCHXA0Fglh4ko
-         9gtUS4OH2jRVRj+w1si/8hS2N1tVtCVP0VKIh4uIHLl89OTH02eiH6/RQGzkCy+I8mq9
-         maSmglqgZDAywYu5ei/uF+91d+PtObue1uns0OUH/TwhYGPzKXsa61SJ/x/7yd9HbB/I
-         3q3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXJYPSRTMfrV44K2ENrEb58yJ5++gxMshQmQdc7+DLlPnXfBq3g4P7KKfYRoSnRp5AzCqsVH3pnmYmUo9fcwj4xqlXpec0IgP+eivJHNTeMtiFisse8yFLwxELJHmqP2/8oQN2I9w2sl0YqiYr6O29Iv1w52OBV3C6+
-X-Gm-Message-State: AOJu0Yw2OBJqmeB21BGQAa5/UKSlsX+1JWiKcUk0AVRs6ql9Lq2bYmCc
-	ny1NsNifJblAFurQKXFskA6zaTeCX0+ZQU/GMk4uknni+L90JQgL
-X-Google-Smtp-Source: AGHT+IFGSkKBNp6XDNjvqwCbD6chadtsBwEYrs5a+Y8nrBt+Sp9KboO/Kh9iU9Cj9Irb9hkW+V/cpw==
-X-Received: by 2002:a05:6122:e41:b0:4d4:1766:52b7 with SMTP id bj1-20020a0561220e4100b004d4176652b7mr1090751vkb.15.1710409760654;
-        Thu, 14 Mar 2024 02:49:20 -0700 (PDT)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id gv13-20020a056214262d00b006904c34d5basm201308qvb.64.2024.03.14.02.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 02:49:20 -0700 (PDT)
-Date: Thu, 14 Mar 2024 05:49:19 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: kernel@quicinc.com, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- bpf <bpf@vger.kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>
-Message-ID: <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
-In-Reply-To: <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
-References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
- <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
- <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
- <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
- <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
- <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
- <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
- <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
- <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
-Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
- for userspace tstamp packets
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A47F6BFCE
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710409937; cv=fail; b=pvBEl2R47dFkSdExLhtlfbMGic6DDD8hD9aDYeMfv4OWxI9TrhmLUtWzNgNf21Snms87oumAXpiQ7dJSOsPxfuMh9/4sZ5HqJdONM2NU64dKSSdH3OY1V3e5oqI9OPrMrh4LnagisyXeWXJJh0U9Ze4qvyYSKhb++igoSGVp7Vk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710409937; c=relaxed/simple;
+	bh=TiADpdXRhBYvU75+IkARqoTP31RDJzqXQVN5hHGdLJg=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=DK7bV851Gwp1vqvLlcUrgLc2k3WDRCJwBXRfZIXt9sQNcO0wzDwB7mK1+dpwPhY2jtUOH/i+nRWAPD8sB6rnO/Rpju2rty4yhvxN85mbCZ7i9YDcjm+NXRTXQ/Ce2TCS8CU50bC0iYctVxGflrE2EFQqfE4Rwaq+OzQ25ChTI0Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3/MbDwHq; arc=fail smtp.client-ip=40.107.244.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mepyLxc+86xO52DCDwMCaN4TY54EhLo2wfZdW3q++NqtO5n3FFIS4sxdp0P59HnDBjKKMSqW93epSNPJKVHwqnFo3N0sBbNIldiyxJkq1e+XC3x349gvM6RSwU1yoBxNKRPgGwp+NlN4aKd36SUgs12G6Ke+Yh4LYkoDpjqLm+WuWLqplyKmyw6dEx1DDSilCP4QoWIfRnnxkS95CiryYfZsw+wUOPmvmpLQ4zeY6QO1PQOn1yUiXfcSIf8mfr13s5NUlPcHbRH9DKpG6xnoaIS09bBHjJu5xpjxJ5GAJtRUCqwkQ0JPSn6DfkE77VS2f3ceqkpPixFyBYJioF7oCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L/wP5NjbYM9IRfF9aNjYsXQxHvqZc+4eFjr1TYSxBmE=;
+ b=PqtDH5IkJC9TZlwjQ4gMP3XwemzkT5GRyfK8+Mv7RQ1qcbV3TsrU0w7E/7sY51GxN03ntQwU7tjjHSE+vLpXY6yxdtfXkffe7VFR/nyw26SKadhNmXh2oJWjniJRsw/i9mzE79X9YP8nEANPHHEKAeW9h6OLfG+XHYu6PUqkkuLpV2c8Ig5Jvtdp/HjON+5Lv9cw4OdHyNf87vW6tH41a5n4u0BU4me4H7DMB2K54l8+xzMsu/3TOuPAVZBgxWlCJKksWNXh6/OOB+lbher8PiW8bq5CwyaB0MnTN2kklLy7XZGAp/vFj8XHRpg+70Ep2Bfel6SawqVcao/GY+/Txw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L/wP5NjbYM9IRfF9aNjYsXQxHvqZc+4eFjr1TYSxBmE=;
+ b=3/MbDwHq+3xDE3iOBP3lsmNvy5TrJhkEiYRmtkx1sB+H3U8xLMxHF0/0LGBS4oRK3+VQOfxzGAZtndNBsRHifrLPOza6eEV6qeDkMOJpJUH9dwavIAnPVhQrY7qn9M2KnMs1XWkIHOx63/JQzA2KuTZxyx8xcPmkYohUqDfkYhs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
+ by PH0PR12MB8052.namprd12.prod.outlook.com (2603:10b6:510:28b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Thu, 14 Mar
+ 2024 09:52:13 +0000
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033]) by PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033%3]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
+ 09:52:13 +0000
+Message-ID: <32111520-7006-442a-8ff3-83fc9eb02997@amd.com>
+Date: Thu, 14 Mar 2024 15:22:04 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] drm:amdgpu: add firmware information of all IP's
+To: "Sharma, Shashank" <shashank.sharma@amd.com>,
+ Alex Deucher <alexdeucher@gmail.com>, Sunil Khatri <sunil.khatri@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240312124148.257067-1-sunil.khatri@amd.com>
+ <20240312124148.257067-2-sunil.khatri@amd.com>
+ <CADnq5_ON0NfcpmnHKjNYWgxfvfz-J3tgjX92DaaN63iKb+FOZg@mail.gmail.com>
+ <498b87fb-727c-4ea2-9633-6ecbff436eba@amd.com>
+ <0ee30d3b-0dbc-3eb6-a19c-abeb85cbc883@amd.com>
+Content-Language: en-US
+From: "Khatri, Sunil" <sukhatri@amd.com>
+In-Reply-To: <0ee30d3b-0dbc-3eb6-a19c-abeb85cbc883@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0083.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9a::14) To PH7PR12MB5596.namprd12.prod.outlook.com
+ (2603:10b6:510:136::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Martin KaFai Lau wrote:
-> On 3/13/24 2:40 PM, Willem de Bruijn wrote:
-> > Abhishek Chauhan (ABC) wrote:
-> >>
-> >>
-> >> On 3/13/2024 2:01 PM, Martin KaFai Lau wrote:
-> >>> On 3/13/24 12:36 PM, Willem de Bruijn wrote:
-> >>>> Martin KaFai Lau wrote:
-> >>>>> On 3/13/24 1:52 AM, Willem de Bruijn wrote:
-> >>>>>> Martin KaFai Lau wrote:
-> >>>>>>> On 3/1/24 12:13 PM, Abhishek Chauhan wrote:
-> >>>>>>>> Bridge driver today has no support to forward the userspace ti=
-mestamp
-> >>>>>>>> packets and ends up resetting the timestamp. ETF qdisc checks =
-the
-> >>>>>>>> packet coming from userspace and encounters to be 0 thereby dr=
-opping
-> >>>>>>>> time sensitive packets. These changes will allow userspace tim=
-estamps
-> >>>>>>>> packets to be forwarded from the bridge to NIC drivers.
-> >>>>>>>>
-> >>>>>>>> Setting the same bit (mono_delivery_time) to avoid dropping of=
-
-> >>>>>>>> userspace tstamp packets in the forwarding path.
-> >>>>>>>>
-> >>>>>>>> Existing functionality of mono_delivery_time remains unaltered=
- here,
-> >>>>>>>> instead just extended with userspace tstamp support for bridge=
-
-> >>>>>>>> forwarding path.
-> >>>>>>>
-> >>>>>>> The patch currently broke the bpf selftest test_tc_dtime:
-> >>>>>>> https://github.com/kernel-patches/bpf/actions/runs/8242487344/j=
-ob/22541746675
-> >>>>>>>
-> >>>>>>> In particular, there is a uapi field __sk_buff->tstamp_type whi=
-ch currently has
-> >>>>>>> BPF_SKB_TSTAMP_DELIVERY_MONO to mean skb->tstamp has the MONO "=
-delivery" time.
-> >>>>>>> BPF_SKB_TSTAMP_UNSPEC means everything else (this could be a rx=
- timestamp at
-> >>>>>>> ingress or a delivery time set by user space).
-> >>>>>>>
-> >>>>>>> __sk_buff->tstamp_type depends on skb->mono_delivery_time which=
- does not
-> >>>>>>> necessarily mean mono after this patch. I thought about fixing =
-it on the bpf
-> >>>>>>> side such that reading __sk_buff->tstamp_type only returns
-> >>>>>>> BPF_SKB_TSTAMP_DELIVERY_MONO when the skb->mono_delivery_time i=
-s set and skb->sk
-> >>>>>>> is IPPROTO_TCP. However, it won't work because of bpf_skb_set_t=
-stamp().
-> >>>>>>>
-> >>>>>>> There is a bpf helper, bpf_skb_set_tstamp(skb, tstamp,
-> >>>>>>> BPF_SKB_TSTAMP_DELIVERY_MONO). This helper changes both the skb=
-->tstamp and the
-> >>>>>>> skb->mono_delivery_time. The expectation is this could change s=
-kb->tstamp in the
-> >>>>>>> ingress skb and redirect to egress sch_fq. It could also set a =
-mono time to
-> >>>>>>> skb->tstamp where the udp sk->sk_clockid may not be necessary i=
-n mono and then
-> >>>>>>> bpf_redirect to egress sch_fq. When bpf_skb_set_tstamp(skb, tst=
-amp,
-> >>>>>>> BPF_SKB_TSTAMP_DELIVERY_MONO) succeeds, reading __sk_buff->tsta=
-mp_type expects
-> >>>>>>> BPF_SKB_TSTAMP_DELIVERY_MONO also.
-> >>>>>>>
-> >>>>>>> I ran out of idea to solve this uapi breakage.
-> >>>>>>>
-> >>>>>>> I am afraid it may need to go back to v1 idea and use another b=
-it
-> >>>>>>> (user_delivery_time) in the skb.
-> >>>>>>
-> >>>>>> Is the only conflict when bpf_skb_set_tstamp is called for an sk=
-b from
-> >>>>>> a socket with sk_clockid set (and thus SO_TXTIME called)?
-> >>>>>
-> >>>>> Right, because skb->mono_delivery_time does not mean skb->tstamp =
-is mono now and
-> >>>>> its interpretation depends on skb->sk->sk_clockid.
-> >>>>>
-> >>>>>> Interpreting skb->tstamp as mono if skb->mono_delivery_time is s=
-et and
-> >>>>>> skb->sk is NULL is fine. This is the ingress to egress redirect =
-case.
-> >>>>>
-> >>>>> skb->sk =3D=3D NULL is fine. I tried something like this in
-> >>>>> bpf_convert_tstamp_type_read() for reading __sk_buff->tstamp_type=
-:
-> >>>>>
-> >>>>> __sk_buff->tstamp_type is BPF_SKB_TSTAMP_DELIVERY_MONO when:
-> >>>>>
-> >>>>>  =C2=A0=C2=A0=C2=A0=C2=A0skb->mono_delivery_time =3D=3D 1 &&
-> >>>>>  =C2=A0=C2=A0=C2=A0=C2=A0(!skb->sk ||
-> >>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 !sk_fullsock(skb->sk) /* tcp tw or req =
-sk */ ||
-> >>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 skb->sk->sk_protocol =3D=3D IPPROTO_TCP=
-)
-> >>>>>
-> >>>>> Not a small bpf instruction addition to bpf_convert_tstamp_type_r=
-ead() but doable.
-> >>>>>
-> >>>>>>
-> >>>>>> I don't see an immediate use for this BPF function on egress whe=
-re it
-> >>>>>> would overwrite an SO_TXTIME timestamp and now skb->tstamp is mo=
-no,
-> >>>>>> but skb->sk !=3D NULL and skb->sk->sk_clockid !=3D CLOCK_MONOTON=
-IC.
-> >>>>>
-> >>>>> The bpf prog may act as a traffic shaper that limits the bandwidt=
-h usage of all
-> >>>>> outgoing packets (tcp/udp/...) by setting the mono EDT in skb->ts=
-tamp before
-> >>>>> sending to the sch_fq.
-> >>>>>
-> >>>>> I currently also don't have a use case for skb->sk->sk_clockid !=3D=
-
-> >>>>> CLOCK_MONOTONIC. However, it is something that bpf_skb_set_tstamp=
-() can do now
-> >>>>> before queuing to sch_fq.
-> >>>>>
-> >>>>> The container (in netns + veth) may use other sk_clockid/qdisc (e=
-g. sch_etf)
-> >>>>> setup and the non mono skb->tstamp is not cleared now during dev_=
-forward_skb()
-> >>>>> between the veth pair.
-> >>>>>
-> >>>>>>
-> >>>>>> Perhaps bpf_skb_set_tstamp() can just fail if another delivery t=
-ime is
-> >>>>>> already explicitly programmed?
-> >>>>>
-> >>>>> This will change the existing bpf_skb_set_tstamp() behavior, so p=
-robably not
-> >>>>> acceptable.
-> >>>>>
-> >>>>>>
-> >>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb->sk &&
-> >>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sock_flag(sk, SOCK_TXTIME) &&
-> >>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb->sk->sk_clockid !=3D CLOCK_M=
-ONOTONIC
-> >>>>>
-> >>>>>> Either that, or unset SOCK_TXTIME to make sk_clockid undefined a=
-nd
-> >>>>>> fall back on interpreting as monotonic.
-> >>>>>
-> >>>>> Change sk->sk_flags in tc bpf prog? hmm... I am not sure this wil=
-l work well also.
-> >>>>>
-> >>>>> sock_valbool_flag(SOCK_TXTIME) should require a lock_sock() to ma=
-ke changes. The
-> >>>>> tc bpf prog cannot take the lock_sock, so bpf_skb_set_tstamp() cu=
-rrently only
-> >>>>> changes skb and does not change skb->sk.
-> >>>>>
-> >>>>> I think changing sock_valbool_flag(SOCK_TXTIME) will also have a =
-new user space
-> >>>>> visible side effect. The sendmsg for cmsg with SCM_TXTIME will st=
-art failing
-> >>>>> from looking at __sock_cmsg_send().
-> >>>>>
-> >>>>> There may be a short period of disconnect between what is in sk->=
-sk_flags and
-> >>>>> what is set in skb->tstamp. e.g. what if user space does setsocko=
-pt(SO_TXTIME)
-> >>>>> again after skb->tstamp is set by bpf. This could be considered a=
- small glitch
-> >>>>> for some amount of skb(s) until the user space settled on setsock=
-opt(SO_TXTIME).
-> >>>>>
-> >>>>> I think all this is crying for another bit in skb to mean user_de=
-livery_time
-> >>>>> (skb->tstamp depends on skb->sk->sk_clockid) while mono_delivery_=
-time is the
-> >>>>> mono time either set by kernel-tcp or bpf.
-> >>>>
-> >>>> It does sound like the approach with least side effects.
-> >>>>
-> >>>> If we're going to increase to two bits per skb, it's perhaps
-> >>>> better to just encode the (selected supported) CLOCK_ type, rather=
-
-> >>>> than only supporting clockid through skb->sk->sk_clockid.
-> >>>
-> >>> Good idea. May be starting with mono and tai (Abishek's use case?),=
- only forward these two clocks and reset the skb->tstamp for others.
-> >>>
-> >>>>
-> >>>> This BPF function is the analogue to SO_TXTIME. It is clearly
-> >>>> extensible to additional BPF_SKB_TSTAMP_DELIVERY_.. types. To
-> >>>> work with sch_etf, say.
-> >>>
-> >>> Yes, if there are bits in skb to describe the clock in the skb->tst=
-amp, BPF_SKB_TSTAMP_DELIVERY_ can be extended to match it. It will be eas=
-ier if the values in the skb bits is the same as the BPF_SKB_TSTAMP_DELIV=
-ERY_*.
-> >>>
-> >>> The bpf_convert_tstamp_*() and the bpf_skb_set_tstamp helper will n=
-eed changes to include the consideration of these two bits. I think we ha=
-ve mostly settled with the approach (thanks for the discussion!). Abhishe=
-k, not sure how much can be reused from this patch for the two bits appor=
-ach, do you want to revert the current patch first and then start from cl=
-ean?
-> >>>
-> >> Yes , I think since we have concluded the two bit .(Thanks for discu=
-ssion again, Martin and Willem)
-> >>
-> >> Here is what i will do from myside
-> >> 1. Revert the v4 patch :-  net: Re-use and set mono_delivery_time bi=
-t for userspace tstamp packets
-> >> 2. Keep mono_delivery_time as ease
-> >> 3. Add user_delivery_time as a new bitfield
-> >> 4. Add BPF_SKB_TSTAMP_DELIVERY_TAI in the bpf.h for etf support
-> >> 5. do not reset the time if either mono_delivery_time or user_delive=
-ry_time is set.
-> >>
-> >> Let me know if i have covered all the design details or add if i mis=
-sed anything.
-> > =
-
-> > Thanks for revising this.
-> > =
-
-> > No need to add the BPF part here.
-> > =
-
-> > I was mistaken that we can encode the clock_id in two skb bits.
-> > SO_TXTIME allows essentially all CLOCK_...
-> =
-
-> The two bits could potentially only encode the delivery time that is al=
-lowed to =
-
-> be forwarded without reset. 0 could mean refering back to sk_clockid an=
-d don't =
-
-> forward. The final consumer of the forwarded skb->tstamp is the qdisc w=
-hich =
-
-> currently only has mono and tai.
-
-So the followinng meaning of bit pair
-{ skb->mono_delivery_time, skb->user_delivery_time } ?
- =
-
-- { 0, 0 } legacy skb->tstamp: realtime on rx
-- { 1, 0 } skb->tstamp is mono: existing behavior of mono_delivery_time b=
-it
-- { 0, 1 } skb->tstamp is tai: analogous to mono case
-- { 1, 1 } skb->tstamp defined by skb->sk->sk_clockid
-
-> The concern is more on future extension to =
-
-> allow more clock type to be forwarded?
-
-Right. Not because I have an immediate use for them. Only because
-SO_TXTIME already allows configuring other values for sk_clockid.
-  =
-
-> I don't have a use case for having BPF_SKB_TSTAMP_DELIVERY_TAI but curi=
-ous on =
-
-> how other clock types are used now.
-> =
-
-> Thanks.
-> =
-
-> > =
-
-> > So indeed we will need a user_delivery_time bit and use that to look
-> > at sk_clockid.
-> =
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|PH0PR12MB8052:EE_
+X-MS-Office365-Filtering-Correlation-Id: 43fc916b-c7bd-4dd9-218b-08dc440c6c43
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	kXUptS9z2OpzKO8YBKCGYgP6qvSGqycYRNrB4p5/LOIJRHTVxPj4nK7n1dqv2rg05Zg3RyNIZYutQgxz4gDoG78UTftVZY1steFGPtAaNgBtXAmIeZJWTJsYbIsQom5+wG8uJ8w6p8srTz7NHqcj5Fnj7fJbccFzjN/xBHqQGJKBp/3ZczHzX0zaqEOHto3Ln4j6fMvpEGPssekgNJ/q2T6gsiAHyDymuFKsxeKM/D8bxCsRHdaA3aMLqhJcG7calwVfd3n03x39zkQwpzeHa1tw9EBh4khkeYH0xtsu9Syw7EWGJroegw6YsdV9XQUA2ul8At6KAXYsatUu6ndQa/b2N9BqxzylPRPCQeJLeInnD4DFu3CHH0ZM1MY542w9aq9P0SwlPdR45GH/D4p/JmI9brPicH4ch8ZCs7fosg8BmPiMQ+GnJqDIZgLn9kGDZ5UFlBVSJYFzkGzUp55BfxEw2eQ2/dvY/Y6k2evbwxXVy6/9FTa1Cdy8ZzuLcZVuwuY+4yOvznAktS8azqzT7yYLd9EXyLn6kacpcnViQCk3jpTk2nb1F+9XY9EoCd96kI4mN8BeDA0ZbzPf3+C5dMV5RKsJXjXu9pmCEZvSAuCw31w6UZyorNiH0GZPfKclUlfE69CmjQW0rVVH1l0w2GgP1CfLzaBQnJoDOaVqPNY=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZGNoaVZSQU1EM0cxcVN4TkFmcnlNaFZUQ2V3T0tPY1ZHSjhYUVJnRjB6TDVx?=
+ =?utf-8?B?QkFyc2FLRG1WeHhsWGViQ0Izcjh5bHA1dnJ5Nzc4Z2ZRM2tKTFpxa0ZlZFhm?=
+ =?utf-8?B?eitBNkhjMmxLK1YycVdXc2FpSWpMNGlSVGRSYjgvZ3MzY0FmS2ZjdHptbms2?=
+ =?utf-8?B?akxlVVBoWm1DM0pPYzRMNyt1djU2YUoyNElpdVk4eDdwdDl5UlZvamg4L1dw?=
+ =?utf-8?B?aWxaYnljVUFrWEsrOGNLSXpleVdockhJOWJ2YzNLNkpISmpmTmNrSVFHck1M?=
+ =?utf-8?B?Yk00dlpxakllUFZYRFUzOEdMUWtBbzc3K1hqYUUzamNOWGcvWlNuY1ZPSUxz?=
+ =?utf-8?B?Ny9KUXFsYTNHQWlZZGJoOTJ3ZkRpSUJWT0RkWXpUSldXQyswOHhwRWUyYXR5?=
+ =?utf-8?B?T0t1THhUYnhxNTVyQnVSL1hPL0krTTV2TGFBTGVEaXhkTzN3WVpDcktTNG9F?=
+ =?utf-8?B?L0pienlTckNQWWhqcHZHQ09jd1R3ZlV2TWYxSXJhVjROVDM3NzMvTnd2VjF1?=
+ =?utf-8?B?RDU4QWN4ckNrdytnNHpSbzNJcDBneFdrRnB4Tkc0bDFZbmszTG9YdncrcUhG?=
+ =?utf-8?B?K2ZRM2wwQ2dpeW5aSHhuUUpZblN6Z1NRTGVYd0VIeEFsaFVHVkJiaXFyeC9t?=
+ =?utf-8?B?ejRIN2dDTVQzWDI5ZjduN0VqeUhMT2NtU1I3Y3JLUkd0SnVxbGNaSGdBRGtu?=
+ =?utf-8?B?VnlLNm5lNy9SNitEcFdhWllOY3JkVVRMdFg4Nmc3Q1R3ODJSNG9oUG0wY1k3?=
+ =?utf-8?B?RDZWc1VWc1g4TUZRQTJ0TlBuQ2pHOVQ0REJSRStTbGFmaE4yVHhGblM2U3FH?=
+ =?utf-8?B?TUpNc2UxQlFHSVRZejFYZ0pyUXVlM3pZNVVCWjVQcm8vTHM2bTd5eW9TZTRW?=
+ =?utf-8?B?c0hyRVFmc2UxVWtEMXVjNGZSRWRDcmlhZDhYVUtqd29mU1JuTHZDVkRXUm1R?=
+ =?utf-8?B?WE41dGozWlVUazU3cmR3QUd3WC9qRi9wdFdjQmM4VlFiV2IxL0FZeS9sUG1Z?=
+ =?utf-8?B?WVJtYTh3a1RxZWVzWkhxbVFXYmtxZmxjVTB2eGhaSTBRamlqeXFKSkFjWEFj?=
+ =?utf-8?B?RkJnSjVQQkJQbGFKTnJQSFR3dW5oV0RwSENwL3dUcnpwcnV3VDBCSUgwcU9y?=
+ =?utf-8?B?WnBxQVpQQ1pZZ1YvZVVsZHYvQUoxbG92dUloNTZlMi9Pbm96aDlGajNqTVN1?=
+ =?utf-8?B?TmdyRXp5cDFIM0N2TmI0bWFqaGRRR1VNYlBYam5kNWk0SVVxNEkvRnQvY3V6?=
+ =?utf-8?B?bGNXSHNTUkdsem9BOFhBREpGVitxNXVIWG1ZcW9HRGNvWkdxU1dpYWZYYkxx?=
+ =?utf-8?B?d25jalorZGVKdXpyMk4rM3lxMThXYkU0Y3FBck5PWFBUM3BnNThsRk41U1lm?=
+ =?utf-8?B?TUJ0dWJQZmE5ejlxcGRZdGs2UGYzOXVKNVhaL2NTLzFQQ3YycEZBeFEwWS9T?=
+ =?utf-8?B?bENmUmFGZ2RRdHpzWjhQU1BKdmpXc0VDbFp4akN3WG1ldktlemlWWjAzNENx?=
+ =?utf-8?B?U1hPb2d3aklBa0hzODkySkRCTU5lblVYdkRTMzhpUWo0WDNXUW10dXcrbG5W?=
+ =?utf-8?B?TVZWbk5PR0trMWZhbUpmaVBPT1EvMjRRSDAyUkVqM3IxWm1hVkZicEpFakVN?=
+ =?utf-8?B?UDZscTA4UXhGVFVVNVdlZVdSc25iN2VYREZ4bmIxR2ZmV09EQWxJTXBoMmlF?=
+ =?utf-8?B?NmZwQmZEYVkxRzZ1OXBsaWJOaFJoV2tlTEV4d2pic1E4WlM3dTlycHNoMGFR?=
+ =?utf-8?B?WDVLUnVLUDZKOEVXYjJJRmY3UC9Ydy81SzA1bWtid1dpbDgvenkrMWFxN1M3?=
+ =?utf-8?B?Z0VaNXo0WmlLdFdTZUdUWUNiUHhqQzRTSGNwQWNEVVovMEcySWt2K1JLdnkw?=
+ =?utf-8?B?VWJMMVRHekUxcGwwelQxMkpQVmVZTmpnL0swZXZJWk9mR3pBNGF4cGFyVW5H?=
+ =?utf-8?B?R0NSaDBFd29OMk0wMG9ScGJvKzRDM3UzaTZORHFTbzhuczZocmpTbTJXZldH?=
+ =?utf-8?B?R004ZVFNOGxtWnNqRFZUUnJnL1I0eU1BSndzY3RLR0Q2M0FaR2R1Wms5NTMy?=
+ =?utf-8?B?QmVHRW4renVJNXFjcjVPd3JHWm9zK0gvSk83anJMbXN6ekdOZit3TmMxZk1t?=
+ =?utf-8?Q?7ygVYIzFJIZrZVeJm4Nl5pXki?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43fc916b-c7bd-4dd9-218b-08dc440c6c43
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 09:52:12.9902
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xfYmv720lUWeTkDEMEOcqljIHziJwqUxZP26Z28RefjcV9eAQZjGBc1yL5rGqpIccav77vW6aKcdgSRWHPy34g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8052
 
 
+On 3/14/2024 11:40 AM, Sharma, Shashank wrote:
+>
+> On 14/03/2024 06:58, Khatri, Sunil wrote:
+>>
+>> On 3/14/2024 2:06 AM, Alex Deucher wrote:
+>>> On Tue, Mar 12, 2024 at 8:42 AM Sunil Khatri <sunil.khatri@amd.com> 
+>>> wrote:
+>>>> Add firmware version information of each
+>>>> IP and each instance where applicable.
+>>>>
+>>> Is there a way we can share some common code with devcoredump,
+>>> debugfs, and the info IOCTL?  All three places need to query this
+>>> information and the same logic is repeated in each case.
+>>
+>> Hello Alex,
+>>
+>> Yes you re absolutely right the same information is being retrieved 
+>> again as done in debugfs. I can reorganize the code so same function 
+>> could be used by debugfs and devcoredump but this is exactly what i 
+>> tried to avoid here. I did try to use minimum functionality in 
+>> devcoredump without shuffling a lot of code here and there.
+>>
+>> Also our devcoredump is implemented in amdgpu_reset.c and not all the 
+>> information is available here and there we might have to include lot 
+>> of header and cross functions in amdgpu_reset until we want a 
+>> dedicated file for devcoredump.
+>
+>
+> I think Alex is suggesting to have one common backend to generate all 
+> the core debug info, and then different wrapper functions which can 
+> pack this raw info into the packets aligned with respective infra like 
+> devcore/debugfs/info IOCTL, which seems like a good idea to me.
+>
+> If you think you need a new file for this backend it should be fine.
+My suggestion was on same lines that if we want to use the same infra to 
+access information from different parts of the code then we need to 
+reorganize. And at same time since there is quite some data we are 
+planning to add in devcoredump so i recommend to have a dedicated .c/.h 
+instead of using amdgpu_reset.c so a clean include is easy to maintain.
 
+Once Alex confirms it i can start working on design and what all 
+information we need on this.
+
+Regards
+Sunil
+
+>
+> something like:
+>
+> amdgpu_debug_core.c::
+>
+> struct amdgpu_core_debug_info {
+>
+> /* Superset of all the info you are collecting from HW */
+>
+> };
+>
+> - amdgpu_debug_generate_core_info
+>
+> {
+>
+> /* This function collects the core debug info from HW and saves in 
+> amdgpu_core_debug_info,
+>
+>   we can update this periodically regardless of a request */
+>
+> }
+>
+> and then:
+>
+> devcore_info *amdgpu_debug_pack_for_devcore(core_debug_info)
+>
+> {
+>
+> /* convert core debug info into devcore aligned format/data */
+>
+> }
+>
+> ioctl_info *amdgpu_debug_pack_for_info_ioctl(core_debug_info)
+>
+> {
+>
+> /* convert core debug info into info IOCTL aligned format/data */
+>
+> }
+>
+> debugfs_info *amdgpu_debug_pack_for_debugfs(core_debug_info)
+>
+> {
+>
+> /* convert core debug info into debugfs aligned format/data */
+>
+> }
+>
+> - Shashank
+>
+>>
+>>
+>>
+>> Info IOCTL does have a lot of information which also is in pipeline 
+>> to be dumped but this if we want to reuse the functionality of IOCTL 
+>> we need to reorganize a lot of code.
+>>
+>> If that is the need of the hour i could work on that. Please let me 
+>> know.
+>>
+>> This is my suggestion if it makes sense:
+>>
+>> 1. If we want to reuse a lot of functionality then we need to 
+>> modularize some of the functions further so they could be consumed 
+>> directly by devcoredump.
+>> 2. We should also have a dedicated file for devcoredump.c/.h so its 
+>> easy to include headers of needed functionality cleanly and easy to 
+>> expand devcoredump.
+>> 3. based on the priority and importance of this task we can add 
+>> information else some repetition is a real possibility.
+>>
+>>>
+>>> Alex
+>>>
+>>>
+>>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>>>> ---
+>>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 122 
+>>>> ++++++++++++++++++++++
+>>>>   1 file changed, 122 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c 
+>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>>>> index 611fdb90a1fc..78ddc58aef67 100644
+>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>>>> @@ -168,6 +168,123 @@ void amdgpu_coredump(struct amdgpu_device 
+>>>> *adev, bool vram_lost,
+>>>>   {
+>>>>   }
+>>>>   #else
+>>>> +static void amdgpu_devcoredump_fw_info(struct amdgpu_device *adev, 
+>>>> struct drm_printer *p)
+>>>> +{
+>>>> +       uint32_t version;
+>>>> +       uint32_t feature;
+>>>> +       uint8_t smu_program, smu_major, smu_minor, smu_debug;
+>>>> +
+>>>> +       drm_printf(p, "VCE feature version: %u, fw version: 0x%08x\n",
+>>>> +                  adev->vce.fb_version, adev->vce.fw_version);
+>>>> +       drm_printf(p, "UVD feature version: %u, fw version: 0x%08x\n",
+>>>> +                  0, adev->uvd.fw_version);
+>>>> +       drm_printf(p, "GMC feature version: %u, fw version: 0x%08x\n",
+>>>> +                  0, adev->gmc.fw_version);
+>>>> +       drm_printf(p, "ME feature version: %u, fw version: 0x%08x\n",
+>>>> +                  adev->gfx.me_feature_version, 
+>>>> adev->gfx.me_fw_version);
+>>>> +       drm_printf(p, "PFP feature version: %u, fw version: 0x%08x\n",
+>>>> +                  adev->gfx.pfp_feature_version, 
+>>>> adev->gfx.pfp_fw_version);
+>>>> +       drm_printf(p, "CE feature version: %u, fw version: 0x%08x\n",
+>>>> +                  adev->gfx.ce_feature_version, 
+>>>> adev->gfx.ce_fw_version);
+>>>> +       drm_printf(p, "RLC feature version: %u, fw version: 0x%08x\n",
+>>>> +                  adev->gfx.rlc_feature_version, 
+>>>> adev->gfx.rlc_fw_version);
+>>>> +
+>>>> +       drm_printf(p, "RLC SRLC feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  adev->gfx.rlc_srlc_feature_version,
+>>>> +                  adev->gfx.rlc_srlc_fw_version);
+>>>> +       drm_printf(p, "RLC SRLG feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  adev->gfx.rlc_srlg_feature_version,
+>>>> +                  adev->gfx.rlc_srlg_fw_version);
+>>>> +       drm_printf(p, "RLC SRLS feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  adev->gfx.rlc_srls_feature_version,
+>>>> +                  adev->gfx.rlc_srls_fw_version);
+>>>> +       drm_printf(p, "RLCP feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  adev->gfx.rlcp_ucode_feature_version,
+>>>> +                  adev->gfx.rlcp_ucode_version);
+>>>> +       drm_printf(p, "RLCV feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  adev->gfx.rlcv_ucode_feature_version,
+>>>> +                  adev->gfx.rlcv_ucode_version);
+>>>> +       drm_printf(p, "MEC feature version: %u, fw version: 0x%08x\n",
+>>>> +                  adev->gfx.mec_feature_version,
+>>>> +                  adev->gfx.mec_fw_version);
+>>>> +
+>>>> +       if (adev->gfx.mec2_fw)
+>>>> +               drm_printf(p,
+>>>> +                          "MEC2 feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> + adev->gfx.mec2_feature_version,
+>>>> +                          adev->gfx.mec2_fw_version);
+>>>> +
+>>>> +       drm_printf(p, "IMU feature version: %u, fw version: 0x%08x\n",
+>>>> +                  0, adev->gfx.imu_fw_version);
+>>>> +       drm_printf(p, "PSP SOS feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  adev->psp.sos.feature_version,
+>>>> +                  adev->psp.sos.fw_version);
+>>>> +       drm_printf(p, "PSP ASD feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> + adev->psp.asd_context.bin_desc.feature_version,
+>>>> + adev->psp.asd_context.bin_desc.fw_version);
+>>>> +
+>>>> +       drm_printf(p, "TA XGMI feature version: 0x%08x, fw version: 
+>>>> 0x%08x\n",
+>>>> + adev->psp.xgmi_context.context.bin_desc.feature_version,
+>>>> + adev->psp.xgmi_context.context.bin_desc.fw_version);
+>>>> +       drm_printf(p, "TA RAS feature version: 0x%08x, fw version: 
+>>>> 0x%08x\n",
+>>>> + adev->psp.ras_context.context.bin_desc.feature_version,
+>>>> + adev->psp.ras_context.context.bin_desc.fw_version);
+>>>> +       drm_printf(p, "TA HDCP feature version: 0x%08x, fw version: 
+>>>> 0x%08x\n",
+>>>> + adev->psp.hdcp_context.context.bin_desc.feature_version,
+>>>> + adev->psp.hdcp_context.context.bin_desc.fw_version);
+>>>> +       drm_printf(p, "TA DTM feature version: 0x%08x, fw version: 
+>>>> 0x%08x\n",
+>>>> + adev->psp.dtm_context.context.bin_desc.feature_version,
+>>>> + adev->psp.dtm_context.context.bin_desc.fw_version);
+>>>> +       drm_printf(p, "TA RAP feature version: 0x%08x, fw version: 
+>>>> 0x%08x\n",
+>>>> + adev->psp.rap_context.context.bin_desc.feature_version,
+>>>> + adev->psp.rap_context.context.bin_desc.fw_version);
+>>>> +       drm_printf(p, "TA SECURE DISPLAY feature version: 0x%08x, 
+>>>> fw version: 0x%08x\n",
+>>>> + adev->psp.securedisplay_context.context.bin_desc.feature_version,
+>>>> + adev->psp.securedisplay_context.context.bin_desc.fw_version);
+>>>> +
+>>>> +       /* SMC firmware */
+>>>> +       version = adev->pm.fw_version;
+>>>> +
+>>>> +       smu_program = (version >> 24) & 0xff;
+>>>> +       smu_major = (version >> 16) & 0xff;
+>>>> +       smu_minor = (version >> 8) & 0xff;
+>>>> +       smu_debug = (version >> 0) & 0xff;
+>>>> +       drm_printf(p, "SMC feature version: %u, program: %d, fw 
+>>>> version: 0x%08x (%d.%d.%d)\n",
+>>>> +                  0, smu_program, version, smu_major, smu_minor, 
+>>>> smu_debug);
+>>>> +
+>>>> +       /* SDMA firmware */
+>>>> +       for (int i = 0; i < adev->sdma.num_instances; i++) {
+>>>> +               drm_printf(p, "SDMA%d feature version: %u, firmware 
+>>>> version: 0x%08x\n",
+>>>> +                          i, adev->sdma.instance[i].feature_version,
+>>>> + adev->sdma.instance[i].fw_version);
+>>>> +       }
+>>>> +
+>>>> +       drm_printf(p, "VCN feature version: %u, fw version: 0x%08x\n",
+>>>> +                  0, adev->vcn.fw_version);
+>>>> +       drm_printf(p, "DMCU feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  0, adev->dm.dmcu_fw_version);
+>>>> +       drm_printf(p, "DMCUB feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  0, adev->dm.dmcub_fw_version);
+>>>> +       drm_printf(p, "PSP TOC feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  adev->psp.toc.feature_version, 
+>>>> adev->psp.toc.fw_version);
+>>>> +
+>>>> +       version = adev->mes.kiq_version & AMDGPU_MES_VERSION_MASK;
+>>>> +       feature = (adev->mes.kiq_version & 
+>>>> AMDGPU_MES_FEAT_VERSION_MASK)
+>>>> +                                       >> 
+>>>> AMDGPU_MES_FEAT_VERSION_SHIFT;
+>>>> +       drm_printf(p, "MES_KIQ feature version: %u, fw version: 
+>>>> 0x%08x\n",
+>>>> +                  feature, version);
+>>>> +
+>>>> +       version = adev->mes.sched_version & AMDGPU_MES_VERSION_MASK;
+>>>> +       feature = (adev->mes.sched_version & 
+>>>> AMDGPU_MES_FEAT_VERSION_MASK)
+>>>> +                                       >> 
+>>>> AMDGPU_MES_FEAT_VERSION_SHIFT;
+>>>> +       drm_printf(p, "MES feature version: %u, fw version: 0x%08x\n",
+>>>> +                  feature, version);
+>>>> +
+>>>> +       drm_printf(p, "VPE feature version: %u, fw version: 0x%08x\n",
+>>>> +                  adev->vpe.feature_version, adev->vpe.fw_version);
+>>>> +
+>>>> +}
+>>>> +
+>>>>   static ssize_t
+>>>>   amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
+>>>>                          void *data, size_t datalen)
+>>>> @@ -215,6 +332,11 @@ amdgpu_devcoredump_read(char *buffer, loff_t 
+>>>> offset, size_t count,
+>>>>                  }
+>>>>          }
+>>>>
+>>>> +       if (coredump->adev) {
+>>>> +               drm_printf(&p, "IP Firmwares\n");
+>>>> + amdgpu_devcoredump_fw_info(coredump->adev, &p);
+>>>> +       }
+>>>> +
+>>>>          if (coredump->ring) {
+>>>>                  drm_printf(&p, "\nRing timed out details\n");
+>>>>                  drm_printf(&p, "IP Type: %d Ring Name: %s\n",
+>>>> -- 
+>>>> 2.34.1
+>>>>
 
