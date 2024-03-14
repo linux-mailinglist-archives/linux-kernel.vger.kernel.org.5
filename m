@@ -1,235 +1,198 @@
-Return-Path: <linux-kernel+bounces-103105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE9287BB16
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:15:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 749F787BB1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:16:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3595C1F22EEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:15:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01E561F23310
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0712E6E614;
-	Thu, 14 Mar 2024 10:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645B66E61E;
+	Thu, 14 Mar 2024 10:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="IlyQDSEM"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2041.outbound.protection.outlook.com [40.107.93.41])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fBYRvSHH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4C896CDD6;
-	Thu, 14 Mar 2024 10:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710411320; cv=fail; b=F1Kb9n1iMv50E1Uc2nnYn/wUIgKr6BU26+v4w0zoVbd6ORmdbSgZVITfC0HyIsQekCQhKJ9s4VlJY86wOATuRhIx28aNWmvNDsdkufeb331dfPu7SZoEd1ZHHXFWmiKPyv/en6igHhw8RDC1+sjzNPyh0hp+7meukzX/kLa5VMM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710411320; c=relaxed/simple;
-	bh=J6jbKnki669PiEzctZd9/2zLXUxqXXgqWlHpQJVLzCc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LWgQUx0peuqNmhLoP+MNY90DDHZS5TBUoolngzxyhROMy7V8ryGPlsvEbENKc+SkIPZy4DP/pOr74xTrxDHFu6sdIFSeLJGTUp/z/trgEVsim/npYoCgW++JbYO8rohrkREMNPP/HwbGauwVbLWAY27W94Uc64r1YmBSHYlAK8k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=IlyQDSEM; arc=fail smtp.client-ip=40.107.93.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jzi4bi+XO1vv0iCFpsrpkvyadva9QNXY6jlKXcOgqxDeg5h6Gq16haoyJfT05eKdXKzmCq6jyc/AY0cTC2QwbCHSxWnUiMOvF41P+IMMo6TZYV/oNNu6sMSxud2NaAOb3Lnk2lpZK+VgO48lzVSxfthmOAcbEQ6KI25f+AIBwZAxyyVupG72/ohhQQxXAQrMIkVgwTSryh3m4n1HDfJv5lWJunzX3yPo5U4Ckx3bOsqgpN/DOVLzMCW9yUoWKwpuvqQ97Awa2Ss7IC8U+nI8XP0bFbxH9J5k13jpcojnbCaWrqq3hXR6o/pRL5m4HKYWCCuE5Y7SwvXiJGWX/RYFvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A2npNS6sBt6md1UnXIX/MtsXBwSVhoQ7VDuj7jfhiq8=;
- b=ItCPYKSAVAtYjoWfooCX5DB/akl+LKMi8gESyr17yeoJPZgMn/MDumn+Nw3n2clauweeUxf1lFBdXL6GDzb/kFKWrijAr22mtL5qmvHoOxxDPxEQ9XNBd3CvANA4AYgWi+dJROsdXc6LzEs39R5XAK6NQl2Ksq2ZIy8Uf2/zz0+DH7bDcqHetfvaktGCznNynGvvxYLNkC6N+G3kUQhJBdkLFPAPpajVv88ZOhKiRuvskpA1+JS7vVrkLasNFrK69dXHU631pDppdRjKzhvmvSdUb/+WEiOSiKXoHMejHhHh+lfhpDxPivGc7MHiZQC+C3Wso5jVxQMqQq7koXBIAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A2npNS6sBt6md1UnXIX/MtsXBwSVhoQ7VDuj7jfhiq8=;
- b=IlyQDSEMl0AyRVgEp0Q9xumGzLTL9zxYYkVPHO1ngGqGryv+wu8eC332xBm9apEvPZQv28Q5tZ+Xyfa6M5CMIDN8bBHFvPYPSp7KPyYqR6veq0TyyqSFPYh5P5YqHcTn8NK5L6Q34XxBR0k0ks2UD9cOWhm92Gvoq/h7IaZuHWE=
-Received: from CYYPR12MB8655.namprd12.prod.outlook.com (2603:10b6:930:c4::19)
- by PH7PR12MB7161.namprd12.prod.outlook.com (2603:10b6:510:200::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Thu, 14 Mar
- 2024 10:15:15 +0000
-Received: from CYYPR12MB8655.namprd12.prod.outlook.com
- ([fe80::64d2:3c49:7c63:1749]) by CYYPR12MB8655.namprd12.prod.outlook.com
- ([fe80::64d2:3c49:7c63:1749%4]) with mapi id 15.20.7362.035; Thu, 14 Mar 2024
- 10:15:15 +0000
-From: "Yuan, Perry" <Perry.Yuan@amd.com>
-To: "Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>
-CC: "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, "Limonciello,
- Mario" <Mario.Limonciello@amd.com>, "viresh.kumar@linaro.org"
-	<viresh.kumar@linaro.org>, "Huang, Ray" <Ray.Huang@amd.com>, "Petkov,
- Borislav" <Borislav.Petkov@amd.com>, "Deucher, Alexander"
-	<Alexander.Deucher@amd.com>, "Huang, Shimmer" <Shimmer.Huang@amd.com>, "Du,
- Xiaojian" <Xiaojian.Du@amd.com>, "Meng, Li (Jassmine)" <Li.Meng@amd.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 6/7] cpufreq: amd-pstate: remove legacy set_boost
- callback for passive mode
-Thread-Topic: [PATCH v4 6/7] cpufreq: amd-pstate: remove legacy set_boost
- callback for passive mode
-Thread-Index: AQHadS4eQHEd+FtCq0O58I4g5fFpnrE3BF0AgAABW6A=
-Date: Thu, 14 Mar 2024 10:15:15 +0000
-Message-ID:
- <CYYPR12MB8655EA9E757280E5602B73AE9C292@CYYPR12MB8655.namprd12.prod.outlook.com>
-References: <cover.1710322310.git.perry.yuan@amd.com>
- <c9653c82afd9a11a7d3fa466f60d64d7e457968c.1710322310.git.perry.yuan@amd.com>
- <ZfLMSIptCObdf4pS@BLR-5CG11610CF.amd.com>
-In-Reply-To: <ZfLMSIptCObdf4pS@BLR-5CG11610CF.amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=57ca65f5-4925-4b7a-9363-83b6dc47999e;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-14T10:11:54Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CYYPR12MB8655:EE_|PH7PR12MB7161:EE_
-x-ms-office365-filtering-correlation-id: 282385b5-f78b-4bf5-d093-08dc440fa478
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- FTm/CMIpT5Nnu4Z6M3dH7+V+S0pXooGtS363mjb78IDZ0XZelnS9bAzs5O+DTh7hppdbNQbOC7uVjbk7Ocv7PJ3+XTWkQTZcstqxaqyIzumMjGN4wziRTIszfbH9MZiYtevEH/nKqaE/pYlTdLkTk4lZjAcy56NH6SJERBfQ5rVMiy5f1WiIqtwh/KnAhZ4f+2Jy/xwcVlqhcIk0Izd2eRBmdZF4Q/JOrkI+am1mb2oefVIhvaNefGKiuodgv1L+WpVt25rHGul0n3W+BIRIJE3Q/gbK8o92FH4hrEjevekhNjtpHO9r/1X5lP1qCjqFo4AZy4ezGB5VPoqgLrKo7O30Fy2wer1ZrLzFUNldBNvwVfzi11IpHA31XaTEjzJOOnObQZqKL6zH1Jmp9JpsowGLOPT91qjt0v2o9KU04aD/iupc7xpal7J30EQ8ENkQV5ed20pNXVWZWhbeFXvT22vLKpvTut8qsw96meFt2uAtsi9JpXrAGqIozj729cgJcqNBuQ2UQ9z+PqovwSQXuD44eUlNIvOOs7G5RxSWL+t19thuO4EU/CINnDIaYnT0T7zypkwNkDJNinA0mbZqk8ysefDBX+yZ6K+tB3t3VOZQxnOTqb0m3WoACdx9XsUv/6Pg2Lufwn5tk9DLRPr1TRcbeWUX422TFIX8EwVADQjPS1l+TeNsvB8r6rdK+vPyQtrRx6X2v6zVJOPjIzWXAQuyoecrkbzYlLny8wdZO/c=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8655.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?9o7fiZPWjzb2qo8Mt3Fw+A9JVczRuKpg5pXMrjWv4EtR+VE6Apy1ZQ3aPBCC?=
- =?us-ascii?Q?yEgtMsdz8iqZ4v8h7k9xAGp4nLJdnE1S2ioqpwA/y0TI7FKWUOKYYhGGmCVC?=
- =?us-ascii?Q?U3lrbuTaFDRiHGjiieMKFf1yuAw64LuyI5Qp3VVQTong4SVHHM0uSOWlmRab?=
- =?us-ascii?Q?JYst5NCvWG0qxuz+hxTydVuhx/4xC1RvEr9mcUi5sHnusZyNdK1GCbULRgC+?=
- =?us-ascii?Q?ZM7ZrVi4pcSF6D5kRTyoPeR2PdsfwsdPvPLz8K+0aglTHQpdHUcdb6nrdUFF?=
- =?us-ascii?Q?EvPAXWXlt2DzoWIoFY4c8VbYp2HqcGVmkwPNW+Eue0iWE9zNGEBxBx0HEBAf?=
- =?us-ascii?Q?ixUT6cd+lfN/PvynIGiPVhuA9YITZteUNr1WIC7/bnVfFYqUCpRCVB887v6u?=
- =?us-ascii?Q?F0qfM2+0NV3fByg/+aczLsbJC567+5fJDv2Hnr/311bdCztANf8SIMtWdA5v?=
- =?us-ascii?Q?iTUz6xL5MDTIMTIiRf584iwhyVjTYJqSY+1U8PzWNN0JjwV710H/DOh4AmbD?=
- =?us-ascii?Q?gSQQH9mBEz8yPwR2UbmrjDQrNCB+7afSuPj875WI3/Q+x4dAqtxfftwH8U7G?=
- =?us-ascii?Q?a8n2x1+7iS5mfaHYT7x4io2aISu4VNE9aqgMc1vwfDwb0I5ItdIcYoyJFQhv?=
- =?us-ascii?Q?D72emC5FkdI09l0FQXHYQEkJkK/yzsmICOqCbfU1oPcfWKwjMY0a2DCdsvNC?=
- =?us-ascii?Q?COOTjcNP8HS/9Y5Laiq+lBDwExX3HU1RRYLQFMUo+IJvnB1Aa5eVsAjA/WFJ?=
- =?us-ascii?Q?xdIXB6Zd5llAnv/MVFfo9HCngOVgfv/Ch+bsFE3Dl+Ohcqr1yWw+PVIkmhVh?=
- =?us-ascii?Q?UGNkgWJYgyScSyiPeWPZcabaEPP6m/8zPpFP6/ZIviDj95oXMOGnvc1Pax4t?=
- =?us-ascii?Q?+2hT+c4QTCLQ1PIZHWaSGG2By00viByUcW86VFEKi8DQRcf4gK/j26+E9ZiQ?=
- =?us-ascii?Q?aSywTDorYIuFVddkdMIFyqIrWLRR0zYACAi9CJSCZM0WN3YFVOM71othZT83?=
- =?us-ascii?Q?zwBbWh+S3dlm7gqF+9w7JrpobZSx8tUAGwPlunnlMCor02lfVMIq3PXfBdKS?=
- =?us-ascii?Q?m8YRc75Kb90WJSVlEuYf+eMXV9iMHcYLQ6CzWj9wPMMTvO+QCPvSavIb2Z1z?=
- =?us-ascii?Q?Qys6lZg8gFmouBanLXfM8nJFUbD6C7LqXovkw/Yms0MkQc4plv0diXuQhf+z?=
- =?us-ascii?Q?aaNvURGKOSwwP2/kb7r3Fp911LpxyefxXMYcmfE6DvMhqenTmxFbsPANF6JG?=
- =?us-ascii?Q?mYudKBwLHl0cUno135l9k5qEx4uu9T5dryrSzKULhxrIz/jXmyqeh78ZXvxJ?=
- =?us-ascii?Q?R90p4Ri5l0QoCIEkYJgK9FDfpmnsWiuZj/Ygbb3PyJf27K6gWl+xwLm7YtCG?=
- =?us-ascii?Q?0fDPa+MX69ft1MQihDzsMJ46j49I8c/2dNRxxuwkVrjOl8bMTii3YYFlYTkI?=
- =?us-ascii?Q?Mo+gl/nXYSLt3ugUiUUkpBHPBwLt1Rl1RR5plU7abgDNy8dI/Wko4jedheMg?=
- =?us-ascii?Q?9GW5O+BI67HlLTyL0mwH/930IoVGg0LDUbQGfq5Ed2f2pEwG+jNYrsFkdiPB?=
- =?us-ascii?Q?4LAXCLhKj93jQKvmhco=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954B06F06C
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710411333; cv=none; b=qciqk6dLUmnbbIDBPW7gN8qgRPLqfxgqAscRD2L5X8XjC7MhSndMFYSCp5zB7IPbTuEBJicFiXwR4PHiXT/zAuLoOOrI+fOD2WsUzbTnFtZIdzRqz0KJy3au2qplUC68btpd3fu9LfXYYBiwJ5kai/HWijy+CgC+mBZaqacGeHU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710411333; c=relaxed/simple;
+	bh=ycsW7LzYI2X7GBwi/xPk4fdSIDiJftf7KAKOzrECOFo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=soNBgzUxcaCG59qgUtGD9xZNbjbVA79T/S6h8Pwkot7A2Tmphdkts9GBF/a6vXWuONn0+Cy+NGlSj0WD8aZj3qbWlTRLVN+rx/6sME8klgmfKxRO6C4oxt7/j1CeI/q6AwW0VwU7jTujE0wxHEpwjB7AVeSsOpbMLG6nHbOdp4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fBYRvSHH; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710411330;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t1Uxb+6viRMpNE9ltOLx40J6IZsgLFNrkQ0OvLIySyw=;
+	b=fBYRvSHHduQyqgVDQ+YLPHEK8PBQ3jzIAXxdtnruIvm4tgNzZBmykV0nvhbafst+cfcqnH
+	k/B+FjiT43O5ecwQZui85n6yFytJvXW4ofS2PVFnlXTTlkmVuTcK2IxPFNx1V4/hv7V/Te
+	s4n1LusnY6xnXblMEgAnQQZoFqvYiV0=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-189-Mo-HSep8MOmL2uJu3LsZyA-1; Thu, 14 Mar 2024 06:15:29 -0400
+X-MC-Unique: Mo-HSep8MOmL2uJu3LsZyA-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5dbddee3694so489889a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 03:15:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710411328; x=1711016128;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t1Uxb+6viRMpNE9ltOLx40J6IZsgLFNrkQ0OvLIySyw=;
+        b=epqwDHpZDeQG5o9P6tW3AXNjde9s7YFhdZQX+zkBPXn+opAHaJ0JksDICXPVvefOLU
+         ClrL05Iyi1Y0Isp75+iEvjZ2FBpGG3SuSxCXBl63C2ffGIbg+CyMHcKTOeF6vsYfn/oq
+         Ex+SCeYu8y9TRpuPcnynYcndxqpqDWiQLVGIMcWfjyOOLWf0kXDZbHG2eReD6ENhk33V
+         +Iz+uYa62jp9KpBmhZK1o4EBSAWiDInIvc/zxebjgu8HMloU12OROdpGbScTdS9yR0VY
+         tePxZWlegkL9PvvgIn/ekVIDGcnp07ilUP7sTFEuZObD2l90I4hremgYqKLnB2NOKqlO
+         xNqw==
+X-Forwarded-Encrypted: i=1; AJvYcCW9XJHUZySQcwV9//93JR4bHEeCaSWy1sRaLXfWhUh6p4+zMtkE3ZVANltq6Xuow0VCqdUKfW4YENqWrJeU9MsypVC9wYIo2dz3HVv1
+X-Gm-Message-State: AOJu0YxZYsmjBTlLa8yb0yZEguDBYqwY/KjBKVmMlKssfA50OnhVILEP
+	fh9m1BDOOFtyQMBBnXwz5+r3e0kiW7rpC5J4rc7VPTLY14rwkV3YwgpdG7P2m/Rdiq1C8TbhLae
+	vzeGGZ407cgFwGHrD1MCMNl0n+kcRd41BjsvssOkSdOKaUdmBDfBrGfq/eW5mUw==
+X-Received: by 2002:a17:902:ce87:b0:1dc:7101:58c0 with SMTP id f7-20020a170902ce8700b001dc710158c0mr7610153plg.22.1710411328139;
+        Thu, 14 Mar 2024 03:15:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEBfGxwiSyPHkLnxtwxkJJyRl1lXhku6m/rd49AH3cwYX8QYQ0bzga29lt8nOAFDxAXNKvfIA==
+X-Received: by 2002:a17:902:ce87:b0:1dc:7101:58c0 with SMTP id f7-20020a170902ce8700b001dc710158c0mr7610128plg.22.1710411327738;
+        Thu, 14 Mar 2024 03:15:27 -0700 (PDT)
+Received: from [192.168.68.51] ([43.252.115.31])
+        by smtp.gmail.com with ESMTPSA id v2-20020a170903238200b001dc3c4e7a12sm1302622plh.14.2024.03.14.03.15.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 03:15:26 -0700 (PDT)
+Message-ID: <9b148de7-b687-4d10-b177-5608b8dc7046@redhat.com>
+Date: Thu, 14 Mar 2024 20:15:22 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8655.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 282385b5-f78b-4bf5-d093-08dc440fa478
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 10:15:15.3853
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 81Pf5hvfkSRmjoNuZmkEZFiuTPSbLd7hkr2Kn1Ep1L/8w+mAeLFKreLCSVPkZdiyLXUGo+crDN8wYhYDB/BsKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7161
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
+Content-Language: en-US
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ jasowang@redhat.com, xuanzhuo@linux.alibaba.com, yihyu@redhat.com,
+ shan.gavin@gmail.com
+References: <20240314074923.426688-1-gshan@redhat.com>
+ <20240314040443-mutt-send-email-mst@kernel.org>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240314040443-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-[AMD Official Use Only - General]
+On 3/14/24 18:05, Michael S. Tsirkin wrote:
+> On Thu, Mar 14, 2024 at 05:49:23PM +1000, Gavin Shan wrote:
+>> The issue is reported by Yihuang Yu who have 'netperf' test on
+>> NVidia's grace-grace and grace-hopper machines. The 'netperf'
+>> client is started in the VM hosted by grace-hopper machine,
+>> while the 'netperf' server is running on grace-grace machine.
+>>
+>> The VM is started with virtio-net and vhost has been enabled.
+>> We observe a error message spew from VM and then soft-lockup
+>> report. The error message indicates the data associated with
+>> the descriptor (index: 135) has been released, and the queue
+>> is marked as broken. It eventually leads to the endless effort
+>> to fetch free buffer (skb) in drivers/net/virtio_net.c::start_xmit()
+>> and soft-lockup. The stale index 135 is fetched from the available
+>> ring and published to the used ring by vhost, meaning we have
+>> disordred write to the available ring element and available index.
+>>
+>>    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64              \
+>>    -accel kvm -machine virt,gic-version=host                            \
+>>       :                                                                 \
+>>    -netdev tap,id=vnet0,vhost=on                                        \
+>>    -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0 \
+>>
+>>    [   19.993158] virtio_net virtio1: output.0:id 135 is not a head!
+>>
+>> Fix the issue by replacing virtio_wmb(vq->weak_barriers) with stronger
+>> virtio_mb(false), equivalent to replaced 'dmb' by 'dsb' instruction on
+>> ARM64. It should work for other architectures, but performance loss is
+>> expected.
+>>
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Yihuang Yu <yihyu@redhat.com>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   drivers/virtio/virtio_ring.c | 12 +++++++++---
+>>   1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+>> index 49299b1f9ec7..7d852811c912 100644
+>> --- a/drivers/virtio/virtio_ring.c
+>> +++ b/drivers/virtio/virtio_ring.c
+>> @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+>>   	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+>>   	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+>>   
+>> -	/* Descriptors and available array need to be set before we expose the
+>> -	 * new available array entries. */
+>> -	virtio_wmb(vq->weak_barriers);
+>> +	/*
+>> +	 * Descriptors and available array need to be set before we expose
+>> +	 * the new available array entries. virtio_wmb() should be enough
+>> +	 * to ensuere the order theoretically. However, a stronger barrier
+>> +	 * is needed by ARM64. Otherwise, the stale data can be observed
+>> +	 * by the host (vhost). A stronger barrier should work for other
+>> +	 * architectures, but performance loss is expected.
+>> +	 */
+>> +	virtio_mb(false);
+> 
+> 
+> I don't get what is going on here. Any explanation why virtio_wmb is not
+> enough besides "it does not work"?
+> 
 
-> -----Original Message-----
-> From: Shenoy, Gautham Ranjal <gautham.shenoy@amd.com>
-> Sent: Thursday, March 14, 2024 6:07 PM
-> To: Yuan, Perry <Perry.Yuan@amd.com>
-> Cc: rafael.j.wysocki@intel.com; Limonciello, Mario
-> <Mario.Limonciello@amd.com>; viresh.kumar@linaro.org; Huang, Ray
-> <Ray.Huang@amd.com>; Petkov, Borislav <Borislav.Petkov@amd.com>;
-> Deucher, Alexander <Alexander.Deucher@amd.com>; Huang, Shimmer
-> <Shimmer.Huang@amd.com>; Du, Xiaojian <Xiaojian.Du@amd.com>; Meng,
-> Li (Jassmine) <Li.Meng@amd.com>; linux-pm@vger.kernel.org; linux-
-> kernel@vger.kernel.org
-> Subject: Re: [PATCH v4 6/7] cpufreq: amd-pstate: remove legacy set_boost
-> callback for passive mode
->
-> Hello Perry,
->
-> On Wed, Mar 13, 2024 at 06:04:43PM +0800, Perry Yuan wrote:
-> > With new freqency boost interface supported, legacy boost control
-> > doesn't make sense any more which only support passive mode.
->
-> Why is the legacy boost control restricted only to the passive mode ?
->
-> Can we not add .set_boost to amd_pstate_set_boost in
-> amd_pstate_epp_driver ?
->
-> --
-> Thanks and Regards
-> gautham.
+The change is replacing instruction "dmb" with "dsb". "dsb" is stronger barrier
+than "dmb" because "dsb" ensures that all memory accesses raised before this
+instruction is completed when the 'dsb' instruction completes. However, "dmb"
+doesn't guarantee the order of completion of the memory accesses.
 
-The new interface is more meaningful to amd-pstate driver, I would like to =
-put the control interface into unique directory like intel dose.
-There will be other interfaces to be added, put them into together is more =
-reasonable to control and maintain.
+So 'vq->split.vring.avail->idx = cpu_to_virtio(_vq->vdev, vq->split.avail_idx_shadow)'
+can be completed before 'vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head)'.
+The stronger barrier 'dsb' ensures the completion order as we expected.
 
-Perry.
+     virtio_wmb(true)         virt_mb(false)
+       virt_wmb                 mb
+         __smp_wmb               __mb
+           dmb(ishst)              dsb(sy)
+       
 
->
-> > so it can remove the legacy set_boost interface from amd-pstate driver
-> > in case of there is conflict with new boost control logic.
-> >
-> > Signed-off-by: Perry Yuan <perry.yuan@amd.com>
-> > ---
-> >  drivers/cpufreq/amd-pstate.c | 1 -
-> >  include/linux/amd-pstate.h   | 2 --
-> >  2 files changed, 3 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/amd-pstate.c
-> > b/drivers/cpufreq/amd-pstate.c index d7afbded6e3d..4a24db868cb1
-> 100644
-> > --- a/drivers/cpufreq/amd-pstate.c
-> > +++ b/drivers/cpufreq/amd-pstate.c
-> > @@ -1689,7 +1689,6 @@ static struct cpufreq_driver amd_pstate_driver =
-=3D
-> {
-> >     .exit           =3D amd_pstate_cpu_exit,
-> >     .suspend        =3D amd_pstate_cpu_suspend,
-> >     .resume         =3D amd_pstate_cpu_resume,
-> > -   .set_boost      =3D amd_pstate_set_boost,
-> >     .update_limits  =3D amd_pstate_update_limits,
-> >     .name           =3D "amd-pstate",
-> >     .attr           =3D amd_pstate_attr,
-> > diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
-> > index c6e2a97913de..7130b297c522 100644
-> > --- a/include/linux/amd-pstate.h
-> > +++ b/include/linux/amd-pstate.h
-> > @@ -56,7 +56,6 @@ struct amd_aperf_mperf {
-> >   * @cur: Difference of Aperf/Mperf/tsc count between last and current
-> sample
-> >   * @prev: Last Aperf/Mperf/tsc count value read from register
-> >   * @freq: current cpu frequency value
-> > - * @boost_supported: check whether the Processor or SBIOS supports
-> boost mode
-> >   * @hw_prefcore: check whether HW supports preferred core featue.
-> >   *                   Only when hw_prefcore and early prefcore param ar=
-e true,
-> >   *                   AMD P-State driver supports preferred core featue=
-.
-> > @@ -93,7 +92,6 @@ struct amd_cpudata {
-> >     struct amd_aperf_mperf prev;
-> >
-> >     u64     freq;
-> > -   bool    boost_supported;
-> >     bool    hw_prefcore;
-> >
-> >     /* EPP feature related attributes*/
-> > --
-> > 2.34.1
-> >
+Extraced from ARMv9 specificaton
+================================
+The DMB instruction is a memory barrier instruction that ensures the relative
+order of memory accesses before the barrier with memory accesses after the
+barrier. The DMB instruction _does not_ ensure the completion of any of the
+memory accesses for which it ensures relative order.
+
+A DSB instruction is a memory barrier that ensures that memory accesses that
+occur before the DSB instruction have __completed__ before the completion of
+the DSB instruction. In doing this, it acts as a stronger barrier than a DMB
+and all ordering that is created by a DMB with specific options is also generated
+by a DSB with the same options.
+
+>>   	vq->split.avail_idx_shadow++;
+>>   	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+>>   						vq->split.avail_idx_shadow);
+>> -- 
+>> 2.44.0
+> 
+
+Thanks,
+Gavin
+
 
