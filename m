@@ -1,96 +1,86 @@
-Return-Path: <linux-kernel+bounces-103492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7111587C033
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:30:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7B987C038
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E3D228124E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:30:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E00D71F232A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E5A71B5D;
-	Thu, 14 Mar 2024 15:29:50 +0000 (UTC)
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766A371B4E;
+	Thu, 14 Mar 2024 15:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GoHGtf4K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E467571B4F;
-	Thu, 14 Mar 2024 15:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13AF51C3B;
+	Thu, 14 Mar 2024 15:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710430190; cv=none; b=JU2SFbYCfHyiilh+tNQuv3/SIC72VcFAtMDzkgehtVaup6FYWEv2f4KQxcQO7JaBUlmL5nlAdl80bstB1MAFlhq4IXLmHDSQGF9j/6+kx1utNQzDrkrddi3QbdvUD1g6uAMa1N27CwgVLx8tziDZPkZSuMyIkdzJRsV8txS+0uY=
+	t=1710430264; cv=none; b=rSNVzzhN1lx9PdhkGAHE8VeZOaUQVA7jBl1C8WovfADauDdJWxdyv0A4Pn29OiPBgvz6ioYnnB3f48Bhv3t6LeXMEPoojGl7LYTtL938RtuT1e6LN+RJiqhIodiz+ev0IhfPwPrWwYTj1eAEfnLGoOaNk6DGD+k4QOYWf8TUrDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710430190; c=relaxed/simple;
-	bh=sz4vtJtgjtxGimNuodR5Dts8e41V2G0abFSVNiYfOig=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YuTDITw3ZzUAGMIe78Qs0EUOgWrU7RDlNblxGdy766wXZKVn+k4I7g4q2cA0mk28a8XRr+HHwy8e56rQlzleqGIyOORRcnIkCCmsGymUuShZQOVgjQZgEKrPwa0YfRypRzTk4RO7igXI6Edx3gwhl8NVvfpZwudGJzF07S7Uk4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-221d4c52759so92285fac.1;
-        Thu, 14 Mar 2024 08:29:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710430188; x=1711034988;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sz4vtJtgjtxGimNuodR5Dts8e41V2G0abFSVNiYfOig=;
-        b=iTh112JXa3u+Utr0j1CTf/n5InCwSNN8pfXbetQmyaqpS0OWZYZYeVknKZWmvFjNrT
-         Zv77EqHFEvPrhTNy0AYfGOuVeOJIxyrBFEqTweeLAYetu8KDk/zBeWd08sf21MKcimPR
-         oQorpqWVL4Bpn+jf42Jti62HngOoa/G7adg48aqjx//9YUbj3yaJl4oIUyv8/f8fhG/X
-         IdkRvG+q3MGf7qugdGvgp6a1RQdp4kWQdD7K+odV7dHc4U0m7YtpTBMLsmE6AkqTmLho
-         I04TTPiLedsVjgaq5r7hSp5OMCjp8EdnxOBvfuzR8FZHra3Vjuv5obqeiHFk1pIRqOsR
-         CvYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVCveDBQRAALR1y7VK/YFlk0aWTibIDUOQgZTKjG1Hft7bB/4klXkV8a+YlXEoRC0fviFrzr8n2B8djluT2UqiBQVwumNXqXnqczk7Y0dccaksQj4Q4DfIuZV1BSNvsevNSpiaO2XI=
-X-Gm-Message-State: AOJu0YzmYisNGvYpzVegzejQRBOCi97dYj/A4GldUx/K4GOg0XYaMaUJ
-	sNOyhKIfeGT7boi/tAdQoLWxzaKmaGoSKofZOB85+tEeF1hJw+pzoHEh4JF93PbdwDdePabAmUP
-	11rFiGB5Asi+OeOKu8Cq6ho+X+GQ=
-X-Google-Smtp-Source: AGHT+IGw1wzCrd+KShFy8gIzPHGgdEgl6nALTcZHtfMqpjOxXMESDUNLraIbxUslw88qM0F+kZ+0mj1dkWxYreVQGI0=
-X-Received: by 2002:a05:6871:5b11:b0:221:a151:7f3d with SMTP id
- op17-20020a0568715b1100b00221a1517f3dmr2177153oac.2.1710430187943; Thu, 14
- Mar 2024 08:29:47 -0700 (PDT)
+	s=arc-20240116; t=1710430264; c=relaxed/simple;
+	bh=P4R5rvdPbrYzDtuRH0MY+VhzazE1F5Yf9nqntNMPj0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ns6x6k9MrQ5DXrQQEb+j3otA54PRyLVQdtaZBjSW9YAYq0PEcHHHX3NUYbT0JtxazasPuis1mHzPIesexoWUAIvUWLkpnOwiZohvWUTJ17lNzwJckGYbt76m+NDy8IfeLBr1Ww+q20B3KapRZ6WCizIxhqDJNYFBYiyP9PYVsK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GoHGtf4K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F66CC433F1;
+	Thu, 14 Mar 2024 15:31:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710430264;
+	bh=P4R5rvdPbrYzDtuRH0MY+VhzazE1F5Yf9nqntNMPj0I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=GoHGtf4K0Ea5Bn1ObXjForkxtSUmTv7QkIjE07GRk/nKrGHZYRGwvG4GMOIB6kwiC
+	 f2xOenaZCYAQuumCoKpQufcUFL1LLti3M6nNGI+pa+n2GjPtnujZNtiH+YN+P9hnOp
+	 wDend5Grsh7gVrhLrJDS+zaWL3AQvClipf4XPk6lVrrohS13J7pPOvbT5a5whNxQKv
+	 gghbVtlIqbq200Cz/pUF/hoymJ8KlAkAtD7QTpIOucCswnDmfJcxTCrZ79rKlqnX7K
+	 Hg7FE3DjjdYhQiSBHKjHJUWJtyHQPAsFgCPxNmLGZGTwIVSlMd1VW82ZS2OUHj3hzu
+	 AB3mMUqu/NM3g==
+Date: Thu, 14 Mar 2024 15:30:49 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Michael Hennerich <michael.hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?=
+ <nuno.sa@analog.com>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] docs: iio: new docs for ad7944 driver
+Message-ID: <20240314153049.5895703d@jic23-huawei>
+In-Reply-To: <20240313-mainline-ad7944-doc-v1-2-7860416726e4@baylibre.com>
+References: <20240313-mainline-ad7944-doc-v1-0-7860416726e4@baylibre.com>
+	<20240313-mainline-ad7944-doc-v1-2-7860416726e4@baylibre.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314075429.1164810-1-d-gole@ti.com> <CAJZ5v0iUt+tudMV-rJ80GR6iNQVv06+054h0UyNgpEOUF6QLRQ@mail.gmail.com>
- <20240314151846.u3r3eaklrl3hf7pi@dhruva>
-In-Reply-To: <20240314151846.u3r3eaklrl3hf7pi@dhruva>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 14 Mar 2024 16:29:36 +0100
-Message-ID: <CAJZ5v0gwkKa+AYgOwydzsKjo=_M56t88PwVo7R+fe-53abAdVw@mail.gmail.com>
-Subject: Re: [PATCH] PM: wakeup: Add a missing return case in init_wakeup
-To: Dhruva Gole <d-gole@ti.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Tony Lindgren <tony@atomide.com>, theo.lebrun@bootlin.com, 
-	Sibi Sankar <quic_sibis@quicinc.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Ulf Hansson <ulf.hansson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 4:18=E2=80=AFPM Dhruva Gole <d-gole@ti.com> wrote:
->
-> Hi,
->
-> On Mar 14, 2024 at 15:01:36 +0100, Rafael J. Wysocki wrote:
-> > On Thu, Mar 14, 2024 at 8:55=E2=80=AFAM Dhruva Gole <d-gole@ti.com> wro=
-te:
-> > >
-> > > The device_wakeup_disable call can return an error if no dev exists
-> > > however this was being ignored. Catch this return value and propagate=
- it
-> > > onward in device_init_wakeup.
-> >
-> > Why does this matter to the callers of device_init_wakeup()?
->
-> If atall !dev->power.can_wakeup then the caller should know something is
-> funny right?
+On Wed, 13 Mar 2024 15:21:52 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-What would the caller do with this information?
+> This adds a new page to document how to use the ad7944 ADC driver.
+> 
+> Credit: the basic structure and some of the text is copied from the
+> adis16475 docs.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-They attempted to disable wakeup on a device that doesn't exist or is
-not wake-capable, and so what?
+In many cases I don't think it's useful to have a per driver doc, but
+for this particular part the asci art diagrams make it useful - so thanks
+for putting this together.
+
+LGTM, but I'll let it sit on the list for others to take a look.
+Poke me if it looks like I've forgotten it (which I used to manage
+a lot, but patchwork keeps me organized better these days!)
+
+Jonathan
+
+
 
