@@ -1,113 +1,130 @@
-Return-Path: <linux-kernel+bounces-103536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C851287C0C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:59:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1FE687C0CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:00:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 655EC1F22579
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:59:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73BCBB20DCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1200973191;
-	Thu, 14 Mar 2024 15:59:08 +0000 (UTC)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821C56EB74;
-	Thu, 14 Mar 2024 15:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65AE73502;
+	Thu, 14 Mar 2024 15:59:53 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63116EB74;
+	Thu, 14 Mar 2024 15:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431947; cv=none; b=qA0dzEaJcTisWZnitxah/hjMqC+Fq11xnd00GEa+Zy8VW4D67E6633bB0LOnWDRAIClzuskR/bmYKtuM8cM+zX42LXc1lKzcRtgiveyx6NcPiS26omAxwjbXi3MY8r/friQZXyZv07w3l270JTC8/JHoru2ACdTS7dGQDyukRTo=
+	t=1710431993; cv=none; b=fRes4FBxBIt0NkAdOboqNDGwPsOiYzisq+WDKBxVqZIVvKetFsUtsSqXNG4WZ7fk/EVEGiSEmdlBBFe/n1DwFbKZeWrJg1mbuWRsce6HnpZE3Lzyh6oKvrws1kBPfAytnSitliVDkN26W3t7BiSKac/iGgkMR+i75MleB3ep0Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431947; c=relaxed/simple;
-	bh=qLm7sdMyTp87kkhCt/5MhF2kdOOR6nFZ2M5qYMfYhE4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J26fjwqAnZX6f6QkgDEnQ9/mOBhVqqXt1+f06EKrdEZ6wTxTlTSmFSAj0Ql4tNaISwTdffIuvP9DdCQDs0rGpIW2+joGhtUsZGf6FWpwwWOlJN3gnQ+qYkUEpG5v6Pvd/h1pzVExn26iStiDR1DEEUkC4o+2I6WA0ISt7PX97iA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60cc4124a39so11309267b3.3;
-        Thu, 14 Mar 2024 08:59:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710431943; x=1711036743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WGo5y059xssa9oMgtCF+hT1vb68q8rGTMUHno6LSTBk=;
-        b=FFuNwaqo4NpZErGsUumZa4cIh1IA0ICrZqyltAH8bUZLhv/HI5e4cLxfmUabtoUvjs
-         oGkdCLywOIwY7+/thWo3Sm4ErYOjsBiobwpRYOWIOWGLX8OsJmz+AvyvbYizhGCvHpvc
-         BrTE4oTIk2tWWD3q1aHuZwQpT9xpJ7psLiXwT2UH7/hQIxoZhuTw4uYRJwajpqcBOGUK
-         Ef8x1znICqPh0s3V5mqTO0vqdPr9/uu973/CGamsSt1LGn637w0Cw4u3ZOjX1s2/pd5m
-         rTa8zB1nZsr5fcdkV+pw9MkqzUnjyC7S46bYj+TK72Z7ZCqjU2UGIxU3j4pHJ8VVhhU2
-         O+kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCURGXGVV4B731YJ3lv786jVh7JUr5BrzXcqEFoh3UUmLzUKW7tp+LjibGNJbWv1zfXyhhOBbEAd4Q8XXCrphas8zNeUJfgMpXEZKbQEFIlFL5Qwytlp8bXfA/2mm9ZUUNaEtTm+tFhTvVCvl7YuA+xh86Nj8UZDsWPV0v6xqqLQxPqfqVr3b7RI5Nb+jjs/XITlNlEGSmO6zoK6J5Nv0F5FMy8wRd/Y
-X-Gm-Message-State: AOJu0YxO64FkWBSw4xsKWfYAjk405XOisJveA5zC8OI+VNXjy5SspEUj
-	nOAD93asyJkhxDLwMCN2dKnoTiayTd1agZPvD3NV9obpu7DgFgT3emjLhT9rm/8=
-X-Google-Smtp-Source: AGHT+IH3mWZnB00yzBl/P+4vpCgvy1TqognMcOx1eiqXCS8bhJRS8l8FzburGf5wIcSmP2v0Dja31g==
-X-Received: by 2002:a81:89c3:0:b0:60a:1e17:2623 with SMTP id z186-20020a8189c3000000b0060a1e172623mr2166957ywf.51.1710431943646;
-        Thu, 14 Mar 2024 08:59:03 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id w64-20020a814943000000b0060a2c381287sm325163ywa.125.2024.03.14.08.59.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 08:59:03 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-609eb3e5a56so12810697b3.1;
-        Thu, 14 Mar 2024 08:59:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWCHolDbsLYXxjJEPZCH1Wmwn7mxZRBqJRmKOvt3cY8Sa+cykDHHC6TOXUiUFwoAYOLmwNAwn7q1xOSveluKR5xYclrAYOW7ULEtlMVfPXpGXHIttjtK+EJBoyDl9mmX/azL0tL/s+FhH3OEZclR41pEu1aIyM0wkCE9kYiyLvcB39L+J5SaGqXzVt0Jr5RQwLG6OxPLm7Lc5eMNlRAjXYl5h5SrnM3
-X-Received: by 2002:a25:8541:0:b0:dcc:d196:a573 with SMTP id
- f1-20020a258541000000b00dccd196a573mr1902447ybn.36.1710431943159; Thu, 14 Mar
- 2024 08:59:03 -0700 (PDT)
+	s=arc-20240116; t=1710431993; c=relaxed/simple;
+	bh=okaw4O3R57c6tEMT0TJSs1UtnZZCStffxFfDr2xlyHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aeNHzxxsVnfkXCjyuZrVl9Yz4ZPzdStJRtSAp7dmCJ1Du41C1qBhU6mOltq7qPkTa/O0eJyh8Q6AeHY3mBOTCOUh3ghvnlLSdVXRlMZdXEA0ZLuBFj09hKbZSFheR37EzmMe2h0yZBVIxmPMxTwr7lESVOgnFc4oHEGSbu0jx7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCA7E1007;
+	Thu, 14 Mar 2024 09:00:25 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.69.235])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 281FB3F762;
+	Thu, 14 Mar 2024 08:59:45 -0700 (PDT)
+Date: Thu, 14 Mar 2024 15:59:39 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Sagi Maimon <maimon.sagi@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, richardcochran@gmail.com,
+	luto@kernel.org, datglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org,
+	peterz@infradead.org, hannes@cmpxchg.org, sohil.mehta@intel.com,
+	rick.p.edgecombe@intel.com, nphamcs@gmail.com, palmer@sifive.com,
+	keescook@chromium.org, legion@kernel.org, mszeredi@redhat.com,
+	casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net,
+	brauner@kernel.org, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+Message-ID: <ZfMe66MfHBEfxrdd@FVFF77S0Q05N>
+References: <20240314090540.14091-1-maimon.sagi@gmail.com>
+ <87a5n1m5j1.ffs@tglx>
+ <CAMuE1bH_H9E+Zx365G9AtmWSmhW-kPPB+-=8s2rH4hpxqE+dHQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com> <20240307140728.190184-2-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240307140728.190184-2-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Mar 2024 16:58:50 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVaKF=4Uu074j9X5Q62OsDZ7q0tXaFazxTP5+TFD51hEg@mail.gmail.com>
-Message-ID: <CAMuHMdVaKF=4Uu074j9X5Q62OsDZ7q0tXaFazxTP5+TFD51hEg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] dt-bindings: clock: r9a07g043-cpg: Add power
- domain IDs
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuE1bH_H9E+Zx365G9AtmWSmhW-kPPB+-=8s2rH4hpxqE+dHQ@mail.gmail.com>
 
-On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
-rote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add power domain IDs for RZ/G2UL (R9A07G043) SoC.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v2:
-> - added "RZ/G2UL Only" comments to some defines
-> - added RZ/Five specific defines
+On Thu, Mar 14, 2024 at 02:19:39PM +0200, Sagi Maimon wrote:
+> On Thu, Mar 14, 2024 at 1:12 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > On Thu, Mar 14 2024 at 11:05, Sagi Maimon wrote:
+> > > +     if (crosstime_support_a) {
+> > > +             ktime_a = ktime_sub(xtstamp_a2.device, xtstamp_a1.device);
+> > > +             ts_offs_err = ktime_divns(ktime_a, 2);
+> > > +             ktime_a = ktime_add_ns(xtstamp_a1.device, (u64)ts_offs_err);
+> > > +             ts_a1 = ktime_to_timespec64(ktime_a);
+> >
+> > This is just wrong.
+> >
+> >      read(a1);
+> >      read(b);
+> >      read(a2);
+> >
+> > You _CANNOT_ assume that (a1 + ((a2 - a1) / 2) is anywhere close to the
+> > point in time where 'b' is read. This code is preemtible and
+> > interruptible. I explained this to you before.
+> >
+> > Your explanation in the comment above the function is just wishful
+> > thinking.
+> >
+> you explained it before, but still it is better then two consecutive
+> user space calls which are also preemptible
+> and the userspace to kernel context switch time is added.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+How much "better" is that in reality?
 
-Gr{oetje,eeting}s,
+The time for a user<->kernel transition should be trivial relative to the time
+a task spends not running after having been preempted.
 
-                        Geert
+Either:
 
+(a) Your userspace application can handle the arbitrary delta resulting from a
+    preemption, in which case the trivial cost shouldn't matter.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+    i.e. this patch *is not necessary* to solve your problem.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+(b) Your userspace application cannot handle the arbitrary delta resulting from
+    a preemption, in which case you need to do something to handle that, which
+    you haven't described at all.
+  
+    i.e. with the information you have provided so far, this patch is
+    *insufficient* to solve your problem.
+
+> > > + * In other cases: Read clock_a twice (before, and after reading clock_b) and
+> > > + * average these times – to be as close as possible to the time we read clock_b.
+> >
+> > Can you please sit down and provide a precise technical description of
+> > the problem you are trying to solve and explain your proposed solution
+> > at the conceptual level instead of throwing out random implementations
+> > every few days?
+
+100% agreed.
+
+Please, explain the actual problem you are solving here. What *specifically*
+are you trying to do in userspace with these values? "Synchronization" is too
+vague a description.
+
+Making what is already the best case *marginally better* without handling the
+common and worst cases is a waste of time. It doesn't actually solve the
+problem, and it misleads people into thinknig that a problem is solved when it
+is not.
+
+Mark.
 
