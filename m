@@ -1,250 +1,265 @@
-Return-Path: <linux-kernel+bounces-102970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF30287B946
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:28:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB15587B94E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A411C214B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:28:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A95F28638F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7E95D75D;
-	Thu, 14 Mar 2024 08:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46AF612EF;
+	Thu, 14 Mar 2024 08:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CabL6gBM"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PvMf9DPC"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E644A12;
-	Thu, 14 Mar 2024 08:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02AFD60EF2
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710404930; cv=none; b=d/GOLmMld8XQEUuSirV3hJPXLC0lsGd08l9lKnKEN0T4aJXVBGUc/AWjhlfAJJ0H6zJ55QcU6cXvO4SsWQJodwAE/zd/JOU9ua6ny6H20jSnfl3ew6nfOIZk3BEc3YPl4KEnYZhx359KgNEhEsXCqa4N2XbS3q3TfiGYc+xm9Tw=
+	t=1710405058; cv=none; b=Bj6yG7eIfOM5QcX/u5ZKjrY/r4rYLUOzcuaEN7JvL7PQ/7y1dUOx7b5K5XeKRzjZWebSjjIUZsHcj8Pj+m7UjUCqGuEpuF4i7CV/kccKja08SG7aAMFyAPia+zf7xUSdPcqOZhdNVdkzFIA5Kv2HvqrV3d6/amWuFT20GewJ0L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710404930; c=relaxed/simple;
-	bh=dWBvzMvhEojLc4YRKahCcivlodgKip+79gtNWQpwMpA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tO7+1+l6kskSogSqdUYewEQQIxDm+BsNAWjBu1e6wGJbBHzX2kHJAqIupLp8GMr8yY0qbnIxq7bqqYB37hlKQ/SMx6p49CHJJnAX+13EMqIwKvoDE58Et8F/Wf7WLst1PHZVbya8p18ThN4bc46Kvlmu2XTKN+uJTlHnDrHGOh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CabL6gBM; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 45ED6C0008;
-	Thu, 14 Mar 2024 08:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710404925;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ta2o1x/LIlySc7obf85xA0brUjSk62k5/P2oqyy2gbY=;
-	b=CabL6gBMbBp+8mopqE1f1dUVAINgn7OlUvLJsnZJP08TZJbgD6yr+zl4f51i4Vx5aLBh25
-	TX8yKi/akLHzClY5day0luGdWE3lSOtAcicijuAPdyiqtQ+2uWWQQZW5twGzVeuTEXw5ov
-	SHfll56j0kvJcdOD4psPs0Qo6jCc5FUM3/ZKJA09M6eXMacXKQUQNj7Iqbymk1KKRGIujj
-	+OtAA89rIgEMuzY3y1Ixvf+66cWzZ444hwAVewSAwuV6KTFP7Ek/30QEXAZTe7zMMW4toc
-	6C4GAMYQFjz6fyFmqwFGe5p+wPIQupGrr2dH1Bkp3v6lfQnKYk3czhpPasYkrg==
-Date: Thu, 14 Mar 2024 09:28:42 +0100
-From: Kamel Bouhara <kamel.bouhara@bootlin.com>
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	Jeff LaBundy <jeff@labundy.com>,
-	catalin.popescu@leica-geosystems.com,
-	mark.satterthwaite@touchnetix.com,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	bsp-development.geo@leica-geosystems.com
-Subject: Re: [PATCH v9 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-Message-ID: <20240314082842.GA6963@tpx1.home>
-References: <20240301103909.167923-1-kamel.bouhara@bootlin.com>
- <20240301103909.167923-4-kamel.bouhara@bootlin.com>
- <20240313202135.2lwgtu2z67ksh2tz@pengutronix.de>
+	s=arc-20240116; t=1710405058; c=relaxed/simple;
+	bh=wSU462xWeV+jb/Fx6lyTfUitOV7Luuama88MauNoHC8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zvrmc5gdN76dMUiqm/f0F3kk7u3RqaIySUsFhlk81d4/Gwp+YVE1ANlIZTZPFH7CNFQ2oxBO6IGppNTX0mkYccHheOY6VejBAij/zgXBlQmg/CA1TpC6qYVVd0iBSsrwPzjU1pgMyRBQlXB77DygQSwYCFjSVYcAxiAwcJUbZc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PvMf9DPC; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33e162b1b71so603719f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 01:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710405055; x=1711009855; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cjDEhlIUtZYugm2VOUzM+DS9b2GCOwIMbK6lToSWDPk=;
+        b=PvMf9DPC2SEtBJugr0/n2MngTh6fTVo/3Ao87xjDwforV841FDuYMXWGxy0tInmwUq
+         am9INT6ws9F0r/CXACRJB3i8qKPvRExFSv12pCWQOkwZNGivoVmWkYtk/ctUJhkI5XRs
+         Umenm8HRT7BEUVkquqQbyvCpdwDGZkvhK2lN1NS1zylY5YRCXLrfwnU9PeyWNpmttgLQ
+         JYBKyg9TbCQRoEyuzkcqnFChObeL0tL/KKpu6aUDGyNuL1knhUqDXsm6MeyjBW2W7/wf
+         S80Ww7kWPt0GQHiHPqvOa+nnsCUNWtpKyYVeRKF042FL8FQApgUoIC3w6q9IkVJslmbH
+         ox/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710405055; x=1711009855;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cjDEhlIUtZYugm2VOUzM+DS9b2GCOwIMbK6lToSWDPk=;
+        b=oCkZ2XknVS6TZVSEJvb/tvwGMy1nr5VZYYZL3IojoV7YN9uplRfIbHqTq8UzFe1toU
+         KtHGSS9MPB7yIEoImM0C3iADJ/wQ7YB7gUGFlnibmmrDJuRf+MxU/ubmESQ/NP/ugieY
+         uqDhWrrTU+nJuUbWorZx85ioF9iSL8AJMqiwniT0pNjC2FeoWSwKF4/hibCBmM5okWIH
+         fDA9rJ4ZygxM8Q0ep4kK/T8PCfurvc9+rPDtoQQAXfPPmE84QJrD2BSulpUZSEaWZwAX
+         +W+L7njzwFlUt+JGZccAhd52QWfC+SMr2TGClnT5jmgkvIhNqT4m4D0yNB63NknXMeom
+         73Dw==
+X-Forwarded-Encrypted: i=1; AJvYcCWtw7CSRdKTGhIwNMovORe/Y0/NXCrbKxsLfqXTtwVRcwcrLwjuvoQAbicGJCSaKKwOHOrnRXkGK+04eRMHmDByjyyklErPwXSo16Yl
+X-Gm-Message-State: AOJu0YzUjKO66Zh0jSgo87Nn4HEerzbtG4QYwALibuoc8sZfqon14W5M
+	T4CW1Ucpuya4pVL9jJG1DTbCoEpSaKDG+GnOP9oE+Db+/DZgn9Nf8o/O2vVmVCA=
+X-Google-Smtp-Source: AGHT+IEh0qvHhOac6Zw+EdlhO3mO2dnkKe8dkP6svfw68TaW4c5Lngi9FG22MLXI2RWOUxjq+aq74w==
+X-Received: by 2002:a5d:4ec5:0:b0:33e:dd4:ca5c with SMTP id s5-20020a5d4ec5000000b0033e0dd4ca5cmr687400wrv.45.1710405055268;
+        Thu, 14 Mar 2024 01:30:55 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id p6-20020adfcc86000000b0033ec072a491sm193303wrj.35.2024.03.14.01.30.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 01:30:54 -0700 (PDT)
+Message-ID: <9dc0415c-4138-4867-861a-38b45b636182@linaro.org>
+Date: Thu, 14 Mar 2024 09:30:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240313202135.2lwgtu2z67ksh2tz@pengutronix.de>
-X-GND-Sasl: kamel.bouhara@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+Content-Language: en-US
+To: Sumit Garg <sumit.garg@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, stephan@gerhold.net,
+ caleb.connolly@linaro.org, neil.armstrong@linaro.org,
+ laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com,
+ jimmy.lalande@se.com, benjamin.missey@non.se.com,
+ daniel.thompson@linaro.org, linux-kernel@vger.kernel.org,
+ Jagdish Gediya <jagdish.gediya@linaro.org>
+References: <20240313123017.362570-1-sumit.garg@linaro.org>
+ <20240313123017.362570-4-sumit.garg@linaro.org>
+ <4a0a8db7-a2bc-4c99-94b2-c13facbd1bef@linaro.org>
+ <CAFA6WYPh5BS_Fpi6ksAC7bwoFEyqjj1Y3EahyQxCG9Pp=KDw=Q@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAFA6WYPh5BS_Fpi6ksAC7bwoFEyqjj1Y3EahyQxCG9Pp=KDw=Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Le Wed, Mar 13, 2024 at 09:21:35PM +0100, Marco Felsch a écrit :
-> Hi Kamel,
->
-Hi Marco,
+On 14/03/2024 09:19, Sumit Garg wrote:
+>>> +             compatible = "smsc,usb3503";
+>>> +             reset-gpios = <&pm8916_gpios 1 GPIO_ACTIVE_LOW>;
+>>> +             initial-mode = <1>;
+>>> +     };
+>>> +
+>>> +     usb_id: usb-id {
+>>> +             compatible = "linux,extcon-usb-gpio";
+>>> +             id-gpios = <&tlmm 110 GPIO_ACTIVE_HIGH>;
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&usb_id_default>;
+>>> +     };
+>>> +
+>>> +     hdmi-out {
+>>> +             compatible = "hdmi-connector";
+>>> +             type = "a";
+>>> +
+>>> +             port {
+>>> +                     hdmi_con: endpoint {
+>>> +                             remote-endpoint = <&adv7533_out>;
+>>> +                     };
+>>> +             };
+>>> +     };
+>>> +
+>>> +     gpio-keys {
+>>> +             compatible = "gpio-keys";
+>>> +             autorepeat;
+>>> +
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&msm_key_volp_n_default>;
+>>> +
+>>> +             button {
+>>> +                     label = "Volume Up";
+>>> +                     linux,code = <KEY_VOLUMEUP>;
+>>> +                     gpios = <&tlmm 107 GPIO_ACTIVE_LOW>;
+>>> +             };
+>>> +     };
+>>> +
+>>> +     leds {
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&pm8916_mpps_leds>;
+>>
+>> First property is always compatible. Please apply DTS coding style rules.
+> 
+> Ack.
+> 
+>>
+>>> +
+>>> +             compatible = "gpio-leds";
+>>> +             #address-cells = <1>;
+>>> +             #size-cells = <0>;
+>>
+>> That's not a bus.
+>>
+>> It does not look like you tested the DTS against bindings. Please run
+>> `make dtbs_check W=1` (see
+>> Documentation/devicetree/bindings/writing-schema.rst or
+>> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+>> for instructions).
+> 
+> I assumed earlier that W=1 is sufficient for DT schema checks but it
 
-> please see below, be aware that this is just an rough review.
->
+W=1 as in make? No, it is not. It's flag changing the build process.
+dtbs_check is separate target.
 
-[...]
+> looks like those are two different entities. However, I added these
+> address and size cells properties only to get rid of warnings reported
+> by W=1, see below:
+> 
+> $ make qcom/apq8016-schneider-hmibsc.dtb W=1
+>   DTC     arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb
+> arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts:96.9-103.5:
+> Warning (unit_address_vs_reg): /leds/led@5: node has a unit name, but
+> no reg or ranges property
+> arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts:105.9-112.5:
+> Warning (unit_address_vs_reg): /leds/led@6: node has a unit name, but
+> no reg or ranges property
 
-> > +
-> > +static int axiom_i2c_probe(struct i2c_client *client)
-> > +{
-> > +	struct device *dev = &client->dev;
-> > +	struct input_dev *input_dev;
-> > +	struct axiom_data *ts;
-> > +	u32 poll_interval;
-> > +	int target;
-> > +	int error;
-> > +
-> > +	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
-> > +	if (!ts)
-> > +		return -ENOMEM;
-> > +
-> > +	i2c_set_clientdata(client, ts);
-> > +	ts->client = client;
-> > +	ts->dev = dev;
-> > +
-> > +	ts->regmap = devm_regmap_init_i2c(client, &axiom_i2c_regmap_config);
-> > +	error = PTR_ERR_OR_ZERO(ts->regmap);
-> > +	if (error) {
-> > +		dev_err(dev, "Failed to initialize regmap: %d\n", error);
-> > +		return error;
-> > +	}
-> > +
-> > +	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> > +	if (IS_ERR(ts->reset_gpio))
-> > +		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
-> > +
-> > +	if (ts->reset_gpio)
-> > +		axiom_reset(ts->reset_gpio);
->
-> This seems useless, since you doing an reset without enabling the power
-> supply (below). I know there are systems which do have the supply always
-> connected or for ACPI the supply is managed via firmware, but the driver
-> should implement the correct logic and for DT/OF case this is not
-> correct.
->
+Wait, so you saw the warnings and ignored them? These are legitimate
+warnings, although they don't give you full answer.
 
-Alright, this can be moved after enabling vdda regulator as this is
-still required in the power sequence.
+> <snip>
+> 
+> So it looks like W=1 is reporting false warnings and we should rather
 
-> > +
-> > +	ts->vddi = devm_regulator_get_optional(dev, "vddi");
-> > +	if (!IS_ERR(ts->vddi)) {
-> > +		error = devm_regulator_get_enable(dev, "vddi");
->
-> Regulators are ref counted and now you request the regulator twice. Also
-> the regulator is not optional, it is required for the device to work.
-> Same applies to the vdda below.
->
+Warnings were true.
 
-Ack, I wrongly took my use case (ACPI + fixed regulators) but this isn't
-a common use case.
+> rely on dtbs_check only.
 
-> > +		if (error)
-> > +			return dev_err_probe(&client->dev, error,
-> > +					     "Failed to enable vddi regulator\n");
-> > +	}
-> > +
-> > +	ts->vdda = devm_regulator_get_optional(dev, "vdda");
-> > +	if (!IS_ERR(ts->vdda)) {
-> > +		error = devm_regulator_get_enable(dev, "vdda");
-> > +		if (error)
-> > +			return dev_err_probe(&client->dev, error,
-> > +					     "Failed to enable vdda regulator\n");
-> > +		msleep(AXIOM_STARTUP_TIME_MS);
-> > +	}
-> > +
-> > +	error = axiom_discover(ts);
-> > +	if (error)
-> > +		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
-> > +
-> > +	input_dev = devm_input_allocate_device(ts->dev);
-> > +	if (!input_dev)
-> > +		return -ENOMEM;
-> > +
-> > +	input_dev->name = "TouchNetix axiom Touchscreen";
-> > +	input_dev->phys = "input/axiom_ts";
-> > +
-> > +	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
-> > +
-> > +	touchscreen_parse_properties(input_dev, true, &ts->prop);
-> > +
-> > +	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
-> > +	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
-> > +	if (error)
-> > +		return error;
-> > +
-> > +	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
-> > +	set_bit(EV_REL, input_dev->evbit);
-> > +	set_bit(EV_MSC, input_dev->evbit);
-> > +	/* Declare that we support "RAW" Miscellaneous events */
-> > +	set_bit(MSC_RAW, input_dev->mscbit);
-> > +
-> > +	ts->input_dev = input_dev;
-> > +	input_set_drvdata(ts->input_dev, ts);
-> > +
-> > +	/* Ensure that all reports are initialised to not be present. */
-> > +	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
-> > +		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
-> > +
-> > +	error = devm_request_threaded_irq(dev, client->irq, NULL,
-> > +					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
-> > +	if (error) {
-> > +		dev_info(dev, "Request irq failed, falling back to polling mode");
-> > +
-> > +		error = input_setup_polling(input_dev, axiom_i2c_poll);
-> > +		if (error)
-> > +			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
-> > +
-> > +		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
->
-> This is not wrong but can we move the "poll-intervall" parsing into
-> touchscreen_parse_properties() since it seems pretty common to me.
+It's really independent. There is only one case where W=1 produces
+warnings you could ignore (ports/port in graphs). At least I am not
+aware of anything else.
 
-Maybe too late to add it in this series :).
+Although Qualcomm does not use clean-check-maintainer-profile, but
+already some archs do (RISC-V, Samsung). For these YOU MUST RUN
+DTBS_CHECK and fix ALL new warnings. But even for Qualcomm, you are
+expected to run dtbs_check. And why would you not run it? You can
+automate checks and save reviewers time with automatic tools, but you
+decide to skip it? Srsly, that's huge waste of reviewers time!
 
->
-> > +			input_set_poll_interval(input_dev, poll_interval);
-> > +		else
-> > +			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
-> > +	}
-> > +
-> > +	error = input_register_device(input_dev);
-> > +	if (error)
-> > +		return dev_err_probe(ts->dev, error,
-> > +				     "Could not register with Input Sub-system.\n");
->
-> 	return input_register_device(input_dev);
+..
 
-Ack, thanks.
+>>> +
+>>> +&blsp_i2c4_default {
+>>
+>> None of your overrides look like have proper alphabetical order. Please
+>> use alphabetical order.
+>>
+> 
+> Although these are already following the same order as
+> apq8016-sbc.dts, would you like the two DTS files based on the same
+> SoC to follow different orders?
 
->
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct i2c_device_id axiom_i2c_id_table[] = {
-> > +	{ "ax54a" },
-> > +	{ },
-> > +};
-> > +MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
->
-> Do we really need an i2c-id table here? Most platforms do either use OF
-> or ACPI.
+I don't know about Konrad and Bjorn, but to me it does not matter that
+some existing board has obvious style issues. What matters to me, that
+new code does not have these obvious style issues.
 
-If not wrong this is used to enumarate the device from userspace
-and in my case it is required as there is no direct i2c controller
-exposed from ACPI pov.
+You can wait for Konrad's point of view on that, if you want to be sure.
 
-Thanks !
+Best regards,
+Krzysztof
 
---
-Kamel Bouhara, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
 
