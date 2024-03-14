@@ -1,167 +1,349 @@
-Return-Path: <linux-kernel+bounces-102700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C05487B62C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:45:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 246EA87B631
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:49:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25C91F2324C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 01:45:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D28E228649E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 01:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00804A15;
-	Thu, 14 Mar 2024 01:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CEC94683;
+	Thu, 14 Mar 2024 01:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="KzDvk5aH"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ypfsvP9o"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515F01C06
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 01:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421D71C01
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 01:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710380702; cv=none; b=hFJogs+2daIGUEfXH93tcD3gyKDrJszTCklZ+iQMv3/Gou2eqQPcP9NQhQ7oKEERY8OmVQaJL42W8mZOkONVPfHUoMyuko+HVFEtOUM5S7VMCVgeya54mKS1UpIEEqRKG29sdS0e0FOQ4p2hPMWX5fIgH0CQdCyPBugKnKbDrho=
+	t=1710380932; cv=none; b=bYJlQDH41jW3ecgqElUZHrR7tpetsj+1cRSBjVTCjn3xgbJRno3Lb0ByAsU63HFbox8aM5RCP670SC3i+6yGhbIS1vzLve+RyHlnocwUDjw1W+hczYYw7dExRW46LaR1CNHO7YzvFy4HaoKJDFq6LwvnmmRLgU3Fuvgl6GMtzgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710380702; c=relaxed/simple;
-	bh=8ocKQTgy4aVumKQ3t2ClwDsyVzBXXUVM2MJIlVz1qOg=;
+	s=arc-20240116; t=1710380932; c=relaxed/simple;
+	bh=DemfoqH6NUl8ANWgqrarNGT/fY3gONhfvTSJTKH6ekM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o+riKVIQu3Bvd9ukx6m3QtyvTsK9ZZB6aLvSXkojLLbWr6ESvHlz/CQ8GV1RzyDUsQ7CTDUcTTKKk4NImJPFq8RLxwzpA8xdfnwaYJcjGHb9/r6l2HXgQO8Ux5sqy3ZbK9WW1E1mnb1ZfiM6L2wS77Ekybdj6xTdjSkcBoKhtFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=KzDvk5aH; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-609f4155b76so5113747b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:45:00 -0700 (PDT)
+	 To:Cc:Content-Type; b=RW/tF1EymI0OCVPRSzb/4ixxMAt7rZQVcMACmTKIR71wxE3kJV7tL1qwugqtxnDj077uqv+mHY6oPd7O0Ct4jd+4YLCzXbpTsMfQmgjTlFLAXvXFZ/ukhi0s/hu2CyLb9DPjbDvXuI6l6QQ8a2TjS+kM1UmnY2yqeVD8ezNixZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ypfsvP9o; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso2529a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 18:48:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1710380699; x=1710985499; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710380928; x=1710985728; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OwpjwJbNEYd3LzOzuw0Mu9cmJt6mxKhJWAmaUDGQPhA=;
-        b=KzDvk5aHRg/hC1XnLHtgiimJvIiPWtTAa3XC7PPZxpy3GE91fFPyvTB8bpUiFrJYxQ
-         9Ye0cgLpkW9nXC6p17C6tzl2l35EYdWbLI8tV/EfeK7EdNuBRyG6tA7lOjwa+BwIdjNi
-         pL38mJK9PHGgOFYLMH2IWTw7tyHVZUmBZbROhqkFmchT0gKB6z3l5nvIlAnm5VKeCnuT
-         /Vx+OHL/tatRqhVHc39tHBjNhrWSTgL+8G0f4KGl5S6JVsjKLUl7QuCV+eZLFNNptcNR
-         /AWrZHVj0buV4I0aB8vTeurzV3K+iErNon5z7ktHu8CSr4py8HUbHPpuqpszcFdPj+we
-         PTtg==
+        bh=E5efaAgWuBTuJY+okAmQC7KnwocCXtcKLJHyMVMEVdw=;
+        b=ypfsvP9on/2KerdwojS+ZFYlKTE26LHbhkRqyMXjscSotWZFKH/s+wo3wGPKRGSL7L
+         XTYnU1OM+j0i8jbilICQCLtqZA9jzexwYFOcGfBXNXNNcz8TIwRNMWbrHw9OX81usiDe
+         sNzXYTsnegYTxApPx5H7kz5h0YrM2r2KINKYBKbVSpnS37UQgzN1azntSskwWRHmFP+Z
+         ifKP23CPaPKeSIjzhdnB0ng+RY1JLLlYS7FvvVDg1ruA+O6Lha9SlRcO/0jx7w2rtCa5
+         Axixg3LJavUT/rH24pDDwvIsC/0LcfHUsxlTMf2XNbgF4Evt9Y0+JXkFi2mUl6V468E2
+         RbYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710380699; x=1710985499;
+        d=1e100.net; s=20230601; t=1710380928; x=1710985728;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OwpjwJbNEYd3LzOzuw0Mu9cmJt6mxKhJWAmaUDGQPhA=;
-        b=I2c13MNSwQA1ENgzz+StKxC3JAcHVeUZAkMug5g0qlWlyj+w6DH8e+2kZw9D4gYU1d
-         Y3RJXh9xQr27u9LccwqjlB4yeAR8r/Rjx1bz4TxNwdRIfghei0+V4/trmP9y6WmM4j10
-         Qlq5WUk5Ma6QCDKLwLps4D47Z6/iR+DB2UutvZm7wH4qn+Kyb4idTyqQCfCrIh9jba7+
-         j4OQ7RkDpMfYSW13AORic+9DIz6Bdpj6eglQdb9dNoy0PieT6+laeF98KaGeKWc8N3Pi
-         0iP1T7uPGxZuMWTtWVIk0oxJD2cJVr7/JFYROOoqqnQf50KAtHKxN+0DT2+ecVMvmNyy
-         HBJw==
-X-Forwarded-Encrypted: i=1; AJvYcCWnuDFpp7LYQ4ogrzPe6WuuNILl+lJxJOqs1OtqbYOVGVLJQa9LpkQdjIdDTmukYLy+m6GwU/ynOBq3iAzJQHOwN1UB03Oop8jbgC6c
-X-Gm-Message-State: AOJu0YwpWdgG8ZHReDxNyIlRKE5v5v+xfslIo7bqKM0btuEjE493vJQG
-	toYE5aju9Ki7F/UT3DLUjEaDbvbQd1Hdr8DVgvMO9dFQ3d310GOhqR38GU2FdvUVIqzuccMYUxs
-	gcFv2W2UBTr9/PCROfM7o353krFeR3eV3bPsJ
-X-Google-Smtp-Source: AGHT+IHlITOg75CIyNpYozu0Q61DdnANQrJlYWSXarrNgbzmdmKUnhw5mGbqAcqxPRKzY0zRJ3OhfGH/U4c/MNV5UKI=
-X-Received: by 2002:a81:b408:0:b0:609:f49f:5949 with SMTP id
- h8-20020a81b408000000b00609f49f5949mr395125ywi.21.1710380699301; Wed, 13 Mar
- 2024 18:44:59 -0700 (PDT)
+        bh=E5efaAgWuBTuJY+okAmQC7KnwocCXtcKLJHyMVMEVdw=;
+        b=wxS1e1dsgyIBUOCb0/KPVQupvhuhJalUVqkxtblzKb3M3zs/TgVZ5ZLieymgtqkwzz
+         3uXSJWfPICUCZwPPBkmusV3C1iXj7t2mOLqtF3hekQ+5lwKMuRBs0pZbi1/p12djjj3r
+         j5o/RaWxqTravwSLSymdw5WGMWHrwTnSR0Pn/fn9ZvCe5Z7vNPeasIu1W/L1CrSeOHQW
+         WCeU9TRoBr511aTt49g0LwHlgC9P7KuYfIpiEfHfCqkavpaBPgB6moWnMS+Gay84LPGz
+         2r3PkYor6qtw5JcRHIl0n8rQECcTmhpN2ltXotqCKOhxPCJyFX62tKBiARIKIlMaRoLN
+         M30A==
+X-Forwarded-Encrypted: i=1; AJvYcCXspPNrwZECuI81RuecjHJQkV2tPw74NMovhFwjTLlzCkupgeFt2jNuxkKhRQUyezjQsUAhuYW21eIyB65H35Gx2TWpBnFt528zEje7
+X-Gm-Message-State: AOJu0YzZs9X7wtPrYRBhlLiy8dn/dh1P1W867JqP4W68dlbbyPs7WXfu
+	mX9+AGpux/7dQN2TiIFTOQ+haQfpG9qe9Ad9OF3RFl2GByZ6MQ7Qje/GunTSl4gxsVAWtd4VZgH
+	mSdqiJWQY5SReE3JqhvCCU2PKl83o+KcJcvCG
+X-Google-Smtp-Source: AGHT+IGkqCTnZ22acpFRAP79ja7eFaJsqihoAQF1r9XTqnHmez8YYvhmspoLnDyk0QFGf+hXGF5v3epCPOLiyRWh6aQ=
+X-Received: by 2002:aa7:df8e:0:b0:568:55db:8c69 with SMTP id
+ b14-20020aa7df8e000000b0056855db8c69mr62818edy.4.1710380928394; Wed, 13 Mar
+ 2024 18:48:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <da4d181d-16b9-4e0f-a744-ac61702e0b63@schaufler-ca.com>
- <ef972e0088964722adffc596d38b0463@paul-moore.com> <CAHC9VhTkvyWpvkejbFf-VJoTvUKVDGxBDYkKFdNrdgq4jy5i_w@mail.gmail.com>
- <b5ebbb40-0dda-4595-a058-d5c3a6e800df@schaufler-ca.com>
-In-Reply-To: <b5ebbb40-0dda-4595-a058-d5c3a6e800df@schaufler-ca.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 13 Mar 2024 21:44:48 -0400
-Message-ID: <CAHC9VhQyje1KdbXLKhZ3atgDbf2mNHB409BHtNyE_RSBACpB7g@mail.gmail.com>
-Subject: Re: [PATCH v3] LSM: use 32 bit compatible data types in LSM syscalls.
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: "Dmitry V. Levin" <ldv@strace.io>, LSM List <linux-security-module@vger.kernel.org>, 
-	Linux kernel mailing list <linux-kernel@vger.kernel.org>, linux-api@vger.kernel.org, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	James Morris <jmorris@namei.org>, Serge Hallyn <serge@hallyn.com>, 
-	John Johansen <john.johansen@canonical.com>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>
+References: <20240224052436.3552333-1-saravanak@google.com> <CAMuHMdWhm1WaX3X3P7tyB+e-rX=iwkwm8LxE3=gfHzJ1umhsFg@mail.gmail.com>
+In-Reply-To: <CAMuHMdWhm1WaX3X3P7tyB+e-rX=iwkwm8LxE3=gfHzJ1umhsFg@mail.gmail.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Wed, 13 Mar 2024 18:48:09 -0700
+Message-ID: <CAGETcx_g5fdeSibDv8C2S4WpVekMvCQ9srwR3BwCzCU2z3kk-g@mail.gmail.com>
+Subject: Re: [PATCH] of: property: fw_devlink: Fix stupid bug in
+ remote-endpoint parsing
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	=?UTF-8?Q?Herv=C3=A9_Codina?= <herve.codina@bootlin.com>, 
+	Luca Ceresoli <luca.ceresoli@bootlin.com>, kernel-team@android.com, 
+	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 13, 2024 at 6:48=E2=80=AFPM Casey Schaufler <casey@schaufler-ca=
+On Thu, Feb 29, 2024 at 2:11=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Sat, Feb 24, 2024 at 6:25=E2=80=AFAM Saravana Kannan <saravanak@google=
 com> wrote:
-> On 3/13/2024 3:37 PM, Paul Moore wrote:
-> > On Wed, Mar 13, 2024 at 4:07=E2=80=AFPM Paul Moore <paul@paul-moore.com=
-> wrote:
-> >> On Mar 13, 2024 Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >>> LSM: use 32 bit compatible data types in LSM syscalls.
-> >>>
-> >>> Change the size parameters in lsm_list_modules(), lsm_set_self_attr()
-> >>> and lsm_get_self_attr() from size_t to u32. This avoids the need to
-> >>> have different interfaces for 32 and 64 bit systems.
-> >>>
-> >>> Cc: stable@vger.kernel.org
-> >>> Fixes: a04a1198088a: ("LSM: syscalls for current process attributes")
-> >>> Fixes: ad4aff9ec25f: ("LSM: Create lsm_list_modules system call")
-> >>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> >>> Reported-and-reviewed-by: Dmitry V. Levin <ldv@strace.io>
-> >>> ---
-> >>>  include/linux/lsm_hook_defs.h                        |  4 ++--
-> >>>  include/linux/security.h                             |  8 ++++----
-> >>>  security/apparmor/lsm.c                              |  4 ++--
-> >>>  security/lsm_syscalls.c                              | 10 +++++-----
-> >>>  security/security.c                                  | 12 ++++++----=
---
-> >>>  security/selinux/hooks.c                             |  4 ++--
-> >>>  security/smack/smack_lsm.c                           |  4 ++--
-> >>>  tools/testing/selftests/lsm/common.h                 |  6 +++---
-> >>>  tools/testing/selftests/lsm/lsm_get_self_attr_test.c | 10 +++++-----
-> >>>  tools/testing/selftests/lsm/lsm_list_modules_test.c  |  8 ++++----
-> >>>  tools/testing/selftests/lsm/lsm_set_self_attr_test.c |  6 +++---
-> >>>  11 files changed, 38 insertions(+), 38 deletions(-)
-> >> Okay, this looks better, I'm going to merge this into lsm/stable-6.9
-> >> and put it through the usual automated testing as well as a kselftest
-> >> run to make sure everything there is still okay.  Assuming all goes
-> >> well and no one raises any objections, I'll likely send this up to
-> >> Linus tomorrow.
-> >>
-> >> Thanks everyone!
+> > Introduced a stupid bug in commit 782bfd03c3ae ("of: property: Improve
+> > finding the supplier of a remote-endpoint property") due to a last minu=
+te
+> > incorrect edit of "index !=3D0" into "!index". This patch fixes it to b=
+e
+> > "index > 0" to match the comment right next to it.
 > >
-> > Unfortunately it looks like we have a kselftest failure (below).  I'm
-> > pretty sure that this was working at some point, but it's possible I
-> > missed it when I ran the selftests previously.  I've got to break for
-> > a personal appt right now, but I'll dig into this later tonight.
+> > Reported-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > Link: https://lore.kernel.org/lkml/20240223171849.10f9901d@booty/
+> > Fixes: 782bfd03c3ae ("of: property: Improve finding the supplier of a r=
+emote-endpoint property")
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
 >
-> In v2:
+> Thanks for your patch!
 >
-> diff --git a/security/security.c b/security/security.c
-> index 7035ee35a393..a0f9caf89ae1 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -810,7 +810,7 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, si=
-ze_t *uctx_len,
->         nctx->ctx_len =3D val_len;
->         memcpy(nctx->ctx, val, val_len);
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -1304,7 +1304,7 @@ static struct device_node *parse_remote_endpoint(=
+struct device_node *np,
+> >                                                  int index)
+> >  {
+> >         /* Return NULL for index > 0 to signify end of remote-endpoints=
+ */
+> > -       if (!index || strcmp(prop_name, "remote-endpoint"))
+> > +       if (index > 0 || strcmp(prop_name, "remote-endpoint"))
+> >                 return NULL;
+> >
+> >         return of_graph_get_remote_port_parent(np);
+> > --
+> > 2.44.0.rc0.258.g7320e95886-goog
 >
-> -       if (copy_to_user(uctx, nctx, nctx_len))
-> +       if (uctx && copy_to_user(uctx, nctx, nctx_len))
->                 rc =3D -EFAULT;
+> After this, the "Fixed dependency cycle" messages I reported to be
+> gone in [1] are back.
 >
->  out:
+> In fact, they are slightly different, and there are now even more of them=
+:
 >
-> This addresses the case where NULL is passed in the call to lsm_get_self_=
-attr()
-> to get the buffer size required.
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef7000/ports/port@1/endpoint@0
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef6000/ports/port@1/endpoint@0
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef5000/ports/port@1/endpoint@0
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef4000/ports/port@1/endpoint@0
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef3000/ports/port@1/endpoint@0
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef2000/ports/port@1/endpoint@0
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef1000/ports/port@1/endpoint@0
+> -platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef0000/ports/port@1/endpoint@0
+> -platform feaa0000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef3000/ports/port@1/endpoint@2
+> -platform feaa0000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef2000/ports/port@1/endpoint@2
+> -platform feaa0000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef1000/ports/port@1/endpoint@2
+> -platform feaa0000.csi2: Fixed dependency cycle(s) with
+> /soc/video@e6ef0000/ports/port@1/endpoint@2
+> -platform fead0000.hdmi: Fixed dependency cycle(s) with
+> /soc/sound@ec500000/ports/port@1/endpoint
+> -platform feae0000.hdmi: Fixed dependency cycle(s) with
+> /soc/sound@ec500000/ports/port@2/endpoint
+> -platform feb00000.display: Fixed dependency cycle(s) with
+> /soc/hdmi@feae0000/ports/port@0/endpoint
+> -platform feb00000.display: Fixed dependency cycle(s) with
+> /soc/hdmi@fead0000/ports/port@0/endpoint
+> -platform hdmi0-out: Fixed dependency cycle(s) with
+> /soc/hdmi@fead0000/ports/port@1/endpoint
+> -platform hdmi1-out: Fixed dependency cycle(s) with
+> /soc/hdmi@feae0000/ports/port@1/endpoint
+> -platform vga-encoder: Fixed dependency cycle(s) with /vga/port/endpoint
+> -platform vga-encoder: Fixed dependency cycle(s) with
+> /soc/display@feb00000/ports/port@0/endpoint
+> +platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef4000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef5000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef6000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef7000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@feae00=
+00
+> +platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@fead00=
+00
+> +platform ec500000.sound: Fixed dependency cycle(s) with
+> /soc/i2c@e6510000/codec@10
+> +platform e6ef7000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef6000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef5000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef4000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@fea800=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef70=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef60=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef50=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef40=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef30=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef20=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef10=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef00=
+00
+> +platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/i2c@e66d8000/video-receiver@70
+> +platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@feaa00=
+00
+> +platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef30=
+00
+> +platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef20=
+00
+> +platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef10=
+00
+> +platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef00=
+00
+> +platform feaa0000.csi2: Fixed dependency cycle(s) with
+> /soc/i2c@e66d8000/video-receiver@70
+> +platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@fead00=
+00
+> +platform fead0000.hdmi: Fixed dependency cycle(s) with /soc/sound@ec5000=
+00
+> +platform fead0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb0=
+0000
+> +platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@feae00=
+00
+> +platform feae0000.hdmi: Fixed dependency cycle(s) with /soc/sound@ec5000=
+00
+> +platform feae0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb0=
+0000
+> +platform feae0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb0=
+0000
+> +platform fead0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb0=
+0000
+> +platform feb00000.display: Fixed dependency cycle(s) with /soc/hdmi@feae=
+0000
+> +platform feb00000.display: Fixed dependency cycle(s) with /soc/hdmi@fead=
+0000
+> +platform cvbs-in: Fixed dependency cycle(s) with
+> /soc/i2c@e66d8000/video-receiver@70
+> +platform hdmi-in: Fixed dependency cycle(s) with
+> /soc/i2c@e66d8000/video-receiver@70
+> +platform fead0000.hdmi: Fixed dependency cycle(s) with /hdmi0-out
+> +platform hdmi0-out: Fixed dependency cycle(s) with /soc/hdmi@fead0000
+> +platform feae0000.hdmi: Fixed dependency cycle(s) with /hdmi1-out
+> +platform hdmi1-out: Fixed dependency cycle(s) with /soc/hdmi@feae0000
+> +platform vga: Fixed dependency cycle(s) with /vga-encoder
+> +platform feb00000.display: Fixed dependency cycle(s) with /vga-encoder
+> +platform vga-encoder: Fixed dependency cycle(s) with /vga
+> +platform vga-encoder: Fixed dependency cycle(s) with /soc/display@feb000=
+00
+>
+> -i2c 2-0010: Fixed dependency cycle(s) with
+> /soc/sound@ec500000/ports/port@0/endpoint
+> +platform ec500000.sound: Fixed dependency cycle(s) with
+> /soc/i2c@e6510000/codec@10
+>
+> -i2c 4-0070: Fixed dependency cycle(s) with
+> /soc/csi2@fea80000/ports/port@0/endpoint
+> -i2c 4-0070: Fixed dependency cycle(s) with
+> /soc/csi2@feaa0000/ports/port@0/endpoint
+> -i2c 4-0070: Fixed dependency cycle(s) with /hdmi-in/port/endpoint
+> -i2c 4-0070: Fixed dependency cycle(s) with /cvbs-in/port/endpoint
+> +platform feaa0000.csi2: Fixed dependency cycle(s) with
+> /soc/i2c@e66d8000/video-receiver@70
+> +platform fea80000.csi2: Fixed dependency cycle(s) with
+> /soc/i2c@e66d8000/video-receiver@70
+> +i2c 4-0070: Fixed dependency cycle(s) with /soc/csi2@fea80000
+> +i2c 4-0070: Fixed dependency cycle(s) with /soc/csi2@feaa0000
+>
+> I guess all of that is expected?
 
-Yeah, thanks.  I didn't get a chance to look at the failure before I
-had to leave, but now that I'm looking at it I agree.  It looks like
-it used to work prior to d7cf3412a9f6c, but I broke things when I
-consolidated the processing into lsm_fill_user_ctx() - oops :/
+Hi Geert,
 
-I'll start working on the patch right now and post it as soon as it
-passes testing.
+Greg has picked up my "post-init-providers" series in his driver core.
+Once you pull that in, you should be able to use the
+post-init-providers property to break these cycles. Basically treat it
+like any other supplier binding, but use it to mark the link in the
+cycle that's not real. For the remote-endpoints case, you need to list
+property at the device level. Not the endpoint, port or ports nodes.
 
---=20
-paul-moore.com
+Once you add this property, you should see an increase in the number
+of device links that are present after all device probing is done.
+Also, a bunch of existing device links should get converted from
+sync_state_only device links to normal managed device links. Meaning,
+the sync_state_only file under those /class/devlink/<device-link-x>/
+folder should change from "1" to "0".
+
+If that's what you see and it works, then go ahead and send out a
+patch so that the boards you care about have a more
+deterministic/stable probe/suspend/resume ordering.
+
+Thanks,
+Saravana
+
+
+
+>
+> [1] https://lore.kernel.org/all/CAMuHMdVon3mdivZQ0O6D4+va0nGBrUQbDp23bEq6=
+61QD=3D4t7+g@mail.gmail.com/
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
 
