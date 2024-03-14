@@ -1,98 +1,126 @@
-Return-Path: <linux-kernel+bounces-103788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8676587C47E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 612D687C481
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:57:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26A71B2247A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:56:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C13FAB21DF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DEB0763F9;
-	Thu, 14 Mar 2024 20:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E457641A;
+	Thu, 14 Mar 2024 20:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="QZ//2V5B"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ArR2IdJa"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C246763E4
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47176763F3;
+	Thu, 14 Mar 2024 20:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710449769; cv=none; b=EI704oORSMg/FZCQoplnjRa1vN8dIhEzuosLz8CLGWdAVikLgpRyRH05UfErln/bzi+qEPnAQqIwm9tLuvJcRrnW93MyRfu8gyZeYC71EnRNS3NU0JOVjYppg3hzB0NP5yDf+FK4+oOaxurAjDwgNCUtk0V8koXnC0Fkya2CTH4=
+	t=1710449805; cv=none; b=TXa9RnzJC1BpBik4so3sxnM7H+Z7sIJZQ1ufXVa7VXvgvzMvhAauhpkZtxiUoQP22iI1kU8R9VotaF5t1Et0XfJJcJwBSfEP26s5JWNiG3EB3HizcebcqF+pYIAdZXWglNLYQhHOf0cJPojhXEQWfMB0EYLcd504tYE1645O82Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710449769; c=relaxed/simple;
-	bh=pRHD+TcjUHkyggbW48f7epyoClmqj1C+KlHwQMyVxzE=;
+	s=arc-20240116; t=1710449805; c=relaxed/simple;
+	bh=vVexG+y35tQ9uiNulQsBhDXB6JraRtnHZp6M/RG+asg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VdFDJzGh/EvGdYKx0O3EMG3heaEyF5pHYRCQaDdLGvT4UccOJI2eFkqDpqIaZo32Y/0JmVFtDSkGGW9fggw6lFfsqGS1JfOg/Z+GOs/NQmmoOSCOW0Uv6GSuVrLLIfKgixxPQ1T1dass2XfYPp/4bonZQGkJmDtssopJFT+5CqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=QZ//2V5B; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1de0f92e649so8395255ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:56:07 -0700 (PDT)
+	 To:Cc:Content-Type; b=QEkMQuH5vGHB+zpmlDRkl9A+09NCb2Aqv9iKce2ckDFaQCuOWbh06WavVv0kGf0Vw193+PZLJvJD3J4ZbxjUILMyWB4aie25LW+fKwhjKrUk2dXNkZWbm0uQPjk0HvmUqkbA5jQ8HnhkqA1R6Xtf9e6TSZt4D0ZnnlFZoBQeabo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ArR2IdJa; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29c731ba369so1156382a91.3;
+        Thu, 14 Mar 2024 13:56:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710449766; x=1711054566; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710449803; x=1711054603; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pRHD+TcjUHkyggbW48f7epyoClmqj1C+KlHwQMyVxzE=;
-        b=QZ//2V5BqcGJc2rqpgzBZEdF/z5f3ZdvY3Llp2HHNI3IBGFCAdF/AobEQzrP9yToX5
-         vPAww3vOF6VT0x09GAvsC2Eg7Oo5Q4vDsNPaGzz1SRUCZMu/G6/uzlpBe6PISeKd9EQV
-         AV8dFihzMkGDcrhwwH8bdXfSKWlWBS5Amgkr1cSzGFhnWfnrSQS9nmRyAu3huICUFcla
-         kn/IDYExg5zYpBLpCVzKR0mv9ccldPCk79r9pO2+eHkl2FsoE1qNihOGnuRqG9jXGWHn
-         SpD3ALBERRQoLUmHSTz4/G8MTdxg6ka7Mz29Khcyezs1B9fgu59cxMS/pBp88rxTViQV
-         qR5Q==
+        bh=vVexG+y35tQ9uiNulQsBhDXB6JraRtnHZp6M/RG+asg=;
+        b=ArR2IdJaBNB6LDskwV1CvU0y3BCddnsUJ15ZQea5mhdl7HVHeBJRHhocwskvkAvXXe
+         qBvoUfuOsQiVhjhHP5XviKFca454LBq9X+5i5tfeX6pumPU73Rs6TiNktmE3X0SgPRPS
+         DBt0/e9LJPsSZ8YXe3Bn4akZSlNtlusudo04KjDOGX2FrURlekhQbaGOJrAAenmEVya5
+         Z2ojscwHEZSjHMgVEQ84R1j4bw0YkDRjlPpGYPmH+NwS7lXYuXIgm+w1TWCEXRriM3B7
+         MN+5git9hsrT4varHBvm0kvKypVo57gH19mYR6zTX8C0KxX0WRkHfig1DeJV8P35RljF
+         8cvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710449766; x=1711054566;
+        d=1e100.net; s=20230601; t=1710449803; x=1711054603;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pRHD+TcjUHkyggbW48f7epyoClmqj1C+KlHwQMyVxzE=;
-        b=amyCWnXD3lhrYVyt/mGV3+vwT5dH+PHZ3bCfLNTXpwyULjHK9PbPQxVnKRF57VC5hR
-         NL4QwwfRR1dC63UOswqRegBRNFtS3Ttm4+lEGXAmPChzuRjDuNxB5wmW2xpe0BcZompu
-         1S/K+9zprXJKvCniG+CJLsrEewlXvaHPUL+jh1nMdhjawCP1r+hRCbOFu7Cbjal1STPT
-         XWdbJ1gu4HuULEDq+lVaxM7z91+dbUYo7KQQyzd57zcFq58LqYqvI4x+CCtVDSdKvvvI
-         e7ZQOo/tOfksKHbAk4/fZyXW5P3KV2nMm43bnCL+1dpH7gfhehNquLnoNCOgbF3wktBU
-         7Rqw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6Y2wTY3OUSYGv2JkqNSAs9uUN4C7l4+T2YRgBsbN7foYYJl4SrzcvRh5zCx3fNqBQrOwqoQ9Y5m3R6hG3q0v+aMuAih6RsnHhH7BK
-X-Gm-Message-State: AOJu0YyXjUtBEYT+C9ytgQOYVxNT2pjy2bt09QmAG5ix6cq3ZtySrztt
-	REAtWPLcrRcdmUQ9Rj+HatW7cfvP8nNxU+iXmNvgTLnwHnajq7NDusIN1pGjjlUda92oILTVtID
-	jsyjDqfnpzhF3figgr19mxBzf2VM=
-X-Google-Smtp-Source: AGHT+IHX1AyajLJTVHGSXYPwtKX+7yh7PG9wayr6B9dveZH+o9n5qK2EDhZ/7woQQgmNKPpyAzCre+qGGjjW9NMe9O0=
-X-Received: by 2002:a17:902:780d:b0:1dd:b6c0:1363 with SMTP id
- p13-20020a170902780d00b001ddb6c01363mr2687465pll.69.1710449766557; Thu, 14
- Mar 2024 13:56:06 -0700 (PDT)
+        bh=vVexG+y35tQ9uiNulQsBhDXB6JraRtnHZp6M/RG+asg=;
+        b=ZyBysuIFfrncaJz1Il8NT2/4Iwrlynu6sez/MsZVzKrUmE0LuaJWgdhb5ZN9wsu7F2
+         dBdfKs0jpchXD7/cOVmEOAoQudOTcvk02gq0svwdjEhN/3EEHmGcp+DP3CvkuKnoTKEb
+         a8L+lTxfJ+4DiqFS5xyT0dvpm3JretDgD0PGAPyFMngnaSTUf54KGKnmVNIMlJajQf/i
+         P5aqCbwcS9VaDfNLW5KoW7oSXm1mKMInKO1/Tv3LV1Vzer178H/sPkQofem+P6lMWNlr
+         DCIHJwX8s4FZicC+R12/eHtj3AsErjhgoI7bngSIlSn4MCRZbF+4scZIMlbg0/eEGzo7
+         r1KA==
+X-Forwarded-Encrypted: i=1; AJvYcCWapOBqqoIcYdP6w4WpsOTttTH5uyaNdDMhwdtytTp76wLc4g+kUq5x05C6bzDlOce6H4qCTKehtonb+1f2RRpza6omA/KAiCM3BL9SMFNEHG9uaHNPDmsrRYRMwWzaUcGfjri0zLh/X4VJyDnHB3Xay2uzYJJxT1AoGy/j+xPff21+ZzN3Nv8ytg==
+X-Gm-Message-State: AOJu0YwvP3tjm8Y4kvTfixOqi/OPEsIp921MhOc4dzALu3kK68F6Vf0g
+	Lmkcp27Udat9h6os2GS8HSRkVKbrKSl7SC+83bBgx5UIRXnIVU5IOTEPXORFq/44JhDls2PnZSS
+	w2CtTDJ2sza1BqK+ZnoqDjy/Wvk8=
+X-Google-Smtp-Source: AGHT+IG4wxqkAxjdwKlg1zhlT5ni1nrZhArv7cmYlou+sBdAxdO9JwjEtP6sfS1qBKW4ZUbRHqGkBMyDjHAU8zKgLeM=
+X-Received: by 2002:a17:90a:ce12:b0:29b:f2b1:6973 with SMTP id
+ f18-20020a17090ace1200b0029bf2b16973mr2930051pju.20.1710449803547; Thu, 14
+ Mar 2024 13:56:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1710259663-14095-1-git-send-email-quic_mojha@quicinc.com>
-In-Reply-To: <1710259663-14095-1-git-send-email-quic_mojha@quicinc.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Thu, 14 Mar 2024 21:55:55 +0100
-Message-ID: <CAFBinCC4k5nuwNq8kUub2kqZGNV=qmOQribnchuFg2vaKF3J3Q@mail.gmail.com>
-Subject: Re: [PATCH v2] nvmem: meson-mx-efuse: Remove nvmem_device from efuse struct
-To: Mukesh Ojha <quic_mojha@quicinc.com>
-Cc: srinivas.kandagatla@linaro.org, neil.armstrong@linaro.org, 
-	khilman@baylibre.com, jbrunet@baylibre.com, 
-	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
+References: <20240313110515.70088-1-nmi@metaspace.dk> <20240313110515.70088-2-nmi@metaspace.dk>
+ <ZfI8-14RUqGqoRd-@boqun-archlinux> <87il1ptck0.fsf@metaspace.dk>
+ <CANiq72mzBe2npLo=CVR=ShyMuDmr0+TW4Gy0coPFQOBQZ_VnwQ@mail.gmail.com>
+ <87plvwsjn5.fsf@metaspace.dk> <CANiq72neNUL1m0AbY78eXWJMov4fgjnNcQ_16SoT=ikJ3K7bZQ@mail.gmail.com>
+In-Reply-To: <CANiq72neNUL1m0AbY78eXWJMov4fgjnNcQ_16SoT=ikJ3K7bZQ@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 14 Mar 2024 21:56:31 +0100
+Message-ID: <CANiq72noqwU9_wC28Emc2LNyD70JFcS+4MXWuwYUTUWq8ragCg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] rust: block: introduce `kernel::block::mq` module
+To: Andreas Hindborg <nmi@metaspace.dk>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Jens Axboe <axboe@kernel.dk>, 
+	Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, 
+	Bart Van Assche <bvanassche@acm.org>, Hannes Reinecke <hare@suse.de>, 
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Niklas Cassel <Niklas.Cassel@wdc.com>, 
+	Greg KH <gregkh@linuxfoundation.org>, Matthew Wilcox <willy@infradead.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Alice Ryhl <aliceryhl@google.com>, 
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Yexuan Yang <1182282462@bupt.edu.cn>, 
+	=?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, 
+	Joel Granados <j.granados@samsung.com>, 
+	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, Daniel Gomez <da.gomez@samsung.com>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, 
+	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>, 
+	"gost.dev@samsung.com" <gost.dev@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 5:08=E2=80=AFPM Mukesh Ojha <quic_mojha@quicinc.com=
-> wrote:
+On Thu, Mar 14, 2024 at 8:41=E2=80=AFPM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
 >
-> nvmem_device is used at one place while registering nvmem
-> device and it is not required to be present in efuse struct
-> for just this purpose.
->
-> Drop nvmem_device and manage with nvmem device stack variable.
->
-> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> In any case, if we really want to avoid exporting the original symbol
+> (perhaps so that "only Rust" can use it -- or someone trying hard to
+> bypass things on purpose), then we could still avoid the helper and
+> instead write a non-generic `kernel`-private Rust function instead.
+
+The advantages would be that we get the export done automatically and
+that we could write in Rust, e.g. with restricted visibility.
+
+But we could need `#[inline(never)]` (or ideally `#[used]` if it could
+go on functions) or `#[no_mangle]` (but we would lose the mangling).
+
+Anyway, the simplest is to export the original symbol, but we could
+consider to provide support one way or another for this kind of
+"helpers" (i.e. leaving the current helpers as those for macros and
+inline functions), so that it is clear what symbols are only exported
+for Rust use (and not other C code).
+
+Cheers,
+Miguel
 
