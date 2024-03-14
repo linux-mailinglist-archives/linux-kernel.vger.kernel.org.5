@@ -1,213 +1,133 @@
-Return-Path: <linux-kernel+bounces-103251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E89487BCF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:47:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078DE87BCFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:48:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1550283FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:47:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92E4F2841DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5050558AC5;
-	Thu, 14 Mar 2024 12:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3902658AD2;
+	Thu, 14 Mar 2024 12:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b="ipQkYC5y"
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [208.125.0.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FFRmai5s"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E865788B
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.125.0.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E7B32C85
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710420439; cv=none; b=b70/+Sl1Q1wf3RVd2fLOmJnr3nGcL87NMFbV8mFddQa+0dwJEgqUssSz++M52rK89e1IcA6YIIN6QjcpwLud+9uFH1t4r71kwAu2Hn7zoYmtiVLGzxbjsysuxrEPr6LEKVbeiQCWv/C5qx1f5CRc3zUvgdVrb6kXmeM026BI7jI=
+	t=1710420488; cv=none; b=KW/lGa28GFE3NDRp1VKcf+6nEHbyQYSGsIbLKz8QyF3vw8E9mKwianLx95WzMMUrCp9H3wgEw82XWJ1ANIH5jvmbIbySReKbLRI5l1ofsZXXq9R2ZOfcdMbeTyLaeFC6vED7Fbt0yO3rtOPi0kyZB72QlfW+4gCNYYch6eUcynM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710420439; c=relaxed/simple;
-	bh=LVDAGLEHdDB4qSDqiUK7oDEa9Xe7FpISNiEDxuG6ZR4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W1PZsLDmmbjK1IiJXyBE88b2Ve0quYHNEbKccIKNp0lEd8xN2MHAHvukpvRzv1l+82mOe8pgNHM34Wb+cKAGiRcFY5RO1K1jPL4NrEJStlVOZBe3uvRw1Ongs2jLk+y5lvvbZW81CYeYMmVChKKhDMnzE2cpFyfgg8e65duEDjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com; spf=pass smtp.mailfrom=auristor.com; dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b=ipQkYC5y; arc=none smtp.client-ip=208.125.0.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=auristor.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-	d=auristor.com; s=MDaemon; r=y; t=1710420436; x=1711025236;
-	i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
-	MIME-Version:User-Agent:Subject:To:Cc:References:
-	Content-Language:From:Organization:In-Reply-To:Content-Type;
-	bh=hFnwA3X50QkpOEyA/fCQwpCIDCGVzalzZCaaxs5X2Ms=; b=ipQkYC5y4af56
-	4FLic2+ruILDEDFBWiOqIS0H3Zj4qfyCCV4/78EL0cxeThOy9b/0h4Bo3g4PcRSH
-	oQA/oAGVV9JAGep5P4qaBs7YEFHDiF+6p14FRXUrCwbEAlrCfiBn3yhCBjQc5MJe
-	gzOTXjbpuWdb099DbtLBrgF6nWuHhc=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 14 Mar 2024 08:47:16 -0400
-Received: from [IPV6:2603:7000:73c:bb00:857e:1338:aa49:4aa1] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.3) 
-	with ESMTPSA id md5001003826173.msg; Thu, 14 Mar 2024 08:47:14 -0400
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 14 Mar 2024 08:47:14 -0400
-	(not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73c:bb00:857e:1338:aa49:4aa1
-X-MDHelo: [IPV6:2603:7000:73c:bb00:857e:1338:aa49:4aa1]
-X-MDArrival-Date: Thu, 14 Mar 2024 08:47:14 -0400
-X-MDOrigin-Country: US, NA
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=1803a1fb3a=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Message-ID: <c8f0851a-780a-4265-8cf5-424f6cdbd071@auristor.com>
-Date: Thu, 14 Mar 2024 08:47:07 -0400
+	s=arc-20240116; t=1710420488; c=relaxed/simple;
+	bh=KI/C5nDqFAm+WQg5YcNuTy5wVj5/EmHvsqDZ4sMKIS8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=eLNsChx662JkOs7xFSPKgUDvNr78u94LFyVIpZTYuXiOvTYf4W3mAaVkAtd+0IQNa6F2Zjatvu7unQFnu8nfdDvJm6+a51gCmapkyQbGDbQbpMLaq1aV2BvdHAuMNe1OH29jK2ynMlk+u9oclntVYvaR3KpVfcBB1VadSbhAYJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FFRmai5s; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710420485;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=KI/C5nDqFAm+WQg5YcNuTy5wVj5/EmHvsqDZ4sMKIS8=;
+	b=FFRmai5siI9OS8aADjvPJ369pZ1BmXlypsArgRtkO/HQEV2/evjy7LPa3EBPPwmA741oIK
+	k7GkD06RogMQER6wmgHqiiuD5DkeCv6J0FHwlydFkrK4mcrY10HGL2N2gwkGKdjBFxAl3c
+	Vri2NPqMfvsC831tDDpyeuSREkglDTc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-295-EEn_3sgjNCiB3zFdU5lKkg-1; Thu, 14 Mar 2024 08:48:03 -0400
+X-MC-Unique: EEn_3sgjNCiB3zFdU5lKkg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33ec9bdcaa7so109920f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:48:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710420483; x=1711025283;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KI/C5nDqFAm+WQg5YcNuTy5wVj5/EmHvsqDZ4sMKIS8=;
+        b=Bl4eYU5HQK5c1Q/9zyUj+4idlMpZGSOOUB5+BnaUoQEARajwsYEvznU27Ljf1DcjGF
+         P6JLO4z5M0feJbIOnA73tvQELz8dP8o9gdzJ/0YZvB9HwyLnnJsBot0BlUXJO+Hog63t
+         YnlG5icW5wM6x5l8OX0CQmruYZgH6HU6sf7keiv8aQ1lrBSel/RdwpKFHEIl9M1CPDBp
+         xC9A2DEoQAh5+qna1QPAzCdfKf/1aHC3qvcgfL4BVxoSqU+q19jdXCJxvU0OtG/F236q
+         bUaAVcKwmWnhO48an4XTsh8T13cQAYD7AM7kYfTO30Yl8YCmlH0tp7EXJIm5fbUMSesS
+         90VA==
+X-Forwarded-Encrypted: i=1; AJvYcCUA77du34nDDLqQTg+U9zVsQyNdGsus/fEyWejzDVp14WUwNks9LOZklGo7FPpTEL9G4EHOfRGPzUcfoE/Z3gzr7LSYwl4Nb4VvXuuK
+X-Gm-Message-State: AOJu0YyU5/eCSwZhh4I75SS9cW9MeBjAMPOODvyPv/3zA+ZdB/me3q3w
+	Og7GGZhuBxfAi4RA5j7U3tyI6msMTR73m4ChAx0bDMmFcDy9xZ7IknpauEMlyQ0R2XEIF6Zm+zi
+	2+WguVtvTgOrbga/22OOcjWVTgdZNoUkcYDoLFaXOo0Jl0feQBWY2WVM/QldfxA==
+X-Received: by 2002:adf:f28f:0:b0:33e:7132:7994 with SMTP id k15-20020adff28f000000b0033e71327994mr1018627wro.2.1710420482785;
+        Thu, 14 Mar 2024 05:48:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEjK81fcaFYkisBz2ix8oUMtLRu495xVfkU3GpCSPWETyFggRX9ip6GLIFWFVFa197cb7lrfQ==
+X-Received: by 2002:adf:f28f:0:b0:33e:7132:7994 with SMTP id k15-20020adff28f000000b0033e71327994mr1018619wro.2.1710420482414;
+        Thu, 14 Mar 2024 05:48:02 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-230-217.dyn.eolo.it. [146.241.230.217])
+        by smtp.gmail.com with ESMTPSA id z18-20020adfec92000000b0033e7de97214sm692269wrn.40.2024.03.14.05.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 05:48:02 -0700 (PDT)
+Message-ID: <d4a698b0deafac0aaed6f357c7768cfdcdc6f766.camel@redhat.com>
+Subject: Re: [PATCH] netpoll: support sending over raw IP interfaces
+From: Paolo Abeni <pabeni@redhat.com>
+To: Mark Cilissen <mark@yotsuba.nl>, netdev@vger.kernel.org
+Cc: Hans de Goede <hdegoede@redhat.com>, Eric Dumazet <edumazet@google.com>,
+  Jakub Kicinski <kuba@kernel.org>, Breno Leitao <leitao@debian.org>, Ingo
+ Molnar <mingo@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
+ linux-kernel@vger.kernel.org
+Date: Thu, 14 Mar 2024 13:48:00 +0100
+In-Reply-To: <20240313124613.51399-1-mark@yotsuba.nl>
+References: <20240313124613.51399-1-mark@yotsuba.nl>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] afs: Revert "afs: Hide silly-rename files from userspace"
-To: David Howells <dhowells@redhat.com>,
- Marc Dionne <marc.dionne@auristor.com>,
- Markus Suvanto <markus.suvanto@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>, linux-afs@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <3085695.1710328121@warthog.procyon.org.uk>
-Content-Language: en-US
-From: Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-In-Reply-To: <3085695.1710328121@warthog.procyon.org.uk>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010909090106060105050900"
-X-MDCFSigsAdded: auristor.com
 
-This is a cryptographically signed message in MIME format.
+On Wed, 2024-03-13 at 13:46 +0100, Mark Cilissen wrote:
+> Currently, netpoll only supports interfaces with an ethernet-compatible
+> link layer. Certain interfaces like SLIP do not have a link layer
+> on the network interface level at all and expect raw IP packets,
+> and could benefit from being supported by netpoll.
+>=20
+> This commit adds support for such interfaces by using the network device'=
+s
+> `hard_header_len` field as an indication that no link layer is present.
+> If that is the case we simply skip adding the ethernet header, causing
+> a raw IP packet to be sent over the interface. This has been confirmed
+> to add netconsole support to at least SLIP and WireGuard interfaces.
+>=20
+> Signed-off-by: Mark Cilissen <mark@yotsuba.nl>
 
---------------ms010909090106060105050900
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+## Form letter - net-next-closed
 
-On 3/13/2024 7:08 AM, David Howells wrote:
->      
-> This reverts commit 57e9d49c54528c49b8bffe6d99d782ea051ea534.
->
-> This undoes the hiding of .__afsXXXX silly-rename files.  The problem with
-> hiding them is that rm can't then manually delete them.
->
-> This also reverts commit 5f7a07646655fb4108da527565dcdc80124b14c4 ("afs: Fix
-> endless loop in directory parsing") as that's a bugfix for the above.
->
-> Fixes: 57e9d49c5452 ("afs: Hide silly-rename files from userspace")
-> Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
-> Link: https://lists.infradead.org/pipermail/linux-afs/2024-February/008102.html
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Marc Dionne <marc.dionne@auristor.com>
-> cc: linux-afs@lists.infradead.org
-> ---
->   fs/afs/dir.c |   10 ----------
->   1 file changed, 10 deletions(-)
->
-> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-> index 8a67fc427e74..67afe68972d5 100644
-> --- a/fs/afs/dir.c
-> +++ b/fs/afs/dir.c
-> @@ -474,16 +474,6 @@ static int afs_dir_iterate_block(struct afs_vnode *dvnode,
->   			continue;
->   		}
->   
-> -		/* Don't expose silly rename entries to userspace. */
-> -		if (nlen > 6 &&
-> -		    dire->u.name[0] == '.' &&
-> -		    ctx->actor != afs_lookup_filldir &&
-> -		    ctx->actor != afs_lookup_one_filldir &&
-> -		    memcmp(dire->u.name, ".__afs", 6) == 0) {
-> -			ctx->pos = blkoff + next * sizeof(union afs_xdr_dirent);
-> -			continue;
-> -		}
-> -
->   		/* found the next entry */
->   		if (!dir_emit(ctx, dire->u.name, nlen,
->   			      ntohl(dire->u.vnode),
+The merge window for v6.9 has begun and we have already posted our pull
+request. Therefore net-next is closed for new drivers, features, code
+refactoring and optimizations. We are currently accepting bug fixes
+only.
 
-Reviewed-by: Jeffrey E Altman<jaltman@auristor.com>
+Please repost when net-next reopens after March 25th.
 
+RFC patches sent for review only are obviously welcome at any time.
 
---------------ms010909090106060105050900
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+See:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#develop=
+ment-cycle
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
-BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
-MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
-MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
-YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
-xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
-fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
-EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
-9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
-IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
-BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
-BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
-My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
-A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
-L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
-bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
-aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
-YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
-ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
-dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
-MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
-gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
-eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
-WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
-utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
-Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
-a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
-AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
-Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
-wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
-15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
-o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
-3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
-VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
-CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
-dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
-L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
-5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
-dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
-eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
-YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
-dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
-Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
-dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
-bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
-CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
-bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
-0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
-6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
-QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
-Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
-db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
-rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
-UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
-p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
-MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
-A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
-ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxNDEy
-NDcwN1owLwYJKoZIhvcNAQkEMSIEIPRB2J+uNLjDZUYP5S828B1Crf/Ts7YuYU6YDsaCZ4P2
-MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
-MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
-AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
-dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
-AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
-hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAImJw
-dZYtwsFvVh5mMOE69p8MMtgQfRuMAK0wDo8JfvJD0rXZFoJZah/OYBMxxrSIZ1aAZnCV7REO
-vwqL0i2+9ppGW1mfv9PZG8fgVRkhsBgGMb+aou7yOgwJoIOyve+9mRmhAxLJRuhX+dBDZmzA
-ydbroCBxN4nG3MvE7F9KPTRpxoU1X1/SgYHY4MNfzjNMsZj4upCgtP1ShbH/7vCaAt3DOdb9
-/ARBDtDFo9g1S3DdPndXC1+u4POEmWSE2vHagZESRfHNoGZAbmDsQ8HVj7iR1necTDrYLgqf
-p3NjRVC0BZtyYJR5662JEqCK4/UyaZw8pfeGbYHkt1FdgXcaEgAAAAAAAA==
---------------ms010909090106060105050900--
+--
+pw-bot: defer
 
 
