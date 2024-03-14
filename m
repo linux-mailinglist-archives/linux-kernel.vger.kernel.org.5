@@ -1,164 +1,196 @@
-Return-Path: <linux-kernel+bounces-103184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 656EE87BC0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:39:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8204D87BC0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D50E01F22FC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:39:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 413D4287E16
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F094D6EB74;
-	Thu, 14 Mar 2024 11:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244CC6F07B;
+	Thu, 14 Mar 2024 11:39:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NUtuI5mx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fMMraK/A"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4AB56CDB5;
-	Thu, 14 Mar 2024 11:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB246CDB5;
+	Thu, 14 Mar 2024 11:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710416374; cv=none; b=gasD04ZUuIY/KEwpqF9JOfhPnpL99q714LxDimxuPSTyiMi0mW8rLlMacnHKHr+BGZGpIHvVQMRmNMPasOGu1urZT4hAPInPCJE+J4qPSkUaXITi4+xi73MIeWzr0RiISoUh6jKNd6eZlnITq+gZPaO/Q5PapPk91IZXawx/DMY=
+	t=1710416385; cv=none; b=MoV15FVUZahH+KM/hZ94KIEm7WjNcNTqTZtbEgXjv7A2OJ7eC/UM4LPVbGT4fTK0dUwLEh/8BWHDKBXjQbfU+MSkTzuWbHrSTAb0FtYq+xxhw3JE+G8RB+udESEGUE+BJqrpNS9rADL4yWgKovhN3GBHo1JyVc2kRR1dih24iC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710416374; c=relaxed/simple;
-	bh=gFRSJcnPaE/PeJWZbowy+BixegV6p7D1UJq7221K7gE=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nnTUAiKCxokwHySY/AxSXBLFs0CZRrP3fmZHt2bpHEzPz6eQJKDBJlEn6/icgjBjgrrLyxGihHqVRxcMKhLSXg+Db02F6vA2f3l0OxTyu+96RzNqqEGNc02f1SQDG2mm8UbgCad9FCRW6yfUWl4bU930yt5dMdCNJXViHcKj7D8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NUtuI5mx; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710416373; x=1741952373;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=gFRSJcnPaE/PeJWZbowy+BixegV6p7D1UJq7221K7gE=;
-  b=NUtuI5mxCpUPosQw59dobzfHE4BcQz0SrbQ3aHg0PFMQmZkKacNZVnQS
-   UloH4oAsMdzl/idAECu/598Ie4DoM7IylpTK8WqFxMzZBGym2ea4k/ZAG
-   fb8JBR34Y4wMuaxfyF6MwNZy2xonR9vaCRvgmfNWipOMCHqnerDyKF4OZ
-   VFgzKF2mjcBxfaml2yb7lxNsOesP4ixLhZyc08e9LcHieug5bl6/NaVql
-   g/zTAosl7ConWlliucxmaUneH90kuoheCsoU/ZSoV3CDOAW6l6PJ8Qp1Q
-   m1PYzWUOs6B+mIX9TKIgNQzTzkIucp9vZdL4Wr21Oe3IsrNS2keN1UsmJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="5352302"
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="5352302"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 04:39:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="12842860"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.8])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 04:39:30 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 14 Mar 2024 13:39:24 +0200 (EET)
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] PCI: Use the correct bit in Link Training not active
- check
-In-Reply-To: <01666075-504d-a434-d039-2e25db931f23@linux.intel.com>
-Message-ID: <c4fe9080-245f-7089-84c1-bb47dcf2cd83@linux.intel.com>
-References: <20240301150641.4037-1-ilpo.jarvinen@linux.intel.com> <alpine.DEB.2.21.2403011622560.42226@angie.orcam.me.uk> <c740c6e4-ca1a-33ad-8437-4a1219c16eb1@linux.intel.com> <alpine.DEB.2.21.2403060951310.43702@angie.orcam.me.uk>
- <01666075-504d-a434-d039-2e25db931f23@linux.intel.com>
+	s=arc-20240116; t=1710416385; c=relaxed/simple;
+	bh=ETF4crk2ZZn+GTdZSouP+pIboaWYhShSjz0BQ9XdVLU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aelnob23XcVokIZUMkVd76xKRrnTEqu0JV5w02y6mnce+Vjk9Jd3BpwaW0rx0wKu1IIbR2vMFEMHNt9YCo2hENDfTVQl2g+fZzCZIzboh1MUzogShCjAk6TMtARa+DdjSQJ7Drvy6e4sg4fupDcG1JiuSBxfH1wy9L6W/MVyg3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fMMraK/A; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e6ccd69ebcso380049b3a.0;
+        Thu, 14 Mar 2024 04:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710416383; x=1711021183; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QfQgWYQyYj89ysjrRhexn30LYxihC3kxhP3AI5S3jLo=;
+        b=fMMraK/AkYSmmwVzgEFN+40yGYq/SPlhRsa/lAW0JQ1lWD74NWV6nA+fhcFU9Gdsu8
+         IXqgTFkjgLilKdYezeH8BI/ndaPrhoHsC4MbkylKvysqrRp56O7iw5VAuN6iA1n/ibeg
+         83yK7etj9/txu94lUYsjc0pcIYjnXuQVxFv6i6wRlNJOUfdzxpGsH9pNCORtNkZu4dvC
+         5nkXr1X8Y45kExvzaKQzUHH0kv4E/3TFIj2avpRT1xZRnGZzjcK0y9b3ff50+mOMga6Y
+         eQA5Aui12TR8FeK+Zr3LfscUs+nRrJnOyDVrWHZmy1PGeHNKEgL2iFlADosKG0PtKwM5
+         Jmpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710416383; x=1711021183;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QfQgWYQyYj89ysjrRhexn30LYxihC3kxhP3AI5S3jLo=;
+        b=A9ZB7eqjfgFuYsvBpBXk3i1bkTVjjiz4CMLEfZDW6uWbusKSXokHNJdkSyuEBb5iW6
+         Lbam3zVIYqSI+Hg5KlIHsotQhLgUYIYuE1JCBXB7yyR1itcY6MSvPTtuaYp6kTPpGuzb
+         lcCxCte4XOGgRxTEGnjePfJD+Atw52mGpJ8KQZl48Yvgl+MHMU5UeWMdwf/MOYJqTLri
+         DqTH6i5VqxxA6ThBysqyvsn8m7DhBOOv1plOcQUmuqdYYhxnHd0ub94RpnlswnWB5+MX
+         Pz4n+sDxic2ao12DxQu4BurN5KtTfMADZNrb+bap8WRQA8elUJWPr1wabGPdTog4wjt5
+         r7gw==
+X-Forwarded-Encrypted: i=1; AJvYcCV4sDi4UBTXNKjiHWuWoeNgy0QnCvWAGuXXv5fiuvlhSpQAe/WD12dp/25uNArV4ldEd7cy42BgDHqkn5xuwXxefx+G7tN+YwR4b9svzKO0N1U83WgkNgUcx4u0ofp2R6Xkd95OCcmqs1PwtcOAOl/Q92mDmR/WOLHyRW80rIlwYw==
+X-Gm-Message-State: AOJu0YzobbrHguGysuXTpNUJvWGf/76KtQXG+LK6XV6pINF4p42drIMP
+	+x4mNHsbhnpsIXRBiWC06+ZtBi56dIUtsSMgNZADzmBHX8/4KLqA
+X-Google-Smtp-Source: AGHT+IHLaKlI2bpVtlmtYb2ia4Zt/JCYONAdDifdpN67PuRuSJBTUazfb6ou5fCqmlhZHkUJgKP0pg==
+X-Received: by 2002:a05:6a21:18e:b0:1a1:6f4f:25e2 with SMTP id le14-20020a056a21018e00b001a16f4f25e2mr1651524pzb.49.1710416383169;
+        Thu, 14 Mar 2024 04:39:43 -0700 (PDT)
+Received: from libra05 ([143.248.188.128])
+        by smtp.gmail.com with ESMTPSA id mr20-20020a17090b239400b0029b9cb71e22sm679670pjb.27.2024.03.14.04.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 04:39:42 -0700 (PDT)
+Date: Thu, 14 Mar 2024 20:39:38 +0900
+From: Yewon Choi <woni9911@gmail.com>
+To: Allison Henderson <allison.henderson@oracle.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+	"Dae R. Jeong" <threeearcat@gmail.com>
+Subject: Re: net/rds: Improper memory ordering semantic in release_in_xmit()
+Message-ID: <ZfLh+va60YU2U86q@libra05>
+References: <Zehp16cKYeGWknJs@libra05>
+ <86d88699e8f22ebe0d45ffb5229fb73d78c5aae9.camel@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-462866126-1710416364=:1017"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <86d88699e8f22ebe0d45ffb5229fb73d78c5aae9.camel@oracle.com>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, Mar 07, 2024 at 08:13:50PM +0000, Allison Henderson wrote:
+> On Wed, 2024-03-06 at 22:04 +0900, Yewon Choi wrote:
+> > Hello,
+> > 
+> > It seems to be that clear_bit() in release_in_xmit() doesn't have
+> > release semantic while it works as a bit lock in rds_send_xmit().
+> > Since acquire/release_in_xmit() are used in rds_send_xmit() for the 
+> > serialization between callers of rds_send_xmit(), they should imply 
+> > acquire/release semantics like other locks.
+> > 
+> > Although smp_mb__after_atomic() is placed after clear_bit(), it
+> > cannot
+> > prevent that instructions before clear_bit() (in critical section)
+> > are
+> > reordered after clear_bit().
+> > As a result, mutual exclusion may not be guaranteed in specific
+> > HW architectures like Arm.
+> > 
+> > We tested that this locking implementation doesn't guarantee the
+> > atomicity of
+> > critical section in Arm server. Testing was done with Arm Neoverse N1
+> > cores,
+> > and the testing code was generated by litmus testing tool (klitmus7).
+> > 
+> > Initial condition:
+> > 
+> > l = x = y = r0 = r1 = 0
+> > 
+> > Thread 0:
+> > 
+> > if (test_and_set_bit(0, l) == 0) {
+> >     WRITE_ONCE(*x, 1);
+> >     WRITE_ONCE(*y, 1);
+> >     clear_bit(0, l);
+> >     smp_mb__after_atomic();
+> > }
+> > 
+> > Thread 1:
+> > 
+> > if (test_and_set_bit(0, l) == 0) {
+> >     r0 = READ_ONCE(*x);
+> >     r1 = READ_ONCE(*y);
+> >     clear_bit(0, l);
+> >     smp_mb__after_atomic();
+> > }
+> > 
+> > If the implementation is correct, the value of r0 and r1 should show
+> > all-or-nothing behavior (both 0 or 1). However, below test result
+> > shows 
+> > that atomicity violation is very rare, but exists:
+> > 
+> > Histogram (4 states)
+> > 9673811 :>1:r0=0; 1:r1=0;
+> > 5647    :>1:r0=1; 1:r1=0; // Violate atomicity
+> > 9605    :>1:r0=0; 1:r1=1; // Violate atomicity
+> > 6310937 :>1:r0=1; 1:r1=1;
+> > 
+> > So, we suggest introducing release semantic using clear_bit_unlock()
+> > instead of clear_bit():
+> > 
+> > diff --git a/net/rds/send.c b/net/rds/send.c
+> > index 5e57a1581dc6..65b1bb06ca71 100644
+> > --- a/net/rds/send.c
+> > +++ b/net/rds/send.c
+> > @@ -108,7 +108,7 @@ static int acquire_in_xmit(struct rds_conn_path
+> > *cp)
+> >  
+> >  static void release_in_xmit(struct rds_conn_path *cp)
+> >  {
+> > -       clear_bit(RDS_IN_XMIT, &cp->cp_flags);
+> > +       clear_bit_unlock(RDS_IN_XMIT, &cp->cp_flags);
+> >         smp_mb__after_atomic();
+> >         /*
+> >          * We don't use wait_on_bit()/wake_up_bit() because our
+> > waking is in a
+> > 
+> > Could you check this please? If needed, we will send a patch.
+> 
+> Hi Yewon,
+> 
+> Thank you for finding this.  I had a look at the code you had
+> mentioned, and while I don't see any use cases of release_in_xmit()
+> that might result in an out of order read, I do think that the proposed
+> change is a good clean up.  If you choose to submit a patch, please
+> remove the proceeding "smp_mb__after_atomic" line as well, as it would
+> no longer be needed.  Also, please update acquire_in_xmit() to use the
+> corresponding test_and_set_bit_lock() call.  Thank you!
+>
 
---8323328-462866126-1710416364=:1017
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Thank you for examining this and giving suggestions!
+I sent a patch with changes including your suggestions. If it has
+problems, I will correct them as soon as possible.
 
-On Wed, 6 Mar 2024, Ilpo J=E4rvinen wrote:
+Sincerely,
+Yewon Choi
 
-> On Wed, 6 Mar 2024, Maciej W. Rozycki wrote:
-> > On Mon, 4 Mar 2024, Ilpo J=E4rvinen wrote:
-> >=20
-> > > > > Since waiting for Data Link Layer Link Active bit is only used fo=
-r the
-> > > > > Target Speed quirk, this only impacts the case when the quirk att=
-empts
-> > > > > to restore speed to higher than 2.5 GT/s (The link is Up at that =
-point
-> > > > > so pcie_retrain_link() will fail).
-> > > >=20
-> > > >  NAK.  It's used for both clamping and unclamping and it will break=
- the=20
-> > > > workaround, because the whole point there is to wait until DLLA has=
- been=20
-> > > > set.  Using LT is not reliable because it will oscillate in the fai=
-lure=20
-> > > > case and seeing the bit clear does not mean link has been establish=
-ed. =20
-> > >=20
-> > > In pcie_retrain_link(), there are two calls into=20
-> > > pcie_wait_for_link_status() and the second one of them is meant to=20
-> > > implement the link-has-been-established check.
-> > >=20
-> > > The first wait call comes from e7e39756363a ("PCI/ASPM: Avoid link=20
-> > > retraining race") and is just to ensure the link is not ongoing retra=
-ining=20
-> > > to make sure the latest configuration in captured as required by the=
-=20
-> > > implementation note. LT being cleared is exactly what is wanted for t=
-hat=20
-> > > check because it means that any earlier retraining has ended (a new o=
-ne=20
-> > > might be starting but that doesn't matter, we saw it cleared so the n=
-ew=20
-> > > configuration should be in effect for that instance of link retrainin=
-g).
-> > >=20
-> > > So my point is, the first check is not even meant to check that link =
-has=20
-> > > been established.
-> >=20
-> >  I see what you mean, and I now remember the note in the spec.  I had=
-=20
-> > concerns about it, but did not do anything about it at that point.
-> >=20
-> >  I think we still have no guarantee that LT will be clear at the point =
-we=20
-> > set RL, because LT could get reasserted by hardware between our read an=
-d=20
-> > the setting of RL.
-> >
-> > IIUC that doesn't matter really, because the new link=20
-> > parameters will be taken into account regardless of whether retraining =
-was
-> > initiated by hardware in an attempt to do link recovery or triggered by=
-=20
-> > software via RL.
->=20
-> I, too, was somewhat worried about having LT never clear for long enough=
-=20
-> to successfully sample it during the wait but it's like you say, any new=
-=20
-> link training should take account the new Target Speed which should=20
-> successfully bring the link up (assuming the quirk works in the first=20
-> place) and that should clear LT.
-
-Hi,
-
-One more point to add here, I started to wonder today why that use_lt=20
-parameter is needed at all for pcie_retrain_link()?
-
-Once the Target Speed has been changed to 2.5GT/s which is what the quirk=
-=20
-does before calling retraining, LT too should work "normally" after that.
-
---=20
- i.
-
---8323328-462866126-1710416364=:1017--
+> Allison
+> 
+> 
+> > 
+> > Best Regards,
+> > Yewon Choi
+> 
 
