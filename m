@@ -1,139 +1,146 @@
-Return-Path: <linux-kernel+bounces-103508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1943487C064
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:35:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B326C87C069
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BD63B21F93
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:35:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DF0A2826E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3153B73519;
-	Thu, 14 Mar 2024 15:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9223A71B51;
+	Thu, 14 Mar 2024 15:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WO4zFE6l"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Jc6Jc4iB"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6553C7175B;
-	Thu, 14 Mar 2024 15:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1674EDDD9
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710430421; cv=none; b=cQrjj5AYkwJg7krFqOzSX6lbbDSK2ZqCDl4duRFP5zISvxRqes1H72mUsD4Z6M9jViS5lkBH7UycVDTx51tkpwbduNug7tcrtB04KbzJLya7pv6sz1XtSO41nP31OrG3HzauMt7FweYfAckvdl1WgL1yuABGn/D+RBbAQGJe6iI=
+	t=1710430537; cv=none; b=jMd6ukOVi0lZwZVFLqSJoLlqC6ci2hfI9DyagNp1V12EC2K1u5+6HPp0UBwfbNgs4OqPFsCDoBprN5zqaQnuy2SCbJmfb+rXsvA4LNE/c6qJ7fVN0MBfsNidadk/v1MZzrsySRuoVl+F3kFlo1CMTuFQ0I0r9+ud/CxkScxkIHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710430421; c=relaxed/simple;
-	bh=aCDonrkKYBPwiH8R2bMD582lXFzDsl0VVpShAkgDxdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rx3E4FjTqxAsPRARcRfZclKYoJtRfrZZt+nbAl/XMo0nDOQbe/gtOMsddLcCZ8lnnaT6kMhPBEXEk/KwnvZ6dRBYnniCwaM6abORbX5b64kzysT2F4ZN2ryiT6n4jQshzqOrI9lJmrYdMm+0Lzv6mi9DYctvwP3xHuxBl/joaG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WO4zFE6l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2783EC433F1;
-	Thu, 14 Mar 2024 15:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710430421;
-	bh=aCDonrkKYBPwiH8R2bMD582lXFzDsl0VVpShAkgDxdQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WO4zFE6l0q3diFd5YdMxGJymp+DtRSFJ0f/VuXvm56UlZuAIBWndg8n91L0PeH1px
-	 AFAdRDau5Y4nedRpjHWd4atk8FrhZT4MMq4/lDYy8C/RveYRfl9wFyBS7/ZYfgkep+
-	 3nZO0GZJxb3GwTEzGaER4ayeBiWcKI+naAm3lxVq/edC2xsgmfnORe9+dmBks5SmrS
-	 Xym6FcxFXw2aiBQirXqOQeP8Gg+58iz7fzXe/VzcxlwMXYVxTcGNjJexH0V7uOXZ8S
-	 4ljz2IYlI56V6C7jiO7HNPq0O4mqmcZULEsi/qAPk5VKGB4ehflOXyXAL6Q1d48Kmy
-	 wXHbn691YoVZg==
-Date: Thu, 14 Mar 2024 15:33:26 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>, Srinivas
- Pandruvada <srinivas.pandruvada@linux.intel.com>, Benjamin Tissoires
- <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org,
- linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] HID: hid-sensor-custom: Convert sprintf/snprintf
- to sysfs_emit
-Message-ID: <20240314153326.2126d3df@jic23-huawei>
-In-Reply-To: <20240314084753.1322110-2-lizhijian@fujitsu.com>
-References: <20240314084753.1322110-1-lizhijian@fujitsu.com>
-	<20240314084753.1322110-2-lizhijian@fujitsu.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710430537; c=relaxed/simple;
+	bh=EmSDy+Y2eZ4rjNbfsPJyI2JRjG8zBMXiabnk6HVEFZU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fj2ebGkhZD4wzXx07YsctwnOn17x/z5RL8gwpOvXkjIM5vNrKlh7O2mHDv0yqPm0fbZkqsTUcV5r8HTOh8AX7STidda5aVjKU0Y5gmE9UPOzGgN+rnFJqJqASC8wgv9Gee4bf81wQM5mh2xWvg0y9hrZVBzDL2XGSqSoloSEmNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Jc6Jc4iB; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-690db6edb2bso7099416d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:35:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710430534; x=1711035334; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dd+EVORm9S4/nMKBvY+MY3YVPrA2LiyU3GMnNyIkvV8=;
+        b=Jc6Jc4iBda5n2Qb9O51ze4mHUNuYNTcKp+Odmgbt6IKRd21FyIpgprOrzFTFhccEAa
+         /lo4d1VJmxF8TBstS9+0BwDrcy0QaqSXGLExyoKOK5+SYDn4jLxSKI1CqEPynZhmlPSC
+         b6KwahMCuxPLf/Q9Wjop64/bBm1CbApLbwhzI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710430534; x=1711035334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dd+EVORm9S4/nMKBvY+MY3YVPrA2LiyU3GMnNyIkvV8=;
+        b=g0voVWo9YA9maVR5Dk2W9YqoBZirmQcwyc1vFFtIwbWqvzsdP7oziGkFxIEWLAha9/
+         KkHEd02ypPXUqiIJ1bHxU0nboUn2igdWctsrtL+dv3S2VxoZ68n3yq5hAodxFqMFJbhZ
+         8G/XAdVtqtZfhG9gcOFl4r6k/M8dj9zx93O/IpPy107wrZVOAubpMTQ1FYXWU0vPLK+a
+         KZj6Y4Vd2oghAKETz1YQVAumKIGyCjGhz/a4gz0DctKrvCSRmKH0u6Zr4RtpdmW3yocL
+         xL51hZ0EFaGxcFCpnMNCCpYiTQl5IAO0i2H9FZy1bcl4r8J75o0jjuDdwQh7gFaOSiPG
+         NK3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWq4f6fsvAG7t3BY7Hso4BmJU8K2Njw1Ir41B4Lz7PGZAOoXFceXHHroLZDtNp9CkPDxuIr1ekyx+W4y7H/M7ifcZhBe/uHZAaRa4Qj
+X-Gm-Message-State: AOJu0YwU2/G5szBVAn5kKJsVClMJ/Pim1XlTDLydm9/9gbbjZa0Oa26U
+	PCFCeA3xVB1UWdg/IWzMC1vMMADWiXF0MAAwVnvn6YCigbXOwY2o/y2mVQdohwnq8UiKsaqNjDM
+	IAA==
+X-Google-Smtp-Source: AGHT+IF9l88HGaC1d1HLyyY7IDFpiEi4vq9qAa9NvPmfakPpV+kEbrvofK/e8BseRbKH4YZv3/3tvQ==
+X-Received: by 2002:a0c:ed45:0:b0:690:9eaf:dae3 with SMTP id v5-20020a0ced45000000b006909eafdae3mr2320899qvq.54.1710430533929;
+        Thu, 14 Mar 2024 08:35:33 -0700 (PDT)
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com. [209.85.160.172])
+        by smtp.gmail.com with ESMTPSA id kj15-20020a056214528f00b00691624b5a44sm317973qvb.35.2024.03.14.08.35.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 08:35:33 -0700 (PDT)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-428405a0205so338821cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:35:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX6V1JjyrxHq+zBVRfJLMfj+ebktaolVOBM4wMudb3lLMzpEI+EM7Jz+GIFN8SfJTYM72LjhlYpd3Klx78iXbDV6mVJTehZjQsPsNT/
+X-Received: by 2002:a05:622a:1706:b0:42f:a3c:2d53 with SMTP id
+ h6-20020a05622a170600b0042f0a3c2d53mr379616qtk.20.1710430532560; Thu, 14 Mar
+ 2024 08:35:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240307230653.1807557-1-hsinyi@chromium.org>
+In-Reply-To: <20240307230653.1807557-1-hsinyi@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 14 Mar 2024 08:35:17 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VLs0To3=SKkTdEXyoF=OD55PibpzmEMCvELnrCH+3okw@mail.gmail.com>
+Message-ID: <CAD=FV=VLs0To3=SKkTdEXyoF=OD55PibpzmEMCvELnrCH+3okw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/5] Match panel with identity
+To: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 14 Mar 2024 16:47:51 +0800
-Li Zhijian <lizhijian@fujitsu.com> wrote:
+Hi,
 
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
-> 
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
-> 
-> sprintf() will be converted as weel if they have.
-> 
-> Generally, this patch is generated by
-> make coccicheck M=<path/to/file> MODE=patch \
-> COCCI=scripts/coccinelle/api/device_attr_show.cocci
-> 
-> No functional change intended
-> 
-> CC: Jiri Kosina <jikos@kernel.org>
-> CC: Jonathan Cameron <jic23@kernel.org>
-> CC: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> CC: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> CC: linux-input@vger.kernel.org
-> CC: linux-iio@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-Hi Li Zhijian,
+On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> w=
+rote:
+>
+> This series is a follow up for 1a5e81de180e ("Revert "drm/panel-edp: Add
+> auo_b116xa3_mode""). It's found that 2 different AUO panels use the same
+> product id. One of them requires an overridden mode, while the other shou=
+ld
+> use the mode directly from edid.
+>
+> Match the panel for identity (id and name). If not found, fallback to mat=
+ch
+> id.
+>
+> v1: https://lore.kernel.org/lkml/20240223223958.3887423-1-hsinyi@chromium=
+org
+> v2: https://lore.kernel.org/lkml/20240228011133.1238439-1-hsinyi@chromium=
+org
+> v3: https://lore.kernel.org/lkml/20240304195214.14563-1-hsinyi@chromium.o=
+rg
+> v4: https://lore.kernel.org/lkml/20240306004347.974304-1-hsinyi@chromium.=
+org/
+> v5: https://lore.kernel.org/lkml/20240306200353.1436198-1-hsinyi@chromium=
+org/
+>
+> Hsin-Yi Wang (5):
+>   drm_edid: Add a function to get EDID base block
+>   drm/edid: Add a function to match EDID with identity
+>   drm/edid: Match edid quirks with identity
+>   drm/panel-edp: Match edp_panels with panel identity
+>   drm/panel-edp: Fix AUO 0x405c panel naming and add a variant
+>
+>  drivers/gpu/drm/drm_edid.c        | 147 +++++++++++++++++++++++-------
+>  drivers/gpu/drm/panel/panel-edp.c |  73 ++++++++++-----
+>  include/drm/drm_edid.h            |  12 ++-
+>  3 files changed, 177 insertions(+), 55 deletions(-)
 
-One trivial comment inline.
-Otherwise straight forward so
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+As talked about in response to patch #2 [1], series has been pushed to
+drm-misc-next:
 
-> ---
-> This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
-> Split them per subsystem so that the maintainer can review it easily
-> [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
-> ---
->  drivers/hid/hid-sensor-custom.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-sensor-custom.c b/drivers/hid/hid-sensor-custom.c
-> index d85398721659..ee1a118834f0 100644
-> --- a/drivers/hid/hid-sensor-custom.c
-> +++ b/drivers/hid/hid-sensor-custom.c
-> @@ -155,7 +155,7 @@ static ssize_t enable_sensor_show(struct device *dev,
->  {
->  	struct hid_sensor_custom *sensor_inst = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", sensor_inst->enable);
-> +	return sysfs_emit(buf, "%d\n", sensor_inst->enable);
->  }
->  
->  static int set_power_report_state(struct hid_sensor_custom *sensor_inst,
-> @@ -372,14 +372,14 @@ static ssize_t show_value(struct device *dev, struct device_attribute *attr,
->  				     sizeof(struct hid_custom_usage_desc),
->  				     usage_id_cmp);
->  		if (usage_desc)
-> -			return snprintf(buf, PAGE_SIZE, "%s\n",
-> -					usage_desc->desc);
-> +			return sysfs_emit(buf, "%s\n",
-> +					  usage_desc->desc);
-rewrap the line as will be under 80 chars.
+ca3c7819499e drm/panel-edp: Fix AUO 0x405c panel naming and add a variant
+bf201127c1b8 drm/panel-edp: Match edp_panels with panel identity
+7ff53c2f77f2 drm/edid: Match edid quirks with identity
+6e3fdedcf0bc drm/edid: Add a function to match EDID with identity
+a0b39da11618 drm_edid: Add a function to get EDID base block
 
->  		else
-> -			return sprintf(buf, "not-specified\n");
-> +			return sysfs_emit(buf, "not-specified\n");
->  	 } else
->  		return -EINVAL;
->  
-> -	return sprintf(buf, "%d\n", value);
-> +	return sysfs_emit(buf, "%d\n", value);
->  }
->  
->  static ssize_t store_value(struct device *dev, struct device_attribute *attr,
-
+[1] https://lore.kernel.org/r/CAD=3DFV=3DVsTq_Yy14n5Ygbxqn4pnguG3wC2AQforP8=
+vdX-Wgn0Dw@mail.gmail.com
 
