@@ -1,56 +1,74 @@
-Return-Path: <linux-kernel+bounces-103570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1974A87C139
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:27:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BAA787C138
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:27:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83044B225D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:27:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 206EDB20EB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7E873533;
-	Thu, 14 Mar 2024 16:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCDCD73527;
+	Thu, 14 Mar 2024 16:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="NvR543C0"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dnHhI9cm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC616F524;
-	Thu, 14 Mar 2024 16:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C99B73181;
+	Thu, 14 Mar 2024 16:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710433652; cv=none; b=iYwfGVBmpxPMWQPtc+TTmlY7zabJ6Tm1OGcvAvF0zrwPXxHaAB0RlizYTPRVTuCR6YDZvO2LvNeUbSIa6thorfFuDH4PAMVdNIDuYUoiWKnulrt8Nc4jFyWOx/PrOE6CMfNwnhk2WabkbFjneaQbvAV57+WdfaoS9taWyBVdd9Q=
+	t=1710433636; cv=none; b=AFz5dRF28CoRuqFAGcoTb1oLwMut8O+XnHgL/zvp03DR04On0uLCJGTgbpMA2TMCZ5XbOuuiISNIJLb4o2RI1YTkLc4Dr6UZfC2ch5oZhU2Dkd+v/QDlMu0OW4i0iItKXhAmYY4NKBYgUc/8IqRnZnzaeuX9QBqTlfrSlQwm3L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710433652; c=relaxed/simple;
-	bh=vwoyE2mDyn9On8hrLTCnfN060DQ8TxSfqTAxI+RAnKw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VOJqwB59/kke0iVPGAd9xnLuYOiMhKHcQtQ2s058z6tJq0pqmr72hIc+aqsM5D3Nl+rQ2u8DfTOSX2liyT4yZ5GQ4pMO0a4jBIAgIhZfvnfG1ZlHrpKBkjf+UWKHDYOCzIxY0c7nEIG7Ct9rT0fvmsdCMvAdaatZkbCc6ofpfuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=NvR543C0; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1710433648; x=1710692848;
-	bh=vwoyE2mDyn9On8hrLTCnfN060DQ8TxSfqTAxI+RAnKw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=NvR543C0oZfacPkUN+ozGEYwwwBKN1k0iTFQliPRarb7BOLfs0qRAk7zcFkzv1aSk
-	 eroiTKoVMPV68qZyjv69B8NQhRG9WxKF5DxkS8+tYyonuapvzhzX7pkRLwsmAJfQH5
-	 coxxoBid4P2e2ml6xRwYoprRuDh2kylDcCX50806fYMnuZEWtf1WRZTwIW/cmYMuCr
-	 4x4V/HKhiKZgzcHVYpsjfN3yLaV1oGuqhKx86KIvXw8NidMMuk4mV5Kp5AHMiYAF1f
-	 eQGyWrTpsojGtXDIAStk47pGDQPCLJXB8lN3VrRWcRN8wWud/lV6+gv02Q3ZPku28k
-	 Pvt4e4ZKWVsig==
-Date: Thu, 14 Mar 2024 16:27:09 +0000
-To: Matt Gilbride <mattgilbride@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Rob Landley <rob@landley.net>, Davidlohr Bueso <dave@stgolabs.net>, Michel Lespinasse <michel@lespinasse.org>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] rust: rbtree: add `RBTreeIteratorMut`
-Message-ID: <94cced92-7cb0-4c6c-934f-7f9190abe3a1@proton.me>
-In-Reply-To: <20240219-b4-rbtree-v2-4-0b113aab330d@google.com>
-References: <20240219-b4-rbtree-v2-0-0b113aab330d@google.com> <20240219-b4-rbtree-v2-4-0b113aab330d@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1710433636; c=relaxed/simple;
+	bh=YpfZ0LjRR83dRF+eHwxHgnO/MhB/Otx/i8hyxDgocTc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mndxgYoRa3Ltkcxv2iEMM7wFfCso0UoPyqWbkcK03nRj4PeElEU0Hmc4q2zfW8HHNrbuyHSyS33Qabvget2WyRY0N7D/szfPET4FC7g55S4gdpaGJ5J7U/QT9It65KL4JD+fvYrC3OofNkus77MwDQdu5K3IIpF6Qd6TbNMAUcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dnHhI9cm; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710433634; x=1741969634;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YpfZ0LjRR83dRF+eHwxHgnO/MhB/Otx/i8hyxDgocTc=;
+  b=dnHhI9cmigc2T/YHBVuWnwrqJxottsoBoNqdk/2S5U6wwulMRtibIl0n
+   3DBhabv+SE0nkcae4bcQiPMFspQUjt3fsf4ukN3opWvq1uVkoTKrudnOn
+   JhNMbDMgwsOTU4pV4DcLe4V3XsatsAxxgc33R03giAxfWleS73MRxKHHx
+   5LnI6ZqFWGsSQvlJN0SoiEP7cswZeUz1oupCQSS88hDfJwweWYFtv2uBT
+   NXB62Vac7uySGF2nL2AdSZJ79SVnf63JAvM0DTzpcfMco1FU8lPemgWDW
+   hO+uEuG3nbN79NN6X1Drdgnrql86fsUoNceQM+tO5hhxt2/vZbZ3BiEp5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="27736526"
+X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
+   d="scan'208";a="27736526"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 09:27:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
+   d="scan'208";a="12418727"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 09:27:13 -0700
+Date: Thu, 14 Mar 2024 09:27:12 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+Message-ID: <20240314162712.GO935089@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <f028d43abeadaa3134297d28fb99f283445c0333.1708933498.git.isaku.yamahata@intel.com>
+ <f5da22e3-55fd-4e8b-8112-ccf1468012c8@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,30 +76,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <f5da22e3-55fd-4e8b-8112-ccf1468012c8@linux.intel.com>
 
-On 2/19/24 12:48, Matt Gilbride wrote:
-> From: Wedson Almeida Filho <wedsonaf@gmail.com>
->=20
-> Add mutable Iterator implementation (`RBTreeIteratorMut`) for `RBTree`,
-> allowing iteration over (key, value) pairs in key order. Only values are
-> mutable, as mutating keys implies modifying a node's position in the tree=
-.
->=20
-> Mutable iteration is used by the binder driver during shutdown to
-> clean up the tree maintained by the "range allocator" [1].
->=20
-> Link: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-6-08=
-ba9197f637@google.com/ [1]
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Signed-off-by: Matt Gilbride <mattgilbride@google.com>
-> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> Tested-by: Alice Ryhl <aliceryhl@google.com>
+On Thu, Mar 14, 2024 at 10:05:35AM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-The comments from patch 3 also apply here.
+> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> > index 18cecf12c7c8..18aef6e23aab 100644
+> > --- a/arch/x86/kvm/vmx/main.c
+> > +++ b/arch/x86/kvm/vmx/main.c
+> > @@ -6,6 +6,22 @@
+> >   #include "nested.h"
+> >   #include "pmu.h"
+> > +static bool enable_tdx __ro_after_init;
+> > +module_param_named(tdx, enable_tdx, bool, 0444);
+> > +
+> > +static __init int vt_hardware_setup(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = vmx_hardware_setup();
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >   #define VMX_REQUIRED_APICV_INHIBITS				\
+> >   	(BIT(APICV_INHIBIT_REASON_DISABLE)|			\
+> >   	 BIT(APICV_INHIBIT_REASON_ABSENT) |			\
+> > @@ -22,6 +38,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+> >   	.hardware_unsetup = vmx_hardware_unsetup,
+> > +	/* TDX cpu enablement is done by tdx_hardware_setup(). */
+> 
+> How about if there are some LPs that are offline.
+> In tdx_hardware_setup(), only online LPs are initialed for TDX, right?
 
---=20
-Cheers,
-Benno
+Correct.
 
+
+> Then when an offline LP becoming online, it doesn't have a chance to call
+> tdx_cpu_enable()?
+
+KVM registers kvm_online/offline_cpu() @ kvm_main.c as cpu hotplug callbacks.
+Eventually x86 kvm hardware_enable() is called on online/offline event.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
