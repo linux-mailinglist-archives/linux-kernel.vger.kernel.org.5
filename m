@@ -1,200 +1,206 @@
-Return-Path: <linux-kernel+bounces-102723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E5D87B682
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:46:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D17187B688
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BE9D1C2115A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:46:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BDADB21FC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCC24A1B;
-	Thu, 14 Mar 2024 02:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A63074C96;
+	Thu, 14 Mar 2024 02:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="TSH/jjOp"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="iB9tHFt6"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2048.outbound.protection.outlook.com [40.107.93.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B087E1;
-	Thu, 14 Mar 2024 02:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA98A55;
+	Thu, 14 Mar 2024 02:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710384382; cv=fail; b=Sa1DBIn8LO/ZFMGxsWOa/Eza1Qvg8+tSH47NocjY6pfkqHO8D0ydDbRVqHvtBoZd+h+NLI9EK3/EfvRtOj82o1C1bc9OLhC9xO2r9gjmJ3qF5gL8bViCGYL4fcqYucDzKBjLEM6OpGQYSLM8P2s4f8u+O9KiSNK6I2xe5utihYU=
+	t=1710384631; cv=fail; b=ZwiXhxahljpKGEblUfYG9FwHU7pdR3D7QHoCCTMiZZmRPRFH+JnHGygU4RTUPqTiEjW8l67t5W11kbzmcOt/KQDEBE3yVM3wC9a5pYdl6X5yImSFpYRJqMj9kYtdlZEe5M3edMXGbk4VhPDFJvoyGl9vUJ/WUXZEff2W47jieUc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710384382; c=relaxed/simple;
-	bh=lk/cuaRa5bjxLGt5eJYfYUe4g2Vx4xLHa8vrMgvnAsk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ER5n/U3lmXoZGXXN2e6rcJy2hqeJCsfB1TZBJXyrLleJlkAYwUpkiUnQqn2Qoq0xKMiJv0Rhe3CkmywmRj3vWt3puoTxyuRyV6gaQNipuNiGTHz3xkIJjL76gVztzSbC/HPGqNLY9fHlF4T6AuOMYC3lzGcSLt40jsu5jWjjofE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=TSH/jjOp; arc=fail smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42DJa8Ti022020;
-	Wed, 13 Mar 2024 19:46:09 -0700
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wu9kvuj2h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Mar 2024 19:46:09 -0700 (PDT)
+	s=arc-20240116; t=1710384631; c=relaxed/simple;
+	bh=VcSIvDraVTQ0SoTqGV10kaXHzYhGjWL2DtQmHCqrs0I=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OmBZ9/TM8X8auBc4sKrAM2zbC8VpQa/wNbD35IAUXaYF5Yqt6ZkrMsMbXiQFmq28jde6CZ8zuf+gpIqzfO/yiMFpzONEXHitttJBYJA86bGrwoj4cKZmcEqHeqg8qXjkYClOFEpMLm+BYupYTWUhDVSv4e0BldK8xRAYx+T685o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=iB9tHFt6; arc=fail smtp.client-ip=40.107.93.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CwilnrNqGhm50xKUEicNozAv3dR5IPNdzjCQg5SRZXwtbtu7NZSyN5tBJKdS3bJml1e4UIUTRVmaGxGXEvt4nsqLZ/5L1mwvAwwZ4iTuADVZmH6zL4gxFg5et6bhtGixnaUUzTJ28OY7ceSqncbExIjm9Ad65QgVlTmwyEewxUTY9B1Whe1h4Dtynk+fBFxMqWQJMfXHoV/RHxzkr8O5uMroFIwPytJZY+M062fzRYoav3rp8HOK8TWWKOi3lMAm0pctHLForNd/SzPt1XD+0P7hPuuOMl6IKsUNkFQrxJFSS3ORk/p0EWYi2Te9l71dSigXdyygBwCML5UpPRRUnA==
+ b=A/BbUMBdf2pTRa33JzFt0ppOVE/ai3yWpeV1ALDRd+FF+a+/tRx3KaVRmNA2UtdJhkOv8cZxZbFBlPz0hcIXtkmqPDUnmLgyIRqlmQNL7kT7IHPKuDcSrqZ3to1j2ncSvRFoVPTYVwbd2z6vMa/dm6tjWMWlrrB/mcwjgirdCOdIoOYypfwcXwlBT8RMx/tJX8UwC9OpK1H6cKPXFC6QHvMKgUSeFTDZzSbVImneyBB8csOx8hQiKR8j1ikjBIaGeu43Ga+57Wv2ePiduJqJ16MFZHrB+ziokMjbdHQNYje2Ly96DODmTAsmSlucQY6VhxRbqQeOO/UBEY7p+pC5AQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lk/cuaRa5bjxLGt5eJYfYUe4g2Vx4xLHa8vrMgvnAsk=;
- b=XzNh1xIsiGxN6dExcs8slDJpPz3BZypbfWRmwTxrQ3ARxGkuM3WVqE97umWf8YoHrGNrNmbO+kwm7XkCM3xiyOHXNKwzFlzFYGJctZvDHfyvh2vKce7Vj7nTSMWQSQt8d1I3iFbDLndhRIxadIXv04SouZ/+1MEGMUmkSFxDOyeM+YShKrZJe8YcW7GwU7/AgH42Xv7On3DBFffdQIYwUDO/ECuSOYcAO0HNsIPal7HL6Ud9IJBi6Swv/OrI9DRoGfQ9BF1W9c+7LY5kw2hkFP4HFDmVM/uY4dJFyKdRsooJOTjJY8oxljNhaGCa/PXwE5KDdO+/GQvLfHmfDMtA/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
+ bh=j/hLD2u8/doA1s3xZJgJWLcaS+GBoIW8R2SRxPBIJPE=;
+ b=nX5kLydBbGYkuGDIFJe/wXONn5bgx71bLQvht/Siu2+co1Y2tfyCBRv9cjElcqop5QJtqJZgSdgVe4hLeTU6/dI741Gsxdz6f/d8WPCaxR43c4PIF7Ig8C0j7r4qVwkwgLmY1GxKfj5VlTGCuDH0qAISutTH1nTW0BTbjK0iCivAo+2DkVfGple1Ho1BIhGC6TUXkxJrlY88YEfVTMI+3pNZvxtvAbcHvRixzUE2g/nzDY0BpK7n6QV1JM/rq1S7Os0tzjchU8siwxX8MBxU6pvYfoE1pGtwFC5d0Tj5PlzDTIuyJFq8wdxieGfC7e6TIkDUVhclJoQZ2cEPy1DQnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lk/cuaRa5bjxLGt5eJYfYUe4g2Vx4xLHa8vrMgvnAsk=;
- b=TSH/jjOpZxyMjRtR9UuC8NhD2qKEC3IdCGywyDe9jarzyelJ/GlUvonx8JG8M/F8YjcVKpZP9CNNthI9feEk4TQtQBsRw71ekPs2s9G8P8Jxpq6ENMid6DGnxCzR9NKSvUZZ28EIQi1Xzf0PcXjXS1C3KYeCbarT/dmf07aMjcI=
-Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
- (2603:10b6:301:68::33) by PH7PR18MB5283.namprd18.prod.outlook.com
- (2603:10b6:510:243::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Thu, 14 Mar
- 2024 02:46:07 +0000
-Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
- ([fe80::89ce:35b4:c4b0:c7ad]) by MWHPR1801MB1918.namprd18.prod.outlook.com
- ([fe80::89ce:35b4:c4b0:c7ad%7]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 02:46:06 +0000
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: Mark <mark@yotsuba.nl>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Hans de Goede
-	<hdegoede@redhat.com>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Breno Leitao <leitao@debian.org>, Ingo Molnar
-	<mingo@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni
-	<pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH] netpoll: support sending over raw IP
- interfaces
-Thread-Topic: [EXTERNAL] Re: [PATCH] netpoll: support sending over raw IP
- interfaces
-Thread-Index: AQHadU3g5YSI4ZMVGEaLlCke/4aQhrE2hTzQ
-Date: Thu, 14 Mar 2024 02:46:06 +0000
-Message-ID: 
- <MWHPR1801MB1918F15413BA4766F29A8581D3292@MWHPR1801MB1918.namprd18.prod.outlook.com>
-References: <20240313124613.51399-1-mark@yotsuba.nl>
- <20240313133602.GA1263314@maili.marvell.com>
- <7C42FC4B-D803-4194-8FBB-19A432D37124@yotsuba.nl>
-In-Reply-To: <7C42FC4B-D803-4194-8FBB-19A432D37124@yotsuba.nl>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MWHPR1801MB1918:EE_|PH7PR18MB5283:EE_
-x-ms-office365-filtering-correlation-id: e83099c6-e4ff-4cb6-9c10-08dc43d0e5d6
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- iWFrCBqefni13xBija90ZXYtgHl5OhA+CuYjL0UMoSILe4a5mT4LIes3zb30e319eVWW++S+8KkouRx7+WnsbXNG5wqzYQcp4S87yHPA+rqw2GHsOGgVF1yg+oZ6Ih7ibBns+7pLln4A55Cxg+WBeOsAg7SeWLgWTgzX3cC31d/8+wxqdRnuImAmiZfdegob6hJXSNI/SFeJxD3m02ln0xxeu4MS4ZwcVJCrGGUczdYNkg9vbnG/7VZQAb+vIFArxwCEClRscjVap7ZcyODsELRZ76cfK5RhjkvwVvdiz4VjodKbQLNfG4DG9MkWewvtc4KoCusSD/nAPUCoUid5s0OtTuajHbPK1EdCJBkaD0HjFPNdj7LJoFyLpDd/4E+WUXvaSg0h6gd31XXu85CAqtdzlxplwfCWleWN67Dt1+f9T2mPuauixcc1+Kj1IU21Nl8F7n46RYAbNlxG362K3wOYrAwpHebMJc5Hqp7YOKAiGABcQMh0MHjvWu9Pb7q7UrRJcuMGfzpkHA8oHIIsR0qE3522/i6Xl+ZMyMdkOQp3UyJMgfPA+4PO7kodKTvVRa1fkCyMXIaJ6qF7adzn6tmwCxxNUvPUsqPDCC4W9M4/WCcbBKQlZ0n6JsQ6RBcDbceAbK0p26xYDkALgLPrHTOOa+ePrFdkU2b1Ddko+DYJmhZcHDliPTFaA1tSvvQNU2QCA+rOo49cysWm8nxm2w==
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1801MB1918.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?ak5YYVNtZ1k5Rlk1TzZ0UmtsZVdwYmJFL29FaTl3UDNmeWRsd0FhOVQ3bUxQ?=
- =?utf-8?B?Ri9Ld29YUVN2RWFLZ2M5QjRDNWRmeCthekFmWGRnck5PVHI4K0NrNzNhKy9j?=
- =?utf-8?B?Y1RiWmVjMmVvNXRoQWdGQklWQW1va2FVZWl5dU9majVWMkNxMjQxcXU3SXJ6?=
- =?utf-8?B?TDJmTExYdXJqY2NHQkY1MGRGL0xPbUpZRW5mWGJhckxJMExxSlBEangxUmNG?=
- =?utf-8?B?OEdPWWNRczh6bnd4d0RnMzF0WTdWL1NNLzdwNGVmUkJRUUExNUZHNTc1SGk0?=
- =?utf-8?B?K3RsUEJINy9sZ2tnOTd6SHhVTDlQa0piYTllYVBTYW01M2hJaHVHSjlJRXlj?=
- =?utf-8?B?Mi9vVDJZdGR4UkN6VFhCbHZ0YzJWL1NZZytHYkp3M3hxZ254bFBlRWU2SCtJ?=
- =?utf-8?B?N0RxeXpvYW94MVJvcHdZcEM2ck1Cc2s2YnJVSXJUdUhCM0NYV3Y0amVqQ21n?=
- =?utf-8?B?TmJoelZ1MDZOeXFJVXJHQkczYmYwZlJRRmJoOG4yM2Y0c0VNZjF4bmxpV096?=
- =?utf-8?B?bkVySk92Q1JpVityL25JekQzdUZ5cHR6Vkc2ODdVNUxvdncyejUxa0JtZE5Q?=
- =?utf-8?B?QlhCcDB5MWJaOVVVYWNpcVhjbnA0Vm1oRXBVN1dWYXRBVnBDU0hkNWh0Mk1W?=
- =?utf-8?B?MGE5MHlTcmYyeVk5eHlrdkN3aVpPRTluSHNrZDRPZWRGTHJJQ3Jmd1VuUXFS?=
- =?utf-8?B?TlZRMWxZWVFQK1I0UFR6cmdFU2lwaG1tTGY3bCtzQzNOYjYrMXV1b2FWY1lD?=
- =?utf-8?B?UlFENHJGZjFrZUFId3JVQ2ZmSGZXaHZyT1BRQUpJTFRQL2lWMS81VDFDb3hh?=
- =?utf-8?B?MEF3TUFSMUdNZDBmSG5mL2k0eUplRVdmcnZad2M4N0FFYTc5cE84UE5GOUkx?=
- =?utf-8?B?RVltYkUvdWZWQmZPTWx1T1Nrb1k0clFWbmFSTVpUVWlQZ05yWUdDa2tucGpr?=
- =?utf-8?B?U3FHNDg4WTl4b0N6Q1Rjc1QwdTNuK293bXBiZ3MwZG5xajdSUEFHYjc2Y2VY?=
- =?utf-8?B?bXd0SnhJcnFpdmVpdnk1RE5kL3c5ME0rSVMzallvMDJZU3EzTktPVGhFWHA5?=
- =?utf-8?B?RmZ5UFQ4TVRGNXMwSE1GZ0ZNOUdJcEhLbGhZWDZtQlVTanI1bjhmb3VHVE9L?=
- =?utf-8?B?cjBwa0RkYWQ0SC9XSXNrUEt1MHEzSE5VWlpEem5rZjJPaGNmNlRXYWxjcEM3?=
- =?utf-8?B?NUplTk9DTGpKamxIeU8zeGl5V0Z3QzB1VzZBL3JOZWN1cER2M2NaeE1sbnEy?=
- =?utf-8?B?dDBaQTB3TVEvZlZyb0lHaWFHc0NOcE1BQXBwSVhMK2xDaFpGVGcyMkQ5ZytN?=
- =?utf-8?B?VDRoVTdObUlXOUlmb0R3L243MWdmK1o4SW1uallkMS9mUUJ0RHNKdk5rT0ZG?=
- =?utf-8?B?dzdjU1ptMHF5NnMwTEdEZ1pwYUQyUXVFS2FmcjU1bzlHcFR1a3U2QzROSjVo?=
- =?utf-8?B?RmtuS2lsOGVsNHZYZWdxdEg3Ryt4V0xXMmUvd2R0cU4zYjF0amdMc3YzTGU2?=
- =?utf-8?B?UXFvMmFBamY1TzdqbXZlWUtXOHNkaW5XQmVBTGlUZFpJRW5sbVZZeU9PbkNZ?=
- =?utf-8?B?Rnc1U2NCTDVTZ0FnUDlsd1hUR0lVZnIwQkZSNi8vTml4c0hZYjhDSzB6MUFh?=
- =?utf-8?B?WjVya0REblZ1eFdHd0ZSbDRRTHV1VUN6OVJkSS9RYkpyUWpRK2RnalBySGZ6?=
- =?utf-8?B?emlMOWZlL0tlMnVjRkxjdGZtN3Q0YnhMdE1ycHpNMFdoaDdxZHlhNmZQNDNL?=
- =?utf-8?B?Y1B1b1JFejh2aXZVY2ZnbjZ4SDlEeW90MXRLUk5xRUJPdFZEZXhJWXRQZmQy?=
- =?utf-8?B?ZVJCNTJLVVVPOXplV05WQlpMWXEyTW9PcXJoN0VJWGFydUM0d3QxTVdaa3V4?=
- =?utf-8?B?eWllNHdtZHYzYUE4cVZubUdtaGpFOUMvcmlTcFZ0QUhtc3FMOWF6VnlsNWtF?=
- =?utf-8?B?aGtuWFlsWDRFaTFkZnBkSGZ3dCtqYkdlendGdTFZTjg3bXhJbm9mN3B2eWhU?=
- =?utf-8?B?NEhnNkROK2dmMGV5MklDSG1wMDRiSTIwd2RPZzNrZVFSQllvL1VSQmF3ck1B?=
- =?utf-8?B?YmFTcXZtYkdxRG8vL3NDUHVSclZzZmlXdi9pYkJzWHd6d3A3eXZMODRId1Vh?=
- =?utf-8?Q?20c/FsAH2NX7iok5yE+65tAjM?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ bh=j/hLD2u8/doA1s3xZJgJWLcaS+GBoIW8R2SRxPBIJPE=;
+ b=iB9tHFt6oaoWjrAlc70pn32lRmUQqYrNHwLH4OKLfaDsoN48KG7qGVFEKNrDFJ0JBxWV+ULcTQ5gAcSnKe3PBxdCruYDqLRGW50qe9Bb++E8cGWninFMMwWBI3uF2xO3P0xVWjePa4axEIqWBZXzx4yspoISeuo8wScwm5EKPp8=
+Received: from MW4PR03CA0305.namprd03.prod.outlook.com (2603:10b6:303:dd::10)
+ by PH0PR12MB7929.namprd12.prod.outlook.com (2603:10b6:510:284::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Thu, 14 Mar
+ 2024 02:50:25 +0000
+Received: from MWH0EPF000971E3.namprd02.prod.outlook.com
+ (2603:10b6:303:dd:cafe::a6) by MW4PR03CA0305.outlook.office365.com
+ (2603:10b6:303:dd::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18 via Frontend
+ Transport; Thu, 14 Mar 2024 02:50:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000971E3.mail.protection.outlook.com (10.167.243.70) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7386.12 via Frontend Transport; Thu, 14 Mar 2024 02:50:25 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 13 Mar
+ 2024 21:50:22 -0500
+Date: Wed, 13 Mar 2024 21:49:52 -0500
+From: Michael Roth <michael.roth@amd.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+	<seanjc@google.com>, <aik@amd.com>, <pankaj.gupta@amd.com>
+Subject: Re: [PATCH v3 10/15] KVM: x86: add fields to struct kvm_arch for
+ CoCo features
+Message-ID: <20240314024952.w6n6ol5hjzqayn2g@amd.com>
+References: <20240226190344.787149-1-pbonzini@redhat.com>
+ <20240226190344.787149-11-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1801MB1918.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e83099c6-e4ff-4cb6-9c10-08dc43d0e5d6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 02:46:06.7597
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240226190344.787149-11-pbonzini@redhat.com>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E3:EE_|PH0PR12MB7929:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9a38f629-c0f5-4ef2-6422-08dc43d1803b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	S48XOy0sKfNLXOLQi1Fn18IyPl/7PlA55JrQ4Mq4BlDqlE4GEa/At4MXO85/fm2+fHdeZ/X2wY8MXyeIZYdN7JkDdKG71s2ayNmxa066sCyQM9MnKJXRk6PwOy4XesjmitI9mRa3ujmYIys3/ybMIbRjnHm07hV7dtkQmKW0FWfM29F0zTRcpvKZcGL+NmFoTR6fuUxz/HHWGRsU2cRP1qm60eQIIoRcKPLJBknAmuqRBdATPQvgf6H9l1//fKnEkf9dAGTMu+E3RU8m6Kn+uqiIj/XdWugud7kp60GfHCPiBhK4FHK7REtBgQ3YUIv6Imtm5b68+i3zXAwAab8ySYuDJ3d1LnFodxaVDb4qU0VW6lcJni6P8qvZtEvhNDKEvlur2n5twejJW5JhK20wpml1rUq+Nmg448EuQ+78y+HvqTFDrruWHLTgzgjaaUjFtoBTvjzIWnyDYf6N7xTZE+u3V1pJSKUigUc76OpKEPahmeLDHqArreHxnneqwxf1Pycdjpd4lGOTAtlyGqx+mEeMoHE+ajS1gbwlRQdQt5v9AzdupWUpemp74BYn20H31PfBV6caloM+uUbAcB4J8vJG5MSVWJC3ZuPHuWPly4G6BTrHHLRcTPfV8bhetf1P+IZljXgoMa/GbQtMaKrdv93+kefzz/tLAzsaBzuYl8k6dqPJlWwdf1osVbDcm3F33+rnhxxkJJyw7leYmp8izk0IW4mp5sKXHhGlf/l/Lf+OmFCpeho0FhwogKHjdRn/
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(36860700004)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 02:50:25.6494
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IzUPqryCICDwzeGqvsgBYLpPAthFU/Bz7mDAQrFbbb7jNeWFwMVFhLlzIgzSv++0/mXE/edc28nnPudnY0zYXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR18MB5283
-X-Proofpoint-GUID: c1H1u3-i3h1b2aWFLBrCr6xrH9lFpHT2
-X-Proofpoint-ORIG-GUID: c1H1u3-i3h1b2aWFLBrCr6xrH9lFpHT2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_11,2024-03-13_01,2023-05-22_02
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a38f629-c0f5-4ef2-6422-08dc43d1803b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E3.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7929
 
-PiBGcm9tOiBNYXJrIDxtYXJrQHlvdHN1YmEubmw+DQo+IFNlbnQ6IFdlZG5lc2RheSwgTWFyY2gg
-MTMsIDIwMjQgNzoyMyBQTQ0KPiBUbzogUmF0aGVlc2ggS2Fubm90aCA8cmthbm5vdGhAbWFydmVs
-bC5jb20+DQo+ID4gT24gMjAyNC0wMy0xMyBhdCAxODoxNjoxMywgTWFyayBDaWxpc3NlbiAobWFy
-a0B5b3RzdWJhLm5sKSB3cm90ZToNCj4gPj4gW+KApl0NCj4gPiBUYWtpbmcgYW4gYXNzdW1wdGlv
-biBiYXNlZCBvbiBkZXbigJlzIGxvd2VyIGxheWVyIGRvZXMgbm90IGxvb2sgdG8gYmUgZ29vZC4N
-Cj4gPiB3aHkgbm90IHRyYW5zbWl0IHBhY2tldCBmcm9tIHNrYl9uZXR3b3JrX2hlYWRlcigpIGlu
-IHlvdXIgZHJpdmVyIChieQ0KPiA+IG1ha2luZyBjaGFuZ2VzIGluIHlvdXIgZHJpdmVyKQ0KPiAN
-Cj4gVGhlcmXigJlzIHR3byBhc3N1bXB0aW9ucyBhdCBwbGF5IGhlcmU6DQo+IC0gVGhlIGxvd2Vy
-IGxheWVyIGlzIGV0aGVybmV0OiB0aGlzIGhhcyBhbHdheXMgYmVlbiBwcmVzZW50IGluIG5ldHBv
-bGwsIGFuZCBpcw0KPiBldmVuDQo+ICAgZG9jdW1lbnRlZCBpbiBuZXRjb25zb2xlLnJzdC4gVGhp
-cyBjb21tZW50IGp1c3QgbWVudGlvbnMgaXQgYmVjYXVzZSB3ZQ0KPiBhZGQgYSB3YXkNCj4gICB0
-byBieXBhc3MgdGhlIGFzc3VtcHRpb247IGl0IGlzIG5vdCBhbiBhc3N1bXB0aW9uIHRoaXMgcGF0
-Y2ggYWRkcyB0byB0aGUNCj4gY29kZS4NCj4gLSBoYXJkX2hlYWRlcl9sZW49PTAgbWVhbnMgdGhh
-dCB0aGVyZSBpcyBubyBleHBvc2VkIGxpbmsgbGF5ZXI6IHRoaXMgaXMgYSByYXRoZXINCj4gICBj
-b25zZXJ2YXRpdmUgYXNzdW1wdGlvbiBpbiBteSBvcGluaW9uLCBhbmQgaXMgYWxzbyBtZW50aW9u
-ZWQgaW4gdGhlDQo+IGRlZmluaXRpb24NCg0KSG1tLiAgVGhhdCBpcyBub3QgbXkgcXVlc3Rpb24u
-ICAgTGV0IG1lIGV4cGxhaW4gaXQgaW4gZGV0YWlsLiBOZXRjb25zb2xlIGlzIHVzaW5nIG5ldHBv
-bGxfc2VuZF91ZHAoKSB0byBlbmNhcHN1bGF0ZSB0aGUgbXNnIG92ZXIgDQpVRFAvSVAvIE1BQyBo
-ZWFkZXJzLiBKb2Igd2VsbCBkb25lLiBOb3cgaXQgY2FsbHMgbmV0ZGV2LT5vcHMtPm5kb19zdGFy
-dF94bWl0KHNrYiwgZGV2KS4gIElmIHlvdXIgZHJpdmVyIGlzIHdlbGwgYXdhcmUgdGhhdCB5b3Ug
-Y2FuDQpUcmFuc21pdCBvbmx5IGZyb20gbmV0d29yayBoZWFkZXIsIHdoeSBkb27igJl0IHlvdSBk
-bWEgbWFwIGZyb20gbmV0d29yayBoZWFkZXIgPyAgDQoNCj4gICBvZiBMTF9SRVNFUlZFRF9TUEFD
-RToNCj4gDQo+ID4gKiBBbHRlcm5hdGl2ZSBpczoNCj4gPiAqICAgZGV2LT5oYXJkX2hlYWRlcl9s
-ZW4gPyAoZGV2LT5oYXJkX2hlYWRlcl9sZW4gKw0KPiA+ICogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKEhIX0RBVEFfTU9EIC0gMSkpICYgfihISF9EQVRBX01PRCAtIDEpIDogMA0KPiANCj4g
-ICBUaGUgc2FtZSBhc3N1bXB0aW9uIGlzIGFsc28gbWFkZSBpbiBtb3JlIHBsYWNlcyBpbiB0aGUg
-Y29yZSBuZXR3b3JrIGNvZGUsDQo+IGxpa2UgYWZfcGFja2V0Og0KPiANCj4gPiAgIC0gSWYgdGhl
-IGRldmljZSBoYXMgbm8gZGV2LT5oZWFkZXJfb3BzLT5jcmVhdGUsIHRoZXJlIGlzIG5vIExMIGhl
-YWRlcg0KPiA+ICAgICB2aXNpYmxlIGFib3ZlIHRoZSBkZXZpY2UuIEluIHRoaXMgY2FzZSwgaXRz
-IGhhcmRfaGVhZGVyX2xlbiBzaG91bGQgYmUgMC4NCj4gPiAgICAgVGhlIGRldmljZSBtYXkgcHJl
-cGVuZCBpdHMgb3duIGhlYWRlciBpbnRlcm5hbGx5LiBJbiB0aGlzIGNhc2UsIGl0cw0KPiA+ICAg
-ICBuZWVkZWRfaGVhZHJvb20gc2hvdWxkIGJlIHNldCB0byB0aGUgc3BhY2UgbmVlZGVkIGZvciBp
-dCB0byBhZGQgaXRzDQo+ID4gICAgIGludGVybmFsIGhlYWRlci4NCj4gDQpBQ0suIA0KDQoNCg==
+On Mon, Feb 26, 2024 at 02:03:39PM -0500, Paolo Bonzini wrote:
+> Some VM types have characteristics in common; in fact, the only use
+> of VM types right now is kvm_arch_has_private_mem and it assumes that
+> _all_ nonzero VM types have private memory.
+> 
+> We will soon introduce a VM type for SEV and SEV-ES VMs, and at that
+> point we will have two special characteristics of confidential VMs
+> that depend on the VM type: not just if memory is private, but
+> also whether guest state is protected.  For the latter we have
+> kvm->arch.guest_state_protected, which is only set on a fully initialized
+> VM.
+> 
+> For VM types with protected guest state, we can actually fix a problem in
+> the SEV-ES implementation, where ioctls to set registers do not cause an
+> error even if the VM has been initialized and the guest state encrypted.
+> Make sure that when using VM types that will become an error.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Message-Id: <20240209183743.22030-7-pbonzini@redhat.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  7 ++-
+>  arch/x86/kvm/x86.c              | 95 +++++++++++++++++++++++++++------
+>  2 files changed, 84 insertions(+), 18 deletions(-)
+> 
+> @@ -5552,9 +5561,13 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
+>  }
+>  
+>  
+> -static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
+> -					  u8 *state, unsigned int size)
+> +static int kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
+> +					 u8 *state, unsigned int size)
+>  {
+> +	if (vcpu->kvm->arch.has_protected_state &&
+> +	    fpstate_is_confidential(&vcpu->arch.guest_fpu))
+> +		return -EINVAL;
+> +
+>  	/*
+>  	 * Only copy state for features that are enabled for the guest.  The
+>  	 * state itself isn't problematic, but setting bits in the header for
+> @@ -5571,22 +5584,27 @@ static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
+>  			     XFEATURE_MASK_FPSSE;
+>  
+>  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
+> -		return;
+> +		return 0;
+>  
+>  	fpu_copy_guest_fpstate_to_uabi(&vcpu->arch.guest_fpu, state, size,
+>  				       supported_xcr0, vcpu->arch.pkru);
+> +	return 0;
+>  }
+>  
+> -static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
+> -					 struct kvm_xsave *guest_xsave)
+> +static int kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
+> +					struct kvm_xsave *guest_xsave)
+>  {
+> -	kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
+> -				      sizeof(guest_xsave->region));
+> +	return kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
+> +					     sizeof(guest_xsave->region));
+>  }
+>  
+>  static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
+>  					struct kvm_xsave *guest_xsave)
+>  {
+> +	if (vcpu->kvm->arch.has_protected_state &&
+> +	    fpstate_is_confidential(&vcpu->arch.guest_fpu))
+> +		return -EINVAL;
+> +
+>  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
+>  		return 0;
+
+I've been trying to get SNP running on top of these patches and hit and
+issue with these due to fpstate_set_confidential() being done during
+svm_vcpu_create(), so when QEMU tries to sync FPU state prior to calling
+SNP_LAUNCH_FINISH it errors out. I think the same would happen with
+SEV-ES as well.
+
+Maybe fpstate_set_confidential() should be relocated to SEV_LAUNCH_FINISH
+site as part of these patches?
+
+Also, do you happen to have a pointer to the WIP QEMU patches? Happy to
+help with posting/testing those since we'll need similar for
+SEV_INIT2-based SNP patches.
+
+Thanks,
+
+Mike
 
