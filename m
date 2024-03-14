@@ -1,213 +1,150 @@
-Return-Path: <linux-kernel+bounces-103624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3433287C213
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:22:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BC287C218
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:24:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D48D1F22004
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:22:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 058B3B2265B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82944745FA;
-	Thu, 14 Mar 2024 17:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8261D745F0;
+	Thu, 14 Mar 2024 17:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D7PRhRH0"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QN1Jiaq0"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D980C74C0C;
-	Thu, 14 Mar 2024 17:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C98745F1;
+	Thu, 14 Mar 2024 17:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710436921; cv=none; b=SI6Lk3AO4Pf/vFwcuIUFWcTGH47Qihl0XlnrqFLRxO5Fy7JO2UBf4J5cuYcRArxapleyqU4ZRZ4JrtSWfR9rqgjeG056X6yEyxIf7g9TS8Qdy8xbUnPYdjEHrXJo9FNLGXZst0e1Y8/zckJItnkrsWrT8N5FmFQ5GtoP57U5OKU=
+	t=1710437057; cv=none; b=jqXBqGjwDhL++KQ/+FkLhjkqI1oeH85gvVdEe0JDWyD+4KSgdrad/NkWKS+88AtmvH8N0UFR6T5TDXeTYUmrBl+QbdFr8sUJURmKjqAe14AcxTpbPwDJ02xJ5Kw778/rV40IUdJvw4jFDhQC9XhMjZ6QaDXaMiNhXFJlmelJ8jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710436921; c=relaxed/simple;
-	bh=FXrEH3M/IH7IFRkcj9qjFyB/CEQVFKIX7HcLdf3KbvA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DaW7sDPK3IDAPKx9z4XgytDVSZwB1UOJCTExnT1IED+7DdhpsEtTL5uVyq+afT9RCUFXwZuS2iGaI2EA0ghsX+6FNj5kvb2q3jUEgGILr37nKR1wHpRXHAjXvafePTowuRj8ddQlnwinJ91eBlx+li9e9ah3MTQrQnbxqOITCuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D7PRhRH0; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1710437057; c=relaxed/simple;
+	bh=hUYQANzZPU+Zd5O3hvkp/pd5Gw+TRN/zpzfDb8/esSk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Kgy5ljURs3lo2Kr+gb4TH52sqW/x6DcVw3B7VZr65jZWpS21WH6ZfDI21jkaevTEKZ6/VYGIK+WE2E9CP7kh70+WwzHgI1/KmrR7EnxZ5MjrjjpAzGN1so1P6Mia2At5t6TwlUjybx8ORruimGprr7AHAO5TeJAzgaHdJ7AiwUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QN1Jiaq0; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ececeb19eso164029f8f.3;
-        Thu, 14 Mar 2024 10:21:59 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41312232c7aso14591355e9.0;
+        Thu, 14 Mar 2024 10:24:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710436918; x=1711041718; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8omIJiDvHxyK3b+awxgLaasQCN8eMR86h8WDGSeQ4XU=;
-        b=D7PRhRH08TFcJCarG9Z+Hd0WsJtv2GMr67TU741nwRxChyqXyr5SmaQk3KOjenGKTs
-         S5yIK0/6REu02lsSfN46jnamx/34ZJH4KpW0qpcOc/cqFO2PddeYI6o9PDF3stvxdugT
-         IbmdOKjvvsv5FAUQy/qpkjmX/xVG/BRv9aMGJ/AliK3CTJhNdfi3/GaalVUEFMnYY1iv
-         L9Wytoxpzr+qi7KIOnm759A0o4YVSyTDUc8qWsr/3YOnk0zc2sauA3jCpWDMitbEKer0
-         NzezVpgFWmpqsNcu8vYlYWlg+BpM0Ps1IgfcQM2s+fUl++kL2AeTEOhzvg+7HbnmH0aV
-         gsqA==
+        d=gmail.com; s=20230601; t=1710437054; x=1711041854; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yHYpQHDVWIEkU9CUR0MvRqU6+tOD2fXJjwYTroSp9es=;
+        b=QN1Jiaq03BnAa0DOciOQNLMIfyy2ioQFyohMxDGseaI/VZPLuc5GDpFEZd6kW73jVy
+         LAcuDgcVTZY6jNZqbV96FRMAYid4IVZWEhKGH5Y56zFpxHY/5e/tJa8wyXf6VPL7kF8G
+         s47r+4UtXFYks8lEvTGhj0mgdpPsrjHpTQS0wVFrqmPmm19+eOqOgCYQRX9MhcAViN4/
+         kf6dd6H2V0ngokcsu+IUv5Jsii3NWDtNNeQS8/zB6PIpF55HozHYlWzERYksGeG1dwSo
+         ER8XNAuhWRSXM6ZKwzQk4pfADsqgJCMDGxbi9oga00kEkhrLi4VBs4WOyotaPsm3lab4
+         dhVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710436918; x=1711041718;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8omIJiDvHxyK3b+awxgLaasQCN8eMR86h8WDGSeQ4XU=;
-        b=lnK/EKFRyA1pQs7/KeH0LEnjsTnt3o4HF38WbUWesQe4Ao7GRqPU26tRYBpj/PxYQh
-         q+SC575ivbr0ybAU/BXqYuNiWURA1NKqx9NjaCU9S4SYScm82aUPEBUm5xBjw/mZqph0
-         0o+OW6yxH8tC2WEevLLBVh39DX7f0eke45mEJN4y9+hQVThCoELKAJRI7aYdJ/OzXJ+8
-         RBvYwQUbFDw/MQjWQZNLW4lM3ghFLicrevADKkj3IOPEowkCtk8f4r4JFa3G/lxHJVqx
-         8+kT1hi77nknPQOdHQ2+Ez4HW5/oyKSk9VI78Y5PYQNd5NuQyfGBaWkf+xzB4IACf+sX
-         UiOw==
-X-Forwarded-Encrypted: i=1; AJvYcCVeCQXvhmVaWLjyY35+5ZtJBaaR4BKDnVVL7Yxm1WAeBBkvbmxYe+ZszhrGxmW03aDpB1mL6kT48fJkHwUSArVANnofgDxiULkJbqCdylDbUhr7wkU/eaOpRQCMp1xESPeC
-X-Gm-Message-State: AOJu0Ywa2ihrM5wEP/fw/FhZ28wjIbWqnMWcEPgyi3ik8PTFhtfMyB4T
-	b1PiTtufM6xxKwfdwuiPuRPzOGpLTMlVLTsV9NPzldMDXZ2FkLR9J5Zo/e8gVRhrn+gQ8CP3gI+
-	4d3QLPoAGKGBQ4NVa3LRGTQqTZic=
-X-Google-Smtp-Source: AGHT+IH5Wj3qmhCmgyAnPRU2qa9YAai8utdty4Z5Aaesw86Y4yqXNAQ5VygwN2khRUy5Jab9ygrwy8EvX0zK+aX6HWE=
-X-Received: by 2002:a5d:4577:0:b0:33e:9116:bef4 with SMTP id
- a23-20020a5d4577000000b0033e9116bef4mr627661wrc.14.1710436917857; Thu, 14 Mar
- 2024 10:21:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710437054; x=1711041854;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yHYpQHDVWIEkU9CUR0MvRqU6+tOD2fXJjwYTroSp9es=;
+        b=j8Cfremgwxmgu5AhGHlwlha4KLOto+ZPLkLqWolThLZawj+uXvgc5Dl7T4ngRW9uCq
+         Nvh+yxgzzUy+gUIYZW+nmehZsERGb2pHqYrpI86H/oNhaq0fOYs9JUbLACRjfUNDShms
+         FfLFCjeOn/WerKbr4rH+VLaAN2EHrWVPM7cc8AisWmGBZET3P09uxjd76KDKmpDtrEJs
+         D7eOf+D518Mpx1fK5nVgn0j/18lCfDUSqI3MIcg3AjHk1qNGy3bCBG0IiJ23HuBxEark
+         J/dvkZYMti0tb+2dHIZz+/EfB+I1cwtx54dcu9JWoO9f/9j50ya46VLSWzqceaH4f6EB
+         hoJg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxiYR1fwWrT7Uqqdti2euh4Q3MIDYQODpfR+UCRElpNzCa9NgfCkoUs2quxxono7RJ0YcW9713rfP/y/STo+6dbXpd/ivdPLyf+uGUAzOvfDFbyiRAPWZvor8++Kx3FHqsB/QdQrQyJ/Uh6fxYfMbIN61Ju7als0lDSPn3Ab+f
+X-Gm-Message-State: AOJu0Yy1uxZMA2kUntBs3A+3UeGILED6zFx+mEBCrBW7wuF5QCXjINAc
+	TaQFimkkysemS4U1BI0OS9Duqifmu7Qsc70DBioASMmc9UE8PyBZ
+X-Google-Smtp-Source: AGHT+IE1m63yzHQ+v/oXeyBNcaSZhNJeuWOk678+29ozFfuMnP5Muv+wpzL0qiJ5FGj7UzkcHJBtIA==
+X-Received: by 2002:a05:600c:3b07:b0:412:c379:606 with SMTP id m7-20020a05600c3b0700b00412c3790606mr3228741wms.2.1710437054264;
+        Thu, 14 Mar 2024 10:24:14 -0700 (PDT)
+Received: from [192.168.20.170] (57657817.catv.pool.telekom.hu. [87.101.120.23])
+        by smtp.gmail.com with ESMTPSA id jt23-20020a05600c569700b00412f4afab4csm3115697wmb.1.2024.03.14.10.24.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 10:24:13 -0700 (PDT)
+Message-ID: <05028fed-2462-4e0b-b686-bbacc23868d9@gmail.com>
+Date: Thu, 14 Mar 2024 18:24:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314150003.123020-1-puranjay12@gmail.com> <20240314150003.123020-2-puranjay12@gmail.com>
- <CAP01T75tG5tXqRJsMn6iU1xvmEqeuTg=ja=LUPqqXkrJiYL2XQ@mail.gmail.com> <mb61pfrwsohx5.fsf@gmail.com>
-In-Reply-To: <mb61pfrwsohx5.fsf@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 14 Mar 2024 10:21:46 -0700
-Message-ID: <CAADnVQ+vAuP1UuFf6tY64AmHBqk4FjRY7DwEjKXwWUaczubDcg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add arm64 JIT support for PROBE_MEM32
- pseudo instructions.
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to
+ fix boot failure
+Content-Language: hu
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240311-apss-ipq-pll-ipq5018-hang-v1-1-8ed42b7a904d@gmail.com>
+ <58f07908-127a-438d-84e2-e059f269859b@linaro.org>
+ <2b95a593-225e-47b1-8bda-03240eb0f81e@gmail.com>
+ <8affb3d8-6210-43e6-8cbb-de28bdcf326a@linaro.org>
+From: Gabor Juhos <j4g8y7@gmail.com>
+In-Reply-To: <8affb3d8-6210-43e6-8cbb-de28bdcf326a@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024 at 10:13=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.c=
-om> wrote:
->
-> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
->
-> > On Thu, 14 Mar 2024 at 16:00, Puranjay Mohan <puranjay12@gmail.com> wro=
-te:
-> >>
-> >> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
-> >> instructions.  They are similar to PROBE_MEM instructions with the
-> >> following differences:
-> >> - PROBE_MEM32 supports store.
-> >> - PROBE_MEM32 relies on the verifier to clear upper 32-bit of the
-> >>   src/dst register
-> >> - PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in R2=
-8
-> >>   in the prologue). Due to bpf_arena constructions such R28 + reg +
-> >>   off16 access is guaranteed to be within arena virtual range, so no
-> >>   address check at run-time.
-> >> - PROBE_MEM32 allows STX and ST. If they fault the store is a nop. Whe=
-n
-> >>   LDX faults the destination register is zeroed.
-> >>
-> >> To support these on arm64, we do tmp2 =3D R28 + src/dst reg and then u=
-se
-> >> tmp2 as the new src/dst register. This allows us to reuse most of the
-> >> code for normal [LDX | STX | ST].
-> >>
-> >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> >> ---
-> >
-> > Hi Alexei,
-> > Puranjay and I were discussing this stuff off list and noticed that
-> > atomic instructions are not handled.
-> > It turns out that will cause a kernel crash right now because the
-> > 32-bit offset into arena will be dereferenced directly.
-> >
-> > e.g. something like this:
-> >
-> > @@ -55,6 +56,7 @@ int arena_list_add(void *ctx)
-> >                 test_val++;
-> >                 n->value =3D i;
-> >                 arena_sum +=3D i;
-> > +               __sync_fetch_and_add(&arena_sum, 0);
-> >                 list_add_head(&n->node, list_head);
-> >         }
-> >  #else
-> >
-> > I will try to prepare a fix for the x86 JIT. Puranjay will do the same
-> > for his set.
->
-> Yes, testing the change mentioned by Kumar on ARM64 causes a crashes as w=
-ell:
->
-> bpf_testmod: loading out-of-tree module taints kernel.
->  bpf_testmod: module verification failed: signature and/or required key m=
-issing - tainting kernel
->  Unable to handle kernel NULL pointer dereference at virtual address 0000=
-000000000010
->  Mem abort info:
->    ESR =3D 0x0000000096000006
->    EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->    SET =3D 0, FnV =3D 0
->    EA =3D 0, S1PTW =3D 0
->    FSC =3D 0x06: level 2 translation fault
->  Data abort info:
->    ISV =3D 0, ISS =3D 0x00000006, ISS2 =3D 0x00000000
->    CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
->    GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
->  user pgtable: 4k pages, 48-bit VAs, pgdp=3D00000004043cc000
->  [0000000000000010] pgd=3D0800000410d8f003, p4d=3D0800000410d8f003, pud=
-=3D0800000405972003, pmd=3D0000000000000000
->  Internal error: Oops: 0000000096000006 [#1] SMP
->  Modules linked in: bpf_testmod(OE) nls_ascii nls_cp437 sunrpc vfat fat a=
-es_ce_blk aes_ce_cipher ghash_ce sha1_ce button sch_fq_codel dm_mod dax con=
-figfs dmi_sysfs sha2_ce sha256_arm64 efivarfs
->  CPU: 8 PID: 5631 Comm: test_progs Tainted: G           OE      6.8.0+ #2
->  Hardware name: Amazon EC2 c6g.16xlarge/, BIOS 1.0 11/1/2018
->  pstate: 20400005 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
->  pc : bpf_prog_8771c336cb6a18eb_arena_list_add+0x204/0x2b8
->  lr : bpf_prog_8771c336cb6a18eb_arena_list_add+0x144/0x2b8
->  sp : ffff80008b84bc30
->  x29: ffff80008b84bca0 x28: ffff8000a5008000 x27: ffff80008b84bc38
->  x26: 0000000000000000 x25: ffff80008b84bc60 x24: 0000000000000000
->  x23: 0000000000000000 x22: 0000000000000058 x21: 0000000000000838
->  x20: 0000000000000000 x19: 0000000100001fe0 x18: 0000000000000000
->  x17: 0000000000000000 x16: 0000000000000000 x15: 0000ffffcc66d2c8
->  x14: 0000000000000000 x13: 0000000000000000 x12: 000000000004058c
->  x11: ffff8000a5008010 x10: 00000000ffffffff x9 : 00000000000002cf
->  x8 : ffff800082ff4ab8 x7 : 0000000100001000 x6 : 0000000000000001
->  x5 : 0000000010e5e3fd x4 : 000000003619b978 x3 : 0000000000000010
->  x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000001fe0
->  Call trace:
->   bpf_prog_8771c336cb6a18eb_arena_list_add+0x204/0x2b8
->   bpf_prog_test_run_syscall+0x100/0x340
->   __sys_bpf+0x8e8/0xa20
->   __arm64_sys_bpf+0x2c/0x48
->   invoke_syscall+0x50/0x128
->   el0_svc_common.constprop.0+0x48/0xf8
->   do_el0_svc+0x28/0x40
->   el0_svc+0x58/0x190
->   el0t_64_sync_handler+0x13c/0x158
->   el0t_64_sync+0x1a8/0x1b0
->  Code: 8b010042 8b1c006b f9000162 d2800001 (f821307f)
->  ---[ end trace 0000000000000000 ]---
->  Kernel panic - not syncing: Oops: Fatal exception
->  SMP: stopping secondary CPUs
->  Kernel Offset: disabled
->  CPU features: 0x0,00000120,7002014a,21407a0b
->  Memory Limit: none
->  Rebooting in 5 seconds..
->
-> I will send v2 with the arm64 JIT fix, but I guess verifier has to be mod=
-ified
-> as well to add BPF_PROBE_MEM32 to atomic instructions.
+2024. 03. 14. 15:00 keltezéssel, Konrad Dybcio írta:
 
-The JIT and the verifier changes for atomics might be too big.
-Let's disable atomics in arena in the verifier for now.
-Pls send a patch.
+..
+
+>>>> @@ -55,6 +55,24 @@ static struct clk_alpha_pll ipq_pll_huayra = {
+>>>>        },
+>>>>    };
+>>>>    +static struct clk_alpha_pll ipq_pll_stromer = {
+>>>> +    .offset = 0x0,
+>>>> +    .regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
+>>>
+>>> CLK_ALPHA_PLL_TYPE_STROMER?
+>>
+>> I admit that using CLK_ALPHA_PLL_TYPE_STROMER would be less confusing. However
+>> 'ipq_pll_offsets' array has no entry for that enum, and given the fact that the
+>> CLK_ALPHA_PLL_TYPE_STROMER_PLUS entry uses the correct register offsets it makes
+>>   little sense to add another entry with the same offsets.
+>>
+>> Although the 'clk_alpha_pll_regs' in clk-alpha-pll.c has an entry for
+>> CLK_ALPHA_PLL_TYPE_STROMER, but the offsets defined there are not 'exactly' the
+>> same as the ones defined locally in 'ipq_pll_offsets'. They will be identical if
+>> [1] gets accepted but we are not there yet.
+> 
+> Oh, I completely overlooked that this driver has its own array.. Hm..
+> 
+> I suppose it would make sense to rename these indices to IPQ_PLL_x to
+> help avoid such confusion..
+
+
+Yes, that would work. To be honest, I have tried that already a few days ago,
+but then I had a better idea.
+
+It will be possible to use the entry from 'clk_alpha_pll_regs' for
+'ipq_pll_stromer' and for 'ipq_pll_stromer_plus'. To be precise, it would be
+usable already but for correctness it needs the series mentioned in my previous
+mail.
+
+Then the local entry can be removed from 'ipq_pll_regs' entirely.
+
+Once it is done, the 'ipq_pll_regs' can be converted to be an one-dimensional
+array containing the IPQ Huayra specific offsets only. Alternatively the
+remaining sole element can be moved into 'clk_alpha_pll_regs' array.
+
+Additionally, the 'pll_type' field in the match data structure is redundant so
+that can be removed as well.
+
+This eliminates the need of a separate enum for IPQ specific indices.
+
+
+Regards,
+Gabor
+
 
