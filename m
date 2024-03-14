@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-103321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 308F887BE07
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:50:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB4387BE0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:50:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E3B81F21839
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:50:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCA872825FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1104A6FE0D;
-	Thu, 14 Mar 2024 13:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765406F086;
+	Thu, 14 Mar 2024 13:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T6wHILmi"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZ1LCZZL"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813895D8F8;
-	Thu, 14 Mar 2024 13:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27776F06D;
+	Thu, 14 Mar 2024 13:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710424228; cv=none; b=i7iJq6K5Vinkn3Pm1pNoDRsKDbPsF0v7pIqQcTEQZiVSYL7uZ90X+0DYK4sxE+jKQ32imTuOVjpc3yD+03ka+e9vHyPhhFlfP4h1xYQMkXjCtJebTCT0q+TlOkEGj7UY5LvM1pPIdfYE50FP9ye8ybKAeWsAixEpKe6cpH/TfTM=
+	t=1710424237; cv=none; b=aKYcgDWOzY10EIwTpJWxgd2rns2wPwgPG4xiEOLTrlT5Xwa320K3Y6OVvkG6xM/tEte5ovmlkSUhDQFbPwZU+YQ245fNWOocIXaG6Da1FKNEUNTPsYGt4eVEPpFTObB8Y4octeUEhVApTUfhXf/7/bZEUubMgpeoLgsxUrzQQl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710424228; c=relaxed/simple;
-	bh=Tzh1vK/DGy6uJE/2aWSmjyxSpU/ZsuowcH3NnApV4aQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pojwfWJ/+fFEZHohYCfYXVEBadJtptXR4lCcmUD4rziZUYWi9lH9aF1iRuTfpOjRNeuE9Xhh0vB78nFp5tV1MsbBse0bWneyqRgJcGdmCyXXv/XDGXF6zz/DwcD9+nKAXUXbnoHx+LFhpAz1HHDIHDaZcto5UqzZCfEmQQwk0/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T6wHILmi; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1710424237; c=relaxed/simple;
+	bh=UNpaCeBcqmNNLkvnpntDc2rky0tZJ6yDsYV4YuKGPjk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=PMASxGgDpaseg9QspLq/KkI/v4iS6xFZ6Pwf88J4TnYWulTUSORpkcBe5hdqTqL6P+jNktW2sfJyln9RsTuMlB1nZSGWjRgRMs+Wi5/Cge8823psu7gOulaQvzxaw/8+CWzv2jZq9nUJCumJHqZJ3fT9kN8qg3mdkFTHOSSNEHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZ1LCZZL; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e899ce9e3so792413f8f.1;
-        Thu, 14 Mar 2024 06:50:25 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6ce174d45so573295b3a.3;
+        Thu, 14 Mar 2024 06:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710424224; x=1711029024; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=gmail.com; s=20230601; t=1710424235; x=1711029035; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bgAo15gUFSM02p3Cs8MF4SXie/Dp2TjY+57amsz4rcs=;
-        b=T6wHILmiYwuk/0AIiDGDjtAzetvZjZj3dD3XPeCAPmCPDwdpgeah0sFBcPlJuuKOYA
-         gUBWRaQCEVheBDS3xkeKlFOyzolan290KPlctabnY79QxmooI1D91jrPKpGH2/npZk6l
-         q9C7YeT0oQIS0SDqYeNwRPImBViOX/E5OFLLHTk89vLfOS2214kk1cBrqjTCkjbqLBUk
-         jYQ1ezz2Zywpy1FnGvi7r5FGTAo9ge5+nU65JbQ3r4g+5FDqEkcCnVmjUBaO7jP7h8Iu
-         lK3tJ5lRa8386cbuD06xcGUa75l0Z0F9w7VHgYBKkzP9eHO7weWVInOGAx/dSBPE7Rf8
-         +6vQ==
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=vJp1W1BFyCTx9D6QxoVL4qIYyK7cv5fVEs0PxaztKc8=;
+        b=OZ1LCZZLlN+N8hsWBbtt+J5W4UhydFWAtZiZEAzTnYatUc9ngrEc0nyMr9CroFrWxU
+         iU4RPrCyQhLbvyot2GRYton0z/Cw0M4XJ4GG7bZE70/nkBjkYY2ISDGFid1ef1iHw/Y3
+         dAjzmkobuBSSYM6puZi4QrVRgp0idil6Q3Dbl/Wo5gecHiyZoTpd2Qd9orYNf90ZVLpd
+         isgy11Iuv+1rEy4u590t4ee9+Zzi8c6BzokISx7Y6AFrXRBML5IdogZ2Dkedg3ar8aEC
+         eou8GpfvbSQQVy0dh+GIm50yopt5eqYXZZvWTXfY7CBrAJg4L6d9JLfh3vPvmIHbKkkp
+         m5gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710424224; x=1711029024;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=1e100.net; s=20230601; t=1710424235; x=1711029035;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bgAo15gUFSM02p3Cs8MF4SXie/Dp2TjY+57amsz4rcs=;
-        b=rYWbCj81V8YKaNDVceT5gc4WepLzK9GaLZE8YoxDgGYhplKWyPrbflJS/FKdl5bCL2
-         MMLev1MwjX9IvzKQYjX3GmLerw7a5YXUbbNJoDBdnbNi0KVKra16MxRYV0gJU6o2SEdU
-         w+KkIOs9x3sp4uyV1r5g71rK2TSX4lRmd7S/EOUQ2ppg1BNgqfpuMpm0fD+gWhXMhXOx
-         Ev8RrFIrCCzij7RpPw0JpOkQ+yQJ80Wz85VQNvYyeemWV+9kBorsEUpoG24gNPoI3xgf
-         4/VkMpSyPoUVPiSwcUxooJjOys38nq/3je7mj+8EKeB6xCWiyUISXZHYkzaJDk4cqbMI
-         IBVg==
-X-Forwarded-Encrypted: i=1; AJvYcCX9ji6NXbypmrVa6s+/aAn0DN65xgmpH0a1ne5brD5fi8S0LmfnEvYCemC0dQDFbvQmlPSa13wum1viQdJib/02Bw8zpwXRGG4osvBAy6LfSCqG0tuJ5ZYW1v75DauBzVi2wbIxCMMN3YegMi0bB0aqVeSkiU1EvoB/cc3DZnKv
-X-Gm-Message-State: AOJu0Ywwad3nN+PF3nBxJY1rONRnn/s9mlhppe/zjeXQIJpVHJ45OX0B
-	bH64E8mv0+gKR6zZj7pVNYwLKEhdO1hYBgc+QcIDwwmaOe3CQJ/SAV4ZMaSTVrc=
-X-Google-Smtp-Source: AGHT+IEqKJeR27FJtO7JNugr4TpMAFBBQOgL+/adDzqjA6u6o+ZWg0DvOoXMGlGVERyIxlMYoQ40JQ==
-X-Received: by 2002:a5d:4bc1:0:b0:33e:c316:2a51 with SMTP id l1-20020a5d4bc1000000b0033ec3162a51mr1317287wrt.27.1710424223829;
-        Thu, 14 Mar 2024 06:50:23 -0700 (PDT)
-Received: from [192.168.20.170] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.gmail.com with ESMTPSA id bq29-20020a5d5a1d000000b0033ec8b3b3e4sm868372wrb.79.2024.03.14.06.50.19
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vJp1W1BFyCTx9D6QxoVL4qIYyK7cv5fVEs0PxaztKc8=;
+        b=gFql1a8W0YoiqHox+VxrDJwEibQ4n5O1HXEGoY0v9ySWdOqiQh0hjLaCh4st6ZbMo8
+         tuhoZqSneDfFmeDubnx7HEVYgXCikYh6TmKWj0H9J/4z7TCOk/Hy2yT/6RC+RQdlFpKz
+         wcbeqnJtzFCjQeSzcPmjdNgudoRZfOfyMa5aAGV3COumQKaRoQDqMgpSGjTGKUDT5KWW
+         2+t77v8JSQvangbhR3sjNtfyflujCE0UDxaBlpuV4otZCL/oWNyOggcUJwTFfuhY80g8
+         l46Igwqlp5SpofiXRawbgBrSYLSsamWLNHTKKeVz3IMvObq4wPE3LX91WBOsQi9W2DIz
+         MB2A==
+X-Forwarded-Encrypted: i=1; AJvYcCXXVj18yaz4irk1+W4xONlgk1YTaNvlknrid4rD/vWWU0ql231hm5Nz4iZVXIESR+gZTl2WOiIPTtP0BIBildPJcdPbYFy2/HtPXmK0ZEWIyyyBd/IN2+M8QKR2hKpXU10j7mJsQ75EPB+y0A0=
+X-Gm-Message-State: AOJu0Yx1hUyht9Wy77+wj9/2zAOhrg8EUCdLsBffRaVylCY7S7yEWsSN
+	MQfBaJPGIpKF++AIrQXbehVkFIuYxtBPy7qKP/UqiKwxzKZilutq
+X-Google-Smtp-Source: AGHT+IFq8jao80Z/Ja9nZTGJGiEkdtmFrTaFi4uMIFzA/6Pv9cSD9FIUcGJ0KTKKK317fxG8FaUKAQ==
+X-Received: by 2002:aa7:8881:0:b0:6e6:9fe2:e902 with SMTP id z1-20020aa78881000000b006e69fe2e902mr1931527pfe.20.1710424234932;
+        Thu, 14 Mar 2024 06:50:34 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ks1-20020a056a004b8100b006e6cc458206sm1439506pfb.175.2024.03.14.06.50.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 06:50:22 -0700 (PDT)
-Message-ID: <2b95a593-225e-47b1-8bda-03240eb0f81e@gmail.com>
-Date: Thu, 14 Mar 2024 14:50:18 +0100
+        Thu, 14 Mar 2024 06:50:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <257fa47f-f1de-49ec-9ebf-c33d4de736e1@roeck-us.net>
+Date: Thu, 14 Mar 2024 06:50:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,112 +77,119 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to
- fix boot failure
-Content-Language: hu
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Sricharan Ramabadhran <quic_srichara@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240311-apss-ipq-pll-ipq5018-hang-v1-1-8ed42b7a904d@gmail.com>
- <58f07908-127a-438d-84e2-e059f269859b@linaro.org>
-From: Gabor Juhos <j4g8y7@gmail.com>
-In-Reply-To: <58f07908-127a-438d-84e2-e059f269859b@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v1] drivers: watchdog: ast2600 support bootstatus
+Content-Language: en-US
+To: Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ linux-watchdog@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20240314065744.1182701-1-peteryin.openbmc@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240314065744.1182701-1-peteryin.openbmc@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-2024. 03. 13. 19:36 keltezéssel, Konrad Dybcio írta:
+On 3/13/24 23:57, Peter Yin wrote:
+> Add WDIOF_EXTERN1 bootstatus in ast2600
 > 
+
+This does a bit more than that because it replaces
+WDIOF_CARDRESET with WDIOF_EXTERN1 for ast2600.
+
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+> ---
+> Change log:
 > 
-> On 3/11/24 16:06, Gabor Juhos wrote:
->> Booting v6.8 results in a hang on various IPQ5018 based boards.
->> Investigating the problem showed that the hang happens when the
->> clk_alpha_pll_stromer_plus_set_rate() function tries to write
->> into the PLL_MODE register of the APSS PLL.
->>
->> Checking the downstream code revealed that it uses [1] stromer
->> specific operations for IPQ5018, whereas in the current code
->> the stromer plus specific operations are used.
->>
->> The ops in the 'ipq_pll_stromer_plus' clock definition can't be
->> changed since that is needed for IPQ5332, so add a new alpha pll
->> clock declaration which uses the correct stromer ops and use this
->> new clock for IPQ5018 to avoid the boot failure.
->>
->> 1.
->> https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4/drivers/clk/qcom/apss-ipq5018.c#L67
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 50492f929486 ("clk: qcom: apss-ipq-pll: add support for IPQ5018")
->> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
->> ---
->> Based on v6.8.
->> ---
->>   drivers/clk/qcom/apss-ipq-pll.c | 20 +++++++++++++++++++-
->>   1 file changed, 19 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
->> index 678b805f13d45..11f1ae59438f7 100644
->> --- a/drivers/clk/qcom/apss-ipq-pll.c
->> +++ b/drivers/clk/qcom/apss-ipq-pll.c
->> @@ -55,6 +55,24 @@ static struct clk_alpha_pll ipq_pll_huayra = {
->>       },
->>   };
->>   +static struct clk_alpha_pll ipq_pll_stromer = {
->> +    .offset = 0x0,
->> +    .regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
+> v1
+>    - Patch 0001 - Add WDIOF_EXTERN1 bootstatus
+> ---
+>   drivers/watchdog/aspeed_wdt.c | 14 ++++++++++++--
+>   1 file changed, 12 insertions(+), 2 deletions(-)
 > 
-> CLK_ALPHA_PLL_TYPE_STROMER?
+> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+> index b4773a6aaf8c..8adadd394be6 100644
+> --- a/drivers/watchdog/aspeed_wdt.c
+> +++ b/drivers/watchdog/aspeed_wdt.c
+> @@ -81,6 +81,7 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
+>   #define   WDT_CLEAR_TIMEOUT_AND_BOOT_CODE_SELECTION	BIT(0)
+>   #define WDT_RESET_MASK1		0x1c
+>   #define WDT_RESET_MASK2		0x20
+> +#define   WDT_EVENT_COUNTER_MASK       (0xFFF << 8)
+>   
+>   /*
+>    * WDT_RESET_WIDTH controls the characteristics of the external pulse (if
+> @@ -459,8 +460,17 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+>   	}
+>   
+>   	status = readl(wdt->base + WDT_TIMEOUT_STATUS);/BOOT_SECON
+> -	if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
+> -		wdt->wdd.bootstatus = WDIOF_CARDRESET;
+> +
+> +	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
+> +		if (status & WDT_EVENT_COUNTER_MASK) {
+> +			/*
+> +			 * Reset cause by WatchDog
+> +			 */
+> +			wdt->wdd.bootstatus |= WDIOF_EXTERN1;
+> +		}
+> +	} else {
+> +		if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY)
+> +			wdt->wdd.bootstatus = WDIOF_CARDRESET;
+>   
+>   		if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
+>   		    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
 
-I admit that using CLK_ALPHA_PLL_TYPE_STROMER would be less confusing. However
-'ipq_pll_offsets' array has no entry for that enum, and given the fact that the
-CLK_ALPHA_PLL_TYPE_STROMER_PLUS entry uses the correct register offsets it makes
- little sense to add another entry with the same offsets.
+This check is now unnecessary since it matches the else case.
 
-Although the 'clk_alpha_pll_regs' in clk-alpha-pll.c has an entry for
-CLK_ALPHA_PLL_TYPE_STROMER, but the offsets defined there are not 'exactly' the
-same as the ones defined locally in 'ipq_pll_offsets'. They will be identical if
-[1] gets accepted but we are not there yet.
+Either case, it needs to be explained why WDIOF_CARDRESET ("Card previously
+reset the CPU") is replaced by WDIOF_EXTERN1 ("External relay 1") for ast2600,
+and why WDT_TIMEOUT_STATUS_BOOT_SECONDARY does not apply for ast2600 but
+(status & WDT_EVENT_COUNTER_MASK) does.
 
-> 
-> [...]
-> 
->>   static const struct apss_pll_data ipq5018_pll_data = {
->>       .pll_type = CLK_ALPHA_PLL_TYPE_STROMER_PLUS,
-> 
-> and here?
+Guenter
 
-The value of the 'pll_type' field is used only in the probe function to decide
-which configuration function should be called for the actual PLL. Changing this
-means that the probe function must be changed as well.
-
-Originally, I did not want to change this as it is not required for fixing the
-bug, but it might worth to do it to avoid further confusion. I will modify that
-in the next version.
-
-I also have a small patch-set on top of the current one which reduces the mess
-in the driver, but that still needs some testing. Will send it later.
-
-> The L register differs, so the rattesetting done from Linux must
-> have never worked anyway?
-
-Probably not, although I did not test the original commit which added IPQ5018
-support to the driver.
-
-I have noticed the bug in next-20240130 first, but I had no time to find the
-root cause that time. Later it turned out that cpufreq scaling was broken in
-v6.8-rc1 on some platforms [2] which has been fixed with 98323e9d7017
-("topology: Set capacity_freq_ref in all cases"). This was the change which made
-the bug visible on IPQ5018.
-
-1.
-https://lore.kernel.org/lkml/20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com/
-2. https://lore.kernel.org/lkml/75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com/
-
-Regards,
-Gabor
 
