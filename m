@@ -1,222 +1,296 @@
-Return-Path: <linux-kernel+bounces-102875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A660787B7EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:26:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A2F187B7F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 338041F23680
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:26:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95113B203CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5806DF78;
-	Thu, 14 Mar 2024 06:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BAD4FC05;
+	Thu, 14 Mar 2024 06:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DnEb78xq"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UxAJg3a3"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62DADDC1;
-	Thu, 14 Mar 2024 06:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C04D27E;
+	Thu, 14 Mar 2024 06:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710397587; cv=none; b=tn+86HOl97LbqedqSQ9D556RrRUukq69rF/Gh+pgaZgU4N/TO24pR1fHlKJcJ4HA5oeoQz+jmSzR8Kfq0n9Aw44oZOw36XgfaL6bhVGHJe8siyZLt6XDg/ivE6DnoI/A5mag5Y74F9Q5yikRYpf81gzj2ytBDVMm73d/HSPGLqY=
+	t=1710397681; cv=none; b=jz/hOO5+UFyK+iNWi4R9EUzxbiLuZ3pQLA+0brzYknFIv8nphiJIYsThX/lohlS8LvbOFFZ0YgDm86k+nMfl7QQoiOW203Y/LodLgPY2BIl2ZUzepPk47qp/qZxznTQzQkrElRp5k8wrs8XNGiEzDZGhJzJzHc23vWVEeFC9uEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710397587; c=relaxed/simple;
-	bh=mZwZ50bVBOhjmPhgBk8fElRcUd5UbUZwTh3xhQBAgL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HpQfoFVCSsVOnqyvFDyV5p9oAL7zZEu2Z86EAULCsliMaocVo55mH4+V0UPZnT1Vcey2J26+8RnSOQNoYs3zV4rTAZ8YkpVtek+s7cHQhtGNBhRpBDw+bgf/UHmwGM4TGlwj4qoNPsVF7nVf/YsvYUVUa8W6eOO8OwB/zGOIO7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DnEb78xq; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710397585; x=1741933585;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mZwZ50bVBOhjmPhgBk8fElRcUd5UbUZwTh3xhQBAgL8=;
-  b=DnEb78xqa5kxisLhtd/NU6InlCCCU9sX+kUCC1kzCnrxZ4Bc8Dgzv3Ad
-   cj8DqT5+pmJke9d0MIbavfd0yrAl3TcFhGk08tmRzSo07BuJwqI4P2vUr
-   Itm3zsVHwHyVU4MPnX8ZSbNWbeIRlsc9klA+8HD2W0DMsY3foN7IO7v0w
-   5t5dCu7y+Pqsg0XHMthKkIvXqUMI2NzKZfq7j8Ynb7uCnZgU9tfD3OwfO
-   1+Ih4JeyyQR5g1wfrh40DINBrnk9lTPzU/uPcY7qAaRfuz4WA76nzcLpD
-   7QRrWZKXzUBWY9MZ4678qjdqZv2SuvirTIKMhV87r42kiI/YJEwe4kqy0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="15840533"
-X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
-   d="scan'208";a="15840533"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 23:26:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
-   d="scan'208";a="16659291"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 13 Mar 2024 23:26:19 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rkeXh-000DAZ-0J;
-	Thu, 14 Mar 2024 06:26:17 +0000
-Date: Thu, 14 Mar 2024 14:25:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	willl will <will@willwhang.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	tomi.valkeinen@ideasonboard.com,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Mehdi Djait <mehdi.djait@bootlin.com>,
-	Bingbu Cao <bingbu.cao@intel.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] media: i2c: Add imx283 camera sensor driver
-Message-ID: <202403141412.K2tNvCOL-lkp@intel.com>
-References: <20240313070705.91140-3-umang.jain@ideasonboard.com>
+	s=arc-20240116; t=1710397681; c=relaxed/simple;
+	bh=9PJKp5d07U4cqQ+doLFO1wV2FwDX/AFcq+h6mLuajhA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ik5ui+cXHlpMXwDYrvcJ97qBmaoNSjt7Hd8fEEwKAXU3dPJ7RkA5rB4UzfNyZBXNedBca7gAXuP1Sjyr6tNk4kv9nv5m7hCgCFkotRk2IMlGXcCRoc+4GL+lYSvT4Dou1aJ448uNSCLb832JBEc2gP5BkbtPGBduX5t62dJ5NDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UxAJg3a3; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a44f2d894b7so53194866b.1;
+        Wed, 13 Mar 2024 23:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710397676; x=1711002476; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Wy48BMq7k7tUA5PbAAKgjU/lgoVJFz6MN9TbVJQFsQM=;
+        b=UxAJg3a3Z+yT+HhNZCswgwLcX0lMVw/lOrUNh3ZZdeXorK0fIYY810Ti2siwbJb/x2
+         iQKD6YyHgbTXClQ7vpDG1py1frjvjmj1cn9L755waaoc5+8e1OiLbI3ppTDSnVyzjKpj
+         8jTK6JH8sxAH0qk0aWU47f2rUK1rZCoGLhtNvPDQMb5kR/DoR7cc3Ca3fbizS30nM90b
+         2jL4szJTzoLU7Qo2W3HIFTgGk7HrtUzWjqsdKEflBYzZ/kNVhyxc4ZZEluzHSDhgfSgs
+         9FSFHhJZZLB1s8aOrmFe1r4AtqDP1D5hE4hczL4IBB5AHm8ocTyz6QtBe96OFG2UZ2+D
+         weyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710397676; x=1711002476;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wy48BMq7k7tUA5PbAAKgjU/lgoVJFz6MN9TbVJQFsQM=;
+        b=oGF0xO9MUwF9x7XT86KBHYWcVeGVLRG2nWSS2pk0xJjoXMv8NTsXfViLmm7iRyWe6W
+         1nPu28XTXH7TAs/qJuza1nQyw56TniBZzZWHZobBKx5clPXFQbRDo4pa4wAV6vpSGYPw
+         aKGEA61xQOYYwh9Bv7h6NS7k+bQ/fi8bnMjNswX/rOWuKSvQoJHkjbvPubV5n7eu1vXH
+         7odE5kCNELPQlrryi3wQtvVFtT15EPx/jcNh2/35+lfh1do2knTz6RSqb2dUYphyoOBT
+         t+WvlVnPzcY8ahYcZs1oJX+eiDyWf/pyRYDvapi/nQSQO2WLsiYEePXZxSfootmLPgEt
+         DaSw==
+X-Forwarded-Encrypted: i=1; AJvYcCVS9QQXVZkbh6HjwVVx+tCiamGDoMwR3C50rjNo/jD4UJUvZ+fJAw1LJIMufTZdYRrceaQ2L2LCU71xOmgBkYSt/PXS1JOESxxatfca4/1UsmpB4FuoF3NDZuVUnov++Pjer/QCdKhPNSzfA/Yl+6sQzLisTm3CBDM8wQxBPJdFtcQKh5sxo65DzDftg21gxRVxzaNgsDqxOB5TF5Hl6Y3AkYINPFKceZyEd5p1xHi4OUhlcnhkzVnsmIx262h+5KlV6XGq9q5xeSgsN+RPkfJS/dQjgVI5cIvHnw==
+X-Gm-Message-State: AOJu0YyMhHEBNBmHbQxVeZX/yZ4CuzjY5UuYQfXbTfB2fHMvcJlJdMPz
+	3Y91Aw1uABMjgnAgA5Da48JScs492pEMjBwonp8f8tw/o6pLukBh
+X-Google-Smtp-Source: AGHT+IF0pnR3t8OP32CidAqcEwLWVf5pxREHuVK53gI8rH7KwaQf04P9Mb0+ZaiK2iVNQgj+ScQKXQ==
+X-Received: by 2002:a17:906:b899:b0:a3f:5ad2:1ff0 with SMTP id hb25-20020a170906b89900b00a3f5ad21ff0mr391041ejb.46.1710397675813;
+        Wed, 13 Mar 2024 23:27:55 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id ld8-20020a170906f94800b00a46754900a4sm104587ejb.33.2024.03.13.23.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 23:27:55 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 14 Mar 2024 07:27:52 +0100
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: =?utf-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	linux-s390 <linux-s390@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+Message-ID: <ZfKY6E8xhSgzYL1I@krava>
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com>
+ <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+ <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+ <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
+ <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+ <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240313070705.91140-3-umang.jain@ideasonboard.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
 
-Hi Umang,
+On Wed, Mar 13, 2024 at 05:25:35PM -0700, Alexei Starovoitov wrote:
+> On Tue, Mar 12, 2024 at 6:53 PM 梦龙董 <dongmenglong.8@bytedance.com> wrote:
+> >
+> > On Wed, Mar 13, 2024 at 12:42 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Mar 11, 2024 at 7:42 PM 梦龙董 <dongmenglong.8@bytedance.com> wrote:
+> > > >
+> > [......]
+> > >
+> > > I see.
+> > > I thought you're sharing the trampoline across attachments.
+> > > (since bpf prog is the same).
+> >
+> > That seems to be a good idea, which I hadn't thought before.
+> >
+> > > But above approach cannot possibly work with a shared trampoline.
+> > > You need to create individual trampoline for all attachment
+> > > and point them to single bpf prog.
+> > >
+> > > tbh I'm less excited about this feature now, since sharing
+> > > the prog across different attachments is nice, but it won't scale
+> > > to thousands of attachments.
+> > > I assumed that there will be a single trampoline with max(argno)
+> > > across attachments and attach/detach will scale to thousands.
+> > >
+> > > With individual trampoline this will work for up to a hundred
+> > > attachments max.
+> >
+> > What does "a hundred attachments max" means? Can't I
+> > trace thousands of kernel functions with a bpf program of
+> > tracing multi-link?
+> 
+> I mean what time does it take to attach one program
+> to 100 fentry-s ?
+> What is the time for 1k and for 10k ?
+> 
+> The kprobe multi test attaches to pretty much all funcs in
+> /sys/kernel/tracing/available_filter_functions
+> and it's fast enough to run in test_progs on every commit in bpf CI.
+> See get_syms() in prog_tests/kprobe_multi_test.c
+> 
+> Can this new multi fentry do that?
+> and at what speed?
+> The answer will decide how applicable this api is going to be.
+> Generating different trampolines for every attach point
+> is an approach as well. Pls benchmark it too.
+> 
+> > >
+> > > Let's step back.
+> > > What is the exact use case you're trying to solve?
+> > > Not an artificial one as selftest in patch 9, but the real use case?
+> >
+> > I have a tool, which is used to diagnose network problems,
+> > and its name is "nettrace". It will trace many kernel functions, whose
+> > function args contain "skb", like this:
+> >
+> > ./nettrace -p icmp
+> > begin trace...
+> > ***************** ffff889be8fbd500,ffff889be8fbcd00 ***************
+> > [1272349.614564] [dev_gro_receive     ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614579] [__netif_receive_skb_core] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614585] [ip_rcv              ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614592] [ip_rcv_core         ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614599] [skb_clone           ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614616] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614629] [nft_do_chain        ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614635] [ip_rcv_finish       ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614643] [ip_route_input_slow ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614647] [fib_validate_source ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614652] [ip_local_deliver    ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614658] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614663] [ip_local_deliver_finish] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614666] [icmp_rcv            ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614671] [icmp_echo           ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614675] [icmp_reply          ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614715] [consume_skb         ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614722] [packet_rcv          ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> > [1272349.614725] [consume_skb         ] ICMP: 169.254.128.15 ->
+> > 172.27.0.6 ping request, seq: 48220
+> >
+> > For now, I have to create a bpf program for every kernel
+> > function that I want to trace, which is up to 200.
+> >
+> > With this multi-link, I only need to create 5 bpf program,
+> > like this:
+> >
+> > int BPF_PROG(trace_skb_1, struct *skb);
+> > int BPF_PROG(trace_skb_2, u64 arg0, struct *skb);
+> > int BPF_PROG(trace_skb_3, u64 arg0, u64 arg1, struct *skb);
+> > int BPF_PROG(trace_skb_4, u64 arg0, u64 arg1, u64 arg2, struct *skb);
+> > int BPF_PROG(trace_skb_5, u64 arg0, u64 arg1, u64 arg2, u64 arg3, struct *skb);
+> >
+> > Then, I can attach trace_skb_1 to all the kernel functions that
+> > I want to trace and whose first arg is skb; attach trace_skb_2 to kernel
+> > functions whose 2nd arg is skb, etc.
+> >
+> > Or, I can create only one bpf program and store the index
+> > of skb to the attachment cookie, and attach this program to all
+> > the kernel functions that I want to trace.
+> >
+> > This is my use case. With the multi-link, now I only have
+> > 1 bpf program, 1 bpf link, 200 trampolines, instead of 200
+> > bpf programs, 200 bpf link and 200 trampolines.
+> 
+> I see. The use case makes sense to me.
+> Andrii's retsnoop is used to do similar thing before kprobe multi was
+> introduced.
+> 
+> > The shared trampoline you mentioned seems to be a
+> > wonderful idea, which can make the 200 trampolines
+> > to one. Let me have a look, we create a trampoline and
+> > record the max args count of all the target functions, let's
+> > mark it as arg_count.
+> >
+> > During generating the trampoline, we assume that the
+> > function args count is arg_count. During attaching, we
+> > check the consistency of all the target functions, just like
+> > what we do now.
+> 
+> For one trampoline to handle all attach points we might
+> need some arch support, but we can start simple.
+> Make btf_func_model with MAX_BPF_FUNC_REG_ARGS
+> by calling btf_distill_func_proto() with func==NULL.
+> And use that to build a trampoline.
+> 
+> The challenge is how to use minimal number of trampolines
+> when bpf_progA is attached for func1, func2, func3
+> and bpf_progB is attached to func3, func4, func5.
+> We'd still need 3 trampolines:
+> for func[12] to call bpf_progA,
+> for func3 to call bpf_progA and bpf_progB,
+> for func[45] to call bpf_progB.
+> 
+> Jiri was trying to solve it in the past. His slides from LPC:
+> https://lpc.events/event/16/contributions/1350/attachments/1033/1983/plumbers.pdf
+> 
+> Pls study them and his prior patchsets to avoid stepping on the same rakes.
 
-kernel test robot noticed the following build errors:
+yep, I refrained from commenting not to take you down the same path
+I did, but if you insist.. ;-) 
 
-[auto build test ERROR on media-tree/master]
-[also build test ERROR on linuxtv-media-stage/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I managed to forgot almost all of it, but the IIRC the main pain point
+was that at some point I had to split existing trampoline which caused
+the whole trampolines management and error paths to become a mess
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Umang-Jain/media-dt-bindings-media-Add-bindings-for-IMX283/20240313-151107
-base:   git://linuxtv.org/media_tree.git master
-patch link:    https://lore.kernel.org/r/20240313070705.91140-3-umang.jain%40ideasonboard.com
-patch subject: [PATCH v3 2/2] media: i2c: Add imx283 camera sensor driver
-config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240314/202403141412.K2tNvCOL-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 503c55e17037436dcd45ac69dea8967e67e3f5e8)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240314/202403141412.K2tNvCOL-lkp@intel.com/reproduce)
+I tried to explain things in [1] changelog and the latest patchset is in [0]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403141412.K2tNvCOL-lkp@intel.com/
+feel free to use/take anything, but I advice strongly against it ;-)
+please let me know if I can help
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+jirka
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mp-interconnect.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hte/hte-tegra194-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/vdpa/vdpa.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/parsers/brcm_u-boot.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/parsers/tplink_safeloader.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/hisi-spmi-controller.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/spmi-pmic-arb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_pruss.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pcmcia/pcmcia_rsrc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/corsair-cpro.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/mr75203.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/vhost/vringh.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/greybus.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/gb-es2.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rpmsg/rpmsg_char.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/ingenic-adc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/xilinx-ams.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/buffer/kfifo_buf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-hub.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-aspeed.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-ast-cf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/siox/siox-bus-gpio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/counter/ftm-quaddec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/core/snd-pcm-dmaengine.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/drivers/snd-pcmtest.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/pci/hda/snd-hda-cirrus-scodec-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/soc-topology-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-ab8500-codec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-sigmadsp.o
-WARNING: modpost: sound/soc/codecs/snd-soc-tlv320adc3xxx: section mismatch in reference: adc3xxx_i2c_driver+0x8 (section: .data) -> adc3xxx_i2c_remove (section: .exit.text)
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-wm-adsp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/fsl/imx-pcm-dma.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/mxs/snd-soc-mxs-pcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-sdw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/qdsp6/snd-q6dsp-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/intel/snd-sof-intel-atom.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/intel/snd-sof-acpi-intel-byt.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/intel/snd-sof-acpi-intel-bdw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/snd-sof-imx8.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/snd-sof-imx8m.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/snd-sof-imx8ulp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/imx-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/mediatek/mtk-adsp-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/mediatek/mt8195/snd-sof-mt8195.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/mediatek/mt8186/snd-sof-mt8186.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/snd-sof-utils.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/snd-sof-acpi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/snd-sof-of.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-i2s.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/ac97_bus.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mtty.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mdpy.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mdpy-fb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mbochs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/configfs/configfs_sample.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/bytestream-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/dma-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/inttype-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/record-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kobject-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kset-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_cmp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_nbyte.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_u32.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_meta.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_text.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_canid.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ipip.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_gre.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_vti.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ah4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/esp4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/xfrm4_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tunnel4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_algo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/esp6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/xfrm6_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/tunnel6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/mip6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/sit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ip6_udp_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/key/af_key.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/mpoa.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/6lowpan/6lowpan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/6lowpan/ieee802154_6lowpan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
->> ERROR: modpost: "__hexagon_udivdi3" [drivers/media/i2c/imx283.ko] undefined!
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=bpf/batch
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=bpf/batch&id=52a1d4acdf55df41e99ca2cea51865e6821036ce
 
