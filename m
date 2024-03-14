@@ -1,163 +1,111 @@
-Return-Path: <linux-kernel+bounces-103847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9929C87C55E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:52:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC7D87C565
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:56:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AE631F21683
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:52:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5821C2827A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6F6749A;
-	Thu, 14 Mar 2024 22:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C864FFC0E;
+	Thu, 14 Mar 2024 22:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Pih3OuIG";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QJTzQ2Zl"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mbophuYk"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62964DF59;
-	Thu, 14 Mar 2024 22:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12AD28FA
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 22:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710456715; cv=none; b=AzXLD41PkpKp19sLcJJD9v+gxtRjJDpG2YAv+gahSsmWxvnlfbVqP6H7tyBhxcNrRo01BMAZmSj0zlMekfmXgCBfFhsmvUJECI5MHc1He0rQjx4HPyEPMiMhkEdLpGtBzfO1wY6X6mSh26GYRYGSh9TKKQpzBZCjPTN4fsoYxBU=
+	t=1710456991; cv=none; b=hGnXn9d3Wq7kHjvNILVe4DIX29jIFJkO8+9xRMU9hstR+h085xYaCbsJilT1wkz3AdVltGyAm6w0cUJZ98oBt72/yaBacs13C6Sw9pmSo91ZrZD64oB6kNFBQgWggrycT4IeMo/EukDidkyzfAYoI79sDWoIXcxnwSb6dJZRi10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710456715; c=relaxed/simple;
-	bh=lfE9bu5HRXF5tO0qg8xsCSrAQraK0qItLSvD6agDm7s=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UeFwnOZAnr9iJ/u4lnkwyP6N9k78Wjw8BQL3NG73U0Wvv3MGrkAdQxRBKiIDhYrRAD88r8szwo9oiDYDEgtnMIv4UeGh/OUJT9zAWOIKFegZpJbpysb9a803IhNbrPLYKzvNdszAtNpN+FHuWjTmROyxX64SDb//49NqAvyqKsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Pih3OuIG; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QJTzQ2Zl; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710456711;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1x6BoiJ2R+wIuiaWxSk4Ux5uhLtUhIOpd/83aUhZwks=;
-	b=Pih3OuIGQcS61QjoP2KuiE3390kbeQpxn9jx224nSXAfiXm/DFAqs1gIdULtefF/IvhZaW
-	GzM1T0azw/jGvcVOobh4noA3MaieHLSPbdedWlIwKlBY6ZmDZvpVUHDN6TTrtXhzbTd7+n
-	itZndrmMsEwIvo5rjhuCf5gJxQoeppijU+FJ1GSAKtYo/Nul7e2tuOjDlLRZKmr4VLhzBN
-	xU/I3+wGyucQSX9IX8GnX9RQLIBOJmh27ZxQNmjqm6udQseFnXPljITNc1dKxrnQfV6l3T
-	mMuPtFDhg6lnleujOHsR/H9ffW3IMMV13tTqKLsv7HC87R1Wpoo61MPOhWwtQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710456711;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1x6BoiJ2R+wIuiaWxSk4Ux5uhLtUhIOpd/83aUhZwks=;
-	b=QJTzQ2ZluUTsc5i71qrPP987FUBaJDN+dSu+Hca8zgsZ1hJB2fR3pPrGD2lw4yfF/Fbsly
-	uGeLP0YHgtHjVSCQ==
-To: Florian Fainelli <f.fainelli@gmail.com>, Boqun Feng <boqun.feng@gmail.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, "Russell King (Oracle)"
- <linux@armlinux.org.uk>, Joel Fernandes <joel@joelfernandes.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Linus Torvalds
- <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org,
- kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
- rcu@vger.kernel.org, neeraj.upadhyay@amd.com, urezki@gmail.com,
- qiang.zhang1211@gmail.com, bigeasy@linutronix.de, chenzhongjin@huawei.com,
- yangjihong1@huawei.com, rostedt@goodmis.org, Justin Chen
- <justin.chen@broadcom.com>
-Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes
- for v6.9]
-In-Reply-To: <8f977bbb-d949-4e90-b3d2-b9815189b842@gmail.com>
-References: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
- <ZfDptafiK0jns050@boqun-archlinux>
- <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
- <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
- <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
- <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
- <ZfIuRMo8oKbR08Af@lothringen>
- <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
- <ZfLUU+XuQC7W79tf@lothringen>
- <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
- <ZfNHNvzpqf8DOZd8@boqun-archlinux>
- <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com> <87v85olez3.ffs@tglx>
- <87sf0sldbi.ffs@tglx> <8f977bbb-d949-4e90-b3d2-b9815189b842@gmail.com>
-Date: Thu, 14 Mar 2024 23:51:50 +0100
-Message-ID: <87msr0l94p.ffs@tglx>
+	s=arc-20240116; t=1710456991; c=relaxed/simple;
+	bh=zUGwVd0Yv0nkOSW9GUHRgOk7KhLFU9jjeRUEPHTKrY4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=T0FvsaYLjoLeZxTLs6LaJEinsJ+wwehZj2vvIH0Z9V9HRS8PrvQmZC7cisP4ejcsk7cOlIQ7PNSZK/H8BNTna5oiZ2hO9+qyYBoaYDaekoahDgC4DOL7tj5FGBwUd2CeTeEqkCPfL5iQYyGIF4Gj4w3aruOR8vU00v+Bw3HrxhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mbophuYk; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e6bf91a8dfso1596473b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710456989; x=1711061789; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbqpstRtYQ8JkMb3zpP7dCjT/ZA8dEtLsJkyinUWLF4=;
+        b=mbophuYkBhPIA2DdTdZXvjo0Omt1x10Its4SdYzox4K6eCR/cHNo/TmJ9tK6BMu3Hz
+         32qWQRQaJaIAnuANjSHgt0wp4CQfHggheHwyuHHy52XrXbX5YDL2AZDsjbjViz3NHrIS
+         U7eUaSQeUh4VvzK6R2FUhxdN7TKGUFsMfOL3VCGakOIliK1F4OZysnmVcX1ldpsCOWDi
+         NPzhUa2GVYK7EM0FzknllQZ0HNhso+mX8gYkdcv4wqPzh0ZuoDKtLmsu8U8z58WmkYrU
+         738wIoKGl3NQaHVQ7JuqwkJiAHfzZuZJ0HEZ614ZjkeWCb4dONYLcme2s214+sLTyQwn
+         r60Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710456989; x=1711061789;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbqpstRtYQ8JkMb3zpP7dCjT/ZA8dEtLsJkyinUWLF4=;
+        b=pvF1gQItgABnsdtlyn5uH6j7vFMXyy4i/5g6R+0+Qdv1ILwVvWrHj532rR0Ah0QnTx
+         LriNaFKYruROzCTgnemxnpSX2JEeZZC4zQuCdlz2arkhZsz5xTD4oLLsvR39bcl9ECM4
+         pADK+Hm9Kf8v9ujez4I/QbXky2Tq5MDqV15MF3849ps+BZ0mluE/ttTwlBNwkRyl0AV7
+         ZRddM3LG2ldeLTVNz0mJTUSOvyH0CuC4tZ58Sof+LyA79G/TnHE/L2ZpKgj5DxxFQevS
+         Y6aWIR7/t4VUL+ux+cXXGbhF9oAJ+w4Ua5BUHatrK9nqqTKeE96PZ7PsuNKPlk1x96/W
+         CXnw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXRDhDwqHgk1YyOyTW/IoeYNpQNK/vf4g5e+SLmMuw76atQWSD/tW2xFmIhLGTeeQToV6+68xaEhjjTQbhdNwKtkCURSmQkGPr2mMw
+X-Gm-Message-State: AOJu0YzCol7HZISGRIMbloQCOO1pVlOuuUwOQLjxwlbPzYBDEa1r5NdA
+	hFIe7I/lXMQdufQYzFKTdo+nmbqTWLx16ktWpH2kJh9Wsemaj+hRQbn/Pebdm4zhi69tK/0lFxV
+	/Jw==
+X-Google-Smtp-Source: AGHT+IHL1nGWRPUt2Oy0hxjclaJNlV5M3ONGqW8lRTubyLes97erS22uxfuXyy1x83TcEl2bg5Z3zG2zvOA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d18:b0:6e6:c38e:eaa7 with SMTP id
+ fa24-20020a056a002d1800b006e6c38eeaa7mr137828pfb.5.1710456989038; Thu, 14 Mar
+ 2024 15:56:29 -0700 (PDT)
+Date: Thu, 14 Mar 2024 15:56:27 -0700
+In-Reply-To: <20240314220923.htmb4qix4ct5m5om@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <20240226190344.787149-1-pbonzini@redhat.com> <20240226190344.787149-11-pbonzini@redhat.com>
+ <20240314024952.w6n6ol5hjzqayn2g@amd.com> <20240314220923.htmb4qix4ct5m5om@amd.com>
+Message-ID: <ZfOAm8HtAaazpc5O@google.com>
+Subject: Re: [PATCH v3 10/15] KVM: x86: add fields to struct kvm_arch for CoCo features
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	aik@amd.com, pankaj.gupta@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Mar 14 2024 at 14:53, Florian Fainelli wrote:
-> On 3/14/24 14:21, Thomas Gleixner wrote:
->> 8ca1836769d758e4fbf5851bb81e181c52193f5d is related, but dos not fully
->> explain the fail. I haven't yet spotted where this goes into lala land.
->
-> It was a lot harder to generate the same issue on cold boot against 
-> 8ca1836769d758e4fbf5851bb81e181c52193f5d,
+On Thu, Mar 14, 2024, Michael Roth wrote:
+> On Wed, Mar 13, 2024 at 09:49:52PM -0500, Michael Roth wrote:
+> > I've been trying to get SNP running on top of these patches and hit and
+> > issue with these due to fpstate_set_confidential() being done during
+> > svm_vcpu_create(), so when QEMU tries to sync FPU state prior to calling
+> > SNP_LAUNCH_FINISH it errors out. I think the same would happen with
+> > SEV-ES as well.
+> > 
+> > Maybe fpstate_set_confidential() should be relocated to SEV_LAUNCH_FINISH
+> > site as part of these patches?
+> 
+> Talked to Tom a bit about this and that might not make much sense unless
+> we actually want to add some code to sync that FPU state into the VMSA
+> prior to encryption/measurement. Otherwise, it might as well be set to
+> confidential as soon as vCPU is created.
+> 
+> And if userspace wants to write FPU register state that will not actually
+> become part of the guest state, it probably does make sense to return an
+> error for new VM types and leave it to userspace to deal with
+> special-casing that vs. the other ioctls like SET_REGS/SREGS/etc.
 
-That's good as it points into the exactly right direction as far as I
-can tell from the data we have, but I might be wrong at the end.
+Won't regs and sregs suffer the same fate?  That might not matter _today_ for
+"real" VMs, but it would be a blocking issue for selftests, which need to stuff
+state to jumpstart vCPUs.
 
-> however, just like against 36e40df35d2c1891fe58241640c7c95de4aa739b,
-> it would happen resuming from suspend to DRAM whereby the CPU core(s)
-> lost their power and had to be re-initialized. Eventually I got a cold
-> boot log:
->
-> https://gist.github.com/ffainelli/b5684585c78518a5492cbbf1c7dce16e
-
-The picture is similar to the one before:
-
-<idle>-0         2d.... 3016627us : tmigr_update_events: child=00000000 group=6b74d49d group_lvl=0 child_active=0 group_active=1 nextevt=3023000000 next_expiry=3023000000 child_evt_expiry=0 child_evtcpu=0
-<idle>-0         2d.... 3016628us : tmigr_group_set_cpu_inactive: group=6b74d49d lvl=0 numa=0 active=1 migrator=1 parent=00000000 childmask=4
-<idle>-0         2d.... 3016629us : tmigr_cpu_idle: cpu=2 parent=6b74d49d nextevt=3023000000 wakeup=9223372036854775807
-
-<idle>-0         0d.... 3016684us : tmigr_group_set_cpu_inactive: group=6b74d49d lvl=0 numa=0 active=0 migrator=ff parent=00000000 childmask=1
-<idle>-0         0d.... 3016685us : tmigr_cpu_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
-<idle>-0         0d.... 3024623us : tmigr_cpu_new_timer_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
-
-<idle>-0         1d.s.. 162080532us : timer_cancel: timer=2e281df7
-
-Just a different CPU this time.
-
-The first expiring timer:
-
-kcompact-42        1d.... 2552891us : timer_start: timer=2e281df7 function=process_timeout expires=4294670348 [timeout=500] bucket_expiry=4294670352 cpu=1 idx=66 flags=
-
-Last expiry before going south:
-
-   <idle>-0         1..s.. 3006620us : timer_expire_entry: timer=6f47b280 function=process_timeout now=4294670302 baseclk=4294670302
-
-4294670352 - 4294670302 = 50
-
-3006620us + 50*1000us = 3056620us
-
-So the previous observation of hitting the exact point of the last CPU
-going idle does not matter.
-
-What really bothers me is:
-
-<idle>-0         2d.... 3016629us : tmigr_cpu_idle: cpu=2 parent=6b74d49d nextevt=3023000000 wakeup=9223372036854775807
-
-which has an event between these events:
-
-<idle>-0         0d.... 3016685us : tmigr_cpu_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
-<idle>-0         0d.... 3024623us : tmigr_cpu_new_timer_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
-
-But that event is before the next expiring timer. Confused, but Frederic
-just told me on IRC he's on to something.
-
-> Does the consistent ~159s mean anything?
-
-I don't think so. It might be the limitation of the clockevent device,
-the maximum sleep time restriction or some other unrelated event (device
-interrupt, hrtimer) which happens to pop up after this time for some
-reason.
-
-But it's definitely not relevant to the problem itself. It's just the
-thing which brings the machine back to life. Otherwise it might sit
-there forever.
-
-Thanks,
-
-        tglx
+And maybe someday real VMs will catch up to the times and stop starting at the
+RESET vector...
 
