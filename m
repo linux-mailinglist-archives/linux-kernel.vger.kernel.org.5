@@ -1,173 +1,351 @@
-Return-Path: <linux-kernel+bounces-103415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FF2287BF19
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:39:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFD787BF1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:40:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C34A91C22E9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:39:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1FD3B2200A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A51E5D75A;
-	Thu, 14 Mar 2024 14:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BEA6FE37;
+	Thu, 14 Mar 2024 14:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XHKSnkxP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="13gjzTv4"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2064.outbound.protection.outlook.com [40.107.223.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABF7DDD9
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710427176; cv=none; b=sS7k82v52Ruhv41fJSmw7g54QfCYelPaTNBhvHub2YatMP9RdTHzZ3Zj25BWm3SdJ6RIqrnRTLUcBw7oU2ken9OG+eU4iG2BqixAy2bGSsPGF1EU5y1eT0mfD1dyse75j8wq0mhQBV0a2pLm9hNOX0tTxoJddwE3lYgTNUWpJh0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710427176; c=relaxed/simple;
-	bh=htMGaELCn1S8KWPBIXUDOtfLlxSBIy5UJs4/5V9lI4M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EeLir0ewNkN+gHIYopyWeq00RBkHTw2WPsuOyJtZ5tz57A2QLHgESDAdq9SZeH//4tGmyaZXAkS6NbUzUsdAB/1k3X/aNNJcpPFodrusLRuMbw8K3bocxUvrTSVrO8zYhg07ZC8C7oop7eSH++Sz1linruf0pXzMNVuFnMYj0qQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XHKSnkxP; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710427173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=uu+6Lcsc167aknt17gHSlt6RJtJnzw0KlGtcQvx6o9I=;
-	b=XHKSnkxP1MuBVCi7D4I4rLBr3qgHJZ3WTL83a4Rl263D3hpare07cSRXLIapBlEuc/wvjS
-	n+0H5ZS9J9b4QdLE1lAbz9TZMc3fXsOAhtRT/E8upEWV8GIfn693spOCw1xzgPU2t6tpxj
-	SEO5MGjTtw+wUWGxQw7T+VA58Ww9YpE=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-15OVkSdBMfqY7HZqZhsoOg-1; Thu, 14 Mar 2024 10:39:31 -0400
-X-MC-Unique: 15OVkSdBMfqY7HZqZhsoOg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-413efefbdfbso661875e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:39:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710427170; x=1711031970;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uu+6Lcsc167aknt17gHSlt6RJtJnzw0KlGtcQvx6o9I=;
-        b=ngDqV+2ZLSbMkjJQfcMNupVb+r5MDTy1eptdOacE0tGJAzIx3nxSqyY7/VAIYHNywT
-         HKWVR6aibPh2E2v93XglrPLW8LSGFfJNDY8PMr/d6kX/Sm8gupuTdqhec+FguJ12c/QP
-         smTWOZeMOR8zDQHNCPuQ7nt8c485b3zZ/FHShj4PDFVEjwpCgsVh1QZXKWDsiIlkEIRC
-         SHG7CFppOtzMasnN+b1xiFU418K7wOKV06StjlrbdKyTn+ZIEpAV1W48p93mSTi8uIZj
-         rzHtH5VRM0N6BScNnPe9lzB/tX/d+oPVT1Vri8SgiVMvwGdNrr7zHKAENC91mZr9nHJY
-         i0Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCVm/GEoAxCW6dQT2TyHgL9jMS/gTK8TUQDGYz9vYOk3q+rvdXM6KP+k9aYtwxC/1/RTqdoFfvbPlvyltJQQdyvZdKmV3oRY6PJTrnPB
-X-Gm-Message-State: AOJu0YwsCW36CUVr4dLPikMvV8UQZmA6csV/iHqWUzZrA5ckBY6s5O7U
-	1c57rQf+98DI8L3hm8QbpvlGwL9F3OsQVHe7ioig/exdT/tu2QabQEi32CK1axmKnxz7HaltWU7
-	LueppKLp8gzI0IviB+OhaDb++bZzmm8l+NQemCnZtG/xGRCV4X79OHNUwyDAcUw==
-X-Received: by 2002:a05:600c:45c8:b0:413:ebfb:aef with SMTP id s8-20020a05600c45c800b00413ebfb0aefmr1628734wmo.4.1710427170368;
-        Thu, 14 Mar 2024 07:39:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEmvdjJr4wkiWWW/fJFayTEBhIFmvVEFkGnaixiKzLYCX5/kChL5fqaIzwFodLALgl9OvTfUg==
-X-Received: by 2002:a05:600c:45c8:b0:413:ebfb:aef with SMTP id s8-20020a05600c45c800b00413ebfb0aefmr1628722wmo.4.1710427170005;
-        Thu, 14 Mar 2024 07:39:30 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-230-217.dyn.eolo.it. [146.241.230.217])
-        by smtp.gmail.com with ESMTPSA id bh26-20020a05600c3d1a00b00413ee67f741sm3647861wmb.13.2024.03.14.07.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 07:39:29 -0700 (PDT)
-Message-ID: <8607787b42e80503e0259f41e0bcc2d3ff770355.camel@redhat.com>
-Subject: Re: [PATCH] net: hns3: tracing: fix hclgevf trace event strings
-From: Paolo Abeni <pabeni@redhat.com>
-To: Steven Rostedt <rostedt@goodmis.org>, LKML
- <linux-kernel@vger.kernel.org>,  Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
- <salil.mehta@huawei.com>,  Jijie Shao <shaojijie@huawei.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Yufeng Mo <moyufeng@huawei.com>, Huazhong Tan
- <tanhuazhong@huawei.com>
-Date: Thu, 14 Mar 2024 15:39:28 +0100
-In-Reply-To: <20240313093454.3909afe7@gandalf.local.home>
-References: <20240313093454.3909afe7@gandalf.local.home>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD764D9ED
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710427246; cv=fail; b=O50E2I0pdUYHTSMWwZDwL0rDQaTJ3h1DtJ/jHZuJCsSy2MeZk7H0qj9tzirBokp6sKx8sll0DXcFOcX79ZXvwzPD6dJ861uD8GY5RwJElgu91RHNxHdcq/qyLg76y9G3et5/yENQX7nxt+8P5M9ZyyTEiIEbiy0bQWfPhMPeFWw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710427246; c=relaxed/simple;
+	bh=vK1viXCgL4UmM67wd5ZvV+Ok5gsfFGujQBuNFvQg28I=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=PU5to9Q+j36fRHEDnsBQftnkE1pCTYjGi5yR58sgMextyXoAxkRsdH340JpkDUkEw4JcDTEyASSk9Dl+ii2A3m8LekoZezzPlA9Pbkp/6ARDJay5t4TEw9SFfH6kkEbbv0z0tsumOcqULJGDQWy/Bip3li0bNRdWrDPkyPAZof4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=13gjzTv4; arc=fail smtp.client-ip=40.107.223.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kn7XBlkKpzs7znalaHCOkznVfsjC7njVFMKPAGkaTPYharHTq4lImloUn+D5kIrh2TbqxBDrTMaQmSLBCIt1lVl8k6NAvxnnmJkUuq7ZNxtF9By9QT5WENaOjYPjPNGgZWp9lMGotGirUM06e0lres2k/20vYaHyy/Xxv5wW1bJZL0q/M1sM1tHGFDqgNGRSyuvNRlrVUqMIS8NlvDCQSQ5GwsxZnNl+34q/EbyNwkx+ztJ1rBlz9W8jHdf3pEV+ntqNzyKFd6PV547Ujl036c8fybYFnoPx5PvQkHi4vVIy3eKJsp3nSXoXcrEUYTcfnSWvIzDYTCJRWEne/vpMbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=swD6T/RgLjivDz91v2PAuhPqj4jTfq7HpwbMhSlFdJA=;
+ b=C768septOhDnjzmYZS8deL9mjYC6mCi1duhlhNAwn/8hIp1O/d5vMZtx4yN5wzzqw5XBwvapdTN7wFwK5HdRQ2PhtQlpXyiCFy2GdrdZMqXDr118T5fDXyNO6tqvy57FSQUNle54bzhRUVxe3HYD3Ff/qe9wzVVoEAYbFWcojel8AeI9tsQEXZadgosz/TP4UXChg5mNvprh+XW844GGCkJ33I0oEo6xwCHfZKCOlaTybIs3Kb3Yq8EgWvIARt5XtAI+SbaaJPMil/3Gii3tyhy2Uimi8vv6OD+xWJ0C5u1nh8jkdAgDWqlTw2VH4xEkwvO3MzdopSsy7QgYHcAZqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=swD6T/RgLjivDz91v2PAuhPqj4jTfq7HpwbMhSlFdJA=;
+ b=13gjzTv4pWM3vCZWhZ3OuoxAUkB6vgTNz+MUj+aXSuvq5pv0Y0voPxQUNRZLvEfkNSIYkHgROkO8/aQyMP9xTlE8fPyFYAWCYM46M2cT+QCt1R/1/Gm18TA2pIDSxTOTyGjuC9TQCkhhOwiT1Dn3eqh/CGqa0KmeEfVhUfh9i4s=
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6)
+ by SA3PR12MB7857.namprd12.prod.outlook.com (2603:10b6:806:31e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Thu, 14 Mar
+ 2024 14:40:41 +0000
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::b001:1430:f089:47ae]) by BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::b001:1430:f089:47ae%7]) with mapi id 15.20.7362.035; Thu, 14 Mar 2024
+ 14:40:41 +0000
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To: Qiang Ma <maqianga@uniontech.com>, "Koenig, Christian"
+	<Christian.Koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	"airlied@gmail.com" <airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
+	"SHANMUGAM, SRINIVASAN" <SRINIVASAN.SHANMUGAM@amd.com>,
+	"sunran001@208suo.com" <sunran001@208suo.com>
+CC: "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] drm/amdgpu: Clear the hotplug interrupt ack bit before
+ hpd initialization
+Thread-Topic: [PATCH v2] drm/amdgpu: Clear the hotplug interrupt ack bit
+ before hpd initialization
+Thread-Index: AQHaVBuV1+DuIno39kWTMzibKUqKELE1dE6AgAIefBA=
+Date: Thu, 14 Mar 2024 14:40:40 +0000
+Message-ID:
+ <BL1PR12MB5144F6A9CAB0504C8AD5728CF7292@BL1PR12MB5144.namprd12.prod.outlook.com>
+References: <20240131075703.24600-1-maqianga@uniontech.com>
+ <A65A2F93D9F165EC+20240313141827.40f30bd5@john-PC>
+In-Reply-To: <A65A2F93D9F165EC+20240313141827.40f30bd5@john-PC>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=be9acc67-a4ec-4e26-9175-6848817506c8;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP
+ 2.0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2024-03-14T14:40:38Z;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR12MB5144:EE_|SA3PR12MB7857:EE_
+x-ms-office365-filtering-correlation-id: 564fd3d9-222a-4cde-8bd5-08dc4434b8dd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Kg2KOrVU49WCPmbEVAENvfbhvss6iNXwpOvbgxJK9aN6OYE1nxXUqu9FYNN7OQQXJ5CT1RUzkY84CxAmIrO0Odah2S0CNo2tm65fXLQ5rxZNMr3YfNg9OTqwnsMiJmdPHdM13YpjXmNuZwTg0J/zzYuyLNvfRzLiXHbjcDaqssJxkJF0cTWYqD4YezniWCG2xprvOpH9KmiKnL8OyJ62ehFlvXsvX4AQguMlDNq/4FaxsJnefa1a5I5VDRRWQEnGtJ1pjxKhhRnAV+SMlNye/qd78yG83rQJELu84QaXP2SbgGHX2e1ryYxMXJ7u5UEQ1VT5MTUjVj0u//jig6p55pQVnZ7cv+shUrpBp8tLFc4s9TG6EtkIaYYb88EOSPkOhzC+STF/kaNm/3VP+edUsT2/mXxcfcjjR9ePUS5syKQFthjU6R6t/aTrh3tjBXkObPBnz3CWrvDEiCEb2t2fLWcF8oVud/mZuDMSPZDg3Sw2azU3+mE96V5Hu/StC3wDJ4b5kkRgQdNfTo1iYNey4Jj6TyBqcWVAPgcl6f6L+a+qANo8DK/AyvCydltBxgHHuERjxBJQCZMVrIFu5FDIuSxLhVHJhL49VZjWkyVK3fYFcNcmGTExrItGDSp+GVgDpGtC3e8y7ww98aTf5mG2tTXZ7S872tkq6xeaPXWw900WZnsyZiMIHy8iQWfkl65b0k7gIo3O35VFIpN7vBwCXJqxhqwQ9CO8Hx3jcV+AN4U=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5144.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(921011)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?fxOu+4x3629nwmL1ykAmQzvrGQJdbvLQ8try7lEvONd9pz1iEdOyh3EFAcWm?=
+ =?us-ascii?Q?dIJ+6NAyesP4DALXDjdqEqt9ChBaVwiBloS/dw0LqupYzQKbqsRMYUdMh1a/?=
+ =?us-ascii?Q?yFzm6ecZyr7Hup1R2gqiSzEtWr/4uCpfl/jRB2ADwjo1E8pa8dift3NmKy3+?=
+ =?us-ascii?Q?OvwL8XCySvTg+TiM48eoLZsORTeFd2ivh0DtSWsM19ZOaAQy9YVGsH74/zHk?=
+ =?us-ascii?Q?B4goSth7zsk6Uwrz3zMM7LJcf89X1Z5DWROHnoT4aCruxmrqnG8+QPl/0dAG?=
+ =?us-ascii?Q?cgHbthIZVkMZpBizX/Oe5OsgYhRQyKfjQXNWG6X9mj5f9Pr/ciEy7P7jU3Or?=
+ =?us-ascii?Q?rVxv7xoaguC+ZyRufd7S//cJtJfq2BQX7krX9tP9oN3Un5HJavvyNFeW4BDx?=
+ =?us-ascii?Q?D9B9/+hLeNCpZZaB0HnxrGKA7pWZwIety1Kuaj8lI9DH1HSlnkd2VdnU4Rbv?=
+ =?us-ascii?Q?hnyCh7Ubm16DXcXjiWfOyrLoFJEwspA+3GutnV+xK2JADYYSPX40peCn67G/?=
+ =?us-ascii?Q?Ghy//3QnKVmEh0rq9siWIInTbBaHQFWXnrHjvZHUNEpNTnQfeM8Tal3AqOKi?=
+ =?us-ascii?Q?2zvs3VaMB0ifhkna8BzooGUbyWlc/Morpq9YZ/yRh+gnwqjo0Tw/SsRcgaKV?=
+ =?us-ascii?Q?NAbN9r6h9OqHlmdccZAoZFba8AP/jY8oKfQQ8ITHIHmQOJevQbUr5mWTYiUN?=
+ =?us-ascii?Q?Ghfqw5uVn6M+OtVx+/HLnHDBlez0wlu/9t9bMEYEglMU84KtGsIe5wr6TuHb?=
+ =?us-ascii?Q?0xoMqqOLEEM7wr24Dca12lD8nT3O9i4kHVnw5MUdRE6/RjWXWNFPPIfB+VhW?=
+ =?us-ascii?Q?oBxrs6qcxX07el1BQEN/xObJE0EbSTz8GOvV7oFYv621QfAhFdqQCIvw4RwO?=
+ =?us-ascii?Q?Ni3GvM5Yefhc9dGh8FXOOmsHLmRkHn/Yb6oCZX0VNxOIJinT6oC2p44Qt3eC?=
+ =?us-ascii?Q?gMVOc6kC15o2HDSHx+uxPekl6SKaPvLXdBm8ikJMqjhLsWqBc1j52v1J8ELz?=
+ =?us-ascii?Q?7gJDeHttIdB9V+WHHj/A0gpuOH0oeYvT5uFu0ieWfGX1KS0EPgaI9P96VT13?=
+ =?us-ascii?Q?8V+jxJxQa16CDocnbhCe7D+7JE3JIcQZtv/vQ9fPPRcWhPP3gmQbyOToPLKy?=
+ =?us-ascii?Q?/45j/zUG8YEktPE4M8QCMrXIXU732yOfVP+5zvsLikB6b6NwiTe0z1cJNVqQ?=
+ =?us-ascii?Q?WzXvWqza9tM+i1oRQfSmuraGngbdxzSHr44xsH0VV9/Pbc/Ga6qSeOdsJW2C?=
+ =?us-ascii?Q?yUP1vp9GzfptEKtRRtVgIHD0lEXuO1B4lvVwEZLuP8eQFPApmpBwwyfXBHzv?=
+ =?us-ascii?Q?6IqVMBT/mLs302J47gmuiWw/r8C+4psgkg7Ua1+PLeOK/V4sDXMFmXOtex9T?=
+ =?us-ascii?Q?jdooN1YIfE5h8Kz/jkEa/E20qg8AXEZmlNJdeXIntfe46GS55iG1Gx8d9Zvk?=
+ =?us-ascii?Q?qd2GoskWbX2NPh91tSSXk/PBzsk0Qr7dv0Pk/v2ElRlKHABgsA3xf3f88qNB?=
+ =?us-ascii?Q?vWfTV/Df8Gpnhv2BlFkerPwNNve8zgqzI4kJP3cNs5HaulH/eyrQQjZf9H75?=
+ =?us-ascii?Q?LobHTDxSJJPZY214na8=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5144.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 564fd3d9-222a-4cde-8bd5-08dc4434b8dd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 14:40:40.9824
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: woV682h9I9/se5JBSwt8Uhgkvn5XaoUAVEhTSAqK0Htty1NTMkp6+mKSYOHH6zkLEzWhTGmHHkpoD/puVU0Jvg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7857
 
-On Wed, 2024-03-13 at 09:34 -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->=20
-> [
->    Note, I need to take this patch through my tree, so I'm looking for ac=
-ks.
+[Public]
 
-Note that this device driver is changing quite rapidly, so I expect
-some conflicts here later. I guess Liuns will have to handle them ;)
+> -----Original Message-----
+> From: Qiang Ma <maqianga@uniontech.com>
+> Sent: Wednesday, March 13, 2024 2:18 AM
+> To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian
+> <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
+> airlied@gmail.com; daniel@ffwll.ch; SHANMUGAM, SRINIVASAN
+> <SRINIVASAN.SHANMUGAM@amd.com>; sunran001@208suo.com
+> Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux=
+-
+> kernel@vger.kernel.org
+> Subject: Re: [PATCH v2] drm/amdgpu: Clear the hotplug interrupt ack bit
+> before hpd initialization
+>
+> On Wed, 31 Jan 2024 15:57:03 +0800
+> Qiang Ma <maqianga@uniontech.com> wrote:
+>
+> Hello everyone, please help review this patch.
 
->    This causes the build to fail when I add the __assign_str() check, whi=
-ch
->    I was about to push to Linus, but it breaks allmodconfig due to this e=
-rror.
-> ]
->=20
-> The __string() and __assign_str() helper macros of the TRACE_EVENT() macr=
-o
-> are going through some optimizations where only the source string of
-> __string() will be used and the __assign_str() source will be ignored and
-> later removed.
->=20
-> To make sure that there's no issues, a new check is added between the
-> __string() src argument and the __assign_str() src argument that does a
-> strcmp() to make sure they are the same string.
->=20
-> The hclgevf trace events have:
->=20
->   __assign_str(devname, &hdev->nic.kinfo.netdev->name);
->=20
-> Which triggers the warning:
->=20
-> hclgevf_trace.h:34:39: error: passing argument 1 of =E2=80=98strcmp=E2=80=
-=99 from incompatible pointer type [-Werror=3Dincompatible-pointer-types]
->    34 |                 __assign_str(devname, &hdev->nic.kinfo.netdev->na=
-me);
->  [..]
-> arch/x86/include/asm/string_64.h:75:24: note: expected =E2=80=98const cha=
-r *=E2=80=99 but argument is of type =E2=80=98char (*)[16]=E2=80=99
->    75 | int strcmp(const char *cs, const char *ct);
->       |            ~~~~~~~~~~~~^~
->=20
->=20
-> Because __assign_str() now has:
->=20
-> 	WARN_ON_ONCE(__builtin_constant_p(src) ?		\
-> 		     strcmp((src), __data_offsets.dst##_ptr_) :	\
-> 		     (src) !=3D __data_offsets.dst##_ptr_);	\
->=20
-> The problem is the '&' on hdev->nic.kinfo.netdev->name. That's because
-> that name is:
->=20
-> 	char			name[IFNAMSIZ]
->=20
-> Where passing an address '&' of a char array is not compatible with strcm=
-p().
->=20
-> The '&' is not necessary, remove it.
->=20
-> Fixes: d8355240cf8fb ("net: hns3: add trace event support for PF/VF mailb=
-ox")
+This was applied back in January, sorry if I forget to reply.
 
-checkpactch in strict mode complains the hash is not 12 char long.
+Alex
 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
-FWIW
-
-Acked-by: Paolo Abeni <pabeni@redhat.com>
+>
+>   Qiang Ma
+>
+> > Problem:
+> > The computer in the bios initialization process, unplug the HDMI
+> > display, wait until the system up, plug in the HDMI display, did not
+> > enter the hotplug interrupt function, the display is not bright.
+> >
+> > Fix:
+> > After the above problem occurs, and the hpd ack interrupt bit is 1,
+> > the interrupt should be cleared during hpd_init initialization so that
+> > when the driver is ready, it can respond to the hpd interrupt
+> > normally.
+> >
+> > Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+> > ---
+> > v2:
+> >  - Remove unused variable 'tmp'
+> >  - Fixed function spelling errors
+> >
+> > drivers/gpu/drm/amd/amdgpu/dce_v10_0.c |  2 ++
+> > drivers/gpu/drm/amd/amdgpu/dce_v11_0.c |  2 ++
+> > drivers/gpu/drm/amd/amdgpu/dce_v6_0.c  | 22 ++++++++++++++++++---
+> -
+> > drivers/gpu/drm/amd/amdgpu/dce_v8_0.c  | 22 ++++++++++++++++++---
+> -
+> >  4 files changed, 40 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c index
+> > bb666cb7522e..12a8ba929a72 100644 ---
+> > a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c +++
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c @@ -51,6 +51,7 @@
+> >
+> >  static void dce_v10_0_set_display_funcs(struct amdgpu_device *adev);
+> > static void dce_v10_0_set_irq_funcs(struct amdgpu_device *adev);
+> > +static void dce_v10_0_hpd_int_ack(struct amdgpu_device *adev, int
+> > hpd);
+> >  static const u32 crtc_offsets[] =3D {
+> >     CRTC0_REGISTER_OFFSET,
+> > @@ -363,6 +364,7 @@ static void dce_v10_0_hpd_init(struct
+> > amdgpu_device *adev) AMDGPU_HPD_DISCONNECT_INT_DELAY_IN_MS);
+> >             WREG32(mmDC_HPD_TOGGLE_FILT_CNTL +
+> > hpd_offsets[amdgpu_connector->hpd.hpd], tmp);
+> > +           dce_v10_0_hpd_int_ack(adev,
+> > amdgpu_connector->hpd.hpd); dce_v10_0_hpd_set_polarity(adev,
+> > amdgpu_connector->hpd.hpd); amdgpu_irq_get(adev, &adev->hpd_irq,
+> >                            amdgpu_connector->hpd.hpd); diff --git
+> > a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c index
+> > 7af277f61cca..745e4fdffade 100644 ---
+> > a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c +++
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c @@ -51,6 +51,7 @@
+> >
+> >  static void dce_v11_0_set_display_funcs(struct amdgpu_device *adev);
+> > static void dce_v11_0_set_irq_funcs(struct amdgpu_device *adev);
+> > +static void dce_v11_0_hpd_int_ack(struct amdgpu_device *adev, int
+> > hpd);
+> >  static const u32 crtc_offsets[] =3D
+> >  {
+> > @@ -387,6 +388,7 @@ static void dce_v11_0_hpd_init(struct
+> > amdgpu_device *adev) AMDGPU_HPD_DISCONNECT_INT_DELAY_IN_MS);
+> >             WREG32(mmDC_HPD_TOGGLE_FILT_CNTL +
+> > hpd_offsets[amdgpu_connector->hpd.hpd], tmp);
+> > +           dce_v11_0_hpd_int_ack(adev,
+> > amdgpu_connector->hpd.hpd); dce_v11_0_hpd_set_polarity(adev,
+> > amdgpu_connector->hpd.hpd); amdgpu_irq_get(adev, &adev->hpd_irq,
+> > amdgpu_connector->hpd.hpd); } diff --git
+> > a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c index
+> > 143efc37a17f..28c4a735716b 100644 ---
+> > a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c +++
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c @@ -272,6 +272,21 @@
+> static
+> > void dce_v6_0_hpd_set_polarity(struct amdgpu_device *adev,
+> > WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp); }
+> >
+> > +static void dce_v6_0_hpd_int_ack(struct amdgpu_device *adev,
+> > +                            int hpd)
+> > +{
+> > +   u32 tmp;
+> > +
+> > +   if (hpd >=3D adev->mode_info.num_hpd) {
+> > +           DRM_DEBUG("invalid hdp %d\n", hpd);
+> > +           return;
+> > +   }
+> > +
+> > +   tmp =3D RREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd]);
+> > +   tmp |=3D DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> > +   WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp); }
+> > +
+> >  /**
+> >   * dce_v6_0_hpd_init - hpd setup callback.
+> >   *
+> > @@ -311,6 +326,7 @@ static void dce_v6_0_hpd_init(struct
+> amdgpu_device
+> > *adev) continue;
+> >             }
+> >
+> > +           dce_v6_0_hpd_int_ack(adev,
+> > amdgpu_connector->hpd.hpd); dce_v6_0_hpd_set_polarity(adev,
+> > amdgpu_connector->hpd.hpd); amdgpu_irq_get(adev, &adev->hpd_irq,
+> > amdgpu_connector->hpd.hpd); } @@ -3088,7 +3104,7 @@ static int
+> > dce_v6_0_hpd_irq(struct amdgpu_device *adev, struct amdgpu_irq_src
+> > *source,
+> >                         struct amdgpu_iv_entry *entry)  {
+> > -   uint32_t disp_int, mask, tmp;
+> > +   uint32_t disp_int, mask;
+> >     unsigned hpd;
+> >
+> >     if (entry->src_data[0] >=3D adev->mode_info.num_hpd) { @@ -3101,9
+> > +3117,7 @@ static int dce_v6_0_hpd_irq(struct amdgpu_device *adev,
+> > mask =3D interrupt_status_offsets[hpd].hpd;
+> >
+> >     if (disp_int & mask) {
+> > -           tmp =3D RREG32(mmDC_HPD1_INT_CONTROL +
+> > hpd_offsets[hpd]);
+> > -           tmp |=3D
+> DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> > -           WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd],
+> > tmp);
+> > +           dce_v6_0_hpd_int_ack(adev, hpd);
+> >             schedule_delayed_work(&adev->hotplug_work, 0);
+> >             DRM_DEBUG("IH: HPD%d\n", hpd + 1);
+> >     }
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c index
+> > adeddfb7ff12..8ff2b5adfd95 100644 ---
+> > a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c +++
+> > b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c @@ -264,6 +264,21 @@
+> static
+> > void dce_v8_0_hpd_set_polarity(struct amdgpu_device *adev,
+> > WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp); }
+> >
+> > +static void dce_v8_0_hpd_int_ack(struct amdgpu_device *adev,
+> > +                            int hpd)
+> > +{
+> > +   u32 tmp;
+> > +
+> > +   if (hpd >=3D adev->mode_info.num_hpd) {
+> > +           DRM_DEBUG("invalid hdp %d\n", hpd);
+> > +           return;
+> > +   }
+> > +
+> > +   tmp =3D RREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd]);
+> > +   tmp |=3D DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> > +   WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd], tmp); }
+> > +
+> >  /**
+> >   * dce_v8_0_hpd_init - hpd setup callback.
+> >   *
+> > @@ -303,6 +318,7 @@ static void dce_v8_0_hpd_init(struct
+> amdgpu_device
+> > *adev) continue;
+> >             }
+> >
+> > +           dce_v8_0_hpd_int_ack(adev,
+> > amdgpu_connector->hpd.hpd); dce_v8_0_hpd_set_polarity(adev,
+> > amdgpu_connector->hpd.hpd); amdgpu_irq_get(adev, &adev->hpd_irq,
+> > amdgpu_connector->hpd.hpd); } @@ -3176,7 +3192,7 @@ static int
+> > dce_v8_0_hpd_irq(struct amdgpu_device *adev, struct amdgpu_irq_src
+> > *source,
+> >                         struct amdgpu_iv_entry *entry)  {
+> > -   uint32_t disp_int, mask, tmp;
+> > +   uint32_t disp_int, mask;
+> >     unsigned hpd;
+> >
+> >     if (entry->src_data[0] >=3D adev->mode_info.num_hpd) { @@ -3189,9
+> > +3205,7 @@ static int dce_v8_0_hpd_irq(struct amdgpu_device *adev,
+> > mask =3D interrupt_status_offsets[hpd].hpd;
+> >
+> >     if (disp_int & mask) {
+> > -           tmp =3D RREG32(mmDC_HPD1_INT_CONTROL +
+> > hpd_offsets[hpd]);
+> > -           tmp |=3D
+> DC_HPD1_INT_CONTROL__DC_HPD1_INT_ACK_MASK;
+> > -           WREG32(mmDC_HPD1_INT_CONTROL + hpd_offsets[hpd],
+> > tmp);
+> > +           dce_v8_0_hpd_int_ack(adev, hpd);
+> >             schedule_delayed_work(&adev->hotplug_work, 0);
+> >             DRM_DEBUG("IH: HPD%d\n", hpd + 1);
+> >     }
 
 
