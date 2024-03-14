@@ -1,128 +1,125 @@
-Return-Path: <linux-kernel+bounces-103687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F7687C301
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:46:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D04AA87C304
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:48:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C04A01F23A28
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:46:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70BA61F2439B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85B675815;
-	Thu, 14 Mar 2024 18:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787A21E480;
+	Thu, 14 Mar 2024 18:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="tOeFAKIc"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DI335Mhq"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CFF1E480;
-	Thu, 14 Mar 2024 18:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6921B71750
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710441965; cv=none; b=PH0lePPLSD07S23ht8Ywvhk5XQDPIK+Q+A7o0Tpytwy83gLHeWZ4EjhrE79YFz5VG94Z68kifK7PnbfaHCJbuqwegdKO0qJrO5X3eZ6LRKl87eagUWX7PDQi0k2FKz6KLVPDE2oSwWhm6pQst+UCzpI2Yq+TFaIEYjj2MYkKsOg=
+	t=1710442086; cv=none; b=iOMajGf/DyguKp84SCJRNBEwwwld1hL5JzL8reJ4+1c0YPBQQrgviaFIc4GVijh4aNUFZOawH6MyXTO2X/zAuwfRrzDJFk0F83yZm7hnLyFo/zzZlhd3LbnQv32giAvL5d55AHJ+IkK3DtoUyedA6s6N4WLhTg4ve+i9cZ0loFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710441965; c=relaxed/simple;
-	bh=73pleJhpD+977gat83JtY6VoRHWs9PM2nlEgjX6dODM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Wpuqdap1h+8wnaLfITTPaRIJbcQ01uVs3Gkg2FjgD2xnXvuoQnFVkot8T8GCSaDnz5ICBAejJsn/3KV9BOni+ZrMaKdhE1nj/+6JGHK5sReYubDHW2S5afh1WFHe75whdw+bi0OxquXrzykq4u0wzFQaBvDiA4lTyC4jbZw/m/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=tOeFAKIc; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710441946; x=1711046746; i=w_armin@gmx.de;
-	bh=OvYtfM9Idw423mYxqaNVgKEM4T4GduoNSCU/wC8Pn1E=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=tOeFAKIcNUuva+vSuzovLT1LU0qxVMTnPiaEdPMWXhJj+htslM/O+UdVSMpeEv+m
-	 jihiyUg1NkOjBBhM7SKSBN+YlFptq9mL/SgbOaffTxv2SDN6ApQpy3ibPAHu2hts6
-	 VDXjGLmIhuhCNprVMKjc5E2fSv8t/9R5NBn4bw+d46w2OtzTWFjR2T2jzCjnEt4Zl
-	 i1/9Vn1RJiiLzkQNv5xwLUwdj91S35c4skPiRx/BrdxOiSSu+YnrjGMQmZgkkiqR0
-	 GIfAqif/9IoaGORWboecJgYZHm5LKtPWMXTZN3o9ZnbFP84/R/1t9ADJIk+QgbTfM
-	 NCMWiG61eafr15sN0A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1Mt757-1qw2iJ25Np-00tVY5; Thu, 14 Mar 2024 19:45:46 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Cc: rafael@kernel.org,
-	lenb@kernel.org,
-	mario.limonciello@amd.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	linux-acpi@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] platform/x86: wmi: Avoid returning AE_OK upon unknown error
-Date: Thu, 14 Mar 2024 19:45:38 +0100
-Message-Id: <20240314184538.2933-2-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240314184538.2933-1-W_Armin@gmx.de>
-References: <20240314184538.2933-1-W_Armin@gmx.de>
+	s=arc-20240116; t=1710442086; c=relaxed/simple;
+	bh=EZhbH9Xwujr/B3oht4heJ2cRMgZi/vMO7ZMCqXz3KMc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hwJTT6SCSZmblSgqAEZRNuCBAo14wndUqOugmEECtaAs0cjeQ2b6xeWJf0Xv8aezpm6J9X+aNO9qaZMy6zGn3qP7S3PGFd35VyfviY7Owj1LGPxWZdnGIz4rKqUpW+HmBZeiV+LIGXLpY77HZlwwARb2agvRYrvvlXjeOHDJKb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DI335Mhq; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dd84ecfc47so10012805ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:48:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710442085; x=1711046885; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QCEUuHzDWcMi+OoMke8TXPhtm1lQOemQGrFVoSbQ18I=;
+        b=DI335MhqzDKZPv53se/zCIkwMtn1U0bYn0QbtjtnowYahz69fBc3jymn02rFPR4uT8
+         pVJoPHwpzv9UtmQXl+hgbbejBmMDrPTxorpcjy6CG0tyXgasKOVmuvcWlWVU6W/METXI
+         6dUkAVOURSOMmYnjx8tqoJGTYbVmAiM3cwEBxgdgOhq+v4YBAvY86HTq3295U3ZhcOpM
+         1dgGbLn98ezEhyfZcsMxr1f6Guya0z0PpjfJESeRsC0tEYEWwWrMWQtwWL/e6GtEhwZM
+         pU0SbC2PZ3uLFBuRaQAk8/NVifUe94IqlRQeHcrLkb83jjzbkA8vGTNeqcBdTqMD0hxR
+         eNrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710442085; x=1711046885;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QCEUuHzDWcMi+OoMke8TXPhtm1lQOemQGrFVoSbQ18I=;
+        b=R+JB9KVRzmQRdNJ3PZVgQq4BY3tLsKCuREhx8lItH/fxFrZPigXrBB+0vTkPnZv01a
+         xGv9eaIpXOzizcg/781er8IxHZw4h++1Opa0UyjAvKirofX9O+3/Xba6BxOLYQ55scq6
+         cB6ObhPpprSHgXDXQ/az5Wy27WlDc9lCU4KTG3MICUgE6q4IjUsaEQ6R6SExJeboTOWW
+         74M/s4NRXnhoilwkiU28US7b9oWdSAdXzeGpgtmo5CEroYDD3yfuU582TZD4qoW6sGtd
+         hvF9YyNLBkdlvSxgQjzB1z6voTIdQMsaUTYnCioXJql8xtfQtEJ41oxX4NzMrLUmexuA
+         QrLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVxbDaiRCAM/pdUbeGVg8OYpSCDIKOh8+NA8uK+ft+MNt39N89ZH+WEeZng/uiI2Tr52L+hdY3nCDtuIoZGVuxM5W/c/TNYD0Ieue4b
+X-Gm-Message-State: AOJu0YyMeCKu7fNc/dpkH+hEGm4bBDJ74ldE8+p70L0HLtzTYs8z/ANZ
+	yOJE1d04fEAJ3tRmdzECpNBrS6uudoKY8ix/AICNqInFepdpCETP
+X-Google-Smtp-Source: AGHT+IEDtQA/4/IxqD2QHGTaBEu5I8uPvanoYr5fvT4nwEYTBsMMRCgC3ZzP5HFhm2YFPaLC4rGc1Q==
+X-Received: by 2002:a17:902:6504:b0:1dd:de1a:bd02 with SMTP id b4-20020a170902650400b001ddde1abd02mr2656915plk.41.1710442084587;
+        Thu, 14 Mar 2024 11:48:04 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.66])
+        by smtp.gmail.com with ESMTPSA id q12-20020a17090311cc00b001db9e12cd62sm2069170plh.10.2024.03.14.11.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 11:48:04 -0700 (PDT)
+Date: Fri, 15 Mar 2024 00:18:01 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH v4] staging: greybus: Constify gb_audio_module_type
+Message-ID: <ZfNGYSC8CDHqVPlm@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BzNMQR+CPawSYJ7irsf98oWrdE8WPnzPb/P+gCNQPTjfHVCjbVM
- sBffKxV7U5JJAsA2qjjJgo2UoAvtoIAtCTikGGpHdGJ62AHjsYs9+HhPwXoKtIt5BmlHQmH
- bW/cBV+1q9BSXPmH0qij/L4v1Cq9lMxRd7rjWQqz6PGZto2onpt2BiZf8bVPbKeCHgyNhyq
- MD2v1zTVxG+7idXZbqHFQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:vZGeaRnPzjI=;Zb46cEwHdsv1VGbzDtSrQBIrCQ3
- QnW/GtdlNUE5+tm7hfEQsdAHEWfwLgOt5IBpjoKHIbtqP+XlIgHKBQ78z59jCs44O1htJtjHi
- +cy1aRLIoCAD/Vvf2gM48WAfMmF+Pcvk1XcHtxBAWNcVng+qcgfcYFlroNQSdGbn/MBprp00g
- mVxilJlmcqPZZW7St2qvHebCpaxNbJ5y3yh2K8oFaaKf3T/bYhmcz5LBHOEpFyeUXsxZTqbYg
- h0ngJSHOPQ3fHm3Hd4vtu94seoDRQYa1MDsnA0QNV4A7CaHg8guLUzVnnp0UOm7JT0FB0TEjb
- jMQMgM0lLYjICObtwlsiiNoAnrBy0k0fhZSwFAM3mEnYiIlFo4WiXEikqW/fD7nroQKPA9USM
- QDzNqtOS3+0kjc67d3mC094ZZAmZrZaK1y29KEASQb+bKt9WOKLgdNSPj2Hp3UisWK42LGDve
- 1ItLOi+v2p3wgkgWvwA2jZsp5qb/SRy3HQ+Cap+p++vXI9wwMrU3WIs5c3oRrm30m+zIN9/aY
- OU1HKh2Tsi7DPJGdhmZXEEWT2AljXPMkz27K46DpwU3KquxtcuJy+Kg8ued+G79deU9BbDb0S
- w+Fav4lhIY3Ky4wrSAtCk1a6RFFSKMvKY64yRcemKv3a8qnRLgCOYmNgWtNnHzUpiSUICpQp6
- onx1I+4tK4Gpf/fnHVJT5rAk6VBo8m8iJkvaHMTIByFnlwTTDLwdhFLEKenveq6gQaneonxc3
- 0OC1xJiLOFB7DNRySrUy++fh9sr8B7TXFjN+U34rbx7Vojl+zmkUT4Ohhnm+VITZSi/SqgLKb
- 0nzS09uaxhcQBXzvzdoxlaXVvuYy76vIPGQ9P5NjZ0oJw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If an error code other than EINVAL, ENODEV or ETIME is returned
-by ec_read()/ec_write(), then AE_OK is wrongly returned.
+Constify static struct kobj_type gb_audio_module_type to prevent
+modification of data shared across many instances, ensuring that the
+structure's usage is consistent and predictable throughout the driver
+and allows the compiler to place it in read-only memory.
+The gb_audio_module_type structure is used when initializing and
+adding kobj instances to the kernel's object hierarchy.
+After adding const, any attempt to alter gb_audio_module_type
+in the code is raising a compile-time error. This enforcement
+ensures that the sysfs interface and operations for audio
+modules remain stable.
 
-Fix this by only returning AE_OK if the return code is 0, and
-return AE_ERROR otherwise.
+Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 
-Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
+---
+Changes in v4: added more details verifying the change.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.=
-intel.com>
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/wmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Changes in v3: added the message that verifies the change,
+as suggested by Julia
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 9602658711cf..060e4236f932 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -1217,8 +1217,10 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physic=
-al_address address,
- 		return AE_NOT_FOUND;
- 	case -ETIME:
- 		return AE_TIME;
--	default:
-+	case 0:
- 		return AE_OK;
-+	default:
-+		return AE_ERROR;
- 	}
- }
+Changes in v2: incorporated changes in commit message
+as suggested by Alison
+---
+ drivers/staging/greybus/audio_manager_module.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-=2D-
-2.39.2
+diff --git a/drivers/staging/greybus/audio_manager_module.c b/drivers/staging/greybus/audio_manager_module.c
+index 5f9dcbdbc191..4a4dfb42f50f 100644
+--- a/drivers/staging/greybus/audio_manager_module.c
++++ b/drivers/staging/greybus/audio_manager_module.c
+@@ -144,7 +144,7 @@ static struct attribute *gb_audio_module_default_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(gb_audio_module_default);
+ 
+-static struct kobj_type gb_audio_module_type = {
++static const struct kobj_type gb_audio_module_type = {
+ 	.sysfs_ops = &gb_audio_module_sysfs_ops,
+ 	.release = gb_audio_module_release,
+ 	.default_groups = gb_audio_module_default_groups,
+-- 
+2.40.1
 
 
