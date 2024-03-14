@@ -1,107 +1,144 @@
-Return-Path: <linux-kernel+bounces-103033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6F587BA2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:15:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1F1587BA2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:16:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E81D1C22358
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:15:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C5771F23D4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3146CDDC;
-	Thu, 14 Mar 2024 09:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D046CDB0;
+	Thu, 14 Mar 2024 09:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ubFCNPhe"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="IJCZ1lEd"
+Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com [68.232.139.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5686BFB3
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3C226AD6;
+	Thu, 14 Mar 2024 09:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710407712; cv=none; b=qzv1rWNKTyJdUv7t7S803LgfOV1MlZOd1Lwu8P3HbT/hvOZ2LFNzX0rohRjyCm2BJ4q+WYqBT7F9vW4YkyyvsunZm+HNdZ27DD3+c9km/fz0gjH+1EAY4paNy5tYkog6xHas0bo2Tr5b3XT383JZTjEz+dGaZusW7RBtXY1z+mY=
+	t=1710407734; cv=none; b=D+fozOlvYTzpcpneowIfmWArKjmEZH6IDi1mRPJeCSsDuIZM9AfRbL6yOFMZIBZHO2pkEryXlhzuiUPE6+ftwvrTTmu240H/9yQiG50luSZa9yyG2sz1gP8DmJrcs8Ogc4WMwQjo7uak9Kf29P6RH3ejlM000jLbsDsbUJsxNrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710407712; c=relaxed/simple;
-	bh=lE/ZP5Tkvx9YY0FpPfk+sLpzNiYxoj91aWi14jou22k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VLxKI3c8aWlZdPb2NP84RRMiZWgfkRvhtN89++k3d0ihQpYBZB82lP6oAO5rAysLRzUeSLWfwd06mCnEa6o9nsDlQunPXnXwfZOfYMLTNG+GI5iINElqqjaXDfOUXjCH3yfewV5xMIM2tixWquP+TTG7SnH5cWrZPvcYAprKUsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ubFCNPhe; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-690c5d7851dso3811276d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710407708; x=1711012508; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lE/ZP5Tkvx9YY0FpPfk+sLpzNiYxoj91aWi14jou22k=;
-        b=ubFCNPheSIZ9cs6MaZxKWElEVqfL+s3kamjXeBCi5TL+nFgDVocsEf/N34w/gQXVeR
-         0LqK5N5L9cob0jrM+f06EPxadjMNgbXM10e4we3+v20YN4+oZzGSq809ILziIuLklVf3
-         MBm43VXX5DXR9vpuXWhLQJkZrcstImmNuzovBiJ6kUS7KGdNafB6ePLmas1Yg90DDG03
-         whRbVMEzHbrjEoARIstnlcsrPPjeL90l7fJUSi7+N1nlhc63QTNiYR/XCWHbWFoB4enw
-         T02PnMckcF/xjSPGoeMaeSN/Mx2E151p/NulWThbpZmFZgW6TqG22w6hjIaIO52cbznP
-         R02Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710407708; x=1711012508;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lE/ZP5Tkvx9YY0FpPfk+sLpzNiYxoj91aWi14jou22k=;
-        b=b+KeSSzHLByP72AtFCtMQWS0S7rYS+dTgwmp+FjiiAelPX1EZKk1f7P5Ws9H4CKUvq
-         VfAQA5mEzJiuzYGy3fREZR0HvKZpE+YjTyNMOni3kUNyMdL99pmxrA0gzuZ/vNlhSg0i
-         xJTVrMg1l56mLMhxRW9w8c93wjqfhzphQYywu1VcqrPWoJEgN7TDGzm9qO5Tt7T09Sin
-         W3gPFgk+zXRgZW9n2iyT8rz2+QJyiCwzvH2rt4PoTalpHjvM8mPMDPiRsEXQLtBxZCUL
-         YZ66Hyf28kYBtMbRHtbWUU4wuQML5gGlb//wJKXUTeIkgXsHtorsjBTUfcQS7Qez3sNm
-         74Sw==
-X-Forwarded-Encrypted: i=1; AJvYcCUCjRdTKzfl9Rd1zFPxVtGTNtbZQ39/WZqk1kKFgS9vij1TulvqvrmqGJ2At3oNUPCnzfucaUTt97jmc9V/oudEyk3WkD0RYUuZA9RD
-X-Gm-Message-State: AOJu0YwX24VLp8cWvNRkxPgeN7IwYQcauVkCBEf18GlUqGdDXLTmr4RX
-	CwKoHUApJmm9t7Kr9WCblI8I1O6c52oUI40ah0I0KVpHFxBj7gx6ZRMK/tcOPpPOp77GM7PcfPk
-	3r4+6yMSmyvNKmwpd6hPfSvYfBf6wyzrzWNFE
-X-Google-Smtp-Source: AGHT+IGfMznYIETWqpb1PprXePzqaigF18dojgQnMhgp1CmXhdyU8MIRSF4qLWE020QEL3knnSBFKCRcRErOBRLrkgE=
-X-Received: by 2002:ad4:53a6:0:b0:690:d719:d575 with SMTP id
- j6-20020ad453a6000000b00690d719d575mr1324895qvv.43.1710407708463; Thu, 14 Mar
- 2024 02:15:08 -0700 (PDT)
+	s=arc-20240116; t=1710407734; c=relaxed/simple;
+	bh=uApUjC5YdwCr0tkc9ThyODjdMT/+nu/W6brBLQ7RlsE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cRXzY9qhAWqUPJpLAEImcN4ye+Z8iTs1Va4PW1syQyH72SBO27IjIKrHd1PPXem78QP43Q8mZnPeNi8ju0+4acf3Paet2pksf1SVvXoI4zI0xCSAi5p4N9Yha92b+/CxSJBaobmyfJNahg8t5T5plRfHix6vXKQe/18CZ9jQHNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=IJCZ1lEd; arc=none smtp.client-ip=68.232.139.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1710407733; x=1741943733;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uApUjC5YdwCr0tkc9ThyODjdMT/+nu/W6brBLQ7RlsE=;
+  b=IJCZ1lEd9afcaX66LRRjynDbbURulgyo3ifMiRe23vDhY1a9vY3Xhndp
+   ByW/ANd6DETcADEWXGMncWf7XxI6Z4UyjoepVi1iX85e4E/WA83A0UvD3
+   iB1wUKswTlhKHVqgrTdDA0vpUKfEfhAQ0qzjeu7rTOxWKztqatJhLEr31
+   yXCdq7Gq7WqfFshnZV3RCWU3+PqunhZ26Gy0CB7NcZWHUBKwe9WrRVDaC
+   5Rs18EGGsfT1khkDKoG20AKChTqaKbut9U/G3ZY0FaY1MShxjPn/T8mvx
+   LIqMIef+sHnDOhFrMIhSHy8tco36k6n76ZSUb31WgDjCItPZlYJhCxtZ9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="154095754"
+X-IronPort-AV: E=Sophos;i="6.07,124,1708354800"; 
+   d="scan'208";a="154095754"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:15:24 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
+	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 3A4B5C32E2;
+	Thu, 14 Mar 2024 18:15:21 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 691B6B0D79;
+	Thu, 14 Mar 2024 18:15:20 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 016546B4C5;
+	Thu, 14 Mar 2024 18:15:20 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 80F291A006B;
+	Thu, 14 Mar 2024 17:15:19 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	linux-mmc@vger.kernel.org
+Subject: [PATCH] mmc: core: Convert sprintf/snprintf to sysfs_emit
+Date: Thu, 14 Mar 2024 17:15:12 +0800
+Message-Id: <20240314091512.1323650-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313230713.987124-1-benno.lossin@proton.me>
-In-Reply-To: <20240313230713.987124-1-benno.lossin@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 14 Mar 2024 10:14:57 +0100
-Message-ID: <CAH5fLgjMkWxqTxZKt_w+V6X1qfUzosTbwMxDVXUmw_qTdzYP_A@mail.gmail.com>
-Subject: Re: [PATCH] rust: init: remove impl Zeroable for Infallible
-To: Benno Lossin <benno.lossin@proton.me>, Laine Taffin Altman <alexanderaltman@me.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, stable@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28250.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28250.006
+X-TMASE-Result: 10--6.925300-10.000000
+X-TMASE-MatchedRID: 84oovQVhL8E4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfDqO6/8R69QE8U
+	roFNOGp7a6aAZTOwtJmRloiW1Kgftd2ZdKe8BPbSrMZ+BqQt2NpBHuVYxc8DW3hh5KUdlgWiKqF
+	q1hn3Eb3d+/nM3Koh0iaTw03n/wYO0ekSi+00U24ReM8i8p3vgEyQ5fRSh265uBsk5njfgGwHBN
+	wMIojZclkG0yevELlY5nGjEm4IlfpEY+rVKhaSwJ4CIKY/Hg3AaZGo0EeYG96m4/3ODjvukSq2r
+	l3dzGQ1bvsoMHHm4Yje41SHp05NwSTlv00df6MuF3aCMgMiMs9sOKrFPGAUQA==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-On Thu, Mar 14, 2024 at 12:09=E2=80=AFAM Benno Lossin <benno.lossin@proton.=
-me> wrote:
->
-> From: Laine Taffin Altman <alexanderaltman@me.com>
->
-> It is not enough for a type to be a ZST to guarantee that zeroed memory
-> is a valid value for it; it must also be inhabited. Creating a value of
-> an uninhabited type, ZST or no, is immediate UB.
-> Thus remove the implementation of `Zeroable` for `Infallible`, since
-> that type is not inhabited.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and `init::zeroed`=
- function")
-> Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
-> Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+or sysfs_emit_at() when formatting the value to be returned to user space.
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+coccinelle complains that there are still a couple of functions that use
+snprintf(). Convert them to sysfs_emit().
+
+sprintf() will be converted as weel if they have.
+
+Generally, this patch is generated by
+make coccicheck M=<path/to/file> MODE=patch \
+COCCI=scripts/coccinelle/api/device_attr_show.cocci
+
+No functional change intended
+
+CC: Ulf Hansson <ulf.hansson@linaro.org>
+CC: linux-mmc@vger.kernel.org
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+Split them per subsystem so that the maintainer can review it easily
+[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+---
+ drivers/mmc/core/block.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 64a3492e8002..1e1e136d9e72 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -234,7 +234,7 @@ static ssize_t power_ro_lock_show(struct device *dev,
+ 	else if (card->ext_csd.boot_ro_lock & EXT_CSD_BOOT_WP_B_PWR_WP_EN)
+ 		locked = 1;
+ 
+-	ret = snprintf(buf, PAGE_SIZE, "%d\n", locked);
++	ret = sysfs_emit(buf, "%d\n", locked);
+ 
+ 	mmc_blk_put(md);
+ 
+@@ -296,9 +296,9 @@ static ssize_t force_ro_show(struct device *dev, struct device_attribute *attr,
+ 	int ret;
+ 	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+ 
+-	ret = snprintf(buf, PAGE_SIZE, "%d\n",
+-		       get_disk_ro(dev_to_disk(dev)) ^
+-		       md->read_only);
++	ret = sysfs_emit(buf, "%d\n",
++			 get_disk_ro(dev_to_disk(dev)) ^
++			 md->read_only);
+ 	mmc_blk_put(md);
+ 	return ret;
+ }
+-- 
+2.29.2
+
 
