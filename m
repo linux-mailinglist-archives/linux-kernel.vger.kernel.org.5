@@ -1,157 +1,203 @@
-Return-Path: <linux-kernel+bounces-103202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A338687BC4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:55:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08BE687BC31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36508287B7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:55:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3825286F13
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5F96F08E;
-	Thu, 14 Mar 2024 11:55:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fLZxSUsE"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE576F06F;
+	Thu, 14 Mar 2024 11:48:48 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD21D60ED0;
-	Thu, 14 Mar 2024 11:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC146EB6D;
+	Thu, 14 Mar 2024 11:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710417345; cv=none; b=E3Qj67x7XNryAWDxOodlATur6HZ8me96rGmZSRiZdhp4vp3DtZwJgDs2ar71loqPnxjdRawpVT60ymrCvsFMoafLw10PAKF13c38qnsxvRLHHNSqyTSjy9O31D5pkM1q4L1FQdFtNP+V4JMC0NMgb3F4Ijk6QoLDt+L8ckeuN78=
+	t=1710416927; cv=none; b=mEZAOY4V58FKAm3sUNz1AjhK6SD63nWe6ROfvx6QvZZIH7K+5Wsydry/c7i3/VQWv1iBEj+8cfr73AInzTlQtHymNz2NtRCFh2eXrz3mpTRD5vSv/Z+SfLV+SzDl7PuIP1ES2kngAgCLil0/p5+YiWXK2jgT7xyFRTXEhPzu6a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710417345; c=relaxed/simple;
-	bh=1JjhfL7FcQqnuhY7jT5WcbVKksVOcdGMYehx/+c0rr0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=lk0CEgHKDnOq68XLOGvD1FwgPAJLeauiwwh2t+6z4cmVWGaAEnhBN3w8YhA/x9PWOqYghrMxC8DuPr5kHfK0zf71aEpL/CphDvG1Ak6/GyJvyQ1KnM8xMQ1+BIyqCGTui0iIi+nnw03vCfssB2JIUQvgFI3PHgidVBIdxNjYcro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fLZxSUsE; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42EBlHeF003175;
-	Thu, 14 Mar 2024 11:55:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=xHYEL1lRKfbbIXWWI4DDnPg/kjBT2P/MRCov2Y8zLH8=;
- b=fLZxSUsEBoXmkeDkU8mPLsAfh2icRZ2876jBMfL+otAhwyDmMh4PC6eDEeSMhVBWEmR1
- HRsnr/jBlZVGHIrW+eyRrSf7plYqFZ/QFvMwqrMYVdFVEznkOdh1fvsU+n8GwH+RamuU
- WuV0DjSecMAYrcK7hmyx0ztcS/2ZcrgRLg/fQMw1vAjnd3lwYATXvfVmk/6ufTVWsrm7
- WqQuKV3bL4jVXnyF70gG8hj2TtfI12QXzauXFf4sErUuu8WExF8KuGY647mKsAvj9aIN
- ylVV51qsgbhlKGrafDjtahYIO1kmJQOQcp/AKZeOybaK0CrturiT5HZEz6a8ksfZJsio zA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wv0ntr22n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 11:55:23 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42EBtNpD019215;
-	Thu, 14 Mar 2024 11:55:23 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wv0ntr1ve-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 11:55:23 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42E90Yas015501;
-	Thu, 14 Mar 2024 11:46:59 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws2g04t67-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 11:46:59 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42EBktXE30146886
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 14 Mar 2024 11:46:57 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BE70020043;
-	Thu, 14 Mar 2024 11:46:55 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8D84D20040;
-	Thu, 14 Mar 2024 11:46:55 +0000 (GMT)
-Received: from DESKTOP-2CCOB1S. (unknown [9.171.201.209])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 14 Mar 2024 11:46:55 +0000 (GMT)
-Date: Thu, 14 Mar 2024 12:46:54 +0100
-From: Tobias Huschle <huschle@linux.ibm.com>
-To: Luis Machado <luis.machado@arm.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Abel Wu <wuyun.abel@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, netdev@vger.kernel.org,
-        nd <nd@arm.com>
-Subject: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair: Add
- lag based placement)
-Message-ID: <ZfLjrgn5rlPOD5Xa@DESKTOP-2CCOB1S.>
-References: <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
- <92916.124010808133201076@us-mta-622.us.mimecast.lan>
- <20240121134311-mutt-send-email-mst@kernel.org>
- <07974.124020102385100135@us-mta-501.us.mimecast.lan>
- <20240201030341-mutt-send-email-mst@kernel.org>
- <89460.124020106474400877@us-mta-475.us.mimecast.lan>
- <20240311130446-mutt-send-email-mst@kernel.org>
- <cf813f92-9806-4449-b099-1bb2bd492b3c@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf813f92-9806-4449-b099-1bb2bd492b3c@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4WG_DbRUNjYH5LKbYYHh4Hj_rurXdFYU
-X-Proofpoint-GUID: yN8qJr39mIg58TjVoNIARvWEO-oed-Kd
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1710416927; c=relaxed/simple;
+	bh=7ZiBPpdN/pRir9iGW2WDn9wd7ox5+ZWpl5rz4L8hPpM=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HhNVcJuuK4QcruPysEGwnrJxJkIO/bEKUCZ1/pofYyJymEBZm9D2Lh05xnK8PI15L/wsu2M6JSUywL7LWgpMYo8rYmuJtnwARXZzIuEda8EQv0pV+QZjrvh8J2rqOaL3/quEghVIWK749GaaVJxj7IiWNAw4zRCE6RxeFhgdIrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TwQb24vv0z1xrD5;
+	Thu, 14 Mar 2024 19:46:54 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id 18715180061;
+	Thu, 14 Mar 2024 19:48:41 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 14 Mar 2024 19:48:40 +0800
+Message-ID: <da60f9b8-0ea7-4580-ab45-f294801605f9@huawei.com>
+Date: Thu, 14 Mar 2024 19:48:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_10,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- impostorscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
- priorityscore=1501 clxscore=1011 adultscore=0 spamscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403140085
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, Yisen Zhuang <yisen.zhuang@huawei.com>, Salil
+ Mehta <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Yufeng Mo <moyufeng@huawei.com>, Huazhong Tan
+	<tanhuazhong@huawei.com>
+Subject: Re: [PATCH] net: hns3: tracing: fix hclgevf trace event strings
+To: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>,
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, netdev
+	<netdev@vger.kernel.org>
+References: <20240313093454.3909afe7@gandalf.local.home>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20240313093454.3909afe7@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-On Tue, Mar 12, 2024 at 09:45:57AM +0000, Luis Machado wrote:
-> On 3/11/24 17:05, Michael S. Tsirkin wrote:
-> > 
-> > Are we going anywhere with this btw?
-> > 
-> >
-> 
-> I think Tobias had a couple other threads related to this, with other potential fixes:
-> 
-> https://lore.kernel.org/lkml/20240228161018.14253-1-huschle@linux.ibm.com/
-> 
-> https://lore.kernel.org/lkml/20240228161023.14310-1-huschle@linux.ibm.com/
-> 
+Reviewed-by: Jijie Shao<shaojijie@huawei.com>
 
-Sorry, Michael, should have provided those threads here as well.
-
-The more I look into this issue, the more things to ponder upon I find.
-It seems like this issue can (maybe) be fixed on the scheduler side after all.
-
-The root cause of this regression remains that the mentioned kworker gets
-a negative lag value and is therefore not elligible to run on wake up.
-This negative lag is potentially assigned incorrectly. But I'm not sure yet.
-
-Anytime I find something that can address the symptom, there is a potential
-root cause on another level, and I would like to avoid to just address a
-symptom to fix the issue, wheras it would be better to find the actual
-root cause.
-
-I would nevertheless still argue, that vhost relies rather heavily on the fact
-that the kworker gets scheduled on wake up everytime. But I don't have a 
-proposal at hand that accounts for potential side effects if opting for
-explicitly initiating a schedule.
-Maybe the assumption, that said kworker should always be selected on wake 
-up is valid. In that case the explicit schedule would merely be a safety 
-net.
-
-I will let you know if something comes up on the scheduler side. There are
-some more ideas on my side how this could be approached.
+on 2024/3/13 21:34, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>
+> [
+>     Note, I need to take this patch through my tree, so I'm looking for acks.
+>     This causes the build to fail when I add the __assign_str() check, which
+>     I was about to push to Linus, but it breaks allmodconfig due to this error.
+> ]
+>
+> The __string() and __assign_str() helper macros of the TRACE_EVENT() macro
+> are going through some optimizations where only the source string of
+> __string() will be used and the __assign_str() source will be ignored and
+> later removed.
+>
+> To make sure that there's no issues, a new check is added between the
+> __string() src argument and the __assign_str() src argument that does a
+> strcmp() to make sure they are the same string.
+>
+> The hclgevf trace events have:
+>
+>    __assign_str(devname, &hdev->nic.kinfo.netdev->name);
+>
+> Which triggers the warning:
+>
+> hclgevf_trace.h:34:39: error: passing argument 1 of ‘strcmp’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+>     34 |                 __assign_str(devname, &hdev->nic.kinfo.netdev->name);
+>   [..]
+> arch/x86/include/asm/string_64.h:75:24: note: expected ‘const char *’ but argument is of type ‘char (*)[16]’
+>     75 | int strcmp(const char *cs, const char *ct);
+>        |            ~~~~~~~~~~~~^~
+>
+>
+> Because __assign_str() now has:
+>
+> 	WARN_ON_ONCE(__builtin_constant_p(src) ?		\
+> 		     strcmp((src), __data_offsets.dst##_ptr_) :	\
+> 		     (src) != __data_offsets.dst##_ptr_);	\
+>
+> The problem is the '&' on hdev->nic.kinfo.netdev->name. That's because
+> that name is:
+>
+> 	char			name[IFNAMSIZ]
+>
+> Where passing an address '&' of a char array is not compatible with strcmp().
+>
+> The '&' is not necessary, remove it.
+>
+> Fixes: d8355240cf8fb ("net: hns3: add trace event support for PF/VF mailbox")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>   drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h  | 8 ++++----
+>   .../net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h    | 8 ++++----
+>   2 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
+> index 8510b88d4982..f3cd5a376eca 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
+> @@ -24,7 +24,7 @@ TRACE_EVENT(hclge_pf_mbx_get,
+>   		__field(u8, code)
+>   		__field(u8, subcode)
+>   		__string(pciname, pci_name(hdev->pdev))
+> -		__string(devname, &hdev->vport[0].nic.kinfo.netdev->name)
+> +		__string(devname, hdev->vport[0].nic.kinfo.netdev->name)
+>   		__array(u32, mbx_data, PF_GET_MBX_LEN)
+>   	),
+>   
+> @@ -33,7 +33,7 @@ TRACE_EVENT(hclge_pf_mbx_get,
+>   		__entry->code = req->msg.code;
+>   		__entry->subcode = req->msg.subcode;
+>   		__assign_str(pciname, pci_name(hdev->pdev));
+> -		__assign_str(devname, &hdev->vport[0].nic.kinfo.netdev->name);
+> +		__assign_str(devname, hdev->vport[0].nic.kinfo.netdev->name);
+>   		memcpy(__entry->mbx_data, req,
+>   		       sizeof(struct hclge_mbx_vf_to_pf_cmd));
+>   	),
+> @@ -56,7 +56,7 @@ TRACE_EVENT(hclge_pf_mbx_send,
+>   		__field(u8, vfid)
+>   		__field(u16, code)
+>   		__string(pciname, pci_name(hdev->pdev))
+> -		__string(devname, &hdev->vport[0].nic.kinfo.netdev->name)
+> +		__string(devname, hdev->vport[0].nic.kinfo.netdev->name)
+>   		__array(u32, mbx_data, PF_SEND_MBX_LEN)
+>   	),
+>   
+> @@ -64,7 +64,7 @@ TRACE_EVENT(hclge_pf_mbx_send,
+>   		__entry->vfid = req->dest_vfid;
+>   		__entry->code = le16_to_cpu(req->msg.code);
+>   		__assign_str(pciname, pci_name(hdev->pdev));
+> -		__assign_str(devname, &hdev->vport[0].nic.kinfo.netdev->name);
+> +		__assign_str(devname, hdev->vport[0].nic.kinfo.netdev->name);
+>   		memcpy(__entry->mbx_data, req,
+>   		       sizeof(struct hclge_mbx_pf_to_vf_cmd));
+>   	),
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
+> index 5d4895bb57a1..b259e95dd53c 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
+> @@ -23,7 +23,7 @@ TRACE_EVENT(hclge_vf_mbx_get,
+>   		__field(u8, vfid)
+>   		__field(u16, code)
+>   		__string(pciname, pci_name(hdev->pdev))
+> -		__string(devname, &hdev->nic.kinfo.netdev->name)
+> +		__string(devname, hdev->nic.kinfo.netdev->name)
+>   		__array(u32, mbx_data, VF_GET_MBX_LEN)
+>   	),
+>   
+> @@ -31,7 +31,7 @@ TRACE_EVENT(hclge_vf_mbx_get,
+>   		__entry->vfid = req->dest_vfid;
+>   		__entry->code = le16_to_cpu(req->msg.code);
+>   		__assign_str(pciname, pci_name(hdev->pdev));
+> -		__assign_str(devname, &hdev->nic.kinfo.netdev->name);
+> +		__assign_str(devname, hdev->nic.kinfo.netdev->name);
+>   		memcpy(__entry->mbx_data, req,
+>   		       sizeof(struct hclge_mbx_pf_to_vf_cmd));
+>   	),
+> @@ -55,7 +55,7 @@ TRACE_EVENT(hclge_vf_mbx_send,
+>   		__field(u8, code)
+>   		__field(u8, subcode)
+>   		__string(pciname, pci_name(hdev->pdev))
+> -		__string(devname, &hdev->nic.kinfo.netdev->name)
+> +		__string(devname, hdev->nic.kinfo.netdev->name)
+>   		__array(u32, mbx_data, VF_SEND_MBX_LEN)
+>   	),
+>   
+> @@ -64,7 +64,7 @@ TRACE_EVENT(hclge_vf_mbx_send,
+>   		__entry->code = req->msg.code;
+>   		__entry->subcode = req->msg.subcode;
+>   		__assign_str(pciname, pci_name(hdev->pdev));
+> -		__assign_str(devname, &hdev->nic.kinfo.netdev->name);
+> +		__assign_str(devname, hdev->nic.kinfo.netdev->name);
+>   		memcpy(__entry->mbx_data, req,
+>   		       sizeof(struct hclge_mbx_vf_to_pf_cmd));
+>   	),
 
