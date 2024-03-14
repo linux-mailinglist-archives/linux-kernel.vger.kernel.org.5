@@ -1,284 +1,190 @@
-Return-Path: <linux-kernel+bounces-103376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FFFE87BEB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:18:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 532A487BEBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 870FFB217DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:18:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEAA4B2121F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB366FE22;
-	Thu, 14 Mar 2024 14:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6C06FE07;
+	Thu, 14 Mar 2024 14:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bkfJm3tY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRHuOwPv"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C99B6FE1E;
-	Thu, 14 Mar 2024 14:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC645A10A
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425892; cv=none; b=joa2tYY2k22EKz+ZVYTavL1HcIVkRiAghy7HQG5iK5CsTB2XbSHbRYjSmUKpCP6EPDuRMIkvWpNPKM8GKnxX4TKFvGkAcLGJ27wK0897cuVvgRaS7EUjX4fYCRrRw8zEKmdgo4j3kO4IfaxAGtcTbifoNbtuz45/aMZbby4bp+U=
+	t=1710425983; cv=none; b=UsVR/8RaWSxK4diXmXvkayV42+kYJ3axqZkOgD3ZIymrfEPf6DekncB1FAmBdL9luMLYLMfA+7tXvHCLGfveEIZG23vJt1FiIWs9edUPOBEfDmAVQxeWa3+ZAmePIYLz0yHFV3bBIlWcLzRVH+Fb4R+NY/RAyE5VRN2AEGLlm0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425892; c=relaxed/simple;
-	bh=OTkP1n3C9jAyH61FpbIq2rfeXyZpSbVstp1ZWMRVwtc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TtMSG9re8jcpBIHK0Ei9UpYCNbIwEGEAKLTlaF49AXeJ//zjFGKhfXc3zUfRgW7BXcTfbSNLJiJgkWijhzB0m/ozYs9ssG0L6ziXyX3CJJW/IIuACm98OHSN+1MrNx0QKpVdpWQR877jlh+ZhaHfY0g/vSNHl+Jfyim0+DadgQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bkfJm3tY; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710425890; x=1741961890;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=OTkP1n3C9jAyH61FpbIq2rfeXyZpSbVstp1ZWMRVwtc=;
-  b=bkfJm3tYH3mvOdHeSMRlxNwN2lejAv07kBJG79H4f7MTLtg0T+29oKoj
-   3rNjHZGMgYjOp9YLISndYIoMgmTXFsGTVIA0/3HyCfGAepVqcY3Yxw6wk
-   ECP0Y0Yf5czmKqBo+3F8C/pxNbScWQvmU/XADIu5iAkROM9lKs5OYjx0m
-   v6/BVaXJxyBc7m1rfNTVAAIsPdDN825t7ya1/GrNkjDNb1n0SfcDfDy1T
-   eXSiUpEDyUyLn8QreZ9Z2uSLALSubZ2Rdx9CvyZlBaX/SUy5/oFF+whs4
-   TudiosNWgVSo2oam2L13UPwBwbszHE+fjNp5v92OdL6nvT0EBrHrAUWyK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="5102494"
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="5102494"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 07:18:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="43224022"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.237])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 07:18:07 -0700
-Message-ID: <e0ae65bf-9cca-4dd7-9915-dd9ad67cfb35@intel.com>
-Date: Thu, 14 Mar 2024 16:18:01 +0200
+	s=arc-20240116; t=1710425983; c=relaxed/simple;
+	bh=MZokerWRd6ZnZkXZMrbp85CAsZJCPyifNzLdmDGrqmk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D2D3YysbFwoqcx3Hv1MsYdUPOJz88DK8egPcFL5zwbbmzYhWe8gAwigI5NdzakV/MB9D+pAcSONVCPlP23Ut2Ao6CRglf34l4TtwSGzcwOq5x6f4ZbMqDOOLSK4tTsfL9Ov1jThM+FjUuB4ZWznBCSi2nAAaS5CMqiPt3ryy7Qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eRHuOwPv; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-609fd5fbe50so11512407b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710425981; x=1711030781; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gg2nzRe0L0YtyEcjhyzdyONnHk2DTccF/72el9UJrWg=;
+        b=eRHuOwPveGsjRtM0rwq92wvRjAmEGfJDwLA6Lovw0I6PkCBxZdhUUlrchjoqzLSXu8
+         M6hRaILM3jFcaR2sPOk0GkM3BOS6trjz5CemY3fXRX/jetQ58KXvk4aHDKNzQVXBFCLa
+         CAS0xj98nJfwOQziOK3YxNVJtSdEhijPWNY6Zhwcn9QFrjIbnPLZOFCO8bkQFbdv3bXF
+         8hSOwA4l3tHLV2Tv+4MUPkTuica7w5h8znLuWHDdrV5rMQJS775/yLI271kzzuAx6qFG
+         pykbC0Mf+j88VLpO6a+zfrI8kr+kU3wU5XkycL1aXR+wArcNEdg9lvZY6l8rr4sFy46Q
+         qiLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710425981; x=1711030781;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Gg2nzRe0L0YtyEcjhyzdyONnHk2DTccF/72el9UJrWg=;
+        b=JKeqicL80EqzV+Y70Am5qUGywllOXJ3xI3WWPw12kgh3+IPLnWEKFwBdEa2yj+knFs
+         wXvCqYEpqJC0p20eOiAh69irGWwj/ONz5cFAY95eo471SYzOPfCe++zHWWwq9Cyc+2zL
+         9KLmd8asR6xxYGpsJEo3mWA6ugQrp3zCRG7OpCzFBpVAkW/TcNr5NJL9cl8590o1kY+U
+         t/Gpw6qLLRJ3I9bIij8d6e0gkNWFWT9Ss0ay5LLA8ROcMUe0Ietem7kG3Rg36fax3Maz
+         hS/6cApI0UC3YDIb3lK5bNvv5YvGWWhb0jfUvfzPQAdVJMnBQ1sM/+5nGLf/SY3RQydk
+         logw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOqxpeQ7h24e1OqlSdt+bP9dl7RjX69N++SkFchSJzxEvTjvVV/BFUR1w/+DK/x48cIXbf/t3RTSLKCiUonJKUY3yhwA2w1hlyBflD
+X-Gm-Message-State: AOJu0YxhrpjhxCYb6C/Pc06oSfmBaK6o9zRnJx6jQsYeMdkzC0ipiTJe
+	lHQJCOrrECLXrjcgziXmMjHKz9Pl8wkYCyfgjqeKQKZbdgYELPbwJrOLDPyoEeiD+eeu4pWq7LE
+	m96X9d3a7oQIqBIyDUomtYJLlgy0=
+X-Google-Smtp-Source: AGHT+IHIs1ObIko8smQY33wEreFY8eUyGblmVsRNQSkdicymVs2+Fy5wx2ybecf64OFdVQWodvsoH2QB2pwgNeQY1+E=
+X-Received: by 2002:a0d:fd46:0:b0:60a:3487:6f74 with SMTP id
+ n67-20020a0dfd46000000b0060a34876f74mr2123445ywf.7.1710425980805; Thu, 14 Mar
+ 2024 07:19:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/7] mmc: sdhci_am654: Add tuning algorithm for delay
- chain
-Content-Language: en-US
-To: Judith Mendez <jm@ti.com>
-Cc: Andrew Davis <afd@ti.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-References: <20240308005746.1059813-1-jm@ti.com>
- <20240308005746.1059813-2-jm@ti.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240308005746.1059813-2-jm@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240308074921.45752-1-ioworker0@gmail.com> <ef409d5e-5652-4fff-933c-49bda6d75018@redhat.com>
+ <CAK1f24k_+qAqxKGMpKziouuds=PQ6kfKyQ8D3SYEyW7cQOAJWw@mail.gmail.com>
+ <75630ba6-79b6-4105-b614-29cfb0331084@redhat.com> <CAK1f24=vU5kEuJC6x099JGFD7z6FK5q+o1to7QY8Q12jNQzr_g@mail.gmail.com>
+In-Reply-To: <CAK1f24=vU5kEuJC6x099JGFD7z6FK5q+o1to7QY8Q12jNQzr_g@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Thu, 14 Mar 2024 22:19:29 +0800
+Message-ID: <CAK1f24ktQMYogUETyu04KahC1YAdrY1XwCNNrYUQXN4tSEPKsQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: reduce process visible downtime by
+ pre-zeroing hugepage
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com, 
+	shy828301@gmail.com, xiehuan09@gmail.com, songmuchun@bytedance.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	libang.li@antgroup.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/03/24 02:57, Judith Mendez wrote:
-> Currently the sdhci_am654 driver only supports one tuning
-> algorithm which should be used only when DLL is enabled. The
-> ITAPDLY is selected from the largest passing window and the
-> buffer is viewed as a circular buffer.
-> 
-> The new algorithm should be used when the delay chain
-> is enabled. The ITAPDLY is selected from the largest passing
-> window and the buffer is not viewed as a circular buffer.
-> 
-> This implementation is based off of the following paper: [1].
-> 
-> Also add support for multiple failing windows.
-> 
-> [1] https://www.ti.com/lit/an/spract9/spract9.pdf
-> 
-> Fixes: 13ebeae68ac9 ("mmc: sdhci_am654: Add support for software tuning")
-> Signed-off-by: Judith Mendez <jm@ti.com>
+Another thought suggested by Bang Li is that we record which pte is none
+in hpage_collapse_scan_pmd. Then, before acquiring the mmap_lock (write mod=
+e),
+we will pre-zero pages as needed.
 
-One question further below, and one cosmetic change, but resolve
-those and you may add to all patches in this patch set:
+What do you think?
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Thanks,
+Lance
 
-> ---
-> Changelog:
-> v2->v3:
-> - Fix return for tuning algorithm
-> - Fix ITAPDLY_LAST_INDEX
-> - Use reverse fir tree order for variable declarations
-> - Remove unnecessary parenthesis
-> ---
->  drivers/mmc/host/sdhci_am654.c | 112 +++++++++++++++++++++++++++------
->  1 file changed, 92 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index d659c59422e1..d11b0d769e6c 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -149,10 +149,17 @@ struct sdhci_am654_data {
->  	int strb_sel;
->  	u32 flags;
->  	u32 quirks;
-> +	bool dll_enable;
->  
->  #define SDHCI_AM654_QUIRK_FORCE_CDTEST BIT(0)
->  };
->  
-> +struct window {
-> +	u8 start;
-> +	u8 end;
-> +	u8 length;
-> +};
-> +
->  struct sdhci_am654_driver_data {
->  	const struct sdhci_pltfm_data *pdata;
->  	u32 flags;
-> @@ -290,10 +297,12 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
->  
->  	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, val);
->  
-> -	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ)
-> +	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
->  		sdhci_am654_setup_dll(host, clock);
-> -	else
-> +		sdhci_am654->dll_enable = true;
-> +	} else {
->  		sdhci_am654_setup_delay_chain(sdhci_am654, timing);
-
-V2 patch had here:
-
-		sdhci_am654->dll_enable = false;
-
-Was its removal intended?
-
-> +	}
->  
->  	regmap_update_bits(sdhci_am654->base, PHY_CTRL5, CLKBUFSEL_MASK,
->  			   sdhci_am654->clkbuf_sel);
-> @@ -408,39 +417,102 @@ static u32 sdhci_am654_cqhci_irq(struct sdhci_host *host, u32 intmask)
->  	return 0;
->  }
->  
-> -#define ITAP_MAX	32
-> +#define ITAPDLY_LENGTH 32
-> +#define ITAPDLY_LAST_INDEX (ITAPDLY_LENGTH - 1)
-> +
-> +static u32 sdhci_am654_calculate_itap(struct sdhci_host *host, struct window
-> +			  *fail_window, u8 num_fails, bool circular_buffer)
-> +{
-> +	u8 itap = 0, start_fail = 0, end_fail = 0, pass_length = 0;
-> +	u8 first_fail_start = 0, last_fail_end = 0;
-> +	struct device *dev = mmc_dev(host->mmc);
-> +	struct window pass_window = {0, 0, 0};
-> +	int prev_fail_end = -1;
-> +
-
-Unnecessary blank line
-
-> +	u8 i;
-> +
-> +	if (!num_fails)
-> +		return ITAPDLY_LAST_INDEX >> 1;
-> +
-> +	if (fail_window->length == ITAPDLY_LENGTH) {
-> +		dev_err(dev, "No passing ITAPDLY, return 0\n");
-> +		return 0;
-> +	}
-> +
-> +	first_fail_start = fail_window->start;
-> +	last_fail_end = fail_window[num_fails - 1].end;
-> +
-> +	for (i = 0; i < num_fails; i++) {
-> +		start_fail = fail_window[i].start;
-> +		end_fail = fail_window[i].end;
-> +		pass_length = start_fail - (prev_fail_end + 1);
-> +
-> +		if (pass_length > pass_window.length) {
-> +			pass_window.start = prev_fail_end + 1;
-> +			pass_window.length = pass_length;
-> +		}
-> +		prev_fail_end = end_fail;
-> +	}
-> +
-> +	if (!circular_buffer)
-> +		pass_length = ITAPDLY_LAST_INDEX - last_fail_end;
-> +	else
-> +		pass_length = ITAPDLY_LAST_INDEX - last_fail_end + first_fail_start;
-> +
-> +	if (pass_length > pass_window.length) {
-> +		pass_window.start = last_fail_end + 1;
-> +		pass_window.length = pass_length;
-> +	}
-> +
-> +	if (!circular_buffer)
-> +		itap = pass_window.start + (pass_window.length >> 1);
-> +	else
-> +		itap = (pass_window.start + (pass_window.length >> 1)) % ITAPDLY_LENGTH;
-> +
-> +	return (itap > ITAPDLY_LAST_INDEX) ? ITAPDLY_LAST_INDEX >> 1 : itap;
-> +}
-> +
->  static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
->  					       u32 opcode)
->  {
->  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->  	struct sdhci_am654_data *sdhci_am654 = sdhci_pltfm_priv(pltfm_host);
-> -	int cur_val, prev_val = 1, fail_len = 0, pass_window = 0, pass_len;
-> -	u32 itap;
-> +	struct window fail_window[ITAPDLY_LENGTH];
-> +	u8 curr_pass, itap;
-> +	u8 fail_index = 0;
-> +	u8 prev_pass = 1;
-> +
-> +	memset(fail_window, 0, sizeof(fail_window));
->  
->  	/* Enable ITAPDLY */
->  	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYENA_MASK,
->  			   1 << ITAPDLYENA_SHIFT);
->  
-> -	for (itap = 0; itap < ITAP_MAX; itap++) {
-> +	for (itap = 0; itap < ITAPDLY_LENGTH; itap++) {
->  		sdhci_am654_write_itapdly(sdhci_am654, itap);
->  
-> -		cur_val = !mmc_send_tuning(host->mmc, opcode, NULL);
-> -		if (cur_val && !prev_val)
-> -			pass_window = itap;
-> +		curr_pass = !mmc_send_tuning(host->mmc, opcode, NULL);
->  
-> -		if (!cur_val)
-> -			fail_len++;
-> +		if (!curr_pass && prev_pass)
-> +			fail_window[fail_index].start = itap;
->  
-> -		prev_val = cur_val;
-> +		if (!curr_pass) {
-> +			fail_window[fail_index].end = itap;
-> +			fail_window[fail_index].length++;
-> +		}
-> +
-> +		if (curr_pass && !prev_pass)
-> +			fail_index++;
-> +
-> +		prev_pass = curr_pass;
->  	}
-> -	/*
-> -	 * Having determined the length of the failing window and start of
-> -	 * the passing window calculate the length of the passing window and
-> -	 * set the final value halfway through it considering the range as a
-> -	 * circular buffer
-> -	 */
-> -	pass_len = ITAP_MAX - fail_len;
-> -	itap = (pass_window + (pass_len >> 1)) % ITAP_MAX;
-> +
-> +	if (fail_window[fail_index].length != 0)
-> +		fail_index++;
-> +
-> +	itap = sdhci_am654_calculate_itap(host, fail_window, fail_index,
-> +					  sdhci_am654->dll_enable);
-> +
->  	sdhci_am654_write_itapdly(sdhci_am654, itap);
->  
->  	return 0;
-
+On Tue, Mar 12, 2024 at 9:55=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wr=
+ote:
+>
+> On Tue, Mar 12, 2024 at 9:19=E2=80=AFPM David Hildenbrand <david@redhat.c=
+om> wrote:
+> >
+> > On 12.03.24 14:09, Lance Yang wrote:
+> > > Hey David,
+> > >
+> > > Thanks for taking time to review!
+> > >
+> > > On Tue, Mar 12, 2024 at 12:19=E2=80=AFAM David Hildenbrand <david@red=
+hat.com> wrote:
+> > >>
+> > >> On 08.03.24 08:49, Lance Yang wrote:
+> > >>> The patch reduces the process visible downtime during hugepage
+> > >>> collapse. This is achieved by pre-zeroing the hugepage before
+> > >>> acquiring mmap_lock(write mode) if nr_pte_none >=3D 256, without
+> > >>> affecting the efficiency of khugepaged.
+> > >>>
+> > >>> On an Intel Core i5 CPU, the process visible downtime during
+> > >>> hugepage collapse is as follows:
+> > >>>
+> > >>> | nr_ptes_none  | w/o __GFP_ZERO | w/ __GFP_ZERO  |  Change |
+> > >>> --------------------------------------------------=E2=80=94--------=
+--
+> > >>> |      511      |     233us      |      95us      |  -59.21%|
+> > >>> |      384      |     376us      |     219us      |  -41.20%|
+> > >>> |      256      |     421us      |     323us      |  -23.28%|
+> > >>> |      128      |     523us      |     507us      |   -3.06%|
+> > >>>
+> > >>> Of course, alloc_charge_hpage() will take longer to run with
+> > >>> the __GFP_ZERO flag.
+> > >>>
+> > >>> |       Func           | w/o __GFP_ZERO | w/ __GFP_ZERO |
+> > >>> |----------------------|----------------|---------------|
+> > >>> | alloc_charge_hpage   |      198us     |      295us    |
+> > >>>
+> > >>> But it's not a big deal because it doesn't impact the total
+> > >>> time spent by khugepaged in collapsing a hugepage. In fact,
+> > >>> it would decrease.
+> > >>
+> > >> It does look sane to me and not overly complicated.
+> > >>
+> > >> But, it's an optimization really only when we have quite a bunch of
+> > >> pte_none(), possibly repeatedly so that it really makes a difference=
+.
+> > >>
+> > >> Usually, when we repeatedly collapse that many pte_none() we're just
+> > >> wasting a lot of memory and should re-evaluate life choices :)
+> > >
+> > > Agreed! It seems that the default value of max_pte_none may be set to=
+o
+> > > high, which could result in the memory wastage issue we're discussing=
+.
+> >
+> > IIRC, some companies disable it completely (set to 0) because of that.
+> >
+> > >
+> > >>
+> > >> So my question is: do we really care about it that much that we care=
+ to
+> > >> optimize?
+> > >
+> > > IMO, although it may not be our main concern, reducing the impact of
+> > > khugepaged on the process remains crucial. I think that users also pr=
+efer
+> > > minimal interference from khugepaged.
+> >
+> > The problem I am having with this is that for the *common* case where w=
+e
+> > have a small number of pte_none(), we cannot really optimize because we
+> > have to perform the copy.
+> >
+> > So this feels like we're rather optimizing a corner case, and I am not
+> > so sure if that is really worth it.
+> >
+> > Other thoughts?
+>
+> Another thought is to introduce khugepaged/alloc_zeroed_hpage for THP
+> sysfs settings. This would enable users to decide whether to avoid unnece=
+ssary
+> copies when nr_ptes_none > 0.
+>
+> >
+> > --
+> > Cheers,
+> >
+> > David / dhildenb
+> >
 
