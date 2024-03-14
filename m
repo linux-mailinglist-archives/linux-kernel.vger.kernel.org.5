@@ -1,284 +1,170 @@
-Return-Path: <linux-kernel+bounces-103738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D6B87C3CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:43:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24EB887C3D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22C491C226E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:43:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 240BD1C226F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F0E76047;
-	Thu, 14 Mar 2024 19:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7301675817;
+	Thu, 14 Mar 2024 19:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DXScqs7y"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2052.outbound.protection.outlook.com [40.107.243.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hMGh2pUV"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79B97580D;
-	Thu, 14 Mar 2024 19:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710445419; cv=fail; b=FC0x0fJK7uJkBwYeq6WsnIEtfe5kcYRvxB3TZ6qPTE3J4UmOdHwK3Z6idv9SRnNzN48IMUnMpFPGmgNAG+dLPJPNHvU6xwt8AFUAonwXfr11LWdAiV4oVarmS4L4+EI4/O0iGAGdJIikq07gOUVTB6eldZKY75ZcTJG1m8TNeAQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710445419; c=relaxed/simple;
-	bh=99TPw4gTCS4jltzROzRzFdc06ediU2r3aCPte9FgY0g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=tw3RMO0aY+St9Vt4hDZc3FKglxkNGLfyPrmDS2RAQPWId2E5fat6mnODEzQsfX3quzz/soAaFwZS+7P+b/s83Q9TPzO0osFrOY6cs4E/d5K2yQfmkS++skkQMDa8wBjjuuTXioGwwAukb5GgxvENU5vHMeOHEkseJMQhAyWeISs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=DXScqs7y; arc=fail smtp.client-ip=40.107.243.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mGgx0M8RXCyJj2ox5Ot8QoJdvO1Y+IGWrIuZBt6JZyfp8hJmmB51aR7iKSQs/WYQoiRd8ZLFdBMNe2T9p1TldKlRhFDJgKIbfdLeVhmDL6qHxYawqxqkGpGGNbPRWf+akNz8e5wHhJHWw054vdcIE98WQUnGXLp6MmHLF6mVDvy65PkYNBv8RAU7Oh6MM65LbLLefK6yjJCV46ZTM9ntjYVPkpX4mN51VLVl9B8mEPnreZHv1Vgct1WqbLZdnC88z2iLra54AsAMXUkokwzvSqjrDPDSwQl3jYGA4IwijDNFsbp2tobkXCBqBAbhUhXsXJ8vyc/pKm0BXM30ibg+wA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZHM4jONKJmyeoZsqz3fg+KMDU48asV9CZiaETJJvItk=;
- b=GN+jv+DxH6yoYx5DXpDEc99osdDddz2Pq0p5Uiiob+kTn7SC5OBooPtdq/Q7zbGffJgvrrJNA8ctc1/aUv41i2cKk91UXfTLO06YX/Cr6XxdDIjP2GJTQtDFvzfGWAw6VGjNC0nQdOzeJuC/Tc82OeOVT1Qx9k4g7CucNRZFRbhRY6LivYHxg2mGQxoY7vVmR0nt7ecw+Yh1hVY2pMzj3PvfUXsDBi8iy6Bi/CS+TcD2NCSZRW+cTvwTcrKbTY72z4GsKlBiudw4HfDkTaAQ5wHf8n694oEENxxtJQVWro1bkKH9IjGS9L+O14yPXoyLtKPpL+DPYTynuZlFr/tTmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZHM4jONKJmyeoZsqz3fg+KMDU48asV9CZiaETJJvItk=;
- b=DXScqs7ykLzeuwBZwm6fEdL4CVRjswVa97fKuqDY9jGjgLKNOEuqzBndHXR1nMewnG2S8TbYK7WOs3aHxZvnXOInzjQOOEJ/9I9Sb9QNjuCUNbW9gQF+3wwr0MNZXyr1fGDCGYLPZJdJQKN5L1CGzE47uJtdKpusRGSpj8KNApA=
-Received: from MW4PR12MB7165.namprd12.prod.outlook.com (2603:10b6:303:21b::14)
- by CH3PR12MB7668.namprd12.prod.outlook.com (2603:10b6:610:14d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Thu, 14 Mar
- 2024 19:43:31 +0000
-Received: from MW4PR12MB7165.namprd12.prod.outlook.com
- ([fe80::e039:187d:47be:afb7]) by MW4PR12MB7165.namprd12.prod.outlook.com
- ([fe80::e039:187d:47be:afb7%4]) with mapi id 15.20.7386.020; Thu, 14 Mar 2024
- 19:43:31 +0000
-From: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
-To: Maxime Ripard <mripard@kernel.org>
-CC: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Simek,
- Michal" <michal.simek@amd.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Neil
- Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Jonas
- Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>
-Subject: RE: [PATCH v2 8/8] drm: xlnx: Intoduce TPG CRTC driver
-Thread-Topic: [PATCH v2 8/8] drm: xlnx: Intoduce TPG CRTC driver
-Thread-Index: AQHadOEjzq/Vahr1mEq0V8Suc/Gl2bE3Je0AgAB2zWA=
-Date: Thu, 14 Mar 2024 19:43:30 +0000
-Message-ID:
- <MW4PR12MB7165A15E233957E3914AA297E6292@MW4PR12MB7165.namprd12.prod.outlook.com>
-References: <20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com>
- <20240312-dp-live-fmt-v2-8-a9c35dc5c50d@amd.com>
- <20240314-esoteric-delicate-sidewinder-5dc4db@houat>
-In-Reply-To: <20240314-esoteric-delicate-sidewinder-5dc4db@houat>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR12MB7165:EE_|CH3PR12MB7668:EE_
-x-ms-office365-filtering-correlation-id: cd9377ab-cc12-4c8c-ea45-08dc445f06ff
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- qA8PyGlTUw+Wa7WFKUkfYFGoKhABNxlUd9YCW8PS/7priCzEP5xDS6l5bidxM6teKgVsajIonsOSd455tjdEXgFNRi5v5L0g6EedWF4KIsQlhOi6X1ZFcZnvI4Al9DryVWoaPCicqZCZxGObbzgq+T6ZPvNISbXoSwcd+90p/5CAno+KZOVScgmr3AYvrIxVJ2TO7RLz8IprR8AnlB0tBn3baM2XX7dHZ8HWlVcYHdXxIcyKJZyR0yz3PqfuQxxJfKpnWXhZlKrzpjQ1tgBE283hoyFvY1n9FyM7HOjmjpiodUTSXkLKTbD4ODxbuqtQAJ3DTxx5zDDSE+P7NUft34Paos4XXTV2WRYxl+RSV1kTl6lGdaEwO1hJN8RL+MB+zg0nvaCrEox/yb1TJqAdQD2wx77SOf6bfjLJoTgYUfXQglfbWqaqmMzsRa9IOONq6eyMI4CnOVNHIOrW9NWdGP7EI7UuXsQCknR1Uq8o2PuRLq8TjXCD1hls+64ZO4RswCeDGbEVNVltopRGtCa/SMReuFvYLDLD55WSdRKCRQhur2X5kYiVJRppCuXDtHCTAN/+DQGggo9gWBKK4WljjexpsjoS+JqCWAN0fizm3hB0ChgawGHF1QcOXzrCG2dc+PNkD2fpP8cSMH97P8M6bnj6KKc3Kgs3hsr0XwHylZBGeRybU4sEDfr6sWfWo0iYCJLYmLB+3mYoW/gzDJkun7FecQZM38BLHJiIpBx8yyM=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?dFiiNdazaCUapWHiqwROeDqHEUoiVhfWBirzm9VArvBPCOpE/Tpe1KnHngyN?=
- =?us-ascii?Q?iMmB0TlmkbOzcPmfxFbgnx+FGYF8kOcxBZTUDFQNNE0obnrsa5Dri+X7UNzJ?=
- =?us-ascii?Q?rc1MoH8JMIwDyiqD9ZhE8ehL7mEerhJRn6J5qwDMewLS1/Zmc/ouBP+Jaedu?=
- =?us-ascii?Q?GdwwNrdaPszIDR+MfHd9F6UPQIrUB9DqbkIWQoQ9oVEqBwqV+dfSyI5ZkKIQ?=
- =?us-ascii?Q?oZ60M2uefZQhotHCluHRJJT9ld88EB7NtlV5j/gRjqZF1tSZlHiCiefT+KuM?=
- =?us-ascii?Q?UvrdD7TgdCSLkG/MMBJhCqP2TRJru+me8/Zq6abdhgosFp9gEoXtymtNV9fG?=
- =?us-ascii?Q?0XgA5KseKnemUaGD8/7Zc3vWJb8y4zjge6MITMxgNmnXzksvKA9MXIrPx2Tf?=
- =?us-ascii?Q?VaLhJm8BbjtkLJ+ApSZoUSkkK2k+WwAHykkBkjfaCYk2TshIg/4cBnhnwKBJ?=
- =?us-ascii?Q?eChU+GdqTx5ke5yFWPszw1PO5472DeHDlqCLyT7+GsmXw34OMVNRrvr7iw3s?=
- =?us-ascii?Q?xfBHPHMhUh+HbtWi1jfo2nHsP+CnP6jqJGrqdPjJqNQoZkG4ZRKF0K36FGKV?=
- =?us-ascii?Q?wNAM3hkSxMTiUZliz+CzOB5Lk+Ui0JY23Kp2rJhR/lwpBlxZ9oF9tMng5zIR?=
- =?us-ascii?Q?ixWC3m7yUIkDauMyx15Y/Jc77JkeDyyYXhbjdiIpYmI7HY02u6G2iCvo7qnM?=
- =?us-ascii?Q?c36KluFiGQwrs4hXz9BFXeCxr2/9uPPrYuZVvcylTqRSIJiuII/O0YICHoY/?=
- =?us-ascii?Q?tHz+s2AjWcXsYAK/tQ+QTQyJqLy4fKQmSSUZKtrpLp7KDfX44/ZAF/0/Tuv9?=
- =?us-ascii?Q?2C8PtsWmtJWZdQlRR+VJpoHQvgOKJmrKqMDrpT6fowPIxTND2u9n1LPOI9xs?=
- =?us-ascii?Q?dicbJjXQe/By+YsZ8qFEkJiQ5tbjnloivZvXc08a27C5LOS+e1uIDkhbfUIZ?=
- =?us-ascii?Q?jF9EB105L32el3bhNrp4V2sDufqY8Dcv2WQMgvulTAyjxt5V+IcYFnXZonxG?=
- =?us-ascii?Q?iIQYolt/Th3mYzY2h9KYOnAjEWPJtKdggde3XeOwMSvFcRR9ZZZgIxKj83AK?=
- =?us-ascii?Q?24br8R4apeeDXwVKz1Zd2Z3pw9Ht5+YZ1RQ8lynrAz0m+mp1DguCpeV0EFK4?=
- =?us-ascii?Q?soTfFkRE9oFhK/4Rb8AE94vnEv47RNN0FeFBRI+yrINNMWq/H02iPp7O3myV?=
- =?us-ascii?Q?tjspmAEC8fi8XRgJ0M9KapSKDZqBjgMPsB6FUXZCrDN+IRVw0n93tcMZvNys?=
- =?us-ascii?Q?Gb0edZFgVtevW5D5IjU8NTTy91Bm82xjYN1aLhNEzaDZ88IU04PrrXBsHVzn?=
- =?us-ascii?Q?Nu3jlbvSxPIhO0synx7TKVamx3Xxgdu6ZvZk5vdTMoJRYzcnfxEx5eFluovi?=
- =?us-ascii?Q?YA8Qopqjp/vQCUELJjGkGWguF9Ltu+888M2qlaDeK4FKLJpECLkyMmFvwNsE?=
- =?us-ascii?Q?KgfyLHz3mHiaOeQpo3GVI77gg3BUm4HQI5Uf2Yihj0YaCvpHKHwGcVLQMG3M?=
- =?us-ascii?Q?8H+Sey2wGBWfceJvZvrIVXyZtFKmj95rDzYiNMKCogZCBqmOErwALgMc/3zv?=
- =?us-ascii?Q?lbKhnprmRRerhRYBz44=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140161A38C6
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710445477; cv=none; b=ieJ6FjygUQo4UbSHsoJEXKyLr4qGOB4lHrWyvIegpI6DWdIbAG1n1629w3k69iN1hgFZPRHKmYIRldbU1UW2Jx5Um77RNBxaIMV202Yw1TPuiRgRCqbsWWjPDLZAQJ0eLIRZwXtYZWDW/5SdxGtNtoVbw4ufhcRzvMghtORQYWU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710445477; c=relaxed/simple;
+	bh=f5tL1mvuYvO0AshWdH3WTbV/Ee3Y79O3EkJx8aBJaA0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TofbPdHJTraBXcJF1FD00ByjamK0YQKSYTNnDW/MQmFmuqgCkHtJzap/hUagOGrR93JCOEtQPCtuWiknN9huR74cv/jYcTUSnQy60HFbCLVitalioEIZ+DEijdMrAY7Qs6Wgy23DikoAuprgHoigFhcW9IgaTA8xbak+8rbXksA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hMGh2pUV; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-428405a0205so1711cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:44:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710445475; x=1711050275; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pOBjDmVKA5zRB4l04283eg35xpgmUMSDXLAd+siCSCA=;
+        b=hMGh2pUVcPCHxxTzf0Jf5MXDEJe/XapQKqErY/0gi6qrJDuxe6gtOQjjLPsOINsZ5R
+         ZaQe/51F0ZlckkAr+svObDLGGwRCOpPt4Rzs07shYWIe14TZIW+YV8o4Brd3NLw8nvH9
+         QkRjjmcf1klnRDgYgLNBry807F/X0cjKpQZxG6nvVFf++54gDF9RgQjzt6nx0uAAS/MM
+         Rtwwk8SxiirQywO3J4NQV0JWqzOZAm0mXLiFkFIDc4js9iqZ+zmtLc8hFGPOQ0z6c6Ny
+         0+OZ0iTq6RwneNeUZjV8sSf/rrXhzUtdgNoh4sy4N6kuoHH33eit5/cLR5YddRaLK+bq
+         zeNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710445475; x=1711050275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pOBjDmVKA5zRB4l04283eg35xpgmUMSDXLAd+siCSCA=;
+        b=Pqzd81HRXlNovEWGlm9SluWtY8c6b/3YMDsem9bjxquYEHBo1mU3hG1GWIQxtzLnAH
+         9pb0NQXuBftsbbFGQZ7orhzBcfSQRA1/MNxXej+ey8pLnDyuIFs8D2gOFzU5jw9ljQ1f
+         a9hNopagi06wT/+F8UMQwH46MgmOw0lH1VismbL5xlSlE1mJ4VrgYzcSIaJ8jmndeab0
+         9pUzk81krsNlfJvJu9XYaEVw0NNrWemnoa04P3LrvFzIsa8OvbFIyfPxQl5od5g0PVjo
+         7GzgTb5sAwxlPqMfvDlQM4lRcjh5Q3S1oKf2H40k6xsLFOTQqQS6kVT2JQUlBqKq5nmF
+         I7eA==
+X-Forwarded-Encrypted: i=1; AJvYcCXuHuJ26hgacHhLtH9c2wnOwPlnFAaa0wdixpwY8EwU7OkzEJ0Ux3tb3YYYtJE+XbiaGpfTyVavZWfAoz5S6BRNFYbiEShbEcyFFyqJ
+X-Gm-Message-State: AOJu0Yz3I8itGh5h370Ri+jqMpdVEtFCAMVseSd8sOaHtYMdEiWmN3uz
+	XkcAjAYJP/YtmAWdPkSIdtCKKsWLo/BrbpLA+K9V/vrycmhpFxZKaJ0wt5TVpUxfhtPmOIhWggx
+	jQtvJJlSuPplCRPG0ma3BM9hs0fpaL4xDb8Cw
+X-Google-Smtp-Source: AGHT+IHCt4qa8F771F5HRT5vHNOciOj9DayMfSe/fEjO0ceISNRxm5i1lgjEhoG/E1429wEX5YrZl+WSnAlYAkh1YME=
+X-Received: by 2002:a05:622a:9:b0:430:ad98:cc44 with SMTP id
+ x9-20020a05622a000900b00430ad98cc44mr59024qtw.12.1710445474828; Thu, 14 Mar
+ 2024 12:44:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7165.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd9377ab-cc12-4c8c-ea45-08dc445f06ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 19:43:30.9641
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YKSD4FK5LMdM/MuO2vhxf7wUiJKk2PGwD+I4lI14Z+cE/jcHgPMDG+G0TNOs1y9dG9epROBRLCthtkykrBnANA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7668
+References: <20240313210124.2858729-1-linux@roeck-us.net> <CA+GJov5V5+X9FY7MD1Q+eBeEcJeUjQEuK3Qw8LJ0Oho9KtuXtQ@mail.gmail.com>
+ <c34e1c68-254f-489b-925f-0e7906b3a89f@roeck-us.net>
+In-Reply-To: <c34e1c68-254f-489b-925f-0e7906b3a89f@roeck-us.net>
+From: Rae Moar <rmoar@google.com>
+Date: Thu, 14 Mar 2024 15:44:23 -0400
+Message-ID: <CA+GJov6j7Spi2bPki2Z2rDp+AarkM0dwrXjPKrVksDw0Uo2D0g@mail.gmail.com>
+Subject: Re: [PATCH] kunit: time: Add faster unit test with shorter time range
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org, 
+	Daniel Diaz <daniel.diaz@linaro.org>, Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Maxime,
-
-Thank you for the review.
-
-> -----Original Message-----
-> From: Maxime Ripard <mripard@kernel.org>
-> Sent: Thursday, March 14, 2024 5:05 AM
-> To: Klymenko, Anatoliy <Anatoliy.Klymenko@amd.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>; Maarten Lankhor=
-st
-> <maarten.lankhorst@linux.intel.com>; Thomas Zimmermann
-> <tzimmermann@suse.de>; David Airlie <airlied@gmail.com>; Daniel Vetter
-> <daniel@ffwll.ch>; Simek, Michal <michal.simek@amd.com>; Andrzej Hajda
-> <andrzej.hajda@intel.com>; Neil Armstrong <neil.armstrong@linaro.org>; Ro=
-bert
-> Foss <rfoss@kernel.org>; Jonas Karlman <jonas@kwiboo.se>; Jernej Skrabec
-> <jernej.skrabec@gmail.com>; Rob Herring <robh+dt@kernel.org>; Krzysztof
-> Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> <conor+dt@kernel.org>; Mauro Carvalho Chehab <mchehab@kernel.org>; dri-
-> devel@lists.freedesktop.org; linux-arm-kernel@lists.infradead.org; linux-
-> kernel@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> media@vger.kernel.org
-> Subject: Re: [PATCH v2 8/8] drm: xlnx: Intoduce TPG CRTC driver
->=20
-> Hi,
->=20
-> On Tue, Mar 12, 2024 at 05:55:05PM -0700, Anatoliy Klymenko wrote:
-> > DO NOT MERGE. REFERENCE ONLY.
+On Thu, Mar 14, 2024 at 3:30=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+>
+> On 3/14/24 12:05, Rae Moar wrote:
+> > On Wed, Mar 13, 2024 at 5:01=E2=80=AFPM Guenter Roeck <linux@roeck-us.n=
+et> wrote:
+> >>
+> >> Commit a547c4ce10bd ("kunit: time: Mark test as slow using test
+> >> attributes") marked the time unit test as slow. This means it does not
+> >> run anymore if slow tests are disabled. This reduces test coverage and
+> >> is thus undesirable. At the same time, the test currently covers a ran=
+ge
+> >> of 160,000 years, which has limited value.
+> >>
+> >> Add additional test case covering a total range of 1,600 years. This t=
+est
+> >> takes less than a second to run even on slow systems while still cover=
+ing
+> >> twice the leap year calculation range of 400 years around the center d=
+ate.
+> >> This test can run even with slow tests disabled.
 > >
-> > Add CRTC driver based on AMD/Xilinx Video Test Pattern Generator IP.
-> > TPG based FPGA design represents minimalistic harness useful for
-> > testing links between FPGA based CRTC and external DRM encoders, both
-> > FPGA and hardened IP based.
+> > Hello!
 > >
-> > Add driver for AMD/Xilinx Video Timing Controller. The VTC, working in
-> > generator mode, suplements TPG with video timing signals.
+> > I really like this addition of another time range test. This looks good=
+ to me.
 > >
-> > Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
->=20
-> As I said previously, we don't want to have unused APIs, so this patch sh=
-ould be in
-> a good enough state to be merged if we want to merge the whole API.
->=20
+> > Thanks!
+> > -Rae
+> >
+> > Reviewed-by: Rae Moar <rmoar@google.com>
+> >
+> >>
+> >> Cc: Rae Moar <rmoar@google.com>
+> >> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> >> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> >> ---
+> >>   kernel/time/time_test.c | 35 +++++++++++++++++++++++++++--------
+> >>   1 file changed, 27 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
+> >> index 3e5d422dd15c..15c6f3a5e73c 100644
+> >> --- a/kernel/time/time_test.c
+> >> +++ b/kernel/time/time_test.c
+> >> @@ -47,18 +47,18 @@ static void advance_date(long *year, int *month, i=
+nt *mday, int *yday)
+> >>   }
+> >>
+> >>   /*
+> >> - * Checks every day in a 160000 years interval centered at 1970-01-01
+> >> + * Checks every day in a specified interval centered at 1970-01-01
+> >>    * against the expected result.
+> >>    */
+> >> -static void time64_to_tm_test_date_range(struct kunit *test)
+> >> +static void time64_to_tm_test_date_range(struct kunit *test, int year=
+s)
+> >>   {
+> >>          /*
+> >> -        * 80000 years  =3D (80000 / 400) * 400 years
+> >> -        *              =3D (80000 / 400) * 146097 days
+> >> -        *              =3D (80000 / 400) * 146097 * 86400 seconds
+> >> +        * years        =3D (years / 400) * 400 years
+> >
+> > This is tiny but if there is another version, I find this comment a
+> > bit confusing. Could you change this to maybe be "total seconds =3D"
+> > instead of "years =3D" because years is used as a unit on the right sid=
+e
+> > of the equation?
+> >
+>
+> Good point. "total seconds" might be just as confusing, though.
+> How about "total range", "time range", or just "range" ?
+>
 
-This is understandable, but even having this API just reviewed by the commu=
-nity will open the path forward for aligning AMD/Xilinx downstream DRM driv=
-ers with the upstream kernel.
+I see that. Any of those options look fine to me, maybe just "range"?
+Whatever you think is best of those.
 
-> > +/*
-> > +---------------------------------------------------------------------
-> > +--------
-> > + * DRM CRTC
-> > + */
-> > +
-> > +static enum drm_mode_status xlnx_tpg_crtc_mode_valid(struct drm_crtc
-> *crtc,
-> > +						     const struct
-> drm_display_mode *mode) {
-> > +	return MODE_OK;
-> > +}
-> > +
-> > +static int xlnx_tpg_crtc_check(struct drm_crtc *crtc,
-> > +			       struct drm_atomic_state *state) {
-> > +	struct drm_crtc_state *crtc_state =3D
-> drm_atomic_get_new_crtc_state(state, crtc);
-> > +	int ret;
-> > +
-> > +	if (!crtc_state->enable)
-> > +		goto out;
-> > +
-> > +	ret =3D drm_atomic_helper_check_crtc_primary_plane(crtc_state);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +out:
-> > +	return drm_atomic_add_affected_planes(state, crtc); }
-> > +
->=20
-> [...]
->=20
-> > +
-> > +static u32 xlnx_tpg_crtc_select_output_bus_format(struct drm_crtc *crt=
-c,
-> > +						  struct drm_crtc_state
-> *crtc_state,
-> > +						  const u32 *in_bus_fmts,
-> > +						  unsigned int
-> num_in_bus_fmts) {
-> > +	struct xlnx_tpg *tpg =3D crtc_to_tpg(crtc);
-> > +	unsigned int i;
-> > +
-> > +	for (i =3D 0; i < num_in_bus_fmts; ++i)
-> > +		if (in_bus_fmts[i] =3D=3D tpg->output_bus_format)
-> > +			return tpg->output_bus_format;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct drm_crtc_helper_funcs xlnx_tpg_crtc_helper_funcs =
-=3D {
-> > +	.mode_valid =3D xlnx_tpg_crtc_mode_valid,
-> > +	.atomic_check =3D xlnx_tpg_crtc_check,
-> > +	.atomic_enable =3D xlnx_tpg_crtc_enable,
-> > +	.atomic_disable =3D xlnx_tpg_crtc_disable,
-> > +	.select_output_bus_format =3D xlnx_tpg_crtc_select_output_bus_format,
-> > +};
->=20
-> From that code, it's not clear to me how the CRTC is going to be able to =
-get what
-> the format is.
->=20
+Thanks!
+-Rae
 
-It's coming from DT "bus-format" property. The idea is that this property w=
-ill reflect the FPGA design variation synthesized.=20
-
-> It looks like you hardcode it here, but what if there's several that woul=
-d fit the
-> bill? Is the CRTC expected to store it into its private structure?
->=20
-
-It's impractical from the resources utilization point of view to support mu=
-ltiple runtime options for FPGA-based CRTCs output signal format, so the bu=
-s-format will be runtime fixed but can vary between differently synthesized=
- instances.
-
-> If so, I would expect it to be in the crtc state, and atomic_enable to ju=
-st reuse
-> whatever is in the state.
->=20
-
-This could be totally valid for different kinds of CRTCs, although for this=
- particular case, the bus-fomat choice is runtime immutable.
-
-> Maxime
-
-Thank you,
-Anatoliy
+> Thanks,
+> Guenter
+>
 
