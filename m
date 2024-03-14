@@ -1,182 +1,166 @@
-Return-Path: <linux-kernel+bounces-103269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C62D87BD40
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:05:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F83E87BD41
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13DEFB217DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:05:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7686C1C20E66
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232A85A7B4;
-	Thu, 14 Mar 2024 13:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3932E5A11A;
+	Thu, 14 Mar 2024 13:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gXLxoAhX"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aBpVYAmg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FE15A0ED
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4B65914E
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710421541; cv=none; b=EEvx9Iqi/x8hnChiZ75r4bRkpUkqORhbr7sEl/hhmaqRNyRn9Vr48VkXnO5Hx/F3xO0FQq7wLXJS4hGrhSmv4vmqbgm34A3LeimcUyUbZvG5Y+EFrvvxsAWT+S6tFIXk/SJmLxkjhuIWMYzmEGMrXRi0VbebOnGnRx8MclHlofw=
+	t=1710421580; cv=none; b=PSIgSfwmAL4Q7VWfCjvFaM3OxdrOQQODoClj3V+6sUqhYmRkcRJD7gn3PPixA9+5b/rYdIpZczlCiDlWeHqQDvbCwD5b84U6JGgtcyYcyzThSf5a2HiKl5ab4al1AD1aohNpbV+DpzajqMnalfIiRKRa5jcGK9vnY5K7T6PjwC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710421541; c=relaxed/simple;
-	bh=QBhs2rdEI9Ta2Qm5lV/m1p6meuBuhC/dnIjl3YYKYI4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SyNX+cl+Bb1XNh5ztLbbBzoYvMazM8qrD2cqNoA2tQYU3A5PSUK2VAw7X+VbaXz6Npyrg4Jf1Ag2aPjkWnSPSeiU1g7GQ2CpPsXCSIW9dFWtmCSd/ns7O73ymGHmdUDjt6FfXg4bi3S9uuZXf4meW9Jyp5VY2RaYGVOiQMBRfP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gXLxoAhX; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6099703e530so9049227b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710421537; x=1711026337; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=II2UsaIZAzw07RsAVvrS+6gd+EObsid7jBvJIs0WBzw=;
-        b=gXLxoAhXqsvS3fzWN/U9aHRYz4lemCrCX+CKcD0Q7RYLy2VBqhmE5LgmumFQ4hBVOO
-         K2EaqXgOPD8jhf5n2YtTKoFdYG1/pCG66yNA4vZVq4syEIgAY92WfEoLDWPbv/pOXNTP
-         H3vA7uegPZCyl8GbpN6WyPh/0pGhbFjWGf2ZhDrJ/YKYBmIakta2GIlfSk8y8pXg46b6
-         ZIUUDSGGiNlpMgN+biy0N9E8KAdb0CBv1gSY0MSvaZJCMn22J0ha/KHzYIwkg8iDakmg
-         er5f2Js7oPX0jaTWeas/7lkk7cf0EeN526XMxt74PifdLCB/EEBir507/mFAJ+Drsvvv
-         sfkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710421537; x=1711026337;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=II2UsaIZAzw07RsAVvrS+6gd+EObsid7jBvJIs0WBzw=;
-        b=LMIgW7i7SAM9ttgIZXq/wG6Hz1ZxiUf3NrYm3bbZI9gqwdVrMWm1bRpKY9N0kngbuZ
-         JB9WB1Sr5v+qMVGEpcmpdVwd2M5idfzNt1zkwZN9O5n288I3dvcW4clxel5Ga7T4sF2G
-         ecqehggqhQ2bRg/U6u1qgNtRKZKa05jrM6R5ClfuMEmozHhmgjEESJog2FbTQeqmMntx
-         IlLKhcrwl167dUVRpUjqJb4Xfkcb0Xbl+zLHOEnJ61TaaMygqZm05aXD/frSnBUDMh/S
-         ZO0lclC0iukeRhmqiBmzQU2InwrnREgCPnOzke9lFX6rsTSCn3IkPNtJkzPDbf2RptsD
-         UJFA==
-X-Forwarded-Encrypted: i=1; AJvYcCX6ICNcfeoujZ/vO6LEqj6D1HUSnIrBftBeck6L+i4y+s4qbug5FmYsY+ZZKPjrNWPU0f8fOw6XqUDf8z+3f8T/88xIxTQ57P3K2tK9
-X-Gm-Message-State: AOJu0YyZ+U65TuaeYnUDo4fKyQBuE7jY8or5JpOYE6Qsb5bM2IKaP/mP
-	KWrdP8jNrSFih/558rHBXGt8Qk5ywC/+aNNPyggjEFmFJOzz6XqiuRv3ATztjeUgguI/+Nw0nrR
-	Kk3fGOvVbEdHfDdWu/lKCnf8WzOkjf6CFc1L7EA==
-X-Google-Smtp-Source: AGHT+IFXC5RLGM5+/OQzl0VN7/sYRocbZIrLl+pCS9V1R3inRBR/pXXbajydYegK5aeCFV33pHqokJMy1KmLSL3ltB4=
-X-Received: by 2002:a0d:e4c4:0:b0:60c:ced3:8e26 with SMTP id
- n187-20020a0de4c4000000b0060cced38e26mr901393ywe.13.1710421537330; Thu, 14
- Mar 2024 06:05:37 -0700 (PDT)
+	s=arc-20240116; t=1710421580; c=relaxed/simple;
+	bh=MElPHl186ioKAc0FmIFa1N/21frTBw3U+yXB0xz9r5Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZLmsw+gHl/Ke3qJ1k+Jcvkq91Vr6ViUeoBqRMIrR1CMRR1stWDYlGdq0rVWy5ede/xDj7k4O3yIbVtVmJukm3Eh3xxPHK/KCwzLtlUytkS+Xxsy97xgID6nML6Y5NDTFjjnFa4jOuyoJ9t6eMC42eJg3kEVpmqeTYlZ4YISZoNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aBpVYAmg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD80C433C7;
+	Thu, 14 Mar 2024 13:06:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710421580;
+	bh=MElPHl186ioKAc0FmIFa1N/21frTBw3U+yXB0xz9r5Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=aBpVYAmgsE/0H0WsN6O7VV/6lHtyT164V9jLi4xhHLVPQJZ0lG2WyEs4WOdw1AYeH
+	 DO/TIknKEnHW5hDy+XyWMGkMfz6HgZ3g2Hg9eRLKDU1jtNvi08vcf3WDFjfkMoNW3j
+	 hLD7Ve3qeP3jx2KxPYV7WshocToOOawZJk0Z0EGk6KYuACLEEfbF5Hc4QYa5TMMaER
+	 8JZZ1F1PXo6yBGRlgiVEXdDiApVkC0GnW8FAvSy5d3R/wf0F4vmRQ1yNI4vY8nJxkp
+	 ERbKMg5cKgD1DxC1EjYsWqS/Kf7ENHWpmJqbvcVlfCiy6UB0SG5eksx7ku3VOYZKv+
+	 zw/F5VVR31OQg==
+Message-ID: <eeefebcb-54db-4087-9319-dd5f9b63a1da@kernel.org>
+Date: Thu, 14 Mar 2024 21:06:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313-videocc-sm8150-dt-node-v1-0-ae8ec3c822c2@quicinc.com>
- <20240313-videocc-sm8150-dt-node-v1-1-ae8ec3c822c2@quicinc.com>
- <CAA8EJpo63oRA07QNCdzJdHW_hJJWK6aj-LCpp-XwmPJYf0twZw@mail.gmail.com> <a09941ff-7b43-a964-1bd1-5321913be1a3@quicinc.com>
-In-Reply-To: <a09941ff-7b43-a964-1bd1-5321913be1a3@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 14 Mar 2024 15:05:26 +0200
-Message-ID: <CAA8EJpo=ACtqbaPQN--p_28Cf6DLsKMFKh-A0crMZq4hmhPdyA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: clock: qcom: Update SM8150 videocc bindings
-To: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>, 
-	Jagadeesh Kona <quic_jkona@quicinc.com>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] f2fs: add REQ_TIME time update for some user behaviors
+Content-Language: en-US
+To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ niuzhiguo84@gmail.com, ke.wang@unisoc.com, hongyu.jin@unisoc.com
+References: <1710303061-16822-1-git-send-email-zhiguo.niu@unisoc.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <1710303061-16822-1-git-send-email-zhiguo.niu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 14 Mar 2024 at 11:19, Satya Priya Kakitapalli (Temp)
-<quic_skakitap@quicinc.com> wrote:
->
->
-> On 3/14/2024 12:50 AM, Dmitry Baryshkov wrote:
-> > On Wed, 13 Mar 2024 at 13:11, Satya Priya Kakitapalli
-> > <quic_skakitap@quicinc.com> wrote:
-> >> Update the videocc device tree bindings for sm8150 to align with the
-> >> latest convention.
-> > But why? Bindings already exist. There is nothing wrong with them. And
-> > sm8150 platform in general uses name-based lookup.
->
->
-> With the new index based lookup introduced we cannot use this bindings,
-> hence I moved to the sm8450-videocc bindings.
+On 2024/3/13 12:11, Zhiguo Niu wrote:
+> some user behaviors requested filesystem operations, which
+> will cause filesystem not idle.
+> Meanwhile adjust f2fs_update_time(REQ_TIME) of
+> f2fs_ioc_defragment to successful case.
+> 
+> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> ---
+>   fs/f2fs/file.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 4dfe38e..dac3836 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -2784,7 +2784,6 @@ static int f2fs_ioc_defragment(struct file *filp, unsigned long arg)
+>   	err = f2fs_defragment_range(sbi, filp, &range);
+>   	mnt_drop_write_file(filp);
+>   
+> -	f2fs_update_time(sbi, REQ_TIME);
 
-This is true for _new_ drivers. However you have a driver already. And
-the driver has bindings. If you check, existing drivers were updated
-from parent_names to fw_name / parent_hw lookups. However none of the
-drivers was _updated_ to use index-based lookups.
+I guess we need to call f2fs_update_time() here if any data was
+migrated.
 
-> >> Fixes: 35d26e9292e2 ("dt-bindings: clock: Add YAML schemas for the QCOM VIDEOCC clock bindings")
-> > It is not a fix, there is no bug that this commit is fixing.
->
->
-> The clocks list needs to be fixed to add both XO and AHB clocks, and we
-> are adding required-opps property.
+if (range->len)
+	f2fs_update_time(sbi, REQ_TIME);
 
-Oh, so you have mixed two unrelated changes without telling anybody.
-Please don't do this.
+>   	if (err < 0)
+>   		return err;
+>   
+> @@ -2792,6 +2791,7 @@ static int f2fs_ioc_defragment(struct file *filp, unsigned long arg)
+>   							sizeof(range)))
+>   		return -EFAULT;
+>   
+> +	f2fs_update_time(sbi, REQ_TIME);
+>   	return 0;
+>   }
+>   
+> @@ -3331,6 +3331,7 @@ static int f2fs_ioc_resize_fs(struct file *filp, unsigned long arg)
+>   	if (copy_from_user(&block_count, (void __user *)arg,
+>   			   sizeof(block_count)))
+>   		return -EFAULT;
+> +	f2fs_update_time(sbi, REQ_TIME);
 
->
->
-> >> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-> >> ---
-> >>   Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml | 1 +
-> >>   Documentation/devicetree/bindings/clock/qcom,videocc.yaml        | 3 ---
-> >>   2 files changed, 1 insertion(+), 3 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-> >> index bad8f019a8d3..e00fdc8ceaa4 100644
-> >> --- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-> >> +++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-> >> @@ -20,6 +20,7 @@ properties:
-> >>       enum:
-> >>         - qcom,sm8450-videocc
-> >>         - qcom,sm8550-videocc
-> >> +      - qcom,sm8150-videocc
-> >>
-> >>     reg:
-> >>       maxItems: 1
-> >> diff --git a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-> >> index 6999e36ace1b..28d134ad9517 100644
-> >> --- a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-> >> +++ b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-> >> @@ -17,7 +17,6 @@ description: |
-> >>       include/dt-bindings/clock/qcom,videocc-sc7180.h
-> >>       include/dt-bindings/clock/qcom,videocc-sc7280.h
-> >>       include/dt-bindings/clock/qcom,videocc-sdm845.h
-> >> -    include/dt-bindings/clock/qcom,videocc-sm8150.h
-> >>       include/dt-bindings/clock/qcom,videocc-sm8250.h
-> >>
-> >>   properties:
-> >> @@ -26,7 +25,6 @@ properties:
-> >>         - qcom,sc7180-videocc
-> >>         - qcom,sc7280-videocc
-> >>         - qcom,sdm845-videocc
-> >> -      - qcom,sm8150-videocc
-> >>         - qcom,sm8250-videocc
-> >>
-> >>     clocks:
-> >> @@ -75,7 +73,6 @@ allOf:
-> >>             enum:
-> >>               - qcom,sc7180-videocc
-> >>               - qcom,sdm845-videocc
-> >> -            - qcom,sm8150-videocc
-> >>       then:
-> >>         properties:
-> >>           clocks:
-> >>
-> >> --
-> >> 2.25.1
-> >>
-> >>
-> >
+There will be no further IO in the end of f2fs_ioc_resize_fs(), so we don't
+need to update time to delay gc/discard thread?
 
+>   
+>   	return f2fs_resize_fs(filp, block_count);
+>   }
+> @@ -3424,6 +3425,7 @@ static int f2fs_ioc_setfslabel(struct file *filp, unsigned long arg)
+>   	f2fs_up_write(&sbi->sb_lock);
+>   
+>   	mnt_drop_write_file(filp);
+> +	f2fs_update_time(sbi, REQ_TIME);
 
+Ditto,
 
--- 
-With best wishes
-Dmitry
+Thanks,
+
+>   out:
+>   	kfree(vbuf);
+>   	return err;
+> @@ -3597,6 +3599,7 @@ static int f2fs_release_compress_blocks(struct file *filp, unsigned long arg)
+>   
+>   	filemap_invalidate_unlock(inode->i_mapping);
+>   	f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> +	f2fs_update_time(sbi, REQ_TIME);
+>   out:
+>   	inode_unlock(inode);
+>   
+> @@ -3766,6 +3769,7 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
+>   		clear_inode_flag(inode, FI_COMPRESS_RELEASED);
+>   		inode_set_ctime_current(inode);
+>   		f2fs_mark_inode_dirty_sync(inode, true);
+> +		f2fs_update_time(sbi, REQ_TIME);
+>   	}
+>   unlock_inode:
+>   	inode_unlock(inode);
+> @@ -3964,6 +3968,7 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+>   	if (len)
+>   		ret = f2fs_secure_erase(prev_bdev, inode, prev_index,
+>   				prev_block, len, range.flags);
+> +	f2fs_update_time(sbi, REQ_TIME);
+>   out:
+>   	filemap_invalidate_unlock(mapping);
+>   	f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> @@ -4173,6 +4178,7 @@ static int f2fs_ioc_decompress_file(struct file *filp)
+>   	if (ret)
+>   		f2fs_warn(sbi, "%s: The file might be partially decompressed (errno=%d). Please delete the file.",
+>   			  __func__, ret);
+> +	f2fs_update_time(sbi, REQ_TIME);
+>   out:
+>   	inode_unlock(inode);
+>   	file_end_write(filp);
+> @@ -4252,6 +4258,7 @@ static int f2fs_ioc_compress_file(struct file *filp)
+>   	if (ret)
+>   		f2fs_warn(sbi, "%s: The file might be partially compressed (errno=%d). Please delete the file.",
+>   			  __func__, ret);
+> +	f2fs_update_time(sbi, REQ_TIME);
+>   out:
+>   	inode_unlock(inode);
+>   	file_end_write(filp);
 
