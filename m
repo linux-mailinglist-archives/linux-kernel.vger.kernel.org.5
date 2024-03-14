@@ -1,207 +1,357 @@
-Return-Path: <linux-kernel+bounces-103524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC05A87C097
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:45:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A44187C09B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:46:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C46B1C21D65
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:45:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25F6C1C21E5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DDD7316A;
-	Thu, 14 Mar 2024 15:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C28373179;
+	Thu, 14 Mar 2024 15:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxera.com header.i=@tuxera.com header.b="jZHsmYdv"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2090.outbound.protection.outlook.com [40.107.6.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j1g3KvcG"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC48471749;
-	Thu, 14 Mar 2024 15:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.90
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431149; cv=fail; b=lOszW1WvZPQoL9nibYYcuxz7/5lDfcjdX14/BWRON2s4Ws/ToIeYxmtoyRTjTF8tKFXhxxwcE3xBdRJlCQG4zEcsNPbdoFPmNKe8xL5vsNciBxltEui/DmptMOMCeVob22zR89jaybGmg2iSJzZeIUsq5b1q+32J10Z30wmL4fE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431149; c=relaxed/simple;
-	bh=bWfaTX4oJ1iTJgw5u8WfT47xbcn0xhZutbiYJMM0ScE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=rP4QKd/ubBilqq4gyPNt4Uj1MMyMxC8JBDaeGT4TTnxIddTdCRh7ARqbbSkoCV8NTn5HgrpzC8HEtQzKCLR41GQyxqS4MQ2BjVNcQwmS4m6xYXnI/0hGxnQNysqU/2YSYPCjPiK32DbrhvPN1Uulbd4ioZLpnoc9B/tkK/RKN4Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxera.com; spf=pass smtp.mailfrom=tuxera.com; dkim=pass (2048-bit key) header.d=tuxera.com header.i=@tuxera.com header.b=jZHsmYdv; arc=fail smtp.client-ip=40.107.6.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxera.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxera.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b2IwdvlLVtH5aKAkSyaB6zUesBHOKRlJC5Ql3IcxzDg+fcUG1QqQ/k3PD+7Pi9SkF+tlxTGQuCfUsqidKQCMrgI1ZHqv+aGPVd7ZcDiyQUst8Gjj7ImXnPP8SR5SdgHK0HG6kJpSWtxblkQhR0H1+RWwEadM9+wvAFPaX07sITZLC7jjR5OgV/ixHyTRNnD4Zylj6lHzO5nGiMFyboefxEr2pZi4SFeTB9zke/gvWbK3wEisGn8LL9NzbwuLdF9JQG6dkd/HkiMM5bf7Cg6+Thq6SHKMJ2cmjqLFnOivZsFm2Meu9IDouMzHwvEdRpoS92M4X/UsI0bKDa2Uc6x2yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LmifIluQTPTxWP+oP3tNT5LaKylXiIysj401izJB2PE=;
- b=DOA5+89Ub112Zg6Wir1UtxicrgmPl9yJCC0Qz3UjvfXmL87u+qk375i69U12zMQmjCSNe+2QfrRdcc8xORlE3coyP4NhPIOxG4CFXhPmYpheR5/T1VTZzhZN4MMSfxQxHKuNO/nz+3nAwJDQ0dTWcsakEDPJoSodhiFCmxwkt09rHqmozzo4lJItYwbKIOa0a/ha3Wcwmkb3bJCUDN2UUDJ9NdoP/kRuPgt0SlzH22E6sp2zeh7nouaOPPUzVB9QexWUqbUvXV0yIlHooy6iA6Efw3Oha7UMIRHqqagMiTPUHMWV5bTrD+QXAft01K0awMpcEaSweoFAE3jtKL+oew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=tuxera.com; dmarc=pass action=none header.from=tuxera.com;
- dkim=pass header.d=tuxera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxera.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LmifIluQTPTxWP+oP3tNT5LaKylXiIysj401izJB2PE=;
- b=jZHsmYdvVf5tn0K7G1GrnkFvZLWqJ/DQAZ5nkplswxKasdu/Pyz4khGoyAssAA1Yj6/gyhPfPwNCguif3EdyABnascXxRkVKunOSQkWhLRtmWDSmEDE4i5dy2P8R6xjbVYJ3n8OkuwkMtAq8v8fesEs20H47GyS+liVfgLJqUcndcFDzr7jC7thO1HBmUeEKebjqPYgMmDrojpu+luVkil1VPsnp/nIFBbezsXilOccglpTJHiJWm6zoyUa6rpGh/8Eg5mJ1KtooyXRMBodPs+UZJUyU7q7H+NqHvakLDVkTgLyASYGROFtERCxkas3YtLDhdEXJ5bFNyq7d98kM9w==
-Received: from AS8PR06MB7239.eurprd06.prod.outlook.com (2603:10a6:20b:254::18)
- by AS8PR06MB7766.eurprd06.prod.outlook.com (2603:10a6:20b:33a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Thu, 14 Mar
- 2024 15:45:44 +0000
-Received: from AS8PR06MB7239.eurprd06.prod.outlook.com
- ([fe80::6306:f08a:57eb:467c]) by AS8PR06MB7239.eurprd06.prod.outlook.com
- ([fe80::6306:f08a:57eb:467c%4]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 15:45:44 +0000
-From: Anton Altaparmakov <anton@tuxera.com>
-To: Dave Hansen <dave.hansen@intel.com>
-CC: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	"x86@kernel.org" <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Chen Yu
-	<yu.c.chen@intel.com>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Catalin Marinas <catalin.marinas@arm.com>, Linux Memory Management
-	<linux-mm@kvack.org>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Ingo
- Molnar <mingo@kernel.org>, "linux-pm@vger.kernel.org"
-	<linux-pm@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] x86/pm: Fix false positive kmemleak report in
- msr_build_context().
-Thread-Topic: [PATCH] x86/pm: Fix false positive kmemleak report in
- msr_build_context().
-Thread-Index: AQHadiEQrskV1NWHjkSsYR0U0Bb8SLE3YQqA
-Date: Thu, 14 Mar 2024 15:45:44 +0000
-Message-ID: <653BCAC0-8A79-400F-B496-23A2FA169786@tuxera.com>
-References: <20240314142656.17699-1-anton@tuxera.com>
- <70261e2a-b87e-462e-964e-95a51ecde978@intel.com>
-In-Reply-To: <70261e2a-b87e-462e-964e-95a51ecde978@intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=tuxera.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR06MB7239:EE_|AS8PR06MB7766:EE_
-x-ms-office365-filtering-correlation-id: ba1b3b2a-4e8d-4de4-552f-08dc443dcf80
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Gby/xhYZ0nh+8/BZV6VJg7zwhVywCSCvZls0ewwpWdZL4hgVbjeQgFXe89vnFkahN0Iksyw0FQadL8h6rgRdpbDZlNMPjYN5GMHl2ZYRcGm1NDlQC8xNfLSUzztdboi/Jfv/Zz9B+saKhSh4Fs26uC8GBO4JzS24wzlYQ0hcN4y5Mzi246qI+uTmNKd1jUp+fnMxOPIfTqaHa4+KBlBEmQxBCjsrdbD8rFYgWqc/CQMnnAt6Szej2mweL5Kv89gnd8kWx26/Lvou/Bc5b69JX7PD/Ax0N3sTK4mOiM4g7EqtaCioqh92QutkUHjorQQdxNMfxdpyTjD5SDm+LbfBW+VGYjL6W1n4pE6ctV/UUqeNux79ow7r3GA40Uicw6S6DQrLTMNHHMO1QkWhIJIEzMXTL3BymFW13W539L6VMXu6oA0tlQmcLyAiXLXvziHOvfFRY9xk4ets9e+UoM7Vy8aM6fhlC4q1qqif32m/MKKMLvXaD+tO8yjO4HO+wg9ZbYHmyMetqg9bAUvLVW7PdO3oHVvWzB+HyQBZfanGKe09LoFoPB2oir0QmLdxBqHHAK9zgwcBhwjgNYGzjIgIywdGXBHKZUvm87comrznNDQ5dGEtCxdzTHtEWCcTMrz7rHCSmtPvxuLrqv/CAhtiIfCZfx4Rllkcr2OXlzRl7Gg=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR06MB7239.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?WiBd/WSYE4WNWpxzJwO2IEwKDABaiGCHFiZPB5l53GjVUmkw2+oM5IuaYo2n?=
- =?us-ascii?Q?uE6JRx5nHoQS9+FlM5i0sDFsbW93Mlp5eX0Zt+CVDrVbe65jECRAOxy1+WfL?=
- =?us-ascii?Q?T4LvDViHr+zdZ75lLt9SIAFujuo7en2D1AJI2kgI3RQ8blF0MMw95v44ZGit?=
- =?us-ascii?Q?+1ZQ/2OdqJl0ZKEtLFebvcZXyLUhE6UDwEsZoxC5aDgi9GvIEeNUKnqOZqXx?=
- =?us-ascii?Q?7vYPjnRoYAADj3NPUdqo20PlVgkHXzNFRY5Qe0xVANrwlH9DnCnPRw2PiB9B?=
- =?us-ascii?Q?EVClTIGBjny1uxND4ZFcvN648mkTTq7MjyhDWGQzZv4GEt3lu/pLuluZmnoP?=
- =?us-ascii?Q?shv/+j9HQI3ZfOq1OAvmcZqS7J2r42apMUN8/Xy5Qnz/wkXZYcZw+TzPA3nq?=
- =?us-ascii?Q?iN8b0cqjPv2SpvwTYUy2ooAAFtO7x4g3X22mH10OGVNaWYcgaxoZN+3jBB2K?=
- =?us-ascii?Q?WnxbpTa8Ia2vAoXGHgyRUav6ULvRZEC0T6j1JN+xi6R8fWM3MYgkub3egpWp?=
- =?us-ascii?Q?rRqiueUJYwrMXyUUq+mc8wYwvELIl/+B+J3OU+agSqYxN627y01s0kT5HdDX?=
- =?us-ascii?Q?AIVKUORi4sSVHGj5ERTq8lhiWjlwS3YRCN6oh56TXT9l+XzY1H4v2UzphEcl?=
- =?us-ascii?Q?+QswbNEk6gkXHgMZJsQrIoPhg5qA1DOtxsp602iiYtB50TE7zP6x+i/o8+4R?=
- =?us-ascii?Q?k/8FO0PWFfvKeDzFxY8IeuwwqbsQj2+CEv/5Am6WLxLgC78L5GPTqDXt6Na7?=
- =?us-ascii?Q?GnoSEj8UGEW21ZUvuQWguQ5QlpkDlmv/ewZpLjZLchYvHWtKNoXaEqwxBvHq?=
- =?us-ascii?Q?5md4OA1kfgVu/DnveWPTktBeLMlX0VpAcaaRjpZe+G7aFo9KBVSjj4CgJJc+?=
- =?us-ascii?Q?Ry5Yt0/DOddmlaLn6MvDMjdUr4RhJURJUmkffb+vLKYLCibDBZ2D08cNjk8F?=
- =?us-ascii?Q?VQNRVvNtzx70ZhG//Cxg0AgjkIWZuTxvvtjhumqtMPsGc3sK+FNBrScpqG0f?=
- =?us-ascii?Q?ZnZvD3IuJlWioZxKBCNlB+CkrrwFpEJSurwpHpm5lcYEUkRP7yl2DefitvCd?=
- =?us-ascii?Q?RYnbxMFfv9hPLGo8l/lZ1XMrdcYAmvpYhQkIcVABmX1Ssa+/AiGl6wTYUnKy?=
- =?us-ascii?Q?/INQHFy5T7hpjTF6I87EmUkRO/aOoACHj71gMZWaRU+tV3WXSmVPs8SLzB9B?=
- =?us-ascii?Q?uQdBG//8GG9HutUinNN+d+ZI1T1+RzR9nSODiQEEe54D9lrGwsJkPl6D0O/Z?=
- =?us-ascii?Q?7Q4iJzMpGDfQOVOHPBkV3SMtkM1XZmwRfwPOcZH4WK5s7eEhz8ZIgGecNs6R?=
- =?us-ascii?Q?IZXhAhC6p/D9FPDZN63xnEMoDRkuR/5hPaDhep5sVD2KihjpwVOZr/UOLCbi?=
- =?us-ascii?Q?gip+Lp2MJ+/J3ov9k6nsS0otoh179Z0vRCA+CJBMBfleEiVwlqPu9CI4K/qv?=
- =?us-ascii?Q?z5XNROgWQJGgGlBpM1GbLgfVYYL3P6TfA6mILtmSUXIWrOPFDSrBt6X2ojhv?=
- =?us-ascii?Q?fKHn+RUUTRwkm8rTxuj6uuU4ooz95Cny8sPxUyV6ZZtqu6u5D7/xZzqH7sFk?=
- =?us-ascii?Q?GTzVKDo7Bs3N5rWm8+YWBt0kZw3QbkEKtV6wcpup?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5EBCB49079CC674890FFC0406646BE57@eurprd06.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89B470CDE;
+	Thu, 14 Mar 2024 15:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710431204; cv=none; b=HjPRS+jR1t35u2mwwMOCCYO0sA3KbPx3KFwYECb1LkDmhriuv7+lQI4RZp/tzzrtCm+b0X3WeEBtrp618/jjIH5iccEknKL13jV3b429rO/Rr+sxIjdayX/1dTFivCNY2pK42fRth/uGxhc9JhKfH1/llBVPuI90pL5KaxXeLmw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710431204; c=relaxed/simple;
+	bh=oynWwKzA+0qEynlkdHoX9Q6l9nj+lEyOj7BCH09ZPG4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sxyPksmHkip5xvdNKpUU5GPFL231fXdGx7+/jjixTWabYfD42Oi4s1ljtO0BvHloeCv/9vxxe3JF0ip7M4+tuv3BAXvozx6hZd6siu1AVATF56RIjaPJXOM3ROVRQW3KeppNND/hrlI9cTZHgOBB3bmXnZ1d7AEPTeG7nkieOsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j1g3KvcG; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so2074170276.0;
+        Thu, 14 Mar 2024 08:46:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710431201; x=1711036001; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1/0zUkiPOILO/41SCjmzy5gU7e3o5AEa1dCgcttcrlk=;
+        b=j1g3KvcGw9T60rpGCp5HJPXzWVhYQGug6KtuTvkS4aFH+pmBi0PePKj90kDeqwGPVf
+         +Qwg8H3hdDeMPYkqnwpt3WUH4XXKFrO2km+nG6Tlh1sDaQubRtYxBIun2tbHT2IjvoVF
+         AZjgldjObbC1GL/FoOw5DA8eNA0ftr2T8RtduJNHZJdO78u2ajYk5dXvEL8OjGQf2ahG
+         fiLTXCa4UtJ5UcwNfpgWjW8Id3wt8/h6Nsociu1dlHhsyVkQa+UcUHez+ceMcpVHGAXq
+         luLeOhgf46BJrGhYv2Rc94Zk3t+hMBYqtwgv2zozsdHjeuFBDs+k7CHgwmNoF8MXQH9b
+         rH/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710431201; x=1711036001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1/0zUkiPOILO/41SCjmzy5gU7e3o5AEa1dCgcttcrlk=;
+        b=iVIUgFzoUodJzpq01+MEgipRF66kDeyb65zgkLM499DeW/EPX3qOEFk0o/Lj8px/Z0
+         tAw70MjyWScLAo1f28nPFoQLqKmwZoir2Q0VN+eRoGee6emBHIB2KoR/7WDkSMxFliMk
+         qFcDA4hfN/ZBK6Vf0vbHpRlyK9ok/4jHbfS4nwoXS+G+Cg8d3MiZsgPOqPm+mxZF0gxb
+         wDXAvLGtAmkfExPfS56MInchQeXaBI2gKfx9jNX7VMtY5jeT3i25H9K/r5h3MrdiJFHN
+         KxKXuT3Eje8ORH2eZaPyUPhwNf/i0aih/cKrkIGoHhNrc2TyjAY7FhOgZJjFXjXftJj6
+         sYgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXYxN7+JFJ8HdswOjinWKS3E7nMqw1drf0cucaqx8XGWjNVdmHyerBEGae64XEps47lneHH4//vLkWUUCmyc6w9QhSlS5XErUuDu5si1AxPZ+i5g6qLWnQdf2i17uXaq5uU16/85HTy0ymmjqTP6q+OBBxSp5clHIkZHrBWqpz34jiojQ0MluLfELiu5df5YTURsOQO8tbA+/AcYg==
+X-Gm-Message-State: AOJu0YwpFY11Kvt6FU4AgfC4s5DBCALR1WZB09OiMx/5Nm7RMrq6MPuv
+	QKNstZxNobFQ4Mnzu5K+ykB0cfbaXlU96qdL6N9kr83oLwa19979rlskdz0Cw/xU6yArZXygNmJ
+	CUPDkAtXnyGpYa6Y40ZFw6X07rsc=
+X-Google-Smtp-Source: AGHT+IFWpDcrqPH8bTrfukl8C/qZJ0doZ+8wMTevLQt0xt9L6RzqWz8jGpLBgjlktd2V0/1FHh6G74lG9WC2EQCm/OI=
+X-Received: by 2002:a25:acc2:0:b0:dc7:421d:bcc0 with SMTP id
+ x2-20020a25acc2000000b00dc7421dbcc0mr1406120ybd.32.1710431201553; Thu, 14 Mar
+ 2024 08:46:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: tuxera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR06MB7239.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba1b3b2a-4e8d-4de4-552f-08dc443dcf80
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 15:45:44.4159
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e7fd1de3-6111-47e9-bf5d-4c1ca2ed0b84
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1yQNlXEZ6PYOUfM3UEAuC637C2laLH83UWxxJB373skPx3XSPnMbZpEkHpvFExSxudjcMVYfEkRq4CtxT2CSEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR06MB7766
+References: <20240314090540.14091-1-maimon.sagi@gmail.com> <87a5n1m5j1.ffs@tglx>
+In-Reply-To: <87a5n1m5j1.ffs@tglx>
+From: Sagi Maimon <maimon.sagi@gmail.com>
+Date: Thu, 14 Mar 2024 17:46:30 +0200
+Message-ID: <CAMuE1bHOm2Y1bOpggStMOjZhN5TaxoC1gJea5Mdrc+mormQg0g@mail.gmail.com>
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: richardcochran@gmail.com, luto@kernel.org, datglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org, 
+	hannes@cmpxchg.org, sohil.mehta@intel.com, rick.p.edgecombe@intel.com, 
+	nphamcs@gmail.com, palmer@sifive.com, keescook@chromium.org, 
+	legion@kernel.org, mark.rutland@arm.com, mszeredi@redhat.com, 
+	casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net, 
+	brauner@kernel.org, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Dave,
-
-> On 14 Mar 2024, at 15:05, Dave Hansen <dave.hansen@intel.com> wrote:
->=20
-> On 3/14/24 07:26, Anton Altaparmakov wrote:
->> /* image of the saved processor state */
->> struct saved_context {
->> - /*
->> - * On x86_32, all segment registers except gs are saved at kernel
->> - * entry in pt_regs.
->> - */
->> - u16 gs;
->> unsigned long cr0, cr2, cr3, cr4;
->> u64 misc_enable;
->> struct saved_msrs saved_msrs;
->> @@ -27,6 +22,11 @@ struct saved_context {
->> unsigned long tr;
->> unsigned long safety;
->> unsigned long return_address;
->> + /*
->> + * On x86_32, all segment registers except gs are saved at kernel
->> + * entry in pt_regs.
->> + */
->> + u16 gs;
->> bool misc_enable_saved;
->> } __attribute__((packed));
->=20
-> Isn't this just kinda poking at the symptoms?  This seems to be
-> basically the exact same bug as b0b592cf08, just with a different source
-> of unaligned structure members.
-
-Yes, that is exactly the same bug.  That's how we figured out the solution =
-in fact - it is totally the same problem with another struct member...
-
-> There's nothing to keep folks from reintroducing these kinds of issues
-> and evidently no way to detect when they happen without lengthy reproduce=
-rs.
-
-Correct.  But short of adding asserts / documentation that pointers must be=
- aligned or kmemleak won't work or fixing kmemleak (which I expect is not t=
-ractical as it would become a lot slower if nothing else) not sure what els=
-e can be done.
-
-Given I cannot see any alternative to fixing the kmemleak failures I think =
-it is worth applying this fix.
-
-Unless you have better ideas how to fix this issue?
-
-What I can say is that we run a lot of tests with our CI and applying this =
-fix we do not see any kmemleak issues any more whilst without it we see hun=
-dreds of the above - from a single, simple test run consisting of 416 indiv=
-idual test cases on kernel 5.10 x86 with kmemleak enabled we got 20 failure=
-s due to this which is quite a lot.  With this fix applied we get zero kmem=
-leak related failures.
-
-Best regards,
-
-Anton
---=20
-Anton Altaparmakov <anton at tuxera.com> (replace at with @)
-Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
-
+On Thu, Mar 14, 2024 at 1:12=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Thu, Mar 14 2024 at 11:05, Sagi Maimon wrote:
+> > Some user space applications need to read a couple of different clocks.
+> > Each read requires moving from user space to kernel space.
+> > Reading each clock separately (syscall) introduces extra
+> > unpredictable/unmeasurable delay. Minimizing this delay contributes to =
+user
+> > space actions on these clocks (e.g. synchronization etc).
+>
+> I asked for a proper description of the actual problem several times now
+> and you still provide some handwaving blurb. Feel free to ignore me, but
+> then please don't be surprised if I ignore you too.
+>
+> Also why does reading two random clocks make any sense at all? Your code
+> allows to read CLOCK_TAI and CLOCK_THREAD_CPUTIME_ID. What for?
+>
+> This is about PTP, no?
+>
+> Again you completely fail to explain why the existing PTP ioctls are not
+> sufficient for the purpose and why you need to provide a new interface
+> which is completely ill defined.
+>
+> > arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+> > drivers/ptp/ptp_clock.c                |  34 ++++--
+> > include/linux/posix-clock.h            |   2 +
+> > include/linux/syscalls.h               |   4 +
+> > include/uapi/asm-generic/unistd.h      |   5 +-
+> > kernel/time/posix-clock.c              |  25 +++++
+> > kernel/time/posix-timers.c             | 138 +++++++++++++++++++++++++
+> > kernel/time/posix-timers.h             |   2 +
+>
+> This needs to be split up into:
+>
+>      1) Infrastructure in posix-timers.c
+>      2) Wire up the syscall in x86
+>      3) Infrastructure in posix-clock.c
+>      4) Usage in ptp_clock.c
+>
+> and not as a big lump of everything.
+>
+> > +/**
+> > + * clock_compare - Get couple of clocks time stamps
+>
+> So the name of the syscall suggest that it compares two clocks, but the
+> actual functionality is to read two clocks.
+>
+> This does not make any sense at all. Naming matters.
+>
+> > + * @clock_a: clock a ID
+> > + * @clock_b: clock b ID
+> > + * @tp_a:            Pointer to a user space timespec64 for clock a st=
+orage
+> > + * @tp_b:            Pointer to a user space timespec64 for clock b st=
+orage
+> > + *
+> > + * clock_compare gets time sample of two clocks.
+> > + * Supported clocks IDs: PHC, virtual PHC and various system clocks.
+> > + *
+> > + * In case of PHC that supports crosstimespec and the other clock is M=
+onotonic raw
+> > + * or system time, crosstimespec will be used to synchronously capture
+> > + * system/device time stamp.
+> > + *
+> > + * In other cases: Read clock_a twice (before, and after reading clock=
+_b) and
+> > + * average these times =E2=80=93 to be as close as possible to the tim=
+e we read clock_b.
+> > + *
+> > + * Returns:
+> > + *   0               Success. @tp_a and @tp_b contains the time stamps
+> > + *   -EINVAL         @clock a or b ID is not a valid clock ID
+> > + *   -EFAULT         Copying the time stamp to @tp_a or @tp_b faulted
+> > + *   -EOPNOTSUPP     Dynamic POSIX clock does not support crosstimespe=
+c()
+> > + **/
+> > +SYSCALL_DEFINE5(clock_compare, const clockid_t, clock_a, const clockid=
+_t, clock_b,
+> > +             struct __kernel_timespec __user *, tp_a, struct __kernel_=
+timespec __user *,
+> > +             tp_b, s64 __user *, offs_err)
+> > +{
+> > +     struct timespec64 ts_a, ts_a1, ts_b, ts_a2;
+> > +     struct system_device_crosststamp xtstamp_a1, xtstamp_a2, xtstamp_=
+b;
+> > +     const struct k_clock *kc_a, *kc_b;
+> > +     ktime_t ktime_a;
+> > +     s64 ts_offs_err =3D 0;
+> > +     int error =3D 0;
+> > +     bool crosstime_support_a =3D false;
+> > +     bool crosstime_support_b =3D false;
+>
+> Please read and follow the documentation provided at:
+>
+> https://www.kernel.org/doc/html/latest/process/maintainer-tip.html
+>
+I have missed this part on prviews reply.
+I have read the documentation above and I think that the variable
+declarations at the beginning of a function is in reverse fir tree
+order
+meaning from big to small, but I guess that I am missing something,
+can you please explain what is wrong with the variable declaration,
+so I can fix it.
+> > +     kc_a =3D clockid_to_kclock(clock_a);
+> > +     if (!kc_a) {
+> > +             error =3D -EINVAL;
+> > +             return error;
+>
+> What's wrong about 'return -EINVAL;' ?
+>
+> > +     }
+> > +
+> > +     kc_b =3D clockid_to_kclock(clock_b);
+> > +     if (!kc_b) {
+> > +             error =3D -EINVAL;
+> > +             return error;
+> > +     }
+> > +
+> > +     // In case crosstimespec supported and b clock is Monotonic raw o=
+r system
+> > +     // time, synchronously capture system/device time stamp
+>
+> Please don't use C++ comments.
+>
+> > +     if (clock_a < 0) {
+>
+> This is just wrong. posix-clocks ar not the only ones which have a
+> negative clock id. See clockid_to_kclock()
+>
+> > +             error =3D kc_a->clock_get_crosstimespec(clock_a, &xtstamp=
+_a1);
+>
+> What's a crosstimespec?
+>
+> This function fills in a system_device_crosststamp, so why not name it
+> so that the purpose of the function is obvious?
+>
+> ptp_clock::info::getcrosststamp() has a reasonable name. So why do you
+> need to come up with something which makes the code obfuscated?
+>
+> > +             if (!error) {
+> > +                     if (clock_b =3D=3D CLOCK_MONOTONIC_RAW) {
+> > +                             ts_b =3D ktime_to_timespec64(xtstamp_a1.s=
+ys_monoraw);
+> > +                             ts_a1 =3D ktime_to_timespec64(xtstamp_a1.=
+device);
+> > +                             goto out;
+> > +                     } else if (clock_b =3D=3D CLOCK_REALTIME) {
+> > +                             ts_b =3D ktime_to_timespec64(xtstamp_a1.s=
+ys_realtime);
+> > +                             ts_a1 =3D ktime_to_timespec64(xtstamp_a1.=
+device);
+> > +                             goto out;
+> > +                     } else {
+> > +                             crosstime_support_a =3D true;
+>
+> Right. If clock_b is anything else than CLOCK_MONOTONIC_RAW or
+> CLOCK_REALTIME then this is true.
+>
+> > +                     }
+> > +             }
+>
+> So in case of an error, this just keeps going with an uninitialized
+> xtstamp_a1 and if the clock_b part succeeds it continues and operates on
+> garbage.
+>
+> > +     }
+> > +
+> > +     // In case crosstimespec supported and a clock is Monotonic raw o=
+r system
+> > +     // time, synchronously capture system/device time stamp
+> > +     if (clock_b < 0) {
+> > +             // Synchronously capture system/device time stamp
+> > +             error =3D kc_b->clock_get_crosstimespec(clock_b, &xtstamp=
+_b);
+> > +             if (!error) {
+> > +                     if (clock_a =3D=3D CLOCK_MONOTONIC_RAW) {
+> > +                             ts_a1 =3D ktime_to_timespec64(xtstamp_b.s=
+ys_monoraw);
+> > +                             ts_b =3D ktime_to_timespec64(xtstamp_b.de=
+vice);
+> > +                             goto out;
+> > +                     } else if (clock_a =3D=3D CLOCK_REALTIME) {
+> > +                             ts_a1 =3D ktime_to_timespec64(xtstamp_b.s=
+ys_realtime);
+> > +                             ts_b =3D ktime_to_timespec64(xtstamp_b.de=
+vice);
+> > +                             goto out;
+> > +                     } else {
+> > +                             crosstime_support_b =3D true;
+> > +                     }
+> > +             }
+> > +     }
+> > +
+> > +     if (crosstime_support_a)
+> > +             error =3D kc_a->clock_get_crosstimespec(clock_a, &xtstamp=
+_a1);
+>
+> What? crosstime_support_a is only true when the exactly same call
+> returned success. Why does it need to be called here again?
+>
+> > +     else
+> > +             error =3D kc_a->clock_get_timespec(clock_a, &ts_a1);
+> > +
+> > +     if (error)
+> > +             return error;
+> > +
+> > +     if (crosstime_support_b)
+> > +             error =3D kc_b->clock_get_crosstimespec(clock_b, &xtstamp=
+_b);
+> > +     else
+> > +             error =3D kc_b->clock_get_timespec(clock_b, &ts_b);
+> > +
+> > +     if (error)
+> > +             return error;
+> > +
+> > +     if (crosstime_support_a)
+> > +             error =3D kc_a->clock_get_crosstimespec(clock_a, &xtstamp=
+_a2);
+> > +     else
+> > +             error =3D kc_a->clock_get_timespec(clock_a, &ts_a2);
+> > +
+> > +     if (error)
+> > +             return error;
+>
+> The logic and the code flow here are unreadable garbage and there are
+> zero comments what this is supposed to do.
+>
+> > +     if (crosstime_support_a) {
+> > +             ktime_a =3D ktime_sub(xtstamp_a2.device, xtstamp_a1.devic=
+e);
+> > +             ts_offs_err =3D ktime_divns(ktime_a, 2);
+> > +             ktime_a =3D ktime_add_ns(xtstamp_a1.device, (u64)ts_offs_=
+err);
+> > +             ts_a1 =3D ktime_to_timespec64(ktime_a);
+>
+> This is just wrong.
+>
+>      read(a1);
+>      read(b);
+>      read(a2);
+>
+> You _CANNOT_ assume that (a1 + ((a2 - a1) / 2) is anywhere close to the
+> point in time where 'b' is read. This code is preemtible and
+> interruptible. I explained this to you before.
+>
+> Your explanation in the comment above the function is just wishful
+> thinking.
+>
+> > + * In other cases: Read clock_a twice (before, and after reading clock=
+_b) and
+> > + * average these times =E2=80=93 to be as close as possible to the tim=
+e we read clock_b.
+>
+> Can you please sit down and provide a precise technical description of
+> the problem you are trying to solve and explain your proposed solution
+> at the conceptual level instead of throwing out random implementations
+> every few days?
+>
+> Thanks,
+>
+>         tglx
+>
+>
 
