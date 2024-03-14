@@ -1,233 +1,386 @@
-Return-Path: <linux-kernel+bounces-102932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F158787B892
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:26:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1D4B87B896
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B2F42814B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:26:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27C651F217A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0485CDD9;
-	Thu, 14 Mar 2024 07:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63485CDDB;
+	Thu, 14 Mar 2024 07:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="B0JRU9eK";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="XkJ0EMgO"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SYBkjq9Z"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14DE25C61C;
-	Thu, 14 Mar 2024 07:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=60.244.123.138
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710401197; cv=fail; b=lXk5xVKpw9VfuYvASfG7hcIecwMnfH9/jA7qaa3YSTrDoGqdvqdHgkdNxI64AnR8Gcop5GxEtAkK0duWNOZRxiBtdEkFIYFijBCY1y95v5DdxezgH+fvDEttxwZHKvAv/64VegX1QTd7KlKzIAH3fyrPq0CR6TtTt1oNbsLkLqo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710401197; c=relaxed/simple;
-	bh=SJnRewlVjMXyg1I9Z8AdVvj+YJaDg6eKXesNRWBYGZo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=BcCDNDT6Zs/h9QE5Q38VQsvTIEUlNwEFuOUamTnbOjmGPi6IP5NwyAjBN3c2mFtEJbHamvv4xmYqrXtaBZnMCSpqk1we7hZc+eFfRf1KnMX2zRJ6+b33PSd7aHcRXNOHA8/3JAuUFVIdackek76BNREo/7bs7KpsWX4qDSVEmRA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=B0JRU9eK; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=XkJ0EMgO; arc=fail smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 2afab358e1d411eeb8927bc1f75efef4-20240314
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=SJnRewlVjMXyg1I9Z8AdVvj+YJaDg6eKXesNRWBYGZo=;
-	b=B0JRU9eK/BJ3oReNn+ML1Pth/26jmn0aJIXoFYDUG9o3PB/GiLC/Fpml0yxlSdTayki7VqIsLvcv8KN/D2fG2dnZbzxKGJ40X/V+F4McLjuybo3s8ek1wLYSck/VSzFCmnYc0VMR2qqMFQuuRtiu68ua59398sPSfs1YxqfSn7E=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:6c45220f-f6f7-41bd-bfdb-ab20cd92a02b,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:98a36490-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 2afab358e1d411eeb8927bc1f75efef4-20240314
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
-	(envelope-from <ck.hu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1211267763; Thu, 14 Mar 2024 15:26:26 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 14 Mar 2024 15:26:23 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 14 Mar 2024 15:26:23 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NPgxpynZHgYaAWA0KsSqNBt2RABSoozSnNgdIchhdmUdHSQ++HnBKy7MNpioafZyVn5s5iUXrn7NZwomdaYQiZae5q3IMUFe8wgY2BoRECJklJE3HWKgYII/M6aXnF0bKq3PERM9ZNmgnlCuJlhbR6ZWai54k8Gr5FBVEYLJE7HPQsnUj4oBI+d5H4pJ8Tlbj6L5NeK9BQs+lXb0hdK/stz6WHObjGEDW3UVPcmM9V2tTd/o8vJ/TvAHomjRloWdvcroC8w1M1JxLRK/OgmunahbSFiXBVmNO2OUeRrF87iUBxknyUUrcbgJ2LSphp2cV143Xr7MFcIP+mhDHi0fmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SJnRewlVjMXyg1I9Z8AdVvj+YJaDg6eKXesNRWBYGZo=;
- b=HSs0FKy1G0TIF+nQtV7HcmBOm/SS0zGu9b8gptxw2ofkQZtX/Y92SUx0GmKgaJMo0imRLDHqIn61rGdtPlJFohaEBr5raVpvV9sE5NBAywySXqXSo/+e8Xdh3YO56qV8p20e+T9VXPe0IUqif561ucjGrVr9gel/khOoUdqp6ZwsQq3XBenUxaNqdWmH46KvKFgGddA9WABuZ3/0jK4AJu7bwFO9IMnu5Wo9+XIz+HhetB36fjJTpGZ2idZPI9ckvl6Qbcd6mhxvEEcs+mnGWnQZxmzqsIV8JFsBIPfR4E6/OaBo7QJ7HPOHJBmVXD96wRNd4ohiu0mHgl7PMZrFaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SJnRewlVjMXyg1I9Z8AdVvj+YJaDg6eKXesNRWBYGZo=;
- b=XkJ0EMgOvpk2a16xrbb5ANmv4nu20l9w/zuBByUhoYOBHqnf7P+dCfEeHczbyqz9QgImQYIWM7p2ZctcFICbXNUvDf/ZveBPNKeVxQBicglIImlAqet7rlLtm/FcG/ziouCgS9GVXujZAhhBOxlLSiRdyWRjSrONRiEau0PH7xY=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SEYPR03MB8743.apcprd03.prod.outlook.com (2603:1096:101:201::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Thu, 14 Mar
- 2024 07:26:20 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::f3b6:91a7:e0fb:cb27]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::f3b6:91a7:e0fb:cb27%7]) with mapi id 15.20.7362.031; Thu, 14 Mar 2024
- 07:26:20 +0000
-From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To: =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= <Shawn.Sung@mediatek.com>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>
-CC: "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-	"christian.koenig@amd.com" <christian.koenig@amd.com>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>, "p.zabel@pengutronix.de"
-	<p.zabel@pengutronix.de>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>,
-	"shawn.sung@mediatek.corp-partner.google.com"
-	<shawn.sung@mediatek.corp-partner.google.com>, "airlied@gmail.com"
-	<airlied@gmail.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "matthias.bgg@gmail.com"
-	<matthias.bgg@gmail.com>
-Subject: Re: [PATCH 11/11] drm/mediatek: Rename "pending_needs_vblank" to
- "needs_vblank"
-Thread-Topic: [PATCH 11/11] drm/mediatek: Rename "pending_needs_vblank" to
- "needs_vblank"
-Thread-Index: AQHaaJEfcSPtdu0F7kygFMPcSagb17E28K6A
-Date: Thu, 14 Mar 2024 07:26:20 +0000
-Message-ID: <db993e44824b69dc36cbb36ff9558e10a3cf0c8e.camel@mediatek.com>
-References: <20240226085059.26850-1-shawn.sung@mediatek.com>
-	 <20240226085059.26850-12-shawn.sung@mediatek.com>
-In-Reply-To: <20240226085059.26850-12-shawn.sung@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEYPR03MB8743:EE_
-x-ms-office365-filtering-correlation-id: 8ef80ea3-bba0-453a-f4d1-08dc43f80b72
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8YCf3LLI+23ebZF8hErdKWLEeSuWOvjhgiW5aw72ujEr6EQsIAAf5vFf1jtm4XlzntOfW4H6/9UkZHpYUNacMxQY88a5/MSYZ6OmCEcUnLCzsB0tCE2TMR7G/kHvTfC/sR5t8qsxMm7OtP0wfetoBAJWM5ac3RVUGSr2sCKit6VZmwgk0qMtxmp8hvCc41cQMVTJ0nuGY3bxf74xmIcFN32NGR4fAERcER3zDMVQLv1lf/+vYhdvLdxfBHQ5l75qmZBlEhh0EdjNwLUOmRPBB5MDubTlMfAw8U7YQaEA+eCLfqnocRNfL0GqrPujrpS2FHshWMtrCV2F66XcnkXPg79HlGEvY55FCbbEN3sMmH0/ARC5MBkduHKwH6pIzS0mwS4cZ67h7qryAGIoJ8D/OXhCUyI1wMej+DzFv92oE2+2cCQhGoFgrtREsj9MXK6MVDtSB1RcG0BjFjpaWhoVA2yNn4OcuLmKgUEU5k4ENoEZ6DKaGUW7Ldb64z4jSFEzMPvunxR/+mSFnFKw8vVFnPupDZz9bJlTm91jgd6Ps0Z9+B5HjytBoiwLFcZHgQESBaOX3Zr0OVfW5ykCrSuw+qKVWG4Q4keI0aJGFIqhTkvvX6LDHO6TTJ8ymCilKabXDM0AIP8msSNrILRlvcxrT+He+Gs/Y6LoFrLAH7cVpv1n38BoMZv4xmC8nVFawg1pz281sQIc0qKPIEdcB6+u/rzGD0ERlFOcKT18kNdOGDM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bzJZdUJWelZaNXBSTHhXYnIvQk44OVhEaVJvajlOQU1SelA4V3FmYTNBTHFG?=
- =?utf-8?B?dENPZHlBZE16T2NTbDFIN3YvRHVGcXVvMVI5UmVaQ3R3eWVIdGlFTldhUlNH?=
- =?utf-8?B?cGxMWlIrbkd1TmpCYkI0WXM5eDNKNlNuYjRnTUR6ZjRwc1E3K0Jhci9BbUo5?=
- =?utf-8?B?dExMZ0ljd2grTXVZNWRXZzFTQ3dqUlZmN0NDYUtNN0NJbFBaV243Ulp0czQ1?=
- =?utf-8?B?WnVlNzVnelRJSDZ5WjhVb2pIZ3BrdVNXbTU3cjFGYTdXcGR0bFJNWFBDY0ZP?=
- =?utf-8?B?eFhYY1dkYjFOV0Qwd3lMcUdTb01rS2o3ZG83a1VVcWxZTDY1eW1kclFhS1dR?=
- =?utf-8?B?andJWWJOajZ5UHh5OVptZHhBOFhnUHM3WCthb25DV0NUdkUvSFpQTFVxUXhN?=
- =?utf-8?B?VHc3OHJXaVAwYTF0NjlLaml4UklvUWdDYzBZUmkyb2NxOFVEeVVyeDVHdDJu?=
- =?utf-8?B?YmtVd21rR3JHMlJGa0ZzanJzakdUVXV2L2FyZkMxTU1FZFVaRzJhY1VvQ0pv?=
- =?utf-8?B?Wk0vd3VEMCs3Q0FpeHltU1gzK1Q1WDhCeUQ3N3FRUm9KdjF5c0tjMUE5TFVz?=
- =?utf-8?B?MVk4QWxtdjJoR0lRRndVVjJyNU1HZVptMTBFMWRiUElSZzhGRElZb2t1NVMx?=
- =?utf-8?B?emhKWWVHZWgzTGV3TDdEakJmNm4vYkdLUU5ZeEEzTDV3S0swZnVEVGZBUkhU?=
- =?utf-8?B?MTZ3NFRGQnNDdWpyTm5jQklETTJYejE3anh2cTdyRm5oT3ZNbUxqYm5uK0c4?=
- =?utf-8?B?QzR6K3FuVGQzbzNSa3FaeVVxL2hSQnA2NmgxQUhXTHVlYUxoRXUwRnNnOFZB?=
- =?utf-8?B?ejNYNVc5MzZCQVUzMjFmOUFpemZET0xEbS9hdFF6ZTdiL0lRODBSWVVsQkJp?=
- =?utf-8?B?bzNLcWErQ3NLTkpaU0x2VExkM3pqWlA5R3ZNV3VkREJGZXNGVmlORnpiMjVk?=
- =?utf-8?B?RG9lejBQRngwVWZ1dG9FSU5nQUdDbE42aVhXN3d3RXE1dGtXUVdsdlJhSHJo?=
- =?utf-8?B?Y2RtVUQyQkJ3UmJ3MExheUgyUUJqZHBQSFVuZ2o0bjlGRkZoejVJTGttbXh3?=
- =?utf-8?B?UUQ3TXFSSUU0bWZUTlBoSHphYmZXYnNFYlNXZTJ0b0JWZm51ZldjaUUxY1Bi?=
- =?utf-8?B?bkRJSS9Hcnc1M3dhNzVwZTBzam1kR2M4ZHUxWnFTb056R1ZxQ0YrT1plSlVE?=
- =?utf-8?B?QVlIdmMrdGJsWDVkVEI1YlhTZ3gzU0hiZlp5SDFvYnplTXJCUzR0NCtEUko1?=
- =?utf-8?B?VVR1QWQzbVFYU09KcWwwR2hlODV6SzA3c2FxWU15aDZleC9TeEwxenFnbHdP?=
- =?utf-8?B?azB5bWRieTRnNmxWcHBXeDkxQWhZT3J2OHlYeTZOZG1KL2J3RjAzRnZxL0Jt?=
- =?utf-8?B?YkRsWmRYdWRKY1dFNHRlOTRsUkM2ai9XYlpLWG1tWTRBNWc4dlRrMUxabU9W?=
- =?utf-8?B?a0pKdGVrT1Q4ZUVBWFppMFhRMDBtWVBmRjBjZXYwNm83ODZ1OVNqYTJqU2cx?=
- =?utf-8?B?dnZNTTFCMllDWWkvUVM3d2Q5WVZOV2szLzEwMFZZbnZ3akNiZjdOT0c1N3lF?=
- =?utf-8?B?a3pRZmU1bGJoWjZZcXhmVk04ZldZcUJoL0I2Zmt5Znl5cHgwVkRqSmljTjl1?=
- =?utf-8?B?M2FsRDNTNTBVV3YyV0s0QXRzTXhxWXlBSm0zeExRTmo0YlVrRE5KKzR1YldI?=
- =?utf-8?B?YXQwUjR5ekRMUUl0N2ROTU95UnF3U3ZldXpsMVRFQXBOS3hRWFZVT0g4ZWpj?=
- =?utf-8?B?NytCTDhiSG5FdjVGTHZnZ0xYNDhlSTBNUmN2Z2dQNWpoRkFkZlVnajlzL2kx?=
- =?utf-8?B?TVdlWDRHbW1NQWlFenBWcnZDNFNhT3R3Z3hYSzBSclRUNjNNbC9QbEFBb3RV?=
- =?utf-8?B?aFVvRnBTZDVGVW9VSU1oazdtelJnNGZLWU5YRVBIN2xHdExIcU9DQVRDYXZF?=
- =?utf-8?B?WFczck5JYWhmcWVtdW5xakFwTkxyeFB2QnJETGZFcCs1bXgrUzV2Szc1dDNT?=
- =?utf-8?B?SVV2YkhiRERld1RkMmRja2Y0VndYWVVoSHNYR2hTaGRSZ2JScGN2OXZLaVh4?=
- =?utf-8?B?SVltNXVpQ1N5TUVieU80YUFSN3VhNlF0aEVBb2FxcTliejBjMEZ0cW9hbWNI?=
- =?utf-8?Q?hhA08wbpnOI4anv48Q/VbVzbR?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B457BC34A46FA149BD0D37A3C48F1271@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71804A12;
+	Thu, 14 Mar 2024 07:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710401452; cv=none; b=t+aLstddmAz7XNXXssrGympubqlFUgYLfLDIVaNmF6PVlIxUoCsV99huMWEMi1wWGB9hDMCBpJkuSU9MF/futeDMpcYRektfL9teL7JlgWPn7hFODVdmrMxGRlMIrTHUN6nHiLyvdUvWP8JEZst4vfoN+RQr2eF79xTZ9hJJjwI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710401452; c=relaxed/simple;
+	bh=F6TeUAp84mNXVZccqSO8QiqkdZep+IZt47gbd0nMjmc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JUNif6Wbhkg0kM67NJas4jqz2lAyhKrfTndyzyyE3eVmDehpYR8fX0vBv4Iv4RrMSFOOyg5qqOulWALixMNtMY13NGpOiX85o0NDlSjOGQMe3ulxmiVBPrX7uBYA3XPFKxJMcJBbMaMtax4U3UHBsYungXzAL+fDFIfaeH8obb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SYBkjq9Z; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710401451; x=1741937451;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=F6TeUAp84mNXVZccqSO8QiqkdZep+IZt47gbd0nMjmc=;
+  b=SYBkjq9Zgz4xmQWIgru9cONJ5fOP7h4B2fj9GBROtun2aSoV99xF678T
+   76lfUG+d59lqcHI6ESj8hmRNjsTLQl+PWnooDHC5216qdXRh2JaLOxdZj
+   Z0KjOyIeZJyug09WnxSETrApAM+j2eXetkx4SCLojQQHpvZCOUVZUUjqa
+   snYEzAV2NNqg92o3fkPVL0d5Whds0pyE7aNftjSCS6IB9/ADh/OnU79Sa
+   SQ9AhaySrgbsHbrYjXsf47HuR3whL8gzb9avJsJRkHLjo3XwL706SkCMs
+   QJx1Vrf7oEUMfQ6nFHwaOFmboTCt8xKkXxVWXeuK6i7Iu8vN8SgMQNpMU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="5330033"
+X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
+   d="scan'208";a="5330033"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 00:30:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
+   d="scan'208";a="12215035"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.242.47]) ([10.124.242.47])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 00:30:47 -0700
+Message-ID: <f8d50f45-eb7e-46bf-b3a8-35f02efd4e4c@linux.intel.com>
+Date: Thu, 14 Mar 2024 15:30:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ef80ea3-bba0-453a-f4d1-08dc43f80b72
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 07:26:20.2271
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c7hsUPBnyDc9B4O5WXbqnVlKJoUwk+65Mvb0FZxxSslqllKtp/kDBKZ4Fp6Ntk7DZuU5cAMJdG/RbLoIepls9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB8743
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--16.989700-8.000000
-X-TMASE-MatchedRID: scwq2vQP8OH+DXQl7XSOUt7SWiiWSV/1jLOy13Cgb49qSjxROy+AU3a2
-	v7MgC776yAUgFH8TZu7DCwrx7OfXzdTgPtgJJv6UDB+ErBr0bAPwZGE/+dMc1nzlhuYw8JsTUNW
-	K3252w/96lh0OR8iK+hgRYmdci0+Tw5hH8zwI+joD2WXLXdz+AV67veYUroY0CqIJhrrDy2+Mv7
-	XbowmN0jiFeyap0p87E9PhZaJeNjOvvxILmKK/HNIFVVzYGjNKWQy9YC5qGvz6APa9i04WGCq2r
-	l3dzGQ1sS/MVWpzisNBFh0IliiAGlPLsRPBDDv9UmTPtPrhItifyPlgiETfgA==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--16.989700-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	E9E0B62EE16DDF509F2822076D154BBCCA84E32D57F6A6344E3025C40D4B0D3F2000:8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 027/130] KVM: TDX: Define TDX architectural
+ definitions
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ Sean Christopherson <sean.j.christopherson@intel.com>,
+ Xiaoyao Li <xiaoyao.li@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <522cbfe6e5a351f88480790fe3c3be36c82ca4b1.1708933498.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <522cbfe6e5a351f88480790fe3c3be36c82ca4b1.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-SGksIFNoYXduOg0KDQpPbiBNb24sIDIwMjQtMDItMjYgYXQgMTY6NTAgKzA4MDAsIFNoYXduIFN1
-bmcgd3JvdGU6DQo+IEZyb206IEhzaWFvIENoaWVuIFN1bmcgPHNoYXduLnN1bmdAbWVkaWF0ZWsu
-Y29ycC1wYXJ0bmVyLmdvb2dsZS5jb20+DQo+IA0KPiBSZW5hbWUgInBlbmRpbmdfbmVlZHNfdmJs
-YW5rIiB0byAibmVlZHNfdmJsYW5rIiB0byByZWR1Y2UgdGhlIGNvZGUNCj4gc2l6ZS4NCg0KSW4g
-bXRrIGNydGMsIG1hbnkgdmFyaWFibGUgaGFzIHByZWZpeCAncGVuZGluZycgdG8gaW5kaWNhdGUg
-c29tZXRoaW5nDQpoYXMgbm90IGJlZW4gZG9uZSB5ZXQuIFRvIGFsaWduIHRoaXMgbmFtaW5nLCBJ
-IHRoaW5rIGl0J3MgYmV0dGVyIHRvDQprZWVwIHRoaXMgcHJlZml4Lg0KDQpSZWdhcmRzLA0KQ0sN
-Cg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSHNpYW8gQ2hpZW4gU3VuZyA8DQo+IHNoYXduLnN1bmdA
-bWVkaWF0ZWsuY29ycC1wYXJ0bmVyLmdvb2dsZS5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19jcnRjLmMgfCA4ICsrKystLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwg
-NCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfY3J0Yy5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlh
-dGVrL210a19jcnRjLmMNCj4gaW5kZXggN2ZlMjM0ZGU4M2EzLi5hMWZiNmM2NzY4MWQgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfY3J0Yy5jDQo+ICsrKyBiL2Ry
-aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfY3J0Yy5jDQo+IEBAIC00Miw3ICs0Miw3IEBAIHN0
-cnVjdCBtdGtfY3J0YyB7DQo+ICAJc3RydWN0IGRybV9jcnRjCQkJYmFzZTsNCj4gIAlib29sCQkJ
-CWVuYWJsZWQ7DQo+ICANCj4gLQlib29sCQkJCXBlbmRpbmdfbmVlZHNfdmJsYW5rOw0KPiArCWJv
-b2wJCQkJbmVlZHNfdmJsYW5rOw0KPiAgCXN0cnVjdCBkcm1fcGVuZGluZ192YmxhbmtfZXZlbnQJ
-KmV2ZW50Ow0KPiAgDQo+ICAJc3RydWN0IGRybV9wbGFuZQkJKnBsYW5lczsNCj4gQEAgLTEwNSw5
-ICsxMDUsOSBAQCBzdGF0aWMgdm9pZCBtdGtfY3J0Y19maW5pc2hfcGFnZV9mbGlwKHN0cnVjdA0K
-PiBtdGtfY3J0YyAqbXRrX2NydGMpDQo+ICBzdGF0aWMgdm9pZCBtdGtfZHJtX2ZpbmlzaF9wYWdl
-X2ZsaXAoc3RydWN0IG10a19jcnRjICptdGtfY3J0YykNCj4gIHsNCj4gIAlkcm1fY3J0Y19oYW5k
-bGVfdmJsYW5rKCZtdGtfY3J0Yy0+YmFzZSk7DQo+IC0JaWYgKCFtdGtfY3J0Yy0+Y29uZmlnX3Vw
-ZGF0aW5nICYmIG10a19jcnRjLQ0KPiA+cGVuZGluZ19uZWVkc192YmxhbmspIHsNCj4gKwlpZiAo
-IW10a19jcnRjLT5jb25maWdfdXBkYXRpbmcgJiYgbXRrX2NydGMtPm5lZWRzX3ZibGFuaykgew0K
-PiAgCQltdGtfY3J0Y19maW5pc2hfcGFnZV9mbGlwKG10a19jcnRjKTsNCj4gLQkJbXRrX2NydGMt
-PnBlbmRpbmdfbmVlZHNfdmJsYW5rID0gZmFsc2U7DQo+ICsJCW10a19jcnRjLT5uZWVkc192Ymxh
-bmsgPSBmYWxzZTsNCj4gIAl9DQo+ICB9DQo+ICANCj4gQEAgLTU3MSw3ICs1NzEsNyBAQCBzdGF0
-aWMgdm9pZCBtdGtfY3J0Y191cGRhdGVfY29uZmlnKHN0cnVjdA0KPiBtdGtfY3J0YyAqbXRrX2Ny
-dGMsIGJvb2wgbmVlZHNfdmJsYW5rKQ0KPiAgCW11dGV4X2xvY2soJm10a19jcnRjLT5od19sb2Nr
-KTsNCj4gIAltdGtfY3J0Yy0+Y29uZmlnX3VwZGF0aW5nID0gdHJ1ZTsNCj4gIAlpZiAobmVlZHNf
-dmJsYW5rKQ0KPiAtCQltdGtfY3J0Yy0+cGVuZGluZ19uZWVkc192YmxhbmsgPSB0cnVlOw0KPiAr
-CQltdGtfY3J0Yy0+bmVlZHNfdmJsYW5rID0gdHJ1ZTsNCj4gIA0KPiAgCWZvciAoaSA9IDA7IGkg
-PCBtdGtfY3J0Yy0+bGF5ZXJfbnI7IGkrKykgew0KPiAgCQlzdHJ1Y3QgZHJtX3BsYW5lICpwbGFu
-ZSA9ICZtdGtfY3J0Yy0+cGxhbmVzW2ldOw0K
+
+
+On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Define architectural definitions for KVM to issue the TDX SEAMCALLs.
+>
+> Structures and values that are architecturally defined in the TDX module
+> specifications the chapter of ABI Reference.
+>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> ---
+> v19:
+> - drop tdvmcall constants by Xiaoyao
+>
+> v18:
+> - Add metadata field id
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/vmx/tdx_arch.h | 265 ++++++++++++++++++++++++++++++++++++
+>   1 file changed, 265 insertions(+)
+>   create mode 100644 arch/x86/kvm/vmx/tdx_arch.h
+>
+> diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
+> new file mode 100644
+> index 000000000000..e2c1a6f429d7
+> --- /dev/null
+> +++ b/arch/x86/kvm/vmx/tdx_arch.h
+> @@ -0,0 +1,265 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* architectural constants/data definitions for TDX SEAMCALLs */
+> +
+> +#ifndef __KVM_X86_TDX_ARCH_H
+> +#define __KVM_X86_TDX_ARCH_H
+> +
+> +#include <linux/types.h>
+> +
+> +/*
+> + * TDX SEAMCALL API function leaves
+> + */
+> +#define TDH_VP_ENTER			0
+> +#define TDH_MNG_ADDCX			1
+> +#define TDH_MEM_PAGE_ADD		2
+> +#define TDH_MEM_SEPT_ADD		3
+> +#define TDH_VP_ADDCX			4
+> +#define TDH_MEM_PAGE_RELOCATE		5
+> +#define TDH_MEM_PAGE_AUG		6
+> +#define TDH_MEM_RANGE_BLOCK		7
+> +#define TDH_MNG_KEY_CONFIG		8
+> +#define TDH_MNG_CREATE			9
+> +#define TDH_VP_CREATE			10
+> +#define TDH_MNG_RD			11
+> +#define TDH_MR_EXTEND			16
+> +#define TDH_MR_FINALIZE			17
+> +#define TDH_VP_FLUSH			18
+> +#define TDH_MNG_VPFLUSHDONE		19
+> +#define TDH_MNG_KEY_FREEID		20
+> +#define TDH_MNG_INIT			21
+> +#define TDH_VP_INIT			22
+> +#define TDH_MEM_SEPT_RD			25
+> +#define TDH_VP_RD			26
+> +#define TDH_MNG_KEY_RECLAIMID		27
+> +#define TDH_PHYMEM_PAGE_RECLAIM		28
+> +#define TDH_MEM_PAGE_REMOVE		29
+> +#define TDH_MEM_SEPT_REMOVE		30
+> +#define TDH_SYS_RD			34
+> +#define TDH_MEM_TRACK			38
+> +#define TDH_MEM_RANGE_UNBLOCK		39
+> +#define TDH_PHYMEM_CACHE_WB		40
+> +#define TDH_PHYMEM_PAGE_WBINVD		41
+> +#define TDH_VP_WR			43
+> +#define TDH_SYS_LP_SHUTDOWN		44
+> +
+> +/* TDX control structure (TDR/TDCS/TDVPS) field access codes */
+> +#define TDX_NON_ARCH			BIT_ULL(63)
+> +#define TDX_CLASS_SHIFT			56
+> +#define TDX_FIELD_MASK			GENMASK_ULL(31, 0)
+> +
+> +#define __BUILD_TDX_FIELD(non_arch, class, field)	\
+> +	(((non_arch) ? TDX_NON_ARCH : 0) |		\
+> +	 ((u64)(class) << TDX_CLASS_SHIFT) |		\
+> +	 ((u64)(field) & TDX_FIELD_MASK))
+> +
+> +#define BUILD_TDX_FIELD(class, field)			\
+> +	__BUILD_TDX_FIELD(false, (class), (field))
+> +
+> +#define BUILD_TDX_FIELD_NON_ARCH(class, field)		\
+> +	__BUILD_TDX_FIELD(true, (class), (field))
+> +
+> +
+> +/* Class code for TD */
+> +#define TD_CLASS_EXECUTION_CONTROLS	17ULL
+> +
+> +/* Class code for TDVPS */
+> +#define TDVPS_CLASS_VMCS		0ULL
+> +#define TDVPS_CLASS_GUEST_GPR		16ULL
+> +#define TDVPS_CLASS_OTHER_GUEST		17ULL
+> +#define TDVPS_CLASS_MANAGEMENT		32ULL
+> +
+> +enum tdx_tdcs_execution_control {
+> +	TD_TDCS_EXEC_TSC_OFFSET = 10,
+> +};
+> +
+> +/* @field is any of enum tdx_tdcs_execution_control */
+> +#define TDCS_EXEC(field)		BUILD_TDX_FIELD(TD_CLASS_EXECUTION_CONTROLS, (field))
+> +
+> +/* @field is the VMCS field encoding */
+> +#define TDVPS_VMCS(field)		BUILD_TDX_FIELD(TDVPS_CLASS_VMCS, (field))
+> +
+> +enum tdx_vcpu_guest_other_state {
+> +	TD_VCPU_STATE_DETAILS_NON_ARCH = 0x100,
+> +};
+> +
+> +union tdx_vcpu_state_details {
+> +	struct {
+> +		u64 vmxip	: 1;
+> +		u64 reserved	: 63;
+> +	};
+> +	u64 full;
+> +};
+> +
+> +/* @field is any of enum tdx_guest_other_state */
+> +#define TDVPS_STATE(field)		BUILD_TDX_FIELD(TDVPS_CLASS_OTHER_GUEST, (field))
+> +#define TDVPS_STATE_NON_ARCH(field)	BUILD_TDX_FIELD_NON_ARCH(TDVPS_CLASS_OTHER_GUEST, (field))
+> +
+> +/* Management class fields */
+> +enum tdx_vcpu_guest_management {
+> +	TD_VCPU_PEND_NMI = 11,
+> +};
+> +
+> +/* @field is any of enum tdx_vcpu_guest_management */
+> +#define TDVPS_MANAGEMENT(field)		BUILD_TDX_FIELD(TDVPS_CLASS_MANAGEMENT, (field))
+> +
+> +#define TDX_EXTENDMR_CHUNKSIZE		256
+> +
+> +struct tdx_cpuid_value {
+> +	u32 eax;
+> +	u32 ebx;
+> +	u32 ecx;
+> +	u32 edx;
+> +} __packed;
+> +
+> +#define TDX_TD_ATTRIBUTE_DEBUG		BIT_ULL(0)
+> +#define TDX_TD_ATTR_SEPT_VE_DISABLE	BIT_ULL(28)
+It's better to align the style of the naming.
+
+Either use TDX_TD_ATTR_* or TDX_TD_ATTRIBUTE_*?
+
+> +#define TDX_TD_ATTRIBUTE_PKS		BIT_ULL(30)
+> +#define TDX_TD_ATTRIBUTE_KL		BIT_ULL(31)
+> +#define TDX_TD_ATTRIBUTE_PERFMON	BIT_ULL(63)
+> +
+> +/*
+> + * TD_PARAMS is provided as an input to TDH_MNG_INIT, the size of which is 1024B.
+> + */
+> +#define TDX_MAX_VCPUS	(~(u16)0)
+> +
+> +struct td_params {
+> +	u64 attributes;
+> +	u64 xfam;
+> +	u16 max_vcpus;
+> +	u8 reserved0[6];
+> +
+> +	u64 eptp_controls;
+> +	u64 exec_controls;
+> +	u16 tsc_frequency;
+> +	u8  reserved1[38];
+> +
+> +	u64 mrconfigid[6];
+> +	u64 mrowner[6];
+> +	u64 mrownerconfig[6];
+> +	u64 reserved2[4];
+> +
+> +	union {
+> +		DECLARE_FLEX_ARRAY(struct tdx_cpuid_value, cpuid_values);
+> +		u8 reserved3[768];
+> +	};
+> +} __packed __aligned(1024);
+> +
+> +/*
+> + * Guest uses MAX_PA for GPAW when set.
+> + * 0: GPA.SHARED bit is GPA[47]
+> + * 1: GPA.SHARED bit is GPA[51]
+> + */
+> +#define TDX_EXEC_CONTROL_MAX_GPAW      BIT_ULL(0)
+> +
+> +/*
+> + * TDH.VP.ENTER, TDG.VP.VMCALL preserves RBP
+> + * 0: RBP can be used for TDG.VP.VMCALL input. RBP is clobbered.
+> + * 1: RBP can't be used for TDG.VP.VMCALL input. RBP is preserved.
+> + */
+> +#define TDX_CONTROL_FLAG_NO_RBP_MOD	BIT_ULL(2)
+> +
+> +
+> +/*
+> + * TDX requires the frequency to be defined in units of 25MHz, which is the
+> + * frequency of the core crystal clock on TDX-capable platforms, i.e. the TDX
+> + * module can only program frequencies that are multiples of 25MHz.  The
+> + * frequency must be between 100mhz and 10ghz (inclusive).
+> + */
+> +#define TDX_TSC_KHZ_TO_25MHZ(tsc_in_khz)	((tsc_in_khz) / (25 * 1000))
+> +#define TDX_TSC_25MHZ_TO_KHZ(tsc_in_25mhz)	((tsc_in_25mhz) * (25 * 1000))
+> +#define TDX_MIN_TSC_FREQUENCY_KHZ		(100 * 1000)
+> +#define TDX_MAX_TSC_FREQUENCY_KHZ		(10 * 1000 * 1000)
+> +
+> +union tdx_sept_entry {
+> +	struct {
+> +		u64 r		:  1;
+> +		u64 w		:  1;
+> +		u64 x		:  1;
+> +		u64 mt		:  3;
+> +		u64 ipat	:  1;
+> +		u64 leaf	:  1;
+> +		u64 a		:  1;
+> +		u64 d		:  1;
+> +		u64 xu		:  1;
+> +		u64 ignored0	:  1;
+> +		u64 pfn		: 40;
+> +		u64 reserved	:  5;
+> +		u64 vgp		:  1;
+> +		u64 pwa		:  1;
+> +		u64 ignored1	:  1;
+> +		u64 sss		:  1;
+> +		u64 spp		:  1;
+> +		u64 ignored2	:  1;
+> +		u64 sve		:  1;
+> +	};
+> +	u64 raw;
+> +};
+> +
+> +enum tdx_sept_entry_state {
+> +	TDX_SEPT_FREE = 0,
+> +	TDX_SEPT_BLOCKED = 1,
+> +	TDX_SEPT_PENDING = 2,
+> +	TDX_SEPT_PENDING_BLOCKED = 3,
+> +	TDX_SEPT_PRESENT = 4,
+> +};
+> +
+> +union tdx_sept_level_state {
+> +	struct {
+> +		u64 level	:  3;
+> +		u64 reserved0	:  5;
+> +		u64 state	:  8;
+> +		u64 reserved1	: 48;
+> +	};
+> +	u64 raw;
+> +};
+> +
+> +/*
+> + * Global scope metadata field ID.
+> + * See Table "Global Scope Metadata", TDX module 1.5 ABI spec.
+> + */
+> +#define MD_FIELD_ID_SYS_ATTRIBUTES		0x0A00000200000000ULL
+> +#define MD_FIELD_ID_FEATURES0			0x0A00000300000008ULL
+> +#define MD_FIELD_ID_ATTRS_FIXED0		0x1900000300000000ULL
+> +#define MD_FIELD_ID_ATTRS_FIXED1		0x1900000300000001ULL
+> +#define MD_FIELD_ID_XFAM_FIXED0			0x1900000300000002ULL
+> +#define MD_FIELD_ID_XFAM_FIXED1			0x1900000300000003ULL
+> +
+> +#define MD_FIELD_ID_TDCS_BASE_SIZE		0x9800000100000100ULL
+> +#define MD_FIELD_ID_TDVPS_BASE_SIZE		0x9800000100000200ULL
+> +
+> +#define MD_FIELD_ID_NUM_CPUID_CONFIG		0x9900000100000004ULL
+> +#define MD_FIELD_ID_CPUID_CONFIG_LEAVES		0x9900000300000400ULL
+> +#define MD_FIELD_ID_CPUID_CONFIG_VALUES		0x9900000300000500ULL
+> +
+> +#define MD_FIELD_ID_FEATURES0_NO_RBP_MOD	BIT_ULL(18)
+> +
+> +#define TDX_MAX_NR_CPUID_CONFIGS       37
+> +
+> +#define TDX_MD_ELEMENT_SIZE_8BITS      0
+> +#define TDX_MD_ELEMENT_SIZE_16BITS     1
+> +#define TDX_MD_ELEMENT_SIZE_32BITS     2
+> +#define TDX_MD_ELEMENT_SIZE_64BITS     3
+> +
+> +union tdx_md_field_id {
+> +	struct {
+> +		u64 field                       : 24;
+> +		u64 reserved0                   : 8;
+> +		u64 element_size_code           : 2;
+> +		u64 last_element_in_field       : 4;
+> +		u64 reserved1                   : 3;
+> +		u64 inc_size                    : 1;
+> +		u64 write_mask_valid            : 1;
+> +		u64 context                     : 3;
+> +		u64 reserved2                   : 1;
+> +		u64 class                       : 6;
+> +		u64 reserved3                   : 1;
+> +		u64 non_arch                    : 1;
+> +	};
+> +	u64 raw;
+> +};
+> +
+> +#define TDX_MD_ELEMENT_SIZE_CODE(_field_id)			\
+> +	({ union tdx_md_field_id _fid = { .raw = (_field_id)};  \
+> +		_fid.element_size_code; })
+> +
+> +#endif /* __KVM_X86_TDX_ARCH_H */
+
 
