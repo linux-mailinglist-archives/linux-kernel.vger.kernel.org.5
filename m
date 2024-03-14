@@ -1,110 +1,183 @@
-Return-Path: <linux-kernel+bounces-103672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1E6187C2D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A128B87C2CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:32:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D5FE282971
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:33:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5720B2859F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DBE74E0C;
-	Thu, 14 Mar 2024 18:33:19 +0000 (UTC)
-Received: from bues.ch (bues.ch [80.190.117.144])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11961762D0;
+	Thu, 14 Mar 2024 18:32:02 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410CD1A38FB;
-	Thu, 14 Mar 2024 18:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.190.117.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39117350B;
+	Thu, 14 Mar 2024 18:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710441198; cv=none; b=JyfT5PDHtvrz209RLutCJLXpWevGuWj20by3RGhCKINIQbj+iHhKMNZTs/6K4pkZA9PHCC3ZR/rYlKpLIxjtl8aTYw0Og+BmBOzyUp9+Zu5VrSve9dQ1XoskHjCSTiS+w1x3XvVrtD5UThPvt5HEC33+0npaMd5F+bGV7N1+8eY=
+	t=1710441121; cv=none; b=EZoUVEHF++UUYYt9fb4/hpjdkwvysB7w0VUIEI9O2BDkfjP0eTCf6ipD2zul41ZM0Vay59ZbvyxbNemQA6K2KZ/JiceRnVHizaFGaAt7qQxyvwHP8orXEaXHYptopGpdU5Qq6kM/b2cyAyj/DouG1jAfxb0+2g+ND+dPzIeYFjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710441198; c=relaxed/simple;
-	bh=G2QSNSLgALZNvK4haNKtoQw708Y7zVKOLHgKk+Y1/f0=;
+	s=arc-20240116; t=1710441121; c=relaxed/simple;
+	bh=mvdnoLfy3ROkxmfR7t2H/wROfPIdheF/nBqPtCWPX4A=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HcOVgvAxgq3ii3dsGr0ba027HgdTP+7syzFXCgY9AAARYU8yzsD3ndynwlknPvZSFDoa9xsiLcsCx3DTcK2ieA3Q/KWd38TT2kbxuvztHg9FGLj05zuRYFTtEklcBMZsPDVRYMphtyMe5wEXUWSFiMFZBTME+vo0B1e/AZgi2Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bues.ch; spf=pass smtp.mailfrom=bues.ch; arc=none smtp.client-ip=80.190.117.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bues.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bues.ch
-Received: by bues.ch with esmtpsa (Exim 4.96)
-	(envelope-from <m@bues.ch>)
-	id 1rkpt2-0012GJ-0E;
-	Thu, 14 Mar 2024 19:33:03 +0100
-Date: Thu, 14 Mar 2024 19:32:15 +0100
-From: Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
- Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
- b43-dev@lists.infradead.org
-Subject: Re: [PATCH 2/3] net: b43: Convert sprintf/snprintf to sysfs_emit
-Message-ID: <20240314193215.74aac927@barney>
-In-Reply-To: <20240314094823.1324898-2-lizhijian@fujitsu.com>
-References: <20240314094823.1324898-1-lizhijian@fujitsu.com>
-	<20240314094823.1324898-2-lizhijian@fujitsu.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	 MIME-Version:Content-Type; b=caLa/U/pxbHZR3c2cgLYTWNfRiA+6oquCYVT0Zmwd3BR/OrkH/rbhZk1lY5pP3oWRjph2JZwAmOZLHBdGaQYp7AYEQdESRFcyNEAwWBKfS3IFbfttuB+96ugNrUdTjPMYwMOfjTBCQ7G8BRIlMWMFp5hWA2G/VbK2/563kweVw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A243FC43390;
+	Thu, 14 Mar 2024 18:31:55 +0000 (UTC)
+Date: Thu, 14 Mar 2024 14:34:06 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Alison Schofield <alison.schofield@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-cxl@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+ freedreno@lists.freedesktop.org, virtualization@lists.linux.dev,
+ linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org,
+ iommu@lists.linux.dev, linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
+ ath12k@lists.infradead.org, brcm80211@lists.linux.dev,
+ brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-nfs@vger.kernel.org,
+ ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org,
+ selinux@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org,
+ linux-sound@vger.kernel.org, bpf@vger.kernel.org,
+ linux-wpan@vger.kernel.org, dev@openvswitch.org,
+ linux-s390@vger.kernel.org, tipc-discussion@lists.sourceforge.net, Julia
+ Lawall <Julia.Lawall@inria.fr>
+Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
+ __assign_str()
+Message-ID: <20240314143406.6289a060@gandalf.local.home>
+In-Reply-To: <ZfMslbCmCtyEaEWN@aschofie-mobl2>
+References: <20240223125634.2888c973@gandalf.local.home>
+	<ZfMslbCmCtyEaEWN@aschofie-mobl2>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lQpcmYwR9PeRUh3dx42=9yH";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
---Sig_/lQpcmYwR9PeRUh3dx42=9yH
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, 14 Mar 2024 09:57:57 -0700
+Alison Schofield <alison.schofield@intel.com> wrote:
 
-On Thu, 14 Mar 2024 17:48:22 +0800
-Li Zhijian <lizhijian@fujitsu.com> wrote:
+> On Fri, Feb 23, 2024 at 12:56:34PM -0500, Steven Rostedt wrote:
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > [
+> >    This is a treewide change. I will likely re-create this patch again in
+> >    the second week of the merge window of v6.9 and submit it then. Hoping
+> >    to keep the conflicts that it will cause to a minimum.
+> > ]
 
->  	case B43legacy_INTERFMODE_NONE:
-> -		count =3D snprintf(buf, PAGE_SIZE, "0 (No Interference"
-> -				 " Mitigation)\n");
-> +		count =3D sysfs_emit(buf, "0 (No Interference" " Mitigation)\n");
->  		break;
+Note, change of plans. I plan on sending this in the next merge window, as
+this merge window I have this patch:
 
->  	if (wldev->short_preamble)
-> -		count =3D snprintf(buf, PAGE_SIZE, "1 (Short Preamble"
-> -				 " enabled)\n");
-> +		count =3D sysfs_emit(buf, "1 (Short Preamble" " enabled)\n");
->  	else
-> -		count =3D snprintf(buf, PAGE_SIZE, "0 (Short Preamble"
-> -				 " disabled)\n");
-> +		count =3D sysfs_emit(buf, "0 (Short Preamble" " disabled)\n");
-> =20
+  https://lore.kernel.org/linux-trace-kernel/20240312113002.00031668@gandalf.local.home/
 
-Please either leave the line break in place, or remove the string continuat=
-ion.
+That will warn if the source string of __string() is different than the
+source string of __assign_str(). I want to make sure they are identical
+before just dropping one of them.
 
 
+> 
+> > diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
+> > index bdf117a33744..07ba4e033347 100644
+> > --- a/drivers/cxl/core/trace.h
+> > +++ b/drivers/cxl/core/trace.h  
+> 
+> snip to poison
+> 
+> > @@ -668,8 +668,8 @@ TRACE_EVENT(cxl_poison,
+> >  	    ),
+> >  
+> >  	TP_fast_assign(
+> > -		__assign_str(memdev, dev_name(&cxlmd->dev));
+> > -		__assign_str(host, dev_name(cxlmd->dev.parent));
+> > +		__assign_str(memdev);
+> > +		__assign_str(host);  
+> 
+> I think I get that the above changes work because the TP_STRUCT__entry for
+> these did:
+> 	__string(memdev, dev_name(&cxlmd->dev))
+> 	__string(host, dev_name(cxlmd->dev.parent))
 
---=20
-Michael B=C3=BCsch
-https://bues.ch/
+That's the point. They have to be identical or you will likely bug.
 
---Sig_/lQpcmYwR9PeRUh3dx42=9yH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+The __string(name, src) is used to find the string length of src which
+allocates the necessary length on the ring buffer. The __assign_str(name, src)
+will copy src into the ring buffer.
 
------BEGIN PGP SIGNATURE-----
+Similar to:
 
-iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmXzQq8ACgkQ9TK+HZCN
-iw4/lg/+JasVyWxAy739KHA2FtfgNev/rh0gwiIISYBJd72k164TItI6CoOK/vFE
-RaufsC77oYVzcIpuGitLAgyGnl0voXywJPnMSsce57eqqXnjeblJpXP2IWmpykGv
-2VBmXKY8SwwtOwjvYfRxCCT48n0uRNCtflLrbIlD5nVYVLDGwcDpFAz1Eas27vfy
-xHCf3FtCL5Hu0kC3y0Y0GZHTNRH/fOd8dVJ/6QBjRyB8i7f7FpTdRW8t9M8TJbW4
-FcfiVnisM8WgC5T4dTzsZ776EaUHsxHM2XV78oywcfEr/Shj8OOQGoIqbAj7oyRI
-4QgdMmQjJnTJkJVUpIxYxm+nUmGK8zz3HhNyX3dBTUi2wfidOSs2H2b8NI7VZLeB
-1FD3sc7CR7OQFhfsoDr6oDHNDug1ryun67hXK1AY+Qtr35Mz+C7l1YfiyzSKc8og
-bTJAyFsBttDjbMYsHqxY9PEKrmRC9ubZWAcfz6/6Ir9RC7SHh8WNrX8F7v3BIWxy
-N5BUVjjppQw5SiFgYUny1fNM1gHvzy9IScUIiv21zMb1ei02GmU4qw/pAe0oIKCP
-pQFV4BJhHtBgI7aL3vIXe2yYRO9fNdxt5h4TJ6ZWVD1QCFzKbC7MihxHCtLZakma
-nzc+UwY/uniy5LtQmwQirsrBr+5Zc2WSrVvziK2sD0tzYFRp9w0=
-=1+TG
------END PGP SIGNATURE-----
+	len = strlen(src);
+	buf = malloc(len);
+	strcpy(buf, str);
 
---Sig_/lQpcmYwR9PeRUh3dx42=9yH--
+Where __string() is strlen() and __assign_str() is strcpy(). It doesn't
+make sense to use two different strings, and if you did, it would likely be
+a bug.
+
+But the magic behind __string() does much more than just get the length of
+the string, and it could easily save the pointer to the string (along with
+its length) and have it copy that in the __assign_str() call, making the
+src parameter of __assign_str() useless.
+
+> 
+> >  		__entry->serial = cxlmd->cxlds->serial;
+> >  		__entry->overflow_ts = cxl_poison_overflow(flags, overflow_ts);
+> >  		__entry->dpa = cxl_poison_record_dpa(record);
+> > @@ -678,12 +678,12 @@ TRACE_EVENT(cxl_poison,
+> >  		__entry->trace_type = trace_type;
+> >  		__entry->flags = flags;
+> >  		if (region) {
+> > -			__assign_str(region, dev_name(&region->dev));
+> > +			__assign_str(region);
+> >  			memcpy(__entry->uuid, &region->params.uuid, 16);
+> >  			__entry->hpa = cxl_trace_hpa(region, cxlmd,
+> >  						     __entry->dpa);
+> >  		} else {
+> > -			__assign_str(region, "");
+> > +			__assign_str(region);
+> >  			memset(__entry->uuid, 0, 16);
+> >  			__entry->hpa = ULLONG_MAX;  
+> 
+> For the above 2, there was no helper in TP_STRUCT__entry. A recently
+> posted patch is fixing that up to be __string(region, NULL) See [1],
+> with the actual assignment still happening in TP_fast_assign.
+
+__string(region, NULL) doesn't make sense. It's like:
+
+	len = strlen(NULL);
+	buf = malloc(len);
+	strcpy(buf, NULL);
+
+??
+
+I'll reply to that email.
+
+-- Steve
+
+> 
+> Does that assign logic need to move to the TP_STRUCT__entry definition
+> when you merge these changes? I'm not clear how much logic is able to be
+> included, ie like 'C' style code in the TP_STRUCT__entry.
+> 
+> [1]
+> https://lore.kernel.org/linux-cxl/20240314044301.2108650-1-alison.schofield@intel.com/
 
