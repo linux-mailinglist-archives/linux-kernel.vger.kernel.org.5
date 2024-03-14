@@ -1,125 +1,113 @@
-Return-Path: <linux-kernel+bounces-103665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 986CF87C29E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:26:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E99E087C2A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32175B21D2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:26:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4871BB21B32
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A7374BFE;
-	Thu, 14 Mar 2024 18:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8162974C0F;
+	Thu, 14 Mar 2024 18:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vGhQHSyC";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yuhs32qs"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pcgIDNo6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8F31A38D0
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:26:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66FD1A38D0;
+	Thu, 14 Mar 2024 18:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710440775; cv=none; b=DcALtWugWDF+bHpU2owTzHkvD2wzZ05QPmwObi5XI9XCI755ROdYao+AWzPyiub8wNorhJpkjIIUANJMITIB2DH5upLJLmnzQrrkhKpF4sP345xWZ9Wjq1BaU3ZBziDFY7eRo/BXIcYAZKDKtIdkv72MiJ5csh5q3ds85AHf7Zw=
+	t=1710440856; cv=none; b=uEMakciQGoqU96NluZsVAosGoACRx+mI9vMfM7NJeFG+TojDvQYNZhkcWnj03SwKyA0OBW9Ipa+tdsCVqxTrs/acGoVl1s+uDvKIhxLhbKEM3tyxHOafQAqi/WwVl8wpn+NLJfT7UuadOVUOuBZOO76vKf18KoxwXlUrR1DytLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710440775; c=relaxed/simple;
-	bh=osRkPii/Ul1NhhSqCxFUuSOok2Fv+oo6eZSyDcMKXjU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CKMb5POuOBTokNz8Kg5xmZfEkTDlQOMU4F5sK9IrmmW5gz24/jAaur8MjaJrXr0DFZ90f6bRd+FKPTyhmQ6nrOaROaUN9E+x5FMvm8NZSOM/bPGziHgeoX+WHkrbKY3bypKoj5Cn8Hpp/oKk8xSltP6chqEInvfTBQjPg54WrMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vGhQHSyC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yuhs32qs; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710440769;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OT14uNtw6W0ZjCQ33RZUVgtWubWcRnNaxohmLkNQdCc=;
-	b=vGhQHSyCkQ0VUh5HYVjZVY8hylof6whCFJs79bZ5Lt0/fTGSh3dZ5z3y/GoxFxfehu8CSz
-	bqRZgCKXGr0xSC9T4RmgKrT1ivs81KeAQ/ZVpbZWG6rV3bx62N/RtzgElCySvi62plzY0v
-	JH0Q1trQw1LjwKaQv3gwl++w4PGKCFm3zXOH8FOkSWJ8cDx3JMkfjZUFW46hiLM7f/Jldk
-	jqBq1Ugk5W1v5VpUB7Butgr1eWGtfIo9/kQo5T99WvhjvG1DNXWv/tudj9xFRf2qtUwHix
-	r8ZtYQ9pmB4y12/mjXhaYV8CCNBPYcrD35j6DO5dkkg5Z7NfMM1CiJG+cbgS9g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710440769;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OT14uNtw6W0ZjCQ33RZUVgtWubWcRnNaxohmLkNQdCc=;
-	b=yuhs32qsRTZnBHrQkpPUXoqiyigddgGgWFc3xDguGV11mBHpyuFVQtHxsHdAzZXLBoTCDl
-	UPdtLeS1DC9pP0AQ==
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de,
- brauner@kernel.org, bristot@redhat.com, bsegall@google.com,
- dave.hansen@linux.intel.com, dianders@chromium.org,
- dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com,
- hch@infradead.org, hpa@zytor.com, jacob.jun.pan@linux.intel.com,
- jgg@ziepe.ca, jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com,
- kent.overstreet@linux.dev, kinseyho@google.com,
- kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org,
- mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com,
- mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, npiggin@gmail.com,
- peterz@infradead.org, pmladek@suse.com, rick.p.edgecombe@intel.com,
- rostedt@goodmis.org, surenb@google.com, urezki@gmail.com,
- vincent.guittot@linaro.org, vschneid@redhat.com
-Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
-In-Reply-To: <CA+CK2bC=6GOkCOwJdhH25r-9hb1BQVoLK7LLAgpm2AKqdmStrg@mail.gmail.com>
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <20240311164638.2015063-12-pasha.tatashin@soleen.com>
- <87v85qo2fj.ffs@tglx>
- <CA+CK2bBgeK=rW3=RJSx8zxST8xnJ-VXSSYmKPVK9gHX3pxEWuQ@mail.gmail.com>
- <CA+CK2bAzJuCe06g_TEOh3B-hK+dXfUaGaOSTgzyxkN4zqpSU_A@mail.gmail.com>
- <87bk7inmah.ffs@tglx>
- <CA+CK2bC=6GOkCOwJdhH25r-9hb1BQVoLK7LLAgpm2AKqdmStrg@mail.gmail.com>
-Date: Thu, 14 Mar 2024 19:26:09 +0100
-Message-ID: <871q8cmzzy.ffs@tglx>
+	s=arc-20240116; t=1710440856; c=relaxed/simple;
+	bh=wvZQ6EkK3Zr78gZKY6mbHSxOYjMQ/6C07pm5tHfcalc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PPG6gHrMruWzQSGGUi2CRrahFsAQjZChMQUDwgvtCpIRtmSZ6DfWFhzJ4BUViennWyiRskm9HBiAwVsCwCJfkGax/xMHEyJM309smc7JfhqW2K//wFBo+02pMZTFneYCgg2ujxD4KmYJxSNWte8thVXU3pv/Xa/xbIL4HsY6J/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pcgIDNo6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FD3CC433C7;
+	Thu, 14 Mar 2024 18:27:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710440856;
+	bh=wvZQ6EkK3Zr78gZKY6mbHSxOYjMQ/6C07pm5tHfcalc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pcgIDNo6+Jx9g1FVdyq37yqerQyrpShtUOjQ9n27jtT7YMvFQeCuV1qZCgb3XcWQK
+	 Q/v3tSCHmPIW56Zim33p+Env+4YdDQ5ztgPOHSZblgNt+Rv3GNKuzlRGtbcyC6jgj4
+	 /af/RGyDWDWZirAiycP/RBEe58UHQvEe45XUragt5UhSnnTk3kM0COQ25ickIbMGkP
+	 EGQ5Mq8rpuCWU09X2cKeOeJiuTCSnT6SdndVccRrpIm9eGM15t5TpZmzKZ8ANms1Om
+	 3nW5JwaAM1NxFDPdn05JGGb0VsDv2KFc3PU+Z+qi0kPracqutTqUlTyvdwEtCHres0
+	 BA13Ud52d9jNA==
+Date: Thu, 14 Mar 2024 11:27:34 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>, Shradha Gupta
+ <shradhagupta@microsoft.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-hyperv@vger.kernel.org"
+ <linux-hyperv@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+ <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Ajay Sharma <sharmaajay@microsoft.com>, Leon
+ Romanovsky <leon@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, KY Srinivasan
+ <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+ <decui@microsoft.com>, Long Li <longli@microsoft.com>, Michael Kelley
+ <mikelley@microsoft.com>
+Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
+Message-ID: <20240314112734.5f1c9f7e@kernel.org>
+In-Reply-To: <20240314025720.GA13853@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
+	<20240307072923.6cc8a2ba@kernel.org>
+	<DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
+	<20240307090145.2fc7aa2e@kernel.org>
+	<CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+	<20240308112244.391b3779@kernel.org>
+	<20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	<20240314025720.GA13853@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14 2024 at 10:03, Pasha Tatashin wrote:
-> On Wed, Mar 13, 2024 at 12:12=E2=80=AFPM Thomas Gleixner <tglx@linutronix=
-de> wrote:
->> That needs to validate whether anything uses current between the stack
->> switch and the place where current is updated today. I think nothing
->> should do so, but I would not be surprised either if it would be the
->> case. Such code would already today just work by chance I think,
->>
->> That should not be hard to analyze and fixup if necessary.
->>
->> So that's fixable, but I'm not really convinced that all of this is safe
->> and correct under all circumstances. That needs a lot more analysis than
->> just the trivial one I did for switch_to().
->
-> Agreed, if the current task pointer can be switched later, after loads
-> and stores to the stack, that would be a better solution. I will
-> incorporate this approach into my next version.
+On Wed, 13 Mar 2024 19:57:20 -0700 Shradha Gupta wrote:
+> Default interrupts affinity for each queue:
+> 
+>  25:          1        103          0    2989138  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
+>  26:          0          1    4005360          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
+>  27:          0          0          1    2997584  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
+>  28:    3565461          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3
+> @pci:7870:00:00.0
+> 
+> As seen the CPU-queue mapping is not 1:1, Queue 0 and Queue 2 are both mapped 
+> to cpu3. From this knowledge we can figure out the total RX stats processed by
+> each CPU by adding the values of mana_q0 and mana_q2 stats for cpu3. But if
+> this data changes dynamically using irqbalance or smp_affinity file edits, the
+> above assumption fails. 
+> 
+> Interrupt affinity for mana_q2 changes and the affinity table looks as follows
+>  25:          1        103          0    3038084  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
+>  26:          0          1    4012447          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
+>  27:     157181         10          1    3007990  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
+>  28:    3593858          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3@pci:7870:00:00.0 
+> 
+> And during this time we might end up calculating the per-CPU stats incorrectly,
+> messing up the understanding of CPU usage by MANA driver that is consumed by 
+> monitoring services. 
 
-No. You need to ensure that there is neither a load or store on the
-stack between:
+Like Stephen said, forget about irqbalance for networking.
 
-        movq    %rsp, TASK_threadsp(%rdi)
-        movq    TASK_threadsp(%rsi), %rsp
+Assume that the IRQs are affinitized and XPS set, correctly.
 
-and update_current(). IOW, you need to move the update of
-pcpu_hot.current to ASM right after the RSP switch.
-
-> I also concur that this proposal necessitates more rigorous analysis.
-
-Glad we agree here :)
-
-Thanks,
-
-        tglx
+Now, presumably you can use your pcpu stats to "trade queues",
+e.g. 4 CPUs / 4 queues, if CPU 0 insists on using queue 1
+instead of queue 0, you can swap the 0 <> 1 assignment.
+That's just an example of an "algorithm", maybe you have other
+use cases. But if the problem is "user runs broken irqbalance"
+the solution is not in the kernel...
 
