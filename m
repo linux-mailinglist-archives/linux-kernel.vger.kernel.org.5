@@ -1,306 +1,233 @@
-Return-Path: <linux-kernel+bounces-102728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47E087B69D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:57:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA45D87B69F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:00:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A21E1F24529
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:57:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 273D2B21A0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF6853A0;
-	Thu, 14 Mar 2024 02:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DAEB4A08;
+	Thu, 14 Mar 2024 03:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="h881D/6v"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942AC8BE5;
-	Thu, 14 Mar 2024 02:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dt66jE2v"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14A41841
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 03:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710385042; cv=none; b=B0OmVNzwMpfVXoRhXIXr5Vt4tyGUo41fhsuNZ/QBovB8sekoInCvG3l9Dt4GJ4PnnGfGnIM5QBWMrlR/ekwKGRQ89cXDGSFUc0/HLvuYkiBp5xkXkiu6ZzegkFDFzxcL4ErSxSkkD5l8CnRxnDQ5A6i21fNtCrbWQdc98PZG0Ps=
+	t=1710385204; cv=none; b=UmEUyFOhAwfyabx/AMG8fxarGz7O2iMhpc6uXF0sLMLOz2ekS9+SZIKL9+T4ZbTtkUsTL8SlDHdVGo9C20CJ51zfdlLFTHmBXEyF75NFCzIYRfC3Jh442iyIz23g0EoYb87/lrkyU/K612DFbGqpr/TdNEVVMHflZFbV5qC9H84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710385042; c=relaxed/simple;
-	bh=6UGr1FCB/DQlxlKdXDcKgaFfLxkGBqfSY1r+CIlhATw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t0rNcBROjvzFEHKgaktoanDlXXLjXPgF018BnCUo16/jATfYXKOMxTchqO3cXlmNbjSd3w8wcVkRswBloNZJOKsIZii5+QDYntVAJxJc7pg7/wZEqvevWdPsxSnY60VvcXTYczHE4nndrJwi3xsMRZ+1pjH/KeLUrxUbmKBj4oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=h881D/6v; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 1C3AF20B74C0; Wed, 13 Mar 2024 19:57:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1C3AF20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710385040;
-	bh=66P25FXNgIs5HQWvc3vNtZYJsw5/Od+QnPZTiotxhoc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h881D/6vJeZSZkW42zfwWokQkqJ4RGf7RqqzkGXVWMLY5LIYJoEa5o0niT2gscsut
-	 Xz9YIG7S8W6WsYg1EGLOKn14lnppimejl/1grxQYynfq0YfccUTUDxFo+73/oVm/qe
-	 WoyVzGuEKY1O0enfLM5SgcFagZqYTYhbwgbI/uGw=
-Date: Wed, 13 Mar 2024 19:57:20 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
-Message-ID: <20240314025720.GA13853@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240307072923.6cc8a2ba@kernel.org>
- <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
- <20240307090145.2fc7aa2e@kernel.org>
- <CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
- <20240308112244.391b3779@kernel.org>
- <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1710385204; c=relaxed/simple;
+	bh=Kp1dv4vgO5RIbk2qt5RKDB95cqiwJkA4DlTfz1ooBJ0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uVMt9e3VeoFmfw8vSET9wD7wa/wCFhjpoYUqwtgdrQU7Ce2g3GWgxnQqhCYFAaLRjzntx+LJ959yQH7ZvPCd7M7V2K6xJlkT+wzGERYvaFtOB9LbxXqlW63MnNmx44Zb5LNSDQph/PH3fTbY65zgGQTjiwtr6RXphw6JeE++trM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dt66jE2v; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so697314a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 20:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710385201; x=1710990001; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ra9KWpescs2b4ic2C3bUzMKxFu2Uuh++R64Eac+e23s=;
+        b=Dt66jE2vshbbF++0wVwCul2bZrQgNuMnq9zXlvB9ct1pHGkfF/xZyVKhQCzlqGJulc
+         Wqeq312PvDaj2YhVeCjJDxTpXbg+yKADfLiOjHQsoLUNOaC1ORmUXSya9Ea24/TU9FMB
+         N24GXuCPTeQV2svMBJBrE2VgjMEiD7ICG/4oD6GCfmV+KJU/yHGbtqz1oNEGBYPVk2pp
+         Y/G8YVRhogTayf/omlycINaPUHqCLpXhjVCDJK76KIgKtPOjlWbiU3pwW1Ajdgdk3i0W
+         zsRfC2+Co5sTN1CSrGhcdyAz6fblfzZIgOZkqhWe6uiiM9TnvHeQmZ+i2WdmtInj3jlP
+         UWEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710385201; x=1710990001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ra9KWpescs2b4ic2C3bUzMKxFu2Uuh++R64Eac+e23s=;
+        b=c/mBuvuWcbz/stUplehfeYwuGlYGUTYiNFaNSVb9wvfrphk9waQybI/w+WD4OK5hNN
+         PNvwKxxT8mGQ2iPBRz8ISQzWygoFVY5MFLcl/HeXc5UEKw+NssdWT5OmEDxfIpuAM91a
+         yMV1KeoEKOXoNeVA1g504Ga9hCMRrV02/6hf5J5lWQd2xgf0oTqWUmAWnBhwDnMH+FKb
+         q2Gx3JkJBpufhdClG8zTAqP3xUXl92zGZtHZbC8qHX/jjypJCOyRuyEuH6pV5sbsI+AT
+         yklZN9wn3ww0ymaVZc0+b33FeMFteD8fVD2jaMAHUrK5T0CUbAjATcsrIyqSgP6/w3cG
+         GViQ==
+X-Gm-Message-State: AOJu0YxZfbO4vu2nHiH5hVE3nIiy2WSvDMBIcCQiIfemgJDLG9OrMdJB
+	VI7hN6aNWRLBaVRFpoBC/W2t21WdgvKw6sFKDnWA9GfSU2Zn1dO+/meu4c3+Nr6oIbAkeSBaung
+	Jb5GraaBeNLZsZn6+IWJ54ZYC8yE=
+X-Google-Smtp-Source: AGHT+IEFyc5sMzujAeUT+qcEiGWkGP3BTNTXtRfhAIFzSSKLh0l199BR9SYmkKezY1UR4JqrP/+XtEU/lDrRfPP/udc=
+X-Received: by 2002:a05:6402:1599:b0:568:9d96:b2d1 with SMTP id
+ ij25-20020a056402159900b005689d96b2d1mr173322edb.32.1710385200714; Wed, 13
+ Mar 2024 20:00:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20240313085817.48892-1-zegao@tencent.com> <d43ed111-085b-432b-ad5b-433d5031fad1@arm.com>
+In-Reply-To: <d43ed111-085b-432b-ad5b-433d5031fad1@arm.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Thu, 14 Mar 2024 10:59:49 +0800
+Message-ID: <CAD8CoPAC0ti2=mAbP5GMN6ZidZnPV-Antf7KrjwPtEnE7gYOdg@mail.gmail.com>
+Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
+ affinity changes
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Mel Gorman <mgorman@suse.de>, Juri Lelli <juri.lelli@redhat.com>, Ingo Molnar <mingo@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	Ben Segall <bsegall@google.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 10, 2024 at 09:19:50PM -0700, Shradha Gupta wrote:
-> On Fri, Mar 08, 2024 at 11:22:44AM -0800, Jakub Kicinski wrote:
-> > On Fri, 8 Mar 2024 18:51:58 +0000 Haiyang Zhang wrote:
-> > > > Dynamic is a bit of an exaggeration, right? On a well-configured system
-> > > > each CPU should use a single queue assigned thru XPS. And for manual
-> > > > debug bpftrace should serve the purpose quite well.  
-> > > 
-> > > Some programs, like irqbalancer can dynamically change the CPU affinity, 
-> > > so we want to add the per-CPU counters for better understanding of the CPU 
-> > > usage.
-> > 
-> > Do you have experimental data showing this making a difference
-> > in production?
-> Sure, will try to get that data for this discussion
-> > 
-> > Seems unlikely, but if it does work we should enable it for all
-> > devices, no driver by driver.
-> You mean, if the usecase seems valid we should try to extend the framework
-> mentioned by Rahul (https://lore.kernel.org/lkml/20240307072923.6cc8a2ba@kernel.org/)
-> to include these stats as well?
-> Will explore this a bit more and update. Thanks.
+On Wed, Mar 13, 2024 at 11:16=E2=80=AFPM Pierre Gondois <pierre.gondois@arm=
+com> wrote:
+>
+> Hello Ze,
+>
+> I am running stress-ng with the following command:
+>    stress-ng -c 1 -l 10 &
+> and migrating the process with:
+>    taskset -pc [cpus] [pid]
+>
+> The thread seems to be migrated via:
+> sched_setaffinity
+>    \-__sched_setaffinity()
+>      \-__set_cpus_allowed_ptr()
+>        \-__set_cpus_allowed_ptr_locked()
+>          \- [1]
 
-Following is the data we can share:
 
-Default interrupts affinity for each queue:
 
- 25:          1        103          0    2989138  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
- 26:          0          1    4005360          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
- 27:          0          0          1    2997584  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
- 28:    3565461          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3
-@pci:7870:00:00.0
+> [1]
+> /*
+>   * Picking a ~random cpu helps in cases where we are changing affinity
+>   * for groups of tasks (ie. cpuset), so that load balancing is not
+>   * immediately required to distribute the tasks within their new mask.
+>   */
+> dest_cpu =3D cpumask_any_and_distribute(cpu_valid_mask, ctx->new_mask);
+>
+> So it seems the destination CPU chosen among the new CPU affinity mask is=
+ done
+> here, by picking a random CPU in the mask.
 
-As seen the CPU-queue mapping is not 1:1, Queue 0 and Queue 2 are both mapped 
-to cpu3. From this knowledge we can figure out the total RX stats processed by
-each CPU by adding the values of mana_q0 and mana_q2 stats for cpu3. But if
-this data changes dynamically using irqbalance or smp_affinity file edits, the
-above assumption fails. 
+IIUC, this is for running/queued/waking tasks instead of blocked tasks.
 
-Interrupt affinity for mana_q2 changes and the affinity table looks as follows
- 25:          1        103          0    3038084  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
- 26:          0          1    4012447          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
- 27:     157181         10          1    3007990  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
- 28:    3593858          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3@pci:7870:00:00.0 
+Am I missing something obvious here?
 
-And during this time we might end up calculating the per-CPU stats incorrectly,
-messing up the understanding of CPU usage by MANA driver that is consumed by 
-monitoring services. 
- 
+> Checking the cpus_ptr in select_idle_sibling() might be useful in other c=
+ases,
+> but I think the experiment doesn't show that. Maybe a another small tweak=
+ could
 
-Also sharing the existing per-queue stats during this experiment, in case needed
+The experiment is used to illustrate that the status quo does not do well
+but has to rely on select_fallback_rq() to choose a cpu for a woken task
+which turns out to be a bad choice since it's already monopolized by a
+cpu bound task, that is why a second migration happens with the help
+of the load balancer.
 
-Per-queue stats before changing CPU-affinities:
-     tx_cq_err: 0
-     tx_cqe_unknown_type: 0
-     rx_coalesced_err: 0
-     rx_cqe_unknown_type: 0
-     rx_0_packets: 4230152
-     rx_0_bytes: 289545167
-     rx_0_xdp_drop: 0
-     rx_0_xdp_tx: 0
-     rx_0_xdp_redirect: 0
-     rx_1_packets: 4113017
-     rx_1_bytes: 314552601
-     rx_1_xdp_drop: 0
-     rx_1_xdp_tx: 0
-     rx_1_xdp_redirect: 0
-     rx_2_packets: 4458906
-     rx_2_bytes: 305117506
-     rx_2_xdp_drop: 0
-     rx_2_xdp_tx: 0
-     rx_2_xdp_redirect: 0
-     rx_3_packets: 4619589
-     rx_3_bytes: 315445084
-     rx_3_xdp_drop: 0
-     rx_3_xdp_tx: 0
-     rx_3_xdp_redirect: 0
-     hc_tx_err_vport_disabled: 0
-     hc_tx_err_inval_vportoffset_pkt: 0
-     hc_tx_err_vlan_enforcement: 0
-     hc_tx_err_eth_type_enforcement: 0
-     hc_tx_err_sa_enforcement: 0
-     hc_tx_err_sqpdid_enforcement: 0
-     hc_tx_err_cqpdid_enforcement: 0
-     hc_tx_err_mtu_violation: 0
-     hc_tx_err_inval_oob: 0
-     hc_tx_err_gdma: 0
-     hc_tx_bytes: 126336708121
-     hc_tx_ucast_pkts: 86748013
-     hc_tx_ucast_bytes: 126336703775
-     hc_tx_bcast_pkts: 37
-     hc_tx_bcast_bytes: 2842
-     hc_tx_mcast_pkts: 7
-     hc_tx_mcast_bytes: 1504
-     tx_cq_err: 0
-     tx_cqe_unknown_type: 0
-     rx_coalesced_err: 0
-     rx_cqe_unknown_type: 0
-     rx_0_packets: 4230152
-     rx_0_bytes: 289545167
-     rx_0_xdp_drop: 0
-     rx_0_xdp_tx: 0
-     rx_0_xdp_redirect: 0
-     rx_1_packets: 4113017
-     rx_1_bytes: 314552601
-     rx_1_xdp_drop: 0
-     rx_1_xdp_tx: 0
-     rx_1_xdp_redirect: 0
-     rx_2_packets: 4458906
-     rx_2_bytes: 305117506
-     rx_2_xdp_drop: 0
-     rx_2_xdp_tx: 0
-     rx_2_xdp_redirect: 0
-     rx_3_packets: 4619589
-     rx_3_bytes: 315445084
-     rx_3_xdp_drop: 0
-     rx_3_xdp_tx: 0
-     rx_3_xdp_redirect: 0
-     tx_0_packets: 5995507
-     tx_0_bytes: 28749696408
-     tx_0_xdp_xmit: 0
-     tx_0_tso_packets: 4719840
-     tx_0_tso_bytes: 26873844525
-     tx_0_tso_inner_packets: 0
-     tx_0_tso_inner_bytes: 0
-     tx_0_long_pkt_fmt: 0
-     tx_0_short_pkt_fmt: 5995507
-     tx_0_csum_partial: 1275621
-     tx_0_mana_map_err: 0
-     tx_1_packets: 6653598
-     tx_1_bytes: 38318341475
-     tx_1_xdp_xmit: 0
-     tx_1_tso_packets: 5330921
-     tx_1_tso_bytes: 36210150488
-     tx_1_tso_inner_packets: 0
-     tx_1_tso_inner_bytes: 0
-     tx_1_long_pkt_fmt: 0
-     tx_1_short_pkt_fmt: 6653598
-     tx_1_csum_partial: 1322643
-     tx_1_mana_map_err: 0
-     tx_2_packets: 5715246
-     tx_2_bytes: 25662283686
-     tx_2_xdp_xmit: 0
-     tx_2_tso_packets: 4619118
-     tx_2_tso_bytes: 23829680267
-     tx_2_tso_inner_packets: 0
-     tx_2_tso_inner_bytes: 0
-     tx_2_long_pkt_fmt: 0
-     tx_2_short_pkt_fmt: 5715246
-     tx_2_csum_partial: 1096092
-     tx_2_mana_map_err: 0
-     tx_3_packets: 6175860
-     tx_3_bytes: 29500667904
-     tx_3_xdp_xmit: 0
-     tx_3_tso_packets: 4951591
-     tx_3_tso_bytes: 27446937448
-     tx_3_tso_inner_packets: 0
-     tx_3_tso_inner_bytes: 0
-     tx_3_long_pkt_fmt: 0
-     tx_3_short_pkt_fmt: 6175860
-     tx_3_csum_partial: 1224213
-     tx_3_mana_map_err: 0
+Actually, we can reuse the same reasons for doing so as in
 
-Per-queue stats after changing CPU-affinities:
-     rx_0_packets: 4781895
-     rx_0_bytes: 326478061
-     rx_0_xdp_drop: 0
-     rx_0_xdp_tx: 0
-     rx_0_xdp_redirect: 0
-     rx_1_packets: 4116990
-     rx_1_bytes: 315439234
-     rx_1_xdp_drop: 0
-     rx_1_xdp_tx: 0
-     rx_1_xdp_redirect: 0
-     rx_2_packets: 4528800
-     rx_2_bytes: 310312337
-     rx_2_xdp_drop: 0
-     rx_2_xdp_tx: 0
-     rx_2_xdp_redirect: 0
-     rx_3_packets: 4622622
-     rx_3_bytes: 316282431
-     rx_3_xdp_drop: 0
-     rx_3_xdp_tx: 0
-     rx_3_xdp_redirect: 0
-     tx_0_packets: 5999379
-     tx_0_bytes: 28750864476
-     tx_0_xdp_xmit: 0
-     tx_0_tso_packets: 4720027
-     tx_0_tso_bytes: 26874344494
-     tx_0_tso_inner_packets: 0
-     tx_0_tso_inner_bytes: 0
-     tx_0_long_pkt_fmt: 0
-     tx_0_short_pkt_fmt: 5999379
-     tx_0_csum_partial: 1279296
-     tx_0_mana_map_err: 0
-     tx_1_packets: 6656913
-     tx_1_bytes: 38319355168
-     tx_1_xdp_xmit: 0
-     tx_1_tso_packets: 5331086
-     tx_1_tso_bytes: 36210592040
-     tx_1_tso_inner_packets: 0
-     tx_1_tso_inner_bytes: 0
-     tx_1_long_pkt_fmt: 0
-     tx_1_short_pkt_fmt: 6656913
-     tx_1_csum_partial: 1325785
-     tx_1_mana_map_err: 0
-     tx_2_packets: 5906172
-     tx_2_bytes: 36758032245
-     tx_2_xdp_xmit: 0
-     tx_2_tso_packets: 4806348
-     tx_2_tso_bytes: 34912213258
-     tx_2_tso_inner_packets: 0
-     tx_2_tso_inner_bytes: 0
-     tx_2_long_pkt_fmt: 0
-     tx_2_short_pkt_fmt: 5906172
-     tx_2_csum_partial: 1099782
-     tx_2_mana_map_err: 0
-     tx_3_packets: 6202399
-     tx_3_bytes: 30840325531
-     tx_3_xdp_xmit: 0
-     tx_3_tso_packets: 4973730
-     tx_3_tso_bytes: 28784371532
-     tx_3_tso_inner_packets: 0
-     tx_3_tso_inner_bytes: 0
-     tx_3_long_pkt_fmt: 0
-     tx_3_short_pkt_fmt: 6202399
-     tx_3_csum_partial: 1228603
-     tx_3_mana_map_err: 0
+    commit 46a87b3851f0("sched/core: Distribute tasks within affinity masks=
+")
 
+> be done at [1] instead ?
+
+As for blocked tasks, check out what is commented on set_task_cpu() and
+select_task_rq(), since we never call set_task_cpu() on blocked tasks which
+in turn, we have no way to change p->wake_cpu to dest_cpu being randomly
+chosen here, so when it's woken up, it still needs to go through the
+select_task_rq() process using the outdated p->wake_cpu.
+
+
+Thanks,
+        -- Ze
+
+> Regards,
+> Pierre
+>
+> On 3/13/24 09:58, Ze Gao wrote:
+> > We observered select_idle_sibling() is likely to return the *target* cp=
+u
+> > early which is likely to be the previous cpu this task is running on ev=
+en
+> > when it's actually not within the affinity list newly set, from where a=
+fter
+> > we can only rely on select_fallback_rq() to choose one for us at its wi=
+ll
+> > (the first valid mostly for now).
+> >
+> > However, the one chosen by select_fallback_rq() is highly likely not a
+> > good enough candidate, sometimes it has to rely on load balancer to kic=
+k
+> > in to place itself to a better cpu, which adds one or more unnecessary
+> > migrations in no doubt. For example, this is what I get when I move tas=
+k
+> > 3964 to cpu 23-24 where cpu 23 has a cpu bound work pinned already:
+> >
+> >          swapper       0 [013]   959.791829: sched:sched_migrate_task: =
+comm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D13 dest_cpu=3D23
+> > kworker/24:2-mm    1014 [024]   959.806148: sched:sched_migrate_task: c=
+omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D23 dest_cpu=3D24
+> >
+> > The thing is we can actually do better if we do checks early and take m=
+ore
+> > advantages of the *target* in select_idle_sibling(). That is, we contin=
+ue
+> > the idle cpu selection if *target* fails the test of cpumask_test_cpu(
+> > *target*, p->cpus_ptr). By doing so, we are likely to pick a good candi=
+date,
+> > especially when the newly allowed cpu set shares some cpu resources wit=
+h
+> > *target*.
+> >
+> > And with this change, we clearly see the improvement when I move task 3=
+964
+> > to cpu 25-26 where cpu 25 has a cpu bound work pinned already.
+> >
+> >          swapper       0 [027]  4249.204658: sched:sched_migrate_task: =
+comm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D27 dest_cpu=3D26
+> >
+> > Note we do the same check for *prev* in select_idle_sibling() as well.
+> >
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+> >   kernel/sched/fair.c | 13 ++++++++-----
+> >   1 file changed, 8 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 533547e3c90a..9ef6e74c6b2a 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -7511,16 +7511,19 @@ static int select_idle_sibling(struct task_stru=
+ct *p, int prev, int target)
+> >        */
+> >       lockdep_assert_irqs_disabled();
+> >
+> > -     if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
+> > -         asym_fits_cpu(task_util, util_min, util_max, target))
+> > +     if (cpumask_test_cpu(target, p->cpus_ptr) &&
+> > +             (available_idle_cpu(target) || sched_idle_cpu(target)) &&
+> > +             asym_fits_cpu(task_util, util_min, util_max, target))
+> >               return target;
+> >
+> >       /*
+> >        * If the previous CPU is cache affine and idle, don't be stupid:
+> >        */
+> > -     if (prev !=3D target && cpus_share_cache(prev, target) &&
+> > -         (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+> > -         asym_fits_cpu(task_util, util_min, util_max, prev)) {
+> > +     if (cpumask_test_cpu(prev, p->cpus_ptr) &&
+> > +             prev !=3D target &&
+> > +             cpus_share_cache(prev, target) &&
+> > +             (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+> > +             asym_fits_cpu(task_util, util_min, util_max, prev)) {
+> >
+> >               if (!static_branch_unlikely(&sched_cluster_active) ||
+> >                   cpus_share_resources(prev, target))
 
