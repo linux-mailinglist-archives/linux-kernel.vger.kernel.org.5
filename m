@@ -1,219 +1,138 @@
-Return-Path: <linux-kernel+bounces-103638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEB5887C240
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:52:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 345FE87C244
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 567B9283648
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:52:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2CC1281891
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC0374BEB;
-	Thu, 14 Mar 2024 17:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A79E74BED;
+	Thu, 14 Mar 2024 17:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJaWvpoA"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OCQE7gEC"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAFA8745D5
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FA274BEC
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710438717; cv=none; b=bLWMqFtWnY8FBaqpYPVz4IplQcbzKy+/wt3wmucq0b5DBBGqlYyh79JQdxaJsy9vUmrGkc/Mz77GgzIvdaypHktscHcrfbogo9ql/15QdQVrq2Nxoj415Guz7uMhw7W4sr93m9UZ90mQGHXOD4jXziv4Kt5cJOA2EDcHb9xGfxA=
+	t=1710438859; cv=none; b=Uizk192Yl6vJtDxw8uFVijOPWP5gFiugePiXzOAA4GAzm0kNRXmIHdaR52D+N/IwGx8RT//96aXlGqIMFa8Z9ILKekJAtxTVFICiRy0WJwtcmZ/TWcNpPTxCsAfzzQmMbYMTHMRYIRpws2hxbH1cBPPjplbFlicDqbCUomoyvxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710438717; c=relaxed/simple;
-	bh=W4fz5aM1Xj6mRv+GxOPNP6rsBtXJG7XPvD6c5p5zsZQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J66VGLx8whOiVckitWF1y8jJWCLsPyJkncO46mM8C1RR2iudyG3Ri9CcyQUTVpeXSOiKSRo4ejd55EuEF7gkFLA5imA4jWc68LzGHejwZ3kzmTt3O1HmWnzt4cdH9d+mhquDxGkHc8HHbAi26OWDiWty9i1gNxC/pzCsLQwHsSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJaWvpoA; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd955753edso11042525ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710438715; x=1711043515; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=83o/z763nISRcPT8Ce4hg/uxvl1Iug2mRWFmiJSQha0=;
-        b=FJaWvpoADUHLohVoV3rHtXueyMji46KgbHN20QukdDaHAum7hNYP0I+1t7Q6p26UUj
-         zngdI0zQgRaFwFgSSfEZFGRNQUCmI4+T00bRv0q08FyCT1OzgTc1MDqHjGNurf6Q7/uQ
-         rVoiu+yqcNPyoB0MfdNeT1lndsILvkNR/niEJioW9xnW3bY1fhUQU6mP64bu50QUOhTx
-         o4IzLw2Fyo5U6gzPDC4gXDsZokOHF3V89kjKsyTrMpGpBVqdDVuTfURflNMeAgqL74pg
-         UOt1RQixqhfG6CZQ0kujIsdjxLo4jQ7algMYQrL2deZ11rUgexYKc4EP/8ooVGawIpdQ
-         JF0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710438715; x=1711043515;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=83o/z763nISRcPT8Ce4hg/uxvl1Iug2mRWFmiJSQha0=;
-        b=iUHBo+6XB0Em9E+UbIeBYxTfB7FqYhG8bl+iu1KNV8xGm0FY4fngPqS0BYwqG7txSZ
-         qKjVyrXyrJKGhVPIJwF6XnqTeawRr8nuDK3E4+8P8z9fdPWvVQbeO74ekV3oyXrEjDEZ
-         sKsnsOPQAOjyYv6AR4QrBDICXBL2Uuhgcs8nAGrvkZLpr4OVh7r6xJMlTs1vs5o6mEtM
-         0gkTDqKYGkW1Oy92/ZaM3VdpbCrIgicAEyNpc3v9Hs+XY4a6Hxtm1//i7MuVt9duw+Aq
-         /tcFL/MYbNUijNvYEybOnlGqEKIAo58jHyVjl6X0eZwUQbyp/qVXi8HNVZvBQ2qQDlsr
-         TtOA==
-X-Forwarded-Encrypted: i=1; AJvYcCXSZJUqqEO2INd8T0c55a9q6OGsrMk+ZFUOqo+Ix4RXu0HOeYzP6MPme/06g96G9B42dANV3YOGy1QSLhY4BEb89ENYi1x3ahpXF+sy
-X-Gm-Message-State: AOJu0YwetzBr4eQSXzDkFPsTM9g8LFfz3pb4l9lTIAKplO+SlBno+Cry
-	+vtnffiROZrrkVZA3gCU4eCjaxVBbC1oQizlofgatKYHzEO2pR1hLpUrTOaNcvMvvmYCcpORxuT
-	kvUwUkAda6YgBViZHSwsRVWb98IrawSwamCU=
-X-Google-Smtp-Source: AGHT+IGME2ZBAjfwN5W4buTyp4q6UKGQ3GqH2t3Nk3YFMv7LRHDx2QR5986+nNZie6GdhVNX/cqIqgT3EyzylKiQKAk=
-X-Received: by 2002:a17:90a:6c06:b0:29b:4d0b:66ab with SMTP id
- x6-20020a17090a6c0600b0029b4d0b66abmr684578pjj.33.1710438715102; Thu, 14 Mar
- 2024 10:51:55 -0700 (PDT)
+	s=arc-20240116; t=1710438859; c=relaxed/simple;
+	bh=JUiHZqwVpW0oiOsOlVofpBOzxIfEOls61UfDEqlLuc8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jsx17wcIiWP+25fB785cJRjDVFkCaKWl/eAtcCZ5d40MKZ0p7eK1RGjG0AWwpo9vEe95stMX9YNNEr1oqE5t6aY0JMOLIC5MBvE/vZl5Z1+m30/8vz0it1exkiC4PyUalm8hCpbnTT7Ld+PpR1jPJfSe1TUsK+96tw+185Y/ruo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OCQE7gEC; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710438858; x=1741974858;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=JUiHZqwVpW0oiOsOlVofpBOzxIfEOls61UfDEqlLuc8=;
+  b=OCQE7gEC8PGgoXrng7/9vFvFXrFiB4/3cjz8+e0EUYfc3308GZjP2NSC
+   FaGMOtmHXy/2J6LTVwGqAVRp75c6VsUX/AA/VxvykNaG4shDoueRZTits
+   Jg8+54FaZZr57qyuS3qdYBaHI36lzBRd8YW9j+WMrr/N6xKAmGkUO7thY
+   mQyt802UepiVhkOQCbUF6se4TMnc6fSL9jfQDwYs60AsRL4hNRyYO9upY
+   8LlFriHmynpiUbKFf54iUfxCLyFCJT0BD2eCScq5ZV11XBfxkpERDL3i+
+   KAVmCktXjsPCkKc/RMSeV5BUZB93/Kzl2vwBt7zdxR9jQXhsstsaFP7MF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5135198"
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="5135198"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 10:54:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="12818122"
+Received: from laallen-mobl.amr.corp.intel.com (HELO [10.209.21.198]) ([10.209.21.198])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 10:54:17 -0700
+Message-ID: <4bd2aea0-3cea-4ef8-9607-40447cd531e5@intel.com>
+Date: Thu, 14 Mar 2024 10:54:18 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312124148.257067-1-sunil.khatri@amd.com> <CADnq5_O-cyDkNLznZpvnZtz15Mi1_rkigirG80BmYJprP_udnw@mail.gmail.com>
- <59cf081e-5924-42b5-a3f1-de8b012f09d1@amd.com> <CADnq5_N0H75UU2aFTAkqUrdGxKPxBQUnodsH-bcpS-ZUqgUb3A@mail.gmail.com>
- <32aad098-9392-4899-9839-1beaedcac8b8@amd.com>
-In-Reply-To: <32aad098-9392-4899-9839-1beaedcac8b8@amd.com>
-From: Alex Deucher <alexdeucher@gmail.com>
-Date: Thu, 14 Mar 2024 13:51:42 -0400
-Message-ID: <CADnq5_NvBsbmTteDKmzi1DZHPKGfoSMjW5TFfy2x60YDxydc=g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/amdgpu: add the IP information of the soc
-To: "Khatri, Sunil" <sukhatri@amd.com>
-Cc: Sunil Khatri <sunil.khatri@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] x86/pkeys: update PKRU to enable pkey 0 before XSAVE
+Content-Language: en-US
+To: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
+ linux-kernel@vger.kernel.org
+Cc: x86@kernel.org, dave.hansen@linux.intel.com, tglx@linutronix.de
+References: <20240314172920.2708810-1-aruna.ramakrishna@oracle.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240314172920.2708810-1-aruna.ramakrishna@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 12:16=E2=80=AFPM Khatri, Sunil <sukhatri@amd.com> w=
-rote:
->
->
-> On 3/14/2024 8:12 PM, Alex Deucher wrote:
-> > On Thu, Mar 14, 2024 at 1:44=E2=80=AFAM Khatri, Sunil <sukhatri@amd.com=
-> wrote:
-> >>
-> >> On 3/14/2024 1:58 AM, Alex Deucher wrote:
-> >>> On Tue, Mar 12, 2024 at 8:41=E2=80=AFAM Sunil Khatri <sunil.khatri@am=
-d.com> wrote:
-> >>>> Add all the IP's information on a SOC to the
-> >>>> devcoredump.
-> >>>>
-> >>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
-> >>>> ---
-> >>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 19 ++++++++++++++++++=
-+
-> >>>>    1 file changed, 19 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu=
-/drm/amd/amdgpu/amdgpu_reset.c
-> >>>> index a0dbccad2f53..611fdb90a1fc 100644
-> >>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> >>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> >>>> @@ -196,6 +196,25 @@ amdgpu_devcoredump_read(char *buffer, loff_t of=
-fset, size_t count,
-> >>>>                              coredump->reset_task_info.process_name,
-> >>>>                              coredump->reset_task_info.pid);
-> >>>>
-> >>>> +       /* GPU IP's information of the SOC */
-> >>>> +       if (coredump->adev) {
-> >>>> +               drm_printf(&p, "\nIP Information\n");
-> >>>> +               drm_printf(&p, "SOC Family: %d\n", coredump->adev->f=
-amily);
-> >>>> +               drm_printf(&p, "SOC Revision id: %d\n", coredump->ad=
-ev->rev_id);
-> >>>> +
-> >>>> +               for (int i =3D 0; i < coredump->adev->num_ip_blocks;=
- i++) {
-> >>>> +                       struct amdgpu_ip_block *ip =3D
-> >>>> +                               &coredump->adev->ip_blocks[i];
-> >>>> +                       drm_printf(&p, "IP type: %d IP name: %s\n",
-> >>>> +                                  ip->version->type,
-> >>>> +                                  ip->version->funcs->name);
-> >>>> +                       drm_printf(&p, "IP version: (%d,%d,%d)\n\n",
-> >>>> +                                  ip->version->major,
-> >>>> +                                  ip->version->minor,
-> >>>> +                                  ip->version->rev);
-> >>>> +               }
-> >>>> +       }
-> >>> I think the IP discovery table would be more useful.  Either walk the
-> >>> adev->ip_versions structure, or just include the IP discovery binary.
-> >> I did explore the adev->ip_versions and if i just go through the array
-> >> it doesn't give any useful information directly.
-> >> There are no ways to find directly from adev->ip_versions below things
-> >> until i also reparse the discovery binary again like done the discover=
-y
-> >> amdgpu_discovery_reg_base_init and walk through the headers of various
-> >> ips using discovery binary.
-> >> a. Which IP is available on soc or not.
-> >> b. How many instances are there
-> >> Also i again have to change back to major, minor and rev convention fo=
-r
-> >> this information to be useful. I am exploring it more if i find some
-> >> other information i will update.
-> >>
-> >> adev->ip_block[] is derived from ip discovery only for each block whic=
-h
-> >> is there on the SOC, so we are not reading information which isnt
-> >> applicable for the soc. We have name , type and version no of the IPs
-> >> available on the soc. If you want i could add no of instances of each =
-IP
-> >> too if you think that's useful information here. Could you share what
-> >> information is missing in this approach so i can include that.
-> > I was hoping to get the actual IP versions for the IPs from IP
-> > discovery rather than the versions from the ip_block array.  The
-> > latter are common so you can end up with the same version used across
-> > a wide variety of chips (e.g., all gfx10.x based chips use the same
-> > gfx 10 IP code even if the actual IP version is different for most of
-> > the chips).
-> Got it. let me check how to get it could be done rightly.
-> >
-> >> For dumping the IP discovery binary, i dont understand how that
-> >> information would be useful directly and needs to be decoded like we a=
-re
-> >> doing in discovery init. Please correct me if my understanding is wron=
-g
-> >> here.
-> > It's probably not a high priority, I was just thinking it might be
-> > useful to have in case there ended up being some problem related to
-> > the IP discovery table on some boards.  E.g., we'd know that all
-> > boards with a certain harvest config seem to align with a reported
-> > problem.  Similar for vbios.  It's more for telemetry.  E.g., all the
-> > boards reporting some problem have a particular powerplay config or
-> > whatever.
-> I got it.
-> But two points of contention here in my understanding. The dump works
-> only where there is reset and not sure if it could be used very early in
-> development of not. Second point is that devcoredump is 4096
-> bytes/4Kbyte of memory where we are dumping all the information. Not
-> sure if that could be increased but it might not be enough if we are
-> planning to dump all to it.
+On 3/14/24 10:29, Aruna Ramakrishna wrote:
+> This patch is a workaround for a bug where the PKRU value is not
+> restored to the init value before the signal handler is invoked.
 
-ah, ok.  Let's skip the IP versions in that case, we can use the
-family and rev_id and external_rev_id to look up the IP versions.
+I don't think we should touch this with a ten foot pole without a test
+for it in tools/testing/selftests/mm/protection_keys.c.
 
-Alex
+I'm not sure this is worth the trouble.  Protection keys is not a
+security feature.  This isn't a regression.  It's been the behavior
+since day one.  This really is a feature request for a behavioral
+improvement, not a bug fix.
 
->
-> Another point is since we have sysfs/debugfs/info ioctl etc information
-> available. We should sort out what really is helpful in debugging GPU
-> hang and that's added in devcore.
->
-> Regards
-> Sunil
->
-> >
-> > Alex
-> >
-> >
-> >>> Alex
-> >>>
-> >>>> +
-> >>>>           if (coredump->ring) {
-> >>>>                   drm_printf(&p, "\nRing timed out details\n");
-> >>>>                   drm_printf(&p, "IP Type: %d Ring Name: %s\n",
-> >>>> --
-> >>>> 2.34.1
-> >>>>
+The need for this new feature is highly dependent on the threat model
+that it supports.  I'm highly dubious that there's a true need to
+protect against an attacker with arbitrary write access in the same
+address space.  We need to have a lot more information there.
+
+I haven't even more than glanced at the code.  It looks pretty
+unspeakably ugly even at a glance.
 
