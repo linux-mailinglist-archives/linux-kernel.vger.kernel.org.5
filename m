@@ -1,285 +1,240 @@
-Return-Path: <linux-kernel+bounces-102756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D27287B6EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75C5287B6EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:44:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF1D01C20E0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997CF1C20E88
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386F153BE;
-	Thu, 14 Mar 2024 03:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4583F947B;
+	Thu, 14 Mar 2024 03:44:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="qskep9QL"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2058.outbound.protection.outlook.com [40.107.22.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qe0g8Z+o"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C314C96;
-	Thu, 14 Mar 2024 03:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710387830; cv=fail; b=KQz5kMNmPcJX6EOkyjThvrv2Zq5N0CHWmeHP6eK2VxWJiRDkdZ10OQNR6A19NNxzDyexePipvKzJbEoMBANqBKd5sA5mzNR2+wapGjGq1TFbdLj6Z0KlnR4T9EaO5EC0HYmiJsTFGO5FvLwH+JULH26QBBbEYz4ItacbvvHNdRU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710387830; c=relaxed/simple;
-	bh=/xCETYQ4JzCKnur52p/SJNiOdamFJhhiwf1pElt+mao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=GnINA4M02wC1v88QrfhSaCW5SQ4qTyz9cMiyducMhaDk82iFwi4jEQ4I93KPqEus30kJbVek2E9TVVoe3na5THQiAZdoUV3SDu0NRI6Xwu0XDfa8QTyegKCKSN4uqxV7Pvi9XBeWW0DFEmiHQaIEhM9Zk1G7hR5LqhE67k94DRc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=qskep9QL; arc=fail smtp.client-ip=40.107.22.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QVTyf6M0nS7SFPrF22u0wVIpBlk/uXOUYaoaDjn3Y+MKe/X/nk7/RzJlY0C/budpe+5EbaZFwFv3SWKZ3E0DCv1WNeDHsna6pWREnFWyV5ose03p/dvgqpj+mBqRDIkfFzCKhOZxl5dzf7ROWB7dc7eRHSdxlpF14DOZdQvcQEDVIl9iSHzr6dBEQopQnd92Xwc/9BUl2FIAEjfWJwCZEBiseKDFUsuFMzDV5XKhJ8fCx2tRpow1yGm3BJqkff2Ux/EPwjkMahM7lKDSGAcGpL9d87hw3MizPznidgRdn7+7KbMcc1+WblX+h2cscewJvzRpjYrDAo2oN3hxxhSoxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eRhTtl1kujxQ5cn0hIuPRoQlV8XvD0CUzsjDA/oNW3I=;
- b=jzHtzVjpyhL6a4NKw0ZkEtjBY/MBCbA62m+IwD5Qa/UD5SlOWrzm7lf4BXLR0+WX8gGRPUzi5NM0gxVd9XqC2NPt02oPRWZ0sMf2uAu2pI7oxUoWckGP2w3V+ROrnpv/ajKm61pXzEocYpD/raKkrosVpNiBbX2BCx38THqljEi3zwIJqptzUIBnF0JyQsFXQ0x/n0N8kN6HQ7w0IMqiGGICdDQh2ZoBrLzIKBcN2uhtTRw2Je3lqEBSu/2cmgXzWlBKYlB2kzTjUjfxvlqq/+973/RKtN2okWCwtaPh6Lla89Js4C6phVO3wOuaKU1Dml9sXKMXgu9tYo8XXJ6eJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eRhTtl1kujxQ5cn0hIuPRoQlV8XvD0CUzsjDA/oNW3I=;
- b=qskep9QLnMNsbgERvvMLd73jVXJgv9RpeacMIuw2rR+z2Hmph+7mNz6nz1wfjLpqaWasAe4U8/6aelPS1GueHJGLm1wn/xuz7vB8vSfCZ5zNzj6yJTId5Xq5gug/fjLYi4yR3XyIZh7zltWLr46mP+IJjMbCrtEQNaBfHxykYfk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS8PR04MB8343.eurprd04.prod.outlook.com (2603:10a6:20b:3f1::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Thu, 14 Mar
- 2024 03:43:45 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7362.035; Thu, 14 Mar 2024
- 03:43:45 +0000
-Date: Wed, 13 Mar 2024 23:43:36 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Joy Zou <joy.zou@nxp.com>
-Cc: ping.bai@nxp.com, lgirdwood@gmail.com, broonie@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, imx@lists.linux.dev
-Subject: Re: [PATCH v4 3/3] arm64: dts: imx93-11x11-evk: add pca9451a support
-Message-ID: <ZfJyaFUxwMq20XMd@lizhi-Precision-Tower-5810>
-References: <20240314032923.2360248-1-joy.zou@nxp.com>
- <20240314032923.2360248-4-joy.zou@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314032923.2360248-4-joy.zou@nxp.com>
-X-ClientProxiedBy: SJ0PR03CA0065.namprd03.prod.outlook.com
- (2603:10b6:a03:331::10) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F0D8F5B;
+	Thu, 14 Mar 2024 03:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710387854; cv=none; b=qu57xWZ6dOLEHkp9nRU+d/RX8q1ZzS05PiZb3T5SLbVevr9XW8y6Ou7KIQbPWTQEVlX4801AN3KDg1NhAGZ3nAhsQ29FWfItCgySCwSi/g4y8d7ZC6DEON8FfaxkpPEzKvD6wEyFfw3BSxLzYA8ceEsqczmLXAp5ZqxRFLaEADY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710387854; c=relaxed/simple;
+	bh=XkUhEBBXByTRjClPGLvc/LMxHGLjYuPwzv3F8uZf3EM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KmOmTs2kI7dRFewrAQgBlZnil1Z2N4DhcARjbqdNf+OtctZnPb7M9Zi+9BtBmpKLCe1rwn//KZd38+sKKktYQsP4YhbOaF/2xlXins8iO1UGLjO/GcHmU+p7xhQtRkW9E02OS3XkTyLtwVUXF9K4Chn3p6rhIPetevu0I+/tHtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qe0g8Z+o; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42f3d88bc20so2193111cf.1;
+        Wed, 13 Mar 2024 20:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710387851; x=1710992651; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FxcCCcyJb5hckDgXHUgjpmd8n+vqjZwLDESuUfS2lhQ=;
+        b=Qe0g8Z+o71/ttI4YttW6Bbr25Lh6b7vzwrHZFxHUEjbPX1VpFwKf0jXjPfoXjYehaU
+         HCnk6OqbyXNAIepuwa88HpXP0fkOTQVrmlecij/d563cFNxm4HHxAeYNP/Zwor4khiv3
+         FMDifIELiBxqwCkTJIz1Bw1f94zGFDXqAr7QuBURQjGMirP5FsgjZkGS1TRZrs2emshe
+         2wZZWLlyL0i3I66kP7HKFQ820eXkwycoZMeLM0CEZrNB/hFKgyOXB68cmz3odjpqs2Gz
+         TxL9GxfVSrA1NgS69Ee1I5kYhP+9uikov3hg0ilZ+ulZ0JaAf3M8+S22e/eEmWWOJgV0
+         8RAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710387851; x=1710992651;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FxcCCcyJb5hckDgXHUgjpmd8n+vqjZwLDESuUfS2lhQ=;
+        b=t1sdvnfhgJWkDlvE52OxqhEaSs6/DNM9vMTJtzG+q4ssafKZY+8t/aj56TPUA1t2kd
+         /GF6P7BCWgh5aBNeaW8SHGhrZ+pq7wX8PHJqlg4MSlv87aoUhLdSpzsdHDIr2uCtiZ0F
+         ZEBUj+CX1iqaxEYt71gSSa3YC+aPxc2293496r+CK5Nua1AQHOg7eQm0TQq+5yvLWZG9
+         vlKWQCeUfp8Spu1G42c0FzPPJf3qsF1n7liAWRziGsJell8GR0wVNyJUVszmxa2pp1hU
+         +ifrJvxGh+Dk/zq+4eI/NUe917uo4QlU7428B9/Gc2WATERQfk2I+fHo/QG0Hg3x2ujx
+         +fnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWBHxdYVcoJ/bc4irBZAsjRZRUMcpzwiopgm+NB+7hEOWofH2vE4Nwm+g8rBB6u5pYb2USnXqnAMnGT+qpMA4JWuLYMsgYumg3CyiMDnZ1SPz9Uw7yNm26IWZZqjCkCtUxN
+X-Gm-Message-State: AOJu0YxW9bEEce5TB5rBOPEnqc2cEOuHESu4ox9i88lPI8staT8PswEK
+	l6pZKOHk/8btgAVDM7+dh82KZ17JFaaiIqwF1FF2/eRZbjYO4BQg
+X-Google-Smtp-Source: AGHT+IGPDnDM29i5VG4Czn2ouF40dCxI5bsvS8gEKq3s367+LidGGxdDmlHXTzW7BTH9VYnAytTM+A==
+X-Received: by 2002:a05:620a:c93:b0:787:a83a:cfed with SMTP id q19-20020a05620a0c9300b00787a83acfedmr603309qki.70.1710387851414;
+        Wed, 13 Mar 2024 20:44:11 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id dc33-20020a05620a522100b007885cd1c058sm287988qkb.103.2024.03.13.20.44.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 20:44:10 -0700 (PDT)
+Message-ID: <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+Date: Wed, 13 Mar 2024 20:44:07 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8343:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc6e2899-15a9-4bd8-7d17-08dc43d8f2fa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	uaNCradKUnHVYJH4fzIvXE8ABRpGl+LMafzTjDJV7fbPf8Oipy/wvwKpCNWbm44SyUTDIKGLkWpfs93sd++pYdQ5ymrGb07CzAAYHLdHzLo9MndeJnmmAfB0PXyG+zYXm9RVFATKjRx7GdkwB8E7AWFLpGB0/0BIrHpSnIVV3v9EcYiRjAvsCN8JBeIdur2dDesQWH+sJxP69s5luyGtb95ovvuorbHrGIch4MKNjEjIbT/waRs8aI8cJ1XJ5C2fsLtmh6+ET9SiJxoJRExJdkZj1M3R0wcF8/2RuK+STwcZsveGTpCCLz9dmUdv7XsfBOo/RmjUrYuPwZA/UVTGXKCoZQi1CYbW73XiOpfwTo9jZAM4vnlZzECyxzl2N37neGruQlUYskLxWSo3MuWVxKPQRvSE74F3zRhNiGs8u6YSVkOgrEb6KHCBvO+eOj9QDVqA+z3pXBk5EiLnfrZDflFl0TGi+GQiv6eaN60cYz5xR94p9k2qsvncPyjHzrRSYKyVMl2q96sE9779GpXjyYPRNfGAMB9FDMjIZT5CfCEhOL7H9qd1blK6vbJPpQxoqZ2dPz4ObQYcgyG9ukGUtsEyv/u2iX3v0CChepFgkCAdJJ26Vy5cV3GC5c/8/2zqMsWwA0qes6sQTt0W0SBCKBq8vqsHLvPaP1bORIVDZ8rhuY3xRJH6nDJATJ1FwvNeMU42Nm23JdRbq+buoFcn6g==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(7416005)(376005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?SnPJFi+rmuFegNtxhKx6nmmeyRbqfnMC/bJZsItdsH3DSjt9OXLuKTWeIPoa?=
- =?us-ascii?Q?slLPXfiWI4PLaD3xNuq8wlNmtiPw8bhARPoPC7XE9kWOQN/foog7AWc+AaxE?=
- =?us-ascii?Q?7BPine+T0ISBvRMwhcFS0jrDQAbS413l5EjaVbbmCCQNA1T40wA9RJW4JnQQ?=
- =?us-ascii?Q?5jgLcrB2EKaU4HMd+uM1dDycrPUwv0wsj4z4B1xgDw8NU0ba7qxdwiM6K75U?=
- =?us-ascii?Q?ZpdYYyO0LtaRdaO+gh8KbEDu7MNYo8/gbZU9Cuu63cFMINCDWwaYajKtJSiA?=
- =?us-ascii?Q?9gMCoXVNWgqJviVLoGMb0TZLRZEkKiii4RyWP6CToInTNbpeQbuGrlLjvMBz?=
- =?us-ascii?Q?7k92VZbc9MvwL5+2yFnJfHStS1U31VKiyLNLPFOjudpkiBTcXAl914toiyqT?=
- =?us-ascii?Q?+bIgB1J6lKL6vWNF0W7kuDuOEpLJy6NjwcbLIVRZYgflBo48RY9SEZVckZxY?=
- =?us-ascii?Q?hpiKnBhDacdsvkq95LFlNVZfuMvcGjToepAId2KOxk6XAHQL1+S8x1mTXtUN?=
- =?us-ascii?Q?Q07f+RtlRMC7BjtGOUCoTijQUq9g4evhd6IYInyBUF0f0JZ3Bk1IxJB0lfvA?=
- =?us-ascii?Q?LUv5oyeMW3K/TK2y96R6/PXHMpvKXmVK4T7/rkRDHZpgnhoAZgRRWRn6oge9?=
- =?us-ascii?Q?E9uY4KIVv9WJlyBiY+tpqJw3opoRNO4LcWsGVRt4z8us9DwgBgeiARJEs+SC?=
- =?us-ascii?Q?6HIXG7UjNLU65BwksfH/rx53v6yBx2G0pZdkzScCONw6Q85lYQyqB7TdjD4U?=
- =?us-ascii?Q?KAf2yfs3Udo8uFtrLH/WuLx8Yosl3ai84pqWvZYIXCF+8MyP/NgCvyfc5c6I?=
- =?us-ascii?Q?pfkMmry4XK1o163xPRA60nj389qB7hbgl5zZFOYhdzdY/1+sUWawsioqIER1?=
- =?us-ascii?Q?fXEzxJYal9KYyblg9qt+KhGkRC3TKZcHeUHiKBk8R/tzHi845GtsBt6nTjVd?=
- =?us-ascii?Q?gnxMu1oGBXQgK6HtDxCJLbI3Cbr5BVMKsKWtURgpcGPlXA8h5ZeHLyTcSd01?=
- =?us-ascii?Q?bOlDi3NZUOPnJ/pdI2pI1TANJFpcoHJHfH0osXg9AWdTjCqoWQUAV3oEOoR5?=
- =?us-ascii?Q?n/vFZQiegmcY5hdp9Xm5Jxegf33/P64Lix5JkJE94TbAU4FFdSiiwkjN6Ojr?=
- =?us-ascii?Q?SpZ6YaXSoXawBSxfNHjr3rszxJDkjRsyAqeEc0i/nQGBU4aoG1AKhF5TuKYO?=
- =?us-ascii?Q?jkT+5tFKgvD3afu/UPsjDELS4KxfG5H5N6TeT4nzasouevcawNcvapGBoyVw?=
- =?us-ascii?Q?RT06cpIaknq6eqbqKLDHOtnmJJsnuKglPCTUfAecenr8cg9EqRV3MhEM2vFh?=
- =?us-ascii?Q?lY1B7iRwGGC+BqKV7hwRxROjU45EFBvUN1HEQioAzXawk3nLYyq1igpS5IIS?=
- =?us-ascii?Q?qi0CrZ4AsmQo9UmwjURXkjgJL3qMWyc/cq8vTWC4ZjDbebGzOkqdJZYAlKFx?=
- =?us-ascii?Q?fFS1I6BQt3uP9kqBlXJVsW4ipsh0HIPEznc51VMeOVn5F9Vezx8iadvuy5r/?=
- =?us-ascii?Q?q4r/B0KKhU08hQUXbvi4tgYkZoXCuwgUX4QHJaC+/YrJWMt9W+Xl5A8KLONq?=
- =?us-ascii?Q?QRbcb8Tf8vu8+1gWkx2st+C/bSJ7U7vlP26asw3v?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc6e2899-15a9-4bd8-7d17-08dc43d8f2fa
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 03:43:44.9873
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IkmpIqvXxB/djWZ0aqrV71oCCB+0qpF3A2pClDVZavKodw+TlQE9UQIjSTnWF19/dh7mh55iV8eKmWtoaxvRKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8343
+User-Agent: Mozilla Thunderbird
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
+ v6.9]
+Content-Language: en-US
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ Joel Fernandes <joel@joelfernandes.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+ mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
+ neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
+ bigeasy@linutronix.de, chenzhongjin@huawei.com, yangjihong1@huawei.com,
+ rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
+References: <ZetHwrCb0KXE0xFI@tardis>
+ <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux>
+ <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+ <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+ <ZfDptafiK0jns050@boqun-archlinux>
+ <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
+ <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
+ <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
+ <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
+ <ZfIuRMo8oKbR08Af@lothringen>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <ZfIuRMo8oKbR08Af@lothringen>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 11:29:23AM +0800, Joy Zou wrote:
-> Support pca9451a on imx93-11x11-evk.
-> 
-> Signed-off-by: Joy Zou <joy.zou@nxp.com>
-> ---
-> Changes in v4:
-> 1. modify the comment for uSDHC but not i2c.
-> 
-> Changes in v3:
-> 1. modify the voltages constraints according to the imx93 datasheet.
-> ---
->  .../boot/dts/freescale/imx93-11x11-evk.dts    | 112 ++++++++++++++++++
->  1 file changed, 112 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-> index 9921ea13ab48..59740dfa054c 100644
-> --- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-> @@ -183,6 +183,105 @@ &wdog3 {
->  	status = "okay";
->  };
->  
-> +&lpi2c2 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&pinctrl_lpi2c2>;
-> +	pinctrl-1 = <&pinctrl_lpi2c2>;
-> +	status = "okay";
-> +
-> +	pmic@25 {
-> +		compatible = "nxp,pca9451a";
-> +		reg = <0x25>;
-> +		interrupt-parent = <&pcal6524>;
-> +		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		regulators {
-> +			buck1: BUCK1 {
-> +				regulator-name = "BUCK1";
-> +				regulator-min-microvolt = <610000>;
-> +				regulator-max-microvolt = <950000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +				regulator-ramp-delay = <3125>;
-> +			};
-> +
-> +			buck2: BUCK2 {
-> +				regulator-name = "BUCK2";
-> +				regulator-min-microvolt = <600000>;
-> +				regulator-max-microvolt = <670000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +				regulator-ramp-delay = <3125>;
-> +			};
-> +
-> +			buck4: BUCK4{
-> +				regulator-name = "BUCK4";
-> +				regulator-min-microvolt = <1620000>;
-> +				regulator-max-microvolt = <3400000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			buck5: BUCK5{
-> +				regulator-name = "BUCK5";
-> +				regulator-min-microvolt = <1620000>;
-> +				regulator-max-microvolt = <3400000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			buck6: BUCK6 {
-> +				regulator-name = "BUCK6";
-> +				regulator-min-microvolt = <1060000>;
-> +				regulator-max-microvolt = <1140000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldo1: LDO1 {
-> +				regulator-name = "LDO1";
-> +				regulator-min-microvolt = <1620000>;
-> +				regulator-max-microvolt = <1980000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldo4: LDO4 {
-> +				regulator-name = "LDO4";
-> +				regulator-min-microvolt = <800000>;
-> +				regulator-max-microvolt = <840000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldo5: LDO5 {
-> +				regulator-name = "LDO5";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +		};
-> +	};
-> +
-> +	pcal6524: gpio@22 {
-> +		compatible = "nxp,pcal6524";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_pcal6524>;
-> +		reg = <0x22>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		interrupt-parent = <&gpio3>;
-> +		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
-> +	};
 
-It'd better order by address. gpio@22 should before pmic@25
 
-Frank
-
-> +};
-> +
->  &iomuxc {
->  	pinctrl_eqos: eqosgrp {
->  		fsl,pins = <
-> @@ -238,6 +337,19 @@ MX93_PAD_DAP_TCLK_SWCLK__LPUART5_CTS_B		0x31e
->  		>;
->  	};
->  
-> +	pinctrl_lpi2c2: lpi2c2grp {
-> +		fsl,pins = <
-> +			MX93_PAD_I2C2_SCL__LPI2C2_SCL			0x40000b9e
-> +			MX93_PAD_I2C2_SDA__LPI2C2_SDA			0x40000b9e
-> +		>;
-> +	};
-> +
-> +	pinctrl_pcal6524: pcal6524grp {
-> +		fsl,pins = <
-> +			MX93_PAD_CCM_CLKO2__GPIO3_IO27			0x31e
-> +		>;
-> +	};
-> +
->  	/* need to config the SION for data and cmd pad, refer to ERR052021 */
->  	pinctrl_usdhc1: usdhc1grp {
->  		fsl,pins = <
-> -- 
-> 2.37.1
+On 3/13/2024 3:52 PM, Frederic Weisbecker wrote:
+> On Wed, Mar 13, 2024 at 03:04:26PM -0700, Florian Fainelli wrote:
+>> On 3/13/24 14:59, Russell King (Oracle) wrote:
+>>> On Wed, Mar 13, 2024 at 02:30:43PM -0700, Florian Fainelli wrote:
+>>>> I will try to provide multiple answers for the sake of everyone having the
+>>>> same context. Responding to Linus' specifically and his suggestion to use
+>>>> "initcall_debug", this is what it gave me:
+>>>>
+>>>> [    6.970669] ata1: SATA link down (SStatus 0 SControl 300)
+>>>> [  166.136366] probe of unimac-mdio-0:01 returned 0 after 159216218 usecs
+>>>> [  166.142931] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
+>>>> [  166.148900] probe of unimac-mdio.0 returned 0 after 159243553 usecs
+>>>> [  166.155820] probe of f0480000.ethernet returned 0 after 159258794 usecs
+>>>> [  166.166427] ehci-brcm f0b00300.ehci_v2: EHCI Host Controller
+>>>>
+>>>> Also got another occurrence happening resuming from suspend to DRAM with:
+>>>>
+>>>> [   22.570667] brcmstb-dpfe 9932000.dpfe-cpu: PM: calling
+>>>> platform_pm_resume+0x0/0x54 @ 1574, parent: rdb
+>>>> [  181.643809] brcmstb-dpfe 9932000.dpfe-cpu: PM:
+>>>> platform_pm_resume+0x0/0x54 returned 0 after 159073134 usecs
+>>>>
+>>>> and also with the PCIe root complex driver:
+>>>>
+>>>> [   18.266279] brcm-pcie f0460000.pcie: PM: calling
+>>>> brcm_pcie_resume_noirq+0x0/0x164 @ 1597, parent: platform
+>>>> [  177.457219] brcm-pcie f0460000.pcie: clkreq-mode set to default
+>>>> [  177.457225] brcm-pcie f0460000.pcie: link up, 2.5 GT/s PCIe x1 (!SSC)
+>>>> [  177.457231] brcm-pcie f0460000.pcie: PM: brcm_pcie_resume_noirq+0x0/0x164
+>>>> returned 0 after 159190939 usecs
+>>>> [  177.457257] pcieport 0000:00:00.0: PM: calling
+>>>> pci_pm_resume_noirq+0x0/0x160 @ 33, parent: pci0000:00
+>>>>
+>>>> Surprisingly those drivers are consistently reproducing the failures I am
+>>>> seeing so at least this gave me a clue as to where the problem is.
+>>>>
+>>>> There were no changes to drivers/net/ethernet/broadcom/genet/, the two
+>>>> changes done to drivers/net/mdio/mdio-bcm-unimac.c are correct, especially
+>>>> the read_poll_timeout() conversion is correct, we properly break out of the
+>>>> loop. The initial delay looked like a good culprit for a little while, but
+>>>> it is not used on the affected platforms because instead we provide a
+>>>> callback and we have an interrupt to signal the completion of a MDIO
+>>>> operation, therefore unimac_mdio_poll() is not used at all. Finally
+>>>> drivers/memory/brcmstb_dpfe.c also received a single change which is not
+>>>> functional here (.remove function change do return void).
+>>>>
+>>>> I went back to a manual bisection and this time I believe that I have a more
+>>>> plausible candidate with:
+>>>>
+>>>> 7ee988770326fca440472200c3eb58935fe712f6 ("timers: Implement the
+>>>> hierarchical pull model")
+>>>
+>>> I haven't understood the code there yet, and how it would interact with
+>>> arch code, but one thing that immediately jumps out to me is this:
+>>>
+>>> "    As long as a CPU is busy it expires both local and global timers. When a
+>>>       CPU goes idle it arms for the first expiring local timer."
+>>>
+>>> So are local timers "armed" when they are enqueued while the cpu is
+>>> "busy" during initialisation, and will they expire, and will that
+>>> expiry be delivered in a timely manner?
+>>>
+>>> If not, this commit is basically broken, and would be the cause of the
+>>> issue you are seeing. For the mdio case, we're talking about 2ms
+>>> polling. For the dpfe case, it looks like we're talking about 1ms
+>>> sleeps. I'm guessing that these end up being local timers.
+>>>
+>>> Looking at pcie-brcmstb, there's a 100ms msleep(), and then a polling
+>>> for link up every 5ms - if the link was down and we msleep(5) I wonder
+>>> if that's triggering the same issue.
+>>>
+>>> Why that would manifest itself on 32-bit but not 64-bit Arm, I can't
+>>> say. I would imagine that the same hardware timer driver is being used
+>>> (may be worth checking DT.) The same should be true for the interrupt
+>>> driver as well. There's been no changes in that code.
+>>
+>> I just had it happen with ARM64 I was plagued by:
+>>
+>> https://lore.kernel.org/lkml/87wmqrjg8n.fsf@somnus/T/
+>>
+>> and my earlier bisections somehow did not have ARM64 fail, so I thought it
+>> was immune but it fails with about the same failure rate as ARM 32-bit.
 > 
+> Can you please boot with:
+> 
+>      trace_event=timer_migration,timer_start,timer_expire_entry,timer_cancel
+> 
+> And add the following and give us the resulting output in dmesg?
+
+Here are two logs from two different systems that exposed the problem on 
+boot:
+
+https://gist.github.com/ffainelli/f0834c52ef6320c9216d879ca29a4b81
+https://gist.github.com/ffainelli/dc838883edb925a77d8eb34c0fe95be0
+
+thanks!
+-- 
+Florian
 
