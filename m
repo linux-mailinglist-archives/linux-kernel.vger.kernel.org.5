@@ -1,280 +1,127 @@
-Return-Path: <linux-kernel+bounces-103052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA9E887BA70
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:31:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7A6687BA74
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:32:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7823A1F22673
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:31:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5774B280A20
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:32:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9633F6D1A4;
-	Thu, 14 Mar 2024 09:31:27 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C3D6CDDE;
+	Thu, 14 Mar 2024 09:32:12 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062066CDB9
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A679F6CDBC;
+	Thu, 14 Mar 2024 09:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710408686; cv=none; b=ZuFrr3CvQepMxcVg4wgjQI7WSstPb+5JbEg/nc/X/IBF8wuw/fsL5CBHrSDvPnmn2hq3Sb4nlehmhEj63j/UGKfmWWOw+MVxRSsAtwU0Cmloc8XEvbJ7HFnZQFhNmwQuQP7Emm38ETiY2ha6H6EJq9bXVr5/u0GAPLqX+1QThrc=
+	t=1710408731; cv=none; b=VN2jTnD0fOEOtvYBPqEZp+eSToqvDiZOK370vDSoImLWIJ57rk3MUTduH+9lvlrhOKQPATyk/9AIFnzCGUpCumRi9YIkIYaFG0ZlQC5B/kT+LWg0IuvypSClxguOIyoSpf6lt6O8onXkpjRzG7PhkaN7K10R6Fvgqpqb16k3hJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710408686; c=relaxed/simple;
-	bh=tctNCO0iNDPBNbbPZV7XQSOjqTpL4C0GDrvGQioh7WQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=C4zs4Dwpzw8QHpHMEEB36LFxMmbXJdn4etKjJzHcVIt6x496w7WG1cYTl0dgHNVRvcqKSuRfwgX5xHPBQ+dlgLzYC/Q26wmuGgsoLllKp27bhEYDgih0zDdnW1yVAgWvMk1NxYy7B7T9dva4FygeiArtSZmCk66ohBd/+liUGsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8a6a122b5so54318939f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:31:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710408684; x=1711013484;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UyOGv0mDGqitQD3NP/hm9ku/8l83Ts1p+Vr5MaZs2Ug=;
-        b=J+S6rv3R4I0apxMt0kWUa1TDthadNjNLl22HROFlld7BOyBHGAoStxPLgUqWT1Kblh
-         9UWqjZweOGdwpd9kUNR4DEvJ+4a7TrHpyKhk0M4sb7ykQwQ0IQT4e1YUcP4x7kqTrjDB
-         BzgFrEneycHHjIiCKabNaXMNjitXKJLR6aNKxPvlNNTRo+6Ym+QUmEzIQxHTBv7fo4N4
-         gqTLj5WyLBLzQd8gkUunW9s10Z5gz4GLkJxBLR1Wi1OC0YigjFweuRCDcHJSq1W8U+Kv
-         qRAsuiFV+8AekAgbIJjA43n+CmvXUZ0RVNYVADRIrsQSXiYrr3TB/uSQ5nhYit5ibXT9
-         LM2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUnoRvlhIOc5HpKeQAGE5Lu4G9CdLo4Bin+EccayoMEv/snKgYVJ6a8LoMFPVvPKHOSafm75y8h4xmEz5TuZWU0L0H0zXMAMiyIYjpQ
-X-Gm-Message-State: AOJu0Ywq2115HwCHxv5lGI1kF3Wwqs/LA74O+8YvlHBS5uSS78I8i/Rw
-	RtZ60/DwhzfDCApamVc/9COlK0PgwNjJtO3os4iJGm7lji2L33AiLFGRbzW8dTaC38J4fVaYhFB
-	NWQf3WNbgizwYGQaRkJWbyGeDOmmB17py2a2hU1TWAduOy4PdY5a6JdE=
-X-Google-Smtp-Source: AGHT+IHy2QCuihHNWNBuP86d2l8YZBecoXPOMm9wJpMo4eFdypfJAcBwptAW+Mba6xUzy4Bq7G6u2+nrZvYNcZDQGr1zMiukokPi
+	s=arc-20240116; t=1710408731; c=relaxed/simple;
+	bh=4yJRZjKqPaTm31UQT+k6xPGX1PqZ0dzpVSE3l/nbGGc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pgFtVKfx1Od9E8MTfaxNqf+c0s2GxNsGa4raGXKrbM83TK6Hl7zJiW2xA+haBRK+BkZOjEnsPHSIov/8IkR9cGoy6xm89JeB2onh5Ettj+ORr76qkvAKjEiw9QJC8pNuiAeqxDXIJBrvAF4dqFppq/d5GmvfjvODOgNphU9xVXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from localhost.localdomain (78.37.41.175) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 14 Mar
+ 2024 12:31:57 +0300
+From: Roman Smirnov <r.smirnov@omp.ru>
+To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+CC: Roman Smirnov <r.smirnov@omp.ru>, <linux-usb@vger.kernel.org>,
+	<usb-storage@lists.one-eyed-alien.net>, <linux-kernel@vger.kernel.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>, Karina Yankevich <k.yankevich@omp.ru>,
+	<lvc-project@linuxtesting.org>, <stable@vger.kernel.org>
+Subject: [PATCH] usb: storage: isd200: fix error checks in  isd200_{read,write}_config()
+Date: Thu, 14 Mar 2024 12:31:36 +0300
+Message-ID: <20240314093136.16386-1-r.smirnov@omp.ru>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:272b:b0:476:7265:9bfc with SMTP id
- m43-20020a056638272b00b0047672659bfcmr70416jav.6.1710408684222; Thu, 14 Mar
- 2024 02:31:24 -0700 (PDT)
-Date: Thu, 14 Mar 2024 02:31:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000b4e8806139b8e72@google.com>
-Subject: [syzbot] [xfs?] possible deadlock in xfs_qm_dqget_cache_insert
-From: syzbot <syzbot+8fdff861a781522bda4d@syzkaller.appspotmail.com>
-To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/14/2024 09:10:01
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 184157 [Mar 14 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.4
+X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 10 0.3.10
+ 53c821b925e16276b831986eabc71d60ab82ee60
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;78.37.41.175:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.175
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 03/14/2024 09:14:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 3/14/2024 6:00:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Hello,
+The expression result >= 0 will be true even if usb_stor_ctrl_transfer()
+returns an error code. It is necessary to compare result with
+USB_STOR_XFER_GOOD.
 
-syzbot found the following issue on:
+Found by Linux Verification Center (linuxtesting.org) with Svace.
 
-HEAD commit:    e5e038b7ae9d Merge tag 'fs_for_v6.9-rc1' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1629d9d1180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ce8d253b68e67fe
-dashboard link: https://syzkaller.appspot.com/bug?extid=8fdff861a781522bda4d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e5e038b7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/82ab7eda09bc/vmlinux-e5e038b7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bda17336e65d/bzImage-e5e038b7.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8fdff861a781522bda4d@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-syzkaller-06619-ge5e038b7ae9d #0 Not tainted
-------------------------------------------------------
-syz-executor.0/10102 is trying to acquire lock:
-ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:303 [inline]
-ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3746 [inline]
-ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3827 [inline]
-ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
-
-but task is already holding lock:
-ffff88802712c958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqget_cache_insert.constprop.0+0x2a/0x2c0 fs/xfs/xfs_dquot.c:825
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&qinf->qi_tree_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
-       xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
-       xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
-       do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
-       shrink_slab+0x18a/0x1310 mm/shrinker.c:662
-       shrink_one+0x493/0x7b0 mm/vmscan.c:4767
-       shrink_many mm/vmscan.c:4828 [inline]
-       lru_gen_shrink_node mm/vmscan.c:4929 [inline]
-       shrink_node+0x2191/0x3770 mm/vmscan.c:5888
-       kswapd_shrink_node mm/vmscan.c:6696 [inline]
-       balance_pgdat+0x9d0/0x1a90 mm/vmscan.c:6886
-       kswapd+0x5c1/0xc10 mm/vmscan.c:7146
-       kthread+0x2c1/0x3a0 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-       __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
-       fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3706
-       might_alloc include/linux/sched/mm.h:303 [inline]
-       slab_pre_alloc_hook mm/slub.c:3746 [inline]
-       slab_alloc_node mm/slub.c:3827 [inline]
-       kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
-       radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:276
-       radix_tree_extend+0x1a2/0x4d0 lib/radix-tree.c:425
-       __radix_tree_create lib/radix-tree.c:613 [inline]
-       radix_tree_insert+0x499/0x630 lib/radix-tree.c:712
-       xfs_qm_dqget_cache_insert.constprop.0+0x38/0x2c0 fs/xfs/xfs_dquot.c:826
-       xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:901
-       xfs_qm_vop_dqalloc+0x49a/0xe10 fs/xfs/xfs_qm.c:1755
-       xfs_create+0x422/0x1140 fs/xfs/xfs_inode.c:1041
-       xfs_generic_create+0x631/0x7c0 fs/xfs/xfs_iops.c:199
-       lookup_open.isra.0+0x10a1/0x13c0 fs/namei.c:3497
-       open_last_lookups fs/namei.c:3566 [inline]
-       path_openat+0x92f/0x2990 fs/namei.c:3796
-       do_filp_open+0x1dc/0x430 fs/namei.c:3826
-       do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
-       do_sys_open fs/open.c:1421 [inline]
-       __do_compat_sys_openat fs/open.c:1481 [inline]
-       __se_compat_sys_openat fs/open.c:1479 [inline]
-       __ia32_compat_sys_openat+0x16e/0x210 fs/open.c:1479
-       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
-       __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
-       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
-       entry_SYSENTER_compat_after_hwframe+0x7a/0x84
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&qinf->qi_tree_lock);
-                               lock(fs_reclaim);
-                               lock(&qinf->qi_tree_lock);
-  lock(fs_reclaim);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.0/10102:
- #0: ffff88801e4f0420 (sb_writers#21){.+.+}-{0:0}, at: open_last_lookups fs/namei.c:3555 [inline]
- #0: ffff88801e4f0420 (sb_writers#21){.+.+}-{0:0}, at: path_openat+0x19a7/0x2990 fs/namei.c:3796
- #1: ffff88804c060338 (&inode->i_sb->s_type->i_mutex_dir_key){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
- #1: ffff88804c060338 (&inode->i_sb->s_type->i_mutex_dir_key){+.+.}-{3:3}, at: open_last_lookups fs/namei.c:3563 [inline]
- #1: ffff88804c060338 (&inode->i_sb->s_type->i_mutex_dir_key){+.+.}-{3:3}, at: path_openat+0x8c7/0x2990 fs/namei.c:3796
- #2: ffff88802712c958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqget_cache_insert.constprop.0+0x2a/0x2c0 fs/xfs/xfs_dquot.c:825
-
-stack backtrace:
-CPU: 3 PID: 10102 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-06619-ge5e038b7ae9d #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
- __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
- fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3706
- might_alloc include/linux/sched/mm.h:303 [inline]
- slab_pre_alloc_hook mm/slub.c:3746 [inline]
- slab_alloc_node mm/slub.c:3827 [inline]
- kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
- radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:276
- radix_tree_extend+0x1a2/0x4d0 lib/radix-tree.c:425
- __radix_tree_create lib/radix-tree.c:613 [inline]
- radix_tree_insert+0x499/0x630 lib/radix-tree.c:712
- xfs_qm_dqget_cache_insert.constprop.0+0x38/0x2c0 fs/xfs/xfs_dquot.c:826
- xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:901
- xfs_qm_vop_dqalloc+0x49a/0xe10 fs/xfs/xfs_qm.c:1755
- xfs_create+0x422/0x1140 fs/xfs/xfs_inode.c:1041
- xfs_generic_create+0x631/0x7c0 fs/xfs/xfs_iops.c:199
- lookup_open.isra.0+0x10a1/0x13c0 fs/namei.c:3497
- open_last_lookups fs/namei.c:3566 [inline]
- path_openat+0x92f/0x2990 fs/namei.c:3796
- do_filp_open+0x1dc/0x430 fs/namei.c:3826
- do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_compat_sys_openat fs/open.c:1481 [inline]
- __se_compat_sys_openat fs/open.c:1479 [inline]
- __ia32_compat_sys_openat+0x16e/0x210 fs/open.c:1479
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
- entry_SYSENTER_compat_after_hwframe+0x7a/0x84
-RIP: 0023:0xf7328579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f5f225ac EFLAGS: 00000292 ORIG_RAX: 0000000000000127
-RAX: ffffffffffffffda RBX: 00000000ffffff9c RCX: 00000000200002c0
-RDX: 000000000000275a RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-syz-executor.0 (10102) used greatest stack depth: 20032 bytes left
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-
+Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+Cc: stable@vger.kernel.org
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/usb/storage/isd200.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/usb/storage/isd200.c b/drivers/usb/storage/isd200.c
+index 300aeef160e7..2a1531793820 100644
+--- a/drivers/usb/storage/isd200.c
++++ b/drivers/usb/storage/isd200.c
+@@ -774,7 +774,7 @@ static int isd200_write_config( struct us_data *us )
+ 		(void *) &info->ConfigData, 
+ 		sizeof(info->ConfigData));
+ 
+-	if (result >= 0) {
++	if (result == USB_STOR_XFER_GOOD) {
+ 		usb_stor_dbg(us, "   ISD200 Config Data was written successfully\n");
+ 	} else {
+ 		usb_stor_dbg(us, "   Request to write ISD200 Config Data failed!\n");
+@@ -816,7 +816,7 @@ static int isd200_read_config( struct us_data *us )
+ 		sizeof(info->ConfigData));
+ 
+ 
+-	if (result >= 0) {
++	if (result == USB_STOR_XFER_GOOD) {
+ 		usb_stor_dbg(us, "   Retrieved the following ISD200 Config Data:\n");
+ #ifdef CONFIG_USB_STORAGE_DEBUG
+ 		isd200_log_config(us, info);
+-- 
+2.34.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
