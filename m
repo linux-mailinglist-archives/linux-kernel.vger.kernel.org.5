@@ -1,350 +1,142 @@
-Return-Path: <linux-kernel+bounces-103631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F85A87C22F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:44:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEDD87C231
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019EE1F21F53
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:44:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23F83282EB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CC174BEC;
-	Thu, 14 Mar 2024 17:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07197745F4;
+	Thu, 14 Mar 2024 17:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="g/s7Kuaq"
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="K8/t1/OY"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC7E56B72
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA364745CB
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710438249; cv=none; b=bGFmYjARdCi//2aFhhsqNMLLhW8vCYHuvtPEh2UWp3lOyR+kDq/3dkIda8EvKIe45iThHsEtK2M6PgEQkyZHwDgAL1oLdYW0Pj6L6KHfB9CKxGjY94KaR2GVxKP0fKnb9xPYU3vCa9Eaen5yj1fqQVMgjmPi2zowbDk/dnuxL7s=
+	t=1710438251; cv=none; b=PXslb2ijV1hnASfCBJ82reeJmO7FqZVOKMBviDE05ci2QRZCZj+jaaE33W+jGj6MTRBEW5WUOJnrJyoYp7DrintwbHMdGZkMEw2mTEdE0r9rxKr89WAshNnpFQHszmtO8xf0O5NjTwYS+8QfXoZvZ01jaj+63/6sUsKVA80ROX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710438249; c=relaxed/simple;
-	bh=bMS7qno8XSHcHIJW0LJtjXJv9boRl6FZkAn8WIA0xYU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f+4rfeiJNK7jTJ2PCQ1Q+P03RBupO0scLlOy1uVZPnyxGLi7u0F1szaEKl3+Sc0skGU4JLo4pMMeHpjiqsyUTxOv/kEJvEVJz49qul42z/4hiZRZsUfgaQafhzttuku+MBeWgZFMt3Vg4Wi0wHdUQR+UteXtLKvvFnIVYsToI3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=g/s7Kuaq; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e0f43074edso754589a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:44:05 -0700 (PDT)
+	s=arc-20240116; t=1710438251; c=relaxed/simple;
+	bh=M8N5oZ+/LXyAzxuvMsSQY7clk0qZgqtmEHzrADgnLm0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=k+b/XmV8ysnTrQ0SMvK80PcyuPkztune7nJ9zPIq85idoR3T78E8Dc3iJ3JHs25KlMuzYrgwBiuI2f4/MrrbNXRlFK6+QDRqBsj5NKx8A/48JYBQyiZefHgzH0upHmiE7uECLPLYBHg39HhYIVgk+5o/hFLHQQRa0BXPdWjG2W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=K8/t1/OY; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56845954fffso1412019a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:44:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710438245; x=1711043045; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nHqMVr9UoBNoXr00r6Tp/14yR/buvgklUKV5jTJKppk=;
-        b=g/s7Kuaq2Tsre3aOqhhurHu8KqpkJQIBZXh4ZW7KNQj0nB7xNXaxQsef1UHqIX5dqI
-         m3KHCa81hpAC0QD5Qgef4gkFxk3PYXihrhoZGPI0GvcsctTmCOoIH/NAj02IthZCERvR
-         ogloJ+OXTmtHKn+plaKNoSpE9Q3biy8DL8LnusGPwrDytDioVRqS1TjOtHStcZBMXJKB
-         i5lgp+yfN9fjGdDrjaE8dzsnFVo30hGlmor384VRNZH0CNzjEgw57Yy65eXQoMCZhdd2
-         pN1fMiv+ShODba2lFX8+RTDJvEhFKwqRKXks9PVpewK/bDyRYcRs/gtaVMhB05cvTDvN
-         frWg==
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1710438247; x=1711043047; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M8N5oZ+/LXyAzxuvMsSQY7clk0qZgqtmEHzrADgnLm0=;
+        b=K8/t1/OYbSELH/AtbRGJwsePiQxm+LDoKKW0vrSdTde+JD/3ZSmnWCiMW2yKs0mM7C
+         7zLpX6Qhd4b/GIAi31zs5Qp21xTShppS8JrErW/WcbBAAoQPxnuVCnEDm/PrWReSC0hK
+         NFfOgnMx7cAuB3DZ6Oc7d/vTh3mxva4lt7vYa4xp364LeX4tSvy6dR8nbVmlIajxjxRO
+         4PF37gKpklHycQP5TXgOAJoXuaT0oWq8ARuI6hiQOTSyhzcUWuk+wNFuN0s4YtBMScCB
+         Wa/o/ik8crXx4saXDaf9ReNyh2kAZlpFvEr3Ce166+5DzYGYenkaPj1F/MsTZF/L+EVj
+         7mFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710438245; x=1711043045;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nHqMVr9UoBNoXr00r6Tp/14yR/buvgklUKV5jTJKppk=;
-        b=S+UoVdwSa2n/coeMXsWvbpu4himb6dg6XPVR7MNz5jqelEkJmKPgGOpCO21hECET+n
-         XzyD7Wyu7garLY5wN9JlHvjGJyIQWZ20zqUzzwUHsTrJKqOXySPkpNnoB2SCHpjewE1t
-         NsmGgUAzXzdt3vzXuO205eBT1qEA1JacCF6Z4xArkjjYenUMIcjZTjyD0mL2hlLUINYG
-         XJCamjeeW8DdopAP/f+7Ru3NwF0/fqDco6op6mj+gVHjAttGvsI1bL4kxNZBLcTUU421
-         wkuJ6xK67YT9d/BZTjMKEtX5SDYuAy+3pJDYw+uo0e4We2WH5PT8UABB6iKIDj2T6Ebj
-         KZiA==
-X-Forwarded-Encrypted: i=1; AJvYcCVp3ueBC8IDeN+ZTTrJ09Y4doJsjsvrsbC+BVKn173jxxZ1c++8BqEn+5yT/9nBjv6kNJZiiNq44x/oyUFSeeqZ0FdI0aGH/Fib6OIW
-X-Gm-Message-State: AOJu0Yx4vALvkTsJb47M5RJ8dZ8/Bktlg844c3XqSlQrXybiBnTChI2n
-	KpVhrQzCt3s7d0JxQsF2D+cSdSBQStLg7ZW+BFLTxQ5HDdinpYhQabSwOlQ1Oeo=
-X-Google-Smtp-Source: AGHT+IGdtktP+Xf4JI7z1bvWIBvxBKgA4BmXthfJugWlroQCdhg1pC5mQLDBnb9MxZXgmfeMA8sxOg==
-X-Received: by 2002:a9d:6b15:0:b0:6e5:42cc:8f21 with SMTP id g21-20020a9d6b15000000b006e542cc8f21mr1314207otp.6.1710438244854;
-        Thu, 14 Mar 2024 10:44:04 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id w1-20020a9d5381000000b006e5273c35e5sm358461otg.64.2024.03.14.10.44.03
+        d=1e100.net; s=20230601; t=1710438247; x=1711043047;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M8N5oZ+/LXyAzxuvMsSQY7clk0qZgqtmEHzrADgnLm0=;
+        b=AsK3fzcnPBHg0kCAWIx5U6PZhec0w5V3p/dAzJrSH6C3LC7sNciJi2q2Tinc2P6TOi
+         udaX4+uWYu5mIPB0NzdPoKVYW2Yjk5rtCTTbZkHdQqCSngUHgnVV9X+ugx+xEU6KZw2B
+         qNxKB9Dg9G+IXeMraa8p8lQ8DgRmfZI6lsxCl3iDq5zWAcs1/hg/gdQOXex4UMvcQDrR
+         rhLcITmIkkAviH6pZr2LOKiBNMz0pTfvSqU/zk5vBrsF7SUj99mOcnj3HcOfl7AJsVNO
+         PM2YXM5B3KKDPZF+Itwgon4pzRXsHP9LYgZO+s2EtFWqwDXSQ4GVj3gWSX92vbaVWlYj
+         JbAg==
+X-Forwarded-Encrypted: i=1; AJvYcCULPPGwDQ4Ht/YEXi7v9f4pXaJ/ZLjGYy+VmjtCLVmtCVGD4WaE6tFTGQwBu5Lg3nP1vAZd8M5dp79lcJHLEiLSyBD/iEbUzfAP+qoh
+X-Gm-Message-State: AOJu0YxHeYo6nws6mrespB8y/R3SlJYQm0R7CMoTtJVGXqgpddHEj+A1
+	EqASfHq777gq7Y+IQDPb4uR9Lnx9vHPhmQkxxZrkQozyxCG+MeiRGJUbm5yVcUo=
+X-Google-Smtp-Source: AGHT+IGNGmhd6c8fk9N36efORaPKI9EAIHgsWOB21RuI53fwrlIxyX+LzZWbPTSK4HG2OUGeBRQDIA==
+X-Received: by 2002:aa7:dd0f:0:b0:565:b456:435d with SMTP id i15-20020aa7dd0f000000b00565b456435dmr1018190edv.17.1710438246623;
+        Thu, 14 Mar 2024 10:44:06 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id s4-20020aa7d784000000b0056486eaa669sm899978edq.50.2024.03.14.10.44.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 10:44:04 -0700 (PDT)
-From: David Lechner <dlechner@baylibre.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
-Date: Thu, 14 Mar 2024 12:43:38 -0500
-Message-ID: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
-X-Mailer: git-send-email 2.43.2
+        Thu, 14 Mar 2024 10:44:06 -0700 (PDT)
+From: Andreas Hindborg <nmi@metaspace.dk>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: Philipp Stanner <pstanner@redhat.com>,  Jens Axboe <axboe@kernel.dk>,
+  Christoph Hellwig <hch@lst.de>,  Keith Busch <kbusch@kernel.org>,  Damien
+ Le Moal <Damien.LeMoal@wdc.com>,  Hannes Reinecke <hare@suse.de>,
+  "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,  Andreas
+ Hindborg <a.hindborg@samsung.com>,  Niklas Cassel <Niklas.Cassel@wdc.com>,
+  Greg KH <gregkh@linuxfoundation.org>,  Matthew Wilcox
+ <willy@infradead.org>,  Miguel Ojeda <ojeda@kernel.org>,  Alex Gaynor
+ <alex.gaynor@gmail.com>,  Wedson Almeida Filho <wedsonaf@gmail.com>,
+  Boqun Feng <boqun.feng@gmail.com>,  Gary Guo <gary@garyguo.net>,
+  =?utf-8?Q?Bj=C3=B6rn?=
+ Roy Baron <bjorn3_gh@protonmail.com>,  Benno Lossin
+ <benno.lossin@proton.me>,  Alice Ryhl <aliceryhl@google.com>,  Chaitanya
+ Kulkarni <chaitanyak@nvidia.com>,  Luis Chamberlain <mcgrof@kernel.org>,
+  Yexuan Yang <1182282462@bupt.edu.cn>,  Sergio =?utf-8?Q?Gonz=C3=A1lez?=
+ Collado
+ <sergio.collado@gmail.com>,  Joel Granados <j.granados@samsung.com>,
+  "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,  Daniel Gomez
+ <da.gomez@samsung.com>,  open list <linux-kernel@vger.kernel.org>,
+  "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+  "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+  "gost.dev@samsung.com" <gost.dev@samsung.com>
+Subject: Re: [RFC PATCH 0/5] Rust block device driver API and null block driver
+In-Reply-To: <5f502f91-0450-454d-ae8f-36223920532e@acm.org> (Bart Van Assche's
+	message of "Thu, 14 Mar 2024 10:03:28 -0700")
+References: <20240313110515.70088-1-nmi@metaspace.dk>
+	<855a006d-5afc-4f70-90a9-ec94c0414d4f@acm.org>
+	<c38358c418d4db11221093d7c38c080e4c2d737f.camel@redhat.com>
+	<5f502f91-0450-454d-ae8f-36223920532e@acm.org>
+User-Agent: mu4e 1.12.0; emacs 29.2
+Date: Thu, 14 Mar 2024 18:43:56 +0100
+Message-ID: <87y1akso83.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.4
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-This adds support for AD7944 ADCs wired in "3-wire mode". (NOTE: 3-wire
-is the datasheet name for this wiring configuration and has nothing to
-do with SPI_3WIRE.)
 
-In the 3-wire mode, the SPI controller CS line can be wired to the CNV
-line on the ADC and used to trigger conversions rather that using a
-separate GPIO line.
+Hi Bart,
 
-The turbo/chain mode compatibility check at the end of the probe
-function is technically can't be triggered right now but adding it now
-anyway so that we don't forget to add it later when support for
-daisy-chaining is added.
+Bart Van Assche <bvanassche@acm.org> writes:
+> On 3/14/24 05:14, Philipp Stanner wrote:
+>> On Wed, 2024-03-13 at 11:02 -0700, Bart Van Assche wrote:
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
-Changes in v2:
-- Use default: in case statements.
-- Remove redundant else.
-- Explain turbo/chain mode check in commit message.
-- Link to v1: https://lore.kernel.org/r/20240311-mainline-ad7944-3-wire-mode-v1-1-8e8199efa1f7@baylibre.com
----
- drivers/iio/adc/ad7944.c | 157 +++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 139 insertions(+), 18 deletions(-)
+[...]
 
-diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
-index adb007cdd287..d5ec6b5a41c7 100644
---- a/drivers/iio/adc/ad7944.c
-+++ b/drivers/iio/adc/ad7944.c
-@@ -32,8 +32,25 @@ struct ad7944_timing_spec {
- 	unsigned int turbo_conv_ns;
- };
- 
-+enum ad7944_spi_mode {
-+	/* datasheet calls this "4-wire mode" */
-+	AD7944_SPI_MODE_DEFAULT,
-+	/* datasheet calls this "3-wire mode" (not related to SPI_3WIRE!) */
-+	AD7944_SPI_MODE_SINGLE,
-+	/* datasheet calls this "chain mode" */
-+	AD7944_SPI_MODE_CHAIN,
-+};
-+
-+/* maps adi,spi-mode property value to enum */
-+static const char * const ad7944_spi_modes[] = {
-+	[AD7944_SPI_MODE_DEFAULT] = "",
-+	[AD7944_SPI_MODE_SINGLE] = "single",
-+	[AD7944_SPI_MODE_CHAIN] = "chain",
-+};
-+
- struct ad7944_adc {
- 	struct spi_device *spi;
-+	enum ad7944_spi_mode spi_mode;
- 	/* Chip-specific timing specifications. */
- 	const struct ad7944_timing_spec *timing_spec;
- 	/* GPIO connected to CNV pin. */
-@@ -58,6 +75,9 @@ struct ad7944_adc {
- 	 } sample __aligned(IIO_DMA_MINALIGN);
- };
- 
-+/* quite time before CNV rising edge */
-+#define T_QUIET_NS	20
-+
- static const struct ad7944_timing_spec ad7944_timing_spec = {
- 	.conv_ns = 420,
- 	.turbo_conv_ns = 320,
-@@ -110,6 +130,65 @@ AD7944_DEFINE_CHIP_INFO(ad7985, ad7944, 16, 0);
- /* fully differential */
- AD7944_DEFINE_CHIP_INFO(ad7986, ad7986, 18, 1);
- 
-+/*
-+ * ad7944_3wire_cs_mode_conversion - Perform a 3-wire CS mode conversion and
-+ *                                   acquisition
-+ * @adc: The ADC device structure
-+ * @chan: The channel specification
-+ * Return: 0 on success, a negative error code on failure
-+ *
-+ * This performs a conversion and reads data when the chip is wired in 3-wire
-+ * mode with the CNV line on the ADC tied to the CS line on the SPI controller.
-+ *
-+ * Upon successful return adc->sample.raw will contain the conversion result.
-+ */
-+static int ad7944_3wire_cs_mode_conversion(struct ad7944_adc *adc,
-+					   const struct iio_chan_spec *chan)
-+{
-+	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
-+						   : adc->timing_spec->conv_ns;
-+	struct spi_transfer xfers[] = {
-+		{
-+			/*
-+			 * NB: can get better performance from some SPI
-+			 * controllers if we use the same bits_per_word
-+			 * in every transfer.
-+			 */
-+			.bits_per_word = chan->scan_type.realbits,
-+			/*
-+			 * CS is tied to CNV and we need a low to high
-+			 * transition to start the conversion, so place CNV
-+			 * low for t_QUIET to prepare for this.
-+			 */
-+			.delay = {
-+				.value = T_QUIET_NS,
-+				.unit = SPI_DELAY_UNIT_NSECS,
-+			},
-+
-+		},
-+		{
-+			.bits_per_word = chan->scan_type.realbits,
-+			/*
-+			 * CS has to be high for full conversion time to avoid
-+			 * triggering the busy indication.
-+			 */
-+			.cs_off = 1,
-+			.delay = {
-+				.value = t_conv_ns,
-+				.unit = SPI_DELAY_UNIT_NSECS,
-+			},
-+		},
-+		{
-+			/* Then we can read the data during the acquisition phase */
-+			.rx_buf = &adc->sample.raw,
-+			.len = BITS_TO_BYTES(chan->scan_type.storagebits),
-+			.bits_per_word = chan->scan_type.realbits,
-+		},
-+	};
-+
-+	return spi_sync_transfer(adc->spi, xfers, ARRAY_SIZE(xfers));
-+}
-+
- /*
-  * ad7944_4wire_mode_conversion - Perform a 4-wire mode conversion and acquisition
-  * @adc: The ADC device structure
-@@ -167,9 +246,22 @@ static int ad7944_single_conversion(struct ad7944_adc *adc,
- {
- 	int ret;
- 
--	ret = ad7944_4wire_mode_conversion(adc, chan);
--	if (ret)
--		return ret;
-+	switch (adc->spi_mode) {
-+	case AD7944_SPI_MODE_DEFAULT:
-+		ret = ad7944_4wire_mode_conversion(adc, chan);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	case AD7944_SPI_MODE_SINGLE:
-+		ret = ad7944_3wire_cs_mode_conversion(adc, chan);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
- 
- 	if (chan->scan_type.storagebits > 16)
- 		*val = adc->sample.raw.u32;
-@@ -230,9 +322,23 @@ static irqreturn_t ad7944_trigger_handler(int irq, void *p)
- 	struct ad7944_adc *adc = iio_priv(indio_dev);
- 	int ret;
- 
--	ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
--	if (ret)
-+	switch (adc->spi_mode) {
-+	case AD7944_SPI_MODE_DEFAULT:
-+		ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
-+		if (ret)
-+			goto out;
-+
-+		break;
-+	case AD7944_SPI_MODE_SINGLE:
-+		ret = ad7944_3wire_cs_mode_conversion(adc, &indio_dev->channels[0]);
-+		if (ret)
-+			goto out;
-+
-+		break;
-+	default:
-+		/* not supported */
- 		goto out;
-+	}
- 
- 	iio_push_to_buffers_with_timestamp(indio_dev, &adc->sample.raw,
- 					   pf->timestamp);
-@@ -260,16 +366,9 @@ static int ad7944_probe(struct spi_device *spi)
- 	struct ad7944_adc *adc;
- 	bool have_refin = false;
- 	struct regulator *ref;
-+	const char *str_val;
- 	int ret;
- 
--	/*
--	 * driver currently only supports the conventional "4-wire" mode and
--	 * not other special wiring configurations.
--	 */
--	if (device_property_present(dev, "adi,spi-mode"))
--		return dev_err_probe(dev, -EINVAL,
--				     "adi,spi-mode is not currently supported\n");
--
- 	indio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
- 	if (!indio_dev)
- 		return -ENOMEM;
-@@ -283,6 +382,22 @@ static int ad7944_probe(struct spi_device *spi)
- 
- 	adc->timing_spec = chip_info->timing_spec;
- 
-+	if (device_property_read_string(dev, "adi,spi-mode", &str_val) == 0) {
-+		ret = sysfs_match_string(ad7944_spi_modes, str_val);
-+		if (ret < 0)
-+			return dev_err_probe(dev, -EINVAL,
-+					     "unsupported adi,spi-mode\n");
-+
-+		adc->spi_mode = ret;
-+	} else {
-+		/* absence of adi,spi-mode property means default mode */
-+		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
-+	}
-+
-+	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "chain mode is not implemented\n");
-+
- 	/*
- 	 * Some chips use unusual word sizes, so check now instead of waiting
- 	 * for the first xfer.
-@@ -349,15 +464,17 @@ static int ad7944_probe(struct spi_device *spi)
- 		adc->ref_mv = AD7944_INTERNAL_REF_MV;
- 	}
- 
--	/*
--	 * CNV gpio is required in 4-wire mode which is the only currently
--	 * supported mode.
--	 */
--	adc->cnv = devm_gpiod_get(dev, "cnv", GPIOD_OUT_LOW);
-+	adc->cnv = devm_gpiod_get_optional(dev, "cnv", GPIOD_OUT_LOW);
- 	if (IS_ERR(adc->cnv))
- 		return dev_err_probe(dev, PTR_ERR(adc->cnv),
- 				     "failed to get CNV GPIO\n");
- 
-+	if (!adc->cnv && adc->spi_mode == AD7944_SPI_MODE_DEFAULT)
-+		return dev_err_probe(&spi->dev, -EINVAL, "CNV GPIO is required\n");
-+	if (adc->cnv && adc->spi_mode != AD7944_SPI_MODE_DEFAULT)
-+		return dev_err_probe(&spi->dev, -EINVAL,
-+				     "CNV GPIO in single and chain mode is not currently supported\n");
-+
- 	adc->turbo = devm_gpiod_get_optional(dev, "turbo", GPIOD_OUT_LOW);
- 	if (IS_ERR(adc->turbo))
- 		return dev_err_probe(dev, PTR_ERR(adc->turbo),
-@@ -369,6 +486,10 @@ static int ad7944_probe(struct spi_device *spi)
- 		return dev_err_probe(dev, -EINVAL,
- 			"cannot have both turbo-gpios and adi,always-turbo\n");
- 
-+	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN && adc->always_turbo)
-+		return dev_err_probe(dev, -EINVAL,
-+			"cannot have both chain mode and always turbo\n");
-+
- 	indio_dev->name = chip_info->name;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->info = &ad7944_iio_info;
+>> One of the stronger arguments behind the push for Rust is that the
+>> language by design forces you to obey, because otherwise the compiler
+>> will just reject building.
+>
+> Rust has a very significant disadvantage that memory-safe C/C++ won't
+> have: supporting Rust means adding Rust bindings for all C functions
+> called from Rust code. This forces everyone who wants to change an
+> interface to also change the Rust bindings and hence will make it
+> harder to maintain the Linux kernel in its entirety.
 
----
-base-commit: bbafdb305d6b00934cc09a90ec1bb659d43e5171
-change-id: 20240311-mainline-ad7944-3-wire-mode-c240fe8af979
+I think you might be missing a key point here. We actually generate Rust
+bindings to the existing C kernel automatically. No hand editing
+required, except for some corner cases we currently have with static
+methods and certain macros. If we just wanted to call the C APIa
+directly, there would be no engineering required. The main reason to
+deploy Rust would also go away, we might as well stay in C.
+
+The actual engineering effort goes into building memory safe versions of
+the C APIs. This requirement will not magically go away, no matter what
+memory safe language (or language extensions) your use to interface the
+existing unsafe C APIs.
+
+Best regards,
+Andreas
 
