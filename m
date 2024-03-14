@@ -1,105 +1,122 @@
-Return-Path: <linux-kernel+bounces-103843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DC4C87C54F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:43:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDCB87C551
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DDD1B219CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:43:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 302581F22056
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:44:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D68F101CF;
-	Thu, 14 Mar 2024 22:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE7C6119;
+	Thu, 14 Mar 2024 22:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TL1JK3Da"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uv5ZnILg"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1CC749A;
-	Thu, 14 Mar 2024 22:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586C7D27E;
+	Thu, 14 Mar 2024 22:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710456172; cv=none; b=BCmr6dyG1secgbl9WBjICf5FOnwuyjx+/oapXz4Z1IryDrUVNMBaDA7wXFzYjM+SLB5cxhlcjyXi1w20WG4Et5JsPIuV1cfosyhV3ezwklVPn7ROUy2A4iGUZ9cW7mLxzEIYRP9o2t/rELbNCDHg5cT5O0Ev9ES6DF0+4MJknvg=
+	t=1710456243; cv=none; b=PlBY4euEfMQ8I4VKXrEq1rMtnjXqxFss16SMGtiSMf0lDfntp5UWHL+cB7+Yml7SZUuYN2WsKKcmAdphXcj0M4DvFryoNpuNbB5wKf35379tPFQ+kukLvs+6LCIWFQGhXpCRfzB7mdrKF1pleHlVC6kyNYy/hr/BE8eQfZeZKik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710456172; c=relaxed/simple;
-	bh=U45zB3+40tmVIhF5iKt03Xdrdh8+Z7vW7QN+7y5B3f0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LB5Wb3hQ98+4qPYjE5RspExN3TQo+lo5Is+cx7p+cGooHVZO1SUVPRJclUMvpm+X1fpOHBTQCDRC5w4XkCLg+mbxnVpfQm4tYYUDJeQulI7J6E7RyHg0BlbvzBY1zbCud9RYe4CrhQMuIoZVu4tk7EdhxY4kqiC4mW+VwUqhOlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TL1JK3Da; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F7C9C433C7;
-	Thu, 14 Mar 2024 22:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710456171;
-	bh=U45zB3+40tmVIhF5iKt03Xdrdh8+Z7vW7QN+7y5B3f0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TL1JK3Dai/kz4OGSXOftYv022x+e7Q4s6+0rQaw50afW+buujjI7SqPnwHoAH/3aY
-	 mHTeNCNm02z8wXyaMCJODN+iXSFMO5ZqOrHw6II6qseUS3PXj/GAIKs2k3exN0FaMG
-	 lgbBhDkTmXnrCvS40pNbF3ZnvBEUlCKF1ne+k8VzuEVhYpEglNHD41xcRqtveNNHb0
-	 5zJFI9JPRdFPROEN46yi+IL95kRvDd7R2MZNGlrZ0+JIHP972CJ8zYnOHQCaTLhiDZ
-	 ouFccyuRjCmD0Wx7PCvr2x5nVuP6IV9lwMrD/Xt8W4JeMxTlXrcUrM0JHh/VAe2C68
-	 3WGbOwnNpaulg==
-Date: Thu, 14 Mar 2024 15:42:48 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Cc: <j.granados@samsung.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexander
- Aring <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern
- <dsahern@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, Matthieu Baerts
- <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, Geliang Tang
- <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Remi
- Denis-Courmont <courmisch@gmail.com>, Allison Henderson
- <allison.henderson@oracle.com>, David Howells <dhowells@redhat.com>, Marc
- Dionne <marc.dionne@auristor.com>, Marcelo Ricardo Leitner
- <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>, "D. Wythe"
- <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>, Wen Gu
- <guwen@linux.alibaba.com>, Trond Myklebust
- <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck
- Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil
- Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
- <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Jon Maloy
- <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>, Martin Schiller
- <ms@dev.tdt.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik
- <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, Roopa Prabhu
- <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, Simon Horman
- <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Joerg Reuter
- <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook
- <keescook@chromium.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
- linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org
-Subject: Re: [PATCH 0/4] sysctl: Remove sentinel elements from networking
-Message-ID: <20240314154248.155d96a4@kernel.org>
-In-Reply-To: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
-References: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
+	s=arc-20240116; t=1710456243; c=relaxed/simple;
+	bh=QvqpKGOSYA7BSdeUsCnKtWmV5OlW1reNtVj8Tc2WIzw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=up4tEfQRFtZw8A5BBbg0m/vImcCmg0fGoo5c4SmhZ73D1iaB0iNuFV/220jn0m29Q//5z6xxonEMCDnKEsfdLf9au9Oyp/gtTjTx5cH86zluJE4kyJOCubpt0/T3rkgLqo7VBqZjTxPCkHbPfsRuB7ebsPoZe4WiqO96KBLNJxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uv5ZnILg; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d24a727f78so17706941fa.0;
+        Thu, 14 Mar 2024 15:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710456239; x=1711061039; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISa+awojIIIvyhV6jEcmOsx8uIkeDM0sI+hIucia5Po=;
+        b=Uv5ZnILgJB949itKGrs7q3cgrYGp0zv5H7kVjlGrxsIqYnCGoz+cyIyioimawhxgcK
+         RgVAvnTa1svx6kH7luwB31Kt/NgAp0WAR0Y9Nonxcveg9R0y1GqtPXZJsc60oH2c9tYc
+         A6ei2ln8VTb04knICIBPhT55Y/v4TwGHU9NGuB0AclC9P9V2CyUA8Hr+zabHnFOo3CLf
+         cmMnlbbEk3hdsg2n+FR0Yr+Ohtc5QzAUomishJzKoAWLvshhGzGuW0L5g7uKhJo+QT5O
+         9guA10bzQJvy9CQmNB3dsxTeX+CufNuEVNkxg1mdZkMx/jkZZmfQ21vTMTNEm909r8MF
+         5gyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710456239; x=1711061039;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ISa+awojIIIvyhV6jEcmOsx8uIkeDM0sI+hIucia5Po=;
+        b=WrCRAFGmFy+kyvfN9kEX50N5uJDgztT/6PuiUKq/OBR1MQmsfYCxY0HS+vUzDA2WtA
+         PaZs3OXgu5IlDEC85fQNdhqyUe/+wpmhKiIaAOOvkFOs+gi/K5mNr7Zsp8FqF4JZKj2Y
+         O16bXuCTvd6kyoj5jbVxo90Vx3aTRK+IZnSJM49L2J072iWN+0w4Fgxmr2sRBwK3zSxP
+         tfW1QTm3I3NwfyFUXrHWcZyLtUonbaZUOcQGwJ0UoZzvIsvI/zEUgwmtBmE7D4omalf8
+         346G6w1010DL8kuRV3m58KqlttywN6I1t9mRc2j+9rwDX5VP3w8JlMKlQrJgZON/LR4J
+         9Yew==
+X-Forwarded-Encrypted: i=1; AJvYcCVByokcY95NfOMjwi8hxBPKtm0hFSh1nzlf87lWVJ3dRQmHbuGQH8uQwy3lB34HcIgPRow3YVq09Ts3uq/2j2/Qp67WdFStDHFFRqkm7UZvLUjdp95gQbpOvzfeBT44V5pFQOlkjcV1rleGjKYN
+X-Gm-Message-State: AOJu0YzFmSu3GE2uGJrSA9WE9VTxpYVzvpdIyMNf0S83kfW1aXVBQrGR
+	C7+9dwbcYVdtaYYA7kvL6q7AxoBhv9QWlLY28XEl+zCjByujhw==
+X-Google-Smtp-Source: AGHT+IEXWWIpfxd6KpsM9cgZ0hDPWGIK0f8y7B4rBKG9tFq30Ks7c79r6cslIcDcQUlAbJiSoHGfEg==
+X-Received: by 2002:a2e:9b99:0:b0:2d3:4c3f:c12d with SMTP id z25-20020a2e9b99000000b002d34c3fc12dmr2257744lji.26.1710456239298;
+        Thu, 14 Mar 2024 15:43:59 -0700 (PDT)
+Received: from localhost.localdomain ([85.89.127.166])
+        by smtp.gmail.com with ESMTPSA id f14-20020a2e6a0e000000b002d0f0f5e395sm284838ljc.47.2024.03.14.15.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 15:43:58 -0700 (PDT)
+From: Shengyu Li <shengyu.li.evgeny@gmail.com>
+To: shuah@kernel.org
+Cc: luto@amacapital.net,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	wad@chromium.org,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>
+Subject: [PATCH] selftests/harness: Prevent infinite loop due to Assert in FIXTURE_TEARDOWN
+Date: Fri, 15 Mar 2024 06:43:23 +0800
+Message-Id: <20240314224323.23201-1-shengyu.li.evgeny@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu, 14 Mar 2024 20:20:40 +0100 Joel Granados via B4 Relay wrote:
-> These commits remove the sentinel element (last empty element) from the
-> sysctl arrays of all the files under the "net/" directory that register
-> a sysctl array. The merging of the preparation patches [4] to mainline
-> allows us to just remove sentinel elements without changing behavior.
-> This is safe because the sysctl registration code (register_sysctl() and
-> friends) use the array size in addition to checking for a sentinel [1].
+This patch addresses an issue in the selftests/harness where an assertion within FIXTURE_TEARDOWN could trigger an infinite loop. The problem arises because the teardown procedure is meant to execute once, but the presence of failing assertions (ASSERT_EQ(0, 1)) leads to repeated attempts to execute teardown due to the long jump mechanism used by the harness for handling assertions.
 
-Thanks, but please resend after the merge window, we don't apply
-code to -next until -rc1 is cut.
+To resolve this, the patch ensures that the teardown process runs only once, regardless of assertion outcomes, preventing the infinite loop and allowing tests to fail.
+
+Signed-off-by: Shengyu Li <shengyu.li.evgeny@gmail.com>
+---
+ tools/testing/selftests/kselftest_harness.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+index 4fd735e48ee7..230d62884885 100644
+--- a/tools/testing/selftests/kselftest_harness.h
++++ b/tools/testing/selftests/kselftest_harness.h
+@@ -383,6 +383,7 @@
+ 		FIXTURE_DATA(fixture_name) self; \
+ 		pid_t child = 1; \
+ 		int status = 0; \
++		bool jmp = false; \
+ 		memset(&self, 0, sizeof(FIXTURE_DATA(fixture_name))); \
+ 		if (setjmp(_metadata->env) == 0) { \
+ 			/* Use the same _metadata. */ \
+@@ -399,8 +400,10 @@
+ 				_metadata->exit_code = KSFT_FAIL; \
+ 			} \
+ 		} \
++		else \
++			jmp = true; \
+ 		if (child == 0) { \
+-			if (_metadata->setup_completed && !_metadata->teardown_parent) \
++			if (_metadata->setup_completed && !_metadata->teardown_parent && !jmp) \
+ 				fixture_name##_teardown(_metadata, &self, variant->data); \
+ 			_exit(0); \
+ 		} \
 -- 
-pw-bot: defer
+2.25.1
+
 
