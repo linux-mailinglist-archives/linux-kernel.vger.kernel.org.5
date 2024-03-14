@@ -1,146 +1,194 @@
-Return-Path: <linux-kernel+bounces-103063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DDB387BA89
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:36:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF99287BA8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:37:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D2CD1F231DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:36:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96836283B5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D493B6CDD3;
-	Thu, 14 Mar 2024 09:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C426CDD5;
+	Thu, 14 Mar 2024 09:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="okLkm7DI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wtUhg6uv"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CUWeeBGl"
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE97D6BFAC;
-	Thu, 14 Mar 2024 09:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F9794D9E3
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710408953; cv=none; b=FJSppmJDzO6CXtmg0maAYGF3e/hyFlWf/NeSg5c6/NJwvVumQfgFyQ1JZe0nI69IWzgyv4pG2caUDZi7zD25jWVHoxwjtlW3nCmPH8l/H6z/WLOR3n5lneZI2IO7O3nFsCSImtly72Ow6m+P2/PkccJYroLuD1rqfig/mC3Da84=
+	t=1710409016; cv=none; b=KtjOUAdaljDMxv+bdgtD8q0SfLuNDs4EbxJiVs24hxQfXhMU/sjRBOzP8C2bRb10E4Ht52SAP4ZBlygXx9MoWlXKEHYxl0lgaLp7cDsBUS+Xt8uoHRbXn/B+zb8japYsfOtzo9IA7HhJ267RHLhkw+QZlFgF+RsmRXGE746a8hU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710408953; c=relaxed/simple;
-	bh=QBRFnshAWRpfqZwjRMRRzAQGvNYMEcWoioZjdVTx8Bc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E8Vv7s8M6rnVXpp0ZOhQXa8dIA9fU2z9Wnm6+NKwTSvz/PvmxpWrx31kM2ANWreyj248jtFnzjwncNGhH4Gzm2p3YbOR1FvtHEcaNq7JONyIc+dFwcJj4eGaBmi/JvzF7gTTF0AivpeAGzE9443TkopU9h9Vm5IFDKdFzRNWCek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=okLkm7DI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wtUhg6uv; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 14 Mar 2024 10:35:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710408949;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wASLV8yYd2a3kgb3Xdjj61PCbQ4m+ePsepX+ftyYcfM=;
-	b=okLkm7DISwWuq6CYgUsuPUcBQ1qhijHwpQ4QxK8ZP/LtjI7BH5UNbckx2niGt8NWaC4k4F
-	cSagUr9zNkAqHVbKVFVXdOjxCgPR8Fd1OHd215OvZcUab05qsKVoa0yxPYoVpfzyzLt99Q
-	fbqv52atGQI/y6oOHzbHtqjdN2AFNZGoOhgkQOXkEalPkzmRaMgEJc21AnYTpnn+V6aJym
-	W3KuG96Rrl2tbCsPh3JQIf6LXUbdEBa/2kXUiLj6vpf5lRBzJvepeTXLZYxL55f4T9xEss
-	IU0ctxQsKeZC5DMLBA+ZxSPmFjMRet9dKoNkD1j7AkCpiciyaQHEIeZZz8wwdg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710408949;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wASLV8yYd2a3kgb3Xdjj61PCbQ4m+ePsepX+ftyYcfM=;
-	b=wtUhg6uviL4gNhG65TvaChxmRYcuOIUhatvlARTbB/HTSwwS+jd/XwCISj+I19G3ZOy6MJ
-	SvT8ON8QG95JhrDA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Marco Elver <elver@google.com>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 2/4] perf: Enqueue SIGTRAP always via task_work.
-Message-ID: <20240314093548.sVPg_3b9@linutronix.de>
-References: <20240312180814.3373778-1-bigeasy@linutronix.de>
- <20240312180814.3373778-3-bigeasy@linutronix.de>
- <CANpmjNNYNxMMSdWFiPiT3i888fi8--k_H0xMX7i17VCT97vARg@mail.gmail.com>
+	s=arc-20240116; t=1710409016; c=relaxed/simple;
+	bh=1kL2QN6WVKz8gSy0PyRVHEePyuYyXifXRN8NSSLj2C8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ApeUdDc3/FXjaY/H5kg0F+JJAD/89qcQ5pIv92ggGuJ6r3TSL63Yl/z/HLBnRKBd5o5XssJbBF0RkwbtMv/aU/XeklBc21KpuvAdSMfZ4xO+rtIYZ6hbSvNZrgEzadWmB4tu8gShzkX8ZeNolkFEGqnUvlru6XCKpXq48weUc/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CUWeeBGl; arc=none smtp.client-ip=209.85.217.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-474c44ac8aeso215597137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710409014; x=1711013814; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rFCyko4UygTC+eA1DqHkphcPHLw6z/FvgDsZ8y5K0hc=;
+        b=CUWeeBGlWyiP6E1YQSxhVNq28+HtealEt6mX/CZk+e+9zIKM3GCsm0WjhPqrEBS+SN
+         UVcZeMAdhCMXcNFNtkPDjhaFFcz5jrnIeSou1Oz6m0cp7RZjQsK807eXwTiME/19jAcO
+         rHgbFOfE2sP1pmS2ZD+8T5B/50QNZ+liqwtIB/QZevwrMPNknIit6/ApGJz3vk9srFMp
+         ttRsYjF56HllPhG9owIveuRS+fNwUhnErpWLyMqXCd0BmrdTTCidx42VJKiuJTkkS4jS
+         WLYpcSXcmGUvL5DyzBNz1gmNANkQt/lptpEIuIqP1S1IBOpBwLoMmVzK0MpxMWkf3qFp
+         lQRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710409014; x=1711013814;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rFCyko4UygTC+eA1DqHkphcPHLw6z/FvgDsZ8y5K0hc=;
+        b=HyHu3rohgTM2LhFwi03in1/48XhsVyCFtZZ3d6g8OXDfUDvI5RkGHH87TE+25YX4Oh
+         RXrLI1LdXGyW5jvBQ+SG+5IqbDOkncYNg0vL/pJQJ+kWZhKiJniHySSTh0/7zyTtMMi9
+         +IwoiS1Qjn1/eUHEQangNUL7ouCInYSNr3JswHhZJ5x993tQtCpOKKp9MILS+5lA9R/L
+         z3gE7RCto80Lp+EAf/ndaSvV+SN7mb2u8YwB4LBtlzckTGLFpwC+AeC8xduzgXUNbQWF
+         fFtoVf67inEsXCm6ri4ySS5xSOVbOfEBOVHgSbucyM1fv9Ti53O1ddOyQQjaT+D1dwCU
+         ERLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUuyEwNycm7Pu4kt/QLUGVQLJhWExk7LphV4u75W1NuoP0zbWeduYqVZ3fWEFR0CDRY9FGAtacXb+Lnor0PvhbQKMfWPNf5F6d6x3ZO
+X-Gm-Message-State: AOJu0YwQ6W4QnE3UysoshH7jQic4DD3AbJyk4uUlzTO9ZtqWW1r2t7op
+	f7/IM5jO4SWzZdCCl4mklI37DreJ5PxcWNyVjP5EKALGVfpqmVFr1u20rUzykkrflq7zyjXd/D4
+	YK8f65TpcUjWpuwqVNt4edHaGNch7z9zMIK6iuA==
+X-Google-Smtp-Source: AGHT+IHVz12/u2D9Hz2azuqLhg23uk/LHlBlyaUz+qb/H6DQHAh+NCRPmis06EV6xo04zGds633tyOqTHvVrXys2qzU=
+X-Received: by 2002:a67:f744:0:b0:475:fb4c:7945 with SMTP id
+ w4-20020a67f744000000b00475fb4c7945mr1506021vso.26.1710409014054; Thu, 14 Mar
+ 2024 02:36:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNYNxMMSdWFiPiT3i888fi8--k_H0xMX7i17VCT97vARg@mail.gmail.com>
+References: <20240313123017.362570-1-sumit.garg@linaro.org>
+ <20240313123017.362570-4-sumit.garg@linaro.org> <4a0a8db7-a2bc-4c99-94b2-c13facbd1bef@linaro.org>
+ <CAFA6WYPh5BS_Fpi6ksAC7bwoFEyqjj1Y3EahyQxCG9Pp=KDw=Q@mail.gmail.com>
+ <9dc0415c-4138-4867-861a-38b45b636182@linaro.org> <CAFA6WYPFfL18acdZt6O-_=LWnH7J2MooDuf9cA3JCaQZdoLhVA@mail.gmail.com>
+In-Reply-To: <CAFA6WYPFfL18acdZt6O-_=LWnH7J2MooDuf9cA3JCaQZdoLhVA@mail.gmail.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Thu, 14 Mar 2024 15:06:43 +0530
+Message-ID: <CAFA6WYNo73S5ROHCMK0ZQSiU0DDbuDadptmaPL+GPCocE0h-mA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, stephan@gerhold.net, 
+	caleb.connolly@linaro.org, neil.armstrong@linaro.org, 
+	laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com, 
+	jimmy.lalande@se.com, benjamin.missey@non.se.com, daniel.thompson@linaro.org, 
+	linux-kernel@vger.kernel.org, Jagdish Gediya <jagdish.gediya@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-03-13 15:41:18 [+0100], Marco Elver wrote:
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index c7a0274c662c8..e9926baaa1587 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -9592,14 +9572,17 @@ static int __perf_event_overflow(struct perf_event *event,
+On Thu, 14 Mar 2024 at 14:47, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> On Thu, 14 Mar 2024 at 14:00, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
 > >
-> >                 if (regs)
-> >                         pending_id = hash32_ptr((void *)instruction_pointer(regs)) ?: 1;
-> > -               if (!event->pending_sigtrap) {
-> > -                       event->pending_sigtrap = pending_id;
-> > +               if (!event->pending_work) {
-> > +                       event->pending_work = pending_id;
-> >                         local_inc(&event->ctx->nr_pending);
-> > -                       irq_work_queue(&event->pending_irq);
-> > +                       WARN_ON_ONCE(!atomic_long_inc_not_zero(&event->refcount));
-> > +                       task_work_add(current, &event->pending_task, TWA_RESUME);
-> > +                       if (in_nmi())
-> > +                               irq_work_queue(&event->pending_irq);
-> 
-> Some brief code comments here would help having to dig through git
-> history to understand this.
-
-Sure.
-
-> >                 } else if (event->attr.exclude_kernel && valid_sample) {
-> >                         /*
-> >                          * Should not be able to return to user space without
-> > -                        * consuming pending_sigtrap; with exceptions:
-> > +                        * consuming pending_work; with exceptions:
-> >                          *
-> >                          *  1. Where !exclude_kernel, events can overflow again
-> >                          *     in the kernel without returning to user space.
-> > @@ -13049,6 +13032,13 @@ static void sync_child_event(struct perf_event *child_event)
-> >                      &parent_event->child_total_time_running);
-> >  }
+> > >>> +
+> > >>> +             compatible = "gpio-leds";
+> > >>> +             #address-cells = <1>;
+> > >>> +             #size-cells = <0>;
+> > >>
+> > >> That's not a bus.
+> > >>
+> > >> It does not look like you tested the DTS against bindings. Please run
+> > >> `make dtbs_check W=1` (see
+> > >> Documentation/devicetree/bindings/writing-schema.rst or
+> > >> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+> > >> for instructions).
+> > >
+> > > I assumed earlier that W=1 is sufficient for DT schema checks but it
 > >
-> > +static bool task_work_cb_match(struct callback_head *cb, void *data)
-> > +{
-> > +       struct perf_event *event = container_of(cb, struct perf_event, pending_task);
-> > +
-> > +       return event == data;
-> > +}
-> > +
-> >  static void
-> >  perf_event_exit_event(struct perf_event *event, struct perf_event_context *ctx)
-> >  {
-> > @@ -13088,6 +13078,11 @@ perf_event_exit_event(struct perf_event *event, struct perf_event_context *ctx)
-> >                  * Kick perf_poll() for is_event_hup();
-> >                  */
-> >                 perf_event_wakeup(parent_event);
-> > +               if (event->pending_work &&
-> > +                   task_work_cancel_match(current, task_work_cb_match, event)) {
-> 
-> Brief comment which case this covers would be good.
+> > W=1 as in make? No, it is not. It's flag changing the build process.
+> > dtbs_check is separate target.
+> >
+> > > looks like those are two different entities. However, I added these
+> > > address and size cells properties only to get rid of warnings reported
+> > > by W=1, see below:
+> > >
+> > > $ make qcom/apq8016-schneider-hmibsc.dtb W=1
+> > >   DTC     arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb
+> > > arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts:96.9-103.5:
+> > > Warning (unit_address_vs_reg): /leds/led@5: node has a unit name, but
+> > > no reg or ranges property
+> > > arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts:105.9-112.5:
+> > > Warning (unit_address_vs_reg): /leds/led@6: node has a unit name, but
+> > > no reg or ranges property
+> >
+> > Wait, so you saw the warnings and ignored them?
+>
+> Sorry but you are ignoring what I am trying to say.
+>
+> > These are legitimate
+> > warnings, although they don't give you full answer.
+> >
+> > > <snip>
+> > >
+> > > So it looks like W=1 is reporting false warnings and we should rather
+> >
+> > Warnings were true.
+> >
+>
+> That's was my initial impression too and I fixed them via following diff:
+>
+> diff --git a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> index 8f9cacf8de89..a366d3aff3c5 100644
+> --- a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> +++ b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> @@ -92,8 +92,11 @@ leds {
+>                 pinctrl-0 = <&pm8916_mpps_leds>;
+>
+>                 compatible = "gpio-leds";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+>
+>                 led@5 {
+> +                       reg = <5>;
+>                         label = "apq8016-hmibsc:green:wlan";
+>                         function = LED_FUNCTION_WLAN;
+>                         color = <LED_COLOR_ID_YELLOW>;
+> @@ -103,6 +106,7 @@ led@5 {
+>                 };
+>
+>                 led@6 {
+> +                       reg = <6>;
+>                         label = "apq8016-hmibsc:yellow:bt";
+>                         function = LED_FUNCTION_BLUETOOTH;
+>                         color = <LED_COLOR_ID_BLUE>;
+>
+> But it then broke dtbs_check.
 
-Okay.
+See following breakage afterwards:
 
-> > +                       put_event(event);
-> > +                       local_dec(&event->ctx->nr_pending);
-> > +               }
-> >                 free_event(event);
-> >                 put_event(parent_event);
-> >                 return;
+$ make qcom/apq8016-schneider-hmibsc.dtb dtbs_check
+<snip>
+/home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
+leds: led@5: Unevaluated properties are not allowed ('reg' was
+unexpected)
+from schema $id: http://devicetree.org/schemas/leds/leds-gpio.yaml#
+/home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
+leds: led@6: Unevaluated properties are not allowed ('reg' was
+unexpected)
+from schema $id: http://devicetree.org/schemas/leds/leds-gpio.yaml#
+/home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
+leds: '#address-cells', '#size-cells' do not match any of the regexes:
+'(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+<snip>
 
-Sebastian
+> Are you aware of any other saner way to
+> fix those warnings properly?
+>
+
+-Sumit
 
