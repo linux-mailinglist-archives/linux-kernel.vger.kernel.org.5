@@ -1,625 +1,284 @@
-Return-Path: <linux-kernel+bounces-103737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F25887C3CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D6B87C3CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:43:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82A001C226E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:43:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22C491C226E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4CC75813;
-	Thu, 14 Mar 2024 19:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F0E76047;
+	Thu, 14 Mar 2024 19:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tmcn/a8A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DXScqs7y"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2052.outbound.protection.outlook.com [40.107.243.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 678C4757FE;
-	Thu, 14 Mar 2024 19:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710445405; cv=none; b=K9yg2acuA0QJ6FnN/cR8fEXi44o9JpAuF//3nK8rCJU7hELPyDy/R0KTUyuYlxH0IMWmLWBVHvbKVgISVEMnSjvK7bhBZuuvuJ2ZhYB1JO10Xh51MVQCRi5MvNs4oXGI3dD8M1LrWxjNgvDPamOzuv0XY/slmadSxd/7Q+byHEc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710445405; c=relaxed/simple;
-	bh=Umkpnt+DkmwthY8wMa0dorfxN5HtEH7Vqm4yjYb24/8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NqaaRUBVWmHCEXSM8Mxzb/meqyN0ErmPPyBLuOOZ4OURHFx+LbFENNvlMbCM6GADpIDojhN6DyRqiVC0J5Da5LeHGAM5gFQCvMKRqtv3O+fHi4oiMk+8iMTghWnj3e01wTt5FVEWrQkMYl+n7uv8aGbN63154qIgWBE6B97iqYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tmcn/a8A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C20F7C433C7;
-	Thu, 14 Mar 2024 19:43:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710445405;
-	bh=Umkpnt+DkmwthY8wMa0dorfxN5HtEH7Vqm4yjYb24/8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Tmcn/a8AuYA35Ms4/4QlV3KU/BDDDHDwyZvbAj5Y/erkMsZd0Q5bOQqcMv8pSg+lK
-	 i2Kn0L5iUbq7ssw5xQWzCedBE4fnQ+AoI3xFC3XoRelc5APFBLsX0bHAzGH6UgCf5t
-	 8vjA812KrwLdI9nr+pDaEAG8kNHShr/DoNXTJR+PWPM7wXDhnb+7+iMyUfihPCFJym
-	 S+QqMrAcH7niN1FlRMGTo/GXQ7sb12vy7Pu4zZO8Bw4idadAnH3gYLTz/iwfuqoV2k
-	 ce26N6WoFI9sAgQGC1CatN9Qobp1G/dFhXL4W+jO31JUzpSN8hDqTBf+3qHTVjCnKw
-	 tPu9/0sZnwk3w==
-From: Stephen Boyd <sboyd@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Michael Turquette <mturquette@baylibre.com>,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] clk changes for the merge window
-Date: Thu, 14 Mar 2024 12:43:22 -0700
-Message-ID: <20240314194324.2487618-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79B97580D;
+	Thu, 14 Mar 2024 19:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710445419; cv=fail; b=FC0x0fJK7uJkBwYeq6WsnIEtfe5kcYRvxB3TZ6qPTE3J4UmOdHwK3Z6idv9SRnNzN48IMUnMpFPGmgNAG+dLPJPNHvU6xwt8AFUAonwXfr11LWdAiV4oVarmS4L4+EI4/O0iGAGdJIikq07gOUVTB6eldZKY75ZcTJG1m8TNeAQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710445419; c=relaxed/simple;
+	bh=99TPw4gTCS4jltzROzRzFdc06ediU2r3aCPte9FgY0g=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=tw3RMO0aY+St9Vt4hDZc3FKglxkNGLfyPrmDS2RAQPWId2E5fat6mnODEzQsfX3quzz/soAaFwZS+7P+b/s83Q9TPzO0osFrOY6cs4E/d5K2yQfmkS++skkQMDa8wBjjuuTXioGwwAukb5GgxvENU5vHMeOHEkseJMQhAyWeISs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=DXScqs7y; arc=fail smtp.client-ip=40.107.243.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mGgx0M8RXCyJj2ox5Ot8QoJdvO1Y+IGWrIuZBt6JZyfp8hJmmB51aR7iKSQs/WYQoiRd8ZLFdBMNe2T9p1TldKlRhFDJgKIbfdLeVhmDL6qHxYawqxqkGpGGNbPRWf+akNz8e5wHhJHWw054vdcIE98WQUnGXLp6MmHLF6mVDvy65PkYNBv8RAU7Oh6MM65LbLLefK6yjJCV46ZTM9ntjYVPkpX4mN51VLVl9B8mEPnreZHv1Vgct1WqbLZdnC88z2iLra54AsAMXUkokwzvSqjrDPDSwQl3jYGA4IwijDNFsbp2tobkXCBqBAbhUhXsXJ8vyc/pKm0BXM30ibg+wA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZHM4jONKJmyeoZsqz3fg+KMDU48asV9CZiaETJJvItk=;
+ b=GN+jv+DxH6yoYx5DXpDEc99osdDddz2Pq0p5Uiiob+kTn7SC5OBooPtdq/Q7zbGffJgvrrJNA8ctc1/aUv41i2cKk91UXfTLO06YX/Cr6XxdDIjP2GJTQtDFvzfGWAw6VGjNC0nQdOzeJuC/Tc82OeOVT1Qx9k4g7CucNRZFRbhRY6LivYHxg2mGQxoY7vVmR0nt7ecw+Yh1hVY2pMzj3PvfUXsDBi8iy6Bi/CS+TcD2NCSZRW+cTvwTcrKbTY72z4GsKlBiudw4HfDkTaAQ5wHf8n694oEENxxtJQVWro1bkKH9IjGS9L+O14yPXoyLtKPpL+DPYTynuZlFr/tTmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZHM4jONKJmyeoZsqz3fg+KMDU48asV9CZiaETJJvItk=;
+ b=DXScqs7ykLzeuwBZwm6fEdL4CVRjswVa97fKuqDY9jGjgLKNOEuqzBndHXR1nMewnG2S8TbYK7WOs3aHxZvnXOInzjQOOEJ/9I9Sb9QNjuCUNbW9gQF+3wwr0MNZXyr1fGDCGYLPZJdJQKN5L1CGzE47uJtdKpusRGSpj8KNApA=
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com (2603:10b6:303:21b::14)
+ by CH3PR12MB7668.namprd12.prod.outlook.com (2603:10b6:610:14d::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Thu, 14 Mar
+ 2024 19:43:31 +0000
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::e039:187d:47be:afb7]) by MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::e039:187d:47be:afb7%4]) with mapi id 15.20.7386.020; Thu, 14 Mar 2024
+ 19:43:31 +0000
+From: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
+To: Maxime Ripard <mripard@kernel.org>
+CC: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Simek,
+ Michal" <michal.simek@amd.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Neil
+ Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Jonas
+ Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>
+Subject: RE: [PATCH v2 8/8] drm: xlnx: Intoduce TPG CRTC driver
+Thread-Topic: [PATCH v2 8/8] drm: xlnx: Intoduce TPG CRTC driver
+Thread-Index: AQHadOEjzq/Vahr1mEq0V8Suc/Gl2bE3Je0AgAB2zWA=
+Date: Thu, 14 Mar 2024 19:43:30 +0000
+Message-ID:
+ <MW4PR12MB7165A15E233957E3914AA297E6292@MW4PR12MB7165.namprd12.prod.outlook.com>
+References: <20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com>
+ <20240312-dp-live-fmt-v2-8-a9c35dc5c50d@amd.com>
+ <20240314-esoteric-delicate-sidewinder-5dc4db@houat>
+In-Reply-To: <20240314-esoteric-delicate-sidewinder-5dc4db@houat>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR12MB7165:EE_|CH3PR12MB7668:EE_
+x-ms-office365-filtering-correlation-id: cd9377ab-cc12-4c8c-ea45-08dc445f06ff
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ qA8PyGlTUw+Wa7WFKUkfYFGoKhABNxlUd9YCW8PS/7priCzEP5xDS6l5bidxM6teKgVsajIonsOSd455tjdEXgFNRi5v5L0g6EedWF4KIsQlhOi6X1ZFcZnvI4Al9DryVWoaPCicqZCZxGObbzgq+T6ZPvNISbXoSwcd+90p/5CAno+KZOVScgmr3AYvrIxVJ2TO7RLz8IprR8AnlB0tBn3baM2XX7dHZ8HWlVcYHdXxIcyKJZyR0yz3PqfuQxxJfKpnWXhZlKrzpjQ1tgBE283hoyFvY1n9FyM7HOjmjpiodUTSXkLKTbD4ODxbuqtQAJ3DTxx5zDDSE+P7NUft34Paos4XXTV2WRYxl+RSV1kTl6lGdaEwO1hJN8RL+MB+zg0nvaCrEox/yb1TJqAdQD2wx77SOf6bfjLJoTgYUfXQglfbWqaqmMzsRa9IOONq6eyMI4CnOVNHIOrW9NWdGP7EI7UuXsQCknR1Uq8o2PuRLq8TjXCD1hls+64ZO4RswCeDGbEVNVltopRGtCa/SMReuFvYLDLD55WSdRKCRQhur2X5kYiVJRppCuXDtHCTAN/+DQGggo9gWBKK4WljjexpsjoS+JqCWAN0fizm3hB0ChgawGHF1QcOXzrCG2dc+PNkD2fpP8cSMH97P8M6bnj6KKc3Kgs3hsr0XwHylZBGeRybU4sEDfr6sWfWo0iYCJLYmLB+3mYoW/gzDJkun7FecQZM38BLHJiIpBx8yyM=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?dFiiNdazaCUapWHiqwROeDqHEUoiVhfWBirzm9VArvBPCOpE/Tpe1KnHngyN?=
+ =?us-ascii?Q?iMmB0TlmkbOzcPmfxFbgnx+FGYF8kOcxBZTUDFQNNE0obnrsa5Dri+X7UNzJ?=
+ =?us-ascii?Q?rc1MoH8JMIwDyiqD9ZhE8ehL7mEerhJRn6J5qwDMewLS1/Zmc/ouBP+Jaedu?=
+ =?us-ascii?Q?GdwwNrdaPszIDR+MfHd9F6UPQIrUB9DqbkIWQoQ9oVEqBwqV+dfSyI5ZkKIQ?=
+ =?us-ascii?Q?oZ60M2uefZQhotHCluHRJJT9ld88EB7NtlV5j/gRjqZF1tSZlHiCiefT+KuM?=
+ =?us-ascii?Q?UvrdD7TgdCSLkG/MMBJhCqP2TRJru+me8/Zq6abdhgosFp9gEoXtymtNV9fG?=
+ =?us-ascii?Q?0XgA5KseKnemUaGD8/7Zc3vWJb8y4zjge6MITMxgNmnXzksvKA9MXIrPx2Tf?=
+ =?us-ascii?Q?VaLhJm8BbjtkLJ+ApSZoUSkkK2k+WwAHykkBkjfaCYk2TshIg/4cBnhnwKBJ?=
+ =?us-ascii?Q?eChU+GdqTx5ke5yFWPszw1PO5472DeHDlqCLyT7+GsmXw34OMVNRrvr7iw3s?=
+ =?us-ascii?Q?xfBHPHMhUh+HbtWi1jfo2nHsP+CnP6jqJGrqdPjJqNQoZkG4ZRKF0K36FGKV?=
+ =?us-ascii?Q?wNAM3hkSxMTiUZliz+CzOB5Lk+Ui0JY23Kp2rJhR/lwpBlxZ9oF9tMng5zIR?=
+ =?us-ascii?Q?ixWC3m7yUIkDauMyx15Y/Jc77JkeDyyYXhbjdiIpYmI7HY02u6G2iCvo7qnM?=
+ =?us-ascii?Q?c36KluFiGQwrs4hXz9BFXeCxr2/9uPPrYuZVvcylTqRSIJiuII/O0YICHoY/?=
+ =?us-ascii?Q?tHz+s2AjWcXsYAK/tQ+QTQyJqLy4fKQmSSUZKtrpLp7KDfX44/ZAF/0/Tuv9?=
+ =?us-ascii?Q?2C8PtsWmtJWZdQlRR+VJpoHQvgOKJmrKqMDrpT6fowPIxTND2u9n1LPOI9xs?=
+ =?us-ascii?Q?dicbJjXQe/By+YsZ8qFEkJiQ5tbjnloivZvXc08a27C5LOS+e1uIDkhbfUIZ?=
+ =?us-ascii?Q?jF9EB105L32el3bhNrp4V2sDufqY8Dcv2WQMgvulTAyjxt5V+IcYFnXZonxG?=
+ =?us-ascii?Q?iIQYolt/Th3mYzY2h9KYOnAjEWPJtKdggde3XeOwMSvFcRR9ZZZgIxKj83AK?=
+ =?us-ascii?Q?24br8R4apeeDXwVKz1Zd2Z3pw9Ht5+YZ1RQ8lynrAz0m+mp1DguCpeV0EFK4?=
+ =?us-ascii?Q?soTfFkRE9oFhK/4Rb8AE94vnEv47RNN0FeFBRI+yrINNMWq/H02iPp7O3myV?=
+ =?us-ascii?Q?tjspmAEC8fi8XRgJ0M9KapSKDZqBjgMPsB6FUXZCrDN+IRVw0n93tcMZvNys?=
+ =?us-ascii?Q?Gb0edZFgVtevW5D5IjU8NTTy91Bm82xjYN1aLhNEzaDZ88IU04PrrXBsHVzn?=
+ =?us-ascii?Q?Nu3jlbvSxPIhO0synx7TKVamx3Xxgdu6ZvZk5vdTMoJRYzcnfxEx5eFluovi?=
+ =?us-ascii?Q?YA8Qopqjp/vQCUELJjGkGWguF9Ltu+888M2qlaDeK4FKLJpECLkyMmFvwNsE?=
+ =?us-ascii?Q?KgfyLHz3mHiaOeQpo3GVI77gg3BUm4HQI5Uf2Yihj0YaCvpHKHwGcVLQMG3M?=
+ =?us-ascii?Q?8H+Sey2wGBWfceJvZvrIVXyZtFKmj95rDzYiNMKCogZCBqmOErwALgMc/3zv?=
+ =?us-ascii?Q?lbKhnprmRRerhRYBz44=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-The following changes since commit c81798cf9dd2f324934585b2b52a0398caefb88e:
-
-  dt-bindings: clock: rk3588: add missing PCLK_VO1GRF (2024-02-27 17:04:58 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
-
-for you to fetch changes up to 3066c521be9db14964d78c6c431c97a424468ded:
-
-  Merge branches 'clk-samsung', 'clk-imx', 'clk-rockchip', 'clk-clkdev' and 'clk-rate-exclusive' into clk-next (2024-03-13 12:36:21 -0700)
-
-----------------------------------------------------------------
-Not a ton of stuff happening in the clk framework in this pull request. We got
-some more devm helpers and we seem to be going in the direction of "just turn
-this stuff on already and leave me alone!" with the addition of a
-devm_clk_bulk_get_all_enable() API. I'm hoping that we can make that into a
-genpd that drivers attach instead, but this API should help drivers simplify in
-the meantime.
-
-Outside of the devm wrappers, we've got the usual clk driver updates that are
-dominated by the major phone SoC vendors (Samsung and Qualcomm) and the
-non-critical driver fixes for things like incorrect topology descriptions and
-wrong registers or bit fields. More details are below, but I'd say that it
-looks pretty ordinary. The only thing that really jumps out at me is the
-Renesas clk driver that's ignoring clks that are assigned to remote processors
-in DeviceTree. That's a new feature that they're using to avoid marking clks as
-CLK_IGNORE_UNUSED based on the configuration of the system.
-
-Core:
- - Increase dev_id len for clkdev lookups
- - Add a devm_clk_bulk_get_all_enable() API to get and enable all clks
-   for a device
- - Add a devm variant of clk_rate_exclusive_get()
-
-New Drivers:
- - Display, TCSR, GPU, and Camera clock controllers for Qualcomm's X1 Elite SoC
- - Google GS101 PERIC0 and PERIC1 clock controllers
- - Exynos850 PDMA clocks
- - Exynos850 CPU cluster 0 and 1 (CMU_CPUCLK0/CMU_CPUCLK1) clock controllers
-
-Removed Drivers:
- - Remove the unused Qualcomm sc7180 modem clk driver
-
-Updates:
- - Fix some static checker errors in the Hisilicon clk driver
- - Polarfire MSSPLL hardware has 4 output clocks (the driver supported
-   previously only one output); each of these 4 outputs feed dividers and the
-   output of each divider feed individual hardware blocks (e.g. CAN, Crypto,
-   eMMC); individual hardware block drivers need to control their clocks thus
-   clock driver support was added for all MSSPLL output clocks
- - Typo fixes in the Qualcomm IPQ5018 GCC driver
- - Add "qdss_at" clk on Qualcomm IPQ6018, needed for WiFi
- - Properly terminate frequency tables in different Qualcomm clk drivers
- - Add MDSS, crypto, and SDCC resets on Qualcomm MSM8953
- - Add missing UFS CLKREF clks on Qualcomm SC8180X
- - Avoid significant delays during boot by adding a softdep on rpmhpd to
-   Qualcomm SDM845 gcc driver
- - Add QUPv3 RCGS w/ DFS and video resets to Qualcomm SM8150 GCC driver
- - Fix the custom GPU GX "do-nothing" method in the Qualcomm GDSC driver
- - Add an external regulator to GX GDSC on Qualcomm SC8280XP GPU clk driver
- - Switch display, GPU, video, and camera Qualcomm clk drivers to
-   module_platform_driver()
- - Set a longer delay for Venus resets on many Qualcomm SoCs
- - Correct the GDSC wait times in the Qualcomm SDM845 display clk driver
- - Fix clock listing Oops on Amlogic axg
- - New pll-rate for Rockchip rk3568
- - i2s rate improvements for Rockchip rk3399
- - Rockchip rk3588 syscon clock fixes and removal of overall clock-number from
-   the rk3588 binding header
- - A prerequisite for later improvements to the Rockchip rk3588 linked clocks
- - Minor clean-ups and error handling improvements in both composite-8m and SCU
-   i.MX clock drivers
- - Fix for SAI_MCLK_SEL definition for i.MX8MP
- - Register the Samsung CMU MISC clock controller earlier, so the Multi Core
-   Timer clocksource can use it on Google GS101
- - Propagate Exynos850 SPI IPCLK rate change to parents, so the SPI will get
-   proper clock rates
- - Refactor the generic Samsung CPU clock controllers code, preparing it for
-   supporting Exynos850 CPU clocks
- - Fix some clk kerneldoc warnings
- - Add Ethernet, SDHI, DMA, and HyperFLASH/QSPI (RPC-IF) clocks on Renesas
-   R-Car V4M
- - Ignore all clocks which are assigned to a non-Linux system in the Renesas
-   clk driver
- - Add watchdog clock on Renesas RZ/G3S
- - Add camera (CRU) clock and reset on Renesas RZ/G2UL
- - Add support for the Renesas R-Car V4M (R8A779H0) SoC
- - Convert some clk bindings to YAML so they can be validated
-
-----------------------------------------------------------------
-Abel Vesa (1):
-      clk: qcom: Add TCSR clock driver for x1e80100
-
-Amit Pundir (1):
-      clk: qcom: gcc-sdm845: Add soft dependency on rpmhpd
-
-André Draszik (3):
-      clk: samsung: gs101: gpio_peric0_pclk needs to be kept on
-      clk: samsung: gs101: drop extra empty line
-      clk: samsung: gs101: add support for cmu_peric1
-
-Andy Shevchenko (2):
-      clk: fractional-divider: Move mask calculations out of lock
-      clk: fractional-divider: Use bit operations consistently
-
-Biju Das (1):
-      clk: renesas: r9a07g043: Add clock and reset entries for CRU
-
-Bjorn Andersson (6):
-      dt-bindings: clock: qcom: Allow VDD_GFX supply to GX
-      clk: qcom: gdsc: Enable supply reglator in GPU GX handler
-      clk: qcom: gpucc-sc8280xp: Add external supply for GX gdsc
-      Merge branch '20240202-x1e80100-clock-controllers-v4-5-7fb08c861c7c@linaro.org' into clk-for-6.9
-      Merge branch '20240125-msm8953-mdss-reset-v2-1-fd7824559426@z3ntu.xyz' into clk-for-6.9
-      Merge branch '20240131-ufs-phy-clock-v3-3-58a49d2f4605@linaro.org' into clk-for-6.9
-
-Bryan O'Donoghue (2):
-      clk: qcom: camcc-x1e80100: Fix missing DT_IFACE enum in x1e80100 camcc
-      clk: Fix clk_core_get NULL dereference
-
-Chen-Yu Tsai (1):
-      clk: mediatek: mt8183: Correct parent of CLK_INFRA_SSPM_32K_SELF
-
-Chris Morgan (1):
-      clk: rockchip: rk3568: Add PLL rate for 128MHz
-
-Christophe JAILLET (4):
-      clk: hisilicon: hi3519: Release the correct number of gates in hi3519_clk_unregister()
-      clk: hisilicon: hi3559a: Fix an erroneous devm_kfree()
-      clk: mediatek: mt8135: Fix an error handling path in clk_mt8135_apmixed_probe()
-      clk: mediatek: mt7622-apmixedsys: Fix an error handling path in clk_mt8135_apmixed_probe()
-
-Claudiu Beznea (3):
-      clk: renesas: r9a08g045: Add clock and reset support for watchdog
-      clk: renesas: r9a07g04[34]: Use SEL_SDHI1_STS status configuration for SD1 mux
-      clk: renesas: r9a07g04[34]: Fix typo for sel_shdi variable
-
-Colin Ian King (2):
-      clk: cdce925: Remove redundant assignment to variable 'rate'
-      clk: clocking-wizard: Remove redundant initialization of pointer div_addr
-
-Cong Dang (8):
-      clk: renesas: cpg-mssr: Add support for R-Car V4M
-      clk: renesas: r8a779h0: Add PFC/GPIO clocks
-      clk: renesas: r8a779h0: Add watchdog clock
-      clk: renesas: r8a779h0: Add I2C clocks
-      clk: renesas: r8a779h0: Add EtherAVB clocks
-      clk: renesas: r8a779h0: Add SDHI clock
-      clk: renesas: r8a779h0: Add SYS-DMAC clocks
-      clk: renesas: r8a779h0: Add RPC-IF clock
-
-Conor Dooley (6):
-      dt-bindings: clock: mpfs: add more MSSPLL output definitions
-      dt-bindings: can: mpfs: add missing required clock
-      clk: microchip: mpfs: split MSSPLL in two
-      clk: microchip: mpfs: setup for using other mss pll outputs
-      clk: microchip: mpfs: add missing MSSPLL outputs
-      clk: microchip: mpfs: convert MSSPLL outputs to clk_divider
-
-Daniel Golle (1):
-      clk: mediatek: mt7981-topckgen: flag SGM_REG_SEL as critical
-
-Dmitry Baryshkov (6):
-      clk: qcom: camcc-*: switch to module_platform_driver
-      clk: qcom: dispcc-*: switch to module_platform_driver
-      clk: qcom: gpucc-*: switch to module_platform_driver
-      clk: qcom: videocc-*: switch to module_platform_driver
-      clk: qcom: drop the SC7180 Modem subsystem clock driver
-      dt-bindings: clk: qcom: drop the SC7180 Modem subsystem clock controller
-
-Duoming Zhou (1):
-      clk: zynq: Prevent null pointer dereference caused by kmalloc failure
-
-Eddie James (2):
-      dt-bindings: clock: ast2600: Add FSI clock
-      clk: ast2600: Add FSI parent clock with correct rate
-
-Erick Archer (1):
-      clk: hisilicon: Use devm_kcalloc() instead of devm_kzalloc()
-
-Frank Wunderlich (2):
-      dt-bindings: reset: mediatek: add MT7988 infracfg reset IDs
-      clk: mediatek: add infracfg reset controller for mt7988
-
-Gabor Juhos (10):
-      clk: qcom: gcc-ipq5018: fix terminating of frequency table arrays
-      clk: qcom: gcc-ipq6018: fix terminating of frequency table arrays
-      clk: qcom: gcc-ipq8074: fix terminating of frequency table arrays
-      clk: qcom: gcc-ipq9574: fix terminating of frequency table arrays
-      clk: qcom: camcc-sc8280xp: fix terminating of frequency table arrays
-      clk: qcom: mmcc-apq8084: fix terminating of frequency table arrays
-      clk: qcom: mmcc-msm8974: fix terminating of frequency table arrays
-      clk: qcom: gcc-ipq5018: fix 'enable_reg' offset of 'gcc_gmac0_sys_clk'
-      clk: qcom: gcc-ipq5018: fix 'halt_reg' offset of 'gcc_pcie1_pipe_clk'
-      clk: qcom: gcc-ipq5018: fix register offset for GCC_UBI0_AXI_ARES reset
-
-Geert Uytterhoeven (6):
-      clk: renesas: mstp: Remove obsolete clkdev registration
-      Merge tag 'renesas-r8a779h0-dt-binding-defs-tag' into renesas-clk-for-v6.9
-      clk: renesas: rcar-gen4: Add support for FRQCRC1
-      clk: renesas: r8a779g0: Fix PCIe clock name
-      clk: renesas: r8a779g0: Correct PFC/GPIO parent clocks
-      clk: renesas: r8a779f0: Correct PFC/GPIO parent clock
-
-Heiko Stuebner (1):
-      Merge branch 'v6.9-shared/clkids' into v6.9-clk/next
-
-Igor Prusov (1):
-      clk: meson: Add missing clocks to axg_clk_regmaps
-
-Jeffrey Hugo (1):
-      dt-bindings: clock: qcom: Fix @codeaurora email in Q6SSTOP
-
-Konrad Dybcio (21):
-      clk: qcom: reset: Increase max reset delay
-      clk: qcom: reset: Commonize the de/assert functions
-      clk: qcom: reset: Ensure write completion on reset de/assertion
-      clk: qcom: gcc-sa8775p: Set delay for Venus CLK resets
-      clk: qcom: gcc-sc8180x: Set delay for Venus CLK resets
-      clk: qcom: gcc-sc8280xp: Set delay for Venus CLK resets
-      clk: qcom: gcc-sm4450: Set delay for Venus CLK resets
-      clk: qcom: gcc-sm7150: Set delay for Venus CLK resets
-      clk: qcom: gcc-sm8250: Set delay for Venus CLK resets
-      clk: qcom: gcc-sm8350: Set delay for Venus CLK resets
-      clk: qcom: gcc-sm8450: Set delay for Venus CLK resets
-      clk: qcom: gcc-sm8550: Set delay for Venus CLK resets
-      clk: qcom: gcc-sm8650: Set delay for Venus CLK resets
-      clk: qcom: videocc-sm8150: Set delay for Venus CLK resets
-      clk: qcom: videocc-sm8250: Set delay for Venus CLK resets
-      clk: qcom: videocc-sm8350: Set delay for Venus CLK resets
-      clk: qcom: videocc-sm8450: Set delay for Venus CLK resets
-      clk: qcom: videocc-sm8550: Set delay for Venus CLK resets
-      clk: qcom: branch: Add a helper for setting the enable bit
-      clk: qcom: Use qcom_branch_set_clk_en()
-      clk: qcom: dispcc-sdm845: Adjust internal GDSC wait times
-
-Krzysztof Kozlowski (2):
-      Merge tag 'samsung-dt-bindings-clk-6.9-2' into next/clk
-      Merge tag 'samsung-dt-bindings-clk-6.9-3' into next/clk
-
-Kuninori Morimoto (4):
-      of: Add __of_device_is_status() and makes more generic status check
-      of: Add of_get_next_status_child() and makes more generic of_get_next
-      of: Add for_each_reserved_child_of_node()
-      clk: renesas: cpg-mssr: Ignore all clocks assigned to non-Linux system
-
-Manivannan Sadhasivam (1):
-      clk: qcom: gcc-sc8180x: Add missing UFS QREF clocks
-
-Mantas Pucka (1):
-      clk: qcom: gcc-ipq6018: add qdss_at clock needed for wifi operation
-
-Markus Elfring (4):
-      clk: imx: composite-8m: Less function calls in __imx8m_clk_hw_composite() after error detection
-      clk: imx: composite-8m: Delete two unnecessary initialisations in __imx8m_clk_hw_composite()
-      clk: imx: scu: Use common error handling code in imx_clk_scu_alloc_dev()
-      clk: mediatek: clk-mt8173-apmixedsys: Use common error handling code in clk_mt8173_apmixed_probe()
-
-Michael J. Ruhl (1):
-      clkdev: Update clkdev id usage to allow for longer names
-
-Ondrej Jirman (1):
-      clk: rockchip: rk3399: Allow to set rate of clk_i2s0_frac's parent
-
-Peter Griffin (1):
-      clk: samsung: gs101: register cmu_misc clocks early
-
-Rafał Miłecki (3):
-      dt-bindings: clock: mediatek: convert hifsys to the json-schema clock
-      dt-bindings: clock: mediatek: convert PCIESYS to the json-schema clock
-      dt-bindings: clock: mediatek: convert SSUSBSYS to the json-schema clock
-
-Rajendra Nayak (4):
-      clk: qcom: clk-alpha-pll: Add support for zonda ole pll configure
-      clk: qcom: Add dispcc clock driver for x1e80100
-      clk: qcom: Add GPU clock driver for x1e80100
-      clk: qcom: Add camcc clock driver for x1e80100
-
-Randy Dunlap (5):
-      clk: sunxi: a20-gmac: fix kernel-doc warnings
-      clk: sunxi: sun9i-cpus: fix kernel-doc warnings
-      clk: sunxi: usb: fix kernel-doc warnings
-      clk: keystone: sci-clk: match func name comment to actual
-      clk: ti: dpll3xxx: use correct function names in kernel-doc
-
-Sam Protsenko (14):
-      clk: samsung: exynos850: Add PDMA clocks
-      clk: samsung: exynos850: Propagate SPI IPCLK rate change
-      dt-bindings: clock: exynos850: Add CMU_CPUCLK0 and CMU_CPUCL1
-      clk: samsung: Improve clk-cpu.c style
-      clk: samsung: Pull struct exynos_cpuclk into clk-cpu.c
-      clk: samsung: Reduce params count in exynos_register_cpu_clock()
-      clk: samsung: Use single CPU clock notifier callback for all chips
-      clk: samsung: Group CPU clock functions by chip
-      clk: samsung: Pass actual CPU clock registers base to CPU_CLK()
-      clk: samsung: Pass register layout type explicitly to CLK_CPU()
-      clk: samsung: Keep CPU clock chip specific data in a dedicated struct
-      clk: samsung: Keep register offsets in chip specific structure
-      clk: samsung: Pass mask to wait_until_mux_stable()
-      clk: samsung: Add CPU clock support for Exynos850
-
-Satya Priya Kakitapalli (4):
-      clk: qcom: gcc-sm8150: Register QUPv3 RCGs for DFS on SM8150
-      dt-bindings: clock: qcom,gcc-sm8150: Add gcc video resets for sm8150
-      clk: qcom: gcc-sm8150: Add gcc video resets for sm8150
-      clk: qcom: dispcc-sm8250: Make clk_init_data and pll_vco const
-
-Sebastian Reichel (3):
-      clk: rockchip: rk3588: fix pclk_vo0grf and pclk_vo1grf
-      clk: rockchip: rk3588: fix indent
-      clk: rockchip: rk3588: use linked clock ID for GATE_LINK
-
-Sekhar Nori (1):
-      MAINTAINERS: drop Sekhar Nori
-
-Shengjiu Wang (1):
-      clk: imx: imx8mp: Fix SAI_MCLK_SEL definition
-
-Shradha Todi (1):
-      clk: Provide managed helper to get and enable bulk clocks
-
-Stephen Boyd (13):
-      Merge tag 'renesas-clk-for-v6.9-tag1' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers into clk-renesas
-      Merge tag 'renesas-clk-for-v6.9-tag2' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers into clk-renesas
-      Merge tag 'sunxi-clk-for-6.9-1' of https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux into clk-allwinner
-      Merge tag 'samsung-clk-6.9' of https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux into clk-samsung
-      Merge tag 'clk-imx-6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux into clk-imx
-      Merge tag 'v6.9-rockchip-clk1' of git://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip into clk-rockchip
-      Merge tag 'clk-meson-v6.9-1' of https://github.com/BayLibre/clk-meson into clk-amlogic
-      Merge tag 'qcom-clk-for-6.9' of https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux into clk-qcom
-      Merge tag 'clk-microchip-6.9' of https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux into clk-microchip
-      Merge branches 'clk-renesas', 'clk-cleanup', 'clk-hisilicon', 'clk-mediatek' and 'clk-bulk' into clk-next
-      Merge branches 'clk-aspeed', 'clk-keystone', 'clk-mobileye' and 'clk-allwinner' into clk-next
-      Merge branches 'clk-remove', 'clk-amlogic', 'clk-qcom', 'clk-parent' and 'clk-microchip' into clk-next
-      Merge branches 'clk-samsung', 'clk-imx', 'clk-rockchip', 'clk-clkdev' and 'clk-rate-exclusive' into clk-next
-
-Théo Lebrun (4):
-      clk: fixed-factor: add optional accuracy support
-      clk: fixed-factor: add fwname-based constructor functions
-      dt-bindings: clock: mobileye,eyeq5-clk: add bindings
-      dt-bindings: reset: mobileye,eyeq5-reset: add bindings
-
-Tudor Ambarus (1):
-      clk: samsung: gs101: add support for cmu_peric0
-
-Udit Kumar (1):
-      clk: keystone: sci-clk: Adding support for non contiguous clocks
-
-Uwe Kleine-König (4):
-      clk: Add a devm variant of clk_rate_exclusive_get()
-      clk: imx: imx8-acm: Convert to platform remove callback returning void
-      clk: starfive: jh7110-isp: Convert to platform remove callback returning void
-      clk: starfive: jh7110-vout: Convert to platform remove callback returning void
-
-Varada Pavani (1):
-      dt-bindings: clock: tesla,fsd: Fix spelling mistake
-
-Vladimir Lypak (1):
-      clk: qcom: gcc-msm8953: add more resets
-
- CREDITS                                            |    5 +
- .../bindings/arm/mediatek/mediatek,hifsys.txt      |   26 -
- .../bindings/arm/mediatek/mediatek,pciesys.txt     |   25 -
- .../bindings/arm/mediatek/mediatek,ssusbsys.txt    |   25 -
- .../bindings/clock/google,gs101-clock.yaml         |   32 +-
- .../bindings/clock/mediatek,mt2701-hifsys.yaml     |   50 +
- .../bindings/clock/mediatek,mt7622-pciesys.yaml    |   45 +
- .../bindings/clock/mediatek,mt7622-ssusbsys.yaml   |   45 +
- .../bindings/clock/mobileye,eyeq5-clk.yaml         |   51 +
- .../devicetree/bindings/clock/qcom,gpucc.yaml      |    9 +
- .../devicetree/bindings/clock/qcom,q6sstopcc.yaml  |    2 +-
- .../devicetree/bindings/clock/qcom,sc7180-mss.yaml |   61 -
- .../bindings/clock/qcom,sm8450-camcc.yaml          |    2 +
- .../bindings/clock/qcom,sm8450-gpucc.yaml          |    2 +
- .../bindings/clock/qcom,sm8550-dispcc.yaml         |    7 +-
- .../bindings/clock/qcom,sm8550-tcsr.yaml           |    1 +
- .../bindings/clock/qcom,sm8650-dispcc.yaml         |  106 -
- .../bindings/clock/renesas,cpg-mssr.yaml           |    1 +
- .../bindings/clock/samsung,exynos850-clock.yaml    |   42 +
- .../devicetree/bindings/clock/tesla,fsd-clock.yaml |    2 +-
- .../bindings/net/can/microchip,mpfs-can.yaml       |    6 +-
- .../bindings/power/renesas,rcar-sysc.yaml          |    1 +
- .../bindings/reset/mobileye,eyeq5-reset.yaml       |   43 +
- MAINTAINERS                                        |    1 -
- drivers/clk/clk-ast2600.c                          |    7 +-
- drivers/clk/clk-cdce925.c                          |    1 -
- drivers/clk/clk-devres.c                           |   40 +
- drivers/clk/clk-fixed-factor.c                     |  103 +-
- drivers/clk/clk-fractional-divider.c               |   14 +-
- drivers/clk/clk.c                                  |   22 +
- drivers/clk/clkdev.c                               |    2 +-
- drivers/clk/hisilicon/clk-hi3519.c                 |    2 +-
- drivers/clk/hisilicon/clk-hi3559a.c                |    4 +-
- drivers/clk/imx/clk-composite-8m.c                 |   16 +-
- drivers/clk/imx/clk-imx8-acm.c                     |    6 +-
- drivers/clk/imx/clk-imx8mp-audiomix.c              |   11 +-
- drivers/clk/imx/clk-scu.c                          |   22 +-
- drivers/clk/keystone/sci-clk.c                     |   12 +-
- drivers/clk/mediatek/clk-mt7622-apmixedsys.c       |    1 -
- drivers/clk/mediatek/clk-mt7981-topckgen.c         |    5 +-
- drivers/clk/mediatek/clk-mt7988-infracfg.c         |   23 +
- drivers/clk/mediatek/clk-mt8135-apmixedsys.c       |    4 +-
- drivers/clk/mediatek/clk-mt8173-apmixedsys.c       |    5 +-
- drivers/clk/mediatek/clk-mt8183.c                  |    2 +-
- drivers/clk/meson/axg.c                            |    2 +
- drivers/clk/microchip/clk-mpfs.c                   |  154 +-
- drivers/clk/qcom/Kconfig                           |   45 +-
- drivers/clk/qcom/Makefile                          |    5 +-
- drivers/clk/qcom/camcc-sc7180.c                    |   12 +-
- drivers/clk/qcom/camcc-sc7280.c                    |   12 +-
- drivers/clk/qcom/camcc-sc8280xp.c                  |   27 +-
- drivers/clk/qcom/camcc-sdm845.c                    |   12 +-
- drivers/clk/qcom/camcc-sm6350.c                    |   12 +-
- drivers/clk/qcom/camcc-sm8550.c                    |   10 +-
- drivers/clk/qcom/camcc-x1e80100.c                  | 2487 ++++++++++++++++++++
- drivers/clk/qcom/clk-alpha-pll.c                   |   16 +
- drivers/clk/qcom/clk-alpha-pll.h                   |    4 +
- drivers/clk/qcom/clk-branch.h                      |    6 +
- drivers/clk/qcom/dispcc-qcm2290.c                  |   16 +-
- drivers/clk/qcom/dispcc-sc7180.c                   |   12 +-
- drivers/clk/qcom/dispcc-sc7280.c                   |   19 +-
- drivers/clk/qcom/dispcc-sc8280xp.c                 |   16 +-
- drivers/clk/qcom/dispcc-sdm845.c                   |   14 +-
- drivers/clk/qcom/dispcc-sm6115.c                   |    4 +-
- drivers/clk/qcom/dispcc-sm6125.c                   |   12 +-
- drivers/clk/qcom/dispcc-sm6350.c                   |   12 +-
- drivers/clk/qcom/dispcc-sm6375.c                   |   12 +-
- drivers/clk/qcom/dispcc-sm8250.c                   |  134 +-
- drivers/clk/qcom/dispcc-sm8450.c                   |   19 +-
- drivers/clk/qcom/dispcc-sm8550.c                   |   19 +-
- drivers/clk/qcom/dispcc-sm8650.c                   |   16 +-
- drivers/clk/qcom/dispcc-x1e80100.c                 | 1718 ++++++++++++++
- drivers/clk/qcom/gcc-ipq5018.c                     |    9 +-
- drivers/clk/qcom/gcc-ipq6018.c                     |   19 +
- drivers/clk/qcom/gcc-ipq8074.c                     |    2 +
- drivers/clk/qcom/gcc-ipq9574.c                     |    1 +
- drivers/clk/qcom/gcc-msm8953.c                     |    4 +
- drivers/clk/qcom/gcc-sa8775p.c                     |   29 +-
- drivers/clk/qcom/gcc-sc7180.c                      |   22 +-
- drivers/clk/qcom/gcc-sc7280.c                      |   20 +-
- drivers/clk/qcom/gcc-sc8180x.c                     |   62 +-
- drivers/clk/qcom/gcc-sc8280xp.c                    |   29 +-
- drivers/clk/qcom/gcc-sdm845.c                      |    1 +
- drivers/clk/qcom/gcc-sdx55.c                       |   12 +-
- drivers/clk/qcom/gcc-sdx65.c                       |   13 +-
- drivers/clk/qcom/gcc-sdx75.c                       |   10 +-
- drivers/clk/qcom/gcc-sm4450.c                      |   32 +-
- drivers/clk/qcom/gcc-sm6375.c                      |   11 +-
- drivers/clk/qcom/gcc-sm7150.c                      |   25 +-
- drivers/clk/qcom/gcc-sm8150.c                      |  352 +--
- drivers/clk/qcom/gcc-sm8250.c                      |   23 +-
- drivers/clk/qcom/gcc-sm8350.c                      |   24 +-
- drivers/clk/qcom/gcc-sm8450.c                      |   25 +-
- drivers/clk/qcom/gcc-sm8550.c                      |   25 +-
- drivers/clk/qcom/gcc-sm8650.c                      |   20 +-
- drivers/clk/qcom/gcc-x1e80100.c                    |   16 +-
- drivers/clk/qcom/gdsc.c                            |   12 +-
- drivers/clk/qcom/gpucc-sa8775p.c                   |   12 +-
- drivers/clk/qcom/gpucc-sc7180.c                    |   12 +-
- drivers/clk/qcom/gpucc-sc7280.c                    |   21 +-
- drivers/clk/qcom/gpucc-sc8280xp.c                  |   10 +-
- drivers/clk/qcom/gpucc-sdm845.c                    |   12 +-
- drivers/clk/qcom/gpucc-sm8150.c                    |   12 +-
- drivers/clk/qcom/gpucc-sm8250.c                    |   12 +-
- drivers/clk/qcom/gpucc-sm8350.c                    |   12 +-
- drivers/clk/qcom/gpucc-sm8550.c                    |   22 +-
- drivers/clk/qcom/gpucc-x1e80100.c                  |  656 ++++++
- drivers/clk/qcom/lpasscorecc-sc7180.c              |    7 +-
- drivers/clk/qcom/mmcc-apq8084.c                    |    2 +
- drivers/clk/qcom/mmcc-msm8974.c                    |    2 +
- drivers/clk/qcom/mss-sc7180.c                      |  140 --
- drivers/clk/qcom/reset.c                           |   27 +-
- drivers/clk/qcom/reset.h                           |    2 +-
- drivers/clk/qcom/tcsrcc-x1e80100.c                 |  285 +++
- drivers/clk/qcom/videocc-sc7180.c                  |   12 +-
- drivers/clk/qcom/videocc-sc7280.c                  |   12 +-
- drivers/clk/qcom/videocc-sdm845.c                  |   12 +-
- drivers/clk/qcom/videocc-sm8150.c                  |   14 +-
- drivers/clk/qcom/videocc-sm8250.c                  |   22 +-
- drivers/clk/qcom/videocc-sm8350.c                  |   14 +-
- drivers/clk/qcom/videocc-sm8450.c                  |   29 +-
- drivers/clk/qcom/videocc-sm8550.c                  |   29 +-
- drivers/clk/renesas/Kconfig                        |    5 +
- drivers/clk/renesas/Makefile                       |    1 +
- drivers/clk/renesas/clk-mstp.c                     |   16 +-
- drivers/clk/renesas/r8a779f0-cpg-mssr.c            |    2 +-
- drivers/clk/renesas/r8a779g0-cpg-mssr.c            |   13 +-
- drivers/clk/renesas/r8a779h0-cpg-mssr.c            |  256 ++
- drivers/clk/renesas/r9a07g043-cpg.c                |   37 +-
- drivers/clk/renesas/r9a07g044-cpg.c                |    6 +-
- drivers/clk/renesas/r9a08g045-cpg.c                |    3 +
- drivers/clk/renesas/rcar-gen4-cpg.c                |   10 +-
- drivers/clk/renesas/renesas-cpg-mssr.c             |  117 +-
- drivers/clk/renesas/renesas-cpg-mssr.h             |    1 +
- drivers/clk/rockchip/clk-rk3399.c                  |    6 +-
- drivers/clk/rockchip/clk-rk3568.c                  |    1 +
- drivers/clk/rockchip/clk-rk3588.c                  |   50 +-
- drivers/clk/samsung/clk-cpu.c                      |  564 +++--
- drivers/clk/samsung/clk-cpu.h                      |   53 +-
- drivers/clk/samsung/clk-exynos3250.c               |    2 +-
- drivers/clk/samsung/clk-exynos4.c                  |    9 +-
- drivers/clk/samsung/clk-exynos5250.c               |    5 +-
- drivers/clk/samsung/clk-exynos5420.c               |   16 +-
- drivers/clk/samsung/clk-exynos5433.c               |   10 +-
- drivers/clk/samsung/clk-exynos850.c                |   43 +-
- drivers/clk/samsung/clk-gs101.c                    |  942 +++++++-
- drivers/clk/samsung/clk.h                          |    5 +-
- drivers/clk/starfive/clk-starfive-jh7110-isp.c     |    6 +-
- drivers/clk/starfive/clk-starfive-jh7110-vout.c    |    6 +-
- drivers/clk/sunxi/clk-a20-gmac.c                   |   21 +-
- drivers/clk/sunxi/clk-sun9i-cpus.c                 |    7 +-
- drivers/clk/sunxi/clk-usb.c                        |    9 +-
- drivers/clk/ti/dpll3xxx.c                          |    4 +-
- drivers/clk/xilinx/clk-xlnx-clock-wizard.c         |    2 +-
- drivers/clk/zynq/clkc.c                            |    8 +-
- drivers/of/base.c                                  |  123 +-
- include/dt-bindings/clock/ast2600-clock.h          |    1 +
- include/dt-bindings/clock/exynos850.h              |   56 +
- include/dt-bindings/clock/google,gs101.h           |  129 +
- include/dt-bindings/clock/microchip,mpfs-clock.h   |    5 +
- include/dt-bindings/clock/mobileye,eyeq5-clk.h     |   22 +
- include/dt-bindings/clock/qcom,gcc-msm8953.h       |    4 +
- include/dt-bindings/clock/qcom,gcc-sc8180x.h       |    2 +
- include/dt-bindings/clock/qcom,gcc-sm8150.h        |    3 +
- include/dt-bindings/clock/qcom,x1e80100-camcc.h    |  135 ++
- include/dt-bindings/clock/qcom,x1e80100-dispcc.h   |   98 +
- include/dt-bindings/clock/qcom,x1e80100-gpucc.h    |   41 +
- include/dt-bindings/clock/qcom,x1e80100-tcsr.h     |   23 +
- include/dt-bindings/clock/r8a779g0-cpg-mssr.h      |    1 +
- .../dt-bindings/clock/renesas,r8a779h0-cpg-mssr.h  |   96 +
- include/dt-bindings/power/renesas,r8a779h0-sysc.h  |   49 +
- include/dt-bindings/reset/mediatek,mt7988-resets.h |    6 +
- include/dt-bindings/reset/qcom,x1e80100-gpucc.h    |   19 +
- include/linux/clk-provider.h                       |   26 +-
- include/linux/clk.h                                |   34 +
- include/linux/of.h                                 |   11 +
- 176 files changed, 9239 insertions(+), 1788 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
- delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pciesys.txt
- delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ssusbsys.txt
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7622-pciesys.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7622-ssusbsys.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
- delete mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7180-mss.yaml
- delete mode 100644 Documentation/devicetree/bindings/clock/qcom,sm8650-dispcc.yaml
- create mode 100644 Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
- create mode 100644 drivers/clk/qcom/camcc-x1e80100.c
- create mode 100644 drivers/clk/qcom/dispcc-x1e80100.c
- create mode 100644 drivers/clk/qcom/gpucc-x1e80100.c
- delete mode 100644 drivers/clk/qcom/mss-sc7180.c
- create mode 100644 drivers/clk/qcom/tcsrcc-x1e80100.c
- create mode 100644 drivers/clk/renesas/r8a779h0-cpg-mssr.c
- create mode 100644 include/dt-bindings/clock/mobileye,eyeq5-clk.h
- create mode 100644 include/dt-bindings/clock/qcom,x1e80100-camcc.h
- create mode 100644 include/dt-bindings/clock/qcom,x1e80100-dispcc.h
- create mode 100644 include/dt-bindings/clock/qcom,x1e80100-gpucc.h
- create mode 100644 include/dt-bindings/clock/qcom,x1e80100-tcsr.h
- create mode 100644 include/dt-bindings/clock/renesas,r8a779h0-cpg-mssr.h
- create mode 100644 include/dt-bindings/power/renesas,r8a779h0-sysc.h
- create mode 100644 include/dt-bindings/reset/qcom,x1e80100-gpucc.h
-
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7165.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd9377ab-cc12-4c8c-ea45-08dc445f06ff
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 19:43:30.9641
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YKSD4FK5LMdM/MuO2vhxf7wUiJKk2PGwD+I4lI14Z+cE/jcHgPMDG+G0TNOs1y9dG9epROBRLCthtkykrBnANA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7668
+
+Hi Maxime,
+
+Thank you for the review.
+
+> -----Original Message-----
+> From: Maxime Ripard <mripard@kernel.org>
+> Sent: Thursday, March 14, 2024 5:05 AM
+> To: Klymenko, Anatoliy <Anatoliy.Klymenko@amd.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>; Maarten Lankhor=
+st
+> <maarten.lankhorst@linux.intel.com>; Thomas Zimmermann
+> <tzimmermann@suse.de>; David Airlie <airlied@gmail.com>; Daniel Vetter
+> <daniel@ffwll.ch>; Simek, Michal <michal.simek@amd.com>; Andrzej Hajda
+> <andrzej.hajda@intel.com>; Neil Armstrong <neil.armstrong@linaro.org>; Ro=
+bert
+> Foss <rfoss@kernel.org>; Jonas Karlman <jonas@kwiboo.se>; Jernej Skrabec
+> <jernej.skrabec@gmail.com>; Rob Herring <robh+dt@kernel.org>; Krzysztof
+> Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> <conor+dt@kernel.org>; Mauro Carvalho Chehab <mchehab@kernel.org>; dri-
+> devel@lists.freedesktop.org; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> media@vger.kernel.org
+> Subject: Re: [PATCH v2 8/8] drm: xlnx: Intoduce TPG CRTC driver
+>=20
+> Hi,
+>=20
+> On Tue, Mar 12, 2024 at 05:55:05PM -0700, Anatoliy Klymenko wrote:
+> > DO NOT MERGE. REFERENCE ONLY.
+> >
+> > Add CRTC driver based on AMD/Xilinx Video Test Pattern Generator IP.
+> > TPG based FPGA design represents minimalistic harness useful for
+> > testing links between FPGA based CRTC and external DRM encoders, both
+> > FPGA and hardened IP based.
+> >
+> > Add driver for AMD/Xilinx Video Timing Controller. The VTC, working in
+> > generator mode, suplements TPG with video timing signals.
+> >
+> > Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+>=20
+> As I said previously, we don't want to have unused APIs, so this patch sh=
+ould be in
+> a good enough state to be merged if we want to merge the whole API.
+>=20
+
+This is understandable, but even having this API just reviewed by the commu=
+nity will open the path forward for aligning AMD/Xilinx downstream DRM driv=
+ers with the upstream kernel.
+
+> > +/*
+> > +---------------------------------------------------------------------
+> > +--------
+> > + * DRM CRTC
+> > + */
+> > +
+> > +static enum drm_mode_status xlnx_tpg_crtc_mode_valid(struct drm_crtc
+> *crtc,
+> > +						     const struct
+> drm_display_mode *mode) {
+> > +	return MODE_OK;
+> > +}
+> > +
+> > +static int xlnx_tpg_crtc_check(struct drm_crtc *crtc,
+> > +			       struct drm_atomic_state *state) {
+> > +	struct drm_crtc_state *crtc_state =3D
+> drm_atomic_get_new_crtc_state(state, crtc);
+> > +	int ret;
+> > +
+> > +	if (!crtc_state->enable)
+> > +		goto out;
+> > +
+> > +	ret =3D drm_atomic_helper_check_crtc_primary_plane(crtc_state);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +out:
+> > +	return drm_atomic_add_affected_planes(state, crtc); }
+> > +
+>=20
+> [...]
+>=20
+> > +
+> > +static u32 xlnx_tpg_crtc_select_output_bus_format(struct drm_crtc *crt=
+c,
+> > +						  struct drm_crtc_state
+> *crtc_state,
+> > +						  const u32 *in_bus_fmts,
+> > +						  unsigned int
+> num_in_bus_fmts) {
+> > +	struct xlnx_tpg *tpg =3D crtc_to_tpg(crtc);
+> > +	unsigned int i;
+> > +
+> > +	for (i =3D 0; i < num_in_bus_fmts; ++i)
+> > +		if (in_bus_fmts[i] =3D=3D tpg->output_bus_format)
+> > +			return tpg->output_bus_format;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct drm_crtc_helper_funcs xlnx_tpg_crtc_helper_funcs =
+=3D {
+> > +	.mode_valid =3D xlnx_tpg_crtc_mode_valid,
+> > +	.atomic_check =3D xlnx_tpg_crtc_check,
+> > +	.atomic_enable =3D xlnx_tpg_crtc_enable,
+> > +	.atomic_disable =3D xlnx_tpg_crtc_disable,
+> > +	.select_output_bus_format =3D xlnx_tpg_crtc_select_output_bus_format,
+> > +};
+>=20
+> From that code, it's not clear to me how the CRTC is going to be able to =
+get what
+> the format is.
+>=20
+
+It's coming from DT "bus-format" property. The idea is that this property w=
+ill reflect the FPGA design variation synthesized.=20
+
+> It looks like you hardcode it here, but what if there's several that woul=
+d fit the
+> bill? Is the CRTC expected to store it into its private structure?
+>=20
+
+It's impractical from the resources utilization point of view to support mu=
+ltiple runtime options for FPGA-based CRTCs output signal format, so the bu=
+s-format will be runtime fixed but can vary between differently synthesized=
+ instances.
+
+> If so, I would expect it to be in the crtc state, and atomic_enable to ju=
+st reuse
+> whatever is in the state.
+>=20
+
+This could be totally valid for different kinds of CRTCs, although for this=
+ particular case, the bus-fomat choice is runtime immutable.
+
+> Maxime
+
+Thank you,
+Anatoliy
 
