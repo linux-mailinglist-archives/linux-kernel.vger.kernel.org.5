@@ -1,139 +1,117 @@
-Return-Path: <linux-kernel+bounces-103732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8866D87C3BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:34:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB3987C3BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C84C28337A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:34:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4CB61F21FD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F62757FE;
-	Thu, 14 Mar 2024 19:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B532175813;
+	Thu, 14 Mar 2024 19:38:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="NvGrvbtf"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y2JqGJTL"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84F72E410
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B802E410;
+	Thu, 14 Mar 2024 19:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710444883; cv=none; b=NMwLuPZuvyBlBU1q82KgcrSYVRrVN8MO5NAeIrnn8Jht+Nd3DzqVtMiIrH/CLJaJJgzpvrWeFgbpDktr3M2vY3Inbs+BP6gU8i3ZzV4B+M54+bH92WbQXuULTnul2vBr9kUyZvpOtmeS9Bie49cJINCGgM/g6b6ssPxRw30ZsRE=
+	t=1710445101; cv=none; b=B0sXVk8Kb8KFYCjhwGdJQMrE8zlQDp12pccgHOeoDOW5/QlCI0rNafQzWcUvX5jDT4BF/ORhh8urKRgi90dLSskwm2q9GG0TyBAqucjUFDj5nOZOmpMx+Cbcd6KJuHaeauJ02BrqdHPMCuivKdioA2dwcPotgKCpXgv5W+wf4Bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710444883; c=relaxed/simple;
-	bh=Gu8ndvCosLfR13D/hsYz/cv9ogsH/tqd6hyUv+jcRaM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ca+CUwEiI5FCnFQDdGkzcpbLz+Q3Cwt2c6tl0r/ZpjN1VMhrMKnFYb1uaQEOFmRkejgqri0Gt8O0sKgei3x9U6qxiS7JMOUEbTobo+c6pVhb0MiLNSvrdkdJWzbSrAUIytFYVKBAm192vO1x4dzEs+ieMnm+msQrvCeP7O1vyy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=NvGrvbtf; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42a029c8e62so8959001cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:34:41 -0700 (PDT)
+	s=arc-20240116; t=1710445101; c=relaxed/simple;
+	bh=2ZdiD1IoUseLi2z6Jn18hB92ejMwVgbyw7tciD+Fnpc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Otk9VOu3hetcJl5lXnMK+V+l0AIZigU6Pvtpbhza+fu6rmE+V4ZAgTD2sxUq0u53U8Xh4lSzmVpEw8xuaxpTY04fQ7gRqMqWsud+7iEmmVCRCQHhQQ/XNNPk/2oU0H1b0agFc5cWKWn+CFCgfOtnYHfCpyXvlRsRRWNnIz41pf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y2JqGJTL; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-789db18e24eso54239985a.1;
+        Thu, 14 Mar 2024 12:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710444881; x=1711049681; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gu8ndvCosLfR13D/hsYz/cv9ogsH/tqd6hyUv+jcRaM=;
-        b=NvGrvbtf1Kwp25RAZmnTcVC0aF6bpZqbwYjXn4JQm68VaNxi6MbUjWuhmZV0FlPePg
-         Mk5/GYaK/3C+o3yF5i0d3d4oXHQJZgyZNCEuw6nLyvCrLjit9bYXUxh2njQz6qQgy4l4
-         ldFW7VqZYnXOm01PbXWM9gOX0cz9qU68IwjHfPyju12/n4iAWFU6Fm7PRolbQG2aMqtn
-         FhLiOCujBcYpeXtLOeqgLyaLRrjznn1wKnT3UX89ajBzJmcEksbSOPX/ptubvxYlY2CL
-         XnQM1IwRvtZ5MBc3TY+7H/5ztD7IN2waqNweb3WhxhQKIZ4pIHATEah4710eTRxDPgI2
-         F7tg==
+        d=gmail.com; s=20230601; t=1710445098; x=1711049898; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QM0EpX+2nRF6kqssGaNMOIy7olhnPJ21fD9kE6DtD/0=;
+        b=Y2JqGJTLn1UhJZttV9BRDCcxu/mYL4UlCparLl5g+46Fh21jtTmPzHanohNAb8eME/
+         m4zCn2QlI5cxwUBVvx+fvLa1AF7kOa9y9apR5zQISFeQ0bwwrm2P+wn7zE2NpnzE3QfP
+         9DTOPXk7UOpRLgA3Ek/VU1sDR8FK6Nbu3wEWmB950OzZNWjkVZswPe3bnQiWAEu6Rfq7
+         D+N6O4fFLwmrZqFpMkrT2+N2OGhoBYE0u1oRrXVDYTfNDA9o9kiBqvGaXSQMRd5xXdH9
+         3GOMMcNjjEDZO/VXcPVRUHylt9jtmiUGs5DtemtbHQQvWJu6xfDDwwRBWSNUSok8dH27
+         nEIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710444881; x=1711049681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gu8ndvCosLfR13D/hsYz/cv9ogsH/tqd6hyUv+jcRaM=;
-        b=P2uabfLyFCpbsF2J/cUnyvY+/WDIRthYHsok4sLbQqYXv9r2FX6thq0xoBt8uIukQr
-         fASzMTjIxdmebvoi2/jNnDpGBtOPtXN1dNmZadOkPLBeHzGD6LlfGAR3rGmCAme3mF1w
-         2WVH+P+OPswRdhIsfG/cexW+OJcVhu4KjO1kQDrpLOkuvO6AvmoOcBNtPWuJuCZMs4D6
-         ouRdIqYMYHVqZGsan/TLT8jjNeELUGwC+5s49xtS9vYprVnLIED6fQFI1EWV7ZQwLh1K
-         PV4mrz3ah00XIJu082CCCZG3+AgPLAU6AIiSrZNDYTTisTC3o3gWu+wbFSEDxJZBf8OI
-         qdkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUlE4KxHVwcJQ0Jqkz4bi8Nxu5CmZb4nuPKCMPJKgQMEHqMqzldhitipi/jQJ5lG1+Umnh62KPJbKP+yjAHixe8qUwLAGgy6166isab
-X-Gm-Message-State: AOJu0YyfARcZ7i1ihbBTQDy7Lw0obMqRclwxCptNxjXqMq2oj3HMZYwg
-	sNpkJ01d7ZtitTwFLCR7UFbdUwozsC8ostSUF8MjE9swIycp0VTWYe7SAG1T2uDOYid8krlLgnO
-	ceEBhI5J9mubyhjS1y+0E6yk5xYtU1+Iy6MlKmg==
-X-Google-Smtp-Source: AGHT+IFYUmp8vuQtAaVQJsJwK0pf9SP/QzZlup80TTakr/1z6jjrHWw1ZTmVhdIG/sfZHB8mMBDgjcN1TuW0c5bY+6I=
-X-Received: by 2002:ac8:5f8e:0:b0:42f:30bd:fc8b with SMTP id
- j14-20020ac85f8e000000b0042f30bdfc8bmr1956069qta.63.1710444880851; Thu, 14
- Mar 2024 12:34:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710445098; x=1711049898;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QM0EpX+2nRF6kqssGaNMOIy7olhnPJ21fD9kE6DtD/0=;
+        b=H4Z4EmBByokUwVMjcr0JjtCK+eZTit6WxArR2ic2BQAPwYTBYda2cn39WBvckBxFlh
+         uQaOTc10o5RxY+ej2HDTMFoMZNmpI/gJ/muCxXbFdV56i5gLLRNmcrTww4/ywgYmZ6cX
+         qInQGL+1z/vJ68rClktfzmEikk7z2V4pfFbF8VLDOM0dC4uJzByk+fVJvQmR4qKCxToN
+         DEhj22HYfBkwgUdZPxbCAkV0TUCOmNwJzolKbhSLAjIREJoIsj4zkqRHsV2a49o7q9yJ
+         M3ncrOy73ikJ404P9B5vUSt1xB7ZFsiPfQQVI1XhiX6as1Q3FV56DMwuArEYXrhkIaKp
+         GWbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUI3mgMSWCpdyaJwvT8ZtIjKqWnDish1MdOJzoS8R9vvyFJDA43R6XReajoRbvazsklYtvuXavCTfkUkSAqIINEnT87zAZ7YzTlRRUqjaFSi6xUpWj6cz2/da2Q+oLaaVcV/DwE
+X-Gm-Message-State: AOJu0YxarzeA89nru1U6kEsaVKBskRpwZ7jYYNvoOkmvTCDVJefjvFZP
+	dF1dKkFxKYlBD8Ao142UZC0q1sxusr2VW7DtAB+jGM52X3CewvGJ
+X-Google-Smtp-Source: AGHT+IFd0HbfX2lksd26KvQNXcItlwpCahQ4dfZn5vRuJfEpk8cclOMq694BPylw2ZuXl+Px+HlNhQ==
+X-Received: by 2002:a05:620a:817:b0:788:2e47:b297 with SMTP id s23-20020a05620a081700b007882e47b297mr2964412qks.78.1710445098425;
+        Thu, 14 Mar 2024 12:38:18 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id vq23-20020a05620a559700b00789d0189eb6sm1160085qkn.117.2024.03.14.12.38.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 12:38:17 -0700 (PDT)
+Message-ID: <ec2707ea-0586-4218-8813-7a43885616e2@gmail.com>
+Date: Thu, 14 Mar 2024 12:38:15 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <CA+CK2bC+bgOfohCEEW7nwAdakVmzg=RhUjjw=+Rw3wFALnOq-Q@mail.gmail.com>
- <f949f712-eacf-49a0-91ea-8062e2d1f5e0@zytor.com> <fp6tyl6laseytepxpyidvwjo4dl357dtqegzumrc5ao6srm6we@afcl57kvjieb>
- <CA+CK2bA+ACXv955KXpP3ZW47n7tiZqzUMz9s09cJMUD7Cz2Log@mail.gmail.com> <mo2z7sfzxntlfbbr5yqyjpe5cn2nn6ecxgi3pr5kcfbzq2dnzn@vvtugr3s5hbf>
-In-Reply-To: <mo2z7sfzxntlfbbr5yqyjpe5cn2nn6ecxgi3pr5kcfbzq2dnzn@vvtugr3s5hbf>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 14 Mar 2024 15:34:03 -0400
-Message-ID: <CA+CK2bDQu0jh55H=FQtA-5R-5Qy2=nqzcybEuN=RzVR75NBLRA@mail.gmail.com>
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
-	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
-	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
-	hca@linux.ibm.com, hch@infradead.org, jacob.jun.pan@linux.intel.com, 
-	jgg@ziepe.ca, jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com, 
-	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
-	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
-	michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
-	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
-	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
-	tglx@linutronix.de, urezki@gmail.com, vincent.guittot@linaro.org, 
-	vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 00/51] 5.4.272-rc1 review
+Content-Language: en-US
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de
+References: <20240313170212.616443-1-sashal@kernel.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240313170212.616443-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 3:29=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, Mar 14, 2024 at 03:23:08PM -0400, Pasha Tatashin wrote:
-> > > >
-> > > > My point is that what matters is total memory use, not just memory =
-used in
-> > > > the kernel. Amdahl's law.
-> > >
-> > > If userspace is running a few processes with many threads and the
-> > > userspace stacks are small, kernel stacks could end up dominating.
-> > >
-> > > I'd like to see some numbers though.
-> >
-> > The unused kernel stack pages occupy petabytes of memory across the fle=
-et [1].
->
-> Raw number doesn't mean much here (I know how many machines Google has,
-> of course it's going to be petabytes ;), percentage of system memory
-> would be better.
->
-> What I'd _really_ like to see is raw output from memory allocation
-> profiling, so we can see how much memory is going to kernel stacks vs.
-> other kernel allocations.
+On 3/13/24 10:01, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.4.272 release.
+> There are 51 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri Mar 15 05:02:10 PM UTC 2024.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.271
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
 
-I've heard there is memory profiling working that can help with that...
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-While I do not have the data you are asking for, the other kernel
-allocations might be useful, but this particular project is targeted
-to help with reducing overhead where the memory is not used, or used
-in very extreme rare cases.
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-> Number of kernel threads vs. number of user threads would also be good
-> to know - I've been seeing ps output lately where we've got a lot more
-> workqueue workers than we should, perhaps that's something that could be
-> addressed.
-
-Yes, doing other optimizations make sense, reducing the total number
-kernel threads if possible might help as well. I will look into this
-as well to see how many user threads vs kernel threads we have.
 
