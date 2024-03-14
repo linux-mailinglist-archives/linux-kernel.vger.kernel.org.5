@@ -1,95 +1,167 @@
-Return-Path: <linux-kernel+bounces-103149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B62A87BB9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:57:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1D1687BBA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:00:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 140141F23D84
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:57:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51CD2B21D35
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1C86EB6F;
-	Thu, 14 Mar 2024 10:57:33 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ECB76EB51;
+	Thu, 14 Mar 2024 11:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yl+37VDK"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B1D6EB59
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219AD6CDA3;
+	Thu, 14 Mar 2024 10:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710413853; cv=none; b=oxWsKbjH3F2tFkIbhtZbTXFJOSIhRnGfH3nmz8v5EN6I0WVb1QokEWD6XUoSxx9nFRYboxcMz0vWh5C1cqXP+1mCCAwalnGKp56+X4Q7KxjaFCdYbClB5DP5DZAqK3b51gTpsiXHDJAfLt5T9q5wxZTdreXghedWvpnmPov56pc=
+	t=1710414001; cv=none; b=R2NCsply3UiR0iDFYxHmCtV4/TK+hHCePHGa+UlDaQi3PEfbADvtZGVizStDHgb0dPem1n3APfjZo2rKVyn/aAvsXA9Kf3bB+VAZzK5Pj5DrFpLtWu9Q0/Y7alKwky9heFmxUcAehsU3I3yNSEidRoJRuSC9BEy6Zvy5xQXOxfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710413853; c=relaxed/simple;
-	bh=wqW8Cfeo8H5/uTSQiLDF+ZZ0kCvejX6xUsqyF6X6QfU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=mGcmFFVshcyYmMUHx1Rtm63nVb8bdrKjn1H+10t2ZRZNlhJGajpvgHfbu6WqJtaaMRlIrMl1CAo47CqsUy9jVGcgjhXvEzbuicZlFuAcmlJG1IpMGk5zb2kd4x2wurwI3nP1IOe+1um9r8LzJJUA7KgVUVtY08wYmCSK2PCdlzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c8b8a6f712so65651939f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 03:57:30 -0700 (PDT)
+	s=arc-20240116; t=1710414001; c=relaxed/simple;
+	bh=IsShSKe2XWmUERLMrTIUxY+uPPipgWDxAQnRv8B+s/c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-type; b=IaB7jtHs1IfbflOTYeAtzrw5u/PR1vZEvz/2FT+TeJYHKMAeokjpoBJI07gIQumESKaE9pdEUdyxCDK40a0Vi3l8s0IOgPCD0sT/MzTEEYvMpnp04cEYm48GKzGMyiz4wMD7Yg+xKrJe/+sDOd6x9p/QkD9P0iw5r32Xfrgyywc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yl+37VDK; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a465ddc2c09so86150766b.2;
+        Thu, 14 Mar 2024 03:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710413998; x=1711018798; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=f74il14ZWPvRtCdOjQ7hLLex80lpQ3c6JxKbsOjU1Ps=;
+        b=Yl+37VDKuFR/LB9gRdq9EDL10s4hClWdHIoN8yG2edq7s7MNmb8ArRbyCQqX3eJQ13
+         QKg8aFGkVYF7mhqJasCixxLN3JWHXukkCxQ8dcTDAfPAd5LZJrO/z698HRkmqrQYgKkn
+         tMBFR0p3oAMICT7S2ZzsFW+EPk6xWbUWmOfe1CAB7sSBmNdawARdRieLLYHdQEDJOtU4
+         XEbh3aYf7sQsHirZowNIGR2LZPh+7nsai1HwLgHaj64jhU0xbhKdfImuqsYe7508JTiy
+         4dqLEIsi0xn691fdF6m5cLeLbmCGsm3rtW86dt2IYnAUqAKjl4olbe5bojyW3tSBQxf5
+         IagQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710413850; x=1711018650;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wq7e2gcF/L/dH/HAItcQ1BpEoiEbfL1oa9AWQqFNdjk=;
-        b=PECPWuIybfdm3I2QNsApAA3vaPRMv4F3WxaZVvU6amYun8oP5iMTamttTKMiyUZ6wr
-         KXv1NjUjFSXFHWbmJwkRiei4U5k237L3oiNrjt1pBPls8aHw1bCB1ikhOhDu74jghlLC
-         lLOjRsRzpOv2RiZaRfMzMEK3piP6RoyBAb1yYvIFUwPsZ+NRkBDLLhobXrqM2RxHhR1T
-         GgTqfcN0Qo5TyZo464CLd77gyPqHcriEfKY9COcvbwLM7xXguNXAAoTOWIMUY2GhOQlX
-         GfmgPiX6YP99BrpIFipSodwiOf4ShC9xz4WriQ8b4ghxaFBeUOheB0MWJMYUrSTkhCBT
-         a2uA==
-X-Gm-Message-State: AOJu0YzcXhfhFos8vL3bgXSvL0BD+skrls0xUe1dt81RImulydEBxaOX
-	4M7GcTKXEUo4aQXb+OOt73yXtxWp/OymeV/sEts+AZG01QXRTj8bDemOHPKLCdzXuYtUq631M9Q
-	qeQ4WpMjy17cnm7MfiGc9aQUvUJgHCGJWOxzQ+6I7DoZNU/naWtJ3HuwwPw==
-X-Google-Smtp-Source: AGHT+IEXXQtYdGejuNfcBi3ZrkGwafrpTasOhti1WFIG0pViXZfetfwn+aEoqcZDOKoNZSw5bvZpi+dlRoyYj7BrvVpm7u1DPAZW
+        d=1e100.net; s=20230601; t=1710413998; x=1711018798;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f74il14ZWPvRtCdOjQ7hLLex80lpQ3c6JxKbsOjU1Ps=;
+        b=Q0SxjE4/sPaDv4NIvCotLujG/XN5qVBvGDrFYaqp0JeZ6SVwBwefZf2F16tZbokb/P
+         oq8dzDDLP8IoxMl4pfGzdz5MiE3kJNfRh4XEjWmOxXrk8fVPzk4RZNQ2EiOkimjRXPcR
+         EhcwlieIo7ARiZ/6slS9jMJP0J9XSPNL4Z8aufVHgKoRDau+CjgOScZE3YpfuAIAtiW8
+         qyrXl/Xf58btTRv7xlgJo73l7Dv0ct6VCyloD/DDRrw3mArSvJ+01dQn+G4G5ucOgIwx
+         aHo3MZGyBnRnVwWy2qjJCdzVEq4OtZtndGySOWc8k2uRUX7C1eVfxXZxCmBrsJPPLRu+
+         Pv1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXqbBX6zSPq6erFypttOIWo0tNz17HYq8VUKS4aZpxBfBQCvMtFLC0G5PxDp5NH4oP2WJ30i3Vrg+z7BFFGiRknJwA4NkDYp2KFYA/fDqdHXglGFcAlePB/eX2AylJPslLX6j26bquYATa5MtMXG+IvS/iDJ3uCcYhlFWrvN6cSy8EN
+X-Gm-Message-State: AOJu0YyZXIbcdlVeqdShdlem87+t1BTFoOUPB0oadzKkVlrtJji3n6f9
+	KyLMfIxsKfQ2DoRrEFUD2cViu5+sBLJ2At85F7A2SMwepK1l+jpV
+X-Google-Smtp-Source: AGHT+IG7A6HdmcY9jUncbFxRiJeisYCCIEcG3esBJ+ZAJKVpFR+ycbzcM3+TaJVxKNZ8Teh9Wgu1fQ==
+X-Received: by 2002:a17:906:7f06:b0:a3f:bd94:4d80 with SMTP id d6-20020a1709067f0600b00a3fbd944d80mr804119ejr.76.1710413997949;
+        Thu, 14 Mar 2024 03:59:57 -0700 (PDT)
+Received: from lab.hqhome163.com ([194.183.10.152])
+        by smtp.googlemail.com with ESMTPSA id en2-20020a17090728c200b00a4674ad8ab9sm371988ejc.211.2024.03.14.03.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 03:59:57 -0700 (PDT)
+From: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Alessandro Carminati <alessandro.carminati@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] tools/testing/selftests/bpf/test_tc_tunnel.sh: Prevent client connect before server bind
+Date: Thu, 14 Mar 2024 10:59:11 +0000
+Message-Id: <20240314105911.213411-1-alessandro.carminati@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2045:b0:476:ecfa:83e6 with SMTP id
- t5-20020a056638204500b00476ecfa83e6mr74252jaj.2.1710413850062; Thu, 14 Mar
- 2024 03:57:30 -0700 (PDT)
-Date: Thu, 14 Mar 2024 03:57:30 -0700
-In-Reply-To: <0000000000003ea6ba0613882a96@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f3c5d906139cc17d@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [fs?] WARNING in stashed_dentry_prune
-From: syzbot <syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
+In some systems, the netcat server can incur in delay to start listening.
+When this happens, the test can randomly fail in various points.
+This is an example error message:
 
-***
+   # ip gre none gso
+   # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
+   # test basic connectivity
+   # Ncat: Connection refused.
 
-Subject: Re: [syzbot] [fs?] WARNING in stashed_dentry_prune
-Author: brauner@kernel.org
+The issue stems from a race condition between the netcat client and server.
+The test author had addressed this problem by implementing a sleep, which
+I have removed in this patch.
+This patch introduces a function capable of sleeping for up to two seconds.
+However, it can terminate the waiting period early if the port is reported
+to be listening.
 
-On Wed, Mar 13, 2024 at 03:23:25AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    0f1a876682f0 Merge tag 'vfs-6.9.uuid' of git://git.kernel...
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=1541d101180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f0300fe4d5cae610
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9b5ec5ccf7234cc6cb86
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1484d70a180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b38d1180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/9de3cd01214c/disk-0f1a8766.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/af661293680e/vmlinux-0f1a8766.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/a439df6ad20e/bzImage-0f1a8766.xz
+Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+---
+ tools/testing/selftests/bpf/test_tc_tunnel.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 9d9539db8638cfe053fcd1f441746f0e2c8c2d32
+diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+index 910044f08908..7989ec608454 100755
+--- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
++++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+@@ -72,7 +72,6 @@ cleanup() {
+ server_listen() {
+ 	ip netns exec "${ns2}" nc "${netcat_opt}" -l "${port}" > "${outfile}" &
+ 	server_pid=$!
+-	sleep 0.2
+ }
+ 
+ client_connect() {
+@@ -93,6 +92,16 @@ verify_data() {
+ 	fi
+ }
+ 
++wait_for_port() {
++	for i in $(seq 20); do
++		if ip netns exec "${ns2}" ss ${2:--4}OHntl | grep -q "$1"; then
++			return 0
++		fi
++		sleep 0.1
++	done
++	return 1
++}
++
+ set -e
+ 
+ # no arguments: automated test, run all
+@@ -193,6 +202,7 @@ setup
+ # basic communication works
+ echo "test basic connectivity"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ client_connect
+ verify_data
+ 
+@@ -204,6 +214,7 @@ ip netns exec "${ns1}" tc filter add dev veth1 egress \
+ 	section "encap_${tuntype}_${mac}"
+ echo "test bpf encap without decap (expect failure)"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ ! client_connect
+ 
+ if [[ "$tuntype" =~ "udp" ]]; then
+-- 
+2.34.1
+
 
