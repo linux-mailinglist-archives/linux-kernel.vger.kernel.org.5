@@ -1,116 +1,139 @@
-Return-Path: <linux-kernel+bounces-103337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C34687BE3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:01:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 534FE87BE41
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:02:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ECB1288AD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:01:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 820EF1C21210
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22326F53E;
-	Thu, 14 Mar 2024 14:01:51 +0000 (UTC)
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBFD46FBB8;
+	Thu, 14 Mar 2024 14:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Zorg+HYu"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3115C6EB73;
-	Thu, 14 Mar 2024 14:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB186EB66;
+	Thu, 14 Mar 2024 14:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710424911; cv=none; b=gYkYRj8slvAQepHyOg3LPcztDpa0+CjnznOf8f+S1xgsM++ocs9YNqNIOlvxlBZZoWJwlmxb+rxgPw0xB4rrknKup3JACgyrqswhhObABSyp8KMN61eRDuWiU+k6yGpMU4pbq08E4gtfm2hj7RXsW7EC6PWZtbEc5jVdg2SeL+w=
+	t=1710424967; cv=none; b=cPmu7H7HCtPTmhnaA2mOysU0W/uBkA5dmRrzythoMMLxMvL7D0OQkZyUhwgsYozDGnl2TxDxKepM5qIo2efgtKi8QGwkv5McSZQds6FmeqEgy2Y7jD+w0Xd6/O48K6lv7JNYc8Qxgu84mcHtIrjXYHVTaKl+YH4NM4AEdJCVk48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710424911; c=relaxed/simple;
-	bh=26IvTvQg8Q1DCffM7XYqhRz02vATkODwSLqGA4wHP1I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xqxp6agzEg0DmylYT9CrAh02wL5rbFZ94TtdFUxh+BCt3p4nparkaEBfETQ3OBSwAP/pE0ZoOC/8CMEabnwE1pjnA2saIxHbRorH7wfgw08ZWnh7tCEfv6FcjxdL43hmCktRlo5A+Fj8iD+BpyYFsV8WY941c/jENCzzJlhZJZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a46ad0d981so39491eaf.1;
-        Thu, 14 Mar 2024 07:01:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710424909; x=1711029709;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nlUOEVdCSeBaOUnlZslF3hthRjVOvINmoadUntekmTA=;
-        b=uDmmcDMxOa8z8gsB7teoQvAwNl3CQVl9SJsZK5ZV+snqPDoSrPV5KMk3z9DWzh2gJa
-         r4YxdH3CLldyov2W0QutB7Jhjm6yeEgmgnfmaHwwpAXpfF6Sy1/MspdZO01dDAyifsQL
-         2bX2VjlElJL2lkhQPBRBjfLP1SA6KM+RxdnJBPlrusfAFfWy0dTv4X1/rH/iYAawptlQ
-         aNwDNruKCIjh2On+a/G/vCd6ClN6Hg2c2c1Qzy2aJDqOqcC0DuzduUjD1WDkoZfLRTq/
-         CRH8nrON+mYDuR7S0uIZPtdcvYRaI+l4SjncXDCA1Z3QKJqaL2pqaFbBwT/rHVDCVgUa
-         Gg1A==
-X-Forwarded-Encrypted: i=1; AJvYcCW1ScvB5m8yIoB6hUdE/4QtoFEeDpUbMCbcknGPx6nrMKNITECPG9CpqcUQscQ+7NdnXiPpl5lqyLxMsA1QEkNb+ekxHfPiHJUQ/WqwgUyDLZjFtg54ZPuxoAZzEgfkpG7HcUmZH2U=
-X-Gm-Message-State: AOJu0YzqBhcLfrz70LtNBYC4LNGEMm7GfjzDOymbe5CwAzeMOlqfWew+
-	9l0gW3fxQt16IE1qP33q6P+qS7WZ6wbQn7Zbs8/0tBv3PfS9lJWpglemwSprHwSBkPFNnSFaqR1
-	Bs1Y+TrbKygYTSpWVMzeew5N9dv8=
-X-Google-Smtp-Source: AGHT+IHgkJcz+tkEM2LlBM12CUpHuGpPaw+WbJZ9d5/mHiTfNKztnU4wt3pT0Ity3gbnnDlYPANT7N4C9ObuOS2h6RQ=
-X-Received: by 2002:a05:6870:9209:b0:222:4480:6577 with SMTP id
- e9-20020a056870920900b0022244806577mr1953757oaf.0.1710424909035; Thu, 14 Mar
- 2024 07:01:49 -0700 (PDT)
+	s=arc-20240116; t=1710424967; c=relaxed/simple;
+	bh=1VujOo3bwS8aZF9+nYwk4562s+hxXxzy/YG40BYsEn0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qk2ec9OADNkYReYSzioxdIbwRn6FMg+6VGPks8s5xcuFpwR6DzYGsdG2xaezonsoufGrA2Bg0qKIHX3BPd6m30XD2VBuRV+BtpHL6aF649SZfomww6jFKtPshKJqcHlGJ1u7iWel9z2+NrcBfbs9+z/IaPRIVMOEh+x8y1xxhCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Zorg+HYu; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42ECsvIB019870;
+	Thu, 14 Mar 2024 14:02:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:reply-to:references
+	:mime-version:content-type:in-reply-to; s=qcppdkim1; bh=N2j5RMdH
+	DNmm3vWJcZlaSTomA4u+OU2nb6B+0WWCKZs=; b=Zorg+HYu948hVr1+iR8dxpo4
+	bfHfry6RIKXCZaDkp2VQMriK4+dEwyXKMiJKH3/zVPRukJuzKVgPpYHU3CrFoMkv
+	dqdaBUAb4j3jVgmtNdmO3UqfIASahKjTIoSJDQR1nIjgC2DUugUYn5dTLGs7+1b4
+	BMNlQSFmVZLlJ9roHCyX751/TPdfGUO2N3dwdvU8Ng0iglSvohB/uJ4IFPBb2aOz
+	G4FjLUy2GC/y2jVXbh1nRmeg1PYi6m3g7t9OcgSoRHdRYXZrAw6aexMC4mj9a0G7
+	EIZhqlteO6R7UxULrUMVJjIfkOIUJJM8+RfpiXA4s6N1C41F/ycFNrUWJ5u9HA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wv1njr508-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 14:02:22 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42EE2Lo6009173
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 14:02:21 GMT
+Received: from quicinc.com (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Mar
+ 2024 07:02:13 -0700
+Date: Thu, 14 Mar 2024 19:32:10 +0530
+From: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+To: Elliot Berman <quic_eberman@quicinc.com>
+CC: Alex Elder <elder@linaro.org>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Murali Nalajal <quic_mnalajal@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Carl van Schaik
+	<quic_cvanscha@quicinc.com>,
+        Philip Derrin <quic_pderrin@quicinc.com>,
+        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+        Jonathan Corbet
+	<corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "Fuad
+ Tabba" <tabba@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Andrew
+ Morton" <akpm@linux-foundation.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v17 17/35] gunyah: rsc_mgr: Add memory parcel RPC
+Message-ID: <20240314140210.GU440762@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-17-1e9da6763d38@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314075429.1164810-1-d-gole@ti.com>
-In-Reply-To: <20240314075429.1164810-1-d-gole@ti.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 14 Mar 2024 15:01:36 +0100
-Message-ID: <CAJZ5v0iUt+tudMV-rJ80GR6iNQVv06+054h0UyNgpEOUF6QLRQ@mail.gmail.com>
-Subject: Re: [PATCH] PM: wakeup: Add a missing return case in init_wakeup
-To: Dhruva Gole <d-gole@ti.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Tony Lindgren <tony@atomide.com>, theo.lebrun@bootlin.com, 
-	Sibi Sankar <quic_sibis@quicinc.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Ulf Hansson <ulf.hansson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+In-Reply-To: <20240222-gunyah-v17-17-1e9da6763d38@quicinc.com>
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: l11wezTxCzYOMBhKzKDcLrBYuuW80ZZ3
+X-Proofpoint-GUID: l11wezTxCzYOMBhKzKDcLrBYuuW80ZZ3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_11,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0 phishscore=0
+ mlxlogscore=782 spamscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403140103
 
-On Thu, Mar 14, 2024 at 8:55=E2=80=AFAM Dhruva Gole <d-gole@ti.com> wrote:
->
-> The device_wakeup_disable call can return an error if no dev exists
-> however this was being ignored. Catch this return value and propagate it
-> onward in device_init_wakeup.
+* Elliot Berman <quic_eberman@quicinc.com> [2024-02-22 15:16:40]:
 
-Why does this matter to the callers of device_init_wakeup()?
+> In a Gunyah hypervisor system using the Gunyah Resource Manager, the
+> "standard" unit of donating, lending and sharing memory is called a
+> memory parcel (memparcel).  A memparcel is an abstraction used by the
+> resource manager for securely managing donating, lending and sharing
+> memory, which may be physically and virtually fragmented, without
+> dealing directly with physical memory addresses.
+> 
+> Memparcels are created and managed through the RM RPC functions for
+> lending, sharing and reclaiming memory from VMs.
+> 
+> When creating a new VM the initial VM memory containing the VM image and
+> the VM's device tree blob must be provided as a memparcel. The memparcel
+> must be created using the RM RPC for lending and mapping the memory to
+> the VM.
+> 
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 
->
-> Signed-off-by: Dhruva Gole <d-gole@ti.com>
-> ---
->  include/linux/pm_wakeup.h | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/pm_wakeup.h b/include/linux/pm_wakeup.h
-> index 6eb9adaef52b..64c7db35e693 100644
-> --- a/include/linux/pm_wakeup.h
-> +++ b/include/linux/pm_wakeup.h
-> @@ -232,14 +232,15 @@ static inline void pm_wakeup_hard_event(struct devi=
-ce *dev)
->   */
->  static inline int device_init_wakeup(struct device *dev, bool enable)
->  {
-> +       int ret;
->         if (enable) {
->                 device_set_wakeup_capable(dev, true);
-> -               return device_wakeup_enable(dev);
-> +               ret =3D device_wakeup_enable(dev);
->         } else {
-> -               device_wakeup_disable(dev);
-> +               ret =3D device_wakeup_disable(dev);
->                 device_set_wakeup_capable(dev, false);
-> -               return 0;
->         }
-> +       return ret;
->  }
->
->  #endif /* _LINUX_PM_WAKEUP_H */
->
-> base-commit: 9bb9b28d0568991b1d63e66fe75afa5f97ad1156
-> --
-> 2.34.1
->
+Reviewed-by: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+
+- vatsa
 
