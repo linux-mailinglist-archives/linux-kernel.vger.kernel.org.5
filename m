@@ -1,215 +1,173 @@
-Return-Path: <linux-kernel+bounces-102794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5425E87B75D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:45:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599DF87B766
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE10C2845FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:44:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE1D7B20A84
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7934ECA6F;
-	Thu, 14 Mar 2024 05:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="rPuxXJOQ"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AB9C157;
+	Thu, 14 Mar 2024 05:48:21 +0000 (UTC)
+Received: from bg5.exmail.qq.com (bg5.exmail.qq.com [43.155.80.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF744C129
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395089; cv=fail; b=IRvpOSMQF/dwwgDnuV06c/HXmnTyKEHX9DauCiyoy/IGYTDrSfoYxpPDv+llGBCwA/I3WbJ/v56GAqUQMr4bfrtNi05KwcH14yC2C+rY5mg17b9kIdpyL4NFSG1pTrTmyAO02sggwDFQk79OgnBfZIjPPN01NrjxopYyv6Gga1M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395089; c=relaxed/simple;
-	bh=FFFNL64YL8mG8YuUBHZnzyXIiOiJ19V5YwKOnQ56KE8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=JYTTMFG3Ixm20IMzBO+a0fgCptKc32g9v2m24qrZ+wHCYiL9b2GBMhdPLMrJ6642wVedK5XGBIyMnPp2+zEuEiwIwLZ3BWBvlOTUKlsVLmOMRmgtNQx8QGlusiDt8q1CvQGl4BgV0L1IFAawr7Eu7M8x3MGffEVzp9UDFE8B/7E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=rPuxXJOQ; arc=fail smtp.client-ip=40.107.220.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCyFqVV25o21jnB32t6JjF+p4xeRcGiD4rcgGdky1iFfN8VEh4f6tS8oljkiVOWkpmu8fvm6aeU1p5t3mNIrFL3BzYbbTsOIQ+nt6+CHNPRyiYj7CPXlr7/XaZNOn0UTS16udwllyRE4zLae5H/ocyi/USv+lB0cH6KPg7dWRQcQlbIN4q0OioZCrZpi8hDlTMdfZRis+g3IwPXXiIDC+/Hoj7yfIeY88YgFhl4VC87JKcWkSu44vOxl9MXAN9WBBshQiVmUWIPZHLwbQEmXfFBbiuALy1zNgUWuvcNZrn/1T7I3S7McAvqZgkfpGAl+A1cPwEuPt7CJuQYFlkAoPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LcdELSvJQsMQUSjePIjkBgHg65uORrS2o8N994ghA6c=;
- b=LF+eJWXJIZ2jGKUspfygNUrm+WjFgbhOCqD3II03POWzF1lnw9RuIIe/DIMSuUlPvY7msrq/MyW9/tomAYc04ggPb3sypiFOU4vTUDtMvoF7Xjr9oU563yPLZIhC14+4RkJ7yX99J3fEotBXmD2fqHgBtyohAYzQ4TKipIyi9gJWAbw3S3vJBpQEx0b6A25SY03FoGYRJKr6eVQ/Cq3CthhM60CdYwHFEwSlCsDCAmGnZ3gPbpfLiP+LA67mWKWfN1SEuFkpNUt13BBv5aINbw1BveQGWl033hlMjnVSLxVECKA985BYGpxVqoRUXvK07ehzCiIOcZWE6twgIxLXgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LcdELSvJQsMQUSjePIjkBgHg65uORrS2o8N994ghA6c=;
- b=rPuxXJOQqJtwnOAbZ9nMTV7/zrSU2O6v1TwoiT8IXoj69PRKzCv06l2Y8+R0mQFkh96Xs1kn39Ne9bXfj9QG6B57FD6uyIQJgAaVmES0+970+fbYHA/HjdHsCUxdfOTPpNM67FQoIPXyXXM3E8HTOynmsG8KRZpLZITgsNXMjE4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by SA3PR12MB8022.namprd12.prod.outlook.com (2603:10b6:806:307::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Thu, 14 Mar
- 2024 05:44:44 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6974:3875:ed0:7033]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6974:3875:ed0:7033%3]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 05:44:44 +0000
-Message-ID: <59cf081e-5924-42b5-a3f1-de8b012f09d1@amd.com>
-Date: Thu, 14 Mar 2024 11:14:35 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] drm/amdgpu: add the IP information of the soc
-To: Alex Deucher <alexdeucher@gmail.com>, Sunil Khatri <sunil.khatri@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20240312124148.257067-1-sunil.khatri@amd.com>
- <CADnq5_O-cyDkNLznZpvnZtz15Mi1_rkigirG80BmYJprP_udnw@mail.gmail.com>
-Content-Language: en-US
-From: "Khatri, Sunil" <sukhatri@amd.com>
-In-Reply-To: <CADnq5_O-cyDkNLznZpvnZtz15Mi1_rkigirG80BmYJprP_udnw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0114.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:27::29) To PH7PR12MB5596.namprd12.prod.outlook.com
- (2603:10b6:510:136::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6432DDA7
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:48:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.155.80.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710395301; cv=none; b=ecT/kRioe1wdSjUlZXC3R21JvzjXF4RCd57+53GErwBdhDZ7pKb/KkYv6vk48eKnngi9h4OrdzlAwHgW+SzLROA8PoB1tr8KAAq5LXKPTuWX6n2+8YKcoU2rdBwTtzNXnaptqQVpAPgizJtQ7jvVV3ioAl1l9rSdQLD2P5DK6ic=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710395301; c=relaxed/simple;
+	bh=0ezp/7WdTENKpTy0Whv2aOHefOVuHs3x/Y2PMZuoSQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=dy/Osb0gUKXyT9ErfIqz4IWpWrqdYeU5mV8bV8Z9L7+h8FusvrKhIua3QoRoedxKKI3++D+cDW8wZx+7+QUJL+i8YUHEB0B7AiWciAeL/fxYstgu5tk7wKYiMHss4NzrDiqFJQUux3IhJnSqgrJ90bT6JMl76DELznMHciDvHEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=43.155.80.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp66t1710395257t795nqjw
+X-QQ-Originating-IP: EtXU75Fm3LcUIiZJQd1ZpmT+4Ld5/cLVHkyLy7JTGMs=
+Received: from localhost ( [112.0.147.175])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 14 Mar 2024 13:47:35 +0800 (CST)
+X-QQ-SSF: 01400000000000704000000A0000000
+X-QQ-FEAT: 90EFqYDyPxDBW2LafaqRuqDBYWenM5Dowt+D8DWXg2/pxNXsxDf/1j3SO8Rh7
+	Y+pqTYKJyTHjmhfyT899YuvNQGaR4oT7L9RQqkeYEr6ikz79J6DJJdw2j/zysK0qxyz1bGL
+	ZK+04nwgYbMOjmybXyHeVGe/ZK6ZIQGt2D0A4qTcw/wRpzIkVbIjD1zV4fEL2Fo+qEtrFye
+	8bQ0Y63BtsC6zCkKDjqG1DRN8zDxd0YsMglx9qvXLDO53i5ejlQd6t4PKOmCMCsu2emh36z
+	XHY0GLRZs8iiU0jUX2MwbyFDeIxBNBYwApnfSImiTNqGaUa1F7UhI7kcIkeiWf50Az3h8YZ
+	L4jvK0hiS2Kjr5aakiSKvn1PNQ5t9EW+ScPD/FnX9JurVj1qRQmRtOR511/fDKctAKV3hW+
+	3pYcAZCiLLXpIOq8/TAFGPwwgUz5bZ8d
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 3674010246827021712
+Date: Thu, 14 Mar 2024 13:47:35 +0800
+From: Dawei Li <dawei.li@shingroup.cn>
+To: apatel@ventanamicro.com
+Cc: tglx@linutronix.de, palmer@dabbelt.com, paul.walmsley@sifive.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, maz@kernel.org, bjorn@kernel.org,
+	atishp@atishpatra.org, ajones@ventanamicro.com,
+	sunilvl@ventanamicro.com, saravanak@google.com,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dawei.li@shingroup.cn
+Subject: Re: [PATCH v16 0/9] Linux RISC-V AIA Support
+Message-ID: <343C92ABCFEE9906+ZfKPd/boCT8RAr3f@centos8>
+Reply-To: 20240307140307.646078-1-apatel@ventanamicro.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SA3PR12MB8022:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d6a7180-65e8-465f-d737-08dc43e9d9c9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Me+Jw/WndgkqyHP9HXIjkHTXqQfMQLsQUIiZBCnknyqDDj+eZ+fvwRcTliPDrd7mbsk4HshC++2XqAU8ZDEI4rWaTZvprV+B+XhsycQGtze8IztjACJPmbRsrp/dglVrpPnSgtDk5y6Fls//xwlZxzFkJzyA3SxJoUJjt+HRfXw7pMoe3PDiFFn58jtqWVNy1yWZQcjd5rgVTKX4bErw1uGUsVG4CJw0vuAyL3tPH33Bbib22yCl0JAXhAW9vk7nYHCcAf4dwKBMxf/oacR4Jg7YS8oFJxQRUmc6NpxTm2+QpdNUYsByPA21NX6y3Oi0UwupUJo5Peh6fF4vBJ8dFtKuDcAeIWG7O0J+rQbjsxiQU6QlAGIaILNpLEP9m7DU6erq91wJjcFxid6EWQQuz7IO2phWancKoCYkeXMWA7kgiE4dEseIzffJGlIVy6Efp7qL03k1Ryg2PUe68hWEdMeUU6SNs38NACdxdtgDKPwz9FNluSxf29Gh+lM8qIiKsbuKadTiVZMRD4hhssoW9r71AWp+YamBDxs1B5HNLep2r5ffqLaA6cvO/hs6Uv4S8Czqrr1k6S0rtuOoBCFG93MYxIjKWwBegRmjUUq2FOoSq6u7i7Sl+l53Br7h+C3OaKK73zWglrfpuLp4WVGmPoH7jUEAazKAK78D2veQQ2Y=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?anMrOUdSKzVnbXdLOFZtKzFJa2FrWlJYb29vMGJxS2x2bVVWUExVSHpIcVlp?=
- =?utf-8?B?dER3VWhoaTBEcFgwTkMvNjlEbkxhTnA5WVpVWGovQW5USm9WYTJkTFc2ekti?=
- =?utf-8?B?a1hCN0l1blRsY2xOYkd4UllDU1N5MjhYYWFyemFGNUVaZEZRVHBFalNSNUE5?=
- =?utf-8?B?emVjZE5jTC8wSjF1ZEFZTURFZXBRU2wzZkFsVjI0UE9vWk4ycmZZeWc3bldR?=
- =?utf-8?B?eGZaRjVRRDEza1dJbEtWWlN4cXdoSGkrZUZZOGQ2M0tQSGxodFBHMkpRUmFV?=
- =?utf-8?B?Q3g1OUdaZ3Nic2VUVnRIVXNpbElhYmVScmh5eFlVMGxkOFRWU2pmWHJpWmVD?=
- =?utf-8?B?RlNpLzNiQTNkeVAyK3hOSjI3dU5lTXhwL3dUZURQZDJiNE1MQlRXdXBvSFRV?=
- =?utf-8?B?RWxOQm1QMTBpR0lJaWZpcEVLUzl6T3JSVjFNVWJ1QjVsSXVFS2dHenR2ay9Q?=
- =?utf-8?B?NTQ4YVNITUtESVB5dlU0Y1Q0RW1IYkJzRkt0S3FZT29HT0kzNVp2dEUzSTMw?=
- =?utf-8?B?ay9ZOG5yOCtuZjJRQ20yWGxBTkRJc1cxOXZGT3pOUUwwSm5TK3pzUTFGSlZy?=
- =?utf-8?B?c3RvT2M5WWNOODF3cDNmYlBVOStJRHloMUUzdVE4eW50QmhaV1dqQ0kxaTNL?=
- =?utf-8?B?d0dzcWwvZ3k4TmFzeHVMdVRLeTk5U1k4c3FoVlRUZkVUTTNFNlBiL1NkK3hX?=
- =?utf-8?B?YnBGK1Y0YkNvN2FUOXFERmNwMGI1S0JQMUV3ZnorRVh0clpBdSsrcXlnNDNE?=
- =?utf-8?B?Q2V4NmRURjZzakJWYTIwVzhwVE83Qm93V0pCT1NGaERpMkMxRTh1YURhVlV4?=
- =?utf-8?B?NGM4MDNiMmNJUVllZTQ2KzVaeHZTR042RmFZaXBtQWM0aWtVUGIrR3hiTjZL?=
- =?utf-8?B?QTBUV204UllONE9Zdzhwbk9GeWdDMm9rdHp3R0pLZFMzaWhHanFHQ1BuL1FC?=
- =?utf-8?B?MEVYRDBnN3g4Uk5nanZZUzFacjF4eFR6WmJIRHJDdUt5eWIrUmtaS1c4OHZI?=
- =?utf-8?B?QzU0RkJyN2JMWlRlT2lCSW50QTl5enZqUUsyaVprdVFkbFdWeExYN25YazFP?=
- =?utf-8?B?dzQ0U3JEOWVvTzFnUU1TSllXa2NQMVA4Y3d6UDdTYkg5MHhQYVJCNGNpUXQx?=
- =?utf-8?B?QUVvS2N4bGJkK1VJMWVoclBUb0h1VURUdjVwK2RGK21OZGJZMkRZRXRuR1Jj?=
- =?utf-8?B?UUVOcWxxNmNNa1pQc1ovaUJtL3d6MklSSitMcjJrR0thTTg3RCtxeGNmeW5S?=
- =?utf-8?B?d2tMWkRMTjZtZkw2Q29QYVNWSUJKQUVRWmlEdTAxNENIRTgzWGIvZXlLQ3RO?=
- =?utf-8?B?TjhsTXEyaUxqRXcrdmVQRlo4ZFZIQTh2cDZVUGFYcitUdUJVVitKUkd5MnJM?=
- =?utf-8?B?M3lsWnk4NXdOZi9CVi94VVhMelJUYkNyMmVtWmRPUjhvenFVU0FWU2pYcnZG?=
- =?utf-8?B?M3J1SEV4ZXk5NnhuVWFUaHRoUEVhNnVzMmRsVWpxN0JiUnd0aE9zMDdzQWYw?=
- =?utf-8?B?UnNIV1Z6b0toVmEzRGdZSmFWSyttUFNLMGljVERqeThWQW13TUVlb2lqaHZ4?=
- =?utf-8?B?OEIveGNvbGpKOUZHY3RHYU5xL2RRaDBRV0R2ZnlSaW9sa0MwcEdhV0VVN1hl?=
- =?utf-8?B?VHgzK2tqVnJIMXB4cW5YSEJ4ZFVqMmVBWllhKzZ2NVoyNy9iWjhWU1VBQkQv?=
- =?utf-8?B?cEd2OGNmRGp3d0FRaUpEK3pZS3F3MnorNkwrWFZkUHViS2NUb3BNcmJPdklW?=
- =?utf-8?B?b25FYmlFZXlDcEdiakxwell6WmNjVWtxd2cxdGNRc0h5Y1ZaWXMxaVNXbnpa?=
- =?utf-8?B?WVRXMnVxWDRSUWh6Qm5qeitvZ25vSU1EbjFGR0E1SzU5SWNLVVNXNkhrbkJB?=
- =?utf-8?B?VG5saWVsVkhjdkttR2FjeEtNMDdqdzFpYnMwbW5lWm5hM01YalREQ21ZRC9F?=
- =?utf-8?B?bEhtL09XTVR5dXgwMmRycFZ2TXRORS96YWZQd1VvRm8rU1lZZ1JxMTVybFBa?=
- =?utf-8?B?UGMvbitQY0JyNVMyNEJJYTA0UGFqRW12S3lpdkFNdm9iTW9VUDVlSVFBeGdx?=
- =?utf-8?B?ZjVyNkdvU2MyT04vZVVkUG9sVW8vVDI4cVJKTmhNSXBYUWdTa2FVR3N4WldE?=
- =?utf-8?Q?/25DFxOgsSjl4Zf+OW5P73A2L?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d6a7180-65e8-465f-d737-08dc43e9d9c9
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 05:44:44.3495
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FwPhb3QSzHNQ6bXM7+bzfpWhdiDT6x1Fy0nMrd0s3KTu2JbsRXUxP36H7QdlMB1hyvowYCRfBrVR1B1KfWyJ/A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8022
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
+Hi Anup,
 
-On 3/14/2024 1:58 AM, Alex Deucher wrote:
-> On Tue, Mar 12, 2024 at 8:41 AM Sunil Khatri <sunil.khatri@amd.com> wrote:
->> Add all the IP's information on a SOC to the
->> devcoredump.
->>
->> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 19 +++++++++++++++++++
->>   1 file changed, 19 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> index a0dbccad2f53..611fdb90a1fc 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> @@ -196,6 +196,25 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
->>                             coredump->reset_task_info.process_name,
->>                             coredump->reset_task_info.pid);
->>
->> +       /* GPU IP's information of the SOC */
->> +       if (coredump->adev) {
->> +               drm_printf(&p, "\nIP Information\n");
->> +               drm_printf(&p, "SOC Family: %d\n", coredump->adev->family);
->> +               drm_printf(&p, "SOC Revision id: %d\n", coredump->adev->rev_id);
->> +
->> +               for (int i = 0; i < coredump->adev->num_ip_blocks; i++) {
->> +                       struct amdgpu_ip_block *ip =
->> +                               &coredump->adev->ip_blocks[i];
->> +                       drm_printf(&p, "IP type: %d IP name: %s\n",
->> +                                  ip->version->type,
->> +                                  ip->version->funcs->name);
->> +                       drm_printf(&p, "IP version: (%d,%d,%d)\n\n",
->> +                                  ip->version->major,
->> +                                  ip->version->minor,
->> +                                  ip->version->rev);
->> +               }
->> +       }
-> I think the IP discovery table would be more useful.  Either walk the
-> adev->ip_versions structure, or just include the IP discovery binary.
+Thanks for the great work on AIA!
 
-I did explore the adev->ip_versions and if i just go through the array 
-it doesn't give any useful information directly.
-There are no ways to find directly from adev->ip_versions below things 
-until i also reparse the discovery binary again like done the discovery 
-amdgpu_discovery_reg_base_init and walk through the headers of various 
-ips using discovery binary.
-a. Which IP is available on soc or not.
-b. How many instances are there
-Also i again have to change back to major, minor and rev convention for 
-this information to be useful. I am exploring it more if i find some 
-other information i will update.
+Firstly I must apologize for the top posting cuz I miss the series mail for
+my inbox. And for the record, I am replying to [1].
 
-adev->ip_block[] is derived from ip discovery only for each block which 
-is there on the SOC, so we are not reading information which isnt 
-applicable for the soc. We have name , type and version no of the IPs 
-available on the soc. If you want i could add no of instances of each IP 
-too if you think that's useful information here. Could you share what 
-information is missing in this approach so i can include that.
+After I checkout riscv_aia_v16 branch at https://github.com/avpatel/linux.git,
+some call traces about spurious interrupt are screaming:
 
-For dumping the IP discovery binary, i dont understand how that 
-information would be useful directly and needs to be decoded like we are 
-doing in discovery init. Please correct me if my understanding is wrong 
-here.
-> Alex
->
->> +
->>          if (coredump->ring) {
->>                  drm_printf(&p, "\nRing timed out details\n");
->>                  drm_printf(&p, "IP Type: %d Ring Name: %s\n",
->> --
->> 2.34.1
->>
+[    1.244292] irq 11: nobody cared (try booting with the "irqpoll" option)
+[    1.244707] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc6-00055-gd7d4d086b79a #14
+[    1.244932] Hardware name: riscv-virtio,qemu (DT)
+[    1.245130] Call Trace:
+[    1.245337] [<ffffffff80005f32>] dump_backtrace+0x1c/0x24
+[    1.245559] [<ffffffff809023f4>] show_stack+0x2c/0x38
+[    1.245761] [<ffffffff8090ec8c>] dump_stack_lvl+0x3c/0x54
+[    1.245979] [<ffffffff8090ecb8>] dump_stack+0x14/0x1c
+[    1.246116] [<ffffffff8090368c>] __report_bad_irq+0x3e/0xae
+[    1.246276] [<ffffffff8006a938>] note_interrupt+0x1f4/0x23e
+[    1.246382] [<ffffffff800679e2>] handle_irq_event_percpu+0x42/0x50
+[    1.246508] [<ffffffff80067a2c>] handle_irq_event+0x3c/0x68
+[    1.246628] [<ffffffff8006b7a4>] handle_fasteoi_irq+0xac/0x176
+[    1.246788] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+[    1.246928] [<ffffffff80473f0e>] imsic_handle_irq+0x72/0x12a
+[    1.247041] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+[    1.247165] [<ffffffff80472470>] riscv_intc_aia_irq+0x26/0x38
+[    1.247291] [<ffffffff8090ed0a>] handle_riscv_irq+0x4a/0x74
+[    1.247430] [<ffffffff80918af6>] call_on_irq_stack+0x32/0x40
+[    1.247626] handlers:
+[    1.247721] [<000000004ebb6fe3>] vm_interrupt
+[    1.248314] Disabling IRQ #11
+[    1.303510] irq 12: nobody cared (try booting with the "irqpoll" option)
+[    1.303700] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc6-00055-gd7d4d086b79a #14
+[    1.304768] Hardware name: riscv-virtio,qemu (DT)
+[    1.305460] Call Trace:
+[    1.305868] [<ffffffff80005f32>] dump_backtrace+0x1c/0x24
+[    1.306621] [<ffffffff809023f4>] show_stack+0x2c/0x38
+[    1.307295] [<ffffffff8090ec8c>] dump_stack_lvl+0x3c/0x54
+[    1.308025] [<ffffffff8090ecb8>] dump_stack+0x14/0x1c
+[    1.308698] [<ffffffff8090368c>] __report_bad_irq+0x3e/0xae
+[    1.309698] [<ffffffff8006a938>] note_interrupt+0x1f4/0x23e
+[    1.310568] [<ffffffff800679e2>] handle_irq_event_percpu+0x42/0x50
+[    1.311542] [<ffffffff80067a2c>] handle_irq_event+0x3c/0x68
+[    1.312298] [<ffffffff8006b7a4>] handle_fasteoi_irq+0xac/0x176
+[    1.313127] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+[    1.315375] [<ffffffff80473f0e>] imsic_handle_irq+0x72/0x12a
+[    1.316163] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+[    1.317078] [<ffffffff80472470>] riscv_intc_aia_irq+0x26/0x38
+[    1.318036] [<ffffffff8090ed0a>] handle_riscv_irq+0x4a/0x74
+[    1.318934] [<ffffffff8090f3e6>] do_irq+0x4a/0x4c
+[    1.319831] [<ffffffff809189ac>] ret_from_exception+0x0/0x64
+[    1.320860] [<ffffffff8091845c>] _raw_spin_unlock_irqrestore+0x1a/0x2e
+[    1.321887] [<ffffffff80473d06>] imsic_local_timer_callback+0x50/0x5c
+[    1.322957] [<ffffffff8008ade4>] call_timer_fn.isra.0+0x14/0x5e
+[    1.323781] [<ffffffff8008b44a>] run_timer_softirq+0x388/0x3a8
+[    1.324579] [<ffffffff80918c7e>] __do_softirq+0x100/0x252
+[    1.325304] [<ffffffff80018464>] irq_exit_rcu+0x7c/0xa6
+[    1.326126] [<ffffffff8090ed24>] handle_riscv_irq+0x64/0x74
+[    1.327535] [<ffffffff80918af6>] call_on_irq_stack+0x32/0x40
+[    1.328703] handlers:
+[    1.330724] [<000000008b6c4f15>] serial8250_interrupt
+[    1.331573] Disabling IRQ #12
+[    1.350231] Run /sbin/init as init process
+
+And I take a look on /proc/interrupts, spurious interrupts are happening:
+~ # cat /proc/interrupts
+           CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       CPU8       CPU9       CPU10      CPU11      CPU12      CPU13      CPU14      CPU15
+ 10:         83        222        350        163         71        101        193         68         54         60        174         50         51         48         48         46  RISC-V INTC   5 Edge      riscv-timer
+ 11:     100001          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  APLIC-MSI-d000000.aplic   8 Level   -fasteoi   virtio0
+ 12:          0     100000          0          0          0          0          0          0          0          0          0          0          0          0          0          0  APLIC-MSI-d000000.aplic  10 Level   -fasteoi   ttyS0
+ 13:          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  APLIC-MSI-d000000.aplic  11 Level   -fasteoi   101000.rtc
+IPI0:         3          8          4          7          7          6          5          4          7          7          7          5          6         10          4          5  Rescheduling interrupts
+IPI1:       727        517        431        448        497        456        514        476        488        466        455        456        443        443        439        433  Function call interrupts
+IPI2:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  CPU stop interrupts
+IPI3:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  CPU stop (for crash dump) interrupts
+IPI4:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  IRQ work interrupts
+IPI5:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  Timer broadcast interrupts
+
+But when I switched back to V15, everything is fine.
+
+Here are some of info _maybe_ helpful:
+kernel: d7d4d086b79a11ad8bbcaf732c7830faa3f3192f
+qemu: e1007b6bab5cf97705bf4f2aaec1f607787355b8
+qemu cmdline: qemu-system-riscv64 -M virt,aia=aplic-imsic -m 256M -nographic -kernel ~/src/linux/arch/riscv/boot/Image -drive file=rootfs.img,format=raw,id=hd0  -device virtio-blk-device,drive=hd0 -append "root=/dev/vda rw console=ttyS0" -smp 16
+config: defconfig(make ARCH=riscv defconfig)
+
+And I am happy to provide any extra info if needed.
+
+After I take a git diff and check your changelog:
+[Quoting from [1]]
+ - Simplified aplic_msi_irq_eoi() in PATCH7 based on the section "4.9.2 Special
+   consideration for level-sensitive interrupt sources"  of the RISC-V AIA
+   specification and also provided handler name.
+
+I apologize if I miss something.
+
+[1] https://lore.kernel.org/lkml/20240307140307.646078-1-apatel@ventanamicro.com/
+
+Thanks,
+
+        Dawei
+
 
