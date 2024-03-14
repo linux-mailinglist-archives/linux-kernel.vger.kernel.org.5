@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-103895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B7D87C655
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:32:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3C687C654
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75DC0282DCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:32:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CBCB1C20A69
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDE218AEA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFC418AED;
 	Thu, 14 Mar 2024 23:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f+TvWrqx"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3BBKRojW"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8322117BCE
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC31318026
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710458809; cv=none; b=AUHhAjWl+PI65/ftYNhaeXhNJwyDEH2bWu4ixhlkqsyy6xhg079VDHVrrN1YOVgLvT6NZK3FUzrMsXZiKS7sy+WmXwniBvZLQD6pHRnuxVt2ruYN2pjeqvqPgG+dVO5rExd7kN96nmJPSx4OBnyjgo79TcXAoMvcgEZ+x0s3boA=
+	t=1710458809; cv=none; b=aLF1hsmPLP2oB4IVFXsnudiHrKEnGpGvEV55q/7QdBkb9eiWYWccb8U96WPcxA6T/YQcARkY3cFk0UczwmFvpExh5CAuRZ7OWZzR8z4x+uyz//CMi7wTi/vOMLxWoCIOLZRVRntfsdeDgZP+hfB2HjikWjUJn05gwrKthkSieDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710458809; c=relaxed/simple;
-	bh=/DFVgwUADJ8044CUozTzdVo66BI55qOtEwmADQ190vs=;
+	bh=hVROtGdDjNDokjJTyibuSKcjvmcYXHYDj2oTedDMiks=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Ykutrwyo4pJKPEk484ACBmTtSFEafBEEw6Tb4Hybj01kPkC8pYx+2sRIiBLcyCBqLAVE0w4RspVJZ5zb0bhsxKFfyu6sbRYRNn+yOTav5hQkuDdFe7OblvFXOYsvu6XEA9MjSf1p4/nLjdxS0WzDW74Bjlx7Xxle6/+UKZX/YKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f+TvWrqx; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=Z0rMFq9NAWtPfci5MBJ0uQN1eMT0XibBK3M1zPng9juHGGXGHjf2lRgYPw3NqTaCTZ/JPEG+7xm5hEq7BMU+KSweNR2vrJhh6QoxIOtfaWfe4T2ZYIqkwNAy9/MT/pQxXBRbnKpbKTkvXBXcL6BK8dHKmh0HbgIZF0l1lPgA6ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3BBKRojW; arc=none smtp.client-ip=209.85.210.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so2013090276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:26:46 -0700 (PDT)
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e6c5b1377fso964436b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:26:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710458805; x=1711063605; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710458807; x=1711063607; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=RlUxziw8BSQloGiMQruhCdJKG6uB341JDYak+7wFF+E=;
-        b=f+TvWrqx9Qoxu2uez5MEwW7fDmLfzpRcBHwVSFm4GtFcAQq9x5g5BRbphZyPIuOJIT
-         dWFpJdv2pKhCgUCkAkJ0iuTDlnHiwTheo3mbXmc7/SnczMSIpBtcwpBxu6GBAfufX0j/
-         67noqXvIv1pGqY6QVuOGblkeUNLnqU7mldWWklpYFKtTRlXmVvweWnF1CoumzDcuLz6s
-         H4ZB8UYc8rul2y9ZdHPjO3wdGt3R4Za/VAdRTHOMzx41DP+SUf/8dzEMvA7qsB2EBllJ
-         X9XcS+2QGVUUYppwLSfLBf596FlZq19H6KYJCIMn1KLoogDFCafL+qtYp01Fj8A3OZzW
-         wRtw==
+        bh=f7mdClvgIXUuf9+yuKM3CelLdMACw57Fq4PBdMk33ZU=;
+        b=3BBKRojWR/jRYG1n/FKYWL5/dqIp5HYlcuoZneAhJoUI68SBSUM98/RfD26Taft5bx
+         +ga/ChJEKn5Zg3O/EChjn7e2tUpWI5MGpCWsOaHxfUhbOuYTP3KfEO6IvsdRZdNUDcwb
+         we6eiHAn2YrDnyE8g/NLOr6Rn8wdz158ZQGEBI4vefEa2vA3ViHgorXE3GFVztaUOXRs
+         34UNS3o+6zVZFCf1C4R7VzgU2XWkJKu/Ye9JJfTqxLLrNw4+i5f27yUiq8iwm4JlmFgz
+         cFfbrtIKYkE2mww5pjA8tW+q0WGwazOz+GD1QI9Yd8F2nnno6ySRdvwSUA3vtpubhMZy
+         YGwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710458805; x=1711063605;
+        d=1e100.net; s=20230601; t=1710458807; x=1711063607;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RlUxziw8BSQloGiMQruhCdJKG6uB341JDYak+7wFF+E=;
-        b=kVR4LU6GXeQbbOrdFklAWq+5SlWrEn8KJre4cXFTDk/Tm0sTGPZeKwVTRlzZIsQ9lu
-         QaNTxd4L7xHi+Q7P+qXvUI3tVYK8u+bl/RPvqM1HhfuW62wVhg7S9ktYYXA0W0TrxCsH
-         UmVNNANNs+BHn3G+h/78+bNbBESt+YbS2/ARTd/deNFu0hhftOymsdh3RKuooy9bVpbR
-         jVj/T2z6hLPGsd6KtGla2+h9jE3CQn4UFvXlbhE9ZO0WyTA+2PK80pLKJGZvi07H36SU
-         fbBxMEYive3GJ9FWGoJf340spE7KU75t9nMgkag3oVyKYR4b0DFyu6kgRkLpBXTq9qzw
-         C9dQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWteZuRzjtS9njS2dFbZCt254eBOR0U5AUyy7DzxlZJ9GfUiaDt1kxY8J8mxIbBJpHd3dXnjpAccKRiCFtJrwkSbkVi3/4JOkcTJBFN
-X-Gm-Message-State: AOJu0YyoQ7ujbX+E0y/jVjvTzfYY13xKMR+DFJaP+YHR8pc9jic4+8UL
-	JND2kWF9QEr5a4IQuXMcK66+6G9RZqONbHpJFnlhys4CGjt6Usj50DY90miN1e5KbG5kkLpSh97
-	xnw==
-X-Google-Smtp-Source: AGHT+IH4/ZMXFC2bouhklnoQYb0n6FnYJheuUMSCo2hpU0HMSJmGgKAAvzyEpu0qKMWThNjUG8Cmprp+aaY=
+        bh=f7mdClvgIXUuf9+yuKM3CelLdMACw57Fq4PBdMk33ZU=;
+        b=Z+SJmsSSQcvh01l4JLNXw74Qm46uDNwcpG/OMRNL4xM9Yk3iLRoLvijgvVI7x7Bvla
+         HuX2S0KnZaGGjPTyxcJ/tXpo1yZ8cXEdaj7qKfxOgBVtMpPsoleDvPr4PaKSVec7T3NG
+         nepbDOuZNrsRL8E2PdRDcr4WFp3kSJUw4MXfD/QsPzYUbW8WHTxmsm3UD28iX0E54ePF
+         z4qN9K+HBFd4R9Wi8fd2vf+KPCRGnECFSkLgUEhrJ8kaz94lCHiWu0Fe1AxN1nHvooD0
+         +8aYqALMJaMkrBaGhu4u0C1JBFCIMef43N8UlhJkHXQDHw9M0Uab+u8KqmXiEBn6O/bn
+         bsXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEe53GnXHusytuwRl+MFHw2c9Bln4eK0RmXQwmexRa5abFz0s7PHVxNP8JQEABx7yc15to2VKoh/rVvamj1gQ6JCkW+WHIsaXEa/6K
+X-Gm-Message-State: AOJu0Ywk9/Y5dnD1BCBWk+eRcfOKaMNwZm9QuQ50lmVozYHlsdwqBZIn
+	NmPaOUOOvzQTCl3sI0a6XLjT/0GmT8bjGtohfra1ZJKlXpd98miRjTXrIHO1PYWsD4HnvAd39UA
+	0mw==
+X-Google-Smtp-Source: AGHT+IHP+9uB+bS3/lKcsyk7/8c0Ce59jwpM+G35vfnwrWKSRS2+iNaQrX8dqel6o4dt3H0Nsgf9UIQa3fs=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1b08:b0:dc6:c94e:fb85 with SMTP id
- eh8-20020a0569021b0800b00dc6c94efb85mr188198ybb.2.1710458805679; Thu, 14 Mar
- 2024 16:26:45 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1a:b0:6e6:eefe:945d with SMTP id
+ h26-20020a056a00001a00b006e6eefe945dmr9863pfk.0.1710458807233; Thu, 14 Mar
+ 2024 16:26:47 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 14 Mar 2024 16:26:22 -0700
+Date: Thu, 14 Mar 2024 16:26:23 -0700
 In-Reply-To: <20240314232637.2538648-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,8 +75,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240314232637.2538648-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240314232637.2538648-4-seanjc@google.com>
-Subject: [PATCH 03/18] KVM: selftests: Move GDT, IDT, and TSS fields to x86's kvm_vm_arch
+Message-ID: <20240314232637.2538648-5-seanjc@google.com>
+Subject: [PATCH 04/18] KVM: selftests: Fix off-by-one initialization of GDT limit
 From: Sean Christopherson <seanjc@google.com>
 To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
 	Paolo Bonzini <pbonzini@redhat.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
@@ -90,147 +90,37 @@ Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
 	Ackerley Tng <ackerleytng@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Now that kvm_vm_arch exists, move the GDT, IDT, and TSS fields to x86's
-implementation, as the structures are firmly x86-only.
+From: Ackerley Tng <ackerleytng@google.com>
 
+Fix an off-by-one bug in the initialization of the GDT limit, which as
+defined in the SDM is inclusive, not exclusive.
+
+Note, vcpu_init_descriptor_tables() gets the limit correct, it's only
+vcpu_setup() that is broken, i.e. only tests that _don't_ invoke
+vcpu_init_descriptor_tables() can have problems.  And the fact that KVM
+effectively initializes the GDT twice will be cleaned up in the near
+future.
+
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+[sean: rewrite changelog]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../testing/selftests/kvm/include/kvm_util.h  |  3 ---
- .../kvm/include/x86_64/kvm_util_arch.h        |  6 +++++
- .../selftests/kvm/lib/x86_64/processor.c      | 22 +++++++++----------
- .../kvm/x86_64/svm_nested_shutdown_test.c     |  2 +-
- .../kvm/x86_64/svm_nested_soft_inject_test.c  |  2 +-
- 5 files changed, 19 insertions(+), 16 deletions(-)
+ tools/testing/selftests/kvm/lib/x86_64/processor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-index acdcddf78e3f..58d6a4d6ce4f 100644
---- a/tools/testing/selftests/kvm/include/kvm_util.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util.h
-@@ -94,9 +94,6 @@ struct kvm_vm {
- 	bool pgd_created;
- 	vm_paddr_t ucall_mmio_addr;
- 	vm_paddr_t pgd;
--	vm_vaddr_t gdt;
--	vm_vaddr_t tss;
--	vm_vaddr_t idt;
- 	vm_vaddr_t handlers;
- 	uint32_t dirty_ring_size;
- 	uint64_t gpa_tag_mask;
-diff --git a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
-index 9f1725192aa2..b14ff3a88b4a 100644
---- a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
-@@ -5,7 +5,13 @@
- #include <stdbool.h>
- #include <stdint.h>
- 
-+#include "kvm_util_types.h"
-+
- struct kvm_vm_arch {
-+	vm_vaddr_t gdt;
-+	vm_vaddr_t tss;
-+	vm_vaddr_t idt;
-+
- 	uint64_t c_bit;
- 	uint64_t s_bit;
- 	int sev_fd;
 diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-index 74a4c736c9ae..45f965c052a1 100644
+index 45f965c052a1..eaeba907bb53 100644
 --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
 +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-@@ -417,7 +417,7 @@ static void kvm_seg_set_unusable(struct kvm_segment *segp)
+@@ -522,7 +522,7 @@ static void kvm_setup_gdt(struct kvm_vm *vm, struct kvm_dtable *dt)
+ 		vm->arch.gdt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
  
- static void kvm_seg_fill_gdt_64bit(struct kvm_vm *vm, struct kvm_segment *segp)
- {
--	void *gdt = addr_gva2hva(vm, vm->gdt);
-+	void *gdt = addr_gva2hva(vm, vm->arch.gdt);
- 	struct desc64 *desc = gdt + (segp->selector >> 3) * 8;
- 
- 	desc->limit0 = segp->limit & 0xFFFF;
-@@ -518,21 +518,21 @@ vm_paddr_t addr_arch_gva2gpa(struct kvm_vm *vm, vm_vaddr_t gva)
- 
- static void kvm_setup_gdt(struct kvm_vm *vm, struct kvm_dtable *dt)
- {
--	if (!vm->gdt)
--		vm->gdt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
-+	if (!vm->arch.gdt)
-+		vm->arch.gdt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
- 
--	dt->base = vm->gdt;
-+	dt->base = vm->arch.gdt;
- 	dt->limit = getpagesize();
+ 	dt->base = vm->arch.gdt;
+-	dt->limit = getpagesize();
++	dt->limit = getpagesize() - 1;
  }
  
  static void kvm_setup_tss_64bit(struct kvm_vm *vm, struct kvm_segment *segp,
- 				int selector)
- {
--	if (!vm->tss)
--		vm->tss = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
-+	if (!vm->arch.tss)
-+		vm->arch.tss = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
- 
- 	memset(segp, 0, sizeof(*segp));
--	segp->base = vm->tss;
-+	segp->base = vm->arch.tss;
- 	segp->limit = 0x67;
- 	segp->selector = selector;
- 	segp->type = 0xb;
-@@ -1091,7 +1091,7 @@ static void set_idt_entry(struct kvm_vm *vm, int vector, unsigned long addr,
- 			  int dpl, unsigned short selector)
- {
- 	struct idt_entry *base =
--		(struct idt_entry *)addr_gva2hva(vm, vm->idt);
-+		(struct idt_entry *)addr_gva2hva(vm, vm->arch.idt);
- 	struct idt_entry *e = &base[vector];
- 
- 	memset(e, 0, sizeof(*e));
-@@ -1144,7 +1144,7 @@ void vm_init_descriptor_tables(struct kvm_vm *vm)
- 	extern void *idt_handlers;
- 	int i;
- 
--	vm->idt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
-+	vm->arch.idt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
- 	vm->handlers = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
- 	/* Handlers have the same address in both address spaces.*/
- 	for (i = 0; i < NUM_INTERRUPTS; i++)
-@@ -1158,9 +1158,9 @@ void vcpu_init_descriptor_tables(struct kvm_vcpu *vcpu)
- 	struct kvm_sregs sregs;
- 
- 	vcpu_sregs_get(vcpu, &sregs);
--	sregs.idt.base = vm->idt;
-+	sregs.idt.base = vm->arch.idt;
- 	sregs.idt.limit = NUM_INTERRUPTS * sizeof(struct idt_entry) - 1;
--	sregs.gdt.base = vm->gdt;
-+	sregs.gdt.base = vm->arch.gdt;
- 	sregs.gdt.limit = getpagesize() - 1;
- 	kvm_seg_set_kernel_data_64bit(NULL, DEFAULT_DATA_SELECTOR, &sregs.gs);
- 	vcpu_sregs_set(vcpu, &sregs);
-diff --git a/tools/testing/selftests/kvm/x86_64/svm_nested_shutdown_test.c b/tools/testing/selftests/kvm/x86_64/svm_nested_shutdown_test.c
-index d6fcdcc3af31..f4a1137e04ab 100644
---- a/tools/testing/selftests/kvm/x86_64/svm_nested_shutdown_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/svm_nested_shutdown_test.c
-@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
- 
- 	vcpu_alloc_svm(vm, &svm_gva);
- 
--	vcpu_args_set(vcpu, 2, svm_gva, vm->idt);
-+	vcpu_args_set(vcpu, 2, svm_gva, vm->arch.idt);
- 
- 	vcpu_run(vcpu);
- 	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_SHUTDOWN);
-diff --git a/tools/testing/selftests/kvm/x86_64/svm_nested_soft_inject_test.c b/tools/testing/selftests/kvm/x86_64/svm_nested_soft_inject_test.c
-index 0c7ce3d4e83a..2478a9e50743 100644
---- a/tools/testing/selftests/kvm/x86_64/svm_nested_soft_inject_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/svm_nested_soft_inject_test.c
-@@ -166,7 +166,7 @@ static void run_test(bool is_nmi)
- 
- 		idt_alt_vm = vm_vaddr_alloc_page(vm);
- 		idt_alt = addr_gva2hva(vm, idt_alt_vm);
--		idt = addr_gva2hva(vm, vm->idt);
-+		idt = addr_gva2hva(vm, vm->arch.idt);
- 		memcpy(idt_alt, idt, getpagesize());
- 	} else {
- 		idt_alt_vm = 0;
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
