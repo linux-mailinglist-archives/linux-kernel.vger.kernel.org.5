@@ -1,95 +1,131 @@
-Return-Path: <linux-kernel+bounces-103604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B244587C1CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:06:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C3987C1D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E335C1C2095D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:06:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604F01F2217C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:08:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E087374436;
-	Thu, 14 Mar 2024 17:06:32 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 561A67351C
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6117443A;
+	Thu, 14 Mar 2024 17:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eWbCqdJ+"
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116236E610;
+	Thu, 14 Mar 2024 17:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710435992; cv=none; b=fXA18OD1wH/w7PRuJHek950qyTjoQvoli969o0drSLJp9M1cutWOJdMugO58IfXH9DNymXXolS65OWeuxoCvwBcn5quY8NHMA94HZgkV5rYq1Eqk5kfHTQB5QhyE3WMrnWXFSbTNci4SFd9SjOB15CxaihiNSWCw7u1pgPyoVrQ=
+	t=1710436109; cv=none; b=Cty5AXw3jhE3u7s/IVcdLh0gL/myY2nP4wSGCHPTS00yjhDAFXkzYMECB9oXAUwnVaSCKwKqmoIGAxyPVTql8+8BSDSc0I65eWQtMhxkHvZCilrsx3bqUeHWysMY0PFuFEbdDJDSzkxG/HOldtb5WnUQltCjH4EywBtE1zYPz/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710435992; c=relaxed/simple;
-	bh=CGkln+OmSkzR1fL8B64pytuSGwIBUDXizmxgaTNMi1Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bNox6LI+9Jv+/r2OsWJMbdeYb7/Mf7ANKpBydZ54oaRGLPjMS3MBvQ4BONwUuKu2Db7+o3XAEdOELU5o7UNuOIzvwEARWZHEFIxnXwQH0mph+xx+tC4XY42oHAcILMOfsQj3xNI5eit6TDlX94CQPmNm7gE2AlSmrK6A8BMDD08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 457369 invoked by uid 1000); 14 Mar 2024 13:06:29 -0400
-Date: Thu, 14 Mar 2024 13:06:29 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Roman Smirnov <r.smirnov@omp.ru>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-  linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-  linux-kernel@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
-  Karina Yankevich <k.yankevich@omp.ru>, lvc-project@linuxtesting.org,
-  stable@vger.kernel.org
-Subject: Re: [PATCH] usb: storage: isd200: fix error checks in
- isd200_{read,write}_config()
-Message-ID: <8819c3a3-fbf1-4df5-9e40-3509ef383b4a@rowland.harvard.edu>
-References: <20240314093136.16386-1-r.smirnov@omp.ru>
+	s=arc-20240116; t=1710436109; c=relaxed/simple;
+	bh=fbB5AxAdKo0wy6VhS6ZRq9Tyrk+J/JRWJyQZyo4j0PM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YcIMcfXo2vt3kjxQM5X7FvzZk4TM5Dk5c7uOk/v+6CYBgbD7pfq1ioVdTehw1XT1JCeAjrIhEaqDYQwa3jnJvHGeZx0YfghcMw8qy6fPwjmwrLxbh9zM/okLI2fR3vX79RDDoCHfqimriSqI6I75Ar7pOpNwNwFRVkWMIwq92fA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eWbCqdJ+; arc=none smtp.client-ip=209.85.218.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a466a1f9ea0so153838266b.1;
+        Thu, 14 Mar 2024 10:08:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710436106; x=1711040906; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IRts4rkBVcGeXEcRt2MTupfVX97nL0afashtKjZXc+M=;
+        b=eWbCqdJ+B6S19Up1ODitWvyN/nMkT4YZXVBQXXUI+O+rIDc4I9QuhZxtWenPjawxC7
+         buIkHMpD8xTaVRb21ZcsGnMSl1waLRixq4YJbHvierpAHlR8KzKYpaZ1FC34qVU48DIh
+         fTJII3bBIbl7yk4zQhCxsZqdtTzodDBphkWcvFNWKRhU8hh9uBL8EbaVQfx01qNX7i/t
+         s5QWbQ6Hr9JrXc8HJV4PArpQhT7vQLTRFMJHREJIUks9BMfv3oiWjsp4pA9CWVOOOydq
+         U7CMtaQcSf+G664QZkpeLS4g1DymymFaYL7z3PTnW7RRC0tcrEM/Av389WIbZ6vdDlgN
+         ETkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710436106; x=1711040906;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IRts4rkBVcGeXEcRt2MTupfVX97nL0afashtKjZXc+M=;
+        b=sWY+UhbM9Us2xWASdaM0JOmtIRWO4G02Zb065EVFYLjZN0ksBii9Yu+r20F7NoMNgU
+         Tf3D4Y1B/ptmZ+g5fUTi4V0lECh2brcBy5c6dxcck+oG+FMdT/lt4KFrJNZQKO0aj2uG
+         02Ai4hSB71PKfalBc7vAO1HxY3Sbl7OvstDIu86kWqIQojv74kvMaZXy8GG/TUJzQebA
+         ocVQgnjEvzijIYhMvsj1JrlgVbwxvbkcMA1A2x3UoaY07JuGSY8CORrwFfkS+diwNRjW
+         +NzHb/DsjSyk+1PdtJrRQbGX7JJBzrYibjKveKn1c6v8C7cjFnRLtufa0AbqckzyWH6z
+         xN2w==
+X-Forwarded-Encrypted: i=1; AJvYcCU96Etkq+6nzSA72QuH4WwFWoQjkB0CD761HGpOTS2G+54dmFRtGZMjc+cj58XG9u9KKCACg9tKLHere9e0keewqIq/5mOSzFDH+G80Q4H/RtIQmW5tjP8nygMsCZOeojb1
+X-Gm-Message-State: AOJu0Ywhg2x5wamqQZVdfncMoL4wR4i5ciKD+6tUEDO79OugDtHE4HyU
+	HRD8WX1ymwSa9Mi+AQtRA3zpHbYCbaSenv10lZLHOJudT0/UiAWtnWDBVeyr/6EtftlEilTM9q/
+	ZkQgq/N03iOyr5/g+cYofeTHAheY=
+X-Google-Smtp-Source: AGHT+IGqCVTYpTv8Odrmbx4dKTarYfQn2vbyLl9wbpot7Qd2LnFnZCO0voyX1zRvnG0tesx5ukz0qToe39rls0zB140=
+X-Received: by 2002:aa7:c2c4:0:b0:567:2a22:6e86 with SMTP id
+ m4-20020aa7c2c4000000b005672a226e86mr960099edp.22.1710436106036; Thu, 14 Mar
+ 2024 10:08:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314093136.16386-1-r.smirnov@omp.ru>
+References: <20240314150003.123020-1-puranjay12@gmail.com> <20240314150003.123020-2-puranjay12@gmail.com>
+In-Reply-To: <20240314150003.123020-2-puranjay12@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 14 Mar 2024 18:07:49 +0100
+Message-ID: <CAP01T75tG5tXqRJsMn6iU1xvmEqeuTg=ja=LUPqqXkrJiYL2XQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add arm64 JIT support for PROBE_MEM32
+ pseudo instructions.
+To: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 14, 2024 at 12:31:36PM +0300, Roman Smirnov wrote:
-> The expression result >= 0 will be true even if usb_stor_ctrl_transfer()
-> returns an error code. It is necessary to compare result with
-> USB_STOR_XFER_GOOD.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with Svace.
-> 
-> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+On Thu, 14 Mar 2024 at 16:00, Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
+> instructions.  They are similar to PROBE_MEM instructions with the
+> following differences:
+> - PROBE_MEM32 supports store.
+> - PROBE_MEM32 relies on the verifier to clear upper 32-bit of the
+>   src/dst register
+> - PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in R28
+>   in the prologue). Due to bpf_arena constructions such R28 + reg +
+>   off16 access is guaranteed to be within arena virtual range, so no
+>   address check at run-time.
+> - PROBE_MEM32 allows STX and ST. If they fault the store is a nop. When
+>   LDX faults the destination register is zeroed.
+>
+> To support these on arm64, we do tmp2 = R28 + src/dst reg and then use
+> tmp2 as the new src/dst register. This allows us to reuse most of the
+> code for normal [LDX | STX | ST].
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 > ---
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Hi Alexei,
+Puranjay and I were discussing this stuff off list and noticed that
+atomic instructions are not handled.
+It turns out that will cause a kernel crash right now because the
+32-bit offset into arena will be dereferenced directly.
 
->  drivers/usb/storage/isd200.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/storage/isd200.c b/drivers/usb/storage/isd200.c
-> index 300aeef160e7..2a1531793820 100644
-> --- a/drivers/usb/storage/isd200.c
-> +++ b/drivers/usb/storage/isd200.c
-> @@ -774,7 +774,7 @@ static int isd200_write_config( struct us_data *us )
->  		(void *) &info->ConfigData, 
->  		sizeof(info->ConfigData));
->  
-> -	if (result >= 0) {
-> +	if (result == USB_STOR_XFER_GOOD) {
->  		usb_stor_dbg(us, "   ISD200 Config Data was written successfully\n");
->  	} else {
->  		usb_stor_dbg(us, "   Request to write ISD200 Config Data failed!\n");
-> @@ -816,7 +816,7 @@ static int isd200_read_config( struct us_data *us )
->  		sizeof(info->ConfigData));
->  
->  
-> -	if (result >= 0) {
-> +	if (result == USB_STOR_XFER_GOOD) {
->  		usb_stor_dbg(us, "   Retrieved the following ISD200 Config Data:\n");
->  #ifdef CONFIG_USB_STORAGE_DEBUG
->  		isd200_log_config(us, info);
-> -- 
-> 2.34.1
-> 
-> 
+e.g. something like this:
+
+@@ -55,6 +56,7 @@ int arena_list_add(void *ctx)
+                test_val++;
+                n->value = i;
+                arena_sum += i;
++               __sync_fetch_and_add(&arena_sum, 0);
+                list_add_head(&n->node, list_head);
+        }
+ #else
+
+I will try to prepare a fix for the x86 JIT. Puranjay will do the same
+for his set.
 
