@@ -1,152 +1,328 @@
-Return-Path: <linux-kernel+bounces-102829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CED187B799
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:02:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB1F87B7B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B1E11F22A54
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:02:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7504928035F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B36B22068;
-	Thu, 14 Mar 2024 05:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q3Me8htA"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211611BDE0
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA9F3CF7C;
+	Thu, 14 Mar 2024 05:59:54 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990083BB37;
+	Thu, 14 Mar 2024 05:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395953; cv=none; b=iibiSOpliBLqUxkXAbM2GhlEIu4eQZmdtqnAH42w4pX2U6MSJeX83knE55r/KLpiJ0SMsTIi6x9mz6fRy9SpHijjUzFUKjYtXwUWFyGxnU5o0/3oQxLT1eFwql9F9d6PQk9B3VmG1SlozLQUsghX+mnnCRULENCRK8ALGY49NkA=
+	t=1710395993; cv=none; b=bOOj9Cr6d0i18ptbDTaXoSIxTeFGKCdH3znXq5rAa0B6cpbCSvgz/nSySxiUAVgiv0ogjyrUV+Efw30udUAWZGnR6BR7BogodKVdH8fEAnWFQGS4iDP72UXBK0ouzEwiyOI4wHRQ8ZxUioqaNJfIKyYRbGTfC33/vU1+tZfgoC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395953; c=relaxed/simple;
-	bh=Mk3XQlHLZxdVodcrzm+PODwSYBMgkZqVt9gXIE7aW2I=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=pCm3SDYQ6Kfokq9Hs0on4N2MikIs4Bb0GZ+8KBnyOPZ11bSGuZzFy+HuRE9S6jgcq07AC6kN62mYpKxgLSLZ/SXxw/WbkyYjOkZC1REJqj2r4251Hd8U20gjVqsV/VxirJmkL/VHVDUsrKMtbxMtccyLBhwANV9ATiHk+rcUVzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q3Me8htA; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ad239f8fso10660217b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710395951; x=1711000751; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xSBh0lB+a23+39fFaPjg8zQM/Im9uFNXguVDinAnXbc=;
-        b=Q3Me8htAcgDEJEuqazatt0G3Rlq7GsKxRDIeFW0dTzEQfeqVVWA72NvbSLXFhqSXXj
-         O2o+rPXJKuOaBpK9pwDk5/7k7/mc7l6YM9fL+4Ih+5KDYgwBCwQF1BB51REA2TYOkIN1
-         bGYLLKYjvQO9N5CZ61AwyULuiZCKG1n8d7C9II3FrL9JN3Ub0spAXefYGrtDvIYuTYeD
-         UY4mIgSzwyGO7lBP0oVnNMek3l7+M49LrhB+7BRws094d7Kx3xHKsU9Gj7gz/1BDBScE
-         kYpDAeKO3oCAU1bwTtv9BPOENT5lfFJUyN7EMvl/E/jk4MXV36Nty8XiUs5D23b3lg8t
-         CPcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710395951; x=1711000751;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xSBh0lB+a23+39fFaPjg8zQM/Im9uFNXguVDinAnXbc=;
-        b=XEdZagZbTNliN9nTuE8dvk+56r9dsURxiA31UNHP/AXKDyHl0o3rQJ5ti9b+HzoQnX
-         l7Wc4XVfYaBZ04Dgr49CTr8voGsBL1FBY20NWBWziSpHXZVoj3HGnGpDkJATOELUQZl8
-         ONLZdZUd3PS/lq1ylTw9ckHciAxI+kFoXCIqaHuM+Xrgt74M0i712YeHVD5jNeNuok7g
-         DdD9gfJYu76BTqROCOF6vgp3l0Dh/vDCickODDHSv3AS0EUZL8rFc/MUOEy+rhWn5e7K
-         s5O3HHw4yXct5guTmJvhF4yvRBnyaum8vXnaLgdx9JI4H558ikAQt7Y3E/T1ZfLPbQXD
-         4pfg==
-X-Forwarded-Encrypted: i=1; AJvYcCVsDfAdD4STyaRZNRQSOaXVsjEZn7MeNWA8scQj9ljWLD8+i1rURpRCWZs+AE8b6vZbKc+lhpzaK+I5ygwTaDjsWtG0aeLzMYZptqIX
-X-Gm-Message-State: AOJu0YxTCB1S2UQ98Vl4RhtpIaqfP2ripZp36QLI8JiNfhR7Si55I/li
-	8F6rJzkqT+2HE9A+fjPS4BIqyXaNrQ7G+YS08iO/XJ7pa1telCsT42F02Kg90KHikggBeNdChDN
-	LZ90tDg==
-X-Google-Smtp-Source: AGHT+IGz/WcD1pwUVpDjsHmi87+odVdNlep/ZH4vaPqLNRuRB0bMnFJncve4GNCavNVSJJbYCIMFntlCkmwb
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:449f:3bde:a4cd:806a])
- (user=irogers job=sendgmr) by 2002:a25:9285:0:b0:dc6:dfc6:4207 with SMTP id
- y5-20020a259285000000b00dc6dfc64207mr211031ybl.10.1710395950986; Wed, 13 Mar
- 2024 22:59:10 -0700 (PDT)
-Date: Wed, 13 Mar 2024 22:58:39 -0700
-In-Reply-To: <20240314055839.1975063-1-irogers@google.com>
-Message-Id: <20240314055839.1975063-13-irogers@google.com>
+	s=arc-20240116; t=1710395993; c=relaxed/simple;
+	bh=/ynXK/wwo6vxgSvodH8Qphiw9crFmPIhTLqhJ1xqsnI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=cUn5ODBN+KTxTy9m4dqyaYxjISsB0iwKgrBZD/e8STwTOSEwPyayPddWL0qKe+9z4Vj2TFJ/3EcYOMNj4C90j04x8EwVi66Koe8EIzVi4O6QFbffPNSa9NfiUDKee43A8AUDXFdZvBRJOyALlt4EYkMSZyz2NEiA0KbgPUet0Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 646A01007;
+	Wed, 13 Mar 2024 23:00:27 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.53.138])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 02F203F73F;
+	Wed, 13 Mar 2024 22:59:46 -0700 (PDT)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-arm-kernel@lists.infradead.org,
+	suzuki.poulose@arm.com
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	James Clark <james.clark@arm.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	coresight@lists.linaro.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH V7 07/11] coresight: catu: Move ACPI support from AMBA driver to platform driver
+Date: Thu, 14 Mar 2024 11:28:39 +0530
+Message-Id: <20240314055843.2625883-8-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240314055843.2625883-1-anshuman.khandual@arm.com>
+References: <20240314055843.2625883-1-anshuman.khandual@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240314055839.1975063-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 12/12] perf jevents: Add context switch metrics for AMD
-From: Ian Rogers <irogers@google.com>
-To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Metrics break down context switches for different kinds of
-instruction.
+Add support for the catu devices in a new platform driver, which can then
+be used on ACPI based platforms. This change would now allow runtime power
+management for ACPI based systems. The driver would try to enable the APB
+clock if available. But first this renames and then refactors catu_probe()
+and catu_remove(), making sure it can be used both for platform and AMBA
+drivers. This also moves pm_runtime_put() from catu_probe() to the callers.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: linux-acpi@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+Reviewed-by: James Clark <james.clark@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- tools/perf/pmu-events/amd_metrics.py | 32 ++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+Changes in V7:
 
-diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
-index bf5c4ffa53e9..bc70743c2f11 100755
---- a/tools/perf/pmu-events/amd_metrics.py
-+++ b/tools/perf/pmu-events/amd_metrics.py
-@@ -120,6 +120,37 @@ def AmdBr():
-                      description="breakdown of retired branch instructions")
+- Dropped struct resource check before devm_ioremap_resource()
+- Dropped reduntant drvdata check in catu_platform_probe()
+- Dropped reduntant drvdata check in catu_platform_remove()
+- Sorted the headers in alphabetic order
+
+ drivers/acpi/arm64/amba.c                    |   1 -
+ drivers/hwtracing/coresight/coresight-catu.c | 138 ++++++++++++++++---
+ drivers/hwtracing/coresight/coresight-catu.h |   1 +
+ 3 files changed, 120 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+index afb6afb66967..587061b0fd2f 100644
+--- a/drivers/acpi/arm64/amba.c
++++ b/drivers/acpi/arm64/amba.c
+@@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+ 	{"ARMHC503", 0}, /* ARM CoreSight Debug */
+ 	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
+ 	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+-	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+ 	{"", 0},
+ };
  
+diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+index 3949ded0d4fa..9712be6acd26 100644
+--- a/drivers/hwtracing/coresight/coresight-catu.c
++++ b/drivers/hwtracing/coresight/coresight-catu.c
+@@ -7,11 +7,13 @@
+  * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
+  */
  
-+def AmdCtxSw() -> MetricGroup:
-+  cs = Event("context\-switches")
-+  metrics = [
-+      Metric("cs_rate", "Context switches per second", d_ratio(cs, interval_sec), "ctxsw/s")
-+  ]
-+
-+  ev = Event("instructions")
-+  metrics.append(Metric("cs_instr", "Instructions per context switch",
-+                        d_ratio(ev, cs), "instr/cs"))
-+
-+  ev = Event("cycles")
-+  metrics.append(Metric("cs_cycles", "Cycles per context switch",
-+                        d_ratio(ev, cs), "cycles/cs"))
-+
-+  ev = Event("ls_dispatch.ld_dispatch")
-+  metrics.append(Metric("cs_loads", "Loads per context switch",
-+                          d_ratio(ev, cs), "loads/cs"))
-+
-+  ev = Event("ls_dispatch.store_dispatch")
-+  metrics.append(Metric("cs_stores", "Stores per context switch",
-+                        d_ratio(ev, cs), "stores/cs"))
-+
-+  ev = Event("ex_ret_brn_tkn")
-+  metrics.append(Metric("cs_br_taken", "Branches taken per context switch",
-+                        d_ratio(ev, cs), "br_taken/cs"))
-+
-+  return MetricGroup("cs", metrics,
-+                     description = ("Number of context switches per second, instructions "
-+                                    "retired & core cycles between context switches"))
-+
-+
- def AmdIlp() -> MetricGroup:
-     tsc = Event("msr/tsc/")
-     c0 = Event("msr/mperf/")
-@@ -613,6 +644,7 @@ def main() -> None:
++#include <linux/acpi.h>
+ #include <linux/amba/bus.h>
+ #include <linux/device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
  
-   all_metrics = MetricGroup("", [
-       AmdBr(),
-+      AmdCtxSw(),
-       AmdIlp(),
-       AmdDtlb(),
-       AmdItlb(),
+ #include "coresight-catu.h"
+@@ -502,28 +504,20 @@ static const struct coresight_ops catu_ops = {
+ 	.helper_ops = &catu_helper_ops,
+ };
+ 
+-static int catu_probe(struct amba_device *adev, const struct amba_id *id)
++static int __catu_probe(struct device *dev, struct resource *res)
+ {
+ 	int ret = 0;
+ 	u32 dma_mask;
+-	struct catu_drvdata *drvdata;
++	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+ 	struct coresight_desc catu_desc;
+ 	struct coresight_platform_data *pdata = NULL;
+-	struct device *dev = &adev->dev;
+ 	void __iomem *base;
+ 
+ 	catu_desc.name = coresight_alloc_device_name(&catu_devs, dev);
+ 	if (!catu_desc.name)
+ 		return -ENOMEM;
+ 
+-	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+-	if (!drvdata) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	dev_set_drvdata(dev, drvdata);
+-	base = devm_ioremap_resource(dev, &adev->res);
++	base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(base)) {
+ 		ret = PTR_ERR(base);
+ 		goto out;
+@@ -567,19 +561,39 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+ 	drvdata->csdev = coresight_register(&catu_desc);
+ 	if (IS_ERR(drvdata->csdev))
+ 		ret = PTR_ERR(drvdata->csdev);
+-	else
+-		pm_runtime_put(&adev->dev);
+ out:
+ 	return ret;
+ }
+ 
+-static void catu_remove(struct amba_device *adev)
++static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+ {
+-	struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
++	struct catu_drvdata *drvdata;
++	int ret;
++
++	drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	amba_set_drvdata(adev, drvdata);
++	ret = __catu_probe(&adev->dev, &adev->res);
++	if (!ret)
++		pm_runtime_put(&adev->dev);
++
++	return ret;
++}
++
++static void __catu_remove(struct device *dev)
++{
++	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+ 
+ 	coresight_unregister(drvdata->csdev);
+ }
+ 
++static void catu_remove(struct amba_device *adev)
++{
++	__catu_remove(&adev->dev);
++}
++
+ static struct amba_id catu_ids[] = {
+ 	CS_AMBA_ID(0x000bb9ee),
+ 	{},
+@@ -598,13 +612,99 @@ static struct amba_driver catu_driver = {
+ 	.id_table			= catu_ids,
+ };
+ 
++static int catu_platform_probe(struct platform_device *pdev)
++{
++	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	struct catu_drvdata *drvdata;
++	int ret = 0;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
++	if (IS_ERR(drvdata->pclk))
++		return -ENODEV;
++
++	pm_runtime_get_noresume(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
++	dev_set_drvdata(&pdev->dev, drvdata);
++	ret = __catu_probe(&pdev->dev, res);
++	pm_runtime_put(&pdev->dev);
++	if (ret) {
++		pm_runtime_disable(&pdev->dev);
++		if (!IS_ERR_OR_NULL(drvdata->pclk))
++			clk_put(drvdata->pclk);
++	}
++
++	return ret;
++}
++
++static int catu_platform_remove(struct platform_device *pdev)
++{
++	struct catu_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
++
++	if (WARN_ON(!drvdata))
++		return -ENODEV;
++
++	__catu_remove(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++	if (!IS_ERR_OR_NULL(drvdata->pclk))
++		clk_put(drvdata->pclk);
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int catu_runtime_suspend(struct device *dev)
++{
++	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
++
++	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
++		clk_disable_unprepare(drvdata->pclk);
++	return 0;
++}
++
++static int catu_runtime_resume(struct device *dev)
++{
++	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
++
++	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
++		clk_prepare_enable(drvdata->pclk);
++	return 0;
++}
++#endif
++
++static const struct dev_pm_ops catu_dev_pm_ops = {
++	SET_RUNTIME_PM_OPS(catu_runtime_suspend, catu_runtime_resume, NULL)
++};
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id catu_acpi_ids[] = {
++	{"ARMHC9CA", 0, 0, 0}, /* ARM CoreSight CATU */
++	{},
++};
++
++MODULE_DEVICE_TABLE(acpi, catu_acpi_ids);
++#endif
++
++static struct platform_driver catu_platform_driver = {
++	.probe	= catu_platform_probe,
++	.remove	= catu_platform_remove,
++	.driver	= {
++		.name			= "coresight-catu-platform",
++		.acpi_match_table	= ACPI_PTR(catu_acpi_ids),
++		.suppress_bind_attrs	= true,
++		.pm			= &catu_dev_pm_ops,
++	},
++};
++
+ static int __init catu_init(void)
+ {
+ 	int ret;
+ 
+-	ret = amba_driver_register(&catu_driver);
+-	if (ret)
+-		pr_info("Error registering catu driver\n");
++	ret = coresight_init_driver("catu", &catu_driver, &catu_platform_driver);
+ 	tmc_etr_set_catu_ops(&etr_catu_buf_ops);
+ 	return ret;
+ }
+@@ -612,7 +712,7 @@ static int __init catu_init(void)
+ static void __exit catu_exit(void)
+ {
+ 	tmc_etr_remove_catu_ops();
+-	amba_driver_unregister(&catu_driver);
++	coresight_remove_driver(&catu_driver, &catu_platform_driver);
+ }
+ 
+ module_init(catu_init);
+diff --git a/drivers/hwtracing/coresight/coresight-catu.h b/drivers/hwtracing/coresight/coresight-catu.h
+index 442e034bbfba..141feac1c14b 100644
+--- a/drivers/hwtracing/coresight/coresight-catu.h
++++ b/drivers/hwtracing/coresight/coresight-catu.h
+@@ -61,6 +61,7 @@
+ #define CATU_IRQEN_OFF		0x0
+ 
+ struct catu_drvdata {
++	struct clk *pclk;
+ 	void __iomem *base;
+ 	struct coresight_device *csdev;
+ 	int irq;
 -- 
-2.44.0.278.ge034bb2e1d-goog
+2.25.1
 
 
