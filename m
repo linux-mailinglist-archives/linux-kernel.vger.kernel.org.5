@@ -1,117 +1,113 @@
-Return-Path: <linux-kernel+bounces-103534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96C087C0BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:57:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C851287C0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1713E1C21643
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:57:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 655EC1F22579
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEFF473173;
-	Thu, 14 Mar 2024 15:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1NulDDpo"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1200973191;
+	Thu, 14 Mar 2024 15:59:08 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CBB1EA6F
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821C56EB74;
+	Thu, 14 Mar 2024 15:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431838; cv=none; b=hhG5VUwHcuUc3fNhkViBWmN08AjszvuJoHWnS0f1+VaU4sqe5D7BTpSovY7mUupL/be1OiVTW4gpmXCBEqLN4nxo1wjeLi/rKFhceFETO4dXPiV9BDxkeP8MKw9tdxcCms2SUtfqaqg0IzixYv4zFH5bZcLwPAelapxn7rVvo28=
+	t=1710431947; cv=none; b=qA0dzEaJcTisWZnitxah/hjMqC+Fq11xnd00GEa+Zy8VW4D67E6633bB0LOnWDRAIClzuskR/bmYKtuM8cM+zX42LXc1lKzcRtgiveyx6NcPiS26omAxwjbXi3MY8r/friQZXyZv07w3l270JTC8/JHoru2ACdTS7dGQDyukRTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431838; c=relaxed/simple;
-	bh=7HQ3IpO13Y+q9VqOFTfv5rfBRj5NGDdKTqljlt/5bqA=;
+	s=arc-20240116; t=1710431947; c=relaxed/simple;
+	bh=qLm7sdMyTp87kkhCt/5MhF2kdOOR6nFZ2M5qYMfYhE4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lLA3HcXnvz3QpcGuj6y8AXrRg4fxS/VYm9OCTpsEJu254tZkMbAGukfDm0KSZP/Oa0u/MGIpnQBxBnUHouJHbv8a/43P2Pwm7WSyYaG5wl+9iW5J3rrsGhwpkeEqK64qMFPq8h/aSt3NfeRRPuNv0785YpUGiSRwiVaWc3qaHzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1NulDDpo; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-47348b64b56so190985137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710431835; x=1711036635; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7HQ3IpO13Y+q9VqOFTfv5rfBRj5NGDdKTqljlt/5bqA=;
-        b=1NulDDpo1VPwhNkjm/Z2OK/9rTPnRljRtcwunOh5AC5hj44WU6qyBMkqU6/no5du1y
-         1TkgAglE0G2FYY5AwbvKWLs9AMtwRDAujXdZstsBJe3L2FxwDXKutc73IIAa+4dkUEgJ
-         BfiR6Vpb046GghGKpbGqqelHqyJebNFE66IkGgMaSkyyCMexhQESwdBoQGdt4Ig8vYMg
-         RFXRAuciiTamWbP9NNnUQ9OBSikgHqJL4vcJkWy1nJvF1c2J0u/Prq0xH+xBbFNubGyF
-         q4hlQJDQOFaspnSFpk9ygfViCXGmibj1q+XPTxKJjQb6/jEMFAReO625gwJHlZ3zQmtj
-         V8vA==
+	 To:Cc:Content-Type; b=J26fjwqAnZX6f6QkgDEnQ9/mOBhVqqXt1+f06EKrdEZ6wTxTlTSmFSAj0Ql4tNaISwTdffIuvP9DdCQDs0rGpIW2+joGhtUsZGf6FWpwwWOlJN3gnQ+qYkUEpG5v6Pvd/h1pzVExn26iStiDR1DEEUkC4o+2I6WA0ISt7PX97iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60cc4124a39so11309267b3.3;
+        Thu, 14 Mar 2024 08:59:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710431835; x=1711036635;
+        d=1e100.net; s=20230601; t=1710431943; x=1711036743;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7HQ3IpO13Y+q9VqOFTfv5rfBRj5NGDdKTqljlt/5bqA=;
-        b=NQZyDdau/7ux0yZmFqcjCU4GXir0vQLs1d36PHMgKtTRzypzasttJGZrQNL4hJxEHl
-         bJqKyoMEvvAA9m+5vcjyqCnQOsXh9nO/+W0IM5MFSI81CGx5bo/hQ8AsKh/BClzXG2tf
-         bkSsMWEuqE9TCVaJfd+dz2m4T5dCOKBxaf1939jR5nZqQSdCcuCsBTgXUVxsiNZH5WKz
-         HxjLibgxKy3LQpYTCeMOWu1p2URqYut/Iz2Bv7dlHbEtr7tDlRDlLSXK2QD4bSyQ879t
-         m6jcaAs3MsJTQs/rjcwTLtsOa/GGaLj+eAhOfpCq3t8AGnQQjIClq1JKPYppfoLZBOIz
-         gmYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3D7hBZ5piwAUYm424c+pTXwssZXPu+gAKZ4uGQnT3DdDAUXe7Tn+jZM/ysuWNWP16d90zhwsebhApa/itv8oHOAC+RbhIXXW6pDvP
-X-Gm-Message-State: AOJu0YzYuGXuYdcBJiC3gZmf2A20Wb5HIopIY8swShqNXX4YPJrkpALk
-	woOS3pR4ZkgfDHoyjUhHjHHVKiAu8q3bxiFpjxvlkDUw5igzjnonKMNGfU2Y+oHVFp5pGRhd865
-	J57ZYvdKBssMGvnXAD8FkvwU+fPvSf2DgrCwo
-X-Google-Smtp-Source: AGHT+IEOFuQHsI3D29O5MY90DhCqB2gYp03PZpY3DtGYEUDYmaQaVyOYcsrzQfrSYP+I+5eIGdBCg56AcJ4Fcw+IhwA=
-X-Received: by 2002:a67:cd11:0:b0:474:acae:f3c3 with SMTP id
- u17-20020a67cd11000000b00474acaef3c3mr611837vsl.25.1710431835573; Thu, 14 Mar
- 2024 08:57:15 -0700 (PDT)
+        bh=WGo5y059xssa9oMgtCF+hT1vb68q8rGTMUHno6LSTBk=;
+        b=FFuNwaqo4NpZErGsUumZa4cIh1IA0ICrZqyltAH8bUZLhv/HI5e4cLxfmUabtoUvjs
+         oGkdCLywOIwY7+/thWo3Sm4ErYOjsBiobwpRYOWIOWGLX8OsJmz+AvyvbYizhGCvHpvc
+         BrTE4oTIk2tWWD3q1aHuZwQpT9xpJ7psLiXwT2UH7/hQIxoZhuTw4uYRJwajpqcBOGUK
+         Ef8x1znICqPh0s3V5mqTO0vqdPr9/uu973/CGamsSt1LGn637w0Cw4u3ZOjX1s2/pd5m
+         rTa8zB1nZsr5fcdkV+pw9MkqzUnjyC7S46bYj+TK72Z7ZCqjU2UGIxU3j4pHJ8VVhhU2
+         O+kQ==
+X-Forwarded-Encrypted: i=1; AJvYcCURGXGVV4B731YJ3lv786jVh7JUr5BrzXcqEFoh3UUmLzUKW7tp+LjibGNJbWv1zfXyhhOBbEAd4Q8XXCrphas8zNeUJfgMpXEZKbQEFIlFL5Qwytlp8bXfA/2mm9ZUUNaEtTm+tFhTvVCvl7YuA+xh86Nj8UZDsWPV0v6xqqLQxPqfqVr3b7RI5Nb+jjs/XITlNlEGSmO6zoK6J5Nv0F5FMy8wRd/Y
+X-Gm-Message-State: AOJu0YxO64FkWBSw4xsKWfYAjk405XOisJveA5zC8OI+VNXjy5SspEUj
+	nOAD93asyJkhxDLwMCN2dKnoTiayTd1agZPvD3NV9obpu7DgFgT3emjLhT9rm/8=
+X-Google-Smtp-Source: AGHT+IH3mWZnB00yzBl/P+4vpCgvy1TqognMcOx1eiqXCS8bhJRS8l8FzburGf5wIcSmP2v0Dja31g==
+X-Received: by 2002:a81:89c3:0:b0:60a:1e17:2623 with SMTP id z186-20020a8189c3000000b0060a1e172623mr2166957ywf.51.1710431943646;
+        Thu, 14 Mar 2024 08:59:03 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id w64-20020a814943000000b0060a2c381287sm325163ywa.125.2024.03.14.08.59.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 08:59:03 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-609eb3e5a56so12810697b3.1;
+        Thu, 14 Mar 2024 08:59:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWCHolDbsLYXxjJEPZCH1Wmwn7mxZRBqJRmKOvt3cY8Sa+cykDHHC6TOXUiUFwoAYOLmwNAwn7q1xOSveluKR5xYclrAYOW7ULEtlMVfPXpGXHIttjtK+EJBoyDl9mmX/azL0tL/s+FhH3OEZclR41pEu1aIyM0wkCE9kYiyLvcB39L+J5SaGqXzVt0Jr5RQwLG6OxPLm7Lc5eMNlRAjXYl5h5SrnM3
+X-Received: by 2002:a25:8541:0:b0:dcc:d196:a573 with SMTP id
+ f1-20020a258541000000b00dccd196a573mr1902447ybn.36.1710431943159; Thu, 14 Mar
+ 2024 08:59:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206223620.1833276-1-acdunlap@google.com> <168b4e3b-8076-4fc3-92bc-fcd9f2b516a8@intel.com>
- <CAMj1kXE4Yhh_5y=ybFkD7YQUZuh7+-P_Vyzv-gpvbQ=i=eRMnw@mail.gmail.com> <CAMBK9=bTMJircCK9SYHsZcKvbD0oZUByQPXcYciD6mcVqgg6=g@mail.gmail.com>
-In-Reply-To: <CAMBK9=bTMJircCK9SYHsZcKvbD0oZUByQPXcYciD6mcVqgg6=g@mail.gmail.com>
-From: Kevin Loughlin <kevinloughlin@google.com>
-Date: Thu, 14 Mar 2024 08:57:04 -0700
-Message-ID: <CAGdbjm+A2UwK0yYfA+AasxqjQJBfRE3k9ubpPcaVP9KJNinxHQ@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/asm: Force native_apic_mem_read to use mov
-To: Adam Dunlap <acdunlap@google.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>, Dave Hansen <dave.hansen@intel.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
-	Arjan van de Ven <arjan@linux.intel.com>, Wei Liu <wei.liu@kernel.org>, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, Jacob Xu <jacobhxu@google.com>, Alper Gun <alpergun@google.com>, 
-	Peter Gonda <pgonda@google.com>
+References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com> <20240307140728.190184-2-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240307140728.190184-2-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Mar 2024 16:58:50 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVaKF=4Uu074j9X5Q62OsDZ7q0tXaFazxTP5+TFD51hEg@mail.gmail.com>
+Message-ID: <CAMuHMdVaKF=4Uu074j9X5Q62OsDZ7q0tXaFazxTP5+TFD51hEg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] dt-bindings: clock: r9a07g043-cpg: Add power
+ domain IDs
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 9, 2024 at 10:20=E2=80=AFAM Adam Dunlap <acdunlap@google.com> w=
+On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
 rote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >
-> On Fri, Feb 9, 2024 at 7:22=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> w=
-rote:
-> >
-> > this seems like the kind of thing we'll want in -stable in case folks
-> > are compiling stable kernels with new clangs.
+> Add power domain IDs for RZ/G2UL (R9A07G043) SoC.
 >
-> That makes sense. Note that there was another patch accepted recently
-> that fixed another
-> clang-with-SEV problem [1], so they should probably be backported to
-> the same stable
-> branches since neither is that useful without the other.
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
 >
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?i=
-d=3D1c811d403afd73f04bde82b83b24c754011bd0e8
+> Changes in v2:
+> - added "RZ/G2UL Only" comments to some defines
+> - added RZ/Five specific defines
 
-Agreed; clang builds of SEV-SNP guests will need both this patch and
-[1]. If an additional patch [2] also gets merged, we may want to do
-the same for [2] as well.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[2] https://lore.kernel.org/lkml/20240313121546.2964854-1-kevinloughlin@goo=
-gle.com/
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
