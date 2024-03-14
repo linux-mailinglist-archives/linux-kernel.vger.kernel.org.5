@@ -1,148 +1,139 @@
-Return-Path: <linux-kernel+bounces-103282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FEC287BD71
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:17:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08A0887BD90
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 342FD2816E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:17:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A34D1C20E2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C485B683;
-	Thu, 14 Mar 2024 13:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ho7CTE2Z"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE1D5BAC3;
+	Thu, 14 Mar 2024 13:21:52 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BE03D0D5;
-	Thu, 14 Mar 2024 13:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B875A11A;
+	Thu, 14 Mar 2024 13:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710422245; cv=none; b=QqlMMDtmhU9TUvu+vvXvaQrfL8oyvd3XHNVrQUrsT8ehliLOJa+wZ4LXyMhoMh6g+rze490g8yVT0Qdvv3vbjmR+EpUfqHl8AUWJ0/SDGgMq1snNkVnfOZfcFMppyDLaRlon3NZewXqzzemTS0PoCPeDttz23MoIUNq1hif+k58=
+	t=1710422512; cv=none; b=bx2ZeHyK2aQ53jGVUd4MHBhGnseyu5c/PPOHnpWFV5qJxlNKGkWWu4MiZ84l7krjjfmDiVug60Q6VImAVhk382R8OZTBCJCzPG+rQvspe0Zu3BOvgSV1kbxXl6pE3PcrVg/6IJcQ3rznVeOfctT3XcAC+SKHHtFwCHdpePRwXo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710422245; c=relaxed/simple;
-	bh=8om1TSfZV/lD1t30d/Govum8U1wXvG3FbuXdIOkj6mA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rymCzcRpiVvJfEbcyNghy6uGiHW414vAhny0f9BPYX8bqY1lbtDm6CUhmm3orAEzAciZu4urvjeh4M7ql7XzXsIH4kF9FItrLEpYhR0LoxXW5iUPx/vgMZXhlygBYM+uhWzkUOeRV1nOrimcWHWEHA92d2BqW9olL2Qk4dI+W9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ho7CTE2Z; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=clrW0RwMW19aCCVUBe+aDaa6Xr2fikUQUzGV0E47Ik8=; b=ho7CTE2Zq1/DvHgOQchZ4l3JtQ
-	k5ID2n2/S4kvmPPE9WrMgxAyc9pWgcLyPizYsqSRtd8W80gi8AYct3bRILrT6ln668Tj9Q8FWDx3G
-	uEh81hiCaDn+Kr+6bcuNb1RRA9E0Rs2P51cwzTON2R++WbCGz+BSSutYfuA4BjFKr7/houpCIGZmz
-	Q1km00FJT9ueKsGXmjsYD9euNplW3zJK4EkHBw5g5tQmR0YA21vrtJxeVxuiP0G9UdTakINVDCKR/
-	iMmP0znPoqK9WArfjueEljzbfOI+lNl4mY7UMH924GL2vKcYY7lNEZ7Ekj2uCbUneYA9wSFamyc+E
-	jgzW8UBQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51784)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rkkxM-0000Vg-2h;
-	Thu, 14 Mar 2024 13:17:12 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rkkxE-0005Tc-6M; Thu, 14 Mar 2024 13:17:04 +0000
-Date: Thu, 14 Mar 2024 13:17:04 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	"Christoph Lameter (Ampere)" <cl@linux.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <vireshk@kernel.org>, Will Deacon <will@kernel.org>,
-	Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com,
-	Valentin.Schneider@arm.com, akpm@linux-foundation.org,
-	anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>,
-	dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	robin.murphy@arm.com, vanshikonda@os.amperecomputing.com,
-	yang@os.amperecomputing.com, Nishanth Menon <nm@ti.com>,
-	Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
- supported CPUs to 512
-Message-ID: <ZfL40N6HYzEQaEj1@shell.armlinux.org.uk>
-References: <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
- <Ze9TsQ-qVCZMazfI@arm.com>
- <9352f410-9dad-ac89-181a-b3cfc86176b8@linux.com>
- <bf1757ca-6d41-87e7-53dd-56146eef5693@linux.com>
- <ZfCXJRJSMK4tt_Cm@arm.com>
- <ZfG5oyrgGOkpHYD6@bogus>
- <432c1980-b00f-4b07-9e24-0bec52ccb5d6@samsung.com>
- <ZfHevcKpcb6i1fn5@shell.armlinux.org.uk>
- <ZfK30r8M6zx2aWU6@arm.com>
- <a210104f-a3af-4554-b734-097cfa77a470@samsung.com>
+	s=arc-20240116; t=1710422512; c=relaxed/simple;
+	bh=mAQqhpExv5z6FkNqYs0EBzPymQ2Rz/+bGcGssvuBbv0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c1p5M19iDA6vEvL/ApMWrI07i9zAonDqjxwGboBN6ijyTPmonF6F0dcava3IBRy+ktPo/Sj/MYnX5v6PpCTkFKRYZ9J8kyslAP53koB/IVFJryitRPf7oDBO+fJwqkNXZ8n54EeiN5MqO/Lz/xhn1CjHLawxCPq+EsryJGHrn74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60a0579a931so9780487b3.0;
+        Thu, 14 Mar 2024 06:21:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710422508; x=1711027308;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C7XAOxtvk9jTIMeO9XmUcAHnDd/fm39bPev4wL/JHpw=;
+        b=lMuNIGfsxS5aeLG+UlWi0e/bRoxCYOfA9VCtvvFGPMp0v/KmwIAX6+JcS/fqW5A98K
+         xCv5wYHWZsMxRhlBZyIKoGDiQ65PxotvBsUyzVdsXL2AZA0/R5K3RbVNG5fMRa7Zrrv7
+         jgud3PvewBHD9XkKVZiSEr5GFQ3XFYntsCsmb83x5RnejH1GP6X951hJrINzCCDKln1A
+         Z+GHPegMuOHba0Ii2Q6+9BAh1S8fj10dXuhHRnlxNc/E+zrqkSWNuNoe2VaXHmUifi8o
+         ylerQDZwkzTS2iSA4BK2gywTigOrzQFlIgSLWXmZtv656F222sU6qmW6T8wCEsz+re7f
+         HNwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVe4MQt0ZyRtwO+12oCDeaM225xplUn6ewNV0kzdyO85uYFJZXTTHc7VgnXe1kG+/bDHvGBHedZKdptF9O2cCf2+XV5hjO1Vmrg5p5tSt/xCUW2sWUz9kJXnheri/3/1df8TUOAiW58DkzW975/uj2FHJFaUg/dpz9bsKjfbDLEvvQiMoxzHtm6yaVu
+X-Gm-Message-State: AOJu0YwIJlgDm/dM444F9+kEbmsxrVBiwPQ+F5Oumz29pp8k+0ZPo5s7
+	nf0CUSLS74EQvbK12PzJnirdZ5HOUGB7aN6cMGVakadGPFSs/GXwN3gGMnHR1O0=
+X-Google-Smtp-Source: AGHT+IGPM7ZSp1O03vFs1AvdeYLpCmxu/7UjXsduu48nm8Q9xds8ghE/La58vYwshcA9Xyl9pBbd+A==
+X-Received: by 2002:a5b:9d0:0:b0:dc6:d22e:ef4c with SMTP id y16-20020a5b09d0000000b00dc6d22eef4cmr1612860ybq.17.1710422508075;
+        Thu, 14 Mar 2024 06:21:48 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id x200-20020a25e0d1000000b00dcd56356c80sm258562ybg.47.2024.03.14.06.21.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 06:21:47 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcbc00f6c04so787547276.3;
+        Thu, 14 Mar 2024 06:21:47 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUkM06aGyMAb62M6YQjb3/GOvODW/iAyTIi3PrXu67m3/Y4nRkKn56FCXUbKPbMdloPjmAoZJh72+1GI3ELnw3flP+1ugEP2QtnO93V6biulbHRbKVfxt1I6bvGnT6V2MO1aa0FAEUX8i/UIFE5sqjc3DuxiyFtEMzpb4MmLdgf/N2W6MHLCiErX+Kf
+X-Received: by 2002:a25:b101:0:b0:dcd:ba5a:8704 with SMTP id
+ g1-20020a25b101000000b00dcdba5a8704mr1543398ybj.24.1710422507240; Thu, 14 Mar
+ 2024 06:21:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a210104f-a3af-4554-b734-097cfa77a470@samsung.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240307112452.74220-1-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240307112452.74220-1-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Mar 2024 14:21:35 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWwbfem71Q9FE40jqHM2pXWJW9u+w-+NKy3OffFkzu5SQ@mail.gmail.com>
+Message-ID: <CAMuHMdWwbfem71Q9FE40jqHM2pXWJW9u+w-+NKy3OffFkzu5SQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: renesas: rzg2l: Execute atomically the interrupt configuration
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 14, 2024 at 01:28:40PM +0100, Marek Szyprowski wrote:
-> Dear All,
-> 
-> On 14.03.2024 09:39, Catalin Marinas wrote:
-> > On Wed, Mar 13, 2024 at 05:13:33PM +0000, Russell King wrote:
-> >> So, I wonder whether what you're seeing is a latent bug which is
-> >> being tickled by the presence of the CPU masks being off-stack
-> >> changing the kernel timing.
-> >>
-> >> I would suggest the printk debug approach may help here to see when
-> >> the OPPs are begun to be parsed, when they're created etc and their
-> >> timing relationship to being used. Given the suspicion, it's possible
-> >> that the mere addition of printk() may "fix" the problem, which again
-> >> would be another semi-useful data point.
-> > It might be an init order problem. Passing "initcall_debug" on the
-> > cmdline might help a bit.
-> >
-> > It would also be useful in dev_pm_opp_set_config(), in the WARN_ON
-> > block, to print opp_table->opp_list.next to get an idea whether it looks
-> > like a valid pointer or memory corruption.
-> 
-> I've finally found some time to do the step-by-step printk-based 
-> debugging of this issue and finally found what's broken!
-> 
-> Here is the fix:
-> 
-> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-> index 8bd6e5e8f121..2d83bbc65dd0 100644
-> --- a/drivers/cpufreq/cpufreq-dt.c
-> +++ b/drivers/cpufreq/cpufreq-dt.c
-> @@ -208,7 +208,7 @@ static int dt_cpufreq_early_init(struct device *dev, 
-> int cpu)
->          if (!priv)
->                  return -ENOMEM;
-> 
-> -       if (!alloc_cpumask_var(&priv->cpus, GFP_KERNEL))
-> +       if (!zalloc_cpumask_var(&priv->cpus, GFP_KERNEL))
->                  return -ENOMEM;
-> 
->          cpumask_set_cpu(cpu, priv->cpus);
-> 
-> 
-> It is really surprising that this didn't blow up for anyone else so 
-> far... This means that the $subject patch is fine.
+Hi Claudiu,
 
-Wow. I guess we've been lucky with that allocation hitting memory
-containing zeros. Well done at tracking it down!
+Thanks for your patch!
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+On Thu, Mar 7, 2024 at 12:25=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
+wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Lockdep detects a possible deadlock as listed below. This is because it
+> detects the IA55 interrupt controller .irq_eoi() API is called from
+> interrupt context while configuration-specific API (e.g., .irq_enable())
+> could be called from process context on resume path (by calling
+> rzg2l_gpio_irq_restore()). To avoid this, protect the call of
+> rzg2l_gpio_irq_enable() with spin_lock_irqsave()/spin_unlock_irqrestore()=
+.
+> With this the same approach that is available in __setup_irq() is mimicke=
+d
+> to pinctrl IRQ resume function.
+
+You mean __setup_irq() in kernel/irq/manage.c?
+That one uses the raw spinlock methods?
+
+> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> @@ -2063,8 +2063,17 @@ static void rzg2l_gpio_irq_restore(struct rzg2l_pi=
+nctrl *pctrl)
+>                         continue;
+>                 }
+>
+> -               if (!irqd_irq_disabled(data))
+> +               if (!irqd_irq_disabled(data)) {
+> +                       unsigned long flags;
+> +
+> +                       /*
+> +                        * This has to be atomically executed to protect =
+against a concurrent
+> +                        * interrupt.
+> +                        */
+> +                       spin_lock_irqsave(&pctrl->lock, flags);
+>                         rzg2l_gpio_irq_enable(data);
+> +                       spin_unlock_irqrestore(&pctrl->lock, flags);
+> +               }
+>         }
+>  }
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
