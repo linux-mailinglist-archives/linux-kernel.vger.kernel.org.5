@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-103199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7883B87BC41
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:53:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21DEE87BC42
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E64811F2206E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:53:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 457BE1C2172C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C52F6F507;
-	Thu, 14 Mar 2024 11:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GOTurZuq"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C384D6F06F;
+	Thu, 14 Mar 2024 11:54:10 +0000 (UTC)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745E06EB41;
-	Thu, 14 Mar 2024 11:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A13960ED0
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710417172; cv=none; b=DKjWFnxLK1ecH9NmNmiOl0Y57PTI0PB3a5onEItMbVdEhZg1dRdw1W5FufqMXyfQkCTJHwNlnSA47cayRV8N0TKb96s7wuM6QQ+W3Xxft9jVCe0bv855hDOERSISMPYYJPy6hipk8BOA4U6O7V1De8RCHfz2z0oA1W0lIz47g/I=
+	t=1710417250; cv=none; b=KqOnLv0gEtaRx+75THjtcNiP/nCW0snnPqj5oZ5XFcrGGBtQ1DWkVmwRdjUAiDcTUu7U4LfM2m1nOfxzaNWUYWyzF2rGO0q8XoCEJKZuYGnk6eyPzFjTvRGYD8+YdhXYxF13R4SuWJHUr0znvIjNxp1z6URbSUzLvJXXk48+cQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710417172; c=relaxed/simple;
-	bh=DR7uIQcQtirFNtRaxp4uGyTaLvC4VFi+/92L9+pR+Yw=;
+	s=arc-20240116; t=1710417250; c=relaxed/simple;
+	bh=mezzzORJG8MInwmquEBVYXZEJoV8f0g/Bv7pZi+KWb0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XEDkh/vh7QRAlV6LPfajGm1bLOLwnnEfh1fJ+EiRE8Ltdtk25wEx4Us3J0CGsHxm5kO2A/k9sQTywIC638pFM2byoFBvljLJ/bOcSyH54HQmcU/VsoySJULlM733oLK2TB/XOj6D7ghJCO1IrgmjohFBtrzrd8nHU8zX+Gvfw1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GOTurZuq; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 In-Reply-To:Content-Type; b=AowjytsEQMGITc0lChhXtveTqwnXxIsGYDTDOKbkYjSwYgNKewgDg3QGAbJiH6EeBVF28/NsmNEtqi4bQ971jYlgWP1SOjQW41xeGSoWD3bfvEs3CtvKR6U8/arxMjRlmrbZcSNM/Kz3nGS+E9p8Hnh+Epsia2Xn6SZso0sPLUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a217378ad8so315140eaf.2;
-        Thu, 14 Mar 2024 04:52:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710417169; x=1711021969; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Tdifjv40tbAIgozYYTGFKCKIMm7LnNYUe3NS1/d4TCc=;
-        b=GOTurZuqO2xY72OF5w8SovnrNMYLUNykX64w9uZAAVk6VzAuDS5cWdPfcbUVeCgvIK
-         epECDrhCAeodqX2nAYwe5c+uqMRfi+yfoc0dtsZik8pWs93gcr0FFB6akiNOYg/Eggr9
-         PYbHzJvqMqexVfk9pK/VWuGqUXawXTkkLfJ3oAdv5bBBDBLqd0mtGQMQbHDDH8VJ4+nD
-         9IMVg18aRRftON2Jj0rNMNf2HDb2yV8RfZqg5ZlMtL/1iIgtt/pB6Zd1A3vygGp/jqiy
-         fRD86MTPepjv+RkEhT/u9E+V+99nKcbp8LlgPcU1Lphokc+ekWmN/r3n6GH54EwLsHLe
-         QguA==
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5684c3313cdso1054463a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 04:54:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710417169; x=1711021969;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tdifjv40tbAIgozYYTGFKCKIMm7LnNYUe3NS1/d4TCc=;
-        b=bQFClA2B/XYUsV+X1sVUJ6n6MaNjEzVftgchoBEbEX9F3RWc1XOWO8GqistR+6MSTe
-         Shxfdt2OBCaQh/HWIXzgvi+i7o1DwfL4YzOGnqCFLIrbxUB6T5Tef+aBHeZvWuM1wqp0
-         5powtAtEi0Wv43yAaDDhpVwufsrZ5XTa/jvK5MtGmjH3seQ2KUN+6tgod7tnlaGGkyb2
-         bqFcNO8JFUcplvx74XF3Mhy+ujNpj49jK21/Dq12kEK+ZKaVIPPF/auJ6q3b8ft8X59I
-         j2mgyDkqnO4fJL2APMQC796AWBvvBEy0HctmouNnLm6kn/ulU6Osmaerxil+IIrdJNNz
-         4p2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVRgwxMODd0mt8Pq1JHd+e3ZSU5y9OS0bVVAow9mkeHoU5zzx1lKnaexaYIRo2XAw6cIfwF+iSNTqJh70lwlVWqw1gbgrLqxpRusdUAfKWXCk4cvwGHH5JwIzGZWu1WZgwqpf5f54Fann3I2MPYECSuMS6LWAqJEn+kljszIs2dLMjg+z26I2g4rlhrr5umUNo9Zu13t5CCDirFiqvRnN+eL+7am2re5iNlQMw/sbhcJVtrSlcq4c/+vF/Rf0VJgKcKJCsgBidJIBFLCOelHIt5Xk4cF4Dno/utM0s=
-X-Gm-Message-State: AOJu0YxzbiGsSvxL30Fkvxv0yHTyVxRuLa5oQucqTVq3BYMIjUdN87pQ
-	MX0nSwjue1/DHkhH1E75+GbBnw+i/msjSa22sAkZX4B3EmDh6oBy
-X-Google-Smtp-Source: AGHT+IHPtvNpbzsaayWywW7W8tum6qeCMeXLFKZPuvZvQSEuflx/ONggDCEzNvvaKOcLF8ZD/bugFA==
-X-Received: by 2002:a05:6358:6590:b0:17b:b52c:c121 with SMTP id x16-20020a056358659000b0017bb52cc121mr1728763rwh.13.1710417169288;
-        Thu, 14 Mar 2024 04:52:49 -0700 (PDT)
-Received: from [192.168.254.38] ([50.39.172.77])
-        by smtp.gmail.com with ESMTPSA id 192-20020a6301c9000000b005d7994a08dcsm522636pgb.36.2024.03.14.04.52.48
+        d=1e100.net; s=20230601; t=1710417247; x=1711022047;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XY9AnvArjYT7RETUszjV+RTASINeKdsvUgO5fnPO4HU=;
+        b=kVGh++FKSBTPqcXHkdiug+BFdrYkx4sWCKqafPd/IVZsLA4BTzN40q3j8CX4o+qU5Q
+         jg5Xk/a1Nx211V94tcPbWPsmIrCo7t7T4NVJe6lrP11hPTNi1O/IskQME2asHZr641lZ
+         +dZLNu8x+pTDo5tvVyMF16PR7gUicYZc9WoTnT+mUTvuIMU4QssM3FtQarPfCHlkGAMD
+         8px0QUWWHwfidB0acUVVNOlxVeXxIjx2dDMGz2JdYJZMHeQyPS5PPN2M/xmVJYPlayXZ
+         5Glfch5c5sPzZqqnyyjdrSKkaSJnzGkwXM4wGf01oWEfS6Vsb3JczIU15Cz3hXa7U8r8
+         DKcw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwZCPnni1Hu485Ft2fohF7v7TIxvacOqLhmsm6DoL7ZwDoL9Slz785WPeeD6AjCfXjIn/GuqJL6ccOk6bfE4+ylobwZXginvKFmTO2
+X-Gm-Message-State: AOJu0YzS3yiW0GVLxrsUnnmtcVcSbu8MegUJUdVNn3BhyQU6Gxmdyi3G
+	B4cxvubuXf3DyH50vUsHzFZRpmmOKZSDHbwVsB+V0Zm9Rf+vR7XvrXF73DWq
+X-Google-Smtp-Source: AGHT+IEuolq7Y0oiADgiN48/UycSxA8WBrcMiYWoBqWagrXvG4keU/JnB4Puxyckmi7on5ktuSMV0w==
+X-Received: by 2002:a05:6402:b34:b0:568:32cc:f808 with SMTP id bo20-20020a0564020b3400b0056832ccf808mr294291edb.15.1710417246653;
+        Thu, 14 Mar 2024 04:54:06 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
+        by smtp.gmail.com with ESMTPSA id t26-20020a056402241a00b005689f73704csm599051eda.38.2024.03.14.04.54.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 04:52:48 -0700 (PDT)
-Message-ID: <a4d24b2c-7dbf-4354-9514-f8a253aac14b@gmail.com>
-Date: Thu, 14 Mar 2024 04:52:47 -0700
+        Thu, 14 Mar 2024 04:54:05 -0700 (PDT)
+Message-ID: <5d10552a-1c73-4f35-84be-ce6c1dcd800b@kernel.org>
+Date: Thu, 14 Mar 2024 12:54:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,184 +62,121 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+Subject: Re: [PATCH] kexec: fix the unexpected kexec_dprintk() macro
+To: Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc: kexec@lists.infradead.org, akpm@linux-foundation.org, joe@perches.com,
+ dyoung@redhat.com
+References: <20240314103947.717991-1-bhe@redhat.com>
 Content-Language: en-US
-To: Eric Biggers <ebiggers@kernel.org>,
- Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Karel Balej
- <balejk@matfyz.cz>, dimitri.ledkov@canonical.com,
- alexandre.torgue@foss.st.com, davem@davemloft.net, dhowells@redhat.com,
- herbert@gondor.apana.org.au, keyrings@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org,
- mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, iwd@lists.linux.dev
-References: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz>
- <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
- <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
- <20240313194423.GA1111@sol.localdomain>
- <b838e729-dc30-4e18-b928-c34c16b08606@gmail.com>
- <20240313202223.GB1111@sol.localdomain>
- <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
- <20240313221043.GC1111@sol.localdomain>
- <f0492c92-1015-48e3-bfce-598c7a4843d1@quicinc.com>
- <20240313230611.GD1111@sol.localdomain>
-From: James Prestwood <prestwoj@gmail.com>
-In-Reply-To: <20240313230611.GD1111@sol.localdomain>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20240314103947.717991-1-bhe@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+
+On 14. 03. 24, 11:39, Baoquan He wrote:
+> Jiri reported that the current kexec_dprintk() always prints out
+> debugging message whenever kexec/kdmmp loading is triggered. That is
+> not wanted. The debugging message is supposed to be printed out when
+> 'kexec -s -d' is specified for kexec/kdump loading.
+> 
+> After investigating, the reason is the current kexec_dprintk() takes
+> printk(KERN_INFO) or printk(KERN_DEBUG) depending on whether '-d' is
+> specified. However, distros usually have defaulg log level like below:
+> 
+>   [~]# cat /proc/sys/kernel/printk
+>   7	 4	1	7
+> 
+> So, even though '-d' is not specified, printk(KERN_DEBUG) also always
+> prints out. I thought printk(KERN_DEBUG) is equal to pr_debug(), it's
+> not.
+> 
+> Fix it by changing to use pr_info() and pr_debug() instead which are
+> expected to work.
 
 Hi,
 
-On 3/13/24 4:06 PM, Eric Biggers wrote:
-> On Wed, Mar 13, 2024 at 03:51:10PM -0700, Jeff Johnson wrote:
->> On 3/13/2024 3:10 PM, Eric Biggers wrote:
->>> On Wed, Mar 13, 2024 at 02:17:29PM -0700, James Prestwood wrote:
->>>> Hi,
->>>>
->>>> On 3/13/24 1:22 PM, Eric Biggers wrote:
->>>>> On Wed, Mar 13, 2024 at 01:12:54PM -0700, James Prestwood wrote:
->>>>>> Hi,
->>>>>>
->>>>>> On 3/13/24 12:44 PM, Eric Biggers wrote:
->>>>>>> On Wed, Mar 13, 2024 at 10:26:06AM -0700, James Prestwood wrote:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> On 3/13/24 1:56 AM, Johannes Berg wrote:
->>>>>>>>> Not sure why you're CC'ing the world, but I guess adding a few more
->>>>>>>>> doesn't hurt ...
->>>>>>>>>
->>>>>>>>> On Wed, 2024-03-13 at 09:50 +0100, Karel Balej wrote:
->>>>>>>>>>      and I use iwd
->>>>>>>>> This is your problem, the wireless stack in the kernel doesn't use any
->>>>>>>>> kernel crypto code for 802.1X.
->>>>>>>> Yes, the wireless stack has zero bearing on the issue. I think that's what
->>>>>>>> you meant by "problem".
->>>>>>>>
->>>>>>>> IWD has used the kernel crypto API forever which was abruptly broken, that
->>>>>>>> is the problem.
->>>>>>>>
->>>>>>>> The original commit says it was to remove support for sha1 signed kernel
->>>>>>>> modules, but it did more than that and broke the keyctl API.
->>>>>>>>
->>>>>>> Which specific API is iwd using that is relevant here?
->>>>>>> I cloned https://kernel.googlesource.com/pub/scm/network/wireless/iwd
->>>>>>> and grepped for keyctl and AF_ALG, but there are no matches.
->>>>>> IWD uses ELL for its crypto, which uses the AF_ALG API:
->>>>>>
->>>>>> https://git.kernel.org/pub/scm/libs/ell/ell.git/
->>>>> Thanks for pointing out that the relevant code is really in that separate
->>>>> repository.  Note, it seems that keyctl() is the problem here, not AF_ALG.  The
->>>>> blamed commit didn't change anything for AF_ALG.
->>>>>
->>>>>> I believe the failure is when calling:
->>>>>>
->>>>>> KEYCTL_PKEY_QUERY enc="x962" hash="sha1"
->>>>>>
->>>>>>   From logs Michael posted on the IWD list, the ELL API that fails is:
->>>>>>
->>>>>> l_key_get_info (ell.git/ell/key.c:416)
->>>>> Okay, I guess that's what's actually causing the problem.  KEYCTL_PKEY_* are a
->>>>> weird set of APIs where userspace can ask the kernel to do asymmetric key
->>>>> operations.  It's unclear why they exist, as the same functionality is available
->>>>> in userspace crypto libraries.
->>>>>
->>>>> I suppose that the blamed commit, or at least part of it, will need to be
->>>>> reverted to keep these weird keyctls working.
->>>>>
->>>>> For the future, why doesn't iwd just use a userspace crypto library such as
->>>>> OpenSSL?
->>>> I was not around when the original decision was made, but a few reasons I
->>>> know we don't use openSSL:
->>>>
->>>>   - IWD has virtually zero dependencies.
->>> Depending on something in the kernel does not eliminate a dependency; it just
->>> adds that particular kernel UAPI to your list of dependencies.  The reason that
->>> we're having this discussion in the first place is because iwd is depending on
->>> an obscure kernel UAPI that is not well defined.  Historically it's been hard to
->>> avoid "breaking" changes in these crypto-related UAPIs because of the poor
->>> design where a huge number of algorithms are potentially supported, but the list
->>> is undocumented and it varies from one system to another based on configuration.
->>> Also due to their obscurity many kernel developers don't know that these UAPIs
->>> even exist.  (The reaction when someone finds out is usually "Why!?")
->>>
->>> It may be worth looking at if iwd should make a different choice for this
->>> dependency.  It's understandable to blame dependencies when things go wrong, but
->>> at the same time the choice of dependency is very much a choice, and some
->>> choices can be more technically sound and cause fewer problems than others...
->>>
->>>>   - OpenSSL + friends are rather large libraries.
->>> The Linux kernel is also large, and it's made larger by having to support
->>> obsolete crypto algorithms for backwards compatibility with iwd.
->>>
->>>>   - AF_ALG has transparent hardware acceleration (not sure if openSSL does
->>>> too).
->>> OpenSSL takes advantage of CPU-based hardware acceleration, e.g. AES-NI.
->>>
->>>> Another consideration is once you support openSSL someone wants wolfSSL,
->>>> then boringSSL etc. Even if users implement support it just becomes a huge
->>>> burden to carry for the project. Just look at wpa_supplicant's src/crypto/
->>>> folder, nearly 40k LOC in there, compared to ELL's crypto modules which is
->>>> ~5k. You have to sort out all the nitty gritty details of each library, and
->>>> provide a common driver/API for the core code, differences between openssl
->>>> versions, the list goes on.
->>> What is the specific functionality that you're actually relying on that you
->>> think would need 40K lines of code to replace, even using OpenSSL?  I see you
->>> are using KEYCTL_PKEY_*, but what specifically are you using them for?  What
->>> operations are being performed, and with which algorithms and key formats?
->>> Also, is the kernel behavior that you're relying on documented anywhere?  There
->>> are man pages for those keyctls, but they don't say anything about any
->>> particular hash algorithm, SHA-1 or otherwise, being supported.
->> <https://lore.kernel.org/all/CA+55aFxW7NMAMvYhkvz1UPbUTUJewRt6Yb51QAx5RtrWOwjebg@mail.gmail.com/>
->> "And we simply do not break user space."
->> -Linus Torvalds
->>
->> Is this no longer applicable?
->>
-> As I said, the commit, or at least the part of it that broke iwd (it's not clear
-> that it's the whole commit), needs to be reverted.
->
-> I just hope that, simultaneously, the iwd developers will consider improving the
-> design of iwd to avoid this type of recurring issue in the future.  After all,
-> this may be the only real chance for such a discussion before the next time iwd
-> breaks.
->
-> Also, part of the reason I'm asking about what functionality that iwd is relying
-> on is so that, if necessary, it can be properly documented and supported...
->
-> If we don't know what we are supporting, it is very hard to support it.
+sow, you'd need both -d, and dyndbg updates. Hence, again my question:
+===
+Actually what was wrong on the pr_debug()s? Can you simply turn them on 
+from the kernel when -d is passed to kexec instead of all this?
+===
 
-IWD uses AF_ALG/keyctl for _all_ its crypto, cipher, and checksum needs. 
-Anything that wifi requires as far as crypto goes IWD uses the kernel, 
-except ECC is the only exception. The entire list of crypto requirements 
-(for full support at least) for IWD is here:
+And yet, it is still missing a prefix :).
 
-https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/tools/test_runner_kernel_config
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Reported-by: Jiri Slaby <jirislaby@kernel.org>
+> Closes: https://lore.kernel.org/all/4c775fca-5def-4a2d-8437-7130b02722a2@kernel.org
+> ---
+>   include/linux/kexec.h | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index 400cb6c02176..09688e681bf7 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -502,10 +502,13 @@ static inline unsigned int crash_get_elfcorehdr_size(void) { return 0; }
+>   
+>   extern bool kexec_file_dbg_print;
+>   
+> -#define kexec_dprintk(fmt, ...)					\
+> -	printk("%s" fmt,					\
+> -	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
+> -	       ##__VA_ARGS__)
+> +#define kexec_dprintk(fmt, args...)				\
+> +	do {							\
+> +		if (kexec_file_dbg_print)			\
+> +			pr_info(fmt, ##args);			\
+> +		else						\
+> +			pr_debug(fmt, ##args);			\
+> +	} while (0)
+>   
+>   #else /* !CONFIG_KEXEC_CORE */
+>   struct pt_regs;
 
-For KEYCTL_PKEY_* specifically we use it for all asymmetric crypto 
-operations, (query), encrypt, decrypt, sign, verify.
+-- 
+js
+suse labs
 
-I'll be honest, the AF_ALG/keyctl support in ELL was mostly done by the 
-time I started working on IWD so I was not aware the documentation was 
-so poor. That is an entirely separate issue than this IMO, and I'm happy 
-to help with getting docs updated to include a proper list of supported 
-features. In addition maybe some automated testing that gets run on 
-kernel builds which actually exercises this API so it doesn't get 
-accidentally get broken in the future? Docs/tests IMO are the proper 
-"fix" here, not telling someone to stop using an API that has existed a 
-long time.
-
-I'm also not entirely sure why this stuff continues to be removed from 
-the kernel. First MD4, then it got reverted, then this (now reverted, 
-thanks). Both cases there was not clear justification of why it was 
-being removed.
-
-Thanks,
-
-James
-
->
-> - Eric
->
 
