@@ -1,196 +1,393 @@
-Return-Path: <linux-kernel+bounces-103585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F5087C171
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 341B287C173
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 928451F21A03
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:42:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7CDE1F22258
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926F67352C;
-	Thu, 14 Mar 2024 16:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941A774297;
+	Thu, 14 Mar 2024 16:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XlFySStF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XvAjdVsd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE271E480
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369141E480;
+	Thu, 14 Mar 2024 16:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710434547; cv=none; b=OP3SR+oNaMaQCDr5xt5wIa7qpUJqyFOGyMTkwafhU9f3pZHVyIEw9G258DXFCTJ+b/rPKtjN/rBwnotW2wsddzxCfKpBktTI9w/uHN/fzPlz26lga6oNP2bZt5T7qGwm4DtNhS8ZJgUL5rotFs9LsB/J2oL6xfWqUmcvppiFumk=
+	t=1710434600; cv=none; b=hmpjM+2006CWprsIFQH8gvFAWnEEhbn0w/dD7rtobgdzPI9kse6FVXojsmkPYBv38XENV/aqpF+p32XayixjKcmsdwmZkhDiYNrtKUtsl9KktSHfRxaGz4XjPbogQvWB+P8N9B3rxb52V7t5es2/I/kwUsqDFjBecF7nWs5kzgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710434547; c=relaxed/simple;
-	bh=YKzRMgIfzlyfRzInzCXhlKp56/llBAiBK342zYGkXkg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=BTjzaMUcAcOdCiJ66T4JPcYwnfTF98sgppXbwsb+M35ok8VbQW5r2zSymJ8S30Y7bW9FVhs+D2DLiDLVuMSvGg4wJ0G5YMNiyLeCeooIWb1mHyJ4XBD+IOD/QxWxkHCAuT13W1eSKnMExP+99h3JsEKGJzlZXNrQl9HBdO3R8po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XlFySStF; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710434545;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Sixi7qBIO0KgmAD6JY5YHs0YPFdGVi8xhVX/DMw9B9s=;
-	b=XlFySStFYQEzzS0ROVLska/NLMhqeO+LeVoCP52JuYaWKT8M1GdRzQBRu85f3K5qHmJQIm
-	6H2eh4h/N+0GqqNNzl+10zeYodkamR7fLuzmbgT6NJFekyDSfisfFdgYfWY71eR3Ks6cCM
-	A+JnQK7u+CnqvJFeCZL6RMbinH1xSLM=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-609-GqB_DhSSMPun3p9cDXA8Mg-1; Thu, 14 Mar 2024 12:42:23 -0400
-X-MC-Unique: GqB_DhSSMPun3p9cDXA8Mg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4130b4b6676so5918135e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:42:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710434542; x=1711039342;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:from:content-language:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Sixi7qBIO0KgmAD6JY5YHs0YPFdGVi8xhVX/DMw9B9s=;
-        b=om/Krjf8sCKf9SIrQ/5f+at67rTdsldgN3xy4uYZf1s2eTclvU6OJljHKH+3ws/3R1
-         0HIdvSfNIZv/zeas4uVzxsYoqAZgHcDZNI8HUNFDJXnaaor8W0qYEH2NNIn5YhOK2TtR
-         YW6+QlBXgmeqi+dXSl+Wl0uBNl8E2RQ9HYYcQuctqohImU0674L3IyjmNEIZ5f/8ZKmG
-         Do/fdXW9ilyB2gWr7ilTw29O6P0QMiVu5Rid9jO21jExMjz0kLBhSX/QQ6riZPICqO97
-         N3pV/rOnF34mKbvaUDHkT91ODB9p0R1WsI19ioFulCXKPWmEEFoahyiGm/exEAWzTQ4V
-         nl4A==
-X-Gm-Message-State: AOJu0Yy18NXMvs0pnZVnzcARLVWLMSyQzmzRgXdWHrPfygvX6tSC1qjM
-	rFPhIXCv6HhFppNikZDj/crQIGRCwU0wWWxfFjxKXx19cOcNxN+CXhg1TLrBluqDJrwIU27NTBp
-	aS9XlT843O8sNbeWheJvq0moCtYuJV3914DzztRL8UkhLOAHRr+eKvLvRLZpvJQ==
-X-Received: by 2002:a05:600c:1e0f:b0:413:f034:da6d with SMTP id ay15-20020a05600c1e0f00b00413f034da6dmr1973204wmb.33.1710434542152;
-        Thu, 14 Mar 2024 09:42:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH8h8Emg/Cpc1mQHtB+StYkxSmE284u93z+Kc7ACJqNEFqtWRWUp+0VCCHzVTIRDza+C44qzg==
-X-Received: by 2002:a05:600c:1e0f:b0:413:f034:da6d with SMTP id ay15-20020a05600c1e0f00b00413f034da6dmr1973187wmb.33.1710434541715;
-        Thu, 14 Mar 2024 09:42:21 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c709:a00:7d7d:3665:5fe4:7127? (p200300cbc7090a007d7d36655fe47127.dip0.t-ipconnect.de. [2003:cb:c709:a00:7d7d:3665:5fe4:7127])
-        by smtp.gmail.com with ESMTPSA id bi17-20020a05600c3d9100b00413f50e944fsm1814148wmb.45.2024.03.14.09.42.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 09:42:21 -0700 (PDT)
-Message-ID: <1f2a8ed4-aaff-4be7-b3b6-63d2841a2908@redhat.com>
-Date: Thu, 14 Mar 2024 17:42:20 +0100
+	s=arc-20240116; t=1710434600; c=relaxed/simple;
+	bh=gHWnvzVFXOXG5b3CGJ2cV162pB5RwA/iaRNU6uWunk0=;
+	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=Edy8S/TqmfDnMIoCxbz/XzHUvicMpr+9EDAdJD3Mp1DPMRgJwxc8kn3JmP6TmGUK6o5ehkg+8tVtBs11llodAOxid0yW/Um9k55VyDEac4r4CMtkkR7f49minB2iVvJM6mpToOa4cmfmyiPwjd08HuL2akMYD74mHSEQBeP58Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XvAjdVsd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A430EC433F1;
+	Thu, 14 Mar 2024 16:43:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1710434599;
+	bh=gHWnvzVFXOXG5b3CGJ2cV162pB5RwA/iaRNU6uWunk0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=XvAjdVsd/u+2NWlVSO+V9SHK5RRfrZUrQNszJ64NbCEr1GwgooTMp1CUTkrbVDt1A
+	 5oXThTnnuVfYz0sGuPK0LauEltzllenSC26Gah0i9fT65ExI8tIoy9u860Uk94jPdU
+	 85fn9vmlaDtgdAWHaPruD9uaFG21ZTI/qApR2Vsw=
+Date: Thu, 14 Mar 2024 09:43:19 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mm@kvack.org, mm-commits@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [GIT PULL] non-MM updates for 6.9-rc1
+Message-Id: <20240314094319.5d6cc99c653e4797f162af04@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] x86/mm/pat: fix VM_PAT handling in COW mappings
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
- Wupeng Ma <mawupeng1@huawei.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- Andrew Morton <akpm@linux-foundation.org>
-References: <20240312181118.318701-1-david@redhat.com>
- <ZfCrkL-Aieer2EAg@casper.infradead.org>
- <5bc9de2f-c3ba-46e7-a234-3d3a46e53ba1@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <5bc9de2f-c3ba-46e7-a234-3d3a46e53ba1@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 12.03.24 20:38, David Hildenbrand wrote:
-> On 12.03.24 20:22, Matthew Wilcox wrote:
->> On Tue, Mar 12, 2024 at 07:11:18PM +0100, David Hildenbrand wrote:
->>> PAT handling won't do the right thing in COW mappings: the first PTE
->>> (or, in fact, all PTEs) can be replaced during write faults to point at
->>> anon folios. Reliably recovering the correct PFN and cachemode using
->>> follow_phys() from PTEs will not work in COW mappings.
->>
->> I guess the first question is: Why do we want to support COW mappings
->> of VM_PAT areas?  What breaks if we just disallow it?
-> 
-> Well, that was my first approach. Then I decided to be less radical (IOW
-> make my life easier by breaking less user space) and "fix it" with
-> minimal effort.
-> 
-> Chances of breaking some weird user space is possible, although I
-> believe for most such mappings MAP_PRIVATE doesn't make too much sense
-> sense.
-> 
-> Nasty COW support for VM_PFNMAP mappings dates back forever. So does PAT
-> support.
-> 
-> I can try finding digging through some possible user space users tomorrow.
-
-As discussed, MAP_PRIVATE doesn't make too much sense for most PFNMAP 
-mappings.
-
-However, /dev/mem and /proc/vmcore are still used with MAP_PRIVATE in 
-some cases.
-
-Side note: /proc/vmcore is a bit weird: mmap_vmcore() sets VM_MIXEDMAP, 
-and then we might call remap_pfn_range(), which sets VM_PFNMAP. I'm not 
-so sure if that's what we want to happen ...
-
-As far as I can see, makedumpfile always mmap's memory to be dumped 
-(/dev/mem, /proc/vmcore) using PROT_READ+MAP_PRIVATE, resulting in a COW 
-mapping.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
-In my opinion, we should use this fairly simple fix to keep it working 
-for now and look into disabling any MAP_PRIVATE of VM_PFNMAP separately, 
-for all architectures.
+Linus, please merge the non-MM updates for this cycle.
 
-But I'll leave the decision to x86 maintainers.
+I'm seeing conflicts in Documentation/process/changes.rst,
+arch/riscv/include/asm/ftrace.h and fs/ocfs2/super.c.  I don't have a
+record of Stephen hitting these, but all are simple.
 
--- 
-Cheers,
+Thanks.
 
-David / dhildenb
+
+The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
+
+  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-nonmm-stable-2024-03-14-09-36
+
+for you to fetch changes up to 269cdf353b5bdd15f1a079671b0f889113865f20:
+
+  nilfs2: prevent kernel bug at submit_bh_wbc() (2024-03-14 09:17:30 -0700)
+
+----------------------------------------------------------------
+- Kuan-Wei Chiu has developed the well-named series "lib min_heap: Min
+  heap optimizations".
+
+- Kuan-Wei Chiu has also sped up the library sorting code in the series
+  "lib/sort: Optimize the number of swaps and comparisons".
+
+- Alexey Gladkov has added the ability for code running within an IPC
+  namespace to alter its IPC and MQ limits.  The series is "Allow to
+  change ipc/mq sysctls inside ipc namespace".
+
+- Geert Uytterhoeven has contributed some dhrystone maintenance work in
+  the series "lib: dhry: miscellaneous cleanups".
+
+- Ryusuke Konishi continues nilfs2 maintenance work in the series
+
+	"nilfs2: eliminate kmap and kmap_atomic calls"
+	"nilfs2: fix kernel bug at submit_bh_wbc()"
+
+- Nathan Chancellor has updated our build tools requirements in the
+  series "Bump the minimum supported version of LLVM to 13.0.1".
+
+- Muhammad Usama Anjum continues with the selftests maintenance work in
+  the series "selftests/mm: Improve run_vmtests.sh".
+
+- Oleg Nesterov has done some maintenance work against the signal code
+  in the series "get_signal: minor cleanups and fix".
+
+Plus the usual shower of singleton patches in various parts of the tree.
+Please see the individual changelogs for details.
+
+----------------------------------------------------------------
+Ahelenia Ziemiańska (1):
+      Normalise "name (ad@dr)" MODULE_AUTHORs to "name <ad@dr>"
+
+Alexey Dobriyan (1):
+      smp: make __smp_processor_id() 0-argument macro
+
+Alexey Gladkov (3):
+      sysctl: allow change system v ipc sysctls inside ipc namespace
+      docs: add information about ipc sysctls limitations
+      sysctl: allow to change limits for posix messages queues
+
+Andy Shevchenko (1):
+      dyndbg: replace kstrdup() + strchr() with kstrdup_and_replace()
+
+Baoquan He (1):
+      panic: suppress gnu_printf warning
+
+Chengming Zhou (1):
+      ocfs2: remove SLAB_MEM_SPREAD flag usage
+
+Feng Tang (1):
+      panic: add option to dump blocked tasks in panic_print
+
+Geert Uytterhoeven (4):
+      lib: dhry: remove unneeded <linux/mutex.h>
+      lib: dhry: use ktime_ms_delta() helper
+      lib: dhry: add missing closing parenthesis
+      init: remove obsolete arch_call_rest_init() wrapper
+
+Jan Kara (1):
+      fat: fix uninitialized field in nostale filehandles
+
+Kemeng Shi (1):
+      flex_proportions: remove unused fprop_local_single
+
+Kuan-Wei Chiu (4):
+      lib min_heap: optimize number of calls to min_heapify()
+      lib min_heap: optimize number of comparisons in min_heapify()
+      lib/sort: optimize heapsort for equal elements in sift-down path
+      lib/sort: optimize heapsort with double-pop variation
+
+Li zeming (1):
+      user_namespace: remove unnecessary NULL values from kbuf
+
+Matthew Wilcox (Oracle) (1):
+      bounds: support non-power-of-two CONFIG_NR_CPUS
+
+Muhammad Usama Anjum (5):
+      selftests/mm: hugetlb_reparenting_test: do not unmount
+      selftests/mm: run_vmtests: remove sudo and conform to tap
+      selftests/mm: save and restore nr_hugepages value
+      selftests/mm: protection_keys: save/restore nr_hugepages settings
+      selftests/mm: run_vmtests.sh: add missing tests
+
+Nathan Chancellor (13):
+      arch and include: update LLVM Phabricator links
+      treewide: update LLVM Bugzilla links
+      kbuild: raise the minimum supported version of LLVM to 13.0.1
+      Makefile: drop warn-stack-size plugin opt
+      x86: drop stack-alignment plugin opt
+      ARM: remove Thumb2 __builtin_thread_pointer workaround for Clang
+      arm64: Kconfig: clean up tautological LLVM version checks
+      powerpc: Kconfig: remove tautology in CONFIG_COMPAT
+      riscv: remove MCOUNT_NAME workaround
+      riscv: Kconfig: remove version dependency from CONFIG_CLANG_SUPPORTS_DYNAMIC_FTRACE
+      fortify: drop Clang version check for 12.0.1 or newer
+      lib/Kconfig.debug: update Clang version check in CONFIG_KCOV
+      compiler-clang.h: update __diag_clang() macros for minimum version bump
+
+Oleg Nesterov (4):
+      ptrace_attach: shift send(SIGSTOP) into ptrace_set_stopped()
+      get_signal: don't abuse ksig->info.si_signo and ksig->sig
+      get_signal: hide_si_addr_tag_bits: fix the usage of uninitialized ksig
+      get_signal: don't initialize ksig->info if SIGNAL_GROUP_EXIT/group_exec_task
+
+Peng Hao (1):
+      buildid: use kmap_local_page()
+
+Pierre Gondois (3):
+      list: add hlist_count_nodes()
+      binder: use of hlist_count_nodes()
+      bcache: use of hlist_count_nodes()
+
+Randy Dunlap (1):
+      lib/win_minmax: fix header comments
+
+Ricardo B. Marliere (2):
+      const_structs.checkpatch: add bus_type
+      const_structs.checkpatch: add device_type
+
+Roman Smirnov (1):
+      assoc_array: fix the return value in assoc_array_insert_mid_shortcut()
+
+Ryusuke Konishi (18):
+      nilfs2: convert recovery logic to use kmap_local
+      nilfs2: convert segment buffer to use kmap_local
+      nilfs2: convert nilfs_copy_buffer() to use kmap_local
+      nilfs2: convert metadata file common code to use kmap_local
+      nilfs2: convert sufile to use kmap_local
+      nilfs2: convert persistent object allocator to use kmap_local
+      nilfs2: convert DAT to use kmap_local
+      nilfs2: move nilfs_bmap_write call out of nilfs_write_inode_common
+      nilfs2: do not acquire rwsem in nilfs_bmap_write()
+      nilfs2: convert ifile to use kmap_local
+      nilfs2: localize highmem mapping for checkpoint creation within cpfile
+      nilfs2: localize highmem mapping for checkpoint finalization within cpfile
+      nilfs2: localize highmem mapping for checkpoint reading within cpfile
+      nilfs2: remove nilfs_cpfile_{get,put}_checkpoint()
+      nilfs2: convert cpfile to use kmap_local
+      nilfs2: MAINTAINERS: drop unreachable project mirror site
+      nilfs2: fix failure to detect DAT corruption in btree and direct mappings
+      nilfs2: prevent kernel bug at submit_bh_wbc()
+
+Su Yue (1):
+      ocfs2: enable ocfs2_listxattr for special files
+
+Thomas Weißschuh (1):
+      watchdog/core: remove sysctl handlers from public header
+
+Thorsten Blum (1):
+      nilfs2: use div64_ul() instead of do_div()
+
+Uwe Kleine-König (1):
+      mul_u64_u64_div_u64: increase precision by conditionally swapping a and b
+
+Wei Yang (1):
+      list: leverage list_is_head() for list_entry_is_head()
+
+Wen Yang (1):
+      selftests: add eventfd selftests
+
+Yongzhen Zhang (1):
+      ocfs2: spelling fix
+
+yang.zhang (1):
+      kexec: copy only happens before uchunk goes to zero
+
+ Documentation/admin-guide/kernel-parameters.txt    |   1 +
+ Documentation/admin-guide/sysctl/kernel.rst        |  15 +-
+ Documentation/process/changes.rst                  |   2 +-
+ MAINTAINERS                                        |   1 -
+ Makefile                                           |   8 -
+ arch/arm/include/asm/current.h                     |   8 +-
+ arch/arm64/Kconfig                                 |   9 +-
+ arch/powerpc/Kconfig                               |   1 -
+ arch/powerpc/Makefile                              |   4 +-
+ arch/powerpc/kvm/book3s_hv_nested.c                |   2 +-
+ arch/riscv/Kconfig                                 |   4 +-
+ arch/riscv/include/asm/ftrace.h                    |  14 +-
+ arch/riscv/kernel/mcount.S                         |  10 +-
+ arch/s390/include/asm/ftrace.h                     |   2 +-
+ arch/sparc/kernel/chmc.c                           |   2 +-
+ arch/sparc/kernel/ds.c                             |   2 +-
+ arch/x86/Makefile                                  |   6 -
+ arch/x86/power/Makefile                            |   2 +-
+ crypto/blake2b_generic.c                           |   2 +-
+ drivers/android/binder.c                           |   4 +-
+ drivers/block/sunvdc.c                             |   2 +-
+ drivers/char/hw_random/n2-drv.c                    |   2 +-
+ drivers/char/tpm/st33zp24/i2c.c                    |   2 +-
+ drivers/char/tpm/st33zp24/spi.c                    |   2 +-
+ drivers/char/tpm/st33zp24/st33zp24.c               |   2 +-
+ drivers/char/tpm/tpm-interface.c                   |   2 +-
+ drivers/char/tpm/tpm_atmel.c                       |   2 +-
+ drivers/char/tpm/tpm_i2c_nuvoton.c                 |   2 +-
+ drivers/char/tpm/tpm_nsc.c                         |   2 +-
+ drivers/char/tpm/tpm_tis.c                         |   2 +-
+ drivers/char/tpm/tpm_tis_core.c                    |   2 +-
+ drivers/char/tpm/tpm_vtpm_proxy.c                  |   2 +-
+ drivers/crypto/n2_core.c                           |   2 +-
+ drivers/firmware/efi/libstub/Makefile              |   2 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_4_2.c           |   2 +-
+ drivers/hwmon/dell-smm-hwmon.c                     |   2 +-
+ drivers/hwmon/ultra45_env.c                        |   2 +-
+ drivers/i2c/muxes/i2c-mux-mlxcpld.c                |   2 +-
+ drivers/leds/leds-sunfire.c                        |   2 +-
+ drivers/md/bcache/sysfs.c                          |   8 +-
+ drivers/media/common/siano/smscoreapi.c            |   2 +-
+ drivers/media/common/siano/smsdvb-main.c           |   2 +-
+ drivers/media/dvb-frontends/cx24117.c              |   2 +-
+ drivers/media/test-drivers/vicodec/codec-fwht.c    |   2 +-
+ drivers/media/usb/siano/smsusb.c                   |   2 +-
+ drivers/net/ethernet/broadcom/tg3.c                |   2 +-
+ drivers/net/ethernet/sun/cassini.c                 |   2 +-
+ drivers/net/ethernet/sun/niu.c                     |   2 +-
+ drivers/net/ethernet/sun/sunhme.c                  |   2 +-
+ drivers/net/ethernet/sun/sunvnet.c                 |   2 +-
+ drivers/net/ethernet/sun/sunvnet_common.c          |   2 +-
+ drivers/net/ppp/pptp.c                             |   2 +-
+ drivers/platform/x86/compal-laptop.c               |   2 +-
+ drivers/platform/x86/intel/oaktrail.c              |   2 +-
+ drivers/platform/x86/mlx-platform.c                |   2 +-
+ drivers/regulator/Kconfig                          |   2 +-
+ drivers/s390/net/fsm.c                             |   2 +-
+ drivers/sbus/char/openprom.c                       |   2 +-
+ drivers/scsi/esp_scsi.c                            |   2 +-
+ drivers/scsi/jazz_esp.c                            |   2 +-
+ drivers/scsi/mesh.c                                |   2 +-
+ drivers/scsi/qlogicpti.c                           |   2 +-
+ drivers/scsi/sun3x_esp.c                           |   2 +-
+ drivers/scsi/sun_esp.c                             |   2 +-
+ drivers/video/fbdev/hgafb.c                        |   2 +-
+ fs/fat/nfs.c                                       |   6 +
+ fs/nilfs2/alloc.c                                  |  91 +++---
+ fs/nilfs2/bmap.c                                   |   3 -
+ fs/nilfs2/btree.c                                  |   9 +-
+ fs/nilfs2/cpfile.c                                 | 321 ++++++++++++++-------
+ fs/nilfs2/cpfile.h                                 |  10 +-
+ fs/nilfs2/dat.c                                    |  40 +--
+ fs/nilfs2/direct.c                                 |   9 +-
+ fs/nilfs2/ifile.c                                  |  21 +-
+ fs/nilfs2/ifile.h                                  |  10 +-
+ fs/nilfs2/inode.c                                  |  46 ++-
+ fs/nilfs2/ioctl.c                                  |   4 +-
+ fs/nilfs2/mdt.c                                    |   4 +-
+ fs/nilfs2/nilfs.h                                  |   3 +-
+ fs/nilfs2/page.c                                   |   8 +-
+ fs/nilfs2/recovery.c                               |   4 +-
+ fs/nilfs2/segbuf.c                                 |   4 +-
+ fs/nilfs2/segment.c                                | 121 +++-----
+ fs/nilfs2/sufile.c                                 |  88 +++---
+ fs/nilfs2/super.c                                  |  33 +--
+ fs/nilfs2/the_nilfs.c                              |   2 +-
+ fs/ocfs2/dlmfs/dlmfs.c                             |   2 +-
+ fs/ocfs2/dlmglue.c                                 |   2 +-
+ fs/ocfs2/file.c                                    |   1 +
+ fs/ocfs2/super.c                                   |   7 +-
+ include/asm-generic/vmlinux.lds.h                  |   2 +-
+ include/linux/compiler-clang.h                     |  10 +-
+ include/linux/flex_proportions.h                   |  32 --
+ include/linux/list.h                               |  17 +-
+ include/linux/min_heap.h                           |  44 +--
+ include/linux/nmi.h                                |   7 -
+ include/linux/smp.h                                |   2 +-
+ include/linux/start_kernel.h                       |   2 -
+ include/linux/win_minmax.h                         |   4 +-
+ init/main.c                                        |   9 +-
+ ipc/ipc_sysctl.c                                   |  37 ++-
+ ipc/mq_sysctl.c                                    |  36 +++
+ kernel/bounds.c                                    |   2 +-
+ kernel/kexec_core.c                                |  44 +--
+ kernel/panic.c                                     |   9 +
+ kernel/ptrace.c                                    |  13 +-
+ kernel/signal.c                                    |  28 +-
+ kernel/user_namespace.c                            |   2 +-
+ kernel/watchdog.c                                  |  22 +-
+ lib/Kconfig.debug                                  |   4 +-
+ lib/Kconfig.kasan                                  |   2 +-
+ lib/assoc_array.c                                  |   2 +-
+ lib/buildid.c                                      |   4 +-
+ lib/dhry_1.c                                       |   2 +-
+ lib/dhry_run.c                                     |   1 -
+ lib/dynamic_debug.c                                |   7 +-
+ lib/flex_proportions.c                             |  77 -----
+ lib/math/div64.c                                   |  15 +
+ lib/raid6/Makefile                                 |   2 +-
+ lib/sort.c                                         |  20 +-
+ lib/stackinit_kunit.c                              |   2 +-
+ mm/slab_common.c                                   |   2 +-
+ net/bridge/br_multicast.c                          |   2 +-
+ net/ipv4/gre_demux.c                               |   2 +-
+ net/ipv6/ip6_gre.c                                 |   2 +-
+ net/iucv/iucv.c                                    |   2 +-
+ net/mpls/mpls_gso.c                                |   2 +-
+ scripts/const_structs.checkpatch                   |   2 +
+ scripts/min-tool-version.sh                        |   2 +-
+ scripts/recordmcount.pl                            |   2 +-
+ security/Kconfig                                   |   2 -
+ tools/objtool/noreturns.h                          |   1 -
+ .../selftests/filesystems/eventfd/.gitignore       |   2 +
+ .../testing/selftests/filesystems/eventfd/Makefile |   7 +
+ .../selftests/filesystems/eventfd/eventfd_test.c   | 186 ++++++++++++
+ tools/testing/selftests/mm/Makefile                |   5 +
+ .../selftests/mm/charge_reserved_hugetlb.sh        |   4 +
+ .../selftests/mm/hugetlb_reparenting_test.sh       |   9 +-
+ tools/testing/selftests/mm/on-fault-limit.c        |  36 ++-
+ tools/testing/selftests/mm/protection_keys.c       |  34 +++
+ tools/testing/selftests/mm/run_vmtests.sh          |  17 +-
+ 141 files changed, 1055 insertions(+), 770 deletions(-)
+ create mode 100644 tools/testing/selftests/filesystems/eventfd/.gitignore
+ create mode 100644 tools/testing/selftests/filesystems/eventfd/Makefile
+ create mode 100644 tools/testing/selftests/filesystems/eventfd/eventfd_test.c
 
 
