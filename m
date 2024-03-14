@@ -1,63 +1,59 @@
-Return-Path: <linux-kernel+bounces-103267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89FF887BD36
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:02:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499B187BD31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A8441F25A89
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:02:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F32C31F25471
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D495A4C6;
-	Thu, 14 Mar 2024 13:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F33F5A11F;
+	Thu, 14 Mar 2024 13:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="Rn2he2KG"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="T6V+5qj0"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035C659B52;
-	Thu, 14 Mar 2024 13:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EF855C35;
+	Thu, 14 Mar 2024 13:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710421356; cv=none; b=bMK8gUB0LDyaWylLh9jt8r8aHderGchlINI5Mg9MYHq7kGrN/ltFM0BNj16w0bKKI9COMVW5dJtij3bXAmURIlWTmSsmNCXzXqVn2EMzmeUHdnYQEWE057+huW6/FVOArsW1vPIXJ4D3Ily8d31vK9w4hYuA8DGUxOoAR4Tvvls=
+	t=1710421325; cv=none; b=FBPC/6F2igJEbU5v42xD01qfVBGGSd0LW6KuKu1Vu4wREBWAZcyNf8OXEnl63V1zgkCon45uHaq1ow1OUn8pqKWCw5m61+hnz1Anft2Y55xY8I1IWwejHdxGaaHLGCtPo55OLot50ZYyPv9OQoWKY1Mpeg5uT3v6Y9xV4atFjps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710421356; c=relaxed/simple;
-	bh=RAKVpHxjeVAwoYuEB8CMcoH4wDiQqcm7h2A5VMcHkuc=;
+	s=arc-20240116; t=1710421325; c=relaxed/simple;
+	bh=qAQB9FK88epVTyF/LeZpqM5y5+oOyaphSDCBPPScblw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nwUfz+yBmyjmeTigmmtCWKdhkMOtDjElF6tdaDYYaUO/mhbZ6asVyqCMLP4SGhQCp4hiQb+8Jl6WioyQIqN9DIKfS+WbyghqRoz7hV7UtpbKOq4DepiBnLL+Y3UxNupOsW0T67Sxvboxgvz8r0IKmxwxSzmaf9fJnMEDSnDvVko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=Rn2he2KG; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 7265E1FE36;
-	Thu, 14 Mar 2024 14:02:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1710421343;
-	bh=2g+DQ7FufJDoNjxFyMoaWdNsJq45GFmfUlVzS35VOAE=; h=From:To:Subject;
-	b=Rn2he2KGS+Lm6q4JT+i0cX0ELmENbr3vx1Sv6qu4a4EpLELff/S6/ElpoqrPc/2hq
-	 DYnHwdGkFaqAKzcCjRz4cV2aXSZYrpqY7GG+7H19ej387/po4oTEWFz9SiF2tvnAD8
-	 L/EmdRH54RQAsuoWP1iFnGvFAPse2H1coeCoOjImjcOhdzm093hfnDCCHfuhYyAroX
-	 HbOkRgD5lH6A53OQDJyysy67rihuBg/p42hU0DEFL0eKgrbKqxMlq0M0opBDeAld1J
-	 INwep7rJmgyaTv3UEc40VkMqVf/ukaL5PNVCNLMdR2sSss3/LTX6NF/poiaJHtegYo
-	 BIGM1EGJIIjbQ==
-Date: Thu, 14 Mar 2024 14:02:19 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Nishanth Menon <nm@ti.com>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?iso-8859-1?Q?Jo=E3o_Paulo_Silva_Gon=E7alves?= <joao.goncalves@toradex.com>
-Subject: Re: [PATCH v1] arm64: dts: ti: verdin-am62: use SD1 CD as GPIO
-Message-ID: <20240314130219.GA124430@francesco-nb>
-References: <20240312144956.40211-1-francesco@dolcini.it>
- <20240314121833.4fngkk35aw44o2x5@array>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fE5WO93139YKMV9SC9RcA1OdNbZH6272II5iJPXkN7jab6og4WjINCZxkZ9l8GRR+C+9JXdImW38p6vJkkIOaahKSb1Lr58qyi5LAtPlNSnzWWtEL6PYqodVZQitjrVuGWDk9PP1VF8uKabEzaKn10svztxUfJbp9d5AYuc2ge4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=T6V+5qj0; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=EVli0OmFTuK34nwbOdblGGUn4WUi0rrQKbNKDtrDklk=; b=T6V+5qj0xaMOJrB2glYk53Eafv
+	n2/VR9Pnz79XXEteuAxtf0EDuQkLwDObzh8LzRLOh1FS4OF4dSJgvf7QgNMAnzAlaJnKDE2nvAbAE
+	CWrNAPdZzrStDUQ89uzZ8VNUnVwIJLv2lIv6bHeJGUXpQmvvKhu63CuORqIqeCb3L5UU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rkkiy-00AJtH-8f; Thu, 14 Mar 2024 14:02:20 +0100
+Date: Thu, 14 Mar 2024 14:02:20 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Alexandra Diupina <adiupina@astralinux.ru>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sebastian Reichel <sre@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] net: dsa: add return value check of genphy_read_status()
+Message-ID: <99631ba3-36f9-4eed-80d9-4a663ef46d80@lunn.ch>
+References: <20240314063008.11214-1-adiupina@astralinux.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,25 +62,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240314121833.4fngkk35aw44o2x5@array>
+In-Reply-To: <20240314063008.11214-1-adiupina@astralinux.ru>
 
-Hello Nishanth,
+On Thu, Mar 14, 2024 at 09:30:08AM +0300, Alexandra Diupina wrote:
+> Need to check return value of genphy_read_status(),
+> because higher in the call hierarchy is the
+> dsa_register_switch() function,
+> which is used in various drivers.
 
-On Thu, Mar 14, 2024 at 07:18:33AM -0500, Nishanth Menon wrote:
-> On 15:49-20240312, Francesco Dolcini wrote:
-> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > 
-> > TI SDHCI IP has a hardware debounce timer of 1 second as described in
-> 
-> Umm... Minor clarification - the SDHCI IP is not TI's - as commit
-> 41fd4caeb00bbd6dc55f056f3e8e956697b0760d says, this was an Arasan IP
-> which was integrated into TI SoCs but needs it's own driver due to some
-> quirkiness in the version TI picked up.
-> 
-> Are you OK to rephrase this as TI SDHCI 'instance' rather than 'IP'? If
-> yes, I can do the change locally when I commit.
+I don't understand the commit message. Why is it important to
+dsa_register_switch()?
 
-Fine for me, thanks,
-Francesco
-
+	Andrew
 
