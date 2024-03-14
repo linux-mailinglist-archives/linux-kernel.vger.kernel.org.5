@@ -1,128 +1,135 @@
-Return-Path: <linux-kernel+bounces-103400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92A4387BEEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:31:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3131987BEF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 343BEB21E0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:31:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91E67B2329C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A963426AF3;
-	Thu, 14 Mar 2024 14:31:32 +0000 (UTC)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4DA4A12;
-	Thu, 14 Mar 2024 14:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFBE6FE02;
+	Thu, 14 Mar 2024 14:32:24 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5EF13D75;
+	Thu, 14 Mar 2024 14:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710426692; cv=none; b=CJtTrXdbwgyBib82IxA6Ie1eDLQ5kH9NuhLcEJSSEB3L8dZyfHp4/IvBKRSfbxzC4RFmzn5nlvlhOKxwUu9V5S+teQWqrl5Vh/mDOjNug8MljO1qpHI75dtXrS0acVgh/ISmPG+/hx5Lr4htdgpjrJpBVfpp4YkKeH/t5+Nn5ag=
+	t=1710426744; cv=none; b=nBtiefEiN3PgBy3pdW/XcyNru5L6AXdOl9Pj8nVEAV8uqoupHSe3ekUoUqF2v/oIkjKu9HTHksZEVNWTN9HhapC9GegqD6AirkNjxdU7G4ynTNORc/S8Grsda8GA0ehbxZbXdTvzDbpXVsVyX027CXLrZMm0Ssqn8nJKUbGjb3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710426692; c=relaxed/simple;
-	bh=xFi2AxXaD1yOJvBeQtP4ZD5kDFtlgnvcd89oSlKF4Ck=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gkLZ8aPbwJBQfnUaVe0+ZhNpDXrCYXvCaV2epwtEkFMgSl9OTXcsI3HCHpobVoZZSSUq76I9Mr/mOahBImtK5Qq2bRFob0/DnwVTHgrzoPbUoz1M/zxQeF1S7kWh7KMQ6QjLQo9jlRexDNxdGMMn8HAe0aLQLKZ1U1G8BIupoIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-609ed7ca444so11031127b3.1;
-        Thu, 14 Mar 2024 07:31:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710426689; x=1711031489;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fpTGs8md/LpP1yl0wQV3+VwaTfKxWgHEQ+Q8ylWPYkI=;
-        b=hHY2TlaTC4PqfXnF4h41RHeMNBs7qKTds66ePwLGI74Su9ZDBJIxvPDVgJY+BIvj/C
-         mES6Dob6Da+1lAhqwoKPhlS9UgKmNylF36oFDevUXzV5um1sBLyALFDsd4Nn5Yc44YhN
-         NF0D9/dzZBuGE81d2+srA2vJk73EMJZePN4LmdFBul+i8gaghG2Tb8bfHMPGOjqZdvof
-         X05IKVvHROLqPzGAoaaI7YB3FTRHSQq9Om9+zSRNj/ue67RDeumB21bMHsy9f73E/gTH
-         Fr5iOUMTUKmzYt0vE1nMME3Vdml7Y0XaLz/8QM+yN2d6aIZBd9GUO9azdzuJGEX9i9C5
-         gaHA==
-X-Forwarded-Encrypted: i=1; AJvYcCXjl5NIzlB8IFeY0OjMfIxc49/SyOEPNALyEiBDOS1v8XAXbc+MCHRz3MS0tA92XcHdVRjhsE44XKDztgKMHFjeWJyNmfzBSZSxNfhi8SvBeos8HcxwRyoWZ2+Jr8N+8FYdwINHYPl+qnWaTZPPh0HcMB2uV9rXiguF0eoubaNXQYcNLNJE6iytUzxx
-X-Gm-Message-State: AOJu0YxHtslM+EX5x4B9+dxrF12alz8gMJmDhmeUkVn8OsWjNyIGrC1c
-	X2CoRxa6XMI0Nqm+HNicVsswIrluyyoPfJ7kM7iqx5ICsSmFKSjL64uMS0h2UiY=
-X-Google-Smtp-Source: AGHT+IE8ZbNb5xPNE9O4L4/HL2zteap+0DIOLu3b1Wm1qdBksLX3ahtb1zB1wFR4wLFKFn8jbQd6Kg==
-X-Received: by 2002:a0d:fac5:0:b0:60a:107c:cfef with SMTP id k188-20020a0dfac5000000b0060a107ccfefmr2032496ywf.41.1710426688925;
-        Thu, 14 Mar 2024 07:31:28 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id i72-20020a0ddf4b000000b00604a0aedd92sm290572ywe.108.2024.03.14.07.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 07:31:28 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc742543119so908414276.0;
-        Thu, 14 Mar 2024 07:31:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXfrZWvbiKVStYjfUePmWCeJhuNXCnb+ONe5fhjBoECOEpqOlAPf3JwqdH3picPBsScHA9rKtCEtqnzfq8VC4ld37SU2wuYn5VYto5qzxZw5jvB41ttz2VgYgZQe7Qhb63JzTHC2jlYgL/2kVyLiKTd40cUgmTckDrzrVf+TtpKPc+doXOTWdxN2GTa
-X-Received: by 2002:a25:ad46:0:b0:dcd:aa73:e349 with SMTP id
- l6-20020a25ad46000000b00dcdaa73e349mr1723862ybe.12.1710426688516; Thu, 14 Mar
- 2024 07:31:28 -0700 (PDT)
+	s=arc-20240116; t=1710426744; c=relaxed/simple;
+	bh=d6bhwA/P3ncxIFhHlOOvQpGjSkuqQGU5Gk7Hkz0XghI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vDDI8ZCkl5HRF4TONW5qom+IJD9yk+S94FLi57WtBNIn0CioMGZumDnAb6t2T6bCtS/+tWMlU8NqXhAYb35B11vo4RSL3/RkdXXoBQ/7mcdy0nrdjyKmSBN16FdogDO6pWhi/EVOfKWBNYUuF2/8rYjIjbZqj9ZVl0Z53T9ZUQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30C4E1007;
+	Thu, 14 Mar 2024 07:32:58 -0700 (PDT)
+Received: from [10.1.38.62] (e133047.arm.com [10.1.38.62])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CADE3F762;
+	Thu, 14 Mar 2024 07:32:19 -0700 (PDT)
+Message-ID: <aefbb61c-8e15-4e40-9459-30bbbcb8d6f5@arm.com>
+Date: Thu, 14 Mar 2024 14:32:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307112452.74220-1-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdWwbfem71Q9FE40jqHM2pXWJW9u+w-+NKy3OffFkzu5SQ@mail.gmail.com> <da48838c-5043-4fff-99aa-2f75f0755609@tuxon.dev>
-In-Reply-To: <da48838c-5043-4fff-99aa-2f75f0755609@tuxon.dev>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Mar 2024 15:31:16 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU6fo0S0FOpvii8gksa=X=2o4BTCQOp2KS5SnErHeXLKg@mail.gmail.com>
-Message-ID: <CAMuHMdU6fo0S0FOpvii8gksa=X=2o4BTCQOp2KS5SnErHeXLKg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: renesas: rzg2l: Execute atomically the interrupt configuration
-To: claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc: linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] PM: EM: Add em_dev_update_chip_binning()
+To: Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org
+Cc: dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org,
+ sboyd@kernel.org, nm@ti.com, linux-samsung-soc@vger.kernel.org,
+ daniel.lezcano@linaro.org, rafael@kernel.org, viresh.kumar@linaro.org,
+ krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+ m.szyprowski@samsung.com, mhiramat@kernel.org
+References: <20240314140421.3563571-1-lukasz.luba@arm.com>
+ <20240314140421.3563571-4-lukasz.luba@arm.com>
+Content-Language: en-US
+From: Christian Loehle <christian.loehle@arm.com>
+In-Reply-To: <20240314140421.3563571-4-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Claudiu,
+On 14/03/2024 14:04, Lukasz Luba wrote:
+> Add a function which allows to modify easily the EM after the new voltage
+> information is available. The device drivers for the chip can adjust
+> the voltage values after setup. The voltage for the same frequency in OPP
+> can be different due to chip binning. The voltage impacts the power usage
+> and the EM power values can be updated to reflect that.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  include/linux/energy_model.h |  5 ++++
+>  kernel/power/energy_model.c  | 51 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 56 insertions(+)
+> 
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index 770755df852f1..d30d67c2f07cf 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -172,6 +172,7 @@ struct em_perf_table __rcu *em_table_alloc(struct em_perf_domain *pd);
+>  void em_table_free(struct em_perf_table __rcu *table);
+>  int em_dev_compute_costs(struct device *dev, struct em_perf_state *table,
+>  			 int nr_states);
+> +int em_dev_update_chip_binning(struct device *dev);
+>  
+>  /**
+>   * em_pd_get_efficient_state() - Get an efficient performance state from the EM
+> @@ -387,6 +388,10 @@ int em_dev_compute_costs(struct device *dev, struct em_perf_state *table,
+>  {
+>  	return -EINVAL;
+>  }
+> +static inline int em_dev_update_chip_binning(struct device *dev)
+> +{
+> +	return -EINVAL;
+> +}
+>  #endif
+>  
+>  #endif
+> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> index 6960dd7393b2d..1494a909844a4 100644
+> --- a/kernel/power/energy_model.c
+> +++ b/kernel/power/energy_model.c
+> @@ -808,3 +808,54 @@ static void em_update_workfn(struct work_struct *work)
+>  {
+>  	em_check_capacity_update();
+>  }
+> +
+> +/**
+> + * em_dev_update_chip_binning() - Update Energy Model with new values after
+> + *			the new voltage information is present in the OPPs.
+> + * @dev		: Device for which the Energy Model has to be updated.
+> + *
+> + * This function allows to update easily the EM with new values available in
+> + * the OPP framework and DT. It can be used after the chip has been properly
+> + * verified by device drivers and the voltages adjusted for the 'chip binning'.
+> + * It uses the "dynamic-power-coefficient" DT property to calculate the power
+> + * values for EM. For power calculation it uses the new adjusted voltage
+> + * values known for OPPs, which might be changed after boot.
+> + */
+> +int em_dev_update_chip_binning(struct device *dev)
+> +{
+> +	struct em_perf_table __rcu *em_table;
+> +	struct em_perf_domain *pd;
+> +	int i, ret;
+> +
+> +	if (IS_ERR_OR_NULL(dev))
+> +		return -EINVAL;
+> +
+> +	pd = em_pd_get(dev);
+> +	if (!pd) {
+> +		dev_warn(dev, "Couldn't find Energy Model %d\n", ret);
 
-On Thu, Mar 14, 2024 at 3:11=E2=80=AFPM claudiu beznea <claudiu.beznea@tuxo=
-n.dev> wrote:
-> On 14.03.2024 15:21, Geert Uytterhoeven wrote:
-> > On Thu, Mar 7, 2024 at 12:25=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.d=
-ev> wrote:
-> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >>
-> >> Lockdep detects a possible deadlock as listed below. This is because i=
-t
-> >> detects the IA55 interrupt controller .irq_eoi() API is called from
-> >> interrupt context while configuration-specific API (e.g., .irq_enable(=
-))
-> >> could be called from process context on resume path (by calling
-> >> rzg2l_gpio_irq_restore()). To avoid this, protect the call of
-> >> rzg2l_gpio_irq_enable() with spin_lock_irqsave()/spin_unlock_irqrestor=
-e().
-> >> With this the same approach that is available in __setup_irq() is mimi=
-cked
-> >> to pinctrl IRQ resume function.
-> >
-> > You mean __setup_irq() in kernel/irq/manage.c?
->
-> Yes!
->
-> > That one uses the raw spinlock methods?
->
-> Yes! Would you prefer to have raw spinlock here, too?
+ret is uninitialized at this point, I guess just
++		dev_warn(dev, "Couldn't find Energy Model\n");
+already contains everything relevant.
 
-Most pin control driver needing protection in an irq_enable
-method use raw spinlock, so I think it makes sense to follow that.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> [...]
 
