@@ -1,233 +1,261 @@
-Return-Path: <linux-kernel+bounces-102729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA45D87B69F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:00:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D6487B6A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 273D2B21A0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:00:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 745C81F24B2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DAEB4A08;
-	Thu, 14 Mar 2024 03:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687AB4A1B;
+	Thu, 14 Mar 2024 03:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dt66jE2v"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="PAZ9/AfN"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2089.outbound.protection.outlook.com [40.107.220.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14A41841
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 03:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710385204; cv=none; b=UmEUyFOhAwfyabx/AMG8fxarGz7O2iMhpc6uXF0sLMLOz2ekS9+SZIKL9+T4ZbTtkUsTL8SlDHdVGo9C20CJ51zfdlLFTHmBXEyF75NFCzIYRfC3Jh442iyIz23g0EoYb87/lrkyU/K612DFbGqpr/TdNEVVMHflZFbV5qC9H84=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710385204; c=relaxed/simple;
-	bh=Kp1dv4vgO5RIbk2qt5RKDB95cqiwJkA4DlTfz1ooBJ0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uVMt9e3VeoFmfw8vSET9wD7wa/wCFhjpoYUqwtgdrQU7Ce2g3GWgxnQqhCYFAaLRjzntx+LJ959yQH7ZvPCd7M7V2K6xJlkT+wzGERYvaFtOB9LbxXqlW63MnNmx44Zb5LNSDQph/PH3fTbY65zgGQTjiwtr6RXphw6JeE++trM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dt66jE2v; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so697314a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 20:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710385201; x=1710990001; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ra9KWpescs2b4ic2C3bUzMKxFu2Uuh++R64Eac+e23s=;
-        b=Dt66jE2vshbbF++0wVwCul2bZrQgNuMnq9zXlvB9ct1pHGkfF/xZyVKhQCzlqGJulc
-         Wqeq312PvDaj2YhVeCjJDxTpXbg+yKADfLiOjHQsoLUNOaC1ORmUXSya9Ea24/TU9FMB
-         N24GXuCPTeQV2svMBJBrE2VgjMEiD7ICG/4oD6GCfmV+KJU/yHGbtqz1oNEGBYPVk2pp
-         Y/G8YVRhogTayf/omlycINaPUHqCLpXhjVCDJK76KIgKtPOjlWbiU3pwW1Ajdgdk3i0W
-         zsRfC2+Co5sTN1CSrGhcdyAz6fblfzZIgOZkqhWe6uiiM9TnvHeQmZ+i2WdmtInj3jlP
-         UWEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710385201; x=1710990001;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ra9KWpescs2b4ic2C3bUzMKxFu2Uuh++R64Eac+e23s=;
-        b=c/mBuvuWcbz/stUplehfeYwuGlYGUTYiNFaNSVb9wvfrphk9waQybI/w+WD4OK5hNN
-         PNvwKxxT8mGQ2iPBRz8ISQzWygoFVY5MFLcl/HeXc5UEKw+NssdWT5OmEDxfIpuAM91a
-         yMV1KeoEKOXoNeVA1g504Ga9hCMRrV02/6hf5J5lWQd2xgf0oTqWUmAWnBhwDnMH+FKb
-         q2Gx3JkJBpufhdClG8zTAqP3xUXl92zGZtHZbC8qHX/jjypJCOyRuyEuH6pV5sbsI+AT
-         yklZN9wn3ww0ymaVZc0+b33FeMFteD8fVD2jaMAHUrK5T0CUbAjATcsrIyqSgP6/w3cG
-         GViQ==
-X-Gm-Message-State: AOJu0YxZfbO4vu2nHiH5hVE3nIiy2WSvDMBIcCQiIfemgJDLG9OrMdJB
-	VI7hN6aNWRLBaVRFpoBC/W2t21WdgvKw6sFKDnWA9GfSU2Zn1dO+/meu4c3+Nr6oIbAkeSBaung
-	Jb5GraaBeNLZsZn6+IWJ54ZYC8yE=
-X-Google-Smtp-Source: AGHT+IEFyc5sMzujAeUT+qcEiGWkGP3BTNTXtRfhAIFzSSKLh0l199BR9SYmkKezY1UR4JqrP/+XtEU/lDrRfPP/udc=
-X-Received: by 2002:a05:6402:1599:b0:568:9d96:b2d1 with SMTP id
- ij25-20020a056402159900b005689d96b2d1mr173322edb.32.1710385200714; Wed, 13
- Mar 2024 20:00:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711901C01;
+	Thu, 14 Mar 2024 03:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.89
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710385247; cv=fail; b=Rvr6OiAlEI43xUtX94IByxd2ORyYv5jSCq+jhGmZxRmSVmd24Yb4PwS41rT+ja7ZNzCLqminmmflwM/+3oEWE2sBl/tDgW/6g61EQagdgSvyTYwuWA3h6g/n0uSHVOZv9SYvhak0i2kHf2Li4Hd6DY/xxWVg8P5OV7fKwCVHenU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710385247; c=relaxed/simple;
+	bh=MuNZiBc79L8NYh5WlCzqVBsUFqlLsstZ3fy24m8QnVg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=a2iDVkz/5D2tckEPYS8a1wRSzHNkpJ3Xo3muIZ7nyQeGFJuiA5bTF/4VGUmgElZYhfvf6G5YHwKn/bmxDVsJTxq+HUQRCYtUGDxBznpcu601bXgijpjvsJfWPwfWyS4t9wfq4upWDnzv80+wz8Y0wB7lPQk2MlqjsE55U96h0N0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=PAZ9/AfN; arc=fail smtp.client-ip=40.107.220.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jWXmbQgRNOPshp0rKXiHyRO0HiimvM1/OvToZ7GrqFbFGzAsFfPtAT/t28Y+rW78sd3A0Zbx2X9achVrRgbrmFqN7zd5rgoMWMfmBwYqwAkhDtom3YxxhH0LObfBIBh0cWvBa0fBrpEHgA/ZsUCNUXfX6wmxPezF5wBXYxafC4ArQ4oW67HoGnOmOz2/Zx0I6rgwh73BwHs9LeLfdFpWdbpAZomgafx3AQ0Z/seEM+DOBzD6wmu3Xd95MPQXfnHUN/qii7z2gaeMGf0McxWb6fpe1WOlHAikaEIDIF6+Akj1OCKzyMc/j7aPu0SzKNFqpC0Rk0WahyOxp7HnQb7thw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MuNZiBc79L8NYh5WlCzqVBsUFqlLsstZ3fy24m8QnVg=;
+ b=PMNOlMVowxxc6R29e03L9mS9ujizuVWYGHGp36NGW3rmj0qOwgSNAS7RKMIkFF9pN1fBH/uRN6MiLs75JKqP3mS0dAo1YKnuRK16FmsHob2ant7BCRAeFvvNZ/0NDtjx0KQNM0wmnXfXesl9Mvj3/tchbAddh8+0/+ak7Q9+s+EsMU5eE1I7R0XJOxVDGsyEkGlQ/P6Xg1su1b3vdaSb1d9CbFvjMiphj6GotECXTbjuni6RTfuu/GiDwjS008aQbhN2dwJfj4Frgttjkdd+GOWzfo97Lgi8yO8DOxIZXd/AboZ3r6MUakZQKRCYMcx4t7OW98lGtatJqI6GSLSnrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MuNZiBc79L8NYh5WlCzqVBsUFqlLsstZ3fy24m8QnVg=;
+ b=PAZ9/AfN7pHd8q3Mfv2/6vS51rOf6BNU7fStOyB4BTy08ITbRHnmwYL9lD6ZATpZOmo51sCrHpM+T1XgGE/x11UkKAZKmTvSlhQowR3ulBeNrw4O83MWxlFMjbn7Q3H9H/XexY3clEvCiatO9cZ8FppXU4yBr1i3axdSLQeWivY=
+Received: from DS7PR12MB6005.namprd12.prod.outlook.com (2603:10b6:8:7c::17) by
+ LV3PR12MB9330.namprd12.prod.outlook.com (2603:10b6:408:217::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 14 Mar
+ 2024 03:00:41 +0000
+Received: from DS7PR12MB6005.namprd12.prod.outlook.com
+ ([fe80::a702:68e0:aa54:fb87]) by DS7PR12MB6005.namprd12.prod.outlook.com
+ ([fe80::a702:68e0:aa54:fb87%4]) with mapi id 15.20.7362.035; Thu, 14 Mar 2024
+ 03:00:41 +0000
+From: "Liang, Prike" <Prike.Liang@amd.com>
+To: Alex Deucher <alexdeucher@gmail.com>, "Kuehling, Felix"
+	<Felix.Kuehling@amd.com>
+CC: Sasha Levin <sashal@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
+	<stable@vger.kernel.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+	"Koenig, Christian" <Christian.Koenig@amd.com>, "Pan, Xinhui"
+	<Xinhui.Pan@amd.com>, "airlied@gmail.com" <airlied@gmail.com>,
+	"daniel@ffwll.ch" <daniel@ffwll.ch>, "Zhang, Hawking"
+	<Hawking.Zhang@amd.com>, "Lazar, Lijo" <Lijo.Lazar@amd.com>, "Ma, Le"
+	<Le.Ma@amd.com>, "Zhu, James" <James.Zhu@amd.com>, "Xiao, Shane"
+	<shane.xiao@amd.com>, "Jiang, Sonny" <Sonny.Jiang@amd.com>,
+	"amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: RE: [PATCH AUTOSEL 5.15 3/5] drm/amdgpu: Enable gpu reset for S3
+ abort cases on Raven series
+Thread-Topic: [PATCH AUTOSEL 5.15 3/5] drm/amdgpu: Enable gpu reset for S3
+ abort cases on Raven series
+Thread-Index: AQHac8bXYQof3+sluk60IFsTJAEbMLE2G4SAgAAL3ACAAFBjoA==
+Date: Thu, 14 Mar 2024 03:00:41 +0000
+Message-ID:
+ <DS7PR12MB6005CE495A063B43939F6CE8FB292@DS7PR12MB6005.namprd12.prod.outlook.com>
+References: <20240311151424.318621-1-sashal@kernel.org>
+ <20240311151424.318621-3-sashal@kernel.org>
+ <65d9f97b-95a8-474f-a716-32f810cbb1bc@amd.com>
+ <CADnq5_OHW9Sw5quFqk52ymGVKXe3PGidB9uLW9wcQcA=pCOTCA@mail.gmail.com>
+In-Reply-To:
+ <CADnq5_OHW9Sw5quFqk52ymGVKXe3PGidB9uLW9wcQcA=pCOTCA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=e8629579-166d-466a-823a-bb116716c51a;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-14T01:33:47Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS7PR12MB6005:EE_|LV3PR12MB9330:EE_
+x-ms-office365-filtering-correlation-id: 5bdc7f03-2b7e-4794-5ce2-08dc43d2ef24
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 054VM8bXgXE4eKEAfNqcknY8sKgxI8RO+IHQBUbma5qR17pSMJC+ezVkv2cjPMNAt7roWSsR8MOcp2qzETb9YZirLksSnP5nyw3phq87aznd5y8cfz6Ihvl+tyyhuUZG4G7ojJcHGvUYIVeJpmdXj5Uo2LDBl27Tx73JfbhWQGakDgPVss5Dz0MmVEwc5zTvG7OU2u5LRGbaHZZpGLwnrskkvlWAPAkvdNMUutpinXyxL/kFRmuIOfriZoySo0BuluYUp4cUzgPdj9nc8D22qWTJ4VzTWjSqwrOHjrLBliNC7yfVPVwyJ2YgvrQQS/YlRZJy0IFAAa530hWL58pdzjkg2rrKcFZJlfzQM1rd+jE+tIboLX8M4Irfdm+r4R5TqfcCBZhupsSCLf924TrDAcJs0Ont2jvC17w3CvEkYmRjyTh04VUSfOpUrG5mtjqnWk++kRrCMlpCjkH5bZthsXa7H8V6Lzs6we1ZG85bPkYH0FFxHSmlqEMiXk/BiMKe3sf3nQyuLEvETVa7b2QxwstJXfv+Gh31K5bBDmXn3dNlN8eOFsZ1Bx1FiBc3UWqeXlO+fzMEFdbe9Mo5tLbQTa0PZLQ8Q4aWhxbHVuhuBfQ7FIv7z1NY6CP5OIZn9pXsA3WjfzTADGIV+xnysxaf0A+OudxgpIJKFi9MahPDvJylEyMpzZNytvJi3yyrQwi4gJcjWCQgTMXOjFm6XOq+oPvcMD+0EUdRLFBwg/T6s78=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6005.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?V0hBQ1JXdG12OHUxYjZiYmE3SktTVU9DM0NoQjI1MHFnQWpVYUxBMG5QUkMy?=
+ =?utf-8?B?cUs3V2JtVXp5dkZIYlpuQzRoZVdGTk1XR2V1ZStlNGdBbEI4aERTVTkrMGx1?=
+ =?utf-8?B?QzU3K3FvMmR4OXFQZWltejdFZlJCdFNubEJBNUVOS1MwbldqWmd1MVB5VWJi?=
+ =?utf-8?B?bEs1K1M2OWFFOFRKaGFGd0h5YStwc2lIbFJjbGRkaWtPcURSMU1LTXI4aFZE?=
+ =?utf-8?B?bUFEUk5hMUpwYyt6YXlZb2NIcUN1dGh2cmxZY3NiczBwMll0Q205YW9HTjhm?=
+ =?utf-8?B?b3UxMWlaTXV0enh0T2NKVGpUNjlYZDcrSEJrUWFvWVJWU1h5ZkhvS01NMkZl?=
+ =?utf-8?B?WG9tTVlkSDY4YXRNVUx2OWpaQ1dEZ0d1bG0xZkZXUWRUMHlEbytrbXpnODFF?=
+ =?utf-8?B?NWdGL3pzQ3laWDlIT3hZOVZWV0gzVFYvUkV4ekN1cGVSeFdpaXdrb0lIZFpI?=
+ =?utf-8?B?NDZRZlo1ay9DQXNVeXF0ZTlyeE8wUENmYkpSNkhHYlpuenhYSkpjSkdiKzNC?=
+ =?utf-8?B?UERDQjE4cEJsNTh5cFIyOWhGN0k5NFN0MVAyV1krSGdVZkIzNFVUVTM4UVQv?=
+ =?utf-8?B?VWZnRE0yWVlDOXkrTnRZdXVDTVpMWGVVTHF5d0NxOUlRTGlmUDNIbCtvR3Ns?=
+ =?utf-8?B?Y2kzL2hoZEFSVnhmR0FzUmlVZ1d0TGY5eit3cXZwenlLR0JNK29WdUI0amph?=
+ =?utf-8?B?UVBNeklzb1pZS1pCb0lTYnNpbWtFNWE4bzhWY00wSFVnNEk5bWRuZnJ3b2FV?=
+ =?utf-8?B?QlJDS3dsaTc3eVFzcXovZ0lCOUFUbXhLSmd4Y0ZTdytsVEFhQ1RKSVUzNWVq?=
+ =?utf-8?B?ejlGZmtwTXFTWUdRc0VmZmhEM0FKWllnU1F4MDc3Wk5UK1VPTEU3SWtZUThH?=
+ =?utf-8?B?TGxlelpoQkZjdXZPUCtjbmRNSHlSTFdHY0RaWUVHdm5GcVBDakVNamlZcjZF?=
+ =?utf-8?B?U3N1T2orblZQbXk0ZWVETmVvQnMrSG4xUFNocW9uS0oxeXI5VUgyd1FvaFNM?=
+ =?utf-8?B?UDNySTBSbzllbGVSeG1HazBTU1dNV0N1QTZpODMzdXdqcmVBTWNhZXp0U2pC?=
+ =?utf-8?B?MXRhYzNQaHlFR1Fha0pXaVJVd1NCK0dad2lSRDZnOHNTVi8xSGJCSEZFZUk1?=
+ =?utf-8?B?b25kTFB3ZEFlVkhuOHAxYWRNVnFwMXIxVWdGVzc3N2k3elI5OVlzYXpTUnQy?=
+ =?utf-8?B?a0cxSlRDMVJvRGJPNEYzTHZKUUo5Z1NkaEdlQXlSLzFHZi9MajRIeWRoMElR?=
+ =?utf-8?B?Znd5ZEYyTGNkSWx4Nmc0b2Z5Z3ZwYW1TMERsckFzdW9JaDArZ3NvaFBRMWVp?=
+ =?utf-8?B?WWhNUTNxTlR0aElEZHNkbzZ1am51cXlOdEtVanJKMlB5b25od1piZmFVblkw?=
+ =?utf-8?B?dzRIZTlZTExXb1dWcFlZZmJabzBOblVzV0F0bmFNbW5zQ0RtSVpFaHBmMXcy?=
+ =?utf-8?B?OXVqN0N3R1JoUUphdThjcEVvb1RtSjZTYmNBNVczT3FTYVBJekw2TklkREZZ?=
+ =?utf-8?B?MDkzZHZUQ1M4NU15bEdYbEkrSGkvWjd5UC9pcXBIVXZsNFM4RDFlS2xNT3By?=
+ =?utf-8?B?TjFxZ05HTEVyOFNXdGhWempwYTJrWWRkVjcxVlUvNktKN3Y4VHpLTWs4Y2d3?=
+ =?utf-8?B?MGUxbXhmNHF5MTlEOXdxKzBCaWlPd0FpL0tRT2JoL3dxTDduK292eHk1ekdO?=
+ =?utf-8?B?LzZYa3JSZm15VC9tVmFCOVZzQmJScTFMRVI1K2hxaFpZUWNxS2NhN0RqQnVE?=
+ =?utf-8?B?WktSSmtzTWNCa1ZsVzh4TWp1V2I3WlA3ZUxCemhzWG9VcGh6N3hpZVFLZXhy?=
+ =?utf-8?B?cGMvZmRKQkZlMTV5K2RvQ0xWWUJUUDB3MXlOajlqdHAyVGZLZTRzeE5nZFdB?=
+ =?utf-8?B?OEpBWkg3UVpWNnd3RzYxOWdzTzhRTjNCMjJBN0w4WWg0N0cxT2lhaWpRUlpu?=
+ =?utf-8?B?cEhVRnBJamJMSEdad2x1ZjdYZUV4UlBQQ0tQbllERVlwRHN0RlUxczNCdlpa?=
+ =?utf-8?B?LzRRU00zRHFScGVhclZTQXdOR1BBdEFFTEpMcUtOci9QSnBqUUhaQVZDY2R2?=
+ =?utf-8?B?MzZhb1ZHeFJyd09kQzhrR1N2Q0JYK3NSdkpWTDlCZzFraDhPNndDR1RsOXRS?=
+ =?utf-8?Q?Ls8g=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313085817.48892-1-zegao@tencent.com> <d43ed111-085b-432b-ad5b-433d5031fad1@arm.com>
-In-Reply-To: <d43ed111-085b-432b-ad5b-433d5031fad1@arm.com>
-From: Ze Gao <zegao2021@gmail.com>
-Date: Thu, 14 Mar 2024 10:59:49 +0800
-Message-ID: <CAD8CoPAC0ti2=mAbP5GMN6ZidZnPV-Antf7KrjwPtEnE7gYOdg@mail.gmail.com>
-Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
- affinity changes
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Mel Gorman <mgorman@suse.de>, Juri Lelli <juri.lelli@redhat.com>, Ingo Molnar <mingo@redhat.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	Ben Segall <bsegall@google.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6005.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5bdc7f03-2b7e-4794-5ce2-08dc43d2ef24
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 03:00:41.3755
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 16NpT7/er1DpKkjR30Gokli7R/ZBw4Hk0fG0dGC9RcDhpJMCc1DZ1JAvJXm5k5ub
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9330
 
-On Wed, Mar 13, 2024 at 11:16=E2=80=AFPM Pierre Gondois <pierre.gondois@arm=
-com> wrote:
->
-> Hello Ze,
->
-> I am running stress-ng with the following command:
->    stress-ng -c 1 -l 10 &
-> and migrating the process with:
->    taskset -pc [cpus] [pid]
->
-> The thread seems to be migrated via:
-> sched_setaffinity
->    \-__sched_setaffinity()
->      \-__set_cpus_allowed_ptr()
->        \-__set_cpus_allowed_ptr_locked()
->          \- [1]
-
-
-
-> [1]
-> /*
->   * Picking a ~random cpu helps in cases where we are changing affinity
->   * for groups of tasks (ie. cpuset), so that load balancing is not
->   * immediately required to distribute the tasks within their new mask.
->   */
-> dest_cpu =3D cpumask_any_and_distribute(cpu_valid_mask, ctx->new_mask);
->
-> So it seems the destination CPU chosen among the new CPU affinity mask is=
- done
-> here, by picking a random CPU in the mask.
-
-IIUC, this is for running/queued/waking tasks instead of blocked tasks.
-
-Am I missing something obvious here?
-
-> Checking the cpus_ptr in select_idle_sibling() might be useful in other c=
-ases,
-> but I think the experiment doesn't show that. Maybe a another small tweak=
- could
-
-The experiment is used to illustrate that the status quo does not do well
-but has to rely on select_fallback_rq() to choose a cpu for a woken task
-which turns out to be a bad choice since it's already monopolized by a
-cpu bound task, that is why a second migration happens with the help
-of the load balancer.
-
-Actually, we can reuse the same reasons for doing so as in
-
-    commit 46a87b3851f0("sched/core: Distribute tasks within affinity masks=
-")
-
-> be done at [1] instead ?
-
-As for blocked tasks, check out what is commented on set_task_cpu() and
-select_task_rq(), since we never call set_task_cpu() on blocked tasks which
-in turn, we have no way to change p->wake_cpu to dest_cpu being randomly
-chosen here, so when it's woken up, it still needs to go through the
-select_task_rq() process using the outdated p->wake_cpu.
-
-
-Thanks,
-        -- Ze
-
-> Regards,
-> Pierre
->
-> On 3/13/24 09:58, Ze Gao wrote:
-> > We observered select_idle_sibling() is likely to return the *target* cp=
-u
-> > early which is likely to be the previous cpu this task is running on ev=
-en
-> > when it's actually not within the affinity list newly set, from where a=
-fter
-> > we can only rely on select_fallback_rq() to choose one for us at its wi=
-ll
-> > (the first valid mostly for now).
-> >
-> > However, the one chosen by select_fallback_rq() is highly likely not a
-> > good enough candidate, sometimes it has to rely on load balancer to kic=
-k
-> > in to place itself to a better cpu, which adds one or more unnecessary
-> > migrations in no doubt. For example, this is what I get when I move tas=
-k
-> > 3964 to cpu 23-24 where cpu 23 has a cpu bound work pinned already:
-> >
-> >          swapper       0 [013]   959.791829: sched:sched_migrate_task: =
-comm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D13 dest_cpu=3D23
-> > kworker/24:2-mm    1014 [024]   959.806148: sched:sched_migrate_task: c=
-omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D23 dest_cpu=3D24
-> >
-> > The thing is we can actually do better if we do checks early and take m=
-ore
-> > advantages of the *target* in select_idle_sibling(). That is, we contin=
-ue
-> > the idle cpu selection if *target* fails the test of cpumask_test_cpu(
-> > *target*, p->cpus_ptr). By doing so, we are likely to pick a good candi=
-date,
-> > especially when the newly allowed cpu set shares some cpu resources wit=
-h
-> > *target*.
-> >
-> > And with this change, we clearly see the improvement when I move task 3=
-964
-> > to cpu 25-26 where cpu 25 has a cpu bound work pinned already.
-> >
-> >          swapper       0 [027]  4249.204658: sched:sched_migrate_task: =
-comm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D27 dest_cpu=3D26
-> >
-> > Note we do the same check for *prev* in select_idle_sibling() as well.
-> >
-> > Signed-off-by: Ze Gao <zegao@tencent.com>
-> > ---
-> >   kernel/sched/fair.c | 13 ++++++++-----
-> >   1 file changed, 8 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 533547e3c90a..9ef6e74c6b2a 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -7511,16 +7511,19 @@ static int select_idle_sibling(struct task_stru=
-ct *p, int prev, int target)
-> >        */
-> >       lockdep_assert_irqs_disabled();
-> >
-> > -     if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
-> > -         asym_fits_cpu(task_util, util_min, util_max, target))
-> > +     if (cpumask_test_cpu(target, p->cpus_ptr) &&
-> > +             (available_idle_cpu(target) || sched_idle_cpu(target)) &&
-> > +             asym_fits_cpu(task_util, util_min, util_max, target))
-> >               return target;
-> >
-> >       /*
-> >        * If the previous CPU is cache affine and idle, don't be stupid:
-> >        */
-> > -     if (prev !=3D target && cpus_share_cache(prev, target) &&
-> > -         (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-> > -         asym_fits_cpu(task_util, util_min, util_max, prev)) {
-> > +     if (cpumask_test_cpu(prev, p->cpus_ptr) &&
-> > +             prev !=3D target &&
-> > +             cpus_share_cache(prev, target) &&
-> > +             (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-> > +             asym_fits_cpu(task_util, util_min, util_max, prev)) {
-> >
-> >               if (!static_branch_unlikely(&sched_cluster_active) ||
-> >                   cpus_share_resources(prev, target))
+W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCj4gRnJvbTogQWxleCBEZXVjaGVy
+IDxhbGV4ZGV1Y2hlckBnbWFpbC5jb20+DQo+IFNlbnQ6IFRodXJzZGF5LCBNYXJjaCAxNCwgMjAy
+NCA0OjQ2IEFNDQo+IFRvOiBLdWVobGluZywgRmVsaXggPEZlbGl4Lkt1ZWhsaW5nQGFtZC5jb20+
+DQo+IENjOiBTYXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+OyBsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnOw0KPiBzdGFibGVAdmdlci5rZXJuZWwub3JnOyBMaWFuZywgUHJpa2UgPFBy
+aWtlLkxpYW5nQGFtZC5jb20+OyBEZXVjaGVyLA0KPiBBbGV4YW5kZXIgPEFsZXhhbmRlci5EZXVj
+aGVyQGFtZC5jb20+OyBLb2VuaWcsIENocmlzdGlhbg0KPiA8Q2hyaXN0aWFuLktvZW5pZ0BhbWQu
+Y29tPjsgUGFuLCBYaW5odWkgPFhpbmh1aS5QYW5AYW1kLmNvbT47DQo+IGFpcmxpZWRAZ21haWwu
+Y29tOyBkYW5pZWxAZmZ3bGwuY2g7IFpoYW5nLCBIYXdraW5nDQo+IDxIYXdraW5nLlpoYW5nQGFt
+ZC5jb20+OyBMYXphciwgTGlqbyA8TGlqby5MYXphckBhbWQuY29tPjsgTWEsIExlDQo+IDxMZS5N
+YUBhbWQuY29tPjsgWmh1LCBKYW1lcyA8SmFtZXMuWmh1QGFtZC5jb20+OyBYaWFvLCBTaGFuZQ0K
+PiA8c2hhbmUueGlhb0BhbWQuY29tPjsgSmlhbmcsIFNvbm55IDxTb25ueS5KaWFuZ0BhbWQuY29t
+PjsgYW1kLQ0KPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBkcmktZGV2ZWxAbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggQVVUT1NFTCA1LjE1IDMvNV0gZHJt
+L2FtZGdwdTogRW5hYmxlIGdwdSByZXNldCBmb3IgUzMNCj4gYWJvcnQgY2FzZXMgb24gUmF2ZW4g
+c2VyaWVzDQo+DQo+IE9uIFdlZCwgTWFyIDEzLCAyMDI0IGF0IDQ6MTLigK9QTSBGZWxpeCBLdWVo
+bGluZyA8ZmVsaXgua3VlaGxpbmdAYW1kLmNvbT4NCj4gd3JvdGU6DQo+ID4NCj4gPiBPbiAyMDI0
+LTAzLTExIDExOjE0LCBTYXNoYSBMZXZpbiB3cm90ZToNCj4gPiA+IEZyb206IFByaWtlIExpYW5n
+IDxQcmlrZS5MaWFuZ0BhbWQuY29tPg0KPiA+ID4NCj4gPiA+IFsgVXBzdHJlYW0gY29tbWl0IGM2
+NzFlYzAxMzExYjQ3NDRiMzc3Zjk4YjBiNGM2ZDAzM2ZlNTY5YjMgXQ0KPiA+ID4NCj4gPiA+IEN1
+cnJlbnRseSwgR1BVIHJlc2V0cyBjYW4gbm93IGJlIHBlcmZvcm1lZCBzdWNjZXNzZnVsbHkgb24g
+dGhlIFJhdmVuDQo+ID4gPiBzZXJpZXMuIFdoaWxlIEdQVSByZXNldCBpcyByZXF1aXJlZCBmb3Ig
+dGhlIFMzIHN1c3BlbmQgYWJvcnQgY2FzZS4NCj4gPiA+IFNvIG5vdyBjYW4gZW5hYmxlIGdwdSBy
+ZXNldCBmb3IgUzMgYWJvcnQgY2FzZXMgb24gdGhlIFJhdmVuIHNlcmllcy4NCj4gPg0KPiA+IFRo
+aXMgbG9va3Mgc3VzcGljaW91cyB0byBtZS4gSSdtIG5vdCBzdXJlIHdoYXQgY29uZGl0aW9ucyBt
+YWRlIHRoZSBHUFUNCj4gPiByZXNldCBzdWNjZXNzZnVsLiBCdXQgdW5sZXNzIGFsbCB0aGUgY2hh
+bmdlcyBpbnZvbHZlZCB3ZXJlIGFsc28NCj4gPiBiYWNrcG9ydGVkLCB0aGlzIHNob3VsZCBwcm9i
+YWJseSBub3QgYmUgYXBwbGllZCB0byBvbGRlciBrZXJuZWwNCj4gPiBicmFuY2hlcy4gSSdtIHNw
+ZWN1bGF0aW5nIGl0IG1heSBiZSByZWxhdGVkIHRvIHRoZSByZW1vdmFsIG9mIEFNRA0KPiBJT01N
+VXYyLg0KPiA+DQo+DQo+IFdlIHNob3VsZCBnZXQgY29uZmlybWF0aW9uIGZyb20gUHJpa2UsIGJ1
+dCBJIHRoaW5rIGhlIHRlc3RlZCB0aGlzIG9uIG9sZGVyDQo+IGtlcm5lbHMgYXMgd2VsbC4NCj4N
+Cj4gQWxleA0KPg0KPiA+IFJlZ2FyZHMsDQo+ID4gICAgRmVsaXgNCj4gPg0KDQpUaGUgUmF2ZW4v
+UmF2ZW4yIHNlcmllcyBHUFUgcmVzZXQgZnVuY3Rpb24gd2FzIGVuYWJsZWQgaW4gc29tZSBvbGRl
+ciBrZXJuZWwgdmVyc2lvbnMgc3VjaCBhcyA1LjUgYnV0IGZpbHRlcmVkIG91dCBpbiBtb3JlIHJl
+Y2VudCBrZXJuZWwgZHJpdmVyIHZlcnNpb25zLiBUaGVyZWZvcmUsIHRoaXMgcGF0Y2ggb25seSBh
+cHBsaWVzIHRvIHRoZSBsYXRlc3Qga2VybmVsIHZlcnNpb24sIGFuZCBpdCBzaG91bGQgYmUgc2Fm
+ZSB3aXRob3V0IGFmZmVjdGluZyBvdGhlciBjYXNlcyBieSBlbmFibGluZyB0aGUgUmF2ZW4gR1BV
+IHJlc2V0IG9ubHkgb24gdGhlIFMzIHN1c3BlbmQgYWJvcnQgY2FzZS4gRnJvbSB0aGUgQ2hyb21l
+IGtlcm5lbCBsb2cgaW5kaWNhdGluZyB0aGF0IHRoZSBBTUQgSU9NTVV2MiBkcml2ZXIgaXMgbG9h
+ZGVkLCBhbmQgd2l0aCB0aGlzIHBhdGNoIHRyaWdnZXJpbmcgdGhlIEdQVSByZXNldCBiZWZvcmUg
+dGhlIEFNREdQVSBkZXZpY2UgcmVpbml0aWFsaXphdGlvbiwgaXQgY2FuIGVmZmVjdGl2ZWx5IGhh
+bmRsZSB0aGUgUzMgc3VzcGVuZCBhYm9ydCByZXN1bWUgcHJvYmxlbSBvbiB0aGUgUmF2ZW4gc2Vy
+aWVzLg0KDQpXYXMgdGhlIFJhdmVuIEdQVSByZXNldCBwcmV2aW91c2x5IGRpc2FibGVkIGR1ZSB0
+byB0aGUgQU1EIElPTU1VdjIgZHJpdmVyPyBJZiBzbywgYmFzZWQgb24gdGhlIENocm9tZWJvb2sn
+cyB2ZXJpZmljYXRpb24gcmVzdWx0LCB0aGUgUmF2ZW4gc2VyaWVzIEdQVSByZXNldCBjYW4gcHJv
+YmFibHkgYmUgZW5hYmxlZCB3aXRoIElPTU1VdjIgZm9yIG90aGVyIGNhc2VzIGFzIHdlbGwuDQoN
+ClRoYW5rcywNClByaWtlDQo+ID4NCj4gPiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBQcmlrZSBM
+aWFuZyA8UHJpa2UuTGlhbmdAYW1kLmNvbT4NCj4gPiA+IEFja2VkLWJ5OiBBbGV4IERldWNoZXIg
+PGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBBbGV4IERl
+dWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBT
+YXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+DQo+ID4gPiAtLS0NCj4gPiA+ICAgZHJpdmVy
+cy9ncHUvZHJtL2FtZC9hbWRncHUvc29jMTUuYyB8IDQ1ICsrKysrKysrKysrKysrKysrLS0tLS0t
+LS0tLQ0KPiAtLS0NCj4gPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDI1IGluc2VydGlvbnMoKyksIDIw
+IGRlbGV0aW9ucygtKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0v
+YW1kL2FtZGdwdS9zb2MxNS5jDQo+ID4gPiBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L3Nv
+YzE1LmMNCj4gPiA+IGluZGV4IDZhMzQ4NmY1MmQ2OTguLmVmNWIzZWVkYzg2MTUgMTAwNjQ0DQo+
+ID4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9zb2MxNS5jDQo+ID4gPiArKysg
+Yi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9zb2MxNS5jDQo+ID4gPiBAQCAtNjA1LDExICs2
+MDUsMzQgQEAgc29jMTVfYXNpY19yZXNldF9tZXRob2Qoc3RydWN0DQo+IGFtZGdwdV9kZXZpY2Ug
+KmFkZXYpDQo+ID4gPiAgICAgICAgICAgICAgIHJldHVybiBBTURfUkVTRVRfTUVUSE9EX01PREUx
+Ow0KPiA+ID4gICB9DQo+ID4gPg0KPiA+ID4gK3N0YXRpYyBib29sIHNvYzE1X25lZWRfcmVzZXRf
+b25fcmVzdW1lKHN0cnVjdCBhbWRncHVfZGV2aWNlICphZGV2KQ0KPiA+ID4gK3sNCj4gPiA+ICsg
+ICAgIHUzMiBzb2xfcmVnOw0KPiA+ID4gKw0KPiA+ID4gKyAgICAgc29sX3JlZyA9IFJSRUczMl9T
+T0MxNShNUDAsIDAsIG1tTVAwX1NNTl9DMlBNU0dfODEpOw0KPiA+ID4gKw0KPiA+ID4gKyAgICAg
+LyogV2lsbCByZXNldCBmb3IgdGhlIGZvbGxvd2luZyBzdXNwZW5kIGFib3J0IGNhc2VzLg0KPiA+
+ID4gKyAgICAgICogMSkgT25seSByZXNldCBsaW1pdCBvbiBBUFUgc2lkZSwgZEdQVSBoYXNuJ3Qg
+Y2hlY2tlZCB5ZXQuDQo+ID4gPiArICAgICAgKiAyKSBTMyBzdXNwZW5kIGFib3J0IGFuZCBUT1Mg
+YWxyZWFkeSBsYXVuY2hlZC4NCj4gPiA+ICsgICAgICAqLw0KPiA+ID4gKyAgICAgaWYgKGFkZXYt
+PmZsYWdzICYgQU1EX0lTX0FQVSAmJiBhZGV2LT5pbl9zMyAmJg0KPiA+ID4gKyAgICAgICAgICAg
+ICAgICAgICAgICFhZGV2LT5zdXNwZW5kX2NvbXBsZXRlICYmDQo+ID4gPiArICAgICAgICAgICAg
+ICAgICAgICAgc29sX3JlZykNCj4gPiA+ICsgICAgICAgICAgICAgcmV0dXJuIHRydWU7DQo+ID4g
+PiArDQo+ID4gPiArICAgICByZXR1cm4gZmFsc2U7DQo+ID4gPiArfQ0KPiA+ID4gKw0KPiA+ID4g
+ICBzdGF0aWMgaW50IHNvYzE1X2FzaWNfcmVzZXQoc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYp
+DQo+ID4gPiAgIHsNCj4gPiA+ICAgICAgIC8qIG9yaWdpbmFsIHJhdmVuIGRvZXNuJ3QgaGF2ZSBm
+dWxsIGFzaWMgcmVzZXQgKi8NCj4gPiA+IC0gICAgIGlmICgoYWRldi0+YXB1X2ZsYWdzICYgQU1E
+X0FQVV9JU19SQVZFTikgfHwNCj4gPiA+IC0gICAgICAgICAoYWRldi0+YXB1X2ZsYWdzICYgQU1E
+X0FQVV9JU19SQVZFTjIpKQ0KPiA+ID4gKyAgICAgLyogT24gdGhlIGxhdGVzdCBSYXZlbiwgdGhl
+IEdQVSByZXNldCBjYW4gYmUgcGVyZm9ybWVkDQo+ID4gPiArICAgICAgKiBzdWNjZXNzZnVsbHku
+IFNvIG5vdywgdGVtcG9yYXJpbHkgZW5hYmxlIGl0IGZvciB0aGUNCj4gPiA+ICsgICAgICAqIFMz
+IHN1c3BlbmQgYWJvcnQgY2FzZS4NCj4gPiA+ICsgICAgICAqLw0KPiA+ID4gKyAgICAgaWYgKCgo
+YWRldi0+YXB1X2ZsYWdzICYgQU1EX0FQVV9JU19SQVZFTikgfHwNCj4gPiA+ICsgICAgICAgICAo
+YWRldi0+YXB1X2ZsYWdzICYgQU1EX0FQVV9JU19SQVZFTjIpKSAmJg0KPiA+ID4gKyAgICAgICAg
+ICAgICAhc29jMTVfbmVlZF9yZXNldF9vbl9yZXN1bWUoYWRldikpDQo+ID4gPiAgICAgICAgICAg
+ICAgIHJldHVybiAwOw0KPiA+ID4NCj4gPiA+ICAgICAgIHN3aXRjaCAoc29jMTVfYXNpY19yZXNl
+dF9tZXRob2QoYWRldikpIHsgQEAgLTE0OTAsMjQgKzE1MTMsNg0KPiA+ID4gQEAgc3RhdGljIGlu
+dCBzb2MxNV9jb21tb25fc3VzcGVuZCh2b2lkICpoYW5kbGUpDQo+ID4gPiAgICAgICByZXR1cm4g
+c29jMTVfY29tbW9uX2h3X2ZpbmkoYWRldik7DQo+ID4gPiAgIH0NCj4gPiA+DQo+ID4gPiAtc3Rh
+dGljIGJvb2wgc29jMTVfbmVlZF9yZXNldF9vbl9yZXN1bWUoc3RydWN0IGFtZGdwdV9kZXZpY2Ug
+KmFkZXYpDQo+ID4gPiAtew0KPiA+ID4gLSAgICAgdTMyIHNvbF9yZWc7DQo+ID4gPiAtDQo+ID4g
+PiAtICAgICBzb2xfcmVnID0gUlJFRzMyX1NPQzE1KE1QMCwgMCwgbW1NUDBfU01OX0MyUE1TR184
+MSk7DQo+ID4gPiAtDQo+ID4gPiAtICAgICAvKiBXaWxsIHJlc2V0IGZvciB0aGUgZm9sbG93aW5n
+IHN1c3BlbmQgYWJvcnQgY2FzZXMuDQo+ID4gPiAtICAgICAgKiAxKSBPbmx5IHJlc2V0IGxpbWl0
+IG9uIEFQVSBzaWRlLCBkR1BVIGhhc24ndCBjaGVja2VkIHlldC4NCj4gPiA+IC0gICAgICAqIDIp
+IFMzIHN1c3BlbmQgYWJvcnQgYW5kIFRPUyBhbHJlYWR5IGxhdW5jaGVkLg0KPiA+ID4gLSAgICAg
+ICovDQo+ID4gPiAtICAgICBpZiAoYWRldi0+ZmxhZ3MgJiBBTURfSVNfQVBVICYmIGFkZXYtPmlu
+X3MzICYmDQo+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgIWFkZXYtPnN1c3BlbmRfY29tcGxl
+dGUgJiYNCj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICBzb2xfcmVnKQ0KPiA+ID4gLSAgICAg
+ICAgICAgICByZXR1cm4gdHJ1ZTsNCj4gPiA+IC0NCj4gPiA+IC0gICAgIHJldHVybiBmYWxzZTsN
+Cj4gPiA+IC19DQo+ID4gPiAtDQo+ID4gPiAgIHN0YXRpYyBpbnQgc29jMTVfY29tbW9uX3Jlc3Vt
+ZSh2b2lkICpoYW5kbGUpDQo+ID4gPiAgIHsNCj4gPiA+ICAgICAgIHN0cnVjdCBhbWRncHVfZGV2
+aWNlICphZGV2ID0gKHN0cnVjdCBhbWRncHVfZGV2aWNlICopaGFuZGxlOw0K
 
