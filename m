@@ -1,60 +1,94 @@
-Return-Path: <linux-kernel+bounces-103629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0542387C227
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:36:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0058787C229
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FCDAB2134A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:36:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817A71F2125A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6029674BE0;
-	Thu, 14 Mar 2024 17:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B35745FA;
+	Thu, 14 Mar 2024 17:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X/Tss4SC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=freebsd.org header.i=@freebsd.org header.b="sEhNz4ZB"
+Received: from mx2.freebsd.org (mx2.freebsd.org [96.47.72.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60E31A38D0;
-	Thu, 14 Mar 2024 17:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710437761; cv=none; b=MATYZgn3vUxuFdYRWJhWQz8LBBLpY6lFERZkBstaid5ej7HRBsc5GRVX1mWaLFVMJK3qNRJjrKaEP/iwFz8MYWaDUFJ78qU52jbHKEU7eDaNiGdKFWW3Pu/XVmE8ZnCCayP8nXGmkCQqIuz6gMd18dpUaveFq5LvkqstsOvT3AE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710437761; c=relaxed/simple;
-	bh=tJYtE0G7Mo8xhlgcTywajqgMMhsI5U/ArFP1K2nTMK0=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2D673510;
+	Thu, 14 Mar 2024 17:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=96.47.72.81
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710437814; cv=pass; b=iEykuBQluAQH/WnOK6ePzg/Q3ShK2iGZUiE+YXvTrsJ8WQPD4C2UArkk+LuJUh9LFW/AAcFNstlIRx8FZqtL9LXssLKlbwS5XJod6bM5tALLLi/tR+TMzEMrGGWjEK68Y225HZKSw75uq7uNB55+mk2mHqcGV+B9NVP3d9FphOQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710437814; c=relaxed/simple;
+	bh=CsK5s0+VbXMp/Uzr0NC2Vw2bo01xvjT7x2Lb4wK8GBs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZXnMMQE06UiyF3n6f0v0/qOnMpQGWluAzToacz9nsc36fxTo4xieOngiyZ2Nz++P5ZQ6OjHTQIlZ1zF8kb1038NihtVQlzXVh9xXobWCOWaTm046ORs8Yza80Axijr1oL9W1cn5Ypvw14IO6ryMjel1dULfMuMPbtS9Pvz3zN6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X/Tss4SC; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710437759; x=1741973759;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=tJYtE0G7Mo8xhlgcTywajqgMMhsI5U/ArFP1K2nTMK0=;
-  b=X/Tss4SCTY2vB2cm3TQ0zuelVov3CK0MTXQGXHHUyucTVtLoP20fvAkh
-   olcUIFtcGuT17Dn5zW7D2Xi5+gL/m2NB9tThfmiKnTZoF3IwAOktX758k
-   S8F6g0trRqIBdltmdnp6yOWRJMGt2zpRMlV46GXW8FnCGUI/mCb83QoIG
-   TCcadyX0gzl9+uNypqC4woKgOIFcpAa/f3CtGg8MSRd/FUgoNttNg0C83
-   cTKOU+5sCM+0n+kPz0bHt32WOoCh33lQ79YuDfbpdc1kRUxCwtd2LCMFU
-   AnG52uueGFoTmdc+iKL2DCK5pTx02JuXW6Oz68itHr/K6L7gXrSDYmufW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="27746098"
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="27746098"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 10:34:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="16838585"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.237])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 10:34:08 -0700
-Message-ID: <2be9cef6-8f29-4fcb-8187-ce772af9fd00@intel.com>
-Date: Thu, 14 Mar 2024 19:34:02 +0200
+	 In-Reply-To:Content-Type; b=W2G0MAPzP6b8KqBUevjaZ1po1X/+lPDWqulVfxJD7ouRpGseI794HGKMR8fp1dqYZyc81c6lmK9SfQelGuflAWlPSW5r/X3lxZF/2wcOfOfY6ehakZH4cLh60K4tDeas7uxkNFuzmOEIxynXPLvmdAww15lBoM/5RwREYh1bUeU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=FreeBSD.org; spf=pass smtp.mailfrom=FreeBSD.org; dkim=pass (2048-bit key) header.d=freebsd.org header.i=@freebsd.org header.b=sEhNz4ZB; arc=pass smtp.client-ip=96.47.72.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=FreeBSD.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=FreeBSD.org
+Received: from mx1.freebsd.org (mx1.freebsd.org [IPv6:2610:1c1:1:606c::19:1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits)
+	 client-signature RSA-PSS (4096 bits))
+	(Client CN "mx1.freebsd.org", Issuer "R3" (verified OK))
+	by mx2.freebsd.org (Postfix) with ESMTPS id 4TwZLq2tq7z45qb;
+	Thu, 14 Mar 2024 17:36:51 +0000 (UTC)
+	(envelope-from jhb@FreeBSD.org)
+Received: from smtp.freebsd.org (smtp.freebsd.org [IPv6:2610:1c1:1:606c::24b:4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "smtp.freebsd.org", Issuer "R3" (verified OK))
+	by mx1.freebsd.org (Postfix) with ESMTPS id 4TwZLq0vlZz4G9m;
+	Thu, 14 Mar 2024 17:36:51 +0000 (UTC)
+	(envelope-from jhb@FreeBSD.org)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=freebsd.org; s=dkim;
+	t=1710437811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2FRnGeCxFOtPEvgUPXcBs82NrDY5IYDYS2r+RYjKVpg=;
+	b=sEhNz4ZBuiVsXmcilCwowh42gWx/ujdNrhfQgF9MTZYFlTaPNgT6u6CtyovNZK0Ny3h9mr
+	CjC3HmvFbS3BkqOsuR2TOxuM6kBYn8pnaHaQ4RrKVpMDnPny1CpYXDZtxa1zLIZAcWi31H
+	dyjuNpYOqU0wNqbJ3lIuEYxHTtKYl6lUX7XIzF4UyvBMJHmpJcGNGO5SP24p0a9wo6wJTr
+	/P8LZAor9zCuZK2PUIk/anzVNzBpYTQTHb3pdXSzZZKKUACMsWvjUoJjy9IHsaA73UU1+z
+	F1KVTzacJkz7b2ZE1J2ENR/X/qDRR9YZ+z0Mdt6SGn+gwOTkDJJr6G8QZrsaoA==
+ARC-Seal: i=1; s=dkim; d=freebsd.org; t=1710437811; a=rsa-sha256; cv=none;
+	b=PJKOWliNE9sARysvn+5wbnE2O6//dmWKHXlV8KLUAGyZVL7ruhitf1Yv22v2SuiB1cOfv2
+	CFcknR6jm5Wd0uWqAkvHZx4OE9ppyXIYhWhOlJ3yaXvOGMYjqUbtzBa822N37nVaTHugkB
+	Yi5GnZJF9OPyqDUB2cPOrlns4sLcOTrLpYWPzzL0C4cakDQv3yboQLvsM0hNVys8Ca+FE1
+	cf72Qv++5EHsmMq4OYvmnXvM3KEcMWq7phQqb6jeImXXdUBzZUhVRq17uwqz/wLKZZXaIt
+	914d2ab+00tzpHGfMelNG8uVgQLWotKFY53gT6SN9L2qx2iXe8tZkd6K9nw+Rw==
+ARC-Authentication-Results: i=1;
+	mx1.freebsd.org;
+	none
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=freebsd.org;
+	s=dkim; t=1710437811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2FRnGeCxFOtPEvgUPXcBs82NrDY5IYDYS2r+RYjKVpg=;
+	b=uNM9NnEpZukwPoUCmQi64Ps5+jKT7j+T+8xTlbM759DPqHIneuZ0wR4NKINoteUxbgJNvX
+	dZtg3U0tYZM/JNO3w6oSigr0i4OCzfbaHAY3HWy0iPKcLLMZJRfxPOmK2mFW5kEY+H28Yj
+	cTXHiLTARTTjEJPYbQnbR3jKkbC2I8tqB1XopkCpJRPzJbwHScQr6LG0KK/1NI+iWRAil7
+	LXRBkTUE/AsW9N36R/6ZBD4XeddWzpJiqzfiLQ9yZyMC/hM6exKzQ/J4Er3RdlfZQpgbGD
+	kUkj/Np/G7DTcG6hUeI3XuFFL8gEdgfQBOJzlcI1Fnyb0HIFW1GmpHR3oCTrfQ==
+Received: from [IPV6:2601:644:937f:4c50:9159:2009:aff7:887a] (unknown [IPv6:2601:644:937f:4c50:9159:2009:aff7:887a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: jhb)
+	by smtp.freebsd.org (Postfix) with ESMTPSA id 4TwZLn2VmVzMNv;
+	Thu, 14 Mar 2024 17:36:49 +0000 (UTC)
+	(envelope-from jhb@FreeBSD.org)
+Message-ID: <b86e4d31-70db-42de-bf54-4ffb03b5cba0@FreeBSD.org>
+Date: Thu, 14 Mar 2024 10:36:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,331 +96,199 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/2] mmc: sdhci-of-dwcmshc: Implement SDHCI CQE support
+Subject: Re: [PATCH 1/1] x86/elf: Add a new .note section containing Xfeatures
+ information to x86 core files
 Content-Language: en-US
-To: Sergey Khimich <serghox@gmail.com>, linux-kernel@vger.kernel.org
-Cc: linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
- Shawn Lin <shawn.lin@rock-chips.com>, Jyan Chou <jyanchou@realtek.com>
-References: <20240314141440.3305802-1-serghox@gmail.com>
- <20240314141440.3305802-3-serghox@gmail.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240314141440.3305802-3-serghox@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Dave Hansen <dave.hansen@intel.com>,
+ Vignesh Balasubramanian <vigbalas@amd.com>, linux-kernel@vger.kernel.org,
+ linux-toolchains@vger.kernel.org
+Cc: mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+ aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com, ebiederm@xmission.com,
+ keescook@chromium.org, x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-mm@kvack.org, bpetkov@amd.com, jinisusan.george@amd.com, matz@suse.de,
+ binutils@sourceware.org, felix.willgerodt@intel.com
+References: <20240314112359.50713-1-vigbalas@amd.com>
+ <20240314112359.50713-2-vigbalas@amd.com>
+ <dd54d6de-0bcc-4b2e-a420-b1a429b06246@intel.com>
+ <971d21b7-0309-439e-91b6-234f84da959d@FreeBSD.org>
+ <a789c10e-861e-48eb-96d6-aa129d352535@intel.com>
+From: John Baldwin <jhb@FreeBSD.org>
+In-Reply-To: <a789c10e-861e-48eb-96d6-aa129d352535@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 14/03/24 16:14, Sergey Khimich wrote:
-> From: Sergey Khimich <serghox@gmail.com>
+On 3/14/24 10:10 AM, Dave Hansen wrote:
+> On 3/14/24 09:45, John Baldwin wrote:
+>> On 3/14/24 8:37 AM, Dave Hansen wrote:
+>>> On 3/14/24 04:23, Vignesh Balasubramanian wrote:
+>>>> Add a new .note section containing type, size, offset and flags of
+>>>> every xfeature that is present.
+>>>
+>>> Mechanically, I'd much rather have all of that info in the cover letter
+>>> in the actual changelog instead.
+>>>
+>>> I'd also love to see a practical example of what an actual example core
+>>> dump looks like on two conflicting systems:
+>>>
+>>>      * Total XSAVE size
+>>>      * XCR0 value
+>>>      * XSTATE_BV from the core dump
+>>>      * XFEATURE offsets for each feature
+>>
+>> I noticed this when I bought an AMD Ryzen 9 5900X based system for
+>> my desktop running FreeBSD and found that the XSAVE core dump notes
+>> were not recognized by GDB (FreeBSD dumps an XSAVE register set note
+>> that matches the same layout of NT_X86_XSTATE used by Linux).
 > 
-> For enabling CQE support just set 'supports-cqe' in your DevTree file
-> for appropriate mmc node.
+> I just want to make sure that you heard what I asked.  I'd like to see a
+> practical example of how the real-world enumeration changes between two
+> real world systems.
 > 
-> Signed-off-by: Sergey Khimich <serghox@gmail.com>
-> ---
->  drivers/mmc/host/Kconfig            |   1 +
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 188 +++++++++++++++++++++++++++-
->  2 files changed, 187 insertions(+), 2 deletions(-)
+> Is that possible?
 > 
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index 81f2c4e05287..554dbf7f2fa4 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -233,6 +233,7 @@ config MMC_SDHCI_OF_DWCMSHC
->  	depends on MMC_SDHCI_PLTFM
->  	depends on OF
->  	depends on COMMON_CLK
-> +	select MMC_CQHCI
->  	help
->  	  This selects Synopsys DesignWare Cores Mobile Storage Controller
->  	  support.
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index a1f57af6acfb..3ddf5024b0f9 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -21,6 +21,7 @@
->  #include <linux/sizes.h>
->  
->  #include "sdhci-pltfm.h"
-> +#include "cqhci.h"
->  
->  #define SDHCI_DWCMSHC_ARG2_STUFF	GENMASK(31, 16)
->  
-> @@ -52,6 +53,9 @@
->  #define AT_CTRL_SWIN_TH_VAL_MASK	GENMASK(31, 24) /* bits [31:24] */
->  #define AT_CTRL_SWIN_TH_VAL		0x9  /* sampling window threshold */
->  
-> +/* DWC IP vendor area 2 pointer */
-> +#define DWCMSHC_P_VENDOR_AREA2		0xea
-> +
->  /* Rockchip specific Registers */
->  #define DWCMSHC_EMMC_DLL_CTRL		0x800
->  #define DWCMSHC_EMMC_DLL_RXCLK		0x804
-> @@ -167,6 +171,10 @@
->  #define BOUNDARY_OK(addr, len) \
->  	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
->  
-> +#define DWCMSHC_SDHCI_CQE_TRNS_MODE	(SDHCI_TRNS_MULTI | \
-> +					 SDHCI_TRNS_BLK_CNT_EN | \
-> +					 SDHCI_TRNS_DMA)
-> +
->  enum dwcmshc_rk_type {
->  	DWCMSHC_RK3568,
->  	DWCMSHC_RK3588,
-> @@ -182,7 +190,9 @@ struct rk35xx_priv {
->  
->  struct dwcmshc_priv {
->  	struct clk	*bus_clk;
-> -	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA reg */
-> +	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA1 reg */
-> +	int vendor_specific_area2; /* P_VENDOR_SPECIFIC_AREA2 reg */
-> +
->  	void *priv; /* pointer to SoC private stuff */
->  	u16 delay_line;
->  	u16 flags;
-> @@ -441,6 +451,90 @@ static void dwcmshc_hs400_enhanced_strobe(struct mmc_host *mmc,
->  	sdhci_writel(host, vendor, reg);
->  }
->  
-> +static int dwcmshc_execute_tuning(struct mmc_host *mmc, u32 opcode)
-> +{
-> +	int err = sdhci_execute_tuning(mmc, opcode);
-> +	struct sdhci_host *host = mmc_priv(mmc);
-> +
-> +	if (err)
-> +		return err;
-> +
-> +	/*
-> +	 * Tuning can leave the IP in an active state (Buffer Read Enable bit
-> +	 * set) which prevents the entry to low power states (i.e. S0i3). Data
-> +	 * reset will clear it.
-> +	 */
-> +	sdhci_reset(host, SDHCI_RESET_DATA);
-> +
-> +	return 0;
-> +}
-> +
-> +static u32 dwcmshc_cqe_irq_handler(struct sdhci_host *host, u32 intmask)
-> +{
-> +	int cmd_error = 0;
-> +	int data_error = 0;
-> +
-> +	if (!sdhci_cqe_irq(host, intmask, &cmd_error, &data_error))
-> +		return intmask;
-> +
-> +	cqhci_irq(host->mmc, intmask, cmd_error, data_error);
-> +
-> +	return 0;
-> +}
-> +
-> +static void dwcmshc_sdhci_cqe_enable(struct mmc_host *mmc)
-> +{
-> +	struct sdhci_host *host = mmc_priv(mmc);
-> +	u8 ctrl;
-> +
-> +	sdhci_writew(host, DWCMSHC_SDHCI_CQE_TRNS_MODE, SDHCI_TRANSFER_MODE);
-> +
-> +	sdhci_cqe_enable(mmc);
-> +
-> +	/*
-> +	 * The "DesignWare Cores Mobile Storage Host Controller
-> +	 * DWC_mshc / DWC_mshc_lite Databook" says:
-> +	 * when Host Version 4 Enable" is 1 in Host Control 2 register,
-> +	 * SDHCI_CTRL_ADMA32 bit means ADMA2 is selected.
-> +	 * Selection of 32-bit/64-bit System Addressing:
-> +	 * either 32-bit or 64-bit system addressing is selected by
-> +	 * 64-bit Addressing bit in Host Control 2 register.
-> +	 *
-> +	 * On the other hand the "DesignWare Cores Mobile Storage Host
-> +	 * Controller DWC_mshc / DWC_mshc_lite User Guide" says, that we have to
-> +	 * set DMA_SEL to ADMA2 _only_ mode in the Host Control 2 register.
-> +	 */
-> +	ctrl = sdhci_readb(host, SDHCI_HOST_CONTROL);
-> +	ctrl &= ~SDHCI_CTRL_DMA_MASK;
-> +	ctrl |= SDHCI_CTRL_ADMA32;
-> +	sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
-> +}
-> +
-> +static void dwcmshc_set_tran_desc(struct cqhci_host *cq_host, u8 **desc,
-> +				  dma_addr_t addr, int len, bool end, bool dma64)
-> +{
-> +	int tmplen, offset;
-> +
-> +	if (likely(!len || BOUNDARY_OK(addr, len))) {
-> +		cqhci_set_tran_desc(*desc, addr, len, end, dma64);
-> +		return;
-> +	}
-> +
-> +	offset = addr & (SZ_128M - 1);
-> +	tmplen = SZ_128M - offset;
-> +	cqhci_set_tran_desc(*desc, addr, tmplen, false, dma64);
-> +
-> +	addr += tmplen;
-> +	len -= tmplen;
-> +	*desc += cq_host->trans_desc_len;
-> +	cqhci_set_tran_desc(*desc, addr, len, end, dma64);
-> +}
-> +
-> +static void dwcmshc_cqhci_dumpregs(struct mmc_host *mmc)
-> +{
-> +	sdhci_dumpregs(mmc_priv(mmc));
-> +}
-> +
->  static void dwcmshc_rk3568_set_clock(struct sdhci_host *host, unsigned int clock)
->  {
->  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> @@ -649,6 +743,7 @@ static const struct sdhci_ops sdhci_dwcmshc_ops = {
->  	.get_max_clock		= dwcmshc_get_max_clock,
->  	.reset			= sdhci_reset,
->  	.adma_write_desc	= dwcmshc_adma_write_desc,
-> +	.irq			= dwcmshc_cqe_irq_handler,
->  };
->  
->  static const struct sdhci_ops sdhci_dwcmshc_rk35xx_ops = {
-> @@ -700,6 +795,70 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_th1520_pdata = {
->  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
->  };
->  
-> +static const struct cqhci_host_ops dwcmshc_cqhci_ops = {
-> +	.enable		= dwcmshc_sdhci_cqe_enable,
-> +	.disable	= sdhci_cqe_disable,
-> +	.dumpregs	= dwcmshc_cqhci_dumpregs,
-> +	.set_tran_desc	= dwcmshc_set_tran_desc,
-> +};
-> +
-> +static void dwcmshc_cqhci_init(struct sdhci_host *host, struct platform_device *pdev)
-> +{
-> +	struct cqhci_host *cq_host;
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> +	bool dma64 = false;
-> +	u16 clk;
-> +	int err;
-> +
-> +	host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
-> +	cq_host = devm_kzalloc(&pdev->dev, sizeof(*cq_host), GFP_KERNEL);
-> +	if (!cq_host) {
-> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: not enough memory\n");
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * For dwcmshc host controller we have to enable internal clock
-> +	 * before access to some registers from Vendor Specific Area 2.
-> +	 */
-> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> +	clk |= SDHCI_CLOCK_INT_EN;
-> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> +	if (!(clk & SDHCI_CLOCK_INT_EN)) {
-> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: internal clock enable error\n");
-> +		goto free_cq_host;
-> +	}
-> +
-> +	cq_host->mmio = host->ioaddr + priv->vendor_specific_area2;
-> +	cq_host->ops = &dwcmshc_cqhci_ops;
-> +
-> +	/* Enable using of 128-bit task descriptors */
-> +	dma64 = host->flags & SDHCI_USE_64_BIT_DMA;
-> +	if (dma64) {
-> +		dev_dbg(mmc_dev(host->mmc), "128-bit task descriptors\n");
-> +		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
-> +	}
-> +	err = cqhci_init(cq_host, host->mmc, dma64);
-> +	if (err) {
-> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: error %d\n", err);
-> +		goto int_clock_disable;
-> +	}
-> +
-> +	dev_dbg(mmc_dev(host->mmc), "CQE init done\n");
-> +
-> +	return;
-> +
-> +int_clock_disable:
-> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> +	clk &= ~SDHCI_CLOCK_INT_EN;
-> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-> +
-> +free_cq_host:
-> +	devm_kfree(&pdev->dev, cq_host);
-> +}
-> +
->  static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
->  {
->  	int err;
-> @@ -796,7 +955,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  	struct rk35xx_priv *rk_priv = NULL;
->  	const struct sdhci_pltfm_data *pltfm_data;
->  	int err;
-> -	u32 extra;
-> +	u32 extra, caps;
->  
->  	pltfm_data = device_get_match_data(&pdev->dev);
->  	if (!pltfm_data) {
-> @@ -847,6 +1006,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  
->  	host->mmc_host_ops.request = dwcmshc_request;
->  	host->mmc_host_ops.hs400_enhanced_strobe = dwcmshc_hs400_enhanced_strobe;
-> +	host->mmc_host_ops.execute_tuning = dwcmshc_execute_tuning;
->  
->  	if (pltfm_data == &sdhci_dwcmshc_rk35xx_pdata) {
->  		rk_priv = devm_kzalloc(&pdev->dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
-> @@ -896,6 +1056,10 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  		sdhci_enable_v4_mode(host);
->  #endif
->  
-> +	caps = sdhci_readl(host, SDHCI_CAPABILITIES);
-> +	if (caps & SDHCI_CAN_64BIT_V4)
-> +		sdhci_enable_v4_mode(host);
-> +
->  	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
->  
->  	pm_runtime_get_noresume(dev);
-> @@ -906,6 +1070,14 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  	if (err)
->  		goto err_rpm;
->  
-> +	/* Setup Command Queue Engine if enabled */
-> +	if (device_property_read_bool(&pdev->dev, "supports-cqe")) {
-> +		priv->vendor_specific_area2 =
-> +			sdhci_readw(host, DWCMSHC_P_VENDOR_AREA2);
-> +
-> +		dwcmshc_cqhci_init(host, pdev);
+> Here's the raw CPUID data from the XSAVE region on my laptop:
+> 
+>>     0x0000000d 0x00: eax=0x000002e7 ebx=0x00000a88 ecx=0x00000a88 edx=0x00000000
+>>     0x0000000d 0x01: eax=0x0000000f ebx=0x00000998 ecx=0x00003900 edx=0x00000000
+>>     0x0000000d 0x02: eax=0x00000100 ebx=0x00000240 ecx=0x00000000 edx=0x00000000
+>>     0x0000000d 0x05: eax=0x00000040 ebx=0x00000440 ecx=0x00000000 edx=0x00000000
+>>     0x0000000d 0x06: eax=0x00000200 ebx=0x00000480 ecx=0x00000000 edx=0x00000000
+>>     0x0000000d 0x07: eax=0x00000400 ebx=0x00000680 ecx=0x00000000 edx=0x00000000
+>>     0x0000000d 0x08: eax=0x00000080 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
+>>     0x0000000d 0x09: eax=0x00000008 ebx=0x00000a80 ecx=0x00000000 edx=0x00000000
+>>     0x0000000d 0x0b: eax=0x00000010 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
+>>     0x0000000d 0x0c: eax=0x00000018 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
+>>     0x0000000d 0x0d: eax=0x00000008 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
+> 
+> Could we get that for an impacted AMD system, please?
+> 
+> 	cpuid -1 --raw | grep "   0x0000000d "
+> 
+> should do it.
 
-If CQE init fails, you continue anyway, but MMC_CAP2_CQE is
-still set, which would cause problems.  Better to clear
-MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD
+    0x0000000d 0x00: eax=0x00000207 ebx=0x00000988 ecx=0x00000988 edx=0x00000000
+    0x0000000d 0x01: eax=0x0000000f ebx=0x00000348 ecx=0x00001800 edx=0x00000000
+    0x0000000d 0x02: eax=0x00000100 ebx=0x00000240 ecx=0x00000000 edx=0x00000000
+    0x0000000d 0x09: eax=0x00000008 ebx=0x00000980 ecx=0x00000000 edx=0x00000000
+    0x0000000d 0x0b: eax=0x00000010 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
+    0x0000000d 0x0c: eax=0x00000018 ebx=0x00000000 ecx=0x00000001 edx=0x00000000
 
-> +	}
-> +
->  	if (rk_priv)
->  		dwcmshc_rk35xx_postinit(host, priv);
->  
-> @@ -961,6 +1133,12 @@ static int dwcmshc_suspend(struct device *dev)
->  
->  	pm_runtime_resume(dev);
->  
-> +	if (host->mmc->caps2 & MMC_CAP2_CQE) {
-> +		ret = cqhci_suspend(host->mmc);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	ret = sdhci_suspend_host(host);
->  	if (ret)
->  		return ret;
-> @@ -1005,6 +1183,12 @@ static int dwcmshc_resume(struct device *dev)
->  	if (ret)
->  		goto disable_rockchip_clks;
->  
-> +	if (host->mmc->caps2 & MMC_CAP2_CQE) {
-> +		ret = cqhci_resume(host->mmc);
-> +		if (ret)
-> +			goto disable_rockchip_clks;
-> +	}
-> +
->  	return 0;
->  
->  disable_rockchip_clks:
+Here, I think the ebx value for the 0x09 leaf (PKRU) is the relevant difference
+here, it is 0xa80 on your laptop and 0x980 on the AMD CPU.  (This is the
+missing MPX gap on AMD.)
+
+>>> This is pretty close to just a raw dump of the XSAVE CPUID leaves.
+>>> Rather than come up with an XSAVE-specific ABI that depends on CPUID
+>>> *ANYWAY* (because it dumps the "flags" register aka. ECX), maybe we
+>>> should just bite the bullet and dump out (some of) the raw CPUID space.
+>>
+>> So the current note I initially proposed and implemented for FreeBSD
+>> (https://reviews.freebsd.org/D42136) and an initial patch set for GDB
+>> (https://sourceware.org/pipermail/gdb-patches/2023-October/203083.html)
+>> do indeed dump a raw set of CPUID leaves.  The version I have for FreeBSD
+>> only dumps the raw leaf values for leaf 0x0d though the note format is
+>> extensible should additional leaves be needed in the future.  One of the
+>> questions if we wanted to use a CPUID leaf note is which leaves to dump
+>> (e.g. do you dump all of them, or do you just dump the subset that is
+>> currently needed).
+> 
+> You dump what is needed and add to the dump over time.
+
+That is what I started with, yes, but am attempting to anticipate future
+problems in my list of caveats.
+
+>> Another quirky question is what to do about systems with hetergeneous
+>> cores (E vs P for example).
+> That's irrelevant for now.  The cores may be heterogeneous but the
+> userspace ISA and (and thus XSAVE formats) are identical.  If they're
+> not, then we have bigger problems on our hands.
+
+Yes, I agree on the bigger problems and hope we don't have to solve
+them.
+
+>> Currently those systems use the same XSAVE layout across all cores,
+>> but other CPUID leaves do already vary across cores on those systems.
+> 
+> There shouldn't be any CPUID leaves that differ _and_ matter to
+> userspace and thus core dumps.
+
+Today that is true, yes.  I'm fine with making that tradeoff (along
+with only dumping a subset of leaves) so long as the consensus is that
+is an acceptable tradeoff to make.
+
+>> However, there are other wrinkles with the leaf approach.  Namely, one
+>> of the use cases that I currently have an ugly hack for in GDB is if
+>> you are using gdb against a remote host running gdbserver and then use
+>> 'gcore' to generate a core dump.  GDB needs to write out a NT_X86_XSTATE
+>> note, but that note requires a layout.  What GDB does today is just pick
+>> a known Intel layout based on the XCR0 mask.  However, GDB should ideally
+>> start writing out whatever new note we adopt here, so if we dump raw
+>> CPUID leaves it means extending the GDB remote protocol so we can query
+>> the CPUID leaves from the remote host.  On the other hand, if we choose a
+>> more abstract format as proposed in this patch, the local GDB (or LLDB
+>> or whatever) can generate whatever synthetic layout it wants to write
+>> the local NT_X86_XSTATE.  (NB: A relevant detail here is that the GDB
+>> remote protocol does not pass the entire XSAVE state across as a block,
+>> instead gdbserver parses individual register values for AVX, etc.
+>> registers and those decoded register values are passed over the
+>> protocol.)
+> 
+> So the gdb side says, "Give me PKRU" and the remote side parses the
+> XSAVE image, finds PKRU, and sends it over the wire?
+
+Yes.
+
+>> Another question is potentially supporting compact XSAVE format in
+>> for NT_X86_XSTATE.  Today Linux has some complicated code to re-expand
+>> the compat XSAVE format back out to the standard layout for ptrace() and
+>> process core dumps.
+> 
+> Yeah, but supporting the compacted format in NT_X86_XSTATE doesn't help
+> us at all.  We still intermingle user and supervisor state and that
+> needs to get repacked _anyway_.
+
+Fair enough.
+
+> In other words, no matter what we do, it's going to be complicated
+> because the userspace buffer can't have supervisor state and the kernel
+> buffer does have it.  The compacted format mismatch is the least of our
+> problems.
+> 
+>>    (FreeBSD doesn't yet make use of XSAVEC so we
+>> haven't yet dealt with that problem.)
+> 
+> ... or XSAVES, which is actually the most relevant here.
+> 
+> Backing up... there are two approaches here:
+> 
+>   1. Dump out raw x86-specific gunk, aka. CPUID contents itself.  There
+>      are a billion ways to do this and lots of complications, including
+>      the remote protocol implications
+> or
+>   2. Define an abstract format that works anywhere, not just on x86 and
+>      not just for XSAVE.
+> 
+> There's no (sane) middle ground.  The implementation here (in this
+> patch) is fundamentally x86-specific and pretends to be some kind of
+> abstracted x86-independent format.
+
+Well, are there other register notes that could benefit from an approach
+like this?  Most other register notes I'm aware of on various architectures
+either have a fixed layout (like the typical general purpose register notes),
+or they have a fixed set of registers but the size of individual registers
+can vary (thinks like SME or RISC-V's vector extension).  XSAVE is the only
+one I'm aware of that packs multiple register sets into a single note.
+
+To step back a bit, another approach that could be taken (and I'm not sure
+it is worth it at this point) would to stop dumping a single XSAVE note
+and dump a separate register note for each feature.  That is, dump a note
+for AVX (the upper bits of ymmX), a note for PKRU, etc.  I think if I had
+to pick a strategy at the very beginning that's what I would choose now,
+but this isn't the very beginning and that sort of change is likely too
+disruptive.  (This approach is what happens on other arches today in effect,
+e.g. on AArch64.)
+
+-- 
+John Baldwin
 
 
