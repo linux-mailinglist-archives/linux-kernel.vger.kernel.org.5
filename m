@@ -1,155 +1,257 @@
-Return-Path: <linux-kernel+bounces-103305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4C6687BDC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:32:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0182587BDBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:31:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52556281FD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:32:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E71931C21057
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F1A55C35;
-	Thu, 14 Mar 2024 13:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD695C60D;
+	Thu, 14 Mar 2024 13:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="klcVKh1w"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T8MAfn4v"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D955A4E0
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD4B55C35
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710423121; cv=none; b=RGcJXR4q/Tq+T36QqYq4wMAIZ5jewrPLPhdrdEa2L4hyVvdaCeBOY7NGeyLiY6cwSnC38LqOfPtUWc4U3AkN4fSS/E8ZMVQBz/Y5494xdTXeSi0rnGrIQFPcom7IypWWN1fuvM4d6Dluhb2lMg1R/RF2SsTNUbefA5MKIJc2wPU=
+	t=1710423095; cv=none; b=JFk78FFMQoyuUyLBUxjaagqZQCOKg9hiwpvw33xK2KE9tfHa7OejX/83WOX0JqwSGsBsPW+twy7Hxc+QFW/NsLHlXD82CCSmCYZqr1qwAFGwEDi2/9LjdJH4HhAqvdkcQtmnBo4h5H4gNawa9HOSdjGciehO8YsEdxR3KIJ7Ejw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710423121; c=relaxed/simple;
-	bh=jOWUOUdqrMqCL7G4jj9TfumdyGMfKnGMtDE29PbjJ4U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LXqcmBBOeufqn5CquQXJnVZ7jmgJn5MnGjUE7eVbtilnZkMBVWR5ey0JgDFLaeFIQmQHmRBgL/P31U4hMJll3CPlAMBgleWSRRp7hr8Ua6nnMqFmzSlOsR9FuPDZnSlN2bDOuU+M4RdmMLPjPozCKWXw8r63o6aTn4M9xxIiGxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=klcVKh1w; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=s/0FdWk5XGUyqBACzBKt0C5ouVnbDInJpotxpm6FY0U=; b=klcVKh1wMlvaqagVsgKd3o91I7
-	Wzzz8EZCgUdZFgi72k8zovFPFxQ+KluyMxWKm+39aEBa3x2L6/bk07soevl3sC+qZ/ONgTWzZTYgF
-	jfrfaLroef/2JlWo97lbWUN9UiaQ1FlBV9KxhFoZ4vwynxkxv4YLbIXM6Kr/FGgLYhp05nsASPL1G
-	OmX0hZAq5oox7Atd3KWNi9KBvE29xRAVGjde0FuIs20JuSeESN+gPn876fmW+1PeyuzMYfPLRTLqb
-	SA3WfQe+j4PIq0tTU/a5vPSWjLoYsxPqyaQUGQXfc92W7nv87EcFiZQ+rWN+GH7rKSgrmRbV50Qsd
-	U115Jzbw==;
-Received: from [189.6.17.125] (helo=mail.igalia.com)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rklBI-00AMX3-BG; Thu, 14 Mar 2024 14:31:36 +0100
-Date: Thu, 14 Mar 2024 10:31:13 -0300
-From: Melissa Wen <mwen@igalia.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
-	Melissa Wen <melissa.srw@gmail.com>, =?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, 
-	Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi, 
-	Louis Chauvet <louis.chauvet@bootlin.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com, 
-	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com, 
-	Pekka Paalanen <pekka.paalanen@collabora.com>
-Subject: Re: [PATCH 1/7] drm: Fix drm_fixp2int_round() making it add 0.5
-Message-ID: <qabkvxajmothdzi4x6p56sehs4tmqgpniki5vyzu55gz6ogkmt@mypwkdofe2kt>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
- <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
- <yyrvbqpmqplwtqfdsjkhzmx7wrk4h67kn5443bdou7c7uciouy@hac7zfxiff7t>
- <16f8867c-147a-4149-ba96-ae70f8eaf903@riseup.net>
- <nzce3m2okiqdd6iqj6ynymus64vjcpdep3jwqgs4uw3rvkvqkz@tz4i34w7b6es>
+	s=arc-20240116; t=1710423095; c=relaxed/simple;
+	bh=nGFymr06jggn35ZdmCn4T3pwrR6+++r55xgECWArEvY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tYRWQyUSHaPQlJZLMuVPrNCcwagfHrCE0U1CrLbWWBLdzstVZH4eqDW5guSNXjVldOouOMCuC1+/U7E2Ah/ExA9/KrVgdvdl7umSp13M4YGICdV+Em/c3u+QIeacSx6WES9znwRn5K7+Ei/D7TFK82JMs/LGFGGHOkN4Fuoa51Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T8MAfn4v; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d46d729d89so13323251fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710423091; x=1711027891; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gPkhUSdcqdsN9V6zcu4BRhpYFnVUNXONuARlNbPZEbM=;
+        b=T8MAfn4vVI97SSphEf5unrcm2NKyhwsx5Lpr+ACu6unf/Cv0wYBInRwiVCb3oyZ7mV
+         8BLHVn/eoec0pxgm5lKGIbPxNtTcuq47yy+pWJA5QlJ0aXDpe8ODNU2mahnVGFwQ3k9Y
+         ZR7l34SF6HkAaprxZ2xo6ykAejmnOaQLG7i/oBEhom/lCztgTmg0WqjRjrdi8wO28Pv7
+         kCvM4dW6bxolpBB7vnY8/8Wrrk1CYYos6ZbXb+oGNh18R+mazP4n8qEZrbhk8OBJhApw
+         1JMSKGn1VozFXQrl7OBHwaWsEGFWMZndU6SNApu2RRVyeW2dJUIf3adGhmA4gi9QGpJS
+         k/fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710423091; x=1711027891;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gPkhUSdcqdsN9V6zcu4BRhpYFnVUNXONuARlNbPZEbM=;
+        b=ZoDfF1P32AcDA6rW1Lr8Jm/1iMzlGzFJAmhg7U2/OuiZ903uzbq6JB2FjueR4eqi3j
+         GeGzB5d4DgKNu69IeWthCk1xWbPqn50n+DyrYBIweTahGyEgjHULeVPPFaE1Q5YwK01O
+         JWz7nFQLr1hM87J7giKIyUM2gDsTSh3D2+Dl++kUtQ5vnjUOppJupY2oDEvIoNWVfxEZ
+         RqL+pub6KGsp2v9DQ9EhEX55EGiR7CxVh913uafo6Qm6KKo5PbWHLgK5H5XX6FVWQmXg
+         dA6VoBXq0N2y49WZxj0wcQFeTPtTrob7k0MVbEjPqYILXWpNbCW1i+c2CJspAONXa4QW
+         evjw==
+X-Forwarded-Encrypted: i=1; AJvYcCX05MG7T/JznejsVZXUBMiMevymJnuyWFXnVwCKbBNtb3NqhfC5mtgiP4BZKDERuBTZFXt8Wc+rk6aslZb5t6urCUj5Sa8sor32Ak6f
+X-Gm-Message-State: AOJu0Yz60CRB4AbWdGnOJBpvTWc2KWKgraIib8bG+Ha5MUaGRMFLTn0m
+	aFCH5KhM1AwCDcSRc2lZK0OoYaoUAzQtK/pv0OqJ+aVY7O4cGTjWsCL7FH9XA24=
+X-Google-Smtp-Source: AGHT+IFaLoDN+qWeQtwjKCiJXBGDygA8rVYQTs6JwGP3mrfQKiP4eBl/sU2zeSEoZ48NYtXaxNHMlQ==
+X-Received: by 2002:a2e:9019:0:b0:2d4:7829:4d11 with SMTP id h25-20020a2e9019000000b002d478294d11mr8773ljg.39.1710423091372;
+        Thu, 14 Mar 2024 06:31:31 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id v3-20020adfe4c3000000b0033e052be14fsm767561wrm.98.2024.03.14.06.31.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 06:31:30 -0700 (PDT)
+Message-ID: <df615536-8034-464a-8dba-c890b70edc1f@linaro.org>
+Date: Thu, 14 Mar 2024 14:31:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nzce3m2okiqdd6iqj6ynymus64vjcpdep3jwqgs4uw3rvkvqkz@tz4i34w7b6es>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/4] soc: amlogic: meson-gx-socinfo-sm: Add Amlogic
+ secure-monitor SoC Information driver
+Content-Language: en-US
+To: Viacheslav <adeep@lexina.in>, Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+References: <20240314070433.4151931-1-adeep@lexina.in>
+ <20240314070433.4151931-3-adeep@lexina.in>
+ <111346d3-8357-4ca3-9249-a43ebc225fcb@linaro.org>
+ <9292d2ee-138a-4a59-9c96-31c1b4473a4e@lexina.in>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <9292d2ee-138a-4a59-9c96-31c1b4473a4e@lexina.in>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 03/14, Melissa Wen wrote:
-> On 03/13, Arthur Grillo wrote:
-> > 
-> > 
-> > On 12/03/24 15:27, Melissa Wen wrote:
-> > > On 03/06, Arthur Grillo wrote:
-> > >> As well noted by Pekka[1], the rounding of drm_fixp2int_round is wrong.
-> > >> To round a number, you need to add 0.5 to the number and floor that,
-> > >> drm_fixp2int_round() is adding 0.0000076. Make it add 0.5.
-> > >>
-> > >> [1]: https://lore.kernel.org/all/20240301135327.22efe0dd.pekka.paalanen@collabora.com/
-> > >>
-> > > Hi Arthur,
-> > > 
-> > > thanks for addressing this issue.
-> > > 
-> > > Please, add a fix tag to the commit that you are fixing, so we can
-> > > easily backport. Might be this commit:
-> > > https://cgit.freedesktop.org/drm/drm-misc/commit/drivers/gpu/drm/vkms?id=ab87f558dcfb2562c3497e89600dec798a446665
-> > >> Suggested-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-> > >> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> > >> ---
-> > >>  include/drm/drm_fixed.h | 2 +-
-> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >>
-> > >> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
-> > >> index 0c9f917a4d4b..de3a79909ac9 100644
-> > >> --- a/include/drm/drm_fixed.h
-> > >> +++ b/include/drm/drm_fixed.h
-> > >> @@ -90,7 +90,7 @@ static inline int drm_fixp2int(s64 a)
-> > >>  
-> > >>  static inline int drm_fixp2int_round(s64 a)
-> > >>  {
-> > >> -	return drm_fixp2int(a + (1 << (DRM_FIXED_POINT_HALF - 1)));
-> > > Also, this is the only usage of DRM_FIXED_POINT_HALF. Can you also
-> > > remove it as it won't be used anymore?
-> > > 
-> > >> +	return drm_fixp2int(a + DRM_FIXED_ONE / 2);
-> > > Would this division be equivalent to just shifting 1ULL by 31 instead of
-> > > 32 as done in DRM_FIXED_ONE?
-> > 
-> > Yes, but I think the division makes it easier to understand what is
-> > going on.
+On 14/03/2024 13:22, Viacheslav wrote:
+>> +
+>>> +	soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
+>>> +				    GFP_KERNEL);
+>>> +	if (!soc_dev_attr)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	soc_dev_attr->serial_number = socinfo_get_chipid(&pdev->dev, fw, &socinfo);
+>>> +
+>>> +	soc_dev_attr->family = "Amlogic Meson";
+>>> +	soc_dev_attr->revision = kasprintf(GFP_KERNEL, "%x:%x - %x:%x",
+>>> +					   socinfo.v1.major_id,
+>>> +					   socinfo.v1.chip_rev,
+>>> +					   socinfo.v1.pack_id,
+>>> +					   (socinfo.v1.reserved<<4) + socinfo.v1.layout_ver);
+>>> +	soc_dev_attr->soc_id = kasprintf(GFP_KERNEL, "%s (%s)",
+>>> +					 socinfo_v1_to_soc_id(socinfo),
+>>> +					 socinfo_v1_to_package_id(socinfo));
+>>> +
+>>> +	soc_dev = soc_device_register(soc_dev_attr);
+>>> +
+>>> +
+>>> +	if (IS_ERR(soc_dev)) {
+>>> +		kfree(soc_dev_attr->revision);
+>>> +		kfree_const(soc_dev_attr->soc_id);
+>>> +		kfree(soc_dev_attr);
+>>
+>> That's a double free. This was not tested.
 > 
-> Right. I was thinking about slightly better performance, but I don't
-> have any data. We can go with this since you consider more readable,
-> anyway.
+> 
+> Please, describe the problem.
 
-Just checked that Harry proposed in another patch[1] this:
-`#define DRM_FIXED_HALF		0x80000000ll` for the 0.5 const
+Test your code. What's the point of arguing over it if regular test
+would show this?
 
-Doesn't it sounds better?
+> I don't quite understand what the issue is:
+> 
+> - kfree() releases memory allocated with kmalloc()
 
-[1] https://lore.kernel.org/dri-devel/20240226211100.100108-4-harry.wentland@amd.com/
+So point me where is kmalloc(). I don't see. I see only devm.
+
+> - kasprintf() allocates memory using kmalloc_track_caller()
 > 
-> Can you send another version addressing the other comments? Then I can
-> cherry-pick and already apply the fix.
+> Technically, I see no difficulty in freeing the newly allocated memory. 
+> In case of memory allocation issues in kasprintf, we would just get 
+> NULL, which kfree should also handle properly. Considering that we don't 
+> need soc_dev_attr anymore, we don't need to worry about the contents of 
+> .revision and .soc_id.
+
+Please pay attention that my comment is under specific line. We do not
+discuss unrelated code.
+
 > 
-> Thanks,
+> I see that kfree_const has crept in by accident, which is essentially 
+> needed here only if we replace kasprintf with kasprintf_const for 
+> .soc_id, but it does not introduce any erroneous behavior.
+
 > 
-> Melissa
+>>
+>>> +		return PTR_ERR(soc_dev);
+>>> +	}
+>>> +
+>>> +	dev = soc_device_to_device(soc_dev);
+>>> +	platform_set_drvdata(pdev, soc_dev);
+>>> +
+>>> +	dev_info(dev, "Amlogic Meson %s Revision %x:%x (%x:%x) Detected (SM)\n",
+>>> +			soc_dev_attr->soc_id,
+>>> +			socinfo.v1.major_id,
+>>> +			socinfo.v1.chip_rev,
+>>> +			socinfo.v1.pack_id,
+>>> +			(socinfo.v1.reserved<<4) + socinfo.v1.layout_ver);
+>>> +
+>>> +	return PTR_ERR_OR_ZERO(dev);
+>>> +}
+>>> +
+>>> +
+>>> +static int meson_gx_socinfo_sm_remove(struct platform_device *pdev)
+>>> +{
+>>> +	struct soc_device *soc_dev = platform_get_drvdata(pdev);
+>>> +
+>>> +	soc_device_unregister(soc_dev);
+>>
+>> If you free the memory in probe() error path, why you did not decide to
+>> free it here as well? It is symmetrical, so this should make you wonder
+>> - error path is wrong.
 > 
-> > 
-> > Best Regards,
-> > ~Arthur Grillo
-> > 
-> > > 
-> > > Melissa
-> > > 
-> > >>  }
-> > >>  
-> > >>  static inline int drm_fixp2int_ceil(s64 a)
-> > >>
-> > >> -- 
-> > >> 2.43.0
-> > >>
+> This is something I can easily explain:
+> 
+> In the case where we have successfully registered with 
+> soc_device_register, we clean up everything that was manually allocated 
+> and not used.
+> In the case of unloading the driver, the cleanup should be handled by 
+> the soc_device_unregister command.
+> 
+> Technically, it's not possible to insert memory release because until 
+> the command is called, the driver is active, and afterwards, there's no 
+> guarantee of the pointer's validity.
+
+Then you do not understand lifecycle of device. There is release here
+via devm. Exactly at after my comment, when } finishes.
+
+> Perhaps it would have been better if soc_device_register copied the 
+> entire soc_device_attribute structure and took care of memory allocation 
+> and release itself, then we could comfortably free any excess memory 
+> back in _probe.
+> 
+> Are you currently recommending not to release memory within the if 
+> (IS_ERR(soc_dev)) section?
+
+You have double free which will be pointed out by testing. Yes, of
+course I recommend not to have double free, so not to release memory
+which is being released.
+
+Best regards,
+Krzysztof
+
 
