@@ -1,212 +1,181 @@
-Return-Path: <linux-kernel+bounces-103314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28DFF87BDEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:43:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC4A587BDF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C3A81C225A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:43:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A462830DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCE75D8F8;
-	Thu, 14 Mar 2024 13:43:45 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7305A4CB
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:43:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3BA612EC;
+	Thu, 14 Mar 2024 13:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="he8MG/k9"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2625E5C5F3
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710423825; cv=none; b=mvhE6CgiQf0aR6SOMGmPEMhTF+LIqf0xwIi+9+SX0w8Ky1sGf1RXCPOMz1ggZbZ/LNyhBxzUxmp/N3H5GhXTt/STy3NAlVlTtw6uVUMjtVQlhnA+KmIzlYOQ7PAbiFIRVzNOaJBGnWkLgq6vx+k1fDprunBHMBDTj+za48Y4g/o=
+	t=1710423968; cv=none; b=VpiqSan951je+dgVkptuaRkwqjK9ihpAI6bzOx8U2cvi6mWne9JpoT4mBlxSE0Ny1Xm/mg8pnAkvxN6qGmUm6b9Cf1AlO6jvV6bP585WmqKaZX+zHgmjjsD+k+4Mtj9NuQEz/Q6qph/zmIQZkKpZaPGa3OWI7nWyKD1yisRhmv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710423825; c=relaxed/simple;
-	bh=Ia7fXQpwscxjlgS77Cik0if2GSeWHgz/M9bm7iY1vIc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pXrHh5l/fYlEn9mXt44AXyGYkFxhsF7Ofe8yeFAg1qualY9G739vj9x6DZ95Gz3LiwmbsDkawyf1hszf//qPcapJ7uL8XgyRX9xUKu9nd3yncp9ruJY9Gu3u47d9BCUo4YCx8K6CI/T8ls4xDUceqHCQmlMG+fHrSCRjiXCm/6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E8B61007;
-	Thu, 14 Mar 2024 06:44:17 -0700 (PDT)
-Received: from [10.1.30.182] (XHFQ2J9959.cambridge.arm.com [10.1.30.182])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A83463F762;
-	Thu, 14 Mar 2024 06:43:36 -0700 (PDT)
-Message-ID: <716bb29c-d2a2-4eef-b300-b037f08f458f@arm.com>
-Date: Thu, 14 Mar 2024 13:43:34 +0000
+	s=arc-20240116; t=1710423968; c=relaxed/simple;
+	bh=Nwe0OJCwPmO+Pyk5ikxG+QFsv/VS0r+15g43/j6W8GM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=B+ZFCaTJ8qxyGKO2b50cSmdo1KN7vkbDY+08AaO+9jcM0BYn+Ry/suylreJtOO+xKYt7dWih42CNz4cxlQekIevnunQ0jfHcBFQWhPzEzPBBhYqciWy4gEZw0+kj0WboFJVeEP65QXXarIGkv8Pt8pYeXC6Ife7B7gtfKrTQcUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=he8MG/k9; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42ECrD2l029511;
+	Thu, 14 Mar 2024 13:45:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=XwiQpHXIslt51XYw+nYwRS+Tl6bFp6ua9li80Bv5mQw=;
+ b=he8MG/k9ecHXJLA09kkkxNS8g7veOVeccmEJKg8RCfagzZBt1/11Pxu7FM+pW9DSI5FT
+ sVVXvmSHO+SitfcyDOvOwuuKKzwlHIBblYZ60LMmmnjrHjqwYaeITiLhpkg5BFkpEOHO
+ c+VsMx6DiSx1hrGAqPrawXuuI7nOO7yMyL+7KEu+zsnnesU3SaygPmvWM93hPMq3hGzZ
+ kzf4qyxWICNv95FADnbQnC1yRYLK1D3uQ7RhdFOznR+3RGoQdKu7y1iJDwIqMGHQYWXP
+ SbC9edevwNibhqyZJOPb7VmiOm0/JsKq7WUC4Q5skhTxb+4rJ4fFJ+jxFNrRfISILxEK 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wv1mngvq7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 13:45:48 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42EDdHqV001952;
+	Thu, 14 Mar 2024 13:45:47 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wv1mngvpy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 13:45:47 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42EB0RiW020506;
+	Thu, 14 Mar 2024 13:45:46 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws3kmd2ar-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 13:45:46 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42EDjgFa12583400
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 14 Mar 2024 13:45:44 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id ABADF2004B;
+	Thu, 14 Mar 2024 13:45:42 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 699EB20040;
+	Thu, 14 Mar 2024 13:45:42 +0000 (GMT)
+Received: from DESKTOP-2CCOB1S. (unknown [9.171.201.209])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 14 Mar 2024 13:45:42 +0000 (GMT)
+Date: Thu, 14 Mar 2024 14:45:41 +0100
+From: Tobias Huschle <huschle@linux.ibm.com>
+To: Luis Machado <luis.machado@arm.com>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, nd <nd@arm.com>
+Subject: Re: [RFC] sched/eevdf: sched feature to dismiss lag on wakeup
+Message-ID: <ZfL/hROYxQudcTuX@DESKTOP-2CCOB1S.>
+References: <20240228161018.14253-1-huschle@linux.ibm.com>
+ <5a32e8e1-67cf-4296-a655-f0fc35dc880a@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5a32e8e1-67cf-4296-a655-f0fc35dc880a@arm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PvEnVf3CeDddS-tn5gdTkdX5xc-aFryX
+X-Proofpoint-GUID: uO3Sy-jjvv1DLMP_tYpnLbfXBGAXTWbH
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 2/5] mm: swap: introduce swap_nr_free() for batched
- swap_free()
-Content-Language: en-GB
-To: Chuanhua Han <chuanhuahan@gmail.com>
-Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org, chengming.zhou@linux.dev, chrisl@kernel.org,
- david@redhat.com, hannes@cmpxchg.org, kasong@tencent.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
- steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
- willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
- yosryahmed@google.com, yuzhao@google.com, Chuanhua Han
- <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
-References: <20240304081348.197341-1-21cnbao@gmail.com>
- <20240304081348.197341-3-21cnbao@gmail.com>
- <499a60c6-eeb8-4bbd-8563-9717c0d2e43d@arm.com>
- <CANzGp4+kSxc_JbOsOcvm6vXfu2KORaqqGyuKK_eJwCLTK5X__Q@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CANzGp4+kSxc_JbOsOcvm6vXfu2KORaqqGyuKK_eJwCLTK5X__Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_11,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 clxscore=1015 adultscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403140100
 
-On 14/03/2024 13:12, Chuanhua Han wrote:
-> Ryan Roberts <ryan.roberts@arm.com> 于2024年3月12日周二 02:51写道：
->>
->> On 04/03/2024 08:13, Barry Song wrote:
->>> From: Chuanhua Han <hanchuanhua@oppo.com>
->>>
->>> While swapping in a large folio, we need to free swaps related to the whole
->>> folio. To avoid frequently acquiring and releasing swap locks, it is better
->>> to introduce an API for batched free.
->>>
->>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
->>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
->>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->>> ---
->>>  include/linux/swap.h |  6 ++++++
->>>  mm/swapfile.c        | 35 +++++++++++++++++++++++++++++++++++
->>>  2 files changed, 41 insertions(+)
->>>
->>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>> index 2955f7a78d8d..d6ab27929458 100644
->>> --- a/include/linux/swap.h
->>> +++ b/include/linux/swap.h
->>> @@ -481,6 +481,7 @@ extern void swap_shmem_alloc(swp_entry_t);
->>>  extern int swap_duplicate(swp_entry_t);
->>>  extern int swapcache_prepare(swp_entry_t);
->>>  extern void swap_free(swp_entry_t);
->>> +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
->>
->> nit: In my swap-out v4 series, I've created a batched version of
->> free_swap_and_cache() and called it free_swap_and_cache_nr(). Perhaps it is
->> preferable to align the naming schemes - i.e. call this swap_free_nr(). Your
->> scheme doesn't really work when applied to free_swap_and_cache().
-> Thanks for your suggestions, and for the next version, we'll see which
-> package is more appropriate!
->>
->>>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
->>>  extern int free_swap_and_cache(swp_entry_t);
->>>  int swap_type_of(dev_t device, sector_t offset);
->>> @@ -561,6 +562,11 @@ static inline void swap_free(swp_entry_t swp)
->>>  {
->>>  }
->>>
->>> +void swap_nr_free(swp_entry_t entry, int nr_pages)
->>> +{
->>> +
->>> +}
->>> +
->>>  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
->>>  {
->>>  }
->>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>> index 3f594be83b58..244106998a69 100644
->>> --- a/mm/swapfile.c
->>> +++ b/mm/swapfile.c
->>> @@ -1341,6 +1341,41 @@ void swap_free(swp_entry_t entry)
->>>               __swap_entry_free(p, entry);
->>>  }
->>>
->>> +/*
->>> + * Called after swapping in a large folio, batched free swap entries
->>> + * for this large folio, entry should be for the first subpage and
->>> + * its offset is aligned with nr_pages
->>> + */
->>> +void swap_nr_free(swp_entry_t entry, int nr_pages)
->>> +{
->>> +     int i;
->>> +     struct swap_cluster_info *ci;
->>> +     struct swap_info_struct *p;
->>> +     unsigned type = swp_type(entry);
->>
->> nit: checkpatch.py will complain about bare "unsigned", preferring "unsigned
->> int" or at least it did for me when I did something similar in my swap-out patch
->> set.
-> Gee, thanks for pointing that out!
->>
->>> +     unsigned long offset = swp_offset(entry);
->>> +     DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) = { 0 };
->>
->> I don't love this, as it could blow the stack if SWAPFILE_CLUSTER ever
->> increases. But the only other way I can think of is to explicitly loop over
->> fixed size chunks, and that's not much better.
-> Is it possible to save kernel stack better by using bit_map here?  If
-> SWAPFILE_CLUSTER=512, we consume only (512/64)*8= 64 bytes.
-
-I'm not sure I've understood what you are saying? You're already using
-DECLARE_BITMAP(), so its already consuming 64 bytes if SWAPFILE_CLUSTER=512, no?
-
-I actually did a bad job of trying to express a couple of different points:
-
-- Are there any configurations today where SWAPFILE_CLUSTER > 512? I'm not sure.
-Certainly not for arm64, but not sure about other architectures. For example if
-an arch had 64K pages with 8192 entries per THP and supports SWAP_THP, that's 1K
-for the bitmap, which is now looking pretty big for the stack.
-
-- Would it be better to decouple stack usage from SWAPFILE_CLUSTER and instead
-define a fixed stack size (e.g. 64 bytes -> 512 entries). Then free the range of
-entries in batches no bigger than this size. This approach could also allow
-removing the constraint that the range has to be aligned and fit in a single
-cluster. Personally I think an approach like this would be much more robust, in
-return for a tiny bit more complexity.
-
->>
->>> +
->>> +     /* all swap entries are within a cluster for mTHP */
->>> +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
->>> +
->>> +     if (nr_pages == 1) {
->>> +             swap_free(entry);
->>> +             return;
->>> +     }
->>> +
->>> +     p = _swap_info_get(entry);
->>
->> You need to handle this returning NULL, like swap_free() does.
-> Yes, you're right! We did forget to judge NULL here.
->>
->>> +
->>> +     ci = lock_cluster(p, offset);
->>
->> The existing swap_free() calls lock_cluster_or_swap_info(). So if swap is backed
->> by rotating media, and clusters are not in use, it will lock the whole swap
->> info. But your new version only calls lock_cluster() which won't lock anything
->> if clusters are not in use. So I think this is a locking bug.
-> Again, you're right, it's bug!
->>
->>> +     for (i = 0; i < nr_pages; i++) {
->>> +             if (__swap_entry_free_locked(p, offset + i, 1))
->>> +                     __bitmap_set(usage, i, 1);
->>> +     }
->>> +     unlock_cluster(ci);
->>> +
->>> +     for_each_clear_bit(i, usage, nr_pages)
->>> +             free_swap_slot(swp_entry(type, offset + i));
->>> +}
->>> +
->>>  /*
->>>   * Called after dropping swapcache to decrease refcnt to swap entries.
->>>   */
->>
->> Thanks,
->> Ryan
->>
->>
+On Fri, Mar 08, 2024 at 03:11:38PM +0000, Luis Machado wrote:
+> On 2/28/24 16:10, Tobias Huschle wrote:
+> > 
+> > Questions:
+> > 1. The kworker getting its negative lag occurs in the following scenario
+> >    - kworker and a cgroup are supposed to execute on the same CPU
+> >    - one task within the cgroup is executing and wakes up the kworker
+> >    - kworker with 0 lag, gets picked immediately and finishes its
+> >      execution within ~5000ns
+> >    - on dequeue, kworker gets assigned a negative lag
+> >    Is this expected behavior? With this short execution time, I would
+> >    expect the kworker to be fine.
 > 
+> That strikes me as a bit odd as well. Have you been able to determine how a negative lag
+> is assigned to the kworker after such a short runtime?
 > 
 
+I did some more trace reading though and found something.
+
+What I observed if everything runs regularly:
+- vhost and kworker run alternating on the same CPU
+- if the kworker is done, it leaves the runqueue
+- vhost wakes up the kworker if it needs it
+--> this means:
+  - vhost starts alone on an otherwise empty runqueue
+  - it seems like it never gets dequeued
+    (unless another unrelated task joins or migration hits)
+  - if vhost wakes up the kworker, the kworker gets selected
+  - vhost runtime > kworker runtime 
+    --> kworker gets positive lag and gets selected immediately next time
+
+What happens if it does go wrong:
+From what I gather, there seem to be occasions where the vhost either
+executes suprisingly quick, or the kworker surprinsingly slow. If these
+outliers reach critical values, it can happen, that
+   vhost runtime < kworker runtime
+which now causes the kworker to get the negative lag.
+
+In this case it seems like, that the vhost is very fast in waking up
+the kworker. And coincidentally, the kworker takes, more time than usual
+to finish. We speak of 4-digit to low 5-digit nanoseconds.
+
+So, for these outliers, the scheduler extrapolates that the kworker 
+out-consumes the vhost and should be slowed down, although in the majority
+of other cases this does not happen.
+
+Therefore this particular usecase would profit from being able to ignore
+such outliers, or being able to ignore a certain amount of difference in the
+lag values, i.e. introduce some grace value around the average runtime for
+which lag is not accounted. But not sure if I like that idea.
+
+So the negative lag can be somewhat justified, but for this particular case
+it leads to a problem where one outlier can cause havoc. As mentioned in the
+vhost discussion, it could also be argued that the vhost should not rely on 
+the fact that the kworker gets always scheduled on wake up, since these
+timing issues can always happen.
+
+Hence, the two options:
+- offer the alternative strategy which dismisses lag on wake up for workloads
+  where we know that a task usually finishes faster than others but should
+  not be punished by rare outliers (if that is predicatble, I don't know)
+- require vhost to adress this issue on their side (if possible without 
+  creating an armada of side effects)
+
+(plus the third one mentioned above, but that requires a magic cutoff value, meh)
+
+> I was looking at a different thread (https://lore.kernel.org/lkml/20240226082349.302363-1-yu.c.chen@intel.com/) that
+> uncovers a potential overflow in the eligibility calculation. Though I don't think that is the case for this particular
+> vhost problem.
+
+Yea, the numbers I see do not look very overflowy.
 
