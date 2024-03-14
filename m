@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-102868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A0A87B7D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A98CC87B7DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E2BC282A8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:14:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EA8528416C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A44EFC0E;
-	Thu, 14 Mar 2024 06:13:57 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724DEFC12;
+	Thu, 14 Mar 2024 06:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HvYxXCXk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC71BFBF7
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C075FF9DB;
+	Thu, 14 Mar 2024 06:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710396837; cv=none; b=IfpqAhDdtBGWSBXBUe2c8ObdJ9AuKwRBfxXo8Qe78B3ovKv5KD+MTqn9hvSUgSzBP8uaLFccVYeIF5rEpwQgYK6KI6joKeAyjrnIMsg0Q0J577ikYFpfxX0XH3SsDNVzD00AJE4bYKVkcDEXe0ZIBUfuAenAyovcIRkX9KU+4ms=
+	t=1710397275; cv=none; b=DFVPm9Y0E7/Rpe8nBmL+p6+aftveI9cxUxy8i/BbZzKfXF1JPyqsrV+4QLPVK03QDHYhZUfZvTyUjbATE2TmOvLh45Wuks0SkR1Gs0klgfdKJb6HXbG0RghIcZZfOaQz9kRWn9taOXxajEnLI4Kb+SRzBtfAf9Eq7QhMug2uUwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710396837; c=relaxed/simple;
-	bh=LpEQ15/BcP/fjuXF4e27uGFBrsT+jVtbbeHCru6Nh3o=;
+	s=arc-20240116; t=1710397275; c=relaxed/simple;
+	bh=wq2SC8j4x5uUSSHjNt99R5eSLr+S+hk7CUHtgGhkS5Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RdY/LRBDuJqmF9Gpv0WeKnmZ8SkZskOkhLNbI54F9wozHLl5AA1mkRXY/gLZf8waRkP7arUwH0+JS9jZxnA5R/CO6BqRsmXRrijNLf7q4CZbvyKR+CNWnauSz44AWhudEGwVnmnj/3wneVhRwNzHZhpGbVMZAotRlbfdjC32PwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 87f24640804442478ab4c0c41f2ed086-20240314
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:6431f97b-90c6-43f5-83bc-0e24c63277cb,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.37,REQID:6431f97b-90c6-43f5-83bc-0e24c63277cb,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6f543d0,CLOUDID:dbb96390-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:240314141347PQQTX76M,BulkQuantity:0,Recheck:0,SF:64|66|38|24|17|19|4
-	4|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,
-	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 87f24640804442478ab4c0c41f2ed086-20240314
-Received: from node2.com.cn [(39.156.73.10)] by mailgw
-	(envelope-from <mengfanhui@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 657671404; Thu, 14 Mar 2024 14:13:46 +0800
-Received: from node2.com.cn (localhost [127.0.0.1])
-	by node2.com.cn (NSMail) with SMTP id 5C173B80758A;
-	Thu, 14 Mar 2024 14:13:46 +0800 (CST)
-X-ns-mid: postfix-65F2959A-259172168
-Received: from [172.30.60.81] (unknown [172.30.60.81])
-	by node2.com.cn (NSMail) with ESMTPA id 1CA6CB80758A;
-	Thu, 14 Mar 2024 06:13:40 +0000 (UTC)
-Message-ID: <c934831a-ec84-4ea4-a156-782880086ffe@kylinos.cn>
-Date: Thu, 14 Mar 2024 14:13:39 +0800
+	 In-Reply-To:Content-Type; b=PR75JQEh2uTe6szvLV36zFykTypzvWevdLE46J6Lou0VUfiyT9XTjqQlJzzFi1q7rDO0broDBA2sBSgE0cGDFmh99moVNxo3lHqXAk6tkEouZSPVYuYJFPZVvv++v9RDmGC+cdzsUt0Rycy/1ApeAtOqZah8aNDhPnXqkoTd21E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HvYxXCXk; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710397274; x=1741933274;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=wq2SC8j4x5uUSSHjNt99R5eSLr+S+hk7CUHtgGhkS5Y=;
+  b=HvYxXCXkZzaO4FpcHCwgFI5WmJ/7McFmz+dCJgc2u+wZrchB+Uv//mZn
+   iAxOkWru9IPXGBNj6+8GVN5tCzjJUnbOPhueh3Zazp51AcDT26/4E30mh
+   KO2Z7QkI+p6N6X8+RaMZUnyBeEVy0SZaWg63ZoVh3mvM1TDkeOFv6rhkP
+   pFVxLBPvXKLNHpWFaUVFP9/5j5IEGAlW8ybjfcl7giAH+AmOQQPHbFTY7
+   T/h9QCPIHiFQjO3l7RH0SAPfN8wCXvQIXZcNorhmkhIP3jPrstpeiyiP2
+   v1YcEnth1QtiHVJFw6gAkYwkrr3nvKev2CJ20qO+LVnHxfR8VauTM0bWc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="15926210"
+X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
+   d="scan'208";a="15926210"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 23:21:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
+   d="scan'208";a="12068681"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 23:21:06 -0700
+Message-ID: <1ae483bc-b279-44ca-b396-04aa480e3781@linux.intel.com>
+Date: Thu, 14 Mar 2024 14:21:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,31 +62,168 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nvme-multipath: fix bogus request queue reference put
-Content-Language: en-US
-To: Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>
-Cc: kbusch@kernel.org, axboe@kernel.dk, linux-kernel@vger.kernel.org,
- linux-nvme@lists.infradead.org
-References: <20240117065043.79192-1-mengfanhui@kylinos.cn>
- <b926d754-130d-424e-b099-001e14badc50@grimberg.me>
- <20240117143952.GA27918@lst.de>
-From: mengfanhui <mengfanhui@kylinos.cn>
-In-Reply-To: <20240117143952.GA27918@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Purpose that to check if we ever added a live path (using
-NVME_NS_HEAD_HAS_DISK flag) and if not, clear the disk->queue
-reference.The purpose is to perform security checks and remove the disk.
+Subject: Re: [PATCH v19 024/130] KVM: TDX: Add placeholders for TDX VM/vcpu
+ structure
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <c857863a346e692837b0c35da8a0e03c45311496.1708933498.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <c857863a346e692837b0c35da8a0e03c45311496.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-=E5=9C=A8 2024/1/17 22:39, Christoph Hellwig =E5=86=99=E9=81=93:
-> On Wed, Jan 17, 2024 at 04:04:12PM +0200, Sagi Grimberg wrote:
->> How did you see this? disk->queue is allocated in blk_alloc_disk calle=
-d
->> in nvme_mpath_alloc_disk... I don't understand how you saw the same
->> dereference that was addressed by this commit.
->=20
-> This looks like a backport of an old patch of yours to a geriatric
-> kernel to me..
+
+On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Add placeholders TDX VM/vcpu structure that overlays with VMX VM/vcpu
+> structures.  Initialize VM structure size and vcpu size/align so that x86
+> KVM common code knows those size irrespective of VMX or TDX.  Those
+> structures will be populated as guest creation logic develops.
+>
+> Add helper functions to check if the VM is guest TD and add conversion
+> functions between KVM VM/VCPU and TDX VM/VCPU.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> ---
+> v19:
+> - correctly update ops.vm_size, vcpu_size and, vcpu_align by Xiaoyao
+>
+> v14 -> v15:
+> - use KVM_X86_TDX_VM
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/vmx/main.c | 14 ++++++++++++
+>   arch/x86/kvm/vmx/tdx.c  |  1 +
+>   arch/x86/kvm/vmx/tdx.h  | 50 +++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 65 insertions(+)
+>   create mode 100644 arch/x86/kvm/vmx/tdx.h
+>
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index 18aef6e23aab..e11edbd19e7c 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -5,6 +5,7 @@
+>   #include "vmx.h"
+>   #include "nested.h"
+>   #include "pmu.h"
+> +#include "tdx.h"
+>   
+>   static bool enable_tdx __ro_after_init;
+>   module_param_named(tdx, enable_tdx, bool, 0444);
+> @@ -18,6 +19,9 @@ static __init int vt_hardware_setup(void)
+>   		return ret;
+>   
+>   	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
+> +	if (enable_tdx)
+> +		vt_x86_ops.vm_size = max_t(unsigned int, vt_x86_ops.vm_size,
+> +					   sizeof(struct kvm_tdx));
+>   
+>   	return 0;
+>   }
+> @@ -215,8 +219,18 @@ static int __init vt_init(void)
+>   	 * Common KVM initialization _must_ come last, after this, /dev/kvm is
+>   	 * exposed to userspace!
+>   	 */
+> +	/*
+> +	 * kvm_x86_ops is updated with vt_x86_ops.  vt_x86_ops.vm_size must
+> +	 * be set before kvm_x86_vendor_init().
+
+The comment is not right?
+In this patch, vt_x86_ops.vm_size is set in  vt_hardware_setup(),
+which is called in kvm_x86_vendor_init().
+
+Since kvm_x86_ops is updated by kvm_ops_update() with the fields of
+vt_x86_ops. I guess you wanted to say vt_x86_ops.vm_size must be set
+before kvm_ops_update()?
+
+> +	 */
+>   	vcpu_size = sizeof(struct vcpu_vmx);
+>   	vcpu_align = __alignof__(struct vcpu_vmx);
+> +	if (enable_tdx) {
+> +		vcpu_size = max_t(unsigned int, vcpu_size,
+> +				  sizeof(struct vcpu_tdx));
+> +		vcpu_align = max_t(unsigned int, vcpu_align,
+> +				   __alignof__(struct vcpu_tdx));
+> +	}
+>   	r = kvm_init(vcpu_size, vcpu_align, THIS_MODULE);
+>   	if (r)
+>   		goto err_kvm_init;
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 43c504fb4fed..14ef0ccd8f1a 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -6,6 +6,7 @@
+>   #include "capabilities.h"
+>   #include "x86_ops.h"
+>   #include "x86.h"
+> +#include "tdx.h"
+>   
+>   #undef pr_fmt
+>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
+> new file mode 100644
+> index 000000000000..473013265bd8
+> --- /dev/null
+> +++ b/arch/x86/kvm/vmx/tdx.h
+> @@ -0,0 +1,50 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __KVM_X86_TDX_H
+> +#define __KVM_X86_TDX_H
+> +
+> +#ifdef CONFIG_INTEL_TDX_HOST
+> +struct kvm_tdx {
+> +	struct kvm kvm;
+> +	/* TDX specific members follow. */
+> +};
+> +
+> +struct vcpu_tdx {
+> +	struct kvm_vcpu	vcpu;
+> +	/* TDX specific members follow. */
+> +};
+> +
+> +static inline bool is_td(struct kvm *kvm)
+> +{
+> +	return kvm->arch.vm_type == KVM_X86_TDX_VM;
+> +}
+> +
+> +static inline bool is_td_vcpu(struct kvm_vcpu *vcpu)
+> +{
+> +	return is_td(vcpu->kvm);
+> +}
+> +
+> +static inline struct kvm_tdx *to_kvm_tdx(struct kvm *kvm)
+> +{
+> +	return container_of(kvm, struct kvm_tdx, kvm);
+> +}
+> +
+> +static inline struct vcpu_tdx *to_tdx(struct kvm_vcpu *vcpu)
+> +{
+> +	return container_of(vcpu, struct vcpu_tdx, vcpu);
+> +}
+> +#else
+> +struct kvm_tdx {
+> +	struct kvm kvm;
+> +};
+> +
+> +struct vcpu_tdx {
+> +	struct kvm_vcpu	vcpu;
+> +};
+> +
+> +static inline bool is_td(struct kvm *kvm) { return false; }
+> +static inline bool is_td_vcpu(struct kvm_vcpu *vcpu) { return false; }
+> +static inline struct kvm_tdx *to_kvm_tdx(struct kvm *kvm) { return NULL; }
+> +static inline struct vcpu_tdx *to_tdx(struct kvm_vcpu *vcpu) { return NULL; }
+> +#endif /* CONFIG_INTEL_TDX_HOST */
+> +
+> +#endif /* __KVM_X86_TDX_H */
+
 
