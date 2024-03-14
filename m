@@ -1,170 +1,128 @@
-Return-Path: <linux-kernel+bounces-103399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC02787BEE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:31:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92A4387BEEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 500551F23D31
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:31:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 343BEB21E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03DE6FE26;
-	Thu, 14 Mar 2024 14:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IBT/fG+U"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A963426AF3;
+	Thu, 14 Mar 2024 14:31:32 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51FE71DFE4;
-	Thu, 14 Mar 2024 14:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4DA4A12;
+	Thu, 14 Mar 2024 14:31:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710426653; cv=none; b=tRKp/uY+NHZhCWBKNBUSy31fSUB7D78D5hZtH0+3MPPvIkryphxOe4UUfBfPsLCNlVdTPCakgtIGzQbH5EzWs3q+iWWtR1XR+/xc4eHhcZZARuDvcq5vCWKDhPYGKr7zbJ3H7BRWKd20oAfSZsEDOGX/YNx9CyCffbZi4fpPmDc=
+	t=1710426692; cv=none; b=CJtTrXdbwgyBib82IxA6Ie1eDLQ5kH9NuhLcEJSSEB3L8dZyfHp4/IvBKRSfbxzC4RFmzn5nlvlhOKxwUu9V5S+teQWqrl5Vh/mDOjNug8MljO1qpHI75dtXrS0acVgh/ISmPG+/hx5Lr4htdgpjrJpBVfpp4YkKeH/t5+Nn5ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710426653; c=relaxed/simple;
-	bh=nOgzAl/kZbPiswgz+PAekV21T21wnBeyrjRSsKn26CM=;
+	s=arc-20240116; t=1710426692; c=relaxed/simple;
+	bh=xFi2AxXaD1yOJvBeQtP4ZD5kDFtlgnvcd89oSlKF4Ck=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a/+otjJiH/bme1P/LDQt/a41eRD+2ReXhMpFBB8TqugdewR+SqZOjl7Cf0iOZwmCJNc0G6wi09HxnXmbGeUfFqMcN5h+soX323CymojDn+DDey1+RUD8dtdntHeH7k3w+5fwQHkgK/2aksIgok2Zug7tzkbftaOw6nPtSemqcYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IBT/fG+U; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=gkLZ8aPbwJBQfnUaVe0+ZhNpDXrCYXvCaV2epwtEkFMgSl9OTXcsI3HCHpobVoZZSSUq76I9Mr/mOahBImtK5Qq2bRFob0/DnwVTHgrzoPbUoz1M/zxQeF1S7kWh7KMQ6QjLQo9jlRexDNxdGMMn8HAe0aLQLKZ1U1G8BIupoIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d228a132acso13445281fa.0;
-        Thu, 14 Mar 2024 07:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710426649; x=1711031449; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vGuFdLL2A0SVLqEVBpXHYOjMN8ZFaFaJtzrBQiA78yk=;
-        b=IBT/fG+UoTGoay0EmebQKsLd1xnBhTWvqPbC+Ld2KDKjmQWzSHFE3NXO7nRGD8Y+nu
-         cvnTXg19e/a26VGLCOY/pw9UwxzYcNuUP00P2+nsrmx0PziyDX3gwuUhFUGKLm4jrQk7
-         byGEyUl7aaCNuuDuno6L4bica3IfLiNSejkHOUwatxldkQVUKHRg9CsHHHaaOflWTkKH
-         /VOhrlxh93eAkaqAhLJa3FJTxU/yN52ZMw2hi7t9yEREj89kEerdPjD1rVrVrWRNEhsm
-         a9CAXK7K23PuLR7GgrQpAX4SkdijIFEugKUu0YEMqZWS/B7Gk+bTuiMx0Sd1iEYz5IC1
-         PrYw==
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-609ed7ca444so11031127b3.1;
+        Thu, 14 Mar 2024 07:31:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710426649; x=1711031449;
+        d=1e100.net; s=20230601; t=1710426689; x=1711031489;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vGuFdLL2A0SVLqEVBpXHYOjMN8ZFaFaJtzrBQiA78yk=;
-        b=bnTVt2Hdx2LveYr1gSPXy2yef1WcsdiB8FSpxknbjMmXwh/N3J2yB8sF32VelyTjpi
-         lWOv+MtCAYbNxgT4QBK6CZ0+V1Dyp+j2wWSUF4rAk5H7K5sBAevTVbmAekCpjnabiokz
-         G1HfvU0Er1V7WSqfdP4EQgRHZTu2pK1c2D8CYOy1fKOsY7FRyipYFXRNaXH9Nf5KYT72
-         FTsmoBWr1VKtQbybsu1iJmPO7gsB7mUqI6odOTw5XBJvI0fmECagMtNRBF8/nCTdM/jK
-         XxsmCBdayXhVPu6dXRIQ6gc2FjX89YnScFdiKkV76I70+IbOZBTKfcFE7BW9gB2j1nNA
-         fnFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWI8a+8f3UFeoYA8C5bpCDr/rqWQ0RaW6M6f+U4A/rm4q03X2KvlB2KyADx3LbkzGbOTJhkqJQVpeah2+nR23SLQEJsY3bMN3y4arXLjWyysmSrF6tyMtrqnReSKRQpr3n1kCPWrVwcF7/qW4zInizHnialfPewlG5H8eC6e84qBLEBt7a6
-X-Gm-Message-State: AOJu0YyraJt+7zESLGLiIsD5a/mIyPXvUwVkP3X9bKjTR27d9+Wm//tV
-	SSIy/jX33Y+Y5BKMUcVu2EkOef4Y1r/mCoR2LE/2KW6bjmr3d2sAeLHYfMQv1xvDY7ys9GLBq0b
-	s+C6dlrFIuJ0e96TtxF0KtPdztgRCKQTj
-X-Google-Smtp-Source: AGHT+IEuwoDwnTWhjt/JkLKa02QILhgzuO/FfliJLD2dXLjPQ9EXst9r8FPLjaypVgQWKhFpurrnVj3WvXCN81+5+3I=
-X-Received: by 2002:a2e:a592:0:b0:2d4:6815:fc6f with SMTP id
- m18-20020a2ea592000000b002d46815fc6fmr1554846ljp.30.1710426649071; Thu, 14
- Mar 2024 07:30:49 -0700 (PDT)
+        bh=fpTGs8md/LpP1yl0wQV3+VwaTfKxWgHEQ+Q8ylWPYkI=;
+        b=hHY2TlaTC4PqfXnF4h41RHeMNBs7qKTds66ePwLGI74Su9ZDBJIxvPDVgJY+BIvj/C
+         mES6Dob6Da+1lAhqwoKPhlS9UgKmNylF36oFDevUXzV5um1sBLyALFDsd4Nn5Yc44YhN
+         NF0D9/dzZBuGE81d2+srA2vJk73EMJZePN4LmdFBul+i8gaghG2Tb8bfHMPGOjqZdvof
+         X05IKVvHROLqPzGAoaaI7YB3FTRHSQq9Om9+zSRNj/ue67RDeumB21bMHsy9f73E/gTH
+         Fr5iOUMTUKmzYt0vE1nMME3Vdml7Y0XaLz/8QM+yN2d6aIZBd9GUO9azdzuJGEX9i9C5
+         gaHA==
+X-Forwarded-Encrypted: i=1; AJvYcCXjl5NIzlB8IFeY0OjMfIxc49/SyOEPNALyEiBDOS1v8XAXbc+MCHRz3MS0tA92XcHdVRjhsE44XKDztgKMHFjeWJyNmfzBSZSxNfhi8SvBeos8HcxwRyoWZ2+Jr8N+8FYdwINHYPl+qnWaTZPPh0HcMB2uV9rXiguF0eoubaNXQYcNLNJE6iytUzxx
+X-Gm-Message-State: AOJu0YxHtslM+EX5x4B9+dxrF12alz8gMJmDhmeUkVn8OsWjNyIGrC1c
+	X2CoRxa6XMI0Nqm+HNicVsswIrluyyoPfJ7kM7iqx5ICsSmFKSjL64uMS0h2UiY=
+X-Google-Smtp-Source: AGHT+IE8ZbNb5xPNE9O4L4/HL2zteap+0DIOLu3b1Wm1qdBksLX3ahtb1zB1wFR4wLFKFn8jbQd6Kg==
+X-Received: by 2002:a0d:fac5:0:b0:60a:107c:cfef with SMTP id k188-20020a0dfac5000000b0060a107ccfefmr2032496ywf.41.1710426688925;
+        Thu, 14 Mar 2024 07:31:28 -0700 (PDT)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id i72-20020a0ddf4b000000b00604a0aedd92sm290572ywe.108.2024.03.14.07.31.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 07:31:28 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc742543119so908414276.0;
+        Thu, 14 Mar 2024 07:31:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXfrZWvbiKVStYjfUePmWCeJhuNXCnb+ONe5fhjBoECOEpqOlAPf3JwqdH3picPBsScHA9rKtCEtqnzfq8VC4ld37SU2wuYn5VYto5qzxZw5jvB41ttz2VgYgZQe7Qhb63JzTHC2jlYgL/2kVyLiKTd40cUgmTckDrzrVf+TtpKPc+doXOTWdxN2GTa
+X-Received: by 2002:a25:ad46:0:b0:dcd:aa73:e349 with SMTP id
+ l6-20020a25ad46000000b00dcdaa73e349mr1723862ybe.12.1710426688516; Thu, 14 Mar
+ 2024 07:31:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
-In-Reply-To: <20240314084412.1127-1-johan+linaro@kernel.org>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Thu, 14 Mar 2024 10:30:36 -0400
-Message-ID: <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+References: <20240307112452.74220-1-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdWwbfem71Q9FE40jqHM2pXWJW9u+w-+NKy3OffFkzu5SQ@mail.gmail.com> <da48838c-5043-4fff-99aa-2f75f0755609@tuxon.dev>
+In-Reply-To: <da48838c-5043-4fff-99aa-2f75f0755609@tuxon.dev>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Mar 2024 15:31:16 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU6fo0S0FOpvii8gksa=X=2o4BTCQOp2KS5SnErHeXLKg@mail.gmail.com>
+Message-ID: <CAMuHMdU6fo0S0FOpvii8gksa=X=2o4BTCQOp2KS5SnErHeXLKg@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: renesas: rzg2l: Execute atomically the interrupt configuration
+To: claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc: linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Johan,
+Hi Claudiu,
 
-On Thu, Mar 14, 2024 at 4:44=E2=80=AFAM Johan Hovold <johan+linaro@kernel.o=
-rg> wrote:
+On Thu, Mar 14, 2024 at 3:11=E2=80=AFPM claudiu beznea <claudiu.beznea@tuxo=
+n.dev> wrote:
+> On 14.03.2024 15:21, Geert Uytterhoeven wrote:
+> > On Thu, Mar 7, 2024 at 12:25=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.d=
+ev> wrote:
+> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>
+> >> Lockdep detects a possible deadlock as listed below. This is because i=
+t
+> >> detects the IA55 interrupt controller .irq_eoi() API is called from
+> >> interrupt context while configuration-specific API (e.g., .irq_enable(=
+))
+> >> could be called from process context on resume path (by calling
+> >> rzg2l_gpio_irq_restore()). To avoid this, protect the call of
+> >> rzg2l_gpio_irq_enable() with spin_lock_irqsave()/spin_unlock_irqrestor=
+e().
+> >> With this the same approach that is available in __setup_irq() is mimi=
+cked
+> >> to pinctrl IRQ resume function.
+> >
+> > You mean __setup_irq() in kernel/irq/manage.c?
 >
-> This reverts commit 7dcd3e014aa7faeeaf4047190b22d8a19a0db696.
+> Yes!
 >
-> Qualcomm Bluetooth controllers like WCN6855 do not have persistent
-> storage for the Bluetooth address and must therefore start as
-> unconfigured to allow the user to set a valid address unless one has
-> been provided by the boot firmware in the devicetree.
+> > That one uses the raw spinlock methods?
 >
-> A recent change snuck into v6.8-rc7 and incorrectly started marking the
-> default (non-unique) address as valid. This specifically also breaks the
-> Bluetooth setup for some user of the Lenovo ThinkPad X13s.
->
-> Note that this is the second time Qualcomm breaks the driver this way
-> and that this was fixed last year by commit 6945795bc81a ("Bluetooth:
-> fix use-bdaddr-property quirk"), which also has some further details.
->
-> Fixes: 7dcd3e014aa7 ("Bluetooth: hci_qca: Set BDA quirk bit if fwnode exi=
-sts in DT")
-> Cc: stable@vger.kernel.org      # 6.8
-> Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> Yes! Would you prefer to have raw spinlock here, too?
 
-Well I guess I will need to start asking for evidence that this works
-on regular Linux distros then, because it looks like that is not the
-environment Janaki and others Qualcomm folks are testing with.
+Most pin control driver needing protection in an irq_enable
+method use raw spinlock, so I think it makes sense to follow that.
 
-What I probably would consider as evidence is bluetoothd logs showing
-that the controller has been configured correctly or perhaps there is
-a simpler way?
+Gr{oetje,eeting}s,
 
-> ---
->  drivers/bluetooth/hci_qca.c | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
->
-> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> index edd2a81b4d5e..f989c05f8177 100644
-> --- a/drivers/bluetooth/hci_qca.c
-> +++ b/drivers/bluetooth/hci_qca.c
-> @@ -7,7 +7,6 @@
->   *
->   *  Copyright (C) 2007 Texas Instruments, Inc.
->   *  Copyright (c) 2010, 2012, 2018 The Linux Foundation. All rights rese=
-rved.
-> - *  Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reser=
-ved.
->   *
->   *  Acknowledgements:
->   *  This file is based on hci_ll.c, which was...
-> @@ -1904,17 +1903,7 @@ static int qca_setup(struct hci_uart *hu)
->         case QCA_WCN6750:
->         case QCA_WCN6855:
->         case QCA_WCN7850:
-> -
-> -               /* Set BDA quirk bit for reading BDA value from fwnode pr=
-operty
-> -                * only if that property exist in DT.
-> -                */
-> -               if (fwnode_property_present(dev_fwnode(hdev->dev.parent),=
- "local-bd-address")) {
-> -                       set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->qui=
-rks);
-> -                       bt_dev_info(hdev, "setting quirk bit to read BDA =
-from fwnode later");
-> -               } else {
-> -                       bt_dev_dbg(hdev, "local-bd-address` is not presen=
-t in the devicetree so not setting quirk bit for BDA");
-> -               }
-> -
-> +               set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
->                 hci_set_aosp_capable(hdev);
->
->                 ret =3D qca_read_soc_version(hdev, &ver, soc_type);
-> --
-> 2.43.2
->
-
+                        Geert
 
 --=20
-Luiz Augusto von Dentz
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
