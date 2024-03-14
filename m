@@ -1,66 +1,94 @@
-Return-Path: <linux-kernel+bounces-103714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CCDD87C350
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:06:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD4F187C351
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD1F3282E2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:05:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C055B22166
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9016B757E8;
-	Thu, 14 Mar 2024 19:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16B1757F5;
+	Thu, 14 Mar 2024 19:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lHtoAmqU"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	dkim=pass (2048-bit key) header.d=tyhicks.com header.i=@tyhicks.com header.b="YLCJfRNw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XG8uDL+y"
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7A274E23
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D35BC6F07E
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710443157; cv=none; b=ZDz7UqCFjkNwXGjqEcWAFdnVT2wZDMTAVqGLq/M2Epn73jcSQkZzawA5svsNGwXO4ncF/HTMmy2Td11pMFYxRmeZf1SsAi0OQJgpbaN2sn53c++OevSI+U0v9RptEHdXwCdqLV2o6/EXPfiVxGU0XTzxHkMCHkFP89e+ix4e2tc=
+	t=1710443206; cv=none; b=Zmp1HFVcPoUr0Oe+PLc9WRfXj0gBnBC5qzNOhUGlOx4hl8NrJMQ25vG7DKtyt5C5WJ/j3p3sXQ4VkfnXm7lXPVQU71cRZbeVcqL4dt9Mzc0ehsnY07CUFsvXfS2Cgpw+/7ykUiHsRsfeHqCwEnvPazxicJRHfssGAgkllcrBzRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710443157; c=relaxed/simple;
-	bh=IT9eLdbpe91FhfBPJR5qulj0qHeEACU6NqDEvgqyDW4=;
+	s=arc-20240116; t=1710443206; c=relaxed/simple;
+	bh=6u41PBoWA/dHSyhaL4eR+nAg2BC9TcZOlGX4UYE8FGE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uZBhYLxYL+U9ZyjYMSBl6CzJI0kbY1cEibjyCAuc8gnh9Pha6fXdwYrv5RrJCYkM+J5QC8Je4ew1uwuvEb1cNOQNXCOSuF7aB2mSB52umWzN9NXLNFUBBO9UB8aoxvpfOxK5sxG370cpav+Pbn7IHAEOi1VSpRUjILbAo/hzOYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lHtoAmqU; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 14 Mar 2024 15:05:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710443152;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=troX3X8HuvTilW6NgLCfSK9nrQd3wvTH0v9DPQHyR8M=;
-	b=lHtoAmqUIojCK2jPtn9uqGtrJW+6IvhqHqUKqyQDf7NHJmuqJjy/W+x2a7AAXH+7hkUNzH
-	Br5u6MBOqEW3aFoO2R+YLGVNy6A+mUgZ+78EHK5t21DNKyfXdAXuYn02RoQqPJi6KcAeeJ
-	jn15DnwPDOe9CHsRu4tkcVsZdEBBQdg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org, 
-	bp@alien8.de, brauner@kernel.org, bristot@redhat.com, bsegall@google.com, 
-	dave.hansen@linux.intel.com, dianders@chromium.org, dietmar.eggemann@arm.com, 
-	eric.devolder@oracle.com, hca@linux.ibm.com, hch@infradead.org, 
-	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, jroedel@suse.de, 
-	juri.lelli@redhat.com, kinseyho@google.com, kirill.shutemov@linux.intel.com, 
-	lstoakes@gmail.com, luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
-	michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, 
-	npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
-	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de, 
-	urezki@gmail.com, vincent.guittot@linaro.org, vschneid@redhat.com
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-Message-ID: <fp6tyl6laseytepxpyidvwjo4dl357dtqegzumrc5ao6srm6we@afcl57kvjieb>
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com>
- <CA+CK2bC+bgOfohCEEW7nwAdakVmzg=RhUjjw=+Rw3wFALnOq-Q@mail.gmail.com>
- <f949f712-eacf-49a0-91ea-8062e2d1f5e0@zytor.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HsMXGNvhZqWbU+ylI5EN19Od6BqUdCqOik2V5Xv1zm6ma5hw1wOyJVMxOrQWlqFYkBCQY1k5TzRWfU+2k7wUJsR35ZUxHyis2oOs+Lgw6n+XAuh39CwMAKo9vxC5ZND/VbzDMSAEXRvxMoCObrwK+51uWsja7SIQj/XdxF9SO9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tyhicks.com; spf=pass smtp.mailfrom=tyhicks.com; dkim=pass (2048-bit key) header.d=tyhicks.com header.i=@tyhicks.com header.b=YLCJfRNw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XG8uDL+y; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tyhicks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tyhicks.com
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id EF3E513800C5;
+	Thu, 14 Mar 2024 15:06:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 14 Mar 2024 15:06:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tyhicks.com; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1710443203; x=1710529603; bh=RCQmlGp3k6
+	bvYN0RNI3MYCaArrm2bXBnNGldMBKv0+M=; b=YLCJfRNw4qk13Tk78J9I9IIvgz
+	rKpSA5JCPdGaFpSiMuOt6mw/mYgvhqQsvgDDWbTMa7LrZGxa2Wp5NWfu1cqJ31nL
+	GNNGe+zOhA6IaVfKOE2DxwWusgnaU8jHP+IDzf3K8qx6+zTyXa3VEV4FyQxE5Mue
+	2x553yNefdBa+QG61GP0r+E6Z8R/WBuPTJoKxDPs9SXIG0olBBzueVSAxw/KQlPv
+	pjUr4jhqSRxGirNbfGV+1itvpe8KpWxBTy2lBRJk0IFC8QDSkcNAZDbsnZEA3Bny
+	+CbwragPCCtsQ5bz/CLXSum1zQ2gpxbiTv+VScgALJeUoI4AyzKWYLM8ElMg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710443203; x=1710529603; bh=RCQmlGp3k6bvYN0RNI3MYCaArrm2
+	bXBnNGldMBKv0+M=; b=XG8uDL+ylScJRiGrCkiVidUj4YLfN+EQNZKm7bLCAnxG
+	Vt+n8L8Th2tykaWeNv8xbaZiyyYEMf/DWv0EFzOiPaflx32XJjQm58S4XEt179MS
+	bJvAViFIko7XxKv3unGw3BCr9+88IseWiN9/pdyymPtu1j6O2WGy8FVKtY7uj8j2
+	V0a6RpL/OG/8aU9b9ZZCySn0BXMyFD9+SV4z8D3XFZy7QjhmW3MpkVIFgUJ4bU/v
+	QV9edp2cYZakyFIP0e+eRXTiE587rB1XJAODraG8p8yyGlfB44dCJRQEUaezii46
+	zrqUFkYhIhF99pCzORwXWbOh4D31Kf9nylDMVQp05g==
+X-ME-Sender: <xms:wkrzZTm3X2z1kPOEM0VN_ST1bY5HEk37rQlxy3QpS49AUbhU85_Egg>
+    <xme:wkrzZW1V4MFhAkHFqRRFrpgwGECPtVe7ZYKhnTiIQq7atW3ZlKo9zcJ3-lRr1ss9h
+    ms6Ju4YAu77uQYFW8Y>
+X-ME-Received: <xmr:wkrzZZqlIFep2D75EhXrfV0zsd-6gadufwc-hY5lw21glxgzeLufu-GPv-8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeejgdduudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihlhgv
+    rhcujfhitghkshcuoegtohguvgesthihhhhitghkshdrtghomheqnecuggftrfgrthhtvg
+    hrnhepgfegkeeiffethefgteffudfhfeejhedvjefhjeekudelffdulefhfeekieeludej
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegtohguvgesthihhhhitghkshdrtghomh
+X-ME-Proxy: <xmx:wkrzZblKiuiTM8ni1rpAIXxmUXEmITqwifQj1TYv4Lj-tM1z8Rt0Rg>
+    <xmx:wkrzZR3L085MQGYgcRz-Om_p-QxoKEpxLFYF7N-pvsQRYyoeShE9ug>
+    <xmx:wkrzZaslTD7QpwoiG0ZHiJJFdh5Vhr5Y_z2m6LR-auw1IFRyXFy6aA>
+    <xmx:wkrzZVU9hWbNGbtchumdcYlPSUd5shXgkdIUC-mimrk4VI4eF69Klg>
+    <xmx:w0rzZate56TlPuywl8bA1AqPowO_2puZpr4eFIAhICEr-x4lSOGnXQ>
+Feedback-ID: i78e14604:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Mar 2024 15:06:41 -0400 (EDT)
+Date: Thu, 14 Mar 2024 14:06:39 -0500
+From: Tyler Hicks <code@tyhicks.com>
+To: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jerry Snitselaar <jsnitsel@redhat.com>
+Cc: linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+	Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: Re: Why is the ARM SMMU v1/v2 put into bypass mode on kexec?
+Message-ID: <ZfNKv70oqqwMwIeS@sequoia>
+References: <ZfKsAIt8RY/JcL/V@sequoia>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,45 +97,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f949f712-eacf-49a0-91ea-8062e2d1f5e0@zytor.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZfKsAIt8RY/JcL/V@sequoia>
 
-On Tue, Mar 12, 2024 at 02:36:27PM -0700, H. Peter Anvin wrote:
-> On 3/12/24 12:45, Pasha Tatashin wrote:
-> > > 
-> > > Ok, first of all, talking about "kernel memory" here is misleading.
-> > 
-> > Hi Peter,
-> > 
-> > I re-read my cover letter, and I do not see where "kernel memory" is
-> > mentioned. We are talking about kernel stacks overhead that is
-> > proportional to the user workload, as every active thread has an
-> > associated kernel stack. The idea is to save memory by not
-> > pre-allocating all pages of kernel-stacks, but instead use it as a
-> > safeguard when a stack actually becomes deep. Come-up with a solution
-> > that can handle rare deeper stacks only when needed. This could be
-> > done through faulting on the supported hardware (as proposed in this
-> > series), or via pre-map on every schedule event, and checking the
-> > access when thread goes off cpu (as proposed by Andy Lutomirski to
-> > avoid double faults on x86) .
-> > 
-> > In other words, this feature is only about one very specific type of
-> > kernel memory that is not even directly mapped (the feature required
-> > vmapped stacks).
-> > 
-> > > Unless your threads are spending nearly all their time sleeping, the
-> > > threads will occupy stack and TLS memory in user space as well.
-> > 
-> > Can you please elaborate, what data is contained in the kernel stack
-> > when thread is in user space? My series requires thread_info not to be
-> > in the stack by depending on THREAD_INFO_IN_TASK.
-> > 
+On 2024-03-14 09:55:46, Tyler Hicks wrote:
+> Given that drivers are only optionally asked to implement the .shutdown
+> hook, which is required to properly quiesce devices before a kexec, why
+> is it that we put the ARM SMMU v1/v2 into bypass mode in the arm-smmu
+> driver's own .shutdown hook?
 > 
-> My point is that what matters is total memory use, not just memory used in
-> the kernel. Amdahl's law.
+>  arm_smmu_device_shutdown() -> set SMMU_sCR0.CLIENTPD bit to 1
+> 
+> Driver authors often forget to even implement a .shutdown hook, which
+> results in some hard-to-debug memory corruption issues in the kexec'ed
+> target kernel due to pending DMA operations happening on untranslated
+> addresses. Why not leave the SMMU in translate mode but clear the stream
+> mapping table (or maybe even call arm_smmu_device_reset()) in the SMMU's
+> .shutdown hook to prevent the memory corruption from happening in the
+> first place?
+> 
+> Fully acknowledging that the proper fix is to quiesce the devices, I
+> feel like resetting the SMMU and leaving it in translate mode across
+> kexec would be more consistent with the intent behind v5.2 commit
+> 954a03be033c ("iommu/arm-smmu: Break insecure users by disabling bypass
+> by default"). The incoming transactions of devices, that weren't
+> properly quiesced during a kexec, would be blocked until their drivers
+> have a chance to reinitialize the devices in the new kernel.
+> 
+> I appreciate any help understanding why bypass mode is utilized here as
+> I'm sure there are nuances that I haven't considered. Thank you!
 
-If userspace is running a few processes with many threads and the
-userspace stacks are small, kernel stacks could end up dominating.
+I now see that Will has previously mentioned that he'd be open to such a
+change:
 
-I'd like to see some numbers though.
+ One thing I would be in favour of is changing the ->shutdown() code to
+ honour disable_bypass=1 so that we put the SMMU in an aborting state
+ instead of passthrough. Would that help at all? It would at least
+ avoid the memory corruption on missing shutdown callback.
+
+ - https://lore.kernel.org/linux-arm-kernel/20200608113852.GA3108@willie-the-truck/
+
+Robin mentions the need to support kexec into a non-SMMU-aware OS. I
+hadn't considered that bit of complexity:
+
+ ... consider if the first kernel *did* leave it enabled with whatever
+ left-over translations in place, and kexec'ed into another OS that
+ wasn't SMMU-aware...
+
+ - https://lore.kernel.org/linux-arm-kernel/e072f61a-d6cf-2e34-efd5-c1db38c5c622@arm.com/
+
+Now that we're 3-4 years removed from that conversation, has anything
+changed? Will, is there anything we'd need to watch out for if we were
+to prototype this sort of change? For example, would it be wise to
+disable fault interrupts when putting the SMMU in an aborting state
+before kexec'ing?
+
+Thanks again!
+
+Tyler
 
