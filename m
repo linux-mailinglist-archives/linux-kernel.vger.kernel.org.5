@@ -1,144 +1,212 @@
-Return-Path: <linux-kernel+bounces-103313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFBB987BDED
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:42:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28DFF87BDEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:43:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2071D1C214A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:42:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C3A81C225A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8176B5D8F8;
-	Thu, 14 Mar 2024 13:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="VHVHiVvT"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5D15A4E0
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCE75D8F8;
+	Thu, 14 Mar 2024 13:43:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7305A4CB
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710423764; cv=none; b=X4ie5O1mDqtSnT6NrNOKOOT5UpHThcGT6zPw4drsWraqH2LxDuQBs1bqTV9rG3tsWBOWECmZRwMxAe11qNbQpiVjzXiMQZUyQUryw3ULB8q8QTSdhCWKkcmZ3sajN733rDVvADkL05GFTD57BOAlnKZr4RdkYVvBsaHibfj/Vz8=
+	t=1710423825; cv=none; b=mvhE6CgiQf0aR6SOMGmPEMhTF+LIqf0xwIi+9+SX0w8Ky1sGf1RXCPOMz1ggZbZ/LNyhBxzUxmp/N3H5GhXTt/STy3NAlVlTtw6uVUMjtVQlhnA+KmIzlYOQ7PAbiFIRVzNOaJBGnWkLgq6vx+k1fDprunBHMBDTj+za48Y4g/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710423764; c=relaxed/simple;
-	bh=NCm6m9p9o5Na54eQfsAR5vVaVANvzo7zu0eVP9gWP8o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aeKDIp7J+KOtShqEmg/h1czZIfFdgQHQges1NJuYiK7BYQ0VLlcEZdujJfBFyfD2mrqECtYvrxyMNpioBmmEO7zyh3mgsam8bjM6zTyi8h8uGdGGcBKNhx3Wy0USppAJ3ralRpEK3Vy5QOWMg5MGS/QBraE6uZKDEVALB/IQmok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=VHVHiVvT; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-609fb19ae76so10794577b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:42:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710423762; x=1711028562; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tFAZU9ltO4/NJyne7uET/FKWCg3e97DY7gCJUzC0+4o=;
-        b=VHVHiVvTvbGGhaxtkoT94uoJggv4N18USpAD3NuTVpDVA8NhVVgi8IaxavswqtO2Fz
-         llh4S5yCeYFsapxKUWMRuJhfyXDdjHEzUrp5hiv2Nh4bptdH1qIu5xdjRlV8imfDm0dq
-         aF70jfV3qvSv8dLmhvmiwdznwognlRi2lcNUPGIIMHoFrNq0K9iGCQ0nEUsuXG+UA+A7
-         OMC6NyWsfH5iOIx10RkxBMwsvmfTjVJTCkPUkVJ5QHQ/At4yKvPSsHvrYy6qrMwTqqYD
-         eIR850tzNpTiHfNoVjZ0QviX8N2NlgaS3P+9xBRkPbIfGfnfPLuaHKjL8DHDvadNAw8S
-         TXeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710423762; x=1711028562;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tFAZU9ltO4/NJyne7uET/FKWCg3e97DY7gCJUzC0+4o=;
-        b=PQ+Nh2GHfDjfreRxX+AJ8tju/tvZVK2/oWTgPPv8W/3/eNvAYPVvDblZzywpMyTjw5
-         HnnznKxMmIUE+PubmRs1YZrdwwfouAPA/WlYiyW1skVL8HH9xpL2Nog19AuheNbpJoK+
-         bmUPvrrOllwDaSPs/S1XEzYyYOnaC9DG2xINFYYp+vYy31UIWHdOInastt0uXupg7ips
-         Ht5cZVbt7bkYERjOQ6aUSyPdmaOQ4FzuZtSYkDycueLKBlb7F/x1X0vA7XvOUjFSiarJ
-         e1+oxLtUvDj3kt1r4uB0u1gK1uC4oNn0fp1XaTyupQjIzlsUt11+c3uf1GuIyia3chuZ
-         fuow==
-X-Forwarded-Encrypted: i=1; AJvYcCU2lwmEuj/Epfsr49DNEuMSKtcHXUc33uOcr7tIc9j8irJ3dDb0FppawZKU4TIJKb03/wJ8LJlTWm77vZERf/dWOwxfE++K55Rdox50
-X-Gm-Message-State: AOJu0Yz45i+XA6cqHVyGJA/LnGXYru4Y4NOBiOE8BT3tAiVR22I/qJpm
-	5J8aPUgMIFim4gHLrCfHITdI1P/e5C1/W6+n2oLA7fC+neKfIqve9JeUSSC6K8WVEvwos07VZan
-	uBoi1E01ulwtb2irdCxbKnIKt53Ae1vunUuDdTw==
-X-Google-Smtp-Source: AGHT+IFzzcSAl90VnCLvZimd3g0bzNXZxRAp/ul8mB1XTM9UGCCCa9yxtndGCwzS1Os/g+Yi59BMDjnUWnLh700inqA=
-X-Received: by 2002:a0d:fe01:0:b0:60a:2b18:6637 with SMTP id
- o1-20020a0dfe01000000b0060a2b186637mr724546ywf.34.1710423761902; Thu, 14 Mar
- 2024 06:42:41 -0700 (PDT)
+	s=arc-20240116; t=1710423825; c=relaxed/simple;
+	bh=Ia7fXQpwscxjlgS77Cik0if2GSeWHgz/M9bm7iY1vIc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pXrHh5l/fYlEn9mXt44AXyGYkFxhsF7Ofe8yeFAg1qualY9G739vj9x6DZ95Gz3LiwmbsDkawyf1hszf//qPcapJ7uL8XgyRX9xUKu9nd3yncp9ruJY9Gu3u47d9BCUo4YCx8K6CI/T8ls4xDUceqHCQmlMG+fHrSCRjiXCm/6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E8B61007;
+	Thu, 14 Mar 2024 06:44:17 -0700 (PDT)
+Received: from [10.1.30.182] (XHFQ2J9959.cambridge.arm.com [10.1.30.182])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A83463F762;
+	Thu, 14 Mar 2024 06:43:36 -0700 (PDT)
+Message-ID: <716bb29c-d2a2-4eef-b300-b037f08f458f@arm.com>
+Date: Thu, 14 Mar 2024 13:43:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313033417.447216-1-pasha.tatashin@soleen.com> <7af73776-06f9-42e6-9bfc-fabe8f8b002e@csgroup.eu>
-In-Reply-To: <7af73776-06f9-42e6-9bfc-fabe8f8b002e@csgroup.eu>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 14 Mar 2024 09:42:05 -0400
-Message-ID: <CA+CK2bBdJ6RcSdqfE+EkmxgnVnzpRvE+Vz3PUbvYHEHbAQs2NQ@mail.gmail.com>
-Subject: Re: [PATCH] vmstat: Keep count of the maximum page reached by the
- kernel stack
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "jpoimboe@kernel.org" <jpoimboe@kernel.org>, 
-	"kent.overstreet@linux.dev" <kent.overstreet@linux.dev>, "peterz@infradead.org" <peterz@infradead.org>, 
-	"nphamcs@gmail.com" <nphamcs@gmail.com>, 
-	"cerasuolodomenico@gmail.com" <cerasuolodomenico@gmail.com>, "surenb@google.com" <surenb@google.com>, 
-	"lizhijian@fujitsu.com" <lizhijian@fujitsu.com>, "willy@infradead.org" <willy@infradead.org>, 
-	"shakeel.butt@linux.dev" <shakeel.butt@linux.dev>, "vbabka@suse.cz" <vbabka@suse.cz>, 
-	"ziy@nvidia.com" <ziy@nvidia.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 2/5] mm: swap: introduce swap_nr_free() for batched
+ swap_free()
+Content-Language: en-GB
+To: Chuanhua Han <chuanhuahan@gmail.com>
+Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, chengming.zhou@linux.dev, chrisl@kernel.org,
+ david@redhat.com, hannes@cmpxchg.org, kasong@tencent.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
+ steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, Chuanhua Han
+ <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+ <20240304081348.197341-3-21cnbao@gmail.com>
+ <499a60c6-eeb8-4bbd-8563-9717c0d2e43d@arm.com>
+ <CANzGp4+kSxc_JbOsOcvm6vXfu2KORaqqGyuKK_eJwCLTK5X__Q@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CANzGp4+kSxc_JbOsOcvm6vXfu2KORaqqGyuKK_eJwCLTK5X__Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024 at 4:19=E2=80=AFAM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 13/03/2024 =C3=A0 04:34, Pasha Tatashin a =C3=A9crit :
-> > CONFIG_DEBUG_STACK_USAGE provides a mechanism to know the minimum amoun=
-t
-> > of memory that was left in stack. Every time the new anti-record is
-> > reached a message is printed to the console.
-> >
-> > However, this is not useful to know how much each page within stack was
-> > actually used. Provide a mechanism to count the number of time each
-> > stack page was reached throughout the live of the stack:
->
-> by "this is not useful to know ", you mean "this does not allow us to
-> know" ?
+On 14/03/2024 13:12, Chuanhua Han wrote:
+> Ryan Roberts <ryan.roberts@arm.com> 于2024年3月12日周二 02:51写道：
+>>
+>> On 04/03/2024 08:13, Barry Song wrote:
+>>> From: Chuanhua Han <hanchuanhua@oppo.com>
+>>>
+>>> While swapping in a large folio, we need to free swaps related to the whole
+>>> folio. To avoid frequently acquiring and releasing swap locks, it is better
+>>> to introduce an API for batched free.
+>>>
+>>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+>>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>> ---
+>>>  include/linux/swap.h |  6 ++++++
+>>>  mm/swapfile.c        | 35 +++++++++++++++++++++++++++++++++++
+>>>  2 files changed, 41 insertions(+)
+>>>
+>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>> index 2955f7a78d8d..d6ab27929458 100644
+>>> --- a/include/linux/swap.h
+>>> +++ b/include/linux/swap.h
+>>> @@ -481,6 +481,7 @@ extern void swap_shmem_alloc(swp_entry_t);
+>>>  extern int swap_duplicate(swp_entry_t);
+>>>  extern int swapcache_prepare(swp_entry_t);
+>>>  extern void swap_free(swp_entry_t);
+>>> +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
+>>
+>> nit: In my swap-out v4 series, I've created a batched version of
+>> free_swap_and_cache() and called it free_swap_and_cache_nr(). Perhaps it is
+>> preferable to align the naming schemes - i.e. call this swap_free_nr(). Your
+>> scheme doesn't really work when applied to free_swap_and_cache().
+> Thanks for your suggestions, and for the next version, we'll see which
+> package is more appropriate!
+>>
+>>>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
+>>>  extern int free_swap_and_cache(swp_entry_t);
+>>>  int swap_type_of(dev_t device, sector_t offset);
+>>> @@ -561,6 +562,11 @@ static inline void swap_free(swp_entry_t swp)
+>>>  {
+>>>  }
+>>>
+>>> +void swap_nr_free(swp_entry_t entry, int nr_pages)
+>>> +{
+>>> +
+>>> +}
+>>> +
+>>>  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
+>>>  {
+>>>  }
+>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>>> index 3f594be83b58..244106998a69 100644
+>>> --- a/mm/swapfile.c
+>>> +++ b/mm/swapfile.c
+>>> @@ -1341,6 +1341,41 @@ void swap_free(swp_entry_t entry)
+>>>               __swap_entry_free(p, entry);
+>>>  }
+>>>
+>>> +/*
+>>> + * Called after swapping in a large folio, batched free swap entries
+>>> + * for this large folio, entry should be for the first subpage and
+>>> + * its offset is aligned with nr_pages
+>>> + */
+>>> +void swap_nr_free(swp_entry_t entry, int nr_pages)
+>>> +{
+>>> +     int i;
+>>> +     struct swap_cluster_info *ci;
+>>> +     struct swap_info_struct *p;
+>>> +     unsigned type = swp_type(entry);
+>>
+>> nit: checkpatch.py will complain about bare "unsigned", preferring "unsigned
+>> int" or at least it did for me when I did something similar in my swap-out patch
+>> set.
+> Gee, thanks for pointing that out!
+>>
+>>> +     unsigned long offset = swp_offset(entry);
+>>> +     DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) = { 0 };
+>>
+>> I don't love this, as it could blow the stack if SWAPFILE_CLUSTER ever
+>> increases. But the only other way I can think of is to explicitly loop over
+>> fixed size chunks, and that's not much better.
+> Is it possible to save kernel stack better by using bit_map here?  If
+> SWAPFILE_CLUSTER=512, we consume only (512/64)*8= 64 bytes.
 
-Yes, bad wording from my side, I will change it to you suggestion in
-the next version.
+I'm not sure I've understood what you are saying? You're already using
+DECLARE_BITMAP(), so its already consuming 64 bytes if SWAPFILE_CLUSTER=512, no?
 
->
-> >
-> >       $
-> >       kstack_page_1 19974
-> >       kstack_page_2 94
-> >       kstack_page_3 0
-> >       kstack_page_4 0
->
-> That's probably only usefull when THREAD_SIZE is larger than PAGE_SIZE.
+I actually did a bad job of trying to express a couple of different points:
 
-That is right, if THREAD_SIZE <=3D PAGE_SIZE, only "kstack_page_1" would
-be filled.
+- Are there any configurations today where SWAPFILE_CLUSTER > 512? I'm not sure.
+Certainly not for arm64, but not sure about other architectures. For example if
+an arch had 64K pages with 8192 entries per THP and supports SWAP_THP, that's 1K
+for the bitmap, which is now looking pretty big for the stack.
 
->
-> On powerpc 8xx, THREAD_SIZE is 8k by default and PAGE_SIZE can be either
-> 4k or 16k.
+- Would it be better to decouple stack usage from SWAPFILE_CLUSTER and instead
+define a fixed stack size (e.g. 64 bytes -> 512 entries). Then free the range of
+entries in batches no bigger than this size. This approach could also allow
+removing the constraint that the range has to be aligned and fit in a single
+cluster. Personally I think an approach like this would be much more robust, in
+return for a tiny bit more complexity.
 
-With THREAD_SIZE =3D=3D 8K, and  PAGE_SIZE =3D 4K
-There will be  two counters in /proc/vmstat, something like this:
+>>
+>>> +
+>>> +     /* all swap entries are within a cluster for mTHP */
+>>> +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
+>>> +
+>>> +     if (nr_pages == 1) {
+>>> +             swap_free(entry);
+>>> +             return;
+>>> +     }
+>>> +
+>>> +     p = _swap_info_get(entry);
+>>
+>> You need to handle this returning NULL, like swap_free() does.
+> Yes, you're right! We did forget to judge NULL here.
+>>
+>>> +
+>>> +     ci = lock_cluster(p, offset);
+>>
+>> The existing swap_free() calls lock_cluster_or_swap_info(). So if swap is backed
+>> by rotating media, and clusters are not in use, it will lock the whole swap
+>> info. But your new version only calls lock_cluster() which won't lock anything
+>> if clusters are not in use. So I think this is a locking bug.
+> Again, you're right, it's bug!
+>>
+>>> +     for (i = 0; i < nr_pages; i++) {
+>>> +             if (__swap_entry_free_locked(p, offset + i, 1))
+>>> +                     __bitmap_set(usage, i, 1);
+>>> +     }
+>>> +     unlock_cluster(ci);
+>>> +
+>>> +     for_each_clear_bit(i, usage, nr_pages)
+>>> +             free_swap_slot(swp_entry(type, offset + i));
+>>> +}
+>>> +
+>>>  /*
+>>>   * Called after dropping swapcache to decrease refcnt to swap entries.
+>>>   */
+>>
+>> Thanks,
+>> Ryan
+>>
+>>
+> 
+> 
 
-kstack_page_1 XXX
-kstack_page_2 YYY
-
-With THREAD_SIZE=3D16K, and PAGE_SIZE =3D 16K
-There will be two counters, but one will always be zero:
-
-kstack_page_1 XXX
-kstack_page_2 0
-
-Thanks,
-Pasha
 
