@@ -1,95 +1,111 @@
-Return-Path: <linux-kernel+bounces-103066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1763987BA97
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:38:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 486D687BA9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8072283EAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:38:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5245B20DC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3D35D478;
-	Thu, 14 Mar 2024 09:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3272D6CDD3;
+	Thu, 14 Mar 2024 09:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="DoZKLHqH"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Fl4pEshf"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBF326CDA3
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69475D478;
+	Thu, 14 Mar 2024 09:40:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710409127; cv=none; b=DUfFVz4umBbao2GoaF77i9p+BkUryjUZtshMhaT+eTRCyetVnzwC1rN9S3CCMs+f/ZR4QoQyAJZB4L9yUJjL40OJ2nB+tJwXWUxWxoIY7+LvDSlrDfspPXTJIdhgt7fknjNwEt6lA63n7iwmHHJZ2Cf8PdSdeo604qxkAEdc0/g=
+	t=1710409222; cv=none; b=HNAy2Q4ODLOVi1fa9Fe9aSMkgLrGhcmrFzLGaDNkFy0J2L+b4XTMX5sEhsENLh9EtQYZbn/1OD2VlbtqSBqXgKJatv0/uzAFoEf+cfaK7ptmxL5igLNFX5B6QVMc3wrlcOuxsLu9m9ri32+FLmRTK4587k1Iatojw3MtOGkMKNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710409127; c=relaxed/simple;
-	bh=99jdUBguX0rRbr0EjMK/qjwxyH/ALk+EX4vPa6MmEgM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BFYy0wR8FT/Zm1o2evY96GnESXk8XcmL4U8s0GoLI0G1wOy5wsMz2of7OjME64BY1pcm48OKUgx1lMjYh0Fgo6Gb+DkOWX2d9IXkR7VI60jtZ6fYzXQ52l0cKf/xAaERJ6U0IDixGc3q53oGNlzMjHk3MLtccJQcnPTNyW5/XAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=DoZKLHqH; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso905879a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1710409124; x=1711013924; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=99jdUBguX0rRbr0EjMK/qjwxyH/ALk+EX4vPa6MmEgM=;
-        b=DoZKLHqHJjKooT7J4OCNGXuI/f8GMQXmFpBykZY+/C9fTvXOxcZEKiAoTGt/S8rt04
-         yxflKBrpFbGo4FKn4+nrwDh3K8LqcvIb/i5CNcJ5XH9fYGyxa6FPxk/GA2O5zJMNaEBM
-         KJnoscu1Y1vxqItcha1CJPd/4AY+j1q8B+PKA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710409124; x=1711013924;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=99jdUBguX0rRbr0EjMK/qjwxyH/ALk+EX4vPa6MmEgM=;
-        b=HguYtRVNb7GT5LO9THTC1D61JkT/NWZeuqygwH8HmaghMLAd+nO5S5qb+PlrdXG80i
-         8I39ztj0/Ow7WlNf7IY6j0e6QatfBsb0rc3pKKrMPGzYDLxkUD39YXopi8PFlGigz+la
-         kl9eaC12D7BFFVYbjV0ceHDZFx6R2G0a+rEqxiYqkOcxFufN4BnMtflTt3KLqg1W3dOb
-         e+f8AWO8+m7wpqT5T1JEvi9LPy6DnZY7tYdSi85HnrcE7aiQfHpLDZoQC4KabqmlrJgf
-         GlQ0gGxjWsADxTJLbUf0z8fwt//59Iwq5ABlpCb8eBFfDdIcKoDf6qsJvcxjo6BsUyE+
-         pHZw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2FCY4wODmoAVO4sWY8WFiOiOQQ8ualbNWyQSuwLxauSfI7EGBlZW8WhJDlxc8kESrycwkHryn08iEpUl8qqGdtCLQ2THSggvuKBTC
-X-Gm-Message-State: AOJu0YyYH+0AsnMU/8s+koCUaBv560bTQSO3+Z2gT0eDfXfdO9AoqcSl
-	cpJRJV+HfQsiMGT8QykK7Nt2TVX++X1qmC1/NJD/Wb98G7Yt7yiUb5y4FMWf5QF58CEYUqhCh96
-	2GkIpWY1P5jjdxRklw7iEkKdsixvcRCvsX64y4w==
-X-Google-Smtp-Source: AGHT+IFJydnHavfoQj7GUYh55PHRwLEm1dCHo24SSZNO/gRuXbw54y6GXsBk03f130OZZShAe0+mXoV5Dw6q3SS+Q8U=
-X-Received: by 2002:a17:907:6b88:b0:a46:7183:14ff with SMTP id
- rg8-20020a1709076b8800b00a46718314ffmr827861ejc.48.1710409124273; Thu, 14 Mar
- 2024 02:38:44 -0700 (PDT)
+	s=arc-20240116; t=1710409222; c=relaxed/simple;
+	bh=Hl7jmLGK4iDneFMK0s8y3NXOTrwEV3hV/7n5zpdoeak=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fKMU11OfY/TuHk2uSvUxgeGIfevgM1RPtU97dhYqY+DrOv6ULDTAmZ1EHOnd/tu1Jnzfgdo9CfyW0r9T2A4qO389CdJWVZvXfGABdxqmZB0H2VBX6YQKXJNQaJsnmHJbNe8hKHqXFjfQnROzTea04l9h5YK9pih68LXqZMl2V+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Fl4pEshf; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710409219;
+	bh=Hl7jmLGK4iDneFMK0s8y3NXOTrwEV3hV/7n5zpdoeak=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Fl4pEshfn7A20AORpI8jlcZZgtt8ypOPJ8u/pHZIuj3dO4UP9RXs3Ryt6663zPgMS
+	 Zfn5qk3IOJ/1PPhW24QJsdEj8YWGI5RMevBgXiN2FoRwP2Ny9eV33Q1B7zy5tWjqE4
+	 eOmNxyYzDNnJ1tU4D2O7yIQU5nDJnYRZ4EyQOpRp/kSaghgeoKarTQFYF//ut9CC8S
+	 AwPUoBV1GBmvbFdskNNJLQFchj3jSnooiSEzVT6ZBXnWaJrM8BbXIARAbEd4wEKmAK
+	 PBWR2JSbeKD1urf75RGnIbpS1dEioRdfbbAfC+Zrek+j+DQNcg+62Y6HrRSvY8990p
+	 vPn1iZUM2b3vA==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D99DD378148F;
+	Thu, 14 Mar 2024 09:40:16 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: kernel@collabora.com,
+	Joey Gouly <joey.gouly@arm.com>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: mm: restore settings from only parent process
+Date: Thu, 14 Mar 2024 14:40:45 +0500
+Message-Id: <20240314094045.157149-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000043c5e70613882ad1@google.com> <CAOQ4uxjtkRns4_EiradMnRUd6xAkqevTiYZZ61oVh7yDzBn_-g@mail.gmail.com>
-In-Reply-To: <CAOQ4uxjtkRns4_EiradMnRUd6xAkqevTiYZZ61oVh7yDzBn_-g@mail.gmail.com>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 14 Mar 2024 10:38:33 +0100
-Message-ID: <CAJfpegu8Rjj1cHkB6JD=TY1CWuVaH8YpSRLQe0cOfG9aQXj6Vw@mail.gmail.com>
-Subject: Re: [syzbot] [overlayfs?] WARNING in ovl_copy_up_file
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	syzbot <syzbot+3abd99031b42acf367ef@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 13 Mar 2024 at 21:55, Amir Goldstein <amir73il@gmail.com> wrote:
+The atexit() is called from parent process as well as forked processes.
+Hence the child restores the settings at exit while the parent is still
+executing. Fix this by checking pid of atexit() calling process and only
+restore THP number from parent process.
 
-> The WARN_ON that I put in ovl_verify_area() may be too harsh.
-> I think they can happen if lower file is changed (i_size) while file is being
-> copied up after reading i_size into the copy length and this could be
-> the case with this syzbot reproducer that keeps mounting overlayfs
-> instances over same path.
->
-> Should probably demote those WARN_ON to just returning EIO?
+Fixes: c23ea61726d5 ("selftests/mm: protection_keys: save/restore nr_hugepages settings")
+Tested-by: Joey Gouly <joey.gouly@arm.com>
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ tools/testing/selftests/mm/protection_keys.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Sounds good.
+diff --git a/tools/testing/selftests/mm/protection_keys.c b/tools/testing/selftests/mm/protection_keys.c
+index f822ae31af22e..374a308174d2b 100644
+--- a/tools/testing/selftests/mm/protection_keys.c
++++ b/tools/testing/selftests/mm/protection_keys.c
+@@ -1745,9 +1745,12 @@ void pkey_setup_shadow(void)
+ 	shadow_pkey_reg = __read_pkey_reg();
+ }
+ 
++pid_t parent_pid;
++
+ void restore_settings_atexit(void)
+ {
+-	cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
++	if (parent_pid == getpid())
++		cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
+ }
+ 
+ void save_settings(void)
+@@ -1773,6 +1776,7 @@ void save_settings(void)
+ 		exit(__LINE__);
+ 	}
+ 
++	parent_pid = getpid();
+ 	atexit(restore_settings_atexit);
+ 	close(fd);
+ }
+-- 
+2.39.2
 
-Thanks,
-Miklos
 
