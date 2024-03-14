@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-102856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D909C87B7C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:08:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB2E287B7C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EA78285D38
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:08:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36079B23BB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D1B535AB;
-	Thu, 14 Mar 2024 06:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4964548F6;
+	Thu, 14 Mar 2024 06:00:13 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6991250A60;
-	Thu, 14 Mar 2024 06:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C35552F87;
+	Thu, 14 Mar 2024 06:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710396009; cv=none; b=mm/lSklk6v6ZYkf2uYgizsQQrRULoVQizkrd6kJZxRvqIquVg+luU2LrcuKz5th8FKWQu8/dc3enKUSlnAJXWfyFtgiqrttBI6Z1flSnPR0OhYgAO8WSVx17dg9mMPq+rMUNLn0uE5l4F60qvrwJ06lcd1urH0txBe7670B4WgA=
+	t=1710396013; cv=none; b=LjOF4WbnMfT6nJAbaKmKtWrA6zuZfnG57LakUMbc7MERmSgx34HK1E42U3d8aEkX5kQgTNq9MvRUpCuub3WXRlkMqcNAVg2Fyb2SdMzrVDSpertYmI4b9/7YPBPtkiSj/YrAIUbAVvCI1B1NtRY0lXplboHbNGo7t8o7I08NEm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710396009; c=relaxed/simple;
-	bh=moazgtcuMucKciWmHM/NiV2lvzyaSuRx4XTjZfq4/fw=;
+	s=arc-20240116; t=1710396013; c=relaxed/simple;
+	bh=odfDf5jRfzsM9E3bmfCMx7AUD0oZh2kA8ac5NqZQrJI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gW+ILBXa+8OfFk5h5n6AORkQtLaQRkskdbosnc8qQFXqzIupCIdt2nA1IrD7tyCq3vLg/oFxqI2MQIkl1Mnmc71Tt+fJv3yO0x88h/F74HbjRNMl/2skBTfbU8ZLbgK2sM1rvuRvjdX6hyTZGdJwMJOuE1C7kfy051PDc6rODDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	 MIME-Version; b=A3iuVZllwVVRd/4KLVpnv4NmF5eq9IzDs862hGRc7+0wg1IoeQ/jzf054bpV2C35ZQQD1m7SYpMnHCCF0AbPDdwXgYbbwjj5RDKC62x4AVK/ET3dLE/mP2pehM0Rp4AWkLCh209QnfAEcjOL8WKnz3dykh9uc1UZ8gRxe22ffkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com; spf=fail smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C63C11007;
-	Wed, 13 Mar 2024 23:00:42 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CA791007;
+	Wed, 13 Mar 2024 23:00:47 -0700 (PDT)
 Received: from a077893.arm.com (unknown [10.163.53.138])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E59F63F73F;
-	Wed, 13 Mar 2024 23:00:01 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D18AF3F73F;
+	Wed, 13 Mar 2024 23:00:06 -0700 (PDT)
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	suzuki.poulose@arm.com
@@ -46,9 +46,9 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	linux-kernel@vger.kernel.org,
 	coresight@lists.linaro.org,
 	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH V7 10/11] coresight: stm: Move ACPI support from AMBA driver to platform driver
-Date: Thu, 14 Mar 2024 11:28:42 +0530
-Message-Id: <20240314055843.2625883-11-anshuman.khandual@arm.com>
+Subject: [PATCH V7 11/11] coresight: debug: Move ACPI support from AMBA driver to platform driver
+Date: Thu, 14 Mar 2024 11:28:43 +0530
+Message-Id: <20240314055843.2625883-12-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240314055843.2625883-1-anshuman.khandual@arm.com>
 References: <20240314055843.2625883-1-anshuman.khandual@arm.com>
@@ -60,214 +60,189 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for the stm devices in the platform driver, which can then be
-used on ACPI based platforms. This change would now allow runtime power
-management for ACPI based systems. The driver would try to enable the APB
-clock if available. But first this renames and then refactors stm_probe()
-and stm_remove(), making sure it can be used both for platform and AMBA
-drivers. Also this moves pm_runtime_put() from stm_probe() to the callers.
+Add support for the cpu debug devices in a new platform driver, which can
+then be used on ACPI based platforms. This change would now allow runtime
+power management for ACPI based systems. The driver would try to enable
+the APB clock if available. But first this renames and then refactors
+debug_probe() and debug_remove(), making sure they can be used both for
+platform and AMBA drivers.
 
 Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
 Cc: Sudeep Holla <sudeep.holla@arm.com>
 Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc: Mike Leach <mike.leach@linaro.org>
 Cc: James Clark <james.clark@arm.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Cc: linux-acpi@vger.kernel.org
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Cc: coresight@lists.linaro.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
 Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
 Reviewed-by: James Clark <james.clark@arm.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
 Changes in V7:
 
-- Dropped reduntant drvdata check in stm_platform_remove()
+- Dropped struct resource check before devm_ioremap_resource()
+- Dropped reduntant drvdata check in debug_platform_probe()
+- Dropped reduntant drvdata check in debug_platform_remove()
+- Sorted the headers in alphabetic order
 
- drivers/acpi/arm64/amba.c                   |   1 -
- drivers/hwtracing/coresight/coresight-stm.c | 104 ++++++++++++++++++--
- 2 files changed, 94 insertions(+), 11 deletions(-)
+ drivers/acpi/arm64/amba.c                     |   1 -
+ .../hwtracing/coresight/coresight-cpu-debug.c | 138 ++++++++++++++++--
+ 2 files changed, 122 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-index d3c1defa7bc8..bec0976541da 100644
+index bec0976541da..e1f0bbb8f393 100644
 --- a/drivers/acpi/arm64/amba.c
 +++ b/drivers/acpi/arm64/amba.c
 @@ -22,7 +22,6 @@
  static const struct acpi_device_id amba_id_list[] = {
  	{"ARMH0061", 0}, /* PL061 GPIO Device */
  	{"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
--	{"ARMHC502", 0}, /* ARM CoreSight STM */
- 	{"ARMHC503", 0}, /* ARM CoreSight Debug */
+-	{"ARMHC503", 0}, /* ARM CoreSight Debug */
  	{"", 0},
  };
-diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-index 5ae24c33c846..cbf7f17556f8 100644
---- a/drivers/hwtracing/coresight/coresight-stm.c
-+++ b/drivers/hwtracing/coresight/coresight-stm.c
-@@ -29,6 +29,8 @@
- #include <linux/perf_event.h>
- #include <linux/pm_runtime.h>
- #include <linux/stm.h>
-+#include <linux/platform_device.h>
-+#include <linux/acpi.h>
  
- #include "coresight-priv.h"
- #include "coresight-trace-id.h"
-@@ -115,6 +117,7 @@ DEFINE_CORESIGHT_DEVLIST(stm_devs, "stm");
-  * struct stm_drvdata - specifics associated to an STM component
-  * @base:		memory mapped base address for this component.
-  * @atclk:		optional clock for the core parts of the STM.
-+ * @pclk:		APB clock if present, otherwise NULL
-  * @csdev:		component vitals needed by the framework.
-  * @spinlock:		only one at a time pls.
-  * @chs:		the channels accociated to this STM.
-@@ -131,6 +134,7 @@ DEFINE_CORESIGHT_DEVLIST(stm_devs, "stm");
- struct stm_drvdata {
- 	void __iomem		*base;
- 	struct clk		*atclk;
-+	struct clk		*pclk;
- 	struct coresight_device	*csdev;
- 	spinlock_t		spinlock;
- 	struct channel_space	chs;
-@@ -810,14 +814,12 @@ static char *stm_csdev_name(struct coresight_device *csdev)
- 	return uci_data ? (char *)uci_data : "STM";
+diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+index 1874df7c6a73..3263fc86cb66 100644
+--- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
++++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+@@ -4,6 +4,7 @@
+  *
+  * Author: Leo Yan <leo.yan@linaro.org>
+  */
++#include <linux/acpi.h>
+ #include <linux/amba/bus.h>
+ #include <linux/coresight.h>
+ #include <linux/cpu.h>
+@@ -18,6 +19,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/panic_notifier.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_qos.h>
+ #include <linux/slab.h>
+ #include <linux/smp.h>
+@@ -84,6 +86,7 @@
+ #define DEBUG_WAIT_TIMEOUT		32000
+ 
+ struct debug_drvdata {
++	struct clk	*pclk;
+ 	void __iomem	*base;
+ 	struct device	*dev;
+ 	int		cpu;
+@@ -557,18 +560,12 @@ static void debug_func_exit(void)
+ 	debugfs_remove_recursive(debug_debugfs_dir);
  }
  
--static int stm_probe(struct amba_device *adev, const struct amba_id *id)
-+static int __stm_probe(struct device *dev, struct resource *res)
+-static int debug_probe(struct amba_device *adev, const struct amba_id *id)
++static int __debug_probe(struct device *dev, struct resource *res)
  {
- 	int ret, trace_id;
++	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
  	void __iomem *base;
 -	struct device *dev = &adev->dev;
- 	struct coresight_platform_data *pdata = NULL;
- 	struct stm_drvdata *drvdata;
+-	struct debug_drvdata *drvdata;
 -	struct resource *res = &adev->res;
- 	struct resource ch_res;
- 	struct coresight_desc desc = { 0 };
+ 	int ret;
  
-@@ -829,12 +831,16 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	if (!drvdata)
- 		return -ENOMEM;
- 
--	drvdata->atclk = devm_clk_get(&adev->dev, "atclk"); /* optional */
-+	drvdata->atclk = devm_clk_get(dev, "atclk"); /* optional */
- 	if (!IS_ERR(drvdata->atclk)) {
- 		ret = clk_prepare_enable(drvdata->atclk);
- 		if (ret)
- 			return ret;
- 	}
-+
-+	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
-+	if (IS_ERR(drvdata->pclk))
-+		return -ENODEV;
- 	dev_set_drvdata(dev, drvdata);
- 
- 	base = devm_ioremap_resource(dev, res);
-@@ -882,7 +888,7 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 		ret = PTR_ERR(pdata);
- 		goto stm_unregister;
- 	}
--	adev->dev.platform_data = pdata;
-+	dev->platform_data = pdata;
- 
- 	desc.type = CORESIGHT_DEV_TYPE_SOURCE;
- 	desc.subtype.source_subtype = CORESIGHT_DEV_SUBTYPE_SOURCE_SOFTWARE;
-@@ -903,8 +909,6 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	}
- 	drvdata->traceid = (u8)trace_id;
- 
--	pm_runtime_put(&adev->dev);
+-	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+-	if (!drvdata)
+-		return -ENOMEM;
 -
- 	dev_info(&drvdata->csdev->dev, "%s initialized\n",
- 		 stm_csdev_name(drvdata->csdev));
- 	return 0;
-@@ -917,9 +921,20 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
+ 	drvdata->cpu = coresight_get_cpu(dev);
+ 	if (drvdata->cpu < 0)
+ 		return drvdata->cpu;
+@@ -579,10 +576,7 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
+ 		return -EBUSY;
+ 	}
+ 
+-	drvdata->dev = &adev->dev;
+-	amba_set_drvdata(adev, drvdata);
+-
+-	/* Validity for the resource is already checked by the AMBA core */
++	drvdata->dev = dev;
+ 	base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+@@ -629,10 +623,21 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
  	return ret;
  }
  
--static void stm_remove(struct amba_device *adev)
-+static int stm_probe(struct amba_device *adev, const struct amba_id *id)
-+{
-+	int ret;
+-static void debug_remove(struct amba_device *adev)
++static int debug_probe(struct amba_device *adev, const struct amba_id *id)
+ {
+-	struct device *dev = &adev->dev;
+-	struct debug_drvdata *drvdata = amba_get_drvdata(adev);
++	struct debug_drvdata *drvdata;
 +
-+	ret = __stm_probe(&adev->dev, &adev->res);
-+	if (!ret)
-+		pm_runtime_put(&adev->dev);
++	drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
 +
-+	return ret;
++	amba_set_drvdata(adev, drvdata);
++	return __debug_probe(&adev->dev, &adev->res);
 +}
 +
-+static void __stm_remove(struct device *dev)
- {
--	struct stm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-+	struct stm_drvdata *drvdata = dev_get_drvdata(dev);
++static void __debug_remove(struct device *dev)
++{
++	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
  
- 	coresight_trace_id_put_system_id(drvdata->traceid);
- 	coresight_unregister(drvdata->csdev);
-@@ -927,6 +942,11 @@ static void stm_remove(struct amba_device *adev)
- 	stm_unregister_device(&drvdata->stm);
+ 	per_cpu(debug_drvdata, drvdata->cpu) = NULL;
+ 
+@@ -646,6 +651,11 @@ static void debug_remove(struct amba_device *adev)
+ 		debug_func_exit();
  }
  
-+static void stm_remove(struct amba_device *adev)
++static void debug_remove(struct amba_device *adev)
 +{
-+	__stm_remove(&adev->dev);
++	__debug_remove(&adev->dev);
 +}
 +
- #ifdef CONFIG_PM
- static int stm_runtime_suspend(struct device *dev)
- {
-@@ -935,6 +955,8 @@ static int stm_runtime_suspend(struct device *dev)
- 	if (drvdata && !IS_ERR(drvdata->atclk))
- 		clk_disable_unprepare(drvdata->atclk);
- 
-+	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_disable_unprepare(drvdata->pclk);
- 	return 0;
- }
- 
-@@ -945,6 +967,8 @@ static int stm_runtime_resume(struct device *dev)
- 	if (drvdata && !IS_ERR(drvdata->atclk))
- 		clk_prepare_enable(drvdata->atclk);
- 
-+	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_prepare_enable(drvdata->pclk);
- 	return 0;
- }
- #endif
-@@ -973,7 +997,67 @@ static struct amba_driver stm_driver = {
- 	.id_table	= stm_ids,
+ static const struct amba_cs_uci_id uci_id_debug[] = {
+ 	{
+ 		/*  CPU Debug UCI data */
+@@ -677,7 +687,103 @@ static struct amba_driver debug_driver = {
+ 	.id_table	= debug_ids,
  };
  
--module_amba_driver(stm_driver);
-+static int stm_platform_probe(struct platform_device *pdev)
+-module_amba_driver(debug_driver);
++static int debug_platform_probe(struct platform_device *pdev)
 +{
 +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	struct debug_drvdata *drvdata;
 +	int ret = 0;
 +
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
++	if (IS_ERR(drvdata->pclk))
++		return -ENODEV;
++
++	dev_set_drvdata(&pdev->dev, drvdata);
 +	pm_runtime_get_noresume(&pdev->dev);
 +	pm_runtime_set_active(&pdev->dev);
 +	pm_runtime_enable(&pdev->dev);
 +
-+	ret = __stm_probe(&pdev->dev, res);
-+	pm_runtime_put(&pdev->dev);
-+	if (ret)
++	ret = __debug_probe(&pdev->dev, res);
++	if (ret) {
++		pm_runtime_put_noidle(&pdev->dev);
 +		pm_runtime_disable(&pdev->dev);
-+
++		if (!IS_ERR_OR_NULL(drvdata->pclk))
++			clk_put(drvdata->pclk);
++	}
 +	return ret;
 +}
 +
-+static int stm_platform_remove(struct platform_device *pdev)
++static int debug_platform_remove(struct platform_device *pdev)
 +{
-+	struct stm_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
++	struct debug_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
 +
 +	if (WARN_ON(!drvdata))
 +		return -ENODEV;
 +
-+	__stm_remove(&pdev->dev);
++	__debug_remove(&pdev->dev);
 +	pm_runtime_disable(&pdev->dev);
 +	if (!IS_ERR_OR_NULL(drvdata->pclk))
 +		clk_put(drvdata->pclk);
@@ -275,38 +250,62 @@ index 5ae24c33c846..cbf7f17556f8 100644
 +}
 +
 +#ifdef CONFIG_ACPI
-+static const struct acpi_device_id stm_acpi_ids[] = {
-+	{"ARMHC502", 0, 0, 0}, /* ARM CoreSight STM */
++static const struct acpi_device_id debug_platform_ids[] = {
++	{"ARMHC503", 0, 0, 0}, /* ARM CoreSight Debug */
 +	{},
 +};
-+MODULE_DEVICE_TABLE(acpi, stm_acpi_ids);
++MODULE_DEVICE_TABLE(acpi, debug_platform_ids);
 +#endif
 +
-+static struct platform_driver stm_platform_driver = {
-+	.probe	= stm_platform_probe,
-+	.remove	= stm_platform_remove,
++#ifdef CONFIG_PM
++static int debug_runtime_suspend(struct device *dev)
++{
++	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
++
++	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
++		clk_disable_unprepare(drvdata->pclk);
++	return 0;
++}
++
++static int debug_runtime_resume(struct device *dev)
++{
++	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
++
++	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
++		clk_prepare_enable(drvdata->pclk);
++	return 0;
++}
++#endif
++
++static const struct dev_pm_ops debug_dev_pm_ops = {
++	SET_RUNTIME_PM_OPS(debug_runtime_suspend, debug_runtime_resume, NULL)
++};
++
++static struct platform_driver debug_platform_driver = {
++	.probe	= debug_platform_probe,
++	.remove	= debug_platform_remove,
 +	.driver	= {
-+		.name			= "coresight-stm-platform",
-+		.acpi_match_table	= ACPI_PTR(stm_acpi_ids),
++		.name			= "coresight-debug-platform",
++		.acpi_match_table	= ACPI_PTR(debug_platform_ids),
 +		.suppress_bind_attrs	= true,
-+		.pm			= &stm_dev_pm_ops,
++		.pm			= &debug_dev_pm_ops,
 +	},
 +};
 +
-+static int __init stm_init(void)
++static int __init debug_init(void)
 +{
-+	return coresight_init_driver("stm", &stm_driver, &stm_platform_driver);
++	return coresight_init_driver("debug", &debug_driver, &debug_platform_driver);
 +}
 +
-+static void __exit stm_exit(void)
++static void __exit debug_exit(void)
 +{
-+	coresight_remove_driver(&stm_driver, &stm_platform_driver);
++	coresight_remove_driver(&debug_driver, &debug_platform_driver);
 +}
-+module_init(stm_init);
-+module_exit(stm_exit);
++module_init(debug_init);
++module_exit(debug_exit);
  
- MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
- MODULE_DESCRIPTION("Arm CoreSight System Trace Macrocell driver");
+ MODULE_AUTHOR("Leo Yan <leo.yan@linaro.org>");
+ MODULE_DESCRIPTION("ARM Coresight CPU Debug Driver");
 -- 
 2.25.1
 
