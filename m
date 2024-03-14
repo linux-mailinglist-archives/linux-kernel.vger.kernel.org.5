@@ -1,144 +1,173 @@
-Return-Path: <linux-kernel+bounces-103029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 829C387BA1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:14:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7AD587BA26
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:14:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F356284E32
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:14:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0FE11C21B4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185136CDAD;
-	Thu, 14 Mar 2024 09:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA46F6CDB8;
+	Thu, 14 Mar 2024 09:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="lWDZU7oM"
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com [207.54.90.137])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UBqCNxL2"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4577383B8;
-	Thu, 14 Mar 2024 09:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699914D9F9;
+	Thu, 14 Mar 2024 09:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710407649; cv=none; b=cYuiAg+UK7AZ6RQanMfUNK30XUkhYjdEIlDwkD4bZdk201Za523eVooiWHfit6Nrv5zSayCXhNeIC60rER1jpYU74JRrJ8Kfuc6Yo2HJ6ttClx7NrVmgs3zRCxF1RGTa5DsGt5sGM0aNPcBOd6x2tG9kK2C6iQWOHSlsYlp+8pI=
+	t=1710407675; cv=none; b=UFgbsqn0vYHvFPXgXzqAMfTTl1CByMyGMifZxEeHJD0bZUF1w6rD39tWmPJLFnokDS/l7NCrLKuLKUuBODw6aUnkUz/IdcLhV1bI8rDbubOFniP0JrDOv7qTohZqRibnE9jmktHcduPB9roZY1YWkNUpemPrzcxhpfvUBBWf6R0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710407649; c=relaxed/simple;
-	bh=MkPxD/mSb3e/nL1gcdizoWHAielr1Hx/WkR9sTx6OOQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FIUzCAi8XlaiC7w+CGnjzTY3YZ9fEEkh02sME9uFnTX+oUk+CKfLsLa1vbp3x5Qye0FSyhz5AIyeVea6qt/7V6ogI66dPSs0SeXbes+awlGsc7HDMluuc1pTFMSwLBVKjU+HSYHYsYW1yKGDpO1QOPWNUK5D2unjKm6qSzli0O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=lWDZU7oM; arc=none smtp.client-ip=207.54.90.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1710407647; x=1741943647;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MkPxD/mSb3e/nL1gcdizoWHAielr1Hx/WkR9sTx6OOQ=;
-  b=lWDZU7oMi99vwuuS6f6jMqw9xcfTz33hNjgD6/fW45caYLrbEk/s/Ft6
-   4Lks+FC5TEGaq17RWCrVpTVn8fmAflCp3MuvyuF0kxE4dmD5ifiAWNBih
-   QldsvLyrClmyRs8xMlc7T2aHyEOEEAwU/Aw+yOH2mWzmiN6ewOV1VDY/6
-   7ejRoAFt0kcuACicLvgy5gJCzdoxhTjQNnOhWkzwdC9SbYyP12D+RH5Z5
-   egzZBgDRPfHB3IabnZ8cKKvLfUG0T43MMugqxhxC+zdU3+CKwc5Iyz5PV
-   8ucfVdj9ueOa3yzbDeaTCnPOMQoFMPDdQ9f5Wjo8g6JHgWn33DzHDC/ue
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="131621572"
-X-IronPort-AV: E=Sophos;i="6.07,124,1708354800"; 
-   d="scan'208";a="131621572"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
-  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:14:04 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
-	by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id F00E5D4800;
-	Thu, 14 Mar 2024 18:14:01 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
-	by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 29753C19D7;
-	Thu, 14 Mar 2024 18:14:01 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id BF6996B4C5;
-	Thu, 14 Mar 2024 18:14:00 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 4456D1A006B;
-	Thu, 14 Mar 2024 17:14:00 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: linux-kernel@vger.kernel.org
-Cc: Li Zhijian <lizhijian@fujitsu.com>,
-	Sean Young <sean@mess.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org
-Subject: [PATCH] media: imon: Convert sprintf/snprintf to sysfs_emit
-Date: Thu, 14 Mar 2024 17:13:57 +0800
-Message-Id: <20240314091357.1323543-1-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1710407675; c=relaxed/simple;
+	bh=yGECxDVBnHjeax8LXRZ/Y/zGcpZHh9rZqrLunVXFIiU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=U6UPZhkeS31XjwVca4aceImmvnnxHXfRKnjTcBq/jpFrVeHOLZm1j3YZ/M7r7aBkWWVjLuHvX3PISaynvu4I3AH6t/SucZiNYwFT7VRor5YRvEv92dirI4VZGhnPJStjBhm4WpxXm9U7Sm8OXEYPi3UX2vo/2TNf1766566KqPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UBqCNxL2; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42E7HhqZ031313;
+	Thu, 14 Mar 2024 09:14:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ACs28A64PZCK8xR1JHjXCW0uaEqfAaghLtlnmobTOXU=; b=UB
+	qCNxL2jLNIU7rRqYwbuTE9ESHFC8Y/XbnB8FoTwVdCOQZS8k8HdCNkHsZpvCccrf
+	nQ6BPs3XVvkKXiremkbGtSmGkZuo663dIs8xYsxGJsFDrSEVnhcxH9MqPYr/xMRq
+	aSTbucVVRej5dyhD8M4EWzw6zAl5EdTCnZkvhgGShznZqi4pXksMqb2kynWfV1Ht
+	52rrOkq7Ep04bLCYTFBvI3ldhRIwgEqBrsYaegAJ1cTS/fxZqcZDF8vnAX0qlWMi
+	9bknApaMXN2vUUGtkEMziSkqngf2LIy5WzIMcXcAA8NUXmwXAP1m+JfAnJcoLhq2
+	xD75hf4ZU/CWDVufYrQg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wuujsrfs2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 09:14:30 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42E9ETH6025995
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Mar 2024 09:14:29 GMT
+Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Mar
+ 2024 02:14:23 -0700
+Message-ID: <d5f9ff11-ebef-44e6-8f4c-d0a2beed1f8e@quicinc.com>
+Date: Thu, 14 Mar 2024 14:44:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28250.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28250.006
-X-TMASE-Result: 10--8.539700-10.000000
-X-TMASE-MatchedRID: 84oovQVhL8E4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfDqO6/8R69QE8U
-	roFNOGp7a6aAZTOwtJmRloiW1Kgftd2ZdKe8BPbSfc0UG4EkZrGIkRP7M27eX2O0yVK/5LmcQiM
-	ingSlKoKMx5HzfQifbPE41045MrHXFDCN/1eC4ASdVNZaI2n6/8E5XPQnBzGXq8KsbROd9VSD3F
-	7iC1Qm2oHA6IBd3vQsXVJYHPH571zy7SCinQLRVHaNJ/iTxXCafS0Ip2eEHnz3IzXlXlpamPoLR
-	4+zsDTtD12T7q2dIUu6sDUxK6Er+o+9qtuJlxp/NljbRoOK+isrHwmcFXVg/g==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 2/3] clk: qcom: videocc-sm8150: Add index based clk lookup
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "Stephen
+ Boyd" <sboyd@kernel.org>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        "Jagadeesh
+ Kona" <quic_jkona@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+References: <20240313-videocc-sm8150-dt-node-v1-0-ae8ec3c822c2@quicinc.com>
+ <20240313-videocc-sm8150-dt-node-v1-2-ae8ec3c822c2@quicinc.com>
+ <CAA8EJpqsQr2nfDbW1JRyBoNSemudgrpxCRYH1y0ayX2Wd2u=VQ@mail.gmail.com>
+From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
+In-Reply-To: <CAA8EJpqsQr2nfDbW1JRyBoNSemudgrpxCRYH1y0ayX2Wd2u=VQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _bF-kjkkBD7tHgLJ7o5DjjJPKbtVpg9i
+X-Proofpoint-GUID: _bF-kjkkBD7tHgLJ7o5DjjJPKbtVpg9i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_07,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 adultscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403140063
 
-Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-or sysfs_emit_at() when formatting the value to be returned to user space.
 
-coccinelle complains that there are still a couple of functions that use
-snprintf(). Convert them to sysfs_emit().
+On 3/14/2024 12:48 AM, Dmitry Baryshkov wrote:
+> On Wed, 13 Mar 2024 at 13:11, Satya Priya Kakitapalli
+> <quic_skakitap@quicinc.com> wrote:
+>> Add support to look up for clocks using index instead of fw_name.
+> Why? You are breaking compatibility with existing bindings.
+> Also the commit message is incorrect. You are not _adding_ support.
+> You are changing name-based lookup to index-based one.
 
-sprintf() will be converted as weel if they have.
 
-Generally, this patch is generated by
-make coccicheck M=<path/to/file> MODE=patch \
-COCCI=scripts/coccinelle/api/device_attr_show.cocci
+As per the recent upstream discussions, I see that the clock names is 
+not being allowed to use, it is recommended to use the index based 
+lookup. Hence I updated this before adding the DT node.
 
-No functional change intended
+Will update the commit text accordingly.
 
-CC: Sean Young <sean@mess.org>
-CC: Mauro Carvalho Chehab <mchehab@kernel.org>
-CC: linux-media@vger.kernel.org
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
-This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
-Split them per subsystem so that the maintainer can review it easily
-[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
----
- drivers/media/rc/imon.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
-index 5719dda6e0f0..0b55314a8082 100644
---- a/drivers/media/rc/imon.c
-+++ b/drivers/media/rc/imon.c
-@@ -845,13 +845,13 @@ static ssize_t imon_clock_show(struct device *d,
- 	mutex_lock(&ictx->lock);
- 
- 	if (!ictx->display_supported) {
--		len = snprintf(buf, PAGE_SIZE, "Not supported.");
-+		len = sysfs_emit(buf, "Not supported.");
- 	} else {
--		len = snprintf(buf, PAGE_SIZE,
--			"To set the clock on your iMON display:\n"
--			"# date \"+%%y %%m %%d %%w %%H %%M %%S\" > imon_clock\n"
--			"%s", ictx->display_isopen ?
--			"\nNOTE: imon device must be closed\n" : "");
-+		len = sysfs_emit(buf,
-+				 "To set the clock on your iMON display:\n"
-+				 "# date \"+%%y %%m %%d %%w %%H %%M %%S\" > imon_clock\n"
-+				 "%s", ictx->display_isopen ?
-+				 "\nNOTE: imon device must be closed\n" : "");
- 	}
- 
- 	mutex_unlock(&ictx->lock);
--- 
-2.29.2
-
+>> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+>> ---
+>>   drivers/clk/qcom/videocc-sm8150.c | 8 ++++++--
+>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/clk/qcom/videocc-sm8150.c b/drivers/clk/qcom/videocc-sm8150.c
+>> index a0329260157a..2b788a03c5ed 100644
+>> --- a/drivers/clk/qcom/videocc-sm8150.c
+>> +++ b/drivers/clk/qcom/videocc-sm8150.c
+>> @@ -19,6 +19,10 @@
+>>   #include "reset.h"
+>>   #include "gdsc.h"
+>>
+>> +enum {
+>> +       DT_BI_TCXO,
+>> +};
+>> +
+>>   enum {
+>>          P_BI_TCXO,
+>>          P_VIDEO_PLL0_OUT_MAIN,
+>> @@ -49,7 +53,7 @@ static struct clk_alpha_pll video_pll0 = {
+>>                  .hw.init = &(struct clk_init_data){
+>>                          .name = "video_pll0",
+>>                          .parent_data = &(const struct clk_parent_data){
+>> -                               .fw_name = "bi_tcxo",
+>> +                               .index = DT_BI_TCXO,
+>>                          },
+>>                          .num_parents = 1,
+>>                          .ops = &clk_alpha_pll_trion_ops,
+>> @@ -63,7 +67,7 @@ static const struct parent_map video_cc_parent_map_0[] = {
+>>   };
+>>
+>>   static const struct clk_parent_data video_cc_parent_data_0[] = {
+>> -       { .fw_name = "bi_tcxo" },
+>> +       { .index = DT_BI_TCXO },
+>>          { .hw = &video_pll0.clkr.hw },
+>>   };
+>>
+>>
+>> --
+>> 2.25.1
+>>
+>>
+>
 
