@@ -1,146 +1,160 @@
-Return-Path: <linux-kernel+bounces-103341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0161187BE4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:04:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 482AA87BE54
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DCBFB21CF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:04:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 051AC28464C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1B16FE38;
-	Thu, 14 Mar 2024 14:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399A06F53E;
+	Thu, 14 Mar 2024 14:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D/9GI0MN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="p3mjRBYP"
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AAA6EB74;
-	Thu, 14 Mar 2024 14:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B98C66F06D
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425020; cv=none; b=fi+VNCUEz4MU8M2N4j3ApbHWLa/dNw2Pc3QAgI0XDbQmtwc0RagABowO5Bd5fP3Gyg0gtC5S+WZz7BQ/l/hCIdjaFF4DgX1/OqMgWWNy8Ef979ePg+YWEahGRJj1dBWWlzh0dFxAZ6ZrWUCgGx+RnovOx/YedbBSYQD37jvHNZs=
+	t=1710425075; cv=none; b=H4P6MzAJ8w62qKaqVQqp+CxlTxF6qs7/DKvCUEiRlhJZ610yCC5hqOl+3m7khdX00SZ0mFnPqfLSLzdOQFEIxc66GZFVcAG6rFcc3zoWT4lWkddRweQSJDpfOwF2ZqlOGf6OjaqHu/FfdaOEAi+bo2A858eA9ESTLpDHag9QMBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425020; c=relaxed/simple;
-	bh=ocgVFU/TLLicKSAOp5e6Jw1mceRESxNPxDSwgKLBNEA=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qDizKREOZ2RgjVRx4bbzDj3beuAaHN34rQiCxj5TdtSukYTrhIvaFueWeVmmcdygC2fs5Ww56b5q4lpt6pHHwSTRWbPwXDgY/wS1x992R4wJHdgIvzlyFHDNw9z0RlIqnxrnRXyioQxcLSMFpe8FGP1pzrogXp/ZNPuayqJxpUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D/9GI0MN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 000D1C433F1;
-	Thu, 14 Mar 2024 14:03:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710425019;
-	bh=ocgVFU/TLLicKSAOp5e6Jw1mceRESxNPxDSwgKLBNEA=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=D/9GI0MNs8JWQAPf5Z1G4ogPOnDtQG33rHgiHHxOa92Emq5WYrPE2KautM9N9cX+a
-	 WbAAwO3Wj6eGQhlBVLL1NOWBqJbIlFLWdPaqBN/vgFeUiLRGt27X/853VR56NhzJPM
-	 bhGT0rC8lV23Q2AvhaQZDdo1vP+n3SNU5ZK6A1oMZc/AgCrrdI/vToA98gaZ6j16XQ
-	 410z3sbYFy+9A6BbGCT/624NNsQU9AsUlIbj4QVgBsD7FAG1GJ9BPAnQ5tp06sJY54
-	 ZxTk2LafU3ZP/TjsguM9rT43oB0GzuUw09qEcfHP28AKHoMaGH0kFo3KBKE2b2YYZk
-	 0oMCxcfNdjKUg==
-Date: Thu, 14 Mar 2024 14:03:30 +0000
-From: Mark Brown <broonie@kernel.org>
-To: "dalias@libc.org" <dalias@libc.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-	"musl@lists.openwall.com" <musl@lists.openwall.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"fweimer@redhat.com" <fweimer@redhat.com>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"will@kernel.org" <will@kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-	"ardb@kernel.org" <ardb@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"sorear@fastmail.com" <sorear@fastmail.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
- in userspace
-Message-ID: <d334e9b9-659c-476f-b28d-42d3ac3dc591@sirena.org.uk>
-References: <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
- <20240220185714.GO4163@brightrain.aerifal.cx>
- <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
- <20240220235415.GP4163@brightrain.aerifal.cx>
- <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
- <20240221012736.GQ4163@brightrain.aerifal.cx>
- <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
- <20240221145800.GR4163@brightrain.aerifal.cx>
- <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
- <20240302145702.GD1884416@port70.net>
+	s=arc-20240116; t=1710425075; c=relaxed/simple;
+	bh=Hmgq8CAaz4Ke0Zq2nDCvEYSHRExJjsASTSq1J5x5BSo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jkwWG59yzCNfBNkETtHsUH1NKfhRkqN2DSt2Mv5kUOS7b+MPzP2D+8ccfLHwO3rIECQGlDKTnfENJgK3ErYUfDu/LXcDskQvW0yw9CkqoRxlFLVl3/wyfHoZMgGswRL/HWqJdCvb9LS3LsUn7LPPI1hmMy0hdL4NmoAQe6M6PJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=p3mjRBYP; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42ee2012bf0so7588361cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710425072; x=1711029872; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hmgq8CAaz4Ke0Zq2nDCvEYSHRExJjsASTSq1J5x5BSo=;
+        b=p3mjRBYPhLUUdYAypUwm0kLzF2CS5qINen/EX/lmllYe9fBAJ2vTsLPa+uRR4ljjeU
+         trgDMBeXsw64talNInyxsNzE4tWpPNXRgnuleARZnPCg4q81rBSI7Cd77bN/i+p5kmaI
+         sFG9S/mOkegctQwCXe5YAszyB995JRLFMKEb+AOMDyYGAE41LOpfBZG6r1pff2JmyZEl
+         XCorfQqMDbE0T9d6fJyuKBAZMiqt5CBDmr8r9HdW+riytbPFuue+iMIlGIiFlUq03RzR
+         PTjPV0H5tmI4a2VHxjXyJBZIRtb5z3vGLMZQB2TBzLeKEGE1+eZJfxUjlcOD2Fip/590
+         iqdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710425072; x=1711029872;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hmgq8CAaz4Ke0Zq2nDCvEYSHRExJjsASTSq1J5x5BSo=;
+        b=k4KOkmlv19zl3L33zFMcbaBxhofx7gTvr4ydVONTvFIeJA1gGDseEwnbGQDrMdy6ip
+         JVAOP3SbErqP8cOoeVapSmAuRGX+0C+hl+SKaOkhI9Vw3DywflXwbihU0gAzv/9CtQi1
+         aEPUfVtofzmcDkfdVExD3iFbAJpay+NCNP/PWJ/KtwoPAcBa8ol+PsffTEsi5yV07D8w
+         KAkrlqlVx6LWFOJOppemhGhj3DKeLvn9tz4qSxpn2S9x6Knx79ql9fLEVNmjeZl7BJ5J
+         IYnjCiqe05UFSbSITzEaKhy6dc960GxHnuowSIBdGRsvTK1sLTAfSnITTUjTQ3WSsVlx
+         l2nQ==
+X-Gm-Message-State: AOJu0YzQEmSUFYsIaE5y47n4SZFWDPvkndRs/Rw291cDIxx/RQyTB4he
+	fxmiZ9DlXYGzFkFJbVwcOaqqEhZzKJVB/imFJ6NBrnSb+nNFXHkrtg7+9GqiTC9qSVz5E65sJld
+	1sF32tMhgKTKUv9975qZema2pEHbDiv+OzgVVhQ==
+X-Google-Smtp-Source: AGHT+IF1WiEU4N3Z6Uqdf3j6rNjBbma5Y0Jff1HtPv863Egdopl6dhLMAJDdICC3crqwRhHV2ZHM33uBwxoDyrFBoss=
+X-Received: by 2002:a05:622a:1816:b0:42e:db75:3cf9 with SMTP id
+ t22-20020a05622a181600b0042edb753cf9mr8873826qtc.27.1710425072462; Thu, 14
+ Mar 2024 07:04:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pT4wHotY8cx/YSEA"
-Content-Disposition: inline
-In-Reply-To: <20240302145702.GD1884416@port70.net>
-X-Cookie: WYSIWYG:
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <20240311164638.2015063-12-pasha.tatashin@soleen.com> <87v85qo2fj.ffs@tglx>
+ <CA+CK2bBgeK=rW3=RJSx8zxST8xnJ-VXSSYmKPVK9gHX3pxEWuQ@mail.gmail.com>
+ <CA+CK2bAzJuCe06g_TEOh3B-hK+dXfUaGaOSTgzyxkN4zqpSU_A@mail.gmail.com> <87bk7inmah.ffs@tglx>
+In-Reply-To: <87bk7inmah.ffs@tglx>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 14 Mar 2024 10:03:55 -0400
+Message-ID: <CA+CK2bC=6GOkCOwJdhH25r-9hb1BQVoLK7LLAgpm2AKqdmStrg@mail.gmail.com>
+Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
+	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
+	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
+	hca@linux.ibm.com, hch@infradead.org, hpa@zytor.com, 
+	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
+	jroedel@suse.de, juri.lelli@redhat.com, kent.overstreet@linux.dev, 
+	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
+	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
+	michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
+	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
+	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
+	urezki@gmail.com, vincent.guittot@linaro.org, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Mar 13, 2024 at 12:12=E2=80=AFPM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+>
+> On Wed, Mar 13 2024 at 11:28, Pasha Tatashin wrote:
+> > On Wed, Mar 13, 2024 at 9:43=E2=80=AFAM Pasha Tatashin
+> > <pasha.tatashin@soleen.com> wrote:
+> >> Here's a potential solution that is fast, avoids locking, and ensures =
+atomicity:
+> >>
+> >> 1. Kernel Stack VA Space
+> >> Dedicate a virtual address range ([KSTACK_START_VA - KSTACK_END_VA])
+> >> exclusively for kernel stacks. This simplifies validation of faulting
+> >> addresses to be part of a stack.
+> >>
+> >> 2. Finding the faulty task
+> >> - Use ALIGN(fault_address, THREAD_SIZE) to calculate the end of the
+> >> topmost stack page (since stack addresses are aligned to THREAD_SIZE).
+> >> - Store the task_struct pointer as the last word on this topmost page,
+> >> that is always present as it is a pre-allcated stack page.
+> >>
+> >> 3. Stack Padding
+> >> Increase padding to 8 bytes on x86_64 (TOP_OF_KERNEL_STACK_PADDING 8)
+> >> to accommodate the task_struct pointer.
+> >
+> > Alternatively, do not even look-up the task_struct in
+> > dynamic_stack_fault(), but only install the mapping to the faulting
+> > address, store va in the per-cpu array, and handle the rest in
+> > dynamic_stack() during context switching. At that time spin locks can
+> > be taken, and we can do a find_vm_area(addr) call.
+> >
+> > This way, we would not need to modify TOP_OF_KERNEL_STACK_PADDING to
+> > keep task_struct in there.
+>
+> Why not simply doing the 'current' update right next to the stack
+> switching in __switch_to_asm() which has no way of faulting.
+>
+> That needs to validate whether anything uses current between the stack
+> switch and the place where current is updated today. I think nothing
+> should do so, but I would not be surprised either if it would be the
+> case. Such code would already today just work by chance I think,
+>
+> That should not be hard to analyze and fixup if necessary.
+>
+> So that's fixable, but I'm not really convinced that all of this is safe
+> and correct under all circumstances. That needs a lot more analysis than
+> just the trivial one I did for switch_to().
 
---pT4wHotY8cx/YSEA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Agreed, if the current task pointer can be switched later, after loads
+and stores to the stack, that would be a better solution. I will
+incorporate this approach into my next version.
 
-On Sat, Mar 02, 2024 at 03:57:02PM +0100, Szabolcs Nagy wrote:
-> * Mark Brown <broonie@kernel.org> [2024-02-21 17:36:12 +0000]:
+I also concur that this proposal necessitates more rigorous analysis.
+This work remains in the investigative phase, where I am seeking a
+viable solution to the problem.
 
-> > > I said NOP but there's no reason it strictly needs to be a NOP. It
-> > > could instead do something reasonable to convey the state of racing
-> > > with shadow stack being disabled.
+The core issue is that kernel stacks consume excessive memory for
+certain workloads. However, we cannot simply reduce their size, as
+this leads to machine crashes in the infrequent instances where stacks
+do run deep.
 
-> > This feels like it's getting complicated and I fear it may be an uphill
-> > struggle to get such code merged, at least for arm64.  My instinct is
-
-> the aarch64 behaviour is already nop
-> for gcs instructions when gcs is disabled.
-> the isa was designed so async disable is
-> possible.
-
-Yeah, we'd need to handle GCSPR_EL0 somehow (currently it's inaccessible
-when GCS is disabled) and userspace would need to take care it's not
-doing something that could get stuck if for example a pop didn't
-actually *do* anything.
-
---pT4wHotY8cx/YSEA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXzA7EACgkQJNaLcl1U
-h9DtMwf+JnNjwm9DjgfaCHDp+cP7YhhFhwS5JiqPHng947Eq2YICGNh1KUf/HVq8
-VjnGVfZYycl6Q5XcsKtiIge6fzgb0z/vDrjYKaCVLhu7sC03mGroef90nO0gvw2K
-OvMgE+0BzMA7XrMHBWIQlu7p5Wm6rF6U/pVowEHQNunK3uQEyFUzjJUyTYewV/YV
-vuEPBmX2VzqLAzACX142ClcYwHzODx0SQPdvnzrSpXnpw7440+JMYNK/x7QKwPV+
-kWJg2tTuYGo37YLUmSXzk/EQLoQ2mMtcC423i+XHC3W1ATJC6lioyhuPFrec4rmw
-f6AuUBTWAwPFswxpCAmg1ZfUVZGWZg==
-=Oz06
------END PGP SIGNATURE-----
-
---pT4wHotY8cx/YSEA--
+Thanks,
+Pasha
 
