@@ -1,165 +1,207 @@
-Return-Path: <linux-kernel+bounces-103523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D2787C091
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:45:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC05A87C097
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BE65284818
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:45:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C46B1C21D65
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:45:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE1C471B5E;
-	Thu, 14 Mar 2024 15:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DDD7316A;
+	Thu, 14 Mar 2024 15:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="NCdKil5s"
-Received: from sonic315-26.consmr.mail.ne1.yahoo.com (sonic315-26.consmr.mail.ne1.yahoo.com [66.163.190.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tuxera.com header.i=@tuxera.com header.b="jZHsmYdv"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2090.outbound.protection.outlook.com [40.107.6.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3E271723
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.190.152
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431117; cv=none; b=PcCvY7EhUBi8SSlJLIjGu0y+pi6DQ4KZJcSgXkKq8nKQeXqxRBffrQX5ohybQILIssKgIFavEEgpUkuURg1C8i6OlA1r3Z9/1zM6pjrowWeT/Rno46qsIJqdUbnBkE1kIaK8fdy0WlnO3RlcjL/MXqLPAL6OLJ5/zXH9u7lGitE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431117; c=relaxed/simple;
-	bh=X6GVf77QHFHhrmJdArapDFzCy+gK/1Zhmshh68BMYQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EV7xY5EVyZWCoQvPGFcQAZ4CfF4c7aO8ltBoaBSuS8G5AX1msxiAFVxtZCoWY9b21t9krehq92DHi+VpBe66zuartVs8f1LlMZ5o6vN4cF6NmPx0cV/2J2Z3hNvZoyzARZ4mJ4b4ZHnKTzYT3NEUfBwJ0aYpliJyH5BR7TrKJJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=NCdKil5s; arc=none smtp.client-ip=66.163.190.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710431114; bh=8EdGV2Ns74qItVMaHvWmbG1wZxhXh/FfHvPHV0OlpOc=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=NCdKil5sEtfvyvhM5af1/zqWMUswzlPPEX4/aqiL5QlQGvxd2rZJRHgdEg3Shzm1xaAEU9BgAZHCSsKd563AK87wH/s/MPQr8k8kQJyNjR657Zy24SSC2+F1L/ELTlyOKooWyHYSWCHnOBKdSjlVpAMfleIbLaG1LDXhiDAgaLA8GP6eaKusdxG6AmouRYfVYhGvDu6yWjb6EY9TpjhcpPaA/XEemrUTmjhbRAERuRMxg81i8TSGgl/itWXf1PNwG9jLIaWre6mT4rCIfAEQ6/Y5Pndr+sJ4nbFdgsK+3fmI2ptJUd2F1HCMkz56fgM9laCd3h8ZBL0NxcHZWkCgnQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710431114; bh=BRi+Xj8uw/pP48hQAO/VOLHbt298B27x+mDkZuyEXYC=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=hngavXBPi+5u/51/rw7rwEJo+216xHHh01wAc9/QCTHXzscMukav1tehCReKPQDflP0ViBrRgsZpLvqlGwQyY+88iIl5HSim83VB8wHSYLGumcjKxBMCiRoMGqN5uz8jt75/X0Df4CoZU2MQybQ9oYzU/WxtYGHXiwdqeY2MvLzsngpRPcoS6tuTmtpCYP+ZFbNAVCCjsFxenu4lFc9JaCsHSD6lTBH43wEz0a4vpf9PQN50oUhMZKzam4l+bEqCXsvm+gc9Y9W3+AnIfQn1wlQmZ32FQwAHyHmBNj0r1VL+58rYJUUj2qho7srW7ZfdZ2DXUKIkDsIown9AWtc9iA==
-X-YMail-OSG: OswY.MEVM1lw2YJNbe9jOi94L8qZp2dTKN1PX8OmM9C7h5zz86qA28zh2ztwhYi
- XaRl1TpWTNfUW30jCCA6BDZ87u.9da6mlwy98blU0i90rQpZTfHPpt20KmyE0BfDbliTpx6LKIz4
- U9eOWhr5QBEHheoCXIrOYJwWZmu3phRWKlKabjDLadqYdRB8K4WH5au1bf.WYe1zvyIqi_OpCjbI
- TwQz8slGTaLiI0N0OQx2cFd3As5fQ1diqJKMG_QHW9zzGcKfubJg8TU7pHfxZq7sGqkxKNLgaOQI
- qkZUxhaCMinrqubPT4Rxcxikd5RZL5wj9FDFdK5wHYOAzkE9AJIETnVB0uImMHYbc6n_rVKFr9f.
- 4mRNz2uWmVsa2DaZu5oGo6IKd71Vi403ns2tj15iJ30ucoMS54J7rtQgADw6EvxSMuXrj7lSa_kC
- QtZHpf9Wuv6llt7WjdWGcKgphz4mfjZFBHbM6P5b7UPF5XnlayUSxUrYau_Bl9X7h.zooQl2yQBS
- 4xLuusnKbu74Gs294BZYGqiaWdWHKsRFCFos2xgUMs07wpW7l7.m_iR7N6GXDe8DGDghA6BgfTur
- TpoTXNldsM9bMH7CJR0ZBzQ0axevPwJCiUmI7CK6iYzTq6t0w6n0BSDYI9kznXEMBSHxIH1y7Oo3
- PoKL1Og0_IUTYi9Q3xE8B_7PotnBHtkIwSU9aHzi6U7pYBiOHALzHRASKex753xeIiwt8BZNy6Me
- kY2RjKai3S4P9vB7HjUKPltOHjutpFfhzP2mkuC3eI1ou4s6B6QKpHDGU.EvVKewvuOFMIW3v6sf
- 6GibJd6eEel04Si4oP_NqiGBrtl2cT1N6Yh5u0_iEdAKC4EH8o7cTR2I.OKTxEeRcODCiACl.bbG
- as1gHxkmcG7OytqDBuwglluv5bn9mk5nDopRHDgvyAf5goTTkOeSQ27_HD3lkHHrI_z.vlu7c_kJ
- 5w3XR8agxNFPKwjcaJzvWpMx7LG0mniRHTo2p6HwEUPAjhG43aLnp1jPIQTIrnN_zYX.ePBsY7KI
- 9KvOBdiMWP1JBOoKh2DGCKeM6gOdrUCPWFi4Kppyw2I0O9MDdjEkQvYr6mP_qq.lsQBQoK7I1o8x
- pWJZBXVP7d8rJ.gH92OUAvWY6lmoQCc8U9Tget44tKUMtWUbNgBTxs1yiXN0ECGBCwq63XJNIwcu
- xnUvwxRjvtXjmojF2mwHzDb.XMwEx9T8DbAq.mwTGYrsmMtjdBSTPrgwMtw1vw8ioNyWDNX1XxVM
- Uc2rEp24FFHrGou429zqm2OhXW5DQbzplMR_qSCrnlbRrZul.O5GhZfHQesCuMrQpmnRbWp5Ol9M
- 0OdOjAVMQq5bAwXNeVKBTeDUdoPhaMzBEfbDwmizm9Vi4JN1CIruUjO8XsqrKXzzceIcFG0uJPuV
- R.Ra0v98Q4.hgVtCa6IRu5IZqPXOziol9V6fgJ499pcBDDDYRtMbfDG8.RNjCrARhh5o7ZnqPg8c
- QaHX5lSvpylbUm9J21QHjKpBCXNoBIGKNWgdYQs_YxLRr1GCl5OWZowKQdb014YAGrEFTaTxSmxR
- trhbqVNbKinaX55X6.eGyhgyhOsEz8GraA2DRk4qIxvRsuOJnEzLhe3Iq5ZuBGhplsUiCfn9U5qw
- 423tQF_Req52FgbW72CuWIdoqZr_S9SM1oIXBVtQ9LM7fN.dBftLWErwMPZVown8NZ0EgPeDIbba
- JkNVltdPjjiYgslE6w.nuRgHu5GYrS7w1q1W4EHIDG2zlKuBVb8kNUAgdG3e2JiQgw5jAQV_EWLA
- pbOWh178kKgKGgXywSnYK.J1QdGCQRUqPXigSDApS1_M94TsK5xbPTv6P2VXkuIQpMXyiR1mLLkL
- TmZm_ZknP2PuqUdXqxANc_6ibrBZpsJ4CbXuO3AFS.tsm0d8dMNdAA9SSBsEYCZ9hBRRsnG1b5sk
- dpYJloyzgpjEKP69A9Y11gs0mgpPKQgMdnUQY3KisjwIM1xkjPPf8SWkIVbipyqDEp6F0eOJhkuB
- ha07IZyH6Be_Qjp6.2xxMxOTUj93DO2X6PIsyvIYZxbpvXQ1jYCoXV7bgU7EG5T4Lz5dO6KFRg24
- Z_3_qZ1PMyBrUeB5hPG1ydLGk3xmxlOWCT67IZxLDXl40bOfoN2kg7Asgb.KJxpT.fH5zewS3y2o
- IPZc3pK1ma4J0krJUUC1TSclXNN2h_wbBduCdDPmKEAQmGagxoKrq8lha9eOxLL36RMfqt3d2qMz
- s1hU6SxAkfgNPaRGk9iJCZc.as1sLneRk.w4PGpxxum4_an5RUJ7vjeyePImQpI1CFLDBypMo6De
- srvd2DlOIcJtSKNIBt9I-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 8795c96f-0b92-45b7-bdeb-0068ece329e6
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Thu, 14 Mar 2024 15:45:14 +0000
-Received: by hermes--production-gq1-5c57879fdf-tnlsv (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 6288dba7af8c7caaec0833e884a1eb80;
-          Thu, 14 Mar 2024 15:45:10 +0000 (UTC)
-Message-ID: <22cc14d6-0c5f-47d7-9505-44c595d67a29@schaufler-ca.com>
-Date: Thu, 14 Mar 2024 08:45:09 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC48471749;
+	Thu, 14 Mar 2024 15:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.90
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710431149; cv=fail; b=lOszW1WvZPQoL9nibYYcuxz7/5lDfcjdX14/BWRON2s4Ws/ToIeYxmtoyRTjTF8tKFXhxxwcE3xBdRJlCQG4zEcsNPbdoFPmNKe8xL5vsNciBxltEui/DmptMOMCeVob22zR89jaybGmg2iSJzZeIUsq5b1q+32J10Z30wmL4fE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710431149; c=relaxed/simple;
+	bh=bWfaTX4oJ1iTJgw5u8WfT47xbcn0xhZutbiYJMM0ScE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rP4QKd/ubBilqq4gyPNt4Uj1MMyMxC8JBDaeGT4TTnxIddTdCRh7ARqbbSkoCV8NTn5HgrpzC8HEtQzKCLR41GQyxqS4MQ2BjVNcQwmS4m6xYXnI/0hGxnQNysqU/2YSYPCjPiK32DbrhvPN1Uulbd4ioZLpnoc9B/tkK/RKN4Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxera.com; spf=pass smtp.mailfrom=tuxera.com; dkim=pass (2048-bit key) header.d=tuxera.com header.i=@tuxera.com header.b=jZHsmYdv; arc=fail smtp.client-ip=40.107.6.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxera.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxera.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b2IwdvlLVtH5aKAkSyaB6zUesBHOKRlJC5Ql3IcxzDg+fcUG1QqQ/k3PD+7Pi9SkF+tlxTGQuCfUsqidKQCMrgI1ZHqv+aGPVd7ZcDiyQUst8Gjj7ImXnPP8SR5SdgHK0HG6kJpSWtxblkQhR0H1+RWwEadM9+wvAFPaX07sITZLC7jjR5OgV/ixHyTRNnD4Zylj6lHzO5nGiMFyboefxEr2pZi4SFeTB9zke/gvWbK3wEisGn8LL9NzbwuLdF9JQG6dkd/HkiMM5bf7Cg6+Thq6SHKMJ2cmjqLFnOivZsFm2Meu9IDouMzHwvEdRpoS92M4X/UsI0bKDa2Uc6x2yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LmifIluQTPTxWP+oP3tNT5LaKylXiIysj401izJB2PE=;
+ b=DOA5+89Ub112Zg6Wir1UtxicrgmPl9yJCC0Qz3UjvfXmL87u+qk375i69U12zMQmjCSNe+2QfrRdcc8xORlE3coyP4NhPIOxG4CFXhPmYpheR5/T1VTZzhZN4MMSfxQxHKuNO/nz+3nAwJDQ0dTWcsakEDPJoSodhiFCmxwkt09rHqmozzo4lJItYwbKIOa0a/ha3Wcwmkb3bJCUDN2UUDJ9NdoP/kRuPgt0SlzH22E6sp2zeh7nouaOPPUzVB9QexWUqbUvXV0yIlHooy6iA6Efw3Oha7UMIRHqqagMiTPUHMWV5bTrD+QXAft01K0awMpcEaSweoFAE3jtKL+oew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=tuxera.com; dmarc=pass action=none header.from=tuxera.com;
+ dkim=pass header.d=tuxera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LmifIluQTPTxWP+oP3tNT5LaKylXiIysj401izJB2PE=;
+ b=jZHsmYdvVf5tn0K7G1GrnkFvZLWqJ/DQAZ5nkplswxKasdu/Pyz4khGoyAssAA1Yj6/gyhPfPwNCguif3EdyABnascXxRkVKunOSQkWhLRtmWDSmEDE4i5dy2P8R6xjbVYJ3n8OkuwkMtAq8v8fesEs20H47GyS+liVfgLJqUcndcFDzr7jC7thO1HBmUeEKebjqPYgMmDrojpu+luVkil1VPsnp/nIFBbezsXilOccglpTJHiJWm6zoyUa6rpGh/8Eg5mJ1KtooyXRMBodPs+UZJUyU7q7H+NqHvakLDVkTgLyASYGROFtERCxkas3YtLDhdEXJ5bFNyq7d98kM9w==
+Received: from AS8PR06MB7239.eurprd06.prod.outlook.com (2603:10a6:20b:254::18)
+ by AS8PR06MB7766.eurprd06.prod.outlook.com (2603:10a6:20b:33a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Thu, 14 Mar
+ 2024 15:45:44 +0000
+Received: from AS8PR06MB7239.eurprd06.prod.outlook.com
+ ([fe80::6306:f08a:57eb:467c]) by AS8PR06MB7239.eurprd06.prod.outlook.com
+ ([fe80::6306:f08a:57eb:467c%4]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
+ 15:45:44 +0000
+From: Anton Altaparmakov <anton@tuxera.com>
+To: Dave Hansen <dave.hansen@intel.com>
+CC: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Chen Yu
+	<yu.c.chen@intel.com>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Catalin Marinas <catalin.marinas@arm.com>, Linux Memory Management
+	<linux-mm@kvack.org>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Ingo
+ Molnar <mingo@kernel.org>, "linux-pm@vger.kernel.org"
+	<linux-pm@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] x86/pm: Fix false positive kmemleak report in
+ msr_build_context().
+Thread-Topic: [PATCH] x86/pm: Fix false positive kmemleak report in
+ msr_build_context().
+Thread-Index: AQHadiEQrskV1NWHjkSsYR0U0Bb8SLE3YQqA
+Date: Thu, 14 Mar 2024 15:45:44 +0000
+Message-ID: <653BCAC0-8A79-400F-B496-23A2FA169786@tuxera.com>
+References: <20240314142656.17699-1-anton@tuxera.com>
+ <70261e2a-b87e-462e-964e-95a51ecde978@intel.com>
+In-Reply-To: <70261e2a-b87e-462e-964e-95a51ecde978@intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=tuxera.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS8PR06MB7239:EE_|AS8PR06MB7766:EE_
+x-ms-office365-filtering-correlation-id: ba1b3b2a-4e8d-4de4-552f-08dc443dcf80
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Gby/xhYZ0nh+8/BZV6VJg7zwhVywCSCvZls0ewwpWdZL4hgVbjeQgFXe89vnFkahN0Iksyw0FQadL8h6rgRdpbDZlNMPjYN5GMHl2ZYRcGm1NDlQC8xNfLSUzztdboi/Jfv/Zz9B+saKhSh4Fs26uC8GBO4JzS24wzlYQ0hcN4y5Mzi246qI+uTmNKd1jUp+fnMxOPIfTqaHa4+KBlBEmQxBCjsrdbD8rFYgWqc/CQMnnAt6Szej2mweL5Kv89gnd8kWx26/Lvou/Bc5b69JX7PD/Ax0N3sTK4mOiM4g7EqtaCioqh92QutkUHjorQQdxNMfxdpyTjD5SDm+LbfBW+VGYjL6W1n4pE6ctV/UUqeNux79ow7r3GA40Uicw6S6DQrLTMNHHMO1QkWhIJIEzMXTL3BymFW13W539L6VMXu6oA0tlQmcLyAiXLXvziHOvfFRY9xk4ets9e+UoM7Vy8aM6fhlC4q1qqif32m/MKKMLvXaD+tO8yjO4HO+wg9ZbYHmyMetqg9bAUvLVW7PdO3oHVvWzB+HyQBZfanGKe09LoFoPB2oir0QmLdxBqHHAK9zgwcBhwjgNYGzjIgIywdGXBHKZUvm87comrznNDQ5dGEtCxdzTHtEWCcTMrz7rHCSmtPvxuLrqv/CAhtiIfCZfx4Rllkcr2OXlzRl7Gg=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR06MB7239.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?WiBd/WSYE4WNWpxzJwO2IEwKDABaiGCHFiZPB5l53GjVUmkw2+oM5IuaYo2n?=
+ =?us-ascii?Q?uE6JRx5nHoQS9+FlM5i0sDFsbW93Mlp5eX0Zt+CVDrVbe65jECRAOxy1+WfL?=
+ =?us-ascii?Q?T4LvDViHr+zdZ75lLt9SIAFujuo7en2D1AJI2kgI3RQ8blF0MMw95v44ZGit?=
+ =?us-ascii?Q?+1ZQ/2OdqJl0ZKEtLFebvcZXyLUhE6UDwEsZoxC5aDgi9GvIEeNUKnqOZqXx?=
+ =?us-ascii?Q?7vYPjnRoYAADj3NPUdqo20PlVgkHXzNFRY5Qe0xVANrwlH9DnCnPRw2PiB9B?=
+ =?us-ascii?Q?EVClTIGBjny1uxND4ZFcvN648mkTTq7MjyhDWGQzZv4GEt3lu/pLuluZmnoP?=
+ =?us-ascii?Q?shv/+j9HQI3ZfOq1OAvmcZqS7J2r42apMUN8/Xy5Qnz/wkXZYcZw+TzPA3nq?=
+ =?us-ascii?Q?iN8b0cqjPv2SpvwTYUy2ooAAFtO7x4g3X22mH10OGVNaWYcgaxoZN+3jBB2K?=
+ =?us-ascii?Q?WnxbpTa8Ia2vAoXGHgyRUav6ULvRZEC0T6j1JN+xi6R8fWM3MYgkub3egpWp?=
+ =?us-ascii?Q?rRqiueUJYwrMXyUUq+mc8wYwvELIl/+B+J3OU+agSqYxN627y01s0kT5HdDX?=
+ =?us-ascii?Q?AIVKUORi4sSVHGj5ERTq8lhiWjlwS3YRCN6oh56TXT9l+XzY1H4v2UzphEcl?=
+ =?us-ascii?Q?+QswbNEk6gkXHgMZJsQrIoPhg5qA1DOtxsp602iiYtB50TE7zP6x+i/o8+4R?=
+ =?us-ascii?Q?k/8FO0PWFfvKeDzFxY8IeuwwqbsQj2+CEv/5Am6WLxLgC78L5GPTqDXt6Na7?=
+ =?us-ascii?Q?GnoSEj8UGEW21ZUvuQWguQ5QlpkDlmv/ewZpLjZLchYvHWtKNoXaEqwxBvHq?=
+ =?us-ascii?Q?5md4OA1kfgVu/DnveWPTktBeLMlX0VpAcaaRjpZe+G7aFo9KBVSjj4CgJJc+?=
+ =?us-ascii?Q?Ry5Yt0/DOddmlaLn6MvDMjdUr4RhJURJUmkffb+vLKYLCibDBZ2D08cNjk8F?=
+ =?us-ascii?Q?VQNRVvNtzx70ZhG//Cxg0AgjkIWZuTxvvtjhumqtMPsGc3sK+FNBrScpqG0f?=
+ =?us-ascii?Q?ZnZvD3IuJlWioZxKBCNlB+CkrrwFpEJSurwpHpm5lcYEUkRP7yl2DefitvCd?=
+ =?us-ascii?Q?RYnbxMFfv9hPLGo8l/lZ1XMrdcYAmvpYhQkIcVABmX1Ssa+/AiGl6wTYUnKy?=
+ =?us-ascii?Q?/INQHFy5T7hpjTF6I87EmUkRO/aOoACHj71gMZWaRU+tV3WXSmVPs8SLzB9B?=
+ =?us-ascii?Q?uQdBG//8GG9HutUinNN+d+ZI1T1+RzR9nSODiQEEe54D9lrGwsJkPl6D0O/Z?=
+ =?us-ascii?Q?7Q4iJzMpGDfQOVOHPBkV3SMtkM1XZmwRfwPOcZH4WK5s7eEhz8ZIgGecNs6R?=
+ =?us-ascii?Q?IZXhAhC6p/D9FPDZN63xnEMoDRkuR/5hPaDhep5sVD2KihjpwVOZr/UOLCbi?=
+ =?us-ascii?Q?gip+Lp2MJ+/J3ov9k6nsS0otoh179Z0vRCA+CJBMBfleEiVwlqPu9CI4K/qv?=
+ =?us-ascii?Q?z5XNROgWQJGgGlBpM1GbLgfVYYL3P6TfA6mILtmSUXIWrOPFDSrBt6X2ojhv?=
+ =?us-ascii?Q?fKHn+RUUTRwkm8rTxuj6uuU4ooz95Cny8sPxUyV6ZZtqu6u5D7/xZzqH7sFk?=
+ =?us-ascii?Q?GTzVKDo7Bs3N5rWm8+YWBt0kZw3QbkEKtV6wcpup?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5EBCB49079CC674890FFC0406646BE57@eurprd06.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] LSM: use 32 bit compatible data types in LSM syscalls.
-Content-Language: en-US
-To: Paul Moore <paul@paul-moore.com>, "Dmitry V. Levin" <ldv@strace.io>,
- LSM List <linux-security-module@vger.kernel.org>
-Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>,
- linux-api@vger.kernel.org, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
- <mic@digikod.net>, James Morris <jmorris@namei.org>,
- Serge Hallyn <serge@hallyn.com>, John Johansen
- <john.johansen@canonical.com>,
- Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
- Stephen Smalley <stephen.smalley.work@gmail.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <da4d181d-16b9-4e0f-a744-ac61702e0b63@schaufler-ca.com>
- <ef972e0088964722adffc596d38b0463@paul-moore.com>
- <CAHC9VhQc-DEf=kSxbG-Mvz8jq-gxkaCe2jHb2a9LsJLQydj1zQ@mail.gmail.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CAHC9VhQc-DEf=kSxbG-Mvz8jq-gxkaCe2jHb2a9LsJLQydj1zQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.22129 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-OriginatorOrg: tuxera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR06MB7239.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba1b3b2a-4e8d-4de4-552f-08dc443dcf80
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 15:45:44.4159
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e7fd1de3-6111-47e9-bf5d-4c1ca2ed0b84
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1yQNlXEZ6PYOUfM3UEAuC637C2laLH83UWxxJB373skPx3XSPnMbZpEkHpvFExSxudjcMVYfEkRq4CtxT2CSEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR06MB7766
 
-On 3/14/2024 8:30 AM, Paul Moore wrote:
-> On Wed, Mar 13, 2024 at 4:07 PM Paul Moore <paul@paul-moore.com> wrote:
->> On Mar 13, 2024 Casey Schaufler <casey@schaufler-ca.com> wrote:
->>> LSM: use 32 bit compatible data types in LSM syscalls.
->>>
->>> Change the size parameters in lsm_list_modules(), lsm_set_self_attr()
->>> and lsm_get_self_attr() from size_t to u32. This avoids the need to
->>> have different interfaces for 32 and 64 bit systems.
->>>
->>> Cc: stable@vger.kernel.org
->>> Fixes: a04a1198088a: ("LSM: syscalls for current process attributes")
->>> Fixes: ad4aff9ec25f: ("LSM: Create lsm_list_modules system call")
->>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
->>> Reported-and-reviewed-by: Dmitry V. Levin <ldv@strace.io>
->>> ---
->>>  include/linux/lsm_hook_defs.h                        |  4 ++--
->>>  include/linux/security.h                             |  8 ++++----
->>>  security/apparmor/lsm.c                              |  4 ++--
->>>  security/lsm_syscalls.c                              | 10 +++++-----
->>>  security/security.c                                  | 12 ++++++------
->>>  security/selinux/hooks.c                             |  4 ++--
->>>  security/smack/smack_lsm.c                           |  4 ++--
->>>  tools/testing/selftests/lsm/common.h                 |  6 +++---
->>>  tools/testing/selftests/lsm/lsm_get_self_attr_test.c | 10 +++++-----
->>>  tools/testing/selftests/lsm/lsm_list_modules_test.c  |  8 ++++----
->>>  tools/testing/selftests/lsm/lsm_set_self_attr_test.c |  6 +++---
->>>  11 files changed, 38 insertions(+), 38 deletions(-)
->> Okay, this looks better, I'm going to merge this into lsm/stable-6.9
->> and put it through the usual automated testing as well as a kselftest
->> run to make sure everything there is still okay.  Assuming all goes
->> well and no one raises any objections, I'll likely send this up to
->> Linus tomorrow.
-> I had to squash the code snippet below into the patch to address a
-> build problem identified by the kernel build robot.  I'm going to keep
-> Casey's sign-off and Dmitry's reported-reviewed tag as I feel this
-> change is minor, but if anyone has any objections please let me know
-> soon.
+Hi Dave,
 
-Looks fine to me. Thank you.
+> On 14 Mar 2024, at 15:05, Dave Hansen <dave.hansen@intel.com> wrote:
+>=20
+> On 3/14/24 07:26, Anton Altaparmakov wrote:
+>> /* image of the saved processor state */
+>> struct saved_context {
+>> - /*
+>> - * On x86_32, all segment registers except gs are saved at kernel
+>> - * entry in pt_regs.
+>> - */
+>> - u16 gs;
+>> unsigned long cr0, cr2, cr3, cr4;
+>> u64 misc_enable;
+>> struct saved_msrs saved_msrs;
+>> @@ -27,6 +22,11 @@ struct saved_context {
+>> unsigned long tr;
+>> unsigned long safety;
+>> unsigned long return_address;
+>> + /*
+>> + * On x86_32, all segment registers except gs are saved at kernel
+>> + * entry in pt_regs.
+>> + */
+>> + u16 gs;
+>> bool misc_enable_saved;
+>> } __attribute__((packed));
+>=20
+> Isn't this just kinda poking at the symptoms?  This seems to be
+> basically the exact same bug as b0b592cf08, just with a different source
+> of unaligned structure members.
 
->
-> [NOTE: cut-n-paste'd into email, likely whitespace damage, but you get the idea]
->
-> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> index 77eb9b0e7685..e619ac10cd23 100644
-> --- a/include/linux/syscalls.h
-> +++ b/include/linux/syscalls.h
-> @@ -960,10 +960,10 @@ asmlinkage long sys_cachestat(unsigned int fd,
->                struct cachestat __user *cstat, unsigned int flags);
-> asmlinkage long sys_map_shadow_stack(unsigned long addr, unsigned long size, un
-> signed int flags);
-> asmlinkage long sys_lsm_get_self_attr(unsigned int attr, struct lsm_ctx *ctx,
-> -                                     size_t *size, __u32 flags);
-> +                                     u32 *size, u32 flags);
-> asmlinkage long sys_lsm_set_self_attr(unsigned int attr, struct lsm_ctx *ctx,
-> -                                     size_t size, __u32 flags);
-> -asmlinkage long sys_lsm_list_modules(u64 *ids, size_t *size, u32 flags);
-> +                                     u32 size, u32 flags);
-> +asmlinkage long sys_lsm_list_modules(u64 *ids, u32 *size, u32 flags);
->
-> /*
->  * Architecture-specific system calls
->
+Yes, that is exactly the same bug.  That's how we figured out the solution =
+in fact - it is totally the same problem with another struct member...
+
+> There's nothing to keep folks from reintroducing these kinds of issues
+> and evidently no way to detect when they happen without lengthy reproduce=
+rs.
+
+Correct.  But short of adding asserts / documentation that pointers must be=
+ aligned or kmemleak won't work or fixing kmemleak (which I expect is not t=
+ractical as it would become a lot slower if nothing else) not sure what els=
+e can be done.
+
+Given I cannot see any alternative to fixing the kmemleak failures I think =
+it is worth applying this fix.
+
+Unless you have better ideas how to fix this issue?
+
+What I can say is that we run a lot of tests with our CI and applying this =
+fix we do not see any kmemleak issues any more whilst without it we see hun=
+dreds of the above - from a single, simple test run consisting of 416 indiv=
+idual test cases on kernel 5.10 x86 with kmemleak enabled we got 20 failure=
+s due to this which is quite a lot.  With this fix applied we get zero kmem=
+leak related failures.
+
+Best regards,
+
+Anton
+--=20
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+
 
