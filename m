@@ -1,102 +1,141 @@
-Return-Path: <linux-kernel+bounces-103042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 140C987BA4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:23:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41BC987BA55
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 460201C2329D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:23:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D569B1F22CFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290DD6CDBB;
-	Thu, 14 Mar 2024 09:23:26 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFE06D1A0;
+	Thu, 14 Mar 2024 09:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8JR2Lfe"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B22B6CDAB
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D01F6CDC0
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710408205; cv=none; b=llurVt42NuI6qk6v1n6q8jXt/Kl3iKc91Y0lU3P2mhlD+nB2eZZTothDo/BBknKUsztZLTQOHDSf/DNvGpo/BmXWFYJ1qKSpyoyDeQrhZkaFM55JArXim+AnfdmQiAd/wj5UMae2CfT+4CWBXPbKSIoesY0wdSUD8xu/0+cTr4k=
+	t=1710408306; cv=none; b=KJ9jIWk7IiqICvLEcw4FPjqIFmDVLIioyOjL7XSZcRpWdPUl69mrEt9F8gH60YOU3KsNxlsSAji58Bykmx1igp9a9FUmiEKZNhHAnKFYdtzNJiqqKIijQUY7oyMkVcRJsOYazPVxrO7tCjN3rHV9OFlrqk3zBJc3w4h1x8GbDJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710408205; c=relaxed/simple;
-	bh=HdPNgS2PRN84+QqmdjiGCVLBprs0q2toXD7J54d5g9Q=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LCvpAvPN7rIshLu5GHyYf3yyJMRCOPOaqMFfv1G/77J/fU9YewsEsjdGiH669boufTyONfqpXfOSvySxg5QGhetGGeq2ucaa9yT7I5Ic8tZYQ3VrWrs3DKYq8ibNxwWV4xiQlA0tgcVsNeo4jBVoDb4iNptunGgfkMrAHwH5BCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3662feb9789so7473815ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:23:24 -0700 (PDT)
+	s=arc-20240116; t=1710408306; c=relaxed/simple;
+	bh=6tIt0rGYr3xffVSMMPnAuHzPxCWu+NZvjW36OSif+RY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DR4h22UmTDobW0lPHR4yzdE/iSdB8nZMMM9GsweBvXy9ZUBx9TavZyNqibT+VdD3uPwUcdTWn9/v7E7ObaO6UPx9ukX3RZq2CICTLPZ7x8K6U3rjoJlgOSXF2KbmXeyWWi2AayyA3PB8qccNN0vXnUz1qpQW75XDXjj3wk8pFQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L8JR2Lfe; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-783045e88a6so52184185a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:25:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710408304; x=1711013104; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ocCihU80Xv40gzd79kv18kcNVazvWx00n3HGC6M1AO0=;
+        b=L8JR2Lfe4xdc1AKMK620t6lsbDvLNgOkiPzYAl1gUjIgjYXifExiq+g1szLpy15JCG
+         kQTn33ZhNVEYYBh4NvVkvmdPo/Tr4ShfVV7+jF42wGBl8TKGV0jynGymJeSvrmEgtJUE
+         yGTi9dicaChPvPqffJKYcIqHkVBITJqpTT1PiaqOHY1bxw5AwzHhDka/Y/j2CqGfquAX
+         OGwPczRIfgOgZGTIKMi8lpXXhOEQ9vnbrKiJH661cvfoCrlfS5/PbxFpynXZJglT3SeQ
+         5qNr1YGqgbGoQlgGyQJ03Sb+w3GUvKXOIwYbzpwgt6LVTRjKMELjU+6d5W9EnVAzdDtM
+         DpBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710408203; x=1711013003;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cnl3rPO9e4Jwunh0GqBUGtre38f4fNn8+xGZSnr97dk=;
-        b=SABqUAQUcE4uVs9Et7y//vywpg0CnhE4Qg8S1qmn1S/aHuZhPfGmDwYZHqCrbuKWpt
-         zVojb08qIfoOgu60C12fHDJ5VcjZHfi2qqGZ+iqGVsrP++mSTHxqFNjdxOZES4Imgr5a
-         f12PMizjP6AAPrMWmCkfWg8P8LptaUcihY+dkDdWViq5h6YCFZKxUQbTrMObQY+8+GMA
-         JqatgDxzKmN0crxE6guSxYzto3kh4hfgFc6QS9YPNj5ux27iVynRIUg/c35T1NF/e+c1
-         3KgoO2DB+P0XlFGkeU7c/1T2Ny0sSsm2SeFPJ1Ou9fGXhYrkeTtrPfCWzL71R42BZRCi
-         2iNA==
-X-Forwarded-Encrypted: i=1; AJvYcCWcNeDzESqMHvq70ducnX5pMI2ti8k0AkvMJwEM+ACocRgPhW7etFKGoz78D5p2+jEDEaOMCcv/BCPBEHXHtXH3VDjaprgVgQvIs9XE
-X-Gm-Message-State: AOJu0YwVp1SHSW49jqf4zU0h30zhq1TvhWjA+eXLuyumvtn+l9ITYTDB
-	uHqb4Y8SFs+uoLEpd14Tv3pMt2ubMOhLwzCDBA2Af/HYNpb2Wp7GKbPKE8b2a7OaIOP691hedov
-	7nsaoagVs/EzlhYiFy3wl4m3Sdm3GtPEWGHlZQO6RoxAeTC3WvJJpsRo=
-X-Google-Smtp-Source: AGHT+IGsbEW4Tsgl6Muol8d/yWJNRcsrUQpbImQBAKIkuHgYgiXB+36MzcP95S/cQpWwaQQvyw4DKPnpN5XbJW7Sdzf5lJ5vQSvA
+        d=1e100.net; s=20230601; t=1710408304; x=1711013104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ocCihU80Xv40gzd79kv18kcNVazvWx00n3HGC6M1AO0=;
+        b=wH9JEl1bALFENFKveXAfW2DIHxeJbWWA8l+YtNhDj25wq0utRyiif2Hn0jXGqZBawN
+         Q7jOhw9C/hWgo3uC64lEoCtPBbgYI5eGf+vXWdg/9pqemwcYhbl9yR0XGDhw1EH8qn6/
+         QQ1U2+nTQN20qlxt0hGGX722sSrrdhizdcwoS5sKOIRy3O3eetzHlMRDI23IeTfdHD/d
+         50FoGj7/IC0U1GqYNRC31MmF+5aDSPAaObl49yKPU10QA96t0+57mx33tEHUHYvdTs5h
+         tYeis+mCAuGIYbqsj20ZD2XOruJ7oGJ6A5J3kjuHL6pEpTSEtAZsKpH9QVYr74MxA0dH
+         4WUw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfvkSvK+wzdmQcfo/lnCzx80Yoh/b0ajv134qRcjWhGZQdQ3WLGHipVqZVHcjfYEZ78i2Z8rNd5CEAo0U8rnUwg4+rrPYuQ9t3Zqn5
+X-Gm-Message-State: AOJu0YwffB9MqX7H0pX543voWJCbTvEuNsBsy+ia7dPscZcSnOBc9Pdi
+	SjXG69q9fmqdPS/DOUG/kwk97/3FvREiJqU+fPsxMIoYkifhx5JPNHbx5DO4SbEt8eBaEMsDuGD
+	yJWy1M2Iuud1oSGb21EoDR8U/zwo=
+X-Google-Smtp-Source: AGHT+IFwd0hzTsYhw29iN2nwcK1sLtRv9RFdHPdubmJUBwzbzsvkBwHQn/1zikC66NLG0Z9cQD77SclDmWUhTSyctQk=
+X-Received: by 2002:ad4:4e70:0:b0:690:b66b:c43c with SMTP id
+ ec16-20020ad44e70000000b00690b66bc43cmr126685qvb.24.1710408303975; Thu, 14
+ Mar 2024 02:25:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218f:b0:365:3db4:16eb with SMTP id
- j15-20020a056e02218f00b003653db416ebmr71496ila.3.1710408203579; Thu, 14 Mar
- 2024 02:23:23 -0700 (PDT)
-Date: Thu, 14 Mar 2024 02:23:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000065425306139b714a@google.com>
-Subject: [syzbot] Monthly nfc report (Mar 2024)
-From: syzbot <syzbot+lista5c2019c6476fd6bd578@syzkaller.appspotmail.com>
-To: krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20240312-zswap-xarray-v6-1-1b82027d7082@kernel.org>
+In-Reply-To: <20240312-zswap-xarray-v6-1-1b82027d7082@kernel.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 14 Mar 2024 16:24:53 +0700
+Message-ID: <CAKEwX=Nd0kAJCbzNtLHbg6Wz53QY8+uA4d-3dvi_PY9xNX-5Tw@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: replace RB tree with xarray
+To: Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>, 
+	Barry Song <baohua@kernel.org>, Chengming Zhou <chengming.zhou@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello nfc maintainers/developers,
+On Wed, Mar 13, 2024 at 12:31=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote=
+:
+>
+> Very deep RB tree requires rebalance at times. That
+> contributes to the zswap fault latencies. Xarray does not
+> need to perform tree rebalance. Replacing RB tree to xarray
+> can have some small performance gain.
+>
+> One small difference is that xarray insert might fail with
+> ENOMEM, while RB tree insert does not allocate additional
+> memory.
+>
+> The zswap_entry size will reduce a bit due to removing the
+> RB node, which has two pointers and a color field. Xarray
+> store the pointer in the xarray tree rather than the
+> zswap_entry. Every entry has one pointer from the xarray
+> tree. Overall, switching to xarray should save some memory,
+> if the swap entries are densely packed.
+>
+> Notice the zswap_rb_search and zswap_rb_insert always
+> followed by zswap_rb_erase. Use xa_erase and xa_store
+> directly. That saves one tree lookup as well.
+>
+> Remove zswap_invalidate_entry due to no need to call
+> zswap_rb_erase any more. Use zswap_free_entry instead.
+>
+> The "struct zswap_tree" has been replaced by "struct xarray".
+> The tree spin lock has transferred to the xarray lock.
+>
+> Run the kernel build testing 10 times for each version, averages:
+> (memory.max=3D2GB, zswap shrinker and writeback enabled,
+> one 50GB swapfile, 24 HT core, 32 jobs)
+>
+> mm-9a0181a3710eb             xarray v5
+> user       3532.385                     3535.658
+> sys        536.231                      530.083
+> real       200.431                      200.176
+>
+> ---
+>
+>
+> Reviewed-by: Barry Song <baohua@kernel.org>
+> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
+> Signed-off-by: Chris Li <chrisl@kernel.org>
 
-This is a 31-day syzbot report for the nfc subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/nfc
+Apologies for the delayed review :)
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 11 issues are still open and 21 have been fixed so far.
+LGTM FWIW. Looks like you're sending a fixlet to address Johannes'
+comments, but I assume it won't change too much, so feel free to
+include:
 
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 852     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
-                  https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
-<2> 329     Yes   KMSAN: uninit-value in nci_rx_work
-                  https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534
-<3> 143     Yes   INFO: task hung in nfc_rfkill_set_block
-                  https://syzkaller.appspot.com/bug?extid=3e3c2f8ca188e30b1427
-<4> 38      Yes   INFO: task hung in nfc_targets_found
-                  https://syzkaller.appspot.com/bug?extid=2b131f51bb4af224ab40
-<5> 34      Yes   KMSAN: uninit-value in nci_ntf_packet
-                  https://syzkaller.appspot.com/bug?extid=29b5ca705d2e0f4a44d2
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
