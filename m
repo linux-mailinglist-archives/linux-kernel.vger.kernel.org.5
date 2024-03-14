@@ -1,143 +1,113 @@
-Return-Path: <linux-kernel+bounces-103461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6392E87BFA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 296B587BFAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5F6B1F2398D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:12:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D32831F2344D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AFE71751;
-	Thu, 14 Mar 2024 15:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6F671B4B;
+	Thu, 14 Mar 2024 15:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GJvdN6A4"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oack5M/W"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5788BDDD9;
-	Thu, 14 Mar 2024 15:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF360DDD9;
+	Thu, 14 Mar 2024 15:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710429125; cv=none; b=YJB0PW1QqOPIRLfdJJp06tzzen0g6sKN89fQeTl7bzMstep2VkwyKpfOGf0+jrgsxNmUCQQZTrORBM/fY+SWgEv+V0xMkfWbCuzh64F61yoQ6AmlwuDMbR4ADxrrF6MDV+QnxbFRU1DL4yCyCMXvVc6QQwPE+BXImzQ8Ly7KieU=
+	t=1710429157; cv=none; b=ZqF6NFL5f7lgovwRmzS+TUQcoXQI3CmMF6mzXAucdWqttzPudb9ijrLMwpYVeazb+JbCgz9ZMS/3RM25D5nAvYt+7vKyHFzT+EnHwtzKJFr1xLfyiqrJw4cpmK/3eKcGStPh50vK1PqYw6LEn6c5T++uFd+ckB0ucEmNIT3zV6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710429125; c=relaxed/simple;
-	bh=nDsvYD5yEk/gy9N+HJ0QOM2iZUP4AcamRw/unfpE3no=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EwdvDNEOzbnT6b3vJBq0C/J7F2odDL4Dwez19sa68XXcg8eSWYA/0JLUKQmRUMCo5KigpRk5GIvnrDrXQBrnnOM+LQVr9OyyV3OUwEhmMSVm3q+j8n/en5o+Fxf9k1oalkeC5qk5mRGN6EOrTsxwHx8fiz7E5dOdz8fSp4IfVFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GJvdN6A4; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e5760eeb7aso664187b3a.1;
-        Thu, 14 Mar 2024 08:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710429123; x=1711033923; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=fxoX3q50e92OYO+T5SP4tCKLkh072V2ITmpE4k5g1Zw=;
-        b=GJvdN6A4xq0odly/PFFmpEQ3OirDyswOVJSS+cD4Mp/fLV8FrGZyLENVZ/BQN8wZwa
-         qe+58QDua+o0REjJwX0Hk1g9yIwuh9xHb7BmXfBYQlPrv5rYNKtfmKYOIuvLFww1ZrDZ
-         JA9mw4RReIN8Eekvg/UpSxp0B1Mqqq3kRvvrAjpu8kKQpCpizjjuAGn9VbgFliqToR8g
-         TTDnzirVaWagyRKIu78dLKWbr3ZvoxUi3xzP0oPCn3fkDMjjdHppU1S54h699GjaQRlK
-         RHOWxIynRFSWnvXuCjomDTQZdUmlI+wTnHGPeh6+cnK+P/U6ZzgB+GEhHMJGqVkHUCn2
-         s80Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710429123; x=1711033923;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fxoX3q50e92OYO+T5SP4tCKLkh072V2ITmpE4k5g1Zw=;
-        b=jzXPKzYz04pXxj/kEQoKWHTFqoAiWyW87/tW+vCmShZyCi9QpWa+u5LM6uLwqeDeza
-         9w5tvULJPH6GOUkZNKXDDOoaAAlFM2MH7SREzGqAr6Rn8WuqjUyFmNtBZaUzZbUWRmP3
-         7WrFT9YPeQM7tnWEjEgatld4tj7eUVXHxKnPJXskWucRmk0rCYWOQi4zzzLI7fOPP49L
-         aeDErsLZAZ45MGvP0ryuY7VNIs+J8ioXHDIgZA0HioPqY1ZvKmbQmLWfn6qzjmFNLy8+
-         EOMnHj3jkqZZkOA4oDP4F/HMfm89y2pyuIM0twYWyRVFUHA0SI1JQPpXtuXFF0tEShP0
-         OlFA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2qYGewciAA7sAArgqOltcu8uBx6uCHpZ8Uc/gPohzIUpiQQBK67Cjd9qb8nf5ggCq5vRSQY/GB1k/o1gUPf9Vq8NliPFNsV/js0hetw4uTn1iJMrPuXv5q+t4Yqh+z5IQXpeNw+qzjyd+i3N+
-X-Gm-Message-State: AOJu0YwqboBg7fUAtBxZqYgaizZnSwg7pj8n2uNjhT3VLTvmh9jwkP3v
-	LPvrZsuRSi7VFJyYXFnwlC8XVFLksLnzRYa2pHsWFxoyUN8SdbNdJodi7o/e
-X-Google-Smtp-Source: AGHT+IHZjJprxxmVQW8SpPTgG8HyHqVBV86iFSh3yVuG9QvKGx2x29469/lU/aouW0JA0j/YriRUnw==
-X-Received: by 2002:a05:6a00:2d91:b0:6e6:9ff1:31b7 with SMTP id fb17-20020a056a002d9100b006e69ff131b7mr2344954pfb.16.1710429123351;
-        Thu, 14 Mar 2024 08:12:03 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i20-20020aa787d4000000b006e57247f4e5sm1593768pfo.8.2024.03.14.08.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 08:12:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	David Gow <davidgow@google.com>
-Subject: [PATCH] Revert "kunit: memcpy: Split slow memcpy tests into MEMCPY_SLOW_KUNIT_TEST"
-Date: Thu, 14 Mar 2024 08:12:00 -0700
-Message-Id: <20240314151200.2285314-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710429157; c=relaxed/simple;
+	bh=Sq4BX5nCnQbeNMS1RtfpnrqJt/dcI2CBuZ/qi1DiqU4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=shQLooQqpLnbFnn+9AhpVdRqK0eA58lknOiS9FyfwtAb6JMchX4hfFtD8JcdLpWC+7O05C6rBwdpSv0uB0bzrk1PjWpTrmhVRxV4gx/Ns2w3iAW3uXqtRQwnB+Fgq3834S1S7tdLB8XeXk4oyP6pPM6aEEkbNP3sFvGE22yfvXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oack5M/W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 084F6C43390;
+	Thu, 14 Mar 2024 15:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710429156;
+	bh=Sq4BX5nCnQbeNMS1RtfpnrqJt/dcI2CBuZ/qi1DiqU4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Oack5M/WdKQ8fmUxvx5L4jrUbRLtqn47gAx6wV+xhim0Uspor2HZgxqimphibTCa7
+	 pLmpGC8UgeN8dk3E8ZEvFWeveoXa/qRj5jkAjVzkxOp4+07/6gevbU+YRhD8P6vN/y
+	 Emm59/VXoKAwW5xUqFVP4Ioi6HegcNpAh1916FFCvP55ohO+cKuH9F/JeZB7TlQCCp
+	 VGzQNf3tRt5gDz3OGI2S0i0jIAmdNaTEyB5dTygjQrmhND6t3/yDfkF3UhgwHjZ3o8
+	 Pi9HZSZinVwUEDaDtAJNkhY5WzJcyFO3jRy59CGl2U3Em5gEJkhzuflH3v6MQlXzMI
+	 9cvRE2fCcJkNw==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: Qiang Zhang <zzqq0103.hey@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jinghao Jia <jinghao7@illinois.edu>,
+	Peter Zijlstra <peterz@infradead.org>,
+	x86@kernel.org
+Subject: [PATCH] kprobes/x86: Use copy_from_kernel_nofault() to read from unsafe address
+Date: Fri, 15 Mar 2024 00:12:30 +0900
+Message-Id: <171042914997.151113.2962249725455796854.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240315000753.a448251fce0291e041f76c13@kernel.org>
+References: <20240315000753.a448251fce0291e041f76c13@kernel.org>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-This reverts commit 4acf1de35f41549e60c3c02a8defa7cb95eabdf2.
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Commit d055c6a2cc16 ("kunit: memcpy: Mark tests as slow using test
-attributes") marks slow memcpy unit tests as slow. Since this commit,
-the tests can be disabled with a module parameter, and the configuration
-option to skip the slow tests is no longer needed. Revert the patch
-introducing it.
+Read from an unsafe address with copy_from_kernel_nofault() in
+arch_adjust_kprobe_addr() because this function is used before checking
+the address is in text or not. Syzcaller bot found a bug and reported
+the case if user specifies inaccessible data area,
+arch_adjust_kprobe_addr() will cause a kernel panic.
 
-Cc: David Gow <davidgow@google.com>
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
+Closes: https://lore.kernel.org/all/CAKHoSAs2rof6vQVBw_Lg_j3QNku0CANZR2qmy4eT7R5Lo8MFbg@mail.gmail.com/
+Fixes: cc66bb914578 ("x86/ibt,kprobes: Cure sym+0 equals fentry woes")
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- lib/Kconfig.debug  | 12 ------------
- lib/memcpy_kunit.c |  3 ---
- 2 files changed, 15 deletions(-)
+ arch/x86/kernel/kprobes/core.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 2164f066e7b6..eccbc4764f3d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2703,18 +2703,6 @@ config MEMCPY_KUNIT_TEST
- 
- 	  If unsure, say N.
- 
--config MEMCPY_SLOW_KUNIT_TEST
--	bool "Include exhaustive memcpy tests"
--	depends on MEMCPY_KUNIT_TEST
--	default y
--	help
--	  Some memcpy tests are quite exhaustive in checking for overlaps
--	  and bit ranges. These can be very slow, so they are split out
--	  as a separate config, in case they need to be disabled.
--
--	  Note this config option will be replaced by the use of KUnit test
--	  attributes.
--
- config IS_SIGNED_TYPE_KUNIT_TEST
- 	tristate "Test is_signed_type() macro" if !KUNIT_ALL_TESTS
- 	depends on KUNIT
-diff --git a/lib/memcpy_kunit.c b/lib/memcpy_kunit.c
-index 30e00ef0bf2e..fd16e6ce53d1 100644
---- a/lib/memcpy_kunit.c
-+++ b/lib/memcpy_kunit.c
-@@ -309,9 +309,6 @@ static void set_random_nonzero(struct kunit *test, u8 *byte)
- 
- static void init_large(struct kunit *test)
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index a0ce46c0a2d8..a885eea3bd34 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -335,7 +335,16 @@ static int can_probe(unsigned long paddr)
+ kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offset,
+ 					 bool *on_func_entry)
  {
--	if (!IS_ENABLED(CONFIG_MEMCPY_SLOW_KUNIT_TEST))
--		kunit_skip(test, "Slow test skipped. Enable with CONFIG_MEMCPY_SLOW_KUNIT_TEST=y");
--
- 	/* Get many bit patterns. */
- 	get_random_bytes(large_src, ARRAY_SIZE(large_src));
- 
--- 
-2.39.2
+-	if (is_endbr(*(u32 *)addr)) {
++	u32 insn;
++
++	/*
++	 * Since addr is not guaranteed to be safely accessed yet, use
++	 * copy_from_kernel_nofault() to get the instruction.
++	 */
++	if (copy_from_kernel_nofault(&insn, (void *)addr, sizeof(u32)))
++		return 0;
++
++	if (is_endbr(insn)) {
+ 		*on_func_entry = !offset || offset == 4;
+ 		if (*on_func_entry)
+ 			offset = 4;
 
 
