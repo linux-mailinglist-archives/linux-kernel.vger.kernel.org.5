@@ -1,104 +1,107 @@
-Return-Path: <linux-kernel+bounces-103342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD0D87BE53
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:04:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30FEA87BE57
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 726851F21C3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:04:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0C3B2850E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217E86F086;
-	Thu, 14 Mar 2024 14:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dl4QjPcb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6383E6F53E;
-	Thu, 14 Mar 2024 14:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BFF6FE26;
+	Thu, 14 Mar 2024 14:04:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651066EB74;
+	Thu, 14 Mar 2024 14:04:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425049; cv=none; b=gd5mn7N33Cj9d9asRa7RaAhh1pxCEbolxYU0L9v+cm1MFPXWy+2QfBEwbdRzt/FbEHJdPUMfnECqkW9dJbjHSHgJfbeKEWSY1/azyG4UZMa0VMBSbMExKe2F18SIBvXME1hUsx+axDs24LmUXJjQL3VSUgSitoC5rc1w8iRQzFI=
+	t=1710425084; cv=none; b=T96qrrYPm2eD+UChNDnCJikMz+o4iSvcpaf2ALm74xksg8MOvE9ejGwG+ULjbrjwsjvIy415rLcgmfmb6+o0ebH5iOuMUdotDgvOXge15IQMEiMAMEUYHsLo90qoU6kfhqgeastdClohk95kFz+7yA9S+S6Nx1lJPPKCUvjiNoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425049; c=relaxed/simple;
-	bh=0X+kWZ/rrmB+DdmZpVU62eypuVla4+LyNk+iXvCgaxo=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r2XnRgftmpVgYX/bLOG2drpEpBefUMiRB6jFnvY4EtVJ5CvIfpLxHCJ0j/FKPkh8vI+Yh3SusZfOXbKoawFgQQh8rixim+/yjJOgiq21vlxv2l0ntptbcgtxaT0afCjLe6hyeYLkxJXLsxK3c1jj28ZjGaFO98NK0SE6VtmOw0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dl4QjPcb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0A1CC43390;
-	Thu, 14 Mar 2024 14:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710425049;
-	bh=0X+kWZ/rrmB+DdmZpVU62eypuVla4+LyNk+iXvCgaxo=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=Dl4QjPcbYkzLYOaehB2v8TzcILbP14cQGdkGhhd/IZs+ODP7ODBQvD0l5o5Z8fWhM
-	 IqTFy3F1DZRczesId7u6wSdMXak3SXtNbyfB9EHQJ602O3Vi0oBd5e+8PVQHg75vf7
-	 SWvepJ9iVvDXPIf/t1z13J39YviBy1rJjRL68/4Mj2Acx6pm/7mxRbLNlAqdBctCmL
-	 zt1FnsM6v2WkhU5cdJsLtWp8ZjFkjx31EwpowZ/pu7rQOkXkJ1c8qAsaajp/3L+Voa
-	 ALOtCX3WAcF/sM5fuDSKrsE4NfVQF0fIjXO9kwAnPkz5TAYbnWuy9J3Qz//b0ZhjQY
-	 PQS+GFUpcUKBg==
-Date: Thu, 14 Mar 2024 14:04:05 +0000
-From: Mark Brown <broonie@kernel.org>
-To: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	Miquel Raynal <miquel.raynal@bootlin.com>, yen-mei.goh@keysight.com,
-	koon-kee.lie@keysight.com, jeremie.dautheribes@bootlin.com
-Subject: Re: [PATCH v2 0/3] Add multi mode support for omap-mcspi
-Message-ID: <89ce73c5-eaab-42ae-aa2c-01003f04eb2c@sirena.org.uk>
-References: <20240223-spi-omap2-mcspi-multi-mode-v2-0-afe94476b9c3@bootlin.com>
- <ZfMCHjR2jR-24vTC@localhost.localdomain>
+	s=arc-20240116; t=1710425084; c=relaxed/simple;
+	bh=f53euNbOld+RaF4OHr1drOxSEZS1nlFkdLHaIZnNffM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e9y6M7Nxfd612HW6Axl1ty9KoppF2JsmKL1k8j0XIiOZVAq09GTQ5esUF5onjXGNmIvZSfPbWQcNK3Fus5q06oR/GE+Y4vB7MvJNfpyMcH2qHuwbO1ZAuV8sWGtYOvZdWw0F9GbB92xxtcenzCr7veTfffM/MIf/+KwCvsJXg3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B06E21007;
+	Thu, 14 Mar 2024 07:05:16 -0700 (PDT)
+Received: from e129166.arm.com (unknown [10.57.13.158])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D51443F762;
+	Thu, 14 Mar 2024 07:04:37 -0700 (PDT)
+From: Lukasz Luba <lukasz.luba@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Cc: lukasz.luba@arm.com,
+	dietmar.eggemann@arm.com,
+	linux-arm-kernel@lists.infradead.org,
+	sboyd@kernel.org,
+	nm@ti.com,
+	linux-samsung-soc@vger.kernel.org,
+	daniel.lezcano@linaro.org,
+	rafael@kernel.org,
+	viresh.kumar@linaro.org,
+	krzysztof.kozlowski@linaro.org,
+	alim.akhtar@samsung.com,
+	m.szyprowski@samsung.com,
+	mhiramat@kernel.org
+Subject: [PATCH 0/4] Update Energy Model after chip binning adjusted voltages
+Date: Thu, 14 Mar 2024 14:04:17 +0000
+Message-Id: <20240314140421.3563571-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ncr8zWx/7TU0eqMX"
-Content-Disposition: inline
-In-Reply-To: <ZfMCHjR2jR-24vTC@localhost.localdomain>
-X-Cookie: WYSIWYG:
+Content-Transfer-Encoding: 8bit
+
+Hi all,
+
+This is a follow-up patch aiming to add EM modification due to chip binning.
+The first RFC and the discussion can be found here [1].
+
+It uses Exynos chip driver code as a 1st user. The EM framework has been
+extended to handle this use case easily, when the voltage has been changed
+after setup. On my Odroid-xu4 in some OPPs I can observe ~20% power difference.
+According to that data in driver tables it could be up to ~29%.
+
+This chip binning is applicable to a lot of SoCs, so the EM framework should
+make it easy to update. It uses the existing OPP and DT information to
+re-calculate the new power values.
 
 
---ncr8zWx/7TU0eqMX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes:
+v2:
+- exported the OPP calculation function from the OPP/OF so it can be
+  used from EM fwk (Viresh)
+- refactored EM updating function to re-use common code
+- added new EM function which can be used by chip device drivers which
+  modify the voltage in OPPs
+v1 is at [1]
 
-On Thu, Mar 14, 2024 at 02:56:46PM +0100, Louis Chauvet wrote:
-> Hello Mark,
->=20
-> Given how far we already are in the current cycle I suppose this series=
-=20
-> will only be considered after -rc1, will you want me to re-send or will=
-=20
-> it stay on your stack? I know some maintainers prefer contributors to=20
-> re-send and others don't, so let met know what suits best your workflow.
+Regards,
+Lukasz Luba
 
-No need to resend.
+[1] https://lore.kernel.org/lkml/20231220110339.1065505-1-lukasz.luba@arm.com/
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
+Lukasz Luba (4):
+  OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
+  PM: EM: Change the em_adjust_new_capacity() to re-use code
+  PM: EM: Add em_dev_update_chip_binning()
+  soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
 
---ncr8zWx/7TU0eqMX
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/opp/of.c                 |  17 +++--
+ drivers/soc/samsung/exynos-asv.c |  11 +++-
+ include/linux/energy_model.h     |   5 ++
+ include/linux/pm_opp.h           |   8 +++
+ kernel/power/energy_model.c      | 109 +++++++++++++++++++++++++------
+ 5 files changed, 125 insertions(+), 25 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.25.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXzA9QACgkQJNaLcl1U
-h9CkrAf/a60ysAQalgL69U45xTVzqxSejNIIoVVSXqGI98oNhPO8fwzxj/aq8uXX
-kEj7PJaX0ca5xmBVyowdVidxzzXZ8RvojkHZza3SWBJCbjlJkvHZ7SrtdOZ9IOc1
-8M18sSazEJDokelTgRv8ComuYmGDdMCEfOqdk7kp2/CDwH90oe1p6JYyQ9pS4r79
-xwCtx5vfHmQMDayBSMyep0Yn2i4HVOPL4BpBsiM/wZbBqRZax/lxyt6wK/+SzFJ0
-rtneYEER0dDN2yXAFVCwzWv109V6CWSMk18kZOCJWCyuEL66f9PaHuK85bSHVXMh
-N0NqXHLevI9fwoGI4nELvaaBAUfZgQ==
-=3y/L
------END PGP SIGNATURE-----
-
---ncr8zWx/7TU0eqMX--
 
