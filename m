@@ -1,163 +1,129 @@
-Return-Path: <linux-kernel+bounces-103923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DCB187C697
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:49:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1C5F87C69A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F4741C21338
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:49:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81BD31F21C94
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7156612E5D;
-	Thu, 14 Mar 2024 23:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE84E11CBD;
+	Thu, 14 Mar 2024 23:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Dubo+MGr"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2078.outbound.protection.outlook.com [40.107.92.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qUogpZee"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878D211185;
-	Thu, 14 Mar 2024 23:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710460154; cv=fail; b=kmDGbtI0D0ZtD/ow2aWWv6ywkIHDtFGlgAKgBDyPC9nOXjUugJp9uT8SenTOhMANveTYMmxxnF06u36PEaJ6R7oEFhGBkxKLTs6CI0h3wRaL19SrMhnMSsxRyTj1WCZswLsQWTTjLGARKNKkUGBCX3E3euocVlDS9HyXg0kODcc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710460154; c=relaxed/simple;
-	bh=MT3pDohdMywv4yu9/72JDMMO1S0PM+5unJMyKE2+AJo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jJjvX1DX5db1qCeIclK7gb22xTFltICJ18SXTiZEndROu6zCqvisrYuguaZKQkwxcKZVCZlY+geOMMzK+NVSz326jEUDmKcs+jOvWXtd/id64zjm7JmM+oVuaH/J48rY/GtuppFGwXnWgWkfw0tId1gkwEa11+LvnJOmXr3gi2U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Dubo+MGr; arc=fail smtp.client-ip=40.107.92.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FN787zg8VI91svvjN+ouZYjQDeeBYSZjl/itBc+Yc6EhbfgX8twViO+o3wdqrYyXpx7iZ/ZjK6mw65dnxT6jdB0R4qN+YkXc9c/62vcN+/xs6+dky+SAxnKZZfLjPrcBeP1M/BlG5dkOkwGoHB/o053MJbtVayu/tpRF7tWnhkM33IjyAYwYr1TQpfEtBXu9wvz7U2giH6yxmeWtmEc6jSV0oDGoRv4Db3MtaG5FL6wVrk7z1WjVnI4YRgw6VvnJPv+7xdb1266hcqQquYDu4UkREjXUllsDlvz/QLbJOS/iI3ERX/dUeAv5Opit4eEkXaukldklnugq7fCHcrNIAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vnqdK+dDPMl5pZovYRFPQUAOVtPmrPUnnNccN4wfdX0=;
- b=HYMqftf7XDd3TngX5Y+PpTPeQS9gf/qXhQS1V8/Ij6YYL0scztRaFyoQWhLQ3DWK6IZvKIzZVausb+QMWSkehdT7Ce1YoK/33D3g6HMF/qhMY7iIwLGwXVXgxm3EdOWObQP9kCzhApqG+Df6uuQVIQr1i97/KdWarq7psLonlQW6px9ZjPuRHk5joTMepU+OKaUPEdaQ3fBOelFXmCosz1ah7bd1Q/zzrvhK8oFVzZuBsOA8KivW4c7j+7VHWj1qXKMe3eGGnl/x9om2/BMj6+VWX/gxOz3ITrAzuDT25l8FBIY0cYQKUcDNLbHCvoCitR4WQ8L9zAVnHYH3nC2OLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vnqdK+dDPMl5pZovYRFPQUAOVtPmrPUnnNccN4wfdX0=;
- b=Dubo+MGr+gFMVdoI2qylZfPsoCRGgFvyTVDkG3PGBruM0gEFCPQi7Vmuslzb9Wn2kCEeW73xdZAQ0ce31zI96S/M+bfjs3UmDS640Jbg888WTJyvamjRVQKcBw0zilhHrctqLc9rjv0bJhyc0tJCA5ffFMfnrBPKqMVSlvXkvak=
-Received: from SJ0PR03CA0242.namprd03.prod.outlook.com (2603:10b6:a03:3a0::7)
- by MW6PR12MB8898.namprd12.prod.outlook.com (2603:10b6:303:246::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Thu, 14 Mar
- 2024 23:49:09 +0000
-Received: from CO1PEPF000044EF.namprd05.prod.outlook.com
- (2603:10b6:a03:3a0:cafe::fe) by SJ0PR03CA0242.outlook.office365.com
- (2603:10b6:a03:3a0::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21 via Frontend
- Transport; Thu, 14 Mar 2024 23:49:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044EF.mail.protection.outlook.com (10.167.241.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7386.12 via Frontend Transport; Thu, 14 Mar 2024 23:49:08 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Mar
- 2024 18:49:08 -0500
-Date: Thu, 14 Mar 2024 18:48:50 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: Paolo Bonzini <pbonzini@redhat.com>, <linux-kernel@vger.kernel.org>,
-	<kvm@vger.kernel.org>, <aik@amd.com>, <pankaj.gupta@amd.com>
-Subject: Re: [PATCH v3 10/15] KVM: x86: add fields to struct kvm_arch for
- CoCo features
-Message-ID: <20240314234850.js4gvwv7wh43v3y5@amd.com>
-References: <20240226190344.787149-1-pbonzini@redhat.com>
- <20240226190344.787149-11-pbonzini@redhat.com>
- <20240314024952.w6n6ol5hjzqayn2g@amd.com>
- <20240314220923.htmb4qix4ct5m5om@amd.com>
- <ZfOAm8HtAaazpc5O@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AEE614A9D
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710460179; cv=none; b=QsvkdpoYWIjua074nB5Zg6RJWjydUeXRAchy7KDuYzM14PT/5cmEzXNdHZ5gegf5HKw1JQADYfeuq4TGg8AgqjsXVxYncUDQFiinrz4uuwqfJCdiNKYsudiDkhoq2weonhuGpNFb4GaHqR5sGjsJ8u1qeRTynG6KUbm1+R50eDc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710460179; c=relaxed/simple;
+	bh=WENTUOp3D5qKgO+Me5EIUQATACagdW7x0MfwkgJNAYw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q5TIefuUwY1NBdHLsq/Tg+Cs1t2SRgY/H1n0PirnL83rNHSqmKgvkqh5FA/cltBKt9gWe/8V4lRYbzmFROdY2aYrDYoL+jn3kIZBcOB+KzA2BW+JJ+73WZV7lASThDPl7XC7wqINMpVrXYUMgpMmqTd5/tAfaMa+7T2XIS/LFQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qUogpZee; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513d609a889so480916e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710460175; x=1711064975; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JDDmMzCYMjAaKsu18+oLY6uSXCtu/11fL+3ri7il4Nk=;
+        b=qUogpZee0pG8hv6hV+Bln4Zh2yetfz3hlxa5RLlmmPgCc14B+F7GeCyOcLXkrO/EyA
+         d+Nq+KzuHCs7u32i+ac+qaGwAn/ssn3are/wx87iljSGgRz7iY7Wtt4zRhmq7hkdYUjQ
+         svN7sr9IHnawYCaJnbeNu2DNs4If+7jAUiYpCYfGgGxgsW+P2KjESIaHD23eDnTagTCF
+         qKlwf5Qhs2D1hWP4aQ6ogNtc911+IAZ9d+jCK5QJhdB7uXJlDzUIiJgAzDUxoIPA6v89
+         Yg8YGWU8LArQ8VhQljwbodDq/vNqoqBrTDgzxVh6WTe9i/3LdJm8Z09TD4dAxy5x5spC
+         NnoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710460175; x=1711064975;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JDDmMzCYMjAaKsu18+oLY6uSXCtu/11fL+3ri7il4Nk=;
+        b=ZdgSYo714JuEm7ktpWEikPvasvWrrk4rtFnVesyfCmntg6LMUgF0kLq4Mdmiel/qOa
+         0irtWcz32pGd8VETtts31kBjqpkM9pjHn+hnvmGpFQ1l2ORL9w5FJTXkbrqYhGNcw3qc
+         RPOTznGcLrZHQfGSp6XktrkBLWWSSE8eXLCAWpVoklJZXW0SH7w2I/Qc5jMu5m/T78Ct
+         /45uwIEr51dJ+UIa77d3X69jOTGxBg2g+WOxgQgJhtsnIw65LrJSf3a/J74iweqMjShY
+         DL8g2Ypjc1otcYuzaHt944nEzU+rSKUWTK7iu3PpuCPykNK1pgIrIscg5UKdDxmJTwTU
+         jTwA==
+X-Forwarded-Encrypted: i=1; AJvYcCV7AHn9Zo1bHZDvGk5QtOR3vjoLxQiQjz247C4AIdfRrGhsI2TdJGOqVp/arnGIIj8J8IdbE0Gzh3uHDCcfG6z+xbkdiyFKbzIWYCH+
+X-Gm-Message-State: AOJu0Yx9LclNY9/81JL3h3no5I2NoRbfUDeZoOuZU5ACPOkUDRAJ2Egi
+	1eDajnfc+xgMieg19ET7i+o/9XA4ps3sfdP/0U76UzjHICDrBzlkgg6YGlcJQ9o=
+X-Google-Smtp-Source: AGHT+IFEcYIa4GpGeC93soGHGUNc0pmDIvNhbFoVaCBY2T7BXc4vsb3knxKvgcBO/BTy2mEbvdXVlg==
+X-Received: by 2002:a19:5e4f:0:b0:513:d3ea:ec5f with SMTP id z15-20020a195e4f000000b00513d3eaec5fmr820021lfi.34.1710460175498;
+        Thu, 14 Mar 2024 16:49:35 -0700 (PDT)
+Received: from [172.30.204.13] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id a17-20020a056512021100b00513cd2e23f0sm444666lfo.149.2024.03.14.16.49.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 16:49:35 -0700 (PDT)
+Message-ID: <359dafcc-4774-4ff4-8df0-03e3641082e5@linaro.org>
+Date: Fri, 15 Mar 2024 00:49:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZfOAm8HtAaazpc5O@google.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044EF:EE_|MW6PR12MB8898:EE_
-X-MS-Office365-Filtering-Correlation-Id: a5cc90ab-e396-4c0f-88c3-08dc44815795
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	XNjSQ2C6CbYI3CPtbDaJTNKF8QHOUMbx6qZk5t2ZJJASJMp6knzHh6qd/vqpdi8FgSBmg2001YmqErcsNQniZOMKtfxmL7TG6m1nJm3mPzBm5NNlAzHsDe6uw2wVhw4rt+eIsWpUgsvBMgJVkCt4foBpKECvmyMqh8jTSzHOQ1B1XueUz1ZoF9gRGVgsEXG3PN/9ldWBQuf5XZ7zrUxRywlTqoCmE+RyNhfvcPftwxawjdZ0gcL3IPWRIN2OKt32RKSUlzjmlUf1FITkF8WUfwTAdcsI/6uo1t0P7JkJuD/eRpRc6T1LNcPXTtQK25trkKKQa0G5hL5sOu6//2nOKCX/dAWclQC73A5sLZgXqxPUx1eYKxQj4AqmVzZl/HfhmSNTHfAUsZa/Xv4RDRUgYG5qfLy6WCtYz4QsQu+rWRs3Nua3a8Y/NwhjSK9jHVENN1ifqnJVdFrKyuKefpnoSKNLD73kuNboqs/SOn3Fqt29aZlUJaPfgcS5UcLObQKN+Uzs3I6Yh8erTODs6FjNMpT/8M/c5QjtOrzOnrwmjocsJpgv6FO1cuwDwY/YK62E/oxUza3tOut41YYjTUXXt4WayHuco7RaJhWsRsapjmwWqb6Ka7cH4fmsM/ZKPommvUwnKikyt35ZAt8RwnBj5j8hiGaw3s/Ah+nP+IozTPR9YD0ix/60ipRYoH2CkkqVyt5++qs7Xhn9FrCBmzTnKnOwouae6k/GruBXgxszM46TH57uZCIw2tpn2ZPipVGC
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(36860700004)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 23:49:08.9249
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5cc90ab-e396-4c0f-88c3-08dc44815795
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044EF.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8898
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64: dts: qcom: sdm630-nile: add pinctrl for camera
+ key
+Content-Language: en-US
+To: Sebastian Raase <linux@sraa.de>
+Cc: marijn.suijten@somainline.org, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240314200037.549206-1-linux@sraa.de>
+ <20240314232043.1441395-1-linux@sraa.de>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240314232043.1441395-1-linux@sraa.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 03:56:27PM -0700, Sean Christopherson wrote:
-> On Thu, Mar 14, 2024, Michael Roth wrote:
-> > On Wed, Mar 13, 2024 at 09:49:52PM -0500, Michael Roth wrote:
-> > > I've been trying to get SNP running on top of these patches and hit and
-> > > issue with these due to fpstate_set_confidential() being done during
-> > > svm_vcpu_create(), so when QEMU tries to sync FPU state prior to calling
-> > > SNP_LAUNCH_FINISH it errors out. I think the same would happen with
-> > > SEV-ES as well.
-> > > 
-> > > Maybe fpstate_set_confidential() should be relocated to SEV_LAUNCH_FINISH
-> > > site as part of these patches?
-> > 
-> > Talked to Tom a bit about this and that might not make much sense unless
-> > we actually want to add some code to sync that FPU state into the VMSA
-> > prior to encryption/measurement. Otherwise, it might as well be set to
-> > confidential as soon as vCPU is created.
-> > 
-> > And if userspace wants to write FPU register state that will not actually
-> > become part of the guest state, it probably does make sense to return an
-> > error for new VM types and leave it to userspace to deal with
-> > special-casing that vs. the other ioctls like SET_REGS/SREGS/etc.
+
+
+On 3/15/24 00:20, Sebastian Raase wrote:
+> Add pinctrl configuration for gpio-keys. Without this,
+> camera button half-presses are not detected.
 > 
-> Won't regs and sregs suffer the same fate?  That might not matter _today_ for
-> "real" VMs, but it would be a blocking issue for selftests, which need to stuff
-> state to jumpstart vCPUs.
-
-SET_REGS/SREGS and the others only throw an error when
-vcpu->arch.guest_state_protected gets set, which doesn't happen until
-sev_launch_update_vmsa(). So in those cases userspace is still able to sync
-additional/non-reset state prior initial launch. It's just XSAVE/XSAVE2 that
-are a bit more restrictive because they check fpstate_is_confidential()
-instead, which gets set during vCPU creation.
-
-Somewhat related, but just noticed that KVM_SET_FPU also relies on
-fpstate_is_confidential() but still silently returns 0 with this series.
-Seems like it should be handled the same way as XSAVE/XSAVE2, whatever we
-end up doing.
-
--Mike
-
+> Tested on discovery and pioneer.
 > 
-> And maybe someday real VMs will catch up to the times and stop starting at the
-> RESET vector...
+> Fixes: e781633b6067 ("arm64: dts: qcom: Add support for Sony Xperia XA2/Plus/Ultra (Nile platform)")
+> Signed-off-by: Sebastian Raase <linux@sraa.de>
+> ---
+>   arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi | 9 +++++++++
+>   1 file changed, 9 insertions(+)
 > 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+> index 87d0293c728d..823c21d5ee59 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+> @@ -90,6 +90,8 @@ cam_vana_rear_vreg: cam-vana-rear-regulator {
+>   
+>   	gpio-keys {
+>   		compatible = "gpio-keys";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&gpio_keys_default>;
+
+It's fine to keep the "non-preferred" order, I'll probably send some
+changes to nile and fix up the style while at it in the near future.
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
+
+P.S.
+For your next submissions, please send the follow-up revisions in
+new mail threads
 
