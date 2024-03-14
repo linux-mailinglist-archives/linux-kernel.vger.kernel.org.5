@@ -1,125 +1,203 @@
-Return-Path: <linux-kernel+bounces-102981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A08387B96D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:42:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4BED87B973
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:44:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00F791F23ED8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:42:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 560E3B22FBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3517C6BB37;
-	Thu, 14 Mar 2024 08:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910486BB5B;
+	Thu, 14 Mar 2024 08:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IqE2nXnH"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Q6SN+s3y"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3215B5B3
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1918EEC4;
+	Thu, 14 Mar 2024 08:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710405753; cv=none; b=gfNhOenCuFVY6giVHiUVRJIzcoW/vSbZ/+MoSKy+niRp17cNcWLm2JnkgoqwOqg6fi+6X5G323UIevrvsa8Cj8bpGXGjPOZy5+ml+IhweD7ZgZPBLWCEq1GCnNEMZKLLCkFMQC1dRdRTGQStha9VXMzk2isU/+G8dsZktxh8mSw=
+	t=1710405860; cv=none; b=CvhC17+5WJx53JZmyxKj3EPjcRhFGefCIMNS4weqgMaD3h1Yk6NQQN3DLwNP4V4CpgvO4emy2IoUTOBjmr2RXCAi+vzK2BPw9bVF5hXej4uICXS0s5hAU9zJNg0S+oWHgnL3tpnaodes9eIaqN1hRAFydq/kFGP450SCHjWrTrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710405753; c=relaxed/simple;
-	bh=t+RewDLamWAHMrg+3ln/QPQ9cqYlQ0kzaDhyZsJynB0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KNiH9RwBM+pkqthJ3KRHIL3PxMlZ3GiArPLzmv7G1zKckXw9MwnKvsp8DMztEWxOG2sqjBr8A7Kuc6Qc2oVMgFXFVwyjlsBn/E/57JpsrVpGp1cV0ES2Ua+DoSEQb9pKB8BJf4/JFW+5lIetongpki1cdvxAHU/hWYzhYQkty4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IqE2nXnH; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33e70d71756so1065602f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 01:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710405750; x=1711010550; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=t+RewDLamWAHMrg+3ln/QPQ9cqYlQ0kzaDhyZsJynB0=;
-        b=IqE2nXnHv5f4IYG5IZiyJWlLuo+bsCEHhafgJ+9BptFE3TQjySGofxBQ5Pj+7CXAPN
-         xHUlhX3AzW/rVvDRSu2OgszCejNcXIcDHXTOuZlRn3HMWHCfUeXvYgeFjHQw064HcFSC
-         RBDzx2Y13EBNZNxAC9wbNblKEoqjzhUocRnvjyhjb80AgDVYgLjEfLXBc47w6LWlSQbU
-         D7a1cMxrEtkLs9scGtaqpmsa4pqPG25/SAl/cXbKzzs0WCYVmPGD+2HrqiBCKJlVKpbx
-         cqbKG/GcgID6zW1SGWv6OqPukc2iZT5Hr/2/W+A5r8H/oB7q5RkqoGDA62tG7vLfz/Kg
-         1HAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710405750; x=1711010550;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t+RewDLamWAHMrg+3ln/QPQ9cqYlQ0kzaDhyZsJynB0=;
-        b=SXQpnwYYUGSJdvOjQ9/XQzaY1C3bvJ0bmpTi9myG5P6cEhWnV77328JtwBvJW6rZKd
-         GxPCQRDj3Vp7a+mpvWM+tJf8meRn7a42h8T2dSEH1b/mLrVBSUIRIcJyQa4lJlXNR7EZ
-         4ObZLsvVlzwCniCEwbglLQr1GjXyRbJO0AO0Ds1CLGYmcLRKn8HMaqiUblsz3tboeQYj
-         by0sGtSNWMhfRkprZhK2OTanS4SLf9bB6YhMk+JVI7D039I3w58dCkXGlrwITsHWZDY4
-         y0nDTp2hMZimaixaShoXWh66Jjtcn6ETLk4UhxZ6n9poiAjZKkVXPRKXDQGb4IE+WbDW
-         G0oA==
-X-Forwarded-Encrypted: i=1; AJvYcCVP+eO/7e1q9Sj+t/aO/QSCC2NTcrawOdDGh7JUtlQ87DMAZ8UsFu14694er/UK1XBk9ahboolL7ZQXqSYIdZFRNXy7RcjqLQRvmyXw
-X-Gm-Message-State: AOJu0Yzoc/zAAJzyxdsrIs5gMhZdE5G21QYiWF5aYyYdJZ+xKA4gKhSL
-	tWdfweN8om30alYbrOz5OvfJ3CaV2KSWvkSOsuc+L8Hi6OXV4ScJ
-X-Google-Smtp-Source: AGHT+IEBcVWVFLr1B4Rx0huyUVfFAYckB81wUe3geHmWYTUVzUCKbrfYsyeGLHGDPnyd2uF+Wgtuxg==
-X-Received: by 2002:adf:e6c1:0:b0:33e:7bac:7b18 with SMTP id y1-20020adfe6c1000000b0033e7bac7b18mr896819wrm.5.1710405749946;
-        Thu, 14 Mar 2024 01:42:29 -0700 (PDT)
-Received: from giga-mm-1.home ([2a02:1210:8690:9300:82ee:73ff:feb8:99e3])
-        by smtp.gmail.com with ESMTPSA id f10-20020adffcca000000b0033d640c8942sm221081wrs.10.2024.03.14.01.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 01:42:29 -0700 (PDT)
-Message-ID: <cf6624d65f313bf5e94f25866d4473e9bc0f6aae.camel@gmail.com>
-Subject: Re: [PATCH v8 02/38] ARM: ep93xx: add regmap aux_dev
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To: nikita.shubin@maquefel.me, Linus Walleij <linus.walleij@linaro.org>, 
- Sergey Shtylyov <s.shtylyov@omp.ru>, Damien Le Moal <dlemoal@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>
-Cc: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 14 Mar 2024 09:42:37 +0100
-In-Reply-To: <20240226-ep93xx-v8-2-3136dca7238f@maquefel.me>
-References: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
-	 <20240226-ep93xx-v8-2-3136dca7238f@maquefel.me>
-Autocrypt: addr=alexander.sverdlin@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 
+	s=arc-20240116; t=1710405860; c=relaxed/simple;
+	bh=+BX7gnL09c5lxHYhdPdiCZcTTqc7o9DwYCU15DVX9kY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FyXCHn2rPay2Lv8CvTq917mCXFWKseKmbMtNjq1flkRUoysK+VIUIjLaq8+M0hxsRTxcrO21RC2sbHOTR960xrMgORxV21cB3CjZMzhmmulfb1tZcqvrWPd4uRue0+WGfNhzYZvgPVL2jafuO4Q7F+KwSsZCMnSLeRceCk8nHvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Q6SN+s3y; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710405857;
+	bh=+BX7gnL09c5lxHYhdPdiCZcTTqc7o9DwYCU15DVX9kY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Q6SN+s3y4Cu4ar2ldP89W3O7Lw7mEHkWAUdl6vWphpO0XissCZeODmz+8Ogsa6BAb
+	 WRl+OqGyNI/Ug+SuR2XvowOAOS3rIDmgVlopvj+FQ96O62xOfBKhVT79dDQ6pgtzLR
+	 NEAM/Q8cMDgd9XjxqRqGgitDSIug8Ryz7wWLcu/ciapk2Edx8C6ZCsCDut6lx5EIob
+	 lCXsb7D5kbrrGXkFk1CNzfUUF522ujk7Bb75Q1LVPpYzo3pdgWHbIIhaHfEsyyzWjx
+	 aZu1gsLeJGAR0EKDZORhJUfkIzWAamSDFFMBbS9TrDq0NjGfD1QOOio+kHu6f5JVuN
+	 rrXOmYLpNBlhA==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7DD54378105A;
+	Thu, 14 Mar 2024 08:44:12 +0000 (UTC)
+Message-ID: <aaa4561e-fd23-4b21-8963-7ba4cc99eed3@collabora.com>
+Date: Thu, 14 Mar 2024 10:44:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 2/9] f2fs: Simplify the handling of cached insensitive
+ names
+Content-Language: en-US
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ jaegeuk@kernel.org, chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, Gabriel Krisman Bertazi <krisman@collabora.com>
+References: <20240305101608.67943-1-eugen.hristev@collabora.com>
+ <20240305101608.67943-3-eugen.hristev@collabora.com>
+ <87edcdk8li.fsf@mailhost.krisman.be>
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <87edcdk8li.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Nikita,
+On 3/14/24 01:36, Gabriel Krisman Bertazi wrote:
+> Eugen Hristev <eugen.hristev@collabora.com> writes:
+> 
+>> +void f2fs_free_casefolded_name(struct f2fs_filename *fname)
+>> +{
+>> +	unsigned char *buf = (unsigned char *)fname->cf_name.name;
+>> +
+>> +	kmem_cache_free(f2fs_cf_name_slab, buf);
+>> +	fname->cf_name.name = NULL;
+> 
+> In my previous review, I mentioned you could drop the "if (buf)" check
+> here *if and only if* you used kfree. By doing an unchecked kmem_cache_free
+> like this, you will immediately hit an Oops in the first lookup (see below).
+> 
+> Please, make sure you actually stress test this patchset with fstests
+> against both f2fs and ext4 before sending each new version.
 
-On Mon, 2024-02-26 at 10:29 +0300, Nikita Shubin via B4 Relay wrote:
-> The following driver's should be instantiated by ep93xx syscon driver:
->=20
-> - reboot
-> - pinctrl
-> - clock
->=20
-> They all require access to DEVCFG register with a shared lock held, to
-> avoid conflict writing to swlocked parts of DEVCFG.
->=20
-> Provide common resources such as base, regmap and spinlock via auxiliary
-> bus framework.
->=20
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+I did run the xfstests, however, maybe I did not run the full suite, or maybe I am
+running it in a wrong way ?
+How are you running the kvm-xfstests with qemu ? Can you share your command
+arguments please ?
 
-I've applied the whole series onto ef6069f3f6577b2e5bdf223d2f6d09f23bed8c6c
-and tested GPIOs, SPI, DMA, sound on EDB9302, looks good to me:
+Thanks
 
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-
-> ---
-> =C2=A0include/linux/soc/cirrus/ep93xx.h | 26 ++++++++++++++++++++++++++
-> =C2=A01 file changed, 26 insertions(+)
-
---=20
-Alexander Sverdlin.
+> 
+> Thanks,
+> 
+> 
+> [   74.202044] F2FS-fs (loop0): Using encoding defined by superblock: utf8-12.1.0 with flags 0x0
+> [   74.206592] F2FS-fs (loop0): Found nat_bits in checkpoint
+> [   74.221467] F2FS-fs (loop0): Mounted with checkpoint version = 3e684111
+> FSTYP         -- f2fs
+> PLATFORM      -- Linux/x86_64 sle15sp5 6.7.0-gf27274eae416 #8 SMP PREEMPT_DYNAMIC Thu Mar 14 00:22:47 CET 2024
+> MKFS_OPTIONS  -- -O encrypt /dev/loop1
+> MOUNT_OPTIONS -- -o acl,user_xattr /dev/loop1 /root/work/scratch
+> 
+> [   75.038385] F2FS-fs (loop1): Found nat_bits in checkpoint
+> [   75.054311] F2FS-fs (loop1): Mounted with checkpoint version = 6b9fbccb
+> [   75.176328] F2FS-fs (loop0): Using encoding defined by superblock: utf8-12.1.0 with flags 0x0
+> [   75.179261] F2FS-fs (loop0): Found nat_bits in checkpoint
+> [   75.194264] F2FS-fs (loop0): Mounted with checkpoint version = 3e684114
+> f2fs/001 1s ... [   75.570867] run fstests f2fs/001 at 2024-03-14 00:24:33
+> [   75.753604] BUG: unable to handle page fault for address: fffff14ad2000008
+> [   75.754209] #PF: supervisor read access in kernel mode
+> [   75.754647] #PF: error_code(0x0000) - not-present page
+> [   75.755077] PGD 0 P4D 0 
+> [   75.755300] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [   75.755683] CPU: 0 PID: 2740 Comm: xfs_io Not tainted 6.7.0-gf27274eae416 #8
+> [   75.756266] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
+> [   75.756911] RIP: 0010:kmem_cache_free+0x6a/0x320
+> [   75.757309] Code: 80 48 01 d8 0f 82 b4 02 00 00 48 c7 c2 00 00 00 80 48 2b 15 f8 c2 18 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 d6 c2 18 01 <48> 8b 50 08 49 89 c6 f6 c2 01 0f 85 ea 01 00 00 0f 1f 44 00 00 49
+> [   75.758834] RSP: 0018:ffffa59bc231bb10 EFLAGS: 00010286
+> [   75.759270] RAX: fffff14ad2000000 RBX: 0000000000000000 RCX: 0000000000000000
+> [   75.759860] RDX: 0000620400000000 RSI: 0000000000000000 RDI: ffff9dfc80043600
+> [   75.760450] RBP: ffffa59bc231bb30 R08: ffffa59bc231b9a0 R09: 00000000000003fa
+> [   75.761037] R10: 00000000000fd024 R11: 0000000000000107 R12: ffff9dfc80043600
+> [   75.761626] R13: ffffffff8404dc7a R14: 0000000000000000 R15: ffff9dfc8f1aa000
+> [   75.762221] FS:  00007f9601efb780(0000) GS:ffff9dfcfbc00000(0000) knlGS:0000000000000000
+> [   75.762888] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   75.763372] CR2: fffff14ad2000008 CR3: 0000000111750000 CR4: 0000000000750ef0
+> [   75.763962] PKRU: 55555554
+> [   75.764194] Call Trace:
+> [   75.764435]  <TASK>
+> [   75.764677]  ? __die_body+0x1a/0x60
+> [   75.764982]  ? page_fault_oops+0x154/0x440
+> [   75.765335]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.765760]  ? search_module_extables+0x46/0x70
+> [   75.766149]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.766548]  ? fixup_exception+0x22/0x300
+> [   75.766892]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.767292]  ? exc_page_fault+0xa6/0x140
+> [   75.767633]  ? asm_exc_page_fault+0x22/0x30
+> [   75.767995]  ? f2fs_free_filename+0x2a/0x40
+> [   75.768362]  ? kmem_cache_free+0x6a/0x320
+> [   75.768703]  ? f2fs_free_filename+0x2a/0x40
+> [   75.769061]  f2fs_free_filename+0x2a/0x40
+> [   75.769403]  f2fs_lookup+0x19f/0x380
+> [   75.769712]  __lookup_slow+0x8b/0x130
+> [   75.770034]  walk_component+0xfc/0x170
+> [   75.770353]  path_lookupat+0x69/0x140
+> [   75.770664]  filename_lookup+0xe1/0x1c0
+> [   75.770991]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.771393]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.771792]  ? do_wp_page+0x3f6/0xbf0
+> [   75.772109]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.772523]  ? preempt_count_add+0x70/0xa0
+> [   75.772902]  ? vfs_statx+0x89/0x180
+> [   75.773224]  vfs_statx+0x89/0x180
+> [   75.773530]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.773939]  vfs_fstatat+0x80/0xa0
+> [   75.774237]  __do_sys_newfstatat+0x26/0x60
+> [   75.774595]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.775021]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.775448]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.775878]  ? do_user_addr_fault+0x563/0x7c0
+> [   75.776273]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [   75.776699]  do_syscall_64+0x50/0x110
+> [   75.777028]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [   75.777479] RIP: 0033:0x7f9601b07aea
+> [   75.777793] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 41 89 ca b8 06 01 00 00 0f 05 <3d> 00 f0 ff ff 77 07 31 c0 c3 0f 1f 40 00 48 8b 15 01 23 0e 00 f7
+> [   75.779391] RSP: 002b:00007ffc160eaae8 EFLAGS: 00000246 ORIG_RAX: 0000000000000106
+> [   75.780050] RAX: ffffffffffffffda RBX: 0000000000000042 RCX: 00007f9601b07aea
+> [   75.780663] RDX: 00007ffc160eab80 RSI: 00007ffc160ecb88 RDI: 00000000ffffff9c
+> [   75.781278] RBP: 00007ffc160ead20 R08: 00007ffc160ead20 R09: 0000000000000000
+> [   75.781902] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc160eae70
+> [   75.782532] R13: 00007ffc160ecb88 R14: 00007ffc160eae70 R15: 0000000000000020
+> [   75.783150]  </TASK>
+> [   75.783349] Modules linked in:
+> [   75.783628] CR2: fffff14ad2000008
+> [   75.783918] ---[ end trace 0000000000000000 ]---
+> [   75.784315] RIP: 0010:kmem_cache_free+0x6a/0x320
+> [   75.784718] Code: 80 48 01 d8 0f 82 b4 02 00 00 48 c7 c2 00 00 00 80 48 2b 15 f8 c2 18 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 d6 c2 18 01 <48> 8b 50 08 49 89 c6 f6 c2 01 0f 85 ea 01 00 00 0f 1f 44 00 00 49
+> [   75.786294] RSP: 0018:ffffa59bc231bb10 EFLAGS: 00010286
+> [   75.786747] RAX: fffff14ad2000000 RBX: 0000000000000000 RCX: 0000000000000000
+> [   75.787369] RDX: 0000620400000000 RSI: 0000000000000000 RDI: ffff9dfc80043600
+> [   75.788016] RBP: ffffa59bc231bb30 R08: ffffa59bc231b9a0 R09: 00000000000003fa
+> [   75.788672] R10: 00000000000fd024 R11: 0000000000000107 R12: ffff9dfc80043600
+> [   75.789296] R13: ffffffff8404dc7a R14: 0000000000000000 R15: ffff9dfc8f1aa000
+> [   75.789938] FS:  00007f9601efb780(0000) GS:ffff9dfcfbc00000(0000) knlGS:0000000000000000
+> [   75.790677] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   75.791212] CR2: fffff14ad2000008 CR3: 0000000111750000 CR4: 0000000000750ef0
+> [   75.791862] PKRU: 55555554
+> [   75.792112] Kernel panic - not syncing: Fatal exception
+> [   75.792797] Kernel Offset: 0x2a00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> 
+> 
 
 
