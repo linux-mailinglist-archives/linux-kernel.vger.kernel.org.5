@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-102804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFDDB87B771
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:52:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 362E387B772
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3D8C1C21A69
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:52:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF0ED282A63
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FE714AA9;
-	Thu, 14 Mar 2024 05:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDCA15E86;
+	Thu, 14 Mar 2024 05:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ixsn8cOj"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z0SKOH5l"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB50E11C85
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0ADD14A8E
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395490; cv=none; b=fsvNJY8ZvtLL7R2jLlTH5zojyxnkPuzc/9kHlKNM1y/YUr8SjYiTgEeEQ32EB1lxZswQDoe40GKM6Q/w+p5GUhTsjMhwkg0v1QLz8PBY125lLGDZDQPSjgUKiqRO8n3qWqqQN53VcL5xCALl9O10EZnhNZlANbOVpWrA4eXErns=
+	t=1710395492; cv=none; b=kx8K+He0fi+NqDxQNKUco0da6N7mQFvQxg2lAkGbXGj7aLvy9BUaspCR6POK6nV0CZXskSpAymqaviCPA7O297uVWTsYSRzFsQhjL8yp8qPjCtOO/GY1BUvT0h/GrQVSH3cmDqnKwxaHo97rrvYTD3b8lpVxZg51mTKsuaBNv60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395490; c=relaxed/simple;
-	bh=j1Uteud1mWr9qwRDjsafkmahAN/I9mDRvh5Ckh8gIQo=;
+	s=arc-20240116; t=1710395492; c=relaxed/simple;
+	bh=oswX3i20yiaJHjTAeWqAXOG6a2/1Ta4qOMh9xoJeXu4=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=EI3WBS4ls4UeF8nhaEu527/hBudgNK9pEhKgglBq7Usu3c8w6AOvpFzpagAcK1vUWFt9SpvsT6FFWArTV55TQBSh12Ys4HMpWza67aFTBmHSnc8VN1LpVNkGfVBBGIISGQdzAyU5aJbVZSHz05TTVIWw7aqOsx6nt6TrL342vsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ixsn8cOj; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=ax1YxUn9S7jWnkBzn16CyKWh0J+UbrzeQpFn2O3CKvVuXUeCzi7A9HJ5kKJp+JDnthXPOBtXfKGrUkzNt+HWokNZqivdRdZb8uRovqUc/z+QNKVpz2GptsRmcEL3kdrR62DEkUnyhHgNe+EiRM83S5QZ4XiRdf4iYiWvjL/VbFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z0SKOH5l; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6ceade361so938636276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:51:28 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60ab69a9e6fso16991137b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710395488; x=1711000288; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710395490; x=1711000290; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bBWDWJvSshoSjEVW3Suakt0O9q+vGDdTpywx5NXn+PM=;
-        b=Ixsn8cOjAx0Rphql+mkLr1x8nVu2ueFwRt+a3RdTaOW2qUU/TJ+BbOkkTsy+4EQSFQ
-         BtdlFAYWBeyyeFV9JQbRqZ3CEsrs8PYqLvP124lAVVSWGC7yoqjFhff4fC1FkaYj+Sfq
-         BztnyPoC8qS1mgcSoWLMZxoFr4OPmqa2X9hRPrxg0YXseeTtUw1wU9R2WaXRYWt+SpRO
-         hj37wu4yLs2rufBQcmD4nH989PKU2bx1Q05Q8HPcZGAcTLgIqLu5IUFW9aMEv/uGKaaa
-         Eeu3oWPXHkjZb/cUybS2wfHZ0X/FdKaoJuk4mOVj80o98twVMT1EWPIVzZXY50dRFPOQ
-         zCbQ==
+        bh=F9W2L65moWfkRODZWtj1+8FpZZOCQB/UnzNIcvAZEKE=;
+        b=Z0SKOH5lBDXANRYDT3FT4OtVU/68DBsGFiAedYfoHYtmAtNZjcYdRi+bT/VG3Ge2m+
+         tKX2QWO0JlasGCCSH1SHWFMlaZci74YOFqlZhT0Yjgx4L3gHJnPxCP8qITe5VpXVPFm7
+         2LUOFALrcWicwLmzzLrOIBPzVC1Jg8XuVUQF30yt7zysz+6hUKxYGMYs6wM7DawEyfoc
+         GIEC1MvYJuEdw3dEWKOpNFvc7BdJ6P9g6GXiYRT+JDfpjZ7PPt15a7L+Ep7KcGKoe/qy
+         bfm37x+P1gcTFWuRxaURc9WO8OyS03qVQ8TuH5YDKnK1kNEKQd6XGKeMo/CfEkmdXuNh
+         1RJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710395488; x=1711000288;
+        d=1e100.net; s=20230601; t=1710395490; x=1711000290;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bBWDWJvSshoSjEVW3Suakt0O9q+vGDdTpywx5NXn+PM=;
-        b=b/IcM9+6hTeP2I7oDfUn2Ia1ezvIzWpQwMKfwfthM8ebBSS+3uqSVTM3/8qkxP/LP6
-         Tq3jdsWcnqM76yo86Oxed7s7vuX3g1BXRDbne7sw6O+r6ZQFyxsLAsjMWDmQP3CTO4UM
-         Dw2CyWakmSfSHUkm/qv4EWdeuFJhEoOUKQrzOclCKHqBTm/B06IqCEOir7RD5hBjQfHF
-         d7tvGVpZ6ajzcyPuY5E4CrCWGv2EjJlNoqKSGMOO7EPffht8nqWXU5yS9+/F9XVS6y7A
-         GcoRN7+1DKedcwcYCAX5kFISHjX3ozvk0PXrStTXxKdfsPmYAbW74fG1goArZ/vR+x3G
-         5s4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVsoje8m8sSefkWlaWPyCyhm50HWengUcrA895kQJOif+CjALkDoILErFAbYxOZarVSSRtA7b+x760QiTtCuJo/afV/6Etmm91JFJ2z
-X-Gm-Message-State: AOJu0YxCdmNj94CDIC07rH6CL6YEGZrtRlq/jsPg+1ifSWdjzfUH52cq
-	WTMD/+06xx8cXQb2QMeAjZ2q9lD7aeHcj5JPUPn8KHBaK5KgxMysNofbHv7ArOjLtAMSc4aaKUM
-	sz+1nWQ==
-X-Google-Smtp-Source: AGHT+IFa7AP3IAGDDTK1TeUY6o785EBxZQfo4Yqw/fB+vYDzS43SHEh9iogU9Y+RZYdamDFOvOpYMXb0Ud1v
+        bh=F9W2L65moWfkRODZWtj1+8FpZZOCQB/UnzNIcvAZEKE=;
+        b=GDeBmMbo4mZ8e9pdJSRUvl0AfTHBtIQb5ng5uymj9rYvtVe4JuAZljxFF2C2FhCeoo
+         AGUzgceq2To2tJhO4Y22LK755C3OXxDEezioKk11Yr+ctEk3WboZnBiqUvWnvhiGTbTa
+         Q/HrrbSPq1nETtlGkaMysVociQ2uVJxRJana1DoeEhtAGmUVVZ2V/xJGTWEXBFa/HPg4
+         YdnW9IUlSg6uf6RxMkLw5soEO+gfrMQ0+5X8W0+blW160SMjWp46wpP+kQdVxa8B1clF
+         5ZKPYkQ5560PWLvQlO7rTyh9wDH/MJ8uwpwH0F1zP9KL3fZ381GUxF0yGiHLQmST8Kt4
+         wrqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXXLUcCc4KisoWodEW3Fdb/l818uVToAvsz9c/so+VwpzFPuyimt9AxWeIks8cY4+D3VJdaN0BaH/z/TENNy6mrN8HybC49dMEHLp9z
+X-Gm-Message-State: AOJu0Yy9R59h92MH8SXtMm5SqSeILBOKqf+pK7BgHvAs2EFYpfSofiN2
+	ZWSWN9g2ZdieDm9Sus2taIHrT7bhqqCgiTUGgWi6aG0se4uShjNuAmtKuTn64YXQUQx+yrg579Y
+	KUxv2FA==
+X-Google-Smtp-Source: AGHT+IEWSnrDCNmwOwoNayo+Na8bh0N+7sXrpF4N0p5X7i9MQDILAXeEfZ+11sj+7d1o+2cE64r68zbGMoSY
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:449f:3bde:a4cd:806a])
- (user=irogers job=sendgmr) by 2002:a05:6902:e09:b0:dcb:abcc:62be with SMTP id
- df9-20020a0569020e0900b00dcbabcc62bemr260520ybb.6.1710395488045; Wed, 13 Mar
- 2024 22:51:28 -0700 (PDT)
-Date: Wed, 13 Mar 2024 22:50:44 -0700
+ (user=irogers job=sendgmr) by 2002:a81:5255:0:b0:60c:3c63:92a with SMTP id
+ g82-20020a815255000000b0060c3c63092amr238651ywb.0.1710395490226; Wed, 13 Mar
+ 2024 22:51:30 -0700 (PDT)
+Date: Wed, 13 Mar 2024 22:50:45 -0700
 In-Reply-To: <20240314055051.1960527-1-irogers@google.com>
-Message-Id: <20240314055051.1960527-6-irogers@google.com>
+Message-Id: <20240314055051.1960527-7-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240314055051.1960527-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 05/12] perf jevents: Support parsing negative exponents
+Subject: [PATCH v3 06/12] perf jevents: Term list fix in event parsing
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -92,44 +92,38 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Support negative exponents when parsing from a json metric string by
-making the numbers after the 'e' optional in the 'Event' insertion fix
-up.
+Fix events seemingly broken apart at a comma.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/metric.py      | 2 +-
- tools/perf/pmu-events/metric_test.py | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ tools/perf/pmu-events/metric.py | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/pmu-events/metric.py b/tools/perf/pmu-events/metric.py
-index 847b614d40d5..31eea2f45152 100644
+index 31eea2f45152..0f4e67e5cfea 100644
 --- a/tools/perf/pmu-events/metric.py
 +++ b/tools/perf/pmu-events/metric.py
-@@ -573,7 +573,7 @@ def ParsePerfJson(orig: str) -> Expression:
+@@ -568,6 +568,12 @@ def ParsePerfJson(orig: str) -> Expression:
+               r'Event(r"\1")', py)
+   # If it started with a # it should have been a literal, rather than an event name
+   py = re.sub(r'#Event\(r"([^"]*)"\)', r'Literal("#\1")', py)
++  # Fix events wrongly broken at a ','
++  while True:
++    prev_py = py
++    py = re.sub(r'Event\(r"([^"]*)"\),Event\(r"([^"]*)"\)', r'Event(r"\1,\2")', py)
++    if py == prev_py:
++      break
+   # Convert accidentally converted hex constants ("0Event(r"xDEADBEEF)"") back to a constant,
+   # but keep it wrapped in Event(), otherwise Python drops the 0x prefix and it gets interpreted as
    # a double by the Bison parser
-   py = re.sub(r'0Event\(r"[xX]([0-9a-fA-F]*)"\)', r'Event("0x\1")', py)
-   # Convert accidentally converted scientific notation constants back
--  py = re.sub(r'([0-9]+)Event\(r"(e[0-9]+)"\)', r'\1\2', py)
-+  py = re.sub(r'([0-9]+)Event\(r"(e[0-9]*)"\)', r'\1\2', py)
-   # Convert all the known keywords back from events to just the keyword
-   keywords = ['if', 'else', 'min', 'max', 'd_ratio', 'source_count', 'has_event', 'strcmp_cpuid_str']
-   for kw in keywords:
-diff --git a/tools/perf/pmu-events/metric_test.py b/tools/perf/pmu-events/metric_test.py
-index ee22ff43ddd7..8acfe4652b55 100755
---- a/tools/perf/pmu-events/metric_test.py
-+++ b/tools/perf/pmu-events/metric_test.py
-@@ -61,6 +61,10 @@ class TestMetricExpressions(unittest.TestCase):
-     after = before
-     self.assertEqual(ParsePerfJson(before).ToPerfJson(), after)
+@@ -586,7 +592,6 @@ def ParsePerfJson(orig: str) -> Expression:
+   parsed = ast.fix_missing_locations(parsed)
+   return _Constify(eval(compile(parsed, orig, 'eval')))
  
-+    before = r'a + 3e-12 + b'
-+    after = before
-+    self.assertEqual(ParsePerfJson(before).ToPerfJson(), after)
-+
-   def test_IfElseTests(self):
-     # if-else needs rewriting to Select and back.
-     before = r'Event1 if #smt_on else Event2'
+-
+ def RewriteMetricsInTermsOfOthers(metrics: List[Tuple[str, str, Expression]]
+                                   )-> Dict[Tuple[str, str], Expression]:
+   """Shorten metrics by rewriting in terms of others.
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
