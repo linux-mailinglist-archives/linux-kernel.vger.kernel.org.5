@@ -1,99 +1,93 @@
-Return-Path: <linux-kernel+bounces-103776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF5587C45E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A1387C3E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3397B221CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:40:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAD5CB23131
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A118763F6;
-	Thu, 14 Mar 2024 20:40:45 +0000 (UTC)
-Received: from sraa.de (sraa.de [85.214.240.192])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBA776034;
+	Thu, 14 Mar 2024 20:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kRnS3UAz"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6564274E31;
-	Thu, 14 Mar 2024 20:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.240.192
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8EF74E21
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710448844; cv=none; b=fWCxD2KeK0OugxSSQSxL3d4X1cPjpllNyd3PpSLqNIX85edNgS4sI8J6tuMvLKfxBgvv577dHtyEmVJOCj/3Dgi+S7x655nwYBgzjHYEd+5WUgnMHMG7+1ICN2Bfv3EAsaSwfQBQOF5msIAdLOmfnMUVR5YPIUqUhsC01fx4T3A=
+	t=1710446480; cv=none; b=pJV1UY+OEBtnmRAfQP+mEVtPADNmYELzNlXHE9Nb33yaRvdKnVFV71boMmaSn1VEDFgB7RtWsmtQHkSmvcTpEneD4o3F0w4MJmc+/KB3s4cdjPROMLQZBLjzpiu8GNBIO5hnw+dgEzaZLwZwrvng2lwKswwtDc2kbb30S5d/86c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710448844; c=relaxed/simple;
-	bh=PCQLRkNpygxQ82n178hzGVwBb8g97+BkrYzr58NiRG0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UEWIPQ8GjGYu8QZfWZ2+0vuS+SEEUd7zVESBxU7kAFPpBEEuwyZMQFCe3ndEk5TmRVuRhlpn9eOJMXYVM2ilvWbvaR/skTOjy6roxxNHirmlLZjVRUapiRDbz3nXgXjnIpgP8q7HwxVu1Jh6rKc16GweKHah3Ry5dfT+QRNK0QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sraa.de; spf=pass smtp.mailfrom=sraa.de; arc=none smtp.client-ip=85.214.240.192
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sraa.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sraa.de
-Received: from c-bda170d5.017-30-6c756e3.bbcust.telenor.se ([213.112.161.189] helo=senor0lunlx0336.fritz.box)
-	by sraa.de with esmtpa (Exim 4.94.2)
-	(envelope-from <basti@sraa.de>)
-	id 1rkrG8-006Rxu-CY; Thu, 14 Mar 2024 21:01:00 +0100
-From: Sebastian Raase <linux@sraa.de>
-To: linux@sraa.de
-Cc: marijn.suijten@somainline.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sdm630-nile: add pinctrl for camera key
-Date: Thu, 14 Mar 2024 21:00:32 +0100
-Message-ID: <20240314200037.549206-1-linux@sraa.de>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1710446480; c=relaxed/simple;
+	bh=WzR9A6+jj11uhMDYOlAcj90m7WoEANKKgh8cf4FoQ+w=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=TFFoJn9lmMCgpQ2YktWls86ZHTu6oM9WS9gmhmJ7zmGNtGCXRXRdgqNLQDnuTpQmoTg4Sl1XXLoyBVjWuAw6Iv8DdGf9aKOFANhgE+HW6x/1dhw6BTXIUl51FBjUcjSHLF1fyi6l3IC0OlW9mEgv5ikuojs1X9ZEj7mPmcUx5g8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kRnS3UAz; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5e4df21f22dso1042382a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710446479; x=1711051279; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i6pCffNMKzoDGTKw4n/6Ob9IQM84n1hQBuu01Y8Xtu8=;
+        b=kRnS3UAzYvTCDTuL+ZsA6ZKqmr6IUmn0Tj9tBmvXZjJ3f5Z4jxZs2CDxp3NH1w+c9d
+         Zb/Amox4Ha5XID6baLZGDveztJCA4Kp1OIek5hosVsxpcV8zf0Jd/QTU0fpY3WnUYURY
+         yS7oAd1pOxiKJt6ll6KnWQKNztLItGpKq0EamoXK58C6+Jm7k/h4nyAwf2qQWNrjV+u0
+         qgsX1WWEO6gLEIHoGBrS4nd617UXjy0mMkAlDVqwDbfAz7TIKvQgZtl0PyjyWpOoH4YT
+         6QN4iQBN+0GuK/kxRm2HRWbYFWnVNn2K8oKBeAPARfeHuRftNySbJyFigp3Y2vRrnvMS
+         JjPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710446479; x=1711051279;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i6pCffNMKzoDGTKw4n/6Ob9IQM84n1hQBuu01Y8Xtu8=;
+        b=HqdFDhnipeS1y8Lu/iKgj93nKGqT/NVxQmAJ0Je35DVEgqSXS7+elmLAhTN3lem3Zi
+         mG8MPauadxXW+r+CafKgse/YSTu/t2Y1V3AatYBbrTgfzJ7pGTf/Wu2S88nfMFW6B+ub
+         fGjn1BLz0iaBLnKOgRQqEpAEejwAwTtqqwlRArXBacvnzqnj+ftV2PiUs/0XgkwPfOwR
+         /Mxem5XIZRNtetbuvM72r37dcz6Yc58YS5iOPrIxZZFSpWpbAsgtF5TF600LL3A/iWVE
+         ctw+TiLAkqB/Rmiiqn3t1qSgj5VMvlT0UU/FOrTXBU0NZH+Lhd6MD4if47HHYqMy+1R0
+         Cp7A==
+X-Forwarded-Encrypted: i=1; AJvYcCXijzRcqVnCuYfbWOyeOGfgqk1TEacXNNja3OaHs2jJTpo3I+QGZ0iGtaDxcjyF85Fr2HnDTqaf9gUiKzkE3bufJlp+X1argxol2NgW
+X-Gm-Message-State: AOJu0Yy2wCq8O5uxcsmxWADJMtL8FEpPo/+jdyFpUZwFPlTUqlBl82Ic
+	Q5YSccioBUWD16RQXDzy3M+1/5jty0kw4K5bJzCkJ+2nXHKE9jmq2x4SybBfkfvL2g==
+X-Google-Smtp-Source: AGHT+IFKfU2NA2q8Rlp50xG0jix20Rw9KJIZR9SH6PcuXiddyRxwquv/7vX3A/fr9QnaaO/eg3bUAzQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:fd43:0:b0:5dc:aa2a:7766 with SMTP id
+ m3-20020a63fd43000000b005dcaa2a7766mr8215pgj.2.1710446478832; Thu, 14 Mar
+ 2024 13:01:18 -0700 (PDT)
+Date: Thu, 14 Mar 2024 13:01:17 -0700
+In-Reply-To: <20240314122533.419754-1-liucong2@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: basti@sraa.de
+Mime-Version: 1.0
+References: <20240314122533.419754-1-liucong2@kylinos.cn>
+Message-ID: <ZfNXjd1ML2WJwOKX@google.com>
+Subject: Re: [PATCH] tools/Makefile: Remove cgroup target
+From: Stanislav Fomichev <sdf@google.com>
+To: Cong Liu <liucong2@kylinos.cn>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Dmitry Rokosov <ddrokosov@salutedevices.com>, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-Add pinctrl configuration for gpio-keys. Without this,
-camera button half-presses are not detected.
+On 03/14, Cong Liu wrote:
+> The tools/cgroup directory no longer contains a Makefile.  This patch
+> updates the top-level tools/Makefile to remove references to building
+> and installing cgroup components. This change reflects the current
+> structure of the tools directory and fixes the build failure when
+> building tools in the top-level directory.
+> 
+> Fixes: 60433a9d038d ("samples: introduce new samples subdir for cgroup")
 
-Tested on discovery and pioneer.
-
-Fixes: e781633b6067 ("arm64: dts: qcom: Add support for Sony Xperia XA2/Plus/Ultra (Nile platform)")
-Signed-off-by: Sebastian Raase <linux@sraa.de>
----
- arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-index 87d0293c728d..5eedca6f288f 100644
---- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-@@ -90,6 +90,8 @@ cam_vana_rear_vreg: cam-vana-rear-regulator {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gpio_keys_default>;
- 
- 		key-camera-focus {
- 			label = "Camera Focus";
-@@ -635,6 +637,13 @@ ts_lcd_id_active: ts-lcd-id-active-state {
- 		bias-disable;
- 	};
- 
-+	gpio_keys_default: gpio-keys-default {
-+		pins = "gpio64", "gpio113";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+
- 	imx300_vana_default: imx300-vana-default-state {
- 		pins = "gpio50";
- 		function = "gpio";
--- 
-2.42.0
-
+nit: is it worth it to have a fixes tag here? Doesn't looks like it's
+a backport candidate..
 
