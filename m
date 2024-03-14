@@ -1,179 +1,189 @@
-Return-Path: <linux-kernel+bounces-103166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8048087BBD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:20:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C56787BBD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206771F235A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:20:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F71283BE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1846EB5F;
-	Thu, 14 Mar 2024 11:20:24 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12286EB66;
+	Thu, 14 Mar 2024 11:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I8qBC3Xa"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4F96E610
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A99E6EB53
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710415224; cv=none; b=jrbQNVbp2ka2m0bOuR55vrJuUHeqsKBe3R9k0+mnqDQcfHZcaLjmG9UYiOtP/nwDPfqC36stuvNj5CTtI/UM4U+fs46O2V3XEJdAEJPTKMPYf3+tr3sOn5a9Q6+pi4CAIohOc/VcvAYqixFetNmiuX4rRrNPN9o1MyJ0cymn6Xs=
+	t=1710415257; cv=none; b=o9u2evfEoJESe/sN+WA0dYKEaQuZNSGhlPfzYn139RjhKcp7ZvrhoVk3vPll0ADh/bK/JOM9/s3aB6yHdG0Ev3ZNWYTI8AAX7ckPqK30mhsyGrxPW+m7UHwtnH67aAPjXw+PvzRPqdhfn0QlE9dF5YNiOal8tb4hpjjatCbOnzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710415224; c=relaxed/simple;
-	bh=l2HLYYn4UeEUpgV+L5wQ37S45Vthf/ftyRXt+AAR1fA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bTS33x7NGdQ7eQ808XQXYfJk7AFl0iQE9EVJyx3MPYXAw/hYBQ5p5TkILbAFyBKbeiDI4ml5lNAQP9Od6le1mi7Ci8h0CowQehni3HiPmTz8l7gyzlbYtF+x3UrQV1Th9PbtrLD/Y11/3gCV5Zi5B0HUcyIQCo8WY5f+5+e7etI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rkj89-0004J1-22; Thu, 14 Mar 2024 12:20:13 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rkj87-006Ihj-Ay; Thu, 14 Mar 2024 12:20:11 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id EE8582A50C4;
-	Thu, 14 Mar 2024 11:20:10 +0000 (UTC)
-Date: Thu, 14 Mar 2024 12:20:10 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Francesco Valla <valla.francesco@gmail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, fabio@redaril.me, 
-	linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] Documentation: networking: document CAN ISO-TP
-Message-ID: <20240314-nurture-apricot-d4707bc77a00-mkl@pengutronix.de>
-References: <20240313223445.87170-1-valla.francesco@gmail.com>
- <20240313223445.87170-2-valla.francesco@gmail.com>
+	s=arc-20240116; t=1710415257; c=relaxed/simple;
+	bh=d0lHKvuwt0DqJicbUYV4oeRWf99uSfWi7oUxAihw+k4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YT99Y9mg4YDMtp74gHsTOl2EelMDR2DzB1Jiq8hluuw8v6lhXviM1cG0HoVZVU2S0bqknpSSmKEGllf5EoktDQj/yvKPaf36bV24e4V7HiW+bO+zSckNCl8dwvSVCXtsBkpxcTYQXqw6CUAe5lKvraafIYgGIct1Nw2GizeiAhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=I8qBC3Xa; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-413f4b5171dso1956065e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 04:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710415254; x=1711020054; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5CqXWJRHRFkXhCgu6WjqlpPc2HaoZgLyUGHV9Pumfc=;
+        b=I8qBC3XaWkRa+VfRw9j5sL/BxDlx1Gzf3Yi2+OrGHHw6iyhHMBQpLkpPmPohJsos4y
+         z0hyhHYDIDTxjjqfkfB1Ttbt3+ZeVfCfEjWhrEWGeFGy30POq93+IfG3gUqO0Osu7PjA
+         fWjLgRn+ajMq/HziOmv3FpPkeQJ93nMhuA1D1hQm3Pv28e18n9lkg2R62O/flZoBTiA5
+         2AtVsbdaTW3yD+5Cxc6KOlzp8GNMF+E6CiwV+EmzOk6sQHE1Pahsys93+dvleQOheR/1
+         0tbMltE1tn1mishX90n5wnjvpHUMciaqSCYku2FZXIdM5+xKaoufmdbWEutHGNE+vwSC
+         CyOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710415254; x=1711020054;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5CqXWJRHRFkXhCgu6WjqlpPc2HaoZgLyUGHV9Pumfc=;
+        b=ifFlpGvQkaeORzhPhU1hvt3rd1kcB4skUIbZI7nnqksHMphQNo65CThFvZIWZt1/Y6
+         K3NQ7mxAaAKuOjyp1XccFaNlmUhvlVZ+4MRn3cV/+hVuQU0hIxyQIVloBh4Nhg/3lUs+
+         jnh3M3mETezKYRXmq+RBxN6u6t+v7XiRWykiTgzq4xe6M6lP5vq0aD2ve0AVq0hdSn90
+         Q+BUelANIoKAU45q+52i+eK6IpAL140ijvzEWFrVzDQC59zzRmKmba0qZJK3uxHoqH54
+         hLmdLt1gPm0liLwlBDLxotgsifldY3M4M2fpjAeLLP85h6XPKfINkYT5zj7aX9YT1ogn
+         qXUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWj1d11nclGzNCo68yTYBFzVaEJp5tAWft1aqHbA1Ttdq6gjPfVrTxiE0sA2gqAalVBppp68ZW7Tv1FZ6CQ9GVPDW1556078kRMju2t
+X-Gm-Message-State: AOJu0YxYfnYZUuT9hXRJKXG/qmVCxfBhgK+oAASC/uQ5+pHb58BRDGeH
+	KNbWM1d8O7rCb3Zuox5rQ1Znr7fMKXmKZ4rGdVQNduCplJlgt+tr02i0GD8T2ek=
+X-Google-Smtp-Source: AGHT+IEAHffegUMAOdeVrinGTUzp+fTXJm8l+bq80KxTcU84HPuaJ+2VVPnBbsXAgpdvJBTI30tAFg==
+X-Received: by 2002:a05:600c:444e:b0:413:15f2:21bf with SMTP id v14-20020a05600c444e00b0041315f221bfmr1122021wmn.5.1710415254259;
+        Thu, 14 Mar 2024 04:20:54 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id i9-20020a05600c354900b00413ef6826desm2162816wmq.4.2024.03.14.04.20.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 04:20:53 -0700 (PDT)
+Message-ID: <54b820ca-3674-4376-8386-464afcf8c50f@linaro.org>
+Date: Thu, 14 Mar 2024 12:20:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="23lpoqgne2axyrjj"
-Content-Disposition: inline
-In-Reply-To: <20240313223445.87170-2-valla.francesco@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+Content-Language: en-US
+To: Sumit Garg <sumit.garg@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, stephan@gerhold.net,
+ caleb.connolly@linaro.org, neil.armstrong@linaro.org,
+ laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com,
+ jimmy.lalande@se.com, benjamin.missey@non.se.com,
+ daniel.thompson@linaro.org, linux-kernel@vger.kernel.org,
+ Jagdish Gediya <jagdish.gediya@linaro.org>
+References: <20240313123017.362570-1-sumit.garg@linaro.org>
+ <20240313123017.362570-4-sumit.garg@linaro.org>
+ <4a0a8db7-a2bc-4c99-94b2-c13facbd1bef@linaro.org>
+ <CAFA6WYPh5BS_Fpi6ksAC7bwoFEyqjj1Y3EahyQxCG9Pp=KDw=Q@mail.gmail.com>
+ <9dc0415c-4138-4867-861a-38b45b636182@linaro.org>
+ <CAFA6WYPFfL18acdZt6O-_=LWnH7J2MooDuf9cA3JCaQZdoLhVA@mail.gmail.com>
+ <CAFA6WYNo73S5ROHCMK0ZQSiU0DDbuDadptmaPL+GPCocE0h-mA@mail.gmail.com>
+ <f03c7979-79f3-4894-98b0-1e5a2dc18ba6@linaro.org>
+ <CAFA6WYNRwF7GqhBk2B7i-deT3aLxNQckhnOasjip2TYm4HZgAw@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAFA6WYNRwF7GqhBk2B7i-deT3aLxNQckhnOasjip2TYm4HZgAw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 14/03/2024 11:26, Sumit Garg wrote:
+> On Thu, 14 Mar 2024 at 15:36, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 14/03/2024 10:36, Sumit Garg wrote:
+>>>>
+>>>> But it then broke dtbs_check.
+>>>
+>>> See following breakage afterwards:
+>>>
+>>> $ make qcom/apq8016-schneider-hmibsc.dtb dtbs_check
+>>> <snip>
+>>> /home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
+>>> leds: led@5: Unevaluated properties are not allowed ('reg' was
+>>> unexpected)
+>>> from schema $id: http://devicetree.org/schemas/leds/leds-gpio.yaml#
+>>> /home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
+>>> leds: led@6: Unevaluated properties are not allowed ('reg' was
+>>> unexpected)
+>>> from schema $id: http://devicetree.org/schemas/leds/leds-gpio.yaml#
+>>> /home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
+>>> leds: '#address-cells', '#size-cells' do not match any of the regexes:
+>>> '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+>>
+>> That's obvious, I don't get what is the question. Adding not correct
+>> properties is not a solution and dtbs_check correctly tells you that.
+>>
+>> If you only opened absolutely any existing upstream source, you would
+>> see how the gpio leds are represented in DTS.
+>>
+> 
+> It looks like my reference example:
+> arch/arm64/boot/dts/qcom/apq8016-sbc.dts wasn't correct then. I will
+> drop unit addresses then.
 
---23lpoqgne2axyrjj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Oops, unlucky for you, that is one of old DTS which was not yet fixed. I
+am surprised that I missed it, I'll fix it now.
 
-Hello Francesco,
+Best regards,
+Krzysztof
 
-thanks for your contribution! I've some remarks to make it a valid rst
-file.
-
-On 13.03.2024 23:34:31, Francesco Valla wrote:
-> Document basic concepts, APIs and behaviour of the CAN ISO-TP (ISO
-> 15765-2) stack.
->=20
-> Signed-off-by: Francesco Valla <valla.francesco@gmail.com>
-> ---
->  Documentation/networking/index.rst |   1 +
->  Documentation/networking/isotp.rst | 347 +++++++++++++++++++++++++++++
->  2 files changed, 348 insertions(+)
->  create mode 100644 Documentation/networking/isotp.rst
->=20
-> diff --git a/Documentation/networking/index.rst b/Documentation/networkin=
-g/index.rst
-> index 473d72c36d61..ba22acfae389 100644
-> --- a/Documentation/networking/index.rst
-> +++ b/Documentation/networking/index.rst
-> @@ -19,6 +19,7 @@ Contents:
->     caif/index
->     ethtool-netlink
->     ieee802154
-> +   isotp
->     j1939
->     kapi
->     msg_zerocopy
-> diff --git a/Documentation/networking/isotp.rst b/Documentation/networkin=
-g/isotp.rst
-> new file mode 100644
-> index 000000000000..d0c49fd1f5c9
-> --- /dev/null
-> +++ b/Documentation/networking/isotp.rst
-> @@ -0,0 +1,347 @@
-> +.. SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> +
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +ISO-TP (ISO 15765-2) Transport Protocol
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Please make the "=3D" as long as the text it encloses.
-
-> +
-> +Overview
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-
-Same here
-
-[...]
-
-> +Reception stmin
-> +~~~~~~~~~~~~~~~
-> +
-> +The reception minimum separaton time (stmin) can be forced using the
-> +``CAN_ISOTP_RX_STMIN`` optname and providing an stmin value in microseco=
-nds as
-> +a 32bit unsigned integer; received Consecutive Frames (CF) which timesta=
-mps
-> +differ less than this value will be ignored:
-> +
-> +.. code-block:: C
-> +
-> +    uint32_t stmin;
-> +    ret =3D setsockopt(s, SOL_CAN_ISOTP, CAN_ISOTP_RX_STMIN, &stmin, siz=
-eof(stmin));
-> +
-> +Multi-frame transport support
-> +--------------------------
-
-same here
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---23lpoqgne2axyrjj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXy3WcACgkQKDiiPnot
-vG8lzQgAjaKShUuD1SFxYlmma7i0p2rGshpvscLbncWKuBmBQN65xPJAYZ7JOFzC
-szKLUoekrIZmvAu519OYEq9uEqAwPg2SLtgjferHxwSLs3h+ovhyvlrXkYVDXuor
-vwXpM362eJOIGf8b/LkqkMtrTPmwvZ2QLewJbyf8MUVpCYlYjfkrywZS701hvdok
-RetPkO0jKVV5x9+5KJ4F3APspGgZ/rXikZhV2XBMxTshg0OeS1o/+iiZIF1YspYB
-xCgS1UmVtx/8nrJeAIwWd3DFOffbccWDM87hj4+egf2uIuBFe/91CxGsGavgpzBB
-+qKs9Fw+bAslSu+U0wZ7a/QQUpEUmA==
-=K/bN
------END PGP SIGNATURE-----
-
---23lpoqgne2axyrjj--
 
