@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-102888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8946487B80B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:47:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0636787B7F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:28:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7915A1C222EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:47:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFF3B2855B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730455398;
-	Thu, 14 Mar 2024 06:47:17 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2131.outbound.protection.partner.outlook.cn [139.219.17.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A388011190;
+	Thu, 14 Mar 2024 06:28:22 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2108.outbound.protection.partner.outlook.cn [139.219.17.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1FA4A03;
-	Thu, 14 Mar 2024 06:47:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45ADBE556;
+	Thu, 14 Mar 2024 06:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.108
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710398836; cv=fail; b=hIDnN9X+NATHWjWZBSPf1K4G0e8udLi6Y8r3/8HSbFwYolt5Fgv50qZNDfxbDGDBLMDDDnayiq0ikJax69wZdIGnlGw7wpXcA60UKSb5aK/tagoRxJGn2dkEmXN+maoUCfuYAlWZA+aTxhGg+hNPMltVJ3mxqkkLN/BOzXEG9jQ=
+	t=1710397701; cv=fail; b=i8XW2l0pjS1lQSA7vQWAESGxgSTwgtRdUuQdkhz2RcTj9ACf+J2cCB4HOyGIUVBT8cL4CjCwQKke3DirUZKZrNFlFsghX4Ka8j/sJqTnAnY3cH/mOJwirP8ZZ5uhbGxKY/73Y1iZCzQBFZkF5Z/wOonDiTBY1ya0v9a9F66gSk8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710398836; c=relaxed/simple;
-	bh=ArMNK9LJj6hUHI1Rx7dTbP8QTUsJTc14t1HVwzzmCno=;
+	s=arc-20240116; t=1710397701; c=relaxed/simple;
+	bh=lgLlVON8ujEjKjVzSUpp84E1ll4Jx3qCzBBtdAKWlIA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Mzg/brPO2JroAoR6qsl/wmY/ocH515YFdO+zc1Ao9jY3aN/LLUMPFhaH/yatDk1dk7CiwI6o9Ermx//zfl8mYtQ2oYGBF2jm6glXB4VgXfTqLV2CYt+Qp/72Py6MqqZdWVZkjlf+s/4xSMpCCvGnQE5pX+h7wF++Fe0nHYayudQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.131
+	 Content-Type:MIME-Version; b=acww2P6/7P/U+/JcOJXo7dM/htiCbsOwR9xsY4BDJmozO+Wz+dHqEKPc7zwsAvH9Ep1jjgNKkLXSSBiVexGwQxVV4T+v9lHO7QLHLFEoOjJnV5lojMI1p6hOyMoDq7e2C9/OdkJP+yVgrowvZMlKkfFFreGIhc0NhOluB2/4S04=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.108
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XUb0T2S7Z2lhqEI/HiWVx67UQOoqIKGwQKn+jNdCM7FZQRpWBE0Jp82xdsxa0BQGPFWtzZJC4cJ5saiahDgW7LyvH/goq8/DGCks3pSqklVqEI/sYdv7Zhu6oE4AFmdssw8PzIW9JbLvh9AUatlEX3FccYO6vAOIU18F6tqE/PVkb99dxWkC3F29Lef+HgK15bkT+gzmgSV3cvRhCenomt1+RzmrjjBKdnxFs5xX9d3JpXGi6hw9TlZVqqtflZxftJL71TUl7NIu3YQYrNaUf7qqMuxmIB0egtQB0JWiKgkrq334IMSvHW//3K4v+3xRQPDBUOCnk2VFkWeoYrNerQ==
+ b=dV9ulM+H+1YE45mgeHZNFvUIQV2w++n03G8Bf8weCrEDC9ssrtvVLwjMo4MA/dQTK1H5WS8uFhmH4P06ADx9UXGOAXfsXI+jXMfE3sO/ZYQ8shb9BJ+qgoNQesMdN2pQ3715fY0pSHDq1hjprHowcpsYelNCrbon3wal1RZREKf0/1BJO203DsWI32oRI/GxFaUkKnIDspzNAsLRZIKaTArhnYamntIrn6tCiATzVPaO7Ed0/kfMqdMzYWErnJ/NAtF2IWmXkVl4Ry+mnn7y9rAuG38EB5ryiW+lJiXQGd+ArZ1FZ4ZJ9vXdiodqFAiRPERcciIQm4cvBqzJfoILIQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pQEM8FOLWcxfYvVmh/eQrm0TxFeLdfJgmFUVG6eh+20=;
- b=kfEwGQsHYFE/xMNPhquq42QIVgW6/iXbcvh6UqHsDX2ArHvR3963ILpfN8QdiPHHwIjDxvEPZL/MtoQhMSDlA30v0vaOZ8yhcKxd9BAKRGc3//yq9IgCO1ulwJVX/TatQaguJahYkTibUwRf2DIO79WxtI+JGRzRQpb7niXuh0npjXRKtFwiXngj0cHa0FNDRuG2TUxLmHxcgRijEKfbfyRi6zcwbPzsyYIz0+txuI8bieu7DPzxqmb8YC3nc/y9m8IUuHnxfiOPQpBY+kiWs4POJ60u6hZDghHjwO9gjDgt4+HlrP7+m2yqbItjs8x/E/cA0CKqdPUW2qDzaqOEug==
+ bh=tCp8ZsGmMS+EoPESOEX1901ZFRhlU7sve5h9K5kYCAg=;
+ b=gLDJ7Q0rsWE55mY3z4zOd095WVhI8Fb08VIEs8Rj6oSSryOTVvv8Ytez0Uc703wNLX6z9tpI3Oxpvu4LrfA0CGk/HcHwrM6LMlt8agFJd2W1xz4q8CjJ0CgTweL5jLCL26GsEXH0YBNczIGZLfA/n+XF2bzDI+VK9ND9Rw9MmLuwelrOO3GA75dc1pIUGnW8blWHzjPDWblPwtvDzw5VqqQY7voTn1a6xZLNtVSJmq9yCBDFB18JGodGP3hF+nsJWjfddmOQ8KFni+OxIAyoJ0VfiG250zrkhTOCl+ZDASqyoIPYrX39IH11Mtr0yr8VYQRmaQiPTk39rmXjXyhoJQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=starfivetech.com; dmarc=pass action=none
  header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
@@ -44,11 +44,11 @@ Received: from BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c211:1b::23) by BJXPR01MB0711.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c211:18::17) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Thu, 14 Mar
- 2024 06:12:26 +0000
+ 2024 06:12:31 +0000
 Received: from BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn
  ([fe80::a038:3f49:b470:9207]) by
  BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn ([fe80::a038:3f49:b470:9207%4])
- with mapi id 15.20.7386.017; Thu, 14 Mar 2024 06:12:26 +0000
+ with mapi id 15.20.7386.017; Thu, 14 Mar 2024 06:12:31 +0000
 From: Joshua Yeong <joshua.yeong@starfivetech.com>
 To: paul.walmsley@sifive.com,
 	palmer@dabbelt.com,
@@ -73,9 +73,9 @@ To: paul.walmsley@sifive.com,
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org
-Subject: [PATCH 1/4] riscv: asm: vendorid_list: Add StarFive Technology to vendors list
-Date: Thu, 14 Mar 2024 14:12:02 +0800
-Message-Id: <20240314061205.26143-2-joshua.yeong@starfivetech.com>
+Subject: [PATCH 2/4] riscv: errata: Add StarFive alternative ports
+Date: Thu, 14 Mar 2024 14:12:03 +0800
+Message-Id: <20240314061205.26143-3-joshua.yeong@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
 References: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
@@ -92,74 +92,274 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BJXPR01MB0838:EE_|BJXPR01MB0711:EE_
-X-MS-Office365-Filtering-Correlation-Id: 86e21904-5731-4c34-d9fd-08dc43edb85b
+X-MS-Office365-Filtering-Correlation-Id: 9ae60e8c-ccdc-4ee9-3c21-08dc43edbb5e
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	Uba59SvBHfYFhK0kZLdA2hJTtYNNpvMVKaRI2YwT2jQsV9liaMrbhliEUqKIAXzmyLvrd2FEaI3YYqR5KXINyDevVDUW3JT+0t5s4CNwK9oLAZvdumXjxub32Mg96LbVuNMWsLDVyzqPZw/RTDCqnuvA033SP97WXrSMXD6TarzNMfrkkynl6PhXWcb8F/Q2uZzkpalDygC9BgSEqcYDHfUD99Fy98Z3jR5b7FYgK7LAVSqA+pgbmrQ4Mx8g2T7LIurmbKFBlvxszjRrBFG+LrmTJdNqRpFH8BCTlaGaaY7Go2hfG55zasxuV+j6kdAGLodPAjGpAzXW6QmgteDM6/9khLQgZqQCIxaCG4O2gL0vUtxL0AtMCZOuOPkMEMsNGupJwBTEs4UlhCbEr7YvOONUqu3SGvO/fY+EEPd2cVTY7LJbywkbsfCVQe9eD2lfZGg8vrUMYupe8foL97fpYS1FTtZgCkrJpp1rRXi8NA/xJO7AlBATXT9m86OVZ9qqw4LErZY9yUnPbhU/WDTMmlTW2PSm2TZfbzzRDcW+Dd2mc9DIVVKauGgE7m/A9kJjB3czwZ+qnyYKjY8LVe/WMRLRF59jlSDguPb9WRyyZPPNR3RqfJm5nBRjJyKpoPqw5eFqiDgDcQ/vcYPEK2nC3Q==
+	jRv/wUwZUR3VZ/aUWcrGXT8mgjVTa3y2ylOogt0WKIDOaCW4BTw6RUiPpD5lpRm8IC71kgMCertMIv59m3gZahcNs1l81otMRCrD4+rYSe+rc7lLj+31xmJ64Isit0AKk3LIrEa53d1fKl1c9SaWCAS1FMaG+tXuvdKQUlT4zpdyWqs1FHHc6wzEUhXnT01Mc5l53ICGaRPZ++XzF+HskRWKCkC7+bf6m5fPObwAPzZRmSn7ieIbmQcikO/GKvwG1BSlXKTxSM1v3q88DO/2hnhbI5wUNdgEfTD3m02LJcxtX7+FgVG20aNu0HCi9kK/9KZIS2IAfwpBzgys0HB/BCCwU9pDk6uAIwanp4xEbv03rdDxEk/8JcgW8rtQuE9+bUUHgPZm+Zwz9NC8UTnxLPVhyY5zitHadsvs/q50NSaSG1MQ/dwWLKhCC/NuDivNGV9rQSWYa5+KX9ljwfuiF3wvYn4TvCnC6+kiIVEYaMxlle6Wr9shq00bzk1UBrEB4zlSy7pEq2UXkrw7DYGKtdZr0j0OF4E+WhfzqAwshWsvAsUvMilEgTiaHRAzeqLKYO4+h3KfQTmU7Gh1wBGT3nxVL+MjmbIVIPvk0qN69YYyzJFobAZ/25UG/E57Mo2AmKO3FnJsrHUZXzbmKb18tw==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(7416005)(41320700004)(1800799015)(52116005)(921011)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?PoW/LxYq1q0Bp/JHxht4S3R4Uqyd3mxVdxLbxwCwYihkoeR4jIoJuJk+6RDS?=
- =?us-ascii?Q?8WmZ9Zy2DgaIBaY12BiKNYoL8I4+V6Tq3uW2r6AmOhHKtLZJC9ZfwCUnxgev?=
- =?us-ascii?Q?47Uv1h9u/PKmLMMRt4xrS0/gDlnYI4+OE07ttAVxdXvWuJ5jaqIP3M+SZvcz?=
- =?us-ascii?Q?CbLW5C/DRoUSD2XeXaQKCmRU4X7ABUBv7Jfn0l0+eti9NMoHV+AnpO+jAogC?=
- =?us-ascii?Q?z74h9AlJ1BSRFX8TWbTOqie9TRzxDDhPcU0PFMohnh/zZAHbTxH5Z4TclUJR?=
- =?us-ascii?Q?Kcleol2O+eVtfAivtcrqEZ+ImTohYoUo4hQDO7sBAQ4ZPV9RxHt1p1yJzQFK?=
- =?us-ascii?Q?mQ101CZZuu3nZwUPbfN6COpUIIWPXPJd+wnHyhdR3DLmHCVDWJr8vBhRG2Uh?=
- =?us-ascii?Q?35dMC2OqYh+tp2YLilUXmtn4uNSl5hG5zaniON+LPd4RRLkkOziaCzZtPtze?=
- =?us-ascii?Q?mMGlRcbirI2IbVfUvyoGm5zlvEOPJ6czv9Sm1cxSp2brpRG417tyQUg3rGlq?=
- =?us-ascii?Q?7CoWdmohOcTEFfVbhsz0RCk0K0E1zvgGkFzrlOpjo5elp2ymoPHH66UJQ4dR?=
- =?us-ascii?Q?ZtLAOXEEJOChm+S7Bj38vDsRYM8p8bVhqziujVa26kWqMU3enOTC5rlTUi0q?=
- =?us-ascii?Q?ZpqEEmaqq5FlJ13M6sIeeSCBmDa13e/JneNTANO+63UQZhAnmjfR9SD1Wj1F?=
- =?us-ascii?Q?Gv+jHKmrtllqZizXFih/dhUU3GdD+lIPCdYPWeEXFOUAfvD5s4QOV7cLeV9B?=
- =?us-ascii?Q?oa1h6sZhThIiN4fwJ8QDdF846RTgZX6bplUcVybx1YAJxUw2thSdwXRL7++W?=
- =?us-ascii?Q?ZSkPtJdM9dSz+ZhoXy+1UE/1P0A2reAK5LrFvbiSOu6mq3UEbtCGrSjg7Fhk?=
- =?us-ascii?Q?7rHZJbkVPq/tkj0f1MFsUcdYGZPov3Mgdyl3VB4fS5OVdL1r/L6MtXg64XLU?=
- =?us-ascii?Q?3ehC8w+v/ge50l+vAJEEMJSL/DKlXB8UmHbPzkfmUd/Dyej/jN5wxKaNHrhT?=
- =?us-ascii?Q?CEkVJrHFiG5tJHoY8cXK8TZdr5S0JELjAdXZvGw+Xkxw/MsDmQ34CyCrTu/f?=
- =?us-ascii?Q?ofnpX10XudIcjRgYVJdH+0/LgCSSph4AaxSNgm2WGbtsNB4Pjb8aV8lSW5t8?=
- =?us-ascii?Q?hxnh8dv6Ud9PJXB9ltK9DPqIZp7c5NqZB/gjkP6BLXMpICStwrHL4wk3rnWn?=
- =?us-ascii?Q?QbrOO4Ng/N08NGv1eMIOupyovzCH0HSLDGOybbKWJncTPO/zmR4EQV8v0m/c?=
- =?us-ascii?Q?uDFtuY3vTL5qP6o3szJMgR4k7YNTX6j0BBoFNcr+JFPDBdlCp6dKrV938HAW?=
- =?us-ascii?Q?fbqlUk3z6BPpKzJ2zOk9hHsWvucWMafGXDAB3dlZ6kV4ai4xioxAbdImts0+?=
- =?us-ascii?Q?M5L7M8wNG6d7TyjNYhoDiuOEvDDLlJOKne+bmjgRWfc/PeeG9nAyEjmSFBXs?=
- =?us-ascii?Q?OtUAn58EpF1dp2SgVr3zFBFOXU8rsRMrrkQomrWzJyNeqMGf9Ynij8iavB7A?=
- =?us-ascii?Q?ik0twDWnkooUdRFxcg6iwS8ppJeBgx44ZiCR/+HRgR34brF+84HrHp7gvsac?=
- =?us-ascii?Q?ww7GtpPb7IQNVtIEL4AwHYajNBnRmDHZ7s/iNBhXqFxvglfPjuBZvWwH/Dwj?=
- =?us-ascii?Q?JOJzYHD0BWtS23gXEqpQDUA=3D?=
+	=?us-ascii?Q?P6YfhrDAL4SS63zKqrpMmt0hq6azCqEvBA2f17af37EsotOWbOc7a1rLW1eT?=
+ =?us-ascii?Q?wkDTzigX0kWB/01RotB55B6l2UeBM6/EieccYldu5AB36wcJ4c/HyCamW/8d?=
+ =?us-ascii?Q?a+tUG5qNfe0R9zZCC/NRGD3ugtWVETsXfGa+bGT/gsbA6DZzjca9OJ3Gll6R?=
+ =?us-ascii?Q?qwEZxgcaKmlqxmsBQ+LFnviqxOFcIS5afuaBQnYIiayGsetwD/FMQHvW3nRx?=
+ =?us-ascii?Q?XQNLGsnmNfuL6kyBL4kOmXwRlj9Y3IcLGoqUOlA8meUlVEPWyf0oRa1ZrEG8?=
+ =?us-ascii?Q?Hw0DZJyMTbQVxl2TmmF0QCt6KiAbSHQ6wGbPfFY81dt6lXeGzeKbj6Yh1pfM?=
+ =?us-ascii?Q?nim8c13tMlFYLs2Xrke0VAgY38Z7uPWtPRWf5P/TYU00yK+MDLKGW6o8ZygQ?=
+ =?us-ascii?Q?Zr0/yqKZP+ZzGdl8BWXZYSQorzL6geKesu2vJpI+Y8Rq0T9Wo1voTDC9vXN2?=
+ =?us-ascii?Q?tp4m7x3eAI3aG3/2Iyz6vlA7P+9rAyxeADGAGlYf5mrnBwUY5gTnryo9NQaw?=
+ =?us-ascii?Q?A+r6ZLASuy7XrjnAxTG14y28eSG0Jm7ep18A/YwQk5sraHCLb3pk8Fd3CC1B?=
+ =?us-ascii?Q?iv8lY8qDyNeTcNUZNOPgfK6QBPGbQJ6d3tHpDltv3ljjjiwJZvFYnbceY9LU?=
+ =?us-ascii?Q?gS0lpsQdq1JmbWUYFsOa0e6P2GwwWmi2DPxOjrrRf0YoqcllUzNtmecJvAUh?=
+ =?us-ascii?Q?zu5o869toiAEtL0EEWnSMKngG00prrxpOT0S2EqCxD7DcCtNDBta75JY1FxZ?=
+ =?us-ascii?Q?g/UA2nyJNn/WmvzKtTxUzM8Bn7WkDEDTNkuVTIvYYajLypwXjjdRoQ1iJTxw?=
+ =?us-ascii?Q?QJbTKRgPdAM0oqEiojpf72AFB8iHV0QftNUVIN5o6gmrvXOIAQnLndawvE5m?=
+ =?us-ascii?Q?MbC4dzqdZ4g2ObvaKpYlFs3fcOIdwY297oBq2W4xzFhvKPwNJLx3kZyL0PQ3?=
+ =?us-ascii?Q?DjhUx940mGiJmI6cC1/s2nCjB8opvwIUKp9MO3KTq2TxUlQjLEyxiznv/XiW?=
+ =?us-ascii?Q?xKMQtEYvSyBxX/D524ruhuOxJrv03RuzAJq8Acuo9RHG3O+YLAokao8baQA7?=
+ =?us-ascii?Q?E805dSq/IsooZBUBu1TFmtwBu93roCW4hftpqmQpoAJXKORncaj24Qc9CHpD?=
+ =?us-ascii?Q?+D1K1ZdVPHSQwAZAC5VfnCovs94142eEPODTO6hc/ZAr/m5EtM8nNAXiEzNO?=
+ =?us-ascii?Q?jQDqoCkwczwTOCi5KjlbhrCczRzrc1WfVYFqAov6KMIssk3DS3BWMA4i7s0M?=
+ =?us-ascii?Q?Nz72nG7CQryn84LI1XzYVqB1DaD+NzGAAhHRc9n1531a18thS29QVyckIcii?=
+ =?us-ascii?Q?LLFynypGPC5xkSLRsN7HUx+QzZHGcW523L+X1o7vx8drYgYKiUqLccicF4bt?=
+ =?us-ascii?Q?sEb8Whqxzc5HjM7kBPcoHfjteQ86Oh5vbDwAAPBlKCKuFn40bikCq7TyWlWz?=
+ =?us-ascii?Q?47hjuc97C1Ipv/OBmUX2Uhj5uD9M0EbEHqpTb2nUKgIam43mIF+BgPXMw6mF?=
+ =?us-ascii?Q?MRVZ0FyxnF9/NDFrrt1tI9vZY0s9tuGRfs7JgqNcRBoYFEC8fEBS1X3VT/qa?=
+ =?us-ascii?Q?YLrDC3eCk25qMQCDjvHw1RoHo8YagrXiY6WI60UlzZkQLa9L/bi5uMA26xLm?=
+ =?us-ascii?Q?6k4gDIRmpjJ9tt2GLyt+1M8=3D?=
 X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86e21904-5731-4c34-d9fd-08dc43edb85b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ae60e8c-ccdc-4ee9-3c21-08dc43edbb5e
 X-MS-Exchange-CrossTenant-AuthSource: BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 06:12:26.0604
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 06:12:31.0650
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dpevjTdkAACe8PMOUmLV5zWUQ5CauAY6xkxs5vdX4N75LUIxcrIvjWUqjJCjrjJqg4r0kGjXo3//M4U9iANFWH8NhyZvIp28wbzXTg7BkBg=
+X-MS-Exchange-CrossTenant-UserPrincipalName: r2IisVnHXORhUc9vwcZhqZ9DdtqRB0Oxfh6bPMVKvPX5EIbonT8BwvOqlSFSHhxmty9/eq2caYdkiPk1RlkF/EDe/kjlnEfjnCCBV1BmiD0=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJXPR01MB0711
 
-Add StarFive Technology to the vendors list.
+Add required ports of the Alternative scheme for
+StarFive CPU cores.
 
 Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
 ---
- arch/riscv/include/asm/vendorid_list.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/Kconfig.errata            | 21 ++++++
+ arch/riscv/errata/Makefile           |  1 +
+ arch/riscv/errata/starfive/Makefile  |  1 +
+ arch/riscv/errata/starfive/errata.c  | 95 ++++++++++++++++++++++++++++
+ arch/riscv/include/asm/alternative.h |  3 +
+ arch/riscv/include/asm/errata_list.h |  5 ++
+ arch/riscv/kernel/alternative.c      |  5 ++
+ 7 files changed, 131 insertions(+)
+ create mode 100644 arch/riscv/errata/starfive/Makefile
+ create mode 100644 arch/riscv/errata/starfive/errata.c
 
-diff --git a/arch/riscv/include/asm/vendorid_list.h b/arch/riscv/include/asm/vendorid_list.h
-index e55407ace0c3..8c8f19ea505f 100644
---- a/arch/riscv/include/asm/vendorid_list.h
-+++ b/arch/riscv/include/asm/vendorid_list.h
-@@ -7,6 +7,7 @@
+diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
+index 910ba8837add..1438dd09533b 100644
+--- a/arch/riscv/Kconfig.errata
++++ b/arch/riscv/Kconfig.errata
+@@ -53,6 +53,16 @@ config ERRATA_SIFIVE_CIP_1200
  
- #define ANDESTECH_VENDOR_ID	0x31e
- #define SIFIVE_VENDOR_ID	0x489
-+#define STARFIVE_VENDOR_ID	0x67e
- #define THEAD_VENDOR_ID		0x5b7
+ 	  If you don't know what to do here, say "Y".
  
++config ERRATA_STARFIVE
++	bool "StarFive errata"
++	depends on RISCV_ALTERNATIVE
++	help
++	  All StarFive errata Kconfig depend on this Kconfig. Disabling
++	  this Kconfig will disable all StarFive errata. Please say "Y"
++	  here if your platform uses StarFive CPU cores.
++
++	  Otherwise, please say "N" here to avoid unnecessary overhead.
++
+ config ERRATA_STARFIVE_JH7100
+ 	bool "StarFive JH7100 support"
+ 	depends on ARCH_STARFIVE
+@@ -72,6 +82,17 @@ config ERRATA_STARFIVE_JH7100
+ 	  Say "Y" if you want to support the BeagleV Starlight and/or
+ 	  StarFive VisionFive V1 boards.
+ 
++config ERRATA_STARFIVE_CMO
++	bool "Apply StarFive cache management errata"
++	depends on ERRATA_STARFIVE && MMU
++	select RISCV_DMA_NONCOHERENT
++	default y
++	help
++	  This will apply the cache management errata to handle the
++	  non-standard handling on non-coherent operations on StarFive cores.
++
++	  If you don't know what to do here, say "Y".
++
+ config ERRATA_THEAD
+ 	bool "T-HEAD errata"
+ 	depends on RISCV_ALTERNATIVE
+diff --git a/arch/riscv/errata/Makefile b/arch/riscv/errata/Makefile
+index 8a2739485123..4713a686b9f7 100644
+--- a/arch/riscv/errata/Makefile
++++ b/arch/riscv/errata/Makefile
+@@ -4,4 +4,5 @@ endif
+ 
+ obj-$(CONFIG_ERRATA_ANDES) += andes/
+ obj-$(CONFIG_ERRATA_SIFIVE) += sifive/
++obj-$(CONFIG_ERRATA_STARFIVE) += starfive/
+ obj-$(CONFIG_ERRATA_THEAD) += thead/
+diff --git a/arch/riscv/errata/starfive/Makefile b/arch/riscv/errata/starfive/Makefile
+new file mode 100644
+index 000000000000..2d644e19caef
+--- /dev/null
++++ b/arch/riscv/errata/starfive/Makefile
+@@ -0,0 +1 @@
++obj-y += errata.o
+diff --git a/arch/riscv/errata/starfive/errata.c b/arch/riscv/errata/starfive/errata.c
+new file mode 100644
+index 000000000000..3ee360cd5e81
+--- /dev/null
++++ b/arch/riscv/errata/starfive/errata.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Erratas to be applied for StarFive CPU cores
++ *
++ * Copyright (C) 2024 Shanghai StarFive Technology Co., Ltd.
++ *
++ * Author: Joshua Yeong <joshua.yeong@starfivetech.com>
++ */
++
++#include <linux/memory.h>
++#include <linux/module.h>
++
++#include <asm/alternative.h>
++#include <asm/cacheflush.h>
++#include <asm/errata_list.h>
++#include <asm/patch.h>
++#include <asm/processor.h>
++#include <asm/sbi.h>
++#include <asm/vendorid_list.h>
++
++#define STARFIVE_JH8100_DUBHE90_MARCHID	0x80000000DB000090UL
++#define STARFIVE_JH8100_DUBHE90_MIMPID	0x0000000020230930UL
++#define STARFIVE_JH8100_DUBHE80_MARCHID	0x80000000DB000080UL
++#define STARFIVE_JH8100_DUBHE80_MIMPID	0x0000000020230831UL
++#define STARFIVE_JH8100_L3		0x40
++
++static bool errata_probe_cmo(unsigned int stage, unsigned long arch_id,
++			      unsigned long impid)
++{
++	if (!IS_ENABLED(CONFIG_ERRATA_STARFIVE_CMO))
++		return false;
++
++	if ((arch_id != STARFIVE_JH8100_DUBHE90_MARCHID ||
++	    impid != STARFIVE_JH8100_DUBHE90_MIMPID) &&
++	    (arch_id != STARFIVE_JH8100_DUBHE80_MARCHID ||
++	    impid != STARFIVE_JH8100_DUBHE80_MIMPID))
++		return false;
++
++	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
++		return false;
++
++	riscv_cbom_block_size = STARFIVE_JH8100_L3;
++	riscv_noncoherent_supported();
++
++	return true;
++}
++
++static u32 starfive_errata_probe(unsigned int stage,
++			      unsigned long archid, unsigned long impid)
++{
++	u32 cpu_req_errata = 0;
++
++	if (errata_probe_cmo(stage, archid, impid))
++		cpu_req_errata |= BIT(ERRATA_STARFIVE_CMO);
++
++	return cpu_req_errata;
++}
++
++void __init_or_module starfive_errata_patch_func(struct alt_entry *begin,
++					         struct alt_entry *end,
++					         unsigned long archid,
++						 unsigned long impid,
++						 unsigned int stage)
++{
++	struct alt_entry *alt;
++	u32 cpu_apply_errata = 0;
++	u32 tmp;
++	u32 cpu_req_errata;
++
++	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
++		return;
++
++	cpu_req_errata = starfive_errata_probe(stage, archid, impid);
++
++	for (alt = begin; alt < end; alt++) {
++		if (alt->vendor_id != STARFIVE_VENDOR_ID)
++			continue;
++		if (alt->patch_id >= ERRATA_STARFIVE_NUMBER)
++			continue;
++
++		tmp = (1U << alt->patch_id);
++		if (cpu_req_errata & tmp) {
++			mutex_lock(&text_mutex);
++			patch_text_nosync(ALT_OLD_PTR(alt), ALT_ALT_PTR(alt),
++					  alt->alt_len);
++			mutex_unlock(&text_mutex);
++			cpu_apply_errata |= tmp;
++		}
++	}
++
++	if (stage != RISCV_ALTERNATIVES_MODULE &&
++	    cpu_apply_errata != cpu_req_errata) {
++		pr_warn("WARNING: Missing StarFive errata patches! \n");
++	    }
++}
+diff --git a/arch/riscv/include/asm/alternative.h b/arch/riscv/include/asm/alternative.h
+index 3c2b59b25017..8f5e6883db97 100644
+--- a/arch/riscv/include/asm/alternative.h
++++ b/arch/riscv/include/asm/alternative.h
+@@ -51,6 +51,9 @@ void andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+ void sifive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+ 			      unsigned long archid, unsigned long impid,
+ 			      unsigned int stage);
++void starfive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
++			     unsigned long archid, unsigned long impid,
++			     unsigned int stage);
+ void thead_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+ 			     unsigned long archid, unsigned long impid,
+ 			     unsigned int stage);
+diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
+index ea33288f8a25..1cd5ba3a1466 100644
+--- a/arch/riscv/include/asm/errata_list.h
++++ b/arch/riscv/include/asm/errata_list.h
+@@ -22,6 +22,11 @@
+ #define	ERRATA_SIFIVE_NUMBER 2
  #endif
+ 
++#ifdef CONFIG_ERRATA_STARFIVE
++#define	ERRATA_STARFIVE_CMO 0
++#define	ERRATA_STARFIVE_NUMBER 1
++#endif
++
+ #ifdef CONFIG_ERRATA_THEAD
+ #define	ERRATA_THEAD_PBMT 0
+ #define	ERRATA_THEAD_PMU 1
+diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternative.c
+index 319a1da0358b..deedd4b76472 100644
+--- a/arch/riscv/kernel/alternative.c
++++ b/arch/riscv/kernel/alternative.c
+@@ -52,6 +52,11 @@ static void riscv_fill_cpu_mfr_info(struct cpu_manufacturer_info_t *cpu_mfr_info
+ 		cpu_mfr_info->patch_func = sifive_errata_patch_func;
+ 		break;
+ #endif
++#ifdef CONFIG_ERRATA_STARFIVE
++	case STARFIVE_VENDOR_ID:
++		cpu_mfr_info->patch_func = starfive_errata_patch_func;
++		break;
++#endif
+ #ifdef CONFIG_ERRATA_THEAD
+ 	case THEAD_VENDOR_ID:
+ 		cpu_mfr_info->patch_func = thead_errata_patch_func;
 -- 
 2.25.1
 
