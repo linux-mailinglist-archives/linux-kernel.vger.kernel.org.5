@@ -1,132 +1,121 @@
-Return-Path: <linux-kernel+bounces-103527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E306E87C0A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:52:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AE3F87C0A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 853311F21DD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:52:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A2BA282A8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3FD67318B;
-	Thu, 14 Mar 2024 15:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86FB73178;
+	Thu, 14 Mar 2024 15:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIiQTPyi"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="xp0HhZIj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="wly61FZx"
+Received: from fallback3.i.mail.ru (fallback3.i.mail.ru [79.137.243.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C0618E20;
-	Thu, 14 Mar 2024 15:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C97818E20;
+	Thu, 14 Mar 2024 15:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431550; cv=none; b=ZuPNhW1lt6pg+equOXJk5I0OT7amyY5cg3qmgyg1b3efYVuPmHVhHzeULEheYnXuogzkfEXtuXFZwMfUGw/d37Ty08FLdJhj95L7o/FkCR6ZijAAXQfbEQPsEFP8wXZ2KgzwaOHvOBTCw9LzeEjwPgNV+9ShtUU8fCluwytodh4=
+	t=1710431647; cv=none; b=XvzgqjwAQFLg9ZjV2MyIsVyvY4oiZUF2nMKYxLsG54L8Mq3qQSYTg224biRdI9eI4LX+waPpXDb7E9IQAxLqxFEMQiFCmU4rizySX0P10A25hk2YjH2Kbv1jqkwS4UmdZ6jDz1+4yWCA9anIE8GLP67ngQ8XU4exV6WFMoLXWsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431550; c=relaxed/simple;
-	bh=Z7TYGBPOoIBukUksfxYV+hx+h1FdGbsx9QGwkRCvrGg=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=QCVOpWP7+M5cTu5s4Vn/OFX5inafWyo8rabSEHZKkx98nw5FZRcY+0Q3I3j/F3usx8kZTqC1igQnQi8fLNBIEXZ7sBSRmH4N4dlN9iMZHYmwsSLI9HAapgyqr4CtLGffjT4JrQVLu1JY0z1S+VpJriM/u7e+HiXyw1WCK1Tb07M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BIiQTPyi; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so953637b3a.1;
-        Thu, 14 Mar 2024 08:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710431548; x=1711036348; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Cx2Q7SMtzb14PMck/KCjjiXpz4N8Haj7beKabn3YkmM=;
-        b=BIiQTPyi83wvGqe5NSs/I2S1XNat2Lg7BcGn2/MWOLPPqXFlvZQaYbDMuKZYgGRJIP
-         6P9nWHNaPftNKj/CzSQf6rsLJtdXESVKpq30sG63aR5O1B7PuvwATFHa7VkKuHn8zTWQ
-         BH+k93J/hnjS2DvzGaBDlEy7tMoyhQYQZNIs4O6M6/NTltN+TZHcg6annhXkPKawtnW+
-         YDlIJVs0tj/GnV9ictxghxz5ggPEITACstAsFrHLqHR0U+wbrQ4BA9Kw3/KcUNhMonjL
-         ljV7m0QSv4r6KWj7rInT5gultg/tdHA1mcOIe9imDLRn8fP6QKWm7v0sWElH+z7JIdpy
-         +cvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710431548; x=1711036348;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Cx2Q7SMtzb14PMck/KCjjiXpz4N8Haj7beKabn3YkmM=;
-        b=RM3g49vgmtExzIKtO0jGTQMjkM9VU2JWKIH5C4tDnakeShxLJ2/plaRZHWRl3fUzau
-         FS9xEd//YnQDto77+17LGk//yoQ+0VrtzxuTscB2soItucCjcEaklAsW7XLS8GK+85vG
-         Ystrvhved8RGxHEseqwoIYfmMFcFjXh1KTCfBdAf7dPzIzZkHaGJNCDkwOnri2omcU9O
-         cm7OWMTumylk0RneoyoQLjFZ/HggakQU6FnB7PBK95ZrYbFoLJA8Em5nAiw/zOVZ2RkM
-         vptBFfrsWrH/YaLv2DFkl6mzf7cP9bBm0EjogSGcb6N75oE/ulqqY/jMTMUkS999RVZX
-         z50w==
-X-Forwarded-Encrypted: i=1; AJvYcCX72WV6JGK+i7w1mgXYxof+8Sa9h1Tq8J+f7+KwegfXDJMxEHnqRx0DHjew2gbi8l5p8FyYvVXtq5f9131u5qDQkfmmGPOmT6x83QEImky3hMPKDkcL93w+i/OAPJDgHxZ6XecpfXvaek8nVE4mREIIOgQII1QOpQPs9pAbPBzPHD7LNx40Bq8=
-X-Gm-Message-State: AOJu0Yys5VKQl/ZokUlDEuACT/Tu0ZxGeZZLwjfcWjf7R84bGwLq2K3L
-	MF8MhVk3YJJQFM79wgN9NC1RV40193ibwtne1omqRnv1AtQNClfq
-X-Google-Smtp-Source: AGHT+IFYLPUsIucrzPsDiX/M3/odhTswA8YDYlkZ8C6cNzRTo6gKZotrBhRFjmfYzK6sXU/NLDCy2w==
-X-Received: by 2002:a05:6a21:7898:b0:1a3:46fd:6e2d with SMTP id bf24-20020a056a21789800b001a346fd6e2dmr565925pzc.7.1710431548067;
-        Thu, 14 Mar 2024 08:52:28 -0700 (PDT)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id p24-20020a056a0026d800b006e650049472sm1632118pfw.123.2024.03.14.08.52.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 08:52:27 -0700 (PDT)
-Date: Thu, 14 Mar 2024 21:22:14 +0530
-Message-Id: <87r0gcn74h.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org, Dave Chinner <david@fromorbit.com>
-Subject: Re: [RFC] ext4: Add support for ext4_map_blocks_atomic()
-In-Reply-To: <9fdf92e9-ad77-4184-9418-8a209e24ec20@oracle.com>
+	s=arc-20240116; t=1710431647; c=relaxed/simple;
+	bh=+j30LRvuGHqE7HBb4akmSSbhqJww4uAZqRDe/hf9WNA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tQbvcuA1d3ySleHr4L9m9owaw/LAZ95NA27y1xNySr68u5nPerOhwfSGKXAwbJeL8G82aCBVt0hlml6Yd1Mg+HLDmGGb3SwPDLwCTkB+nczZc0hqCQZB4adaNTm47yKAApi4hetLey0rY6xR8Uxor205sFHZwUiTxmKtwMWs2aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru; spf=pass smtp.mailfrom=mail.ru; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=xp0HhZIj; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=wly61FZx; arc=none smtp.client-ip=79.137.243.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
+	h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=Dt/BJ8xOR6hRD8ABYOTFm56uFr9XBUUszh6WQrGnBi8=;
+	t=1710431644;x=1710521644; 
+	b=xp0HhZIj8+cZuJYYLAnkyayGeoqXAtIqFP0YO7HHGEWhjIpwi1kn8tMJ9eFXhsI8VMKf9FE48dh7hPRciwmvOzn3L8evGpxSeMUBp4+JxGH8HCJANTIod4JYyvkMseZvd1tx0EszS5ideReTMbgqoYD591fcmgx1ffM6d9ZLRkjKjpqJoVNzG9Ws9PGKRHXnOrtR/TZPtzKH9uQy9+05W6n7S/WFsBpxKuLVcAJfB8yB+sBsH/BSKwuIEGZ2xzydhv7251Bp2aQNrI1fft21LTnIFEk2RL8Jh0zcBQYldmjfYalLlQTy4/6YpnncMYdH/n3mFxuKAqvg/pni6RY36g==;
+Received: from [10.12.4.6] (port=54220 helo=smtp32.i.mail.ru)
+	by fallback3.i.mail.ru with esmtp (envelope-from <hitechshell@mail.ru>)
+	id 1rknP7-00CNO7-9h; Thu, 14 Mar 2024 18:54:01 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
+	s=mail4; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:
+	To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+	X-Cloud-Ids:Disposition-Notification-To;
+	bh=Dt/BJ8xOR6hRD8ABYOTFm56uFr9XBUUszh6WQrGnBi8=; t=1710431641; x=1710521641; 
+	b=wly61FZxWsM9sBEy4xI7ycxdlt7rFjfe/E4mupsdtaXLBosKNYCu6s14Hvw+oWr+K/xaP4oZ3ff
+	YEOq08Ll0TLg5LQDgs0ShOpXqWPlJVbcYaas5d4zsVSOVrjNw3KTHxprriI1cPRcFI18rv2E7HLtA
+	GxUWo3OFpRMB3U7t5eMc2ODTw0ULRx2O9okvJKOS0cl7VjF8YGTpbWR0UfICvgi9hz3m4vIkmOavS
+	iad3f4IPk1H40vVWBNLcjkpny9dpjAbgU5BtOvsGj0q4S8MhV+OnuEpXBWGFJq9idpsD1B++O5TTD
+	z66FWiZ4EHOogbdESVhZUgEe9kTrMaZIdFaQ==;
+Received: by smtp32.i.mail.ru with esmtpa (envelope-from <hitechshell@mail.ru>)
+	id 1rknOt-00000007WvT-09Si; Thu, 14 Mar 2024 18:53:47 +0300
+From: Denis Burkov <hitechshell@mail.ru>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Denis Burkov <hitechshell@mail.ru>
+Subject: [PATCH 1/2] dt-bindings: arm: sunxi: Add PocketBook 614 Plus
+Date: Thu, 14 Mar 2024 20:53:05 +0500
+Message-ID: <20240314155306.11521-1-hitechshell@mail.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-7564579A: 78E4E2B564C1792B
+X-77F55803: 4F1203BC0FB41BD987C0EE6E7F0A597D21AFE2E000C69B1FBAF020A234192257182A05F538085040B460D2F1FC506B5A91417EB218679B82283679ED793C6075A626F5E7A5DB85024868178014C6CACD
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE73B44982FA5E78411EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637E1B356F17606A5B08638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8CE85A9EAFAB6BB6A216C4BA03E6A86A56A4FC8F65B6B2C4020879F7C8C5043D14489FFFB0AA5F4BF176DF2183F8FC7C07E7E81EEA8A9722B8941B15DA834481FA18204E546F3947C64E7220B7C550592F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F790063706586D6E6283AEAE389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F7900637781DD771F5A5B9F4D81D268191BDAD3DBD4B6F7A4D31EC0BE2F48590F00D11D6D81D268191BDAD3D78DA827A17800CE7C721D8A86C020C7FEC76A7562686271ED91E3A1F190DE8FD2E808ACE2090B5E14AD6D5ED66289B5278DA827A17800CE7390FB772827C5A6B2EB15956EA79C166176DF2183F8FC7C0F43AACC0BCEB2632725E5C173C3A84C306E6634A6CB1A5BE35872C767BF85DA2F004C90652538430E4A6367B16DE6309
+X-C1DE0DAB: 0D63561A33F958A547F0AC3D6A09ABD75002B1117B3ED6969DC4E9342477F165B2920F75BA9A967F823CB91A9FED034534781492E4B8EEAD5C5DFC4BFF39B799F36E2E0160E5C55395B8A2A0B6518DF68C46860778A80D548E8926FB43031F38
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFFF68005373D2F237942C13613764E4AC3D1AE296441560B7CA8FBDC4BC2FD04F768602CF99B169967C77D8D956826D3353AC3A3CF8C59B49A570E4E846A1ABAD829779E884EFD0E742BF32D1DA1046D202C26D483E81D6BEAB6E9BFA52983102758FA77D78A604EFC3981EEBE9DB10F943082AE146A756F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojXiTM5LlaqzJYDBtCAoQ/Dw==
+X-Mailru-Sender: 7219FA8B682B638D379344632618B47A1B17C5D1FFC949FC66B41F5249512E9180B87DBA1C6A6B16DD7143E30D734E3D46315093CA775BF3554C0F224C5326CDBE1FA5EEA7DC04A0851DE5097B8401C6C89D8AF824B716EB5DB38D7CCF7198FF1D0BEC28C16373053DDE9B364B0DF289AE208404248635DF
+X-Mras: Ok
+X-7564579A: B8F34718100C35BD
+X-77F55803: 6242723A09DB00B485448333635D8AFAF2FD4A3C9FF394F5AC027C2622A123E1049FFFDB7839CE9E436D59F16A22D110C8E214B0619F2A9BB497EDD552E1633AD4C903DFE5C2A6B8
+X-7FA49CB5: 0D63561A33F958A5F2B08E73FD5D8A9A2305DA89DE4EA26AC6CF61D7CB8E3FFFCACD7DF95DA8FC8BD5E8D9A59859A8B6EC0BC6DB5D5D7B8BCC7F00164DA146DAFE8445B8C89999728AA50765F7900637889750A55773577B389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8BA7556051D6825FBF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE7040597DFFE1F52DF731C566533BA786AA5CC5B56E945C8DA
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojXiTM5LlaqzLsRk86nQvPsg==
+X-Mailru-MI: 8000000000000800
+X-Mras: Ok
 
-John Garry <john.g.garry@oracle.com> writes:
+Add a new board name.
 
-> On 08/03/2024 20:25, Ritesh Harjani (IBM) wrote:
->
-> Hi Ritesh,
->
->> Currently ext4 exposes [fsawu_min, fsawu_max] size as
->> [blocksize, clustersize] (given the hw block device constraints are
->> larger than FS atomic write units).
->> 
->> That means a user should be allowed to -
->> 1. pwrite 0 4k /mnt/test/f1
->> 2. pwrite 0 16k /mnt/test/f1
->> 
->
-> Previously you have mentioned 2 or 3 methods in which ext4 could support 
-> atomic writes. To avoid doubt, is this patch for the "Add intelligence 
-> in multi-block allocator of ext4 to provide aligned allocations (this 
-> option won't require any formatting)" method mentioned at 
-> https://lore.kernel.org/linux-fsdevel/8734tb0xx7.fsf@doe.com/
->
-> and same as method 3 at 
-> https://lore.kernel.org/linux-fsdevel/cover.1709356594.git.ritesh.list@gmail.com/? 
+Signed-off-by: Denis Burkov <hitechshell@mail.ru>
+---
+ Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Hi John,
+diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+index 09d835db6db5..43491e7f8a5e 100644
+--- a/Documentation/devicetree/bindings/arm/sunxi.yaml
++++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+@@ -774,6 +774,11 @@ properties:
+           - const: pocketbook,touch-lux-3
+           - const: allwinner,sun5i-a13
+ 
++      - description: PocketBook 614 Plus
++        items:
++          - const: pocketbook,614-plus
++          - const: allwinner,sun5i-a13
++
+       - description: Point of View Protab2-IPS9
+         items:
+           - const: pov,protab2-ips9
+-- 
+2.43.0
 
-No. So this particular patch to add ext4_map_blocks_atomic() method is
-only to support the usecase which you listed should work for a good user
-behaviour. This is because, with bigalloc we advertizes fsawu_min and
-fsawu_max as [blocksize, clustersize]
-i.e. 
-
-That means a user should be allowed to -
-1. pwrite 0 4k /mnt/test/f1
-followed by 
-2. pwrite 0 16k /mnt/test/f1
-
-
-So earlier we were failing the second 16k write at an offset where there
-is already an existing extent smaller that 16k (that was because of the
-assumption that the most of the users won't do such a thing).
-
-But for a more general usecase, it is not difficult to support the
-second 16k write in such a way for atomic writes with bigalloc,
-so this patch just adds that support to this series.     
-
--ritesh 
-
-
->
->
-> Thanks,
-> John
 
