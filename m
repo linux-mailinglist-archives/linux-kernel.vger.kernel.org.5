@@ -1,97 +1,83 @@
-Return-Path: <linux-kernel+bounces-103590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3194487C17F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:48:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EB187C183
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 634F21C21608
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:48:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B31B1F21B05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4907E74415;
-	Thu, 14 Mar 2024 16:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n6yryM4S"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4FD6F524;
-	Thu, 14 Mar 2024 16:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8C474419;
+	Thu, 14 Mar 2024 16:48:32 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A656E73526;
+	Thu, 14 Mar 2024 16:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710434884; cv=none; b=B6LYnRj8hFdWGpN5oftoqEqXRLZLf4zvOm1OMAWdQFN9Rn8285h5qzvXyFAIOF/NcAxURCAWMGdxASq1B9Et3JCOd5jnqL/fwh6DCZqW2l4/HrOhANl96F+47Q3XBGYzYkuoDP6tzwd9UvA+O002agWmTKIixgI8SA0DohFlF7g=
+	t=1710434911; cv=none; b=dar3/4VHmzFARhQchgByWr69C3L6RzV4U9OF9x3HBrwlj5iVqCauaowMTI+BDgYClCR7H96GdX7ZS/9slZNf1t7tG+pEsjJ4kbI6/+nXjdArEUPF/azsqj//aaGWcH7r91skmQbb/7818+i/gjK6UlQERl9Nc6OHMQR9bE1ZCJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710434884; c=relaxed/simple;
-	bh=FsEKtAhsZGo5h1PjChAm7sCz44W0i1u7H/cs7wNigB4=;
+	s=arc-20240116; t=1710434911; c=relaxed/simple;
+	bh=61OWcJo8xpjNajI8IviQi0Oc5WE5ZxABZnArcdDNUDc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AqOnaU3bFk0pDtISLdHCbdLOnSzUb9zWZGT/YOrqiUXX7CfYN32Lpm2YVB11EBEPyCoQl2mbQnCUq7IouN04NRGBQV1vg9dbZq0+LyCcTvHfqMYYSBqOA+sC7V8f/UQLlhTyiItOgxyqxGmjvqQHaT6RAV+15D6RYURhgMncrMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n6yryM4S; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710434883; x=1741970883;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FsEKtAhsZGo5h1PjChAm7sCz44W0i1u7H/cs7wNigB4=;
-  b=n6yryM4SdcQVhFextOuoFhAt4FxN4yn+v1ObKiSHJaqluwNVzTJcnT5h
-   4MvKjZ+rFHue4p3jWNubHaiqGSf/5tO72yoawkEPqEkGByZeuypZiK895
-   jjOvN+yhJqWJ04WYHh4X5im/HzwshAFeRHkSGimOLCGdRYZmCTuxj7C4w
-   49KQGT4wg5ksm9fdm+vhuo3aWZGg2s0S/jqNtaqfPmxkNmPUiOrqTT7qa
-   WMgzmncv4XI3TyojKIVLaI7c6ApUMZytpEBY6TG/imdE9FGje72WLesoy
-   LuS0m+ugFTaMkMpTbCDJMUefkfS4svxhRrs0xDPvbul5iWdxPCsTzA7TD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5137319"
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="5137319"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 09:48:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="43269551"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 09:48:02 -0700
-Date: Thu, 14 Mar 2024 09:48:01 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	Xiaoyao Li <xiaoyao.li@intel.com>, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 027/130] KVM: TDX: Define TDX architectural
- definitions
-Message-ID: <20240314164801.GQ935089@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <522cbfe6e5a351f88480790fe3c3be36c82ca4b1.1708933498.git.isaku.yamahata@intel.com>
- <f8d50f45-eb7e-46bf-b3a8-35f02efd4e4c@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=idMvywmrnq/zCYQ/wwVT+Zyyrbbxt8YIAkDCbSkrB5TYErYm3B78M9tW5Q3OYEzzUb20xvFEmnz2UCOqY4o1i8BpZ1yFAU+AbcPeC32sLvLI165tiaR/eC7KG9GtITxLQAGVOLm6dSUxBTQ2Er8Yog3OraOTzVQL3Wlz3UJNVgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 067561007;
+	Thu, 14 Mar 2024 09:49:05 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 698643F762;
+	Thu, 14 Mar 2024 09:48:26 -0700 (PDT)
+Date: Thu, 14 Mar 2024 16:48:24 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+	AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Peng Fan <peng.fan@nxp.com>, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <ZfMqWP-t39SCvkA2@pluto>
+References: <20240314-pinctrl-scmi-v5-0-b19576e557f2@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f8d50f45-eb7e-46bf-b3a8-35f02efd4e4c@linux.intel.com>
+In-Reply-To: <20240314-pinctrl-scmi-v5-0-b19576e557f2@nxp.com>
 
-On Thu, Mar 14, 2024 at 03:30:43PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
-
-> > +#define TDX_TD_ATTRIBUTE_DEBUG		BIT_ULL(0)
-> > +#define TDX_TD_ATTR_SEPT_VE_DISABLE	BIT_ULL(28)
-> It's better to align the style of the naming.
+On Thu, Mar 14, 2024 at 09:35:17PM +0800, Peng Fan (OSS) wrote:
+> Since SCMI 3.2 Spec is released, and this patchset has got R-b/T-b,
+> is it ok to land this patchset?
 > 
-> Either use TDX_TD_ATTR_* or TDX_TD_ATTRIBUTE_*?
 
-Good point. I'll adopt TDX_TD_ATTR_* because TDX_TD_ATTR_SEPT_VE_DISABLE is
-already long.
+I'll have a look at this last version and a spin on my test setup.
 
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+..but has this V5 change at all since the Reviewed-by tags due to the
+latest spec changes ?
+
+..IOW does this V5 include the latest small bits spec-changes or those
+latest gpio-related spec-changes are just not needed at the level of the Linux
+pinctrl support as of now and can be added later on when a Linux gpio
+driver will be built on top of this ?
+
+Thanks,
+Cristian
 
