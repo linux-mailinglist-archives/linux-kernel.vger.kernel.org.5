@@ -1,207 +1,136 @@
-Return-Path: <linux-kernel+bounces-103080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED9AD87BACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:54:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D97687BACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:57:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6743B1F236F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:54:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE01B1C2181D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1636D1BB;
-	Thu, 14 Mar 2024 09:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B18E76D1BF;
+	Thu, 14 Mar 2024 09:57:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="18pT8Y6p";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zPZuaCVY";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="18pT8Y6p";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zPZuaCVY"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2l7w9Kw"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D716CDD7;
-	Thu, 14 Mar 2024 09:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FBC6CDC1;
+	Thu, 14 Mar 2024 09:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710410068; cv=none; b=SUK2u3+Dar+o7eGWnNOyoF4VJXvDgB07GGdbvRBJWQirsKUgeQnFHE7NDPxmKXvQe8RlI/RlBuURz1utTd3ORYPCWOaQGcZiCjLdiunJYoyc9L/K6PZi3/oSeabTYKTZm9i4+A/LFaWlG04guSQxn7UJeo+KEzcDZmjNvJhLsSo=
+	t=1710410261; cv=none; b=fw206vPPwJxxnWUfiBaPtJtm8REVV6Gj66ZjOoiqOh99OQuUQBez//GC7/enyeVpplZfpF3dx+ux3TvWKQJmW3/68MhygZyp2V4GWL/3cAycZy2ZGUqYFZ2FHOBvSVy/AQZk1nV3p0vwuqnuNQIycZzla48By5PslhY48L9bQac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710410068; c=relaxed/simple;
-	bh=SEFuptdzMKtuxipMRpSUXMpbMNYnhlcKDHORqyWDp9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pAu7YmQZIzm1Zy2kAbXFR414ratKpPptF3pYhn67vjGuDJIGYL6BHotltYPH0i+VK+PMXmXbvUYtY+yUJgTik1q9kXl0epeUp0XHw1y+OKgm6dehqjtCvSzdhABDMPmWnlpG54zuRFWcnvve3nRGVQBcSPYmCHwrWSBbj/eJTfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=18pT8Y6p; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zPZuaCVY; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=18pT8Y6p; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zPZuaCVY; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4A34C1F842;
-	Thu, 14 Mar 2024 09:54:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710410063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3xFvxCVNzRZwt8Rr7SRuookoZf9qzc0Nvz78vAIQ+g8=;
-	b=18pT8Y6p/4ZFKF2NJHyfNXb/dpZtMNMezeZrxJ+SvIG9fPqy64JXIQydl/C9gM3w59e57A
-	5VDY5F8bHAIP5cywoqBhd9i2FUJjhVSMxpPoOhka+FTLGobBTtLhmgpn4KNUgjPQCQMus1
-	UtOIHVKfY2NA0Eho6gUu9pC/weOZgNY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710410063;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3xFvxCVNzRZwt8Rr7SRuookoZf9qzc0Nvz78vAIQ+g8=;
-	b=zPZuaCVYrdz1QVYTFru79FTkayolDL+7iIdivm5BX3SPdbb1lfxPWWbFfCwc7lWJYkyM80
-	r+nADRzq+stKo0CA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710410063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3xFvxCVNzRZwt8Rr7SRuookoZf9qzc0Nvz78vAIQ+g8=;
-	b=18pT8Y6p/4ZFKF2NJHyfNXb/dpZtMNMezeZrxJ+SvIG9fPqy64JXIQydl/C9gM3w59e57A
-	5VDY5F8bHAIP5cywoqBhd9i2FUJjhVSMxpPoOhka+FTLGobBTtLhmgpn4KNUgjPQCQMus1
-	UtOIHVKfY2NA0Eho6gUu9pC/weOZgNY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710410063;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3xFvxCVNzRZwt8Rr7SRuookoZf9qzc0Nvz78vAIQ+g8=;
-	b=zPZuaCVYrdz1QVYTFru79FTkayolDL+7iIdivm5BX3SPdbb1lfxPWWbFfCwc7lWJYkyM80
-	r+nADRzq+stKo0CA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA9721386D;
-	Thu, 14 Mar 2024 09:54:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ThjxMU7J8mX2QgAAD6G6ig
-	(envelope-from <dkirjanov@suse.de>); Thu, 14 Mar 2024 09:54:22 +0000
-Message-ID: <8cf6fdc9-caa9-43dc-b392-575b4e596dfa@suse.de>
-Date: Thu, 14 Mar 2024 12:54:22 +0300
+	s=arc-20240116; t=1710410261; c=relaxed/simple;
+	bh=VqCz2igfg2nWsES9iIOGmzpT62E7/xaNIwB8TKcfzcA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iFK/jhOR8540tZd5UPQSyPZYPwCbZ4PYRsgwF/Gem8H/Gc4cGWi0ggIcNZNw5gOOdXpOotoyBMOPVXOMaksmYbJDacBFpXm+Lm0z6L4HOQB4FTlhjWAhQozHa+zvebBZ/PZx/UCYSgPQi/a2ei4g7f04UEZRIl/vMHFH5u72Xlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U2l7w9Kw; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5689b7e8387so890819a12.2;
+        Thu, 14 Mar 2024 02:57:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710410258; x=1711015058; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9EQJP9snJ+QMn1kOIEI1bHrE4YWtBgcqYZRBKU0i0oU=;
+        b=U2l7w9Kwra7BMqOMQLyLhg88vX+CAXPuNqebUMcb+BjoSC9aeTCb1w7bBtlAIe+9M6
+         UKtEUzpHlMWOdm/35uTglltyMV5lVVztsDbjUIYA8cN5mkTe2RJr99ccibbUHnqEwsum
+         rekdDovVU6KeVD+9HYMaiwDQqrjttmsU9Y/1TInPvlbG0EiLVZ5zNEIVh2RNgnTuzmrM
+         1iILSbbzW9in13GwqDD8H1USpU8NvCC27w+HZlgcAufz7NWe2lysasyhUMTAuHg8Izel
+         /7U2oatGzcZ/4ayHENDj0s4KYlxrF28B285CGVCFviVr5o9cPUuKIu4Mg92TG22j0Vh8
+         URgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710410258; x=1711015058;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9EQJP9snJ+QMn1kOIEI1bHrE4YWtBgcqYZRBKU0i0oU=;
+        b=Ba4c2PTusd+KufUZs6ISx1PeaumfukkoVyMbFOaN4TjcAgRFa7MxYvfJHWngra4KQW
+         B0sTTZXHTPKgR057NzZRlxaA94pdNIS8rbRCYlQZq8z7Cy9dlFttjb2XCUjfvDc6x58W
+         Hxc8FBOmBCF9wEC30onJCF+HR63CzfwHH4NWsPSLCsD3IfqxYI5cjNpViYGp55dq4/Sm
+         XI9tipqBWy3qRG0bX9f64JMMIjc3Vt7iOzDdvoQ/jbvBrUvofla/sGdFJWb1CkOY6yDf
+         2skL40+2L5ghiTp1MXi0G/aLWN+aHgv74jqnIceQ2/EOkZoDCSPtzzckUjfTec4TU3kP
+         bINg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOVNhPO5p9R8+fZ9c7HPrwQv5oLBwN54yRFqkKVckCEViULkNZ4Ct8ALBgwu3W1oOyZln293JGkJu0/Oj6S6A/RWcFa3sKJV2TI2u3njFyp/rGuujqzYRxOxeQdV2ST5pd2lfPqoHxEwU=
+X-Gm-Message-State: AOJu0Yx0DQEhRJDtLiiDFqAT/oRoBUSFkAjAR75lLR/rFEPH7+VeauJI
+	mYvFv6VOu7yVMVVjKaTT6Bcm2aK1yfbngymhDl5flDf9jOXlO/AnENlGbelGH/weWDrNBbpDQA3
+	H2z9oGbanRG+e4osIeiiIIuFK4So=
+X-Google-Smtp-Source: AGHT+IGyab5KBsAesnH1jxLgGY6boYF6TUj24EvyN1esyvAau51ilcVLio7p/CiieVnoKJ3jmExMyWomKfwPWIYn3oI=
+X-Received: by 2002:a17:906:ecfc:b0:a46:6557:716f with SMTP id
+ qt28-20020a170906ecfc00b00a466557716fmr143159ejb.20.1710410257421; Thu, 14
+ Mar 2024 02:57:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] atm: Convert sprintf/snprintf to sysfs_emit
-Content-Language: en-US
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org
-Cc: Chas Williams <3chas3@gmail.com>,
- linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
-References: <20240314084417.1321811-1-lizhijian@fujitsu.com>
-From: Denis Kirjanov <dkirjanov@suse.de>
-In-Reply-To: <20240314084417.1321811-1-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 BAYES_HAM(-3.00)[100.00%];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[fujitsu.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[gmail.com,lists.sourceforge.net,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -3.09
-X-Spam-Flag: NO
+References: <20240313070705.91140-3-umang.jain@ideasonboard.com> <202403141436.KEQj1YzE-lkp@intel.com>
+In-Reply-To: <202403141436.KEQj1YzE-lkp@intel.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 14 Mar 2024 11:57:00 +0200
+Message-ID: <CAHp75Vdo4Q-1j7XYB92i5=LNwuB7fpV3jPgE98K1Z_QHP5Zxng@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] media: i2c: Add imx283 camera sensor driver
+To: kernel test robot <lkp@intel.com>
+Cc: Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org, 
+	oe-kbuild-all@lists.linux.dev, 
+	Kieran Bingham <kieran.bingham@ideasonboard.com>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, willl will <will@willwhang.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, tomi.valkeinen@ideasonboard.com, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, 
+	Hans de Goede <hdegoede@redhat.com>, Alain Volmat <alain.volmat@foss.st.com>, 
+	Paul Elder <paul.elder@ideasonboard.com>, Mehdi Djait <mehdi.djait@bootlin.com>, 
+	Bingbu Cao <bingbu.cao@intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Mar 14, 2024 at 8:57=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
+>
+> Hi Umang,
+>
+> kernel test robot noticed the following build errors:
+>
+> [auto build test ERROR on media-tree/master]
+> [also build test ERROR on linuxtv-media-stage/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Umang-Jain/media-d=
+t-bindings-media-Add-bindings-for-IMX283/20240313-151107
+> base:   git://linuxtv.org/media_tree.git master
+> patch link:    https://lore.kernel.org/r/20240313070705.91140-3-umang.jai=
+n%40ideasonboard.com
+> patch subject: [PATCH v3 2/2] media: i2c: Add imx283 camera sensor driver
+> config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/202403=
+14/202403141436.KEQj1YzE-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240314/202403141436.KEQj1YzE-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403141436.KEQj1YzE-lkp=
+@intel.com/
+>
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
 
+..
 
-On 3/14/24 11:44, Li Zhijian wrote:
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
-> 
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
-> 
-> sprintf() will be converted as weel if they have.
-> 
-> Generally, this patch is generated by
-> make coccicheck M=<path/to/file> MODE=patch \
-> COCCI=scripts/coccinelle/api/device_attr_show.cocci
-> 
-> No functional change intended
+> >> ERROR: modpost: "__udivdi3" [drivers/media/i2c/imx283.ko] undefined!
 
-The patch should be targeted to net-next which is closed now.
+I believe I have commented on a suspicious line (during v1 or v2
+review round). Seems nobody reacted :-)
 
-> 
-> CC: Chas Williams <3chas3@gmail.com>
-> CC: linux-atm-general@lists.sourceforge.net
-> CC: netdev@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
-> This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
-> Split them per subsystem so that the maintainer can review it easily
-> [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
-> ---
->  drivers/atm/solos-pci.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/atm/solos-pci.c b/drivers/atm/solos-pci.c
-> index d3c30a28c410..369a7f414f05 100644
-> --- a/drivers/atm/solos-pci.c
-> +++ b/drivers/atm/solos-pci.c
-> @@ -198,8 +198,8 @@ static ssize_t solos_param_show(struct device *dev, struct device_attribute *att
->  
->  	header = skb_put(skb, sizeof(*header));
->  
-> -	buflen = snprintf((void *)&header[1], buflen - 1,
-> -			  "L%05d\n%s\n", current->pid, attr->attr.name);
-> +	buflen = sysfs_emit((void *)&header[1], "L%05d\n%s\n", current->pid,
-> +			    attr->attr.name);
->  	skb_put(skb, buflen);
->  
->  	header->size = cpu_to_le16(buflen);
-> @@ -453,7 +453,7 @@ static ssize_t console_show(struct device *dev, struct device_attribute *attr,
->  	skb = skb_dequeue(&card->cli_queue[SOLOS_CHAN(atmdev)]);
->  	spin_unlock_bh(&card->cli_queue_lock);
->  	if(skb == NULL)
-> -		return sprintf(buf, "No data.\n");
-> +		return sysfs_emit(buf, "No data.\n");
->  
->  	len = skb->len;
->  	memcpy(buf, skb->data, len);
-> @@ -548,7 +548,7 @@ static ssize_t geos_gpio_show(struct device *dev, struct device_attribute *attr,
->  	data32 = ioread32(card->config_regs + GPIO_STATUS);
->  	data32 = (data32 >> gattr->offset) & 1;
->  
-> -	return sprintf(buf, "%d\n", data32);
-> +	return sysfs_emit(buf, "%d\n", data32);
->  }
->  
->  static ssize_t hardware_show(struct device *dev, struct device_attribute *attr,
-> @@ -569,7 +569,7 @@ static ssize_t hardware_show(struct device *dev, struct device_attribute *attr,
->  		data32 = (data32 >> 5) & 0x0F;
->  		break;
->  	}
-> -	return sprintf(buf, "%d\n", data32);
-> +	return sysfs_emit(buf, "%d\n", data32);
->  }
->  
->  static DEVICE_ATTR_RW(console);
+--=20
+With Best Regards,
+Andy Shevchenko
 
