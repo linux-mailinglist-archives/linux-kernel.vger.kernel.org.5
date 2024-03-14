@@ -1,78 +1,71 @@
-Return-Path: <linux-kernel+bounces-103657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F99487C281
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:21:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E40987C286
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80D321C21BC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:21:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22C07B21CA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE6776052;
-	Thu, 14 Mar 2024 18:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9CB768F2;
+	Thu, 14 Mar 2024 18:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="na9a34pi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akz8x/La"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F407581E;
-	Thu, 14 Mar 2024 18:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9611F763FB;
+	Thu, 14 Mar 2024 18:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710440434; cv=none; b=bcrGJQ9tZktvk22iCqIdSsgI44vyU9MCVeRoa4yTusCiu67aHlVwrWWVj1CsR4r5Bz39fF3m5Wst5fZ4r8gg43d0GFqVENWGrZvWINtfN652VPHkxl7eJ5rJxj+S56PAv90SmPHSMyxb4oIif+yMxSEf4kLZLOy5v8LByIBdfZQ=
+	t=1710440436; cv=none; b=ONZBHUWSNw/9HuEqz3ApurWa0a/koh7fnePYClQfTBVsyYkbgD6k1TmdmVkCqpy57VwLgn23fyBvz1HBjm8IEbOmEQM9GKgto694oIWUbHv49/hgo77spIhUiMhzXMpDvC2uc6iBqPny/ScQEq2cQcn3eQsm4B8xmbt386YDp3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710440434; c=relaxed/simple;
-	bh=En9h4aM49K1ODmzZcrnUzkf49GvEV0uAo4ULw9O7InM=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=E/9qZY5RqkMaUsy6j0UwAOwvWcawHI37rFujcp2P7+d3Fj/DWgFp1jTxVBQf/zc0VbIwSrQzpozgDOScQy4ljPp2T+G2n+czDDqGs9TIygzRF4KTDRkYi/trt2vRh4EzF0pfyQ/FW/WaszUy/gEb7A+P5CTtrc2M6oXn9GxrWAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=na9a34pi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2862CC433C7;
-	Thu, 14 Mar 2024 18:20:34 +0000 (UTC)
+	s=arc-20240116; t=1710440436; c=relaxed/simple;
+	bh=cupGIYIVve9aQcafgMSEc6NGWaSioxOEh6ILdwcTumg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=llsNK4SDUED15GUwWg7cQzU9NIOrlGKQoVHNbw7EE6ZvPSwGxG0cvMF6iwKejFhkrraQ0XB97R8wdJcNd96wq2WUO0R+p73PJBvkTSls7gflHM+BNkjntoarHnWLfWZWjPJ07jZf1s7XtfkNnSDGxd6pq/libJ08Xh8xMKbGrWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akz8x/La; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14720C433B1;
+	Thu, 14 Mar 2024 18:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710440434;
-	bh=En9h4aM49K1ODmzZcrnUzkf49GvEV0uAo4ULw9O7InM=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=na9a34pin0xQj2UeBUMMV7xe8NY8YFJB1VERDBJPGgb/mChCDu1ouT7lVuYvbNiJf
-	 rmXMBjtmDujZduOLWGKSH6bLgqRD+MppbSKiTp9La1dAz7IdXBihL93Ez4UiLAGaBW
-	 /7ntbDMVuNh7hzHn1uUUee9bGqqeo3uRHwOQ7bHK9y+33WUjCpVEa1Sqmx5PpL6Ldt
-	 CKjGmj1A6IEgDLgrF22XJ89B47WRxl+XZ6za6UmwsZDn3UxLMP4wSWkoECeqUBsJ7e
-	 wEOLOnRxTyM51ztUAFn08HouEzSdowMxpZTxB5lRxvaIh2qhZccAibxJ7C/3rNiu/3
-	 OQeit156YG93w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1DFC2D84BAA;
-	Thu, 14 Mar 2024 18:20:34 +0000 (UTC)
-Subject: Re: [GIT PULL] pin control changes for v6.9
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdYZ01rEzd5d8RcDbZqBPdy4uVU1uYWH6q7XS1WjKNXrUA@mail.gmail.com>
-References: <CACRpkdYZ01rEzd5d8RcDbZqBPdy4uVU1uYWH6q7XS1WjKNXrUA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdYZ01rEzd5d8RcDbZqBPdy4uVU1uYWH6q7XS1WjKNXrUA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.9-1
-X-PR-Tracked-Commit-Id: fa63587f94a77a49b53274dc0fd1ea41dfde5966
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a3df5d5422b4edfcfe658d5057e7e059571e32ce
-Message-Id: <171044043411.24196.17256053826707694115.pr-tracker-bot@kernel.org>
-Date: Thu, 14 Mar 2024 18:20:34 +0000
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>
+	s=k20201202; t=1710440436;
+	bh=cupGIYIVve9aQcafgMSEc6NGWaSioxOEh6ILdwcTumg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=akz8x/Lar3H1CIuFLysuBt+sFcBVNNbwj9qZTm3q+vr1Jgr4IV13w/rgnQEg3u+/6
+	 aFryOQ7vKxOvd92pW7HrNhZCbWRRtyRAsZwj6aMqLnv7ucZ1uPrvxd7oJAOScrJmQL
+	 p8x1ABJnYMo/Z4iHAUDfZIejw9R0yYi27Pmoqj2z479pVxGg9EmIrIabJr46FO9QCq
+	 z+gvtBjfwJJ15PSKTT2GBP66UX5gOb2EMumQ8+3RD4a2QMy2PvZ/MTuDD4dX+rbLVP
+	 lz53/QeHjfSMuXSzoEFfo9flZInXQiQInwYGKw/esevv4JfHvBlVYERiuF5pvOj/qJ
+	 XmxvuSayZvdvQ==
+Date: Thu, 14 Mar 2024 11:20:35 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Leone Fernando <leone4fernando@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ dsahern@kernel.org, willemb@google.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/4] net: dst_cache: add input_dst_cache API
+Message-ID: <20240314112035.69dbcd20@kernel.org>
+In-Reply-To: <b90d127a-ec5a-4c24-8ddf-4c592dae28f1@gmail.com>
+References: <20240307171202.232684-1-leone4fernando@gmail.com>
+	<20240307171202.232684-3-leone4fernando@gmail.com>
+	<20240308195529.57b1a4fa@kernel.org>
+	<b90d127a-ec5a-4c24-8ddf-4c592dae28f1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The pull request you sent on Wed, 13 Mar 2024 23:24:14 +0100:
+On Thu, 14 Mar 2024 15:04:02 +0100 Leone Fernando wrote:
+> Thanks Jakub. I'll fix it and submit a v2.
+> What do you think about the patch in general?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.9-1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a3df5d5422b4edfcfe658d5057e7e059571e32ce
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Dunno.. it's a bit hard to judge how much benefit we'd get
+in real life scenarios. But I'm not a routing expert.
 
