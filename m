@@ -1,134 +1,165 @@
-Return-Path: <linux-kernel+bounces-103557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DCB87C111
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:16:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C99F87C119
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:17:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 790E31C2127F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:16:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B5F51F229E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:17:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDC173514;
-	Thu, 14 Mar 2024 16:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0092373526;
+	Thu, 14 Mar 2024 16:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PIHwkShn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r6o4tyn2"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D62399
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0017350F
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710432977; cv=none; b=rsDO1solvFlWcRPddwuYSgz6cnUJpGkIQWNAIHGSPJXFuupTJmEZs9VhVX7d/K2e9a4eA/gZFNJTWeHoTvi4Lb3xCcrwm0l+51AL3R7qsxOfl9iS5Z4I1ueuwIX6+5RVZ1P63esbA+y+/qhy1gnuJPQxHhLK9hybiBVNcuk4PHU=
+	t=1710433038; cv=none; b=uExFZNrfE5wAqrILWngBo+LhFcjEYx+rU+gYRlAymz82tbqgmlRAX7/3mNBpoRt+41XTrws13pBOd8rc4DLkbafzUphJ2aJQUK7kmbF9MMt7U0bd3EnbZwhHxgNjiCIz0qVmKa8wx40GdNv+zYLhnh7Elz6G7ia2g+oFAlnoFbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710432977; c=relaxed/simple;
-	bh=U8AyetdLrhnWBQCfPFpv6tTgew9AS0AAM56e79RtgeM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VCm5ChSZfuYsNaqDkxtjOAFrlXcHwZtdh8Cw5U1ZwR0vKU5BvH3ZrsaqH+3+DWAj1iDVWkK1P7hQ9z58TEMJBcEZeTjCGKvL/31HUdsK6g5HOeN8Mh3ypo/9Sl3F9AWaxuCfxQDjceh3uuCXElmXj9P953z9x282wLcE9d4TH0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PIHwkShn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E72B1C433F1;
-	Thu, 14 Mar 2024 16:16:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710432977;
-	bh=U8AyetdLrhnWBQCfPFpv6tTgew9AS0AAM56e79RtgeM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PIHwkShnXphYqFArdN0hG3XJx0vwoeoLih4Bo5c9IFPa6h3zvCl9niRZeulLJKt71
-	 HrlmHYATceiLkvKZss3yUOaCmesxi4c0ry8fGaSRowDsATKyQI+sR+LeaIDlT2u+HC
-	 oigBQf5i3j4Qd0O/mhg3ZXAXBVjVixMRig2oXOPhoYwP9iemI0HyhJUbMbi8Nz+rUk
-	 gNWoB1ikRk2G7KKeJt+mhjqi1MrqR53m85A8E4GqnH89UgvUy8G+67U2pKScRTCwf4
-	 qNdJyKuvI79ST5R1khU7BNANNPIvGM2Vhv+fxYg1BVfzBpdc5A4jgJC9PxmqNI2z8j
-	 AJw9e3/zQ2bug==
-Date: Thu, 14 Mar 2024 09:16:15 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com,
-	Ed Tsai <Ed.Tsai@mediatek.com>, Hillf Danton <hdanton@sina.com>
-Subject: Re: [PATCH] f2fs: fix to avoid use-after-free issue in
- f2fs_filemap_fault
-Message-ID: <ZfMiz67zynbEFBl9@google.com>
-References: <20240314020528.3051533-1-chao@kernel.org>
+	s=arc-20240116; t=1710433038; c=relaxed/simple;
+	bh=sz96ucSlpxY0fStS++TYywmUfo9RtayZN4KhGhuC0tg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=sgHH/pn8sltiBV/rIUUqm5rL9abIeO05FYNNf14hk7gonCRBxzpt5vPq69vRxXzodvwWEYi8iqudaCCp5X3bJH+8ggX0S45DCJEYpJBl6veWpEIBWU5sUIaLAcVyGMD0ezwme4wEPZSAiBp6By73+msuWOWgVuIxjEHu5jH9wuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r6o4tyn2; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so1572938276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710433035; x=1711037835; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U+ZIbp6HNyG0E4TQ0X2k6SxB0un7ns3x5HKX2GIis+s=;
+        b=r6o4tyn2xo+spYXEmnzz7UVtLuygO3Ova90EuzqeZDrpT2TxMh+Mx6UnLANuKtzlQF
+         NwdQ2aUzOguD23vyMbk6QuDKyKNO36qD4FkvF/B99kCxlChPqiSTGOiwSMo4bbhAvlF8
+         xvSAeOToB7JDgqZf/cA66tkKb8OMy5k2nFzsJaRMaBVxcdB+AW7Fqem427AVsz6Lfqkb
+         GaJcHhQ5yStX7jXnuWnNGdeQdFVK/Z/bxobaQHtvdxOJJlyvz0OxrILlUWovwADQSnmU
+         0SZ81u4xdx1P2T8TToNFmrY9O6an5i6xqVD/Xr8MNDmFQuX7/DHFp4ZlUK0mWHT8N8ns
+         WCzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710433035; x=1711037835;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U+ZIbp6HNyG0E4TQ0X2k6SxB0un7ns3x5HKX2GIis+s=;
+        b=OBLDX3RPfGDBtMyxcW7hxMFnP7gnPyiwUKq2OghhK87TyFaMfbe0LOdL4o+4Qd5eJ4
+         QugQ2fK0caUjobXRJ34t4E352HKzDRDn9xlfN0CsN8jAyAnaX8bSrO4xebjfNT2X7z6o
+         edG/FIAwDIbBoYV+67rxhmfy5nv9z1D6Ku8ifMUbq3lYpasotL5Xkq0tLJdLHNLiIYwK
+         Zfi617rOfZvJUJyhEqOoYQDU3muj8dFH1KzbJ8D++FHmEUNn/cqvXgjXyoWTVftVmBI7
+         vWNC5grVMaC/PT2xw7QHGGEUtqVbbWiRhNtRGRiW/irnJ4ndEMFPCapev3zIlz5YP+/l
+         HsIg==
+X-Forwarded-Encrypted: i=1; AJvYcCVnX4Kf2mK71j6/gzwYc7Cl5c0q5WW+TqdZx3oUMsP07pThcSB5F8TkO45QfFCK6r+kLB4jjh6XHZQGYinDqU5IfIEhpGbinHZVZ0BU
+X-Gm-Message-State: AOJu0YwrNdUR/WIMcKgLrlFTbHdGhIu1eQq42NKPNnukhkH+RCO9sfZA
+	rnYVB+PK+s9NXW8YF3Tj8Pi6RW0iSi8sXNXEr7C1FA3XISltXb5B5yfLcwhBFVz05Lvxso7KLoF
+	Epg==
+X-Google-Smtp-Source: AGHT+IFj6zsz6UprtwwuVeWzWxsr2V9qe7+sAPM1bdWCJoRKSwnUj5UGCGfLBihDdD5DId2z6mWdKFp6P1E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:2783:b0:dc7:48ce:d17f with SMTP id
+ eb3-20020a056902278300b00dc748ced17fmr615498ybb.10.1710433035389; Thu, 14 Mar
+ 2024 09:17:15 -0700 (PDT)
+Date: Thu, 14 Mar 2024 09:17:13 -0700
+In-Reply-To: <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314020528.3051533-1-chao@kernel.org>
+Mime-Version: 1.0
+References: <ZfGrS4QS_WhBWiDl@google.com> <0b109bc4-ee4c-4f13-996f-b89fbee09c0b@amd.com>
+ <ZfG801lYHRxlhZGT@google.com> <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com>
+ <ZfHKoxVMcBAMqcSC@google.com> <93df19f9-6dab-41fc-bbcd-b108e52ff50b@amd.com>
+ <ZfHhqzKVZeOxXMnx@google.com> <c84fcf0a-f944-4908-b7f6-a1b66a66a6bc@amd.com>
+ <d2a95b5c-4c93-47b1-bb5b-ef71370be287@amd.com> <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
+Message-ID: <ZfMjCXZWuUD76r_5@google.com>
+Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
+From: Sean Christopherson <seanjc@google.com>
+To: David Stevens <stevensd@chromium.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On 03/14, Chao Yu wrote:
-> syzbot reports a f2fs bug as below:
-> 
-> BUG: KASAN: slab-use-after-free in f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
-> Read of size 8 at addr ffff88807bb22680 by task syz-executor184/5058
-> 
-> CPU: 0 PID: 5058 Comm: syz-executor184 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:377 [inline]
->  print_report+0x163/0x540 mm/kasan/report.c:488
->  kasan_report+0x142/0x170 mm/kasan/report.c:601
->  f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
->  __do_fault+0x131/0x450 mm/memory.c:4376
->  do_shared_fault mm/memory.c:4798 [inline]
->  do_fault mm/memory.c:4872 [inline]
->  do_pte_missing mm/memory.c:3745 [inline]
->  handle_pte_fault mm/memory.c:5144 [inline]
->  __handle_mm_fault+0x23b7/0x72b0 mm/memory.c:5285
->  handle_mm_fault+0x27e/0x770 mm/memory.c:5450
->  do_user_addr_fault arch/x86/mm/fault.c:1364 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1507 [inline]
->  exc_page_fault+0x456/0x870 arch/x86/mm/fault.c:1563
->  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-> 
-> The root cause is: in f2fs_filemap_fault(), vmf->vma may be not alive after
-> filemap_fault(), so it may cause use-after-free issue when accessing
-> vmf->vma->vm_flags in trace_f2fs_filemap_fault(). So it needs to keep vm_flags
-> in separated temporary variable for tracepoint use.
-> 
-> Fixes: 87f3afd366f7 ("f2fs: add tracepoint for f2fs_vm_page_mkwrite()")
-> Reported-and-tested-by: syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/lkml/000000000000e8222b060f00db3b@google.com
-> Cc: Ed Tsai <Ed.Tsai@mediatek.com>
-> Cc: Hillf Danton <hdanton@sina.com>
+-Christ{oph,ian} to avoid creating more noise...
 
-Suggested-by: Hillf Danton <hdanton@sina.com>
+On Thu, Mar 14, 2024, David Stevens wrote:
+> Because of that, the specific type of pfns that don't work right now are
+> pfn_valid() && !PG_Reserved && !page_ref_count() - what I called the
+> non-refcounted pages in a bad choice of words. If that's correct, then
+> perhaps this series should go a little bit further in modifying
+> hva_to_pfn_remapped, but it isn't fundamentally wrong.
 
-I modified to "Suggested-by". Please let me know if this doesn't work.
+Loosely related to all of this, I have a mildly ambitious idea.  Well, one mildly
+ambitious idea, and one crazy ambitious idea.  Crazy ambitious idea first...
 
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
->  fs/f2fs/file.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index a47c57e813bb..c19e55a3e50e 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -39,6 +39,7 @@
->  static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
->  {
->  	struct inode *inode = file_inode(vmf->vma->vm_file);
-> +	vm_flags_t flags = vmf->vma->vm_flags;
->  	vm_fault_t ret;
->  
->  	ret = filemap_fault(vmf);
-> @@ -46,7 +47,7 @@ static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
->  		f2fs_update_iostat(F2FS_I_SB(inode), inode,
->  					APP_MAPPED_READ_IO, F2FS_BLKSIZE);
->  
-> -	trace_f2fs_filemap_fault(inode, vmf->pgoff, vmf->vma->vm_flags, ret);
-> +	trace_f2fs_filemap_fault(inode, vmf->pgoff, flags, ret);
->  
->  	return ret;
->  }
-> -- 
-> 2.40.1
+Something we (GCE side of Google) have been eyeballing is adding support for huge
+VM_PFNMAP memory, e.g. for mapping large amounts of device (a.k.a. GPU) memory
+into guests using hugepages.  One of the hiccups is that follow_pte() doesn't play
+nice with hugepages, at all, e.g. even has a "VM_BUG_ON(pmd_trans_huge(*pmd))".
+Teaching follow_pte() to play nice with hugepage probably is doing, but making
+sure all existing users are aware, maybe not so much.
+
+My first (half baked, crazy ambitious) idea is to move away from follow_pte() and
+get_user_page_fast_only() for mmu_notifier-aware lookups, i.e. that don't need
+to grab references, and replace them with a new converged API that locklessly walks
+host userspace page tables, and grabs the hugepage size along the way, e.g. so that
+arch code wouldn't have to do a second walk of the page tables just to get the
+hugepage size.
+
+In other words, for the common case (mmu_notifier integration, no reference needed),
+route hva_to_pfn_fast() into the new API and walk the userspace page tables (probably
+only for write faults, to avoid CoW compliciations) before doing anything else.
+
+Uses of hva_to_pfn() that need to get a reference to the struct page couldn't be
+converted, e.g. when stuffing physical addresses into the VMCS for nested virtualization.
+But for everything else, grabbing a reference is a non-goal, i.e. actually "getting"
+a user page is wasted effort and actively gets in the way.
+
+I was initially hoping we could go super simple and use something like x86's
+host_pfn_mapping_level(), but there are too many edge cases in gup() that need to
+be respected, e.g. to avoid mapping memfd_secret pages into KVM guests.  I.e. the
+API would need to be a formal mm-owned thing, not some homebrewed KVM implementation.
+
+I can't tell if the payoff would be big enough to justify the effort involved, i.e.
+having a single unified API for grabbing PFNs from the primary MMU might just be a
+pie-in-the-sky type idea.
+
+My second, less ambitious idea: the previously linked LWN[*] article about the
+writeback issues reminded me of something that has bugged me for a long time.  IIUC,
+getting a writable mapping from the primary MMU marks the page/folio dirty, and that
+page/folio stays dirty until the data is written back and the mapping is made read-only.
+And because KVM is tapped into the mmu_notifiers, KVM will be notified *before* the
+RW=>RO conversion completes, i.e. before the page/folio is marked clean.
+
+I _think_ that means that calling kvm_set_page_dirty() when zapping a SPTE (or
+dropping any mmu_notifier-aware mapping) is completely unnecessary.  If that is the
+case, _and_ we can weasel our way out of calling kvm_set_page_accessed() too, then
+with FOLL_GET plumbed into hva_to_pfn(), we can:
+
+  - Drop kvm_{set,release}_pfn_{accessed,dirty}(), because all callers of hva_to_pfn()
+    that aren't tied into mmu_notifiers, i.e. aren't guaranteed to drop mappings
+    before the page/folio is cleaned, will *know* that they hold a refcounted struct
+    page.
+
+  - Skip "KVM: x86/mmu: Track if sptes refer to refcounted pages" entirely, because
+    KVM never needs to know if a SPTE points at a refcounted page.
+
+In other words, double down on immediately doing put_page() after gup() if FOLL_GET
+isn't specified, and naturally make all KVM MMUs compatible with pfn_valid() PFNs
+that are acquired by follow_pte().
+
+I suspect we can simply mark pages as access when a page is retrieved from the primary
+MMU, as marking a page accessed when its *removed* from the guest is rather nonsensical.
+E.g. if a page is mapped into the guest for a long time and it gets swapped out, marking
+the page accessed when KVM drops its SPTEs in response to the swap adds no value.  And
+through the mmu_notifiers, KVM already plays nice with setups that use idle page
+tracking to make reclaim decisions.
+
+[*] https://lwn.net/Articles/930667
 
