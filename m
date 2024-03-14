@@ -1,120 +1,173 @@
-Return-Path: <linux-kernel+bounces-102817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5733887B784
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:59:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 490BA87B781
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12184285AD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:59:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04A6C284ECC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1C6D27E;
-	Thu, 14 Mar 2024 05:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s8azedEn"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6A5FC02;
+	Thu, 14 Mar 2024 05:58:43 +0000 (UTC)
+Received: from smtp238.sjtu.edu.cn (smtp238.sjtu.edu.cn [202.120.2.238])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AD012B93
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0EFD268;
+	Thu, 14 Mar 2024 05:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.120.2.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395928; cv=none; b=g7OgkxOMIf+nocq8/XC/H0Z2t0c6382V5jO7h8V5SuktSmMXsmvczYTbb/yuRQVPWzgv+/Gs/HZV640YZKtUFM5K8TOkDVaaCtw/IIQQD421ifjZJ/KML+KQ/WxvrtDt1FD0MgDdf8cyYfsQk+EgrOyiDB2lcs108Bf+dw0OQh0=
+	t=1710395922; cv=none; b=JKrEDpnjKtMaG+Iv33sPa8nvHs0lUYUiTGeEXp6Q7QOAuwv+WP0/d26LUama4hQqYqHRKZ+vXzgj44UpugBdM8bKUVDO4hqMkm211HSGfYprLLPrSrEu1AzJvKm1fTuZTkWwpZFv6NVXfXzhxcchyL2LwbVGqNQ4Ez67IG2AgZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395928; c=relaxed/simple;
-	bh=SFnRyJCMSz3NfZEXGVAhzmYKO+L+zCZbOzEJqp9PJWE=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=fngCiUKhNUU4QzD2EraH42RYN9vze5Cf+tLvFt40MX+JVXCx/64nvhGNaOZhCO1HH8iH8ayx9z/05qO/0wY2EfT8QRkgexZA1ZsILoNjmGeo4Zh2iVNxuoliG7MJQoPX4eE1zqEtGdmZicAM9asY5/u4EkUuFs2OjOBWAsM9IzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=s8azedEn; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26783b4so680552276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710395926; x=1711000726; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YRB7kOoDxawdK6VhegAiSGEkcLRIKP4KVDKeyUalc2o=;
-        b=s8azedEn+KepevEJX5SpN2PVrfhM+EzZ2YoM+nqIX+KjwHACI4ScxbPxM4YCPrhREN
-         dJCATYpUPo15TipzFE9qx0qUtkFPHXyhMcxORm+e+7P3yOJ93JwZ8OPh/RW/U942RWae
-         CFwdqWAjKmskQXT7voGFuSY3kW+ZQ10kllsDy19drUI5sXTcESUt7vBywQZnvXgHb9p0
-         Jcal4Ukmhr9O27pKh/HnD1OTA4Ssfc35OC4iLDwNSnIfcC8z2r37B/sDWnn2l4GZMYWT
-         B8hngklhgSIaTzbFWpAmm9+7NrX7K7KqyKw0D2Pf1YgFbk35hxeHVUDTGjOXTOFxQzDf
-         5AiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710395926; x=1711000726;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YRB7kOoDxawdK6VhegAiSGEkcLRIKP4KVDKeyUalc2o=;
-        b=I6VjcS5/3X9EGtoNOwpVUcm+RGGs01eoEX/vLk52ky+t4DZDrPiEvPYUTKilL/i5zM
-         JwSOmSV6NG5iCR7KQad8gNd8EeDAou71NMjZpvJkibdcrBcgJDn+Vloi5wM09hiHndU8
-         Lb285KByBc1WrGlZWOQw0CQ7w0BV4geMez4N3PEMrpLXseuA8UkSQlCyapkc3Ym512Fr
-         VWcjK19zpisrKhEq1dgjl29jDBNpeLFBHD5GrbX2TKNMyTSN4pLsbLeaUB/SBLnYK4um
-         bUEzCYoBTN/GNVLWwnwsZ176/f/7I6Tn1gRwTpAuC7XHMcLAJ+5lCEAjMETUdjSFTkBI
-         kKiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX5i8CPTDzP4FTrh4ScNhV0VoSBt6B4opML+wDPmDQaDFSjcJ1OiX5UR/yvWT6uRSXyqGSXxMiO3oaMWWPD9wZoz0Jy9qvpGsi3sVBe
-X-Gm-Message-State: AOJu0Yy0nTo0nNvFRq/jH+r5Dsh9pt+LZVOsMz2z7BiOsf1xNxnNuo7K
-	ZLT5IApB8GnpeoVJ2QuR+W/RFi7XTsAkCVnUwOBkoO7vdkhElu6+xc4rRby4KPOi+u57HW1pZf5
-	bhRqyOQ==
-X-Google-Smtp-Source: AGHT+IESxgUgX1pBvQfMCDwvjsv/KfQ7yj04DfqqVzEGVI0jCFmxm55cadYn7E1/0zQS7Hl11sRsvaJk7u9E
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:449f:3bde:a4cd:806a])
- (user=irogers job=sendgmr) by 2002:a05:6902:240e:b0:dbe:387d:a8ef with SMTP
- id dr14-20020a056902240e00b00dbe387da8efmr22603ybb.1.1710395925934; Wed, 13
- Mar 2024 22:58:45 -0700 (PDT)
-Date: Wed, 13 Mar 2024 22:58:27 -0700
-Message-Id: <20240314055839.1975063-1-irogers@google.com>
+	s=arc-20240116; t=1710395922; c=relaxed/simple;
+	bh=d/DKMqpbLAl7Mt2vT4Z2A2rXSWnn3WDlmojM+dTlQBM=;
+	h=Date:From:To:Cc:Message-ID:Subject:MIME-Version:Content-Type; b=PwgjvlWPtymiFbrGlVodsOYwn4T/Z4NEh/2wV1bXk6kSvR8IUQOr9KVfEpK7cTTyHxPsCD8qEP4qUB1+Ip3s0noWGTrUPXAqeJwY41Db84fHFGF5DGxbuuDMFadv4biBFfQ+s8pc58pNF9kycSrn+ipgdkw/Z/k6OxxaIUu8D90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn; spf=pass smtp.mailfrom=sjtu.edu.cn; arc=none smtp.client-ip=202.120.2.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjtu.edu.cn
+Received: from mta90.sjtu.edu.cn (unknown [10.118.0.90])
+	by smtp238.sjtu.edu.cn (Postfix) with ESMTPS id 9035B340D;
+	Thu, 14 Mar 2024 13:58:28 +0800 (CST)
+Received: from mstore135.sjtu.edu.cn (unknown [10.118.0.135])
+	by mta90.sjtu.edu.cn (Postfix) with ESMTP id 60C2437C878;
+	Thu, 14 Mar 2024 13:58:28 +0800 (CST)
+Date: Thu, 14 Mar 2024 13:58:28 +0800 (CST)
+From: Zheyun Shen <szy0127@sjtu.edu.cn>
+To: thomas lendacky <thomas.lendacky@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, 
+	pbonzini <pbonzini@redhat.com>, tglx <tglx@linutronix.de>
+Cc: kvm <kvm@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1860502863.219296.1710395908135.JavaMail.zimbra@sjtu.edu.cn>
+Subject: [PATCH v3] KVM:SVM: Flush cache only on CPUs running SEV guest
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 00/12] Python generated AMD Zen metrics
-From: Ian Rogers <irogers@google.com>
-To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 10.0.7_GA_4598 (ZimbraWebClient - GC122 (Win)/10.0.7_GA_4598)
+Thread-Index: ni5XwuC1hBU2RnYJnZxX2YGyNjSrCA==
+Thread-Topic: Flush cache only on CPUs running SEV guest
 
-Generate thirteen sets of additional metrics for AMD zen.  Rapl and
-Idle metrics aren't specific to AMD but are placed here for ease and
-convenience. Uncore L3 metrics are added along with the majority of
-core metrics.
+On AMD CPUs without ensuring cache consistency, each memory page
+reclamation in an SEV guest triggers a call to wbinvd_on_all_cpus(),
+thereby affecting the performance of other programs on the host.
 
-The patches should be applied on top of:
-https://lore.kernel.org/lkml/20240314055051.1960527-1-irogers@google.com/
+Typically, an AMD server may have 128 cores or more, while the SEV guest
+might only utilize 8 of these cores. Meanwhile, host can use qemu-affinity
+to bind these 8 vCPUs to specific physical CPUs.
 
-v3. Some minor code cleanup changes.
-v2. Drop the cycles breakdown in favor of having it as a common
-    metric, suggested by Kan Liang <kan.liang@linux.intel.com>.
+Therefore, keeping a record of the physical core numbers each time a vCPU
+runs can help avoid flushing the cache for all CPUs every time.
 
-Ian Rogers (12):
-  perf jevents: Add RAPL event metric for AMD zen models
-  perf jevents: Add idle metric for AMD zen models
-  perf jevents: Add upc metric for uops per cycle for AMD
-  perf jevents: Add br metric group for branch statistics on AMD
-  perf jevents: Add software prefetch (swpf) metric group for AMD
-  perf jevents: Add hardware prefetch (hwpf) metric group for AMD
-  perf jevents: Add itlb metric group for AMD
-  perf jevents: Add dtlb metric group for AMD
-  perf jevents: Add uncore l3 metric group for AMD
-  perf jevents: Add load store breakdown metrics ldst for AMD
-  perf jevents: Add ILP metrics for AMD
-  perf jevents: Add context switch metrics for AMD
+Since the usage of sev_flush_asids() isn't tied to a single VM, we just
+replace all wbinvd_on_all_cpus() with sev_do_wbinvd() except for that
+in sev_flush_asids().
 
- tools/perf/pmu-events/amd_metrics.py | 630 ++++++++++++++++++++++++++-
- 1 file changed, 627 insertions(+), 3 deletions(-)
+Signed-off-by: Zheyun Shen <szy0127@sjtu.edu.cn>
+---
+v2 -> v3:
+- Replaced get_cpu() with parameter cpu in pre_sev_run().
 
--- 
-2.44.0.278.ge034bb2e1d-goog
+v1 -> v2:
+- Added sev_do_wbinvd() to wrap two operations.
+- Used cpumask_test_and_clear_cpu() to avoid concurrent problems.
+---
+ arch/x86/kvm/svm/sev.c | 27 +++++++++++++++++++++++----
+ arch/x86/kvm/svm/svm.h |  3 +++
+ 2 files changed, 26 insertions(+), 4 deletions(-)
 
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index f760106c3..743931e33 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -215,6 +215,24 @@ static void sev_asid_free(struct kvm_sev_info *sev)
+         sev->misc_cg = NULL;
+ }
+ 
++static struct cpumask *sev_get_wbinvd_dirty_mask(struct kvm *kvm)
++{
++        struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
++
++        return &sev->wbinvd_dirty_mask;
++}
++
++static void sev_do_wbinvd(struct kvm *kvm)
++{
++        int cpu;
++        struct cpumask *dirty_mask = sev_get_wbinvd_dirty_mask(kvm);
++
++        for_each_possible_cpu(cpu) {
++                if (cpumask_test_and_clear_cpu(cpu, dirty_mask))
++                        wbinvd_on_cpu(cpu);
++        }
++}
++
+ static void sev_decommission(unsigned int handle)
+ {
+         struct sev_data_decommission decommission;
+@@ -2048,7 +2066,7 @@ int sev_mem_enc_unregister_region(struct kvm *kvm,
+          * releasing the pages back to the system for use. CLFLUSH will
+          * not do this, so issue a WBINVD.
+          */
+-        wbinvd_on_all_cpus();
++        sev_do_wbinvd(kvm);
+ 
+         __unregister_enc_region_locked(kvm, region);
+ 
+@@ -2152,7 +2170,7 @@ void sev_vm_destroy(struct kvm *kvm)
+          * releasing the pages back to the system for use. CLFLUSH will
+          * not do this, so issue a WBINVD.
+          */
+-        wbinvd_on_all_cpus();
++        sev_do_wbinvd(kvm);
+ 
+         /*
+          * if userspace was terminated before unregistering the memory regions
+@@ -2343,7 +2361,7 @@ static void sev_flush_encrypted_page(struct kvm_vcpu *vcpu, void *va)
+         return;
+ 
+ do_wbinvd:
+-        wbinvd_on_all_cpus();
++        sev_do_wbinvd(vcpu->kvm);
+ }
+ 
+ void sev_guest_memory_reclaimed(struct kvm *kvm)
+@@ -2351,7 +2369,7 @@ void sev_guest_memory_reclaimed(struct kvm *kvm)
+         if (!sev_guest(kvm))
+                 return;
+ 
+-        wbinvd_on_all_cpus();
++        sev_do_wbinvd(kvm);
+ }
+ 
+ void sev_free_vcpu(struct kvm_vcpu *vcpu)
+@@ -2648,6 +2666,7 @@ void pre_sev_run(struct vcpu_svm *svm, int cpu)
+         sd->sev_vmcbs[asid] = svm->vmcb;
+         svm->vmcb->control.tlb_ctl = TLB_CONTROL_FLUSH_ASID;
+         vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
++        cpumask_set_cpu(cpu, sev_get_wbinvd_dirty_mask(svm->vcpu.kvm));
+ }
+ 
+ #define GHCB_SCRATCH_AREA_LIMIT                (16ULL * PAGE_SIZE)
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 8ef95139c..de240a9e9 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -90,6 +90,9 @@ struct kvm_sev_info {
+         struct list_head mirror_entry; /* Use as a list entry of mirrors */
+         struct misc_cg *misc_cg; /* For misc cgroup accounting */
+         atomic_t migration_in_progress;
++
++        /* CPUs invoked VMRUN should do wbinvd after guest memory is reclaimed */
++        struct cpumask wbinvd_dirty_mask;
+ };
+ 
+ struct kvm_svm {
+--
+2.34.1
 
