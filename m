@@ -1,168 +1,271 @@
-Return-Path: <linux-kernel+bounces-103620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2F087C209
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:19:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D147B87C20D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63B8C282F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:19:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C10E1F22277
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E55745C9;
-	Thu, 14 Mar 2024 17:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DAE2745EF;
+	Thu, 14 Mar 2024 17:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qz8TQ55d"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="GyoiH8zD"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDC2745D5
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C874074411;
+	Thu, 14 Mar 2024 17:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710436755; cv=none; b=TJ8xCWlhFEwJ5m8NZlZkp0XSl+6Aj5lzfdA7v1XQgFRqabbMROC7QGUceZHF6ClJUGKdwqObCuYcy7EBNBdVOP0N+ilFQcgf7iAsRCi5F8TL4R7sQ/VFgxIp33tKqI+JGlZvhA5LAAoCCJaaQ6H1uhR6CA/uidqto5avB4nOIxg=
+	t=1710436840; cv=none; b=BWADE8ZviA+p/Tq9xTMjXZYRNZARB3ki8Yhj2+AR1xgW6DU32WVzDWjHfx76qbTY1tOdydo8KBKO5Uw19RRptGe30w+bUAMwjY/uDQYqa54b2mxDIBNrHoiNxGJ9jKt3ppPf9j9oB127udFc0dbHEJwZpCdsnNPp3vtEB2gjOdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710436755; c=relaxed/simple;
-	bh=9GOJQu2/nR2BHHiA8GsCDTPdCC4bbP1dNdyhkSDJuIk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NETRKbq8ilKDlLpR7ORf3UMsfj57KGfTOt911RXKVlE9ZXNfAMkvHXgpgQ+ym7ckrPvTEvWywqwLUSu2+ENCo1dvVakL/nK/6a2nFfKJjOCjH38EZn8Q57rQbaAAue0CHmH+oNtv2Kxq+7jTgtA8PIEDq45RuQcf9WyhVSCPWik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qz8TQ55d; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5e4df21f22dso950693a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710436753; x=1711041553; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YBWvGLeIr3WCXjLNKOt4FQgjluVeWjm5enABMhYnJXU=;
-        b=qz8TQ55dhilK//hpN4aYv+OrIiPxYV6laRcCNOuQk8NQVlDeGSC0mkYW2jzQyh+fti
-         O7EJCxIeXwc6XDqqPKj4GFW3tS5NuzdD8hb9lHeERdJkAlpuqNbKQVdfpdZDOoM6vhT4
-         /oK8uZSLUNTtATcR+XBUp5IsrxHVvwl2l0GcX1bGp3DaQYx8zj6CHOFKCjI3tTn3XZwl
-         ShKrFv/rD4Sb8Nce/+9q77Zp2nfxbd9i5JzHBmkC064G1YPo6S5TSlBjgpbLnyo8NreJ
-         4zFT5xD60/27ZDAsDw62YfNHp01W5hij5lhGRp95J1aXX110Sc4MwE58+bqWzwmu6BOR
-         Wldw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710436753; x=1711041553;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YBWvGLeIr3WCXjLNKOt4FQgjluVeWjm5enABMhYnJXU=;
-        b=hSTu9/D0aTvUPUYlTrzhkDhNvBkr/hugQWtmogGowpE32g2fq93uwWpBC0Ojj3XSYn
-         A0IXHEx21xkMGiYB8GYNJCWHYuMpvDCCxFlY89kNY4oiuAqS4HXRLiAHj4pNZJNxoIrh
-         3Gc6e/eeAPAk6MyNWNwwGvHS+S5BmMkIrJxpYoCFElx1yJ2Dse47C91NExweO0ci5tqF
-         c7EiRELt7w2ZhF5Njl1wC013t0aHTaMb1z+aiiG6yF/oZfVBSrz802ls68qu5Gj3ms0J
-         X5j0BBTa7Lj/EhA97M7MrxXgwL8YK8LY3m5xswKde+yVZUiV1XmccUQXrB+pR6RJywBX
-         gGDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUmSXDeDL9UZzr1Y+BNyJD2doJcMdb8R1DFCcEMcVIGFnbK2fDDi7ca/0Mk2u1NvQwDdDrUHAz158wYvKn2YiihQ5rnCIFQqPUDHyVA
-X-Gm-Message-State: AOJu0YyNPCrrB1ZWiwXsHY2rbXuINYbvCjBWZMiX0QdEYxqzSebotfCC
-	RZ3Wrd4laSnkIP79HErLveO0QjUmUbIJP4TGRG/GJFu50K4ilswPxUIKG0oW4TuUxtXY4dWoMYm
-	UMg==
-X-Google-Smtp-Source: AGHT+IHJ2VenE2BaKAvD+GTq5tWookkYyBKbsSY2K3v1ISsNPDio+TNHKRp9cCDcGI/+Bi1te2QL8C8TwDU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:7010:0:b0:5dc:122a:5f8a with SMTP id
- l16-20020a637010000000b005dc122a5f8amr7274pgc.5.1710436752630; Thu, 14 Mar
- 2024 10:19:12 -0700 (PDT)
-Date: Thu, 14 Mar 2024 10:19:11 -0700
-In-Reply-To: <ZfMjCXZWuUD76r_5@google.com>
+	s=arc-20240116; t=1710436840; c=relaxed/simple;
+	bh=NgHgotKhtD1A7iD6oloMGvxAQNHj7LiaQcSDONTaOLQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=AkIyn8MOOuM53bC36YPnYB4148MsJ877DAACTg4jJ7CUXhv1CiOc1Q7Xqw2mIov1JiClJqC8ysbc1LuiCHUUvxuXRcTJtRMRys59em40Fy7aRa9J8XuAFOcfQph+Db3vJpHOdLHJF1IBnlvzsW1FEhfGG8ODQVp9hMepPVxj+5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=GyoiH8zD; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1710436824; x=1711041624; i=w_armin@gmx.de;
+	bh=LQXqc83Fz2n7ArY1KyXlZRGRxcZUTaZFRwjyZfC2l1A=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=GyoiH8zD2a+yMwuwCtKvTG5w8gcWZ2gN/8RyMdTSSGYc0yLQAU6JpJQpXlhKZmYk
+	 tR1+s6M8s/EMwYriuKVaLmBz3ILw/9CPTMeAiVJyc2X8yAengjP7vjT94v4M5A5Zm
+	 7ONdmghmmr6KiF/S47EbWrE/Y9IrTFPTAplC1ZxwfMCyuD83kpsbuzPFd7bz5sFnv
+	 4NB4xqdY5Ms7Vdn+gpQWOSyX0UheGfbI7OXp9hXuTjYFooLrakIsaKsR+Vpsrk4Kk
+	 WbZEJHVasGE5sGF413ewXr9XPZtPeocg+UndtiiXwIUql0QZ3WW+qX3EI6k98oqRf
+	 YQPu6/6HjOY7fyP4gA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MFKKh-1rZV1F0ttB-00Flne; Thu, 14
+ Mar 2024 18:20:24 +0100
+Message-ID: <d7c2de21-50f9-4602-abd0-b83ecbc3f42f@gmx.de>
+Date: Thu, 14 Mar 2024 18:20:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <0b109bc4-ee4c-4f13-996f-b89fbee09c0b@amd.com> <ZfG801lYHRxlhZGT@google.com>
- <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com> <ZfHKoxVMcBAMqcSC@google.com>
- <93df19f9-6dab-41fc-bbcd-b108e52ff50b@amd.com> <ZfHhqzKVZeOxXMnx@google.com>
- <c84fcf0a-f944-4908-b7f6-a1b66a66a6bc@amd.com> <d2a95b5c-4c93-47b1-bb5b-ef71370be287@amd.com>
- <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com> <ZfMjCXZWuUD76r_5@google.com>
-Message-ID: <ZfMxj_e7M_toVR3a@google.com>
-Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
-From: Sean Christopherson <seanjc@google.com>
-To: David Stevens <stevensd@chromium.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
-	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	kvm@vger.kernel.org, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8] platform/x86: add lenovo wmi camera button driver
+Content-Language: en-US
+To: Ai Chao <aichao@kylinos.cn>, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
+References: <20240314050319.171816-1-aichao@kylinos.cn>
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20240314050319.171816-1-aichao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jfmhznM+gZlYWuE+LsYUpAIbRl9nyhWCaECfPATz+Bwqi/BVY0v
+ v3aEIW//Pa0jKiA0fvYwCp4dwTgzdVIP32thTZqaFv4S4hZcmGkdKSlBHBnODCZjO5bA9Zj
+ WSfyTkE4F+NoRcMqlpxk5KU2pvprwzcLS6OfUb8Mh0cVcFbvSmDuP5TZ6Uv6mHTjo9q2kRA
+ RsAJugEurj73xmh+Cw96g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:5mqxxvk5B+s=;uiYdS93D9qlPd53Fm01iM4jBHFC
+ fDQXKxhaeH05QGMmAtP+Rq4oYNShInpSdUOVY9k5mKSXqqITZ0HE1fwFZL+chPteurx7qUBWY
+ Qs7EHTRR/SVcgz8HuaocLIpFTwRG60wnoSbZTAOsXHrqpex9J5xgm+P9+FFZlupaCf5LZdQN4
+ waI/4J1vuYnUaB/WRuEeMXJkLJUvnDnUExYNnFCX66tmZkTkBbEIZw887zIrOpb6wTj6bJrUq
+ qqBX6TPzTkO2gh723V+SHmwuyGcIIgBv6RXxY3BkI48U5pUBC2059JF76bnKJUO5rFl+XemSw
+ fNUvLsteK22984Q7367Rhbm8avNSKp8kFoXVHtrzr7rnBKFkrC1rniRAkNH+9JNbAsUfO0gAv
+ jSXS/wuI2AnkiVk50FsOaKa1jjkzygSkS2zAFStNl/AFC8mO7o08vFBcq6xRQQJm9VKcBq7Fj
+ BGriD+BAoaliTu3MvO2OU+Ci+HiZaezITWe6OKGeJtc8+rLjdUvTf+cK7eZCQDlw2XLZO8c3b
+ yZQNqTP2IzfaDsrw4e2gdThLzDtXjdISWHiuDgxMM7WgmVYVYHKbrFA21n9nDnYeqEbi5UrTA
+ ktkKPqOaNkoLulIzMOofj371OTdEzgZNE8Qp2+FFTtIewWdT1CuqWSM3pL8+yMwba0AuMPM0D
+ OqtsaMx+Jv3Sah+D6+xxl0pFAAS/r4U48SSHegWqw8WFK/CS0LvIXTZJrjYplRQDVp/7NWFiQ
+ vgh4LEG14F7jVPou/3EIDgc+3ZsulgY0eDmQT/3rDVmtOR9ccsdh2jl/shDWAh9kG6GIzUnMW
+ Z51iXvSvPwsIAVSrjLNuwOSQ5xpVFXtAWytUpXwd0ujuQ=
 
-+Alex, who is looking at the huge-VM_PFNMAP angle in particular.
+Am 14.03.24 um 06:03 schrieb Ai Chao:
 
-On Thu, Mar 14, 2024, Sean Christopherson wrote:
-> -Christ{oph,ian} to avoid creating more noise...
-> 
-> On Thu, Mar 14, 2024, David Stevens wrote:
-> > Because of that, the specific type of pfns that don't work right now are
-> > pfn_valid() && !PG_Reserved && !page_ref_count() - what I called the
-> > non-refcounted pages in a bad choice of words. If that's correct, then
-> > perhaps this series should go a little bit further in modifying
-> > hva_to_pfn_remapped, but it isn't fundamentally wrong.
-> 
-> Loosely related to all of this, I have a mildly ambitious idea.  Well, one mildly
-> ambitious idea, and one crazy ambitious idea.  Crazy ambitious idea first...
-> 
-> Something we (GCE side of Google) have been eyeballing is adding support for huge
-> VM_PFNMAP memory, e.g. for mapping large amounts of device (a.k.a. GPU) memory
-> into guests using hugepages.  One of the hiccups is that follow_pte() doesn't play
-> nice with hugepages, at all, e.g. even has a "VM_BUG_ON(pmd_trans_huge(*pmd))".
-> Teaching follow_pte() to play nice with hugepage probably is doing, but making
-> sure all existing users are aware, maybe not so much.
-> 
-> My first (half baked, crazy ambitious) idea is to move away from follow_pte() and
-> get_user_page_fast_only() for mmu_notifier-aware lookups, i.e. that don't need
-> to grab references, and replace them with a new converged API that locklessly walks
-> host userspace page tables, and grabs the hugepage size along the way, e.g. so that
-> arch code wouldn't have to do a second walk of the page tables just to get the
-> hugepage size.
-> 
-> In other words, for the common case (mmu_notifier integration, no reference needed),
-> route hva_to_pfn_fast() into the new API and walk the userspace page tables (probably
-> only for write faults, to avoid CoW compliciations) before doing anything else.
-> 
-> Uses of hva_to_pfn() that need to get a reference to the struct page couldn't be
-> converted, e.g. when stuffing physical addresses into the VMCS for nested virtualization.
-> But for everything else, grabbing a reference is a non-goal, i.e. actually "getting"
-> a user page is wasted effort and actively gets in the way.
-> 
-> I was initially hoping we could go super simple and use something like x86's
-> host_pfn_mapping_level(), but there are too many edge cases in gup() that need to
-> be respected, e.g. to avoid mapping memfd_secret pages into KVM guests.  I.e. the
-> API would need to be a formal mm-owned thing, not some homebrewed KVM implementation.
-> 
-> I can't tell if the payoff would be big enough to justify the effort involved, i.e.
-> having a single unified API for grabbing PFNs from the primary MMU might just be a
-> pie-in-the-sky type idea.
-> 
-> My second, less ambitious idea: the previously linked LWN[*] article about the
-> writeback issues reminded me of something that has bugged me for a long time.  IIUC,
-> getting a writable mapping from the primary MMU marks the page/folio dirty, and that
-> page/folio stays dirty until the data is written back and the mapping is made read-only.
-> And because KVM is tapped into the mmu_notifiers, KVM will be notified *before* the
-> RW=>RO conversion completes, i.e. before the page/folio is marked clean.
-> 
-> I _think_ that means that calling kvm_set_page_dirty() when zapping a SPTE (or
-> dropping any mmu_notifier-aware mapping) is completely unnecessary.  If that is the
-> case, _and_ we can weasel our way out of calling kvm_set_page_accessed() too, then
-> with FOLL_GET plumbed into hva_to_pfn(), we can:
-> 
->   - Drop kvm_{set,release}_pfn_{accessed,dirty}(), because all callers of hva_to_pfn()
->     that aren't tied into mmu_notifiers, i.e. aren't guaranteed to drop mappings
->     before the page/folio is cleaned, will *know* that they hold a refcounted struct
->     page.
-> 
->   - Skip "KVM: x86/mmu: Track if sptes refer to refcounted pages" entirely, because
->     KVM never needs to know if a SPTE points at a refcounted page.
-> 
-> In other words, double down on immediately doing put_page() after gup() if FOLL_GET
-> isn't specified, and naturally make all KVM MMUs compatible with pfn_valid() PFNs
-> that are acquired by follow_pte().
-> 
-> I suspect we can simply mark pages as access when a page is retrieved from the primary
-> MMU, as marking a page accessed when its *removed* from the guest is rather nonsensical.
-> E.g. if a page is mapped into the guest for a long time and it gets swapped out, marking
-> the page accessed when KVM drops its SPTEs in response to the swap adds no value.  And
-> through the mmu_notifiers, KVM already plays nice with setups that use idle page
-> tracking to make reclaim decisions.
-> 
-> [*] https://lwn.net/Articles/930667
+> Add lenovo generic wmi driver to support camera button.
+> The Camera button is a GPIO device. This driver receives ACPI notifyi
+> when the camera button is switched on/off. This driver is used in
+> Lenovo A70, it is a Computer integrated machine.
+>
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+> ---
+> v8: Dev_deb convert to dev_err.
+> v7: Add dev_dbg and remove unused dev in struct.
+> v6: Modify SW_CAMERA_LENS_COVER to KEY_CAMERA_ACCESS_ENABLE/KEY_CAMERA_A=
+CCESS_DISABLE.
+> v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_COV=
+ER.
+> v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenovo_w=
+mi_priv.
+> v3: Remove lenovo_wmi_remove function.
+> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
+>
+>   drivers/platform/x86/Kconfig             |  12 +++
+>   drivers/platform/x86/Makefile            |   1 +
+>   drivers/platform/x86/lenovo-wmi-camera.c | 108 +++++++++++++++++++++++
+>   3 files changed, 121 insertions(+)
+>   create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
+>
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index bdd302274b9a..9506a455b547 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
+>   	To compile this driver as a module, choose M here: the module
+>   	will be called inspur-platform-profile.
+>
+> +config LENOVO_WMI_CAMERA
+> +	tristate "Lenovo WMI Camera Button driver"
+> +	depends on ACPI_WMI
+> +	depends on INPUT
+> +	help
+> +	  This driver provides support for Lenovo camera button. The Camera
+> +	  button is a GPIO device. This driver receives ACPI notify when the
+> +	  camera button is switched on/off.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called lenovo-wmi-camera.
+> +
+>   source "drivers/platform/x86/x86-android-tablets/Kconfig"
+>
+>   config FW_ATTR_CLASS
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefi=
+le
+> index 1de432e8861e..217e94d7c877 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+=3D hdaps.o
+>   obj-$(CONFIG_THINKPAD_ACPI)	+=3D thinkpad_acpi.o
+>   obj-$(CONFIG_THINKPAD_LMI)	+=3D think-lmi.o
+>   obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
+> +obj-$(CONFIG_LENOVO_WMI_CAMERA)	+=3D lenovo-wmi-camera.o
+>
+>   # Intel
+>   obj-y				+=3D intel/
+> diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platform=
+/x86/lenovo-wmi-camera.c
+> new file mode 100644
+> index 000000000000..f83e3ccd9189
+> --- /dev/null
+> +++ b/drivers/platform/x86/lenovo-wmi-camera.c
+> @@ -0,0 +1,108 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Lenovo WMI Camera Button Driver
+> + *
+> + * Author: Ai Chao <aichao@kylinos.cn>
+> + * Copyright (C) 2024 KylinSoft Corporation.
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/input.h>
+> +#include <linux/module.h>
+> +#include <linux/wmi.h>
+> +
+> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F=
+4EA400013"
+> +
+> +struct lenovo_wmi_priv {
+> +	struct input_dev *idev;
+> +};
+> +
+> +enum {
+> +	SW_CAMERA_OFF	=3D 0,
+> +	SW_CAMERA_ON	=3D 1,
+> +};
+> +
+> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_objec=
+t *obj)
+> +{
+> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
+> +	u8 camera_mode;
+> +
+> +	if (obj->type !=3D ACPI_TYPE_BUFFER) {
+> +		dev_err(&wdev->dev, "Bad response type %u\n", obj->type);
+> +		return;
+> +	}
+> +
+> +	if (obj->buffer.length !=3D 1) {
+> +		dev_err(&wdev->dev, "Invalid buffer length %u\n", obj->buffer.length)=
+;
+> +		return;
+> +	}
+> +
+> +	/* obj->buffer.pointer[0] is camera mode:
+> +	 *      0 camera close
+> +	 *      1 camera open
+> +	 */
+> +	camera_mode =3D obj->buffer.pointer[0];
+> +	if (camera_mode > SW_CAMERA_ON) {
+> +		dev_err(&wdev->dev, "Unknown camera mode %u\n", camera_mode);
+> +		return;
+> +	}
+> +
+> +	if (camera_mode =3D=3D SW_CAMERA_ON) {
+> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 1);
+> +		input_sync(priv->idev);
+> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 0);
+> +	} else {
+> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 1);
+> +		input_sync(priv->idev);
+> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 0);
+> +	}
+> +	input_sync(priv->idev);
+> +}
+> +
+> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *contex=
+t)
+> +{
+> +	struct lenovo_wmi_priv *priv;
+> +
+> +	priv =3D devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(&wdev->dev, priv);
+> +
+> +	priv->idev =3D devm_input_allocate_device(&wdev->dev);
+> +	if (!priv->idev)
+> +		return -ENOMEM;
+> +
+> +	priv->idev->name =3D "Lenovo WMI Camera Button";
+> +	priv->idev->phys =3D "wmi/input0";
+> +	priv->idev->id.bustype =3D BUS_HOST;
+> +	priv->idev->dev.parent =3D &wdev->dev;
+> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_ENABLE);
+> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_DISABLE);
+> +
+> +	return input_register_device(priv->idev);
+> +}
+> +
+> +static const struct wmi_device_id lenovo_wmi_id_table[] =3D {
+> +	{ .guid_string =3D WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
+> +	{  }
+> +};
+> +
+> +static struct wmi_driver lenovo_wmi_driver =3D {
+> +	.driver =3D {
+> +		.name =3D "lenovo-wmi-camera",
+> +		.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+> +	},
+> +	.id_table =3D lenovo_wmi_id_table,
+> +	.no_singleton =3D true,
+> +	.probe =3D lenovo_wmi_probe,
+> +	.notify =3D lenovo_wmi_notify,
+> +};
+> +
+> +module_wmi_driver(lenovo_wmi_driver);
+> +
+> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
+> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
+> +MODULE_DESCRIPTION("Lenovo WMI Camera Button Driver");
+> +MODULE_LICENSE("GPL");
+
+Looks good to me.
+
+Reviewed-by: Armin Wolf <W_Armin@gmx.de>
+
 
