@@ -1,129 +1,93 @@
-Return-Path: <linux-kernel+bounces-103012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E08987B9BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:54:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA4C87B9DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:56:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 702251C21FD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:54:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1970E2837E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A75F6BB5D;
-	Thu, 14 Mar 2024 08:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEE76BFA2;
+	Thu, 14 Mar 2024 08:56:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kZVhG8GF"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a8oFIJAz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3977643ADD;
-	Thu, 14 Mar 2024 08:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9988A6BB45;
+	Thu, 14 Mar 2024 08:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710406466; cv=none; b=TlZJBwbR9+zzxo9V64H3bc0kbveW0KdBQPV3j+yhYnsJTztwirXzCFOOZQxHGl+Gm8nxGzyzbDQEcAO5+cVsTWKar6TUucWm6E8wHyGBik9NW9oBPo2vE9ZcmslfL/UZtzpqRXuvx3s6pMl1HvaJlEfA5bydMcYJrJ3beXUQF3c=
+	t=1710406600; cv=none; b=lYz/l5lXGcHkIWv7HUBmbOaSr1V/oUEdvknUMStak6sBNrkSVF6dkxNR4KC/IhSWvurlIzmUYSdr/UByTcJr4ayGijvpLksjPIKu65pZtSPjaMnblmLw8u9WcnyhHJv6W39iVUIBv0bQcG45xnWZaP2f0W2X+Hk9Kt9cuL9NfPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710406466; c=relaxed/simple;
-	bh=Hug4VpcwNwwqAOdVuGR3r5w2hzLyi1ZErcpgeoCjrpg=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fUl2A7YaQiDns87HUAseqBWL60d1SO2gYY7//Gsun6APKFSqTCfAFi1f7GZkfuAcgJJia1kauwPR6WYUJ7E/cK8ABfcYr8aW4ZcmPQbWCj1jRhr70MjlSOlvWqkjFPND1VezyxpQxMEJY1BJumC4Q5Qab8Q4LqEB7nHbi9k7p4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kZVhG8GF; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710406462;
-	bh=Hug4VpcwNwwqAOdVuGR3r5w2hzLyi1ZErcpgeoCjrpg=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=kZVhG8GFZYYC3OAzSAy08JnBI7ueSsyszQUf5fEmjQ2II8WGNRD/wgTbcyAhltdca
-	 MhX/nATboCzW2kCOzEjw200OyBhiHWNi28f+Fd+CF34xT/cGtMpvxqs/HpBWXPzb5Y
-	 qxiBfmUXTOs078rdLjOkbZ3cRZYX9bGtVSx5svoldhVQ6/3Bh0AL+rblWfyAAQpfWZ
-	 gPtW+AA3MdPR0h8MwGVzD7p2bORCWGQ2kq+cYRnrCemV5qYCWemsZpFJGCXNrrZZDO
-	 glDgKLSjJjuhnhYBKNjVFoCvbhaj+BZUq8o7TqrhP48UsGCGqdi4+LuVbzRJwLhi9p
-	 R8ea4uLifDcRw==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A3105378105A;
-	Thu, 14 Mar 2024 08:54:19 +0000 (UTC)
-Message-ID: <1dd87e89-2306-4669-844f-ffe9e56523b6@collabora.com>
-Date: Thu, 14 Mar 2024 13:54:50 +0500
+	s=arc-20240116; t=1710406600; c=relaxed/simple;
+	bh=Py12VRbMdvVtfACD906rKN/O+uZfySHQwj9jlidK6BQ=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=G3HNFa4nOcFWyAEhtbMLch+7aHlYyhXRHfllRWdETgPyIx2JcOdCjFypgleSh6kETEIPnPgEUlBOtb938wTo+meZILMrIgCEkHVchV+qF9Q9w2qr4jcLWYhJBAY/rqKLDWImKNd7QhuVAaPIWxiGbTPAO9xlGNK5bj9bSw4VULs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a8oFIJAz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C60BC433C7;
+	Thu, 14 Mar 2024 08:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710406600;
+	bh=Py12VRbMdvVtfACD906rKN/O+uZfySHQwj9jlidK6BQ=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=a8oFIJAzxiH4GpOSFGQVCtrCcnaXB9VB9CT7nBejXkRsL0OSFYgHJ6/ldVCRAmo6H
+	 oKsPB9hYigEfgXXqk/PT5F/4XoDVYeD9veC4VDmHK649jguTFhhHtjr9KSutwuzzyI
+	 W2Xjtwr7TZnY3WIRH1gYLgavB4CtBpT79rnDaUIn97F5QOTJAB/3g76ZMMYeQGvtNf
+	 wiUs1mzJTIegjmkbfNqqWkZZDRpohUzIOa+JqPZHC4HZul62T0u/iUCId/AxkD4+hd
+	 MG5nIkcxzd7lTLl/Jk8LWhjrVCxuwcUs4A2UQW2lhDG4EfmXpUQhOYbvNK1j0O5TbO
+	 uXahCjWNrIkyg==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Shuah Khan <shuah@kernel.org>, Mark Brown <broonie@kernel.org>,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] selftests/exec: execveat: Improve debug reporting
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>
-References: <20240313185606.work.073-kees@kernel.org>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240313185606.work.073-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ssb: use "break" on default case to prevent warning
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240313001305.18820-1-rdunlap@infradead.org>
+References: <20240313001305.18820-1-rdunlap@infradead.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+ kernel test robot <lkp@intel.com>,
+ =?utf-8?q?Michael_B=C3=BCsch?= <m@bues.ch>, linux-wireless@vger.kernel.org,
+ Johannes Berg <johannes@sipsolutions.net>, llvm@lists.linux.dev
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171040659685.2399140.4522460188387409537.kvalo@kernel.org>
+Date: Thu, 14 Mar 2024 08:56:38 +0000 (UTC)
 
-On 3/13/24 11:56 PM, Kees Cook wrote:
-> Children processes were reporting their status, duplicating the
-> parent's. Remove that, and add some additional details about the test
-> execution.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kselftest@vger.kernel.org
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-> ---
->  tools/testing/selftests/exec/execveat.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
+> Having an empty default: case in a switch statement causes a warning
+> (when using Clang; I don't see the warning when using gcc),
+> so add a "break;" to the default case to prevent the warning:
 > 
-> diff --git a/tools/testing/selftests/exec/execveat.c b/tools/testing/selftests/exec/execveat.c
-> index 0546ca24f2b2..6418ded40bdd 100644
-> --- a/tools/testing/selftests/exec/execveat.c
-> +++ b/tools/testing/selftests/exec/execveat.c
-> @@ -98,10 +98,9 @@ static int check_execveat_invoked_rc(int fd, const char *path, int flags,
->  	if (child == 0) {
->  		/* Child: do execveat(). */
->  		rc = execveat_(fd, path, argv, envp, flags);
-> -		ksft_print_msg("execveat() failed, rc=%d errno=%d (%s)\n",
-> +		ksft_print_msg("child execveat() failed, rc=%d errno=%d (%s)\n",
->  			       rc, errno, strerror(errno));
-> -		ksft_test_result_fail("%s\n", test_name);
-> -		exit(1);  /* should not reach here */
-> +		exit(errno);
->  	}
->  	/* Parent: wait for & check child's exit status. */
->  	rc = waitpid(child, &status, 0);
-> @@ -226,11 +225,14 @@ static int check_execveat_pathmax(int root_dfd, const char *src, int is_script)
->  	 * "If the command name is found, but it is not an executable utility,
->  	 * the exit status shall be 126."), so allow either.
->  	 */
-> -	if (is_script)
-> +	if (is_script) {
-> +		ksft_print_msg("Invoke script via root_dfd and relative filename\n");
->  		fail += check_execveat_invoked_rc(root_dfd, longpath + 1, 0,
->  						  127, 126);
-> -	else
-> +	} else {
-> +		ksft_print_msg("Invoke exec via root_dfd and relative filename\n");
->  		fail += check_execveat(root_dfd, longpath + 1, 0);
-> +	}
->  
->  	return fail;
->  }
+> drivers/ssb/main.c:1149:2: warning: label at end of compound statement is a C2x extension [-Wc2x-extensions]
+> 
+> Fixes: e27b02e23a70 ("ssb: drop use of non-existing CONFIG_SSB_DEBUG symbol")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202403130717.TWm17FiD-lkp@intel.com/
+> Cc: Michael Büsch <m@bues.ch>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: llvm@lists.linux.dev
+> Acked-by: Michael Büsch <m@bues.ch>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+Patch applied to wireless-next.git, thanks.
+
+6c700b35a534 ssb: use "break" on default case to prevent warning
 
 -- 
-BR,
-Muhammad Usama Anjum
+https://patchwork.kernel.org/project/linux-wireless/patch/20240313001305.18820-1-rdunlap@infradead.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
