@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-102938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F0887B8AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CCAE87B99E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:50:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EFAA1C232AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:46:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E9651C22218
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133F75CDDB;
-	Thu, 14 Mar 2024 07:46:25 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2121.outbound.protection.partner.outlook.cn [139.219.17.121])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296EC6CDB2;
+	Thu, 14 Mar 2024 08:47:38 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2138.outbound.protection.partner.outlook.cn [139.219.17.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227355D724;
-	Thu, 14 Mar 2024 07:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644336CDA9;
+	Thu, 14 Mar 2024 08:47:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.138
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710402384; cv=fail; b=N5eUPw8sdBEU8OxknsFywZ3jFG1fftGjgoqdrO1H9IB3FrPE9Ac9Z/RcEb0JgzU1TrTIqgNDFRNKMi54GvgxHTqZxBqsrIhZWymggK7TdfMNuvlAXtmSjPe6xM7EVz799KGJDcyJpvl68H6HiWWz9Q97xGt0p3ZnHPCwEapfdJ0=
+	t=1710406057; cv=fail; b=VvVQUaM9azE8fUCKgvZTVZxKHjtpmtEjO0isMqcZ65k9goDyoLq5mKuXXiCWg5IBMW97uwzsE3TPdRWQ1KOl53wC9NDsV20hUTVS5k523hVz3eQDZ80vodO9vE3899r9D+J2RHbCEd3ywMGjWeWL23SKBt9rl5TTW94Dfrod89w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710402384; c=relaxed/simple;
-	bh=PoksSSO/4MjT5LKsifIJUmpo/IyjFGk/uo0lmuWTbrE=;
+	s=arc-20240116; t=1710406057; c=relaxed/simple;
+	bh=YXTy3D8+8zKyo7U7gL6KxAUAuqHMOtw7c4lwM7ak78Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EqidItVHfgSbqPRCESz2qtAFDpB3yseSBdJIPrWDuyVAMNFiPmWyIF/EgWKHWqGTkFsHv/YV/gijXiorewvrM6iiYJbxS2+8Ga4Rs0184mlL4ykA7MTPUtVYelKJ+Sb79uEWhHwxmsPFdtuovqV4I35a6Xyo9BhPHbeQqsUw0Xs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.121
+	 Content-Type:MIME-Version; b=ZNhcnLRPH9qO5ANTTnU0bSNmSNqwVjbjjZsA2JZm9591iETXrNvc87FziR3sF7ZENQ4zuvrxMPowR5BWLZYypzqRxXlLe4nuKH90hLjVP+IJDJZse7XBoR4BAy3S52e2PI7RVuqwp3elVPv+FqVVIgmDEUTdSwcHlVeuZ4+u2eQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.138
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TFJSdJ7QnYniOG72gxZIHB42G7zRBU2+mrBpx907gB1X31cwz3FN0nQXlzjUPNMEManLklAycLVcoyE+r0gLw3uOukMX470nivKKCbKNfxgbK+owp+6I6Jy9yHlD2cMu/5azb2Kw1ANiqCQYYNJbIENNq+bXouDGWEuZ1Q8vJRa+YgfJKsvgp0cuBMFxCj2bFJco7CN15McpMhQ9J1p6xgmIi10TMZUj6uXCGt8vmKweSkylyp3FQu2UHTUJd61wBJOwUOs9m9SWnqYPHWf/OHtjzUandyS5OcWZ9xmOSGfu/5q2cCKWJAbb+4jv+OZlj6c2iyye2w+dpwOSawU5Hw==
+ b=EKEgXBP5U44G1klIsXyjdwOztF6KhUWyMtf+H7tiessRUYVXFR7ZeRrk6VtV6uzx9Sqh9vKN3U+bjiysJcx4H2Ekp1uvr3CtbMsAbdQ5KTN45R3OduFtfH7j1poW/jm2THrWZX8Pj63tQlOg6fEyKGxzR6b19VFHXH84CED+p48uqry/httILezl7aWf7/97ar+AiDJ7r/NUZIMTMBfhv/7ZbgtJN+T5a9mo0SaGzmAQU4DxQolt1ii6MkyACp12Klf1vU8XK26Bdl8ziu+eHRPe3YXiM7tuvwEDy0ItXE0zrbjIwMPW5MysBW9PWDX3EuTOxSh1/O+7jw9NHDrQkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/G1Nz9ycT1DhhUUC4iDrZWbhROgmt3+O2Ya8UuFhLbQ=;
- b=oWGOeu2DApaZt0jeasWRa6Sc/y/DpoqBu4P/Fz13fo5SUJFigEpNbI8+6qM54i/GQCCOhCJpJvv4OXjzD2g65ncfO1N3kA4ePVBFm30KxXo/acl2i4kvrWs/Ew6Kc9xIzLxleeafygToruI9MsoO9EuXc6HMwKMh0wI/YMOwBsAZ+qh0Wba2wTJRRwc/0f80iUoc3iRW1eZq9osKOgP+WXpqV6Z7eDWX8Bs8MHOJum97zUiK+Qjsv3qzkAuBWdKZOxoZwyYTXGKxWDRjygr3QqLaQf3s/XNtbqnRFMhJbTXTasvn5YwG8eYqzgwIJtAxFRQ9Fs3vn4P94OFiU53THg==
+ bh=3Up0MHIoIRu+8GF/6KPeb8yOAl80wqLgHl0l3i4nGxQ=;
+ b=YFf3G8PwSLyEdXobOE3GpP8odhTUJOR1YpnnRsvun/UWUXOJGvKrUuSgRuVrqSMtw0M13Ztcz2p6Ac8iqGDsx+3hcgTKUErVzgxgzBcyzEDNwLM8WUrtMjDILM5YM9MX9JSEIvT0X31Ksz+I5FobK1KdzlEY/i52yOS4H0BQTMHhugKX0mhlLvTnXZlewpGETZtSpH1s+I5UkGHoECgXZYn9/YvEPYps97BmX0nUTRHc53zHwK7HCtDFordHkD/JoJWK4jroR0vME7u3aLBLQbgKj7niWqcSPk9O/zrx46Tw5SX6X3xUPneMvU1r2EIEh4xeAwz/hnlKr+aAsvhiMg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=starfivetech.com; dmarc=pass action=none
  header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
@@ -44,11 +44,11 @@ Received: from BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c211:1b::23) by BJXPR01MB0711.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c211:18::17) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Thu, 14 Mar
- 2024 06:12:35 +0000
+ 2024 06:12:40 +0000
 Received: from BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn
  ([fe80::a038:3f49:b470:9207]) by
  BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn ([fe80::a038:3f49:b470:9207%4])
- with mapi id 15.20.7386.017; Thu, 14 Mar 2024 06:12:35 +0000
+ with mapi id 15.20.7386.017; Thu, 14 Mar 2024 06:12:40 +0000
 From: Joshua Yeong <joshua.yeong@starfivetech.com>
 To: paul.walmsley@sifive.com,
 	palmer@dabbelt.com,
@@ -73,9 +73,9 @@ To: paul.walmsley@sifive.com,
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org
-Subject: [PATCH 3/4] cache: Add StarLink-500 cache management for StarFive  JH8100 RISC-V core
-Date: Thu, 14 Mar 2024 14:12:04 +0800
-Message-Id: <20240314061205.26143-4-joshua.yeong@starfivetech.com>
+Subject: [PATCH 4/4] dt-bindings: cache: Add docs for StarFive StarLink-500 cache controller
+Date: Thu, 14 Mar 2024 14:12:05 +0800
+Message-Id: <20240314061205.26143-5-joshua.yeong@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
 References: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
@@ -92,236 +92,132 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BJXPR01MB0838:EE_|BJXPR01MB0711:EE_
-X-MS-Office365-Filtering-Correlation-Id: c22cd1d8-7982-474f-1b5c-08dc43edbe13
+X-MS-Office365-Filtering-Correlation-Id: 9fab0cb1-e899-42b8-9c16-08dc43edc0bf
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	pzr5/KKPqLVWDFMa8lhCke4KRUPCWIxvPXKF6GjC+dZYbwz/WNj8JteG3LiGoSfPp8T8qp5YEnp31SsntS3pGFSj4ipxg3f/ERAmtTfhclBUDZPnHNPyPsic9902UmFayYZKCvX/dToI9jsnwrATgnM0KAhMC8oy5xPeCM33I+5qlhxn5hu5SSxp+Q7cdoq4wps4a4iQWZg/Bw/By2vLUa7a1vV57Z6Rt7cayDD0FZttz1S1oDX4nmtTcHOiuwk8/71T26hRAdXJFAQgPqlEQDRlKbL5oUnEWFCjYX5ulH+WL39p2Z1jxsnUddkqxu8qIKP/2BYol+MW4Ih6Ts7+Ta0FXIzYllt6Z68bDnacr0zAF/V1mrbtCHN+d+lu1RE525uZIRYixJ9u2lScd8UAz0jiftKWJM9sxwwOCevm4qUJmFEMIama28LC5bHg6sdgrjRWxJNmyOm2COSatyXF+qxpMxi4hex56MNAMPpXTsa/h/iNkWRyEpD9/5b9LMQZicwblgf6NBo47z2zpbecZogJ3hane0/I1wq6C0FVhYq2ZzzJwa9t3A7mVni0ehXmHo6tBtx6m2Oqejw+duvYLSmi8gUj+li3yaLfTuNqpM94GezRGu+tSk7TATEtqybAf0H4QI9r1NHiyRuAHPyW9w==
+	A5p72sJLznyvOW6snsHQh0uS2Qai/xWwik8ScFehXVeOmeaFLdSqP0Kn9aFj+4Ihqur+4tSIJbicZAsewWanE5rVa2rD1ut4t7RY53BT43tr06BdhzgYTV9cikmn5qrVmRLNzYPqnDraC6s+bVf+PmwxBlHq8oKMdVztYlEFGWJ/JLKL/GLhy2UekIPDJwP4RiK39StwbrqBxnTTjGbN7iqPCqulhH2so8LIV4EL3pDUsF6Hul8PDRere9J5vsbqiVxE2icGo2sgMWjj9c07aEcKnvPDEWaYHjweOEAnqZHZZncor+Ei/mrjqYe+ju/KoOwwkUxld9hTLRq0t/6pseSDzEEmK56Pv/iYe6+EP68VRwd4eOPQJD4BRphKqjBBVBZU6k2B0R05zL4TX8ShDqE27toiqwrM3+DJRIaEswygGPdCZCoc73q9pmy7/YeYsH1+5ck/Te0WAZbE67zKj9p5OcgpCSrVpZIjeOcwdH+ZFzpqlFGI7gTgBSMRNmikUkYlN+1FAUWGG6gbkG5SPosgOc7dJIT9zOAPPEl3TxTYHFCqsHq6ZJNY+YLkuZZuAC4IkUSFYJekuXDNOFNbAwUvbsN09i9ibh3LytFcZ4Mm9cdEIz9eLk0zxg20ZSxHZcsLe8qy6TJRRS2Yx930bg==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(7416005)(41320700004)(1800799015)(52116005)(921011)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?5rjTv+dBV24qnAt/KcYWLMDsPV0lPx+GZBFxqJ6SAeXBjrVASZzdtzUAGPoo?=
- =?us-ascii?Q?piDERj87HGvoPhhKv8GiT1NeN8OOxp0qnPRktvLYCD73UKg0ktIBf8wkunHD?=
- =?us-ascii?Q?fxh+STQRsh7Hh1K4K+2Wc41nhvb1zNvg4VAd+G4EONlLmoceaNz6PVSeHDaq?=
- =?us-ascii?Q?hYF2ctLnAOdEx5ZNxR7edGI6j8N+JciS9tuWq8IK8pBUKxJgM4yY5AvczCBf?=
- =?us-ascii?Q?+3U07ydpYCVKvnPUqAxIvboUJY52udnFneQOV6NEPZubrrs75xnGJCNk/jxj?=
- =?us-ascii?Q?yGg755bAZUPXgW3UFC5aG0cDGyHTd0Q3VMv2VOF9uCjfUwrbMMrDudZ2pHix?=
- =?us-ascii?Q?MD2ZOW7DfNgcogePz0U84FtiYMUQw4J8pLC6xoqGkIdEmoYzC1iAaJA1xyo5?=
- =?us-ascii?Q?UzJ6IQ+TnBbvCF93T8C+3K4Yxdj9TEY7SYH5X2uD2U0a0ZPU6hNlwz7FWbAG?=
- =?us-ascii?Q?zo4Ifa3C59HJwr6fIUMp0aSl9lYPAagcIilJ6NB+F4c26RS511O2sOO1no1i?=
- =?us-ascii?Q?6R55KpbFkFUIYdyNK6w8J4pAowD9GiQ19MEON0aZXBW/bZtIP3oKlDz2hRTC?=
- =?us-ascii?Q?mcQVXL66SI0Nk9dbpK+TD7jTD+KxTrWOGV+T/4A/ihJ18Xo5K4rQ9jjcVHRd?=
- =?us-ascii?Q?fl74hhSYUfEtL0Muv44cptdgvTbfp95tYSziLpf5nV36o8GSElOmkvbjxgGN?=
- =?us-ascii?Q?WKIDSU/ELKQqwExWek20JVuM8+kJ4aXKKwRRhwfv/feLpRyX9fBeOzgkszwS?=
- =?us-ascii?Q?TfPNHrhem+Z4RuDvy7aIW8FIi1S9yC1UQNlVXyOXiA3Xq0ooanIo2oe2eLHb?=
- =?us-ascii?Q?l4LfRF0RW0qCsrs0uaQQxcAms6VkE90EmMpPACSHWQLxMLPzC2hkNxbK1bMa?=
- =?us-ascii?Q?TxhPKWRQnLLmcRg7Qk9rtkjR1uywh1t9Xo7PJUxWtayzO0Icy02WFXIH9uhW?=
- =?us-ascii?Q?k1DL6zvN3ym7wIr+kjYY0g5JyHD62iidq5cVLAcbMK1oNQVIsAREpBqIIskq?=
- =?us-ascii?Q?HDgGcTXPzrZPTHTs8Q65QKI5tD+eMCAhFI3F5J1oTqyHNoE5+SZcVSuqBkLm?=
- =?us-ascii?Q?sIIHPOpBEgb7AOtE3y1u1jgptA2VGqym4p35BkKlUtkmyvndXDJ6sYfLWKPx?=
- =?us-ascii?Q?AbB64N7P2DzousM7l+NZwsuskonDopHeGOoQ44pTKO+38lsSlDpdJNK7/83h?=
- =?us-ascii?Q?qj3wWj61kVT6jrjtSuOTnzpuY1RiUeOy77SOadQM8SpDLk82BeW/TwgBQWrI?=
- =?us-ascii?Q?L2U+IuKpe17hQs2RpagsuxENtIz7g1mpotvm2hBvprhZzpXIiW+pgqpLvelS?=
- =?us-ascii?Q?MKYgx4QLv/AlTF7kZURzroyqNWH8MqplpBsHrS7NGhnlU9eggMaap5KZHQue?=
- =?us-ascii?Q?JILbQUX0jWoeupddrsTrHTJyvj0+WGR/Gnz+voruVVwkM5P9tskRIpC8R9p3?=
- =?us-ascii?Q?noCCnTAHb88Y2LMkJFzteoOxWqeWhBQwRO9BzE8gj2RisBSKHsAz4QtaYd2x?=
- =?us-ascii?Q?1uiI8TX2soYZcI86idEkCfvMQqTw/6XSTvW0CC9RXpcA/nKRPyosGY03Yu5F?=
- =?us-ascii?Q?RbpnwB/rM6rrX4kLIxuCNlWnBZ33o++MzmTcyV55ah8W9Pl36QDR91Zh1stI?=
- =?us-ascii?Q?mh8CT7pPzZvTu98QfuwI7nE=3D?=
+	=?us-ascii?Q?34hi1Cgbk+6sYQRCMq+88NitFUNkqH/fLyzIlh5aizAYcoqcLe0W6Chs8zPD?=
+ =?us-ascii?Q?6FCUQ7qsNjbg5o2FT28aOGPxZUW8Sf3RHJbYVZRSkSXCucFl7L2ekN+pzj5T?=
+ =?us-ascii?Q?AwTjnTb1Qyyc6WdrSdHR6KKfHxsJZfhHC+4TLUqjZODPXbNbnn0TPxdaYfGF?=
+ =?us-ascii?Q?XoQkkOgEC7N1fsumU9idA6Kc/Qtky2jFNOb2Vc6XCiwiiN2/5J/BNiWtGb3f?=
+ =?us-ascii?Q?d5hBb/D7Xim8w+qsW+7fdZZ4xQuvM2JNOlGKnLvMfUusAfnwn5WfzvyYn7Yv?=
+ =?us-ascii?Q?deYNuZSg+YB2EFO7mTnizwjX90gjBQMx0O9I/GR2sp9KJfjqev6qHq07Ol1s?=
+ =?us-ascii?Q?mDxcAcbfJ2/cIHcrB/y0Sj9bykJZoDtCcTAt+5RJfTCaYYGCKjTN1ABqu55t?=
+ =?us-ascii?Q?hO7hVMgFC2E1GFdp2AIXqIylVLlYPNvSertukSBwT9FpsrkSc93a0DyFgHwV?=
+ =?us-ascii?Q?mzP2VU+1XukpAwJlsIbdVT+z0eqXHILaUsWVKhhFJdw8cWh407WImJwdTxzy?=
+ =?us-ascii?Q?sejDny6CT/7VhfYrdOhRi8n4ElS6bvE0fvNQtZFZpOjRcsBvSL4qbvbMA/H0?=
+ =?us-ascii?Q?0gjLMXA/tIwR79R0l1e8rtBAmTVXTQRdzEUHaHvd9uI7pbwG1p2Tc1R8rxoU?=
+ =?us-ascii?Q?rn50qSYNW8HbF1ujW8iXDOLt2BWKUm381dJUlA0+n6RiNTm4G/zba5YvJ/4u?=
+ =?us-ascii?Q?sAmPM+/ExQdkKSltf04jQn0TQPS13JBupe7CUmfiaAar5LsohT5dAXiSHwXn?=
+ =?us-ascii?Q?tmyWvw7FPx8noURlv+sWrcHgi0joz8TsRf/i0EAqKN2z0BSNLiHo9ELvRhRh?=
+ =?us-ascii?Q?3jpXyYISD9By9w9AcWapSzssF0/zfn4AuQYSNJPtqm41eUFY11QHLsLZMuGP?=
+ =?us-ascii?Q?zEABA98xE3iplrGrQPh0n9d3i4jN0c6mV4H8vKtjsNdY2k5fCI3+X8iuPJgO?=
+ =?us-ascii?Q?GAuJQ69WM1GxnKSmdA0aL1pTD2iR3SMFLsnjwX5fJApNyLqB6FFl81cOtWob?=
+ =?us-ascii?Q?47ipKuNI9BP8bUTfZXAMBB5W9uZpTj0rIDjYqohsgp5/azykuCNP1YA1ub+P?=
+ =?us-ascii?Q?ROJ/Pa/62TVkaxtEP7a0kneZQpkxWFek4zL6ZyI1dxf6oCC6qQC9kqvi5SVH?=
+ =?us-ascii?Q?AxU2lA/G/nzxnWEo38lcAiSU1fZ4C6xmdyM+IMGMvBexJwZ9zAsfGUffsI6g?=
+ =?us-ascii?Q?87eh+Lmel1AW8Dz2frY48D7kHcJsLZgXQjwPUDM+O0inL08YDSD5iLzRYOe6?=
+ =?us-ascii?Q?2oYkVmgKMQsvQ0nw9KaOiUaL05vGtQaUagNc/H0eMY5o1Cjlgq8gSUw/RLmQ?=
+ =?us-ascii?Q?b491oHAyUjBSot/9o3SZAceo/UUE++6FTG28+ZjKbUIegVGz/LYmhHGfuLd9?=
+ =?us-ascii?Q?dLIa/mCcouVxQWDeCVmQ4gMek3J47pc5PNuni/OZ1Q6NBruhg3HLHw1DFVGG?=
+ =?us-ascii?Q?BRGkZN7sy1oMmHmI7+3LYfZRR41sjkb1QOsJNxUE2SCirteG3rfW91YB0HDe?=
+ =?us-ascii?Q?Y6l5sNCmrBVz03vBxujbT0UEWYafPBhDSOniEY1PdmSlXb6G378YzxduH/7m?=
+ =?us-ascii?Q?rM2WGwVaaEVFMtXMa2AOs42Bv5/x5d+87bqoFOFBqOixg6WBtYjpKHJ6RxuG?=
+ =?us-ascii?Q?l6bxLlSTdY0YbhItVz1576Q=3D?=
 X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c22cd1d8-7982-474f-1b5c-08dc43edbe13
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fab0cb1-e899-42b8-9c16-08dc43edc0bf
 X-MS-Exchange-CrossTenant-AuthSource: BJXPR01MB0838.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 06:12:35.6080
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 06:12:40.1001
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dIgb+5vRo/W3YVV8b3EpQqprnp5iwQPHaTlcEKsq4yQm44HOJ5HPVOSWfc4KvvTAinAom7WjG8VxE8NcpA2q59YDAomu3xW++AUVTuc6QO8=
+X-MS-Exchange-CrossTenant-UserPrincipalName: HIOSGwWNTfBIgfRGjPU18uo2XvJ0O/tiNAXOa/XkVsoV75woDK3C5ZEb2S+Azjj/X41VWWuasbUEJTDg5iR0bFGU3c4Zu8Y1iF+3gJ07SzI=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJXPR01MB0711
 
-Add software workaround for StarFive StarLink-500
-on JH8100 SoC for CMO extension instructions.
+Add DT binding documentation used by StarFive's
+Starlink-500 cache controller.
 
 Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
 ---
- drivers/cache/Kconfig             |   9 ++
- drivers/cache/Makefile            |   1 +
- drivers/cache/starlink500_cache.c | 137 ++++++++++++++++++++++++++++++
- 3 files changed, 147 insertions(+)
- create mode 100644 drivers/cache/starlink500_cache.c
+ .../cache/starfive,starlink-500-cache.yaml    | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/cache/starfive,starlink-500-cache.yaml
 
-diff --git a/drivers/cache/Kconfig b/drivers/cache/Kconfig
-index 9345ce4976d7..e215379f6a73 100644
---- a/drivers/cache/Kconfig
-+++ b/drivers/cache/Kconfig
-@@ -14,4 +14,13 @@ config SIFIVE_CCACHE
- 	help
- 	  Support for the composable cache controller on SiFive platforms.
- 
-+config STARLINK_500_CACHE
-+	bool "StarLink-500 Cache controller"
-+	depends on RISCV_DMA_NONCOHERENT
-+	depends on ERRATA_STARFIVE
-+	select RISCV_NONSTANDARD_CACHE_OPS
-+	default y
-+	help
-+	  Support for the StarLink-500 cache controller on StarFive platforms.
-+
- endmenu
-diff --git a/drivers/cache/Makefile b/drivers/cache/Makefile
-index 7657cff3bd6c..c515eb5714ea 100644
---- a/drivers/cache/Makefile
-+++ b/drivers/cache/Makefile
-@@ -2,3 +2,4 @@
- 
- obj-$(CONFIG_AX45MP_L2_CACHE)	+= ax45mp_cache.o
- obj-$(CONFIG_SIFIVE_CCACHE)	+= sifive_ccache.o
-+obj-$(CONFIG_STARLINK_500_CACHE) += starlink500_cache.o
-diff --git a/drivers/cache/starlink500_cache.c b/drivers/cache/starlink500_cache.c
+diff --git a/Documentation/devicetree/bindings/cache/starfive,starlink-500-cache.yaml b/Documentation/devicetree/bindings/cache/starfive,starlink-500-cache.yaml
 new file mode 100644
-index 000000000000..eaf8303cb086
+index 000000000000..97ddf7db39e9
 --- /dev/null
-+++ b/drivers/cache/starlink500_cache.c
-@@ -0,0 +1,137 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Non-coherent cache functions for StarFive's StarLink-500 cache controller
-+ *
-+ * Copyright (C) 2024 Shanghai StarFive Technology Co., Ltd.
-+ *
-+ * Author: Joshua Yeong <joshua.yeong@starfivetech.com>
-+ */
++++ b/Documentation/devicetree/bindings/cache/starfive,starlink-500-cache.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/cache/starfive,starlink-500-cache.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/bitfield.h>
-+#include <linux/cacheflush.h>
-+#include <linux/cacheinfo.h>
-+#include <linux/delay.h>
-+#include <linux/dma-direction.h>
-+#include <linux/io.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+#include <linux/processor.h>
++title: StarFive StarLink-500 Cache Controller
 +
-+#include <asm/dma-noncoherent.h>
++maintainers:
++  - Joshua Yeong <joshua.yeong@starfivetech.com>
 +
-+#define STARFIVE_SL500_CMO_FLUSH_START_ADDR		0x0
-+#define STARFIVE_SL500_CMO_FLUSH_END_ADDR		0x8
-+#define STARFIVE_SL500_CMO_FLUSH_CTL			0x10
-+#define STARFIVE_SL500_CMO_CACHE_ALIGN			0x40
++description:
++  StarFive's StarLink-500 controller manages cache shared between clusters of
++  CPU cores. The cache driver provides mechanism to perform invalidate and write
++  back functionality to the shared memory.
 +
-+#define STARFIVE_SL500_ADDRESS_RANGE_MASK		GENMASK(39, 0)
-+#define STARFIVE_SL500_FLUSH_CTL_MODE_MASK		GENMASK(2, 1)
-+#define STARFIVE_SL500_FLUSH_CTL_ENABLE_MASK		BIT(0)
++allOf:
++  - $ref: /schemas/cache-controller.yaml#
 +
-+#define STARFIVE_SL500_FLUSH_CTL_CLEAN_INVALIDATE	0
-+#define STARFIVE_SL500_FLUSH_CTL_MAKE_INVALIDATE	1
-+#define STARFIVE_SL500_FLUSH_CTL_CLEAN_SHARED		2
++# We need a select here so we don't match all nodes with 'cache'
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - starfive,starlink-500-cache
 +
-+struct starfive_sl500_cache_priv {
-+	void __iomem *base_addr;
-+};
++  required:
++    - compatible
 +
-+static struct starfive_sl500_cache_priv starfive_sl500_cache_priv;
++properties:
++  compatible:
++    items:
++      - const: starfive,starlink-500-cache
++      - const: cache
 +
-+static void starfive_sl500_cmo_flush_complete(void)
-+{
-+	ktime_t timeout;
++  reg:
++    maxItems: 1
 +
-+	volatile void __iomem *_ctl = starfive_sl500_cache_priv.base_addr +
-+                                      STARFIVE_SL500_CMO_FLUSH_CTL;
-+	timeout = ktime_add_ms(ktime_get(), 5000);
++  cache-size: true
++  cache-sets: true
++  cache-block-size: true
++  cache-level: true
++  cache-unified: true
 +
-+	do {
-+		if(!(ioread64(_ctl) & STARFIVE_SL500_FLUSH_CTL_ENABLE_MASK))
-+			return;
-+		msleep(50);
-+	} while (ktime_before(ktime_get(), timeout));
++additionalProperties: false
 +
-+	pr_err("StarFive CMO operation timeout\n");
-+	dump_stack();
-+}
++required:
++  - compatible
++  - reg
 +
-+void starfive_sl500_dma_cache_wback(phys_addr_t paddr, unsigned long size)
-+{
-+	writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_START_ADDR);
-+	writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr + size),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_END_ADDR);
-+
-+	mb();
-+	writeq(FIELD_PREP(STARFIVE_SL500_FLUSH_CTL_MODE_MASK,
-+	       STARFIVE_SL500_FLUSH_CTL_CLEAN_SHARED),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_CTL);
-+
-+	starfive_sl500_cmo_flush_complete();
-+}
-+
-+void starfive_sl500_dma_cache_invalidate(phys_addr_t paddr, unsigned long size)
-+{
-+	writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_START_ADDR);
-+	writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr + size),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_END_ADDR);
-+
-+	mb();
-+	writeq(FIELD_PREP(STARFIVE_SL500_FLUSH_CTL_MODE_MASK,
-+	       STARFIVE_SL500_FLUSH_CTL_MAKE_INVALIDATE),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_CTL);
-+
-+	starfive_sl500_cmo_flush_complete();
-+}
-+
-+void starfive_sl500_dma_cache_wback_inv(phys_addr_t paddr, unsigned long size)
-+{
-+	writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_START_ADDR);
-+	writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr + size),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_END_ADDR);
-+
-+	mb();
-+	writeq(FIELD_PREP(STARFIVE_SL500_FLUSH_CTL_MODE_MASK,
-+	       STARFIVE_SL500_FLUSH_CTL_CLEAN_INVALIDATE),
-+	       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_CTL);
-+
-+	starfive_sl500_cmo_flush_complete();
-+}
-+
-+static const struct riscv_nonstd_cache_ops starfive_sl500_cmo_ops = {
-+	.wback = &starfive_sl500_dma_cache_wback,
-+	.inv = &starfive_sl500_dma_cache_invalidate,
-+	.wback_inv = &starfive_sl500_dma_cache_wback_inv,
-+};
-+
-+static const struct of_device_id starfive_sl500_cache_ids[] = {
-+	{ .compatible = "starfive,starlink-500-cache" },
-+	{ /* sentinel */ }
-+};
-+
-+static int __init starfive_sl500_cache_init(void)
-+{
-+	struct device_node *np;
-+	struct resource res;
-+	int ret;
-+
-+	np = of_find_matching_node(NULL, starfive_sl500_cache_ids);
-+	if (!of_device_is_available(np))
-+		return -ENODEV;
-+
-+	ret = of_address_to_resource(np, 0, &res);
-+	if (ret)
-+		return ret;
-+
-+	starfive_sl500_cache_priv.base_addr = ioremap(res.start, resource_size(&res));
-+	if (!starfive_sl500_cache_priv.base_addr)
-+		return -ENOMEM;
-+
-+	riscv_noncoherent_register_cache_ops(&starfive_sl500_cmo_ops);
-+
-+	return 0;
-+}
-+early_initcall(starfive_sl500_cache_init);
++examples:
++  - |
++      cache-controller@15000000 {
++        compatible = "starfive,starlink-500-cache", "cache";
++        reg = <0x15000000 0x278>;
++        cache-block-size = <64>;
++        cache-level = <3>;
++        cache-sets = <8192>;
++        cache-size = <0x400000>;
++        cache-unified;
++      };
 -- 
 2.25.1
 
