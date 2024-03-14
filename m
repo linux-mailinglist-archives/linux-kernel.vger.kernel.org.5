@@ -1,144 +1,172 @@
-Return-Path: <linux-kernel+bounces-103299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0991387BDB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:29:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADBE787BDB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:29:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B0751C226E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:29:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05AE428248A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C8C6FE13;
-	Thu, 14 Mar 2024 13:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E955BAFC;
+	Thu, 14 Mar 2024 13:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OYWkSywB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="5WPWnxVZ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E9D5BACF
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A4C5A11A
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710422879; cv=none; b=kMLWgakALUiByRFcI26LIPgh5ltsSsVfpqQRhlkrtjjdhznZEHq+rWVeP4hByhhKxVzTsMoIhwTmzyXbcCPdFnKnjaIEIHYr8JvvBEnMd7Y0hStteO8JC28FqD3EAbh7GmzAmi0KKKUrshscab/amjvnkbMKB6fsFw0OLP5yWnE=
+	t=1710422968; cv=none; b=kliGvhs9/0CbHYuD1G0uOVAbrUoI9UtwymoeKPJ4dGEIp9hUdjcrLbeZ7OgB/xtBnRqjZsIdTd0OBtchjnwr+YOPAGzbPBXOGmKoCXzMtjNlLdokKRva3kyK6m3tUOeFLDlSXxaGBA0NeJ97H+65qcmqaZPdleL22RBli8vCrW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710422879; c=relaxed/simple;
-	bh=AlzosFQIeUwDpF182A/3HVs1sGOOB9xuxDNbavIhXjg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eGCwE6CJbbpNW3PjJCGyoa5U/0DDhEjU6WwzMSHuHIMECn9L8OjtU55reL+be4PsE1nJRWMOgNEsYo0u4FWNmMUZuV7E81MrjEbG5msDVWEyKdwkBQQTw/rDFe4yCN8licW6L1+zr2v0+csu6AvbCI15XYQDOiFYbAHxoqcEMX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OYWkSywB; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710422876; x=1741958876;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=AlzosFQIeUwDpF182A/3HVs1sGOOB9xuxDNbavIhXjg=;
-  b=OYWkSywBfphZ8BGoIDXC/ITihP+aUvJvIQ7HDjyr2pxqMHctAGgwCPZ0
-   CDvAyOnlCrrdfPc6GF4pjt2WUW48oI2WD29KlCL4/b0f6MFN7fbWXW6SZ
-   /KIHsEOX6QV1nTu+dQHlGQpgHXTwuGVZ+5PxyjQCp8ydTHiQ28mxacoPj
-   J3UA9eBxt9IfxOtEaDaRsL950CREu4bg0HkJ9KXIv4MpYTyWOuSeKgyRK
-   3jjnFUQG1ISMmrUv1ZXadrLnCs7PzEzrkZ4Xf92Y26df0RJrioSiR/rH3
-   X2oQxTixbJKyq2ubLZAx+y2Q93VSjPnkaWTJvE13othSUNLspgcNZ4iH9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="9062625"
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="9062625"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 06:27:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
-   d="scan'208";a="43212728"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.6.193])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 06:27:54 -0700
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- linux-staging@lists.linux.dev, outreachy@lists.linux.dev
-Subject:
- Re: [PATCH v3] staging: greybus: Constify static struct kobj_type
- gb_audio_module_type
-Date: Thu, 14 Mar 2024 14:27:50 +0100
-Message-ID: <2457147.jE0xQCEvom@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <ZfKxooDH2ef6/1y3@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
-References: <ZfKxooDH2ef6/1y3@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1710422968; c=relaxed/simple;
+	bh=OPR+be61xu6eBXXnp/++w/CdEI4VsQSdO9wap5rADAM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GbwM5OORct2pN8jNHzjFDWSxaGNgeKt3qJJapZd0/GgPofyXPTt0UnUYampvGNSOVyHomINChyxdh82bgmfKK2sANHxqfQxNl7670OskG0ScmSJIHF8YvR+Z3P1ERA2R3+2O+HgOuq4hEucJpm9Wjk0Wk+inikW5d38EZB1izk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=5WPWnxVZ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710422964;
+	bh=OPR+be61xu6eBXXnp/++w/CdEI4VsQSdO9wap5rADAM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=5WPWnxVZdkpSnbPDaqckpBPCssY2Hg/K0OrsDXKRkP93nL6O798hS2lVJ8VGpAr9i
+	 Gm5yjE/4UDwgUpil+LWnEMsNuDZvt8WdeDY92NIZPLL4fIBXPrcBBnU792WAHRS66U
+	 COQdtC9HP3o4aZqf0YsWx1WJ+tk0E8CUUz8l4XjDGld/V/VF7RtzQWd0GPyT+R8S4g
+	 sQBp3e3m7nqwyUFOYcMmR1Goy5FqUTjgK4fry7VtgCYe0aqL3/NYNkAgE+K0MVfwCD
+	 rGk1WYmQvIHbF5OY8MmCfT9u0dJPvvAA5pwXrfoY2v4Ovj5+WKl069rXGpodICRZ26
+	 9tagenpHUGexw==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5B1753781013;
+	Thu, 14 Mar 2024 13:29:23 +0000 (UTC)
+Date: Thu, 14 Mar 2024 15:29:12 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Melissa Wen <mwen@igalia.com>
+Cc: Arthur Grillo <arthurgrillo@riseup.net>, Rodrigo Siqueira
+ <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
+ =?UTF-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, Haneen Mohammed
+ <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Louis Chauvet
+ <louis.chauvet@bootlin.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
+ miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
+ seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
+Subject: Re: [PATCH 1/7] drm: Fix drm_fixp2int_round() making it add 0.5
+Message-ID: <20240314152912.7925242f.pekka.paalanen@collabora.com>
+In-Reply-To: <nzce3m2okiqdd6iqj6ynymus64vjcpdep3jwqgs4uw3rvkvqkz@tz4i34w7b6es>
+References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
+	<20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
+	<yyrvbqpmqplwtqfdsjkhzmx7wrk4h67kn5443bdou7c7uciouy@hac7zfxiff7t>
+	<16f8867c-147a-4149-ba96-ae70f8eaf903@riseup.net>
+	<nzce3m2okiqdd6iqj6ynymus64vjcpdep3jwqgs4uw3rvkvqkz@tz4i34w7b6es>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; boundary="Sig_/dOumZZ=j4VZBSK8qbc0+7gS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Thursday, 14 March 2024 09:13:22 CET Ayush Tiwari wrote:
-> Constify static struct kobj_type gb_audio_module_type to prevent
-> modification of data shared across many instances, ensuring that the
-> structure's usage is consistent and predictable throughout the driver
-> and allows the compiler to place it in read-only memory.
-> The kernel builds successfully without errors or new warnings,
-> verifying the change.
-> 
-> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
-> ---
+--Sig_/dOumZZ=j4VZBSK8qbc0+7gS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I think that the "Subject" line should be made shorter by deleting all the 
-unnecessary information. I'm not asking you to make a new version just to 
-address my comment, but please keep the following in mind for your next 
-patches.
+On Thu, 14 Mar 2024 09:59:39 -0300
+Melissa Wen <mwen@igalia.com> wrote:
 
-The "Subject" line is provided (1) to briefly explain what this patch is 
-doing and (2) to uniquely identify the patch (e.g., in git-log output).
+> On 03/13, Arthur Grillo wrote:
+> >=20
+> >=20
+> > On 12/03/24 15:27, Melissa Wen wrote: =20
+> > > On 03/06, Arthur Grillo wrote: =20
+> > >> As well noted by Pekka[1], the rounding of drm_fixp2int_round is wro=
+ng.
+> > >> To round a number, you need to add 0.5 to the number and floor that,
+> > >> drm_fixp2int_round() is adding 0.0000076. Make it add 0.5.
+> > >>
+> > >> [1]: https://lore.kernel.org/all/20240301135327.22efe0dd.pekka.paala=
+nen@collabora.com/
+> > >> =20
+> > > Hi Arthur,
+> > >=20
+> > > thanks for addressing this issue.
+> > >=20
+> > > Please, add a fix tag to the commit that you are fixing, so we can
+> > > easily backport. Might be this commit:
+> > > https://cgit.freedesktop.org/drm/drm-misc/commit/drivers/gpu/drm/vkms=
+?id=3Dab87f558dcfb2562c3497e89600dec798a446665 =20
+> > >> Suggested-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> > >> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> > >> ---
+> > >>  include/drm/drm_fixed.h | 2 +-
+> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
+> > >> index 0c9f917a4d4b..de3a79909ac9 100644
+> > >> --- a/include/drm/drm_fixed.h
+> > >> +++ b/include/drm/drm_fixed.h
+> > >> @@ -90,7 +90,7 @@ static inline int drm_fixp2int(s64 a)
+> > >> =20
+> > >>  static inline int drm_fixp2int_round(s64 a)
+> > >>  {
+> > >> -	return drm_fixp2int(a + (1 << (DRM_FIXED_POINT_HALF - 1))); =20
+> > > Also, this is the only usage of DRM_FIXED_POINT_HALF. Can you also
+> > > remove it as it won't be used anymore?
+> > >  =20
+> > >> +	return drm_fixp2int(a + DRM_FIXED_ONE / 2); =20
+> > > Would this division be equivalent to just shifting 1ULL by 31 instead=
+ of
+> > > 32 as done in DRM_FIXED_ONE? =20
+> >=20
+> > Yes, but I think the division makes it easier to understand what is
+> > going on. =20
+>=20
+> Right. I was thinking about slightly better performance, but I don't
+> have any data. We can go with this since you consider more readable,
+> anyway.
 
-I'd write something like the following:
+Those are constants, the compiler should compute it at build time in
+both styles.
 
-"staging: greybus: Constify gb_audio_module_type"
+I like the DRM_FIXED_ONE / 2 style, it's semantically obvious. Bit
+shift is less obvious.
 
-Who reads the subject doesn't need, and probably doesn't want, to know that 
-the variable you are making "const" has a "static" modifier or that its type 
-is "struct kobj_type". These information add nothing relevant to what the 
-patch is doing.
-
-Examples of shorter, yet sufficient, "Subject" lines:
-
-7ab4de60028e virtio-mem: Constify mem_id_table
-01e1932a1748 iommu/vt-d: Constify intel_dma_ops
 
 Thanks,
+pq
 
-Fabio
+--Sig_/dOumZZ=j4VZBSK8qbc0+7gS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> Changes in v3: added the message that verifies the change,
-> as suggested by Julia
-> 
-> Changes in v2: incorporated changes in commit message
-> as suggested by Alison
-> ---
+-----BEGIN PGP SIGNATURE-----
 
->  drivers/staging/greybus/audio_manager_module.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_manager_module.c
-> b/drivers/staging/greybus/audio_manager_module.c index
-> 5f9dcbdbc191..4a4dfb42f50f 100644
-> --- a/drivers/staging/greybus/audio_manager_module.c
-> +++ b/drivers/staging/greybus/audio_manager_module.c
-> @@ -144,7 +144,7 @@ static struct attribute 
-*gb_audio_module_default_attrs[]
-> = { };
->  ATTRIBUTE_GROUPS(gb_audio_module_default);
-> 
-> -static struct kobj_type gb_audio_module_type = {
-> +static const struct kobj_type gb_audio_module_type = {
->  	.sysfs_ops = &gb_audio_module_sysfs_ops,
->  	.release = gb_audio_module_release,
->  	.default_groups = gb_audio_module_default_groups,
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXy+6gACgkQI1/ltBGq
+qqdypA/8DP+ZPFALvLB10UlVV9UNUurMWlycc6po5VFxXLt8YZcWvGHTaTTAzLyT
+cGkOiq+fq1qXx68+trjpYt1M9f/yfu0BO+YLgVvMYXkJQKqkFFbRxGlUDwltM8SQ
+pGFFKzMX3nPEenfaGJXP53EYRGmZmKND8vSIJgmWXmelgAeHjM0yIB0P5v+FhV4b
+RJbvNNZzqElFqlpowCCk2uE/Yz+9a8eMWQFPu6AIB8UPtB2BbFnVOquMbujHDYuI
+O0oxuoIJOoj+OwIwlZ6yokwiuIugJURsU6No9WD10bLB84uqbCowejdUHOPL42wl
+xBZWVWOCoje18BOKTZFln9NrUW5xxkzGmjCpBrlCKXA9lfzqTcXFWegZEuAms3Ow
+8pHRQ6Exd1GAdSmPjbhu0/KQKhR1EL0FmmaPaRLyVcCYh/Wd3xaFR0wg8GgbiRu2
+emBXRLmffKh36wa8FqnKl+FWNRc354xZ6TN5pw6r0oQRJChwTlGPA4P2SjGqZXGs
+bYOTFXkXzTB20rLFH6rDPKWhVu4RuD8wtQoOp8Gx7mJf2hXszKwIcQj0MFXVPyKe
+05oF8mMGF73HloECl2mV/gEecHLPyjqBIILV6h91DB6Ph0bZ/uXXi53Q99kvK639
+hu/wQTHWNAznEhVFsYtPgd4Uk6q4pPjNM3Nz8fRd+2Hgs+C5Kys=
+=2qYl
+-----END PGP SIGNATURE-----
 
-
-
-
+--Sig_/dOumZZ=j4VZBSK8qbc0+7gS--
 
