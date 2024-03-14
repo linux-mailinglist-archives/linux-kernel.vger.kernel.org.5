@@ -1,163 +1,129 @@
-Return-Path: <linux-kernel+bounces-103011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C185787B9BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:53:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E08987B9BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F6412836E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:53:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 702251C21FD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F0F6BB5D;
-	Thu, 14 Mar 2024 08:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A75F6BB5D;
+	Thu, 14 Mar 2024 08:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="By/226kC"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kZVhG8GF"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07076A005
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3977643ADD;
+	Thu, 14 Mar 2024 08:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710406392; cv=none; b=jU6lKX2Xnwoyp63OHhNeIZdqOA2EcRz4ivDHMVYFCeLLLhvZTBRN/vyfd/moVJT5iMGOrwWJ9QFdXIu3/Sysa2swdFuZdPGxzC5P8/4JoKGl8pIkg2aCM/a5Lh5F92UhaDScw2ZnR9y5DaJkIBMZ15XoWI781E9OffIBO+J/WPY=
+	t=1710406466; cv=none; b=TlZJBwbR9+zzxo9V64H3bc0kbveW0KdBQPV3j+yhYnsJTztwirXzCFOOZQxHGl+Gm8nxGzyzbDQEcAO5+cVsTWKar6TUucWm6E8wHyGBik9NW9oBPo2vE9ZcmslfL/UZtzpqRXuvx3s6pMl1HvaJlEfA5bydMcYJrJ3beXUQF3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710406392; c=relaxed/simple;
-	bh=JRbh0ekOAZoITs6bw+4Z2PKWQij1OKHQNZkoVnNXhvo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=MfYldJgKHnjHi2D6Iqo+bgRgQ8PYZu/F+2N8iVCUY5rKeviYxPNoJE9+/HcAxmcQH1EsTUY1VsBg++bccxFILpVEhI+qHxWMdtIL/SFWgp7KwQWuGz+fTsTjbXOEZ8WOwsVWcTiDdf2dU7AhF6qVM9LclGbIpaOd6tMAYiGlzvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=By/226kC; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-413eede49dbso4143435e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 01:53:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710406389; x=1711011189; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UbDxneRzxmh6zafaW9TXqgUwW7Hf6w8+OIr/Rmft0o8=;
-        b=By/226kCUcEjhGfFaLeDVzuo87OuoGSgpEdVtQZq0EApeYwXbATrwOUSlc3s7ePqrU
-         3oUC363DsRRji1s7Our7OgxQHsFRIl845qTxVcJHkLyc81gJmxLeIKcG7Q0qiLEkLoGG
-         lAAD/oFB/BkIcfS8dKidS4drVoRR5okno6Qs3/iBF2ebAxy8GRcroHK4ihx9GoC+E/h7
-         KrzEV532nhI7opHaPb8I0rY/mDiqSvAUxGf4fg4AIxBKsy7RJeBxrwMYP1ksUqKN+/kQ
-         5R3WiJZ121KuJHKodExU52BNl4LmEce4S1D0FG7lunS7DNn8yU678qHQ+UvRVSxhdQ9r
-         HnEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710406389; x=1711011189;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UbDxneRzxmh6zafaW9TXqgUwW7Hf6w8+OIr/Rmft0o8=;
-        b=upHjaLE7xD66tQWofND8PKw3qgQvQTY+YNcWhZNYoQOpljoArp/5tVvHNhzHT0HQel
-         X18fk1Zv42jdXyCuACh1YqcK8WuS4VjfDeH0tXlb/2xCUswuGwq+vF7Xetmz0iadoBlh
-         +XSjl6KQY7OQJh3Y4YqK9Ipv7FSThUy2QWAsAO0rrL6L6qgGXKvTR6Apbe/sWlMxY0RD
-         uQ+TYsfZn2Rlhkj+fPTCi+myWL4iOmUG0H6TrpPrbdLFScWmFg86YSXsxBv6qB38LOdx
-         jCd19dLx4xi9Oi1JnBeEHwBgErwXzCNVME93o1T79HtF0t5VOAhrJe29JtMkJTcvQ2ZR
-         ICIw==
-X-Forwarded-Encrypted: i=1; AJvYcCWiDmPDQu6uBPNoF5+o9dNDBhk+zaEmbNAt+fTWOKWlDy0qOQ6H4ZqaQV2ycEHoBQYqrJfBRXLdMXQ4h5qzwjJfcCy7vNQQtTR2mYli
-X-Gm-Message-State: AOJu0Yw+Rk5pdyNjS0BNFajNhf9MJ0fMV4PKCvUQPKv4PZAIMnoSlqhi
-	9dzHKqOdxDTkQRLCUdGkMqJ97L31mZ9luWbpHk6bk+IvQ0DotrgqIFjY2VATwdk=
-X-Google-Smtp-Source: AGHT+IFRpexeDw19e7xHc9v1E4DV5w6+c9RQwY+Hev2+ZsJyImI39fcT/32EqxfKP6Mso5LyjBhRTA==
-X-Received: by 2002:a05:600c:511d:b0:413:27ac:d2fa with SMTP id o29-20020a05600c511d00b0041327acd2famr775723wms.6.1710406388634;
-        Thu, 14 Mar 2024 01:53:08 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id c16-20020a05600c0a5000b00413f7c89c0esm239089wmq.24.2024.03.14.01.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 01:53:08 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Thu, 14 Mar 2024 09:53:06 +0100
-Subject: [PATCH] arm64: dts: qcom: sm8650: fix usb interrupts properties
+	s=arc-20240116; t=1710406466; c=relaxed/simple;
+	bh=Hug4VpcwNwwqAOdVuGR3r5w2hzLyi1ZErcpgeoCjrpg=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fUl2A7YaQiDns87HUAseqBWL60d1SO2gYY7//Gsun6APKFSqTCfAFi1f7GZkfuAcgJJia1kauwPR6WYUJ7E/cK8ABfcYr8aW4ZcmPQbWCj1jRhr70MjlSOlvWqkjFPND1VezyxpQxMEJY1BJumC4Q5Qab8Q4LqEB7nHbi9k7p4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kZVhG8GF; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710406462;
+	bh=Hug4VpcwNwwqAOdVuGR3r5w2hzLyi1ZErcpgeoCjrpg=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=kZVhG8GFZYYC3OAzSAy08JnBI7ueSsyszQUf5fEmjQ2II8WGNRD/wgTbcyAhltdca
+	 MhX/nATboCzW2kCOzEjw200OyBhiHWNi28f+Fd+CF34xT/cGtMpvxqs/HpBWXPzb5Y
+	 qxiBfmUXTOs078rdLjOkbZ3cRZYX9bGtVSx5svoldhVQ6/3Bh0AL+rblWfyAAQpfWZ
+	 gPtW+AA3MdPR0h8MwGVzD7p2bORCWGQ2kq+cYRnrCemV5qYCWemsZpFJGCXNrrZZDO
+	 glDgKLSjJjuhnhYBKNjVFoCvbhaj+BZUq8o7TqrhP48UsGCGqdi4+LuVbzRJwLhi9p
+	 R8ea4uLifDcRw==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A3105378105A;
+	Thu, 14 Mar 2024 08:54:19 +0000 (UTC)
+Message-ID: <1dd87e89-2306-4669-844f-ffe9e56523b6@collabora.com>
+Date: Thu, 14 Mar 2024 13:54:50 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <shuah@kernel.org>, Mark Brown <broonie@kernel.org>,
+ linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] selftests/exec: execveat: Improve debug reporting
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>
+References: <20240313185606.work.073-kees@kernel.org>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240313185606.work.073-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240314-topic-sm8650-upstream-usb-dt-irq-fix-v1-1-ea8ab2051869@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAPG68mUC/x2Nuw6DMAwAfwV5rqUQHgJ+peqQEKf1AAQ7VJUQ/
- 96I8W64O0FJmBSm6gShLytva4H6UcH8ceubkENhsMa2pqlbzFviGXUZ+s7gkTQLuQUP9Rgysuw
- Y+Yeh995GCk10I5RUEir63jxf1/UHgOjETXYAAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Krishna Kurapati <quic_kriskura@quicinc.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2404;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=JRbh0ekOAZoITs6bw+4Z2PKWQij1OKHQNZkoVnNXhvo=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl8rrz9KSsY3SwzrfHNznomVnGxXTudvzA0j9vmM0U
- eawhbiCJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZfK68wAKCRB33NvayMhJ0RixD/
- 9xz+bVW58nmfFwhQ8QFWl1/VMdntM/B/3YsrSWuRe1u2XNLVXIrgIkMuSPeja1NEbIFnF2nIYluBuW
- 6IkPMmgeYusMuptUkp0agOOHL97/hMK8fTjcl3+dw5jPuUUNr33XHAT4cXeM1YuNyfq/STDBy4cpm2
- WTGw6/AB9TbI90Fv50hTiOeCLv4oV094z7OPUlAHmDAAKT+B1PpAOLGQYFW/vBNcFpxN8bBYahpIb9
- Rvp0gzh2ALztMGs3Ks3HyaYdKhRaosKkupFaC+ydDn62Elep3oGUIKYXiEMXUF6vc0ZkfiO5kzLujT
- 92OLAezUcFKt70XqL7qSwlJCIgEQ7NUlv7iTt2WNNsUQ6IoO+IIttVjIpf4kiumW/9+33ExOs0eXsT
- 0KMMapBvALHPNH4Z9+Xup9HfH8ayW/BC2v/kDhlMmi63Jdw6uhPPwp8uTD83zojAtDO2LXuObC75/k
- t4NQNqqt2VlX04omvCPvA4TDssPUno/HHyQNQdyVhVYDCnslhshumB13Y3d+ji9IBRAwAxnBgPA9fa
- FCjyVQqwfhLGqLHrorZBoDLpCeycCTsT6YLSNQak37CPXE5/Vf1WADEmFe4zu53FjWh/xQs71bAqvl
- CulT+f/Xk5DUmiGwnA7qrLch33qjWHMBekgPnqlgcjEcifN15yWppihQsWnA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-Update the usb interrupts properties to fix the following
-bindings check errors:
-usb@a6f8800: interrupt-names:0: 'pwr_event' was expected
-        from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-usb@a6f8800: interrupt-names:1: 'hs_phy_irq' was expected
-	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-usb@a6f8800: interrupt-names:2: 'dp_hs_phy_irq' was expected
-        from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-usb@a6f8800: interrupt-names:3: 'dm_hs_phy_irq' was expected
-        from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-usb@a6f8800: interrupt-names: ['hs_phy_irq', 'ss_phy_irq', 'dm_hs_phy_irq', 'dp_hs_phy_irq'] is too short
-        from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+On 3/13/24 11:56 PM, Kees Cook wrote:
+> Children processes were reporting their status, duplicating the
+> parent's. Remove that, and add some additional details about the test
+> execution.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> Cc: Eric Biederman <ebiederm@xmission.com>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kselftest@vger.kernel.org
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-Cc: Krishna Kurapati <quic_kriskura@quicinc.com>
-Fixes: 10e024671295 ("arm64: dts: qcom: sm8650: add interconnect dependent device nodes")
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+> ---
+>  tools/testing/selftests/exec/execveat.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/exec/execveat.c b/tools/testing/selftests/exec/execveat.c
+> index 0546ca24f2b2..6418ded40bdd 100644
+> --- a/tools/testing/selftests/exec/execveat.c
+> +++ b/tools/testing/selftests/exec/execveat.c
+> @@ -98,10 +98,9 @@ static int check_execveat_invoked_rc(int fd, const char *path, int flags,
+>  	if (child == 0) {
+>  		/* Child: do execveat(). */
+>  		rc = execveat_(fd, path, argv, envp, flags);
+> -		ksft_print_msg("execveat() failed, rc=%d errno=%d (%s)\n",
+> +		ksft_print_msg("child execveat() failed, rc=%d errno=%d (%s)\n",
+>  			       rc, errno, strerror(errno));
+> -		ksft_test_result_fail("%s\n", test_name);
+> -		exit(1);  /* should not reach here */
+> +		exit(errno);
+>  	}
+>  	/* Parent: wait for & check child's exit status. */
+>  	rc = waitpid(child, &status, 0);
+> @@ -226,11 +225,14 @@ static int check_execveat_pathmax(int root_dfd, const char *src, int is_script)
+>  	 * "If the command name is found, but it is not an executable utility,
+>  	 * the exit status shall be 126."), so allow either.
+>  	 */
+> -	if (is_script)
+> +	if (is_script) {
+> +		ksft_print_msg("Invoke script via root_dfd and relative filename\n");
+>  		fail += check_execveat_invoked_rc(root_dfd, longpath + 1, 0,
+>  						  127, 126);
+> -	else
+> +	} else {
+> +		ksft_print_msg("Invoke exec via root_dfd and relative filename\n");
+>  		fail += check_execveat(root_dfd, longpath + 1, 0);
+> +	}
+>  
+>  	return fail;
+>  }
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index ba72d8f38420..985ef46a04e1 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -3584,14 +3584,16 @@ usb_1: usb@a6f8800 {
- 			compatible = "qcom,sm8650-dwc3", "qcom,dwc3";
- 			reg = <0 0x0a6f8800 0 0x400>;
- 
--			interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
--					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc 14 IRQ_TYPE_EDGE_RISING>,
- 					      <&pdc 15 IRQ_TYPE_EDGE_RISING>,
--					      <&pdc 14 IRQ_TYPE_EDGE_RISING>;
--			interrupt-names = "hs_phy_irq",
--					  "ss_phy_irq",
-+					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "pwr_event",
-+					  "hs_phy_irq",
-+					  "dp_hs_phy_irq",
- 					  "dm_hs_phy_irq",
--					  "dp_hs_phy_irq";
-+					  "ss_phy_irq";
- 
- 			clocks = <&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
- 				 <&gcc GCC_USB30_PRIM_MASTER_CLK>,
-
----
-base-commit: 9bb9b28d0568991b1d63e66fe75afa5f97ad1156
-change-id: 20240314-topic-sm8650-upstream-usb-dt-irq-fix-d6bb2fed3fa9
-
-Best regards,
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
-
+BR,
+Muhammad Usama Anjum
 
