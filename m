@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-103876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3619087C629
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:26:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8270887C627
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9694DB221E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 371882827C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0586925564;
-	Thu, 14 Mar 2024 23:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB53D250F4;
+	Thu, 14 Mar 2024 23:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="lJyiaIG7"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="jJzF+8WI"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443C817C6B;
-	Thu, 14 Mar 2024 23:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0FF17C70;
+	Thu, 14 Mar 2024 23:23:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710458591; cv=none; b=Bum/2fUj6PjmgV6TcuN3c7F9f/kWJduOyM89UjprY0F9suqHGdbcfxKg9nOoQPkW0P0y+Qbt1exUs8vFZlCwiG2V0Q9F4DEo3BN9BaqbG2hUZKiZO5DEgZ8rwI8kJ92+ALcTVZ/w2MPaKHK8qsEX73vumwlPlKH974Mj8wS5dq4=
+	t=1710458591; cv=none; b=VtP/H8taVRVX/MeEOiQODOv+r5X1h2H9PCaP8R6vgCuAW4Z9bWrl4UTir61yzfa8A/SCu2tD1h3ODLJWyvMP1kmsAyZ62XWvlUJv6yVwW4oWjKPfT0fi+yhxb7Vz1/3Z9Dle4UCpkOTb+xY0nUp4y3mFniL5xyjGKV/avYzG7Hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710458591; c=relaxed/simple;
-	bh=vOpsU+RwIj3w9yooQxGGCn6GlyI3xrVC6F9/0wiwm0Q=;
+	bh=QW+JjbrJl3n7JQhXFVm0AxUJp+xUWsijUysxd7owbZE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kAWZII5SxF58BJq5HOb+ANsjUmecCBODUlUuh1WAiEkq1ozF2MizZUdXtHBE2MYIfbUr7KAsLSebzcpiDBkWM0JQmlKQsWgePLx/auWGStKr7tv/EjxvWGS0/4wrwsB5V19L+QV2BA4pAMyyB+eJ13364pYMDNN0nLvZfQ2WIIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=lJyiaIG7; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=R5Pqv8Hx/MTqQWzxWvf0946ccq2vpBGmGkOr69E5bRaZofvZYflWSzvY6igw1OKdJwoAOipjY7S+6Q/lyyYnp3y6w26nXlfmvWJQIe1mPQBlxVSnSPkkVr1SSq8RIROAYrIgggTgLixyDTb8AzALiNM1KZhjoggrTgtR4uHg8CU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=jJzF+8WI; arc=none smtp.client-ip=37.18.73.165
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 7040812000F;
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 9E315100016;
 	Fri, 15 Mar 2024 02:23:05 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7040812000F
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9E315100016
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
 	s=mail; t=1710458585;
-	bh=2cBR28wVZklCa3JtuvaLhuQxNHULlRMlAPctj547VaE=;
+	bh=V+vdRcALSbTUGDcgP2YFpiUK4bL8vNQx31BjTGtvoQs=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=lJyiaIG7Obr3iLBxwIftnXPeNahwwUvur85TVU78ksmi1EVVWRm8IR4E3csbjWaAE
-	 eycZPWK5ACP16VFhBICUZHxgIA4sA/e98Qq+D7RpaTp0aYMvKl59OAdzEW/MfWRy06
-	 JqTx893XZebdUVXOOtlgQHVRXjr5865MLO6lXv91VLoz5iQd/AkuP1tLsuOOixdmAy
-	 JBaDOVcUtEZ7kDpLIS/s33pad1FxplwHXAF8Y10LRy6eFIg592EUkNThaYojS2aVYP
-	 JJdK/VigObTBukuXw6DJXfSWpWcyQ3WA7ET1B476yTzvPzKXS5Iwi2S0bscb/bE4me
-	 JITunxjVLzjLg==
+	b=jJzF+8WIvZ6FNhovzxBDvIydD2hZBQ81dr6xTs0quRU/a8qXKLjYh6mUHjPhQ7pv5
+	 F8kURAHZ7RS6f3EJA6Z0sJ/lpAPuXEiGYpjsgH7njsvZbpJSfR+9xUN7B3H28d/aH3
+	 OYC3M35dtS+dpV+tAEl7RjJUgPkMeSYiA+vzJ2TCa2mD/OJnT0ZmxnXGgDKwPt+V31
+	 N0uSSPDdVn5dfzwpXMiACnFwKUDtYc3xl+tJPDXCWpNfOgQuwdiHXDTitW35bYEZ8l
+	 409gv/tCzlVoLd7A/0hoW7m6B8aIwKWUizIzKyaK+LzSpS0FxvbRjHceKd3gE1r5ID
+	 ROjOQ7+k/SSKA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
@@ -52,7 +52,7 @@ Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.1
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:04 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:05 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -69,9 +69,9 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
 CC: <kernel@salutedevices.com>
-Subject: [PATCH 13/25] ASoC: dt-bindings: meson: axg-pdm: document 'sysrate' property
-Date: Fri, 15 Mar 2024 02:21:49 +0300
-Message-ID: <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
+Subject: [PATCH 14/25] ASoC: meson: axg-pdm: introduce 'sysrate' property
+Date: Fri, 15 Mar 2024 02:21:50 +0300
+Message-ID: <20240314232201.2102178-15-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -102,28 +102,68 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-This option allow to redefine the rate of DSP system clock.
+This driver unconditionally set the rate of DSP system clock to 250MHz,
+that on A1 SoC family causes reconfiguring of 'hifi_pll' clock to some
+rate, that is multiple to 250MHz.
+
+Further, when playback is activating 'hifi_pll' would be reconfigured
+to another rate to produce audio clock like 12288000Hz. Both these rates
+can't coexist on same parent.
+
+To avoid the fight for 'hifi_pll' clock allow PDM controller to
+configure its maximum sysrate through device tree. It will allow to
+inherit 'sysclk' from another clock (i.e. 'fclk_div2') and isolate
+'hifi_pll' from PDM influence.
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/meson/axg-pdm.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
-index df21dd72fc65..d2f23a59a6b6 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
-@@ -40,6 +40,10 @@ properties:
-   resets:
-     maxItems: 1
+diff --git a/sound/soc/meson/axg-pdm.c b/sound/soc/meson/axg-pdm.c
+index d59050914d3c..a132444a51fb 100644
+--- a/sound/soc/meson/axg-pdm.c
++++ b/sound/soc/meson/axg-pdm.c
+@@ -94,6 +94,7 @@ struct axg_pdm {
+ 	struct clk *dclk;
+ 	struct clk *sysclk;
+ 	struct clk *pclk;
++	u32 sys_rate;
+ };
  
-+  sysrate:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: redefine rate of DSP system clock
+ static void axg_pdm_enable(struct regmap *map)
+@@ -172,10 +173,10 @@ static int axg_pdm_set_sysclk(struct axg_pdm *priv, unsigned int os,
+ 	 * the requested sample rate. In this case, the sample pointer
+ 	 * counter could overflow so set a lower system clock rate
+ 	 */
+-	if (sys_rate < priv->cfg->sys_rate)
++	if (sys_rate < priv->sys_rate)
+ 		return clk_set_rate(priv->sysclk, sys_rate);
+ 
+-	return clk_set_rate(priv->sysclk, priv->cfg->sys_rate);
++	return clk_set_rate(priv->sysclk, priv->sys_rate);
+ }
+ 
+ static int axg_pdm_set_sample_pointer(struct axg_pdm *priv)
+@@ -386,7 +387,7 @@ static int axg_pdm_dai_probe(struct snd_soc_dai *dai)
+ 	 * sysclk must be set and enabled as well to access the pdm registers
+ 	 * Accessing the register w/o it will give a bus error.
+ 	 */
+-	ret = clk_set_rate(priv->sysclk, priv->cfg->sys_rate);
++	ret = clk_set_rate(priv->sysclk, priv->sys_rate);
+ 	if (ret) {
+ 		dev_err(dai->dev, "setting sysclk failed\n");
+ 		goto err_pclk;
+@@ -623,6 +624,9 @@ static int axg_pdm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->sysclk))
+ 		return dev_err_probe(dev, PTR_ERR(priv->sysclk), "failed to get dclk\n");
+ 
++	if (device_property_read_u32(dev, "sysrate", &priv->sys_rate))
++		priv->sys_rate = priv->cfg->sys_rate;
 +
- required:
-   - compatible
-   - reg
+ 	return devm_snd_soc_register_component(dev, &axg_pdm_component_drv,
+ 					       &axg_pdm_dai_drv, 1);
+ }
 -- 
 2.34.1
 
