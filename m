@@ -1,228 +1,165 @@
-Return-Path: <linux-kernel+bounces-103222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B6F787BC8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:13:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9152B87BC90
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:14:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2E6F28533E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:13:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B500C1C21345
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317A66FE19;
-	Thu, 14 Mar 2024 12:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E4C6F510;
+	Thu, 14 Mar 2024 12:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="efy2nGud"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QZIn9zRY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F9E6FBB8;
-	Thu, 14 Mar 2024 12:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EBD6F066
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710418400; cv=none; b=DngYxi9s4qJcEFBTASayrDRkixMW8sr82wNb0F33tJkitVtcwe3dQpeFZMnYx/pb0fSNec9G/2L+jieCyNgA8wCMjYF4Tyh4hvBIlEVAeP1qV5JlMZKwffBJw1ek5MoIeDvuG9VSLC7nU1ajTk6Ky0eNNMACHvOruU42tNmYuPY=
+	t=1710418473; cv=none; b=hryEGPNxez1tea3IgR70MvYYEgeEn9zSbC7fKWN4CcmY2ERrGK7DAICgVr2Rpf/PxoJdLTeXD1NY2M56ncud8MzwNnc/r1Wt7KdB0ib9DMavWHS0VyP4ii+Qj4Ie0qztxXRIAHTg4PB9xYra7w4uruStpWhctSxdECibuyMSykg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710418400; c=relaxed/simple;
-	bh=ggjWaA3TyfOC5HbQubFdLDuHfb92UY9bKjKeA3wCvAo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FP5VKneC8T3XU+r8wV6SHecWlI7fPeJZqk8ci/pAs2MhLp4ZrA0X/TLmBmcTle5clx56oDs7eumkuFGCOwQzNayV1+fr8m+PX8GLn8GN4Pg1LbprrOeaQrBe49Yk01YcVxsclaM/mXuw027nZGfrjRuCJVGBu2r3O1VruQQ2TG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=efy2nGud; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42E5uxSU020619;
-	Thu, 14 Mar 2024 12:13:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=9aOw8ma95arSkhpm2Jtv
-	UEM/jxcsRRTPFhWk6Fcwb5Q=; b=efy2nGudEJL6OnODQPHDd8m+TRG4YXc8XQBl
-	8VU10S9wUOfGGxa6cikfqPWK+Ub48sLHAG+GOfM+LBFncLCRjXINiz+4ojaJBWX+
-	Tl4ysYgEbwwRMy6mybl3mmR1lwA8bYnsDiJWurOPWtTZmjlUG6NDxdRQvCviOQNV
-	mAmNvTjDqTuHLalc2N6KEMNGPaMjafpcP6hmVhDMDaLUTIapXaj4TijEAqmRLO/j
-	Z8Um0H+LTDieslwmCL5Ep9qDRAQCjCgZSTLjqrgBYgsBd5YR7xUpn9L7i2bMhtrH
-	lh3yQtOa6YI700QJN8J7lPAhjCSLb0SjMwcrXG/Qjr0rHNplFA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wuuhrrtn4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 12:13:13 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42ECDCHt018735
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 12:13:12 GMT
-Received: from hu-amrianan-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Mar 2024 05:13:05 -0700
-From: Amrit Anand <quic_amrianan@quicinc.com>
-To: <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        <peter.griffin@linaro.org>, <caleb.connolly@linaro.org>,
-        <linux-riscv@lists.infradead.org>, <chrome-platform@lists.linux.dev>,
-        <linux-mediatek@lists.infradead.org>,
-        Amrit Anand <quic_amrianan@quicinc.com>
-Subject: [PATCH v2 2/2] dt-bindings: qcom: Update DT bindings for multiple DT
-Date: Thu, 14 Mar 2024 17:41:52 +0530
-Message-ID: <1710418312-6559-3-git-send-email-quic_amrianan@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1710418312-6559-1-git-send-email-quic_amrianan@quicinc.com>
-References: <1710418312-6559-1-git-send-email-quic_amrianan@quicinc.com>
+	s=arc-20240116; t=1710418473; c=relaxed/simple;
+	bh=dYc6f0exUqcPfUdHJH+EyAtgZLzfz/x37SqOqu03g6E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fz9xwytb+rjsqOlGXgdfBIpQh+tmjjVWOx0xs5oDYphgWZ0xT2nM++z82FZhavFrPwFe5izsiKlLbOyPTyqa7NH1ZIkKzcqvaciNii8zxIhN5DQ5fL5ihmh96orNlM6MVgp79J9fhyHMlTfkI5jWBezotLpVTT/OR9/ZuI52Ui8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QZIn9zRY; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710418470;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mlOOg1k7Te+LxzN88lGdQ/vUh9O6lwZLPkMDl/ywJH0=;
+	b=QZIn9zRYWYTWqX6Hz4s7qGkcrO7tek16VeHGFFdsMPjxcwUMh2AHYBw8QIPO/83P6ztNCo
+	cXiOG0CvMsOzYVr3D+JYBqg9edaZRaiWvV1/TNcQ6oSkV+J8ShHiqud05Glevhd6EgfpA0
+	+wuaU63J2dqKqmAdOqJa6v5pc8MUzhg=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-347-riDwIFAQN7CWdkpboaYhIQ-1; Thu, 14 Mar 2024 08:14:29 -0400
+X-MC-Unique: riDwIFAQN7CWdkpboaYhIQ-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-29c7792c8c6so279668a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:14:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710418468; x=1711023268;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mlOOg1k7Te+LxzN88lGdQ/vUh9O6lwZLPkMDl/ywJH0=;
+        b=xJjES7Q3uP05q+r7bjJvDabeMG6yYCLwDb80gFQ57EzYrAE83872YDl+4KxREQ4g7S
+         ekr8ZiYLAQj+46CRZxLORYXY6ZhSWiNMGiv4fX53YZOSdPGoxB8i9OgLPs8fe7XFnGzp
+         N4Mi6kN7Lh9OgpRAXHIqjGpv/Hd6FLELc07zGnJqXPOm8NEf7ILX7A0PWLaSQSb5GR0v
+         Z7+bUDLxjbhBXSUVJfIyOLOQwh2JFNcyYJx1EfCUwK+pKOHVJD7qEJHqOsdCM7fVglm9
+         O2hBCjgCwZnd72/v8PdWM0ieHzAWSbzzb4eH87zeGDDk8x2SuyQG0aYP026y5PB02YRN
+         tc2A==
+X-Forwarded-Encrypted: i=1; AJvYcCX2+IBtb5M32LhAu4YX3Sd1DwS/z3e1i8tbBsOtFXWXF9qS9jIeHUPg1PiRsRh4GCk48wKs/pPOSMbHDqEfHgDuO6uYBMENy1RPRSL/
+X-Gm-Message-State: AOJu0Yz0BPzRxkeXr5X4okaz+TdgwNFcyJ8ncjmiQwl2WPpjXYvYip+Q
+	JdXg7a0NP+vxVaDAQFkyqUMyrMI0tBQLjyhNC4QAuh322c+hYPqr9pLyavPctxMoE5anC0isM2d
+	FTYOnvQ7Nc87h+rnpNGvGlJ+Cr+YiSL7/tu0OV6NI2UST7UqRL+8qSe/OCmL5XQ==
+X-Received: by 2002:a17:902:d501:b0:1dd:5a49:7a98 with SMTP id b1-20020a170902d50100b001dd5a497a98mr1640026plg.3.1710418468345;
+        Thu, 14 Mar 2024 05:14:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHu1lypda1SV+Aw1YsnOcyfZmjXmrL3YHG/ruzVs1Q49QJ8abqSFdoRXbnSQERHu40ZJxaIAw==
+X-Received: by 2002:a17:902:d501:b0:1dd:5a49:7a98 with SMTP id b1-20020a170902d50100b001dd5a497a98mr1640004plg.3.1710418467916;
+        Thu, 14 Mar 2024 05:14:27 -0700 (PDT)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-u.redhat.com. [149.14.88.27])
+        by smtp.gmail.com with ESMTPSA id lh6-20020a170903290600b001db40866e09sm1522844plb.260.2024.03.14.05.14.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 05:14:27 -0700 (PDT)
+Message-ID: <c38358c418d4db11221093d7c38c080e4c2d737f.camel@redhat.com>
+Subject: Re: [RFC PATCH 0/5] Rust block device driver API and null block
+ driver
+From: Philipp Stanner <pstanner@redhat.com>
+To: Bart Van Assche <bvanassche@acm.org>, Andreas Hindborg
+ <nmi@metaspace.dk>,  Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+ <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal
+ <Damien.LeMoal@wdc.com>, Hannes Reinecke <hare@suse.de>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Cc: Andreas Hindborg <a.hindborg@samsung.com>, Niklas Cassel
+ <Niklas.Cassel@wdc.com>, Greg KH <gregkh@linuxfoundation.org>, Matthew
+ Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor
+ <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun
+ Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+ =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin
+ <benno.lossin@proton.me>, Alice Ryhl <aliceryhl@google.com>, Chaitanya
+ Kulkarni <chaitanyak@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>,
+ Yexuan Yang <1182282462@bupt.edu.cn>, Sergio =?ISO-8859-1?Q?Gonz=E1lez?=
+ Collado <sergio.collado@gmail.com>, Joel Granados <j.granados@samsung.com>,
+ "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, Daniel Gomez
+ <da.gomez@samsung.com>, open list <linux-kernel@vger.kernel.org>,
+ "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+ "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+ "gost.dev@samsung.com" <gost.dev@samsung.com>
+Date: Thu, 14 Mar 2024 13:14:05 +0100
+In-Reply-To: <855a006d-5afc-4f70-90a9-ec94c0414d4f@acm.org>
+References: <20240313110515.70088-1-nmi@metaspace.dk>
+	 <855a006d-5afc-4f70-90a9-ec94c0414d4f@acm.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Z6uz8jqyl86qsqBw4FdlHNEy5JaN_hZB
-X-Proofpoint-GUID: Z6uz8jqyl86qsqBw4FdlHNEy5JaN_hZB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_10,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- spamscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015
- impostorscore=0 priorityscore=1501 adultscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2402120000 definitions=main-2403140088
 
-Qualcomm produces a lot of "unique" boards with slight differences in
-SoC's and board's configuration. For eg, there can be SM8150v1 on MTPv1,
-SM8150v1 on MTPv2, SM8150v2 on MTPv2, SM8150v2 on MTPv2 with a different
-PMIC, SM8150v2 with no modem support and so on. For instance, suppose we
-have 3 SoC, each with 4 boards supported, along with 2 PMIC support for
-each case which would lead to total of 24 DTB files. Along with these
-configurations, OEMs may also add certain additional board variants. Thus
-a mechanism is required to pick the correct DTB for the corresponding board.
+On Wed, 2024-03-13 at 11:02 -0700, Bart Van Assche wrote:
+> On 3/13/24 04:05, Andreas Hindborg wrote:
+> > This is the second version of the Rust block device driver API and
+> > the Rust null
+> > block driver. The context and motivation can be seen in cover
+> > letter of the RFC
+> > v1 [1]. If more context is required, a talk about this effort was
+> > recorded at
+> > LPC [2]. I hope to be able to discuss this series at LSF this year
+> > [3].
+>=20
+> Memory safety may land in C++ in the near future (see also
+> https://herbsutter.com/2024/03/). If memory-safe C++ or memory-safe C
+> would be adopted in the kernel, it would allow writing memory-safe
+> drivers without having to add complicated bindings between existing C
+> code and new Rust code.
 
-Introduce mechanism to select required DTB using newly introduced device
-tree properties "board-id" and "board-id-type". "board-id" will contain
-the list of values of "qcom,soc-id", "qcom,board-id", "qcom,pmic-id" or
-"qcom,oem-id". "board-id-types" contains the type of parameter which is
-entered. It can be either "qcom,soc-id", "qcom,board-id", "qcom,pmic-id"
-or "qcom,oem-id".
+Correct, but it would also most likely allow to just arbitrarily ignore
+the "modern, memory safe C" (or C++) and write it the old way.
 
-Qualcomm based bootloader will use these properties to pick the best
-matched DTB to boot the device with.
+Those discussions are, below the surface, frequently in truth about the
+question: Can you (and do you want to) _force_ people?
 
-Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
----
- Documentation/devicetree/bindings/arm/qcom.yaml | 90 +++++++++++++++++++++++++
- 1 file changed, 90 insertions(+)
+The Kernel's C already has more memory safety than standardized C:
+There's devres, and since last year there's the __cleanup attribute.
+=E2=80=93 but the thing is, you can just ignore it and do it the old way.
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 7f80f48..dc66ae9 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -1100,6 +1100,76 @@ properties:
-       kernel
-       The property is deprecated.
- 
-+  board-id:
-+    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+    minItems: 2
-+    description: |
-+      Qualcomm specific bootloader uses multiple different identifiers
-+      (qcom,soc-id, qcom,board-id, qcom,pmic-id, qcom,oem-id) to select
-+      single Devicetree among list of Devicetrees. For different identifiers,
-+      the selection can be done either based on exact match (where the
-+      identifiers information coming from firmware should exactly match
-+      the ones described in devicetree) or best match (firmware provided
-+      identifier information closely matches with the one of the Devicetree).
-+      Below table describes matching criteria for each identifier::
-+      |----------------------------------------------------------------------|
-+      |  DT property  |  Individual fields   |   Exact  |  Best  |  Default  |
-+      |----------------------------------------------------------------------|
-+      | qcom,soc-id   |                                                      |
-+      |               |  Chipset Id          |     Y    |    N   |     -     |
-+      |               |  SoC Revision        |     N    |    Y   |     -     |
-+      | qcom,board-id |                                                      |
-+      |               |  Board Id            |     Y    |    N   |     -     |
-+      |               |  Board Major         |     N    |    Y   |     -     |
-+      |               |  Board Minor         |     N    |    Y   |     -     |
-+      |               |  Subtype             |     Y    |    N   |     0     |
-+      |               |  DDRtype             |     Y    |    N   |     0     |
-+      |               |  BootDevice Type     |     Y    |    N   |     0     |
-+      | qcom,pmic-id  |                                                      |
-+      |               |  Slave Id            |     Y    |    N   |     0     |
-+      |               |  PMIC Id             |     Y    |    N   |     0     |
-+      |               |  PMIC Major          |     N    |    Y   |     0     |
-+      |               |  PMIC Minor          |     N    |    Y   |     0     |
-+      | qcom,oem-id   |                                                      |
-+      |               |  OEM Id              |     Y    |    N   |     0     |
-+      |----------------------------------------------------------------------|
-+      For best match, identifiers are matched based on following priority order::
-+      SoC Revision > Board Major > Board Minor > PMIC Major > PMIC Minor
-+
-+  board-id-types:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description:
-+       Each field and helper macros are defined at include/dt-bindings/arm/qcom,ids.
-+    minItems: 2
-+    items:
-+       oneOf:
-+         - const: qcom,soc-id
-+           description:
-+              Matches Qualcomm Technologies, Inc. boards with the specified SoC.
-+              2 integers are needed to describe a soc-id. The first integer is the
-+              SoC ID and the second integer is the SoC revision.
-+              qcom,soc-id = <soc-id  soc-revision>
-+         - const: qcom,board-id
-+           description: |
-+              Matches Qualcomm Technologies, Inc. boards with the specified board.
-+              2 integers are needed to describe a board-id. The first integer is the
-+              board ID. The second integer is the board-subtype.
-+              qcom,board-id = <board-id  board-subtype>
-+         - const: qcom,pmic-id
-+           description: |
-+              Qualcomm boards can be attached to multiple PMICs where slave-id (SID)
-+              indicates the address of the bus on which the PMIC is attached. It can be
-+              any number. The model for a PMIC indicates the PMIC name attached to bus
-+              described by SID along with  major and minor version. 2 integers are needed
-+              to describe qcom,pmic-id. The first integer is the slave-id and the second integer
-+              is the pmic model.
-+              qcom,pmic-id = <pmic-sid pmic-model>
-+         - const: qcom,oem-id
-+           description: |
-+              Matches Qualcomm Technologies, Inc. boards with the specified OEM ID.
-+              1 integer is needed to describe the oem-id.
-+              qcom,oem-id = <oem-id>
-+
- allOf:
-   # Explicit allow-list for older SoCs. The legacy properties are not allowed
-   # on newer SoCs.
-@@ -1167,4 +1237,24 @@ allOf:
- 
- additionalProperties: true
- 
-+examples:
-+  - |
-+    #include <dt-bindings/arm/qcom,ids.h>
-+    / {
-+         model = "Qualcomm Technologies, Inc. sc7280 IDP SKU1 platform";
-+         compatible = "qcom,sc7280-idp", "google,senor", "qcom,sc7280";
-+
-+         #board-id-cells = <2>;
-+         board-id = <QCOM_SOC_ID(SC7280) QCOM_SOC_REVISION(1)>,
-+                    <QCOM_SOC_ID(SC7280) QCOM_SOC_REVISION(2)>,
-+                    <QCOM_BOARD_ID(IDP, 1, 0) QCOM_BOARD_SUBTYPE(UFS, ANY, 1)>;
-+         board-id-types = "qcom,soc-id",
-+                          "qcom,soc-id",
-+                          "qcom,board-id";
-+
-+         #address-cells = <2>;
-+         #size-cells = <2>;
-+    };
-+
-+
- ...
--- 
-2.7.4
+Once you give people freedom (which is necessary frequently), you'll
+get people who ignore "the right way to do it". You certainly get them
+once thousands of people are participating in your project.
+Actually, Rust in userspace has a similar problem: Your coprogrammers
+can call unwrap(), just ignoring those neat Result types and blow up
+your thread. So you have to review and reject that.
+
+One of the stronger arguments behind the push for Rust is that the
+language by design forces you to obey, because otherwise the compiler
+will just reject building.
+
+
+P.
+
+
+>  Please do not take this as personal criticism -
+> I appreciate the effort that has been spent on coming up with great
+> Rust bindings for the Linux kernel block layer.
+>=20
+> Thanks,
+>=20
+> Bart.
+>=20
+>=20
 
 
