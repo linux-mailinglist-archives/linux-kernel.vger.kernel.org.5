@@ -1,170 +1,193 @@
-Return-Path: <linux-kernel+bounces-102899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E430387B828
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8245E87B829
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AFC11F233A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:59:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE62E1F22DDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3976127;
-	Thu, 14 Mar 2024 06:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gUu/8GJn"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A19FC15;
+	Thu, 14 Mar 2024 06:59:51 +0000 (UTC)
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.124.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEFE101CF
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68BE2FBF7
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.124.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710399545; cv=none; b=pEBGj9Pj0WrH7KD2lI8hCGsmz9IbvGBgz10NyRVQ+a7Z233CSmgoNmtIxVK9KySTIg98rqwPjzVK8NgQRfu6LufHqB/vYKxxgCSA8Z9AaZVV8daph8/z9V89HwSuXoQULapVyLzQFZ0qTOVWYw1aDZ84/6jnj3DdNvysreIslys=
+	t=1710399590; cv=none; b=Bnjjx8lAoNNdFn28KNKPQx40p4Xcjr+lSHE2kt+EWMfN9EIRsC2XAtwUVhjCIHSMZU7jMdP3YsFgAK9wQB+9PDbNTmnGW7PgC7kdXvq4mfAActvMD9nVy8W1S736RIqCkfAn4sBVpLR4k92vEIlliL/8yGuNvXPYlo+Ph43LsAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710399545; c=relaxed/simple;
-	bh=lk+FIemgnpehzyK3+vniFLUNk/aaFM13iFrQq0+A8pI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G6Ih+MLS7f4lVOVryWmphGz7pBFo5X2kaundm/bPAIXwQzEUnxfTqcY4cSgISKFJK63zB21GcIf/BtM5EUSCBXlgt3uv5MfOpJdVv1r0D30wcmZAqsuUlUpHSttf1lhgXbMd5hYzfolnBAEx/r2hzysM+alhpgyz4pKN2MiH07s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gUu/8GJn; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-413f4b5171dso556945e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 23:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710399542; x=1711004342; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eMlXmtet+lMKP9MwdxiMqK7TmWez6CL4fiFRXib4iA4=;
-        b=gUu/8GJne/xpdON8oL1fG68GJ3UgvNsSY4VnBEVORX6iH8kFgYQVsKFz23S2S8e0Ur
-         oDFIzCwKHeBbgOC+LSX+TzsWOsX0e/9y+EQcWHkIhwNwK9mMHkLLKgNv4dWXlTaMtu1T
-         oQwJ+/D9XPr9UUMwD2pyZyLtzhopn0V3T/iZjkX1ZQ969l8T3JZHCUjr3hVAE1XCWh2k
-         qheSuQn9sRWmgoeUooxfF+M2e3NPry02PPItzTdvH5+DNW5Kyc/u9TPLzFtRUVquEYIC
-         Ub9d2AQ4tIjqAs1n+g5YmC3RPXWirGR1qWhRqMjVYKGGfr4gDGK+bdlBuaVrZooRrwTC
-         KnKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710399542; x=1711004342;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eMlXmtet+lMKP9MwdxiMqK7TmWez6CL4fiFRXib4iA4=;
-        b=v2nLjQ1U0arz5f5B9MwAY7nUktaRnAFZ3A+nTgZ5nBcvfkAVNAgNln434tP5i1O6ub
-         CHJ7L4+HcyuAyKR4gateC4Qv3gZfBLbQTY0lCcUkzLk1d5HRA3uNgLjVNerNLenj62Zf
-         dojukTImsB+1rFU5D29kz3gnlVWKM5QvcXULpHTS55y1kqqCHykz28oOpuR6o84w8e/Q
-         UuG3oWLcb3qq/aRQEY85onGULkYAI8EHby5OmF0X/3j5HFMtl0hNMgzRdDxCzBPIIseF
-         7Run46A0LoVCibXbLOZIDutuJZ3HxyOD0xFJzOKsIi1Ys7T5YwV/0pyTDwIgPJP57vQm
-         HYLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXQR0LE+vUh6tMkPk8r5Nn5uoCtLIKXQEkBRzopri0x5tw+9JwdKxuaR2HHGFGiuQmsyYgA2UH1lExYetzgQCgwxDLsHaYMLxaNE7DJ
-X-Gm-Message-State: AOJu0YxxT/vZDoU8y81Hwuj1pmm3/ux+mKBgSN90MOr0QWl1u6hQdh6V
-	GMf4opQxTJc6hX7oIEjWiVtiK84+SxaC/08KMWRYSUbByH2Pi1ETvoSeW8PJGxo=
-X-Google-Smtp-Source: AGHT+IGOsBQLhuuoMuHR8m2OSBz2b8kotaUpR3GF/pFWkyT2N1DWRMqNekfNP38jo/iUPW9o1N1r9g==
-X-Received: by 2002:a05:600c:c8b:b0:412:ee8b:dead with SMTP id fj11-20020a05600c0c8b00b00412ee8bdeadmr672788wmb.34.1710399541831;
-        Wed, 13 Mar 2024 23:59:01 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id n2-20020a05600c4f8200b004134540ae3asm1438824wmq.3.2024.03.13.23.59.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 23:59:01 -0700 (PDT)
-Message-ID: <c0e564f1-bfd9-450f-8bce-835837719688@linaro.org>
-Date: Thu, 14 Mar 2024 07:58:59 +0100
+	s=arc-20240116; t=1710399590; c=relaxed/simple;
+	bh=5GJy5DDa8qwSYwrfMYBz7FxtEevd5aHAjl6HBw3iMow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qY2Ig2X8OTiwbfOmv8xBS9yGWMUipZ+nPaIv2Milv33WV6I1HJjfaJqm9SnOzizeOYdyAAU1BydQKleUJL4Nbonn0d9eY2UtIOH/Pvjn3gl+q6zrUIHtntyF4bcwAfrx4mcfdWKa05Qsl7HOpu//cGxQyrqLiH03C4J4Z5c5WU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=114.132.124.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp73t1710399546tkgmdfn1
+X-QQ-Originating-IP: H+KCDFecsMyLYIULuDZR2uIVOIuDfzF1ZSB7u8T1Ej8=
+Received: from localhost ( [112.0.147.175])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 14 Mar 2024 14:59:05 +0800 (CST)
+X-QQ-SSF: 01400000000000704000000A0000000
+X-QQ-FEAT: uhqENxCMO6gQSwvaTcZ18T7KhOejJ2lgDBrmoopt3vsvsQSmXIVnk/+ICisQY
+	g4I5bQ6PfGmNDN77Vb1YlV2AshK0QaEiKDo8DGtAq19WNnp5kUbkx3+98oDN3t6v7J6BJDB
+	JnXVbxmI5DNoVNc3qqqWxGbpXjAy14mePSHMLOZmRiikpKW3i8wY8+LazRUC9IHcFAEv33f
+	/mSQd4/Dyt93H/04ZVSqtRJbiGwv2inp4+xj2+y1VVEwu9gDLMXxS54nWS0SgI5IXJQq58D
+	bGjF+1s6p6IRBXLth0CBmcZAI0UBc1ZE8n+UL61BtTo3jZ1fv61hGOR5leR9VdQ4jbyo51p
+	epj2ZzggtOXNTcV55U5IIGfJnOr6DC+w3HbE/o+xE8SYOD/AK3E0xgq/RZRR0n/n//lAWsI
+	inh8cFgrU4/wghiKduuO+sw/l4aETsPE
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 3017357544389553415
+Date: Thu, 14 Mar 2024 14:59:04 +0800
+From: Dawei Li <dawei.li@shingroup.cn>
+To: Anup Patel <apatel@ventanamicro.com>
+Cc: 20240307140307.646078-1-apatel@ventanamicro.com, tglx@linutronix.de,
+	palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	maz@kernel.org, bjorn@kernel.org, atishp@atishpatra.org,
+	ajones@ventanamicro.com, sunilvl@ventanamicro.com,
+	saravanak@google.com, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v16 0/9] Linux RISC-V AIA Support
+Message-ID: <E9B1C01C10270C80+ZfKgOOylgLIX5nvY@centos8>
+References: <343C92ABCFEE9906+ZfKPd/boCT8RAr3f@centos8>
+ <CAK9=C2UfK=rap06A4GLbbhSvGJYpLHb9LMqU_GuxFo0FVQnJHw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [DMARC error][DKIM error] [PATCH 3/4] arm64: dts: add support for
- A4 based Amlogic BA400
-Content-Language: en-US
-To: Xianwei Zhao <xianwei.zhao@amlogic.com>,
- Dmitry Rokosov <ddrokosov@salutedevices.com>,
- Xianwei Zhao via B4 Relay <devnull+xianwei.zhao.amlogic.com@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Jerome Brunet <jbrunet@baylibre.com>, Kevin Hilman <khilman@baylibre.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org
-References: <20240312-basic_dt-v1-0-7f11df3a0896@amlogic.com>
- <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
- <20240313095311.dxrr7gvt4t3gwoho@CAB-WSD-L081021>
- <74f96887-572d-47eb-bce4-9d61ec51b88d@amlogic.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <74f96887-572d-47eb-bce4-9d61ec51b88d@amlogic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK9=C2UfK=rap06A4GLbbhSvGJYpLHb9LMqU_GuxFo0FVQnJHw@mail.gmail.com>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On 14/03/2024 06:19, Xianwei Zhao wrote:
->>> +
->>> +             apb@fe000000 {
->>> +                     compatible = "simple-bus";
->>> +                     reg = <0x0 0xfe000000 0x0 0x480000>;
->>> +                     #address-cells = <2>;
->>> +                     #size-cells = <2>;
->>> +                     ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
->>> +
->>> +                     uart_b: serial@7a000 {
->>> +                             compatible = "amlogic,meson-s4-uart",
->>
->> If I'm not wrong, you need to create dt-binding alias for meson-a4-uart
->> and use it as 3rd compatible string.
->>
-> On UART module, A4 and A5 SoCs exactly the same as S4. There's no 
-> difference.
+Hi Anup,
 
-That's not really the point. You are supposed to always provide SoC
-specific compatible in front of the fallback. See writing bindings document.
+On Thu, Mar 14, 2024 at 11:51:53AM +0530, Anup Patel wrote:
+> On Thu, Mar 14, 2024 at 11:17 AM Dawei Li <dawei.li@shingroup.cn> wrote:
+> >
+> > Hi Anup,
+> >
+> > Thanks for the great work on AIA!
+> >
+> > Firstly I must apologize for the top posting cuz I miss the series mail for
+> > my inbox. And for the record, I am replying to [1].
+> >
+> > After I checkout riscv_aia_v16 branch at https://github.com/avpatel/linux.git,
+> > some call traces about spurious interrupt are screaming:
+> >
+> > [    1.244292] irq 11: nobody cared (try booting with the "irqpoll" option)
+> > [    1.244707] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc6-00055-gd7d4d086b79a #14
+> > [    1.244932] Hardware name: riscv-virtio,qemu (DT)
+> > [    1.245130] Call Trace:
+> > [    1.245337] [<ffffffff80005f32>] dump_backtrace+0x1c/0x24
+> > [    1.245559] [<ffffffff809023f4>] show_stack+0x2c/0x38
+> > [    1.245761] [<ffffffff8090ec8c>] dump_stack_lvl+0x3c/0x54
+> > [    1.245979] [<ffffffff8090ecb8>] dump_stack+0x14/0x1c
+> > [    1.246116] [<ffffffff8090368c>] __report_bad_irq+0x3e/0xae
+> > [    1.246276] [<ffffffff8006a938>] note_interrupt+0x1f4/0x23e
+> > [    1.246382] [<ffffffff800679e2>] handle_irq_event_percpu+0x42/0x50
+> > [    1.246508] [<ffffffff80067a2c>] handle_irq_event+0x3c/0x68
+> > [    1.246628] [<ffffffff8006b7a4>] handle_fasteoi_irq+0xac/0x176
+> > [    1.246788] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+> > [    1.246928] [<ffffffff80473f0e>] imsic_handle_irq+0x72/0x12a
+> > [    1.247041] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+> > [    1.247165] [<ffffffff80472470>] riscv_intc_aia_irq+0x26/0x38
+> > [    1.247291] [<ffffffff8090ed0a>] handle_riscv_irq+0x4a/0x74
+> > [    1.247430] [<ffffffff80918af6>] call_on_irq_stack+0x32/0x40
+> > [    1.247626] handlers:
+> > [    1.247721] [<000000004ebb6fe3>] vm_interrupt
+> > [    1.248314] Disabling IRQ #11
+> > [    1.303510] irq 12: nobody cared (try booting with the "irqpoll" option)
+> > [    1.303700] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc6-00055-gd7d4d086b79a #14
+> > [    1.304768] Hardware name: riscv-virtio,qemu (DT)
+> > [    1.305460] Call Trace:
+> > [    1.305868] [<ffffffff80005f32>] dump_backtrace+0x1c/0x24
+> > [    1.306621] [<ffffffff809023f4>] show_stack+0x2c/0x38
+> > [    1.307295] [<ffffffff8090ec8c>] dump_stack_lvl+0x3c/0x54
+> > [    1.308025] [<ffffffff8090ecb8>] dump_stack+0x14/0x1c
+> > [    1.308698] [<ffffffff8090368c>] __report_bad_irq+0x3e/0xae
+> > [    1.309698] [<ffffffff8006a938>] note_interrupt+0x1f4/0x23e
+> > [    1.310568] [<ffffffff800679e2>] handle_irq_event_percpu+0x42/0x50
+> > [    1.311542] [<ffffffff80067a2c>] handle_irq_event+0x3c/0x68
+> > [    1.312298] [<ffffffff8006b7a4>] handle_fasteoi_irq+0xac/0x176
+> > [    1.313127] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+> > [    1.315375] [<ffffffff80473f0e>] imsic_handle_irq+0x72/0x12a
+> > [    1.316163] [<ffffffff80066c3c>] generic_handle_domain_irq+0x1c/0x2a
+> > [    1.317078] [<ffffffff80472470>] riscv_intc_aia_irq+0x26/0x38
+> > [    1.318036] [<ffffffff8090ed0a>] handle_riscv_irq+0x4a/0x74
+> > [    1.318934] [<ffffffff8090f3e6>] do_irq+0x4a/0x4c
+> > [    1.319831] [<ffffffff809189ac>] ret_from_exception+0x0/0x64
+> > [    1.320860] [<ffffffff8091845c>] _raw_spin_unlock_irqrestore+0x1a/0x2e
+> > [    1.321887] [<ffffffff80473d06>] imsic_local_timer_callback+0x50/0x5c
+> > [    1.322957] [<ffffffff8008ade4>] call_timer_fn.isra.0+0x14/0x5e
+> > [    1.323781] [<ffffffff8008b44a>] run_timer_softirq+0x388/0x3a8
+> > [    1.324579] [<ffffffff80918c7e>] __do_softirq+0x100/0x252
+> > [    1.325304] [<ffffffff80018464>] irq_exit_rcu+0x7c/0xa6
+> > [    1.326126] [<ffffffff8090ed24>] handle_riscv_irq+0x64/0x74
+> > [    1.327535] [<ffffffff80918af6>] call_on_irq_stack+0x32/0x40
+> > [    1.328703] handlers:
+> > [    1.330724] [<000000008b6c4f15>] serial8250_interrupt
+> > [    1.331573] Disabling IRQ #12
+> > [    1.350231] Run /sbin/init as init process
+> >
+> > And I take a look on /proc/interrupts, spurious interrupts are happening:
+> > ~ # cat /proc/interrupts
+> >            CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       CPU8       CPU9       CPU10      CPU11      CPU12      CPU13      CPU14      CPU15
+> >  10:         83        222        350        163         71        101        193         68         54         60        174         50         51         48         48         46  RISC-V INTC   5 Edge      riscv-timer
+> >  11:     100001          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  APLIC-MSI-d000000.aplic   8 Level   -fasteoi   virtio0
+> >  12:          0     100000          0          0          0          0          0          0          0          0          0          0          0          0          0          0  APLIC-MSI-d000000.aplic  10 Level   -fasteoi   ttyS0
+> >  13:          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  APLIC-MSI-d000000.aplic  11 Level   -fasteoi   101000.rtc
+> > IPI0:         3          8          4          7          7          6          5          4          7          7          7          5          6         10          4          5  Rescheduling interrupts
+> > IPI1:       727        517        431        448        497        456        514        476        488        466        455        456        443        443        439        433  Function call interrupts
+> > IPI2:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  CPU stop interrupts
+> > IPI3:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  CPU stop (for crash dump) interrupts
+> > IPI4:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  IRQ work interrupts
+> > IPI5:         0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  Timer broadcast interrupts
+> >
+> > But when I switched back to V15, everything is fine.
+> >
+> > Here are some of info _maybe_ helpful:
+> > kernel: d7d4d086b79a11ad8bbcaf732c7830faa3f3192f
+> > qemu: e1007b6bab5cf97705bf4f2aaec1f607787355b8
+> > qemu cmdline: qemu-system-riscv64 -M virt,aia=aplic-imsic -m 256M -nographic -kernel ~/src/linux/arch/riscv/boot/Image -drive file=rootfs.img,format=raw,id=hd0  -device virtio-blk-device,drive=hd0 -append "root=/dev/vda rw console=ttyS0" -smp 16
+> > config: defconfig(make ARCH=riscv defconfig)
+> >
+> > And I am happy to provide any extra info if needed.
+> >
+> > After I take a git diff and check your changelog:
+> > [Quoting from [1]]
+> >  - Simplified aplic_msi_irq_eoi() in PATCH7 based on the section "4.9.2 Special
+> >    consideration for level-sensitive interrupt sources"  of the RISC-V AIA
+> >    specification and also provided handler name.
+> >
+> > I apologize if I miss something.
+> >
+> > [1] https://lore.kernel.org/lkml/20240307140307.646078-1-apatel@ventanamicro.com/
+> 
+> The QEMU APLIC emulation of the setipnum register was broken. The
+> corresponding QEMU fixes are already accepted and queued by the
+> maintainer.
+> 
+> Please refer, https://lore.kernel.org/all/20240306095722.463296-1-apatel@ventanamicro.com/
 
+After pulling latest QEMU which contains 2 commits above, problem solved.
+Thanks for the fix.
 
-Best regards,
-Krzysztof
+Thanks,
+	Dawei
 
+> 
+> Regards,
+> Anup
+> 
 
