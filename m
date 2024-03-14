@@ -1,71 +1,78 @@
-Return-Path: <linux-kernel+bounces-103661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E40987C286
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:22:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31B8187C284
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22C07B21CA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:22:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9F40285700
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9CB768F2;
-	Thu, 14 Mar 2024 18:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0F47640B;
+	Thu, 14 Mar 2024 18:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akz8x/La"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U1GBwhbp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9611F763FB;
-	Thu, 14 Mar 2024 18:20:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC17762C6
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710440436; cv=none; b=ONZBHUWSNw/9HuEqz3ApurWa0a/koh7fnePYClQfTBVsyYkbgD6k1TmdmVkCqpy57VwLgn23fyBvz1HBjm8IEbOmEQM9GKgto694oIWUbHv49/hgo77spIhUiMhzXMpDvC2uc6iBqPny/ScQEq2cQcn3eQsm4B8xmbt386YDp3o=
+	t=1710440435; cv=none; b=hT7hxI1IyBOGF8VVkBYe/Oi030o2lBR/Rt1zgRL8qpvxy8ZV+wJKxKeq4iwRkPavR8ZOI/C2IPNzY7KiPLnERZUY0vLp9+iDgnzjH06EiMkKDbKkaw8c0E0PZXyynZMTy4fVNnau41/cJU9sw35epB2UKkpO68FbRg2mJ5YeEwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710440436; c=relaxed/simple;
-	bh=cupGIYIVve9aQcafgMSEc6NGWaSioxOEh6ILdwcTumg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=llsNK4SDUED15GUwWg7cQzU9NIOrlGKQoVHNbw7EE6ZvPSwGxG0cvMF6iwKejFhkrraQ0XB97R8wdJcNd96wq2WUO0R+p73PJBvkTSls7gflHM+BNkjntoarHnWLfWZWjPJ07jZf1s7XtfkNnSDGxd6pq/libJ08Xh8xMKbGrWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akz8x/La; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14720C433B1;
-	Thu, 14 Mar 2024 18:20:36 +0000 (UTC)
+	s=arc-20240116; t=1710440435; c=relaxed/simple;
+	bh=dqhReMsykTy6T/+DFhSz5WAkTSazJl/KIJfgAg/8olk=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=sWbvQS97tuRWDLWqpjDM1aqT/GGdKXAWJ4wfzTTdmFzb9ghhIsPPrulJwjvjGIwEciId9AmFK3fT0SngF7/LQ1Py9g9EV5yvL1m0FXISyiE5QCB76qcQXViFwscf6KVyqven5kswyCPFasPjaxROkjd2GHBTwKuYsi3c3I2O7PI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U1GBwhbp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 41E70C43399;
+	Thu, 14 Mar 2024 18:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710440436;
-	bh=cupGIYIVve9aQcafgMSEc6NGWaSioxOEh6ILdwcTumg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=akz8x/Lar3H1CIuFLysuBt+sFcBVNNbwj9qZTm3q+vr1Jgr4IV13w/rgnQEg3u+/6
-	 aFryOQ7vKxOvd92pW7HrNhZCbWRRtyRAsZwj6aMqLnv7ucZ1uPrvxd7oJAOScrJmQL
-	 p8x1ABJnYMo/Z4iHAUDfZIejw9R0yYi27Pmoqj2z479pVxGg9EmIrIabJr46FO9QCq
-	 z+gvtBjfwJJ15PSKTT2GBP66UX5gOb2EMumQ8+3RD4a2QMy2PvZ/MTuDD4dX+rbLVP
-	 lz53/QeHjfSMuXSzoEFfo9flZInXQiQInwYGKw/esevv4JfHvBlVYERiuF5pvOj/qJ
-	 XmxvuSayZvdvQ==
-Date: Thu, 14 Mar 2024 11:20:35 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Leone Fernando <leone4fernando@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- dsahern@kernel.org, willemb@google.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] net: dst_cache: add input_dst_cache API
-Message-ID: <20240314112035.69dbcd20@kernel.org>
-In-Reply-To: <b90d127a-ec5a-4c24-8ddf-4c592dae28f1@gmail.com>
-References: <20240307171202.232684-1-leone4fernando@gmail.com>
-	<20240307171202.232684-3-leone4fernando@gmail.com>
-	<20240308195529.57b1a4fa@kernel.org>
-	<b90d127a-ec5a-4c24-8ddf-4c592dae28f1@gmail.com>
+	s=k20201202; t=1710440435;
+	bh=dqhReMsykTy6T/+DFhSz5WAkTSazJl/KIJfgAg/8olk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=U1GBwhbpKx4M6F4+cZ5fK37VnfegFYoGKgm1R5LFZWvSjDh1VqIgbQn33hEntOsY6
+	 EN8BzyMdCEsPdGs4d7i46okxhdO2mp9Mcm4lS3r18ZMj3y1J9xe92s87fJ7flaGThx
+	 JVCI8R/clh+QLELr8/YpWQJmHIuh7jn/YqSFy8Mr2YY7tcHnLPLq4jDTl8QyrM5PWT
+	 q+lFe5X4yrkdNLSPuBGd7SpUbACxLJZbrm5IcFF+w/bkKbx3lciEvoLuvw01APkQHJ
+	 C33IX/TTLAj8woIdQme1kKflNLpvy0eArers9zK6ESJIvIJXhVqSWzQcFCVmWhj9fW
+	 DOAttPIO2Ra+g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 38F9DD84BAA;
+	Thu, 14 Mar 2024 18:20:35 +0000 (UTC)
+Subject: Re: [GIT PULL] LEDs for v6.9
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240314144523.GQ1522089@google.com>
+References: <20240314144523.GQ1522089@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240314144523.GQ1522089@google.com>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/lee/leds tags/leds-next-6.9
+X-PR-Tracked-Commit-Id: 45066c4bbe8ca25f9f282245b84568116c783f1d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f5c31bcf604db54470868f3118a60dc4a9ba8813
+Message-Id: <171044043522.24196.5541887241843255785.pr-tracker-bot@kernel.org>
+Date: Thu, 14 Mar 2024 18:20:35 +0000
+To: Lee Jones <lee@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Lee Jones <lee@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Thu, 14 Mar 2024 15:04:02 +0100 Leone Fernando wrote:
-> Thanks Jakub. I'll fix it and submit a v2.
-> What do you think about the patch in general?
+The pull request you sent on Thu, 14 Mar 2024 14:45:23 +0000:
 
-Dunno.. it's a bit hard to judge how much benefit we'd get
-in real life scenarios. But I'm not a routing expert.
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/lee/leds tags/leds-next-6.9
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f5c31bcf604db54470868f3118a60dc4a9ba8813
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
