@@ -1,232 +1,262 @@
-Return-Path: <linux-kernel+bounces-102873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA1187B7E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:25:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8243687B7D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE1CD1F23EAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:25:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD5FBB225FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA445DF78;
-	Thu, 14 Mar 2024 06:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B920310957;
+	Thu, 14 Mar 2024 06:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Iuhg8SSn"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2065.outbound.protection.outlook.com [40.107.92.65])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="KmbyqivT"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2089.outbound.protection.outlook.com [40.107.96.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115DCC8F3;
-	Thu, 14 Mar 2024 06:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7746010949;
+	Thu, 14 Mar 2024 06:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.89
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710397538; cv=fail; b=J4nSpEeESv9NIYll3jEEO5ezm3QK5j0I7qzzbTrju/DGlHJRTELtcxGCfJVzv6vzjsnzL0qrTq9lI4vsUGXVMxa60gzSMkZIURbnnfwxrM910uBnwBxgHKAQCBwDwbN/00lmx1UK8ehxts9BsX5cxYyxA+sw6fpj11QCT7LPuvA=
+	t=1710396570; cv=fail; b=ASzqZHtaKP4iPa/Tmrmpxdk3dPrtcVljz4JAQkoX3QRNvff4j7i7KyCSuYFg5+Nhi7CxsyWIAgP6wJq3oqWhPX8jOEcHA9zGebe3yblYCywkG0urPTBUPX/s50jRwqApuWVc5RRKm5zI6NFgHaNOyfeBtnzmj56gYMXlGKfkZdk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710397538; c=relaxed/simple;
-	bh=GM2APZvYheRKRInFIeoh9WcznM8xFkmOlhZHE/7AM24=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=dLHvgNcnUxwu7hbkIGXSDahY0hmczSNFxeHgb88k6RtE4REozdgPgyYd/0AUoawqfQYr7eF78hYmcOPycOqUoT7kmDcjfV3ktzWMik0uVhvWbyOEx74bhwN9S7/U2sn9oiFXPgTFZIFTDBWosnpnv//KQSvHnR4pGlsjn6Wrjuo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Iuhg8SSn; arc=fail smtp.client-ip=40.107.92.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1710396570; c=relaxed/simple;
+	bh=98tPdyTJiO8QRa24JFCH4uBCHVs8sdlePd5w2Xnw7NM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=WE7oieS3XLBssYZoO+OC47GLVb9x6No9piIdPGsQUB7TxTiXgTABedBzRvFmkE6mqpJypnC5WGDDv0L5CpizifE/idRFkpa9NOJ2aD8OmMifLRjozMVH4OwJKiQu1/fspKAlFVjea1NRkqVWgGiDXFpcBbRRMcUragjX0NtXNo0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=KmbyqivT; arc=fail smtp.client-ip=40.107.96.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gXaPrcGt4Yihe0NJFeV6bdxi0B3mudTOi0+VCz6yzzzvbJTiO5dOB/e7XCMdoLBqu0D6enmO86j2MCLjzER/dVONZEX34p6eILuFUjZWPHLwwgI9Aqf9A8SmJ9qH505zgv6uXyd8BcbuVSG9KmBQNAWDMyimi0Btj3LjEH7VQyf6xzb81bzNeWp/Ap2TApjxOBkuOfS8p3bIK6RIxLGhvh/kKNIKlnMyFWgO1PTPUjQ8gJbe8qnpiGJU/4iS3eg3zDeVulXtvSxSYtrWwD49bA43h3oiGfuz2Bq8Mf8ceUf5tK2gakPBfk6q9m+rscS2HuWXrDfMQi02VfyztYoo1Q==
+ b=lLVw2bNQvA2/17U9By7XHZkNOuGBCPVfWoVyB0ZcepLji97eORI6c5S0qxmwj9Gh9pQFgGx/JRkIVQh7knxWf71L3ekSFN3fvs9+K6kvdb26tvmP44kNXwQ16Eqim402e+RIaHb6l97gjJ6s+w7sU1IG51zQA38PyxiYaSVi9NUSQTO2dgeZiUr8X6UPxuELQEmTxSRxQsr9S579GCZeW1Gws/YdU3CguEujU9f7roE8fIHWaCbHXStgPCsrV1k6g2hJv9FKUnw571Okowk3rzBHCvCZ9KqvF7sBEssu9vSaeHkW6IXtFu2w/ZBgZLNz/lzHN7+0APzEjA+wQjIITA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jRjJ1alIFUENpX3pMk01BUQmdSzcYW1LLOKJoS3D6Cc=;
- b=iYcPeQZE4pqbCdS9BpKldMJnjFtGNBBT5E8COfGiK+BQHH0BZk4nBj4AEAsheN+z6hR7IIYYzlTBBsmDAe8l3hv5wlA8aBNKCuLVE5C+XsZ1o2kwwWjflBw0WlY0dAsZ6MlfZ42vFHXVC9pFXmj/Wprd62uXgnWVgYrhONjibXe9kysz9/N1ysFKTUVjkZww/EVUIGHXJe+2MuzM+TkAlNpMCrb95PqbqVIbG/ykq4iMVUh46vuOvgYtXbUrN03K2Zo0ST4cOfR2z8V1gryqG5FJ6drTvsw4jwbld5LWYVxXCwEnapb+mn/iFTxa5w1yMzlijoe1SJ3W1wGbKN98rg==
+ bh=+T4pd+wI3Qld/npArqaX4C7kEJoXj/Lj0fYPZZuk69Q=;
+ b=LrcivbPioxtWNXNBZbxkIPNgbjzoQvvVh2Y5cpq3fIx9TO07S7pex8sm1q4sKIxpciLfZ6t4YZcOy1bwy2PGxnIt0HgidLbXy0surRgL18iukJ1RVGHbER2FGVj4ORMIB0WrMNUFMV9Qz/7CfU9OWkF0FZn3GfzIuZTfbucU7bihuzDR0YCvWhqHwp1NakNHJPcYlQm+YMH0K/sJ4DHZOXq6eJizUPkXaSob+82zE7Oz0GJCj1iSRCWfCroMJLlY0dsiUDqo2GP5GX2GMIRO31bOyfJ7dA3TGmo0LnAsn9HPuvHoJ9f2h8XnsNXQaqOj3Dhh3C89hPzI6A1/u/uYBw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jRjJ1alIFUENpX3pMk01BUQmdSzcYW1LLOKJoS3D6Cc=;
- b=Iuhg8SSnLxDcRuyi9/ppOPzks4glENy8dqLkt3TqnWXIUZsnF6L4FoU5NkMQuvtk0EtO2rWwUPP5l5HGSkf6czW5q9QZ5KHH2nbML94J8y16ZbDQ9mOyVKCWqy72yWFqMjBmnKesjTjKKEBV/AmpYOL7qJJVVTD1n5fDd7jeS/DMIg9i/V+tdDyTy5b+ezMaelmCA3xkNQJ9rvFm3aazS9OMPMsmQ9TgFR0umJ9MeWTaL8LRivc0oyGaH7Gh7yNAcv015tkom0QiU6FvfeUCDbxD66pXA7VswDXN5Ug7GSneebmjfeT6OkD7Afcfz/GeseoIljpYnZFLW6MkpFPBNQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by DM6PR12MB4122.namprd12.prod.outlook.com (2603:10b6:5:214::17) with
+ bh=+T4pd+wI3Qld/npArqaX4C7kEJoXj/Lj0fYPZZuk69Q=;
+ b=KmbyqivTaV386C9ftnAm4M8zziVWy/GrAzM6c/Z4PJlUI4Fag/Aqqj42nJ32d0p6mXzaQgvaNYBpIfj5kmPepd5Gy9KvrWcBL+xZjh3p0rWLN1EJ3FCMSJY6+5mCZxltVkj5s6Vw8YcLJ9l7/WXp6G5J49XT14gfR8VfCMptW4o=
+Received: from CYYPR12MB8655.namprd12.prod.outlook.com (2603:10b6:930:c4::19)
+ by CY5PR12MB6551.namprd12.prod.outlook.com (2603:10b6:930:41::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Thu, 14 Mar
- 2024 06:25:33 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 06:25:33 +0000
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-7-rrameshbabu@nvidia.com>
- <20240312165544.75ced7e1@kernel.org> <87plvxbqwy.fsf@nvidia.com>
- <20240313174707.38a71c84@kernel.org>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
- alexandre.torgue@foss.st.com, andrew@lunn.ch, corbet@lwn.net,
- davem@davemloft.net, dtatulea@nvidia.com, edumazet@google.com,
- gal@nvidia.com, hkallweit1@gmail.com, jacob.e.keller@intel.com,
- jiri@resnulli.us, joabreu@synopsys.com, justinstitt@google.com,
- kory.maincent@bootlin.com, leon@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, liuhangbin@gmail.com,
- maxime.chevallier@bootlin.com, netdev@vger.kernel.org, pabeni@redhat.com,
- paul.greenwalt@intel.com, przemyslaw.kitszel@intel.com,
- rdunlap@infradead.org, richardcochran@gmail.com, saeed@kernel.org,
- tariqt@nvidia.com, vadim.fedorenko@linux.dev, vladimir.oltean@nxp.com,
- wojciech.drewek@intel.com
-Subject: Re: [PATCH RFC v2 6/6] tools: ynl: ethtool.py: Output timestamping
- statistics from tsinfo-get operation
-Date: Wed, 13 Mar 2024 23:07:22 -0700
-In-reply-to: <20240313174707.38a71c84@kernel.org>
-Message-ID: <87ttl9fhyd.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR07CA0104.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::45) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Thu, 14 Mar
+ 2024 06:09:20 +0000
+Received: from CYYPR12MB8655.namprd12.prod.outlook.com
+ ([fe80::64d2:3c49:7c63:1749]) by CYYPR12MB8655.namprd12.prod.outlook.com
+ ([fe80::64d2:3c49:7c63:1749%4]) with mapi id 15.20.7362.035; Thu, 14 Mar 2024
+ 06:09:20 +0000
+From: "Yuan, Perry" <Perry.Yuan@amd.com>
+To: "Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>
+CC: "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, "Limonciello,
+ Mario" <Mario.Limonciello@amd.com>, "viresh.kumar@linaro.org"
+	<viresh.kumar@linaro.org>, "Huang, Ray" <Ray.Huang@amd.com>, "Petkov,
+ Borislav" <Borislav.Petkov@amd.com>, "Deucher, Alexander"
+	<Alexander.Deucher@amd.com>, "Huang, Shimmer" <Shimmer.Huang@amd.com>, "Du,
+ Xiaojian" <Xiaojian.Du@amd.com>, "Meng, Li (Jassmine)" <Li.Meng@amd.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v7 1/6] cpufreq:amd-pstate: fix the nominal freq value set
+Thread-Topic: [PATCH v7 1/6] cpufreq:amd-pstate: fix the nominal freq value
+ set
+Thread-Index: AQHadS1cQ+6BG6MgdEa4KJHWRzpmg7E2vEOAgAACa/A=
+Date: Thu, 14 Mar 2024 06:09:20 +0000
+Message-ID:
+ <CYYPR12MB865539EE324D834EF5051A679C292@CYYPR12MB8655.namprd12.prod.outlook.com>
+References: <cover.1710323410.git.perry.yuan@amd.com>
+ <08ed1f9f76a6a1c401efd8f426bdeb9681c4b4e9.1710323410.git.perry.yuan@amd.com>
+ <ZfKPy7hlwiYm++AM@BLR-5CG11610CF.amd.com>
+In-Reply-To: <ZfKPy7hlwiYm++AM@BLR-5CG11610CF.amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=50bc6ddd-d363-48c4-b0f2-be1022208f80;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-14T05:57:37Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CYYPR12MB8655:EE_|CY5PR12MB6551:EE_
+x-ms-office365-filtering-correlation-id: 277b8399-6ccb-4c6c-64c5-08dc43ed49f8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ EGINzYFrrdpQ76OxXOG4RgPdneTus1BnfmBEIm2t9oLRl87RUPuKLwQcnI0YthL5l1PMbX48kYSxGzyjBT/Vf1ZiK7AQ1HlgesRFqWmkiNy/VziObVdPDLI3u1nNI7Sl5Of6uev5skc9aOb5/yHJCEHVd697/IViAYWKyX9AJTzhIzULa51AHgRSE/g9pulFWPl4lkCHCrdiq8H/XJxsvsBb6E4t0x2nIWQXn2wkpiu4l4qodpofxbPBo1mtcFkI5Zr7S7D0la9yGUPCYJerJE/NN2dLKwztPfgtzDcVXycR9CY+MJB10llzBDLMIFCI5TY8+aUlBeGEVoiTpUBsE1ARdjQIB1zQs2KTo7ohpypwkYJqQ6D4ypVOliXiEIU37LrKXEWFWL732pulVN0Vf2Xb8S6FBlyh6pBkGWBdWxGYROaouSU2Rb5Qr8FG9o+5NreqTMPWLlvwqWBvj+aro+Yjh9Uhvp2VtAtn6WZ5nRqTT7ZrCnEORq2IpHiRt/4ExusVmfvU08aVUv3oLWeZfB7vbNQr2AOtReGq9YOsb9U24FGH/FECySAT4QQJ4oE4PAMe92SlohR70WpL1GlMjgK8ksm9Sa6euhBznoTJZLf2IBSJKOyNLbRf9hNkPn1kG3N2pjBOyr59II+f2VdaTEnikGZG3IndPM+lSnjH8NKZWs7QpLMuBs+ISA5za6Jb
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8655.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?fyOD3aDIzkPb5daOXfMo0LKcp7YtsG0EyJxgDC9/bH5/1uvOu+huZei1Cioe?=
+ =?us-ascii?Q?0If95W504UqRCEfXZdDv+pLYBXSldtJ8i8QGadXf0o6EFg9xe+EyYC2qnV92?=
+ =?us-ascii?Q?poF4hSRYB8VULld10T4ZvNMLx5IJbVahfNe0zA0Hdnl6jyMnbUm4HbmKqFi7?=
+ =?us-ascii?Q?lw0mCKBriw9xjB14L6/TtMxgjIBtc+uJx+gxbS94UfdKU3UE8e9Y5AGYs43R?=
+ =?us-ascii?Q?mlyMeau4eIop2d3P0YVUUgt3EkJn+39s63fzhgIi6K5iywbONOQuijrzr0ol?=
+ =?us-ascii?Q?0BTmHRWzEx++6T6+hP5qR+vINWCRH3Y1iWYsL8gAYuI2zrfCPOb0i6Ba1PZk?=
+ =?us-ascii?Q?p50ia5nDnbeNkyJM8k690zpai8TBBUC6WM3yqO/yh8DD9tmLjCLfJALTapau?=
+ =?us-ascii?Q?RCLQEgUfiqZLz+J8MxpTuHANhVDeR/kM4Mbj6z0inAZbn0oqyLKO6mvKm7t9?=
+ =?us-ascii?Q?Vf3YlwDYU+KynWGTvhG3ESK6g2NJLGX0fTjwTC7I1odYQH4VI8L4CuVb3wGL?=
+ =?us-ascii?Q?Kaq1z+VyO+b4itpPZ9G77zMTyIFpxBj24Xqhr17fAM7lxI05VWL0Zjyaz4lt?=
+ =?us-ascii?Q?8AhJ3seq1PzE6zu7++PtYw14uWvSXYWN04mvWw84EXEsTvZeuFfhIocOd+t2?=
+ =?us-ascii?Q?iJbEaPxNFn46WEKkFMTH78k1adyXopTPpWm9uZbIKs302gHBxbk09ZDYQj/Q?=
+ =?us-ascii?Q?4F4IfE2jfWK8YNdqVf6PyFlgjp6R8cxVk6hUWlVze06FhwMJAmbhQppdaVWl?=
+ =?us-ascii?Q?x8TpE9zLXIOrxT5aisj/8OlwyFI4C5fEvGzB3fvfieu+sKUEsH62nJ0fX1U5?=
+ =?us-ascii?Q?vy/8yRU+ACK0tGvQxPlygWWWk4N4J2HuWNKbAIoaWWsLUrOd+vKzxE3eMRof?=
+ =?us-ascii?Q?KgMUUb+2sfnmqPH+27FF5/8V+AKvRcVghpi6Zi9At38dFh43tHJHFNls8pJU?=
+ =?us-ascii?Q?ia5ksjX+WPQMOw0JmV40hymLxB3TILyuAVySDSN/CFwqpVLd/FTjcVVQ/5wf?=
+ =?us-ascii?Q?G8ubihHpLJfO3xYTLQpxA2GBsvUvRn0tJMwAGkfbfkw4yuxKbVQH2MsufEKI?=
+ =?us-ascii?Q?IAw5OqqHosGbA5oc8JQ0r0QV9MPj3ThDFbtFlwbYvnSkKA2LQSV8Iye0bge9?=
+ =?us-ascii?Q?5jtizNGw5yN9nPN9rGOtn8jnT5hBe08vGy38lhpxcZmMfbi6cicKoSFbFXbD?=
+ =?us-ascii?Q?l/meqAIjQe7gBErNfn7+YGQPnpIVmtI5LPbI1dBD8yT0ARaqlNU+aNo1o2KN?=
+ =?us-ascii?Q?vbKaVGsYgwffEcJO/aNJ+vdeVKssO42Kr47DlhPDSzRW8hiKUn3tTCp7MsCa?=
+ =?us-ascii?Q?rAb+9iCxLM3YzoizLlcbCNL+dPXgcnpUW0h1+otqObS4WdSGfOsPI28SmFP6?=
+ =?us-ascii?Q?GQFcxNXlWTB7obeWLETjUpbiq4FAwbmTkLDuJzvP18iArvHNQCiOGQeAqoxN?=
+ =?us-ascii?Q?xemqkn7XCQLyo6waHCPgVlWTXE7OMGGi61r1vvTdBlHjyk8e8ilF5m3s1MPW?=
+ =?us-ascii?Q?YI0BLMQa/Nuy1hohtrOwAE0bycwqJnCIcDNWNhVk4Y8+MucndGiBoHPpHtlO?=
+ =?us-ascii?Q?6CazyHnjBmUtpgWoJYw=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|DM6PR12MB4122:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4f4dfd92-9633-4377-af68-08dc43ef8db2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	5sdMCJidp8D9OzEVtgq4ehI0gr3VbofOTU6nB33vg+xQ54RyZg8sA3PlZ9dSeNCgewPien4hxQU+26ux/azisNjV7ViT3IVAL2L2ZiOEdzTSvf+8soTMuMsUqB1fs68BbunNlwbHxYUSINBwMjqK9zGufKLPTPwhOeGkXk4MJ0lFgKegYmz2k+gOr/4CFMDHxmwYP3NNlFrHtk9wZc7rX0mO7Lsdut6V4XW58UOtvLHG9I57smK0Je4P9vMx7zSsBie7pBkhL+LDJOy0MDWyebviv52l5apxvsLsqUNaNmkvI/U/unNzTnDc4z8NOek9PVkUdC2/TP46R8Pjp/0njX52mcXURBpAhd9P7aDYYaYSiFcOUfPcL0CWYZiAuSwi1dnBsHA49JAZv9Fsrpto403Cqfq8gaNnBcfUMVzSw9QzbX2l9IDU7fyZb2kgclk1coNlnZGONWLKJvzn+19JUAwMFmnL+xRUCPTIF55S48mDk8lg+UDp6+JV7ffDcmZNXFsvzh2QieCKzJaZD8GCYrYwR0HfwBod1Uj6/cUpB32CR2emZL/7ZQxA+Q4Yj1Cl/aGHuGoUzt8wp/wQBmJ8ulmHgT+sa/2stog1kgAmGrm6xb0Hs7BVTsaWc4vNu0HXt0tzwETwukIchm4Wx1hg6fxf9lncaRFQscK1F6lGYcY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?XsPikQk1+d02kuwlVy0tZz3mqiPWRQaP8xOVmz5SUHQHE3P8XGzt5MgWwNA+?=
- =?us-ascii?Q?yFxIXWbQ6/9mNNZrBL+fXndJcRBq1FAdgeZuouubUWCPxIFgIYkYFE/Y6isd?=
- =?us-ascii?Q?6PhHx5rMnhx2LGUqD3KlRt3JeP+HkB5bJJpAdyQso5/nenrjmQic7JXwtqy6?=
- =?us-ascii?Q?ReRMuCQHdom5F/GzeuA3pJFzuW3+dobG/Bs24B2/NMcu5Hiy02zFUlcvsDAA?=
- =?us-ascii?Q?IuAB1Zb7hPjhm3zJ77CJx+16n8Bt4bFQMTCzmJa0BxcOh0D3A75GhL04k4b2?=
- =?us-ascii?Q?ZkmkDm90XapTH4NkOiAZ33HZhDSNYM07xcggjY005Rb3DtmwkDxhrNE5+XMm?=
- =?us-ascii?Q?/IDwvhWsDU+psQJ/ycfbvNcvsMA4rq3kwrZiTDdl/r7rgQX4qhFcqw0L/u9J?=
- =?us-ascii?Q?Vm8nj7l+tMmYh4H1PGSiUEXESflQTvVG9lnazUc0QrpmIcqM5ZJ9zLxGxF9k?=
- =?us-ascii?Q?QEb4jXRrHvszmIvXH4q/ABHZeqe6evr7yWmJZyabOufk77wjn38VGfy2xLjH?=
- =?us-ascii?Q?Zqqy92xPaPPrvA51C6CDJ1KT7SkgmRp8FCVefQ3H+TQ/i/4oGYIDLWrjvAmU?=
- =?us-ascii?Q?KN4Pa66LuxnnA+DR0j4mk7NubWAl8GPS83rvDbBtOt5TqN0SeJlrEUlLabCL?=
- =?us-ascii?Q?hvGsefIPF/fE175Qfnh+5bHFPECwripEUD7Za8XAMkjKn3EdJ92eOGFFEvrQ?=
- =?us-ascii?Q?GhKPZBH0nTeEJg1dCfg+Cu18gdKbsntpNY1mQMu3SSTsgVCKuK8nujRBvnQM?=
- =?us-ascii?Q?RVIULGbOjIohgll1nGtxeqJ93tq2ChbpN8iiD0wn/F+saFfj3TCxWKmtjfzm?=
- =?us-ascii?Q?5vxoWb+UXIisIa2sM1uX7WObd5RAG7uGthU6YCDFe29eeaPsBkZWF7vmvmOd?=
- =?us-ascii?Q?kbWoDLhe6vtueFE4ogDoNcThpThoYgPRQTTDzpDT1bIRZRqChzFdl6d0DKZs?=
- =?us-ascii?Q?DuHNBG24EF3rRZguKFzPL+qc9Z6AwQ78pFowwTXG3jKs2B3ntu0P05HFVkiD?=
- =?us-ascii?Q?t/557MQbfY6AiSk2/FZChZ8JU8tvhkOs2sCcZacT1sAOp5eg+Z73E02aWXWa?=
- =?us-ascii?Q?4aarLOU/L9pADQpJXRozyrjy4BCwqSXldXCRtA70TtN5g9yxnL9zdDunEeyW?=
- =?us-ascii?Q?h8+SfTZ+oEgtzuGowedINhV7Vdz/1OAGM9J+6F7axU7zzzTiiU1W7IgLf9ik?=
- =?us-ascii?Q?eTc9hhDwSm2AwshyYrRuBhB5E8iQErWJNmQH92YMvn5AftsVDfeb3iK9WqJg?=
- =?us-ascii?Q?zz/74O+ESVSamQXRuNd2lgF56tbxmtV+Fu+dvfBGf0ITuiM4UGm1SFLgWc+l?=
- =?us-ascii?Q?cbC2yewshXLj3N+tUAzfWPX963wGhjqafkIcnFm7LbaEyHDc30NX38h2QZk8?=
- =?us-ascii?Q?Nw1UGClwq1K5uW2fOEj+2Yyeq7Wg5tyd+GZgER4XEIDNzFqj7CYDWq51geZq?=
- =?us-ascii?Q?l1QvOBbfrPuv4z71R33GCATlh0748zknlptNMGy0gXA3aL98qqzAMfqvwuAK?=
- =?us-ascii?Q?Jk9OuoTH944bUXn+r3Cd+0/Jpyc04Zot1vqbU0aPmQOg6pU117LHJOZ54JY5?=
- =?us-ascii?Q?Ejxrf5Y+is6l5N9S3YkcA4MgyblxlUef6pV+0NwXouxd3cDtWlSn2Ai7dHFV?=
- =?us-ascii?Q?DA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f4dfd92-9633-4377-af68-08dc43ef8db2
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
+X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 06:25:33.4795
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8655.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 277b8399-6ccb-4c6c-64c5-08dc43ed49f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 06:09:20.6618
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3w05cClPe4/Q3tPoG/WjUUwZQ7OYjitUnHPMTEe8dKEWoaNafNBBaChzci6UhrEap67tAYl5Hbw26NAiAKXEUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4122
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h8DYLYgIINGZzDowSB/rka5BcLgvywpqcNqCy+Zu772MJ7gXzfWnwdQQIwv4eqzM0hbwx4BHipXnGM6byZodrw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6551
 
+[AMD Official Use Only - General]
 
-On Wed, 13 Mar, 2024 17:47:07 -0700 Jakub Kicinski <kuba@kernel.org> wrote:
+ Hi Gautham
+
+> -----Original Message-----
+> From: Shenoy, Gautham Ranjal <gautham.shenoy@amd.com>
+> Sent: Thursday, March 14, 2024 1:49 PM
+> To: Yuan, Perry <Perry.Yuan@amd.com>
+> Cc: rafael.j.wysocki@intel.com; Limonciello, Mario
+> <Mario.Limonciello@amd.com>; viresh.kumar@linaro.org; Huang, Ray
+> <Ray.Huang@amd.com>; Petkov, Borislav <Borislav.Petkov@amd.com>;
+> Deucher, Alexander <Alexander.Deucher@amd.com>; Huang, Shimmer
+> <Shimmer.Huang@amd.com>; Du, Xiaojian <Xiaojian.Du@amd.com>; Meng,
+> Li (Jassmine) <Li.Meng@amd.com>; linux-pm@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [PATCH v7 1/6] cpufreq:amd-pstate: fix the nominal freq valu=
+e set
 >
-> Ah, we're missing the enum definition and linking :S
+> Hello Perry,
 >
-> I mean:
+> On Wed, Mar 13, 2024 at 05:59:13PM +0800, Perry Yuan wrote:
+> > Address an untested error where the nominal_freq was returned in KHz
+> > instead of the correct MHz units, this oversight led to a wrong
+> > nominal_freq set and resued, it will cause the max frequency of core
+> > to be initialized with a wrong frequency value.
 >
-> diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-> index 197208f419dc..e1626c94d93b 100644
-> --- a/Documentation/netlink/specs/ethtool.yaml
-> +++ b/Documentation/netlink/specs/ethtool.yaml
-> @@ -16,6 +16,10 @@ doc: Partial family for Ethtool Netlink.
->      name: stringset
->      type: enum
->      entries: []
-> +  -
-> +    name: header-flags
-> +    type: flags
-> +    entries: [ compact-bitset, omit-reply, stats ]
-
-I am running into some strange issues with this even after regenerating
-ynl generated/ by running make under tools/net/ynl/.
-
-  Traceback (most recent call last):
-    File "/root/linux-ethtool-ts/./tools/net/ynl/ethtool.py", line 437, in <module>
-      main()
-    File "/root/linux-ethtool-ts/./tools/net/ynl/ethtool.py", line 333, in main
-      tsinfo = dumpit(ynl, args, 'tsinfo-get', req)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/root/linux-ethtool-ts/./tools/net/ynl/ethtool.py", line 91, in dumpit
-      reply = ynl.dump(op_name, { 'header': {} } | extra)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/root/linux-ethtool-ts/tools/net/ynl/lib/ynl.py", line 873, in dump
-      return self._op(method, vals, [], dump=True)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/root/linux-ethtool-ts/tools/net/ynl/lib/ynl.py", line 824, in _op
-      msg += self._add_attr(op.attr_set.name, name, value, search_attrs)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/root/linux-ethtool-ts/tools/net/ynl/lib/ynl.py", line 459, in _add_attr
-      attr_payload += self._add_attr(attr['nested-attributes'],
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/root/linux-ethtool-ts/tools/net/ynl/lib/ynl.py", line 481, in _add_attr
-      attr_payload = format.pack(int(value))
-                                ^^^^^^^^^^
-  TypeError: int() argument must be a string, a bytes-like object or a real number, not 'dict'
-
-What's your expectation for how the request structure would look like? I
-have tried the following.
-
-  if args.show_time_stamping:
-      req = {
-        'header': {
-          'flags': 'stats',
-        },
-      }
-
-  if args.show_time_stamping:
-      req = {
-        'header': {
-          'flags': {
-             'stats': True,
-          },
-        },
-      }
-
-I tried looking through the lib/ynl.py code, but I did not understand
-how the 'flags' type was specifically handled.
-
->  
->  attribute-sets:
->    -
-> @@ -30,6 +34,7 @@ doc: Partial family for Ethtool Netlink.
->        -
->          name: flags
->          type: u32
-> +        enum: header-flags
->  
->    -
->      name: bitset-bit
+> As I had mentioned in my review comment to v6 [1], cpudata->max_freq,
+> cpudata->min_freq, cpudata->lowest_non_linear_freq are all in
+> khz. With this patch, cpudata->nominal_freq will be in mhz.
 >
-> See if that works and feel free to post it with my suggested-by
+> As Dhananjay confirmed [2], this patch breaks the reporting in
+> /sys/devices/system/cpu/cpufreq/policyX/*_freq as some of them will be
+> reported in mhz while some others in khz which breaks the expectation tha=
+t all
+> these sysfs values should be reported in khz.
+>
+> [cpufreq]# grep . *freq
+> amd_pstate_lowest_nonlinear_freq:1804000   <----- in khz
+> amd_pstate_max_freq:3514000                <----- in khz
+> cpuinfo_max_freq:2151                      <----- in mhz
+> cpuinfo_min_freq:400000                    <----- in khz
+> scaling_cur_freq:2151                      <----- in mhz
+> scaling_max_freq:2151                      <----- in mhz
+> scaling_min_freq:2151                      <----- in mhz
+> [cpufreq]# pwd
+> /sys/devices/system/cpu/cpu0/cpufreq
+>
+> What am I missing ?
 
---
-Thanks,
+https://lore.kernel.org/lkml/42a36c7f788e0fb77d4be7575aab9c937e1773de.17103=
+22310.git.perry.yuan@amd.com/
+Changes from v3:
+* fix the max frequency value to be KHz when cpb boost disabled(Gautham R. =
+Shenoy)
 
-Rahul Rameshbabu
+
+The previous problem has been resolved by the new patchset of  cpb boost su=
+pport
+
++       if (on)
++               policy->cpuinfo.max_freq =3D cpudata->max_freq;
++       else
++               policy->cpuinfo.max_freq =3D cpudata->nominal_freq * 1000;
+
+
+The frequency values of cpuinfo are correct on my system.
+
+amd_pstate_lowest_nonlinear_freq:1701000
+amd_pstate_max_freq:3501000
+cpuinfo_max_freq:3501000
+cpuinfo_min_freq:400000
+scaling_cur_freq:400000
+scaling_max_freq:3501000
+scaling_min_freq:400000
+
+Perry.
+
+>
+> [1] https://lore.kernel.org/lkml/ZcRvoYZKdUEjBUHp@BLR-
+> 5CG11610CF.amd.com/)
+> [2] https://lore.kernel.org/lkml/1aecf2fc-2ea4-46ec-aaf2-
+> 0dbbb11b5f8b@amd.com/
+>
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: ec437d71db7 ("cpufreq: amd-pstate: Introduce a new AMD P-State
+> > driver to support future processors")
+> > Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> > Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+>
+> --
+> Thanks and Regards
+> gautham.
+>
+>
+> > ---
+> >  drivers/cpufreq/amd-pstate.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/cpufreq/amd-pstate.c
+> > b/drivers/cpufreq/amd-pstate.c index 2015c9fcc3c9..3faa895b77b7
+> 100644
+> > --- a/drivers/cpufreq/amd-pstate.c
+> > +++ b/drivers/cpufreq/amd-pstate.c
+> > @@ -647,8 +647,7 @@ static int amd_get_nominal_freq(struct
+> amd_cpudata *cpudata)
+> >     if (ret)
+> >             return ret;
+> >
+> > -   /* Switch to khz */
+> > -   return cppc_perf.nominal_freq * 1000;
+> > +   return cppc_perf.nominal_freq;
+> >  }
+> >
+> >  static int amd_get_lowest_nonlinear_freq(struct amd_cpudata *cpudata)
+> > --
+> > 2.34.1
+> >
 
