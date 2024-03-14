@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-103242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0611A87BCD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 149EE87BCD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3AE32846C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:31:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C44F12845A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1434D535B8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509FA6FE1D;
 	Thu, 14 Mar 2024 12:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oG+C/r13"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvZy+mwd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CA857861;
-	Thu, 14 Mar 2024 12:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933FF56440
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710419432; cv=none; b=hzeup4Oatr/M7KkX8iUSS6a+Wj82iIugUObXVqekX2eA6AGuoS4Hi9fymxvXZvhvSGA0x9DgX5WS6m+Mlx9xLX3c/CEJP3ptc0igBxuFjA9M200MZ4U1MDyVkCqX/WhM5o5Yq3pEmPaOxLdZ+QBKaWCAcrtBLHYRDaCReXIwC9w=
+	t=1710419432; cv=none; b=EgQktVYd6HaYQc0oDwSJet8pwmZIvATRcHu+0PCbhdlrKhthmASZUl1llIYL3sDYZYochm2qq2D6jf++oYIXwB4uCeHCc7bDf0a52OXttYBn4GH6QtWeGyfhkWwWg1j7OX2cU+qcJH/QswgIwuT81Ibr1YJOiYHSbXM24+GmXkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710419432; c=relaxed/simple;
-	bh=CrTSWvnI80HBCf2z8Oy2nHbmglsJV2g15ydY/Fnd+/0=;
+	bh=ZfYdgQYYHUKBjDat7ZMzQdGoJdurRPJ2XJ2xHAHrl0k=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=uSw+Cs0yJAhDIn893ELZie3+hlaLWxDh/+BNYnv/fYpUU5Id9FZ5kcOz3ZcZE/n1uhTE+IbwljOpG38tFJKq6RS80qWQKbqcJBDWLzWPmmspkQVyStWXG7h3Y2WkcCmo6cb/keChZ/b6FrcvxWgut2nQMnc9xyRUtSIsncSYF2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oG+C/r13; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0781EC433A6;
+	 In-Reply-To:To:Cc; b=jQ1ueein/7km/wdbV1AlLdwy8DP/LVtcb0Nje7Gy6z0ZmY4E5YJqdewYU4NELno2g0A9iqmjfmCFcgoGfVbhqq+A1bHtiChBw7hZGBFvO/4tZkDxYSsGrBdzJLYidvGeBV5XpRUMGoHtBAQhL2CgUFKmkir2SErl9srd56OnpgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvZy+mwd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 10E2FC43390;
 	Thu, 14 Mar 2024 12:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710419432;
-	bh=CrTSWvnI80HBCf2z8Oy2nHbmglsJV2g15ydY/Fnd+/0=;
+	bh=ZfYdgQYYHUKBjDat7ZMzQdGoJdurRPJ2XJ2xHAHrl0k=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=oG+C/r13TmKdzhAlJcO0u+vL0vp9yOVmJ0g/oiKWmipU+n6rJquFJCWqrNOQSQ2k4
-	 ccIcGlpXIeboz94YUQO3bvjZFHoQJ6QV7wUhmBeJTFg5AWNmPZJYvIZIrJsFwFY2of
-	 OIDxH2h1iJBf+ExBpnRAcKnFNtoX8rVXNSVgbDEoVlaoUHKsiFD1FrD6Tj7O9vsH/i
-	 bk0FxwUKy6ccBHLapb0AVzUUOBDcALyYpl6oV9SH4llTH7PkbUQmxG8XfVK3qfK+BC
-	 mJ2zLPRrgeNtsRC/QnH5pih+YJGWb/AwwBnL8wrVtonOOJpKYURuS/S2mY0VJCAJFt
-	 54/cvGAWu8vMw==
+	b=fvZy+mwdyc+wi8ZKZlrat5Iavdozk1eOUJq027QwMf1q4vElyuHBKQUk53/y+IrjA
+	 dkh1XtQCx9Oh8rP2VvqQmulX9otGgVzP22b3y/E2yCeA9ldN6pFuBXvsew1gKL4t/9
+	 +mHw3CVMPBcsFg0kuE9BrYcAo56JuaK/H5YMUyhO0mthCQq+q0XNffKgJESzgwXdet
+	 SODh7t4dD9cdhNy2joxs/xxthWTu2IhIjCZD3prqOPTn8vxv3LT9V/p6BJe/sNQuRD
+	 6tEero+cAZlwGze+34IMsyZV0vgJa8OR5YC8gi+VUZPxjaVrwlApwMW9sRyzIIYee/
+	 DvLC14o6z7q3g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E921DD95055;
-	Thu, 14 Mar 2024 12:30:31 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 02D22D84BB4;
+	Thu, 14 Mar 2024 12:30:32 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,69 +51,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v9 00/10] Support Andes PMU extension
+Subject: Re: [PATCH v9 0/4] riscv: Use Kconfig to set unaligned access speed
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <171041943194.26728.3807889559884607630.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Mar 2024 12:30:31 +0000
-References: <20240222083946.3977135-1-peterlin@andestech.com>
-In-Reply-To: <20240222083946.3977135-1-peterlin@andestech.com>
-To: Yu Chien Peter Lin <peterlin@andestech.com>
-Cc: linux-riscv@lists.infradead.org, acme@kernel.org, adrian.hunter@intel.com,
- ajones@ventanamicro.com, alexander.shishkin@linux.intel.com,
- andre.przywara@arm.com, anup@brainfault.org, aou@eecs.berkeley.edu,
- atishp@atishpatra.org, conor+dt@kernel.org, conor.dooley@microchip.com,
- conor@kernel.org, devicetree@vger.kernel.org, evan@rivosinc.com,
- geert+renesas@glider.be, guoren@kernel.org, heiko@sntech.de,
- irogers@google.com, jernej.skrabec@gmail.com, jolsa@kernel.org,
- jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-sunxi@lists.linux.dev, locus84@andestech.com, magnus.damm@gmail.com,
- mark.rutland@arm.com, mingo@redhat.com, n.shubin@yadro.com,
- namhyung@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
- peterz@infradead.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
- rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org,
- sunilvl@ventanamicro.com, tglx@linutronix.de, tim609@andestech.com,
- uwu@icenowy.me, wens@csie.org, will@kernel.org, inochiama@outlook.com,
- unicorn_wang@outlook.com, wefu@redhat.com
+ <171041943200.26728.3861424010420812739.git-patchwork-notify@kernel.org>
+Date: Thu, 14 Mar 2024 12:30:32 +0000
+References: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
+In-Reply-To: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, jszhang@kernel.org,
+ evan@rivosinc.com, cleger@rivosinc.com, ebiggers@kernel.org,
+ quic_eberman@quicinc.com, lohr85@gmail.com, conor.dooley@microchip.com,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
 This series was applied to riscv/linux.git (for-next)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Thu, 22 Feb 2024 16:39:36 +0800 you wrote:
-> Hi All,
+On Fri, 08 Mar 2024 10:25:54 -0800 you wrote:
+> If the hardware unaligned access speed is known at compile time, it is
+> possible to avoid running the unaligned access speed probe to speedup
+> boot-time.
 > 
-> This patch series introduces the Andes PMU extension, which serves the
-> same purpose as Sscofpmf and Smcntrpmf. Its non-standard local interrupt
-> is assigned to bit 18 in the custom S-mode local interrupt enable and
-> pending registers (slie/slip), while the interrupt cause is (256 + 18).
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+> Changes in v9:
+> - Clarify wording for RISCV_MISALIGNED Kconfig option
+> - Link to v8: https://lore.kernel.org/r/20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com
 > 
 > [...]
 
 Here is the summary with links:
-  - [v9,01/10] riscv: errata: Rename defines for Andes
-    https://git.kernel.org/riscv/c/be5e8872b3fb
-  - [v9,02/10] irqchip/riscv-intc: Allow large non-standard interrupt number
-    https://git.kernel.org/riscv/c/96303bcb401c
-  - [v9,03/10] irqchip/riscv-intc: Introduce Andes hart-level interrupt controller
-    https://git.kernel.org/riscv/c/f4cc33e78ba8
-  - [v9,04/10] dt-bindings: riscv: Add Andes interrupt controller compatible string
-    https://git.kernel.org/riscv/c/b88727d554f0
-  - [v9,05/10] riscv: dts: renesas: r9a07g043f: Update compatible string to use Andes INTC
-    https://git.kernel.org/riscv/c/95113bb70515
-  - [v9,06/10] perf: RISC-V: Eliminate redundant interrupt enable/disable operations
-    https://git.kernel.org/riscv/c/ea0e0178e101
-  - [v9,07/10] perf: RISC-V: Introduce Andes PMU to support perf event sampling
-    https://git.kernel.org/riscv/c/bc969d6cc96a
-  - [v9,08/10] dt-bindings: riscv: Add Andes PMU extension description
-    https://git.kernel.org/riscv/c/61609bf2b29d
-  - [v9,09/10] riscv: dts: renesas: Add Andes PMU extension for r9a07g043f
-    https://git.kernel.org/riscv/c/270fc77e7b0e
-  - [v9,10/10] riscv: andes: Support specifying symbolic firmware and hardware raw events
-    https://git.kernel.org/riscv/c/f5102e31c209
+  - [v9,1/4] riscv: lib: Introduce has_fast_unaligned_access()
+    https://git.kernel.org/riscv/c/5a83e7313ee1
+  - [v9,2/4] riscv: Only check online cpus for emulated accesses
+    https://git.kernel.org/riscv/c/313130c62cf1
+  - [v9,3/4] riscv: Decouple emulated unaligned accesses from access speed
+    https://git.kernel.org/riscv/c/6e5ce7f2eae3
+  - [v9,4/4] riscv: Set unaligned access speed at compile time
+    https://git.kernel.org/riscv/c/f413aae96cda
 
 You are awesome, thank you!
 -- 
