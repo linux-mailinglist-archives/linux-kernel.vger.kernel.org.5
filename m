@@ -1,130 +1,127 @@
-Return-Path: <linux-kernel+bounces-103537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1FE687C0CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:00:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C9C887C0CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73BCBB20DCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BAA91F2266B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65AE73502;
-	Thu, 14 Mar 2024 15:59:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63116EB74;
-	Thu, 14 Mar 2024 15:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C9A7319F;
+	Thu, 14 Mar 2024 16:00:04 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCAE73175;
+	Thu, 14 Mar 2024 16:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431993; cv=none; b=fRes4FBxBIt0NkAdOboqNDGwPsOiYzisq+WDKBxVqZIVvKetFsUtsSqXNG4WZ7fk/EVEGiSEmdlBBFe/n1DwFbKZeWrJg1mbuWRsce6HnpZE3Lzyh6oKvrws1kBPfAytnSitliVDkN26W3t7BiSKac/iGgkMR+i75MleB3ep0Mo=
+	t=1710432003; cv=none; b=HRVUvmjijEQV0gA/jliU40bmeihzbVLAVZ/Y3nkmJg7IGHUPWkebYmeIN+5tuQ8K6DQOeF2odZjTusN1/nFTIuzmOcsmODEuruMbzQM6AOtYNXgZ3FFeNAUumP33i++Xsk0/vs7S9EXUPYzVdDI/7Zat7s6WVndHZjBlQ8sllDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431993; c=relaxed/simple;
-	bh=okaw4O3R57c6tEMT0TJSs1UtnZZCStffxFfDr2xlyHw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aeNHzxxsVnfkXCjyuZrVl9Yz4ZPzdStJRtSAp7dmCJ1Du41C1qBhU6mOltq7qPkTa/O0eJyh8Q6AeHY3mBOTCOUh3ghvnlLSdVXRlMZdXEA0ZLuBFj09hKbZSFheR37EzmMe2h0yZBVIxmPMxTwr7lESVOgnFc4oHEGSbu0jx7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCA7E1007;
-	Thu, 14 Mar 2024 09:00:25 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.69.235])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 281FB3F762;
-	Thu, 14 Mar 2024 08:59:45 -0700 (PDT)
-Date: Thu, 14 Mar 2024 15:59:39 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Sagi Maimon <maimon.sagi@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, richardcochran@gmail.com,
-	luto@kernel.org, datglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org,
-	peterz@infradead.org, hannes@cmpxchg.org, sohil.mehta@intel.com,
-	rick.p.edgecombe@intel.com, nphamcs@gmail.com, palmer@sifive.com,
-	keescook@chromium.org, legion@kernel.org, mszeredi@redhat.com,
-	casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net,
-	brauner@kernel.org, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
-Message-ID: <ZfMe66MfHBEfxrdd@FVFF77S0Q05N>
-References: <20240314090540.14091-1-maimon.sagi@gmail.com>
- <87a5n1m5j1.ffs@tglx>
- <CAMuE1bH_H9E+Zx365G9AtmWSmhW-kPPB+-=8s2rH4hpxqE+dHQ@mail.gmail.com>
+	s=arc-20240116; t=1710432003; c=relaxed/simple;
+	bh=1vI2Q4KAWhANIk1ytm6VuIZQ3Iwhh8U/8lyXhKRLs1E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PJi7j8sjre6wXLiK/eD6oDzcWMNQUve7pAGQ2Eg9vlox+UjaFXkYop9vBI/d7zanHycqJYDUb3d8wdgx7SOD6qTKuuwqxmrgifVKrw6P3iFqIUbDQ6rWG9r7ER5jMSYq+xTIa1SXIgF25nrdsyIgzI8TQqhn4QiCUpns8HSt0Qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60cd800f396so430317b3.3;
+        Thu, 14 Mar 2024 09:00:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710431999; x=1711036799;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JaY2hT5rudAoaASQuIj5MP8mmMHrFfWhFtQCkYxvJN4=;
+        b=dz9S36J8tZ+KNEzEOB/ILmkn6B7GPKp5VvBphUJBtACMkSmCiE7ZEALvF0tBKP7W1g
+         LEkDPz/22HN5LjQ7pXWFIuSGqGlECuayYEUrXy1TQnDsCLIA0MBJTbCKUDKKyo6aRiqR
+         JLK4gLiaQvmOUFTWf7gKnCgahQpNlz5K4+pTpkkmLmEGVSJm/K5vU+36qAhOEMmRHO7L
+         eEg6e60tyH6xLN9gnOG8m6rDfMxB3rMVAUqSCAYhydPeFQ/i42KrCwsHGL18stuMltab
+         JK/bV9tXsXzaGML86kZekN9bfKSUfh+kTPG+Ypq4FJg1OPiJ2db+i4YVuBHpakfY4g+j
+         tC6w==
+X-Forwarded-Encrypted: i=1; AJvYcCXw9AaDrQYlCZBdKkgbIDeifCWNwnKujeHcPDPwIOf1nMk0yirwD7rg7STZoxQJ3AmLEiePw/LY8dIpV0Rgjztw4vDC45fqChXfNalMLWWqzSYNP456YzHLBggWehlEe1ZyOH8JNR1nioJ6zmu+uk8vyBVyBvOrKW99pFFMVG7vkBF7CEo5Hk9Qzz6Y1+vjjS08adVpH1MW2oAXyx0XWz68RgynJfdp
+X-Gm-Message-State: AOJu0Yzstwba34j6qzf2Lf7ldiphdgWDTVTEifWzatqolUaEneJjwmuu
+	7XgHP31RSts2Y6YOZFOwz3RWhuKjeZYnPnxrISbRpzuAh9ywmfdHhOp/w6tAYLY=
+X-Google-Smtp-Source: AGHT+IGtmuVvTdplXC3pvejSAGw+8EfhubAyFel7D5+UzZqeL8gJciwZQ+MK6nqYIS1R9+wEpPJ1Tw==
+X-Received: by 2002:a81:6dc2:0:b0:609:8717:4361 with SMTP id i185-20020a816dc2000000b0060987174361mr2098733ywc.4.1710431999143;
+        Thu, 14 Mar 2024 08:59:59 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id j67-20020a819246000000b0060a588c41a3sm324357ywg.76.2024.03.14.08.59.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 08:59:58 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60cbcd04de9so12467337b3.2;
+        Thu, 14 Mar 2024 08:59:57 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWnlkm4XdlilXZxjSXARM3ofp5jQnCie+0lK5i8/Pplg0JT4SODl6KTMA4jjRv4MPNCnvDo0EkQRksPl/I2eZv4UEeTTI7JmzfT0XQ6uBnGUzwQ5fC0dAHxGHvU3yzeAbo/4gBWmpMwYRUEj1F56xBZbabPkh8TTOXukIP35vR0pJ3b7MfQ4ytvZRrvR7iSAGeXVFbxpJsZAJRIee/W/MYOqhs6m71J
+X-Received: by 2002:a25:9801:0:b0:dc7:4ba0:9d24 with SMTP id
+ a1-20020a259801000000b00dc74ba09d24mr1740244ybo.59.1710431997732; Thu, 14 Mar
+ 2024 08:59:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuE1bH_H9E+Zx365G9AtmWSmhW-kPPB+-=8s2rH4hpxqE+dHQ@mail.gmail.com>
+References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com> <20240307140728.190184-6-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240307140728.190184-6-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Mar 2024 16:59:44 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVhcSr882_jADG=F5LbByEbnS1z00XKOQ4MXVeN7_WyOw@mail.gmail.com>
+Message-ID: <CAMuHMdVhcSr882_jADG=F5LbByEbnS1z00XKOQ4MXVeN7_WyOw@mail.gmail.com>
+Subject: Re: [PATCH v2 05/10] dt-bindings: clock: renesas,rzg2l-cpg: Update
+ #power-domain-cells = <1> for RZ/G3S
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 14, 2024 at 02:19:39PM +0200, Sagi Maimon wrote:
-> On Thu, Mar 14, 2024 at 1:12 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > On Thu, Mar 14 2024 at 11:05, Sagi Maimon wrote:
-> > > +     if (crosstime_support_a) {
-> > > +             ktime_a = ktime_sub(xtstamp_a2.device, xtstamp_a1.device);
-> > > +             ts_offs_err = ktime_divns(ktime_a, 2);
-> > > +             ktime_a = ktime_add_ns(xtstamp_a1.device, (u64)ts_offs_err);
-> > > +             ts_a1 = ktime_to_timespec64(ktime_a);
-> >
-> > This is just wrong.
-> >
-> >      read(a1);
-> >      read(b);
-> >      read(a2);
-> >
-> > You _CANNOT_ assume that (a1 + ((a2 - a1) / 2) is anywhere close to the
-> > point in time where 'b' is read. This code is preemtible and
-> > interruptible. I explained this to you before.
-> >
-> > Your explanation in the comment above the function is just wishful
-> > thinking.
-> >
-> you explained it before, but still it is better then two consecutive
-> user space calls which are also preemptible
-> and the userspace to kernel context switch time is added.
+On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
+rote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> The driver will be modified (in the next commits) to be able to specify
+> individual power domain ID for each IP. The driver will still
+> support #power-domain-cells =3D <0>, thus, previous users are not
+> affected.
+>
+> The #power-domain-cells =3D <1> has been instantiated only for RZ/G3S at
+> the moment as individual platform clock drivers need to be adapted for
+> this to be supported on the rest of the SoCs.
+>
+> Also, the description for #power-domain-cells was updated with the links
+> to per-SoC power domain IDs.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>
+> Changes in v2:
+> - updated patch title and description
+> - kept both 0 and 1 for #power-domain-cells as not all the drivers,
+>   device trees are adpated with this series
+> - added a reference to dt-bindings/clock/r9a0*-cpg.h for power domain
+>   specifiers
+> - dropped the changes from examples section
 
-How much "better" is that in reality?
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-The time for a user<->kernel transition should be trivial relative to the time
-a task spends not running after having been preempted.
+Gr{oetje,eeting}s,
 
-Either:
+                        Geert
 
-(a) Your userspace application can handle the arbitrary delta resulting from a
-    preemption, in which case the trivial cost shouldn't matter.
 
-    i.e. this patch *is not necessary* to solve your problem.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-(b) Your userspace application cannot handle the arbitrary delta resulting from
-    a preemption, in which case you need to do something to handle that, which
-    you haven't described at all.
-  
-    i.e. with the information you have provided so far, this patch is
-    *insufficient* to solve your problem.
-
-> > > + * In other cases: Read clock_a twice (before, and after reading clock_b) and
-> > > + * average these times – to be as close as possible to the time we read clock_b.
-> >
-> > Can you please sit down and provide a precise technical description of
-> > the problem you are trying to solve and explain your proposed solution
-> > at the conceptual level instead of throwing out random implementations
-> > every few days?
-
-100% agreed.
-
-Please, explain the actual problem you are solving here. What *specifically*
-are you trying to do in userspace with these values? "Synchronization" is too
-vague a description.
-
-Making what is already the best case *marginally better* without handling the
-common and worst cases is a waste of time. It doesn't actually solve the
-problem, and it misleads people into thinknig that a problem is solved when it
-is not.
-
-Mark.
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
