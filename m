@@ -1,223 +1,250 @@
-Return-Path: <linux-kernel+bounces-102971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C3D287B94B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:29:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF30287B946
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:28:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFE1E1C21EAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:29:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A411C214B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579D75D91E;
-	Thu, 14 Mar 2024 08:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7E95D75D;
+	Thu, 14 Mar 2024 08:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SScl5PSS"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CabL6gBM"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94B154677;
-	Thu, 14 Mar 2024 08:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E644A12;
+	Thu, 14 Mar 2024 08:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710404943; cv=none; b=BICi61uJf3A5pSHOlFToXADcLD2O8xMDVgy8mM0GcQlNkINxeY2L8wHwdgEU2MzKFQSp52Ir9LF5oWJ193Enxspa4GMkm1V9aXZg9nZIgGwmoDRy1LOoUSaVElh46wjd92I9/XwAPEK8NSfU0NzY7EsmATIP5hkunTEOqSKwENI=
+	t=1710404930; cv=none; b=d/GOLmMld8XQEUuSirV3hJPXLC0lsGd08l9lKnKEN0T4aJXVBGUc/AWjhlfAJJ0H6zJ55QcU6cXvO4SsWQJodwAE/zd/JOU9ua6ny6H20jSnfl3ew6nfOIZk3BEc3YPl4KEnYZhx359KgNEhEsXCqa4N2XbS3q3TfiGYc+xm9Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710404943; c=relaxed/simple;
-	bh=JzGyHEjo0l5+t705kG/iFokneXzvLXfTOvbSZ7ORaQ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GCiUP1imq8OFWqMXtGZbk6rjHWyDxwKLUikYqIyYGejicQ9BsaHg6Voy/fSrNamknMTOLlml7qdM6uCw5nl2bzlOaqsxsFCMKbIuOYXKxq6B+TWjfS/6fNbsgS4VSlKhCfp9xPYz56qJk/v7ZvX6Lb04tBaWbZN82A5Emz++2Gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SScl5PSS; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42E7MsdY032381;
-	Thu, 14 Mar 2024 08:28:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=K1DI991HbjwKV63GHD7ax9zV5QvSZ/lxPe4APc6ldJ4=; b=SS
-	cl5PSSel+4Erl0rURjtjYVAKuPzxU5tpymP0aSMamry9oQQoNq/ndKGhvtSrISog
-	QVRj1XoTte7kaNod5lRayBkTa9uxCrm15wb1mYLV5NJpOg9bcFrQqJQjwIz7zDWa
-	w3tnGWg5pGf2r+lEfBKS0Iel+fYbIkHN2ibpZSC3s0hUkntD5zUS0h7Hzvgw33lz
-	2r/Dcg8k+WyqCCM/VWL09DoiI8FFQDKMajHtYzKJPYhUI33xq3XiDdZhbDE1yjxD
-	BhKkhqUeW9alHPvSCUHu7EdbJaD+y0duSJTrEmtFmoyUsavFPxLQAum0j90ExWgp
-	hQ6A73Jn6HNmuBF7gGuw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wusxgghmj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 08:28:37 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42E8SaMu007591
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 08:28:36 GMT
-Received: from [10.217.217.28] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Mar
- 2024 01:28:24 -0700
-Message-ID: <1537d42f-fe61-48c2-9ee2-1066db71a19e@quicinc.com>
-Date: Thu, 14 Mar 2024 13:58:21 +0530
+	s=arc-20240116; t=1710404930; c=relaxed/simple;
+	bh=dWBvzMvhEojLc4YRKahCcivlodgKip+79gtNWQpwMpA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tO7+1+l6kskSogSqdUYewEQQIxDm+BsNAWjBu1e6wGJbBHzX2kHJAqIupLp8GMr8yY0qbnIxq7bqqYB37hlKQ/SMx6p49CHJJnAX+13EMqIwKvoDE58Et8F/Wf7WLst1PHZVbya8p18ThN4bc46Kvlmu2XTKN+uJTlHnDrHGOh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CabL6gBM; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 45ED6C0008;
+	Thu, 14 Mar 2024 08:28:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710404925;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ta2o1x/LIlySc7obf85xA0brUjSk62k5/P2oqyy2gbY=;
+	b=CabL6gBMbBp+8mopqE1f1dUVAINgn7OlUvLJsnZJP08TZJbgD6yr+zl4f51i4Vx5aLBh25
+	TX8yKi/akLHzClY5day0luGdWE3lSOtAcicijuAPdyiqtQ+2uWWQQZW5twGzVeuTEXw5ov
+	SHfll56j0kvJcdOD4psPs0Qo6jCc5FUM3/ZKJA09M6eXMacXKQUQNj7Iqbymk1KKRGIujj
+	+OtAA89rIgEMuzY3y1Ixvf+66cWzZ444hwAVewSAwuV6KTFP7Ek/30QEXAZTe7zMMW4toc
+	6C4GAMYQFjz6fyFmqwFGe5p+wPIQupGrr2dH1Bkp3v6lfQnKYk3czhpPasYkrg==
+Date: Thu, 14 Mar 2024 09:28:42 +0100
+From: Kamel Bouhara <kamel.bouhara@bootlin.com>
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Jeff LaBundy <jeff@labundy.com>,
+	catalin.popescu@leica-geosystems.com,
+	mark.satterthwaite@touchnetix.com,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	bsp-development.geo@leica-geosystems.com
+Subject: Re: [PATCH v9 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
+Message-ID: <20240314082842.GA6963@tpx1.home>
+References: <20240301103909.167923-1-kamel.bouhara@bootlin.com>
+ <20240301103909.167923-4-kamel.bouhara@bootlin.com>
+ <20240313202135.2lwgtu2z67ksh2tz@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: adc: Add support for QCOM PMIC5
- Gen3 ADC
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <jic23@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <daniel.lezcano@linaro.org>,
-        <dmitry.baryshkov@linaro.org>
-CC: <lars@metafoo.de>, <luca@z3ntu.xyz>, <marijn.suijten@somainline.org>,
-        <agross@kernel.org>, <sboyd@kernel.org>, <rafael@kernel.org>,
-        <rui.zhang@intel.com>, <lukasz.luba@arm.com>,
-        <linus.walleij@linaro.org>, <quic_subbaram@quicinc.com>,
-        <quic_collinsd@quicinc.com>, <quic_amelende@quicinc.com>,
-        <quic_kamalw@quicinc.com>, <kernel@quicinc.com>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-msm-owner@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-References: <20231231171237.3322376-1-quic_jprakash@quicinc.com>
- <20231231171237.3322376-3-quic_jprakash@quicinc.com>
- <3f812ffa-ec33-448e-b72a-ce698618a8c1@linaro.org>
- <13f2b558-a50d-44d3-85de-38e230212732@quicinc.com>
- <f52b2d5e-b2b4-48ae-a6a6-fc00c89662d2@linaro.org>
- <0b9e807d-e0ca-411c-9a2b-3d804bdf168c@quicinc.com>
- <d3dc9a41-4738-4634-9a98-fefcf418f552@linaro.org>
-From: Jishnu Prakash <quic_jprakash@quicinc.com>
-In-Reply-To: <d3dc9a41-4738-4634-9a98-fefcf418f552@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: USFgAHj3NNLldE_h9mKjClq3LRVoHbpe
-X-Proofpoint-GUID: USFgAHj3NNLldE_h9mKjClq3LRVoHbpe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_05,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 impostorscore=0
- malwarescore=0 clxscore=1011 mlxscore=0 phishscore=0 lowpriorityscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403140057
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240313202135.2lwgtu2z67ksh2tz@pengutronix.de>
+X-GND-Sasl: kamel.bouhara@bootlin.com
 
-Hi Krzysztof,
+Le Wed, Mar 13, 2024 at 09:21:35PM +0100, Marco Felsch a écrit :
+> Hi Kamel,
+>
+Hi Marco,
 
-On 2/21/2024 12:49 PM, Krzysztof Kozlowski wrote:
-> On 21/02/2024 06:36, Jishnu Prakash wrote:
->> Hi Krzysztof,
->>
->> On 2/17/2024 7:43 PM, Krzysztof Kozlowski wrote:
->>> On 16/02/2024 11:39, Jishnu Prakash wrote:
->>>> Hi Krzysztof,
->>>>
+> please see below, be aware that this is just an rough review.
+>
 
+[...]
 
->>
->>> How is this a problem?
->>
->> In qcom,spmi-vadc.yaml, we have the following top-level constraints for
->> the "reg" and "interrupts" properties:
->>
->>     reg:
->>       maxItems: 1
->>
->>     interrupts:
->>       maxItems: 1
->>
->> For the ADC5 Gen3 device being added now, these constraints cannot be
->> followed always, as there may be more than one peripheral under one
->> device instance, each with a corresponding interrupt. For example, the
->> above properties could be like this for a ADC5 Gen3 device:
->>
->>       reg = <0x9000>, <0x9100>;
->>       interrupts = <0x0 0x90 0x1 IRQ_TYPE_EDGE_RISING>,
->>                    <0x0 0x91 0x1 IRQ_TYPE_EDGE_RISING>;
->>
->>
->> I could not overwrite the top-level constraints for the new device
->> "qcom,spmi-adc5-gen3" alone in qcom,spmi-vadc.yaml, so I tried to remove
->> the constraints from the top level and add them back conditionally for
->> all the device types separately, but you told me not to remove them
->> (full message:
->> https://lore.kernel.org/linux-iio/832053f4-bd5d-4e58-81bb-1a8188e7f364@linaro.org/)
-> 
-> Because top-level widest constraints must stay, but it is not a problem.
-> Most of the multi-device bindings work like this. Dozen of Qualcomm. Why
-> you cannot do this the same way we do for all Qualcomm devices?
-> 
+> > +
+> > +static int axiom_i2c_probe(struct i2c_client *client)
+> > +{
+> > +	struct device *dev = &client->dev;
+> > +	struct input_dev *input_dev;
+> > +	struct axiom_data *ts;
+> > +	u32 poll_interval;
+> > +	int target;
+> > +	int error;
+> > +
+> > +	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
+> > +	if (!ts)
+> > +		return -ENOMEM;
+> > +
+> > +	i2c_set_clientdata(client, ts);
+> > +	ts->client = client;
+> > +	ts->dev = dev;
+> > +
+> > +	ts->regmap = devm_regmap_init_i2c(client, &axiom_i2c_regmap_config);
+> > +	error = PTR_ERR_OR_ZERO(ts->regmap);
+> > +	if (error) {
+> > +		dev_err(dev, "Failed to initialize regmap: %d\n", error);
+> > +		return error;
+> > +	}
+> > +
+> > +	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+> > +	if (IS_ERR(ts->reset_gpio))
+> > +		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
+> > +
+> > +	if (ts->reset_gpio)
+> > +		axiom_reset(ts->reset_gpio);
+>
+> This seems useless, since you doing an reset without enabling the power
+> supply (below). I know there are systems which do have the supply always
+> connected or for ACPI the supply is managed via firmware, but the driver
+> should implement the correct logic and for DT/OF case this is not
+> correct.
+>
 
-I would like to clarify a point with you related to the top-level 
-constraints, as I think I have not asked this exact question earlier.
+Alright, this can be moved after enabling vdda regulator as this is
+still required in the power sequence.
 
-For these top-level constraints in qcom,spmi-vadc.yaml:
+> > +
+> > +	ts->vddi = devm_regulator_get_optional(dev, "vddi");
+> > +	if (!IS_ERR(ts->vddi)) {
+> > +		error = devm_regulator_get_enable(dev, "vddi");
+>
+> Regulators are ref counted and now you request the regulator twice. Also
+> the regulator is not optional, it is required for the device to work.
+> Same applies to the vdda below.
+>
 
-     reg:
-       maxItems: 1
+Ack, I wrongly took my use case (ACPI + fixed regulators) but this isn't
+a common use case.
 
-     interrupts:
-       maxItems: 1
+> > +		if (error)
+> > +			return dev_err_probe(&client->dev, error,
+> > +					     "Failed to enable vddi regulator\n");
+> > +	}
+> > +
+> > +	ts->vdda = devm_regulator_get_optional(dev, "vdda");
+> > +	if (!IS_ERR(ts->vdda)) {
+> > +		error = devm_regulator_get_enable(dev, "vdda");
+> > +		if (error)
+> > +			return dev_err_probe(&client->dev, error,
+> > +					     "Failed to enable vdda regulator\n");
+> > +		msleep(AXIOM_STARTUP_TIME_MS);
+> > +	}
+> > +
+> > +	error = axiom_discover(ts);
+> > +	if (error)
+> > +		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
+> > +
+> > +	input_dev = devm_input_allocate_device(ts->dev);
+> > +	if (!input_dev)
+> > +		return -ENOMEM;
+> > +
+> > +	input_dev->name = "TouchNetix axiom Touchscreen";
+> > +	input_dev->phys = "input/axiom_ts";
+> > +
+> > +	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
+> > +	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
+> > +	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
+> > +	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
+> > +	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
+> > +
+> > +	touchscreen_parse_properties(input_dev, true, &ts->prop);
+> > +
+> > +	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
+> > +	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
+> > +	if (error)
+> > +		return error;
+> > +
+> > +	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
+> > +	set_bit(EV_REL, input_dev->evbit);
+> > +	set_bit(EV_MSC, input_dev->evbit);
+> > +	/* Declare that we support "RAW" Miscellaneous events */
+> > +	set_bit(MSC_RAW, input_dev->mscbit);
+> > +
+> > +	ts->input_dev = input_dev;
+> > +	input_set_drvdata(ts->input_dev, ts);
+> > +
+> > +	/* Ensure that all reports are initialised to not be present. */
+> > +	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
+> > +		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
+> > +
+> > +	error = devm_request_threaded_irq(dev, client->irq, NULL,
+> > +					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
+> > +	if (error) {
+> > +		dev_info(dev, "Request irq failed, falling back to polling mode");
+> > +
+> > +		error = input_setup_polling(input_dev, axiom_i2c_poll);
+> > +		if (error)
+> > +			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
+> > +
+> > +		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
+>
+> This is not wrong but can we move the "poll-intervall" parsing into
+> touchscreen_parse_properties() since it seems pretty common to me.
 
-If we add ADC5 Gen3 bindings in the same file, is it acceptable to 
-update the top-level constraints to something like this:
+Maybe too late to add it in this series :).
 
-     reg:
-       minItems: 1
-       maxItems: 2
+>
+> > +			input_set_poll_interval(input_dev, poll_interval);
+> > +		else
+> > +			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
+> > +	}
+> > +
+> > +	error = input_register_device(input_dev);
+> > +	if (error)
+> > +		return dev_err_probe(ts->dev, error,
+> > +				     "Could not register with Input Sub-system.\n");
+>
+> 	return input_register_device(input_dev);
 
-     interrupts:
-       minItems: 1
-       maxItems: 2
+Ack, thanks.
 
-followed by updating maxItems back to 1 for all the earlier existing 
-compatibles, using if:then: conditions, like the below example?
+>
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct i2c_device_id axiom_i2c_id_table[] = {
+> > +	{ "ax54a" },
+> > +	{ },
+> > +};
+> > +MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
+>
+> Do we really need an i2c-id table here? Most platforms do either use OF
+> or ACPI.
 
-   - if:
-       properties:
-         compatible:
-           contains:
-             const: qcom,spmi-adc5
+If not wrong this is used to enumarate the device from userspace
+and in my case it is required as there is no direct i2c controller
+exposed from ACPI pov.
 
-     then:
-       properties:
-         reg:
-           maxItems: 1
-         interrupts:
-           maxItems: 1
+Thanks !
 
-
-If this is acceptable, I'll add ADC5 Gen3 bindings in the same file with 
-changes like the above, else I'll add them in a new file after first 
-creating a common schema file as you suggested.
-
-Thanks,
-Jishnu
-
->>
->> Since these constraints cannot be modified for a specific new device or
-> 
-> ???
-> 
->> removed, I think the only way to accommodate this new device is to add
->> it in its own new file.
->>
->> Is this a sufficient justification for adding this documentation in a
->> new file or do you have any other suggestions?
-> 
-> I already gave you the suggestions and you ignored them. Do like we are
-> doing for all other drivers. Don't re-invent stuff. Either this fits to
-> existing schema or come with common schema (and then provide rationale
-> why it does not fit to existing one).
-> 
-> Best regards,
-> Krzysztof
-> 
+--
+Kamel Bouhara, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
