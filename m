@@ -1,318 +1,216 @@
-Return-Path: <linux-kernel+bounces-102718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3824287B672
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CBAE587B661
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BD6E1C212E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:33:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEDF71C21062
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595D04A1B;
-	Thu, 14 Mar 2024 02:33:49 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2121.outbound.protection.partner.outlook.cn [139.219.17.121])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F349C2D0;
+	Thu, 14 Mar 2024 02:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bt53jStA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108D6BA29;
-	Thu, 14 Mar 2024 02:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.121
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710383628; cv=fail; b=d1CmhHupkB580cuufsj4vTBmx3hB56ePdCZvovrX66ZAGpPFtzkPQjR0rxB/i2cCEru2MsA3Icfr6hmOWMQWB6fZErLXRia2286lIFRZch72cT14tybxhiJurfYlzpXKVI13uHNCQreLA2gAgNQusZCbA+swdmb6QLW6E2xey1c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710383628; c=relaxed/simple;
-	bh=FQgwnVfdk2HXjrAg6c5cXwYIbkvhP/8B5U5fRZDbomY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LMHl/VxV0Se4X5hNqtU56SSTsrjKD6QXq1EsI6qkLhr4aL7yhWOY/LlmRcxAqL2eZ7GBCU7G2z6zDTSSLJLilBioOO0n9DIEgkTGMw9j5QKsL8I9fA0cSQhnXJGCZdWBB4Nqzw1K4jFAKWfbVA0EslQhl9exTMRh5n5lthOHDXc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BeRyNiAN5uiZBCcZ1a7cffZMhr0Zkfcz+Xk+oJ5mzeViLFEhVA2aZUg3kBcVIKwP2ovKRRrZMZ15w5psdNT5n+tlFSVfjmRrOX/T3w5ar4yeuyWar+oqLJ0sl03rtTnpIY4b+lcnv3UysMh42j9Yd7WiuManO9Rs213wx/vzkxKZbQCG3jOwjO+TvFIaaGiDddNIfzJ6l0O7H5Sj69Vmb+kMPrxWxg+qo1Mai9QUdgZYHNQgpgRh6azm1+kl+dAGFPriFXWX1jknIFkvmWzJCIIUcP7YJlgxY+KbNkCm+9m5GmRi1Zpmrj8ll9vI00/jRh3LhxIXBQinFIcuWpMWVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jwLiPWQwcgK6rSvSVwieAp2WWhrt2spZRSv/c2OuFS4=;
- b=Ma5BD0mFUzY6/bgzDCNwz25Qcyc/KRS4aJX50OfjIGv9YhKv810HMbmAkeoz82DW1ff7xIr5ewTzI3jknJQCWeNskOlhAdcbcKgw/yw2bmvQVZNWa6a+IHO+l5fDWnKLrSSTWwPqW0Vl93RJJk2T8w6MnClhQYohP38z5/7qpGTYUvuv4BRN6a9shsUpXUJh1xL+TEc4n0z/N8XmrgKZJICl8fYVNR2hKuPzwlfQKSgrh0fg7VZN8haoXiSo0ya22Lh1nWl6O0jvmmZKB+D20qUuXBtDzA5u7um/60Y6qZKYKHBleSRZUw3+ni5fGX3Y6NYEtK0WiS84Osq5a6FFzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550::13) by ZQ0PR01MB0951.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:e::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.44; Thu, 14 Mar
- 2024 02:18:39 +0000
-Received: from ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn
- ([fe80::142:2325:a426:2bfa]) by ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn
- ([fe80::142:2325:a426:2bfa%6]) with mapi id 15.20.7386.016; Thu, 14 Mar 2024
- 02:18:38 +0000
-From: Kevin Xie <kevin.xie@starfivetech.com>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>, Palmer Dabbelt
-	<palmer@dabbelt.com>
-CC: Minda Chen <minda.chen@starfivetech.com>, Conor Dooley <conor@kernel.org>,
-	"kw@linux.com" <kw@linux.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"bhelgaas@google.com" <bhelgaas@google.com>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "daire.mcnamara@microchip.com"
-	<daire.mcnamara@microchip.com>, "emil.renner.berthing@canonical.com"
-	<emil.renner.berthing@canonical.com>, "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-pci@vger.kernel.org"
-	<linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, "p.zabel@pengutronix.de"
-	<p.zabel@pengutronix.de>, Mason Huo <mason.huo@starfivetech.com>, Leyfoon Tan
-	<leyfoon.tan@starfivetech.com>
-Subject: Re: [PATCH v15,RESEND 22/23] PCI: starfive: Offload the NVMe timeout
- workaround to host drivers.
-Thread-Topic: [PATCH v15,RESEND 22/23] PCI: starfive: Offload the NVMe timeout
- workaround to host drivers.
-Thread-Index: AQHaaWi+d9assvQENEqJ5rz8wQxEZrEhb4yAgAZ7cgCAAW1+gIANQI1Q
-Date: Thu, 14 Mar 2024 02:18:38 +0000
-Message-ID:
- <ZQ0PR01MB0981BC562E837B232B419AC28229A@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
-References: <ZeCd+xqE6x2ZFtJN@lpieralisi>
- <mhng-87e7ef5a-d60b-4057-960d-41bc901b6c7f@palmer-ri-x1c9>
- <ZedAn8IC+Mpm4Sqz@lpieralisi>
-In-Reply-To: <ZedAn8IC+Mpm4Sqz@lpieralisi>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: ZQ0PR01MB0981:EE_|ZQ0PR01MB0951:EE_
-x-ms-office365-filtering-correlation-id: 2f929a8b-40aa-430c-e8a8-08dc43cd0f96
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- zWfr/2+ym2W9ngOrFASO0n5amEC/afW57Zbo78L5dBjOEuS6q+4NW0Zes6H3qHZhZLdpXHmG262ZQLsRwtMpmtiqchpBDmKGTMhSDEohhgy2g1ezctwSx4BDWBWZ4O23P//AmmEb444efluoRG7Smfao2t86pW8UE/iRuhDSd80tOONIwaxSOs1kOcNWq0xND+jpep+XWmLKzq4oSrVVrsR9jhOBNjo2zq8pKLvJAwtOS+zm+9pvBxdxN2kS47pl7XAAVcOWf3mBua3HSf6bS2ArXQiGc790ImdvYjPH1w9oieXZtUYE6XU8uPWVZn0K+LQjq032ju0qpEaU5vmbIt1f6uJGiJOnCHDOUHDtFgA8n4KYXtklbT3nak2mmelEW6kEQKjqmi48QHaQyNz+czayc3Jmcnr1G5CdeMJNpP5Fip5JlhrfVbIsgiTbvrSdl3fxQQfFLV/mgLrwUto/uGXQN4F/kTYGZFsO/x4n8wgcVoBLA2qlYH/rcPaPcB13lTeWOIEfr4aucNiL3Y0fVnGOIVkWJ3pshpLvu55UZkUCjwjrgfHiXHvMfOPkHouX3qKV4A5cpGJbubKmOlcrtRwW/29cWuia3uiCveixVKZeG2HEZQP5s99CJzfkIrH4
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?rMyDIno4Duk50p10/MIH4SfhsN2BpkdY4jBw1gD+3fgDXkhnf7YH/ptqP5ka?=
- =?us-ascii?Q?7qczLu/NepfyGLt3uaAfluUIJXOWaa88k0DjDUGVXYTh0yHkXUXR1HxjnwTm?=
- =?us-ascii?Q?EKIsEMdRIezS24Y6n/alcIiOVbxpPmsaphw4KyTfa3Ck5M7Uu03lVZx4GYx+?=
- =?us-ascii?Q?zFhXs901LgS8oGWSW+c5n4ygKALvc1ycUCUrV40/g6rUmtLzxj6MdC22OBJq?=
- =?us-ascii?Q?R0kv8fH1zeGqceXWUg0RXTJrcMggiYMYMWrDjNydxNicuWWxABPedU9LtCFP?=
- =?us-ascii?Q?u6ZcsroPsA8440CtrcANj0pIM3CrkEO02xjVBIWuO1tyXbk3wFB/CH8mx7BY?=
- =?us-ascii?Q?y6B/n/N2NJ8qJfnw1AOzvAKfXqsPffT1HBI56QynIrIwZsQ2v3D/Aue1oTB6?=
- =?us-ascii?Q?+ggzex+SxzW1NNyjyxoxQA5FvzrD6AuE6WJnEpG3glg/AHXTNreW88XjTtHz?=
- =?us-ascii?Q?ZBykfEdIO+b142vYNOSLLF62oJo+fM2YsmPyUcBfOrbdseqpmKDZ+GhgbXlE?=
- =?us-ascii?Q?/+MHggiF42gpwtsIgWY77icJxecIKD4DdCAr+OM0uRAEMA5gmF12s/NE/TSP?=
- =?us-ascii?Q?GwWsLRNKt1doGca5i7a6yqvRANcc1iFsPpAH+w6sEwy36Sj9oYLm0u7LzN3T?=
- =?us-ascii?Q?2M2bMOAKOQ70NAUjw5w9U93eXIqHguwoex8aHYYw/pNvqEqn2nBRp5E77gJm?=
- =?us-ascii?Q?8Fa5VxFGNqowyJMdM7Ij18djOQ3J7fxGxQDIDvSLUOJT67McxuSS+i58Fp4i?=
- =?us-ascii?Q?/7jkVzlokFcJ6SW4g/b1QVV2Xk4chIONRd6vn3kR+sIPHO/yCR6CHhkTEkEW?=
- =?us-ascii?Q?33wpYUUo8twIexVjnvZKa/wAV1skpAh16LGxiY+hhWmVFQZ8jfybDC/bRf8b?=
- =?us-ascii?Q?sif0gpZvt75ddv5GiDVHRXjvrhq4HJKUpgq0+VN/aKWZct6TW6MgTWme/v9g?=
- =?us-ascii?Q?5rmxgvlG4KHaH4Ptlq7pagJoVZnhn2ZzV7D9tUo/ClcFM97THdwWsQqmro3Q?=
- =?us-ascii?Q?aditfftYmDdshDUfswRjfy1hDB9c/rF1Fi4GrGWPuel25SjRpl0qxI+UWty5?=
- =?us-ascii?Q?SuYiqTvdDmMApO7PmjYoXxg8vI1J+NFovUNZtJ18ruy+qwTXbB8bL+y/CGF+?=
- =?us-ascii?Q?Mp4PyXfFxWVSuLDBFRHuuaeR+nWQ4cukCMD+Ams504rDQRyc6Az824Fi5uRb?=
- =?us-ascii?Q?KFp9uYvXWktv7ZD/PGQC0jreUvT6yyX2r5c2zk959jXgTTpiY0p37Fagsmgo?=
- =?us-ascii?Q?td/y9ddebnOlGCOwamujgfiRdQ9YJfQFAkAaZhVk4c9CQShyPW88GMMpg2sI?=
- =?us-ascii?Q?FC2B1roCbHqBRZzkYZOh325TZmHAetL2O/Hm3XyRk7v8w2rapu8Gd/zB74+B?=
- =?us-ascii?Q?9uftRnF00qxdV3Ey3EBRZCQvpFAB2EJ62eFj3LbS0/rcb9OsYKNCsUjR56mc?=
- =?us-ascii?Q?3h7giALZ7tgR/OLFdOccAnEZHxIJFa61AT/TuSp6Z1zt5A0FcDcs6GKLPK95?=
- =?us-ascii?Q?AiSOyXqd35dGWfXsIZMFkYp1Pn8UCyDH2UJTtOozeUAqLOoVBIb9YhSuwIGm?=
- =?us-ascii?Q?S1zt+swcTyDj0CHGndhJizXVPXk+AcuVjxIWMx37?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FA2BA29;
+	Thu, 14 Mar 2024 02:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710382762; cv=none; b=n8ZZgA8cFLFnU+Hmex/VUB3C7HRZGIYHwyUocMY9GohnGH61dNL9OimJMYcTWBwOm7hH+dbUGZH6FXrIUAubgtnUCH14H7ry4NwqPmCNlZ+7nDpcYlL/tX5Y7NLcxj+eaMNlEmOQVw+ihtwKS1L/Gk9aPgQ2n8i2bVPYeRralkE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710382762; c=relaxed/simple;
+	bh=oWUuvZfUPQK6oEv2SNRdLnr1fSGZ2Navf8pKF44wuBQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qjTwEFWThWBzpS5vMIrHy9W2ETU6gSyMOlKw3bnHFF5Z89i0lN9ZnnjhAFIhl+fk7KPrAbWwPATgcRjLnjJlatXxcjctH2OQvPA3XimGpQ8BWBE+rpyb+SwTezef1uqcQcIc6cWxoeOrvRnBssWmI3aF3dhoJV0Q4AgFqisKvc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bt53jStA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96671C433F1;
+	Thu, 14 Mar 2024 02:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710382762;
+	bh=oWUuvZfUPQK6oEv2SNRdLnr1fSGZ2Navf8pKF44wuBQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bt53jStAim4HB6IcDu03MYHYMJ46PzUngLFBLd1oskRUuhq+UPXNBEQXlwlqcATb2
+	 pO/Rh27gNTPP3m/nQVRsUCmmJaXBqxKtOUgWOI2QnhDhoIBAtiNaebSdi1x+tRn11P
+	 UrDBYggUeiLL5JIxzttTUsQg2OVGcbqX3PhOrs54o3LbIQ0wRmvn0VX2c7A36ckn9x
+	 Qv+pPLcUjP355J4txuWdYKSk5eb0axbSHmNhT/bkD11ZjuZDhLGORWNJeeqWwp302c
+	 +HfaZ5mIfSQozoWmsOq0mhGhDrjhh3WpQYLMUCvCSsKgmj5PrnqDNAVxb/GsDUuTst
+	 Mb7RLvQpRhBHA==
+Message-ID: <cd89a151-76f6-4f73-a109-72e0a7b758d3@kernel.org>
+Date: Thu, 14 Mar 2024 10:19:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f929a8b-40aa-430c-e8a8-08dc43cd0f96
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2024 02:18:38.8619
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AShm9DQ4Zs94PD+i5SEh0WnLPwQhxqfZtEU7OctnurZ9zg/7wJ8Od56gMpZbS4kOXobL08+jZ8EAAgITtFLm2Kx03iNfE3c5zlNCbdQ+tpw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB0951
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [syzbot] [f2fs?] KASAN: slab-use-after-free Read in
+ f2fs_filemap_fault
+Content-Language: en-US
+To: Jaegeuk Kim <jaegeuk@kernel.org>, "hdanton@sina.com" <hdanton@sina.com>,
+ =?UTF-8?B?RWQgVHNhaSAo6JSh5a6X6LuSKQ==?= <Ed.Tsai@mediatek.com>
+Cc: =?UTF-8?B?Q2h1bi1IdW5nIFd1ICjlt6vpp7/lro8p?= <Chun-hung.Wu@mediatek.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ =?UTF-8?B?TGlnaHQgSHNpZWggKOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>,
+ "linux-f2fs-devel@lists.sourceforge.net"
+ <linux-f2fs-devel@lists.sourceforge.net>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ =?UTF-8?B?RnJlZGR5IEhzaW4gKOi+m+aBkuixkCk=?= <Freddy.Hsin@mediatek.com>
+References: <0000000000000b4e27060ef8694c@google.com>
+ <20240115120535.850-1-hdanton@sina.com>
+ <4bbab168407600a07e1a0921a1569c96e4a1df31.camel@mediatek.com>
+ <ZfEB3rPLQUjePNRz@google.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <ZfEB3rPLQUjePNRz@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> Re: [PATCH v15,RESEND 22/23] PCI: starfive: Offload the NVMe timeout
-> workaround to host drivers.
->=20
-> On Mon, Mar 04, 2024 at 10:08:06AM -0800, Palmer Dabbelt wrote:
-> > On Thu, 29 Feb 2024 07:08:43 PST (-0800), lpieralisi@kernel.org wrote:
-> > > On Tue, Feb 27, 2024 at 06:35:21PM +0800, Minda Chen wrote:
-> > > > From: Kevin Xie <kevin.xie@starfivetech.com>
-> > > >
-> > > > As the Starfive JH7110 hardware can't keep two inbound post write
-> > > > in order all the time, such as MSI messages and NVMe completions.
-> > > > If the NVMe completion update later than the MSI, an NVMe IRQ handl=
-e
-> will miss.
-> > >
-> > > Please explain what the problem is and what "NVMe completions" means
-> > > given that you are talking about posted writes.
+On 2024/3/13 9:31, Jaegeuk Kim wrote:
+> On 03/12, Ed Tsai (蔡宗軒) wrote:
+>> On Mon, 2024-01-15 at 20:05 +0800, Hillf Danton wrote:
+>>>
+>>> ...
+>>>
+>>> --- x/fs/f2fs/file.c
+>>> +++ y/fs/f2fs/file.c
+>>> @@ -39,6 +39,7 @@
+>>>   static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
+>>>   {
+>>>          struct inode *inode = file_inode(vmf->vma->vm_file);
+>>> +       vm_flags_t flags = vmf->vma->vm_flags;
+>>>          vm_fault_t ret;
+>>>   
+>>>          ret = filemap_fault(vmf);
+>>> @@ -46,7 +47,7 @@ static vm_fault_t f2fs_filemap_fault(str
+>>>                  f2fs_update_iostat(F2FS_I_SB(inode), inode,
+>>>                                          APP_MAPPED_READ_IO,
+>>> F2FS_BLKSIZE);
+>>>   
+>>> -       trace_f2fs_filemap_fault(inode, vmf->pgoff, vmf->vma-
+>>>> vm_flags, ret);
+>>> +       trace_f2fs_filemap_fault(inode, vmf->pgoff, flags, ret);
+>>>   
+>>>          return ret;
+>>>   }
+>>> --
+>>
+>> Hi Jaegeuk,
+>>
+>> We recently encountered this slabe-use-after-free issue in KASAN as
+>> well. Could you please review the patch above and merge it into f2fs?
+> 
+> Where is the patch?
 
-Sorry, we made a casual conclusion here.
-Not any two of inbound post requests can`t be kept in order in JH7110 SoC,=
-=20
-the only one case we found is NVMe completions with MSI interrupts.
-To be more precise, they are the pending status in nvme_completion struct a=
-nd
-nvme_irq handler in nvme/host/pci.c.
+Hi, all,
 
-We have shown the original workaround patch before:
-https://lore.kernel.org/lkml/CAJM55Z9HtBSyCq7rDEDFdw644pOWCKJfPqhmi3SD1x6p3=
-g2SLQ@mail.gmail.com/
-We put it in our github branch and works fine for a long time.
-Looking forward to better advices from someone familiar with NVMe drivers.
+I'd like to fix this issue in 6.9-rc1, so I submitted a formal patch based on
+above code, and the patch has been tested by syzbot.
 
-> > >
-> > > If you have a link to an erratum write-up it would certainly help.
-> >
+https://lore.kernel.org/linux-f2fs-devel/20240314020528.3051533-1-chao@kernel.org
 
-That`s not a certain hardware issue with existing erratum, and we are doing
-more investigation for it in these days.
+Hillf, may I change author of the patch to you? :)
 
-The next version we will skip this workaround patch, and then summit separa=
-te
-patch (with erratum) for the fix after more debug on the issue.
+Thanks,
 
-> > I think we really need to see that errata document.  Our formal memory
-> > model doesn't account for device interactions so it's possible there's
-> > just some arch fence we can make stronger in order to get things
-> > ordered again -- we've had similar problems with some other RISC-V
-> > chips, and while it ends up being slow at least it's correct.
-> >
-> > > This looks completely broken to me, if the controller can't
-> > > guarantee PCIe transactions ordering it is toast, there is not even
-> > > a point considering mainline merging.
-> >
-> > I wouldn't be at all surprised if that's the case.  Without some
-> > concrete ISA mechanisms here we're sort of just stuck hoping the SOC
-> > vendors do the right thing, which is always terrifying.
-> >
-> > I'm not really a PCIe person so this is all a bit vague, but IIRC we
-> > had a bunch of possible PCIe ordering violations in the SiFive memory
-> > system back when I was there and we never really got a scheme for
-> > making sure things were correct.
-> >
-> > So I think we really do need to see that errata document to know
-> > what's possible here.  Folks have been able to come up with clever
-> > solutions to these problems before, maybe we'll get lucky again.
-> >
-> > > > As a workaround, we will wait a while before going to the generic
-> > > > handle here.
-> > > >
-> > > > Verified with NVMe SSD, USB SSD, R8169 NIC.
-> > > > The performance are stable and even higher after this patch.
-> > >
-> > > I assume this is a joke even though it does not make me laugh.
-> >
-> > So you're new to RISC-V, then?  It gets way worse than this ;)
->=20
-> To me this is just a PCI controller driver, arch does not matter.
->=20
-> What annoyed me is that we really can't state that this patch improves
-> performance, sorry, the patch itself is not acceptable, let's try not to =
-rub it in :)
->=20
-
-I'm sorry, the description here is confusing too.
-The performance is compared with the version that hasn't been fixed.
-It is reasonable that we can get stable performance when NVMe SSD works
-without any timeouts, but that doesn't means it can improve the performance
-for any other platform.
-
-Thank you for your comments, Lorenzo & Palmer.
-Kevin.
-
-> Please post an erratum write-up and we shall see what can be done.
->=20
-> Thanks,
-> Lorenzo
->=20
-> > > Thanks,
-> > > Lorenzo
-> > >
-> > > >
-> > > > Signed-off-by: Kevin Xie <kevin.xie@starfivetech.com>
-> > > > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> > > > ---
-> > > >  drivers/pci/controller/plda/pcie-plda-host.c | 12 ++++++++++++
-> > > >  drivers/pci/controller/plda/pcie-plda.h      |  1 +
-> > > >  drivers/pci/controller/plda/pcie-starfive.c  |  1 +
-> > > >  3 files changed, 14 insertions(+)
-> > > >
-> > > > diff --git a/drivers/pci/controller/plda/pcie-plda-host.c
-> > > > b/drivers/pci/controller/plda/pcie-plda-host.c
-> > > > index a18923d7cea6..9e077ddf45c0 100644
-> > > > --- a/drivers/pci/controller/plda/pcie-plda-host.c
-> > > > +++ b/drivers/pci/controller/plda/pcie-plda-host.c
-> > > > @@ -13,6 +13,7 @@
-> > > >  #include <linux/msi.h>
-> > > >  #include <linux/pci_regs.h>
-> > > >  #include <linux/pci-ecam.h>
-> > > > +#include <linux/delay.h>
-> > > >
-> > > >  #include "pcie-plda.h"
-> > > >
-> > > > @@ -44,6 +45,17 @@ static void plda_handle_msi(struct irq_desc *des=
-c)
-> > > >  			       bridge_base_addr + ISTATUS_LOCAL);
-> > > >  		status =3D readl_relaxed(bridge_base_addr + ISTATUS_MSI);
-> > > >  		for_each_set_bit(bit, &status, msi->num_vectors) {
-> > > > +			/*
-> > > > +			 * As the Starfive JH7110 hardware can't keep two
-> > > > +			 * inbound post write in order all the time, such as
-> > > > +			 * MSI messages and NVMe completions.
-> > > > +			 * If the NVMe completion update later than the MSI,
-> > > > +			 * an NVMe IRQ handle will miss.
-> > > > +			 * As a workaround, we will wait a while before
-> > > > +			 * going to the generic handle here.
-> > > > +			 */
-> > > > +			if (port->msi_quirk_delay_us)
-> > > > +				udelay(port->msi_quirk_delay_us);
-> > > >  			ret =3D generic_handle_domain_irq(msi->dev_domain, bit);
-> > > >  			if (ret)
-> > > >  				dev_err_ratelimited(dev, "bad MSI IRQ %d\n", diff --git
-> > > > a/drivers/pci/controller/plda/pcie-plda.h
-> > > > b/drivers/pci/controller/plda/pcie-plda.h
-> > > > index 04e385758a2f..feccf285dfe8 100644
-> > > > --- a/drivers/pci/controller/plda/pcie-plda.h
-> > > > +++ b/drivers/pci/controller/plda/pcie-plda.h
-> > > > @@ -186,6 +186,7 @@ struct plda_pcie_rp {
-> > > >  	int msi_irq;
-> > > >  	int intx_irq;
-> > > >  	int num_events;
-> > > > +	u16 msi_quirk_delay_us;
-> > > >  };
-> > > >
-> > > >  struct plda_event {
-> > > > diff --git a/drivers/pci/controller/plda/pcie-starfive.c
-> > > > b/drivers/pci/controller/plda/pcie-starfive.c
-> > > > index 9bb9f0e29565..5cfc30572b7f 100644
-> > > > --- a/drivers/pci/controller/plda/pcie-starfive.c
-> > > > +++ b/drivers/pci/controller/plda/pcie-starfive.c
-> > > > @@ -391,6 +391,7 @@ static int starfive_pcie_probe(struct
-> > > > platform_device *pdev)
-> > > >
-> > > >  	plda->host_ops =3D &sf_host_ops;
-> > > >  	plda->num_events =3D PLDA_MAX_EVENT_NUM;
-> > > > +	plda->msi_quirk_delay_us =3D 1;
-> > > >  	/* mask doorbell event */
-> > > >  	plda->events_bitmap =3D GENMASK(PLDA_INT_EVENT_NUM - 1, 0)
-> > > >  			     & ~BIT(PLDA_AXI_DOORBELL)
-> > > > --
-> > > > 2.17.1
-> > > >
-> > > >
-> > > > _______________________________________________
-> > > > linux-riscv mailing list
-> > > > linux-riscv@lists.infradead.org
-> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+>>
+>> Best,
+>> Ed
+>>
+>> ==================================================================
+>> [29195.369964][T31720] BUG: KASAN: slab-use-after-free in
+>> f2fs_filemap_fault+0x50/0xe0
+>> [29195.370971][T31720] Read at addr f7ffff80454ebde0 by task AsyncTask
+>> #11/31720
+>> [29195.371881][T31720] Pointer tag: [f7], memory tag: [f1]
+>> [29195.372549][T31720]
+>> [29195.372838][T31720] CPU: 2 PID: 31720 Comm: AsyncTask #11 Tainted:
+>> G        W  OE      6.6.17-android15-0-gcb5ba718a525 #1
+>> [29195.374862][T31720] Call trace:
+>> [29195.375268][T31720]  dump_backtrace+0xec/0x138
+>> [29195.375848][T31720]  show_stack+0x18/0x24
+>> [29195.376365][T31720]  dump_stack_lvl+0x50/0x6c
+>> [29195.376943][T31720]  print_report+0x1b0/0x714
+>> [29195.377520][T31720]  kasan_report+0xc4/0x124
+>> [29195.378076][T31720]  __do_kernel_fault+0xb8/0x26c
+>> [29195.378694][T31720]  do_bad_area+0x30/0xdc
+>> [29195.379226][T31720]  do_tag_check_fault+0x20/0x34
+>> [29195.379834][T31720]  do_mem_abort+0x58/0x104
+>> [29195.380388][T31720]  el1_abort+0x3c/0x5c
+>> [29195.380899][T31720]  el1h_64_sync_handler+0x54/0x90
+>> [29195.381529][T31720]  el1h_64_sync+0x68/0x6c
+>> [29195.382069][T31720]  f2fs_filemap_fault+0x50/0xe0
+>> [29195.382678][T31720]  __do_fault+0xc8/0xfc
+>> [29195.383209][T31720]  handle_mm_fault+0xb44/0x10c4
+>> [29195.383816][T31720]  do_page_fault+0x294/0x48c
+>> [29195.384395][T31720]  do_translation_fault+0x38/0x54
+>> [29195.385023][T31720]  do_mem_abort+0x58/0x104
+>> [29195.385577][T31720]  el0_da+0x44/0x78
+>> [29195.386057][T31720]  el0t_64_sync_handler+0x98/0xbc
+>> [29195.386688][T31720]  el0t_64_sync+0x1a8/0x1ac
+>> [29195.387249][T31720]
+>> [29195.387534][T31720] Allocated by task 14784:
+>> [29195.388085][T31720]  kasan_save_stack+0x40/0x70
+>> [29195.388672][T31720]  save_stack_info+0x34/0x128
+>> [29195.389259][T31720]  kasan_save_alloc_info+0x14/0x20
+>> [29195.389901][T31720]  __kasan_slab_alloc+0x168/0x174
+>> [29195.390530][T31720]  slab_post_alloc_hook+0x88/0x3a4
+>> [29195.391168][T31720]  kmem_cache_alloc+0x18c/0x2c8
+>> [29195.391771][T31720]  vm_area_alloc+0x2c/0xe8
+>> [29195.392327][T31720]  mmap_region+0x440/0xa94
+>> [29195.392888][T31720]  do_mmap+0x3d0/0x524
+>> [29195.393399][T31720]  vm_mmap_pgoff+0x1a0/0x1f8
+>> [29195.393980][T31720]  ksys_mmap_pgoff+0x78/0xf4
+>> [29195.394557][T31720]  __arm64_sys_mmap+0x34/0x44
+>> [29195.395138][T31720]  invoke_syscall+0x58/0x114
+>> [29195.395727][T31720]  el0_svc_common+0x80/0xe0
+>> [29195.396292][T31720]  do_el0_svc+0x1c/0x28
+>> [29195.396812][T31720]  el0_svc+0x38/0x68
+>> [29195.397302][T31720]  el0t_64_sync_handler+0x68/0xbc
+>> [29195.397932][T31720]  el0t_64_sync+0x1a8/0x1ac
+>> [29195.398492][T31720]
+>> [29195.398778][T31720] Freed by task 0:
+>> [29195.399240][T31720]  kasan_save_stack+0x40/0x70
+>> [29195.399825][T31720]  save_stack_info+0x34/0x128
+>> [29195.400412][T31720]  kasan_save_free_info+0x18/0x28
+>> [29195.401043][T31720]  ____kasan_slab_free+0x254/0x25c
+>> [29195.401682][T31720]  __kasan_slab_free+0x10/0x20
+>> [29195.402278][T31720]  slab_free_freelist_hook+0x174/0x1e0
+>> [29195.402961][T31720]  kmem_cache_free+0xc4/0x348
+>> [29195.403544][T31720]  __vm_area_free+0x84/0xa4
+>> [29195.404103][T31720]  vm_area_free_rcu_cb+0x10/0x20
+>> [29195.404719][T31720]  rcu_do_batch+0x214/0x720
+>> [29195.405284][T31720]  rcu_core+0x1b0/0x408
+>> [29195.405800][T31720]  rcu_core_si+0x10/0x20
+>> [29195.406348][T31720]  __do_softirq+0x120/0x3f4
+>> [29195.406907][T31720]
+>> [29195.407191][T31720] The buggy address belongs to the object at
+>> ffffff80454ebdc0
+>> [29195.407191][T31720]  which belongs to the cache vm_area_struct of
+>> size 176
+>> [29195.408978][T31720] The buggy address is located 32 bytes inside of
+>> [29195.408978][T31720]  176-byte region [ffffff80454ebdc0,
+>> ffffff80454ebe70)
+>> [29195.410625][T31720]
+>> [29195.410911][T31720] The buggy address belongs to the physical page:
+>> [29195.411709][T31720] page:0000000058f0f2f1 refcount:1 mapcount:0
+>> mapping:0000000000000000 index:0x0 pfn:0xc54eb
+>> [29195.412980][T31720] anon flags:
+>> 0x4000000000000800(slab|zone=1|kasantag=0x0)
+>> [29195.413880][T31720] page_type: 0xffffffff()
+>> [29195.414418][T31720] raw: 4000000000000800 f6ffff8002904500
+>> fffffffe076fc8c0 dead000000000007
+>> [29195.415488][T31720] raw: 0000000000000000 0000000000170017
+>> 00000001ffffffff 0000000000000000
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
