@@ -1,99 +1,105 @@
-Return-Path: <linux-kernel+bounces-103161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 324F287BBC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:14:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 971B087BBC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBB942848C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:13:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 373101F23188
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BB26EB5A;
-	Thu, 14 Mar 2024 11:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AB86EB59;
+	Thu, 14 Mar 2024 11:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UZBCUgdU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="e8hcjDqj"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA482A1D1;
-	Thu, 14 Mar 2024 11:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16DB2A1D1;
+	Thu, 14 Mar 2024 11:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710414832; cv=none; b=R0TMshZEu/yL20p9S243/II5WZ+chESaaAZS12Be2+1lkXsgc++pDjiul29goRCI4fxL6P+F4ujBGbGxVmT7Nc+Ky8LesSjmMfRvP2GvFY885joreNG9ZE8KwCmihU8+LugRDEg8b/gClBdJZymhp+Co6AwVAxmBM0/yQFY1bHE=
+	t=1710414882; cv=none; b=PlU1fUegPZRLcKy1n9aKXSarnZ8cTNmHO0as3g5bRWHvsqWUBm0yuws9ZoGQdtbCixvQaFptEFp4XXvXM8F5n72qdjvXRjRr+MRwCkXt0ZUUVd7G+jNiT0j3erjKm2t5+2RZ68hkHeTeBlFyl1Rz4bHV3cbYFTMUmVoIFdG7T3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710414832; c=relaxed/simple;
-	bh=7J8MT0hUY0ltXFRO4SUuelIo+HzcQQ6ooYOqWsUEuAw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cG3UQ5eH6u+V/3+130XUuZUYNaGdkoCcLAprNnIfA+rqbPvWPd07xjtmGF65+ABYDsl2er6n5VJgvG8y3ZbChfzig0TDyXyWXXV19zm5d8DTN+B/1yHCGpej/qeUTKwncRICvCBQNAK2hCeLM0HCzD50U6gaHwZ94pUXHjDvD9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UZBCUgdU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 948E1C433F1;
-	Thu, 14 Mar 2024 11:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710414832;
-	bh=7J8MT0hUY0ltXFRO4SUuelIo+HzcQQ6ooYOqWsUEuAw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UZBCUgdUaf6PtpckftrOMGMPPWH4+D+FXW9eggLo0TpRtVhNSHOrEsUmqFdJD+Cov
-	 dKdZMYDL5uJyriYLnvvk4luVNIxHC0WOzo7GK+DX7RMTGEYnteB0BNAmf51yUxmq1r
-	 K7qMhFMavkavQ4rg0hS/67Yg8uWrOFwbaOy0OSefWlhMo3sKUwhXdYVSBcsXXuxat6
-	 OrIqSDYV6EJQLNg4A2OmNr5K8FcPlsl9/P0mXjNrWMvw1ppPrbPllxd95sYcx+zQxH
-	 nDhZq7vCbE2RPjr04Yv6KUAXUF/dbmZ+6HPumSJI/wahjLy9juEhTFFfmyM4SEw8DL
-	 5cTEYeZQN5W3A==
-From: Christian Brauner <brauner@kernel.org>
-To: Marc Dionne <marc.dionne@auristor.com>,
-	David Howells <dhowells@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-afs@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] afs: Miscellaneous fixes
-Date: Thu, 14 Mar 2024 12:13:43 +0100
-Message-ID: <20240314-emblem-aufgreifen-1ea689e63099@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240313081505.3060173-1-dhowells@redhat.com>
-References: <20240313081505.3060173-1-dhowells@redhat.com>
+	s=arc-20240116; t=1710414882; c=relaxed/simple;
+	bh=JYThXvFfSUt8bn/u7QVtG0aC+rU3gXJs6BreV0Jsjis=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=drQcQdWmvVHqXB74vVfL6Wfy7V8RuDfXmIvWyllW/sLm6WvYaUKBBp467/mApj+d+jWN0yAPS2lTAc+eCsCsGYNQTdnF2ADdy1OO+sSFZ9wbQGgJEUyPODdCpOimNZEknJu2zxWk5ESZOtn0/zLA68fMo6NuZhV+5c8YPBgD6p0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=e8hcjDqj; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3746240E0028;
+	Thu, 14 Mar 2024 11:14:36 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id cDZD0dZP4nXi; Thu, 14 Mar 2024 11:14:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1710414873; bh=W6YiMJ4KVuTlhdWm5TtH44BSuR5hnaHMB6oOqeEuhNE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e8hcjDqjGJgU6UnJ56h1yfC0EpbT8zm/zqKVR5mgJF83np8lgdA42pCp+Rp0gg3nD
+	 psadm7lJ8SSeBBFwcrsIco+XfdjQ1J5O/LUaH8Toh4qlyqHLNOvXpZbPhLAqHHMBXu
+	 NquAaQbSzuC1TEMBgisSrSibPd2fCaJngqRnKMF8say/HsDtCDiCcET7gJ4ofo4IeG
+	 RfTPGUB4bk1btF6VLLWRDD4P//4o28rN/H3y2ZV92IkTsphUW/8FqzO0xva0qo/hPk
+	 ypmyj6oKVDAld5rSdrtlaelQAiQacGmQI+LEqTTzngD1oIwsWK3GJHxglLY0n8HkoE
+	 dsXZF76Qt3tqpohkOVZNHAz5Uhs9U10asL92OHCMRCQrordgw/A06TrS+X2l6gef5m
+	 QBhY+RguKkCiZdDrXKF9VhYKAV5XdRANak8m4b/66/VTV0K97oZF5AxWl3lblCtxYV
+	 4FjqjsVNEprPJSaUtksJ4DRxrsEy6zadNk9yVJt8lft4jNeFnmuExRZu9EfdU+NhM1
+	 hcEO2FcK571AAyeXxd0xkskdpWvrosSXWTgScISYmysZSVpPXXPLy7AKSAcorcsQm5
+	 xkEhQJzn0yKpdi+EFtfyADQW5BQmX+XQWpoNPwLqBri/eW3JdFaECGf3j02ABwfYCI
+	 8oVjq9oc5M2EB5FPPnMRdqvU=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9729940E016B;
+	Thu, 14 Mar 2024 11:14:19 +0000 (UTC)
+Date: Thu, 14 Mar 2024 12:14:18 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: x86@kernel.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Daniel P =?utf-8?B?LiBCZXJyYW5nw6k=?= <berrange@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tom Lendacky <thomas.lendacky@amd.com>, stable@vger.kernel.org,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v5] x86/coco: Require seeding RNG with RDRAND on CoCo
+ systems
+Message-ID: <20240314111418.GBZfLcCskn7Xjra4mu@fat_crate.local>
+References: <CAHmME9oN+7rbLYcvQN=+KMjwrokvARy_7khLWJvDK=K_S5uHqg@mail.gmail.com>
+ <20240224011921.2663985-1-Jason@zx2c4.com>
+ <ZfI366mQplePkvHv@zx2c4.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1405; i=brauner@kernel.org; h=from:subject:message-id; bh=7J8MT0hUY0ltXFRO4SUuelIo+HzcQQ6ooYOqWsUEuAw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaR+uv1yQkti3maD5ltPuDYffGCaE242ZdYlu5B/nZzrm SIWHbdZ1lHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRnyIMfyUNRGYFt/NeO3U4 7sWFPdk7/xg8i/K903c57XNO5s699TcZ/unM5qjt+7L6uIeBFO/RUlGp6VJPAgqdzrgK/WyZ/TG oghcA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZfI366mQplePkvHv@zx2c4.com>
 
-On Wed, 13 Mar 2024 08:15:01 +0000, David Howells wrote:
-> Here are some fixes for afs, if you could look them over?
-> 
->  (1) Fix the caching of preferred address of a fileserver.  By doing that, we
->      stick with whatever address we get a response back from first rather then
->      obeying any preferences set.
-> 
->  (2) Fix an occasional FetchStatus-after-RemoveDir.  The FetchStatus then
->      fails with VNOVNODE (equivalent to -ENOENT) that confuses parts of the
->      driver that aren't expecting that.
-> 
-> [...]
+Hi Jason,
 
-Applied to the vfs.fixes branch of the vfs/vfs.git tree.
-Patches in the vfs.fixes branch should appear in linux-next soon.
+On Thu, Mar 14, 2024 at 12:34:03AM +0100, Jason A. Donenfeld wrote:
+> This has been sitting on the list for a while with a few positive
+> reviews and no outstanding objections, afaict. Can you merge this to
+> tip?
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+the tip tree is open for new code after the merge window is over.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+-- 
+Regards/Gruss,
+    Boris.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.fixes
-
-[1/2] afs: Don't cache preferred address
-      https://git.kernel.org/vfs/vfs/c/b719dcc8b02d
-[2/2] afs: Fix occasional rmdir-then-VNOVNODE with generic/011
-      https://git.kernel.org/vfs/vfs/c/4eed8f8549f4
+https://people.kernel.org/tglx/notes-about-netiquette
 
