@@ -1,125 +1,86 @@
-Return-Path: <linux-kernel+bounces-103689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D04AA87C304
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:48:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2AF987C302
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:48:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70BA61F2439B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:48:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66C491F24033
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787A21E480;
-	Thu, 14 Mar 2024 18:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DI335Mhq"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB4B74E21;
+	Thu, 14 Mar 2024 18:48:06 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6921B71750
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F311E480
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710442086; cv=none; b=iOMajGf/DyguKp84SCJRNBEwwwld1hL5JzL8reJ4+1c0YPBQQrgviaFIc4GVijh4aNUFZOawH6MyXTO2X/zAuwfRrzDJFk0F83yZm7hnLyFo/zzZlhd3LbnQv32giAvL5d55AHJ+IkK3DtoUyedA6s6N4WLhTg4ve+i9cZ0loFU=
+	t=1710442085; cv=none; b=p14U8foppXJ9K3ObCYQ8HoZz4wtxGEpt/cNVZ03psEfjgCsjOKNKtCGFu077VEOFj3j0HLA54/TCy0pWO8mIWHpcLV92wLcbGIA0AqA+3US3w0iikaJWPXfsqDGO3XRS0GZKUhcu6AQ+MO1gNRg3fnVt5Xyb53D1lbfY4D5y5wY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710442086; c=relaxed/simple;
-	bh=EZhbH9Xwujr/B3oht4heJ2cRMgZi/vMO7ZMCqXz3KMc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=hwJTT6SCSZmblSgqAEZRNuCBAo14wndUqOugmEECtaAs0cjeQ2b6xeWJf0Xv8aezpm6J9X+aNO9qaZMy6zGn3qP7S3PGFd35VyfviY7Owj1LGPxWZdnGIz4rKqUpW+HmBZeiV+LIGXLpY77HZlwwARb2agvRYrvvlXjeOHDJKb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DI335Mhq; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dd84ecfc47so10012805ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710442085; x=1711046885; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QCEUuHzDWcMi+OoMke8TXPhtm1lQOemQGrFVoSbQ18I=;
-        b=DI335MhqzDKZPv53se/zCIkwMtn1U0bYn0QbtjtnowYahz69fBc3jymn02rFPR4uT8
-         pVJoPHwpzv9UtmQXl+hgbbejBmMDrPTxorpcjy6CG0tyXgasKOVmuvcWlWVU6W/METXI
-         6dUkAVOURSOMmYnjx8tqoJGTYbVmAiM3cwEBxgdgOhq+v4YBAvY86HTq3295U3ZhcOpM
-         1dgGbLn98ezEhyfZcsMxr1f6Guya0z0PpjfJESeRsC0tEYEWwWrMWQtwWL/e6GtEhwZM
-         pU0SbC2PZ3uLFBuRaQAk8/NVifUe94IqlRQeHcrLkb83jjzbkA8vGTNeqcBdTqMD0hxR
-         eNrg==
+	s=arc-20240116; t=1710442085; c=relaxed/simple;
+	bh=oDMsNI5OY11VLhhqRPMUlb3eND3fQrsnxWHbOxman6M=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ZererQk3ZUWpDTDvP/TPME05yC9hGOedG+0OSBIEtKoDLQvSFeGbQJ0deue4QxzlPWqR9/whGgsRsS7BlO+Vg2Xo17lMXiYBkfVSw8htyswriF4T99jnjqE/X/Xl/3RhO0gia8bbmABoJPL/n1QAvafweNL+6yaWFxCUJD3K4uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8742bedd4so200500139f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:48:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710442085; x=1711046885;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1710442083; x=1711046883;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QCEUuHzDWcMi+OoMke8TXPhtm1lQOemQGrFVoSbQ18I=;
-        b=R+JB9KVRzmQRdNJ3PZVgQq4BY3tLsKCuREhx8lItH/fxFrZPigXrBB+0vTkPnZv01a
-         xGv9eaIpXOzizcg/781er8IxHZw4h++1Opa0UyjAvKirofX9O+3/Xba6BxOLYQ55scq6
-         cB6ObhPpprSHgXDXQ/az5Wy27WlDc9lCU4KTG3MICUgE6q4IjUsaEQ6R6SExJeboTOWW
-         74M/s4NRXnhoilwkiU28US7b9oWdSAdXzeGpgtmo5CEroYDD3yfuU582TZD4qoW6sGtd
-         hvF9YyNLBkdlvSxgQjzB1z6voTIdQMsaUTYnCioXJql8xtfQtEJ41oxX4NzMrLUmexuA
-         QrLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVxbDaiRCAM/pdUbeGVg8OYpSCDIKOh8+NA8uK+ft+MNt39N89ZH+WEeZng/uiI2Tr52L+hdY3nCDtuIoZGVuxM5W/c/TNYD0Ieue4b
-X-Gm-Message-State: AOJu0YyMeCKu7fNc/dpkH+hEGm4bBDJ74ldE8+p70L0HLtzTYs8z/ANZ
-	yOJE1d04fEAJ3tRmdzECpNBrS6uudoKY8ix/AICNqInFepdpCETP
-X-Google-Smtp-Source: AGHT+IEDtQA/4/IxqD2QHGTaBEu5I8uPvanoYr5fvT4nwEYTBsMMRCgC3ZzP5HFhm2YFPaLC4rGc1Q==
-X-Received: by 2002:a17:902:6504:b0:1dd:de1a:bd02 with SMTP id b4-20020a170902650400b001ddde1abd02mr2656915plk.41.1710442084587;
-        Thu, 14 Mar 2024 11:48:04 -0700 (PDT)
-Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.66])
-        by smtp.gmail.com with ESMTPSA id q12-20020a17090311cc00b001db9e12cd62sm2069170plh.10.2024.03.14.11.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 11:48:04 -0700 (PDT)
-Date: Fri, 15 Mar 2024 00:18:01 +0530
-From: Ayush Tiwari <ayushtiw0110@gmail.com>
-To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev
-Cc: outreachy@lists.linux.dev
-Subject: [PATCH v4] staging: greybus: Constify gb_audio_module_type
-Message-ID: <ZfNGYSC8CDHqVPlm@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+        bh=GdA05tLv+9atPn2grTiMn3VQGhShHjf/kXNU2Dlw4pA=;
+        b=qQUbr7RpAk2/lIRXO2HGtR6QvIL+fktaXr9onmu3g3q3GI1eK5MRGDPX320Q1cotV1
+         q1msJLyhb2JOpdO7NuPXhH+oRSnuP82vJay85450bb9NVQ3+IGR4dvuHmDzZq43T3YsN
+         eoMVxA3asPIejsB1G9P8OKfHY4/ehCwFFZ8OiE2VIJvnES/kDyfYjmnU3Ex1j5PLCYsr
+         Ck72IYemCqaFn5tLn18meEvsOVnl0gixKGo/Ii2SsL6AxusRAZzdwCUdm37A8s2WkpSz
+         Adsm3UCCwi29WgHvUVrzNLohhlCBeLaubw1Cssap0kn1O46Z3t8GE9JRKc/2Gkto2OVh
+         vJKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVWIV8zFwPele5JoUY5WsIwXm+K7gTXxVUpXpVjkDgIaOFKoOHN4nVuAjfl82plXBuKEwjzSWBV2rEn1m/647MzO55MTQAZnU0MShFo
+X-Gm-Message-State: AOJu0YzTrpbdbzYkydl99L1T5ywqm+DAMmVjfJWuZzleKOO1xs1Q9A+D
+	7idlJOSasn0yklrjwV3Ihd26av998HC3LRbixbjVDlgoRd0QxZh5S0Ote3RaIlDgcgvIOgSkifE
+	GtjMxdM7Xr6kM8w1YyX3IUxorJZIXqk9tyHu9XHREG2bweOrFQrhPyvM=
+X-Google-Smtp-Source: AGHT+IHWe42QWy4l/yzv0BlT0Fzh2AH41KmFn9Vq7zBHNBZk7Z5kbaqi6iUGt28UvYPyyXvZ1V7qfGv6U3kV7m7WysZyazNCPrYK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6638:379f:b0:476:b3e5:4392 with SMTP id
+ w31-20020a056638379f00b00476b3e54392mr127824jal.2.1710442083368; Thu, 14 Mar
+ 2024 11:48:03 -0700 (PDT)
+Date: Thu, 14 Mar 2024 11:48:03 -0700
+In-Reply-To: <20240314-impuls-hofiert-3682a611e841@brauner>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c9d0d90613a3544b@google.com>
+Subject: Re: [syzbot] [fs?] WARNING in stashed_dentry_prune
+From: syzbot <syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com>
+To: brauner@kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Constify static struct kobj_type gb_audio_module_type to prevent
-modification of data shared across many instances, ensuring that the
-structure's usage is consistent and predictable throughout the driver
-and allows the compiler to place it in read-only memory.
-The gb_audio_module_type structure is used when initializing and
-adding kobj instances to the kernel's object hierarchy.
-After adding const, any attempt to alter gb_audio_module_type
-in the code is raising a compile-time error. This enforcement
-ensures that the sysfs interface and operations for audio
-modules remain stable.
+Hello,
 
-Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
----
-Changes in v4: added more details verifying the change.
+Reported-and-tested-by: syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com
 
-Changes in v3: added the message that verifies the change,
-as suggested by Julia
+Tested on:
 
-Changes in v2: incorporated changes in commit message
-as suggested by Alison
----
- drivers/staging/greybus/audio_manager_module.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+commit:         9d9539db pidfs: remove config option
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=163fc311180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3d8d7e8531ce5633
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b5ec5ccf7234cc6cb86
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-diff --git a/drivers/staging/greybus/audio_manager_module.c b/drivers/staging/greybus/audio_manager_module.c
-index 5f9dcbdbc191..4a4dfb42f50f 100644
---- a/drivers/staging/greybus/audio_manager_module.c
-+++ b/drivers/staging/greybus/audio_manager_module.c
-@@ -144,7 +144,7 @@ static struct attribute *gb_audio_module_default_attrs[] = {
- };
- ATTRIBUTE_GROUPS(gb_audio_module_default);
- 
--static struct kobj_type gb_audio_module_type = {
-+static const struct kobj_type gb_audio_module_type = {
- 	.sysfs_ops = &gb_audio_module_sysfs_ops,
- 	.release = gb_audio_module_release,
- 	.default_groups = gb_audio_module_default_groups,
--- 
-2.40.1
-
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
