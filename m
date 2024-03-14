@@ -1,154 +1,151 @@
-Return-Path: <linux-kernel+bounces-103770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C95987C430
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:20:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDB3C87C436
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:21:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF92A1F220E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:20:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94444281A31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2862D76913;
-	Thu, 14 Mar 2024 20:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D05B763E8;
+	Thu, 14 Mar 2024 20:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="GujYeqoH"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiGgULrq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044F77605D;
-	Thu, 14 Mar 2024 20:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B73C73539;
+	Thu, 14 Mar 2024 20:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710447565; cv=none; b=IXr1/MRWKxEyG3xEoDvvPwXYidwJPUnC73JHADClGqBqNsVei3ReGBgTTk5o+1bHH3HFd59PkQN+o/rahAKHhEG+qNImbEwkgn4wutn6T+JIN/lHHuL87JTdMZ+CLam+tkUv07XyOno4lcse6VA1dg+WLwCfP3BezUffcqoWnnY=
+	t=1710447614; cv=none; b=e/YY0nz9fUdcd4ZE7HzTliBVlyTGoTv0r+GUjHNR/ms7E0zKSMPFDwUtER8cA0dU3zlq38VTaw+A0obENdYIV8od8zR2LUrz1UgS3z3vvyGk2wkbsvZbh88oAmAq4/xXye5JdzHeOZlSgD8QC7TkyU7GeLD4cpamL443+XjvHNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710447565; c=relaxed/simple;
-	bh=YrFUXpKFZjIrDFt23to5aJksa5NkAaPagqMfCoJao4o=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cE6zyQRHv2L7cBP1/OzgrgJQiEcmS74+dAYVH/JZySXw783KmMHUp0r1EDQPm2+gkXdWZu5iBtfwD+qFRUqD4Gwo3PyV1wUc3gmbZhoZ5Tz02m5FVAsYpwMEs73hlRZcqUDQ1gNhHgCr5i8AS6o3OPDlh6vJ+EPzbu37IaC1WHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=GujYeqoH; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 4DEC0100012;
-	Thu, 14 Mar 2024 23:19:18 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4DEC0100012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710447558;
-	bh=Gg4VD7krOgd1nsrFz5L0eWRpEbtXVfyqyU7Jkdx9Zzk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=GujYeqoHbocPsddJnA9t/neUWH3yhTC8z6QYsmSAzce10D8Eca2K54Lg26MEcWcnX
-	 5oZoljEXAcf50iS5OSGuYwjSPjX9kchI+k8neCOOraj5aoAnspNOwUIcBzqWQ857Mj
-	 fw1qHUYWMlrY/yptMB/BBUB+71ayUIN4zwChJHb22A/wEvyIJsJdY6j9wHWSvWq3ac
-	 eqfrLX/1KQ3N/uDzr7XpXBHtplQ7+UlMrKcDsk3i3S7tvFiEjWgBlECbAkdBs1X1I9
-	 VaHvtGk8AARYNhdSjzLb5jIrg4LHWZepKw6c+na4+sLRzBimEKucD8nmgT9N2LQq3h
-	 XjScsff/8wPZA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 14 Mar 2024 23:19:18 +0300 (MSK)
-Received: from work.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Mar 2024 23:19:17 +0300
-From: George Stark <gnstark@salutedevices.com>
-To: <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
-	<vadimp@nvidia.com>, <christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
-	<mazziesaccount@gmail.com>, <peterz@infradead.org>, <mingo@redhat.com>,
-	<will@kernel.org>, <longman@redhat.com>, <boqun.feng@gmail.com>,
-	<nikitos.tr@gmail.com>, <marek.behun@nic.cz>, <kabel@kernel.org>
-CC: <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@salutedevices.com>, George Stark <gnstark@salutedevices.com>
-Subject: [PATCH v7 8/8] leds: an30259a: use devm_mutex_init() for mutex initialization
-Date: Thu, 14 Mar 2024 23:18:56 +0300
-Message-ID: <20240314201856.1991899-9-gnstark@salutedevices.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240314201856.1991899-1-gnstark@salutedevices.com>
-References: <20240314201856.1991899-1-gnstark@salutedevices.com>
+	s=arc-20240116; t=1710447614; c=relaxed/simple;
+	bh=cy3JVoqeyW0KH3SWl1WPmlAiApJJBcq4bi9azOVKekw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sNOgcvhftCOpiZJf9O/s0UnWVSkF9PpSEUScgowHGkaaj4Ysc+F56O2LBleVyillEeURaRpnULNF2zymrwHy/3DTuoAkYqOCdDpQBBAXy83n86GNXCAhfzkfA7p2DEtUBrCx5bKWulfWxr8E7nTEPbZ9l4RqHhJ8xDBfpFGI8Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JiGgULrq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 160F0C433C7;
+	Thu, 14 Mar 2024 20:20:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710447613;
+	bh=cy3JVoqeyW0KH3SWl1WPmlAiApJJBcq4bi9azOVKekw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JiGgULrqLSJsLtSgR8WM03tmpRc3CMAFhR/bfDoeU+9LPGerE4Pc/mPwuhUZoVf+p
+	 UhfvwuKWV9A0L6E9N9z+dI1nAQEd+BGX6oagzqpUMnCBzIiWOyDGMfu0ZezDpH/OKQ
+	 XVLEEhf/zPktdjGWnL2bR0gy+R/qfXYcKrVcndfus/hEcBOVKe4HU01b0F7ZeHmLI5
+	 RtvgBv/aMi21Mn/NlgpRoIR3I6sv+Pgcx0F8yJBID1e7imSz3zmMbO0bZys0UFCndM
+	 FfRrgj7/173xy3VGd9djYP6FlvpiiGVV+K4QDnrGYph8/LR5bOYayXEUEI9CM2EFtX
+	 k2B1rVZXvmBrA==
+Date: Thu, 14 Mar 2024 13:20:11 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: James Prestwood <prestwoj@gmail.com>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Karel Balej <balejk@matfyz.cz>, dimitri.ledkov@canonical.com,
+	alexandre.torgue@foss.st.com, davem@davemloft.net,
+	dhowells@redhat.com, herbert@gondor.apana.org.au,
+	keyrings@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org,
+	mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org, iwd@lists.linux.dev
+Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+Message-ID: <20240314202011.GB1132@sol.localdomain>
+References: <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
+ <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
+ <20240313194423.GA1111@sol.localdomain>
+ <b838e729-dc30-4e18-b928-c34c16b08606@gmail.com>
+ <20240313202223.GB1111@sol.localdomain>
+ <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
+ <20240313221043.GC1111@sol.localdomain>
+ <f0492c92-1015-48e3-bfce-598c7a4843d1@quicinc.com>
+ <20240313230611.GD1111@sol.localdomain>
+ <a4d24b2c-7dbf-4354-9514-f8a253aac14b@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183875 [Feb 29 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4d24b2c-7dbf-4354-9514-f8a253aac14b@gmail.com>
 
-In this driver LEDs are registered using devm_led_classdev_register()
-so they are automatically unregistered after module's remove() is done.
-led_classdev_unregister() calls module's led_set_brightness() to turn off
-the LEDs and that callback uses mutex which was destroyed already
-in module's remove() so use devm API instead.
+On Thu, Mar 14, 2024 at 04:52:47AM -0700, James Prestwood wrote:
+> IWD uses AF_ALG/keyctl for _all_ its crypto, cipher, and checksum needs.
+> Anything that wifi requires as far as crypto goes IWD uses the kernel,
+> except ECC is the only exception. The entire list of crypto requirements
+> (for full support at least) for IWD is here:
+> 
+> https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/tools/test_runner_kernel_config
 
-Signed-off-by: George Stark <gnstark@salutedevices.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/leds/leds-an30259a.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+That's quite an extensive list, and it's not documented in the iwd README.
+Don't you get bug reports from users who are running a kernel that's missing one
+of those options?
 
-diff --git a/drivers/leds/leds-an30259a.c b/drivers/leds/leds-an30259a.c
-index 0216afed3b6e..decfca447d8a 100644
---- a/drivers/leds/leds-an30259a.c
-+++ b/drivers/leds/leds-an30259a.c
-@@ -283,7 +283,10 @@ static int an30259a_probe(struct i2c_client *client)
- 	if (err < 0)
- 		return err;
- 
--	mutex_init(&chip->mutex);
-+	err = devm_mutex_init(&client->dev, &chip->mutex);
-+	if (err)
-+		return err;
-+
- 	chip->client = client;
- 	i2c_set_clientdata(client, chip);
- 
-@@ -317,17 +320,9 @@ static int an30259a_probe(struct i2c_client *client)
- 	return 0;
- 
- exit:
--	mutex_destroy(&chip->mutex);
- 	return err;
- }
- 
--static void an30259a_remove(struct i2c_client *client)
--{
--	struct an30259a *chip = i2c_get_clientdata(client);
--
--	mutex_destroy(&chip->mutex);
--}
--
- static const struct of_device_id an30259a_match_table[] = {
- 	{ .compatible = "panasonic,an30259a", },
- 	{ /* sentinel */ },
-@@ -347,7 +342,6 @@ static struct i2c_driver an30259a_driver = {
- 		.of_match_table = an30259a_match_table,
- 	},
- 	.probe = an30259a_probe,
--	.remove = an30259a_remove,
- 	.id_table = an30259a_id,
- };
- 
--- 
-2.25.1
+> For KEYCTL_PKEY_* specifically we use it for all asymmetric crypto
+> operations, (query), encrypt, decrypt, sign, verify.
+> 
+> I'll be honest, the AF_ALG/keyctl support in ELL was mostly done by the time
+> I started working on IWD so I was not aware the documentation was so poor.
+> That is an entirely separate issue than this IMO, and I'm happy to help with
+> getting docs updated to include a proper list of supported features. In
+> addition maybe some automated testing that gets run on kernel builds which
+> actually exercises this API so it doesn't get accidentally get broken in the
+> future? Docs/tests IMO are the proper "fix" here, not telling someone to
+> stop using an API that has existed a long time.
 
+I looked into the history, and it seems the KEYCTL_PKEY_* APIs were added as a
+collaboration between the iwd developers and the kernel keyrings maintainer.
+So, as far as I can tell, it's not that the kernel had an existing API that iwd
+started using.  It's that iwd got some APIs added to the kernel for themselves.
+KEYCTL_PKEY_* don't seem to have been adopted elsewhere; Debian Code Search
+doesn't return any notable results.  keyctl does provide a command-line
+interface to them, but I can't find any users of the keyctl commands either.
+
+Then, everyone disappeared and it got dumped on the next generation of kernel
+developers, who often don't know that this API even exists.  And since the API
+is also poorly specified and difficult to maintain (e.g., changing a seemingly
+unrelated part of the kernel can break it), the results are predictable...  And
+of course the only thing that breaks is iwd, since it's the only user.
+
+It would be worth taking a step back and looking at the overall system
+architecture here.  Is this the best way to ensure a reliable wireless
+experience for Linux users?
+
+Maybe it's time to admit that KEYCTL_PKEY_* was basically an experiment, and a
+different direction (e.g. using OpenSSL) should be taken...
+
+(Another issue with the kernel keyrings stuff is that provides a significant
+attack surface for the kernel to be exploited.)
+
+If you do decide to continue with the status quo, it may be necessary for the
+iwd developers to take a more active role in maintaining this API in order to
+ensure it continues working properly for you.
+
+AF_ALG is on *slightly* firmer ground since it's been around for longer, is
+properly part of the crypto subsystem, and has a few other users.  Unfortunately
+it still suffers from the same issues though, just to a slightly lesser degree.
+
+> I'm also not entirely sure why this stuff continues to be removed from the
+> kernel. First MD4, then it got reverted, then this (now reverted, thanks).
+> Both cases there was not clear justification of why it was being removed.
+
+These algorithms are insecure, and it's likely that the author of these commits
+thought that there were no remaining users and nothing would break.  Removing
+them is a worthy goal for code maintenance purposes and to avoid providing
+insecure options that could accidentally be used.  The AF_ALG and KEYCTL_PKEY_*
+APIs are very easy to overlook and I suspect that the author of these commits
+did not know about them.  These APIs are rarely used, not well specified, the
+availability of them and specific algorithms varies by kernel configuration, and
+userspace only uses a subset of the algorithms in the kernel's museum of crypto
+primitives anyway.  So it's plausible that there are algorithms that no one is
+using or that at least there is a fallback for, so can be safely removed...
+
+- Eric
 
