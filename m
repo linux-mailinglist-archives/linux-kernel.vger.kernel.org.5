@@ -1,102 +1,111 @@
-Return-Path: <linux-kernel+bounces-103243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 149EE87BCD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:31:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2741787BCDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C44F12845A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:31:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB22C1F24F0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509FA6FE1D;
-	Thu, 14 Mar 2024 12:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvZy+mwd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0BA50A87;
+	Thu, 14 Mar 2024 12:31:28 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933FF56440
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4326647F46;
+	Thu, 14 Mar 2024 12:31:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710419432; cv=none; b=EgQktVYd6HaYQc0oDwSJet8pwmZIvATRcHu+0PCbhdlrKhthmASZUl1llIYL3sDYZYochm2qq2D6jf++oYIXwB4uCeHCc7bDf0a52OXttYBn4GH6QtWeGyfhkWwWg1j7OX2cU+qcJH/QswgIwuT81Ibr1YJOiYHSbXM24+GmXkY=
+	t=1710419487; cv=none; b=sLUq5fswfpc9bIZ5lYF+7LWj5AWG4bQGXxL283Y5MWwW+/QqL1BG9ohhcDz95w1GKZ8oky0ZXXvFVgrHnGU6wNHWRoeVo6sD4UBq7zCRPuNQc2DAdd8OOjw3UVOGcIb0D4mDI2fG5DEGDPVfbz/2AiXrlwp6s81yk6/iay2YJP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710419432; c=relaxed/simple;
-	bh=ZfYdgQYYHUKBjDat7ZMzQdGoJdurRPJ2XJ2xHAHrl0k=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=jQ1ueein/7km/wdbV1AlLdwy8DP/LVtcb0Nje7Gy6z0ZmY4E5YJqdewYU4NELno2g0A9iqmjfmCFcgoGfVbhqq+A1bHtiChBw7hZGBFvO/4tZkDxYSsGrBdzJLYidvGeBV5XpRUMGoHtBAQhL2CgUFKmkir2SErl9srd56OnpgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvZy+mwd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 10E2FC43390;
-	Thu, 14 Mar 2024 12:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710419432;
-	bh=ZfYdgQYYHUKBjDat7ZMzQdGoJdurRPJ2XJ2xHAHrl0k=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fvZy+mwdyc+wi8ZKZlrat5Iavdozk1eOUJq027QwMf1q4vElyuHBKQUk53/y+IrjA
-	 dkh1XtQCx9Oh8rP2VvqQmulX9otGgVzP22b3y/E2yCeA9ldN6pFuBXvsew1gKL4t/9
-	 +mHw3CVMPBcsFg0kuE9BrYcAo56JuaK/H5YMUyhO0mthCQq+q0XNffKgJESzgwXdet
-	 SODh7t4dD9cdhNy2joxs/xxthWTu2IhIjCZD3prqOPTn8vxv3LT9V/p6BJe/sNQuRD
-	 6tEero+cAZlwGze+34IMsyZV0vgJa8OR5YC8gi+VUZPxjaVrwlApwMW9sRyzIIYee/
-	 DvLC14o6z7q3g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 02D22D84BB4;
-	Thu, 14 Mar 2024 12:30:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710419487; c=relaxed/simple;
+	bh=esxIP+Mn1RizCEnvwEiAOQ4xYLuuJSPTIKa725nOahs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=STrBV/fh84ndgeKtGq+na40ORe3jhJVozvsznTv6vV6EHYRxtGtdjhpvLnPhmg/ezpgLG2Tvc1TK7OZJE7i76CNdx+VFGRtTLErQGQPk0O06xiAmYOnRDKsWSuwUV6xZUc1BIEkLvDujIteZylfoDql4NPA2/XDs2B9y9VhQ8Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i53875a9e.versanet.de ([83.135.90.158] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rkkEs-0003Ip-Sw; Thu, 14 Mar 2024 13:31:14 +0100
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, arinc.unal@arinc9.com
+Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+ =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Subject:
+ Re: [PATCH] arm64: dts: rockchip: set PHY address of MT7531 switch to 0x1f
+Date: Thu, 14 Mar 2024 13:31:13 +0100
+Message-ID: <4682635.taCxCBeP46@diego>
+In-Reply-To:
+ <20240314-for-rockchip-mt7531-phy-address-v1-1-743b5873358f@arinc9.com>
+References:
+ <20240314-for-rockchip-mt7531-phy-address-v1-1-743b5873358f@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v9 0/4] riscv: Use Kconfig to set unaligned access speed
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <171041943200.26728.3861424010420812739.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Mar 2024 12:30:32 +0000
-References: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
-In-Reply-To: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, jszhang@kernel.org,
- evan@rivosinc.com, cleger@rivosinc.com, ebiggers@kernel.org,
- quic_eberman@quicinc.com, lohr85@gmail.com, conor.dooley@microchip.com,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+Am Donnerstag, 14. M=C3=A4rz 2024, 13:24:35 CET schrieb Ar=C4=B1n=C3=A7 =C3=
+=9CNAL via B4 Relay:
+> From: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
+>=20
+> The MT7531 switch listens on PHY address 0x1f on an MDIO bus. I've got two
+> findings that support this. There's no bootstrapping option to change the
+> PHY address of the switch. The Linux driver hardcodes 0x1f as the PHY
+> address of the switch. So the reg property on the device tree is currently
+> ignored by the Linux driver.
+>=20
+> Therefore, describe the correct PHY address on Banana Pi BPI-R2 Pro that
+> has this switch.
+>=20
+> Signed-off-by: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
 
-This series was applied to riscv/linux.git (for-next)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+=46ixes: c1804463e5c6 ("arm64: dts: rockchip: Add mt7531 dsa node to BPI-R2=
+=2DPro board")
 
-On Fri, 08 Mar 2024 10:25:54 -0800 you wrote:
-> If the hardware unaligned access speed is known at compile time, it is
-> possible to avoid running the unaligned access speed probe to speedup
-> boot-time.
-> 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > ---
-> Changes in v9:
-> - Clarify wording for RISCV_MISALIGNED Kconfig option
-> - Link to v8: https://lore.kernel.org/r/20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com
-> 
-> [...]
+>  arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts b/arch/ar=
+m64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts
+> index 7b5f3904ef61..03d6d920446a 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts
+> @@ -525,9 +525,9 @@ &mdio0 {
+>  	#address-cells =3D <1>;
+>  	#size-cells =3D <0>;
+> =20
+> -	switch@0 {
+> +	switch@1f {
+>  		compatible =3D "mediatek,mt7531";
+> -		reg =3D <0>;
+> +		reg =3D <0x1f>;
+> =20
+>  		ports {
+>  			#address-cells =3D <1>;
+>=20
+> ---
+> base-commit: 0276d797531ea2d1865a04fbe54c659608f5788f
+> change-id: 20240314-for-rockchip-mt7531-phy-address-ba6c2fff485f
+>=20
+> Best regards,
+>=20
 
-Here is the summary with links:
-  - [v9,1/4] riscv: lib: Introduce has_fast_unaligned_access()
-    https://git.kernel.org/riscv/c/5a83e7313ee1
-  - [v9,2/4] riscv: Only check online cpus for emulated accesses
-    https://git.kernel.org/riscv/c/313130c62cf1
-  - [v9,3/4] riscv: Decouple emulated unaligned accesses from access speed
-    https://git.kernel.org/riscv/c/6e5ce7f2eae3
-  - [v9,4/4] riscv: Set unaligned access speed at compile time
-    https://git.kernel.org/riscv/c/f413aae96cda
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
