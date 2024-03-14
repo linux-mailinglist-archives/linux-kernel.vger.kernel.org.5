@@ -1,154 +1,278 @@
-Return-Path: <linux-kernel+bounces-103911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EE0F87C677
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:37:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60EDA87C681
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:38:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9300D1C20E61
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:37:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDFED1F21D58
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:38:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7A2125C9;
-	Thu, 14 Mar 2024 23:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E12125CD;
+	Thu, 14 Mar 2024 23:38:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="rj6V2IbB"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ObHhqVDy"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84100FC12;
-	Thu, 14 Mar 2024 23:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E48B111A2
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:38:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710459119; cv=none; b=UlXvprpfMY56wRHfUhPMmR26p1SuHTVJXSTzmK3tIWaFgrEFKrMnhg1D/ykz+ePG/8ev1h70WIdJJt6e2cKBWMBKHb3vNwkQqrC0hgvaag0PNaV7WfZNxqLynS95TgCEqke8WX4GVYx6Cs65jxsF1XGt4ZaKRa5Ycvjem7IJbaQ=
+	t=1710459517; cv=none; b=KoU1NMyMGBWn+13zELQxOIfxYfuJ+vHtqBTTbtR06zjzvRWV/LSIIoZY6JGaQ0VAN/u4oqPhywO+PNifCsQiLDd4KEtt9p1iUKW4b1BSMX006HFqru1ZqqfJvC6mrnZH0juUyYr0mXJHibrRcA3brHqBoRBgrhg+UQrWfH2J3K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710459119; c=relaxed/simple;
-	bh=/Nxif6wGy3TdqcKi0V6sODJjV6iwo1AjewdOxFWtHpc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Bt8Fms0/qoyjboZ/rX6UGYJEyOIp8FnbRibHzquV+eV46FxU9MkOaJuU+cpgj/FEXDbWDbQ6uPmaD784AhMyxKYowB7SPhSkjkpC4lndMJa6TC6MzKYLfNo3I+2s+JzbJLErqGBIORItQJ9XxntqC7FRO1s+KANbY+ZrhXcVrVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=rj6V2IbB; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710459112;
-	bh=OsxHWr7icc+V61IambhZDA5GJm7mXenCqBWEO974Dxo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=rj6V2IbBsDcQiHd42yhkJDEHLzlDREQK+jDBvpuYifhvIzLeUs1XgLYEDyyRPjJ+k
-	 Mh/NBxRr/9pNErqSc2NC+rqMGsPe7bfYG8ChHn/tDIo1FafcjXAUbuqcN7LobMyAgi
-	 a0RbfRtkFMebBIFZ9kuImjUjglxG+6950Mv0Ucqmh15zoHvg/AAq6maoo59XMm8AT0
-	 lSr96BFBb+w9KA8B/HFfYhA/2jUPPUtnUTDBGWkoMTrB6arykvayAx7/+aq2SNl0Bn
-	 1EF4Jv68fsUuois0p9U/bIg4ugSHATZEEPC2E/yNo8bnv18QnRo7uvcPH4HqLrYveX
-	 koFjhYNYFAdvw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TwkDN3Mqkz4wcR;
-	Fri, 15 Mar 2024 10:31:48 +1100 (AEDT)
-Date: Fri, 15 Mar 2024 10:31:46 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Locus Wei-Han Chen <locus84@andestech.com>,
- Palmer Dabbelt <palmer@rivosinc.com>, Yu Chien Peter Lin
- <peterlin@andestech.com>
-Subject: linux-next: manual merge of the risc-v tree with the arm64 tree
-Message-ID: <20240315103146.225b653b@canb.auug.org.au>
+	s=arc-20240116; t=1710459517; c=relaxed/simple;
+	bh=b6hMDBOUHYVvp7TYHuvyzWx7CcPaqJ0juLMKBRJPNVM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TInVQVRWL8mu7yNlNvz6/q9VtYBrnGw6It6dH5iU7Un4GpdCqoX7dEIYm6DPak0s4xV0OsIhp6cGuP94hfFDrfyzEeMyqlsh2ia+thwSh+Ai1TrpEm4PA8sCX5X4nrypqyjX14ryYvdSe2B+FT6f4AsgoHUhlsCbqYMoVVX777Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ObHhqVDy; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc74435c428so1394249276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:38:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710459514; x=1711064314; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2flT0SdHZ7q0eVlgQtj+A0ROMrjTL6rE3iscntdkYF0=;
+        b=ObHhqVDy7qFgf7goxV2+j6FsP+1CLJgwKtgMRHkB+O4dqGvdW8CaB8XrnZMSzV6rdm
+         oTvihuhwxXK+R+kzgyguxm/O4jhXSdh78Xn4y+O1o1DT6OclvrfdzESxITh75mE/pu3c
+         gwU8reQQgaedm6IAITfGgEBYXzK8S7KS7wXq4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710459514; x=1711064314;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2flT0SdHZ7q0eVlgQtj+A0ROMrjTL6rE3iscntdkYF0=;
+        b=MEZelNXWN6nAv2Ylw9Z9VtwsmAcjPkRNaFrzIfayKRFyxGicOe8JWugPozDZGHf799
+         D1rrNn+EC1rWf/T2IZx+gJLtk1/CKj+jTzFGX2Q65ErH8rzTiKhTGYe8mdIziPwqQucs
+         9LS9dyjx0wHW8CX28qW3KJP9LbLIn4ule9FI3xjGlDOezMtUhj5tNrLMnfMj3d0PhKvV
+         q7cVQ3pGnNSw49nrJuSyMpf6nac2N9gAQYJ74jZL1lpJlORYzbmR4U0jnjNnvHcfhWLc
+         uNHW8FfvrjMqYRTopsCsrrIhrm5+UcE8cxAuhF/G56KqDmGVltvaarlnonNuOTosUzSN
+         A/1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU3vGdqLamZKqD8MFRPqgIpwNq1zokbul3xrjcHkEv8O/IR1jz3l1KhSsruNK2PTKeObSyTCMddHVmgHs+LkXrcKZsLX+lg/g3Cxb4g
+X-Gm-Message-State: AOJu0YwnxNQScp0zmqE7Zmqbq7rLLkSyh7LIr1Xc5fnelj+2gIughfJi
+	Xwbhj9uKwFZh3jX9BjZhsxW2Pj34DvOiAfrYynuUXig+n7Qk2XNPVoW9ALLy2ZGJEi8uPEsweHI
+	=
+X-Google-Smtp-Source: AGHT+IGGINGgia8bWWht5gR1hRJ62zZWov50y3GXuln/Aj+3WcbCdJOl8GBP9+vZ8UgV6acXa8+rFw==
+X-Received: by 2002:a25:bfd1:0:b0:dc2:5553:ca12 with SMTP id q17-20020a25bfd1000000b00dc25553ca12mr3258592ybm.14.1710459514088;
+        Thu, 14 Mar 2024 16:38:34 -0700 (PDT)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id bp33-20020a05622a1ba100b0042f3ee1443csm1322247qtb.10.2024.03.14.16.38.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 16:38:33 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-428405a0205so75111cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:38:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXZWMk3ZR2QNIui0LnPWOxmguY17F8Il7G7h6nRxsadLaG1RoHwk793xpqLXeeNoaqjYnr+grEnTQp1RsY7hj5QW9swsCXWBEvX/7OB
+X-Received: by 2002:a05:622a:1391:b0:430:a5ed:fccf with SMTP id
+ o17-20020a05622a139100b00430a5edfccfmr263222qtk.28.1710459130165; Thu, 14 Mar
+ 2024 16:32:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gIl4xHy/dJKTUfoTHBkA85/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/gIl4xHy/dJKTUfoTHBkA85/
-Content-Type: text/plain; charset=US-ASCII
+References: <20240313001345.2623074-1-dianders@chromium.org>
+ <20240312171305.1.I16aff881c9fe82b5e0fc06ca312da017aa7b5b3e@changeid> <d6ac0328-3d3d-75bc-09b9-ed0190a6a8c5@quicinc.com>
+In-Reply-To: <d6ac0328-3d3d-75bc-09b9-ed0190a6a8c5@quicinc.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 14 Mar 2024 16:31:53 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XKc81S9M_Aem0fJhmCnFq458vFg3S-4aJNEvUCcQE3bQ@mail.gmail.com>
+Message-ID: <CAD=FV=XKc81S9M_Aem0fJhmCnFq458vFg3S-4aJNEvUCcQE3bQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] drm/msm/dp: Avoid a long timeout for AUX transfer if
+ nothing connected
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Guenter Roeck <groeck@chromium.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, Sean Paul <sean@poorly.run>, 
+	Tanmay Shah <tanmay@codeaurora.org>, Vinod Polimera <quic_vpolimer@quicinc.com>, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hi,
 
-Today's linux-next merge of the risc-v tree got a conflict in:
+On Wed, Mar 13, 2024 at 1:41=E2=80=AFPM Abhinav Kumar <quic_abhinavk@quicin=
+c.com> wrote:
+>
+>
+>
+> On 3/12/2024 5:13 PM, Douglas Anderson wrote:
+> > As documented in the description of the transfer() function of
+> > "struct drm_dp_aux", the transfer() function can be called at any time
+> > regardless of the state of the DP port. Specifically if the kernel has
+> > the DP AUX character device enabled and userspace accesses
+> > "/dev/drm_dp_auxN" directly then the AUX transfer function will be
+> > called regardless of whether a DP device is connected.
+> >
+>
+> I do see
+>
+> "
+> * Also note that this callback can be called no matter the
+> * state @dev is in and also no matter what state the panel is
+> * in. It's expected:
+> "
+>
+> I understand about the host state that we need to allow the transfers by
+> powering on if the host was off.
+>
+> But I wonder why we should allow the transfer if the sink is not
+> connected because it will anyway timeout.
 
-  drivers/perf/Kconfig
+We shouldn't! That's what this patch is about. ;-)
 
-between commits:
 
-  c2b24812f7bc ("perf: starfive: Add StarLink PMU support")
-  f0dbc6d0de38 ("perf: starfive: Only allow COMPILE_TEST for 64-bit archite=
-ctures")
+> Does it make sense to have get_hpd_status() from the aux dev and not
+> issue the transfers if the sink was not connected?
+>
+> This is more of questioning the intent of drm_dp_helpers to allow
+> transfers without checking the sink status.
 
-from the arm64 tree and commit:
+It's a good question. I guess some of this just comes from the
+abstraction that we currently have.
 
-  bc969d6cc96a ("perf: RISC-V: Introduce Andes PMU to support perf event sa=
-mpling")
+Thinking about this, the ideal would be to somehow query back to the
+"drm_connector" since it already has a "->detect" function. ...but we
+can't really do this since the AUX bus needs to be able to do
+transfers early before all the DRM components aren't initialized. This
+is, for instance, how the eDP panel code queries the EDID while being
+probed.
 
-from the risc-v tree.
+We could consider adding a new callback to "struct drm_dp_aux" that
+would allow checking the HPD status, but it feels to me like this adds
+unneeded complexity. We'd be adding a callback that people need to
+think about just to avoid them adding an "if" statement to their AUX
+transfer routine. I'm not totally convinced.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Interestingly, we actually _could_ use the infrastructure I just
+introduced in commit 8df1ddb5bf11 ("drm/dp: Don't attempt AUX
+transfers when eDP panels are not powered") here, at least if we're in
+the DP case and not the eDP case. When we're in the DP case there is
+no panel involved so the DP driver itself knows when things are
+"powered". For now I'm _not_ going to do this since it feels to me
+like the "if" test makes it clearer what's happening, but yell if you
+want me to change it.
 
---=20
-Cheers,
-Stephen Rothwell
 
-diff --cc drivers/perf/Kconfig
-index 004d86230aa6,564e813d8c69..000000000000
---- a/drivers/perf/Kconfig
-+++ b/drivers/perf/Kconfig
-@@@ -86,15 -86,20 +86,29 @@@ config RISCV_PMU_SB
-  	  full perf feature support i.e. counter overflow, privilege mode
-  	  filtering, counter configuration.
- =20
- +config STARFIVE_STARLINK_PMU
- +	depends on ARCH_STARFIVE || (COMPILE_TEST && 64BIT)
- +	bool "StarFive StarLink PMU"
- +	help
- +	   Provide support for StarLink Performance Monitor Unit.
- +	   StarLink Performance Monitor Unit integrates one or more cores with
- +	   an L3 memory system. The L3 cache events are added into perf event
- +	   subsystem, allowing monitoring of various L3 cache perf events.
- +
-+ config ANDES_CUSTOM_PMU
-+ 	bool "Andes custom PMU support"
-+ 	depends on ARCH_RENESAS && RISCV_ALTERNATIVE && RISCV_PMU_SBI
-+ 	default y
-+ 	help
-+ 	  The Andes cores implement the PMU overflow extension very
-+ 	  similar to the standard Sscofpmf and Smcntrpmf extension.
-+=20
-+ 	  This will patch the overflow and pending CSRs and handle the
-+ 	  non-standard behaviour via the regular SBI PMU driver and
-+ 	  interface.
-+=20
-+ 	  If you don't know what to do here, say "Y".
-+=20
-  config ARM_PMU_ACPI
-  	depends on ARM_PMU && ACPI
-  	def_bool y
+> > For eDP panels we have a special rule where we wait (with a 5 second
+> > timeout) for HPD to go high. This rule was important before all panels
+> > drivers were converted to call wait_hpd_asserted() and actually can be
+> > removed in a future commit.
+> >
+> > For external DP devices we never checked for HPD. That means that
+> > trying to access the DP AUX character device (AKA `hexdump -C
+> > /dev/drm_dp_auxN`) would very, very slowly timeout. Specifically on my
+> > system:
+> >    $ time hexdump -C /dev/drm_dp_aux0
+> >    hexdump: /dev/drm_dp_aux0: Connection timed out
+> >
+> >    real    0m8.200s
+> >
+>
+> IIUC, we want to timeout faster by not bailing out if not connected right=
+?
 
---Sig_/gIl4xHy/dJKTUfoTHBkA85/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Correct. I can try to clarify the commit message for v2 to make this
+more obvious.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXziOIACgkQAVBC80lX
-0GzVjAgAn1ru/3poCYZFZ2tb7LNWXVfVrvHM1ggEk7g6NnxF8l7EzluWG8lrD5VZ
-jhlGWtzCR6lPG+c6o267JwZfhAtuQy2XKFq6NYV7RUZR+WVXOgBlF0hA8EtcBNj/
-2Jc1QVJk/xqhUoFfTvEZKqXahB3DKonlAEhs1moDi61TNP8w714B7UN66Wx+WP9l
-zhJwJEmxETxjQ4kHOCrQlNIKuK8Q48a7RDsnNKLki7PlRvw4kBDOFrjrxqvtuJdt
-xjBFkYGxxZdt3Win4gJXKdQ0aHjj1iEnBLH4xNBrFx4//et6aArU7GD0ooolog8g
-2IOJifoq05RTTGNmVjbbwvqeNwIctw==
-=sbyV
------END PGP SIGNATURE-----
+> > Let's add a check for HPD to avoid the slow timeout. This matches
+> > what, for instance, the intel_dp_aux_xfer() function does when it
+> > calls intel_tc_port_connected_locked(). That call has a document by it
+> > explaining that it's important to avoid the long timeouts.
+> >
+> > Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> >
+> >   drivers/gpu/drm/msm/dp/dp_aux.c     |  8 +++++++-
+> >   drivers/gpu/drm/msm/dp/dp_catalog.c | 10 ++++++++++
+> >   drivers/gpu/drm/msm/dp/dp_catalog.h |  1 +
+> >   3 files changed, 18 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/d=
+p_aux.c
+> > index 03f4951c49f4..de0b0eabced9 100644
+> > --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+> > +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+> > @@ -307,7 +307,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *d=
+p_aux,
+> >        * turned on the panel and then tried to do an AUX transfer. The =
+panel
+> >        * driver has no way of knowing when the panel is ready, so it's =
+up
+> >        * to us to wait. For DP we never get into this situation so let'=
+s
+> > -      * avoid ever doing the extra long wait for DP.
+> > +      * avoid ever doing the extra long wait for DP and just query HPD
+> > +      * directly.
+> >        */
+> >       if (aux->is_edp) {
+> >               ret =3D dp_catalog_aux_wait_for_hpd_connect_state(aux->ca=
+talog);
+> > @@ -315,6 +316,11 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *=
+dp_aux,
+> >                       DRM_DEBUG_DP("Panel not ready for aux transaction=
+s\n");
+> >                       goto exit;
+> >               }
+> > +     } else {
+> > +             if (!dp_catalog_aux_is_hpd_connected(aux->catalog)) {
+> > +                     ret =3D -ENXIO;
+> > +                     goto exit;
+> > +             }
+> >       }
+> >
+> >       dp_aux_update_offset_and_segment(aux, msg);
+> > diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/=
+dp/dp_catalog.c
+> > index 5142aeb705a4..93e2d413a1e7 100644
+> > --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> > +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> > @@ -266,6 +266,16 @@ int dp_catalog_aux_wait_for_hpd_connect_state(stru=
+ct dp_catalog *dp_catalog)
+> >                               2000, 500000);
+> >   }
+> >
+> > +bool dp_catalog_aux_is_hpd_connected(struct dp_catalog *dp_catalog)
+> > +{
+> > +     struct dp_catalog_private *catalog =3D container_of(dp_catalog,
+> > +                             struct dp_catalog_private, dp_catalog);
+> > +
+> > +     /* poll for hpd connected status every 2ms and timeout after 500m=
+s */
+> > +     return readl(catalog->io->dp_controller.aux.base + REG_DP_DP_HPD_=
+INT_STATUS) &
+> > +            DP_DP_HPD_STATE_STATUS_CONNECTED;
+> > +}
+>
+> This method of checking HPD status works for devices which use internal
+> HPD block to control the HPD (like sc7180/sc7280) but not for devices
+> where HPD is controlled outside the MSM DP controller like sc8280xp,
+> sc835-/sm8450 etc etc which use pmic_glink and DP driver only receives
+> the hpd status using the dp_bridge_hpd_notify() callback.
+>
+> If we want to make this generic, we have to do something like:
+>
+> dp_hpd_unplug_handle() notifies the dp_aux.c module that status is
+> disconncted and we should bail out
+>
+> dp_hpd_plug_handle() notifies dp_aux.c module that status is connected
+> again and we allow the aux transfers.
 
---Sig_/gIl4xHy/dJKTUfoTHBkA85/--
+Ah, good point about devices where HPD comes from elsewhere. OK, using
+dp_hpd_plug_handle() and dp_hpd_unplug_handle() and having it notify
+"dp_aux.c" seems to work OK for the external DP case (at least the one
+on trogdor). It didn't work when I tested it on eDP but I can make
+this rule just for non-eDP since they don't have the same issues.
+
+-Doug
 
