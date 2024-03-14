@@ -1,77 +1,198 @@
-Return-Path: <linux-kernel+bounces-103265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 499B187BD31
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:02:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81A3587BD6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:15:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F32C31F25471
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:02:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A21781C2174B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F33F5A11F;
-	Thu, 14 Mar 2024 13:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603A45B5D3;
+	Thu, 14 Mar 2024 13:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="T6V+5qj0"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JjJdKRi8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EF855C35;
-	Thu, 14 Mar 2024 13:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3455811C
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710421325; cv=none; b=FBPC/6F2igJEbU5v42xD01qfVBGGSd0LW6KuKu1Vu4wREBWAZcyNf8OXEnl63V1zgkCon45uHaq1ow1OUn8pqKWCw5m61+hnz1Anft2Y55xY8I1IWwejHdxGaaHLGCtPo55OLot50ZYyPv9OQoWKY1Mpeg5uT3v6Y9xV4atFjps=
+	t=1710422149; cv=none; b=qvlYhOr+ZGZknbXlsXd9AJ3KpMwoE30k2alJ3sWvSJp8lw5k6eceA3Qsl0GOWtpF0HLTtpfAK8jBnlhkRUQHHYyH0Gjjo7hSs582WAqHTUzB1T0a/JEjq/jWaDVBjWWPk6ic1i4gZqoCfpi9p/ycPCT6XLuKUjfyQ0idBHLzT2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710421325; c=relaxed/simple;
-	bh=qAQB9FK88epVTyF/LeZpqM5y5+oOyaphSDCBPPScblw=;
+	s=arc-20240116; t=1710422149; c=relaxed/simple;
+	bh=s8gbaIHHbTZrdVVOi4yZtKNS+S0vWwrzMEUqArhGGUQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fE5WO93139YKMV9SC9RcA1OdNbZH6272II5iJPXkN7jab6og4WjINCZxkZ9l8GRR+C+9JXdImW38p6vJkkIOaahKSb1Lr58qyi5LAtPlNSnzWWtEL6PYqodVZQitjrVuGWDk9PP1VF8uKabEzaKn10svztxUfJbp9d5AYuc2ge4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=T6V+5qj0; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=EVli0OmFTuK34nwbOdblGGUn4WUi0rrQKbNKDtrDklk=; b=T6V+5qj0xaMOJrB2glYk53Eafv
-	n2/VR9Pnz79XXEteuAxtf0EDuQkLwDObzh8LzRLOh1FS4OF4dSJgvf7QgNMAnzAlaJnKDE2nvAbAE
-	CWrNAPdZzrStDUQ89uzZ8VNUnVwIJLv2lIv6bHeJGUXpQmvvKhu63CuORqIqeCb3L5UU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rkkiy-00AJtH-8f; Thu, 14 Mar 2024 14:02:20 +0100
-Date: Thu, 14 Mar 2024 14:02:20 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Alexandra Diupina <adiupina@astralinux.ru>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Sebastian Reichel <sre@kernel.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] net: dsa: add return value check of genphy_read_status()
-Message-ID: <99631ba3-36f9-4eed-80d9-4a663ef46d80@lunn.ch>
-References: <20240314063008.11214-1-adiupina@astralinux.ru>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ng97iq/AEt6RqGSWHbpLGbxYk7hEFf6TIOkcOS1Nvpprm9v7nc0EjdlxW3un09To2bEnV2qJFSrguXbFBAMq9P7JDtipYaO3w/Wrte8wKcPZH9v2Oyjn63F5CZAU9hpv0lfO8kwzyLsIyYLr3jfyQE8XKgnIEOFlLmhDKH2fVKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JjJdKRi8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43875C433C7;
+	Thu, 14 Mar 2024 13:15:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710422149;
+	bh=s8gbaIHHbTZrdVVOi4yZtKNS+S0vWwrzMEUqArhGGUQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JjJdKRi8JxY+tyi+v8BDonWH4IxbfBPa2npy7aB036BQ2nGeEobBNny4/U67gouTH
+	 W8rQgvM2my0BP5KDkrydbYkSSOAyido2Q100QK3g1qdx3W5ZYNt6BPzbWhpitknlO2
+	 0TwJSjVNFdjvi+S8vFiksgXTV6xxg977FD8zUPTEjqXUY28AMmFDiZAvUMK+uylISw
+	 /tx4Ym9JDQeOz1Em0+Km8PUB7ybpXidA2yRZovBIwP/FMYXC7bbeS4NZyJFrS3VxMU
+	 2bdk60NkMaSqqPXraVQtzkwuAcBKuRX1ya8ULUbxlG2MkqxxbJHg06HB4nP7f5gA8j
+	 O4SslNwcXhSCQ==
+Date: Thu, 14 Mar 2024 21:02:38 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: cleger@rivosinc.com, lohr85@gmail.com, Conor Dooley <conor@kernel.org>,
+	samuel.holland@sifive.com, Paul Walmsley <paul.walmsley@sifive.com>,
+	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>, ajones@ventanamicro.com,
+	dlemoal@kernel.org, Bjorn Topel <bjorn@rivosinc.com>,
+	Atish Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH] riscv: deprecate CONFIG_MMU=n
+Message-ID: <ZfL1buKdDI-p5b9X@xhacker>
+References: <a49546e8-6749-4458-98da-67fd37b7df18@rivosinc.com>
+ <mhng-a3b495e6-aca6-4137-a3c1-8fcacafd8596@palmer-ri-x1c9a>
+ <ZfLxip96o5MVjHAF@xhacker>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240314063008.11214-1-adiupina@astralinux.ru>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZfLxip96o5MVjHAF@xhacker>
 
-On Thu, Mar 14, 2024 at 09:30:08AM +0300, Alexandra Diupina wrote:
-> Need to check return value of genphy_read_status(),
-> because higher in the call hierarchy is the
-> dsa_register_switch() function,
-> which is used in various drivers.
+On Thu, Mar 14, 2024 at 08:46:21PM +0800, Jisheng Zhang wrote:
+> On Tue, Feb 27, 2024 at 08:38:50AM -0800, Palmer Dabbelt wrote:
+> > On Tue, 27 Feb 2024 01:11:41 PST (-0800), cleger@rivosinc.com wrote:
+> > > 
+> > > 
+> > > On 26/02/2024 20:00, Charles Lohr wrote:
+> > > > WOAH! Please DO NOT deprecate NOMMU. I use the NOMMU build constantly
+> > > > and NOMMU Linux on RISC-V is the avenue used by many FPGA soft cores
+> > > > for Linux, as well as some limited systems.
+> > 
+> > OK.
+> > 
+> > I just build test this stuff, as I don't really have a use for it
+> > personally.  I figured if nobody's reporting bugs then probably it's broken
+> > and nobody's noticed because nobody's using it.
+> > 
+> > > > I get new copies of the kernel when there are releases and test them
+> > > > frequently to make sure everything is still working as expected.
+> > 
+> > I'd actually expected it to be broken, but I guess we managed to avoid
+> > screwing things up ;)
+> > 
+> > > > For us we just don't care about XIP. I mean if someone did push it
+> 
+> I don't care XIP either, and IMHO the XIP's maintenance effort is much
+> bigger than NOMMU(just check the various XIP_FIXUP* or CONFIG_XIP_KERNEL
+> macros around lowlevel pgtable.h, page.h). If we can remove XIP, the
+> code readability will be much better.
+> 
+> Or sending out a similar XIP deprecation patch to see whether there's
+> any complain ? ;)
+> 
+> > > > through to fruition, I'd also test and use it, but I urge you please
+> > > > do not deprecate this.  While it's sometimes needed a bit of a
+> 
+> +1 for urge the upstream please do not deprecate NOMMU.
+> 
+> Besides the soft(FPGA) core mentioned by Charles, here is another real
 
-I don't understand the commit message. Why is it important to
-dsa_register_switch()?
+And I'd like to write more about soft core: riscv is a free and open
+ISA, this make it really good for education, for simple riscv
+implementation or emulator. Once riscv IMA is implemented(even if MMU,
+cache, TLB stuff don't exist), it's not far away from making linux
+running on the FPGA or emulator. If the gain is larger than the maintenance
+effort, I'd like to urge keeping the NOMMU support.
 
-	Andrew
+Thanks a lot
+
+> usage case: As is known, Sophgo CV1800B platforms such as Milk Duo
+> contains two C906 core, one(a.k.a big core) with MMU another(a.k.a small
+> core)w/o MMU. The vendor sdk runs freertos on the small core, but it
+> doesn't prevent users to run other OS such as threadx, zephyr or nommu
+> linux on the small core. In fact, I sucessfully brought up nommu linux
+> on the small core. I didn't just send out the patches in time during this
+> dev window duo to my personal career reason(I spent the time on hunting
+> for a new job)
+> 
+> I plan to send out NOMMU related patches once 6.9-rc1 is out.
+> 
+> > > > creative build to get everything working, I've never needed to patch
+> > > > anything in the kernel beyond patching in a custom console for serial
+> > > > output.
+> > > > 
+> > > 
+> > > Hey Charles,
+> > > 
+> > > No worries, we actually did not expected NOMMU to have *so many* users.
+> > > I guess deprecating stuff is a good way to have immediate feedback ;).
+> > > Having FDPIC psABI to be merged upstream could also probably be a
+> > > positive point toward a better NOMMU support.
+> > 
+> > Ya, that's probably the right way to do it.  Touching anything in the psABI
+> > is pretty miserable, though, so I don't really want to force people to do
+> > it...
+> > 
+> > > > I am happy to discuss the possibility of me and or one of the other
+> > > > RISC-V soft (FPGA) core people stepping up to try to be more active,
+> > > > but so far we've just been very well serviced by the current NOMMU
+> > > > Linux setup.
+> > > 
+> > > It could probably be nice to have some feedback/Tested-by: from NOMMU
+> > > users for new releases then.
+> > 
+> > Having more upstream interaction from users is always appreciated, that's
+> > the best way to prove people are using the code.  If you guys have the time
+> > it'd be great to get this into some sort of CI, ideally running on some real
+> > platform.
+> 
+> As above, I'd also like to step up on the NOMMU stuff, at least test
+> nommu on milkv duo's small core. And can be seen from my git commit
+> histotry, I was active, and I belive I will still be active on riscv linux
+> kernel development.
+> 
+> > 
+> > > Thanks,
+> > > 
+> > > Clément
+> > > 
+> > > > 
+> > > > Charles
+> > > > 
+> > > > 
+> > > > On Mon, Feb 26, 2024 at 8:03 AM Conor Dooley <conor@kernel.org> wrote:
+> > > > > 
+> > > > > On Mon, Feb 26, 2024 at 04:25:24PM +0100, Clément Léger wrote:
+> > > > > > I guess I could also mark XIP as deprecated.
+> > > > > 
+> > > > > I'm not so sure, people recently added XIP support to QEMU (and sent
+> > > > > kernel fixes in December). XIP is also not nearly as much of a problem
+> > > > > to support, there's far less that it does differently, the main barrier
+> > > > > was the inability to test it which is no longer the case.
+> > > > > That said, XIP is gonna kill itself off I feel as it does not support
+> > > > > runtime patching and therefore is extremely limited on extensions, given
+> > > > > we use alternatives for all of that (although I suppose if someone has a
+> > > > > usecase they could make nasty macros worse and implement a compiletime
+> > > > > switch in the alternatives too).
+> > > > > 
+> > > > > Cheers,
+> > > > > Conor.
+> > > > > 
+> > > > > _______________________________________________
+> > > > > linux-riscv mailing list
+> > > > > linux-riscv@lists.infradead.org
+> > > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > 
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
