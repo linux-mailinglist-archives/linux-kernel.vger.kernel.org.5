@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-103899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C44B87C65F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:33:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2371387C660
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB86BB22EE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:33:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 911BF1F21348
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD63728DDB;
-	Thu, 14 Mar 2024 23:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B452E64E;
+	Thu, 14 Mar 2024 23:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bw0QGiLH"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tDTv2Mvo"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCD5225B2
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE19250EA
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710458815; cv=none; b=At0cSyihsokb0Andh3a92htfy/HhSbwmHnTyqwch/HW0Y4pi8UtyXZtX20o30ImCG/uiNUXpd+DpUg8vx8MJe1p0Oe3eE3wTff8XcYdhAleRF7ZtAjCqxDX35Z+0AhCzl4WJ+cq8g2UigobjiN0j3sjuR9cSLMJfrpqbgSiNcTA=
+	t=1710458816; cv=none; b=QP1E7VSLjdWq2ymrv+4DxnlWy6MX3jsywGtEvOlwz3BeZx8R0qBTwabxhA6UleheESx44aSYab8hFfJVHHInkij/FaSNdXdN/CsJhWKLxH7Leuw9OHDAPpW7phBn8A5rKPULZiPrpAmRCvy+IozJst3xDYV0mNuQg8JV3iRVBGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710458815; c=relaxed/simple;
-	bh=Y4lg842eyRtWuiU4N+Si7fkQtHRQlH6n5P6xF36CfXg=;
+	s=arc-20240116; t=1710458816; c=relaxed/simple;
+	bh=D6rTKBL1Fq2w6V4jF48WMytPJlDVkKznNk4kApfQjLA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=oyNQQDQR+c9osZD8R7AyYGjMs+h+hst1ZvIFdFAml2jE5rae46uTgI99H07/39iWb2qJsjGF4t+lusXKvt10U2V1euyTgdmjA7ky0tDcTDWJNG2egU7D0sCPz0dlGw+8fiz3+ZmTgq/N7AE0ReLJt91D+f4NPXZxWyhAXxASITA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bw0QGiLH; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=icmBLMilkUf4blym7SSwNMLCfm9DeXT5OMaMuufQBNjL3YSeKkiA1sgmCZGQhywzlxD9EZz7hF3YBnOrWtFT34pYQ3+xKTjmalCx1KTZSbgbuQWcW4a4yBaT8lcp0F67ZrpchAe7HMz1LpU8i9cr+gy7QU4iNvnh4vFo5X/cRhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tDTv2Mvo; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ee22efe5eeso29035547b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:26:53 -0700 (PDT)
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-29deeb2fc13so222637a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:26:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710458813; x=1711063613; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710458815; x=1711063615; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=bGD1oHLzIwlI71Um3uWf9rz8YDkt0fT9aZFmZxidv5s=;
-        b=bw0QGiLHlSL5PVie+rUleZ0Ihg8BETFGnSQKz+gbO6X++AHhbvg910zucl2B8xxvqz
-         OtFqTWPL0lF9plJhrLzF0COizAt/NINLn9PG/vKpunqeSzqTP6PFVGv1Aps8DQ0flllE
-         qVQArbIpVUBbUJCAAlrayUQgWVKRBnvj/3MUHZfJoW10pM9wW6LJSb3pFvtqS8vlY41g
-         /U8bEpmnSrycpzn2J80IyI6o7VAnlpgDV05t7dToGDbAw37RGZkSU3LmxcRIqNtWDmer
-         iRSPHeoHzc6LTK6b1b+DhG+Z7S/n+AHmfHf/oySnbdEnjW5IT5Moa3pZgMB2KFdHBSLK
-         EPeA==
+        bh=cYt0UxRFPQqzYn7Vpx6g+tvPS4Iw5cklVXoJXhkYY7M=;
+        b=tDTv2Mvof4055MZP97Dn14widAMxz8/WUyKDrXg68ZXHge2jfpLyGgWHRPaWxoUYrI
+         xMBGRg5NP68qKqMZvK61Stgrk7KmBn3AMl8z7frXsdWZJrE7swR/GJrKDeTpEcnVIu0s
+         WgJ5KxXfqWreThiBPYv4T5rBCoQbqI3b+7MzlPSjI4lqwJg633w0CTFLMPEe7pBy7NVj
+         oTrKDXzI51uootfMD0bp7Z9ifri4nNwJa1uTvAZcYQOn1QV9rluAvGmZn6zJvYovUINe
+         lFHmQZ7GOam4C2Vo2LzhCRMNQ4C+/tC1ZypdnVZQ0s/u1DdR3Ky/uADG+jd+MIZHTBBh
+         P49Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710458813; x=1711063613;
+        d=1e100.net; s=20230601; t=1710458815; x=1711063615;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bGD1oHLzIwlI71Um3uWf9rz8YDkt0fT9aZFmZxidv5s=;
-        b=I1HvgCrpqMkUpSu6samw99DmDufJMCGM9QmOB1H/HLDDhQDWhAsM58Yh5oNgUuU4u3
-         j8/GfzC06HPSHcM8PyNLtnncUj3Ye6Dr/077ZY4tFT+OyzfCDOOD5Iom6IyHPyH9CDA2
-         H8WIJQB+vKODFmbsjPj9rAFWAVNHlNPbjE7pA4xFsNdU+cwUG8mcZlDa397gq1pnSZgS
-         8cDuvZZjP7YWO6efsmAPReFw5c3Aj3rbCvLL52ppc2q688ULA9KLIkP+6C5NzdgXdd5i
-         bDBxO7kwA00ZMCQFlPOPjasXnIkb0aW84/5z7p5Asswo0xcQ+oZYxYQOXnS8hBd7al1P
-         IaEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUqqtHWFnpnENv96dhD1wMsSGUVmnPcA2sIlSY0t4AGwn9qKZtQEd2MzA78IHCnk1CpwnpZuZsymhiMyd3OijbPe6XEso0YKcqce3Zw
-X-Gm-Message-State: AOJu0YwugtydhhZLjRzQiUkapYKebTg/CVvpqSYbbraixQT7aMI2A9Sg
-	O3Zl3APR/jOkVajOrYglPadANc2UpzmFMVPLy7uUO7+GG1a6b5lee9I4zYSfPyYWjob/h6IQUaE
-	Bvw==
-X-Google-Smtp-Source: AGHT+IEf2SHyoW7Ci/nXvsu/vvl6dD716Be1qw4xm14NPqmYsKQJNpbDJU6sbwjkwsuGTYDcc+4TPOzUy5A=
+        bh=cYt0UxRFPQqzYn7Vpx6g+tvPS4Iw5cklVXoJXhkYY7M=;
+        b=Rmhxwysw4/fVD/n/kgxs3M0HjJAeMbUUQ30Qh8ZN9Ax8vZofmcHNf0OIFZxk5+YVC3
+         qCZ4//+Z6YmWdpb6Vf8Deblsw2QHJsmnZ6IL0w/2CmieyWVWmqDO2u+TihTJQEOEDKcC
+         rFG0OKaQuPjqs4Sc3YE2mH/tbQ9pZRA891if5LfegcLwSxyxg5DM/muxmYORP+EFHQ0b
+         n11+0mkHktlk745tJYpQKanukDwDim/hoa8eQzjymTlUi5a9+h0Z9/Zf33eIKNkzL8ui
+         L4WTmzyiDn+WWROmssqaR1ilHMeqwM9DcdKJoHVuHbt0S32z/0dx2dchRI2qYrlPv6pF
+         7Wfw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+4yqC02DJCWx5fRdFkmq8IEJWsZB4qYNacjQY2P2sxlYbhv1sDIi2hqRmiXIBlk6xECbkdC4PU7Cnf6BII8ZT9R+8jckMGLjs+Ha5
+X-Gm-Message-State: AOJu0YxHPZu9kK7nCrKKO07Z0rCyLLG/fjuADTUpaiIO0KVsQc5o/Zcr
+	NeZhjEutfyM+zEKyRAR6/WpJA9PQpCY6W3ipHlnkMZS71otKljOI0iAyzOgf82Bse+2AtHUJrwh
+	yng==
+X-Google-Smtp-Source: AGHT+IFrr0eJ7KJEPLhApMpHRts0gPRzkT9mvlTzswaB+7MaMjHLiz+sM47iUPlzqqkPyfHstCgHwuftTuc=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1b85:b0:dbe:30cd:8fcb with SMTP id
- ei5-20020a0569021b8500b00dbe30cd8fcbmr188618ybb.0.1710458812732; Thu, 14 Mar
- 2024 16:26:52 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:90a:bc94:b0:29b:c2b7:7d29 with SMTP id
+ x20-20020a17090abc9400b0029bc2b77d29mr3418pjr.9.1710458814574; Thu, 14 Mar
+ 2024 16:26:54 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 14 Mar 2024 16:26:26 -0700
+Date: Thu, 14 Mar 2024 16:26:27 -0700
 In-Reply-To: <20240314232637.2538648-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240314232637.2538648-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240314232637.2538648-8-seanjc@google.com>
-Subject: [PATCH 07/18] KVM: selftests: Explicitly clobber the IDT in the
- "delete memslot" testcase
+Message-ID: <20240314232637.2538648-9-seanjc@google.com>
+Subject: [PATCH 08/18] KVM: selftests: Move x86's descriptor table helpers
+ "up" in processor.c
 From: Sean Christopherson <seanjc@google.com>
 To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
 	Paolo Bonzini <pbonzini@redhat.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
@@ -91,49 +91,233 @@ Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
 	Ackerley Tng <ackerleytng@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Explicitly clobber the guest IDT in the "delete memslot" test, which
-expects the deleted memslot to result in either a KVM emulation error, or
-a triple fault shutdown.  A future change to the core selftests library
-will configuring the guest IDT and exception handlers by default, i.e.
-will install a guest #PF handler and put the guest into an infinite #NPF
-loop (the guest hits a !PRESENT SPTE when trying to vector a #PF, and KVM
-reinjects the #PF without fixing the #NPF, because there is no memslot).
+Move x86's various descriptor table helpers in processor.c up above
+kvm_arch_vm_post_create() and vcpu_setup() so that the helpers can be
+made static and invoked from the aforementioned functions.
 
-Note, it's not clear whether or not KVM's behavior is reasonable in this
-case, e.g. arguably KVM should try (and fail) to emulate in response to
-the #NPF.  But barring a goofy/broken userspace, this scenario will likely
-never happen in practice.  Punt the KVM investigation to the future.
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/set_memory_region_test.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../selftests/kvm/lib/x86_64/processor.c      | 191 +++++++++---------
+ 1 file changed, 95 insertions(+), 96 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index 06b43ed23580..9b814ea16eb4 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -221,8 +221,20 @@ static void test_move_memory_region(void)
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+index eaeba907bb53..3640d3290f0a 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+@@ -540,6 +540,21 @@ static void kvm_setup_tss_64bit(struct kvm_vm *vm, struct kvm_segment *segp,
+ 	kvm_seg_fill_gdt_64bit(vm, segp);
+ }
  
- static void guest_code_delete_memory_region(void)
- {
-+	struct desc_ptr idt;
- 	uint64_t val;
- 
-+	/*
-+	 * Clobber the IDT so that a #PF due to the memory region being deleted
-+	 * escalates to triple-fault shutdown.  Because the memory region is
-+	 * deleted, there will be no valid mappings.  As a result, KVM will
-+	 * repeatedly intercepts the state-2 page fault that occurs when trying
-+	 * to vector the guest's #PF.  I.e. trying to actually handle the #PF
-+	 * in the guest will never succeed, and so isn't an option.
-+	 */
-+	memset(&idt, 0, sizeof(idt));
-+	__asm__ __volatile__("lidt %0" :: "m"(idt));
++void vcpu_init_descriptor_tables(struct kvm_vcpu *vcpu)
++{
++	struct kvm_vm *vm = vcpu->vm;
++	struct kvm_sregs sregs;
 +
- 	GUEST_SYNC(0);
++	vcpu_sregs_get(vcpu, &sregs);
++	sregs.idt.base = vm->arch.idt;
++	sregs.idt.limit = NUM_INTERRUPTS * sizeof(struct idt_entry) - 1;
++	sregs.gdt.base = vm->arch.gdt;
++	sregs.gdt.limit = getpagesize() - 1;
++	kvm_seg_set_kernel_data_64bit(NULL, DEFAULT_DATA_SELECTOR, &sregs.gs);
++	vcpu_sregs_set(vcpu, &sregs);
++	*(vm_vaddr_t *)addr_gva2hva(vm, (vm_vaddr_t)(&exception_handlers)) = vm->handlers;
++}
++
+ static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_sregs sregs;
+@@ -572,6 +587,86 @@ static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+ 	vcpu_sregs_set(vcpu, &sregs);
+ }
  
- 	/* Spin until the memory region is deleted. */
++static void set_idt_entry(struct kvm_vm *vm, int vector, unsigned long addr,
++			  int dpl, unsigned short selector)
++{
++	struct idt_entry *base =
++		(struct idt_entry *)addr_gva2hva(vm, vm->arch.idt);
++	struct idt_entry *e = &base[vector];
++
++	memset(e, 0, sizeof(*e));
++	e->offset0 = addr;
++	e->selector = selector;
++	e->ist = 0;
++	e->type = 14;
++	e->dpl = dpl;
++	e->p = 1;
++	e->offset1 = addr >> 16;
++	e->offset2 = addr >> 32;
++}
++
++static bool kvm_fixup_exception(struct ex_regs *regs)
++{
++	if (regs->r9 != KVM_EXCEPTION_MAGIC || regs->rip != regs->r10)
++		return false;
++
++	if (regs->vector == DE_VECTOR)
++		return false;
++
++	regs->rip = regs->r11;
++	regs->r9 = regs->vector;
++	regs->r10 = regs->error_code;
++	return true;
++}
++
++void route_exception(struct ex_regs *regs)
++{
++	typedef void(*handler)(struct ex_regs *);
++	handler *handlers = (handler *)exception_handlers;
++
++	if (handlers && handlers[regs->vector]) {
++		handlers[regs->vector](regs);
++		return;
++	}
++
++	if (kvm_fixup_exception(regs))
++		return;
++
++	ucall_assert(UCALL_UNHANDLED,
++		     "Unhandled exception in guest", __FILE__, __LINE__,
++		     "Unhandled exception '0x%lx' at guest RIP '0x%lx'",
++		     regs->vector, regs->rip);
++}
++
++void vm_init_descriptor_tables(struct kvm_vm *vm)
++{
++	extern void *idt_handlers;
++	int i;
++
++	vm->arch.idt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
++	vm->handlers = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
++	/* Handlers have the same address in both address spaces.*/
++	for (i = 0; i < NUM_INTERRUPTS; i++)
++		set_idt_entry(vm, i, (unsigned long)(&idt_handlers)[i], 0,
++			DEFAULT_CODE_SELECTOR);
++}
++
++void vm_install_exception_handler(struct kvm_vm *vm, int vector,
++			       void (*handler)(struct ex_regs *))
++{
++	vm_vaddr_t *handlers = (vm_vaddr_t *)addr_gva2hva(vm, vm->handlers);
++
++	handlers[vector] = (vm_vaddr_t)handler;
++}
++
++void assert_on_unhandled_exception(struct kvm_vcpu *vcpu)
++{
++	struct ucall uc;
++
++	if (get_ucall(vcpu, &uc) == UCALL_UNHANDLED)
++		REPORT_GUEST_ASSERT(uc);
++}
++
+ void kvm_arch_vm_post_create(struct kvm_vm *vm)
+ {
+ 	vm_create_irqchip(vm);
+@@ -1087,102 +1182,6 @@ void kvm_init_vm_address_properties(struct kvm_vm *vm)
+ 	}
+ }
+ 
+-static void set_idt_entry(struct kvm_vm *vm, int vector, unsigned long addr,
+-			  int dpl, unsigned short selector)
+-{
+-	struct idt_entry *base =
+-		(struct idt_entry *)addr_gva2hva(vm, vm->arch.idt);
+-	struct idt_entry *e = &base[vector];
+-
+-	memset(e, 0, sizeof(*e));
+-	e->offset0 = addr;
+-	e->selector = selector;
+-	e->ist = 0;
+-	e->type = 14;
+-	e->dpl = dpl;
+-	e->p = 1;
+-	e->offset1 = addr >> 16;
+-	e->offset2 = addr >> 32;
+-}
+-
+-
+-static bool kvm_fixup_exception(struct ex_regs *regs)
+-{
+-	if (regs->r9 != KVM_EXCEPTION_MAGIC || regs->rip != regs->r10)
+-		return false;
+-
+-	if (regs->vector == DE_VECTOR)
+-		return false;
+-
+-	regs->rip = regs->r11;
+-	regs->r9 = regs->vector;
+-	regs->r10 = regs->error_code;
+-	return true;
+-}
+-
+-void route_exception(struct ex_regs *regs)
+-{
+-	typedef void(*handler)(struct ex_regs *);
+-	handler *handlers = (handler *)exception_handlers;
+-
+-	if (handlers && handlers[regs->vector]) {
+-		handlers[regs->vector](regs);
+-		return;
+-	}
+-
+-	if (kvm_fixup_exception(regs))
+-		return;
+-
+-	ucall_assert(UCALL_UNHANDLED,
+-		     "Unhandled exception in guest", __FILE__, __LINE__,
+-		     "Unhandled exception '0x%lx' at guest RIP '0x%lx'",
+-		     regs->vector, regs->rip);
+-}
+-
+-void vm_init_descriptor_tables(struct kvm_vm *vm)
+-{
+-	extern void *idt_handlers;
+-	int i;
+-
+-	vm->arch.idt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
+-	vm->handlers = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
+-	/* Handlers have the same address in both address spaces.*/
+-	for (i = 0; i < NUM_INTERRUPTS; i++)
+-		set_idt_entry(vm, i, (unsigned long)(&idt_handlers)[i], 0,
+-			DEFAULT_CODE_SELECTOR);
+-}
+-
+-void vcpu_init_descriptor_tables(struct kvm_vcpu *vcpu)
+-{
+-	struct kvm_vm *vm = vcpu->vm;
+-	struct kvm_sregs sregs;
+-
+-	vcpu_sregs_get(vcpu, &sregs);
+-	sregs.idt.base = vm->arch.idt;
+-	sregs.idt.limit = NUM_INTERRUPTS * sizeof(struct idt_entry) - 1;
+-	sregs.gdt.base = vm->arch.gdt;
+-	sregs.gdt.limit = getpagesize() - 1;
+-	kvm_seg_set_kernel_data_64bit(NULL, DEFAULT_DATA_SELECTOR, &sregs.gs);
+-	vcpu_sregs_set(vcpu, &sregs);
+-	*(vm_vaddr_t *)addr_gva2hva(vm, (vm_vaddr_t)(&exception_handlers)) = vm->handlers;
+-}
+-
+-void vm_install_exception_handler(struct kvm_vm *vm, int vector,
+-			       void (*handler)(struct ex_regs *))
+-{
+-	vm_vaddr_t *handlers = (vm_vaddr_t *)addr_gva2hva(vm, vm->handlers);
+-
+-	handlers[vector] = (vm_vaddr_t)handler;
+-}
+-
+-void assert_on_unhandled_exception(struct kvm_vcpu *vcpu)
+-{
+-	struct ucall uc;
+-
+-	if (get_ucall(vcpu, &uc) == UCALL_UNHANDLED)
+-		REPORT_GUEST_ASSERT(uc);
+-}
+-
+ const struct kvm_cpuid_entry2 *get_cpuid_entry(const struct kvm_cpuid2 *cpuid,
+ 					       uint32_t function, uint32_t index)
+ {
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
