@@ -1,214 +1,386 @@
-Return-Path: <linux-kernel+bounces-103691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BECF87C309
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:50:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB67C87C30F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:51:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3C512820AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:50:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CD6EB20CF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A0D75819;
-	Thu, 14 Mar 2024 18:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140DF7580F;
+	Thu, 14 Mar 2024 18:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="C8m7Wpmu"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2079.outbound.protection.outlook.com [40.107.243.79])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OC0r7q2A"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8C57350B;
-	Thu, 14 Mar 2024 18:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710442189; cv=fail; b=FMK7fYmoAVq2LbgMczP0m1yjdRZ6C/zPSLPZ5dIxFX9JidhCaX+pcqxZwZWlVpCk+qJ7+88lvXnOfDxEZBHdi9y39SV4p2SlbR2ccjNeYy4ReEEolDKT2sFU9bdNQHNzswM+S4RKslgqoT/hbfCTdfCI1BDleolr0odi3Uyg9Gw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710442189; c=relaxed/simple;
-	bh=hqXMc5/rYTL2eqfE0TQeOc6tZb8AXNtuuUMEwUiqxQ8=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=maWebSeGuWZ3Vjq466U0L+ot3qlLDtRxCDyo3qSfSENzMgpp/rxG/Gtyo0t9fj/Be6nJbAbyMtL9pjT1sBxiDiYNE09P0iNxsI+gl0vmFxhs9PpvkpMecy9fAT5e9RsXznGV7Q/1gmOAe4r+dDCN1ix/hj0euX82jsspu/HPwjw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=C8m7Wpmu; arc=fail smtp.client-ip=40.107.243.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oXC8TWwpz7QkqSrqwBUsWeI22t9hhKgxuw6tZ4FO0I7GS+Ba7yE0tStUQj3kPi9xzIb05izxTJ7/6A7KqNIHQZSdklm14gJDUepZTICVZCqvmoTlexHUzAOIyO7uE3DUMAwsBeziJllSi4eixWam6CEjCQjMu3Yzx21Rwla9TrdYRc5F8dUnwSknGASUu/LJ+NXWXbCr9GUxIvY2VcU5rnai2H87XcK7hyiLaY0VBnBcFIDKZrteI1vldb7hee0MgudJfkg1xY35tqtTCMLevA46BvxoE0F1P7R5/xC0pId43nq2aerIRlY3Uq9Hkq242Uyq5AcFPlLU8jJcEglzEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=viBNZkyZDo1uG/RK9QS5BDLQf9dvAXMiMQRlrohAN2Q=;
- b=g+Cnxy4e+c8huiiJAj0vo2kx5ylRT9Qhnhsy2sXaLm01HjNdp7dXG5fH8mq42Nr7un002IbR6vZ0DyFnaAZezQaNyxCl88P2rBfN9CuFh8BHU4ZogaOpiNBd2t8riyS35c+NTW7cj/tP383pfUYFXD6IPmkEiZj71HyO+3zY0VnC0SHz8P+NLczBFWmolPiRG2DlRP5o4SZCrg/TC+BCRhWdMSlTDrVIK6z6IDvLaVVlYYk4gc2AkyO28IA/kzJ7W5F66iJZjEL90l1mylgzPfFW0cgop1QjVsK9h9PvxlnuPwlbKdH00WsoWVmAwP/2Vcr2ooxb5WG5NK/S/742qQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=viBNZkyZDo1uG/RK9QS5BDLQf9dvAXMiMQRlrohAN2Q=;
- b=C8m7WpmudXjjCauSwI67S/VzIGgJi9KOhhVjjQJC13mQQuNCqbimdmOWTtQxOQs9DvuXCJmovAz61opjernzlXt0r3jpCPfAuoxByeK7HOlBi+mF+QtsH8hYbkxR9CpurOSAulL+QsCM9iYXoxfcsmC729pLynfdUz/xXX0pGmJCJu+8wzLmdWb9iMf5EXLHyVpjmv9q7gSref8eJz3Pk0R8i1bE1VZXbLiLs5sOw8v0I7LEWcMu2UTKAlTkPqc/HBeeGtvbjiDQuafIaGZgwDurYD0TAedn3H/MiJVVhGE+B/JbXYLSKfxv7w+gq2ff2TPWuI6k+hr/3h2ztO7TXw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by CH3PR12MB8510.namprd12.prod.outlook.com (2603:10b6:610:15b::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Thu, 14 Mar
- 2024 18:49:39 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 18:49:39 +0000
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-2-rrameshbabu@nvidia.com>
- <20240312165346.14ec1941@kernel.org> <87le6lbqsa.fsf@nvidia.com>
- <20240313174107.68ca4ff1@kernel.org> <87h6h9bpm1.fsf@nvidia.com>
- <20240313184017.794a2044@kernel.org>
- <CO1PR11MB50896031737DD807D071C34BD6292@CO1PR11MB5089.namprd11.prod.outlook.com>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: "Keller, Jacob E" <jacob.e.keller@intel.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, "Zaki, Ahmed" <ahmed.zaki@intel.com>,
- "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
- "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
- "andrew@lunn.ch" <andrew@lunn.ch>, "corbet@lwn.net" <corbet@lwn.net>,
- "davem@davemloft.net" <davem@davemloft.net>, "dtatulea@nvidia.com"
- <dtatulea@nvidia.com>, "edumazet@google.com" <edumazet@google.com>,
- "gal@nvidia.com" <gal@nvidia.com>, "hkallweit1@gmail.com"
- <hkallweit1@gmail.com>, "jiri@resnulli.us" <jiri@resnulli.us>,
- "joabreu@synopsys.com" <joabreu@synopsys.com>, "justinstitt@google.com"
- <justinstitt@google.com>, "kory.maincent@bootlin.com"
- <kory.maincent@bootlin.com>, "leon@kernel.org" <leon@kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "liuhangbin@gmail.com" <liuhangbin@gmail.com>,
- "maxime.chevallier@bootlin.com" <maxime.chevallier@bootlin.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "pabeni@redhat.com"
- <pabeni@redhat.com>, "Greenwalt, Paul" <paul.greenwalt@intel.com>,
- "Kitszel,  Przemyslaw" <przemyslaw.kitszel@intel.com>,
- "rdunlap@infradead.org" <rdunlap@infradead.org>,
- "richardcochran@gmail.com" <richardcochran@gmail.com>, "saeed@kernel.org"
- <saeed@kernel.org>, "tariqt@nvidia.com" <tariqt@nvidia.com>,
- "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
- "vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>, "Drewek, Wojciech"
- <wojciech.drewek@intel.com>
-Subject: Re: [PATCH RFC v2 1/6] ethtool: add interface to read Tx hardware
- timestamping statistics
-Date: Thu, 14 Mar 2024 11:48:11 -0700
-In-reply-to: <CO1PR11MB50896031737DD807D071C34BD6292@CO1PR11MB5089.namprd11.prod.outlook.com>
-Message-ID: <87frwsvebh.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR03CA0027.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::40) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC4F74BED
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710442209; cv=none; b=cBtTOg/Fbmsw642rWK7mE+R4frCgAV3FjQZzrgJlih8F6q3+v7vZNSWkGa9UpkWYU0x2yaZktJx/mh06zAmweIWm46fIUrG5gE381Mc7p3cLh6h4J3fZxUrYhEIeWoS6tpSVw0upTFyUCArSf/6F+VjTijHceUsh9fAnSLbSsWY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710442209; c=relaxed/simple;
+	bh=51QG+kMBKRvX0OMVNWDsczdt4sCxh7ArJUhZ8Z86/qg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KSeNv/GBpoawR2Rxcfmz26hkDNPLuQWO1iMjXOYb1w+NI6Dxzvz4ikYbbHsxlQ6reChuyQcJvRiEr7GS/c96187GuKikYY4UDcBW6KmZunxZxxBZkRq0T+gDZelDZ1gDGppK83Mz+31cMYbtfVB3dvMh+wGS/KOpsNdRbQv1O0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OC0r7q2A; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710442206;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HkHbKx45Q3L1ZP5rRqbPmhlu/JcXI6MggY9Mklvo1v4=;
+	b=OC0r7q2Ak9qSIQ54iQIkdMOKj3YNGEBPgOAdSZP7F3rMvdFZXLmZfFk5mzh5yvpmviyXd5
+	Tn/5ukLF8t1RcWSR80YJ9aImff2cfk9mZj1yf5WuZFrCDLgvqjUyvKClSV6zuZ9dlXsd1B
+	gMHAMXkK6erlaWV6yjdYVQJgTTASxVY=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-648-ELfByNL6PVmyQmfo04KLJg-1; Thu, 14 Mar 2024 14:50:05 -0400
+X-MC-Unique: ELfByNL6PVmyQmfo04KLJg-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-513cb05fcfdso1426864e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:50:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710442201; x=1711047001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HkHbKx45Q3L1ZP5rRqbPmhlu/JcXI6MggY9Mklvo1v4=;
+        b=amm2ZbUN0CjJedgKRqTdutAvhe4XTCW5A3yaZGlGH6FhyuDh69rz4w0Bio8jLQYsty
+         hlFUIR0OmL7rFLUprMU2VyrlpH5Sl5gopHFAfqGe5rNcEXhyULJXAsLM/KjJcv+9GuRD
+         QKSSBrIMAhiuaYySuyx5j+RyYCOyuRkZik0gMiwbpUFWZYJfq3AfcOP28U8L29sOa2zm
+         qKUi12D9aTP1z/sH3Swkob3Qf8toc4NPTgdvUa/Bivg2pkJ7iBn6Y5xWzFu5W8izBnLH
+         GhLaddaMldxhUH6hQnYUAXkiTtzHQaopUOjTmS+48LNKTueDO4nsxN2xhGYQlYTGItb6
+         iUPA==
+X-Forwarded-Encrypted: i=1; AJvYcCWbNMFHysItkuY4gmp6ODF1ruFMc8QloQl89gxqSk0MQkPRwBtWZ6E/Pc0lBqQfbc7O7bpA67RSEUCkLjA9tV67JmzuUP6GFJ5Y1qFb
+X-Gm-Message-State: AOJu0YzD0VUxvBr58Qp0CqyFjUR9LdnGBehIp6vil+93kVJ+PYD9ZvCf
+	yIOUFvIn3e/U/nIWAkce/ti0VK3b8jRXpXlG0x9SWdepvm0Gpc0iJe0AHxSXbSsUDY6TugMdn0d
+	COMYcS7XzJbtpx2Km6g5Bd8E7uanK8Sce2KNY41R8uRv+R63eKHEUePQ5uBiNln9+74a1PfcAWM
+	66jT+6pPpGyz+8bNKYccTkPv0BfCPcF8GCYQze
+X-Received: by 2002:a05:6512:32a6:b0:513:a83b:6761 with SMTP id q6-20020a05651232a600b00513a83b6761mr1885576lfe.18.1710442201103;
+        Thu, 14 Mar 2024 11:50:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEtghzZpirTx7uWUx1wqC+kUfNpMI7U42XIL0zBH0JEsKvGaTG8pDZ0YAkiVa7RCY7lobB0BVqCikGH4ZvJahE=
+X-Received: by 2002:a05:6512:32a6:b0:513:a83b:6761 with SMTP id
+ q6-20020a05651232a600b00513a83b6761mr1885557lfe.18.1710442200593; Thu, 14 Mar
+ 2024 11:50:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|CH3PR12MB8510:EE_
-X-MS-Office365-Filtering-Correlation-Id: e764c267-8302-4b99-f181-08dc445780a0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	lh+uNONe/MTcpidrVuhJvGQQKxI3pmEKOVafKobfuoregxtjwxXWYRzGmSjgArNsUJECSLcq61HF8odBXSsqihg14+U9vBE1hSbtYVKA/frJC8buibLRmuNhW9PbFoZ8IgdXzb5a14r4LAw3EhadMgJ/ip8jcQzN8sRkzjTbhKRZbvAnq1vgvOMGgGTEtQ8dHVQ3jcQwULQQsbvgAGz8SVOIbIGK3uoOCsHM1rBEy6HNz49SqG85oBKfOXOzbey2c2a2urFHMjdzGUB5+91ZaVLZDbr+bBjpB+Y47fZNNqribahVKB4DwOq6pNK8eAz7kGtQ52UfFq3FPVUK3u81Q0qI0m+ZLScxjqi0NIbFkfcN0cBg9+jGpB/WGInf+h3FeLOnVcsmkj4szXlKLfF2EQ4HEODJ2j3KIm8ZsrdG/H3bWde+mGRMaRJOiOm1zQ0NLxsDlVNNaGsXVlqV8eojOqaqB/wkvAi8GPR7BjfqO0+8UycW3nXWO1ES7nLGZFTZWw0jdBcpG1jHJwxtXekmDGYBW7cP0eSmglBGlA2nfvKyBXklOy2Uj7SGPvBB7fWOa9jB+Q14RYGIAYKLeU+o+f8XPkZeC1pw9TEQBb5xQ+ABFDIrC0kOv45gUdk8reo/Pb9DPxuFtmI3hNIxzE3WbyDPtd+Al+obFiLg2xmSN9U=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?uQPKSulr7/gE7o1tbtcNnbLU4QDOIunlytGDy427U2S33OVYkTjyxU7GMy18?=
- =?us-ascii?Q?GpqxuZX9V7yGS0ftagdQB6/k1B3TP/ExHVKJ3AJfzMNSAsHa1AVm/VuNC2cz?=
- =?us-ascii?Q?PZFbpHf1OSkENUPmPCAbI3Pibs1C5ZALCqY18gpaQzoagCh+7VC6mXY8db9j?=
- =?us-ascii?Q?VpbC6rn+xE00WhTs75vdntlGs13csk6qMfz86tdRQ0LyZ1SOiJLc3N52P88Q?=
- =?us-ascii?Q?QJ4ruSWc4Pfgk20fT2PW38wiQvmeqqpJq05bjtAcTf0hxJv6h0+05mO6B7Hz?=
- =?us-ascii?Q?qg+4GI6lgXWn5k9aYORrelnmFCUmhyeVMsO791OYpOPhZOpevJa6ka/lFuXz?=
- =?us-ascii?Q?faWVYiQ6JRk9dMh8ZyFKoeFJbbR+qkRnKDaG9aHBFOxfgW5vtHGWoDfh4kDZ?=
- =?us-ascii?Q?V+KB8E0vR/47MhJ1/e1I4miNSJhBGRaPmZDpAlxZnV7pCSFTVPd2bLdZeNYE?=
- =?us-ascii?Q?PjK31m8Lyo7zqd1CMrrqL1GmsH52RhN7VamhPjPkvNvbu4thStk9dpGkjqO1?=
- =?us-ascii?Q?yxpmQ+VfFd+Bt87DZZOYgfHpisFbKH8qiplRKBee8geQk537ZNZAuNnXIAED?=
- =?us-ascii?Q?ATaGsMyyu3BmXBFnWKPo9G5QMMWkytuXELBsDa+VFc3PgZN1+5H6LhBD6//Q?=
- =?us-ascii?Q?dlPkCBO1xhBZER+UXApcN7meZ6HkvIMquq0+UKiWi98VoMugo8oa9HIBNC3A?=
- =?us-ascii?Q?iTkLQGHS1jWapgzNF0AIOYhCbwxtRkMc/YczqeZkqLRMxRxx3b06mJXdafZX?=
- =?us-ascii?Q?9rrHGgZVXhjAKOWwGl4IXMLjg20HPrNpLweGz1iltixfE7sijakl8KQu1/eV?=
- =?us-ascii?Q?v5uwk4/fEZSD0jkJ0srqvqE0E4KMPgfFm2HjbFJeWA2hibA4PWbylL2g9NCx?=
- =?us-ascii?Q?Po56H+JmkXtxzpgb5Ms12RA6gJdvbQ53dywJL03WK5qRY5TJqu4eeXmYWXig?=
- =?us-ascii?Q?Qu8bUhYua6VaApuEhp0zMjeUF/Ud4h6Sxbb0I/9ywin3O1l0v9ZAX3xoQCL9?=
- =?us-ascii?Q?StQbPWfhoUekWkNOdvmgWKQLcX87FMIKU2WtwyUjyXYYmAigV3TM1IMJDtho?=
- =?us-ascii?Q?cp1pf7AKxTJCUwk1Gk9EwtkuRmS7ITLlyCgDlJYnUpeWgssYFSUMIpA/ZtaL?=
- =?us-ascii?Q?VATE9/LDcvTV5ZZQ2CEQQxxPOTInkKzuW+q09oBuSg0I8PBw2d67/lpHB2ds?=
- =?us-ascii?Q?AhuGwBo1LVV5hRMH+qDdigHfdr5Mtjhs50giMmE8TfChst+W39N+1DEs43qH?=
- =?us-ascii?Q?zpstX5PyZuhwQTytvREuYH7E+sTyl8LYCyYRHnKapH7z4NJiRRT9mvnnvmd0?=
- =?us-ascii?Q?TvgIuhoL42UmDqwRXTJSnqCzNwsNT9MNOdBKb1EUWlimB1y/skemWSKC0eZW?=
- =?us-ascii?Q?1OTkytUP7I7x/PUFiYGaZioaLWS5hnQLwot8rLW4vqAmqB/IH5k/2WG8QrIz?=
- =?us-ascii?Q?8VIf+DFljcfHoS86Ig40m5NB/WaERydoxLFmt9GrL0QTa8oUqCl9NKTxWcRc?=
- =?us-ascii?Q?i15+C9j/Ra2lMMMFRat0fzTjNgFw1GEqUg9Xiid3omtqOJ/SAMq41U0cP1Sz?=
- =?us-ascii?Q?O/UrSwrhshytmFjsTGeWZ+CwT2ayDvkz8kDXqZbEJHCLmAURQ3En2j1cyUy9?=
- =?us-ascii?Q?vw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e764c267-8302-4b99-f181-08dc445780a0
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 18:49:39.1927
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 85SJz1tnKsToJflV099rUxrXA3vbS7OfKKvq5XcnqNOm+0QT0irPjcKaSa752JURqBN5+F4i9aArlm8k0mkFiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8510
+References: <20240314120049.111241-1-ivecera@redhat.com>
+In-Reply-To: <20240314120049.111241-1-ivecera@redhat.com>
+From: Michal Schmidt <mschmidt@redhat.com>
+Date: Thu, 14 Mar 2024 19:49:49 +0100
+Message-ID: <CADEbmW2iX9BnUSh5vWY7tC6dtXX1-XJrY5Ox1K1JPjkemwBM9g@mail.gmail.com>
+Subject: Re: [PATCH net v2] i40e: Enforce software interrupt during busy-poll exit
+To: Ivan Vecera <ivecera@redhat.com>
+Cc: netdev@vger.kernel.org, pawel.chmielewski@intel.com, 
+	aleksandr.loktionov@intel.com, Hugo Ferreira <hferreir@redhat.com>, 
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jacob Keller <jacob.e.keller@intel.com>, 
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On Thu, 14 Mar, 2024 17:50:10 +0000 "Keller, Jacob E" <jacob.e.keller@intel.com> wrote:
->> -----Original Message-----
->> From: Jakub Kicinski <kuba@kernel.org>
->> Sent: Wednesday, March 13, 2024 6:40 PM
->> To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
->> Cc: Zaki, Ahmed <ahmed.zaki@intel.com>; Lobakin, Aleksander
->> <aleksander.lobakin@intel.com>; alexandre.torgue@foss.st.com;
->> andrew@lunn.ch; corbet@lwn.net; davem@davemloft.net; dtatulea@nvidia.com;
->> edumazet@google.com; gal@nvidia.com; hkallweit1@gmail.com; Keller, Jacob E
->> <jacob.e.keller@intel.com>; jiri@resnulli.us; joabreu@synopsys.com;
->> justinstitt@google.com; kory.maincent@bootlin.com; leon@kernel.org; linux-
->> doc@vger.kernel.org; linux-kernel@vger.kernel.org; liuhangbin@gmail.com;
->> maxime.chevallier@bootlin.com; netdev@vger.kernel.org; pabeni@redhat.com;
->> Greenwalt, Paul <paul.greenwalt@intel.com>; Kitszel, Przemyslaw
->> <przemyslaw.kitszel@intel.com>; rdunlap@infradead.org;
->> richardcochran@gmail.com; saeed@kernel.org; tariqt@nvidia.com;
->> vadim.fedorenko@linux.dev; vladimir.oltean@nxp.com; Drewek, Wojciech
->> <wojciech.drewek@intel.com>
->> Subject: Re: [PATCH RFC v2 1/6] ethtool: add interface to read Tx hardware
->> timestamping statistics
->> 
->> On Wed, 13 Mar 2024 17:50:39 -0700 Rahul Rameshbabu wrote:
->> > > Should we give some guidance to drivers which "ignore" time stamping
->> > > requests if they used up all the "slots"? Even if just temporary until
->> > > they are fixed? Maybe we can add after all the fields something like:
->> > >
->> > >   For drivers which ignore further timestamping requests when there are
->> > >   too many in flight, the ignored requests are currently not counted by
->> > >   any of the statistics.
->> >
->> > I was actually thinking it would be better to merge them into the error
->> > counter temporarily. Reason being is that in the case Intel notices that
->> > their slots are full, they just drop traffic from my understanding
->> > today. If the error counters increment in that situation, it helps with
->> > the debug to a degree. EBUSY is an error in general.
->> 
->> That works, too, let's recommend it (FWIW no preference whether
->> in the entry for @err or somewhere separately in the kdoc).
+On Thu, Mar 14, 2024 at 1:00=E2=80=AFPM Ivan Vecera <ivecera@redhat.com> wr=
+ote:
 >
-> We don't drop traffic, we send the packets just fine.. We just never report a
-> timestamp for them, since we don't program the hardware to capture that
-> timestamp.
+> As for ice bug fixed by commit b7306b42beaf ("ice: manage interrupts
+> during poll exit") followed by commit 23be7075b318 ("ice: fix software
+> generating extra interrupts") I'm seeing the similar issue also with
+> i40e driver.
+>
+> In certain situation when busy-loop is enabled together with adaptive
+> coalescing, the driver occasionally misses that there are outstanding
+> descriptors to clean when exiting busy poll.
+>
+> Try to catch the remaining work by triggering a software interrupt
+> when exiting busy poll. No extra interrupts will be generated when
+> busy polling is not used.
+>
+> The issue was found when running sockperf ping-pong tcp test with
+> adaptive coalescing and busy poll enabled (50 as value busy_pool
+> and busy_read sysctl knobs) and results in huge latency spikes
+> with more than 100000us.
+>
+> The fix is inspired from the ice driver and do the following:
+> 1) During napi poll exit in case of busy-poll (napo_complete_done()
+>    returns false) this is recorded to q_vector that we were in busy
+>    loop.
+> 2) In i40e_update_enable_itr()
+>    - updates refreshed ITR intervals directly using PFINT_ITRN register
+>    - if we are exiting ordinary poll then just enables the interrupt
+>      using PFINT_DYN_CTLN
+>    - if we are exiting busy poll then enables the interrupt and
+>      additionally triggers an immediate software interrupt to catch any
+>      pending clean-ups
+> 3) Reuses unused 3rd ITR (interrupt throttle) index and set it to
+>    20K interrupts per second to limit the number of these sw interrupts.
+>
+> Test results
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Prior:
+> [root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 -=
+-mps=3Dmax -t 120
+> sockperf: =3D=3D version #3.10-no.git =3D=3D
+> sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
+>
+> [ 0] IP =3D 10.9.9.1        PORT =3D 11111 # TCP
+> sockperf: Warmup stage (sending a few dummy messages)...
+> sockperf: Starting test...
+> sockperf: Test end (interrupted by timer)
+> sockperf: Test ended
+> sockperf: [Total Run] RunTime=3D119.999 sec; Warm up time=3D400 msec; Sen=
+tMessages=3D2438563; ReceivedMessages=3D2438562
+> sockperf: =3D=3D=3D=3D=3D=3D=3D=3D=3D Printing statistics for Server No: =
+0
+> sockperf: [Valid Duration] RunTime=3D119.549 sec; SentMessages=3D2429473;=
+ ReceivedMessages=3D2429473
+> sockperf: =3D=3D=3D=3D> avg-latency=3D24.571 (std-dev=3D93.297, mean-ad=
+=3D4.904, median-ad=3D1.510, siqr=3D1.063, cv=3D3.797, std-error=3D0.060, 9=
+9.0% ci=3D[24.417, 24.725])
+> sockperf: # dropped messages =3D 0; # duplicated messages =3D 0; # out-of=
+-order messages =3D 0
+> sockperf: Summary: Latency is 24.571 usec
+> sockperf: Total 2429473 observations; each percentile contains 24294.73 o=
+bservations
+> sockperf: ---> <MAX> observation =3D 103294.331
+> sockperf: ---> percentile 99.999 =3D   45.633
+> sockperf: ---> percentile 99.990 =3D   37.013
+> sockperf: ---> percentile 99.900 =3D   35.910
+> sockperf: ---> percentile 99.000 =3D   33.390
+> sockperf: ---> percentile 90.000 =3D   28.626
+> sockperf: ---> percentile 75.000 =3D   27.741
+> sockperf: ---> percentile 50.000 =3D   26.743
+> sockperf: ---> percentile 25.000 =3D   25.614
+> sockperf: ---> <MIN> observation =3D   12.220
+>
+> After:
+> [root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 -=
+-mps=3Dmax -t 120
+> sockperf: =3D=3D version #3.10-no.git =3D=3D
+> sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
+>
+> [ 0] IP =3D 10.9.9.1        PORT =3D 11111 # TCP
+> sockperf: Warmup stage (sending a few dummy messages)...
+> sockperf: Starting test...
+> sockperf: Test end (interrupted by timer)
+> sockperf: Test ended
+> sockperf: [Total Run] RunTime=3D119.999 sec; Warm up time=3D400 msec; Sen=
+tMessages=3D2400055; ReceivedMessages=3D2400054
+> sockperf: =3D=3D=3D=3D=3D=3D=3D=3D=3D Printing statistics for Server No: =
+0
+> sockperf: [Valid Duration] RunTime=3D119.549 sec; SentMessages=3D2391186;=
+ ReceivedMessages=3D2391186
+> sockperf: =3D=3D=3D=3D> avg-latency=3D24.965 (std-dev=3D5.934, mean-ad=3D=
+4.642, median-ad=3D1.485, siqr=3D1.067, cv=3D0.238, std-error=3D0.004, 99.0=
+% ci=3D[24.955, 24.975])
+> sockperf: # dropped messages =3D 0; # duplicated messages =3D 0; # out-of=
+-order messages =3D 0
+> sockperf: Summary: Latency is 24.965 usec
+> sockperf: Total 2391186 observations; each percentile contains 23911.86 o=
+bservations
+> sockperf: ---> <MAX> observation =3D  195.841
+> sockperf: ---> percentile 99.999 =3D   45.026
+> sockperf: ---> percentile 99.990 =3D   39.009
+> sockperf: ---> percentile 99.900 =3D   35.922
+> sockperf: ---> percentile 99.000 =3D   33.482
+> sockperf: ---> percentile 90.000 =3D   28.902
+> sockperf: ---> percentile 75.000 =3D   27.821
+> sockperf: ---> percentile 50.000 =3D   26.860
+> sockperf: ---> percentile 25.000 =3D   25.685
+> sockperf: ---> <MIN> observation =3D   12.277
+>
+> Fixes: 0bcd952feec7 ("ethernet/intel: consolidate NAPI and NAPI exit")
+> Reported-by: Hugo Ferreira <hferreir@redhat.com>
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e.h        |  1 +
+>  drivers/net/ethernet/intel/i40e/i40e_main.c   |  6 +++
+>  .../net/ethernet/intel/i40e/i40e_register.h   |  2 +
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 46 ++++++++++++++-----
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.h   |  1 +
+>  5 files changed, 45 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/etherne=
+t/intel/i40e/i40e.h
+> index ba24f3fa92c3..2fbabcdb5bb5 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e.h
+> +++ b/drivers/net/ethernet/intel/i40e/i40e.h
+> @@ -955,6 +955,7 @@ struct i40e_q_vector {
+>         struct rcu_head rcu;    /* to avoid race with update stats on fre=
+e */
+>         char name[I40E_INT_NAME_STR_LEN];
+>         bool arm_wb_state;
+> +       bool in_busy_poll;
+>         int irq_num;            /* IRQ assigned to this q_vector */
+>  } ____cacheline_internodealigned_in_smp;
+>
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/et=
+hernet/intel/i40e/i40e_main.c
+> index f86578857e8a..6576a0081093 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> @@ -3911,6 +3911,12 @@ static void i40e_vsi_configure_msix(struct i40e_vs=
+i *vsi)
+>                      q_vector->tx.target_itr >> 1);
+>                 q_vector->tx.current_itr =3D q_vector->tx.target_itr;
+>
+> +               /* Set ITR for software interrupts triggered after exitin=
+g
+> +                * busy-loop polling.
+> +                */
+> +               wr32(hw, I40E_PFINT_ITRN(I40E_SW_ITR, vector - 1),
+> +                    I40E_ITR_20K);
+> +
+>                 wr32(hw, I40E_PFINT_RATEN(vector - 1),
+>                      i40e_intrl_usec_to_reg(vsi->int_rate_limit));
+>
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_register.h b/drivers/ne=
+t/ethernet/intel/i40e/i40e_register.h
+> index 14ab642cafdb..baa6bb68bcf8 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_register.h
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_register.h
+> @@ -335,6 +335,8 @@
+>  #define I40E_PFINT_DYN_CTLN_INTERVAL_SHIFT 5
+>  #define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_SHIFT 24
+>  #define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_MASK I40E_MASK(0x1, I40E_PFI=
+NT_DYN_CTLN_SW_ITR_INDX_ENA_SHIFT)
+> +#define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_SHIFT 25
+> +#define I40E_PFINT_DYN_CTLN_SW_ITR_INDX_MASK I40E_MASK(0x3, I40E_PFINT_D=
+YN_CTLN_SW_ITR_INDX_SHIFT)
+>  #define I40E_PFINT_ICR0 0x00038780 /* Reset: CORER */
+>  #define I40E_PFINT_ICR0_INTEVENT_SHIFT 0
+>  #define I40E_PFINT_ICR0_INTEVENT_MASK I40E_MASK(0x1, I40E_PFINT_ICR0_INT=
+EVENT_SHIFT)
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/et=
+hernet/intel/i40e/i40e_txrx.c
+> index 0d7177083708..356c3140adf3 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> @@ -2658,8 +2658,22 @@ static inline u32 i40e_buildreg_itr(const int type=
+, u16 itr)
+>         return val;
+>  }
+>
+> -/* a small macro to shorten up some long lines */
+> -#define INTREG I40E_PFINT_DYN_CTLN
+> +static inline u32 i40e_buildreg_swint(int type)
+> +{
+> +       u32 val;
+> +
+> +       /* 1. Enable the interrupt
+> +        * 2. Do not modify any ITR interval
+> +        * 3. Trigger a SW interrupt specified by type
+> +        */
+> +       val =3D I40E_PFINT_DYN_CTLN_INTENA_MASK |
+> +             I40E_PFINT_DYN_CTLN_ITR_INDX_MASK | /* set noitr */
+> +             I40E_PFINT_DYN_CTLN_SWINT_TRIG_MASK |
+> +             I40E_PFINT_DYN_CTLN_SW_ITR_INDX_ENA_MASK |
+> +             FIELD_PREP(I40E_PFINT_DYN_CTLN_SW_ITR_INDX_MASK, type);
+> +
+> +       return val;
+> +}
+>
+>  /* The act of updating the ITR will cause it to immediately trigger. In =
+order
+>   * to prevent this from throwing off adaptive update statistics we defer=
+ the
+> @@ -2702,8 +2716,8 @@ static inline void i40e_update_enable_itr(struct i4=
+0e_vsi *vsi,
+>          */
+>         if (q_vector->rx.target_itr < q_vector->rx.current_itr) {
+>                 /* Rx ITR needs to be reduced, this is highest priority *=
+/
+> -               intval =3D i40e_buildreg_itr(I40E_RX_ITR,
+> -                                          q_vector->rx.target_itr);
+> +               wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
+> +                    q_vector->rx.target_itr >> 1);
+>                 q_vector->rx.current_itr =3D q_vector->rx.target_itr;
+>                 q_vector->itr_countdown =3D ITR_COUNTDOWN_START;
+>         } else if ((q_vector->tx.target_itr < q_vector->tx.current_itr) |=
+|
+> @@ -2712,25 +2726,33 @@ static inline void i40e_update_enable_itr(struct =
+i40e_vsi *vsi,
+>                 /* Tx ITR needs to be reduced, this is second priority
+>                  * Tx ITR needs to be increased more than Rx, fourth prio=
+rity
+>                  */
+> -               intval =3D i40e_buildreg_itr(I40E_TX_ITR,
+> -                                          q_vector->tx.target_itr);
+> +               wr32(hw, I40E_PFINT_ITRN(I40E_TX_ITR, q_vector->reg_idx),
+> +                    q_vector->tx.target_itr >> 1);
+>                 q_vector->tx.current_itr =3D q_vector->tx.target_itr;
+>                 q_vector->itr_countdown =3D ITR_COUNTDOWN_START;
+>         } else if (q_vector->rx.current_itr !=3D q_vector->rx.target_itr)=
+ {
+>                 /* Rx ITR needs to be increased, third priority */
+> -               intval =3D i40e_buildreg_itr(I40E_RX_ITR,
+> -                                          q_vector->rx.target_itr);
+> +               wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
+> +                    q_vector->rx.target_itr >> 1);
+>                 q_vector->rx.current_itr =3D q_vector->rx.target_itr;
+>                 q_vector->itr_countdown =3D ITR_COUNTDOWN_START;
+>         } else {
+>                 /* No ITR update, lowest priority */
+> -               intval =3D i40e_buildreg_itr(I40E_ITR_NONE, 0);
+>                 if (q_vector->itr_countdown)
+>                         q_vector->itr_countdown--;
+>         }
+>
+> -       if (!test_bit(__I40E_VSI_DOWN, vsi->state))
+> -               wr32(hw, INTREG(q_vector->reg_idx), intval);
+> +       /* Do not enable interrupt if VSI is down */
+> +       if (test_bit(__I40E_VSI_DOWN, vsi->state))
+> +               return;
+> +
+> +       if (!q_vector->in_busy_poll) {
+> +               intval =3D i40e_buildreg_itr(I40E_ITR_NONE, 0);
+> +       } else {
+> +               q_vector->in_busy_poll =3D false;
+> +               intval =3D i40e_buildreg_swint(I40E_SW_ITR);
+> +       }
+> +       wr32(hw, I40E_PFINT_DYN_CTLN(q_vector->reg_idx), intval);
+>  }
+>
+>  /**
+> @@ -2845,6 +2867,8 @@ int i40e_napi_poll(struct napi_struct *napi, int bu=
+dget)
+>          */
+>         if (likely(napi_complete_done(napi, work_done)))
+>                 i40e_update_enable_itr(vsi, q_vector);
+> +       else
+> +               q_vector->in_busy_poll =3D true;
+>
+>         return min(work_done, budget - 1);
+>  }
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.h b/drivers/net/et=
+hernet/intel/i40e/i40e_txrx.h
+> index abf15067eb5d..2cdc7de6301c 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+> @@ -68,6 +68,7 @@ enum i40e_dyn_idx {
+>  /* these are indexes into ITRN registers */
+>  #define I40E_RX_ITR    I40E_IDX_ITR0
+>  #define I40E_TX_ITR    I40E_IDX_ITR1
+> +#define I40E_SW_ITR    I40E_IDX_ITR2
+>
+>  /* Supported RSS offloads */
+>  #define I40E_DEFAULT_RSS_HENA ( \
+> --
+> 2.43.0
 
-My actual kdoc comments are better now, but I should have been better
-with the language I used here in the email. In my head, I was thinking
-more about the case of not submitting HW timestamp information when
-sending out the packet rather than dropping the packet entirely (I would
-say that is still a timestamping error case).
+Reviewed-by: Michal Schmidt <mschmidt@redhat.com>
 
---
-Thanks,
-
-Rahul Rameshbabu
 
