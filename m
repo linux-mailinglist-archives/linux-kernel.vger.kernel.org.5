@@ -1,64 +1,69 @@
-Return-Path: <linux-kernel+bounces-103551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B2A87C104
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:12:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA7F87C107
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:13:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9290D283B89
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:12:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 432D4B22C4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 052F973522;
-	Thu, 14 Mar 2024 16:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE0A73538;
+	Thu, 14 Mar 2024 16:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="dLG7BlGV"
-Received: from mr85p00im-zteg06021601.me.com (mr85p00im-zteg06021601.me.com [17.58.23.187])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S/WVZGVV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A67C73505
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D3473532
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710432738; cv=none; b=sO+97cm43TNJ90EJAyIeYWZbLRh68hh6uHvmai5h3SZGnM9BJK0glb7//hQbDHi3v+QEOnQXJCCQWJpU9F0qNKH9PC9AGXpFeyITfCnQ4+nNh/GTeKe6xKR+00mr3QkLhNYvVvijt76s5ZjFlNWc/FZjVDUrdgnhDNfoBHEy2rY=
+	t=1710432790; cv=none; b=AoIpqi+qYzWfWlk/zW3qclPGj+Ce6pwvEYQ2uF/RVoDnMMfNsgFkj4UOxR8aa3GHSXIXVYNXfnUqdWF081Bsa8oNSo7FaUJKUgm5QRUUPlxR2P85clqM4YsWMkU2p96oEIaecQwIFGKQBKWwir5UPKnBd1bVWtZX3hNxb/NuGwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710432738; c=relaxed/simple;
-	bh=PCA4oEGeHzergRYebAFkfnGjTh/er2Db/gz5H42uMWw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qv0QlZ5gR/hB/nbjrGsZ8cNsPFvDnlc/R6gnDq73jhZcMNUdxrVKfoZ4oYYFCtRCjxZRmXTx9Hms/oiICazv93HS7Y5qQJ9/wibtHMzI/eAD0G7KBMhMjBYynawdRBXZEH24eSIk3iffRkOgSoRaoY+JHGvuZdW3q+GLwKP674Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net; spf=pass smtp.mailfrom=danm.net; dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b=dLG7BlGV; arc=none smtp.client-ip=17.58.23.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
-	t=1710432735; bh=1luFzV2CPB2v/YqlRKWWzf4uwnz03g7Ye4zf7/eqxm4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=dLG7BlGV8NylXoAI//Vb+4/4o+da8YCly/CXZCm2kgpQW7tfq2MFAtcCNGsIi7S7G
-	 J0SlTwS0CO2aaI5uoE1vE2iBbntQ4rZ4uByY6eMmLES8MZTnIk5x7dj79j+Q8U0KQn
-	 VnRmeiSHK/dgzy5BJsWAtFBDIZtUuiRF16O1UpFxlg7ciTtdpSyyxPIJ43nvwFd2Q/
-	 gs/P6eGcwDh3Rmu8AGyBSRLj80ttCWRudfFYHVK8A79fOtlY0X6I7Sj693XypaC7Xb
-	 aPQ6peNdQaD7csfwKLXC3MCCl+UYReQ+TRKKqGFkRrC0/N/cMwyDJKGC/DeW5qQHpq
-	 XyLPvEz1An2Bg==
-Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-zteg06021601.me.com (Postfix) with ESMTPSA id BDCA63058A81;
-	Thu, 14 Mar 2024 16:12:13 +0000 (UTC)
-From: Dan Moulding <dan@danm.net>
-To: yukuai1@huaweicloud.com
-Cc: dan@danm.net,
-	gregkh@linuxfoundation.org,
-	junxiao.bi@oracle.com,
-	linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org,
-	regressions@lists.linux.dev,
-	song@kernel.org,
-	stable@vger.kernel.org,
-	yukuai3@huawei.com
-Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system; successfully bisected
-Date: Thu, 14 Mar 2024 10:12:11 -0600
-Message-ID: <20240314161211.14002-1-dan@danm.net>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <ecfce4d7-bcf7-c09a-7f01-5c7de88df107@huaweicloud.com>
-References: <ecfce4d7-bcf7-c09a-7f01-5c7de88df107@huaweicloud.com>
+	s=arc-20240116; t=1710432790; c=relaxed/simple;
+	bh=bp5aoEas6NU+7l0xitaBemho4peHlQ/ffehJsTxIdOU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YtJGZWxlLZtRHNSMsq6oaCs5FKcf1P2fVD4bgSOVhJMAvD3EjBAQIxskse+EG0zQUJoCAYpRivvKGR+vFo9dSKdnONrlrsd2u7wF5F9rLYLZW/+TIwZXGGXBOp/EckO75Cm0hi/476HlIscb0rKZlxgFXOB2j1pK31myVFA1cUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S/WVZGVV; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710432787;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=rQzaqtFO0M74UqxIFZdSZlCBtuv6/tpgFRgRP1U7oaM=;
+	b=S/WVZGVVBeCjsAx67AcnC6z2/HyGy3SQrPQ+q1YS6wuumD7W8G3SXXpYJetgr4LARvFDOG
+	seUeHB3PrTkGheZA0eE2nbS0KLK9OP6lQBmpQvgFX2adt7g2JR0s4DnojjZCSwroKHzgqv
+	65KtBc2TBm0pMjnZmIJw673NWd1pxyM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-m3ax5l6zMq6oyJh6GFMyXQ-1; Thu, 14 Mar 2024 12:13:03 -0400
+X-MC-Unique: m3ax5l6zMq6oyJh6GFMyXQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E8448047DA;
+	Thu, 14 Mar 2024 16:13:03 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.39.193.74])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5781E40C6DB3;
+	Thu, 14 Mar 2024 16:13:00 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	John Hubbard <jhubbard@nvidia.com>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	Hugh Dickins <hughd@google.com>
+Subject: [PATCH v1 0/2] mm/madvise: make MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY properly
+Date: Thu, 14 Mar 2024 17:12:58 +0100
+Message-ID: <20240314161300.382526-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,73 +71,59 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: n00SGHrE7BkMgWyyYDU0ShHBWmWW7znb
-X-Proofpoint-GUID: n00SGHrE7BkMgWyyYDU0ShHBWmWW7znb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_13,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=984
- adultscore=0 phishscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- clxscore=1030 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2403140122
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-> How about the following patch?
-> 
-> Thanks,
-> Kuai
-> 
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index 3ad5f3c7f91e..0b2e6060f2c9 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -6720,7 +6720,6 @@ static void raid5d(struct md_thread *thread)
-> 
->          md_check_recovery(mddev);
-> 
-> -       blk_start_plug(&plug);
->          handled = 0;
->          spin_lock_irq(&conf->device_lock);
->          while (1) {
-> @@ -6728,6 +6727,14 @@ static void raid5d(struct md_thread *thread)
->                  int batch_size, released;
->                  unsigned int offset;
-> 
-> +               /*
-> +                * md_check_recovery() can't clear sb_flags, usually 
-> because of
-> +                * 'reconfig_mutex' can't be grabbed, wait for 
-> mddev_unlock() to
-> +                * wake up raid5d().
-> +                */
-> +               if (test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags))
-> +                       goto skip;
-> +
->                  released = release_stripe_list(conf, 
-> conf->temp_inactive_list);
->                  if (released)
->                          clear_bit(R5_DID_ALLOC, &conf->cache_state);
-> @@ -6766,8 +6773,8 @@ static void raid5d(struct md_thread *thread)
->                          spin_lock_irq(&conf->device_lock);
->                  }
->          }
-> +skip:
->          pr_debug("%d stripes handled\n", handled);
-> -
->          spin_unlock_irq(&conf->device_lock);
->          if (test_and_clear_bit(R5_ALLOC_MORE, &conf->cache_state) &&
->              mutex_trylock(&conf->cache_size_mutex)) {
-> @@ -6779,6 +6786,7 @@ static void raid5d(struct md_thread *thread)
->                  mutex_unlock(&conf->cache_size_mutex);
->          }
-> 
-> +       blk_start_plug(&plug);
->          flush_deferred_bios(conf);
-> 
->          r5l_flush_stripe_to_raid(conf->log);
+Derrick reports that in some cases where pread() would fail with -EIO and
+mmap()+access would generate a SIGBUS signal, MADV_POPULATE_READ /
+MADV_POPULATE_WRITE will keep retrying forever and not fail with -EFAULT.
 
-I can confirm that this patch also works. I'm unable to reproduce the
-hang after applying this instead of the first patch provided by
-Junxiao. So looks like both ways are succesful in avoiding the hang.
+It all boils down to missing VM_FAULT_RETRY handling. Let's try to handle
+that in a better way, similar to how ordinary GUP handles it.
 
--- Dan
+Details in patch #1. In short, move special MADV_POPULATE_(READ|WRITE)
+VMA handling into __get_user_pages(), and make faultin_page_range()
+call __get_user_pages_locked(), which handles VM_FAULT_RETRY. Further,
+avoid the now-useless madvise VMA walk, because __get_user_pages() will
+perform the VMA lookup either way.
+
+I briefly played with handling the FOLL_MADV_POPULATE checks in
+__get_user_pages() a bit differently, integrating them with existing
+handling, but it ended up looking worse. So I decided to keep it simple.
+
+Likely, we need better selftests, but the reproducer from Darrick might
+be a bit hard to convert into a simple selftest.
+
+Note that using mlock() in Darricks reproducer results in a similar
+endless retry. Likely, that is not what we want, and we should handle
+VM_FAULT_RETRY in populate_vma_page_range() / __mm_populate() as well.
+However, similarly using __get_user_pages_locked() might be more
+complicated, because of the advanced VMA handling in
+populate_vma_page_range().
+
+Further, most populate_vma_page_range() callers simply ignore the return
+values, so it's unclear in which cases we expect to just silently fail, or
+where we'd want to retry+fail or endlessly retry instead.
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Hugh Dickins <hughd@google.com>
+
+David Hildenbrand (2):
+  mm/madvise: make MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY
+    properly
+  mm/madvise: don't perform madvise VMA walk for
+    MADV_POPULATE_(READ|WRITE)
+
+ mm/gup.c      | 54 ++++++++++++++++++++++++++++++---------------------
+ mm/internal.h | 10 ++++++----
+ mm/madvise.c  | 43 +++++++++++++---------------------------
+ 3 files changed, 52 insertions(+), 55 deletions(-)
+
+
+base-commit: f48159f866f422371bb1aad10eb4d05b29ca4d8c
+-- 
+2.43.2
+
 
