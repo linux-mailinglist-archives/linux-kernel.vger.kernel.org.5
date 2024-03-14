@@ -1,466 +1,269 @@
-Return-Path: <linux-kernel+bounces-103831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE3A87C519
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:23:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF83387C51F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:28:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DF391F2211D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:23:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB8C1F2209A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D8B76900;
-	Thu, 14 Mar 2024 22:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A02576909;
+	Thu, 14 Mar 2024 22:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WjcchE2P"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VPQ7aYAF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBDE76037
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 22:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710455006; cv=none; b=mJ78FSSOLyxAu20DfNV/GjPlvuueVB54KECq53GIGqCAI2A4x+N+18O0qF4YVe9U7jb7/i13FLWDYIemsQyCdqw0VcZoMS9uha/31RiqRwFEcunh+t14/IgpRDPeN8TQVxLD8vp2i+vczobS0VYtEPR5VycxRlFe38VUG1bie9E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710455006; c=relaxed/simple;
-	bh=dxynYCTjVCxgm+FMj12PxMZVC3LD3ZmjNOihkbMEuQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aUG4xt9FIFFp/No7MN8WA+0zzNPJzgP+DBnF1KrEAJK15S57aBCnQWrJIEJXW+NRM9DbPlb5spoSlncl1y6E6Ro0xvYowIiBYlHRTo4IElXSiqJLSgY8dn2SPTyi6i6s87ICwnMOlC2Ske8aJ1vkk/GoZjnGi4d7USgoqitKHQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WjcchE2P; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36646d1c2b7so16735ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:23:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710455003; x=1711059803; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fPSU/lY0e54nZlDMQRX0XdeyW69foMgt9vlKuEgC77c=;
-        b=WjcchE2PLnOq7ajfbQY/B9pcYi8mrwO1KBFOX0kUFV+9817uF/scAuSWDqdmZ9uDlC
-         oZ5bl2U/I1bjfVZtOQA1sDybEiW40XBBxbrrIjFZo84M/zQPOjpMGATPc/iFjuzlz/RF
-         6DqSQi95/FNHvuSSlgPaO9Hxt7wtEFrEa0RQKRIo5FFQiO8g/zTtOBEWOLbAfJCpag54
-         DOi8dM89tILsuK8HIp+chQaxJjUr53VK1eaZbRWLYh8NT695TUsuw2rkzW/+/JnjROiU
-         F0GMhb/SXMUu9EpE225S4cfzzLrTV7Ct8zf/hhyhrHV9jIJVun2pvMtRTAlvDvxCwsqf
-         LoAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710455003; x=1711059803;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fPSU/lY0e54nZlDMQRX0XdeyW69foMgt9vlKuEgC77c=;
-        b=X74dhNNPTuCzGkd269H0ZsZxRktBIwa2FExKhbAAkWD0K0ladg4m172mq2CCG8cdrO
-         BB1Hz7pcCfqbn5r4siT2sNpJ/DIEkSbgLQWkL2vQBtQ+YvIl8fUFx6EzLPG51ND+yVfb
-         xZtCzDx6ciaSlTHLFC7udRcjoxM3NNuTmrJVlG/2LBCgGZWAIksT1Xsrc0jATP9VYAEI
-         iCmpfuhkr4ShVxqjy4iPkgAFUQpgcH9ZPrhjFtuLmBjtsmYMwUfenwR4/eA5uvBV8//z
-         cCY23QM/lyl9AJQQdB65HtfevqBIyOZz/yOwuHAvff05idu4tRoscOa1k15L0jKDlLVa
-         Evrw==
-X-Forwarded-Encrypted: i=1; AJvYcCWZfpOEsq+YOf+J8JudlmWkHQyEdj4d5Dv8PqtVF2KLDwdmbx4xcB8j4s8YByu260cGoeykagtLAYTDXl76KgZhi1iltPGb7piX1B04
-X-Gm-Message-State: AOJu0Yw/j+yZHao7neX/IN5Gdv6lOd8zQ3a0de2ZRBx+E/6B7LvrjXkd
-	ZowJjHMZnGG+druUEtYf31fENZFqnonR9Of8/1cEAMKwzm/qWfT7M+aCkGqEMg==
-X-Google-Smtp-Source: AGHT+IGD4rpdTgr+e1aPncVPDvEICL6+gZqPHdIxGmsrhT5BvTIRbFPexxTE620rFJX8Cp9guryruw==
-X-Received: by 2002:a05:6e02:2166:b0:366:7aff:6c7c with SMTP id s6-20020a056e02216600b003667aff6c7cmr328022ilv.14.1710455003129;
-        Thu, 14 Mar 2024 15:23:23 -0700 (PDT)
-Received: from google.com ([100.64.188.49])
-        by smtp.gmail.com with ESMTPSA id he26-20020a0566386d1a00b0047462f8adfdsm392430jab.138.2024.03.14.15.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 15:23:22 -0700 (PDT)
-Date: Thu, 14 Mar 2024 16:23:16 -0600
-From: Yu Zhao <yuzhao@google.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>,
-	Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org,
-	hannes@cmpxchg.org, kernel-team@fb.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: MGLRU premature memcg OOM on slow writes
-Message-ID: <ZfN41Bm2UA7qDPEA@google.com>
-References: <ZcWOh9u3uqZjNFMa@chrisdown.name>
- <20240229235134.2447718-1-axelrasmussen@google.com>
- <ZeEhvV15IWllPKvM@chrisdown.name>
- <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
- <CALOAHbBupMYBMWEzMK2xdhnqwR1C1+mJSrrZC1L0CKE2BMSC+g@mail.gmail.com>
- <CAJHvVcjhUNx8UP9mao4TdvU6xK7isRzazoSU53a4NCcFiYuM-g@mail.gmail.com>
- <ZfC16BikjhupKnVG@google.com>
- <ZfC2612ZYwwxpOmR@google.com>
- <CALOAHbAAnGjt2yd8avcSSkMA2MeUWN1-CTkN81GJF+udwE6+DQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079851A38EE;
+	Thu, 14 Mar 2024 22:28:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710455295; cv=fail; b=O6+GKbJu8QUJH4ZdpPpbELWmOkAC4rRdg8e9NFOzfZrokqStFLcEMIxn5ppT6oJypJIVNW1rV3GVxGpMoFIN9V907Oj1t8hS0JbRHftX0vtwKBDQXKmTogZM3Ut33jIdHyLgY+Qslu5JzpbpKfym/x7QCGo9LprFfWG9w+GmAv0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710455295; c=relaxed/simple;
+	bh=Dd/v8rPR1uU0kDwUW4NvB45cgVfJe4EXa+h+QUx8rDk=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=YD8Ci3DnoR0y5AiPX2uL9JOY9EB4OqD4dh94iVOozrLwhiRwcOV6rHrkaIbn3+Sap2xZpXTsVTb7YbVBRT97UcVgT5D76qM/XkPtTpHX+dl9lRy2GGhYgngT4Xju6waYya6UNMjJzhRUqZzMWYSfBAnoejKc6DnQb5en+a7dj7I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VPQ7aYAF; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710455293; x=1741991293;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Dd/v8rPR1uU0kDwUW4NvB45cgVfJe4EXa+h+QUx8rDk=;
+  b=VPQ7aYAFBrMQGDFNirxDhRQxtqEncWdVG7N6XUX3OQZqLf9LDLG7y2T9
+   2WPDrymIMMU8qf7+haXbGOH8RHlO1SopRn82pHR+FJn/995BphgBKzckf
+   93/SJ+QpJtUJ5lbunAcavaEb7lDU/zZiAqo08aySOCFriuncE8eTaQKFO
+   s5OIPGyk43/ihyCLN7nI7BYLHGuOoO0OEpK705v7HCwP3g4IuJubzzpH9
+   FGSJXGXaNDJp4lSNbPWSWq2MBzaPfpqcd7x93V2cQUlshd52dViw4WCOy
+   CmjwTvyo15hj434kkB68BIm8XnKuuMX5IvAC4mtJZ6efJmWk9gl14cTdw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5507293"
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="5507293"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 15:28:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="12358276"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 15:28:12 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Mar 2024 15:28:11 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Mar 2024 15:28:10 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 15:28:10 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 14 Mar 2024 15:28:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hAO1SXb3xt3dmcWLarngXCON21CP5/lcpbEaqMrucrlYyRIc65YYP4Nb9OmQyxQCtJcPZ29PAeaXQl/u7+Og2XeM/BR8wPTUIwBSBArrbzawvdVGyE3gNKEQ7N8VIblp1d0A4gNNUgrEVQ6ZZ2AV434zwXvjksFVelXo/A4hMxnGtClukBd748DubetdpYmOPZMy9PjEiFZlIv48ue/6GTsGd1rzUJ4h5kmve35PNRiDWp+m+06ZsyZdwzZBi7JYptmtVsvepzEeCPgy4lbdIGuRzB6wabVPLKrCAX3ZjZfh0YNQ7McfIOvZur2NpUZNK3ZaqY6v7h8yGBqFSZIUqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Uysl5hWfdsDZyBPL1Jga3XwEnVUHMXkiPWJxkBWcBRY=;
+ b=Pu2qlUQWPtBMGxnscmcTRa9M/4lJiJLK8Z1VVSjEvE5eA469Lw30wnjoP8ATvK25tM5DSNc8haHML/t3LSWbT/N0dptnoQkwj0fQaDEYSEQRzevEJ7Ig38GsFcm8HJ33ePPqsedKm7j1HWB2u1KSBFRHKiEjgpKkVMg4dpBGht+LBDGnjTaJvvlj6LFVo1Sxj77mEuiU80uLSlaDc1dXojFfh/6aLcNy78uqNO6hcRnJxk1Qo9gZCj3eHx1F8RdCbabvKybROXo8uqFFbSfHhdZKNFAKD2XHBtQ2PiFtVtgM+VDm8lHc5f9vBE7zGrt1+WDYQHy8pUtWA7ZBPo21DQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by SN7PR11MB6602.namprd11.prod.outlook.com (2603:10b6:806:272::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Thu, 14 Mar
+ 2024 22:28:04 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7386.015; Thu, 14 Mar 2024
+ 22:28:04 +0000
+Message-ID: <075d7013-6f5b-4446-a41c-d9ae754d4bd9@intel.com>
+Date: Fri, 15 Mar 2024 11:27:56 +1300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 033/130] KVM: TDX: Add helper function to read TDX
+ metadata in array
+Content-Language: en-US
+To: <isaku.yamahata@intel.com>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
+	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
+	<sagis@google.com>, <chen.bo@intel.com>, <hang.yuan@intel.com>,
+	<tina.zhang@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <72b528863d14b322df553efa285ef4637ee67581.1708933498.git.isaku.yamahata@intel.com>
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <72b528863d14b322df553efa285ef4637ee67581.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0226.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::21) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbAAnGjt2yd8avcSSkMA2MeUWN1-CTkN81GJF+udwE6+DQ@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|SN7PR11MB6602:EE_
+X-MS-Office365-Filtering-Correlation-Id: a1734418-03e9-4042-3fe5-08dc447603f7
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rkM4Ukv3FQry0oRHv1D2R4Ji+3+X+UiWASiy9RWqi3g7elu5cioOIVXPZE5ksn+H/GcIZXSGh2hyWgq5RzdqrMdSgxjBn12G7qKY/Ujetmsu3uwvHHNJ35+0M0CYYejCcUAvz94VYpaBEY7V9EhQtRAPoAefykHIf/Ff7Al5niUeJ+m5A5b4p2PWmrCdHxbKA8vVD27aHp5b4ccAzLHoEzPNn5buzN6agwgn8Ap8bjGIB/Vpp8IMEc8WxmLHHPkBVRVkeaVW2OLE+wg2pkzdyZqhdjJOGbmjYKZ4/U8p7g4MBJkI3B6hRIQgzatth2TCW4qY5jKtGarWNuroedg8ZFyhK2brcfzxIjx98cxlinV9qzQOA7aq8u47u90EyWkMuA1k2yovjvEzxFUW9vZjGPWJLxS4gp7lgdUJDUoOFSNvdtJWK8FTzSpS6ehWdAg1u9suLHUnUtSZu7rsNSgPXlbNdrKKww8mEfxXNVvNJNBV6nVe1IAlJzd93R96PzNbvNoE7W3zuC69LY7oUo6uEzr1b47Fe6aiJZKwfiNBhaRtP90KtCizcJ480NfVfexAzpmJSqUhue4TdhB5mp34jthRZ3+Ig56W9UYiTBPQah2hHLjh0lFFZpsYZ6q1GW88DRP+a1xMAbQjO1MlfXOLaTWeA4p6M1GqaciELQ8/89M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UDVjdGc5YWZlYUt0bXNTUkVzVWlSVDFuNFA2bGtNZzBMcVpWbXlES2NrOTFB?=
+ =?utf-8?B?aWs5RERWWGZvWmpFVlhEYWxrR01IQjY1MWpzTU93ZXVLU2EzTlRWOGtnWG0y?=
+ =?utf-8?B?V2FBb3N2Q0tNd0NQN3pVK2ljRnNKU3BJZXBFQ1FWaU9NNjkxdDl0dWdWTXdO?=
+ =?utf-8?B?a0JQRW1oS3JmaGZFb2YvQzlvRUdmZXJqRGVhUzR3QXprc1hkSVJJNExRcXEx?=
+ =?utf-8?B?cU1PSGxSRzc1Q3VPWkRQMEVWMDF2c0JrL0pQRDd2NnJSWkRsZ2hHWUNvUVlq?=
+ =?utf-8?B?RWFXTHE5NUJRdjl4Mm1HeElKblN2SG1XbjNSbzA3Y2g0OWZDdHNyYlNwVHlM?=
+ =?utf-8?B?ZjlmY3NLVkorYk5kdGRSMkNiZ283NDVXN2pmMURjZUNzZUZjMDJuL2RZamxi?=
+ =?utf-8?B?ekRpQzhOWkRDN2lQZlBLd3doWHBkcDlsamo3U2JNVWdDQkR0RnFsUTl5S1Ux?=
+ =?utf-8?B?M25ZNm9xRFRFSDRWRUc2K09lSmJyaWo5UGYwUVNpQzlnQVo0RkJZUFlVR0xJ?=
+ =?utf-8?B?bnFELzBCbGZoOVJOdzkxWmRmY1N3OXJScUZ0bWNlUUpITG52TzUrUmJRUzdu?=
+ =?utf-8?B?ODBET20rbWFJVFhtSDFkVFh5L3hueDNuZGVyd2Rwc2Z1ZmdWYk9NclYvbm5J?=
+ =?utf-8?B?YkpmdDM1WnUxZmdSKzFrWVk2cU1qRW53UnZTZFUvalltN29tM1FrckZ1U0l6?=
+ =?utf-8?B?bEtZYldNRm9vNHhiRU5PRW96dkpsdkhEWjZMUko1TTRXYlVCdzQwNk9DcUky?=
+ =?utf-8?B?M3QyN3ZnbFNhUE91QVhwaWFiQVNsSFdBamlwRnhsdGZVMThoc1o1VjJRTmYy?=
+ =?utf-8?B?YnB0KzNTUHVTQTN5QWwrMlQ0M0l6SHFKSCtQZzI0OW10cWMrdlZtWkhXQ2d1?=
+ =?utf-8?B?TzRXcCtMU0V6eVF0ZHVyK3Y1Yy9hY0krQXpVM3hOUzM5cVJhcWVKYUFieDc5?=
+ =?utf-8?B?V21LWGZQQ2tMTWxheTJ1MThXTTdCOTdMYksxcWtDazhEaEZyNVkrdHIvQ3B5?=
+ =?utf-8?B?THJtWS9Qb1doSkZtVGFwVjFUQ3NoVTFwc0s1OFJlTlQzVzg2THNiNUU1WjBK?=
+ =?utf-8?B?SkxOWUQ4OHE4TENDaWZvZUtQVkNlZzVCNEI1MzRGQWJSTSszaXQxclMyUDBr?=
+ =?utf-8?B?aHYzenM1WEZ5MDlObWpneEpsR0pkTjNEc05PYmM4WitrTnZkOFkrMzVITmNk?=
+ =?utf-8?B?RUlyZG1HV1l4UEpiK0E3UG9hc001TlYzNU9hQk1GaEFVRUNiTU5zZEdxVlgr?=
+ =?utf-8?B?YWNVU2tOcWhqMVR4T3NoVTlYdXc1UytXc2tTTkdkVjFzQTNVeVJpNWpTM3p6?=
+ =?utf-8?B?SXRqMXY4cTZLSm9LODFwQkZvT294TVdjUk9BYi96b1JNLzZDbnVjaTkyRmto?=
+ =?utf-8?B?R2d3WE1DcHNibU51K3RKcjVMdlNmakd4eTVqNDNDNTVMcmE3U0tybkVQUkx4?=
+ =?utf-8?B?b0kzQ3ZCNEpneXVoTHpWR3ZnZXZ2MHR3clNXZU1TbzZ1dHR0RmdoWmxDZ3NV?=
+ =?utf-8?B?dVN0cHZyYjlna0NUQ1FIYkxMSlRkNlRtQ0NSNjNkZlhjenVnZ0w5cXg1ejFx?=
+ =?utf-8?B?c2toL2ZsL216Ym91OTZNUFdzdmlFU1NnanB3L3hORVVncmhKVldGaXRiWTFC?=
+ =?utf-8?B?LzhIcVRGbkVuM1Y2eGtqSXhDNG90VkxGVmsvSjN0KzFrdXUrL285ZHhvOElL?=
+ =?utf-8?B?dWdlb1lqTFNkQk1iQzFYT0VyVVZwbVNuWCtyNmxhL0YxRFFWSHp3Ny9WSXNB?=
+ =?utf-8?B?WjBXdW9aNVVPN1AzZUt2NGdOZGhMTXV2dzJCeXBIdVFXZ09ZM2d2RmJKVncw?=
+ =?utf-8?B?TUkzelZLUXBKSy9mV0hCRndpUDQyUmR1UUVyNUdOcVp5VnFaYmxDNFJnUXF3?=
+ =?utf-8?B?dk5ZdXowb3dZbWhYZG5vSjNzQ01ZdlZ5VDNULzNUWG42Y2xZNG8yTmtaTmpw?=
+ =?utf-8?B?ZnUrZUl4eVBwczM3cDZkbHhEZUpua1UzeXN6M0VFRk1pbkZCMHZHeWZELzFl?=
+ =?utf-8?B?dFdyS3N5b01mRG9MZjgwVGY3Qlp1K3V3dy9FT3JzaHpRRCtCRVcxT0JIL2hY?=
+ =?utf-8?B?ZnByNm1hL3QxWXpNZVVKQWJMM2FUaXB2alZNSFVkaTBUbUFpVVFUZ1l2OEMv?=
+ =?utf-8?Q?hVXQibJ3jBfs4Pc5YSU3HwGnx?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1734418-03e9-4042-3fe5-08dc447603f7
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 22:28:04.5181
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JrOsbJ0aanigy1JR2UkYTeHfNZaPrNqTD6JtUxDDviJYIpMQ4KWz4hrAYdlROdVux7OXZbiXEXFdtFM8wAi+4w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6602
+X-OriginatorOrg: intel.com
 
-On Wed, Mar 13, 2024 at 11:33:21AM +0800, Yafang Shao wrote:
-> On Wed, Mar 13, 2024 at 4:11 AM Yu Zhao <yuzhao@google.com> wrote:
-> >
-> > On Tue, Mar 12, 2024 at 02:07:04PM -0600, Yu Zhao wrote:
-> > > On Tue, Mar 12, 2024 at 09:44:19AM -0700, Axel Rasmussen wrote:
-> > > > On Mon, Mar 11, 2024 at 2:11 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > > >
-> > > > > On Sat, Mar 9, 2024 at 3:19 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > > > > >
-> > > > > > On Thu, Feb 29, 2024 at 4:30 PM Chris Down <chris@chrisdown.name> wrote:
-> > > > > > >
-> > > > > > > Axel Rasmussen writes:
-> > > > > > > >A couple of dumb questions. In your test, do you have any of the following
-> > > > > > > >configured / enabled?
-> > > > > > > >
-> > > > > > > >/proc/sys/vm/laptop_mode
-> > > > > > > >memory.low
-> > > > > > > >memory.min
-> > > > > > >
-> > > > > > > None of these are enabled. The issue is trivially reproducible by writing to
-> > > > > > > any slow device with memory.max enabled, but from the code it looks like MGLRU
-> > > > > > > is also susceptible to this on global reclaim (although it's less likely due to
-> > > > > > > page diversity).
-> > > > > > >
-> > > > > > > >Besides that, it looks like the place non-MGLRU reclaim wakes up the
-> > > > > > > >flushers is in shrink_inactive_list() (which calls wakeup_flusher_threads()).
-> > > > > > > >Since MGLRU calls shrink_folio_list() directly (from evict_folios()), I agree it
-> > > > > > > >looks like it simply will not do this.
-> > > > > > > >
-> > > > > > > >Yosry pointed out [1], where MGLRU used to call this but stopped doing that. It
-> > > > > > > >makes sense to me at least that doing writeback every time we age is too
-> > > > > > > >aggressive, but doing it in evict_folios() makes some sense to me, basically to
-> > > > > > > >copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
-> > > > > > >
-> > > > > > > Thanks! We may also need reclaim_throttle(), depending on how you implement it.
-> > > > > > > Current non-MGLRU behaviour on slow storage is also highly suspect in terms of
-> > > > > > > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK, but one
-> > > > > > > thing at a time :-)
-> > > > > >
-> > > > > >
-> > > > > > Hmm, so I have a patch which I think will help with this situation,
-> > > > > > but I'm having some trouble reproducing the problem on 6.8-rc7 (so
-> > > > > > then I can verify the patch fixes it).
-> > > > >
-> > > > > We encountered the same premature OOM issue caused by numerous dirty pages.
-> > > > > The issue disappears after we revert the commit 14aa8b2d5c2e
-> > > > > "mm/mglru: don't sync disk for each aging cycle"
-> > > > >
-> > > > > To aid in replicating the issue, we've developed a straightforward
-> > > > > script, which consistently reproduces it, even on the latest kernel.
-> > > > > You can find the script provided below:
-> > > > >
-> > > > > ```
-> > > > > #!/bin/bash
-> > > > >
-> > > > > MEMCG="/sys/fs/cgroup/memory/mglru"
-> > > > > ENABLE=$1
-> > > > >
-> > > > > # Avoid waking up the flusher
-> > > > > sysctl -w vm.dirty_background_bytes=$((1024 * 1024 * 1024 *4))
-> > > > > sysctl -w vm.dirty_bytes=$((1024 * 1024 * 1024 *4))
-> > > > >
-> > > > > if [ ! -d ${MEMCG} ]; then
-> > > > >         mkdir -p ${MEMCG}
-> > > > > fi
-> > > > >
-> > > > > echo $$ > ${MEMCG}/cgroup.procs
-> > > > > echo 1g > ${MEMCG}/memory.limit_in_bytes
-> > > > >
-> > > > > if [ $ENABLE -eq 0 ]; then
-> > > > >         echo 0 > /sys/kernel/mm/lru_gen/enabled
-> > > > > else
-> > > > >         echo 0x7 > /sys/kernel/mm/lru_gen/enabled
-> > > > > fi
-> > > > >
-> > > > > dd if=/dev/zero of=/data0/mglru.test bs=1M count=1023
-> > > > > rm -rf /data0/mglru.test
-> > > > > ```
-> > > > >
-> > > > > This issue disappears as well after we disable the mglru.
-> > > > >
-> > > > > We hope this script proves helpful in identifying and addressing the
-> > > > > root cause. We eagerly await your insights and proposed fixes.
-> > > >
-> > > > Thanks Yafang, I was able to reproduce the issue using this script.
-> > > >
-> > > > Perhaps interestingly, I was not able to reproduce it with cgroupv2
-> > > > memcgs. I know writeback semantics are quite a bit different there, so
-> > > > perhaps that explains why.
-> > > >
-> > > > Unfortunately, it also reproduces even with the commit I had in mind
-> > > > (basically stealing the "if (all isolated pages are unqueued dirty) {
-> > > > wakeup_flusher_threads(); reclaim_throttle(); }" from
-> > > > shrink_inactive_list, and adding it to MGLRU's evict_folios()). So
-> > > > I'll need to spend some more time on this; I'm planning to send
-> > > > something out for testing next week.
-> > >
-> > > Hi Chris,
-> > >
-> > > My apologies for not getting back to you sooner.
-> > >
-> > > And thanks everyone for all the input!
-> > >
-> > > My take is that Chris' premature OOM kills were NOT really due to
-> > > the flusher not waking up or missing throttling.
-> > >
-> > > Yes, these two are among the differences between the active/inactive
-> > > LRU and MGLRU, but their roles, IMO, are not as important as the LRU
-> > > positions of dirty pages. The active/inactive LRU moves dirty pages
-> > > all the way to the end of the line (reclaim happens at the front)
-> > > whereas MGLRU moves them into the middle, during direct reclaim. The
-> > > rationale for MGLRU was that this way those dirty pages would still
-> > > be counted as "inactive" (or cold).
-> > >
-> > > This theory can be quickly verified by comparing how much
-> > > nr_vmscan_immediate_reclaim grows, i.e.,
-> > >
-> > >   Before the copy
-> > >     grep nr_vmscan_immediate_reclaim /proc/vmstat
-> > >   And then after the copy
-> > >     grep nr_vmscan_immediate_reclaim /proc/vmstat
-> > >
-> > > The growth should be trivial for MGLRU and nontrivial for the
-> > > active/inactive LRU.
-> > >
-> > > If this is indeed the case, I'd appreciate very much if anyone could
-> > > try the following (I'll try it myself too later next week).
-> > >
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 4255619a1a31..020f5d98b9a1 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -4273,10 +4273,13 @@ static bool sort_folio(struct lruvec *lruvec, struct folio *folio, struct scan_c
-> > >       }
-> > >
-> > >       /* waiting for writeback */
-> > > -     if (folio_test_locked(folio) || folio_test_writeback(folio) ||
-> > > -         (type == LRU_GEN_FILE && folio_test_dirty(folio))) {
-> > > -             gen = folio_inc_gen(lruvec, folio, true);
-> > > -             list_move(&folio->lru, &lrugen->folios[gen][type][zone]);
-> > > +     if (folio_test_writeback(folio) || (type == LRU_GEN_FILE && folio_test_dirty(folio))) {
-> > > +             DEFINE_MAX_SEQ(lruvec);
-> > > +             int old_gen, new_gen = lru_gen_from_seq(max_seq);
-> > > +
-> > > +             old_gen = folio_update_gen(folio, new_gen);
-> > > +             lru_gen_update_size(lruvec, folio, old_gen, new_gen);
-> > > +             list_move(&folio->lru, &lrugen->folios[new_gen][type][zone]);
-> >
-> > Sorry missing one line here:
-> >
-> >  +              folio_set_reclaim(folio);
-> >
-> > >               return true;
-> > >       }
+
+
+On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 > 
-> Hi Yu,
+> To read meta data in series, use table.
+> Instead of metadata_read(fid0, &data0); metadata_read(...); ...
+> table = { {fid0, &data0}, ...}; metadata-read(tables).
+
+This explains nothing why the code introduced in patch 5 cannot be used.
+
+> TODO: Once the TDX host code introduces its framework to read TDX metadata,
+> drop this patch and convert the code that uses this.
+
+Seriously, what is this?? Please treat your patches as "official" patches.
+
 > 
-> I have validated it using the script provided for Axel, but
-> unfortunately, it still triggers an OOM error with your patch applied.
-> Here are the results with nr_vmscan_immediate_reclaim:
-
-Thanks for debunking it!
-
-> - non-MGLRU
->   $ grep nr_vmscan_immediate_reclaim /proc/vmstat
->   nr_vmscan_immediate_reclaim 47411776
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> v18:
+> - newly added
+> ---
+>   arch/x86/kvm/vmx/tdx.c | 45 ++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 45 insertions(+)
 > 
->   $ ./test.sh 0
->   1023+0 records in
->   1023+0 records out
->   1072693248 bytes (1.1 GB, 1023 MiB) copied, 0.538058 s, 2.0 GB/s
-> 
->   $ grep nr_vmscan_immediate_reclaim /proc/vmstat
->   nr_vmscan_immediate_reclaim 47412544
-> 
-> - MGLRU
->   $ grep nr_vmscan_immediate_reclaim /proc/vmstat
->   nr_vmscan_immediate_reclaim 47412544
-> 
->   $ ./test.sh 1
->   Killed
-> 
->   $ grep nr_vmscan_immediate_reclaim /proc/vmstat
->   nr_vmscan_immediate_reclaim 115455600
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index cde971122c1e..dce21f675155 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -6,6 +6,7 @@
+>   #include "capabilities.h"
+>   #include "x86_ops.h"
+>   #include "x86.h"
+> +#include "tdx_arch.h"
+>   #include "tdx.h"
+>   
+>   #undef pr_fmt
+> @@ -39,6 +40,50 @@ static void __used tdx_guest_keyid_free(int keyid)
+>   	ida_free(&tdx_guest_keyid_pool, keyid);
+>   }
+>   
+> +#define TDX_MD_MAP(_fid, _ptr)			\
+> +	{ .fid = MD_FIELD_ID_##_fid,		\
+> +	  .ptr = (_ptr), }
+> +
+> +struct tdx_md_map {
+> +	u64 fid;
+> +	void *ptr;
+> +};
+> +
+> +static size_t tdx_md_element_size(u64 fid)
+> +{
+> +	switch (TDX_MD_ELEMENT_SIZE_CODE(fid)) {
+> +	case TDX_MD_ELEMENT_SIZE_8BITS:
+> +		return 1;
+> +	case TDX_MD_ELEMENT_SIZE_16BITS:
+> +		return 2;
+> +	case TDX_MD_ELEMENT_SIZE_32BITS:
+> +		return 4;
+> +	case TDX_MD_ELEMENT_SIZE_64BITS:
+> +		return 8;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +		return 0;
+> +	}
+> +}
+> +
+> +static int __used tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+> +{
+> +	struct tdx_md_map *m;
+> +	int ret, i;
+> +	u64 tmp;
+> +
+> +	for (i = 0; i < nr_maps; i++) {
+> +		m = &maps[i];
+> +		ret = tdx_sys_metadata_field_read(m->fid, &tmp);
+> +		if (ret)
+> +			return ret;
+> +
+> +		memcpy(m->ptr, &tmp, tdx_md_element_size(m->fid));
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
-The delta is ~260GB, I'm still thinking how that could happen -- is this reliably reproducible?
+It's just insane to have two duplicated mechanism for metadata reading.
 
-> The detailed OOM info as follows,
-> 
-> [Wed Mar 13 11:16:48 2024] dd invoked oom-killer:
-> gfp_mask=0x101c4a(GFP_NOFS|__GFP_HIGHMEM|__GFP_HARDWALL|__GFP_MOVABLE|__GFP_WRITE),
-> order=3, oom_score_adj=0
-> [Wed Mar 13 11:16:48 2024] CPU: 12 PID: 6911 Comm: dd Not tainted 6.8.0-rc6+ #24
-> [Wed Mar 13 11:16:48 2024] Hardware name: Tencent Cloud CVM, BIOS
-> seabios-1.9.1-qemu-project.org 04/01/2014
-> [Wed Mar 13 11:16:48 2024] Call Trace:
-> [Wed Mar 13 11:16:48 2024]  <TASK>
-> [Wed Mar 13 11:16:48 2024]  dump_stack_lvl+0x6e/0x90
-> [Wed Mar 13 11:16:48 2024]  dump_stack+0x10/0x20
-> [Wed Mar 13 11:16:48 2024]  dump_header+0x47/0x2d0
-> [Wed Mar 13 11:16:48 2024]  oom_kill_process+0x101/0x2e0
-> [Wed Mar 13 11:16:48 2024]  out_of_memory+0xfc/0x430
-> [Wed Mar 13 11:16:48 2024]  mem_cgroup_out_of_memory+0x13d/0x160
-> [Wed Mar 13 11:16:48 2024]  try_charge_memcg+0x7be/0x850
-> [Wed Mar 13 11:16:48 2024]  ? get_mem_cgroup_from_mm+0x5e/0x420
-> [Wed Mar 13 11:16:48 2024]  ? rcu_read_unlock+0x25/0x70
-> [Wed Mar 13 11:16:48 2024]  __mem_cgroup_charge+0x49/0x90
-> [Wed Mar 13 11:16:48 2024]  __filemap_add_folio+0x277/0x450
-> [Wed Mar 13 11:16:48 2024]  ? __pfx_workingset_update_node+0x10/0x10
-> [Wed Mar 13 11:16:48 2024]  filemap_add_folio+0x3c/0xa0
-> [Wed Mar 13 11:16:48 2024]  __filemap_get_folio+0x13d/0x2f0
-> [Wed Mar 13 11:16:48 2024]  iomap_get_folio+0x4c/0x60
-> [Wed Mar 13 11:16:48 2024]  iomap_write_begin+0x1bb/0x2e0
-> [Wed Mar 13 11:16:48 2024]  iomap_write_iter+0xff/0x290
-> [Wed Mar 13 11:16:48 2024]  iomap_file_buffered_write+0x91/0xf0
-> [Wed Mar 13 11:16:48 2024]  xfs_file_buffered_write+0x9f/0x2d0 [xfs]
-> [Wed Mar 13 11:16:48 2024]  ? vfs_write+0x261/0x530
-> [Wed Mar 13 11:16:48 2024]  ? debug_smp_processor_id+0x17/0x20
-> [Wed Mar 13 11:16:48 2024]  xfs_file_write_iter+0xe9/0x120 [xfs]
-> [Wed Mar 13 11:16:48 2024]  vfs_write+0x37d/0x530
-> [Wed Mar 13 11:16:48 2024]  ksys_write+0x6d/0xf0
-> [Wed Mar 13 11:16:48 2024]  __x64_sys_write+0x19/0x20
-> [Wed Mar 13 11:16:48 2024]  do_syscall_64+0x79/0x1a0
-> [Wed Mar 13 11:16:48 2024]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> [Wed Mar 13 11:16:48 2024] RIP: 0033:0x7f63ea33e927
-> [Wed Mar 13 11:16:48 2024] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff
-> ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10
-> b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54
-> 24 18 48 89 74 24
-> [Wed Mar 13 11:16:48 2024] RSP: 002b:00007ffc0e874768 EFLAGS: 00000246
-> ORIG_RAX: 0000000000000001
-> [Wed Mar 13 11:16:48 2024] RAX: ffffffffffffffda RBX: 0000000000100000
-> RCX: 00007f63ea33e927
-> [Wed Mar 13 11:16:48 2024] RDX: 0000000000100000 RSI: 00007f63dcafe000
-> RDI: 0000000000000001
-> [Wed Mar 13 11:16:48 2024] RBP: 00007f63dcafe000 R08: 00007f63dcafe000
-> R09: 0000000000000000
-> [Wed Mar 13 11:16:48 2024] R10: 0000000000000022 R11: 0000000000000246
-> R12: 0000000000000000
-> [Wed Mar 13 11:16:48 2024] R13: 0000000000000000 R14: 0000000000000000
-> R15: 00007f63dcafe000
-> [Wed Mar 13 11:16:48 2024]  </TASK>
-> [Wed Mar 13 11:16:48 2024] memory: usage 1048556kB, limit 1048576kB, failcnt 153
-> [Wed Mar 13 11:16:48 2024] memory+swap: usage 1048556kB, limit
+This will only confuse people.
 
-I see you were actually on cgroup v1 -- this might be a different
-problem than Chris' since he was on v2.
-
-For v1, the throttling is done by commit 81a70c21d9
-("mm/cgroup/reclaim: fix dirty pages throttling on cgroup v1").
-IOW, the active/inactive LRU throttles in both v1 and v2 (done
-in different ways) whereas MGLRU doesn't in either case.
-
-> 9007199254740988kB, failcnt 0
-> [Wed Mar 13 11:16:48 2024] kmem: usage 200kB, limit
-> 9007199254740988kB, failcnt 0
-> [Wed Mar 13 11:16:48 2024] Memory cgroup stats for /mglru:
-> [Wed Mar 13 11:16:48 2024] cache 1072365568
-> [Wed Mar 13 11:16:48 2024] rss 1150976
-> [Wed Mar 13 11:16:48 2024] rss_huge 0
-> [Wed Mar 13 11:16:48 2024] shmem 0
-> [Wed Mar 13 11:16:48 2024] mapped_file 0
-> [Wed Mar 13 11:16:48 2024] dirty 1072365568
-> [Wed Mar 13 11:16:48 2024] writeback 0
-> [Wed Mar 13 11:16:48 2024] workingset_refault_anon 0
-> [Wed Mar 13 11:16:48 2024] workingset_refault_file 0
-> [Wed Mar 13 11:16:48 2024] swap 0
-> [Wed Mar 13 11:16:48 2024] swapcached 0
-> [Wed Mar 13 11:16:48 2024] pgpgin 2783
-> [Wed Mar 13 11:16:48 2024] pgpgout 1444
-> [Wed Mar 13 11:16:48 2024] pgfault 885
-> [Wed Mar 13 11:16:48 2024] pgmajfault 0
-> [Wed Mar 13 11:16:48 2024] inactive_anon 1146880
-> [Wed Mar 13 11:16:48 2024] active_anon 4096
-> [Wed Mar 13 11:16:48 2024] inactive_file 802357248
-> [Wed Mar 13 11:16:48 2024] active_file 270008320
-> [Wed Mar 13 11:16:48 2024] unevictable 0
-> [Wed Mar 13 11:16:48 2024] hierarchical_memory_limit 1073741824
-> [Wed Mar 13 11:16:48 2024] hierarchical_memsw_limit 9223372036854771712
-> [Wed Mar 13 11:16:48 2024] total_cache 1072365568
-> [Wed Mar 13 11:16:48 2024] total_rss 1150976
-> [Wed Mar 13 11:16:48 2024] total_rss_huge 0
-> [Wed Mar 13 11:16:48 2024] total_shmem 0
-> [Wed Mar 13 11:16:48 2024] total_mapped_file 0
-> [Wed Mar 13 11:16:48 2024] total_dirty 1072365568
-> [Wed Mar 13 11:16:48 2024] total_writeback 0
-> [Wed Mar 13 11:16:48 2024] total_workingset_refault_anon 0
-> [Wed Mar 13 11:16:48 2024] total_workingset_refault_file 0
-> [Wed Mar 13 11:16:48 2024] total_swap 0
-> [Wed Mar 13 11:16:48 2024] total_swapcached 0
-> [Wed Mar 13 11:16:48 2024] total_pgpgin 2783
-> [Wed Mar 13 11:16:48 2024] total_pgpgout 1444
-> [Wed Mar 13 11:16:48 2024] total_pgfault 885
-> [Wed Mar 13 11:16:48 2024] total_pgmajfault 0
-> [Wed Mar 13 11:16:48 2024] total_inactive_anon 1146880
-> [Wed Mar 13 11:16:48 2024] total_active_anon 4096
-> [Wed Mar 13 11:16:48 2024] total_inactive_file 802357248
-> [Wed Mar 13 11:16:48 2024] total_active_file 270008320
-> [Wed Mar 13 11:16:48 2024] total_unevictable 0
-> [Wed Mar 13 11:16:48 2024] Tasks state (memory values in pages):
-> [Wed Mar 13 11:16:48 2024] [  pid  ]   uid  tgid total_vm      rss
-> rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
-> [Wed Mar 13 11:16:48 2024] [   6911]     0  6911    55506      640
->  256      384         0    73728        0             0 dd
-> [Wed Mar 13 11:16:48 2024]
-> oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=/,mems_allowed=0-1,oom_memcg=/mglru,task_memcg=/mglru,task=dd,pid=6911,uid=0
-> 
-> The key information extracted from the OOM info is as follows:
-> 
-> [Wed Mar 13 11:16:48 2024] cache 1072365568
-> [Wed Mar 13 11:16:48 2024] dirty 1072365568
-> 
-> This information reveals that all file pages are dirty pages.
-
-I'm surprised to see there was 0 pages under writeback:
-  [Wed Mar 13 11:16:48 2024] total_writeback 0
-What's your dirty limit?
-
-It's unfortunate that the mainline has no per-memcg dirty limit. (We
-do at Google.)
-
-> As of now, it appears that the most effective solution to address this
-> issue is to revert the commit 14aa8b2d5c2e. Regarding this commit
-> 14aa8b2d5c2e,  its original intention was to eliminate potential SSD
-> wearout, although there's no concrete data available on how it might
-> impact SSD longevity. If the concern about SSD wearout is purely
-> theoretical, it might be reasonable to consider reverting this commit.
-
-The SSD wearout problem was real -- it wasn't really due to
-wakeup_flusher_threads() itself; rather, the original MGLRU code call
-the function improperly. It needs to be called under more restricted
-conditions so that it doesn't cause the SDD wearout problem again.
-However, IMO, wakeup_flusher_threads() is just another bandaid trying
-to work around a more fundamental problem. There is no guarantee that
-the flusher will target the dirty pages in the memcg under reclaim,
-right?
-
-Do you mind trying the following first to see if we can get around
-the problem without calling wakeup_flusher_threads().
-
-Thanks!
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 4255619a1a31..d3cfbd95996d 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -225,7 +225,7 @@ static bool writeback_throttling_sane(struct scan_control *sc)
- 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return true;
- #endif
--	return false;
-+	return lru_gen_enabled();
- }
- #else
- static bool cgroup_reclaim(struct scan_control *sc)
-@@ -4273,8 +4273,10 @@ static bool sort_folio(struct lruvec *lruvec, struct folio *folio, struct scan_c
- 	}
- 
- 	/* waiting for writeback */
--	if (folio_test_locked(folio) || folio_test_writeback(folio) ||
--	    (type == LRU_GEN_FILE && folio_test_dirty(folio))) {
-+	if (folio_test_writeback(folio) || (type == LRU_GEN_FILE && folio_test_dirty(folio))) {
-+		sc->nr.dirty += delta;
-+		if (!folio_test_reclaim(folio))
-+			sc->nr.congested += delta;
- 		gen = folio_inc_gen(lruvec, folio, true);
- 		list_move(&folio->lru, &lrugen->folios[gen][type][zone]);
- 		return true;
+If there's anything missing in patch 1-5, we can enhance them.
 
