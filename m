@@ -1,191 +1,253 @@
-Return-Path: <linux-kernel+bounces-103559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91C8C87C115
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEEF987C116
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C7ED1F233AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:16:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E8421F23667
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A555A7429F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFD474401;
 	Thu, 14 Mar 2024 16:16:21 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Uia3ku2s"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A27073520;
-	Thu, 14 Mar 2024 16:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710432981; cv=none; b=jis6cWpEEgzOBLsNVZfMSI78vob17Rq/EEOFGO+OhUPHPB2ic6P414N31CxuDq4iaCFGP2+CZ8kwophvT5sotDR12bjNaNXJDozdXwCM56DoY1rXj84G9Hs289W/Qg6UTd8UfGayTqhJjGvx8rSBi/S5Hniba1OPjwOPsXTzqKw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710432981; c=relaxed/simple;
-	bh=KO5o8QznOOjPNp8jQSbFM7vBgxIXlAg3wTJmFiPXF4k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kc+sr3YHIozlgV3Y8l8FsYwD6oaPT4QllN9kgz2WKE9UoxvoAaB7JwSROYRxN/zRWCi2FetnZZxHMtCxWNkpi3yfhsiwoITn9XuyzxRjrBTusYnhn2IkIZG/6o4EVCOEore6Pda6CKox+CQbf2Bac7PK9GTm9zHg+4mPg5/L6Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-60a0599f631so10452357b3.2;
-        Thu, 14 Mar 2024 09:16:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710432976; x=1711037776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OigFCA6TWncj1dITIB+Ew0q0iS/FSFUD6r9Xvtt/yu4=;
-        b=Pcz00d3z6J9QBVjtQBsQEJxFOb3wWeyjTO0QSYSg88o8yJreiKt/exPaJ71sqQgouW
-         9er3tNSYImz80MysaoPvU+/gJ2m/QB+0RQQjWNRAKFrXvVKEtyFQTTIAAk9qbKesP4h9
-         NxwqMbs/n3bp/jIv8pe/nmsZgUNmtSwNi2PClJmonQzKswQy9yNRh9ZjGuoILkPHjfYg
-         ylfGbMYGdsh+aWqUFGlL7n4C9ZeXu5saL1KmCwHpl/ScELf6/GC5o0M5+ONy8z9R0cdd
-         AZhMNh6cw7dANraFva+lE9Ymb3lkh3tEf2QaqbcuDYUHuznMiYlRfIV47efpgBpFy6H8
-         BhgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXc4/jRsrqKNi6R+OEIa/VCEPKIg6G+ewNqFbUsFRF3pt4GNlt4/+9ndnKTlN0yK9J9SV67drxufgDlu0zrzfv1iq84XCZnlVifzL7nGuYn4C7pSB0pIOj53XMHR4zED5M4fMoYSu6d
-X-Gm-Message-State: AOJu0YyWtXFhRHmVUCsjPj7Sy1ZIxGxo/z3+JdJGxPnNx8RjExfVdU1o
-	9oxO0f2tROAbZj8w08o5V6PxGGeEODdYifmPyOn1E0aMvh+uTvmVC4l/fCuAY0w=
-X-Google-Smtp-Source: AGHT+IGYGhBpprP5uB9x66hWbZHdCv+HfaJjqtxgY381+Xy8kkNoiqekFKWdMEVrQysx4gCvX0t+5A==
-X-Received: by 2002:a0d:fb47:0:b0:609:6bfc:eb8f with SMTP id l68-20020a0dfb47000000b006096bfceb8fmr1939523ywf.48.1710432976627;
-        Thu, 14 Mar 2024 09:16:16 -0700 (PDT)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id s17-20020a819f11000000b005fff0d150adsm319761ywn.122.2024.03.14.09.16.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 09:16:15 -0700 (PDT)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60a0599f631so10451727b3.2;
-        Thu, 14 Mar 2024 09:16:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXSVNK9t50OkfW8riJu4xi5kpkQtHJG+sfthBxQjiSuDzs8L0M7wsehOP7bdKGH9NnyEsEqd+l3clDsDryhtHG0mIYQI6S0P1hzxQIBilahAOs3QnLqs5T6gG4mIwPdhyAAmXh2BwK5
-X-Received: by 2002:a81:bf4a:0:b0:60a:66d3:c021 with SMTP id
- s10-20020a81bf4a000000b0060a66d3c021mr2336021ywk.22.1710432974719; Thu, 14
- Mar 2024 09:16:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B893773519
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:16:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710432980; cv=fail; b=pwtTh0JDFz1W3wmzUZCBJofE2eZSWPS/PLlfnOyhHlo7b/CzGxUrpTG3RIps59PavUZAc6jwvDbgWH4BTmUDe8DOhRCnnlTNtenWO7Hk+eIpS8kdrXDHyo8RTR6Sc1CglwsbS5oqzwRKGUNgp8umhIFwSjlSNnFTL4B3zG6nrM8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710432980; c=relaxed/simple;
+	bh=9+fe+AUyYqV99grHVwRfhQjj8Pzu0lTVvokP998yJJo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=N+44/jXj020TA5BrgzLWVwcJfBDWNk7/jSjOnZht965CD7JUoZONvLQ7zstmHpN/OCsujVYH8fiJ+qjHRKCNel+LRLZsiBFOmXm0AsQxMpB13pg94qX8wGAsdJpNGqLFgRgv08cODFvmb2t6vDK/Ca+DFN9b3f3b3tnYwgyyk6s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Uia3ku2s; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n/jrZ20upEHXjm43h8guctQKhCD3E86vLqLsVPzg83U/q6zMP7RxF5R4yfXU3RNa2aE2/KqxQLBibju6ndW6f/6P2FQHaurdDbKPsBzMhvH2gJHmYPEEG4KVNeVTb//zG66eEWvLCburVX0AVBUsABV82XF2uRa70zlS6YTI+H+Tzd2QvYHhdZHJdYbzQj9tzhwHH7TIL4hy2Vsz0rJDRTXWjDl96vyl6CNdcSlbvSvZ+FROKHtUxBkmrLode8H678av+2nEa2tQkqZUFjprg3fKxtKdyBdf+wiSQG/Zz9vaqtFbFtnevK6UXzKvCqll3H8oJm7WDyb04T+lCtIcag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MCjxNV2koQpnqRFnbLAJs5Hi7EdmfOiFjfI2vU3Hzls=;
+ b=KkBLKryEnMqlrvUScoO3MqttxEFbrgDAUMpN3n9YzCJB+VZo+DlfcLBT41gGjE3tjYvgJ5O6Gx8vOwnZH9+XBcT2p/HvLCdT75fWkJzbJTeoYN9Q+GOH/uHVqL3BjB7NObwN0HIImjWpKhRod0cI3o7RgXDCkvXRBZ0MuhDYVborXxXBTtkkaRu/dgoDKWPjliBH/MVLWFC4KlqZ6evEigEWqvTRDxEFEPHqFGxjGqcneYOVfSUjFDG3kufdhap7lctIrYTOzdnFvr4D2HZbnxSOY9cvcE+8Ilwd8V/TrRx31qdJrQe3fIgZZbD6hZi3oUTXvdJQjeU+lMcP9SP8jQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MCjxNV2koQpnqRFnbLAJs5Hi7EdmfOiFjfI2vU3Hzls=;
+ b=Uia3ku2s/7bV/EhDBnUw+06fSsZRnCL71GgPTxICcO3TEMMohpvPscEZAiZKorrERjKTZDvRSB9q6n3PbRtGu4BOFCPzbQJqYi2EHprrIMWC/vNWRuE7EaL4k7mqbZIkThTnTNLpaZa4CAN5w1Q4Mi5k7ZiWWLxkjECRmTtsdw8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
+ by SA1PR12MB5659.namprd12.prod.outlook.com (2603:10b6:806:236::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.41; Thu, 14 Mar
+ 2024 16:16:15 +0000
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033]) by PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033%3]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
+ 16:16:15 +0000
+Message-ID: <32aad098-9392-4899-9839-1beaedcac8b8@amd.com>
+Date: Thu, 14 Mar 2024 21:46:05 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] drm/amdgpu: add the IP information of the soc
+Content-Language: en-US
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: Sunil Khatri <sunil.khatri@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240312124148.257067-1-sunil.khatri@amd.com>
+ <CADnq5_O-cyDkNLznZpvnZtz15Mi1_rkigirG80BmYJprP_udnw@mail.gmail.com>
+ <59cf081e-5924-42b5-a3f1-de8b012f09d1@amd.com>
+ <CADnq5_N0H75UU2aFTAkqUrdGxKPxBQUnodsH-bcpS-ZUqgUb3A@mail.gmail.com>
+From: "Khatri, Sunil" <sukhatri@amd.com>
+In-Reply-To: <CADnq5_N0H75UU2aFTAkqUrdGxKPxBQUnodsH-bcpS-ZUqgUb3A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0095.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:27::10) To PH7PR12MB5596.namprd12.prod.outlook.com
+ (2603:10b6:510:136::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <898aa0925a9598d44721d00145015b215434cb3b.1710414195.git.geert@linux-m68k.org>
- <695ebdde-3dc3-41b1-b20b-f02c4ba1ae5d@sifive.com> <CAMuHMdURtL1u-MDXBhiwOfX+zBnuunZYvjt+3GMOp6Y6pj1Efw@mail.gmail.com>
- <42c3d591-abe5-4343-9a94-f1705430dcea@sifive.com>
-In-Reply-To: <42c3d591-abe5-4343-9a94-f1705430dcea@sifive.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Mar 2024 17:16:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWLuK=SvwW-MvmCc4hhPTChDzU6q6SPCFTzjGFe8oijig@mail.gmail.com>
-Message-ID: <CAMuHMdWLuK=SvwW-MvmCc4hhPTChDzU6q6SPCFTzjGFe8oijig@mail.gmail.com>
-Subject: Re: [PATCH] clk: starfive: jh7100: Use provided clocks instead of
- hardcoded names
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>, linux-clk@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Emil Renner Berthing <kernel@esmil.dk>, Hal Feng <hal.feng@starfivetech.com>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SA1PR12MB5659:EE_
+X-MS-Office365-Filtering-Correlation-Id: df11bc1a-7536-48bc-94ec-08dc444212d3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	WlNZgeDIaP8V7+A6jZNkgFujPqThWeOdIubislMpz4OR46O0kXpSuvYFXJav/gcOYG2G05cALc6KH04F34NT1vduL5+Q2urmnWabAmJOG47mLfQf+CZLQ10biMH03gG1C9XN3H/pABJK0Y32rOzX0LNDGWWYsLbQJtYeE7neutFPYXITmTRevaZ/ekNp/z8xTWIy75XfaLwhjKCEqEec1v4q/JRNZIZMb8aByEC3VoMvz266px3/NzxbqN7eHsJM7gcCAdbaNpdGIUQCQh+QEVaEoGbusQ275Ugt4a/QXPalY7MjBB2e5qOcIEMTvJvvOocv9YCSSefg4UcHba2EJACSH/cllK87KQfuZYNWS+KzJMJIKey14epeTZuOSQmMSp2M0k7uglXR13r/tLSHWL+ggaATsGZX7gQxcP3qFQ8NzO49Rd91c0iqCO4gdgd+KbRfKIAh29CiJVe9l6rFucfLY0gXCpGI1IvqDqcnDqXAYO7VPo4thhaAHqu7Vl9FOUJn9UvzQu3ogWs/bGnjYMcAy3MdPmuIm/xA/L4x7Keg2PgPPWyR7ZqDDCsESqDJndrqNiXyfrZRI9m9YO0OqG2ZVE14n+wtrF9YtPCarshAoZTWiTMwXmSat1qV3GuM8ONUwrQw2Lgv6AV+xa7JvZeVw8zWG+5LlKVasOqSqoU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TzlEZHhRRjBTTG5BZmFwYWZzUnpUNkFuQUx0RVZoUTN5QlBUV3JlM0d4ZEp6?=
+ =?utf-8?B?VEQzU0ZmaGRYK2JZZU44emlIc0RtOFJ0ZnN2Q3ZBcHV0QXRKUXpuSm96TzE5?=
+ =?utf-8?B?UFZ6UXNSczdZc0ZkQ0VoQ0RDcUFoMDhnbmtNZWNYQzE4d01XeVFlbnBhZC9r?=
+ =?utf-8?B?NzBqTHpCQXE0dkdrK0RNQXhLVUFMdTR2cFUvaERQaEVOanpXVzEzNU5SZ1k1?=
+ =?utf-8?B?eDNhSVNUeHRjSkMrcE9lWmo0SmxPajliOGxTQllFQ20zeU9BLzQ1alNCb2I0?=
+ =?utf-8?B?cndWaWFFdE14ZmtmVHN4djl4WGJtOUdnYjZhUGpSc1orUGd1T3M3eDFzS2dv?=
+ =?utf-8?B?blBpVW10RDdnSWh1VzNlOWhGc2pZOXhGQ1czUG9XOEZENGtGYlE1R05SRTND?=
+ =?utf-8?B?TnVkSUtrVldvVkJqbHpsQ0E3bGQ3ZDY1enRSNnVnSzVIU01CRDRXK1o1STVM?=
+ =?utf-8?B?cHNUUzFIVDBoWndsck5taTNrN2RNVVRUWXhIVTdFc0RTOTZ2eHNXTVJqVXFM?=
+ =?utf-8?B?bVJCSEdhWWZvRVlQY0FEbE5Cd1RGaTZMOTdhRHEvR2hZa0xIQXh1YnI3OFhG?=
+ =?utf-8?B?MHB6OUdjdlcxQ3VkN1EvVG5mTlFSSmVLMm1TVTMxUktJbllQeEE2ai9jTHRa?=
+ =?utf-8?B?OG81WkY4Umh2SXljYUdiWnJ2Uld1aFV2N2poT2ZYbGV5bHY5SWJ2WVE4YlV1?=
+ =?utf-8?B?ZTByMVhLenRmTkVxcEVEeWVVSlVoMGhOYWxWMFdKeElsQUdTNTJxSnlGYVhs?=
+ =?utf-8?B?Y2U3M0hESG5XVWJGeFNTMmlrUnA1K1hmbGI2cHJmWXdiT3lZZDFHbEpRcGRY?=
+ =?utf-8?B?NXBkNngvVTNaM1BFdHFsd3ZEMTV3Y1QxRWRwMENvRGJzRlpqNmQ2TUxoY2px?=
+ =?utf-8?B?TWh5MmVZdHNabEdieUxDS3U2QU15SUtOMmdQeWFUSkJLblcyTVlQL3Jzb2Zp?=
+ =?utf-8?B?SVpaVzY4K2ZyM0xOYXg2S2NSNEEwaUVsUSsxUkNYZjA3K3d3UGN4WGgxYU5y?=
+ =?utf-8?B?VHFvdkhWaytMcHY1MWtSN2xTRk5kTHM2MGtvVHJhOGxia1Q1ZVZQZ1B2V0pp?=
+ =?utf-8?B?N0x1RHQ2NGZtMmo3TmV0ZXlhZVV3Y2M0SzJpWDJraWxKOFpPdXlNU3ZESHQw?=
+ =?utf-8?B?MzRLVUM3QzNRVUR5cnNneUhOSXB5UEYzbW5OdzNLR2tmUi9yOWVqc1dTVjli?=
+ =?utf-8?B?VWQ2Wmc1MmhFL1Fhc1pFQ0xtb3h6dUZtVkxDdXlMQW9aN3REVzlJN2thK0lM?=
+ =?utf-8?B?QU5tcXRnSndybHhyOW9FaFhXdjl1My9PcitPMDBQWHNOUHovNnhkMmdCNlo0?=
+ =?utf-8?B?UjJnZDJIdWxkYURqNFJMTnIzOWdkVUhIVGxLR2RMbi9QZ09wS05Fb0VHY1ox?=
+ =?utf-8?B?NDhoN3JqUEdKRWp6dU41Q1ZVdnVNR2RHYUVEdUViSVUwQVhwRm9YVk01NmZ3?=
+ =?utf-8?B?cS9zb2R2MzFnYUQ2ZnZ4Q0thWDF4QjlPWktjYzJQeVZDTEVxcmtvM3J5MEF1?=
+ =?utf-8?B?c0V5blhSbzFBQUR4NGo3VDd2TU1wVXJxSW8zOEFoampFbm1uWURZaEhDZ0FO?=
+ =?utf-8?B?bGFBbkJsa1lEbllIdFpIWFpHS3lhY2RWNEdmNmxDT2VBY01xMXRxVklKU1hn?=
+ =?utf-8?B?OXkvd1VUYXhoSHBnQmVwcE1XbFZVRGhpVEFPSWNCdjhmK3FpWHNoeCttLzJr?=
+ =?utf-8?B?ZlBzbGhyN2pRMVAxOU9OZkVpdjM0MTVIbHUwMldCRDNkczIrN3EzZjMwNU95?=
+ =?utf-8?B?MnZNY0JJWGNWM1A4L2tFdmRQaGpuNHRMcDBhTDZWRGwwalR6dldxMENrdmxS?=
+ =?utf-8?B?VWIvTlVTRTlWcG1HUXg4QThRZGx2ZmtWb0d6UUNwRDZxNDBhUXZxc1hBMVdP?=
+ =?utf-8?B?cHRPd2J1RHloR0lxRnIvZkxaU0hvMFVVRE1abFRMZW1VVW5qMkNjY2dnUW9O?=
+ =?utf-8?B?VncvbjFmb0tNSFQrZFgvUEN2MkZJakdvQVkrZGZ2UGZ2U2ZDa3ZKNlRzakZM?=
+ =?utf-8?B?R2t3YVhpdVlLZVorWTE1eGJpcjVjaU5TZ09mRzVzMWdJdlNsT3U5MjdlUkdr?=
+ =?utf-8?B?WTBZQ1dlMmZhUDJUWHRqYWhVV1pxUHl2TVpleDVTMGFIb1NoV2F0YXZHRTY1?=
+ =?utf-8?Q?OgdRilFVeSgkNvB0FwKblsvfr?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df11bc1a-7536-48bc-94ec-08dc444212d3
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 16:16:15.5784
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x/7d7OKSt4QwDgscJVR50QJ5KkBIlZpMqkdM69itqRLJao2Jbv+poRjlKRDIiSZH6Kalt1F+7oW8CngNBvUWLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5659
 
-Hi Samuel,
 
-On Thu, Mar 14, 2024 at 3:56=E2=80=AFPM Samuel Holland
-<samuel.holland@sifive.com> wrote:
-> On 2024-03-14 9:48 AM, Geert Uytterhoeven wrote:
-> > On Thu, Mar 14, 2024 at 3:32=E2=80=AFPM Samuel Holland
-> > <samuel.holland@sifive.com> wrote:
-> >> On 2024-03-14 6:05 AM, Geert Uytterhoeven wrote:
-> >>> The Starfive JH7100 clock driver does not use the DT "clocks" propert=
-y
-> >>> to find its external input clocks, but instead relies on the names of
-> >>> the actual external clock providers.  This is fragile, and caused
-> >>> breakage when sanitizing clock names in DT.
-> >>>
-> >>> Fix this by obtaining the external input clocks through the DT "clock=
-s"
-> >>> property, and using their clk_hw objects or corresponding name.
-> >>>
-> >>> Fixes: f03606470886 ("riscv: dts: starfive: replace underscores in no=
-de names")
-> >>> Fixes: 4210be668a09ee20 ("clk: starfive: Add JH7100 clock generator d=
-river")
-> >>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> >
-> >>> --- a/drivers/clk/starfive/clk-starfive-jh7100.c
-> >>> +++ b/drivers/clk/starfive/clk-starfive-jh7100.c
-> >
-> >>> @@ -298,13 +311,23 @@ static int __init clk_starfive_jh7100_probe(str=
-uct platform_device *pdev)
-> >>>       if (IS_ERR(priv->base))
-> >>>               return PTR_ERR(priv->base);
-> >>>
-> >>> +     for (idx =3D 0; idx < EXT_NUM_CLKS; idx++) {
-> >>> +             clk =3D devm_clk_get(&pdev->dev, jh7100_ext_clk[idx]);
-> >>> +             if (IS_ERR(clk))
-> >>> +                     return PTR_ERR(clk);
-> >>> +
-> >>> +             priv->ext[idx] =3D __clk_get_hw(clk);
-> >>> +     }
-> >>> +
-> >>> +     osc_sys =3D clk_hw_get_name(priv->ext[EXT_CLK_OSC_SYS]);
-> >>> +
-> >>>       priv->pll[0] =3D devm_clk_hw_register_fixed_factor(priv->dev, "=
-pll0_out",
-> >>> -                                                      "osc_sys", 0, =
-40, 1);
-> >>> +                                                      osc_sys, 0, 40=
-, 1);
-> >>>       if (IS_ERR(priv->pll[0]))
-> >>>               return PTR_ERR(priv->pll[0]);
-> >>>
-> >>>       priv->pll[1] =3D devm_clk_hw_register_fixed_factor(priv->dev, "=
-pll1_out",
-> >>> -                                                      "osc_sys", 0, =
-64, 1);
-> >>> +                                                      osc_sys, 0, 64=
-, 1);
-> >>
-> >> These should use devm_clk_hw_register_fixed_factor_parent_hw(). (Or yo=
-u could
-> >
-> > Thanks, I didn't know about that function!
-> >
-> >> define a devm_clk_hw_register_fixed_factor_fw_name() and drop the othe=
-r changes.)
-> >
-> > Sorry, I don't understand what you mean here?
+On 3/14/2024 8:12 PM, Alex Deucher wrote:
+> On Thu, Mar 14, 2024 at 1:44 AM Khatri, Sunil <sukhatri@amd.com> wrote:
+>>
+>> On 3/14/2024 1:58 AM, Alex Deucher wrote:
+>>> On Tue, Mar 12, 2024 at 8:41 AM Sunil Khatri <sunil.khatri@amd.com> wrote:
+>>>> Add all the IP's information on a SOC to the
+>>>> devcoredump.
+>>>>
+>>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>>>> ---
+>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 19 +++++++++++++++++++
+>>>>    1 file changed, 19 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>>>> index a0dbccad2f53..611fdb90a1fc 100644
+>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>>>> @@ -196,6 +196,25 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
+>>>>                              coredump->reset_task_info.process_name,
+>>>>                              coredump->reset_task_info.pid);
+>>>>
+>>>> +       /* GPU IP's information of the SOC */
+>>>> +       if (coredump->adev) {
+>>>> +               drm_printf(&p, "\nIP Information\n");
+>>>> +               drm_printf(&p, "SOC Family: %d\n", coredump->adev->family);
+>>>> +               drm_printf(&p, "SOC Revision id: %d\n", coredump->adev->rev_id);
+>>>> +
+>>>> +               for (int i = 0; i < coredump->adev->num_ip_blocks; i++) {
+>>>> +                       struct amdgpu_ip_block *ip =
+>>>> +                               &coredump->adev->ip_blocks[i];
+>>>> +                       drm_printf(&p, "IP type: %d IP name: %s\n",
+>>>> +                                  ip->version->type,
+>>>> +                                  ip->version->funcs->name);
+>>>> +                       drm_printf(&p, "IP version: (%d,%d,%d)\n\n",
+>>>> +                                  ip->version->major,
+>>>> +                                  ip->version->minor,
+>>>> +                                  ip->version->rev);
+>>>> +               }
+>>>> +       }
+>>> I think the IP discovery table would be more useful.  Either walk the
+>>> adev->ip_versions structure, or just include the IP discovery binary.
+>> I did explore the adev->ip_versions and if i just go through the array
+>> it doesn't give any useful information directly.
+>> There are no ways to find directly from adev->ip_versions below things
+>> until i also reparse the discovery binary again like done the discovery
+>> amdgpu_discovery_reg_base_init and walk through the headers of various
+>> ips using discovery binary.
+>> a. Which IP is available on soc or not.
+>> b. How many instances are there
+>> Also i again have to change back to major, minor and rev convention for
+>> this information to be useful. I am exploring it more if i find some
+>> other information i will update.
+>>
+>> adev->ip_block[] is derived from ip discovery only for each block which
+>> is there on the SOC, so we are not reading information which isnt
+>> applicable for the soc. We have name , type and version no of the IPs
+>> available on the soc. If you want i could add no of instances of each IP
+>> too if you think that's useful information here. Could you share what
+>> information is missing in this approach so i can include that.
+> I was hoping to get the actual IP versions for the IPs from IP
+> discovery rather than the versions from the ip_block array.  The
+> latter are common so you can end up with the same version used across
+> a wide variety of chips (e.g., all gfx10.x based chips use the same
+> gfx 10 IP code even if the actual IP version is different for most of
+> the chips).
+Got it. let me check how to get it could be done rightly.
 >
-> In the loop below, the parents are already referenced via .fw_name. That =
-means
-> the string is the DT clock-names property value, not the Linux-internal c=
-lock
-> name (see clk_core_get()). These two function calls are the only ones tha=
-t
-> depend on the internal clock name. If you change them to use .fw_name as =
-well,
-> the clk_core_get() will do the right thing, and you don't need to manuall=
-y call
-> devm_clk_get().
+>> For dumping the IP discovery binary, i dont understand how that
+>> information would be useful directly and needs to be decoded like we are
+>> doing in discovery init. Please correct me if my understanding is wrong
+>> here.
+> It's probably not a high priority, I was just thinking it might be
+> useful to have in case there ended up being some problem related to
+> the IP discovery table on some boards.  E.g., we'd know that all
+> boards with a certain harvest config seem to align with a reported
+> problem.  Similar for vbios.  It's more for telemetry.  E.g., all the
+> boards reporting some problem have a particular powerplay config or
+> whatever.
+I got it.
+But two points of contention here in my understanding. The dump works 
+only where there is reset and not sure if it could be used very early in 
+development of not. Second point is that devcoredump is 4096 
+bytes/4Kbyte of memory where we are dumping all the information. Not 
+sure if that could be increased but it might not be enough if we are 
+planning to dump all to it.
 
-Thank you, I wasn't aware these fw_name names were actually doing the
-right thing ;-)
+Another point is since we have sysfs/debugfs/info ioctl etc information 
+available. We should sort out what really is helpful in debugging GPU 
+hang and that's added in devcore.
 
-Still, looking up by name is more expensive than just using the passed
-clk_hw.  As there are multiple occurrences of the four external
-clocks in the clocks table, thus involving multiple look-ups, I think
-it's better to use clk_hw everywhere.
+Regards
+Sunil
 
-I will update for v2...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+>
+> Alex
+>
+>
+>>> Alex
+>>>
+>>>> +
+>>>>           if (coredump->ring) {
+>>>>                   drm_printf(&p, "\nRing timed out details\n");
+>>>>                   drm_printf(&p, "IP Type: %d Ring Name: %s\n",
+>>>> --
+>>>> 2.34.1
+>>>>
 
