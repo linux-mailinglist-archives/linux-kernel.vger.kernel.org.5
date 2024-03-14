@@ -1,78 +1,103 @@
-Return-Path: <linux-kernel+bounces-103858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2254487C5CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:14:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33BD787C5CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:14:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B61001F2202F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:14:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC64728257F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4CA8134C4;
-	Thu, 14 Mar 2024 23:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69796171B6;
+	Thu, 14 Mar 2024 23:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZNXzVTY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4iW6322Q"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33323FC0E;
-	Thu, 14 Mar 2024 23:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D05168B1
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710458042; cv=none; b=fVjTDfWm8QqvYzSVZeAaz87WQntNlfBr9kWahXiCkN750oMX1UNrV0Bf25gTMJzirjreoSXQFqv257MOsjCO9WJ/5Dp1kJTx0m1VP+i8+DRIglLrdN0I289x/t/xjwQP1f0XZPw6WDgFzFvu6Zhq7nJSiJtqjXL8thHX8cdj3f8=
+	t=1710458054; cv=none; b=I0otngdObpScIsFSffvAEIMn6JycGRH1M4CKgDbnMvBagISL+MFwXwPu8zJnUkIZC8wkt7n9Jfn7sNFbuJLaYU4bS3ODGvZ+tQRjX8Brl/nRVeqTALJP7kVJW7DctGW+Zv69Rilqk3T/d5v2n9akitBG7W2Aj2W9U0jk3pEpt7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710458042; c=relaxed/simple;
-	bh=4o8gVBNKrxwm+IikKUz9LM1qIFbrzYCFYBqgey5Ji9c=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=imYBw45iN4vKaJci2tJkSGOcJAjuSGx3Nrfkl4uGj8Q7B1bGEvV/23uMubEwHFkg493B8ECraKmaK3qhtBfNxnkbdN988um2X+/y8mYrrJch6JWcd5pjscJ2rHv3hU9UEwiOjurQdu5ecDellkHCui+ba7RqwGRMSPNXFwMyRFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZNXzVTY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1441EC43390;
-	Thu, 14 Mar 2024 23:14:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710458042;
-	bh=4o8gVBNKrxwm+IikKUz9LM1qIFbrzYCFYBqgey5Ji9c=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=TZNXzVTYQA1N0m8FWj1GgvMNyBbO37OUlTQEuinyi7jLmToHTcRAqjx/RYLc4trLO
-	 DVjAZCV3vUXUkwM2OUq90eARrRksb3pLh3xh2Y5nNSjz2j3M/9SYJESIFvfuQulDYv
-	 c1KCghMnyxjhw1Jpodp3ZyEPaficasLNRRelI/lUtFaAnUbIXcZFeMFqw4X4wYXSCA
-	 TdVaDq9FdCFYYe6QyNbhD8sCUgOcIHSYyc1pJQLaxQ6mszvjtQr/3hHTXc5QXkOHlg
-	 w9uWuE01lKY4F1vdvN+bmQBthnxRkYQBFFlsJDRbqPfADZH0KLgIM69wgNxUWq2jVD
-	 HdSlJZr56lh2Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0BA98D95055;
-	Thu, 14 Mar 2024 23:14:02 +0000 (UTC)
-Subject: Re: [GIT PULL] lsm/lsm-pr-20240314
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <3f2a695a148db9e1daae8c07d9ce5c85@paul-moore.com>
-References: <3f2a695a148db9e1daae8c07d9ce5c85@paul-moore.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <3f2a695a148db9e1daae8c07d9ce5c85@paul-moore.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git tags/lsm-pr-20240314
-X-PR-Tracked-Commit-Id: eaf0e7a3d2711018789e9fdb89191d19aa139c47
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c0a614e82ece41d15b7a66f43ee79f4dbdbc925a
-Message-Id: <171045804204.7563.1098860944707764914.pr-tracker-bot@kernel.org>
-Date: Thu, 14 Mar 2024 23:14:02 +0000
-To: Paul Moore <paul@paul-moore.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1710458054; c=relaxed/simple;
+	bh=c4BE70nsgZ4EpHYath9ENvwlSd32Bg8IXevQKA4Uufc=;
+	h=Date:Mime-Version:Message-ID:Subject:From:Cc:Content-Type; b=Mmr7KvWfQGSPC5L0x4rJe4uR0skWdCcMhta9c56G6BRauXztpHFyIVi1IXZQfNiOmhBCeRqb9HKiytyh/e/+tdhDSN7v+vpWyf4muai8GjMy8OiYy3j7Aq0NcFJTVpK2eM/RaRct1CKFJibOjezq6GLt+hu3FmLFTTCjPyowLL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4iW6322Q; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc64f63d768so2413506276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710458052; x=1711062852; darn=vger.kernel.org;
+        h=cc:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=47NgUQnVGQBbIng7KOEItYyrBF4Fqt+mN9GiaCGROqw=;
+        b=4iW6322Q5S/rPLq0lHmAN/QrTib+fiMmj5voYxKhcYW3yme1VUGH6zEIkdzvgZ26R5
+         UrlVvOKjmUub/QKT8DCLjFlyzmKufD/RBGyX1oDdb/S3hIgAG5kco74npmJKH2PsP0aa
+         y/e0nqK4ViZ83YzckeYcLgjIX6suoG7k9P+1dPuU3gQ/NEV6Cgh8k9tuWUC5VOmLOyhb
+         qGQM9cfhl0943v1HirO2sZKOlgHFdeUmBx125Bnz59sJKs6EQCZg1r7z7kJQkPko9tRA
+         QrUNiIxBVyY3jp5Wtq8aMhd+JY9LCsXaoUeN5AM6z1UVgyJ2VFfnICzlP4ur3etOWadR
+         1kTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710458052; x=1711062852;
+        h=cc:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=47NgUQnVGQBbIng7KOEItYyrBF4Fqt+mN9GiaCGROqw=;
+        b=mmTUkhpBlmW7xcLcgGA9Q7AVTudMUbUnlfkWQKGVLD+sTalvooqPQXslMcVfZnuQ6/
+         MXr6IveiwLJl76EoUn+Yw7XNKlweXajrLLkrakZeQK10o8fC3ZXBJU5B41lZnYvUwquH
+         FHl8BvXIUDsKZi83lYifqWtCzGg4o6Rj/xco7YkM7KD8C7LvFBBKxJQOLMwTMOP8nzHJ
+         q2lXm33SF2VZ2MyD8U2nssTirKnyfH+h5Kxpl4AaLeHCrYarD3QTaForxOw6bQiSUw1w
+         RMkts88NLcXAxW/AhALMI8q+QphSGjWXBj2GLhEWqMbR1J3+71Y+Kt3v5hqaxpIBFpWe
+         5aCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVZqiyPwlm0Ej4557Yqokjsrorg7IK9UKKscqU6C6Q72X2sY90SZe9Javg3OE78ll6iRiuBfqOag+9SDFj19cuExuhKOvdo+895yLmR
+X-Gm-Message-State: AOJu0YyZtq1NVbnjTn6c3yiJUpyiBOovqoor7SQlYuiBJYlVfnsJxP3R
+	IDg9Lw3RleShUhMRu/DJpAGzHlxA+U8AfZyt7KJ/SLFtpVUaWdSoooSvLjEcvF7NCmRRM7mturF
+	gvhsfxg==
+X-Google-Smtp-Source: AGHT+IFD8eEM1mWFsmXcSWuwtn82SwzRLKc7S4RbEAwxb8zYChzqbLS1oTHAz/G5FnRguCxvTTZCMPQdU8eD
+X-Received: from dhavale-desktop.mtv.corp.google.com ([2620:15c:211:201:c8:ad31:2162:e917])
+ (user=dhavale job=sendgmr) by 2002:a05:6902:100c:b0:dc6:ff2b:7e1b with SMTP
+ id w12-20020a056902100c00b00dc6ff2b7e1bmr918025ybt.4.1710458052162; Thu, 14
+ Mar 2024 16:14:12 -0700 (PDT)
+Date: Thu, 14 Mar 2024 16:14:06 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240314231407.1000541-1-dhavale@google.com>
+Subject: [PATCH] MAINTAINERS: erofs: add myself as reviewer
+From: Sandeep Dhavale <dhavale@google.com>
+Cc: linux-erofs@lists.ozlabs.org, xiang@kernel.org, 
+	Sandeep Dhavale <dhavale@google.com>, kernel-team@android.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The pull request you sent on Thu, 14 Mar 2024 16:31:05 -0400:
+I have been contributing to erofs for sometime and I would like to help
+with code reviews as well.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git tags/lsm-pr-20240314
+Signed-off-by: Sandeep Dhavale <dhavale@google.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c0a614e82ece41d15b7a66f43ee79f4dbdbc925a
-
-Thank you!
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4f298c4187fb..b130340d71bb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7875,6 +7875,7 @@ M:	Gao Xiang <xiang@kernel.org>
+ M:	Chao Yu <chao@kernel.org>
+ R:	Yue Hu <huyue2@coolpad.com>
+ R:	Jeffle Xu <jefflexu@linux.alibaba.com>
++R:	Sandeep Dhavale <dhavale@google.com>
+ L:	linux-erofs@lists.ozlabs.org
+ S:	Maintained
+ W:	https://erofs.docs.kernel.org
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.44.0.291.gc1ea87d7ee-goog
+
 
