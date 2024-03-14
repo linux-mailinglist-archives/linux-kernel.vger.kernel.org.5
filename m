@@ -1,117 +1,110 @@
-Return-Path: <linux-kernel+bounces-103780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4D887C465
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:45:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD9387C46B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D441F21A92
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:45:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E57A0281B80
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:47:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F128763FD;
-	Thu, 14 Mar 2024 20:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA0476400;
+	Thu, 14 Mar 2024 20:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ko/VWB/I";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tZR0FPOc"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="rDOYjRtu"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 071F56FE28;
-	Thu, 14 Mar 2024 20:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF30763E8
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710449140; cv=none; b=G8HWXB3SjLQl7v+ZH0N9krA21UnsRjExdW6qOBrZFfjqMstg4QUO3sgYcvREMxJ9OdzlXFV0S8dtMHMciEo1gWuoTw1jlXvGRX5sBGpwnPF73ULzFrC/7/Bd5DpOfyUcUI86w3zEirNMJT89uLYQ4ajGGUVRJZdzHfpEpvNF8gI=
+	t=1710449247; cv=none; b=VRwktrg5EqxDGZyvj/i6xqiWJkqIR3wgyHwZFQ1HehQmF8S1GFSFxgr3zwtJJ+hhSZSs9nK0M5B0IQtt0VkbetSJIknHBfamviT0GQsngTWGAlmVZiANkUGNPfmNiKz0v7XAla3TRk/zf21sFNozjrXr2PGUQUFexYx34hnmcjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710449140; c=relaxed/simple;
-	bh=O8DozmNrZ4VDRmyiSjzVDJqXlYrMmP08o1YadCXt0Ts=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=p/RtogEXBqMorT2nTLkbMfWyV4CJH6Zy9eB3zbCFZ2tOlFjsDAP3VnEtW1/465Wq0z8uzChjaa5zY+my5WQFVWQdKmIUb4xqWd47uLgMMvOPi2H/WGrNyc+OY8ci4r1y/v4sGsT4A+MHDLt3Vv5d1oB6GxqGohwCmJ8J9W4OfIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ko/VWB/I; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tZR0FPOc; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710449136;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nJy+NUZ8ACD5J2EIR57tnDEqsbwNo2P7mRbaWsqp06E=;
-	b=Ko/VWB/IPyrGtliE6RtDoxypx/OyPJNFP+tpVuZcSyyChSkVkMYH+c30NGsI81y2yLLz4h
-	vfO0CQeaWKgjNfnMAwF5jhxU9UVfd2sMNbviuMGCQqyioEz/YddwSdSxNRfn/PmeNvab53
-	qGfV+FTpRDfMMcqL4TPmpdl7qtNkiunJjNomT7F94q0uFlJalFWCP+KbIGKq22zkWeSxPu
-	sa9X2DHVEIrwCJclgItzFEz+LJpD7u8JCVndFwgziqTc/N3XTG7SsdTBnVHQmNrEdpRWBr
-	WMQyxOoOLzy7OVlRsaV5f+ukgDtmV5XoM8ZHSrVWgC6kk37vMTcPXk/JBBh7og==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710449136;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nJy+NUZ8ACD5J2EIR57tnDEqsbwNo2P7mRbaWsqp06E=;
-	b=tZR0FPOcg/7trlG4MSqmxmcjUH0dg+fEKfbsPJL/zePo5/iPlnYngA1mla48M07AQY4pFl
-	yLwQ1BU3pLB0DtDQ==
-To: Florian Fainelli <f.fainelli@gmail.com>, Boqun Feng <boqun.feng@gmail.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, "Russell King (Oracle)"
- <linux@armlinux.org.uk>, Joel Fernandes <joel@joelfernandes.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Linus Torvalds
- <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org,
- kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
- rcu@vger.kernel.org, neeraj.upadhyay@amd.com, urezki@gmail.com,
- qiang.zhang1211@gmail.com, bigeasy@linutronix.de, chenzhongjin@huawei.com,
- yangjihong1@huawei.com, rostedt@goodmis.org, Justin Chen
- <justin.chen@broadcom.com>
-Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes
- for v6.9]
-In-Reply-To: <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
-References: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
- <ZfDptafiK0jns050@boqun-archlinux>
- <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
- <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
- <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
- <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
- <ZfIuRMo8oKbR08Af@lothringen>
- <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
- <ZfLUU+XuQC7W79tf@lothringen>
- <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
- <ZfNHNvzpqf8DOZd8@boqun-archlinux>
- <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
-Date: Thu, 14 Mar 2024 21:45:36 +0100
-Message-ID: <87v85olez3.ffs@tglx>
+	s=arc-20240116; t=1710449247; c=relaxed/simple;
+	bh=du2WT+/IhUMepIGZbpvZTbMkHPvk1mSEq7tDbAeTApc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LuonG1b2JJPl8DLvdQIi+3b20A+bZaQf1wnyoh+cDu9trto1vXUX4UKqbZiLnUobQG/BtGrLXpx+VQHzyEh6C6EClrXlffgvWrZ1UvlcjotwhQTbNdYo4cYEgZFe7zPTMwkLy9yzEFmdP6GBUMqtVRX00rpLFX3hYdNwERotmqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=rDOYjRtu; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-430a0d6c876so4883421cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710449244; x=1711054044; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EerKNIlRapC7GXPSamOoOowoFZGKR33EHS6GaKW+Uh8=;
+        b=rDOYjRtu2HmbUl4wLBzA5VoTOA36Y7b7QNRPp5Cy5B64Bri9SRmJLwsP6uAtt757W8
+         OWwYMMNO8wsp3Iv7UTvU8FYKsjcQ/MkHxuNBQJ9gr4HUiTDzw2O+GeUBFJEubxB0gUZz
+         LYVx1f09JYnT1GyIz9pHCxUsPPkHR448rYFRV7lpdKfElbWgSi+uao+6YvRSKdnTiH+X
+         nxJjtVovtD+3BUxwUxbg/kZgS52HQArw0gM9EwITChdlJkaxTP91kz5rtLcOr19hLzye
+         B/CP1lIlC3pb3gRr3OEF5XlN5NMvmLq3bwmr44q5EYgMBAY2F7v1LiLQLNuuu0xSaRhC
+         w6Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710449244; x=1711054044;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EerKNIlRapC7GXPSamOoOowoFZGKR33EHS6GaKW+Uh8=;
+        b=klmAXqyI+v8rt4DAMJwvpnGKjQAXGIo+PpA7qDj5YeAgoMFrrig5DBFgFlL3fH4gXk
+         KG/FJoWK49X8wgJxNJqW3UMF2ZBVRTtoAbn1DjK3sXwSl3DiJUlDwWltdz9RJb+XMzg6
+         Xot56xT2b6Mpo3vvGHs4DDAVDUcN3uSjokPY6LkLQkTNiTHaa4R+byS+l3imsHWkX8kR
+         1QyGXsHaZOCwhL9k/KGccgrNrYWhZh57hAFQZ+onJJRLCzZoV96h4jXq1IdWvBf9xSGk
+         UGIDe1JaZ5YsNZ+e5BtuW6FUcHVyBlGsHftaqopyJJAWl+rFV/iiv7igJeyxZI9aNqbf
+         ln/w==
+X-Gm-Message-State: AOJu0YwlbKQS6VTgEbbWGzTyYOJ/igXB1uxfM1L0bXtQzOoEDNS2jvC0
+	qf/gwCnFPEsPNvyUcR8fKmU/N9SNy4C4YzY0ZxszBzbtfZdSRO0eNAepmniae0w=
+X-Google-Smtp-Source: AGHT+IGl2GL5Qyuks42rePlMkrmMzfUZYkVbUfiyA5FKYet4juESL0lsdZbw/hVxxOgZbGAjHXjPOw==
+X-Received: by 2002:a05:622a:5488:b0:42e:b90c:cffb with SMTP id ep8-20020a05622a548800b0042eb90ccffbmr3186362qtb.51.1710449244321;
+        Thu, 14 Mar 2024 13:47:24 -0700 (PDT)
+Received: from megalith.oryx-coho.ts.net (d24-150-219-207.home.cgocable.net. [24.150.219.207])
+        by smtp.gmail.com with ESMTPSA id n16-20020ac86750000000b0042eef160b4dsm1165272qtp.76.2024.03.14.13.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 13:47:24 -0700 (PDT)
+From: Trevor Gamblin <tgamblin@baylibre.com>
+To: linux-pwm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	michael.hennerich@analog.com,
+	nuno.sa@analog.com,
+	devicetree@vger.kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	tgamblin@baylibre.com,
+	dlechner@baylibre.com
+Subject: [PATCH 0/2] pwm: axi-pwmgen: Add support for v2 IP
+Date: Thu, 14 Mar 2024 16:47:20 -0400
+Message-ID: <20240314204722.1291993-1-tgamblin@baylibre.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14 2024 at 12:09, Florian Fainelli wrote:
-> On 3/14/24 11:51, Boqun Feng wrote:
->>>> 	trace_event=timer_migration:*,timer_start,timer_expire_entry,timer_cancel
->>>>
->>>> Though it's fairly possible that timer migration is not enabled at this point
->>>> as it's a late initcall. But we better not miss its traces otherwise.
->>>
->>> Here is another log with timer_migration:
->>>
->>> https://gist.github.com/ffainelli/237a5f9928850d6d8900d1f36da45aee
->> 
->> FWIW, the trace point is still not enabled:
->> 
->> [    0.000000] Failed to enable trace event: timer_migration:*
->> 
->> you need this commit in master:
->> 
->> 	36e40df35d2c "timer_migration: Add tracepoints"
->> 
->> , which is one commit later than 7ee988770326 AFAICT
->
-> Argh, thanks Boqun, here is a new capture:
->
-> https://gist.github.com/ffainelli/cb562c1a60ef8e0e69e7d42143c48e8f
->
-> this one is does include the tmigr events. Thanks!
+This adds support for v2 of axi-pwmgen, which allows for up to 16 PWM
+channels (instead of 4). The series was tested on actual hardware using
+a Zedboard. An oscilloscope was used to validate that the generated PWM
+signals matched the requested ones.
 
-You need 8ca1836769d758e4fbf5851bb81e181c52193f5d too.
+This series depends on [1] that hasn't been picked up yet.
+
+[1]: https://lore.kernel.org/linux-pwm/20240301173343.1086332-1-tgamblin@baylibre.com/
+
+Trevor Gamblin (2):
+  dt-bindings: pwm: adi,axi-pwmgen: Add compatible for v2 IP
+  pwm: axi-pwmgen: support version 2.00.a
+
+ .../bindings/pwm/adi,axi-pwmgen.yaml          |  6 +-
+ drivers/pwm/pwm-axi-pwmgen.c                  | 62 +++++++++++++++----
+ 2 files changed, 53 insertions(+), 15 deletions(-)
+
+-- 
+2.44.0
+
 
