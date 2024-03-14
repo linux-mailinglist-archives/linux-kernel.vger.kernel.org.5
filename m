@@ -1,117 +1,142 @@
-Return-Path: <linux-kernel+bounces-103733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB3987C3BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:38:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC2287C3C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4CB61F21FD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:38:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03E221C20DC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B532175813;
-	Thu, 14 Mar 2024 19:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261157602B;
+	Thu, 14 Mar 2024 19:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y2JqGJTL"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="oelIcVXH"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B802E410;
-	Thu, 14 Mar 2024 19:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975CA757F5
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710445101; cv=none; b=B0sXVk8Kb8KFYCjhwGdJQMrE8zlQDp12pccgHOeoDOW5/QlCI0rNafQzWcUvX5jDT4BF/ORhh8urKRgi90dLSskwm2q9GG0TyBAqucjUFDj5nOZOmpMx+Cbcd6KJuHaeauJ02BrqdHPMCuivKdioA2dwcPotgKCpXgv5W+wf4Bo=
+	t=1710445283; cv=none; b=NVgEWLt8fKir9zyCUIq36UvlCF0xoSHfipTm36IcsyH5oSrx8kjaFcfLutHp84yn0LScuTViykGUkBjlspKZv9bLsm54fgi0qPBE/t8jPsQdHDUbW1eLgQk0wKQ+MBsEJPTTyTk0Ffo7QHG1Z4e4lA8aFkBnH59hhxpMh0O66wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710445101; c=relaxed/simple;
-	bh=2ZdiD1IoUseLi2z6Jn18hB92ejMwVgbyw7tciD+Fnpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Otk9VOu3hetcJl5lXnMK+V+l0AIZigU6Pvtpbhza+fu6rmE+V4ZAgTD2sxUq0u53U8Xh4lSzmVpEw8xuaxpTY04fQ7gRqMqWsud+7iEmmVCRCQHhQQ/XNNPk/2oU0H1b0agFc5cWKWn+CFCgfOtnYHfCpyXvlRsRRWNnIz41pf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y2JqGJTL; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-789db18e24eso54239985a.1;
-        Thu, 14 Mar 2024 12:38:19 -0700 (PDT)
+	s=arc-20240116; t=1710445283; c=relaxed/simple;
+	bh=onEktwJBHB2eXNJMOcrh4ORRowNVQ4kkEBJ7zXW9BpA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cf2zSVs/6aGubUaOgz4bmNqZdjzjjUEgbDPEY6iCJpOLLyE5SIq10Ov5IIVSTVYmj55KBa6M3mRmzI+WTzK7Y91nG4UBJD/5U35Co2q/KrylwislpNLkeXMGgXy4ZfcF5Dd6+9inWQvpWzjWKMXyLNTByOF2+/HtiyVEzMaaOfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=oelIcVXH; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a46692ec303so186120966b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 12:41:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710445098; x=1711049898; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QM0EpX+2nRF6kqssGaNMOIy7olhnPJ21fD9kE6DtD/0=;
-        b=Y2JqGJTLn1UhJZttV9BRDCcxu/mYL4UlCparLl5g+46Fh21jtTmPzHanohNAb8eME/
-         m4zCn2QlI5cxwUBVvx+fvLa1AF7kOa9y9apR5zQISFeQ0bwwrm2P+wn7zE2NpnzE3QfP
-         9DTOPXk7UOpRLgA3Ek/VU1sDR8FK6Nbu3wEWmB950OzZNWjkVZswPe3bnQiWAEu6Rfq7
-         D+N6O4fFLwmrZqFpMkrT2+N2OGhoBYE0u1oRrXVDYTfNDA9o9kiBqvGaXSQMRd5xXdH9
-         3GOMMcNjjEDZO/VXcPVRUHylt9jtmiUGs5DtemtbHQQvWJu6xfDDwwRBWSNUSok8dH27
-         nEIA==
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1710445279; x=1711050079; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=onEktwJBHB2eXNJMOcrh4ORRowNVQ4kkEBJ7zXW9BpA=;
+        b=oelIcVXHmAxAgJy++hRkxCKVyUb5JZiFiSwX6PT+K54sa6aWdq6+QmNCPY2vjzOxVB
+         BImHM41VK05Bc3zhxrNYknDQNjth5ZliXoGozxhwA59IZSy1CBuAR6XYnT7CT2fL6jCM
+         V3sbwrtJ5Z5NJ1KIhyEzbilcM0EBtXbCAV5/BEsvzGnPk9W0bqSGRIVyJT5+dQEf+00D
+         d2X/8F/SqKPztERzQ2A8CndAXCWMcPcHc+R54eaVrRYaFCvtXsPNio9ENcThnMzTmhY+
+         /9E8VctpEGb384dNrS242BoPCBSlkHE61f/8fB6eO7PPZS/KhTt2IfJ9T4KT7A5fjmmg
+         mMuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710445098; x=1711049898;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QM0EpX+2nRF6kqssGaNMOIy7olhnPJ21fD9kE6DtD/0=;
-        b=H4Z4EmBByokUwVMjcr0JjtCK+eZTit6WxArR2ic2BQAPwYTBYda2cn39WBvckBxFlh
-         uQaOTc10o5RxY+ej2HDTMFoMZNmpI/gJ/muCxXbFdV56i5gLLRNmcrTww4/ywgYmZ6cX
-         qInQGL+1z/vJ68rClktfzmEikk7z2V4pfFbF8VLDOM0dC4uJzByk+fVJvQmR4qKCxToN
-         DEhj22HYfBkwgUdZPxbCAkV0TUCOmNwJzolKbhSLAjIREJoIsj4zkqRHsV2a49o7q9yJ
-         M3ncrOy73ikJ404P9B5vUSt1xB7ZFsiPfQQVI1XhiX6as1Q3FV56DMwuArEYXrhkIaKp
-         GWbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUI3mgMSWCpdyaJwvT8ZtIjKqWnDish1MdOJzoS8R9vvyFJDA43R6XReajoRbvazsklYtvuXavCTfkUkSAqIINEnT87zAZ7YzTlRRUqjaFSi6xUpWj6cz2/da2Q+oLaaVcV/DwE
-X-Gm-Message-State: AOJu0YxarzeA89nru1U6kEsaVKBskRpwZ7jYYNvoOkmvTCDVJefjvFZP
-	dF1dKkFxKYlBD8Ao142UZC0q1sxusr2VW7DtAB+jGM52X3CewvGJ
-X-Google-Smtp-Source: AGHT+IFd0HbfX2lksd26KvQNXcItlwpCahQ4dfZn5vRuJfEpk8cclOMq694BPylw2ZuXl+Px+HlNhQ==
-X-Received: by 2002:a05:620a:817:b0:788:2e47:b297 with SMTP id s23-20020a05620a081700b007882e47b297mr2964412qks.78.1710445098425;
-        Thu, 14 Mar 2024 12:38:18 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id vq23-20020a05620a559700b00789d0189eb6sm1160085qkn.117.2024.03.14.12.38.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 12:38:17 -0700 (PDT)
-Message-ID: <ec2707ea-0586-4218-8813-7a43885616e2@gmail.com>
-Date: Thu, 14 Mar 2024 12:38:15 -0700
+        d=1e100.net; s=20230601; t=1710445279; x=1711050079;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=onEktwJBHB2eXNJMOcrh4ORRowNVQ4kkEBJ7zXW9BpA=;
+        b=hkBrPoXbI3+e1ljQkBCYz+x7G7+XMqjcoYmG6Uf7z21IT4f6jQqk+sAaC8kEpYRajf
+         VMdgJUGiI17BTlYQ1VhD18VjEbxTOESdSPbvSA4UmMSr/dfbDEbBFVDw5P2XfjxzCA0e
+         ZeBDeY2lLC63t/V95Wj6mksRFL6EM0mVRYXAlhIgcgr2dvBYF7s+v+5A6sSGBQlGV4bU
+         Snjs1WpuKL5QHXZyV5IH3qkeLqA/L05+VHkEiKNAlTQeeeiswGE4fE+ZuxdaHJSMtbhu
+         agbtU4jRtfwjUrlhPVCC4WdUepFbWJdgGh3m/dHgBw3RvKs4TmaqADo7OLBSJ/++QS50
+         5flg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTGmiDO7Csij3jxm1xgYVjUrFST0a3+BlNxPVVqcy5I/NBzOSmGOlHe6/4kotI+F4KyioTZRTDIfrn5ObDBpGFvWx0X+1PzJgshrbj
+X-Gm-Message-State: AOJu0YwNUSRHZUwJxnPQ/twr93urJ7decCBo592FU5YrGcKmPpspvfPj
+	mlluidOs+SsgbcMf3udEJXxtAyTARiUxdMNIsxnd620JmsnLnb2yRA/Swp2uZ0Q=
+X-Google-Smtp-Source: AGHT+IH8czNlNagx2kXUJ8xAoaQoY9sfM4cx5YqDd4DehyKpFMZ6MjCDM1M528wBaOxegt8hCWznIQ==
+X-Received: by 2002:a17:906:c0cc:b0:a46:2100:da56 with SMTP id bn12-20020a170906c0cc00b00a462100da56mr1804417ejb.55.1710445278810;
+        Thu, 14 Mar 2024 12:41:18 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id o11-20020a1709061b0b00b00a3fb9f1f10csm972383ejg.161.2024.03.14.12.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 12:41:18 -0700 (PDT)
+From: Andreas Hindborg <nmi@metaspace.dk>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>,  Jens Axboe <axboe@kernel.dk>,
+  Christoph Hellwig <hch@lst.de>,  Keith Busch <kbusch@kernel.org>,  Damien
+ Le Moal <Damien.LeMoal@wdc.com>,  Bart Van Assche <bvanassche@acm.org>,
+  Hannes Reinecke <hare@suse.de>,  "linux-block@vger.kernel.org"
+ <linux-block@vger.kernel.org>,  Andreas Hindborg <a.hindborg@samsung.com>,
+  Wedson Almeida Filho <wedsonaf@gmail.com>,  Niklas Cassel
+ <Niklas.Cassel@wdc.com>,  Greg KH <gregkh@linuxfoundation.org>,  Matthew
+ Wilcox <willy@infradead.org>,  Miguel Ojeda <ojeda@kernel.org>,  Alex
+ Gaynor <alex.gaynor@gmail.com>,  Gary Guo <gary@garyguo.net>,
+  =?utf-8?Q?Bj=C3=B6rn?= Roy
+ Baron <bjorn3_gh@protonmail.com>,  Benno Lossin <benno.lossin@proton.me>,
+  Alice Ryhl <aliceryhl@google.com>,  Chaitanya Kulkarni
+ <chaitanyak@nvidia.com>,  Luis Chamberlain <mcgrof@kernel.org>,  Yexuan
+ Yang <1182282462@bupt.edu.cn>,  Sergio =?utf-8?Q?Gonz=C3=A1lez?= Collado
+ <sergio.collado@gmail.com>,  Joel Granados <j.granados@samsung.com>,
+  "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,  Daniel Gomez
+ <da.gomez@samsung.com>,  open list <linux-kernel@vger.kernel.org>,
+  "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+  "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+  "gost.dev@samsung.com" <gost.dev@samsung.com>
+Subject: Re: [RFC PATCH 1/5] rust: block: introduce `kernel::block::mq` module
+In-Reply-To: <87plvwsjn5.fsf@metaspace.dk> (Andreas Hindborg's message of
+	"Thu, 14 Mar 2024 20:22:54 +0100")
+References: <20240313110515.70088-1-nmi@metaspace.dk>
+	<20240313110515.70088-2-nmi@metaspace.dk> <ZfI8-14RUqGqoRd-@boqun-archlinux>
+	<87il1ptck0.fsf@metaspace.dk>
+	<CANiq72mzBe2npLo=CVR=ShyMuDmr0+TW4Gy0coPFQOBQZ_VnwQ@mail.gmail.com>
+	<87plvwsjn5.fsf@metaspace.dk>
+User-Agent: mu4e 1.12.0; emacs 29.2
+Date: Thu, 14 Mar 2024 20:41:10 +0100
+Message-ID: <87h6h8sisp.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 00/51] 5.4.272-rc1 review
-Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de
-References: <20240313170212.616443-1-sashal@kernel.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240313170212.616443-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 3/13/24 10:01, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 5.4.272 release.
-> There are 51 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri Mar 15 05:02:10 PM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.271
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+Andreas Hindborg <nmi@metaspace.dk> writes:
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+> Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> writes:
+>
+>> On Thu, Mar 14, 2024 at 9:58=E2=80=AFAM Andreas Hindborg <nmi@metaspace.=
+dk> wrote:
+>>>
+>>> Yes, good point. Another option suggested by Miguel is that
+>>> `__blk_mq_free_request` need not be exported at all. We can make it
+>>> non-static and then call it from
+>>> `rust_helper_blk_mq_free_request_internal()`. Then only the latter will
+>>> be in the kernel image symbol table, which might be better in terms of
+>>> not exposing `__blk_mq_free_request()` directly.
+>>
+>> The helper is not needed, i.e. what I meant was to make it non-static
+>> and add it to `include/linux/blk-mq.h`.
+>
+> The way the current code compiles, <kernel::block::mq::Request as
+> kernel::types::AlwaysRefCounted>::dec_ref` is inlined into the `rnull`
+> module. A relocation for `rust_helper_blk_mq_free_request_internal`
+> appears in `rnull_mod.ko`. I didn't test it yet, but if
+> `__blk_mq_free_request` (or the helper) is not exported, I don't think
+> this would be possible?
+>
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+I just tested what you suggested Miguel, and I get a link error for
+`__blk_mq_free_request` being undefined when the module is linked. This
+is even though the code that calls this function lives in the `kernel`
+crate, because it is inlined.
 
+BR Andreas
 
