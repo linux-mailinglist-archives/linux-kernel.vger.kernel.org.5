@@ -1,104 +1,63 @@
-Return-Path: <linux-kernel+bounces-103531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E5687C0B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:55:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72EA987C0B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:55:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DFF1B22958
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:55:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5B001C214B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA14E7441B;
-	Thu, 14 Mar 2024 15:54:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BC373179;
+	Thu, 14 Mar 2024 15:55:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tjLgQCjs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="deiIgmej";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AWTTVirU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aYLQHl+L"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="tB6Zfcby"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC6B7353F;
-	Thu, 14 Mar 2024 15:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4517971B51;
+	Thu, 14 Mar 2024 15:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431664; cv=none; b=oT8c6Knds8w0Y7UTcOBGeUq2Hbc/7MZr7l4NjrWE5AdWCe1KZFmgustnggJb3iBnN6CttvaO+c2YMT4MH+TI3qU5yd+d9kL39sP3r7WoTzIIgPgs/l3S5VKN73iUipKbhvT03GLTDRUTO8i9u4el6wD9a2SpxCWXbiR9BNrmGig=
+	t=1710431720; cv=none; b=J56XYMa0aQE2QONp7cSas5JtVnMVLl6K99+ApAeq/03yK5gB7HeIc+T+yBDGw6udxOuyGb9lBYuTeYV8vbJ/w/RG3pEDiwimu/MO/BelykbErr6a3IgvRCv2od2SVjXh12jqrArWnjpjmI0b0LMIJzBzegtXG+/A4VilZ3C2BeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431664; c=relaxed/simple;
-	bh=km/3aGcwVNjprkRJ5a9yQcLEWlg19dOOzcQex1nbcDg=;
+	s=arc-20240116; t=1710431720; c=relaxed/simple;
+	bh=MFV31aSnWDbF3dhvEx83NnYWqwWHNAiaFqx73jZqldY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iMY7NUvTtS/agUwjhDvxZX1jeUGXPY9XhMEPV26bEsANTtT4LslycTb4OLnxexMnV68DafSlE30NjfXyoTjRMCzuykS8EeovUIAFNi425hz9wxmDq4ul5tOr1cQhIA7qZfbdnlnaKroQrGMmauTQHvLBr8pf/U0TwWCaw6CoZcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tjLgQCjs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=deiIgmej; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AWTTVirU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aYLQHl+L; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0A9211F86A;
-	Thu, 14 Mar 2024 15:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710431660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BT7NUMGMj375LcHUS5Xp8EH29Otg/hkMc0woQNGiIn8=;
-	b=tjLgQCjs4YoblTiknk6v6c925YSD176Y5HwHks5cFNCjarrSHZnNEBosRUXLkYpZuJQDgu
-	+V5LUYgzSuPSn6h8z+ai0PgYyjYuQeJkuTUPS9S4rX5wpZjluyB08UhyDQS7styBkfHrCi
-	sTt5gjYS0TpE5tM880uh41XJrpXOjp8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710431660;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BT7NUMGMj375LcHUS5Xp8EH29Otg/hkMc0woQNGiIn8=;
-	b=deiIgmejfrJ1f/+HDe80GhXDzXeVJZUZmpGB+FgnmxIn0XO8HuDS1CKuV240QgjtijBZCb
-	5jVWmsuSoaoKEzDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710431658; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BT7NUMGMj375LcHUS5Xp8EH29Otg/hkMc0woQNGiIn8=;
-	b=AWTTVirUlEzlgXbsQ5/f9Ni0hm7MBI1wX/6gYrGxFWSWj6ybNhOifVLrALpsP0LQts1qfJ
-	j3YdTiJh+dEBUQc6RnC4g86+BZft7fVBVnoWCu4AhYRNl7VoMzxaOEucNliSC3wuCrP5MN
-	6a/lRkIjIIkgM/NcuUVenfQDVJGBHBY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710431658;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BT7NUMGMj375LcHUS5Xp8EH29Otg/hkMc0woQNGiIn8=;
-	b=aYLQHl+LTd9+OOpdnBqccfKM8gwkHbTbLRCQxsonPrvfIziysIshoKCi2gTAW/ZjG0pg4N
-	V8P5o+s9G9SCgMAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F092B1368B;
-	Thu, 14 Mar 2024 15:54:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Myy1Oqkd82V5MwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 15:54:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 916D4A07D9; Thu, 14 Mar 2024 16:54:17 +0100 (CET)
-Date: Thu, 14 Mar 2024 16:54:17 +0100
-From: Jan Kara <jack@suse.cz>
-To: Aleksandr Nogikh <nogikh@google.com>
-Cc: Jan Kara <jack@suse.cz>,
-	syzbot <syzbot+28aaddd5a3221d7fd709@syzkaller.appspotmail.com>,
-	axboe@kernel.dk, brauner@kernel.org, jmorris@namei.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, paul@paul-moore.com,
-	serge@hallyn.com, syzkaller-bugs@googlegroups.com,
-	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: Re: [syzbot] [hfs] general protection fault in tomoyo_check_acl (3)
-Message-ID: <20240314155417.aysvaktvvqxc34zb@quack3>
-References: <000000000000fcfb4a05ffe48213@google.com>
- <0000000000009e1b00060ea5df51@google.com>
- <20240111092147.ywwuk4vopsml3plk@quack3>
- <bbeeb617-6730-4159-80b1-182841925cce@I-love.SAKURA.ne.jp>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HhBFhwaS5Vf7wJvMACaasCwhXQkXtEkYpiE6xj+Rmt36px/GDJ7bGvGZD8Lg8xvyv49zHLBwIljH/wzTZm7OevTZ3y2c6NMDIVdcLjsSdpFSxakiWZZcnd4hdrhRG+lU0C01OlpZp/Gn/2zgXPPaKgl+Tvn8bnlOXf1yXlVtZ+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=tB6Zfcby; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost (unknown [46.242.8.170])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 3FA3F40769D7;
+	Thu, 14 Mar 2024 15:55:08 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 3FA3F40769D7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1710431708;
+	bh=Y8/0hqrVxFQTEZ0jmU+lA12CNpebBoKMmCpYIktEhvc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tB6ZfcbyRL+Ck+4f5rYjjXdBNU5RA3AgUHOlbTWh06BMz6NubFGXSbXf9CpVAyQbi
+	 ueFfSiawWqFsBd2HphfGLsouVJMgv9E0vNzAdwYqLTyRcj2c2Bn9ZX2yliV+Kfvnn+
+	 /WVXEZTA7+vrpKx0+BIWyxHE9CMvPJhIZe8mvjIo=
+Date: Thu, 14 Mar 2024 18:55:08 +0300
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Pavel Begunkov <asml.silence@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, io-uring@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>, 
+	lvc-project@linuxtesting.org, Nikita Zhandarovich <n.zhandarovich@fintech.ru>, 
+	Roman Belyaev <belyaevrd@yandex.ru>
+Subject: Re: [PATCH 5.10/5.15] io_uring: fix registered files leak
+Message-ID: <e7cbf950-c732-4eb3-a91f-8f09249e4f72-pchelkin@ispras.ru>
+References: <20240312142313.3436-1-pchelkin@ispras.ru>
+ <8a9993c7-fd4d-44ff-8971-af59c7f3052c@kernel.dk>
+ <466e842f-66c6-4530-8c16-2b008fc3fbc6-pchelkin@ispras.ru>
+ <fb57be64-4da6-418b-9369-eae0db42a570@kernel.dk>
+ <085beb85-d1a4-4cb0-969b-e0f895a95738@kernel.dk>
+ <a8c81d35-e6ac-420c-9ffa-24dd9e009e29-pchelkin@ispras.ru>
+ <3f17f1d9-9029-4d03-9b0a-9c500cce54e9@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -107,99 +66,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bbeeb617-6730-4159-80b1-182841925cce@I-love.SAKURA.ne.jp>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=7406f415f386e786];
-	 TAGGED_RCPT(0.00)[28aaddd5a3221d7fd709];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+In-Reply-To: <3f17f1d9-9029-4d03-9b0a-9c500cce54e9@kernel.dk>
 
-On Sun 10-03-24 09:52:01, Tetsuo Handa wrote:
-> On 2024/01/11 18:21, Jan Kara wrote:
-> > On Wed 10-01-24 22:44:04, syzbot wrote:
-> >> syzbot suspects this issue was fixed by commit:
-> >>
-> >> commit 6f861765464f43a71462d52026fbddfc858239a5
-> >> Author: Jan Kara <jack@suse.cz>
-> >> Date:   Wed Nov 1 17:43:10 2023 +0000
-> >>
-> >>     fs: Block writes to mounted block devices
-> >>
-> >> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15135c0be80000
-> >> start commit:   a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git://git.ke..
-> >> git tree:       upstream
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=7406f415f386e786
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=28aaddd5a3221d7fd709
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b5bb80a80000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10193ee7280000
-> >>
-> >> If the result looks correct, please mark the issue as fixed by replying with: 
-> > 
-> > Makes some sense since fs cannot be corrupted by anybody while it is
-> > mounted. I just don't see how the reproducer would be corrupting the
-> > image... Still probably:
-> > 
-> > #syz fix: fs: Block writes to mounted block devices
-> > 
-> > and we'll see if syzbot can find new ways to tickle some similar problem.
-> > 
-> > 								Honza
+On 24/03/13 06:40PM, Jens Axboe wrote:
+> Hi,
 > 
-> Since the reproducer is doing open(O_RDWR) before switching loop devices
-> using ioctl(LOOP_SET_FD/LOOP_CLR_FD), I think that that commit converted
-> a run many times, multi threaded program into a run once, single threaded
-> program. That will likely hide all race bugs.
+> OK, here they are. Two patches attached for every stable kernel, that
+> gets rid of the remnants of the SCM related code:
 > 
-> Does that commit also affect open(3) (i.e. open for ioctl only) case?
-> If that commit does not affect open(3) case, the reproducer could continue
-> behaving as run many times, multi threaded program that overwrites
-> filesystem images using ioctl(LOOP_SET_FD/LOOP_CLR_FD), by replacing
-> open(O_RDWR) with open(3) ?
+> 5.4
+> 5.10 and 5.15 (same patches)
+> 6.1
+> 6.6
+> 6.7
+> 
+> Would appreciate if Fedor and Pavel could give them a once over, but I
+> think they are all fine. It's just deleting the code...
 
-Hum, that's a good point. I had a look into details how syskaller sets up
-loop devices and indeed it gets broken by CONFIG_BLK_DEV_WRITE_MOUNTED=n.
-Strace confirms that:
+Thank you, Jens!
 
-openat(AT_FDCWD, "/dev/loop0", O_RDWR)  = 4
-ioctl(4, LOOP_SET_FD, 3)                = 0
-close(3)                                = 0
-mkdir("./file0", 0777)                  = -1 EEXIST (File exists)
-mount("/dev/loop0", "./file0", "reiserfs", 0, "") = -1 EBUSY (Device or resource busy)
-ioctl(4, LOOP_CLR_FD)                   = 0
-close(4)                                = 0
+FWIW, I think it's all good and it eliminates the reported problem
+obviously. Compiled and tested the repro with my kernel config.
 
-which explains why syzbot was not able to reproduce some problems for which
-CONFIG_BLK_DEV_WRITE_MOUNTED=n should have made no difference (I wanted to
-have a look into that but other things kept getting higher priority).
+Just a minor notice - stable rules declare two common ways for upstream
+patch mentioning in backports [1]. And the first one starts from
+lowercase. No big deal here definitely but maybe somebody has some
+handling of these two variants - by regexps or similar, I actually don't
+know. But I see in the git history that Greg also applies the variant
+you've used.
 
-It should be easily fixable by opening /dev/loop0 with O_RDONLY instead of
-O_RDWR. Aleksandr?
+[1]: https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html#option-3
 
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--
+Fedor
 
