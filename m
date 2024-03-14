@@ -1,229 +1,221 @@
-Return-Path: <linux-kernel+bounces-102825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDAC887B795
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:01:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A7487B7A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71DF51F23580
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:01:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968AC1C224F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1081865B;
-	Thu, 14 Mar 2024 05:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BA6Rl4Ng"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2C318044
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC10728E05;
+	Thu, 14 Mar 2024 05:59:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF3110979;
+	Thu, 14 Mar 2024 05:59:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395944; cv=none; b=D4wM9zGxhwlXSPqktwjBc7UIw1TBv9JP4UFPUtD02MVAahAG4FfuS3hcmZa36zCGNBRnZmqvMKfRQeG5LHNUGFFJRFiOsfVGdEBSH987TxIgrUQBz4do8hp9OUwQT3LrSvFiEHgecg4v8njcSDuZhtG21yDHmucjEU3FlMQ4x8k=
+	t=1710395980; cv=none; b=kPTK7jJWlFLhoIIJmvFHyWkoznvjnIgRpiDvZ5xvGEe6GO4CkqSCtDAUKj2ns/vVHllmEGZ1Lhj1d0bfQKptJ4oOa8N1Xw/Aajp2Kr2YKN5es0MOgIS/XbypVsmMk9s3HuydzF/C/iIGs7U/Ru5o8H+TrH9qbA3ac0WR3/3d8JI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395944; c=relaxed/simple;
-	bh=whMVmxF3NoYz6Wx64jZe95t16CbQJLeON0KmO6ONXNo=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=USxFp5SmarW0y/LADIm+k0XUKor8INIyUQsE3nk4kvQbBPpjPkmOW//HowPFTwDif710deU6tiqsyZvGrFh00T82DUniF6VcBCEFaKmquQ434Ij3hioDp18qnLuAjnB481828t0X0VRBhsKYy++gKdLo0znBaUv8NVIMBOs1GxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BA6Rl4Ng; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a0815e3f9so10277747b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710395942; x=1711000742; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AScvNp0fYbHG89nkyRKQajNiisdR6SwLChBrHvGyhcc=;
-        b=BA6Rl4Ng0vnBae80umvCxBknVss+ZLbp7Yz/SWwZTk7IwLQ+wOs65KcFAHPqBP5rNE
-         XBeBQ0N8zJgi1h2p33BKL1zeqP0/ZnRzbno1t3lLhMHqAmZeSn4+KI+uLqKjX2y1DDbA
-         nVrtO3GHCNL30WT7IB5uYfGhJxD1lfAJF5w40EaVkEQfm4Ysrbkp5wHVjIlflh59/NLp
-         wpLHVosUbpn1WiEcPeCCmnOqJzma7XydPyPRWTKbAzteL3oVmW9rZQw5Xh+SrAp2LgIX
-         TudOCpXnSyiT52G73ihG0k5rGYtO7Wa+SYjWfaBDEHMr4a80vQcrPrukelNSLyTdCeys
-         RJ0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710395942; x=1711000742;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AScvNp0fYbHG89nkyRKQajNiisdR6SwLChBrHvGyhcc=;
-        b=lyKAoJTcWHqthnCK6GdWSFTpPDM1nc+U9juJP2hSMxo1GdGMxUKx/nZKhtZb3k7mcA
-         3oIOIUQr4EqnOz/1y9oq5wRKcXqWNGB7LhSuEPP74z/Sn7chI1EOg39zOWwYvdMyUkBM
-         y98+68mIqGZRBGBSnrXrjW0uPnqQ2GilmvRPJhkmvnKJbx3JxKhgiRM5+JyYX8bXhHQL
-         sZCeO6h/OpR8Uy6OHyXW+4BPbuPjZwbTYkflrsoWNbDriMN/sYeKzbm7mQqIgg24I2fS
-         Khqr2MNv4dlY8b2cHQbiUp/WpgItAYAmUFhvtIQhdDcIZoYOYJxNoKuHJS2ru/pXKF6d
-         BCjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrQooyDXDKbNnn4pX1qkEZfnlHVjMP2WrW30fddGnrlHRHcC/62KXHl1qZ0V/1EGu4Ml5GC0cf/9elrnBhSoxEeDSmbZrSmYejPqp2
-X-Gm-Message-State: AOJu0YwBFxLffviaX1cIbyQaVQA2csH29dbFxrr0rAoRt9kyBZ+SG7mm
-	mvGMoMNnfPFARVWto1+YWEogpOT/vqyQlMJGoko2Bp73H9ucdWPG/dI1fBMw/VHwgfc+lYOYuNp
-	TlnSoCw==
-X-Google-Smtp-Source: AGHT+IFFkMR91+4WamnF5jU1jy66HUh37ZDG5SlCY/q6Kc7cyBxemp5moQUFnelv0KCgKJs0ZPJ7qApHXmTd
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:449f:3bde:a4cd:806a])
- (user=irogers job=sendgmr) by 2002:a81:4886:0:b0:60a:66b9:c089 with SMTP id
- v128-20020a814886000000b0060a66b9c089mr149852ywa.8.1710395942348; Wed, 13 Mar
- 2024 22:59:02 -0700 (PDT)
-Date: Wed, 13 Mar 2024 22:58:35 -0700
-In-Reply-To: <20240314055839.1975063-1-irogers@google.com>
-Message-Id: <20240314055839.1975063-9-irogers@google.com>
+	s=arc-20240116; t=1710395980; c=relaxed/simple;
+	bh=OpLaZbtp+WBO3m+PzveXLptrfgHrJ/P+34zDvkbnGLY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=nQ2h2hR8AZzAQ6od5/GQI3cJo+GRW+Z7Xb3vSJc5bcb1JvoQhHWa4hDapBex7+PtZPHGjjzHEYJYbS4tghaQ4vS86hquA0cK87RGv8sfvKXxJEXJ2r5T4xfI4lya1h5FD0QS7Pf65sBViqO4PRo5FDN8bz5h086F+QDilJtXXSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FBDB1007;
+	Wed, 13 Mar 2024 23:00:13 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.53.138])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 004B03F73F;
+	Wed, 13 Mar 2024 22:59:31 -0700 (PDT)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-arm-kernel@lists.infradead.org,
+	suzuki.poulose@arm.com
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	James Clark <james.clark@arm.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	coresight@lists.linaro.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Leo Yan <leo.yan@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: [PATCH V7 04/11] coresight: Add helpers registering/removing both AMBA and platform drivers
+Date: Thu, 14 Mar 2024 11:28:36 +0530
+Message-Id: <20240314055843.2625883-5-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240314055843.2625883-1-anshuman.khandual@arm.com>
+References: <20240314055843.2625883-1-anshuman.khandual@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240314055839.1975063-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 08/12] perf jevents: Add dtlb metric group for AMD
-From: Ian Rogers <irogers@google.com>
-To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Add metrics that give an overview and details of the dtlb (zen1, zen2,
-zen3).
+This adds two different helpers i.e coresight_init_driver()/remove_driver()
+enabling coresight devices to register or remove AMBA and platform drivers.
+This changes replicator and funnel devices to use above new helpers.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Reviewed-by: James Clark <james.clark@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- tools/perf/pmu-events/amd_metrics.py | 109 +++++++++++++++++++++++++++
- 1 file changed, 109 insertions(+)
+ drivers/hwtracing/coresight/coresight-core.c  | 29 +++++++++++++++++++
+ .../hwtracing/coresight/coresight-funnel.c    | 19 ++----------
+ .../coresight/coresight-replicator.c          | 20 ++-----------
+ include/linux/coresight.h                     |  7 +++++
+ 4 files changed, 41 insertions(+), 34 deletions(-)
 
-diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
-index 519aa9ab8801..1bddfb939597 100755
---- a/tools/perf/pmu-events/amd_metrics.py
-+++ b/tools/perf/pmu-events/amd_metrics.py
-@@ -120,6 +120,114 @@ def AmdBr():
-                      description="breakdown of retired branch instructions")
+diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+index b83613e34289..9fc6f6b863e0 100644
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -1398,6 +1398,35 @@ static void __exit coresight_exit(void)
+ module_init(coresight_init);
+ module_exit(coresight_exit);
  
++int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
++			  struct platform_driver *pdev_drv)
++{
++	int ret;
++
++	ret = amba_driver_register(amba_drv);
++	if (ret) {
++		pr_err("%s: error registering AMBA driver\n", drv);
++		return ret;
++	}
++
++	ret = platform_driver_register(pdev_drv);
++	if (!ret)
++		return 0;
++
++	pr_err("%s: error registering platform driver\n", drv);
++	amba_driver_unregister(amba_drv);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(coresight_init_driver);
++
++void coresight_remove_driver(struct amba_driver *amba_drv,
++			     struct platform_driver *pdev_drv)
++{
++	amba_driver_unregister(amba_drv);
++	platform_driver_unregister(pdev_drv);
++}
++EXPORT_SYMBOL_GPL(coresight_remove_driver);
++
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
+ MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
+diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
+index ef1a0abfee4e..ff3ea0670a5b 100644
+--- a/drivers/hwtracing/coresight/coresight-funnel.c
++++ b/drivers/hwtracing/coresight/coresight-funnel.c
+@@ -410,27 +410,12 @@ static struct amba_driver dynamic_funnel_driver = {
  
-+def AmdDtlb() -> Optional[MetricGroup]:
-+  global _zen_model
-+  if _zen_model >= 4:
-+      return None
-+
-+  d_dat = Event("ls_dc_accesses") if _zen_model <= 3 else None
-+  d_h4k = Event("ls_l1_d_tlb_miss.tlb_reload_4k_l2_hit")
-+  d_hcoal = Event("ls_l1_d_tlb_miss.tlb_reload_coalesced_page_hit") if _zen_model >= 2 else 0
-+  d_h2m = Event("ls_l1_d_tlb_miss.tlb_reload_2m_l2_hit")
-+  d_h1g = Event("ls_l1_d_tlb_miss.tlb_reload_1g_l2_hit")
-+
-+  d_m4k = Event("ls_l1_d_tlb_miss.tlb_reload_4k_l2_miss")
-+  d_mcoal = Event("ls_l1_d_tlb_miss.tlb_reload_coalesced_page_miss") if _zen_model >= 2 else 0
-+  d_m2m = Event("ls_l1_d_tlb_miss.tlb_reload_2m_l2_miss")
-+  d_m1g = Event("ls_l1_d_tlb_miss.tlb_reload_1g_l2_miss")
-+
-+  d_w0 = Event("ls_tablewalker.dc_type0") if _zen_model <= 3 else None
-+  d_w1 = Event("ls_tablewalker.dc_type1") if _zen_model <= 3 else None
-+  walks = d_w0 + d_w1
-+  walks_r = d_ratio(walks, interval_sec)
-+  ins_w = d_ratio(ins, walks)
-+  l1 = d_dat
-+  l1_r = d_ratio(l1, interval_sec)
-+  l2_hits = d_h4k + d_hcoal + d_h2m + d_h1g
-+  l2_miss = d_m4k + d_mcoal + d_m2m + d_m1g
-+  l2_r = d_ratio(l2_hits + l2_miss, interval_sec)
-+  l1_miss = l2_hits + l2_miss + walks
-+  l1_hits = max(l1 - l1_miss, 0)
-+  ins_l = d_ratio(ins, l1_miss)
-+
-+  return MetricGroup("dtlb", [
-+      MetricGroup("dtlb_ov", [
-+          Metric("dtlb_ov_insn_bt_l1_miss",
-+                 "DTLB overview: instructions between l1 misses.", ins_l,
-+                 "insns"),
-+          Metric("dtlb_ov_insn_bt_walks",
-+                 "DTLB overview: instructions between dtlb page table walks.",
-+                 ins_w, "insns"),
-+      ]),
-+      MetricGroup("dtlb_l1", [
-+          Metric("dtlb_l1_hits",
-+                 "DTLB L1 hits as percentage of all DTLB L1 accesses.",
-+                 d_ratio(l1_hits, l1), "100%"),
-+          Metric("dtlb_l1_miss",
-+                 "DTLB L1 misses as percentage of all DTLB L1 accesses.",
-+                 d_ratio(l1_miss, l1), "100%"),
-+          Metric("dtlb_l1_reqs", "DTLB L1 accesses per second.", l1_r,
-+                 "insns/s"),
-+      ]),
-+      MetricGroup("dtlb_l2", [
-+          Metric("dtlb_l2_hits",
-+                 "DTLB L2 hits as percentage of all DTLB L2 accesses.",
-+                 d_ratio(l2_hits, l2_hits + l2_miss), "100%"),
-+          Metric("dtlb_l2_miss",
-+                 "DTLB L2 misses as percentage of all DTLB L2 accesses.",
-+                 d_ratio(l2_miss, l2_hits + l2_miss), "100%"),
-+          Metric("dtlb_l2_reqs", "DTLB L2 accesses per second.", l2_r,
-+                 "insns/s"),
-+          MetricGroup("dtlb_l2_4kb", [
-+              Metric(
-+                  "dtlb_l2_4kb_hits",
-+                  "DTLB L2 4kb page size hits as percentage of all DTLB L2 4kb "
-+                  "accesses.", d_ratio(d_h4k, d_h4k + d_m4k), "100%"),
-+              Metric(
-+                  "dtlb_l2_4kb_miss",
-+                  "DTLB L2 4kb page size misses as percentage of all DTLB L2 4kb"
-+                  "accesses.", d_ratio(d_m4k, d_h4k + d_m4k), "100%")
-+          ]),
-+          MetricGroup("dtlb_l2_coalesced", [
-+              Metric(
-+                  "dtlb_l2_coal_hits",
-+                  "DTLB L2 coalesced page (16kb) hits as percentage of all DTLB "
-+                  "L2 coalesced accesses.", d_ratio(d_hcoal,
-+                                                    d_hcoal + d_mcoal), "100%"),
-+              Metric(
-+                  "dtlb_l2_coal_miss",
-+                  "DTLB L2 coalesced page (16kb) misses as percentage of all "
-+                  "DTLB L2 coalesced accesses.",
-+                  d_ratio(d_mcoal, d_hcoal + d_mcoal), "100%")
-+          ]),
-+          MetricGroup("dtlb_l2_2mb", [
-+              Metric(
-+                  "dtlb_l2_2mb_hits",
-+                  "DTLB L2 2mb page size hits as percentage of all DTLB L2 2mb "
-+                  "accesses.", d_ratio(d_h2m, d_h2m + d_m2m), "100%"),
-+              Metric(
-+                  "dtlb_l2_2mb_miss",
-+                  "DTLB L2 2mb page size misses as percentage of all DTLB L2 "
-+                  "accesses.", d_ratio(d_m2m, d_h2m + d_m2m), "100%")
-+          ]),
-+          MetricGroup("dtlb_l2_1g", [
-+              Metric(
-+                  "dtlb_l2_1g_hits",
-+                  "DTLB L2 1gb page size hits as percentage of all DTLB L2 1gb "
-+                  "accesses.", d_ratio(d_h1g, d_h1g + d_m1g), "100%"),
-+              Metric(
-+                  "dtlb_l2_1g_miss",
-+                  "DTLB L2 1gb page size misses as percentage of all DTLB L2 "
-+                  "1gb accesses.", d_ratio(d_m1g, d_h1g + d_m1g), "100%")
-+          ]),
-+      ]),
-+      MetricGroup("dtlb_walks", [
-+          Metric("dtlb_walks_reqs", "DTLB page table walks per second.",
-+                 walks_r, "walks/s"),
-+      ]),
-+  ], description="Data TLB metrics")
-+
-+
- def AmdItlb():
-   global _zen_model
-   l2h = Event("bp_l1_tlb_miss_l2_tlb_hit", "bp_l1_tlb_miss_l2_hit")
-@@ -386,6 +494,7 @@ def main() -> None:
+ static int __init funnel_init(void)
+ {
+-	int ret;
+-
+-	ret = platform_driver_register(&static_funnel_driver);
+-	if (ret) {
+-		pr_info("Error registering platform driver\n");
+-		return ret;
+-	}
+-
+-	ret = amba_driver_register(&dynamic_funnel_driver);
+-	if (ret) {
+-		pr_info("Error registering amba driver\n");
+-		platform_driver_unregister(&static_funnel_driver);
+-	}
+-
+-	return ret;
++	return coresight_init_driver("funnel", &dynamic_funnel_driver, &static_funnel_driver);
+ }
  
-   all_metrics = MetricGroup("", [
-       AmdBr(),
-+      AmdDtlb(),
-       AmdItlb(),
-       AmdHwpf(),
-       AmdSwpf(),
+ static void __exit funnel_exit(void)
+ {
+-	platform_driver_unregister(&static_funnel_driver);
+-	amba_driver_unregister(&dynamic_funnel_driver);
++	coresight_remove_driver(&dynamic_funnel_driver, &static_funnel_driver);
+ }
+ 
+ module_init(funnel_init);
+diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+index 73452d9dc13b..ddb530a8436f 100644
+--- a/drivers/hwtracing/coresight/coresight-replicator.c
++++ b/drivers/hwtracing/coresight/coresight-replicator.c
+@@ -416,27 +416,13 @@ static struct amba_driver dynamic_replicator_driver = {
+ 
+ static int __init replicator_init(void)
+ {
+-	int ret;
+-
+-	ret = platform_driver_register(&static_replicator_driver);
+-	if (ret) {
+-		pr_info("Error registering platform driver\n");
+-		return ret;
+-	}
+-
+-	ret = amba_driver_register(&dynamic_replicator_driver);
+-	if (ret) {
+-		pr_info("Error registering amba driver\n");
+-		platform_driver_unregister(&static_replicator_driver);
+-	}
+-
+-	return ret;
++	return coresight_init_driver("replicator", &dynamic_replicator_driver,
++				     &static_replicator_driver);
+ }
+ 
+ static void __exit replicator_exit(void)
+ {
+-	platform_driver_unregister(&static_replicator_driver);
+-	amba_driver_unregister(&dynamic_replicator_driver);
++	coresight_remove_driver(&dynamic_replicator_driver, &static_replicator_driver);
+ }
+ 
+ module_init(replicator_init);
+diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+index 5f288d475490..653f1712eb77 100644
+--- a/include/linux/coresight.h
++++ b/include/linux/coresight.h
+@@ -12,6 +12,8 @@
+ #include <linux/io.h>
+ #include <linux/perf_event.h>
+ #include <linux/sched.h>
++#include <linux/amba/bus.h>
++#include <linux/platform_device.h>
+ 
+ /* Peripheral id registers (0xFD0-0xFEC) */
+ #define CORESIGHT_PERIPHIDR4	0xfd0
+@@ -658,4 +660,9 @@ coresight_find_output_type(struct coresight_platform_data *pdata,
+ 			   enum coresight_dev_type type,
+ 			   union coresight_dev_subtype subtype);
+ 
++int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
++			  struct platform_driver *pdev_drv);
++
++void coresight_remove_driver(struct amba_driver *amba_drv,
++			     struct platform_driver *pdev_drv);
+ #endif		/* _LINUX_COREISGHT_H */
 -- 
-2.44.0.278.ge034bb2e1d-goog
+2.25.1
 
 
