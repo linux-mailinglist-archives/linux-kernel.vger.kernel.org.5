@@ -1,125 +1,113 @@
-Return-Path: <linux-kernel+bounces-103576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D79C387C151
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:34:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B00F87C156
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:35:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91DFF283424
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:34:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A2BCB21C41
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:35:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7191A7351E;
-	Thu, 14 Mar 2024 16:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679767353F;
+	Thu, 14 Mar 2024 16:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="JSAM8cgc"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PX8Zf4od"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A802C9E;
-	Thu, 14 Mar 2024 16:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1195270CA8;
+	Thu, 14 Mar 2024 16:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710434051; cv=none; b=Q+/xA+rfHPafY5atwuUetMjXlxqnW5WMj72ufs7RvMvkeppc16IAWw7+kFXWnUu5BBdWSV6Mqay3obY1mDxK39c+HeZ1p2qQnyiQ/G+3q5L32gQSlenqGTEYnBSuxwj6dc3T7aarGGgPrZNgfU/Rb58HX4g453CVUoZHBqh3YTk=
+	t=1710434115; cv=none; b=vGSBopvsGEsCWtPYh5xpkZwveC4SWccEAkLmxVReYYCgzxQRC8+8PPjQu2IROLBv/yoAJOkBpeU11cn95FoCfJvmJoHIpkwrSauWyQhClhDQQZQzyUouNV8XWhfltF5ioG+sqcmD+hLs1+16GZ7+7r3uSOg9Ei7keFKFfsncLq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710434051; c=relaxed/simple;
-	bh=kibFCeQMtEz5xXusvehuh0Ajm4crimAZT3g/L1kygAs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AxVNYmM+6srP8Su4exDTsj6sayGCk0SZc2SLgDYxkdLOSOc53uIZSiWXHhvi+Ie53P9HK7bTQO/cujhbRa95E25JVyrWN6TN6pvorrJmid9Pv2Dwoz5p/YN4+OIoGDCH6a8GmQrHa7TnjsdChcjWtTPHyTKX2kvC1XwVWbTKYuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=JSAM8cgc; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9E10940E0196;
-	Thu, 14 Mar 2024 16:34:06 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 8u331dPGBT4t; Thu, 14 Mar 2024 16:34:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1710434044; bh=GGF0W7br1YH0ZUlowMCaPMKKH8Q1iNP76Vr0o+a0Qno=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JSAM8cgcbWNcgxL5xkU6azEPrkz//J+mlQKFJ/7VqRuZZv+Uwu2dVlcW7GpSsD8K1
-	 jGurAjPDQXcf0lNcGO20/AXzsa+stfPbYHuY6Zr47bNGeYgqfq8LjQHc+hQqwMV5NT
-	 P8ilKqJBqq+JAxMMIY/54tgtojeeOlTXp/u4t2simmbbg/zsJlmxfcxCXf9f1GJhvx
-	 y4n6MLLdHSNcYzkQ49D/xrkolApNRt9UIh8a5MwLKKUxS8gETCwWi2NFhGuSjz42uK
-	 xJ+M3I4YiPyVe8gvYa8ghAYu9gv9PiTIk+KoyNx3I6UTev0DBFJJuUT9waQKrv9T+K
-	 Z4hasRC9L8UjFNa7tyKaj+EDdUJnEBTlWB1RnIO3pQNWIhy50KKlW8sUFZc71xMva0
-	 gdg6livm0X7k1KxPJjo2droDcfx7XCayZX1JIE5OLjYYC5AVd4uAbXMqBfeDoB6qJk
-	 EFZQAzxSV+rxEU4h+RkxuerWIwJIXdVJi0Z2MNIIOhz8YwnOzlo73fN05fsNk0pGj6
-	 yGGOlMYUFxWB8gtuBxXnc4uLS4uWZkLTgmNEvcrcPRcC9mR9PR/Wby5EXFWNEugTfi
-	 fkQqkSSMFAV3KW/SqtHEEVg2mircpzHLR/bcvrRK7nb9q1Acu2ttVHZpHjYC2glhrd
-	 nIXWKv4LaCeAHb3Mzt/TL/ak=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3C91240E016B;
-	Thu, 14 Mar 2024 16:33:46 +0000 (UTC)
-Date: Thu, 14 Mar 2024 17:33:45 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Willgerodt, Felix" <felix.willgerodt@intel.com>
-Cc: Vignesh Balasubramanian <vigbalas@amd.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-	"npiggin@gmail.com" <npiggin@gmail.com>,
-	"christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-	"aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
-	"naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"jinisusan.george@amd.com" <jinisusan.george@amd.com>,
-	"matz@suse.de" <matz@suse.de>,
-	"binutils@sourceware.org" <binutils@sourceware.org>,
-	"jhb@FreeBSD.org" <jhb@freebsd.org>
-Subject: Re: [PATCH 0/1] Add XSAVE layout description to Core files for
- debuggers to support varying XSAVE layouts
-Message-ID: <20240314163345.GBZfMm6Ve5QMY_xPjl@fat_crate.local>
-References: <20240314112359.50713-1-vigbalas@amd.com>
- <MN2PR11MB4566BF54DEFF9B7627B096B78E292@MN2PR11MB4566.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1710434115; c=relaxed/simple;
+	bh=WD4pFfaN5EK2gR4oPGKEc40ZY4i6lXlbjdoFiH6yqdA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=uKnD5kmy1x7ic+6P7+CH9ph+5qa9pPVmCkedHMDyf1j3xQ+xT7JsghlAEyR74NT4k7glqI17a+VFx25t7XQhRXE82Wz4g/Vh9i/+dIqmC4bQAFzXgCpf59N/w4+TUtPFDkg4SK9BPDnKaw5KqaukG5bHMP/Jr1vKJrFm55hDydU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PX8Zf4od; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33d38c9ca5bso653486f8f.2;
+        Thu, 14 Mar 2024 09:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710434112; x=1711038912; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3febcg30MUvzziLDV9p5DhB+HO5C8w1a7PC8hf/KTOA=;
+        b=PX8Zf4odVGVb8SbryYl5liUFDm4h8siJ/9fwNrzw+b4viHfBwBsHywa72wpgC1ZQGv
+         ff43JKfxEpCEckKW7iosVHVyem1wzKyWlEPcMmXgTKYfKFK8zrrFw3yxylSACaXFoJM4
+         BGt3VyvFfL+mzMwGt/tEwRu61ojCV8c+sE7RF5qmMehJZo2O2IBiN04HuzRqYMWY1Wjw
+         5mMcA8TkTHLFSwR3m8HfNa01YGGn0DNGco3YoHBu0xSyQHUjgmJpzYwrM0dBtMByTByp
+         ovxqXLpCxdxuX6bsQ4gkmKUX0EuLPoyWdkn21hPqStz0Bhd8PJimnoB+Vud4IaPZiJQg
+         RjJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710434112; x=1711038912;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3febcg30MUvzziLDV9p5DhB+HO5C8w1a7PC8hf/KTOA=;
+        b=rUBj17wvIhNV9LW/OrlnwofEyoNr1DnxwPjL3RiWG9uNAv/aEhuzoOCxJ+wvD4o2zL
+         dzYahlg4hcZ0Dg6wYdaSswd2U/8D98zu/Ia6ABGdDnGu1ydyfQ265idn/t0CxK2XnM6T
+         TfmFHqDk5Prr7uCwWwq4miOYLr5XAwBzGkF3VW6scUZc8q70pS9LTrQC2YigSeaL66J0
+         FOtRx4pRWJe/tdbbcN0Zx5xh7/vbCtv7lCrLLONGZtFNoQPPTzGybG2nkSZYQQd5luZO
+         O4pGwUCxsCqea8e5wfyrFUmuiIlM/tY0MnuFCOCMNKY9bnHkcqtmPQIb0uznMw4inYXM
+         HAMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXHRSYCFJobSTa8taetbQdtdPaHcuD7qnAEXxhpPNZBA00xmo87yArxWUHacMpn21s9Nm8Zre0Rb/JfVKdkyzue6XEO+Z7RVRF/XqKx
+X-Gm-Message-State: AOJu0YzdrM7152flRUhYHyf4XRCATr9DCOcMYQI2zD+qsvftBklvOdMo
+	+nLjfBAv8Y3uRTEmZU1iC0uNHtv3JTuwXdMHfPYmXQdhznayz1aY
+X-Google-Smtp-Source: AGHT+IE7wio3dnoMGVtXz8wtABUS0fpDn3g6mBSI8Z6/SWNg9HZmBIqQ1Zp7CyQqZNKiMCi/VKBiZA==
+X-Received: by 2002:a5d:5750:0:b0:33e:34aa:d78a with SMTP id q16-20020a5d5750000000b0033e34aad78amr1707480wrw.8.1710434112289;
+        Thu, 14 Mar 2024 09:35:12 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id q15-20020adff78f000000b0033e192a5852sm1126824wrp.30.2024.03.14.09.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 09:35:11 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/gma500: Fix spelling mistake "patter" -> "pattern"
+Date: Thu, 14 Mar 2024 16:35:11 +0000
+Message-Id: <20240314163511.2372458-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <MN2PR11MB4566BF54DEFF9B7627B096B78E292@MN2PR11MB4566.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024 at 04:25:44PM +0000, Willgerodt, Felix wrote:
-> I am wondering if it wouldn't be easier for everyone if corefiles would just
-> contain space for all possible XSAVE components?
+There is a spelling mistake in a DRM_DEBUG_KMS message. Fix it.
 
-You mean we should shuffle out from the kernel 8K of AMX state even if
-nothing uses it or the machine doesn't even support it?
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's silly.
-
-Please have a look at this:
-
-+struct xfeat_component {
-+       u32 xfeat_type;
-+       u32 xfeat_sz;
-+       u32 xfeat_off;
-+       u32 xfeat_flags;
-+} __packed;
-
-What is wrong with having a blob of such xfeat_component things
-describing the XSTATE buffer and parsing it in gdb?
-
-Thx.
-
+diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+index dd1eb7e9877d..cc2ed9b3fd2d 100644
+--- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
++++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+@@ -1547,7 +1547,7 @@ cdv_intel_dp_start_link_train(struct gma_encoder *encoder)
+ 	}
+ 
+ 	if (!clock_recovery) {
+-		DRM_DEBUG_KMS("failure in DP patter 1 training, train set %x\n", intel_dp->train_set[0]);
++		DRM_DEBUG_KMS("failure in DP pattern 1 training, train set %x\n", intel_dp->train_set[0]);
+ 	}
+ 
+ 	intel_dp->DP = DP;
 -- 
-Regards/Gruss,
-    Boris.
+2.39.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
