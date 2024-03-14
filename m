@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-102819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32FE987B78A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:59:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F5B187B78E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B616228646B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:59:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E271A1F233D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85CD114F62;
-	Thu, 14 Mar 2024 05:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6613E17555;
+	Thu, 14 Mar 2024 05:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IgvQmxMm"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EBhAJVK5"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E9E13FF2
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353A914AB0
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395932; cv=none; b=CZTIboE4Q+QgPvd4RqM81qiurAUx4YRODdKVIwzXQ/BhjptnYtwtAX+B8wVnM6Ow7xMA/KYnxFivRghRIlFxHD3P6pc5ZvYC0mJkt3q6IAxY8iRa24+ooUFg0uGlXvctD9vWHCFM+Gd272BB0XmSspOLIdEOBGNKpf/Bh8WhD88=
+	t=1710395934; cv=none; b=L6rrZFnE7+OwUyuAgABf9mVRorN+iYPrJTjBrvxKfQOtu/0ydENTP16Vw7og4V8tiM4jrEC9RvFNrwrW5ieVvaTdNTYDP6vxpjyJa+vI3+7f7lc95KshO7xAOPF7jY2LelMDk4fIijlcd0ZtfbQoD6W+NDNnmqkGZsbYIF5zSVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395932; c=relaxed/simple;
-	bh=ANNGBGcZ3vDgNq3zL21zrHIvWLxXdmT224ZJ8sCgbXk=;
+	s=arc-20240116; t=1710395934; c=relaxed/simple;
+	bh=TmZjr1X7q9cH5lQWNtCsYCRCu/YSYQB8OaB2AWUPRcA=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=iEIaXNaqcsxhfI4VAHiwvO3Kv8P+aCoeGvv6H3CSugCGfvAN0D/FGnMr/MlHJ9dFi2rGTYDQCuAgImMDqpNVM2+N3p1fOe74ZyQcFtMkBqTZ0IyPqnKLOEq3diiw/GcwXWqVostsdss4Pwsw8XHO+BRH8V0SO6If4he9eyWe8oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IgvQmxMm; arc=none smtp.client-ip=209.85.128.202
+	 To:Content-Type; b=rVKyXR0GtxAC3CMHvQwbhM4NmAssDsGCNOfiSCUd9iwDG4MA56IvOMs8EctjDqJ0ulBP1b+XDNm69GXGsNV/h7aHhPhVGGkTmMTP1RhHYzCTa8P/1X9zJeC8gkSlZpPeH7oFvqMWa0v/gGV4qs/jRYG32DSF17nQpiun2FhNrfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EBhAJVK5; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a629e2121so11859427b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:58:51 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60cbba6fa0bso14084837b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:58:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710395930; x=1711000730; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710395932; x=1711000732; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=OEqFUQsewVgNTMEeM5wU4wFjtSmvLCXeb2V2OfeYmrA=;
-        b=IgvQmxMmCCmcOuj/Cx6M8n7hVRHZ+64QVWIp1umzp4RWmVZlBKKlmNJlzOMhiLAKgU
-         D2ehwpsf3jngvFbVUMYBsflj/GqFhSBes9fPwrXpRAlbs7hLwDC1qhu4CerFWh+vE+2E
-         XewRJ/xPXUerSwhyoFsKT8lVDA99JORsRCNYHw939BsEaBWLURVle/CzrV0ExG1S/irc
-         1vc4zWfxjPQ+mt6sKxvUBt5Gt26AyDxnxD1bb9qbpo5KSAjlCs8p6WIGa6/WMTG0Ry5z
-         ohWBOMRyiyijPYl7Nk7LCbp2vJGfk8mwJPoB+ULQpjDczC7gjFnLmIEPPzbzauphBOHG
-         CCxQ==
+        bh=5kqjdI3Mz70ShPxJH/La6sSgiKNcz9TbPXqY+nxcV2M=;
+        b=EBhAJVK5PnGtR8OPR1NG+3ArmxY6TXNyhiof0bifQGnZB/KXLKCAO42cG+fioTT/R9
+         BE1AFSnStU/jgBG6ZNGFjQfnifqukKY+3WV8k8IJuftGERZ+MGofiyJm7jsG9qihoLDj
+         sWWmdGxYKucAjs9h4tvsr/SBpNhpUyPbDSE8Wy4tqIZpDiBIfl5Kk0GLJYecnLH/uaxH
+         M7CNXFxrNt6GdKJpYKq5z6ogixSHWA/l3fSpvFIGrKetvb+DsImFlzFgHPK9YJQ8iGoO
+         lsDvo/FUqGqtRHjj3gIJqh4ug1mEIVg5ICWgIRWvnPUcCkbny9eE/CIja3AwsAHFS8yD
+         5JmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710395930; x=1711000730;
+        d=1e100.net; s=20230601; t=1710395932; x=1711000732;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OEqFUQsewVgNTMEeM5wU4wFjtSmvLCXeb2V2OfeYmrA=;
-        b=XmV9JZ1MAWEdE2uC3p/VMFP4IV3vTJtOeIiAvF+3CmBd18OWPGLQes1bsSuFdy9wvP
-         Ehkfon6jP4VyGqmytp61v4/v58fWlvbMYE8lEd/r9a3KNx3vLPbPJWHZMMkxNo8IH6+M
-         GrNijTuP4i4KOVfH+ghkbCau435oRL2w/xuLJAvpUM486XYaYbD1LqfqjGw+ElJfRcF9
-         MnvJGnaJNZTCKBo6caEIeQ+HX8c888qh2aB0wENgj6Ig5Cssb8PBNrm+whQ2VbgomOKy
-         HY2jPscMrpISompdzcmjVnqYgeWqscFJEIYvTLImywNm3u+Ome6mz8DVtTZ9tE0mz9VX
-         dFGA==
-X-Forwarded-Encrypted: i=1; AJvYcCUeJqJVvbt8nDlc4xwQkh3Ke/5hque4wZu8THG7hnYWak8hrjy3h5BLAxBhKN7JUc/y9/MADv/d9WgDFpVUk8AauO2ibOFyTiHwlIdY
-X-Gm-Message-State: AOJu0YyM7zs7OWb31jrShT++RPVv75aKUQn3kP0ImcecGbirF6j7Oudr
-	UP0GprzlUS5QyeCLcYgaB8Fnq6is6suqcaSb084n/qt8acFfY+1zjxDd7B2iWO0zajW+8q+cW8r
-	Djcbdfw==
-X-Google-Smtp-Source: AGHT+IHT5rYavCu3O8x9OWfHu1PU/pOaCHZYG/nQxLnQ3Zyb39rA6u658fANhWXSCYfWQxXIQEfB/afY9/d3
+        bh=5kqjdI3Mz70ShPxJH/La6sSgiKNcz9TbPXqY+nxcV2M=;
+        b=mejwGPvZcesxFn0rS+L0u+J6vnUqqFlKoOrBNySUGrj7B66M1c4vSLln2AnFm0UUlh
+         kCuznKcPtHaWVB8LvEBHMGOlAEl/ZtlgmSSihmWOYQY1u4CygWrEKI+IazyEJ0OyQ2xr
+         CRlwHfqENvOAFeAfR0NlplKR5PxKr3gZMhMaqGEXg4iBOONc38LlEgnZpR9OFeBtQ05i
+         gdgjTC1HsYrJy+UTFWbrbGpjugYCPri4FwYaQQbyfzoDs3tDt519P27+keW1aJIVmU9J
+         k8AKYfjFWEV66UNjdjq1zdMzkehrMccobDeAD38Gs1xBaFKYhL0LNxvKtWwL/PhQ7y4P
+         JdFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUpfgAS5Gu34F6PkuTSKJ6aimMBhBYTF9+MQ8MtnT2CWab2tXDTW6PNn3Sueedxa7PZdcdZCjapra0MNPTvzuWF+qVW6Wv4WV/b7+ev
+X-Gm-Message-State: AOJu0YxBwiOwblX/fJA0XrEhTD0CUyDMBxSx7HXMad5ffPs5lCpk3BRa
+	5fLdEZ58j/sFxPV7Lm/68Mlxv7LgKEM4DH4giJTtKoebntdU1eukMjXbZGONHmxUxG5b+Md2kJ0
+	JtWyqFA==
+X-Google-Smtp-Source: AGHT+IHnDGcpkrYyy1dIlgPlwKh6DeetOXeGIVDucIy4Xp2XHB5PqzZtCKmDu2XfMYM5K7xn9HL8uoH0G+Bp
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:449f:3bde:a4cd:806a])
- (user=irogers job=sendgmr) by 2002:a05:6902:1a45:b0:dcd:88e9:e508 with SMTP
- id cy5-20020a0569021a4500b00dcd88e9e508mr252693ybb.5.1710395930282; Wed, 13
- Mar 2024 22:58:50 -0700 (PDT)
-Date: Wed, 13 Mar 2024 22:58:29 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:220e:b0:dcb:bc80:8333 with SMTP
+ id dm14-20020a056902220e00b00dcbbc808333mr211969ybb.13.1710395932244; Wed, 13
+ Mar 2024 22:58:52 -0700 (PDT)
+Date: Wed, 13 Mar 2024 22:58:30 -0700
 In-Reply-To: <20240314055839.1975063-1-irogers@google.com>
-Message-Id: <20240314055839.1975063-3-irogers@google.com>
+Message-Id: <20240314055839.1975063-4-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240314055839.1975063-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 02/12] perf jevents: Add idle metric for AMD zen models
+Subject: [PATCH v3 03/12] perf jevents: Add upc metric for uops per cycle for AMD
 From: Ian Rogers <irogers@google.com>
 To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
 	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -88,54 +88,66 @@ To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>,
 	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Compute using the msr PMU the percentage of wallclock cycles where the
-CPUs are in a low power state.
+The metric adjusts for whether or not SMT is on.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/amd_metrics.py | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ tools/perf/pmu-events/amd_metrics.py | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
-index fd420466b999..e069b95d6470 100755
+index e069b95d6470..c64470d4822e 100755
 --- a/tools/perf/pmu-events/amd_metrics.py
 +++ b/tools/perf/pmu-events/amd_metrics.py
-@@ -1,7 +1,8 @@
+@@ -1,8 +1,8 @@
  #!/usr/bin/env python3
  # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--from metric import (d_ratio, has_event, Event, JsonEncodeMetric, JsonEncodeMetricGroupDescriptions,
--                    LoadEvents, Metric, MetricGroup, Select)
-+from metric import (d_ratio, has_event, max, Event, JsonEncodeMetric,
-+                    JsonEncodeMetricGroupDescriptions, LoadEvents, Metric,
-+                    MetricGroup, Select)
+ from metric import (d_ratio, has_event, max, Event, JsonEncodeMetric,
+-                    JsonEncodeMetricGroupDescriptions, LoadEvents, Metric,
+-                    MetricGroup, Select)
++                    JsonEncodeMetricGroupDescriptions, Literal, LoadEvents,
++                    Metric, MetricGroup, Select)
  import argparse
  import json
  import math
-@@ -12,6 +13,16 @@ _args = None
+@@ -10,8 +10,17 @@ import os
  
+ # Global command line arguments.
+ _args = None
+-
++_zen_model: int = 1
  interval_sec = Event("duration_time")
- 
-+def Idle() -> Metric:
-+  cyc = Event("msr/mperf/")
-+  tsc = Event("msr/tsc/")
-+  low = max(tsc - cyc, 0)
-+  return Metric(
-+      "idle",
-+      "Percentage of total wallclock cycles where CPUs are in low power state (C1 or deeper sleep state)",
-+      d_ratio(low, tsc), "100%")
++cycles = Event("cycles")
++# Number of CPU cycles scaled for SMT.
++smt_cycles = Select(cycles / 2, Literal("#smt_on"), cycles)
 +
-+
- def Rapl() -> MetricGroup:
-   """Processor socket power consumption estimate.
++def AmdUpc() -> Metric:
++  ops = Event("ex_ret_ops", "ex_ret_cops")
++  upc = d_ratio(ops, smt_cycles)
++  return Metric("upc", "Micro-ops retired per core cycle (higher is better)",
++                upc, "uops/cycle")
  
-@@ -55,6 +66,7 @@ def main() -> None:
+ def Idle() -> Metric:
+   cyc = Event("msr/mperf/")
+@@ -45,6 +54,7 @@ def Rapl() -> MetricGroup:
+ 
+ def main() -> None:
+   global _args
++  global _zen_model
+ 
+   def dir_path(path: str) -> str:
+     """Validate path is a directory for argparse."""
+@@ -65,7 +75,10 @@ def main() -> None:
+   directory = f"{_args.events_path}/x86/{_args.model}/"
    LoadEvents(directory)
  
++  _zen_model = int(_args.model[6:])
++
    all_metrics = MetricGroup("", [
-+      Idle(),
++      AmdUpc(),
+       Idle(),
        Rapl(),
    ])
- 
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
