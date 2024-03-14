@@ -1,247 +1,258 @@
-Return-Path: <linux-kernel+bounces-103198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C196287BC3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7883B87BC41
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:53:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D3C1F21AD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:52:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E64811F2206E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0516F529;
-	Thu, 14 Mar 2024 11:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C52F6F507;
+	Thu, 14 Mar 2024 11:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Dz4kb4ps"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GOTurZuq"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2596F060;
-	Thu, 14 Mar 2024 11:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710417111; cv=fail; b=XNro5cP74F+ynTicpGq1OUH0cSoKdAOMMbjnn/Ifo0w6iGZg4ECYPdU3Rq7rxb6iRmlzzJcXzqCzzUdLIil6W0A8mtkmc8/rU5ueKzNaqh36816yqlzRar7ZAo58zdVZ9fc2/Q1nzgbOCXpz8g675DfR04UuXR2FaUyccY3pAhA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710417111; c=relaxed/simple;
-	bh=+YGwuRBObJ7WrUrBwf/tQnCLPpCYGAUuzvOnIeVSL8I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BlWaZtHru28/rJNyMQSRl5QH6sfHa+dr07+v80eOwaQfnqtxUKYJ2L5WbtKj0tmJKUBBHriYMRqYznNrlFLm1Pb9SefgC2uuyFSNTAnO+YxLt160bHbO1cmHkKVr4Isor0ONvFxJcbgBopX6CXUw23+FW0VKUsOqsUQLaOkCS8Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Dz4kb4ps; arc=fail smtp.client-ip=40.107.93.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RLme0Va0b9oWzI8fqK+5tlBFPqJo7J8iUPFP7eeJXgqtA0vBe4KjVuLMvSV9UmuNtm2XVlLzq3VkrnoPIQvW5ajKJapnzkNiEkHdDpZrivpHRGBkIF3GjM1qJ3IwilCspGXWLAvQUoxpW4xqaPaWXRalHYoDdgxjyZg5B+k1MdSvb04B00WLXW5KtWQoFGNLab/EocBKWCE8CIZMUI6FVa/e8iwU/joZlFXQI0SVzT07JQrRCTYxgI5m+S0d/0dhxafLuyZ1zstsHwKUtaWNo2gZ2ppICfsV/IRZ8JW4Sh0fHMURvkeXwc0ZrB7nI7RUN4ti2VzQ/3HN72BbXglcRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0R5C9HvTm5nWMo1LvD/6YeJMx3C5f2h0XRv8b/3T3PY=;
- b=SDLl1bEm7hZ9ZCR7HqrdaJdE1QLKc9gRG62B05r76C6EYdMjdJaZIzwMjpZlADn2Ash/niDRETUMu+8T/u1rM3mGvtrI2y0fT+/nJVBgdYKi8QMFIvULDvNcW+g0TpBVeDSp7XvBdA4G6/DuRCKfrETf9+vbwpOBDPkpLLVjDokSmlrbw8v01FgrCbnSZBgKMd7+9yJpgH0cayd9n7cQPL8OjRn4HSshZQ4/krfunW7mEmIJK5lIsPj6I60oY0dGe9dhuqQDrtG9cykJmffBu3maMyQs8EImMAVGZogh93dPpC8fOfiWu7Fd6HzbWvRXYxZqAMBSBGy6cQ/JeTkhQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0R5C9HvTm5nWMo1LvD/6YeJMx3C5f2h0XRv8b/3T3PY=;
- b=Dz4kb4psZqxgG8lPo/J3lnNhZo5PbOiKsAKbyQ8qKe789eTJOzPnIR2CnvbPCvrzmlrw+oyBb8zXUlz4FaAJsHk3v9lO/jhgXM/iw2AFnV8cdTcX5itEkOjgMOKxdQAz+L0g8a42/o/zEho2IVY7X2Glu/bdLjC7vrubrzfw2ns=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by DM6PR12MB4233.namprd12.prod.outlook.com (2603:10b6:5:210::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Thu, 14 Mar
- 2024 11:51:47 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 11:51:47 +0000
-Message-ID: <985fd7f8-f8dd-4ce4-aa07-7e47728e3ebd@amd.com>
-Date: Thu, 14 Mar 2024 12:51:40 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
-Content-Language: en-US
-To: David Stevens <stevensd@chromium.org>
-Cc: Sean Christopherson <seanjc@google.com>,
- Christoph Hellwig <hch@infradead.org>, Paolo Bonzini <pbonzini@redhat.com>,
- Yu Zhang <yu.c.zhang@linux.intel.com>,
- Isaku Yamahata <isaku.yamahata@gmail.com>,
- Zhi Wang <zhi.wang.linux@gmail.com>, Maxim Levitsky <mlevitsk@redhat.com>,
- kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20240229025759.1187910-1-stevensd@google.com>
- <ZeCIX5Aw5s1L0YEh@infradead.org>
- <CAD=HUj7fT2CVXLfi5mty0rSzpG_jK9fhcKYGQnTf_H8Hg-541Q@mail.gmail.com>
- <72285e50-6ffc-4f24-b97b-8c381b1ddf8e@amd.com> <ZfGrS4QS_WhBWiDl@google.com>
- <0b109bc4-ee4c-4f13-996f-b89fbee09c0b@amd.com> <ZfG801lYHRxlhZGT@google.com>
- <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com> <ZfHKoxVMcBAMqcSC@google.com>
- <93df19f9-6dab-41fc-bbcd-b108e52ff50b@amd.com> <ZfHhqzKVZeOxXMnx@google.com>
- <c84fcf0a-f944-4908-b7f6-a1b66a66a6bc@amd.com>
- <d2a95b5c-4c93-47b1-bb5b-ef71370be287@amd.com>
- <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR5P281CA0005.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f2::18) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745E06EB41;
+	Thu, 14 Mar 2024 11:52:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710417172; cv=none; b=DKjWFnxLK1ecH9NmNmiOl0Y57PTI0PB3a5onEItMbVdEhZg1dRdw1W5FufqMXyfQkCTJHwNlnSA47cayRV8N0TKb96s7wuM6QQ+W3Xxft9jVCe0bv855hDOERSISMPYYJPy6hipk8BOA4U6O7V1De8RCHfz2z0oA1W0lIz47g/I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710417172; c=relaxed/simple;
+	bh=DR7uIQcQtirFNtRaxp4uGyTaLvC4VFi+/92L9+pR+Yw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XEDkh/vh7QRAlV6LPfajGm1bLOLwnnEfh1fJ+EiRE8Ltdtk25wEx4Us3J0CGsHxm5kO2A/k9sQTywIC638pFM2byoFBvljLJ/bOcSyH54HQmcU/VsoySJULlM733oLK2TB/XOj6D7ghJCO1IrgmjohFBtrzrd8nHU8zX+Gvfw1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GOTurZuq; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a217378ad8so315140eaf.2;
+        Thu, 14 Mar 2024 04:52:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710417169; x=1711021969; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tdifjv40tbAIgozYYTGFKCKIMm7LnNYUe3NS1/d4TCc=;
+        b=GOTurZuqO2xY72OF5w8SovnrNMYLUNykX64w9uZAAVk6VzAuDS5cWdPfcbUVeCgvIK
+         epECDrhCAeodqX2nAYwe5c+uqMRfi+yfoc0dtsZik8pWs93gcr0FFB6akiNOYg/Eggr9
+         PYbHzJvqMqexVfk9pK/VWuGqUXawXTkkLfJ3oAdv5bBBDBLqd0mtGQMQbHDDH8VJ4+nD
+         9IMVg18aRRftON2Jj0rNMNf2HDb2yV8RfZqg5ZlMtL/1iIgtt/pB6Zd1A3vygGp/jqiy
+         fRD86MTPepjv+RkEhT/u9E+V+99nKcbp8LlgPcU1Lphokc+ekWmN/r3n6GH54EwLsHLe
+         QguA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710417169; x=1711021969;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tdifjv40tbAIgozYYTGFKCKIMm7LnNYUe3NS1/d4TCc=;
+        b=bQFClA2B/XYUsV+X1sVUJ6n6MaNjEzVftgchoBEbEX9F3RWc1XOWO8GqistR+6MSTe
+         Shxfdt2OBCaQh/HWIXzgvi+i7o1DwfL4YzOGnqCFLIrbxUB6T5Tef+aBHeZvWuM1wqp0
+         5powtAtEi0Wv43yAaDDhpVwufsrZ5XTa/jvK5MtGmjH3seQ2KUN+6tgod7tnlaGGkyb2
+         bqFcNO8JFUcplvx74XF3Mhy+ujNpj49jK21/Dq12kEK+ZKaVIPPF/auJ6q3b8ft8X59I
+         j2mgyDkqnO4fJL2APMQC796AWBvvBEy0HctmouNnLm6kn/ulU6Osmaerxil+IIrdJNNz
+         4p2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVRgwxMODd0mt8Pq1JHd+e3ZSU5y9OS0bVVAow9mkeHoU5zzx1lKnaexaYIRo2XAw6cIfwF+iSNTqJh70lwlVWqw1gbgrLqxpRusdUAfKWXCk4cvwGHH5JwIzGZWu1WZgwqpf5f54Fann3I2MPYECSuMS6LWAqJEn+kljszIs2dLMjg+z26I2g4rlhrr5umUNo9Zu13t5CCDirFiqvRnN+eL+7am2re5iNlQMw/sbhcJVtrSlcq4c/+vF/Rf0VJgKcKJCsgBidJIBFLCOelHIt5Xk4cF4Dno/utM0s=
+X-Gm-Message-State: AOJu0YxzbiGsSvxL30Fkvxv0yHTyVxRuLa5oQucqTVq3BYMIjUdN87pQ
+	MX0nSwjue1/DHkhH1E75+GbBnw+i/msjSa22sAkZX4B3EmDh6oBy
+X-Google-Smtp-Source: AGHT+IHPtvNpbzsaayWywW7W8tum6qeCMeXLFKZPuvZvQSEuflx/ONggDCEzNvvaKOcLF8ZD/bugFA==
+X-Received: by 2002:a05:6358:6590:b0:17b:b52c:c121 with SMTP id x16-20020a056358659000b0017bb52cc121mr1728763rwh.13.1710417169288;
+        Thu, 14 Mar 2024 04:52:49 -0700 (PDT)
+Received: from [192.168.254.38] ([50.39.172.77])
+        by smtp.gmail.com with ESMTPSA id 192-20020a6301c9000000b005d7994a08dcsm522636pgb.36.2024.03.14.04.52.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 04:52:48 -0700 (PDT)
+Message-ID: <a4d24b2c-7dbf-4354-9514-f8a253aac14b@gmail.com>
+Date: Thu, 14 Mar 2024 04:52:47 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DM6PR12MB4233:EE_
-X-MS-Office365-Filtering-Correlation-Id: b72d2beb-2126-48f6-2324-08dc441d20ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	zNBGcOLLGvGOMkQUDLBwq4UCe+m7fKDsLtQXkDBTjyN6SX6VJ2CPjniSyGrCmOkw7oasOoTndh8Y6SJevdHVWRgCuUuMcSTi769wH4Fypat4WCogKAezOyVeKRMll0iha4dZ68IQBhUBxdQYhGgi/K3v4i2HpY/iY2aK1cmn9UeyHo9kI8x8HE0BHW3My3xll76kk+JJn6w0acGGF5NtOZ+R7dlyInOeVnt+S2rRAbOZ6x6bmOdZ3+nFUGNGRe3b2UhXm06i3c9ICtV45oQRq0X8HCIdiL/p3nV3TiaVo5bGOBkEjlSCH3qvWaDp59xEXDT+B3+gEvJlMVzhVEjzVcmbMsbIaOfXoE2A20OBkJ7645HsrjjvfY2UetpU0mF+XGXX+X5ucLqyT/ZqFmbVMgwYrf5X8Lin4xXsjZjs1acShGx/3JSHWcrfCnhHegh1TvZCLSOJJpmeC1JRfEUGm4MM39Q7ohKei+ihRAdZVeKaPveIyoTN2C0mIAvtnmwpPQde1foq3mVh3/N6ZNMMMVPqtZP3B6cbBmWEE+/dlitYuBnLj5kyzSJemWfs6kcUIZu5pbyWYicBcrJyK3CSV9GRuqBu6aJ3y+hfn06mGho=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TXo5RnIxa0c3S2VtRC9Cb1grdDcxYUpOeFBpSlFqMTY2d0dMWithZGdyaWZJ?=
- =?utf-8?B?c0twMUtIeUlQZkgxYzF3akd2dmcrNTBiU0E4TmxybGFtdnZybWpReEZBWlR2?=
- =?utf-8?B?c3lFeW9LK2NqVEdmNHYybXh0R1Vtbi8vanZGM3dzNWFZd0J2M0VsaExSYTUv?=
- =?utf-8?B?K0lLdGM1YnNnYmo5SHJnL0FZemJpK1llY2sreGQwSTViNVBIUjE4NkFpNG1o?=
- =?utf-8?B?YzZyWE9LVVkxc3VrdnJvRkIyUkV5VFVhejg3czcvQ3MrVmo5VE9MQTVQd3lK?=
- =?utf-8?B?akJlYXVLN0YrRHJ5UXovWUtORFZGYmtxWERlUlBQTUhJdDlOL2F6UStmNCsy?=
- =?utf-8?B?cUU0Y0NCWkswT2xIVU94WElhN25UbnEwaVlzYXBvaGRaQThzcmt6bUdrQXJq?=
- =?utf-8?B?SDVKUmkwNWlpY1FXVTRHZUdJRkZoTldkWE9VelNmaStPTDV4bzJlYzNqRzIw?=
- =?utf-8?B?NlArb3JnTVpadzRSM1I5eWZtckkvb1lhY1hWTWtibTZWcW52bm5rbVlPczlw?=
- =?utf-8?B?R0poTTRVVlpkVWRCZmhIZlVhQjZZemIwaThiWCtrbzFnM2ZqUUdtQXR2TUZV?=
- =?utf-8?B?dm0rMDg3U2RLUFVzb1VraWxuOFh2V1hkQTZmdnF2czJoT29pQUM4MGlqejNI?=
- =?utf-8?B?RTlyZjJ3Zm1HanlGb25FV2U1YnBncFZXU0kycmpBUlhpUk5sSGFiRW1sSjFN?=
- =?utf-8?B?bm5BTmpyMFR2Z0FjMnBBZUtWeDBvenNCK2ErSnVHL01UWVpNc0xRNjJtd2ZG?=
- =?utf-8?B?TzAxcVFhMkE5aUdIOTdlcGE4NDZiNDQwNm5xSTVLRlcxWVRqZDNEUG9NTk03?=
- =?utf-8?B?WDg1SEJyWWsvTCt6b3FFMjlhY1VSbGxHWFVjbG5NUHhjdXRiSm9HOVAxbWxm?=
- =?utf-8?B?clcwS3FhRFZ2dmw4Mld4N2dxQ254OVFScGN0MXdQUnhiTDRJMFZwVkJWWExq?=
- =?utf-8?B?Nk9WUCtpRW1PdW4rY2RBdlRjVExnOE1TdlpBVXY5TEZLd0RKcFdXek5GZ2JL?=
- =?utf-8?B?ZVlycG1ib2o1UnJiYlNYK3QvTFVXY1FBUmJhdW1EYngzN0tDYW9weVJabEQv?=
- =?utf-8?B?UWZCK1lLSGdQMFgrM21QczYvbXJqZUVKMDdMUGlBNURvMmJFNlFwUjB6enE1?=
- =?utf-8?B?OEdPSkVMRFZrbVBXZWN6Y0cxR1lrSEZJamYzMzNta0FybUJsenhSYXNRVEk0?=
- =?utf-8?B?amRQZUVWN0Y4a1c3SHBnVjk1NW42MUFGcmREcmRsWHBYSldDQlFidDNVRk1H?=
- =?utf-8?B?cFcwQTFXbDhWc1oybkxPNFFCUU5XdC92YmYxbjZKN2QySlgyVnJIU2NRdDVP?=
- =?utf-8?B?WXM4dVBqMG9ERGhRYmdjMjMvZEhRWWgvUmVGUCtNYTA3NVJjRElHMzArbCs0?=
- =?utf-8?B?dnZadXBLeHZ6Z3V0cDBLSlozdkxyUVJFdnBRUmNoZVdpRExqZTd4UERVdGlT?=
- =?utf-8?B?L1hEYzRZUGU3VTJvTDVGZnBtZ2NpZUpHcVZDMmJSeTc5UzVPMmpQakUrS2JT?=
- =?utf-8?B?bWIrdDN5c1l0NjJiRSt3NEZBQ3FyT2kwSVVITHpBak5RZ1hjb1JNQjRIbElo?=
- =?utf-8?B?czBPOGRTTE1XdUpWTXczSWRMQ3Zwb2lhZy9xRWQwWHZQamJsbWIweWRqNWlG?=
- =?utf-8?B?MS9xQU1nRVdaNkNCSUNsQXQ0N3dmUXhteDBuTmpXdFJCZ1dGL3dVQytRRHVk?=
- =?utf-8?B?OW5ydHZESmxMMXJiaFBrMVRtQys4S0paU3p4WjdoZ1JsYmpMR2ppYTlSWGhJ?=
- =?utf-8?B?SHVSVDBCOSs1WUVzaE1OVmJZWWtFdkJYc0RDa1N0QjJ1cU1MODhvSXROelJy?=
- =?utf-8?B?RkZMaWxodHpZdE1XdHYyVkpOY0RJTVo4Vm9BUlJidmJIeUNCczViNG1PVDFL?=
- =?utf-8?B?M0ZndU1qM0NCT2ZLQTdVT1Bjb3JrYmtPQUhuVTFleFJPY3o5WEhDOHl1OGN1?=
- =?utf-8?B?SHRpV3k4RzdqRElyRURzMldUYjJJMlJoWkdtaWp2RVE5NFBWNURKa2lHY2lQ?=
- =?utf-8?B?dkpZVWxmSURFVmFzNDhsUEhFWkE0NDBrM3B0VUhMb2ZpYm40a2NEYXlLZ2Mr?=
- =?utf-8?B?TUVEWEhnL3ptLzRDNkp1WkI1eHhTdTlpbzZKVHI2cUU1RlNMQnRwS3FPYmJE?=
- =?utf-8?Q?KoYK/NORlT5zWVSC63TliCpL6?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b72d2beb-2126-48f6-2324-08dc441d20ad
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 11:51:47.5023
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zCIbB9ekzAUTinHRPMjzBcS5Bsh7QUNjcxd1cF7aHyITg0Cdm1o7jtVCM1ZUMv5X
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4233
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+Content-Language: en-US
+To: Eric Biggers <ebiggers@kernel.org>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, Karel Balej
+ <balejk@matfyz.cz>, dimitri.ledkov@canonical.com,
+ alexandre.torgue@foss.st.com, davem@davemloft.net, dhowells@redhat.com,
+ herbert@gondor.apana.org.au, keyrings@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, mcgrof@kernel.org,
+ mcoquelin.stm32@gmail.com, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, iwd@lists.linux.dev
+References: <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz>
+ <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net>
+ <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com>
+ <20240313194423.GA1111@sol.localdomain>
+ <b838e729-dc30-4e18-b928-c34c16b08606@gmail.com>
+ <20240313202223.GB1111@sol.localdomain>
+ <db86cba4-0e61-441d-8e66-405a13b61a3c@gmail.com>
+ <20240313221043.GC1111@sol.localdomain>
+ <f0492c92-1015-48e3-bfce-598c7a4843d1@quicinc.com>
+ <20240313230611.GD1111@sol.localdomain>
+From: James Prestwood <prestwoj@gmail.com>
+In-Reply-To: <20240313230611.GD1111@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Am 14.03.24 um 12:31 schrieb David Stevens:
-> On Thu, Mar 14, 2024 at 6:20 PM Christian König
-> <christian.koenig@amd.com> wrote:
->> Sending that out once more since the AMD email servers have converted it
->> to HTML mail once more :(
->>
->> Grrr,
->> Christian.
->>
->> Am 14.03.24 um 10:18 schrieb Christian König:
->>> Am 13.03.24 um 18:26 schrieb Sean Christopherson:
->>>> On Wed, Mar 13, 2024, Christian König wrote:
->>>>> Am 13.03.24 um 16:47 schrieb Sean Christopherson:
->>>>>> [SNIP]
->>>>>>> It can trivially be that userspace only maps 4KiB of some 2MiB piece of
->>>>>>> memory the driver has allocate.
->>>>>>>
->>>>>>>> I.e. Christoph is (implicitly) saying that instead of modifying KVM to play nice,
->>>>>>>> we should instead fix the TTM allocations.  And David pointed out that that was
->>>>>>>> tried and got NAK'd.
->>>>>>> Well as far as I can see Christoph rejects the complexity coming with the
->>>>>>> approach of sometimes grabbing the reference and sometimes not.
->>>>>> Unless I've wildly misread multiple threads, that is not Christoph's objection.
->>>>>>    From v9 (https://lore.kernel.org/all/ZRpiXsm7X6BFAU%2Fy@infradead.org):
+Hi,
+
+On 3/13/24 4:06 PM, Eric Biggers wrote:
+> On Wed, Mar 13, 2024 at 03:51:10PM -0700, Jeff Johnson wrote:
+>> On 3/13/2024 3:10 PM, Eric Biggers wrote:
+>>> On Wed, Mar 13, 2024 at 02:17:29PM -0700, James Prestwood wrote:
+>>>> Hi,
+>>>>
+>>>> On 3/13/24 1:22 PM, Eric Biggers wrote:
+>>>>> On Wed, Mar 13, 2024 at 01:12:54PM -0700, James Prestwood wrote:
+>>>>>> Hi,
 >>>>>>
->>>>>>      On Sun, Oct 1, 2023 at 11:25 PM Christoph Hellwig<hch@infradead.org>   wrote:
->>>>>>      >
->>>>>>      > On Fri, Sep 29, 2023 at 09:06:34AM -0700, Sean Christopherson wrote:
->>>>>>      > > KVM needs to be aware of non-refcounted struct page memory no matter what; see
->>>>>>      > > CVE-2021-22543 and, commit f8be156be163 ("KVM: do not allow mapping valid but
->>>>>>      > > non-reference-counted pages").  I don't think it makes any sense whatsoever to
->>>>>>      > > remove that code and assume every driver in existence will do the right thing.
->>>>>>      >
->>>>>>      > Agreed.
->>>>>>      >
->>>>>>      > >
->>>>>>      > > With the cleanups done, playing nice with non-refcounted paged instead of outright
->>>>>>      > > rejecting them is a wash in terms of lines of code, complexity, and ongoing
->>>>>>      > > maintenance cost.
->>>>>>      >
->>>>>>      > I tend to strongly disagree with that, though.  We can't just let these
->>>>>>      > non-refcounted pages spread everywhere and instead need to fix their
->>>>>>      > usage.
->>>>> And I can only repeat myself that I completely agree with Christoph here.
->>>> I am so confused.  If you agree with Christoph, why not fix the TTM allocations?
->>> Because the TTM allocation isn't broken in any way.
+>>>>>> On 3/13/24 12:44 PM, Eric Biggers wrote:
+>>>>>>> On Wed, Mar 13, 2024 at 10:26:06AM -0700, James Prestwood wrote:
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>> On 3/13/24 1:56 AM, Johannes Berg wrote:
+>>>>>>>>> Not sure why you're CC'ing the world, but I guess adding a few more
+>>>>>>>>> doesn't hurt ...
+>>>>>>>>>
+>>>>>>>>> On Wed, 2024-03-13 at 09:50 +0100, Karel Balej wrote:
+>>>>>>>>>>      and I use iwd
+>>>>>>>>> This is your problem, the wireless stack in the kernel doesn't use any
+>>>>>>>>> kernel crypto code for 802.1X.
+>>>>>>>> Yes, the wireless stack has zero bearing on the issue. I think that's what
+>>>>>>>> you meant by "problem".
+>>>>>>>>
+>>>>>>>> IWD has used the kernel crypto API forever which was abruptly broken, that
+>>>>>>>> is the problem.
+>>>>>>>>
+>>>>>>>> The original commit says it was to remove support for sha1 signed kernel
+>>>>>>>> modules, but it did more than that and broke the keyctl API.
+>>>>>>>>
+>>>>>>> Which specific API is iwd using that is relevant here?
+>>>>>>> I cloned https://kernel.googlesource.com/pub/scm/network/wireless/iwd
+>>>>>>> and grepped for keyctl and AF_ALG, but there are no matches.
+>>>>>> IWD uses ELL for its crypto, which uses the AF_ALG API:
+>>>>>>
+>>>>>> https://git.kernel.org/pub/scm/libs/ell/ell.git/
+>>>>> Thanks for pointing out that the relevant code is really in that separate
+>>>>> repository.  Note, it seems that keyctl() is the problem here, not AF_ALG.  The
+>>>>> blamed commit didn't change anything for AF_ALG.
+>>>>>
+>>>>>> I believe the failure is when calling:
+>>>>>>
+>>>>>> KEYCTL_PKEY_QUERY enc="x962" hash="sha1"
+>>>>>>
+>>>>>>   From logs Michael posted on the IWD list, the ELL API that fails is:
+>>>>>>
+>>>>>> l_key_get_info (ell.git/ell/key.c:416)
+>>>>> Okay, I guess that's what's actually causing the problem.  KEYCTL_PKEY_* are a
+>>>>> weird set of APIs where userspace can ask the kernel to do asymmetric key
+>>>>> operations.  It's unclear why they exist, as the same functionality is available
+>>>>> in userspace crypto libraries.
+>>>>>
+>>>>> I suppose that the blamed commit, or at least part of it, will need to be
+>>>>> reverted to keep these weird keyctls working.
+>>>>>
+>>>>> For the future, why doesn't iwd just use a userspace crypto library such as
+>>>>> OpenSSL?
+>>>> I was not around when the original decision was made, but a few reasons I
+>>>> know we don't use openSSL:
+>>>>
+>>>>   - IWD has virtually zero dependencies.
+>>> Depending on something in the kernel does not eliminate a dependency; it just
+>>> adds that particular kernel UAPI to your list of dependencies.  The reason that
+>>> we're having this discussion in the first place is because iwd is depending on
+>>> an obscure kernel UAPI that is not well defined.  Historically it's been hard to
+>>> avoid "breaking" changes in these crypto-related UAPIs because of the poor
+>>> design where a huge number of algorithms are potentially supported, but the list
+>>> is undocumented and it varies from one system to another based on configuration.
+>>> Also due to their obscurity many kernel developers don't know that these UAPIs
+>>> even exist.  (The reaction when someone finds out is usually "Why!?")
 >>>
->>> See in some configurations TTM even uses the DMA API for those
->>> allocations and that is actually something Christoph coded.
+>>> It may be worth looking at if iwd should make a different choice for this
+>>> dependency.  It's understandable to blame dependencies when things go wrong, but
+>>> at the same time the choice of dependency is very much a choice, and some
+>>> choices can be more technically sound and cause fewer problems than others...
 >>>
->>> What Christoph is really pointing out is that absolutely nobody should
->>> put non-refcounted pages into a VMA, but again this isn't something
->>> TTM does. What TTM does instead is to work with the PFN and puts that
->>> into a VMA.
+>>>>   - OpenSSL + friends are rather large libraries.
+>>> The Linux kernel is also large, and it's made larger by having to support
+>>> obsolete crypto algorithms for backwards compatibility with iwd.
 >>>
->>> It's just that then KVM comes along and converts the PFN back into a
->>> struct page again and that is essentially what causes all the
->>> problems, including CVE-2021-22543.
-> Does Christoph's objection come from my poorly worded cover letter and
-> commit messages, then?
+>>>>   - AF_ALG has transparent hardware acceleration (not sure if openSSL does
+>>>> too).
+>>> OpenSSL takes advantage of CPU-based hardware acceleration, e.g. AES-NI.
+>>>
+>>>> Another consideration is once you support openSSL someone wants wolfSSL,
+>>>> then boringSSL etc. Even if users implement support it just becomes a huge
+>>>> burden to carry for the project. Just look at wpa_supplicant's src/crypto/
+>>>> folder, nearly 40k LOC in there, compared to ELL's crypto modules which is
+>>>> ~5k. You have to sort out all the nitty gritty details of each library, and
+>>>> provide a common driver/API for the core code, differences between openssl
+>>>> versions, the list goes on.
+>>> What is the specific functionality that you're actually relying on that you
+>>> think would need 40K lines of code to replace, even using OpenSSL?  I see you
+>>> are using KEYCTL_PKEY_*, but what specifically are you using them for?  What
+>>> operations are being performed, and with which algorithms and key formats?
+>>> Also, is the kernel behavior that you're relying on documented anywhere?  There
+>>> are man pages for those keyctls, but they don't say anything about any
+>>> particular hash algorithm, SHA-1 or otherwise, being supported.
+>> <https://lore.kernel.org/all/CA+55aFxW7NMAMvYhkvz1UPbUTUJewRt6Yb51QAx5RtrWOwjebg@mail.gmail.com/>
+>> "And we simply do not break user space."
+>> -Linus Torvalds
+>>
+>> Is this no longer applicable?
+>>
+> As I said, the commit, or at least the part of it that broke iwd (it's not clear
+> that it's the whole commit), needs to be reverted.
+>
+> I just hope that, simultaneously, the iwd developers will consider improving the
+> design of iwd to avoid this type of recurring issue in the future.  After all,
+> this may be the only real chance for such a discussion before the next time iwd
+> breaks.
+>
+> Also, part of the reason I'm asking about what functionality that iwd is relying
+> on is so that, if necessary, it can be properly documented and supported...
+>
+> If we don't know what we are supporting, it is very hard to support it.
 
-Yes, that could certainly be.
+IWD uses AF_ALG/keyctl for _all_ its crypto, cipher, and checksum needs. 
+Anything that wifi requires as far as crypto goes IWD uses the kernel, 
+except ECC is the only exception. The entire list of crypto requirements 
+(for full support at least) for IWD is here:
 
-> Fundamentally, what this series is doing is
-> allowing pfns returned by follow_pte to be mapped into KVM's shadow
-> MMU without inadvertently translating them into struct pages.
+https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/tools/test_runner_kernel_config
 
-As far as I can tell that is really the right thing to do. Yes.
+For KEYCTL_PKEY_* specifically we use it for all asymmetric crypto 
+operations, (query), encrypt, decrypt, sign, verify.
 
-> If I'm understand this discussion correctly, since KVM's shadow MMU is hooked
-> up to MMU notifiers, this shouldn't be controversial. However, my
-> cover letter got a little confused because KVM is currently doing
-> something that it sounds like it shouldn't - translating pfns returned
-> by follow_pte into struct pages with kvm_try_get_pfn. Because of that,
-> the specific type of pfns that don't work right now are pfn_valid() &&
-> !PG_Reserved && !page_ref_count() - what I called the non-refcounted
-> pages in a bad choice of words. If that's correct, then perhaps this
-> series should go a little bit further in modifying
-> hva_to_pfn_remapped, but it isn't fundamentally wrong.
+I'll be honest, the AF_ALG/keyctl support in ELL was mostly done by the 
+time I started working on IWD so I was not aware the documentation was 
+so poor. That is an entirely separate issue than this IMO, and I'm happy 
+to help with getting docs updated to include a proper list of supported 
+features. In addition maybe some automated testing that gets run on 
+kernel builds which actually exercises this API so it doesn't get 
+accidentally get broken in the future? Docs/tests IMO are the proper 
+"fix" here, not telling someone to stop using an API that has existed a 
+long time.
 
-Completely agree. In my thinking when you go a step further and offload 
-grabbing the page reference to get_user_pages() then you are always on 
-the save side.
+I'm also not entirely sure why this stuff continues to be removed from 
+the kernel. First MD4, then it got reverted, then this (now reverted, 
+thanks). Both cases there was not clear justification of why it was 
+being removed.
 
-Because then it is no longer the responsibility of the KVM code to get 
-all the rules around that right, instead you are relying on a core 
-functionality which should (at least in theory) do the correct thing.
+Thanks,
 
-Regards,
-Christian.
+James
 
 >
-> -David
-
+> - Eric
+>
 
