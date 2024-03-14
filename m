@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-102844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFB1F87B7B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:05:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C3AE87B7B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7504928035F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:05:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0284C280628
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA9F3CF7C;
-	Thu, 14 Mar 2024 05:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C57614F90;
+	Thu, 14 Mar 2024 05:59:59 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990083BB37;
-	Thu, 14 Mar 2024 05:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DB53D96E;
+	Thu, 14 Mar 2024 05:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710395993; cv=none; b=bOOj9Cr6d0i18ptbDTaXoSIxTeFGKCdH3znXq5rAa0B6cpbCSvgz/nSySxiUAVgiv0ogjyrUV+Efw30udUAWZGnR6BR7BogodKVdH8fEAnWFQGS4iDP72UXBK0ouzEwiyOI4wHRQ8ZxUioqaNJfIKyYRbGTfC33/vU1+tZfgoC4=
+	t=1710395998; cv=none; b=j6UXE2Zp1rsCDq/gGzoHVNr8uHNWjEQWSwnAxmzgYmEWztz/cndyjwgaO6M9eedJHFuN1LBXDe7W7COUn4MUcMR1yqyKD7at40lenQYp3kSpJ4yfkHd2UZAq/qhAZHZBg1Jqv5n3ZhijriJhsTqGRvNl0QIgzUohPOAjH2dqduI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710395993; c=relaxed/simple;
-	bh=/ynXK/wwo6vxgSvodH8Qphiw9crFmPIhTLqhJ1xqsnI=;
+	s=arc-20240116; t=1710395998; c=relaxed/simple;
+	bh=QLK/5CXW1EfkrfXw1uVJ/ZXCbbiy9q5FlbPbbmsu3aE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cUn5ODBN+KTxTy9m4dqyaYxjISsB0iwKgrBZD/e8STwTOSEwPyayPddWL0qKe+9z4Vj2TFJ/3EcYOMNj4C90j04x8EwVi66Koe8EIzVi4O6QFbffPNSa9NfiUDKee43A8AUDXFdZvBRJOyALlt4EYkMSZyz2NEiA0KbgPUet0Is=
+	 MIME-Version; b=olb/p2RBIIosd6ohflpHoYWeGvmoETMjRqmgu4andns48oyhzD4fb4yLHIMGNpvDu7NmDU2OQmpFkvoNI4khkSSgoxIZCmeBT4ZlIJ1qirxEjfMT20AQnsFEAU7bM32n63Liz5fXln/aLGxkat1cPBqFb7+qlKxmEzN+are0bRs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 646A01007;
-	Wed, 13 Mar 2024 23:00:27 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FE5B1063;
+	Wed, 13 Mar 2024 23:00:32 -0700 (PDT)
 Received: from a077893.arm.com (unknown [10.163.53.138])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 02F203F73F;
-	Wed, 13 Mar 2024 22:59:46 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AB2203F73F;
+	Wed, 13 Mar 2024 22:59:51 -0700 (PDT)
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	suzuki.poulose@arm.com
@@ -46,9 +46,9 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	linux-kernel@vger.kernel.org,
 	coresight@lists.linaro.org,
 	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH V7 07/11] coresight: catu: Move ACPI support from AMBA driver to platform driver
-Date: Thu, 14 Mar 2024 11:28:39 +0530
-Message-Id: <20240314055843.2625883-8-anshuman.khandual@arm.com>
+Subject: [PATCH V7 08/11] coresight: tpiu: Move ACPI support from AMBA driver to platform driver
+Date: Thu, 14 Mar 2024 11:28:40 +0530
+Message-Id: <20240314055843.2625883-9-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240314055843.2625883-1-anshuman.khandual@arm.com>
 References: <20240314055843.2625883-1-anshuman.khandual@arm.com>
@@ -60,12 +60,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for the catu devices in a new platform driver, which can then
-be used on ACPI based platforms. This change would now allow runtime power
+Add support for the tpiu device in the platform driver, which can then be
+used on ACPI based platforms. This change would now allow runtime power
 management for ACPI based systems. The driver would try to enable the APB
-clock if available. But first this renames and then refactors catu_probe()
-and catu_remove(), making sure it can be used both for platform and AMBA
-drivers. This also moves pm_runtime_put() from catu_probe() to the callers.
+clock if available. But first this renames and then refactors tpiu_probe()
+and tpiu_remove(), making sure it can be used both for platform and AMBA
+drivers. This also moves pm_runtime_put() from tpiu_probe() to the callers.
+While here, this also sorts the included headers in alphabetic order.
 
 Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
 Cc: Sudeep Holla <sudeep.holla@arm.com>
@@ -76,252 +77,238 @@ Cc: linux-acpi@vger.kernel.org
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Cc: coresight@lists.linaro.org
+Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
 Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
 Reviewed-by: James Clark <james.clark@arm.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
 Changes in V7:
 
-- Dropped struct resource check before devm_ioremap_resource()
-- Dropped reduntant drvdata check in catu_platform_probe()
-- Dropped reduntant drvdata check in catu_platform_remove()
+- Dropped reduntant drvdata check in tpiu_platform_remove()
 - Sorted the headers in alphabetic order
 
  drivers/acpi/arm64/amba.c                    |   1 -
- drivers/hwtracing/coresight/coresight-catu.c | 138 ++++++++++++++++---
- drivers/hwtracing/coresight/coresight-catu.h |   1 +
- 3 files changed, 120 insertions(+), 20 deletions(-)
+ drivers/hwtracing/coresight/coresight-tpiu.c | 117 ++++++++++++++++---
+ 2 files changed, 100 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-index afb6afb66967..587061b0fd2f 100644
+index 587061b0fd2f..6d24a8f7914b 100644
 --- a/drivers/acpi/arm64/amba.c
 +++ b/drivers/acpi/arm64/amba.c
-@@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+@@ -25,7 +25,6 @@ static const struct acpi_device_id amba_id_list[] = {
+ 	{"ARMHC501", 0}, /* ARM CoreSight ETR */
+ 	{"ARMHC502", 0}, /* ARM CoreSight STM */
  	{"ARMHC503", 0}, /* ARM CoreSight Debug */
- 	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
+-	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
  	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
--	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
  	{"", 0},
  };
- 
-diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
-index 3949ded0d4fa..9712be6acd26 100644
---- a/drivers/hwtracing/coresight/coresight-catu.c
-+++ b/drivers/hwtracing/coresight/coresight-catu.c
-@@ -7,11 +7,13 @@
-  * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
+diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
+index 29024f880fda..6bf3039839c1 100644
+--- a/drivers/hwtracing/coresight/coresight-tpiu.c
++++ b/drivers/hwtracing/coresight/coresight-tpiu.c
+@@ -5,17 +5,19 @@
+  * Description: CoreSight Trace Port Interface Unit driver
   */
  
 +#include <linux/acpi.h>
- #include <linux/amba/bus.h>
++#include <linux/amba/bus.h>
+ #include <linux/atomic.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
++#include <linux/clk.h>
++#include <linux/coresight.h>
  #include <linux/device.h>
- #include <linux/dma-mapping.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
+-#include <linux/io.h>
+ #include <linux/err.h>
+-#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
 +#include <linux/platform_device.h>
- #include <linux/slab.h>
+ #include <linux/pm_runtime.h>
+-#include <linux/coresight.h>
+-#include <linux/amba/bus.h>
+-#include <linux/clk.h>
++#include <linux/slab.h>
  
- #include "coresight-catu.h"
-@@ -502,28 +504,20 @@ static const struct coresight_ops catu_ops = {
- 	.helper_ops = &catu_helper_ops,
+ #include "coresight-priv.h"
+ 
+@@ -52,11 +54,13 @@ DEFINE_CORESIGHT_DEVLIST(tpiu_devs, "tpiu");
+ /*
+  * @base:	memory mapped base address for this component.
+  * @atclk:	optional clock for the core parts of the TPIU.
++ * @pclk:	APB clock if present, otherwise NULL
+  * @csdev:	component vitals needed by the framework.
+  */
+ struct tpiu_drvdata {
+ 	void __iomem		*base;
+ 	struct clk		*atclk;
++	struct clk		*pclk;
+ 	struct coresight_device	*csdev;
+ 	spinlock_t		spinlock;
+ };
+@@ -122,14 +126,12 @@ static const struct coresight_ops tpiu_cs_ops = {
+ 	.sink_ops	= &tpiu_sink_ops,
  };
  
--static int catu_probe(struct amba_device *adev, const struct amba_id *id)
-+static int __catu_probe(struct device *dev, struct resource *res)
+-static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
++static int __tpiu_probe(struct device *dev, struct resource *res)
  {
- 	int ret = 0;
- 	u32 dma_mask;
--	struct catu_drvdata *drvdata;
-+	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
- 	struct coresight_desc catu_desc;
- 	struct coresight_platform_data *pdata = NULL;
--	struct device *dev = &adev->dev;
+ 	int ret;
  	void __iomem *base;
+-	struct device *dev = &adev->dev;
+ 	struct coresight_platform_data *pdata = NULL;
+ 	struct tpiu_drvdata *drvdata;
+-	struct resource *res = &adev->res;
+ 	struct coresight_desc desc = { 0 };
  
- 	catu_desc.name = coresight_alloc_device_name(&catu_devs, dev);
- 	if (!catu_desc.name)
- 		return -ENOMEM;
+ 	desc.name = coresight_alloc_device_name(&tpiu_devs, dev);
+@@ -142,12 +144,16 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
  
--	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
--	if (!drvdata) {
--		ret = -ENOMEM;
--		goto out;
--	}
--
--	dev_set_drvdata(dev, drvdata);
--	base = devm_ioremap_resource(dev, &adev->res);
-+	base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(base)) {
- 		ret = PTR_ERR(base);
- 		goto out;
-@@ -567,19 +561,39 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
- 	drvdata->csdev = coresight_register(&catu_desc);
- 	if (IS_ERR(drvdata->csdev))
- 		ret = PTR_ERR(drvdata->csdev);
--	else
+ 	spin_lock_init(&drvdata->spinlock);
+ 
+-	drvdata->atclk = devm_clk_get(&adev->dev, "atclk"); /* optional */
++	drvdata->atclk = devm_clk_get(dev, "atclk"); /* optional */
+ 	if (!IS_ERR(drvdata->atclk)) {
+ 		ret = clk_prepare_enable(drvdata->atclk);
+ 		if (ret)
+ 			return ret;
+ 	}
++
++	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
++	if (IS_ERR(drvdata->pclk))
++		return -ENODEV;
+ 	dev_set_drvdata(dev, drvdata);
+ 
+ 	/* Validity for the resource is already checked by the AMBA core */
+@@ -173,21 +179,34 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
+ 	desc.dev = dev;
+ 	drvdata->csdev = coresight_register(&desc);
+ 
+-	if (!IS_ERR(drvdata->csdev)) {
 -		pm_runtime_put(&adev->dev);
- out:
- 	return ret;
++	if (!IS_ERR(drvdata->csdev))
+ 		return 0;
+-	}
+ 
+ 	return PTR_ERR(drvdata->csdev);
  }
  
--static void catu_remove(struct amba_device *adev)
-+static int catu_probe(struct amba_device *adev, const struct amba_id *id)
- {
--	struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-+	struct catu_drvdata *drvdata;
+-static void tpiu_remove(struct amba_device *adev)
++static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
++{
 +	int ret;
 +
-+	drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
-+	amba_set_drvdata(adev, drvdata);
-+	ret = __catu_probe(&adev->dev, &adev->res);
++	ret = __tpiu_probe(&adev->dev, &adev->res);
 +	if (!ret)
 +		pm_runtime_put(&adev->dev);
-+
 +	return ret;
 +}
 +
-+static void __catu_remove(struct device *dev)
-+{
-+	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
++static void __tpiu_remove(struct device *dev)
+ {
+-	struct tpiu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
++	struct tpiu_drvdata *drvdata = dev_get_drvdata(dev);
  
  	coresight_unregister(drvdata->csdev);
  }
  
-+static void catu_remove(struct amba_device *adev)
++static void tpiu_remove(struct amba_device *adev)
 +{
-+	__catu_remove(&adev->dev);
++	__tpiu_remove(&adev->dev);
 +}
 +
- static struct amba_id catu_ids[] = {
- 	CS_AMBA_ID(0x000bb9ee),
- 	{},
-@@ -598,13 +612,99 @@ static struct amba_driver catu_driver = {
- 	.id_table			= catu_ids,
+ #ifdef CONFIG_PM
+ static int tpiu_runtime_suspend(struct device *dev)
+ {
+@@ -196,6 +215,8 @@ static int tpiu_runtime_suspend(struct device *dev)
+ 	if (drvdata && !IS_ERR(drvdata->atclk))
+ 		clk_disable_unprepare(drvdata->atclk);
+ 
++	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
++		clk_disable_unprepare(drvdata->pclk);
+ 	return 0;
+ }
+ 
+@@ -206,6 +227,8 @@ static int tpiu_runtime_resume(struct device *dev)
+ 	if (drvdata && !IS_ERR(drvdata->atclk))
+ 		clk_prepare_enable(drvdata->atclk);
+ 
++	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
++		clk_prepare_enable(drvdata->pclk);
+ 	return 0;
+ }
+ #endif
+@@ -245,7 +268,67 @@ static struct amba_driver tpiu_driver = {
+ 	.id_table	= tpiu_ids,
  };
  
-+static int catu_platform_probe(struct platform_device *pdev)
+-module_amba_driver(tpiu_driver);
++static int tpiu_platform_probe(struct platform_device *pdev)
 +{
 +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	struct catu_drvdata *drvdata;
-+	int ret = 0;
-+
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
-+	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
-+	if (IS_ERR(drvdata->pclk))
-+		return -ENODEV;
++	int ret;
 +
 +	pm_runtime_get_noresume(&pdev->dev);
 +	pm_runtime_set_active(&pdev->dev);
 +	pm_runtime_enable(&pdev->dev);
 +
-+	dev_set_drvdata(&pdev->dev, drvdata);
-+	ret = __catu_probe(&pdev->dev, res);
++	ret = __tpiu_probe(&pdev->dev, res);
 +	pm_runtime_put(&pdev->dev);
-+	if (ret) {
++	if (ret)
 +		pm_runtime_disable(&pdev->dev);
-+		if (!IS_ERR_OR_NULL(drvdata->pclk))
-+			clk_put(drvdata->pclk);
-+	}
 +
 +	return ret;
 +}
 +
-+static int catu_platform_remove(struct platform_device *pdev)
++static int tpiu_platform_remove(struct platform_device *pdev)
 +{
-+	struct catu_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
++	struct tpiu_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
 +
 +	if (WARN_ON(!drvdata))
 +		return -ENODEV;
 +
-+	__catu_remove(&pdev->dev);
++	__tpiu_remove(&pdev->dev);
 +	pm_runtime_disable(&pdev->dev);
 +	if (!IS_ERR_OR_NULL(drvdata->pclk))
 +		clk_put(drvdata->pclk);
 +	return 0;
 +}
 +
-+#ifdef CONFIG_PM
-+static int catu_runtime_suspend(struct device *dev)
-+{
-+	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
-+
-+	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_disable_unprepare(drvdata->pclk);
-+	return 0;
-+}
-+
-+static int catu_runtime_resume(struct device *dev)
-+{
-+	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
-+
-+	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_prepare_enable(drvdata->pclk);
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops catu_dev_pm_ops = {
-+	SET_RUNTIME_PM_OPS(catu_runtime_suspend, catu_runtime_resume, NULL)
-+};
-+
 +#ifdef CONFIG_ACPI
-+static const struct acpi_device_id catu_acpi_ids[] = {
-+	{"ARMHC9CA", 0, 0, 0}, /* ARM CoreSight CATU */
-+	{},
++static const struct acpi_device_id tpiu_acpi_ids[] = {
++	{"ARMHC979", 0, 0, 0}, /* ARM CoreSight TPIU */
++	{}
 +};
-+
-+MODULE_DEVICE_TABLE(acpi, catu_acpi_ids);
++MODULE_DEVICE_TABLE(acpi, tpiu_acpi_ids);
 +#endif
 +
-+static struct platform_driver catu_platform_driver = {
-+	.probe	= catu_platform_probe,
-+	.remove	= catu_platform_remove,
-+	.driver	= {
-+		.name			= "coresight-catu-platform",
-+		.acpi_match_table	= ACPI_PTR(catu_acpi_ids),
++static struct platform_driver tpiu_platform_driver = {
++	.probe	= tpiu_platform_probe,
++	.remove	= tpiu_platform_remove,
++	.driver = {
++		.name			= "coresight-tpiu-platform",
++		.acpi_match_table	= ACPI_PTR(tpiu_acpi_ids),
 +		.suppress_bind_attrs	= true,
-+		.pm			= &catu_dev_pm_ops,
++		.pm			= &tpiu_dev_pm_ops,
 +	},
 +};
 +
- static int __init catu_init(void)
- {
- 	int ret;
++static int __init tpiu_init(void)
++{
++	return coresight_init_driver("tpiu", &tpiu_driver, &tpiu_platform_driver);
++}
++
++static void __exit tpiu_exit(void)
++{
++	coresight_remove_driver(&tpiu_driver, &tpiu_platform_driver);
++}
++module_init(tpiu_init);
++module_exit(tpiu_exit);
  
--	ret = amba_driver_register(&catu_driver);
--	if (ret)
--		pr_info("Error registering catu driver\n");
-+	ret = coresight_init_driver("catu", &catu_driver, &catu_platform_driver);
- 	tmc_etr_set_catu_ops(&etr_catu_buf_ops);
- 	return ret;
- }
-@@ -612,7 +712,7 @@ static int __init catu_init(void)
- static void __exit catu_exit(void)
- {
- 	tmc_etr_remove_catu_ops();
--	amba_driver_unregister(&catu_driver);
-+	coresight_remove_driver(&catu_driver, &catu_platform_driver);
- }
- 
- module_init(catu_init);
-diff --git a/drivers/hwtracing/coresight/coresight-catu.h b/drivers/hwtracing/coresight/coresight-catu.h
-index 442e034bbfba..141feac1c14b 100644
---- a/drivers/hwtracing/coresight/coresight-catu.h
-+++ b/drivers/hwtracing/coresight/coresight-catu.h
-@@ -61,6 +61,7 @@
- #define CATU_IRQEN_OFF		0x0
- 
- struct catu_drvdata {
-+	struct clk *pclk;
- 	void __iomem *base;
- 	struct coresight_device *csdev;
- 	int irq;
+ MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
+ MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
 -- 
 2.25.1
 
