@@ -1,101 +1,171 @@
-Return-Path: <linux-kernel+bounces-103248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2B887BCE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:37:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F23D87BCEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0B60B21054
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:37:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BAAA283F42
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2F158106;
-	Thu, 14 Mar 2024 12:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="Zy1zUE5W"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE425A104;
+	Thu, 14 Mar 2024 12:37:52 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7598B51C49;
-	Thu, 14 Mar 2024 12:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C385914B;
+	Thu, 14 Mar 2024 12:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710419865; cv=none; b=SZdGW0olKgHvT1cUpwSImV0UiAWg7vOYTiMKj1kfJs7WOwBeyFSOYlyPTd3BxbH0dYc7qAlsuoJlpH+pbpBcH4bW0AHxhpiaFD0kmUj0oNkxR6WwpUfnzHQp0E9h7uuPXLo6aDgWTF6mwfJOEpNCF8YZ4PGqYuclhFO848FBlOQ=
+	t=1710419871; cv=none; b=L4cRrRVjzv+pSDNEhNo+6WDqEEjndui85qeLtDstFgIb6cO1TuJDz9YIevE8BNvVDcs0p1AvSlBbLFrStCle8xsEqdjoyuov04eupBo2KKL2bgUq5XNU1Euu/uXgb3dhTGal5BHXC8nKpzOqEqSulLuWUQJB9uh3HRirb/ARHZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710419865; c=relaxed/simple;
-	bh=Z8cJyTYUV4aTS9G91QVSKjKFmtjxIQEC3j7bqhcW9Uc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pq0zIeEvL9W5vfY86qOEPa+lttuajo38GhUeRE0QBFON8KIaIcQElHVRy3YIXKm3VfPrJvo5Vz4HfUci9NfALJUOMq02E26k6cCl8HWzQcTOR6/4Qq6SAi4zo2YWn9nEMeetLHzMpurW/yzCqv974XmPivbZyqshHicZDoyJLnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=Zy1zUE5W; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 305FC60006;
-	Thu, 14 Mar 2024 12:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710419858;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/peOBOnLsJGv1ihVaTFv7Ntt/VLBoWwY2pecEGf0v7c=;
-	b=Zy1zUE5WNj30me+0vnKbflTH/h3Mx7DfSrQdmh/OlwgjRz6guFJpz5zDo6mdHj2YWymx7E
-	nALZIKd+2Zw6tEn+N0zcsUcLCr2OjOjQQGP8TqkwZgkwm3RgxzViKo2mozGtSMHiw7RZpz
-	gQ5Wh9O9VjUCU8jOUjonDaEwKdTvDNYbDZAgDd+0IrEc8rTC48ZNlmXX11xeDa5V7tqM3W
-	INqoLgQ7voXnYIQNYWoPfDzjiQUWe5++2lVxe8A8EOrunaa9ZWxx66OyYv3fY2FmUbnV9V
-	To3ECh0B5vbizAX5HXn0ZDLYklqcAjV1fNOTLM5RtjPObi+thVib6EqFWkX+ZQ==
-Message-ID: <3eb63e39-c7f2-4411-bb84-e4c152be1f0c@arinc9.com>
-Date: Thu, 14 Mar 2024 15:37:19 +0300
+	s=arc-20240116; t=1710419871; c=relaxed/simple;
+	bh=csOO+mR0uiAwswW0+kfvVkxqkdpMQpNz+7ApFIXBGiE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SbuAbfYVlNaAP8WGBZxBQjiEjLJNds/Ib5EvNS8StMSS14gYqPTaDXWOlUeghDge3FL69cyPT7KBHHBj2bYeDh9LKRBOf4BEYJ8W1Ace23sT23PWII7AmkA9mpM4kno2JObuIPsD2YSRiwJOxrdSfL1oTEDXcBF9qiAJ1q+0/Oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TwRjH1DSkz1FMGX;
+	Thu, 14 Mar 2024 20:37:23 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0B65D1A016C;
+	Thu, 14 Mar 2024 20:37:40 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 14 Mar 2024 20:37:39 +0800
+Message-ID: <d166d7e6-bc55-8718-19a9-6bd97f4bd032@huawei.com>
+Date: Thu, 14 Mar 2024 20:37:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: rockchip: set PHY address of MT7531 switch to
- 0x1f
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2 4/9] ext4: fix slab-out-of-bounds in
+ ext4_mb_find_good_group_avg_frag_lists()
 Content-Language: en-US
-To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240314-for-rockchip-mt7531-phy-address-v1-1-743b5873358f@arinc9.com>
- <4682635.taCxCBeP46@diego>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <4682635.taCxCBeP46@diego>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <ojaswin@linux.ibm.com>, <adobriyan@gmail.com>,
+	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <stable@vger.kernel.org>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20240227091148.178435-1-libaokun1@huawei.com>
+ <20240227091148.178435-5-libaokun1@huawei.com>
+ <20240314103056.rykwi2hhfm7v575a@quack3>
+ <50f9333b-831a-8b4b-a6f2-ae79ab46a88b@huawei.com>
+ <20240314120011.xggrokdfuu6fh4uv@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240314120011.xggrokdfuu6fh4uv@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Hello Heiko.
-
-On 14.03.2024 15:31, Heiko Stübner wrote:
-> Am Donnerstag, 14. März 2024, 13:24:35 CET schrieb Arınç ÜNAL via B4 Relay:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On 2024/3/14 20:00, Jan Kara wrote:
+> On Thu 14-03-24 19:24:56, Baokun Li wrote:
+>> Hi Jan,
 >>
->> The MT7531 switch listens on PHY address 0x1f on an MDIO bus. I've got two
->> findings that support this. There's no bootstrapping option to change the
->> PHY address of the switch. The Linux driver hardcodes 0x1f as the PHY
->> address of the switch. So the reg property on the device tree is currently
->> ignored by the Linux driver.
+>> On 2024/3/14 18:30, Jan Kara wrote:
+>>> On Tue 27-02-24 17:11:43, Baokun Li wrote:
+>>>
+>>>
+>>> At 4k block size, the length of the s_mb_avg_fragment_size list is 14,
+>>> but an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds
+>>> to be triggered by an attempt to access an element at index 29.
+>>>
+>>> Add a new attr_id attr_clusters_in_group with values in the range
+>>> [0, sbi->s_clusters_per_group] and declare mb_group_prealloc as
+>>> that type to fix the issue. In addition avoid returning an order
+>>> from mb_avg_fragment_size_order() greater than MB_NUM_ORDERS(sb)
+>>> and reduce some useless loops.
+>>>
+>>> Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
+>>> CC: stable@vger.kernel.org
+>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>> Looks good. Just one nit below. Otherwise feel free to add:
+>>>
+>>> Reviewed-by: Jan Kara <jack@suse.cz>
+>>>
+>>>> ---
+>>>>    fs/ext4/mballoc.c |  6 ++++++
+>>>>    fs/ext4/sysfs.c   | 13 ++++++++++++-
+>>>>    2 files changed, 18 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>>> index 85a91a61b761..7ad089df2408 100644
+>>>> --- a/fs/ext4/mballoc.c
+>>>> +++ b/fs/ext4/mballoc.c
+>>>> @@ -831,6 +831,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
+>>>>    		return 0;
+>>>>    	if (order == MB_NUM_ORDERS(sb))
+>>>>    		order--;
+>>>> +	if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
+>>>> +		order = MB_NUM_ORDERS(sb) - 1;
+>>>>    	return order;
+>>>>    }
+>>>> @@ -1057,6 +1059,10 @@ static void ext4_mb_choose_next_group_best_avail(struct ext4_allocation_context
+>>>>    			ac->ac_flags |= EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED;
+>>>>    			return;
+>>>>    		}
+>>>> +
+>>>> +		/* Skip some unnecessary loops. */
+>>>> +		if (unlikely(i > MB_NUM_ORDERS(ac->ac_sb)))
+>>>> +			i = MB_NUM_ORDERS(ac->ac_sb);
+>>> How can this possibly trigger now? MB_NUM_ORDERS is sb->s_blocksize_bits +
+>>> 2. 'i' is starting at fls(ac->ac_g_ex.fe_len) and ac_g_ex.fe_len shouldn't
+>>> be larger than clusters per group, hence fls() should be less than
+>>> sb->s_blocksize_bits? Am I missing something? And if yes, we should rather
+>>> make sure 'order' is never absurdly big?
+>>>
+>>> I suspect this code is defensive upto a point of being confusing :)
+>>>
+>>> Honza
+>> Yes, this is indeed defensive code! Only walk into this branch when
+>> WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)) is triggered.
+>> As previously mentioned by ojaswin in the following link:
 >>
->> Therefore, describe the correct PHY address on Banana Pi BPI-R2 Pro that
->> has this switch.
+>> "The reason for this is that otherwise when order is large eg 29,
+>> we would unnecessarily loop from i=29 to i=13 while always
+>> looking at the same avg_fragment_list[13]."
 >>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> Fixes: c1804463e5c6 ("arm64: dts: rockchip: Add mt7531 dsa node to BPI-R2-Pro board")
+>> Link：https://lore.kernel.org/lkml/ZdQ7FEA7KC4eAMpg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+>>
+>> Thank you so much for the review! ღ( ´･ᴗ･` )
+> Thanks for the link. So what Ojaswin has suggested has been slightly
+> different though. He suggested to trim the order before the for loop, not
+> after the first iteration as you do which is what was confusing me. I'd
+> even suggest to replace your check with:
+>
+>          /*
+>           * mb_avg_fragment_size_order() returns order in a way that makes
+>           * retrieving back the length using (1 << order) inaccurate. Hence, use
+>           * fls() instead since we need to know the actual length while modifying
+>           * goal length.
+>           */
+> -       order = fls(ac->ac_g_ex.fe_len) - 1;
+> +	order = min(fls(ac->ac_g_ex.fe_len), MB_NUM_ORDERS(ac->ac_sb)) - 1;
+>          min_order = order - sbi->s_mb_best_avail_max_trim_order;
+>          if (min_order < 0)
+>                  min_order = 0;
+>
+> 								Honza
+Yes, I changed it that way because it only happens when an exception
+somewhere causes fe_len to be a huge value. I think in this case we
+should report the exception via WARN_ON_ONCE(), and trimming the
+order before the for loop will bypass WARN_ON_ONCE and not report
+any errors.
 
-Do I need to resubmit with this added, or would you add it while applying
-the patch?
-
-Arınç
+Thanks!
+-- 
+With Best Regards,
+Baokun Li
+.
 
