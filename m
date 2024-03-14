@@ -1,198 +1,514 @@
-Return-Path: <linux-kernel+bounces-103216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40E987BC7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:06:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C63387BC7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 420081F22D59
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:06:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F334B23156
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226246F086;
-	Thu, 14 Mar 2024 12:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1JVPuio"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C67C56F08B;
+	Thu, 14 Mar 2024 12:06:52 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95DF6EB4A;
-	Thu, 14 Mar 2024 12:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D674554677;
+	Thu, 14 Mar 2024 12:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710417955; cv=none; b=qOA2ogdWPIk+YHzkK9DIpEzpYDINNFGiDi9iAq72/P9T5rG/H8jtNlHws0iBv7hIZSd3luGaVIA8CljAL3UpUwWWDDAI9Y2Sck9PhVnNaBHgu8guqgUpuQE/RYIvAOH0TA37wI7S4Nb0j/1SV8AE/sFplhnPin2vQpXbnA6s4cA=
+	t=1710418011; cv=none; b=TZ+Snk53datxu8d/a/u7PIAgExjIrOIMAdIoNxhdZONn1kQyTsnrvJgUgdueRVwSInj1ad1xEvxem8B0A/zKt4Af2OtIblDJuYUgVCY0uIEtvl46JSufjXiom7s2nqKxkk6qVWfuX334gDB5ITjtbUhLfJMOuxRBA6Zl8ir2EzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710417955; c=relaxed/simple;
-	bh=0xTpEM3Y/NrqBhreNw+cRUSto1TJ34AiQcMObEgaOG0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MpIHA6aBQn1TWGD065coIsXZE5X17jlTK+8j12ldDEAU7ATEx6/XzUUpk/C2UQ+ZD6+8knsjxT1IGJMnnMEkFfmocWzzOYcL7/fQ3RJIxCivd2demFJ1vvHHBrRKCSJqLpoZy83NRhytQVk1gHYZHKBlSf2zT+hrOkeAjA54TEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1JVPuio; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dc5d0162bcso6405885ad.0;
-        Thu, 14 Mar 2024 05:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710417953; x=1711022753; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sxUqglOb19+8Ui9qYkGG1A5RE2kMc/HzRCXEs7LSq5w=;
-        b=e1JVPuio8S1mti2VC4HH3prBfhrxlse6tuJDMTkBgAWQ2XRxvaV6kCuBIpiu4POQpw
-         cQsZVsocs/0f3Rk4jQ+QOXVPq/+ZRGx8sK+0hkjUF7qttHLT5/ZmEgJ09WBq9KWGQQu8
-         k5qI/K2U+LnpO0mtld0saxivgLYKyMPYFlQ3LuSdBqk/AOWzxwTuA1BG50ik2GsAOcRM
-         9LTXa2jMuJT0ZqF645M3sRnbdK3PADiyeP2U5s/Jlg9B5lEmsa4KvRUfeGJKjJgqL+o8
-         0BZPXiIcTXRh7BEL9PVqSMSj/2sNNpILfYwNCYODVQaygybETLX8lEcCPkafF94eaOuM
-         4rKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710417953; x=1711022753;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sxUqglOb19+8Ui9qYkGG1A5RE2kMc/HzRCXEs7LSq5w=;
-        b=URBKc4ARNGfuoK7KBPjbERdqkEuGqYZ1EQl+YsNMsbXCrJtrq/si/1DFGb0VSGfj1O
-         mSGM9BH9M+7vT26tFSn8JrDfu7Nqr0952nIIenUj4LqOggM1hmZvLYvsouLOsCaTSgJW
-         zewhMRcd8JghvumOmKACb89ZQTQC+pPSFOkn+zKK1AsSGy5qXdErG9mtu58ujF+OK2HZ
-         JfRXeVw2d+WVXUX08eUzlImLuKAco3VG7Gs1BqYNYkKlEeEqag/9fRQCgrrPLVLYObcC
-         EY/p0U1P7bxC29DRyrji3ws0XyR6wWtbvn/daJtjE6UFRPazqQGdTOgCWMELYUIi6beU
-         URRA==
-X-Forwarded-Encrypted: i=1; AJvYcCV0YyHSFT9iRI+YWpBExTle+PfwKTlxg7aLwlI2OUDjqGj9SiYTTJgusuA21xHYQVw4ow7x1HnqS3sB2+dTFlSC8rSubDE/hrEfQljtzfpC1kyB7vMNIqG7g7DLAvSsqTaoptC8McNlhQ==
-X-Gm-Message-State: AOJu0Ywr3c9Knt+a6ggPqegw3Jwc+l5Do4yNeod6MMe6hVI37x9uxXz+
-	J4Gxw5UG7omuAh8uXDcDNkUCROT2fiGsEFbvCkBwJYwmckWAdW/Y
-X-Google-Smtp-Source: AGHT+IH4/NiBc9M2jC4uVkmALXn2nyHXeOSFAZoTwdWRjfOM3P4K+8IzetlR7j+BVbgB4FfZcrwKNw==
-X-Received: by 2002:a17:903:230e:b0:1de:e4bd:73fc with SMTP id d14-20020a170903230e00b001dee4bd73fcmr268291plh.24.1710417953006;
-        Thu, 14 Mar 2024 05:05:53 -0700 (PDT)
-Received: from met-Virtual-Machine.. ([131.107.8.95])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170902e88d00b001db594c9d17sm1497389plg.254.2024.03.14.05.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 05:05:52 -0700 (PDT)
-From: meetakshisetiyaoss@gmail.com
-To: sfrench@samba.org,
-	pc@manguebit.com,
-	ronniesahlberg@gmail.com,
-	sprasad@microsoft.com,
-	nspmangalore@gmail.com,
-	tom@talpey.com,
-	linux-cifs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	bharathsm.hsk@gmail.com
-Cc: Meetakshi Setiya <msetiya@microsoft.com>
-Subject: [PATCH] Fixes: ffceb7640cbf ("smb: client: do not defer close open handles to deleted files")
-Date: Thu, 14 Mar 2024 08:05:49 -0400
-Message-Id: <20240314120549.627950-1-meetakshisetiyaoss@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710418011; c=relaxed/simple;
+	bh=m90Mqt8tRrC/qyuvitBmgbNvq/1kW/xbj/rHbPd9SAg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qx5S9InrqWdBEtuTDLeAaJkguJ58X+4igjljCAFM/1sF6wPJtZfK7989/WhrG3MAhoFwjZA4EZNY1+U2LgGgDdoMMYDFF8zir+o12ZKjGOC2P04YcET4F8JaAZ7VnK0+yqfCbsVur9B5baDTb5MiWGXAYZPNheF4pZMsj2hkeZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED953C433F1;
+	Thu, 14 Mar 2024 12:06:48 +0000 (UTC)
+Message-ID: <ad99e2e6-fff1-43bf-8266-e636d557fd96@xs4all.nl>
+Date: Thu, 14 Mar 2024 13:06:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v20 7/9] media: v4l2: Add REMOVE_BUFS ioctl
+Content-Language: en-US, nl
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org,
+ tfiga@chromium.org, m.szyprowski@samsung.com, ezequiel@vanguardiasur.com.ar,
+ p.zabel@pengutronix.de, nicolas@ndufresne.ca
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, kernel@collabora.com
+References: <20240221155435.100093-1-benjamin.gaignard@collabora.com>
+ <20240221155435.100093-8-benjamin.gaignard@collabora.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20240221155435.100093-8-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Meetakshi Setiya <msetiya@microsoft.com>
+Hi Benjamin,
 
-Fix potential memory leaks, add error checking, remove unnecessary
-initialisation of status_file_deleted and do not use cifs_iget() to get
-inode in reparse_info_to_fattr since fattrs may not be fully set.
+While reviewing the v4l2-compliance code I realized that the type
+handling needs to be improved. See my comments below:
 
-Signed-off-by: Meetakshi Setiya <msetiya@microsoft.com>
----
- fs/smb/client/file.c  |  1 -
- fs/smb/client/inode.c | 24 +++++++++++++-----------
- 2 files changed, 13 insertions(+), 12 deletions(-)
+On 21/02/2024 4:54 pm, Benjamin Gaignard wrote:
+> VIDIOC_REMOVE_BUFS ioctl allows to remove buffers from a queue.
+> The number of buffers to remove in given by count field of
+> struct v4l2_remove_buffers and the range start at the index
+> specified in the same structure.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 20:
+> - Rename DELETE_BUFS into REMOVE_BUFS
+> - Change documention, structure and variables name to use 'remove'
+> 
+>  .../userspace-api/media/v4l/user-func.rst     |  1 +
+>  .../media/v4l/vidioc-remove-bufs.rst          | 82 +++++++++++++++++++
+>  .../media/v4l/vidioc-reqbufs.rst              |  1 +
+>  .../media/common/videobuf2/videobuf2-core.c   | 38 +++++++++
+>  .../media/common/videobuf2/videobuf2-v4l2.c   | 14 +++-
+>  drivers/media/v4l2-core/v4l2-dev.c            |  3 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c          | 32 ++++++++
+>  include/media/v4l2-ioctl.h                    |  4 +
+>  include/media/videobuf2-core.h                | 10 +++
+>  include/media/videobuf2-v4l2.h                |  2 +
+>  include/uapi/linux/videodev2.h                | 17 ++++
+>  11 files changed, 203 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-remove-bufs.rst
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
+> index 15ff0bf7bbe6..6f661138801c 100644
+> --- a/Documentation/userspace-api/media/v4l/user-func.rst
+> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
+> @@ -62,6 +62,7 @@ Function Reference
+>      vidioc-query-dv-timings
+>      vidioc-querystd
+>      vidioc-reqbufs
+> +    vidioc-remove-bufs
+>      vidioc-s-hw-freq-seek
+>      vidioc-streamon
+>      vidioc-subdev-enum-frame-interval
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-remove-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-remove-bufs.rst
+> new file mode 100644
+> index 000000000000..0fbc0dfbbaa1
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-remove-bufs.rst
+> @@ -0,0 +1,82 @@
+> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> +.. c:namespace:: V4L
+> +
+> +.. _VIDIOC_REMOVE_BUFS:
+> +
+> +************************
+> +ioctl VIDIOC_REMOVE_BUFS
+> +************************
+> +
+> +Name
+> +====
+> +
+> +VIDIOC_REMOVE_BUFS - Removes buffers from a queue
+> +
+> +Synopsis
+> +========
+> +
+> +.. c:macro:: VIDIOC_REMOVE_BUFS
+> +
+> +``int ioctl(int fd, VIDIOC_REMOVE_BUFS, struct v4l2_remove_buffers *argp)``
+> +
+> +Arguments
+> +=========
+> +
+> +``fd``
+> +    File descriptor returned by :c:func:`open()`.
+> +
+> +``argp``
+> +    Pointer to struct :c:type:`v4l2_remove_buffers`.
+> +
+> +Description
+> +===========
+> +
+> +Applications can optionally call the :ref:`VIDIOC_REMOVE_BUFS` ioctl to
+> +remove buffers from a queue.
+> +:ref:`VIDIOC_CREATE_BUFS` ioctl support is mandatory to enable :ref:`VIDIOC_REMOVE_BUFS`.
+> +This ioctl is available if the ``V4L2_BUF_CAP_SUPPORTS_REMOVE_BUFS`` capability
+> +is set on the queue when :c:func:`VIDIOC_REQBUFS` or :c:func:`VIDIOC_CREATE_BUFS`
+> +are invoked.
+> +
+> +.. c:type:: v4l2_remove_buffers
+> +
+> +.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.5cm}|
+> +
+> +.. flat-table:: struct v4l2_remove_buffers
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u32
+> +      - ``index``
+> +      - The starting buffer index to remove.
 
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index c3ed7017cdf2..f83b088b5bc9 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -486,7 +486,6 @@ struct cifsFileInfo *cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
- 	cfile->uid = current_fsuid();
- 	cfile->dentry = dget(dentry);
- 	cfile->f_flags = file->f_flags;
--	cfile->status_file_deleted = false;
- 	cfile->invalidHandle = false;
- 	cfile->deferred_close_scheduled = false;
- 	cfile->tlink = cifs_get_tlink(tlink);
-diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
-index 8177ec59afee..6092729bf7f6 100644
---- a/fs/smb/client/inode.c
-+++ b/fs/smb/client/inode.c
-@@ -820,8 +820,10 @@ cifs_get_file_info(struct file *filp)
- 	void *page = alloc_dentry_path();
- 	const unsigned char *path;
- 
--	if (!server->ops->query_file_info)
-+	if (!server->ops->query_file_info) {
-+		free_dentry_path(page);
- 		return -ENOSYS;
-+	}
- 
- 	xid = get_xid();
- 	rc = server->ops->query_file_info(xid, tcon, cfile, &data);
-@@ -835,8 +837,8 @@ cifs_get_file_info(struct file *filp)
- 		}
- 		path = build_path_from_dentry(dentry, page);
- 		if (IS_ERR(path)) {
--			free_dentry_path(page);
--			return PTR_ERR(path);
-+			rc = PTR_ERR(path);
-+			goto cgfi_exit;
- 		}
- 		cifs_open_info_to_fattr(&fattr, &data, inode->i_sb);
- 		if (fattr.cf_flags & CIFS_FATTR_DELETE_PENDING)
-@@ -1009,7 +1011,6 @@ static int reparse_info_to_fattr(struct cifs_open_info_data *data,
- 	struct kvec rsp_iov, *iov = NULL;
- 	int rsp_buftype = CIFS_NO_BUFFER;
- 	u32 tag = data->reparse.tag;
--	struct inode *inode = NULL;
- 	int rc = 0;
- 
- 	if (!tag && server->ops->query_reparse_point) {
-@@ -1049,12 +1050,8 @@ static int reparse_info_to_fattr(struct cifs_open_info_data *data,
- 
- 	if (tcon->posix_extensions)
- 		smb311_posix_info_to_fattr(fattr, data, sb);
--	else {
-+	else
- 		cifs_open_info_to_fattr(fattr, data, sb);
--		inode = cifs_iget(sb, fattr);
--		if (inode && fattr->cf_flags & CIFS_FATTR_DELETE_PENDING)
--			cifs_mark_open_handles_for_deleted_file(inode, full_path);
--	}
- out:
- 	fattr->cf_cifstag = data->reparse.tag;
- 	free_rsp_buf(rsp_buftype, rsp_iov.iov_base);
-@@ -1109,9 +1106,9 @@ static int cifs_get_fattr(struct cifs_open_info_data *data,
- 						   full_path, fattr);
- 		} else {
- 			cifs_open_info_to_fattr(fattr, data, sb);
--			if (fattr->cf_flags & CIFS_FATTR_DELETE_PENDING)
--				cifs_mark_open_handles_for_deleted_file(*inode, full_path);
- 		}
-+		if (!rc && fattr->cf_flags & CIFS_FATTR_DELETE_PENDING)
-+			cifs_mark_open_handles_for_deleted_file(*inode, full_path);
- 		break;
- 	case -EREMOTE:
- 		/* DFS link, no metadata available on this server */
-@@ -1340,6 +1337,8 @@ int smb311_posix_get_inode_info(struct inode **inode,
- 		goto out;
- 
- 	rc = update_inode_info(sb, &fattr, inode);
-+	if (!rc && fattr.cf_flags & CIFS_FATTR_DELETE_PENDING)
-+		cifs_mark_open_handles_for_deleted_file(*inode, full_path);
- out:
- 	kfree(fattr.cf_symlink_target);
- 	return rc;
-@@ -1501,6 +1500,9 @@ struct inode *cifs_root_iget(struct super_block *sb)
- 		goto out;
- 	}
- 
-+	if (!rc && fattr.cf_flags & CIFS_FATTR_DELETE_PENDING)
-+		cifs_mark_open_handles_for_deleted_file(inode, path);
-+
- 	if (rc && tcon->pipe) {
- 		cifs_dbg(FYI, "ipc connection - fake read inode\n");
- 		spin_lock(&inode->i_lock);
--- 
-2.39.2
+Just add: "This field is ignored if count == 0."
 
+> +    * - __u32
+> +      - ``count``
+> +      - The number of buffers to be removed with indices 'index' until 'index + count - 1'.
+> +        All buffers in this range must be valid and in DEQUEUED state.
+> +        If count is set to 0 :ref:`VIDIOC_REMOVE_BUFS` will do nothing and return 0.
+
+I compared this to CREATE_BUFS and there the documentation clearly states
+that it will return an error if count == 0 and the type is incorrect. So
+we should do the same: the type field is checked regardless of the count value.
+
+> +    * - __u32
+> +      - ``type``
+> +      - Type of the stream or buffers, this is the same as the struct
+> +	:c:type:`v4l2_format` ``type`` field. See
+> +	:c:type:`v4l2_buf_type` for valid values.
+> +    * - __u32
+> +      - ``reserved``\ [13]
+> +      - A place holder for future extensions. Drivers and applications
+> +	must set the array to zero.
+> +
+> +Return Value
+> +============
+> +
+> +On success 0 is returned, on error -1 and the ``errno`` variable is set
+> +appropriately. The generic error codes are described at the
+> +:ref:`Generic Error Codes <gen-errors>` chapter.
+> +
+> +EBUSY
+> +    File I/O is in progress.
+> +    One or more of the buffers in the range ``index`` to ``index + count - 1`` are not
+> +    in DEQUEUED state.
+> +
+> +EINVAL
+> +    One or more of the buffers in the range ``index`` to ``index + count - 1`` do not
+> +    exist in the queue.
+
+This does not mention that it is also returned if type is invalid.
+
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> index 0b3a41a45d05..bbc22dd76032 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> @@ -121,6 +121,7 @@ aborting or finishing any DMA in progress, an implicit
+>  .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
+>  .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
+>  .. _V4L2-BUF-CAP-SUPPORTS-MAX-NUM-BUFFERS:
+> +.. _V4L2-BUF-CAP-SUPPORTS-REMOVE-BUFS:
+>  
+>  .. raw:: latex
+>  
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 009cea95d662..0b2b48e1b2df 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -1691,6 +1691,44 @@ int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb)
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
+>  
+> +int vb2_core_remove_bufs(struct vb2_queue *q, unsigned int start, unsigned int count)
+> +{
+> +	unsigned int i, ret = 0;
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(q);
+> +
+> +	if (count == 0)
+> +		return 0;
+> +
+> +	if (count > q_num_bufs)
+> +		return -EINVAL;
+> +
+> +	if (start > q->max_num_buffers - count)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&q->mmap_lock);
+> +
+> +	/* Check that all buffers in the range exist */
+> +	for (i = start; i < start + count; i++) {
+> +		struct vb2_buffer *vb = vb2_get_buffer(q, i);
+> +
+> +		if (!vb) {
+> +			ret = -EINVAL;
+> +			goto unlock;
+> +		}
+> +		if (vb->state != VB2_BUF_STATE_DEQUEUED) {
+> +			ret = -EBUSY;
+> +			goto unlock;
+> +		}
+> +	}
+> +	__vb2_queue_free(q, start, count);
+> +	dprintk(q, 2, "%u buffers removed\n", count);
+> +
+> +unlock:
+> +	mutex_unlock(&q->mmap_lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(vb2_core_remove_bufs);
+> +
+>  /*
+>   * vb2_start_streaming() - Attempt to start streaming.
+>   * @q:		videobuf2 queue
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 03e8080a68a8..9a5dcbb8fef3 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -685,7 +685,7 @@ static void vb2_set_flags_and_caps(struct vb2_queue *q, u32 memory,
+>  		*flags &= V4L2_MEMORY_FLAG_NON_COHERENT;
+>  	}
+>  
+> -	*caps = V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
+> +	*caps |= V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
+>  	if (q->io_modes & VB2_MMAP)
+>  		*caps |= V4L2_BUF_CAP_SUPPORTS_MMAP;
+>  	if (q->io_modes & VB2_USERPTR)
+> @@ -1001,6 +1001,18 @@ EXPORT_SYMBOL_GPL(vb2_poll);
+>  
+>  /* vb2 ioctl helpers */
+>  
+> +int vb2_ioctl_remove_bufs(struct file *file, void *priv,
+> +			  struct v4l2_remove_buffers *d)
+> +{
+> +	struct video_device *vdev = video_devdata(file);
+> +
+
+First check if the type matches vdev->queue->type and return -EINVAL
+if it isn't.
+
+Next, if count == 0, then just return 0. Otherwise it might return
+-EBUSY in the check below.
+
+> +	if (vb2_queue_is_busy(vdev->queue, file))
+> +		return -EBUSY;
+> +
+> +	return vb2_core_remove_bufs(vdev->queue, d->index, d->count);
+> +}
+> +EXPORT_SYMBOL_GPL(vb2_ioctl_remove_bufs);
+> +
+>  int vb2_ioctl_reqbufs(struct file *file, void *priv,
+>  			  struct v4l2_requestbuffers *p)
+>  {
+> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+> index d13954bd31fd..e39e9742fdb5 100644
+> --- a/drivers/media/v4l2-core/v4l2-dev.c
+> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+> @@ -722,6 +722,9 @@ static void determine_valid_ioctls(struct video_device *vdev)
+>  		SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF, vidioc_prepare_buf);
+>  		SET_VALID_IOCTL(ops, VIDIOC_STREAMON, vidioc_streamon);
+>  		SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF, vidioc_streamoff);
+> +		/* VIDIOC_CREATE_BUFS support is mandatory to enable VIDIOC_REMOVE_BUFS */
+> +		if (ops->vidioc_create_bufs)
+> +			SET_VALID_IOCTL(ops, VIDIOC_REMOVE_BUFS, vidioc_remove_bufs);
+>  	}
+>  
+>  	if (is_vid || is_vbi || is_meta) {
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 33076af4dfdb..a5a4134218e6 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -489,6 +489,14 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
+>  	v4l_print_format(&p->format, write_only);
+>  }
+>  
+> +static void v4l_print_remove_buffers(const void *arg, bool write_only)
+> +{
+> +	const struct v4l2_remove_buffers *p = arg;
+> +
+> +	pr_cont("type=%s, index=%u, count=%u\n",
+> +		prt_names(p->type, v4l2_type_names), p->index, p->count);
+> +}
+> +
+>  static void v4l_print_streamparm(const void *arg, bool write_only)
+>  {
+>  	const struct v4l2_streamparm *p = arg;
+> @@ -2092,6 +2100,7 @@ static int v4l_overlay(const struct v4l2_ioctl_ops *ops,
+>  static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> +	struct video_device *vfd = video_devdata(file);
+>  	struct v4l2_requestbuffers *p = arg;
+>  	int ret = check_fmt(file, p->type);
+>  
+> @@ -2100,6 +2109,9 @@ static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
+>  
+>  	memset_after(p, 0, flags);
+>  
+> +	if (is_valid_ioctl(vfd, VIDIOC_REMOVE_BUFS))
+> +		p->capabilities = V4L2_BUF_CAP_SUPPORTS_REMOVE_BUFS;
+> +
+>  	return ops->vidioc_reqbufs(file, fh, p);
+>  }
+>  
+> @@ -2133,6 +2145,7 @@ static int v4l_dqbuf(const struct v4l2_ioctl_ops *ops,
+>  static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> +	struct video_device *vfd = video_devdata(file);
+>  	struct v4l2_create_buffers *create = arg;
+>  	int ret = check_fmt(file, create->format.type);
+>  
+> @@ -2143,6 +2156,9 @@ static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
+>  
+>  	v4l_sanitize_format(&create->format);
+>  
+> +	if (is_valid_ioctl(vfd, VIDIOC_REMOVE_BUFS))
+> +		create->capabilities = V4L2_BUF_CAP_SUPPORTS_REMOVE_BUFS;
+> +
+>  	ret = ops->vidioc_create_bufs(file, fh, create);
+>  
+>  	if (create->format.type == V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+> @@ -2161,6 +2177,21 @@ static int v4l_prepare_buf(const struct v4l2_ioctl_ops *ops,
+>  	return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
+>  }
+>  
+> +static int v4l_remove_bufs(const struct v4l2_ioctl_ops *ops,
+> +			   struct file *file, void *fh, void *arg)
+> +{
+> +	struct v4l2_remove_buffers *remove = arg;
+> +	int ret = check_fmt(file, remove->type);
+
+This check should be dropped, it is unnecessary since vb2_ioctl_remove_bufs
+will verify this. It's not sufficient either since check_fmt allows type
+V4L2_BUF_TYPE_VIDEO_CAPTURE to be specified if vidioc_g_fmt_vid_cap_mplane
+is present, so it is not as precise as checking for 'type == q->type'.
+
+For create_bufs that is done later on, so the call to check_fmt there is
+fairly pointless anyway.
+
+A good test here is to do: modprobe vivid multiplanar=2
+
+This enables multiplanar mode for the video capture and output.
+
+If you pass in V4L2_BUF_TYPE_VIDEO_CAPTURE to remove_bufs, then it passes
+with the check_fmt call, but q->type will actually be V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
+so that should have returned -EINVAL.
+
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (ops->vidioc_remove_bufs)
+> +		return ops->vidioc_remove_bufs(file, fh, remove);
+> +
+> +	return -ENOTTY;
+> +}
+> +
+>  static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> @@ -2910,6 +2941,7 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
+>  	IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands, v4l_print_freq_band, 0),
+>  	IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info, v4l_print_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
+>  	IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl, v4l_print_query_ext_ctrl, INFO_FL_CTRL | INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
+> +	IOCTL_INFO(VIDIOC_REMOVE_BUFS, v4l_remove_bufs, v4l_print_remove_buffers, INFO_FL_PRIO | INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_remove_buffers, type)),
+>  };
+>  #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+>  
+> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+> index edb733f21604..bdbb7e542321 100644
+> --- a/include/media/v4l2-ioctl.h
+> +++ b/include/media/v4l2-ioctl.h
+> @@ -163,6 +163,8 @@ struct v4l2_fh;
+>   *	:ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
+>   * @vidioc_prepare_buf: pointer to the function that implements
+>   *	:ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
+> + * @vidioc_remove_bufs: pointer to the function that implements
+> + *	:ref:`VIDIOC_REMOVE_BUFS <vidioc_remove_bufs>` ioctl
+>   * @vidioc_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
+>   * @vidioc_g_fbuf: pointer to the function that implements
+> @@ -422,6 +424,8 @@ struct v4l2_ioctl_ops {
+>  				  struct v4l2_create_buffers *b);
+>  	int (*vidioc_prepare_buf)(struct file *file, void *fh,
+>  				  struct v4l2_buffer *b);
+> +	int (*vidioc_remove_bufs)(struct file *file, void *fh,
+> +				  struct v4l2_remove_buffers *d);
+>  
+>  	int (*vidioc_overlay)(struct file *file, void *fh, unsigned int i);
+>  	int (*vidioc_g_fbuf)(struct file *file, void *fh,
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 7aebeaf671d8..a4e59280747e 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -867,6 +867,16 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>   */
+>  int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb);
+>  
+> +/**
+> + * vb2_core_remove_bufs() -
+> + * @q:		pointer to &struct vb2_queue with videobuf2 queue.
+> + * @start:	first index of the range of buffers to remove.
+> + * @count:	number of buffers to remove.
+> + *
+> + *  Return: returns zero on success; an error code otherwise.
+> + */
+> +int vb2_core_remove_bufs(struct vb2_queue *q, unsigned int start, unsigned int count);
+> +
+>  /**
+>   * vb2_core_qbuf() - Queue a buffer from userspace
+>   *
+> diff --git a/include/media/videobuf2-v4l2.h b/include/media/videobuf2-v4l2.h
+> index 5a845887850b..77ce8238ab30 100644
+> --- a/include/media/videobuf2-v4l2.h
+> +++ b/include/media/videobuf2-v4l2.h
+> @@ -334,6 +334,8 @@ int vb2_ioctl_streamon(struct file *file, void *priv, enum v4l2_buf_type i);
+>  int vb2_ioctl_streamoff(struct file *file, void *priv, enum v4l2_buf_type i);
+>  int vb2_ioctl_expbuf(struct file *file, void *priv,
+>  	struct v4l2_exportbuffer *p);
+> +int vb2_ioctl_remove_bufs(struct file *file, void *priv,
+> +			  struct v4l2_remove_buffers *p);
+>  
+>  /* struct v4l2_file_operations helpers */
+>  
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index a8015e5e7fa4..2663213b76a4 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -1036,6 +1036,7 @@ struct v4l2_requestbuffers {
+>  #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF	(1 << 5)
+>  #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS		(1 << 6)
+>  #define V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS		(1 << 7)
+> +#define V4L2_BUF_CAP_SUPPORTS_REMOVE_BUFS		(1 << 8)
+>  
+>  /**
+>   * struct v4l2_plane - plane info for multi-planar buffers
+> @@ -2624,6 +2625,20 @@ struct v4l2_create_buffers {
+>  	__u32			reserved[5];
+>  };
+>  
+> +/**
+> + * struct v4l2_remove_buffers - VIDIOC_REMOVE_BUFS argument
+> + * @index:	the first buffer to be removed
+> + * @count:	number of buffers to removed
+> + * @type:	enum v4l2_buf_type
+> + * @reserved:	future extensions
+> + */
+> +struct v4l2_remove_buffers {
+> +	__u32			index;
+> +	__u32			count;
+> +	__u32			type;
+> +	__u32			reserved[13];
+> +};
+> +
+>  /*
+>   *	I O C T L   C O D E S   F O R   V I D E O   D E V I C E S
+>   *
+> @@ -2723,6 +2738,8 @@ struct v4l2_create_buffers {
+>  #define VIDIOC_DBG_G_CHIP_INFO  _IOWR('V', 102, struct v4l2_dbg_chip_info)
+>  
+>  #define VIDIOC_QUERY_EXT_CTRL	_IOWR('V', 103, struct v4l2_query_ext_ctrl)
+> +#define VIDIOC_REMOVE_BUFS	_IOWR('V', 104, struct v4l2_remove_buffers)
+> +
+>  
+>  /* Reminder: when adding new ioctls please add support for them to
+>     drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+
+Regards,
+
+	Hans
 
