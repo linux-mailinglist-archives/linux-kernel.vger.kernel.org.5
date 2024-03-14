@@ -1,181 +1,245 @@
-Return-Path: <linux-kernel+bounces-102978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A2587B962
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:36:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE91587B96B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDEE21F23C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:36:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D26D11C21790
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF9F6AF85;
-	Thu, 14 Mar 2024 08:36:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h76hchDn"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4256BB39;
+	Thu, 14 Mar 2024 08:40:02 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3756EEC4
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D95C433D4
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710405376; cv=none; b=CW9E6Q/r4AOuZJOjXa89ZJ6q/HXyjXuniUqb9bHmgrGA0Hzm4dB5GierBZ81K2Nw/9DEQnqMy4J2t6QHKYgxf5dutBqxcAlQaV40OzTcTDDQNJaubc9ubi9tgxOa4FU7/n7IgUT7L8ZGu/SD+T9bK9KvmDgN3VmY+Ic8iYkjIwI=
+	t=1710405602; cv=none; b=BFSAvzK+jJdLavruDPLup6jeKSdULnC0Ao/xPtTWW085gxvzy3T7OZ272/MpKW7bxKR3/7u81NcUfcem+UHRQdZydpnMj0yqz9jvT8qebvsoN7O02Iyt11kMdKW+EGPp0BhHAot3MIfR4kxdAN+oSykdCj7klh2zxSgUkbtvSEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710405376; c=relaxed/simple;
-	bh=fjbWlaQOikwKMnwZOz8/d8vqFrfC7KHDtintYgjI3K0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QEAOm/odypT26Fk/jQyWLJJPYadgilyTuIrUQZgypj8yw8nO/vH3umT3FdWA/9Mh1ohjE3BU9MinGcUeD6+Sv1UkiDOYqziNexXqeSStVx4SF0B7cNoBejtkcdPXOWMhOggs/7Oj5PglnT71vQVIo/hv33K3Rt+G5A8fMDAEnNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h76hchDn; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5101cd91017so1191164e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 01:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710405373; x=1711010173; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hj/WaHxD/qNMmrcRTKT2ci5bqw6SYan4groqkVU9P0E=;
-        b=h76hchDnBKjjXkxRbAf1ymo1yYHVSGX/vE5MYuYOw/LniQcDQCsHBv5h9OvllF71Yq
-         NwsveUquZ3Lz2pJ+58CjYnVtCVsXJSYEJbgbk/DKKR2EEWdbTEteLP2QwXkfyL8CQLmv
-         sbXVxkEhyEZsst7mAocG1EI/ziw8bjZQhSF6UKUfZN+x8vOdq4PvD/+xYiOvtnVN5qFG
-         VKwdo2i3UmB/dKfeUgwdN95BuQEt00ML0u4WzwcF6wVvJq7MqEXJVG1IAtGMd3EqAwJG
-         MdQYvJVMTtNQKUu/PD3flCkCgfbLfJwdW9A/Ze+S/Cfx6IDENUPFLRLLd0edcUQET22G
-         6KLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710405373; x=1711010173;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hj/WaHxD/qNMmrcRTKT2ci5bqw6SYan4groqkVU9P0E=;
-        b=tsSlyferowHAUtk5KYVmrlasoOTdxOgdAvI+KvkcSu+JDcB91mh/qfSL/vcaDACTIW
-         2ljibS39WUi+3GLDPEW4dOOXaOqw5ovk21jZ/Zv/2U75ao5mmj234YiZlJA4LPewKFyw
-         i9qap4zG3zO0KfKCQtih704WmiOzalv/9JgNccF0KoaSUXRVdt3hDvbeiozjqdnUqdob
-         bgcWfl9as4gqU2l6Rlvx5+u3bH21JPPaZQ/dO7z4onag5DauqtSXv3NRk9LwWXMYBCyU
-         foEkmkbJ8dDHclYjTqawii3NhSEYqMsAg0yKq5r6AcJ5nuumb0EKeugmImUOnk4lu8Gz
-         sxBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIWQeIMZmw+rHGIX++W8cK128XKqvqcRLyMQz9i3qZ6r8VseNns4JigIW52tC0t8qUQH0Up4nrJa0cArd0n5/RfxgO3w4bl2+ziUdG
-X-Gm-Message-State: AOJu0YxmzGNSzQGy/IudlDBk2UdYoTggw8z+Ma+nWK9Bl63fuV79LGjt
-	cmt6LxT8+yuUzY9mqFK0nCzym50O0bhnp86BVsRkmXyo6ceZ1mvOG8e3cc1T698=
-X-Google-Smtp-Source: AGHT+IHg2phWpA6wr0Ec2JY5vMTzDKNCDe3uQE5/b2ulf3w4ZnDGpniqfyMBM8L5ZJNhTuBmWoDrLg==
-X-Received: by 2002:a19:ae17:0:b0:513:cd2e:ceb1 with SMTP id f23-20020a19ae17000000b00513cd2eceb1mr619712lfc.48.1710405373003;
-        Thu, 14 Mar 2024 01:36:13 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id n23-20020a05600c3b9700b00412d4c8b743sm1709942wms.30.2024.03.14.01.36.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 01:36:12 -0700 (PDT)
-Message-ID: <75fd6970-f3a0-4eec-957c-3d8f6a553e0f@linaro.org>
-Date: Thu, 14 Mar 2024 09:36:08 +0100
+	s=arc-20240116; t=1710405602; c=relaxed/simple;
+	bh=hXBkc2lnJyVmaqMJ7BzFl8A8231c++GoATT9FbJj3YY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=T09oZq1t/cInw5ulavJEbgQ/Ie4uIJWst/pGg4KM3p4dA8TBzDKfWx2huRupQlctJFU/RwThGW7AmtFj0v5d7gjw9oMFhBPaj0377oOaIQ5iiYEm6Zau7oNUmdOc8PkUAhaShWIGJoAfHPCzKaNXfdBhakfGAgKcQzfMWaOj+8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 42E8dQ2t042813;
+	Thu, 14 Mar 2024 16:39:26 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TwLPF1QZbz2L2Bvr;
+	Thu, 14 Mar 2024 16:38:09 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 14 Mar 2024 16:39:24 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [PATCH] mm: fix a race scenario in folio_isolate_lru
+Date: Thu, 14 Mar 2024 16:39:21 +0800
+Message-ID: <20240314083921.1146937-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: adc: Add support for QCOM PMIC5
- Gen3 ADC
-Content-Language: en-US
-To: Jishnu Prakash <quic_jprakash@quicinc.com>, jic23@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- andersson@kernel.org, konrad.dybcio@linaro.org, lee@kernel.org,
- andriy.shevchenko@linux.intel.com, daniel.lezcano@linaro.org,
- dmitry.baryshkov@linaro.org
-Cc: lars@metafoo.de, luca@z3ntu.xyz, marijn.suijten@somainline.org,
- agross@kernel.org, sboyd@kernel.org, rafael@kernel.org, rui.zhang@intel.com,
- lukasz.luba@arm.com, linus.walleij@linaro.org, quic_subbaram@quicinc.com,
- quic_collinsd@quicinc.com, quic_amelende@quicinc.com,
- quic_kamalw@quicinc.com, kernel@quicinc.com, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
- devicetree@vger.kernel.org, cros-qcom-dts-watchers@chromium.org
-References: <20231231171237.3322376-1-quic_jprakash@quicinc.com>
- <20231231171237.3322376-3-quic_jprakash@quicinc.com>
- <3f812ffa-ec33-448e-b72a-ce698618a8c1@linaro.org>
- <13f2b558-a50d-44d3-85de-38e230212732@quicinc.com>
- <f52b2d5e-b2b4-48ae-a6a6-fc00c89662d2@linaro.org>
- <0b9e807d-e0ca-411c-9a2b-3d804bdf168c@quicinc.com>
- <d3dc9a41-4738-4634-9a98-fefcf418f552@linaro.org>
- <1537d42f-fe61-48c2-9ee2-1066db71a19e@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1537d42f-fe61-48c2-9ee2-1066db71a19e@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 42E8dQ2t042813
 
-On 14/03/2024 09:28, Jishnu Prakash wrote:
-> 
-> followed by updating maxItems back to 1 for all the earlier existing 
-> compatibles, using if:then: conditions, like the below example?
-> 
->    - if:
->        properties:
->          compatible:
->            contains:
->              const: qcom,spmi-adc5
-> 
->      then:
->        properties:
->          reg:
->            maxItems: 1
->          interrupts:
->            maxItems: 1
-> 
-> 
-> If this is acceptable, I'll add ADC5 Gen3 bindings in the same file with 
-> changes like the above, else I'll add them in a new file after first 
-> creating a common schema file as you suggested.
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Please refer to existing files how it is done:
-https://elixir.bootlin.com/linux/v6.8/source/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml#L132
+Panic[1] reported which is caused by lruvec->list break. Fix the race
+between folio_isolate_lru and release_pages.
 
+race condition:
+release_pages could meet a non-refered folio which escaped from being
+deleted from LRU but add to another list_head
+  #0 folio_isolate_lru          #1 release_pages
+  if (folio_test_clear_lru())
+                                   if (folio_put_testzero())
+                                   if (!folio_test_lru())
+                                    <failed to delete folio from LRU>
+    folio_get(folio)
+                                       list_add(&folio->lru,)
+    list_del(&folio->lru,)
 
-Best regards,
-Krzysztof
+fix action 1:
+have folio_get prior to folio_test_clear_lru is not enough as there
+could be concurrent folio_put(filemap_remove_folios) to make
+release_pages pass refcnt check and failed in delete from LRU
+
+  #0 folio_isolate_lru          #1 release_pages
+  folio_get(folio)
+  if (folio_test_clear_lru())
+                                   if (folio_put_testzero())
+                                   if (!folio_test_lru())
+                                    <failed to delete folio from LRU>
+                                       list_add(&folio->lru,)
+    list_del(&folio->lru,)
+
+fix action 2:
+folio_test_clear_lru should be considered as part of critical section of
+lruvec which require be within lruvec->lock.
+
+  #0 folio_isolate_lru          #1 release_pages
+  spin_lock(lruvec->lock)
+  folio_get(folio)
+  if (folio_test_clear_lru())
+    list_del(&folio->lru,)
+    <delete folio from LRU>
+  spin_unlock(lruvec->lock)        spin_lock(lruvec->lock)
+                                   if (folio_put_testzero())
+                                   if (!folio_test_lru())
+                                       list_add(&folio->lru,)
+
+[1]
+[   37.562326] pc : __list_del_entry_valid_or_report+0xec/0xf0
+[   37.562344] lr : __list_del_entry_valid_or_report+0xec/0xf0
+[   37.562351] sp : ffffffc085953990
+[   37.562355] x29: ffffffc0859539d0 x28: ffffffc082144000 x27: 000000000000000f
+[   37.562367] x26: 000000000000000d x25: 000000000000000d x24: 00000000ffffffff
+[   37.562377] x23: ffffffc085953a08 x22: ffffff8080389000 x21: ffffff8080389000
+[   37.562388] x20: fffffffe05c54180 x19: ffffffc085953b30 x18: ffffffc085989098
+[   37.562399] x17: 20747562202c3838 x16: ffffffffffffffff x15: 0000000000000004
+[   37.562409] x14: ffffff8176980000 x13: 0000000000007fff x12: 0000000000000003
+[   37.562420] x11: 00000000ffff7fff x10: ffffffc0820f51c4 x9 : 53b71233d5d50e00
+[   37.562431] x8 : 53b71233d5d50e00 x7 : ffffffc081161ff0 x6 : 0000000000000000
+[   37.562441] x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+[   37.562451] x2 : ffffff817f2c4178 x1 : ffffff817f2b71c8 x0 : 000000000000006d
+[   37.562461] Call trace:
+[   37.562465]  __list_del_entry_valid_or_report+0xec/0xf0
+[   37.562472]  release_pages+0x410/0x4c0
+[   37.562482]  __folio_batch_release+0x34/0x4c
+[   37.562490]  truncate_inode_pages_range+0x368/0x63c
+[   37.562497]  truncate_inode_pages+0x14/0x24
+[   37.562504]  blkdev_flush_mapping+0x60/0x120
+[   37.562513]  blkdev_put+0x114/0x298
+[   37.562520]  blkdev_release+0x28/0x40
+[   37.562526]  __fput+0xf8/0x2a8
+[   37.562533]  ____fput+0x10/0x20
+[   37.562539]  task_work_run+0xc4/0xec
+[   37.562546]  do_exit+0x32c/0xa3c
+[   37.562554]  do_group_exit+0x98/0x9c
+[   37.562561]  __arm64_sys_exit_group+0x18/0x1c
+[   37.562568]  invoke_syscall+0x58/0x114
+[   37.562575]  el0_svc_common+0xac/0xe0
+[   37.562582]  do_el0_svc+0x1c/0x28
+[   37.562588]  el0_svc+0x50/0xe4
+[   37.562593]  el0t_64_sync_handler+0x68/0xbc
+[   37.562599]  el0t_64_sync+0x1a8/0x1ac
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ mm/swap.c   | 25 +++++++++++++++++--------
+ mm/vmscan.c | 25 +++++++++++++++++++------
+ 2 files changed, 36 insertions(+), 14 deletions(-)
+
+diff --git a/mm/swap.c b/mm/swap.c
+index cd8f0150ba3a..287cf7379927 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -968,6 +968,7 @@ void release_pages(release_pages_arg arg, int nr)
+ 
+ 	for (i = 0; i < nr; i++) {
+ 		struct folio *folio;
++		struct lruvec *prev_lruvec;
+ 
+ 		/* Turn any of the argument types into a folio */
+ 		folio = page_folio(encoded_page_ptr(encoded[i]));
+@@ -996,9 +997,24 @@ void release_pages(release_pages_arg arg, int nr)
+ 				free_zone_device_page(&folio->page);
+ 			continue;
+ 		}
++		/*
++		 * lruvec->lock need to be prior to folio_put_testzero to
++		 * prevent race with folio_isolate_lru
++		 */
++		prev_lruvec = lruvec;
++		lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
++				&flags);
++
++		if (prev_lruvec != lruvec)
++			lock_batch = 0;
+ 
+-		if (!folio_put_testzero(folio))
++		if (!folio_put_testzero(folio)) {
++			if (lruvec) {
++				unlock_page_lruvec_irqrestore(lruvec, flags);
++				lruvec = NULL;
++			}
+ 			continue;
++		}
+ 
+ 		if (folio_test_large(folio)) {
+ 			if (lruvec) {
+@@ -1010,13 +1026,6 @@ void release_pages(release_pages_arg arg, int nr)
+ 		}
+ 
+ 		if (folio_test_lru(folio)) {
+-			struct lruvec *prev_lruvec = lruvec;
+-
+-			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
+-									&flags);
+-			if (prev_lruvec != lruvec)
+-				lock_batch = 0;
+-
+ 			lruvec_del_folio(lruvec, folio);
+ 			__folio_clear_lru_flags(folio);
+ 		}
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 4255619a1a31..13a4a716c67a 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1721,18 +1721,31 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
+ bool folio_isolate_lru(struct folio *folio)
+ {
+ 	bool ret = false;
++	struct lruvec *lruvec;
+ 
+ 	VM_BUG_ON_FOLIO(!folio_ref_count(folio), folio);
+ 
+-	if (folio_test_clear_lru(folio)) {
+-		struct lruvec *lruvec;
++	/*
++	 * The folio_get needs to be prior to clear lru for list integrity.
++	 * Otherwise:
++	 *   #0  folio_isolate_lru	      #1 release_pages
++	 *   if (folio_test_clear_lru())
++	 *				      if (folio_put_testzero())
++	 *				      if (!folio_test_lru())
++	 *				       <failed to del folio from LRU>
++	 *     folio_get(folio)
++	 *                                        list_add(&folio->lru,)
++	 *     list_del(&folio->lru,)
++	 */
++	lruvec = folio_lruvec_lock_irq(folio);
++	folio_get(folio);
+ 
+-		folio_get(folio);
+-		lruvec = folio_lruvec_lock_irq(folio);
++	if (folio_test_clear_lru(folio)) {
+ 		lruvec_del_folio(lruvec, folio);
+-		unlock_page_lruvec_irq(lruvec);
+ 		ret = true;
+-	}
++	} else
++		folio_put(folio);
++	unlock_page_lruvec_irq(lruvec);
+ 
+ 	return ret;
+ }
+-- 
+2.25.1
 
 
