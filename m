@@ -1,135 +1,126 @@
-Return-Path: <linux-kernel+bounces-103403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103B187BEF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:33:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F9D587BEFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:34:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FF531C20EC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:33:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A58A3B21218
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668D26FE26;
-	Thu, 14 Mar 2024 14:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ipkufx3x"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173DC5B683;
+	Thu, 14 Mar 2024 14:34:17 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC821D53F;
-	Thu, 14 Mar 2024 14:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A57A14A8C;
+	Thu, 14 Mar 2024 14:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710426768; cv=none; b=Ek2WcYU9J8NeyNP6ZRa79rS+mNTwvq4QED/IG1nu5FSKO/H/aPux/Mn2Bm+rKoyJJkm9OJQ8uO9uNc5V1FcqkZuf7/kY4bmC2TEgoH8jK97lJOan5mT16RLT7iIz4q3VXSh03Hb6tLUpWUlj4pxZyKxw9s3gQIhzEHhGw8bKrs0=
+	t=1710426856; cv=none; b=BAaaY7Ma+f38+BOCU00AbvrSZob4dBAz4HtgaJryEvBhO629xP4/ch4KihTqNUwC4ep8M0m7sU5tpVIjh/qPawnlVPLe39t/Wz8Ylv+MOooXxIHY0+S/lgVvrtuQ+yC8vS1k7jWJqTRB/l+GltuSZNMTyjgm7B3VTAVh1iV//Eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710426768; c=relaxed/simple;
-	bh=DiUVeysbSuDpknPfqId6mBt1tb9vzHNzOcoWlzmxm68=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BWFV84KzYkSIm9dab5V363+2n0Cuj2xuaxa8zrRAYerRW7sCrMECE043f2INFzIFi7+EktRjN90ULr7qf1SHGAwofQryAlgTnGKYkpkg3kq3F5aOE78blPYMgKpIA3clgOZ3GaeGgPVc3765iLn9RDuxzpJrsAFhOwophO66IwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ipkufx3x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5445AC433C7;
-	Thu, 14 Mar 2024 14:32:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710426768;
-	bh=DiUVeysbSuDpknPfqId6mBt1tb9vzHNzOcoWlzmxm68=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ipkufx3xDcexYOSI9jGCF0BXBhSoSUT3yCnjh4qCIspT/K7fcbQAb3LCO+Ltogr6S
-	 6nwJ/f/rxHn3Sua/j7RmOccYn4pWpMgS4O+3Ob5LPi2E0fSXKrJFg52tVfy1Tp/Jcd
-	 RqWeyMdLdZe0aqtdqfxU+4bzOhx8pGhy5GdZPdnGKZ+F6uVH0OOfUSATuVthTAgpgR
-	 dmfmGNKK6QZ60AyO/xUHo2r0Jk0POdOuv9aYS5xT1h3kKlro9Z9joZYcH5Bkm1OzaQ
-	 xyDFg5g3G/toAcIgDqcToy11zJoeJ3AngsylZAZli3ofYVBzX6BsM6m+3BBu3AH0Mu
-	 fvt/kl9KJJLkA==
-Date: Thu, 14 Mar 2024 14:32:31 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, lars@metafoo.de,
- ang.iglesiasg@gmail.com, mazziesaccount@gmail.com, ak@it-klinger.de,
- petre.rodan@subdimension.ro, linus.walleij@linaro.org,
- phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] iio: pressure: Simplify read_* functions
-Message-ID: <20240314143231.671bf685@jic23-huawei>
-In-Reply-To: <ZfH-b2KWcU_8-Nmh@smile.fi.intel.com>
-References: <20240313174007.1934983-1-vassilisamir@gmail.com>
-	<20240313174007.1934983-3-vassilisamir@gmail.com>
-	<ZfH4IyeFTGFBKT4J@smile.fi.intel.com>
-	<20240313192245.GA1938985@vamoiridPC>
-	<ZfH-b2KWcU_8-Nmh@smile.fi.intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710426856; c=relaxed/simple;
+	bh=FKovST/TpljdGGs8D2ZkyAgK4AleN6LIPat7SGGwkUg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g/vX2XxZ5PpCUhzJ+eEzbx0w8+KKfsfYA8hVpdWfCoIB1Tq0qUe9BjvOoY73IKtfXq6xHC0usHmsidFtgWVYnka1PUXI0e4SLT7FDhy7+n6XCtB3WuaBkqlHSVYkIbM2FXf7PEO7zg/Wk28zMfLYM1TWg7FxLgxZbbArzsW3KhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60a15449303so12101827b3.0;
+        Thu, 14 Mar 2024 07:34:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710426852; x=1711031652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s4Iq1so/K1jl/ID2dXud6xMeQNRUVJwwek8xs8zgHgA=;
+        b=c8IXbXQgQvXJvr+4HFvUHiQpy3kZfGauTt4iyXpxVLUQ3fpIuqTttmaOY6xrnUGeki
+         /n+La1Yt1L90+fQfqETVmbQdZm8fEViMu6iV9GVDuBgjIbx91dtQi2lYZdUffzgFhwpd
+         a3G3M22+1hAtKj8VjCmm3O/qsRxf1C1XketsPmB7G+v0U9KIXwtzkxVqtMMG3Exs/TsU
+         mqSlu8Uw26cSWtoiqyje4pUBm/uMVf4CQ2RZ2rmwEDy8ZhwPPE2N8ST6Rd6QGYb3AF29
+         79KQB9NP8PC+dhnzFFHE5oXBo5Rbzf1Oe+Sk3BGgoJ6sUQe1+R5JDZfEM7v5t7bui+Q0
+         NJGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWCLwrG/cqdozm3lrGkf63DO6utVPPjJ5lndybptRwQ0NXkRQ3rtZkEKdzE6iokmyDopETqlwtBOGHNjeFFispZhBqdSHgKDffTUVffCySbD0aipwU0CAqW1D8KY4czqWYy9LQOp3k6H9qilur4N24alZzMTAsJUt2frLR8issndM3ZD988dQAVP+ekjhK0Xf9MEdzOb61JLQkR/CbZT3TCW/6hM3gx
+X-Gm-Message-State: AOJu0YwEi8kvg7X1ET07GmkJW1j7TyINoFaPA0ixjilJo4nkt/h13SJy
+	MnDNZMqTAzfWFUKQzU65aKpKjvrcNryVu3T0BHnJPCaGHajdT8aaCrqLHPEQbbo=
+X-Google-Smtp-Source: AGHT+IHk3kmywUXU9hcymN1OOj8wBNPklLaUiH/bLzCytCibIiA+43m9B9QXvn4tBtW5TUKdvAgUAQ==
+X-Received: by 2002:a81:5d0a:0:b0:609:6eb0:4714 with SMTP id r10-20020a815d0a000000b006096eb04714mr2070873ywb.34.1710426851886;
+        Thu, 14 Mar 2024 07:34:11 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id w127-20020a0dd485000000b0060a3b09a5c2sm295034ywd.84.2024.03.14.07.34.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 07:34:11 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so885803276.1;
+        Thu, 14 Mar 2024 07:34:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWKE8TvrxFTLLLpOGtotZuXpR2g2hcsfwcWXHo2X0w9e9XqP8KRRrhUnLDYLhGRKHk2379kNhCTUGgm57XCoq0UdcXp92mciWA7oq4rfn8/fuOING/jXApCoauVPII/KL/zK/VAaJoU8vCdv7X1yeaXnlPqSzEIC1oC+76p82qcvqu1RZ6cnvOrtYsqrfMotwhaQfghpw7Mvq1nV6HdLHyVTitXPlf3
+X-Received: by 2002:a25:aa2d:0:b0:dca:c369:fac8 with SMTP id
+ s42-20020a25aa2d000000b00dcac369fac8mr2083982ybi.1.1710426850867; Thu, 14 Mar
+ 2024 07:34:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240308172726.225357-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240308172726.225357-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Mar 2024 15:33:59 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWNW-JbBLuou=dkn1dPJAL+g2GgXnN91nEaoYyNM1biOQ@mail.gmail.com>
+Message-ID: <CAMuHMdWNW-JbBLuou=dkn1dPJAL+g2GgXnN91nEaoYyNM1biOQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: i2c: renesas,riic: Update comment for
+ fallback string
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 13 Mar 2024 21:28:47 +0200
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Hi Prabhakar,
 
-> On Wed, Mar 13, 2024 at 08:22:45PM +0100, Vasileios Amoiridis wrote:
-> > On Wed, Mar 13, 2024 at 09:01:55PM +0200, Andy Shevchenko wrote:  
-> > > On Wed, Mar 13, 2024 at 06:40:03PM +0100, Vasileios Amoiridis wrote:  
-> 
-> ...
-> 
-> > > >  		case IIO_TEMP:
-> > > > -			ret = data->chip_info->read_temp(data, val, val2);
-> > > > +			ret = data->chip_info->read_temp(data);
-> > > > +			*val = data->chip_info->temp_coeffs[0] * ret;
-> > > > +			*val2 = data->chip_info->temp_coeffs[1];  
-> > >   
-> > > > +			if (!strcmp(indio_dev->name, "bmp580"))
-> > > > +				ret = IIO_VAL_FRACTIONAL_LOG2;
-> > > > +			else
-> > > > +				ret = IIO_VAL_FRACTIONAL;  
-> > > 
-> > > I'm wondering if we may replace these strcmp():s by using enum and respective
-> > > values in chip_info.  
-> > 
-> > The whole problem starts from the fact that all these BMPxxx_CHIP_ID defines are
-> > not unique for the respective BMPxxx device. You mean to add a new variable
-> > that could store some enum values that would be the actual chip_info IDs? Like:
-> > 
-> > enum chip_info_ids = {
-> > 	BMP085,
-> > 	BMP180,
-> > 	...
-> > 	BMP580,
-> > };
-> > 
-> > and later for every chip_info struct to use it like this:
-> > 
-> > const struct bmp280_chip_info bmpxxx_chip_info = {
-> > 	...
-> > 	.chip_info_id = BIT(BMPxxx),  
-> 
-> No BIT(), but yes.
-> 
-Better to use something more meaningful such as just storing the
-type you need to return alongside the values it refers to.
-temp_coeffs_type = IIO_VAL_FRACTIONAL_LOG2 / IIO_VAL_FRACTIONAL as appropriate.
-That way the data and what it is are found in one simple place.
+On Fri, Mar 8, 2024 at 6:28=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.co=
+m> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> With the fallback string being utilized by multiple other SoCs, this
+> patch updates the comment for the generic compatible string.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 
-Basic rule of thumb is that if there is a string comparison to identify
-what to do in a driver (other than deep in the fw handling code) then
-that is a bad design. Likewise any matching on an enum value that correlates
-with that chip ID.  I want to see all the difference between chips in one place,
-not scattered through the code.
+Thanks for your patch!
 
-Jonathan
+> --- a/Documentation/devicetree/bindings/i2c/renesas,riic.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/renesas,riic.yaml
+> @@ -22,7 +22,7 @@ properties:
+>            - renesas,riic-r9a07g043  # RZ/G2UL and RZ/Five
+>            - renesas,riic-r9a07g044  # RZ/G2{L,LC}
+>            - renesas,riic-r9a07g054  # RZ/V2L
+> -      - const: renesas,riic-rz      # RZ/A or RZ/G2L
+> +      - const: renesas,riic-rz      # generic RIIC compatible
 
+Please drop this patch, as this is not a truly generic RIIC compatible,
+but applies to a subset of the RZ series only.
 
-> > 	...
-> > }
-> > 
-> > And in the read_raw() function to just use the test_bit() function in the same
-> > way that is done with the test_bit() and avail_scan_mask to test for the
-> > enabled channels?  
-> 
-> If BIT() is more suitable, than also yes.
-> 
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
