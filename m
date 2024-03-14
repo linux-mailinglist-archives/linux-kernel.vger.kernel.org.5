@@ -1,156 +1,213 @@
-Return-Path: <linux-kernel+bounces-103773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B42187C44E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:31:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FBB487C451
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:31:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FDA71F2227F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:31:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C61D1C21702
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1163763E6;
-	Thu, 14 Mar 2024 20:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02CC763ED;
+	Thu, 14 Mar 2024 20:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="ILAytvyh"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="faHS4s6h"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8636FE28
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710448270; cv=none; b=HXyieo2tdoGdJOM2LVT+AGk68SmsEwwuhmC0zCD4dieCbQ6siKKC2UOt6va9g2rEV7mwiyFKBoSgUNIeAgEFpXqj/kezv/pyTHJcV6dDqgQv2jNBDodrhzJmOwLvSDykKBGh6qJF15yEXs4EEzT8nwOGkxuvXQY1R3IwhtE2mI4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710448270; c=relaxed/simple;
-	bh=X3BPVZ/DcbXSd1Z85mVrD8Y1cBbSZCOTowwFiOB4ceo=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=BMCcX0f23Z5GHAjpkrZB2IHTTpweY4TzWsiiFJDyEMm0OiXSb+NM+m5HMke8jPeXxUnATZlh4n71fsFHEJQqGA/nZQFyVu1XrE2Duau2LxHs8JpCdykyDL/sbK6RlQ6u3Yt1MtQNsH4bnZ93o9O9p6XySe9TSJIa9ZwS1xCWRrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=ILAytvyh; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-789e3f17a6eso2095185a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1710448267; x=1711053067; darn=vger.kernel.org;
-        h=subject:cc:to:from:message-id:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jOVFHO8NoQqbd9uiDZWB2S1iwARLFd/3K1hhx95Fs68=;
-        b=ILAytvyhqin3VyXbxc2FKVdVT6zhUT61Mq5skbXw35JB/e6T5or1p0JwG92Xp4hpep
-         WwgzWsrVRnnV6KF/WmQF1XNQWCPvrGELlGOhSMFNsYU+xVqCg01CWy7icO5ADUgn8Szl
-         Yk/I8XAHwterYpta2zFi40ckvg0GuDC3l8ctoVbegkedTOSFb2eYKiANNuSeiUAHYPl9
-         B8XlGnfqYVvYBuBeOV8pEPYhpIuxaN6zo0MO2QRHuUgAzm38BHmTJ0CQmGtibQ5mOi+2
-         6Mc8T/qgbakVedd9bX9pQABecANUp0O6kYB3qphxo5NrF6n2otmVmaXWlF2yTsnMICdC
-         nFZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710448267; x=1711053067;
-        h=subject:cc:to:from:message-id:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jOVFHO8NoQqbd9uiDZWB2S1iwARLFd/3K1hhx95Fs68=;
-        b=tkY+DnOu6AKACcbui5s0dpRFTIwgg/zLvPL8Y0mC3Mc2et43Bke59vd5hJCcouqhW4
-         G64HTdXq7zQqplBFpUUP1Rrt/ydfNzu9mdmnQzQAUIEP6s6cHwbIPKVinO/+uc6GEwIJ
-         6zdCWzN8FOhOB/LX6aDVstv9NPJZ0tykNfzbVq9Y/3NzppqU39ELivtqqKXbnrsYt+Sh
-         VKV/baC9aC3fbsdm3eUQw2WXxBzz35Kcw9j3FI+qs4mkvywu+JViN+sRDRnJ4CJsu3oE
-         OGS1IIj4P5J49FghmXe1jzLehCQYi5lBC9GGsZ0ZCt0hncF+Fd00xPF+oKwjLlgRiYGK
-         WYjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUsIfEXSfeglLQfUOjXGLqYC1BRmJp6jkIOOBfxFwRNMyBRinH5uhcvMR/JgyytTapEL0y4lJeEs5EAEzLsa8t3nCpEIfkklWgOrmgE
-X-Gm-Message-State: AOJu0Yxr7oXTrZ402o48mt2colIWWtnmqbcwCDGyl/ppYntiqZi7I+1u
-	mQrDdWH6P0w7JdVSUoldsHyqvz7UxoSbid3xF/vboUO0pKqza53rJo0ZUTTQxQ==
-X-Google-Smtp-Source: AGHT+IFpk+JjB+WJhifnI6YhAG9tS1Qqmwl12LpjCzVm0DLTPYg/X31LGejpX1MN/St0Kud0rJfyyw==
-X-Received: by 2002:a05:620a:124e:b0:789:c840:8295 with SMTP id a14-20020a05620a124e00b00789c8408295mr2958374qkl.18.1710448266675;
-        Thu, 14 Mar 2024 13:31:06 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id u21-20020ae9c015000000b00788272dbcb3sm1228763qkk.33.2024.03.14.13.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 13:31:06 -0700 (PDT)
-Date: Thu, 14 Mar 2024 16:31:05 -0400
-Message-ID: <3f2a695a148db9e1daae8c07d9ce5c85@paul-moore.com>
-From: Paul Moore <paul@paul-moore.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] lsm/lsm-pr-20240314
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89EA77317E;
+	Thu, 14 Mar 2024 20:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710448304; cv=fail; b=ACNFjUkkDrcH7lXdqiXk2L0xbbbZF9G8/i3cPpSaoWsQ44uAwvEN6BWzQm2WiB6yEWnvDQXq72mE1BBFvkAo3WG18/1JbLRaNK7cu5T+wTPUScsTB45j9bqRdVvrTdsHjal+3saC0TkZz0sGEjtB+9Ckkc15pMBcgNa/Ccf30EM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710448304; c=relaxed/simple;
+	bh=psH04jx38aROT2qxal3IjRokhk1QKyRuXqHN2vWUAWQ=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=OrZq/jA2qk2h4t5hCK+/R8um3ABCP4DXoRcAhnKUpB9DgDZsJOFr7KGkDVDj8Nn7fgAP5GzZ17+Y1JSTG7Xi56tQGWT781FxDAax2BcAxO/hk02dLilEJ1j7RtV7Og1mq+josn6pQZKAUqDtDzENk1LpUy2hGfs5rzopUMpXk+o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=faHS4s6h; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710448302; x=1741984302;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=psH04jx38aROT2qxal3IjRokhk1QKyRuXqHN2vWUAWQ=;
+  b=faHS4s6he2YM7BFxenjAuMboVR9XVL9zHxkhC4KJIe2A2J2+9rF8v14S
+   fWiiTXC76Yar6ZUuLkUi0UqpxxdoIxR1ttIwnF93OKvQXbQPMDmbe+O9V
+   cA4n7eBF8DF/klaQuNjsdrFMWQchx3W4pBOllv3CUc33wJQ15Elf+gxKj
+   k+Z5U07/DojyaGvuKU2xgvCjlKHqqFw8JqEH6cyt4Kr//TAj4tTbfoILZ
+   iqV8h/m5iA1a9zyBs9SMglwFIs+DZvRnVvHcVI0GHEbyg5Ljuu4G90sna
+   sMzdeOrCfUV1T/db55ItxN+ZT8XMYzOXOERSLXxAwiwlJpn/xUIbKN/eV
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="9127850"
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="9127850"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 13:31:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
+   d="scan'208";a="12864912"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 13:31:42 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Mar 2024 13:31:41 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Mar 2024 13:31:40 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 13:31:40 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 14 Mar 2024 13:31:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l1RdBYExlLM/tUBccSxFdGs5c7Df0lX/lkZwU/5qpg8p5XGp74otnp6Lt72I43j7Y+NoZIIxhI7ulLu6XW+ui7EQmrhY14jFr9Q1lQZ2vndXaykzqmgmOALjlWuqSqjlQKp8ZLJTq1igLWFUFZ+cTWZBBvUIipUlOUm63EQ1dpbTN5+2YcKmhAmhi6IWHqee8xE/ORXsjv+PsgMBEZ2PpjaAh2eHYduhhUkbj8T2y8VTosd3ozW5zDMgWe8P2GOaJAD0wLerz+n2X9fLDyoVh7F2xla6XCOfZ3+yPFLiom/hfL3pmUKQQn2Iq793MNBTUjTvpVFupMgX+TsATohWxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kQkEHYLTKKUGUTG4wiie4CcTlojwpS4D6ePntqisDYc=;
+ b=FEpuUwNMD81StbNf/quVni6W86gZBVpuTAwDYlxPDU2r42qiCrn31rPmEY8Uhlp1D85/gvyDwS1BQYEy1XeuStBvLi2m+6TLXhdITa+DTbVuYBfov+cAl0BM8pnDrlQRP9ckqZRAtFo6jR49MfJpcz2nSNUrHmxYMA/EiDMoFm8XtlTB7mooFPoXgQepuuE8t/4DqdKbssydVO+pLLgEkO3nwoca/6Pxv4TqC/3HhGLrRhlrCQXmg184Lh5mhuf3Ys4b+LqvlQHsbO19NxE7Rcp8GlPDvF+MZfKcAxDzJDzjhozwaDMPQSZA96+kk77msD7pOj8JJn0u4nGzwEFsWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL3PR11MB6435.namprd11.prod.outlook.com (2603:10b6:208:3bb::9)
+ by LV3PR11MB8768.namprd11.prod.outlook.com (2603:10b6:408:211::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Thu, 14 Mar
+ 2024 20:31:37 +0000
+Received: from BL3PR11MB6435.namprd11.prod.outlook.com
+ ([fe80::9c80:a200:48a2:b308]) by BL3PR11MB6435.namprd11.prod.outlook.com
+ ([fe80::9c80:a200:48a2:b308%4]) with mapi id 15.20.7362.019; Thu, 14 Mar 2024
+ 20:31:37 +0000
+Message-ID: <8f4724f8-e831-12f6-d4e1-4700ea47b2a0@intel.com>
+Date: Thu, 14 Mar 2024 13:31:33 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v4 iwl-net] i40e: Prevent setting MTU if greater than MFS
+To: Erwan Velu <e.velu@criteo.com>, Brett Creeley <bcreeley@amd.com>, "Erwan
+ Velu" <erwanaliasr1@gmail.com>
+CC: Jesse Brandeburg <jesse.brandeburg@intel.com>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240313090719.33627-2-e.velu@criteo.com>
+ <4e203331-62f7-44e7-acd9-f684c30662de@amd.com>
+ <c0ccaef6-44eb-4851-b336-cdb06647e1d2@criteo.com>
+ <d16ff01c-4a01-4871-93de-a5c26a352301@amd.com>
+ <7b612db6-cec6-4873-8a38-fb4c97192aa2@criteo.com>
+Content-Language: en-US
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+In-Reply-To: <7b612db6-cec6-4873-8a38-fb4c97192aa2@criteo.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4P223CA0020.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:303:80::25) To BL3PR11MB6435.namprd11.prod.outlook.com
+ (2603:10b6:208:3bb::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL3PR11MB6435:EE_|LV3PR11MB8768:EE_
+X-MS-Office365-Filtering-Correlation-Id: 97dd4382-6d41-4663-89f6-08dc4465bf4d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EmvVjVBUx5YMo9EE4TOMMsEfEt0VA3eV/TpzxQR2Z6rl11/UzC18R/XYiZUi58nzFhCEcYyC8/2m2cta/4regOdo1K3q81gaBLumkxl7KKZ7hIpkcEk4qDhtmHeMH/m0D8jN9nJ2ox2pNfnXMcJZvzNITxuyxvvJMhuTGSyaVkKLOxjdquhEaOtJQ6zwKe9lvIbpQfSe75lWIwDNFJXmnQrxWjvXmHg0ZcB2arzXS1Kqv8qWlT8Lg6G9AWTMaPvJuJgWi+C4ZNIGQr4RuZNLvEqMe6Y+M2XIKHVOFYec/qsZJVQqs9M1YW7g7lgbYnGgxGa4rkfwWwq1l+GEHoW6EUgse8RXrXdqM2JjU37E0deIapPY+sfVpptTHVjHD4vkdXEo2Wnzcci9PzqWHIc3U5g0Lp2MTYE3Llc1GRDNCdRbcB7XWR7xfeS3y/Wfrj6vSF/dIxxDedPDXLrkGhXP81KNNkjOahPiEHvGOULGUkVVxmc+nxiwK3fT4xCVR2kmz9q7ibbjUkoHmwy95oUcjbyhqLzQSqNcpgRK7GQJ4tqUWxVN3/5PsovfYZZsr3G/PUt2+6Jm0Mtu6N6sPRvKbmv59xjrzfxq4gB9rG4toS/OL5eweUQIHSSEos1ahTAp3CHCHMM8MHKP4S4/6GWhlP6dm16Hmu1iMeZ1o7+GA1E=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RlpVT1hYV2them5YREs1alhaYWhRbHh0d205N3c3MGVqOE9mTmxQQWdPdm0v?=
+ =?utf-8?B?d0RKcFQvU28zcFovbzU0RG5BYXl3TmovZGVmM1NFdU1Ja1REdG1kL2d0bmpT?=
+ =?utf-8?B?WWQ0RnVUR1ZJcE8yb2lOV0NKR2dHdE1ES0h1T1RIMUlVejF1R2VEcE5DWFJL?=
+ =?utf-8?B?WHo1TVkwZjZsN0ZaQVZHcWljVmFBRG9KVFhiekdLVHQ4c1duUnNsdlE0THJX?=
+ =?utf-8?B?bithdDMwUnJCMytWeTFaLzcxSU10blJxRXhnSjZtY2tyUjc0QUtvZUJXWGx6?=
+ =?utf-8?B?a0pCc1E5Qm5CaWxaRFlLZWZhY2RzcW5US3hvY2dXczZkRUREYU1ZMVdNOGkx?=
+ =?utf-8?B?Z1RQbFNMU2VkR2lTeWRYcitVTW90Szh4TE04dFBYQnJ1a3V1eUhSc2dhN2Vy?=
+ =?utf-8?B?RXFkWkcwMHUyWG5zejFQTGZFZlN5Q1N1dmJQU0k1SVRFdjY4R0NYV1F4SjV6?=
+ =?utf-8?B?Y0M0ZXREd0lyVnhZYU92Q2pONFdyVGU0RkNMd3dFZWdJbHNqbkxONEhqS3ht?=
+ =?utf-8?B?YmRRQ2VZdFVSMU5KbkdvbmpTZDNwdnRpOU9mTTNRb3FBNHRXRGJFMjd1MXNq?=
+ =?utf-8?B?LzN5b2RIdE5vdUROZitjYjJLOVAxN2syTEltenlsQXNydTlWcE5uWjM4ZHRV?=
+ =?utf-8?B?T09STlczRThjTGVrOUpubXJLYndkZ2JuYzdyMEtRc1FGbGttdUIwcXIvZDFw?=
+ =?utf-8?B?YjUvdURJeEpsQTVFS3hzdG80YTFYZzlHbWQ3QURHUTRnckpYRitYcmZ4cjZB?=
+ =?utf-8?B?UHkzOUsyZ202YzlJdEJNRUNVOG5GT3JWVDJuLzlvcTZGQTBDcXBLN2xrR0lK?=
+ =?utf-8?B?aUpydzhkN044cTNyd2pSZVJ1K3JPUTdldmhWRS93UUszQlJBVnpEQU9CNkIy?=
+ =?utf-8?B?MXptTHhKZFpQUG04L2pVOWY1ZTVocEllUDdNNkMyb0hhQnNTVEJnMkRwUDVt?=
+ =?utf-8?B?MnFRbHJvbW9lNDZBRUtLRXFYYS8xdm5sdTNycVJGUnN6ZDh3ZFczdzk3UFhk?=
+ =?utf-8?B?ZDVWVjRpbUlFSjRyTTJOOFZtb1dXK2p4YW1tRW1XMVVydFQyd2Z4WVFFRWpF?=
+ =?utf-8?B?RVBJNVJuZStSMmlZYWd2b2htNHZVWlFQYUs5dDZIUUF2d2dEYi9CQ3lzZUNV?=
+ =?utf-8?B?eXFxelk0RzdzVW1uejNGSFhiMGs5ODVjdWdyWDY2NlpxYXFNamJTYXNnRlNO?=
+ =?utf-8?B?ZFVhMVE5emFmekRPN2VTMGVJYVMwVG4vb1NZM0krV1Zzdkpua04vaDNCNFJP?=
+ =?utf-8?B?M0szQXpGblFNb0RSNmpsWDVraUFGWFpOQjJXY0ZsbGxYV29NZjFLV3MyRTgw?=
+ =?utf-8?B?RExaWmJZYkczSjdBR1hYM1A5Nng3UXdsQWljZXA0d3lYd1F3ck12eGdwb2JB?=
+ =?utf-8?B?VjJpVHhpMDJzY3BzRkZEeG00azBpNVM0SDBPMVRaSXpqODdNdzYrSFh0YXd3?=
+ =?utf-8?B?NG9rc3NOQjRpNjRJVlZVTTFnTjNQa3d0RDB0UUJhNU9zWVdlZzhwTEt3SG0x?=
+ =?utf-8?B?L2t5WG5hYjRuMWJIRGZTcUIwSEZmUFpwQ1FSSkFmaHY5N0FodU5HVU1FVmh0?=
+ =?utf-8?B?UDhyREV0QUhXSlY1VUVlZzFSVS9rSU8yeFpOdGhjazIxR2h2ZERySHhmbUtw?=
+ =?utf-8?B?dTBLU1BqdEtVOHdCbUE5Q0JYVjBqRkUrbU9DRmRPbjcwTWZwbWxMSmNMMm5K?=
+ =?utf-8?B?S0grS1FyLzh1UnYyQytFVUdvc3dhTzMwNGJtRUVtUXBoQ0oyN2FCWkV5Syt3?=
+ =?utf-8?B?K3hNWEt1WjJHK2hhQjN3K0NXbDk5M0xNdWxka1EzN3lUM0x4dkhucklaRmVv?=
+ =?utf-8?B?M2NGRkZsYWdwbnUxSTBCSTl6MHp0MXV5VEk5TEdQS1RZY25jcENlTkp2dVJZ?=
+ =?utf-8?B?Z251ajE0UVkxUlIzYWkvY3QzdGtWNkM2SVk2VktXbHM3VzAvYkVKNk8zaGtQ?=
+ =?utf-8?B?U3REcFZUL0VPOFZoTDZaQ1JaM0Q1VFVkcXB0cXF4aWg5RzNzZHI2dVkyL1pU?=
+ =?utf-8?B?WmJNM1ZIOXNObW1vYTRKOGVFeFBOK1hKQkVHWnEyaWo3U09CTUpVckUrWFU4?=
+ =?utf-8?B?SHJmamR1Q3A1NTFVWEw2Z3NuY1U4elBaSHdrL0Y4bWloOUMrTit5U0hXZmRN?=
+ =?utf-8?B?SDZCRTFwWkt4bVFJcEJLdjZQSm1BT2NNU2tmQWVMTm5rOWt3NVBpTDJVTDlG?=
+ =?utf-8?B?Mmc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97dd4382-6d41-4663-89f6-08dc4465bf4d
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6435.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 20:31:37.3224
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fhuJ2FjVBBsME+fgDlMxorJTS2ErR16bzzdQ608StYHbOAU37wWUs4osXqFYjohntH3GSG7M601uPImPJfBRVAsMk5hayKrBj9RqUT3J4bM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8768
+X-OriginatorOrg: intel.com
 
-Hi Linus,
 
-Two patches to address issues with the LSM syscalls that we shipped in
-Linux v6.8.  The first patch might be a bit controversial, but the
-second is a rather straightforward fix; more on both below.
 
-The first fix from Casey addresses a problem that should have been
-caught during the ~16 month (?) review cycle, but sadly was not.  The
-good news is that Dmitry caught it very quickly once Linux v6.8 was
-released.  The core issue is the use of size_t parameters to pass
-buffer sizes back and forth in the syscall; while we could have solved
-this with a compat syscall definition, given the newness of the syscalls
-I wanted to attempt to just redefine the size_t parameters as u32 types
-and avoid the work associated with a set of compat syscalls.  However,
-this is technically a change in the syscall's signature/API so I can
-understand if you're opposed to this, even if the syscalls are less
-than a week old.
+On 3/14/2024 11:04 AM, Erwan Velu wrote:
+> 
+> Le 14/03/2024 à 18:55, Brett Creeley a écrit :
+>> [...]
+>> AFAIK there is no API for a user to change the max_mtu, so the only way
+>> the device's MFS would need to change is if it's done during
+>> initialization time, which should be done before netdev registration 
+>> anyway.
+> 
+> Sorry Brett, I was probably unclear and please note that I'm not a 
+> network developer, just a user that faced a bug.
+> 
+> My initial though was to check the mfs size in i40e_change_mtu() and if 
+> mfs is too small, then let's increase it.
+> 
+> Maybe just resetting it at init time to the largest value (which seems 
+> to be the default fw behavior) is a best approach.
+> 
+> I'd love to ear from Intel dev that knows this driver/cards/fw better on 
+> what's the best approach here.
 
-The second fix is a rather trivial fix to allow userspace to call into
-the lsm_get_self_attr() syscall with a NULL buffer to quickly determine
-a minimum required size for the buffer.  We do have kselftests for this
-very case, I'm not sure why I didn't notice the failure; I'm going to
-guess stupidity, tired eyes, I dunno.  My apologies we didn't catch
-this earlier.
-
-I would like if you could merge these patches, I believe fixing the
-syscall signature problem now poses very little risk and will help us
-avoid the management overhead of compat syscall variants in the future.
-However, I'll understand if you're opposed, just let me know and I'll
-get you a compat version of this pull request as soon as we can get
-something written/tested/verfified.
+Setting the mfs size to max values during init and reset would better; 
+this is what the ice driver does. However, this would take implementing 
+new AdminQ calls. IMO this patch is ok to prevent the issue being 
+reported and allow for ease of backport.
 
 Thanks,
--Paul
-
---
-The following changes since commit b0546776ad3f332e215cebc0b063ba4351971cca:
-
-  Merge tag 'printk-for-6.9' of
-    git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux
-    (2024-03-12 20:54:50 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
-    tags/lsm-pr-20240314
-
-for you to fetch changes up to eaf0e7a3d2711018789e9fdb89191d19aa139c47:
-
-  lsm: handle the NULL buffer case in lsm_fill_user_ctx()
-    (2024-03-14 11:31:26 -0400)
-
-----------------------------------------------------------------
-lsm/stable-6.9 PR 20240314
-
-----------------------------------------------------------------
-Casey Schaufler (1):
-      lsm: use 32-bit compatible data types in LSM syscalls
-
-Paul Moore (1):
-      lsm: handle the NULL buffer case in lsm_fill_user_ctx()
-
- include/linux/lsm_hook_defs.h                        |  4 ++--
- include/linux/security.h                             |  8 ++++----
- include/linux/syscalls.h                             |  6 +++---
- security/apparmor/lsm.c                              |  4 ++--
- security/lsm_syscalls.c                              | 10 +++++-----
- security/security.c                                  | 20 +++++++++++-----
- security/selinux/hooks.c                             |  4 ++--
- security/smack/smack_lsm.c                           |  4 ++--
- tools/testing/selftests/lsm/common.h                 |  6 +++---
- tools/testing/selftests/lsm/lsm_get_self_attr_test.c | 10 +++++-----
- tools/testing/selftests/lsm/lsm_list_modules_test.c  |  8 ++++----
- tools/testing/selftests/lsm/lsm_set_self_attr_test.c |  6 +++---
- 12 files changed, 48 insertions(+), 42 deletions(-)
-
---
-paul-moore.com
+Tony
 
