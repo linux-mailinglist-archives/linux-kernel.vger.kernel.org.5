@@ -1,105 +1,116 @@
-Return-Path: <linux-kernel+bounces-102773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C06E87B723
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9514087B726
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B3C5282E87
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:32:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ED6C282CD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF23B8BE5;
-	Thu, 14 Mar 2024 04:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56CAD271;
+	Thu, 14 Mar 2024 04:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nbXriEG2"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="gHN4thFU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01677F
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 04:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD65C129;
+	Thu, 14 Mar 2024 04:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710390758; cv=none; b=k7bD+iiwCErd0x8JJ2wopHTRdiTDvbmSV4Nahrwi4kw9iGx2TVOS2RD+Y7tSOm/tI/B7CCBEvm0mpgKEKhkh4Cm1/ZFfQ1xlRZby/aqNYBGl1lGdVeqTWHC8/OVj7ATGfCt9LhiJVGHdzlp+QX9pME1O8Mp9xxlut32quD8O7ms=
+	t=1710390802; cv=none; b=SzKtJjsaMJwcfyvLe1xplHIwFuCSb5yTtXBXhskNXgIWgiuk4ecxC6skr189ztoeEilSX4mGpBt1s3iqSg0oygVflHhv0s/4iUE6AOyzATrpbM5RpityzcZoJZPbew2RfcFA2tqEWR5maWgjYjCqXxoEpwE0P8r+aScsH+XWs24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710390758; c=relaxed/simple;
-	bh=GSj6N2Z5jD6x6imQv7iBhpCBB32EvpVYGf3Iyuhny8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EnxB2q6/IVjCYIYQKQ/deXykyzJDRaDFruRgwNKh3RlpPeI0FC5za95ZdUcSikolj5yWl4y+KP9Pb/42qLwB5gKp5O5tLlVExXE4QivopKX3TWO5isF7PQiNm4nKWZR5NCHWICOYPH2zvawfRY1AidesB07VtgZj5bgaoi3AXUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nbXriEG2; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cedfc32250so407596a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710390756; x=1710995556; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZMDI9m7lnsGUwRkadwDloxIr0GMZuZYDPZn2R+xRdM=;
-        b=nbXriEG2wzoRvy68Y3cFQF25NJvO7QdPzbzyx7MNJcUT9yTWPgK0oWSjYh2sqLutYC
-         6shaTEGcSr5myH1+3ckeYZ09dqIPeoQjEJyvOLI4jye7IXLeRc5HfdXvsuViszO7Zdgk
-         RZYi1ngl72lCfAs+uVkKqAkZDeiSo7Vy325TQr0Hm9Z36Ab5jW+nViY4HTa7ECt3bnrT
-         G6lq0Hmea720xb4MAZfc9FW6gUF16qFFMFUIEAtcIv3z9d5GhSGvGaw7iD8yp94IszLQ
-         nkRgLPGc+N9YY/jA/mZZ+d75jNBYhF/RJTSzXDH0ScQHNHARoX/gAIOcIOwpbkXvUX3j
-         r/7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710390756; x=1710995556;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZMDI9m7lnsGUwRkadwDloxIr0GMZuZYDPZn2R+xRdM=;
-        b=TA05gc6dmmggWUGRv+VSTu36N++g5/Q4uhj1/3C0jEcWVjiit0y+yWLuBXPoXAeY0A
-         ARZJ543Cy8pTDZlyzG2Tn4iCtOCnWpTyNIzlkr0WLSHYOXPiMX8LVviKJdtU3eUzuc0X
-         01wRkHV7zE98AaM/lcgqFrowqQapLMbqfM9fRpEz2vRB2hcZHFXKuxDLxNkfna32zEft
-         FXJqGJKgqEHIDOQstzIA68sD26cBuIBL6OTJeZsCKnrAesA4rCpZ6GbZuENP8euOrFml
-         DaUScxOfB8fkncJ8Ac0kDkuxKzw//n4N6t4dYn61iE84PM9R35P2MZW/ORvpPYgGFqxd
-         X5Jw==
-X-Gm-Message-State: AOJu0Yy0gVNKm8NmLkq3OMXK9Qx4/5Olgo2lVwdcUn6lEHvlqaqoGC0t
-	k4adTOCWo4ZwSusIMrCTtHjirJ3P3YN8ypM8kjyxb4P0YenKzPkZQcNU503Arf0=
-X-Google-Smtp-Source: AGHT+IGOBFoaDHvogP/Kzo9KilJzG5K037wgFkT9Hny0OqT9XcmU03PRLAHfsPsDWFFLLkVfk/WTtA==
-X-Received: by 2002:a05:6a20:734e:b0:1a3:4353:a281 with SMTP id v14-20020a056a20734e00b001a34353a281mr13781pzc.24.1710390755966;
-        Wed, 13 Mar 2024 21:32:35 -0700 (PDT)
-Received: from localhost ([122.172.85.206])
-        by smtp.gmail.com with ESMTPSA id u17-20020a17090341d100b001dddb6c0971sm499213ple.17.2024.03.13.21.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 21:32:35 -0700 (PDT)
-Date: Thu, 14 Mar 2024 10:02:32 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the opp tree
-Message-ID: <20240314043232.4jc4ipmwpz5erhn6@vireshk-i7>
-References: <20240314084329.6c9c59dd@canb.auug.org.au>
+	s=arc-20240116; t=1710390802; c=relaxed/simple;
+	bh=oaR7INPBXWbSndCIuCySYwa55FMJJjVsfijagh6nNO0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A3Rxy0Fyaz+f2CNHVeaxaJzxiyeiAN5793lecFGarwi2uiq9p7hL2z+YvRXGSQel8tl7CY047nmvedbQs8FJuZXNf0KfFpSGI8VOehHqhBGnGF44R43rBHdkFiaFP4Y41YwsDh6n+drrX3RtvBYwPCeTHxuqurb20BGex4x/iNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=gHN4thFU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3BC9C433F1;
+	Thu, 14 Mar 2024 04:33:20 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="gHN4thFU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1710390798;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uV2XXkDShWDvaG98HlCCrocvexYDgtOSoGWgOn6b02g=;
+	b=gHN4thFU9HFH+GIAfzpzN2G8K1hJuE5oxAJlQoR+TMEnkRDQF4v5jNNCofTfRZZmcLYF5h
+	UZDEG+UbdFEURWqC+ERgqc1KzWxDPGHAQIESVlBwHiedrS9rt2Z4SF4DN5POuVagsdbbsI
+	GFiN25pkSyj/IVXpw0U+JQBS3gpPeHM=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 89e2a725 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 14 Mar 2024 04:33:18 +0000 (UTC)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbed0710c74so392052276.1;
+        Wed, 13 Mar 2024 21:33:17 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWe9UiyCWqCWMrKNFabicRSe6O4kEiHc9KONqQgUz7aMIxK2LIo6mpAjxd3nyoeW4OYlIDJ1RMoC3Nqxh/M+XL+q3rIszoGCoFxGa192aqvDuhIUQgkBak0QkG9IakYFpAeTwbq36Zank7sZCJdRFuhLXb/X9n4A+cOvIJ8ZpoWsx3sF0beeA==
+X-Gm-Message-State: AOJu0YwtjC3WRUTxMKsVg8uvS1HbRssYiILIDd2cW+9GTNz7ZU0sbKQz
+	pmoEc2FMCoUhuPVmw3ZoWPrXAa7IFGg9xbhyV8tgOYmTx15bYbcOD9M6Bt1DxAymCrF4rFjz8/j
+	emRgEcAv7SK0fQ1OE1JzN821S/zo=
+X-Google-Smtp-Source: AGHT+IEbDCuzyIkgt/bRae8iwtfrGkhwWdENFBM+2A7+3pyYs6glLpv88gPCloiCTTyM1eEaZfK3iffRsHmBK/1Xsho=
+X-Received: by 2002:a25:c846:0:b0:dcc:96db:fc0d with SMTP id
+ y67-20020a25c846000000b00dcc96dbfc0dmr596737ybf.25.1710390797306; Wed, 13 Mar
+ 2024 21:33:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314084329.6c9c59dd@canb.auug.org.au>
+References: <20240307184820.70589-1-mhklinux@outlook.com> <ZfI3owmQOKc4Ta_X@zx2c4.com>
+ <SN6PR02MB41576DD458EB3C72F3784EDBD4292@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <ZfJpk94mtwzRaJzv@zx2c4.com> <BN7PR02MB4148FA0075DCB43F1971485BD4292@BN7PR02MB4148.namprd02.prod.outlook.com>
+In-Reply-To: <BN7PR02MB4148FA0075DCB43F1971485BD4292@BN7PR02MB4148.namprd02.prod.outlook.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Wed, 13 Mar 2024 22:33:05 -0600
+X-Gmail-Original-Message-ID: <CAHmME9rGm++fA+1=_MkPfdPEsKmDk_P8j_XnUoGC4rED7OYcgw@mail.gmail.com>
+Message-ID: <CAHmME9rGm++fA+1=_MkPfdPEsKmDk_P8j_XnUoGC4rED7OYcgw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] x86/hyperv: Use Hyper-V entropy to seed guest
+ random number generator
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "haiyangz@microsoft.com" <haiyangz@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>, 
+	"decui@microsoft.com" <decui@microsoft.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>, 
+	"arnd@arndb.de" <arnd@arndb.de>, "tytso@mit.edu" <tytso@mit.edu>, "x86@kernel.org" <x86@kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, 
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14-03-24, 08:43, Stephen Rothwell wrote:
-> Hi all,
-> 
-> The following commits are also in Linus Torvalds' tree as different
-> commits (but the same patches):
-> 
->   0b5466a8bc71 ("OPP: Extend dev_pm_opp_data with turbo support")
->   3678779d8b64 ("OPP: debugfs: Fix warning with W=1 builds")
->   6c9a1a56d316 ("OPP: debugfs: Fix warning around icc_get_name()")
->   ace4b31b297d ("cpufreq: Move dev_pm_opp_{init|free}_cpufreq_table() to pm_opp.h")
->   bde3127675ff ("dt-bindings: opp: drop maxItems from inner items")
+Hi Michael,
 
-Hi Stephen,
+On Wed, Mar 13, 2024 at 10:30=E2=80=AFPM Michael Kelley <mhklinux@outlook.c=
+om> wrote:
+> By default, Linux doesn't verify checksums when accessing ACPI tables
+> during early boot, though you can add "acpi_force_table_verification"
+> to the kernel boot line.  The default is shown in dmesg like this:
+>
+> [    0.004419] ACPI: Early table checksum verification disabled
+>
+> The checksum of all tables is checked slightly later in boot, though
+> it's after my entropy code has run.  Without the checksum fixup,
+> this error is output:
+>
+> [    0.053752] ACPI BIOS Warning (bug): Incorrect checksum in table
+>                 [OEM0] - 0x8B, should be 0x82 (20230628/utcksum-58)
+>
+> At this point, the checksum error doesn't really matter, but I
+> don't want the warning showing up.  I need to experiment a
+> bit, but probably the best approach is to set the data length to
+> zero (and adjust the checksum) while leaving the rest of the ACPI
+> table header intact.  It will be more difficult to make the table
+> disappear entirely as it appears in a global list of ACPI tables.
 
-Sorry about that. While creating the tag for the pull request, I
-rebased the commits and forgot to push my branch again. Done now.
-Should match Linus's tree now.
+That makes sense. If the length is getting set to zero and the data
+itself zeroed, I would assume that the checksum evaluates to some
+constant value (0? ~0? dunno how it's computed), so that should ease
+things a bit.
 
--- 
-viresh
+Jason
 
