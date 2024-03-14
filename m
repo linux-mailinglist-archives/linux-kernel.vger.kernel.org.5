@@ -1,236 +1,125 @@
-Return-Path: <linux-kernel+bounces-103371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31E9387BEA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:15:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E233D87BEAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:16:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5918289421
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:15:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 202881C20BE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285A96FE09;
-	Thu, 14 Mar 2024 14:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3101C6FE0A;
+	Thu, 14 Mar 2024 14:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="IClft8te"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2135.outbound.protection.outlook.com [40.107.255.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiXDBHTz"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E61F6EB73
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.135
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425746; cv=fail; b=NcgHzDk+P1tr99Ye6BGMDOJp2PQVOt+duGmWqceuk/4anzU12ayimdMYJxTNwQ4DpfvikD8ln1pHGq+wCciRUQMEg7U2ngBJ0fIqjYjLHmeYeUm2tsSuWPhOgxSiQwJiS7UiDX/wdTl6Ry8ysDvRaN84m4ei1ttwRBoxAzSF3rA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425746; c=relaxed/simple;
-	bh=V+JUXSGQNyoQ/O1A5k9aUYpXfhy4xtp/OIzIgoDEslQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MvC220Tvr8xRtWFGbMYJxMEAKVOQbr+m6GYAFjEDQ9ov05pvQoaDb3p3aT+BQBk86OmLhuzkoDnOMHSG2bFuvAjZXDDT9cdjWlx/ZODuDKjLpcLfiRZHLI6gLBmBpHjjOvflBxuttXocsmV3E9FC/Ztrtiq3grlFyh4F2qfmwrc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=IClft8te; arc=fail smtp.client-ip=40.107.255.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H3Qdv+bF9KEACAdcI8sd4A4Q+K1Iglw9iF9ADUoMySjdM2tu1Ecxiebf8nHlZ6RjGxage3XM8FK6NXSL/Vr5mixsJ5+WAcqnuz/ftoGVHZ8OBx1ya80vwcwVH1KM6MYYJZEDSSJCAwdFqsg4+8uNwx6dUIDoNgM5pDSvpB+wjm4Ijn3y4u8C0g+I41sXxMGa42eBE91CLSNNg4Jnq3k/dj8lbE+3cPG9YWhoMscgmTnL1jF8CDLxvUDuaQUvJF+ztMR44aOPdYhKq/fidsNl3MFl6FGTRZ83DBF+3NJE7As09MV6Tbv6+A7Vt7XzSIeOHULvPTTXRuZKGmlaJwLIwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qdTeTxUTc7bvID5bSUOaCMoO/h8AUVtgfchyzcDc7sc=;
- b=cLDUsc1yp3BzGEOVmpL4EdB2OsKoVyuCOzStvvPsraJ7tBkSd9TS/m9mpOPOGB089aBfbw1FBjH4wAIOMlcC3GX3f8IrsHd7gwlpsRSEvilidUydrc0jhhD9zCk+RUbh2IKgppEGOw2ihymO41VYZv48f6zlVs8LzLNPCt0dzBeDLD6IiefKz1EWhPSv8992F6066EAzrRLOdleN+Sq6uJeCYH1ijttEsI3+IFs0eTDTkJEM6TDm8c1E3pstneUGgSf8jATBo+5FqETRTDfxtGD5srf1dU2gYm7y85G6wn5a3tjPkOqc4B/QN8+sVsq7o1PZEohyHCBtUSvNwnpBdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 58.252.5.68) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=oppo.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=oppo.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qdTeTxUTc7bvID5bSUOaCMoO/h8AUVtgfchyzcDc7sc=;
- b=IClft8te39aCGO78B5CahmVNSMTqFsT833j3lj/njhN6PDWgzvq3mUy68wpzyhK6bYkKqrgolpH9Q1JFmHHeM6o/L60/X658WdyBkG0dCx74yzETv1fCgfNxs+L9ApT2Ud65BwVs8X1yQ9c3XuYQcl/AUV9cbRb7llXpEF/sN64=
-Received: from KL1PR01CA0157.apcprd01.prod.exchangelabs.com
- (2603:1096:820:149::18) by TY0PR02MB7105.apcprd02.prod.outlook.com
- (2603:1096:405:8::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.33; Thu, 14 Mar
- 2024 14:15:39 +0000
-Received: from HK2PEPF00006FB3.apcprd02.prod.outlook.com
- (2603:1096:820:149:cafe::8d) by KL1PR01CA0157.outlook.office365.com
- (2603:1096:820:149::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19 via Frontend
- Transport; Thu, 14 Mar 2024 14:15:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 58.252.5.68)
- smtp.mailfrom=oppo.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=oppo.com;
-Received-SPF: Pass (protection.outlook.com: domain of oppo.com designates
- 58.252.5.68 as permitted sender) receiver=protection.outlook.com;
- client-ip=58.252.5.68; helo=mail.oppo.com; pr=C
-Received: from mail.oppo.com (58.252.5.68) by
- HK2PEPF00006FB3.mail.protection.outlook.com (10.167.8.9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7386.12 via Frontend Transport; Thu, 14 Mar 2024 14:15:38 +0000
-Received: from PH80250894.adc.com (172.16.40.118) by mailappw30.adc.com
- (172.16.56.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Mar
- 2024 22:15:37 +0800
-From: <liuhailong@oppo.com>
-To: <akpm@linux-foundation.org>
-CC: <nathan@kernel.org>, <ndesaulniers@google.com>, <trix@redhat.com>,
-	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>,
-	<surenb@google.com>, <zhaoyang.huang@unisoc.com>, Hailong.Liu
-	<liuhailong@oppo.com>
-Subject: [PATCH] Revert "mm: skip CMA pages when they are not available"
-Date: Thu, 14 Mar 2024 22:15:16 +0800
-Message-ID: <20240314141516.31747-1-liuhailong@oppo.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9CA6FE02;
+	Thu, 14 Mar 2024 14:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710425771; cv=none; b=t4+o8/lB+o14O5d7kLv+tVHclPT1Qwe/TN//GAyMdIGXf4cQ8eUdgDQ/qYHB0PajBcd7opi41lPKTRxkW+6Cu1uN2lRcQrbkqG0GfkJ4qWwLKCs2QPK4K1v0TGTJlCSRWTND8QnMHYQl+s8aHDGIR2i2nBlkvHuHIGQewcM7kxw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710425771; c=relaxed/simple;
+	bh=bVGU/1nT0H0Si6zm/Sz0XZCYeGIcHvVz6AxiepPYAXg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=VGTKsUUtOObEJTRL2ubJb35Y46MUcT2tEuIK64KdXB0fhGkyNpzxe5+Ck2XsbN5qp2lYU5WeTblIHbJhzLrEjIpfNH4agqLSi9Opb164y1RndE1vXflVOvhb4U3VV+aINgavzV/BUfKlYUjwGW5x+IEP0pOPmUSmlPMQv0YQUAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HiXDBHTz; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68f41af71ebso7812286d6.1;
+        Thu, 14 Mar 2024 07:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710425769; x=1711030569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bVGU/1nT0H0Si6zm/Sz0XZCYeGIcHvVz6AxiepPYAXg=;
+        b=HiXDBHTzuwviFWvMBfXKXl/R5Uklrh4zWYXcF6Ie9rjblyrSTYDFnXKL6XZ6U6sxe7
+         sBh5iMEubWBz2y/JP0iOZuJpAatn7G/W5QoSv8BpaCnarKssRV+wSxq37DZIuzaI8bi3
+         YVenQird21t52bWnugumgFCiTNx9ygeMB7RjwOnsfuef8LWlyecRAKDaAnjy5BhHM9XJ
+         iUGahEk+247jP9qydMz+jSdmJe5+Kb9wXFZdi4wJw26Xzb9O/n9QzTEXbvQam0JPDWCC
+         QP4ibKT1U2OdHEht86l3Lc1Qz/qykMjyOsfa9Ai7dItSYEflx4RErvLUm8QA42ornb1Y
+         OORQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710425769; x=1711030569;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bVGU/1nT0H0Si6zm/Sz0XZCYeGIcHvVz6AxiepPYAXg=;
+        b=eIxLMwHxFduIFtTQ9YuXv+yUFLS7caH6rH4fuVeeO3QDiCMg1UV5s3rxxSv2Rubn+o
+         okNLikKnSFPzqdagfHHjUFr3M2Bd75HQMmWwb4PJ0L1ATTDZ3/vbqzbkeoEinYLI12Si
+         fcah1+cYfzU5DSXNao0ei36u01gSwMEEfHH1XO+YZKACRvchID/e+QDaQeEQYu0rJHj1
+         W8aEZcJp34pnKBNdpUUj3vr8Qs+K3Q/6FbmP88germkOQNEPaSyI6JQvWp3AXP1raDuJ
+         KWisg74SPXPVxN5dzXshyEqqX2U2F7OPPAnW5IL1AqUFedbWV16L4oxy9U9j5Rqh+Y62
+         pAeg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCbB/JMJvhH4iFxpvBeERCfQmZ2nFDP9U5tS5mxHkBHLwpya1B6UT5fy9QZFC1Ul+XnyTpc80sKcTsHHfMnm12r/l3nldgPwVmSTGbRfsJ10ikizmEVFrfGLxWZzR8i4MD2nnuL+pKQ5OoEl3kFhLU
+X-Gm-Message-State: AOJu0Yx4+QqaBkDrfwSjBlhrkY9emcX4Tb5ALnDw28xwqMkLB1PVuMOA
+	ohCsHIHNl9D7kMR0ePfFJCc2RvFsqDbNQskgiq/TJFBNnwzREGMR
+X-Google-Smtp-Source: AGHT+IFXeFnBQdQlRURMStTP2QEs5eBWxgcZpvwyfw1K7G6sqYNL0c+PpV2nyZYeVsGMmtLdDAXx1A==
+X-Received: by 2002:a05:6214:2e11:b0:690:de5f:2127 with SMTP id mx17-20020a0562142e1100b00690de5f2127mr1939361qvb.36.1710425768813;
+        Thu, 14 Mar 2024 07:16:08 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id jx5-20020a0562142b0500b0068f4520e42dsm507705qvb.16.2024.03.14.07.16.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Mar 2024 07:16:08 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Steven Rostedt
+ <rostedt@goodmis.org>, "Masami
+ Hiramatsu" <mhiramat@kernel.org>, Sami Tolvanen <samitolvanen@google.com>,
+ Guo Ren <guoren@kernel.org>, Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+ Deepak Gupta <debug@rivosinc.com>, Sia Jee Heng
+ <jeeheng.sia@starfivetech.com>, Bjorn Topel <bjorn@rivosinc.com>, "Song
+ Shuai" <suagrfillet@gmail.com>, Cl'ement L'eger <cleger@rivosinc.com>, "Al
+ Viro" <viro@zeniv.linux.org.uk>, Jisheng Zhang <jszhang@kernel.org>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Andy Chiu <andy.chiu@sifive.com>
+Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
+In-Reply-To: <8734suqsth.fsf@all.your.base.are.belong.to.us>
+References: <20240306165904.108141-1-puranjay12@gmail.com>
+ <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
+ <ZfBbxPDd0rz6FN2T@FVFF77S0Q05N>
+ <8734suqsth.fsf@all.your.base.are.belong.to.us>
+Date: Thu, 14 Mar 2024 14:16:04 +0000
+Message-ID: <mb61pplvw6grf.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: mailappw30.adc.com (172.16.56.197) To mailappw30.adc.com
- (172.16.56.197)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB3:EE_|TY0PR02MB7105:EE_
-X-MS-Office365-Filtering-Correlation-Id: be71050a-24d4-4d57-518f-08dc44313954
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4C7FiLAszmXzhkhYpc8zYvunlAwhVdP5ymcSY1WgCE/Q6srT7ktKv/o8M6Z6FsroYtavhNFj9eLjHCkfY6HiEcZFUah9FFdNbJ8Mb9OyVNo+A0OnLzWE+okXy0qF8UrlUI0KwZNFYWBaGpjXx0eu0TgERM0epayjZp5GxA1M5BPtieXUIGRUDiHhrZWnpEfwqW29EwgN5ZJzBnyzi2E63Ojhuu1KaQ1psFKujBrTFnlZ57BXpWD7rVKLoz37c6BTlHCW/jPnP5gfxpT6JQNGbOOwF8yjhZJMtr944Y6swe7AbzedtRSgwedcbOG/Glqm78C02R/quPi/D90eiOfUlLaM5wXEvl+j+ON3s5KEsCujcRixw9vmk6eWK4+HSC6QmurzZ0dWWt4RornkS637Zf7TcsszmrOf+hHZJ9xowlfHpzPxgjf8z5xLf8Io2M0/r7ktF3n2Qw83WWwWe7/EcEyaeJ4sJ1F07aJKUz5UxLvqEorKBbHAvA5kJOX7kRlGx1WtBSyQtKI2+7/V2eRUqhEU0yxOD658dQH0oBKq/Kew4wCLk7c34+8Q//Fg6lYIdDj2nfXLxPJ016Ai73fL6mSZvO2zRejVNuEHSp5axeLU1oPEy0jUNGgyIiNPwOm5Sh7TijSqs1K3U+eAkXvJKPYYicvPRZySj6V/8W60fdMkcGpwVQD9HYkz9g2KLi6mRcJmCS7osvQ2z3N0T73woUIjsBWS+dlkirjkYBVIlyBATgHGBiXsxYrdjTbfWizn
-X-Forefront-Antispam-Report:
-	CIP:58.252.5.68;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.oppo.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 14:15:38.3962
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: be71050a-24d4-4d57-518f-08dc44313954
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f1905eb1-c353-41c5-9516-62b4a54b5ee6;Ip=[58.252.5.68];Helo=[mail.oppo.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK2PEPF00006FB3.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR02MB7105
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: "Hailong.Liu" <liuhailong@oppo.com>
+Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
 
-This reverts commit 5da226dbfce3a2f44978c2c7cf88166e69a6788b.
+>
+> Hmm, depending on RISC-V's CMODX path, the pro/cons CALL_OPS vs dynamic
+> trampolines changes quite a bit.
+>
+> The more I look at the pains of patching two instruction ("split
+> immediates"), the better "patch data" + one insn patching look.
 
-patch may cause system not responding. if cma pages is large in lru_list
-and system is in lowmemory, many tasks would enter direct reclaim and waste
-cpu time to isolate and return. Test this patch on android-5.15 device
-and tasks call stack as below.
+I was looking at how dynamic trampolines would be implemented for RISC-V.
 
-Task name: UsbFfs-worker [affinity: 0xff] pid: 3374 cpu: 7 prio: 120 start: ffffff8897a35c80
-state: 0x0[R] exit_state: 0x0 stack base: 0xffffffc01eaa0000
-Last_enqueued_ts:       0.000000000 Last_sleep_ts:       0.000000000
-Stack:
-[<ffffffd32ee7d910>] __switch_to+0x180
-[<ffffffd3302022fc>] __schedule+0x4dc
-[<ffffffd330201e08>] preempt_schedule+0x5c
-[<ffffffd33020a4d0>] _raw_spin_unlock_irq+0x54
-[<ffffffd32f14906c>] shrink_inactive_list+0x1d0
-[<ffffffd32f143998>] shrink_lruvec+0x1bc
-[<ffffffd32f147c0c>] shrink_node_memcgs+0x184
-[<ffffffd32f147414>] shrink_node+0x2d0
-[<ffffffd32f146d38>] shrink_zones+0x14c
-[<ffffffd32f142e84>] do_try_to_free_pages+0xe8
-[<ffffffd32f142b08>] try_to_free_pages+0x2e0
-[<ffffffd32f1a8e44>] __alloc_pages_direct_reclaim+0x84
-[<ffffffd32f1a2d58>] __alloc_pages_slowpath+0x4d0
-[<ffffffd32f1a23bc>] __alloc_pages_nodemask[jt]+0x124
-[<ffffffd32f19a220>] __vmalloc_area_node+0x188
-[<ffffffd32f19a540>] __vmalloc_node+0x148
-[<ffffffd32f19a60c>] vmalloc+0x4c
-[<ffffffd32f910218>] ffs_epfile_io+0x258
-[<ffffffd330033780>] kretprobe_trampoline[jt]+0x0
-[<ffffffd330033780>] kretprobe_trampoline[jt]+0x0
-[<ffffffd32f28129c>] __io_submit_one+0x1c0
-[<ffffffd32f280e38>] io_submit_one+0x88
-[<ffffffd32f280c88>] __do_sys_io_submit+0x178
-[<ffffffd32f27eac0>] __arm64_sys_io_submit+0x20
-[<ffffffd32eeabb74>] el0_svc_common.llvm.9961749221945255377+0xd0
-[<ffffffd32eeaba34>] do_el0_svc+0x28
-[<ffffffd32ff21be8>] el0_svc+0x14
-[<ffffffd32ff21b70>] el0_sync_handler+0x88
-[<ffffffd32ee128b8>] el0_sync+0x1b8
+With CALL-OPS we need to patch the auipc+jalr at function entry only, the
+ops pointer above the function can be patched atomically.
 
-Task name: kthreadd [affinity: 0xff] pid: 2 cpu: 7 prio: 120 start: ffffff87808c0000
-state: 0x0[R] exit_state: 0x0 stack base: 0xffffffc008078000
-Last_enqueued_ts:       0.000000000 Last_sleep_ts:       0.000000000
-Stack:
-[<ffffffd32ee7d910>] __switch_to+0x180
-[<ffffffd3302022fc>] __schedule+0x4dc
-[<ffffffd330201e08>] preempt_schedule+0x5c
-[<ffffffd33020a4d0>] _raw_spin_unlock_irq+0x54
-[<ffffffd32f149168>] shrink_inactive_list+0x2cc
-[<ffffffd32f143998>] shrink_lruvec+0x1bc
-[<ffffffd32f147c0c>] shrink_node_memcgs+0x184
-[<ffffffd32f147414>] shrink_node+0x2d0
-[<ffffffd32f146d38>] shrink_zones+0x14c
-[<ffffffd32f142e84>] do_try_to_free_pages+0xe8
-[<ffffffd32f142b08>] try_to_free_pages+0x2e0
-[<ffffffd32f1a8e44>] __alloc_pages_direct_reclaim+0x84
-[<ffffffd32f1a2d58>] __alloc_pages_slowpath+0x4d0
-[<ffffffd32f1a23bc>] __alloc_pages_nodemask[jt]+0x124
-[<ffffffd32f19a220>] __vmalloc_area_node+0x188
-[<ffffffd32f19a044>] __vmalloc_node_range+0x88
-[<ffffffd32f0fb430>] scs_alloc+0x1b8
-[<ffffffd32f0fb62c>] scs_prepare+0x20
-[<ffffffd32ef2ce04>] dup_task_struct+0xd4
-[<ffffffd32ef2a77c>] copy_process+0x144
-[<ffffffd32ef2bae4>] kernel_clone+0xb4
-[<ffffffd32ef2c040>] kernel_thread+0x5c
-[<ffffffd32ef618d0>] kthreadd+0x184
+With a dynamic trampoline we need a auipc+jalr pair at function entry to ju=
+mp
+to the trampoline and then another auipc+jalr pair to jump from trampoline =
+to
+ops->func. When the ops->func is modified, we would need to update the
+auipc+jalr at in the trampoline.
 
-without this patch, the tasks will reclaim cma pages and wakeup
-oom-killer or not spin on cpus.
+So, I am not sure how to move forward here, CALL-OPS or Dynamic trampolines?
 
-Signed-off-by: Hailong.Liu <liuhailong@oppo.com>
----
- mm/vmscan.c | 22 +---------------------
- 1 file changed, 1 insertion(+), 21 deletions(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 2fe4a11d63f4..197ddf62019f 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2261,25 +2261,6 @@ static __always_inline void update_lru_sizes(struct lruvec *lruvec,
- 
- }
- 
--#ifdef CONFIG_CMA
--/*
-- * It is waste of effort to scan and reclaim CMA pages if it is not available
-- * for current allocation context. Kswapd can not be enrolled as it can not
-- * distinguish this scenario by using sc->gfp_mask = GFP_KERNEL
-- */
--static bool skip_cma(struct folio *folio, struct scan_control *sc)
--{
--	return !current_is_kswapd() &&
--			gfp_migratetype(sc->gfp_mask) != MIGRATE_MOVABLE &&
--			get_pageblock_migratetype(&folio->page) == MIGRATE_CMA;
--}
--#else
--static bool skip_cma(struct folio *folio, struct scan_control *sc)
--{
--	return false;
--}
--#endif
--
- /*
-  * Isolating page from the lruvec to fill in @dst list by nr_to_scan times.
-  *
-@@ -2326,8 +2307,7 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
- 		nr_pages = folio_nr_pages(folio);
- 		total_scan += nr_pages;
- 
--		if (folio_zonenum(folio) > sc->reclaim_idx ||
--				skip_cma(folio, sc)) {
-+		if (folio_zonenum(folio) > sc->reclaim_idx) {
- 			nr_skipped[folio_zonenum(folio)] += nr_pages;
- 			move_to = &folios_skipped;
- 			goto move;
--- 
-2.34.1
-
+Thanks,
+Puranjay
 
