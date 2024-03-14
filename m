@@ -1,222 +1,207 @@
-Return-Path: <linux-kernel+bounces-103826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E9687C4FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:09:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E3987C501
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E55511F22022
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:09:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1593A1C20A1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 22:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87A276901;
-	Thu, 14 Mar 2024 22:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9102B768F7;
+	Thu, 14 Mar 2024 22:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="fagdtZhS"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2064.outbound.protection.outlook.com [40.107.94.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hma04Grk"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB92E1A38EE;
-	Thu, 14 Mar 2024 22:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710454185; cv=fail; b=uvJA1yoHurFCsbhUZU7XUBflHHVl4hjtEdBxXjbEsNRCIv/R943RAj8TVDbTs3+A3MypNQDFi/Ol40d4DcnSOGPZVUsIDK4sTn1yOBrTkh+0qK6nwQjqiwVe9x6ZH2Sjw7lcbJmhkawNf++yD299SDTwfkToIBj83hkD7acooNE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710454185; c=relaxed/simple;
-	bh=xbJ/HpVpN85F3hpUyXcMw0tKjoXP5KBu/UdSnRfsuqY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ccZzW36bGgNpnNtjMfPeUApby0wSLiwp1DA7s+pBLN3tNnIKhBzgVKdTju4bJEpke+xM7osKQ99qNAzAWiM/gBVbJYyiUrzFHpZ/iYuPYElvOSV7lP+XYSa3+X8po8WIDeXb3qJKXp7ek1isHu/B7TLy7r/SlsdHTeSGgUKYJUU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=fagdtZhS; arc=fail smtp.client-ip=40.107.94.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OBi0pEj2MmJ0e2Pszkg/QXwvFOljyd0k16cJwy+wlgEsWSCleJ0HfQFN11pgkoUv0miIgjRMKuoNX52r73qH1unYejwsY8x1Y/6Vr93Nl31gOJj4bOMvbMKIqKKWwzFfsueM34sMlyEevsCaI/y+q9vVHMLZwZP+WfWYDgeUXqZ0f7LmxY2bA2xxVIb1FZYguS0sljlDp42hOtJLWk+zTn0L3vnvAnlHyno1kSly/790RIZvIMaHTT2YKuEkKzkMG5RerK4Hh7tBqxYXR4aopk2X3Q0tAoYClyea/SqngBbkkvmc+SBH77/G7gxPqK34/Hd2niWgSPfZh4oGb7X/mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mXIvD71kWbLc4036pgkLHCMUk+upxaIL7CurXA2uh04=;
- b=nVhUHDSl06hT8gzKfvFMEbVjj7VxNH+TeFX5ZYEige3GyQ/LR8bnNUqoAmmLXh3YD+71oxMm+js22NexOhFbTJ0S0U30zVbUiF9JNiXgNWKxLBYwSeX0/3tdcf4DOFytOBJgrWobb4UqFlxOGYNtwIm3BTq3bIrpWmSqLr44kcVGcNFqg21uS+chw4Rcs6h9YmgcsWsfigqqDgFCeAiFMYzlBzAa48H2uWdLtNJe4ojKaiaPz3w5dk2leEtWR7QQvuK69NHuBcRyiIjNXyJbXSWNxyCVeIIspYRYPaVpa7eEBEKXvIRWwYcXpvVm+fwkp/7oYyeaiVDPfH+n3xrgQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mXIvD71kWbLc4036pgkLHCMUk+upxaIL7CurXA2uh04=;
- b=fagdtZhS4vxdp6dXxMgUU6bnBq6GdUBzuybCByWgVCoiREaDHwS7fguybDoM4OYEYFmsHN9ejcYVzs7hswi9MxumyX4rBBpiSDbiWINQqF5gTjX1Md0hdHOJd5uPkBiw9vpJNtFsFZs0Zyts7es/hEgmPgt46rIOiTweeTegV7Q=
-Received: from MW3PR06CA0021.namprd06.prod.outlook.com (2603:10b6:303:2a::26)
- by CH3PR12MB8581.namprd12.prod.outlook.com (2603:10b6:610:15d::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Thu, 14 Mar
- 2024 22:09:41 +0000
-Received: from MWH0EPF000A672F.namprd04.prod.outlook.com
- (2603:10b6:303:2a:cafe::2b) by MW3PR06CA0021.outlook.office365.com
- (2603:10b6:303:2a::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21 via Frontend
- Transport; Thu, 14 Mar 2024 22:09:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000A672F.mail.protection.outlook.com (10.167.249.21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7386.12 via Frontend Transport; Thu, 14 Mar 2024 22:09:41 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Mar
- 2024 17:09:39 -0500
-Date: Thu, 14 Mar 2024 17:09:23 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<seanjc@google.com>, <aik@amd.com>, <pankaj.gupta@amd.com>
-Subject: Re: [PATCH v3 10/15] KVM: x86: add fields to struct kvm_arch for
- CoCo features
-Message-ID: <20240314220923.htmb4qix4ct5m5om@amd.com>
-References: <20240226190344.787149-1-pbonzini@redhat.com>
- <20240226190344.787149-11-pbonzini@redhat.com>
- <20240314024952.w6n6ol5hjzqayn2g@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200EB76414;
+	Thu, 14 Mar 2024 22:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710454252; cv=none; b=l9aGX+vgFlU/ncVReqlSHoHUx5BYMBAhan6l958EKs665USPadpbfE0lA1tRIsNKUJ4JbJgNA6dcZsJxppdnvQa3DIscUq/1zW2OztwjsXFkL4c8UsA5DiTXxEvyDENKzT1qbDxBbeeEKKSnPwrpQhVXW+tqVVazQt/SEcj3RxY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710454252; c=relaxed/simple;
+	bh=OkWcBnsiYG75IDHlAI5T+Gku1wq896+L4GdKgwLV3Po=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FWM3qTKDPLs/fGoT8UKoIhP7vbnYiAqW0PIRC5BaDfSSq5/bcCf0p5Kgx/Md1yL7Qw06guv2SBg8gPunTBX62ved4Wh2YlMeijMKLffrbwOON3ackvtcqeLQDm/BaZ9bmpk0mj5XmE8UI9U0GCVGiNU2SBP6GMmKxpd2/GTjCm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hma04Grk; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42a029c8e62so9846201cf.1;
+        Thu, 14 Mar 2024 15:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710454250; x=1711059050; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CCh3dqJRCdjU6eonAORaNe6PS7ViDsSNXUXdZHK162c=;
+        b=hma04Grk/aHg2NQgGryrLC7jmZvxOwTKtwApQZxuSZYiYC8EQ+cFz1n3do3n3F+KIK
+         9jEFHuDrp5p7rgCJl/6bozS1CAEbekwHA6+QjCP0RUEKszkJDFzlqwD0s8mmh5xtF4rJ
+         RSf4ex1E7VYoW6RPcczVS4KsxQ/ztkO1Q1u4ywkNZeUpwNI14twA04FfOJr0+1BfWsvt
+         YUoW+EQGtPXJBMuUt2HNeBqvVF7a52KTuY91mzljqqn3YRd702RQyylcdWbX3uokttWz
+         n30anQBIi6VsCQj3i0h+d7X6ZSosFANV6MY6s9pJhcKJ5kAozX2AEeSheG/Ab9UNk82W
+         tWkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710454250; x=1711059050;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CCh3dqJRCdjU6eonAORaNe6PS7ViDsSNXUXdZHK162c=;
+        b=r7rpJN40bvUqCqUMMapFUGmTHj2M8LWa3smv15fqRyoPpjcqiZNbsxL/f2397x25UZ
+         ep0C0Ek0ix2iYstKqShHzjUF/KHhG8r9ALuqARby0BBvMG5oZIhHVsAmXvIEF2wkDLCM
+         X1xbNghg6pCrd6uc/S0Ql9AvLOI7Lr/qhEHl4YIWbeihr04zVfQ4/XTAGqOJ5iRwltDJ
+         gFdHuv5xmSdV0WdOxmT3gsCOLNadnge3jxhyQJx0zbf18JecFW5nwOMTi1UjPEixvV1S
+         VSElZxEedAn+fgrdv3k/wW59vHkJfRPLsgnI8Utj3s0xPIhPZaals7OZsKBWfNjudsT5
+         sjyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqEsXdx1NxK2Rm4evKbEpaGaY32g+OTJPwzR5+4XwsF6WiEfnw4tZVgYiJ7HW3+ekFcYFv1KirT5OJhaXmiWKGdjX57jDLgLwSbC3I+knMQ8qjjtgc4OyWFy09Wp6YrNUT
+X-Gm-Message-State: AOJu0YwOX3W1NcKzL3e7QJXZZ3KmPk/GY8+/IlpIxHkDSiZ8i75Tzxyp
+	IxtrpiWHFWebWCbicwQYd8USOSl+f5TEGWlC4B+h2f2VK/yK2RO2
+X-Google-Smtp-Source: AGHT+IE0CbsFgYOBEfoVLEWYHMhDQvabiv4+OsU1OtIjElzhfjT3erU5yfwzKsrSDVb6SifHrw683Q==
+X-Received: by 2002:a05:622a:5807:b0:430:a089:a13d with SMTP id fg7-20020a05622a580700b00430a089a13dmr2619640qtb.2.1710454250038;
+        Thu, 14 Mar 2024 15:10:50 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id s15-20020a05622a178f00b00430a07fb03asm931440qtk.0.2024.03.14.15.10.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 15:10:49 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 0F3BD27C005B;
+	Thu, 14 Mar 2024 18:10:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 14 Mar 2024 18:10:49 -0400
+X-ME-Sender: <xms:6HXzZZkPcGQmgSCYsLvFHe0FkX4engivAvZCdvEj-Z4RnJ2fxMBvGQ>
+    <xme:6HXzZU02vMjD1VrEF3NygDuuqwuvIJAfEkw9KHlZVOoMVEdT9d2KxO4k113_d3usr
+    jPWEE1leRglhWnxlA>
+X-ME-Received: <xmr:6HXzZfqkSF3RQV_Xdre0RptylM2lNaMD1wXrxNVSeCt7wHHmPiUoS7ef86PUUw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeejgdduheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpefftdeihfeigedtvdeuueffieetvedtgeejuefhhffgudfgfeeggfeftdei
+    geehvdenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:6HXzZZlGgiMyv2mWdOXLhDJe9f_XC6W6-qcZqZ18UQosrnG6h9VhYQ>
+    <xmx:6HXzZX1JNSkrhckv7yW2F_Tq86x6M4v9kpav3E36SWaKobl1u86wCQ>
+    <xmx:6HXzZYs02RFHLAAXhk4hGOalQKTD3XhGKokykkG71XydqoxOVDCA3w>
+    <xmx:6HXzZbXScSv_kQi99E7mkUfmBnC0fvnhZGk_5yRpTtONLJG0dqkWxg>
+    <xmx:6XXzZe_0Wrw2kuk17cZjIPi18E4w4AAMr0jznbruP_JZTYzinujKFg>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Mar 2024 18:10:47 -0400 (EDT)
+Date: Thu, 14 Mar 2024 15:10:41 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	paulmck@kernel.org, mingo@kernel.org, rcu@vger.kernel.org,
+	neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
+	chenzhongjin@huawei.com, yangjihong1@huawei.com,
+	rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
+ v6.9]
+Message-ID: <ZfN14cRsXp0CS7KC@boqun-archlinux>
+References: <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
+ <ZfIuRMo8oKbR08Af@lothringen>
+ <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+ <ZfLUU+XuQC7W79tf@lothringen>
+ <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
+ <ZfNHNvzpqf8DOZd8@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
+ <87v85olez3.ffs@tglx>
+ <87sf0sldbi.ffs@tglx>
+ <ZfN0wY41pU5UjP8T@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240314024952.w6n6ol5hjzqayn2g@amd.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000A672F:EE_|CH3PR12MB8581:EE_
-X-MS-Office365-Filtering-Correlation-Id: 183a1e12-e3ef-44a5-b79d-08dc44737280
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	WMuIij8KHYyDvFZqgiYuWR/OMyspNaYhsDveJ23Kh6jIscnYlhMxYppczFk65PUzcKiVUtIqqwtILXZ2iq7IGiV3r4nfSTAOh2G727vk3QFEdD4UntAxNASS/QtyS3KdbqAoQY6evKuomuEI6Q1ALv8OseIPZbCFs7k3h5wAgvmhGugWsZr1b3yVbpv0DSlUihSEjRUKgy/fEG5hTYfkYP0OkJLZat6bQpeyrmhdkHATiHe6J9b99WxzLlFdUz2+sXL4KDoTC0zLkju/iXXlWcOHAvcG2mBPRd2PCfd/ADVHoEMq+vQp3Gg2mbE9oBnO9lMe++6GbvYwY8kGBDTd0ncfMta0hz0Y+bwRNOAurLehJqo8OWQqrPwxmUJvMsPM9am4+L2SIxQChJg14ilYhETxL2eNehcW4JmVT1jCAlMabHBbqZy2WLMnzF2eJEpmk/iaWQtHnXlWllPods3SLM790PtaGutXJxwiYYxqNwpSRsfUv1/G/2igHjUaqZZCaYwRLYfAeulH2oJm9svRBlb7frtqynCw/RAz3VTdjhlr4f8cK1KYTm5bjnJWANoeBUphUcFUwBc0hTwu2JyQeWWi4hTTfV2jAyOz9Zjr7vqoMQn9gzGinu5f4y/lLZy1gxCgrz5fVedUGeDkMTwDUl71LKhYwGkZY3RplmjYgEqsJBYfVrrbSVeS0ocSKHRqtB01FooAr/3j068L2LGFgfuCsU5rIQ/qES9LTskQu+erJOaIL7pKIiTVVBrW3ErY
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 22:09:41.1015
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 183a1e12-e3ef-44a5-b79d-08dc44737280
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000A672F.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8581
+In-Reply-To: <ZfN0wY41pU5UjP8T@boqun-archlinux>
 
-On Wed, Mar 13, 2024 at 09:49:52PM -0500, Michael Roth wrote:
-> On Mon, Feb 26, 2024 at 02:03:39PM -0500, Paolo Bonzini wrote:
-> > Some VM types have characteristics in common; in fact, the only use
-> > of VM types right now is kvm_arch_has_private_mem and it assumes that
-> > _all_ nonzero VM types have private memory.
+On Thu, Mar 14, 2024 at 03:05:53PM -0700, Boqun Feng wrote:
+> On Thu, Mar 14, 2024 at 10:21:21PM +0100, Thomas Gleixner wrote:
+> > On Thu, Mar 14 2024 at 21:45, Thomas Gleixner wrote:
+> > > On Thu, Mar 14 2024 at 12:09, Florian Fainelli wrote:
+> > >> https://gist.github.com/ffainelli/cb562c1a60ef8e0e69e7d42143c48e8f
+> > >>
+> > >> this one is does include the tmigr events. Thanks!
+> > >
+> > > You need 8ca1836769d758e4fbf5851bb81e181c52193f5d too.
 > > 
-> > We will soon introduce a VM type for SEV and SEV-ES VMs, and at that
-> > point we will have two special characteristics of confidential VMs
-> > that depend on the VM type: not just if memory is private, but
-> > also whether guest state is protected.  For the latter we have
-> > kvm->arch.guest_state_protected, which is only set on a fully initialized
-> > VM.
+> > So from the above trace it's clear where it goes south:
 > > 
-> > For VM types with protected guest state, we can actually fix a problem in
-> > the SEV-ES implementation, where ioctls to set registers do not cause an
-> > error even if the VM has been initialized and the guest state encrypted.
-> > Make sure that when using VM types that will become an error.
+> > [  236.318158]   <idle>-0         3..s.. 2928466us : tmigr_handle_remote: group=aecb05cb lvl=0
+> > [  236.326526]   <idle>-0         3d.s.. 2928467us : tmigr_handle_remote_cpu: cpu=0 parent=aecb05cb wakeup=9223372036854775807
+> > [  236.357809]   <idle>-0         3d.s.. 2928469us : tmigr_update_events: child=00000000 group=aecb05cb group_lvl=0 child_active=0 group_active=8 nextevt=3103000000 next_expiry=2934000000 child_evt_expiry=0 child_evtcpu=0
 > > 
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > Message-Id: <20240209183743.22030-7-pbonzini@redhat.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h |  7 ++-
-> >  arch/x86/kvm/x86.c              | 95 +++++++++++++++++++++++++++------
-> >  2 files changed, 84 insertions(+), 18 deletions(-)
+> > [  236.377222]   <idle>-0         0dn... 2928471us : tmigr_cpu_active: cpu=0 parent=aecb05cb wakeup=9223372036854775807
+> > [  236.387765]   <idle>-0         0dn... 2928471us : tmigr_group_set_cpu_active: group=aecb05cb lvl=0 numa=0 active=9 migrator=8 parent=00000000 childmask=1
 > > 
-> > @@ -5552,9 +5561,13 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
-> >  }
-> >  
-> >  
-> > -static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-> > -					  u8 *state, unsigned int size)
-> > +static int kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-> > +					 u8 *state, unsigned int size)
-> >  {
-> > +	if (vcpu->kvm->arch.has_protected_state &&
-> > +	    fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> > +		return -EINVAL;
-> > +
-> >  	/*
-> >  	 * Only copy state for features that are enabled for the guest.  The
-> >  	 * state itself isn't problematic, but setting bits in the header for
-> > @@ -5571,22 +5584,27 @@ static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-> >  			     XFEATURE_MASK_FPSSE;
-> >  
-> >  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> > -		return;
-> > +		return 0;
-> >  
-> >  	fpu_copy_guest_fpstate_to_uabi(&vcpu->arch.guest_fpu, state, size,
-> >  				       supported_xcr0, vcpu->arch.pkru);
-> > +	return 0;
-> >  }
-> >  
-> > -static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
-> > -					 struct kvm_xsave *guest_xsave)
-> > +static int kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
-> > +					struct kvm_xsave *guest_xsave)
-> >  {
-> > -	kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
-> > -				      sizeof(guest_xsave->region));
-> > +	return kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
-> > +					     sizeof(guest_xsave->region));
-> >  }
-> >  
-> >  static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
-> >  					struct kvm_xsave *guest_xsave)
-> >  {
-> > +	if (vcpu->kvm->arch.has_protected_state &&
-> > +	    fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> > +		return -EINVAL;
-> > +
-> >  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> >  		return 0;
+> > [  236.401526]   <idle>-0         0d.... 2928477us : tmigr_update_events: child=00000000 group=aecb05cb group_lvl=0 child_active=0 group_active=8 nextevt=3103000000 next_expiry=2934000000 child_evt_expiry=0 child_evtcpu=0
+> > [  236.420940]   <idle>-0         0d.... 2928478us : tmigr_group_set_cpu_inactive: group=aecb05cb lvl=0 numa=0 active=8 migrator=8 parent=00000000 childmask=1
+> > [  236.434874]   <idle>-0         0d.... 2928478us : tmigr_cpu_idle: cpu=0 parent=aecb05cb nextevt=3103000000 wakeup=9223372036854775807
+> > 
+> > [  236.446896]   <idle>-0         3d.... 2929469us : tmigr_group_set_cpu_inactive: group=aecb05cb lvl=0 numa=0 active=0 migrator=ff parent=00000000 childmask=8
+> > [  236.460916]   <idle>-0         3d.... 2929470us : tmigr_cpu_idle: cpu=3 parent=aecb05cb nextevt=9223372036854775807 wakeup=9223372036854775807
+> > [  236.473721]   <idle>-0         3d.... 2934471us : tmigr_cpu_new_timer_idle: cpu=3 parent=aecb05cb nextevt=9223372036854775807 wakeup=9223372036854775807
+> > 
+> > CPU3 is the last active CPU and goes idle. So it should take care of the
+> > pending events, but it does not.
+> > 
 > 
-> I've been trying to get SNP running on top of these patches and hit and
-> issue with these due to fpstate_set_confidential() being done during
-> svm_vcpu_create(), so when QEMU tries to sync FPU state prior to calling
-> SNP_LAUNCH_FINISH it errors out. I think the same would happen with
-> SEV-ES as well.
+> I notice CPU3 didn't have its own non-deferrable timer queued (local or
+> global), so could the following happen?
 > 
-> Maybe fpstate_set_confidential() should be relocated to SEV_LAUNCH_FINISH
-> site as part of these patches?
+> 	timer_base_try_to_set_idle():
+> 	  __get_next_timer_interrupt():
+> 	    fetch_next_timer_interrupt():
+> 	      // nextevt_local == nextevt_global == basej + NEXT_TIMER_MAX_DELTA
+> 	      // tevt->local == tevt->gloabl = KTIME_MAX
+> 	    timer_use_tmigr():
+> 	      tmigr_cpu_deactivate():
+> 	        __tmigr_cpu_deactivate():
+> 		  // tmc->cpuevt.ignore untouched still == true
+> 		  walk_groups(&tmigr_inactive_up, ...):
+> 		    tmigr_inactive_up():
+> 		      data->remote = true;
 
-Talked to Tom a bit about this and that might not make much sense unless
-we actually want to add some code to sync that FPU state into the VMSA
-prior to encryption/measurement. Otherwise, it might as well be set to
-confidential as soon as vCPU is created.
+this line is 
 
-And if userspace wants to write FPU register state that will not actually
-become part of the guest state, it probably does make sense to return an
-error for new VM types and leave it to userspace to deal with
-special-casing that vs. the other ioctls like SET_REGS/SREGS/etc.
+		data->remote = false;
+	
+in the real code.
 
--Mike
-
+> 		      tmigr_update_events():
+> 		        if (child) { // child is NULL
+> 			  ...
+> 			} else {
+> 			  first_childevt = evt = data->evt;
 > 
-> Also, do you happen to have a pointer to the WIP QEMU patches? Happy to
-> help with posting/testing those since we'll need similar for
-> SEV_INIT2-based SNP patches.
+> 			  if (evt->ignore && !remote)
+> 			    return true; // no remote tick is picked.
+> 			  ...
+> 			}
 > 
-> Thanks,
+> Regards,
+> Boqun
 > 
-> Mike
-> 
+> > This is the next trace entry where CPU0 magically comes back to life.
+> > 
+> > [  236.487393]   <idle>-0         0d.s.. 162001359us : timer_cancel: timer=8c725d84
+> > 
+> > 8ca1836769d758e4fbf5851bb81e181c52193f5d is related, but dos not fully
+> > explain the fail. I haven't yet spotted where this goes into lala land.
 
