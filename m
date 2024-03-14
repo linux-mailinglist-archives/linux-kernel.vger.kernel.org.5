@@ -1,186 +1,192 @@
-Return-Path: <linux-kernel+bounces-102768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5061D87B716
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:24:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8BD987B71A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:27:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D38701F22EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:24:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D504C284BC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63BFB8BF8;
-	Thu, 14 Mar 2024 04:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C49F8F58;
+	Thu, 14 Mar 2024 04:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aVBZhnGD"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IGn8WO7P"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FBF33F6;
-	Thu, 14 Mar 2024 04:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.70
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710390232; cv=fail; b=C0h72g0hRjHEE13O91pWOcXfUJNr/9iG8CtILNv4lLiM+hEY03BICZ7QBpxytt/4i/CZ24fNtX4E7amjzK9N8pvWzhIAneHDacp3qhGBgWybn4dXRMK6GsQQJdHQfH3TmMk6a62pMYHbiopdXN9GglkK75vcR+9y8oH9KhyP2UY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710390232; c=relaxed/simple;
-	bh=UZlkCBdiYd7aTzPsqRA0XF8BErFB0BI3sHBPHli0fUM=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=gCwSz7PT9IYGK6cbNEy70vZbWCzUTXXPc1eiZl0I+rEO3DvxARhHqH6FaeNvN7KY8bgi/CDCf1NK9LyHOQDsUgKoF75bLhKrbVT5HmJFueeKUJRrLvgLcVl7Ld1RAMqqN/pOJPGoWo6GNdvVH3jYkSOrK25pdN7JKKnOq9qiKkI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aVBZhnGD; arc=fail smtp.client-ip=40.107.243.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gI4MQdbeftVcfQkbKEbmZBb5D8mZA79gFdTn7AIUI29MjTdFOqHJXmyZMFd1pJhdvcBnWX4okdZ7AIFd84WOMsEFf8nNDgXC9X4OOLECFDj79WW7YHejuGpdqaA+o+gYJdZKn/T41oJV7nZddJzlHVX6ZwZQ3zerBjks4dpwjKCF8gq+SGecGeHfJF9MssqGTLCHDNiFXSEfTzEOaM2I9davuE2MDMc86zjtQyqd/5PUTcYTFPMFgrhT4wdT1BlcqgE8IKVagorU6UakiafsQX7yILlP3wQWY+hzPkXoSIq0RD132OgyusrISyfmrKhaScduiRyIEDUdV86n2XWAgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y5RkOKx61kXG/hON0foO6mIp7Khyfg/S6IEM4wVNVzI=;
- b=j6eY4HZS0uLPtZlxnNDz7WzH23e2k4zLmikW3iLl9KtzDyN8Ptoe0dLFv6b+Yu+YcZhh4j2JkXwPe6WAAYJl/k0K+jy3xPXDKkJaHF3D6s1L0oDSU4AJnHqQvxgBnNVaKp4WC5mhlhvtcujuWs0t/w9jR3fPjY+AHQMudtvb/mY2xKsxNoJPsbHwSdg77IchOwj0lfBdHFk5mwNClghLbyFnNiZC/yhwl9fEQtvrGlIr8fVN553U4OWYvHCogFXOfwUrNiUH9T8JJ86s401Vvk9KMFeq6cmoKW+d01z0dEOYKVU+efSOGwA0BdUwEAMaa3fnoL/vyiFK9HFoEW/S8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y5RkOKx61kXG/hON0foO6mIp7Khyfg/S6IEM4wVNVzI=;
- b=aVBZhnGD2BD1RGKk2givkYupNhZs0e0nPFmXmjJWEI7cdcvjQZIDgFtrqguJqR6AJslzm983arPTJJ01P9XH8RJI8afx9XQqTWQ+m69ncU6pLoxe4yEfhpR5bPFwWkiB8HhscAr2k5O/qnPwLOOi1nYDWyWiSkwK40etnNWzjZhWM/eRxn5j29XCgPpHs7bAm0XrbVifKhpXHobYyr4bR7/j7VXhMWqE+swdzDtmyewQfGg7QC74L7j+3dmnX3GhHEyHrWKo+BPY4S5mx6r3v5sU4q8+Gou9rOQ1Z9TppTpzTmDJOex7DDrVSnBC6Krg7yNKGwfqCpapHXJzQOAqIQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by MW4PR12MB6683.namprd12.prod.outlook.com (2603:10b6:303:1e2::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Thu, 14 Mar
- 2024 04:23:47 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 04:23:45 +0000
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-2-rrameshbabu@nvidia.com>
- <20240312165346.14ec1941@kernel.org> <87le6lbqsa.fsf@nvidia.com>
- <20240313174107.68ca4ff1@kernel.org> <87h6h9bpm1.fsf@nvidia.com>
- <20240313184017.794a2044@kernel.org>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
- alexandre.torgue@foss.st.com, andrew@lunn.ch, corbet@lwn.net,
- davem@davemloft.net, dtatulea@nvidia.com, edumazet@google.com,
- gal@nvidia.com, hkallweit1@gmail.com, jacob.e.keller@intel.com,
- jiri@resnulli.us, joabreu@synopsys.com, justinstitt@google.com,
- kory.maincent@bootlin.com, leon@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, liuhangbin@gmail.com,
- maxime.chevallier@bootlin.com, netdev@vger.kernel.org, pabeni@redhat.com,
- paul.greenwalt@intel.com, przemyslaw.kitszel@intel.com,
- rdunlap@infradead.org, richardcochran@gmail.com, saeed@kernel.org,
- tariqt@nvidia.com, vadim.fedorenko@linux.dev, vladimir.oltean@nxp.com,
- wojciech.drewek@intel.com
-Subject: Re: [PATCH RFC v2 1/6] ethtool: add interface to read Tx hardware
- timestamping statistics
-Date: Wed, 13 Mar 2024 21:19:26 -0700
-In-reply-to: <20240313184017.794a2044@kernel.org>
-Message-ID: <871q8dh25r.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0204.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::29) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC438BE5
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 04:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710390457; cv=none; b=Kv1caF6zMKqGShz0Q/HYcSkN4N8NMVB3A72RngodZu4B0jPlMebXNYOG/apCaK221YZzMLh01nnfMtXWRmYUMyYx2DFBUjyTE4gg43+abGaBsozeTp4RvH2lnd3Q6z9hkgw10/GAd1V+buxl4neuc/hfa1eJ6ULIvty3yZxs2eQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710390457; c=relaxed/simple;
+	bh=JKNjXwrEAhTcPx0IcTiV0urqEE4apMQabqJ3HGrQyjQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lUNC2bSZIIy0gJzFUnzDCx3qMy5+s2dVlXEbzd6YI1uMj9yG/0t7GMaZH45MSX8+UA1oEu0ABkcoKVEIl0e5baCEejAwh39rMX1ZIpR1Ufdn2u3Zr+InRKuAd6DHzNzo6lCavPSYYnYt6PRq53l3b6+Niczry/b043lDh9qiejs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IGn8WO7P; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso440321a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 21:27:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710390455; x=1710995255; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7cTJjdrBktqdx3YztHJVlXtN8MmvjL+jR5a4blf9J9E=;
+        b=IGn8WO7PAJQCBmbvp4ZHz5ZIcXTGrFH3Fs8Iej3Kc9WsigNQmCL5uxPq8AOgtAeEDD
+         O2MuKnxnVJ/+r147mLyL0jlWCr8wcoFRbnbrvC6K2kAZ+R1MsJ8+mrxoyPoQ3tbvbwfu
+         /hE52UP7shXH4B0aER5RxnCjMg3YGabGDc0FU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710390455; x=1710995255;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7cTJjdrBktqdx3YztHJVlXtN8MmvjL+jR5a4blf9J9E=;
+        b=YqChy7z1ZmMXMiakS6Xjz+KYqHwfWwa8ThFyyfC4Vq3eQ+B1N7WMNzEDmeWH17kmPe
+         KDMyzPProKAFFZuLzeO0SNo0c8jgC2uDOAHJlm41zt7qsjsl3TGxnGyC8pEKTxrE7N0j
+         fj9NH16IMIH/O4FlsUnDCkBFCdfdFjPiicNwfcqNEkkJRIMPzzw/ow5YU47cEVbuuLQW
+         n5DWM8FbNweMK8ricZ5MgedvytHHJm+jkmHVf8gpz//WvEJatQLk8/SbqASyuFMZh5Ag
+         Va7j3bUbrHwPAXhN+Gj/avwXAdXwf02VSmfY9GMG+aOR3KaDqiFZLjduYRNmNSrVT+ia
+         308A==
+X-Forwarded-Encrypted: i=1; AJvYcCUKQuJ53kDOBSu1x560AMV8sFeShUJq2I6X/18Ij1rd/Ipd/uPYAaTtInwfe8NJPIHxRWpS+YVoZymywnJn+VfBm4kOFMEUgfkjMtDN
+X-Gm-Message-State: AOJu0YwQprsRdbHDMVt+sXoTv9p5kFgmNGnIqcZ1n4FDrdIRPS9KUPYJ
+	UIsYR3Utv989FvUhMXCtTKnVEyf/DBrM3vESG8H6moZRIyb5GOitzYu7zBpUZA==
+X-Google-Smtp-Source: AGHT+IE2GvvqiEZuSI45BF1+iK8kMRqs1IBhTbrrI1bwGMdn+msU9RP/ADvzi87321MQZrj02GGl6A==
+X-Received: by 2002:a05:6a21:3990:b0:1a1:49e9:805f with SMTP id ad16-20020a056a21399000b001a149e9805fmr1085141pzc.35.1710390455654;
+        Wed, 13 Mar 2024 21:27:35 -0700 (PDT)
+Received: from chromium.org ([118.149.78.37])
+        by smtp.gmail.com with ESMTPSA id u5-20020a170903124500b001dd98195371sm479200plh.181.2024.03.13.21.27.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 21:27:35 -0700 (PDT)
+From: Simon Glass <sjg@chromium.org>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Simon Glass <sjg@chromium.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Terrell <terrelln@fb.com>,
+	Will Deacon <will@kernel.org>,
+	linux-doc@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	workflows@vger.kernel.org
+Subject: [PATCH v11 0/2] arm64: Add a build target for Flat Image Tree
+Date: Thu, 14 Mar 2024 17:26:57 +1300
+Message-Id: <20240314042659.232142-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|MW4PR12MB6683:EE_
-X-MS-Office365-Filtering-Correlation-Id: d1e52e3d-6a27-4f71-1f87-08dc43de89e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ESFq7YEsgyZlKCsNDNe31K2dxNwVWIPgRP6NnVRv4JVC7KPZ7B2kLJBM75mXztY6aAAit/rJi9A29A/b6sfckUm8U/Ex7jJRlaylIA36ORVLzsXVgelT7+k4ukoqYvQ1DwMRhgiI2AcBU0hThFaz8/yEq0Mlf5oMvwQu4qmemYvtQDWxVpb/2ryOW7Nl1Kw4bADsQjTvYW7YTga6NTzixm+tbBAHl6ognoLF4QQaaAskW+f7/0HJ+WbblAbH7vkAMar1qtozMyG77WrRZ4hdOIUTFPCRnOdo8rWegt3OX/V8+6zTI2eAww8TEDAt058iq+fDZKBS81kvS9GVC3XNEqbjW4Vq3EwnCjG2VxQFOnGC2m8rpD71wW1UkhYsHvXsUd6fIcJHCE0rVOD5ggcJWuDjuz1Xk013Vn5gYA2n5mvJy3ZKnSjiqejtIcI77evLhYYRAi9enT6/KDNRwRt/GOjU4SZSOMpClwtneIntgLu1lLxhX/6EclKls57bNeXyREX3rLJrxfWGk3i+g4lYe6k2Pk1u/ybrRC18i4zD2uyD5qRPvz0h5wOERsNFRR6eAGDpbW6Y8MROkRWsJ4fDIfAJbWF8NN8T8rjZRqE7lNVhjqwLpDOhL4IYGhZQ8aZz3FSYQU97StuCVcTm5QgYUwDsR//F/IMFjBqu2GKDVgs=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?CfkUmmHt2Qh1taLAERrcn3XKI06LHlEm1qKZXMLpzZQoVBIYiw5lMIGxWtFO?=
- =?us-ascii?Q?sQshjiqY/UpE9iunJpTrZALEi46r1vchE12Z5CLS9Jgtr6PIMI9OZuliRSg/?=
- =?us-ascii?Q?ZiS7cegq9zeg/kKnRUJjpjexwz5OYIeqSo3EZA7jcNFkxEFI9+BXkv2XnwRl?=
- =?us-ascii?Q?H4Z/46vPb7uKN60AC2/Cx/7kB1VLe1Yy4Rl0YlGgirde5/5jtaJnNmT+5QLD?=
- =?us-ascii?Q?CiFd+OjCuvWzmcNvPMCV1KWHseU1xmCKyl5j+azM5cFE3mpmlQ8X2wmBMARc?=
- =?us-ascii?Q?ImLNkt8dNn2r04yKAooydnj+dAg2P04V4qUWq8Aq01Ab6D/zugKJ2e/Rqecr?=
- =?us-ascii?Q?3l1Ht74/lH2tyDq+wDf8MAa7f/Hn5AJdbmhVsLLHzWhmsAO/41kKHOJFXIr3?=
- =?us-ascii?Q?CwbXVJ25+aKCKj8FH6yByEMvtp8z1SqZE6qXp2vXZ8PrwjxW6lgQ1IpkENf9?=
- =?us-ascii?Q?fmMjaR7QshrKficWVMiMX/VdIBlZ56oztX20YPW3DTSWDjsPYBxt2mmebyTf?=
- =?us-ascii?Q?InNAiKZe31OZRx3AwQU3XZeZz0QT2ern46z4sPL+x6SPJSJY6Rp0zBkdgp3e?=
- =?us-ascii?Q?lVfdyXNSChrch1K/ja6/X057pPoZ6X00riiPIC19cIhJPZ7ZCQJOhUhwAyRX?=
- =?us-ascii?Q?0/R1pmIkOrnJXG9+f6H/KZJ0OeThCEjDdB1IGWxpgd/yarPXYyeHtmM4Xkz4?=
- =?us-ascii?Q?1R8MAm6mHvqVSwZnDSr6z50DFzXkoObg4DkXRY2LrMS1ZrjNsb6Xiz5eK1z2?=
- =?us-ascii?Q?2jVik4Q59PZThedXbgfRN9pIvrtlyYr+4K+nrWB+C0yp/uUp2RmQDb26mtX3?=
- =?us-ascii?Q?FS2l8hzqDArirUwO/VO1HzFnnJ39NjDJnSTQ9yDhKEX1DSvqI2NdohJw72gG?=
- =?us-ascii?Q?mvZtQcuOh0W/W9X4v5I1uzUCyMjJE5qntvWEfrMQg+KNNiOjqY3sCfID8+4T?=
- =?us-ascii?Q?IMOO45L3miO/Wy97dHkJs0+wg9wT7i18210tLYcJt7BfUcjBDA0/L142sWgL?=
- =?us-ascii?Q?DPy/sfZGfihx7R6eu3AkApgD7nRLR4KJfJI7BpiwOgQLZqwPdb7/KyoALFb3?=
- =?us-ascii?Q?WNCTK8xAc4So95VwWZ6HbpFJfx9UWHd/57/KMXa5KfyRT5BE6N8jnwTKpQvu?=
- =?us-ascii?Q?up18zZFfxS2F4Z00muxcqLVOXffbjWox5/aIGHZ/X5706xgUFS/Pe4Acr/PX?=
- =?us-ascii?Q?6BUxQNFHDuxDEhNoWwvrMayH23TWZa3XpMrvrJUIyuaFKpFN266v8M/J02Ag?=
- =?us-ascii?Q?nQ4LPYxxrRnEvB0Um2eigJG1eyqUCdvq5bGSaI3ekcxFu9dHphoA7Vo+HQ7g?=
- =?us-ascii?Q?igrvk4L+jljidXDEPkLJPS3ttUwbDGVWJvTowIohCCQdiazROEl5LQG2yJcK?=
- =?us-ascii?Q?c+FTdx75fF1+xEVN4nLihk8D94Zee03uuXUGgyXUUByGPDt574u4RT2Gs+0h?=
- =?us-ascii?Q?bzHwRGS/1Z2xsvhMReCjGYU27cPHSj8FbKTkBO0HLvEYccOeMq3JWcFyiw+V?=
- =?us-ascii?Q?SmSsQX5nWBXZRQoP2r7JGIJ8xliDVA9YNts7lV7jf68sP/YSF6fR71RJIn5v?=
- =?us-ascii?Q?XHW5dN5eU/f8Tnd9I2ANKsVSaDq+xjrW57397cdT?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1e52e3d-6a27-4f71-1f87-08dc43de89e1
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 04:23:45.7166
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wNeKAsq9YtS9g72BVlkWtJG3QdDw1bUwJGZNYgmd5i1SjpKaDhVMqt81TfUO8/BCLupFM8BcpfMiB9DRGKBvkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6683
+Content-Transfer-Encoding: 8bit
 
+Flat Image Tree (FIT) is a widely used file format for packaging a
+kernel and associated devicetree files[1]. It is not specific to any
+one bootloader, as it is supported by U-Boot, coreboot, Linuxboot,
+Tianocore and Barebox.
 
-On Wed, 13 Mar, 2024 18:40:17 -0700 Jakub Kicinski <kuba@kernel.org> wrote:
-> On Wed, 13 Mar 2024 17:50:39 -0700 Rahul Rameshbabu wrote:
->> > Should we give some guidance to drivers which "ignore" time stamping
->> > requests if they used up all the "slots"? Even if just temporary until
->> > they are fixed? Maybe we can add after all the fields something like:
->> >
->> >   For drivers which ignore further timestamping requests when there are
->> >   too many in flight, the ignored requests are currently not counted by
->> >   any of the statistics.  
->> 
->> I was actually thinking it would be better to merge them into the error
->> counter temporarily. Reason being is that in the case Intel notices that
->> their slots are full, they just drop traffic from my understanding
->> today. If the error counters increment in that situation, it helps with
->> the debug to a degree. EBUSY is an error in general.
->
-> That works, too, let's recommend it (FWIW no preference whether
-> in the entry for @err or somewhere separately in the kdoc).
+This series adds support for building a FIT as part of the kernel
+build. This makes it easy to try out the kernel - just load the FIT
+onto your tftp server and it will run automatically on any supported
+arm64 board.
 
-  /**
-   * struct ethtool_ts_stats - HW timestamping statistics
-   * @tx_stats: struct group for TX HW timestamping
-   *	@pkts: Number of packets successfully timestamped by the hardware.
-   *	@lost: Number of hardware timestamping requests where the timestamping
-   *		information from the hardware never arrived for submission with
-   *		the skb.
-   *	@err: Number of arbitrary timestamp generation error events that the
-   *		hardware encountered, exclusive of @lost statistics. Cases such
-   *		as resource exhaustion, unavailability, firmware errors, and
-   *		detected illogical timestamp values not submitted with the skb
-   *		are inclusive to this counter.
-   */
+The script is written in Python, since it is easy to build a FIT using
+the Python libfdt bindings. For now, no attempt is made to compress
+files in parallel, so building the 900-odd files takes a while, about
+6 seconds with my testing.
 
-Here is my current draft for the error counter documentation.
+The series also includes a minor clean-up patch.
 
---
-Thanks,
+[1] https://github.com/open-source-firmware/flat-image-tree
 
-Rahul Rameshbabu
+Changes in v11:
+- Use dtbslist file in image.fit rule
+- Update cmd_fit rule as per Masahiro
+- Don't mention ignoring files without a .dtb prefix
+- Use argparse fromfile_prefix_chars feature
+- Add a -v option and use it for output (with make V=1)
+- rename srcdir to dtbs
+- Use -o for the output file instead of -f
+
+Changes in v10:
+- Make use of dtbs-list file
+- Mention dtbs-list and FIT_COMPRESSION
+- Update copyright year
+- Update cover letter to take account of an applied patch
+
+Changes in v9:
+- Move the compression control into Makefile.lib
+
+Changes in v8:
+- Drop compatible string in FDT node
+- Correct sorting of MAINTAINERS to before ARM64 PORT
+- Turn compress part of the make_fit.py comment in to a sentence
+- Add two blank lines before parse_args() and setup_fit()
+- Use 'image.fit: dtbs' instead of BUILD_DTBS var
+- Use '$(<D)/dts' instead of '$(dir $<)dts'
+- Add 'mkimage' details Documentation/process/changes.rst
+- Allow changing the compression used
+- Tweak cover letter since there is only one clean-up patch
+
+Changes in v7:
+- Drop the kbuild tag
+- Add Image as a dependency of image.fit
+- Drop kbuild tag
+- Add dependency on dtbs
+- Drop unnecessary path separator for dtbs
+- Rebase to -next
+
+Changes in v6:
+- Drop the unwanted .gz suffix
+
+Changes in v5:
+- Drop patch previously applied
+- Correct compression rule which was broken in v4
+
+Changes in v4:
+- Use single quotes for UIMAGE_NAME
+
+Changes in v3:
+- Drop temporary file image.itk
+- Drop patch 'Use double quotes for image name'
+- Drop double quotes in use of UIMAGE_NAME
+- Drop unnecessary CONFIG_EFI_ZBOOT condition for help
+- Avoid hard-coding "arm64" for the DT architecture
+
+Changes in v2:
+- Drop patch previously applied
+- Add .gitignore file
+- Move fit rule to Makefile.lib using an intermediate file
+- Drop dependency on CONFIG_EFI_ZBOOT
+- Pick up .dtb files separately from the kernel
+- Correct pylint too-many-args warning for write_kernel()
+- Include the kernel image in the file count
+- Add a pointer to the FIT spec and mention of its wide industry usage
+- Mention the kernel version in the FIT description
+
+Simon Glass (2):
+  arm64: Add BOOT_TARGETS variable
+  arm64: boot: Support Flat Image Tree
+
+ Documentation/process/changes.rst |   9 +
+ MAINTAINERS                       |   7 +
+ arch/arm64/Makefile               |  11 +-
+ arch/arm64/boot/.gitignore        |   1 +
+ arch/arm64/boot/Makefile          |   6 +-
+ scripts/Makefile.lib              |  15 ++
+ scripts/make_fit.py               | 290 ++++++++++++++++++++++++++++++
+ 7 files changed, 336 insertions(+), 3 deletions(-)
+ create mode 100755 scripts/make_fit.py
+
+-- 
+2.34.1
+
 
