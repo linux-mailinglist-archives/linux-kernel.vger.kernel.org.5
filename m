@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-103651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840A087C279
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:20:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D886287C27A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:20:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B401F2288E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:20:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A6162856A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603C074C19;
-	Thu, 14 Mar 2024 18:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECDE74C1A;
+	Thu, 14 Mar 2024 18:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="onZjC/FC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kFcYiUhn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9571974E0C;
-	Thu, 14 Mar 2024 18:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8306774C14;
+	Thu, 14 Mar 2024 18:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710440418; cv=none; b=k59RTjr3TKd2AEBzUnws/yiWTfgctgV0PoN4iiU7K7EiExYi0WbM0UWNkAnWtmZ+2OjkUK3LVtDjP4A1htiK7HNEMWqoYWrxNReWTIPA9dRVkE2CIsVIUBaHU3deW9t7T3xggMfdYwJzaCt5H/w3hsIjLBk+xudYrRJb19ZHXEw=
+	t=1710440427; cv=none; b=Ey3BKorQD8esYDswP466AlRNWqbvJky9I3EpOTji7rVyqr5zJNYcjrnlZmjMNrUY2sU2TXDHlCuHDKzTRFzzIfARe86jeiPiSeCJK1b3B92OIT62dzvRaq2o2uQsn60tqNTFwf3TIQWEPh8NYqz5qW3jxNOKS1NiY6lPfuwRuV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710440418; c=relaxed/simple;
-	bh=KDM7jL/NItsAlRX9ILapDaR20pwCqQ7VGHqbXb7CrIY=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=NskU9P16tcEJ026iOwePG5diVlQGgaw5e3Cm8YqtHKmUiZOssWx+6E7Z7ODt0gtFEsQfJmLruNlPXfnFIrweC4YijZbocijYbtA8Ys2mSaDDyV6a5AmFzKp1JDQTJSdqkTRrhl+CugX36TgjPnLvqaGUoqtHyleT98t1BxGL02o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=onZjC/FC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 77873C433C7;
-	Thu, 14 Mar 2024 18:20:18 +0000 (UTC)
+	s=arc-20240116; t=1710440427; c=relaxed/simple;
+	bh=fwfoBdSO8malZWXE3votyGS7Cq/TkMRqxo+zv7Ju66Y=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=oLdtW6C8RgUyAzNBiQuoi8x1+/ddySzKaxUg/EC2T5WeByfB6fXcvfgicjiOaV9Qnh4+dDLpWWiyP43uV9WYewW9SwChg+qPCm6c0FK2nviGJou6X/lzAEpipxFwesCbM0Ynb3/SoAO28eHJxvPvcEfnipL2bzaAK4+RSd371n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kFcYiUhn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D184C43390;
+	Thu, 14 Mar 2024 18:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710440418;
-	bh=KDM7jL/NItsAlRX9ILapDaR20pwCqQ7VGHqbXb7CrIY=;
+	s=k20201202; t=1710440427;
+	bh=fwfoBdSO8malZWXE3votyGS7Cq/TkMRqxo+zv7Ju66Y=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=onZjC/FCCiWlMBtA9NaO7JvjzT5DOMCEEFdy9qPUiKxMsCQP4pu/14b5Fr1q4XsCs
-	 3jbVoG/iExX2CjHzEb47rTr3g7hOdNENhfwaXIxiJok87+u3eao4qxy8GrWDg72BuE
-	 AfIuxS1fq/2UXlqlYD0GLk7SUC6U0AguuMPaV75THfTH4H7KD8atFUa6GcBI1XVs2S
-	 yXcnUCf6sc0sWv+U2kfsu/mSvRqMQjT8TOkW7r8fdE29kn/Z2r4KG5kYMVXPvxZeCg
-	 S6TwoaYKn5UAmWvLsW9VCu/2GWjJvBxZeA0cArVtnm3f5Ie8YbQUXEZu7c/tW1FluE
-	 WkYGc0mtOvHVA==
+	b=kFcYiUhnfLLmT+vHR+FCMc8A+2P8GhryVhdAU5yDP/g9TWXG8IRD79jEvWTEuuZ/7
+	 7Cj/McJa9Am0K4nvoilMfvC8eouAPFyjXd6DQHVCaO9AyFuLQZRd+m8+ZMa3wEGbVC
+	 AvaoY7hQd/47dKI0/mXCRIj+tDBRWKUik3XwD6bbTZ8O/JGgZXj4OeO8NqU9j9tcfu
+	 LB3zMM3PC35e7mwOMEWtr2y3F0bVmKmSmK2Z03bkL2WtPIVXo70hpGYrGRe63tjmEa
+	 YUgq28cBUJeo7Q12vOSANvhc4GTfOtKVUzT5uszf0TEJlqJYsqxuUNXBSTHoohRddR
+	 VSZ60K4VUPI1Q==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 69622D95055;
-	Thu, 14 Mar 2024 18:20:18 +0000 (UTC)
-Subject: Re: [GIT PULL] platform-drivers-x86 for v6.9-1
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 55FD3D95055;
+	Thu, 14 Mar 2024 18:20:27 +0000 (UTC)
+Subject: Re: [GIT PULL] sound updates for 6.9-rc1
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <4844b67c9b1feca386eb739a4592bdbf.=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>>
-References: <4844b67c9b1feca386eb739a4592bdbf.=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>>
-X-PR-Tracked-List-Id: <platform-driver-x86.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4844b67c9b1feca386eb739a4592bdbf.=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.9-1
-X-PR-Tracked-Commit-Id: 16f8091b49175f327120cdbbdde135d38a853ae1
+In-Reply-To: <874jd9m69o.wl-tiwai@suse.de>
+References: <874jd9m69o.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-sound.vger.kernel.org>
+X-PR-Tracked-Message-Id: <874jd9m69o.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.9-rc1
+X-PR-Tracked-Commit-Id: a39d51ff1f52cd0b6fe7d379ac93bd8b4237d1b7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 66fd6d0bd7572fcb7859ebd4dbfb133881e1cd66
-Message-Id: <171044041842.24196.11195751085454538927.pr-tracker-bot@kernel.org>
-Date: Thu, 14 Mar 2024 18:20:18 +0000
-To: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, PDx86 <platform-driver-x86@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy Shevchenko <andy@kernel.org>
+X-PR-Merge-Commit-Id: fe46a7dd189e25604716c03576d05ac8a5209743
+Message-Id: <171044042734.24196.6958519905217855170.pr-tracker-bot@kernel.org>
+Date: Thu, 14 Mar 2024 18:20:27 +0000
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Thu, 14 Mar 2024 12:42:27 +0200:
+The pull request you sent on Thu, 14 Mar 2024 11:56:03 +0100:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.9-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.9-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/66fd6d0bd7572fcb7859ebd4dbfb133881e1cd66
+https://git.kernel.org/torvalds/c/fe46a7dd189e25604716c03576d05ac8a5209743
 
 Thank you!
 
