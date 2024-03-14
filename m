@@ -1,196 +1,135 @@
-Return-Path: <linux-kernel+bounces-103185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8204D87BC0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:40:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE0D87BC0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 413D4287E16
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:40:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F003B23F7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244CC6F07B;
-	Thu, 14 Mar 2024 11:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E436EB73;
+	Thu, 14 Mar 2024 11:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fMMraK/A"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="im0sBbs5"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB246CDB5;
-	Thu, 14 Mar 2024 11:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35BC46DCF5
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710416385; cv=none; b=MoV15FVUZahH+KM/hZ94KIEm7WjNcNTqTZtbEgXjv7A2OJ7eC/UM4LPVbGT4fTK0dUwLEh/8BWHDKBXjQbfU+MSkTzuWbHrSTAb0FtYq+xxhw3JE+G8RB+udESEGUE+BJqrpNS9rADL4yWgKovhN3GBHo1JyVc2kRR1dih24iC0=
+	t=1710416432; cv=none; b=L3JD6BO65eIAJ0QB7PYhIn5fML93qcql1rnBsOZSHe7o8K96loG6CGgZ5HzkGBqOGPW4/yR8HSLw/DNFD+8sGlm56GQWmNGAdgZ60iENkWf/Nx32sjvniMjINDWt3nhk2hSX9r78ui1hrnsAxFkjHpnCzVKz0b9rZSUrfAGgpz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710416385; c=relaxed/simple;
-	bh=ETF4crk2ZZn+GTdZSouP+pIboaWYhShSjz0BQ9XdVLU=;
+	s=arc-20240116; t=1710416432; c=relaxed/simple;
+	bh=gKTcjdFrr1i6/462Q9B2PQQrObiqbNl2aiA7L8ANI+o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aelnob23XcVokIZUMkVd76xKRrnTEqu0JV5w02y6mnce+Vjk9Jd3BpwaW0rx0wKu1IIbR2vMFEMHNt9YCo2hENDfTVQl2g+fZzCZIzboh1MUzogShCjAk6TMtARa+DdjSQJ7Drvy6e4sg4fupDcG1JiuSBxfH1wy9L6W/MVyg3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fMMraK/A; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e6ccd69ebcso380049b3a.0;
-        Thu, 14 Mar 2024 04:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710416383; x=1711021183; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QfQgWYQyYj89ysjrRhexn30LYxihC3kxhP3AI5S3jLo=;
-        b=fMMraK/AkYSmmwVzgEFN+40yGYq/SPlhRsa/lAW0JQ1lWD74NWV6nA+fhcFU9Gdsu8
-         IXqgTFkjgLilKdYezeH8BI/ndaPrhoHsC4MbkylKvysqrRp56O7iw5VAuN6iA1n/ibeg
-         83yK7etj9/txu94lUYsjc0pcIYjnXuQVxFv6i6wRlNJOUfdzxpGsH9pNCORtNkZu4dvC
-         5nkXr1X8Y45kExvzaKQzUHH0kv4E/3TFIj2avpRT1xZRnGZzjcK0y9b3ff50+mOMga6Y
-         eQA5Aui12TR8FeK+Zr3LfscUs+nRrJnOyDVrWHZmy1PGeHNKEgL2iFlADosKG0PtKwM5
-         Jmpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710416383; x=1711021183;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QfQgWYQyYj89ysjrRhexn30LYxihC3kxhP3AI5S3jLo=;
-        b=A9ZB7eqjfgFuYsvBpBXk3i1bkTVjjiz4CMLEfZDW6uWbusKSXokHNJdkSyuEBb5iW6
-         Lbam3zVIYqSI+Hg5KlIHsotQhLgUYIYuE1JCBXB7yyR1itcY6MSvPTtuaYp6kTPpGuzb
-         lcCxCte4XOGgRxTEGnjePfJD+Atw52mGpJ8KQZl48Yvgl+MHMU5UeWMdwf/MOYJqTLri
-         DqTH6i5VqxxA6ThBysqyvsn8m7DhBOOv1plOcQUmuqdYYhxnHd0ub94RpnlswnWB5+MX
-         Pz4n+sDxic2ao12DxQu4BurN5KtTfMADZNrb+bap8WRQA8elUJWPr1wabGPdTog4wjt5
-         r7gw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4sDi4UBTXNKjiHWuWoeNgy0QnCvWAGuXXv5fiuvlhSpQAe/WD12dp/25uNArV4ldEd7cy42BgDHqkn5xuwXxefx+G7tN+YwR4b9svzKO0N1U83WgkNgUcx4u0ofp2R6Xkd95OCcmqs1PwtcOAOl/Q92mDmR/WOLHyRW80rIlwYw==
-X-Gm-Message-State: AOJu0YzobbrHguGysuXTpNUJvWGf/76KtQXG+LK6XV6pINF4p42drIMP
-	+x4mNHsbhnpsIXRBiWC06+ZtBi56dIUtsSMgNZADzmBHX8/4KLqA
-X-Google-Smtp-Source: AGHT+IHLaKlI2bpVtlmtYb2ia4Zt/JCYONAdDifdpN67PuRuSJBTUazfb6ou5fCqmlhZHkUJgKP0pg==
-X-Received: by 2002:a05:6a21:18e:b0:1a1:6f4f:25e2 with SMTP id le14-20020a056a21018e00b001a16f4f25e2mr1651524pzb.49.1710416383169;
-        Thu, 14 Mar 2024 04:39:43 -0700 (PDT)
-Received: from libra05 ([143.248.188.128])
-        by smtp.gmail.com with ESMTPSA id mr20-20020a17090b239400b0029b9cb71e22sm679670pjb.27.2024.03.14.04.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 04:39:42 -0700 (PDT)
-Date: Thu, 14 Mar 2024 20:39:38 +0900
-From: Yewon Choi <woni9911@gmail.com>
-To: Allison Henderson <allison.henderson@oracle.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-	"Dae R. Jeong" <threeearcat@gmail.com>
-Subject: Re: net/rds: Improper memory ordering semantic in release_in_xmit()
-Message-ID: <ZfLh+va60YU2U86q@libra05>
-References: <Zehp16cKYeGWknJs@libra05>
- <86d88699e8f22ebe0d45ffb5229fb73d78c5aae9.camel@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dSg9xpoieOXCHClFNOYjM3kQw+yX4qqmmL3EVYH0bb/wLKdEYtBP/M8HmgaOO9sgyWe/PkW1TIIuGhMNEDuE/YzdX1dfvJW8fAWgNWWm2vJ2/CSoEiIC9FA45JtrejAuvGjuStUCnWFIAJLeZwB6SbX7hqcgL0pPFNKOFrg8jqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=im0sBbs5; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710416430; x=1741952430;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gKTcjdFrr1i6/462Q9B2PQQrObiqbNl2aiA7L8ANI+o=;
+  b=im0sBbs5qfmxawwbed+0O8MRDZXIfnct0GG5g+62oj5hzBMt1FGsVp9Z
+   VYT0FaeNIcZ2uQuXB+Z//bWfwoZ6S5fqEX3G6eEfgAYC4CNhgTT0qoWgl
+   Naz8gysNiE+WNEY2hjRxAIPJk/R5tQL0RZqGnpU8J5NfLnQx31d7/1LmE
+   /HAuO2vbKM8WPurOSGz/knkvOWODEFbVkpPvha95LUG0KIS2/ON6CHyG4
+   kv1qMUQBAlPw0P0zIks7+0tjC0zpj8/9RCvHuWXKBQdJTzc6q+GXrByeW
+   mvxvcBcfooZ2jQUreA868ntUY9jd24I+f9PnoyxGnQoyK4RiKdfZgQp0h
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="9006089"
+X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
+   d="scan'208";a="9006089"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 04:40:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
+   d="scan'208";a="43298849"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 14 Mar 2024 04:40:27 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rkjRg-000DNn-0P;
+	Thu, 14 Mar 2024 11:40:24 +0000
+Date: Thu, 14 Mar 2024 19:40:04 +0800
+From: kernel test robot <lkp@intel.com>
+To: Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org,
+	jhubbard@nvidia.com, vbabka@suse.cz, mgorman@suse.de,
+	linux-mm@kvack.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	dave@stgolabs.net, p.raghav@samsung.com, da.gomez@samsung.com,
+	mcgrof@kernel.org
+Subject: Re: [PATCH 2/3] mm/compaction: add and use
+ for_each_populated_zone_pgdat() helper
+Message-ID: <202403141931.2XJWI4fa-lkp@intel.com>
+References: <20240314005436.2962962-3-mcgrof@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <86d88699e8f22ebe0d45ffb5229fb73d78c5aae9.camel@oracle.com>
+In-Reply-To: <20240314005436.2962962-3-mcgrof@kernel.org>
 
-On Thu, Mar 07, 2024 at 08:13:50PM +0000, Allison Henderson wrote:
-> On Wed, 2024-03-06 at 22:04 +0900, Yewon Choi wrote:
-> > Hello,
-> > 
-> > It seems to be that clear_bit() in release_in_xmit() doesn't have
-> > release semantic while it works as a bit lock in rds_send_xmit().
-> > Since acquire/release_in_xmit() are used in rds_send_xmit() for the 
-> > serialization between callers of rds_send_xmit(), they should imply 
-> > acquire/release semantics like other locks.
-> > 
-> > Although smp_mb__after_atomic() is placed after clear_bit(), it
-> > cannot
-> > prevent that instructions before clear_bit() (in critical section)
-> > are
-> > reordered after clear_bit().
-> > As a result, mutual exclusion may not be guaranteed in specific
-> > HW architectures like Arm.
-> > 
-> > We tested that this locking implementation doesn't guarantee the
-> > atomicity of
-> > critical section in Arm server. Testing was done with Arm Neoverse N1
-> > cores,
-> > and the testing code was generated by litmus testing tool (klitmus7).
-> > 
-> > Initial condition:
-> > 
-> > l = x = y = r0 = r1 = 0
-> > 
-> > Thread 0:
-> > 
-> > if (test_and_set_bit(0, l) == 0) {
-> >     WRITE_ONCE(*x, 1);
-> >     WRITE_ONCE(*y, 1);
-> >     clear_bit(0, l);
-> >     smp_mb__after_atomic();
-> > }
-> > 
-> > Thread 1:
-> > 
-> > if (test_and_set_bit(0, l) == 0) {
-> >     r0 = READ_ONCE(*x);
-> >     r1 = READ_ONCE(*y);
-> >     clear_bit(0, l);
-> >     smp_mb__after_atomic();
-> > }
-> > 
-> > If the implementation is correct, the value of r0 and r1 should show
-> > all-or-nothing behavior (both 0 or 1). However, below test result
-> > shows 
-> > that atomicity violation is very rare, but exists:
-> > 
-> > Histogram (4 states)
-> > 9673811 :>1:r0=0; 1:r1=0;
-> > 5647    :>1:r0=1; 1:r1=0; // Violate atomicity
-> > 9605    :>1:r0=0; 1:r1=1; // Violate atomicity
-> > 6310937 :>1:r0=1; 1:r1=1;
-> > 
-> > So, we suggest introducing release semantic using clear_bit_unlock()
-> > instead of clear_bit():
-> > 
-> > diff --git a/net/rds/send.c b/net/rds/send.c
-> > index 5e57a1581dc6..65b1bb06ca71 100644
-> > --- a/net/rds/send.c
-> > +++ b/net/rds/send.c
-> > @@ -108,7 +108,7 @@ static int acquire_in_xmit(struct rds_conn_path
-> > *cp)
-> >  
-> >  static void release_in_xmit(struct rds_conn_path *cp)
-> >  {
-> > -       clear_bit(RDS_IN_XMIT, &cp->cp_flags);
-> > +       clear_bit_unlock(RDS_IN_XMIT, &cp->cp_flags);
-> >         smp_mb__after_atomic();
-> >         /*
-> >          * We don't use wait_on_bit()/wake_up_bit() because our
-> > waking is in a
-> > 
-> > Could you check this please? If needed, we will send a patch.
-> 
-> Hi Yewon,
-> 
-> Thank you for finding this.  I had a look at the code you had
-> mentioned, and while I don't see any use cases of release_in_xmit()
-> that might result in an out of order read, I do think that the proposed
-> change is a good clean up.  If you choose to submit a patch, please
-> remove the proceeding "smp_mb__after_atomic" line as well, as it would
-> no longer be needed.  Also, please update acquire_in_xmit() to use the
-> corresponding test_and_set_bit_lock() call.  Thank you!
->
+Hi Luis,
 
-Thank you for examining this and giving suggestions!
-I sent a patch with changes including your suggestions. If it has
-problems, I will correct them as soon as possible.
+kernel test robot noticed the following build warnings:
 
-Sincerely,
-Yewon Choi
+[auto build test WARNING on akpm-mm/mm-everything]
 
-> Allison
-> 
-> 
-> > 
-> > Best Regards,
-> > Yewon Choi
-> 
+url:    https://github.com/intel-lab-lkp/linux/commits/Luis-Chamberlain/mm-show_mem-simplify-ifdef-on-si_meminfo_node/20240314-085917
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20240314005436.2962962-3-mcgrof%40kernel.org
+patch subject: [PATCH 2/3] mm/compaction: add and use for_each_populated_zone_pgdat() helper
+config: openrisc-defconfig (https://download.01.org/0day-ci/archive/20240314/202403141931.2XJWI4fa-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240314/202403141931.2XJWI4fa-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403141931.2XJWI4fa-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   mm/compaction.c: In function 'fragmentation_score_node':
+>> mm/compaction.c:2252:13: warning: unused variable 'zoneid' [-Wunused-variable]
+    2252 |         int zoneid;
+         |             ^~~~~~
+
+
+vim +/zoneid +2252 mm/compaction.c
+
+  2240	
+  2241	/*
+  2242	 * The per-node proactive (background) compaction process is started by its
+  2243	 * corresponding kcompactd thread when the node's fragmentation score
+  2244	 * exceeds the high threshold. The compaction process remains active till
+  2245	 * the node's score falls below the low threshold, or one of the back-off
+  2246	 * conditions is met.
+  2247	 */
+  2248	static unsigned int fragmentation_score_node(pg_data_t *pgdat)
+  2249	{
+  2250		unsigned int score = 0;
+  2251		struct zone *zone;
+> 2252		int zoneid;
+  2253	
+  2254		for_each_populated_zone_pgdat(zone, pgdat)
+  2255			score += fragmentation_score_zone_weighted(zone);
+  2256	
+  2257		return score;
+  2258	}
+  2259	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
