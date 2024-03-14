@@ -1,101 +1,179 @@
-Return-Path: <linux-kernel+bounces-102776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EB887B72A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:46:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE3387B72E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:59:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E028C1F22AC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:46:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31DB1282A61
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 04:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B447F79EE;
-	Thu, 14 Mar 2024 04:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3533E8C07;
+	Thu, 14 Mar 2024 04:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=post.com header.i=kolusion@post.com header.b="a0Ii887j"
-Received: from mout.gmx.com (mout.gmx.com [74.208.4.200])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="d09Hvd4e"
+Received: from TY3P286CU002.outbound.protection.outlook.com (mail-japaneastazolkn19011003.outbound.protection.outlook.com [52.103.43.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142E82F44
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 04:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.200
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710391610; cv=none; b=ac8sEs6MhKvPx5Eg8ymAlLKqgLoAv1xbfYyel3MRBBt9QkA42FCinmW8O+fK5wmWaAuwYS3xVH/50ddqRZCI/51hq+BDpbhJQ6IJ8+k2Zx4a4h5mm6Z5tZRbr7UEvU7eJSWwQgqcqklf5jiT1/QZ0CCj9zC6iLusICRIqydG40k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710391610; c=relaxed/simple;
-	bh=i8aewbkj3bgU91cI4jY3s/QIOYe6q12c7yJ3VEQVYAM=;
-	h=MIME-Version:Message-ID:From:To:Subject:Content-Type:Date; b=muT0I3Ov8ujmAJUAWvNAqx/w9MP5C3p2WVUtgtxDicL7RCs3WyA0kGyfLKDo6dtaPnG2sGynMrw8mP7q+YZONzkSI885YZTs+pFYTXx29kMIjdx6uJjG+05fZ4L4RIq4/VLwIEKDyut+RiOajg4aCyHiaCMbVr8c61reym671aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=post.com; spf=pass smtp.mailfrom=post.com; dkim=pass (2048-bit key) header.d=post.com header.i=kolusion@post.com header.b=a0Ii887j; arc=none smtp.client-ip=74.208.4.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=post.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=post.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=post.com;
-	s=s1089575; t=1710391608; x=1710996408; i=kolusion@post.com;
-	bh=i8aewbkj3bgU91cI4jY3s/QIOYe6q12c7yJ3VEQVYAM=;
-	h=X-UI-Sender-Class:From:To:Subject:Date;
-	b=a0Ii887ji/3yoZPJFU2bu+M4BWLrBP9RThJ1G3b3+xLLQNi72C8ubfB60Y5ZHq25
-	 pYvUX7Z7FSTtWHqbOn8pwWye/QFht0EvKHaD6qBiwbX2o5vigB5rHliL0ZlcpFEbx
-	 lgRpqa6K9fG3/pM4NLPEBmQVYgMedBdv8BO/dJmwbsuSeS9n4lLzLnMIgjme7stxJ
-	 Z0O8DdH5rYPAmMFaRgwnvVxGLMJHP2wng6GyGwGF1yxOhYbmqADFoXSLQFfdjywyT
-	 UCWmoUuz6Ub82+F38wN2rWjcNhplxfxYwCTtTURj/mH4hJgTalPQ6A3CUmuKoSBu1
-	 fvWzhRiHFfsYxR2Zsw==
-X-UI-Sender-Class: f2cb72be-343f-493d-8ec3-b1efb8d6185a
-Received: from [10.237.67.4] ([10.237.67.4]) by msvc-mesg-gmxus001 (via
- HTTP); Thu, 14 Mar 2024 05:46:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB4E3234;
+	Thu, 14 Mar 2024 04:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.43.3
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710392361; cv=fail; b=M1yxrXe48g2LSCgLVQRUH1yo6saE5yoJiCTqgQtNzjkfrU5NKEMgxgbonpx2AGdZk9qONshS6ab4m5kZEDyvarZydL7FqOjRqBQqwuIyjEgXpIAb7BjFdkvKb20vRHrbz/Ttdfwuarp0mWpSvlJ5YTAmVdedVa3tiKEtkcp7Pc4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710392361; c=relaxed/simple;
+	bh=dqo8rpc+eJlypZjwwroscuPZllnWWY8eqDT/X2uD/RE=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=o33J9K8dv9oETuLZa01UxBrcYrGm3aqaGOlHr75xKF+X1f/iZets3tj9YTgUpcWgrLvRVMWhPC6dPtnf+nnf2y1f6tBCDQDLcsm/vqOHdkuOfzUFEa/fjIB2X50rsduoeHAatNDCIb17+XhUhqIaP4NTLXnnWAqxoVTtpCsFLHA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=d09Hvd4e; arc=fail smtp.client-ip=52.103.43.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kOMbysl3m7+dcrJFg+E5q0DgBa0QylmM3OzEIlF7fuQyLkmILcycLs+MEfo77uu0gy8YNG7+lg2L+wEMml9qHpP9t7J7sW5paimOOm0XDm819nFpnZzNpLyejxrUMBABvFMl+jMCf3jB1vH18ICUfXa8ecjqqSmpj6kdNNHcs2AGN4KLFJKRSmiIFCLqC0W6HucVUbm37x5GKlb02tzq3p7B29ca8+YMEmqP+apgnzt02jIYNrlK+fe36brRErU2Fd18twHv/T3J+Nn5vPVLbaeJLP+ecKRcixjXrrE1e76m7QrmEVsQg5nZkiIG/lMcIMcX+jer/zXBTqRLxjXW4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=poC3kvfIgSBt190X28S5i/6XPrr++Q9iHCeSLpF/KFI=;
+ b=HxoBzq6bbowC15Nj04UA7RWNwxpAkJO2Bg1Hs1L3A2v2vwtumLTd63YjGeV+wY7moQ3fkAYDwK3WTE6heGxP/3R85IOKZhkpn7jMFR/ySnp3VNQIC/doGGYK09Y7NBHwgJsxQ/RBxkQyDGWmAfEG0NhTGC4Pa0KFfvvTCFYWrNH0jg0PF+MdmyaAtJyaion2B3b5suTcvjTv5MJJ6rlUlruTATZb0bVrXc5f7TCqdp9nAxkUlAc9QyLDere3GFkzB3mmXDvVnaNJnVd+5fiRodh7uEbmoFMcb3Arq788b+wdsMYeWuBNk7JIfv8FEdg+TAUMTN5bB9f12FsG3vUFAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=poC3kvfIgSBt190X28S5i/6XPrr++Q9iHCeSLpF/KFI=;
+ b=d09Hvd4eLKcN9iMMbtgPP5SifmJ1zbDH1QNCFSKT8sIQpHFhcHnI7OVLTyCBlpwTerRWlo00Q8OgD9M6tpKipx65yUCg/t/NpZBmabKBxFhmCixUg7V58fPcfirar10EN+fxjgfIor0vrraMfblsOZrPBP4x+4A0yVfcEd7U5uHEHXxyVxarjZVqkLKRpYNZOiK4UOPNIzGiEl++RAxmQdq7ZYuD+hvakNDVG8O+dlk+H5/1Jz7P4Hyb5OZ8ljUEMeNbsJ0D+l3y8ku04iTs7k6ZpzG08d/np5SWYeLieXTibOWj+hXa52YQ+SBN257MZJ7v7D+1Sw8qvuqktSfijw==
+Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8041::8)
+ by TYCP286MB2335.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:17d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Thu, 14 Mar
+ 2024 04:59:16 +0000
+Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::d125:453b:b7b:e90b]) by TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::d125:453b:b7b:e90b%5]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
+ 04:59:16 +0000
+From: Shiji Yang <yangshiji66@outlook.com>
+To: linux-mips@vger.kernel.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kernel@vger.kernel.org,
+	Shiji Yang <yangshiji66@outlook.com>
+Subject: [PATCH] mips: setup: fix detect_memory_region() function
+Date: Thu, 14 Mar 2024 12:56:46 +0800
+Message-ID:
+ <TYAP286MB0315E609C476B86E22700626BC292@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [KS2YiHBNAd0FpgvOxlN9vQ6MjYwldyfVS0T4hzFzxtM=]
+X-ClientProxiedBy: TY2PR0101CA0040.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:8000::26) To TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:404:8041::8)
+X-Microsoft-Original-Message-ID:
+ <20240314045646.14824-1-yangshiji66@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <trinity-da135c23-2f1c-41c9-ba0c-17ee2d5cd035-1710391607967@msvc-mesg-gmxus001>
-From: Kolusion K <kolusion@post.com>
-To: linux-kernel@vger.kernel.org
-Subject: Suggestion
-Content-Type: text/plain; charset=UTF-8
-Importance: normal
-Sensitivity: Normal
-Date: Thu, 14 Mar 2024 05:46:48 +0100
-X-Priority: 3
-X-Provags-ID: V03:K1:CligyEk/MGMu0LqHfLz1fevjVDohYRcJnXKWl+HevgsKWrDEpHZNZQ+yl7xg5L1wj+d5R
- ps/0HNRZQc5bQQCn6DAChJkLgeSEfM1SXPKQb2m9StD9lgx76qtpMphu55P54x0dXzy9VU5ZmYv/
- +6DIJaSSZiENWUUCYPmT3Q+QzNhfzARHFuOoZ20mtOD8Ocu4ugnNphE65V6L7j0y4rSmwc5MT78Y
- qDwAsFR9dmaD520AN3UlSN2rEbtUUOjecRqJuxil6u7UBgHhiw6ThGoQzt4onY0HgYdVztzOfKzE
- Pk=
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hd8ZyqR2VKs=;kIYTNLZ7U/ps4ywZEgOjTa34BTt
- GBof0FS7wkQhSwJKks7igeHUJTBFNv7D7PLgr1jHekWF3dLoWy3B923KLj/KnTUBWFhwRzPFl
- 1QUVT+eu0HZL2PFZOCkeUUvrpK22rqv8PHneb4NvH+ieXJvLI4VFRJR/MQ5carc5T/1IvhPn8
- V385Uc7rJFVNJSipFlo39m+i2kQlL2dSoTLGa1VnDL+2oK/q7TLuL871GJPvOnyxLUJOoZeQm
- +4vK7yfXPJtb6dAJE6RoFQPGO41abkNxCP/NkTvyN2mL1yDxCou7ndPJoxnQr1PcLZMIV6LsA
- 1/0jpAkXp1gyGGy71HKF0+BxbvjvleFsNYBbEUGG/n/GTQ5UO8VXqOcEroj0/AjADzY2YAsaV
- iiwuANOoh8UgPCp0inFhKF9xmCqZ22ll+oTbj1d15ok8xHQON5zj/7NJn/kN1uNn/3hGfFEk1
- 49iqQ3AULiWOjZ9CJ86wwP39TXCz4Kbno+tpPMGD3YabbSD61tpFChmIxWrmguEhs02C1h3qn
- r0t9w6GV9JoS9km82HkyTXuHuHfm9HVBtQ/F+yFWANvEdWOJ8gVByURxU4hKCgG2l6XlmqZtw
- 8/4JSj6SKRdGDSwk1glZxV/elsZcDuNXfkBYiSF5q+AXBi0loeQTXcR0f3TIDY24J8fprl9dV
- GMkUivTFQpmpTGHcWMgyVC7UpawySYyGKWJOV5W3x39FaTOLQefE1tK50seDt6TwPWeqBg+vM
- Cqg20S1x5n4Hrj5/1dVB425ozSfBuS1XGGBKxT2EUvek6aR+JzCCy9wAWUz4ouEPMxMZ6vDZZ
- 7K
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYAP286MB0315:EE_|TYCP286MB2335:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9a46f2d4-2a41-490a-4a0c-08dc43e37fe1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Y/UON2jP9EXLXwURU5M86YXQFS6o0tNQMzg4heUnmudB2HONNnNU41/8uzO9dEJMNZME5TxdC3ymqfopOVE4p5sEGJqyH8uAXdTiiiGTmlSGUqchmVpSomNpIYyccAC3OFpWu2E3NOyur8G49dZvi4/uWZrICVerjnyhPQhLaGI0EI0z6QxngDII1QQ8lhEbwdFX9syVm8wAK+ibleF6+NL6yuFs3TE8cgGxN/9wSt9dj1y3fu+ESmjLQFomg10lXEfwqyYc22BcT9vv8wzrqTgigOQ/1QDztSc13uj8R3kRkaGCHI3vWDIiC6gFGXdZn2GlEGrrl9o+JKFi3+JLc+UKO4Ox/zeJ0PcZzfiMxUIPitV+9WOC0WTm44gkEG6b/suHvN+I0qQCDZQ8wK/l7H76Xc+WQVlThyglsCbtxnLfQq76m34QFXwYJlSuK0KnkHmkk9fRnxHoKVVSwruh6MaPNazBIWDKSZ2X+cPcn/syOnpd1Cq0xvXNooowlSDIizeFs95SoGmcmRaDD6kC1s7MZfup9/NpgtlvwK1dQEFlZ3bdwYogNLCrPjBovomkB1mCT4SYKfh9Oc5eR9dBvZWgOEDRYh+VhZq2cuRegMscGzHWV7alMQPQupF8zAqP
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Z71bNVLsdFeOpSqEcdbnr45cuNp6D4NISCmrPA5lABVmJ8vkoeiW8jc+a2DX?=
+ =?us-ascii?Q?F3B0hTyQDa2zniXID0yjmaTF79a78BIMpSUgORFnNBK1VYAs24HjO2Qnr+uz?=
+ =?us-ascii?Q?faNN62j6nbPsWDuNaRDc3XxX0wclRBU61js5qNFTthEFpg6CWUSfwrQcpVF6?=
+ =?us-ascii?Q?06n8RgxmpJTChS1DXCGK05sN8BTn02se8ej4bJ8VVl6nNEfC87maVWha/uov?=
+ =?us-ascii?Q?yfig6uyk9fv9gXdUvsBfEDjB5EgH3LtoDK8xmDCV0wHHONSe4bFZ9FVs/xia?=
+ =?us-ascii?Q?mafWi+bdZMQdi83Fm8TSGllcMJCP2TNlW7GV3uHxYb3K5AFSW3NGkKSGSF3z?=
+ =?us-ascii?Q?kgQq0JTQN9MbwhEZ4JFm4eRV8ienLuZPD0MAVU0ZwZihPiEingZxgk96iuKK?=
+ =?us-ascii?Q?VxDtqE0TR/JoOxK3Jn+sNfG3s647j21HFYK/m5AKAH97JdPNrIxBpJm6/Q9Z?=
+ =?us-ascii?Q?/bTvqQfDziynJzo5WxLPtVKJRnY8WgFUCQjLZptHc6mLgQ6cUebDcEj4ip2T?=
+ =?us-ascii?Q?AmzdRYDwBPYG29USNWHL1zpGzxRpNaCmoMY1deeOVPZxQbL9OQYBF0K6pcZd?=
+ =?us-ascii?Q?9/fzzp6ccp2qEn1Dxk1EFkzhBx+5EMzrWIqCQHR2IuwMXr/9glUxtv0kT4zs?=
+ =?us-ascii?Q?xFTOPAVOLYTrUqctzhLMk/6E6qItuMCtSB5cTGqcUeiIBkNsAXIp9d6AGmMN?=
+ =?us-ascii?Q?X5Qzk2RwVjsxVOHfze93trZpygT3EC0lWVx9XQWpsdlHRjaouy8rnGQrPPmX?=
+ =?us-ascii?Q?+Xtn3WUhnxWHKc3gcdw6OZXgdYX4XcgW8GonZPLqgKcbMcYnIrZNGjJrKyxG?=
+ =?us-ascii?Q?acsMU2JMmepo9BRRR2VEfAkMZRmbsz5YdOqbO3PDwYsHtoWQTjMaKH3ZfwQn?=
+ =?us-ascii?Q?WigqiVOS4KiRvuoA6hLKnRWtzkKYFvZr0SA8UAAPciNaasj8tDf+OmQVrWI3?=
+ =?us-ascii?Q?avvB1dSTFFKCK/tGfSzSmkT9rA18r5Br+IdGSa7v5A2sRVHrwhYl3k2rd7Vn?=
+ =?us-ascii?Q?dDImti0rWNsu1uotkJ2Gf723HcOl0KbkRhhUiTIw9DwbOTvse3Z7+SuaRqJU?=
+ =?us-ascii?Q?dZnxIuggZCaok/VGfnH001AQ8e52+p63i1Z4HgPmLRYJVH6asquyBDwMuuYs?=
+ =?us-ascii?Q?EKpy5+4y672t4lln4Ug741+4ClocZ/8QERwiecFaeOHvGfXt1qfL99d1hJ2+?=
+ =?us-ascii?Q?Q0Ef6CnTXxQwH8c+Lm9MduOlQBIFQk2Q/cAW/7DyUne9pIzqwIYycz27mdmw?=
+ =?us-ascii?Q?h06+Gn5wbwPZ5PIVgOwg?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a46f2d4-2a41-490a-4a0c-08dc43e37fe1
+X-MS-Exchange-CrossTenant-AuthSource: TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 04:59:16.6623
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB2335
 
-Hello
+1. Do not use memcmp() on unallocated memory, as the new introduced
+   fortify dynamic object size check[1] will report unexpected result.
+2. Use a fixed pattern instead of a random function pointer as the
+   magic value.
+3. Flip magic value and double check it.
 
+[1] 439a1bcac648 ("fortify: Use __builtin_dynamic_object_size() when available")
+Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
+---
+ arch/mips/kernel/setup.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-Recently I have been fed up with all the low quality hobby software in the open source world and I have been wishing there was a true alternative open source operating system to Windows which doesn't suck. I had considered TempleOS but my games don't run on it. :)
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 9c30de151..354458fa9 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -46,6 +46,8 @@
+ #include <asm/prom.h>
+ #include <asm/fw/fw.h>
+ 
++#define MIPS_MEM_TEST_PATTERN		0xaa5555aa
++
+ #ifdef CONFIG_MIPS_ELF_APPENDED_DTB
+ char __section(".appended_dtb") __appended_dtb[0x100000];
+ #endif /* CONFIG_MIPS_ELF_APPENDED_DTB */
+@@ -86,7 +88,7 @@ static struct resource bss_resource = { .name = "Kernel bss", };
+ unsigned long __kaslr_offset __ro_after_init;
+ EXPORT_SYMBOL(__kaslr_offset);
+ 
+-static void *detect_magic __initdata = detect_memory_region;
++static u32 detect_magic __initdata;
+ 
+ #ifdef CONFIG_MIPS_AUTO_PFN_OFFSET
+ unsigned long ARCH_PFN_OFFSET;
+@@ -95,12 +97,16 @@ EXPORT_SYMBOL(ARCH_PFN_OFFSET);
+ 
+ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_addr_t sz_max)
+ {
+-	void *dm = &detect_magic;
++	void *dm = (void *)KSEG1ADDR(&detect_magic);
+ 	phys_addr_t size;
+ 
+ 	for (size = sz_min; size < sz_max; size <<= 1) {
+-		if (!memcmp(dm, dm + size, sizeof(detect_magic)))
+-			break;
++		__raw_writel(MIPS_MEM_TEST_PATTERN, dm);
++		if (__raw_readl(dm) == __raw_readl(dm + size)) {
++			__raw_writel(~MIPS_MEM_TEST_PATTERN, dm);
++			if (__raw_readl(dm) == __raw_readl(dm + size))
++				break;
++		}
+ 	}
+ 
+ 	pr_debug("Memory: %lluMB of RAM detected at 0x%llx (min: %lluMB, max: %lluMB)\n",
+-- 
+2.44.0
 
-This got me looking into the history of operating systems where I read MS-DOS was written in just 6 weeks.
-
-Somehow I got onto looking at the Linux Standards Base and I was surprised at how well organised it is as well as how complex it is.
-
-This got me thinking... With the amount of effort that went into creating the Linux Standard Base, that effort instead could have been used to create an official Linux userland etcetera and turn Linux into an operating system.
-
-The world likes real operating systems. That's why MS-DOS dominated and why Windows continues to dominate, and why Microsoft is the worlds leading software developer. More people create applications for Windows than any other operating system and the applications are overall higher quality than applications for other operating systems.
-
-My suggestion is instead of working on the Linux Standard Base, instead use that effort to create Linux into an actual operating system.
-
-The world needs a true open source quality operating system that isn't just hobby software.
-
-
-Sincerely,
-
-Kolusion
 
