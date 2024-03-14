@@ -1,173 +1,265 @@
-Return-Path: <linux-kernel+bounces-102789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90F9087B74F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:35:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D858487B74E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13CC91F22FC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0678B1C21A01
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 05:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6AAFDDAE;
-	Thu, 14 Mar 2024 05:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590DBCA73;
+	Thu, 14 Mar 2024 05:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Nh+tgZg+"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="q1tMsfGt"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72FF58F7A
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D318F55
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 05:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710394537; cv=none; b=TGPvQNHj24Xb8ogQ6IqrYhr1g0lhAo3DLGV5EVlndM3VHhQOrNmO9XvMPjG/8HqhFX6DKIUhyissZ4GchZAacB4zxEWvgmFiYalnf6RVL6pjmh9Qjx0sQR6ofReNr9S4NzyrUSc04SsPRsIt/Kfv84MwK/i8M1s/0Qad09fsFX8=
+	t=1710394535; cv=none; b=u3Nz45mM1sjP0FwlBFuCvffjNxCfCPxEk9IG002R2XT1fEPXlYVy06KsC64p9N1lGWTuFJcXa4MuQJ7/NxQ9YkAyU0tftwOldl5sdtlIPDOPHsBmOctNFUDkGgz5al/fGseRwP50CVHQGiCvVjQubWFs6jMUomqYO3rW3cgKl1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710394537; c=relaxed/simple;
-	bh=xy+yihGYgmGmElHluWjV+klBZIrdr8SZjpVJJwUTbRo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M9BbEztw1ENn2AMj4neWtsh11BTehJhNd7CacZf8vIxWX66LFB64xFzPlttVeAD9TCh+NwriIJ5ON/MEZfYhqeBjdyyhwyow49ORM9OGsbAI80OCoHamvU2eqZHkLnt/t6Y4pV/N2SbpYgt/55inZF0VRH7UHkibvnq5NE+zpJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Nh+tgZg+; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-36646d1c2b7so44965ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:35:35 -0700 (PDT)
+	s=arc-20240116; t=1710394535; c=relaxed/simple;
+	bh=wnyc1qtSHvisNJejbCfK6hGNGLnBCEc4+ttrJj7mPOU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nNiSRQXhYnPVHgcEuHuwuHbEeJdaQMa8J2S0g566qkTiSgKljJjwNPnerejzbTHOJZ006rtRrqapoDsHfkpjHg83w1FfkYaR1Z57x3Nx4XHHLplKZluPAHXHJRTthJd//5SQI1PPNsX2q1+UHY3lhb1gIH7pn+MqXBu7jq9e/p8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=q1tMsfGt; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1ddc7e45c47so4090365ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 22:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710394534; x=1710999334; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eRDPxJVTHieOMR3Hi1d1OF7eIKdaIqrR5LQQJbNyQzY=;
-        b=Nh+tgZg+lhnywmiFpFav38vo/wDiDXwzTtJHxdkkOeW/7BEeI2t6kWWQPV0UYeKyfP
-         BwiOjCHhWvOGDQoeRMVdUwnUoN1gmA0EIrkrTut6vD6VIaCrEm4R92D2T1YTQV9PgMqa
-         sqLjD1aF9PJgUDBank0O1Vkk+KJb0fSN/QGqkCyHZI36EeSElW+oQi3C+aFfgYFV0ehx
-         E4wYLONf3c84wj6I2FPSaDpC3/vUWL07aoxDdH4u65rSNf8nIohDKsV0t7JGbjTtIlHG
-         Q/LrrS8xIUsBACIbHPXR2EXe1UXxZEaVwaN2POTPYWU1EX9kaA/GFyjx8Obd661HcLZ3
-         l8gw==
+        d=linaro.org; s=google; t=1710394533; x=1710999333; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fxO4CS6+v/R6FQk4VO/N/wHqH8l31febwKNwu3Ztp4g=;
+        b=q1tMsfGtWmPk21sRg9iCgbn+CDUEAMPU7F909ioq+mtAbRfDBZW6+bhQ57uqlmjgC+
+         8i/sE+RNZSWvRvSedfAmRMAjBCj6xaXrcnD4LsTfAvJoUBEuoS5OJN85EBPVbAxRCQkX
+         aTxP9Ny2j24theJsxrrsV3r0u6Q4Kxd0iCviKyW3JZP2Yhkmw2VTTu7OQZJhKJVqwVEv
+         ZDc7ykuyFlp4deshwEWp5jSRRp1P7KIdBLXnNYLB7xRXUjGGx++BJdGHRkIpt04+G/d8
+         WDEvPugzaR16z4RbDgz3N0EhjadUP0ITX9f2lHpLerkWm9M4Z5bIwtbGthAROYnre9FP
+         R0sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710394534; x=1710999334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eRDPxJVTHieOMR3Hi1d1OF7eIKdaIqrR5LQQJbNyQzY=;
-        b=AjGJeHVdAtLrJWgawnad+BWBgVpuEbwSTzceRAAmZ0CEN1uAYF0cGdy05VqAI2JN5K
-         FfReu8fp8z+iFJAV9PVdsEiIjcX3elYUY9GMwRE1lmciDQtwzEcbEscNTSch0tHN3n20
-         RTyti9HYw1S52LNdXW6EFfOaK2eCT3HmrG9yq+mI+//SQiznRCUOsLMNv9CQChtdUgPS
-         Xp9tZhl6DNov5wYIoseMxB7OWrwVrA3vXyyke4gwzRa4ZQVZl32un8iDyTckNr55539B
-         Lu8qJiRymO/QURn4/enbbhjinnu9fRXEmjdXa86TPczGtXCMbOSjMfeBwUgWEPcyqn2J
-         ryoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWi5S0PthzYbjmIk/s4549GQov212UzyylIHgUqLg5tU7+eYrIvXeAV0PT/f9jl4HdQ88ap4HC0oniqwPmlqBghbZ5OnUViD/sI1hBC
-X-Gm-Message-State: AOJu0YwNPG7jBorr/vjnNMrOXXVHzFbgwZwiH/7w9AER3RFUJQA9csb/
-	AYL/4rrz5WhIwNj2zNiSPCd13ogx4H93ohygrVFEY24BqZ+RZje0mm8OgtsW/Epzr1C1TMVoL75
-	Ja6Vn2dgD6HhtzLQ07vkIppIjLtUbh47nY+F5
-X-Google-Smtp-Source: AGHT+IEJSm5V0OXFp5NUsTIYQhAkR1uFtPgMbLi4oFiAtso/P8YCTZrbfl03711ANo1DPKkK9Dz22Hul1RM1t/ecGX8=
-X-Received: by 2002:a92:ca45:0:b0:366:796e:eb95 with SMTP id
- q5-20020a92ca45000000b00366796eeb95mr146084ilo.29.1710394534350; Wed, 13 Mar
- 2024 22:35:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710394533; x=1710999333;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fxO4CS6+v/R6FQk4VO/N/wHqH8l31febwKNwu3Ztp4g=;
+        b=MlPJdJmOGuAgukTHUc4mFXYvD0PffZhVFWozVWuOby1oRKEIdwN8DxgDZqFfgsYvo3
+         7ZwiIaA47n4qBkNfPuK6NZ+W1U3XhClUw25M6MTIUYlSbyH1voG87C7XXN+TNEXvqjRL
+         BR0G+8zfNDa0L0ZMzw/BRCncpQkYGkJ4FLrlz5APUgDmDpaZIVKBUZ8tbgSW+YBiGb1U
+         zzQ63YhYb88GvqFhthBBLDkyf0RrzfmF//1a/WNaeCNeq5GKVjs0HOQqQ8SFWSAbedIl
+         YpNM4lue1YP5UHNirfook8RRIMuwCmCrcZEfc9ASaEvR2TmhRL+12U1yLVz4RKL1cyNb
+         NlCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVNfkBlgGd4V43xSVMpWekNZdM0YOV1VbIGkqxV+KVlOAwfqO4P7PNiAOYbxKaD7ea1Fv44zV9rhhZAgIswaeL63lpPNlLwVMrkmacy
+X-Gm-Message-State: AOJu0Yx0jRAevSgKoQhWDnWfD3SGVQnm8EURk4g0WmYRYprYijqYuAqA
+	OWaQEGD77mVAtKDLBS0Y+lgNaT1FcDCBHctCT64ORbGKSdv4ZwPLaJK0Y4ukCA==
+X-Google-Smtp-Source: AGHT+IFb62XIR+M7PYX+5Uez2c2mc4hqJpOmNcntEpkYpWIn+f1QcjfI7Q+ezp2c2yAm0E2EcviD6Q==
+X-Received: by 2002:a17:902:9688:b0:1dc:499b:8e80 with SMTP id n8-20020a170902968800b001dc499b8e80mr816349plp.54.1710394532640;
+        Wed, 13 Mar 2024 22:35:32 -0700 (PDT)
+Received: from thinkpad ([117.213.99.94])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001de3f08d768sm442172plh.251.2024.03.13.22.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 22:35:32 -0700 (PDT)
+Date: Thu, 14 Mar 2024 11:05:26 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Implement shutdown() callback to properly
+ reset the endpoint devices
+Message-ID: <20240314053526.GA3575@thinkpad>
+References: <20240313150242.GA2656@thinkpad>
+ <20240313191656.GA921158@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240302005950.2847058-1-irogers@google.com> <20240302005950.2847058-6-irogers@google.com>
- <CAM9d7cjVE=gH8A4zzsUFwLibgHy=3C71UnFe5SEu-RDFTOWkDw@mail.gmail.com>
-In-Reply-To: <CAM9d7cjVE=gH8A4zzsUFwLibgHy=3C71UnFe5SEu-RDFTOWkDw@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 13 Mar 2024 22:35:20 -0700
-Message-ID: <CAP-5=fVqDEXHaoONKjsaMuDG5B-kH1zX01R3fg7QkYn83LHCiw@mail.gmail.com>
-Subject: Re: [PATCH v2 05/12] perf jevents: Support parsing negative exponents
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Jing Zhang <renyu.zj@linux.alibaba.com>, 
-	Thomas Richter <tmricht@linux.ibm.com>, James Clark <james.clark@arm.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Andi Kleen <ak@linux.intel.com>, Kajol Jain <kjain@linux.ibm.com>, 
-	Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
-	Edward Baker <edward.baker@intel.com>, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240313191656.GA921158@bhelgaas>
 
-On Tue, Mar 5, 2024 at 11:20=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Fri, Mar 1, 2024 at 5:00=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > Support negative exponents when parsing from a json metric string by
-> > making the numbers after the 'e' optional in the 'Event' insertion fix
-> > up.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/pmu-events/metric.py      | 2 +-
-> >  tools/perf/pmu-events/metric_test.py | 4 ++++
-> >  2 files changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/pmu-events/metric.py b/tools/perf/pmu-events/me=
-tric.py
-> > index 847b614d40d5..31eea2f45152 100644
-> > --- a/tools/perf/pmu-events/metric.py
-> > +++ b/tools/perf/pmu-events/metric.py
-> > @@ -573,7 +573,7 @@ def ParsePerfJson(orig: str) -> Expression:
-> >    # a double by the Bison parser
-> >    py =3D re.sub(r'0Event\(r"[xX]([0-9a-fA-F]*)"\)', r'Event("0x\1")', =
-py)
-> >    # Convert accidentally converted scientific notation constants back
-> > -  py =3D re.sub(r'([0-9]+)Event\(r"(e[0-9]+)"\)', r'\1\2', py)
-> > +  py =3D re.sub(r'([0-9]+)Event\(r"(e[0-9]*)"\)', r'\1\2', py)
->
-> I don't understand how it can handle negative numbers.
-> Why isn't it like Event\(r"(e-?[0-9]+)"\) ?
+On Wed, Mar 13, 2024 at 02:16:56PM -0500, Bjorn Helgaas wrote:
+> On Wed, Mar 13, 2024 at 08:32:42PM +0530, Manivannan Sadhasivam wrote:
+> > On Wed, Mar 13, 2024 at 09:36:14AM -0500, Bjorn Helgaas wrote:
+> > > On Wed, Mar 13, 2024 at 05:39:22PM +0530, Manivannan Sadhasivam wrote:
+> > > > PCIe host controller drivers are supposed to properly reset the endpoint
+> > > > devices during host shutdown/reboot.
+> 
+> Where does this requirement to reset endpoints during host shutdown
+> come from?  My working assumption is that .shutdown() needs to stop
+> DMA and interrupts, based on this old thread:
+> https://lore.kernel.org/all/61f70fd6-52fd-da07-ce73-303f95132131@codeaurora.org/
+> 
 
-When something like 3e12 is converted at this point it would be:
-3Event("e12")
-and so this substitution remove the Event and puts it back to:
-3e12
-but it expects a number with the "e". For a negative exponent like 3e-12 we=
- get:
-3Event("e")-12
-and so there's no number and no substitution. Changing the + to a *
-means the number in the event next to the "e" becomes optional and so
-we match and remove the Event again.
+Yes, it indeed need to stop DMA and interrupts since the endpoint is going to
+a dormant state. But not everyone care about PERST# since it will be asserted
+by the hw automaticallyt once the SoC goes to a powerdown state. That's what
+happening even without this patch. Also, in most of the cases, during host
+shutdown/reboot, the power to the endpoint will be cutoff and reapplied
+(on reboot). So the endpoint will undergo cold boot and it would work as usual.
 
-I'm wondering about having this be a bit more of a parser, but then it
-kind of defeats using Python's eval as being the parser.
+But, in some rare cases like the one I'm dealing with, power to the endpoint
+device is not coming from the host. The endpoint here is another SoC that works
+on its own. It just receives refclk from the host. So in this case, during host
+shutdown/reboot, only PERST# will be asserted and refclk will be cutoff, but the
+device will be kept powered on. Due to this, the device when it tries to
+cleanup the state machine post PERST# assertion, it will crash because refclk
+will be cutoff immediately.
 
-Thanks,
-Ian
+And that is what being addressed with this patch.
 
-> Thanks,
-> Namhyung
->
->
-> >    # Convert all the known keywords back from events to just the keywor=
-d
-> >    keywords =3D ['if', 'else', 'min', 'max', 'd_ratio', 'source_count',=
- 'has_event', 'strcmp_cpuid_str']
-> >    for kw in keywords:
-> > diff --git a/tools/perf/pmu-events/metric_test.py b/tools/perf/pmu-even=
-ts/metric_test.py
-> > index ee22ff43ddd7..8acfe4652b55 100755
-> > --- a/tools/perf/pmu-events/metric_test.py
-> > +++ b/tools/perf/pmu-events/metric_test.py
-> > @@ -61,6 +61,10 @@ class TestMetricExpressions(unittest.TestCase):
-> >      after =3D before
-> >      self.assertEqual(ParsePerfJson(before).ToPerfJson(), after)
-> >
-> > +    before =3D r'a + 3e-12 + b'
-> > +    after =3D before
-> > +    self.assertEqual(ParsePerfJson(before).ToPerfJson(), after)
-> > +
-> >    def test_IfElseTests(self):
-> >      # if-else needs rewriting to Select and back.
-> >      before =3D r'Event1 if #smt_on else Event2'
-> > --
-> > 2.44.0.278.ge034bb2e1d-goog
-> >
+I should admit that this issue is not very common and that's the reason no one
+cared about it so far. Because, on PCs/Laptops, most likely the endpoint device
+will be powercycled during reboot.
+
+> > > > Currently, Qcom driver doesn't do
+> > > > anything during host shutdown/reboot, resulting in both PERST# and refclk
+> > > > getting disabled at the same time. This prevents the endpoint device
+> > > > firmware to properly reset the state machine. Because, if the refclk is
+> > > > cutoff immediately along with PERST#, access to device specific registers
+> > > > within the endpoint will result in a firmware crash.
+> 
+> Does "PERST# getting disabled" mean PERST# is asserted or deasserted?
+> 
+
+PERST# assertion I meant. Will change the wording.
+
+> > > > To address this issue, let's call qcom_pcie_host_deinit() inside the
+> > > > shutdown callback, that asserts PERST# and then cuts off the refclk with a
+> > > > delay of 1ms, thus allowing the endpoint device firmware to properly
+> > > > cleanup the state machine.
+> 
+> This *adds* the qcom_pcie_shutdown() callback, right?
+> 
+
+Yeah. Will make it explicit.
+
+> > > I guess this 1ms delay is the PERST_DELAY_US hidden inside
+> > > qcom_ep_reset_assert()?  I assume the refclk disable is done by
+> > > clk_bulk_disable_unprepare()?
+> > 
+> > Yes to both.
+> > 
+> > >   #define PERST_DELAY_US 1000
+> > > 
+> > >   qcom_pcie_shutdown
+> > >     qcom_pcie_host_deinit
+> > >       qcom_ep_reset_assert
+> > >         gpiod_set_value_cansleep(pcie->reset, 1);
+> > >         usleep_range(PERST_DELAY_US, PERST_DELAY_US + 500);  <--
+> > >       phy_power_off(pcie->phy)
+> > >       pcie->cfg->ops->deinit()
+> > >         qcom_pcie_deinit_...
+> > >           clk_bulk_disable_unprepare                         <--
+> > > 
+> > > Is there a spec citation for this delay requirement?  If not, how do
+> > > we know 1ms is enough for whatever the firmware needs to do?
+> > 
+> > Both PCIe base spec and Electromechanical spec only mentions Tperst,
+> > which is the minimum time PERST# should remain asserted. But there
+> > is no mention about the time, refclk should be active.
+> 
+> I see Tperst mentioned in PCIe r6.0, sec 6.6.1, but AFAICS the value
+> is only defined in PCIe CEM (r5.0, sec 2.9.2), which says 100us, and
+> maybe other form factor specs.
+> 
+
+I'm not 100% sure that Tperst represents the minimum time to keep refclk active.
+
+> If PERST_DELAY_US is enforcing Tperst, why is it 1000us instead of
+> 100us?
+> 
+
+As I said above, I'm not sure if PERST_DELAY_US corresponds to Tperst. It
+predates my work on this driver, but I'll check internally.
+
+> > So I used the existing delay post PERST# assert in the driver. I do
+> > not know if that is enough for all the endpoints out in the wild,
+> > but atleast satisfies the requirement of the endpoint I'm working on
+> > (which is another Qcom SoC in EP mode).
+> > 
+> > We can change the delay if someone reports any issue with the
+> > existing one.  Atleast, that's the best we could do in this
+> > situation.
+> 
+> I'm dubious about this.  If endpoints require a delay here to work
+> properly, the spec should specify a minimum delay.  We can't make a
+> reliable system based on "here's a guess and we'll update it if people
+> report issues."  That makes me think this endpoint mode Qcom SoC
+> dependency on a delay might itself be non spec-compliant.
+> 
+
+I wouldn't say "non spec compliant", but a usecase not addressed properly in the
+spec. This Chip to Chip usecase (connecting two SoCs over PCIe bus where one
+acting as host and another as endpoint with their own power supply), is not very
+popular IMO.
+
+- Mani
+
+> > > Do other drivers require similar changes?
+> > 
+> > Most likely yes, but that also depends on when the drivers are
+> > cutting off the refclk. Not all drivers are implementing the
+> > shutdown callback, and even few of the ones implementing, do not
+> > assert PERST# since it is optional.
+> 
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pcie-qcom.c | 8 ++++++++
+> > > >  1 file changed, 8 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > index 2ce2a3bd932b..41434bc4761a 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > @@ -1618,6 +1618,13 @@ static int qcom_pcie_resume_noirq(struct device *dev)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > +static void qcom_pcie_shutdown(struct platform_device *pdev)
+> > > > +{
+> > > > +	struct qcom_pcie *pcie = platform_get_drvdata(pdev);
+> > > > +
+> > > > +	qcom_pcie_host_deinit(&pcie->pci->pp);
+> > > > +}
+> > > > +
+> > > >  static const struct of_device_id qcom_pcie_match[] = {
+> > > >  	{ .compatible = "qcom,pcie-apq8064", .data = &cfg_2_1_0 },
+> > > >  	{ .compatible = "qcom,pcie-apq8084", .data = &cfg_1_0_0 },
+> > > > @@ -1670,5 +1677,6 @@ static struct platform_driver qcom_pcie_driver = {
+> > > >  		.pm = &qcom_pcie_pm_ops,
+> > > >  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+> > > >  	},
+> > > > +	.shutdown = qcom_pcie_shutdown,
+> > > >  };
+> > > >  builtin_platform_driver(qcom_pcie_driver);
+> > > > 
+> > > > ---
+> > > > base-commit: 51459eb30f88651d3688b9e95fed0f97767ececb
+> > > > change-id: 20240313-pci-qcom-shutdown-d86298186560
+> > > > 
+> > > > Best regards,
+> > > > -- 
+> > > > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > 
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
