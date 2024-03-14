@@ -1,398 +1,209 @@
-Return-Path: <linux-kernel+bounces-103529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28F5387C0AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:54:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC72687C0B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:54:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 857561F21C10
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:54:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71CB42833C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D7373516;
-	Thu, 14 Mar 2024 15:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B741273537;
+	Thu, 14 Mar 2024 15:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="QJYi0iCA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="VR5lhD16"
-Received: from fallback13.i.mail.ru (fallback13.i.mail.ru [79.137.243.65])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="g6OiwPMg"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234F973163;
-	Thu, 14 Mar 2024 15:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.65
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431649; cv=none; b=QBZ73J6/NiPYyGVrPAotW0yPBbXG89MEMZ2mtTb6jU0zTA2e5To/bz63gH/hwoOmwTG5P0JHmR1SVOWBkg4kWuBNy+TD3h0Q2xuSmLp+b7dDE801bjIDPaMeAMYxPGLwAKx6BlvepvdIYifqcLHayl9a1h+qOkza0ctRHbOWKA0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431649; c=relaxed/simple;
-	bh=Mcb4jkmhJk+EHSfGl4ZTsIHzvYmYuM4Ok5EqCEXJmrg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ebgzbwWe0+O+LizzGr1RaJuKmvyFdoE/Cf3IOYzOHT9+vIFoIHBjLkAjCnsPIfwwm6MPVW18PHU8LiIXE5uspKz++peaXLRCvkpXyhUPqyYV9+N5Nf5oaqBBh+ZXTJrMjKD3qrHLfjGdC7jAb5j7VGq8gPZ/gR/QdhzihjJ7oFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru; spf=pass smtp.mailfrom=mail.ru; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=QJYi0iCA; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=VR5lhD16; arc=none smtp.client-ip=79.137.243.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
-	h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=iF97vxV7BrgXpXlszlj7gJFTV57ZBbqlf6D+BsC1p+c=;
-	t=1710431647;x=1710521647; 
-	b=QJYi0iCAffCgFwDDmnp9xqo9DpHKwEQqGWr3B59C0aBXAA+KFJGUBcaVvodswxkQzAatFiP63kwC1A9wXHtTU0hTEZPrZmKTQMnaEqvCH4M/0gmH9mSAYS/UAegaK014Go3uQZph71m3G1qkXOUHpy6fB7d+gzx+/toUcRglJS0Ngce7Mi2lRqpqqEZKXHW8gAOP4lO/WKNlHGpcRxdogmdDTpV63a7nqCmfQsaaIzlExGxZ5lWQAl7yRZOI5k4T9/TZGP7YTBmcI5cQhlaaqlCMcROBLiXH5XA5xRrBxVeflBnO3EYftsrG889l5YcBPkqcZ6IyIfkKA7zcSSsypQ==;
-Received: from [10.12.4.6] (port=33910 helo=smtp32.i.mail.ru)
-	by fallback13.i.mail.ru with esmtp (envelope-from <hitechshell@mail.ru>)
-	id 1rknPA-006iHH-E9; Thu, 14 Mar 2024 18:54:04 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
-	s=mail4; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
-	X-Cloud-Ids:Disposition-Notification-To;
-	bh=iF97vxV7BrgXpXlszlj7gJFTV57ZBbqlf6D+BsC1p+c=; t=1710431644; x=1710521644; 
-	b=VR5lhD167lc1vM/cT7BkN8z0jPyf3t1xMOhIT7JDaARZ86LXoueln+echot8kKpFdSQTmlYVGlo
-	vvFQnNcgaZeNkKBti9VZnsTg5XF+DXbJo2lFLuF4Ub41VP/7/irQEwStHUO30lH6a6ycxvZO4NfD4
-	msJSniQF1rY0XP6qKEkGJxrxqHYhHN32BhSfKsDRTxdpQgWQJdZj6ul1HJ+EC9bD+xoaLGVMabC22
-	sWUXjax84vT0THFAjDsFUP1IMp3WplMI5lw5tM9M9Xtul0JmV7LeFBdLu0nAGHhVsLOoVsooS1Qvh
-	n20By6fPVl3FVkU9CK0OOftIse8kr6z9QzsA==;
-Received: by smtp32.i.mail.ru with esmtpa (envelope-from <hitechshell@mail.ru>)
-	id 1rknOw-00000007WvT-2VKQ; Thu, 14 Mar 2024 18:53:51 +0300
-From: Denis Burkov <hitechshell@mail.ru>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Denis Burkov <hitechshell@mail.ru>
-Subject: [PATCH 2/2] ARM: dts: sun5i: Add PocketBook 614 Plus support
-Date: Thu, 14 Mar 2024 20:53:06 +0500
-Message-ID: <20240314155306.11521-2-hitechshell@mail.ru>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240314155306.11521-1-hitechshell@mail.ru>
-References: <20240314155306.11521-1-hitechshell@mail.ru>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D525F73171;
+	Thu, 14 Mar 2024 15:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710431660; cv=fail; b=QETkCRwjHSetb8ZN8SRZZEn2NZSunnnN/CgMOlSPd5jeuVsnpK5CYzgUz9iCekpfvLV3ICycFh82IKCQtLcZ3TxOyZ6JLRJBPhHsEdHrWYmQZA6RjxAubIpZppuSAvLx4Ql4NS16azBd3CClZjmshyMDJhaNX+LasPOV0AgaVT4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710431660; c=relaxed/simple;
+	bh=uKgvklbYa/0ILDIsSpxcLyKO35yBnWxHlW17p+EzrQc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=VzefM3YrDtI7DslAZSASd52TabiAfI+OxwV21Nz4YMztwnRMjrK5WEiVyoUqr7ZoAzqdda2W0dJ3Sne6WgetKSBXFBhu5QMIq59BUDU1IGqtzc7EYGweE1V1+R6GL0FG0tFwRefOpT2TAOoGiEtBWaRDyQSB60t4KNAWtgxiwgk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=g6OiwPMg; arc=fail smtp.client-ip=40.107.244.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gGafjPmlYEwVfK28xz2kS3GwvmLkSW/8AFMMx3+AtAuG2eWYWWmZ3AHJgkwrm3gicG4Azh/c6wavq8+ywhDcsL543xfgxIZSSLtPUZgZasFVZOztIR4ZvhymOzmFZX/EwxNOLU8Vo8QTJTBWW+pj9tSI/yvqtg0we87mYjGReBoUD75wweV8JZ8vFFRftktCx3O5vv6XzGsChaenv6Gb8wEdUXwOJJT2dL0aKUgWLPLRghYJ3hJJkM1c4/aBbPq6QoDEChCZ/64086wapdrHeNftETlkCUDRgK68p7ch/xHuPMb/XO942c4QwR9p4GJ3ozcmeBzRc6ASbzerk4EVKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0CF2D1LdR3YGjipcaH2VdCpidOvJYda/43iSZJ/FGR0=;
+ b=kmcOd6UWcFIEwQuFsM6ftqM0dkAknpNcaCWhIUApceJlgG12hLUnC2r3uWrQthuw6px+uxzMprxKdFmP693gLFHLnNxGGlCWJy7fGfSi5v7uaQBj3UJhhxEOePEJTeB38GQaYeL8WU/e01PNYJSDx1lYVpkI3L+/LRFflS4Pxel1HrvDoUrFTD2F93g3AVQBO0aMCVxy9+0mx5otKSayZre92cYsvQg4yyQ0dC6RjXNdO8H/N1LnfkPPDytEab9xO5ZKkD3pDBITyH6QAJCarks1xfBSyPHTKkSlosafaKs8O4vPpm33QqWfRKPFj4AgmTMl/LZMtxTqKH6O5ufK8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0CF2D1LdR3YGjipcaH2VdCpidOvJYda/43iSZJ/FGR0=;
+ b=g6OiwPMgwfsCD0vHyqJltHiBarUHaRP9NgwIWd0F8H5IjLEvx7RDUXBXQRs80ybIhG1Jb2a7/eFXEvGVum23KBz0Mlr3eLxmx3/cDfwnYv2COGVrAhBFo3oaKfqrsAbmrmTzI/GpvdGBs+lMFcV3Ba8tTeqHtnQE6+7SPyTAfI4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
+ by DS7PR12MB6335.namprd12.prod.outlook.com (2603:10b6:8:94::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Thu, 14 Mar
+ 2024 15:54:16 +0000
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::c325:df95:6683:b429]) by PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::c325:df95:6683:b429%6]) with mapi id 15.20.7362.035; Thu, 14 Mar 2024
+ 15:54:15 +0000
+Message-ID: <d66bc516-c5b1-433c-a128-a28d657efea7@amd.com>
+Date: Thu, 14 Mar 2024 08:54:12 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] i40e: Fix VF MAC filter removal
+Content-Language: en-US
+To: Ivan Vecera <ivecera@redhat.com>, netdev@vger.kernel.org
+Cc: aleksandr.loktionov@intel.com, mschmidt@redhat.com, horms@kernel.org,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240313135618.20930-1-ivecera@redhat.com>
+From: Brett Creeley <bcreeley@amd.com>
+In-Reply-To: <20240313135618.20930-1-ivecera@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR16CA0004.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::17) To PH0PR12MB7982.namprd12.prod.outlook.com
+ (2603:10b6:510:28d::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD987C0EE6E7F0A597DDF776407DD463AED7AC1984F64828CE8182A05F538085040DDA203CD7554BDCB91417EB218679B82066AEBC27A175451A626F5E7A5DB8502FE495290C33621F9
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7BBC4AF2A01A27A06EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006379108F895B68B2FFD8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8093DF926811FC38C216C4BA03E6A86A55CEF1BFD8DE5DC2920879F7C8C5043D14489FFFB0AA5F4BFA417C69337E82CC2CC7F00164DA146DAFE8445B8C89999728AA50765F79006377C70927E34808485389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC821E93C0F2A571C7BF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947CE6BDB36F057AC83CC0837EA9F3D197644AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C3CB22C283732751EBBA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CFE478A468B35FE7671DD303D21008E298D5E8D9A59859A8B6957A4DEDD2346B4275ECD9A6C639B01B78DA827A17800CE74526E367E45555E8731C566533BA786AA5CC5B56E945C8DA
-X-C1DE0DAB: 0D63561A33F958A5D4F990E96E0547045002B1117B3ED696D5B231DD2FF3671BB74D9144D44E4FCF823CB91A9FED034534781492E4B8EEAD577AE849BCD98940C79554A2A72441328621D336A7BC284946AD531847A6065A17B107DEF921CE79BDAD6C7F3747799A
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFD4083841D20A0C49064F5C9A34415F899B14B08E4F12A4A6F6A98EC6D592F36B4A7F0923522A066E7C77D8D956826D33DB8CF25F8449602BA570E4E846A1ABAD5DE028DDFF752A5242BF32D1DA1046D202C26D483E81D6BEAB6E9BFA52983102758FA77D78A604EFC3981EEBE9DB10F943082AE146A756F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojXiTM5LlaqzKE07ZeRNuCMQ==
-X-Mailru-Sender: 7219FA8B682B638D379344632618B47A51E657991DB3E45466B41F5249512E91014BCD7CF731B1A1DD7143E30D734E3D46315093CA775BF3554C0F224C5326CDBE1FA5EEA7DC04A0851DE5097B8401C6C89D8AF824B716EB5DB38D7CCF7198FF1D0BEC28C16373053DDE9B364B0DF289AE208404248635DF
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B485448333635D8AFAF2FD4A3C9FF394F55EC4B11F4A1BFD60049FFFDB7839CE9E436D59F16A22D1106D61213FF8B6AB9D881A0DBF0DC461E64A0FB364FA09D05E
-X-7FA49CB5: 0D63561A33F958A50E6A4F8413C98D7EB8862340981031EE0A13EAB3D3821AC1CACD7DF95DA8FC8BD5E8D9A59859A8B68BFD6B1B042489ACCC7F00164DA146DAFE8445B8C89999728AA50765F79006371DD7586035AB81AE389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8893991AD1F2BFC6AF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE7040597DFFE1F52DF731C566533BA786AA5CC5B56E945C8DA
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojXiTM5LlaqzLYgCt4vsK0iQ==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|DS7PR12MB6335:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92ec08be-279b-4f49-e9c1-08dc443f000b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	s+zRhR65+ZXDbRrrm1c6rkGb+40HZmmYlrf5kQgrvo1Mc7Nlw6UV4wjB3HlcwI5+TNte4E9FYO7yPL0FsDQ1yDGmIdvcl8TI1aqUsHt/ErZABULRB8ik5hddp8esC2yF1am60Xr+NNUanDVg4NpoitmN+wGWpSb6KFNaMRZDIZPL9LQ688eAVflxAPg6B4NTL53x1VhvXgs5iIZ9ghSr+yfON9P2up9226VHRXhuQNL1lGI30IZ4ac2Bf3pVRyYD0Folp2lvQf5opOieTP5ilVsB+lIrGhNPtvK2xFke+zSfYE0CzbBankN3VnN4xunClQWLA/QuWJ6r9x0vEerclz/hjql9p5g/U/FWESxS/vW10skRs00k2msgC9fcT8U+zcgES+3ESEt844Jdj0O+Yv7X+6zNYK6S199friN1qdaKynZys3XOH8CZCDyolIrmmBq66V4gaYjto8pD6/WLL0fwRRaFN3+5rqxetdKZx2ep3DPww04jtIx4MgUH5dgKp8Zpi13IYE7DdQ3VQc4bY6S7LvvnKc+KXFHzP7gzt5h+T3ss9nkRq/ZxOzYnF12K+WJMb7/qhYnBP/uEOzxBK46TIyorxMm6b6YoS8961MRf7HO1PWIRqruIVDfIof/Kpz0n9xoKNK07g2UkPMzen8SaIIEzgjtk6lGort4bU0w=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?MU9tT3pNdXpMU2V1UENjcHdoNFVNTEkwcGJXUXlJNEZINEhRTHkzZ2hQNWR3?=
+ =?utf-8?B?c2daVDhBeVpZcXJxNkZEYVZWaHdnUWI1ZjFwbjIyejl0dTZBdlpaZUdOTFVD?=
+ =?utf-8?B?RUViNTY4cXhlendWWjNWM2ZPMlFVRXo1UWc2MUhvaWlubUZYVVQ1RGxUcnc4?=
+ =?utf-8?B?M1hDaThoTXc0Z0cwOXF5VkxGbG5Sb1NvZFFTK3lZREp5MVNVQlF2a0pOWUZN?=
+ =?utf-8?B?Z0lic3pRRmZZRDU1L1I5WXR2MENVMzltODk2OGx1WHdjalB4RVBYbjAxQ0Fz?=
+ =?utf-8?B?aEdIamVwaGxqZUswai8zdG9VOTBzbjBCdEViUmRsUElrOTR2Zk1pTWoxaVBL?=
+ =?utf-8?B?OFkwQnR6d1M1OFNxcUp3VGVYQkEyMzZJYkg1VkRXNndNNE0ySDhUQzFxamN3?=
+ =?utf-8?B?YTlNamFpTE5JWGFveXBSUW1QY2UyUjNQdDZmZi8rL25MMzkzaFBaVlYyWHBF?=
+ =?utf-8?B?UWhNUWlBcWVxSGdPVVY0bWNSOXFRenZTajlkK281eHRHY0h3Y2QvRFNWb3RT?=
+ =?utf-8?B?OXFsQWxSbXgvMFFrcjYzcDU0TG04SEJQS2I1UDJQZVNqbVJTbTlFV0hQM0hn?=
+ =?utf-8?B?d1NCZGIySVgwZCtGaytQc1FSM2x3dFhCWHlHOVI2WFBRMzNuSWllalJOVUtn?=
+ =?utf-8?B?VkZ2c2xKWXhXL05CNEJFMUVOUjVyTjlMalRIVkQ4UEpMRzhSYUpEVHJ3OGlZ?=
+ =?utf-8?B?a3lDdC9pb3h5b3dLV0M4MWp6dDRNcnlGSUUvdUlLYXczTVpLdCtWZitldFJG?=
+ =?utf-8?B?MGZrcXBBcHdkbHk3ZVYrTFBJd1hZcDdYZzNIY2UwV1JDaG80a01JMmljR0xI?=
+ =?utf-8?B?aFdqc3BkNys1SVVHc2NocVAxb0xKd0tKUURxV1dhbW9QUTJlM0I4bUFxVnRx?=
+ =?utf-8?B?UC9rT3ZIL2lzT2E1OEM0VW9RcUZaY1B1K1NlQ3Z2SzVROHRjNFZMNHpyMjN1?=
+ =?utf-8?B?TmdXTTlDRW5mYk90NmVheHA4WEVnN0ljSDVjVkcySjRqYmY5RHNqbTQvMkgz?=
+ =?utf-8?B?ZW1RQzJIaGE5eGk0VEc5ckwwQ0ZRVjJJZFB5WVUySWdkb1JqNTVLdFZ5MG1w?=
+ =?utf-8?B?QzJESGU3ZWhDeTNrOXNnWEZXWS9DR1ZJaVB2UEVPNVR2ZDVSdjVleHZzSHYy?=
+ =?utf-8?B?c3I4eE5DQ0JnZWFha0VDM0VlS0s1STB4THoxMGJrbGVWclQ4SkZ6L2dLUHdk?=
+ =?utf-8?B?VktRMXJPdnJuWEkzVmtLa1JlNWQySEJkQ0xjSGozY0Jzem5DMFlyUnlsN1hV?=
+ =?utf-8?B?WjR5NkV4ZHRuYVlnb3JHMVB4T1ZrMjJMK2p2dkJCRXE0N0VPTWtvTDFCQU5J?=
+ =?utf-8?B?M3cxYmxhcklCNDdLK1JIT2h6eWlkS1B0dWEwYVpaVCtZK3hmOVgwSWR1K1k3?=
+ =?utf-8?B?aHpZb2t5NlE3UWxObW52SjFiUXpzejVaT2pCdEIwYlB0cDJPcVdPR0ZmNWpu?=
+ =?utf-8?B?SmN1S1V2NFZBOHlaaE41VUorZGVqbHVCN0VJSjNyU012cU9ZaDlrRHYvTVdm?=
+ =?utf-8?B?bXY1MHA4ZkJtNHFCZ0lKMUJhUUtZdmhYYUlUZmJQbXM4SDViWlJDQTdTeStM?=
+ =?utf-8?B?d0ZlM2pxbHZZd2dTbittbDA2Wnl0NE9UUERYaTBkNUlSUzQxK2FXSkVhcjlo?=
+ =?utf-8?B?QURzTUIzd3o1OWpaSHNUMUNIeTBZWWdNUkxWMEorbDljVHo2UzluU2t4cmdC?=
+ =?utf-8?B?Y0VRTHhaSldLY2JLMWhKQUxWUzViRkYydU5ycTFlRXk4c1FvdGoyMUtISXpB?=
+ =?utf-8?B?NGE4RHBQRGMzSGhETnhPTThsTzdUc3htblA0TVRFSFE4K0xZL3hJaUVZWjR2?=
+ =?utf-8?B?V0ptVEVBVHpHajQ3dFdGYStidExIM0R6dldrWHRUVlBCdmk0a2lIaU9sZlE1?=
+ =?utf-8?B?dkFaQ05tRnRGbURWRklpQ2tqcjA5OWtnWC9ZU0ZYQVNON2NBbXdRTmMyOU1M?=
+ =?utf-8?B?MmtPWnlCVVhPVVdya1UrcWMvNURsZ2E2b01CTzNPMThrNklnUDhvZGU4RmhW?=
+ =?utf-8?B?UHl2NTV5eHpJczJqdjlSb3lvS1BJRGhaWkVjMnhKN1RCNDJHQnR4SDZXcGN3?=
+ =?utf-8?B?SE9sOWtZNitFWk52dHQ4eDZTNmdZaXI0U2NCaytXNWRCK082S3lDaUh2WVNp?=
+ =?utf-8?Q?ZVjxPWGDkEVZbUP7pzjXpFoa8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92ec08be-279b-4f49-e9c1-08dc443f000b
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 15:54:15.5402
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l3eEL/8arfDyjz2o9xBgl+01wTKY9kbYDLA1fyW47+xjYYvgKBgkmQFddrrUgNBa01RM35X1bCOH9xpA+/8+Cg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6335
 
-What works:
+On 3/13/2024 6:56 AM, Ivan Vecera wrote:
+> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
+> 
+> 
+> Commit 73d9629e1c8c ("i40e: Do not allow untrusted VF to remove
+> administratively set MAC") fixed an issue where untrusted VF was
+> allowed to remove its own MAC address although this was assigned
+> administratively from PF. Unfortunately the introduced check
+> is wrong because it causes that MAC filters for other MAC addresses
+> including multi-cast ones are not removed.
+> 
+> <snip>
+>          if (ether_addr_equal(addr, vf->default_lan_addr.addr) &&
+>              i40e_can_vf_change_mac(vf))
+>                  was_unimac_deleted = true;
+>          else
+>                  continue;
+> 
+>          if (i40e_del_mac_filter(vsi, al->list[i].addr)) {
+>          ...
+> </snip>
+> 
+> The else path with `continue` effectively skips any MAC filter
+> removal except one for primary MAC addr when VF is allowed to do so.
+> Fix the check condition so the `continue` is only done for primary
+> MAC address.
+> 
+> Fixes: 73d9629e1c8c ("i40e: Do not allow untrusted VF to remove administratively set MAC")
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> ---
+>   drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 11 ++++++-----
+>   1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+> index b34c71770887..10267a300770 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+> @@ -3143,11 +3143,12 @@ static int i40e_vc_del_mac_addr_msg(struct i40e_vf *vf, u8 *msg)
+>                  /* Allow to delete VF primary MAC only if it was not set
+>                   * administratively by PF or if VF is trusted.
+>                   */
+> -               if (ether_addr_equal(addr, vf->default_lan_addr.addr) &&
+> -                   i40e_can_vf_change_mac(vf))
+> -                       was_unimac_deleted = true;
+> -               else
+> -                       continue;
+> +               if (ether_addr_equal(addr, vf->default_lan_addr.addr)) {
+> +                       if (i40e_can_vf_change_mac(vf))
+> +                               was_unimac_deleted = true;
+> +                       else
+> +                               continue;
+> +               }
 
-- Serial console
-- mmc0, mmc2 (both microSD card slots on the board)
-- All buttons (gpio and lradc based)
-- Power LED
-- PMIC
-- RTC
-- USB OTG/gadgets mode
+Seems okay to me.
 
-Signed-off-by: Denis Burkov <hitechshell@mail.ru>
----
- arch/arm/boot/dts/allwinner/Makefile          |   2 +
- .../sun5i-a13-pocketbook-614-plus.dts         | 254 ++++++++++++++++++
- 2 files changed, 256 insertions(+)
- create mode 100644 arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
+Reviewed-by: Brett Creeley <brett.creeley@amd.com>
 
-diff --git a/arch/arm/boot/dts/allwinner/Makefile b/arch/arm/boot/dts/allwinner/Makefile
-index 2d26c3397f14..fe321865beed 100644
---- a/arch/arm/boot/dts/allwinner/Makefile
-+++ b/arch/arm/boot/dts/allwinner/Makefile
-@@ -61,6 +61,7 @@ dtb-$(CONFIG_MACH_SUN5I) += \
- 	sun5i-a13-olinuxino.dtb \
- 	sun5i-a13-olinuxino-micro.dtb \
- 	sun5i-a13-pocketbook-touch-lux-3.dtb \
-+	sun5i-a13-pocketbook-614-plus.dtb \
- 	sun5i-a13-q8-tablet.dtb \
- 	sun5i-a13-utoo-p66.dtb \
- 	sun5i-gr8-chip-pro.dtb \
-@@ -82,6 +83,7 @@ dtb-$(CONFIG_MACH_SUN5I) += \
- 	sun5i-a13-olinuxino.dtb \
- 	sun5i-a13-olinuxino-micro.dtb \
- 	sun5i-a13-pocketbook-touch-lux-3.dtb \
-+	sun5i-a13-pocketbook-614-plus.dtb \
- 	sun5i-a13-q8-tablet.dtb \
- 	sun5i-a13-utoo-p66.dtb \
- 	sun5i-gr8-chip-pro.dtb \
-diff --git a/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-new file mode 100644
-index 000000000000..89898fa16ff7
---- /dev/null
-+++ b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-@@ -0,0 +1,254 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2024 Denis Burkov <hitechshell@mail.ru>
-+ */
-+
-+/dts-v1/;
-+#include "sun5i-a13.dtsi"
-+#include "sunxi-common-regulators.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+
-+/ {
-+	model = "PocketBook 614 Plus";
-+	compatible = "pocketbook,614-plus", "allwinner,sun5i-a13";
-+
-+	aliases {
-+		serial0 = &uart1;
-+		i2c0 = &i2c0;
-+		i2c1 = &i2c1;
-+		i2c2 = &i2c2;
-+		rtc0 = &pcf8563;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&led_pins_pocketbook>;
-+
-+		led {
-+			gpios = <&pio 4 8 GPIO_ACTIVE_LOW>; /* PE8 */
-+			default-state = "on";
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		autorepeat;
-+		label = "GPIO Keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pocketbook_btn_pins>;
-+
-+		key-right {
-+			label = "Right";
-+			linux,code = <KEY_NEXT>;
-+			gpios = <&pio 6 9 GPIO_ACTIVE_LOW>; /* PG9 */
-+		};
-+
-+		key-left {
-+			label = "Left";
-+			linux,code = <KEY_PREVIOUS>;
-+			gpios = <&pio 6 10 GPIO_ACTIVE_LOW>; /* PG10 */
-+		};
-+	};
-+
-+	reg_3v3_mmc0: regulator-mmc0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd-mmc0";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pocketbook_reg_mmc0_pins>;
-+		gpio = <&pio 4 4 GPIO_ACTIVE_LOW>; /* PE4 */
-+		vin-supply = <&reg_vcc3v3>;
-+	};
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&reg_dcdc2>;
-+};
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+
-+	axp209: pmic@34 {
-+		compatible = "x-powers,axp209";
-+		reg = <0x34>;
-+		interrupts = <0>;
-+	};
-+};
-+
-+#include "axp209.dtsi"
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	pcf8563: rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+		#clock-cells = <0>;
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+
-+	/* Touchpanel is connected here. */
-+};
-+
-+&lradc {
-+	vref-supply = <&reg_ldo2>;
-+	status = "okay";
-+
-+	button-300 {
-+		label = "Down";
-+		linux,code = <KEY_DOWN>;
-+		channel = <0>;
-+		voltage = <300000>;
-+	};
-+
-+	button-700 {
-+		label = "Up";
-+		linux,code = <KEY_UP>;
-+		channel = <0>;
-+		voltage = <700000>;
-+	};
-+
-+	button-1000 {
-+		label = "Left";
-+		linux,code = <KEY_LEFT>;
-+		channel = <0>;
-+		voltage = <1000000>;
-+	};
-+
-+	button-1200 {
-+		label = "Menu";
-+		linux,code = <KEY_MENU>;
-+		channel = <0>;
-+		voltage = <1200000>;
-+	};
-+
-+	button-1500 {
-+		label = "Right";
-+		linux,code = <KEY_RIGHT>;
-+		channel = <0>;
-+		voltage = <1500000>;
-+	};
-+};
-+
-+&mmc0 {
-+	vmmc-supply = <&reg_3v3_mmc0>;
-+	bus-width = <4>;
-+	cd-gpios = <&pio 6 0 GPIO_ACTIVE_LOW>; /* PG0 */
-+	status = "okay";
-+};
-+
-+&mmc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc2_4bit_pc_pins>;
-+	vmmc-supply = <&reg_vcc3v3>;
-+	bus-width = <4>;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&ohci0 {
-+	status = "okay";
-+};
-+
-+&otg_sram {
-+	status = "okay";
-+};
-+
-+&pio {
-+	led_pins_pocketbook: led-pin {
-+		pins = "PE8";
-+		function = "gpio_out";
-+	};
-+	pocketbook_btn_pins: btn-pins {
-+		pins = "PG9", "PG10";
-+		function = "gpio_in";
-+		bias-pull-up;
-+	};
-+	pocketbook_reg_mmc0_pins: reg-mmc0-pins {
-+		pins = "PE4";
-+		function = "gpio_out";
-+	};
-+};
-+
-+&reg_dcdc2 {
-+	regulator-always-on;
-+	regulator-min-microvolt = <1000000>;
-+	regulator-max-microvolt = <1500000>;
-+	regulator-name = "vdd-cpu";
-+};
-+
-+&reg_dcdc3 {
-+	regulator-always-on;
-+	regulator-min-microvolt = <1000000>;
-+	regulator-max-microvolt = <1400000>;
-+	regulator-name = "vdd-int-dll";
-+};
-+
-+&reg_ldo1 {
-+	regulator-name = "vdd-rtc";
-+};
-+
-+&reg_ldo2 {
-+	regulator-always-on;
-+	regulator-min-microvolt = <3000000>;
-+	regulator-max-microvolt = <3000000>;
-+	regulator-name = "avcc";
-+};
-+
-+&reg_ldo3 {
-+	regulator-min-microvolt = <3300000>;
-+	regulator-max-microvolt = <3300000>;
-+	regulator-name = "vcc-wifi";
-+};
-+
-+&reg_usb0_vbus {
-+	status = "okay";
-+	gpio = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
-+};
-+
-+&reg_usb1_vbus {
-+	gpio = <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart1_pg_pins>;
-+	status = "okay";
-+};
-+
-+&usb_otg {
-+	dr_mode = "otg";
-+	status = "okay";
-+};
-+
-+&usb_power_supply {
-+	status = "okay";
-+};
-+
-+&battery_power_supply {
-+	status = "okay";
-+};
-+
-+&usbphy {
-+	usb0_id_det-gpios = <&pio 6 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>; /* PG2 */
-+	usb0_vbus_det-gpios = <&axp_gpio 1 GPIO_ACTIVE_HIGH>;
-+	usb0_vbus-supply = <&reg_usb0_vbus>;
-+	usb1_vbus-supply = <&reg_usb1_vbus>;
-+	status = "okay";
-+};
--- 
-2.43.0
-
+> 
+>                  if (i40e_del_mac_filter(vsi, al->list[i].addr)) {
+>                          ret = -EINVAL;
+> --
+> 2.43.0
+> 
+> 
 
