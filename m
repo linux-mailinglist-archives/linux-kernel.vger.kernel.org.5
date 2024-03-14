@@ -1,62 +1,68 @@
-Return-Path: <linux-kernel+bounces-103455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D85E087BF93
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:07:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CD4587BF94
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68BBBB22A0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:07:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADD5B1C21753
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E017174A;
-	Thu, 14 Mar 2024 15:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498CB71741;
+	Thu, 14 Mar 2024 15:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kM8VADVD"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gfl+o6Vt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344BF29CE3;
-	Thu, 14 Mar 2024 15:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87853DDD9;
+	Thu, 14 Mar 2024 15:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710428845; cv=none; b=uQLCbvCYGyvoeqtkqMzVqRUgBUXpcyxLpYZypfqUXe/Yf2j9Vb45nyZaqsJBQgtPR1IJvc70wukjOAjJK3TSyjtSabi3eIz0hauxubPfLkgrSqHCGf9sj2oXUDl2bStdTBXvqmWIOLI/vaUN+EsAUM3zIyAWKfw9qu5otW/R8h0=
+	t=1710428857; cv=none; b=SZ4ilK/PguZv6sZ0LkDcyztq7NGviH5+ziHB2rqOQj3xEj4vZutNRZnu96mNTzPfR3biSUSi29EFqer9pV2hEsKtXLZABd1gU+XiFk6s5c4pHCdQ2TfqTJhdYpqVdqBh8RDUTo9NLVl0vzmz9obILF0B0evKGS1n7YUe+2JtbGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710428845; c=relaxed/simple;
-	bh=UDO+GCBQ2Q8HVX/DgX++9oioBWZq9EGTDYBCcJjoj7k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JXUQkamQPHS6lIRhQtxsfE/2U6oRKxKaDf1IN3GJAKV2YugKIn5sN/0pQ0piJUIdn5wDsmWGcFWhxHMA1atgLRBIYf+/oIJhj5zJ2J4B7P/ynasqLbR/WedUYWagcF4thDkF0sZ22gJzRm6TRc4Fu5GPF3+qEzo5qkCOxY+aRTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kM8VADVD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B30D3C433F1;
-	Thu, 14 Mar 2024 15:07:24 +0000 (UTC)
+	s=arc-20240116; t=1710428857; c=relaxed/simple;
+	bh=GTQVrWcs6XBMnV9a14mAay7RyQJOjR0XkVbs68SqZPM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=F0CKbxS9CbwAI4V1LblbZvVy5KOGq75UAGoKdxwRmRdvintycE6pAceu24mLE4TEJ4jOj0QxDLaQVHj/4IPcBaifgltVGOubC4ieoXd/53Y+gaud+ENJ/VO2bkjeDt6XIvHk1akc9tTRCEwL5uBDVcDK5Ck8KovSmdGD2EhhIJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gfl+o6Vt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92F50C433F1;
+	Thu, 14 Mar 2024 15:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710428844;
-	bh=UDO+GCBQ2Q8HVX/DgX++9oioBWZq9EGTDYBCcJjoj7k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kM8VADVD2HQiVDgozP7tWxSYt1hVTgBtx9xVZYEIGbWPlQb7MY7iWsd18hnwCHKRH
-	 //Sx3ZXVgXvYvCBcrC5Eb8BMbnePZAlOdFRLi0mXF9+YUaHvwSWw0Q0gB+P+5ShMiv
-	 RAKqLtewuovmzU2IYFUxPZexuQUbg/XJiqos9adOu2mXpitIlKlNHP50etzuWLLpB5
-	 2HTKbU1JyBiHtmrpfWBnuBlgXPMv96fPCisDYU132tOiYKqHX2bHFVwEVPGUi0rWBU
-	 wqJbP8CuP8y6cmcC1re/5CdrvU/OmVaQ27CLZEvYVd2qUmewPm1hV+NZXPpfDkvrpE
-	 tMcoSVFJrAK7Q==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rkmg8-000000004p1-35kT;
-	Thu, 14 Mar 2024 16:07:33 +0100
-Date: Thu, 14 Mar 2024 16:07:32 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-Message-ID: <ZfMStHjwtCT1SW3z@hovoldconsulting.com>
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
- <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
+	s=k20201202; t=1710428857;
+	bh=GTQVrWcs6XBMnV9a14mAay7RyQJOjR0XkVbs68SqZPM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Gfl+o6VtDn9x2Fj955iyoM1+yBnt/TsF7oYp6foNPn9asCM6e9NsX2I9HbgeW5uI5
+	 fcoKb3FedKukBXX05fexGqKId3twgTL/3iq3jcYCxobZ48JHMiJZeVz6tNs+6+wtPk
+	 w0PHcqFQDARplTSrKVp2EpgNYKTWO/itjTRfg5WmqLw27khIRRf86AdB+DLL+0n6yq
+	 YuRRZ8GgUx+px5xHy1V2xBnnxhSwa01rK/mFRerJSP2rfaYES1mWmZYix4YtILbgy8
+	 IdhL0TkeHcMvr787XJOsXnCZPM+gUee6OTjB2Y6oT4qAy7EhvEt6PntEVMY5jSyrkk
+	 loOBoYle/+6mg==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Puranjay Mohan <puranjay12@gmail.com>, Mark Rutland
+ <mark.rutland@arm.com>, Andy Chiu <andy.chiu@sifive.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Sami Tolvanen <samitolvanen@google.com>,
+ Guo Ren <guoren@kernel.org>, Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+ Deepak Gupta <debug@rivosinc.com>, Sia Jee Heng
+ <jeeheng.sia@starfivetech.com>, Bjorn Topel <bjorn@rivosinc.com>, Song
+ Shuai <suagrfillet@gmail.com>, Cl'ement L'eger <cleger@rivosinc.com>, Al
+ Viro <viro@zeniv.linux.org.uk>, Jisheng Zhang <jszhang@kernel.org>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Robbin Ehn <rehn@rivosinc.com>
+Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
+In-Reply-To: <mb61pplvw6grf.fsf@gmail.com>
+References: <20240306165904.108141-1-puranjay12@gmail.com>
+ <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
+ <ZfBbxPDd0rz6FN2T@FVFF77S0Q05N>
+ <8734suqsth.fsf@all.your.base.are.belong.to.us>
+ <mb61pplvw6grf.fsf@gmail.com>
+Date: Thu, 14 Mar 2024 16:07:33 +0100
+Message-ID: <87zfv0onre.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,60 +70,111 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 14, 2024 at 10:30:36AM -0400, Luiz Augusto von Dentz wrote:
-> On Thu, Mar 14, 2024 at 4:44 AM Johan Hovold <johan+linaro@kernel.org> wrote:
+Puranjay Mohan <puranjay12@gmail.com> writes:
 
-> > This reverts commit 7dcd3e014aa7faeeaf4047190b22d8a19a0db696.
-> >
-> > Qualcomm Bluetooth controllers like WCN6855 do not have persistent
-> > storage for the Bluetooth address and must therefore start as
-> > unconfigured to allow the user to set a valid address unless one has
-> > been provided by the boot firmware in the devicetree.
-> >
-> > A recent change snuck into v6.8-rc7 and incorrectly started marking the
-> > default (non-unique) address as valid. This specifically also breaks the
-> > Bluetooth setup for some user of the Lenovo ThinkPad X13s.
-> >
-> > Note that this is the second time Qualcomm breaks the driver this way
-> > and that this was fixed last year by commit 6945795bc81a ("Bluetooth:
-> > fix use-bdaddr-property quirk"), which also has some further details.
-> >
-> > Fixes: 7dcd3e014aa7 ("Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT")
-> > Cc: stable@vger.kernel.org      # 6.8
-> > Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> 
-> Well I guess I will need to start asking for evidence that this works
-> on regular Linux distros then, because it looks like that is not the
-> environment Janaki and others Qualcomm folks are testing with.
-> 
-> What I probably would consider as evidence is bluetoothd logs showing
-> that the controller has been configured correctly or perhaps there is
-> a simpler way?
+> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+>
+>>
+>> Hmm, depending on RISC-V's CMODX path, the pro/cons CALL_OPS vs dynamic
+>> trampolines changes quite a bit.
+>>
+>> The more I look at the pains of patching two instruction ("split
+>> immediates"), the better "patch data" + one insn patching look.
+>
+> I was looking at how dynamic trampolines would be implemented for RISC-V.
+>
+> With CALL-OPS we need to patch the auipc+jalr at function entry only, the
+> ops pointer above the function can be patched atomically.
+>
+> With a dynamic trampoline we need a auipc+jalr pair at function entry to =
+jump
+> to the trampoline and then another auipc+jalr pair to jump from trampolin=
+e to
+> ops->func. When the ops->func is modified, we would need to update the
+> auipc+jalr at in the trampoline.
+>
+> So, I am not sure how to move forward here, CALL-OPS or Dynamic trampolin=
+es?
 
-Well, in this case we actually want the controller to remain
-unconfigured (e.g. to avoid having every user of the X13s unknowingly
-use the same default address). 
+Yeah. Honestly, we need to figure out the patching story prior
+choosing the path, so let's start there.
 
-I'm not sure why Qualcomm insists on breaking these quirks, but I guess
-they just haven't understood why they exist. It's of course convenient
-to be able to use the default address during development without first
-having to provide an address, but that's not a valid reason to break the
-driver.
+After reading Mark's reply, and discussing with OpenJDK folks (who does
+the most crazy text patching on all platforms), having to patch multiple
+instructions (where the address materialization is split over multiple
+instructions) is a no-go. It's just a too big can of worms. So, if we
+can only patch one insn, it's CALL_OPS.
 
-From what I hear the Qualcomm developers only care about Android and I
-believe they have some out-of-tree hack for retrieving the device
-address directly from the rootfs.
+A couple of options (in addition to Andy's), and all require a
+per-function landing address ala CALL_OPS) tweaking what Mark is doing
+on Arm (given the poor branch range).
 
-For the X13s, and as I think I've mentioned before, we have been trying
-to get Qualcomm to tell us how to access the assigned addresses that are
-stored in some secure world storage so that we can set it directly from
-the driver. But until we figure that out, users will need to continue
-setting the address manually.
+..and maybe we'll get RISC-V rainbows/unicorns in the future getting
+better reach (full 64b! ;-)).
 
-Johan
+A) Use auipc/jalr, only patch jalr to take us to a common
+   dispatcher/trampoline
+=20=20
+ | <func_trace_target_data_8B> # probably on a data cache-line !=3D func .t=
+ext to avoid ping-pong
+ | ...
+ | func:
+ |   ...make sure ra isn't messed up...
+ |   aupic
+ |   nop <=3D> jalr # Text patch point -> common_dispatch
+ |   ACTUAL_FUNC
+ |=20
+ | common_dispatch:
+ |   load <func_trace_target_data_8B> based on ra
+ |   jalr
+ |   ...
+
+The auipc is never touched, and will be overhead. Also, we need a mv to
+store ra in a scratch register as well -- like Arm. We'll have two insn
+per-caller overhead for a disabled caller.
+
+B) Use jal, which can only take us +/-1M, and requires multiple
+   dispatchers (and tracking which one to use, and properly distribute
+   them. Ick.)
+
+ | <func_trace_target_data_8B> # probably on a data cache-line !=3D func .t=
+ext to avoid ping-pong
+ | ...
+ | func:
+ |   ...make sure ra isn't messed up...
+ |   nop <=3D> jal # Text patch point -> within_1M_to_func_dispatch
+ |   ACTUAL_FUNC
+ |=20
+ | within_1M_to_func_dispatch:
+ |   load <func_trace_target_data_8B> based on ra
+ |   jalr
+
+C) Use jal, which can only take us +/-1M, and use a per-function
+   trampoline requires multiple dispatchers (and tracking which one to
+   use). Blows up text size A LOT.
+
+ | <func_trace_target_data_8B> # somewhere, but probably on a different cac=
+heline than the .text to avoid ping-ongs
+ | ...
+ | per_func_dispatch
+ |   load <func_trace_target_data_8B> based on ra
+ |   jalr
+ | func:
+ |   ...make sure ra isn't messed up...
+ |   nop <=3D> jal # Text patch point -> per_func_dispatch
+ |   ACTUAL_FUNC
+
+It's a bit sad that we'll always have to have a dispatcher/trampoline,
+but it's still better than stop_machine(). (And we'll need a fencei IPI
+as well, but only one. ;-))
+
+Today, I'm leaning towards A (which is what Mark suggested, and also
+Robbin).. Any other options?
+
+[Now how do we implement OPTPROBES? I'm kidding. ;-)]
+
+
+Bj=C3=B6rn
 
