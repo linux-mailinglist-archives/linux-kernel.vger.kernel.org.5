@@ -1,100 +1,88 @@
-Return-Path: <linux-kernel+bounces-103148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19CAB87BB9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:57:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB6787BB9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:58:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 853241F237B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:57:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BE5DB23E87
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE94A6EB4C;
-	Thu, 14 Mar 2024 10:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DD86F072;
+	Thu, 14 Mar 2024 10:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fH4Ew/5E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DoIgMTFu";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fH4Ew/5E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DoIgMTFu"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bSEoxgrS"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BCE6DCE3;
-	Thu, 14 Mar 2024 10:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B006EB73;
+	Thu, 14 Mar 2024 10:57:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710413849; cv=none; b=jInkzaAruBH4XkWioFQ93xA/szjPcQqKjsz7M4Lka97AfQjKj1wTed2Voj3/2HuCCSOVE4bQGbXY+zBiYCgnDa952cnuOnD7ABTNo3YCZIaWW6II9DO5bmMymr5V5opNHoPggKtuS0B5kJeIkPKIhqRaxDo5M2A6A08XhA0YG+E=
+	t=1710413855; cv=none; b=Evv4fygb00GMMfi2YB36IA7i5xoDSPlX+C/yhiQjT2d3rCrK8ZbUgOJDelwCmPfR8sG0zy5nxTU4xwS0YfY3nogpDPA7GisfNChMaagyVgOLFZ/+wm0icaOFExEtZsE4n4h/Cur3tUlEiTTHxbC/SGZS4jxnrvsEebVh/gzXka4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710413849; c=relaxed/simple;
-	bh=lN+o+sy/b4sSQ0Euh7pwJ3UNsh94+te5f88NY5XA2j4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uNEhITc2XzJdnKPusu749VLpgHh3Q9pd2TV89NWyh5KpU92AlEsGswZj/UI0TNdmCu4QKmS1BQEb4GBXc/0FpCQZL49UUI3w1Fqebee9pNUpZpEUzXk8Y27TCwuRX8VNXZ+qiX42MIDk+zmJjTs7BrloIraEEqLF3O/tyDsNq0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fH4Ew/5E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DoIgMTFu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fH4Ew/5E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DoIgMTFu; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 20DE821C83;
-	Thu, 14 Mar 2024 10:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710413846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KB+QJfsxVWgzPlKw2RN08zlrokt0dFW1xGWyQPDlI34=;
-	b=fH4Ew/5ET4pOBiR/SnFatadpCoyGZ2KTrIV0HI1JUX7Hu1pJSHzyXanjnlmfxJV+yzFRyp
-	AfL9dEtyxPSBvUc+qn6cgq+bkMZEQ9vQW6jloKkmwLu2LiVLd+CrDlAiZcCEPMu9zMDPXa
-	DFrTBep2VtlZBfpYCvIOOTdZtxlv3Cw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710413846;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KB+QJfsxVWgzPlKw2RN08zlrokt0dFW1xGWyQPDlI34=;
-	b=DoIgMTFuqvgI1uwzc9/XXnQ/l45LOO5PtatGEcPX1L0fq5glKtc4Dux/OIwKjwEOhOyoi0
-	Ibdnys8bMtsdeSAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710413846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KB+QJfsxVWgzPlKw2RN08zlrokt0dFW1xGWyQPDlI34=;
-	b=fH4Ew/5ET4pOBiR/SnFatadpCoyGZ2KTrIV0HI1JUX7Hu1pJSHzyXanjnlmfxJV+yzFRyp
-	AfL9dEtyxPSBvUc+qn6cgq+bkMZEQ9vQW6jloKkmwLu2LiVLd+CrDlAiZcCEPMu9zMDPXa
-	DFrTBep2VtlZBfpYCvIOOTdZtxlv3Cw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710413846;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KB+QJfsxVWgzPlKw2RN08zlrokt0dFW1xGWyQPDlI34=;
-	b=DoIgMTFuqvgI1uwzc9/XXnQ/l45LOO5PtatGEcPX1L0fq5glKtc4Dux/OIwKjwEOhOyoi0
-	Ibdnys8bMtsdeSAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 118541386E;
-	Thu, 14 Mar 2024 10:57:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id r+ZBBBbY8mXTWAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 10:57:26 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B6A0DA07D9; Thu, 14 Mar 2024 11:57:21 +0100 (CET)
-Date: Thu, 14 Mar 2024 11:57:21 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+d3cd38158cd7c8d1432c@syzkaller.appspotmail.com>
-Cc: almaz.alexandrovich@paragon-software.com, anton@tuxera.com,
-	axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
-	linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-	ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ntfs3?] KASAN: use-after-free Read in ntfs_read_folio
-Message-ID: <20240314105721.q2xd5zq3st7awjfh@quack3>
-References: <0000000000009146bb05f71b03a0@google.com>
- <0000000000008414ba06125ba07f@google.com>
+	s=arc-20240116; t=1710413855; c=relaxed/simple;
+	bh=r896VFbfcS0xuGXvgjLwcx9xIEMapA2z9gV09qYRM7o=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lJDEYLHlTBshSXELTrr+rgLpAZ4S1lDtBsxVaeFuDUaSgdk/WkIADq4s3k8DTW4dG2MLFrT+xlsChCbVKXEf6GzDtuQ+QvdsOfLBuC+CqI44ZyPEe9+1maEujf+eyGjVmnbNrgTQFSo2hyUrgE3i6a5xsjdtAE65g1U/KrY1zTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bSEoxgrS; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5683576ea18so1038163a12.3;
+        Thu, 14 Mar 2024 03:57:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710413851; x=1711018651; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xo1CXpxaozz3bIcU8SWM6IvQgEAj2vZ6WjYgjDbJujM=;
+        b=bSEoxgrSQ4pxwo/EHAu3SNbKethMBpjameqeJLtFQf7Wz3nFsRTDIbhy8Uver1BF5V
+         a5RE8SdcwE+o2kRm5sl6uxAPOy5Gc3pFMruz4OOfHMur+m4TideqwEWNFp3N4lWURYuc
+         T0AgYoBc7GFklldury6gWDNygqPmA9rp6YHvRDd3+HselTw5r0UHiBdy7fjj/r/R+M2p
+         Z+9bcEcMpObI3mZ50hey1dd4yMlSCSufxk1XjgLhhZlBx5LteL/7EFjs778K+0jI0fmZ
+         KHTVrfJezu+V4YOecmD7nOnTrKVAkzlguY4mWTZhstXD3bGcHKyrqvyi+GUzuXoXCH96
+         SGsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710413851; x=1711018651;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xo1CXpxaozz3bIcU8SWM6IvQgEAj2vZ6WjYgjDbJujM=;
+        b=GTMLY3pd9eRTwVzVCq8sZkTmxE4NnkhLe/O05WV2Eav8Z3+9V2/NkwGH8pE/V+G+yT
+         NWXGgi4O1fXr3qHs+h4LD2xDDn51w2imNX+YuwXswTdFDf3xDsrCsz2tSooaZKz/sIJv
+         aqhLB0LzMmR2PCKmv2oO5sLUEc2ijKkSGZ8OIHxycSGufdFLORDA9nLBMNHng5sVGfjK
+         /8nlKh0aDIAB0B+WJ98kwGRKg8JfR2LPwCYrUM//NtaUN6m/uFfreYVhJ5+sgVZP+PCA
+         ZQS4vGRqGHnqHWF/8QDSMvnYWMtBts3ATDHq+4kVZs+d9Uhp9EvdG9E9EuDQfU1WTHST
+         KSIg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNHdgZ6m1qe5YkKj4Re7GWy2elnaeHXcN0kjGkjH5XNOoGPsnT5uUWYJdlSA9PjBs8pLv2WBzhnkJh2ldfrmUqlcaYm5WVnzkLlfxdb+AuiCABZJWzJTj3ew596IhZYpBPWGrmuepA
+X-Gm-Message-State: AOJu0YxXrWJYnu1cUbro4oRvQACVcgncl1ZAmBCGV1cxuXBZ0m/5h0tC
+	BXs49QjLLsjqJ42pRvMCzRvDJcPeYS7tXtLA1y1xnFOAvpGcHou4
+X-Google-Smtp-Source: AGHT+IGw/KeaG17TYOgZ30Ngr/ndiMiQGoIcXycvl1tBSZjJ7CzVWdChe7/tUBvg0IT6qFXkb6YcSA==
+X-Received: by 2002:a17:907:cbc6:b0:a46:22a3:4798 with SMTP id vk6-20020a170907cbc600b00a4622a34798mr1298961ejc.46.1710413850593;
+        Thu, 14 Mar 2024 03:57:30 -0700 (PDT)
+Received: from vamoirid-EDL-PC ([2001:1458:204:1::102:bd5f])
+        by smtp.gmail.com with ESMTPSA id p25-20020a1709061b5900b00a461d8335f2sm587897ejg.45.2024.03.14.03.57.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 03:57:30 -0700 (PDT)
+From: vamoirid <vassilisamir@gmail.com>
+X-Google-Original-From: vamoirid <vamoirid@vamoirid-edl-pc>
+Date: Thu, 14 Mar 2024 11:57:28 +0100
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, jic23@kernel.org,
+	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
+	ak@it-klinger.de, petre.rodan@subdimension.ro,
+	linus.walleij@linaro.org, phil@raspberrypi.com, 579lpy@gmail.com,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] iio: pressure: add SCALE and RAW values for
+ channels
+Message-ID: <ZfLYGL/vXMHUGghz@vamoirid-EDL-PC>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+ <20240313174007.1934983-4-vassilisamir@gmail.com>
+ <ZfH4bET-HX0e3PO_@smile.fi.intel.com>
+ <20240313195110.GB1938985@vamoiridPC>
+ <ZfIGtUPZpyDBnWwz@smile.fi.intel.com>
+ <20240313212812.GE1938985@vamoiridPC>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,70 +91,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000008414ba06125ba07f@google.com>
-X-Spam-Level: *
-X-Spamd-Bar: +
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="fH4Ew/5E";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DoIgMTFu
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [1.37 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.997];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.12)[66.89%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b];
-	 TAGGED_RCPT(0.00)[d3cd38158cd7c8d1432c];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,syzkaller.appspot.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: 1.37
-X-Rspamd-Queue-Id: 20DE821C83
-X-Spam-Flag: NO
+In-Reply-To: <20240313212812.GE1938985@vamoiridPC>
 
-On Tue 27-02-24 03:50:04, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On Wed, Mar 13, 2024 at 10:28:12PM +0100, Vasileios Amoiridis wrote:
+> On Wed, Mar 13, 2024 at 10:04:05PM +0200, Andy Shevchenko wrote:
+> > On Wed, Mar 13, 2024 at 08:51:10PM +0100, Vasileios Amoiridis wrote:
+> > > On Wed, Mar 13, 2024 at 09:03:08PM +0200, Andy Shevchenko wrote:
+> > > > On Wed, Mar 13, 2024 at 06:40:04PM +0100, Vasileios Amoiridis wrote:
+> > > > > Add extra IIO_CHAN_INFO_SCALE and IIO_CHAN_INFO_RAW in order to be
+> > > > > able to calculate the processed value with standard userspace IIO
+> > > > > tools. Can be used for triggered buffers as well.
+> > 
+> > ...
+> > 
+> > > > > +	case IIO_CHAN_INFO_RAW:
+> > > > > +		switch (chan->type) {
+> > > > > +		case IIO_HUMIDITYRELATIVE:
+> > > > > +			*val = data->chip_info->read_humid(data);
+> > > > > +			ret = IIO_VAL_INT;
+> > > > > +			break;
+> > > > > +		case IIO_PRESSURE:
+> > > > > +			*val = data->chip_info->read_press(data);
+> > > > > +			ret = IIO_VAL_INT;
+> > > > > +			break;
+> > > > > +		case IIO_TEMP:
+> > > > > +			*val = data->chip_info->read_temp(data);
+> > > > > +			ret = IIO_VAL_INT;
+> > > > > +			break;
+> > > > > +		default:
+> > > > > +			ret = -EINVAL;
+> > > > > +			break;
+> > > > 
+> > > > Is it mutex that prevents us from returning here?
+> > > > If so, perhaps switching to use cleanup.h first?
+> > > 
+> > > I haven't seen cleanup.h used in any file and now that I searched,
+> > > only 5-6 are including it.
+> > 
+> > Hmm... Which repository you are checking with?
+> > 
+> > $ git grep -lw cleanup.h -- drivers/ | wc -l
+> > 47
+> > 
+> > (Today's Linux Next)
+> >
 > 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
+> I am checking the drivers/iio of 6.8 (on sunday) and I can only find 7
+> drivers that use it.
 > 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a70f4a180000
-> start commit:   ac865f00af29 Merge tag 'pci-v6.7-fixes-2' of git://git.ker..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d3cd38158cd7c8d1432c
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12769ba5e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10c2b97ee80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+> > > I am currently thinking if the mutex
+> > > that already exists is really needed since most of the drivers
+> > > don't have it + I feel like this is something that should be done
+> > > by IIO, thus maybe it's not even needed here.
+> >
 
-No working reproducer so:
+After some researching today, I realized that all the                           
+{read/write}_{raw/avail}_{multi/}() functions are in drivers/iio/inkern.c
+for channel mapping in the kernel and it looks like they are guarded by
+the mutex_{un}lock(&iio_dev_opaque->info_exist_lock). So I feel that the
+mutexes in the aforementioned functions can be dropped. When you have the
+time please have a look, maybe the could be dropped.
 
-#syz fix: fs: Block writes to mounted block devices
+In general, there is quite some cleaning that can be done in this driver
+but is it wise to include it in the triggered buffer support series??? I
+have noticed quite some things that could be improved but I am hesitating
+to do it now in order to not "pollute" this series with many cleanups and
+leave it for another cleanup series for example.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Best regards,
+Vasilis Amoiridis
+
+> > > > > +		}
+> > > > > +		break;
+> > 
+> > -- 
+> > With Best Regards,
+> > Andy Shevchenko
+> > 
+> > 
 
