@@ -1,297 +1,254 @@
-Return-Path: <linux-kernel+bounces-102709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6D5A87B64A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:06:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F3CF87B656
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A92F28318F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:06:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1C5E286AFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C9209454;
-	Thu, 14 Mar 2024 02:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BA04A15;
+	Thu, 14 Mar 2024 02:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LOZ237Ag"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="khKOdLPu"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA1753A0;
-	Thu, 14 Mar 2024 02:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB6E1C06
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710381944; cv=none; b=LEK1sJDuToqcXwrAj60VadsOMK21kft/QL5hQeLXZ2X6Qi40eErQi6DPD4VZi9YthDUQ8oXTNz8/Xku7MLbif6NXDaRa8Jh1OxRUQqY+NAMqK2Vk+Qru5+UmtKWEJTrvJ7G9E5ub8T6gOf98JrO2I6BzETTsY6v+JvVZJ1yZ7aM=
+	t=1710382543; cv=none; b=guW6/QnLkjja6ROahG/FRKRhizCY5M3dnYIe6dyj2K7afLCZfUyBsX3i9seRvbDGWK5lipE+1WB0IEsO+ajCTTCkDyrXOKR/j3rr26qdIQESRwMncFVYRXS2xe9fWh9ftxl0QP0wXjai+pDDGy/acloocjSWicwo9Wc8f3O3QFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710381944; c=relaxed/simple;
-	bh=cRptNJgw5yHuUq4Slch3zYQUVuz7tKOCUXa79hcLgxs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jM1k1DRh0yyakW3eJx0AKLFT7lECetB8LGyx9hz/F9e1p7+uPFvhyc2LdMRvZK1id5tw7DCfLrRSx/Rzs9dhGmQWISW1Dnjp2cGG2xF31I7LzLRxReN0fqs5bjp1FBHJaSLCD01z8VN6d+EwD8XvW6h9d9mOC7zsJaxun89iD6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LOZ237Ag; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710381942; x=1741917942;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=cRptNJgw5yHuUq4Slch3zYQUVuz7tKOCUXa79hcLgxs=;
-  b=LOZ237Agw0QJltj4M9/yVD2eoSRyhkzsmbTv9PsMPT9gEL7cQpirbvFa
-   acbxe+++7uVg0Pd1ED5WUGOrtOESByeibTT8U7UqbfzT+kYhZFENmNfAk
-   2g36ZhI5mvHOdhngRIS+h4kynny/AiZ+4kHh5JGzxIAYJTL1yHcWvNJ7r
-   OOOGnw9LMo4Cj2l9hVJwt4jLiLCgIcXDR8C9p/+0fsjbyt3oLjQvP+IaE
-   RnMGWGWyPhJRI4GHBUymMH1OWmBBFyE03pKmuurL/+ceGrIXboqTAfagu
-   2nNhkViqYKfWuZWYbc45TVAgdjtNMWAZYt1DCkKXZZAt2Jvv61FxLD/ut
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="5029642"
-X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
-   d="scan'208";a="5029642"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 19:05:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,124,1708416000"; 
-   d="scan'208";a="12583862"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 19:05:38 -0700
-Message-ID: <f5da22e3-55fd-4e8b-8112-ccf1468012c8@linux.intel.com>
-Date: Thu, 14 Mar 2024 10:05:35 +0800
+	s=arc-20240116; t=1710382543; c=relaxed/simple;
+	bh=8D8DM2Ehu+d0G7A6rtunPe5CuzjyEvLi4IW+E1vOxMk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a1NnbSBQVPlLrsIvMswCAZrKTyWCA43eG2QX/c+mGYXti9JjAtB343u+Bul56j73bdVbixhA0WjMlNHQoj7Rlz9uOAEvhn55No+SW4zWA4C6sKqMcV+sS/vStjRsc4VgCLPBAJHkMh0b3AnC6bujmQ5BIUVjNg2FrzkDn4kChHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=khKOdLPu; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4d371351b62so147027e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710382541; x=1710987341; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cn3bs1YfzZryCc5H7gkVB2XqHmwH+85IGt+IRJDcw7s=;
+        b=khKOdLPuS4R1SP+tq/h4rgrbN2zznKEKXpE1F8e2CIFr3r0mTvY3FT5SwKqAeYKWQh
+         HTkCgcHee55Sfodf5EbEweHx81wxlwJiETOPYcishcj1lOlovQn/l2Tsmj/eMNJkWvGo
+         5TG+FQK3pZ+RX+gD1B+XW1p1JS5iExIDmgwWg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710382541; x=1710987341;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cn3bs1YfzZryCc5H7gkVB2XqHmwH+85IGt+IRJDcw7s=;
+        b=ifAz+piS+IGYiaB4tIqpbwBF0MqCMR2fN+i/udPJb4M4EESxApAUiNAnwCVq+TeAEw
+         mNp+L6pe4TE6yFtrwXezhOQmnQpbKLXaOheCnpkUZ0t3qGffI0LzwGJirSA77s1bLx6w
+         QpcA1DCkNuzhFTZmz8eTThqunohmTWsrJNQ4PecrHSaZcvS+vTIiu6EdjYKPUraFbKhU
+         VGfC67f+Gkl5Rj0jX63ZOcxzRfT8QFhdOfRP+VUsQQbhQ0lzXr4BCFk/38WWlp2pQP2b
+         ppCIVUTBXb9ZwDk1B6CbWBN+5qTiUi0SeEiANNPL/M/m9xPaj73TAccjVtAqi47gohNQ
+         ChTg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCnLDGg31g0F6EAgjL1nHlM/N1n22fXiebApDjZ1qGfEFBZ6hi62KNJd4bgv9JMMGquGUEYkPJYdtYhv17Tik4mKEkzJly7U5fO0mh
+X-Gm-Message-State: AOJu0YxgLiZHCVBXZ9fDDxskhcJm93BFRysuw9ZWsdK142aMfxoSyUYZ
+	OZ38coXNCpJAuKsSsGhMW+qyPR6D93HjngTzGtVghl7VS1E47ztWPBCAIb3A/k85RHaE6bPTSjK
+	UyriWQ6ItoyRPAav6XIUnCJx/cSdd3eJz7A9Q
+X-Google-Smtp-Source: AGHT+IGcS4zTmTCpGZzm3ppXJXHiKW2RGfHCRm/zeO4viqblfB1ZUUXPJ6w9vvXza7ULZzQ1Y7mQUYRoZ7cwdlpkkjE=
+X-Received: by 2002:a1f:fe8e:0:b0:4d3:3a8c:13ad with SMTP id
+ l136-20020a1ffe8e000000b004d33a8c13admr655409vki.8.1710382540960; Wed, 13 Mar
+ 2024 19:15:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
- loading the KVM intel kernel module
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <f028d43abeadaa3134297d28fb99f283445c0333.1708933498.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <f028d43abeadaa3134297d28fb99f283445c0333.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231116172859.393744-1-sjg@chromium.org> <20231208150042.GA1278773-robh@kernel.org>
+ <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
+ <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
+ <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
+ <20231214172702.GA617226-robh@kernel.org> <CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
+ <CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
+ <CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
+ <CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
+ <20240205085056.44278f2c@xps-13> <CAFLszTi+8ygXOidnhxj7sdJwc6X5i+++QvnUyfe-kde5eSts_w@mail.gmail.com>
+ <20240205131755.3462084f@xps-13> <CAFLszTh3t6wPz8PFhFzazTAGaLVpObkjY9qv7MtSkQ21zZFzKA@mail.gmail.com>
+ <20240308084212.4aa58761@xps-13> <CAFLszTi8w4gBoa-6uoKUN-Ng07ieA+DXy3gm2cdxfwgAybrgsQ@mail.gmail.com>
+ <20240313083541.1e7d4a2f@xps-13>
+In-Reply-To: <20240313083541.1e7d4a2f@xps-13>
+From: Simon Glass <sjg@chromium.org>
+Date: Thu, 14 Mar 2024 15:15:30 +1300
+Message-ID: <CAFLszThe8qTWM4GtpsLyy1+yyhN-MEfcPT2OcU1sd4ST=3n55Q@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, 
+	Michael Walle <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>, 
+	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Miquel,
 
+On Wed, 13 Mar 2024 at 20:35, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Hi Simon,
+>
+> sjg@chromium.org wrote on Wed, 13 Mar 2024 11:25:42 +1300:
+>
+> > Hi Miquel,
+> >
+> > On Fri, 8 Mar 2024 at 20:42, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > >
+> > > Hi Simon,
+> > >
+> > > sjg@chromium.org wrote on Fri, 8 Mar 2024 15:44:25 +1300:
+> > >
+> > > > Hi Miquel,
+> > > >
+> > > > On Tue, 6 Feb 2024 at 01:17, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > > > >
+> > > > > Hi Simon,
+> > > > >
+> > > > > > > > > > > > > > > > > +description: |
+> > > > > > > > > > > > > > > > > +  The binman node provides a layout for firmware, used when packaging firmware
+> > > > > > > > > > > > > > > > > +  from multiple projects. It is based on fixed-partitions, with some
+> > > > > > > > > > > > > > > > > +  extensions, but uses 'compatible' to indicate the contents of the node, to
+> > > > > > > > > > > > > > > > > +  avoid perturbing or confusing existing installations which use 'label' for a
+> > > > > > > > > > > > > > > > > +  particular purpose.
+> > > > > > > > > > > > > > > > > +
+> > > > > > > > > > > > > > > > > +  Binman supports properties used as inputs to the firmware-packaging process,
+> > > > > > > > > > > > > > > > > +  such as those which control alignment of partitions. This binding addresses
+> > > > > > > > > > > > > > > > > +  these 'input' properties. For example, it is common for the 'reg' property
+> > > > > > > > > > > > > > > > > +  (an 'output' property) to be set by Binman, based on the alignment requested
+> > > > > > > > > > > > > > > > > +  in the input.
+> > > > > > > > > > > > > > > > > +
+> > > > > > > > > > > > > > > > > +  Once processing is complete, input properties have mostly served their
+> > > > > > > > > > > > > > > > > +  purpose, at least until the firmware is repacked later, e.g. due to a
+> > > > > > > > > > > > > > > > > +  firmware update. The 'fixed-partitions' binding should provide enough
+> > > > > > > > > > > > > > > > > +  information to read the firmware at runtime, including decompression if
+> > > > > > > > > > > > > > > > > +  needed.
+> > > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > > How is this going to work exactly? binman reads these nodes and then
+> > > > > > > > > > > > > > > > writes out 'fixed-partitions' nodes. But then you've lost the binman
+> > > > > > > > > > > > > > > > specifc parts needed for repacking.
+> > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > No, they are the same node. I do want the extra information to stick
+> > > > > > > > > > > > > > > around. So long as it is compatible with fixed-partition as well, this
+> > > > > > > > > > > > > > > should work OK.
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > How can it be both? The partitions node compatible can be either
+> > > > > > > > > > > > > > 'fixed-partitions' or 'binman'.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Can we not allow it to be both? I have tried to adjust things in
+> > > > > > > > > > > > > response to feedback but perhaps the feedback was leading me down the
+> > > > > > > > > > > > > wrong path?
+> > > > > > > > > > > >
+> > > > > > > > > > > > Sure, but then the schema has to and that means extending
+> > > > > > > > > > > > fixed-partitions.
+> > > > > > > > > > >
+> > > > > > > > > > > Can we cross that bridge later? There might be resistance to it. I'm
+> > > > > > > > > > > not sure. For now, perhaps just a binman compatible works well enough
+> > > > > > > > > > > to make progress.
+> > > > > > > > > >
+> > > > > > > > > > Is there any way to make progress on this? I would like to have
+> > > > > > > > > > software which doesn't understand the binman compatible to at least be
+> > > > > > > > > > able to understand the fixed-partition compatible. Is that acceptable?
+> > > > > > > > >
+> > > > > > > > > There's only 2 ways that it can work. Either binman writes out
+> > > > > > > > > fixed-partition nodes dropping/replacing anything only defined for
+> > > > > > > > > binman or fixed-partition is extended to include what binman needs.
+> > > > > > > >
+> > > > > > > > OK, then I suppose the best way is to add a new binman compatible, as
+> > > > > > > > is done with this v6 series. People then need to choose it instead of
+> > > > > > > > fixed-partition.
+> > > > > > >
+> > > > > > > I'm sorry this is not at all what Rob suggested, or did I totally
+> > > > > > > misunderstand his answer?
+> > > > > > >
+> > > > > > > In both cases the solution is to generate a "fixed-partition" node. Now
+> > > > > > > up to you to decide whether binman should adapt the output to the
+> > > > > > > current schema, or if the current schema should be extended to
+> > > > > > > understand all binman's output.
+> > > > > > >
+> > > > > > > At least that is my understanding and also what I kind of agree with.
+> > > > > >
+> > > > > > I do want to binman schema to include all the features of Binman.
+> > > > > >
+> > > > > > So are you saying that there should not be a 'binman'  schema, but I
+> > > > > > should just add all the binman properties to the fixed-partition
+> > > > > > schema?
+> > > > >
+> > > > > This is my current understanding, yes. But acknowledgment from Rob is
+> > > > > also welcome.
+> > > >
+> > > > I am trying again to wade through all the confusion here.
+> > > >
+> > > > There is not actually a 'fixed-partition' node. So are you saying I
+> > > > should add one? There is already a 'partitions' node. Won't they
+> > > > conflict?
+> > >
+> > > Sorry for the confusion, there is a 'partitions' node indeed. This
+> > > node shall declare it's "programming model" (let's say), ie. how it
+> > > should be parsed. What defines this programming model today is the
+> > > 'fixed-partitions' compatible. I think we (Rob and myself, but again,
+> > > Rob, please confirm) agree on the fact that we don't want to duplicate
+> > > the fixed-partitions compatible/logic and thus the binman compatible
+> > > was rejected.
+> > >
+> > > Hence, in order to move forward, I would definitely appreciate an
+> > > update of the fixed-partitions binding in order to support what binman
+> > > can generate.
+> >
+> > OK, so I think my confusion is that I thought you were referring to a
+> > 'partitions' compatible. But you are just referring to the name of the
+> > node being 'partitions', with the compatible string being
+> > 'fixed-partitions'.
+>
+> Yes.
+>
+> >
+> > I believe I can make this work by adding a new 'binman.yaml' with the
+> > compatibles that I want to introduce. I cannot change partition.yaml
+> > since it does not itself specify a compatible.
+>
+> What about fixed-partitions.ymal? The yaml file name should match the
+> compatible.
 
-On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> TDX requires several initialization steps for KVM to create guest TDs.
-> Detect CPU feature, enable VMX (TDX is based on VMX) on all online CPUs,
-> detect the TDX module availability, initialize it and disable VMX.
->
-> To enable/disable VMX on all online CPUs, utilize
-> vmx_hardware_enable/disable().  The method also initializes each CPU for
-> TDX.  TDX requires calling a TDX initialization function per logical
-> processor (LP) before the LP uses TDX.  When the CPU is becoming online,
-> call the TDX LP initialization API.  If it fails to initialize TDX, refuse
-> CPU online for simplicity instead of TDX avoiding the failed LP.
->
-> There are several options on when to initialize the TDX module.  A.) kernel
-> module loading time, B.) the first guest TD creation time.  A.) was chosen.
-> With B.), a user may hit an error of the TDX initialization when trying to
-> create the first guest TD.  The machine that fails to initialize the TDX
-> module can't boot any guest TD further.  Such failure is undesirable and a
-> surprise because the user expects that the machine can accommodate guest
-> TD, but not.  So A.) is better than B.).
->
-> Introduce a module parameter, kvm_intel.tdx, to explicitly enable TDX KVM
-> support.  It's off by default to keep the same behavior for those who don't
-> use TDX.  Implement hardware_setup method to detect TDX feature of CPU and
-> initialize TDX module.
->
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
-> v19:
-> - fixed vt_hardware_enable() to use vmx_hardware_enable()
-> - renamed vmx_tdx_enabled => tdx_enabled
-> - renamed vmx_tdx_on() => tdx_on()
->
-> v18:
-> - Added comment in vt_hardware_enable() by Binbin.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/Makefile      |  1 +
->   arch/x86/kvm/vmx/main.c    | 19 ++++++++-
->   arch/x86/kvm/vmx/tdx.c     | 84 ++++++++++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/x86_ops.h |  6 +++
->   4 files changed, 109 insertions(+), 1 deletion(-)
->   create mode 100644 arch/x86/kvm/vmx/tdx.c
->
-> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-> index 274df24b647f..5b85ef84b2e9 100644
-> --- a/arch/x86/kvm/Makefile
-> +++ b/arch/x86/kvm/Makefile
-> @@ -24,6 +24,7 @@ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
->   
->   kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
->   kvm-intel-$(CONFIG_KVM_HYPERV)	+= vmx/hyperv.o vmx/hyperv_evmcs.o
-> +kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o
->   
->   kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
->   			   svm/sev.o
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 18cecf12c7c8..18aef6e23aab 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -6,6 +6,22 @@
->   #include "nested.h"
->   #include "pmu.h"
->   
-> +static bool enable_tdx __ro_after_init;
-> +module_param_named(tdx, enable_tdx, bool, 0444);
-> +
-> +static __init int vt_hardware_setup(void)
-> +{
-> +	int ret;
-> +
-> +	ret = vmx_hardware_setup();
-> +	if (ret)
-> +		return ret;
-> +
-> +	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
-> +
-> +	return 0;
-> +}
-> +
->   #define VMX_REQUIRED_APICV_INHIBITS				\
->   	(BIT(APICV_INHIBIT_REASON_DISABLE)|			\
->   	 BIT(APICV_INHIBIT_REASON_ABSENT) |			\
-> @@ -22,6 +38,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   
->   	.hardware_unsetup = vmx_hardware_unsetup,
->   
-> +	/* TDX cpu enablement is done by tdx_hardware_setup(). */
+But we already decided we cannot add a new 'binman' compatible but
+want to use the existing fixed-partitions.yaml
 
-How about if there are some LPs that are offline.
-In tdx_hardware_setup(), only online LPs are initialed for TDX, right?
-Then when an offline LP becoming online, it doesn't have a chance to call
-tdx_cpu_enable()?
+I cannot add compatible strings into that, since these are defined by
+the default files which make use of partition.yaml
 
->   	.hardware_enable = vmx_hardware_enable,
->   	.hardware_disable = vmx_hardware_disable,
->   	.has_emulated_msr = vmx_has_emulated_msr,
-> @@ -161,7 +178,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   };
->   
->   struct kvm_x86_init_ops vt_init_ops __initdata = {
-> -	.hardware_setup = vmx_hardware_setup,
-> +	.hardware_setup = vt_hardware_setup,
->   	.handle_intel_pt_intr = NULL,
->   
->   	.runtime_ops = &vt_x86_ops,
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> new file mode 100644
-> index 000000000000..43c504fb4fed
-> --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -0,0 +1,84 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/cpu.h>
-> +
-> +#include <asm/tdx.h>
-> +
-> +#include "capabilities.h"
-> +#include "x86_ops.h"
-> +#include "x86.h"
-> +
-> +#undef pr_fmt
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
-> +static int __init tdx_module_setup(void)
-> +{
-> +	int ret;
-> +
-> +	ret = tdx_enable();
-> +	if (ret) {
-> +		pr_info("Failed to initialize TDX module.\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +struct tdx_enabled {
-> +	cpumask_var_t enabled;
-> +	atomic_t err;
-> +};
-> +
-> +static void __init tdx_on(void *_enable)
-> +{
-> +	struct tdx_enabled *enable = _enable;
-> +	int r;
-> +
-> +	r = vmx_hardware_enable();
-> +	if (!r) {
-> +		cpumask_set_cpu(smp_processor_id(), enable->enabled);
-> +		r = tdx_cpu_enable();
-> +	}
-> +	if (r)
-> +		atomic_set(&enable->err, r);
-> +}
-> +
-> +static void __init vmx_off(void *_enabled)
-> +{
-> +	cpumask_var_t *enabled = (cpumask_var_t *)_enabled;
-> +
-> +	if (cpumask_test_cpu(smp_processor_id(), *enabled))
-> +		vmx_hardware_disable();
-> +}
-> +
-> +int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
-> +{
-> +	struct tdx_enabled enable = {
-> +		.err = ATOMIC_INIT(0),
-> +	};
-> +	int r = 0;
-> +
-> +	if (!enable_ept) {
-> +		pr_warn("Cannot enable TDX with EPT disabled\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!zalloc_cpumask_var(&enable.enabled, GFP_KERNEL)) {
-> +		r = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	/* tdx_enable() in tdx_module_setup() requires cpus lock. */
-> +	cpus_read_lock();
-> +	on_each_cpu(tdx_on, &enable, true); /* TDX requires vmxon. */
-> +	r = atomic_read(&enable.err);
-> +	if (!r)
-> +		r = tdx_module_setup();
-> +	else
-> +		r = -EIO;
-> +	on_each_cpu(vmx_off, &enable.enabled, true);
-> +	cpus_read_unlock();
-> +	free_cpumask_var(enable.enabled);
-> +
-> +out:
-> +	return r;
-> +}
-> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> index b936388853ab..346289a2a01c 100644
-> --- a/arch/x86/kvm/vmx/x86_ops.h
-> +++ b/arch/x86/kvm/vmx/x86_ops.h
-> @@ -135,4 +135,10 @@ void vmx_cancel_hv_timer(struct kvm_vcpu *vcpu);
->   #endif
->   void vmx_setup_mce(struct kvm_vcpu *vcpu);
->   
-> +#ifdef CONFIG_INTEL_TDX_HOST
-> +int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
-> +#else
-> +static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
-> +#endif
-> +
->   #endif /* __KVM_X86_VMX_X86_OPS_H */
+Anyway, I will see v7 so you can see what I mean.
 
+>
+> > > We are here talking about the output of binman, not its input. TBH I
+> > > haven't understood the point in having binman's input parsed by the
+> > > generic yaml binding. I would advise to focus on binman's output first
+> > > because it feels more relevant, at a first glance.
+> >
+> > Yes that is fine.
+> >
+> > >
+> > > > Would it be possible for you to look at my patches and suggest
+> > > > something? I think at this point, after so many hours of trying
+> > > > different things and trying to understand what is needed, I could
+> > > > really use a little help.
+> > >
+> > > I hope the above details will help.
+> >
+> > I think so, thank you. I will send another version.
+> >
+> > Regards,
+> > Simon
+
+Regards,
+Simon
 
