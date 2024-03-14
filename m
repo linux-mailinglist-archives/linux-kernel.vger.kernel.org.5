@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-103885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9497387C645
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:29:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4A3387C642
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34D201F24B5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:29:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C01BA1C218A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 23:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4604500B;
-	Thu, 14 Mar 2024 23:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B653F9F4;
+	Thu, 14 Mar 2024 23:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="F5+hAxaA"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="XJMIhSsd"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A2D21111;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD59210E8;
 	Thu, 14 Mar 2024 23:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710458595; cv=none; b=d3GFwLcFlbMD/iyE9a1r4LrWM5GBKkSZZiAljt7TpYFam84Bv+x6WaMT2cnrDs7hG3DcPVsVQEamvzNnl8W80AnzEU6+Kj9gWs9uizQf7al01+WL6sGGEwiTaJKOG2mmt1Sc1cgEfXnrWdrW1IjonljwIH00rXRuH6VWQj21bOo=
+	t=1710458595; cv=none; b=aViEOscZd71BneCsxhUejJ7cwC5+2QtKzwQP9iizWGPRdBXbTyjUYcDMH+PstP+JMTCrZDXqOb5gBhorP1u3AeQwMN4plETyYkZxehE3R19q+FVgHczeE1pyN00ZriOTdqI/o1XdkTP6UCnyzncswrKmrX9r2sIj+rTEgU+h60c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710458595; c=relaxed/simple;
-	bh=yqiIwjG/S7XDJV/pa1WQy2erlDBpjOznaZZknYGr6Bk=;
+	bh=no/BaOcNF/CJFMCkCB326IrOeqdTQjbbbUPW7iPJHDY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cNklxgBI2YuaT3mJlsVQFuHgeZi+IakBhkDL6wugLqmayKqHhty84vvsBJ/7rZt8oIuwGAjB0GPfFdAOd7uhIYUKowrFHLTM62bPNEcDAJBSIzKl57GpFafS85POhfSKlsZDC37EwAnB7LlkM4p3cl9jgCZL6rU3GN1LZCkNIfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=F5+hAxaA; arc=none smtp.client-ip=37.18.73.165
+	 MIME-Version:Content-Type; b=esZclSHnz7ZgSkV20xY7qkT66X7aI0usHZhULdW090hEemHvclZTaZROqzZBiHgmxPTTBBGOp8NTnzB0fa6LfCebQDrf+gajzAqoVcevY3r0Mv8teGTYaeQPasV5kAm9r1lzoL2D4KUCh3VmqHY7AUA1CQ+88TGNP/VJcpUlRoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=XJMIhSsd; arc=none smtp.client-ip=45.89.224.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 089C110001B;
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 5D8B8120016;
 	Fri, 15 Mar 2024 02:23:08 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 089C110001B
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5D8B8120016
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
 	s=mail; t=1710458588;
-	bh=KNZWo7RkvOeyvRwAeuVGN8+SUS+q1CnUsbKOy62L+dA=;
+	bh=lfafaGrQIktQg/rWyr/aK5n5leCd1McAMyotoMmDk/s=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=F5+hAxaAuDoDnxTAqPYowmUkkX/zJKODl8ftawtc03dmmjCxhn8MTZVcYf4q6FgsS
-	 SHYEHSeJFJiglmOka3LVsX0BD9hxLA1CprfiPvvlo16P3uluxgV4X4L2jPEQn+RrMh
-	 BGCW+nQuaPxLoxyr2qyTMd8phuzS3lXBB4s5YAXoBpn5zlbTc6NE+k3M/uN9l8lrLK
-	 7+19l6E6fiYcj/t2+4es17KU8ajQtYABzmOlSKQJuNBjSQmQdXb1LRotSOgvD2HhdG
-	 Jyrt8MJoejggzhXQZRDOIaX+SUvE0v7uxSL7YVColylFONTEPvHrU0wX8y7LuVAYzD
-	 6nUconXFqKSBA==
+	b=XJMIhSsdEN0VNh5LqWmllNaCWjm6KhGkX598dYM2LT2xyqTJXyNmOH1uARpOqQjrt
+	 Y0IBu4MjycToMERvuohkmj/9GVCf6w14ND/wh0LQagQpowKY1HCnDG0Fr0cuegaolg
+	 A7DsZZGsiEMIiRDTOCY1hh2RYFKhLyKnYJfmm14Vivg/01FKalrLfggCnTMI7f0qUi
+	 IWsnv/c7+XZVpCu+Zw4aIbqVDB0BI1ea3Me55Bklwk3kYvDVeWmKAuzTTzqAxwYk59
+	 nGB+UGsLjsJnbxQYPczYegFVjzx3iQHiUQ4vCp8FwgcShUTa1cLr7G5s192v2LTaJE
+	 xysw/Jg2nPMYw==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:07 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:08 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -69,9 +69,9 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
 CC: <kernel@salutedevices.com>
-Subject: [PATCH 20/25] ASoC: dt-bindings: meson: axg-tdm-formatters: claim support of A1 SoC family
-Date: Fri, 15 Mar 2024 02:21:56 +0300
-Message-ID: <20240314232201.2102178-21-jan.dakinevich@salutedevices.com>
+Subject: [PATCH 21/25] ASoC: dt-bindings: meson: axg-tdm-iface: claim support of A1 SoC family
+Date: Fri, 15 Mar 2024 02:21:57 +0300
+Message-ID: <20240314232201.2102178-22-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -102,47 +102,31 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-Add "amlogic,a1-tdmout" and "amlogic,a1-tdmin" compatible string aliases
-to "amlogic,sm1-tdmout" and "amlogic,sm1-tdmin" respectevely.
+Add "amlogic,a1-tdm-iface" compatible string alias to
+"amlogic,axg-tdm-iface".
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- .../sound/amlogic,axg-tdm-formatters.yaml     | 22 ++++++++++++-------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ .../devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml    | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml
-index 719ca8fc98c7..154522488020 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml
-@@ -11,14 +11,20 @@ maintainers:
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
+index 45955d8a26d1..7c1af85b52b4 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
+@@ -14,7 +14,11 @@ allOf:
  
  properties:
    compatible:
--    enum:
--      - amlogic,g12a-tdmout
--      - amlogic,sm1-tdmout
--      - amlogic,axg-tdmout
--      - amlogic,g12a-tdmin
--      - amlogic,sm1-tdmin
--      - amlogic,axg-tdmin
--
+-    const: amlogic,axg-tdm-iface
 +    oneOf:
-+      - enum:
-+          - amlogic,g12a-tdmout
-+          - amlogic,sm1-tdmout
-+          - amlogic,axg-tdmout
-+          - amlogic,g12a-tdmin
-+          - amlogic,sm1-tdmin
-+          - amlogic,axg-tdmin
++      - const: amlogic,axg-tdm-iface
 +      - items:
-+          - const: amlogic,a1-tdmout
-+          - const: amlogic,sm1-tdmout
-+      - items:
-+          - const: amlogic,a1-tdmin
-+          - const: amlogic,sm1-tdmin
-   clocks:
-     items:
-       - description: Peripheral clock
++          - const: amlogic,a1-tdm-iface
++          - const: amlogic,axg-tdm-iface
+ 
+   "#sound-dai-cells":
+     const: 0
 -- 
 2.34.1
 
