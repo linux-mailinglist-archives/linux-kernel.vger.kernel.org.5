@@ -1,138 +1,145 @@
-Return-Path: <linux-kernel+bounces-102882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FE5E87B7FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:34:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D1587B801
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:37:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7D2028416F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:34:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807051F21CCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22DB4A11;
-	Thu, 14 Mar 2024 06:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ERxsUxZI"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C3B4A11;
+	Thu, 14 Mar 2024 06:37:31 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C0CF9DB;
-	Thu, 14 Mar 2024 06:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4D34683;
+	Thu, 14 Mar 2024 06:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710398045; cv=none; b=IHaodvuUs7rdLRpBSekMtUCjohTsEGTYBpDA2N8+xa+4lVp7US50eaihBICwiparbL75PDn6Mt57XkMUvi5dEttSob2AVTfp5SHwAkv0v0GVZrudFkAlFeQClIjtiuXxt0/OnaBZLtT5VOIGeurbD9R/qncNImzcBJ8isLaKGnY=
+	t=1710398250; cv=none; b=drjMfVl0bUbfc9jBwcqWmaw7hJdjWV1aY/lyFveCU2I4rSusEdHqY0peBIMWWQUTSUqS2ddTZjHRQ+kPc6DZZXyNwBFVHVSMTjqe4Hi9eTbOGLDN7Gfgjzjhif75/+3UL12yKLqcurLu6QulXrdULKZXMDTCESqKQReKE8ZEcbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710398045; c=relaxed/simple;
-	bh=+bFdUJyOYKwTrYV4x6J+m/pVXk7bGoNavriufSSMezQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J59vg/lEuZgYy8mo3J0oNQACNJASr6zn5JeKRb4RXEt9lG6BRjP26hA02yaToVtPCHGWN4V9GbD+1MclYw4mq4kVIpWAkr4DPbSQUGajMcqFc9+rbEsH2K7z8sAlDaYphFruCcXmEYiGiERWBfExapbV4mzmKJREVHpc4mlv+RQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ERxsUxZI; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42E2Jg6i027942;
-	Thu, 14 Mar 2024 06:33:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=/quYWKqEIc/h1upfh0SRmrCUaTXjybxugd1mNo8OXlI=; b=ER
-	xsUxZInFk/x+iPZf6wq9+/VcXLbnKhPqlzCtui5w93RXdq1r02fQmfKYjp+Oh8QI
-	fUOxBAhzF3ZXMnrl+ZkSvsJYktKmW3gCQunOwFIrpgl3OTe9yaXztAiY21mcPydc
-	y/nP5g2/JGx4Ge8n+6DizoaFu7BKBBplB5evDyolm8+rRUbhbw0oSIm1NZeEQOPZ
-	8SpVwVKuNTZ8GMEQK64iFjTLWC5DWw1wDM/PP4Su4Z4PMKw25MRmBareYwgh9CvL
-	/dLcg16wjp69wmaeS1KA+XDD2EAbvvaBjDuKEH9+GAmKlEVAgoT9Pec0JYFzJXdz
-	jnVsKwy3viScvpP/zzXQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wugq19g2c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 06:33:52 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42E6Xpxu014743
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 06:33:51 GMT
-Received: from hu-lxu5-sha.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Mar 2024 23:33:45 -0700
-From: Ling Xu <quic_lxu5@quicinc.com>
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <quic_ekangupt@quicinc.com>, <kernel@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Ling Xu <quic_lxu5@quicinc.com>
-Subject: [PATCH] arm64: dts: qcom: sm8650: Add three missing fastrpc-compute-cb nodes
-Date: Thu, 14 Mar 2024 12:03:34 +0530
-Message-ID: <20240314063334.31942-1-quic_lxu5@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1710398250; c=relaxed/simple;
+	bh=rYAKy0YwJE5ci82WZQpxeGINJPlfTTccgMae34B3AWU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aGE7Pocu/F4GKabzyxp5RX7QkG78JSrBKaS+Jn/+nHD6amI84j3QIEe/iPTLqQ0ncUFWV08n4a2kcUHkwU3DHgiHGZy7C6D5OlHjYrLxPksRWl38MeBekf3woyAUResRZYmM2/7sW1M+duGlde7t+/nenCHOY2n1kgiqNRsl7ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 98ce9f10be844c369520d7c1404ded6f-20240314
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:e20e57c8-bb4e-4429-a4ac-d750caae4838,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.37,REQID:e20e57c8-bb4e-4429-a4ac-d750caae4838,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:6f543d0,CLOUDID:f1ea7c81-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:2403141437215XVAHEKJ,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
+	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 98ce9f10be844c369520d7c1404ded6f-20240314
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+	(envelope-from <aichao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 887291583; Thu, 14 Mar 2024 14:37:19 +0800
+From: Ai Chao <aichao@kylinos.cn>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	u.kleine-koenig@pengutronix.de,
+	mario.limonciello@amd.com,
+	jes965@nyu.edu,
+	alexbelm48@gmail.com,
+	onenowy@gmail.com,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v1] platform/x86: hp-wmi: use sysfs_emit() instead of sprintf()
+Date: Thu, 14 Mar 2024 14:37:03 +0800
+Message-Id: <20240314063703.315841-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ugi6Zx4lWUZWFDEq69sMs-6I0Tx42tYP
-X-Proofpoint-GUID: ugi6Zx4lWUZWFDEq69sMs-6I0Tx42tYP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_03,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=680 phishscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 adultscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403140042
+Content-Transfer-Encoding: 8bit
 
-Add three missing cDSP fastrpc compute-cb nodes for the SM8650 SoC.
+Follow the advice in Documentation/filesystems/sysfs.rst:
+show() should only use sysfs_emit() or sysfs_emit_at() when formatting
+the value to be returned to user space.
 
-Signed-off-by: Ling Xu <quic_lxu5@quicinc.com>
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
 ---
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 29 ++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/platform/x86/hp/hp-wmi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index ba72d8f38420..c238ad1be0d4 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -5084,6 +5084,35 @@
- 							 <&apps_smmu 0x19c8 0x0>;
- 						dma-coherent;
- 					};
-+
-+					/* note: secure cb9 in downstream */
-+
-+					compute-cb@10 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <12>;
-+						iommus = <&apps_smmu 0x196C 0x0000>,
-+							 <&apps_smmu 0x0C0C 0x0020>,
-+							 <&apps_smmu 0x19CC 0x0000>;
-+						dma-coherent;
-+					};
-+
-+					compute-cb@11 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <13>;
-+						iommus = <&apps_smmu 0x196D 0x0000>,
-+							 <&apps_smmu 0x0C0D 0x0020>,
-+							 <&apps_smmu 0x19CD 0x0000>;
-+						dma-coherent;
-+					};
-+
-+					compute-cb@12 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <14>;
-+						iommus = <&apps_smmu 0x196E 0x0000>,
-+							 <&apps_smmu 0x0C0E 0x0020>,
-+							 <&apps_smmu 0x19CE 0x0000>;
-+						dma-coherent;
-+					};
- 				};
- 			};
- 		};
+diff --git a/drivers/platform/x86/hp/hp-wmi.c b/drivers/platform/x86/hp/hp-wmi.c
+index 630519c08617..5fa553023842 100644
+--- a/drivers/platform/x86/hp/hp-wmi.c
++++ b/drivers/platform/x86/hp/hp-wmi.c
+@@ -681,7 +681,7 @@ static ssize_t display_show(struct device *dev, struct device_attribute *attr,
+ 
+ 	if (value < 0)
+ 		return value;
+-	return sprintf(buf, "%d\n", value);
++	return sysfs_emit(buf, "%d\n", value);
+ }
+ 
+ static ssize_t hddtemp_show(struct device *dev, struct device_attribute *attr,
+@@ -691,7 +691,7 @@ static ssize_t hddtemp_show(struct device *dev, struct device_attribute *attr,
+ 
+ 	if (value < 0)
+ 		return value;
+-	return sprintf(buf, "%d\n", value);
++	return sysfs_emit(buf, "%d\n", value);
+ }
+ 
+ static ssize_t als_show(struct device *dev, struct device_attribute *attr,
+@@ -701,7 +701,7 @@ static ssize_t als_show(struct device *dev, struct device_attribute *attr,
+ 
+ 	if (value < 0)
+ 		return value;
+-	return sprintf(buf, "%d\n", value);
++	return sysfs_emit(buf, "%d\n", value);
+ }
+ 
+ static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
+@@ -711,7 +711,7 @@ static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
+ 
+ 	if (value < 0)
+ 		return value;
+-	return sprintf(buf, "%d\n", value);
++	return sysfs_emit(buf, "%d\n", value);
+ }
+ 
+ static ssize_t tablet_show(struct device *dev, struct device_attribute *attr,
+@@ -721,7 +721,7 @@ static ssize_t tablet_show(struct device *dev, struct device_attribute *attr,
+ 
+ 	if (value < 0)
+ 		return value;
+-	return sprintf(buf, "%d\n", value);
++	return sysfs_emit(buf, "%d\n", value);
+ }
+ 
+ static ssize_t postcode_show(struct device *dev, struct device_attribute *attr,
+@@ -732,7 +732,7 @@ static ssize_t postcode_show(struct device *dev, struct device_attribute *attr,
+ 
+ 	if (value < 0)
+ 		return value;
+-	return sprintf(buf, "0x%x\n", value);
++	return sysfs_emit(buf, "0x%x\n", value);
+ }
+ 
+ static ssize_t als_store(struct device *dev, struct device_attribute *attr,
 -- 
-2.17.1
+2.25.1
 
 
