@@ -1,138 +1,219 @@
-Return-Path: <linux-kernel+bounces-103637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5C087C23D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:51:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEB5887C240
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BAD51C21A01
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:51:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 567B9283648
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BECD74BEB;
-	Thu, 14 Mar 2024 17:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC0374BEB;
+	Thu, 14 Mar 2024 17:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Hnds6wRl"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJaWvpoA"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221A37443F
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAFA8745D5
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710438681; cv=none; b=TRHmQYth1DMBmWstGb1wWTouhkZNSPiGVxvmQxF9wXQL9AuX0S/Yv1KRHrs0Y2fF+t29Krzp0sqZNnKgrjZTooVct0ONdigS5Ani+5XafywDWDEUfx46GG9XxjS8WYek7764+WR+eFBS21vspYVMhVgByyOu2oaMXsK1+99Ne5w=
+	t=1710438717; cv=none; b=bLWMqFtWnY8FBaqpYPVz4IplQcbzKy+/wt3wmucq0b5DBBGqlYyh79JQdxaJsy9vUmrGkc/Mz77GgzIvdaypHktscHcrfbogo9ql/15QdQVrq2Nxoj415Guz7uMhw7W4sr93m9UZ90mQGHXOD4jXziv4Kt5cJOA2EDcHb9xGfxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710438681; c=relaxed/simple;
-	bh=kUVqfqBl6OrS8y6lo4ykNNWJdbCOGT3O6tMkIPe5R8I=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=A+By0XRDQYFCSoi4apVqMeVHtwgJqkAWTh5Kvp4Kkro2fiYidHfKJTiNdkOQFqNvS6fG5voN2TTUzWhKsg75NEfHttXlYEDOGJO5D47+DX9EfH18IAt7turylwsEk1cwxVOG3g5IgV0CSWU6eIJ3S6b3Fj4diH2AXaMXBAF8Cds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Hnds6wRl; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so1812761276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:51:19 -0700 (PDT)
+	s=arc-20240116; t=1710438717; c=relaxed/simple;
+	bh=W4fz5aM1Xj6mRv+GxOPNP6rsBtXJG7XPvD6c5p5zsZQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J66VGLx8whOiVckitWF1y8jJWCLsPyJkncO46mM8C1RR2iudyG3Ri9CcyQUTVpeXSOiKSRo4ejd55EuEF7gkFLA5imA4jWc68LzGHejwZ3kzmTt3O1HmWnzt4cdH9d+mhquDxGkHc8HHbAi26OWDiWty9i1gNxC/pzCsLQwHsSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJaWvpoA; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd955753edso11042525ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710438679; x=1711043479; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:reply-to:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yo6oS4AcC009MmPBD5DloFbZft+lin+hzANIRBSkUSA=;
-        b=Hnds6wRlQB4t4EQaXM4q6swI2wP5CFzhHw5g9Uu3huXf/jZbWkrkkurKs7fI84edtj
-         PnPo3EdUpFEJKFgFgED2Q3NcJLLVoCRs9tZsM2ZOUj85/FxW/E6VzX98Bgs3KYn/g0ZS
-         HfYxXL07+bYwpU/1zRqJRVf4ssoGp6JDVdisuW/vCh8sRM+CCqbitB1JGdArz0eZh1Gi
-         1uVb5VTWLZSziE0J+mF/C0VUW84fCdzZGs6s7nHZB6PJJIKY4miDdGJOexgE8stoE1Vd
-         /XxIn/CNMi5EVl4DmvOx+k53F3ZYzvdkoLSYM1XK5XSSO3IF6l2Q00mK+T4SHg58A46U
-         rE4A==
+        d=gmail.com; s=20230601; t=1710438715; x=1711043515; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=83o/z763nISRcPT8Ce4hg/uxvl1Iug2mRWFmiJSQha0=;
+        b=FJaWvpoADUHLohVoV3rHtXueyMji46KgbHN20QukdDaHAum7hNYP0I+1t7Q6p26UUj
+         zngdI0zQgRaFwFgSSfEZFGRNQUCmI4+T00bRv0q08FyCT1OzgTc1MDqHjGNurf6Q7/uQ
+         rVoiu+yqcNPyoB0MfdNeT1lndsILvkNR/niEJioW9xnW3bY1fhUQU6mP64bu50QUOhTx
+         o4IzLw2Fyo5U6gzPDC4gXDsZokOHF3V89kjKsyTrMpGpBVqdDVuTfURflNMeAgqL74pg
+         UOt1RQixqhfG6CZQ0kujIsdjxLo4jQ7algMYQrL2deZ11rUgexYKc4EP/8ooVGawIpdQ
+         JF0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710438679; x=1711043479;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:reply-to:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Yo6oS4AcC009MmPBD5DloFbZft+lin+hzANIRBSkUSA=;
-        b=rUwpc1g2k6Mf12CyDETl71YvoDceFoLM9pN8JYex0DXLy8EkDkVyDAZ+CLYum8yR35
-         z+KU2L81fzQwQwN69iezuIs3jTIkLnkeUN1rdoohthy3LbP7ulmURz1x+G7pb3SWN4t0
-         wTmZWU8DcdrH5/2sXmR55j7FSxcPvtvyOC77z4R3QvmNfWSL3GAf8+UW+YOlZMcBqB17
-         3+91aqAIoGz5D7ZA4NRTTNFXUW0yWnIy/ZM/7v1faVkndKKfaYWbj+5hWuAlKsYjiG4M
-         yL+CaQdjLfQST5UDV25bGR9qlEPP960LQZThYAPeHegkSuhkc2Ebkf/wsdALxjHdmX6Y
-         qVKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWd7PTC2kqeB+i3CdgXmKvzxbk9bo3XV2Q+hSgckNIsZm9dZRJKvnCITR9iMjWSbrC9c//WqT75ynYBLIomZGBRFgtPLBBIoAqPoxRy
-X-Gm-Message-State: AOJu0YydojLD+xx7J15pF9BBXQcggMFZr9B0RWWFStf42ym9qzUIsh0/
-	lFl8WVBGawlhXMtn5Hcw2QyPs4D2VC+O/mS7ylwL/GjtasaWkbPkxTSi0Q3297SFvTXmHcKubrJ
-	C+g==
-X-Google-Smtp-Source: AGHT+IHj12Fv5pkl+ktVSIACg0smeX5esnto6C7bfpPJvOND3/RpBJcke5Qg1JIRU0EQaPE2grYP8ghXkRc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1b85:b0:dc6:e1ed:bd1a with SMTP id
- ei5-20020a0569021b8500b00dc6e1edbd1amr582659ybb.2.1710438679190; Thu, 14 Mar
- 2024 10:51:19 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 14 Mar 2024 10:51:15 -0700
+        d=1e100.net; s=20230601; t=1710438715; x=1711043515;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=83o/z763nISRcPT8Ce4hg/uxvl1Iug2mRWFmiJSQha0=;
+        b=iUHBo+6XB0Em9E+UbIeBYxTfB7FqYhG8bl+iu1KNV8xGm0FY4fngPqS0BYwqG7txSZ
+         qKjVyrXyrJKGhVPIJwF6XnqTeawRr8nuDK3E4+8P8z9fdPWvVQbeO74ekV3oyXrEjDEZ
+         sKsnsOPQAOjyYv6AR4QrBDICXBL2Uuhgcs8nAGrvkZLpr4OVh7r6xJMlTs1vs5o6mEtM
+         0gkTDqKYGkW1Oy92/ZaM3VdpbCrIgicAEyNpc3v9Hs+XY4a6Hxtm1//i7MuVt9duw+Aq
+         /tcFL/MYbNUijNvYEybOnlGqEKIAo58jHyVjl6X0eZwUQbyp/qVXi8HNVZvBQ2qQDlsr
+         TtOA==
+X-Forwarded-Encrypted: i=1; AJvYcCXSZJUqqEO2INd8T0c55a9q6OGsrMk+ZFUOqo+Ix4RXu0HOeYzP6MPme/06g96G9B42dANV3YOGy1QSLhY4BEb89ENYi1x3ahpXF+sy
+X-Gm-Message-State: AOJu0YwetzBr4eQSXzDkFPsTM9g8LFfz3pb4l9lTIAKplO+SlBno+Cry
+	+vtnffiROZrrkVZA3gCU4eCjaxVBbC1oQizlofgatKYHzEO2pR1hLpUrTOaNcvMvvmYCcpORxuT
+	kvUwUkAda6YgBViZHSwsRVWb98IrawSwamCU=
+X-Google-Smtp-Source: AGHT+IGME2ZBAjfwN5W4buTyp4q6UKGQ3GqH2t3Nk3YFMv7LRHDx2QR5986+nNZie6GdhVNX/cqIqgT3EyzylKiQKAk=
+X-Received: by 2002:a17:90a:6c06:b0:29b:4d0b:66ab with SMTP id
+ x6-20020a17090a6c0600b0029b4d0b66abmr684578pjj.33.1710438715102; Thu, 14 Mar
+ 2024 10:51:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240314175116.2366301-1-seanjc@google.com>
-Subject: [PATCH] KVM: selftests: Fix __GUEST_ASSERT() format warnings in ARM's
- arch timer test
-From: Sean Christopherson <seanjc@google.com>
-To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Sean Christopherson <seanjc@google.com>
+MIME-Version: 1.0
+References: <20240312124148.257067-1-sunil.khatri@amd.com> <CADnq5_O-cyDkNLznZpvnZtz15Mi1_rkigirG80BmYJprP_udnw@mail.gmail.com>
+ <59cf081e-5924-42b5-a3f1-de8b012f09d1@amd.com> <CADnq5_N0H75UU2aFTAkqUrdGxKPxBQUnodsH-bcpS-ZUqgUb3A@mail.gmail.com>
+ <32aad098-9392-4899-9839-1beaedcac8b8@amd.com>
+In-Reply-To: <32aad098-9392-4899-9839-1beaedcac8b8@amd.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Thu, 14 Mar 2024 13:51:42 -0400
+Message-ID: <CADnq5_NvBsbmTteDKmzi1DZHPKGfoSMjW5TFfy2x60YDxydc=g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm/amdgpu: add the IP information of the soc
+To: "Khatri, Sunil" <sukhatri@amd.com>
+Cc: Sunil Khatri <sunil.khatri@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Use %x instead of %lx when printing uint32_t variables to fix format
-warnings in ARM's arch timer test.
+On Thu, Mar 14, 2024 at 12:16=E2=80=AFPM Khatri, Sunil <sukhatri@amd.com> w=
+rote:
+>
+>
+> On 3/14/2024 8:12 PM, Alex Deucher wrote:
+> > On Thu, Mar 14, 2024 at 1:44=E2=80=AFAM Khatri, Sunil <sukhatri@amd.com=
+> wrote:
+> >>
+> >> On 3/14/2024 1:58 AM, Alex Deucher wrote:
+> >>> On Tue, Mar 12, 2024 at 8:41=E2=80=AFAM Sunil Khatri <sunil.khatri@am=
+d.com> wrote:
+> >>>> Add all the IP's information on a SOC to the
+> >>>> devcoredump.
+> >>>>
+> >>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+> >>>> ---
+> >>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 19 ++++++++++++++++++=
++
+> >>>>    1 file changed, 19 insertions(+)
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu=
+/drm/amd/amdgpu/amdgpu_reset.c
+> >>>> index a0dbccad2f53..611fdb90a1fc 100644
+> >>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> >>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> >>>> @@ -196,6 +196,25 @@ amdgpu_devcoredump_read(char *buffer, loff_t of=
+fset, size_t count,
+> >>>>                              coredump->reset_task_info.process_name,
+> >>>>                              coredump->reset_task_info.pid);
+> >>>>
+> >>>> +       /* GPU IP's information of the SOC */
+> >>>> +       if (coredump->adev) {
+> >>>> +               drm_printf(&p, "\nIP Information\n");
+> >>>> +               drm_printf(&p, "SOC Family: %d\n", coredump->adev->f=
+amily);
+> >>>> +               drm_printf(&p, "SOC Revision id: %d\n", coredump->ad=
+ev->rev_id);
+> >>>> +
+> >>>> +               for (int i =3D 0; i < coredump->adev->num_ip_blocks;=
+ i++) {
+> >>>> +                       struct amdgpu_ip_block *ip =3D
+> >>>> +                               &coredump->adev->ip_blocks[i];
+> >>>> +                       drm_printf(&p, "IP type: %d IP name: %s\n",
+> >>>> +                                  ip->version->type,
+> >>>> +                                  ip->version->funcs->name);
+> >>>> +                       drm_printf(&p, "IP version: (%d,%d,%d)\n\n",
+> >>>> +                                  ip->version->major,
+> >>>> +                                  ip->version->minor,
+> >>>> +                                  ip->version->rev);
+> >>>> +               }
+> >>>> +       }
+> >>> I think the IP discovery table would be more useful.  Either walk the
+> >>> adev->ip_versions structure, or just include the IP discovery binary.
+> >> I did explore the adev->ip_versions and if i just go through the array
+> >> it doesn't give any useful information directly.
+> >> There are no ways to find directly from adev->ip_versions below things
+> >> until i also reparse the discovery binary again like done the discover=
+y
+> >> amdgpu_discovery_reg_base_init and walk through the headers of various
+> >> ips using discovery binary.
+> >> a. Which IP is available on soc or not.
+> >> b. How many instances are there
+> >> Also i again have to change back to major, minor and rev convention fo=
+r
+> >> this information to be useful. I am exploring it more if i find some
+> >> other information i will update.
+> >>
+> >> adev->ip_block[] is derived from ip discovery only for each block whic=
+h
+> >> is there on the SOC, so we are not reading information which isnt
+> >> applicable for the soc. We have name , type and version no of the IPs
+> >> available on the soc. If you want i could add no of instances of each =
+IP
+> >> too if you think that's useful information here. Could you share what
+> >> information is missing in this approach so i can include that.
+> > I was hoping to get the actual IP versions for the IPs from IP
+> > discovery rather than the versions from the ip_block array.  The
+> > latter are common so you can end up with the same version used across
+> > a wide variety of chips (e.g., all gfx10.x based chips use the same
+> > gfx 10 IP code even if the actual IP version is different for most of
+> > the chips).
+> Got it. let me check how to get it could be done rightly.
+> >
+> >> For dumping the IP discovery binary, i dont understand how that
+> >> information would be useful directly and needs to be decoded like we a=
+re
+> >> doing in discovery init. Please correct me if my understanding is wron=
+g
+> >> here.
+> > It's probably not a high priority, I was just thinking it might be
+> > useful to have in case there ended up being some problem related to
+> > the IP discovery table on some boards.  E.g., we'd know that all
+> > boards with a certain harvest config seem to align with a reported
+> > problem.  Similar for vbios.  It's more for telemetry.  E.g., all the
+> > boards reporting some problem have a particular powerplay config or
+> > whatever.
+> I got it.
+> But two points of contention here in my understanding. The dump works
+> only where there is reset and not sure if it could be used very early in
+> development of not. Second point is that devcoredump is 4096
+> bytes/4Kbyte of memory where we are dumping all the information. Not
+> sure if that could be increased but it might not be enough if we are
+> planning to dump all to it.
 
-aarch64/arch_timer.c: In function =E2=80=98guest_run_stage=E2=80=99:
-aarch64/arch_timer.c:138:33: warning: format =E2=80=98%lx=E2=80=99 expects =
-argument of type =E2=80=98long unsigned int=E2=80=99,
-                             but argument 6 has type =E2=80=98uint32_t=E2=
-=80=99 {aka =E2=80=98unsigned int=E2=80=99} [-Wformat=3D]
-  138 |                                 "config_iter + 1 =3D 0x%lx, irq_ite=
-r =3D 0x%lx.\n"
-      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~
-.....
-  141 |                                 config_iter + 1, irq_iter);
-      |                                 ~~~~~~~~~~~~~~~
-      |                                             |
-      |                                             uint32_t {aka unsigned =
-int}
+ah, ok.  Let's skip the IP versions in that case, we can use the
+family and rev_id and external_rev_id to look up the IP versions.
 
-Fixes: d1dafd065a23 ("KVM: arm64: selftests: Enable tuning of error margin =
-in arch_timer test")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+Alex
 
-2024 Whack-a-Mole Champion.
-
-Note, this is based on kvm/queue and probably won't apply to your tree as
-the buggy commit went in via the RISC-V pull request.
-
- tools/testing/selftests/kvm/aarch64/arch_timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testi=
-ng/selftests/kvm/aarch64/arch_timer.c
-index ddba2c2fb5de..93100b3f1312 100644
---- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-+++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-@@ -135,7 +135,7 @@ static void guest_run_stage(struct test_vcpu_shared_dat=
-a *shared_data,
-=20
- 		irq_iter =3D READ_ONCE(shared_data->nr_iter);
- 		__GUEST_ASSERT(config_iter + 1 =3D=3D irq_iter,
--				"config_iter + 1 =3D 0x%lx, irq_iter =3D 0x%lx.\n"
-+				"config_iter + 1 =3D 0x%x, irq_iter =3D 0x%x.\n"
- 				"  Guest timer interrupt was not trigged within the specified\n"
- 				"  interval, try to increase the error margin by [-e] option.\n",
- 				config_iter + 1, irq_iter);
-
-base-commit: e9a2bba476c8332ed547fce485c158d03b0b9659
---=20
-2.44.0.291.gc1ea87d7ee-goog
-
+>
+> Another point is since we have sysfs/debugfs/info ioctl etc information
+> available. We should sort out what really is helpful in debugging GPU
+> hang and that's added in devcore.
+>
+> Regards
+> Sunil
+>
+> >
+> > Alex
+> >
+> >
+> >>> Alex
+> >>>
+> >>>> +
+> >>>>           if (coredump->ring) {
+> >>>>                   drm_printf(&p, "\nRing timed out details\n");
+> >>>>                   drm_printf(&p, "IP Type: %d Ring Name: %s\n",
+> >>>> --
+> >>>> 2.34.1
+> >>>>
 
