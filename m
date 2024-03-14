@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-102995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B7A87B990
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67F9387B989
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 09:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4780F1C21893
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:48:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 993651C21706
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 08:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9426E5FB;
-	Thu, 14 Mar 2024 08:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05EE56CDCA;
+	Thu, 14 Mar 2024 08:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Km0rU/5E"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Tdql683r"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7246D1AD;
-	Thu, 14 Mar 2024 08:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C986BFAA;
+	Thu, 14 Mar 2024 08:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710405983; cv=none; b=toSqondCxUvTGV/gzOjKcjs+/MGyABWgfFfHpY5xTYchbuo7IWIJhVBZvSY3fU9Ofa5lWaVDBfKbEJbzx+reEmYnVzmzylAz2AgiylhUnFwSZkyMZInbWOpibiRVzNOOxmvuL06Rq5SLB+GGc3WNzX+uw43JSz2BX36+LaosQGg=
+	t=1710405980; cv=none; b=famOxHg/KdlzBpe097vsGjDz88yiWMVph8sMqoNOicnQiD4xa0f1DZ8dVI0ZbR/7M9pmpv8xA0uk/d4cbLtFv4+YgvcXRSJ4wUpFxkcz1id8SgvcV9lAeJxjwZjH0C8g4HlbYSgcLKXQDyXVbiU9pywq/qo9DZ9UyIT8Fx9fsEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710405983; c=relaxed/simple;
-	bh=1wp47qp/alsOZHbeqiRWsh/Pk9ud/IcelhS3NNl88Xs=;
+	s=arc-20240116; t=1710405980; c=relaxed/simple;
+	bh=pBPynPtz/V7v/h5wuWtgu0O4YV1eNNCWoKb2hnz3ZPk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M9USZwieycXOEfMKDVqE9knsyFvRXz64g7R9VLhoowRaCJDkXrXRxpTlIqocLYRMkFwCNLRj3JNN1uvV1n5cD282GkAovGEKCVzV4L/Ecp8ic7xkds6r97r/3FDP7vajBAgUof1dfoLeWGozhErzqiCbU8kpn2xW1ehovYHOgao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Km0rU/5E; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=iRs7D0U+TEZOXjYjJNTxXP3CZWsOY6SSZjzzRAb72kz0kTsvan9oBb/ToaQmu0V7hQPOCMNw+FQi2ctzU//e1drjq9Lntq8G266GGWfb3wqnfmY6nc7JsIt8TN7thpvNujSgicTJOzz7BIL8CZI44U6jpPZH3y1LQgEh+joKa8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Tdql683r; arc=none smtp.client-ip=37.18.73.165
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id F3DA2120008;
-	Thu, 14 Mar 2024 11:46:13 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru F3DA2120008
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 2FF53100015;
+	Thu, 14 Mar 2024 11:46:14 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2FF53100015
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
 	s=mail; t=1710405974;
-	bh=7LCfx2PuYn9jYgJQVVqsryHiVahatRhw2btAYqtVZKA=;
+	bh=gPoYxl99hZw4r2GrN+UX1NkBh/kze2TFpy26yv3N7sw=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Km0rU/5EocJAGAGZUTwMqQW8XgG6JPo2LG/cdDXbhCOBG50+BbEaCA4CUdi3q8YO5
-	 Tj/UlU/1LzkSQb/lXzFcXEj+u82RamL1hG+CJRep9/llwry1Y8RXQSK8mIA2/9iHQ5
-	 7VITNa4d06ebreVhGtVi3kAXq6FHvP71gUt0ezJI1BtmrGnGRB8OascoAGnbovXxIy
-	 Fem0sKyRXdYQ1wGGgZ3Ujfrnis7mubDgTFYP7Q/YfWpYEkPQbNk/cY/eyORXa/xDOK
-	 +s4x1AHMuYKwW2Kyjs2Ju6LsJKuKiey+op77hhmjCfN8Uw0b6q4eNZpkdOrvDoWROa
-	 L8hJ1tqXgjPzQ==
+	b=Tdql683rDRQPyaaVzvScBzF1FKUiwIDrXPJQTk8TzT7Oi7TN/yI4VBXOwDoOKS2Rl
+	 i2oz7eZ1XIDsI35xJ4W8ueWToYVbm8sRMlvb6FDxrdbHHi87I79K849W6u+RKp6TK+
+	 mVeSr26kA6FA5U3AgtixE6GrYmKrQZF6c6Q/Cb1OMOctvfeA/Y04VOmBiRtnu19Nyg
+	 rfeDOFgqRNzZEcPKy6Ru8G4wySuLTNSqWJwii87NqmQSDyn+d4KatUnwbrLYp11Zud
+	 dmnclthsgKTT1i8LHiBgNc3/a82emgQcU+NExGC8y+T7elKiRSrGAE8mjYd3kD4vZv
+	 dn2rcynvvfx/g==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 14 Mar 2024 11:46:13 +0300 (MSK)
+	Thu, 14 Mar 2024 11:46:14 +0300 (MSK)
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -62,10 +62,10 @@ To: <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
 	<nikitos.tr@gmail.com>, <marek.behun@nic.cz>, <kabel@kernel.org>
 CC: <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linuxppc-dev@lists.ozlabs.org>, <kernel@salutedevices.com>, George Stark
-	<gnstark@salutedevices.com>
-Subject: [PATCH v6 1/9] locking/mutex: introduce devm_mutex_init
-Date: Thu, 14 Mar 2024 11:45:23 +0300
-Message-ID: <20240314084531.1935545-2-gnstark@salutedevices.com>
+	<gnstark@salutedevices.com>, Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH v6 2/9] leds: aw2013: use devm API to cleanup module's resources
+Date: Thu, 14 Mar 2024 11:45:24 +0300
+Message-ID: <20240314084531.1935545-3-gnstark@salutedevices.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240314084531.1935545-1-gnstark@salutedevices.com>
 References: <20240314084531.1935545-1-gnstark@salutedevices.com>
@@ -96,96 +96,85 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-Using of devm API leads to a certain order of releasing resources.
-So all dependent resources which are not devm-wrapped should be deleted
-with respect to devm-release order. Mutex is one of such objects that
-often is bound to other resources and has no own devm wrapping.
-Since mutex_destroy() actually does nothing in non-debug builds
-frequently calling mutex_destroy() is just ignored which is safe for now
-but wrong formally and can lead to a problem if mutex_destroy() will be
-extended so introduce devm_mutex_init()
+In this driver LEDs are registered using devm_led_classdev_register()
+so they are automatically unregistered after module's remove() is done.
+led_classdev_unregister() calls module's led_set_brightness() to turn off
+the LEDs and that callback uses resources which were destroyed already
+in module's remove() so use devm API instead of remove().
 
 Signed-off-by: George Stark <gnstark@salutedevices.com>
-Suggested by-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Tested-by: Nikita Travkin <nikita@trvn.ru>
 ---
- include/linux/mutex.h        | 27 +++++++++++++++++++++++++++
- kernel/locking/mutex-debug.c | 11 +++++++++++
- 2 files changed, 38 insertions(+)
+ drivers/leds/leds-aw2013.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 67edc4ca2bee..f57e005ded24 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -22,6 +22,8 @@
- #include <linux/cleanup.h>
- #include <linux/mutex_types.h>
- 
-+struct device;
-+
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- # define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
- 		, .dep_map = {					\
-@@ -117,6 +119,31 @@ do {							\
- } while (0)
- #endif /* CONFIG_PREEMPT_RT */
- 
-+#ifdef CONFIG_DEBUG_MUTEXES
-+
-+int __devm_mutex_init(struct device *dev, struct mutex *lock);
-+
-+#else
-+
-+static inline int __devm_mutex_init(struct device *dev, struct mutex *lock)
-+{
-+	/*
-+	 * When CONFIG_DEBUG_MUTEXES is off mutex_destroy is just a nop so
-+	 * no really need to register it in devm subsystem.
-+	 */
-+	return 0;
-+}
-+
-+#endif
-+
-+#define devm_mutex_init(dev, mutex)			\
-+({							\
-+	typeof(mutex) mutex_ = (mutex);			\
-+							\
-+	mutex_init(mutex_);				\
-+	__devm_mutex_init(dev, mutex_);			\
-+})
-+
- /*
-  * See kernel/locking/mutex.c for detailed documentation of these APIs.
-  * Also see Documentation/locking/mutex-design.rst.
-diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
-index bc8abb8549d2..6aa77e3dc82e 100644
---- a/kernel/locking/mutex-debug.c
-+++ b/kernel/locking/mutex-debug.c
-@@ -19,6 +19,7 @@
- #include <linux/kallsyms.h>
- #include <linux/interrupt.h>
- #include <linux/debug_locks.h>
-+#include <linux/device.h>
- 
- #include "mutex.h"
- 
-@@ -89,6 +90,16 @@ void debug_mutex_init(struct mutex *lock, const char *name,
- 	lock->magic = lock;
+diff --git a/drivers/leds/leds-aw2013.c b/drivers/leds/leds-aw2013.c
+index 17235a5e576a..6475eadcb0df 100644
+--- a/drivers/leds/leds-aw2013.c
++++ b/drivers/leds/leds-aw2013.c
+@@ -320,6 +320,11 @@ static int aw2013_probe_dt(struct aw2013 *chip)
+ 	return 0;
  }
  
-+static void devm_mutex_release(void *res)
++static void aw2013_chip_disable_action(void *data)
 +{
-+	mutex_destroy(res);
++	aw2013_chip_disable(data);
 +}
 +
-+int __devm_mutex_init(struct device *dev, struct mutex *lock)
-+{
-+	return devm_add_action_or_reset(dev, devm_mutex_release, lock);
-+}
+ static const struct regmap_config aw2013_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+@@ -336,7 +341,10 @@ static int aw2013_probe(struct i2c_client *client)
+ 	if (!chip)
+ 		return -ENOMEM;
+ 
+-	mutex_init(&chip->mutex);
++	ret = devm_mutex_init(&client->dev, &chip->mutex);
++	if (ret)
++		return ret;
 +
- /***
-  * mutex_destroy - mark a mutex unusable
-  * @lock: the mutex to be destroyed
+ 	mutex_lock(&chip->mutex);
+ 
+ 	chip->client = client;
+@@ -384,6 +392,10 @@ static int aw2013_probe(struct i2c_client *client)
+ 		goto error_reg;
+ 	}
+ 
++	ret = devm_add_action(&client->dev, aw2013_chip_disable_action, chip);
++	if (ret)
++		goto error_reg;
++
+ 	ret = aw2013_probe_dt(chip);
+ 	if (ret < 0)
+ 		goto error_reg;
+@@ -406,19 +418,9 @@ static int aw2013_probe(struct i2c_client *client)
+ 
+ error:
+ 	mutex_unlock(&chip->mutex);
+-	mutex_destroy(&chip->mutex);
+ 	return ret;
+ }
+ 
+-static void aw2013_remove(struct i2c_client *client)
+-{
+-	struct aw2013 *chip = i2c_get_clientdata(client);
+-
+-	aw2013_chip_disable(chip);
+-
+-	mutex_destroy(&chip->mutex);
+-}
+-
+ static const struct of_device_id aw2013_match_table[] = {
+ 	{ .compatible = "awinic,aw2013", },
+ 	{ /* sentinel */ },
+@@ -432,7 +434,6 @@ static struct i2c_driver aw2013_driver = {
+ 		.of_match_table = aw2013_match_table,
+ 	},
+ 	.probe = aw2013_probe,
+-	.remove = aw2013_remove,
+ };
+ 
+ module_i2c_driver(aw2013_driver);
 -- 
 2.25.1
 
