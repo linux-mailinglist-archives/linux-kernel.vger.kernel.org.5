@@ -1,193 +1,156 @@
-Return-Path: <linux-kernel+bounces-103772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB80B87C44A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:29:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B42187C44E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 21:31:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C616B2215F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:29:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FDA71F2227F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4D1762E8;
-	Thu, 14 Mar 2024 20:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1163763E6;
+	Thu, 14 Mar 2024 20:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RC4TESjg"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="ILAytvyh"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC486FE0B;
-	Thu, 14 Mar 2024 20:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8636FE28
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710448132; cv=none; b=KCc0M9Z3+7ynYMrnOh10HjPbYmhD7aOiknAp9e8ePBReAO+PAF0Et8KQsqsyyoRfUtR77NmfZiWlBZj1WrTkBD/ySve4wG617yriFG20dysY/51N07hreaN6c7KTM4rSzFEyx9+NsCGm5Ob4cVLoQCwtoGvAjq8vio8Mb1lfN5M=
+	t=1710448270; cv=none; b=HXyieo2tdoGdJOM2LVT+AGk68SmsEwwuhmC0zCD4dieCbQ6siKKC2UOt6va9g2rEV7mwiyFKBoSgUNIeAgEFpXqj/kezv/pyTHJcV6dDqgQv2jNBDodrhzJmOwLvSDykKBGh6qJF15yEXs4EEzT8nwOGkxuvXQY1R3IwhtE2mI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710448132; c=relaxed/simple;
-	bh=CSLuRo45oS25PsjTaTFl3smBFMW61nQHF4/uB1uvbfY=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=O03mh7d2i18EqP/XufisSYDlEnYreRdYZlc3FD74gJBkRu8/EiyCZniWL5yy1aMRYkWBSUIvB5ISWdhT4A/fA6B6RgwaEjHeS66EZUL3M1fOta6TWDl5q+Z9moqo/ICQew5hKnEs57ZwEtp0F2dUOurJT1in+6nXzTKSogIl2sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RC4TESjg; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-788455430easo120568785a.0;
-        Thu, 14 Mar 2024 13:28:50 -0700 (PDT)
+	s=arc-20240116; t=1710448270; c=relaxed/simple;
+	bh=X3BPVZ/DcbXSd1Z85mVrD8Y1cBbSZCOTowwFiOB4ceo=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=BMCcX0f23Z5GHAjpkrZB2IHTTpweY4TzWsiiFJDyEMm0OiXSb+NM+m5HMke8jPeXxUnATZlh4n71fsFHEJQqGA/nZQFyVu1XrE2Duau2LxHs8JpCdykyDL/sbK6RlQ6u3Yt1MtQNsH4bnZ93o9O9p6XySe9TSJIa9ZwS1xCWRrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=ILAytvyh; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-789e3f17a6eso2095185a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710448129; x=1711052929; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1710448267; x=1711053067; darn=vger.kernel.org;
+        h=subject:cc:to:from:message-id:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CYqvlgz3fwOmk26mzvVlgzBO06xI1HS4SgqCSEg+b5c=;
-        b=RC4TESjg+RNd+U9F+L9Ct6JX7nEGooNiGgcfVhghmLLOCRgo2j4OpQEcnNtMoXUu+5
-         gZo5WM/2/TFaRZUyR9hrtkqcateGkAT7yaG6GkaCOaeBtt73OonIpQ/iXFSn7YVBhsK1
-         aqUp0znJK2g1TTcabqxuY3VK84S8nXYGV5Y487ZyC7pH66PGwp1jnHgUzwXyHJ0gYjbz
-         4ENu/n+4mAiJkrpjcBluG3UOkVo0znqadKdVBDGpKLZHF9WjihGnjeF2f+p40eXwVUP3
-         yEr3uXltB54W8dI6DiDcAIUDdLZTWjJRGTsPuj9/L0OZ0rMt/V0gx9fjHWSRJlVGsm9u
-         22qA==
+        bh=jOVFHO8NoQqbd9uiDZWB2S1iwARLFd/3K1hhx95Fs68=;
+        b=ILAytvyhqin3VyXbxc2FKVdVT6zhUT61Mq5skbXw35JB/e6T5or1p0JwG92Xp4hpep
+         WwgzWsrVRnnV6KF/WmQF1XNQWCPvrGELlGOhSMFNsYU+xVqCg01CWy7icO5ADUgn8Szl
+         Yk/I8XAHwterYpta2zFi40ckvg0GuDC3l8ctoVbegkedTOSFb2eYKiANNuSeiUAHYPl9
+         B8XlGnfqYVvYBuBeOV8pEPYhpIuxaN6zo0MO2QRHuUgAzm38BHmTJ0CQmGtibQ5mOi+2
+         6Mc8T/qgbakVedd9bX9pQABecANUp0O6kYB3qphxo5NrF6n2otmVmaXWlF2yTsnMICdC
+         nFZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710448129; x=1711052929;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CYqvlgz3fwOmk26mzvVlgzBO06xI1HS4SgqCSEg+b5c=;
-        b=LhFEHZxbJL/WUAVr/mQcfw7IGElZSeioz+TD8DFYuLqYMAcXyzdLGXXmOrT/uvvINn
-         vhqyRZ66Dc/SArewK67IilmjA1BG4iCNgF6Zaz8gaY9NO67ySOJdxqtM8xeIiKMO6Wpp
-         AzSRLWC3ijEPErBouGnpBNrtmJZ9Ttjg3e28TD0+lnrlkF8UwRI6TPEX2QS0Wmtujgto
-         y89UxCB7s5EjqcCU/bcPjkd/R/cwHHVjSvpvC6nQDQGyn+aVWtHqwqKgiZ1ATkXNsxIs
-         If3EOiaPvsCMZhu4Ozla5AUEeMbBp137YmIjHhfu6VYUtMmmvaiuYO+QqVoR7a9fBqgR
-         WVZg==
-X-Forwarded-Encrypted: i=1; AJvYcCUWnfKPGwlW9vgjIuAhymb2webG3tdSoCDH+2TrD+Qm3ZI1I2E7ensqgDpfn2o6IojfI9BDezF0yLa01vI0I3lYc3kRtthtY1yJ7w6KT5lkMq2ZjPD8hl3BpLGvfqr4/0HnG4tBLMNYym1idDcWQ6f0vLPtECSrzPGO
-X-Gm-Message-State: AOJu0Yxa8esFFpgmSQmU215SnHH/gNxcsz4Clqo69DBrZEzbNypGqPYP
-	EW1K34zRWvwCsZJ3MQqLv2iGqrFmICAlhnARQfhCmN4T2CkJ9uF2
-X-Google-Smtp-Source: AGHT+IGUaNsIDJgU+eM5eb/wJkOEMlfh0za8eNyWdhZM8yhCLEQBESeVxfmkTFMxD2J+HIvCbDcDtg==
-X-Received: by 2002:a05:620a:29cb:b0:789:cfca:f59 with SMTP id s11-20020a05620a29cb00b00789cfca0f59mr7081354qkp.14.1710448129467;
-        Thu, 14 Mar 2024 13:28:49 -0700 (PDT)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id d2-20020a05620a158200b00789cd996cbcsm1201344qkk.134.2024.03.14.13.28.48
+        d=1e100.net; s=20230601; t=1710448267; x=1711053067;
+        h=subject:cc:to:from:message-id:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jOVFHO8NoQqbd9uiDZWB2S1iwARLFd/3K1hhx95Fs68=;
+        b=tkY+DnOu6AKACcbui5s0dpRFTIwgg/zLvPL8Y0mC3Mc2et43Bke59vd5hJCcouqhW4
+         G64HTdXq7zQqplBFpUUP1Rrt/ydfNzu9mdmnQzQAUIEP6s6cHwbIPKVinO/+uc6GEwIJ
+         6zdCWzN8FOhOB/LX6aDVstv9NPJZ0tykNfzbVq9Y/3NzppqU39ELivtqqKXbnrsYt+Sh
+         VKV/baC9aC3fbsdm3eUQw2WXxBzz35Kcw9j3FI+qs4mkvywu+JViN+sRDRnJ4CJsu3oE
+         OGS1IIj4P5J49FghmXe1jzLehCQYi5lBC9GGsZ0ZCt0hncF+Fd00xPF+oKwjLlgRiYGK
+         WYjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUsIfEXSfeglLQfUOjXGLqYC1BRmJp6jkIOOBfxFwRNMyBRinH5uhcvMR/JgyytTapEL0y4lJeEs5EAEzLsa8t3nCpEIfkklWgOrmgE
+X-Gm-Message-State: AOJu0Yxr7oXTrZ402o48mt2colIWWtnmqbcwCDGyl/ppYntiqZi7I+1u
+	mQrDdWH6P0w7JdVSUoldsHyqvz7UxoSbid3xF/vboUO0pKqza53rJo0ZUTTQxQ==
+X-Google-Smtp-Source: AGHT+IFpk+JjB+WJhifnI6YhAG9tS1Qqmwl12LpjCzVm0DLTPYg/X31LGejpX1MN/St0Kud0rJfyyw==
+X-Received: by 2002:a05:620a:124e:b0:789:c840:8295 with SMTP id a14-20020a05620a124e00b00789c8408295mr2958374qkl.18.1710448266675;
+        Thu, 14 Mar 2024 13:31:06 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id u21-20020ae9c015000000b00788272dbcb3sm1228763qkk.33.2024.03.14.13.31.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 13:28:48 -0700 (PDT)
-Date: Thu, 14 Mar 2024 16:28:48 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: kernel@quicinc.com, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- bpf <bpf@vger.kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>
-Message-ID: <65f35e00a83c0_2132294f5@willemb.c.googlers.com.notmuch>
-In-Reply-To: <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
-References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
- <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
- <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
- <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
- <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
- <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
- <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
- <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
- <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
- <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
- <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
-Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
- for userspace tstamp packets
+        Thu, 14 Mar 2024 13:31:06 -0700 (PDT)
+Date: Thu, 14 Mar 2024 16:31:05 -0400
+Message-ID: <3f2a695a148db9e1daae8c07d9ce5c85@paul-moore.com>
+From: Paul Moore <paul@paul-moore.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] lsm/lsm-pr-20240314
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
 
-Martin KaFai Lau wrote:
-> On 3/14/24 2:49 AM, Willem de Bruijn wrote:
-> >> The two bits could potentially only encode the delivery time that is allowed to
-> >> be forwarded without reset. 0 could mean refering back to sk_clockid and don't
-> >> forward. The final consumer of the forwarded skb->tstamp is the qdisc which
-> >> currently only has mono and tai.
-> > 
-> > So the followinng meaning of bit pair
-> > { skb->mono_delivery_time, skb->user_delivery_time } ?
-> >   
-> > - { 0, 0 } legacy skb->tstamp: realtime on rx
-> > - { 1, 0 } skb->tstamp is mono: existing behavior of mono_delivery_time bit
-> > - { 0, 1 } skb->tstamp is tai: analogous to mono case
-> > - { 1, 1 } skb->tstamp defined by skb->sk->sk_clockid
-> 
-> I was thinking only forward mono and tai until it is clearer how other clocks 
-> will be useful for forwarding between e/ingress. By resetting all skb->tstamp 
-> other than mono and tai, { 0, 0 } at ingress will mean realtime on rx and { 0, 0 
-> } at egress will mean go look skb->sk->sk_clockid.
-> 
-> I do like your scheme such that it is much clearer what is in skb->tstamp 
-> without depending on other bits like tc_at_ingress or not.
-> 
-> "{ 0, 1 } skb->tstamp is tai: analogous to mono case" can probably be dropped 
-> for now until bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_TAI) is needed.
-> Otherwise, it is mostly a duplicate of "{ 1, 1 } skb->tstamp defined by 
-> skb->sk->sk_clockid".
-> 
-> The bpf_convert_tstamp_{read,write} and the helper bpf_skb_set_tstamp need to be 
-> changed to handle the new "user_delivery_time" bit anyway, e.g. 
-> bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_MONO) needs to clear the 
-> "user_delivery_time" bit.
-> 
-> I think the "struct inet_frag_queue" also needs a new "user_delivery_time" 
-> field. "mono_delivery_time" is already in there.
-> 
-> It may as well be cleaner to combine mono_delivery_time and user_delivery_time 
-> into a 2 bits field like:
-> 
-> struct sk_buff {
-> 	__u8 tstamp_type:2;
-> };
-> 
-> enum {
-> 	SKB_TSTAMP_TYPE_RX_REAL = 0, /* A RX (receive) time in real */
-> 	SKB_TSTAMP_TYPE_TX_MONO = 1, /* A TX (delivery) time in mono */
-> 
-> 	/* A TX (delivery) time and its clock is in skb->sk->sk_clockid.
-> 	 *
-> 	 * BPF_SKB_TSTAMP_DELIVERY_USER should be added
-> 	 * such that reading __sk_buff->tstamp_type will match the
-> 	 * SKB_TSTAMP_TYPE_TX_USER.
-> 	 *
-> 	 * The bpf program can learn the clockid by
-> 	 * reading skb->sk->sk_clockid.
-> 	 *
-> 	 * bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_USER)
-> 	 * should be disallowed for now until the use case
-> 	 * is more clear. Potentially, we could allow it
-> 	 * in the future as long as
-> 	 * the sock_flag(sk, SOCK_TXTIME) is true at that moment.
-> 	 */
-> 	SKB_TSTAMP_TYPE_TX_USER = 2,
-> 
-> 	/* UNUSED_FOR_FUTURE = 3, */
-> };
-> 
-> It will have more code churns in the first patch to rename 
-> s/mono_delivery_time/tstamp_type/.
-> 
-> wdyt?
+Hi Linus,
 
-I asked for such code churn in the original patch. We then decided to
-leave the variable name as is, as the churn was significant.
+Two patches to address issues with the LSM syscalls that we shipped in
+Linux v6.8.  The first patch might be a bit controversial, but the
+second is a rather straightforward fix; more on both below.
 
-Long term, it is obviously cleaner.
+The first fix from Casey addresses a problem that should have been
+caught during the ~16 month (?) review cycle, but sadly was not.  The
+good news is that Dmitry caught it very quickly once Linux v6.8 was
+released.  The core issue is the use of size_t parameters to pass
+buffer sizes back and forth in the syscall; while we could have solved
+this with a compat syscall definition, given the newness of the syscalls
+I wanted to attempt to just redefine the size_t parameters as u32 types
+and avoid the work associated with a set of compat syscalls.  However,
+this is technically a change in the syscall's signature/API so I can
+understand if you're opposed to this, even if the syscalls are less
+than a week old.
 
-I don't have a strong opinion. If doing this, let's at least make it
-two separate patches, one that is a NOOP rename only.
+The second fix is a rather trivial fix to allow userspace to call into
+the lsm_get_self_attr() syscall with a NULL buffer to quickly determine
+a minimum required size for the buffer.  We do have kselftests for this
+very case, I'm not sure why I didn't notice the failure; I'm going to
+guess stupidity, tired eyes, I dunno.  My apologies we didn't catch
+this earlier.
 
+I would like if you could merge these patches, I believe fixing the
+syscall signature problem now poses very little risk and will help us
+avoid the management overhead of compat syscall variants in the future.
+However, I'll understand if you're opposed, just let me know and I'll
+get you a compat version of this pull request as soon as we can get
+something written/tested/verfified.
 
+Thanks,
+-Paul
+
+--
+The following changes since commit b0546776ad3f332e215cebc0b063ba4351971cca:
+
+  Merge tag 'printk-for-6.9' of
+    git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux
+    (2024-03-12 20:54:50 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
+    tags/lsm-pr-20240314
+
+for you to fetch changes up to eaf0e7a3d2711018789e9fdb89191d19aa139c47:
+
+  lsm: handle the NULL buffer case in lsm_fill_user_ctx()
+    (2024-03-14 11:31:26 -0400)
+
+----------------------------------------------------------------
+lsm/stable-6.9 PR 20240314
+
+----------------------------------------------------------------
+Casey Schaufler (1):
+      lsm: use 32-bit compatible data types in LSM syscalls
+
+Paul Moore (1):
+      lsm: handle the NULL buffer case in lsm_fill_user_ctx()
+
+ include/linux/lsm_hook_defs.h                        |  4 ++--
+ include/linux/security.h                             |  8 ++++----
+ include/linux/syscalls.h                             |  6 +++---
+ security/apparmor/lsm.c                              |  4 ++--
+ security/lsm_syscalls.c                              | 10 +++++-----
+ security/security.c                                  | 20 +++++++++++-----
+ security/selinux/hooks.c                             |  4 ++--
+ security/smack/smack_lsm.c                           |  4 ++--
+ tools/testing/selftests/lsm/common.h                 |  6 +++---
+ tools/testing/selftests/lsm/lsm_get_self_attr_test.c | 10 +++++-----
+ tools/testing/selftests/lsm/lsm_list_modules_test.c  |  8 ++++----
+ tools/testing/selftests/lsm/lsm_set_self_attr_test.c |  6 +++---
+ 12 files changed, 48 insertions(+), 42 deletions(-)
+
+--
+paul-moore.com
 
