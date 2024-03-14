@@ -1,162 +1,173 @@
-Return-Path: <linux-kernel+bounces-103426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10C8587BF35
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:44:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CB2487BF36
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A661D1F21971
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:44:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95AF31F22ECB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E07171759;
-	Thu, 14 Mar 2024 14:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D5A870CBD;
+	Thu, 14 Mar 2024 14:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIOenNHV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6eMuTFe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA9071746;
-	Thu, 14 Mar 2024 14:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6243870CBC
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710427414; cv=none; b=o5h1970uGtVyLCp9TKxKKiUyv81ly7Y3T9cb6zHNw05hsZudnTt6v9rTzUVbk+BbHebT1zQfd6YnZqRwqnGujuWcKQYE0O+mxYc/v8/LTcm8MSBeQlVqnMlIMAMUQKxWtNzfjlk3k35Ed/RaXNY5ULcKzOwAbiELy4P2ZM3Nh6A=
+	t=1710427434; cv=none; b=YHNXhF1z3HG2PjdCaV2lAyyJH0+2e+CZvkJ4+NIhTBNKTVtDcgcT27Bo1gUEKjTluwkao34rWb284T3Cb/T5nzIYFhSOoOYvAqpMSdWWIfTo3aX4wRR01b3LzkMUa6jfCMbG1Po6KxNeXcxuIxo/l3kPwI3Xa1DeHxQVB4ki7mU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710427414; c=relaxed/simple;
-	bh=FeH9KIAieASP7N2t5QySoaSYptggQ1Z30dxYLQNICXQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k98wGHBo0+0Yk6qJte4D6QHlSmOHb/yMeO4XDohTID9XEbVdkAqYksSdCv2bgS6v++3qxHVmAr6uxJhOXc/k8rK3knQthiHg5/wST2zKQOggGHkZwMxYGlhWVlvm0WOa3UoEOJs7QdfB74vQT89/pdpCdKxE0+KAeU4cx/+PWZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XIOenNHV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82EA7C433F1;
-	Thu, 14 Mar 2024 14:43:32 +0000 (UTC)
+	s=arc-20240116; t=1710427434; c=relaxed/simple;
+	bh=G8gkI8ogHOLf8UKfRzUmXw+0mUIBA5o9ALc0D/L89mA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=p2f0Lzipe4X/WTLeVNCRQ82eVrt31nMI7vhOOCVxoeQgMvNZ9PIAzQ5aJZERfB+m7q+PaHZihOPIXb+P5nEU9+sN4xIxL7zQYyZzp2XFFHvwTPw+oGgEskYyBAEK+HVLEADLDcrBsHknreQ6NNIlWcNStFPzmUuLf1oPjnL0tLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a6eMuTFe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC2E6C433C7;
+	Thu, 14 Mar 2024 14:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710427414;
-	bh=FeH9KIAieASP7N2t5QySoaSYptggQ1Z30dxYLQNICXQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XIOenNHVZpNt3pfknt2SSY2kcFbS/Kr/6DCda5U8iT/UfA5s7nl8GqQHmxaIB8ReR
-	 6pdimDvMf4YFbg0OCQuViRiGrIK9aTuJuYuwOrGwk4W87+WPWoJAbQjOB9HWUHhrb+
-	 1voaqPoE9I44L+MiXZRmUg0TYmdNTQiO33eR8tp5yLoxb6JnOs3bOSk/ZiV0DSrkMy
-	 wFeJTRX1H3mUiwHKsRXNcyyk75Mzayaw3XDs97Lgpn6nh39MBbUKGavShnoKVa/rWh
-	 KUOKFZ1PgZWMhRoGHVkfbmj6ZrD4BtltLW9FIM4UsRh4wvAE9opB1+YiTBrfLz4vOR
-	 3ApvnVqClY8yQ==
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 3/3] perf beauty: Move arch/x86/include/asm/irq_vectors.h copy out of the directory used to build perf
-Date: Thu, 14 Mar 2024 11:43:20 -0300
-Message-ID: <20240314144320.743217-4-acme@kernel.org>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240314144320.743217-1-acme@kernel.org>
-References: <20240314144320.743217-1-acme@kernel.org>
+	s=k20201202; t=1710427434;
+	bh=G8gkI8ogHOLf8UKfRzUmXw+0mUIBA5o9ALc0D/L89mA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=a6eMuTFemmiVp5BHLVTAbT3pNT5EF4UmUIxqoRl67nw6oy7PoWwlx0i/JNoeFSyVI
+	 e3Hht8Mshv+l0X9RtDJRn/LHOf/mVKVN9xySfMMeSU9lV1oWLTve9dzgMyQlaBAwn9
+	 HteorsPmL8/m20CUemWMSLvogDmx3n17r577hhNFIiUJPRAUKZhk0zbbysm28xiP32
+	 n3YjijqJU9rvGUcvoGnkzGhA1fsHcpIegtXo7IcYI3U9YZIx9vvmVKcJF6rEqhVdFO
+	 Fam1jWDPvF6FeL7qoeWqdZ1J/8/u0O+1fWCk8aQrOOWUB6Ii2JWntJZ8uprRQKxAsj
+	 Bkydi55sMvDRg==
+Date: Thu, 14 Mar 2024 14:43:50 +0000
+From: Lee Jones <lee@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Lee Jones <lee@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>
+Subject: [GIT PULL] Backlight for v6.9
+Message-ID: <20240314144350.GP1522089@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+Good afternoon Linus,
 
-It is used only to generate string tables, not to build perf, so move it
-to the tools/perf/trace/beauty/include/ hierarchy, that is used just for
-scrapping.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-This is a something that should've have happened, as happened with the
-linux/socket.h scrapper, do it now as Ian suggested while doing an
-audit/refactor session in the headers used by perf.
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-No other tools/ living code uses it.
+are available in the Git repository at:
 
-Suggested-by: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/lkml/CAP-5=fWZVrpRufO4w-S4EcSi9STXcTAN2ERLwTSN7yrSSA-otQ@mail.gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/Makefile.perf                                    | 6 ++++--
- tools/perf/check-headers.sh                                 | 2 +-
- .../trace/beauty}/arch/x86/include/asm/irq_vectors.h        | 0
- tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh      | 6 +++---
- 4 files changed, 8 insertions(+), 6 deletions(-)
- rename tools/{ => perf/trace/beauty}/arch/x86/include/asm/irq_vectors.h (100%)
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/lee/backlight tags/backlight-next-6.9
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 757777d968602ded..c75342b21089fc6f 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -474,6 +474,8 @@ arm64-sysreg-defs-clean:
- beauty_linux_dir := $(srctree)/tools/perf/trace/beauty/include/linux/
- beauty_uapi_linux_dir := $(srctree)/tools/perf/trace/beauty/include/uapi/linux/
- beauty_uapi_sound_dir := $(srctree)/tools/perf/trace/beauty/include/uapi/sound/
-+beauty_arch_asm_dir := $(srctree)/tools/perf/trace/beauty/arch/x86/include/asm/
-+
- linux_uapi_dir := $(srctree)/tools/include/uapi/linux
- asm_generic_uapi_dir := $(srctree)/tools/include/uapi/asm-generic
- arch_asm_uapi_dir := $(srctree)/tools/arch/$(SRCARCH)/include/uapi/asm/
-@@ -636,8 +638,8 @@ $(x86_arch_prctl_code_array): $(x86_arch_asm_uapi_dir)/prctl.h $(x86_arch_prctl_
- x86_arch_irq_vectors_array := $(beauty_outdir)/x86_arch_irq_vectors_array.c
- x86_arch_irq_vectors_tbl := $(srctree)/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
- 
--$(x86_arch_irq_vectors_array): $(x86_arch_asm_dir)/irq_vectors.h $(x86_arch_irq_vectors_tbl)
--	$(Q)$(SHELL) '$(x86_arch_irq_vectors_tbl)' $(x86_arch_asm_dir) > $@
-+$(x86_arch_irq_vectors_array): $(beauty_arch_asm_dir)/irq_vectors.h $(x86_arch_irq_vectors_tbl)
-+	$(Q)$(SHELL) '$(x86_arch_irq_vectors_tbl)' $(beauty_arch_asm_dir) > $@
- 
- x86_arch_MSRs_array := $(beauty_outdir)/x86_arch_MSRs_array.c
- x86_arch_MSRs_tbl := $(srctree)/tools/perf/trace/beauty/tracepoints/x86_msr.sh
-diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-index 93ad7a787a19d550..b35eba5e99c8d91f 100755
---- a/tools/perf/check-headers.sh
-+++ b/tools/perf/check-headers.sh
-@@ -34,7 +34,6 @@ FILES=(
-   "arch/x86/include/asm/cpufeatures.h"
-   "arch/x86/include/asm/inat_types.h"
-   "arch/x86/include/asm/emulate_prefix.h"
--  "arch/x86/include/asm/irq_vectors.h"
-   "arch/x86/include/asm/msr-index.h"
-   "arch/x86/include/uapi/asm/prctl.h"
-   "arch/x86/lib/x86-opcode-map.txt"
-@@ -93,6 +92,7 @@ SYNC_CHECK_FILES=(
- 
- declare -a BEAUTY_FILES
- BEAUTY_FILES=(
-+  "arch/x86/include/asm/irq_vectors.h"
-   "include/linux/socket.h"
-   "include/uapi/linux/fs.h"
-   "include/uapi/linux/mount.h"
-diff --git a/tools/arch/x86/include/asm/irq_vectors.h b/tools/perf/trace/beauty/arch/x86/include/asm/irq_vectors.h
-similarity index 100%
-rename from tools/arch/x86/include/asm/irq_vectors.h
-rename to tools/perf/trace/beauty/arch/x86/include/asm/irq_vectors.h
-diff --git a/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh b/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
-index 87dc68c7de0c297e..d8e927dd2bb75c41 100755
---- a/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
-+++ b/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
-@@ -3,12 +3,12 @@
- # (C) 2019, Arnaldo Carvalho de Melo <acme@redhat.com>
- 
- if [ $# -ne 1 ] ; then
--	arch_x86_header_dir=tools/arch/x86/include/asm/
-+	beauty_arch_asm_dir=tools/perf/trace/beauty/arch/x86/include/asm/
- else
--	arch_x86_header_dir=$1
-+	beauty_arch_asm_dir=$1
- fi
- 
--x86_irq_vectors=${arch_x86_header_dir}/irq_vectors.h
-+x86_irq_vectors=${beauty_arch_asm_dir}/irq_vectors.h
- 
- # FIRST_EXTERNAL_VECTOR is not that useful, find what is its number
- # and then replace whatever is using it and that is useful, which at
+for you to fetch changes up to b49c1caca529c28712ef62bfaabdb9441162a935:
+
+  backlight: pandora_bl: Drop unneeded ENOMEM error message (2024-03-07 09:03:29 +0000)
+
+----------------------------------------------------------------
+ - New Drivers
+   - Add support for Kinetic KTD2801 Backlight
+
+ - Fix-ups
+   - Fix include lists; alphabetise, remove unused, explicitly add used
+   - Device Tree binding adaptions/conversions/creation
+   - Use dev_err_probe() to clean-up error paths
+   - Use/convert to new/better APIs/helpers/MACROs instead of hand-rolling implementations
+
+ - Bug Fixes
+   - Fix changes of NULL pointer dereference
+   - Remedy a bunch of logic errors
+   - Initialise (zero) Backlight properties data structures
+
+----------------------------------------------------------------
+Andy Shevchenko (9):
+      leds: expresswire: Don't use "proxy" headers
+      backlight: hx8357: Fix potential NULL pointer dereference
+      backlight: hx8357: Make use of device properties
+      backlight: hx8357: Move OF table closer to its consumer
+      backlight: hx8357: Make use of dev_err_probe()
+      backlight: hx8357: Utilise temporary variable for struct device
+      backlight: mp3309c: Make use of device properties
+      backlight: mp3309c: Use dev_err_probe() instead of dev_err()
+      backlight: mp3309c: Utilise temporary variable for struct device
+
+Arnd Bergmann (1):
+      leds: ktd2692: Add GPIOLIB dependency
+
+Daniel Thompson (4):
+      backlight: mp3309c: Fully initialize backlight_properties during probe
+      backlight: da9052: Fully initialize backlight_properties during probe
+      backlight: lm3639: Fully initialize backlight_properties during probe
+      backlight: lp8788: Fully initialize backlight_properties during probe
+
+Duje Mihanović (5):
+      leds: Introduce ExpressWire library
+      leds: ktd2692: Convert to use ExpressWire library
+      dt-bindings: backlight: Add Kinetic KTD2801 binding
+      backlight: Add Kinetic KTD2801 Backlight support
+      backlight: ktd2801: Make timing struct static
+
+Jeffrey Hugo (1):
+      dt-bindings: backlight: qcom-wled: Fix bouncing email addresses
+
+Jianhua Lu (1):
+      backlight: ktz8866: Correct the check for of_property_read_u32
+
+Krzysztof Kozlowski (7):
+      backlight: gpio: Simplify with dev_err_probe()
+      backlight: l4f00242t03: Simplify with dev_err_probe()
+      backlight: bd6107: Handle deferred probe
+      backlight: as3711_bl: Handle deferred probe
+      backlight: lm3630a_bl: Handle deferred probe
+      backlight: lm3630a_bl: Simplify probe return on gpio request error
+      backlight: pandora_bl: Drop unneeded ENOMEM error message
+
+Luca Weiss (3):
+      backlight: lm3630a: Initialize backlight_properties on init
+      backlight: lm3630a: Don't set bl->props.brightness in get_brightness
+      backlight: lm3630a: Use backlight_get_brightness helper in update_status
+
+Sean Young (1):
+      backlight: mp3309c: Use pwm_apply_might_sleep()
+
+ .../bindings/leds/backlight/kinetic,ktd2801.yaml   |  46 ++++++++
+ .../bindings/leds/backlight/qcom-wled.yaml         |   4 +-
+ MAINTAINERS                                        |  13 +++
+ drivers/leds/Kconfig                               |   4 +
+ drivers/leds/Makefile                              |   3 +
+ drivers/leds/flash/Kconfig                         |   3 +-
+ drivers/leds/flash/leds-ktd2692.c                  | 116 +++++--------------
+ drivers/leds/leds-expresswire.c                    |  72 ++++++++++++
+ drivers/video/backlight/Kconfig                    |   7 ++
+ drivers/video/backlight/Makefile                   |   1 +
+ drivers/video/backlight/as3711_bl.c                |   6 +-
+ drivers/video/backlight/bd6107.c                   |   9 +-
+ drivers/video/backlight/da9052_bl.c                |   1 +
+ drivers/video/backlight/gpio_backlight.c           |  10 +-
+ drivers/video/backlight/hx8357.c                   |  67 ++++++-----
+ drivers/video/backlight/ktd2801-backlight.c        | 128 +++++++++++++++++++++
+ drivers/video/backlight/ktz8866.c                  |   6 +-
+ drivers/video/backlight/l4f00242t03.c              |  34 +++---
+ drivers/video/backlight/lm3630a_bl.c               |  42 +++----
+ drivers/video/backlight/lm3639_bl.c                |   1 +
+ drivers/video/backlight/lp8788_bl.c                |   1 +
+ drivers/video/backlight/mp3309c.c                  |  93 ++++++---------
+ drivers/video/backlight/pandora_bl.c               |   4 +-
+ include/linux/leds-expresswire.h                   |  38 ++++++
+ 24 files changed, 461 insertions(+), 248 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
+ create mode 100644 drivers/leds/leds-expresswire.c
+ create mode 100644 drivers/video/backlight/ktd2801-backlight.c
+ create mode 100644 include/linux/leds-expresswire.h
+
 -- 
-2.43.2
-
+Lee Jones [李琼斯]
 
