@@ -1,199 +1,263 @@
-Return-Path: <linux-kernel+bounces-102671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B6187B5C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 01:25:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 808FE87B5C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 01:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5634B285EDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:25:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A401F1C20D5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEDBB2581;
-	Thu, 14 Mar 2024 00:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D808C07;
+	Thu, 14 Mar 2024 00:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KDH+w9AU"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2054.outbound.protection.outlook.com [40.107.95.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OdqMrdyl"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FD77F;
-	Thu, 14 Mar 2024 00:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710375941; cv=fail; b=dnDSbq8/jmG7EQnydedEBo0Q3mxeX+mtQ+f/zRgbKmZYyGtycXPfBzQZlfn8H9O5zKWfwmsHyLft1IU+DiuqCq1c2necPc1e7MBViEVJSP/XLZIDpE7/M2P5I/eX726ukMJu0vAkI8N6zj6OJy8pQlYe/oHL1+ZDWkvjnTuUaPg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710375941; c=relaxed/simple;
-	bh=0IKFPH/3jiM3CXeAOn5DOE6ojS5sGLEbiBqIjoKbm6s=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=gzB0janEViFfKgRlRWMARIRh17q8sNUUYSK6Rashi1VusokbnW0fD8uZe+TT1vxa62JTkMgqvF9ICi3F40wshkUZvm4fv8/ecGxaslc0IrqN5xRiAkH9dZ0F6uYphCTSR8+3RwtR0z9dXyhr11JbtZBwrR5ttvY/OA4z0nFQl0M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KDH+w9AU; arc=fail smtp.client-ip=40.107.95.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LqtVPzMaZH/jGSXUHTEhnFlgAif2pUDWO/m5c/rDf76QwKm3LpRLa4EQqFSQDus8rS1IWdNq/tWWsfFW2PJxcs3Xnk8uGHEP9MPoQmapugA/m5Hd8fIFoAO+inRoAPU9UJ1JR2UQrZfbFFmHFSt6J8TR+YLCkV19QfXs4/2kBn2kWCSpDm5UfPqHJQghgerMDXTl0hv2pOntFHgnyVpgBG+o4MX4NV657Z5T+H3cmRMi+fnjFkeL9NKaHmX983LfQnjrJ4JtVqxPYsU34Sy9cGpD4ffEo0ftAAA0K1FOXHZpOXQCEu5XdfDwp5pqrZMs9Q5tiPFwmGcr0WsX5cvW5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pCoxXYlU85HveMRw3/yOmYeexChPmA1M4HsfukFnGWs=;
- b=nvhU77+OKJxtIECc6W9HnLTufEwOFBhnOoe41PB36PBB29Rm/8jjjjrWXvnVwYsyoxn67I1vYBMdFunlypkr8BfhdconCfAW6cUzK/8l+di5FhkpBFHfpr5qSnuysAJ9uqwekl4P9fcYe+pmNMRTprNPt8qfC+VkOz8BsjQwr39pk/5qRCzub53rCkF/WJHPDrlH0zmtO96eloBoEqsaQ/y/Pdt/Ooj0Q9Xlz6zPbm/0eUgKbxtEoWxIrFq5pIJ9VxdpAMEZCAqJd5oBr4WxtB7D4GtYQfIUPnI954nPYTgtQN/qjgosiVTkxHK0k872B1R7kGuJXQnv8WIYWCxWyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pCoxXYlU85HveMRw3/yOmYeexChPmA1M4HsfukFnGWs=;
- b=KDH+w9AUf4sWX+m2cgdxiJJazj1LWYMOaYIXHl0vVry9n3KEhBlRmv2QtsVgjoio142PGSLS5p+HTxsBkRwdM4/L1QSORcT3Fu8NTjTbY0Ilv+ojhuL8g9HTapLgDFiTAUFJrC/Wde81xbQMXR9dW1JvnbNU2En/YMV5/VaXGh+0tNQ6apsstIWOg6PMCFB34cuEfadz7B1b+uwPdsPtaqZ8YFv6Y06CWAwiH1bsciuNwuW/qc0vTifD+U9un5Gwm08P59GhuukVZalO1SvY4kEUthinKqoXcz0flXlUQdm1dz8Hk1PqxO5lMAiuBydDFcKGzmfwAZvGXEOsQAAHNg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by PH0PR12MB7840.namprd12.prod.outlook.com (2603:10b6:510:28a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Thu, 14 Mar
- 2024 00:25:35 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
- 00:25:35 +0000
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-7-rrameshbabu@nvidia.com>
- <20240312165544.75ced7e1@kernel.org>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
- alexandre.torgue@foss.st.com, andrew@lunn.ch, corbet@lwn.net,
- davem@davemloft.net, dtatulea@nvidia.com, edumazet@google.com,
- gal@nvidia.com, hkallweit1@gmail.com, jacob.e.keller@intel.com,
- jiri@resnulli.us, joabreu@synopsys.com, justinstitt@google.com,
- kory.maincent@bootlin.com, leon@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, liuhangbin@gmail.com,
- maxime.chevallier@bootlin.com, netdev@vger.kernel.org, pabeni@redhat.com,
- paul.greenwalt@intel.com, przemyslaw.kitszel@intel.com,
- rdunlap@infradead.org, richardcochran@gmail.com, saeed@kernel.org,
- tariqt@nvidia.com, vadim.fedorenko@linux.dev, vladimir.oltean@nxp.com,
- wojciech.drewek@intel.com
-Subject: Re: [PATCH RFC v2 6/6] tools: ynl: ethtool.py: Output timestamping
- statistics from tsinfo-get operation
-Date: Wed, 13 Mar 2024 17:22:50 -0700
-In-reply-to: <20240312165544.75ced7e1@kernel.org>
-Message-ID: <87plvxbqwy.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR11CA0038.namprd11.prod.outlook.com
- (2603:10b6:a03:80::15) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF96C7F;
+	Thu, 14 Mar 2024 00:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710375951; cv=none; b=PQOLe92SVYXfkAaiLnguOWR3vHcs1cEv/vmNO0gwkFUR4E3ng7W9Qh7DLBZjicGsZhhCiLJ2FGqiLHu7T79YG9gkS+DGCE6+shhMqx+/ryr7ED1Z11pl1Rt8xfcKG81yGVVt1oqvWzdKwQfcDig4HAg9VjIjQZLg4bl3mCeY6VA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710375951; c=relaxed/simple;
+	bh=9EoMAftd9vY6BGdahDlojvcesrBvYUJgWbCGJaD+H+c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l1R0a3XYor+KmeTKYIJ4asID37ZsKdtnDnU+j2X5o8Zj6g92KVFmqgyIPthKrxDhJVdIx3xdEPN8XbG+GvLoDC1L0Hfoj2H6i8KHVXSp5FqhllVGo5WVEgHxuH6kXzdp/PnlHgq7fcWC0R898Z/Nsau+5IBOKvsicSn1UgH24mI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OdqMrdyl; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33e8e9a4edaso405846f8f.2;
+        Wed, 13 Mar 2024 17:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710375948; x=1710980748; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b1pXXVSLcJWs+QWrQ+i4P/taCr8L+0F6xiRmk8ycZXY=;
+        b=OdqMrdylzqEmk8VEhLX1MaecvtTmKmwYObl/HWkrJz2vxQmpRjFG9i7g8QGYsrvjIS
+         3B4axAft8v/tYcF4Gf34OYyjD5HXLwCu/fQk6dDB5SSUTT54DYmdhidhXRF5oA2YXlAt
+         bMrhze1VDqGgWJn6bURCARSVFag3rtodXL3MFiBzhrQOnbz2Ct8WRc/U76bVoBpsXL0b
+         fUWX1a4am4L1t4shFGn52EjdIYbWHjDksvo3e9tIZtqeVAbxDzo7kbJTYxqazVtuq7VX
+         5uJ1R0NgYUNHglDFpt5lMfQs9/yZ+8b6vvpBFAuqLbwiYr7H5NbhKdhb3DkoKBqdlrRo
+         H7NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710375948; x=1710980748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b1pXXVSLcJWs+QWrQ+i4P/taCr8L+0F6xiRmk8ycZXY=;
+        b=Gp3B4kqA1uQ7w4ERAzo0xDM1z2drDlO7/W3S6ugQ0teE3UfTsYmFufGLKN0RRBAgXq
+         HoJZBYgAy2aVkhXr9IskiPVpkVUmywVqUVAwR3A1FgNe1w3tdLHsFrAheyHAo2dYocSk
+         iclK+A4Pfzp/Kcm2q7IL1YvhBSYAoOFnTFoohQ9EKLmXOiIaH0lqzyL3g73lA2DxEFme
+         me/8jt86a13+mcB1E1hkOn7lGGRAhAKIozoBvDxriQGDSokksaEBUsxVHkBcdSkfPywR
+         rEJyeACyT7zYvfDTHyWuoQievp651My0kbqZDv45WXImnVtb03Hp/gX89DVgxJND75a5
+         O1tg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+MoOvZgsUoUpQUJPyphFpdDWfJkSqlZfC4RY38bCxBm/0apLstsk9sY/xpTTBkIxVsiNqFrELE7a5mnqpky8QeqEhDrebejlrHmL6VKmoUCUqJT4i0ZJc/SQQ32YQwcVYP/5FE2I298QfePSlXH3NMc+oCSSZBv20cwIPrUG/dwNx4AojkkHcaBpyoHyIR+wpeiDPqqsD3dTH0tBxs/+76XJ0Y44TOwQgPwKbNOXTtHt250J65oGCbLyBj/M/8ghGUS7Scfr6cMx4iUNsJBLOZBQpj2HiJtwoFQ==
+X-Gm-Message-State: AOJu0YyPgXjJNakyVxQExxzx0wjcqTVdVdoGKvzlX6EkDqv5JtZqAkzh
+	vwywPgHZ1JzJQDp84w3Jci1F+ONBlX8zTWXgVAb6YrfiynGjevvSfUC3BPmhO3apr1Jn+VrwNAf
+	QjL+FiG2UxEKVveH8LSBgXj1Fyxs=
+X-Google-Smtp-Source: AGHT+IEluUxpksFRvEO4amy8bxc8cXhNS84YSmujwUrBqdFTzudYkIWBqt3bc5Ekgo5hTd/k08iQyCGhQiEqmdJKoSg=
+X-Received: by 2002:a5d:438e:0:b0:33e:44da:827 with SMTP id
+ i14-20020a5d438e000000b0033e44da0827mr112820wrq.57.1710375947716; Wed, 13 Mar
+ 2024 17:25:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|PH0PR12MB7840:EE_
-X-MS-Office365-Filtering-Correlation-Id: 570863be-835b-45f4-7e9b-08dc43bd4401
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	eniwVF1dNlafml21FzDQBhGx4NWFynI1gRGoR+8/z4wN/NsaGkBO7Z6s7OpiQaIGIhQnoNO0C+nfRf8sffWLD9AETc3qs2mLCdM2LpSqSeIWcCa5H3c8vmIxaLvcvbHZ4ZB5NDMTBg+/1G4XZuT2Kd7RyCGtBX/PQvdtSlvlvUc32jbL+GW5tG6ggqvy8MkGaDQzalvi+/eYFf4+XQJXv4mc8BC4ypx9pTi4kwxG1zSXXYayL13gqWixbdBxhU8CQqqkFi9SeFnsRPYAa5u6BtNNf5qC8Dqd99Q9bfznOj4J2/wq6CnBTwHAU38klSOstcXIxVyVqfcCcFaEZ/VE53WLZSWu9rkmNa7rhomVWhKgihvbPUmv/SlIJyV4h5cv+HG2CYZbG5QU2GTCskBAQuFDqHrEkNAx6+xp5V7DBg/Ye3hvNtQZaetd0bh2SBi/F+8b51SJEd45FIwr287da5jqvijCfUP+XC7wDMeL7AWpL/AJrnsjTidTavd9NyBe8O/WSN3oTv1kUSlIlCVuUg9nPAxu1o/+E7aIG8ssJlyiTydNgejP+9tGwqTH7KLRZTiojU342v9/WhjiuAYMejWSsOncVeZ7n5K6ErSoEdD7cJlPF4i4Ibjqa9fBnJ5S7e0LT0T604+ylts8nL5//DdC5kVnjjDA7oxtYfTW1Tc=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?mXbHSTeCXQZtxzWgP207vNZt8obetJJdLuYBNLUW9nxYkpqV57EAzkMMreJA?=
- =?us-ascii?Q?GRQYBR6ghgWqyt2BtYhlE277onsNMT7Krv2CNRdxuXmk2PKMCKM8+y2Eti2g?=
- =?us-ascii?Q?TmDY6GPOnWqJgELHEtvBHRiwZF89gAdOHnCKiQpEjcOebX3o/D9XoTwe3bHA?=
- =?us-ascii?Q?jn7kxgxqe0xS+bxfNvut+jdasUGHGFGLWPRRa1mu1iRGTPPmPojHMQaECbq6?=
- =?us-ascii?Q?cLd3SQnuzGa0voysgC/x60TOi6dV3H1gt6LkWlTWPp7GN7IcfjBZbq6yN6j/?=
- =?us-ascii?Q?fIYYAFYumAdgLhdrTvjb7IkiwtOH6pYTjylD7ofcrr5HKdcdkm4TL7NEfoy5?=
- =?us-ascii?Q?aAoENNFrTyhJPCagUiyas6lKzZieYJ2VzNZn82yJyp4C6sAnZbMMnqnJ/NbP?=
- =?us-ascii?Q?AmmCODrwUBr6rnZAAhdaTUXh7sEqvT5I2rfpqGqly6eZj+19fdBBezVetAj/?=
- =?us-ascii?Q?lrUS6TzIhTg+meBEdTAbGhw9zhO/SrdZy5YsENkohWDH3WdTe0Wq3irTJdoG?=
- =?us-ascii?Q?wHjDT/9RHWuD4O2OYXee7B8tnhCZQx9rTil+8sbeiRIPVGnXj34zFxI6ECrf?=
- =?us-ascii?Q?FPepHzW9ocDsaRY1Ev3yD3vJ+C6CVtr6WvS4SpOFwydTyGRYcF+Tt+YqXoYK?=
- =?us-ascii?Q?O/r5PKzthpYCDjX6Q17IfggQKXrLLg9DK05wGHWoqDH7u8WNmM4hBRfPEXbT?=
- =?us-ascii?Q?WVS+aUmQjGitnkXU5BjFYI7qGy0ywjpKjYJ0U/gR0bpHLdj5z/EJF2kW2aHK?=
- =?us-ascii?Q?s5dXvBLUUVj29LVWhSTo+d60kNyHRdHUjJTj8yF0UOy3lV+Gh8aflI4JR+ZA?=
- =?us-ascii?Q?FAi9GYMuA8mehW09Ifv/q1g5vF9DP/o6j65DJ6Vdc52nIPBHYCqPqttZz/xW?=
- =?us-ascii?Q?kVvWkmHrHGGufPfrhP992VmMtVjENMC0bCXBcONI55vLMgL7LrftI/LTGclw?=
- =?us-ascii?Q?xoA4ZGoobMP4odXLWLiQVgnm0HUcQcUHEKGrYa5mxJ9MvFMHBID2IPdXPAL1?=
- =?us-ascii?Q?XUvJnsM+txp+kjUOIQ1omgfTuQRMPAmJjKTzf+gy4VYcDpC0ILbYnraNkKCG?=
- =?us-ascii?Q?7NtrrynjGfw/6Vwt6Wwwuq4TCgpbrxIPEUc77enZh9wiUvmx0rWMUj6helkC?=
- =?us-ascii?Q?BKmTTiWd7L+0hnK4g1N2GDo65vg92+1YS+dulC2XRCcQAmI2m+kOotUzDuEU?=
- =?us-ascii?Q?xZirDk9E8twniNirjSECqMcaSM4Jmg0Xmwk0PDb4MI0BSm9le3Grpd0Plh59?=
- =?us-ascii?Q?KTAhDc4urXI5U1NllU0WYfo3RXfZVB5S/lVT9AAfLxdQe92IRzlV896Bp8vz?=
- =?us-ascii?Q?Pm5FfMCqlkqiRZGJiGPuJb+WMFjmS1+q4U1x6o54q4l6loI8sc8PkYtBuk/i?=
- =?us-ascii?Q?Y6yyvR4JQ4/KuR+dKMGRqPiwBEZwpprby1tF2thZrAA7Bshcsc1A5QPifUqV?=
- =?us-ascii?Q?O+vskeBD7hRpjqPmB2wbrjSoAKFWC/3LXseuFFdnUcCJHuCiKmScFa1d3aIZ?=
- =?us-ascii?Q?i1XYwx1u39JRHn3ZPalb3Urj5fiGOaIhGUMixpi751xbttF0nNeK2DGNPC1P?=
- =?us-ascii?Q?UibQemUpyPdNWkL9h1L53HGzXYNz9oN7emuishjQkhmVzOSoIwm2xj9Zlo92?=
- =?us-ascii?Q?Og=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 570863be-835b-45f4-7e9b-08dc43bd4401
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 00:25:35.0042
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9vXujXcbAp00sFDax3lSbWt2zQSJULG6JHDONTMOa5UkE1zVLv94DOO+uVXKel/3px9/b6MGTTw0Zkk4mnCRWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7840
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+ <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+ <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com> <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+In-Reply-To: <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 13 Mar 2024 17:25:35 -0700
+Message-ID: <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On Tue, 12 Mar, 2024 16:55:44 -0700 Jakub Kicinski <kuba@kernel.org> wrote:
-> On Sat,  9 Mar 2024 00:44:40 -0800 Rahul Rameshbabu wrote:
->> +        req = {
->> +          'header': {
->> +            'flags': 1 << 2,
->> +          },
->> +        }
+On Tue, Mar 12, 2024 at 6:53=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongme=
+nglong.8@bytedance.com> wrote:
 >
-> You should be able to use the name of the flag instead of the raw value.
-> Jiri added that recently, IIRC.
+> On Wed, Mar 13, 2024 at 12:42=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Mar 11, 2024 at 7:42=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <do=
+ngmenglong.8@bytedance.com> wrote:
+> > >
+> [......]
+> >
+> > I see.
+> > I thought you're sharing the trampoline across attachments.
+> > (since bpf prog is the same).
+>
+> That seems to be a good idea, which I hadn't thought before.
+>
+> > But above approach cannot possibly work with a shared trampoline.
+> > You need to create individual trampoline for all attachment
+> > and point them to single bpf prog.
+> >
+> > tbh I'm less excited about this feature now, since sharing
+> > the prog across different attachments is nice, but it won't scale
+> > to thousands of attachments.
+> > I assumed that there will be a single trampoline with max(argno)
+> > across attachments and attach/detach will scale to thousands.
+> >
+> > With individual trampoline this will work for up to a hundred
+> > attachments max.
+>
+> What does "a hundred attachments max" means? Can't I
+> trace thousands of kernel functions with a bpf program of
+> tracing multi-link?
 
-I think this is for 'flag' type attributes. Not for the "header" flags
-for the ethtool request, so I believe this cannot be done here, since
-the header flags are a u32 type, not a flag type.
+I mean what time does it take to attach one program
+to 100 fentry-s ?
+What is the time for 1k and for 10k ?
 
-  https://lore.kernel.org/netdev/20240222134351.224704-2-jiri@resnulli.us/
+The kprobe multi test attaches to pretty much all funcs in
+/sys/kernel/tracing/available_filter_functions
+and it's fast enough to run in test_progs on every commit in bpf CI.
+See get_syms() in prog_tests/kprobe_multi_test.c
 
-  -
-    name: header
-    attributes:
-      -
-        name: dev-index
-        type: u32
-      -
-        name: dev-name
-        type: string
-      -
-        name: flags
-        type: u32
+Can this new multi fentry do that?
+and at what speed?
+The answer will decide how applicable this api is going to be.
+Generating different trampolines for every attach point
+is an approach as well. Pls benchmark it too.
 
-vs
+> >
+> > Let's step back.
+> > What is the exact use case you're trying to solve?
+> > Not an artificial one as selftest in patch 9, but the real use case?
+>
+> I have a tool, which is used to diagnose network problems,
+> and its name is "nettrace". It will trace many kernel functions, whose
+> function args contain "skb", like this:
+>
+> ./nettrace -p icmp
+> begin trace...
+> ***************** ffff889be8fbd500,ffff889be8fbcd00 ***************
+> [1272349.614564] [dev_gro_receive     ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614579] [__netif_receive_skb_core] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614585] [ip_rcv              ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614592] [ip_rcv_core         ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614599] [skb_clone           ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614616] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614629] [nft_do_chain        ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614635] [ip_rcv_finish       ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614643] [ip_route_input_slow ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614647] [fib_validate_source ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614652] [ip_local_deliver    ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614658] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614663] [ip_local_deliver_finish] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614666] [icmp_rcv            ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614671] [icmp_echo           ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614675] [icmp_reply          ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614715] [consume_skb         ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614722] [packet_rcv          ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+> [1272349.614725] [consume_skb         ] ICMP: 169.254.128.15 ->
+> 172.27.0.6 ping request, seq: 48220
+>
+> For now, I have to create a bpf program for every kernel
+> function that I want to trace, which is up to 200.
+>
+> With this multi-link, I only need to create 5 bpf program,
+> like this:
+>
+> int BPF_PROG(trace_skb_1, struct *skb);
+> int BPF_PROG(trace_skb_2, u64 arg0, struct *skb);
+> int BPF_PROG(trace_skb_3, u64 arg0, u64 arg1, struct *skb);
+> int BPF_PROG(trace_skb_4, u64 arg0, u64 arg1, u64 arg2, struct *skb);
+> int BPF_PROG(trace_skb_5, u64 arg0, u64 arg1, u64 arg2, u64 arg3, struct =
+*skb);
+>
+> Then, I can attach trace_skb_1 to all the kernel functions that
+> I want to trace and whose first arg is skb; attach trace_skb_2 to kernel
+> functions whose 2nd arg is skb, etc.
+>
+> Or, I can create only one bpf program and store the index
+> of skb to the attachment cookie, and attach this program to all
+> the kernel functions that I want to trace.
+>
+> This is my use case. With the multi-link, now I only have
+> 1 bpf program, 1 bpf link, 200 trampolines, instead of 200
+> bpf programs, 200 bpf link and 200 trampolines.
 
-  -
-    name: bitset-bit
-    attributes:
-      -
-        name: index
-        type: u32
-      -
-        name: name
-        type: string
-      -
-        name: value
-        type: flag
+I see. The use case makes sense to me.
+Andrii's retsnoop is used to do similar thing before kprobe multi was
+introduced.
 
-So I believe Jiri's change applies for the latter, not the former (could
-be wrong here).
+> The shared trampoline you mentioned seems to be a
+> wonderful idea, which can make the 200 trampolines
+> to one. Let me have a look, we create a trampoline and
+> record the max args count of all the target functions, let's
+> mark it as arg_count.
+>
+> During generating the trampoline, we assume that the
+> function args count is arg_count. During attaching, we
+> check the consistency of all the target functions, just like
+> what we do now.
 
---
-Thanks,
+For one trampoline to handle all attach points we might
+need some arch support, but we can start simple.
+Make btf_func_model with MAX_BPF_FUNC_REG_ARGS
+by calling btf_distill_func_proto() with func=3D=3DNULL.
+And use that to build a trampoline.
 
-Rahul Rameshbabu
+The challenge is how to use minimal number of trampolines
+when bpf_progA is attached for func1, func2, func3
+and bpf_progB is attached to func3, func4, func5.
+We'd still need 3 trampolines:
+for func[12] to call bpf_progA,
+for func3 to call bpf_progA and bpf_progB,
+for func[45] to call bpf_progB.
 
+Jiri was trying to solve it in the past. His slides from LPC:
+https://lpc.events/event/16/contributions/1350/attachments/1033/1983/plumbe=
+rs.pdf
+
+Pls study them and his prior patchsets to avoid stepping on the same rakes.
 
