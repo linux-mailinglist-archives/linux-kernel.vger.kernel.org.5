@@ -1,46 +1,47 @@
-Return-Path: <linux-kernel+bounces-102687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DE1B87B5F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 01:54:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B7C87B5F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 01:54:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1927B2832D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:54:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FB3E1C21625
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 00:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A2EB65C;
-	Thu, 14 Mar 2024 00:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E190AA94D;
+	Thu, 14 Mar 2024 00:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="35u0CG1V"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="r0hduQlU"
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39A58F58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9349D8C10
 	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 00:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710377682; cv=none; b=u4afXvnD5a4cRqs8R+GFqnj80GyTcKte0WKwLDgtT/oJjI9xV4yghS/2ux3udn7pl4LxXuX2/wFqE5idG5gMm9BQPTajTp/m4rlQRJVWLyngGAoYUecF0sYlHD3ISskjsT0sWcEuBGPOS4F3W8IsyETZ5SDc75hWqwJRI90mnuk=
+	t=1710377682; cv=none; b=LZSOyMMiySgj9zd/4bJ5dIErKtFpQUgWVtaj/lsc8zD79Mbh3CsWNvnMpRmIPl072wp9RlSz6LTRwtUxWEVf2yr68pazsb5BlJ7ia8jgaApfrG+3ROronvBP23Xzhb+yXVsWmIW7Ln+LKjeYMwETqOAjRClf6OcrUMG3IZ2MW+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710377682; c=relaxed/simple;
-	bh=hEd7yGTTgtoEWtR7Df37a3dG03idlQkuKsP6d6crYbo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D1jtR9s88XHBHZsjmeNRm+rT7O3hLM+0RcCVmK/p4Sluzlsqom3YNyF1ewyyFkvfY8NWacETHl8y80DUwmWfXbVUcrbQQ+XSj/DI4CYcwYh1wFl9vgCWbaro9yD/kcVq+i/yQm0F9eKg6Qnh+fdg9kfAlAguPB5vQuPs0UE5b+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=35u0CG1V; arc=none smtp.client-ip=198.137.202.133
+	bh=5oQw0Jc4fccd2QAnymYMdxiP3SqsguZWdc+975ecfnk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Lx98MV2N/bCXMEciZatnt8gFafiG4MACBrDdPo4t6yMSPC2bR2LSDX8bEgigdZdny9vn6DBNxwtI+k9CiDQA6wqz8A8HlKognTtA3sDyTPL9Tmk4XESoNpQa9EheH15ca/sdobZ6ev1M9mLpxNnDaR6EpK/w6tZJXvpbWiOqlWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=r0hduQlU; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=V+ZVRZICTWAfdlng4uK3SLZO/6XHiTftuTJ5tPtJc5c=; b=35u0CG1Vu/wTheLe79swQh6gUb
-	RBRP7gE0uw5ozHsWFkLpj9pW+P/H28fdcshMKtrYzslZ7Jw1+J915AH73GINTcuhBJn1Qn1q407bN
-	tINR5A6o67crJvrkaPLq956p+JaPeVvOIs8jyY+4ypS3SRr7wCQqjRBCsAhoH4SMcmNH7Tjvz3I3g
-	wBwjeEcdF/ArYxHRUC9j9zrv9vofHiVUFc66QN/hAlRMmJ2kp0LWEq13pS26omxtvlkGu8ATQhhe0
-	foc5DWD6L/ZbM/0nwUs2VDnnzz5AtPYsiiktHaMfH1hWOr8uC6VxMOCD4VHsLJpY4FwLJraOgxutu
-	NvKAd1lg==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description;
+	bh=7afOyl7nv+Mi2FyolEBEsVPtXVCWDMinpJ3b7YCSncQ=; b=r0hduQlUY10mSUkoM9CAoK9lkY
+	yTEkaLMR27xDBoYJKGbslC7WZIvQXb4tlMjx+hEm/VkTWjjgeaw6Dh4AS48tbKqqNwv/oVRFt/2ta
+	8dWEbIaV4Z4BQuqcN1A+OoK/m5xwTbjJ5iqq9SObSEGbyZo4zlqplKXYlWI1k6bUDwY273nsRqykB
+	7RehX2u5lZDO1JbzAel4LeqG3LjmL07vw/Wv0/tZJt/8kzLfBjKJ/LMnqg01l8UKJ6T+0I9TshIxN
+	A/66N/n4PAoQQw/KTp/hDAZ79HtS9FuEf/NDkv/loDe+kcCcTMjQU8I492IF9burTzY94jLRQMWPH
+	XhLuJErQ==;
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkZMj-0000000CQny-0Oiw;
+	id 1rkZMj-0000000CQo2-0f9b;
 	Thu, 14 Mar 2024 00:54:37 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: akpm@linux-foundation.org,
@@ -53,10 +54,12 @@ Cc: linux-kernel@vger.kernel.org,
 	p.raghav@samsung.com,
 	da.gomez@samsung.com,
 	mcgrof@kernel.org
-Subject: [PATCH 0/3] mm: random cleanups
-Date: Wed, 13 Mar 2024 17:54:32 -0700
-Message-ID: <20240314005436.2962962-1-mcgrof@kernel.org>
+Subject: [PATCH 1/3] mm/show_mem: simplify ifdef on si_meminfo_node()
+Date: Wed, 13 Mar 2024 17:54:33 -0700
+Message-ID: <20240314005436.2962962-2-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240314005436.2962962-1-mcgrof@kernel.org>
+References: <20240314005436.2962962-1-mcgrof@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,20 +69,33 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-Here's a few random minor cleanups I spotted while reviewing a few mm/*.c files.
-No functional changes.
+There is an ifdef where the same exact values are used at
+the end, so remove the else and keep the same values for both
+conditions.
 
-Luis Chamberlain (3):
-  mm/show_mem: simplify ifdef on si_meminfo_node()
-  mm/compaction: add and use for_each_populated_zone_pgdat() helper
-  mm/vmstat: simplfy extfrag_show_print with fragmentation_index()
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ mm/show_mem.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
- include/linux/mmzone.h |  8 ++++++++
- mm/compaction.c        |  9 ++-------
- mm/show_mem.c          |  5 +----
- mm/vmstat.c            | 11 +++++------
- 4 files changed, 16 insertions(+), 17 deletions(-)
-
+diff --git a/mm/show_mem.c b/mm/show_mem.c
+index 8dcfafbd283c..529d2f9b6410 100644
+--- a/mm/show_mem.c
++++ b/mm/show_mem.c
+@@ -108,12 +108,9 @@ void si_meminfo_node(struct sysinfo *val, int nid)
+ 			free_highpages += zone_page_state(zone, NR_FREE_PAGES);
+ 		}
+ 	}
++#endif
+ 	val->totalhigh = managed_highpages;
+ 	val->freehigh = free_highpages;
+-#else
+-	val->totalhigh = managed_highpages;
+-	val->freehigh = free_highpages;
+-#endif
+ 	val->mem_unit = PAGE_SIZE;
+ }
+ #endif
 -- 
 2.43.0
 
