@@ -1,66 +1,68 @@
-Return-Path: <linux-kernel+bounces-102711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57ED487B65C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:18:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7780887B65E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 03:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E47328740C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:18:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 060A41F23B5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 02:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5A84A15;
-	Thu, 14 Mar 2024 02:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753624683;
+	Thu, 14 Mar 2024 02:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SYt5dr7Y"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KUNWi+v1"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF511FB4
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFE04A0F
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 02:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710382690; cv=none; b=arOT2BY5+fDqg/Zq4EwA+N+x5rmxRBZir3FyCXxhYxkGugRRvGXQ1xbSxjXIwNPijpQRKTApwNdaK45rd6KBWpVN6K/EOxTHHplJQ19ZbOuaVBSHJuWaV7BsL/KCmvEqnWQ/84mMp8mh7PBOymI13qcGiUT9Yaq9CFMVMGh2I8s=
+	t=1710382715; cv=none; b=DdpvQr+6SJtbaNCPhhim4c8KWtnGGQAY/iebbw+2mRztPWTgi11GqMHTWLCeT8vXFr2Y42CmZsNk3blNANBDyjmC5I3/Kq5QESsKf7r3YdsRVKXhpDfhW2ragD7P5IVoq9DQGItaxXYsv4B1Man//otQIQY/Q+GXGljp6KkSO1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710382690; c=relaxed/simple;
-	bh=FFT+kshlP8IvZkSDJMUj66oZlx/qU05+9qLGQo4+SB8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VenS3O8qtYt54z2+g5W30Cgp+m+zNBxZyS+tYHKBmywxRlAbjJPK7Z9DT/bVjfGbq/O2z3wn+AL+X4jmSlbfQ0WtDSjqSuPkYysqDXQSjesSRNnYtiGdwx8HitBjRdJt59Y0GlZJGJvn/UF6EKmoWJ1LZz9UAmNcKGqmKOFTdis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SYt5dr7Y; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1710382715; c=relaxed/simple;
+	bh=g7vEnho4KgVqd3zIlFIhWB3dU3UC1oJopzBuAznghs0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Jsr/42Tc78OMps/AuNalU9Ew14ZmwVXZM+NN7mbXHqopG11LBJcBvAaT2z0nLwd6RQL3rYg4KEAN37+wX2KTelH8+gj3aSRYHXXHM2p6PRFeJfIwlEo/E2o5mS6hCmX9QYlDEZ2RSv324O+HHlzzhqLB6YMk0Wq/gdCt1DOaGL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KUNWi+v1; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5ce2aada130so403489a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:18:09 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5e152c757a5so259412a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Mar 2024 19:18:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710382688; x=1710987488; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bw/+Z7r/txSTQl3/VBt2dWxefijuFQx/eWY4cCx1Vxc=;
-        b=SYt5dr7YU0VcWwf9ggzT+1KHRVbaS4WeI4Pl0SheyBk0FtAVvg6TmlWpG6Q3kLInpj
-         sUteD750Hvx3ziXK3+S6HmXTe8129s4IZguBKUNdEGPkIssFyUNUVHwZkZJJsHaRSlG8
-         IUG8chQ2ny/T5W1wg1vuGpubg7wxCZqZ/EjU0=
+        d=chromium.org; s=google; t=1710382713; x=1710987513; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NMXxgYFB39c3JQb86pcYzX4ejK9UB61sydOSCe9B0SI=;
+        b=KUNWi+v16FOSGVjQIJz2I3O4Ua+xysDllewL/bJ4PLEgNIz8F5InacyakaalbBFmvx
+         ejXVfCyKiAXvfCZcrOzFlkrCF/5ESlGz9okbhYX7l8c3uXCvWeQ9sVrH1T4Kd1z/8PrT
+         Nr9qYOYsn/4FvKU+EA7630srBpkGZlR/fpiQg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710382688; x=1710987488;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bw/+Z7r/txSTQl3/VBt2dWxefijuFQx/eWY4cCx1Vxc=;
-        b=Y/Ga00UFs6jnfiQDVPVN4ZLrVws2H4TtEz9HOa/aIx4C9glhgNwFPfl5EIBCRUjnSS
-         L2/1kviUoioEG5ELhpJRpAE3fHNhud0jStYgRosKhGxoaphaivzohtlmSlqEDGBqFH+K
-         bNSVliZWazZOVToxkSOGCz9mFiwimXhlSA2mZ0nsmJvA/FL4T+kjTZrLNjdZki23kzaD
-         2ro1+w7y73fZoop76+1zZ8l9BZTAmky1p0qLsQrkawx7tAnbInNo+mWm360Vylikjf79
-         +64Qfk2pgNDi4FLZWdn/gQclnSB8FEcLL2InrTjaGj+dyHQ/j3wBUyNhzv6O9U6KpS5v
-         KMPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWuAOYGEB0EI7+oYa1irNxpHS/V47fR6siZ3RCAqPUJQ9/KVfwpsLp/LLiICH6IqFL3vm7KiX7QIO2ZXLpyoBKvlWNtTlBPC+dSNMMB
-X-Gm-Message-State: AOJu0YxCOAuHJajia+E9iKnuU5lCH/3FRM48IlYgve9Xpcbw96AtIVJX
-	mDqBnRvUnGJVyhrkaqR9Q/BFkh6hyR+GgAvoutHnygoT1Nr5s1QXKuIgd7L9Bg==
-X-Google-Smtp-Source: AGHT+IEGCQ0dir7xQW4xKnBdRv5fD3d9jdrPjgJZwAI2oEu7UpTxG2WSBqCuGmEu9uHnxxEjUnqRMw==
-X-Received: by 2002:a17:90a:d18e:b0:29c:289b:1eb3 with SMTP id fu14-20020a17090ad18e00b0029c289b1eb3mr452033pjb.6.1710382688593;
-        Wed, 13 Mar 2024 19:18:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710382713; x=1710987513;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NMXxgYFB39c3JQb86pcYzX4ejK9UB61sydOSCe9B0SI=;
+        b=AX4+6rTPPfVrZOVwai7KhgSGbWfSZVZDxqBOPyx3GH2lsX+QSe1XzQm4mNCMSobZEY
+         WRKtDgkNRBjVHotj4Dot+ouAA9ZODLIAPr5kFBHtVFNvlpfYo0eSTtDfR8U79Q0Rsq3N
+         aBFSaE5gLY1h9VY4xB9lNT30+eZm/HZPXTl13R+BK0bpcUr0qLK4TdIILAIkZ9R47tPk
+         9j6WKpaE3jNckRd+PD6diCkRwQDngZcR4plWoDO+k3gcyqdFy8XRG6NXif8viEJ8QfuR
+         W5mpwNYBY2/CR6tjKpKf2o4vD6wLVUbMAovxZ+YZaaJW5oFxq11hg7gKsKRyburhtMzr
+         TOaw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5dWoDiOGP/+29k8ZRvxKCeY4dC21FDt+jUoICwupMxHJnZn09YtMG+9nd5g9K9f7KE2ZG1Be/ZjSfIYOlxHTdrdfctfc+ZOGaNdOC
+X-Gm-Message-State: AOJu0YwBnL43ia/FmcChVxcINyzlA36ybrWB2ooWxz4bC7lTeX7xWQcK
+	A8N9RIHAB6AvaJ6NZflGqlSKNwD422kTDoSd+GzUT2NLNYSuK7ug03kl3JsyWw==
+X-Google-Smtp-Source: AGHT+IEC8GLkKGjjgaPvX0/xnlGwn3qQtPhlBt8R9T5fCKZBAWzvZ9Yc2/prutcWFyDk7dnjBytK6g==
+X-Received: by 2002:a17:90a:f288:b0:29a:caf9:de64 with SMTP id fs8-20020a17090af28800b0029acaf9de64mr414882pjb.40.1710382713471;
+        Wed, 13 Mar 2024 19:18:33 -0700 (PDT)
 Received: from chromium.org ([118.149.82.233])
-        by smtp.gmail.com with ESMTPSA id o1-20020a17090aac0100b0029bc25f7181sm1993937pjq.54.2024.03.13.19.18.01
+        by smtp.gmail.com with ESMTPSA id o1-20020a17090aac0100b0029bc25f7181sm1993937pjq.54.2024.03.13.19.18.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 19:18:08 -0700 (PDT)
+        Wed, 13 Mar 2024 19:18:33 -0700 (PDT)
 From: Simon Glass <sjg@chromium.org>
 To: devicetree@vger.kernel.org
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -70,97 +72,125 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Simon Glass <sjg@chromium.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
 	Richard Weinberger <richard@nod.at>,
 	Rob Herring <robh+dt@kernel.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 1/2] dt-bindings: mtd: fixed-partition: Add binman compatibles
-Date: Thu, 14 Mar 2024 15:17:53 +1300
-Message-Id: <20240314021754.84557-1-sjg@chromium.org>
+Subject: [PATCH v7 2/2] dt-bindings: mtd: fixed-partitions: Add alignment properties
+Date: Thu, 14 Mar 2024 15:17:54 +1300
+Message-Id: <20240314021754.84557-2-sjg@chromium.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240314021754.84557-1-sjg@chromium.org>
+References: <20240314021754.84557-1-sjg@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add two compatibles for binman entries, as a starting point for the
-schema.
+Add three properties for controlling alignment of partitions, aka
+'entries' in fixed-partition.
 
-Note that, after discussion on v2, we decided to keep the existing
-meaning of label so as not to require changes to existing userspace
-software when moving to use binman nodes to specify the firmware
-layout.
+For now there is no explicit mention of hierarchy, so a 'section' is
+just the 'fixed-partitions' node.
 
-Note also that, after discussion on v6, we decided to use the same
-'fixed-partition' schema for the binman features, so this version
-adds a new 'binman.yaml' file providing the new compatibles to the
-existing partition.yaml binding.
+These new properties are inputs to the Binman packaging process, but are
+also needed if the firmware is repacked, to ensure that alignment
+constraints are not violated. Therefore they are provided as part of
+the schema.
 
 Signed-off-by: Simon Glass <sjg@chromium.org>
 ---
 
 Changes in v7:
-- Adjust MAINTAINERS entry
-- Put compatible strings into the 'fixed-partition' binding
+- Drop patch 'Add binman compatible'
+- Put the alignment properties into the fixed-partition binding
+
+Changes in v6:
+- Correct schema-validation errors missed due to older dt-schema
+  (enum fix and reg addition)
 
 Changes in v5:
-- Add mention of why 'binman' is the vendor
-- Drop  'select: false'
-- Tidy up the compatible setings
-- Use 'tfa-bl31' instead of 'atf-bl31'
-
-Changes in v4:
-- Correct selection of multiple compatible strings
-
-Changes in v3:
-- Drop fixed-partitions from the example
-- Use compatible instead of label
+- Add value ranges
+- Consistently mention alignment must be power-of-2
+- Mention that alignment refers to bytes
 
 Changes in v2:
-- Use plain partition@xxx for the node name
+- Fix 'a' typo in commit message
 
- .../bindings/mtd/partitions/binman.yaml       | 49 +++++++++++++++++++
- MAINTAINERS                                   |  5 ++
- 2 files changed, 54 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+ .../bindings/mtd/partitions/partition.yaml    | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-new file mode 100644
-index 000000000000..83417ad5cee9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+index 1ebe9e2347ea..3df12df06116 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+@@ -57,6 +57,57 @@ properties:
+       user space from
+     type: boolean
+ 
++  align:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment of the entry in bytes.
 +
-+title: Binman entries
++      The entry offset is adjusted so that the entry starts on an aligned
++      boundary within the containing section or image. For example ‘align =
++      <16>’ means that the entry will start on a 16-byte boundary. This may
++      mean that padding is added before the entry. The padding is part of
++      the containing section but is not included in the entry, meaning that
++      an empty space may be created before the entry starts. Alignment
++      must be a power of 2. If ‘align’ is not provided, no alignment is
++      performed.
 +
-+description: |
-+  TBD
++  align-size:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment of the entry size in bytes. It must be a power
++      of 2.
 +
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
++      For example, to ensure that the size of an entry is a multiple of 64
++      bytes, set this to 64. While this does not affect the contents of the
++      entry within binman itself (the padding is performed only when its
++      parent section is assembled), the end result is that the entry ends
++      with the padding bytes, so may grow. If ‘align-size’ is not provided,
++      no alignment is performed.
 +
-+allOf:
-+  - $ref: /schemas/mtd/partitions/partition.yaml#
++  align-end:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment (in bytes) of the end of an entry with respect
++      to the containing section. It must be a power of 2.
 +
-+properties:
-+  compatible:
-+    enum:
-+      - binman,entry # generic binman entry
-+      - u-boot       # u-boot.bin from U-Boot project
-+      - tfa-bl31     # bl31.bin or bl31.elf from TF-A project
++      Some entries require that they end on an alignment boundary,
++      regardless of where they start. This does not move the start of the
++      entry, so the contents of the entry will still start at the beginning.
++      But there may be padding at the end. While this does not affect the
++      contents of the entry within binman itself (the padding is performed
++      only when its parent section is assembled), the end result is that the
++      entry ends with the padding bytes, so may grow. If ‘align-end’ is not
++      provided, no alignment is performed.
 +
-+required:
-+  - compatible
-+
-+unevaluatedProperties: false
+ if:
+   not:
+     required: [ reg ]
+@@ -67,3 +118,24 @@ then:
+ 
+ # This is a generic file other binding inherit from and extend
+ additionalProperties: true
 +
 +examples:
 +  - |
@@ -182,22 +212,6 @@ index 000000000000..83417ad5cee9
 +            align = <0x4000>;
 +        };
 +    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1aabf1c15bb3..66f5e09e2d70 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3576,6 +3576,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
-+
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 -- 
 2.34.1
 
