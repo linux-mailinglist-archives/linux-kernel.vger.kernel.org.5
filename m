@@ -1,144 +1,127 @@
-Return-Path: <linux-kernel+bounces-103535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CD0C87C0C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:58:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7484587C0D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:01:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C85DB22887
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:58:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FBFA284D56
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64C873194;
-	Thu, 14 Mar 2024 15:58:18 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9B607319C;
+	Thu, 14 Mar 2024 16:01:30 +0000 (UTC)
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6652071B37;
-	Thu, 14 Mar 2024 15:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23786FE36;
+	Thu, 14 Mar 2024 16:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431898; cv=none; b=J5F43Ik6WRv6bk84HdqmJaJFrkKtnSLFjUWcmI3BBqC+UWFN423mFb/w6TVqKoXnxNQTUjn2nfcckRaorFNcHvoghW+++yOGYOFiOI6ZdsCVHp6/Tzdv2uYBUAtToCEGS++oADR7FgKxC6/hKgBr70UqMJ9jQW/Z6rSnTmc0Q4s=
+	t=1710432090; cv=none; b=RM686ThBNewat3cji75y3Eo5hQN7Nc3o9O+HE2ihUlcbu0yEO8rY4QoFV96JaxhJeTbUQOVRNBCjnNxpSIgJgYH+RROTTdFm6XHGiHTuf5cpa/Z6HA1IyOO8EfDkyVNUFJdcF6g/yOBRpzF2b+A/e8MiAzZCbyr0zEGIrY9oJY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431898; c=relaxed/simple;
-	bh=DXQqwJJ63DZa7xAit6S7SqD2kBPUmGIXS/NWXgZYEwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kCkNn9ETjCf6CiXzS3ovC7Y8ngSgqgNR/2nUIFZ2MGHdFdko01znAitKCow9QC/bKLB8nCofB6Zxzs1DXkZCV6w18GQnj3T1eHqEwJ3CqJOsKYgA0ue/90YwO7rKqYG5fJ6aCQ0WvOOGPOi6cdTsXf9Pqti9J2RQE6RFmctJNK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E21BC433C7;
-	Thu, 14 Mar 2024 15:58:16 +0000 (UTC)
-Date: Thu, 14 Mar 2024 12:00:27 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
- Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
- <salil.mehta@huawei.com>, Jijie Shao <shaojijie@huawei.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Yufeng Mo <moyufeng@huawei.com>, Huazhong Tan
- <tanhuazhong@huawei.com>
-Subject: Re: [PATCH] net: hns3: tracing: fix hclgevf trace event strings
-Message-ID: <20240314120027.088e850d@gandalf.local.home>
-In-Reply-To: <8607787b42e80503e0259f41e0bcc2d3ff770355.camel@redhat.com>
-References: <20240313093454.3909afe7@gandalf.local.home>
-	<8607787b42e80503e0259f41e0bcc2d3ff770355.camel@redhat.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710432090; c=relaxed/simple;
+	bh=HmW2u3GIQSTHJ1TrNNSxc9z4hL7mtGt+q2u0TcftYuo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gOdPRF+kuwrVa7VtEj/XHeU7TfqXxeop5LFwyDbOrx5jK0BhNCEnHyeKxmmYhQobVpU/44YpZ8dczIYvNNYYIv6i7GYTSkvJGb3mQSP9GIRwjBCZcU3EoleRomkPqDGWq0gvnljyZfTivsaioqXc/m8/nARHS6xMPPoMOPkiGtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5a1d2cac52aso440732eaf.0;
+        Thu, 14 Mar 2024 09:01:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710432087; x=1711036887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BTOcgaYCUNY/ogvH5Tg7ITSO8qkwxO1+5t0UgNhF1l0=;
+        b=jjWlZNt77gkxQIYrXUD28JloL+R1vCEhG0NfLv52ClxIRL8LVswrgb6SA2WtptwIHz
+         2NmdN8W+cM3UxMP4uMLF1QfCNSwVHN/MFJwudEhCdEa9GDze8zyQ2g+3UZ5K433qRAT2
+         axfR3MaLY+NrWGC11TN92823yKzkCj/tDvJ10Ef7Ork6RpkofNnJWNcl6Lf2qjrFtDMa
+         gXNSMCU6rpabu7B366O/GrTnvbNE9UcnJj3EZdNEqrHgGokhBi+p7RWThCltpsgN0Y9q
+         6/0UtG2z15ru166mBgxx/U44nCpJzQ0WroiesgeFCyiBXTUp79cx7n/7t37PARffdC/I
+         gm8w==
+X-Forwarded-Encrypted: i=1; AJvYcCW6zfhYXKC4gikae//3p4nQoxbDLp27uL0hHaOXRNPju6z+XKRvvkGHLJydkHENR8hXaGE4B52j+DDq7shdyFPRMFWgGUVkoJaRLOc81rTUnd6JeKNCgHSx+GN9La77iBkyef3QX3wKn7QEkAx+xpwdIVIP2MaXa4d5rbkW66mBoNPwa0Bi7GAnaZxFg/i4E6LqfeoM9q8TEy8R8IzJMRDIw1MEH3iO
+X-Gm-Message-State: AOJu0YzCos4kpETrGqwTVsju5b+oR2XxTqb0QjrXajAmnKE62AE+ZJN7
+	qTeq528GWySm4aX2/0B3vXSCiEYMbkxhHQovRCHr+nJnoU0Ax7T484W1SJy6428=
+X-Google-Smtp-Source: AGHT+IEZILcfMVY7xGnIe6o5ngyaj2dT5WSPFxxw2/gzQJVKkE4mpHvGl7PnABo6WIFo3pl5+HnLCQ==
+X-Received: by 2002:a4a:6c1d:0:b0:5a1:1e5e:1fd0 with SMTP id q29-20020a4a6c1d000000b005a11e5e1fd0mr967684ooc.2.1710432087268;
+        Thu, 14 Mar 2024 09:01:27 -0700 (PDT)
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com. [209.85.161.43])
+        by smtp.gmail.com with ESMTPSA id cg16-20020a056820099000b005a46c933653sm77080oob.1.2024.03.14.09.01.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Mar 2024 09:01:27 -0700 (PDT)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a1d2cac52aso440723eaf.0;
+        Thu, 14 Mar 2024 09:01:27 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU1SFBGnzKFHjdzOheosdjM07eMqFgnD80j8NiPa+b6G/bgf6o3M/Fn9amiUhWzUYWBJ/7srulYBHROo7lyg4pl7v51ej4qITPkySPmXqvYFgCjXJX7m+xXd5w879o4pTDye7YXUUsO7AM8ov6sVEKmQ90D+94PSfiylsVGL47kAAL6pJtxS4ODgxXTIT+l5qQxm9bsnukUEg3kdSrixSZtd8oZz0nR
+X-Received: by 2002:a05:6358:938f:b0:17c:1e44:a49a with SMTP id
+ h15-20020a056358938f00b0017c1e44a49amr2367976rwb.1.1710432086791; Thu, 14 Mar
+ 2024 09:01:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com> <20240307140728.190184-8-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240307140728.190184-8-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Mar 2024 17:01:15 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXQ=m2BJ3Tjt0m8Q_H6dLh62sXjd2EMBTc+kuAwtc5B7A@mail.gmail.com>
+Message-ID: <CAMuHMdXQ=m2BJ3Tjt0m8Q_H6dLh62sXjd2EMBTc+kuAwtc5B7A@mail.gmail.com>
+Subject: Re: [PATCH v2 07/10] clk: renesas: r9a08g045: Add support for power domains
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 14 Mar 2024 15:39:28 +0100
-Paolo Abeni <pabeni@redhat.com> wrote:
+On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
+rote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Instantiate power domains for the currently enabled IPs of R9A08G045 SoC.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>
+> Change in v2:
+> - used DEF_REG_CONF() to describe register offests and bits
+> - updated MSTOP bitmask for ddr domain
+> - updated MSTOP config for oftde_ddr
+> - kept the same description for gic as the CPG_BUS_ACPU_MSTOP register
+>   documentation in the latest HW manual version is wrong and it will be
+>   fixed; proper description for GIC is located in "Registers for Module
+>   Standby Mode" table
+> - haven't added watchdog domain (was missing in v1, too, by mistake) as
+>   the watchdog restart handler will fail w/o patch [1]; with this pm doma=
+in
+>   support the watchdog will fail to probe; not sure what is the best
+>   option until [1] will be integrated
+>
+> [1] https://patchwork.kernel.org/project/linux-renesas-soc/patch/20240228=
+083253.2640997-10-claudiu.beznea.uj@bp.renesas.com
 
-> On Wed, 2024-03-13 at 09:34 -0400, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> >=20
-> > [
-> >    Note, I need to take this patch through my tree, so I'm looking for =
-acks. =20
->=20
-> Note that this device driver is changing quite rapidly, so I expect
-> some conflicts here later. I guess Liuns will have to handle them ;)
+I guess we'll have to wait until that dependency is integrated,
+or use an immutable branch?
 
-Well, it merges fine with linux-next and linus's current master. ;-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
->=20
-> >    This causes the build to fail when I add the __assign_str() check, w=
-hich
-> >    I was about to push to Linus, but it breaks allmodconfig due to this=
- error.
-> > ]
-> >=20
-> > The __string() and __assign_str() helper macros of the TRACE_EVENT() ma=
-cro
-> > are going through some optimizations where only the source string of
-> > __string() will be used and the __assign_str() source will be ignored a=
-nd
-> > later removed.
-> >=20
-> > To make sure that there's no issues, a new check is added between the
-> > __string() src argument and the __assign_str() src argument that does a
-> > strcmp() to make sure they are the same string.
-> >=20
-> > The hclgevf trace events have:
-> >=20
-> >   __assign_str(devname, &hdev->nic.kinfo.netdev->name);
-> >=20
-> > Which triggers the warning:
-> >=20
-> > hclgevf_trace.h:34:39: error: passing argument 1 of =E2=80=98strcmp=E2=
-=80=99 from incompatible pointer type [-Werror=3Dincompatible-pointer-types]
-> >    34 |                 __assign_str(devname, &hdev->nic.kinfo.netdev->=
-name);
-> >  [..]
-> > arch/x86/include/asm/string_64.h:75:24: note: expected =E2=80=98const c=
-har *=E2=80=99 but argument is of type =E2=80=98char (*)[16]=E2=80=99
-> >    75 | int strcmp(const char *cs, const char *ct);
-> >       |            ~~~~~~~~~~~~^~
-> >=20
-> >=20
-> > Because __assign_str() now has:
-> >=20
-> > 	WARN_ON_ONCE(__builtin_constant_p(src) ?		\
-> > 		     strcmp((src), __data_offsets.dst##_ptr_) :	\
-> > 		     (src) !=3D __data_offsets.dst##_ptr_);	\
-> >=20
-> > The problem is the '&' on hdev->nic.kinfo.netdev->name. That's because
-> > that name is:
-> >=20
-> > 	char			name[IFNAMSIZ]
-> >=20
-> > Where passing an address '&' of a char array is not compatible with str=
-cmp().
-> >=20
-> > The '&' is not necessary, remove it.
-> >=20
-> > Fixes: d8355240cf8fb ("net: hns3: add trace event support for PF/VF mai=
-lbox") =20
->=20
-> checkpactch in strict mode complains the hash is not 12 char long.
+Gr{oetje,eeting}s,
 
-Hmm, I wonder why my git blame gives me 13 characters in the sha. (I cut
-and pasted it from git blame). My git config has:
+                        Geert
 
-[core] =20
-        abbrev =3D 12
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-
->=20
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org> =20
->=20
-> FWIW
->=20
-> Acked-by: Paolo Abeni <pabeni@redhat.com>
-
-Thanks!
-
--- Steve
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
