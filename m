@@ -1,150 +1,288 @@
-Return-Path: <linux-kernel+bounces-103438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 248D787BF56
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:53:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBBCA87BF57
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A441F1F22F6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:53:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ABA91F22720
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D107172B;
-	Thu, 14 Mar 2024 14:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1478971726;
+	Thu, 14 Mar 2024 14:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yeawrzyK"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="vgTQzZaO"
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754FE6FE10
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BBC6FE11
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 14:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710427984; cv=none; b=W5ItyNe55omsHOB9QJeSIghScS179t2fbaogWVI2mlc3BiZomFH6f47EGEw81I5CugvGpdh1OdlegA1QdG1qdDehab/Fc9ABykweH2HV5Yayr+K8V3suTrXwAiQqVApuy4r2okNZTw/TsDMAV2Eq8M+N0VOarsM95Zi9TWepuDY=
+	t=1710428113; cv=none; b=pgalm/zq8x5cHI8U8E70m6DI2gBV4jLT7GkiyUoOcuE3bZRJeb9s+R4wCOO7nWt39NOBswAvWVz1thDLLhfaeGnjQgBl0+pVJJRvKCP1DTDM3sKg08Q6TDSKkQ3LE3kd2lAMwcl9orWsAN74B1Ce1sig2EtlsJ6/x3jMc4wlBx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710427984; c=relaxed/simple;
-	bh=Z4Ix1Oz24qrsjV1vmGqdhWdEKSxI4Rx28UJCxDH4Sx0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aUowygLaogz+jVmLxUyvPvgmtKyiP31qbUah8J+Ugbn1BKaVZApsBV2/+cLvl2NvSRiBQMlBCnwuSCYqrwEXlf46Og6DnirufpVx1xWU0OPAI7MN5i92HbJgCXNZb1q772Lpn2++SoZp1pSlK56+b6qnB/6l7eBerzBUYCKxMdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yeawrzyK; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6b5831bc8so1033080b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:53:03 -0700 (PDT)
+	s=arc-20240116; t=1710428113; c=relaxed/simple;
+	bh=No3CcZI0R4w6avOsnxeH0/5MK3Se1i3ukG4F2P0PWMY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=LWBAGV4UWiH3UnoHmlVMcvqbOEbbzVtDQ/89t30Prl3po0MdbsNWua1w0VQsccQxN8PZgEkbOr/MM2rRUXUr10m3KsQXdqe9lmz0lYE1Tt38dJwKW8ATcwR9Ucn1EB8xQjhEZIxZUPwfX5Y0Dz/+PW6Ve+wAj6s7CoJg4Mwfm4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=vgTQzZaO; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-788303f317eso48169885a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 07:55:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710427983; x=1711032783; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gQdGRCc8CvufO8pJrzg/EbeDXgOQDIEiNqPLlOCuoyM=;
-        b=yeawrzyK12AlYySnBbLvlrY1hiqyxCZSY1Rim5dOnqUe13MaKTSR9H03Cx2n3ZAZxI
-         UR7h+ffqhVUKMSLkcycaRCSVaBu+0kLoXQzrbtouG4YI0MtPMeRrIKvceunrfAJRCGQP
-         0Rrluu34ssIuS5bgS/0+hdMZXSI4GRPxGCCGt4NH0yXnAykDFzSEvXu05OGlEfisr5K6
-         Km3sVE+a6EB27U1hJZ9d2ncYaF2E1qgdw8yLtq1MyT4Uy9RI93zMoy8s01FHNe1XOQrb
-         2+sIajZSHGn6SqKKG0s4UXoTO0GVnBIn0DdMk2C8Uyi3q8H9a/m6MiGwuIjPxK3SFdc5
-         d+/A==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710428110; x=1711032910; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wW+2zHFZQjqfYIpLd4QibSf5RSIcFb17pxrKGVZfg7k=;
+        b=vgTQzZaO7QxySNh5iuvzWZw7klEAYZButavIHT3qd1Z71MEZaynC7F4ddmAESF+j7f
+         1rs4A57TtEFemy7CDRs3NLg5kv/IhNRspbEfVfrmzdfzUzv8vn7uorhAX3rNp/We3+aE
+         A8B78+cRJPn9rVov88eWqHmQR2VGYm76OmcR4QHolr5gUflwUJI1v6mTGL1Ey056De0f
+         VXAZSEC2yEol/ytOz0KEB0SgGnqqG18TTTOZJW0+Cr3u4LWDvcF0d3PVYfkOlKNSzmj2
+         zjPmlViQrvTXld2jgHJWGCjLUJlRorWTbkA4OZMBmNNS57ZYmbPoxn2d3wLmb2ncRvA1
+         8S/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710427983; x=1711032783;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gQdGRCc8CvufO8pJrzg/EbeDXgOQDIEiNqPLlOCuoyM=;
-        b=oyrug3DnM7h/dfUOOL83oV8WpAYLguyB9g863i2YLaWGyGIspetB3yEWy6lDcdyYR+
-         B0fAgDBB+Z3pkZWj7mHJbK7cVC3isGgTsWCa77oUsuL63vRIU2zD/DHoLPG007rf6m6v
-         PycMZ+nxzB48X8dbBhwqEi3Gmq/y8WLzveVZgaAfGlCyni3/4582Rb2cXH3k8fqF574D
-         jQpbNG6Gx0Wns0A4oUWeomhPOcTwmjRGpHnCe5oqlYF6ehl5fFenN0D22WYwOdhksPab
-         XbgBUG2dR1Fblwey4t59HiYvgRCK84i0Xu5JqCCu4yIYWIM8346BOgyp7OpBrprDRjif
-         pTDA==
-X-Forwarded-Encrypted: i=1; AJvYcCUoA4KCGKzuQcBPvCNACChpCx9sdHGI+AgPbQFb9vaA6lH889RgcIPiK0uwaEJdd+2egsIz52PLdfVh+voQDL7ZZEH6CfIBCcdyZjmL
-X-Gm-Message-State: AOJu0YydlNGUtiDkH6O3oX5K54j+Skt8aIyP+/znqdwGv22Nl7EGo7Cq
-	y2GUs2uRatDxYyfkd6ADw04GSag1osuKCLensk9jR2mc50+TIRwDUozpndZimO4=
-X-Google-Smtp-Source: AGHT+IHEMN+NstoSXqaYuO+a0b+IClYsaLbJ/T+IJD4cV0xAleMVWkTv6lKGty1MmRGzfPlPcDv1+Q==
-X-Received: by 2002:a05:6a00:39a1:b0:6e6:7af6:2201 with SMTP id fi33-20020a056a0039a100b006e67af62201mr1888318pfb.8.1710427982718;
-        Thu, 14 Mar 2024 07:53:02 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:7983:888b:1e31:65e6])
-        by smtp.gmail.com with ESMTPSA id fb12-20020a056a002d8c00b006e6b73eb992sm1543850pfb.118.2024.03.14.07.53.01
+        d=1e100.net; s=20230601; t=1710428110; x=1711032910;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wW+2zHFZQjqfYIpLd4QibSf5RSIcFb17pxrKGVZfg7k=;
+        b=RiIJj2RS2fmuqjmfX9S3zYWHx4D/7lODspaCbyF1uehAT8xbL7c1huBYK0XJmzUKEr
+         VS3QOW5dpBvgv/In4hEEebyAjtignV4SVtmR/S/4qIwmT1UHdox7n6ABSNJcrzcyXE6d
+         8epkw8DP+fUB/6/VgMvnG4CUlTS/bppNA72p7T195KZVhcb1fmCJvVNP8r5/id00/AtN
+         oGL8AB0xnOXdYyVo4b/6vPXYanhJPJOskk4wTO31VW2ql36rifGjwLrfBzcVRfZXj4a6
+         +Pd1hZYmUmUBPQLvuROCMMUNEWJsohAWAm0Cd5zOASLUfzK5KG/6zZh0I3hXHGcXBKNx
+         Rkyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUWvcXHPQcscMREKXRxpWaxXweFtrbbd2VHnnDgIZ0rVGQfI0ErJyVeCnOLMDye5TK5wm43MZdEOqqvZ3p+iFXTfwNS7Q4YwZKsidyI
+X-Gm-Message-State: AOJu0YyE/rlpevyMjhFJvKJoxb803Bi0fOY72dfeeJU6sdllhjo+bB9W
+	ZTdvu0Zg9jVvICIDcS+UMnpz27h2912Ptktak7L/BZO7ltLoqUK51LjQeeIl8mE=
+X-Google-Smtp-Source: AGHT+IFRyx8KYheppMcuTmknKZnIAQURRHVD3bqUb92bxpaPUbwp7dA3a4520rhwKxXGDEt+IFhD8g==
+X-Received: by 2002:a05:620a:2943:b0:789:e044:eb08 with SMTP id n3-20020a05620a294300b00789e044eb08mr739775qkp.24.1710428110047;
+        Thu, 14 Mar 2024 07:55:10 -0700 (PDT)
+Received: from soleen.c.googlers.com (150.254.86.34.bc.googleusercontent.com. [34.86.254.150])
+        by smtp.gmail.com with ESMTPSA id pi20-20020a05620a379400b00788406f9c7dsm904821qkn.101.2024.03.14.07.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 07:53:02 -0700 (PDT)
-Date: Thu, 14 Mar 2024 08:52:59 -0600
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-To: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Drew.Reed@arm.com,
-	Adam.Johnston@arm.com, linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH 1/3] remoteproc: Add Arm remoteproc driver
-Message-ID: <ZfMPS+qn0lh5IrS7@p14s>
-References: <20240301164227.339208-1-abdellatif.elkhlifi@arm.com>
- <20240301164227.339208-2-abdellatif.elkhlifi@arm.com>
- <ZeYWKVpeFm1+4mlT@p14s>
- <20240307194026.GA355455@e130802.arm.com>
- <CANLsYkzA20rQdTM6AOvFK=3o28GvcoRbckL=ri8RegHqyHaiCw@mail.gmail.com>
- <20240311114442.GA82865@e130802.arm.com>
- <CANLsYkwReJvB1UWvR5TwtSs-w_VqU45kDSUzuQ0k+waetEn6Yw@mail.gmail.com>
- <20240312173252.GA38992@e130802.arm.com>
- <ZfHTfNx4um8koTlY@p14s>
- <20240313171756.GA82165@e130802.arm.com>
+        Thu, 14 Mar 2024 07:55:09 -0700 (PDT)
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+To: akpm@linux-foundation.org,
+	jpoimboe@kernel.org,
+	pasha.tatashin@soleen.com,
+	kent.overstreet@linux.dev,
+	peterz@infradead.org,
+	nphamcs@gmail.com,
+	cerasuolodomenico@gmail.com,
+	surenb@google.com,
+	lizhijian@fujitsu.com,
+	willy@infradead.org,
+	shakeel.butt@linux.dev,
+	vbabka@suse.cz,
+	ziy@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v2] vmstat: Keep count of the maximum page reached by the kernel stack
+Date: Thu, 14 Mar 2024 14:54:57 +0000
+Message-ID: <20240314145457.1106299-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313171756.GA82165@e130802.arm.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 13, 2024 at 05:17:56PM +0000, Abdellatif El Khlifi wrote:
-> Hi Mathieu,
-> 
-> On Wed, Mar 13, 2024 at 10:25:32AM -0600, Mathieu Poirier wrote:
-> > On Tue, Mar 12, 2024 at 05:32:52PM +0000, Abdellatif El Khlifi wrote:
-> > > Hi Mathieu,
-> > > 
-> > > On Tue, Mar 12, 2024 at 10:29:52AM -0600, Mathieu Poirier wrote:
-> > > > > This is an initial patchset for allowing to turn on and off the remote processor.
-> > > > > The FW is already loaded before the Corstone-1000 SoC is powered on and this
-> > > > > is done through the FPGA board bootloader in case of the FPGA target. Or by the Corstone-1000 FVP model
-> > > > > (emulator).
-> > > > >
-> > > > >From the above I take it that booting with a preloaded firmware is a
-> > > > scenario that needs to be supported and not just a temporary stage.
-> > > 
-> > > The current status of the Corstone-1000 SoC requires that there is
-> > > a preloaded firmware for the external core. Preloading is done externally
-> > > either through the FPGA bootloader or the emulator (FVP) before powering
-> > > on the SoC.
-> > > 
-> > 
-> > Ok
-> > 
-> > > Corstone-1000 will be upgraded in a way that the A core running Linux is able
-> > > to share memory with the remote core and also being able to access the remote
-> > > core memory so Linux can copy the firmware to. This HW changes are still
-> > > This is why this patchset is relying on a preloaded firmware. And it's the step 1
-> > > of adding remoteproc support for Corstone.
-> > >
-> > 
-> > Ok, so there is a HW problem where A core and M core can't see each other's
-> > memory, preventing the A core from copying the firmware image to the proper
-> > location.
-> > 
-> > When the HW is fixed, will there be a need to support scenarios where the
-> > firmware image has been preloaded into memory?
-> 
-> No, this scenario won't apply when we get the HW upgrade. No need for an
-> external entity anymore. The firmware(s) will all be files in the linux filesystem.
->
+CONFIG_DEBUG_STACK_USAGE provides a mechanism to determine the minimum
+amount of memory left in a stack. Every time a new low-memory record is
+reached, a message is printed to the console.
 
-Very well.  I am willing to continue with this driver but it does so little that
-I wonder if it wouldn't simply be better to move forward with upstreaming when
-the HW is fixed.  The choice is yours. 
+However, this doesn't reveal how many pages within each stack were
+actually used. Introduce a mechanism that keeps count the number of
+times each of the stack's pages were reached:
 
-Thanks,
-Mathieu
+	$ grep kstack /proc/vmstat
+	kstack_page_1 19974
+	kstack_page_2 94
+	kstack_page_3 0
+	kstack_page_4 0
+
+In the above example, out of 20,068 threads that exited on this
+machine, only 94 reached the second page of their stack, and none
+touched pages three or four.
+
+In fleet environments with millions of machines, this data can help
+optimize kernel stack sizes.
+
+Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+---
+Changelog:
+v2:
+- Fixed enum name KSTACK_PAGE_5 ->KSTACK_PAGE_REST.
+- Improved commit message based on Christophe Leroy
+  comment.
+
+ include/linux/sched/task_stack.h | 40 ++++++++++++++++++++++++++++++--
+ include/linux/vm_event_item.h    | 29 +++++++++++++++++++++++
+ include/linux/vmstat.h           | 16 -------------
+ mm/vmstat.c                      | 11 +++++++++
+ 4 files changed, 78 insertions(+), 18 deletions(-)
+
+diff --git a/include/linux/sched/task_stack.h b/include/linux/sched/task_stack.h
+index ccd72b978e1f..09e6874c2ced 100644
+--- a/include/linux/sched/task_stack.h
++++ b/include/linux/sched/task_stack.h
+@@ -95,9 +95,42 @@ static inline int object_is_on_stack(const void *obj)
+ extern void thread_stack_cache_init(void);
+ 
+ #ifdef CONFIG_DEBUG_STACK_USAGE
++#ifdef CONFIG_VM_EVENT_COUNTERS
++#include <linux/vm_event_item.h>
++
++/* Count the maximum pages reached in kernel stacks */
++static inline void count_kstack_page(int stack_max_page)
++{
++	switch (stack_max_page) {
++	case 1:
++		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_1]);
++		break;
++	case 2:
++		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_2]);
++		break;
++#if THREAD_SIZE >= (4 * PAGE_SIZE)
++	case 3:
++		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_3]);
++		break;
++	case 4:
++		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_4]);
++		break;
++#endif
++#if THREAD_SIZE > (4 * PAGE_SIZE)
++	default:
++		this_cpu_inc(vm_event_states.event[KSTACK_PAGE_REST]);
++		break;
++#endif
++	}
++}
++#else /* !CONFIG_VM_EVENT_COUNTERS */
++static inline void count_kstack_page(int stack_max_page) {}
++#endif /* CONFIG_VM_EVENT_COUNTERS */
++
+ static inline unsigned long stack_not_used(struct task_struct *p)
+ {
+ 	unsigned long *n = end_of_stack(p);
++	unsigned long unused_stack;
+ 
+ 	do { 	/* Skip over canary */
+ # ifdef CONFIG_STACK_GROWSUP
+@@ -108,10 +141,13 @@ static inline unsigned long stack_not_used(struct task_struct *p)
+ 	} while (!*n);
+ 
+ # ifdef CONFIG_STACK_GROWSUP
+-	return (unsigned long)end_of_stack(p) - (unsigned long)n;
++	unused_stack = (unsigned long)end_of_stack(p) - (unsigned long)n;
+ # else
+-	return (unsigned long)n - (unsigned long)end_of_stack(p);
++	unused_stack = (unsigned long)n - (unsigned long)end_of_stack(p);
+ # endif
++	count_kstack_page(((THREAD_SIZE - unused_stack) >> PAGE_SHIFT) + 1);
++
++	return unused_stack;
+ }
+ #endif
+ extern void set_task_stack_end_magic(struct task_struct *tsk);
+diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+index 747943bc8cc2..1dbfe47ff048 100644
+--- a/include/linux/vm_event_item.h
++++ b/include/linux/vm_event_item.h
+@@ -153,10 +153,39 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+ 		VMA_LOCK_ABORT,
+ 		VMA_LOCK_RETRY,
+ 		VMA_LOCK_MISS,
++#endif
++#ifdef CONFIG_DEBUG_STACK_USAGE
++		KSTACK_PAGE_1,
++		KSTACK_PAGE_2,
++#if THREAD_SIZE >= (4 * PAGE_SIZE)
++		KSTACK_PAGE_3,
++		KSTACK_PAGE_4,
++#endif
++#if THREAD_SIZE > (4 * PAGE_SIZE)
++		KSTACK_PAGE_REST,
++#endif
+ #endif
+ 		NR_VM_EVENT_ITEMS
+ };
+ 
++#ifdef CONFIG_VM_EVENT_COUNTERS
++/*
++ * Light weight per cpu counter implementation.
++ *
++ * Counters should only be incremented and no critical kernel component
++ * should rely on the counter values.
++ *
++ * Counters are handled completely inline. On many platforms the code
++ * generated will simply be the increment of a global address.
++ */
++
++struct vm_event_state {
++	unsigned long event[NR_VM_EVENT_ITEMS];
++};
++
++DECLARE_PER_CPU(struct vm_event_state, vm_event_states);
++#endif
++
+ #ifndef CONFIG_TRANSPARENT_HUGEPAGE
+ #define THP_FILE_ALLOC ({ BUILD_BUG(); 0; })
+ #define THP_FILE_FALLBACK ({ BUILD_BUG(); 0; })
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 343906a98d6e..18d4a97d3afd 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -41,22 +41,6 @@ enum writeback_stat_item {
+ };
+ 
+ #ifdef CONFIG_VM_EVENT_COUNTERS
+-/*
+- * Light weight per cpu counter implementation.
+- *
+- * Counters should only be incremented and no critical kernel component
+- * should rely on the counter values.
+- *
+- * Counters are handled completely inline. On many platforms the code
+- * generated will simply be the increment of a global address.
+- */
+-
+-struct vm_event_state {
+-	unsigned long event[NR_VM_EVENT_ITEMS];
+-};
+-
+-DECLARE_PER_CPU(struct vm_event_state, vm_event_states);
+-
+ /*
+  * vm counters are allowed to be racy. Use raw_cpu_ops to avoid the
+  * local_irq_disable overhead.
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index db79935e4a54..737c85689251 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1413,6 +1413,17 @@ const char * const vmstat_text[] = {
+ 	"vma_lock_retry",
+ 	"vma_lock_miss",
+ #endif
++#ifdef CONFIG_DEBUG_STACK_USAGE
++	"kstack_page_1",
++	"kstack_page_2",
++#if THREAD_SIZE >= (4 * PAGE_SIZE)
++	"kstack_page_3",
++	"kstack_page_4",
++#endif
++#if THREAD_SIZE > (4 * PAGE_SIZE)
++	"kstack_page_rest",
++#endif
++#endif
+ #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
+ };
+ #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA || CONFIG_MEMCG */
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
