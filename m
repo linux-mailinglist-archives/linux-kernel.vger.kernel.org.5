@@ -1,178 +1,198 @@
-Return-Path: <linux-kernel+bounces-103215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D54C87BC7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:05:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B40E987BC7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA31284AFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:05:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 420081F22D59
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDE76F50F;
-	Thu, 14 Mar 2024 12:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226246F086;
+	Thu, 14 Mar 2024 12:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O3L14v3U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1JVPuio"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A217C6E5F6;
-	Thu, 14 Mar 2024 12:05:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95DF6EB4A;
+	Thu, 14 Mar 2024 12:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710417909; cv=none; b=R4u9xg55kTjCvggf+8GN9kqQOXx5/fZjjGh2lDAsGu2GCfJMN6TZuKJ8mywh16HBme5HJcddydWGQWaCdVO6DKuye//3y7XCS2h5fZRaoxpz/7HTELM49NnsRqD2wK35AUoGRymZtKPgB1sa0+1hb+pA4J5n7POIoIa4++MRNKM=
+	t=1710417955; cv=none; b=qOA2ogdWPIk+YHzkK9DIpEzpYDINNFGiDi9iAq72/P9T5rG/H8jtNlHws0iBv7hIZSd3luGaVIA8CljAL3UpUwWWDDAI9Y2Sck9PhVnNaBHgu8guqgUpuQE/RYIvAOH0TA37wI7S4Nb0j/1SV8AE/sFplhnPin2vQpXbnA6s4cA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710417909; c=relaxed/simple;
-	bh=JZwrOZDBFM4h/ynerY9rzycucCItCakGta+7niAWv34=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fOKE/4Oy0BnmSpurtF1Taa6BPwJJLalMyxeQRGrThplAyRkiVVOi3V9/Q8F7zPvdAu6p26k3aspduU+8WSGwXzv3628WPWKFXWgcccRyJSpMCXYkDyvF03NkckZ8cvgVlOIyQu5zICzSUch+1/Fi+SsUFxxO9prwzae2ZKLUlPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O3L14v3U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A75D7C433F1;
-	Thu, 14 Mar 2024 12:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710417909;
-	bh=JZwrOZDBFM4h/ynerY9rzycucCItCakGta+7niAWv34=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O3L14v3UAfRtphABQURAy5hQTD8gXfvP+lZKPlr74q8Kz6VP/Mai4gnpuAA2jcgrt
-	 EOY6WTGmaqw+zR0YwGPUakdMF9ysfVJHD+FOMYVG0es/sFTOZbC2B0HFrencD1+Bjd
-	 HThHKuJcu+DeY0YJ+/0E87pn38YjoV+J3VMdHY1Xrnll7FhtMe8nhwNjfAVYd4GveJ
-	 bJNd+Ee99OLBrJgzSQZF1KoSbjTNkVACbSrgrL3glcUaOfCvK1Eq3sIiZVYXpTrqlN
-	 y/L1gSHlZZ0v/f2rPzMc+hdX1ifSpU7oPTbwJMK7+r8/mgU3Pl6STUuw+to239Zt39
-	 XwJuUTioiZpkQ==
-Date: Thu, 14 Mar 2024 13:05:02 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Michal Simek <michal.simek@amd.com>, Andrzej Hajda <andrzej.hajda@intel.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, dri-devel@lists.freedesktop.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-media@vger.kernel.org
-Subject: Re: [PATCH v2 8/8] drm: xlnx: Intoduce TPG CRTC driver
-Message-ID: <20240314-esoteric-delicate-sidewinder-5dc4db@houat>
-References: <20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com>
- <20240312-dp-live-fmt-v2-8-a9c35dc5c50d@amd.com>
+	s=arc-20240116; t=1710417955; c=relaxed/simple;
+	bh=0xTpEM3Y/NrqBhreNw+cRUSto1TJ34AiQcMObEgaOG0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MpIHA6aBQn1TWGD065coIsXZE5X17jlTK+8j12ldDEAU7ATEx6/XzUUpk/C2UQ+ZD6+8knsjxT1IGJMnnMEkFfmocWzzOYcL7/fQ3RJIxCivd2demFJ1vvHHBrRKCSJqLpoZy83NRhytQVk1gHYZHKBlSf2zT+hrOkeAjA54TEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1JVPuio; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dc5d0162bcso6405885ad.0;
+        Thu, 14 Mar 2024 05:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710417953; x=1711022753; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sxUqglOb19+8Ui9qYkGG1A5RE2kMc/HzRCXEs7LSq5w=;
+        b=e1JVPuio8S1mti2VC4HH3prBfhrxlse6tuJDMTkBgAWQ2XRxvaV6kCuBIpiu4POQpw
+         cQsZVsocs/0f3Rk4jQ+QOXVPq/+ZRGx8sK+0hkjUF7qttHLT5/ZmEgJ09WBq9KWGQQu8
+         k5qI/K2U+LnpO0mtld0saxivgLYKyMPYFlQ3LuSdBqk/AOWzxwTuA1BG50ik2GsAOcRM
+         9LTXa2jMuJT0ZqF645M3sRnbdK3PADiyeP2U5s/Jlg9B5lEmsa4KvRUfeGJKjJgqL+o8
+         0BZPXiIcTXRh7BEL9PVqSMSj/2sNNpILfYwNCYODVQaygybETLX8lEcCPkafF94eaOuM
+         4rKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710417953; x=1711022753;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sxUqglOb19+8Ui9qYkGG1A5RE2kMc/HzRCXEs7LSq5w=;
+        b=URBKc4ARNGfuoK7KBPjbERdqkEuGqYZ1EQl+YsNMsbXCrJtrq/si/1DFGb0VSGfj1O
+         mSGM9BH9M+7vT26tFSn8JrDfu7Nqr0952nIIenUj4LqOggM1hmZvLYvsouLOsCaTSgJW
+         zewhMRcd8JghvumOmKACb89ZQTQC+pPSFOkn+zKK1AsSGy5qXdErG9mtu58ujF+OK2HZ
+         JfRXeVw2d+WVXUX08eUzlImLuKAco3VG7Gs1BqYNYkKlEeEqag/9fRQCgrrPLVLYObcC
+         EY/p0U1P7bxC29DRyrji3ws0XyR6wWtbvn/daJtjE6UFRPazqQGdTOgCWMELYUIi6beU
+         URRA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0YyHSFT9iRI+YWpBExTle+PfwKTlxg7aLwlI2OUDjqGj9SiYTTJgusuA21xHYQVw4ow7x1HnqS3sB2+dTFlSC8rSubDE/hrEfQljtzfpC1kyB7vMNIqG7g7DLAvSsqTaoptC8McNlhQ==
+X-Gm-Message-State: AOJu0Ywr3c9Knt+a6ggPqegw3Jwc+l5Do4yNeod6MMe6hVI37x9uxXz+
+	J4Gxw5UG7omuAh8uXDcDNkUCROT2fiGsEFbvCkBwJYwmckWAdW/Y
+X-Google-Smtp-Source: AGHT+IH4/NiBc9M2jC4uVkmALXn2nyHXeOSFAZoTwdWRjfOM3P4K+8IzetlR7j+BVbgB4FfZcrwKNw==
+X-Received: by 2002:a17:903:230e:b0:1de:e4bd:73fc with SMTP id d14-20020a170903230e00b001dee4bd73fcmr268291plh.24.1710417953006;
+        Thu, 14 Mar 2024 05:05:53 -0700 (PDT)
+Received: from met-Virtual-Machine.. ([131.107.8.95])
+        by smtp.gmail.com with ESMTPSA id w13-20020a170902e88d00b001db594c9d17sm1497389plg.254.2024.03.14.05.05.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 05:05:52 -0700 (PDT)
+From: meetakshisetiyaoss@gmail.com
+To: sfrench@samba.org,
+	pc@manguebit.com,
+	ronniesahlberg@gmail.com,
+	sprasad@microsoft.com,
+	nspmangalore@gmail.com,
+	tom@talpey.com,
+	linux-cifs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	samba-technical@lists.samba.org,
+	bharathsm.hsk@gmail.com
+Cc: Meetakshi Setiya <msetiya@microsoft.com>
+Subject: [PATCH] Fixes: ffceb7640cbf ("smb: client: do not defer close open handles to deleted files")
+Date: Thu, 14 Mar 2024 08:05:49 -0400
+Message-Id: <20240314120549.627950-1-meetakshisetiyaoss@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kwejoxn4vhiy7i6i"
-Content-Disposition: inline
-In-Reply-To: <20240312-dp-live-fmt-v2-8-a9c35dc5c50d@amd.com>
+Content-Transfer-Encoding: 8bit
 
+From: Meetakshi Setiya <msetiya@microsoft.com>
 
---kwejoxn4vhiy7i6i
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix potential memory leaks, add error checking, remove unnecessary
+initialisation of status_file_deleted and do not use cifs_iget() to get
+inode in reparse_info_to_fattr since fattrs may not be fully set.
 
-Hi,
+Signed-off-by: Meetakshi Setiya <msetiya@microsoft.com>
+---
+ fs/smb/client/file.c  |  1 -
+ fs/smb/client/inode.c | 24 +++++++++++++-----------
+ 2 files changed, 13 insertions(+), 12 deletions(-)
 
-On Tue, Mar 12, 2024 at 05:55:05PM -0700, Anatoliy Klymenko wrote:
-> DO NOT MERGE. REFERENCE ONLY.
->=20
-> Add CRTC driver based on AMD/Xilinx Video Test Pattern Generator IP. TPG
-> based FPGA design represents minimalistic harness useful for testing links
-> between FPGA based CRTC and external DRM encoders, both FPGA and hardened
-> IP based.
->=20
-> Add driver for AMD/Xilinx Video Timing Controller. The VTC, working in
-> generator mode, suplements TPG with video timing signals.
->=20
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+index c3ed7017cdf2..f83b088b5bc9 100644
+--- a/fs/smb/client/file.c
++++ b/fs/smb/client/file.c
+@@ -486,7 +486,6 @@ struct cifsFileInfo *cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
+ 	cfile->uid = current_fsuid();
+ 	cfile->dentry = dget(dentry);
+ 	cfile->f_flags = file->f_flags;
+-	cfile->status_file_deleted = false;
+ 	cfile->invalidHandle = false;
+ 	cfile->deferred_close_scheduled = false;
+ 	cfile->tlink = cifs_get_tlink(tlink);
+diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
+index 8177ec59afee..6092729bf7f6 100644
+--- a/fs/smb/client/inode.c
++++ b/fs/smb/client/inode.c
+@@ -820,8 +820,10 @@ cifs_get_file_info(struct file *filp)
+ 	void *page = alloc_dentry_path();
+ 	const unsigned char *path;
+ 
+-	if (!server->ops->query_file_info)
++	if (!server->ops->query_file_info) {
++		free_dentry_path(page);
+ 		return -ENOSYS;
++	}
+ 
+ 	xid = get_xid();
+ 	rc = server->ops->query_file_info(xid, tcon, cfile, &data);
+@@ -835,8 +837,8 @@ cifs_get_file_info(struct file *filp)
+ 		}
+ 		path = build_path_from_dentry(dentry, page);
+ 		if (IS_ERR(path)) {
+-			free_dentry_path(page);
+-			return PTR_ERR(path);
++			rc = PTR_ERR(path);
++			goto cgfi_exit;
+ 		}
+ 		cifs_open_info_to_fattr(&fattr, &data, inode->i_sb);
+ 		if (fattr.cf_flags & CIFS_FATTR_DELETE_PENDING)
+@@ -1009,7 +1011,6 @@ static int reparse_info_to_fattr(struct cifs_open_info_data *data,
+ 	struct kvec rsp_iov, *iov = NULL;
+ 	int rsp_buftype = CIFS_NO_BUFFER;
+ 	u32 tag = data->reparse.tag;
+-	struct inode *inode = NULL;
+ 	int rc = 0;
+ 
+ 	if (!tag && server->ops->query_reparse_point) {
+@@ -1049,12 +1050,8 @@ static int reparse_info_to_fattr(struct cifs_open_info_data *data,
+ 
+ 	if (tcon->posix_extensions)
+ 		smb311_posix_info_to_fattr(fattr, data, sb);
+-	else {
++	else
+ 		cifs_open_info_to_fattr(fattr, data, sb);
+-		inode = cifs_iget(sb, fattr);
+-		if (inode && fattr->cf_flags & CIFS_FATTR_DELETE_PENDING)
+-			cifs_mark_open_handles_for_deleted_file(inode, full_path);
+-	}
+ out:
+ 	fattr->cf_cifstag = data->reparse.tag;
+ 	free_rsp_buf(rsp_buftype, rsp_iov.iov_base);
+@@ -1109,9 +1106,9 @@ static int cifs_get_fattr(struct cifs_open_info_data *data,
+ 						   full_path, fattr);
+ 		} else {
+ 			cifs_open_info_to_fattr(fattr, data, sb);
+-			if (fattr->cf_flags & CIFS_FATTR_DELETE_PENDING)
+-				cifs_mark_open_handles_for_deleted_file(*inode, full_path);
+ 		}
++		if (!rc && fattr->cf_flags & CIFS_FATTR_DELETE_PENDING)
++			cifs_mark_open_handles_for_deleted_file(*inode, full_path);
+ 		break;
+ 	case -EREMOTE:
+ 		/* DFS link, no metadata available on this server */
+@@ -1340,6 +1337,8 @@ int smb311_posix_get_inode_info(struct inode **inode,
+ 		goto out;
+ 
+ 	rc = update_inode_info(sb, &fattr, inode);
++	if (!rc && fattr.cf_flags & CIFS_FATTR_DELETE_PENDING)
++		cifs_mark_open_handles_for_deleted_file(*inode, full_path);
+ out:
+ 	kfree(fattr.cf_symlink_target);
+ 	return rc;
+@@ -1501,6 +1500,9 @@ struct inode *cifs_root_iget(struct super_block *sb)
+ 		goto out;
+ 	}
+ 
++	if (!rc && fattr.cf_flags & CIFS_FATTR_DELETE_PENDING)
++		cifs_mark_open_handles_for_deleted_file(inode, path);
++
+ 	if (rc && tcon->pipe) {
+ 		cifs_dbg(FYI, "ipc connection - fake read inode\n");
+ 		spin_lock(&inode->i_lock);
+-- 
+2.39.2
 
-As I said previously, we don't want to have unused APIs, so this patch
-should be in a good enough state to be merged if we want to merge the
-whole API.
-
-> +/* ---------------------------------------------------------------------=
---------
-> + * DRM CRTC
-> + */
-> +
-> +static enum drm_mode_status xlnx_tpg_crtc_mode_valid(struct drm_crtc *cr=
-tc,
-> +						     const struct drm_display_mode *mode)
-> +{
-> +	return MODE_OK;
-> +}
-> +
-> +static int xlnx_tpg_crtc_check(struct drm_crtc *crtc,
-> +			       struct drm_atomic_state *state)
-> +{
-> +	struct drm_crtc_state *crtc_state =3D drm_atomic_get_new_crtc_state(sta=
-te, crtc);
-> +	int ret;
-> +
-> +	if (!crtc_state->enable)
-> +		goto out;
-> +
-> +	ret =3D drm_atomic_helper_check_crtc_primary_plane(crtc_state);
-> +	if (ret)
-> +		return ret;
-> +
-> +out:
-> +	return drm_atomic_add_affected_planes(state, crtc);
-> +}
-> +
-
-[...]
-
-> +
-> +static u32 xlnx_tpg_crtc_select_output_bus_format(struct drm_crtc *crtc,
-> +						  struct drm_crtc_state *crtc_state,
-> +						  const u32 *in_bus_fmts,
-> +						  unsigned int num_in_bus_fmts)
-> +{
-> +	struct xlnx_tpg *tpg =3D crtc_to_tpg(crtc);
-> +	unsigned int i;
-> +
-> +	for (i =3D 0; i < num_in_bus_fmts; ++i)
-> +		if (in_bus_fmts[i] =3D=3D tpg->output_bus_format)
-> +			return tpg->output_bus_format;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_crtc_helper_funcs xlnx_tpg_crtc_helper_funcs =3D=
- {
-> +	.mode_valid =3D xlnx_tpg_crtc_mode_valid,
-> +	.atomic_check =3D xlnx_tpg_crtc_check,
-> +	.atomic_enable =3D xlnx_tpg_crtc_enable,
-> +	.atomic_disable =3D xlnx_tpg_crtc_disable,
-> +	.select_output_bus_format =3D xlnx_tpg_crtc_select_output_bus_format,
-> +};
-
-=46rom that code, it's not clear to me how the CRTC is going to be able to
-get what the format is.
-
-It looks like you hardcode it here, but what if there's several that
-would fit the bill? Is the CRTC expected to store it into its private
-structure?
-
-If so, I would expect it to be in the crtc state, and atomic_enable to
-just reuse whatever is in the state.
-
-Maxime
-
---kwejoxn4vhiy7i6i
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZfLn7QAKCRDj7w1vZxhR
-xSvRAQDBl2QlIoZyi0ODQ+MZMNWBU6kh/mje8vQzNdYdrUgsbQEApcQO+aeY7fXf
-KFceNVFn3+gdg8H4vaDQkRqOjheGcg8=
-=knUA
------END PGP SIGNATURE-----
-
---kwejoxn4vhiy7i6i--
 
