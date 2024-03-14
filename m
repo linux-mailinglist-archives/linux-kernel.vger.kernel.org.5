@@ -1,68 +1,70 @@
-Return-Path: <linux-kernel+bounces-103368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8698F87BEA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE2587BEA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:15:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31495B21134
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:14:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C184B21476
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611096FE10;
-	Thu, 14 Mar 2024 14:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E676FE31;
+	Thu, 14 Mar 2024 14:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZJsd3Zb3"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WSSLw3v7"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0042D5811C;
-	Thu, 14 Mar 2024 14:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50156FE02;
+	Thu, 14 Mar 2024 14:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425686; cv=none; b=gajxxpH2VyVDTY3mySWqNjTNZ8UX3t3BJIg8/nxhi//xOQNLCzmS4idqtFs48e+jjyy83fuUyKes0eks/PN8/HSAtSBD9Tm+WAwurYdPPg2vGy4Gt/Hx0yB6kNGbqgqZL2L9y3U79V0jk6HLBl/s7RHJO4kgYYCxj0kpszjnGBI=
+	t=1710425687; cv=none; b=IniYqzwrpJLdjg1orfLd1ZPpfAy/v+BG91A4cdu0JEQFNV1Ugx9Z6MFqFqh/zHwUvIRINBv7HLiCLY7Out7P9HQd942Qevkyi8+71Vi4vW3uoMCLq/G9zmd8XUNH48I9ODPKaNSOIjmp4wM1W2MpJgoZGeMf0qLcFUgSbSLdoh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425686; c=relaxed/simple;
-	bh=x5CVPbF28WQ1DpJCoL+U1c14mF1GOV9N6BoJa/JW2Ig=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YXwTpPWDkVtkMZcrKJjobzMorMFHmcoVgIr84+eL+/wZBFxkUQ/CPkjHtBSrUksVWSb8E3iRQY/3wSQnQraFtYtwgcqRw2JuSTMPEHEc5IcwMC7Vu/X2dpZ7Fb+jJ/d+fU4EsRBZ5zqMYtslB56F0B5pX5VH1I6waDvKI32JpTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZJsd3Zb3; arc=none smtp.client-ip=209.85.167.54
+	s=arc-20240116; t=1710425687; c=relaxed/simple;
+	bh=eZ7+YWRuTJS+M+Tbb32Zj+n4QjgQnXl0BfWwdXSaSiI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=qM4IaCBs+RTls8NWjl9twDa1FAQH/OYT6lkZtv26INTh+hK0f1yXYtE+lxUhOqp8hX0eflZsOhmLthDBRIde3fw+uK4xSt01lYYhT6sK+hD7Oj+gKKUJmD1mhdftiv5MtnXXD+pIQMQmvsJCzlHe7PAqbWrTIquY1+aIseHdrqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WSSLw3v7; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5131a9b3d5bso1328461e87.0;
-        Thu, 14 Mar 2024 07:14:44 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5139d80f8b6so1286380e87.1;
+        Thu, 14 Mar 2024 07:14:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1710425683; x=1711030483; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PAAoGUwJhKHSM53yVC1A2s8QbjT/aWBxy9la5JymCLA=;
-        b=ZJsd3Zb3knbapts/qUS1n8+Cr1zJDrfYyAWKjpEnRQBXAf11lwv0PPrE6T1SEiFVI2
-         RIQAEWtMQpVQl6Z8g0ETLEet2rrkcbkpuB7XSob9s7KuiAcSROVIJVKO2IPuqfh7QnwG
-         oNGRnCc123z/E2P77r3bVzLMxDIOEu9av83BGjJzjAzAQl39H+nV6RZKZILS2Tls1DCg
-         /iKKqScJIbqxut19j52uNvr/YYR3z0pTXtAaG4ii+kuZBwj2rjBAdMWmSxASI5SdNaXN
-         jGNW3VR8ORfiVDqf0P7VZA8pq9eO52fxLEEv7nsFY0D/4Tjn7xhlEWWc3KlXP15OCvun
-         z6wg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RI1qGz8CIIXyUXChOvLqXgzJKN1FSHM3UtHTCtJhJhY=;
+        b=WSSLw3v7ZytmikMXUHOSK//6yico4F7EqonJwFaU57O6+O+U1d0E6e7BeECIM6vIhi
+         2968QWdpT7k8wTUSBUaJrvf/0wdT5g1YDBhg293dUrcDW3RarBHQVtzIxqFZh3glYbuw
+         TzJ5/CV5S6RNzn256YwMledUV4xkmBhz74U4iOR8ITqP25GMebTOnXRcEHDKMP9SizPp
+         4fiAcvsOlwGAM4pdJv3WQiU5eRWwq3XSwMOeUhCcMppvMMeEWew2VskirV9rJn3qHE3L
+         LioHm/ugUvBscbeXLOWecvuhkmiEMP+SzobD8XKmQ0GwJfBf14YxDzDW9mvuzLpL5jk+
+         JcQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1710425683; x=1711030483;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PAAoGUwJhKHSM53yVC1A2s8QbjT/aWBxy9la5JymCLA=;
-        b=b+NDUPDZgVBqg2155TwPuUGMnp2PSCmmCVvLtPeZBlQ/lOdAqNGrdfSVYcCvKPseFp
-         FD2u1CGYNOYqMV1z9FHfU56d53VMoSTP1k3TxrimONQ6ZXJ6Ws6PRMBQ9WcTlWhUacLM
-         U6E0Oa6ThoLLKkvhYklazPsuz+jY098y1QV/Ov+6er1ER0Xu/xmVzPF7J2Xcf5r7cQpw
-         4yMsGhDrNe53XJsanQHu6q7//o6J0xMPviAGwfnW9i8LKr4XvEYDv130/QcQsOojniyR
-         vrDHIUDQZU5sZelJSuOgY3/ZUMfzCo61scp99dnW0NH6WxFUL7w2KmE+bTRh+IHJ6XSw
-         X+cw==
-X-Gm-Message-State: AOJu0YyPqsT0ZIt7T/lhhIdMki3t8rdJbzGDiH3sTp0Gg2zBQM6juwE/
-	dB/uSmLdLA+HvGz8wlEe8uH5VwRj6Lp83OmJG7JuWzGyo0igEyugdg4YXAv9uRk=
-X-Google-Smtp-Source: AGHT+IHthsBH5+FP1OlF3bK3BRi/RkDevyBhf348milcB9Hjy3iU8bN00i0ea1eQVxPIyvEfUPJFvA==
-X-Received: by 2002:ac2:598c:0:b0:513:a732:4878 with SMTP id w12-20020ac2598c000000b00513a7324878mr1346057lfn.41.1710425682283;
-        Thu, 14 Mar 2024 07:14:42 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RI1qGz8CIIXyUXChOvLqXgzJKN1FSHM3UtHTCtJhJhY=;
+        b=IrjwT1mPADQ+m2zm+uT+LJHsy+P86W+6Mhigu2vVSS6IHZKasfKvCIktMC2OOEfHX4
+         ZTrX8AcB+/4pGli7o/LVw9ll/yzW6R1NhVbQjN/1tOkD1aNj70U7Szylt9tpG3fq8y6c
+         lYiRcK/rRz66/DuXdS70+tWaxZ1OqbAqsmPtbqShVQDLdDP1WrmKaTwNHknTYXVUOFFR
+         KJ2YXEyfPS+8lohYbzk2kKpTYkqIOQVDzK4iSNbjL1y0YBv9onkYsI54CH2eRHeLke+J
+         h3tTnRgOE9nz9UNmYq6oANgn7G+s5NGt7i0aGvhs8w6YAcMjw2jqL8TblxzHiW0I3E+7
+         jaqA==
+X-Gm-Message-State: AOJu0YxX3zlHYbJqie+TL4sxWOqKrczG/l//3q1RBjX+EUYGiJDMl2XT
+	mvGHj8ib+zYL+9tsooyH4Kiqm9olM6y5LVwXeF9jjdpafGgHWwMscb1wAe+DOog=
+X-Google-Smtp-Source: AGHT+IFIob1Z7MNOWoU2QITak92Fg2FZ3n2AJ2V77murgg98b0MdD2a1Vh2SP7HNHgnn1M6WVUi3PA==
+X-Received: by 2002:a19:5e59:0:b0:513:b062:98c4 with SMTP id z25-20020a195e59000000b00513b06298c4mr192188lfi.11.1710425683060;
+        Thu, 14 Mar 2024 07:14:43 -0700 (PDT)
 Received: from skhimich.dev.yadro.com (avpn01.yadro.com. [89.207.88.243])
-        by smtp.gmail.com with ESMTPSA id a19-20020ac25e73000000b005135bd71d6fsm286538lfr.276.2024.03.14.07.14.41
+        by smtp.gmail.com with ESMTPSA id a19-20020ac25e73000000b005135bd71d6fsm286538lfr.276.2024.03.14.07.14.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 07:14:41 -0700 (PDT)
+        Thu, 14 Mar 2024 07:14:42 -0700 (PDT)
 From: Sergey Khimich <serghox@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-mmc@vger.kernel.org,
@@ -70,10 +72,12 @@ Cc: linux-mmc@vger.kernel.org,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	Shawn Lin <shawn.lin@rock-chips.com>,
 	Jyan Chou <jyanchou@realtek.com>
-Subject: [PATCH v6 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
-Date: Thu, 14 Mar 2024 17:14:38 +0300
-Message-Id: <20240314141440.3305802-1-serghox@gmail.com>
+Subject: [PATCH v6 1/2] mmc: cqhci: Add cqhci set_tran_desc() callback
+Date: Thu, 14 Mar 2024 17:14:39 +0300
+Message-Id: <20240314141440.3305802-2-serghox@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240314141440.3305802-1-serghox@gmail.com>
+References: <20240314141440.3305802-1-serghox@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,78 +86,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello!
+From: Sergey Khimich <serghox@gmail.com>
 
-This is implementation of SDHCI CQE support for sdhci-of-dwcmshc driver.
-For enabling CQE support just set 'supports-cqe' in your DevTree file
-for appropriate mmc node.
+There are could be specific limitations for some mmc
+controllers for setting cqhci transfer descriptors.
+So add callback to allow implement driver specific function.
 
-Also, while implementing CQE support for the driver, I faced with a problem
-which I will describe below.
-According to the IP block documentation CQE works only with "AMDA-2 only"
-mode which is activated only with v4 mode enabled. I see in dwcmshc_probe()
-function that v4 mode gets enabled only for 'sdhci_dwcmshc_bf3_pdata'
-platform data.
+Signed-off-by: Sergey Khimich <serghox@gmail.com>
+---
+ drivers/mmc/host/cqhci-core.c | 11 ++++++++---
+ drivers/mmc/host/cqhci.h      |  4 ++++
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
-So my question is: is it correct to enable v4 mode for all platform data
-if 'SDHCI_CAN_64BIT_V4' bit is set in hw?
-
-Because I`m afraid that enabling v4 mode for some platforms could break
-them down. On the other hand, if host controller says that it can do v4
-(caps & SDHCI_CAN_64BIT_V4), lets do v4 or disable it manualy by some
-quirk. Anyway - RFC.
-
-
-v2:
- - Added dwcmshc specific cqe_disable hook to prevent losing
-   in-flight cmd when an ioctl is issued and cqe_disable is called;
-
- - Added processing 128Mb boundary for the host memory data buffer size
-   and the data buffer. For implementing this processing an extra
-   callback is added to the struct 'sdhci_ops'.
-
- - Fixed typo.
-
-v3:
- - Fix warning reported by kernel test robot:
-        | Reported-by: kernel test robot <lkp@intel.com>
-        | Closes: https://lore.kernel.org/oe-kbuild-all/202309270807.VoVn81m6-lkp@intel.com/
-        | Closes: https://lore.kernel.org/oe-kbuild-all/202309300806.dcR19kcE-lkp@intel.com/
-
-v4:
- - Data reset moved to custom driver tuning hook.
- - Removed unnecessary dwcmshc_sdhci_cqe_disable() func
- - Removed unnecessary dwcmshc_cqhci_set_tran_desc. Export and use
-   cqhci_set_tran_desc() instead.
- - Provide a hook for cqhci_set_tran_desc() instead of cqhci_prep_tran_desc().
- - Fix typo: int_clok_disable --> int_clock_disable
-
-v5:
- - Fix warning reported by kernel test robot:
-	| Reported-by: kernel test robot <lkp@intel.com>
-	| Closes: https://lore.kernel.org/oe-kbuild-all/202312301130.itEZhhI5-lkp@intel.com/
-
-v6:
- - Rebase to master branch
- - Fix typo;
- - Fix double blank line;
- - Add cqhci_suspend() and cqhci_resume() functions
-   to support mmc suspend-to-ram (s2r);
- - Move reading DWCMSHC_P_VENDOR_AREA2 register under "supports-cqe"
-   condition as not all IPs have that register;
- - Remove sdhci V4 mode from the list of prerequisites to init cqhci.
-
-
-Sergey Khimich (2):
-  mmc: cqhci: Add cqhci set_tran_desc() callback
-  mmc: sdhci-of-dwcmshc: Implement SDHCI CQE support
-
- drivers/mmc/host/Kconfig            |   1 +
- drivers/mmc/host/cqhci-core.c       |  11 +-
- drivers/mmc/host/cqhci.h            |   4 +
- drivers/mmc/host/sdhci-of-dwcmshc.c | 188 +++++++++++++++++++++++++++-
- 4 files changed, 199 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index 41e94cd14109..c14d7251d0bb 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -474,8 +474,8 @@ static int cqhci_dma_map(struct mmc_host *host, struct mmc_request *mrq)
+ 	return sg_count;
+ }
+ 
+-static void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end,
+-				bool dma64)
++void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end,
++			 bool dma64)
+ {
+ 	__le32 *attr = (__le32 __force *)desc;
+ 
+@@ -495,6 +495,7 @@ static void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end,
+ 		dataddr[0] = cpu_to_le32(addr);
+ 	}
+ }
++EXPORT_SYMBOL(cqhci_set_tran_desc);
+ 
+ static int cqhci_prep_tran_desc(struct mmc_request *mrq,
+ 			       struct cqhci_host *cq_host, int tag)
+@@ -522,7 +523,11 @@ static int cqhci_prep_tran_desc(struct mmc_request *mrq,
+ 
+ 		if ((i+1) == sg_count)
+ 			end = true;
+-		cqhci_set_tran_desc(desc, addr, len, end, dma64);
++		if (cq_host->ops->set_tran_desc)
++			cq_host->ops->set_tran_desc(cq_host, &desc, addr, len, end, dma64);
++		else
++			cqhci_set_tran_desc(desc, addr, len, end, dma64);
++
+ 		desc += cq_host->trans_desc_len;
+ 	}
+ 
+diff --git a/drivers/mmc/host/cqhci.h b/drivers/mmc/host/cqhci.h
+index 1a12e40a02e6..fab9d74445ba 100644
+--- a/drivers/mmc/host/cqhci.h
++++ b/drivers/mmc/host/cqhci.h
+@@ -293,6 +293,9 @@ struct cqhci_host_ops {
+ 	int (*program_key)(struct cqhci_host *cq_host,
+ 			   const union cqhci_crypto_cfg_entry *cfg, int slot);
+ #endif
++	void (*set_tran_desc)(struct cqhci_host *cq_host, u8 **desc,
++			      dma_addr_t addr, int len, bool end, bool dma64);
++
+ };
+ 
+ static inline void cqhci_writel(struct cqhci_host *host, u32 val, int reg)
+@@ -318,6 +321,7 @@ irqreturn_t cqhci_irq(struct mmc_host *mmc, u32 intmask, int cmd_error,
+ int cqhci_init(struct cqhci_host *cq_host, struct mmc_host *mmc, bool dma64);
+ struct cqhci_host *cqhci_pltfm_init(struct platform_device *pdev);
+ int cqhci_deactivate(struct mmc_host *mmc);
++void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end, bool dma64);
+ static inline int cqhci_suspend(struct mmc_host *mmc)
+ {
+ 	return cqhci_deactivate(mmc);
 -- 
 2.30.2
 
