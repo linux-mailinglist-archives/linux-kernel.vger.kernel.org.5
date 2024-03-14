@@ -1,165 +1,115 @@
-Return-Path: <linux-kernel+bounces-103173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB0787BBE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:27:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C3087BBEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 12:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95F1B1C22B68
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:27:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45480282010
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757C36F07C;
-	Thu, 14 Mar 2024 11:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F297B6EB73;
+	Thu, 14 Mar 2024 11:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e02Lk7fr"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Vq1Q3vey"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35E46EB76
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 11:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350FB6EB5D;
+	Thu, 14 Mar 2024 11:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710415624; cv=none; b=VFwrIVhPONcywHk/4pRyjv46n+DFm89d+oymVvSDSH5NXk5uP5QJ3m1gZZtMxzgKKDz8b08kffaKrft17dPkS/ivGzrYX/XUjeIv8Trd4JMXJ/qltj3DIgWabDbeYrwfFEdPMktSsQzd6w1RvZQ3isjGsOv4hNf6KwsOeVFpyCs=
+	t=1710415652; cv=none; b=nAg/XOAwRqav9pDRE3waLfcwjoKy46lLa02Bytb4m8s+vHGEBC7hsCrFEP0x/9HGiq2s5HhhKoloX6L+AjMzFJFzQpWHZmnHJTh3/bCjPO7D8A2DsckU4KxLw2azHa5eWL283meEg2Uird+fVDpyIBYBwP0rpGKZpb/FHe2270E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710415624; c=relaxed/simple;
-	bh=NZQktpdrtfs7qW27jx8uDV2H4cOGOdMPNZEZKyZNqn4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A3a3Bd5cXzbIRLCgp0WWuWveKjlR9Xdg7tYlb9OJVgIIQGQPDBZHYNs7AF2qBqnwyDhRgfMGPVJB0jbgTd10hYnWj2n4oNRoshrvOvossnbZ92pxcYr3q92UY8pXGoEHNVfuBBNW9pH7iKRKuL/XN0ubjNS6nEarm+RQGE9q1Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e02Lk7fr; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51320ca689aso1032462e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 04:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710415621; x=1711020421; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RqhAHkzb4BHsXhRmp42tjCgM0t0AB1g5Lp7YtW1X1vg=;
-        b=e02Lk7frLO8mGFG2llXaOzkBKU7MbQLlhs3kBLmkjjbWK7ISkzfHp9TNSZNSHDw684
-         g7i0y8ZNhCoXeL1UiJG9DSUJkl2+W4b7VEgrNu2RE9l9zHiDjiWf1k2uapEA6S5kJjn+
-         MFAEudv5fm5ZUTqsyTESSK2JWTCccGsYFGqmuljv+UQYfLeGSUD+XNl0WO7eOpseOpgB
-         YIw/AGMtGdQ4MeEX0TmEvqwcOjqZGJA25h1h4e+3idxe9tvmgA6Te44UFdPKA5qRuIyl
-         fNds+KudlkYqd3v8AC9cTw+uvSgj42YnwnTAXVyLtXGUdObi2WikMURQiktU6jL6tvDm
-         slVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710415621; x=1711020421;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RqhAHkzb4BHsXhRmp42tjCgM0t0AB1g5Lp7YtW1X1vg=;
-        b=eNHR8VInYH3VQ8P9fDWoO7OOhqQcWO54OI6rMQ9oIYSE/Folvx1qJ2bQCjIbG8mQj+
-         J0rOoJRtUGOMnbA2sUiyiNepI66GQykRDZ/PsaUibPps07CKTNUEQGhBSO3h5p0mkZb2
-         wpTTq2M5iz2leBwJnXcG/o8EHRs0tXN7j3DReCWsQ6PPHqZi6iu/qNbrkY8cuoziF7m/
-         joPIKy63Ck4BdiLVtzrqfDL+7eqEeEfU/apO3eVflYLxOGF0oF3MTO0wjMtAK2gH/Xx/
-         7iF2mUVzxDDBvQEdYRNNWEc8qPNghrNvxDpcL3tlsmuD3gouCVfVmoISCACT42kg9mDS
-         iYDg==
-X-Forwarded-Encrypted: i=1; AJvYcCXLLhNdyJcNIqNnIo7qtCm83n5F+nUPQBte7CB4gdDmY5lsPqdjc4XcY+aHYwymjcJsNtskwjTgsShUsLFiHJaPDvqeiJY7QE85ZQr+
-X-Gm-Message-State: AOJu0Yx2lnYlBubw9BZrCbGG+xHjvxVmU6TndbRClYRf+N9GeIhoDS3v
-	ukwTYomH9/XE1AVkBIZBCrFBjlGptFaslouw8/VOOFOYfZZlxpv4qzu/fGQzPXA=
-X-Google-Smtp-Source: AGHT+IFiOaTUBm/dmApeywx7C2FjUTaLu385b2URTg8PSx1WzFj+iIemPcjjAzN72x90SEFH8nsUrg==
-X-Received: by 2002:a19:8c47:0:b0:513:b062:98c4 with SMTP id i7-20020a198c47000000b00513b06298c4mr950278lfj.11.1710415621009;
-        Thu, 14 Mar 2024 04:27:01 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id j16-20020adfe510000000b0033e42ab5114sm560922wrm.2.2024.03.14.04.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 04:27:00 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: apq8016-sbc: correct GPIO LEDs node names
-Date: Thu, 14 Mar 2024 12:26:57 +0100
-Message-Id: <20240314112657.167006-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710415652; c=relaxed/simple;
+	bh=GqRRN7Gy1wji1RHe+Tu4TFLSTVMzkG2q5lTvefIyzRU=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=KTR2/dLO0c2n2T8Getk+QriEDsnsht05s4wVnD5gkcimpaB0yXrQl+AfMHJXkcYn9hltoesenpxiDjQWZrH1nN7TAXgcZw5fZQYowJTUJYGwBekScX/lNgZtapcztEi4leEjYoYNLNV8/K4k+pFVcLxWKhAs0C4dq0M5qLtq6a4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Vq1Q3vey; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=GqRRN7Gy1wji1RHe+Tu4TFLSTVMzkG2q5lTvefIyzRU=; b=Vq1Q3veyZarK0LuaADg8Zj8zER
+	U8eljUtoa10X4GQuCrkZcJwRveL8E3n5jSlW0CpsRjgOWvRis/JdLIh+G/nU5Muk/hxb6I4HR6jGE
+	iiwJmjL75qSAoJUhe0PpRdn1P4uALnBHIp2TpJ4aF9NXWoyAZBSUjJLPRJSbftPVQj0GDzjAFfplY
+	7lVlbe7+vZ70HrHdLIQLPbrMrAeibCHzTQDe/rQlVP8JfSfTCY2ZYs1lG8XYa7rfJPjmQ2dhrVYi/
+	ciCo3hrXXufTSlrAB/NbPZ++eD2jCWHMKnNvk+KgdtLqqhc8XrSQ2OUor3a1eUTVJvqgmvLjh8UZ/
+	Lz0Hsgyg==;
+Received: from [31.94.26.231] (helo=[127.0.0.1])
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rkjF0-0000000ASlo-3aMq;
+	Thu, 14 Mar 2024 11:27:19 +0000
+Date: Thu, 14 Mar 2024 12:27:14 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sudeep Holla <sudeep.holla@arm.com>
+CC: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
+ Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
+ James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Mostafa Saleh <smostafa@google.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+ linux-pm@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BRFC_PATCH_2/2=5D_arm64=3A_Use_SYSTEM=5FO?= =?US-ASCII?Q?FF2_PSCI_call_to_power_off_for_hibernate?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZfLa1_TWArT7tCtb@bogus>
+References: <20240312135958.727765-1-dwmw2@infradead.org> <20240312135958.727765-3-dwmw2@infradead.org> <ZfB7c9ifUiZR6gy1@bogus> <520ce28050c29cca754493f0595d4a64d45796ee.camel@infradead.org> <ZfHHlBgSNr8Qm22D@bogus> <ZfLa1_TWArT7tCtb@bogus>
+Message-ID: <5A0D0B83-F898-4B5B-893F-7953847ED5CD@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 
-Individual LEDs in a GPIO LEDs device node are not addressable, thus
-unit address is not correct.
+On 14 March 2024 12:09:11 CET, Sudeep Holla <sudeep=2Eholla@arm=2Ecom> wrot=
+e:
+>On Wed, Mar 13, 2024 at 03:34:44PM +0000, Sudeep Holla wrote:
+>> On Tue, Mar 12, 2024 at 04:36:05PM +0000, David Woodhouse wrote:
+>> > On Tue, 2024-03-12 at 15:57 +0000, Sudeep Holla wrote:
+>> > > Looked briefly at register_sys_off_handler and it should be OK to c=
+all
+>> > > it from psci_init_system_off2() below=2E Any particular reason for =
+having
+>> > > separate initcall to do this ? We can even eliminate the need for
+>> > > psci_init_system_off2 if it can be called from there=2E What am I m=
+issing ?
+>> >
+>> > My first attempt did that=2E I don't think we can kmalloc that early:
+>> >
+>>
+>> That was was initial guess=2E But a quick hack on my setup and running =
+it on
+>> the FVP model didn't complain=2E I think either I messed up or somethin=
+g else
+>> wrong, I must check on some h/w=2E Anyways sorry for the noise and than=
+ks for
+>> the response=2E
+>>
+>
+>OK, it was indeed giving -ENOMEM which in my hack didn't get propogated
+>properly =F0=9F=99=81=2E I assume you have some configs that is resulting=
+ in the
+>crash instead of -ENOMEM as I see in my setup(FVP as well as hardware)=2E
+>
+>Sorry for the noise=2E
 
-dtc is also not happy:
+Fairly stock Fedora config, with a few tweaks=2E
+http://david=2Ewoodhou=2Ese/arm-hibernate-config
 
-  Warning (unit_address_vs_reg): /leds/led@5: node has a unit name, but no reg or ranges property
-
-Reported-by: Sumit Garg <sumit.garg@linaro.org>
-Closes: https://lore.kernel.org/all/CAFA6WYNRwF7GqhBk2B7i-deT3aLxNQckhnOasjip2TYm4HZgAw@mail.gmail.com/
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/qcom/apq8016-sbc.dts | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-index 9ffad7d1f2b6..aba08424aa38 100644
---- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-+++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-@@ -91,7 +91,7 @@ leds {
- 
- 		compatible = "gpio-leds";
- 
--		led@1 {
-+		led-1 {
- 			label = "apq8016-sbc:green:user1";
- 			function = LED_FUNCTION_HEARTBEAT;
- 			color = <LED_COLOR_ID_GREEN>;
-@@ -100,7 +100,7 @@ led@1 {
- 			default-state = "off";
- 		};
- 
--		led@2 {
-+		led-2 {
- 			label = "apq8016-sbc:green:user2";
- 			function = LED_FUNCTION_DISK_ACTIVITY;
- 			color = <LED_COLOR_ID_GREEN>;
-@@ -109,7 +109,7 @@ led@2 {
- 			default-state = "off";
- 		};
- 
--		led@3 {
-+		led-3 {
- 			label = "apq8016-sbc:green:user3";
- 			function = LED_FUNCTION_DISK_ACTIVITY;
- 			color = <LED_COLOR_ID_GREEN>;
-@@ -118,7 +118,7 @@ led@3 {
- 			default-state = "off";
- 		};
- 
--		led@4 {
-+		led-4 {
- 			label = "apq8016-sbc:green:user4";
- 			color = <LED_COLOR_ID_GREEN>;
- 			gpios = <&pm8916_gpios 2 GPIO_ACTIVE_HIGH>;
-@@ -127,7 +127,7 @@ led@4 {
- 			default-state = "off";
- 		};
- 
--		led@5 {
-+		led-5 {
- 			label = "apq8016-sbc:yellow:wlan";
- 			function = LED_FUNCTION_WLAN;
- 			color = <LED_COLOR_ID_YELLOW>;
-@@ -136,7 +136,7 @@ led@5 {
- 			default-state = "off";
- 		};
- 
--		led@6 {
-+		led-6 {
- 			label = "apq8016-sbc:blue:bt";
- 			function = LED_FUNCTION_BLUETOOTH;
- 			color = <LED_COLOR_ID_BLUE>;
--- 
-2.34.1
+I note kmalloc_trace() is in the backtrace=2E
 
 
