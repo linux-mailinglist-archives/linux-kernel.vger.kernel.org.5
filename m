@@ -1,207 +1,148 @@
-Return-Path: <linux-kernel+bounces-103280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91C0E87BD67
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:15:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FEC287BD71
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:17:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B23781C21E9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:14:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 342FD2816E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6101F5B696;
-	Thu, 14 Mar 2024 13:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C485B683;
+	Thu, 14 Mar 2024 13:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mbExeOXW"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ho7CTE2Z"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B996D5B200
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 13:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BE03D0D5;
+	Thu, 14 Mar 2024 13:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710422086; cv=none; b=Lwq88C3rRAUZLfN1UMzob/v3LiVXtVqQ8CsBnQ4Fn8/fQXn6gJb7msTQasdjASOCC3QdZw9cpv+dMZfdl4jm6WCAH66CBsVYaNrnVnLGcXU0sawJlh7VyO0uIFxZKSgkQWKF72FJTLUNlkNGTa3HJtHqMEpVePViuASONW3QR6s=
+	t=1710422245; cv=none; b=QqlMMDtmhU9TUvu+vvXvaQrfL8oyvd3XHNVrQUrsT8ehliLOJa+wZ4LXyMhoMh6g+rze490g8yVT0Qdvv3vbjmR+EpUfqHl8AUWJ0/SDGgMq1snNkVnfOZfcFMppyDLaRlon3NZewXqzzemTS0PoCPeDttz23MoIUNq1hif+k58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710422086; c=relaxed/simple;
-	bh=nzs6zCI1jdSZw5ilnOs66b3DiJ+Gf76pVPexRiRqK7E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A3ev6ZFDjEd1YMOqNmPpmhQQhAkVWgIpVUoD1dVLEqu6z7QetOlCYEZBUtZQ/sTOjjiq20bT41DHEebqkpX/cWCIsCyKZXKkfGIWaku7mGk4Fhzm8kis59whOht27/CBByIcc8kw9AP5Sxg2qyer+cyF4g7BiwK5AT5yK8hbWNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mbExeOXW; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-60a068e26d8so10632377b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 06:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710422084; x=1711026884; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fkD0KnYDjnqjUj1tphaFuRIzplXQwfgK5ojv6GksvlY=;
-        b=mbExeOXWboJjaCa3+MJDNvkDycW3WnS7LAgCFA+ETZWcjDuJUe01dOwfhbqJ8GHTiK
-         eUl4AT/2414JLugozU+NuTglKzUQm6h2NJqtadjwqSV/MV+G0BWcnQVfkEyYH5oOl3ad
-         jaBQvGr7jBp7Nv+5nIeesKqk5usYZfGNm7+A5skXqQaY1ZgOp+YFR+q3fnzmBMMR8kVf
-         fCYeWsH6BuljNTJxUm0Q+7tFKQgSoRjAtd9hKAvkPTlcyYiaD2QG6Dg0Y8zQqmPqfM24
-         sDkJVZninY99Nu/F+9dzUbpB5fcS977LehLkc/Ku4PJlgjTgD3Km4QK6Rl8FU7C2wg9M
-         1vpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710422084; x=1711026884;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fkD0KnYDjnqjUj1tphaFuRIzplXQwfgK5ojv6GksvlY=;
-        b=BnmarV8IiWJraiqj5kvb0HLizG/7qzULj4l+KGFEeQGqlE9VLnHIYJuwdLq6BMOgb4
-         HEwahjrl8hGgYzEzr2F2ki73kNt2wCTJOJyqhZdFCLOUyi22ZazSxmbSk4z7Bjzqbwtz
-         kQMNk08nIyLoDWd2v5fW9lAxKSr1xvyJrOeCH+MOZSaNXN2rJD2gBNbapAf37YFHfs5Z
-         LqP0Ntt4gzT3mFATZpEDirgmqMFh3FwX9giTnPkJ9DuenoowpCp3Oo3K8wjDlKvzQLWd
-         D4MhHy2aRnlJ6l6m08RdRc/gm+EFsCeLNhLHN7PjixhhGLtHDslfaQCoTRT0q5sWRRLH
-         +qaA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFi4Z6QCDOr9GqKnp1kWhycXuUl1pmjRZl8WSrjnDixQ6NlNrpPtTSgrS5Hya4STQKIy58DRNuNbLCn7hk1J//9ZlkyJ74UmWGaShQ
-X-Gm-Message-State: AOJu0YxdOVxe6bv+hUjD9qOU9POxsN/KM/mnYYU/+xZ0jnhJ1QFTbSsi
-	6vMHokz5bZPq1v+Mu755r6egdLHO2hUq90EZJ5Q8cRsVAD5//uIVrUXkQ0vPcUY1AlClZtum3em
-	TK2VNXaHC5mtYgsndiV5yM//XGZg9ZySUQgtD9Q==
-X-Google-Smtp-Source: AGHT+IENdbs25prtdnXfRF19x+3DROxo9WIqwzwvi6gTNh98VdEaATL6yqgmxAYviMYew8QsBjhPAlhRMp6IcmuesAo=
-X-Received: by 2002:a05:690c:6f88:b0:60c:d56c:2c38 with SMTP id
- je8-20020a05690c6f8800b0060cd56c2c38mr341959ywb.7.1710422083691; Thu, 14 Mar
- 2024 06:14:43 -0700 (PDT)
+	s=arc-20240116; t=1710422245; c=relaxed/simple;
+	bh=8om1TSfZV/lD1t30d/Govum8U1wXvG3FbuXdIOkj6mA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rymCzcRpiVvJfEbcyNghy6uGiHW414vAhny0f9BPYX8bqY1lbtDm6CUhmm3orAEzAciZu4urvjeh4M7ql7XzXsIH4kF9FItrLEpYhR0LoxXW5iUPx/vgMZXhlygBYM+uhWzkUOeRV1nOrimcWHWEHA92d2BqW9olL2Qk4dI+W9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ho7CTE2Z; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=clrW0RwMW19aCCVUBe+aDaa6Xr2fikUQUzGV0E47Ik8=; b=ho7CTE2Zq1/DvHgOQchZ4l3JtQ
+	k5ID2n2/S4kvmPPE9WrMgxAyc9pWgcLyPizYsqSRtd8W80gi8AYct3bRILrT6ln668Tj9Q8FWDx3G
+	uEh81hiCaDn+Kr+6bcuNb1RRA9E0Rs2P51cwzTON2R++WbCGz+BSSutYfuA4BjFKr7/houpCIGZmz
+	Q1km00FJT9ueKsGXmjsYD9euNplW3zJK4EkHBw5g5tQmR0YA21vrtJxeVxuiP0G9UdTakINVDCKR/
+	iMmP0znPoqK9WArfjueEljzbfOI+lNl4mY7UMH924GL2vKcYY7lNEZ7Ekj2uCbUneYA9wSFamyc+E
+	jgzW8UBQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51784)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rkkxM-0000Vg-2h;
+	Thu, 14 Mar 2024 13:17:12 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rkkxE-0005Tc-6M; Thu, 14 Mar 2024 13:17:04 +0000
+Date: Thu, 14 Mar 2024 13:17:04 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	"Christoph Lameter (Ampere)" <cl@linux.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <vireshk@kernel.org>, Will Deacon <will@kernel.org>,
+	Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com,
+	Valentin.Schneider@arm.com, akpm@linux-foundation.org,
+	anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>,
+	dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	robin.murphy@arm.com, vanshikonda@os.amperecomputing.com,
+	yang@os.amperecomputing.com, Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
+ supported CPUs to 512
+Message-ID: <ZfL40N6HYzEQaEj1@shell.armlinux.org.uk>
+References: <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
+ <Ze9TsQ-qVCZMazfI@arm.com>
+ <9352f410-9dad-ac89-181a-b3cfc86176b8@linux.com>
+ <bf1757ca-6d41-87e7-53dd-56146eef5693@linux.com>
+ <ZfCXJRJSMK4tt_Cm@arm.com>
+ <ZfG5oyrgGOkpHYD6@bogus>
+ <432c1980-b00f-4b07-9e24-0bec52ccb5d6@samsung.com>
+ <ZfHevcKpcb6i1fn5@shell.armlinux.org.uk>
+ <ZfK30r8M6zx2aWU6@arm.com>
+ <a210104f-a3af-4554-b734-097cfa77a470@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313123017.362570-1-sumit.garg@linaro.org>
- <20240313123017.362570-4-sumit.garg@linaro.org> <4a0a8db7-a2bc-4c99-94b2-c13facbd1bef@linaro.org>
- <CAFA6WYPh5BS_Fpi6ksAC7bwoFEyqjj1Y3EahyQxCG9Pp=KDw=Q@mail.gmail.com>
- <9dc0415c-4138-4867-861a-38b45b636182@linaro.org> <CAFA6WYPFfL18acdZt6O-_=LWnH7J2MooDuf9cA3JCaQZdoLhVA@mail.gmail.com>
- <CAFA6WYNo73S5ROHCMK0ZQSiU0DDbuDadptmaPL+GPCocE0h-mA@mail.gmail.com>
-In-Reply-To: <CAFA6WYNo73S5ROHCMK0ZQSiU0DDbuDadptmaPL+GPCocE0h-mA@mail.gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 14 Mar 2024 15:14:32 +0200
-Message-ID: <CAA8EJpqxb39u=ShpcALa+M8Pj8fE-q2p6WzZA=HPLJ-47UH+qg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
- board DTS
-To: Sumit Garg <sumit.garg@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	stephan@gerhold.net, caleb.connolly@linaro.org, neil.armstrong@linaro.org, 
-	laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com, 
-	jimmy.lalande@se.com, benjamin.missey@non.se.com, daniel.thompson@linaro.org, 
-	linux-kernel@vger.kernel.org, Jagdish Gediya <jagdish.gediya@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a210104f-a3af-4554-b734-097cfa77a470@samsung.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, 14 Mar 2024 at 11:37, Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> On Thu, 14 Mar 2024 at 14:47, Sumit Garg <sumit.garg@linaro.org> wrote:
+On Thu, Mar 14, 2024 at 01:28:40PM +0100, Marek Szyprowski wrote:
+> Dear All,
+> 
+> On 14.03.2024 09:39, Catalin Marinas wrote:
+> > On Wed, Mar 13, 2024 at 05:13:33PM +0000, Russell King wrote:
+> >> So, I wonder whether what you're seeing is a latent bug which is
+> >> being tickled by the presence of the CPU masks being off-stack
+> >> changing the kernel timing.
+> >>
+> >> I would suggest the printk debug approach may help here to see when
+> >> the OPPs are begun to be parsed, when they're created etc and their
+> >> timing relationship to being used. Given the suspicion, it's possible
+> >> that the mere addition of printk() may "fix" the problem, which again
+> >> would be another semi-useful data point.
+> > It might be an init order problem. Passing "initcall_debug" on the
+> > cmdline might help a bit.
 > >
-> > On Thu, 14 Mar 2024 at 14:00, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> > >
-> > > >>> +
-> > > >>> +             compatible = "gpio-leds";
-> > > >>> +             #address-cells = <1>;
-> > > >>> +             #size-cells = <0>;
-> > > >>
-> > > >> That's not a bus.
-> > > >>
-> > > >> It does not look like you tested the DTS against bindings. Please run
-> > > >> `make dtbs_check W=1` (see
-> > > >> Documentation/devicetree/bindings/writing-schema.rst or
-> > > >> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-> > > >> for instructions).
-> > > >
-> > > > I assumed earlier that W=1 is sufficient for DT schema checks but it
-> > >
-> > > W=1 as in make? No, it is not. It's flag changing the build process.
-> > > dtbs_check is separate target.
-> > >
-> > > > looks like those are two different entities. However, I added these
-> > > > address and size cells properties only to get rid of warnings reported
-> > > > by W=1, see below:
-> > > >
-> > > > $ make qcom/apq8016-schneider-hmibsc.dtb W=1
-> > > >   DTC     arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb
-> > > > arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts:96.9-103.5:
-> > > > Warning (unit_address_vs_reg): /leds/led@5: node has a unit name, but
-> > > > no reg or ranges property
-> > > > arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts:105.9-112.5:
-> > > > Warning (unit_address_vs_reg): /leds/led@6: node has a unit name, but
-> > > > no reg or ranges property
-> > >
-> > > Wait, so you saw the warnings and ignored them?
-> >
-> > Sorry but you are ignoring what I am trying to say.
-> >
-> > > These are legitimate
-> > > warnings, although they don't give you full answer.
-> > >
-> > > > <snip>
-> > > >
-> > > > So it looks like W=1 is reporting false warnings and we should rather
-> > >
-> > > Warnings were true.
-> > >
-> >
-> > That's was my initial impression too and I fixed them via following diff:
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
-> > b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
-> > index 8f9cacf8de89..a366d3aff3c5 100644
-> > --- a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
-> > +++ b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
-> > @@ -92,8 +92,11 @@ leds {
-> >                 pinctrl-0 = <&pm8916_mpps_leds>;
-> >
-> >                 compatible = "gpio-leds";
-> > +               #address-cells = <1>;
-> > +               #size-cells = <0>;
-> >
-> >                 led@5 {
-> > +                       reg = <5>;
-> >                         label = "apq8016-hmibsc:green:wlan";
-> >                         function = LED_FUNCTION_WLAN;
-> >                         color = <LED_COLOR_ID_YELLOW>;
-> > @@ -103,6 +106,7 @@ led@5 {
-> >                 };
-> >
-> >                 led@6 {
-> > +                       reg = <6>;
-> >                         label = "apq8016-hmibsc:yellow:bt";
-> >                         function = LED_FUNCTION_BLUETOOTH;
-> >                         color = <LED_COLOR_ID_BLUE>;
-> >
-> > But it then broke dtbs_check.
->
-> See following breakage afterwards:
->
-> $ make qcom/apq8016-schneider-hmibsc.dtb dtbs_check
-> <snip>
-> /home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
-> leds: led@5: Unevaluated properties are not allowed ('reg' was
-> unexpected)
-> from schema $id: http://devicetree.org/schemas/leds/leds-gpio.yaml#
-> /home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
-> leds: led@6: Unevaluated properties are not allowed ('reg' was
-> unexpected)
-> from schema $id: http://devicetree.org/schemas/leds/leds-gpio.yaml#
-> /home/sumit/build/upstream/linux/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb:
-> leds: '#address-cells', '#size-cells' do not match any of the regexes:
-> '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
-> <snip>
+> > It would also be useful in dev_pm_opp_set_config(), in the WARN_ON
+> > block, to print opp_table->opp_list.next to get an idea whether it looks
+> > like a valid pointer or memory corruption.
+> 
+> I've finally found some time to do the step-by-step printk-based 
+> debugging of this issue and finally found what's broken!
+> 
+> Here is the fix:
+> 
+> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+> index 8bd6e5e8f121..2d83bbc65dd0 100644
+> --- a/drivers/cpufreq/cpufreq-dt.c
+> +++ b/drivers/cpufreq/cpufreq-dt.c
+> @@ -208,7 +208,7 @@ static int dt_cpufreq_early_init(struct device *dev, 
+> int cpu)
+>          if (!priv)
+>                  return -ENOMEM;
+> 
+> -       if (!alloc_cpumask_var(&priv->cpus, GFP_KERNEL))
+> +       if (!zalloc_cpumask_var(&priv->cpus, GFP_KERNEL))
+>                  return -ENOMEM;
+> 
+>          cpumask_set_cpu(cpu, priv->cpus);
+> 
+> 
+> It is really surprising that this didn't blow up for anyone else so 
+> far... This means that the $subject patch is fine.
 
-That's because there is no addressing for gpio-leds. Just use names as
-led-5, led-6.
-
->
-> > Are you aware of any other saner way to
-> > fix those warnings properly?
-> >
->
-> -Sumit
->
-
+Wow. I guess we've been lucky with that allocation hitting memory
+containing zeros. Well done at tracking it down!
 
 -- 
-With best wishes
-Dmitry
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
