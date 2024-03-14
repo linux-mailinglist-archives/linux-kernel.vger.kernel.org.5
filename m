@@ -1,232 +1,103 @@
-Return-Path: <linux-kernel+bounces-103124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D39B387BB52
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:33:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3915187BB5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:35:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0322D1C21B5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:33:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6971D1C215BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE395D73C;
-	Thu, 14 Mar 2024 10:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468975DF26;
+	Thu, 14 Mar 2024 10:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KDjgmz2G";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KZ2RI7x/";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KDjgmz2G";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KZ2RI7x/"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="avKzZCgq"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA5D347C1;
-	Thu, 14 Mar 2024 10:33:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDED3347C1;
+	Thu, 14 Mar 2024 10:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710412423; cv=none; b=du6Ybc82LhGEoefn2vQti1nxRLVTuMqgDNayxlbDQ+k1QbMoT75h0UdzDDPykVjU4BIsYErfVGzBIhvGhngJiF2LqQy+/lTTAVm+0oUzztjHXsuHkofJtPaNqqYwWXj1Poqm6wSagjFC5Ko/UGg14MlY8Xqzn43BVUwFgGWTn1s=
+	t=1710412533; cv=none; b=h3MGvGtwmbmK2KADknLb/V64TN7YiGtXb7BLmCzobRcKc8KFjCiyOz0XHtXvRQ8ZIVJ0SFREbNKv+5m+ORwAWN8jiKQWo6FV53oZhu64CyTdAEtlMVdhxVrN5DHXIn2RQCpLwgSGr3Z6BbU+e7OcU4qBmUuVaKuYRXx1i6sAKZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710412423; c=relaxed/simple;
-	bh=ZXKLVIB1m0fSMuF1GTNUjKfPE6NFABLw1foqiZj2YMI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iThAPp1TGG9zSjbPYdmel6KkSoFWV55JF25f92SdsCzbptNl1HNki0yhJLSmBXINwso1fkL8jsLs7gx4BM3+Bj9m8PUJvwVHt6MgCVITczZ7vO/NrT8RWt9JUg+4HNt+vQubqxsfJzb042lwv6nJ3XCjqc//Fg4Fs0dkDHYMJfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KDjgmz2G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KZ2RI7x/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KDjgmz2G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KZ2RI7x/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 294001F844;
-	Thu, 14 Mar 2024 10:33:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710412419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TtzFSiIKEr1T7bBqncP2DqIClM8BRRVMKUwFlDjRNf0=;
-	b=KDjgmz2GObBi0/lk4omZm4RkqE+O06nXsYQ8LhDGZkUNY7n1DbBIIZM/EIF5z9RvWMQAHT
-	lcPxBTLw9L+JHS7jd/hB9iaUcK0PyHiQoOxyVhGc+NX5G/pcRCsZesos5f/ehdnXVvshSS
-	gNxBiRX+pzco4nZ45MXu+48LaUyo8/4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710412419;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TtzFSiIKEr1T7bBqncP2DqIClM8BRRVMKUwFlDjRNf0=;
-	b=KZ2RI7x/zy2eZPmN8ZGZAJmEGfLCPb43rzD+auIjwzI/Zy+g/wZfIS7WWTef9x4OAE4f6s
-	csXX+N0IUn0fivCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710412419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TtzFSiIKEr1T7bBqncP2DqIClM8BRRVMKUwFlDjRNf0=;
-	b=KDjgmz2GObBi0/lk4omZm4RkqE+O06nXsYQ8LhDGZkUNY7n1DbBIIZM/EIF5z9RvWMQAHT
-	lcPxBTLw9L+JHS7jd/hB9iaUcK0PyHiQoOxyVhGc+NX5G/pcRCsZesos5f/ehdnXVvshSS
-	gNxBiRX+pzco4nZ45MXu+48LaUyo8/4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710412419;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TtzFSiIKEr1T7bBqncP2DqIClM8BRRVMKUwFlDjRNf0=;
-	b=KZ2RI7x/zy2eZPmN8ZGZAJmEGfLCPb43rzD+auIjwzI/Zy+g/wZfIS7WWTef9x4OAE4f6s
-	csXX+N0IUn0fivCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 136B7139E7;
-	Thu, 14 Mar 2024 10:33:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cGq4BIPS8mWJUAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 10:33:39 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C26E0A07D9; Thu, 14 Mar 2024 11:33:34 +0100 (CET)
-Date: Thu, 14 Mar 2024 11:33:34 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
-	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2 6/9] ext4: add positive int attr pointer to avoid
- sysfs variables overflow
-Message-ID: <20240314103334.pvfgvw4dw7a27unb@quack3>
-References: <20240227091148.178435-1-libaokun1@huawei.com>
- <20240227091148.178435-7-libaokun1@huawei.com>
+	s=arc-20240116; t=1710412533; c=relaxed/simple;
+	bh=xUT+z5aPzLoK1XBR0CtD7lRZ7iP+OijvRC1vgfB2c3M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WN+oVyaf/9BlNoNLIlx7zAU6+6t9KbPaRJg5lq4rvRpwQllwlvkXAp3SbM7B0wKvqlwT0EkB+IM4qx1GJg08lGCFPp42E5Y3LHC9oKM3ojXW/c818UDDwo3KTItszSgh+MgZlXNx2FBg2FQA8OfyteWbUWoG3oUSD0dtT9GtC0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=avKzZCgq; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a466a256726so146374566b.1;
+        Thu, 14 Mar 2024 03:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710412530; x=1711017330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xUT+z5aPzLoK1XBR0CtD7lRZ7iP+OijvRC1vgfB2c3M=;
+        b=avKzZCgq3uWI40OvufjlPKyjvxzt70i0JvtttZ19X3jxcMZ/au8oouj/f52xUN1ru9
+         wfAJkvbfR6wHIPBFhWXNrRGnAwvv+pDl/xkvNZGQFgtymep56H+tt0Jr/gT26u86KIYY
+         Ar+eFZfHLek3Im7nQqzGU9sh8tcgJgnMeUfmIE8rT3cyRR+mKGa/7mt63sSUkvszDC1c
+         lOw98ZH8ZLjva/mofUwNzAAM7vEEIYa5LltbU6H2Hv7ZC6BJSIK9hO8gU7uWmrnnaRyX
+         gZVBD1sa0oy+GRyg9dwxHk+bZM4BQPKB0uoAORN/x4ufCKZjVWGGODbMkbT7MljoNNPa
+         4+Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710412530; x=1711017330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xUT+z5aPzLoK1XBR0CtD7lRZ7iP+OijvRC1vgfB2c3M=;
+        b=AQsk7jMJ0R2glxPngvp8aUr/scK26XT9LPiWsPPEWSu+Et7KvQmymXoKTq+YY4Pa4O
+         Q1SektZhfbIf87nVAr/3hN3YxLcHKu2yYWbdZcSPBB7nmeq8J1J7pruKF2Yhi0kt5Wvm
+         byWgN3bYFq1voObmF3xvn5NIpjvcsBGqkq60WwPg33la+x472U/xZP8zu9eime3xIP5G
+         Fg+e9A2Ir2BPtt5/H2RhYQOs3LkExL6zE+DBE7M3PE30mMqfSpKNdO9VebCSB3a+H1F6
+         7LPgWSK2LqvxltzO4/UV89qnmWo+jIHIfWWmeD0op7e8wUz20eRvnBAU50cYC18OIf/k
+         tU3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUQQMZYnPBtJ2F/gHT1m/BIFo1kOVjNO+3Rbt/uEA0+PZ4R04mRCvHpOx6Es2Gu9LsQsqVo2/OOzSe/Y+9qN31KX7KTEQF5FNfCzXoLh8w9xgOsn++6pddhXjftX+XejtEqVLABLpQyag==
+X-Gm-Message-State: AOJu0Yx9rm9T0GFCiLbxWVItkLU2x+1Fs86SSlKMfVGeKIEXQvUsbATs
+	00pvG5aZ/vN+kHrXu0pialFFoAWax3An2UUk+CpYzOyeVw20PhCxd4xCHNOeAzvw9AC/AvHXJly
+	mOEB5hhCl4Ghk68jRHophkmAfZsg=
+X-Google-Smtp-Source: AGHT+IFnq0Pgx23scikKTP17lOnZUwgeSw196b+FB/RuP2T0OiI6iGiC9TdnME85WIwCtzKA0WA7uZJMZKfaiv1Soro=
+X-Received: by 2002:a17:906:5acf:b0:a46:1cbd:c2c4 with SMTP id
+ x15-20020a1709065acf00b00a461cbdc2c4mr1170808ejs.26.1710412530221; Thu, 14
+ Mar 2024 03:35:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227091148.178435-7-libaokun1@huawei.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-1.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,linux.ibm.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -1.10
-X-Spam-Flag: NO
+References: <20240314084531.1935545-1-gnstark@salutedevices.com> <20240314084531.1935545-10-gnstark@salutedevices.com>
+In-Reply-To: <20240314084531.1935545-10-gnstark@salutedevices.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 14 Mar 2024 12:34:54 +0200
+Message-ID: <CAHp75VfGRNo4hvKV7caQE6i2rHVncOjxDv3-b9oGrpK-uDEBRw@mail.gmail.com>
+Subject: Re: [PATCH v6 9/9] leds: powernv: use LED_RETAIN_AT_SHUTDOWN flag for leds
+To: George Stark <gnstark@salutedevices.com>
+Cc: pavel@ucw.cz, lee@kernel.org, vadimp@nvidia.com, mpe@ellerman.id.au, 
+	npiggin@gmail.com, christophe.leroy@csgroup.eu, hdegoede@redhat.com, 
+	mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com, 
+	will@kernel.org, longman@redhat.com, boqun.feng@gmail.com, 
+	nikitos.tr@gmail.com, marek.behun@nic.cz, kabel@kernel.org, 
+	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, kernel@salutedevices.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 27-02-24 17:11:45, Baokun Li wrote:
-> The following variables controlled by the sysfs interface are of type
-> int and are normally used in the range [0, INT_MAX], but are declared as
-> attr_pointer_ui, and thus may be set to values that exceed INT_MAX and
-> result in overflows to get negative values.
-> 
->   err_ratelimit_burst
->   msg_ratelimit_burst
->   warning_ratelimit_burst
->   err_ratelimit_interval_ms
->   msg_ratelimit_interval_ms
->   warning_ratelimit_interval_ms
-> 
-> Therefore, we add attr_pointer_pi (aka positive int attr pointer) with a
-> value range of 0-INT_MAX to avoid overflow.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+On Thu, Mar 14, 2024 at 10:46=E2=80=AFAM George Stark <gnstark@salutedevice=
+s.com> wrote:
+>
+> This driver wants to keep its LEDs state after module is removed
+> and implemented it in its own way. LED subsystem supports dedicated
+> flag LED_RETAIN_AT_SHUTDOWN for the same purpose so use the flag
+> instead of custom implementation.
 
-Looks good. Feel free to add:
+So, this change is not related to the main purpose of the series...
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/sysfs.c | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 8e0473169458..ddb54608ca2e 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -32,6 +32,7 @@ typedef enum {
->  	attr_clusters_in_group,
->  	attr_mb_order,
->  	attr_feature,
-> +	attr_pointer_pi,
->  	attr_pointer_ui,
->  	attr_pointer_ul,
->  	attr_pointer_u64,
-> @@ -180,6 +181,9 @@ static struct ext4_attr ext4_attr_##_name = {			\
->  #define EXT4_RO_ATTR_ES_STRING(_name,_elname,_size)			\
->  	EXT4_ATTR_STRING(_name, 0444, _size, ext4_super_block, _elname)
->  
-> +#define EXT4_RW_ATTR_SBI_PI(_name,_elname)      \
-> +	EXT4_ATTR_OFFSET(_name, 0644, pointer_pi, ext4_sb_info, _elname)
-> +
->  #define EXT4_RW_ATTR_SBI_UI(_name,_elname)	\
->  	EXT4_ATTR_OFFSET(_name, 0644, pointer_ui, ext4_sb_info, _elname)
->  
-> @@ -222,12 +226,12 @@ EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
->  EXT4_RW_ATTR_SBI_UI(mb_max_linear_groups, s_mb_max_linear_groups);
->  EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
->  EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
-> -EXT4_RW_ATTR_SBI_UI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
-> -EXT4_RW_ATTR_SBI_UI(err_ratelimit_burst, s_err_ratelimit_state.burst);
-> -EXT4_RW_ATTR_SBI_UI(warning_ratelimit_interval_ms, s_warning_ratelimit_state.interval);
-> -EXT4_RW_ATTR_SBI_UI(warning_ratelimit_burst, s_warning_ratelimit_state.burst);
-> -EXT4_RW_ATTR_SBI_UI(msg_ratelimit_interval_ms, s_msg_ratelimit_state.interval);
-> -EXT4_RW_ATTR_SBI_UI(msg_ratelimit_burst, s_msg_ratelimit_state.burst);
-> +EXT4_RW_ATTR_SBI_PI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
-> +EXT4_RW_ATTR_SBI_PI(err_ratelimit_burst, s_err_ratelimit_state.burst);
-> +EXT4_RW_ATTR_SBI_PI(warning_ratelimit_interval_ms, s_warning_ratelimit_state.interval);
-> +EXT4_RW_ATTR_SBI_PI(warning_ratelimit_burst, s_warning_ratelimit_state.burst);
-> +EXT4_RW_ATTR_SBI_PI(msg_ratelimit_interval_ms, s_msg_ratelimit_state.interval);
-> +EXT4_RW_ATTR_SBI_PI(msg_ratelimit_burst, s_msg_ratelimit_state.burst);
->  #ifdef CONFIG_EXT4_DEBUG
->  EXT4_RW_ATTR_SBI_UL(simulate_fail, s_simulate_fail);
->  #endif
-> @@ -382,6 +386,7 @@ static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
->  	case attr_inode_readahead:
->  	case attr_clusters_in_group:
->  	case attr_mb_order:
-> +	case attr_pointer_pi:
->  	case attr_pointer_ui:
->  		if (a->attr_ptr == ptr_ext4_super_block_offset)
->  			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
-> @@ -452,6 +457,14 @@ static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
->  		return 0;
->  
->  	switch (a->attr_id) {
-> +	case attr_pointer_pi:
-> +		ret = kstrtouint(skip_spaces(buf), 0, &t);
-> +		if (ret)
-> +			return ret;
-> +		if ((int)t < 0)
-> +			return -EINVAL;
-> +		*((unsigned int *) ptr) = t;
-> +		return len;
->  	case attr_pointer_ui:
->  		ret = kstrtouint(skip_spaces(buf), 0, &t);
->  		if (ret)
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--=20
+With Best Regards,
+Andy Shevchenko
 
