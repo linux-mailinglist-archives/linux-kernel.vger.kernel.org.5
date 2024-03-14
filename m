@@ -1,156 +1,261 @@
-Return-Path: <linux-kernel+bounces-103460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3BE387BFA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:11:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA27987BFA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:10:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8590B1F23E2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:11:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8078E28596F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 15:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF18471747;
-	Thu, 14 Mar 2024 15:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C38B7174A;
+	Thu, 14 Mar 2024 15:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Uh+HVKsO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BInPB5u0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21910DDD9
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 15:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45AC2DDD9;
+	Thu, 14 Mar 2024 15:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710429055; cv=none; b=iMDrBuHipaggodVpUGsGQjiaQQV78eTn2a6fWsXrMAnf687Moy1rujBHnu68HUG1D8G0hwkyy/U5XBgbFmqtQpWNYChrrIe31uxXW0c6Ku8B92Od0lKx0GdqQSNlFr6i+6+Kv0eMlv5b+B/buIN8LzHuFWHujdaoj0TcbgklLZw=
+	t=1710429015; cv=none; b=Q/BAcO3EniwNAzmtG3wq5eDB2dbElApQdOPTTlI8gclLG60vOdMmxBTUjyqAYRfHY90x/5LvqbMWArc3Qka3G7LZMA83Mv5hE3zdpyi7nB+ItcN0OcgaAxqKmby3mzzP3fr8jBrww2oB/hyr/apkU3Gawd2RmdGoqp06yh21/g0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710429055; c=relaxed/simple;
-	bh=AQfUW3gFNrbjXXL3IloGvW+E2jBS9PDIeGTSBRAl+RQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MD1+xavsgbyCNcdHGRt94smkdmSSF50VYpxsoj+E0iBF6owNf8j8lHkG9lbrJ9YC7lqI4fvpiRUM0bVq59SaFlBvRc0cU9LRRxbqerEIdxvZZ6c9mADpfR7XoR5SC7WHpJy9LHvRa1RwEjJzIR+cb83FwKf0vTcGovfwxnI6BjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Uh+HVKsO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710429043;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EtZDDd/rvhCl2ys9FRYjPigN0aLlgEl2NbUy3nuNa/o=;
-	b=Uh+HVKsO22xCBfZyVdqOstqpz9mQXOTc7Za6z8ItoVZ+LaNniQvKP3uOFjcbMCGCyt5+fl
-	Vay60tJrJpbdnggOR4NIUKSEM+lSpsnO0vyZ0ieyd5NKlXd8UM/8q/kJO83/GayuGSCEmj
-	1DIxbMEOsRqZNlmy3g0F7+mSUvHptA0=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-YJKIeZgBPTyqMKvWEz-mkg-1; Thu, 14 Mar 2024 11:09:32 -0400
-X-MC-Unique: YJKIeZgBPTyqMKvWEz-mkg-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-513b3ca9650so903486e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 08:09:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710428970; x=1711033770;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EtZDDd/rvhCl2ys9FRYjPigN0aLlgEl2NbUy3nuNa/o=;
-        b=cuurIXjeWy/ZWYx2AiXot0g9kHouqKM7jJjPe5GrEWerEb9vmUjA3pxkawsQXsu5BM
-         Dt4Lcn7k33bMJZCCmlf2wUEm0joGgKpnQXAZMP4O63lRXqly3tXZqa0+b5B9cHt2cmXq
-         rpD0LRyYxNT0iNzG5LvEQOWKsJkmmav2EgK4VcLEr2JCd+IhYcdD8wtZ7IRyZcbdBnR8
-         hdHBIoZEQx9IAoZW3dez/eBCnCz1PvTuU3RQ07nKxFH2gV8wRVT8jkjGuBBoTUL/onMh
-         vJQGFgOUWYuY5DAJFefXX6CAi9fhyfghRM90MpSq3kq+YhaWshp4fFoZzT2c/AP9ZoOJ
-         /Zug==
-X-Forwarded-Encrypted: i=1; AJvYcCUUXp+Cjqe6Sm5hQAeB03EQiN/WsVvpqoRIrHPgO+5apVMxuZxxFuTHnaI0pKP+euD2bCm7SRg1VyI3yhho0wNw9sVkZx3KtxhU192I
-X-Gm-Message-State: AOJu0Yyq868+tpZcBIh46vaxCopTyaysqi7vdkoqqP3mazWWkHy//6vX
-	XLVmYoTjQHml93w3We+03u/bfCQnSIB9e0KEt1564dbWa84RQwKqKt7qDd4aTUZfc5NJd5Wuv1y
-	qrTX/H+E2jZOLyiQ0xJpw4kczRvbT8Y93CZVfGCbuBvhb3RjM6QWIcB/XX6uzpA==
-X-Received: by 2002:a19:914c:0:b0:513:cab1:dc9a with SMTP id y12-20020a19914c000000b00513cab1dc9amr1492771lfj.19.1710428970155;
-        Thu, 14 Mar 2024 08:09:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEJWuoe/3iFru0sIgh80GCQKJ1jGXO44jJmLMs2cyMkKY2erF0fOYFgEPRPLaBXlctWIZnyYg==
-X-Received: by 2002:a19:914c:0:b0:513:cab1:dc9a with SMTP id y12-20020a19914c000000b00513cab1dc9amr1492752lfj.19.1710428969612;
-        Thu, 14 Mar 2024 08:09:29 -0700 (PDT)
-Received: from redhat.com ([2.52.141.198])
-        by smtp.gmail.com with ESMTPSA id b9-20020a05600c4e0900b004132f8c2ac1sm2732690wmq.14.2024.03.14.08.09.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 08:09:29 -0700 (PDT)
-Date: Thu, 14 Mar 2024 11:09:25 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Tobias Huschle <huschle@linux.ibm.com>
-Cc: Luis Machado <luis.machado@arm.com>, Jason Wang <jasowang@redhat.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, netdev@vger.kernel.org,
-	nd <nd@arm.com>
-Subject: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair: Add
- lag based placement)
-Message-ID: <20240314110649-mutt-send-email-mst@kernel.org>
-References: <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
- <92916.124010808133201076@us-mta-622.us.mimecast.lan>
- <20240121134311-mutt-send-email-mst@kernel.org>
- <07974.124020102385100135@us-mta-501.us.mimecast.lan>
- <20240201030341-mutt-send-email-mst@kernel.org>
- <89460.124020106474400877@us-mta-475.us.mimecast.lan>
- <20240311130446-mutt-send-email-mst@kernel.org>
- <cf813f92-9806-4449-b099-1bb2bd492b3c@arm.com>
- <73123.124031407552500165@us-mta-156.us.mimecast.lan>
+	s=arc-20240116; t=1710429015; c=relaxed/simple;
+	bh=GFkZJWB9Ya9MH81kTy8tv+kqzJ5IRFkWv+lbxOaNeP0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eff16N+hiQrg8K6NmKDUxLodwGUySiLWoeKD51pjWUWE9XK74a87sY9HEr1wKcxGZ7+qIOxcmbdO8cZ6RaHLHyJvGsLuTZCK8ukLF+JVfOU/0RqVvy+7tqwIzi+ZHBCPCDDu3j8dXTK5jSxG08rRYZQJ8ki4H8vtwSkf+JepJHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BInPB5u0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 410DBC433C7;
+	Thu, 14 Mar 2024 15:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710429015;
+	bh=GFkZJWB9Ya9MH81kTy8tv+kqzJ5IRFkWv+lbxOaNeP0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BInPB5u0KRxHSzzuHXV9AYJG649a6SgDCUiadtq5iZjFNeNkONh0acf5QvryLzEmQ
+	 nkopOwsubpUXu4/gov6AR+ht5InbRxMc+iptjiOq6i9kcPSkwr6OxshscCZ2pYPHF/
+	 qqhc5NoLlM/AZxrLeKr7U3tdMS8c3Eq+Z+6SZwzYr77LiXBow32ntUTfoYDy8Q1Jdc
+	 bHSPyybYQL+uD0g+L9LJtVKthVyeyIg7kBkSB01LukZ3ZI29xNs4A/3l2ZHT3x8dyT
+	 nTb07ZAi5J/3eSbYyeuLHXikpaJYE2jpkfn8d3m4hYbmfZpIBidcBXCNwtdtEwzgHg
+	 pVh7iAP49h7QA==
+Date: Thu, 14 Mar 2024 15:09:59 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: lars@metafoo.de, andriy.shevchenko@linux.intel.com,
+ ang.iglesiasg@gmail.com, mazziesaccount@gmail.com, ak@it-klinger.de,
+ petre.rodan@subdimension.ro, linus.walleij@linaro.org,
+ phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/6] iio: pressure: Simplify and make more clear
+ temperature readings
+Message-ID: <20240314150959.585367b5@jic23-huawei>
+In-Reply-To: <20240313174007.1934983-5-vassilisamir@gmail.com>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+	<20240313174007.1934983-5-vassilisamir@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73123.124031407552500165@us-mta-156.us.mimecast.lan>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 12:46:54PM +0100, Tobias Huschle wrote:
-> On Tue, Mar 12, 2024 at 09:45:57AM +0000, Luis Machado wrote:
-> > On 3/11/24 17:05, Michael S. Tsirkin wrote:
-> > > 
-> > > Are we going anywhere with this btw?
-> > > 
-> > >
-> > 
-> > I think Tobias had a couple other threads related to this, with other potential fixes:
-> > 
-> > https://lore.kernel.org/lkml/20240228161018.14253-1-huschle@linux.ibm.com/
-> > 
-> > https://lore.kernel.org/lkml/20240228161023.14310-1-huschle@linux.ibm.com/
-> > 
-> 
-> Sorry, Michael, should have provided those threads here as well.
-> 
-> The more I look into this issue, the more things to ponder upon I find.
-> It seems like this issue can (maybe) be fixed on the scheduler side after all.
-> 
-> The root cause of this regression remains that the mentioned kworker gets
-> a negative lag value and is therefore not elligible to run on wake up.
-> This negative lag is potentially assigned incorrectly. But I'm not sure yet.
-> 
-> Anytime I find something that can address the symptom, there is a potential
-> root cause on another level, and I would like to avoid to just address a
-> symptom to fix the issue, wheras it would be better to find the actual
-> root cause.
-> 
-> I would nevertheless still argue, that vhost relies rather heavily on the fact
-> that the kworker gets scheduled on wake up everytime. But I don't have a 
-> proposal at hand that accounts for potential side effects if opting for
-> explicitly initiating a schedule.
-> Maybe the assumption, that said kworker should always be selected on wake 
-> up is valid. In that case the explicit schedule would merely be a safety 
-> net.
-> 
-> I will let you know if something comes up on the scheduler side. There are
-> some more ideas on my side how this could be approached.
+On Wed, 13 Mar 2024 18:40:05 +0100
+Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
 
-Thanks a lot! To clarify it is not that I am opposed to changing vhost.
-I would like however for some documentation to exist saying that if you
-do abc then call API xyz. Then I hope we can feel a bit safer that
-future scheduler changes will not break vhost (though as usual, nothing
-is for sure).  Right now we are going by the documentation and that says
-cond_resched so we do that.
+> The read_press/read_humid functions need the updated t_fine value
+> in order to calculate the current pressure/humidity. Temperature
+> reads should be removed from the read_press/read_humid functions
+> and should be placed in the oneshot captures before the pressure
+> and humidity reads. This makes the code more intuitive.
+> 
+> Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
 
--- 
-MST
+To me this makes the use of these calls less obvious than they were
+previously.  The calls are made close to where t_fine is used and
+don't have to go via the indirection of chip_info.
+
+So I disagree. I think this change makes the code a lot less
+clear.
+
+The only improvement I can readily see would be to move the
+temperature read into the compensation functions themselves, possibly
+removing t_fine from data and having a function that reads everything
+relevant to computing it directly but doesn't do the maths to get
+a temperature reading.  That can be reused in bmp280_compensate_temp()
+
+Something along lines of.
+
+static s32 bmp280_calc_tfine(struct bmp280_calib *calib, s32 adc_temp) 
+{
+	s32 var1, var2;
+
+	var1 = (((adc_temp >> 3) - ((s32)calib->T1 << 1)) *
+		((s32)calib->T2)) >> 11;
+	var2 = (((((adc_temp >> 4) - ((s32)calib->T1)) *
+		  ((adc_temp >> 4) - ((s32)calib->T1))) >> 12) *
+		((s32)calib->T3)) >> 14;
+	return var1 + var2;
+}
+
+static int bmp280_read_temp_raw(struct bmp280_data *data,
+			    	s32 *raw)
+{
+	s32 adc_temp;
+	int ret;
+
+	ret = regmap_bulk_read(data->regmap, BMP280_REG_TEMP_MSB,
+			       data->buf, sizeof(data->buf));
+	if (ret < 0) {
+		dev_err(data->dev, "failed to read temperature\n");
+		return ret;
+	}
+
+	adc_temp = FIELD_GET(BMP280_MEAS_TRIM_MASK, get_unaligned_be24(data->buf));
+	if (adc_temp == BMP280_TEMP_SKIPPED) {
+		/* reading was skipped */
+		dev_err(data->dev, "reading temperature skipped\n");
+		return -EIO;
+	}
+	*raw = adc_temp;
+
+	return 0;
+}
+static int bmp280_get_t_fine(.., s32 *t_fine)
+{
+	s32 adc_temp, comp_temp;
+	s32 t_fine;
+	int ret;
+
+	ret = bmp280_read_temp_raw(data, &adc_temp;
+	if (ret)
+		return ret;
+
+	*t_fine = bmp280_calc_tfine(&data->calib.bmp280, adc_temp);
+	return 0;
+}
+
+static int bmp280_read_temp(struct bmp280_data *data, s32 *temp)
+{
+	int ret;
+	s32 t_fine;
+
+	ret = bmp280_get_t_fine(data, &t_fine);
+	if (ret)
+		return ret;
+
+	*temp = (t_fine * 5 + 128) / 256;
+//division rather than shift as then it's obvious what the 128 is there for
+	return 0;
+}
+
+Now you have a nice function to get you t_fine which is all you want in some
+of these paths.  Call it directly where it is needed instead of as
+a side effect of a temperature read.
+
+
+
+> ---
+>  drivers/iio/pressure/bmp280-core.c | 38 ++++++++++++++----------------
+>  1 file changed, 18 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+> index 6d7734f867bc..377e90d9e5a2 100644
+> --- a/drivers/iio/pressure/bmp280-core.c
+> +++ b/drivers/iio/pressure/bmp280-core.c
+> @@ -404,11 +404,6 @@ static u32 bmp280_read_press(struct bmp280_data *data)
+>  	s32 adc_press;
+>  	int ret;
+>  
+> -	/* Read and compensate temperature so we get a reading of t_fine. */
+> -	ret = bmp280_read_temp(data);
+> -	if (ret < 0)
+> -		return ret;
+> -
+>  	ret = regmap_bulk_read(data->regmap, BMP280_REG_PRESS_MSB,
+>  			       data->buf, sizeof(data->buf));
+>  	if (ret < 0) {
+> @@ -433,11 +428,6 @@ static u32 bmp280_read_humid(struct bmp280_data *data)
+>  	s32 adc_humidity;
+>  	int ret;
+>  
+> -	/* Read and compensate temperature so we get a reading of t_fine. */
+> -	ret = bmp280_read_temp(data);
+> -	if (ret < 0)
+> -		return ret;
+> -
+>  	ret = regmap_bulk_read(data->regmap, BMP280_REG_HUMIDITY_MSB,
+>  			       &data->be16, sizeof(data->be16));
+>  	if (ret < 0) {
+> @@ -470,12 +460,21 @@ static int bmp280_read_raw(struct iio_dev *indio_dev,
+>  	case IIO_CHAN_INFO_PROCESSED:
+>  		switch (chan->type) {
+>  		case IIO_HUMIDITYRELATIVE:
+> +			/* Read temperature to update the t_fine value */
+> +			data->chip_info->read_temp(data);
+>  			ret = data->chip_info->read_humid(data);
+>  			*val = data->chip_info->humid_coeffs[0] * ret;
+>  			*val2 = data->chip_info->humid_coeffs[1];
+>  			ret = IIO_VAL_FRACTIONAL;
+>  			break;
+>  		case IIO_PRESSURE:
+> +			/*
+> +			 * Read temperature to update the t_fine value.
+> +			 * BMP5xx devices do this in hardware, so skip it.
+> +			 */
+> +			if (strcmp(indio_dev->name, "bmp580"))
+> +				data->chip_info->read_temp(data);
+> +
+>  			ret = data->chip_info->read_press(data);
+>  			*val = data->chip_info->press_coeffs[0] * ret;
+>  			*val2 = data->chip_info->press_coeffs[1];
+> @@ -500,10 +499,19 @@ static int bmp280_read_raw(struct iio_dev *indio_dev,
+>  	case IIO_CHAN_INFO_RAW:
+>  		switch (chan->type) {
+>  		case IIO_HUMIDITYRELATIVE:
+> +			/* Read temperature to update the t_fine value */
+> +			data->chip_info->read_temp(data);
+>  			*val = data->chip_info->read_humid(data);
+>  			ret = IIO_VAL_INT;
+>  			break;
+>  		case IIO_PRESSURE:
+> +			/*
+> +			 * Read temperature to update the t_fine value.
+> +			 * BMP5xx devices do this in hardware, so skip it.
+> +			 */
+> +			if (strcmp(indio_dev->name, "bmp580"))
+> +				data->chip_info->read_temp(data);
+> +
+>  			*val = data->chip_info->read_press(data);
+>  			ret = IIO_VAL_INT;
+>  			break;
+> @@ -1092,11 +1100,6 @@ static u32 bmp380_read_press(struct bmp280_data *data)
+>  	s32 adc_press;
+>  	int ret;
+>  
+> -	/* Read and compensate for temperature so we get a reading of t_fine */
+> -	ret = bmp380_read_temp(data);
+> -	if (ret)
+> -		return ret;
+> -
+>  	ret = regmap_bulk_read(data->regmap, BMP380_REG_PRESS_XLSB,
+>  			       data->buf, sizeof(data->buf));
+>  	if (ret) {
+> @@ -2009,11 +2012,6 @@ static u32 bmp180_read_press(struct bmp280_data *data)
+>  	s32 adc_press;
+>  	int ret;
+>  
+> -	/* Read and compensate temperature so we get a reading of t_fine. */
+> -	ret = bmp180_read_temp(data);
+> -	if (ret)
+> -		return ret;
+> -
+>  	ret = bmp180_read_adc_press(data, &adc_press);
+>  	if (ret)
+>  		return ret;
 
 
