@@ -1,53 +1,70 @@
-Return-Path: <linux-kernel+bounces-103142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0693487BB88
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 852AB87BB8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 11:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 909521F232E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:49:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EA031F232FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 10:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A4D6E617;
-	Thu, 14 Mar 2024 10:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886906E619;
+	Thu, 14 Mar 2024 10:51:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qd4v42hJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="EwLkY4XJ"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84B14691;
-	Thu, 14 Mar 2024 10:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0F05DF0E;
+	Thu, 14 Mar 2024 10:51:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710413388; cv=none; b=XloT1YIqtD/WcuRDzHc6tHrkDS8rQ8KqgWj1gDHOnBXYTUszI/YO2jrN66YTsqQMPdixtBFtyouxnJpkqxPnoBPq9N0FWKhOnqE61CnagCp6dHan8cAh9xf4Q+GzFNvPEFqYS1RLknMq2ODBpvhMPKVl2vxY8YEKSezrtrY8v7k=
+	t=1710413471; cv=none; b=LAum1D/vfBTKk3IUj55H9d4AhgArxdhhEEG37AKY8H/YIt+ANCVGiKv8hT8CkGCYW4FRcvRsmOK0SEBmbPE1EEmaCCw3zx8gctzpY1p2PhUz6s/SSiJMld4qmxDrmJ0FUS13QVcth5Qw4TM8DP4RN0stXFuLfs4FeDNcQnCAa94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710413388; c=relaxed/simple;
-	bh=XO6ORvnUUqNCoQFoeBALPciUHMxrzFjU+pE2kYe1iTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aXtMUvWoarcXRubzejOMqde1BlDMcj+FlhuZZTmoZxEmjfCBXQ480JJImSJqJh6ciuftsIrAsCTiLzG5GalaNi0qWU48IxKCr7bh2BtRBtU1aGNmyv5ksEc3JN6JdGiwhXHePWGE7YHY2MXTdqHWOCKROuK33xM3Ziltuw4VGwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qd4v42hJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB770C433C7;
-	Thu, 14 Mar 2024 10:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710413388;
-	bh=XO6ORvnUUqNCoQFoeBALPciUHMxrzFjU+pE2kYe1iTg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qd4v42hJYNSmWhqb6U2QwY/IrP5PAuN3pB4aXJ9KW+LyaxBq6d8jAiQLCNyD27Bmz
-	 tSZatq8aVdpx3VbzzgKEN6dAegm3rf563n4wFVnMnMJjhi/t0PPIidkgQoZPlan8Om
-	 /RU7wTUUcF4L0rvqqWW3b210X6v+gCJ9Cix1kDwqe08sEmn1xcXHpJBmrmrH3nfPyQ
-	 dAHt1PE3hdBvcXBJNO2gdBSzAGrtGoOX4ZOQjYDsVhKsOiLf+ZobVfKI8QY8p9/qR2
-	 mOvOAyZSeVWgwKlvy1ODf4O7EJtQkSk0GzFzOmBv3AgDZ1FCldupqmAFGo+dmx/sUn
-	 lnlGAXbz66tUg==
-Date: Thu, 14 Mar 2024 11:49:44 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: syzbot <syzbot+9b5ec5ccf7234cc6cb86@syzkaller.appspotmail.com>
-Cc: jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [fs?] WARNING in stashed_dentry_prune
-Message-ID: <20240314-vollversammlung-aktenordner-f60fb363674c@brauner>
-References: <0000000000003ea6ba0613882a96@google.com>
+	s=arc-20240116; t=1710413471; c=relaxed/simple;
+	bh=EWUlLis8X669AunKiPTK04qSVrQJU4W8sOADYKjgKR8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ehmMojLTjdQyRW3CAJhCh9fOX89XCPXuVEZz9Z6VVo1kxzOCQ+9jWCJ1PhBNwYFdwSP5/1gYK40htQDQuyUhibLTkkfDXQBES+HtKDngvIK5erQw5jW6ebV+eWceyRss+zNhPzRYNFVHX2Y0D/um8tJMls9nfHNm6pytBqngxRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=EwLkY4XJ; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1710413464;
+	bh=DRdiHGqYqxjEF8hsA5ZH+kEbHXJ9gHLyaDJurUBUBU8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=EwLkY4XJ/XL6m9O01lkeRqb+bFGM+QvljzvF4nbDCTUEioyZoYoIMNbpMjw/ibU28
+	 UaZLGEMxbKyyHXpBTLDqSOa9gMjkeg2wXcWsO6hB8FLPuII9r/uZvQoQ0axiGR9ZjI
+	 OJoivYUdbYAy72HQQGSNAgfMInJNDl8EOWJ+HVA5xsz7/fbUPckzgw0OYMh8LYCfrh
+	 AHfU/K+/T+ds+0JQChBbJxC55hFG5D9mFQW1g+NpydlfUrwdlDsmwljjoxuLlD129X
+	 mFlBgg//ha/jnCRFFGrUoPpkT996Tpp2gKmcMniglSQgR/+XtpLQBEQyF4GYKAqh/K
+	 6sl4QGJjol9Vw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TwPLZ4lVKz4wnr;
+	Thu, 14 Mar 2024 21:51:02 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Yury Norov
+ <yury.norov@gmail.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
+ <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Andrew Lunn
+ <andrew@lunn.ch>, Mark Brown <broonie@kernel.org>, Ratheesh Kannoth
+ <rkannoth@marvell.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v7 1/5] net: wan: Add support for QMC HDLC
+In-Reply-To: <20240314081200.5af62fab@bootlin.com>
+References: <20240307113909.227375-1-herve.codina@bootlin.com>
+ <20240307113909.227375-2-herve.codina@bootlin.com>
+ <87ttl93f7i.fsf@mail.lhotse> <20240314081200.5af62fab@bootlin.com>
+Date: Thu, 14 Mar 2024 21:51:01 +1100
+Message-ID: <87r0gd2iju.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,27 +72,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0000000000003ea6ba0613882a96@google.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 13, 2024 at 03:23:25AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    0f1a876682f0 Merge tag 'vfs-6.9.uuid' of git://git.kernel...
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=1541d101180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f0300fe4d5cae610
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9b5ec5ccf7234cc6cb86
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1484d70a180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b38d1180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/9de3cd01214c/disk-0f1a8766.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/af661293680e/vmlinux-0f1a8766.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/a439df6ad20e/bzImage-0f1a8766.xz
+Herve Codina <herve.codina@bootlin.com> writes:
+> Hi Michael,
+>
+> On Thu, 14 Mar 2024 10:05:37 +1100
+> Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+>> Hi Herve,
+>>=20
+>> Herve Codina <herve.codina@bootlin.com> writes:
+> ..
+>> This breaks when building as a module (eg. ppc32_allmodconfig):
+>>=20
+>>   In file included from ../include/linux/device/driver.h:21,
+>>                    from ../include/linux/device.h:32,
+>>                    from ../include/linux/dma-mapping.h:8,
+>>                    from ../drivers/net/wan/fsl_qmc_hdlc.c:13:
+>>   ../drivers/net/wan/fsl_qmc_hdlc.c:405:25: error: =E2=80=98qmc_hdlc_dri=
+ver=E2=80=99 undeclared here (not in a function); did you mean =E2=80=98qmc=
+_hdlc_probe=E2=80=99?
+>>     405 | MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
+>>         |                         ^~~~~~~~~~~~~~~
+>>=20
+>>=20
+>> IIUIC it should be pointing to the table, not the driver, so:
+>>=20
+>> diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hd=
+lc.c
+>> index 5fd7ed325f5b..705c3681fb92 100644
+>> --- a/drivers/net/wan/fsl_qmc_hdlc.c
+>> +++ b/drivers/net/wan/fsl_qmc_hdlc.c
+>> @@ -402,7 +402,7 @@ static const struct of_device_id qmc_hdlc_id_table[]=
+ =3D {
+>>         { .compatible =3D "fsl,qmc-hdlc" },
+>>         {} /* sentinel */
+>>  };
+>> -MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
+>> +MODULE_DEVICE_TABLE(of, qmc_hdlc_id_table);
+>>=20
+>>  static struct platform_driver qmc_hdlc_driver =3D {
+>>         .driver =3D {
+>>=20
+>>=20
+>> Which then builds correctly.
+>
+> My bad, I missed that one.
+> I fully agree with your modification.
+>
+> Do you want me to make a patch (copy/paste of your proposed modification)
+> or do you plan to send the patch on your side ?
 
-#syz fix: pidfs: remove config option 
+Yes if you can please turn it into a proper patch and submit it.
+
+No need to add my SoB, it's trivial.
+
+cheers
 
