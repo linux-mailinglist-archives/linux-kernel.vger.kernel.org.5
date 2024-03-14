@@ -1,88 +1,65 @@
-Return-Path: <linux-kernel+bounces-103742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84C387C3DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:53:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2CEC87C3DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 345BB1F22BC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:53:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1064C1C2265A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6414476055;
-	Thu, 14 Mar 2024 19:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6351E7581A;
+	Thu, 14 Mar 2024 19:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eED2XMGq"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nQS6Y8Uw"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD672A1C7;
-	Thu, 14 Mar 2024 19:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392462A1C7
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710445984; cv=none; b=l+Je+pBx7NUeWSu5/UBuSanI86Jsnx4eEFLVKXlZyCJgCmPDGad6dyIIXtyj36NfK1Zc7C1V4nvnKlS3HexK7TsVKtU+6SLqhBO1Qkq/OF9yvcGftZua1c3L5xGND267xQLxJoL8+1AMlfs4tYzfqUODQ7tr1TWbEgGkPyDqDGs=
+	t=1710446029; cv=none; b=c6kGvnTfeBJM7I2tgptcy7o58bCkpeFG5YlldLQSWToNwZLaLN2h4upZDFgtDunZoAQkO4FlW+I6JA0UcKocNyBZRZH3UvYQelQd3VXdaa+m9z5ubXPrnCdM0imP549Mem2rzGx7skxBw/JPnKtOR7IKG99B1cdLx+w3JCcMbSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710445984; c=relaxed/simple;
-	bh=FT+Jxam2JbSRZnXuLmLoDxj+ZjQmr6CKt84qjcS5VvE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GRPNVtx588RmPd5cEtW7ZR9D2P0MpEnZaqBBaajMU77ojr9+2gbJlG2X+ztw3Ro7TUXMsTXxcVCJb7sabsZV+OdQBiI5laav0dIsLvzKgqMNlM1NsfDi73t4Zqws30X+naWAO86g3lYu9FvRLlDFu35N1Gf0hvio9PVLsEYHRA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eED2XMGq; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5687e7662a5so1903924a12.0;
-        Thu, 14 Mar 2024 12:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710445981; x=1711050781; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j8XelG+9iocurj9x9eq3IaSOODzws4f/zEi7dkOsaeQ=;
-        b=eED2XMGqPrGJyJ2Tm/Jy5Azm6m1616OEQ4PJdBAGI84TGPfWt+RRZG1BGW0ynSRDch
-         BgxrHj/T5SnS22yFLtldo3LBwEeqy/yOUuy9+qYCRd9dJiNkwABAe/M8G78+pDkz/RiS
-         k4pxkZMh/q3dxni1WprZ7x2UIn0ghtdeOwDEdEVDIsnX9QUvTyKndhfZtcAMQVtA1/FA
-         REUN9k9wZX3QgWWorP6w+dDlWXP2409zbJ+apKI2O9i9JUuodm6bvWx8v4e4ZmThE73r
-         71HdqgP5i0m8x+I03zKJzPPugvmOdKufYrNsZCDL9qYleI96N1uN1VjipQ6Z66ypumIV
-         PD2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710445981; x=1711050781;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j8XelG+9iocurj9x9eq3IaSOODzws4f/zEi7dkOsaeQ=;
-        b=tFR4KL/gHvcCpdyjeGLRUHS+Xj8d7GEMVFFKB3wNmryjDYnESWRR5NeNr4HKfNqOY7
-         MRGpBRUtjtAVAB+Epdhj/iMMHdrqyXDdOUdy6j05OcJ99HOCcYdQuNO7SoVU2jKmxLcn
-         HsWrA5JCrfbhROG4MjElKHXUPbCJuC6D/UTicvTodYkuxcBusXoK7HPXo9ItdG7ki+00
-         uvQPbk/BkZGLNzkJcqGhWOZZLRWpCq8gP+kYMAV5K9EgOCXMoZP5gwAWENGREv/Cge23
-         +iRt4KGGlfQ8VMZOS0Mgbt+LqsZ/qMZNmFHvDG+zmiSXMaZw5afeVh/6xTXZ8iNKL1au
-         mQLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVsYqaTfEhlHsxGRXaTy8ixk3DcFtYxzNj94ISt/KMdp2TtEmnHwixV3KkljWuyzjit13khYtQIiE/zmFOuik3/V4V2GhdFAGVd3uUwWN4cnA5/TT/wEJA7MiT4PJxnq5W2BfDUVKML
-X-Gm-Message-State: AOJu0Yz0v5DbLfsUGveD42tDQa/qh1s0tvJ/HRFq5bf17Cbitu3SkUNI
-	L+UoT3Eb3nc92nL3T2etjca6H2tPVW8PkeuS1Tn20W0q1ERY5xdz
-X-Google-Smtp-Source: AGHT+IHK+fsSjqESW8pcn2XNuTI6VEFIMUjkbSjYXX0wD1vDVX7afvLaGA/QHbsJaBkite5GbJONow==
-X-Received: by 2002:a17:907:bb88:b0:a44:bd2:c4a with SMTP id xo8-20020a170907bb8800b00a440bd20c4amr1791387ejc.51.1710445981244;
-        Thu, 14 Mar 2024 12:53:01 -0700 (PDT)
-Received: from vamoiridPC ([2a04:ee41:82:7577:3844:3925:f1c1:4bc5])
-        by smtp.gmail.com with ESMTPSA id l5-20020a1709066b8500b00a44d3847811sm984142ejr.102.2024.03.14.12.53.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 12:53:00 -0700 (PDT)
-From: Vasileios Amoiridis <vassilisamir@gmail.com>
-X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
-Date: Thu, 14 Mar 2024 20:52:58 +0100
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Vasileios Amoiridis <vassilisamir@gmail.com>, lars@metafoo.de,
-	ang.iglesiasg@gmail.com, mazziesaccount@gmail.com, ak@it-klinger.de,
-	petre.rodan@subdimension.ro, linus.walleij@linaro.org,
-	phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] iio: pressure: Simplify read_* functions
-Message-ID: <20240314195258.GA1964894@vamoiridPC>
-References: <20240313174007.1934983-1-vassilisamir@gmail.com>
- <20240313174007.1934983-3-vassilisamir@gmail.com>
- <ZfH4IyeFTGFBKT4J@smile.fi.intel.com>
- <20240313192245.GA1938985@vamoiridPC>
- <ZfH-b2KWcU_8-Nmh@smile.fi.intel.com>
- <20240314143231.671bf685@jic23-huawei>
+	s=arc-20240116; t=1710446029; c=relaxed/simple;
+	bh=OC42Flg23nHZTOJ2Eh08T6xsS6xb+y1pcTb3FgWXs5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s2iR+FpaSCgJnt6fou5tBQC0YcIOmIdWxvAab/GYBSbh8fPggwen+KXf8PXfjrbrGeWKLjn2r5hDU3Xg5Nu2g3T5jSe9Ls7QxS9VEoCsVIiFirboGgCjL9iafP9zeh0RWOq9Smf1o4OXFoO9S9rF0vXz8W6+jqESLGlPBphGlcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nQS6Y8Uw; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 14 Mar 2024 15:53:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710446026;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4kApU2kLAOZt4fs1XzI38Cc/RPp9WtA/5TCETh/ESiU=;
+	b=nQS6Y8UwhmnyERjhKozWTXENnHnLiuHjK4gk2g20jfiTt32jcBKQXcrSmhHPd+QFrVsCMB
+	Q68W1CTWG17m8+B49rpyPjels7FLaBnxgLQZbx7L0VOoXn9DZ3lK2jqHlWARbdgpMpU/gQ
+	pt+ISGginzImGTNpqv9Hm+JWfsvu4Do=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, 
+	Pasha Tatashin <pasha.tatashin@soleen.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
+	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
+	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
+	hca@linux.ibm.com, hch@infradead.org, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, 
+	jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com, kinseyho@google.com, 
+	kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org, mgorman@suse.de, 
+	mic@digikod.net, michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
+	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
+	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de, 
+	urezki@gmail.com, vincent.guittot@linaro.org, vschneid@redhat.com
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+Message-ID: <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com>
+ <ZfNTSjfE_w50Otnz@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,79 +68,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240314143231.671bf685@jic23-huawei>
+In-Reply-To: <ZfNTSjfE_w50Otnz@casper.infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 14, 2024 at 02:32:31PM +0000, Jonathan Cameron wrote:
-> On Wed, 13 Mar 2024 21:28:47 +0200
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox wrote:
+> On Tue, Mar 12, 2024 at 10:18:10AM -0700, H. Peter Anvin wrote:
+> > Second, non-dynamic kernel memory is one of the core design decisions in
+> > Linux from early on. This means there are lot of deeply embedded assumptions
+> > which would have to be untangled.
 > 
-> > On Wed, Mar 13, 2024 at 08:22:45PM +0100, Vasileios Amoiridis wrote:
-> > > On Wed, Mar 13, 2024 at 09:01:55PM +0200, Andy Shevchenko wrote:  
-> > > > On Wed, Mar 13, 2024 at 06:40:03PM +0100, Vasileios Amoiridis wrote:  
-> > 
-> > ...
-> > 
-> > > > >  		case IIO_TEMP:
-> > > > > -			ret = data->chip_info->read_temp(data, val, val2);
-> > > > > +			ret = data->chip_info->read_temp(data);
-> > > > > +			*val = data->chip_info->temp_coeffs[0] * ret;
-> > > > > +			*val2 = data->chip_info->temp_coeffs[1];  
-> > > >   
-> > > > > +			if (!strcmp(indio_dev->name, "bmp580"))
-> > > > > +				ret = IIO_VAL_FRACTIONAL_LOG2;
-> > > > > +			else
-> > > > > +				ret = IIO_VAL_FRACTIONAL;  
-> > > > 
-> > > > I'm wondering if we may replace these strcmp():s by using enum and respective
-> > > > values in chip_info.  
-> > > 
-> > > The whole problem starts from the fact that all these BMPxxx_CHIP_ID defines are
-> > > not unique for the respective BMPxxx device. You mean to add a new variable
-> > > that could store some enum values that would be the actual chip_info IDs? Like:
-> > > 
-> > > enum chip_info_ids = {
-> > > 	BMP085,
-> > > 	BMP180,
-> > > 	...
-> > > 	BMP580,
-> > > };
-> > > 
-> > > and later for every chip_info struct to use it like this:
-> > > 
-> > > const struct bmp280_chip_info bmpxxx_chip_info = {
-> > > 	...
-> > > 	.chip_info_id = BIT(BMPxxx),  
-> > 
-> > No BIT(), but yes.
-> > 
-> Better to use something more meaningful such as just storing the
-> type you need to return alongside the values it refers to.
-> temp_coeffs_type = IIO_VAL_FRACTIONAL_LOG2 / IIO_VAL_FRACTIONAL as appropriate.
-> That way the data and what it is are found in one simple place.
+> I think there are other ways of getting the benefit that Pasha is seeking
+> without moving to dynamically allocated kernel memory.  One icky thing
+> that XFS does is punt work over to a kernel thread in order to use more
+> stack!  That breaks a number of things including lockdep (because the
+> kernel thread doesn't own the lock, the thread waiting for the kernel
+> thread owns the lock).
 > 
-> Basic rule of thumb is that if there is a string comparison to identify
-> what to do in a driver (other than deep in the fw handling code) then
-> that is a bad design. Likewise any matching on an enum value that correlates
-> with that chip ID.  I want to see all the difference between chips in one place,
-> not scattered through the code.
+> If we had segmented stacks, XFS could say "I need at least 6kB of stack",
+> and if less than that was available, we could allocate a temporary
+> stack and switch to it.  I suspect Google would also be able to use this
+> API for their rare cases when they need more than 8kB of kernel stack.
+> Who knows, we might all be able to use such a thing.
 > 
-> Jonathan
-> 
+> I'd been thinking about this from the point of view of allocating more
+> stack elsewhere in kernel space, but combining what Pasha has done here
+> with this idea might lead to a hybrid approach that works better; allocate
+> 32kB of vmap space per kernel thread, put 12kB of memory at the top of it,
+> rely on people using this "I need more stack" API correctly, and free the
+> excess pages on return to userspace.  No complicated "switch stacks" API
+> needed, just an "ensure we have at least N bytes of stack remaining" API.
 
-Yes, sounds totally right. I was just hesitating to add new variables in the
-chip_info structure (as you probably noticed in the next commits as well).
-
-Best regards,
-Vasilis
-> 
-> > > 	...
-> > > }
-> > > 
-> > > And in the read_raw() function to just use the test_bit() function in the same
-> > > way that is done with the test_bit() and avail_scan_mask to test for the
-> > > enabled channels?  
-> > 
-> > If BIT() is more suitable, than also yes.
-> > 
-> 
+Why would we need an "I need more stack" API? Pasha's approach seems
+like everything we need for what you're talking about.
 
