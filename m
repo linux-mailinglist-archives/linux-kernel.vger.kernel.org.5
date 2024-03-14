@@ -1,160 +1,103 @@
-Return-Path: <linux-kernel+bounces-103539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEE1587C0D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:00:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A47487C0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:00:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 583FD1F22676
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:00:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3339284BAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 16:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37EA07351A;
-	Thu, 14 Mar 2024 16:00:13 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D82570CDE;
+	Thu, 14 Mar 2024 16:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a+NbZ9mQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E3373175;
-	Thu, 14 Mar 2024 16:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC2673181
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 16:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710432012; cv=none; b=UybkOyjWcy3JIddgqNEUu+JnXD8TuD6micuFuh2vkgjZLlre4QUEGoMq1lwytM5q+L56pHk++TS3nTk6Siy3g+7Kn5l7MThIigcSlSd+i+MRt3AtEaDdS1ENbw6ssmQ2HUkqrATbpoNPZlBCR6eN6zWc1/hYVFdxCke1ervE+xM=
+	t=1710432032; cv=none; b=qSLB5Azk0fJ+3VuFoRXA7/xX0EnTbklbfqjp0RDFk6xPW7TJRUsuyLtXw6oXtd2jcd0+XGNQnzh2aCq8PlzRzSsGyLgK/R8/fIIRkRMW5AwYJvKDqKK+goeh4HqFDtmKJ94kNpdWwhJciCDvO5nlc/Iwbpql9JcFU/DD4N1JdbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710432012; c=relaxed/simple;
-	bh=4MUJISf/nr3TQ7HYo25BQMIjZKwgigLAprdQ4CQYZPs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T7amMo2ymt8ksd5KcWxLOd3uNOp9HQLLcDazw5WsvckNHWrqqtfraRFpJ4QUBKtilTF6WU1+LqxO0gCJA7/tSW0aEtHkiaBuBufc5I+93EyOfG0GEMLwbNYuiJTiDIswrPk6WIn8o9I8GktAov7StrSbu4CpKBk4jXj0bavftdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60cd800f396so432287b3.3;
-        Thu, 14 Mar 2024 09:00:10 -0700 (PDT)
+	s=arc-20240116; t=1710432032; c=relaxed/simple;
+	bh=7QjiuBQBRyT+9k4iTSOFxeijm4WCgkFheISPv0kW21k=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=UEDfYggGD2A4kAc2DEjvmx/R5qUhpwmjP+fjfG6pX91wZMg+IvKyxJTfpUi19j4TybPPpC6RKnfE5Ds/zmf9a+umbJin1ht86bLYcJ3P9k/twusfwpCy2fFjmLqbD20emdTsMXmBxFeZpMdRJo0CZUXtb7B583LziuU6RSdNI5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a+NbZ9mQ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710432029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7QjiuBQBRyT+9k4iTSOFxeijm4WCgkFheISPv0kW21k=;
+	b=a+NbZ9mQVyrL+wm/YiPDjqALwRDIXpyXbJxPE7ubpajZv0KpjQI/1Kd8Kbf7aATjF8w8Ye
+	JgbaNK4lsJ6Iogviva99mw8gLf1+qYR21jnW56CAxNIOJaLM0TXX4MRMw+b9CbjxGArWqd
+	n/xY9FWOE6Eh/GdQpO/6uNhnUQprlPY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-164-yWhzMBIeN826XPS1AxCOQA-1; Thu, 14 Mar 2024 12:00:25 -0400
+X-MC-Unique: yWhzMBIeN826XPS1AxCOQA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e40126031so5844415e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 09:00:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710432010; x=1711036810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LvyikbsPyaYu0i7gDH1hFPWOgCXnbU21LKOtMlZYSeE=;
-        b=F2u9Duo/1FIdD08n2fafF/uf3E3nNBE3rn7+jz+Y6WyZjx2fVOIUYhDXDrE1IKyBs5
-         WWrA0T+4RA5QvHVvH/DfIpOjY0Ph34/ebupLgIWyFinB5iyMC61Nw2fZ5jYOlvOidPdy
-         hZaHt/LvUSSeTk+WUUeRqr/SJNAOH16ojQc1ApFwvftHC66BkjFqmH4XjKAdknp31UeN
-         vFJVs9ir8JSNBouv9orG/PoYy02SnUB3sRxH/kYiPTGn+Mq9c1cBN4Q5WFhjyJjAd/IF
-         GJRWgbCUJYKQBWd9DJc82tiE4hcGuKDuREBJJWH9g2OV1Wl432XVB2mvP+5nnnUlXkRx
-         V4Uw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAHAOseeypOz8M6oO8dPrR3JAOKV6J0eLz0P56SjeAsSBqy0fMfjivu26CWKt7Gm5dgVt2fOo6KCfDNehIO0LJIpi8KItKXjwWKNMc4X9CdFEzTO9DeNCJ+fG5JMI7vUVnaNTiyNTPwOMlgB+vMcx2tQvc/BC0WtvIM+Dfp6BEBbEXtQfbDMIVnTTlvwmJLYx5aRDmM40aRpccILvd+MS0og0LQbpU
-X-Gm-Message-State: AOJu0YyYHS7SdRowVXy2LBEZeBY3rSAdcSsr+Kva8zRinyN7T2qU6fef
-	eNkDBJT8Mur2a6yt9Esz3w/MFPB0TdhzKSmW0iul5QNhCkz45moD5KVlJPIG4ZU=
-X-Google-Smtp-Source: AGHT+IGJ+U6I+T8jelm8OEwQ4ca57MvLsRiknF8m6gllG7/VjfK/NTWd0VmvhAjumpkoiP5vAjjP0Q==
-X-Received: by 2002:a81:834c:0:b0:607:cb4e:eb41 with SMTP id t73-20020a81834c000000b00607cb4eeb41mr2213971ywf.35.1710432009562;
-        Thu, 14 Mar 2024 09:00:09 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id ev19-20020a05690c2f1300b006098a21f7ebsm314679ywb.135.2024.03.14.09.00.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 09:00:09 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso875300276.2;
-        Thu, 14 Mar 2024 09:00:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW5ZBv1YjElNXtm0A9c16RVKsmjHX4Kf0uxBeQoquf1BeJnTpFf44KamU5OG4LcYurOjU+JXwwa9OC3zrr8U6ZCGkhIGmYsrTa1mp4FMD4j/qGl+S3GNlz4Exs4u1JVC/5vJ9XG74xXcpI2UGRc3WGtAcFAG/u0Drihe6N2Xcfqlar2FNl3gM18hQ1xvqnBACOvSjef1WjqhSa+jLMJ2BP2zvuxWfQN
-X-Received: by 2002:a25:e812:0:b0:dcc:2da:e44e with SMTP id
- k18-20020a25e812000000b00dcc02dae44emr1957249ybd.61.1710432008795; Thu, 14
- Mar 2024 09:00:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710432024; x=1711036824;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7QjiuBQBRyT+9k4iTSOFxeijm4WCgkFheISPv0kW21k=;
+        b=QKdjBJBU9C0MnS1pbdh+s2sCycviypsniq9DcRcazQMilBo7gwHdIcf51cnfUP/Yin
+         CnXqiUBV9+B9NhfeSk7XpBxOmLeJxZDfpGvmYb4bbaFB33oWu0c7mzzgFVOXBaQAA+6M
+         zgW99Ied1wEQt6dCSD9kQvCtkeWjVU54PUKatcJafa5jcRpGfhpIQhxLPm8toFIJHgGE
+         pj6NyMunDBwpFrKzUE0pdOibORwNfjnGaXEsEIt/KegDSljfFKk9J6RqwvpRuOEiuFj4
+         WghNHap9MIEAqE+48Msd6IHE0AXfeCiWGCo0RsvNYGaH276jm3T6Z/7nCaZZnDz+SPII
+         0Sow==
+X-Forwarded-Encrypted: i=1; AJvYcCXsNwk2TXqefgpndlDNCCtpyZDw6WpMsyBGcd3H45lgbNFt/Wue8QtadKAfzNsx2MWMQC/NxHvcZ+4Iu/eyllkdAYNNbYSRLirrfox6
+X-Gm-Message-State: AOJu0YwTyRbeo96RnRGC++VBTs83Jz6wlW+2VUGJFJ86Bl4yjw3rtcI6
+	a/K/idN/B5kriwMpnj4se39ZBfjiLry00VkIyEfcREScz5MGM18+vQzzcW4WR6q8PNfCw8exL2z
+	JgC0ovTyyARuBaLxb8teQ0OR64o64XXVQgRKyev4y+7W0ocI6i2UaHs8HWiyiAQ==
+X-Received: by 2002:a05:600c:450f:b0:413:286c:4fc0 with SMTP id t15-20020a05600c450f00b00413286c4fc0mr315570wmo.34.1710432024057;
+        Thu, 14 Mar 2024 09:00:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF2tOqao4TMwOT3g3Hy6m0Z9ITRUlzMpqp4+Nsd+qQNSxpdMyyiCnfDrSmoUMHir24grTWrwQ==
+X-Received: by 2002:a05:600c:450f:b0:413:286c:4fc0 with SMTP id t15-20020a05600c450f00b00413286c4fc0mr315551wmo.34.1710432023735;
+        Thu, 14 Mar 2024 09:00:23 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id q13-20020a05600c46cd00b00412e5f32591sm2761945wmo.28.2024.03.14.09.00.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 09:00:23 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Maxim Moskalets <maximmosk4@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
+ de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
+Subject: Re: [PATCH] kernel/sched: use seq_putc instead of seq_puts
+In-Reply-To: <20240303110500.15239-1-Maxim.Moskalets@kaspersky.com>
+References: <20240303110500.15239-1-Maxim.Moskalets@kaspersky.com>
+Date: Thu, 14 Mar 2024 17:00:22 +0100
+Message-ID: <xhsmho7bgdcrt.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com> <20240307140728.190184-7-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240307140728.190184-7-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Mar 2024 16:59:57 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUzAG7dOfrz+xFdmV3inBGZnyc=faJ_Vbj-NEjzMnV12A@mail.gmail.com>
-Message-ID: <CAMuHMdUzAG7dOfrz+xFdmV3inBGZnyc=faJ_Vbj-NEjzMnV12A@mail.gmail.com>
-Subject: Re: [PATCH v2 06/10] clk: renesas: rzg2l: Extend power domain support
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Hi Claudiu,
+On 03/03/24 14:05, Maxim Moskalets wrote:
+> Using seq_putc for newline characters is faster and more appropriate
+> than seq_puts, since only one character is passed and there is no need
+> to use a more powerful and less fast function
+>
 
-On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
-rote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> RZ/{G2L, V2L, G3S}-based CPG versions have support for saving extra
-> power when clocks are disabled by activating module standby. This is done
-> through MSTOP-specific registers that are part of CPG. Each individual
-> module has one or more bits associated with one MSTOP register (see table
-> "Registers for Module Standby Mode" from HW manuals). Hardware manual
-> associates modules' clocks with one or more MSTOP bits. There are 3
-> mappings available (identified by researching RZ/G2L, RZ/G3S, RZ/V2L HW
-> manuals):
->
-> case 1: N clocks mapped to N MSTOP bits (with N=3D{0, ..., X})
-> case 2: N clocks mapped to 1 MSTOP bit  (with N=3D{0, ..., X})
-> case 3: N clocks mapped to M MSTOP bits (with N=3D{0, ..., X}, M=3D{0, ..=
-, Y})
->
-> Case 3 has been currently identified on RZ/V2L for the VCPL4 module.
->
-> To cover all three cases, the individual platform drivers will provide to
-> clock driver MSTOP register offset and associated bits in this register
-> as a bitmask and the clock driver will apply this bitmask to proper
-> MSTOP register.
->
-> Apart from MSTOP support, RZ/G3S can save more power by powering down the
-> individual IPs (after MSTOP has been set) if proper bits in
-> CPG_PWRDN_IP{1,2} registers are set.
->
-> The MSTOP and IP power down support were implemented through power
-> domains. Platform-specific clock drivers will register an array of
-> type struct rzg2l_cpg_pm_domain_init_data, which will be used to
-> instantiate properly the power domains.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v2:
-> - called pm_genpd_init() with proper value for is_off argument
-> - fixed typos
-> - used flexible array for struct rzg2l_cpg_pm_domains::domains member
-> - moved genpd member of struct rzg2l_cpg_pd at the beginning of struct
-> - didn't initialize the parent variable in rzg2l_cpg_add_pm_domains()
->   as it is already initialized in the for block from
->   rzg2l_cpg_add_pm_domains() and that initialization should be enough
-> - dropped RZG2L_PD_F_PARENT flag
-> - used datasheet naming for all MSTOP registers
-> - added all MSTOP registers to rzg2l-cpg.h
-> - reworked the code that initializes the register offset and bits for dom=
-ains
-> - dropped MSTOP*(), PWRDN*() macros and introduced struct rzg2l_cpg_reg_c=
-onf
->   and DEF_REG_CONF() for domain description
-> - constified the 1st argument of rzg2l_cpg_pm_domain_xlate()
-> - used dev instead of priv->dev where possible
-> - dropped RZG2L_PD_F_PARENT
-> - added RZG2L_PD_F_NONE for better description of domains in platform
->   specific clock drivers
+Why not, but then why not do this treewide? A quick grep shows ~340 such
+sites. That makes for a fairly easy coccinelle patch.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
