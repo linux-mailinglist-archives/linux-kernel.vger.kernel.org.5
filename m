@@ -1,271 +1,161 @@
-Return-Path: <linux-kernel+bounces-103621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D147B87C20D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:20:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4AE087C20E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 18:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C10E1F22277
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7F041C20E2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 17:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DAE2745EF;
-	Thu, 14 Mar 2024 17:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482C1745EF;
+	Thu, 14 Mar 2024 17:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="GyoiH8zD"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eU8zQsh4"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C874074411;
-	Thu, 14 Mar 2024 17:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C71177441D
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 17:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710436840; cv=none; b=BWADE8ZviA+p/Tq9xTMjXZYRNZARB3ki8Yhj2+AR1xgW6DU32WVzDWjHfx76qbTY1tOdydo8KBKO5Uw19RRptGe30w+bUAMwjY/uDQYqa54b2mxDIBNrHoiNxGJ9jKt3ppPf9j9oB127udFc0dbHEJwZpCdsnNPp3vtEB2gjOdE=
+	t=1710436863; cv=none; b=Qu+C67u5lbngFdAqfGdswn/npIm5sIDbEUQN3ItouM1oBwtq1lPlDeZrGom/lNFcM8yF9ocVk34bezQuvWlV8nra/NMsZJR9+OvIEKpph2CB6vgNeWOTgjmj3H+U3u2eVEgJypjxgxm63wgowwUeXcGoXheLqZtPSTLoiZriv0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710436840; c=relaxed/simple;
-	bh=NgHgotKhtD1A7iD6oloMGvxAQNHj7LiaQcSDONTaOLQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=AkIyn8MOOuM53bC36YPnYB4148MsJ877DAACTg4jJ7CUXhv1CiOc1Q7Xqw2mIov1JiClJqC8ysbc1LuiCHUUvxuXRcTJtRMRys59em40Fy7aRa9J8XuAFOcfQph+Db3vJpHOdLHJF1IBnlvzsW1FEhfGG8ODQVp9hMepPVxj+5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=GyoiH8zD; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710436824; x=1711041624; i=w_armin@gmx.de;
-	bh=LQXqc83Fz2n7ArY1KyXlZRGRxcZUTaZFRwjyZfC2l1A=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=GyoiH8zD2a+yMwuwCtKvTG5w8gcWZ2gN/8RyMdTSSGYc0yLQAU6JpJQpXlhKZmYk
-	 tR1+s6M8s/EMwYriuKVaLmBz3ILw/9CPTMeAiVJyc2X8yAengjP7vjT94v4M5A5Zm
-	 7ONdmghmmr6KiF/S47EbWrE/Y9IrTFPTAplC1ZxwfMCyuD83kpsbuzPFd7bz5sFnv
-	 4NB4xqdY5Ms7Vdn+gpQWOSyX0UheGfbI7OXp9hXuTjYFooLrakIsaKsR+Vpsrk4Kk
-	 WbZEJHVasGE5sGF413ewXr9XPZtPeocg+UndtiiXwIUql0QZ3WW+qX3EI6k98oqRf
-	 YQPu6/6HjOY7fyP4gA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MFKKh-1rZV1F0ttB-00Flne; Thu, 14
- Mar 2024 18:20:24 +0100
-Message-ID: <d7c2de21-50f9-4602-abd0-b83ecbc3f42f@gmx.de>
-Date: Thu, 14 Mar 2024 18:20:22 +0100
+	s=arc-20240116; t=1710436863; c=relaxed/simple;
+	bh=uvthK6ZPHv9ziKLsWHO3MPl4ZybvCCopm0QV4LX8UkQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bXCSE0nveF1N1CU8n/mIC4CVrIn1ToChh5ghCazMWzOPN7XuEyySkrzWNK/QlV9w3MTMNWFYEymKHibLDcOkYYe0ojuG86hmJRD6o5p98YBikGq67Fw5llqiR6S0Bu8YIHkALSV+qh/iMxhJqPHrG5kxBe0Xec8s4NZordhcE6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eU8zQsh4; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a44ad785a44so139133566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 10:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710436860; x=1711041660; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvthK6ZPHv9ziKLsWHO3MPl4ZybvCCopm0QV4LX8UkQ=;
+        b=eU8zQsh4BepZhwS8jFoJYpsema9DUYmPBJm2MjvaDmigIkEGnjFCdO96G9vZ8kwOFT
+         Upj6lOfyQY7TpNdXd5iXpUXCON/NLSJ04PIidrpWUkZYUfIsueFnC7cR9hJTh6iFUpck
+         otK8vT5q66xxQi95MvpUR15nctInO1SSrIqx9ragyMIrAyXx3QHNo67F1yGJyKZxGC61
+         9nRzhw+vAxlcIlEiRuezbKv6hM8CDqCgktV8B4gVi5MpNs8EcpPJFM7FiaaGftV+0/y5
+         6ut9tUetFv5x5HUNCzDJ6ECZg6XCemyVjH1qCj8RKHz1QWB/qy1Yw9THtEPamrjqzK+g
+         6l/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710436860; x=1711041660;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uvthK6ZPHv9ziKLsWHO3MPl4ZybvCCopm0QV4LX8UkQ=;
+        b=HMmqyzbqVMO/I7ycSuOs7qydlHRznkcAQAUn8weBPyTyHItb38FqLRsWcUBWO7VmiU
+         SLOeSZsrgoAULP6B43jq0CR0/PXl4MLB3lZuj2ahgrjUqVkzgcqJ13qyIr1l5SR18Be4
+         g+yZa14iRTY2QzlD6+6xkuHHRIZGCjy2h2vgGHHnCK+rpZ2X2NFZCf7s2SHov1F9+LWZ
+         lTDpomG+wGGIM3mXNvsOvVshXuQltxalZp+8TIc6X6buZ3MvmQml9Se/tWdJWUO+RLt1
+         OL4guA5CooF8vUmkDYeilSI4b06QESRQTp8sLkHKwKeM5/XQiq5UKBU78RkHAMwtj3Id
+         i4WA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1enLtkyj3p5IC+z/dxEdCyeOUkqGJTroBM7J4pF2O2NMBahbByCciGRs3EHDoc7SCPBiepPGL/Q6oHcaUQmofs/JPFaYUdhnXh+6i
+X-Gm-Message-State: AOJu0YwDHsLGKOVo5/1GSSxY/ucx6s756dVNl4gpGSSguutldjhaGSbP
+	oLSeg3iD+/URRivO7PhtFAcdHTQQIM3DUkyG5mw9IFoFpUGH1b5Z
+X-Google-Smtp-Source: AGHT+IEwb/JV3ROy5jBsR2h0x53EOam5x48bXCQzKOeUat4Rg2BPQuqlegOQyDv9bGsdCWC9AfeGSw==
+X-Received: by 2002:a17:907:2da1:b0:a45:ab9b:4a28 with SMTP id gt33-20020a1709072da100b00a45ab9b4a28mr552954ejc.60.1710436860023;
+        Thu, 14 Mar 2024 10:21:00 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id o26-20020a17090608da00b00a461c637eddsm881549eje.223.2024.03.14.10.20.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 10:20:59 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Frank Oltmanns <frank@oltmanns.dev>, Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Samuel Holland <samuel@sholland.org>,
+ Icenowy Zheng <uwu@icenowy.me>, Ondrej Jirman <x@xnux.eu>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH] drm/sun4i: tcon: Support keeping dclk rate upon ancestor clock
+ changes
+Date: Thu, 14 Mar 2024 18:20:58 +0100
+Message-ID: <5448341.Sb9uPGUboI@jernej-laptop>
+In-Reply-To: <20240314-careful-silky-bear-8ee43f@houat>
+References:
+ <20240310-tcon_keep_stable_rate-v1-1-0296b0a85c02@oltmanns.dev>
+ <20240314-careful-silky-bear-8ee43f@houat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8] platform/x86: add lenovo wmi camera button driver
-Content-Language: en-US
-To: Ai Chao <aichao@kylinos.cn>, hdegoede@redhat.com,
- ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org
-References: <20240314050319.171816-1-aichao@kylinos.cn>
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <20240314050319.171816-1-aichao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jfmhznM+gZlYWuE+LsYUpAIbRl9nyhWCaECfPATz+Bwqi/BVY0v
- v3aEIW//Pa0jKiA0fvYwCp4dwTgzdVIP32thTZqaFv4S4hZcmGkdKSlBHBnODCZjO5bA9Zj
- WSfyTkE4F+NoRcMqlpxk5KU2pvprwzcLS6OfUb8Mh0cVcFbvSmDuP5TZ6Uv6mHTjo9q2kRA
- RsAJugEurj73xmh+Cw96g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5mqxxvk5B+s=;uiYdS93D9qlPd53Fm01iM4jBHFC
- fDQXKxhaeH05QGMmAtP+Rq4oYNShInpSdUOVY9k5mKSXqqITZ0HE1fwFZL+chPteurx7qUBWY
- Qs7EHTRR/SVcgz8HuaocLIpFTwRG60wnoSbZTAOsXHrqpex9J5xgm+P9+FFZlupaCf5LZdQN4
- waI/4J1vuYnUaB/WRuEeMXJkLJUvnDnUExYNnFCX66tmZkTkBbEIZw887zIrOpb6wTj6bJrUq
- qqBX6TPzTkO2gh723V+SHmwuyGcIIgBv6RXxY3BkI48U5pUBC2059JF76bnKJUO5rFl+XemSw
- fNUvLsteK22984Q7367Rhbm8avNSKp8kFoXVHtrzr7rnBKFkrC1rniRAkNH+9JNbAsUfO0gAv
- jSXS/wuI2AnkiVk50FsOaKa1jjkzygSkS2zAFStNl/AFC8mO7o08vFBcq6xRQQJm9VKcBq7Fj
- BGriD+BAoaliTu3MvO2OU+Ci+HiZaezITWe6OKGeJtc8+rLjdUvTf+cK7eZCQDlw2XLZO8c3b
- yZQNqTP2IzfaDsrw4e2gdThLzDtXjdISWHiuDgxMM7WgmVYVYHKbrFA21n9nDnYeqEbi5UrTA
- ktkKPqOaNkoLulIzMOofj371OTdEzgZNE8Qp2+FFTtIewWdT1CuqWSM3pL8+yMwba0AuMPM0D
- OqtsaMx+Jv3Sah+D6+xxl0pFAAS/r4U48SSHegWqw8WFK/CS0LvIXTZJrjYplRQDVp/7NWFiQ
- vgh4LEG14F7jVPou/3EIDgc+3ZsulgY0eDmQT/3rDVmtOR9ccsdh2jl/shDWAh9kG6GIzUnMW
- Z51iXvSvPwsIAVSrjLNuwOSQ5xpVFXtAWytUpXwd0ujuQ=
+Content-Type: text/plain; charset="utf-8"
 
-Am 14.03.24 um 06:03 schrieb Ai Chao:
+Dne =C4=8Detrtek, 14. marec 2024 ob 15:42:24 CET je Maxime Ripard napisal(a=
+):
+> Hi,
+>=20
+> On Sun, Mar 10, 2024 at 02:32:29PM +0100, Frank Oltmanns wrote:
+> > Allow the dclk to reset its rate when a rate change is initiated from an
+> > ancestor clock. This makes it possible to no longer to get an exclusive
+> > lock. As a consequence, it is now possible to set new rates if
+> > necessary, e.g. when an external display is connected.
+> >=20
+> > The first user of this functionality is the A64 because PLL-VIDEO0 is an
+> > ancestor for both HDMI and TCON0. This allows to select an optimal rate
+> > for TCON0 as long as there is no external HDMI connection. Once a change
+> > in PLL-VIDEO0 is performed when an HDMI connection is established, TCON0
+> > can react gracefully and select an optimal rate based on this the new
+> > constraint.
+> >=20
+> > Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> > ---
+> > I would like to make the Allwinner A64's data-clock keep its rate
+> > when its ancestor's (pll-video0) rate changes. Keeping data-clock's rate
+> > is required, to let the A64 drive both an LCD and HDMI display at the
+> > same time, because both have pll-video0 as an ancestor.
+> >=20
+> > TCONs that use this flag store the ideal rate for their data-clock and
+> > subscribe to be notified when data-clock changes. When rate setting has
+> > finished (indicated by a POST_RATE_CHANGE event) the call back function
+> > schedules delayed work to set the data-clock's rate to the initial value
+> > after 100 ms. Using delayed work maks sure that the clock setting is
+> > finished.
+> >=20
+> > I've implemented this functionality as a quirk, so that it is possible
+> > to use it only for the A64.
+> >=20
+> > This patch supersedes [1].
+> >=20
+> > This work is inspired by an out-of-tree patchset [2] [3] [4].
+> > Unfortunately, the patchset uses clk_set_rate() directly in a notifier
+> > callback, which the following comment on clk_notifier_register()
+> > forbids: "The callbacks associated with the notifier must not re-enter
+> > into the clk framework by calling any top-level clk APIs." [5]
+> > Furthermore, that out-of-tree patchset no longer works since 6.6,
+> > because setting pll-mipi is now also resetting pll-video0 and therefore
+> > causes a race condition.
+>=20
+> Workqueues don't have an upper boundary on when they execute. As we
+> discussed multiple times, this should be solved in the clock framework
+> itself, not bypassing it.
 
-> Add lenovo generic wmi driver to support camera button.
-> The Camera button is a GPIO device. This driver receives ACPI notifyi
-> when the camera button is switched on/off. This driver is used in
-> Lenovo A70, it is a Computer integrated machine.
->
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
-> ---
-> v8: Dev_deb convert to dev_err.
-> v7: Add dev_dbg and remove unused dev in struct.
-> v6: Modify SW_CAMERA_LENS_COVER to KEY_CAMERA_ACCESS_ENABLE/KEY_CAMERA_A=
-CCESS_DISABLE.
-> v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_COV=
-ER.
-> v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenovo_w=
-mi_priv.
-> v3: Remove lenovo_wmi_remove function.
-> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
->
->   drivers/platform/x86/Kconfig             |  12 +++
->   drivers/platform/x86/Makefile            |   1 +
->   drivers/platform/x86/lenovo-wmi-camera.c | 108 +++++++++++++++++++++++
->   3 files changed, 121 insertions(+)
->   create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
->
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index bdd302274b9a..9506a455b547 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
->   	To compile this driver as a module, choose M here: the module
->   	will be called inspur-platform-profile.
->
-> +config LENOVO_WMI_CAMERA
-> +	tristate "Lenovo WMI Camera Button driver"
-> +	depends on ACPI_WMI
-> +	depends on INPUT
-> +	help
-> +	  This driver provides support for Lenovo camera button. The Camera
-> +	  button is a GPIO device. This driver receives ACPI notify when the
-> +	  camera button is switched on/off.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called lenovo-wmi-camera.
-> +
->   source "drivers/platform/x86/x86-android-tablets/Kconfig"
->
->   config FW_ATTR_CLASS
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefi=
-le
-> index 1de432e8861e..217e94d7c877 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+=3D hdaps.o
->   obj-$(CONFIG_THINKPAD_ACPI)	+=3D thinkpad_acpi.o
->   obj-$(CONFIG_THINKPAD_LMI)	+=3D think-lmi.o
->   obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
-> +obj-$(CONFIG_LENOVO_WMI_CAMERA)	+=3D lenovo-wmi-camera.o
->
->   # Intel
->   obj-y				+=3D intel/
-> diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platform=
-/x86/lenovo-wmi-camera.c
-> new file mode 100644
-> index 000000000000..f83e3ccd9189
-> --- /dev/null
-> +++ b/drivers/platform/x86/lenovo-wmi-camera.c
-> @@ -0,0 +1,108 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Lenovo WMI Camera Button Driver
-> + *
-> + * Author: Ai Chao <aichao@kylinos.cn>
-> + * Copyright (C) 2024 KylinSoft Corporation.
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/input.h>
-> +#include <linux/module.h>
-> +#include <linux/wmi.h>
-> +
-> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F=
-4EA400013"
-> +
-> +struct lenovo_wmi_priv {
-> +	struct input_dev *idev;
-> +};
-> +
-> +enum {
-> +	SW_CAMERA_OFF	=3D 0,
-> +	SW_CAMERA_ON	=3D 1,
-> +};
-> +
-> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_objec=
-t *obj)
-> +{
-> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
-> +	u8 camera_mode;
-> +
-> +	if (obj->type !=3D ACPI_TYPE_BUFFER) {
-> +		dev_err(&wdev->dev, "Bad response type %u\n", obj->type);
-> +		return;
-> +	}
-> +
-> +	if (obj->buffer.length !=3D 1) {
-> +		dev_err(&wdev->dev, "Invalid buffer length %u\n", obj->buffer.length)=
-;
-> +		return;
-> +	}
-> +
-> +	/* obj->buffer.pointer[0] is camera mode:
-> +	 *      0 camera close
-> +	 *      1 camera open
-> +	 */
-> +	camera_mode =3D obj->buffer.pointer[0];
-> +	if (camera_mode > SW_CAMERA_ON) {
-> +		dev_err(&wdev->dev, "Unknown camera mode %u\n", camera_mode);
-> +		return;
-> +	}
-> +
-> +	if (camera_mode =3D=3D SW_CAMERA_ON) {
-> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 1);
-> +		input_sync(priv->idev);
-> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 0);
-> +	} else {
-> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 1);
-> +		input_sync(priv->idev);
-> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 0);
-> +	}
-> +	input_sync(priv->idev);
-> +}
-> +
-> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *contex=
-t)
-> +{
-> +	struct lenovo_wmi_priv *priv;
-> +
-> +	priv =3D devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	dev_set_drvdata(&wdev->dev, priv);
-> +
-> +	priv->idev =3D devm_input_allocate_device(&wdev->dev);
-> +	if (!priv->idev)
-> +		return -ENOMEM;
-> +
-> +	priv->idev->name =3D "Lenovo WMI Camera Button";
-> +	priv->idev->phys =3D "wmi/input0";
-> +	priv->idev->id.bustype =3D BUS_HOST;
-> +	priv->idev->dev.parent =3D &wdev->dev;
-> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_ENABLE);
-> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_DISABLE);
-> +
-> +	return input_register_device(priv->idev);
-> +}
-> +
-> +static const struct wmi_device_id lenovo_wmi_id_table[] =3D {
-> +	{ .guid_string =3D WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
-> +	{  }
-> +};
-> +
-> +static struct wmi_driver lenovo_wmi_driver =3D {
-> +	.driver =3D {
-> +		.name =3D "lenovo-wmi-camera",
-> +		.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
-> +	},
-> +	.id_table =3D lenovo_wmi_id_table,
-> +	.no_singleton =3D true,
-> +	.probe =3D lenovo_wmi_probe,
-> +	.notify =3D lenovo_wmi_notify,
-> +};
-> +
-> +module_wmi_driver(lenovo_wmi_driver);
-> +
-> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
-> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
-> +MODULE_DESCRIPTION("Lenovo WMI Camera Button Driver");
-> +MODULE_LICENSE("GPL");
+I think TCON code still needs to be touched due to clk_rate_exclusive_get()
+calls which effectively lock whole chain. You can't have both TCONs locking
+rate on A64 for this to work correctly.
 
-Looks good to me.
+What was original reason for clk_rate_exclusive_get()? I forgot already.
 
-Reviewed-by: Armin Wolf <W_Armin@gmx.de>
+Best regards,
+Jernej
+
+>=20
+> Maxime
+>=20
+
+
+
 
 
