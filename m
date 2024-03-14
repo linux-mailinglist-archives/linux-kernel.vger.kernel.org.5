@@ -1,135 +1,165 @@
-Return-Path: <linux-kernel+bounces-102897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CDF187B823
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:58:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A70D87B826
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 07:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF0581C20A41
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:58:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5D4B1F23F3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 06:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EFE18BF6;
-	Thu, 14 Mar 2024 06:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B40CC139;
+	Thu, 14 Mar 2024 06:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XNaDKHll"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EuDaChnW"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0345E5664;
-	Thu, 14 Mar 2024 06:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08A35664;
+	Thu, 14 Mar 2024 06:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710399471; cv=none; b=c4R4Xackmn4bO6sMws/zQUVg4AtY24wWF4jKqG4kI1tC6rB/iFjZgOrk8ZToqQjPPADjDwrqmtx1nl0J7huo7zxHcNysMarW+axasfsJIAbGJm+4tce8ea5c8yX+bpERVi940GcZvvqre6Igkpnw2rKLOxzEShmjh+J1RKeWloc=
+	t=1710399499; cv=none; b=p6ZUvfjWAzqRV/GGyZ4yHbeRoaeXWVMh8SIE/MK87HHTQJGMpvmkQ3u/c2dYfLRaJAFRcZ36dpdEv2GQWpFp9iCbqYoFw13WyVhSIAMXtF2ynDVFJPpvPUDLvgD8EQUIifgpKVFGEccVCOHCzhJoRJLyWzLyx9FtPP9JZyQHJbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710399471; c=relaxed/simple;
-	bh=9EK0hK9Yh8f/gaoc5EL6LuxNpHEYEbWGrAthaoXzOb0=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=JHGSkyVHByP1GKkYId9rjs66K75MwgI9/OjTYRzlJqxnMvuQ0jPR9sl/OX/s9dAs6gOYP/eah+gb4BcqpsoHclagR/wQruCiJZLBnPuKxnpVr5BXRQB4fPSb/1Vy9an5act0qF+1LxobheaVSdTZeR/kkRMXQ3SkxJYsdlQKMLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XNaDKHll; arc=none smtp.client-ip=209.85.167.172
+	s=arc-20240116; t=1710399499; c=relaxed/simple;
+	bh=2hbTNV/5TvtblKwtMXwvzQguisFt/r+armRXGnDKz2g=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=oTQcdQElFc5J/11FlOwIB9hR8us3ZQsXowXkq6qPRrWsW0DqFZPTfFBXhERRzL8flwLb0tBgByG+4/OXYUm1kOBKKxPZtoEPNgbqmZtuOXhu4UzmDm2OncM9zABMndSBI7fGohCMGGY/khVCJtU+akQH2sZZ79vuq0SeT4MG+Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EuDaChnW; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c35c4d8878so132317b6e.1;
-        Wed, 13 Mar 2024 23:57:49 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a4663b29334so77587166b.0;
+        Wed, 13 Mar 2024 23:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710399469; x=1711004269; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W3XCzn158oeVoQis+pbpqZUpajHhpzGWGyFPRII2fyI=;
-        b=XNaDKHlldv/sJhyVOKxlgm2HPaTqBD1ikEB35o23UYzE9EltaI1lhpgw4fpLNX2j6e
-         MAbOQckiYJDY1e5FLitpchu3QVsfLTX8sEaE9p4PxGNK2X5/1BpAWUZopqrebOB8dVAt
-         jwyTi7zxzcm1qFtZ9bx1xmdgKqtCBbmauM9NwvoLqxeayyxShIKS6eWt6za0NH/0vpba
-         nSkz83e4/Dik4DpxQRCHuRlyDGZYv6OiDSRGv+HaAMMfu78rp6ui9oEYp4YUEbWiBJhR
-         MD254mAFCO4vRjY+nMMJcjkX6tLYZ0iB+2QDR8cLCoVJiTwpfKQNt/NfhDow6jotUUma
-         xQpQ==
+        d=gmail.com; s=20230601; t=1710399496; x=1711004296; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uK7R6IMh4K5SH8t6Y4GtQF/Ru1BA8tcfLnJueFyG1X0=;
+        b=EuDaChnWiw4ZUDz1xh4o6s7LIwft/s+bWGXLiKi41zn2oCdB8cg0tWpVE1MlF3L+pw
+         5gsrsYHUEooNWfeElNvjW8fnRSX/SdpPmklRolGY56L4MHsyDfBr/eL3y/cNjIuN823j
+         eMCvc6WMcDPE0/e+H3hoAx3fH6s/RveIffiL9TcWCJkDK9zODOrT7QJrBl9/Hc/C0xkf
+         sBPZvM+ehc3IgLWarNyB9jd0tIOncTMH0WXObJEDjyfp+ezLEnxoL8ilz0756Fs9A+mk
+         908BMY934lBBLFmwYkpAOXurLo2w0QUJbLGVS4ttkIBHHxD1l24Ur2eAooVQDod+WBas
+         5Glw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710399469; x=1711004269;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W3XCzn158oeVoQis+pbpqZUpajHhpzGWGyFPRII2fyI=;
-        b=ZAs5Of1QwoxphjxNYEHd8jVa4WPo2XCua3pe8EcRScyzDv/XXKrS4oxROQz7rtKN4E
-         yuuTynTWY6YthxVvaY4sPhmeUa/z/qOKDfzcxq4czoUWMuqWgTAsC+SBfrj1jDQ/6vwj
-         6C5Za3IHhwv0kf8Bu7bWsUI2P6Uho+wVtohie2AqkU5xPmuS5Vs9lv+Tul0kK3lN8rRp
-         6spaSyLHQ+OFB96XfgP5+/SIMfy47ATNnXsgZZPs4DcyIS+rpUroiemEU+vxTzCbXe9H
-         lyj7UOTPZVtGajmT4s5QTHH31fVDmsRHUP14BVBEVx7V21owmZD2kpiFzGKamPJmwCRH
-         rSeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUWfbnT6zpTGGTHHIrHDc311IlMuKZppoIfzDmy14CVW7Z3naimNPARv4O1Zhs7p1b7WuiJW9pVwHyoLUo2gYEAjMvDQzFA7WCsa41F9hpmpfKq2FRk1eZBBCOT6A6AFSquyBf/swzNdb12NgM=
-X-Gm-Message-State: AOJu0YwLsejiJGStV/KPCSMK6joJB0oWEkSqrwF3tauweOa+iGLQfiyy
-	B6kfhYl9rBksuCiMsVhWs301oqyy6DmEG2P7jqKl7SBvvD/WTZzt
-X-Google-Smtp-Source: AGHT+IEGDBPn5h1CV4s3eWeXANQ5Zk+Wc9Bse4rPgbtE2gjJ8e8WQd/zlGsODb+VhYWDWnMuXDgUpg==
-X-Received: by 2002:a05:6808:399b:b0:3c2:36dd:a368 with SMTP id gq27-20020a056808399b00b003c236dda368mr980223oib.10.1710399468981;
-        Wed, 13 Mar 2024 23:57:48 -0700 (PDT)
-Received: from localhost.localdomain (2001-b400-e359-9e59-9ebb-2f4b-4781-fe3b.emome-ip6.hinet.net. [2001:b400:e359:9e59:9ebb:2f4b:4781:fe3b])
-        by smtp.gmail.com with ESMTPSA id a5-20020aa78e85000000b006e6857da474sm733847pfr.178.2024.03.13.23.57.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 23:57:48 -0700 (PDT)
-From: Peter Yin <peteryin.openbmc@gmail.com>
-To: patrick@stwcx.xyz,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	linux-watchdog@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] drivers: watchdog: ast2600 support bootstatus
-Date: Thu, 14 Mar 2024 14:57:44 +0800
-Message-Id: <20240314065744.1182701-1-peteryin.openbmc@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1710399496; x=1711004296;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uK7R6IMh4K5SH8t6Y4GtQF/Ru1BA8tcfLnJueFyG1X0=;
+        b=nUro6ikm46AYQtQ4Sxd1NteEJbuyh3dPnlxNqcOkHrAKeqxY/iQndXvQ0NEDIQ33Ui
+         w0p2s94X56bPBtNTHyd5VeZs5Ps5wEzZa6L+uRsp2VC1GXonUnQ/IohJTHW5kSpExxSi
+         IjBrZS7fgAGQNNOut4Aia6RnjpYLbOD8Dtm2v6sW40+GCu3MBUvwltS20Wos7geHET2V
+         bJWC4njL0jkRc1F/hb+QDBSVD6ANHmG200Ujv3FKMD077kn5rF0Lba1NRAjuv00c1MkN
+         67jXQY+XJBnXj88Z2KWhF0tVFETDT1uGE37iXxPsn3Ke1V7YtkQGVU/3+KIpjEATlPBc
+         aBzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXBv0LfHTHcWZlykG/JfNT9M/R2fLxQsW1UfIbNfi1WoasWl0VGPlssbkVViojVDeWrBtWJmbkqol6cLJXJWtWkAmSjKtZCj6WppKLN
+X-Gm-Message-State: AOJu0YwjhmcxbBZlGcKHLVEoMdut1+3fq+Pdy/snekZzLluPeqkWLjr2
+	1vMycLEyZ3Htw9JBGgC76ZYEyonjsHePzD7DhOXqmytu8VxA1xmBMxY5FUvyFuqsFTzLNeNF0CT
+	SX97ZJHvKalu+5xaY7IKqkuLy2XwZR+RJSVZ/Fg==
+X-Google-Smtp-Source: AGHT+IEw19muaeHHMxKaLD2OH1IXR23BE4sOVyWaMGVV43bclBS3JS5qh+xwkPYMSJodQe+qwlkmSXR2NyqDRSQ2wQ8=
+X-Received: by 2002:a17:906:4a86:b0:a46:1a14:356a with SMTP id
+ x6-20020a1709064a8600b00a461a14356amr488592eju.53.1710399495749; Wed, 13 Mar
+ 2024 23:58:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: cheung wall <zzqq0103.hey@gmail.com>
+Date: Thu, 14 Mar 2024 14:58:04 +0800
+Message-ID: <CAKHoSAu2+dDCR9Dgd4PGYJg2qBqKO+kNThaoFdfVi-AheS3S7w@mail.gmail.com>
+Subject: KASAN: slab-use-after-free Read in ext4_find_extent
+To: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Add WDIOF_EXTERN1 bootstatus in ast2600
+Hello,
 
-Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
----
-Change log:
+when using Healer to fuzz the latest Linux Kernel, the following crash
 
-v1
-  - Patch 0001 - Add WDIOF_EXTERN1 bootstatus
----
- drivers/watchdog/aspeed_wdt.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+was triggered on:
 
-diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-index b4773a6aaf8c..8adadd394be6 100644
---- a/drivers/watchdog/aspeed_wdt.c
-+++ b/drivers/watchdog/aspeed_wdt.c
-@@ -81,6 +81,7 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
- #define   WDT_CLEAR_TIMEOUT_AND_BOOT_CODE_SELECTION	BIT(0)
- #define WDT_RESET_MASK1		0x1c
- #define WDT_RESET_MASK2		0x20
-+#define   WDT_EVENT_COUNTER_MASK       (0xFFF << 8)
- 
- /*
-  * WDT_RESET_WIDTH controls the characteristics of the external pulse (if
-@@ -459,8 +460,17 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
- 	}
- 
- 	status = readl(wdt->base + WDT_TIMEOUT_STATUS);
--	if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
--		wdt->wdd.bootstatus = WDIOF_CARDRESET;
-+
-+	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
-+		if (status & WDT_EVENT_COUNTER_MASK) {
-+			/*
-+			 * Reset cause by WatchDog
-+			 */
-+			wdt->wdd.bootstatus |= WDIOF_EXTERN1;
-+		}
-+	} else {
-+		if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY)
-+			wdt->wdd.bootstatus = WDIOF_CARDRESET;
- 
- 		if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
- 		    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
--- 
-2.25.1
 
+HEAD commit: e8f897f4afef0031fe618a8e94127a0934896aba  (tag: v6.8)
+
+git tree: upstream
+
+console output: https://pastebin.com/raw/YBKrQHxW
+
+kernel config: https://pastebin.com/raw/SJFReJfc
+
+C reproducer: https://pastebin.com/raw/GUVzwEmx
+
+Syzlang reproducer: https://pastebin.com/raw/9KqQRP2e
+
+If you fix this issue, please add the following tag to the commit:
+
+Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
+
+----------------------------------------------------------
+
+------------[ cut here ]------------
+kernel BUG at fs/ext4/extents.c:3180!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 267 Comm: syz-executor349 Tainted: G    B              6.8.0 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+RIP: 0010:ext4_split_extent_at+0x8bf/0xdb0 fs/ext4/extents.c:3180
+Code: 25 28 00 00 00 0f 85 68 04 00 00 48 81 c4 d8 00 00 00 44 89 e8
+5b 5d 41 5c 41 5d 41 5e 41 5f e9 02 78 90 02 e8 22 9c a6 ff 90 <0f> 0b
+e8 1a 9c a6 ff 48 8b 5c 24 28 8b 6c 24 30 48 b8 00 00 00 00
+RSP: 0018:ffff88810e12f720 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001ff7fdfd RCX: ffffffffb0dfc90e
+RDX: ffff88810ea54400 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000050000028
+R10: 000000001ff7fdfd R11: 6e696c6261736944 R12: ffff8881031efff8
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff88810c226980
+FS:  00005555561ad3c0(0000) GS:ffff88811af00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0d9033a180 CR3: 000000010e0b2001 CR4: 0000000000770ef0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ext4_force_split_extent_at fs/ext4/extents.c:338 [inline]
+ ext4_ext_remove_space+0x283d/0x3ba0 fs/ext4/extents.c:2875
+ ext4_punch_hole+0xce0/0xfa0 fs/ext4/inode.c:3994
+ ext4_fallocate+0xd02/0x3760 fs/ext4/extents.c:4741
+ vfs_fallocate+0x4a1/0xd00 fs/open.c:328
+ ioctl_preallocate+0x192/0x210 fs/ioctl.c:291
+ file_ioctl fs/ioctl.c:334 [inline]
+ do_vfs_ioctl+0x1262/0x15b0 fs/ioctl.c:850
+ __do_sys_ioctl fs/ioctl.c:869 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x110/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xb3/0x1b0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7fd0ed76317d
+Code: c3 e8 d7 21 00 00 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd48ca3738 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd0ed76317d
+RDX: 0000000020000080 RSI: 0000000040305829 RDI: 0000000000000004
+RBP: 0000000000000001 R08: 00007ffd48ca3938 R09: 00007ffd48ca3938
+R10: 00007ffd48ca3938 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffd48ca3928 R14: 00007fd0ed7e2530 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_split_extent_at+0x8bf/0xdb0 fs/ext4/extents.c:3180
+Code: 25 28 00 00 00 0f 85 68 04 00 00 48 81 c4 d8 00 00 00 44 89 e8
+5b 5d 41 5c 41 5d 41 5e 41 5f e9 02 78 90 02 e8 22 9c a6 ff 90 <0f> 0b
+e8 1a 9c a6 ff 48 8b 5c 24 28 8b 6c 24 30 48 b8 00 00 00 00
+RSP: 0018:ffff88810e12f720 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 000000001ff7fdfd RCX: ffffffffb0dfc90e
+RDX: ffff88810ea54400 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000050000028
+R10: 000000001ff7fdfd R11: 6e696c6261736944 R12: ffff8881031efff8
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff88810c226980
+FS:  00005555561ad3c0(0000) GS:ffff88811af00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0d9033a180 CR3: 000000010e0b2001 CR4: 0000000000770ef0
+PKRU: 55555554
 
