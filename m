@@ -1,165 +1,151 @@
-Return-Path: <linux-kernel+bounces-103724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4403B87C3A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:22:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92DDF87C3A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 20:23:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 665511C214AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:22:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A25B1F221C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 19:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED0076C63;
-	Thu, 14 Mar 2024 19:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975CB7603A;
+	Thu, 14 Mar 2024 19:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZRlRGpey"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SHTRgcz6"
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8747C7602C;
-	Thu, 14 Mar 2024 19:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049FC757FE
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710444059; cv=none; b=Yt1HvvLPEWuV+easdbPgpI04fPUCQv5uPueSHpNEfigqnFsMb2L/QI+q7slhqa+yPZmn+ybF23O2mh0RKANyTXGE0C/QvLMY6/CfDFOo9UwKED9wOY0y/5qu8Z9IonRRDIbU9zDftt4XHdZOqTq25iOOuirE8oZJIrff4JIYB/E=
+	t=1710444132; cv=none; b=k+BWS4aav1dguSYS6kDqfXX9J/pniy7Em3ONNhmZSdHD//EBONXU5kgwo0n6f4EsCwAfF2XNLly3gmXBnPAouJK+HMDUEvMEiR6moP3UhEXNMx2qx5gTH9ALk4830n5PgaTEi86bxdyBI5jEFh76RpIqdot02CWED48w7Nd3UVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710444059; c=relaxed/simple;
-	bh=gH3b/5A7IYQsiYNt2bdQmHSGeO/sQMIwqfeaWs5xuNg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=X6S9F+oxmVrhdmAkzXB+IIABgLRrTxF1wM9nIf6lCVle5QPgC3GeWGIKem5u2qZ34WHeGNXUEC8Kb8fBeOtnBzMSuXPLbQU5Aulo/umescAgyraYx64MqvLbW/pJ62/giA9VPGAke68gYdwsFJxC6bDyVNmKkG0cb1fDrOnxzl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZRlRGpey; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 00EA5C4166A;
-	Thu, 14 Mar 2024 19:20:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710444059;
-	bh=gH3b/5A7IYQsiYNt2bdQmHSGeO/sQMIwqfeaWs5xuNg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=ZRlRGpey5qcW288aIwBTzKDt6XrvAwsgxLYc0oFUsG//OqwKLEQAQFi7Eb6tQaEoM
-	 Wu0JPg+hiyy45jwe3FjQ85gNZ/sQT+cgY2WfhvGGWpBqxuHob0HTlJ5zKJFT3OhSSm
-	 gWxLXua4j1BK4HMUj8jXkcbVPDZut3cziYQc4a2hlCqmdJ5iD20Q9LrXhwVOlTj5GM
-	 Lh11DERA9KI3k8qkhKnyJBhIhJPxZ3sMNKs5E/T+w/g0sd/wxivDA4fElSQ6bSWp+X
-	 5V9cRmc7HpHbeen6d9ByvK0xRMcNMvqfw8nDIE5tTQ/oJapjdpiNs4ceQDh11pZVOa
-	 dLomDp1xJDlyQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E373EC54E60;
-	Thu, 14 Mar 2024 19:20:58 +0000 (UTC)
-From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Date: Thu, 14 Mar 2024 20:20:44 +0100
-Subject: [PATCH 4/4] ax.25: Remove the now superfluous sentinel elements
- from ctl_table array
+	s=arc-20240116; t=1710444132; c=relaxed/simple;
+	bh=PE2W/o/UvsErg2b4BmQSjXcvDafvNWS0TOx8wjbfou8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JnCZeRIrnhNplsONSzBZLCuvjH6oNGWDnFbHkYXMMkFXGE8HSkHHuIl2oiTj4Z3dvb47NQWthmYUlC37RQtCTJn5CsDXiQRcRtF5bwZuAoGLT4pDcfa8Y2Fst9Nla2y13ChbuKalDUkYND4+GiglpubTpyOLqGWnmKxh8neMjQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SHTRgcz6; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710444129;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wk6LUIISIZc8BBteqHZvf6DKngdRbzsCGc5VN6J1OYo=;
+	b=SHTRgcz6utQlrtEABb4ur0hnuXJiD/bp6XlDbQ07vYilrLmBuj2/dQ8cpWz4e6Gq6krw+q
+	y4YCzuZdmY8K0Qea+0k7ENAjXbeKuILtMhoZzv9alpgfCLMknNC2vuPZh1VgJqHylO0FpG
+	QvpGco4nPjJ/VC+MJu8fQehU02yBufg=
+Date: Thu, 14 Mar 2024 12:21:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+Cc: kernel@quicinc.com, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+ <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+ <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
+ <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
+ <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
+ <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
+ <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
+ <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240314-jag-sysctl_remset_net-v1-4-aa26b44d29d9@samsung.com>
-References: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
-In-Reply-To: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, 
- Stefan Schmidt <stefan@datenfreihafen.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, 
- Steffen Klassert <steffen.klassert@secunet.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, 
- Remi Denis-Courmont <courmisch@gmail.com>, 
- Allison Henderson <allison.henderson@oracle.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
- Xin Long <lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
- Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, 
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, 
- Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, 
- Pablo Neira Ayuso <pablo@netfilter.org>, 
- Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, 
- Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
- Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, 
- Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, 
- Kees Cook <keescook@chromium.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.linux.dev, 
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, 
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net, 
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
- Joel Granados <j.granados@samsung.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1667;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=ejJiyRhNOC9Xg5jx2v5IBc5vVgg4IABN6nfDRl2m3bQ=;
- b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBl804YOT/y4oh7cSp7OlPw2zS5Tl/S3d+XSL1dZ
- qcQXL+fOt2JAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZfNOGAAKCRC6l81St5ZB
- T7kQC/wK2/wTeTZeTM0MnPlpRdOOBc8cyUMgjDVKpxvMyRI8yAICvkYuT5X3I/JIAiSTlnoPRNs
- T8czt4a9El8kn3rzJrUnWqslVgijCjQNu75mhVIl5h2Hx0DeyF7xXzvxP9a7qpRBsrxGFsJOzlr
- xIV+BECnckb1ymuqG9Nx5TcTYFUef2eHx6R1NahoOJ2eaJkT8NbMr+4d+IxeEVNv1KCngJcTLhn
- j2ODJJt9OJ/W5k8gAyqvJZWLCnlIAPZIYzhOEGBu3D7BYhmVa/L2Ea74K76U054rZeBIbg4Xt5R
- IKEbNBeLmErLYVin2F8ZzAgSWEbtolh545+BB7/t6fTEkwctvzvj3d5+JqxdaTvb2lKfRReRxEJ
- h7dTo0Ikttkj4V+cjftwKAmFSNVE4NYWhCGfwn1M+onp2ZzZzdn79m3lY7nJW4z4KsIXo+z5ghP
- LzdpG1ie5IRBI09mzaVoxDs4mkjlmc8NlDUaMqjjP1vM1VYLgMKXI9Jn1NE4Y1Ws1QRok=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received:
- by B4 Relay for j.granados@samsung.com/default with auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: <j.granados@samsung.com>
+X-Migadu-Flow: FLOW_OUT
 
-From: Joel Granados <j.granados@samsung.com>
+On 3/14/24 2:49 AM, Willem de Bruijn wrote:
+>> The two bits could potentially only encode the delivery time that is allowed to
+>> be forwarded without reset. 0 could mean refering back to sk_clockid and don't
+>> forward. The final consumer of the forwarded skb->tstamp is the qdisc which
+>> currently only has mono and tai.
+> 
+> So the followinng meaning of bit pair
+> { skb->mono_delivery_time, skb->user_delivery_time } ?
+>   
+> - { 0, 0 } legacy skb->tstamp: realtime on rx
+> - { 1, 0 } skb->tstamp is mono: existing behavior of mono_delivery_time bit
+> - { 0, 1 } skb->tstamp is tai: analogous to mono case
+> - { 1, 1 } skb->tstamp defined by skb->sk->sk_clockid
 
-This commit comes at the tail end of a greater effort to remove the
-empty elements at the end of the ctl_table arrays (sentinels) which will
-reduce the overall build time size of the kernel and run time memory
-bloat by ~64 bytes per sentinel (further information Link :
-https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+I was thinking only forward mono and tai until it is clearer how other clocks 
+will be useful for forwarding between e/ingress. By resetting all skb->tstamp 
+other than mono and tai, { 0, 0 } at ingress will mean realtime on rx and { 0, 0 
+} at egress will mean go look skb->sk->sk_clockid.
 
-When we remove the sentinel from ax25_param_table a buffer overflow
-shows its ugly head. The sentinel's data element used to be changed when
-CONFIG_AX25_DAMA_SLAVE was not defined. This did not have any adverse
-effects as we still stopped on the sentinel because of its null
-procname. But now that we do not have the sentinel element, we are
-careful to check ax25_param_table's size.
+I do like your scheme such that it is much clearer what is in skb->tstamp 
+without depending on other bits like tc_at_ingress or not.
 
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- net/ax25/sysctl_net_ax25.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+"{ 0, 1 } skb->tstamp is tai: analogous to mono case" can probably be dropped 
+for now until bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_TAI) is needed.
+Otherwise, it is mostly a duplicate of "{ 1, 1 } skb->tstamp defined by 
+skb->sk->sk_clockid".
 
-diff --git a/net/ax25/sysctl_net_ax25.c b/net/ax25/sysctl_net_ax25.c
-index db66e11e7fe8..2ee375a6a69c 100644
---- a/net/ax25/sysctl_net_ax25.c
-+++ b/net/ax25/sysctl_net_ax25.c
-@@ -141,8 +141,7 @@ static const struct ctl_table ax25_param_table[] = {
- 		.extra2		= &max_ds_timeout
- 	},
- #endif
--
--	{ }	/* that's all, folks! */
-+/* that's all, folks! */
- };
- 
- int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
-@@ -155,7 +154,7 @@ int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
- 	if (!table)
- 		return -ENOMEM;
- 
--	for (k = 0; k < AX25_MAX_VALUES; k++)
-+	for (k = 0; k < AX25_MAX_VALUES && k < ARRAY_SIZE(ax25_param_table); k++)
- 		table[k].data = &ax25_dev->values[k];
- 
- 	snprintf(path, sizeof(path), "net/ax25/%s", ax25_dev->dev->name);
+The bpf_convert_tstamp_{read,write} and the helper bpf_skb_set_tstamp need to be 
+changed to handle the new "user_delivery_time" bit anyway, e.g. 
+bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_MONO) needs to clear the 
+"user_delivery_time" bit.
 
--- 
-2.43.0
+I think the "struct inet_frag_queue" also needs a new "user_delivery_time" 
+field. "mono_delivery_time" is already in there.
+
+It may as well be cleaner to combine mono_delivery_time and user_delivery_time 
+into a 2 bits field like:
+
+struct sk_buff {
+	__u8 tstamp_type:2;
+};
+
+enum {
+	SKB_TSTAMP_TYPE_RX_REAL = 0, /* A RX (receive) time in real */
+	SKB_TSTAMP_TYPE_TX_MONO = 1, /* A TX (delivery) time in mono */
+
+	/* A TX (delivery) time and its clock is in skb->sk->sk_clockid.
+	 *
+	 * BPF_SKB_TSTAMP_DELIVERY_USER should be added
+	 * such that reading __sk_buff->tstamp_type will match the
+	 * SKB_TSTAMP_TYPE_TX_USER.
+	 *
+	 * The bpf program can learn the clockid by
+	 * reading skb->sk->sk_clockid.
+	 *
+	 * bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_USER)
+	 * should be disallowed for now until the use case
+	 * is more clear. Potentially, we could allow it
+	 * in the future as long as
+	 * the sock_flag(sk, SOCK_TXTIME) is true at that moment.
+	 */
+	SKB_TSTAMP_TYPE_TX_USER = 2,
+
+	/* UNUSED_FOR_FUTURE = 3, */
+};
+
+It will have more code churns in the first patch to rename 
+s/mono_delivery_time/tstamp_type/.
+
+wdyt?
 
 
