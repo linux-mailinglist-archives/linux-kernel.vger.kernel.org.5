@@ -1,107 +1,90 @@
-Return-Path: <linux-kernel+bounces-103266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08E387BD33
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:02:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89FF887BD36
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 14:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DF311C20E40
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:02:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A8441F25A89
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Mar 2024 13:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936495A11A;
-	Thu, 14 Mar 2024 13:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D495A4C6;
+	Thu, 14 Mar 2024 13:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cU4lGv+a"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="Rn2he2KG"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA5F59B52;
-	Thu, 14 Mar 2024 13:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035C659B52;
+	Thu, 14 Mar 2024 13:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710421346; cv=none; b=BGeIaoWKMLbLMkoN76mRZhABtnBJ1oR2XLZn35K7kjjs4z3BnRmf4NvVapZIJGKxUPjh6QrlM7Zq+hZN26rnFmDnaJbu+hSUfrNDQNQ8Md4EXlGh6u5Nhok/CCCCkfteq0K7N1X7ZAdbFvPGBqfaD7a8cYubFAtkjCv6iwG15N0=
+	t=1710421356; cv=none; b=bMK8gUB0LDyaWylLh9jt8r8aHderGchlINI5Mg9MYHq7kGrN/ltFM0BNj16w0bKKI9COMVW5dJtij3bXAmURIlWTmSsmNCXzXqVn2EMzmeUHdnYQEWE057+huW6/FVOArsW1vPIXJ4D3Ily8d31vK9w4hYuA8DGUxOoAR4Tvvls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710421346; c=relaxed/simple;
-	bh=84bbEjvBlJ/24wVknFCROidZyrV2FJtAwZcxO3xPYs8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P1J6INgROV8xP8Slgwv032sm9jest1senUvrffZo8E/u48zJBBbUXKIQu3A3XOXCQtolQ9CLwMEbkiQqSezurxp8+bDuTCoWQaxZKk1Yk9ozZYs+Bk/80EbSnf2RWIdTSOvCvkIM2X/hcUrhjKgu0Xww8aq3WcQeVgWnFjtC/vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cU4lGv+a; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dedb92e540so3822205ad.0;
-        Thu, 14 Mar 2024 06:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710421345; x=1711026145; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rlsLkZ2heubivONDblGycl3wo6hHBEpYjO72QZ11wxU=;
-        b=cU4lGv+aRHgkow4dCb+WziD1dlHKg2oIqh09T5xBgXPgitD8gHtHXdGXnE+uFjY6uP
-         6QTk7StvHdmuz9RzMZ03gAc+7Tvfh3AQR49jNOfl/Tz9q1T55l1UAznMmmhjdo6BNo5X
-         cRuR+tVGskElZ0YgDMqAmZiA+rwM73uJShyO6c2uULsmnEyLLixvoGL/Yl/ZnXvMxo6k
-         PKPMnMRxe3hKWXkCvO4Lv2kLq6S08JIUFQOvCEoWlZiZwRXKpc3qYTVazjwqBrIo+aNT
-         Lr1m5kTMUbyDnVGe3kSedNjndE04jbiBkos0zV27ovfd5EsbsuFWLcszthBtUsf5ZyBD
-         zS1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710421345; x=1711026145;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rlsLkZ2heubivONDblGycl3wo6hHBEpYjO72QZ11wxU=;
-        b=bIbkVk8G18V8mGLMwuEaQytOjvjshPLcskIzYEDp64wVyyI6mWfU3PLtrOAhVIi5TT
-         vGme03CuFTobYg8kh8aexh3R5jRNprcL95Q2nsYMn4TsA3m0oHZyzsi7JkST0vu4vNYi
-         RpSNLuVAIGaYHlZr1D0lc7ZyJSYbllo/fbXFCz+j+tN/zfA3LidgmBMh9MNHJ7yFkcAS
-         V8zY2EHZggb14mhlNT9zg7wGH9HHhEiLX/UJypdXE25wUP9B0wIYpAoXXnG9MRE9gUw8
-         pjNnMro2SHmbUnaFLHhT6d+GU50ScU9mIL3+2KL3esfPqAjvO4+vpZmeItJX3SKBunOD
-         m9eg==
-X-Forwarded-Encrypted: i=1; AJvYcCWz5XowwnnWgwk1KMtZ94S7uGeqs1WLLbfmobIvUakfDzar2L+rRrauInXo80ZSoI3KFht+RQ1EMpLHNUCneHFxfZFBrlbDkXzeiIODbOKe+AFLTHSNRJvRKD8HkzefgTtlJFW6
-X-Gm-Message-State: AOJu0Yyuui2klku061pemwMzhdS3iiBnS+ab1frfJeVmRBp4niP2QA8T
-	mxdCXnIc69qIA0AJDXWfajdYj8Wy6sUEOMaX+k1vktN9TCGksG7kuCSkHpKlBoTGtSujaUe0VhG
-	R7qajE8POrH/21Y/yCmpWra6w7lo=
-X-Google-Smtp-Source: AGHT+IHrZbDmNwRLArFfEalJLerPRZlrSgqbWY6ZoxUILhYTVEuZ7C4bocg1wvQ4xim/PI56zkz2GgOQbqQfPdZPwk8=
-X-Received: by 2002:a17:903:2292:b0:1dd:aaab:7e67 with SMTP id
- b18-20020a170903229200b001ddaaab7e67mr2743377plh.30.1710421344898; Thu, 14
- Mar 2024 06:02:24 -0700 (PDT)
+	s=arc-20240116; t=1710421356; c=relaxed/simple;
+	bh=RAKVpHxjeVAwoYuEB8CMcoH4wDiQqcm7h2A5VMcHkuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nwUfz+yBmyjmeTigmmtCWKdhkMOtDjElF6tdaDYYaUO/mhbZ6asVyqCMLP4SGhQCp4hiQb+8Jl6WioyQIqN9DIKfS+WbyghqRoz7hV7UtpbKOq4DepiBnLL+Y3UxNupOsW0T67Sxvboxgvz8r0IKmxwxSzmaf9fJnMEDSnDvVko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=Rn2he2KG; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 7265E1FE36;
+	Thu, 14 Mar 2024 14:02:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1710421343;
+	bh=2g+DQ7FufJDoNjxFyMoaWdNsJq45GFmfUlVzS35VOAE=; h=From:To:Subject;
+	b=Rn2he2KGS+Lm6q4JT+i0cX0ELmENbr3vx1Sv6qu4a4EpLELff/S6/ElpoqrPc/2hq
+	 DYnHwdGkFaqAKzcCjRz4cV2aXSZYrpqY7GG+7H19ej387/po4oTEWFz9SiF2tvnAD8
+	 L/EmdRH54RQAsuoWP1iFnGvFAPse2H1coeCoOjImjcOhdzm093hfnDCCHfuhYyAroX
+	 HbOkRgD5lH6A53OQDJyysy67rihuBg/p42hU0DEFL0eKgrbKqxMlq0M0opBDeAld1J
+	 INwep7rJmgyaTv3UEc40VkMqVf/ukaL5PNVCNLMdR2sSss3/LTX6NF/poiaJHtegYo
+	 BIGM1EGJIIjbQ==
+Date: Thu, 14 Mar 2024 14:02:19 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Nishanth Menon <nm@ti.com>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?iso-8859-1?Q?Jo=E3o_Paulo_Silva_Gon=E7alves?= <joao.goncalves@toradex.com>
+Subject: Re: [PATCH v1] arm64: dts: ti: verdin-am62: use SD1 CD as GPIO
+Message-ID: <20240314130219.GA124430@francesco-nb>
+References: <20240312144956.40211-1-francesco@dolcini.it>
+ <20240314121833.4fngkk35aw44o2x5@array>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313163019.613705-1-sashal@kernel.org> <ZfKzpiF4l7eRUq0d@archie.me>
-In-Reply-To: <ZfKzpiF4l7eRUq0d@archie.me>
-From: Luna Jernberg <droidbittin@gmail.com>
-Date: Thu, 14 Mar 2024 14:02:12 +0100
-Message-ID: <CADo9pHirYZG2xoJm60ohEgp_5jQRtVa27R3Tt8jozV00QBZgXQ@mail.gmail.com>
-Subject: Re: [PATCH 6.8 0/5] 6.8.1-rc1 review
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
-	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
-	pavel@denx.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240314121833.4fngkk35aw44o2x5@array>
 
-Works fine on my Arch Linux desktop with model name    : AMD Ryzen 5
-5600 6-Core Processor
+Hello Nishanth,
 
-Tested-by: Luna Jernberg <droidbittin@gmail.com>
+On Thu, Mar 14, 2024 at 07:18:33AM -0500, Nishanth Menon wrote:
+> On 15:49-20240312, Francesco Dolcini wrote:
+> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > 
+> > TI SDHCI IP has a hardware debounce timer of 1 second as described in
+> 
+> Umm... Minor clarification - the SDHCI IP is not TI's - as commit
+> 41fd4caeb00bbd6dc55f056f3e8e956697b0760d says, this was an Arasan IP
+> which was integrated into TI SoCs but needs it's own driver due to some
+> quirkiness in the version TI picked up.
+> 
+> Are you OK to rephrase this as TI SDHCI 'instance' rather than 'IP'? If
+> yes, I can do the change locally when I commit.
 
-Den tors 14 mars 2024 kl 09:22 skrev Bagas Sanjaya <bagasdotme@gmail.com>:
->
-> On Wed, Mar 13, 2024 at 12:30:14PM -0400, Sasha Levin wrote:
-> >
-> > This is the start of the stable review cycle for the 6.8.1 release.
-> > There are 5 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
->
-> Successfully compiled and installed the kernel on my computer (Acer
-> Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
->
-> Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
->
-> --
-> An old man doll... just what I always wanted! - Clara
+Fine for me, thanks,
+Francesco
+
 
