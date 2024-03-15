@@ -1,328 +1,240 @@
-Return-Path: <linux-kernel+bounces-104715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D3787D2AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:22:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC85A87D2AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:23:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CCE01F24B4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:22:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A24971C21335
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E64482E2;
-	Fri, 15 Mar 2024 17:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23DB4C3DE;
+	Fri, 15 Mar 2024 17:22:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IJpLyYGI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D1YxW2xt"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885DA50A60;
-	Fri, 15 Mar 2024 17:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4D54AEE3
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710523347; cv=none; b=hIl9SMXFPPct2L3zWrNZjapQdgZNutLddDlwJjt/G9nsWd04Ilyi13GLb+q927pn0OnN5MUWO5Zyl8xcMlYVpFnBnTW4lzht1ag/X4X04Rmykb5TrzkqfqWFPG63swvPHeZLlmyml50zSyc5eljkuNlU+o/B2WIAn/OikZQZJvs=
+	t=1710523369; cv=none; b=gGeGEVKkSq/e9I8kCqEd6+houz20HqEw37Ty3veMfdjWe9XOR7yhp+QyjD2/X5Mblgx4pbk/2uJG1iPAZcOo7SWwImm1hncoLjViuHWXL2d/vFoQdSp088cYVRcfFpn12ChRk++eRKQQ52cQSAn749Yvc1Bj/eZKHB9qywT75FA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710523347; c=relaxed/simple;
-	bh=7GDKhw2QtnkDvhwA9/3K1ZC3h7d4J8wzBkO5Ddpp0oI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=cmSTRjPqJIo7ZBz9I5ZIowbB2h7IjvhcX8w72PQ7SjxYWt6aH/GOMST5Ph0ec1qZYJ8H6ZXXIIOneVk63nI5TrZSje5t945I+NTaoBV9YrbtC+HkO1WFBNzQcJcMIASt+vtZgSDgbMFsuRWtrqtD6SZKH95ARg6kSHb+tNikjvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IJpLyYGI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C5DC433C7;
-	Fri, 15 Mar 2024 17:22:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710523347;
-	bh=7GDKhw2QtnkDvhwA9/3K1ZC3h7d4J8wzBkO5Ddpp0oI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=IJpLyYGIK98T/y1ZfxIj2qR6Wa2eKDOVi/09/RnE7eB83C28WJpGqH3Wqi3kzNuNu
-	 MtF+2XflGkwSfOMvlA7n8sFnMFnqPrpuOYBpNjoJcWy69r0EzFqFXwDdHQTXKo/Jzp
-	 +oZrC89hrI3HM1Y4E/W5CiM9mDEdD/QyO1SZTdpeeF5u7VQxY0q5hoCpPik7xYOrQZ
-	 kaA+kbYqLPTGlDM+N9PfVkX4Nnckd45D//dlXFOYaiCerdBFBXEPA4/ROmb6Y9kc5H
-	 AKp5YEcJpiivgSGy9AafFcHVDzDl6YsPh5ZvmpQXNQwiYZiHqUVoKhR5Nm7kt6hl3F
-	 Rd0HuwQ4tDQDQ==
-Date: Fri, 15 Mar 2024 11:22:24 -0600
-From: Rob Herring <robh@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Saravana Kannan <saravanak@google.com>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [GIT PULL] Devicetree updates for v6.9
-Message-ID: <20240315172224.GA1479929-robh@kernel.org>
+	s=arc-20240116; t=1710523369; c=relaxed/simple;
+	bh=mAhE3o0SrMCeflcuooFtxO5kccZA1jl/gXfmf7FXXXY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=OebubCc8EROxlJqa9LyDLHZ57BxF0t2LfwRrggnOrzw/XL/bffkqYPdTKwdTEgjF/0ztbwJzt8/YBxXtgLkJZrz/aXSPjAwTqBqc2S+7ZO2n2dEMeFrCBchsr481C6eHmM7u82WV2EIYtDafULqHYwy5W7PnMyKBihK2hoeRKcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D1YxW2xt; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-413feaf0625so8250875e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710523366; x=1711128166; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8LDXTlkgNdzNpQM4AckJ/eSrFb3E/elpUN5arl+3BbQ=;
+        b=D1YxW2xtp3g9lNWf1RdLqoxXqV8YaPgpwiL3wC2MDhEiaFUWtKtR6i8gFHf40E47nV
+         ehY2MNVYS+D04qy9ORj+5H3nhnXjB8WX02FFgTDJrDYvd6zAHap65Nur+z6FSYaf+qaM
+         aU5CUC+0Qwjpujv7Fuao/XOeR/6VtSw775m6C6nF5vyR4x32ITjTRWDbBeCLMSjMbQ+7
+         Z7JhamadV9b+78zj1Tg6FmIALsTtKQLPUJofp30RAQHW+D8r0/1Ui1lpbF/BEoJd/7gR
+         PiAlluiMda4UdCfsFQUwrE9bLD2olyovyFVM3Ig4QV3dsrOg7/Iii3JWJXAbSvMCwWQB
+         cMGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710523366; x=1711128166;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8LDXTlkgNdzNpQM4AckJ/eSrFb3E/elpUN5arl+3BbQ=;
+        b=KSRGHkGNTTenPKwIHkHtUcfY1IYMssXjdDAK3EQ0wm9qw5/zbzSp7OAe6KJ3NOniqG
+         Sfb0iPHK0rEgUcySj8/iZtvMFW28aFHSZLc8icLp1u3qM80+vQnFLH7N8W4CsDUSc4IO
+         IV4h2owg+Z7lvJTOXdZ99E7fN1AhBPvs+vXfKhKs+Sfaf+5SJ/1ZvqG1qaKvUjWPMMdI
+         cF9nHG3gXrp2dhXbOYSKMWLyn1fH+A88IWB9iri7rRoLpmjyH1Wgha40e3OBHZNW77Jo
+         eW1A3WspiY161pWkjXqnOSP9PqxpLWIb6DX3/OjZ69/Wte19rnByBgLhbvEpP7peQxbs
+         U82w==
+X-Forwarded-Encrypted: i=1; AJvYcCXCPrZpB/JAS85bpdSpIfJEQ3J6qS4gNbss8WHK3BbdpbLYAjlUO7Mkd4fEw5tW4AsVz126V99wJXrhKSj/U9VFsWZv31bvYVuoHGV/
+X-Gm-Message-State: AOJu0YzwrHNwxzyZvDcXIrbKFiWLB8BZPlxhp2Z4mgOrgxNDPkaj1yFW
+	biztpuNMiw84FNDal1f2ucmWKn1wIBYxLzJO3l7y+fBhS4aSwUWiaEXiIN2XeKk=
+X-Google-Smtp-Source: AGHT+IE+tglPP52E7sGBtoK9bjSYFBUkswYItNjrVGIPqxkzJGnOxbpS3lX+gGL6lHvEIr8omTLi7A==
+X-Received: by 2002:a05:600c:4e16:b0:413:feb5:96f6 with SMTP id b22-20020a05600c4e1600b00413feb596f6mr2356468wmq.21.1710523366246;
+        Fri, 15 Mar 2024 10:22:46 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:a633:992a:92cc:9c3? ([2a01:e0a:982:cbb0:a633:992a:92cc:9c3])
+        by smtp.gmail.com with ESMTPSA id p7-20020adfcc87000000b0033e25c39ac3sm3629908wrj.80.2024.03.15.10.22.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 10:22:45 -0700 (PDT)
+Message-ID: <b0e6badf-51f8-4c70-b315-5e5fd7a8e91b@linaro.org>
+Date: Fri, 15 Mar 2024 18:22:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 1/1] usb: typec: ucsi: Check capabilities before cable
+ and identity discovery
+Content-Language: en-US, fr
+To: Jameson Thies <jthies@google.com>, heikki.krogerus@linux.intel.com,
+ linux-usb@vger.kernel.org
+Cc: pmalani@chromium.org, bleung@google.com, abhishekpandit@chromium.org,
+ andersson@kernel.org, dmitry.baryshkov@linaro.org,
+ fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org,
+ hdegoede@redhat.com, rajaram.regupathy@intel.com, saranya.gopal@intel.com,
+ linux-kernel@vger.kernel.org
+References: <20240315171836.343830-1-jthies@google.com>
+ <20240315171836.343830-2-jthies@google.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20240315171836.343830-2-jthies@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Linus,
+Hi,
 
-Please pull DT updates for v6.9.
+On 15/03/2024 18:18, Jameson Thies wrote:
+> Check the UCSI_CAP_GET_PD_MESSAGE bit before sending GET_PD_MESSAGE to
+> discover partner and cable identity, check UCSI_CAP_CABLE_DETAILS before
+> sending GET_CABLE_PROPERTY to discover the cable and check
+> UCSI_CAP_ALT_MODE_DETAILS before registering the a cable plug. Additionally,
+> move 8 bits from reserved_1 to features in the ucsi_capability struct. This
+> makes the field 16 bits, still 8 short of the 24 bits allocated for it in
+> UCSI v3.0, but it will not overflow because UCSI only defines 14 bits in
+> bmOptionalFeatures.
+> 
+> Fixes: 38ca416597b0 ("usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY")
+> Link: https://lore.kernel.org/linux-usb/44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org
+> Suggested-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Jameson Thies <jthies@google.com>
+> ---
+> Confirmed a device which supports GET_PD_MESSAGE, GET_CABLE_PROPERTY and
+> GET_ALTERNATE_MODES still requested identity and cable information.
+> 
+>   drivers/usb/typec/ucsi/ucsi.c | 34 +++++++++++++++++++++-------------
+>   drivers/usb/typec/ucsi/ucsi.h |  5 +++--
+>   2 files changed, 24 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+> index cf52cb34d2859..958dc82989b60 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.c
+> +++ b/drivers/usb/typec/ucsi/ucsi.c
+> @@ -1133,17 +1133,21 @@ static int ucsi_check_cable(struct ucsi_connector *con)
+>   	if (ret < 0)
+>   		return ret;
+>   
+> -	ret = ucsi_get_cable_identity(con);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE) {
+> +		ret = ucsi_get_cable_identity(con);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>   
+> -	ret = ucsi_register_plug(con);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (con->ucsi->cap.features & UCSI_CAP_ALT_MODE_DETAILS) {
+> +		ret = ucsi_register_plug(con);
+> +		if (ret < 0)
+> +			return ret;
+>   
+> -	ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
+> -	if (ret < 0)
+> -		return ret;
+> +		ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>   
+>   	return 0;
+>   }
+> @@ -1189,8 +1193,10 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+>   			ucsi_register_partner(con);
+>   			ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
+>   			ucsi_partner_task(con, ucsi_check_connector_capability, 1, HZ);
+> -			ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
+> -			ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
+> +			if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
+> +				ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
+> +			if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
+> +				ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
+>   
+>   			if (UCSI_CONSTAT_PWR_OPMODE(con->status.flags) ==
+>   			    UCSI_CONSTAT_PWR_OPMODE_PD)
+> @@ -1589,8 +1595,10 @@ static int ucsi_register_port(struct ucsi *ucsi, struct ucsi_connector *con)
+>   		ucsi_register_partner(con);
+>   		ucsi_pwr_opmode_change(con);
+>   		ucsi_port_psy_changed(con);
+> -		ucsi_get_partner_identity(con);
+> -		ucsi_check_cable(con);
+> +		if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
+> +			ucsi_get_partner_identity(con);
+> +		if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
+> +			ucsi_check_cable(con);
+>   	}
+>   
+>   	/* Only notify USB controller if partner supports USB data */
+> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
+> index 32daf5f586505..0e7c92eb1b227 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.h
+> +++ b/drivers/usb/typec/ucsi/ucsi.h
+> @@ -206,7 +206,7 @@ struct ucsi_capability {
+>   #define UCSI_CAP_ATTR_POWER_OTHER		BIT(10)
+>   #define UCSI_CAP_ATTR_POWER_VBUS		BIT(14)
+>   	u8 num_connectors;
+> -	u8 features;
+> +	u16 features;
+>   #define UCSI_CAP_SET_UOM			BIT(0)
+>   #define UCSI_CAP_SET_PDM			BIT(1)
+>   #define UCSI_CAP_ALT_MODE_DETAILS		BIT(2)
+> @@ -215,7 +215,8 @@ struct ucsi_capability {
+>   #define UCSI_CAP_CABLE_DETAILS			BIT(5)
+>   #define UCSI_CAP_EXT_SUPPLY_NOTIFICATIONS	BIT(6)
+>   #define UCSI_CAP_PD_RESET			BIT(7)
+> -	u16 reserved_1;
+> +#define UCSI_CAP_GET_PD_MESSAGE		BIT(8)
+> +	u8 reserved_1;
+>   	u8 num_alt_modes;
+>   	u8 reserved_2;
+>   	u16 bc_version;
 
-Rob
+It looks fine:
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
+I'll run a test on the affected platforms in the next days and
+report if it fixes the regression.
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-for-6.9
-
-for you to fetch changes up to 7e98fe49f8896cc60c2a88c60bc535aa3e0e2564:
-
-  dt-bindings: soc: imx: fsl,imx-anatop: add imx6q regulators (2024-03-15 10:57:36 -0600)
-
-----------------------------------------------------------------
-Devicetree updates for v6.9:
-
-DT core:
-
-- Add cleanup.h based auto release of struct device_node pointers via
-  __free marking and new for_each_child_of_node_scoped() iterator to use
-  it.
-
-- Always create a base skeleton DT when CONFIG_OF is enabled. This
-  supports several usecases of adding DT data on non-DT booted systems.
-
-- Move around some /reserved-memory code in preparation for further
-  improvements
-
-- Add a stub for_each_property_of_node() for !OF
-
-- Adjust the printk levels on some messages
-
-- Fix __be32 sparse warning
-
-- Drop RESERVEDMEM_OF_DECLARE usage from Freescale qbman driver
-  (currently orphaned)
-
-- Add Saravana Kannan and drop Frank Rowand as DT maintainers
-
-DT bindings:
-
-- Convert Mediatek timer, Mediatek sysirq, fsl,imx6ul-tsc,
-  fsl,imx6ul-pinctrl, Atmel AIC, Atmel HLCDC, FPGA region, and
-  xlnx,sd-fec to DT schemas
-
-- Add existing, but undocumented fsl,imx-anatop binding
-
-- Add bunch of undocumented vendor prefixes used in compatible strings
-
-- Drop obsolete brcm,bcm2835-pm-wdt binding
-
-- Drop obsolete i2c.txt which as been replaced with schema in dtschema
-
-- Add DPS310 device and sort trivial-devices.yaml
-
-- Enable undocumented compatible checks on DT binding examples
-
-- More QCom maintainer fixes/updates
-
-- Updates to writing-schema.rst and DT submitting-patches.rst to cover
-  some frequent review comments
-
-- Clean-up SPDX tags to use 'OR' rather than 'or'
-
-----------------------------------------------------------------
-Alexander Stein (2):
-      of: property: Make 'no port node found' output a debug message
-      dt-bindings: soc: imx: fsl,imx-anatop: add imx6q regulators
-
-AngeloGioacchino Del Regno (1):
-      dt-bindings: timer: mediatek: Convert to json-schema
-
-Bartosz Golaszewski (1):
-      of: make for_each_property_of_node() available to to !OF
-
-Dawei Li (1):
-      of: Make explicit cpu_to_be32 conversion to mute sparse warning
-
-Dharma Balasubiramani (2):
-      dt-bindings: display: convert Atmel's HLCDC to DT schema
-      dt-bindings: interrupt-controller: Convert Atmel AIC to json-schema
-
-Dragan Cvetic (1):
-      dt-bindings: misc: xlnx,sd-fec: convert bindings to yaml
-
-Frank Li (1):
-      dt-bindings: interrupt-controller: fsl,intmux: Include power-domains support
-
-Frank Rowand (2):
-      of: Create of_root if no dtb provided by firmware
-      of: unittest: treat missing of_root as error instead of fixing up
-
-Jeffrey Hugo (2):
-      dt-bindings: watchdog: qcom-wdt: Update maintainer to Rajendra Nayak
-      dt-bindings: net: bluetooth: qualcomm: Fix bouncing @codeaurora
-
-Jonathan Cameron (3):
-      of: Add cleanup.h based auto release via __free(device_node) markings
-      of: Introduce for_each_*_child_of_node_scoped() to automate of_node_put() handling
-      of: unittest: Use for_each_child_of_node_scoped()
-
-Krzysztof Kozlowski (10):
-      docs: dt: submitting-patches: drop outdated points to TXT format
-      docs: dt: submitting-patches: add commit subject prefix in reversed format
-      dt-bindings: mux: restrict node name suffixes
-      dt-bindings: trivial-devices: sort entries alphanumerically
-      dt-bindings: misc: qcom,fastrpc: Compute callbacks can be DMA coherent
-      dt-bindings: use capital "OR" for multiple licenses in SPDX
-      docs: dt: writing-schema: clarify that schema should describe hardware
-      docs: dt: writing-schema: explain additional/unevaluatedProperties
-      docs: dt: writing-schema: document expectations on example DTS
-      dt-bindings: arm: syna: remove unstable remark
-
-Kuninori Morimoto (2):
-      of: property: add missing kerneldoc for of_graph_get_endpoint_count()
-      of: property: use unsigned int return on of_graph_get_endpoint_count()
-
-Lad Prabhakar (1):
-      dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Update interrupts
-
-Michal Simek (1):
-      dt-bindings: fpga: Convert fpga-region binding to yaml
-
-Ninad Palsule (1):
-      dt-bindings: Add DPS310 as trivial device
-
-Peng Fan (1):
-      dt-bindings: can: fsl,flexcan: add i.MX95 compatible string
-
-Rafał Miłecki (2):
-      dt-bindings: interrupt-controller: convert MediaTek sysirq to the json-schema
-      dt-bindings: vendor-prefixes: add smartrg
-
-Rob Herring (9):
-      dt-bindings: Turn on undocumented compatible checks
-      MAINTAINERS: Drop Frank Rowand from DT maintainership
-      MAINTAINERS: Drop my "+dt" sub-address
-      dt-bindings: i2c: mux: i2c-demux-pinctrl: Drop i2c-mux.yaml reference
-      dt-bindings: i2c: mux: i2c-demux-pinctrl: Define "i2c-parent" constraints
-      dt-bindings: vendor-prefixes: Add missing prefixes used in compatibles
-      dt-bindings: i2c: Remove obsolete i2c.txt
-      soc: fsl: qbman: Remove RESERVEDMEM_OF_DECLARE usage
-      of: Move all FDT reserved-memory handling into of_reserved_mem.c
-
-Saravana Kannan (1):
-      MAINTAINERS: of: Add Saravana Kannan
-
-Sebastian Reichel (6):
-      dt-bindings: lcdif: Do not require power-domains for i.MX6ULL
-      dt-bindings: pinctrl: fsl,imx6ul-pinctrl: convert to YAML
-      dt-bindings: input: touchscreen: fsl,imx6ul-tsc convert to YAML
-      dt-bindings: soc: imx: fsl,imx-anatop: add binding
-      dt-bindings: soc: imx: fsl,imx-iomuxc-gpr: add imx6
-      dt-bindings: fsl-imx-sdma: fix HDMI audio index
-
-Stanislav Jakubek (1):
-      dt-bindings: watchdog: drop obsolete brcm,bcm2835-pm-wdt bindings
-
-Stephen Boyd (4):
-      of: Always unflatten in unflatten_and_copy_device_tree()
-      um: Unconditionally call unflatten_device_tree()
-      x86/of: Unconditionally call unflatten_and_copy_device_tree()
-      of: Add KUnit test to confirm DTB is loaded
-
-Uwe Kleine-König (1):
-      of/platform: Inform about created platform devices using pr_debug()
-
- Documentation/devicetree/bindings/Makefile         |   3 -
- Documentation/devicetree/bindings/arm/syna.txt     |  12 -
- .../atmel/atmel,hlcdc-display-controller.yaml      |  63 +++
- .../devicetree/bindings/display/atmel/hlcdc-dc.txt |  75 ----
- .../devicetree/bindings/display/fsl,lcdif.yaml     |   8 +-
- .../bindings/display/panel/visionox,r66451.yaml    |   2 +-
- .../devicetree/bindings/dma/fsl,imx-sdma.yaml      |   3 +-
- .../devicetree/bindings/fpga/fpga-region.txt       | 479 ---------------------
- .../devicetree/bindings/fpga/fpga-region.yaml      | 358 +++++++++++++++
- .../bindings/gpio/gateworks,pld-gpio.txt           |   3 +-
- .../devicetree/bindings/gpio/mrvl-gpio.yaml        |   2 +-
- .../devicetree/bindings/i2c/i2c-demux-pinctrl.yaml |   3 +-
- Documentation/devicetree/bindings/i2c/i2c-pxa.yaml |   2 +-
- Documentation/devicetree/bindings/i2c/i2c.txt      | 151 -------
- .../bindings/i2c/nvidia,tegra186-bpmp-i2c.yaml     |   3 +-
- Documentation/devicetree/bindings/i3c/i3c.yaml     |   2 +-
- .../bindings/input/touchscreen/fsl,imx6ul-tsc.yaml |  97 +++++
- .../bindings/input/touchscreen/imx6ul_tsc.txt      |  38 --
- .../bindings/interrupt-controller/atmel,aic.txt    |  43 --
- .../bindings/interrupt-controller/atmel,aic.yaml   |  89 ++++
- .../bindings/interrupt-controller/fsl,intmux.yaml  |   3 +
- .../mediatek,mt6577-sysirq.yaml                    |  85 ++++
- .../interrupt-controller/mediatek,sysirq.txt       |  44 --
- .../interrupt-controller/renesas,rzg2l-irqc.yaml   |  44 +-
- .../devicetree/bindings/misc/qcom,fastrpc.yaml     |   2 +
- .../devicetree/bindings/misc/xlnx,sd-fec.txt       |  58 ---
- .../devicetree/bindings/misc/xlnx,sd-fec.yaml      | 140 ++++++
- .../devicetree/bindings/mux/mux-controller.yaml    |   2 +-
- .../bindings/net/bluetooth/qualcomm-bluetooth.yaml |   4 +-
- .../devicetree/bindings/net/can/fsl,flexcan.yaml   |   3 +
- .../bindings/pinctrl/fsl,imx6ul-pinctrl.txt        |  37 --
- .../bindings/pinctrl/fsl,imx6ul-pinctrl.yaml       | 116 +++++
- .../devicetree/bindings/rtc/sa1100-rtc.yaml        |   2 +-
- .../bindings/soc/imx/fsl,imx-anatop.yaml           | 128 ++++++
- .../bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml       |  18 +-
- Documentation/devicetree/bindings/sound/cs4341.txt |   2 +-
- .../devicetree/bindings/submitting-patches.rst     |  23 +-
- .../bindings/timer/mediatek,mtk-timer.txt          |  48 ---
- .../devicetree/bindings/timer/mediatek,timer.yaml  |  84 ++++
- .../devicetree/bindings/timer/mrvl,mmp-timer.yaml  |   2 +-
- .../devicetree/bindings/trivial-devices.yaml       |  75 ++--
- .../devicetree/bindings/usb/cypress,hx3.yaml       |   2 +-
- .../devicetree/bindings/vendor-prefixes.yaml       |  27 ++
- .../bindings/watchdog/brcm,bcm2835-pm-wdog.txt     |  18 -
- .../devicetree/bindings/watchdog/qcom-wdt.yaml     |   2 +-
- .../devicetree/bindings/writing-schema.rst         |  30 +-
- Documentation/misc-devices/xilinx_sdfec.rst        |   2 +-
- MAINTAINERS                                        |   9 +-
- arch/um/kernel/dtb.c                               |  16 +-
- arch/x86/kernel/devicetree.c                       |  26 +-
- drivers/of/.kunitconfig                            |   3 +
- drivers/of/Kconfig                                 |  14 +-
- drivers/of/Makefile                                |   4 +-
- drivers/of/base.c                                  |   4 +-
- drivers/of/empty_root.dts                          |   6 +
- drivers/of/fdt.c                                   | 187 +++-----
- drivers/of/of_private.h                            |   5 +-
- drivers/of/of_reserved_mem.c                       | 125 +++++-
- drivers/of/of_test.c                               |  57 +++
- drivers/of/platform.c                              |   5 +-
- drivers/of/property.c                              |  12 +-
- drivers/of/unittest.c                              |  27 +-
- drivers/soc/fsl/qbman/bman_ccsr.c                  |  27 +-
- drivers/soc/fsl/qbman/dpaa_sys.c                   |  12 +-
- drivers/soc/fsl/qbman/dpaa_sys.h                   |   4 +-
- drivers/soc/fsl/qbman/qman_ccsr.c                  |  73 +---
- include/dt-bindings/power/amlogic,c3-pwrc.h        |   2 +-
- include/linux/of.h                                 |  46 +-
- include/linux/of_graph.h                           |   4 +-
- 69 files changed, 1722 insertions(+), 1383 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-display-controller.yaml
- delete mode 100644 Documentation/devicetree/bindings/display/atmel/hlcdc-dc.txt
- delete mode 100644 Documentation/devicetree/bindings/fpga/fpga-region.txt
- create mode 100644 Documentation/devicetree/bindings/fpga/fpga-region.yaml
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c.txt
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/fsl,imx6ul-tsc.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/imx6ul_tsc.txt
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mediatek,mt6577-sysirq.yaml
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mediatek,sysirq.txt
- delete mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
- create mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
- delete mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.txt
- create mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.yaml
- create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
- delete mode 100644 Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt
- create mode 100644 Documentation/devicetree/bindings/timer/mediatek,timer.yaml
- delete mode 100644 Documentation/devicetree/bindings/watchdog/brcm,bcm2835-pm-wdog.txt
- create mode 100644 drivers/of/.kunitconfig
- create mode 100644 drivers/of/empty_root.dts
- create mode 100644 drivers/of/of_test.c
+Thanks,
+Neil
 
