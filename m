@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-104376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11DB787CCFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:01:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9125687CD01
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B610B21F2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:01:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C282E1C2199B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF441C287;
-	Fri, 15 Mar 2024 12:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEDB1C280;
+	Fri, 15 Mar 2024 12:02:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1jxPqcrx"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="myQxTOcD"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBCC635
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5C7635
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:02:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710504066; cv=none; b=tQBUjtyQKxtsA03afgNI8auY03LFw/l/SrHGvZDBbO6J6PDWCujJ/WeeLRtruo01xOr7dTm11T9MvIWrbEoqbCK7PYNxYAtn+MGQZM3Vq30hZsWLUwO1lSd/YYrSCX7PSLkkCLfRN4EBaAXNAn2SdvNxW8XnikYL3C3Ay+e937M=
+	t=1710504131; cv=none; b=jPg8rr+jO1tup+HAFb0EpiaC/81ROrYiFs+/1qOA2hqoW5paMSVMegp8r0f5aYsXbxZ848MeaJbr7MP5/dpnLMkX/teJFYLzMgpvLhlJltiAQcS1+/QG8pFEU9PAHas1Me0lhTOQ/ag1tXqtIvFOyt8l7CxAeBsDRkXK56JPfbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710504066; c=relaxed/simple;
-	bh=wo5KaJTO7g4XTsjvDT5W1hhUtD1zGfjPtDK9XkU/fsw=;
+	s=arc-20240116; t=1710504131; c=relaxed/simple;
+	bh=OtLFV54AJAjMDblqkVAwHk31mrIpvs9hCe+qbqa6st0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bm3RJGvRs/0LLr/D01SY9xsr1orzjtwKKrZ2YjKMOCEZBLNTeZhm8FpeFpz7j8aOOulLV7OtZlDfld1T42CyUZCtJvHSXFgZNTJUQsr6scbvfZiTRPkNZdgYumfMEp2X6rzKMOPWJL0y6+8FhavqdePjY96WV+AbOIuZZpJuQ4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1jxPqcrx; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=bDpvCQCas4xGQ1zM2INcl9zRdkNN1RAoNbRyd/E0+jw77IRxE3zhHMKKfSoulgdCfQEueKz7/C8P0ugVP16Rex1AdjLe+zDcNTqOjJp2cU+OWTIRWzkm6BeT2IStZCJ8LLEAe2jtoBnVwsWvzTDNw3ENpOfHOfIs7O7D2mNE86E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=myQxTOcD; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710504059;
-	bh=wo5KaJTO7g4XTsjvDT5W1hhUtD1zGfjPtDK9XkU/fsw=;
+	s=mail; t=1710504128;
+	bh=OtLFV54AJAjMDblqkVAwHk31mrIpvs9hCe+qbqa6st0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=1jxPqcrx/ox/m1AOEkf/cnIgOag7fS4EFgxhaRQR6tv37YpNkhmjwMdziiVEDa5Ii
-	 RNa47ceM168TpFQcoHUTRQsLKpALlajcmXvRzc3Aw6eyITrsBKbWXLiIS7XmVwchyD
-	 h5lL1gNiFConcL3rmgtDIyYiVK6Hc82QbbabKl1p1QQnWDyh/PcK2+4k9dGRIziPs/
-	 rhPXT6O2yWCSelSqW+RmWE/S9PbgExcDvLe0LyzkQ2OUNEKrRDltU0nCcQ724VDc9W
-	 hnpyxuJitqatKY1oiW2YO9yXCgvwSlEH269TMeWB26+lPF9wKOwdYMIzVLOQ1YhbCX
-	 vi5pfjpYCvEEA==
+	b=myQxTOcD/FfQvyq0VJdG+KHbNtlK3TN0MTbM8M44bMsJlsgbinPJEXz/jCWDRL1PU
+	 focHWdjD9QDjGIRpQlNqFI4k/lVmGIBS+tRV5APngLHW82Pm9fhgbQMS2tOD6AE1pP
+	 seN2B4/Cjq8eBc1W+Tc2pyNrC1APKfg6fyc2T7DYFkszdbQ9ljIFzQ3HWz3nzkRRe+
+	 Oujf/PSTY0GzSDFXArl60Jk6NGqWm0KxhzG/aZ+Rv6ZEj8OaSu2ygJGpHgTqH17nBr
+	 qSsf9upQs/hcuTx8BR7SDwnR4Q0A1Wsq9pjKB2euYnAayAr4ueIxmQFsK0pnLm8XEa
+	 YbQtABFGH5NQQ==
 Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: koike)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D3E8A378105A;
-	Fri, 15 Mar 2024 12:00:53 +0000 (UTC)
-Message-ID: <00b4af3b-bbb6-4057-969f-5882220858a3@collabora.com>
-Date: Fri, 15 Mar 2024 09:00:50 -0300
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D34E2378105A;
+	Fri, 15 Mar 2024 12:02:02 +0000 (UTC)
+Message-ID: <aba60de7-63a2-4009-bdfd-4d86cec464be@collabora.com>
+Date: Fri, 15 Mar 2024 09:02:02 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,9 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 03/11] drm/ci: uprev IGT and update testlist
+Subject: Re: [PATCH v4 09/11] drm/ci: rockchip: Refactor existing rockchip
+ jobs
+Content-Language: en-US
 To: Vignesh Raman <vignesh.raman@collabora.com>,
  dri-devel@lists.freedesktop.org
 Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
@@ -67,122 +69,114 @@ Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
  linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
  linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20240306030649.60269-1-vignesh.raman@collabora.com>
- <20240306030649.60269-4-vignesh.raman@collabora.com>
- <4f927c99-9ea2-424e-85a7-bd05d0817dab@collabora.com>
- <af5b6e38-306d-ae79-42af-88e6e9a32cff@collabora.com>
-Content-Language: en-US
+ <20240306030649.60269-10-vignesh.raman@collabora.com>
+ <098d2345-df99-4ad2-bc1c-9641662ed9bd@collabora.com>
+ <f53c716d-6d11-13f6-0ecf-ec02f4debcfa@collabora.com>
 From: Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <af5b6e38-306d-ae79-42af-88e6e9a32cff@collabora.com>
+In-Reply-To: <f53c716d-6d11-13f6-0ecf-ec02f4debcfa@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 15/03/2024 08:12, Vignesh Raman wrote:
+On 15/03/2024 08:18, Vignesh Raman wrote:
 > Hi Helen,
 > 
-> On 07/03/24 19:05, Helen Koike wrote:
+> On 07/03/24 19:32, Helen Koike wrote:
 >>
 >>
 >> On 06/03/2024 00:06, Vignesh Raman wrote:
->>> Uprev IGT and add amd, v3d, vc4 and vgem specific
->>> tests to testlist. Have testlist.txt per driver
->>> and include a base testlist so that the driver
->>> specific tests will run only on those hardware.
->>> Also add testlists to the MAINTAINERS file.
+>>> For rockchip rk3288 and rk3399, the display driver is rockchip.
+>>> Currently, in drm-ci for rockchip, only the display driver is
+>>> tested. Refactor the existing rockchip jobs so that gpu driver
+>>> testing jobs can be added later and update xfails accordingly.
 >>>
 >>> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
 >>> ---
 >>>
+>>> v2:
+>>>    - Refactor the patch to rename job to indicate display driver 
+>>> testing,
+>>>      rename the existing xfail files.
+>>>
 >>> v3:
->>>    - New patch in series to uprev IGT and update testlist.
+>>>    - Add the job name in GPU_VERSION and use it for xfail file names
+>>>      instead of using DRIVER_NAME. Also update xfails.
 >>>
 >>> v4:
->>>    - Add testlists to the MAINTAINERS file and remove amdgpu xfails 
->>> changes.
+>>>    - Remove the display suffix in job and rename xfails accordingly.
+>>>      Remove the change adding job name in GPU_VERSION.
 >>>
 >>> ---
->>>   MAINTAINERS                              |  11 ++
->>>   drivers/gpu/drm/ci/gitlab-ci.yml         |   2 +-
->>>   drivers/gpu/drm/ci/igt_runner.sh         |  12 +-
->>>   drivers/gpu/drm/ci/testlist-amdgpu.txt   | 151 +++++++++++++++++++++++
->>>   drivers/gpu/drm/ci/testlist-msm.txt      |  50 ++++++++
->>>   drivers/gpu/drm/ci/testlist-panfrost.txt |  17 +++
->>>   drivers/gpu/drm/ci/testlist-v3d.txt      |  73 +++++++++++
->>>   drivers/gpu/drm/ci/testlist-vc4.txt      |  49 ++++++++
->>>   drivers/gpu/drm/ci/testlist.txt          |  84 ++++++-------
->>>   9 files changed, 398 insertions(+), 51 deletions(-)
->>>   create mode 100644 drivers/gpu/drm/ci/testlist-amdgpu.txt
->>>   create mode 100644 drivers/gpu/drm/ci/testlist-msm.txt
->>>   create mode 100644 drivers/gpu/drm/ci/testlist-panfrost.txt
->>>   create mode 100644 drivers/gpu/drm/ci/testlist-v3d.txt
->>>   create mode 100644 drivers/gpu/drm/ci/testlist-vc4.txt
+>>>   drivers/gpu/drm/ci/test.yml                   | 36 ++++++++----
+>>>   .../drm/ci/xfails/rockchip-rk3288-fails.txt   | 58 ++++++-------------
+>>>   .../drm/ci/xfails/rockchip-rk3288-flakes.txt  | 20 +++++++
+>>>   .../drm/ci/xfails/rockchip-rk3288-skips.txt   | 54 ++---------------
+>>>   .../drm/ci/xfails/rockchip-rk3399-fails.txt   | 38 ++++++------
+>>>   .../drm/ci/xfails/rockchip-rk3399-flakes.txt  | 28 +++++++--
+>>>   .../drm/ci/xfails/rockchip-rk3399-skips.txt   |  5 +-
+>>>   7 files changed, 110 insertions(+), 129 deletions(-)
+>>>   create mode 100644 
+>>> drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
 >>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index 3bc7e122a094..4da66ca92f1a 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -1665,6 +1665,8 @@ L:    dri-devel@lists.freedesktop.org
->>>   S:    Supported
->>>   T:    git git://anongit.freedesktop.org/drm/drm-misc
->>>   F:    Documentation/gpu/panfrost.rst
->>> +F:    drivers/gpu/drm/ci/testlist-panfrost.txt
->>> +F:    drivers/gpu/drm/ci/testlist.txt
+>>> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+>>> index 6ae6398b3d88..831e580e6dfd 100644
+>>> --- a/drivers/gpu/drm/ci/test.yml
+>>> +++ b/drivers/gpu/drm/ci/test.yml
+>>> @@ -153,33 +153,45 @@ msm:sdm845:
+>>>     script:
+>>>       - ./install/bare-metal/cros-servo.sh
+>>> -rockchip:rk3288:
+>>> -  extends:
+>>> -    - .lava-igt:arm32
+>>> +.rockchip:
+>>>     stage: rockchip
+>>>     variables:
+>>> -    DRIVER_NAME: rockchip
 >>
->> I wonder if we should have both here, since the second is not used right?
-> 
-> Yes, we need to use both here. testlist-panfrost.txt includes 
-> testlist.txt. So we have moved the driver specific tests to
-> testlist-panfrost.txt and have a base testlist.txt.
-> 
-> 
->>> diff --git a/drivers/gpu/drm/ci/igt_runner.sh 
->>> b/drivers/gpu/drm/ci/igt_runner.sh
->>> index f1a08b9b146f..77cd81fe6d1a 100755
->>> --- a/drivers/gpu/drm/ci/igt_runner.sh
->>> +++ b/drivers/gpu/drm/ci/igt_runner.sh
->>> @@ -74,10 +74,20 @@ if ! grep -q "core_getversion" 
->>> /install/testlist.txt; then
->>>   fi
->>>   set +e
->>> +if [ "$DRIVER_NAME" = "amdgpu" ]; then
->>> +    TEST_LIST="/install/testlist-amdgpu.txt"
->>> +elif [ "$DRIVER_NAME" = "msm" ]; then
->>> +    TEST_LIST="/install/testlist-msm.txt"
->>> +elif [ "$DRIVER_NAME" = "panfrost" ]; then
->>> +    TEST_LIST="/install/testlist-panfrost.txt"
->>> +else
->>> +    TEST_LIST="/install/testlist.txt"
->>> +fi
+>> Looks like it make sense to keep DRIVER_NAME here, no?
 >>
->> Maybe simplify this with:
+>>> -    DEVICE_TYPE: rk3288-veyron-jaq
+>>>       DTB: ${DEVICE_TYPE}
+>>>       BOOT_METHOD: depthcharge
+>>> +
+>>> +.rk3288:
+>>> +  extends:
+>>> +    - .lava-igt:arm32
+>>> +    - .rockchip
 >>
->> TEST_LIST="/install/testlist-$DRIVER_NAME.txt"
+>> Maybe, instead of extending .rockchip here, make .rockchip tied to the 
+>> DRIVER_NAME and .rk3288 tied to the GPU_VERSION, and on 
+>> rockchip:rk3288 you can extend both .rockchip and .rk3288, what do you 
+>> think?
+>> So rockchip:rk3399 you can extend .rockchip and .rk3399.
 >>
->> if [ ! -f "$TEST_LIST" ]; then
->>      TEST_LIST="/install/testlist.txt"
->> fi
-> 
-> Yes, this is much better. Thanks.
-> 
+>> and in the panfrost one you can have a .panfrost (that can extend 
+>> .rockchip if they are the same definition).
 >>
->> Another question I have: shouldn't testlist-$DRIVER_NAME.txt and 
->> testlist.txt be merged? Or they are really mutually exclusive?
+>> I feel it becomes less confusing, what do you think?
+>>
+>> I would even add some prefix or suffix to make it less confusing, like 
+>> .driver-rockchip and .gpu-rk3288 for instance, making it a bit more 
+>> intuitive and helping our future selves :)
 > 
-> We have testlist-$DRIVER_NAME.txt per driver and it includes a base 
-> testlist.txt
+> Thanks for the suggestion. This can be done. Should we do it only
+> for rockchip jobs or others also (meson, mediatek) ?
 
-I'm confused, it seems that from the code or it uses 
-testlist-$DRIVER_NAME.txt or it uses testlist.txt, you don't merge them 
-by code, which means that drivers don't need to follow changes to 
-testlist.txt.
-
-If testlist-$DRIVER_NAME.txt already includes tests in testlist.txt, 
-than testlist.txt doesn't need to be added in the MAINTEINERS file in 
-all drivers.
+I guess we could keep the same patter for all the make sense.
 
 Helen
 
+> 
+>>
+>>> +  variables:
+>>> +    DEVICE_TYPE: rk3288-veyron-jaq
+>>>       KERNEL_IMAGE_TYPE: "zimage"
+>>> -    GPU_VERSION: rk3288
+>>
+>> Looks like it make sense to keep GPU_VERSION here, no? Same comment 
+>> for .rk3399.
+> Yes, will fix this.
 > 
 > Regards,
 > Vignesh
