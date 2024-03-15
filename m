@@ -1,145 +1,131 @@
-Return-Path: <linux-kernel+bounces-104966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB14987D6B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B70E587D6BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:39:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EF071F2388B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:38:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D30A1F23943
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFA45677B;
-	Fri, 15 Mar 2024 22:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C1756B65;
+	Fri, 15 Mar 2024 22:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="fvtASvfd"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EhVlUuzJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A25C4595D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 22:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C552A1774E;
+	Fri, 15 Mar 2024 22:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710542321; cv=none; b=di/gH2MAPIFN1j8YMqzmXJf6LlhenR/XzdwtaW9rHgdEawMX4SUiDXhS1pEbrXdhNOCNVj7F9YvttCck8UmYD1s6QgRvKs8TM9+Zo8t27V2BzWraV+1/4bgcNB2Zj51IsLkCJXB2LbRsPNLyP4W0OPrc0y6GVbYX0vf3RHSpXvM=
+	t=1710542375; cv=none; b=NctccMrJUYR6qZ5roSxZRRF2uWJQfAWEuWEHBIDyew1Q+7mlvcQkwHp04gKOd12rsiYAeJDFnm9nCZUnFVJFbMWbTCIPPC49xQjBEugqmpjmETVr7nXzvLEKoqUVTJvVeOBaSKAJsM8dbL3dJDDNiPdOhuIGb7gC6gTbhIhY76U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710542321; c=relaxed/simple;
-	bh=ZtmGBms18y5rLruGa78SQlS9w6D2T7MxwMlTdsX4dsI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=UMM0KL8ygnImQjjUu+9AyDV8BMGoaTCUp9mnfFTzzU8i+SRHprIG608Iv2R1jxraCYE0jtRKfB1WAnS1MQRpUhKd8KFwoiz66hf5yronwSdaLm3xLQW2n+uc6qts1CjbmTtZlyvR6ryFFhmeVdiwOx2ocOiE5I0P2XeGVMVtPI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=fvtASvfd; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1def81ee762so2193755ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710542316; x=1711147116; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ic+kabnMCMY5KJ+q4SJK00XV6xYupnupycxy1eugygg=;
-        b=fvtASvfdsG/qGWoIa55zZBR3s2EWEf2TCtxXLc0OlQraH2o99FJJ/DEV11AadyaZ/a
-         X9MfGqoqtkAv/jTsJrHefD5l8wa3OFvjERzqo1Hhqf1qty2Hg1N/k9IjKWbtu1wgYGmr
-         ahXEAk77JLNP9xSTybrhMK+v5IA7yvf1QJy3C8UAJopyTd9fvUh+0hOZFWH9AoRyb6r6
-         hWe5qGgpPvnxoPpvqgAt+tk9xCaqnU37LTziQiKzzYkfqWPGwzeXOSsu4HPGZmWZ4Blp
-         LcFDWdOHy5VdvKks/ux83nOsbSH5OxR7KYI/1K7RbAnE7CZ3LMGCr0oHwk/71iwGBKBu
-         DfqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710542316; x=1711147116;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ic+kabnMCMY5KJ+q4SJK00XV6xYupnupycxy1eugygg=;
-        b=B21HnMXDcJq2ooX8HfsjXGO7yOiLGRcmugi7JnO/rGKBpiIY2oj7BDqMCtn3Z2cHv4
-         DvrLrSzwVcEmCw0SLG7VGIT/B0PSEOiUmwk8hyAReIo3zeCRjBozuXc91IGegRA3j/9L
-         GFBmmjB1ekccDxU9jqTCGRVGLju7UooZXefEgGovaAQOK7hO5HhIZ6SNHfI4L34VngVZ
-         +GHnBXRc5zPW/VUX+Ro9uVStLlhzVkU2l48CCNNV9y4fzUaV4cZfuNAdAsVlB2PcnD3q
-         TZ871M40zTp03SCqUUzRLejvl9hnZ5W0bkmQ+kFm7e6tcB/xVD5hZ/kpnv3KI9dZNIyX
-         sJBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU26BtGn0IG0iTHNcQ7+SMc0/vW/GEUxNptJ80LiIZ4rSyPHaGSbPpnsMe1AWHaDa6S9xqZy7ty/Eng8qSHSEpw7KZwcE3tb4RdiN6D
-X-Gm-Message-State: AOJu0YydpeHORbIkXBoRgehbxyfSKjnov6IgoCxwi8R/oDF4NN962d2c
-	yrDyif7n/6dPUeJw4HEfFyeOPDrcACK8NuiD6S2dtOndo6JR9cFc8Dc2q1cy7KA=
-X-Google-Smtp-Source: AGHT+IE+Rl8hRNTw4LjSIwnzdcVlE7pqV6EbEBqwGh98PqS29g23gF2U93X3qctGYOUNlZ9RRhvz1A==
-X-Received: by 2002:a05:6a21:1706:b0:1a1:694d:d4f7 with SMTP id nv6-20020a056a21170600b001a1694dd4f7mr6813196pzb.0.1710542316403;
-        Fri, 15 Mar 2024 15:38:36 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id n45-20020a056a000d6d00b006e6ff8ba817sm1208238pfv.16.2024.03.15.15.38.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 15:38:35 -0700 (PDT)
-Message-ID: <b090c928-6c42-4735-9758-e8a137832607@kernel.dk>
-Date: Fri, 15 Mar 2024 16:38:34 -0600
+	s=arc-20240116; t=1710542375; c=relaxed/simple;
+	bh=7AGoxyZRNwhWGRoTX0vozA4l+C5nDgnZKf/FebfvTaM=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=sZClRztBrycg7Wn3Eqi3tgA1bMwtyMTaPxuyds4e+sH7bcltFJaDe7SYGC/t+xQlNwLqz1kArUw1ADqIHsqjh3djM3NU9aUXgx3D1aAj7WdN8m3lEOt7G7r8FaLp8xqTEDcZeT/b74q2lQY2P0cKGJgSFzWCdB3NKO08iLm8BOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EhVlUuzJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28387C433F1;
+	Fri, 15 Mar 2024 22:39:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710542375;
+	bh=7AGoxyZRNwhWGRoTX0vozA4l+C5nDgnZKf/FebfvTaM=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=EhVlUuzJAcqLU0r1H2j4kr9URd7T6xVe8pbRCDtZAKanIlZ0r2DagcWdPI5uqeoqg
+	 9cQYNI8hjHYRZyK0m5KrCHu8hR0Lwra7Sclv3UC7lMbG7Xuw31s00jilt07Fm2xoA3
+	 BWkr09TCiS+x625sOJKABC6q+IUrp84D/AqlK8vf5GEXR0fMUv8rbebvThQQunjOpZ
+	 3bFr96dJ6ZksmJ33F0oJkVZp7aDUTJsiagVdIe6q+GmIr6pyUTvPPYp6WKu5IoJ0bR
+	 OH2ksIE5X8P9EBF78g4XZi8CLONMncZW2hMQljMhhix1aPqsT/if2h8GlWFUa5xUzQ
+	 AoJBZ5qknUmTg==
+Date: Fri, 15 Mar 2024 16:39:34 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] KMSAN: uninit-value in io_sendrecv_fail
-Content-Language: en-US
-To: syzbot <syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com>,
- asml.silence@gmail.com, io-uring@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000024b0820613ba8647@google.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <00000000000024b0820613ba8647@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: Simon Glass <sjg@chromium.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Michael Walle <mwalle@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20240315204521.28613-1-sjg@chromium.org>
+References: <20240315204521.28613-1-sjg@chromium.org>
+Message-Id: <171054237303.2017019.6117263925348911387.robh@kernel.org>
+Subject: Re: [PATCH v8 1/2] dt-bindings: mtd: fixed-partitions: Add
+ alignment properties
 
-On 3/15/24 4:28 PM, syzbot wrote:
-> Hello,
+
+On Sat, 16 Mar 2024 09:45:20 +1300, Simon Glass wrote:
+> Add three properties for controlling alignment of partitions, aka
+> 'entries' in fixed-partition.
 > 
-> syzbot found the following issue on:
+> For now there is no explicit mention of hierarchy, so a 'section' is
+> just the 'fixed-partitions' node.
 > 
-> HEAD commit:    8ede842f669b Merge tag 'rust-6.9' of https://github.com/Ru..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=138f0ad6180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a271c5dca0ff14df
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f8e9a371388aa62ecab4
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b4a6fa180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14a59799180000
+> These new properties are inputs to the Binman packaging process, but are
+> also needed if the firmware is repacked, to ensure that alignment
+> constraints are not violated. Therefore they are provided as part of
+> the schema.
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/af1cd47b84ef/disk-8ede842f.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/be9297712c37/vmlinux-8ede842f.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/c569fb33468d/bzImage-8ede842f.xz
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com
+> (no changes since v7)
 > 
-> =====================================================
-> BUG: KMSAN: uninit-value in io_sendrecv_fail+0x91/0x1e0 io_uring/net.c:1334
->  io_sendrecv_fail+0x91/0x1e0 io_uring/net.c:1334
->  io_req_defer_failed+0x3bd/0x610 io_uring/io_uring.c:1050
->  io_queue_sqe_fallback+0x1e3/0x280 io_uring/io_uring.c:2126
->  io_submit_fail_init+0x4e1/0x790 io_uring/io_uring.c:2304
->  io_submit_sqes+0x19cd/0x2fb0 io_uring/io_uring.c:2480
->  __do_sys_io_uring_enter io_uring/io_uring.c:3656 [inline]
->  __se_sys_io_uring_enter+0x409/0x43e0 io_uring/io_uring.c:3591
->  __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3591
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> Changes in v7:
+> - Drop patch 'Add binman compatible'
+> - Put the alignment properties into the fixed-partition binding
+> 
+> Changes in v6:
+> - Correct schema-validation errors missed due to older dt-schema
+>   (enum fix and reg addition)
+> 
+> Changes in v5:
+> - Add value ranges
+> - Consistently mention alignment must be power-of-2
+> - Mention that alignment refers to bytes
+> 
+> Changes in v2:
+> - Fix 'a' typo in commit message
+> 
+>  .../bindings/mtd/partitions/partition.yaml    | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+> 
 
-This is similar to the issue fixed by:
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-commit 0a535eddbe0dc1de4386046ab849f08aeb2f8faf
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Thu Dec 21 08:49:18 2023 -0700
+yamllint warnings/errors:
 
-    io_uring/rw: ensure io->bytes_done is always initialized
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/mtd/partitions/partition.example.dtb: /example-0/partitions/partition@100000: failed to match any schema with compatible: ['u-boot']
+Documentation/devicetree/bindings/mtd/partitions/partition.example.dtb: /example-0/partitions/partition@200000: failed to match any schema with compatible: ['tfa-bl31']
 
-which I did fix separately for this case, just not in the 6.9 pile. I'll
-move it over there to silence this one.
+doc reference errors (make refcheckdocs):
 
-Only side effect of this is that cqe->res may not be -EINVAL, when it
-should've been, for an ill formed request that was issued with
-ISOQE_ASYNC.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240315204521.28613-1-sjg@chromium.org
 
-#syz test: git://git.kernel.dk/linux.git io_uring-6.0
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
--- 
-Jens Axboe
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
