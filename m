@@ -1,119 +1,255 @@
-Return-Path: <linux-kernel+bounces-103968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3194887C742
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:35:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4764C87C745
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:36:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 603211C21B96
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:35:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDEC82832B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748105381;
-	Fri, 15 Mar 2024 01:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9378C13;
+	Fri, 15 Mar 2024 01:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BdbsAzMd"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="OcknNY4x"
+Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com [207.54.90.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBE4C17E9;
-	Fri, 15 Mar 2024 01:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEE579C1;
+	Fri, 15 Mar 2024 01:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710466515; cv=none; b=toJtBmFnzMF9A911yHIih5VbsIORHJul6w51W4830VLjV7iDdMme/3faNPPSUjGYj4pDOTccNAc1uUvD9Gqa2mdu0Ly6skqfVWkZ8bWdoj40UBKq8/udHZFbZdrLTJKOsbprWlfGQ0vfYp4lzoqbDkrTyqSAiwU5iGaV0pMICk0=
+	t=1710466558; cv=none; b=dSt5lFfHHUVzfYnillvxKgTC496QohkODqamD/4ep0E8N6OLuhSX8mdrZ2K63UAESqpLlrtf8aY3EuY6zjNIDJUTsfsFj3bGRduvt3uCARcpUhY90xRicrw687GoytAOyjDwvjGfTh62NombOxqhzG/gUNto1UO7cV0QZHsm+4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710466515; c=relaxed/simple;
-	bh=Th7S+DhYrtzjGeSKsD9TjobPaMkl17CMIDV/Ixl5vvw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s237Ang+9s+Na+MdwrA83otVRXz9VGTixenN+q8HWfN1tv5k2JrealChSDgTOCy5qd8kDVemeXGRBSouwhHTrp8B65oD7Ealo1YmTC9TavgGwqSSGwddyUpQRM7PL+ucHFjWVq8McgdFnsjzcuqJDhwN1XPGFPitCjjbUKEgHRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BdbsAzMd; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710466514; x=1742002514;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Th7S+DhYrtzjGeSKsD9TjobPaMkl17CMIDV/Ixl5vvw=;
-  b=BdbsAzMdlaYXXpYJJK9JzDsACVYIJgTFsOYqYdHcsCNsiFCvCYMDF2yr
-   TqjTJBqz/rvp7RqCUzuUeTi4dGArnCyVo9UktpkGHNTwgNm9X4i7TPeqD
-   c7BqDm/pAGzWIG7f2TY/QK90YhkbPbyvQUP1/K7OeNWkrP4SWUVTQeLg9
-   vg9XtV1Can6PO/JfyEMhOlD+TtxEYoBWNscCR7sMMIf7E0h19djiQBwnJ
-   Yi5p8gnIyJSolQPsHfGHExDvgBUxKcRwMfrlo2IbYsdeUUTEly1eJvupm
-   Xc7oy+jyTRN6SB2zWah29axIYV9EeLdsDaTNkr3aSk2ntEonB5gZR5EiF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="15963108"
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="15963108"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:35:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="43397230"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:35:12 -0700
-Date: Thu, 14 Mar 2024 18:35:11 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 120/130] KVM: TDX: Add a method to ignore dirty
- logging
-Message-ID: <20240315013511.GF1258280@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1491dd247829bf1a29df1904aeed5ed6b464d29c.1708933498.git.isaku.yamahata@intel.com>
- <b4cde44a884f2f048987826d59e2054cd1fa532b.camel@intel.com>
+	s=arc-20240116; t=1710466558; c=relaxed/simple;
+	bh=PYZ4NePPHsN3d9b+NJwqBkFE1ABY+nJt1UpuoxX2paY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jNXjZSgTUEm502Eow5Rb/VbXesBsOcc84/APf8Ytw72jBlEN5X29lVtNNxAmjXYiSzBiS6M+mi8eehmtdMvbqi+aX7aHudAJsKSBFnVns7o9Eu75wBJuWB0/V25dYyGAAnVFxK8uqtiteU98P4dgWF/BAybXgNhJ1J/zwVj154g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=OcknNY4x; arc=none smtp.client-ip=207.54.90.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1710466557; x=1742002557;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PYZ4NePPHsN3d9b+NJwqBkFE1ABY+nJt1UpuoxX2paY=;
+  b=OcknNY4xcerYn1iGrzf2cVTEg/mBH1yZcs5a6/GJe8wH3MjqzScHPCoc
+   Bsp0XcIStgBLFOir7Y8Y73NuJeZ54dnHsEXjaE+rPiQV7Y+qgGpgtWmLj
+   UxDtyqK3BcYD/yEh5+LPlmM3QoLtdjXsJv+Z8H3dKLxCkWWMSq6JarNOk
+   XIDZxzMyPeSogr+BDGQjhhwpv2LHZb8eskaaIpI8kLPCbmcKwt8G1Gt78
+   pl+6vaLE7NrIBQ9sL4BH+2Lkw1cr0DcW0UwJY4LoUQbm+5JYjCF9XzPDB
+   P6U0u4yX8nAcsBovBUftTQw9HnxGrYRQxnWTMyP/kVLrQXL5aLvjEC8d4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="131682003"
+X-IronPort-AV: E=Sophos;i="6.07,127,1708354800"; 
+   d="scan'208";a="131682003"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 10:35:53 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
+	by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id ECB2F10528;
+	Fri, 15 Mar 2024 10:35:50 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 2B963D9497;
+	Fri, 15 Mar 2024 10:35:50 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id B9B3E6BF42;
+	Fri, 15 Mar 2024 10:35:49 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 177DA1A006B;
+	Fri, 15 Mar 2024 09:35:48 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Sathya Prakash <sathya.prakash@broadcom.com>,
+	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
+	MPT-FusionLinux.pdl@broadcom.com,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH v2] scsi: message: fusion: Convert sprintf/snprintf to sysfs_emit
+Date: Fri, 15 Mar 2024 09:35:37 +0800
+Message-Id: <20240315013537.1342404-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b4cde44a884f2f048987826d59e2054cd1fa532b.camel@intel.com>
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28252.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28252.004
+X-TMASE-Result: 10--11.657400-10.000000
+X-TMASE-MatchedRID: z2BzWfwZiWs4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfDqO6/8R69QE8U
+	roFNOGp7a6aAZTOwtJmRloiW1Kgftd2ZdKe8BPbSrMZ+BqQt2NpBHuVYxc8DW3hh5KUdlgWiKqF
+	q1hn3Eb3d+/nM3Koh0iaTw03n/wYO7HqxUUCs8WpO5y1KmK5bJRSLgSFq3TnjoxCLfriDzziDtx
+	8lDD0Wx5fzUkBpc072D+3TgzUiCNlgNUdcYnHhO4DCiwMF64/BtwN0VDeaZaP4V3z98vLukSWV0
+	qXgzOhKoUVG/E9QDuidqC2fLtk9xB8TzIzimOwPC24oEZ6SpSkj80Za3RRg8KUmPK/2Ez0/rYyf
+	EnVQ5+VATC81Ak4PiZyfz8gNjrHPFjO3sMWMTDI=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-On Fri, Mar 15, 2024 at 12:06:31AM +0000,
-"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+or sysfs_emit_at() when formatting the value to be returned to user space.
 
-> On Mon, 2024-02-26 at 00:27 -0800, isaku.yamahata@intel.com wrote:
-> >  
-> > +static void vt_update_cpu_dirty_logging(struct kvm_vcpu *vcpu)
-> > +{
-> > +       if (KVM_BUG_ON(is_td_vcpu(vcpu), vcpu->kvm))
-> > +               return;
-> > +
-> > +       vmx_update_cpu_dirty_logging(vcpu);
-> > +}
-> 
-> Discussed this first part offline, but logging it here. Since
-> guest_memfd cannot have dirty logging, this is essentially bugging the
-> VM if somehow they manage anyway. But it should be blocked via the code
-> in check_memory_region_flags().
+coccinelle complains that there are still a couple of functions that use
+snprintf(). Convert them to sysfs_emit().
 
-Will drop this patch.
+sprintf() will be converted as weel if they have.
 
+Generally, this patch is generated by
+make coccicheck M=<path/to/file> MODE=patch \
+COCCI=scripts/coccinelle/api/device_attr_show.cocci
 
-> On the subject of warnings and KVM_BUG_ON(), my feeling so far is that
-> this series is quite aggressive about these. Is it due the complexity
-> of the series? I think maybe we can remove some of the simple ones, but
-> not sure if there was already some discussion on what level is
-> appropriate.
+No functional change intended
 
-KVM_BUG_ON() was helpful at the early stage.  Because we don't hit them
-recently, it's okay to remove them.  Will remove them.
+CC: Sathya Prakash <sathya.prakash@broadcom.com>
+CC: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+CC: Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>
+CC: MPT-FusionLinux.pdl@broadcom.com
+CC: linux-scsi@vger.kernel.org
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+Split them per subsystem so that the maintainer can review it easily
+[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+---
+ drivers/message/fusion/mptscsih.c | 42 +++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/message/fusion/mptscsih.c b/drivers/message/fusion/mptscsih.c
+index 9080a73b4ea6..df4b2ebd30ec 100644
+--- a/drivers/message/fusion/mptscsih.c
++++ b/drivers/message/fusion/mptscsih.c
+@@ -3097,11 +3097,11 @@ mptscsih_version_fw_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d.%02d.%02d.%02d\n",
+-	    (ioc->facts.FWVersion.Word & 0xFF000000) >> 24,
+-	    (ioc->facts.FWVersion.Word & 0x00FF0000) >> 16,
+-	    (ioc->facts.FWVersion.Word & 0x0000FF00) >> 8,
+-	    ioc->facts.FWVersion.Word & 0x000000FF);
++	return sysfs_emit(buf, "%02d.%02d.%02d.%02d\n",
++			  (ioc->facts.FWVersion.Word & 0xFF000000) >> 24,
++			  (ioc->facts.FWVersion.Word & 0x00FF0000) >> 16,
++			  (ioc->facts.FWVersion.Word & 0x0000FF00) >> 8,
++			  ioc->facts.FWVersion.Word & 0x000000FF);
+ }
+ static DEVICE_ATTR(version_fw, S_IRUGO, mptscsih_version_fw_show, NULL);
+ 
+@@ -3113,11 +3113,11 @@ mptscsih_version_bios_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02x.%02x.%02x.%02x\n",
+-	    (ioc->biosVersion & 0xFF000000) >> 24,
+-	    (ioc->biosVersion & 0x00FF0000) >> 16,
+-	    (ioc->biosVersion & 0x0000FF00) >> 8,
+-	    ioc->biosVersion & 0x000000FF);
++	return sysfs_emit(buf, "%02x.%02x.%02x.%02x\n",
++			  (ioc->biosVersion & 0xFF000000) >> 24,
++			  (ioc->biosVersion & 0x00FF0000) >> 16,
++			  (ioc->biosVersion & 0x0000FF00) >> 8,
++			  ioc->biosVersion & 0x000000FF);
+ }
+ static DEVICE_ATTR(version_bios, S_IRUGO, mptscsih_version_bios_show, NULL);
+ 
+@@ -3129,7 +3129,7 @@ mptscsih_version_mpi_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%03x\n", ioc->facts.MsgVersion);
++	return sysfs_emit(buf, "%03x\n", ioc->facts.MsgVersion);
+ }
+ static DEVICE_ATTR(version_mpi, S_IRUGO, mptscsih_version_mpi_show, NULL);
+ 
+@@ -3142,7 +3142,7 @@ char *buf)
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ioc->prod_name);
++	return sysfs_emit(buf, "%s\n", ioc->prod_name);
+ }
+ static DEVICE_ATTR(version_product, S_IRUGO,
+     mptscsih_version_product_show, NULL);
+@@ -3156,8 +3156,8 @@ mptscsih_version_nvdata_persistent_show(struct device *dev,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02xh\n",
+-	    ioc->nvdata_version_persistent);
++	return sysfs_emit(buf, "%02xh\n",
++			  ioc->nvdata_version_persistent);
+ }
+ static DEVICE_ATTR(version_nvdata_persistent, S_IRUGO,
+     mptscsih_version_nvdata_persistent_show, NULL);
+@@ -3170,7 +3170,7 @@ mptscsih_version_nvdata_default_show(struct device *dev,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02xh\n",ioc->nvdata_version_default);
++	return sysfs_emit(buf, "%02xh\n",ioc->nvdata_version_default);
+ }
+ static DEVICE_ATTR(version_nvdata_default, S_IRUGO,
+     mptscsih_version_nvdata_default_show, NULL);
+@@ -3183,7 +3183,7 @@ mptscsih_board_name_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ioc->board_name);
++	return sysfs_emit(buf, "%s\n", ioc->board_name);
+ }
+ static DEVICE_ATTR(board_name, S_IRUGO, mptscsih_board_name_show, NULL);
+ 
+@@ -3195,7 +3195,7 @@ mptscsih_board_assembly_show(struct device *dev,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ioc->board_assembly);
++	return sysfs_emit(buf, "%s\n", ioc->board_assembly);
+ }
+ static DEVICE_ATTR(board_assembly, S_IRUGO,
+     mptscsih_board_assembly_show, NULL);
+@@ -3208,7 +3208,7 @@ mptscsih_board_tracer_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ioc->board_tracer);
++	return sysfs_emit(buf, "%s\n", ioc->board_tracer);
+ }
+ static DEVICE_ATTR(board_tracer, S_IRUGO,
+     mptscsih_board_tracer_show, NULL);
+@@ -3221,7 +3221,7 @@ mptscsih_io_delay_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->io_missing_delay);
++	return sysfs_emit(buf, "%02d\n", ioc->io_missing_delay);
+ }
+ static DEVICE_ATTR(io_delay, S_IRUGO,
+     mptscsih_io_delay_show, NULL);
+@@ -3234,7 +3234,7 @@ mptscsih_device_delay_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->device_missing_delay);
++	return sysfs_emit(buf, "%02d\n", ioc->device_missing_delay);
+ }
+ static DEVICE_ATTR(device_delay, S_IRUGO,
+     mptscsih_device_delay_show, NULL);
+@@ -3247,7 +3247,7 @@ mptscsih_debug_level_show(struct device *dev, struct device_attribute *attr,
+ 	MPT_SCSI_HOST	*hd = shost_priv(host);
+ 	MPT_ADAPTER *ioc = hd->ioc;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%08xh\n", ioc->debug_level);
++	return sysfs_emit(buf, "%08xh\n", ioc->debug_level);
+ }
+ static ssize_t
+ mptscsih_debug_level_store(struct device *dev, struct device_attribute *attr,
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+2.29.2
+
 
