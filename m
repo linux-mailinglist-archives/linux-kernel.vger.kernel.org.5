@@ -1,210 +1,131 @@
-Return-Path: <linux-kernel+bounces-104145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5183C87C9B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:11:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 311C187C9BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:11:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E86F283AE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:11:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C84BA1F22DCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:11:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C615171A7;
-	Fri, 15 Mar 2024 08:11:10 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E3C1429B;
-	Fri, 15 Mar 2024 08:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C544915AC4;
+	Fri, 15 Mar 2024 08:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="gzo/YaNr"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E4114A98
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710490270; cv=none; b=kgFu6FfV4OXy9q8SeWccIm35XcQPPTlr+SgOmBkZKvN5r2aaALHzDsUg7pzhsT1I+9cK2eBdhGWzbJRgiE9XdAEnQkGK5k0gu7CIMa5MWW/cs1VHlL9DrKWzP07WMmxn4Uq9Jw+uM4Y5l6TQhwZR4ksMoig7nMteG5jfm3bD7z0=
+	t=1710490300; cv=none; b=UWAPcOHlPvd8mOrZ19jlwklarzTPBZmsQ31vbVKju27IpEK9xN60lV+WGb/ZLbTuaxSiRB7rW21OwjjRG0QcRO0n4f6wdD0hbPOKSBKBjsDHTPKutE0r9BCD7EatGsl8f7U7ICqGaNK2fiHuP1T5LvSN99hYrrCF0MuesIxGy8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710490270; c=relaxed/simple;
-	bh=pXqz4qetKcexyld6lqrWVua3KVrcp3aKmnVf9vX3cr0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kJ72fEkXD1uaf+jxI1QycHm3cVQgC+e+FRv1Sx7lkF6p/WYO7qy+6v12ENfhoJ+ngCKbsWSKNRzJo+ZMeIE6AChCOrZPlp/XlfiapYeyZKcQkOrJU0uHqIi1tTrwEnk1HfUOxb6qHFQDWdWSLSZWxDApEtKky/RmvP52RxzQ1D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8AxeeiZAvRlAmYZAA--.41874S3;
-	Fri, 15 Mar 2024 16:11:05 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfROYAvRlv8haAA--.9838S2;
-	Fri, 15 Mar 2024 16:11:04 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Juergen Gross <jgross@suse.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: [PATCH v7 7/7] Documentation: KVM: Add hypercall for LoongArch
-Date: Fri, 15 Mar 2024 16:11:04 +0800
-Message-Id: <20240315081104.2813031-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240315080710.2812974-1-maobibo@loongson.cn>
-References: <20240315080710.2812974-1-maobibo@loongson.cn>
+	s=arc-20240116; t=1710490300; c=relaxed/simple;
+	bh=s/GjHxvspqde5PDmyzE58y/UK2LQWPcFmtqDdmYzTvY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=STS97v5dJ7qOhMvHl/COjiXWjWMYUayFSet4p1keBTjevwecRdpbeKVJs3Cmn9uMphG1PTXbju5r4ue3TPjI0+8seFx7gC6E7eMfh1kzqzw5YAzsZPkb3VJORBzFJtYxZTcPtkyvV+akUx+Gmp/6voZ+RdbzHNd/s2zYJmZgi4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=gzo/YaNr; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a449c5411e1so230549566b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 01:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1710490296; x=1711095096; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s/GjHxvspqde5PDmyzE58y/UK2LQWPcFmtqDdmYzTvY=;
+        b=gzo/YaNrn3ifLEzU62i9u7TFYvalGfvXZsBcn8zNdzprHZ7AyuP8nUW12iudHOK7bq
+         5e2nFY/dE6L5GlM6R0a2z7lzH5luCsMbOx/EK/E+xJZ5WTNWWxVbrwIj/vaQnJ8RqzUc
+         /NQ37R05cgqcDwp5JIhNO+LDJKVOEYX2vNzOVL9iBGiSjXPoDCZHOmauJJ81N7FS/jdP
+         K8bbEGFfd+pJHAFSZ/+aAE+UfOB4p4GPXG6rEMET9mBz+GmlG/XggYjs5QPrPzPan4Br
+         sqD6Tx2ejxO48L6dVpjicDUGee4ISZXCeDZ4RpYX5vJwB68L/HDeKBWfaWrnh+U+sLkv
+         nP3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710490296; x=1711095096;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s/GjHxvspqde5PDmyzE58y/UK2LQWPcFmtqDdmYzTvY=;
+        b=OS0EWF0/WES80Wgx+XNqCVDEvbYZWVbcnGepb8XkjTkK1oxnKFYTD6nJsYILyPYx4d
+         7uRM1k8WPcl2zoDIwee0t+tyjo/tod7C5T8VXQSjKbzCRVlYBa3CJGQq5/acc0liY5lw
+         nrq+f7UcIErXTuyeUGzjyUi60/qrf/9yob4zV/bEb6Ml3Cj0YwiHLgO2xJnm5zzPm7oU
+         pPE8MVbhScTpqtQwM/tdR4HiwCO63ZT2TPZrOuZDk/ijEnBHnNW0J8M+/U2DRHDoODql
+         07kJ0JBrtIG51OEi3M2cu3wyjD6cPDdkC1KRwHNgudoUULQOv4pBJuEMD3dBw1X0WP/J
+         GPNA==
+X-Forwarded-Encrypted: i=1; AJvYcCU2udphoH8cYb8pDribOrvkHxUN7L+ZD+Q4XJ5GbOkQI2A4Wnh0nu7aAg5Hp147yXJO/dIWzBy2by6CgyJkYVb4+oKyhsaKSelBvFan
+X-Gm-Message-State: AOJu0YwkEZTh/TFI987flSf3ONWiE3gCuxLAIPiIBus0FlcpeJciveA3
+	eEc5I3DH9URusa8YOc+8CCo+CmXiabIvle+xVN4CbS0TUXUHdGexGnCYZwVMKhg=
+X-Google-Smtp-Source: AGHT+IHkkLwS46uOPoHgx+M42KZhCd2StM3WX/KkNEtooUlZc+lcqKpZL+XZ9e/wUMtsDkqtuWHieg==
+X-Received: by 2002:a17:906:c144:b0:a46:9395:818e with SMTP id dp4-20020a170906c14400b00a469395818emr156069ejc.68.1710490296654;
+        Fri, 15 Mar 2024 01:11:36 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id h11-20020a1709062dcb00b00a433f470cf1sm1467996eji.138.2024.03.15.01.11.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 01:11:36 -0700 (PDT)
+Date: Fri, 15 Mar 2024 09:11:35 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Conor Dooley <conor@kernel.org>, Qingfang Deng <dqfext@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Atish Patra <atishp@atishpatra.org>, 
+	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
+Message-ID: <20240315-73aa13079ef83a4559869084@orel>
+References: <20240311063018.1886757-1-dqfext@gmail.com>
+ <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <CALW65jZ+q8sDiRKgsRL9n+939HNUCnkKuO=YJjHB5Js=WYQeOg@mail.gmail.com>
+ <20240312-evil-resource-66370b68b9b4@spud>
+ <IA1PR20MB4953CE8999960BA71B46DE6CBB2A2@IA1PR20MB4953.namprd20.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8DxfROYAvRlv8haAA--.9838S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxAFWUury5tw15XF47Kw1ktFc_yoWrtr4rpF
-	95G3s7Grn7Jry7A347JF1UXryYkryxJF47Ga18Jr1Fqr1Dtr1fJr4UtFyYy3W8G3y8AFy8
-	XF1Iqr1j9r1UAwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBvb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
-	xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
-	Wrv_ZF1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2
-	Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-	z7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Ar0_tr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6x
-	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jxxhdUUUUU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB4953CE8999960BA71B46DE6CBB2A2@IA1PR20MB4953.namprd20.prod.outlook.com>
 
-Add documentation topic for using pv_virt when running as a guest
-on KVM hypervisor.
+On Wed, Mar 13, 2024 at 09:31:26AM +0800, Inochi Amaoto wrote:
+..
+> IMHO, it may be better to use a new DT property like "riscv,cpu-errata" or
+> "<vendor>,cpu-errata". It can achieve almost everything like using pseudo
+> isa. And the only cost I think is a small amount code to parse this.
+>
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- Documentation/virt/kvm/index.rst              |  1 +
- .../virt/kvm/loongarch/hypercalls.rst         | 82 +++++++++++++++++++
- Documentation/virt/kvm/loongarch/index.rst    | 10 +++
- 3 files changed, 93 insertions(+)
- create mode 100644 Documentation/virt/kvm/loongarch/hypercalls.rst
- create mode 100644 Documentation/virt/kvm/loongarch/index.rst
+What's the ACPI equivalent for this new DT property? If there isn't one,
+then the cost is also to introduce something to the ACPI spec and add the
+ACPI parsing code.
 
-diff --git a/Documentation/virt/kvm/index.rst b/Documentation/virt/kvm/index.rst
-index ad13ec55ddfe..9ca5a45c2140 100644
---- a/Documentation/virt/kvm/index.rst
-+++ b/Documentation/virt/kvm/index.rst
-@@ -14,6 +14,7 @@ KVM
-    s390/index
-    ppc-pv
-    x86/index
-+   loongarch/index
- 
-    locking
-    vcpu-requests
-diff --git a/Documentation/virt/kvm/loongarch/hypercalls.rst b/Documentation/virt/kvm/loongarch/hypercalls.rst
-new file mode 100644
-index 000000000000..0f61a49c31a9
---- /dev/null
-+++ b/Documentation/virt/kvm/loongarch/hypercalls.rst
-@@ -0,0 +1,82 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===================================
-+The LoongArch paravirtual interface
-+===================================
-+
-+KVM hypercalls use the HVCL instruction with code 0x100, and the hypercall
-+number is put in a0 and up to five arguments may be placed in a1-a5, the
-+return value is placed in a0.
-+
-+The code for that interface can be found in arch/loongarch/kvm/*
-+
-+Querying for existence
-+======================
-+
-+To find out if we're running on KVM or not, cpucfg can be used with index
-+CPUCFG_KVM_BASE (0x40000000), cpucfg range between 0x40000000 - 0x400000FF
-+is marked as a specially reserved range. All existing and future processors
-+will not implement any features in this range.
-+
-+When Linux is running on KVM, cpucfg with index CPUCFG_KVM_BASE (0x40000000)
-+returns magic string "KVM\0"
-+
-+Once you determined you're running under a PV capable KVM, you can now use
-+hypercalls described as follows.
-+
-+KVM hypercall ABI
-+=================
-+
-+Hypercall ABI on KVM is simple, only one scratch register a0 and at most
-+five generic registers used as input parameter. FP register and vector register
-+is not used for input register and should not be modified during hypercall.
-+Hypercall function can be inlined since there is only one scratch register.
-+
-+The parameters are as follows:
-+
-+        ========	=========================	=====================
-+	Register	IN			        OUT
-+        ========	=========================	=====================
-+	a0		function number(Required)       Return code(Required)
-+	a1		1st parameter(Optional)		Keep Unmodified
-+	a2		2nd parameter(Optional)		Keep Unmodified
-+	a3		3rd parameter(Optional)		Keep Unmodified
-+	a4		4th parameter(Optional)		Keep Unmodified
-+	a5		5th parameter(Optional)		Keep Unmodified
-+        ========	=========================	=====================
-+
-+Return codes can be as follows:
-+
-+	====		=========================
-+	Code		Meaning
-+	====		=========================
-+	0		Success
-+	-1		Hypercall not implemented
-+	-2		Hypercall parameter error
-+	====		=========================
-+
-+KVM Hypercalls Documentation
-+============================
-+
-+The template for each hypercall is:
-+1. Hypercall name
-+2. Purpose
-+
-+1. KVM_HCALL_FUNC_PV_IPI
-+------------------------
-+
-+:Purpose: Send IPIs to multiple vCPUs.
-+
-+- a0: KVM_HCALL_FUNC_PV_IPI
-+- a1: lower part of the bitmap of destination physical cpu core id
-+- a2: higher part of the bitmap of destination physical cpu core id
-+- a3: the lowest physical cpu core id in bitmap
-+
-+The hypercall lets a guest send multicast IPIs, with at most 128
-+destinations per hypercall.  The destinations are represented by a bitmap
-+contained in the first two arguments (a1 and a2). Bit 0 of a1 corresponds
-+to the physical cpu core id in the third argument (a3), bit 1 corresponds
-+to the physical cpu core id a3+1, and so on.
-+
-+Returns success always, it skips current cpu and continues to send ipi to
-+next cpu in the bitmap mask if current physical cpu core id is invalid.
-diff --git a/Documentation/virt/kvm/loongarch/index.rst b/Documentation/virt/kvm/loongarch/index.rst
-new file mode 100644
-index 000000000000..83387b4c5345
---- /dev/null
-+++ b/Documentation/virt/kvm/loongarch/index.rst
-@@ -0,0 +1,10 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=========================
-+KVM for LoongArch systems
-+=========================
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   hypercalls.rst
--- 
-2.39.3
+I'd much rather we call specified behaviors "extensions", whether they
+are vendor-specific or RVI standard, and then treat all extensions the
+same way in hardware descriptions and Linux. It'd also be best if errata
+in extension implementations were handled by replacing the extension in
+the hardware description with a new name which is specifically for the
+behavior Linux should expect. (Just because two extensions are almost the
+same doesn't mean we should say we have one and then have some second
+mechanism to say, "well, not really, instead of that, it's this". It's
+cleaner to just remove the extension it doesn't properly implement from
+its hardware description and create a name for the behavior it does have.)
 
+Errata in behaviors which don't have extension names (are hopefully few)
+and are where mvendorid and friends would need to be checked, but then why
+not create a pseudo extension name, as Conor suggests, so the rest of
+Linux code can manage errata the same way it manages every other behavior?
+
+The growth rate of the ISA bitmap is worth thinking about, though, since
+we have several copies of it (at least one "all harts" bitmap, one bitmap
+for each hart, another one for each vcpu, and then there's nested virt...)
+We don't have enough extensions to worry about it now, but we can
+eventually try partitioning, using common maps for common bits, not
+storing bits which can be inferred from other bits, etc.
+
+Thanks,
+drew
 
