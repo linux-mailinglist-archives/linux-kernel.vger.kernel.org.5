@@ -1,122 +1,147 @@
-Return-Path: <linux-kernel+bounces-104897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97EB287D51E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:41:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BDFC87D51F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:43:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4B2F288878
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:41:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7E5F1F21DA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1919E25740;
-	Fri, 15 Mar 2024 20:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6AC81EB48;
+	Fri, 15 Mar 2024 20:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X6KYFR0e"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jfY9PGHJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C47B1EB48;
-	Fri, 15 Mar 2024 20:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE6B17BA8;
+	Fri, 15 Mar 2024 20:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710535286; cv=none; b=qeb8A4vi02+lKizLzyvUsb5K+LD2MzV1gP1Eq31q3ci3LbWW6bYfGZosBd0fQeuFy6QnpyKDP5pbwhuDrMWaq186m/7soIsqVbkmgrQX/pJ5NbKIg6di0ZxPhu/ntoPA3YIksiItIYNRF94dyWKndU3jrNN1V1M1jYNoYuEFhcc=
+	t=1710535378; cv=none; b=rnZbzJ7YBSIqKLRCdgKQa2pT7Q49rvKIq7IK6SfATaRN9rezdg86sOvE8f7l/qYDn6adKgGSbiKdAdIuLgE6bAUZvt6vZK9AcInzar5NBfY7o02QnqL4TZz8TjQEElrl2Y8r9pYXMTXYKYlp8lPL2Ez9uI/NPejO0yT376bR13U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710535286; c=relaxed/simple;
-	bh=OCGwnFTrEKMR7c0B6YzT8O9HyaNBGHd+2FsDDY5QnpI=;
+	s=arc-20240116; t=1710535378; c=relaxed/simple;
+	bh=sIUywcrIGziaj+6fPipKbPdvjxmOEgFJSj2PoIaDXxM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PXFvWXlR62o9AYvKvlZDrTFekztcVqiKb0gqygdx1aI9XN6MSRc9gmtNxKq/O/K0C8qZeNyYL7ebVV+nver2Bs2z7uySu9G5WOSmoUF24LWKgKPbQZSjqDU3X42VcNZKpQjW9RpvjzeVoGgzf4nZaYa1gvX+SuSXsD3cbc6b2uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X6KYFR0e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95D09C433C7;
-	Fri, 15 Mar 2024 20:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710535286;
-	bh=OCGwnFTrEKMR7c0B6YzT8O9HyaNBGHd+2FsDDY5QnpI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=X6KYFR0eGqSI4WRdnxqRUW0SUG6msu1cMhnmPGxxyVVa5RiisKSr8sviDtWOonI7U
-	 hHSyyxdUesc95vAVrkcOKoodbsd4Hqz1B/WzWELSVqPgsjmXVehj9qg14qSUaKzDzL
-	 +NcM0ZzGuSMTzLQ03rFQtVh68jeumeRjIZ2qVLypThrf4ExNhreLWXMJ3xOo8mZu1V
-	 C33n6H50BJQWErH07JixQ3cd7RF1iJJ3x1yZCLO8lD3uq68I9Z1czYpx5EdXGQXJOO
-	 sAPuZH0yZZJDJQvfxJWCoWxG2tEvWtiw+81W5EcjqCjYcfct0bvmwkXfKmRt4CzbsF
-	 hj65LPqGR0LfQ==
-Date: Fri, 15 Mar 2024 20:41:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] spi: mt7621: allow GPIO chip select lines
-Message-ID: <71533474-eb08-438c-b7ec-5f3277c195fc@sirena.org.uk>
-References: <20240315015708.13948-1-justin.swartz@risingedge.co.za>
- <d562be73-ad76-4450-8bff-38ed5d144714@sirena.org.uk>
- <2dbc59c9133542f6f8bc465113d9630b@risingedge.co.za>
- <6c92fddd-f79b-40b5-bd52-61f43d6a7591@sirena.org.uk>
- <55c5f2e0723c18384c781e87985f0d22@risingedge.co.za>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TlUsXsZzZWGLzfSgd4WB9PCKpVgzsx2W6G1A3kaObX8G8VvCPDUXI39efYeyV+AKjEmSDeg7QxKo27ugrMC+bYZEIZBNpoGpdpGcMGWRxJ7wOOu6gto6dtFHyO7mSPydT5QpJmOBEL9gWyKvDYAVRhGkj71s8Ao9YmoySbbGVM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jfY9PGHJ; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710535374; x=1742071374;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sIUywcrIGziaj+6fPipKbPdvjxmOEgFJSj2PoIaDXxM=;
+  b=jfY9PGHJMZ6oKLSTe4KUE9yb2voKyh6PA1QfdeI5nU0WyG6Tyn1gXdWW
+   XkJXXqtrJtF4ZlUhu7HDHve3uC7KA3NB9ojnCEyp4cUC684awMxUdhm6U
+   vKvuwaYX/FP51KIfudakSKeMdPA1ewc8Z+dZ/HyJR68EoT7wrKsLHj+9l
+   wPqrmPBOeYwF+ZKwQ/RcaCqxSkY/ngdArG+ay+SMiOAT5l0s7f/dCL2Dz
+   PPvQS/qNywcQDOdrov4VVLobp/AyQdLIAF0H9zhOtLeiUpVCSihEucgmv
+   5fy5+dQNBBEDfVHvEXVIJ5/orzjNKan5fBSz3OIYaIfy1knr3vM4qECl5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5281749"
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="5281749"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 13:42:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="12754169"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 13:42:53 -0700
+Date: Fri, 15 Mar 2024 13:42:53 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 078/130] KVM: TDX: Implement TDX vcpu enter/exit path
+Message-ID: <20240315204253.GI1258280@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <dbaa6b1a6c4ebb1400be5f7099b4b9e3b54431bb.1708933498.git.isaku.yamahata@intel.com>
+ <ZfSExlemFMKjBtZb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="D8fyoBk023SaRwkC"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <55c5f2e0723c18384c781e87985f0d22@risingedge.co.za>
-X-Cookie: A well-known friend is a treasure.
+In-Reply-To: <ZfSExlemFMKjBtZb@google.com>
 
+On Fri, Mar 15, 2024 at 10:26:30AM -0700,
+Sean Christopherson <seanjc@google.com> wrote:
 
---D8fyoBk023SaRwkC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
+> > index d822e790e3e5..81d301fbe638 100644
+> > --- a/arch/x86/kvm/vmx/tdx.h
+> > +++ b/arch/x86/kvm/vmx/tdx.h
+> > @@ -27,6 +27,37 @@ struct kvm_tdx {
+> >  	struct page *source_page;
+> >  };
+> >  
+> > +union tdx_exit_reason {
+> > +	struct {
+> > +		/* 31:0 mirror the VMX Exit Reason format */
+> 
+> Then use "union vmx_exit_reason", having to maintain duplicate copies of the same
+> union is not something I want to do.
+> 
+> I'm honestly not even convinced that "union tdx_exit_reason" needs to exist.  I
+> added vmx_exit_reason because we kept having bugs where KVM would fail to strip
+> bits 31:16, and because nested VMX needs to stuff failed_vmentry, but I don't
+> see a similar need for TDX.
+> 
+> I would even go so far as to say the vcpu_tdx field shouldn't be exit_reason,
+> and instead should be "return_code" or something.  E.g. if the TDX module refuses
+> to run the vCPU, there's no VM-Enter and thus no VM-Exit (unless you count the
+> SEAMCALL itself, har har).  Ditto for #GP or #UD on the SEAMCALL (or any other
+> reason that generates TDX_SW_ERROR).
+> 
+> Ugh, I'm doubling down on that suggesting.  This:
+> 
+> 	WARN_ON_ONCE(!kvm_rebooting &&
+> 		     (tdx->vp_enter_ret & TDX_SW_ERROR) == TDX_SW_ERROR);
+> 
+> 	if ((u16)tdx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI &&
+> 	    is_nmi(tdexit_intr_info(vcpu))) {
+> 		kvm_before_interrupt(vcpu, KVM_HANDLING_NMI);
+> 		vmx_do_nmi_irqoff();
+> 		kvm_after_interrupt(vcpu);
+> 	}
+> 
+> is heinous.  If there's an error that leaves bits 15:0 zero, KVM will synthesize
+> a spurious NMI.  I don't know whether or not that can happen, but it's not
+> something that should even be possible in KVM, i.e. the exit reason should be
+> processed if and only if KVM *knows* there was a sane VM-Exit from non-root mode.
+> 
+> tdx_vcpu_run() has a similar issue, though it's probably benign.  If there's an
+> error in bits 15:0 that happens to collide with EXIT_REASON_TDCALL, weird things
+> will happen.
+> 
+> 	if (tdx->exit_reason.basic == EXIT_REASON_TDCALL)
+> 		tdx->tdvmcall.rcx = vcpu->arch.regs[VCPU_REGS_RCX];
+> 	else
+> 		tdx->tdvmcall.rcx = 0;
+> 
+> I vote for something like the below, with much more robust checking of vp_enter_ret
+> before it's converted to a VMX exit reason.
+> 
+> static __always_inline union vmx_exit_reason tdexit_exit_reason(struct kvm_vcpu *vcpu)
+> {
+> 	return (u32)vcpu->vp_enter_ret;
+> }
 
-On Fri, Mar 15, 2024 at 10:21:53PM +0200, Justin Swartz wrote:
-> On 2024-03-15 19:47, Mark Brown wrote:
-
-> > Look at other drivers that support GPIO chip selects?
-
-> Of the 43 drivers (of drivers/spi/*.c) that setup the
-> spi_controller's use_gpio_descriptors as true:
-
->   39 drivers use the transfer_one hook, and
->    4 drivers use the transfer_one_message hook.
-
-> Drivers that use the transfer_one hook benefit from the core
-> taking care of chip selection on their behalf.
-
-> Drivers that use the transfer_one_message hook handle chip
-> selection on their own, within the function they've pointed
-> the hook at.
-
-Oh, this is an old school driver.  Glancing at the code I can't see any
-particular reason why it's not using transfer_one(), you should just
-convert the driver to that which will reduce the open coding and just
-generally improve functionality.  You could add a callback to flush the
-write FIFO or add that into the write function, I'm not sure if there's
-a meaningful performance benefit there.
-
-> Considering spi-mt7621.c was implemented using the
-> transfer_one_message() hook, I'd assumed that it made more
-
-I think it's just old and based on having gone through staging likely
-based on even older BSP code.
-
---D8fyoBk023SaRwkC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0snEACgkQJNaLcl1U
-h9AiQwf/UOmHNcZDrwzH7kt6mKHCl+t2aZ6FfT4MQdJ8icSErJVvBcuuQ9oJsVxP
-xz1vy6RLJhwCbN5LBk2dq55XzuBxiITCjPJhusoxmvZhbYZeZYzWzzWY8aB88aFV
-fyxs1trGjhla0rRAs1oNr/y5UDZFLYQvD9tBX+BWyGbous6fV7yYBycO7nYdRHd5
-rsfasrQicNwMFKe1CJfKPp7GbaHPvC4drNGlDL9EaAFHGlxCp0a5ayWrLV4k1A6W
-v77j7yGf8gagHBzL7wp3pTbBKfJkYxSJiyEeIvsxXpKg7cjVHMywkzWlvF9RYTvv
-ZN3l1mazhE3mtXYNfbTEgMCj1iNXKg==
-=gBAh
------END PGP SIGNATURE-----
-
---D8fyoBk023SaRwkC--
+Thank you for the concrete suggestion.  Let me explore what safe guard check
+can be done to make exit path robust.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
