@@ -1,124 +1,131 @@
-Return-Path: <linux-kernel+bounces-104459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BFA87CE2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:37:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DFC987CE32
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5693F281C20
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:37:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA4E01F22325
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1DFA2E62F;
-	Fri, 15 Mar 2024 13:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208B82E634;
+	Fri, 15 Mar 2024 13:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WBikQgWF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bbt2cRue"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E8236AED;
-	Fri, 15 Mar 2024 13:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED661C291;
+	Fri, 15 Mar 2024 13:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710509816; cv=none; b=QW1Dtb2yFi7mOa+9a+USvlQ3PxK+lGMgTlQsF17mUFik2YOtm8/z6icdGnDo9R361nRuS+iAmyfOZ4+aKrRBu1CkRbQDL4yBEym5tUdzK7h1y25FOXhCHzsXGMSIWkA98ivmwvjeW3aBhqw/hykvWEmXsGyLFN/tXnJjUy7zB1s=
+	t=1710510165; cv=none; b=mgTYl6j4cEQ4OfSFShN1nKSJ2PVC/tZE1wE9Map1Yzbp2/YYxEbF367Tm6yq59Jm2+/v/HJswYE4SMdZbK9Ku+xaRHfcaJK7/4w64QVfaxzhlTWXl0ElMvduKlAh+5F6tAUTYLBOZtQfO7edwgWHhJ31yKF8jIBAGgueMsPcuyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710509816; c=relaxed/simple;
-	bh=mnKx/USIAWKFowB3UECi37soYZOTeSdjE7YC6dui0gY=;
+	s=arc-20240116; t=1710510165; c=relaxed/simple;
+	bh=yQjjoHAXiCtUEgUO5PE3VGVY3a1Pjgr3XTej8GW/Mhk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nQbgdKYHyu/lcRDgYQy6/uQJdqrpI4ceH+tiMPMEm6idfyntRHVuH1+X4ZOArh+vH/8k4mj9ZYLXQV4HzTQ1NV7TTu/sRC7lYSXudSWGR7JfhKVA8y1ACxJEyNKXsSIvKsyf6MhbSW+rgSwgBSeE/OUBd+rpL/oR24uuRUAL4nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WBikQgWF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B990C433F1;
-	Fri, 15 Mar 2024 13:36:50 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GmRajdxC+PZ2wwLLu8Q5kT2ht/FK/UdOMU4BWgaC0Tb36P1zHSi5zG9qgMIc5fAq9at9cPbu24Xv5zW0DHy7o/z8yyY+i8TkaghpuzN44QzhNbcMv6eZHsXzYwgFuY12Ad+/JMSYTvuBoRgkERIqCDlfQMKM3bJIxez+2d0vIjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bbt2cRue; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 376D8C433F1;
+	Fri, 15 Mar 2024 13:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710509815;
-	bh=mnKx/USIAWKFowB3UECi37soYZOTeSdjE7YC6dui0gY=;
+	s=k20201202; t=1710510165;
+	bh=yQjjoHAXiCtUEgUO5PE3VGVY3a1Pjgr3XTej8GW/Mhk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WBikQgWFYtKFSQn7AJHJtgle7tDUdFM0GNQ/6JqxAf0lxH6kRfm2hxTIXdG5E6Egy
-	 YAzTuwY1PjSj0ojy2bfIUYwcULJe3/38mYLHr+20Nw39reMae5OEJudFQOAYqJS1cG
-	 mjHGzUI/L69hkyZrBEUsb8oCQhOHCT3JZQ44vfSkw/OskPHgcBcH2rCpWA6LWBCF5E
-	 diWwtCdzYwAdPO346YhitMreYA0mq7RAR0VnKsuUT5V6yoGUgrZLjFm21Xpp4uFg52
-	 3KzbWdPKyTbVDmpXxzm5MDzWsiHQEt7QAGwNh5hjZUGzrkEU44uZ9fAbLix7zN5tme
-	 8jjsI9jEx/Dhw==
-Date: Fri, 15 Mar 2024 13:36:48 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
-	kernel@salutedevices.com
-Subject: Re: [PATCH 12/25] ASoC: meson: t9015: add support for A1 SoC family
-Message-ID: <5f8e8cd2-f9c4-4961-a85d-a0f3217294e6@sirena.org.uk>
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-13-jan.dakinevich@salutedevices.com>
+	b=Bbt2cRueQrFzlu5adTAhX82qM17+W0wzcYzfoZdlYx1J58zF77Ri4nQ0qKLP+CDg5
+	 fThVJKrH6ggcBsrhrxqNWPB31SC6yx7vEHhyL6IUgpxNE2YB+PY9jWm4ecbe2tGkUD
+	 VqXX0y6aP+Dwoot7lHy1opVGTe46Rf5Yhw5/SC5GYeRJHHf06EEKnEoVMX2Sd+Fv6f
+	 B8EYcRCQrGF4o0wqNfj3+Jao1fXLw3fCPEkEKU1AS0WZkm+D1QQMaLE8YLNuWTQWqO
+	 pXkCbLsd8j+oPPQ9xQa3lpoldYD05bZoRk2oVGIc9gRIDLD6wUNwPM3gKRurwDorcX
+	 P485iX30ZjkOQ==
+Date: Fri, 15 Mar 2024 14:42:40 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
+Subject: Re: [linus:master] [pidfd]  cb12fd8e0d: ltp.readahead01.fail
+Message-ID: <20240315-neufahrzeuge-kennt-317f2a903605@brauner>
+References: <202403151507.5540b773-oliver.sang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4AHceM7kGoMGggFJ"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240314232201.2102178-13-jan.dakinevich@salutedevices.com>
-X-Cookie: A well-known friend is a treasure.
+In-Reply-To: <202403151507.5540b773-oliver.sang@intel.com>
 
+On Fri, Mar 15, 2024 at 04:16:33PM +0800, kernel test robot wrote:
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "ltp.readahead01.fail" on:
+> 
+> commit: cb12fd8e0dabb9a1c8aef55a6a41e2c255fcdf4b ("pidfd: add pidfs")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> [test failed on linus/master 65d287c7eb1d14e0f4d56f19cec30d97fc7e8f66]
+> [test failed on linux-next/master a1184cae56bcb96b86df3ee0377cec507a3f56e0]
+> 
+> in testcase: ltp
+> version: ltp-x86_64-14c1f76-1_20240309
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	fs: f2fs
+> 	test: syscalls-00/readahead01
+> 
+> 
+> 
+> compiler: gcc-12
+> test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
 
---4AHceM7kGoMGggFJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, this is an expected failure.
+Before moving pidfds to pidfs they were based on anonymous inodes.
+Anonymous inodes have a strange property: yhey have no file type. IOW,
+(stat.st_mode & S_IFMT) == 0.
 
-On Fri, Mar 15, 2024 at 02:21:48AM +0300, Jan Dakinevich wrote:
+The readhead code looks at the filetype and if it isn't a regular file
+then you'll get EINVAL. This is the case for anonymous inode based
+pidfds:
 
-> +static const char * const a1_adc_mic_bias_level_txt[] = { "2.0V", "2.1V",
-> +	"2.3V", "2.5V", "2.8V" };
-> +static const unsigned int a1_adc_mic_bias_level_values[] = { 0, 1, 2, 3, 7 };
+        /*
+         * The readahead() syscall is intended to run only on files
+         * that can execute readahead. If readahead is not possible
+         * on this file, then we must return -EINVAL.
+         */
+        ret = -EINVAL;
+        if (!f.file->f_mapping || !f.file->f_mapping->a_ops ||
+            (!S_ISREG(file_inode(f.file)->i_mode) &&
+            !S_ISBLK(file_inode(f.file)->i_mode)))
+                goto out;
 
-Why would this be varied at runtime rather than being something fixed
-when the system is designed?
+However, pidfs makes them regular files so they're not caught by that
+check anymore.
 
-> +static const char * const a1_adc_pga_txt[] = { "None", "Differential",
-> +	"Positive", "Negative" };
-> +static const unsigned int a1_adc_pga_right_values[] = { 0, PGAR_DIFF,
-> +	PGAR_POSITIVE, PGAR_NEGATIVE };
-> +static const unsigned int a1_adc_pga_left_values[] = { 0, PGAL_DIFF,
-> +	PGAL_POSITIVE, PGAL_NEGATIVE };
+However, pidfs doesn't implement any readahead support. Specifically,
+it'll have sb->s_bdi == noop_backing_dev_info. Which will mean the
+readahead request is just ignored:
 
-Similarly here.
+        if (IS_DAX(inode) || (bdi == &noop_backing_dev_info)) {
+                switch (advice) {
+                case POSIX_FADV_NORMAL:
+                case POSIX_FADV_RANDOM:
+                case POSIX_FADV_SEQUENTIAL:
+                case POSIX_FADV_WILLNEED:
+                case POSIX_FADV_NOREUSE:
+                case POSIX_FADV_DONTNEED:
+                        /* no bad return value, but ignore advice */
+                        break;
+                default:
+                        return -EINVAL;
+                }
+                return 0;
+        }
 
-> +	SOC_SINGLE("ADC Mic Bias Switch", LINEIN_CFG, MICBIAS_EN, 1, 0),
-> +	SOC_ENUM("ADC Mic Bias Level", a1_adc_mic_bias_level),
-
-Why would micbias be user controlled rather than a DAPM widget as
-normal?
-
---4AHceM7kGoMGggFJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0Tu8ACgkQJNaLcl1U
-h9B7RQf/eYxVKAjAigpYP4vgwBWRE/HosjdaaB5ogMo8PMSiXfacGnLx0ZtIpWa9
-i6saOA5iW9E/n7Et4JpmJ0J/fYdN7d5TkSlgYGwYP/ojBAChias0hOS7f+fHKvdM
-qH8C+20ovZC5RpNOZUjLmiwJ1WMJQrXgjYVTLpBHn23XPsf8fV3i+B5JEQzBJtXI
-px2DiSaV2iQ+nBmrZQEQo7KnJsQiLahPLQgr81xq5322lUfLN0+kRHrNGnqMU/Aw
-BW++2BV+mf6HXT8WKXrn2DeQByMpBN+jc7eeRDI7xIiB4iAWwpDL9Cn5HsSuYYvI
-ZdU3lU/s6CaDa3e5AyxYVatZ42Rx4Q==
-=sm4b
------END PGP SIGNATURE-----
-
---4AHceM7kGoMGggFJ--
+So I'd just remove that test. It's meaningless for pseudo fses.
 
