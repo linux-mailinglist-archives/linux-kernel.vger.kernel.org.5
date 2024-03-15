@@ -1,94 +1,143 @@
-Return-Path: <linux-kernel+bounces-104384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372CD87CD15
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:14:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5CF287CD18
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F86DB2284B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:14:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35C3B283882
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5BE1C28B;
-	Fri, 15 Mar 2024 12:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADC21C29B;
+	Fri, 15 Mar 2024 12:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QEcHXLpj"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bOKxmpN1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523F21BF3C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F0441B7F6;
+	Fri, 15 Mar 2024 12:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710504862; cv=none; b=c3v7sKcVn+eYSw1v2zLdSHqmu69QWUJLnq3HacMfJifzX4DEnFtP4CdHURaMECdoEVvYtab0uBS9cTCddr5wy2CKh0hna3Jl809Z1ns/Rc3GyndDF3I8gNHNsc/6izQ/Vz9ba0n9KB4cJwZiVQh6WFFW09C0/tkz/OKmDaYl1W8=
+	t=1710504899; cv=none; b=AY37xfxksB7R1rl/+H9OPTL7mSOsea0BgNsy3+9zbgd4RdBJZeGF93oP6oZeHVMBgJxDjHZHUHgfFKchiihvQLeHySTtKt4aQzk5gifbBLcGTJFFOhitzPdEaZv23In50uZAMTDw2ZKauo+fGRjprSaXddW7dg2BXkaxcvJfxRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710504862; c=relaxed/simple;
-	bh=Dqc2eeavMmTzOc0YPipc0us70b4n2nkR8oz6yKvom0w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CTjLP5ANpjLxWDfqBpvOBKKwEnBv73ZLoTBnKIqd532Neg4dT3fqbCoRqxVDQm+/rD3WBnIdQg0qBsnLCt67NSEJOP+Q2mMdXIRT3LHWWz5j20uwLShPYUgL2G/M0igohFaMcsOL8oEwwq/J6qTPa29b0TQEfGhg5uXy42s01+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QEcHXLpj; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A999FE000A;
-	Fri, 15 Mar 2024 12:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710504853;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ys6zmTNnRRaNwkqda5/UM+chtWuSEH0RXOVuVZYrg58=;
-	b=QEcHXLpj7xesh3WJZz+kKm0Su5uv/szxg1thn5Thka2YeoIfbkGozq3Ro+EW+61Yo4wmCz
-	tNTlZDDHZgHN8WE/eKGD/cV9ebjBn/YWIULQbbjluIi3ceM5kv/YZTt6bPN8r1BaArydy0
-	8kwsT5wZHxj+fyLnd8N1L3q9p01AqD8O/+WIgJSMaaw+x2QETDaFg85LYvz86BgK0iY6Oq
-	Otq9YscJTeC+QfWDdaGvMMDCTmPOU4w3xbKto01Q4FPF8gr6DI2fq+QictEQIoOmNThUW+
-	HT155BeK2V/mFdVRrMlQxQW3psqHYKestGmMWZTkyDTaW/oVGrj4aWJrQUlZ/A==
-Date: Fri, 15 Mar 2024 13:14:12 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Maxim Korotkov <korotkov.maxim.s@gmail.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Hector Palacios
- <hector.palacios@digi.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] mtd: rawnand: hynix: fixed typo
-Message-ID: <20240315131412.488167c1@xps-13>
-In-Reply-To: <529774b9-20be-485d-b218-2452ce536770@gmail.com>
-References: <20240313102721.1991299-1-korotkov.maxim.s@gmail.com>
-	<20240315122314.10c88c2e@xps-13>
-	<529774b9-20be-485d-b218-2452ce536770@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710504899; c=relaxed/simple;
+	bh=se/JZNB55A3lH9+VBE3tPOQsYGGid9H7CPkEHSUWIZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WdR1t1dCED5VBsgGvZsTkooIzFOgmJn7o6TafhV/0FHJfrafGt4QjZoTqbYHS8H22b4ZiX4iRL784GKZfGj+8Brg9i5PMMYlQp/PMJoOZIJZq4HQwTh99l3tP6x+OVJD3Osrku0UfdMu8hXUcaHcMRciMw4e5SUCa5wQnnRll9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bOKxmpN1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8E3AC433F1;
+	Fri, 15 Mar 2024 12:14:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710504899;
+	bh=se/JZNB55A3lH9+VBE3tPOQsYGGid9H7CPkEHSUWIZc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bOKxmpN1yT+3BhHrIdZiJmXOJI5aBfA3XipPXNZ7JqTexQl1ngvGcG8u7ztACmaOT
+	 nDnz1BHlz1WEEhLdiJZGsYejTBDg/4dwoigypUDU6B21/tlrxU3GUB2gKPALIxyfiz
+	 fM6EbqZYw+JDhSJxeDuG/mF3WZYYinIERxqimS1KkJs/erc2nIUq++YSvQ6mnfC4sg
+	 iYjMit0ygSuutqyPrYWUHIf+iUuOWZfoSmLZU7go6v85hQ6z/HdyVU6SlEs+t4+DYx
+	 79q+LEDryvZsDNGGVIfxPBHTOGlxjuZ3auuPbRFGYGMOFF37L5dYu8l44fXOxFpv6m
+	 jhFRSZ2P4SCPQ==
+Date: Fri, 15 Mar 2024 08:14:57 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	Andreas Herrmann <aherrmann@suse.de>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 6.1 00/71] 6.1.82-rc1 review
+Message-ID: <ZfQ7wRX06R-d3X7F@sashalap>
+References: <20240313163957.615276-1-sashal@kernel.org>
+ <73072bdd-590a-44b4-8e6d-34bd17073bb5@o2.pl>
+ <ecb0b6a1-a8e7-4645-9a2c-56ada368f733@o2.pl>
+ <ba297ed4-a74a-4786-a303-ce617b2de09b@o2.pl>
+ <38563683-300a-487b-81c6-b2ea4dbb925c@kernel.dk>
+ <ZfN7wtnVeb9vOL1H@sashalap>
+ <267b0000-fba0-4dcf-945d-72b8ca4704c8@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <267b0000-fba0-4dcf-945d-72b8ca4704c8@kernel.dk>
 
-Hi Maxim,
+On Thu, Mar 14, 2024 at 04:40:53PM -0600, Jens Axboe wrote:
+>On 3/14/24 4:35 PM, Sasha Levin wrote:
+>> On Thu, Mar 14, 2024 at 04:04:59PM -0600, Jens Axboe wrote:
+>>> On 3/14/24 3:12 PM, Mateusz Jo?czyk wrote:
+>>>> W dniu 13.03.2024 o 22:27, Mateusz Jo?czyk pisze:
+>>>>> W dniu 13.03.2024 o 21:13, Mateusz Jo?czyk pisze:
+>>>>>> W dniu 13.03.2024 o 17:38, Sasha Levin pisze:
+>>>>>>> This is the start of the stable review cycle for the 6.1.82 release.
+>>>>>>> There are 71 patches in this series, all will be posted as a response
+>>>>>>> to this one.  If anyone has any issues with these being applied, please
+>>>>>>> let me know.
+>>>>>>>
+>>>>>>> Responses should be made by Fri Mar 15 04:39:56 PM UTC 2024.
+>>>>>>> Anything received after that time might be too late.
+>>>>>>>
+>>>>>>> The whole patch series can be found in one patch at:
+>>>>>>>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.81
+>>>>>>> or in the git tree and branch at:
+>>>>>>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+>>>>>>> and the diffstat can be found below.
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Sasha
+>>>>>>>
+>>>>>> Hello,
+>>>>>>
+>>>>>> Kernel hangs during early boot. No console messages, nothing in pstore.
+>>>>>>
+>>>>>> Tested on a HP 17-by0001nw laptop with an Intel Kaby Lake CPU (Intel i3-7020U) and Ubuntu 20.04.
+>>>>>>
+>>>>>> This CPU is not affected by RFDS (at least according to the Kconfig message), so I have set
+>>>>>>
+>>>>>> CONFIG_MITIGATION_RFDS=n
+>>>>>>
+>>>>>> in Kconfig. I do not have any updated microcode (if any will be provided at all for this CPU).
+>>>>>>
+>>>>>> Greetings,
+>>>>>>
+>>>>>> Mateusz
+>>>>>>
+>>>>> [snip]
+>>>>
+>>>> Bisected down to
+>>>>
+>>>> commit d3d517a95e83a7d89e1ff511da1a0a31c9234155
+>>>> Author: Christoph Hellwig <hch@lst.de>
+>>>> Date:   Fri Feb 3 16:03:54 2023 +0100
+>>>>
+>>>>     blk-rq-qos: make rq_qos_add and rq_qos_del more useful
+>>>
+>>> Do you have:
+>>>
+>>> commit e33b93650fc5364f773985a3e961e24349330d97
+>>> Author: Breno Leitao <leitao@debian.org>
+>>> Date:   Tue Feb 28 03:16:54 2023 -0800
+>>>
+>>>    blk-iocost: Pass gendisk to ioc_refresh_params
+>>>
+>>> in there?
+>>
+>> It's not in the 6.1 tree, do we need it?
+>
+>If the bisected commit is in there, then yes we need it. It's marked as
+>fixes that, so puzzled why it isn't in there?
 
-korotkov.maxim.s@gmail.com wrote on Fri, 15 Mar 2024 14:45:47 +0300:
+Sorry, I take it back - both e33b93650fc5 ("blk-iocost: Pass gendisk to
+ioc_refresh_params") and d3d517a95e83 ("blk-rq-qos: make rq_qos_add and
+rq_qos_del more useful") are currently in the 6.1 tree.
 
-> Hi,
->=20
-> On 15.03.2024 14:23, Miquel Raynal wrote:
-> > Isn't it done like that on purpose? Read-retry is not a mandatory
-> > feature. =20
->=20
-> Works it as designed? I'm not sure about it.
-> I wouldn't rule it out, but it's a little weird that the hynix_nand_rr_in=
-it() function
-> is used as if it can return an error but never returns.
->=20
-> Probably  checking  of value returned from hynix_nand_rr_init()
-> should be removed in hynix_nand_init()
-
-It is indeed confusing. I'll take it.
-
+-- 
 Thanks,
-Miqu=C3=A8l
+Sasha
 
