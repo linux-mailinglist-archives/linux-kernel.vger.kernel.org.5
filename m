@@ -1,108 +1,161 @@
-Return-Path: <linux-kernel+bounces-104687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7473987D259
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:07:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F166387D262
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 175CB1F226B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:07:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD1FA1C222F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:08:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABB5548EC;
-	Fri, 15 Mar 2024 17:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC1B54FA0;
+	Fri, 15 Mar 2024 17:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RYI0qYCo"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NFfJiFsL"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3887226AF2
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 979174CB28;
+	Fri, 15 Mar 2024 17:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710522062; cv=none; b=jR77lpwSO9X+LIArH8cuxLLvhNVKhIehXeLln6hGGLAGSiAlgN5NyYAY1DE5IZFlGXDTKPjiK/qRBcJVDQau++VM8qqowwjx+yLaqB8XIUQwJW4EPxdLAFnc3vyh99QPx+U5BA++0OPZZYxcPWoWA7D/b/Ru5JOwSmL1I/DDqP0=
+	t=1710522195; cv=none; b=VIQsA7nwGEuLc/r9JffSUGIpN57wq835fuUo2R2iZBLgFNfjJH8J+cvjpUukIT/xOskqTxgx7C8/rfZN9/T+XfHwplapCsgvAMCTybw11E/2GZtL/RgJWgf4v19jCT0W3P/7FtTd3Kh8IbAwn/oBDxi9dFiTqqokFH12pxi4BL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710522062; c=relaxed/simple;
-	bh=VxvSDm2ZfaL9xq0aOb0UcMoXGUO8PigKdEpcIWxJyOk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rzr/+iegJCR3yT8PKWbklSDO4tdS8SVgrEpyS/N8rxo0liYtZtoYMNjkY9uBnPNt1uWxUKzy6JvvpzPDeTDaLazBVGTvI7odyjBHCMHPK10XbrF+UTUlygPIUozfRFh9ElP4bN8GttlG9863KATix+Gb5p5Id0xeboT+luQcsxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RYI0qYCo; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so2141420276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:01:00 -0700 (PDT)
+	s=arc-20240116; t=1710522195; c=relaxed/simple;
+	bh=VuiJ6Yk+4rO2dkDpvPyGuOChWDOminf+zuxzplbDYt8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n+1wSblftkHdpKlu7YNCWi9PQzWMU4hAHBzSWSWWonT65lm2n4ErUUv/LCvCW/Lp+AxYEze1xkqWAjV6uxLpAumwHtvum61bv9TbUaZDZK4PdJZY1tpBVtDIOvz0/WhjayB/dFca2aGRZExEpxVgMCeDU5S473cZJujUu3x+1Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NFfJiFsL; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46805cd977so165672966b.0;
+        Fri, 15 Mar 2024 10:03:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710522060; x=1711126860; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wGuDPW+xpxE1rhhXhV3L94phIhzcr2uwDr/5oD2kEEE=;
-        b=RYI0qYCoxfMjX8uEqHEd7GmldLToUBpan169dPPtDCYi5kKFbbN9xRXllx4Ech4m0k
-         FRvQI1abiC/4HyfN6xlrTPJRK30p02wnhrC3p6Qpp2OJUO5vhCJw214p9IK6VXWrDs0R
-         GzoVAp4Y82HyH7+fVp+AmrP/t/04Q9/d7zYm6V/1zIJa+AAkVLLXyieFsyPRkRKE62QP
-         0deM5p66TXgLHvILV0B4IcJI2NoJN4qIyCxtCMsHZYJltPBAW6DQgzjQp2WD3bdnMcOZ
-         RV8RUOcnwXusl30ZJOiDahqCS0Te8fbXM3m1oRNzEWBz0lMNHrI9nXqUkaUE+NDHt5bx
-         bxDA==
+        d=gmail.com; s=20230601; t=1710522192; x=1711126992; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JZ1sNJm+yT9gSzolt7Elm/obovWaZLhTaW0EpgnXEQs=;
+        b=NFfJiFsLvf49XlMBvvVwwv2Y+YjwoH5qyn5W3t34DyWtcUZSjCLqlbf+0Hae8+VbJu
+         sJgOBjlkE82SLHSoNmOUzbIS+xbxJ4Fzfvh6qmcqN8FNG8cXU/KzoEG83M7cNVyAGETE
+         PrJi5lOUyLL2kWPGdGPj9sdHWsiPS5oi/Uce4UEwTOqavsGjjBRChDEFIPLY4n3xw3+A
+         +Hu5lwlbAARlyyg25r+NpAao+hLSONZz07HyABCjHv/jMJnCpeUQN0VZRQoYMKaCEaJl
+         6RudIetddkfXvXbg3+vkubEZOWzVRDmN757bjaIzwpGWUJsmaA9InPQQXm4j59FTumIO
+         VsVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710522060; x=1711126860;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wGuDPW+xpxE1rhhXhV3L94phIhzcr2uwDr/5oD2kEEE=;
-        b=Zx/DqMq8Y91MA1gbvaqvIFJtljf34DO1Nt6sWNs/eJ42OnixchmCUXfAWGO6yDo59k
-         M4vxDWZF1aHOJFDYoRggr+tVAEyZpvwDx2WNV5jw12CzbTWMjijji78TdtYZMCWRB/qd
-         8+7PBGX5QvN10phLCOhI6LBPO0QvzIT30343iBFzkYJK0G7AcXy8JhBMJglnbSd5PDcN
-         pNjCVSxO4JJr9VCueLhag3NN7p5jbnIPZIs2cIcxWi/jDm34Dlv43JQebcc04nsPMNR1
-         oyYi3oEAuRZkqs769AwArPat77w5YdNf3hkK6jQ7ns2MuyO6IY1URCI+FD3Z+tBjJ00Y
-         YTyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/CkgY0mGgHUSpdsqxPdV78pROvWyLF/TQbcxTesYxvEr01AcCVHfWq/DdEoEE4qvwlCFZ6GQzfx1Cwh2nWUgb2dESzkD2yWQ9F306
-X-Gm-Message-State: AOJu0Yx/t+v7eznEa3oxbZsewiNLRhq+3OZmpZNxyN+ennZjFZ2yzjhp
-	Y7ZSN8bHkiMCzIIpA8cALR2Fx+NT6hXFNoa4upgnWmX/labUvgQXM7hJP1DYq7kUGzYKXw84bu7
-	udDHLnDNN2neZNPlokeXy7el5cEihOLxbe5N82A==
-X-Google-Smtp-Source: AGHT+IEUASmPSE9Y5xTuqIoFFoAAA7FGv98DXuvrPHA/u9CgZstT/gZzcts5gk/gDtXUlsOJuiJ/ZzXxRwlYryzCNCw=
-X-Received: by 2002:a25:ac57:0:b0:dc7:4363:4532 with SMTP id
- r23-20020a25ac57000000b00dc743634532mr4712203ybd.53.1710522060086; Fri, 15
- Mar 2024 10:01:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710522192; x=1711126992;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JZ1sNJm+yT9gSzolt7Elm/obovWaZLhTaW0EpgnXEQs=;
+        b=MFsr2QD7KbJs0z1c2uJgWarYYW0abbbw4jcUDRwGUrqca0t95kRPp0RszclYfIBTIl
+         P1nooI/XJla+7X0as5jMZOAjwILzVfJxwQn6/MPaETJZxr0slXoLNHXl+07r4N+eQ8h5
+         50oCG/SeuSGyatK7FjYb9zuyNpZ3qDYe3yCOHIckeoiw99X5RWJZdbUVwOeADoWvXT5z
+         +5euG/7rZDx1k4QRlTcWsFtDMcAtgb7I+FJsP9i6jYzUb6s4RjbjcJRcZq3+1FmHGvgq
+         ++AzTAPlDvLir0GPzqx51zcsNAwis71uOMiycNZ63uH+9xBq5NbOEVBUa/mGHscBYcxY
+         z/1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWe4BpHNMwVwiaa5nX9qtgjJgVd+eHFmu7EU64FEpb+Hkh5PNtC5EtZW2djnWVyERrMwPLmfN/RHpc6D3avZsJvFDhYjrKfFypCYF83lgpIkZqaAd3G4xFmxBcRK8PrTVnpgTZXBeI4xpPXRUM7n/Pkx7F3ZFTYxtSATtvf/Ws=
+X-Gm-Message-State: AOJu0YwSu0v8eWQtT/Jy0QhvyH8KoDZNQ/xoJblZmCbBVA5gT3Z6hCh7
+	1tYkdmmJbGKrdMQ/SwtuG6ns53GT34vrkxIFn0ukFPMEi4fzTx8Z
+X-Google-Smtp-Source: AGHT+IHmXXk6e/3tQw4Vi40FAeG9esFTmR4mmLFDgLolU22mS0fcuSO+nCMA5o7zuNvSNbXzpebRwQ==
+X-Received: by 2002:a17:906:3bd1:b0:a45:fb0f:d210 with SMTP id v17-20020a1709063bd100b00a45fb0fd210mr2348722ejf.25.1710522191729;
+        Fri, 15 Mar 2024 10:03:11 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.141.58])
+        by smtp.gmail.com with ESMTPSA id e27-20020a170906375b00b00a4354b9893csm1857566ejc.74.2024.03.15.10.03.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 10:03:11 -0700 (PDT)
+Message-ID: <7b82679f-9b69-4568-a61d-03eb1e4afc18@gmail.com>
+Date: Fri, 15 Mar 2024 17:02:05 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315-ptn36502-aux-v1-1-c9d3c828ff2e@fairphone.com>
-In-Reply-To: <20240315-ptn36502-aux-v1-1-c9d3c828ff2e@fairphone.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 15 Mar 2024 19:00:48 +0200
-Message-ID: <CAA8EJpo=g6jsmd1W=PK3YZOdnKx2DP-tvvS0nND8BO7LtzVThw@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: ptn36502: switch to DRM_AUX_BRIDGE
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, ~postmarketos/upstreaming@lists.sr.ht, 
-	phone-devel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
+ TIF_NOTIFY_SIGNAL
+Content-Language: en-US
+To: Sascha Hauer <s.hauer@pengutronix.de>, netdev@vger.kernel.org
+Cc: kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+ Paolo Abeni <pabeni@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+ io-uring@vger.kernel.org
+References: <20240315100159.3898944-1-s.hauer@pengutronix.de>
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20240315100159.3898944-1-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 15 Mar 2024 at 18:04, Luca Weiss <luca.weiss@fairphone.com> wrote:
->
-> Switch to using the new DRM_AUX_BRIDGE helper to create the transparent
-> DRM bridge device instead of handcoding corresponding functionality.
->
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+On 3/15/24 10:01, Sascha Hauer wrote:
+> It can happen that a socket sends the remaining data at close() time.
+> With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
+> out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
+> current task. This flag has been set in io_req_normal_work_add() by
+> calling task_work_add().
+
+The entire idea of task_work is to interrupt syscalls and let io_uring
+do its job, otherwise it wouldn't free resources it might be holding,
+and even potentially forever block the syscall.
+
+I'm not that sure about connect / close (are they not restartable?),
+but it doesn't seem to be a good idea for sk_stream_wait_memory(),
+which is the normal TCP blocking send path. I'm thinking of some kinds
+of cases with a local TCP socket pair, the tx queue is full as well
+and the rx queue of the other end, and io_uring has to run to receive
+the data.
+
+If interruptions are not welcome you can use different io_uring flags,
+see IORING_SETUP_COOP_TASKRUN and/or IORING_SETUP_DEFER_TASKRUN.
+
+Maybe I'm missing something, why not restart your syscall?
+
+
+> This patch replaces signal_pending() with task_sigpending(), thus ignoring
+> the TIF_NOTIFY_SIGNAL flag.
+> 
+> A discussion of this issue can be found at
+> https://lore.kernel.org/20231010141932.GD3114228@pengutronix.de
+> 
+> Suggested-by: Jens Axboe <axboe@kernel.dk>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
-> Very similar to this patch:
-> c5d296bad640 ("usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE")
-
-Thanks! LGTM
-
-> ---
->  drivers/usb/typec/mux/Kconfig    |  2 +-
->  drivers/usb/typec/mux/ptn36502.c | 44 ++--------------------------------------
->  2 files changed, 3 insertions(+), 43 deletions(-)
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
+>   net/core/stream.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/core/stream.c b/net/core/stream.c
+> index 96fbcb9bbb30a..e9e17b48e0122 100644
+> --- a/net/core/stream.c
+> +++ b/net/core/stream.c
+> @@ -67,7 +67,7 @@ int sk_stream_wait_connect(struct sock *sk, long *timeo_p)
+>   			return -EPIPE;
+>   		if (!*timeo_p)
+>   			return -EAGAIN;
+> -		if (signal_pending(tsk))
+> +		if (task_sigpending(tsk))
+>   			return sock_intr_errno(*timeo_p);
+>   
+>   		add_wait_queue(sk_sleep(sk), &wait);
+> @@ -103,7 +103,7 @@ void sk_stream_wait_close(struct sock *sk, long timeout)
+>   		do {
+>   			if (sk_wait_event(sk, &timeout, !sk_stream_closing(sk), &wait))
+>   				break;
+> -		} while (!signal_pending(current) && timeout);
+> +		} while (!task_sigpending(current) && timeout);
+>   
+>   		remove_wait_queue(sk_sleep(sk), &wait);
+>   	}
+> @@ -134,7 +134,7 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
+>   			goto do_error;
+>   		if (!*timeo_p)
+>   			goto do_eagain;
+> -		if (signal_pending(current))
+> +		if (task_sigpending(current))
+>   			goto do_interrupted;
+>   		sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
+>   		if (sk_stream_memory_free(sk) && !vm_wait)
 
 -- 
-With best wishes
-Dmitry
+Pavel Begunkov
 
