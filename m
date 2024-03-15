@@ -1,52 +1,88 @@
-Return-Path: <linux-kernel+bounces-104940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92CED87D63A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:36:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C01087D644
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B792282F22
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:36:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DD091C20EA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AE454912;
-	Fri, 15 Mar 2024 21:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8027E54912;
+	Fri, 15 Mar 2024 21:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TR8k0t9H"
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V+pwHWhs"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCFAB548F4
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 21:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F28E11CBD
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 21:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710538561; cv=none; b=lFyldYsdPLgLF1dz7pWeIetMfsxZvSQYWXjeckx8Z3krLR5Ye11KkEncuyUjCU05A5kszCEh3msqN7P3+snJtghhZ9UTMTrM6y+X/xZarHw7qXC449DAMTxooln1vsoU73fp12x2X7U/qiXKVk/dcZm9YhnVD/3MFWj/7IGF9PI=
+	t=1710538659; cv=none; b=cEYPXh0jd8LtbGl53BhL0fONMj46YVhSXdKP457j6x5KVYboT3MmOnMb2F+HRtny5tUYO2kcWpoCyI9GDQ581iGAIBGR7cYKJrs9Z7bHmOllK8I4/KEznTtQF+LimCYcc2CupmLnWHLYUD0/JmgGMFHHhobwkiNOuf3AGsjeWtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710538561; c=relaxed/simple;
-	bh=CG2MR7sO9yin4h+PbF8Oq5ga4DEY+K/45S38A5VbGSU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=vCRi+UO5XaMTRFAo3DbyoApVGNIA24qlxl+W+fWRX3ApRFB5ZSwO5sjwzRAIm1YtCbvifxn7ShEmlDouLiYwEVJ2ZLknRmBnzkaL3rz2cDT+KSFwVXQKtK7GaT6VPig3IQpf0n/ODMwgdD+VbKX9d34lKp8N4aPUjEjaktYqFGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TR8k0t9H; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710538555;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zLhbNCpAsdnAMm/9yoY8p/qO8u7ebloSJXuKEpMzYWA=;
-	b=TR8k0t9HMgzywrFBM7L3wdTnNZLquR0M5r0jLh9Abig5sBkYd36GADUjpcYywentdEmUNr
-	9DdvV5lea2SIDb6hN//OpuPmBH5d5pLucUzqcdYpfjShUSGLtn64SkcbK0vaEqwUD3zkbp
-	RFlObyIa4rSHXGt1MwbBQeenS3otouU=
-From: Sean Anderson <sean.anderson@linux.dev>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	s=arc-20240116; t=1710538659; c=relaxed/simple;
+	bh=bUvPhLUiYOJgKB6BrL5Hb+aiuEbi6OrUUVqjDAfvd34=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N5pBo491mlarg83pm8TQWJ77jYVESmwk+MlDHwuxxp1Lt7wT9IGXi4qpjzU8rsTHnu618rabtHfuvH/dEvSVnpNdfybukVE54wxEWX2wefhOeYMHDzMs8qVCNHiDEVu12GXPrzUt8rRn4LP2Hq5MkWY+gkNXAAbYoTwZZTx6voE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V+pwHWhs; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e6b6e000a4so1911568b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 14:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710538658; x=1711143458; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JcjIzpIf3M0tslD3zrN0DmNXzOjKP0xQjzG1iMsY+AU=;
+        b=V+pwHWhsmSk7mv9gKqYS6kFcwWq+NSKyAb62tENB0bnnXtIjojr25ZtCDSH1MinpyD
+         /csJeETZaz3n799BwW3KJElgHwhuLCfljKTFZ7Gk4NVQwDTXMgg0AnH9liqNix6qtO6o
+         eFjLIleaG/HhdfHEPOOfjU3oXNhJv48ldfQJY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710538658; x=1711143458;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JcjIzpIf3M0tslD3zrN0DmNXzOjKP0xQjzG1iMsY+AU=;
+        b=fohZiTlA4pKcwUwV81r6+ypz0lkCUzLis+6vzRUOcpOzjpt1THEMZtjem7XH825I5d
+         VLjWEy//3TqnLXgMGhnOvoq+Tur706o6O8u+ULjR0D8RKzrFD7hyS/dVDjllJgxrKQya
+         4ZmFcRsfDCRcSDKtAdEy5Da4NVqYNXQgyZuJBcmjqM9GTo6EhpqzaJi1yziwXH9cllAD
+         Eh4utvvfcudjxSNsiNLfGA+D/hb5qYxWgjuMzCYc5Hb6Xj1jt+uTyTPkcGupe7omayre
+         1bkyeYCe0PppZbfiiR/HNbStJUYcdMFv7Rm912Zp5mxNAMl2RsRBGdR8uLKXZ4VPhKzn
+         k/rg==
+X-Forwarded-Encrypted: i=1; AJvYcCXsMfN/MFGdAA/KvtouO+dyNNVtZD0HjA14Q3BC41WkHqcnNml68ua0SVczyM6pMmDaNPHlteg2nHU6tTyOE4GKtSmhqVNWzQsmpH0V
+X-Gm-Message-State: AOJu0YyKQwroTaWcZwT5gHA5RKVDlLd2qKsP8ubq8CnLct/5o0uRFeVl
+	HzuLTHPFdhHxPt2xUhRQT82dUOjnDDPPr6oNfT84n0A7TOeeRZEEqutPYixXZA==
+X-Google-Smtp-Source: AGHT+IFjUmHac2Bq6KdiZW/REPm92doVaTzd5QixixIP9P8bacTyl7uoL/ZLpufE9uq3gSzkN3xgmQ==
+X-Received: by 2002:a05:6a00:2d1d:b0:6e6:fb9a:fb45 with SMTP id fa29-20020a056a002d1d00b006e6fb9afb45mr3949524pfb.1.1710538657710;
+        Fri, 15 Mar 2024 14:37:37 -0700 (PDT)
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:b23e:e8dc:3df4:aa2a])
+        by smtp.gmail.com with ESMTPSA id a26-20020aa7865a000000b006e6b5e65579sm3837142pfo.106.2024.03.15.14.37.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 14:37:37 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+To: Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Douglas Anderson <dianders@chromium.org>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Guenter Roeck <groeck@chromium.org>,
+	Kuogee Hsieh <quic_khsieh@quicinc.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Sean Paul <sean@poorly.run>,
+	Stephen Boyd <swboyd@chromium.org>,
+	Vara Reddy <quic_varar@quicinc.com>,
+	dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH] misc: ds1682: Add NVMEM support
-Date: Fri, 15 Mar 2024 17:35:40 -0400
-Message-Id: <20240315213540.1682964-1-sean.anderson@linux.dev>
+Subject: [PATCH v2 0/4] drm/msm/dp: Improve DP AUX transfer vs. HPD interactions
+Date: Fri, 15 Mar 2024 14:36:28 -0700
+Message-ID: <20240315213717.1411017-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,84 +90,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add NVMEM support for the internal EEPROM.
 
-Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
----
+The main goal of this patch series is to avoid problems running
+"fwupd" on Qualcomm devices. Right now several of the plugins used
+with fwupd try talking over all DP AUX busses and this results in a
+very long timeout on Qualcomm devices.
 
- drivers/misc/ds1682.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+As part of fixing this, I noticed a case where the MSM DP code wasn't
+respecing the timeout properly when asked to wait for HPD. I also
+noticed that, now that we've implemented wait_hpd_asserted(), we no
+longer need the long hardcoded timeout / special case for eDP in the
+AUX transfer function.
 
-diff --git a/drivers/misc/ds1682.c b/drivers/misc/ds1682.c
-index 21fc5bc85c5c..5f8dcd0e3848 100644
---- a/drivers/misc/ds1682.c
-+++ b/drivers/misc/ds1682.c
-@@ -32,6 +32,7 @@
- #include <linux/i2c.h>
- #include <linux/string.h>
- #include <linux/list.h>
-+#include <linux/nvmem-provider.h>
- #include <linux/sysfs.h>
- #include <linux/ctype.h>
- #include <linux/hwmon-sysfs.h>
-@@ -197,11 +198,43 @@ static const struct bin_attribute ds1682_eeprom_attr = {
- 	.write = ds1682_eeprom_write,
- };
- 
-+static int ds1682_nvmem_read(void *priv, unsigned int offset, void *val,
-+			     size_t bytes)
-+{
-+	struct i2c_client *client = priv;
-+	int ret;
-+
-+	ret = i2c_smbus_read_i2c_block_data(client, DS1682_REG_EEPROM + offset,
-+					    bytes, val);
-+	return ret < 0 ? ret : 0;
-+}
-+
-+static int ds1682_nvmem_write(void *priv, unsigned int offset, void *val,
-+			      size_t bytes)
-+{
-+	struct i2c_client *client = priv;
-+	int ret;
-+
-+	ret = i2c_smbus_write_i2c_block_data(client, DS1682_REG_EEPROM + offset,
-+					     bytes, val);
-+	return ret < 0 ? ret : 0;
-+}
-+
- /*
-  * Called when a ds1682 device is matched with this driver
-  */
- static int ds1682_probe(struct i2c_client *client)
- {
-+	struct nvmem_config config = {
-+		.dev = &client->dev,
-+		.owner = THIS_MODULE,
-+		.type = NVMEM_TYPE_EEPROM,
-+		.reg_read = ds1682_nvmem_read,
-+		.reg_write = ds1682_nvmem_write,
-+		.size = DS1682_EEPROM_SIZE,
-+		.priv = client,
-+	};
-+	struct nvmem_device *nvmem;
- 	int rc;
- 
- 	if (!i2c_check_functionality(client->adapter,
-@@ -211,6 +244,10 @@ static int ds1682_probe(struct i2c_client *client)
- 		goto exit;
- 	}
- 
-+	nvmem = devm_nvmem_register(&client->dev, &config);
-+	if (IS_ENABLED(CONFIG_NVMEM) && IS_ERR(nvmem))
-+		return PTR_ERR(nvmem);
-+
- 	rc = sysfs_create_group(&client->dev.kobj, &ds1682_group);
- 	if (rc)
- 		goto exit;
+NOTE: I managed to dig up some hardware to test the eDP case and my
+basic testing shows that everything still works fine there after this
+series.
+
+Changes in v2:
+- Don't look at the HPD line directly; have dp_display call us.
+- ("Fix typo in static function (ststus => status)") new for v2.
+
+Douglas Anderson (4):
+  drm/msm/dp: Avoid a long timeout for AUX transfer if nothing connected
+  drm/msm/dp: Account for the timeout in wait_hpd_asserted() callback
+  drm/msm/dp: Delete the old 500 ms wait for eDP HPD in aux transfer
+  drm/msm/dp: Fix typo in static function (ststus => status)
+
+ drivers/gpu/drm/msm/dp/dp_aux.c     | 30 ++++++++++++++++-------------
+ drivers/gpu/drm/msm/dp/dp_aux.h     |  1 +
+ drivers/gpu/drm/msm/dp/dp_catalog.c |  7 ++++---
+ drivers/gpu/drm/msm/dp/dp_catalog.h |  3 ++-
+ drivers/gpu/drm/msm/dp/dp_display.c |  8 ++++++--
+ 5 files changed, 30 insertions(+), 19 deletions(-)
+
 -- 
-2.35.1.1320.gc452695387.dirty
+2.44.0.291.gc1ea87d7ee-goog
 
 
