@@ -1,156 +1,155 @@
-Return-Path: <linux-kernel+bounces-104857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E61787D49F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:49:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2C687D4AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:52:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E04F1C2241F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:49:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40C5BB21A72
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB3C524CE;
-	Fri, 15 Mar 2024 19:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6CB535AC;
+	Fri, 15 Mar 2024 19:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="CnbLJSNB"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B5As7fuD"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A613F524BC
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE12E36B15
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710532149; cv=none; b=PqrNqNlQytJAi1E4Fk8Oq1rsAA9B5lNsyiJGjopQ+OtJteRqCnCeB0gqyASHyd0G0+dc8cAp8CIlMO5LCFxQbkZRCoWUfCeBnHuOAdEWRooG/D1TO3cDkhKcB6YxAdNZGHdfeVTfPHRXJNb++MZoMthKliP6tRtmvvMx1tlBmiE=
+	t=1710532338; cv=none; b=gojrMcrfItejBSKeWRrCjQh7OEqwlifObpfLVZSlef3Aa2DAWA+OOgG95QymecEiiyD7K7kwBl7ZykOyk2P9o+jyb8Ge7zGGe2ZUdksouaW1zaN5VRLRxzFNZKi6GtA2teSVnsoise3Kafa10wsB0whPHW9NT1T2l1u3oepYsbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710532149; c=relaxed/simple;
-	bh=ZfQ8x5dH4x5DWUpBJmuLHOLodi5CZsFApbL/gAswl2M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cqAPeidej6UnYMthqikL/DktBj03Y1UP+TAfb3AdHcs6K9uVmMdHJ3hQD93aAefilvbnX6JExmngrhjepJKwfkOg+cllDSg5mzYcmOER9NLdNA/CdaEyhQe3tcBVv/XOi4Zkpal1BXVmfuIrvhq1x1AVvhBIE83z0JVi61xyQ3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=CnbLJSNB; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-609fd5fbe50so26698677b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:49:06 -0700 (PDT)
+	s=arc-20240116; t=1710532338; c=relaxed/simple;
+	bh=Oa9QWweedRF6jpfo/nRk+i60JCiExm98a5CdcH2Mr+0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QzN7uOXWVxXqcca6F/CemOhsM5UiscOUEgBcqmu/KJ0/nviMeA/c4kJNM0ly8ziV1i/kE3MVxxB9EvFLCI8TXbzoJSENj9cTre2fBX8rMBJj+lIZGXDBRqCMX/eQCyg0eH83QRb/QYEvxj8Oces5tsPONR1FoGxPmXtDPLNYjeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=B5As7fuD; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513d247e3c4so1841356e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:52:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1710532145; x=1711136945; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xrPHDfVM1LJbs09LU1eQrP0j2lULZw9AOoce47S0QjY=;
-        b=CnbLJSNBjdQyDHAHN0qBeXGwczhNZa200ldLwVa2zo+qgcHbkwgPQZlYQLyaHkd02e
-         S5FswNzNeWEgWTmpuziPaguxVpxzDCQHm+Pm9CS1zmZWXIJfWE79QZuVoZHn59dwaPZN
-         SHQMyE/Z/iHNBXpiRixvwABxVC9Wvyf5AL2I4nZgDfKniOq0fk6QZfdz0YoDgisP0kpv
-         vYfUVcO7ejMGHHMLrHi5Yb4CnKWY4xz8aWjV5lHs/P60iwuvP8Ti9ZkpZioLo4Gtv1pH
-         zEJOIzjo3cZHUlyKSonzVNdfKTQM/t/zXezhKXHbpUWemKHbFYi3YTrrKLOD+QnJ0aQh
-         s4Aw==
+        d=linaro.org; s=google; t=1710532332; x=1711137132; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LvSepV5Zd+55lgwXRxtPp7+i7xc6kKJVG1QWydHr3/0=;
+        b=B5As7fuDJ6/8iT852LsiNE5jsCyNggMIsyJrKV0+WANOtPaO1cX7/J0jsD21xRiYtu
+         m2XGH/UdlCCwrQ6U2t1Xl2qA+VCjekq9T63QNh6HFb11CHRDyNgOcTx0nG2htCe+lD3c
+         oymJ2H9aVECqy7T+XnMoXtG57JN879R1YJ/hGyROMP5nmHseVFcLxKCM6cGGzNoIhzli
+         AIO3hex1cCpB3n16Frs5hXleHiwC/8I2PPq0hExJiHfNVB+5WijdGf94vf5wy84mTUGb
+         p9y+4pU3ru8WRrgTDt7YIj/GyPgrvtsklnjQz/UCM9cZeYBlrYpCyoWmMF4nbTPhUDJA
+         Hf/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710532145; x=1711136945;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xrPHDfVM1LJbs09LU1eQrP0j2lULZw9AOoce47S0QjY=;
-        b=YZSrXGwx93U4qKMQ6xH78s/kE6d5N/qbQXgZp/rRGZB5RpxOgC42ZNKIntNFcWGIwc
-         NudnSreHKSv6wgckfZbL4yjVGkjCeYIjvbKmjGqGQcOiTxAPB3g5alKQDUKKlarI2WXh
-         63jzJ4UL2deVsprBPK//7HmO3phGKnRsjtI765tCevreAAdI8kf7qDbsqCbHsmOXxJsi
-         rHNXfhGBKJnOw/xtMcLbEg3zux1NRT+xGbsrWMr08mHY+EyNuYydPKRczwCdInhevxqF
-         ND6qDSfKy8vblh2hha8TmMyf0tHl5glWxxSGn310L5doZIinScrikZ8LMRItKMPB81Fn
-         DswQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXaMcV8VaddoZJoIMS+52eaR5V97XU/N2rK3hR2GqnN48uAyD75+liVCIZ1JDJk6nXSnGLDRzRRF905s9jGAckpMmzk2efYR1jR2RU6
-X-Gm-Message-State: AOJu0Ywj4CtN4OtOj84joMAKDe5LEgSXsctXa90zIggE97eMVDANE2FZ
-	BblV9TK8NvY0k14IcIcM4iTCq92rCd7EtpVe7DPCKD/3Z+QjqPY03o81YSg3qNww0lp2JANT2OO
-	S42My482sslPllXJDygnWjh5M15zVrnP2Xtgb
-X-Google-Smtp-Source: AGHT+IHwst5TyUeb5tW6MfflqpvFB5F4B4ooBz3Wi0KHfdEId2X9D9NYeBtrW+pZioCvi3AEZ5oYfZafRRbAkRSKQiE=
-X-Received: by 2002:a25:26c4:0:b0:dc6:ebca:c2e8 with SMTP id
- m187-20020a2526c4000000b00dc6ebcac2e8mr6228967ybm.5.1710532145662; Fri, 15
- Mar 2024 12:49:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710532332; x=1711137132;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LvSepV5Zd+55lgwXRxtPp7+i7xc6kKJVG1QWydHr3/0=;
+        b=j0DVtG3N3R6fKT3jH4kbR80cqx6HU3WncdvMJGgzRZp+hy8sBTUrWpxpXf4cJynHWG
+         9XCSEkg/klo8rKEpM1Xqel4UjwYca7Te0mJBL4cuY4tyr2Y4natHGkHPyyMQeNjSZOPK
+         3x+3OT5LI10xGKB1l7aeuo1iA51Z36YzRH9L2C+Abr4HyrJAYVmQRiww2ZlzF0SKERnZ
+         Uuanz1NX3JOosU/k0/Ly7qz6LUnOQgXoXGQYMiLkG1BSZFPz+gr0EDX5DG5rM/VX8V92
+         M38zbRDySh+I9w91Lkg7YOw7mn4lGC3Poxk2wyDjDJDuQ/fhdgL1npRY+mfifATemgRO
+         f+Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCX4Q6A/HXoXqhFnsdEmqqzp52BRaBW2zGYwvp0ePdwRJ18lKAAx6klMr1+UBBr9ILiIwDxOqdeCfY6YA+PSRnOl0zilEXFag/bZPeSP
+X-Gm-Message-State: AOJu0YxfBGLguNWU4T4GNGM74euYYORe9qtuyywvDPX0HJ3zoUvkbp5W
+	dxKmvVgz+85A6KzgF9GsfUzSIOS5OdPLGunPVn3cN0L/fDsPkxZTJGfm5sQSo5w=
+X-Google-Smtp-Source: AGHT+IE+9ZShxgEICTEsvSGunqK7oZPfU2+fKgKDLr/Z88m6fSC8xKsuOyAOJBFcl64gaHm6wxt0Uw==
+X-Received: by 2002:a19:2d02:0:b0:513:dfac:b29e with SMTP id k2-20020a192d02000000b00513dfacb29emr86198lfj.26.1710532332046;
+        Fri, 15 Mar 2024 12:52:12 -0700 (PDT)
+Received: from [192.168.223.169] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id v27-20020a05651203bb00b00513d595f775sm477121lfp.101.2024.03.15.12.52.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 12:52:11 -0700 (PDT)
+Message-ID: <82d2249a-2854-46e3-ac86-7b5415ce3590@linaro.org>
+Date: Fri, 15 Mar 2024 20:52:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315113828.258005-1-cgzones@googlemail.com>
- <20240315113828.258005-2-cgzones@googlemail.com> <CAEf4BzZF0A9qEzmRigHFLQ4vBQshGUQWZVG5L0q2_--kx4=AXA@mail.gmail.com>
- <0f8291f7-48b1-4be1-8a57-dbad5d0ab28c@kernel.dk>
-In-Reply-To: <0f8291f7-48b1-4be1-8a57-dbad5d0ab28c@kernel.dk>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 15 Mar 2024 15:48:54 -0400
-Message-ID: <CAHC9VhRUkgVUJiGKHjmJo5e4o1NGL_Gc9zpipAbQbMqyn1ZFzg@mail.gmail.com>
-Subject: Re: [PATCH 02/10] capability: add any wrappers to test for multiple
- caps with exactly one audit message
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	=?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>, 
-	linux-security-module@vger.kernel.org, linux-block@vger.kernel.org, 
-	Serge Hallyn <serge@hallyn.com>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] ARM: dts: qcom: Add Sony Xperia Z3 smartphone
+Content-Language: en-US
+To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+ phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240314-shinano-common-v2-0-a0fce1c72c74@z3ntu.xyz>
+ <20240314-shinano-common-v2-3-a0fce1c72c74@z3ntu.xyz>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240314-shinano-common-v2-3-a0fce1c72c74@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 15, 2024 at 2:41=E2=80=AFPM Jens Axboe <axboe@kernel.dk> wrote:
-> On 3/15/24 10:45 AM, Andrii Nakryiko wrote:
-> >> +/**
-> >> + * ns_capable_any - Determine if the current task has one of two supe=
-rior capabilities in effect
-> >> + * @ns:  The usernamespace we want the capability in
-> >> + * @cap1: The capabilities to be tested for first
-> >> + * @cap2: The capabilities to be tested for secondly
-> >> + *
-> >> + * Return true if the current task has at least one of the two given =
-superior
-> >> + * capabilities currently available for use, false if not.
-> >> + *
-> >> + * In contrast to or'ing capable() this call will create exactly one =
-audit
-> >> + * message, either for @cap1, if it is granted or both are not permit=
-ted,
-> >> + * or @cap2, if it is granted while the other one is not.
-> >> + *
-> >> + * The capabilities should be ordered from least to most invasive, i.=
-e. CAP_SYS_ADMIN last.
-> >> + *
-> >> + * This sets PF_SUPERPRIV on the task if the capability is available =
-on the
-> >> + * assumption that it's about to be used.
-> >> + */
-> >> +bool ns_capable_any(struct user_namespace *ns, int cap1, int cap2)
-> >> +{
-> >> +       if (cap1 =3D=3D cap2)
-> >> +               return ns_capable(ns, cap1);
-> >> +
-> >> +       if (ns_capable_noauditondeny(ns, cap1))
-> >> +               return true;
-> >> +
-> >> +       if (ns_capable_noauditondeny(ns, cap2))
-> >> +               return true;
-> >> +
-> >> +       return ns_capable(ns, cap1);
-> >
-> > this will incur an extra capable() check (with all the LSMs involved,
-> > etc), and so for some cases where capability is expected to not be
-> > present, this will be a regression. Is there some way to not redo the
-> > check, but just audit the failure? At this point we do know that cap1
-> > failed before, so might as well just log that.
->
-> Not sure why that's important - if it's a failure case, and any audit
-> failure should be, then why would we care if that's now doing a bit of
-> extra work?
+On 14.03.2024 19:56, Luca Weiss wrote:
+> Add the dts for the Xperia Z3 smartphone which is based on Sony's
+> shinano platform, so at the moment there's little device-specific dts to
+> add on top of the common parts.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
 
-Exactly.  We discussed this in an earlier patchset in 2022 (lore link below=
-):
+[...]
 
-https://lore.kernel.org/all/CAHC9VhS8ASN+BB7adi=3DuoAj=3DLeNhiD4LEidbMc=3D_=
-bcD3UTqabg@mail.gmail.com
+> +
+> +&smbb {
+> +	usb-charge-current-limit = <1500000>;
+> +	qcom,fast-charge-safe-current = <3000000>;
+> +	qcom,fast-charge-current-limit = <2150000>;
+> +	qcom,fast-charge-safe-voltage = <4400000>;
+> +	qcom,fast-charge-high-threshold-voltage = <4350000>;
+> +	qcom,auto-recharge-threshold-voltage = <4280000>;
+> +	qcom,minimum-input-voltage = <4200000>;
 
-> I say this not knowing the full picture, as I unhelpfully was only CC'ed
-> on two of the patches... Please don't do that when sending patchsets.
+I took a quick look and without going deep into downstream code,
+these values look sane, so
 
-Agreed, if the patchset touches anything in the audit, LSM, or SELinux
-code please send the full patchset to the related lists.  If I have to
-dig the full patchset out of lore for review it makes me grumpy.
-Don't resend the patchset for just this reason, but please keep it in
-mind for future patchsets.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
---
-paul-moore.com
+Konrad
 
