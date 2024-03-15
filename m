@@ -1,142 +1,149 @@
-Return-Path: <linux-kernel+bounces-104078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC7B87C8AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:53:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B98C87C8B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDCDB1C22313
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:53:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A7D81F22C8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4808F134B2;
-	Fri, 15 Mar 2024 05:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE87134BE;
+	Fri, 15 Mar 2024 06:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="ADeBF+Ez"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WAa8P53t"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0C812E6D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 05:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782E38BFB
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 06:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710482015; cv=none; b=NJ3zuKeB2VWMC2dQHweQSvekDkvVqn/9tW1vC/V/Jqmf/UVfK5PcScGTyBhx2Atxqbftyb7d3s+QbCcCbW30BmRlhnJ8neJXJsStPdlsNPenbhpXDJD7/uZrsM3OSh/Yt5ileHs8I7CZYMOUr3aeAwpk3bAqEBq8cMfVoiWNvGA=
+	t=1710482841; cv=none; b=DZYSyS3YAyGhUNqHI9thHHbE/isKUQcjGiEnbCRczt0/N5u8wv5W91pNDMD1ld5xMj4l7iDBiFB2NAQm3LU5N2DsFXoAiPI1jn5InH+IXg+ZgWik6fJRbMLqwMwetHq72wwR/Xys/UKgSHce892omak83jbGaS+n175Hk7LODaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710482015; c=relaxed/simple;
-	bh=UDhwVLvrhKZ4zV83WNvEmS1n7Q5RwVHTSzv7hrkimAk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iud1DpSDv8r16FkFYPOIEXQcuocqq+n4PyfrzLUD5Lrihi4z6GmpqccptL739bF8s/lPi6SsQJpufLohKAZBXiNhvaIGq8xW8mgDt3cQ7Qqi0avghSVDoGYxh907t1vdBmd3MddiizkYuU+a5Hl6G37gApIqFlJzBga2Vo9ieu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=ADeBF+Ez; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dee5daa236so6988065ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 22:53:33 -0700 (PDT)
+	s=arc-20240116; t=1710482841; c=relaxed/simple;
+	bh=HVXTNW9WfrKPtY5fK0crOs82roJk78uiZSNA4Bpj5tE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MRI34T14p2kZL/plYR/CEZSBx5VxLMyC/9oP2gpFIKLw2JJz+TTFCuUfVRtm10+FZRtJcgjW+hTycSiBE11fMlw6qJR5Xb3Ia5Za4yviTxUO0MrfXWiUToZtcBccjCOE1ZQJnhvepibiCGhN1HueLfjUlT66a030VLE6TzdGMDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WAa8P53t; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso1379835a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 23:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1710482013; x=1711086813; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6143Xt6B1fDIKqVroZrZ1l3ARGTZuJpSXXKGYmPvAls=;
-        b=ADeBF+EzvihhgqCzjtlhJAWGFXdOcayNCcFl51JfItK8YNAuKa+3+UN9+I4JPNa6pO
-         vYJyTE25aWD7L2oobBVuSaB5gMTeCfBGNyVVc5BqhUR06SkUvF3yE5c683YmWV9Q9cSS
-         r3rQT9L0Av74zCK98nSRpqO25sintcjT0nR3oJaPLh/485r/FN8uooyZEhmw02Ly1wcc
-         yFOfD+8qHR0W40TIFU8Q2dBKCwfK+P3MDEllkqkA9pScG2jQhObB9Tjty4DE+3xVccEW
-         E6aedSjyuRE+GjXhIllxuSFuI7wC1NkmI6Ck94937CBJE/3SwKMjS0QmAYx2JF5dJ9M3
-         D35g==
+        d=linaro.org; s=google; t=1710482839; x=1711087639; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xxvxJAdPrUFHn3gHyj5TaXqFg1E/jrdJuUEbi6T9i/I=;
+        b=WAa8P53tdPONPW4OqIgKzKQ3WHZFpu+75Lrx9FQ8P4XtRKx3sW6FJvP969+GnaHt8K
+         9CbPe35sbsdhjcX3M7bS8hEzFSpSEmj/n2eCNjhJ1LcisFZznK5YHC+tTvJ4m63lhBKF
+         dURZgBX+ZXdbWzA2XJsT5rBiVxAPmf8e9zFPTfFBQOHEDi6d9IZ1ptnpNEaekQg1sm61
+         TY0A/xEV4dwqVmaC7yfXl271ZWkx0g8J9W+GnQv4EJ4cKGRCJY++FvDSMBEXBAr+qfQw
+         EtcvL9PfWTBWsbS7fCEjgzks2Ib+obpPjxH5XS6UjRj7yeNs2wmTb4TZB139UBLuBZz6
+         ScSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710482013; x=1711086813;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6143Xt6B1fDIKqVroZrZ1l3ARGTZuJpSXXKGYmPvAls=;
-        b=fiN/TrNj7kt75lmhW6pQKT8jUqDtGkX2VVF54ROgUzjAxzKQAS3gOsDRrFNgiPMPTE
-         nIz1tsIR924o7k/EJVpXuvPERw/twx0k5e1NTY0QihTX9z2otHPEJlIM06sNewt5rmuo
-         D2KLY+er59HULXo7tkztcwlyyF078kGHynRI+NbTIldIY6TJeXZdeis+kGopkY5CAxTK
-         m81i4ng/tJj/TlhQx56Y0KVM1YVIWoJvk8fRP6jVSBT7YIctGHWnlydglv2Qd7kGi9aY
-         PoCd7TeJJCzdLx8C4wf4WzT8+tU205CMUWVm8iLlQgWpDPWAnMIqo6gBDPfjx0gPDUGj
-         i0lQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBWloeLGMU0cljrt3sL1IKaS/78YgkgkqhfVxof+LCsYoRFfmaItM2UI8XapmqhmM+H38NvkQWLETBX6vZd6b75YCWFJatAQdukbO7
-X-Gm-Message-State: AOJu0YzSA7vLiRGuA2n/Y2n95F5vh1cjK+Ju45g64JXEix1M4OHYlOhM
-	Q3orv8Bk/eSyBFgpqaJuye7Lmm8bwlrYxcPVL8cTIx6vpOmEwWCXSWaVpMbGOw0=
-X-Google-Smtp-Source: AGHT+IFdhVX1m34Rty2PqcdB9AWHBwlmpI+1s+YRgrPY8LLbB4ruxR0YBRVt2iLRDYdvkYdiR1xfvw==
-X-Received: by 2002:a17:902:f706:b0:1dd:8df3:1727 with SMTP id h6-20020a170902f70600b001dd8df31727mr2720117plo.44.1710482012859;
-        Thu, 14 Mar 2024 22:53:32 -0700 (PDT)
-Received: from sunil-laptop ([106.51.184.12])
-        by smtp.gmail.com with ESMTPSA id u11-20020a170903124b00b001dcbffec642sm2804203plh.133.2024.03.14.22.53.27
+        d=1e100.net; s=20230601; t=1710482839; x=1711087639;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xxvxJAdPrUFHn3gHyj5TaXqFg1E/jrdJuUEbi6T9i/I=;
+        b=DQ9k3jbVxOVVLtuNWux341cXug4SeEdqhCE7O6MqJLY8xQHxUajDF6uFXFgWNKAmw/
+         85ft88N3F7JQymppqKrcmo4q9b1aHv98J7c37mfJGW4GMC30GHJQvb0AWuYr5ou+vx1i
+         Eb/DT4PrgpFcx9jlWkDCUGHgzUyaGJtRdxtQEHWc6g9gc2XZAH3Xknv+AJjGDenxukxt
+         ohjmse1OjUdWDFI5Uqoc3zwy7xtXgIGoAaMYbPZ9+EigwfIDPAJlMe1iRvzKSmPp5Unp
+         h10FIGbCZaofu/qrsJ/f7nvjJ8jqIGHSgE0aLIsUc34CrajnrY0EPruhaeiKH/B2/MyH
+         m0Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCVV1jn+CBwAk2kSL5VrzCgl9nzN7Y+jlJXAHOd+j8CJ4M+M865apoS8T2CZB55SyTuJ/mCyyBtNPkssTpNkWhBgZfEk2tfyb6JbcOIj
+X-Gm-Message-State: AOJu0Yy1VuSj12IHwZYly0IzG8gCLTL0M4gVzdIXByaz1zWo2rfOU9Lc
+	1gSubDY852xvuyWcN03MYaLLQ0gr03WzUrc4VaBhZChuFlz7gPogiDQzTz9zKH4=
+X-Google-Smtp-Source: AGHT+IFLqeSVg/GGkWBFLXbMR3PVm6GB4LJGElcVrUUbrFmFNe904DbaRZ9ayxCFBsx906C2f8WoEw==
+X-Received: by 2002:a17:90a:d686:b0:29a:46d2:e877 with SMTP id x6-20020a17090ad68600b0029a46d2e877mr3747233pju.48.1710482838778;
+        Thu, 14 Mar 2024 23:07:18 -0700 (PDT)
+Received: from sumit-X1.. ([223.178.212.73])
+        by smtp.gmail.com with ESMTPSA id lf11-20020a170902fb4b00b001dccaafe249sm2852024plb.220.2024.03.14.23.07.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 22:53:32 -0700 (PDT)
-Date: Fri, 15 Mar 2024 11:23:23 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Drew Fustini <drew@pdp7.com>
-Cc: linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH v3 -next 0/3] RISC-V: ACPI: Add LPI support
-Message-ID: <ZfPiU5aSw0jML3S1@sunil-laptop>
-References: <20240118062930.245937-1-sunilvl@ventanamicro.com>
- <ZfO5oiVSVSmlP8eL@x1>
+        Thu, 14 Mar 2024 23:07:18 -0700 (PDT)
+From: Sumit Garg <sumit.garg@linaro.org>
+To: linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	stephan@gerhold.net,
+	caleb.connolly@linaro.org,
+	neil.armstrong@linaro.org,
+	dmitry.baryshkov@linaro.org,
+	laetitia.mariottini@se.com,
+	pascal.eberhard@se.com,
+	abdou.saker@se.com,
+	jimmy.lalande@se.com,
+	benjamin.missey@non.se.com,
+	daniel.thompson@linaro.org,
+	linux-kernel@vger.kernel.org,
+	Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v3 0/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC board DTS
+Date: Fri, 15 Mar 2024 11:37:04 +0530
+Message-Id: <20240315060707.471248-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfO5oiVSVSmlP8eL@x1>
+Content-Transfer-Encoding: 8bit
 
-Hi Drew,
+Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+Box Core board based on the Qualcomm APQ8016E SoC. For more information
+refer to the product page [1].
 
-On Thu, Mar 14, 2024 at 07:59:46PM -0700, Drew Fustini wrote:
-> On Thu, Jan 18, 2024 at 11:59:27AM +0530, Sunil V L wrote:
-> > This series adds support for Low Power Idle (LPI) on ACPI based
-> > platforms. 
-> > 
-> > LPI is described in the ACPI spec [1]. RISC-V FFH spec required to
-> > enable this is available at [2].
-> 
-> I'm interested in trying out this series. Might you be able to provide
-> some guidance on how to setup a test environment?
-> 
-> Are there specific branches of qemu and edk2 that I should use?
-> 
-1) You need LPI objects in the platform. I have added dummy objects for
-testing this for qemu virt machine. Please use below branch.
+One of the major difference from db410c is serial port where HMIBSC board
+uses UART1 as the debug console with a default RS232 mode (UART1 mode mux
+configured via gpio99 and gpio100).
 
-https://github.com/vlsunil/qemu/tree/lpi_exp
+Support for Schneider Electric HMIBSC. Features:
+- Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+- 1GiB RAM
+- 8GiB eMMC, SD slot
+- WiFi and Bluetooth
+- 2x Host, 1x Device USB port
+- HDMI
+- Discrete TPM2 chip over SPI
+- USB ethernet adaptors (soldered)
 
-Since interrupt controllers are not merged yet in linux, we need to boot
-without any IO devices and use only polling based console and ram disk.
-Above qemu branch disables IO devices as well.
+This series is a v2 since v1 of this DTS file has been reviewed on the
+U-Boot mailing list [2].
 
-2) Enable below config options while building linux kernel.
-RISCV_SBI_V01
-HVC_RISCV_SBI
+Changes in v3:
+- Picked up tags.
+- Fixed further DT schema warnings.
+- Configure resin/power button interrupt as falling edge.
+- Incorporate DTS coding style comments from Krzysztof and Konrad.
 
-3) Use upstream EDK2 (RiscVVirt)
+Changes in v2:
+- Fix DT schema warnings.
+- Incorporate suggestions from Stephan.
+- Document UART1 mode GPIOs based mux.
 
-4) Boot:
-qemu-system-riscv64 \
- -M virt,pflash0=pflash0,pflash1=pflash1 \
- -m 2G -smp 8 \
- -serial mon:stdio \
- -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
- -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
- -kernel arch/riscv/boot/Image \
- -initrd buildroot/output/images/rootfs.cpio \
- -append "root=/dev/ram ro console=hvc earlycon=sbi"
+[1] https://www.se.com/us/en/product/HMIBSCEA53D1L0T/iiot-edge-box-core-harmony-ipc-emmc-dc-linux-tpm/
+[2] https://patchwork.ozlabs.org/project/uboot/patch/20240311111027.44577-6-sumit.garg@linaro.org/
 
-Feel free to ping me if you have any difficulties.
+Sumit Garg (3):
+  dt-bindings: vendor-prefixes: Add Schneider Electric
+  dt-bindings: arm: qcom: Add Schneider Electric HMIBSC board
+  arm64: dts: qcom: apq8016: Add Schneider HMIBSC board DTS
 
-Thanks!
-Sunil
+ .../devicetree/bindings/arm/qcom.yaml         |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ .../dts/qcom/apq8016-schneider-hmibsc.dts     | 510 ++++++++++++++++++
+ 4 files changed, 514 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+
+-- 
+2.34.1
+
 
