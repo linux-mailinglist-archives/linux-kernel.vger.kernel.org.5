@@ -1,204 +1,93 @@
-Return-Path: <linux-kernel+bounces-104775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A09387D373
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:14:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1DA387D377
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C81B1C206A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:14:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27438B20328
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DA34F8B2;
-	Fri, 15 Mar 2024 18:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="FwNUO8kx"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2779B4E1D1;
+	Fri, 15 Mar 2024 18:19:45 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC474CE1B;
-	Fri, 15 Mar 2024 18:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBF0376F3;
+	Fri, 15 Mar 2024 18:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710526465; cv=none; b=P6K0+YUxo6q5xLBebD7MG4RRBUH7W/xGL0ZSwQcLuVjIa/YhkAUFtECaTl03NeRh/Rxqd9JDvn89fzjLjemE1wa3FQtzdq6KLmeOyX88bZLkWFBNBMO5LzjvO5yE+nD9emwbDrGY6dpRyi+aWDRiCHwVK4AXZSUxjBqHhLDvccE=
+	t=1710526784; cv=none; b=Coue3E/apdMLvQblGg64HniZuEY1befaXt+ego+ATZqp0j9jYLIgLNY8zPrdVRj89p+SrcDauIQUOp29v77zk0WVa1dUwp4Pin2+HfK8KYk92qVTooLnsvGBcT2O0DliUwUqlx43Fw5NBUxDpoLJcynxiruD6iTNNcqH8400h5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710526465; c=relaxed/simple;
-	bh=9MvyuDrhaotfv+B09py4H758keObr5ydb2VtJa2MuPQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dOwd0DIYAfv3F3PysUY5eGpd6pFnw4/g+fPWvsq+7wdlIvaWiRgWlDuIzTPmDm+Y8kejiUUXSYhKKqjeYRJzM1/WcoAlvHpTBelV4K85Mnp8i9TU9T7nM3mB0Cc87Qf3X5H7PEpDD4h4vcjLT+H651nFIDYArDlUSnXov2n4Q4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=FwNUO8kx; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5131a9b3d5bso2838740e87.0;
-        Fri, 15 Mar 2024 11:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710526459; x=1711131259; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rkDC2yEMoA8aKIWbb14yRjg2ggB/5aRYuGOEZHBpmZY=;
-        b=FwNUO8kxELT0PVYOpStNAXEMmPU/k8dbMcyXoQgC91w2KQjmpXLwr6UdWnTN193HkJ
-         UvhiswazO/1tcYzFnRty8AAyBBV8+XBHGjMB6Y1bCGO5gdbTJPkPyKkieCVmd4T6ms9K
-         taE3fi/5q1jBmQJm2qqmutJ/mh9zDkFwZTuCx/WFyN4FT5tjJUZHA9u8vQr6xyPpk6RC
-         vbPPncCAhDKFxswudmWkw9R2ZZbkxXZOlLXSoqRUHb8W2Ib8MuYwVvl6vOKPsJpeNbmd
-         pkCYX2/p1Wi/cEJ3WJOGul8JOmVuhSBNdGsVB0CIUhvFHfS4iXg6wGCYL/6CPtNijXG9
-         d5XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710526459; x=1711131259;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rkDC2yEMoA8aKIWbb14yRjg2ggB/5aRYuGOEZHBpmZY=;
-        b=AqRFMSK5HGLqK/xR5HJtuHSUVlm6vYSJV6PfhGLaUr2eLa9Km8DGYkKof8WCS0Y/uB
-         PhgLgc6BD5mNsRrgUppcUXvvoW5/EB99RrAd6rBByJr7rS2ydR9tBeKQDadZrdmWt2e7
-         Llrjkplt2Qq5lPVFX8gIRf1D0kpJwO/uem7UlHMymnI1anJ/7h8ygtfKZEDPc874JknS
-         H4c68v2y4YV2AH07mjBK+nT0taL+Kjk0XLC13soqUfF9PrZOcZ7xbdZnMcAqpuNIjCI9
-         KykZcYZUdgpJc4/EtgZ8yUMggObRjC6zZy8Qct1/5iAvvv+gcf3ZbNBVyrULV/ie2l5J
-         SlCg==
-X-Forwarded-Encrypted: i=1; AJvYcCXPYVP7WxLyJgsQb76L2QsgLonqLFFGP7fi5HeK2yrPXb0hpFW2PRctBKC/OAdI/zadKaGQDjUFQEkIHFUq0UynvYyQtfd+Gji0ysMq
-X-Gm-Message-State: AOJu0Yz9QiyHVxt5RJYOxkCWV2xziXK0FEqJP/rufuuV6hc17/vuHvVt
-	5PnWG9Zak5O/gxTVCO6Q65vcrRbV9BD8lapx+Ee3TQkdR+S3X47uLcPVoDWJ4iFVyA==
-X-Google-Smtp-Source: AGHT+IGIuF8DT4BuRTsNF75XWJY7LrK3fZ/F9lk3g/712vFhApFrvdmY7Sv/cGViWzJMkNiVQb4f8Q==
-X-Received: by 2002:ac2:5b03:0:b0:513:bd72:a677 with SMTP id v3-20020ac25b03000000b00513bd72a677mr3893522lfn.19.1710526459502;
-        Fri, 15 Mar 2024 11:14:19 -0700 (PDT)
-Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
-        by smtp.gmail.com with ESMTPSA id u20-20020a1709060b1400b00a449076d0dbsm1915682ejg.53.2024.03.15.11.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 11:14:19 -0700 (PDT)
-From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To: selinux@vger.kernel.org
-Cc: Paul Moore <paul@paul-moore.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] selinux: dump statistics for more hash tables
-Date: Fri, 15 Mar 2024 19:14:05 +0100
-Message-ID: <20240315181414.649045-2-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240315181414.649045-1-cgzones@googlemail.com>
-References: <20240315181414.649045-1-cgzones@googlemail.com>
+	s=arc-20240116; t=1710526784; c=relaxed/simple;
+	bh=dbsvbfIgWkiMbG+rujc9xyqiUlyvV2JC/ZSuiZJeuvc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LlR+GP9QJ0I9agBACtxXXC61tg8546TEOYAH24Nkt4Q5PrcAMhEbdAVBGv/z3kSwLMGuNQBQmZITtHDLD/IsvTlB/Q2Wu6zQ2RRz18s+898YCXqaW+Fr91UQOQpUtjsJYTnYnYzxlvZohdfGRRb66p9KqP2ydeuvL5modRdqq30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E57BC433C7;
+	Fri, 15 Mar 2024 18:19:42 +0000 (UTC)
+Date: Fri, 15 Mar 2024 18:19:39 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Paul Walmsley <paul@pwsan.com>,
+	Will Deacon <will@kernel.org>, jisheng.teoh@starfivetech.com,
+	linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+	locus84@andestech.com, peterlin@andestech.com
+Subject: Re: linux-next: manual merge of the risc-v tree with the arm64 tree
+Message-ID: <ZfSRO9JeFTxEeM8Q@arm.com>
+References: <20240315103146.225b653b@canb.auug.org.au>
+ <mhng-cfc51b24-8f65-4b87-a258-71a9893cb6fe@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-cfc51b24-8f65-4b87-a258-71a9893cb6fe@palmer-ri-x1c9a>
 
-Dump in the SELinux debug configuration the statistics for the
-conditional rules avtab, the role transition, and class and common
-permission hash tables.
+On Fri, Mar 15, 2024 at 10:21:13AM -0700, Palmer Dabbelt wrote:
+> On Thu, 14 Mar 2024 16:31:46 PDT (-0700), Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Today's linux-next merge of the risc-v tree got a conflict in:
+> > 
+> >   drivers/perf/Kconfig
+> > 
+> > between commits:
+> > 
+> >   c2b24812f7bc ("perf: starfive: Add StarLink PMU support")
+> >   f0dbc6d0de38 ("perf: starfive: Only allow COMPILE_TEST for 64-bit architectures")
+> > 
+> > from the arm64 tree and commit:
+> > 
+> >   bc969d6cc96a ("perf: RISC-V: Introduce Andes PMU to support perf event sampling")
+> > 
+> > from the risc-v tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> 
+> Sorry, I guess maybe I should have looked at my queue before agreeing to
+> send the starfive PMU patches via the arm64 tree.  The Andes stuff touches a
+> bunch of other RISC-V bits, but I'm happy to do a shared tag or something if
+> folks want.
+> 
+> Otherwise I'll just point this out to Linus when I send my PR -- I'm going
+> to hold off on that this morning, as I just realized I should have taken
+> this GUP fix and thus want to let things bake a little longer.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
-v2:
-   print key in hash_eval() for class and common tables
----
- security/selinux/ss/conditional.c |  3 +++
- security/selinux/ss/policydb.c    | 23 ++++++++++++++++-------
- 2 files changed, 19 insertions(+), 7 deletions(-)
+The arm64 tree went in yesterday already. If you want, you can merge
+the arm64 for-next/perf tree into yours before sending the PR to Linus.
+Otherwise, the conflict is trivial, just give Linus a heads-up.
 
-diff --git a/security/selinux/ss/conditional.c b/security/selinux/ss/conditional.c
-index f12476855b27..e868fc403d75 100644
---- a/security/selinux/ss/conditional.c
-+++ b/security/selinux/ss/conditional.c
-@@ -169,6 +169,9 @@ int cond_init_bool_indexes(struct policydb *p)
- 		p->p_bools.nprim, sizeof(*p->bool_val_to_struct), GFP_KERNEL);
- 	if (!p->bool_val_to_struct)
- 		return -ENOMEM;
-+
-+	avtab_hash_eval(&p->te_cond_avtab, "conditional_rules");
-+
- 	return 0;
- }
- 
-diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
-index 3d22d5baa829..b0f688fe0737 100644
---- a/security/selinux/ss/policydb.c
-+++ b/security/selinux/ss/policydb.c
-@@ -672,14 +672,17 @@ static int (*const index_f[SYM_NUM])(void *key, void *datum, void *datap) = {
- /* clang-format on */
- 
- #ifdef CONFIG_SECURITY_SELINUX_DEBUG
--static void hash_eval(struct hashtab *h, const char *hash_name)
-+static void hash_eval(struct hashtab *h, const char *hash_name, const char *hash_details)
- {
- 	struct hashtab_info info;
- 
- 	hashtab_stat(h, &info);
- 	pr_debug(
--		"SELinux: %s:  %d entries and %d/%d buckets used, longest chain length %d, sum of chain length^2 %llu\n",
--		hash_name, h->nel, info.slots_used, h->size, info.max_chain_len,
-+		"SELinux: %s%s%s:  %d entries and %d/%d buckets used, longest chain length %d, sum of chain length^2 %llu\n",
-+		hash_name,
-+		hash_details ? "@" : "",
-+		hash_details ?: "",
-+		h->nel, info.slots_used, h->size, info.max_chain_len,
- 		info.chain2_len_sum);
- }
- 
-@@ -688,11 +691,11 @@ static void symtab_hash_eval(struct symtab *s)
- 	int i;
- 
- 	for (i = 0; i < SYM_NUM; i++)
--		hash_eval(&s[i].table, symtab_name[i]);
-+		hash_eval(&s[i].table, symtab_name[i], NULL);
- }
- 
- #else
--static inline void hash_eval(struct hashtab *h, const char *hash_name)
-+static inline void hash_eval(struct hashtab *h, const char *hash_name, const char *hash_details)
- {
- }
- static inline void symtab_hash_eval(struct symtab *s)
-@@ -1178,6 +1181,8 @@ static int common_read(struct policydb *p, struct symtab *s, void *fp)
- 			goto bad;
- 	}
- 
-+	hash_eval(&comdatum->permissions.table, "common_permissions", key);
-+
- 	rc = symtab_insert(s, key, comdatum);
- 	if (rc)
- 		goto bad;
-@@ -1358,6 +1363,8 @@ static int class_read(struct policydb *p, struct symtab *s, void *fp)
- 			goto bad;
- 	}
- 
-+	hash_eval(&cladatum->permissions.table, "class_permissions", key);
-+
- 	rc = read_cons_helper(p, &cladatum->constraints, ncons, 0, fp);
- 	if (rc)
- 		goto bad;
-@@ -1898,7 +1905,7 @@ static int range_read(struct policydb *p, void *fp)
- 		rt = NULL;
- 		r = NULL;
- 	}
--	hash_eval(&p->range_tr, "rangetr");
-+	hash_eval(&p->range_tr, "rangetr", NULL);
- 	rc = 0;
- out:
- 	kfree(rt);
-@@ -2116,7 +2123,7 @@ static int filename_trans_read(struct policydb *p, void *fp)
- 				return rc;
- 		}
- 	}
--	hash_eval(&p->filename_trans, "filenametr");
-+	hash_eval(&p->filename_trans, "filenametr", NULL);
- 	return 0;
- }
- 
-@@ -2649,6 +2656,8 @@ int policydb_read(struct policydb *p, void *fp)
- 		rtd = NULL;
- 	}
- 
-+	hash_eval(&p->role_tr, "roletr", NULL);
-+
- 	rc = next_entry(buf, fp, sizeof(u32));
- 	if (rc)
- 		goto bad;
 -- 
-2.43.0
-
+Catalin
 
