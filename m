@@ -1,166 +1,97 @@
-Return-Path: <linux-kernel+bounces-104717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A599987D2B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:24:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF5F287D2B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAFEC1C2212E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:24:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93EA2281DCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0769482E2;
-	Fri, 15 Mar 2024 17:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0879D482C6;
+	Fri, 15 Mar 2024 17:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDIRyhBj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BYf/YMrU"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D47B2A8E5;
-	Fri, 15 Mar 2024 17:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49844642A
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710523452; cv=none; b=o46xlcvn7DmbO/xB2hOzH6LieTzltFhtCMQWby33Tbz+/wcsgHnqHZZ0gJKm3hRnbB9lq8dr7/Urj+MTrT3LRwOGjhjsC+BE98+wkFGgctDZNxRqQsEYtjLSjUj7lBAzyWmPALzsk9YwFeq4gLPFuaaLGHY5SJZF1ITH0u9Wz9E=
+	t=1710523568; cv=none; b=V7nxLM3WFzTh5xDK1A/cL4DrPkgy++KKzVZSydiQl8W3YfAPygSRaPQWwHn/Qz59Q+kNCtWs94L8HpPDx4Cxp3w3z0pnL2uxKNe7aleAfU6QDrzhB9b3e+RCP6RS9jLRQqo6hRwWcTZINRsTrSIkHaC6zJKZwc+Kx9P++dm+U4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710523452; c=relaxed/simple;
-	bh=P4ahuRqKcidMxXgK+Vt8kDvXfaSyEoM6o0sLAnkmz8U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ia77GXD/lzlNYShHR1dH4y+Dsz4UbHL60DcrC+piaQ5UzEC1TFlmDHWoVVa3y0boK1oKYIB2c7meAqLwoWZsO60/cfR6rcvryBG7eN+CRBtk90SW5YKE4pe1CqhYQC6RzJQzolYm5+YrtZuBCOtXN5CUhE+t8AwsazLGUtjyfBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDIRyhBj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FAD8C433C7;
-	Fri, 15 Mar 2024 17:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710523451;
-	bh=P4ahuRqKcidMxXgK+Vt8kDvXfaSyEoM6o0sLAnkmz8U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qDIRyhBj+o7szPndtNfibGKwc6B/jmsPBQrnW4leDPaJq2jC3GYZhfTPg3rZw/T4J
-	 UoZaf6MUTmg6m1hY4ah5sznYGxq0ri35iUeAk8gAmGzlD26PL43Yq5VUAtNf9r8RgZ
-	 fHzKRtC2d3NGOYtFwwMfTVpfdD04NAW37cRVpbnx5fGcX8rlEYUUcn3ZG6iLj3UvG5
-	 i/dS/yLOEiBMuUFWB3L6gGwRcQHW6x3jWcj4IzTMvL0USM+067bzArXCv8dCbSmruA
-	 3gDqwiRv0SYucUSJOoY5Wwjn77KIJ9gmcx4uJmAAV0kv+WnHkvPO/L4ZDurN7U+Dqv
-	 s3SFEZB1M1B0A==
-Date: Fri, 15 Mar 2024 11:24:09 -0600
-From: Rob Herring <robh@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Abel Vesa <abelvesa@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-	imx@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v4 2/6] dt-bindindgs: clock: nxp: support i.MX95 Camera
- CSR module
-Message-ID: <20240315172409.GA1506658-robh@kernel.org>
-References: <20240314-imx95-blk-ctl-v4-0-d23de23b6ff2@nxp.com>
- <20240314-imx95-blk-ctl-v4-2-d23de23b6ff2@nxp.com>
+	s=arc-20240116; t=1710523568; c=relaxed/simple;
+	bh=cFTdYcax5gRdWhzgeNIJ1mjhAy6vbDir1d7YavE2RGk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=oIHx+1t1tYHfWySfSsLOTTyI6gNM7tQNu56vaTqBSZV96j43P1VZZRfqJOEaLxf63Vq3DE8NpnTid2jElb/Vjio/bw0uxKIh+DJkcYH1cm7NYVcUpec2L/n6xnqYuDbcElQqFGrNCVLoraDyKydDmaq+drZrOn2VIiin9QMFVWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BYf/YMrU; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1dd916d7d55so19993975ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710523566; x=1711128366; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hvVwcEiJwAJ+sbhcH9TeiA0j2HoTmMi1pHT6QVcoQQY=;
+        b=BYf/YMrUfmPrwO+TKfdeVk8e9+2FR2CJj3IHxzYPbWxrAXn4sX3YoXLBKxFNAhvaTH
+         V6zPOsxtAzKai77boYNETzcnP3A1LNirQZPXTuSeOmods7mv8LBNZvi1ErNq91JghmgD
+         2LbZP9WBh1t1M5XNyuRV0D8bL7IlpuHQCxvIExvO5U1h1tZEKOyLk9ez6tGZJFIM4n6h
+         klQysXxlgRn8IyrcncF7DHzvP9jW7OrtsLmowHa1b0XvGtzmvi0+4H3A5t6IX/Js3eOy
+         mOfpxKjOH8ZU9d5XQKHSBTc7R3Nb6bDZq3Ru7Ro7zv5N8LwvzR00fkeWtjOs1jFaaO7j
+         lzwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710523566; x=1711128366;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hvVwcEiJwAJ+sbhcH9TeiA0j2HoTmMi1pHT6QVcoQQY=;
+        b=J/BIXgVkBU3K4F0239OQgWV7WgJA8U1R9K1xgkN/MFWimyyGzssdGK2G9Gm5cHXwXz
+         eu92Aowg42iaveYrmm48tSyYc1oRRSVlYoHJY8FHnd+yT2rzHDEEcS2ukw0fTouVAayf
+         IDt+5XI4XMCehsmzOLmr8ADOIAmp4cgmtgdC5uzrszhce5uD0VjdNTgR+KfMm1VIlAj0
+         FcWV/UCpem+/RZ1UdnPqNVcz/f8hFDDK85zR04XEMeIvdrgPchhTaizbP1xA2tWsaNy9
+         jmVH8iGvE/rzzvMoopOz/05r5sIyBOoJmtRHRDl9NUl9MbIwfIR60CKMSk3R/XAm/qec
+         M09A==
+X-Forwarded-Encrypted: i=1; AJvYcCVJ8unGGacm4bz5BVH44ONn4fXh86cLyV453Oqzaev5OSs+InEPpyQjxKqO+MZUZA/Cc47EDbPiq0gl6brxQNS2/D4I8SJppISMIxuC
+X-Gm-Message-State: AOJu0Yya7UJjIdaAyHg56xj8pR1n05HXpKdneHwTPGaiym4II1gqK7iP
+	4GcpwTOHlND0XryYpeiO0zsJuumsfh3ui3ItpFk7MBUMJANsBVEz3kNIFyCOuC6uDw==
+X-Google-Smtp-Source: AGHT+IG7rbyBC8cmSfSgM1ZPt/64xcQzRHRYJmtaC9Fz4S0LeyUtL6P76VYLMAsrIGzOhoP6Sg/8mug=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:e5c7:b0:1dd:dbf6:57de with SMTP id
+ u7-20020a170902e5c700b001dddbf657demr46533plf.12.1710523566056; Fri, 15 Mar
+ 2024 10:26:06 -0700 (PDT)
+Date: Fri, 15 Mar 2024 10:26:04 -0700
+In-Reply-To: <20240315012249.439639-1-liucong2@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240314-imx95-blk-ctl-v4-2-d23de23b6ff2@nxp.com>
+Mime-Version: 1.0
+References: <ZfNXjd1ML2WJwOKX@google.com> <20240315012249.439639-1-liucong2@kylinos.cn>
+Message-ID: <ZfSErGdSKDnMpPzd@google.com>
+Subject: Re: [PATCH v2] tools/Makefile: Remove cgroup target
+From: Stanislav Fomichev <sdf@google.com>
+To: Cong Liu <liucong2@kylinos.cn>
+Cc: akpm@linux-foundation.org, bpf@vger.kernel.org, 
+	ddrokosov@salutedevices.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Mar 14, 2024 at 09:25:11PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 03/15, Cong Liu wrote:
+> The tools/cgroup directory no longer contains a Makefile.  This patch
+> updates the top-level tools/Makefile to remove references to building
+> and installing cgroup components. This change reflects the current
+> structure of the tools directory and fixes the build failure when
+> building tools in the top-level directory.
 > 
-> The i.MX95 Camera CSR is a set of registers that provides various
-> configuration and status of the Camera modules’ operations. Registers
-> are available to enable clock gating to the ISP and CSI-2 pixel
-> formatters, enable transport of various pixel data and non-pixel data
-> types, control their routing, and other functions. Status registers
-> provide pixel data type error information and pending transaction
-> from Camera NoC initiators.
+> linux/tools$ make cgroup
+>   DESCEND cgroup
+> make[1]: *** No targets specified and no makefile found.  Stop.
+> make: *** [Makefile:73: cgroup] Error 2
 > 
-> This patch is to add clock features for Camera CSR.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../bindings/clock/nxp,imx95-camera-csr.yaml       | 50 ++++++++++++++++++++++
->  include/dt-bindings/clock/nxp,imx95-clock.h        |  7 +++
->  2 files changed, 57 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/nxp,imx95-camera-csr.yaml b/Documentation/devicetree/bindings/clock/nxp,imx95-camera-csr.yaml
-> new file mode 100644
-> index 000000000000..e62494e3a8b1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/nxp,imx95-camera-csr.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/nxp,imx95-camera-csr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX95 Camera MIX Block Control
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: nxp,imx95-camera-csr
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +    description:
-> +      The clock consumer should specify the desired clock by having the clock
-> +      ID in its "clocks" phandle cell. See
-> +      include/dt-bindings/clock/nxp,imx95-clock.h
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    syscon@4c410000 {
-> +      compatible = "nxp,imx95-camera-csr", "syscon";
-> +      reg = <0x4ac10000 0x10000>;
-> +      #clock-cells = <1>;
-> +      clocks = <&scmi_clk 62>;
-> +      power-domains = <&scmi_devpd 3>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/nxp,imx95-clock.h b/include/dt-bindings/clock/nxp,imx95-clock.h
-> index 9d8f0a6d12d0..c671c4dbb4d5 100644
-> --- a/include/dt-bindings/clock/nxp,imx95-clock.h
-> +++ b/include/dt-bindings/clock/nxp,imx95-clock.h
-> @@ -11,4 +11,11 @@
->  #define IMX95_CLK_VPUBLK_JPEG_DEC		2
->  #define IMX95_CLK_VPUBLK_END			3
->  
-> +#define IMX95_CLK_CAMBLK_CSI2_FOR0		0
-> +#define IMX95_CLK_CAMBLK_CSI2_FOR1		1
-> +#define IMX95_CLK_CAMBLK_ISP_AXI		2
-> +#define IMX95_CLK_CAMBLK_ISP_PIXEL		3
-> +#define IMX95_CLK_CAMBLK_ISP			4
-> +#define IMX95_CLK_CAMBLK_END			5
+> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
 
-Same issue here. With that dropped,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
