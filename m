@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-104593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5353487D0A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:50:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EBFD87D0A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:51:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E98351F225D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:50:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FFDD1C222DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:51:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 937D53FB1D;
-	Fri, 15 Mar 2024 15:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D69B210E8;
+	Fri, 15 Mar 2024 15:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQ5ABuXt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Giu/+s4C"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D0F210E8;
-	Fri, 15 Mar 2024 15:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8868140BEE;
+	Fri, 15 Mar 2024 15:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710517837; cv=none; b=RXey2WH1Ji3P04ZEUqFLDMz9K/F3lu6QuB1T8wNZ/w4typX9fFIc+MFKpnq5QZvtLc7H5nVaOksE7IA05G45yPE5Nk29t2QkNkvI4SnPBasll9OIMbiNx1KTrIgUuEuTL49FxC+DD99kgCAVpP4K/OIV78zjIz9YfJe63yL0u1o=
+	t=1710517840; cv=none; b=XtYBvnTE/Jg4ZOKRolfajutlW+weqIgVvRtiQ6pFQzqcMR/t3SjDMDCB3NiCFAOiwvLQueQ9vppZy+kBYs18VnkMv17uulHLaB5/04DAc6ZnOwWA4pMy7XCJxnARrunRvIK5ntnvdz5n5lbRumHveM0MB4NBiOqTISPhMigxrrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710517837; c=relaxed/simple;
-	bh=xVuAaUPdip4/3/PGOSlC8sQofYGfDMYAqbhEVwHY4y8=;
+	s=arc-20240116; t=1710517840; c=relaxed/simple;
+	bh=VneOSFVdQziyWAhbdyL3fxXJcxjyiVrgBzmL3u+gdSI=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=cyM+XButrzsolxBhfxa8mkVgq0VW7JiWyUF4jswIn+FJm7W3RofceSwWaHWBwz8L6HaZlo2AIAAOxVU3xfhpe8U7i0lHSgoZRLFYFpL7f7sw07Qew31maZAZp/NGXueaVWyT2GfUVFN4lrwO09uSs5/UVKWDHFyfrw67IqEkdfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQ5ABuXt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662B4C433C7;
-	Fri, 15 Mar 2024 15:50:36 +0000 (UTC)
+	 Message-Id:Subject; b=AKF4f+XcmH+QBIV7h1lyL8jp5ISANG3j7dlzPTCm4m2+0zqqrRgRRcTf0GhUEAjk2KGpA1aLj2l1NR2TNsfTZoswWBECAYKQ2SiMQoZ4SkcUI0MjIosKpTnozjvzTV3nG6owOBY9NodJ4LWqmF9rCQhvdiWdda+7MLU1dNvaeDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Giu/+s4C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C22D0C433C7;
+	Fri, 15 Mar 2024 15:50:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710517837;
-	bh=xVuAaUPdip4/3/PGOSlC8sQofYGfDMYAqbhEVwHY4y8=;
+	s=k20201202; t=1710517839;
+	bh=VneOSFVdQziyWAhbdyL3fxXJcxjyiVrgBzmL3u+gdSI=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=UQ5ABuXtb6Aui9fKOITdM2oNJcgpnvut9cnqqwJpCF0U0Av8WiXbnG/jtREjsiLtY
-	 8pGv/H3dwrt86EhqnZ+sZEt4HZPaJCcbUOGxx/D6nfyKN3dxzcdDxETLZEU3CORL5d
-	 ba/cYFwkMhBGIHObWOJVJsBbWQjPJxZHBITqx+HwT8nTckQ/4TJVJ+km1ORMMD40rp
-	 w3GjkWVUAy/47IxftHgzElD9k2jUZdjyOYm0fRV+iPO2HbiSWYoyWfcD7v6lAjOvtf
-	 gTTIQoVnc6Orsb4MXNzedo8YZhNAA0VNfFkG+plMMV4W4qrv5/T0khgRAXQif0DTQy
-	 PEPt/EjExo7BQ==
-Date: Fri, 15 Mar 2024 09:50:35 -0600
+	b=Giu/+s4CmKiLWHWQI3fpo3uE2TfV/UgAklMSqIXdpF1yrZR4zB+7aJ03hvGMuxr5U
+	 6WR6B9y1w5knlPvvUXlAWkMmwQI1VBCMywDVqbLUXKe9J3v5QKjxiWBYigFpP7DajV
+	 IE5y+YiKq/oW3i/8fHSVpxhW9d0OETBJSzh7O7TmDCqyCI41tHIhljNQtIWvHXcsJW
+	 egRhJ+KG1R5FP0j4lMsHTGA5YqPlcyuzbXlqfwz9VWFmPzV84cF1TwF8O3kbijULvR
+	 0Y1wIcMU+nxvZ/qgPlHq67hrVw4A1ufzEwh3DKMjMy0yfjCQL4KH3dR5a3gTCM5ict
+	 oYM2HkqP53MBw==
+Date: Fri, 15 Mar 2024 09:50:38 -0600
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,42 +50,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org, 
- devicetree@vger.kernel.org, 
+To: Gabor Juhos <j4g8y7@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>
-In-Reply-To: <20240312-lx2162-rtc-v1-0-1f4cd431b1cf@solid-run.com>
-References: <20240312-lx2162-rtc-v1-0-1f4cd431b1cf@solid-run.com>
-Message-Id: <171051663090.1379808.10191493054068044105.robh@kernel.org>
-Subject: Re: [PATCH 0/2] arm64: dts: fsl-lx2162a-som: add description for
- rtc
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+ Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20240313-archer-ax55-v1-v3-0-cd9402efab59@gmail.com>
+References: <20240313-archer-ax55-v1-v3-0-cd9402efab59@gmail.com>
+Message-Id: <171051663258.1379880.507954244428830454.robh@kernel.org>
+Subject: Re: [PATCH v3 0/2] arm64: add minimal boot support for TP-Link
+ Archer AX55 v1
 
 
-On Tue, 12 Mar 2024 20:56:53 +0100, Josua Mayer wrote:
-> Add description for an on-som rtc that was missed in original submission
-> of device-tree.
+On Wed, 13 Mar 2024 19:25:38 +0100, Gabor Juhos wrote:
+> The purpose of this series to add minimal boot support for the
+> TP-Link Archer AX55 v1 dual-band wireless router.
 > 
-> Also update the clearfog reference carrier board aliases to include the
-> previously disabled i2c bus with this rtc.
+> There are two patches:
+>   - the first one adds the compatible for the board into the dt-bindings
+>     documentation,
+>   - the second patch introduces a minimal device tree source which can be
+>     used for booting initramfs images
 > 
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
 > ---
-> Josua Mayer (2):
->       arm64: dts: fsl-lx2162a-som: add description for rtc
->       arm64: dts: fsl-lx2162a-clearfog: add alias for i2c bus iic6
+> Changes in v3:
+>   - change pin configuration to use "gpio20" and "gpio21" for UART pins
+>     in patch 2/2
+>   - rebase on top of v6.8
+>   - Link to v2: https://lore.kernel.org/r/20240226-archer-ax55-v1-v2-0-3776eb61f432@gmail.com
 > 
->  arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dts | 1 +
->  arch/arm64/boot/dts/freescale/fsl-lx2162a-sr-som.dtsi  | 9 +++++++++
->  2 files changed, 10 insertions(+)
+> Changes in v2:
+>   - reorder pin configuration properties in patch 2/2
+>   - add 'Acked-by' tag to patch 1/2
+>   - Link to v1: https://lore.kernel.org/r/20240223-archer-ax55-v1-v1-0-99f8fa2c3858@gmail.com
+> 
 > ---
-> base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
-> change-id: 20240312-lx2162-rtc-a68b6ebfcb53
+> Gabor Juhos (2):
+>       dt-bindings: arm: qcom: add TP-Link Archer AX55 v1
+>       arm64: dts: qcom: add TP-Link Archer AX55 v1
 > 
-> Sincerely,
+>  Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+>  arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+>  .../dts/qcom/ipq5018-tplink-archer-ax55-v1.dts     | 132 +++++++++++++++++++++
+>  3 files changed, 134 insertions(+)
+> ---
+> base-commit: 0becfaedccee979a5f270647e573b52668669a4a
+> change-id: 20240221-archer-ax55-v1-73ed91a97c6e
+> 
+> Best regards,
 > --
-> Josua Mayer <josua@solid-run.com>
+> Gabor Juhos <j4g8y7@gmail.com>
 > 
 > 
 > 
@@ -105,10 +121,18 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y freescale/fsl-lx2162a-clearfog.dtb' for 20240312-lx2162-rtc-v1-0-1f4cd431b1cf@solid-run.com:
+New warnings running 'make CHECK_DTBS=y qcom/ipq5018-tplink-archer-ax55-v1.dtb' for 20240313-archer-ax55-v1-v3-0-cd9402efab59@gmail.com:
 
-arch/arm64/boot/dts/freescale/fsl-lx2162a-clearfog.dtb: i2c@2050000: Unevaluated properties are not allowed ('clock-names' was unexpected)
-	from schema $id: http://devicetree.org/schemas/i2c/i2c-imx.yaml#
+arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupts: [[0, 62, 4]] is too short
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names: ['hs_phy_irq'] is too short
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupts: [[0, 62, 4]] is too short
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names:0: 'pwr_event' was expected
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names: ['hs_phy_irq'] is too short
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
 
 
 
