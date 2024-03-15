@@ -1,92 +1,39 @@
-Return-Path: <linux-kernel+bounces-104294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60EE687CBB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:59:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 800D887CBB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFACE1F225E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:59:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7FD7B21C3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FDB1AADD;
-	Fri, 15 Mar 2024 10:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kIeV/N+n";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4muqVjs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kIeV/N+n";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4muqVjs"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A04C19474;
-	Fri, 15 Mar 2024 10:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C4E1B7EB;
+	Fri, 15 Mar 2024 10:59:28 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C2B1B7E2
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710500337; cv=none; b=ADK6iyvmqlO0bpszkQnFd2HMJTJlOsKUi6jjo678k7pHmCX+Pb1E1DIdWbsZvGPNzyF+6ezOqzREz35fYxoauWHr6dNGiOgOgtP7l7K5wBjmz+NWjAJfbsymffAxbG+9GTxioTGXQWp8MPd7pgDFkMxiPe8fSuLI2uRB9p2dpL4=
+	t=1710500367; cv=none; b=ozRqlKs4yqMPFTcCt8DckhBheua47Itk4l3Vlx8HYj/+7Zt8G1w21HsqUa9q9pHknlJa+xXpPcUX2rhVokHJUjEIwvZThJJBXnskG9LQBOWdrmqHKFFJRgTpdptWTrjZjhutvGqIokYv2whozHvjtdgAE7HQuPywDUFt8aAji9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710500337; c=relaxed/simple;
-	bh=bLXi0Kv2aTCp63cNUTwNkTolcU7Fdj7oossLerdiFcs=;
+	s=arc-20240116; t=1710500367; c=relaxed/simple;
+	bh=43rVENI8c7Xjq3GiKV/Hi0nkYIdilqgYNSWoFHgvraU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mokFSlsCyn/pc7u8J/SYlROAZjToEGytjMRd38KQYxDqX97/yYZSzfmCojICe1c0yKIb/+VvpKnW97Ra/y+Uyag66QqYLf7FJ1prXWqC42yUUPqZEU/7+GM+18hdlIv8sQSBxNVoMrHopWh1SKkTZpo0vfABWVoHo98W2hZtBdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kIeV/N+n; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4muqVjs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kIeV/N+n; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4muqVjs; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 50E4E21DD2;
-	Fri, 15 Mar 2024 10:58:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710500333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
-	b=kIeV/N+n1Qjn4RwdctLpBJA/ti5qrD6sZCC/MPiMggb17MFzRe5HBe0AQTNROQDaKSju7R
-	a0SLFUAt+MJiKmd9tkmDZZP0d8BIvQQaQcoE33BtEHz87wjWhVe0H/xpFhRF3pbknSydFH
-	TYmRZwi/PzREciTT3ulCpGUJ5who+rQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710500333;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
-	b=N4muqVjs0s0Jytaoa8YUY3ruVKbKV/g3CLqo9GREsnONsvr9go6NQwryE9JTCFZbAjNLnA
-	uwWsA04tQTN0rHCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710500333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
-	b=kIeV/N+n1Qjn4RwdctLpBJA/ti5qrD6sZCC/MPiMggb17MFzRe5HBe0AQTNROQDaKSju7R
-	a0SLFUAt+MJiKmd9tkmDZZP0d8BIvQQaQcoE33BtEHz87wjWhVe0H/xpFhRF3pbknSydFH
-	TYmRZwi/PzREciTT3ulCpGUJ5who+rQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710500333;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
-	b=N4muqVjs0s0Jytaoa8YUY3ruVKbKV/g3CLqo9GREsnONsvr9go6NQwryE9JTCFZbAjNLnA
-	uwWsA04tQTN0rHCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4DD81368C;
-	Fri, 15 Mar 2024 10:58:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BxitK+wp9GU7dwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 15 Mar 2024 10:58:52 +0000
-Message-ID: <1f51ffe8-e5b9-460f-815e-50e3a81c57bf@suse.cz>
-Date: Fri, 15 Mar 2024 11:58:52 +0100
+	 In-Reply-To:Content-Type; b=mBFhjMGEPP6k3nmtE9Qtt8FlDcyBkPW5f3u/DtreEJDUOrq2jr9jHpIhHef7nysekZ3e8oeRzpuLZH9/YHJp2UUiTRZMcfJh0rwIM8YHNvhXL7ai2REpBY0xyCfuMA7CK/H1iy4YFpeEd+LwnlInD33UOdCSAR3p74rtmr9Lous=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 207B2C15;
+	Fri, 15 Mar 2024 04:00:00 -0700 (PDT)
+Received: from [10.57.69.160] (unknown [10.57.69.160])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AE513F762;
+	Fri, 15 Mar 2024 03:59:17 -0700 (PDT)
+Message-ID: <ac660239-fd53-4e88-9c40-3d81fb4df259@arm.com>
+Date: Fri, 15 Mar 2024 10:59:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,132 +41,528 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/37] mm/slab: add allocation accounting into slab
- allocation and free paths
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
- muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
- pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
- dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
- keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
- gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
- penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
- glider@google.com, elver@google.com, dvyukov@google.com,
- shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
- aliceryhl@google.com, rientjes@google.com, minchan@google.com,
- kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-References: <20240306182440.2003814-1-surenb@google.com>
- <20240306182440.2003814-24-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240306182440.2003814-24-surenb@google.com>
+Subject: Re: [RFC PATCH v3 5/5] mm: support large folios swapin as a whole
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: Chuanhua Han <chuanhuahan@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, chengming.zhou@linux.dev, chrisl@kernel.org,
+ david@redhat.com, hannes@cmpxchg.org, kasong@tencent.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
+ steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, Chuanhua Han
+ <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+ <20240304081348.197341-6-21cnbao@gmail.com>
+ <c9702789-5772-4750-a609-e44a5bbd8468@arm.com>
+ <CANzGp4+p3xSo9uX2i7K2bSZ3VKEQQChAVzdmBD3O2qXq_cE2yA@mail.gmail.com>
+ <85b59657-9660-41a2-b091-0c6ec4a6ef16@arm.com>
+ <CAGsJ_4wwyFtyYgyoHpWOR=rbg23pkaMNLxJ0oMKbQjPb5oR-RQ@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4wwyFtyYgyoHpWOR=rbg23pkaMNLxJ0oMKbQjPb5oR-RQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -3.00
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[76];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,nvidia.com,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="kIeV/N+n";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=N4muqVjs
-X-Rspamd-Queue-Id: 50E4E21DD2
+Content-Transfer-Encoding: 8bit
 
-On 3/6/24 19:24, Suren Baghdasaryan wrote:
-> Account slab allocations using codetag reference embedded into slabobj_ext.
+On 14/03/2024 20:43, Barry Song wrote:
+> On Fri, Mar 15, 2024 at 2:57 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 14/03/2024 12:56, Chuanhua Han wrote:
+>>> Ryan Roberts <ryan.roberts@arm.com> 于2024年3月13日周三 00:33写道：
+>>>>
+>>>> On 04/03/2024 08:13, Barry Song wrote:
+>>>>> From: Chuanhua Han <hanchuanhua@oppo.com>
+>>>>>
+>>>>> On an embedded system like Android, more than half of anon memory is
+>>>>> actually in swap devices such as zRAM. For example, while an app is
+>>>>> switched to background, its most memory might be swapped-out.
+>>>>>
+>>>>> Now we have mTHP features, unfortunately, if we don't support large folios
+>>>>> swap-in, once those large folios are swapped-out, we immediately lose the
+>>>>> performance gain we can get through large folios and hardware optimization
+>>>>> such as CONT-PTE.
+>>>>>
+>>>>> This patch brings up mTHP swap-in support. Right now, we limit mTHP swap-in
+>>>>> to those contiguous swaps which were likely swapped out from mTHP as a
+>>>>> whole.
+>>>>>
+>>>>> Meanwhile, the current implementation only covers the SWAP_SYCHRONOUS
+>>>>> case. It doesn't support swapin_readahead as large folios yet since this
+>>>>> kind of shared memory is much less than memory mapped by single process.
+>>>>>
+>>>>> Right now, we are re-faulting large folios which are still in swapcache as a
+>>>>> whole, this can effectively decrease extra loops and early-exitings which we
+>>>>> have increased in arch_swap_restore() while supporting MTE restore for folios
+>>>>> rather than page. On the other hand, it can also decrease do_swap_page as
+>>>>> PTEs used to be set one by one even we hit a large folio in swapcache.
+>>>>>
+>>>>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+>>>>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+>>>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>>>> ---
+>>>>>  mm/memory.c | 250 ++++++++++++++++++++++++++++++++++++++++++++--------
+>>>>>  1 file changed, 212 insertions(+), 38 deletions(-)
+>>>>>
+>>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>>> index e0d34d705e07..501ede745ef3 100644
+>>>>> --- a/mm/memory.c
+>>>>> +++ b/mm/memory.c
+>>>>> @@ -3907,6 +3907,136 @@ static vm_fault_t handle_pte_marker(struct vm_fault *vmf)
+>>>>>       return VM_FAULT_SIGBUS;
+>>>>>  }
+>>>>>
+>>>>> +/*
+>>>>> + * check a range of PTEs are completely swap entries with
+>>>>> + * contiguous swap offsets and the same SWAP_HAS_CACHE.
+>>>>> + * pte must be first one in the range
+>>>>> + */
+>>>>> +static bool is_pte_range_contig_swap(pte_t *pte, int nr_pages)
+>>>>> +{
+>>>>> +     int i;
+>>>>> +     struct swap_info_struct *si;
+>>>>> +     swp_entry_t entry;
+>>>>> +     unsigned type;
+>>>>> +     pgoff_t start_offset;
+>>>>> +     char has_cache;
+>>>>> +
+>>>>> +     entry = pte_to_swp_entry(ptep_get_lockless(pte));
+>>>>
+>>>> Given you are getting entry locklessly, I expect it could change under you? So
+>>>> probably need to check that its a swap entry, etc. first?
+>>> The following non_swap_entry checks to see if it is a swap entry.
+>>
+>> No, it checks if something already known to be a "swap entry" type is actually
+>> describing a swap entry, or a non-swap entry (e.g. migration entry, hwpoison
+>> entry, etc.) Swap entries with type >= MAX_SWAPFILES don't actually describe swap:
+>>
+>> static inline int non_swap_entry(swp_entry_t entry)
+>> {
+>>         return swp_type(entry) >= MAX_SWAPFILES;
+>> }
+>>
+>>
+>> So you need to do something like:
+>>
+>> pte = ptep_get_lockless(pte);
+>> if (pte_none(pte) || !pte_present(pte))
+>>         return false;
 > 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> Indeed, I noticed that a couple of days ago, but it turned out that it
+> didn't cause any issues
+> because the condition following 'if (swp_offset(entry) != start_offset
+> + i)'  cannot be true :-)
+> 
+> I do agree it needs a fix here. maybe by
+> 
+> if (!is_swap_pte(pte))
+>            return false?
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Nice! I hadn't noticed is_swap_pte().
 
-Nit below:
-
-> @@ -3833,6 +3913,7 @@ void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
->  			  unsigned int orig_size)
->  {
->  	unsigned int zero_size = s->object_size;
-> +	struct slabobj_ext *obj_exts;
->  	bool kasan_init = init;
->  	size_t i;
->  	gfp_t init_flags = flags & gfp_allowed_mask;
-> @@ -3875,6 +3956,12 @@ void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
->  		kmemleak_alloc_recursive(p[i], s->object_size, 1,
->  					 s->flags, init_flags);
->  		kmsan_slab_alloc(s, p[i], init_flags);
-> +		obj_exts = prepare_slab_obj_exts_hook(s, flags, p[i]);
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +		/* obj_exts can be allocated for other reasons */
-> +		if (likely(obj_exts) && mem_alloc_profiling_enabled())
-> +			alloc_tag_add(&obj_exts->ref, current->alloc_tag, s->size);
-> +#endif
-
-I think you could still do this a bit better:
-
-Check mem_alloc_profiling_enabled() once before the whole block calling
-prepare_slab_obj_exts_hook() and alloc_tag_add()
-Remove need_slab_obj_ext() check from prepare_slab_obj_exts_hook()
-
->  	}
->  
->  	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
-> @@ -4353,6 +4440,7 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
->  	       unsigned long addr)
->  {
->  	memcg_slab_free_hook(s, slab, &object, 1);
-> +	alloc_tagging_slab_free_hook(s, slab, &object, 1);
->  
->  	if (likely(slab_free_hook(s, object, slab_want_init_on_free(s))))
->  		do_slab_free(s, slab, object, object, 1, addr);
-> @@ -4363,6 +4451,7 @@ void slab_free_bulk(struct kmem_cache *s, struct slab *slab, void *head,
->  		    void *tail, void **p, int cnt, unsigned long addr)
->  {
->  	memcg_slab_free_hook(s, slab, p, cnt);
-> +	alloc_tagging_slab_free_hook(s, slab, p, cnt);
->  	/*
->  	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
->  	 * to remove objects, whose reuse must be delayed.
+> 
+>> entry = pte_to_swp_entry(pte);
+>> if (non_swap_entry(entry))
+>>         return false;
+>> ...
+>>
+>>>>
+>>>>> +     if (non_swap_entry(entry))
+>>>>> +             return false;
+>>>>> +     start_offset = swp_offset(entry);
+>>>>> +     if (start_offset % nr_pages)
+>>>>> +             return false;
+>>>>> +
+>>>>> +     si = swp_swap_info(entry);
+>>>>
+>>>> What ensures si remains valid (i.e. swapoff can't happen)? If swapoff can race,
+>>>> then swap_map may have been freed when you read it below. Holding the PTL can
+>>>> sometimes prevent it, but I don't think you're holding that here (you're using
+>>>> ptep_get_lockless(). Perhaps get_swap_device()/put_swap_device() can help?
+>>> Thank you for your review,you are righit! this place reaally needs
+>>> get_swap_device()/put_swap_device().
+>>>>
+>>>>> +     type = swp_type(entry);
+>>>>> +     has_cache = si->swap_map[start_offset] & SWAP_HAS_CACHE;
+>>>>> +     for (i = 1; i < nr_pages; i++) {
+>>>>> +             entry = pte_to_swp_entry(ptep_get_lockless(pte + i));
+>>>>> +             if (non_swap_entry(entry))
+>>>>> +                     return false;
+>>>>> +             if (swp_offset(entry) != start_offset + i)
+>>>>> +                     return false;
+>>>>> +             if (swp_type(entry) != type)
+>>>>> +                     return false;
+>>>>> +             /*
+>>>>> +              * while allocating a large folio and doing swap_read_folio for the
+>>>>> +              * SWP_SYNCHRONOUS_IO path, which is the case the being faulted pte
+>>>>> +              * doesn't have swapcache. We need to ensure all PTEs have no cache
+>>>>> +              * as well, otherwise, we might go to swap devices while the content
+>>>>> +              * is in swapcache
+>>>>> +              */
+>>>>> +             if ((si->swap_map[start_offset + i] & SWAP_HAS_CACHE) != has_cache)
+>>>>> +                     return false;
+>>>>> +     }
+>>>>> +
+>>>>> +     return true;
+>>>>> +}
+>>>>
+>>>> I created swap_pte_batch() for the swap-out series [1]. I wonder if that could
+>>>> be extended for the SWAP_HAS_CACHE checks? Possibly not because it assumes the
+>>>> PTL is held, and you are lockless here. Thought it might be of interest though.
+>>>>
+>>>> [1] https://lore.kernel.org/linux-mm/20240311150058.1122862-3-ryan.roberts@arm.com/
+>>>>
+>>> Thanks. It's probably simily to ours, but as you said we are lockless
+>>> here, and we need to check has_cache.
+>>>>> +
+>>>>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>>>> +/*
+>>>>> + * Get a list of all the (large) orders below PMD_ORDER that are enabled
+>>>>> + * for this vma. Then filter out the orders that can't be allocated over
+>>>>> + * the faulting address and still be fully contained in the vma.
+>>>>> + */
+>>>>> +static inline unsigned long get_alloc_folio_orders(struct vm_fault *vmf)
+>>>>> +{
+>>>>> +     struct vm_area_struct *vma = vmf->vma;
+>>>>> +     unsigned long orders;
+>>>>> +
+>>>>> +     orders = thp_vma_allowable_orders(vma, vma->vm_flags, false, true, true,
+>>>>> +                                       BIT(PMD_ORDER) - 1);
+>>>>> +     orders = thp_vma_suitable_orders(vma, vmf->address, orders);
+>>>>> +     return orders;
+>>>>> +}
+>>>>> +#endif
+>>>>> +
+>>>>> +static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+>>>>> +{
+>>>>> +     struct vm_area_struct *vma = vmf->vma;
+>>>>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>>>> +     unsigned long orders;
+>>>>> +     struct folio *folio;
+>>>>> +     unsigned long addr;
+>>>>> +     pte_t *pte;
+>>>>> +     gfp_t gfp;
+>>>>> +     int order;
+>>>>> +
+>>>>> +     /*
+>>>>> +      * If uffd is active for the vma we need per-page fault fidelity to
+>>>>> +      * maintain the uffd semantics.
+>>>>> +      */
+>>>>> +     if (unlikely(userfaultfd_armed(vma)))
+>>>>> +             goto fallback;
+>>>>> +
+>>>>> +     /*
+>>>>> +      * a large folio being swapped-in could be partially in
+>>>>> +      * zswap and partially in swap devices, zswap doesn't
+>>>>> +      * support large folios yet, we might get corrupted
+>>>>> +      * zero-filled data by reading all subpages from swap
+>>>>> +      * devices while some of them are actually in zswap
+>>>>> +      */
+>>>>> +     if (is_zswap_enabled())
+>>>>> +             goto fallback;
+>>>>> +
+>>>>> +     orders = get_alloc_folio_orders(vmf);
+>>>>> +     if (!orders)
+>>>>> +             goto fallback;
+>>>>> +
+>>>>> +     pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
+>>>>
+>>>> Could also briefly take PTL here, then is_pte_range_contig_swap() could be
+>>>> merged with an enhanced swap_pte_batch()?
+>>> Yes, it's easy to use a lock here, but I'm wondering if it's
+>>> necessary, because when we actually set pte in do_swap_page, we'll
+>>> hold PTL to check if the pte changes.
+>>>>
+>>>>> +     if (unlikely(!pte))
+>>>>> +             goto fallback;
+>>>>> +
+>>>>> +     /*
+>>>>> +      * For do_swap_page, find the highest order where the aligned range is
+>>>>> +      * completely swap entries with contiguous swap offsets.
+>>>>> +      */
+>>>>> +     order = highest_order(orders);
+>>>>> +     while (orders) {
+>>>>> +             addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>>>>> +             if (is_pte_range_contig_swap(pte + pte_index(addr), 1 << order))
+>>>>> +                     break;
+>>>>> +             order = next_order(&orders, order);
+>>>>> +     }
+>>>>
+>>>> So in the common case, swap-in will pull in the same size of folio as was
+>>>> swapped-out. Is that definitely the right policy for all folio sizes? Certainly
+>>>> it makes sense for "small" large folios (e.g. up to 64K IMHO). But I'm not sure
+>>>> it makes sense for 2M THP; As the size increases the chances of actually needing
+>>>> all of the folio reduces so chances are we are wasting IO. There are similar
+>>>> arguments for CoW, where we currently copy 1 page per fault - it probably makes
+>>>> sense to copy the whole folio up to a certain size.
+>>> For 2M THP, IO overhead may not necessarily be large? :)
+>>> 1.If 2M THP are continuously stored in the swap device, the IO
+>>> overhead may not be very large (such as submitting bio with one
+>>> bio_vec at a time).
+>>> 2.If the process really needs this 2M data, one page-fault may perform
+>>> much better than multiple.
+>>> 3.For swap devices like zram,using 2M THP might also improve
+>>> decompression efficiency.
+>>>
+>>> On the other hand, if the process only needs a small part of the 2M
+>>> data (such as only frequent use of 4K page, the rest of the data is
+>>> never accessed), This is indeed give a lark to catch a kite!  :(
+>>
+>> Yes indeed. It's not always clear-cut what the best thing to do is. It would be
+>> good to hear from others on this.
+>>
+>>>>
+>>>> Thanks,
+>>>> Ryan
+>>>>
+>>>>> +
+>>>>> +     pte_unmap(pte);
+>>>>> +
+>>>>> +     /* Try allocating the highest of the remaining orders. */
+>>>>> +     gfp = vma_thp_gfp_mask(vma);
+>>>>> +     while (orders) {
+>>>>> +             addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>>>>> +             folio = vma_alloc_folio(gfp, order, vma, addr, true);
+>>>>> +             if (folio)
+>>>>> +                     return folio;
+>>>>> +             order = next_order(&orders, order);
+>>>>> +     }
+>>>>> +
+>>>>> +fallback:
+>>>>> +#endif
+>>>>> +     return vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, vmf->address, false);
+>>>>> +}
+>>>>> +
+>>>>> +
+>>>>>  /*
+>>>>>   * We enter with non-exclusive mmap_lock (to exclude vma changes,
+>>>>>   * but allow concurrent faults), and pte mapped but not yet locked.
+>>>>> @@ -3928,6 +4058,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>       pte_t pte;
+>>>>>       vm_fault_t ret = 0;
+>>>>>       void *shadow = NULL;
+>>>>> +     int nr_pages = 1;
+>>>>> +     unsigned long start_address;
+>>>>> +     pte_t *start_pte;
+>>>>>
+>>>>>       if (!pte_unmap_same(vmf))
+>>>>>               goto out;
+>>>>> @@ -3991,35 +4124,41 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>       if (!folio) {
+>>>>>               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>>>>>                   __swap_count(entry) == 1) {
+>>>>> -                     /*
+>>>>> -                      * Prevent parallel swapin from proceeding with
+>>>>> -                      * the cache flag. Otherwise, another thread may
+>>>>> -                      * finish swapin first, free the entry, and swapout
+>>>>> -                      * reusing the same entry. It's undetectable as
+>>>>> -                      * pte_same() returns true due to entry reuse.
+>>>>> -                      */
+>>>>> -                     if (swapcache_prepare(entry)) {
+>>>>> -                             /* Relax a bit to prevent rapid repeated page faults */
+>>>>> -                             schedule_timeout_uninterruptible(1);
+>>>>> -                             goto out;
+>>>>> -                     }
+>>>>> -                     need_clear_cache = true;
+>>>>> -
+>>>>>                       /* skip swapcache */
+>>>>> -                     folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+>>>>> -                                             vma, vmf->address, false);
+>>>>> +                     folio = alloc_swap_folio(vmf);
+>>>>>                       page = &folio->page;
+>>>>>                       if (folio) {
+>>>>>                               __folio_set_locked(folio);
+>>>>>                               __folio_set_swapbacked(folio);
+>>>>>
+>>>>> +                             if (folio_test_large(folio)) {
+>>>>> +                                     nr_pages = folio_nr_pages(folio);
+>>>>> +                                     entry.val = ALIGN_DOWN(entry.val, nr_pages);
+>>>>> +                             }
+>>>>> +
+>>>>> +                             /*
+>>>>> +                              * Prevent parallel swapin from proceeding with
+>>>>> +                              * the cache flag. Otherwise, another thread may
+>>>>> +                              * finish swapin first, free the entry, and swapout
+>>>>> +                              * reusing the same entry. It's undetectable as
+>>>>> +                              * pte_same() returns true due to entry reuse.
+>>>>> +                              */
+>>>>> +                             if (swapcache_prepare_nr(entry, nr_pages)) {
+>>>>> +                                     /* Relax a bit to prevent rapid repeated page faults */
+>>>>> +                                     schedule_timeout_uninterruptible(1);
+>>>>> +                                     goto out;
+>>>>> +                             }
+>>>>> +                             need_clear_cache = true;
+>>>>> +
+>>>>>                               if (mem_cgroup_swapin_charge_folio(folio,
+>>>>>                                                       vma->vm_mm, GFP_KERNEL,
+>>>>>                                                       entry)) {
+>>>>>                                       ret = VM_FAULT_OOM;
+>>>>>                                       goto out_page;
+>>>>>                               }
+>>>>> -                             mem_cgroup_swapin_uncharge_swap(entry);
+>>>>> +
+>>>>> +                             for (swp_entry_t e = entry; e.val < entry.val + nr_pages; e.val++)
+>>>>> +                                     mem_cgroup_swapin_uncharge_swap(e);
+>>>>>
+>>>>>                               shadow = get_shadow_from_swap_cache(entry);
+>>>>>                               if (shadow)
+>>>>> @@ -4118,6 +4257,42 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>        */
+>>>>>       vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+>>>>>                       &vmf->ptl);
+>>>>> +
+>>>>> +     start_address = vmf->address;
+>>>>> +     start_pte = vmf->pte;
+>>>>> +     if (start_pte && folio_test_large(folio)) {
+>>>>> +             unsigned long nr = folio_nr_pages(folio);
+>>>>> +             unsigned long addr = ALIGN_DOWN(vmf->address, nr * PAGE_SIZE);
+>>>>> +             pte_t *aligned_pte = vmf->pte - (vmf->address - addr) / PAGE_SIZE;
+>>>>> +
+>>>>> +             /*
+>>>>> +              * case 1: we are allocating large_folio, try to map it as a whole
+>>>>> +              * iff the swap entries are still entirely mapped;
+>>>>> +              * case 2: we hit a large folio in swapcache, and all swap entries
+>>>>> +              * are still entirely mapped, try to map a large folio as a whole.
+>>>>> +              * otherwise, map only the faulting page within the large folio
+>>>>> +              * which is swapcache
+>>>>> +              */
+>>>>> +             if (!is_pte_range_contig_swap(aligned_pte, nr)) {
+>>>>> +                     if (nr_pages > 1) /* ptes have changed for case 1 */
+>>>>> +                             goto out_nomap;
+>>>>> +                     goto check_pte;
+>>>>> +             }
+>>>>> +
+>>>>> +             start_address = addr;
+>>>>> +             start_pte = aligned_pte;
+>>>>> +             /*
+>>>>> +              * the below has been done before swap_read_folio()
+>>>>> +              * for case 1
+>>>>> +              */
+>>>>> +             if (unlikely(folio == swapcache)) {
+>>>>> +                     nr_pages = nr;
+>>>>> +                     entry.val = ALIGN_DOWN(entry.val, nr_pages);
+>>>>> +                     page = &folio->page;
+>>>>> +             }
+>>>>> +     }
+>>>>> +
+>>>>> +check_pte:
+>>>>>       if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
+>>>>>               goto out_nomap;
+>>>>>
+>>>>> @@ -4185,12 +4360,14 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>        * We're already holding a reference on the page but haven't mapped it
+>>>>>        * yet.
+>>>>>        */
+>>>>> -     swap_free(entry);
+>>>>> +     swap_nr_free(entry, nr_pages);
+>>>>>       if (should_try_to_free_swap(folio, vma, vmf->flags))
+>>>>>               folio_free_swap(folio);
+>>>>>
+>>>>> -     inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+>>>>> -     dec_mm_counter(vma->vm_mm, MM_SWAPENTS);
+>>>>> +     folio_ref_add(folio, nr_pages - 1);
+>>>>> +     add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
+>>>>> +     add_mm_counter(vma->vm_mm, MM_SWAPENTS, -nr_pages);
+>>>>> +
+>>>>>       pte = mk_pte(page, vma->vm_page_prot);
+>>>>>
+>>>>>       /*
+>>>>> @@ -4200,14 +4377,14 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>        * exclusivity.
+>>>>>        */
+>>>>>       if (!folio_test_ksm(folio) &&
+>>>>> -         (exclusive || folio_ref_count(folio) == 1)) {
+>>>>> +         (exclusive || folio_ref_count(folio) == nr_pages)) {
+>>>>>               if (vmf->flags & FAULT_FLAG_WRITE) {
+>>>>>                       pte = maybe_mkwrite(pte_mkdirty(pte), vma);
+>>>>>                       vmf->flags &= ~FAULT_FLAG_WRITE;
+>>>>>               }
+>>>>>               rmap_flags |= RMAP_EXCLUSIVE;
+>>>>>       }
+>>>>> -     flush_icache_page(vma, page);
+>>>>> +     flush_icache_pages(vma, page, nr_pages);
+>>>>>       if (pte_swp_soft_dirty(vmf->orig_pte))
+>>>>>               pte = pte_mksoft_dirty(pte);
+>>>>>       if (pte_swp_uffd_wp(vmf->orig_pte))
+>>>>> @@ -4216,17 +4393,19 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>
+>>>>>       /* ksm created a completely new copy */
+>>>>>       if (unlikely(folio != swapcache && swapcache)) {
+>>>>> -             folio_add_new_anon_rmap(folio, vma, vmf->address);
+>>>>> +             folio_add_new_anon_rmap(folio, vma, start_address);
+>>>>>               folio_add_lru_vma(folio, vma);
+>>>>> +     } else if (!folio_test_anon(folio)) {
+>>>>> +             folio_add_new_anon_rmap(folio, vma, start_address);
+>>>>>       } else {
+>>>>> -             folio_add_anon_rmap_pte(folio, page, vma, vmf->address,
+>>>>> +             folio_add_anon_rmap_ptes(folio, page, nr_pages, vma, start_address,
+>>>>>                                       rmap_flags);
+>>>>>       }
+>>>>>
+>>>>>       VM_BUG_ON(!folio_test_anon(folio) ||
+>>>>>                       (pte_write(pte) && !PageAnonExclusive(page)));
+>>>>> -     set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
+>>>>> -     arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_pte);
+>>>>> +     set_ptes(vma->vm_mm, start_address, start_pte, pte, nr_pages);
+>>>>> +     arch_do_swap_page(vma->vm_mm, vma, start_address, pte, vmf->orig_pte);
+>>>>>
+>>>>>       folio_unlock(folio);
+>>>>>       if (folio != swapcache && swapcache) {
+>>>>> @@ -4243,6 +4422,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>       }
+>>>>>
+>>>>>       if (vmf->flags & FAULT_FLAG_WRITE) {
+>>>>> +             if (nr_pages > 1)
+>>>>> +                     vmf->orig_pte = ptep_get(vmf->pte);
+>>>>> +
+>>>>>               ret |= do_wp_page(vmf);
+>>>>>               if (ret & VM_FAULT_ERROR)
+>>>>>                       ret &= VM_FAULT_ERROR;
+>>>>> @@ -4250,14 +4432,14 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>       }
+>>>>>
+>>>>>       /* No need to invalidate - it was non-present before */
+>>>>> -     update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
+>>>>> +     update_mmu_cache_range(vmf, vma, start_address, start_pte, nr_pages);
+>>>>>  unlock:
+>>>>>       if (vmf->pte)
+>>>>>               pte_unmap_unlock(vmf->pte, vmf->ptl);
+>>>>>  out:
+>>>>>       /* Clear the swap cache pin for direct swapin after PTL unlock */
+>>>>>       if (need_clear_cache)
+>>>>> -             swapcache_clear(si, entry);
+>>>>> +             swapcache_clear_nr(si, entry, nr_pages);
+>>>>>       if (si)
+>>>>>               put_swap_device(si);
+>>>>>       return ret;
+>>>>> @@ -4273,7 +4455,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>>               folio_put(swapcache);
+>>>>>       }
+>>>>>       if (need_clear_cache)
+>>>>> -             swapcache_clear(si, entry);
+>>>>> +             swapcache_clear_nr(si, entry, nr_pages);
+>>>>>       if (si)
+>>>>>               put_swap_device(si);
+>>>>>       return ret;
+>>>>> @@ -4309,15 +4491,7 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>>>>>       if (unlikely(userfaultfd_armed(vma)))
+>>>>>               goto fallback;
+>>>>>
+>>>>> -     /*
+>>>>> -      * Get a list of all the (large) orders below PMD_ORDER that are enabled
+>>>>> -      * for this vma. Then filter out the orders that can't be allocated over
+>>>>> -      * the faulting address and still be fully contained in the vma.
+>>>>> -      */
+>>>>> -     orders = thp_vma_allowable_orders(vma, vma->vm_flags, false, true, true,
+>>>>> -                                       BIT(PMD_ORDER) - 1);
+>>>>> -     orders = thp_vma_suitable_orders(vma, vmf->address, orders);
+>>>>> -
+>>>>> +     orders = get_alloc_folio_orders(vmf);
+>>>>>       if (!orders)
+>>>>>               goto fallback;
+>>>>>
+> 
+> Thanks
+> Barry
 
 
