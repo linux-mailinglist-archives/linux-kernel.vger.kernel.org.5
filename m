@@ -1,172 +1,129 @@
-Return-Path: <linux-kernel+bounces-104042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD76C87C839
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:06:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C30B87C83E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8C51C221A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:06:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9D37283433
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD09FC1C;
-	Fri, 15 Mar 2024 04:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFE1DDA3;
+	Fri, 15 Mar 2024 04:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdZuayU5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cZtGZwSs"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128E6FBEF
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B228C05
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710475608; cv=none; b=sbI46B7oQpfVv5+lBEHd0uK0xYJRj657WcDMWIABmDW41DjuGUIbFMNbse+vJYTUogFqsrEm8gN0LdZAlEoJcVQ560yPTBBTL/Cshjrl1SY+lF87los5/QejvGqM/CBEz8+Ke+eSdWgpVAzKd43iLDk1/F2Ui35inMFhvGcGZ60=
+	t=1710476079; cv=none; b=bKiq5XTiARK0FLX8valxLjlHlAGtO/ZaMTHq6s8iD7mAM4NEmGpQyJIvuqFpOM+cMFwT56RjU/J9yOfKf4cMNCfZ7v+VOCrLdF8W528seUX70Tj6RB8PNVwsb/OWe2GZhtY2fwQEBVe0Ln0JL/zblmAgwMvHPFphXlcQc4PcaYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710475608; c=relaxed/simple;
-	bh=aEszL1eYHuUQrRaWbEMqIqLr91Z5i2VPp0C2t0X6KIY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TCmdOuVPMDk4niKL3zwGEUiyQtzdmJvGeshHZmJgVMqr0B0mpNmCSx4ZtrIRVg0BEMaTVijUViP0Sde8qIfqQbfxAF/XWUHzIqSm8OnolPHUtDfFvOp1S1x0m3jsnzUq2XoE3GfrtHaintpT6vlivHxiNSrcIQ/reJvvuh1wG10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FdZuayU5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CE1AC433C7
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710475607;
-	bh=aEszL1eYHuUQrRaWbEMqIqLr91Z5i2VPp0C2t0X6KIY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FdZuayU5mkzcBq/o+O+0IZyudM7OKwyweH0it1sejpPBugKMVqqri4q9bwe0MmHK0
-	 XPpuDD35pQUqHdlIyT1iUm/b6FMWBtkh6MxbEZmbGqwidjLzrB6hihLLUZv0HR0FuO
-	 /TZktOdUbUxm2AeJhrtEzjwPxIqAQsncwJcNN6ZX1PMNnj4fP1sDwYV56kUVn9h9Os
-	 kC+v1AmuxkXnep0siUaQP9PkR4xD0Pc4j2RunHMJcyjBnf5svyeJAHqUVN+Oipiqfe
-	 MiUzDbz/tFcDeO23546JZBIvJF7gtU+fYK4pojYtKiKNn4pGW/Z3ws0Bw5nJDdtZVU
-	 ywXwN1vvsCCAA==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d220e39907so23784081fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 21:06:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXLwVouyVy1E4iJi8+W6Hz78rxadk1Fp4S3QTMqf8S4DRi0XkwAiXDa4RUUq28sHHEoyCY40g5gSItkgYUHqefVp7EbMGXKiq7PIBIt
-X-Gm-Message-State: AOJu0YyMY1fEgNvH74dCWudJBQ1QT5Sz+7RQT9bY4a8D7g081tyi5lwk
-	EXrHZDACuwVsoe02pzfP95gVHoux0rnL+6ivQGsOO5xZ/8zw7fwuy4bGR98q+ghAqbsJxKMe0QI
-	ifuD3RFDXt0DADueuK1iMGKsg/7M=
-X-Google-Smtp-Source: AGHT+IHvMoXiS87S0gUMxFt23So/Yzo5cCR8QxVV+JTA0NOy2me1SReKl03MODdud8gY1g5pnw9EN7ncy20C6SJJUEI=
-X-Received: by 2002:a05:651c:615:b0:2d4:992:3cb0 with SMTP id
- k21-20020a05651c061500b002d409923cb0mr2093037lje.6.1710475606307; Thu, 14 Mar
- 2024 21:06:46 -0700 (PDT)
+	s=arc-20240116; t=1710476079; c=relaxed/simple;
+	bh=fNFNjQvXNvgikvOXPiMJs11G4GpRMkjI6aMCQwpzMvw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=uaKbCxzFJFh8tIAt55wY2ZyOZlXdBS//u5Zb/c14gO6zEfdCu2tRLZJPE4W1WSDzZStBl/OEbqNzy0kX/vjGlhCmAhfDU/+G3QL0Zc35iT2Kjj6QmaUFOt91RyVS+1Twt3eWAnajU6yBCiJ0k5kou7DD7XBRMT/Gv++O6ztIZ1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cZtGZwSs; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56890b533aaso1929547a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 21:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710476076; x=1711080876; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=esWBAWNpxZxSv2f4JZ39IMVHRPSBl9yDSu/rgu5wDoA=;
+        b=cZtGZwSsuoaxHBzDsDmiX6SMxR3qbY4mj89UkklRjJHdYQooeXc3DWhgFel+q1zBXC
+         uIFYYb0eTjnEHx19Qm5io+52NBOG/5ISXInaODmW06is4WNaW0H+wd7g/vKfeTjyHuV5
+         Y/IXBuOIGjmQOiHrNRKVwHZhVETy10AcxAPme/C9YXPzCgoL0UuH3Ot3ROvMYd6goGSZ
+         YH4IicJiGqs21V2JFr9UQsrQy+Mjs/XWLzhYFNmTtq6aLM54LDt7vmof9pjFBJUC4YeO
+         BFCeLnRgpoTf66cioM5Z4ZrCgbOefqCKtSg2aKEXBLbOx1614S3OjVxI+9DCvEzmBzoR
+         5qow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710476076; x=1711080876;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=esWBAWNpxZxSv2f4JZ39IMVHRPSBl9yDSu/rgu5wDoA=;
+        b=Rbim4P1CYg8Bu0JZBlqIWxBax8zmWPhtdmx2cLi9wurPaF28rDoeD1VBElvBD7Ivb6
+         KjFZDkm34GZuZULJtP/RkAByIrEnQWHm9O1AilKtEz0PC0RPFj8UT8XdhxsIvzLct/pm
+         YIVmduYYvYSKk2fguPNeriGXJ65KcVG7vlnw48duuRQdzSLghPcZO8NvgYln4WIIzH4I
+         D/akEDVWBIP4qO5k7U9GNfRLw5gbVnEDWwC/XP4DCBHR0VWY+MToqcO7chuIWnfBL46/
+         qTPTBqvTvh+z1ZC8ZM8bZsxQrIg6Dzf7Mp1SEqNq7zXS3HGTl0gBN52knCcwW7EPHevr
+         Onww==
+X-Forwarded-Encrypted: i=1; AJvYcCXy2ShIjtyhJWT2KX6IiFaGJtxHCDWby8e+geDefKS5KEva8KzttFBTXcOKZSaBUVWV9YRptIkAUQfrdqFD0rD/mVPDbI1hFf4li16d
+X-Gm-Message-State: AOJu0YwC8r+hEwho8f+AMipYDzAOaBYCaEBwJf1UWdrNclHGwbJ6aa8i
+	ypDjFrBCkBpVAGY1r1PtutAzckfRNiFlt4TVWOxiz273xq8Q8t3z
+X-Google-Smtp-Source: AGHT+IHIhge/PybGVc54z98Xe0W/RrPEWumidHHnkfGgW3fIHLT1OqFgrT6J87hZ7vFBnJOGnC9BFw==
+X-Received: by 2002:a05:6402:4341:b0:564:5150:76a2 with SMTP id n1-20020a056402434100b00564515076a2mr2158445edc.4.1710476076088;
+        Thu, 14 Mar 2024 21:14:36 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id ig15-20020a056402458f00b005681599a033sm1294562edb.13.2024.03.14.21.14.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 14 Mar 2024 21:14:35 -0700 (PDT)
+From: Wei Yang <richard.weiyang@gmail.com>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de
+Cc: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wei Yang <richard.weiyang@gmail.com>,
+	Joerg Roedel <jroedel@suse.de>,
+	Michael Roth <michael.roth@amd.com>,
+	Brian Gerst <brgerst@gmail.com>,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] x86/head_64: move parameter close to call function
+Date: Fri, 15 Mar 2024 04:14:20 +0000
+Message-Id: <20240315041420.12802-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231117125807.1058477-1-masahiroy@kernel.org>
- <CAK7LNAStoCja1gnoFmsKikbzGZmKTcTu+Vc7v9zg8B9hwsH+iQ@mail.gmail.com>
- <CAK7LNATVAcj-pa_G-NGBTr9doCACGk1nKCNbxM50-M0mi9q=7w@mail.gmail.com> <ca097f2a-59ec-4945-9860-5e380e1665e4@ghiti.fr>
-In-Reply-To: <ca097f2a-59ec-4945-9860-5e380e1665e4@ghiti.fr>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Fri, 15 Mar 2024 13:06:09 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARShVA953-U+p6=wzq3GFsKx4GwpRiqmqftjQz3VkE2VA@mail.gmail.com>
-Message-ID: <CAK7LNARShVA953-U+p6=wzq3GFsKx4GwpRiqmqftjQz3VkE2VA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: compat_vdso: install compat_vdso.so.dbg to /lib/modules/*/vdso/
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 7, 2024 at 5:12=E2=80=AFAM Alexandre Ghiti <alex@ghiti.fr> wrot=
-e:
->
-> Hi Masahiro,
->
-> On 24/02/2024 04:37, Masahiro Yamada wrote:
-> > Ping x 2 ?
-> >
-> >
-> >
-> >
-> >
-> > On Sun, Jan 21, 2024 at 6:48=E2=80=AFAM Masahiro Yamada <masahiroy@kern=
-el.org> wrote:
-> >> On Fri, Nov 17, 2023 at 9:58=E2=80=AFPM Masahiro Yamada <masahiroy@ker=
-nel.org> wrote:
-> >>> 'make vdso_install' installs debug vdso files to /lib/modules/*/vdso/=
-.
-> >>>
-> >>> Only for the compat vdso on riscv, the installation destination diffe=
-rs;
-> >>> compat_vdso.so.dbg is installed to /lib/module/*/compat_vdso/.
-> >>>
-> >>> To follow the standard install destination and simplify the vdso_inst=
-all
-> >>> logic, change the install destination to standard /lib/modules/*/vdso=
-/.
-> >>>
-> >>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> >>> ---
-> >>
-> >> Ping?
-> >> (in case "yet more RISC-V updates" happens)
-> >>
-> >>
-> >>
-> >>
-> >>>   arch/riscv/Makefile | 2 +-
-> >>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> >>> index a74be78678eb..5cbe596345c1 100644
-> >>> --- a/arch/riscv/Makefile
-> >>> +++ b/arch/riscv/Makefile
-> >>> @@ -146,7 +146,7 @@ endif
-> >>>   endif
-> >>>
-> >>>   vdso-install-y                 +=3D arch/riscv/kernel/vdso/vdso.so.=
-dbg
-> >>> -vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/co=
-mpat_vdso.so.dbg:../compat_vdso/compat_vdso.so
-> >>> +vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/co=
-mpat_vdso.so.dbg
-> >>>
-> >>>   ifneq ($(CONFIG_XIP_KERNEL),y)
-> >>>   ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
-> >>> --
-> >>> 2.40.1
-> >>>
-> >>
-> >> --
-> >> Best Regards
-> >> Masahiro Yamada
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
->
->
-> Couldn't changing this library install path break some existing
-> application? I mean it kind of breaks where the library is expected to
-> be right?
+startup_64_setup_env is first introduced by 'commit 866b556efa12
+("x86/head/64: Install startup GDT")'. Then 'commit 469693d8f622
+("x86/head/64: Re-enable stack protection")' insert some code which
+leverage %rdi, which is removed by 'commit 8f6be6d870e8 ("x86/smpboot:
+Remove initial_gs")'.
 
+This left the parameter of startup_64_setup_env a little far away from
+where it is used. Let's move them together for better understanding.
 
-Do you have a particular library in mind?
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+CC: Joerg Roedel <jroedel@suse.de>
+CC: Michael Roth <michael.roth@amd.com>
+CC: Brian Gerst <brgerst@gmail.com>
+CC: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/x86/kernel/head_64.S | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 3dbd05f93859..5fb8bb7cdabe 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -69,8 +69,6 @@ SYM_CODE_START_NOALIGN(startup_64)
+ 	/* Set up the stack for verify_cpu() */
+ 	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
+ 
+-	leaq	_text(%rip), %rdi
+-
+ 	/* Setup GSBASE to allow stack canary access for C code */
+ 	movl	$MSR_GS_BASE, %ecx
+ 	leaq	INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
+@@ -78,6 +76,7 @@ SYM_CODE_START_NOALIGN(startup_64)
+ 	shrq	$32,  %rdx
+ 	wrmsr
+ 
++	leaq	_text(%rip), %rdi
+ 	call	startup_64_setup_env
+ 
+ 	/* Now switch to __KERNEL_CS so IRET works reliably */
+-- 
+2.34.1
 
-RISV-V is the only architecture that installs a debug vdso
-to a different location than the
-standard lib/modules/*/vdso/.
-
-
-I regard this as a fix.
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
 
