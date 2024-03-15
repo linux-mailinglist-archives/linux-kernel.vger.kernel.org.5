@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-104807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D0AB87D3FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2F787D405
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6010D1C22F5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:50:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEEFF1C230AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C47524D8;
-	Fri, 15 Mar 2024 18:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1EA53802;
+	Fri, 15 Mar 2024 18:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kSGypwHG"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b9hVQkrS"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5044524C3;
-	Fri, 15 Mar 2024 18:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E0D535BF;
+	Fri, 15 Mar 2024 18:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710528596; cv=none; b=oWGZrtVrgv8nqMnJQJ7BJnkPLv/Wm02VyerG/Gwm3H7KugXx99aoYfZNrKdvYbzvmevsFymk1FIhdXyRLXb+GNBtQSWwvsy2Xr7zBWbdf1p+4iUzRVwmJTkTb0L5b9AcBzcCWvagdmIYejde8sB+Xso551bXQRNQLhIWoS76hHk=
+	t=1710528607; cv=none; b=XFbgGuIoOjaFConX3LHAyvHYKD6GR66rpL7xq1R4sThaKGbpKuuOJ3gS42t7q6WziAxL0XDOuw8s4mQB8vE0Yp440HKTaNqluTOgV4OgSwk5P1TdIm5xu13/FfP6wLfkv65LuCww9v+pHAUeGVeDONY/ooNgHIcPa+XZUtc2Q6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710528596; c=relaxed/simple;
-	bh=qME2ktJXCyLreJLQ5k66cQS2skuPHFzR24V3ciu5bhQ=;
+	s=arc-20240116; t=1710528607; c=relaxed/simple;
+	bh=HKO1HfQMaGl/CCeE/Ln6SsQv/qM6IwNciXbv0btirr0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kwEBZIlNAS4So7KCrKpLmQwLR+eoVZTngIH59pKaarPgi9u5GNuK94HsD2vTp1Ji+W/RH4hDtf4ZjlcXDz6pT9MIRoZISmveFcEsDX40E5BndpRB6owHProfNH/8ghEOEAT4Wjsj9X6PWa3aggYtVLPR056qlQWwV3PW8rOLRDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kSGypwHG; arc=none smtp.client-ip=209.85.215.181
+	 MIME-Version; b=Ry6uy2SDLkPctarVEVRimsNQQeww2aQJRyPKBwgE3R6MyGAjWIPy9j7xu0sH19KoIIwYHBApI0f3+aUhyNME2D7vvuA5bSTcUCHbT+AxtxCbmFazNDg/n00yUk0YJoRKIvIDbvxkPRxrf/DGD4QUG22rkSEXv0FidmljuvA53Yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b9hVQkrS; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d8b276979aso1706414a12.2;
-        Fri, 15 Mar 2024 11:49:54 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so1251623b3a.2;
+        Fri, 15 Mar 2024 11:50:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710528594; x=1711133394; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710528602; x=1711133402; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zcNxWNH5QzToDPbBOtHvsfB896+SEBZGOEHaE/ifDKQ=;
-        b=kSGypwHGOS6xFv6Gi8VTR3reSR/0G1JIMS4jJKkfmXPGBAra+PGrsv1uEgdZA65k3c
-         D5blYL+MMmcTx+dIE22VDKhxvnUK0NpUOgdZRkW8tR9dWNgLw2xxl5mqPLOyoUUyACnP
-         51+VN05+cgC60lTzYFIDxDFago3qXgvgWjk4eyLkdrzzq5g22Z+lW7doA7StfMQ9nuWe
-         loP2aARZG9DEs6Vv0uorkVhMniQmfa5xFcW/dB+DAwIcxdtkhnEwddQq42jSDJDEvluA
-         mzWURBRh7EmTyRLhB4xoJa1ICluQnrBuyRdJ43S2s0ssCQNA0WO/BoR03V4Tcm6mERG9
-         S83w==
+        bh=aRqivYuE7DcmOFFhwyqSkRwN4XtrqdDpfy8FtThn+Dk=;
+        b=b9hVQkrSu/NrMhqToThWIFikGzZR38NsaYglJ8YgDHHuFzVDv7wfUAeJ3IiXzZSEF2
+         R6WdLUAUuPNHpi3e24Us21T6WhdYd1l4x3+AQt/8XN6caSFr8M9y8j3XvfWE4MbSXdLe
+         RtAi4DWATZKZhouAWSFYF3TZJcr4OztNiKbhvWwdWWLLeFSFW4OCAcjXmY1FsnFPHIZj
+         h+I72yeZSdvTW32LW6WjTxJzjv+i3nJFpO26qRZSz/FIUabg0ovhtkR2OrwV5paOSYol
+         VjwhfD/OP1k2gxSvY5y7u2wT64w75tIVZIlugXc6MhHwaKs5BNeV6rv3QS6iF3AEtC1x
+         WrAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710528594; x=1711133394;
+        d=1e100.net; s=20230601; t=1710528602; x=1711133402;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zcNxWNH5QzToDPbBOtHvsfB896+SEBZGOEHaE/ifDKQ=;
-        b=EpQx0FiAWbLj0JrMTEI28Xu+6AjD0fVhD9z2qifEnwm7yUZEfw/anz7f3N57tKJPZv
-         w3wJed57EeHrXTsK2Rch9WFANex4HmVTqgaxPoHN3t4Umil7HzzCen1GmRP/4mRJGcyp
-         +MEls6+zQwLCfi3phVvPBSmU9BvNubK9+cuE5Q+zABPxrjaoxPAum5hjCWfEZpENL9EB
-         7Uq5RwBPK2eGqYJZNo7P12/sZs5HATYhoBi3f2ejU6jdDDEWJfHowFAX6LGL86YDP+gO
-         xaqSd0N7X2Nrm/lnFGQIAxLu7UFLDfhMG4LzXc86lVQhonYt6zSncVrNgEnu8x+OocFy
-         maVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDpNQwl3Ts3mJt7mF5zUDImU9kbXP1dBx8/LgBykNtljBR61U8waWfMo00qAaL48VzzeoL7r0O5z3tytUUg9lY2ULUlIqRTljPWo0vNQVSKEYAXjuFX0/Trm6x0q+vNTl+3sMg+8YPt1bQxOQEsmxjgAotpWegzNyLRCphtdkosohXnA==
-X-Gm-Message-State: AOJu0YwzGIcAKED75aAonD8G+N4oEPwUXSTqhb62lQydF70/N9u81c9T
-	fcd76eOv/xJvVE5zjkc8luQv7chIy95Gab/kgwGSlGs+IhxG/e10MuyjIxDytQ6MPA==
-X-Google-Smtp-Source: AGHT+IFUoqWC1HtQxdY7BvPQs9oM6UO/StxnSTV9tWAOOYsTsEYNfXK17Rt3JHJT1PSBQMF68CAHlw==
-X-Received: by 2002:a05:6a20:9f95:b0:1a3:51fc:a62d with SMTP id mm21-20020a056a209f9500b001a351fca62dmr2182876pzb.26.1710528593624;
-        Fri, 15 Mar 2024 11:49:53 -0700 (PDT)
+        bh=aRqivYuE7DcmOFFhwyqSkRwN4XtrqdDpfy8FtThn+Dk=;
+        b=DY2j9jcIXe9qBKfxtgTM3xd2FfX7AId3jNtukldBYssYueYlTlQy+AUw3cZ0uNfqAj
+         EC4SpAKca6Jt2oGg+xdAolAPkyoOlzJbdBjOW03bhe/u8Nrk1WaFOOxgnrW1+FhAs0Qe
+         Fud5eKllt0UNENjwi2e1YDTeQ5m3uq+A7R2q+3MJipfArSsyuCODVKB+T8IsaWsueKxQ
+         5c/oq9NJ6A0Sw5d2Gte2K92+ZcHFlKIGwj8cVrJBO3QLzySeDV3ei/9sMegN484oVJLN
+         MpOXEIQ+lV2PGomDcfEPIEnaKsThrBmk08UXydqPxENfbnnmGyHAj28Z1KeyuPIJjT1u
+         PkYg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAv3e5yL9tfsbqwb9F0MiB0lgngBDKxys1vc8aEcag5Wm2Shaqds30aOQIqqDvk/yAPE0Hl/f6CbWgeYglrSxrRcrfW/g195kFUXBx+/utk02Y/wOzVBl1nWZaSwUyv/Gpyu4YKx1B9PQ2Yd10oG1sLlxcNe0SSwrdVCZIfAdV2A61Qg==
+X-Gm-Message-State: AOJu0YwA4rPX8S9VUK2c1cHd6ejwAfqphDd0yv0fvgHInch+7ZFnsA3X
+	cYt8BZFgeOs8f+LK7yDH8N0ls0TEomgpyoZonhbUycCkDf85lV5e+kxdzrLSj9u2tA==
+X-Google-Smtp-Source: AGHT+IHQbXiA7SVlIsgBVryvm0PGS1QFL0t3DlqmYIaIG83GvhramGbGJdZlO3EHZsPjHP3Bdwk5+g==
+X-Received: by 2002:a05:6a20:7d9c:b0:1a3:53a0:da1f with SMTP id v28-20020a056a207d9c00b001a353a0da1fmr1195976pzj.12.1710528602430;
+        Fri, 15 Mar 2024 11:50:02 -0700 (PDT)
 Received: from toolbox.iitism.net ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id f17-20020a056a0022d100b006e6cc998be8sm3580784pfj.207.2024.03.15.11.49.45
+        by smtp.gmail.com with ESMTPSA id f17-20020a056a0022d100b006e6cc998be8sm3580784pfj.207.2024.03.15.11.49.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 11:49:53 -0700 (PDT)
+        Fri, 15 Mar 2024 11:50:02 -0700 (PDT)
 From: Ayush Singh <ayushdevel1325@gmail.com>
 To: linux-kernel@vger.kernel.org
-Cc: Ayush Singh <ayushdevel1325@gmail.com>,
+Cc: Vaishnav M A <vaishnav@beagleboard.org>,
 	jkridner@beagleboard.org,
 	robertcnelson@beagleboard.org,
-	Vaishnav M A <vaishnav@beagleboard.org>,
 	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
@@ -91,10 +90,11 @@ Cc: Ayush Singh <ayushdevel1325@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-spi@vger.kernel.org,
 	linux-serial@vger.kernel.org,
-	greybus-dev@lists.linaro.org
-Subject: [PATCH v3 3/8] spi: Make of_find_spi_controller_by_node() available
-Date: Sat, 16 Mar 2024 00:19:01 +0530
-Message-ID: <20240315184908.500352-4-ayushdevel1325@gmail.com>
+	greybus-dev@lists.linaro.org,
+	Ayush Singh <ayushdevel1325@gmail.com>
+Subject: [PATCH v3 4/8] serdev: add of_ helper to get serdev controller
+Date: Sat, 16 Mar 2024 00:19:02 +0530
+Message-ID: <20240315184908.500352-5-ayushdevel1325@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240315184908.500352-1-ayushdevel1325@gmail.com>
 References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
@@ -106,276 +106,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This externalizes and exports the symbol
-of_find_spi_controller_by_node() from the SPI core akin to how
-of_find_i2c_adapter_by_node() is already available. As we will
-need this also for non-dynamic OF setups, we move it under a
-CONFIG_OF check.
+From: Vaishnav M A <vaishnav@beagleboard.org>
 
+add of_find_serdev_controller_by_node to obtain a
+serdev_controller from the device_node, which
+can help if the serdev_device is not described
+over device tree and instantiation of the device
+happens from a different driver, for the same purpose
+an option to not delete an empty serdev controller
+is added.
+
+Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
 Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
 ---
- drivers/spi/spi.c       | 206 ++++++++++++++++++++--------------------
- include/linux/spi/spi.h |   4 +
- 2 files changed, 108 insertions(+), 102 deletions(-)
+ drivers/tty/serdev/core.c | 19 +++++++++++++++++++
+ include/linux/serdev.h    |  4 ++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index ba4d3fde2054..9ec507d92f80 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2320,6 +2320,93 @@ void spi_flush_queue(struct spi_controller *ctlr)
- 
- /*-------------------------------------------------------------------------*/
- 
-+static void spi_controller_release(struct device *dev)
-+{
-+	struct spi_controller *ctlr;
-+
-+	ctlr = container_of(dev, struct spi_controller, dev);
-+	kfree(ctlr);
-+}
-+
-+static struct class spi_master_class = {
-+	.name		= "spi_master",
-+	.dev_release	= spi_controller_release,
-+	.dev_groups	= spi_master_groups,
-+};
-+
-+static ssize_t slave_show(struct device *dev, struct device_attribute *attr,
-+			  char *buf)
-+{
-+	struct spi_controller *ctlr = container_of(dev, struct spi_controller,
-+						   dev);
-+	struct device *child;
-+
-+	child = device_find_any_child(&ctlr->dev);
-+	return sysfs_emit(buf, "%s\n", child ? to_spi_device(child)->modalias : NULL);
-+}
-+
-+static ssize_t slave_store(struct device *dev, struct device_attribute *attr,
-+			   const char *buf, size_t count)
-+{
-+	struct spi_controller *ctlr = container_of(dev, struct spi_controller,
-+						   dev);
-+	struct spi_device *spi;
-+	struct device *child;
-+	char name[32];
-+	int rc;
-+
-+	rc = sscanf(buf, "%31s", name);
-+	if (rc != 1 || !name[0])
-+		return -EINVAL;
-+
-+	child = device_find_any_child(&ctlr->dev);
-+	if (child) {
-+		/* Remove registered slave */
-+		device_unregister(child);
-+		put_device(child);
-+	}
-+
-+	if (strcmp(name, "(null)")) {
-+		/* Register new slave */
-+		spi = spi_alloc_device(ctlr);
-+		if (!spi)
-+			return -ENOMEM;
-+
-+		strscpy(spi->modalias, name, sizeof(spi->modalias));
-+
-+		rc = spi_add_device(spi);
-+		if (rc) {
-+			spi_dev_put(spi);
-+			return rc;
-+		}
-+	}
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(slave);
-+
-+static struct attribute *spi_slave_attrs[] = {
-+	&dev_attr_slave.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group spi_slave_group = {
-+	.attrs = spi_slave_attrs,
-+};
-+
-+static const struct attribute_group *spi_slave_groups[] = {
-+	&spi_controller_statistics_group,
-+	&spi_slave_group,
-+	NULL,
-+};
-+
-+static struct class spi_slave_class = {
-+	.name		= "spi_slave",
-+	.dev_release	= spi_controller_release,
-+	.dev_groups	= spi_slave_groups,
-+};
-+
- #if defined(CONFIG_OF)
- static void of_spi_parse_dt_cs_delay(struct device_node *nc,
- 				     struct spi_delay *delay, const char *prop)
-@@ -2543,6 +2630,23 @@ static void of_register_spi_devices(struct spi_controller *ctlr)
- 		}
- 	}
+diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+index 613cb356b918..5b5b3f2b2e42 100644
+--- a/drivers/tty/serdev/core.c
++++ b/drivers/tty/serdev/core.c
+@@ -555,6 +555,19 @@ static int of_serdev_register_devices(struct serdev_controller *ctrl)
+ 	return 0;
  }
-+
-+/* The spi controllers are not using spi_bus, so we find it with another way */
-+struct spi_controller *of_find_spi_controller_by_node(struct device_node *node)
+ 
++#if defined(CONFIG_OF)
++struct serdev_controller *of_find_serdev_controller_by_node(struct device_node *node)
 +{
-+	struct device *dev;
++	struct device *dev = bus_find_device_by_of_node(&serdev_bus_type, node);
 +
-+	dev = class_find_device_by_of_node(&spi_master_class, node);
-+	if (!dev && IS_ENABLED(CONFIG_SPI_SLAVE))
-+		dev = class_find_device_by_of_node(&spi_slave_class, node);
 +	if (!dev)
 +		return NULL;
 +
-+	/* Reference got in class_find_device */
-+	return container_of(dev, struct spi_controller, dev);
++	return (dev->type == &serdev_ctrl_type) ? to_serdev_controller(dev) : NULL;
 +}
-+EXPORT_SYMBOL_GPL(of_find_spi_controller_by_node);
-+
- #else
- static void of_register_spi_devices(struct spi_controller *ctlr) { }
- #endif
-@@ -2942,20 +3046,6 @@ static void acpi_register_spi_devices(struct spi_controller *ctlr)
- static inline void acpi_register_spi_devices(struct spi_controller *ctlr) {}
- #endif /* CONFIG_ACPI */
- 
--static void spi_controller_release(struct device *dev)
--{
--	struct spi_controller *ctlr;
--
--	ctlr = container_of(dev, struct spi_controller, dev);
--	kfree(ctlr);
--}
--
--static struct class spi_master_class = {
--	.name		= "spi_master",
--	.dev_release	= spi_controller_release,
--	.dev_groups	= spi_master_groups,
--};
--
- #ifdef CONFIG_SPI_SLAVE
- /**
-  * spi_slave_abort - abort the ongoing transfer request on an SPI slave
-@@ -2983,79 +3073,6 @@ int spi_target_abort(struct spi_device *spi)
- 	return -ENOTSUPP;
- }
- EXPORT_SYMBOL_GPL(spi_target_abort);
--
--static ssize_t slave_show(struct device *dev, struct device_attribute *attr,
--			  char *buf)
--{
--	struct spi_controller *ctlr = container_of(dev, struct spi_controller,
--						   dev);
--	struct device *child;
--
--	child = device_find_any_child(&ctlr->dev);
--	return sysfs_emit(buf, "%s\n", child ? to_spi_device(child)->modalias : NULL);
--}
--
--static ssize_t slave_store(struct device *dev, struct device_attribute *attr,
--			   const char *buf, size_t count)
--{
--	struct spi_controller *ctlr = container_of(dev, struct spi_controller,
--						   dev);
--	struct spi_device *spi;
--	struct device *child;
--	char name[32];
--	int rc;
--
--	rc = sscanf(buf, "%31s", name);
--	if (rc != 1 || !name[0])
--		return -EINVAL;
--
--	child = device_find_any_child(&ctlr->dev);
--	if (child) {
--		/* Remove registered slave */
--		device_unregister(child);
--		put_device(child);
--	}
--
--	if (strcmp(name, "(null)")) {
--		/* Register new slave */
--		spi = spi_alloc_device(ctlr);
--		if (!spi)
--			return -ENOMEM;
--
--		strscpy(spi->modalias, name, sizeof(spi->modalias));
--
--		rc = spi_add_device(spi);
--		if (rc) {
--			spi_dev_put(spi);
--			return rc;
--		}
--	}
--
--	return count;
--}
--
--static DEVICE_ATTR_RW(slave);
--
--static struct attribute *spi_slave_attrs[] = {
--	&dev_attr_slave.attr,
--	NULL,
--};
--
--static const struct attribute_group spi_slave_group = {
--	.attrs = spi_slave_attrs,
--};
--
--static const struct attribute_group *spi_slave_groups[] = {
--	&spi_controller_statistics_group,
--	&spi_slave_group,
--	NULL,
--};
--
--static struct class spi_slave_class = {
--	.name		= "spi_slave",
--	.dev_release	= spi_controller_release,
--	.dev_groups	= spi_slave_groups,
--};
- #else
- extern struct class spi_slave_class;	/* dummy */
- #endif
-@@ -4749,21 +4766,6 @@ static struct spi_device *of_find_spi_device_by_node(struct device_node *node)
- 	return dev ? to_spi_device(dev) : NULL;
- }
- 
--/* The spi controllers are not using spi_bus, so we find it with another way */
--static struct spi_controller *of_find_spi_controller_by_node(struct device_node *node)
--{
--	struct device *dev;
--
--	dev = class_find_device_by_of_node(&spi_master_class, node);
--	if (!dev && IS_ENABLED(CONFIG_SPI_SLAVE))
--		dev = class_find_device_by_of_node(&spi_slave_class, node);
--	if (!dev)
--		return NULL;
--
--	/* Reference got in class_find_device */
--	return container_of(dev, struct spi_controller, dev);
--}
--
- static int of_spi_notify(struct notifier_block *nb, unsigned long action,
- 			 void *arg)
- {
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index e400d454b3f0..f6fb7bad9a90 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -1684,4 +1684,8 @@ spi_transfer_is_last(struct spi_controller *ctlr, struct spi_transfer *xfer)
- 	return list_is_last(&xfer->transfer_list, &ctlr->cur_msg->transfers);
- }
- 
-+#if IS_ENABLED(CONFIG_OF)
-+struct spi_controller *of_find_spi_controller_by_node(struct device_node *node);
++EXPORT_SYMBOL_GPL(of_find_serdev_controller_by_node);
 +#endif
 +
- #endif /* __LINUX_SPI_H */
+ #ifdef CONFIG_ACPI
+ 
+ #define SERDEV_ACPI_MAX_SCAN_DEPTH 32
+@@ -785,6 +798,12 @@ int serdev_controller_add(struct serdev_controller *ctrl)
+ 
+ 	pm_runtime_enable(&ctrl->dev);
+ 
++	/* provide option to not delete a serdev controller without devices
++	 * if property is present
++	 */
++	if (device_property_present(&ctrl->dev, "force-empty-serdev-controller"))
++		return 0;
++
+ 	ret_of = of_serdev_register_devices(ctrl);
+ 	ret_acpi = acpi_serdev_register_devices(ctrl);
+ 	if (ret_of && ret_acpi) {
+diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+index ff78efc1f60d..287d7b9bc10a 100644
+--- a/include/linux/serdev.h
++++ b/include/linux/serdev.h
+@@ -117,6 +117,10 @@ static inline struct serdev_controller *to_serdev_controller(struct device *d)
+ 	return container_of(d, struct serdev_controller, dev);
+ }
+ 
++#if defined(CONFIG_OF)
++struct serdev_controller *of_find_serdev_controller_by_node(struct device_node *node);
++#endif
++
+ static inline void *serdev_device_get_drvdata(const struct serdev_device *serdev)
+ {
+ 	return dev_get_drvdata(&serdev->dev);
 -- 
 2.44.0
 
