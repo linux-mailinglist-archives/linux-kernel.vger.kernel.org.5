@@ -1,167 +1,219 @@
-Return-Path: <linux-kernel+bounces-104547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 883E187CF95
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:57:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABAB387CFA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:59:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29D701F23CE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:57:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A9B283F1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76B13C68A;
-	Fri, 15 Mar 2024 14:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F993D39A;
+	Fri, 15 Mar 2024 14:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e0yiTy2w"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="G2Tv4oet"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521322577C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 14:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07ACB18EA8;
+	Fri, 15 Mar 2024 14:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710514623; cv=none; b=dLNaD0fdFAmc7JmrC7uMQK+X8LxESO4tUXUVdY6KE5/Vxsn5s64QwjsQWzTQdN58JzEtplk9pOTRxkaDHzmqSYVj5/36B3zL6NrGgVby23ZOkqRBwgSGXBWlMDUpMcKlW32z63r7ulQ/vEaiNDhquFRSL2ZnOvTU9l6WCSznO9w=
+	t=1710514725; cv=none; b=rgcvH+phdQupfxIAKNfIgZEVHfc+63ITbRNWTlDrW/h5XfPwbdGHfL++T2HGxf0cD3P9fqAAYNi4J+EZbmFR7ovV3TNdl/ZhdyruPBP2HrHdukINBDDDJetG5XcYNQIgdchMFDu2b5K3tGJGsloVd+y5Z2CtlzxG6Z9Hp/Hvfdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710514623; c=relaxed/simple;
-	bh=DT/ViFBHsbj0Q/geQ6VrVlllozbe4AADDgj8K1dteyw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Q0JtpfwoQ4zxOXbGs6MR4rInJE6X+qXHyLF98t5ny1Nht2FnTOwrb9JH6DQ/IdEVUuM8+5quBve0unjbpkgCFbuNhit/dYBXtQvAAzhC2POQio28nFaj2whYJc8Zo63Mgsc11Ke0lXEA6pZJNUtv9CEhOh8ezcQcEpfS0mSSaSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e0yiTy2w; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a2386e932so44933187b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 07:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710514621; x=1711119421; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+L6K4/F3ILROB130RWMthiAdNEjFhajcVE2ecg4ZLck=;
-        b=e0yiTy2wg3LABxgRiGdDwCC02iGAEtF696CQvHuhTtQSEPKd85MRoYI0Q90N6FvJFw
-         MvPnkxEu1R5SMqImtPMGyai/3vcM4HVMBBbcI/9UqsI5Jc6ZeuClA+ifKCoH7/3LdH+U
-         1lvpCe02yGe5NlnBf6NM8isHkKDjeKDjj1dLmH29vl9ZJQhKivplXaMkJxXbvf4gVo0E
-         ClYyStx7PvrHu9bks6bnitbdbstp5tu/Oa79tpsovlc2sjcaqjcIEvGhffmr3XogWkjK
-         Jg9WyocVny66x9Eg4JMLd23JPJti85QyEfAMPtmsPGc7SP2SpqM0rMPRRCMekdC0iWWM
-         wRzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710514621; x=1711119421;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+L6K4/F3ILROB130RWMthiAdNEjFhajcVE2ecg4ZLck=;
-        b=ev7okikBFSzJxcZ67nd2k3k+5ZOpUfcFToH13VPf1nU+hCYMFyY+TGdQcVVYpKrWCf
-         ROgzJJA3Ue+jxNn4LPsSQPoYcrJytnbcJ0B56o3LVatx4fkFjPYgErNIPFstU47+fbg4
-         qEUgaLxMTR6Sb1/3pGZ8PsBSLieldDLMBwa8nxOU52gX6hFmnMDDHh7BhY//tiGmI8oK
-         h/INKDr21MPuu8JYmDiWUpIDoZCWR1oWAqJHLst2sQaGD4r98nO6YUEpsLpWE9+CZcT3
-         +e/WpgnUefexFwphYAHhLJP/ulvl6kPXRB5ghbBgohlSLb77uUJGT4G8jzfAhS+V/xTA
-         VUiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWbq9NFaqSMAAkiNjT0zYCJAlYrRs8sPRgzlsu8dJ0ZHyfSsP+OrkoCElAk/T3F7ZyVxmPj0x6MksXBISMlFvurPbWmlH5T81OYvxJZ
-X-Gm-Message-State: AOJu0YxsbQswdTvOND8O/3Y/uPyjeuO+MmFKS6p6MLdVw87f2snuTpyE
-	sZuUK2fIUTVwTLkDwS7u4d8jUv5WHQJ4QSaJsTUw24vo/3rMwgeyjpXXclF6hKjq3glGlpUZmfh
-	VbA==
-X-Google-Smtp-Source: AGHT+IGTs8Mz3jfFYBRg1koL6FoVVmgByeTYj5l1v2JnAkIpqZuR/Ss5pmMujfr3s/OIjQg5cFM4ti24jkE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1b91:b0:dd1:390a:51e8 with SMTP id
- ei17-20020a0569021b9100b00dd1390a51e8mr1454996ybb.10.1710514621353; Fri, 15
- Mar 2024 07:57:01 -0700 (PDT)
-Date: Fri, 15 Mar 2024 07:56:59 -0700
-In-Reply-To: <20240314234850.js4gvwv7wh43v3y5@amd.com>
+	s=arc-20240116; t=1710514725; c=relaxed/simple;
+	bh=QkAlNJ9V9qppiro/zSbEdW694RBnZkoeHZrahCOadSs=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=BRh1Vfp16onm/9TCZHDqNmwVEhfnt9VjudysgjwtNsCDRxMG9yI1nUMwPGN8pMc+K645N1c+4/dusrbtuZlGheZUg7RZgvwD0DVkM6oqi3IlvcXnM3LtnOFsXqjgvEEP2XnqdDcVncaQsFAaYQtr0GZU5WDuU9rNL4cD6+Zw2CE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=G2Tv4oet; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240315145834euoutp0208e17bee17510a43114d2abc73c66d9e~8_BH9XOku2978829788euoutp02f;
+	Fri, 15 Mar 2024 14:58:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240315145834euoutp0208e17bee17510a43114d2abc73c66d9e~8_BH9XOku2978829788euoutp02f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1710514714;
+	bh=QkAlNJ9V9qppiro/zSbEdW694RBnZkoeHZrahCOadSs=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=G2Tv4oet03CghGKOrgieijfEl82FvjQVZBL+NfoG15HFyo9VIUHcvPRvsG82TfUwJ
+	 dX7pxAXAb9YPyNG2TKDc8iEY570oeA5ZpY68L1+/6ZETCD+YW+AwjxiTIrcFxIsFOl
+	 Mk2mYfgH8Xod4xWY0H6rRKtWJgy98o37Oog1PoZk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240315145834eucas1p263d507b6e6b1b2347755a3b8a3d110c2~8_BHm31sC0659706597eucas1p2F;
+	Fri, 15 Mar 2024 14:58:34 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 62.5F.09539.A1264F56; Fri, 15
+	Mar 2024 14:58:34 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240315145833eucas1p213fce847384eb45d99b496e63aeef842~8_BHARDUI1048010480eucas1p2_;
+	Fri, 15 Mar 2024 14:58:33 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240315145833eusmtrp1d4283c4c3365474281127eb3980b7d32~8_BG_cMhB2583725837eusmtrp1-;
+	Fri, 15 Mar 2024 14:58:33 +0000 (GMT)
+X-AuditID: cbfec7f2-515ff70000002543-32-65f4621a921a
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id B2.BC.09146.91264F56; Fri, 15
+	Mar 2024 14:58:33 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240315145833eusmtip25fac59b9345218f02603c4bc99e60c97~8_BGowIxW0792607926eusmtip2S;
+	Fri, 15 Mar 2024 14:58:33 +0000 (GMT)
+Received: from localhost (106.210.248.173) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Fri, 15 Mar 2024 14:58:32 +0000
+Date: Fri, 15 Mar 2024 15:58:30 +0100
+From: Joel Granados <j.granados@samsung.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, "Steffen
+ Klassert" <steffen.klassert@secunet.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, Matthieu Baerts <matttbe@kernel.org>, "Mat
+ Martineau" <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, "Ralf
+ Baechle" <ralf@linux-mips.org>, Remi Denis-Courmont <courmisch@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>, David Howells
+	<dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, "Marcelo
+ Ricardo Leitner" <marcelo.leitner@gmail.com>, Xin Long
+	<lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher
+	<jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu
+	<tonylu@linux.alibaba.com>, "Wen Gu" <guwen@linux.alibaba.com>, Trond
+	Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker
+	<anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>, Jeff Layton
+	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
+	<kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, Ying Xue
+	<ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, Pablo Neira Ayuso
+	<pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Florian
+	Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>, Nikolay
+	Aleksandrov <razor@blackwall.org>, Simon Horman <horms@verge.net.au>, Julian
+	Anastasov <ja@ssi.bg>, Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain
+	<mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<dccp@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
+	<mptcp@lists.linux.dev>, <linux-hams@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
+	<linux-afs@lists.infradead.org>, <linux-sctp@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+	<tipc-discussion@lists.sourceforge.net>, <linux-x25@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
+	<bridge@lists.linux.dev>, <lvs-devel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] sysctl: Remove sentinel elements from networking
+Message-ID: <20240315145830.e3sl57eytsosngeb@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240226190344.787149-1-pbonzini@redhat.com> <20240226190344.787149-11-pbonzini@redhat.com>
- <20240314024952.w6n6ol5hjzqayn2g@amd.com> <20240314220923.htmb4qix4ct5m5om@amd.com>
- <ZfOAm8HtAaazpc5O@google.com> <20240314234850.js4gvwv7wh43v3y5@amd.com>
-Message-ID: <ZfRhu0GVjWeAAJMB@google.com>
-Subject: Re: [PATCH v3 10/15] KVM: x86: add fields to struct kvm_arch for CoCo features
-From: Sean Christopherson <seanjc@google.com>
-To: Michael Roth <michael.roth@amd.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	aik@amd.com, pankaj.gupta@amd.com
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="onm3lc3zkynvura4"
+Content-Disposition: inline
+In-Reply-To: <20240314154248.155d96a4@kernel.org>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTfVBUZRTGe+/XLuA610XhDcwSgSE1Ck09fmBSUbeZmpTKcWq01riCCOjs
+	QlqMhoAu7opsMEUiCoryLSCsu6wCyyCisAQoauQsEAuEISLyIQICsV4cnem/33me87zznD9e
+	MSn9Rewk3hkaxstDZcEujC2lqx5teMtp+xD/TrWKgcrIVdBeqqIhMuYwAYcMUxTo0tUETLV0
+	EzBhUJIw2N5NQ+qZYgZSGmIomPhTzUDTyU4C+qLGKci/dIiArmqLCHRxuQhyo8wU6LtHGFD3
+	zIfoi8MIOuMtNNzK6GdgNCNHBG3DFgpGj9nBcVU0AXXqEChp6aSgUXeMBk2tF9zRtxDQdCmF
+	gcYKEw3/VMZRoDkdTUJX2n0azIkZFFSUpSKwFDwkIDp1gITowQ4SxrKu0VAfN0VCcn4OCc2a
+	LgRXlOU01BVEieDxqesklKVGUlCd5gCa/FoKHpt6EST13ibhZqkr1A5NEVBfPEjDYIoHJGZp
+	Cbh85IkItA1BUDtWS0DHSDcDU83vwcE6nWiDD3fXMkxyffU1iDuVF8GdiLxBcWOjizlt9l8E
+	p67qITlDcouI01W4cWlF4dzTygsirijnCMNdzT5PcIb21ZzmTAXiis/+vHHh17br/PngnT/w
+	8rfXf2cb2PFb0B69ZJ/+zjAZicx2KmQjxuy7OGXsJrKylM1CWHlsmm2neQjhkjuDImEYRPhJ
+	Xir1PFGgN9KCkYmwOcr0YqtmZHwmfxHhk6UnGGuEYt1wlVr5jBl2KW7oNZNWnsu64pji45Q1
+	QLLXpfipcpS2GvbsJzinoGvaEIsl7AZ8pmGrVZawc3DN8c5nNUh2H76elUBYV0jWGWdOiq2y
+	DeuF9UkdpNB0ER5OeMQIvB/Xau8SAv8xC/dVuQj8IW4tUM5cZo97rmlFAs/HpsSjz6phNhFh
+	42S/SBhyEc44ODzz0locc6tzJuGDRyz1jLUQZmfj5gdzhJ6zcYIuiRRkCY49LBW23XFuay+l
+	QYuSX7os+aXLkl9cJshLcdrlAeZ/8hKccfo+KbA3zs9/SKUhUQ5y5MMVIQG8wiuU3+upkIUo
+	wkMDPL/fHVKEpn+qafLaQAk62fPIsxIRYlSJXKfDlsLcRuREhe4O5V3mSg4sfMRLJf6yH3/i
+	5bu/lYcH84pK5CymXBwlbv6v81I2QBbG7+L5Pbz8uUuIbZwiCY/R5VrvV20vvPLF765VfY5G
+	JutXS+Z2P/mQIcCkjgr76k33BdnEra4VqfZfGjtKgnTpBuf0RCm9nJuQObLJxTFbBoyb/MK5
+	He3G97VNu25/tODzbZMyh+7YVt3mFtXHTSY3Ol5VXn109TJfDds+79PY9XV22yqilPqVtI/m
+	wKTveY95BtIvre1G9Gf96uA1Rvc5sRExCsk5Tp6+Kvvq+AdTbaqbCfjfwHubrhSeDYswP4hD
+	Ra+Jt3bcSxxY672hcMJ3zUPub5clzfGxbxw9VXGo1+ebQim3ZSSwxr3cqWrd7L0bz93bPMt/
+	hyzunOZ+0rK2B3n0yvay/Q4rxv3N9avFy33sXChFoMxrMSlXyP4Di5z3OyQFAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTZxiH/c45Pa2XZmeU6bG6RDuYhmm1CPJ2Q4VM3XHZzJiJMTNGOz0r
+	OtqyXnTOzHETJhUsNhkBERC1AjoqLReroqRT1IqgUxlTGNLSEpHAEFAolw6oy0z235PfLV++
+	5OXhARe4Qt5upZZVK2VxInIGcWf85l9L5349wC5vuywEe0IEtF9J50BCSioGh2w+AqpO6THw
+	tXZiMGZLw6G/vZMDBUVWEvIaUwgY+0NPwoMTHRj0JI0QUHbpEAbuOicXqjLOITiX1EJAdecr
+	EvRd8yG5chBBx1EnBx6a/iZh2FTKhbZBJwHDmTMhJz0Zg3q9Ai62dhBwryqTAwaHBJqqWzF4
+	cCmPhHu1dzjgsWcQYDiZjIO78DkHWowmAmprChA4zb0YJBe8wCG534WDt/gmBxoyfDjklpXi
+	0GxwI/gt7SoH6s1JXHiZfwuHmoIEAuoKZ4OhzEHAyzvdCLK7H+Hw+5UgcAz4MGiw9nOgP28x
+	GIsrMLh8eIgLFY17wOF1YOB61UmCr3kNJNZXcaOimcfOQZzpabiNmPzzB5jjCfcJxjscwlSU
+	/Ikx+utdOGPLbeUyVbXBTKFFx4zay7mMpfQwydwo+RVjbO1SxlBUixjr6Z++WPiVOFKt0mnZ
+	BbEqjXaVaKsEQsUSKYhDw6RiyYqIbR+GhouWrY7cxcbt3suql63eIY496e7G4iv53xsfNuAJ
+	6PHMdDSdR1NhtLn6GicdzeAFUGcQ3Wsp4fiN+XT5wKPXLKBHm9JJf6gP0X2exNeNSkT/Ut42
+	lSKoYPq6Po2cZJJaQjd2t+CTHEgF0SnWHGKygFO3AuikorYpQ0BtoEvN7gmDx+NTUXRR4zb/
+	6A1Ej92yTY3yqbfp2zkdxCTj1F46c8AzlcepefTZcd6kPJ2S0NXZLtz/0vfowWN9pJ9/pPvH
+	PMiABLlvLOW+sZT735JfDqGbx59h/5M/oE0nn+N+XkWXlfUShYhbigJZnUYhV2gkYo1ModEp
+	5eKdKoUFTZxLVd2w9SLK7+oT2xHGQ3YUNNF0Xjh3DwkJpUrJigL5Bxf2sQH8XbL9P7Bq1Xa1
+	Lo7V2FH4xC9m4cJ3dqombk+p3S5ZuTxcErZSujxcunKFaA5/Q/zPsgBKLtOy37JsPKv+t4fx
+	pgsTMN3nnatEVv3GxIUPIuLyhmaHf5S7c9aWtft164zbhLOr4Um/iXc39eLwyPqz8/e8+hSP
+	NX4mtQW6qz01BwTyefsq2qcpVOKN9zcFyzN9YcINR7SVT2JuOt2K3hiyIvjMoHrt5vr3ZZuO
+	FC/xJZrKj+V1nWZjI87TcsGXxTrH5ewaQcEzeZbFK46qY08Y142hFTvmLJrxbNrTa963XKci
+	XUZXci05eiW6Ibrrquab7I+PtjszxvgxA0vnise1axK3Nm052BOWk53uZt5d01xuXhz2yQgz
+	EhgS+ij0Oxupbx2dtcw8tO9Gqq1t/wKLxjLPl695EbRpkTfr6fG7PM9mSjd+VURoYmWSEFyt
+	kf0DO6fsqMMEAAA=
+X-CMS-MailID: 20240315145833eucas1p213fce847384eb45d99b496e63aeef842
+X-Msg-Generator: CA
+X-RootMTR: 20240314224256eucas1p292b70c755674fe9311d190a8b50e1ce1
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240314224256eucas1p292b70c755674fe9311d190a8b50e1ce1
+References: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
+	<CGME20240314224256eucas1p292b70c755674fe9311d190a8b50e1ce1@eucas1p2.samsung.com>
+	<20240314154248.155d96a4@kernel.org>
+
+--onm3lc3zkynvura4
 Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 14, 2024, Michael Roth wrote:
-> On Thu, Mar 14, 2024 at 03:56:27PM -0700, Sean Christopherson wrote:
-> > On Thu, Mar 14, 2024, Michael Roth wrote:
-> > > On Wed, Mar 13, 2024 at 09:49:52PM -0500, Michael Roth wrote:
-> > > > I've been trying to get SNP running on top of these patches and hit and
-> > > > issue with these due to fpstate_set_confidential() being done during
-> > > > svm_vcpu_create(), so when QEMU tries to sync FPU state prior to calling
-> > > > SNP_LAUNCH_FINISH it errors out. I think the same would happen with
-> > > > SEV-ES as well.
-> > > > Maybe fpstate_set_confidential() should be relocated to SEV_LAUNCH_FINISH
-> > > > site as part of these patches?
-> > > 
-> > > Talked to Tom a bit about this and that might not make much sense unless
-> > > we actually want to add some code to sync that FPU state into the VMSA
+On Thu, Mar 14, 2024 at 03:42:48PM -0700, Jakub Kicinski wrote:
+> On Thu, 14 Mar 2024 20:20:40 +0100 Joel Granados via B4 Relay wrote:
+> > These commits remove the sentinel element (last empty element) from the
+> > sysctl arrays of all the files under the "net/" directory that register
+> > a sysctl array. The merging of the preparation patches [4] to mainline
+> > allows us to just remove sentinel elements without changing behavior.
+> > This is safe because the sysctl registration code (register_sysctl() and
+> > friends) use the array size in addition to checking for a sentinel [1].
+>=20
+> Thanks, but please resend after the merge window, we don't apply
+> code to -next until -rc1 is cut.
+of course. I'll resend after -rc1 hits kernel.org.
 
-Is manually copying required for register state?  If so, manually copying everything
-seems like the way to go, otherwise we'll end up with a confusing ABI where a
-rather arbitrary set of bits are (not) configurable by userspace.
+Best
 
-> > > prior to encryption/measurement. Otherwise, it might as well be set to
-> > > confidential as soon as vCPU is created.
-> > > 
-> > > And if userspace wants to write FPU register state that will not actually
-> > > become part of the guest state, it probably does make sense to return an
-> > > error for new VM types and leave it to userspace to deal with
-> > > special-casing that vs. the other ioctls like SET_REGS/SREGS/etc.
-> > 
-> > Won't regs and sregs suffer the same fate?  That might not matter _today_ for
-> > "real" VMs, but it would be a blocking issue for selftests, which need to stuff
-> > state to jumpstart vCPUs.
-> 
-> SET_REGS/SREGS and the others only throw an error when
-> vcpu->arch.guest_state_protected gets set, which doesn't happen until
+--=20
 
-Ah, I misread the diff and didn't see the existing check on fpstate_is_confidential().
+Joel Granados
 
-Side topic, I could have sworn KVM didn't allocate the guest fpstate for SEV-ES,
-but git blame says otherwise.  Avoiding that allocation would have been an argument
-for immediately marking the fpstate confidential.
+--onm3lc3zkynvura4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-That said, any reason not to free the state when the fpstate is marked confidential?
+-----BEGIN PGP SIGNATURE-----
 
-> sev_launch_update_vmsa(). So in those cases userspace is still able to sync
-> additional/non-reset state prior initial launch. It's just XSAVE/XSAVE2 that
-> are a bit more restrictive because they check fpstate_is_confidential()
-> instead, which gets set during vCPU creation.
-> 
-> Somewhat related, but just noticed that KVM_SET_FPU also relies on
-> fpstate_is_confidential() but still silently returns 0 with this series.
-> Seems like it should be handled the same way as XSAVE/XSAVE2, whatever we
-> end up doing.
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX0YhUACgkQupfNUreW
+QU8cEAv+M1Ewqt08SIopWKdreIIqD2kzMZ3Ql+7uN752tp2sVtVbFjjrO8sKICiz
+g6Oiqw0mocBQd7wjnGLc5+VxeYK+5VG4geP6jecNsNgGRdSaXdEqSzqf60Ri+nq5
+etfLQbWjO306ZcZGEitSwDxTJhoG00IwTZdu1zXhsypcNAW46xVEnSuT1tdx3wB9
+7CoVy5hYg+KrYrLGfAPbG2g9iOOTG4jNFL3SjiiqNb/1qhknf4D0CL8f0v/5yYM8
+J0ple4a3xlyODh5hiN7PBuOveQd7hLZMeK3/WhByQn9QSe3sc5J7Ue5I40jtQ+1p
+14ahVOh5+Dh9bxxKdVzjnx2FXbG7MF6ZdOw9LarYon3W2xx++UfLA9SF4X9f+Z+C
+WwPzCt7Yk/WmShpqM1KCOVAUwcNtdF2Jttyk2vKqWDB//02sqhtO+ndueWvLNgti
+3H427shFf9/ctykv2dQmthRviho30MSC9eB3BcjmUL8SE5G6WwMb/csBkkV+DG3d
+0widvqRM
+=vtM5
+-----END PGP SIGNATURE-----
 
-+1
-
-Also, I think a less confusing and more robust way to deal with the new VM types
-would be to condition only the return code on whether or not the VM has protected
-state, e.g.
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 9d670a45aea4..0e245738d4c5 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5606,10 +5606,6 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
- static int kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-                                         u8 *state, unsigned int size)
- {
--       if (vcpu->kvm->arch.has_protected_state &&
--           fpstate_is_confidential(&vcpu->arch.guest_fpu))
--               return -EINVAL;
--
-        /*
-         * Only copy state for features that are enabled for the guest.  The
-         * state itself isn't problematic, but setting bits in the header for
-@@ -5626,7 +5622,7 @@ static int kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-                             XFEATURE_MASK_FPSSE;
- 
-        if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
--               return 0;
-+               return vcpu->kvm->arch.has_protected_state ? -EINVAL : 0;
- 
-        fpu_copy_guest_fpstate_to_uabi(&vcpu->arch.guest_fpu, state, size,
-                                       supported_xcr0, vcpu->arch.pkru);
+--onm3lc3zkynvura4--
 
