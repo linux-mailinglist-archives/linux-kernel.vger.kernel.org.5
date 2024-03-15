@@ -1,129 +1,115 @@
-Return-Path: <linux-kernel+bounces-104207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F7387CAB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:29:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778CA87CAB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:29:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A1032841D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:29:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17FB21F236DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A9C18045;
-	Fri, 15 Mar 2024 09:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D8B17C72;
+	Fri, 15 Mar 2024 09:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WA6i7aap"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e++MNO9Y"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E452217C6F;
-	Fri, 15 Mar 2024 09:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0431C17BD5;
+	Fri, 15 Mar 2024 09:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710494925; cv=none; b=q+d8mZ1zi+xs5Tx8vC9aeB8kzrMeOu7/4zA28v8OtD38Ng+n82Qa+J7mXB6I6clpZ03jUjebzUqgY4YBhBepo1L3KwhrvzKcLu6/3Ueg+w8rtBbdJOGh/1RGWWS/yjev0blVXqEbvkv60nJZasBsTE7nCrolIW09w74Ziog1YkY=
+	t=1710494958; cv=none; b=M37x8QgE0i3T2q4OYXMeox4ZZCxBNx1KHTSCv06s7icblnKhZaeqxpWoukmhQ4JzANTe5rcjks6Oq0hhnPaQROiMsPzSxPVjb3gGZSHtXfjMA1QqDqPEVdDrWAYL7W2hbed+zLB5aQ0cEngHGu+vy1BVdjps9BIPUOsvpeU80ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710494925; c=relaxed/simple;
-	bh=0M+s6FikwHhrPesVLy1FInqzB+lvAfTTtTj2bJfLm5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Qe2NB8R5X45E53rcmBmnaLqrHF/Z/OKLWw+6hAv1AfTFmniXdADpXhs4MTXujCrJZTo4TpJuphsnZn4pDn9yWm2gliR+C56uDL+pOTbJt4XMCyF+tFZeBPTTV7nPa7MUaTYRXGmuh+WlPIr8CeQwsCOMtvkG7zu8jnrplQESbNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WA6i7aap; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1710494958; c=relaxed/simple;
+	bh=wqJicanmbWrVswkMM+X7rKf99P006pSFr8h80mtjKJc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=HN7Py8e3W8dB7mawBQcLUeqBLcHjRONyK17WV0tySmWkL5bckhWWbTAxeMhT4p5W4IzfUCMN2KXGSTwq1UGqL8DC2nkVUMkE7xbG5cct7f2lneKFzVcgMZGU63HJUQ/EFIe6XGtwdVnGMXGHfKk8rGqH0sYLd90VHikIdfURGx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e++MNO9Y; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6ca3fc613so1738323b3a.3;
-        Fri, 15 Mar 2024 02:28:43 -0700 (PDT)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ed5b6bf59so93346f8f.0;
+        Fri, 15 Mar 2024 02:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710494923; x=1711099723; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4iUpnvg2lJInUyXSwQRwOqYpvq0Q7ZeBFhxpnTWBCyk=;
-        b=WA6i7aaplKL/fvIc4g+Hf68jjpeykHGFqgV1f9yvZ5bUGJgJ12/pSyEjBoKuLEaqk6
-         nddOEfNGlvlVOkXZ9bzTEteZEj3Oadn2o2ESdu3zKAACYQTMyChWiNxGgSIngs7ymMS8
-         8+WkghRDvR/VHslXXTjSz0ckoHDNku+YeevcLCzwNKLUe4e3UWYeZFBaVuoJDzCL7/1X
-         yaio9T5YwLlU3dmF+gNxtWxxWhpbtoP7gCI68+ptnEneag45tteysbaieGXnWA1A4LdD
-         14hOd6BpIwnGYOPepwdZDLWyBv8gGmlbjiGkGJkEDU2bOieHQE5YQ3011/UhpeW5dKQp
-         PxOA==
+        d=gmail.com; s=20230601; t=1710494955; x=1711099755; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yy9UuaOwwnjmkLdHpJLRJuDPkF6dNfVXKVVIwe8goJw=;
+        b=e++MNO9YyG3uV5e56fOZWgKSfc2rsbw+djjlTr2/AMFJWsKpXJxOC2D7sfoPXqFg+I
+         WVy6DDWqgL2LEqeY7DDEe8ZJK32xY+qH4jpG+A9Acst7dstahrGa/zSeE3Yrp//AuPeS
+         lLV2ckXOwXmeri+Uh9KMMqG1y6FeTe6CjW1Ee3ZR+V5IwJU5dJqIgUzapvkFpyuZRobA
+         XtOHDs3ERj/ESCGf5SadkY1KSiGhEFhPerxim8EW7Kta3M89XluIQjIG0Uuy6gq9ox5P
+         h4U1s0mdML8g8lrvI4nPbsqzjp0Q+3jxxAcGJE9HENTWHCtHWidXMOv/+6bukkKjUaf4
+         FvXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710494923; x=1711099723;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4iUpnvg2lJInUyXSwQRwOqYpvq0Q7ZeBFhxpnTWBCyk=;
-        b=HITg7ZMZwuFGB8bEhK0lMQfO73mNZXhVRV7xsKQgZBns09rFgGe39eAv0Cv6cLn6JX
-         nERbLQxmsSzc8jStiSuRuDPeLGKd/g1ZqfXjfxQXbZCsbUvKsttcGIzoWtKk209weQsk
-         5rmXA8RNmIpZgjC4vz54kFUP+I/ijFrcTBP96z5+HoxNLLw0ZIC7JyHIawhD78b8nuZp
-         JAIH2Y+gEnNALioJHizChgD3jjhJ/YOVDnTo0JaKlM5VRU7HTo4sKmyzDS8mS0nh4k7G
-         IV8gfKUAnb9PP7YdPgVCpzCl8k5rOxI928nbPWbEq31Qi1xBEN6y6KjA3NJRiVvUsXjQ
-         viQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmNI+1psvaAXRrFMcxNLbGM2x8gT6+AbZ/ixyL3/zLzS6zl/VLlwOEO0tBHA9vIQVkF8Ib8EwtA17xt0of4TZEzXM4F3pwn5sDwj8XiNtUf2OxerqxfckQMPlyGJxQf68Vw9C/ASpSr4LVwN6xGzhBbaCqepOpdQEtrT+HTY6BxQ==
-X-Gm-Message-State: AOJu0Yy3ppKbBrLAtTxZE9rdP6hhtXqnk2TIQ3uZvXy8MKh9cjjdUTzg
-	dcHt3QSaDCc0Wg6tAp7BHg8YMcUvm9HEyo/Dkg85Ya1KSfxrEZNd
-X-Google-Smtp-Source: AGHT+IEbZiJivklD5Du4nOd9Fchv3Tn+hjYAhIiufc1/ErBMEyBY7PktqGyChTs4nu/q7ti60Xacmg==
-X-Received: by 2002:a05:6a20:4327:b0:1a1:8ba0:2845 with SMTP id h39-20020a056a20432700b001a18ba02845mr3047631pzk.29.1710494923132;
-        Fri, 15 Mar 2024 02:28:43 -0700 (PDT)
-Received: from libra05 ([143.248.188.128])
-        by smtp.gmail.com with ESMTPSA id nt10-20020a17090b248a00b0029c7236637dsm2490885pjb.5.2024.03.15.02.28.40
+        d=1e100.net; s=20230601; t=1710494955; x=1711099755;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yy9UuaOwwnjmkLdHpJLRJuDPkF6dNfVXKVVIwe8goJw=;
+        b=kL3o68vsGoG9mRcwuaNK/bjQiMCo/xzt70TyFecoDLa10ffbzTSv/BD7bbNF3UVUEj
+         a+/hKInBbrgFcUd2pLhz9GcXu+m72Sd8g24lRP/37JfQiaMPkt2Ldd6YIp15HIoU+jG2
+         wwX8uAGcHWHj12NHYLDrzJW7HSE3CTIjGxv0mtwmifl0L+Kwncry8VGvRf2HOQwpmX+c
+         6rEtC4mP9/LxVkoOcZlL60fEAiFexifeSePYRpvw6jEWlcTvhc47ChOyeETcCotKbriS
+         nrZxEvWYlwIL6YY54DlG+rKR0qkWtegRXHwarbrsirmhqfSw0Gmg+stA3nQMucNkApqo
+         EuIw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVTzORYXgrtprHhyaUEGTiGGEWc7AWDfz78dmo7bVjIsBSx5PyQJsiPNmJdopVNuaJ8ipz/z0JyCdfHNEecpLEy2K9TWQMbnhLTTuFNPk0xXWCtlsTY+OTAJtBbQYnPy9F
+X-Gm-Message-State: AOJu0YzPaHin0EjL7Wg6wEzrcnOEAdpFFQCJADuJykVpvUWssPkeVerp
+	eciAhAbhciDKkTiKJfxUI4IuFMDjY7IHgoy8AA3zjvc9YnPW2428
+X-Google-Smtp-Source: AGHT+IEmfGjtXZvqB0qQ0wkuzU6/qV0BfQY1EeQ8qHol34BJoU6SPpfV0XTqiH0QZzTBWkH99PXJpg==
+X-Received: by 2002:a05:6000:4e4:b0:33e:78c4:3738 with SMTP id cr4-20020a05600004e400b0033e78c43738mr3615149wrb.54.1710494955224;
+        Fri, 15 Mar 2024 02:29:15 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id x11-20020a5d60cb000000b0033eca2cee1asm2736644wrt.92.2024.03.15.02.29.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 02:28:42 -0700 (PDT)
-Date: Fri, 15 Mar 2024 18:28:38 +0900
-From: Yewon Choi <woni9911@gmail.com>
-To: Allison Henderson <allison.henderson@oracle.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Cc: "Dae R. Jeong" <threeearcat@gmail.com>
-Subject: [PATCH net v2] rds: introduce acquire/release ordering in
- acquire/release_in_xmit()
-Message-ID: <ZfQUxnNTO9AJmzwc@libra05>
+        Fri, 15 Mar 2024 02:29:14 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] RISC-V: KVM: Remove second semicolon
+Date: Fri, 15 Mar 2024 09:29:14 +0000
+Message-Id: <20240315092914.2431214-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-acquire/release_in_xmit() work as bit lock in rds_send_xmit(), so they
-are expected to ensure acquire/release memory ordering semantics.
-However, test_and_set_bit/clear_bit() don't imply such semantics, on
-top of this, following smp_mb__after_atomic() does not guarantee release
-ordering (memory barrier actually should be placed before clear_bit()).
+There is a statement with two semicolons. Remove the second one, it
+is redundant.
 
-Instead, we use clear_bit_unlock/test_and_set_bit_lock() here.
-
-Fixes: 0f4b1c7e89e6 ("rds: fix rds_send_xmit() serialization")
-Fixes: 1f9ecd7eacfd ("RDS: Pass rds_conn_path to rds_send_xmit()")
-Signed-off-by: Yewon Choi <woni9911@gmail.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
-Changes in v1 -> v2:
-- Added missing Fixes tags
+ arch/riscv/kvm/vcpu_onereg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- net/rds/send.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 5e57a1581dc6..8f38009721b7 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -103,13 +103,12 @@ EXPORT_SYMBOL_GPL(rds_send_path_reset);
+diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
+index f4a6124d25c9..994adc26db4b 100644
+--- a/arch/riscv/kvm/vcpu_onereg.c
++++ b/arch/riscv/kvm/vcpu_onereg.c
+@@ -986,7 +986,7 @@ static int copy_isa_ext_reg_indices(const struct kvm_vcpu *vcpu,
  
- static int acquire_in_xmit(struct rds_conn_path *cp)
+ static inline unsigned long num_isa_ext_regs(const struct kvm_vcpu *vcpu)
  {
--	return test_and_set_bit(RDS_IN_XMIT, &cp->cp_flags) == 0;
-+	return test_and_set_bit_lock(RDS_IN_XMIT, &cp->cp_flags) == 0;
+-	return copy_isa_ext_reg_indices(vcpu, NULL);;
++	return copy_isa_ext_reg_indices(vcpu, NULL);
  }
  
- static void release_in_xmit(struct rds_conn_path *cp)
- {
--	clear_bit(RDS_IN_XMIT, &cp->cp_flags);
--	smp_mb__after_atomic();
-+	clear_bit_unlock(RDS_IN_XMIT, &cp->cp_flags);
- 	/*
- 	 * We don't use wait_on_bit()/wake_up_bit() because our waking is in a
- 	 * hot path and finding waiters is very rare.  We don't want to walk
+ static int copy_sbi_ext_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices)
 -- 
-2.43.0
+2.39.2
 
 
