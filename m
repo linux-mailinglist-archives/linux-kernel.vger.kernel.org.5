@@ -1,203 +1,143 @@
-Return-Path: <linux-kernel+bounces-104565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71B0C87D000
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:16:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E09C87CFF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 278A21F23CCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:16:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BAA22835B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FEA43D38C;
-	Fri, 15 Mar 2024 15:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05873D54D;
+	Fri, 15 Mar 2024 15:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="O43SCO9M"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6UQVzJD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010013E48E;
-	Fri, 15 Mar 2024 15:16:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9CA3BB52;
+	Fri, 15 Mar 2024 15:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710515783; cv=none; b=LVdNaVMmFTWRY9vqY8L14M1kwqjXsDAVpb+wo/01Yq/xF0zCIMibsOkUYVvmi0TwOxIHT8pPGb9U1CYBeLQxsdq/YA22txCgLaDTQ5eXRjRCQFMUqr4mBbdGUB8pfMW8JKLS5lrYxLQE5NCXpU0zuFySlijF1VtodBnDpdi44dc=
+	t=1710515762; cv=none; b=d2wUuUQFC1S+dfcUYm6l+GBUAZu48vEXc306cWCCFblzk1xr5261YwMPtoXuKhabXgjWE7RawCH5SJSx7xGNRlWp6H6S+pzL7XqzGRdBDUC/UieIYv9M8xkNOBhwwM04H1mE9aCrwSZPVMLO2FiWXyZNVr54JBb3SqjesbHfAQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710515783; c=relaxed/simple;
-	bh=IHIPLZE3idlw2cVAcFI6y49qart4V2n1jZXMAHDIMxo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Lq2Qm0B/iSkhv9HW6XbGDzChrPhlJkNucuyWM7cn4xatHFEB0DeHIkyOyNw3VD7+TmPDP7NXr+7oq+kElfZFcq2ZogUMbEVD0RwWocz0EDFKiJtw+wCYyKoz/+8EhSf2SgUPsoQkun6UwNDwdevApYxo+qBbsMUBtA0iPrVudSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=O43SCO9M; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42FEcweV009640;
-	Fri, 15 Mar 2024 16:15:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=mN5YOoII/OjhboOJve/4NynjPrKGyVn2gyMyB0ukmK8=; b=O4
-	3SCO9MyJtYSOKQdCylCRvSDcHHxssv5BfVPLBubd9+Szkv5WcxgLnXtQAUfWgSpU
-	I/ziY/map1ZTLqOZb8ZAnHsdyX60bH1ck19Gasjv4xwvTDWB7UoL00peD7ZiCStO
-	KeaFREhRryPVNq8JlIigO7sTODYdN74knfTf/64YaI2cECSnOQXA2TDg2oVnyhxf
-	P1Ith7hPfjfZF1sCPg9eLz3nYzbimwXYUPLzLHoxToQw0oCvidRmtD+dA3IjzbcF
-	g9O/JaNlPfLQ71HLGwZi21RHHQpgGpDVpk7byycaRUQ1xcUN6bn0PdAJMuuQbsMe
-	cbrKU5yedbA9yalQymXg==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wv9yckf3e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 16:15:46 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id A126D4002D;
-	Fri, 15 Mar 2024 16:15:30 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8AEB827564A;
-	Fri, 15 Mar 2024 16:14:16 +0100 (CET)
-Received: from [10.252.28.102] (10.252.28.102) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Mar
- 2024 16:14:15 +0100
-Message-ID: <ac696442-0513-48cc-86b1-8647b9bd8e91@foss.st.com>
-Date: Fri, 15 Mar 2024 16:14:06 +0100
+	s=arc-20240116; t=1710515762; c=relaxed/simple;
+	bh=JetYKg36RGIdkXrH8sSoGmguKkbdT3c+edAG3vVoLks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tP03OoGsfNTos+fpoLxNwmigWUjU0NFnkgEIJHGJ38kRbcjGcEbvytLGEvo/2ZCvVPRLVU8N65q7YnzCNxkTHRrs6JulUiE5oUqo9wbIrIgoZ9srUK6onQ9av2sWDdxYvjls1Sr+W0rDeJi4do83O8K4tYXfl2WrEpqccEoc1eY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6UQVzJD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C680C433F1;
+	Fri, 15 Mar 2024 15:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710515761;
+	bh=JetYKg36RGIdkXrH8sSoGmguKkbdT3c+edAG3vVoLks=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Z6UQVzJDHdLFI/FI8NYnDUEw4xnU4jAVfiYnJa7PImFmHArIldd+gIV3Sv2UQwCGZ
+	 9Ax3SpbT9vkcMC7t4p3Zfj1jIn4bGhzHu4dq2KCraI7LAE/NU3z54DZji/qrZXXo61
+	 sptSTer//vPtvWSriM+ymuqmO77T0AvZg1YzEQw/BPikvjeE+M1R/KsxX/MLlKhBzY
+	 jbHmdHzfeyUuZoWykiI8NkuSojEMzfOk4bj14VxQxqGF5lq2Wd6y+agWxXx+vx29oh
+	 BWLxPgFUv8c8QrU2p+BHTR1HgmqxOZM93ujA2zaLrLXUvLusk84biWueGVvifRqFhn
+	 SwYBfpHlb7iKw==
+Date: Fri, 15 Mar 2024 15:15:54 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Alexandre Mergnat <amergnat@baylibre.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+	Nicolas Belin <nbelin@baylibre.com>
+Subject: Re: [PATCH 12/18] ASoC: codecs: mt6357: add MT6357 codec
+Message-ID: <0a41b498-5cca-4487-a0e0-0df749f6e796@sirena.org.uk>
+References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
+ <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
+ <9891855d-2284-42e4-9d3a-35ba406540e8@sirena.org.uk>
+ <c441a132-b16b-4244-a712-8971c902d4d7@baylibre.com>
+ <ff3d2db1-697b-42c6-a0f2-74276e9fc098@sirena.org.uk>
+ <dda0e6ba-4538-47a0-95e9-6adcfd4169a7@baylibre.com>
+ <0d31ffb2-9df5-4c3e-a728-902b71a1a713@sirena.org.uk>
+ <fd53a0e7-fa70-4c0d-b578-393183487335@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] dt-bindings: net: add new property st,ext-phyclk
- in documentation for stm32
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "David S . Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark
- Brown <broonie@kernel.org>
-CC: <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240307135957.303481-1-christophe.roullier@foss.st.com>
- <20240307135957.303481-3-christophe.roullier@foss.st.com>
- <578f421c-ca06-45d4-8380-8b2b423d4d47@linaro.org>
- <50ee6122-b160-48ea-8c44-1046b5907d7c@foss.st.com>
- <e2a98098-8ccd-4b8f-9a4b-1cbc0776a9c2@linaro.org>
- <51531046-ee83-4d99-836b-af4dc5d7add9@foss.st.com>
- <cf122942-c0fd-457f-a753-366cae39d5f8@linaro.org>
-Content-Language: en-US
-From: Christophe ROULLIER <christophe.roullier@foss.st.com>
-In-Reply-To: <cf122942-c0fd-457f-a753-366cae39d5f8@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-15_02,2024-03-13_01,2023-05-22_02
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fgDyTJrdbX73HLO7"
+Content-Disposition: inline
+In-Reply-To: <fd53a0e7-fa70-4c0d-b578-393183487335@baylibre.com>
+X-Cookie: A well-known friend is a treasure.
 
-Hi
 
-On 3/14/24 16:25, Krzysztof Kozlowski wrote:
-> On 14/03/2024 16:10, Christophe ROULLIER wrote:
->> Hi,
->>
->> On 3/13/24 14:06, Krzysztof Kozlowski wrote:
->>> On 13/03/2024 11:39, Christophe ROULLIER wrote:
->>>> On 3/8/24 09:28, Krzysztof Kozlowski wrote:
->>>>> On 07/03/2024 14:59, Christophe Roullier wrote:
->>>>>> Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
->>>>>> This property can be used with RMII phy without cristal 50Mhz and when we
->>>>>> want to select RCC clock instead of ETH_REF_CLK
->>>>>> Can be used also with RGMII phy with no cristal and we select RCC clock
->>>>>> instead of ETH_CLK125
->>>>>>
->>>>> Nothing improved here. You say you add new property (wrote it explicitly
->>>>> in the subject), but where is it? Where is the user?
->>>>>
->>>>> I think we talked about this. Rob also asked quite clear:
->>>>>
->>>>>> That is obvious from the diff. What is not obvious is why we need a new
->>>>>> property and what is the problem with the existing ones.
->>>>> How did you solve it?
->>>> Hi,
->>>>
->>>> I do not understand your questions.
->>> OK, I will clarify some questions, but are you sure that this question:
->>> "How did you solve it?"
->>> needs clarification?
->>>
->>> If so, then let me clarify:
->>> Rob pointed issue. How did you resolve Rob's comment? How did you
->>> address it? What changed in your patch, that Rob's comment should be
->>> considered as addressed/resolved/done?
->> This property was introduced in 2020 in order to simplify management of
->> all STM32 platforms without Ethernet cristal/quartz PHY.
-> I fail to see how this answers how did you resolve the comment. You now
-> described some sort of history, but I am asking: what did you change in
-> your patches, so Rob's comment is considered resolved?
+--fgDyTJrdbX73HLO7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Concerning Rob's comment, in V2 I finally remove deprecated fields put 
-in V1 to keep existing properties, which have no pb and can be used.
+On Fri, Mar 15, 2024 at 04:05:21PM +0100, Alexandre Mergnat wrote:
+> On 15/03/2024 15:30, Mark Brown wrote:
 
-And I explained the meaning to add existing property in yaml.
+> > > Let me know, when you change de gain to do a ramp down (start from user gain
+> > > to gain=-40db), next time for the ramp up, how/where do you find the user
+> > > gain ?
 
->>> Now about my other question:
->>> "but where is it? Where is the user?"
->>>
->>> Your subject and commit message claim you add new property. This means
->>> such property was not existing so far in the Linux kernel. If you add
->>> new property in the binding, then I expect adding the user of that
->>> binding, thus my question: where is the user of that binding?
->>>
->> I'm preparing glue and DTS to upstream for STM32MP13 platform, this
->> platform will use with property.
->>
->> Since 2020, this property is available in the driver in kernel.org, so
->> it is also possible that someone who has not upstreamed their
-> This should be explained in commit msg (although not kernel.org, website
-> does not matter here).
-ok I will add this in V3.
->
->> code also uses it.
->>
->>>> That I would like to do, it is property "st,ext-phyclk" was introduced
->>>> in driver
->>>>
->>>> "drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c" in 2020, and YAML
->>>> was not updated at the time.
->>> Are you saying you document existing property or add a new one?
->> Yes, existing property, since 2020 in kernel.org.
-> Drop the website. We talk here about Linux kernel.
->
-> Commit msg fails to explain it in a clear way.
+> > In the register.  You only need to reset the gain to -40dB at the start
+> > of the ramp.
 
-ok I will add this in V3.
+> Sorry but I don't understand your logic, I'm not able to implement it...
+> If I'm at -10dB and doing a ramp to reach -40dB, next time I will read the
+> register the value will be -40dB.
 
-Thanks
+After we've done the ramp and turned the amplifier off we can just
+restore the desired value?  The hardware is not going to care what the
+volume is while it's not enabled.
 
->
->>>> Goal of this patch it is to update YAML to avoid dtbs check issue if
->>>> someone use this property :
->>>>
->>>>     dtbs check issue : views/kernel/upstream/net-next/arch/arm/boot/dts/st/stm32mp157c-dk2.dtb:
->>>> ethernet@5800a000: Unevaluated properties are not allowed
->>>> ('st,ext-phyclk' was unexpected)
->>> So DTS uses it?
->> Here it was example, if someone wants to use this property, but today
->> this property is not yet present in DTS in kernel.org
->
-> Best regards,
-> Krzysztof
->
+> This implementation is also done in other MTK audio codec drivers.
+
+Perhaps they should be updated too?
+
+> > > When microphone isn't capturing, the gain read back from the register is
+> > > 0dB. I've put some logs in my code and do capture to show how it works:
+
+> > Is this a property of the hardware or a property of your driver?
+
+> At the end of the capture, the gain is set to 0dB by the driver.
+> At the start of the capture, the gain is set to the setup gain.
+
+So that's a property of the driver then?
+
+> AFAII from the comment in the code, it's done to avoid the "pop noises".
+
+Yes, that's the usual reason to ramp gains.  Though if you've just
+copied the code without checking that it's needed it's possible that
+this is something that's been fixed in current hardware.
+
+--fgDyTJrdbX73HLO7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0ZikACgkQJNaLcl1U
+h9ANMQf7BdfrOiW1Xoo2hUjwcif1X0ikLf9S3dwVoevqKNXQHOBvrNlZo0hx8Lpc
+cb7BxhcMn0yDAdJKRd5N4p/THoafHtJ/+pYuLVB1xyz9W0OB/x+RZEMBDUv+AOIG
+gN4Pb9xiFL55ELmhLXdQcmyccdi3RjnnGK07tD3gwqiHgilNQazB2sqKf+bUrs0f
+P5pJpmnh6QWxyMnyI9Mby7N/c4LDtVKMyBeptA631XeUyiPnlhN2Y8E4aZo0u5+p
+qg/zSbEy39TWoCI69lQkJX7MYeoTDzuKCmaGdolnVUjOsm0ZWpxt5iuxdyq4Yhl/
+65is6JhRr0irTBQKv824acHouSjrkw==
+=GmOx
+-----END PGP SIGNATURE-----
+
+--fgDyTJrdbX73HLO7--
 
