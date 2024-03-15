@@ -1,291 +1,215 @@
-Return-Path: <linux-kernel+bounces-104158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341BA87C9DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:22:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4977487C9DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:23:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B416D1F22855
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:22:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C3ABB231FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B63F175BF;
-	Fri, 15 Mar 2024 08:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC2D1757A;
+	Fri, 15 Mar 2024 08:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j3qWw58p"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EERxz13A"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEA91758B;
-	Fri, 15 Mar 2024 08:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574E316427;
+	Fri, 15 Mar 2024 08:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710490935; cv=none; b=hxPACYn3LoRjs2hjKoofoRRFuz9tnRyIlWk+Pt5SlT2y2xPe5OMbm/JPMFUzRNG3xRGqCuYMlEMpYxRnC8iABkTjX8XQTU4dZk9UiMzWvz+2XYR+dIfmAzP3unTSYFEhjfMlxv5DBJ0z0U18i39VCNE42dVfS3vup5rSp0W3pNU=
+	t=1710490989; cv=none; b=YzzBw9sxiQ32FxwvXKewrV3Wp9Uv7Qd4cyEJPl9g09N9nRKKoZYkoY16yvs5dYH0rvpZeg0WMkVH0tLECSIRXb9e++oWUYmmitz2elSWXwPSng3UHCD1zlT26FUi9q9EHIbo2KyLULmeJdyBcIvJaI0C+IzOQnUMezX5tR2Cbnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710490935; c=relaxed/simple;
-	bh=nVn3aX7+3f9iTQBAed2ZqWdElNcvvfVXItbazWoBUAw=;
+	s=arc-20240116; t=1710490989; c=relaxed/simple;
+	bh=yXZH8RAtGsBHoBi0Ar7G6PRNfK452YQsTJc6LoedWUk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mmLb0UbxSImFA4z+yWmMBon+g/yguXlLmG7fwPyMFAsSJSj2shUcLlW/usDyO7c03XsE0dgNngMDT/SVafQ5q98GAV0k0xN3j+yYfD3TIaxzOns3eT02HCdsJ1OzuHGVlfsLVvhpW945/N1H1y/NWNZd2c7ew1+me3KJylPeN+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j3qWw58p; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=DhxsuUd7F587pcBUyijNHdXgHSz7Pt5LbqQVRT0ruVEOFnoC2xpkkm7leK4qsLPHxZFpkRhjG3jeyoSMH8d8VYMeHTWOxDNruzE4lZLyPUjUBp7q9Fvb6YMS8bDrUjmQ6yWPBm6IrCFCRImAM3y2keFPHTJCO3bYJetNNQjiosY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EERxz13A; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710490934; x=1742026934;
+  t=1710490987; x=1742026987;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=nVn3aX7+3f9iTQBAed2ZqWdElNcvvfVXItbazWoBUAw=;
-  b=j3qWw58pJJcdVH2ppabA8hzJCRtjBBxxjyYFa4k8gD3j2yUEqm2XvDT5
-   abqAjIuhPJYgU/Tn9NyfIFaAMxjuFSWGYtzdvgC9pAuMx1ZtgeHYdcXnz
-   s5ZGtcs5BgwfWYNF7aBz9q+jxEmAEXE6aogeV/dTVItgIietpcPdRfM9k
-   R3KG0k5vBGJ4joFhat0T6uPVUL9i+UmFyMQkN0CxK1XiWUNpyN+xW0/GD
-   0ebepdO2e4hpEVAiFmDEXuT1MMvBFJK4Fkt/bJ8JqHfXUgSu1ST5mDiDt
-   PWS5ykM3WYPzCXuOUaRVmMAU1lYppwX8DbiVDp3N2+W/nX+ricUsUDGMd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5534228"
+   mime-version:in-reply-to;
+  bh=yXZH8RAtGsBHoBi0Ar7G6PRNfK452YQsTJc6LoedWUk=;
+  b=EERxz13Afk63SPAyA65wPgepjjG0FgWSYHXcQeJCtgC7Of1Cdg7a90Rb
+   nAbrjwjD4tpx2eNZTJFKVFqaNbkMg5kq5HRvNuNMgGBFguEvwvAvcn+/u
+   4HeURDNejnnr1GkY455+BuOtVdD6FDemcvnSGIby0ssAoy5aBK1L5sWBm
+   +tYL+XfLr2nXIlkvddXbb2Oh0Fq227yMuB4UFgtvjGV/iaJg2gyz/zKFH
+   rncapwNy/FFzsvCEKnfIjkYcU4pulQ/W9fWYbilpEOdriqitOR0KmbWka
+   y758ZWeTTVdeSekEPrUbTFU5SNrjaF3SBmMyts5B/kAB/fsfCZpzUEzjs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="15896608"
 X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="5534228"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 01:22:13 -0700
+   d="scan'208";a="15896608"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 01:23:06 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="827780535"
 X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="827780535"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 15 Mar 2024 01:22:06 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 15 Mar 2024 10:22:05 +0200
-Date: Fri, 15 Mar 2024 10:22:05 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Sebastian Wick <sebastian.wick@redhat.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v9 20/27] drm/connector: hdmi: Add Infoframes generation
-Message-ID: <ZfQFLR2xO6vUpAJ9@intel.com>
-References: <20240311-kms-hdmi-connector-state-v9-0-d45890323344@kernel.org>
- <20240311-kms-hdmi-connector-state-v9-20-d45890323344@kernel.org>
+   d="scan'208";a="13217521"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 15 Mar 2024 01:23:01 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rl2qA-000EFx-1q;
+	Fri, 15 Mar 2024 08:22:58 +0000
+Date: Fri, 15 Mar 2024 16:22:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Joshua Yeong <joshua.yeong@starfivetech.com>, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, geert+renesas@glider.be,
+	prabhakar.mahadev-lad.rj@bp.renesas.com, conor.dooley@microchip.com,
+	alexghiti@rivosinc.com, evan@rivosinc.com, ajones@ventanamicro.com,
+	heiko@sntech.de, guoren@kernel.org, uwu@icenowy.me,
+	jszhang@kernel.org, conor@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	leyfoon.tan@starfivetech.com, jeeheng.sia@starfivetech.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/4] cache: Add StarLink-500 cache management for
+ StarFive  JH8100 RISC-V core
+Message-ID: <202403151625.boKDjHGr-lkp@intel.com>
+References: <20240314061205.26143-4-joshua.yeong@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240311-kms-hdmi-connector-state-v9-20-d45890323344@kernel.org>
-X-Patchwork-Hint: comment
+In-Reply-To: <20240314061205.26143-4-joshua.yeong@starfivetech.com>
 
-On Mon, Mar 11, 2024 at 03:49:48PM +0100, Maxime Ripard wrote:
-> Infoframes in KMS is usually handled by a bunch of low-level helpers
-> that require quite some boilerplate for drivers. This leads to
-> discrepancies with how drivers generate them, and which are actually
-> sent.
-> 
-> Now that we have everything needed to generate them in the HDMI
-> connector state, we can generate them in our common logic so that
-> drivers can simply reuse what we precomputed.
-> 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->  drivers/gpu/drm/Kconfig                            |   1 +
->  drivers/gpu/drm/drm_atomic_state_helper.c          | 323 +++++++++++++++++++++
->  drivers/gpu/drm/drm_connector.c                    |  14 +
->  .../gpu/drm/tests/drm_atomic_state_helper_test.c   |   1 +
->  drivers/gpu/drm/tests/drm_connector_test.c         |  12 +
->  include/drm/drm_atomic_state_helper.h              |   8 +
->  include/drm/drm_connector.h                        | 133 +++++++++
->  7 files changed, 492 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index 872edb47bb53..ad9c467e20ce 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -97,10 +97,11 @@ config DRM_KUNIT_TEST
->  	  If in doubt, say "N".
->  
->  config DRM_KMS_HELPER
->  	tristate
->  	depends on DRM
-> +	select DRM_DISPLAY_HDMI_HELPER
->  	help
->  	  CRTC helpers for KMS drivers.
->  
->  config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
->          bool "Enable refcount backtrace history in the DP MST helpers"
-> diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
-> index e66272c0d006..2bf53666fc9d 100644
-> --- a/drivers/gpu/drm/drm_atomic_state_helper.c
-> +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
-> @@ -36,10 +36,12 @@
->  #include <drm/drm_plane.h>
->  #include <drm/drm_print.h>
->  #include <drm/drm_vblank.h>
->  #include <drm/drm_writeback.h>
->  
-> +#include <drm/display/drm_hdmi_helper.h>
-> +
->  #include <linux/slab.h>
->  #include <linux/dma-fence.h>
->  
->  /**
->   * DOC: atomic state reset and initialization
-> @@ -912,10 +914,143 @@ hdmi_compute_config(const struct drm_connector *connector,
->  	}
->  
->  	return -EINVAL;
->  }
->  
-> +static int hdmi_generate_avi_infoframe(const struct drm_connector *connector,
-> +				       struct drm_connector_state *state)
-> +{
-> +	const struct drm_display_mode *mode =
-> +		connector_state_get_mode(state);
-> +	struct drm_connector_hdmi_infoframe *infoframe =
-> +		&state->hdmi.infoframes.avi;
-> +	struct hdmi_avi_infoframe *frame =
-> +		&infoframe->data.avi;
-> +	bool is_full_range = state->hdmi.is_full_range;
-> +	enum hdmi_quantization_range rgb_quant_range =
-> +		is_full_range ? HDMI_QUANTIZATION_RANGE_FULL : HDMI_QUANTIZATION_RANGE_LIMITED;
-> +	int ret;
-> +
-> +	ret = drm_hdmi_avi_infoframe_from_display_mode(frame, connector, mode);
-> +	if (ret)
-> +		return ret;
-> +
-> +	frame->colorspace = state->hdmi.output_format;
-> +
-> +	drm_hdmi_avi_infoframe_quant_range(frame, connector, mode, rgb_quant_range);
+Hi Joshua,
 
-drm_hdmi_avi_infoframe_quant_range() doesn't handle YCbCr currently.
+kernel test robot noticed the following build warnings:
 
-> +	drm_hdmi_avi_infoframe_colorimetry(frame, state);
-> +	drm_hdmi_avi_infoframe_bars(frame, state);
-> +
-> +	infoframe->set = true;
-> +
-> +	return 0;
-> +}
-> +
-<snip>
-> +
-> +#define UPDATE_INFOFRAME(c, os, ns, i)				\
-> +	write_or_clear_infoframe(c,				\
-> +				 &(c)->hdmi.infoframes.i,	\
-> +				 &(os)->hdmi.infoframes.i,	\
-> +				 &(ns)->hdmi.infoframes.i)
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master v6.8 next-20240314]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-This macro feels like pointless obfuscation to me.
+url:    https://github.com/intel-lab-lkp/linux/commits/Joshua-Yeong/riscv-asm-vendorid_list-Add-StarFive-Technology-to-vendors-list/20240314-165125
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240314061205.26143-4-joshua.yeong%40starfivetech.com
+patch subject: [PATCH 3/4] cache: Add StarLink-500 cache management for StarFive  JH8100 RISC-V core
+config: riscv-allmodconfig (https://download.01.org/0day-ci/archive/20240315/202403151625.boKDjHGr-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8f68022f8e6e54d1aeae4ed301f5a015963089b7)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240315/202403151625.boKDjHGr-lkp@intel.com/reproduce)
 
-<snip>
-> @@ -1984,20 +2063,73 @@ struct drm_connector {
->  
->  	/**
->  	 * @hdmi: HDMI-related variable and properties.
->  	 */
->  	struct {
-> +#define DRM_CONNECTOR_HDMI_VENDOR_LEN	8
-> +		/**
-> +		 * @vendor: HDMI Controller Vendor Name
-> +		 */
-> +		unsigned char vendor[DRM_CONNECTOR_HDMI_VENDOR_LEN] __nonstring;
-> +
-> +#define DRM_CONNECTOR_HDMI_PRODUCT_LEN	16
-> +		/**
-> +		 * @product: HDMI Controller Product Name
-> +		 */
-> +		unsigned char product[DRM_CONNECTOR_HDMI_PRODUCT_LEN] __nonstring;
-> +
->  		/**
->  		 * @supported_formats: Bitmask of @hdmi_colorspace
->  		 * supported by the controller.
->  		 */
->  		unsigned long supported_formats;
->  
->  		/**
->  		 * @funcs: HDMI connector Control Functions
->  		 */
->  		const struct drm_connector_hdmi_funcs *funcs;
-> +
-> +		/**
-> +		 * @infoframes: Current Infoframes output by the connector
-> +		 */
-> +		struct {
-> +			/**
-> +			 * @lock: Mutex protecting against concurrent access to
-> +			 * the infoframes, most notably between KMS and ALSA.
-> +			 */
-> +			struct mutex lock;
-> +
-> +			/**
-> +			 * @audio: Current Audio Infoframes structure. Protected
-> +			 * by @lock.
-> +			 */
-> +			struct drm_connector_hdmi_infoframe audio;
-> +
-> +			/**
-> +			 * @avi: Current AVI Infoframes structure. Protected by
-> +			 * @lock.
-> +			 */
-> +			struct drm_connector_hdmi_infoframe avi;
-> +
-> +			/**
-> +			 * @hdr_drm: Current DRM (Dynamic Range and Mastering)
-> +			 * Infoframes structure. Protected by @lock.
-> +			 */
-> +			struct drm_connector_hdmi_infoframe hdr_drm;
-> +
-> +			/**
-> +			 * @spd: Current SPD Infoframes structure. Protected by
-> +			 * @lock.
-> +			 */
-> +			struct drm_connector_hdmi_infoframe spd;
-> +
-> +			/**
-> +			 * @vendor: Current HDMI Vendor Infoframes structure.
-> +			 * Protected by @lock.
-> +			 */
-> +			struct drm_connector_hdmi_infoframe hdmi;
-> +		} infoframes;
->  	} hdmi;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403151625.boKDjHGr-lkp@intel.com/
 
-What's the deal with this bloat? These are already tracked in the
-connector's state so this looks entirely redundant.
+All warnings (new ones prefixed by >>):
 
->  };
->  
->  #define obj_to_connector(x) container_of(x, struct drm_connector, base)
->  
-> @@ -2015,10 +2147,11 @@ int drmm_connector_init(struct drm_device *dev,
->  			const struct drm_connector_funcs *funcs,
->  			int connector_type,
->  			struct i2c_adapter *ddc);
->  int drmm_connector_hdmi_init(struct drm_device *dev,
->  			     struct drm_connector *connector,
-> +			     const char *vendor, const char *product,
->  			     const struct drm_connector_funcs *funcs,
->  			     const struct drm_connector_hdmi_funcs *hdmi_funcs,
->  			     int connector_type,
->  			     struct i2c_adapter *ddc,
->  			     unsigned long supported_formats,
-> 
-> -- 
-> 2.43.2
+   In file included from drivers/cache/starlink500_cache.c:11:
+   In file included from include/linux/cacheflush.h:5:
+   In file included from arch/riscv/include/asm/cacheflush.h:9:
+   In file included from include/linux/mm.h:2188:
+   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     509 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     516 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     528 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     537 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/cache/starlink500_cache.c:59:6: warning: no previous prototype for function 'starfive_sl500_dma_cache_wback' [-Wmissing-prototypes]
+      59 | void starfive_sl500_dma_cache_wback(phys_addr_t paddr, unsigned long size)
+         |      ^
+   drivers/cache/starlink500_cache.c:59:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      59 | void starfive_sl500_dma_cache_wback(phys_addr_t paddr, unsigned long size)
+         | ^
+         | static 
+>> drivers/cache/starlink500_cache.c:74:6: warning: no previous prototype for function 'starfive_sl500_dma_cache_invalidate' [-Wmissing-prototypes]
+      74 | void starfive_sl500_dma_cache_invalidate(phys_addr_t paddr, unsigned long size)
+         |      ^
+   drivers/cache/starlink500_cache.c:74:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      74 | void starfive_sl500_dma_cache_invalidate(phys_addr_t paddr, unsigned long size)
+         | ^
+         | static 
+>> drivers/cache/starlink500_cache.c:89:6: warning: no previous prototype for function 'starfive_sl500_dma_cache_wback_inv' [-Wmissing-prototypes]
+      89 | void starfive_sl500_dma_cache_wback_inv(phys_addr_t paddr, unsigned long size)
+         |      ^
+   drivers/cache/starlink500_cache.c:89:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      89 | void starfive_sl500_dma_cache_wback_inv(phys_addr_t paddr, unsigned long size)
+         | ^
+         | static 
+   8 warnings generated.
+
+
+vim +/starfive_sl500_dma_cache_wback +59 drivers/cache/starlink500_cache.c
+
+    58	
+  > 59	void starfive_sl500_dma_cache_wback(phys_addr_t paddr, unsigned long size)
+    60	{
+    61		writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr),
+    62		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_START_ADDR);
+    63		writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr + size),
+    64		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_END_ADDR);
+    65	
+    66		mb();
+    67		writeq(FIELD_PREP(STARFIVE_SL500_FLUSH_CTL_MODE_MASK,
+    68		       STARFIVE_SL500_FLUSH_CTL_CLEAN_SHARED),
+    69		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_CTL);
+    70	
+    71		starfive_sl500_cmo_flush_complete();
+    72	}
+    73	
+  > 74	void starfive_sl500_dma_cache_invalidate(phys_addr_t paddr, unsigned long size)
+    75	{
+    76		writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr),
+    77		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_START_ADDR);
+    78		writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr + size),
+    79		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_END_ADDR);
+    80	
+    81		mb();
+    82		writeq(FIELD_PREP(STARFIVE_SL500_FLUSH_CTL_MODE_MASK,
+    83		       STARFIVE_SL500_FLUSH_CTL_MAKE_INVALIDATE),
+    84		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_CTL);
+    85	
+    86		starfive_sl500_cmo_flush_complete();
+    87	}
+    88	
+  > 89	void starfive_sl500_dma_cache_wback_inv(phys_addr_t paddr, unsigned long size)
+    90	{
+    91		writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr),
+    92		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_START_ADDR);
+    93		writeq(FIELD_PREP(STARFIVE_SL500_ADDRESS_RANGE_MASK, paddr + size),
+    94		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_END_ADDR);
+    95	
+    96		mb();
+    97		writeq(FIELD_PREP(STARFIVE_SL500_FLUSH_CTL_MODE_MASK,
+    98		       STARFIVE_SL500_FLUSH_CTL_CLEAN_INVALIDATE),
+    99		       starfive_sl500_cache_priv.base_addr + STARFIVE_SL500_CMO_FLUSH_CTL);
+   100	
+   101		starfive_sl500_cmo_flush_complete();
+   102	}
+   103	
 
 -- 
-Ville Syrjälä
-Intel
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
