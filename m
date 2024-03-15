@@ -1,173 +1,188 @@
-Return-Path: <linux-kernel+bounces-104310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B84D887CC0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:13:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AAAA87CC12
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:14:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A4B1C22573
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:13:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75DC1281219
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0E81B5B1;
-	Fri, 15 Mar 2024 11:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7391B7FB;
+	Fri, 15 Mar 2024 11:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="fIY2rkPW"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dMLbha13";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9Eh2KuoW";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dMLbha13";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9Eh2KuoW"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217BD18EA5
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC2C1C280
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710501182; cv=none; b=SScz+j3yOa1khyoUtLLoopq/uRBhfQuppTCSGYkoUBjyVR5vyVqNGnu/WP6lSwznQ1XyTU+YRbDlXo3rTAlFQ7j5HkGLf7lXCcgTyQsacHKBFseuHNOhI4MpWB2AssrInOSJTYaMrtyNdWhuNHKJDDfrYsb+7Ke/DbZ6WOHbTiI=
+	t=1710501196; cv=none; b=d/h4GMuEtF7aiovgmRUxvaZL4/UUEi5x73PHQqoPXxd3qQQUAEMF9d6DGLlAnir7UIIp3Xd3QBMS/CKDOahfJLdRmXYG83T3LFZoTJhVw9Nuuq5+0gXnq5CycmAsmCAPJQLy34uUqUHqJjORBPaRAPR58zhfnA4JYO/CgazZt5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710501182; c=relaxed/simple;
-	bh=0CXDKtVLaMZDoZYYFTaEKJbdWnIjyLWhv+rAJccVjpA=;
+	s=arc-20240116; t=1710501196; c=relaxed/simple;
+	bh=QbNyKl2+UNc3CtzWMSyqX7208qlKY58J7aRuKqEjrEc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V6DNpKAO8fUZOcNMAfaMaWy66uYPthJMLtoS04ZHMJafUp1v6QIKKe0Ccj2N0PKGXDlrI3pW96WuAe8baJo1a+O9Ejw8aTrp7dZNWancZz9xmTDcK9DPdqA6/A7BWIrnRspnC7WvJ4+5r6/VEdHFpflB5FrfuYWowkHIzQORD6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=fIY2rkPW; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710501179;
-	bh=0CXDKtVLaMZDoZYYFTaEKJbdWnIjyLWhv+rAJccVjpA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fIY2rkPWBdmvDpr0Wom4qFXXVpArrafGToPCZp2XjR+O80luPezh2WtvoB3kopjKr
-	 oQM1rDX8QxVgnC0rE+1xABQXLuPNKswAqJj66NifFvNwa7+MgV8MFzCOjplUqw4rtK
-	 dEcaa0n2ZT6NGPO+E+gTfBvySKTndwpcEVLH/JKUis2SjV3g5J9V77IBHmQrhpQWb+
-	 mQYhWbyUb4wHLO17kp868XgQqVt09ivekV05vVdtlW0zGjNvMIUe7NyOfzj+XOCdor
-	 mrCBuo4qHQPe6Dhk7W5kjWq0ieFwu5eLMYdbRxilEedc385U9pBLiK71caXIr5efUX
-	 mJqVSIf0ziBLg==
-Received: from [100.66.96.193] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 In-Reply-To:Content-Type; b=dPWoG/iTXmaqfrCqLi6zTIsJHWLd7lW5mF1WgcHQpQ+QDVePGbQ540haVKmJenMyvrKUtCVO4yrJQ0NWXFmt4rGqO74fCFpQQJU98jc/PvgzFfzCP/vh45MUmlhJGB9aRDczdteMYKdEV23nKt4t96VnCPvEqONDYa69SQp7XIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dMLbha13; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9Eh2KuoW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dMLbha13; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9Eh2KuoW; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: vignesh)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1EF11378210F;
-	Fri, 15 Mar 2024 11:12:54 +0000 (UTC)
-Message-ID: <af5b6e38-306d-ae79-42af-88e6e9a32cff@collabora.com>
-Date: Fri, 15 Mar 2024 16:42:52 +0530
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3B3611FB58;
+	Fri, 15 Mar 2024 11:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710501193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=68obMeZP9GkgE+BaJ/q7IbPrJxRaYAC1bA2WaPLQkyk=;
+	b=dMLbha13ROIJpvpe3teSaEg6sQbyzUsn3nJ7iTg/NI7zHefAG+SepVd8dcieG2AjpO0qRt
+	5Z/veNI6frMsJpas+ZrICnIlmkzu4eBMLgIh2b2wAB85AfN32ziieU/iqE88CFh/tke5WI
+	u+mHtnRGL4UuBMKBtDDRrRjSDjvL6LE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710501193;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=68obMeZP9GkgE+BaJ/q7IbPrJxRaYAC1bA2WaPLQkyk=;
+	b=9Eh2KuoWjZ9HSFeLDVgV2S3Fyr4hZhkscbzHeva3IXDu+MalTjb31F4FK2OHPQeq5V2dqB
+	8Iob6aNC73+W7ACA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710501193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=68obMeZP9GkgE+BaJ/q7IbPrJxRaYAC1bA2WaPLQkyk=;
+	b=dMLbha13ROIJpvpe3teSaEg6sQbyzUsn3nJ7iTg/NI7zHefAG+SepVd8dcieG2AjpO0qRt
+	5Z/veNI6frMsJpas+ZrICnIlmkzu4eBMLgIh2b2wAB85AfN32ziieU/iqE88CFh/tke5WI
+	u+mHtnRGL4UuBMKBtDDRrRjSDjvL6LE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710501193;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=68obMeZP9GkgE+BaJ/q7IbPrJxRaYAC1bA2WaPLQkyk=;
+	b=9Eh2KuoWjZ9HSFeLDVgV2S3Fyr4hZhkscbzHeva3IXDu+MalTjb31F4FK2OHPQeq5V2dqB
+	8Iob6aNC73+W7ACA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28417137E8;
+	Fri, 15 Mar 2024 11:13:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id c1x/CUkt9GX0ewAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 15 Mar 2024 11:13:13 +0000
+Message-ID: <74675841-efdf-4af1-8505-3ad548a34b77@suse.cz>
+Date: Fri, 15 Mar 2024 12:13:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 03/11] drm/ci: uprev IGT and update testlist
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] mm/vmstat: simplfy extfrag_show_print with
+ fragmentation_index()
 Content-Language: en-US
-To: Helen Koike <helen.koike@collabora.com>, dri-devel@lists.freedesktop.org
-Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
- emma@anholt.net, robdclark@gmail.com, david.heidelberg@collabora.com,
- guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
- hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
- melissa.srw@gmail.com, mairacanal@riseup.net, mcanal@igalia.com,
- linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240306030649.60269-1-vignesh.raman@collabora.com>
- <20240306030649.60269-4-vignesh.raman@collabora.com>
- <4f927c99-9ea2-424e-85a7-bd05d0817dab@collabora.com>
-From: Vignesh Raman <vignesh.raman@collabora.com>
-In-Reply-To: <4f927c99-9ea2-424e-85a7-bd05d0817dab@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org,
+ jhubbard@nvidia.com, mgorman@suse.de, linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, dave@stgolabs.net, p.raghav@samsung.com,
+ da.gomez@samsung.com
+References: <20240314005436.2962962-1-mcgrof@kernel.org>
+ <20240314005436.2962962-4-mcgrof@kernel.org>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240314005436.2962962-4-mcgrof@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.59
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.59 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.09)[64.26%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dMLbha13;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9Eh2KuoW
+X-Rspamd-Queue-Id: 3B3611FB58
 
-Hi Helen,
-
-On 07/03/24 19:05, Helen Koike wrote:
+On 3/14/24 01:54, Luis Chamberlain wrote:
+> fragmentation_index() already uses the stack for the struct contig_page_info,
+> so just use that and enhance the documentation for fragmentation_index().
 > 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  mm/vmstat.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
 > 
-> On 06/03/2024 00:06, Vignesh Raman wrote:
->> Uprev IGT and add amd, v3d, vc4 and vgem specific
->> tests to testlist. Have testlist.txt per driver
->> and include a base testlist so that the driver
->> specific tests will run only on those hardware.
->> Also add testlists to the MAINTAINERS file.
->>
->> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
->> ---
->>
->> v3:
->>    - New patch in series to uprev IGT and update testlist.
->>
->> v4:
->>    - Add testlists to the MAINTAINERS file and remove amdgpu xfails 
->> changes.
->>
->> ---
->>   MAINTAINERS                              |  11 ++
->>   drivers/gpu/drm/ci/gitlab-ci.yml         |   2 +-
->>   drivers/gpu/drm/ci/igt_runner.sh         |  12 +-
->>   drivers/gpu/drm/ci/testlist-amdgpu.txt   | 151 +++++++++++++++++++++++
->>   drivers/gpu/drm/ci/testlist-msm.txt      |  50 ++++++++
->>   drivers/gpu/drm/ci/testlist-panfrost.txt |  17 +++
->>   drivers/gpu/drm/ci/testlist-v3d.txt      |  73 +++++++++++
->>   drivers/gpu/drm/ci/testlist-vc4.txt      |  49 ++++++++
->>   drivers/gpu/drm/ci/testlist.txt          |  84 ++++++-------
->>   9 files changed, 398 insertions(+), 51 deletions(-)
->>   create mode 100644 drivers/gpu/drm/ci/testlist-amdgpu.txt
->>   create mode 100644 drivers/gpu/drm/ci/testlist-msm.txt
->>   create mode 100644 drivers/gpu/drm/ci/testlist-panfrost.txt
->>   create mode 100644 drivers/gpu/drm/ci/testlist-v3d.txt
->>   create mode 100644 drivers/gpu/drm/ci/testlist-vc4.txt
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 3bc7e122a094..4da66ca92f1a 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -1665,6 +1665,8 @@ L:    dri-devel@lists.freedesktop.org
->>   S:    Supported
->>   T:    git git://anongit.freedesktop.org/drm/drm-misc
->>   F:    Documentation/gpu/panfrost.rst
->> +F:    drivers/gpu/drm/ci/testlist-panfrost.txt
->> +F:    drivers/gpu/drm/ci/testlist.txt
-> 
-> I wonder if we should have both here, since the second is not used right?
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index db79935e4a54..582f89b37ccf 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1129,7 +1129,10 @@ unsigned int extfrag_for_order(struct zone *zone, unsigned int order)
+>  			info.free_pages);
+>  }
+>  
+> -/* Same as __fragmentation index but allocs contig_page_info on stack */
+> +/*
+> + * Same as __fragmentation index but allocs contig_page_info on stack,
+> + * useful when walking a zone as interrupts are disabled.
+> + */
+>  int fragmentation_index(struct zone *zone, unsigned int order)
+>  {
+>  	struct contig_page_info info;
+> @@ -2227,15 +2230,11 @@ static void extfrag_show_print(struct seq_file *m,
+>  	unsigned int order;
+>  	int index;
+>  
+> -	/* Alloc on stack as interrupts are disabled for zone walk */
+> -	struct contig_page_info info;
+> -
+>  	seq_printf(m, "Node %d, zone %8s ",
+>  				pgdat->node_id,
+>  				zone->name);
+>  	for (order = 0; order < NR_PAGE_ORDERS; ++order) {
+> -		fill_contig_page_info(zone, order, &info);
+> -		index = __fragmentation_index(order, &info);
+> +		index = fragmentation_index(zone, order);
+>  		seq_printf(m, "%2d.%03d ", index / 1000, index % 1000);
+>  	}
+>  
 
-Yes, we need to use both here. testlist-panfrost.txt includes 
-testlist.txt. So we have moved the driver specific tests to
-testlist-panfrost.txt and have a base testlist.txt.
-
-
->> diff --git a/drivers/gpu/drm/ci/igt_runner.sh 
->> b/drivers/gpu/drm/ci/igt_runner.sh
->> index f1a08b9b146f..77cd81fe6d1a 100755
->> --- a/drivers/gpu/drm/ci/igt_runner.sh
->> +++ b/drivers/gpu/drm/ci/igt_runner.sh
->> @@ -74,10 +74,20 @@ if ! grep -q "core_getversion" 
->> /install/testlist.txt; then
->>   fi
->>   set +e
->> +if [ "$DRIVER_NAME" = "amdgpu" ]; then
->> +    TEST_LIST="/install/testlist-amdgpu.txt"
->> +elif [ "$DRIVER_NAME" = "msm" ]; then
->> +    TEST_LIST="/install/testlist-msm.txt"
->> +elif [ "$DRIVER_NAME" = "panfrost" ]; then
->> +    TEST_LIST="/install/testlist-panfrost.txt"
->> +else
->> +    TEST_LIST="/install/testlist.txt"
->> +fi
-> 
-> Maybe simplify this with:
-> 
-> TEST_LIST="/install/testlist-$DRIVER_NAME.txt"
-> 
-> if [ ! -f "$TEST_LIST" ]; then
->      TEST_LIST="/install/testlist.txt"
-> fi
-
-Yes, this is much better. Thanks.
-
-> 
-> Another question I have: shouldn't testlist-$DRIVER_NAME.txt and 
-> testlist.txt be merged? Or they are really mutually exclusive?
-
-We have testlist-$DRIVER_NAME.txt per driver and it includes a base 
-testlist.txt
-
-Regards,
-Vignesh
 
