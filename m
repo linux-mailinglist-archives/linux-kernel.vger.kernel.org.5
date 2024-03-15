@@ -1,152 +1,193 @@
-Return-Path: <linux-kernel+bounces-104143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98F887C9AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:09:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61BCC87C9A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FAC31C22319
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:09:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E4C42813AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB08A15E88;
-	Fri, 15 Mar 2024 08:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kp7RNCfS"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A5821AAAE;
-	Fri, 15 Mar 2024 08:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40B218032;
+	Fri, 15 Mar 2024 08:07:26 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA408EEC4;
+	Fri, 15 Mar 2024 08:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710490068; cv=none; b=SjhKnNi5jE66seTzuR8l9XzRX7D0WowVYnb/lzmvyBz0qG9A1o0Z6pKbLMe4Q6qA/lmf/feijt9eSVs0i49nXBdtK05PsthhmOne7WDe6k9Pj39uTiYtJ3YhErmCaizSLMS/uAU0nkIkpQ8ypjvMk4PSxXQYMGwQZ4aSAiqz/uE=
+	t=1710490046; cv=none; b=UPLVFIdDfBR5VJrwy9Dkhdn3dkU7WMVILHoIsk/rSfCMBZhJOdvwZecpQxG0tTyUWOzyrJhBkvt4ECgHACQ0Khj8qxYEsRQGbpt7z3xWcNRVdslzvnP52qqdgDStzS8NKwa/XGfLePzWDCxwpPCtIhbzkFy5eTW2NTCs2aKwvaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710490068; c=relaxed/simple;
-	bh=I9CZHjGLseY19YFTtusPH4FEw4b8ZHI1OZ1poZl29Ow=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HPzn25tJImT9Zu4gwmKLV79NXInitESoYXjHeqpr3b0jnJ+kn1wcCGarmHxT2Ud8krEPO+mXfROJnd8HG3gq2PP4p3QjcV0z/FWSDfonmys8EZiwa5egVWVXSQ/E4KWtfVeFQp5F+MCJ8vuIT2uH08rmDQ8VmYg2bE7gRazP6bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kp7RNCfS; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-513cf9bacf1so2252868e87.0;
-        Fri, 15 Mar 2024 01:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710490064; x=1711094864; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2PKCiNmwzWlVeb44V5zJD+USqe8HMNhcEB2r7dumJco=;
-        b=kp7RNCfSm2t5gB/CntMxTmPupEsszDq6DPYBDofg65CaRmuZCzg6vM4zF/NXmJqHH4
-         8yQMOBnx7fSkoCDMWoPuBA5fY5ZUXJfhjGQpFr2X3HDbJGwWX5A842KJURGF8HsRc87a
-         0Abg8Ypd/19ZuMHU/zdvSAPecH4id3njuN/5bEqcqOA6Ipdn6C4kJyZhKQ4jnJPLPfQ0
-         MRpEMJA/oXdsdo9tDi3n2O7TM+ZggRAHvAiFdkm3rcJ1Ia4cBAy0kNQoi82cnt4c1i5a
-         07tz7uGYxSIaDENHm1xJzjWvUsor1qRMxBBaxKqmZJc1ftXRsIQQiCEUo50XA6Q6NtgO
-         28eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710490064; x=1711094864;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2PKCiNmwzWlVeb44V5zJD+USqe8HMNhcEB2r7dumJco=;
-        b=NthTcEvl+96UIMngxJJ/vQkRCHRJAsKiUgSot8wuoieP4CZSrzVHo7J8pLVf6/jPfS
-         xo1oOZg9O5UMotiHyS6Lo2ibtUCEv+f4teI/70dqN0iM0qOzHJchg/Pe9bBk/hNTtc/p
-         4cE+pRvcpg3P5NQdMTMfxvVtdbmlUuyn6p29BmqB9t7pLvmiOYCHoQ5OwruFVClm6na+
-         jo2O+L9oATH4/sbKge7/dG0FtqC/CcFpxztgBC95Lv6DPP5ad2CyJd7vp5gt6aamnoGs
-         RjteFPTjmnrB0Dl7edDemBOCeYGfKk4lTCEOyKZo4MUEaIfWwfJUaNUuI1uaDyCaD+Nv
-         Hrmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVpuk3BlkwWuHI9PHo0Y2gkguO3SwHRdm68sq+5zPX2yLWgauIxsLhR214B/4RixaDKkl9JNeeHh6a0biDYRfhsWdUQT6eL0OT/jxGKhkCj32DvNZkL1LyrtNlqeu63UkJsliJG
-X-Gm-Message-State: AOJu0YyDxSwoeWkyYvuENyNJVU7PmYV9YYtBEvcRu7oQ0tBAVIcfhbK1
-	uwg/NtbnJ2+Jsv95GnFSykdDc6kDVezQsfX09JNITPMf9Rcge8g=
-X-Google-Smtp-Source: AGHT+IGGFlDBe2VZdzwHilcJKmzNzqi5YhmYuqrSAunBcPK03IlR8xn2HJOQFeCLPiNH+44BvmAkNQ==
-X-Received: by 2002:a05:6512:3b96:b0:513:c227:70bd with SMTP id g22-20020a0565123b9600b00513c22770bdmr1985223lfv.60.1710490063677;
-        Fri, 15 Mar 2024 01:07:43 -0700 (PDT)
-Received: from frutis-latitude7490.lan (public-gprs367196.centertel.pl. [37.47.65.157])
-        by smtp.googlemail.com with ESMTPSA id l24-20020a19c218000000b00513d1ff9eb2sm475518lfc.208.2024.03.15.01.07.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 01:07:42 -0700 (PDT)
-From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
-To: 
-Cc: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Robert Marko <robimarko@gmail.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: phy: aquantia: add support for AQR114C PHY ID
-Date: Fri, 15 Mar 2024 09:06:50 +0100
-Message-ID: <20240315080657.3460084-1-frut3k7@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710490046; c=relaxed/simple;
+	bh=yS/ThWdcky27h+yGYrh7nmkWzopcZ9gUz7yXOHT971M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QWr+PIpxvIVmuqDzSTNKBx0o+bHS7GaOYSAGI5CTfVXHww2oRA1XqEupg7TvIyae5mCkGuQxMRKJQdxy7vkrC/7XiLI4Bv9urW5puKGLPV0jVXr7JuAA6fBbWjLWmvPYeTiHdz8mDSZLm2zP86kCPZvPOP5Dp6bWSSNywvYum+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8CxWOizAfRlMmUZAA--.41703S3;
+	Fri, 15 Mar 2024 16:07:15 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c6uAfRl4MZaAA--.41676S2;
+	Fri, 15 Mar 2024 16:07:10 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Juergen Gross <jgross@suse.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: [PATCH v7 0/7] LoongArch: Add pv ipi support on LoongArch VM
+Date: Fri, 15 Mar 2024 16:07:03 +0800
+Message-Id: <20240315080710.2812974-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Cx_c6uAfRl4MZaAA--.41676S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Xw17Gw4xGF15Kr4fWFW8KrX_yoW7XF1fpF
+	WUurn3Wr4kGr93Awnxtas3ur98Jw4xG3yaq3WayrW8CrW2qFyUZr48Kr98Aas5Jws3JFW0
+	qF1rGw1Yg3WDAabCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1a6r1DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+	AKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU14v3UUUUUU==
 
-Add support for AQR114C PHY ID. This PHY advertise 10G speed
-but supports only up to 5G speed.
+On physical machine, ipi HW uses IOCSR registers, however there is trap
+into hypervisor when vcpu accesses IOCSR registers if system is in VM
+mode. SWI is a interrupt mechanism like SGI on ARM, software can send
+interrupt to CPU, only that on LoongArch SWI can only be sent to local CPU
+now. So SWI can not used for IPI on real HW system, however it can be used
+on VM when combined with hypercall method. IPI can be sent with hypercall
+method and SWI interrupt is injected to vcpu, vcpu can treat SWI
+interrupt as IPI.
 
-Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
+With PV IPI supported, there is one trap with IPI sending, however with IPI
+receiving there is no trap. with IOCSR HW ipi method, there will be one
+trap with IPI sending and two trap with ipi receiving.
+
+Also IPI multicast support is added for VM, the idea comes from x86 PV ipi.
+IPI can be sent to 128 vcpus in one time. With IPI multicast support, trap
+will be reduced greatly.
+
+Here is the microbenchmarck data with "perf bench futex wake" testcase on
+3C5000 single-way machine, there are 16 cpus on 3C5000 single-way machine,
+VM has 16 vcpus also. The benchmark data is ms time unit to wakeup 16
+threads, the performance is better if data is smaller.
+
+physical machine                     0.0176 ms
+VM original                          0.1140 ms
+VM with pv ipi patch                 0.0481 ms
+
+It passes to boot with 128/256 vcpus, and passes to run runltp command
+with package ltp-20230516.
+
 ---
- drivers/net/phy/aquantia/aquantia_main.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Change in v7:
+  1. Refine LoongArch virt document by review comments.
+  2. Add function kvm_read_reg()/kvm_write_reg() in hypercall emulation,
+and later it can be used for other trap emulations.
 
-diff --git a/drivers/net/phy/aquantia/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
-index 71bfddb8f453..e1fdfa537452 100644
---- a/drivers/net/phy/aquantia/aquantia_main.c
-+++ b/drivers/net/phy/aquantia/aquantia_main.c
-@@ -28,6 +28,7 @@
- #define PHY_ID_AQR412	0x03a1b712
- #define PHY_ID_AQR113	0x31c31c40
- #define PHY_ID_AQR113C	0x31c31c12
-+#define PHY_ID_AQR114C	0x31c31c22
- #define PHY_ID_AQR813	0x31c31cb2
- 
- #define MDIO_PHYXS_VEND_IF_STATUS		0xe812
-@@ -962,6 +963,25 @@ static struct phy_driver aqr_driver[] = {
- 	.get_stats      = aqr107_get_stats,
- 	.link_change_notify = aqr107_link_change_notify,
- },
-+{
-+	PHY_ID_MATCH_MODEL(PHY_ID_AQR114C),
-+	.name		= "Aquantia AQR114C",
-+	.probe		= aqr107_probe,
-+	.get_rate_matching = aqr107_get_rate_matching,
-+	.config_init	= aqr111_config_init,
-+	.config_aneg    = aqr_config_aneg,
-+	.config_intr	= aqr_config_intr,
-+	.handle_interrupt = aqr_handle_interrupt,
-+	.read_status	= aqr107_read_status,
-+	.get_tunable    = aqr107_get_tunable,
-+	.set_tunable    = aqr107_set_tunable,
-+	.suspend	= aqr107_suspend,
-+	.resume		= aqr107_resume,
-+	.get_sset_count	= aqr107_get_sset_count,
-+	.get_strings	= aqr107_get_strings,
-+	.get_stats	= aqr107_get_stats,
-+	.link_change_notify = aqr107_link_change_notify,
-+},
- {
- 	PHY_ID_MATCH_MODEL(PHY_ID_AQR813),
- 	.name		= "Aquantia AQR813",
-@@ -999,6 +1019,7 @@ static struct mdio_device_id __maybe_unused aqr_tbl[] = {
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR412) },
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR113) },
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR113C) },
-+	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR114C) },
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR813) },
- 	{ }
- };
+Change in V6:
+  1. Add privilege checking when emulating cpucfg at index 0x4000000 --
+0x400000FF, return 0 if not executed at kernel mode.
+  2. Add document about LoongArch pv ipi with new creatly directory
+Documentation/virt/kvm/loongarch/
+  3. Fix pv ipi handling in kvm backend function kvm_pv_send_ipi(),
+where min should plus BITS_PER_LONG with second bitmap, otherwise
+VM with more than 64 vpus fails to boot.
+  4. Adjust patch order and code refine with review comments.
+
+Change in V5:
+  1. Refresh function/macro name from review comments.
+
+Change in V4:
+  1. Modfiy pv ipi hook function name call_func_ipi() and
+call_func_single_ipi() with send_ipi_mask()/send_ipi_single(), since pv
+ipi is used for both remote function call and reschedule notification.
+  2. Refresh changelog.
+
+Change in V3:
+  1. Add 128 vcpu ipi multicast support like x86
+  2. Change cpucfg base address from 0x10000000 to 0x40000000, in order
+to avoid confliction with future hw usage
+  3. Adjust patch order in this patchset, move patch
+Refine-ipi-ops-on-LoongArch-platform to the first one.
+
+Change in V2:
+  1. Add hw cpuid map support since ipi routing uses hw cpuid
+  2. Refine changelog description
+  3. Add hypercall statistic support for vcpu
+  4. Set percpu pv ipi message buffer aligned with cacheline
+  5. Refine pv ipi send logic, do not send ipi message with if there is
+pending ipi message.
+---
+Bibo Mao (7):
+  LoongArch/smp: Refine some ipi functions on LoongArch platform
+  LoongArch: KVM: Add hypercall instruction emulation support
+  LoongArch: KVM: Add cpucfg area for kvm hypervisor
+  LoongArch: KVM: Add vcpu search support from physical cpuid
+  LoongArch: KVM: Add pv ipi support on kvm side
+  LoongArch: Add pv ipi support on guest kernel side
+  Documentation: KVM: Add hypercall for LoongArch
+
+ Documentation/virt/kvm/index.rst              |   1 +
+ .../virt/kvm/loongarch/hypercalls.rst         |  82 +++++++++
+ Documentation/virt/kvm/loongarch/index.rst    |  10 ++
+ arch/loongarch/Kconfig                        |   9 +
+ arch/loongarch/include/asm/Kbuild             |   1 -
+ arch/loongarch/include/asm/hardirq.h          |   5 +
+ arch/loongarch/include/asm/inst.h             |   1 +
+ arch/loongarch/include/asm/irq.h              |  10 +-
+ arch/loongarch/include/asm/kvm_host.h         |  27 +++
+ arch/loongarch/include/asm/kvm_para.h         | 155 ++++++++++++++++++
+ arch/loongarch/include/asm/kvm_vcpu.h         |  11 ++
+ arch/loongarch/include/asm/loongarch.h        |  11 ++
+ arch/loongarch/include/asm/paravirt.h         |  27 +++
+ .../include/asm/paravirt_api_clock.h          |   1 +
+ arch/loongarch/include/asm/smp.h              |  31 ++--
+ arch/loongarch/include/uapi/asm/Kbuild        |   2 -
+ arch/loongarch/kernel/Makefile                |   1 +
+ arch/loongarch/kernel/irq.c                   |  24 +--
+ arch/loongarch/kernel/paravirt.c              | 151 +++++++++++++++++
+ arch/loongarch/kernel/perf_event.c            |  14 +-
+ arch/loongarch/kernel/smp.c                   |  62 ++++---
+ arch/loongarch/kernel/time.c                  |  12 +-
+ arch/loongarch/kvm/exit.c                     | 141 ++++++++++++++--
+ arch/loongarch/kvm/vcpu.c                     |  94 ++++++++++-
+ arch/loongarch/kvm/vm.c                       |  11 ++
+ 25 files changed, 792 insertions(+), 102 deletions(-)
+ create mode 100644 Documentation/virt/kvm/loongarch/hypercalls.rst
+ create mode 100644 Documentation/virt/kvm/loongarch/index.rst
+ create mode 100644 arch/loongarch/include/asm/kvm_para.h
+ create mode 100644 arch/loongarch/include/asm/paravirt.h
+ create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
+ delete mode 100644 arch/loongarch/include/uapi/asm/Kbuild
+ create mode 100644 arch/loongarch/kernel/paravirt.c
+
+
+base-commit: 480e035fc4c714fb5536e64ab9db04fedc89e910
 -- 
-2.44.0
+2.39.3
 
 
