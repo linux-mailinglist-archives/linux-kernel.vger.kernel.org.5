@@ -1,107 +1,162 @@
-Return-Path: <linux-kernel+bounces-104020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB0487C7F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:32:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DC8F87C7FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:33:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FFAC1F215DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:32:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71C4C1C2216E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB545D527;
-	Fri, 15 Mar 2024 03:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52156D52E;
+	Fri, 15 Mar 2024 03:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Dg1GUQdd"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gcrFCS1A"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4585479E4;
-	Fri, 15 Mar 2024 03:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F82D517
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710473539; cv=none; b=u5724EELGDSkFEyE+rAVP7Iu57YzUtWhwdvraFmHl94bsy3Qprb53XwisYX9Pjbs1MYInDGbQ3lwuPoEaNoGfildT4JSKQ0OGGP9+mxIgTA3hncAPk4f54iQM7Yng6R6ZS4nRKUsJKjoNv3uic7QoudK7GosN+KqzWAzRb0o/V0=
+	t=1710473601; cv=none; b=Uy4M+/azSNoRCtbMvnH2e0/nf3PlVwgYxokqsM2va+DI6NldSyyBqFEMJ+bXVnN8tCGoCuClef7ycHraXunszh2uhHzcjn75k4XSfJwJpJBx5193oHHlMbPxUpeXTs9AeKOwhzx4Z0xt2IqUZ2MsaHtBdj3VCuZbgcukPPviTAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710473539; c=relaxed/simple;
-	bh=8VLFOIqPwuPQnFOYSW2sEHKRMpO4TAf/nX3Cvyrj9BE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZjuM7ZzFVBbF8iIQbnqPDe9VvOS6KlKmmhi0Y25Mv/8xlqEJKa3NOcH/LZstp4tqDZOo1H8WatojbQFxl7u4sJRQRkxCdkra0pQUHg4BFTPBwonGTOjxXygveLYhDI5Fow+NU6uIIwSGME2tDmEH0XNyp5AMGWt9/m0rveZRw+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Dg1GUQdd; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Xad6TWdMoCDKHkALF6smFbmrqhCsydxlR9/cUgdVc/A=; b=Dg1GUQddeltBm36mqGgTIuCRNm
-	sSXQfxqSRXod/5TL7O9KLuAPUTAAP4l/ZxtMRPtwMkv1Xz1md29Zsy4VIcfz1q4HMLOkJEjyVNXms
-	yhHMm7bKxYbh70eg/g/kaTytL4hmggcwgf8+3si4c1qxU+joJ//Y7uokTYlkxHo+06fSAs0ptd48e
-	UDWWzqiqWgm2qlRaG5O81hbF/VaamV/qlXlCbX2a32DJRdj1t6qRwIG3GIXywMjTxy/fc6g4WzB11
-	nCOUMZq4ldpo8KFOgZQk1uRQ6iJnOC4uUaNM3SL8elrqqAkDFZLk09uYUqAawtoy6aomE69VlKVea
-	D80ilLQw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkyIl-00000009Lp3-11Ss;
-	Fri, 15 Mar 2024 03:32:11 +0000
-Date: Fri, 15 Mar 2024 03:32:11 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>, Mel Gorman <mgorman@suse.de>,
-	Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [mm]  99fbb6bfc1:  will-it-scale.per_process_ops
- -4.7% regression
-Message-ID: <ZfPBOyONqBnhUa3R@casper.infradead.org>
-References: <202403151058.7048f6a8-oliver.sang@intel.com>
+	s=arc-20240116; t=1710473601; c=relaxed/simple;
+	bh=p3XT5kBMyqXeFKhp5hnPEnsXzgnV5U7qU2ovO/CYlYc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 Cc:Content-Type; b=kXKCvJVuMPFU4q0s1abWjsAw+uO3wc385JJLnE5fsfg2RLQ6lTWYk5pioTnJOmht2Av+iIEr/yXPP4TcL4Jhp7ZX2yHAR7mNyZkYG1waQSc1o6H74QvTsxdcGICZp7yqkgnhvgZahmV/BNwgLU5Lh3yFo/jvPcZMaSnbgG51F74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gcrFCS1A; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d24a727f78so19570311fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710473598; x=1711078398; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H32FltJCYmRuT1xpAWB9CWf2fiNQNrbCsZf2QEEHNWY=;
+        b=gcrFCS1AJ+3PYA2JiK5exOWJ67MOUtXQ8HMyQ7LIeYdX4YBccLYMhO6L+kZ8rE4bea
+         9/qZz3koHGkh1y7yMBWlgjh8UBlUP54NUlW2yBn7zc0Cy+6uUobN3MGCfDOzMNFxM9A2
+         +NPkhXdY9bf0G3d7Syd5jvAMZR9pnERDsQM/bQmyNZ+s1GYhtNGBNlSO1Qw3TuYrs15N
+         MyYlKcZeVnkpDnK2Wjlfrn6cQ2B6tB5dEEZzoLeVgaWuORnY7XX5Mnr2Al77i2ZfxnDK
+         u5lj0wrnyNZd4IZCxp212dSo7P1nxx1G6maGhyOAJUeFt2THQusXKFwi7dKFiUL4sS0l
+         772w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710473598; x=1711078398;
+        h=content-transfer-encoding:cc:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H32FltJCYmRuT1xpAWB9CWf2fiNQNrbCsZf2QEEHNWY=;
+        b=vMukMbRGEwxgnkyTXfN9lunk0BJTl3oN8dDV5dPCHzs/0XrwKvX8drJWKgOtvhbR7p
+         3Bu1ZrMRud5tNkmrJk3FxKh2Am6hZqqBMycMG0MfxiHueBwCEM3p7Rqnr4LiKdZFgZl7
+         kCMMpF0YQtFPCXCrxtcEFfOhFEQ5XKtcKBDPQU+/BGjH/Pnc69TmRR6wUl1sLYK8wXyb
+         945zIDjKuY+yf9PFOfUISOaSzbp9bXpdnKinUokKIIGmKVbWy3wdUbuKLzCgH0EUdSNb
+         roetjmu36Bxw/gQ98muJ22qMyStzxPwftZ1SLLb8fmHJ1TQKDrNqetO5WuZv+6znLnll
+         ilng==
+X-Forwarded-Encrypted: i=1; AJvYcCXYk4t0NfVWJtgufcmD7QvwKDAE3+zPS+3MkKs1aSpBom/iSEsuE9A8cUrBMwm268Q0JVX+KuHX3uBjKW68I5GsZc6+rdkXNmy5QKlW
+X-Gm-Message-State: AOJu0YyvcRN9gZzc6b8tp/4Ps6fZmmmwxNJjFy89bldGrkc0xYyyA3pq
+	WOlehtYvbK9GPmKO1ILPNPPBGkEeSlsbEy6xmECZ3HtA/0e0CIZHjaydiL/4YJWEQa9Yz0qmFU9
+	RMjR8X5Lz9sdywWGhY9TdTBTMlVg=
+X-Received: by 2002:a2e:91cd:0:b0:2d4:24cc:b499 with SMTP id
+ u13-20020a2e91cd000000b002d424ccb499mt2098030ljg.15.1710473597737; Thu, 14
+ Mar 2024 20:33:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403151058.7048f6a8-oliver.sang@intel.com>
+References: <CA+eeCSPUDpUg76ZO8dszSbAGn+UHjcyv8F1J-CUPVARAzEtW9w@mail.gmail.com>
+ <20240314-sublevel-jargon-4234df3fa614@spud>
+In-Reply-To: <20240314-sublevel-jargon-4234df3fa614@spud>
+From: Eva Kurchatova <nyandarknessgirl@gmail.com>
+Date: Fri, 15 Mar 2024 05:33:06 +0200
+Message-ID: <CA+eeCSPgxB9VCyB9fmEy4A1rEynNFv34LYA1UDBNT8Po=ag28w@mail.gmail.com>
+Subject: Re: Boot hang with SiFive PLIC when routing I2C-HID level-triggered interrupts
+Cc: linux-riscv <linux-riscv@lists.infradead.org>, bugs@lists.linux.dev, 
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 15, 2024 at 11:07:58AM +0800, kernel test robot wrote:
-> kernel test robot noticed a -4.7% regression of will-it-scale.per_process_ops on:
-> 
-> commit: 99fbb6bfc16f202adc411ad5d353db214750d121 ("mm: make folios_put() the basis of release_pages()")
+On Thu, Mar 14, 2024 at 11:46=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
+> This immediately seemed odd to me, but I have no reason to disbelieve
+> you, given you say this was discovered in RVVM which is an emulator and
+> you should know whether or not registers are accessed.
+> The very first action taken by the ocores i2c controller driver when it
+> gets an interrupt though is to read a register:
+>
+>         u8 stat =3D oc_getreg(i2c, OCI2C_STATUS);
+>
+> I would expect that this handler would be called, and therefore you'd
+> see the register read, had the probe function of that driver run to
+> completion. I'd also expect that the interrupt would not even be
+> unmasked if that probe function had failed.
+> In your case though, you can see that the interrupt is not masked,
+> since it is being raised and handled repeatedly by the PLIC driver.
+> Has the i2c controller driver probed in the period of boot that you say
+> this problem manifests?
 
-I was kind of hoping you'd report this before it hit Linus' tree ...
-I did post it last August without any response from the bot, and it's
-been in Andrew's tree for a couple of weeks.  Is there a better way
-to draw the attention of the performance bots?
+There is not a single problem with the ocores I2C driver. I2C-HID device
+itself has a separate IRQ line which is level-triggered.
+This is to signal the host that there is input available without polling,
+since I2C is a master-driven bus with no "data available" notifications.
+So in reality the I2C-HID driver should handle the interrupt; Then it
+uses the I2C controller to access I2C-HID slave registers (via I2C) to
+read the incoming HID input report. I2C controller interrupts are unrelated=
+;
+it's the link between the HID device and the host and it doesn't seem
+to be touched at all inside the I2C-HID IRQ handler (So it's just a pair
+of Claim/Complete actions). I2C ocores interrupts are not generated
+(and shouldn't) at that point, because no I2C transfer was initiated at all=
+.
 
-> testcase: will-it-scale
-> test machine: 104 threads 2 sockets (Skylake) with 192G memory
-> parameters:
-> 
-> 	nr_task: 100%
-> 	mode: process
-> 	test: page_fault2
+There is a way to make I2C-HID device edge-triggered, in RVVM
+emulation code, but it's not actually spec compliant. It gets rid of the
+hang too; However the same Claim/Complete actions without any
+handling inside the IRQ handler are observed at least once, which
+technically means a lost interrupt (Pressing a key somewhere early in
+boot thus doesn't propagate the keypress to the guest until you press
+another key later, after which both HID reports are read), so it's not
+a way how I'd like to mitigate this in the emulator code.
+I, and another developer from Haiku OS team (X512), are almost sure
+this is a kernel bug related to level triggered IRQs with PLIC or a
+specific incompatibility of PLIC/I2C-HID (Not the ocores I2C controller).
 
-OK, this makes sense.  mmap(128MB, MAP_PRIVATE), write to all the pages,
-then unmap them.  That's going to throw 32k pages at the page freeing
-path.
+This hang is not reproducible with a Haiku OS guest in any way and
+most of the drivers involved seem to be FreeBSD based or written by
+X512 (Specifically the PLIC and I2C-HID drivers are). This person also
+believes that this Claim/Complete behavior on PLIC side without any
+other actions made in between is erroneous kernel behavior too.
 
-Can you add this patch and rerun the test?
+I am open to discussions what specifically could be wrong with the VM
+since one of my end goals is to just make HID devices work without
+issues there; However if a simple 2-line patch (which I'm not entirely
+sure of it's implications) that removes return path at line 223 in PLIC
+driver resolves the issue (I kept a guest in a 24 hr reboot loop whilst
+spamming fake I2C-HID input and no hang was observed), then it does
+lead me to belief that it's at least not some blatant emulation issue.
 
-diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-index 87cc678adc85..67f10b8810a8 100644
---- a/include/linux/pagevec.h
-+++ b/include/linux/pagevec.h
-@@ -11,8 +11,8 @@
- 
- #include <linux/types.h>
- 
--/* 15 pointers + header align the folio_batch structure to a power of two */
--#define PAGEVEC_SIZE	15
-+/* 31 pointers + header align the folio_batch structure to a power of two */
-+#define PAGEVEC_SIZE	31
- 
- struct folio;
- 
+I came here to collect some kernel devs opinions since we are
+debugging this for some 2 weeks already. Your initial understanding
+that something is wrong with ocores I2C controller is not what I meant,
+sorry for lacking in my explanation.
+
+>Are interrupts unmasked by default on RVVM?
+
+By default all PLIC ENABLE registers are set to zero. All PRIO,
+THRESHOLD registers are zero on reset. So all PLIC state is
+simply zeroed on reset, as can be seen here:
+https://github.com/LekKit/RVVM/blob/f81df57a2af77cbae25fd3cc65d07106d9505e2=
+3/src/devices/plic.c#L265
+
+> Have you checked that this actually affects any actual hardware?
+
+I might very soon if no one has immediate ideas what is wrong;
+Problem is that I don't have hardware that exposes PLIC IRQ lines to
+the user. It might be possible to use some FPGA or at least reproduce
+in other simulators.
 
