@@ -1,103 +1,124 @@
-Return-Path: <linux-kernel+bounces-104458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECCCC87CE27
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:36:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BFA87CE2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA25A1C21121
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:36:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5693F281C20
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6680828E3E;
-	Fri, 15 Mar 2024 13:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1DFA2E62F;
+	Fri, 15 Mar 2024 13:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fq9guYqz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WBikQgWF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A608828DCF
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E8236AED;
+	Fri, 15 Mar 2024 13:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710509802; cv=none; b=FdwJfN/DjwWk+iGp2Zs4837eXslCrnugETOg3bssMQhjUM5CAOzTHzpAhfxUA0J82xVw1HYp4RCS1vrzke07EoDYdJPRdCSu3IDqO+46knkoCkrZUwjNhmjj2kfrI5/d4n7jI3ZpVzCSuZ07d915v9tIgb0jQE4Vw3yRXnGLano=
+	t=1710509816; cv=none; b=QW1Dtb2yFi7mOa+9a+USvlQ3PxK+lGMgTlQsF17mUFik2YOtm8/z6icdGnDo9R361nRuS+iAmyfOZ4+aKrRBu1CkRbQDL4yBEym5tUdzK7h1y25FOXhCHzsXGMSIWkA98ivmwvjeW3aBhqw/hykvWEmXsGyLFN/tXnJjUy7zB1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710509802; c=relaxed/simple;
-	bh=2vLrjlglM4jtfGDpxEQlmCCOroNcS3fCuVdTMX3dGrc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Bleh7PNzF9WWD8Y6gGE4RXT9fs413wQlzA89seq9Cq8gMWkD7tjCah0Vk5qOdKDfJOKKtRYPVFC3SusVXJU7Pu1qsdTGRMWy2JxO+naocSE52EZ4X1BeTSSkX4x34dl71w7gOCs6Rkz7HwfE+3qhZ0x9xaN+GSXw9ia66UXEa4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fq9guYqz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9642C433C7;
-	Fri, 15 Mar 2024 13:36:40 +0000 (UTC)
+	s=arc-20240116; t=1710509816; c=relaxed/simple;
+	bh=mnKx/USIAWKFowB3UECi37soYZOTeSdjE7YC6dui0gY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nQbgdKYHyu/lcRDgYQy6/uQJdqrpI4ceH+tiMPMEm6idfyntRHVuH1+X4ZOArh+vH/8k4mj9ZYLXQV4HzTQ1NV7TTu/sRC7lYSXudSWGR7JfhKVA8y1ACxJEyNKXsSIvKsyf6MhbSW+rgSwgBSeE/OUBd+rpL/oR24uuRUAL4nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WBikQgWF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B990C433F1;
+	Fri, 15 Mar 2024 13:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710509802;
-	bh=2vLrjlglM4jtfGDpxEQlmCCOroNcS3fCuVdTMX3dGrc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Fq9guYqz+5jWnftsHOjIRbIeCDIc6u3ZkJ5zz6wpQuJO5q1GudmRXsKZYQPE6nbKQ
-	 sdzyi69oNvJfIH5++2Q41at37etd0l7KawrHryAqQeYKn2sA9eCoGHhujQC5ApIS+/
-	 z9X3HjfOITo3NV163Kc/wsIolyQassnHVCk6yVTthQNxggwhfYn32ymqHOUMQNQFKB
-	 h2Xu21sM/OB3XUK25Ed6yGmyaxDnqq2aecQdQdwyaFwZcM/lrQrHd6tsEasSrDmNqP
-	 ZzQUChyPTPRdrychwiyZePD9omSuIqZt0jfTRdS7z0RyErBh1cWRw17xRfkwwF40tY
-	 I0+QVyqEU7I6A==
-From: qmo@kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH] MAINTAINERS: Update email address for Quentin Monnet
-Date: Fri, 15 Mar 2024 13:36:05 +0000
-Message-Id: <20240315133606.65971-1-qmo@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=k20201202; t=1710509815;
+	bh=mnKx/USIAWKFowB3UECi37soYZOTeSdjE7YC6dui0gY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WBikQgWFYtKFSQn7AJHJtgle7tDUdFM0GNQ/6JqxAf0lxH6kRfm2hxTIXdG5E6Egy
+	 YAzTuwY1PjSj0ojy2bfIUYwcULJe3/38mYLHr+20Nw39reMae5OEJudFQOAYqJS1cG
+	 mjHGzUI/L69hkyZrBEUsb8oCQhOHCT3JZQ44vfSkw/OskPHgcBcH2rCpWA6LWBCF5E
+	 diWwtCdzYwAdPO346YhitMreYA0mq7RAR0VnKsuUT5V6yoGUgrZLjFm21Xpp4uFg52
+	 3KzbWdPKyTbVDmpXxzm5MDzWsiHQEt7QAGwNh5hjZUGzrkEU44uZ9fAbLix7zN5tme
+	 8jjsI9jEx/Dhw==
+Date: Fri, 15 Mar 2024 13:36:48 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
+	kernel@salutedevices.com
+Subject: Re: [PATCH 12/25] ASoC: meson: t9015: add support for A1 SoC family
+Message-ID: <5f8e8cd2-f9c4-4961-a85d-a0f3217294e6@sirena.org.uk>
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-13-jan.dakinevich@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4AHceM7kGoMGggFJ"
+Content-Disposition: inline
+In-Reply-To: <20240314232201.2102178-13-jan.dakinevich@salutedevices.com>
+X-Cookie: A well-known friend is a treasure.
 
-From: Quentin Monnet <qmo@kernel.org>
 
-With Isovalent being acquired by Cisco, I expect my related email
-address to disappear sooner or later. Update my email entries in
-MAINTAINERS and .mailmap with my kernel.org address instead.
+--4AHceM7kGoMGggFJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Quentin Monnet <qmo@kernel.org>
----
- .mailmap    | 3 ++-
- MAINTAINERS | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+On Fri, Mar 15, 2024 at 02:21:48AM +0300, Jan Dakinevich wrote:
 
-diff --git a/.mailmap b/.mailmap
-index 2216b5d5c84e..02cd23b76eda 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -497,7 +497,8 @@ Prasad Sodagudi <quic_psodagud@quicinc.com> <psodagud@codeaurora.org>
- Punit Agrawal <punitagrawal@gmail.com> <punit.agrawal@arm.com>
- Qais Yousef <qyousef@layalina.io> <qais.yousef@imgtec.com>
- Qais Yousef <qyousef@layalina.io> <qais.yousef@arm.com>
--Quentin Monnet <quentin@isovalent.com> <quentin.monnet@netronome.com>
-+Quentin Monnet <qmo@kernel.org> <quentin.monnet@netronome.com>
-+Quentin Monnet <qmo@kernel.org> <quentin@isovalent.com>
- Quentin Perret <qperret@qperret.net> <quentin.perret@arm.com>
- Rafael J. Wysocki <rjw@rjwysocki.net> <rjw@sisk.pl>
- Rajeev Nandan <quic_rajeevny@quicinc.com> <rajeevny@codeaurora.org>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 76b3714710c2..02dadb5de58b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3967,7 +3967,7 @@ F:	kernel/bpf/bpf_lru*
- F:	kernel/bpf/cgroup.c
- 
- BPF [TOOLING] (bpftool)
--M:	Quentin Monnet <quentin@isovalent.com>
-+M:	Quentin Monnet <qmo@kernel.org>
- L:	bpf@vger.kernel.org
- S:	Maintained
- F:	kernel/bpf/disasm.*
--- 
-2.34.1
+> +static const char * const a1_adc_mic_bias_level_txt[] = { "2.0V", "2.1V",
+> +	"2.3V", "2.5V", "2.8V" };
+> +static const unsigned int a1_adc_mic_bias_level_values[] = { 0, 1, 2, 3, 7 };
 
+Why would this be varied at runtime rather than being something fixed
+when the system is designed?
+
+> +static const char * const a1_adc_pga_txt[] = { "None", "Differential",
+> +	"Positive", "Negative" };
+> +static const unsigned int a1_adc_pga_right_values[] = { 0, PGAR_DIFF,
+> +	PGAR_POSITIVE, PGAR_NEGATIVE };
+> +static const unsigned int a1_adc_pga_left_values[] = { 0, PGAL_DIFF,
+> +	PGAL_POSITIVE, PGAL_NEGATIVE };
+
+Similarly here.
+
+> +	SOC_SINGLE("ADC Mic Bias Switch", LINEIN_CFG, MICBIAS_EN, 1, 0),
+> +	SOC_ENUM("ADC Mic Bias Level", a1_adc_mic_bias_level),
+
+Why would micbias be user controlled rather than a DAPM widget as
+normal?
+
+--4AHceM7kGoMGggFJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0Tu8ACgkQJNaLcl1U
+h9B7RQf/eYxVKAjAigpYP4vgwBWRE/HosjdaaB5ogMo8PMSiXfacGnLx0ZtIpWa9
+i6saOA5iW9E/n7Et4JpmJ0J/fYdN7d5TkSlgYGwYP/ojBAChias0hOS7f+fHKvdM
+qH8C+20ovZC5RpNOZUjLmiwJ1WMJQrXgjYVTLpBHn23XPsf8fV3i+B5JEQzBJtXI
+px2DiSaV2iQ+nBmrZQEQo7KnJsQiLahPLQgr81xq5322lUfLN0+kRHrNGnqMU/Aw
+BW++2BV+mf6HXT8WKXrn2DeQByMpBN+jc7eeRDI7xIiB4iAWwpDL9Cn5HsSuYYvI
+ZdU3lU/s6CaDa3e5AyxYVatZ42Rx4Q==
+=sm4b
+-----END PGP SIGNATURE-----
+
+--4AHceM7kGoMGggFJ--
 
