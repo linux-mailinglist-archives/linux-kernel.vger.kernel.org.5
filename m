@@ -1,87 +1,140 @@
-Return-Path: <linux-kernel+bounces-104418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C4B387CD80
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:58:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A06B487CD84
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:59:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FECF283F4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:58:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DE0DB22C02
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DBB028E23;
-	Fri, 15 Mar 2024 12:58:40 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7783D2511E;
+	Fri, 15 Mar 2024 12:59:04 +0000 (UTC)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5079F288CF
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C4536AF1;
+	Fri, 15 Mar 2024 12:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710507520; cv=none; b=IPtQy0EJJzbgU4UxBlWXCkOsssRE1h9Vvmpa1HNFm4Kv+RQayxmSOXofipncXvUxntJK8+Is7tQy+0jP7rct2Bv/PLjw+hpCQyhWRWHWBFDMixL7xXj8dplUWMNs7pemF0OahECBV2xgOJz0+3dnoxuQwRls4XtfQ+7O6OL8oDw=
+	t=1710507544; cv=none; b=IU7aKh4GFjHexDLdJhZmJmG99zweqsOXfjGioryn4j7BskALHSLY+V6C/4FBxUsSEoP6J12/SeX8vzVp1W3K3/aH6fktWYAx+1mqgSPpWilOvNYWekucJZcumcRjG9c0EVptG8wjnNANKupKeVMjpzQvWEH65Q/4oH0jOT4Ikj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710507520; c=relaxed/simple;
-	bh=doKKCEW0xAcyKzV3gycR+dcCOcAuhLAAPj+/A0V/+YI=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=UGyiZtrbPl9enxSxOMtsDZIyPXwMv9UYlL1QjfmoJSAPtyWe2tzesIV2/SNbLT9CqgFWZE58uMx0893GCqVpykKq2ph5D3Sd0mG06HP6LnucxUhR5kxsycPENw34dYSfW0+H8Z+luqWchDfjJfNUMPLDWo6NM50hFfcIEgpyvS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tx46p4dRSz1FMCq;
-	Fri, 15 Mar 2024 20:58:10 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 945701402CC;
-	Fri, 15 Mar 2024 20:58:28 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 15 Mar 2024 20:58:27 +0800
-Subject: Re: [RFC PATCH] jffs2: fix recursive fs_reclaim deadlock
-To: Qingfang Deng <dqfext@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
-	<richard@nod.at>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240315075946.587679-1-dqfext@gmail.com>
- <ff19df82-3fd4-9098-667c-0502b2452334@huawei.com>
- <CALW65jbKBUDN8ybE1oqrNW5VK1QGpZ1RmnFCCzxjQCo4obaA4A@mail.gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <e5c2c285-0b10-0d23-2c02-7582c026dbfd@huawei.com>
-Date: Fri, 15 Mar 2024 20:58:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1710507544; c=relaxed/simple;
+	bh=aU/+xbHZrRa2hS8oJ9/kmv4Zwrx63bpqjJiI+btrVVQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V37Jv2KTurMnKlqioGOCdpsFO8EjO8FJHPhlcjZeCVmmqaH3SuUakPh6MVt15ZtjZ7L0HucItF61WsPS34aGhSTxQ1YFVrr6PJeF5VyHY95BU7ZFUlhFiR0E6oFUfJdYl5t27wmmaKOyKspc5Z/Iuw1GD5qRc5debLJnjneeLWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60cbcd04de9so22251567b3.2;
+        Fri, 15 Mar 2024 05:59:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710507540; x=1711112340;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dh+7X3xMJwI1csR7/OA1vWq1iHF+qCWaXfTH41sfHnM=;
+        b=K/MiGuoejGUltMUVRfyz0QBEzbuD1qTn7ivKhpfHbQdP9q1RbDbWr60KpDE0YVapiT
+         g/gwTcdBN+MRC2G23FsOuyN2w7Ua+k2ZsN2lfvu3MseJvXkpkqbGR8yRH6Mrg1MyB5/y
+         xrrbj4Ie4Q0FO04qT7MlqXB6AFHpKrHBFGDdBg3un7hDVSUKISwf0eYx73Q+y6tWxxoj
+         gOAcEWnYaXaCPq0uxBgRD6irSX8Z8yxqDPDFjZK7OIbodKhSye53dZmU/nc8vHagVdVZ
+         vHul2zUdoE+k6zMK4/yn8hayLYgrionZy7gJUWYKS746cIiWRmGsB8HeHrUx70su59vt
+         Cyhg==
+X-Forwarded-Encrypted: i=1; AJvYcCUGwIvbfEzVpcXvZZxCrsGvSdf/xrY87TwFPMqrGElzijT1JKpQUskkA2xyACtMnWv335GdY+k7UcipKuez7lhvgCflIu9UnODMaGLBLVFCC1fvy/wU9AkmWbdRb7vZu9SyUfICVla24dhH/jgrwQf4ZJl8eGwndv81myuXgPMLJp4rGMh4v8OtC1GoGXrphrSZIhfuYc+Hqa9RiMnBBX/afmBgt9jX
+X-Gm-Message-State: AOJu0Yx+UT1rPlXugwFr7cbg7OFzbvnyeRQELAFBWBNL6stWNPxSMSEB
+	skT3qCIurltsjc6AkGTbQ6ax/zbeQbdy6BoswV2Vn5p4AMLPfj8cDh2hNhkQ8Ng=
+X-Google-Smtp-Source: AGHT+IHgYo0LrTYs/K5TI/f16QIeEtbNdUn/0DRjx/nDmnkCyu7rz2N2TNfGAXJcTc65PscAZrHkow==
+X-Received: by 2002:a81:6508:0:b0:609:c125:e649 with SMTP id z8-20020a816508000000b00609c125e649mr4692039ywb.48.1710507540016;
+        Fri, 15 Mar 2024 05:59:00 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id et4-20020a05690c2e0400b006042345d3e2sm674360ywb.141.2024.03.15.05.58.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 05:58:59 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60a15449303so23149867b3.0;
+        Fri, 15 Mar 2024 05:58:59 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWLoKqCBDozIksvH8FnK2NigVK8Pjsb+zCrm0F5ocr8cpcrY4qE5e9im9JYu3lf80FT5O7fS0Dri4RTFOPlMDf4NnSxgq8UCyy6ZVth4DO/XZHpzrlhGYA6XNjSu4oi/syOVkzV0MF6JN+Q/S5siXL4zilRsrG8ocZa3A1fX2FvOuhsEmFS9OaHg9WgY5SQKhmbMNFD1jxFZAFtcSBx/TnXKPwAY3Dt
+X-Received: by 2002:a0d:cb47:0:b0:60c:d7c0:8ee4 with SMTP id
+ n68-20020a0dcb47000000b0060cd7c08ee4mr2808805ywd.42.1710507539610; Fri, 15
+ Mar 2024 05:58:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALW65jbKBUDN8ybE1oqrNW5VK1QGpZ1RmnFCCzxjQCo4obaA4A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+References: <20240315103033.141226-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240315103033.141226-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240315103033.141226-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 15 Mar 2024 13:58:47 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW8qKy4p4vefhrdK861dEi93Awr6NcQBHbLTwO0NWq6kA@mail.gmail.com>
+Message-ID: <CAMuHMdW8qKy4p4vefhrdK861dEi93Awr6NcQBHbLTwO0NWq6kA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] i2c: riic: Introduce helper functions for I2C
+ read/write operations
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2024/3/15 20:19, Qingfang Deng 写道:
-> Hi Zhihao,
-> 
-> On Fri, Mar 15, 2024 at 7:19 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
->> I think it's a false positive warning. Jffs2 is trying to get root inode
->> in process '#1', which means that the filesystem is not mounted
->> yet(Because d_make_root is after jffs2_iget(sb,1), there is no way to
->> access other inodes.), so it is impossible that jffs2 inode is being
->> evicted in '#0'.
->>
-> 
-> You're right that process '#1' is getting the root inode. However,
-> lockdep only records the stack of the first unique lock ordering (see
-> https://docs.kernel.org/locking/lockdep-design.html#performance ), and
-> there are many occasions where GFP_KERNEL is used inside a
-> jffs2_inode_info::sem 's critical section.
-> .
-> 
-Allocating memory without GFP_NOFS flags under sleeping lock is a normal 
-thing. The vfs_write is an example(eg. ext4), page is allocated with 
-FGP_WRITEBEGIN flag(no FGP_NOFS) when holding inode lock.
+Hi Prabhakar,
+
+On Fri, Mar 15, 2024 at 11:31=E2=80=AFAM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Introduce helper functions for performing I2C read and write operations
+> in the RIIC driver.
+>
+> These helper functions lay the groundwork for adding support for the
+> RZ/V2H SoC. This is essential because the register offsets for the RZ/V2H
+> SoC differ from those of the RZ/A SoC. By abstracting the read and write
+> operations, we can seamlessly adapt the driver to support different SoC
+> variants without extensive modifications.
+>
+> This patch is part of the preparation process for integrating support for
+> the RZ/V2H SoC into the RIIC driver.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> v1->v2
+> - Renamed i2c read/write to riic_readb/riic_writeb
+> - Made riic as first parameter for riic_writeb
+
+Thanks for the update!
+
+> --- a/drivers/i2c/busses/i2c-riic.c
+> +++ b/drivers/i2c/busses/i2c-riic.c
+> @@ -105,9 +105,19 @@ struct riic_irq_desc {
+>         char *name;
+>  };
+>
+> +static inline void riic_writeb(struct riic_dev *riic, u8 offset, u8 val)
+
+Please use the same parameter order as writeb(), i.e. "val" before
+"offset"), to increase uniformity.  This also would make it easier
+to review your changes using "git {diff,show} --color-words".
+
+The rest LGTM.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
