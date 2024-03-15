@@ -1,126 +1,106 @@
-Return-Path: <linux-kernel+bounces-104793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA27E87D3B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D56C87D3B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:39:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04B1AB2379B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:35:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1D27B22333
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA90175AE;
-	Fri, 15 Mar 2024 18:35:28 +0000 (UTC)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849001EB3C;
+	Fri, 15 Mar 2024 18:39:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="RT9ysCUC"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93766FC18;
-	Fri, 15 Mar 2024 18:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB2510A2A;
+	Fri, 15 Mar 2024 18:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710527727; cv=none; b=unJ8J4fgLVc1cQ5Yq0KnXQf8dcuhiqgGsyNLrbAElMyVdM9xBa8UmHCtx4E5ghXMxqk7HJKJ7Bjf3w34QzFHLB86/Fk21rQfEbNicKalB4KnHQ84NV5N/VHTjh7FS7BsgH962xnrRFjNEsEsHYmsL+92nj+QIcMnsEwvsoSjftk=
+	t=1710527939; cv=none; b=Ax2tcTq+RQoYYZIFqdEf4ZRINFh8SK8Zs86BvF1i144eus+qfc8lxYLpQ8L7DkZPPLt2oH9A5JuCL/LYvPi1lRI/fGG5liuU9MIssIgQJvWN/Z5ZmR4mwnjT+0kUxfWpDUXn6knJC1lVdaFMeBlye5nWXznhAHKzyyv9CIKMdPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710527727; c=relaxed/simple;
-	bh=Gv8QKD12HIml6BcI86NmkVhlJYP9tGz7JBYz0p3U8kE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HE54ZpRVmIhdc+Q9VwtulF/+CgYEC0BUCDs6T1s3dylddweKDZL7ACzI1O8+nxWaDarW8vlN1qcezU01vx6OAbhaLz6jG+HWpGZd5WDfO/iL3yHcl089dlzP93c6jUjL2ObMKeFC6xGdwbyfEko7zvB7BH1A3lX76RFNZZJIvL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60a15449303so27165317b3.0;
-        Fri, 15 Mar 2024 11:35:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710527722; x=1711132522;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z9WcVFiuL/IGi+J5+eglMDeGStL2NJRCLgSl7bWAdM8=;
-        b=mM0EixQUJWTag5bfg9SVLwUF1FKs/xtHt1Br+kdQ6cb8P0zEhn68D0q8RMurKvASGU
-         ze4CuOaNs11JGBv5lEkuspikeov9WnoDhmHIHrbPPYBp05whCjgTq9mqBE5NoqNa6Kq7
-         CnpNjW55nWhmBRWooGvfruq+qo5PqKj8h+iJ3kZpnuB6amlU0n49psNH810MK4X7pQb5
-         JmrFrpDmBz8lRaNEBrfBKcAXlA0kZKOTEn9qDcIR/z/SKTS4rnMQn18i9/rw2W+wbg6v
-         W677Ic0vyEuiYD6+o1yeT+p8J78tiI9zQmFGUnoNyzLkw978cXwLkSPd5UEYbtQJZL07
-         rS0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXubCw2USKiG9iDgV559vURVVGakxCmKYgmNjdH0yvOqDlpoKw98gfS9DL5UjeWLtzxBruFzAB2R2xVUA82Aiupcg+RkhmP+lMLgg7oR1pz5nghB8ElRneAcmBHDqY26jpm0/IIiL61kUtynpRQLiZmwn4p+4teEhj5zYsmquogcF3Mwu2pi5mvXyj3zjgSvsaaoVh0sJVUobKbxyDX5neGRsvkyUr1
-X-Gm-Message-State: AOJu0YycvoHHyL/8juvJv4Ik+pdEaSbS/aZWFOBdKc2fdHzGSyD3mVKl
-	z/pEmcEp3zmNTs6k2v1CUEAQwACBi3rNjchx6UldXrBsIhlWYny/gRZDoguNEXk=
-X-Google-Smtp-Source: AGHT+IFklYu4oUcMub/sDiwT5/31Hf2W3LX/tGBWhOeSzReg25WSQcIwgIbOhYR4xbq0pLO9KM9gtQ==
-X-Received: by 2002:a81:a253:0:b0:60a:374:969a with SMTP id z19-20020a81a253000000b0060a0374969amr6106221ywg.50.1710527722243;
-        Fri, 15 Mar 2024 11:35:22 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id bs19-20020a05690c071300b00607bc220c5esm794529ywb.102.2024.03.15.11.35.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 11:35:21 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so2136428276.1;
-        Fri, 15 Mar 2024 11:35:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWMWKAW+go8i+wWDm+i9Ge+WYz4FXcuQbzbnsYpmYaHE97D2rI9zDZKCxVGSWUfPcsaJVceWHocRcsQVyVbsQNvWY217Nfdj8D3emsvxUmzXos+XQhzglSGpoLiLq36tnP/SrObhJB+rI4mBPfY6VLa9cHMvY+5COPtbTjA2ZrLQlDc0uu/8Z7Tsn7TcgRovQjSXE9+zf19EZ5j9jl72vHpGMw+3X2X
-X-Received: by 2002:a25:f40c:0:b0:dc7:2401:df4e with SMTP id
- q12-20020a25f40c000000b00dc72401df4emr5038303ybd.39.1710527721014; Fri, 15
- Mar 2024 11:35:21 -0700 (PDT)
+	s=arc-20240116; t=1710527939; c=relaxed/simple;
+	bh=8Aoo9eOKWnx5Pa08PI7YI1Dgaa4uYs167pxGa5q6eDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ipPi0Vr8egnMFnqK+2I0pOCAHw1hZhfp6SGIPzStf0N40PyNCcrAs3yckLfgBm/myOXNVejPRxCDMrT8li0kLVV4CpHlyokW9AYFpnzH5Ws+20TJ6Sa75NaoqD8V0kvhuf0NIeAgmYuVR5In/o/hXbsmoL0793xNXuhIVXjkMRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=RT9ysCUC; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=xaGS7BGnjMck/bV5iUN/Gm9lsk2oMymyo55vI3BCLdM=; b=RT9ysCUC1zc0ThZgFdKk+qmWQp
+	7y987h3hvq3yuxTdAPi3ycDLp26+qTfQPHcDV02XAYyVEbsntMpNrtaDbD+HLvl3cx9aSiUkHw6bX
+	4S/9oaDZu/aZJiquzf35RoxS/66oUoGIoKiRE6dU6Z+/ypPjJJg2EtZVPLwza4CT+bp6qYE55Te8z
+	KaRT3rX5GGdARVFwQTPckVK/Q9Ielsiro6iecSsOIKcTFpL2RPeXfJa+JFUMumT6JO5wRtCqaJoZe
+	rY2pTjIAPj5dbG/vGnKKd+9xJ8t7OzH9htAyMJF3o8DWMWO1n6mULmXxIazKrmneSg4c/RXjL4LM2
+	a3aJUxRQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44850)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rlCS1-0001rx-2a;
+	Fri, 15 Mar 2024 18:38:41 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rlCRy-0006aE-6t; Fri, 15 Mar 2024 18:38:38 +0000
+Date: Fri, 15 Mar 2024 18:38:38 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH net] net: phy: fix phy_read_poll_timeout argument type in
+ genphy_loopback
+Message-ID: <ZfSVrge/REaXPF+0@shell.armlinux.org.uk>
+References: <20240314164826.161bd398@kernel.org>
+ <20240315175052.8049-1-kiryushin@ancud.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315103033.141226-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240315103033.141226-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdW_WBaGjYmU_RnMnq2T7PeEafAZqyP9Md9g0VUKzgrecQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdW_WBaGjYmU_RnMnq2T7PeEafAZqyP9Md9g0VUKzgrecQ@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 15 Mar 2024 19:35:08 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUZhnf96M2MgLepu04J84jz_B_vZEtQYQZefsFu1rYfeg@mail.gmail.com>
-Message-ID: <CAMuHMdUZhnf96M2MgLepu04J84jz_B_vZEtQYQZefsFu1rYfeg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: i2c: renesas,riic: Document R9A09G057 support
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315175052.8049-1-kiryushin@ancud.ru>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hi Prabhakar,,
+On Fri, Mar 15, 2024 at 08:50:52PM +0300, Nikita Kiryushin wrote:
+> read_poll_timeout inside phy_read_poll_timeout can set val negative
+> in some cases (for example, __mdiobus_read inside phy_read can return
+> -EOPNOTSUPP).
+> 
+> Supposedly, commit 4ec732951702 ("net: phylib: fix phy_read*_poll_timeout()")
+> should fix problems with wrong-signed vals, but I do not see how
+> as val is sent to phy_read as is and __val = phy_read (not val)
+> is checked for sign.
+> 
+> Change val type for signed to allow better error handling as done in other
+> phy_read_poll_timeout callers. This will not fix any error handling
+> by itself, but allows, for example, to modify cond with appropriate
+> sign check or check resulting val separately.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 014068dcb5b1 ("net: phy: genphy_loopback: add link speed configuration")
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
 
-On Fri, Mar 15, 2024 at 1:50=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Fri, Mar 15, 2024 at 11:31=E2=80=AFAM Prabhakar <prabhakar.csengg@gmai=
-l.com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Document support for the I2C Bus Interface (RIIC) available in the
-> > Renesas RZ/V2H(P) (R9A09G057) SoC.
-> >
-> > The RIIC interface in the Renesas RZ/V2H(P) differs from RZ/A in a
-> > couple of ways:
-> > - Register offsets for the RZ/V2H(P) SoC differ from those of the
-> >   RZ/A SoC.
-> > - RZ/V2H register access is limited to 8-bit, whereas RZ/A supports
-> >   8/16/32-bit.
-> > - RZ/V2H has bit differences in the slave address register.
-> >
-> > To accommodate these differences in the existing driver, a new compatib=
-le
-> > string "renesas,riic-r9a09g057" is added.
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-As it looks like there will be a v3 of this series, please drop "in
-the existing driver".
+Thanks!
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
