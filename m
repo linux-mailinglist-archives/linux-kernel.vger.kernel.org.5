@@ -1,186 +1,268 @@
-Return-Path: <linux-kernel+bounces-104932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8EF487D60D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:19:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4313F87D614
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:20:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26FD11C21310
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:19:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7AF81F22E0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C4954901;
-	Fri, 15 Mar 2024 21:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E604854903;
+	Fri, 15 Mar 2024 21:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="b3Y4ofKL"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=beagleboard-org.20230601.gappssmtp.com header.i=@beagleboard-org.20230601.gappssmtp.com header.b="SJsDv1GQ"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBFE1DA5E;
-	Fri, 15 Mar 2024 21:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184D74F8A1
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 21:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710537586; cv=none; b=m8r3x2zX4qTHrkLUKegUIt8f8eG4q3edByHmGNpkHu+LunlJwOgINzI48IMTMcr6xfpwFhbx177hAwc0qPm3bejXPv2msArLjdOsUlK9IlJVBmb+nxc5HGBS3R4o3VwxxNokRucXvSXVmw7ynt1payXseb6jVDISJYvpyYGvaec=
+	t=1710537631; cv=none; b=VsqdbmYUYWqKToaLeU68kxKbh4iHRNOtFvVOQBNZM9hZ/r49OpeoJNKbLjk71tDxmxxbeUYSIBpCMSLk/53Gr5NUEG2lFDD89yNmySb71C8C8DGtaysJBwXx6R9B9J3f1kVKmnKQs9f5CqdqbiXDNTjSIdgs72FOFvil13ZuSug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710537586; c=relaxed/simple;
-	bh=hHtgEr/5VMXCz8vuPkp/Mit3mZ//jYLgkBhhrYiMYJM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rkMHrRPcMYFCz1pNZ7BIf3ZEbll0C0pwNq0gkbiwidIR7201LodUhHQ/1rXlblGDJ8KhQRgF07QMMrVoZcr9QPqZD/R6UTGHW30iwkYKS5XlndYIJwwmB8YNofm/WdMtgC1tmiE2svphXNjwceKS0rCir9fyJ3iMiMQMDMrTWiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=b3Y4ofKL; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=o1YIiWKWxJNDdSzsWJzaL07fe51Di6mSo9Y2mM7H6Io=; b=b3Y4ofKLZ9KN4+FKDyOeexkEK7
-	ozRPcoV4wiTdmBXClQmxRHZ0NGGlWJPcAyCC2YHX1uMGzq8qGZt4vXBd1WNaCF3WCQFDd3z88gktJ
-	848Xkq/rVoOXc3VOISf9mQtyo3axW/LQAB36CI5cs/Aajp0UG71emubX+s2vPGLyMvnQllPyd5EB/
-	LrFiCPXGk5GdlT1xvKfqwDmi50pzKrFvG4zCenPj6t9AlNLD4Z3ymd4oXyNpjmVpnEKNCMNTM9TRA
-	0mFcmkxPmex71LMYqFbAJdvjWc76IcKuXVMZvAZ/fySLgaOZWkzUVqZhLR4o4D4f6C82hAj9S9Cuh
-	mlNUKnSw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58700)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rlExj-00022E-2D;
-	Fri, 15 Mar 2024 21:19:35 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rlExh-0006iE-Gw; Fri, 15 Mar 2024 21:19:33 +0000
-Date: Fri, 15 Mar 2024 21:19:33 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Ayush Singh <ayushdevel1325@gmail.com>
-Cc: linux-kernel@vger.kernel.org, jkridner@beagleboard.org,
-	robertcnelson@beagleboard.org,
-	Vaishnav M A <vaishnav@beagleboard.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Derek Kiernan <derek.kiernan@amd.com>,
-	Dragan Cvetic <dragan.cvetic@amd.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
-	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-	greybus-dev@lists.linaro.org
-Subject: Re: [PATCH v3 7/8] mikrobus: Add mikrobus driver
-Message-ID: <ZfS7Za/KITnQiYjh@shell.armlinux.org.uk>
-References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
- <20240315184908.500352-8-ayushdevel1325@gmail.com>
- <ZfSiaT9WltBDY9yD@shell.armlinux.org.uk>
- <46ba778a-5966-4b99-b820-f0d047a56227@gmail.com>
+	s=arc-20240116; t=1710537631; c=relaxed/simple;
+	bh=nvuEUt1n2fgmz3yyWKQvSYgQU5Hy1fuxQ6UNYsk1qiY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h4X+1ukC5hAXxPFH7JJQQU78UbQa7TZtpb/0RhTyysqhXAzSZV7b6lzBxMCnSk+YIW9a6Tg9FJoZH/3vXmb5r6NCXDIL7NW+RIuZ+KHueBUEKMZ3qJH8X37kM3Xx45ihqUQfaC6bm0Zdg8cKOIakg9ln5rxRn2JZlhb5tx3u/dY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=beagleboard.org; spf=fail smtp.mailfrom=beagleboard.org; dkim=pass (2048-bit key) header.d=beagleboard-org.20230601.gappssmtp.com header.i=@beagleboard-org.20230601.gappssmtp.com header.b=SJsDv1GQ; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=beagleboard.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=beagleboard.org
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d485886545so28966691fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 14:20:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20230601.gappssmtp.com; s=20230601; t=1710537625; x=1711142425; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qhQYqFTZpSvyzqRZ4R//8NCPFsK5Cfx9302tirVTjw0=;
+        b=SJsDv1GQz4xaNmHDmYdDIKfusLKLzcH0fI2AmCmSZ8mZ5jR6IWvABjjsmt+ncO2V7a
+         IGTVJP8cw3/ED/Dh/V1r/ixSsCMyfM9RpnjF5+QGFeyBvJFhrKZTVpabOR0iY0IyF4mO
+         BlP+lv8upTdDfIiD+gPITT0q2rIVffHzirurP8w26y7epgeor0hGnGpfgdTZDG2Pce7V
+         voye1fUEz56vwrpoVTPDiKswTLV1nUnyhwMOREYsSYVZbGAcnh6AE10Lr6tA2Xem7dDf
+         qhKD+Vzk/0HYb0xsFWP8Z2Qf91zlCPclsIWMYgsHOeQTBKpRJdBJs9opZ+qWIuO5CHTP
+         QtsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710537625; x=1711142425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qhQYqFTZpSvyzqRZ4R//8NCPFsK5Cfx9302tirVTjw0=;
+        b=cbf9RutbxI0rBtoyNEtIt9w1nj8DFo3mSvuKz4V0RZXcj7HGuNdrVx1dV1prNmfFjo
+         1NEfCooOyfLx8HEeedQmKSBNUHBHpxDfRfljZvr7B51JIpy+1RBHOlpmoruj4PtIgY2Q
+         UbOv4GdMHE09dWSvOr34yLyDT067b4nBhP0JoWFZ3kS8hEn/ZncBVQ1nN0y42aqQyYQr
+         bYJ778btESIQCbC4lLbSBJqlVmb4WjpIHBOyWdQef3qbYlaC94QZITTh6TZ6xuSCnlH+
+         GvhZnUzb4t+LHG+ReM69eyxWJqyH/Qm3WeX9xK6TVp638TqxfxVOsLDN0wZUpL5QIgyo
+         tl7A==
+X-Gm-Message-State: AOJu0YzPTaqi+dpHbRlF+fC3WDS9sCzraYd+J9jX6kca9vp10R+uDAOV
+	ylTrbowBlSvEKC1aq5AO4WdnOi6k2QMnzaPW3LNbWzjhHJy+LZsijBByZD5cBVMW4J4zMdG1+bp
+	Hx7v5pFXr9AqL08TDlFp0A89ZkjgTdvXdRBc=
+X-Google-Smtp-Source: AGHT+IEjDNqTIf91jmyd0ACknC8C/IveOoxg+8FMZYxQ/7WpNERxy0nqNaqZnN+hus67K69hU9E4L/U41yukVQ8aPgY=
+X-Received: by 2002:a2e:a164:0:b0:2d4:3e96:47ee with SMTP id
+ u4-20020a2ea164000000b002d43e9647eemr246475ljl.26.1710537624874; Fri, 15 Mar
+ 2024 14:20:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <46ba778a-5966-4b99-b820-f0d047a56227@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
+In-Reply-To: <20240315184908.500352-1-ayushdevel1325@gmail.com>
+From: Vaishnav M A <vaishnav@beagleboard.org>
+Date: Sat, 16 Mar 2024 02:50:13 +0530
+Message-ID: <CALudOK5v_uCUffxHGKS-jA-DKLNV7xwmKkxJwjHaMWWgDdPDqA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] misc: Add mikroBUS driver
+To: Ayush Singh <ayushdevel1325@gmail.com>
+Cc: linux-kernel@vger.kernel.org, jkridner@beagleboard.org, 
+	robertcnelson@beagleboard.org, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
+	Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic <dragan.cvetic@amd.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org, 
+	greybus-dev@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 16, 2024 at 02:17:24AM +0530, Ayush Singh wrote:
-> On 3/16/24 01:02, Russell King (Oracle) wrote:
-> 
-> > On Sat, Mar 16, 2024 at 12:19:05AM +0530, Ayush Singh wrote:
-> > > diff --git a/drivers/misc/mikrobus/Kconfig b/drivers/misc/mikrobus/Kconfig
-> > > new file mode 100644
-> > > index 000000000000..f0770006b4fe
-> > > --- /dev/null
-> > > +++ b/drivers/misc/mikrobus/Kconfig
-> > > @@ -0,0 +1,19 @@
-> > > +menuconfig MIKROBUS
-> > > +	tristate "Module for instantiating devices on mikroBUS ports"
-> > > +	depends on GPIOLIB
-> > > +	depends on W1
-> > > +	depends on W1_MASTER_GPIO
-> > > +	help
-> > > +	  This option enables the mikroBUS driver. mikroBUS is an add-on
-> > > +	  board socket standard that offers maximum expandability with
-> > > +	  the smallest number of pins. The mikroBUS driver instantiates
-> > > +	  devices on a mikroBUS port described by identifying data present
-> > > +	  in an add-on board resident EEPROM, more details on the mikroBUS
-> > > +	  driver support and discussion can be found in this eLinux wiki :
-> > > +	  elinux.org/Mikrobus
-> > I think this is a fallacy. I have boards that support Mikrobus - some of
-> > the SolidRun products do. I have several Mikrobus "click" boards.
-> > 
-> > This help text seems to imply that Mikrobus click boards include an
-> > EEPROM that identify them, hence you make the support for mikroBUS
-> > depend on it. No, this is not the case - the click boards do not
-> > contain a 1-wire EEPROM.
-> > 
-> > Please fetch a copy of the official Mikrobus specification which is
-> > available here:
-> > 
-> > https://download.mikroe.com/documents/standards/mikrobus/mikrobus-standard-specification-v200.pdf
-> > 
-> > and rather than creating something that is implementation specific but
-> > appears to be generic, create something that is generic with
-> > implementation specific extensions.
-> 
-> I think you mean mikroBUS addon boards? mikroBUS is an open socket and click
-> boards™ are MikroElektronika’s brand of mikroBUS™ add-on boards.
+Hi Ayush,
 
-MikroElektronika _owns_ the standard for mikroBUS, they're the ones
-who publish it and it has their logo plastered all over it.
+On Sat, Mar 16, 2024 at 12:19=E2=80=AFAM Ayush Singh <ayushdevel1325@gmail.=
+com> wrote:
+>
+> MikroBUS is an open standard  developed by MikroElektronika for connectin=
+g
+> add-on boards to microcontrollers or microprocessors. It essentially
+> allows you to easily expand the functionality of your main boards using
+> these add-on boards.
+>
+> This patchset adds mikroBUS as a Linux bus type and provides a driver to
+> parse, and flash mikroBUS manifest and register the mikroBUS board.
+>
 
-> So I think
-> all click boards™ do have clickID support, but yes, mikroBUS spec is not the
-> same as clickID and thus are not mutually dependent.
+As Russel had provided the feedback, this patchset does not add support
+for mikrobus, but a subset of mikrobus add-on boards which have a
+1-wire click ID EEPROM with an identifier blob that is similar to the greyb=
+us
+manifest. This series lacks the necessary context and details to the
+specifications that is implemented.
 
-None of the MikroElektronika "click" boards that I have (and thus
-officially produced boards) have any ID EEPROM on them, so your
-statement is false. For example, if you look at the "relay click"
-board schematic:
+https://www.mikroe.com/clickid - you should atleast point to this specs.
 
-https://download.mikroe.com/documents/add-on-boards/click/relay/relay-click-schematic-v100-a.pdf
+> The v1 and v2 of this patchset was submitted by Vaishnav M A back in
+> 2020. This patchset also includes changes made over the years as part of
+> BeagleBoards kernel.
+>
+> Link: https://www.mikroe.com/mikrobus
+> Link: https://docs.beagleboard.org/latest/boards/beagleplay/
+> Link: https://lore.kernel.org/lkml/20200818124815.11029-1-vaishnav@beagle=
+board.org/ Patch v2
+>
 
-you will find no EEPROM.
+Thank you for making the effort to upstream this, arriving at the
+latest revision of the public available click ID hardware took almost 2-3 y=
+ears
+and I could not personally keep up with upstreaming, my sincere apologies t=
+o
+the maintainers that provided feedback on the earlier revisions. I hope an
+updated version of this series lands upstream with your work as the  effort=
+s
+made at BeagleBoard.org Foundation makes development simpler by adding
+plug and play support to these add-on boards. Also this series mentions onl=
+y
+the case where mikroBUS port is present physically on the board, but there
+can be mikroBUS ports appearing over greybus and that is the reason why
+greybus manifest was chose as descriptor format - the series needs to
+describe these details so that a reviewer has the necessary information
+to review your patches. A link to beagleconnect is also helpful to reviewer=
+s.
 
-The "relay 3" click board also doesn't:
+https://docs.beagleboard.org/latest/projects/beagleconnect/index.html
 
-https://download.mikroe.com/documents/add-on-boards/click/relay-3/relay-3-schematic-v100.pdf
+> Changes in v3:
+> - Use phandle instead of busname for spi
+> - Use spi board info for registering new device
+> - Convert dt bindings to yaml
+> - Add support for clickID
+> - Code cleanup and style changes
+> - Additions required to spi, serdev, w1 and regulator subsystems
+>
+> Changes in v2:
+> - support for adding mikroBUS ports from DT overlays,
+> - remove debug sysFS interface for adding mikrobus ports,
+> - consider extended pin usage/deviations from mikrobus standard
+>   specifications
+> - use greybus CPort protocol enum instead of new protocol enums
+> - Fix cases of wrong indentation, ignoring return values, freeing allocat=
+ed
+>   resources in case of errors and other style suggestions in v1 review.
+>
+> Ayush Singh (7):
 
-However, the "relay 4" click board does:
+It looks like the version you have sent is very similar to the
+version I had previously updated for Beagleboard git with
+only rebases and cleanup, but I don't see major functional
+changes. I request you give credit to the original author
+atleast as a Co-author with Co-developed by tag, As there
+there was a significant amount of work done by myself to
+come up with this specs and get everything working on close
+to 150 mikrobus add-on boards on physical mikroBUS ports
+and over greybus:
+https://github.com/vaishnavachath/manifesto/tree/mikrobusv3/manifests
 
-https://download.mikroe.com/documents/add-on-boards/click/relay_4_click/Relay_4_Click_v100_Schematic.PDF
+The driver today is poorly written and was one of the first
+Linux kernel development work I did while I was still in college
+so I might have made a lot of blunders and just rebasing and
+reposting will not get this to an acceptable state, here is what
+I would recommend:
 
-Now, ClickID is relatively new. Note that the mikroBUS standard dates
-from 2011, with v2 coming out in 2015. A blog post introducing ClickID
-was posted in November 2023, just some 5 months ago, so that leaves an
-awful lot of click boards out there at the moment which have no EEPROM
-on them.
+* Drop all the unnecessary changes in the mikroBUS driver to
+support fixed-regulators, fixed-clocks, serdev device .etc and
+implement minimal changes to support the mikroBUS clickid
+devices.
 
-If what you have written assumes that all click boards have this EEPROM
-then you are - in my opinion - intolerably constraining the usefulness
-of your idea for those of us who have click boards bought over the past
-few years, and this will confuse users who have these older boards.
-"I've enabled mikroBUS support in the kernel, but my board isn't
-recognised" will probably end up being a regular cry from people with
-this.
+* Provide necessary justification to why the particular descriptor
+format (greybus manifest) is chosen, with pull request to manifesto
+and greybus-specification.
+https://github.com/projectara/greybus-spec
+and similar to : https://github.com/projectara/manifesto/pull/2
 
-So, I think you need to consider how to support the already vast number
-of click boards that do not support ClickID.
+* Move the mikrobus W1 driver to w1/ subsytem, it is a standard
+W1 EEPROM driver (also a standard part with updated family code)
+* Keep a RFC series of changes where mikroBUS ports can appear over
+greybus to justify why the identifier format needs to be extended greybus
+manifest.
 
-At the moment, my own personal solution is currently to hack the
-platform's DT file for the board I wish to use, creating a new variant
-of the platform which configures the SoC so the mikroBUS connector pins
-are appropriately configured. It would be good to get away from the need
-to do that.
+>   dt-bindings: misc: Add mikrobus-connector
+>   w1: Add w1_find_master_device
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Dependent patches that goes to different subsytems should
+be sent first separately to avoid confusion and then your series
+should mention the necessary dependencies. (same for
+spi).
+
+>   spi: Make of_find_spi_controller_by_node() available
+>   regulator: fixed-helper: export regulator_register_always_on
+>   greybus: Add mikroBUS manifest types
+>   mikrobus: Add mikrobus driver
+>   dts: ti: k3-am625-beagleplay: Add mikroBUS
+
+Send this patch as DONOTMERGE till your bindings are
+accepted.
+
+>
+> Vaishnav M A (1):
+>   serdev: add of_ helper to get serdev controller
+>
+Drop this from initial series,
+I will provide further feedback from my TI e-mail,
+Vaishnav Achath <vaishnav.a@ti.com>
+
+Thank again for taking this up,
+
+Thanks and Regards,
+Vaishnav
+
+>  .../bindings/misc/mikrobus-connector.yaml     | 110 ++
+>  MAINTAINERS                                   |   7 +
+>  .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |  76 +-
+>  drivers/misc/Kconfig                          |   1 +
+>  drivers/misc/Makefile                         |   1 +
+>  drivers/misc/mikrobus/Kconfig                 |  19 +
+>  drivers/misc/mikrobus/Makefile                |   6 +
+>  drivers/misc/mikrobus/mikrobus_core.c         | 942 ++++++++++++++++++
+>  drivers/misc/mikrobus/mikrobus_core.h         | 201 ++++
+>  drivers/misc/mikrobus/mikrobus_id.c           | 229 +++++
+>  drivers/misc/mikrobus/mikrobus_manifest.c     | 502 ++++++++++
+>  drivers/misc/mikrobus/mikrobus_manifest.h     |  20 +
+>  drivers/regulator/fixed-helper.c              |   1 +
+>  drivers/spi/spi.c                             | 206 ++--
+>  drivers/tty/serdev/core.c                     |  19 +
+>  drivers/w1/w1.c                               |   6 +-
+>  drivers/w1/w1_int.c                           |  27 +
+>  include/linux/greybus/greybus_manifest.h      |  49 +
+>  include/linux/serdev.h                        |   4 +
+>  include/linux/spi/spi.h                       |   4 +
+>  include/linux/w1.h                            |   1 +
+>  21 files changed, 2318 insertions(+), 113 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/misc/mikrobus-conne=
+ctor.yaml
+>  create mode 100644 drivers/misc/mikrobus/Kconfig
+>  create mode 100644 drivers/misc/mikrobus/Makefile
+>  create mode 100644 drivers/misc/mikrobus/mikrobus_core.c
+>  create mode 100644 drivers/misc/mikrobus/mikrobus_core.h
+>  create mode 100644 drivers/misc/mikrobus/mikrobus_id.c
+>  create mode 100644 drivers/misc/mikrobus/mikrobus_manifest.c
+>  create mode 100644 drivers/misc/mikrobus/mikrobus_manifest.h
+>
+>
+> base-commit: 61996c073c9b070922ad3a36c981ca6ddbea19a5
+> --
+> 2.44.0
+>
 
