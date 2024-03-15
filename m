@@ -1,185 +1,80 @@
-Return-Path: <linux-kernel+bounces-104437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063FD87CDC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:07:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5828887CDC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FF042821AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:07:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B88E82818BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D9A36B04;
-	Fri, 15 Mar 2024 13:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UOnbzokV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yqgsxWh4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UOnbzokV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yqgsxWh4"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35E628E23;
+	Fri, 15 Mar 2024 13:09:49 +0000 (UTC)
+Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FCFE36AED
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:07:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24FB2511E;
+	Fri, 15 Mar 2024 13:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710508069; cv=none; b=K+kbqjZIpjKp2RmBsfs/02c6Uu5sOgJw48ZMxtG8I6tqSEqnV6rNHqdxRXSOIeODxvz6MvU9ubzPc8mcXO+vmwpyU4/hhFl13lGeeqnuXFi8F+RrgeYqKoRPksn5iUD9Wt64ri5AHgUMC/gVZlMeKvvqiyJzu9j/EVIQu/aySh4=
+	t=1710508189; cv=none; b=R3B2URpvlf7BGIrWHHLkGrIFnOpRXC82ST9ynZm7p276DKxIduHbrjwcs/1qBhcqArFCabNNF4fG3/5N9k63ONFSMCRpQz7fxyzBy/1MGtLnwKpVMRE1SUC9FkhbB/4x9l9tfPZvdv7UB3NFDXXHF4bNsTNCXUJYyp45NlwOHV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710508069; c=relaxed/simple;
-	bh=mSohghLDJbp7142TrJKBKFeVxl4X6hCtsSehtNibEsw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fqcYVXn2O32W82EXpt+nlo7kzDbWmJOPj2qiPyV9KQKw7zS359QU7IgvihbHDcTMs2EWbCYO9XNHHCBIk04pF6zA1LTYTsWHCyvUogvGKPL8oac0eS5S5X8S0EaP8yp4GFP5G4id9qjHXgjqeIIl66kQe8WQD39TYs8XQEnP/74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UOnbzokV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yqgsxWh4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UOnbzokV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yqgsxWh4; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 879881FB63;
-	Fri, 15 Mar 2024 13:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710508065; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UNb4nW2xcC1S94ZTnXVVn5Q1xi4EnOrvKCc0jSiOkq4=;
-	b=UOnbzokVpaISeHhqtQu7ppsFLwcFl+UAfZyMYUt/+B98tl1wHEyZNnIlS42ZEhjGd87XNb
-	PAWbFqH/cvMcoXtpY3a5BcJ7OxDqcsyQO1b1rPlttp7DrSDAgTke46qzPcvboa4/f33n9f
-	IvSK4R9XvvkERRDKBd3xuiLhTjUu9h0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710508065;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UNb4nW2xcC1S94ZTnXVVn5Q1xi4EnOrvKCc0jSiOkq4=;
-	b=yqgsxWh4wuRpVXb6X+sty568bStfsC/RERcqFnyydjWWv6Kj67cCkABvD8fGbeAnTND9Ai
-	GPfyPfEDhWaTf6Cg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710508065; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UNb4nW2xcC1S94ZTnXVVn5Q1xi4EnOrvKCc0jSiOkq4=;
-	b=UOnbzokVpaISeHhqtQu7ppsFLwcFl+UAfZyMYUt/+B98tl1wHEyZNnIlS42ZEhjGd87XNb
-	PAWbFqH/cvMcoXtpY3a5BcJ7OxDqcsyQO1b1rPlttp7DrSDAgTke46qzPcvboa4/f33n9f
-	IvSK4R9XvvkERRDKBd3xuiLhTjUu9h0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710508065;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UNb4nW2xcC1S94ZTnXVVn5Q1xi4EnOrvKCc0jSiOkq4=;
-	b=yqgsxWh4wuRpVXb6X+sty568bStfsC/RERcqFnyydjWWv6Kj67cCkABvD8fGbeAnTND9Ai
-	GPfyPfEDhWaTf6Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 748A51368C;
-	Fri, 15 Mar 2024 13:07:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bd4ZHCFI9GXQIwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 15 Mar 2024 13:07:45 +0000
-Message-ID: <3bd30334-0a46-4050-930f-7f606a72b3e7@suse.cz>
-Date: Fri, 15 Mar 2024 14:07:45 +0100
+	s=arc-20240116; t=1710508189; c=relaxed/simple;
+	bh=W+ABfQLN3KCOvRqGEyd8pg1ypVwpXtU704uye5orKeI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
+	 References:In-Reply-To; b=K6O0f8BMwTs/Rvu7S/4IBYfibd9wvrRhATDvU4wiCuD5LUJtpbA8i2Tcf6IV0najsUbnd0hAQE6z1egVj4nlxSucwKPtfELAibVSv4Lx0S5GHPkMqIzY8hiRrSWs8uzjT7zTK3TPf+9nuMgeKAAxmsynW1V32evpJuBD9GW1/rY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; arc=none smtp.client-ip=195.113.20.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
+X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
+	serial F5FD910E8FE2121B897F7E55B84E351D
+	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
+	auth type TLS.CUNI
+Received: from localhost (cdwifi-a106.cd-t.cz [213.235.133.106] (may be forged))
+	(authenticated)
+	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42FD8Ug8098517
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Fri, 15 Mar 2024 14:08:33 +0100 (CET)
+	(envelope-from balejk@matfyz.cz)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm,page_owner: Fix recursion
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240313234245.18824-1-osalvador@suse.de>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240313234245.18824-1-osalvador@suse.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -5.03
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-5.03 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_HI(-3.50)[suse.cz:dkim];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-0.03)[55.66%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UOnbzokV;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yqgsxWh4
-X-Rspamd-Queue-Id: 879881FB63
+Date: Fri, 15 Mar 2024 14:09:01 +0100
+Message-Id: <CZUCJ4CEVXMS.2MML8IFVVTBC9@matfyz.cz>
+Cc: <alexandre.torgue@foss.st.com>, <davem@davemloft.net>,
+        <dhowells@redhat.com>, <herbert@gondor.apana.org.au>,
+        <keyrings@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-modules@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>, <mcgrof@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <dimitri.ledkov@canonical.com>,
+        <iwd@lists.linux.dev>, "Johannes Berg" <johannes@sipsolutions.net>,
+        "James
+ Prestwood" <prestwoj@gmail.com>,
+        "Michael Yartys" <mail@yartys.no>
+Subject: Re: [REGRESSION] Re: [PATCH] crypto: pkcs7: remove sha1 support
+To: <regressions@lists.linux.dev>
+From: "Karel Balej" <balejk@matfyz.cz>
+References: <005f998ec59e27633b1b99fdf929e40ccfd401c1.camel@sipsolutions.net> <f2dcbe55-0f0e-4173-8e21-f899c6fc802a@gmail.com> <NbWQKmrYDD20KKHeq9TMda2MJFE00-weepZGuSIRzO5BOgMlTbWBkDlNNweA2dhbvF8TK1F_cHbMxblLVNREZa1HZEFt9TVCkTB1jo_5ppc=@yartys.no> <CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz> <20231010212240.61637-1-dimitri.ledkov@canonical.com> <CZSVWO3IDZ96.38O0P161Z99XU@matfyz.cz>
+In-Reply-To: <CZSVWO3IDZ96.38O0P161Z99XU@matfyz.cz>
 
-On 3/14/24 00:42, Oscar Salvador wrote:
-> Prior to 217b2119b9e2 ("mm,page_owner: implement the tracking of the stacks count")
-> the only place where page_owner could potentially go into recursion due to
-> its need of allocating more memory was in save_stack(), which ends up calling
-> into stackdepot code with the possibility of allocating memory.
-> 
-> We made sure to guard against that by signaling that the current task was
-> already in page_owner code, so in case a recursion attempt was made, we
-> could catch that and return dummy_handle.
-> 
-> After above commit, a new place in page_owner code was introduced where we
-> could allocate memory, meaning we could go into recursion would we take that
-> path.
-> 
-> Make sure to signal that we are in page_owner in that codepath as well.
-> Move the guard code into two helpers {un}set_current_in_page_owner()
-> and use them prior to calling in the two functions that might allocate
-> memory.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Fixes: 217b2119b9e2 ("mm,page_owner: implement the tracking of the stacks count")
-> ---
->  mm/page_owner.c | 30 +++++++++++++++++++++---------
->  1 file changed, 21 insertions(+), 9 deletions(-)
-> 
-> @@ -292,7 +302,9 @@ noinline void __set_page_owner(struct page *page, unsigned short order,
->  		return;
->  	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
->  	page_ext_put(page_ext);
-> +	set_current_in_page_owner();
->  	inc_stack_record_count(handle, gfp_mask);
-> +	unset_current_in_page_owner();
+#regzbot title: SHA1 support removal breaks iwd's ability to connect to edu=
+roam
+#regzbot monitor: https://lore.kernel.org/all/20240313233227.56391-1-ebigge=
+rs@kernel.org/
+#regzbot monitor: https://lore.kernel.org/all/CZSHRUIJ4RKL.34T4EASV5DNJM@ma=
+tfyz.cz/
+#regzbot link: https://lore.kernel.org/iwd/njvxKaPo_CBxsQGaNSRHj8xOSxzk1_j_=
+K-minIe4GCKUMB1qxJT8nPk9SGmfqg7Aepm_5dO7FEofYIYP1g15R9V5dJ0F8bN6O4VthSjzu1g=
+=3D@yartys.no/
 
-This is because of the kmalloc() in add_stack_record_to_list() right? Why
-not wrap just that then?
-
->  }
->  
->  void __set_page_owner_migrate_reason(struct page *page, int reason)
-
+Sorry for the tracking mess...
 
