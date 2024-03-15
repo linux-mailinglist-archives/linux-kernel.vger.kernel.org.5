@@ -1,85 +1,94 @@
-Return-Path: <linux-kernel+bounces-104650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EFB687D174
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B108E87D17B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30F901F2731A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:50:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 521541F24068
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F54344C77;
-	Fri, 15 Mar 2024 16:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F2B45954;
+	Fri, 15 Mar 2024 16:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MgqYNQWp"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NrACjc1h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369DE2BD19
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F2D2BD19;
+	Fri, 15 Mar 2024 16:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710521448; cv=none; b=iYGrDYI/c3yNfonvsH718o5YsBsb2BqLzZNeoFdlRE1rPmoLeLgFKJ4PtQpAxbwvttAfhugpjS43EQGDWXCNvgzdnlC4XFiVwFPHj7RzbYy4Gjiwnw/j3hyIyBOVmcBoZp2ZOxefS78e9TSMKPFI0mdkheQIaqQe48c7UY/Wbmo=
+	t=1710521567; cv=none; b=C3U2QAI1fUsGg6isiOzf6a6rZmByJ4q/bxnYYmufmlrM9fGAo2EGuVoFL4GMQnmfQLOGgjhJ+honWgH7oRDGUd1z3sUvjOOOTbeDuzj6Bax3t6/ld6N7XL0mONDArXwtf6kWAJOV2njy0InQZqgP9rVp+zb9n9FwSBMoiPK0/sI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710521448; c=relaxed/simple;
-	bh=+1zM7cQOmjEK5zeishajGM7/9lDXdEAF+fHjVpsU/Fc=;
+	s=arc-20240116; t=1710521567; c=relaxed/simple;
+	bh=IzJk7AOCoYLXieCArB4efm0NZS82K8nZGO0e760LYXU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tYfSa6TWFyIGf4IBwMjtnfivdkrtHqDxe5f5IV9Nv/83N1nhcmRKJIuJG/m72Vu8TYjTc9d2PGGg+07cTpvmvrJbh091ExLCUCoEPxQNTewltbmlY1WcKfFjfzKlt0HA/5FPZsE+vIqh4UvmpZt6d7pI3QEehTS8U+FyCYLytO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MgqYNQWp; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 15 Mar 2024 12:50:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710521444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zo40Qzdo/CwJ9JXAYKrTmNI4kAnF/70CKG12hoxZK9Q=;
-	b=MgqYNQWpAaz6mM9OZjN7rmNmF0vafWaVA8KED7+Ndu/K95ZiQrE2cVoEeiPFjucxxg9B0O
-	kHkPtxxI8ntiXVQcbV04nI979FbHGa3TjPLCSzVc/3CvMb32jpwnTJ214U84SExTcMMovV
-	jw+oi871WIej0aScuSii64lkDdON3JM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/3] ext4: Add support for FS_IOC_GETFSSYSFSPATH
-Message-ID: <l3dzlrzaekbxjryazwiqtdtckvl4aundfmwff2w4exuweg4hbc@2zsrlptoeufv>
-References: <20240315035308.3563511-1-kent.overstreet@linux.dev>
- <20240315035308.3563511-4-kent.overstreet@linux.dev>
- <20240315164550.GD324770@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=d82QNV/DXCV3Sz48FhpB275lHHuUytRHwLNkyWy8pAQtUmLZ2p08Huhl8oARy8THXUKO6rrFBkW7EH7YuOpgGV3NPDeQtyvEvPtbi5YZqyx18CSwFYcz+hNWu9JJZJAWQgvRUw0RpgEexOZEuevabZc7DQxG2LaDFwxP9cjua70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NrACjc1h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8E8CC433F1;
+	Fri, 15 Mar 2024 16:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710521567;
+	bh=IzJk7AOCoYLXieCArB4efm0NZS82K8nZGO0e760LYXU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NrACjc1h3HwK8Qluv4p2ISBwy96gV9h2aMopUYzMFDPOtTHNFOBHgJl3U93bxj8F/
+	 SeHkhu0yHmntgkmMi/dOMqYhqKW8oAaJ9zJj2FKIWVAmwZ9fi/Yr8tMAmyja1DBc9M
+	 TF+sKHQLzOqFBuWJDE2zn4Ze3f1uOpIrfTrvJZ1ORGUjPPijekMqKya4S3xDNjIgfF
+	 OLQzcoEqS6HsJk/By+xUKQj4oVavuEyLRhbvI5UTZm2mQpyqpqiUADESx/q1spevsH
+	 hN8lLBJjyvBz7qyX9thzmdimKIt0gaYJGDyQSTdPYIG0Gdoi/aXkv9QgAdspbOSiOy
+	 vGgKJ1k5lek3w==
+Date: Fri, 15 Mar 2024 12:52:45 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: Dominique Martinet <asmadeus@codewreck.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 5.10 00/73] 5.10.213-rc1 review
+Message-ID: <ZfR83VSHE2RZKs5Q@sashalap>
+References: <20240313164640.616049-1-sashal@kernel.org>
+ <ZfKhPaFngJTrTJyt@codewreck.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240315164550.GD324770@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZfKhPaFngJTrTJyt@codewreck.org>
 
-On Fri, Mar 15, 2024 at 12:45:50PM -0400, Theodore Ts'o wrote:
-> On Thu, Mar 14, 2024 at 11:53:02PM -0400, Kent Overstreet wrote:
-> > the new sysfs path ioctl lets us get the /sys/fs/ path for a given
-> > filesystem in a fs agnostic way, potentially nudging us towards
-> > standarizing some of our reporting.
-> > 
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -5346,6 +5346,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
-> >  	sb->s_quota_types = QTYPE_MASK_USR | QTYPE_MASK_GRP | QTYPE_MASK_PRJ;
-> >  #endif
-> >  	super_set_uuid(sb, es->s_uuid, sizeof(es->s_uuid));
-> > +	super_set_sysfs_name_bdev(sb);
-> 
-> Should we perhaps be hoisting this call up to the VFS layer, so that
-> all file systems would benefit?
+On Thu, Mar 14, 2024 at 04:03:25PM +0900, Dominique Martinet wrote:
+>Sasha Levin wrote on Wed, Mar 13, 2024 at 12:45:27PM -0400:
+>> This is the start of the stable review cycle for the 5.10.213 release.
+>> There are 73 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>
+>Thanks Sasha for submitting a stable rc review!
+>
+>If it's not too much trouble, would it be possible to have a different
+>header in the 00 patch from the other patches for my mailbox?
+>The mails Greg sends have the X-KernelTest-* headers (patch, tree,
+>branch etc) only in the cover letter, while all the patches themselves
+>only have 'X-stable: review' and 'X-Patchwork-Hint: ignore'
+>
+>I don't really care much what actual tags are on which as long as
+>there's a way to differentiate that cover letter from the rest so I can
+>redirect it to a mailbox I actually read to notice there's a new rc to
+>test, without having all the patches unless I explicitly look for them.
+>
+>If it's difficult I'll add a regex on the subject for ' 00/' or
+>something, I'd prefer matching only headers for robustness but just let
+>me know.
 
-I did as much hoisting as I could. For some filesystems (single device
-filesystems) the sysfs name is the block device, for the multi device
-filesystems I've looked at it's the UUID.
+I should be able to adjust my scripts to match what Greg does. Thanks
+for pointing it out!
+
+-- 
+Thanks,
+Sasha
 
