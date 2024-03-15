@@ -1,128 +1,156 @@
-Return-Path: <linux-kernel+bounces-104840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B54E187D467
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:18:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 951C687D468
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6A401C212E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:18:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE8241C2102C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838FF524C9;
-	Fri, 15 Mar 2024 19:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B7F524C9;
+	Fri, 15 Mar 2024 19:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cg1pZybu"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kviWD2WK"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03181DA26;
-	Fri, 15 Mar 2024 19:18:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6CF5102F
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710530295; cv=none; b=MCAdY9HMu/F9V81o2wklT0RQUb4lfeG42VOW/goqNbruLWGPvoNjJzvI9ixvli/3b56m2UOW4P/t6CnGue0X4W+xiaPXbEUKijvn4pEfr3f/bpnxmUZ8yi1Lq076NQREDamjUNdCFo12t0EiLIBkKDhwJxJ71bOqoY46pLx/A4w=
+	t=1710530434; cv=none; b=oIVTq7NuG59mThBTshcF0klZEUZIrwBZJMHhHwENqpuSTOYC/FD1NLiu9Ut9PK3rIJBulaO1ycGW285IN+4PSDdPSNw2l9IuApq8q5a9Q4QEk66OaVtQgtElPeFqZ3GkRx0AACgctDTFIA0drswOfmbXKUWku+9PbGYFRwI70oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710530295; c=relaxed/simple;
-	bh=KAAL2g1Jr5L18tFOJNZQ3FnSiMfqDl3TIkg7X+igEOc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iF1PXQnUdMY5tN9UXg56cQQ1Gop6wW7Ns4yh3xXGtLYqCWZxFeAZSjWAogxc2sBif5suAK0IVGbYOG5kBQOK4QCc/tNEZEdgsXdzb/u9zSD+rsKot5DqjbxgnoQ+vvH1thy0AfrbEBNk3DXRg1lsnW2GV6RPcDowP+SM9BycYFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cg1pZybu; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4d43b8b258aso411653e0c.1;
-        Fri, 15 Mar 2024 12:18:12 -0700 (PDT)
+	s=arc-20240116; t=1710530434; c=relaxed/simple;
+	bh=mrTyWLKNzbPd+Es/f7k4riqHuUAgAcAswomjRq95eU4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WmchQkqYlwR3woIck5NFglqDgx+RVzPOg2JYHtsNMl93AlXAObbRGGuuuygmjbbpfVHlFoiPqJuEuu/yOFWCIAWvRNmUxhypZ5Ju36kmaLskE9/SA6f/msQm0B8fQqav5I1tAlXACtmFNR18LXroZwAfKIWte17rTSH+hYGkxek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kviWD2WK; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a55cd262aso44385427b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710530292; x=1711135092; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U7IZjuz3DDMkvUwTM0i6q57JxubsfRJ4vJTNG888nZc=;
-        b=Cg1pZybuJ+96g4fkkgIst9Vphln4HMTr7z5aldN4xy3YpcH75xMhmTm3nsQQyGkw8m
-         FSnVYy45ku6hFj/jP4bfJhTSqtE1r/4uzAwvqwZwHCyhu9/KlnuuC79G9gmWO2z9Wo8c
-         AOEgy5900y4VYMQ/xjXbTRsDGmSy9RhnPqbxrC7qJMb+qNqiL/3Sl+7BJf7AJpCu38oP
-         +g1UlEf6nlwdCGZROYN8WCdEfZd5yA7uykJs6q+wh9frG9yXm3iHYysEbZ7SCbYM0NQ/
-         ltC6HkLmarL+nkym+th+LTMyKVMTkDqB07mEi8YIX84XlqMXYO8ZQ0MEZ6IH+jEfXZKo
-         Vtvw==
+        d=google.com; s=20230601; t=1710530432; x=1711135232; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xGq29qQOFJv52Q4bTVIictDDuC4jaHMG/xiohXW6Wrg=;
+        b=kviWD2WKAigKRar70oD9qu8aC7dtFGyvNC/LCAN/xCb7nbKp3EBPg06czInnlqpI/s
+         R2WNYWVE0IbWislcHkYB+wpXJPTlu//bEGREcfXhCNmyoWPUVj7FJsK2pVKvnXohmYGf
+         yncTTfjNebks31Mo8X19QxusyOk2MlGOaCfCCazMPKQ7ZP91lvPt9CQ/2mArHKpp58wl
+         Dx7K4ZMt9ceVime903PCacPb9ltmG7tONmw75xBglBPBSSvD/x2JMuXehlLaJ1c5Rvwy
+         flPh+hciran1gXkSCa0O0zTfd4vmbnLAY46+VVGCgmWPWrgMn+/hO7Tc16AcpDnHcmNO
+         1jqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710530292; x=1711135092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U7IZjuz3DDMkvUwTM0i6q57JxubsfRJ4vJTNG888nZc=;
-        b=ZRDIuQlguAmbkfqiHgvUkrWWHuTKZyChZW+4RsIMQsbTs8S4hgjb+2BX0vfMW9qido
-         CaGclccC3wV0k4YbeWIgweSLGxkJruNzk0zx+dvr6s7sKysFPj3ZI1oAdSs5SEu/u/Xp
-         uJ8MXAStN6IrArvoOlRea7pBEmOd+KoXfmAsvRyv6PJyl/uEHpxNRYoNc4TPGZ1DVC2e
-         OEMm86o5BZQeo3hcRxXXfWOabqa4fLX6Qvij2GYsRwqAo+RBTCjcqmfpos0q98Ae1Osx
-         cT46CmUM0a0UzRp5Gf//bLQKJS/s9sMKL6Ha1kaq20DSEfVjlb1tH80IQp9ccvyKbuIJ
-         bIAw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8YQLtNvb2XsYmEodmrGacv6Qce2uKgCaiAUaumDqJOUxgA2zDXbrQ87SnBWsikV4TV+jQl8B1QCnCCUOfN4sKH5dvbh02GFe7LXygC6XnUZMo4jvIg/+zIOACwqafDem70ecvNQm35ghmpsbOZxXMPP9ge3RhAc+cVomJDzYzc6cxlDHfGaBamUofYEven9cBmk5VG1QJljUqzUHENjSuKG7B/AvW
-X-Gm-Message-State: AOJu0YwEprPt7DVxuszWK8/sV24n2pZY0ltIqKHLz4nYmINu+Peg61tm
-	7GjdthwKStcX0aKmYg6NwNS3Vk4LgT2H6P7vopZK/IHRoOVUr/nKyI+j1wyB9eDZ+QyVxXUSAWZ
-	mBbxOSvH927H/d4ofKme7UejbISE=
-X-Google-Smtp-Source: AGHT+IFfc5t+nCvhYPD4KLfmYBd61W2nuvPXXUBIzaylUUdStKMC2Saoc3vQ+E3J9WoSWIyI6nEfYOfdpygZFq6KQrE=
-X-Received: by 2002:a05:6122:12d5:b0:4cc:29cf:a1fa with SMTP id
- d21-20020a05612212d500b004cc29cfa1famr4207888vkp.4.1710530291758; Fri, 15 Mar
- 2024 12:18:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710530432; x=1711135232;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xGq29qQOFJv52Q4bTVIictDDuC4jaHMG/xiohXW6Wrg=;
+        b=U9mXSREMcUzysslvblGtAOgE8uXqCNrHD6V1lcDuD1EP1Kmw52ilwAD4hOikhK+M8o
+         aFF9JhWakxLmLpL0g9oyMTkCt4oogpysjGhS25n+qQFH2wMfCe5jlRomywje8LCVU4AM
+         8roXNYBOJg6PrvV739VKtDXStbJfDb4k0LkZXtw2QbrVyLjq41EBfKHEJnt1U+HJncmB
+         7NUkZaCeG6CE5j1O5kHz+SQ5qSLNJoVMmXk0kYm5kJzHccnHsTWBZ79+daBxmZQvznso
+         L6MMzy8QN8eXMm/80eqwvNVyKm1TCw/BGFAzuJiiUGZQHuFejfmdp0pGwouTRQeA6CP6
+         grog==
+X-Forwarded-Encrypted: i=1; AJvYcCW2Ja/FWpjjQs46aBLFzbWpK7IWb2WPWsIXyCWWrcvv4X7dnuhUfPPMPE1f/f95ZjzFqkVS5hbqdT0Aegsn2Zh/8gWDx/79KZizwCBT
+X-Gm-Message-State: AOJu0Yz92SqO9bf4svYEIJAoR6d/b/lhXH7o17c1GvsR6+spr0jnKysi
+	6R2Ap3Co6HwnSfr/yns0q6JT9CFAiib+XaWiCiK+Kdt0QqAwvJ8LieP6PY2lSnFsDsQp6fnqkEi
+	Xig==
+X-Google-Smtp-Source: AGHT+IF6S3TxprvwoJU2GOkok9Zi0eiF/NCn2IJTYEv9k7CxvacWoa7pAyS5+65wdo+4/6YoHFi411jrrjk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:db03:0:b0:608:72fe:b8a1 with SMTP id
+ d3-20020a0ddb03000000b0060872feb8a1mr1377179ywe.4.1710530431809; Fri, 15 Mar
+ 2024 12:20:31 -0700 (PDT)
+Date: Fri, 15 Mar 2024 12:20:30 -0700
+In-Reply-To: <07b75e0f18a5082a91f80fb234d29c97489e2f75.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240315103033.141226-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240315103033.141226-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdW_WBaGjYmU_RnMnq2T7PeEafAZqyP9Md9g0VUKzgrecQ@mail.gmail.com> <CAMuHMdUZhnf96M2MgLepu04J84jz_B_vZEtQYQZefsFu1rYfeg@mail.gmail.com>
-In-Reply-To: <CAMuHMdUZhnf96M2MgLepu04J84jz_B_vZEtQYQZefsFu1rYfeg@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Fri, 15 Mar 2024 19:17:45 +0000
-Message-ID: <CA+V-a8sPgvPC3xng_dHwEaHJEgLKeAM8yNuwZRKfpgV+AKueQA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: i2c: renesas,riic: Document R9A09G057 support
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <8f64043a6c393c017347bf8954d92b84b58603ec.1708933498.git.isaku.yamahata@intel.com>
+ <e6e8f585-b718-4f53-88f6-89832a1e4b9f@intel.com> <bd21a37560d4d0695425245658a68fcc2a43f0c0.camel@intel.com>
+ <54ae3bbb-34dc-4b10-a14e-2af9e9240ef1@intel.com> <ZfR4UHsW_Y1xWFF-@google.com>
+ <ZfSJkwnC4LRCqQS9@google.com> <07b75e0f18a5082a91f80fb234d29c97489e2f75.camel@intel.com>
+Message-ID: <ZfSQC8vsqqE2DziW@google.com>
+Subject: Re: [PATCH v19 007/130] x86/virt/tdx: Export SEAMCALL functions
+From: Sean Christopherson <seanjc@google.com>
+To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>, Tina Zhang <tina.zhang@intel.com>, 
+	Hang Yuan <hang.yuan@intel.com>, Kai Huang <kai.huang@intel.com>, 
+	"x86@kernel.org" <x86@kernel.org>, Bo Chen <chen.bo@intel.com>, 
+	"sagis@google.com" <sagis@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, Erdem Aktas <erdemaktas@google.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+On Fri, Mar 15, 2024, Rick P Edgecombe wrote:
+> On Fri, 2024-03-15 at 10:46 -0700, Sean Christopherson wrote:
+> > On Fri, Mar 15, 2024, Sean Christopherson wrote:
+> > > So my feedback is to not worry about the exports, and instead focus o=
+n
+> > > figuring out a way to make the generated code less bloated and easier=
+ to
+> > > read/debug.
+> >=20
+> > Oh, and please make it a collaborative, public effort.=C2=A0 I don't wa=
+nt to
+> > hear crickets and then see v20 dropped with a completely new SEAMCALL
+> > scheme.
+>=20
+> And here we we're worrying that people might eventually grow tired of
+> us adding mails to v19 and we debate every detail in public. Will do.
 
-On Fri, Mar 15, 2024 at 6:35=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,,
->
-> On Fri, Mar 15, 2024 at 1:50=E2=80=AFPM Geert Uytterhoeven <geert@linux-m=
-68k.org> wrote:
-> > On Fri, Mar 15, 2024 at 11:31=E2=80=AFAM Prabhakar <prabhakar.csengg@gm=
-ail.com> wrote:
-> > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > >
-> > > Document support for the I2C Bus Interface (RIIC) available in the
-> > > Renesas RZ/V2H(P) (R9A09G057) SoC.
-> > >
-> > > The RIIC interface in the Renesas RZ/V2H(P) differs from RZ/A in a
-> > > couple of ways:
-> > > - Register offsets for the RZ/V2H(P) SoC differ from those of the
-> > >   RZ/A SoC.
-> > > - RZ/V2H register access is limited to 8-bit, whereas RZ/A supports
-> > >   8/16/32-bit.
-> > > - RZ/V2H has bit differences in the slave address register.
-> > >
-> > > To accommodate these differences in the existing driver, a new compat=
-ible
-> > > string "renesas,riic-r9a09g057" is added.
->
-> As it looks like there will be a v3 of this series, please drop "in
-> the existing driver".
->
-Sure I'll drop it.
+As a general rule, I _strongly_ prefer all review to be done on-list, in pu=
+blic.
+Copy+pasting myself from another Intel series[*]
 
-Cheers,
-Prabhakar
+ : Correct, what I object to is Intel _requiring_ a Reviewed-by before post=
+ing.
+ :=20
+ : And while I'm certainly not going to refuse patches that have been revie=
+wed
+ : internally, I _strongly_ prefer reviews be on-list so that they are publ=
+ic and
+ : recorded.  Being able to go back and look at the history and evolution o=
+f patches
+ : is valuable, and the discussion itself is often beneficial to non-partic=
+ipants,
+ : e.g. people that are new-ish to KVM and/or aren't familiar with the feat=
+ure being
+ : enabled can often learn new things and avoid similar pitfalls of their o=
+wn.
+
+There are definitely situations where exceptions are warranted, e.g. if som=
+eone
+is a first-time poster and/or wants a sanity check to make sure their idea =
+isn't
+completely crazy.  But even then, the internal review should only be very c=
+ursory.
+
+In addition to the history being valuable, doing reviews in public minimize=
+s the
+probability of a developer being led astray, e.g. due to someone internally=
+ saying
+do XYZ, and then upstream reviewers telling them to do something entirely d=
+ifferent.=20
+
+As far as noise goes, look at it this way.  Every time a new TDX series is =
+posted,
+I get 130+ emails.  Y'all can do a _lot_ of public review and discussion be=
+fore
+you'll get anywhere near the point where it'd be noiser than spinning a new=
+ version
+of the series.
+
+[*] https://lore.kernel.org/all/Y+ZxLfCrcTQ6poYg@google.com
 
