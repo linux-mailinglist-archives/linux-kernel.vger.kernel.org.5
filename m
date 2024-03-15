@@ -1,267 +1,326 @@
-Return-Path: <linux-kernel+bounces-104983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EED787D73F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:12:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17AD87D742
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 159D1284D92
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:12:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 304E61F22B32
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B884D5A4D5;
-	Fri, 15 Mar 2024 23:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B995A11B;
+	Fri, 15 Mar 2024 23:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="CYIBjIMZ"
-Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="isPHTi0T"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429FB5A0E7;
-	Fri, 15 Mar 2024 23:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A145A0F4
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 23:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710544323; cv=none; b=i4XKdpyqSI4wXG+dc+ir4Jl4/f/la5ieFVeo92sLJYQnAnJ1vDg7Oy15IKy2kQcDpve3tdoH51jSvaUagc/mUoM+X/+fjMtA0Ljr2wrWiwRi6tOqumQ5fiWjjQNxYCav4sVfRJ1CBVNvC5SKfyFU9RshUMEeYz0793Xb6YK1RjM=
+	t=1710544420; cv=none; b=XYK813Z3Tncku2RZtYjMWqmg/mdOjXwPg4DV9zAxjdzcf5Iw/U9lwI3sHltavU/hgaX+w5SRJYNd0m6fmWAVJS9NHnNX0NRN/26Ka5mO5y6EogO2VA9SifrwxSHAs+uHWyVFQQhoaX+mVWkwbF6k/5Sm5KJQhuGoTvIpiip/uSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710544323; c=relaxed/simple;
-	bh=VQpxIo0PRL4MlhjDwV9PLwADMylqIo1qt3PRoZ+zYW8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dmWC0T5h2wLYiN3Ot/Y6B69YooO0zaxDrTj75oDwcI5lDFItqqO1cvY2tfwvCQDWUSwMxXsSoqy1HLXa3Wiwu0+PrvzOgiutdZ+76Jhb6N85cPWEzVsHAYl2r8mhAjlYdex+cvJgWHVO4cxUvavaK97Vv4EUoM88G9+kon86mBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=CYIBjIMZ; arc=none smtp.client-ip=52.119.213.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1710544420; c=relaxed/simple;
+	bh=Zjv6sIG5TsfIjOfw5GN/h6HebnF+orhWYl3wzJnO5yw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EtZj49UqFeORa+aV+AhMWZmfr7eRqxU2vlTTML6/DVAI6DLmnKTp6S4p5nHpVEXVsaAV2S9s3QGasBCCcwFdafe4BwEAx0/lQRYg3nufVWX/rXa2UYiTYPT8a6XPBxDpUvgz3GMz1qjgKOaIAkwVwrCjnK+0Mh3N3c2qWXEXSs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=isPHTi0T; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36678885723so16037935ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1710544321; x=1742080321;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=B4dnSYlWi+5f7Z1pVNEI53jPibTTZHENrkrv7AgPCIg=;
-  b=CYIBjIMZedxnpTM42iSQy1wPnrbdvQURaToagXnoucn4gxMaHkAOkH2P
-   FTxFYWzfP/OAfLKvzXHrOwmytlsrmgQSefqr8Q/C2uq3/ySkN+a6HvKPG
-   2vgAUznirbZYmuXbGVzjg8+J9N0e55atpFV4hUYPr5qhweTvKApJTCqyn
-   0=;
-X-IronPort-AV: E=Sophos;i="6.07,129,1708387200"; 
-   d="scan'208";a="620033953"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 23:11:57 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:50026]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.17.84:2525] with esmtp (Farcaster)
- id c630005c-4ede-431c-93cb-c18bfbd6267b; Fri, 15 Mar 2024 23:11:56 +0000 (UTC)
-X-Farcaster-Flow-ID: c630005c-4ede-431c-93cb-c18bfbd6267b
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 15 Mar 2024 23:11:56 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.41) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 15 Mar 2024 23:11:51 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <cgzones@googlemail.com>
-CC: <alex.aring@gmail.com>, <alexander@mihalicyn.com>, <bpf@vger.kernel.org>,
-	<daan.j.demeyer@gmail.com>, <davem@davemloft.net>, <dhowells@redhat.com>,
-	<dsahern@kernel.org>, <edumazet@google.com>, <john.fastabend@gmail.com>,
-	<kuba@kernel.org>, <kuniyu@amazon.com>, <leitao@debian.org>,
-	<linux-kernel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-	<linux-wpan@vger.kernel.org>, <miquel.raynal@bootlin.com>,
-	<mkl@pengutronix.de>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
-	<stefan@datenfreihafen.org>, <wuyun.abel@bytedance.com>
-Subject: Re: [PATCH 08/10] net: use new capable_any functionality
-Date: Fri, 15 Mar 2024 16:11:42 -0700
-Message-ID: <20240315231142.56998-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240315113828.258005-8-cgzones@googlemail.com>
-References: <20240315113828.258005-8-cgzones@googlemail.com>
+        d=sifive.com; s=google; t=1710544416; x=1711149216; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ik0WgA0NYbsNgyUpEeTOF/vMyU1VZieyn2u6T3u4Jh4=;
+        b=isPHTi0Tj3BlgaGWYN7DZ2zEeS7Q2TiziMDSdByYEECSq8Sfd8t+HpK9IN2zNtDAmX
+         S4iZQMhhKNRllJ8wQ15osDHLQ6qz2XksJR/8xDkzEC0GEDHri3oWK4NGYYLAjbtcjJWE
+         ZWiq2BXFYvIYawRvMkWEUr/vRkkKyhsGAYmtOoQuJ0uF48qQUFR5YxpTgvBsaknQlX8Q
+         As+RzHEw2ljy2hzugUufDrgtkrApagztEsPFYu8V+sOq+L3+2YBBZwhx3BhLlBI7EEXo
+         eNVXI2JzopiX9OnUSumJJM+sA1JtwotyYYk54g2WuA+VpxzMjWwQLs5xm1hE38n4eCF8
+         LqzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710544416; x=1711149216;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ik0WgA0NYbsNgyUpEeTOF/vMyU1VZieyn2u6T3u4Jh4=;
+        b=pWqVyqQlasNnzBoAHBIcN7OThT8ja1Q2c3kU2zH8Y7cqEmbBssAHXWJwKnXLPouVbO
+         +ZmiKnIa/nqV9qC91Y3JS7ptKmOAFCuY1fI/W+G0bmOEFrEeIEgp0Kr1+NL3M2uEweDp
+         O9rqn82z64K0W9lIGOxorS9Wb0h2osFCgLsf565GA3gr2m7uLT5HXhZvkhi9Eap6/Md/
+         6/kWeswuuqNX/dTEXl76C0XqUaRh5BTY1vMsV0PPM3e2z+hsVQ8++/YBaRlsGUnNKPh+
+         qYGRJlSUId8v7qBvNT50eY7osBDOKV8SWNl+tUPovf0Xw5sQwUP01fCg8akb8Ao3PRcy
+         CjjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUGBkh++ALLJJaX3WDLod97LkFbgiSnRO+roTnGVBjEXR5vgdyclMDsycmcurE+fsVyq0o0fkCWPO8pe2GdrosNenqU+iQPtfYVqdvf
+X-Gm-Message-State: AOJu0YzovKJu9zukx+sB2CZ5YEbvMkT0N8bDiZuQlBwWQFnAo6y0nKYu
+	B7/rkRCnnIlOvoAJUYjI+SyF95F343BuhAAmMdbkQvfdc0uWEayHw5hcISbmje0=
+X-Google-Smtp-Source: AGHT+IGmWV+7gORxW1R384X6QiwEgLn1AxgnTY/2dOT9BBzXCSKh7z21EEUx/s44+ntxvgCJXtMhfQ==
+X-Received: by 2002:a92:d952:0:b0:366:1f42:dc53 with SMTP id l18-20020a92d952000000b003661f42dc53mr6424138ilq.18.1710544416406;
+        Fri, 15 Mar 2024 16:13:36 -0700 (PDT)
+Received: from [100.64.0.1] ([136.226.86.189])
+        by smtp.gmail.com with ESMTPSA id r5-20020a056638044500b004773027eee2sm964542jap.12.2024.03.15.16.13.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 16:13:36 -0700 (PDT)
+Message-ID: <b662bb30-d5e2-4bf0-a156-ac38461fcea2@sifive.com>
+Date: Fri, 15 Mar 2024 18:13:34 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D031UWC002.ant.amazon.com (10.13.139.212) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] riscv: errata: Add StarFive alternative ports
+Content-Language: en-US
+To: Joshua Yeong <joshua.yeong@starfivetech.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, geert+renesas@glider.be,
+ prabhakar.mahadev-lad.rj@bp.renesas.com, conor.dooley@microchip.com,
+ alexghiti@rivosinc.com, evan@rivosinc.com, ajones@ventanamicro.com,
+ heiko@sntech.de, guoren@kernel.org, uwu@icenowy.me, jszhang@kernel.org,
+ conor@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, leyfoon.tan@starfivetech.com,
+ jeeheng.sia@starfivetech.com
+References: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
+ <20240314061205.26143-3-joshua.yeong@starfivetech.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240314061205.26143-3-joshua.yeong@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Christian Göttsche <cgzones@googlemail.com>
-Date: Fri, 15 Mar 2024 12:37:29 +0100
-> Use the new added capable_any function in appropriate cases, where a
-> task is required to have any of two capabilities.
+On 2024-03-14 1:12 AM, Joshua Yeong wrote:
+> Add required ports of the Alternative scheme for
+> StarFive CPU cores.
 > 
-> Add sock_ns_capable_any() wrapper similar to existing sock_ns_capable()
-> one.
-> 
-> Reorder CAP_SYS_ADMIN last.
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com> (ieee802154 portion)
+> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
 > ---
-> v4:
->   - introduce sockopt_ns_capable_any()
-> v3:
->   - rename to capable_any()
->   - make use of ns_capable_any
-> ---
->  include/net/sock.h       |  1 +
->  net/caif/caif_socket.c   |  2 +-
->  net/core/sock.c          | 15 +++++++++------
->  net/ieee802154/socket.c  |  6 ++----
->  net/ipv4/ip_sockglue.c   |  5 +++--
->  net/ipv6/ipv6_sockglue.c |  3 +--
->  net/unix/af_unix.c       |  2 +-
->  7 files changed, 18 insertions(+), 16 deletions(-)
+>  arch/riscv/Kconfig.errata            | 21 ++++++
+>  arch/riscv/errata/Makefile           |  1 +
+>  arch/riscv/errata/starfive/Makefile  |  1 +
+>  arch/riscv/errata/starfive/errata.c  | 95 ++++++++++++++++++++++++++++
+>  arch/riscv/include/asm/alternative.h |  3 +
+>  arch/riscv/include/asm/errata_list.h |  5 ++
+>  arch/riscv/kernel/alternative.c      |  5 ++
+>  7 files changed, 131 insertions(+)
+>  create mode 100644 arch/riscv/errata/starfive/Makefile
+>  create mode 100644 arch/riscv/errata/starfive/errata.c
 > 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index b5e00702acc1..2e64a80c8fca 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1736,6 +1736,7 @@ static inline void unlock_sock_fast(struct sock *sk, bool slow)
->  void sockopt_lock_sock(struct sock *sk);
->  void sockopt_release_sock(struct sock *sk);
->  bool sockopt_ns_capable(struct user_namespace *ns, int cap);
-> +bool sockopt_ns_capable_any(struct user_namespace *ns, int cap1, int cap2);
->  bool sockopt_capable(int cap);
+> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
+> index 910ba8837add..1438dd09533b 100644
+> --- a/arch/riscv/Kconfig.errata
+> +++ b/arch/riscv/Kconfig.errata
+> @@ -53,6 +53,16 @@ config ERRATA_SIFIVE_CIP_1200
 >  
->  /* Used by processes to "lock" a socket state, so that
-> diff --git a/net/caif/caif_socket.c b/net/caif/caif_socket.c
-> index 039dfbd367c9..2d811037e378 100644
-> --- a/net/caif/caif_socket.c
-> +++ b/net/caif/caif_socket.c
-> @@ -1026,7 +1026,7 @@ static int caif_create(struct net *net, struct socket *sock, int protocol,
->  		.usersize = sizeof_field(struct caifsock, conn_req.param)
->  	};
+>  	  If you don't know what to do here, say "Y".
 >  
-> -	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_NET_ADMIN))
-> +	if (!capable_any(CAP_NET_ADMIN, CAP_SYS_ADMIN))
->  		return -EPERM;
->  	/*
->  	 * The sock->type specifies the socket type to use.
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 43bf3818c19e..fa9edcc3e23d 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1077,6 +1077,12 @@ bool sockopt_ns_capable(struct user_namespace *ns, int cap)
->  }
->  EXPORT_SYMBOL(sockopt_ns_capable);
->  
-> +bool sockopt_ns_capable_any(struct user_namespace *ns, int cap1, int cap2)
-> +{
-> +	return has_current_bpf_ctx() || ns_capable_any(ns, cap1, cap2);
-> +}
-> +EXPORT_SYMBOL(sockopt_ns_capable_any);
+> +config ERRATA_STARFIVE
+> +	bool "StarFive errata"
+> +	depends on RISCV_ALTERNATIVE
+> +	help
+> +	  All StarFive errata Kconfig depend on this Kconfig. Disabling
+> +	  this Kconfig will disable all StarFive errata. Please say "Y"
+> +	  here if your platform uses StarFive CPU cores.
 > +
->  bool sockopt_capable(int cap)
->  {
->  	return has_current_bpf_ctx() || capable(cap);
-> @@ -1118,8 +1124,7 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
->  	switch (optname) {
->  	case SO_PRIORITY:
->  		if ((val >= 0 && val <= 6) ||
-> -		    sockopt_ns_capable(sock_net(sk)->user_ns, CAP_NET_RAW) ||
-> -		    sockopt_ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN)) {
-> +		    sockopt_ns_capable_any(sock_net(sk)->user_ns, CAP_NET_RAW, CAP_NET_ADMIN)) {
->  			sock_set_priority(sk, val);
->  			return 0;
->  		}
-> @@ -1422,8 +1427,7 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
+> +	  Otherwise, please say "N" here to avoid unnecessary overhead.
+> +
+>  config ERRATA_STARFIVE_JH7100
+>  	bool "StarFive JH7100 support"
+>  	depends on ARCH_STARFIVE
+> @@ -72,6 +82,17 @@ config ERRATA_STARFIVE_JH7100
+>  	  Say "Y" if you want to support the BeagleV Starlight and/or
+>  	  StarFive VisionFive V1 boards.
+>  
+> +config ERRATA_STARFIVE_CMO
+> +	bool "Apply StarFive cache management errata"
+> +	depends on ERRATA_STARFIVE && MMU
+> +	select RISCV_DMA_NONCOHERENT
+> +	default y
+> +	help
+> +	  This will apply the cache management errata to handle the
+> +	  non-standard handling on non-coherent operations on StarFive cores.
+> +
+> +	  If you don't know what to do here, say "Y".
+> +
+>  config ERRATA_THEAD
+>  	bool "T-HEAD errata"
+>  	depends on RISCV_ALTERNATIVE
+> diff --git a/arch/riscv/errata/Makefile b/arch/riscv/errata/Makefile
+> index 8a2739485123..4713a686b9f7 100644
+> --- a/arch/riscv/errata/Makefile
+> +++ b/arch/riscv/errata/Makefile
+> @@ -4,4 +4,5 @@ endif
+>  
+>  obj-$(CONFIG_ERRATA_ANDES) += andes/
+>  obj-$(CONFIG_ERRATA_SIFIVE) += sifive/
+> +obj-$(CONFIG_ERRATA_STARFIVE) += starfive/
+>  obj-$(CONFIG_ERRATA_THEAD) += thead/
+> diff --git a/arch/riscv/errata/starfive/Makefile b/arch/riscv/errata/starfive/Makefile
+> new file mode 100644
+> index 000000000000..2d644e19caef
+> --- /dev/null
+> +++ b/arch/riscv/errata/starfive/Makefile
+> @@ -0,0 +1 @@
+> +obj-y += errata.o
+> diff --git a/arch/riscv/errata/starfive/errata.c b/arch/riscv/errata/starfive/errata.c
+> new file mode 100644
+> index 000000000000..3ee360cd5e81
+> --- /dev/null
+> +++ b/arch/riscv/errata/starfive/errata.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Erratas to be applied for StarFive CPU cores
+> + *
+> + * Copyright (C) 2024 Shanghai StarFive Technology Co., Ltd.
+> + *
+> + * Author: Joshua Yeong <joshua.yeong@starfivetech.com>
+> + */
+> +
+> +#include <linux/memory.h>
+> +#include <linux/module.h>
+> +
+> +#include <asm/alternative.h>
+> +#include <asm/cacheflush.h>
+> +#include <asm/errata_list.h>
+> +#include <asm/patch.h>
+> +#include <asm/processor.h>
+> +#include <asm/sbi.h>
+> +#include <asm/vendorid_list.h>
+> +
+> +#define STARFIVE_JH8100_DUBHE90_MARCHID	0x80000000DB000090UL
+> +#define STARFIVE_JH8100_DUBHE90_MIMPID	0x0000000020230930UL
+> +#define STARFIVE_JH8100_DUBHE80_MARCHID	0x80000000DB000080UL
+> +#define STARFIVE_JH8100_DUBHE80_MIMPID	0x0000000020230831UL
+> +#define STARFIVE_JH8100_L3		0x40
+> +
+> +static bool errata_probe_cmo(unsigned int stage, unsigned long arch_id,
+> +			      unsigned long impid)
+> +{
+> +	if (!IS_ENABLED(CONFIG_ERRATA_STARFIVE_CMO))
+> +		return false;
+> +
+> +	if ((arch_id != STARFIVE_JH8100_DUBHE90_MARCHID ||
+> +	    impid != STARFIVE_JH8100_DUBHE90_MIMPID) &&
+> +	    (arch_id != STARFIVE_JH8100_DUBHE80_MARCHID ||
+> +	    impid != STARFIVE_JH8100_DUBHE80_MIMPID))
+> +		return false;
+> +
+> +	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
+> +		return false;
+> +
+> +	riscv_cbom_block_size = STARFIVE_JH8100_L3;
+> +	riscv_noncoherent_supported();
+
+This patch doesn't add any alternatives, so you don't need to use the errata
+framework. Please move these two lines to the cache driver -- see
+drivers/cache/sifive_ccache.c -- and then you can drop this patch.
+
+Regards,
+Samuel
+
+> +
+> +	return true;
+> +}
+> +
+> +static u32 starfive_errata_probe(unsigned int stage,
+> +			      unsigned long archid, unsigned long impid)
+> +{
+> +	u32 cpu_req_errata = 0;
+> +
+> +	if (errata_probe_cmo(stage, archid, impid))
+> +		cpu_req_errata |= BIT(ERRATA_STARFIVE_CMO);
+> +
+> +	return cpu_req_errata;
+> +}
+> +
+> +void __init_or_module starfive_errata_patch_func(struct alt_entry *begin,
+> +					         struct alt_entry *end,
+> +					         unsigned long archid,
+> +						 unsigned long impid,
+> +						 unsigned int stage)
+> +{
+> +	struct alt_entry *alt;
+> +	u32 cpu_apply_errata = 0;
+> +	u32 tmp;
+> +	u32 cpu_req_errata;
+> +
+> +	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
+> +		return;
+> +
+> +	cpu_req_errata = starfive_errata_probe(stage, archid, impid);
+> +
+> +	for (alt = begin; alt < end; alt++) {
+> +		if (alt->vendor_id != STARFIVE_VENDOR_ID)
+> +			continue;
+> +		if (alt->patch_id >= ERRATA_STARFIVE_NUMBER)
+> +			continue;
+> +
+> +		tmp = (1U << alt->patch_id);
+> +		if (cpu_req_errata & tmp) {
+> +			mutex_lock(&text_mutex);
+> +			patch_text_nosync(ALT_OLD_PTR(alt), ALT_ALT_PTR(alt),
+> +					  alt->alt_len);
+> +			mutex_unlock(&text_mutex);
+> +			cpu_apply_errata |= tmp;
+> +		}
+> +	}
+> +
+> +	if (stage != RISCV_ALTERNATIVES_MODULE &&
+> +	    cpu_apply_errata != cpu_req_errata) {
+> +		pr_warn("WARNING: Missing StarFive errata patches! \n");
+> +	    }
+> +}
+> diff --git a/arch/riscv/include/asm/alternative.h b/arch/riscv/include/asm/alternative.h
+> index 3c2b59b25017..8f5e6883db97 100644
+> --- a/arch/riscv/include/asm/alternative.h
+> +++ b/arch/riscv/include/asm/alternative.h
+> @@ -51,6 +51,9 @@ void andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+>  void sifive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+>  			      unsigned long archid, unsigned long impid,
+>  			      unsigned int stage);
+> +void starfive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+> +			     unsigned long archid, unsigned long impid,
+> +			     unsigned int stage);
+>  void thead_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+>  			     unsigned long archid, unsigned long impid,
+>  			     unsigned int stage);
+> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
+> index ea33288f8a25..1cd5ba3a1466 100644
+> --- a/arch/riscv/include/asm/errata_list.h
+> +++ b/arch/riscv/include/asm/errata_list.h
+> @@ -22,6 +22,11 @@
+>  #define	ERRATA_SIFIVE_NUMBER 2
+>  #endif
+>  
+> +#ifdef CONFIG_ERRATA_STARFIVE
+> +#define	ERRATA_STARFIVE_CMO 0
+> +#define	ERRATA_STARFIVE_NUMBER 1
+> +#endif
+> +
+>  #ifdef CONFIG_ERRATA_THEAD
+>  #define	ERRATA_THEAD_PBMT 0
+>  #define	ERRATA_THEAD_PMU 1
+> diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternative.c
+> index 319a1da0358b..deedd4b76472 100644
+> --- a/arch/riscv/kernel/alternative.c
+> +++ b/arch/riscv/kernel/alternative.c
+> @@ -52,6 +52,11 @@ static void riscv_fill_cpu_mfr_info(struct cpu_manufacturer_info_t *cpu_mfr_info
+>  		cpu_mfr_info->patch_func = sifive_errata_patch_func;
 >  		break;
->  
->  	case SO_MARK:
-> -		if (!sockopt_ns_capable(sock_net(sk)->user_ns, CAP_NET_RAW) &&
-> -		    !sockopt_ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN)) {
-> +		if (!sockopt_ns_capable_any(sock_net(sk)->user_ns, CAP_NET_RAW, CAP_NET_ADMIN)) {
->  			ret = -EPERM;
->  			break;
->  		}
-> @@ -2813,8 +2817,7 @@ int __sock_cmsg_send(struct sock *sk, struct cmsghdr *cmsg,
->  
->  	switch (cmsg->cmsg_type) {
->  	case SO_MARK:
-> -		if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_RAW) &&
-> -		    !ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
-> +		if (!ns_capable_any(sock_net(sk)->user_ns, CAP_NET_RAW, CAP_NET_ADMIN))
->  			return -EPERM;
->  		if (cmsg->cmsg_len != CMSG_LEN(sizeof(u32)))
->  			return -EINVAL;
-> diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
-> index 990a83455dcf..42b3b12eb493 100644
-> --- a/net/ieee802154/socket.c
-> +++ b/net/ieee802154/socket.c
-> @@ -902,8 +902,7 @@ static int dgram_setsockopt(struct sock *sk, int level, int optname,
->  		ro->want_lqi = !!val;
->  		break;
->  	case WPAN_SECURITY:
-> -		if (!ns_capable(net->user_ns, CAP_NET_ADMIN) &&
-> -		    !ns_capable(net->user_ns, CAP_NET_RAW)) {
-> +		if (!ns_capable_any(net->user_ns, CAP_NET_ADMIN, CAP_NET_RAW)) {
+>  #endif
+> +#ifdef CONFIG_ERRATA_STARFIVE
+> +	case STARFIVE_VENDOR_ID:
+> +		cpu_mfr_info->patch_func = starfive_errata_patch_func;
+> +		break;
+> +#endif
+>  #ifdef CONFIG_ERRATA_THEAD
+>  	case THEAD_VENDOR_ID:
+>  		cpu_mfr_info->patch_func = thead_errata_patch_func;
 
-IIUC, should CAP_NET_RAW be tested first ?
-
-Then, perhaps you should remove the Reviewed-by tag.
-
-
->  			err = -EPERM;
->  			break;
->  		}
-> @@ -926,8 +925,7 @@ static int dgram_setsockopt(struct sock *sk, int level, int optname,
->  		}
->  		break;
->  	case WPAN_SECURITY_LEVEL:
-> -		if (!ns_capable(net->user_ns, CAP_NET_ADMIN) &&
-> -		    !ns_capable(net->user_ns, CAP_NET_RAW)) {
-> +		if (!ns_capable_any(net->user_ns, CAP_NET_ADMIN, CAP_NET_RAW)) {
-
-Same here.
-
-Thanks!
-
-
->  			err = -EPERM;
->  			break;
->  		}
-> diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
-> index cf377377b52d..5a1e5ee20ddd 100644
-> --- a/net/ipv4/ip_sockglue.c
-> +++ b/net/ipv4/ip_sockglue.c
-> @@ -1008,8 +1008,9 @@ int do_ip_setsockopt(struct sock *sk, int level, int optname,
->  		inet_assign_bit(MC_ALL, sk, val);
->  		return 0;
->  	case IP_TRANSPARENT:
-> -		if (!!val && !sockopt_ns_capable(sock_net(sk)->user_ns, CAP_NET_RAW) &&
-> -		    !sockopt_ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
-> +		if (!!val &&
-> +		    !sockopt_ns_capable_any(sock_net(sk)->user_ns,
-> +					    CAP_NET_RAW, CAP_NET_ADMIN))
->  			return -EPERM;
->  		if (optlen < 1)
->  			return -EINVAL;
-> diff --git a/net/ipv6/ipv6_sockglue.c b/net/ipv6/ipv6_sockglue.c
-> index d4c28ec1bc51..e46b11b5d3dd 100644
-> --- a/net/ipv6/ipv6_sockglue.c
-> +++ b/net/ipv6/ipv6_sockglue.c
-> @@ -773,8 +773,7 @@ int do_ipv6_setsockopt(struct sock *sk, int level, int optname,
->  		break;
->  
->  	case IPV6_TRANSPARENT:
-> -		if (valbool && !sockopt_ns_capable(net->user_ns, CAP_NET_RAW) &&
-> -		    !sockopt_ns_capable(net->user_ns, CAP_NET_ADMIN)) {
-> +		if (valbool && !sockopt_ns_capable_any(net->user_ns, CAP_NET_RAW, CAP_NET_ADMIN)) {
->  			retv = -EPERM;
->  			break;
->  		}
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 5b41e2321209..acc36b2d25d7 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -1783,7 +1783,7 @@ static inline bool too_many_unix_fds(struct task_struct *p)
->  	struct user_struct *user = current_user();
->  
->  	if (unlikely(READ_ONCE(user->unix_inflight) > task_rlimit(p, RLIMIT_NOFILE)))
-> -		return !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN);
-> +		return !capable_any(CAP_SYS_RESOURCE, CAP_SYS_ADMIN);
->  	return false;
->  }
->  
-> -- 
-> 2.43.0
 
