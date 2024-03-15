@@ -1,170 +1,134 @@
-Return-Path: <linux-kernel+bounces-104824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 609A287D432
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42EE487D43A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 167CE2829B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:56:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02830285F69
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A82141C6E;
-	Fri, 15 Mar 2024 18:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F994CB37;
+	Fri, 15 Mar 2024 19:00:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FsHqRNeN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14211F94B;
-	Fri, 15 Mar 2024 18:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 356533C6AC;
+	Fri, 15 Mar 2024 19:00:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710529000; cv=none; b=lwjt/Jy0+5dGwPlgG4EZna46I012luTwqQw34f7HS9r7VjkBHA8ICk4WZM//MXiAVMLnKGrmg6HiIt90ICnerwdRB4YvYatBk03GITEXTNDodH1zs/1/ahtybvkEMzqGKxBYLKTEj1sMI0WoArxPcFqDP+D6v+WFJTgKuC1RI/g=
+	t=1710529225; cv=none; b=dwU9VINuEdSWYcqm0u5gEfSUZfMoYhVkMy5uTmd7ww21ezuhSRzLNm2TQ6NIKzJVo4qHYVUWY5jrsvRd0fgO9mW0DEg+3xzXHxeSG32noirG9ltulVnhkQzzepyT1lqmiUXZCaJVTKobfeHJ+9yE+3dJbvhsXzrbn7tBMp47F68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710529000; c=relaxed/simple;
-	bh=dPjJRTej2L6vDTjZl0tMzl13uN4xNcrNG6FfSYbLkUA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gbgWYu1tQTr+4APJ/Mt1Q7VqBI/xrxObHQ4iPu2FU+Z8q/U27v74OBF7tWuR45t7VIh1XrWHduHq8wzodcMJPGA38BXLBSWQxL1y9AZSz1KnUuAQ8jwNLXDjEa/TKpjdtteVknkVYCNtsTo2ntGPsS+2PYOLWDv9cCFD0MC6Wqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31DA5C433C7;
-	Fri, 15 Mar 2024 18:56:39 +0000 (UTC)
-Date: Fri, 15 Mar 2024 14:58:52 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: TP_printk() bug with %c, and more?
-Message-ID: <20240315145852.46125ac5@gandalf.local.home>
-In-Reply-To: <20240315190312.2bd6a198@booty>
-References: <20240315174900.14418f22@booty>
-	<20240315132146.29edf416@gandalf.local.home>
-	<20240315190312.2bd6a198@booty>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710529225; c=relaxed/simple;
+	bh=dFaIIP3h2/4z7Ri/hpxDhx7MtkGrBQZ5gt0kHZ6Fl7Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XFS3bQdNFySikc3S4a1XQLd6OUQRu+veqO/FFHcc4jR/OhTfF90QxNghjcqsmJ+OmG3RdABoCdleaiRYI/Y1tko94fnZMIaUUsJ0Q/Y0qJ1KJkH00/o6loLwmcSLLLMjWVTwcSUCrc3uQjI8+K4XoZw6ea7HecWxqsrS1YQPNVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FsHqRNeN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61DB1C433C7;
+	Fri, 15 Mar 2024 19:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710529223;
+	bh=dFaIIP3h2/4z7Ri/hpxDhx7MtkGrBQZ5gt0kHZ6Fl7Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FsHqRNeNcdZDysuSGfidc9Q3PdZBQFEso4FZdF8tBIjAqixqSNWJMdXspWXzt8joQ
+	 JALhYTmd7HIYDFhhOB046n51nqHSobjprfnyoN3knFvixxKesQKPvz1Wbk6cPPiwZG
+	 gyM4IynaY412PxmmBKZb74k6zH0Bhryx+AitwkPgc7FVj21icf001KgjCqmmZobhWz
+	 ZDC2HWpqVfxMfQRZrx1yqO13Czv2At70AD96xgwDfGskLcPy2nGm6pxIJ3ed5uTGBB
+	 iAGmYJD5sob+yEaPMdoXPDz9UD7Z/ux862WwQ/usDpjMVMqJQqAJIv7tZxhfJOwoxP
+	 QZf2qcOILoe8Q==
+Date: Fri, 15 Mar 2024 12:00:21 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+Cc: masahiroy@kernel.org, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, nicolas@fjasle.eu
+Subject: Re: [PATCH V2] kbuild: rpm-pkg: add dtb files in kernel rpm
+Message-ID: <20240315190021.GA721491@dev-arch.thelio-3990X>
+References: <CAK7LNAQ6_kr0Q1RB0dELiGUObFJ4HEEu3XTErGf6FaNntKMnTg@mail.gmail.com>
+ <20240311162238.1761147-1-jtornosm@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311162238.1761147-1-jtornosm@redhat.com>
 
-On Fri, 15 Mar 2024 19:03:12 +0100
-Luca Ceresoli <luca.ceresoli@bootlin.com> wrote:
-
-> > > 
-> > > I've come across an unexpected behaviour in the kernel tracing
-> > > infrastructure that looks like a bug, or maybe two.
-> > > 
-> > > Cc-ing ASoC maintainers for as it appeared using ASoC traces, but it
-> > > does not look ASoC-specific.
-> > > 
-> > > It all started when using this trace-cmd sequence on an ARM64 board
-> > > running a mainline 6.8.0-rc7 kernel:
-> > > 
-> > >   trace-cmd record -e snd_soc_dapm_path ./my-play
-> > >   trace-cmd report
-> > > 
-> > > While this produces perfectly valid traces for other asoc events,
-> > > the snd_soc_dapm_path produces:
-> > > 
-> > >   snd_soc_dapm_path:    >c<* MIC1_EN <- (direct) <-
-> > > 
-> > > instead of the expected:
-> > > 
-> > >   snd_soc_dapm_path:    *MIC1 <- (direct) <- MIC1_EN
-> > > 
-> > > The originating macro is:
-> > > 
-> > > 	TP_printk("%c%s %s %s %s %s",
-> > > 		(int) __entry->path_node &&
-> > > 		(int) __entry->path_connect ? '*' : ' ',
-> > > 		__get_str(wname), DAPM_ARROW(__entry->path_dir),
-> > > 		__get_str(pname), DAPM_ARROW(__entry->path_dir),
-> > > 		__get_str(pnname))
-> > > 
-> > > It appears as if the %c placeholder always produces the three ">c<"
-> > > characters, the '*' or ' ' char is printed as the first %s, all the
-> > > other strings are shifted right by one position and the last string is
-> > > never printed.
-> > > 
-> > > On my x86_64 laptop running the default Ubuntu kernel (6.5) I'm able to
-> > > trace a few events having a '%c' in their TP_printk() macros and the
-> > > result is:
-> > > 
-> > >   intel_pipe_update_start: dev 0000:00:02.0, pipe >c<, frame=1,
-> > >   scanline=107856, min=2208, max=2154
-> > >     
-> > 
-> > What does /sys/kernel/tracing/trace show?  
+On Mon, Mar 11, 2024 at 05:22:38PM +0100, Jose Ignacio Tornos Martinez wrote:
+> Some architectures, like aarch64 ones, need a dtb file to configure the
+> hardware. The default dtb file can be preloaded from u-boot, but the final
+> and/or more complete dtb file needs to be able to be loaded later from
+> rootfs.
 > 
-> It is correct:
+> Add the possible dtb files to the kernel rpm and mimic Fedora shipping
+> process, storing the dtb files in the module directory. These dtb files
+> will be copied to /boot directory by the install scripts, but add fallback
+> just in case, checking if the content in /boot directory is correct.
 > 
->    intel_pipe_update_start: dev 0000:00:02.0, pipe B, frame=377644, scanline=1466, min=2154, max=2159
+> Mark the files installed to /boot as %ghost to make sure they will be
+> removed when the package is uninstalled.
 > 
-> > If that's fine, then the bug is in libtraceevent and not the kernel.
-> > 
-> > I'm testing it out now, and I see %c not being processed properly by
-> > libtraceevent. I'll take a deeper look.  
+> Tested with Fedora Rawhide (x86_64 and aarch64) with dnf and rpm tools.
+> In addition, fallback was also tested after modifying the install scripts.
 > 
-> Thanks.
+> Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
+I can see the new files in my arm64 package using 'rpm -qf'.
+
+> ---
+> V1 -> V2:
+> - Follow the suggestions from Masahiro Yamada to improve the checks and
+> avoid the loop to ghost the dtb files in /boot folder.
 > 
-> > > originating from:
-> > > 
-> > >   TP_printk("dev %s, pipe %c, frame=%u, scanline=%u, min=%u, max=%u",
-> > > 
-> > > Here it looks like the %c produced ">c<" again, but apparently without
-> > > any shifting.
-> > > 
-> > > Back on the ARM64 board I found a couple interesting clues.
-> > > 
-> > > First, using the <debugfs>/tracing/ interface instead of trace-cmd, I'm
-> > > getting correctly formatted strings:
-> > > 
-> > > trace-cmd: snd_soc_dapm_path: >c<* HPOUT_L -> (direct) ->
-> > > debugfs:   snd_soc_dapm_path: *HPOUT_L <- (direct) <- HPOUT_POP_SOUND_L
-> > > 
-> > > Notice the arrows pointing to the opposite direction though. The correct
-> > > arrow is the one in the debugfs run.  
+>  scripts/package/kernel.spec | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> This other issue appears a separate bug however.
-
-Can you make user you have the latest libtraceevent from:
-
-   git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
-
-And apply this patch.
-
-Thanks,
-
--- Steve
-
-diff --git a/src/event-parse.c b/src/event-parse.c
-index d607556..61b0966 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -3732,8 +3732,19 @@ process_arg_token(struct tep_event *event, struct tep_print_arg *arg,
- 		arg->atom.atom = atom;
- 		break;
- 
--	case TEP_EVENT_DQUOTE:
- 	case TEP_EVENT_SQUOTE:
-+		arg->type = TEP_PRINT_ATOM;
-+		/* Make characters into numbers */
-+		if (asprintf(&arg->atom.atom, "%d", token[0]) < 0) {
-+			free_token(token);
-+			*tok = NULL;
-+			arg->atom.atom = NULL;
-+			return TEP_EVENT_ERROR;
-+		}
-+		free_token(token);
-+		type = read_token_item(event->tep, &token);
-+		break;
-+	case TEP_EVENT_DQUOTE:
- 		arg->type = TEP_PRINT_ATOM;
- 		arg->atom.atom = token;
- 		type = read_token_item(event->tep, &token);
+> diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
+> index c256b73cca3e..e095eb1e290e 100644
+> --- a/scripts/package/kernel.spec
+> +++ b/scripts/package/kernel.spec
+> @@ -61,6 +61,9 @@ cp $(%{make} %{makeflags} -s image_name) %{buildroot}/lib/modules/%{KERNELRELEAS
+>  %{make} %{makeflags} INSTALL_HDR_PATH=%{buildroot}/usr headers_install
+>  cp System.map %{buildroot}/lib/modules/%{KERNELRELEASE}
+>  cp .config %{buildroot}/lib/modules/%{KERNELRELEASE}/config
+> +if %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='test -d ${srctree}/arch/${SRCARCH}/boot/dts' 2>/dev/null; then
+> +	%{make} %{makeflags} INSTALL_DTBS_PATH=%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb dtbs_install
+> +fi
+>  ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEASE}/build
+>  %if %{with_devel}
+>  %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='${srctree}/scripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE}'
+> @@ -81,6 +84,11 @@ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEA
+>  		echo "%ghost /boot/${x}-%{KERNELRELEASE}"
+>  	done
+>  
+> +	if [ -d "%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb" ];then
+> +		echo "/lib/modules/%{KERNELRELEASE}/dtb"
+> +		find "%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb" -printf "%%%ghost /boot/dtb-%{KERNELRELEASE}/%%P\n"
+> +	fi
+> +
+>  	echo "%exclude /lib/modules/%{KERNELRELEASE}/build"
+>  } > %{buildroot}/kernel.list
+>  
+> @@ -96,6 +104,11 @@ for file in vmlinuz System.map config; do
+>  		cp "/lib/modules/%{KERNELRELEASE}/${file}" "/boot/${file}-%{KERNELRELEASE}"
+>  	fi
+>  done
+> +if [ -d "/lib/modules/%{KERNELRELEASE}/dtb" ] && \
+> +   ! diff -rq "/lib/modules/%{KERNELRELEASE}/dtb" "/boot/dtb-%{KERNELRELEASE}" >/dev/null 2>&1; then
+> +	rm -rf "/boot/dtb-%{KERNELRELEASE}"
+> +	cp -r "/lib/modules/%{KERNELRELEASE}/dtb" "/boot/dtb-%{KERNELRELEASE}"
+> +fi
+>  if [ ! -e "/lib/modules/%{KERNELRELEASE}/modules.dep" ]; then
+>  	/usr/sbin/depmod %{KERNELRELEASE}
+>  fi
+> -- 
+> 2.44.0
+> 
 
