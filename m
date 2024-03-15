@@ -1,162 +1,216 @@
-Return-Path: <linux-kernel+bounces-104021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC8F87C7FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:33:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6904E87C7FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:39:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71C4C1C2216E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:33:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D28F01F22E8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52156D52E;
-	Fri, 15 Mar 2024 03:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399C9D534;
+	Fri, 15 Mar 2024 03:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gcrFCS1A"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="y9176obs"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2058.outbound.protection.outlook.com [40.107.223.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F82D517
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710473601; cv=none; b=Uy4M+/azSNoRCtbMvnH2e0/nf3PlVwgYxokqsM2va+DI6NldSyyBqFEMJ+bXVnN8tCGoCuClef7ycHraXunszh2uhHzcjn75k4XSfJwJpJBx5193oHHlMbPxUpeXTs9AeKOwhzx4Z0xt2IqUZ2MsaHtBdj3VCuZbgcukPPviTAs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710473601; c=relaxed/simple;
-	bh=p3XT5kBMyqXeFKhp5hnPEnsXzgnV5U7qU2ovO/CYlYc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 Cc:Content-Type; b=kXKCvJVuMPFU4q0s1abWjsAw+uO3wc385JJLnE5fsfg2RLQ6lTWYk5pioTnJOmht2Av+iIEr/yXPP4TcL4Jhp7ZX2yHAR7mNyZkYG1waQSc1o6H74QvTsxdcGICZp7yqkgnhvgZahmV/BNwgLU5Lh3yFo/jvPcZMaSnbgG51F74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gcrFCS1A; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d24a727f78so19570311fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710473598; x=1711078398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H32FltJCYmRuT1xpAWB9CWf2fiNQNrbCsZf2QEEHNWY=;
-        b=gcrFCS1AJ+3PYA2JiK5exOWJ67MOUtXQ8HMyQ7LIeYdX4YBccLYMhO6L+kZ8rE4bea
-         9/qZz3koHGkh1y7yMBWlgjh8UBlUP54NUlW2yBn7zc0Cy+6uUobN3MGCfDOzMNFxM9A2
-         +NPkhXdY9bf0G3d7Syd5jvAMZR9pnERDsQM/bQmyNZ+s1GYhtNGBNlSO1Qw3TuYrs15N
-         MyYlKcZeVnkpDnK2Wjlfrn6cQ2B6tB5dEEZzoLeVgaWuORnY7XX5Mnr2Al77i2ZfxnDK
-         u5lj0wrnyNZd4IZCxp212dSo7P1nxx1G6maGhyOAJUeFt2THQusXKFwi7dKFiUL4sS0l
-         772w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710473598; x=1711078398;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H32FltJCYmRuT1xpAWB9CWf2fiNQNrbCsZf2QEEHNWY=;
-        b=vMukMbRGEwxgnkyTXfN9lunk0BJTl3oN8dDV5dPCHzs/0XrwKvX8drJWKgOtvhbR7p
-         3Bu1ZrMRud5tNkmrJk3FxKh2Am6hZqqBMycMG0MfxiHueBwCEM3p7Rqnr4LiKdZFgZl7
-         kCMMpF0YQtFPCXCrxtcEFfOhFEQ5XKtcKBDPQU+/BGjH/Pnc69TmRR6wUl1sLYK8wXyb
-         945zIDjKuY+yf9PFOfUISOaSzbp9bXpdnKinUokKIIGmKVbWy3wdUbuKLzCgH0EUdSNb
-         roetjmu36Bxw/gQ98muJ22qMyStzxPwftZ1SLLb8fmHJ1TQKDrNqetO5WuZv+6znLnll
-         ilng==
-X-Forwarded-Encrypted: i=1; AJvYcCXYk4t0NfVWJtgufcmD7QvwKDAE3+zPS+3MkKs1aSpBom/iSEsuE9A8cUrBMwm268Q0JVX+KuHX3uBjKW68I5GsZc6+rdkXNmy5QKlW
-X-Gm-Message-State: AOJu0YyvcRN9gZzc6b8tp/4Ps6fZmmmwxNJjFy89bldGrkc0xYyyA3pq
-	WOlehtYvbK9GPmKO1ILPNPPBGkEeSlsbEy6xmECZ3HtA/0e0CIZHjaydiL/4YJWEQa9Yz0qmFU9
-	RMjR8X5Lz9sdywWGhY9TdTBTMlVg=
-X-Received: by 2002:a2e:91cd:0:b0:2d4:24cc:b499 with SMTP id
- u13-20020a2e91cd000000b002d424ccb499mt2098030ljg.15.1710473597737; Thu, 14
- Mar 2024 20:33:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C5A323D;
+	Fri, 15 Mar 2024 03:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710473959; cv=fail; b=EYoRoFCi+Ahu9EXzzgohyNo19BzvGJTcUcPIj9N4X9dULQoPMXJJFH53ovWsuRkHR2V9cBGJTiuVq4QwNC5yyXykohEJ8jRHdtcRXIBPBBUDsodsgWBym7DknJq+orwuq+xicadW+b2T6jzOrUI7y1x7XQ9BTvmryzmE2tTTc1I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710473959; c=relaxed/simple;
+	bh=Juzj7BfrLmnw3RA0jtipsieSytGll2kYeImehvm7MBE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MvlBDvLnZns0QsYJFAZv/AorGOceBWIfcJlbUXW204VRA5zml12CaLajssRfb2d1ncwsBnNux/MKdJDOpeTKCR0WS4Hj68zb5IVZSlqREp9itWaRtvK3VLZ6meOg34DbuN9AXophUFTU6ljAhOeehaaYitX7vu6SunHlM/ahg3M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=y9176obs; arc=fail smtp.client-ip=40.107.223.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j37IkQW+cjzqzy75Nrqze7hFrNmiA0B1hV4/oN7aFtsy1hjZ1J3MjMXdy849n0DHkjI48frl9qABsU/JBymxaho5VpWEMiByO9MraX5k95BEy1H2L3YH7RWt33fgH+caP8c5lJlLQo83h6jI4HUaI5MAFBVI7vBo87H9Jhk4aJVtfd5xBQEsx2Ypo+DohS6MjWH8kGXdoZMpic1YM8WdvXxqIrqTx225Ef3uN8Gp2SEzq8VF+lU1+unCMSUxkr/un8pNJQWaNqdRqih30vkFIQBaUFglaeUet3q53B4OkUvKSdYqh4TVX8sd2TSfj87sGuQJxSBIJLSlpeFdk5Amkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qnp95cff8GuJbpSFmnj7O6TvSzBB0Vkjg6DWvNUK4vc=;
+ b=RxXqs5izCdYNeeLPZmShFA/+GaN9+rpv0uh6FRRHaMhWOUr/o6BwlaUzCxEfWZDPM9bkJCUVGX6GeMaNemh/T0tlB3rrr5uMm6UlBevFhKgShbhl1CyYS1h4Bdi4igq0HcWHcdcwAXMGbHryddVQzUYMuXVRKwixgahFSwxHWK3XjpPKFfHzI+e98xLGBtVOexcJSY5hyXImj6eLtAks7bsGhhld9K2Ww97eeR+sERZ4VfLbTbeBDkntA4wSDreIfsefBvBGrA/auz4O6WVJZRjlsw6tbtcUfcNitj7rD6lrmW5qia7Q2LOSakl+TfnjQOib92P9lMuEPMIafRgB3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qnp95cff8GuJbpSFmnj7O6TvSzBB0Vkjg6DWvNUK4vc=;
+ b=y9176obsDIXfJFqt/3JlnbNjTVRj2i6M6xFvytmNRee+ZMWwCLNHvUSSp0z8LXLfLOQYa/D7IGaRpxjD0F4e5yerN0HvSpem/SLydCnQsnp9poyqNDsohPR4XUIbLCPtE1XK+tec1Rv2gDKt0Z6HozNr0hkUzhkUz1GLsHvzj2M=
+Received: from CH0PR03CA0205.namprd03.prod.outlook.com (2603:10b6:610:e4::30)
+ by SA1PR12MB8842.namprd12.prod.outlook.com (2603:10b6:806:378::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Fri, 15 Mar
+ 2024 03:39:14 +0000
+Received: from CH2PEPF0000013C.namprd02.prod.outlook.com
+ (2603:10b6:610:e4:cafe::55) by CH0PR03CA0205.outlook.office365.com
+ (2603:10b6:610:e4::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36 via Frontend
+ Transport; Fri, 15 Mar 2024 03:39:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CH2PEPF0000013C.mail.protection.outlook.com (10.167.244.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7386.12 via Frontend Transport; Fri, 15 Mar 2024 03:39:14 +0000
+Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Mar 2024 22:38:33 -0500
+From: Perry Yuan <perry.yuan@amd.com>
+To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
+	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
+	<Borislav.Petkov@amd.com>
+CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
+	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/8] AMD Pstate Driver Core Performance Boost
+Date: Fri, 15 Mar 2024 11:38:01 +0800
+Message-ID: <cover.1710473712.git.perry.yuan@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+eeCSPUDpUg76ZO8dszSbAGn+UHjcyv8F1J-CUPVARAzEtW9w@mail.gmail.com>
- <20240314-sublevel-jargon-4234df3fa614@spud>
-In-Reply-To: <20240314-sublevel-jargon-4234df3fa614@spud>
-From: Eva Kurchatova <nyandarknessgirl@gmail.com>
-Date: Fri, 15 Mar 2024 05:33:06 +0200
-Message-ID: <CA+eeCSPgxB9VCyB9fmEy4A1rEynNFv34LYA1UDBNT8Po=ag28w@mail.gmail.com>
-Subject: Re: Boot hang with SiFive PLIC when routing I2C-HID level-triggered interrupts
-Cc: linux-riscv <linux-riscv@lists.infradead.org>, bugs@lists.linux.dev, 
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF0000013C:EE_|SA1PR12MB8842:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4e905fde-67f4-4f8d-654e-08dc44a17c22
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Pi7N5uZnw5XeJA4zMTHU4gBfL4ObBouPrJHsZSHF0/Nk9u+uo0PbFmmgc3KH/oA/MJYKyiYGNLm8EEBGOhdvLzB9pfQ+5hWFICq9rY75P9byVE1AIZaNbyiuC7gsr7nSi4ohh2FduGA/QZ3jlpqeySFG5TSWyvbaIych54xQVpYeeocaYmaqRjSVv6p+hAhNgMNOnbxqx1wldEmLM9gW/Zl0LuOWBZyoQiYVeDaauxgEZNXp5IaGuo4pvf55l1Tg1vlP4Tf1YKu8FwIL0z5QVR+9ksYPg5hQ1kKvrarQdqql1kAt1Hgypk5VFrORrVy/B/TwTW1MTOg46GUx/WxYbdS5bh4Km7SjcqeOeZUFXx44goViLr24mfhJq+Whk0GtV4OCuTY2s0pLDo/KAmRyZbqZT7ANFPucOvHi9GLXvY6ez/o6m/M5DI1Wfu4qPnfw5ftUyOJmg/7oH9+YlOSGaQqtBZ2RqGM50EGY7H8bznGPu7UF3Xa2SOqNvkYA/Okw3iM7fZfl2LZb8RmtaJiylzJpDPXSlMUI0BoO4GirQ3DvRAJKJTFP3MwWR5ATK3V8UXKS1IPp/66Yti6X/7c+zoRiGC3wpv2yqla3UUTVnlxW/Y3LpT2YQEOBDufSCAK5Ew4pGrriOIUqgkjfmRFeiRVzcicdLnhSDdHgGv4ehVD4UxR7w0t5ps22zAhzog0oxCMw+QOnqrhzobAE5sUZ+A==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(36860700004)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 03:39:14.2195
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e905fde-67f4-4f8d-654e-08dc44a17c22
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH2PEPF0000013C.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8842
 
-On Thu, Mar 14, 2024 at 11:46=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
-ote:
-> This immediately seemed odd to me, but I have no reason to disbelieve
-> you, given you say this was discovered in RVVM which is an emulator and
-> you should know whether or not registers are accessed.
-> The very first action taken by the ocores i2c controller driver when it
-> gets an interrupt though is to read a register:
->
->         u8 stat =3D oc_getreg(i2c, OCI2C_STATUS);
->
-> I would expect that this handler would be called, and therefore you'd
-> see the register read, had the probe function of that driver run to
-> completion. I'd also expect that the interrupt would not even be
-> unmasked if that probe function had failed.
-> In your case though, you can see that the interrupt is not masked,
-> since it is being raised and handled repeatedly by the PLIC driver.
-> Has the i2c controller driver probed in the period of boot that you say
-> this problem manifests?
+Hi all,
+The patchset series add core performance boost feature for AMD pstate
+driver including passisve ,guide and active mode support.
 
-There is not a single problem with the ocores I2C driver. I2C-HID device
-itself has a separate IRQ line which is level-triggered.
-This is to signal the host that there is input available without polling,
-since I2C is a master-driven bus with no "data available" notifications.
-So in reality the I2C-HID driver should handle the interrupt; Then it
-uses the I2C controller to access I2C-HID slave registers (via I2C) to
-read the incoming HID input report. I2C controller interrupts are unrelated=
-;
-it's the link between the HID device and the host and it doesn't seem
-to be touched at all inside the I2C-HID IRQ handler (So it's just a pair
-of Claim/Complete actions). I2C ocores interrupts are not generated
-(and shouldn't) at that point, because no I2C transfer was initiated at all=
-.
+User can change core frequency boost control with a new sysfs entry:
 
-There is a way to make I2C-HID device edge-triggered, in RVVM
-emulation code, but it's not actually spec compliant. It gets rid of the
-hang too; However the same Claim/Complete actions without any
-handling inside the IRQ handler are observed at least once, which
-technically means a lost interrupt (Pressing a key somewhere early in
-boot thus doesn't propagate the keypress to the guest until you press
-another key later, after which both HID reports are read), so it's not
-a way how I'd like to mitigate this in the emulator code.
-I, and another developer from Haiku OS team (X512), are almost sure
-this is a kernel bug related to level triggered IRQs with PLIC or a
-specific incompatibility of PLIC/I2C-HID (Not the ocores I2C controller).
+"/sys/devices/system/cpu/amd_pstate/cpb_boost"
 
-This hang is not reproducible with a Haiku OS guest in any way and
-most of the drivers involved seem to be FreeBSD based or written by
-X512 (Specifically the PLIC and I2C-HID drivers are). This person also
-believes that this Claim/Complete behavior on PLIC side without any
-other actions made in between is erroneous kernel behavior too.
+The legancy boost interface has been removed due to the function
+conflict with new cpb_boost which can support all modes.
 
-I am open to discussions what specifically could be wrong with the VM
-since one of my end goals is to just make HID devices work without
-issues there; However if a simple 2-line patch (which I'm not entirely
-sure of it's implications) that removes return path at line 223 in PLIC
-driver resolves the issue (I kept a guest in a 24 hr reboot loop whilst
-spamming fake I2C-HID input and no hang was observed), then it does
-lead me to belief that it's at least not some blatant emulation issue.
+1). enable core boost:
+$ sudo bash -c "echo 0 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
+$ lscpu -ae
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE    MAXMHZ   MINMHZ      MHZ
+  0    0      0    0 0:0:0:0          yes 4201.0000 400.0000 2983.578
+  1    0      0    1 1:1:1:0          yes 4201.0000 400.0000 2983.578
+  2    0      0    2 2:2:2:0          yes 4201.0000 400.0000 2583.855
+  3    0      0    3 3:3:3:0          yes 4201.0000 400.0000 2983.578
+  4    0      0    4 4:4:4:0          yes 4201.0000 400.0000 2983.578
 
-I came here to collect some kernel devs opinions since we are
-debugging this for some 2 weeks already. Your initial understanding
-that something is wrong with ocores I2C controller is not what I meant,
-sorry for lacking in my explanation.
+2). disabble core boost:
+$ sudo bash -c "echo 1 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
+$ lscpu -ae
+   0    0      0    0 0:0:0:0          yes 5759.0000 400.0000 2983.578
+  1    0      0    1 1:1:1:0          yes 5759.0000 400.0000 2983.578
+  2    0      0    2 2:2:2:0          yes 5759.0000 400.0000 2983.578
+  3    0      0    3 3:3:3:0          yes 5759.0000 400.0000 2983.578
+  4    0      0    4 4:4:4:0          yes 5759.0000 400.0000 2983.578
 
->Are interrupts unmasked by default on RVVM?
 
-By default all PLIC ENABLE registers are set to zero. All PRIO,
-THRESHOLD registers are zero on reset. So all PLIC state is
-simply zeroed on reset, as can be seen here:
-https://github.com/LekKit/RVVM/blob/f81df57a2af77cbae25fd3cc65d07106d9505e2=
-3/src/devices/plic.c#L265
+The patches have been tested with the AMD 7950X processor and many users
+would like to get core boost control enabled for power saving.
 
-> Have you checked that this actually affects any actual hardware?
+If you would like to test this patchset, it needs to apply the patchset
+based on below one latest version patchset.
+https://lore.kernel.org/lkml/20240208102122.GAZcSrIkbPJfIExdF6@fat_crate.local/
 
-I might very soon if no one has immediate ideas what is wrong;
-Problem is that I don't have hardware that exposes PLIC IRQ lines to
-the user. It might be possible to use some FPGA or at least reproduce
-in other simulators.
+
+Perry.
+
+Changes from v4:
+ * move MSR_K7_HWCR_CPB_DIS_BIT into msr-index.h
+ * pick RB flag from Gautham R. Shenoy
+ * add Cc Oleksandr Natalenko <oleksandr@natalenko.name>
+ * rebase to latest linux-pm/bleeding-edge branch
+ * rebase the patch set on top of [PATCH v7 0/6] AMD Pstate Fixes And Enhancements
+ * update  [PATCH v7 2/6] to use MSR_K7_HWCR_CPB_DIS_BIT 
+
+Changes from v3:
+ * rebased to linux-pm/bleeding-edge v6.8
+ * rename global to amd_pstate_global_params(Oleksandr Natalenko)
+ * remove comments for boot_supported in amd_pstate.h
+ * fix the compiler warning for amd-pstate-ut.ko
+ * use for_each_online_cpu in cpb_boost_store which fix the null pointer
+   error during testing
+ * fix the max frequency value to be KHz when cpb boost disabled(Gautham R. Shenoy)
+
+Changes from v2:
+ * move global struct to amd-pstate.h
+ * fix the amd-pstate-ut with new cpb control interface
+
+Changes from v1:
+ * drop suspend/resume fix patch 6/7 because of the fix should be in
+   another fix series instead of CPB feature
+ * move the set_boost remove patch to the last(Mario)
+ * Fix commit info with "Closes:" (Mario)
+ * simplified global.cpb_supported initialization(Mario)
+ * Add guide mode support for CPB control
+ * Fixed some Doc typos and add guide mode info to Doc as well.
+
+v1: https://lore.kernel.org/all/cover.1706255676.git.perry.yuan@amd.com/
+v2: https://lore.kernel.org/lkml/cover.1707047943.git.perry.yuan@amd.com/
+v3: https://lore.kernel.org/lkml/cover.1707297581.git.perry.yuan@amd.com/
+v4: https://lore.kernel.org/lkml/cover.1710322310.git.perry.yuan@amd.com/
+
+*** BLURB HERE ***
+
+Perry Yuan (8):
+  cpufreq: acpi: move MSR_K7_HWCR_CPB_DIS_BIT into msr-index.h
+  cpufreq: amd-pstate: initialize new core precision boost state
+  cpufreq: amd-pstate: implement cpb_boost sysfs entry for boost control
+  cpufreq: amd-pstate: fix max_perf calculation for amd_get_max_freq()
+  cpufreq: amd-pstate: fix the MSR highest perf will be reset issue
+    while cpb boost off
+  Documentation: cpufreq: amd-pstate: introduce the new cpu boost
+    control method
+  cpufreq: amd-pstate: remove legacy set_boost callback for passive mode
+  cpufreq: amd-pstate-ut: support new cpb boost control interface
+
+ Documentation/admin-guide/pm/amd-pstate.rst |  11 ++
+ arch/x86/include/asm/msr-index.h            |   2 +
+ drivers/cpufreq/acpi-cpufreq.c              |   2 -
+ drivers/cpufreq/amd-pstate-ut.c             |   2 +-
+ drivers/cpufreq/amd-pstate.c                | 157 +++++++++++++++-----
+ include/linux/amd-pstate.h                  |  15 +-
+ 6 files changed, 150 insertions(+), 39 deletions(-)
+
+-- 
+2.34.1
+
 
