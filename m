@@ -1,326 +1,329 @@
-Return-Path: <linux-kernel+bounces-104984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A17AD87D742
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:13:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9CB987D746
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 304E61F22B32
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:13:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67D02282B3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B995A11B;
-	Fri, 15 Mar 2024 23:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022D3DDAD;
+	Fri, 15 Mar 2024 23:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="isPHTi0T"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Pgv/7/Aa"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A145A0F4
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 23:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA69659B6C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 23:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710544420; cv=none; b=XYK813Z3Tncku2RZtYjMWqmg/mdOjXwPg4DV9zAxjdzcf5Iw/U9lwI3sHltavU/hgaX+w5SRJYNd0m6fmWAVJS9NHnNX0NRN/26Ka5mO5y6EogO2VA9SifrwxSHAs+uHWyVFQQhoaX+mVWkwbF6k/5Sm5KJQhuGoTvIpiip/uSs=
+	t=1710544608; cv=none; b=HzBurKx/Q3BSCK0FYBq/tM9GbaUHDpCgMamgyFv8/5wAb+5hhxPwQ0JdGLxvhnnayLp1U2i7aNga1aPWcDKh0NI5VjOAHDtAa8Hpeu4q4UqKE6R4bKPvHECMNsQMpSAOTeOMWhdKNC+HrSp+vLCOq7jpm0MCA8+iMEFsSrvVKNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710544420; c=relaxed/simple;
-	bh=Zjv6sIG5TsfIjOfw5GN/h6HebnF+orhWYl3wzJnO5yw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EtZj49UqFeORa+aV+AhMWZmfr7eRqxU2vlTTML6/DVAI6DLmnKTp6S4p5nHpVEXVsaAV2S9s3QGasBCCcwFdafe4BwEAx0/lQRYg3nufVWX/rXa2UYiTYPT8a6XPBxDpUvgz3GMz1qjgKOaIAkwVwrCjnK+0Mh3N3c2qWXEXSs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=isPHTi0T; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36678885723so16037935ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:13:37 -0700 (PDT)
+	s=arc-20240116; t=1710544608; c=relaxed/simple;
+	bh=YG1vd1juQNaQvSUKtPdn0fqcJqdzmUUrzhazjbC0GP0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=txXWQG2bh2+eLJKUx32FxK1CqbHVg6Ylp/BhFlAtbOsYsz6QJ2inFGRQ/Lrph5DDrxlV1SDOx93VTRAz1+QVNYRNyD0AkPr72jcNbtV0M0PIvsin4BNkRjW8+S1Zbnaf+T2/wW8QctvWUPiXHULZTULif8yby3krBeyZ/lWw1oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Pgv/7/Aa; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5687ebddd8eso6135a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:16:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710544416; x=1711149216; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ik0WgA0NYbsNgyUpEeTOF/vMyU1VZieyn2u6T3u4Jh4=;
-        b=isPHTi0Tj3BlgaGWYN7DZ2zEeS7Q2TiziMDSdByYEECSq8Sfd8t+HpK9IN2zNtDAmX
-         S4iZQMhhKNRllJ8wQ15osDHLQ6qz2XksJR/8xDkzEC0GEDHri3oWK4NGYYLAjbtcjJWE
-         ZWiq2BXFYvIYawRvMkWEUr/vRkkKyhsGAYmtOoQuJ0uF48qQUFR5YxpTgvBsaknQlX8Q
-         As+RzHEw2ljy2hzugUufDrgtkrApagztEsPFYu8V+sOq+L3+2YBBZwhx3BhLlBI7EEXo
-         eNVXI2JzopiX9OnUSumJJM+sA1JtwotyYYk54g2WuA+VpxzMjWwQLs5xm1hE38n4eCF8
-         LqzQ==
+        d=google.com; s=20230601; t=1710544603; x=1711149403; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RwLzfWwBwbCcEZKduRLWrp8dVywQR/08FJQ2Cohkdxk=;
+        b=Pgv/7/AazUMuiuJwUE47lyE32bdBeKtM8Ci1LOHucW3alba10AE6pAVoi5cbme/P3J
+         +r8KyzbogSonYhi0XqUoHp93QC7QEeyBGTpf3+gRGfOI6JVczCaOurOIS2Ss54+xp8fE
+         X5jgw6WTwdyHUjIIoslLoe8U1+pO1UWsCiTiebrJBbAkzYYoApj5x0Jnex23/kviSdH/
+         M/lkG58Z3q6FviFILpO74EcntvEmByPXQhv8EOifviIU+z5NAj5iBJgzNbi0lKqssaMb
+         KfZ5FAVnu+A/6Q3UzLgI0Vbg02MGIwANQ3kwTTE4m99MAbnXttBGDFeeaVRiZEgCVLGy
+         Y19Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710544416; x=1711149216;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ik0WgA0NYbsNgyUpEeTOF/vMyU1VZieyn2u6T3u4Jh4=;
-        b=pWqVyqQlasNnzBoAHBIcN7OThT8ja1Q2c3kU2zH8Y7cqEmbBssAHXWJwKnXLPouVbO
-         +ZmiKnIa/nqV9qC91Y3JS7ptKmOAFCuY1fI/W+G0bmOEFrEeIEgp0Kr1+NL3M2uEweDp
-         O9rqn82z64K0W9lIGOxorS9Wb0h2osFCgLsf565GA3gr2m7uLT5HXhZvkhi9Eap6/Md/
-         6/kWeswuuqNX/dTEXl76C0XqUaRh5BTY1vMsV0PPM3e2z+hsVQ8++/YBaRlsGUnNKPh+
-         qYGRJlSUId8v7qBvNT50eY7osBDOKV8SWNl+tUPovf0Xw5sQwUP01fCg8akb8Ao3PRcy
-         CjjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGBkh++ALLJJaX3WDLod97LkFbgiSnRO+roTnGVBjEXR5vgdyclMDsycmcurE+fsVyq0o0fkCWPO8pe2GdrosNenqU+iQPtfYVqdvf
-X-Gm-Message-State: AOJu0YzovKJu9zukx+sB2CZ5YEbvMkT0N8bDiZuQlBwWQFnAo6y0nKYu
-	B7/rkRCnnIlOvoAJUYjI+SyF95F343BuhAAmMdbkQvfdc0uWEayHw5hcISbmje0=
-X-Google-Smtp-Source: AGHT+IGmWV+7gORxW1R384X6QiwEgLn1AxgnTY/2dOT9BBzXCSKh7z21EEUx/s44+ntxvgCJXtMhfQ==
-X-Received: by 2002:a92:d952:0:b0:366:1f42:dc53 with SMTP id l18-20020a92d952000000b003661f42dc53mr6424138ilq.18.1710544416406;
-        Fri, 15 Mar 2024 16:13:36 -0700 (PDT)
-Received: from [100.64.0.1] ([136.226.86.189])
-        by smtp.gmail.com with ESMTPSA id r5-20020a056638044500b004773027eee2sm964542jap.12.2024.03.15.16.13.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 16:13:36 -0700 (PDT)
-Message-ID: <b662bb30-d5e2-4bf0-a156-ac38461fcea2@sifive.com>
-Date: Fri, 15 Mar 2024 18:13:34 -0500
+        d=1e100.net; s=20230601; t=1710544603; x=1711149403;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RwLzfWwBwbCcEZKduRLWrp8dVywQR/08FJQ2Cohkdxk=;
+        b=wp3cPXk+zVE0vmGa5P5nJSZ3gaegS8rSkDhVXdb66M85ocU6TXQS7X3pi+CoRKLvfh
+         5MGPXPhOtTffXaXhXa79JunjSg3wuHuYWaJUEx2whuaQyhWrcBIQbRZCOJ7fs18lECjv
+         RaM7drcY9H8QRNq7O04CG8WufnGbE+uVmdTORA9lIOGOD0mwpEE7+YcFhQWi73dRfCnx
+         eRmUpWBbHczz4G8Jtgqheb2LU50f5amA4tOo7L2eVV428Gu8bLucfOoO3gUTmqQWvR5+
+         PHRMseJZ3+vqkLHLO2gSZQs5zpKpsFMLl+n+UrS3kEcK2VWZQ6ogZNacSWOdE42rg2uP
+         45zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOTM2U0SUN2kEjL055XAbcl4QmigmpjglJPSWcA0d+/j9IkJ4CnlTaikZmUWEPFTBxyzHWB3bgCiHE1ewha+9Ta9jXoLbM+8SY4xLn
+X-Gm-Message-State: AOJu0Yzz56k5Wk2ZjoSBGRkPGkJ2diOZebFgKTGbneZzypiUAyjerQgW
+	61KJtaaTBYqhietZIjK8wrCft2kipW4ezzNK33OFYiRii9iPa75nt5S2KTCiFraHe95tfktNpkY
+	W5fkbwtXt8SqQ7Ymz47CL3JxAlsWbZC6etRuX
+X-Google-Smtp-Source: AGHT+IGKD8w8/5z/F0F9q8ayCrR92OJWIbaZuDsOWlQLAzyPphKXnc4hYGvwLrq4DSMEKG49OUJvLfIeuKwgMy4Ibew=
+X-Received: by 2002:a05:6402:898:b0:568:6ca6:98c1 with SMTP id
+ e24-20020a056402089800b005686ca698c1mr18546edy.0.1710544602820; Fri, 15 Mar
+ 2024 16:16:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] riscv: errata: Add StarFive alternative ports
-Content-Language: en-US
-To: Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, geert+renesas@glider.be,
- prabhakar.mahadev-lad.rj@bp.renesas.com, conor.dooley@microchip.com,
- alexghiti@rivosinc.com, evan@rivosinc.com, ajones@ventanamicro.com,
- heiko@sntech.de, guoren@kernel.org, uwu@icenowy.me, jszhang@kernel.org,
- conor@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, leyfoon.tan@starfivetech.com,
- jeeheng.sia@starfivetech.com
-References: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
- <20240314061205.26143-3-joshua.yeong@starfivetech.com>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20240314061205.26143-3-joshua.yeong@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240307222932.584164-1-rmoar@google.com>
+In-Reply-To: <20240307222932.584164-1-rmoar@google.com>
+From: Daniel Latypov <dlatypov@google.com>
+Date: Fri, 15 Mar 2024 16:16:30 -0700
+Message-ID: <CAGS_qxr==N-E4VHei0o-A1=5dno_ozqMsHPHoq7RFF5bearhpg@mail.gmail.com>
+Subject: Re: [PATCH v3] kunit: tool: add ability to parse multiple files
+To: Rae Moar <rmoar@google.com>
+Cc: shuah@kernel.org, davidgow@google.com, brendan.higgins@linux.dev, 
+	kevko@google.com, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-14 1:12 AM, Joshua Yeong wrote:
-> Add required ports of the Alternative scheme for
-> StarFive CPU cores.
-> 
-> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+On Thu, Mar 7, 2024 at 2:29=E2=80=AFPM Rae Moar <rmoar@google.com> wrote:
+>
+> Add ability to parse multiple files. Additionally add the
+> ability to parse all results in the KUnit debugfs repository.
+>
+> How to parse multiple files:
+>
+> ./tools/testing/kunit/kunit.py parse results.log results2.log
+>
+> How to parse all files in directory:
+>
+> ./tools/testing/kunit/kunit.py parse directory_path/*
+>
+> How to parse KUnit debugfs repository:
+>
+> ./tools/testing/kunit/kunit.py parse debugfs
+>
+> For each file, the parser outputs the file name, results, and test
+> summary. At the end of all parsing, the parser outputs a total summary
+> line.
+>
+> This feature can be easily tested on the tools/testing/kunit/test_data/
+> directory.
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
 > ---
->  arch/riscv/Kconfig.errata            | 21 ++++++
->  arch/riscv/errata/Makefile           |  1 +
->  arch/riscv/errata/starfive/Makefile  |  1 +
->  arch/riscv/errata/starfive/errata.c  | 95 ++++++++++++++++++++++++++++
->  arch/riscv/include/asm/alternative.h |  3 +
->  arch/riscv/include/asm/errata_list.h |  5 ++
->  arch/riscv/kernel/alternative.c      |  5 ++
->  7 files changed, 131 insertions(+)
->  create mode 100644 arch/riscv/errata/starfive/Makefile
->  create mode 100644 arch/riscv/errata/starfive/errata.c
-> 
-> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-> index 910ba8837add..1438dd09533b 100644
-> --- a/arch/riscv/Kconfig.errata
-> +++ b/arch/riscv/Kconfig.errata
-> @@ -53,6 +53,16 @@ config ERRATA_SIFIVE_CIP_1200
->  
->  	  If you don't know what to do here, say "Y".
->  
-> +config ERRATA_STARFIVE
-> +	bool "StarFive errata"
-> +	depends on RISCV_ALTERNATIVE
-> +	help
-> +	  All StarFive errata Kconfig depend on this Kconfig. Disabling
-> +	  this Kconfig will disable all StarFive errata. Please say "Y"
-> +	  here if your platform uses StarFive CPU cores.
-> +
-> +	  Otherwise, please say "N" here to avoid unnecessary overhead.
-> +
->  config ERRATA_STARFIVE_JH7100
->  	bool "StarFive JH7100 support"
->  	depends on ARCH_STARFIVE
-> @@ -72,6 +82,17 @@ config ERRATA_STARFIVE_JH7100
->  	  Say "Y" if you want to support the BeagleV Starlight and/or
->  	  StarFive VisionFive V1 boards.
->  
-> +config ERRATA_STARFIVE_CMO
-> +	bool "Apply StarFive cache management errata"
-> +	depends on ERRATA_STARFIVE && MMU
-> +	select RISCV_DMA_NONCOHERENT
-> +	default y
-> +	help
-> +	  This will apply the cache management errata to handle the
-> +	  non-standard handling on non-coherent operations on StarFive cores.
-> +
-> +	  If you don't know what to do here, say "Y".
-> +
->  config ERRATA_THEAD
->  	bool "T-HEAD errata"
->  	depends on RISCV_ALTERNATIVE
-> diff --git a/arch/riscv/errata/Makefile b/arch/riscv/errata/Makefile
-> index 8a2739485123..4713a686b9f7 100644
-> --- a/arch/riscv/errata/Makefile
-> +++ b/arch/riscv/errata/Makefile
-> @@ -4,4 +4,5 @@ endif
->  
->  obj-$(CONFIG_ERRATA_ANDES) += andes/
->  obj-$(CONFIG_ERRATA_SIFIVE) += sifive/
-> +obj-$(CONFIG_ERRATA_STARFIVE) += starfive/
->  obj-$(CONFIG_ERRATA_THEAD) += thead/
-> diff --git a/arch/riscv/errata/starfive/Makefile b/arch/riscv/errata/starfive/Makefile
-> new file mode 100644
-> index 000000000000..2d644e19caef
-> --- /dev/null
-> +++ b/arch/riscv/errata/starfive/Makefile
-> @@ -0,0 +1 @@
-> +obj-y += errata.o
-> diff --git a/arch/riscv/errata/starfive/errata.c b/arch/riscv/errata/starfive/errata.c
-> new file mode 100644
-> index 000000000000..3ee360cd5e81
-> --- /dev/null
-> +++ b/arch/riscv/errata/starfive/errata.c
-> @@ -0,0 +1,95 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Erratas to be applied for StarFive CPU cores
-> + *
-> + * Copyright (C) 2024 Shanghai StarFive Technology Co., Ltd.
-> + *
-> + * Author: Joshua Yeong <joshua.yeong@starfivetech.com>
-> + */
-> +
-> +#include <linux/memory.h>
-> +#include <linux/module.h>
-> +
-> +#include <asm/alternative.h>
-> +#include <asm/cacheflush.h>
-> +#include <asm/errata_list.h>
-> +#include <asm/patch.h>
-> +#include <asm/processor.h>
-> +#include <asm/sbi.h>
-> +#include <asm/vendorid_list.h>
-> +
-> +#define STARFIVE_JH8100_DUBHE90_MARCHID	0x80000000DB000090UL
-> +#define STARFIVE_JH8100_DUBHE90_MIMPID	0x0000000020230930UL
-> +#define STARFIVE_JH8100_DUBHE80_MARCHID	0x80000000DB000080UL
-> +#define STARFIVE_JH8100_DUBHE80_MIMPID	0x0000000020230831UL
-> +#define STARFIVE_JH8100_L3		0x40
-> +
-> +static bool errata_probe_cmo(unsigned int stage, unsigned long arch_id,
-> +			      unsigned long impid)
-> +{
-> +	if (!IS_ENABLED(CONFIG_ERRATA_STARFIVE_CMO))
-> +		return false;
-> +
-> +	if ((arch_id != STARFIVE_JH8100_DUBHE90_MARCHID ||
-> +	    impid != STARFIVE_JH8100_DUBHE90_MIMPID) &&
-> +	    (arch_id != STARFIVE_JH8100_DUBHE80_MARCHID ||
-> +	    impid != STARFIVE_JH8100_DUBHE80_MIMPID))
-> +		return false;
-> +
-> +	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
-> +		return false;
-> +
-> +	riscv_cbom_block_size = STARFIVE_JH8100_L3;
-> +	riscv_noncoherent_supported();
+> Changes since v2:
+> - Fixed bug with input from command line. I changed this to use
+>   input(). Daniel, let me know if this works for you.
 
-This patch doesn't add any alternatives, so you don't need to use the errata
-framework. Please move these two lines to the cache driver -- see
-drivers/cache/sifive_ccache.c -- and then you can drop this patch.
+Oops, sorry for the delay.
 
-Regards,
-Samuel
+Hmm, it seems to be treating the stdin lines like file names
 
-> +
-> +	return true;
-> +}
-> +
-> +static u32 starfive_errata_probe(unsigned int stage,
-> +			      unsigned long archid, unsigned long impid)
-> +{
-> +	u32 cpu_req_errata = 0;
-> +
-> +	if (errata_probe_cmo(stage, archid, impid))
-> +		cpu_req_errata |= BIT(ERRATA_STARFIVE_CMO);
-> +
-> +	return cpu_req_errata;
-> +}
-> +
-> +void __init_or_module starfive_errata_patch_func(struct alt_entry *begin,
-> +					         struct alt_entry *end,
-> +					         unsigned long archid,
-> +						 unsigned long impid,
-> +						 unsigned int stage)
-> +{
-> +	struct alt_entry *alt;
-> +	u32 cpu_apply_errata = 0;
-> +	u32 tmp;
-> +	u32 cpu_req_errata;
-> +
-> +	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
-> +		return;
-> +
-> +	cpu_req_errata = starfive_errata_probe(stage, archid, impid);
-> +
-> +	for (alt = begin; alt < end; alt++) {
-> +		if (alt->vendor_id != STARFIVE_VENDOR_ID)
-> +			continue;
-> +		if (alt->patch_id >= ERRATA_STARFIVE_NUMBER)
-> +			continue;
-> +
-> +		tmp = (1U << alt->patch_id);
-> +		if (cpu_req_errata & tmp) {
-> +			mutex_lock(&text_mutex);
-> +			patch_text_nosync(ALT_OLD_PTR(alt), ALT_ALT_PTR(alt),
-> +					  alt->alt_len);
-> +			mutex_unlock(&text_mutex);
-> +			cpu_apply_errata |= tmp;
-> +		}
-> +	}
-> +
-> +	if (stage != RISCV_ALTERNATIVES_MODULE &&
-> +	    cpu_apply_errata != cpu_req_errata) {
-> +		pr_warn("WARNING: Missing StarFive errata patches! \n");
-> +	    }
-> +}
-> diff --git a/arch/riscv/include/asm/alternative.h b/arch/riscv/include/asm/alternative.h
-> index 3c2b59b25017..8f5e6883db97 100644
-> --- a/arch/riscv/include/asm/alternative.h
-> +++ b/arch/riscv/include/asm/alternative.h
-> @@ -51,6 +51,9 @@ void andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
->  void sifive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
->  			      unsigned long archid, unsigned long impid,
->  			      unsigned int stage);
-> +void starfive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
-> +			     unsigned long archid, unsigned long impid,
-> +			     unsigned int stage);
->  void thead_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
->  			     unsigned long archid, unsigned long impid,
->  			     unsigned int stage);
-> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-> index ea33288f8a25..1cd5ba3a1466 100644
-> --- a/arch/riscv/include/asm/errata_list.h
-> +++ b/arch/riscv/include/asm/errata_list.h
-> @@ -22,6 +22,11 @@
->  #define	ERRATA_SIFIVE_NUMBER 2
->  #endif
->  
-> +#ifdef CONFIG_ERRATA_STARFIVE
-> +#define	ERRATA_STARFIVE_CMO 0
-> +#define	ERRATA_STARFIVE_NUMBER 1
-> +#endif
-> +
->  #ifdef CONFIG_ERRATA_THEAD
->  #define	ERRATA_THEAD_PBMT 0
->  #define	ERRATA_THEAD_PMU 1
-> diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternative.c
-> index 319a1da0358b..deedd4b76472 100644
-> --- a/arch/riscv/kernel/alternative.c
-> +++ b/arch/riscv/kernel/alternative.c
-> @@ -52,6 +52,11 @@ static void riscv_fill_cpu_mfr_info(struct cpu_manufacturer_info_t *cpu_mfr_info
->  		cpu_mfr_info->patch_func = sifive_errata_patch_func;
->  		break;
->  #endif
-> +#ifdef CONFIG_ERRATA_STARFIVE
-> +	case STARFIVE_VENDOR_ID:
-> +		cpu_mfr_info->patch_func = starfive_errata_patch_func;
-> +		break;
-> +#endif
->  #ifdef CONFIG_ERRATA_THEAD
->  	case THEAD_VENDOR_ID:
->  		cpu_mfr_info->patch_func = thead_errata_patch_func;
+$ ./tools/testing/kunit/kunit.py parse <
+/tools/testing/kunit/test_data/test_config_printk_time.log
+File path: Could not find  [    0.060000] printk: console [mc-1] enabled
 
+Oh, I see, we're prompting the user via
+  input("File path: ")
+?
+
+I'm not necessarily against such a change, but I would personally
+prefer the old behavior of being able to read ktap from stdin
+directly.
+As a user, I'd also prefer to only type out filenames as arguments
+where I can get autocomplete, so `input()` here wouldn't help me
+personally.
+
+Applying a hackish patch like this [1] on top gets the behavior I'd
+personally expect:
+$ ./tools/testing/kunit/kunit.py parse <
+/tools/testing/kunit/test_data/test_config_printk_time.log
+/dev/stdin
+..
+[16:01:50] Testing complete. Ran 10 tests: passed: 10
+
+I'd mentioned in the previous version that we could have parsed files
+contain a `Union[str, TextIO]` and then read from the `sys.stdin` file
+object directly.
+But having it blindly open `/dev/stdin` seems to work just the same,
+if we want to keep our list simpler and just hold strings.
+
+[1] this just also re-orders the `os.path.isdir()` check as mentioned
+below, which simplifies things
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index 1aa3d736d80c..311d107bd684 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -515,18 +515,18 @@ def parse_handler(cli_args: argparse.Namespace) -> No=
+ne:
+        total_test =3D kunit_parser.Test()
+        total_test.status =3D kunit_parser.TestStatus.SUCCESS
+        if not parsed_files:
+-               parsed_files.append(input("File path: "))
+-
+-       if parsed_files[0] =3D=3D "debugfs" and len(parsed_files) =3D=3D 1:
++               parsed_files.append('/dev/stdin')
++       elif len(parsed_files) =3D=3D 1 and parsed_files[0] =3D=3D "debugfs=
+":
+                parsed_files.pop()
+                for (root, _, files) in os.walk("/sys/kernel/debug/kunit"):
+                        parsed_files.extend(os.path.join(root, f) for
+f in files if f =3D=3D "results")
+-
+-       if not parsed_files:
+-               print("No files found.")
++               if not parsed_files:
++                       print("No files found.")
+
+        for file in parsed_files:
+-               if os.path.isfile(file):
++               if os.path.isdir(file):
++                       print("Ignoring directory ", file)
++               elif os.path.exists(file):
+                        print(file)
+                        with open(file, 'r', errors=3D'backslashreplace') a=
+s f:
+                                kunit_output =3D f.read().splitlines()
+@@ -536,8 +536,6 @@ def parse_handler(cli_args: argparse.Namespace) -> None=
+:
+                                                        json=3Dcli_args.jso=
+n)
+                        _, test =3D parse_tests(request, metadata, kunit_ou=
+tput)
+                        total_test.subtests.append(test)
+-               elif os.path.isdir(file):
+-                       print("Ignoring directory ", file)
+                else:
+                        print("Could not find ", file)
+
+
+> - Add more specific warning messages
+>
+>  tools/testing/kunit/kunit.py | 56 +++++++++++++++++++++++++-----------
+>  1 file changed, 40 insertions(+), 16 deletions(-)
+>
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index bc74088c458a..1aa3d736d80c 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -511,19 +511,42 @@ def exec_handler(cli_args: argparse.Namespace) -> N=
+one:
+>
+>
+>  def parse_handler(cli_args: argparse.Namespace) -> None:
+> -       if cli_args.file is None:
+> -               sys.stdin.reconfigure(errors=3D'backslashreplace')  # typ=
+e: ignore
+> -               kunit_output =3D sys.stdin  # type: Iterable[str]
+> -       else:
+> -               with open(cli_args.file, 'r', errors=3D'backslashreplace'=
+) as f:
+> -                       kunit_output =3D f.read().splitlines()
+> -       # We know nothing about how the result was created!
+> -       metadata =3D kunit_json.Metadata()
+> -       request =3D KunitParseRequest(raw_output=3Dcli_args.raw_output,
+> -                                       json=3Dcli_args.json)
+> -       result, _ =3D parse_tests(request, metadata, kunit_output)
+> -       if result.status !=3D KunitStatus.SUCCESS:
+> -               sys.exit(1)
+> +       parsed_files =3D cli_args.files # type: List[str]
+> +       total_test =3D kunit_parser.Test()
+> +       total_test.status =3D kunit_parser.TestStatus.SUCCESS
+> +       if not parsed_files:
+> +               parsed_files.append(input("File path: "))
+> +
+> +       if parsed_files[0] =3D=3D "debugfs" and len(parsed_files) =3D=3D =
+1:
+> +               parsed_files.pop()
+> +               for (root, _, files) in os.walk("/sys/kernel/debug/kunit"=
+):
+> +                       parsed_files.extend(os.path.join(root, f) for f i=
+n files if f =3D=3D "results")
+> +
+> +       if not parsed_files:
+> +               print("No files found.")
+> +
+> +       for file in parsed_files:
+> +               if os.path.isfile(file):
+
+Note: perhaps we should reorder this to
+
+if os.path.isdir(file):
+   ...
+elif os.path.exists(file):
+  ...
+
+That way this code will then start handling non-regular, yet readable
+files, like links, etc.
+That would also help out if we started passing in the magic
+"/dev/stdin" (since it's a symlink)
+
+> +                       print(file)
+> +                       with open(file, 'r', errors=3D'backslashreplace')=
+ as f:
+> +                               kunit_output =3D f.read().splitlines()
+> +                       # We know nothing about how the result was create=
+d!
+> +                       metadata =3D kunit_json.Metadata()
+> +                       request =3D KunitParseRequest(raw_output=3Dcli_ar=
+gs.raw_output,
+> +                                                       json=3Dcli_args.j=
+son)
+> +                       _, test =3D parse_tests(request, metadata, kunit_=
+output)
+> +                       total_test.subtests.append(test)
+> +               elif os.path.isdir(file):
+> +                       print("Ignoring directory ", file)
+
+minor nit: `print()` will automatically put a space between arguments, e.g.
+> Ignoring directory  .
+is what it'll print if I run `kunit.py parse .`
+
+It might be better to use a f-string so put quotes around it, like so
+  print(f'Ignoring directory "{file}"')}
+and below,
+  print(f'Could not find "{file}"')
+
+> +               else:
+> +                       print("Could not find ", file)
+> +
+> +       if len(parsed_files) > 1: # if more than one file was parsed outp=
+ut total summary
+> +               print('All files parsed.')
+> +               if not request.raw_output:
+> +                       stdout.print_with_timestamp(kunit_parser.DIVIDER)
+> +                       kunit_parser.bubble_up_test_results(total_test)
+> +                       kunit_parser.print_summary_line(total_test)
+>
+>
+>  subcommand_handlers_map =3D {
+> @@ -569,9 +592,10 @@ def main(argv: Sequence[str]) -> None:
+>                                             help=3D'Parses KUnit results =
+from a file, '
+>                                             'and parses formatted results=
+')
+>         add_parse_opts(parse_parser)
+> -       parse_parser.add_argument('file',
+> -                                 help=3D'Specifies the file to read resu=
+lts from.',
+> -                                 type=3Dstr, nargs=3D'?', metavar=3D'inp=
+ut_file')
+> +       parse_parser.add_argument('files',
+> +                                 help=3D'List of file paths to read resu=
+lts from or keyword'
+> +                                               '"debugfs" to read all re=
+sults from the debugfs directory.',
+
+minor spacing note: there are two ' 's here in the series of tabs, i.e.
+  ^I^I^I^I  ^I^I'"debugfs" to read all results from the debugfs directory.'=
+,$
+(using vim's :list formatting)
+
+This was copy-pasted from the lines above and below which look like
+  ^I^I^I^I  help=3D'List of file paths to read results from or keyword'$
+i.e. they use the 2 spaces to align after the tabs.
+
+We can just drop those 2 spaces since they won't visually affect the
+outcome with a tabwidth of 8 spaces.
+
+Sorry again for the delayed reply,
+Daniel
 
