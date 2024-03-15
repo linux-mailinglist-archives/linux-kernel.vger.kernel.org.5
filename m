@@ -1,112 +1,138 @@
-Return-Path: <linux-kernel+bounces-104190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 477FC87CA78
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:14:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BBDD87CA7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07033282F74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:14:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 248ED28278B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DEF3179BC;
-	Fri, 15 Mar 2024 09:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3855F17732;
+	Fri, 15 Mar 2024 09:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBdseELT"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="j7CQdFq4"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030FA13AC5;
-	Fri, 15 Mar 2024 09:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E931B17736
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 09:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710494081; cv=none; b=fnrfVtHqvjCb4UcNVKQsAWEvYF0lg3Zi63wOFFRXGQeqMNMhtQmN0TspylGdAjdlZv2BRC5RnFefJzOBYXvzoRyP1BmJiCMhbbIJdGuueVbOsDtTvy08VkakMFzOVydnWH6pMSP1DDr5GiURWNgZABFwoabeY6oUeqZy3NCsUDo=
+	t=1710494127; cv=none; b=Pv8UvGXKV0s7O7VGQtdyXhrHDrtb84QCoo8X0lGEPE4qbjDq1zyugaVdsUjNbL5Kd/DPfeieUIZ3pYIzHcZ16LWVuqdGs7oF0s9jcYRPA3rYkczDJkuJxIMAsCLSnyE16SxsZ+adSIakbHHeqFBzK9YtMXg++sXwZkrBSQvJF50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710494081; c=relaxed/simple;
-	bh=UsJgKbEx0AKH4pAVybDI3SH53hz+4clcfF4q3S14ZMA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jf2iRK6Km3v7ZExLENU3kQSuu4DC+P1wpjBhJMLVn8bon4it4YAZ1d5ezljXdyEEvcFj+V5M+mNQZLiR91u10cyqkcPsZZorNaTwECvMcD2ZcAmXlvoehDR8G2fonHBWFEUfZuPEU+bGQL4TA6Lco03HxKylouVhiS4MjekXpTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VBdseELT; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso24027501fa.2;
-        Fri, 15 Mar 2024 02:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710494078; x=1711098878; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kdhg2x3t8Nf/uv6nbcx14LUHcWP8lBLkCrAgVBOR3+8=;
-        b=VBdseELTJq+R0fUmhkj8cs6NfGuFz93eDsRx6H4vqdYT96yHoRSLetBTnPTyn0pPwB
-         avlo5UUbkWnN2zPRYINsdzlz2nck/1iqkyisyCtxu5GB+7sA7niCEf5/vdEAscpujti6
-         f3A/1fkjH9ZnqKQZz3IySaSHQ63D2Vr7bUt+opHYsB8AyHyw9RHYIOjsiXs4QqrBXvdN
-         r5yX8uHBcW4GB07fXDyb6+k+KP4r5B5kYu9z0AfGaVOOqqbhEZ1MUQLJJd8ULjkXWM+B
-         3CWKAzZhFqtwyhOflmJGl3jj915KfaFjVlL1bsB6rcY69VcHh9bWoYTYLDUh7+SMJCFY
-         a41A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710494078; x=1711098878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kdhg2x3t8Nf/uv6nbcx14LUHcWP8lBLkCrAgVBOR3+8=;
-        b=SAVhM8KFrPzSwqvzgg2PcSmWGXqbSkO02dA1ZljgdO/vr5+pYO/8W1/ZIB7QXyxKbc
-         s/BZO+H5/N6xbvyEtsWHNKaagwxebkhanbWsqPjEcuOksjyKGfN5NaiTMSqs1YQW6y3x
-         DglQOiAqTBZ/RC4guCGMmObVPXYIohI/byXv81XgmOP0QiCZ2gk6qe0TOL0PMW4bIPYz
-         QcfZautjPJ2buk/SrQNvdsV7WzNyW3XsC0WvdGrFbf4wDqXoYEwBt4CYeM4lXX/Xl59H
-         30JDDSvixB4pQK448RONIp34a4vnONMBuXS8AX7bWB4yVU6V6ZY5fniPSGHpmeDrV2qb
-         jpQg==
-X-Forwarded-Encrypted: i=1; AJvYcCVb2OoQzRuaamSZCi9SodvoyEKEY8rsttuDEVi7gcqAIRVUDFz9P1nEJ5/bRLFqu19TyRONa8qGZ+7G8BfpoAl6xSO3Y692zAUqBnZtu/XmPLPWNLtMLE8qUyw3I0RGNy/lZYBfD/zt
-X-Gm-Message-State: AOJu0YyySt8B2q06mW7TNAsVHqaQGccomsVluhuFwX+9R3Yj3VRKfpkG
-	VBBVpyI+MD1fLFxssSAjTHaWzML23nSDbBbWCHLhVtDvrpY+8W06
-X-Google-Smtp-Source: AGHT+IFkANNGzB0Gt1dRmpu4/6570ZhiIh3q/3WxPkx8sXXzRwN27f8fcui1dezilc/yejo7Yqxf+g==
-X-Received: by 2002:a2e:b611:0:b0:2d4:251f:c151 with SMTP id r17-20020a2eb611000000b002d4251fc151mr1655141ljn.46.1710494077935;
-        Fri, 15 Mar 2024 02:14:37 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id f5-20020adffcc5000000b0033e7b05edf3sm2710694wrs.44.2024.03.15.02.14.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 02:14:37 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Cosmin Tanislav <cosmin.tanislav@analog.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	linux-iio@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] iio: accel: adxl367: Remove second semicolon
-Date: Fri, 15 Mar 2024 09:14:36 +0000
-Message-Id: <20240315091436.2430227-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710494127; c=relaxed/simple;
+	bh=acrQ5oOzFvIptP0m55ggct7J15MBntUB7Hgt+FmRFRg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z7hbgdOwF5xI3+S8t/Qop51CMhSRkR2HTl0Ck3C94DunAAIvClGHhPZaKIbV20XUu/LYGozxKXBVHZIpEwZHZ89T4MAOuHySnProtVbDmMKfvISooFVnl0hSsDKSz2gKHwq0Dr8ps5cUxnqYIQKRAdYPO6eNfDzuVpZbayrBvj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=j7CQdFq4; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710494124;
+	bh=acrQ5oOzFvIptP0m55ggct7J15MBntUB7Hgt+FmRFRg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=j7CQdFq496EcdadWXv01UmcL6cPMnEne0Ve8NgUX6EIsZfO28poLm/zYFElsRmg8r
+	 L02tS8PomCFcYDO2g/Fpm6YlBqVX/p3IqIaxspuWPkGOYg1N1bGS+r6vAxDsKVKg+e
+	 xiDOpoNn6GD1INtI2opCCnng8fin2PPXPROdpsqeOZhWLzYqRG/i+eHB+mYljXN4CE
+	 sBKniqwVIkFU3vB2+zdfX0ICiRTuEItOr+lnz/V2pFkMZrcCk4q5rvTxNqt5uvNxXJ
+	 AewYrKTKhrLaqm9vCBSfDpgEFOzbsvh9u3hyfcFeMqChvHglqGLhJr0cKE8r+7M/1i
+	 pTRd13IOCOfWg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 36ED137820FD;
+	Fri, 15 Mar 2024 09:15:23 +0000 (UTC)
+Message-ID: <d295a448-1b50-47be-92a2-770501c83e18@collabora.com>
+Date: Fri, 15 Mar 2024 10:15:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mediatek: dsi: Correct calculation formula of PHY Timing
+To: Shuijing Li <shuijing.li@mediatek.com>, chunkuang.hu@kernel.org,
+ p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+ matthias.bgg@gmail.com, jitao.shi@mediatek.com
+Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20240315072945.19502-1-shuijing.li@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240315072945.19502-1-shuijing.li@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-There is a statement with two semicolons. Remove the second one, it
-is redundant.
+Il 15/03/24 08:29, Shuijing Li ha scritto:
+> This patch correct calculation formula of PHY timing.
+> Make actual phy timing more accurate.
+> 
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/iio/accel/adxl367.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+More accurate in which cases? By how much? On which SoC(s)?
 
-diff --git a/drivers/iio/accel/adxl367.c b/drivers/iio/accel/adxl367.c
-index 210228affb80..5cf4828a5eb5 100644
---- a/drivers/iio/accel/adxl367.c
-+++ b/drivers/iio/accel/adxl367.c
-@@ -621,7 +621,7 @@ static int _adxl367_set_odr(struct adxl367_state *st, enum adxl367_odr odr)
- static int adxl367_set_odr(struct iio_dev *indio_dev, enum adxl367_odr odr)
- {
- 	iio_device_claim_direct_scoped(return -EBUSY, indio_dev) {
--		struct adxl367_state *st = iio_priv(indio_dev);;
-+		struct adxl367_state *st = iio_priv(indio_dev);
- 		int ret;
- 
- 		guard(mutex)(&st->lock);
--- 
-2.39.2
+I agree about those changes if those are improving the PHY timing, but
+can you please document what's going on?
+
+Thanks,
+Angelo
+
+> Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
+> ---
+>   drivers/gpu/drm/mediatek/mtk_dsi.c | 33 +++++++++++++++---------------
+>   1 file changed, 17 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> index a2fdfc8ddb15..d1bd7d671880 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -235,22 +235,23 @@ static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi)
+>   	u32 data_rate_mhz = DIV_ROUND_UP(dsi->data_rate, 1000000);
+>   	struct mtk_phy_timing *timing = &dsi->phy_timing;
+>   
+> -	timing->lpx = (60 * data_rate_mhz / (8 * 1000)) + 1;
+> -	timing->da_hs_prepare = (80 * data_rate_mhz + 4 * 1000) / 8000;
+> -	timing->da_hs_zero = (170 * data_rate_mhz + 10 * 1000) / 8000 + 1 -
+> -			     timing->da_hs_prepare;
+> -	timing->da_hs_trail = timing->da_hs_prepare + 1;
+> -
+> -	timing->ta_go = 4 * timing->lpx - 2;
+> -	timing->ta_sure = timing->lpx + 2;
+> -	timing->ta_get = 4 * timing->lpx;
+> -	timing->da_hs_exit = 2 * timing->lpx + 1;
+> -
+> -	timing->clk_hs_prepare = 70 * data_rate_mhz / (8 * 1000);
+> -	timing->clk_hs_post = timing->clk_hs_prepare + 8;
+> -	timing->clk_hs_trail = timing->clk_hs_prepare;
+> -	timing->clk_hs_zero = timing->clk_hs_trail * 4;
+> -	timing->clk_hs_exit = 2 * timing->clk_hs_trail;
+> +	timing->lpx = (80 * data_rate_mhz / (8 * 1000)) + 1;
+> +	timing->da_hs_prepare = (59 * data_rate_mhz + 4 * 1000) / 8000 + 1;
+> +	timing->da_hs_zero = (163 * data_rate_mhz + 11 * 1000) / 8000 + 1 -
+> +		timing->da_hs_prepare;
+> +	timing->da_hs_trail = (78 * data_rate_mhz + 7 * 1000) / 8000 + 1;
+> +
+> +	timing->ta_go = 4 * timing->lpx;
+> +	timing->ta_sure = 3 * timing->lpx / 2;
+> +	timing->ta_get = 5 * timing->lpx;
+> +	timing->da_hs_exit = (118 * data_rate_mhz / (8 * 1000)) + 1;
+> +
+> +	timing->clk_hs_prepare = (57 * data_rate_mhz / (8 * 1000)) + 1;
+> +	timing->clk_hs_post = (65 * data_rate_mhz + 53 * 1000) / 8000 + 1;
+> +	timing->clk_hs_trail = (78 * data_rate_mhz + 7 * 1000) / 8000 + 1;
+> +	timing->clk_hs_zero = (330 * data_rate_mhz / (8 * 1000)) + 1 -
+> +		timing->clk_hs_prepare;
+> +	timing->clk_hs_exit = (118 * data_rate_mhz / (8 * 1000)) + 1;
+>   
+>   	timcon0 = timing->lpx | timing->da_hs_prepare << 8 |
+>   		  timing->da_hs_zero << 16 | timing->da_hs_trail << 24;
+
+
 
 
