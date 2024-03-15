@@ -1,192 +1,364 @@
-Return-Path: <linux-kernel+bounces-104920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E25D87D5D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D99F87D5DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7F6D283EAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:57:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A1E8285ACF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FB558127;
-	Fri, 15 Mar 2024 20:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1569259169;
+	Fri, 15 Mar 2024 20:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d92Ucujo"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCmlZwPT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13CF56B90
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 20:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2705336A;
+	Fri, 15 Mar 2024 20:51:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710535785; cv=none; b=CiuTO9F+QZvkvAwy9GBLUSf8HMl9Bs8PvfLbVEjbW9zwAGymUkA1lMgCcOnuj9tGi8OJsKC173xzn+8MeG1KF0MnFzY8FdQnl8QrfYMvbeAhp1TBlWdVAeBOPC9qqIzoJlKCkc1oSxX47L8lhsnYB5+SY60XfnzHM/n5tV5BMSU=
+	t=1710535868; cv=none; b=SNjc7XA4Mjd7WM3MqTcwZuY5KYzkNnEhLXo8SSJQWunw7kLPFIkVLO3iSAw52P+GuWk9SOPINVCbx6aFu2YoAYVrol5Vgft6XNYhxmiHdFCLbulojb+bRnijQflyE/FJ6e6ZVXJVhpzPkLCaZWztzySdCOAaDxn+J2sv4BUSgng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710535785; c=relaxed/simple;
-	bh=Rut/BAraKFn7EzjJl52R4XRiSgrwnmytZ5kfoG42EdU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HdHFahAVbmpafao6RZjqboN36CtjjLX0QNcidFMuhq8Wsy0DJKdpzTrAU8rdD7Sdnt19a+ufwhS7fc1zawqr4k5zkr0vx4gJT889lbYaWHwMJKqRv0mLU2Guow6EumTWycw6KDAT5tXjP+giLmCDcmqkhH+Nkv5cfcOzn1+FgNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d92Ucujo; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-413fea12b50so13544635e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710535779; x=1711140579; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=evdMd0PT9+KX7ncy1Up7YwjVyPPKavdHQwvEaxViPvA=;
-        b=d92UcujouT9aKhjIh8Btc0is+RJ7B7yw6UYgnjTGyV+aJOdqmihq5rJwEVCmZkzPdF
-         meWzvh4vyCD7UeaM+GNLk1hzqa+36gyu6Whk+10l3RD6th8/7yFC9AghVaGwdFH/Mx9b
-         +xlAhoZLNS4WxdVOs0wF767t9owuXTxJHZWWuTcdeQAYmIIglnhN1Jcov5Efd3KoT7M3
-         TPjWN+FfRcN5/WCEV1340yBHNBrE2WHYomOSL1klPs6EGRsd4rjMD2zPiaoP6G80fwSO
-         s3V4Kj8AcrwPu560oGAckfsp+nEJtBzbqKPdsaSSaai9w6R1FzuMdyBJznl2BN8Fgd1J
-         F8ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710535779; x=1711140579;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=evdMd0PT9+KX7ncy1Up7YwjVyPPKavdHQwvEaxViPvA=;
-        b=lDRuDZRSqysnFDL2bVTVIFvVbAzWpqAuCkdPXPW1Hl4bctUP8ysQ0aG13C+YZXjjEX
-         J4NmE4nqxXV2tKU6S9EDniD3MXDJi9x3ihx+YfMosc80fXK1QxX43c1MctsKaQ5yHGLx
-         eP+7EGe+KOTJF+GV99DX1qcxu+7WDRjp/Eqa7C7AlPcuLFuK2abokwqhsoFo0elQdH2I
-         67C4TDk8rmd3MoHnbk2bheJtwBlCtFOCHXOq34gZ6RWLStxh/UkKwqH3LJVderB0YGB7
-         AMRr9t6oaNLiLAYnfCyyywji9Or1d6kdNrlw9J9Tefcg74i18hYOjBe884SXG3AT0AMO
-         AndQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVdqvHFntTgOVV6zt2KGBaFXGkNOzzMsiWlvLdX7g4fu1qSq8fSyd++QHDRtAktqR5vklmn2ISrbGOcvZ2lfLZVR9UcGhYZWVTbzU4M
-X-Gm-Message-State: AOJu0Yxs1JJBNitbROeG4xy2ctPhXZk7eo80JiDfPwYM3R4YCWz59m7O
-	NSftXFr1ArxSPadcNBHzyknLCxTWAk2WLeMG3ao8r29HVW5fnQ/0vuvpsZlc+Kg=
-X-Google-Smtp-Source: AGHT+IHW/ZhLoW9dVsP03e/cfzAFm2l0UodLy8/jk0GAphAW9PjOYbi/mCIN40Y0gjbTVAhL7S0e+g==
-X-Received: by 2002:a05:600c:b59:b0:413:f1a4:d412 with SMTP id k25-20020a05600c0b5900b00413f1a4d412mr194865wmr.14.1710535779319;
-        Fri, 15 Mar 2024 13:49:39 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id h10-20020a05600c350a00b00412ee8e2f2asm10091282wmq.9.2024.03.15.13.49.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 13:49:38 -0700 (PDT)
-Message-ID: <b4fe2ffa-bd36-404a-9441-8781f0a81d26@linaro.org>
-Date: Fri, 15 Mar 2024 21:49:37 +0100
+	s=arc-20240116; t=1710535868; c=relaxed/simple;
+	bh=ltXoId498AiO/30grKuZlMlq+tUWSOpSAWm/2NMtmLg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VEd/AQ8rKpY3A3M7l+Dp5ROw/6CMRVqRWSZWlARPYMc3bBis9W7tuLm8s/s5YWuqUvmgKo8omb6WKV4Y6+6goGbrzJt5S66FQRKsYLKTwCXn2qC1h0LRunPoJyBVhNVnVQ+axR7lfe6QUgQZTTpf7NZm1D4QOtROxwOB8JKeAEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCmlZwPT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EE05C43609;
+	Fri, 15 Mar 2024 20:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710535867;
+	bh=ltXoId498AiO/30grKuZlMlq+tUWSOpSAWm/2NMtmLg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eCmlZwPTCB1HaH9iTx6aUiNQYgmIX/3NcStPjBR9Ftpwp7WDzNnc/1/2GBpPbH+GB
+	 EEYKeWv+zpc2RGYstt2XpcA12UIkGM//BqUQBesgpoyQ33wY8PNUUBIPvf7xXRNgou
+	 J4NHCtAOgEaZD8FZ9Sap7ItPJ3V1hL+Bg++IjNzmbroLqged8xumHBfbcAYoIABaC+
+	 5jvlekMMfIViSfuahfugEQh+8w1oP9bGmF/icx0i1XDuHKhf3hprYViqCA/eRAAyr0
+	 dbfxPcrBkGSNvQfMeaCBCokfLEbmTjNd6uOWsUYJOYcxQqBshssEXSeB8nQ2bNcV+x
+	 Qz0j9/Sfx9nGg==
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7882e8f99eeso131280685a.0;
+        Fri, 15 Mar 2024 13:51:07 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUSNu26GL02xinbvP4dhSdrB/WtXqH4yEg2fXbgBKUvHm/nvJGAR/jmX6ecOtCwlxGfE5s5zayUpq/fcVTdKkbfxyOL5LYvy4tyt5UbL+UdnH/ggkf4Fmx8U3zAmaYn7HVFuThkzqBpgukZ30ZtEpwqzfbQuFppBGgvx7wj4DCPmtigJN9souqf05E+te0c1SYtTrvfZwX3XHnFMi4AweQIl2mWB9WEi68mQH9LGeTUbjYv+El7r+Q4RIFL5uTA/S9/sn/xpPPHIIiuSMbh+hmNvZyGxXc/SmKoXNaPGqTiWWZDc5n3AXXmsi4y+N9Tfx3lZDk=
+X-Gm-Message-State: AOJu0YwsnwW4GV12LNv+HEMvHyjlhJLWmoEJ3Y0g3zjZJam1wItHcGxT
+	3AwsysUrrMvUexYhrtS27HcRr2ZjqhCgUC/7yd/GCwoiUd4RQkbAOZ/F2ocvZxqWMClJiUNa1Lc
+	sERmgFXGO4z9IQBP1/LLxiDEt9Yg=
+X-Google-Smtp-Source: AGHT+IGET8xwI3RnqbMCBle+J+vig4o2hHdhxNsQ/Tg1+24ag8QltmBO+43+Nn6/Nn43j6qBbbvvZhy8NrbcaHjAt2g=
+X-Received: by 2002:ac8:7dc1:0:b0:42e:fa57:e07e with SMTP id
+ c1-20020ac87dc1000000b0042efa57e07emr5976112qte.9.1710535866260; Fri, 15 Mar
+ 2024 13:51:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/6] dt-bindindgs: clock: nxp: support i.MX95 Display
- CSR module
-Content-Language: en-US
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Abel Vesa <abelvesa@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>
-Cc: linux-clk@vger.kernel.org, imx@lists.linux.dev,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-References: <20240314-imx95-blk-ctl-v4-0-d23de23b6ff2@nxp.com>
- <20240314-imx95-blk-ctl-v4-5-d23de23b6ff2@nxp.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240314-imx95-blk-ctl-v4-5-d23de23b6ff2@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240315-dir-deleg-v1-0-a1d6209a3654@kernel.org> <20240315-dir-deleg-v1-21-a1d6209a3654@kernel.org>
+In-Reply-To: <20240315-dir-deleg-v1-21-a1d6209a3654@kernel.org>
+From: Anna Schumaker <anna@kernel.org>
+Date: Fri, 15 Mar 2024 16:50:50 -0400
+X-Gmail-Original-Message-ID: <CAFX2Jfk_np=agEWY0aPkosssBkfx9S+ur-L1=91psn-hdgK+RA@mail.gmail.com>
+Message-ID: <CAFX2Jfk_np=agEWY0aPkosssBkfx9S+ur-L1=91psn-hdgK+RA@mail.gmail.com>
+Subject: Re: [PATCH RFC 21/24] nfs: add a GDD_GETATTR rpc operation
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Chuck Lever <chuck.lever@oracle.com>, Alexander Aring <alex.aring@gmail.com>, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, Steve French <sfrench@samba.org>, 
+	Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	David Howells <dhowells@redhat.com>, Tyler Hicks <code@tyhicks.com>, Neil Brown <neilb@suse.de>, 
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+	netfs@lists.linux.dev, ecryptfs@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14/03/2024 14:25, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> The DISPLAY_CSR provides control and status of the following:
->  Clock selection for the Display Engines
->  Pixel Interleaver mode selection
->  Pixel Link enables
->  QoS settings for the display controller
->  ArCache and AwCache signals
->  Display Engine plane association
-> 
-> This patch is to add the clock features for this module
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Hi Jeff,
+
+On Fri, Mar 15, 2024 at 12:54=E2=80=AFPM Jeff Layton <jlayton@kernel.org> w=
+rote:
+>
+> Add a new compound that does a GET_DIR_DELEGATION just before doing a
+> GETATTR on an inode. Add a delegation stateid and a nf_status code to
+> struct nfs4_getattr_res to store the result.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > ---
->  .../bindings/clock/nxp,imx95-display-csr.yaml      | 50 ++++++++++++++++++++++
->  include/dt-bindings/clock/nxp,imx95-clock.h        |  4 ++
->  2 files changed, 54 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/nxp,imx95-display-csr.yaml b/Documentation/devicetree/bindings/clock/nxp,imx95-display-csr.yaml
-> new file mode 100644
-> index 000000000000..9a5e21346b0d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/nxp,imx95-display-csr.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/nxp,imx95-display-csr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>  fs/nfs/nfs4xdr.c        | 136 ++++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  include/linux/nfs4.h    |   1 +
+>  include/linux/nfs_xdr.h |   2 +
+>  3 files changed, 139 insertions(+)
+>
+> diff --git a/fs/nfs/nfs4xdr.c b/fs/nfs/nfs4xdr.c
+> index 1416099dfcd1..c28025018bda 100644
+> --- a/fs/nfs/nfs4xdr.c
+> +++ b/fs/nfs/nfs4xdr.c
+> @@ -391,6 +391,22 @@ static int decode_layoutget(struct xdr_stream *xdr, =
+struct rpc_rqst *req,
+>                                 XDR_QUADLEN(NFS4_MAX_SESSIONID_LEN) + 5)
+>  #define encode_reclaim_complete_maxsz  (op_encode_hdr_maxsz + 4)
+>  #define decode_reclaim_complete_maxsz  (op_decode_hdr_maxsz + 4)
+> +#define encode_get_dir_delegation_maxsz (op_encode_hdr_maxsz +          =
+               \
+> +                                        4 /* gdda_signal_deleg_avail */ =
++              \
+> +                                        8 /* gdda_notification_types */ =
++              \
+> +                                        nfstime4_maxsz  /* gdda_child_at=
+tr_delay */ +  \
+> +                                        nfstime4_maxsz  /* gdda_dir_attr=
+_delay */ +    \
+> +                                        nfs4_fattr_bitmap_maxsz /* gdda_=
+child_attributes */ + \
+> +                                        nfs4_fattr_bitmap_maxsz /* gdda_=
+dir_attributes */)
 > +
-> +title: NXP i.MX95 Display Block Control
+> +#define decode_get_dir_delegation_maxsz (op_encode_hdr_maxsz +          =
+               \
+> +                                        4 /* gddrnf_status */ +         =
+               \
+> +                                        encode_verifier_maxsz /* gddr_co=
+okieverf */ +  \
+> +                                        encode_stateid_maxsz /* gddr_sta=
+teid */ +      \
+> +                                        8 /* gddr_notification */ +     =
+               \
+> +                                        nfs4_fattr_bitmap_maxsz /* gddr_=
+child_attributes */ + \
+> +                                        nfs4_fattr_bitmap_maxsz /* gddr_=
+dir_attributes */)
 > +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
+>  #define encode_getdeviceinfo_maxsz (op_encode_hdr_maxsz + \
+>                                 XDR_QUADLEN(NFS4_DEVICEID4_SIZE) + \
+>                                 1 /* layout type */ + \
+> @@ -636,6 +652,18 @@ static int decode_layoutget(struct xdr_stream *xdr, =
+struct rpc_rqst *req,
+>                                 decode_putfh_maxsz + \
+>                                 decode_getattr_maxsz + \
+>                                 decode_renew_maxsz)
+> +#define NFS4_enc_gdd_getattr_sz        (compound_encode_hdr_maxsz + \
+> +                               encode_sequence_maxsz + \
+> +                               encode_putfh_maxsz + \
+> +                               encode_get_dir_delegation_maxsz + \
+> +                               encode_getattr_maxsz + \
+> +                               encode_renew_maxsz)
+> +#define NFS4_dec_gdd_getattr_sz        (compound_decode_hdr_maxsz + \
+> +                               decode_sequence_maxsz + \
+> +                               decode_putfh_maxsz + \
+> +                               decode_get_dir_delegation_maxsz + \
+> +                               decode_getattr_maxsz + \
+> +                               decode_renew_maxsz)
+>  #define NFS4_enc_lookup_sz     (compound_encode_hdr_maxsz + \
+>                                 encode_sequence_maxsz + \
+>                                 encode_putfh_maxsz + \
+> @@ -1981,6 +2009,30 @@ static void encode_sequence(struct xdr_stream *xdr=
+,
+>  }
+>
+>  #ifdef CONFIG_NFS_V4_1
+> +static void
+> +encode_get_dir_delegation(struct xdr_stream *xdr, struct compound_hdr *h=
+dr)
+> +{
+> +       __be32 *p;
+> +       struct timespec64 ts =3D {};
+> +       u32 zerobm[1] =3D {};
 > +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: nxp,imx95-display-csr
-> +      - const: syscon
+> +       encode_op_hdr(xdr, OP_GET_DIR_DELEGATION, decode_get_dir_delegati=
+on_maxsz, hdr);
+> +
+> +       /* We can't handle CB_RECALLABLE_OBJ_AVAIL yet */
+> +       xdr_stream_encode_bool(xdr, false);
+> +
+> +       /* for now, we request no notification types */
+> +       xdr_encode_bitmap4(xdr, zerobm, ARRAY_SIZE(zerobm));
+> +
+> +       /* Request no attribute updates */
+> +       p =3D reserve_space(xdr, 12 + 12);
+> +       p =3D xdr_encode_nfstime4(p, &ts);
+> +       xdr_encode_nfstime4(p, &ts);
+> +
+> +       xdr_encode_bitmap4(xdr, zerobm, ARRAY_SIZE(zerobm));
+> +       xdr_encode_bitmap4(xdr, zerobm, ARRAY_SIZE(zerobm));
+> +}
+> +
+>  static void
+>  encode_getdeviceinfo(struct xdr_stream *xdr,
+>                      const struct nfs4_getdeviceinfo_args *args,
+> @@ -2334,6 +2386,25 @@ static void nfs4_xdr_enc_getattr(struct rpc_rqst *=
+req, struct xdr_stream *xdr,
+>         encode_nops(&hdr);
+>  }
+>
+> +/*
+> + * Encode GDD_GETATTR request
+> + */
+> +static void nfs4_xdr_enc_gdd_getattr(struct rpc_rqst *req, struct xdr_st=
+ream *xdr,
+> +                                    const void *data)
+> +{
+> +       const struct nfs4_getattr_arg *args =3D data;
+> +       struct compound_hdr hdr =3D {
+> +               .minorversion =3D nfs4_xdr_minorversion(&args->seq_args),
+> +       };
+> +
+> +       encode_compound_hdr(xdr, req, &hdr);
+> +       encode_sequence(xdr, &args->seq_args, &hdr);
+> +       encode_putfh(xdr, args->fh, &hdr);
+> +       encode_get_dir_delegation(xdr, &hdr);
+> +       encode_getfattr(xdr, args->bitmask, &hdr);
+> +       encode_nops(&hdr);
+> +}
+> +
 
-Why do you create five different bindings with almost the same contents?
-Do you plan to grow on them, like add more compatibles here? Otherwise
-all this could be in one binding.
+This function should be under a "#ifdef CONFIG_NFS_V4_1" to avoid the
+following compiler error:
 
-Best regards,
-Krzysztof
+fs/nfs/nfs4xdr.c:2403:2: error: call to undeclared function
+'encode_get_dir_delegation'; ISO C99 and later do not support implicit
+function declarations [-Wimplicit-function-declaration]
+ 2403 |         encode_get_dir_delegation(xdr, &hdr);
+      |         ^
 
+
+>  /*
+>   * Encode a CLOSE request
+>   */
+> @@ -5919,6 +5990,43 @@ static int decode_layout_stateid(struct xdr_stream=
+ *xdr, nfs4_stateid *stateid)
+>         return decode_stateid(xdr, stateid);
+>  }
+>
+> +static int decode_get_dir_delegation(struct xdr_stream *xdr,
+> +                                    struct nfs4_getattr_res *res)
+> +{
+> +       nfs4_verifier   cookieverf;
+> +       int             status;
+> +       u32             bm[1];
+> +
+> +       status =3D decode_op_hdr(xdr, OP_GET_DIR_DELEGATION);
+> +       if (status)
+> +               return status;
+> +
+> +       if (xdr_stream_decode_u32(xdr, &res->nf_status))
+> +               return -EIO;
+> +
+> +       if (res->nf_status =3D=3D GDD4_UNAVAIL)
+> +               return xdr_inline_decode(xdr, 4) ? 0 : -EIO;
+> +
+> +       status =3D decode_verifier(xdr, &cookieverf);
+> +       if (status)
+> +               return status;
+> +
+> +       status =3D decode_delegation_stateid(xdr, &res->deleg);
+> +       if (status)
+> +               return status;
+> +
+> +       status =3D decode_bitmap4(xdr, bm, ARRAY_SIZE(bm));
+> +       if (status < 0)
+> +               return status;
+> +       status =3D decode_bitmap4(xdr, bm, ARRAY_SIZE(bm));
+> +       if (status < 0)
+> +               return status;
+> +       status =3D decode_bitmap4(xdr, bm, ARRAY_SIZE(bm));
+> +       if (status < 0)
+> +               return status;
+> +       return 0;
+> +}
+> +
+>  static int decode_getdeviceinfo(struct xdr_stream *xdr,
+>                                 struct nfs4_getdeviceinfo_res *res)
+>  {
+> @@ -6455,6 +6563,33 @@ static int nfs4_xdr_dec_getattr(struct rpc_rqst *r=
+qstp, struct xdr_stream *xdr,
+>         return status;
+>  }
+>
+> +/*
+> + * Decode GDD_GETATTR response
+> + */
+> +static int nfs4_xdr_dec_gdd_getattr(struct rpc_rqst *rqstp, struct xdr_s=
+tream *xdr,
+> +                                   void *data)
+> +{
+> +       struct nfs4_getattr_res *res =3D data;
+> +       struct compound_hdr hdr;
+> +       int status;
+> +
+> +       status =3D decode_compound_hdr(xdr, &hdr);
+> +       if (status)
+> +               goto out;
+> +       status =3D decode_sequence(xdr, &res->seq_res, rqstp);
+> +       if (status)
+> +               goto out;
+> +       status =3D decode_putfh(xdr);
+> +       if (status)
+> +               goto out;
+> +       status =3D decode_get_dir_delegation(xdr, res);
+> +       if (status)
+> +               goto out;
+> +       status =3D decode_getfattr(xdr, res->fattr, res->server);
+> +out:
+> +       return status;
+> +}
+> +
+
+This needs to be under the same #ifdef, too.
+
+Thanks,
+ Anna
+
+>  /*
+>   * Encode an SETACL request
+>   */
+> @@ -7704,6 +7839,7 @@ const struct rpc_procinfo nfs4_procedures[] =3D {
+>         PROC41(BIND_CONN_TO_SESSION,
+>                         enc_bind_conn_to_session, dec_bind_conn_to_sessio=
+n),
+>         PROC41(DESTROY_CLIENTID,enc_destroy_clientid,   dec_destroy_clien=
+tid),
+> +       PROC41(GDD_GETATTR,     enc_gdd_getattr,        dec_gdd_getattr),
+>         PROC42(SEEK,            enc_seek,               dec_seek),
+>         PROC42(ALLOCATE,        enc_allocate,           dec_allocate),
+>         PROC42(DEALLOCATE,      enc_deallocate,         dec_deallocate),
+> diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
+> index 11ad088b411d..86cbfd50ecd1 100644
+> --- a/include/linux/nfs4.h
+> +++ b/include/linux/nfs4.h
+> @@ -681,6 +681,7 @@ enum {
+>         NFSPROC4_CLNT_LISTXATTRS,
+>         NFSPROC4_CLNT_REMOVEXATTR,
+>         NFSPROC4_CLNT_READ_PLUS,
+> +       NFSPROC4_CLNT_GDD_GETATTR,
+>  };
+>
+>  /* nfs41 types */
+> diff --git a/include/linux/nfs_xdr.h b/include/linux/nfs_xdr.h
+> index d09b9773b20c..85ee37ccc25e 100644
+> --- a/include/linux/nfs_xdr.h
+> +++ b/include/linux/nfs_xdr.h
+> @@ -1072,6 +1072,8 @@ struct nfs4_getattr_res {
+>         struct nfs4_sequence_res        seq_res;
+>         const struct nfs_server *       server;
+>         struct nfs_fattr *              fattr;
+> +       nfs4_stateid                    deleg;
+> +       u32                             nf_status;
+>  };
+>
+>  struct nfs4_link_arg {
+>
+> --
+> 2.44.0
+>
 
