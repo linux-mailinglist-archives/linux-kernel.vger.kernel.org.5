@@ -1,264 +1,230 @@
-Return-Path: <linux-kernel+bounces-104953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67E5D87D676
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:11:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5C687D67C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BC4D1C221DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:11:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FF901F23722
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6557155C05;
-	Fri, 15 Mar 2024 22:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9169E55E46;
+	Fri, 15 Mar 2024 22:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VAdU83y6"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="vnW/MAcq"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2B544393;
-	Fri, 15 Mar 2024 22:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE37055C1B
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 22:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710540656; cv=none; b=YO3+SrFSPJgFEXGAIkm6ayLrMzQ6XbhwG0KlSjzn830uRYw06Mvf2G//pPxPb0zh7FDbHLda0rhxIXIGA64dqcIlnbOsooJfYaHQm6a0SpgV6jI/9QkGdFoATUlx6wpddpysT7C5gVTS16Tl3x0LoFogCEFTXodBrlYqQajNUwc=
+	t=1710541166; cv=none; b=C4u+wqiJja3fqCxXaklwTE7z1j5xKzSASG4SGCY1/4+PKvjVvYbmLmeNQnu2EJbzjFAcpCVzo4lwtDsSjryBKgSBbmu2BlvpEmohBY0bs3mFkGNcchplvhT6zhluSMIAH3GrUGiHPvl8aODmy1rcxqk6ykyjfBKig+66NL1gu9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710540656; c=relaxed/simple;
-	bh=PNQJWd7HxXcJnbYgdzJBU4kUBm0Ch11S8O3iK9HqbcY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DvQBHRU+ZrzT98N7+oGf7o/Itel6gc+spwPUbvB3FF8izrfJJXHi6LB9KVV87yi/7sTWIQ9wXRU+BxisBOLdCUL6GuPykDj4QBoE0M83PLKDM8DRHoCDqjVkU/AZ4aZ43wnFNufvR4RuHP5T9w3VkUd9IpMUCEkiH9NFPf2kjkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VAdU83y6; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42FMAInl061560;
-	Fri, 15 Mar 2024 17:10:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1710540618;
-	bh=f7izHaMoJ965KSuRUF5+A7MIQq48w7B7wci0lhYv5oU=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=VAdU83y6bVG5zZ4WltjUGbUTQxOdcqEWzvastPiyMaNDKqsw1M/455XapO4C68Jg/
-	 1getJEmUJw2wbNpzO0Mk0/gFv4VO6q3pMBqu3+ZzpVvfIY5DxgYTF834G13TCR2UBc
-	 j57aHRyMOhDme6WIJzpkJaeclbbd10wyYeZGc88Y=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42FMAI3l012049
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 15 Mar 2024 17:10:18 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
- Mar 2024 17:10:18 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 15 Mar 2024 17:10:18 -0500
-Received: from [10.24.69.142] ([10.24.69.142])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42FMAAfW000976;
-	Fri, 15 Mar 2024 17:10:11 -0500
-Message-ID: <163ecd0f-3e3d-44d5-8ae4-be20ea6956a0@ti.com>
-Date: Sat, 16 Mar 2024 03:40:09 +0530
+	s=arc-20240116; t=1710541166; c=relaxed/simple;
+	bh=bX/rWXNcjkXxS/NmuiV2k5brIuTAUg4Dey6eqH6nWmU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dKpiLtR+khlr9co8apXuB+mTnxcLWBl0dZN07lY+OVwWWXDBm1R32MQITfD9GA4zHis/dToxtztzTWcPEInte5wfPS8k/MqR3eDht9XRgpZS++nic9T9QNbyuwrVKyXmNzXwXHtMZg2q5kGNibOSUVUzgWT3j2q3p1RSIPHCIHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vnW/MAcq; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42ef8193ae6so36691cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:19:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710541161; x=1711145961; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uGbXyxh9lPDMGwwcLAjwgGrEcCAIj7UP9zCDYhA4zzQ=;
+        b=vnW/MAcqpTJZUK9aqiE9GcMzxCFZoW1HoDwB6axWthoHi9f/0GZwKp5H3mrRoebUGS
+         2m0mgZzP0vNg1i3SOmowFNr1YzNXLgbVwXZQt+2T7xbFts/ToZ5lRhwIH0SdraQpA5RC
+         wzYN/FMpgOBljjumHiUZ4UdUnDmA8zW1WAsNTQx1PayGDyhp585GJApNFrVIOfbWTcdl
+         jEMDREsUZ/+G644De6tpjMLXZ/MX9nr7/3pLkTLMvUzTFk7HeqC8CYq9PNWKmCHRRD31
+         NvLT3Vv5fMBH0U7zLbescFUsCBu5vhi9IEqKx3O8AJvMpFd8AmjpXFYKqigeG44EU2ur
+         Qg6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710541161; x=1711145961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uGbXyxh9lPDMGwwcLAjwgGrEcCAIj7UP9zCDYhA4zzQ=;
+        b=ZwmfZDbByCSS1yEt9c20iZBVQMfRyTbVvdVy+5q5KIieY73wLZjyKRoaqcQe0YKhAQ
+         SqfFcnAdG/ymL1GhWoiZJBo6SpTlybqMkjuyisspS/rsH7RQBZoXhrexVKNk5dnVyyhG
+         AR+2hFXOdy3SE18p02q8Rgn2Pt0j7FCCcy9OwVvVjyA180FUAhWQ1D+pmazkzfn1UzGj
+         k6dRAg12Hw0f9sA6mTJpMHdFCvSO6E2hV4ym+DUDgCMRAMpdGiYvsY+rAuDLpwrkF/MK
+         BQ0co1y6H/cuI3UfPq5JEH9kaepyULBzaV/v78AmaqAmuP0t6AkTNUe1xnZAr4oBKl6I
+         BC+A==
+X-Forwarded-Encrypted: i=1; AJvYcCXHOmFjzyQUgRw6Ne4GuTggTIX3DqgJ1+qy829KXl+NMOp89HN+HC2Fk196cJEooATKbVAtgyTe0gQzMprDcOQdftaLTy67+odyl6Lp
+X-Gm-Message-State: AOJu0YzZ1uE+LypkQEMPS+94Y59ztCpif37iRD3LZqqjNO06FnY8mYIP
+	JqSRo99VThA87LUch16BvgFgQesJOacJefXSfyKMXvIpbzaIEBC5J8E7qQk+F1hVF89dqaZxiM+
+	YhYZ0UI7oEGmQBp/e2jr6hWP2VPqnNiGRdbHI
+X-Google-Smtp-Source: AGHT+IF5aE3FAQmefnHVNwEtb6k1Zffv9Um1vh+H3378WyxNWP45BWPFL4v4HGvSMNt4R1eN2uzB4Tld6uV0gxwIAD0=
+X-Received: by 2002:a05:622a:1a97:b0:430:b7dd:c175 with SMTP id
+ s23-20020a05622a1a9700b00430b7ddc175mr3086qtc.23.1710541161346; Fri, 15 Mar
+ 2024 15:19:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/8] mikrobus: Add mikrobus driver
-Content-Language: en-US
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Ayush Singh
-	<ayushdevel1325@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <jkridner@beagleboard.org>,
-        <robertcnelson@beagleboard.org>,
-        Vaishnav M A <vaishnav@beagleboard.org>,
-        Rob
- Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan
- Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood
-	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Jiri Slaby
-	<jirislaby@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Alex Elder
-	<elder@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <greybus-dev@lists.linaro.org>
-References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
- <20240315184908.500352-8-ayushdevel1325@gmail.com>
- <ZfSiaT9WltBDY9yD@shell.armlinux.org.uk>
- <46ba778a-5966-4b99-b820-f0d047a56227@gmail.com>
- <ZfS7Za/KITnQiYjh@shell.armlinux.org.uk>
-From: Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <ZfS7Za/KITnQiYjh@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240315213717.1411017-1-dianders@chromium.org> <20240315143621.v2.1.I16aff881c9fe82b5e0fc06ca312da017aa7b5b3e@changeid>
+In-Reply-To: <20240315143621.v2.1.I16aff881c9fe82b5e0fc06ca312da017aa7b5b3e@changeid>
+From: Guenter Roeck <groeck@google.com>
+Date: Fri, 15 Mar 2024 15:19:07 -0700
+Message-ID: <CABXOdTcfb9F8mKSNnQKWRCAgANyJMNn1yzk4n_E_MpUgH23KCw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] drm/msm/dp: Avoid a long timeout for AUX transfer
+ if nothing connected
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Bjorn Andersson <quic_bjorande@quicinc.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Guenter Roeck <groeck@chromium.org>, 
+	Kuogee Hsieh <quic_khsieh@quicinc.com>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	Sean Paul <sean@poorly.run>, Stephen Boyd <swboyd@chromium.org>, 
+	Vara Reddy <quic_varar@quicinc.com>, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Russell,
+On Fri, Mar 15, 2024 at 2:37=E2=80=AFPM Douglas Anderson <dianders@chromium=
+org> wrote:
+>
+> As documented in the description of the transfer() function of
+> "struct drm_dp_aux", the transfer() function can be called at any time
+> regardless of the state of the DP port. Specifically if the kernel has
+> the DP AUX character device enabled and userspace accesses
+> "/dev/drm_dp_auxN" directly then the AUX transfer function will be
+> called regardless of whether a DP device is connected.
+>
+> For eDP panels we have a special rule where we wait (with a 5 second
+> timeout) for HPD to go high. This rule was important before all panels
+> drivers were converted to call wait_hpd_asserted() and actually can be
+> removed in a future commit.
+>
+> For external DP devices we never checked for HPD. That means that
+> trying to access the DP AUX character device (AKA `hexdump -C
+> /dev/drm_dp_auxN`) would very, very slowly timeout. Specifically on my
+> system:
+>   $ time hexdump -C /dev/drm_dp_aux0
+>   hexdump: /dev/drm_dp_aux0: Connection timed out
+>   real    0m8.200s
+> We want access to the drm_dp_auxN character device to fail faster than
+> 8 seconds when no DP cable is plugged in.
+>
+> Let's add a test to make transfers fail right away if a device isn't
+> plugged in. Rather than testing the HPD line directly, we have the
+> dp_display module tell us when AUX transfers should be enabled so we
+> can handle cases where HPD is signaled out of band like with Type C.
+>
+> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-I had originally worked on this and will try to provide
-some more context which is missing in this series. I am
-replying from my TI email as I am active here.
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
 
-On 16/03/24 02:49, Russell King (Oracle) wrote:
-> On Sat, Mar 16, 2024 at 02:17:24AM +0530, Ayush Singh wrote:
->> On 3/16/24 01:02, Russell King (Oracle) wrote:
->>
->>> On Sat, Mar 16, 2024 at 12:19:05AM +0530, Ayush Singh wrote:
->>>> diff --git a/drivers/misc/mikrobus/Kconfig b/drivers/misc/mikrobus/Kconfig
->>>> new file mode 100644
->>>> index 000000000000..f0770006b4fe
->>>> --- /dev/null
->>>> +++ b/drivers/misc/mikrobus/Kconfig
->>>> @@ -0,0 +1,19 @@
->>>> +menuconfig MIKROBUS
->>>> +	tristate "Module for instantiating devices on mikroBUS ports"
->>>> +	depends on GPIOLIB
->>>> +	depends on W1
->>>> +	depends on W1_MASTER_GPIO
->>>> +	help
->>>> +	  This option enables the mikroBUS driver. mikroBUS is an add-on
->>>> +	  board socket standard that offers maximum expandability with
->>>> +	  the smallest number of pins. The mikroBUS driver instantiates
->>>> +	  devices on a mikroBUS port described by identifying data present
->>>> +	  in an add-on board resident EEPROM, more details on the mikroBUS
->>>> +	  driver support and discussion can be found in this eLinux wiki :
->>>> +	  elinux.org/Mikrobus
->>> I think this is a fallacy. I have boards that support Mikrobus - some of
->>> the SolidRun products do. I have several Mikrobus "click" boards.
->>>
->>> This help text seems to imply that Mikrobus click boards include an
->>> EEPROM that identify them, hence you make the support for mikroBUS
->>> depend on it. No, this is not the case - the click boards do not
->>> contain a 1-wire EEPROM.
->>>
->>> Please fetch a copy of the official Mikrobus specification which is
->>> available here:
->>>
->>> https://download.mikroe.com/documents/standards/mikrobus/mikrobus-standard-specification-v200.pdf
->>>
->>> and rather than creating something that is implementation specific but
->>> appears to be generic, create something that is generic with
->>> implementation specific extensions.
->>
->> I think you mean mikroBUS addon boards? mikroBUS is an open socket and click
->> boards™ are MikroElektronika’s brand of mikroBUS™ add-on boards.
-> 
-> MikroElektronika _owns_ the standard for mikroBUS, they're the ones
-> who publish it and it has their logo plastered all over it.
-> 
-
-Yes, MikroE owns the standard but they do not prevent anyone from 
-creating new add-on boards or adding the sockets in commercially 
-available boards, with the only condition that custom mikroBUS add-on
-boards cannot be marketed with the name "click" board.
-
->> So I think
->> all click boards™ do have clickID support, but yes, mikroBUS spec is not the
->> same as clickID and thus are not mutually dependent.
-> 
-> None of the MikroElektronika "click" boards that I have (and thus
-> officially produced boards) have any ID EEPROM on them, so your
-> statement is false. For example, if you look at the "relay click"
-> board schematic:
-> 
-> https://download.mikroe.com/documents/add-on-boards/click/relay/relay-click-schematic-v100-a.pdf
-> 
-> you will find no EEPROM.
-> 
-> The "relay 3" click board also doesn't:
-> 
-> https://download.mikroe.com/documents/add-on-boards/click/relay-3/relay-3-schematic-v100.pdf
-> 
-> However, the "relay 4" click board does:
-> 
-> https://download.mikroe.com/documents/add-on-boards/click/relay_4_click/Relay_4_Click_v100_Schematic.PDF
-> 
-> Now, ClickID is relatively new. Note that the mikroBUS standard dates
-> from 2011, with v2 coming out in 2015. A blog post introducing ClickID
-> was posted in November 2023, just some 5 months ago, so that leaves an
-> awful lot of click boards out there at the moment which have no EEPROM
-> on them.
-> 
-> If what you have written assumes that all click boards have this EEPROM
-> then you are - in my opinion - intolerably constraining the usefulness
-> of your idea for those of us who have click boards bought over the past
-> few years, and this will confuse users who have these older boards.
-> "I've enabled mikroBUS support in the kernel, but my board isn't
-> recognised" will probably end up being a regular cry from people with
-> this.
-> 
-> So, I think you need to consider how to support the already vast number
-> of click boards that do not support ClickID.
-> 
-
-The same series actually can support mikroBUS add-on boards without 
-EEPROM as well, it exposes a sysfs interface similar to i2c new_device,
-so all you need to do is to plug-in the add-on board, the pass the 
-manifest using this interface.
-Example :
-cat /lib/firmware/mikrobus/AMBIENT-2-CLICK.mnfb > 
-/sys/bus/mikrobus/devices/mikrobus-0/new_device
-
-Reference: 
-https://docs.beagleboard.org/latest/boards/beagleplay/demos-and-tutorials/using-mikrobus.html#what-if-my-add-on-doesn-t-have-clickid
-
-I am not sure if passing binary manifest blob using the sysfs interface 
-is an ideal solution, but the driver can support boards without EEPROM.
-Actually the 150+ boards we have validated in the past did not have 
-EEPROM on all of them : 
-https://github.com/MikroElektronika/click_id/tree/main/manifests
-
-> At the moment, my own personal solution is currently to hack the
-> platform's DT file for the board I wish to use, creating a new variant
-> of the platform which configures the SoC so the mikroBUS connector pins
-> are appropriately configured. It would be good to get away from the need
-> to do that.
-
-Yes, the pain point with creating device tree overlays for mikroBUS 
-add-on boards is that you need an almost new overlays for each 
-permutation of the hardware (150+ add-on boards with driver support in 
-Linux connected on just BeagleBoard platforms like BeaglePlay[1 port], 
-PocketBeagle [2 port], mikroBUS cape on BB black[4 ports]) is more than
-1000 overlays to maintain, this driver aims to split the platform 
-aspects of mikroBUS (pinmux, SPI/I2C/GPIO controller .etc) from the 
-add-on board information, thus requiring one device tree overlay per 
-port and just a single manifest describing the add-on board.
-
-The reason for choosing greybus manifest for the identifier is that so 
-far we discussed only about physical mikroBUS ports on the board, but we 
-can also have mikroBUS ports on a remote microcontroller appearing on 
-host over greybus and there a device tree overlay solution does not work 
-as the standard identifier mechanism is greybus manifest, some details 
-on the remote greybus mikrobus port is available here:
-
-https://docs.beagleboard.org/boards/beagleconnect/technology/index.html
-
-Here is an old video of the concept working: 
-https://www.youtube.com/watch?v=JKrCRRuCw3c
-
-To summarise, the driver with proper fixes and feedback incorporated can 
-support mikroBUS Click ID boards(plug and play), existing mikroBUS 
-add-on boards (with a clean way to pass the manifest to driver, slight 
-manual intervention compared to click ID boards) and also mikroBUS 
-add-on board connected to a remote microcontroller appearing over 
-greybus (not part of the series, but mentioning it so that it is clear 
-why greybus manifest is chosen as the descriptor format).
-
-Thanks and Regards,
-Vaishnav
-
-
-
-> 
+> ---
+>
+> Changes in v2:
+> - Don't look at the HPD line directly; have dp_display call us.
+>
+>  drivers/gpu/drm/msm/dp/dp_aux.c     | 20 ++++++++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_aux.h     |  1 +
+>  drivers/gpu/drm/msm/dp/dp_display.c |  4 ++++
+>  3 files changed, 25 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_=
+aux.c
+> index 03f4951c49f4..e67a80d56948 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+> @@ -35,6 +35,7 @@ struct dp_aux_private {
+>         bool no_send_stop;
+>         bool initted;
+>         bool is_edp;
+> +       bool enable_xfers;
+>         u32 offset;
+>         u32 segment;
+>
+> @@ -301,6 +302,17 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp=
+_aux,
+>                 goto exit;
+>         }
+>
+> +       /*
+> +        * If we're using DP and an external display isn't connected then=
+ the
+> +        * transfer won't succeed. Return right away. If we don't do this=
+ we
+> +        * can end up with long timeouts if someone tries to access the D=
+P AUX
+> +        * character device when no DP device is connected.
+> +        */
+> +       if (!aux->is_edp && !aux->enable_xfers) {
+> +               ret =3D -ENXIO;
+> +               goto exit;
+> +       }
+> +
+>         /*
+>          * For eDP it's important to give a reasonably long wait here for=
+ HPD
+>          * to be asserted. This is because the panel driver may have _jus=
+t_
+> @@ -433,6 +445,14 @@ irqreturn_t dp_aux_isr(struct drm_dp_aux *dp_aux)
+>         return IRQ_HANDLED;
+>  }
+>
+> +void dp_aux_enable_xfers(struct drm_dp_aux *dp_aux, bool enabled)
+> +{
+> +       struct dp_aux_private *aux;
+> +
+> +       aux =3D container_of(dp_aux, struct dp_aux_private, dp_aux);
+> +       aux->enable_xfers =3D enabled;
+> +}
+> +
+>  void dp_aux_reconfig(struct drm_dp_aux *dp_aux)
+>  {
+>         struct dp_aux_private *aux;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.h b/drivers/gpu/drm/msm/dp/dp_=
+aux.h
+> index 511305da4f66..f3052cb43306 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_aux.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_aux.h
+> @@ -12,6 +12,7 @@
+>  int dp_aux_register(struct drm_dp_aux *dp_aux);
+>  void dp_aux_unregister(struct drm_dp_aux *dp_aux);
+>  irqreturn_t dp_aux_isr(struct drm_dp_aux *dp_aux);
+> +void dp_aux_enable_xfers(struct drm_dp_aux *dp_aux, bool enabled);
+>  void dp_aux_init(struct drm_dp_aux *dp_aux);
+>  void dp_aux_deinit(struct drm_dp_aux *dp_aux);
+>  void dp_aux_reconfig(struct drm_dp_aux *dp_aux);
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
+/dp_display.c
+> index 4c72124ffb5d..b0f3e2ef5a6b 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -565,6 +565,8 @@ static int dp_hpd_plug_handle(struct dp_display_priva=
+te *dp, u32 data)
+>         int ret;
+>         struct platform_device *pdev =3D dp->dp_display.pdev;
+>
+> +       dp_aux_enable_xfers(dp->aux, true);
+> +
+>         mutex_lock(&dp->event_mutex);
+>
+>         state =3D  dp->hpd_state;
+> @@ -629,6 +631,8 @@ static int dp_hpd_unplug_handle(struct dp_display_pri=
+vate *dp, u32 data)
+>         u32 state;
+>         struct platform_device *pdev =3D dp->dp_display.pdev;
+>
+> +       dp_aux_enable_xfers(dp->aux, false);
+> +
+>         mutex_lock(&dp->event_mutex);
+>
+>         state =3D dp->hpd_state;
+> --
+> 2.44.0.291.gc1ea87d7ee-goog
+>
 
