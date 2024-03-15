@@ -1,63 +1,61 @@
-Return-Path: <linux-kernel+bounces-104880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1248A87D4F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:30:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16AC587D4F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:32:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1768DB21D43
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:30:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B91601F226A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46174548F9;
-	Fri, 15 Mar 2024 20:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AED179AF;
+	Fri, 15 Mar 2024 20:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yq0deBeA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oCcHsJn1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8341F19A;
-	Fri, 15 Mar 2024 20:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B361774E;
+	Fri, 15 Mar 2024 20:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710534596; cv=none; b=oULsIlxdg48O9ospyLICTOn2edZghUHo0rq/h/EJ1+QDpuCYemCGKx1/7rbBbYyD+4MpyZLvjxyypCtSDP9/0EttP9Et4kuic3Grfxb0EdiinIWIssbqputM5oJPb3MJyzICEqd6AnFBPUvvXGW7vHl0w0smz3AiNHyKHMecSvQ=
+	t=1710534728; cv=none; b=TsbKXCLtYkAD1FPB5T96l/aV7DK+DOxocvHN/dVgAX88ZGg4wYt1Ldlu7XwJroRLBeu+UShk2a4yjAtLnjg9NuxD2HWOpgapHZAKFCZh+nLboPyBooFEIbSUaf3hMOFDI3eyugAn3xSKHHO80BHPcjr/MNa8+eDd5+wIDB3M+rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710534596; c=relaxed/simple;
-	bh=HyJ1lV5/KtaAjYSgsjIpgBj1ohgVn3CGns1XQk7p5bs=;
+	s=arc-20240116; t=1710534728; c=relaxed/simple;
+	bh=PbZqHEA+YkEJNHdwhMrFP0v5XWegWU4vg4x/7mlNex8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AnB7tywPh1jIiekdU09uyyxImKTl5bf5QzePKbctNWv4PnbzQ2zK7YgZGcUUh2MdHPVrPQnLUJ0wvS0MXlWT+HmxWGFkPmmf4yZ3ZMTvMxdOYms+08XDN3hBSZNmCiHiPZqwxqIVSKZj9Q5xsUdsuCdIQ89rtc1QTz0cSAagknQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yq0deBeA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DC81C433F1;
-	Fri, 15 Mar 2024 20:29:55 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=bno+gJMSEvxUlmlhVaGU7Sg5cnFApzh4AeeC4i++U2CMwzVkNUXIJHylAr06tSfdMe7TkJjyguW7xgwvOF1TP30zSaVLDdcJDbIsaOQMN+ZrXHzpnecaBiq5wJrOpo980ivamVAgrHgRwuVigkZl7zyQj7x8PpiTSIiMjA2pm7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oCcHsJn1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2293C433C7;
+	Fri, 15 Mar 2024 20:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710534596;
-	bh=HyJ1lV5/KtaAjYSgsjIpgBj1ohgVn3CGns1XQk7p5bs=;
+	s=k20201202; t=1710534728;
+	bh=PbZqHEA+YkEJNHdwhMrFP0v5XWegWU4vg4x/7mlNex8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yq0deBeAtd2GuEZq6bTGafM6o0GWNjtBQg/hQSR1AnN3t2LzOi9SJibaWpQi0agtI
-	 XRZ+KuzvH4h+1WwDG0cyzrzHZA4fChVaPVPv/9uZdVWLQ+Ex91liNGEcpVuYJFnx7Z
-	 65wSKa/eerCi6J1wEwPmIQiuaWmK2B0J3XyrM4JRymVTpewDLEKO2FecEo8h9iazQP
-	 kBXBD5vPrsqFP3lSv4xOFEvmmQaAIgwAmas7/HJ5+ZLBeBBshEDbIyAYNpeHng0m1s
-	 kxiqpQAqzPjPmkoXUfQ5GHVdmV2eeHqIfoW6PU8BdGMbe4QGY2LdXlrLOLy0IwipBG
-	 3c7k/gbdYNARg==
-Date: Fri, 15 Mar 2024 17:29:52 -0300
+	b=oCcHsJn1HkABfY0Wphu7NifOHPIn99tEWiLnojbrfFV/4pFMYhYtJoq974q2j/PKd
+	 GZZOlt3NEXmH9R+jh7EaMOEZzUib/RHlcaMhs3qxnhsAm6umvbC8UXHZhlZz8CkjHx
+	 Zd8UvN13bQa15njFIk+snfYfKKVXlMFmNsskLXh0cmIYHKKvDz0G9tMt8xzKOvqgDA
+	 pbz3K1NH5i+9lHm75GF0zWm9ypGxDduLfkqgC4tUfXqstA+t+quN6lHvNTRDHmPNob
+	 BvyGi6PF3kgLuKidAZ0ECN5JqVNHyevp0jm8KsQ7zVnR3KJtDwxfNN7IYCFrNBtcOc
+	 aPC3+dS1fos6Q==
+Date: Fri, 15 Mar 2024 17:32:04 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: "Liang, Kan" <kan.liang@linux.intel.com>,
+To: James Clark <james.clark@arm.com>
+Cc: Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf vendor events intel: Add umasks to PCU events.
-Message-ID: <ZfSvwBQRBhfWGb98@x1>
-References: <20240226201517.3540187-1-irogers@google.com>
- <0b2ff06f-099c-424a-97b5-fdf638892e41@linux.intel.com>
- <CAP-5=fVTOgOO=N7uf4CaANWu+WCCLXXMuNBnDdBOP3E6vijG_A@mail.gmail.com>
- <2b950564-fe20-4426-ac91-5b40a2087099@linux.intel.com>
- <CAP-5=fURvd4nx_-QLgRBWSoJbXDUqO=WbsLkqMgjiyucXHVrjw@mail.gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf docs: arm_spe: Clarify more SPE requirements
+Message-ID: <ZfSwRP5B1G5RvpOR@x1>
+References: <20240312132508.423320-1-james.clark@arm.com>
+ <CAP-5=fWGrkjx1vz+2aQU0A+_B3d=nCtK9WBGiSPbDbUaTXR4pQ@mail.gmail.com>
+ <0c503c64-133a-705f-9dc4-47c623dacd2c@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,42 +65,67 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fURvd4nx_-QLgRBWSoJbXDUqO=WbsLkqMgjiyucXHVrjw@mail.gmail.com>
+In-Reply-To: <0c503c64-133a-705f-9dc4-47c623dacd2c@arm.com>
 
-On Wed, Feb 28, 2024 at 08:12:10AM -0800, Ian Rogers wrote:
-> On Wed, Feb 28, 2024 at 6:55 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
-> > On 2024-02-27 9:12 p.m., Ian Rogers wrote:
-> > > Kan, what's the right way to deal with this?
-> >
-> > There is no umask in the uncore spec. Please see P120 of the spec.
-> > https://www.intel.com/content/www/us/en/develop/download/intel-xeon-processor-e5-2600-v2-product-family-uncore-performance-monitoring-reference.html
-> >
-> > It should be occ_sel.
-> > The occ_sel = (the umask from the event list >> 6) & 0x3.
-> >
-> > I don't think we want to change either the kernel or the perf tool.
-> > There is nothing to help either if we add the occ_sel in the original
-> > event list. So it seems the only choice should be handling it in the
-> > convertor tool.
-> >
-> > Is it possible to check the UNC_P_POWER_STATE_OCCUPANCY.CORES_C0 in IVT
-> > and use "Filter": "occ_sel=0x1" to replace "UMask": "0x40"?
-> >
-> > It seems everything in the filter will directly be appended. Is my
-> > understanding correct?
+On Wed, Mar 13, 2024 at 09:41:54AM +0000, James Clark wrote:
 > 
-> Yep. From the manual:
-> C0 = 1
-> C3 = 2
-> C6= 3
-> So I'll need to fix all 3 events during the conversion to perf json.
-> The same problem exists for haswell and broadwell, so I'll do the fix
-> on those architectures too. I was able to test on a jaketown but the
-> kernel source makes me think the same fix is necessary there too. I'll
-> send out a new patch with this.
+> 
+> On 12/03/2024 19:56, Ian Rogers wrote:
+> > On Tue, Mar 12, 2024 at 6:25 AM James Clark <james.clark@arm.com> wrote:
+> >>
+> >> The question of exactly when KPTI needs to be disabled comes up a lot
+> >> because it doesn't always need to be done. Add the relevant kernel
+> >> function and some examples that describe the behavior.
+> >>
+> >> Also describe the interrupt requirement and that no error message will
+> >> be printed if this isn't met.
+> >>
+> >> Signed-off-by: James Clark <james.clark@arm.com>
+> > 
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+ 
+> Thanks for the review
 
-Please clarify if this remains reviewed and should be merged as-is.
+Thanks, applied to perf-tools-next,
 
 - Arnaldo
-
+ 
+> >> ---
+> >>  tools/perf/Documentation/perf-arm-spe.txt | 12 +++++++++++-
+> >>  1 file changed, 11 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/perf/Documentation/perf-arm-spe.txt b/tools/perf/Documentation/perf-arm-spe.txt
+> >> index bf03222e9a68..0a3eda482307 100644
+> >> --- a/tools/perf/Documentation/perf-arm-spe.txt
+> >> +++ b/tools/perf/Documentation/perf-arm-spe.txt
+> >> @@ -116,6 +116,15 @@ Depending on CPU model, the kernel may need to be booted with page table isolati
+> >>  (kpti=off). If KPTI needs to be disabled, this will fail with a console message "profiling buffer
+> >>  inaccessible. Try passing 'kpti=off' on the kernel command line".
+> >>
+> >> +For the full criteria that determine whether KPTI needs to be forced off or not, see function
+> >> +unmap_kernel_at_el0() in the kernel sources. Common cases where it's not required
+> >> +are on the CPUs in kpti_safe_list, or on Arm v8.5+ where FEAT_E0PD is mandatory.
+> >> +
+> >> +The SPE interrupt must also be described by the firmware. If the module is loaded and KPTI is
+> >> +disabled (or isn't required to be disabled) but the SPE PMU still doesn't show in
+> >> +/sys/bus/event_source/devices/, then it's possible that the SPE interrupt isn't described by
+> >> +ACPI or DT. In this case no warning will be printed by the driver.
+> >> +
+> >>  Capturing SPE with perf command-line tools
+> >>  ------------------------------------------
+> >>
+> >> @@ -199,7 +208,8 @@ Common errors
+> >>
+> >>   - "Cannot find PMU `arm_spe'. Missing kernel support?"
+> >>
+> >> -   Module not built or loaded, KPTI not disabled (see above), or running on a VM
+> >> +   Module not built or loaded, KPTI not disabled, interrupt not described by firmware,
+> >> +   or running on a VM. See 'Kernel Requirements' above.
+> >>
+> >>   - "Arm SPE CONTEXT packets not found in the traces."
+> >>
+> >> --
+> >> 2.34.1
+> >>
+> > 
 
