@@ -1,230 +1,147 @@
-Return-Path: <linux-kernel+bounces-104262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E12BF87CB63
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:30:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62C3E87CB64
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:31:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10B6F1C217A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:30:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1603E283042
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62F319474;
-	Fri, 15 Mar 2024 10:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D9618EAF;
+	Fri, 15 Mar 2024 10:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="NafJHbAd"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="msBPhbGZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C0E17C60;
-	Fri, 15 Mar 2024 10:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BB918040
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710498628; cv=none; b=HTSRLu1Bu608sGzZ60MVsvdilCWLgJifAnKc8lINssdWARF+o8buug6Mz4hXcZnxy62GcRhdczFSvGoiuPG2yJbngGso9xDep5PO3RGaUdyKD6N9BS94/jr7JjJDqe9zItnqhkzsJ0FBs3mvcircqWaGgRq+MA7cQakyWn3YK0Y=
+	t=1710498669; cv=none; b=BPKoCGkjfsM7Ll+VjAf7QhHEipQth9nQRSOifkB4naiqhqGnfH43Pult2hD8MfBg82oYHMuPsEaWzf/6lbMEuR/8H86i5Q/p+pPGfYGIEtnT0M4j5kw50C/gZ49Do4NSNO9Ouf3jc/LoO+3kb2bdaIVfSzpQFN0FcvbpUsPrsgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710498628; c=relaxed/simple;
-	bh=Wi/QbN+8ipUEYeOAbUm86xpNE3oPJ0g7EhQMoF7njRU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXKTIOUk00g4+5zjNfG2GDawnIz7TH+cFMzYHHKnREqj7fwftVmLgx+zhwWFQg5DA48Ob9bYQJ6yebW4GWJ2DabbjWmdCPReBTj8JBBuAoaEYoZF4XWX1VOv4kUbk6qxvf02O/gK44jwoVGTfXODSo0AZ1GiMiMMWVeKE46jOp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=NafJHbAd; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710498618;
-	bh=Wi/QbN+8ipUEYeOAbUm86xpNE3oPJ0g7EhQMoF7njRU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NafJHbAd9/omf5ShUyuD5GKzQhS3XJhF4WMagWXntKDm3n8ti0taj0esJziU84Mdp
-	 WxYGljPwkXxB/PIz9ZLteJsSqXoYKViMdBJzKwxa4hy1ptRIMx8uVa3dNz6zuawAiD
-	 BT6Otsgt/kFOBfErLJb6+zoetXvFppHZ86JA1bLOb2cBtH40Cs1Lr/UdGQjmk1R6D1
-	 sc2FoITqwOwvMCEk7Qf8hjr9Tku2FW4ps+x36BQYhVeob6INGvf88oXDqrVGj72evN
-	 ojyf3oZ8szTOXxre1VJoYt0ebtUIYWZdugBIh++MpGJXZ2oS3Wmx5TepO4gGVBoWhb
-	 d/+ulbrcypKuw==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9D6383782083;
-	Fri, 15 Mar 2024 10:30:18 +0000 (UTC)
-Date: Fri, 15 Mar 2024 11:30:17 +0100
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: Yunfei Dong <yunfei.dong@mediatek.com>
-Cc: =?utf-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4=?= Prado <nfraprado@collabora.com>,
-	Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Nathan Hebert <nhebert@chromium.org>,
-	Hsin-Yi Wang <hsinyi@chromium.org>,
-	Fritz Koenig <frkoenig@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>,
-	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH] media: mediatek: vcodec: add decoder command to support
- stateless decoder
-Message-ID: <20240315094706.xcpjy5s4fjtjvn7j@basti-XPS-13-9310>
-References: <20240315072629.27738-1-yunfei.dong@mediatek.com>
+	s=arc-20240116; t=1710498669; c=relaxed/simple;
+	bh=hY5n8yiSLnK6A5k9B8yt5M2btemk+zy4UubFFwBG4NU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=FU8p4R6hTFInG5VFKRmKBJlTNL/JCMtVI00JdfTls5ISlPgrmJdmMxRDMMorNRSxE31AwKrI0WijZerHIU6VpdLUenEabg0+vVDcvc+yxe4Q69syoVrH4Rrwj2WBff9MI1wzduUMyXeefM+dTrUCC/oYT5bIsE0CD/mwvaoOR5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=msBPhbGZ; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710498667; x=1742034667;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=hY5n8yiSLnK6A5k9B8yt5M2btemk+zy4UubFFwBG4NU=;
+  b=msBPhbGZPRfbgy1RNDbGMcZI3WmbjKeci4NnnnSv+SZ1FCX0HGt0DXhe
+   56AbEpu0B/lOi3+J6UvjCxv3so9Z+FL10yhe4Ea/swPo8j+Jtpy1k/B/y
+   ZsIrrMBGqEI/mv9uTYpKYaOMUuBqGUTGKXRywijIe/bMEna4G2UrbodUe
+   kXY8XIpKTuQm2eMmAeLYw/14ZHJKIY2jdYKczWpwffbDoGfW1NEJ3vzzh
+   odA3sLY1nFUia882g7dAxw3B3HLukKMsLihU7k2lfsQDqZHi0Dyb1Ldo+
+   3If/5EeXt49xFKGc1nQsypSlpnr/RZRwFMCOq1uiANM4xCNgeUXUGw5oi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5493376"
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="5493376"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 03:31:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="17299223"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 15 Mar 2024 03:31:05 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rl4q6-000EKv-1y;
+	Fri, 15 Mar 2024 10:31:02 +0000
+Date: Fri, 15 Mar 2024 18:30:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: sound/core/compress_offload.c:595:6-12: inconsistent IS_ERR and
+ PTR_ERR on line 596.
+Message-ID: <202403151855.V0OS6L14-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240315072629.27738-1-yunfei.dong@mediatek.com>
 
-Hey Yunfei,
+Hi Takashi,
 
-On 15.03.2024 15:26, Yunfei Dong wrote:
->The supported decoder commands are different for stateless and
->stateful architecture. Adding stateless decoder commands to fix
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-s/Adding/Add/
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   e5eb28f6d1afebed4bb7d740a797d0390bd3a357
+commit: 9b02221422a55e834469fdc91dc4d5147f5a1fb9 ALSA: compress_offload: Use automatic cleanup of kfree()
+date:   3 weeks ago
+config: x86_64-randconfig-103-20240314 (https://download.01.org/0day-ci/archive/20240315/202403151855.V0OS6L14-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
 
->below v4l2-compliance test error.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403151855.V0OS6L14-lkp@intel.com/
 
-s/below v4l2-compliance test error./the v4l2-compliance test error below./
+cocci warnings: (new ones prefixed by >>)
+>> sound/core/compress_offload.c:595:6-12: inconsistent IS_ERR and PTR_ERR on line 596.
 
->
->Codec ioctls:
->    VIDIOC_ENCODER_CMD returned -1 (Inappropriate ioctl for device)
->    VIDIOC_TRY_ENCODER_CMD returned -1 (Inappropriate ioctl for device)
-> test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
->    VIDIOC_G_ENC_INDEX returned -1 (Inappropriate ioctl for device)
-> test VIDIOC_G_ENC_INDEX: OK (Not Supported)
->    VIDIOC_DECODER_CMD returned -1 (Invalid argument)
->    VIDIOC_TRY_DECODER_CMD returned -1 (Invalid argument)
->    VIDIOC_TRY_DECODER_CMD returned -1 (Invalid argument)
->    fail: v4l2-test-codecs.cpp(126): ret
-> test VIDIOC_(TRY_)DECODER_CMD: FAIL
->
->Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
->---
-> .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 65 +++++++++++++++++--
-> 1 file changed, 59 insertions(+), 6 deletions(-)
->
->diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
->index ba742f0e391d..90579dd92cae 100644
->--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
->+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
->@@ -80,21 +80,20 @@ static struct mtk_q_data *mtk_vdec_get_q_data(struct mtk_vcodec_dec_ctx *ctx,
-> 	return &ctx->q_data[MTK_Q_DATA_DST];
-> }
->
->-static int vidioc_try_decoder_cmd(struct file *file, void *priv,
->-				struct v4l2_decoder_cmd *cmd)
->+static int mtk_vcodec_stateful_try_decoder_cmd(struct file *file, void *priv,
->+					       struct v4l2_decoder_cmd *cmd)
+vim +595 sound/core/compress_offload.c
 
-In some cases you seem to name these functions with the prefix
-`mtk_vdec` and sometimes with the prefix `mtk_vcodec` but all of these
-are for decoders, so could you settle for one naming scheme? Also as
-these functions are static I don't think it is strictly necessary to add
-a prefix for each function.
+4dc040a0b34890 Vinod Koul          2012-09-17  582  
+b21c60a4edd22e Vinod Koul          2011-12-23  583  static int
+b21c60a4edd22e Vinod Koul          2011-12-23  584  snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+b21c60a4edd22e Vinod Koul          2011-12-23  585  {
+9b02221422a55e Takashi Iwai        2024-02-22  586  	struct snd_compr_params *params __free(kfree) = NULL;
+b21c60a4edd22e Vinod Koul          2011-12-23  587  	int retval;
+b21c60a4edd22e Vinod Koul          2011-12-23  588  
+7ea9ee0064281e Srinivas Kandagatla 2023-06-19  589  	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN || stream->next_track) {
+b21c60a4edd22e Vinod Koul          2011-12-23  590  		/*
+b21c60a4edd22e Vinod Koul          2011-12-23  591  		 * we should allow parameter change only when stream has been
+b21c60a4edd22e Vinod Koul          2011-12-23  592  		 * opened not in other cases
+b21c60a4edd22e Vinod Koul          2011-12-23  593  		 */
+c2f14ba749c1ce Markus Elfring      2016-08-21  594  		params = memdup_user((void __user *)arg, sizeof(*params));
+c2f14ba749c1ce Markus Elfring      2016-08-21 @595  		if (IS_ERR(params))
+9b02221422a55e Takashi Iwai        2024-02-22 @596  			return PTR_ERR(no_free_ptr(params));
+4dc040a0b34890 Vinod Koul          2012-09-17  597  
+4dc040a0b34890 Vinod Koul          2012-09-17  598  		retval = snd_compress_check_input(params);
+4dc040a0b34890 Vinod Koul          2012-09-17  599  		if (retval)
+9b02221422a55e Takashi Iwai        2024-02-22  600  			return retval;
+4dc040a0b34890 Vinod Koul          2012-09-17  601  
+b21c60a4edd22e Vinod Koul          2011-12-23  602  		retval = snd_compr_allocate_buffer(stream, params);
+9b02221422a55e Takashi Iwai        2024-02-22  603  		if (retval)
+9b02221422a55e Takashi Iwai        2024-02-22  604  			return -ENOMEM;
+4dc040a0b34890 Vinod Koul          2012-09-17  605  
+b21c60a4edd22e Vinod Koul          2011-12-23  606  		retval = stream->ops->set_params(stream, params);
+b21c60a4edd22e Vinod Koul          2011-12-23  607  		if (retval)
+9b02221422a55e Takashi Iwai        2024-02-22  608  			return retval;
+49bb6402f1aa1e Charles Keepax      2013-04-18  609  
+7ea9ee0064281e Srinivas Kandagatla 2023-06-19  610  		if (stream->next_track)
+9b02221422a55e Takashi Iwai        2024-02-22  611  			return retval;
+7ea9ee0064281e Srinivas Kandagatla 2023-06-19  612  
+9727b490e543de Jeeja KP            2013-02-14  613  		stream->metadata_set = false;
+9727b490e543de Jeeja KP            2013-02-14  614  		stream->next_track = false;
+49bb6402f1aa1e Charles Keepax      2013-04-18  615  
+49bb6402f1aa1e Charles Keepax      2013-04-18  616  		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+769fab2a41da4b Jesper Juhl         2012-01-23  617  	} else {
+b21c60a4edd22e Vinod Koul          2011-12-23  618  		return -EPERM;
+769fab2a41da4b Jesper Juhl         2012-01-23  619  	}
+b21c60a4edd22e Vinod Koul          2011-12-23  620  	return retval;
+b21c60a4edd22e Vinod Koul          2011-12-23  621  }
+b21c60a4edd22e Vinod Koul          2011-12-23  622  
 
-> {
-> 	return v4l2_m2m_ioctl_try_decoder_cmd(file, priv, cmd);
-> }
->
->-
->-static int vidioc_decoder_cmd(struct file *file, void *priv,
->-				struct v4l2_decoder_cmd *cmd)
->+static int mtk_vcodec_stateful_decoder_cmd(struct file *file, void *priv,
->+					   struct v4l2_decoder_cmd *cmd)
-> {
-> 	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
-> 	struct vb2_queue *src_vq, *dst_vq;
-> 	int ret;
->
->-	ret = vidioc_try_decoder_cmd(file, priv, cmd);
->+	ret = mtk_vcodec_stateful_try_decoder_cmd(file, priv, cmd);
-> 	if (ret)
-> 		return ret;
->
->@@ -128,6 +127,60 @@ static int vidioc_decoder_cmd(struct file *file, void *priv,
-> 	return 0;
-> }
->
->+static int mtk_vcodec_stateless_try_decoder_cmd(struct file *file, void *priv,
->+						struct v4l2_decoder_cmd *cmd)
->+{
->+	return v4l2_m2m_ioctl_stateless_try_decoder_cmd(file, priv, cmd);
->+}
->+
->+static int mtk_vcodec_stateless_decoder_cmd(struct file *file, void *priv,
->+					    struct v4l2_decoder_cmd *cmd)
->+{
->+	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
->+	int ret;
->+
->+	ret = v4l2_m2m_ioctl_stateless_try_decoder_cmd(file, priv, cmd);
->+	if (ret)
->+		return ret;
->+
->+	mtk_v4l2_vdec_dbg(3, ctx, "decoder cmd=%u", cmd->cmd);
->+	switch (cmd->cmd) {
->+	case V4L2_DEC_CMD_FLUSH:
->+		/*
->+		 * If the flag of output buffer is set with V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF,
+:::::: The code at line 595 was first introduced by commit
+:::::: c2f14ba749c1ce94aa97c5a84733a89aaaadada4 ALSA: compress: Use memdup_user() rather than duplicating its implementation
 
-s/output/the output/
-s/is set with/equals/
+:::::: TO: Markus Elfring <elfring@users.sourceforge.net>
+:::::: CC: Takashi Iwai <tiwai@suse.de>
 
->+		 * this command will prevent dequeueing the capture buffer containing the last
->+		 * decoded frame. Or do nothing
->+		 */
->+		break;
->+
-
-Please remove this newline.
-
->+	default:
->+		mtk_v4l2_vdec_err(ctx, "invalid stateless decoder cmd=%u", cmd->cmd);
->+		return -EINVAL;
->+	}
->+
->+	return 0;
->+}
->+
->+static int vidioc_try_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
->+{
->+	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
->+
->+	if (ctx->dev->vdec_pdata->uses_stateless_api)
->+		return mtk_vcodec_stateless_try_decoder_cmd(file, priv, cmd);
->+	else
-
-As these conditional branches contain return statements you can skip the
-else.
-E.g.
-	if (ctx->dev->vdec_pdata->uses_stateless_api)
-		return mtk_vcodec_stateless_try_decoder_cmd(file, priv, cmd);
-   return mtk_vcodec_stateful_try_decoder_cmd(file, priv, cmd);
-
->+		return mtk_vcodec_stateful_try_decoder_cmd(file, priv, cmd);
->+}
->+
->+static int vidioc_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
->+{
->+	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
->+
->+	if (ctx->dev->vdec_pdata->uses_stateless_api)
->+		return mtk_vcodec_stateless_decoder_cmd(file, priv, cmd);
->+	else
-
-Same as mentioned above.
-
->+		return mtk_vcodec_stateful_decoder_cmd(file, priv, cmd);
->+}
->+
-> void mtk_vdec_unlock(struct mtk_vcodec_dec_ctx *ctx)
-> {
-> 	mutex_unlock(&ctx->dev->dec_mutex[ctx->hw_id]);
->-- 
->2.18.0
->
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
