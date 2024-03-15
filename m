@@ -1,136 +1,114 @@
-Return-Path: <linux-kernel+bounces-104739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D8287D2F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:41:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A072B87D2FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:45:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 053A51C212D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:41:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40B6DB2131A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:45:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9080A4CB2B;
-	Fri, 15 Mar 2024 17:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB1B4CB38;
+	Fri, 15 Mar 2024 17:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WW6KjNCZ"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jtfBDkSI"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6531F487B6
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6E040BE6
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710524491; cv=none; b=gyvWXpdfAXZbNThusbRY1orGQEV+PlkeD1EoiKcOWro6NLKNnErHeJKbubSRle6sHhLVF5vdYzuvs+QAWbobEyI22qdOa4m8QkA+4cphW0IoJ/cieuKEdi4eB/4xOZNeNLEx+SMYgIZ3Dyl823qEsI6SEfpdiuR6jQl/zxXWNTw=
+	t=1710524708; cv=none; b=qhoG4qCzPTQMdrjFFXkLZ1sTrQuE7s+fBImJnlnmEMkAJbB0GZIxQYclDKoJSqts7tXUhxXSbGwdcSqyiNZ8LeR6srtZaJDqtX7o6Bpjdlk/ps5M3Lxn7YOLJB/9Ntg84rCOA/P1yhCN2cQYYjx8rhJsMDCXDe95/QxACCvEVOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710524491; c=relaxed/simple;
-	bh=yuuPNY4/s5/UlcbR6wILOPm6AltS6irnsHBo9y9VNzw=;
+	s=arc-20240116; t=1710524708; c=relaxed/simple;
+	bh=INk8cZa0+LsWyZ8N8Wj8NppnFI5IdXvc/S0CKFZ7Zx8=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=F3TzJ7p2Dc5q+3mjO/JBYE/A9NURezKIb1fGeYGD7+oWEAEs6v5GWfrUiNvsQjt70UTDu0f7ZYfBukIHD6KduX6Tjx8Chm1exo7PnhuswOP7Bg8QieAsqEuQV0IEADqijPHaNApR1q7XD+v9CJ6W+NQPyOQALO6F8NWi8ovM+hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WW6KjNCZ; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=KHLtmg+7EkbNRzFqCwL244rCM8SM1sZMHFcmB/cXv6WlMwVhypzQBZLDcIF3DjANe7Dxk8+xWPK69SWL/7DzFcAGjOsErJGesT44uAr2Hnoa0VMr30XCr0LZnlvbkTHb4hMeZs1CrXsTD5KFGnnpPNBsHYyIITiitep8SrQOnog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jtfBDkSI; arc=none smtp.client-ip=209.85.215.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a2386e932so48082117b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:41:30 -0700 (PDT)
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5e4df21f22dso1826998a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710524489; x=1711129289; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710524706; x=1711129506; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yefYGzkLN0A6uHHWqrU5PePod4vCRl9tPQamL29vI5o=;
-        b=WW6KjNCZqIONCPJxOFr6+3bmtM/i5qNwM976qcs7Xa+hau2yals5cXOYVqJlbPyBuK
-         sGcWHiCmBiXNXG2Jih9qGEm/HYiUMUOUjTICT26zE17AVnkAx3sHk8Mn65ePZadyUZTu
-         tjgW0nFmDjd47cKK0+NFdFQ8n6a15oJA8z1ya3iuKhWJPjB6rVle5jA6sVRD9IgorSWE
-         6VBjPYCx5YlTZxq9ZxTH+ScU7qr7U0rwQwxnmhIvoIVorKO+kQDFBwl12WMzSKiQp4Sf
-         8c0ZBuVThH9hVoRcAFow8Yd4tjSTAi/7SwgoqWBo8WOAzaaogdn9iDqPkPrcHXC0OB5c
-         Q+NA==
+        bh=Fa79Oatca6zQP0uWiPqrWcQ+HA0jbKoi5WIlc5XFVOI=;
+        b=jtfBDkSI1YprbJcST6or1vIBc40EPQl69MSaZZd+UwEcmBN1Tb0a9AfJsKwcygsmXQ
+         pJsLEoAlE0vVCIgk4lLvbJmwNFujcDMtpKbpTtw/mLubZexGjkZaFNMx5g3OV0pX9srT
+         e9JlNVp1CnTr+guzP5c/DuOWOpEJt4PPWZF89qh5l9GPs8P871iRvO6V8rkp0Fv3flug
+         nKWsGcAl4GzE4g5YQGsIhx8Y12NOjylVFDU4auwN22epnAM2Dl1mjIUhr0AnWIKlumBg
+         oeO5GWDYtE3eMAXI07zboZJnoMt0alrCgYYnuYqpVz4avswKTLYEsgkw4qnUCC/0RzE8
+         nlbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710524489; x=1711129289;
+        d=1e100.net; s=20230601; t=1710524706; x=1711129506;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yefYGzkLN0A6uHHWqrU5PePod4vCRl9tPQamL29vI5o=;
-        b=LJtITyV8UumF5Grw9O0PJ9FqPByHErWlqjsPVTqdMDc/3m8Shc2cIFn0lQkoCAMoc7
-         3Jo1LczERk5/cQ80xvjQn5fX+FXTgW8bcOdngXCJujtZwZV5dgG1wNqRPptjvD9zPsRB
-         OlKAopCrpx7Ps2V7nXLvGTt+H0GmaVEiwoeHPcdxOCY4cVIjFsX+FwxbSbmkzNXFcril
-         EvDIYsufLkp+7ef6y8ZuIgwBNagH4DbDG/QTeWmLu5HRqYR069i0l8ZaVHme3HqgGdWY
-         hV4wl+wDVG9bkaqB5Jm4saqr1ter/OUVx5TZUCevkP/9ArjII5aEzdDkUA2bq2MpDqJL
-         an3g==
-X-Forwarded-Encrypted: i=1; AJvYcCU9ago54tgJCHkfu6kHZVA44/Z2VqXI+13FrL3hg9dCkse4hKfgjq7B+QQ4n+A1MYpQepIB0Gd1wzfqSQenh6OPZyqzSRiOhYnJqqjw
-X-Gm-Message-State: AOJu0YwEqwFW7fPTkOfPozmTmXgfSEQevToI0Ev3ybPcO6VOLCeRT4Hh
-	flreYXFDrXde/5LkXiQjtORKr0PTqana+895qW70sa3+tIxDzpq+Axctsgfc4k6Llt8CFn8KhFr
-	9ug==
-X-Google-Smtp-Source: AGHT+IGFNK6aMYj8wIgRXznNcv7zdvGKfDM/WM0H+Hn5MQtbuke4kTTMx0h39Ab8ATUVYsX7cJfzU9+m4IU=
+        bh=Fa79Oatca6zQP0uWiPqrWcQ+HA0jbKoi5WIlc5XFVOI=;
+        b=rwU0Zfy6ooXo55r3jGfN18ADq/3rSmYaa89KnmIO8zVH5icvselSvnoSZzv92gGGEi
+         KxrtfIV389orbYeYkLMPMxtc1/4xH2A7UWMnIRpK6EBENu/+XxvsW9i7PCwU+mKBKmzq
+         0ntlx3rlXwb9LbC1rcGe8irJ7AzDyHbFYaWie8YD8mxpknaKKmhLHhOmbM0gRRpZd4sR
+         Bw1SZ1rQsvmqlqxIOEjWbuUZX2OeXokr1qBCud4TBo4YvfS0yoyBMqwWd07fv9ad4YLa
+         kSbcSqJuWrvLQ4Sxhv+SDL1ZpwtFvXrwSyxQ9t9xN9qHhOctlFmGd9k4tCcxg76qOFcU
+         6FYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUdLLgK58YWqc/DvGO3sBTR58VlQ+OPP0MWX7xm0JcxEUt9S+P70PAFPUFQYZYZaCKxXEPG6wugZD2JoaNN1c9X7SSSicqWdkT8Qnu+
+X-Gm-Message-State: AOJu0Ywlsgi9FrPrijIop3sTVUdFtQ7dOTlzoyXaphTNE7v/JtGVznK2
+	Fo4pvKk/PowGoIc3Ycxxo8arCrgxm5n2OVEBLH+WSTNai49mTwKNKom/r9QjMsbgYcUCwIu3KoS
+	bfw==
+X-Google-Smtp-Source: AGHT+IGu2WNZTypfxINJC8/H54Ic0YBZ2JsCZRcH5IR1csm3Rm5dO3KPADbKayNfFkfN+yOjeH1XY0fCaXQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:910f:0:b0:60a:25ce:c165 with SMTP id
- i15-20020a81910f000000b0060a25cec165mr1314650ywg.6.1710524489411; Fri, 15 Mar
- 2024 10:41:29 -0700 (PDT)
-Date: Fri, 15 Mar 2024 10:41:28 -0700
-In-Reply-To: <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
+ (user=seanjc job=sendgmr) by 2002:a63:e903:0:b0:5dc:4a5f:a5ee with SMTP id
+ i3-20020a63e903000000b005dc4a5fa5eemr18668pgh.1.1710524706415; Fri, 15 Mar
+ 2024 10:45:06 -0700 (PDT)
+Date: Fri, 15 Mar 2024 10:45:04 -0700
+In-Reply-To: <88920c598dcb55c15219642f27d0781af6d0c044.1708933498.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <cover.1708933498.git.isaku.yamahata@intel.com> <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
-Message-ID: <ZfSISAC0sIYXewqG@google.com>
-Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
- SEAMCALLs to the TDX module
+References: <cover.1708933498.git.isaku.yamahata@intel.com> <88920c598dcb55c15219642f27d0781af6d0c044.1708933498.git.isaku.yamahata@intel.com>
+Message-ID: <ZfSJIDOJzGJ4lPjX@google.com>
+Subject: Re: [PATCH v19 098/130] KVM: TDX: Add a place holder to handle TDX VM exit
 From: Sean Christopherson <seanjc@google.com>
 To: isaku.yamahata@intel.com
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
 	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, 
-	hang.yuan@intel.com, tina.zhang@intel.com, 
-	Sean Christopherson <sean.j.christopherson@intel.com>, Binbin Wu <binbin.wu@linux.intel.com>, 
-	Yuan Yao <yuan.yao@intel.com>
+	hang.yuan@intel.com, tina.zhang@intel.com
 Content-Type: text/plain; charset="us-ascii"
 
 On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
-> +static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
-> +			       struct tdx_module_args *out)
+> +int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
 > +{
-> +	u64 ret;
+> +	union tdx_exit_reason exit_reason = to_tdx(vcpu)->exit_reason;
 > +
-> +	if (out) {
-> +		*out = *in;
-> +		ret = seamcall_ret(op, out);
-> +	} else
-> +		ret = seamcall(op, in);
+> +	/* See the comment of tdh_sept_seamcall(). */
+> +	if (unlikely(exit_reason.full == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_SEPT)))
+> +		return 1;
 > +
-> +	if (unlikely(ret == TDX_SEAMCALL_UD)) {
-> +		/*
-> +		 * SEAMCALLs fail with TDX_SEAMCALL_UD returned when VMX is off.
-> +		 * This can happen when the host gets rebooted or live
-> +		 * updated. In this case, the instruction execution is ignored
-> +		 * as KVM is shut down, so the error code is suppressed. Other
-> +		 * than this, the error is unexpected and the execution can't
-> +		 * continue as the TDX features reply on VMX to be on.
-> +		 */
+> +	/*
+> +	 * TDH.VP.ENTRY checks TD EPOCH which contend with TDH.MEM.TRACK and
+> +	 * vcpu TDH.VP.ENTER.
+> +	 */
+> +	if (unlikely(exit_reason.full == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_TD_EPOCH)))
+> +		return 1;
+> +
+> +	if (unlikely(exit_reason.full == TDX_SEAMCALL_UD)) {
 > +		kvm_spurious_fault();
-> +		return 0;
+> +		/*
+> +		 * In the case of reboot or kexec, loop with TDH.VP.ENTER and
+> +		 * TDX_SEAMCALL_UD to avoid unnecessarily activity.
+> +		 */
+> +		return 1;
 
-This is nonsensical.  The reason KVM liberally uses BUG_ON(!kvm_rebooting) is
-because it *greatly* simpifies the overall code by obviating the need for KVM to
-check for errors that should never happen in practice.  On, and 
+No.  This is unnecessarily risky.  KVM_BUG_ON() and exit to userspace.  The
+response to "SEAMCALL faulted" should never be, "well, let's try again!".
 
-But KVM quite obviously needs to check the return code for all SEAMCALLs, and
-the SEAMCALLs are (a) wrapped in functions and (b) preserve host state, i.e. we
-don't need to worry about KVM consuming garbage or running with unknown hardware
-state because something like INVVPID or INVEPT faulted.
-
-Oh, and the other critical aspect of all of this is that unlike VMREAD, VMWRITE,
-etc., SEAMCALLs almost always require a TDR or TDVPR, i.e. need a VM or vCPU.
-Now that we've abandoned the macro shenanigans that allowed things like
-tdh_mem_page_add() to be pure translators to their respective SEAMCALL, I don't
-see any reason to take the physical addresses of the TDR/TDVPR in the helpers.
-
-I.e.  if we do:
-
-	u64 tdh_mng_addcx(struct kvm *kvm, hpa_t addr)
-
-then the intermediate wrapper to the SEAMCALL assembly has the vCPU or VM and
-thus can precisely terminate the one problematic VM.
-
-So unless I'm missing something, I think that kvm_spurious_fault() should be
-persona non grata for TDX, and that KVM should instead use KVM_BUG_ON().
+Also, what about #GP on SEAMCALL?  In general, the error handling here seems
+lacking.
 
