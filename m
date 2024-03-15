@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-104910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 920C787D59A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:53:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F48487D59B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:53:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C41F61C2301C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:53:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCBF0286865
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6853F5D8FB;
-	Fri, 15 Mar 2024 20:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0A05DF15;
+	Fri, 15 Mar 2024 20:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="be/K8OlJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F+PAoiOk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8A45490F;
-	Fri, 15 Mar 2024 20:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE9B5490F;
+	Fri, 15 Mar 2024 20:48:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710535723; cv=none; b=Kra3TRtauxgDn5+hgB5v8vpKvHCPBu6Z+CtKpKfxyqgjjE7R1FVZVIpH/aGtO/02aitAKHReWpQ9gKHJoQqpt5t/2mRa+ixkN4bOkY5g2Su1mcl50y/IiTzKoZCjGPyM3tVEK21vCRCcpeppOkGRAwXbA6UxjLZ+v2hqHQv5fQY=
+	t=1710535727; cv=none; b=tGQESfRf8V59TCozNgtWUSv+3isOHIQpuRzQcJoZDqt6ZDYYsyQF//huYFCLO6sdj/tGjKRkaCoEtWd3+r5Zwu5jo0FKKe9GL8i6+9zEPIU5ZgJpRF/smoa55FURMOpD9m0lSmLPVMV/VAjwW3aR1M+K7DYenjLOeRKEu+Hzyx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710535723; c=relaxed/simple;
-	bh=n4mnq2bQoZFQmkQWAONSQIZqwOxc8OXB1FXSujoaH0E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DnuFnlBOrSOylejir9oHKhvNQgWXbdTuyVT88+9rkdkGxaFHo9csIqdxWoEwaLC4ZnbLiDH/0SDz1DnjwqEgokxQ+687g138qAgP4nqBZyy+E4QSdSGVbo3EvFBllyMNog+R0O3VJxZeySffC6+mHoIc1RBUN62PQvCui8U/d7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=be/K8OlJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 549E1C43609;
-	Fri, 15 Mar 2024 20:48:41 +0000 (UTC)
+	s=arc-20240116; t=1710535727; c=relaxed/simple;
+	bh=KSHcMin1HPdOQAKKTc/0Gi9jbVVIAh8wdEBxTZxd8vQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=T1vt03JPg8dedTAnJYGPBen1dV2wm9vwYVIL6JH+j9tNC3PpAyKuD3TXQVRWK3xNC4qZMMwxTjEtRTsg50+MYve1/579Be5ya7M3Rp/N+kPApYfvfkQeTN0s7sHMawiG8gMGvbidvbzjtInERDCaVowEKIBDPiWjfZrmbevja88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F+PAoiOk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94B7CC43399;
+	Fri, 15 Mar 2024 20:48:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710535723;
-	bh=n4mnq2bQoZFQmkQWAONSQIZqwOxc8OXB1FXSujoaH0E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=be/K8OlJrOmZxrW8MKTT/mLucN1MW1ro91IY2YrOUY9HwEAiwRVe7HGBarsZRcYQC
-	 yPq0Y4v/YwRnQVmJm2m469h6ZaxjJg5cU1Fp7q6BSa9p7DKZx1thS3QKI10miTTgC+
-	 mrNH3rncE/bP4ug1Odb0mBAN7PaY20Aue7USHCfqjtcDotzBMvf9v9NW04NfJeqM/y
-	 /gVTb6RDVCP+G8ofbEOdSfJWgp2dX4QVMV5F6lbOaGeZyFnCsBZ5z8qNaGw97sLHe6
-	 KJ0HRTdaACsRRcUWFI28EfBP1ZKWzkKJd0VwsBL25RhmR4FB7Hc2H3+fddh1uoCnZz
-	 0oSmW5R1fA0oA==
+	s=k20201202; t=1710535725;
+	bh=KSHcMin1HPdOQAKKTc/0Gi9jbVVIAh8wdEBxTZxd8vQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=F+PAoiOkYhVyhGpZ0AAZ8iuIAfpf4TbBUA4YRP1DN9F4VZEK453QOT/pKSAdKeNYo
+	 DTr4/SGK459fS/hgfnXoaHLvqQE4V5AjR5l6V1xcytpm8gI0UzjO16/NKScBHOkePj
+	 973usPZF/KrO6U2QLye0pUV6VnaFaS3rU8tQab6q0dHeq80lJPSfxhJ1pjC5/r/6rD
+	 BCoZmUUZ9ErU4SC3MxuqKNqgH1uz/wki0VhqMrRVEb1auv7a/Xzuf+H71zqkCiYSfc
+	 BGJgc9g1V//xBeEJJve9FcxZAStCJfFkZsfIL656PYzcozs38ELP3F+6fWR6toYmWr
+	 FZsXSeXSveBDw==
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>,
@@ -46,11 +47,13 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH 0/5] move more stuff to trace/beauty
-Date: Fri, 15 Mar 2024 17:48:30 -0300
-Message-ID: <20240315204835.748716-1-acme@kernel.org>
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 1/5] perf beauty: Stop using the copy of uapi/linux/prctl.h
+Date: Fri, 15 Mar 2024 17:48:31 -0300
+Message-ID: <20240315204835.748716-2-acme@kernel.org>
 X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240315204835.748716-1-acme@kernel.org>
+References: <20240315204835.748716-1-acme@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,48 +62,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Ian,
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-	I have those in the tmp.perf-tools-next branch, please take a
-look to see if you spot any problem.
+Use the system one, nothing used in that file isn't available in the
+supported, active distros.
 
-Thanks,
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/trace/beauty/prctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-- Arnaldo
-
-Arnaldo Carvalho de Melo (5):
-  perf beauty: Stop using the copy of uapi/linux/prctl.h
-  perf beauty: Move prctl.h files (uapi/linux and x86's) copy out of the
-    directory used to build perf
-  perf beauty: Use the system linux/fcntl.h instead of a copy from the
-    kernel
-  tools headers: Remove now unused copies of uapi/{fcntl,openat2}.h and
-    asm/fcntl.h
-  tools headers: Remove almost unused copy of uapi/stat.h, add few
-    conditional defines
-
- tools/include/uapi/asm-generic/fcntl.h        | 221 ------------------
- tools/include/uapi/linux/fcntl.h              | 123 ----------
- tools/include/uapi/linux/openat2.h            |  43 ----
- tools/include/uapi/linux/stat.h               | 195 ----------------
- tools/perf/Makefile.perf                      |  11 +-
- tools/perf/check-headers.sh                   |   7 +-
- .../beauty}/arch/x86/include/uapi/asm/prctl.h |   0
- tools/perf/trace/beauty/fcntl.c               |   2 +-
- tools/perf/trace/beauty/flock.c               |   2 +-
- .../trace/beauty}/include/uapi/linux/prctl.h  |   0
- tools/perf/trace/beauty/prctl.c               |   2 +-
- tools/perf/trace/beauty/prctl_option.sh       |   6 +-
- tools/perf/trace/beauty/statx.c               |  14 +-
- tools/perf/trace/beauty/x86_arch_prctl.sh     |   4 +-
- 14 files changed, 27 insertions(+), 603 deletions(-)
- delete mode 100644 tools/include/uapi/asm-generic/fcntl.h
- delete mode 100644 tools/include/uapi/linux/fcntl.h
- delete mode 100644 tools/include/uapi/linux/openat2.h
- delete mode 100644 tools/include/uapi/linux/stat.h
- rename tools/{ => perf/trace/beauty}/arch/x86/include/uapi/asm/prctl.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/prctl.h (100%)
-
+diff --git a/tools/perf/trace/beauty/prctl.c b/tools/perf/trace/beauty/prctl.c
+index 6fe5ad5f5d3a4e4b..7d1aa9fd03da52c2 100644
+--- a/tools/perf/trace/beauty/prctl.c
++++ b/tools/perf/trace/beauty/prctl.c
+@@ -7,7 +7,7 @@
+ 
+ #include "trace/beauty/beauty.h"
+ #include <linux/kernel.h>
+-#include <uapi/linux/prctl.h>
++#include <linux/prctl.h>
+ 
+ #include "trace/beauty/generated/prctl_option_array.c"
+ 
 -- 
 2.43.2
 
