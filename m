@@ -1,132 +1,145 @@
-Return-Path: <linux-kernel+bounces-104071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B935087C89C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:50:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F05687C89D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 647C0282FD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:50:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB94B282FB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF6C10A2A;
-	Fri, 15 Mar 2024 05:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7FF112E6D;
+	Fri, 15 Mar 2024 05:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wmkDciih"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fkqJJJwX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC37FC0B
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 05:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE4B12B6C;
+	Fri, 15 Mar 2024 05:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710481830; cv=none; b=cL2rKGWyHEty9PVBgiHSgz64CWa2ZFkbY3oeCI9VFqCjvyPiUx2cTA+AeTuUfGQbQZSBsbcsZ6gvzr2jvEOqw0Nc8C/w7AxfprmGajKY6QRCoC+ziuErZvJHopoo4Aq+Iw9y38gB4RJXUo2chESTWR4F6qrw4/6VDhrTIVRfB40=
+	t=1710481848; cv=none; b=hX3XG8fuJKnizSSehWgRjPnKDTUi4b2a3+bEepWW0kE1UO7+fKkw44u5JgPGxC8FDnLoujbfAqN2/WEsKR8qjmDrgxidcZErxuRhFA5XL2uGjOU09mR0T+MSxG7owmomJPKSw75sZLnX6iFARHE3rLkj4zfr7SGFsk0SLXHdmHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710481830; c=relaxed/simple;
-	bh=Naq9CDfVLJcnya6EOl3vtZ0oDKB1UwOPAMZ9XUdYhW8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TnUd7EoPmoNMY8xpLRL9yYQaTWlGrW+tERMDGljfro9Oxt9Xlt32ogTdR43lcFm3iwZSBdTsVQK0el37bWzisLmwcyuzkQVw+2LtGhsCCDCwwmkJYgKk5uCbvQZkybouut8OVJSZ+BELH5SjSHp2mrxILidTvXujKzD48KqtB/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wmkDciih; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6b54a28ebso1829015b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 22:50:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710481827; x=1711086627; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VmeqZQFsfILznkSe1TDD/d0MuJKx0Lhu/2GiKczhwds=;
-        b=wmkDciihrW5uRQUtYyPQUML0MbOxl3cE4UMXLoxK+4OjAURzdiICFc7eyjTehN6NbL
-         Vn1aNfWoAnALHvCy26hWFDGZ7d+V1qx/i80w2WLhv8A5CIeuTngMHORKOrlVEdGshCD9
-         rbPuKbpexGMMJB0/tEyCHsl+YwPHRyP7J+XA+LeSwSk2AXvLk3bqdIhjKpCDxYz2770E
-         3CK65OGZdd+ekC/VqPfHBsA0y1mgwVgqA3/3pjuRhvityKjMRbmJxaouRd5My8mFGJ+P
-         iZgBLL/tuxedrVUoTVf+FKTDdpoRqety1tapZ9hBOTOFF4778Fc60NIhcd3xUWS8TA54
-         IhEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710481827; x=1711086627;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VmeqZQFsfILznkSe1TDD/d0MuJKx0Lhu/2GiKczhwds=;
-        b=FvkqzP38kLcO7+pwKWvIBvdqs0h6JFU5h+2obHmazMfNi0TABjHLqH3+JZljltTNF6
-         jsV8lSV6+6m/7YZ98vGsCaNZkxOTneS6mpW/Rn3f/GhOVn+MbSPEV/pDD4bvwUq2/65L
-         6YUZkuK6iKVtc5LMyKavfYTepA37yg48S5Ho/vPgHO8SwICdRQjXuQHGUFk/VXbvoJ1G
-         EhmDVQ37LUfBzRnscVnjs5v0vTi7j5oJn7JRGjMU/W+PbCTKm77/TvUFy/ZFu6AQRwhq
-         OH0uEiclMMc1sr3Pa0aCGU/zS3v+ZWB+IVn/JM73bJVSvTLCG6fSFX9fh1SpM56HCUCe
-         uCow==
-X-Forwarded-Encrypted: i=1; AJvYcCWEA7D8mtqoHcMHHO+0bOJhZ0Lke1Re9NMC/4Nu/7c/625q9PGqAOE1Y+Rt6f9nyMbdrKQOHi4BFNeRomQG05HEhW7+JH6I7LMu7cqf
-X-Gm-Message-State: AOJu0Yw6XSANhI0dF+D60zx+Nk4WHgvhraXTQfPQbWlW4Chdvwge2ia/
-	wjVy1KymjxNFmg5aGaTVF9DaoGZdR92BF6rvKrbUeRPnkz9cx8ooIxo+HJa9cuX0q8OUI4qFJjf
-	2
-X-Google-Smtp-Source: AGHT+IGfYH1h68xEMnxaFPv1hFUKOr5YSQLITq8lOAM9Fw+k62f3AwJ0HdbWBTJZFkUgfCmfapPMfg==
-X-Received: by 2002:a05:6a20:9d94:b0:1a3:2f5e:6126 with SMTP id mu20-20020a056a209d9400b001a32f5e6126mr4304199pzb.22.1710481826596;
-        Thu, 14 Mar 2024 22:50:26 -0700 (PDT)
-Received: from localhost ([122.172.85.206])
-        by smtp.gmail.com with ESMTPSA id le13-20020a170902fb0d00b001dcc2951c02sm2823712plb.286.2024.03.14.22.50.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 22:50:26 -0700 (PDT)
-Date: Fri, 15 Mar 2024 11:20:24 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Stephan Gerhold <stephan@gerhold.net>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Christoph Lameter <cl@gentwo.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: dt: always allocate zeroed cpumask
-Message-ID: <20240315055024.bm7vvznq3nzhfsno@vireshk-i7>
-References: <CGME20240314125628eucas1p161af377a50fd957f445397bc1404978b@eucas1p1.samsung.com>
- <20240314125457.186678-1-m.szyprowski@samsung.com>
+	s=arc-20240116; t=1710481848; c=relaxed/simple;
+	bh=S0iZ55C9l1m73RLehXEmJUqcuecM8ZpLpZ+1VMipxEQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iLAY6zAVtm/TIB2UxQpY+FrqFR34MHw7sfClmjbN3pkn4qAnlio9oCF5rlIU/PnxaO222o0R8cFF2oZuI+aY2EJs+8EKFLJOQSsdTg1T7GN0EJv7AGC8tehihVSXqpcau5cfYAsExqgJ2VHuBOxznUHHIlf9Lzh8MpOqUqozDgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fkqJJJwX; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710481847; x=1742017847;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=S0iZ55C9l1m73RLehXEmJUqcuecM8ZpLpZ+1VMipxEQ=;
+  b=fkqJJJwXvlaVl0FT8YL7aiQ5q3jF1xKTUpEJItAvwm9WuygOw4t5caw7
+   SfKhgF/gb0f2xpGpk+ue/IATpPBk3kexrMnEmQ4gC0BvHAbXJMEubdBMQ
+   zn1H3Pw8uPd9BSnvCRNDw8v0BSimvqJzrwo44EFJH04ESJYpoWeFYueI1
+   zhnFxfRBTDMnmNehZnqZqXEZ7STSOMmD41CV8Q6pjUQ2rTHGv1MFjxAyi
+   vB8mMwYPA8r6hl8c0t1r7JAuNkoRRaKfOpbKjzW+x7pAw4oCcoDZLhsjN
+   +3mSRm/wpFwk5iZtEANBXfQxg2v8gJ1nPMZsJ+JAWbObZzHnbOZBJWf+2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="9118242"
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="9118242"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 22:50:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="17284036"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 22:50:42 -0700
+Message-ID: <0f20ffa7-63ac-4af2-8293-447dcae45eb7@intel.com>
+Date: Fri, 15 Mar 2024 13:50:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314125457.186678-1-m.szyprowski@samsung.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 034/130] KVM: TDX: Get system-wide info about TDX
+ module on initialization
+Content-Language: en-US
+To: "Huang, Kai" <kai.huang@intel.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Yamahata, Isaku" <isaku.yamahata@intel.com>
+Cc: "Zhang, Tina" <tina.zhang@intel.com>, "Yuan, Hang" <hang.yuan@intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Chen, Bo2" <chen.bo@intel.com>,
+ "sagis@google.com" <sagis@google.com>,
+ "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+ "Aktas, Erdem" <erdemaktas@google.com>,
+ "pbonzini@redhat.com" <pbonzini@redhat.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <eaa2c1e23971f058e5921681b0b84d7ea7d38dc1.1708933498.git.isaku.yamahata@intel.com>
+ <e88e5448-e354-4ec6-b7de-93dd8f7786b5@intel.com>
+ <15a13c5d-df88-46cf-8d88-2c8b94ff41ff@intel.com>
+ <aa1ed4c118177e3e341eebccecac3b07bf75a47d.camel@intel.com>
+ <10c41a88-d692-4ff5-a0c3-ae13a06a055c@intel.com>
+ <078ed2b1c3681c6c0ada9106d481d2f7d964815a.camel@intel.com>
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <078ed2b1c3681c6c0ada9106d481d2f7d964815a.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 14-03-24, 13:54, Marek Szyprowski wrote:
-> Commit 0499a78369ad ("ARM64: Dynamically allocate cpumasks and increase
-> supported CPUs to 512") changed the handling of cpumasks on ARM 64bit,
-> what resulted in the strange issues and warnings during cpufreq-dt
-> initialization on some big.LITTLE platforms.
+On 3/15/2024 1:39 PM, Huang, Kai wrote:
+> On Fri, 2024-03-15 at 13:11 +0800, Li, Xiaoyao wrote:
+>>> Here is what Isaku can do using the current API:
+>>>
+>>>   	u64 num_cpuid_config;
+>>   >
+>>>
+>>>   	...
+>>>
+>>>   	tdx_sys_metadata_field_read(NUM_CPUID_CONFIG, &num_cpuid_config);
+>>>
+>>>   	tdx_info = kzalloc(calculate_tdx_info_size(num_cpuid_config), ...);
+>>>
+>>>   	tdx_info->num_cpuid_config = num_cpuid_config;
+>>
+>> Dosen't num_cpuid_config serve as temporary variable in some sense?
 > 
-> This was caused by mixing OPPs between big and LITTLE cores, because
-> OPP-sharing information between big and LITTLE cores is computed on
-> cpumask, which in turn was not zeroed on allocation. Fix this by
-> switching to zalloc_cpumask_var() call.
+> You need it, regardless whether it is u64 or u16.
 > 
-> Fixes: dc279ac6e5b4 ("cpufreq: dt: Refactor initialization to handle probe deferral properly")
-> CC: stable@vger.kernel.org # v5.10+
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  drivers/cpufreq/cpufreq-dt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> For this case, it needs to be used for calculating the size of tdx_info.
+>> So we have to have it. But it's not the common case.
+>>
+>> E.g., if we have another non-u64 field (e.g., field_x) in tdx_info, we
+>> cannot to read it via
+>>
+>> 	tdx_sys_metadata_field_read(FIELD_X_ID, &tdx_info->field_x);
+>>
+>> we have to use a temporary u64 variable.
 > 
-> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-> index 8bd6e5e8f121..2d83bbc65dd0 100644
-> --- a/drivers/cpufreq/cpufreq-dt.c
-> +++ b/drivers/cpufreq/cpufreq-dt.c
-> @@ -208,7 +208,7 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
->  	if (!priv)
->  		return -ENOMEM;
->  
-> -	if (!alloc_cpumask_var(&priv->cpus, GFP_KERNEL))
-> +	if (!zalloc_cpumask_var(&priv->cpus, GFP_KERNEL))
->  		return -ENOMEM;
->  
->  	cpumask_set_cpu(cpu, priv->cpus);
+> Let me repeat below in my _previous_ reply:
+> 
+> "
+> One example that the current tdx_sys_metadata_field_read() doesn't quite fit is
+> you have something like this:
+> 
+> 	struct {
+> 		u16 whatever;
+> 		...
+> 	} st;
+> 
+> 	tdx_sys_metadata_field_read(FIELD_ID_WHATEVER, &st.whatever);
+> 
+> But for this use case you are not supposed to use tdx_sys_metadata_field_read(),
+> but use tdx_sys_metadata_read() which has a mapping provided anyway.
+> "
 
-Applied. Thanks.
+tdx_sys_metadata_read() is too complicated for just reading one field.
 
--- 
-viresh
+Caller needs to prepare a one-item size array of "struct 
+tdx_metadata_field_mapping" and pass the correct offset.
+
+> So sorry I am not seeing a real example from you.
+> 
+
 
