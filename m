@@ -1,147 +1,128 @@
-Return-Path: <linux-kernel+bounces-104263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62C3E87CB64
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:31:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3703A87CB6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1603E283042
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:31:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6915B1C21506
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D9618EAF;
-	Fri, 15 Mar 2024 10:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D2219478;
+	Fri, 15 Mar 2024 10:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="msBPhbGZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQpLCfN+"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BB918040
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A489F18040;
+	Fri, 15 Mar 2024 10:31:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710498669; cv=none; b=BPKoCGkjfsM7Ll+VjAf7QhHEipQth9nQRSOifkB4naiqhqGnfH43Pult2hD8MfBg82oYHMuPsEaWzf/6lbMEuR/8H86i5Q/p+pPGfYGIEtnT0M4j5kw50C/gZ49Do4NSNO9Ouf3jc/LoO+3kb2bdaIVfSzpQFN0FcvbpUsPrsgg=
+	t=1710498693; cv=none; b=hl2ySdmxwFIKz9Xdizqu5dWwmY1HqarHWhjMaa3f3Z7lnGF2TfegFPzvOmCJyW5vcNiAfut1iIaariqjDMXcDss2WL7JU20aM/t+vzUE1f3EUerUvSf8LbgWioiGs/ZzvV09NzM8HGn+rYTf8p72CSR9YAU9A5Nw3z5B2cbiXBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710498669; c=relaxed/simple;
-	bh=hY5n8yiSLnK6A5k9B8yt5M2btemk+zy4UubFFwBG4NU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=FU8p4R6hTFInG5VFKRmKBJlTNL/JCMtVI00JdfTls5ISlPgrmJdmMxRDMMorNRSxE31AwKrI0WijZerHIU6VpdLUenEabg0+vVDcvc+yxe4Q69syoVrH4Rrwj2WBff9MI1wzduUMyXeefM+dTrUCC/oYT5bIsE0CD/mwvaoOR5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=msBPhbGZ; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710498667; x=1742034667;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=hY5n8yiSLnK6A5k9B8yt5M2btemk+zy4UubFFwBG4NU=;
-  b=msBPhbGZPRfbgy1RNDbGMcZI3WmbjKeci4NnnnSv+SZ1FCX0HGt0DXhe
-   56AbEpu0B/lOi3+J6UvjCxv3so9Z+FL10yhe4Ea/swPo8j+Jtpy1k/B/y
-   ZsIrrMBGqEI/mv9uTYpKYaOMUuBqGUTGKXRywijIe/bMEna4G2UrbodUe
-   kXY8XIpKTuQm2eMmAeLYw/14ZHJKIY2jdYKczWpwffbDoGfW1NEJ3vzzh
-   odA3sLY1nFUia882g7dAxw3B3HLukKMsLihU7k2lfsQDqZHi0Dyb1Ldo+
-   3If/5EeXt49xFKGc1nQsypSlpnr/RZRwFMCOq1uiANM4xCNgeUXUGw5oi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5493376"
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="5493376"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 03:31:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="17299223"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 15 Mar 2024 03:31:05 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rl4q6-000EKv-1y;
-	Fri, 15 Mar 2024 10:31:02 +0000
-Date: Fri, 15 Mar 2024 18:30:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: sound/core/compress_offload.c:595:6-12: inconsistent IS_ERR and
- PTR_ERR on line 596.
-Message-ID: <202403151855.V0OS6L14-lkp@intel.com>
+	s=arc-20240116; t=1710498693; c=relaxed/simple;
+	bh=RJX4FJHlMm3oenQeaE386MoRXPyn2WHUWes6h41yR+o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bYMqFUK1DKCZYEUcO0A47g9mEr2xQUAYqgCPEH6UijJGWZzDq6UQVaHeET/IlyrCGY3kPS9ilmNTYwXhN7geZ48esdoRXycZD36YSNrRsiv3Vwb9dFEMHRFgJcEDxHyRGVgewg94gPiObaCsCZzrh9F+rgjnl5Iq1DlqKLVmfzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WQpLCfN+; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-413f936a17cso7913695e9.1;
+        Fri, 15 Mar 2024 03:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710498690; x=1711103490; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VcarFVU9V+h10+R9Y+pltNDAfj/DLbvuBUHZVFKImu8=;
+        b=WQpLCfN+iaxt/ee87vafFJfKxNm3iz6d2SDFjQbVQ9XP759Xilpf17s5jIPXFg6hlb
+         X5GswSalEjn5j7F9Em6H2pYAAtLooxf0V1HafwGjZ4k85AJFKrhiDoUwMY3u2zpbQyjl
+         9j1gJrFxbWV66iibU2422l/TMq4cL7LtRycsgaZo/Vv7ok2d6fZ/frDl+fP8LoWo6Muc
+         27/TCLc9VD4CsZ5UGVTZlurDJ3tZY/r6T71yzew/tEL6XK2JHkj8AAU0SD3xR5fe1bdm
+         o9NjmEukAR1UPSLq3FLWUpZXmbooWUWx/r/ql3jgeEYqyVdcqAq58hVXJ91gfl/o1tlN
+         DJ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710498690; x=1711103490;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VcarFVU9V+h10+R9Y+pltNDAfj/DLbvuBUHZVFKImu8=;
+        b=YNRyTHVwbnlJMrGVFtw5EVTpTzrVlDdqysV3kNTTwUxYRRhsS0+psng6ip4f9nTuYb
+         t66aYuX4ry383T/pAxpoXSLdfNpV9iNrPMnye5/zVl7ytyuiCx9kiSTI1szo8IPDbt+F
+         hBNnWvLGS3b59vcLWdR92MAaLDAYR63/wpF+AUD3ysbjvGEGR+I7wI+LJzFf4RWVrIWX
+         IRl0Z1xF51Mv9xGLYw7J9jhIa96OxzLwulRTO0DLGAXLjJa2huZnEnuvDBgRUjP4zfSW
+         /C3rSD83MXcpcLdKgyTvAbjOln3NkMK56cAcJqSqRfQMQoub9U1yCh0ts6hlghlwohMs
+         e81g==
+X-Forwarded-Encrypted: i=1; AJvYcCUa+WnbBgS80GGBKfWyESF7iNJdDavlhZ78QaWxlFA6GvRPqmFbR+Lwq54cxvC6ta3tzxaINMmRB9IW9a+L2jlHml2zxVWsuRUFh9wQwrQj4RKeRXDHJEX2qmm1E9igLE2JdN/jhCGBYWW3Aw8dc8f5PWDTlirZH9fps/s6errIZqO1ww==
+X-Gm-Message-State: AOJu0Yw/3VjaAcUITaRVghmUbf/S0hqD6vUGUlLcXgGPlgc1RF6LJHp1
+	qys01PvMiKL2sTGEMhCo5LUX6FySHf6vhddld64R0Ql7JZLcCneS
+X-Google-Smtp-Source: AGHT+IHgVYsh5iptX0jiwjtNaalLI8OCEKEflTEvzb9QsWn/ScXXUUC5F8WsdU04ZpxykUC+GpPzog==
+X-Received: by 2002:a05:600c:5117:b0:413:fea7:bd19 with SMTP id o23-20020a05600c511700b00413fea7bd19mr1791964wms.15.1710498689705;
+        Fri, 15 Mar 2024 03:31:29 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2500:a01:ae92:6adf:5cb6:274c])
+        by smtp.gmail.com with ESMTPSA id l19-20020a05600c4f1300b004130378fb77sm8676549wmq.6.2024.03.15.03.31.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 03:31:29 -0700 (PDT)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Chris Brandt <chris.brandt@renesas.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 0/4] Add RIIC support for Renesas RZ/V2H SoC
+Date: Fri, 15 Mar 2024 10:30:29 +0000
+Message-Id: <20240315103033.141226-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hi Takashi,
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+Hi all,
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e5eb28f6d1afebed4bb7d740a797d0390bd3a357
-commit: 9b02221422a55e834469fdc91dc4d5147f5a1fb9 ALSA: compress_offload: Use automatic cleanup of kfree()
-date:   3 weeks ago
-config: x86_64-randconfig-103-20240314 (https://download.01.org/0day-ci/archive/20240315/202403151855.V0OS6L14-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+This patch series aims to add RIIC support for Renesas RZ/V2H(P) SoC.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403151855.V0OS6L14-lkp@intel.com/
+v1->v2
+- Dropped dt binding which update the comment.
+- Used a const for V2H SoC instead of enum in items list
+- Dropped internal review tags
+- Renamed i2c read/write to riic_readb/riic_writeb
+- Made riic as first parameter for riic_writeb
+- Dropped family from struct riic_of_data
+- Included RIIC_REG_END in enum list as flexible array member
+  in a struct with no named members is not allowed
 
-cocci warnings: (new ones prefixed by >>)
->> sound/core/compress_offload.c:595:6-12: inconsistent IS_ERR and PTR_ERR on line 596.
+Cheers,
+Prabhakar
 
-vim +595 sound/core/compress_offload.c
+Lad Prabhakar (4):
+  dt-bindings: i2c: renesas,riic: Document R9A09G057 support
+  i2c: riic: Introduce helper functions for I2C read/write operations
+  i2c: riic: Pass register offsets and chip details as OF data
+  i2c: riic: Add support for R9A09G057 SoC
 
-4dc040a0b34890 Vinod Koul          2012-09-17  582  
-b21c60a4edd22e Vinod Koul          2011-12-23  583  static int
-b21c60a4edd22e Vinod Koul          2011-12-23  584  snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
-b21c60a4edd22e Vinod Koul          2011-12-23  585  {
-9b02221422a55e Takashi Iwai        2024-02-22  586  	struct snd_compr_params *params __free(kfree) = NULL;
-b21c60a4edd22e Vinod Koul          2011-12-23  587  	int retval;
-b21c60a4edd22e Vinod Koul          2011-12-23  588  
-7ea9ee0064281e Srinivas Kandagatla 2023-06-19  589  	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN || stream->next_track) {
-b21c60a4edd22e Vinod Koul          2011-12-23  590  		/*
-b21c60a4edd22e Vinod Koul          2011-12-23  591  		 * we should allow parameter change only when stream has been
-b21c60a4edd22e Vinod Koul          2011-12-23  592  		 * opened not in other cases
-b21c60a4edd22e Vinod Koul          2011-12-23  593  		 */
-c2f14ba749c1ce Markus Elfring      2016-08-21  594  		params = memdup_user((void __user *)arg, sizeof(*params));
-c2f14ba749c1ce Markus Elfring      2016-08-21 @595  		if (IS_ERR(params))
-9b02221422a55e Takashi Iwai        2024-02-22 @596  			return PTR_ERR(no_free_ptr(params));
-4dc040a0b34890 Vinod Koul          2012-09-17  597  
-4dc040a0b34890 Vinod Koul          2012-09-17  598  		retval = snd_compress_check_input(params);
-4dc040a0b34890 Vinod Koul          2012-09-17  599  		if (retval)
-9b02221422a55e Takashi Iwai        2024-02-22  600  			return retval;
-4dc040a0b34890 Vinod Koul          2012-09-17  601  
-b21c60a4edd22e Vinod Koul          2011-12-23  602  		retval = snd_compr_allocate_buffer(stream, params);
-9b02221422a55e Takashi Iwai        2024-02-22  603  		if (retval)
-9b02221422a55e Takashi Iwai        2024-02-22  604  			return -ENOMEM;
-4dc040a0b34890 Vinod Koul          2012-09-17  605  
-b21c60a4edd22e Vinod Koul          2011-12-23  606  		retval = stream->ops->set_params(stream, params);
-b21c60a4edd22e Vinod Koul          2011-12-23  607  		if (retval)
-9b02221422a55e Takashi Iwai        2024-02-22  608  			return retval;
-49bb6402f1aa1e Charles Keepax      2013-04-18  609  
-7ea9ee0064281e Srinivas Kandagatla 2023-06-19  610  		if (stream->next_track)
-9b02221422a55e Takashi Iwai        2024-02-22  611  			return retval;
-7ea9ee0064281e Srinivas Kandagatla 2023-06-19  612  
-9727b490e543de Jeeja KP            2013-02-14  613  		stream->metadata_set = false;
-9727b490e543de Jeeja KP            2013-02-14  614  		stream->next_track = false;
-49bb6402f1aa1e Charles Keepax      2013-04-18  615  
-49bb6402f1aa1e Charles Keepax      2013-04-18  616  		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-769fab2a41da4b Jesper Juhl         2012-01-23  617  	} else {
-b21c60a4edd22e Vinod Koul          2011-12-23  618  		return -EPERM;
-769fab2a41da4b Jesper Juhl         2012-01-23  619  	}
-b21c60a4edd22e Vinod Koul          2011-12-23  620  	return retval;
-b21c60a4edd22e Vinod Koul          2011-12-23  621  }
-b21c60a4edd22e Vinod Koul          2011-12-23  622  
-
-:::::: The code at line 595 was first introduced by commit
-:::::: c2f14ba749c1ce94aa97c5a84733a89aaaadada4 ALSA: compress: Use memdup_user() rather than duplicating its implementation
-
-:::::: TO: Markus Elfring <elfring@users.sourceforge.net>
-:::::: CC: Takashi Iwai <tiwai@suse.de>
+ .../devicetree/bindings/i2c/renesas,riic.yaml |  19 +--
+ drivers/i2c/busses/i2c-riic.c                 | 125 +++++++++++++-----
+ 2 files changed, 100 insertions(+), 44 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
