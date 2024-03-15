@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-104049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AF8F87C84C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:40:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD65887C84D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:40:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24E3C1C211A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:40:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 749BA282B24
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:40:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB05D11CBD;
-	Fri, 15 Mar 2024 04:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07E812B95;
+	Fri, 15 Mar 2024 04:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fGptibbk"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nxAY3pNd"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8F6F9DE
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11ACB101C4
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710477626; cv=none; b=blispntDP4z7VBDuwJRNry+EQJBpq6N8YiWlnwatxtb920R0pRh1bUH5H/jjzM8RBxqU0kUUs3MlDyKM5lyKAYtzeBGgQvvEOq0LwHtSIbF1p1BeGbF24oijkvmZgwsZv2ti6Yfw+oTL6SsbotE07xZIQxAugrCqsOJqplF37qg=
+	t=1710477627; cv=none; b=Y99XVxq8wqaOgB5dQkcTYYbm3A4HeBr7Pe3lt1XBU2YAcYB8TU8z/fkfplIR0AMvcSSB7i1YFqZxmXgZiYhuJ7YT7nv4lqsb9C5imeqJhmI6MlKLQacMRZhWVVu8asyGwpBBOIujyPEpua/RKiN17rT4rdxZEUS4Q5K74VLGkW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710477626; c=relaxed/simple;
-	bh=2FiN2H+43D3sx0OR6+I4fJnMUbMIax6oO3HYblar+8k=;
+	s=arc-20240116; t=1710477627; c=relaxed/simple;
+	bh=RoIcrErNdRRmnt6YHmJ5Updj0dP2brw5ELAlflT/1hs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Wv/tY0vhNQpORzifHvYZkf3P3Z/Vy2lKTiWxQZvv9YBvW8H3PO3sjmEcjvn8+03MOOw/sIj/rLb6v+z5biVhmfKZ80W0sNAWu3YxDR7VGGwngbEkQkWFvc+gl+SLFP5feuQLHr2G/yHJOlV8zODXt/vzKBiakHjyTeclGCzXAsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fGptibbk; arc=none smtp.client-ip=209.85.128.201
+	 To:Cc:Content-Type; b=DMQB9eH1cNxI9GyvOJHDdKtzIeY0lBdcSB0cFV3R+OK6wnvbr4HKY1y2KmvDV2HjLRk/+a4cl6YkvPFimLJ/eTqjdcrmLH/K3Q41igI4Ifxvrymfo8kK6rrZ7eW0JX0kYsDJIVjFvUgTo/fbKt7nPBzA3DKkMgSYxNhdj8TnN1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nxAY3pNd; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a2b82039bso31911597b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 21:40:24 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dced704f17cso2769366276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 21:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710477624; x=1711082424; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710477625; x=1711082425; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wPFpAa5+VGKsgJgb1JT18RP9N5QBHmzAN+rZSPB/N9U=;
-        b=fGptibbkGCzPDTJTQiyif4UEiWSx7yP0wVtA1Z5Jfh6KSmZEGkl8xU54drxHv4YBMP
-         mBvSNcnzPlOOSiVuMjGo1UrikjrGZepvGaYCcNbEzhDX5u/Xzjhne9sI0iYMTQz4vqlG
-         qSqnr2e0zRzaXpD3Q4LmkYaZloNJlrMXtQYWzeL3svcVXNOyJn/a+aC1C5OYddDdQZ6p
-         O40ryN69+NxebDTrCaYLDQYSZ6QqQSWN/cie3L10LPdkGAleeEKdbuxB2ApiNCj4VV5L
-         werbK/Qf6CYsDNuDv7bvjUgRbP/MjVdy5Goa+zZrph5Os62YmKcvlQvHdxTXXfA/P3u5
-         1sdA==
+        bh=QaAjw+GLN3fthD1Tt2Fd5YB8ROakR8eIp7hBkVpSiIo=;
+        b=nxAY3pNdYizTuB4L59lJLODjrpV5nwvBXX1l3pplVvlKhwZCGjdReZ+OIuyeVwHSHp
+         uQlUzlVfNJ2UX08AtGf2vXXgx+KC2TTYH2vpWLIMsuAuW2Pd6d9dTZ5ty+4CTQStwvfI
+         ttuJJmkfsP2w5D2vbww9++ViVISyEOm8pEbdObLLyXhYSL9Wwun4gGBKILJQMgYnswPZ
+         frzNkVsTeCl69UUV1mypRopw9SmCCktYzSb3bLlJ5sw1ZlLnRXNFsYkRpFyGRvgUo0zN
+         rrbDTTY+XvVd8PfoVhq6c2cRhfY6U0d7+6sLBACh49SAJydtz6zCnY3yydNQYmRjS5yn
+         js/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710477624; x=1711082424;
+        d=1e100.net; s=20230601; t=1710477625; x=1711082425;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wPFpAa5+VGKsgJgb1JT18RP9N5QBHmzAN+rZSPB/N9U=;
-        b=FmyFGnkiQAE6dzQAHTKhIIkimlOB9omB8ohJr1zNeKAuewWuMea6jrAFMIUDJwomli
-         ehrKkax7H1jDdETgyEggzCOXpmJXawvs1XCi7iH66q3By1d8Yv2U2AW/gXJNps2rWDPK
-         NJ0GRxJJiaIeAp91yOUUxYGgo/gVUikqE0Z32V9eaYe8SxrEO3BLaC9ZlY4o1ejxaCZO
-         Hx/6coqMTnsbvP5zZanVOGQLqpNwD27l+NYAlKGggR48JMFsWJNgiLU9CcdaCoH6SvNI
-         WlpE5cG/mjjBQ1Vt+TMf4P6lfMGl9QRbxw+qCoKk9X7MG9nShWso/GEWUwD4VMme4cH3
-         yBjQ==
-X-Gm-Message-State: AOJu0YxnnG3em9okRxsHsW+JuiEvDNSZVzZD+p7Oll5AykYGCKDuFpw1
-	bMulNu/jh2Gj8cZAZV+CpDMqaFgshCZVmqUDcvMwz5LiYXoIecbK01Z6+VyFFQYEQqi9YAZwsdx
-	2Q7+BRSjALAVgEog9pa1cdF1iBxlNkyluz0BKYsa3SXw1LMwQk5H7tqbPsiz0cQvoIbi+tEuWT8
-	XdkJLl5FsjNPXl89RAxTY+P7CwjJQ49O6eZadFYDW0hra9
-X-Google-Smtp-Source: AGHT+IHbuhfbSLlOQ+YuqId0AhDWuZAc6Dxqiic9vTVmYsExfcqXMr6IctAYiHlNUuO4/TdpLbLJcedc29bA
+        bh=QaAjw+GLN3fthD1Tt2Fd5YB8ROakR8eIp7hBkVpSiIo=;
+        b=dggEopVx1zFNhGa/nmWCP2NaeZTpnD2m6Trrjcwc6QE9Tij8Shx3sQotw87cjip5pA
+         KFkOZYhdYpBsSW64bDNUVBNnfWu9jKZB61vB5f5ri9UKRdG7envTurAtKNEQPpqzBuht
+         6bPiFJuW1HrMVY7V0bPoIVr64J5K3vbNjYI73LK/u6EqxzREyS8Rx9Nf1lAbA8EFHW1U
+         E/pbxV1pc5WiNkATc4NxWuwrIcEGDfSTBTqPJjHLucb/NtOyzal1Lkh2y3OEDuX3t9n2
+         s7TeKd6fSbsOe2lplxnQLh3OorGQQA/ObMdX3rFgzcDbte7DjcXH9Yt9DKdjuLmVkv84
+         tq8w==
+X-Gm-Message-State: AOJu0Yw99dzF/ErN8XbMS/HduM2F7nT9tvCY0xfRii/jCBAvX+BxzCYB
+	TqdDyQhmXy3KruRwXg02SsJbkkubezEe0qZJ9wjJbu1JO42k7jUHXvxFlWwJVGJRGpzNUNKjNtJ
+	AyeqkItJ8kTsTA8u8dJrc6vX9VzKRxCin1TRlqA5QAzsh6U0Z846wEoY9Nccz/iRLXgMI2VMTlU
+	Cn8fBXIc2l6ncF8nSsP7nzDmHEZbz1bdLslt1jvmwYpN4T
+X-Google-Smtp-Source: AGHT+IHrGFmuVdNv87RfxHRPYm5/7AnTutaFZYOVGNZQsMeBVL96LxwznLFIO7HJaAWLPjy4VEuQxTmDbtQT
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a05:6902:2748:b0:dc6:ebd4:cca2 with SMTP
- id ea8-20020a056902274800b00dc6ebd4cca2mr216205ybb.11.1710477622683; Thu, 14
- Mar 2024 21:40:22 -0700 (PDT)
-Date: Thu, 14 Mar 2024 21:39:47 -0700
+ (user=jstultz job=sendgmr) by 2002:a05:6902:72e:b0:dcc:94b7:a7a3 with SMTP id
+ l14-20020a056902072e00b00dcc94b7a7a3mr216175ybt.12.1710477624535; Thu, 14 Mar
+ 2024 21:40:24 -0700 (PDT)
+Date: Thu, 14 Mar 2024 21:39:48 -0700
 In-Reply-To: <20240315044007.2778856-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240315044007.2778856-1-jstultz@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240315044007.2778856-3-jstultz@google.com>
-Subject: [PATCH v9 2/7] locking/mutex: Make mutex::wait_lock irq safe
+Message-ID: <20240315044007.2778856-4-jstultz@google.com>
+Subject: [PATCH v9 3/7] locking/mutex: Expose __mutex_owner()
 From: John Stultz <jstultz@google.com>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Juri Lelli <juri.lelli@redhat.com>, Joel Fernandes <joelaf@google.com>, 
@@ -88,14 +88,15 @@ Cc: Juri Lelli <juri.lelli@redhat.com>, Joel Fernandes <joelaf@google.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>, Metin Kaya <Metin.Kaya@arm.com>, 
 	Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
 	Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
-	"Connor O'Brien" <connoro@google.com>, John Stultz <jstultz@google.com>
+	Valentin Schneider <valentin.schneider@arm.com>, "Connor O'Brien" <connoro@google.com>, 
+	John Stultz <jstultz@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
 From: Juri Lelli <juri.lelli@redhat.com>
 
-mutex::wait_lock might be nested under rq->lock.
-
-Make it irq safe then.
+Implementing proxy execution requires that scheduler code be able to
+identify the current owner of a mutex. Expose __mutex_owner() for
+this purpose (alone!).
 
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: Qais Yousef <qyousef@google.com>
@@ -121,173 +122,94 @@ Cc: K Prateek Nayak <kprateek.nayak@amd.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: kernel-team@android.com
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-[rebase & fix {un,}lock_wait_lock helpers in ww_mutex.h]
+[Removed the EXPORT_SYMBOL]
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Connor O'Brien <connoro@google.com>
+[jstultz: Reworked per Peter's suggestions]
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
-v3:
-* Re-added this patch after it was dropped in v2 which
-  caused lockdep warnings to trip.
-v7:
-* Fix function definition for PREEMPT_RT case, as pointed out
-  by Metin Kaya.
-* Fix incorrect flags handling in PREEMPT_RT case as found by
-  Metin Kaya
+v4:
+* Move __mutex_owner() to kernel/locking/mutex.h instead of
+  adding a new globally available accessor function to keep
+  the exposure of this low, along with keeping it an inline
+  function, as suggested by PeterZ
 ---
- kernel/locking/mutex.c    | 18 ++++++++++--------
- kernel/locking/ww_mutex.h | 22 +++++++++++-----------
- 2 files changed, 21 insertions(+), 19 deletions(-)
+ kernel/locking/mutex.c | 25 -------------------------
+ kernel/locking/mutex.h | 25 +++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 25 deletions(-)
 
 diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 980ce630232c..7de72c610c65 100644
+index 7de72c610c65..5741641be914 100644
 --- a/kernel/locking/mutex.c
 +++ b/kernel/locking/mutex.c
-@@ -578,6 +578,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 	DEFINE_WAKE_Q(wake_q);
- 	struct mutex_waiter waiter;
- 	struct ww_mutex *ww;
-+	unsigned long flags;
- 	int ret;
- 
- 	if (!use_ww_ctx)
-@@ -620,7 +621,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 		return 0;
- 	}
- 
--	raw_spin_lock(&lock->wait_lock);
-+	raw_spin_lock_irqsave(&lock->wait_lock, flags);
- 	/*
- 	 * After waiting to acquire the wait_lock, try again.
- 	 */
-@@ -681,7 +682,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 				goto err;
- 		}
- 
--		raw_spin_unlock(&lock->wait_lock);
-+		raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
- 		/* Make sure we do wakeups before calling schedule */
- 		if (!wake_q_empty(&wake_q)) {
- 			wake_up_q(&wake_q);
-@@ -707,9 +708,9 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 			trace_contention_begin(lock, LCB_F_MUTEX);
- 		}
- 
--		raw_spin_lock(&lock->wait_lock);
-+		raw_spin_lock_irqsave(&lock->wait_lock, flags);
- 	}
--	raw_spin_lock(&lock->wait_lock);
-+	raw_spin_lock_irqsave(&lock->wait_lock, flags);
- acquired:
- 	__set_current_state(TASK_RUNNING);
- 
-@@ -735,7 +736,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 	if (ww_ctx)
- 		ww_mutex_lock_acquired(ww, ww_ctx);
- 
--	raw_spin_unlock(&lock->wait_lock);
-+	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
- 	wake_up_q(&wake_q);
- 	preempt_enable();
- 	return 0;
-@@ -745,7 +746,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 	__mutex_remove_waiter(lock, &waiter);
- err_early_kill:
- 	trace_contention_end(lock, ret);
--	raw_spin_unlock(&lock->wait_lock);
-+	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
- 	debug_mutex_free_waiter(&waiter);
- 	mutex_release(&lock->dep_map, ip);
- 	wake_up_q(&wake_q);
-@@ -916,6 +917,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
- 	struct task_struct *next = NULL;
- 	DEFINE_WAKE_Q(wake_q);
- 	unsigned long owner;
-+	unsigned long flags;
- 
- 	mutex_release(&lock->dep_map, ip);
- 
-@@ -943,7 +945,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
- 	}
- 
- 	preempt_disable();
--	raw_spin_lock(&lock->wait_lock);
-+	raw_spin_lock_irqsave(&lock->wait_lock, flags);
- 	debug_mutex_unlock(lock);
- 	if (!list_empty(&lock->wait_list)) {
- 		/* get the first entry from the wait-list: */
-@@ -960,7 +962,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
- 	if (owner & MUTEX_FLAG_HANDOFF)
- 		__mutex_handoff(lock, next);
- 
--	raw_spin_unlock(&lock->wait_lock);
-+	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
- 	wake_up_q(&wake_q);
- 	preempt_enable();
+@@ -56,31 +56,6 @@ __mutex_init(struct mutex *lock, const char *name, struct lock_class_key *key)
  }
-diff --git a/kernel/locking/ww_mutex.h b/kernel/locking/ww_mutex.h
-index 7189c6631d90..9facc0ddfdd3 100644
---- a/kernel/locking/ww_mutex.h
-+++ b/kernel/locking/ww_mutex.h
-@@ -70,14 +70,14 @@ __ww_mutex_has_waiters(struct mutex *lock)
- 	return atomic_long_read(&lock->owner) & MUTEX_FLAG_WAITERS;
- }
+ EXPORT_SYMBOL(__mutex_init);
  
--static inline void lock_wait_lock(struct mutex *lock)
-+static inline void lock_wait_lock(struct mutex *lock, unsigned long *flags)
- {
--	raw_spin_lock(&lock->wait_lock);
-+	raw_spin_lock_irqsave(&lock->wait_lock, *flags);
- }
- 
--static inline void unlock_wait_lock(struct mutex *lock)
-+static inline void unlock_wait_lock(struct mutex *lock, unsigned long *flags)
- {
--	raw_spin_unlock(&lock->wait_lock);
-+	raw_spin_unlock_irqrestore(&lock->wait_lock, *flags);
- }
- 
- static inline void lockdep_assert_wait_lock_held(struct mutex *lock)
-@@ -144,14 +144,14 @@ __ww_mutex_has_waiters(struct rt_mutex *lock)
- 	return rt_mutex_has_waiters(&lock->rtmutex);
- }
- 
--static inline void lock_wait_lock(struct rt_mutex *lock)
-+static inline void lock_wait_lock(struct rt_mutex *lock, unsigned long *flags)
- {
--	raw_spin_lock(&lock->rtmutex.wait_lock);
-+	raw_spin_lock_irqsave(&lock->rtmutex.wait_lock, *flags);
- }
- 
--static inline void unlock_wait_lock(struct rt_mutex *lock)
-+static inline void unlock_wait_lock(struct rt_mutex *lock, unsigned long *flags)
- {
--	raw_spin_unlock(&lock->rtmutex.wait_lock);
-+	raw_spin_unlock_irqrestore(&lock->rtmutex.wait_lock, *flags);
- }
- 
- static inline void lockdep_assert_wait_lock_held(struct rt_mutex *lock)
-@@ -380,6 +380,7 @@ static __always_inline void
- ww_mutex_set_context_fastpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
- {
- 	DEFINE_WAKE_Q(wake_q);
-+	unsigned long flags;
- 
- 	ww_mutex_lock_acquired(lock, ctx);
- 
-@@ -408,10 +409,9 @@ ww_mutex_set_context_fastpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
- 	 * Uh oh, we raced in fastpath, check if any of the waiters need to
- 	 * die or wound us.
- 	 */
--	lock_wait_lock(&lock->base);
-+	lock_wait_lock(&lock->base, &flags);
- 	__ww_mutex_check_waiters(&lock->base, ctx, &wake_q);
--	unlock_wait_lock(&lock->base);
+-/*
+- * @owner: contains: 'struct task_struct *' to the current lock owner,
+- * NULL means not owned. Since task_struct pointers are aligned at
+- * at least L1_CACHE_BYTES, we have low bits to store extra state.
+- *
+- * Bit0 indicates a non-empty waiter list; unlock must issue a wakeup.
+- * Bit1 indicates unlock needs to hand the lock to the top-waiter
+- * Bit2 indicates handoff has been done and we're waiting for pickup.
+- */
+-#define MUTEX_FLAG_WAITERS	0x01
+-#define MUTEX_FLAG_HANDOFF	0x02
+-#define MUTEX_FLAG_PICKUP	0x04
 -
-+	unlock_wait_lock(&lock->base, &flags);
- 	wake_up_q(&wake_q);
- }
+-#define MUTEX_FLAGS		0x07
+-
+-/*
+- * Internal helper function; C doesn't allow us to hide it :/
+- *
+- * DO NOT USE (outside of mutex code).
+- */
+-static inline struct task_struct *__mutex_owner(struct mutex *lock)
+-{
+-	return (struct task_struct *)(atomic_long_read(&lock->owner) & ~MUTEX_FLAGS);
+-}
+-
+ static inline struct task_struct *__owner_task(unsigned long owner)
+ {
+ 	return (struct task_struct *)(owner & ~MUTEX_FLAGS);
+diff --git a/kernel/locking/mutex.h b/kernel/locking/mutex.h
+index 0b2a79c4013b..1c7d3d32def8 100644
+--- a/kernel/locking/mutex.h
++++ b/kernel/locking/mutex.h
+@@ -20,6 +20,31 @@ struct mutex_waiter {
+ #endif
+ };
  
++/*
++ * @owner: contains: 'struct task_struct *' to the current lock owner,
++ * NULL means not owned. Since task_struct pointers are aligned at
++ * at least L1_CACHE_BYTES, we have low bits to store extra state.
++ *
++ * Bit0 indicates a non-empty waiter list; unlock must issue a wakeup.
++ * Bit1 indicates unlock needs to hand the lock to the top-waiter
++ * Bit2 indicates handoff has been done and we're waiting for pickup.
++ */
++#define MUTEX_FLAG_WAITERS	0x01
++#define MUTEX_FLAG_HANDOFF	0x02
++#define MUTEX_FLAG_PICKUP	0x04
++
++#define MUTEX_FLAGS		0x07
++
++/*
++ * Internal helper function; C doesn't allow us to hide it :/
++ *
++ * DO NOT USE (outside of mutex & scheduler code).
++ */
++static inline struct task_struct *__mutex_owner(struct mutex *lock)
++{
++	return (struct task_struct *)(atomic_long_read(&lock->owner) & ~MUTEX_FLAGS);
++}
++
+ #ifdef CONFIG_DEBUG_MUTEXES
+ extern void debug_mutex_lock_common(struct mutex *lock,
+ 				    struct mutex_waiter *waiter);
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
