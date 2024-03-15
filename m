@@ -1,313 +1,204 @@
-Return-Path: <linux-kernel+bounces-104729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE20087D2D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:32:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5A587D2DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:34:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 766A9282224
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:32:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F01291C22481
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:34:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201154AECB;
-	Fri, 15 Mar 2024 17:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D2D4AEF1;
+	Fri, 15 Mar 2024 17:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="VxHgk7ne"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hpD1tt+2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA60487B3;
-	Fri, 15 Mar 2024 17:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710523961; cv=none; b=kEaHS0A5FRDsN4SgLwum98VlqW1UQRKNantNNNt5wMo4ZymIKJfDIxZ/m9woOZ+TbykaiTtpRCID6icBhcoJF/HL2KUBRj+tziA6S9tSxsXmlxSAL4lwTAbkvq7iU+n9nHBgyfUojZ9Y8XKvQKIX5ZVm+55tNNQfloqLq3ZvvmM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710523961; c=relaxed/simple;
-	bh=Q8t3AEPKp6fQi3w/pbYOmlKsBZ/FJIzlbR19sfwaXU0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QvklC45B1fthwaxlbgYX7pMDamw8wkz20EAeh5UTVDAhaQb2d//jyquAa0apjRN3we/kh2d0jn58++8w52DKBQEWj1r/6mKdo/lsMbsz/+voEtJ7WD+U3P9I+bibkJTRo3FsL6NUgLFdvEb2L0TMzXEaoC8C8exu9JTb+lRZ4Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=VxHgk7ne; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so319697466b.0;
-        Fri, 15 Mar 2024 10:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710523957; x=1711128757; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aB1DZO1/YVC0bjj1nE+ssniKkXOWA9sPBcm6ECq5hfE=;
-        b=VxHgk7ne2THitQtWrB3BMpzqq8AunQjdZMfzAGK0cZZooTSt0SR/4cK3MfbK5AQePi
-         +w6/xfqW/pPPzdBs+XsATME72S0nj8oO9qTQwnGq0Xbcv+cR/KJi+W17gFQphY35kIXh
-         6ayvtoA/IRBCbF3CbJb34xtw20d/7FmoNdPrR+KCsNqE1brRDIvcIthQUt3Rtoci7DCA
-         k9gHz1e74K7KNRM7pYwxsI0WzenMhMwN40wU0ji7jZP015SUverErZlZgfRhG7je4Cmo
-         hbc5CRdHfEftb0EH3W8zu4u+GR6Pe2uykRAi1fcFrT/rRqvVIr9gbH8xe800CKstY0Zq
-         y78w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710523957; x=1711128757;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aB1DZO1/YVC0bjj1nE+ssniKkXOWA9sPBcm6ECq5hfE=;
-        b=Bno0XFiCQjG+D8PR448QcN26VJVecBhj/GNZxHuQeiM1RlS63rXNfDWS26ECSQeG3y
-         nuyHEI4a0QER+V0ACuZBQdl7vauuunz4RW2fQ7q6RHR4fVkAL+KfjN/cSASLikZ6/DY9
-         kekLUetkCBU9dVnhdqouvA2wyidDOXDSVtCjnqAkG1czxpe7vjijEu1BMBPdcasDzKCz
-         B4mhb7KMPGWZAkM/bCqeTxV8c8NSB2zZDfCN1b6/ZKzum78FEKwHJ6zWWUN6Kkv+BhN6
-         sEVl8hgw85ytJ5lOnIJTkpbaZYTTYmctjXIaRttzheNSsKf1e1vZ//5DYgVAK+esI5lg
-         pTRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWU5cSgEmP0xpMCUfApX6nhehQ7zyXst06YRNnbjsfXxs6xCXIZA9OrM/DulnnHMgvuHpKu2DWILBEIBWm3HneaTj2UJNxOeOl8HCfL
-X-Gm-Message-State: AOJu0YyaWiGPUV8Lemg35+iHaL4sNA5rLoOYGAic4ada5DRgv4oQvEje
-	mYMZuKGJEEBXkeLN982DbTTzGOjFY8UqVruJyi/Qz7K4TgQFQSO36lnJe52is7jSMA==
-X-Google-Smtp-Source: AGHT+IEofF8plLQoAghdethOGLl782/5CRj5pviO8139HW5mm9bwCbpouUArkHSO25P9UFatCUwhzA==
-X-Received: by 2002:a17:906:a291:b0:a46:7e08:37e8 with SMTP id i17-20020a170906a29100b00a467e0837e8mr2329929ejz.53.1710523957450;
-        Fri, 15 Mar 2024 10:32:37 -0700 (PDT)
-Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170906370a00b00a469b71b818sm246687ejc.113.2024.03.15.10.32.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 10:32:37 -0700 (PDT)
-From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To: selinux@vger.kernel.org
-Cc: Paul Moore <paul@paul-moore.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selinux: use u32 as bit type in ebitmap code
-Date: Fri, 15 Mar 2024 18:32:28 +0100
-Message-ID: <20240315173234.637629-1-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683B247A67;
+	Fri, 15 Mar 2024 17:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710524053; cv=fail; b=VsWZVocgAfcUYA9Yi7CtYCH26X0+v6wVy+3X5Wb9H+RUA6V9nuI32Gw7vE/lwj7Z7iYeYcmD1szJjsrG06ScktxObyCKN092SuXo+9vCz/xSKT0FZ6fiRffR2UxF+bIl/17WRyW5elmnT/rkml4EIccfd5DXC9ZLa+f6vjuojQc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710524053; c=relaxed/simple;
+	bh=MlnHAG/Uv87dkG/URr57wHxzjrmq2ZzhNAg2k4/fVSY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=IsAkfmqIGxpNViR6Tk/1fmuEUqpg5AibEgpKKrUTWoNlSEf7ChmXZYgvbwUqgPT++mvXE8QsY2NxoiGNegvu9beuG5AIFyyAXyby2VCiZkFT665jyJSCCt/xCIypCJR7+rlU1mNSIJ03P8k4gsPwoh31mFTfccVN30XUhqPPo0w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hpD1tt+2; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710524050; x=1742060050;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=MlnHAG/Uv87dkG/URr57wHxzjrmq2ZzhNAg2k4/fVSY=;
+  b=hpD1tt+2EMyn87ev23iEUZGzLna9fqG2vU86BJI9yiGkUbnQcfHrrwlD
+   ewpts5yVKCi00jsoWNDdTT+5apsmzLuXs5sTAv7lKhmg9514C99kc6lAI
+   OMGEXKki8/KrhwCCGaZdpY3Qr0vfIVB7zof7oELhuT7FYo9aMrEwHQFv5
+   yTw+Ng26hDMy209G+Y1F26Keabr0nRAbtrKyHkturQhRtCFmA+AWKZOmS
+   ns2FP/nBRnh9vgjIYcjjulYT5fNu5b/HyewGgRjM9oIa8UNljhxoIiMQf
+   BbwroqpPBwJAQftVQKxQVkuS3hpx4Co6MvSKmdIDhMIOgIV/KkSRjEFJ8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="16807865"
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="16807865"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 10:34:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="12665068"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Mar 2024 10:34:09 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 15 Mar 2024 10:34:08 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 15 Mar 2024 10:34:08 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 15 Mar 2024 10:34:08 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 15 Mar 2024 10:34:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EzjqK+P0xVg8oM1DdWLpKb/XELIzcJjHU+k11nzQQ70X0Ufcwqr2jtRblz7SYScH6K7hFYqWdLErsQqGFyzidFZ+uWh1AC+rEpPnKonoOdK3Uu6BLyhJm3RqGzN55kFeT+QhChYe9q0nICF5gBjalKHjlCrJgFM6D6YLjd0zSTi3yr+HuxIi2IRvLbbByMou5z85MSWT7TfrfCS3x7Eiw40h80mN9Wi7UzG0A6CLdhMNk+67uZ4piQdJ89gWQkk4TKw3eM1cF0NpxAk2e7yOg/KHdnv4gMbn9rqwzD5A6cvaB9MEeN3jkiVu0Kj0cxMNMY1PhAXTaUSUfEiMs7HA+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mDg2O8s36vOex6FkpP443EtpqqJeqWmSfmLR3pJn0DY=;
+ b=LGw4/iAAOTztc5s1n7ds63lArPEMcj5cpYDEY6BFKJutRzd3CgP5+gLtlpEcZ/BUSyL+WauHTs3OK3OdjROq9VcEUy13bwTMH5/lM698nt4k1byHz3U0w5EQt8iNKgulzBJoWUwoGlaK68HwXuQqw3SM2XZp9DJmjjT2Z77wGDwIF7wIGeQ5mlNLm2rvGJXdPft0UGndeW+kOixVfkOPXf1KKRoMwlHwy5Q7+hJGDFJHVc0XnjuAlZcZcrGye0Wmj9lSJFMmFIiRveJhR15R27IJfcnx6tjaMDweO3YmKJWzDXWbqpxpZxtCviB8V6j2ZVa5fkef6Yx9LW4cmJEBbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com (2603:10b6:510:147::11)
+ by PH7PR11MB8526.namprd11.prod.outlook.com (2603:10b6:510:30a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Fri, 15 Mar
+ 2024 17:34:05 +0000
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630]) by PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630%4]) with mapi id 15.20.7386.017; Fri, 15 Mar 2024
+ 17:34:05 +0000
+Date: Fri, 15 Mar 2024 18:33:58 +0100
+From: Michal Kubiak <michal.kubiak@intel.com>
+To: Jijie Shao <shaojijie@huawei.com>
+CC: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+	<liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net 1/3] net: hns3: fix index limit to support all queue
+ stats
+Message-ID: <ZfSGhhn4pkhlZh7G@localhost.localdomain>
+References: <20240315100748.2913882-1-shaojijie@huawei.com>
+ <20240315100748.2913882-2-shaojijie@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240315100748.2913882-2-shaojijie@huawei.com>
+X-ClientProxiedBy: DU2PR04CA0314.eurprd04.prod.outlook.com
+ (2603:10a6:10:2b5::19) To PH0PR11MB5782.namprd11.prod.outlook.com
+ (2603:10b6:510:147::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5782:EE_|PH7PR11MB8526:EE_
+X-MS-Office365-Filtering-Correlation-Id: c3219793-44c7-4eb1-50d0-08dc45161cce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a3HGBxcETkQJlUduq0spQgjPcu5bEko2LbEcWRkColtFkbXqqhnnLVVFAbMDNaARAP2CkIPHNCME8Mbu5253spIlhC/uXp8a1WSZLVLksPFYiKT15Ceehe9HjjU6CpQ602F/Tpm8rJI0IsSjz0YjvBNdtL+7z++338UeWsh9CBy5dmpLsLUO5drmt8ByrBMqaUrJy+tpycJKoesWSnNJnaXZjABgOweSjS/BvUQkQOWP1FzQ+OIeTeN+tfmCkvYGjkXjxtLrNpy1h7eFDTIoG57pKLaLtPrvzRp+mhr8YzTP3RT1alYyKlixJXq7t5LT/n2AxiZr/aTOsfYWBvzGhM91Q5ipzZvzHZzZ9wdnHceivPZClo4sZapDeNmFVZjhNXzVS5FTZ6L2NK/t3vBx3dLMjVnONfXnpZhtKftFw4VgWCfdeoRXiYdctPUxCauRcRxdT1fEK7zWXShSw/6daXQUd3OxDLpMH7SnYlxbi8Jfrxvep8qFlr1qz71OxFL6VNigCcOl3tXchLQrR/zvMUjNMWthLbnCHLeHXBFaPE1jI4iVSxndpVaKYwagvSyOLjHgx+ICj4uVoGlo/GW1eIfWOwoj6j43DhfATA1SIiJB4TmTPDxaWqyCjXJAOnny51E04Yg10TJD08I0WCilDDZAfbYHfhBNS6sMkHO34Tc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5782.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4W7sWFM3o7Mta0M7Xo1DorWLIAdYPT6PuldN3yn3cpu2wS1W8q6/ExkIt5YC?=
+ =?us-ascii?Q?riQVC25e9dvfAKYaV4SYNZClz0B0WnG8kaz9viRV/ynhJN1NZoBPc/C+LeqU?=
+ =?us-ascii?Q?qOvalws2n29MrH3VH4ERoa/eUhOF2ebgElEJbPC8eHbFmiKCL7j8DiF9Ni/h?=
+ =?us-ascii?Q?D+gsyxai7WnYob1fJ6oDEu3/TysL7zwauMSAzGJmMJ56wunpmAtn3vASs2wj?=
+ =?us-ascii?Q?nWFfDS12kJLsdcvTvZE2Qtre6kni5+2vvKLI810DIPBYv8GPN2lSkns086Ea?=
+ =?us-ascii?Q?OLyKhdYcFft5itb2xr/r0dmQm2kF+kdfctjORpH5KcuEDZJqrWmGGLuleL6l?=
+ =?us-ascii?Q?ammpy+NZXe6VW0uAMJtgsA8OI0jeY9hA2F7n8Mveqg5qbr9JDDIkZ4x90ngY?=
+ =?us-ascii?Q?RRWyQfcWgyjy0tHRMqwTt8vTH7Do2lWOfAvntXDNjhKDjKRkAG4R7QQXK7vX?=
+ =?us-ascii?Q?zTLE1Wabo0lxCelkTAeGzyAO6rMerQJpfjxas3VVuYRc6xMP5Wm0qwRMiNAx?=
+ =?us-ascii?Q?BC96jLHIY+ta4TUfCEFsm/MkoAZWz6z+GzZQUsNqG8LDPR2NjldvZ2jVPN2j?=
+ =?us-ascii?Q?HRjt9aLNreaC++PYio2QnKfpErjVX2EWXSfWZbJEoOmSixVascCmTwc72M81?=
+ =?us-ascii?Q?LyTGB6tDd9JUTcmpjjfTdFeudzF62UUFaN8ETjGYYh3QZPXLFQyXuQ95fKxU?=
+ =?us-ascii?Q?Q9yhkaTFew1G1dzzKpTLRohdD8L1BxtyankpB0Qs35xpeeggY51OpWUMFekY?=
+ =?us-ascii?Q?mrEuoQnSa0HAYjZuMy5wIW0Z1quRIfNh2CM5JNsC6oz62npcuZqEuBBMozEJ?=
+ =?us-ascii?Q?dgoNJi3fJUeF6vZtgTqOXfpExGH6pZzGwire4qjKO/FLo9Lp06c0LkrjFSdv?=
+ =?us-ascii?Q?SCvaMLAwlLimZf8OrYWfmyZRSn8K6HSZzaU2u36V//4jZCpYfJ38dzamygDa?=
+ =?us-ascii?Q?GLEV15305wFtqHoigZUF4r4K8gU8wGVxqmA1AkktPrVXHK8VxCe10DGc0fxm?=
+ =?us-ascii?Q?EcwDjYf3jvrkKBAh2p72Vs1oYCL1jycmMAApxyBW5Z3108EdxEH/Z+9DNJIx?=
+ =?us-ascii?Q?dYOujLv856cUSHeowcRE4Vd1IwYs6Ivtd+oBm1dkC9ie7DGiGHb2YbzF4vXF?=
+ =?us-ascii?Q?ri6llrrKGGLCJujm2t608UmXNSFGZwXmQKdr+E8TkZfMCzC0r9aNk92B5htC?=
+ =?us-ascii?Q?y/esRZ7jeu6S58JrVqOymY/IkdHvEnjaKqyyYvHc27Ookrb7egBmsr6Xz/Bx?=
+ =?us-ascii?Q?fNMDRbQfuyAXr6q+5SA7CfQy5SLQQeQ+s7Wqztz/lXl2AlgLXE0JXm+26zKu?=
+ =?us-ascii?Q?gOTVotEYt9S90AbRB+Spaq8vxA/VYWARe7j7hcjuIFI9JUwfL44arKphZ43N?=
+ =?us-ascii?Q?edG3dgRQS5Rz4gf8yt44FGM/DgDRtB5u0juP3DWrr8pxsV2Ppfx5HKJOfV/V?=
+ =?us-ascii?Q?oKiwaMgoJShnm4hJmv6SYowxDRfpxvRPVCNx8WUtHzGBkC6doKypmc7yPG4i?=
+ =?us-ascii?Q?vP4rdsJb6VNEJ742LD9bIc1OOvOv1UthDPpa8az04vM1VHAwfdocktDAyCoD?=
+ =?us-ascii?Q?fQy2FhO185l50MeicDwxCVtjZvbtjRWy2fwbn7MBrxCsH29iWSAmrJ7UAs10?=
+ =?us-ascii?Q?Vg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3219793-44c7-4eb1-50d0-08dc45161cce
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5782.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 17:34:05.7215
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0dGpnNoKZkcIfwardmO4d/s5ksI/Zz12vNNbVMUMdHvQ8TNyYoQp2hKPkgxfHfPIZPEsKMRbft7Qv6YZ/PYyvg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8526
+X-OriginatorOrg: intel.com
 
-The extensible bitmap supports bit positions up to U32_MAX due to the
-type of the member highbit being u32.  Use u32 consistently as the type
-for bit positions to announce to callers what range of values is
-supported.
+On Fri, Mar 15, 2024 at 06:07:46PM +0800, Jijie Shao wrote:
+> From: Jie Wang <wangjie125@huawei.com>
+> 
+> Currently, hns hardware supports more than 512 queues and the index limit
+> in hclge_comm_tqps_update_stats is useless. So this patch remove it.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
-v4:
-  - apply format style
-  I hope i addressed all comment from [1] in [2].
-v3:
-  - revert type change of unrelated iter variable
-  - use U32_MAX instead of (u32)-1
-v2: avoid declarations in init-clauses of for loops
+typo: remove -> removes
 
-[1]: https://lore.kernel.org/selinux/67cee6245e2895e81a0177c4c1ed01ba.paul@paul-moore.com/
-[2]: https://lore.kernel.org/selinux/CAJ2a_DdLR40CB6Ua5cNjYhtexNmGkzQRsVrJn+dhVaZO-aVKsA@mail.gmail.com/
+> 
+> Fixes: 287db5c40d15 ("net: hns3: create new set of common tqp stats APIs for PF and VF reuse")
+> Signed-off-by: Jie Wang <wangjie125@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> ---
+>  .../ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c  | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c
+> index f3c9395d8351..618f66d9586b 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c
+> @@ -85,7 +85,7 @@ int hclge_comm_tqps_update_stats(struct hnae3_handle *handle,
+>  		hclge_comm_cmd_setup_basic_desc(&desc, HCLGE_OPC_QUERY_TX_STATS,
+>  						true);
+>  
+> -		desc.data[0] = cpu_to_le32(tqp->index & 0x1ff);
+> +		desc.data[0] = cpu_to_le32(tqp->index);
+>  		ret = hclge_comm_cmd_send(hw, &desc, 1);
+>  		if (ret) {
+>  			dev_err(&hw->cmq.csq.pdev->dev,
+> -- 
+> 2.30.0
+> 
+> 
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
- security/selinux/ss/ebitmap.c | 31 +++++++++++++++-------------
- security/selinux/ss/ebitmap.h | 38 ++++++++++++++++-------------------
- 2 files changed, 34 insertions(+), 35 deletions(-)
 
-diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
-index 67c1a73cd5ee..8177f1c3c774 100644
---- a/security/selinux/ss/ebitmap.c
-+++ b/security/selinux/ss/ebitmap.c
-@@ -21,7 +21,7 @@
- #include "ebitmap.h"
- #include "policydb.h"
- 
--#define BITS_PER_U64 (sizeof(u64) * 8)
-+#define BITS_PER_U64 ((u32)(sizeof(u64) * 8))
- 
- static struct kmem_cache *ebitmap_node_cachep __ro_after_init;
- 
-@@ -79,7 +79,8 @@ int ebitmap_and(struct ebitmap *dst, const struct ebitmap *e1,
- 		const struct ebitmap *e2)
- {
- 	struct ebitmap_node *n;
--	int bit, rc;
-+	u32 bit;
-+	int rc;
- 
- 	ebitmap_init(dst);
- 
-@@ -256,7 +257,7 @@ int ebitmap_contains(const struct ebitmap *e1, const struct ebitmap *e2,
- 	return 1;
- }
- 
--int ebitmap_get_bit(const struct ebitmap *e, unsigned long bit)
-+int ebitmap_get_bit(const struct ebitmap *e, u32 bit)
- {
- 	const struct ebitmap_node *n;
- 
-@@ -273,7 +274,7 @@ int ebitmap_get_bit(const struct ebitmap *e, unsigned long bit)
- 	return 0;
- }
- 
--int ebitmap_set_bit(struct ebitmap *e, unsigned long bit, int value)
-+int ebitmap_set_bit(struct ebitmap *e, u32 bit, int value)
- {
- 	struct ebitmap_node *n, *prev, *new;
- 
-@@ -284,7 +285,7 @@ int ebitmap_set_bit(struct ebitmap *e, unsigned long bit, int value)
- 			if (value) {
- 				ebitmap_node_set_bit(n, bit);
- 			} else {
--				unsigned int s;
-+				u32 s;
- 
- 				ebitmap_node_clr_bit(n, bit);
- 
-@@ -362,12 +363,12 @@ void ebitmap_destroy(struct ebitmap *e)
- int ebitmap_read(struct ebitmap *e, void *fp)
- {
- 	struct ebitmap_node *n = NULL;
--	u32 mapunit, count, startbit, index;
-+	u32 mapunit, count, startbit, index, i;
- 	__le32 ebitmap_start;
- 	u64 map;
- 	__le64 mapbits;
- 	__le32 buf[3];
--	int rc, i;
-+	int rc;
- 
- 	ebitmap_init(e);
- 
-@@ -381,7 +382,7 @@ int ebitmap_read(struct ebitmap *e, void *fp)
- 
- 	if (mapunit != BITS_PER_U64) {
- 		pr_err("SELinux: ebitmap: map size %u does not "
--		       "match my size %zd (high bit was %d)\n",
-+		       "match my size %d (high bit was %d)\n",
- 		       mapunit, BITS_PER_U64, e->highbit);
- 		goto bad;
- 	}
-@@ -469,19 +470,20 @@ int ebitmap_read(struct ebitmap *e, void *fp)
- int ebitmap_write(const struct ebitmap *e, void *fp)
- {
- 	struct ebitmap_node *n;
--	u32 count;
-+	u32 bit, count, last_bit, last_startbit;
- 	__le32 buf[3];
- 	u64 map;
--	int bit, last_bit, last_startbit, rc;
-+	int rc;
- 
- 	buf[0] = cpu_to_le32(BITS_PER_U64);
- 
- 	count = 0;
- 	last_bit = 0;
--	last_startbit = -1;
-+	last_startbit = U32_MAX;
- 	ebitmap_for_each_positive_bit(e, n, bit)
- 	{
--		if (rounddown(bit, (int)BITS_PER_U64) > last_startbit) {
-+		if (last_startbit == U32_MAX ||
-+		    rounddown(bit, BITS_PER_U64) > last_startbit) {
- 			count++;
- 			last_startbit = rounddown(bit, BITS_PER_U64);
- 		}
-@@ -495,10 +497,11 @@ int ebitmap_write(const struct ebitmap *e, void *fp)
- 		return rc;
- 
- 	map = 0;
--	last_startbit = INT_MIN;
-+	last_startbit = U32_MAX;
- 	ebitmap_for_each_positive_bit(e, n, bit)
- 	{
--		if (rounddown(bit, (int)BITS_PER_U64) > last_startbit) {
-+		if (last_startbit == U32_MAX ||
-+		    rounddown(bit, BITS_PER_U64) > last_startbit) {
- 			__le64 buf64[1];
- 
- 			/* this is the very first bit */
-diff --git a/security/selinux/ss/ebitmap.h b/security/selinux/ss/ebitmap.h
-index 02798b35eecc..24d7d8b3cda3 100644
---- a/security/selinux/ss/ebitmap.h
-+++ b/security/selinux/ss/ebitmap.h
-@@ -46,10 +46,10 @@ struct ebitmap {
- 
- #define ebitmap_length(e) ((e)->highbit)
- 
--static inline unsigned int ebitmap_start_positive(const struct ebitmap *e,
--						  struct ebitmap_node **n)
-+static inline u32 ebitmap_start_positive(const struct ebitmap *e,
-+					 struct ebitmap_node **n)
- {
--	unsigned int ofs;
-+	u32 ofs;
- 
- 	for (*n = e->node; *n; *n = (*n)->next) {
- 		ofs = find_first_bit((*n)->maps, EBITMAP_SIZE);
-@@ -64,11 +64,10 @@ static inline void ebitmap_init(struct ebitmap *e)
- 	memset(e, 0, sizeof(*e));
- }
- 
--static inline unsigned int ebitmap_next_positive(const struct ebitmap *e,
--						 struct ebitmap_node **n,
--						 unsigned int bit)
-+static inline u32 ebitmap_next_positive(const struct ebitmap *e,
-+					struct ebitmap_node **n, u32 bit)
- {
--	unsigned int ofs;
-+	u32 ofs;
- 
- 	ofs = find_next_bit((*n)->maps, EBITMAP_SIZE, bit - (*n)->startbit + 1);
- 	if (ofs < EBITMAP_SIZE)
-@@ -87,11 +86,10 @@ static inline unsigned int ebitmap_next_positive(const struct ebitmap *e,
- #define EBITMAP_NODE_OFFSET(node, bit) \
- 	(((bit) - (node)->startbit) % EBITMAP_UNIT_SIZE)
- 
--static inline int ebitmap_node_get_bit(const struct ebitmap_node *n,
--				       unsigned int bit)
-+static inline int ebitmap_node_get_bit(const struct ebitmap_node *n, u32 bit)
- {
--	unsigned int index = EBITMAP_NODE_INDEX(n, bit);
--	unsigned int ofs = EBITMAP_NODE_OFFSET(n, bit);
-+	u32 index = EBITMAP_NODE_INDEX(n, bit);
-+	u32 ofs = EBITMAP_NODE_OFFSET(n, bit);
- 
- 	BUG_ON(index >= EBITMAP_UNIT_NUMS);
- 	if ((n->maps[index] & (EBITMAP_BIT << ofs)))
-@@ -99,21 +97,19 @@ static inline int ebitmap_node_get_bit(const struct ebitmap_node *n,
- 	return 0;
- }
- 
--static inline void ebitmap_node_set_bit(struct ebitmap_node *n,
--					unsigned int bit)
-+static inline void ebitmap_node_set_bit(struct ebitmap_node *n, u32 bit)
- {
--	unsigned int index = EBITMAP_NODE_INDEX(n, bit);
--	unsigned int ofs = EBITMAP_NODE_OFFSET(n, bit);
-+	u32 index = EBITMAP_NODE_INDEX(n, bit);
-+	u32 ofs = EBITMAP_NODE_OFFSET(n, bit);
- 
- 	BUG_ON(index >= EBITMAP_UNIT_NUMS);
- 	n->maps[index] |= (EBITMAP_BIT << ofs);
- }
- 
--static inline void ebitmap_node_clr_bit(struct ebitmap_node *n,
--					unsigned int bit)
-+static inline void ebitmap_node_clr_bit(struct ebitmap_node *n, u32 bit)
- {
--	unsigned int index = EBITMAP_NODE_INDEX(n, bit);
--	unsigned int ofs = EBITMAP_NODE_OFFSET(n, bit);
-+	u32 index = EBITMAP_NODE_INDEX(n, bit);
-+	u32 ofs = EBITMAP_NODE_OFFSET(n, bit);
- 
- 	BUG_ON(index >= EBITMAP_UNIT_NUMS);
- 	n->maps[index] &= ~(EBITMAP_BIT << ofs);
-@@ -130,8 +126,8 @@ int ebitmap_and(struct ebitmap *dst, const struct ebitmap *e1,
- 		const struct ebitmap *e2);
- int ebitmap_contains(const struct ebitmap *e1, const struct ebitmap *e2,
- 		     u32 last_e2bit);
--int ebitmap_get_bit(const struct ebitmap *e, unsigned long bit);
--int ebitmap_set_bit(struct ebitmap *e, unsigned long bit, int value);
-+int ebitmap_get_bit(const struct ebitmap *e, u32 bit);
-+int ebitmap_set_bit(struct ebitmap *e, u32 bit, int value);
- void ebitmap_destroy(struct ebitmap *e);
- int ebitmap_read(struct ebitmap *e, void *fp);
- int ebitmap_write(const struct ebitmap *e, void *fp);
--- 
-2.43.0
-
+Thanks,
+Michal
 
