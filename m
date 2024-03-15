@@ -1,131 +1,107 @@
-Return-Path: <linux-kernel+bounces-104353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 841FC87CC7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:39:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE1187CC69
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12A63B223F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:39:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C98D2282C18
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24ED1C69E;
-	Fri, 15 Mar 2024 11:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D62F1B809;
+	Fri, 15 Mar 2024 11:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="ZA8tl7Pw"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LbBooBE+"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623891B81F;
-	Fri, 15 Mar 2024 11:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B82E171C8
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710502743; cv=none; b=ldR4B3ISFYmLSGu1nafjSSo97SW4fLW7u43VRSm7xl7Zz6hVMtwIlzIGdTR16oSudRus/HjgFOGNw1qeCXIKgWmHQuO3FFn+o1mXARoqGQPr0cUyHWhHSUMiH4lOvpstUQ32SH7EyAZ6BNEPXDuXm/MbZBJbBwodRc399UBgM9I=
+	t=1710502658; cv=none; b=D6hbxuBMz3qf6CJcZ3tJ1E7oyBR3lJhay+0m0PkeC9wua1ZTEIGGz2k6wLTmpQrUEVB/FR/cLoTgZ9n0lpen9AebGxv24mSpFElVd7EUA+2g3Dsga7NC12I/NVBbJyTKLFIGeo2XJ2kEcHqI4yl32nPgXTkwltkV1Hft6StaHC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710502743; c=relaxed/simple;
-	bh=HmGGEmUedu3998fS4GIHrSJ4xICz6CRhS6+OSHoY6Js=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IoyEfMEZcVXAUi620WygZsP+0JaooSUBYMBXpPXfd+/RBdK9q8wwEbpIsPHNSnSDyv5sZSeZfLHTutvwbUUtvxzaGr1nxCNO5THAccWQV+Z44ENzc6S9fGxrOG+LCDgFapI1YwbB7PxUuZjZAQhy4+axLdymzOaI7m3ETSyyCXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=ZA8tl7Pw; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so2669626a12.2;
-        Fri, 15 Mar 2024 04:39:01 -0700 (PDT)
+	s=arc-20240116; t=1710502658; c=relaxed/simple;
+	bh=XME15Qz6eZI3kyPR3ZDiBzWwrGS9XZbM4DqTjdNxlo0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f0Q2RIoPJEdiZHkgiTTc7f1h7Uqxrl9V8GwS+aooqjz0TPWeddLl1iU+clZyVBHCBOQQ+O3WXrkdgwNHbDS7TLyhK+hmXbAwpvDlvxSMUNRShZcyYEpp9g6ot4pe67cvbOpMtB8KnpGc+Y8xe2iHyFgNMhp4C0xXynpBQF2WKY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LbBooBE+; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-db3a09e96daso1726350276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:37:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710502740; x=1711107540; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JbGx8NSxuyFGtW+6h8d45ucKpQT9LiM32oyhrb8awck=;
-        b=ZA8tl7PwfGUz8WjOiAFleW3DARsqcXFaFfcDOQMw3TYtTzik0vZPdNsOKWBJku1RoK
-         mY4YiBXV90aMio9Cws3Yn/isaBC2WNZhKyBUNHVA7V4sMbmugdXomAad7VLNKEw53jKT
-         TXx+YEC8qq3GByVugA5p+nhL8flbBBWUCuth0Ps5diS5sWnFP1u78w04FaCML56IMoOu
-         oFRlWKqH3LHwxBH71LmVywGMK+00KC0ZdGr1F+qaO/FVsCIZOFMWqdqoWncY5xsutC/C
-         jLHSgZu5DMlRgmZ8stSBXTwTfTvAO7nDZnyxGwRmK1IrmEfyYNRhfKhbUQ67NQUM2kxo
-         qDGA==
+        d=linaro.org; s=google; t=1710502656; x=1711107456; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=W1YjIjeqOSOzfGq2xXT4IYkQmnAHVepprgGXQRagfTY=;
+        b=LbBooBE+IFJU5zVBfnesbRVFF+oqtSU1WlJzGBaC2T+yXwx+5BfKnlSeolCY0Ee6z3
+         jvsN1r2KSMRcy48cALERuS9fykH49Kn/wPcWWoB/ymtyLH6X2Uq5ZUFbKiE7KJkKcaWL
+         bWFlbRthJlAvfBFDbRA6F8Wi0s2GiirOyMogkMzVbkSG3GuWazCVwGpwKy2MyUDLS12c
+         I3tJV233bt9LF6+av+v1+RSum1KrJVG8/q9P3/1Z/oA3G7muD2eKkV3ihL46rd4giYQX
+         u8yoKnoHq7Mh9xXmsdCrPNf3cKxBlIqe1D9D7f7mnokLt+eU7LvvJAG5RJZPuUuoeJ9e
+         Xe1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710502740; x=1711107540;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JbGx8NSxuyFGtW+6h8d45ucKpQT9LiM32oyhrb8awck=;
-        b=Pt4RcYkxNYEB5x5abCcx72HZMyX18dfWastShNURd1p/3OMYAVQpnOfOMpfj50mms+
-         R/+A9fvxkZ+1lC16wPTksN3HfjxMVgiYhRb0iXLoPAIo7BYrPpoaCZLws168yFTWsp50
-         3b66PGjofOAFLFyXigK7Qw+CCJFJn0cX/lecHl6/g85KvdWDPeaTeMkaO1t2QXm6YzQr
-         KcBnGsm03JmTLXs0mgysrbuj0JUmTtnjQNajRKkE+XHvsJn8lPFO2K10cF66b+WthRjY
-         6UH4hPaIyN43Nf5D/VqqvPR3v3l/MuweWoiCSYxvJ7pgE/fdgx97J813JRvhXNPWAMgX
-         adig==
-X-Forwarded-Encrypted: i=1; AJvYcCWyEkQKJvz8D4BNTKEx4EhcIMBH88bhVPDAmqcQKdMQdDsyUm6GJig5XeoTFEU7SsHPBb8APrgfD0FirxNtAK7EPZJiwb8IEGTZRsCGH76HkE3OAdXlCALfJski3i+zH9fSsWDDPSpoatf4def8ZqYpG8PBQsJstFafy1TlP/Q=
-X-Gm-Message-State: AOJu0YyiwMDMK4VtuV4NwjXz+m9x326o11hP21cOaBgCJF0v0eFSK+sR
-	xEQBuzFWEqkhGMJXNQv6LZUBNzBunXk94zQ3JXHADMwglTAQOZ5Hy9YIyNxOjkeNpg==
-X-Google-Smtp-Source: AGHT+IFY5K+9DDgx4ObwJ0dCYxDgSvtfoZadfKP7DyB/rvVKCmS0q5ZNQdZ4UE7liIIVw2Wnv2Owpw==
-X-Received: by 2002:a05:6402:b34:b0:568:32cc:f808 with SMTP id bo20-20020a0564020b3400b0056832ccf808mr2135290edb.15.1710502739644;
-        Fri, 15 Mar 2024 04:38:59 -0700 (PDT)
-Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
-        by smtp.gmail.com with ESMTPSA id fg3-20020a056402548300b005682f47aea7sm1610024edb.94.2024.03.15.04.38.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 04:38:59 -0700 (PDT)
-From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To: linux-security-module@vger.kernel.org
-Cc: Jens Axboe <axboe@kernel.dk>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Serge Hallyn <serge@hallyn.com>,
-	Alistair Delva <adelva@google.com>,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH 04/10] block: use new capable_any functionality
-Date: Fri, 15 Mar 2024 12:37:25 +0100
-Message-ID: <20240315113828.258005-4-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240315113828.258005-1-cgzones@googlemail.com>
-References: <20240315113828.258005-1-cgzones@googlemail.com>
+        d=1e100.net; s=20230601; t=1710502656; x=1711107456;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W1YjIjeqOSOzfGq2xXT4IYkQmnAHVepprgGXQRagfTY=;
+        b=S1ks98GPvaj+NeOzq0anIiA3ZjmrqXRv+JHiKijWmy0cgtCl0NfuMg56tLLwi4XuNI
+         6IpXXE/fY1gDiX5ZYrAmmnceSHnp1y/enU3lzK7R1AgOp8kjd21lhgLK1ViPSAmSzeQr
+         CbJ1ooOZqdc1FcAuwOkAv9QERdLgzk+SXtsIvzbgbHiHh3Qm7HH48NFIHOpW1r9V+hK5
+         Dp51PkAcRCQsi4O63pMx/Tgwf59r6af6SJuGqj78PXz48Y8gexK7YcGqI//n0y9Gl0cw
+         NSLk4b9e8mfJRzoSIN1h5JM7ZfIdFcVsaZQ3p6jt5fUfuhht1AFpmlNeQLgc62xcSbOq
+         iZCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVVbApks4OA8mfwOzbKU6nPG83gGYT/zldLhp1OaawUqb7u4D54h1+4Xo7aWR5VZPu1LgrivoimYlpzOUubwYZBQmaJfbohBxXXhXTx
+X-Gm-Message-State: AOJu0YzHcShGRKkp0uwSEIBMjAk2jyY0CEea2IpfveIEIWDeAIfJCQqt
+	BGOTQv0Y9AkLYrvTrZegV9nm+XyeGjv+yNNkW4MSzR8fqmxXl7yFKiH5Ie139IvX9O5vjHezvBF
+	kfQSnOpU29CMbnNKrEKnHb/GLkROHgBfEfYY3Mw==
+X-Google-Smtp-Source: AGHT+IGNjJToPdVH5hgnrzbo2/Y+N7SoBZsHPueEWHCi3sAAnAaUw/tww8bYLv5uKat8ny98eFlvnQEHDXDY2PazX2c=
+X-Received: by 2002:a25:c5cb:0:b0:dc6:c2b2:c039 with SMTP id
+ v194-20020a25c5cb000000b00dc6c2b2c039mr4303557ybe.41.1710502656113; Fri, 15
+ Mar 2024 04:37:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240306030649.60269-1-vignesh.raman@collabora.com> <20240306030649.60269-4-vignesh.raman@collabora.com>
+In-Reply-To: <20240306030649.60269-4-vignesh.raman@collabora.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 15 Mar 2024 13:37:25 +0200
+Message-ID: <CAA8EJpo=OXUitC+NPjZd5Kpq9dF04BSffvgsMYnn7LmmEoh09A@mail.gmail.com>
+Subject: Re: [PATCH v4 03/11] drm/ci: uprev IGT and update testlist
+To: Vignesh Raman <vignesh.raman@collabora.com>
+Cc: dri-devel@lists.freedesktop.org, daniels@collabora.com, 
+	helen.koike@collabora.com, airlied@gmail.com, daniel@ffwll.ch, 
+	emma@anholt.net, robdclark@gmail.com, david.heidelberg@collabora.com, 
+	guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com, 
+	hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com, 
+	mairacanal@riseup.net, mcanal@igalia.com, linux-mediatek@lists.infradead.org, 
+	linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Use the new added capable_any function in appropriate cases, where a
-task is required to have any of two capabilities.
+On Wed, 6 Mar 2024 at 05:08, Vignesh Raman <vignesh.raman@collabora.com> wrote:
+>
+> Uprev IGT and add amd, v3d, vc4 and vgem specific
+> tests to testlist. Have testlist.txt per driver
+> and include a base testlist so that the driver
+> specific tests will run only on those hardware.
+> Also add testlists to the MAINTAINERS file.
 
-Reorder CAP_SYS_ADMIN last.
+I think we should move away from specifying tests explicitly. They can
+easily get out of sync. A month ago I had to manually go through the
+list of the tests and update it to follow changes in the IGT.
 
-Fixes: 94c4b4fd25e6 ("block: Check ADMIN before NICE for IOPRIO_CLASS_RT")
+I think we should directly use testlist.txt from IGT and then filter
+it out using skips.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
-v3:
-   rename to capable_any()
----
- block/ioprio.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/block/ioprio.c b/block/ioprio.c
-index 73301a261429..6e1291679ea0 100644
---- a/block/ioprio.c
-+++ b/block/ioprio.c
-@@ -37,14 +37,7 @@ int ioprio_check_cap(int ioprio)
- 
- 	switch (class) {
- 		case IOPRIO_CLASS_RT:
--			/*
--			 * Originally this only checked for CAP_SYS_ADMIN,
--			 * which was implicitly allowed for pid 0 by security
--			 * modules such as SELinux. Make sure we check
--			 * CAP_SYS_ADMIN first to avoid a denial/avc for
--			 * possibly missing CAP_SYS_NICE permission.
--			 */
--			if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
-+			if (!capable_any(CAP_SYS_NICE, CAP_SYS_ADMIN))
- 				return -EPERM;
- 			fallthrough;
- 			/* rt has prio field too */
 -- 
-2.43.0
-
+With best wishes
+Dmitry
 
