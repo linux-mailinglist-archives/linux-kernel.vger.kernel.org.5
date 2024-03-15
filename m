@@ -1,261 +1,143 @@
-Return-Path: <linux-kernel+bounces-104849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218DD87D47D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:39:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5377287D483
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36B17B21804
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:38:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84FCB1C21E63
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BFF452F92;
-	Fri, 15 Mar 2024 19:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03F41864D;
+	Fri, 15 Mar 2024 19:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xkC1M/1X"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UybiJ558"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0CA1864D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA250524D0
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710531524; cv=none; b=fnEbjkhnQvYZDI71C6sMrzSS5bMNh4YkA81yaD/Vm0OK1RMCtHHAMvmxxMQ3msrjx9QuRApcu02SdsqUl3pC6/bRlAMsR8q6TgwdKeDDq5SBMdlugbXehBHQDzYH18UqFbNfpnp/TvSuv0oQxKs65AtNf48/JihVVDYfw2LjleM=
+	t=1710531624; cv=none; b=eKKUzKWysHF1cWtO9lcIQKVDK2UF+ZGF0VL1nhtu6AQs8LIVcYK8hAlebV9/UYusqwBOdEsCzQSuVV94fIJv9cPHAx+xKlZ+n+dwsxzr6OzKQtHfb4wFIMoAYjFqnrhOE+x3tdHG4ZwKKBF5GBnijBC4NTxOtrX4V9ki88AZwQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710531524; c=relaxed/simple;
-	bh=RGPC777eBlkFJio++4t4VlJ1sBxW6uPJFKW/2qQVXYw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=sCZY6wkPahk0BkFPU+s4l4/Ll6PK/oKq9/WI4CCp967dMdAvg+Nm3wgnMXlGd6GHbg1oNNUOG6Wv7XzkZnG38zWwd2VDhx8K3RlF/lvfZBk0vpwWQ3gM8dNKcfp2DMzaIfgK9LLgSxEZ6Et6fOa1rSrJkOX22ttqzJ11xcbCwPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xkC1M/1X; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e68be494d2so1667645b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:38:42 -0700 (PDT)
+	s=arc-20240116; t=1710531624; c=relaxed/simple;
+	bh=C8VocPAHBU5oMLWcdQnETq6+NgeEczJEka1FC54P6Yw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eByLJArMh3b7LcBR3+yWQlocE1XwEwwcwUcIcg7mqddCOv93sKMxcVZjnYXA47Iltc+2JKurvhmKQYfzwblmrGrrjB2ICSfHbMM2UbA8DKrlOm5ch/2EyytgdIZhrMa/zl6BRq9ftd11F/blO2Y87MckaAc3Odc05P4opz1Ym9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UybiJ558; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513d717269fso1762756e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710531522; x=1711136322; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+zMeq0vqhynnEQcbVRxi0CACo9uLajOY9qPMbdixPBQ=;
-        b=xkC1M/1XFjhKWHCgpxKrt7gTBgfdT5gPooYjI9G6AURZyTPgFN4Py700gD5k8OqM1G
-         euwPjJex8pyVZjSmfxxPXzuu+oYjC17wywXfYpLXPDKCi+I/IgA4G6v3FaF+PhA+MBGw
-         JacMnR2EWqWkXLOt8AkpeXg+f/06fHYKnLrxETG8BUuL0L/52eo+zK+dMZq/lRsRFj6T
-         dhfRFKcrUjztmxous89UsOkOO4/aAvAARNLv1572crz7kPAtl3BtKxiAufdrnuL3WeKF
-         TlMx7NKqpjI8wYepDFBL1ZM/z7d71//qjWhne2uw5+nePXv+o8tA6VL4BKkzz6JvtkfD
-         UAtg==
+        d=linaro.org; s=google; t=1710531618; x=1711136418; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=cYaD8h2YZDs24TOtiqJaFcLSOchMww2DmpDClzEatxE=;
+        b=UybiJ558Iw2Xmw5DUSs91h76JBCEc/erqptsnPflVYawkYCgVLXMMjSMlWJlCLT8h8
+         UUnTlWyVTTjRomYWCMaZI7qmPnGTq4ZQ8jhIK3YmyNdS87qzsRhtKqghKfDVU5h2prxC
+         DTa0OVS1v7OssAFxS3TehdvtZBKiJCYqwMXbjSCdVhMzaav9I4IW6kSMYy4duv1v762D
+         mB2LnrX8JAlTmrAoRrnc66iJVvNQX7ii2giDP8CWCCiOj8QlV/PuZVD7G0q6rUoxwrDt
+         mXmCK4sgvz6DsNgPPz9pXytNlHkER92NDrQjcZ+LGV6JJ2+h6weURk/Ope6yle2vNOkE
+         l/7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710531522; x=1711136322;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+zMeq0vqhynnEQcbVRxi0CACo9uLajOY9qPMbdixPBQ=;
-        b=UqnZJ+zmhhab4pHkrAvBbOCPFhcSWaRzykQ0adOi2UIqghDtZTTisWUVe/+Wdd67iP
-         6wrgA6/nfsrsZ3kOxJWaia339vRPP94sg9LXtbA3g4UkcjzzYgH78dc0+u5Qbe/Kr6yZ
-         r6HRw5t+p8Q+d9r4LcTJi9XJd4t4ZMWuNrUMlcNGUGEgYaDenpewG7I0JPxxvx6+HyZB
-         B18ZXb4r6BbOHdWs4M4B1dn3h2PFuAmguM92tuDgdToQ2mhuy+AFQy5xpwXT7KQF3B3p
-         c1/NV2ktNkaYAbOmEfwUhkDEnj9bZUKtweHxikAWgWu/SEMqgs6RxwvZcCcZ/sAfGuRQ
-         3wGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJz77SWVcG9jAnikIHRjlfE5PjB9bSq+gjpSAcxAhTfXlG0mIX/3oE0dMe2SeJiA5TVnmhVVVk21EbSwRUUMsmyblCWytM/wzVinWb
-X-Gm-Message-State: AOJu0Yz5KDGozdfQfVYBteGg6dLBZrjU5FNItGvGrn6YCx/S2d+/ZEbd
-	VKpBTtG+Iqk0g9K6A74Accgl6svcCVEtLP05YkhL//gAi0s2ePWgie86eGiBJIaj9D+3IIzd5Vv
-	ImQ==
-X-Google-Smtp-Source: AGHT+IGrnIfaYFnn4ZKJ049EDZZpjflnJNqElYAH/XpXBT1sXRkPAf720qtNiX5MM5UcTkO9b+U9YR0+J+I=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:3999:b0:6e6:7abd:b7c2 with SMTP id
- fi25-20020a056a00399900b006e67abdb7c2mr125648pfb.5.1710531520444; Fri, 15 Mar
- 2024 12:38:40 -0700 (PDT)
-Date: Fri, 15 Mar 2024 12:38:39 -0700
-In-Reply-To: <ea85f773-b5ef-4cf6-b2bd-2c0e7973a090@intel.com>
+        d=1e100.net; s=20230601; t=1710531618; x=1711136418;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cYaD8h2YZDs24TOtiqJaFcLSOchMww2DmpDClzEatxE=;
+        b=bhCFyFK3iCbwLCogtJbBd2VT2xL84cwG+ZORYOHdTf8A1aAKZb7eQGsFDDsSIBfUOr
+         JqpVRKaW6rGVi7pzFsV1DzcmEv8cPCbGbU4R2PPmn/L9r2H8aZBWX+lrbUcjHyRlQRXd
+         iXR7Iq+aQGve/C3CxfelTVVS4737e69r9hBZSHzozTsuy8MSWlfdqaEwnbXIjNqrsocw
+         26JovVVgPKnXQeXCbQHstqmkfdpEqSEA+ShdbhZswi/yu/NU5sKTYtVOXVTQeeNVdaTA
+         UrQSbjTvSp3VfuDjTi0mOXGdN1WCtggeyfJJOq546VmqFA0SHoeA4CkxD1qiKZUO62ZO
+         MJwA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9n+cywejlEvAx2r3RyIsDlUM6FzcWFgXZmHTEpOthnwQVG4JthiXqzPOpLDbK+bUNcO0bcnQ+SNrJTku9hMpd8++DNc2Q/VaNspJH
+X-Gm-Message-State: AOJu0YzlEtwOM5cJQKdEjJGsPCrtAH7ja9sS7vFMUQYzAeduJxCB72L4
+	7u/katQcTF64jGta9p90iTvf9bcmXojR5Q/pHGoCbsRCfFbLedMDY3Yf4lqp6ZA=
+X-Google-Smtp-Source: AGHT+IFtBDh48GI07L27lE8v2ub2aRiEvLnRn0ejcdd4ZxRrz4EBTUQtfnDM2zYErTlr9EnkuChqZA==
+X-Received: by 2002:a05:6512:508:b0:513:c936:7fe6 with SMTP id o8-20020a056512050800b00513c9367fe6mr2886719lfb.34.1710531618125;
+        Fri, 15 Mar 2024 12:40:18 -0700 (PDT)
+Received: from [192.168.223.169] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id v9-20020a197409000000b00513d021afd1sm723212lfe.103.2024.03.15.12.40.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 12:40:17 -0700 (PDT)
+Message-ID: <77f41b38-dcd0-4dfa-a4f3-e5fb7f9829cf@linaro.org>
+Date: Fri, 15 Mar 2024 20:40:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <8f64043a6c393c017347bf8954d92b84b58603ec.1708933498.git.isaku.yamahata@intel.com>
- <e6e8f585-b718-4f53-88f6-89832a1e4b9f@intel.com> <bd21a37560d4d0695425245658a68fcc2a43f0c0.camel@intel.com>
- <54ae3bbb-34dc-4b10-a14e-2af9e9240ef1@intel.com> <ZfR4UHsW_Y1xWFF-@google.com>
- <ea85f773-b5ef-4cf6-b2bd-2c0e7973a090@intel.com>
-Message-ID: <ZfSjvwdJqFJhxjth@google.com>
-Subject: Re: [PATCH v19 007/130] x86/virt/tdx: Export SEAMCALL functions
-From: Sean Christopherson <seanjc@google.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kai Huang <kai.huang@intel.com>, 
-	Isaku Yamahata <isaku.yamahata@intel.com>, "x86@kernel.org" <x86@kernel.org>, 
-	Tina Zhang <tina.zhang@intel.com>, Hang Yuan <hang.yuan@intel.com>, Bo2 Chen <chen.bo@intel.com>, 
-	"sagis@google.com" <sagis@google.com>, "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, 
-	Erdem Aktas <erdemaktas@google.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: Fix the compatible for cluster idle
+ states
+To: Rajendra Nayak <quic_rjendra@quicinc.com>, andersson@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: abel.vesa@linaro.org, quic_sibis@quicinc.com,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240315132423.2422484-1-quic_rjendra@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <20240315132423.2422484-1-quic_rjendra@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 15, 2024, Dave Hansen wrote:
-> On 3/15/24 09:33, Sean Christopherson wrote:
-> >         static inline u64 tdh_mem_page_remove(hpa_t tdr, gpa_t gpa, int level,
-> >         				      struct tdx_module_args *out)
-> >         {
-> >         	struct tdx_module_args in = {
-> >         		.rcx = gpa | level,
-> >         		.rdx = tdr,
-> >         	};
-> > 
-> >         	return tdx_seamcall_sept(TDH_MEM_PAGE_REMOVE, &in, out);
-> >         }
-> > 
-> > generates the below monstrosity with gcc-13.  And that's just one SEAMCALL wrapper,
-> > *every* single one generates the same mess.  clang-16 is kinda sorta a little
-> > better, as it at least inlines the helpers that have single callers.
+On 15.03.2024 14:24, Rajendra Nayak wrote:
+> The compatible's for the cluster/domain idle states of x1e80100
+> are wrong, fix it.
 > 
-> Yeah, that's really awful.
-> 
-> Is all the inlining making the compiler too ambitious?
+> Fixes: af16b00578a7 ("arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts")
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> ---
 
-No, whether or not the wrappers are inlined doesn't change anything.  gcc actually
-doesn't inline any of these helpers.  More below.
+The title should mention "qcom: x1e80100:"
 
-> Why is this all inlined in the first place?
+For the contents:
 
-Likely because no one looked at the generated code.  The C code is super simple
-and looks like it should be inlined.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-And the very original code was macro heavy, i.e. relied on inlining to allow the
-compiler to precisely set only the actual registers needed for the SEAMCALL.
-
-> tdh_mem_page_remove() _should_ just be logically:
-> 
-> 	* initialize tdx_module_args.  Move a few things into place on
-> 	  the stack and zero the rest.
-
-The "zero the rest" is what generates the fugly code.  The underlying problem is
-that the SEAMCALL assembly functions unpack _all_ registers from tdx_module_args.
-As a result, tdx_module_args needs to be zeroed to avoid loading registers with
-unitialized stack data.
-
-E.g. before I looked at the assembly code, my initial thought to clean things
-up by doing:
-
-	struct tdx_module_args in;
-
-	in.rcx = gpa | level;
-	in.rdx = tdr;
-
-but that would make one or more sanitizers (and maybe even the compiler itself)
-more than a bit unhappy.
-
-The struct is 72 bytes, which adds up to a lot of wasted effort since the majority
-of SEAMCALLs only use a few of the 13 registers.
-
-FWIW, the guest side of TDX is equally gross.  E.g. to do kvm_hypercall1(), which
-without TDX is simply
-
-   0xffffffff810eb4a2 <+82>:	48 c7 c0 8c 9a 01 00	mov    $0x19a8c,%rax
-   0xffffffff810eb4a9 <+89>:	8b 1c 02           	mov    (%rdx,%rax,1),%ebx
-   0xffffffff810eb4ac <+92>:	b8 0b 00 00 00     	mov    $0xb,%eax
-   0xffffffff810eb4b1 <+97>:	0f 01 c1           	vmcall
-   0xffffffff810eb4b4 <+100>:	5b                 	pop    %rbx
-   0xffffffff810eb4b5 <+101>:	5d                 	pop    %rbp
-
-the kernel blasts the unused params
-
-   0xffffffff810ffdc1 <+97>:	bf 0b 00 00 00     	mov    $0xb,%edi
-   0xffffffff810ffdc6 <+102>:	31 d2              	xor    %edx,%edx
-   0xffffffff810ffdc8 <+104>:	31 c9              	xor    %ecx,%ecx
-   0xffffffff810ffdca <+106>:	45 31 c0           	xor    %r8d,%r8d
-   0xffffffff810ffdcd <+109>:	5b                 	pop    %rbx
-   0xffffffff810ffdce <+110>:	41 5e              	pop    %r14
-   0xffffffff810ffdd0 <+112>:	e9 bb 1b f0 ff     	jmp    0xffffffff81001990 <tdx_kvm_hypercall>
-
-then loads and zeros a ton of memory (tdx_kvm_hypercall()):
-
-   0xffffffff81001990 <+0>:	nopl   0x0(%rax,%rax,1)
-   0xffffffff81001995 <+5>:	sub    $0x70,%rsp
-   0xffffffff81001999 <+9>:	mov    %gs:0x28,%rax
-   0xffffffff810019a2 <+18>:	mov    %rax,0x68(%rsp)
-   0xffffffff810019a7 <+23>:	mov    %edi,%eax
-   0xffffffff810019a9 <+25>:	movq   $0x0,0x18(%rsp)
-   0xffffffff810019b2 <+34>:	movq   $0x0,0x10(%rsp)
-   0xffffffff810019bb <+43>:	movq   $0x0,0x8(%rsp)
-   0xffffffff810019c4 <+52>:	movq   $0x0,(%rsp)
-   0xffffffff810019cc <+60>:	mov    %rax,0x20(%rsp)
-   0xffffffff810019d1 <+65>:	mov    %rsi,0x28(%rsp)
-   0xffffffff810019d6 <+70>:	mov    %rdx,0x30(%rsp)
-   0xffffffff810019db <+75>:	mov    %rcx,0x38(%rsp)
-   0xffffffff810019e0 <+80>:	mov    %r8,0x40(%rsp)
-   0xffffffff810019e5 <+85>:	movq   $0x0,0x48(%rsp)
-   0xffffffff810019ee <+94>:	movq   $0x0,0x50(%rsp)
-   0xffffffff810019f7 <+103>:	movq   $0x0,0x58(%rsp)
-   0xffffffff81001a00 <+112>:	movq   $0x0,0x60(%rsp)
-   0xffffffff81001a09 <+121>:	mov    %rsp,%rdi
-   0xffffffff81001a0c <+124>:	call   0xffffffff819f0a80 <__tdx_hypercall>
-   0xffffffff81001a11 <+129>:	mov    %gs:0x28,%rcx
-   0xffffffff81001a1a <+138>:	cmp    0x68(%rsp),%rcx
-   0xffffffff81001a1f <+143>:	jne    0xffffffff81001a26 <tdx_kvm_hypercall+150>
-   0xffffffff81001a21 <+145>:	add    $0x70,%rsp
-   0xffffffff81001a25 <+149>:	ret
-
-and then unpacks all of that memory back into registers, and reverses that last
-part on the way back, (__tdcall_saved_ret()):
-
-   0xffffffff819f0b10 <+0>:	mov    %rdi,%rax
-   0xffffffff819f0b13 <+3>:	mov    (%rsi),%rcx
-   0xffffffff819f0b16 <+6>:	mov    0x8(%rsi),%rdx
-   0xffffffff819f0b1a <+10>:	mov    0x10(%rsi),%r8
-   0xffffffff819f0b1e <+14>:	mov    0x18(%rsi),%r9
-   0xffffffff819f0b22 <+18>:	mov    0x20(%rsi),%r10
-   0xffffffff819f0b26 <+22>:	mov    0x28(%rsi),%r11
-   0xffffffff819f0b2a <+26>:	push   %rbx
-   0xffffffff819f0b2b <+27>:	push   %r12
-   0xffffffff819f0b2d <+29>:	push   %r13
-   0xffffffff819f0b2f <+31>:	push   %r14
-   0xffffffff819f0b31 <+33>:	push   %r15
-   0xffffffff819f0b33 <+35>:	mov    0x30(%rsi),%r12
-   0xffffffff819f0b37 <+39>:	mov    0x38(%rsi),%r13
-   0xffffffff819f0b3b <+43>:	mov    0x40(%rsi),%r14
-   0xffffffff819f0b3f <+47>:	mov    0x48(%rsi),%r15
-   0xffffffff819f0b43 <+51>:	mov    0x50(%rsi),%rbx
-   0xffffffff819f0b47 <+55>:	push   %rsi
-   0xffffffff819f0b48 <+56>:	mov    0x58(%rsi),%rdi
-   0xffffffff819f0b4c <+60>:	mov    0x60(%rsi),%rsi
-   0xffffffff819f0b50 <+64>:	tdcall
-   0xffffffff819f0b54 <+68>:	push   %rax
-   0xffffffff819f0b55 <+69>:	mov    0x8(%rsp),%rax
-   0xffffffff819f0b5a <+74>:	mov    %rsi,0x60(%rax)
-   0xffffffff819f0b5e <+78>:	pop    %rax
-   0xffffffff819f0b5f <+79>:	pop    %rsi
-   0xffffffff819f0b60 <+80>:	mov    %r12,0x30(%rsi)
-   0xffffffff819f0b64 <+84>:	mov    %r13,0x38(%rsi)
-   0xffffffff819f0b68 <+88>:	mov    %r14,0x40(%rsi)
-   0xffffffff819f0b6c <+92>:	mov    %r15,0x48(%rsi)
-   0xffffffff819f0b70 <+96>:	mov    %rbx,0x50(%rsi)
-   0xffffffff819f0b74 <+100>:	mov    %rdi,0x58(%rsi)
-   0xffffffff819f0b78 <+104>:	mov    %rcx,(%rsi)
-   0xffffffff819f0b7b <+107>:	mov    %rdx,0x8(%rsi)
-   0xffffffff819f0b7f <+111>:	mov    %r8,0x10(%rsi)
-   0xffffffff819f0b83 <+115>:	mov    %r9,0x18(%rsi)
-   0xffffffff819f0b87 <+119>:	mov    %r10,0x20(%rsi)
-   0xffffffff819f0b8b <+123>:	mov    %r11,0x28(%rsi)
-   0xffffffff819f0b8f <+127>:	xor    %ecx,%ecx
-   0xffffffff819f0b91 <+129>:	xor    %edx,%edx
-   0xffffffff819f0b93 <+131>:	xor    %r8d,%r8d
-   0xffffffff819f0b96 <+134>:	xor    %r9d,%r9d
-   0xffffffff819f0b99 <+137>:	xor    %r10d,%r10d
-   0xffffffff819f0b9c <+140>:	xor    %r11d,%r11d
-   0xffffffff819f0b9f <+143>:	xor    %r12d,%r12d
-   0xffffffff819f0ba2 <+146>:	xor    %r13d,%r13d
-   0xffffffff819f0ba5 <+149>:	xor    %r14d,%r14d
-   0xffffffff819f0ba8 <+152>:	xor    %r15d,%r15d
-   0xffffffff819f0bab <+155>:	xor    %ebx,%ebx
-   0xffffffff819f0bad <+157>:	xor    %edi,%edi
-   0xffffffff819f0baf <+159>:	pop    %r15
-   0xffffffff819f0bb1 <+161>:	pop    %r14
-   0xffffffff819f0bb3 <+163>:	pop    %r13
-   0xffffffff819f0bb5 <+165>:	pop    %r12
-   0xffffffff819f0bb7 <+167>:	pop    %rbx
-   0xffffffff819f0bb8 <+168>:	ret
-
-It's honestly quite amusing, because y'all took one what I see as one of the big
-advantages of TDX over SEV (using registers instead of shared memory), and managed
-to effectively turn it into a disadvantage.
-
-Again, I completely understand the maintenance and robustness benefits, but IMO
-the pendulum swung a bit too far in that direction.
+Konrad
 
