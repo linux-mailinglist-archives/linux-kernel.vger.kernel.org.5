@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-104773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3F887D36D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B9C87D370
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:14:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8CFF1F219DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:12:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35BA01F21984
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC7D4E1B5;
-	Fri, 15 Mar 2024 18:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DFA4E1D1;
+	Fri, 15 Mar 2024 18:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="EBmaaAzM"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="nicKShIm"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84954F1EE;
-	Fri, 15 Mar 2024 18:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8136B4CB3D;
+	Fri, 15 Mar 2024 18:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710526330; cv=none; b=fNKTJOnYXYRI++Z6GQiRkAjphEq2AfTl0RRX6YHdFCwBX11rZrWx2bvoA08BEy/P5/fVNK5i45tWNiZtTc44ao2Ftw3JS7J/SDqH94e5Dt44owbeYx0/F7X+f7WIhwe9rHQfm59cSuLYRKKw6FFhr0i+8M8C2Jl8XM8w08Kxu+k=
+	t=1710526464; cv=none; b=WwI+8y9UniOVB1GCSH5bACex6T/00KxF8N0SUPe1jmfDXNj8wXuHYYk7FchtCRHvIoXpg0TC4A640lS+L7lWn0/oBke7NvCoW24HxLNkRvRxjZ15D+xK0gdl7ufMMrkpFsYmd0wcmQPY0hs8vNPjQ0+b0/DZfdY/d6cD/PtoCp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710526330; c=relaxed/simple;
-	bh=0e2hTLzqSzWSLW52Z9nltO5UKSGGXIc9zzq/LGh+H/U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=t5z4DoCKaREiwBiNfKRZExF+UOgMLZ3VsXMVwdJ1Oemec/ilaz7vtV8JpMJlijXCYB+U0rDbRzB0NZ/JmtLZb2k7L56huypNd7ek0We53/uqKsp9KRHPsaKsMcVUF7iB4Npw7jqxXtmktPNW+NDAo5X1M78Td+N2rAu78tkut4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=EBmaaAzM; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1710526464; c=relaxed/simple;
+	bh=oaDXv1OJE51+9/GVUC/OBvla4qNIWodt+ovWJPKnDyc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=c8T43Fi+78I4Jo3WT8/VYenzxLdBefUB1BtJ3z/ziXOu75piHQu3tacIhPkigyJ8YAgNOlX9mhgSvqEXlvETYrA0K/3MxizHFDZ7D0npUaaeEKNe45mcnBNLzySqHChOZ82/jqmJP1Jk1VlllV2aM9Uvf8oPDVYReqX/339rk4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=nicKShIm; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a461c50deccso303813866b.0;
-        Fri, 15 Mar 2024 11:12:08 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512bde3d197so2389190e87.0;
+        Fri, 15 Mar 2024 11:14:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710526327; x=1711131127; darn=vger.kernel.org;
+        d=googlemail.com; s=20230601; t=1710526458; x=1711131258; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YocCyKVkREiO6SEkYbFtG3eZAFhKtO/ltd371FGqMMc=;
-        b=EBmaaAzM22HZ3h2mUD7iqSm4N8VstY6fVnb7SUS0/RxyHjDcOVP5cmmFsVThhR99vk
-         h2hjdAG+8lT4L6uQ9/pOJ4rNiV4+XZDsu/sYunMAwLCvYR3uAFh9zkvxsO7TS8qmFG4h
-         WvtOjHaPhPX1l0Dxgay1mfN6KyfiHcZUd2fXvimt6NjUqvkKVqeuGN7MZ/F1WM87YkKB
-         aeI19H36OZQWGhgya/tEUtMy1rGDcNpE+BcAINJxvleqcHiYBFvaCcdTL6gGbVNRR/g9
-         OBDH+ugGayNlKLcjJUn8IpT6/im03vEer3Nm+Zl/og3POdJGdc8PWydAKT6AQbv018XA
-         0xqQ==
+        bh=GWhQJIrlAe3Zt6yVWAsx1dDzPBZeGyd2jOUBiZHxlQs=;
+        b=nicKShImym04Tk5ubOrZ2vGfPRMS7qGX+Ruuos3YthVZgGawo1zeAGhx9mrDdAQgiE
+         0QZF7u2fOiJTdknfGYebcjqvhiUkWtU9qzZFX/SPmSyG9Tz3t6c1K4siSPjZaDbZUckw
+         IK7eM0I++rcU3NGhD6mtzDUrsMZLpIJUEKm6+mbxfVQu29nrxG9xgji7KYsylgMukoJF
+         esEVvVnf+TfJ3W2Z087ekY5mheiTcrRGnStwrM+tOeSInrvDJ1YwgOL4apIyhKEQpRW4
+         3ZVwIJavviZH5AS+XPpLUHCZGn/xcaU6C7OXfWaxmMGNJ9+yv8kOXan1+KaZFCgR6u2G
+         foBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710526327; x=1711131127;
+        d=1e100.net; s=20230601; t=1710526458; x=1711131258;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YocCyKVkREiO6SEkYbFtG3eZAFhKtO/ltd371FGqMMc=;
-        b=AD4yk6dgJqEak/UNxu4OR1NoUfGtwAGqEwAEQKhmqdBCibKIKkDOB9IzddUVlzy9wH
-         NP/Q0WNJ1hGIEAYMH2TmpLoQ9WrxRFY78hx1EPwJrabftJfqEVu/yvhzcKkG784dfTRV
-         xfZ+ziky7GC+tv/ht91zAkDTNUmSJdmO8KVp3AbwOahKrUy3UP5fYcqxIClIL8sZ8jmY
-         GcrkKLx2iuEXeCKY9dEq1Hk5INY/VzrSTSEdRW4g+DhTCG70Hj5cayHHU8Zt67msd7Zw
-         QMwsVkortsCWnLivIZCRhNPxW+I2/Gb1HXF6XnnLINtxjvKZZqgKUmK8GQz9ghOySVZ9
-         WMeg==
-X-Forwarded-Encrypted: i=1; AJvYcCVs2LHYBnYECo5+RRxaYamrWUGetFoY9nmjCHBL8qaOZcFkvyp6F8BJKvN7NVvhS7nAJGn7NYViKwuv2UWwzwyDUD+blwa5GPy/ZYYJ
-X-Gm-Message-State: AOJu0YztGvrEdOdwsG/EwrF4VQhJh3X4DF6iRSDltTHCoV2ai8oTyaxw
-	eNlTxG33IGE/PbmMbcz8jge6DlYDNOk4z9fDWMUdUdIoH0cHYsZcbWESSlCgpqBU5Q==
-X-Google-Smtp-Source: AGHT+IHkiHOlyaF2CCvrzBL2FiDyb0mSCQv703B1AwmSl6Oa+P7muTJf0VbnAXzaGUoH3C80G0YqOg==
-X-Received: by 2002:a17:906:c30f:b0:a46:2a85:b37b with SMTP id s15-20020a170906c30f00b00a462a85b37bmr3441990ejz.51.1710526327041;
-        Fri, 15 Mar 2024 11:12:07 -0700 (PDT)
+        bh=GWhQJIrlAe3Zt6yVWAsx1dDzPBZeGyd2jOUBiZHxlQs=;
+        b=v1fWAQplWnm8QlB74nCJJefW7wvtgF2Tc2Na+t6SAPHKQhSF4DxOZJD9DFLTRdHzrh
+         KUZ/WtODVYMOH1R6VGctswBtm+CNQ6TYwswuSL4+NJaFmExol/OLfR/MyuwMwYJ/8yDk
+         oSKmJPmSoquPS+4f58QF8TG6Q6+p/qqa7UWyXqR2paXoR6X8pFKPz2k7An+WFSpq4y58
+         GRnSjkKaIkDsQJVHg04OVYu1PJin+PuYlnBT7x4qotBALQujRB9Uo1ldQ+j74v9g/QR+
+         ezzhsw/JFmBXgo7i3tBQ9yk+sw1zvXqR53CbnzatjpvdJtQfuL86nVllL0oZbSmlZmat
+         UKXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtjoyE9VhJ8GXu/7WuM8SqTRiN9B3bvpRdi5PULyBwHMrZGo0wurwOCNji0eVdh4fIi8PNE+frvmcj1yEYzaUaFGIANeXm5jy0BULC
+X-Gm-Message-State: AOJu0YxY2h5SUEco5lywkY657KO8EVhhnnWW0KrvhljMjGg+rafMc6ai
+	OvgZZGW5kV5vY9SAR9WJqONqCBCavN8cIRPNh44C13UXQdPy/DgcT0+98h+bLYjbIA==
+X-Google-Smtp-Source: AGHT+IHyYt6hSv3pFERpzItO8fZsQiuY5C6FoawT6+NaqEMW96OtRoSCcROYt+Xr/NzFYSYg16HdfQ==
+X-Received: by 2002:a19:8c01:0:b0:513:25c6:e98e with SMTP id o1-20020a198c01000000b0051325c6e98emr3720302lfd.1.1710526457609;
+        Fri, 15 Mar 2024 11:14:17 -0700 (PDT)
 Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
-        by smtp.gmail.com with ESMTPSA id jy5-20020a170907762500b00a4675490095sm1650064ejc.42.2024.03.15.11.12.06
+        by smtp.gmail.com with ESMTPSA id u20-20020a1709060b1400b00a449076d0dbsm1915682ejg.53.2024.03.15.11.14.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 11:12:06 -0700 (PDT)
+        Fri, 15 Mar 2024 11:14:17 -0700 (PDT)
 From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
 To: selinux@vger.kernel.org
 Cc: Paul Moore <paul@paul-moore.com>,
 	Stephen Smalley <stephen.smalley.work@gmail.com>,
 	Ondrej Mosnacek <omosnace@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] selinux: optimize ebitmap_and()
-Date: Fri, 15 Mar 2024 19:11:55 +0100
-Message-ID: <20240315181204.647182-1-cgzones@googlemail.com>
+Subject: [PATCH v2 2/2] selinux: improve symtab string hashing
+Date: Fri, 15 Mar 2024 19:14:04 +0100
+Message-ID: <20240315181414.649045-1-cgzones@googlemail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -83,88 +83,75 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Iterate on nodes instead of single bits to save node resolution for each
-single bit.
+The number of buckets is calculated by performing a binary AND against
+the mask of the hash table, which is one less than its size (which is a
+power of two).  This leads to all top bits being discarded, requiring
+for short or similar inputs a hash function with a good avalanche
+effect.
 
-Similar to userspace patch efcd00814879 ("libsepol: optimize
-ebitmap_and").
+Use djb2a:
+
+    # current
+    common prefixes:  7 entries and 5/8 buckets used, longest chain length 2, sum of chain length^2 11
+    classes:  134 entries and 100/256 buckets used, longest chain length 5, sum of chain length^2 234
+    roles:  15 entries and 6/16 buckets used, longest chain length 5, sum of chain length^2 57
+    types:  4448 entries and 3016/8192 buckets used, longest chain length 41, sum of chain length^2 14922
+    users:  7 entries and 3/8 buckets used, longest chain length 3, sum of chain length^2 17
+    bools:  306 entries and 221/512 buckets used, longest chain length 4, sum of chain length^2 524
+    levels:  1 entries and 1/1 buckets used, longest chain length 1, sum of chain length^2 1
+    categories:  1024 entries and 400/1024 buckets used, longest chain length 4, sum of chain length^2 2740
+
+    # patch
+    common prefixes:  7 entries and 5/8 buckets used, longest chain length 2, sum of chain length^2 11
+    classes:  134 entries and 101/256 buckets used, longest chain length 3, sum of chain length^2 210
+    roles:  15 entries and 9/16 buckets used, longest chain length 3, sum of chain length^2 31
+    types:  4448 entries and 3459/8192 buckets used, longest chain length 5, sum of chain length^2 6778
+    users:  7 entries and 5/8 buckets used, longest chain length 3, sum of chain length^2 13
+    bools:  306 entries and 236/512 buckets used, longest chain length 5, sum of chain length^2 470
+    levels:  1 entries and 1/1 buckets used, longest chain length 1, sum of chain length^2 1
+    categories:  1024 entries and 518/1024 buckets used, longest chain length 7, sum of chain length^2 2992
 
 Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
-v3:
-  apply format style
 v2:
-  fix array size computation
+   add licensing note
 ---
- security/selinux/ss/ebitmap.c | 50 +++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 8 deletions(-)
+ security/selinux/ss/symtab.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
-index 67c1a73cd5ee..47cb90106118 100644
---- a/security/selinux/ss/ebitmap.c
-+++ b/security/selinux/ss/ebitmap.c
-@@ -78,19 +78,53 @@ int ebitmap_cpy(struct ebitmap *dst, const struct ebitmap *src)
- int ebitmap_and(struct ebitmap *dst, const struct ebitmap *e1,
- 		const struct ebitmap *e2)
+diff --git a/security/selinux/ss/symtab.c b/security/selinux/ss/symtab.c
+index c04f8d447873..832660fd84a9 100644
+--- a/security/selinux/ss/symtab.c
++++ b/security/selinux/ss/symtab.c
+@@ -12,17 +12,17 @@
+ 
+ static unsigned int symhash(const void *key)
  {
--	struct ebitmap_node *n;
--	int bit, rc;
-+	const struct ebitmap_node *n1, *n2;
-+	struct ebitmap_node *new = NULL, **prev;
- 
- 	ebitmap_init(dst);
- 
--	ebitmap_for_each_positive_bit(e1, n, bit)
--	{
--		if (ebitmap_get_bit(e2, bit)) {
--			rc = ebitmap_set_bit(dst, bit, 1);
--			if (rc < 0)
--				return rc;
-+	prev = &dst->node;
-+	n1 = e1->node;
-+	n2 = e2->node;
-+	while (n1 && n2) {
-+		if (n1->startbit == n2->startbit) {
-+			unsigned long testmap[EBITMAP_UNIT_NUMS];
-+			unsigned int i;
-+			bool match = false;
+-	const char *p, *keyp;
+-	unsigned int size;
+-	unsigned int val;
+-
+-	val = 0;
+-	keyp = key;
+-	size = strlen(keyp);
+-	for (p = keyp; (p - keyp) < size; p++)
+-		val = (val << 4 | (val >> (8 * sizeof(unsigned int) - 4))) ^
+-		      (*p);
+-	return val;
++	/*
++	 * djb2a
++	 * Public domain from cdb v0.75
++	 */
++	unsigned int hash = 5381;
++	unsigned char c;
 +
-+			for (i = 0; i < ARRAY_SIZE(testmap); i++) {
-+				testmap[i] = n1->maps[i] & n2->maps[i];
-+				if (testmap[i] != 0)
-+					match = true;
-+			}
++	while ((c = *(const unsigned char *)key++))
++		hash = ((hash << 5) + hash) ^ c;
 +
-+			if (match) {
-+				new = kmem_cache_zalloc(ebitmap_node_cachep,
-+							GFP_ATOMIC);
-+				if (!new) {
-+					ebitmap_destroy(dst);
-+					return -ENOMEM;
-+				}
-+				new->startbit = n1->startbit;
-+				memcpy(new->maps, testmap, EBITMAP_SIZE / 8);
-+				new->next = NULL;
-+
-+				*prev = new;
-+				prev = &(new->next);
-+			}
-+
-+			n1 = n1->next;
-+			n2 = n2->next;
-+		} else if (n1->startbit > n2->startbit) {
-+			n2 = n2->next;
-+		} else {
-+			n1 = n1->next;
- 		}
- 	}
-+
-+	if (new)
-+		dst->highbit = new->startbit + EBITMAP_SIZE;
-+
- 	return 0;
++	return hash;
  }
  
+ static int symcmp(const void *key1, const void *key2)
 -- 
 2.43.0
 
