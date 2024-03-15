@@ -1,144 +1,104 @@
-Return-Path: <linux-kernel+bounces-104698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC7A787D287
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:12:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C6187D289
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:13:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8816B28375B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:12:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD7ACB23C67
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CAD47A67;
-	Fri, 15 Mar 2024 17:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179D745C06;
+	Fri, 15 Mar 2024 17:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gPEZYIRn"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ojoOWoPM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E1945BE7
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CA972D7A8;
+	Fri, 15 Mar 2024 17:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710522755; cv=none; b=Y09bCeL/DtrwGnokKoOalR0/IdGDFNnPuD5hIiVD1V1MQFN/7W/W5Bt3E5IgCddlcgzAqSFauQPqbtXSdgu7Bt3hrNE6iFfqBojP/yLue9e7jH5X/twaEsucBhcVhOTaacURiirxiOIktN4fsSwXc5RqWJiBsdiXC22dBhQk3Xc=
+	t=1710522793; cv=none; b=i9bATmwB4/iCXhr+8m8nqkJxV+HSH+niXnAU61HiHATyN0mFjQK3FK/5TAv4z+wd/U4v+FXWEmnPevAon4tVeTh5brDoxBnQHFV0YgkYT+zZlBQ4hBAcwLUk1dCX/082ISKH48vrQLEv3Uae5h3H7B3wmt76mr3Vz4fb39mW9kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710522755; c=relaxed/simple;
-	bh=kWzlo4AaZeWtEkzCy8TJZmtsYDqVVCm/XwSPAebW3DI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DEqnblwugt/GmqB/szBEZYl6Lh5nzKPFJRA0+fIavpv5dOEwbDXTcDh5Ow+1J3hvrTmolgGzeoBRO71uOmcpHswRhieo5s96KRGkNjVz5hkybCjPtIGhnuDgOzbcnxSn3Ic3/WYTXdaTd+4AM0V8NmHNS4CKGegK8V94eNbE+q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gPEZYIRn; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6914101079eso16183876d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710522750; x=1711127550; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YBgzsheMyMt2wDXPPT0VYLjrPGEmgjQ97XLNs9yUYLg=;
-        b=gPEZYIRn5TOzx0CD9MhYMJE8IegTBXts89PPitzmyLGrdBw75k3GCrAzWUGDbcNl8Q
-         B8hQLWkxemwXLOOcU8SfGLnzXI3KlCe5CUUcVMGE8cMvskTEkEJRNCLPMKZSTqOtMgRc
-         scBeMdTNyeGA6jWvK7rI/aQCeIEXtzS4emclA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710522750; x=1711127550;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YBgzsheMyMt2wDXPPT0VYLjrPGEmgjQ97XLNs9yUYLg=;
-        b=DHQ+KcxgNmVCqMzLpvqg0FgLUykDtVZXwf0uFai67iInzQBg+fNqJq+5JVMY6r+rJc
-         tcpNHez2RwbOko0ZOL0gbjsk1JxW8p+aGj/GTwqRSy3S2VsQCgeP/p0mBnBdDFV71N3Y
-         +eMKGSd22NvXUQu05AxZ67b4X5JHyncl6GlMkC1aXi/MZ7ErOA7xwhqBmqEV8CFF+cvs
-         FhZK/RHJkeBV/YttH4yi1LNqmfFWz31/7jF08H+DShvCcdCrWZKlIWQuLfxQrMfcUfVd
-         i8dz9gtYXw4/GDzl382PhPYZsrlOmECt3sJ3dXRBivyU/Ou2Woj4X4fPi8hT26TvMMj9
-         /0nA==
-X-Forwarded-Encrypted: i=1; AJvYcCVbpfQGxoSC2u7UCvV8oPq1a7U6xLVlRf3uMcHq47CnTBa22wshi/ceopPJokAS/oCKeQnI8bnJMnekznsJqxnkAeeb3sT6K0Oopuv0
-X-Gm-Message-State: AOJu0Yx4EUocCicjczJTq+DMAJGP0OvDCpnW3INcT79RO9blOAh4hi1/
-	oXNmjTdmppw8uPl3asuBfl733Q4KTf1eXjWzZG6KDM42djFZRzaL9nLz4IZLteKBI4cGmqXAPbc
-	=
-X-Google-Smtp-Source: AGHT+IFMKEktyqxgPuphVdBObAtojMqpAe0CA5/Fn9r/rzIpJQzRmnOYGZgv6qsqotQ8jMF3ikOaXg==
-X-Received: by 2002:a0c:f2cf:0:b0:691:8552:fd0a with SMTP id c15-20020a0cf2cf000000b006918552fd0amr1050912qvm.60.1710522749691;
-        Fri, 15 Mar 2024 10:12:29 -0700 (PDT)
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com. [209.85.160.179])
-        by smtp.gmail.com with ESMTPSA id 10-20020a05621420ca00b00690d43db164sm2230674qve.44.2024.03.15.10.12.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 10:12:29 -0700 (PDT)
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42ee0c326e8so9491cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:12:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVxnthlet3MCssOI0FndR25JdtOZ551MuotUMRnArmBgdPu+jFGbLcxZh2REYz+CZh+0h3BTcHTxa69Bg5KuVzsEymoVDCc9YZxwKQx
-X-Received: by 2002:a05:622a:1706:b0:42f:a3c:2d53 with SMTP id
- h6-20020a05622a170600b0042f0a3c2d53mr822108qtk.20.1710522747755; Fri, 15 Mar
- 2024 10:12:27 -0700 (PDT)
+	s=arc-20240116; t=1710522793; c=relaxed/simple;
+	bh=bux1e6Dc/9IxUoMYOK9iP4ti4i1eDiNvOx/+YMftFOg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Bx3rmM8XpAVTWYYodIeZmifcMgjzmKS+wylZBGaL8sL1iDknwvbZOR5Q6YPVUdalgWFi+6ckpAsfSSYTNPEjYpaOMp7MBtqKAnEU5NshcZeSBwgDMJbwERWszY7ccjCOmW7CjRNugwmobSEzqcmelvRXKDPZVxKUeBWREstLuzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ojoOWoPM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DD07C433F1;
+	Fri, 15 Mar 2024 17:13:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710522792;
+	bh=bux1e6Dc/9IxUoMYOK9iP4ti4i1eDiNvOx/+YMftFOg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ojoOWoPMuw2D8HPVkPxIsx3OJnWAERmH4qU+mxR9PkhXTBBd2Xo5fL4sO6e/SHt0S
+	 RQqRwNky4zx83qNwcmT3z/TxgOl1+/WCV+iP11fPTScXJaz0tpzlVBSkM23mjYoRGa
+	 C7j0uVG53TNt9/JMh0sP6QKB7zRiezdINsW2zni151CTsiJZYKHPWOLI9AZ8OgqpCu
+	 QcAnAshKY7EyGZnc2rtUjObIby3JqCS/2zguuBm4+G/9JgIYwLxJa8SSpp5v+b+GFL
+	 W8SvHQwndlaCDHkGIDJaAj+FeS7MpST3tEI+bGjKyDOt2AMlshMPEeJ/A87I1bm2ki
+	 qphGktogSD6yA==
+From: Mark Brown <broonie@kernel.org>
+To: linux-spi@vger.kernel.org, 
+ Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Mika Westerberg <mika.westerberg@linux.intel.com>, 
+ Michael Walle <michael@walle.cc>, 
+ "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240313171050.3505620-1-florian.fainelli@broadcom.com>
+References: <20240313171050.3505620-1-florian.fainelli@broadcom.com>
+Subject: Re: [PATCH] spi: Fix error code checking in spi_mem_exec_op()
+Message-Id: <171052279110.52555.12215764049151524815.b4-ty@kernel.org>
+Date: Fri, 15 Mar 2024 17:13:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230703085555.30285-1-quic_mkshah@quicinc.com>
- <20230703085555.30285-4-quic_mkshah@quicinc.com> <CAD=FV=XWH+Eoa9XjDns--NSDTZHeUwTdrX_r_QZhSPpbZNwz+w@mail.gmail.com>
- <20240315152431.sckqhc6ri63blf2g@bogus>
-In-Reply-To: <20240315152431.sckqhc6ri63blf2g@bogus>
-From: Doug Anderson <dianders@chromium.org>
-Date: Fri, 15 Mar 2024 10:12:12 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UD1nuxryvWH=Mi7E+QzMoa7xCHebY0DtZCAVmEW3ZeAg@mail.gmail.com>
-Message-ID: <CAD=FV=UD1nuxryvWH=Mi7E+QzMoa7xCHebY0DtZCAVmEW3ZeAg@mail.gmail.com>
-Subject: Re: [RESEND v4 3/3] arm64: dts: qcom: sc7280: Add power-domains for
- cpuidle states
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Maulik Shah <quic_mkshah@quicinc.com>, andersson@kernel.org, ulf.hansson@linaro.org, 
-	swboyd@chromium.org, wingers@google.com, daniel.lezcano@linaro.org, 
-	rafael@kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, jwerner@chromium.org, 
-	quic_lsrao@quicinc.com, quic_rjendra@quicinc.com, devicetree@vger.kernel.org, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Rob Clark <robdclark@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-Hi,
+On Wed, 13 Mar 2024 10:10:49 -0700, Florian Fainelli wrote:
+> After commit cff49d58f57e ("spi: Unify error codes by replacing -ENOTSUPP with
+> -EOPNOTSUPP"), our SPI NOR flashes would stop probing with the following
+> visible in the kernel log:
+> 
+> [    2.196300] brcmstb_qspi f0440920.qspi: using bspi-mspi mode
+> [    2.210295] spi-nor: probe of spi1.0 failed with error -95
+> 
+> [...]
 
-On Fri, Mar 15, 2024 at 8:24=E2=80=AFAM Sudeep Holla <sudeep.holla@arm.com>=
- wrote:
->
-> On Thu, Mar 14, 2024 at 04:20:59PM -0700, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Mon, Jul 3, 2023 at 1:56=E2=80=AFAM Maulik Shah <quic_mkshah@quicinc=
-com> wrote:
-> > >
-> > > Add power-domains for cpuidle states to use psci os-initiated idle st=
-ates.
-> > >
-> > > Cc: devicetree@vger.kernel.org
-> > > Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 98 +++++++++++++++++++++-----=
---
-> > >  1 file changed, 73 insertions(+), 25 deletions(-)
-> >
-> > FWIW, I dug up an old sc7280-herobrine board to test some other change
-> > and found it no longer booted. :( I bisected it and this is the change
-> > that breaks it. Specifically, I can make mainline boot with:
-> >
-> > git revert --no-edit db5d137e81bc # arm64: dts: qcom: sc7280: Update
-> > domain-idle-states for cluster sleep
-> > git revert --no-edit 7925ca85e956 # arm64: dts: qcom: sc7280: Add
-> > power-domains for cpuidle states
-> >
->
-> IIRC, this could be issue with psci firmware. There were some known
-> issues which were discussed few years back but I am not aware of the
-> details and if/how it is applicable here.
->
-> Not sure if you are getting any logs during the boot, if you do have
-> worth look at logs related to PSCI/OSI/Idle/...
+Applied to
 
-Given that the new firmware fixes it I'm going to say it's not worth
-looking into any longer.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
--Doug
+Thanks!
+
+[1/1] spi: Fix error code checking in spi_mem_exec_op()
+      commit: 29895ce18311ddd702973ddb3a6c687db663e0fb
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
