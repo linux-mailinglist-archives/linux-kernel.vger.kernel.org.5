@@ -1,108 +1,214 @@
-Return-Path: <linux-kernel+bounces-104199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B52F87CA95
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:20:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A480287CA98
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD47228471A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:20:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10C2DB222A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EEF17BD5;
-	Fri, 15 Mar 2024 09:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F5D17C6E;
+	Fri, 15 Mar 2024 09:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IUs0E6zs"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UXX5qCHl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5912C17C60;
-	Fri, 15 Mar 2024 09:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F1917BCB
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 09:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710494394; cv=none; b=DWj6uLQA7gCQYqtn4JKvQS4ShLH/3VTRcJeWZiZlnWS+ktcphyaYggdvxYI6ziqSMy4H9Gh+NdbwPaybZdz+TDp6/mRKzoyO0khGcQYlewVp97OzxA8A7VD9YQx9ZJnXCSktjTuIGGm0tWCrfDnrWGFM6rFSynXrcBJiersvFbc=
+	t=1710494410; cv=none; b=fR6Ad5WM0bNqdDdIes8b0ytWICLsYUIgeOE7J+lTtsf0+l2dLNxWLcEuDDPiNwDEg5/4RqMLSYk9a1TRx6A2ywHvG45DMnU6zDx8/7yyQUD41wmZzV/FHU4RvepHly315Wq5JbLcvUSk2XMh03gma+88F1Wd2Ctzk3m5RBymCZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710494394; c=relaxed/simple;
-	bh=AHqSOaYNZFgQYet46uTTxEfuRsPs8jM7XyxJUop08WQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=j8aGrzcqiCeo8m6/kBv800V1xniXQPQpKhIGDVLaOF1BzS8l8jEskkvW5M8eklUVc/Jw8Thki9Yvk1hR3R8AvKrzLVeOc9MW/h82BjNa2+faHvYvrEA8Vtb9Jj8P56sKOQvZn+ZbgKOpJGehPV36E2RkQoQRxIzuoxnQ01lIDcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IUs0E6zs; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33ecbe78c3fso701550f8f.3;
-        Fri, 15 Mar 2024 02:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710494390; x=1711099190; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HQw5oNsYEXSP8sYyXUIy+9N1iJwFeZV5w5qJgAdE1PQ=;
-        b=IUs0E6zsw1KXD2i4OQ1DhBHVpLVaPGFsNZZStWtfH25dfWkqb2ofRpBfkD4IXhAO85
-         VBzZMWbeQfOK5bhCh1nDSmCwlcNwdb19CEtlAxQOpETxUm597OLfnhOU5kbxW0puK6a9
-         CKk1IMhUawiLKbRPR7cP9+TmZYVjBWENeH8xqiSEjoUdIDGMSa/L+KVdxwe9tGnKW2rl
-         /1AaMHKle7Ou9MgVKL7qc72kckIgTA/6hvkWqEg2um/p8vINjaJommL8Obg/STN1o7Uj
-         6H/BxBgZHPw596RGwfjsJ5mQ46c4YOKhFByAMKkWv5wNN9/Kd+H1K1/srFrxl1X2HLNF
-         5nsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710494390; x=1711099190;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HQw5oNsYEXSP8sYyXUIy+9N1iJwFeZV5w5qJgAdE1PQ=;
-        b=n364Sn5iUqHN47J7oPgn2IDFwHuDlH7rm1QT0pQC05JnMhTLomxkyDO09TStIElN64
-         I/MOvydI8+L7F1/EOsmpPEnWEvFYBrJbzdGb4dW2zhuMMN9z85bQ3w0C7j7r9q27KgCv
-         kRJnrlbMJw1hN3secbQSxuTbs1PrF2UUsqlISA1oXKEvcdn/bWA62RKmyUOShvJWG5Mx
-         FMuGE17SjKfZffBITwKMN7OxrepsmfoDuxNCVnJlG/EgWN9Jp+GUzQ8XEWwax45DMhNz
-         H51yhxp+p2SpGRJWrU4ZcI5HchzIiszvpzEt9N5mGjUWPE6TbtEOmRIw6ofiXBuCXtnP
-         YzcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVNFqQ2D9KLxL10WjjwEiGnE/pzadmkMS3XmTGjX7YrB4hOgPnsdNPbnkP5Wy4nOPDCyqXT6HDLr0USnj+TRqZ64ym8lIKwlVnmgj8k
-X-Gm-Message-State: AOJu0YzvSLGI0zsu2A3uJMOggG6xSemVA6Vbq0DZ/PKlgSqyScFKVTE7
-	qC0JjB/tYnzZ2Jsbckk8WqwYlrHiaoKXHfwozqB1QQqvmrmIWcuS
-X-Google-Smtp-Source: AGHT+IEPdVBZg1VY8jVGSbWV92yzvxfLlvNgJ8Fm6j0v75JcMGGC9XqCOWMIYR7F+cZQf+yjsTfhsg==
-X-Received: by 2002:a5d:5750:0:b0:33e:34aa:d78a with SMTP id q16-20020a5d5750000000b0033e34aad78amr3009495wrw.8.1710494390487;
-        Fri, 15 Mar 2024 02:19:50 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id h13-20020a056000000d00b0033ec9ddc638sm2723586wrx.31.2024.03.15.02.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 02:19:50 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Jan Kara <jack@suse.com>
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] udf: Remove second semicolon
-Date: Fri, 15 Mar 2024 09:19:49 +0000
-Message-Id: <20240315091949.2430585-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710494410; c=relaxed/simple;
+	bh=LXMAp98yYouLO2qKKxhEdORaYj4y2Lqsdjg6UNcPM7s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uM1pjynnTNBh6m3Fui9VDOT6Oe92whkvdyWDc7W7VisVOILjKGeOzsFa26KNH0IEHvb9Gxd5AW4D1L1tFUX3mUQJOBZF/mH7wbXOcbgQnNSCMyjHE7VXnfA5ZOSKOOy1dziIa5XZ0xQDvzp97adVBMnlTPIdzBQKi0OHocgkIwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UXX5qCHl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710494406;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MA4d9RmpAf+Zlw9q6wNWE3DUAtlrQpvK0bSCfYcQMp8=;
+	b=UXX5qCHlyhGs4dG/utg3qddBwr40HDY5Q6dRfjjny+rzsZ5xi9k1jRoq5InP3e4fBayNzC
+	JM3C+tOCl0lwzsL4wd+8ZKfCpevXHEOXbQOq4s/Tjp5APET8994l9nvQ7HfECVEh67d81o
+	YJye1KNNyCgW8R9tXqy+caMA6qNgwWs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-333-Gxg4SC3YPSiX0_dKbJG3rg-1; Fri, 15 Mar 2024 05:19:58 -0400
+X-MC-Unique: Gxg4SC3YPSiX0_dKbJG3rg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2415385A58B;
+	Fri, 15 Mar 2024 09:19:58 +0000 (UTC)
+Received: from [10.45.224.236] (unknown [10.45.224.236])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 47B71492BD0;
+	Fri, 15 Mar 2024 09:19:56 +0000 (UTC)
+Message-ID: <47003267-35b5-446e-aaca-f775b71bd01f@redhat.com>
+Date: Fri, 15 Mar 2024 10:19:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] i40e: Enforce software interrupt during busy-poll
+ exit
+Content-Language: en-US
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>, netdev@vger.kernel.org
+Cc: pawel.chmielewski@intel.com, aleksandr.loktionov@intel.com,
+ mschmidt@redhat.com, Hugo Ferreira <hferreir@redhat.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240313125457.19475-1-ivecera@redhat.com>
+ <0249d506-6ab2-485a-b95f-6e32e5a92d9e@intel.com>
+From: Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <0249d506-6ab2-485a-b95f-6e32e5a92d9e@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-There is a statement with two semicolons. Remove the second one, it
-is redundant.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/udf/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/udf/super.c b/fs/udf/super.c
-index 2217f7ed7a49..ba6b747a3830 100644
---- a/fs/udf/super.c
-+++ b/fs/udf/super.c
-@@ -630,7 +630,7 @@ static int udf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 			if (!uopt->nls_map) {
- 				errorf(fc, "iocharset %s not found",
- 					param->string);
--				return -EINVAL;;
-+				return -EINVAL;
- 			}
- 		}
- 		break;
--- 
-2.39.2
+On 15. 03. 24 1:53, Jesse Brandeburg wrote:
+> On 3/13/2024 5:54 AM, Ivan Vecera wrote:
+>> As for ice bug fixed by commit b7306b42beaf ("ice: manage interrupts
+>> during poll exit") I'm seeing the similar issue also with i40e driver.
+>>
+>> In certain situation when busy-loop is enabled together with adaptive
+>> coalescing, the driver occasionally miss that there are outstanding
+>> descriptors to clean when exiting busy poll.
+>>
+>> Try to catch the remaining work by triggering a software interrupt
+>> when exiting busy poll. No extra interrupts will be generated when
+>> busy polling is not used.
+>>
+>> The issue was found when running sockperf ping-pong tcp test with
+>> adaptive coalescing and busy poll enabled (50 as value busy_pool
+>> and busy_read sysctl knobs) and results in huge latency spikes
+>> with more than 100000us.
+> 
+> I like the results of this fix! Thanks for working on it.
+> 
+>>
+>> The fix is inspired from the ice driver and do the following:
+>> 1) During napi poll exit in case of busy-poll (napo_complete_done()
+>>     returns false) this is recorded to q_vector that we were in busy
+>>     loop.
+>> 2) In i40e_update_enable_itr()
+>>     - updates refreshed ITR intervals directly using PFINT_ITRN register
+>>     - if we are exiting ordinary poll then just enables the interrupt
+>>       using PFINT_DYN_CTLN
+>>     - if we are exiting busy poll then enables the interrupt and
+>>       additionally triggers an immediate software interrupt to catch any
+>>       pending clean-ups
+>> 3) Reuses unused 3rd ITR (interrupt throttle) index and set it to
+>>     20K interrupts per second to limit the number of these sw interrupts.
+> 
+> This is a good idea.
+> 
+>>
+>> @@ -2702,8 +2716,8 @@ static inline void i40e_update_enable_itr(struct i40e_vsi *vsi,
+>>   	 */
+>>   	if (q_vector->rx.target_itr < q_vector->rx.current_itr) {
+>>   		/* Rx ITR needs to be reduced, this is highest priority */
+>> -		intval = i40e_buildreg_itr(I40E_RX_ITR,
+>> -					   q_vector->rx.target_itr);
+>> +		wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
+>> +		     q_vector->rx.target_itr >> 1);
+> 
+> so here you write (this is a new write)
+> 
+>>   		q_vector->rx.current_itr = q_vector->rx.target_itr;
+>>   		q_vector->itr_countdown = ITR_COUNTDOWN_START;
+>>   	} else if ((q_vector->tx.target_itr < q_vector->tx.current_itr) ||
+>> @@ -2712,25 +2726,33 @@ static inline void i40e_update_enable_itr(struct i40e_vsi *vsi,
+>>   		/* Tx ITR needs to be reduced, this is second priority
+>>   		 * Tx ITR needs to be increased more than Rx, fourth priority
+>>   		 */
+>> -		intval = i40e_buildreg_itr(I40E_TX_ITR,
+>> -					   q_vector->tx.target_itr);
+>> +		wr32(hw, I40E_PFINT_ITRN(I40E_TX_ITR, q_vector->reg_idx),
+>> +		     q_vector->tx.target_itr >> 1);
+>>   		q_vector->tx.current_itr = q_vector->tx.target_itr;
+>>   		q_vector->itr_countdown = ITR_COUNTDOWN_START;
+>>   	} else if (q_vector->rx.current_itr != q_vector->rx.target_itr) {
+>>   		/* Rx ITR needs to be increased, third priority */
+>> -		intval = i40e_buildreg_itr(I40E_RX_ITR,
+>> -					   q_vector->rx.target_itr);
+>> +		wr32(hw, I40E_PFINT_ITRN(I40E_RX_ITR, q_vector->reg_idx),
+>> +		     q_vector->rx.target_itr >> 1);
+> 
+> or here (new write)
+> 
+>>   		q_vector->rx.current_itr = q_vector->rx.target_itr;
+>>   		q_vector->itr_countdown = ITR_COUNTDOWN_START;
+>>   	} else {
+>>   		/* No ITR update, lowest priority */
+>> -		intval = i40e_buildreg_itr(I40E_ITR_NONE, 0);
+>>   		if (q_vector->itr_countdown)
+>>   			q_vector->itr_countdown--;
+>>   	}
+>>   
+>> -	if (!test_bit(__I40E_VSI_DOWN, vsi->state))
+>> -		wr32(hw, INTREG(q_vector->reg_idx), intval);
+> 
+> The above used to be the *only* write.
+> 
+>> +	/* Do not enable interrupt if VSI is down */
+>> +	if (test_bit(__I40E_VSI_DOWN, vsi->state))
+>> +		return;
+>> +
+>> +	if (!q_vector->in_busy_poll) {
+>> +		intval = i40e_buildreg_itr(I40E_ITR_NONE, 0);
+>> +	} else {
+>> +		q_vector->in_busy_poll = false;
+>> +		intval = i40e_buildreg_swint(I40E_SW_ITR);
+>> +	}
+>> +	wr32(hw, I40E_PFINT_DYN_CTLN(q_vector->reg_idx), intval);
+> 
+> and then you write again here.
+> 
+> So this function will now regularly have two writes in hot-path. Before
+> it was very carefully crafted to reduce the number of writes to 1.
+> 
+> This is made possible because the PFINT_DYN_CTLN register can do
+> multiple tasks at once with a single write.
+> 
+> Can you just modify intval to *both* trigger a software interrupt, and
+> update the ITR simultaneously? I'm really not sure that's even possible.
+> 
+> It may make more sense to only do the second write when exiting busy
+> poll, what do you think?
+
+Yeah, you are right, we can eliminate these two writes by one and also 
+for busy-poll exit. I'm setting up ITR2_IDX rate during MSI-X 
+initialization and as this is fixed we do not need to update it 
+everytime in i40e_update_enable_itr().
+
+Per datasheet the PFINT_DYN_CTLN value can be encoded to do the 
+following at once:
+- enable interrupt
+- update interval for particular ITR index
+- software interrupt trigger limited by interval of different ITR index
+
+Will prepare, test and submit v3 with this change.
+
+Thanks,
+Ivan
 
 
