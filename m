@@ -1,217 +1,120 @@
-Return-Path: <linux-kernel+bounces-104217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9879A87CAD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:44:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A4F787CAD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C54EF1C21ADE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:44:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C94C8B210FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4080417C6F;
-	Fri, 15 Mar 2024 09:44:52 +0000 (UTC)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CA517C66;
-	Fri, 15 Mar 2024 09:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317E517C6E;
+	Fri, 15 Mar 2024 09:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tCtIRsDC"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D108817C66
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 09:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710495891; cv=none; b=T3SitfioplTDTX3+haVT3zNyDJtTH2f6xRdF3huunmWsma4McvwzBtDwL69GUKof2wf4sUjKYANDN4dbfbMtlJlzAr/ndulSiU38FInfablLiQDhhvC6iMgNlMHtPfU1RJ9/3un5qIqUPANABnhG1K1/3/h85qXiPbQH8Kcp5k0=
+	t=1710496038; cv=none; b=Q9AxfxgLf/azkWQZFsKHjcPpUygolA7U/Vga4gOqdLHu6NfWaOBrOujEJ9SoEJv863yh41b03Y3zx/9ueqiHVyW+xJU0rUG5PhVotp0j6QBznr3G6GQzBb6WCLm9yJF3wEsHOby2jinjiux2PfY45M7IKQ5auk31coXYH785oxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710495891; c=relaxed/simple;
-	bh=0jGDH/dyYXZFXjOFk/pyfPSGUV4a9lho+ZbGA9PHzts=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=tEzZHTYNK6Q2M9Gpiv0nJ4DG7i0qu7SVWmsh65dfyftFKjBcOW0F58P8MFqRSTCm3ijD1bimSXgWopblL15A2qJTDsK5s3hXJM8pR1Q4l5qV+7dDvsWlAKRGrrIv/DPUKqMzNL3YtzfZAv82/SrmzzhbGyj14l5LjdC7Zny3Ljg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rl47B-00031f-00; Fri, 15 Mar 2024 10:44:37 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id DFC75C0267; Fri, 15 Mar 2024 10:44:28 +0100 (CET)
-Date: Fri, 15 Mar 2024 10:44:28 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: torvalds@linux-foundation.org
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS changes for v6.9
-Message-ID: <ZfQYfNzwx/4WeGKT@alpha.franken.de>
+	s=arc-20240116; t=1710496038; c=relaxed/simple;
+	bh=XL7fCL1X51bdK2UTGtEnjvAnQ8MtXmWuq6XUAu1YFqg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NvMbIl/Ay+BmE1UXJfLpyKePq+PZUhNcVVFxpg2HthDnPscXkUHnqOfSLZhnBXp3wAN66ouhpVxESG7atd3TecY3uA1CilaX5vJaSqTXI6327QAKtl4BVCvRg6lrFLSQvCVBbYVcXAnOrXb4dU1Guwqn/Xegh7Fq/08Yu89lE0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tCtIRsDC; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ae197190-6a15-49c5-ab3c-3eaac6dd4c5c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710496031;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+/vakx78+sEV9QsMCP2nwlQKJ4QPOe67TJg3tqtM1qw=;
+	b=tCtIRsDCZRb4O6oyZYK3Bw2EaLfVQFGMRIIGH21Q/6Zih8cwZbzAlwfYDFoWs3iyqaTKec
+	jh+WBpVE3XdAwx6l99gVghldWylYZnbVB/sTf2jilmnfLqB9qsN+0/VXPoiwvqX5+pZwmz
+	7yB7W1qUzQ/BkX/S8ceJmRXGpN+kep8=
+Date: Fri, 15 Mar 2024 17:47:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] mm: cachestat: avoid bogus workingset test during
+ swapping & invalidation races
+Content-Language: en-US
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Jann Horn <jannh@google.com>
+References: <20240314164941.580454-1-hannes@cmpxchg.org>
+ <1551fa14-2a95-49fd-ab1a-11c38ae29486@linux.dev>
+ <20240315093010.GB581298@cmpxchg.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240315093010.GB581298@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
+On 2024/3/15 17:30, Johannes Weiner wrote:
+> On Fri, Mar 15, 2024 at 11:16:35AM +0800, Chengming Zhou wrote:
+>> On 2024/3/15 00:49, Johannes Weiner wrote:
+>>> When cachestat against shmem races with swapping and invalidation, the
+>>> shadow entry might not exist: swapout IO is still in progress and
+>>> we're before __remove_mapping; or swapin/invalidation/swapoff has
+>>> removed the shadow from swapcache after we saw a shmem swap entry.
+>>>
+>>> This will send a NULL to workingset_test_recent(). The latter purely
+>>> operates on pointer bits, so it won't crash - node 0, memcg ID 0,
+>>> eviction timestamp 0, etc. are all valid inputs - but it's a bogus
+>>> test. In theory that could result in a false "recently evicted" count.
+>>
+>> Good catch!
+>>
+>>>
+>>> Such a false positive wouldn't be the end of the world. But for code
+>>> clarity and (future) robustness, be explicit about this case.
+>>>
+>>> Fixes: cf264e1329fb ("cachestat: implement cachestat syscall")
+>>> Reported-by: Jann Horn <jannh@google.com>
+>>> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+>>> ---
+>>>  mm/filemap.c | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>> index 222adac7c9c5..a07c27df7eab 100644
+>>> --- a/mm/filemap.c
+>>> +++ b/mm/filemap.c
+>>> @@ -4199,6 +4199,9 @@ static void filemap_cachestat(struct address_space *mapping,
+>>>  				swp_entry_t swp = radix_to_swp_entry(folio);
+>>>  
+>>
+>> IIUC, we should first check if it's a real swap entry using non_swap_entry(), right?
+>> Since there maybe other types of entries in shmem.
+> 
+> Good point, it could be a poisoned entry. I'll add the
+> non_swap_entry() check on swp.
+> 
+>> And need to get_swap_device() to prevent concurrent swapoff here,
+>> get_shadow_from_swap_cache() won't do it for us.
+> 
+> We're holding rcu_read_lock() for the xarray iteration, so if we see
+> the swap entry in the shmem mapping, it means we beat shmem_unuse()
+> and swapoff hasn't run synchronize_rcu() yet.
 
-  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
+Ah, you are right, so it's safe.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_6.9
-
-for you to fetch changes up to 732932220078f6312f3ef57c17523d3d7f995655:
-
-  mips: cm: Convert __mips_cm_phys_base() to weak function (2024-03-11 14:02:15 +0100)
-
-----------------------------------------------------------------
-- added support for Mobileye SoCs
-- unified GPR/CP0 regs handling for uasm
-- cleanups and fixes
-
-----------------------------------------------------------------
-Andy Shevchenko (2):
-      MIPS: ralink: Remove unused of_gpio.h
-      MIPS: ralink: Don't use "proxy" headers
-
-Erick Archer (1):
-      MIPS: Alchemy: Use kcalloc() instead of kzalloc()
-
-Gregory CLEMENT (12):
-      MIPS: spaces: Define a couple of handy macros
-      MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
-      MIPS: cps-vec: Use macros for 64bits access
-      dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
-      dt-bindings: mips: cpus: Sort the entries
-      dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
-      dt-bindings: mips: Add bindings for Mobileye SoCs
-      MIPS: mobileye: Add EyeQ5 dtsi
-      MIPS: mobileye: Add EPM5 device tree
-      MIPS: Share generic kernel code with other architecture
-      MIPS: Add support for Mobileye EyeQ5
-      MAINTAINERS: Add entry for Mobileye MIPS SoCs
-
-Ilpo Järvinen (4):
-      MIPS: lantiq: Remove unused function pointer variables
-      MIPS: ath79: Don't return PCIBIOS_* code from pcibios_enable_device()
-      MIPS: PCI: Return PCIBIOS_* from tx4927_pci_config_read/write()
-      MIPS: TXx9: Use PCI_SET_ERROR_RESPONSE()
-
-Jiapeng Chong (1):
-      bus: bt1-apb: Remove duplicate include
-
-Jiaxun Yang (19):
-      MIPS: Unify define of CP0 registers for uasm code
-      MIPS: regdefs.h: Guard all defines with __ASSEMBLY__
-      MIPS: regdefs.h: Define a set of register numbers
-      MIPS: traps: Use GPR number macros
-      MIPS: page: Use GPR number macros
-      MIPS: tlbex: Use GPR number macros
-      MIPS: kvm/entry: Use GPR number macros
-      MIPS: pm-cps: Use GPR number macros
-      MIPS: Fix set_uncached_handler for ebase in XKPHYS
-      MIPS: Allows relocation exception vectors everywhere
-      MIPS: Probe toolchain support of -msym32
-      MIPS: Remove cc-option checks for -march=octeon
-      MIPS: Fallback CPU -march flag to ISA level if unsupported
-      MIPS: BMIPS: Drop unnecessary assembler flag
-      MIPS: Loongson64: test for -march=loongson3a cflag
-      MIPS: Limit MIPS_MT_SMP support by ISA reversion
-      MIPS: Implement microMIPS MT ASE helpers
-      MIPS: mipsregs: Set proper ISA level for virt extensions
-      MIPS: mipsregs: Parse fp and sp register by name in parse_r
-
-Justin Swartz (4):
-      mips: dts: ralink: mt7621: associate uart1_pins with serial0
-      mips: dts: ralink: mt7621: reorder serial0 properties
-      mips: dts: ralink: mt7621: add serial1 and serial2 nodes
-      mips: dts: ralink: mt7621: add cell count properties to usb
-
-Lukas Bulwahn (1):
-      MAINTAINERS: remove entry to non-existing file in MOBILEYE MIPS SOCS
-
-Masahiro Yamada (1):
-      MIPS: move unselectable entries out of the "CPU type" choice
-
-Ricardo B. Marliere (6):
-      mips: sgi-ip22: make gio_bus_type const
-      mips: txx9: make txx9_sramc_subsys const
-      tc: make tc_bus_type const
-      mips: bus: make mips_cdmm_bustype const
-      mips: mt: make mt_class constant
-      mips: sibyte: make tb_class constant
-
-Serge Semin (5):
-      MAINTAINERS: Add maintainer for MIPS Baikal-T1 platform code
-      mips: zboot: Fix "no previous prototype" build warning
-      tty: mips_ejtag_fdc: Fix passing incompatible pointer type warning
-      mips: cm: Convert __mips_cm_l2sync_phys_base() to weak function
-      mips: cm: Convert __mips_cm_phys_base() to weak function
-
- Documentation/devicetree/bindings/mips/cpus.yaml   |  13 +-
- .../devicetree/bindings/mips/mobileye.yaml         |  32 ++
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- MAINTAINERS                                        |  22 ++
- arch/mips/Kbuild                                   |   1 +
- arch/mips/Kbuild.platforms                         |   1 +
- arch/mips/Kconfig                                  | 138 +++++--
- arch/mips/Makefile                                 |  46 ++-
- arch/mips/alchemy/common/clock.c                   |   2 +-
- arch/mips/boot/compressed/uart-16550.c             |   2 +
- arch/mips/boot/compressed/uart-alchemy.c           |   2 +
- arch/mips/boot/compressed/uart-prom.c              |   2 +
- arch/mips/boot/dts/Makefile                        |   1 +
- arch/mips/boot/dts/mobileye/Makefile               |   4 +
- arch/mips/boot/dts/mobileye/eyeq5-epm5.dts         |  23 ++
- .../mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 292 ++++++++++++++
- arch/mips/boot/dts/mobileye/eyeq5.dtsi             | 124 ++++++
- arch/mips/boot/dts/ralink/mt7621.dtsi              |  47 +++
- arch/mips/configs/eyeq5_defconfig                  | 108 ++++++
- arch/mips/generic/Makefile                         |   6 +-
- arch/mips/include/asm/addrspace.h                  |   5 +
- arch/mips/include/asm/asmmacro.h                   |  22 +-
- arch/mips/include/asm/cdmm.h                       |   2 +-
- arch/mips/include/asm/mach-generic/spaces.h        |   4 +
- arch/mips/include/asm/mips-cm.h                    |  21 +-
- arch/mips/include/asm/mips_mt.h                    |   2 +-
- arch/mips/include/asm/mipsmtregs.h                 | 256 +++++++-----
- arch/mips/include/asm/mipsregs.h                   | 278 ++++++++++---
- arch/mips/include/asm/regdef.h                     |  91 +++++
- arch/mips/include/asm/smp-cps.h                    |   9 +-
- arch/mips/kernel/cps-vec.S                         |  54 +--
- arch/mips/kernel/mips-cm.c                         |  10 +-
- arch/mips/kernel/mips-mt.c                         |  14 +-
- arch/mips/kernel/pm-cps.c                          | 134 +++----
- arch/mips/kernel/rtlx-mt.c                         |   8 +-
- arch/mips/kernel/smp-cps.c                         | 141 +++++--
- arch/mips/kernel/traps.c                           |  13 +-
- arch/mips/kernel/vpe-mt.c                          |   4 +-
- arch/mips/kvm/entry.c                              | 431 +++++++++------------
- arch/mips/mm/page.c                                | 202 +++++-----
- arch/mips/mm/tlbex.c                               | 214 +++++-----
- arch/mips/mobileye/Makefile                        |   1 +
- arch/mips/mobileye/Platform                        |  15 +
- arch/mips/mobileye/board-epm5.its.S                |  24 ++
- arch/mips/mobileye/vmlinux.its.S                   |  32 ++
- arch/mips/pci/fixup-ath79.c                        |   2 +-
- arch/mips/pci/fixup-lantiq.c                       |   9 -
- arch/mips/pci/ops-tx4927.c                         |  18 +-
- arch/mips/ralink/timer.c                           |  11 +-
- arch/mips/sgi-ip22/ip22-gio.c                      |   4 +-
- arch/mips/sibyte/common/sb_tbprof.c                |  21 +-
- arch/mips/txx9/generic/setup.c                     |   2 +-
- drivers/bus/bt1-apb.c                              |   1 -
- drivers/bus/mips_cdmm.c                            |   2 +-
- drivers/tc/tc-driver.c                             |   2 +-
- drivers/tty/mips_ejtag_fdc.c                       |   2 +-
- include/linux/tc.h                                 |   2 +-
- 57 files changed, 2010 insertions(+), 921 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
- create mode 100644 arch/mips/boot/dts/mobileye/Makefile
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
- create mode 100644 arch/mips/configs/eyeq5_defconfig
- create mode 100644 arch/mips/mobileye/Makefile
- create mode 100644 arch/mips/mobileye/Platform
- create mode 100644 arch/mips/mobileye/board-epm5.its.S
- create mode 100644 arch/mips/mobileye/vmlinux.its.S
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> 
+> So it's safe. But I think it could use a comment. Maybe the
+> documentation of get_swap_device() should mention this option too?
 
