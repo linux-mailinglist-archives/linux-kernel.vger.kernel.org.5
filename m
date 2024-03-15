@@ -1,94 +1,96 @@
-Return-Path: <linux-kernel+bounces-104581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F386687D068
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:35:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F022D87D06A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:35:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 319AD1C22B83
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:35:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C4D81C22BBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CF23EA96;
-	Fri, 15 Mar 2024 15:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D935405F7;
+	Fri, 15 Mar 2024 15:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oIFGOt9W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGxd6Yh9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43CC1946C;
-	Fri, 15 Mar 2024 15:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20263F9F4;
+	Fri, 15 Mar 2024 15:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710516902; cv=none; b=AmYL81HOMzrKOCIatYRejR62LBy/bVAmtoy8aPtQ2vldqgf0XrJRmsRCMhNgfFgmch/Nek//QIPBfdOkVdOphzxl86SJ5gQG82dr7fLUFlNdeO7RfA/hwBfKZBaVjMddw6ho+nNc7ikjU9K1zxvV/yx7zAjRpsRwWgASGQyK7fU=
+	t=1710516903; cv=none; b=mk1lcQ+qi6uBRXIDkYWsNbpM9DJuBuFkFGrknbAQNg7FOn+gOCMcvtqE5J8gVO0g/v6TKf/hUntO7/g0Cqck3RNIPkZHDen16Eu05JGOorhym3wMkYkSq+hVYyy2RptUN0Zd/ZyFgG2VB/+mDYH2EfXhlyGTR79H/aMUY43FkBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710516902; c=relaxed/simple;
-	bh=4Mbh4wTN4l0acjOafVieNblPuAn3MVy3J0dwXOH+nZE=;
+	s=arc-20240116; t=1710516903; c=relaxed/simple;
+	bh=kMvE945U6tZvf5khr6Zgk0+4AmsFWiLJKJFA3XanMDY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZSbxRVuUdLz4YOJx+Ns+JYp+XXZwlHI/z/M70aDvFht0MWWocwDaud1pCXhqz1lBKRfg24sMR+Jom2mUKnQyCBIC1n7gOkZeLskPneG5MT1g7q9jdOLkoQLF24SBJ0OwMF/x1uTCM0/ODO3FJ8HChvFCu1BGBAlxz4K1FQqRV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oIFGOt9W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D67D6C433C7;
-	Fri, 15 Mar 2024 15:35:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=hiXaRY94wbn1AxpBZnGF+sgK9+iGL/1IDkWyJMtAWt3liJlSkrUKt3GdZ3rXZ9LYS8gPXfpMil5KZzKJGvQx3BTbCbrHIRghk5dG9JuKFZHWjofVed1roVy+Rd6noILn96m48eRFNcYcdL4XZAXIIwRzB3Zs1wQkDn8HyV9ceNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGxd6Yh9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32A00C43390;
+	Fri, 15 Mar 2024 15:35:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710516901;
-	bh=4Mbh4wTN4l0acjOafVieNblPuAn3MVy3J0dwXOH+nZE=;
+	s=k20201202; t=1710516903;
+	bh=kMvE945U6tZvf5khr6Zgk0+4AmsFWiLJKJFA3XanMDY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oIFGOt9WEi+rs8n9L6/eU7bjSyoSBJYpWft4q74RdYzXL1f762aaNvFOvraBL/y3k
-	 +7LT6mlQUWzv2PNrGRxp5BcWkWX+ueV0RU6UQagANB/49Ppkx3P28D2NYdB+OW8Ybz
-	 XpQBZfrNVFxSFIzITonzQsLJzRwdJzeY9Il7MQL5CCuElvxbagWeNZr9VLwizu3Jm0
-	 FDI41R0/OzGUAUCifShbVo/AaD5tuuxjw30B2ompS2wWU8W64E++Z9cufxUlxMAB+P
-	 JPrUuOiqVukCWxkdqzA0iPoJuhg7vFrdio6NLmiMyJlIgN1qxllbcB2CjUQO8gc80h
-	 8X0NWrh7E7HTw==
+	b=oGxd6Yh93OoOgar07GpQnyRiGlV5FsLGb53T7JYs5zqkg1kaksZWhP+O2Sgwi5jSo
+	 viqqkeL74blcV69t45uvIXnZiSBpvLwF9CLvAZws7OWmalWkaKTuHedBe7ewBFd4S2
+	 qPSSy/lgwbV81B+8WMbUalgzaidP7BinvrrckJN/kUMj8dDsEULwEzeOrINg7xdvP+
+	 mmma5ll5yib10JW9sLJXT9IT+tXSSU/48pY3CS8ig5ZlxASs5kE4XDiFg6IBvHqe8l
+	 DYLQYWNx4UcAHS086S6bmTzXrT69i86zaF/JT++NfTma/HkZMqQb57Igz3jD2MnFYX
+	 qdU/oDVF4ZmCg==
 Date: Fri, 15 Mar 2024 15:34:58 +0000
-From: Eric Van Hensbergen <ericvh@kernel.org>
-To: Dominique Martinet <asmadeus@codewreck.org>
-Cc: Colin Ian King <colin.i.king@gmail.com>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	v9fs@lists.linux.dev, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] fs/9p: remove redundant pointer v9ses
-Message-ID: <ZfRqohX3x7q2p952@1149290c588b>
-References: <20240229222250.351322-1-colin.i.king@gmail.com>
- <ZeXFqt1NDp9sdz7n@codewreck.org>
+From: Mark Brown <broonie@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 6.1 00/71] 6.1.82-rc1 review
+Message-ID: <fdcb4083-d18b-41ef-a29b-ab1f9fb8bae2@sirena.org.uk>
+References: <20240313163957.615276-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gY9Vlt8Iv6TUAL0x"
+Content-Disposition: inline
+In-Reply-To: <20240313163957.615276-1-sashal@kernel.org>
+X-Cookie: Best if used before date on carton.
+
+
+--gY9Vlt8Iv6TUAL0x
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZeXFqt1NDp9sdz7n@codewreck.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 09:59:22PM +0900, Dominique Martinet wrote:
-> Colin Ian King wrote on Thu, Feb 29, 2024 at 10:22:50PM +0000:
-> > Pointer v9ses is being assigned the value from the return of inlined
-> > function v9fs_inode2v9ses (which just returns inode->i_sb->s_fs_info).
-> > The pointer is not used after the assignment, so the variable is
-> > redundant and can be removed.
-> > 
-> > Cleans up clang scan warnings such as:
-> > fs/9p/vfs_inode_dotl.c:300:28: warning: variable 'v9ses' set but not
-> > used [-Wunused-but-set-variable]
-> 
-> Thanks for the patch!
-> 
-> Eric, this appears to be for your -next tree as it doesn't build on
-> master -- didn't notice the [next] in the subject line until I tried...
-> (I've just build-checked on your tree and it appears correct there)
-> 
-> > 
-> > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> 
-> Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
-> 
-> -- 
-> Dominique
+On Wed, Mar 13, 2024 at 12:38:46PM -0400, Sasha Levin wrote:
+>=20
+> This is the start of the stable review cycle for the 6.1.82 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-Pulled into my for-next tree, will try to get into a part-2 pull
-request.  Thanks.
+Tested-by: Mark Brown <broonie@kernel.org>
 
-   -eric
+--gY9Vlt8Iv6TUAL0x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0aqEACgkQJNaLcl1U
+h9AwnQf9Hc6tXCghN0tarwwvf7pVi9DpywhHHyde9n2pzebQ+JHnOyG+d0JUJeOD
+/Az0uk7WwQQxzVCCBnTAOCC0CN7uNvHHTs+Ox0N6USUsyTK1GudedYI6Qxs6e5ds
+VDc46bXBcAptk9EX+fUEeWA3HHEe+orileF1nRT44ve+d68J/oGO9tdDCa0yGVoL
+AXH0l60MweRSoYnjAJidhIJ0jaWzKs4TSkMld6ZkUl9a6rzssIHaOBShr694tpxM
+kOwWrKJQ5NB4IhPg03DV1OT34kQ0Pn7VWpUuDN6iRvevIgIS5tRMPUac5Dsa4xKn
+BQTwIlyHLd0SAb+22dXkokCa5J+HzQ==
+=LXLx
+-----END PGP SIGNATURE-----
+
+--gY9Vlt8Iv6TUAL0x--
 
