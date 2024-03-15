@@ -1,183 +1,109 @@
-Return-Path: <linux-kernel+bounces-104494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D433487CEBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:25:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA70387CEC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:25:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70E7F1F22C48
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:25:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51CEEB22A7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32C23C087;
-	Fri, 15 Mar 2024 14:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877DC38FB9;
+	Fri, 15 Mar 2024 14:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b="nKR01fZ3"
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="g6icv7vD"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0841B3BBCD
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 14:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.203.114
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA8E61A38E1;
+	Fri, 15 Mar 2024 14:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710512641; cv=none; b=j1HkqHYqWrgCzj1jPEc3RtEwK0aSSDcOCJIc6h0ZzsbiVI3W/wEJBpZ9pxAgTUtEJu9xdpml9FtD6e3b8vB8A0K/CkahrCE4YMK5hyIENaTLp7GA1vn63QaOGnzcayD+m0Vk8Xhzn8CqiUsM/PUTJ34I/AfQ520jZ1Tr4I9b3kk=
+	t=1710512689; cv=none; b=rqA6wMhr31kltIz8Mav4gBr6VP0m1ycTA0jlE6QDJPC3HVyOHjQJH4xriFSw3U7OPC0bjZC56vg6ZGZL7eZpJkIvUZ/gf7mwYF7oaC6KU2+/aNomuP4MqH3MtCDjrX/Ejqxu96/a6qu+yS9MD8U/4BgKTBgQtHY3yCrsmB7pvKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710512641; c=relaxed/simple;
-	bh=fXau4aMPengQDZo9DjA1lWY+BpLa+Yk6m2NeDQcvUck=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=tL9ktyz3pcbZOIhVbQh8dupgu6HfjnbirQBsTnZMSXGDxQcQ4AyMDQRDQE893rHtad9VS1LzDtDzNFl7uq6yT1n7aZXASzvfsZVUxdfs1qW/QOlcJ+/cjG3ivxhWinRb74V2u6WyCo6tvTKlsS6Tx1eXSgmUi1OxnIuu5Loi17k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk; spf=pass smtp.mailfrom=codethink.com; dkim=pass (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b=nKR01fZ3; arc=none smtp.client-ip=188.40.203.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codethink.com
+	s=arc-20240116; t=1710512689; c=relaxed/simple;
+	bh=XvjSAIxe0XWX6keCOkIyeqiUrgXg5gc6pqVeS3VEo0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TIMEsJVar7eeXJSAWz5qqUsR+CZuwwZVpGl3k6qnKhV1sFsIzIPbRIouKhdzCLwnyeInf2VOn3QUt5607pmFoA3umUBJqoJNpOJf0Tqw7ZxJHKgl/iUJmHLsdYwernP4850X9nJsxeVUFHV5LGi1jGo5/ZSWMbhtWwqqgNT/0MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=g6icv7vD; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=wSH5FGFCIv59n3XTzZYR2ZRxICHAaXYIdM5WDnGInd4=; b=nKR01fZ3qEWlufkqnK+sagHhdw
-	qz0A2NfC6tmbfJG+VizF156NMvnlqW9uGmxsqnQlOIekq8Zfy4T+DZfH+DgfvA0ANlpt9zPeDGCgj
-	UJQWf1cyYOzCJRmY2DoVJo01jGkLWv5TdFiwfS84J9Wm+YP/j+35CX5hAvFezq7fQIMwdRy3gR2D1
-	I7HZclRIJSqgRlfGytmRNop/Y0idbpSDqPjZcuu1YPoSH+wQJb0zTidOrJHo3fqLew+2WEo8NAOMq
-	MK0VKofFm936TOSv7KdzMtBBXyws+0VLsm8k4yrOIuvMfZtT97zCyiBgkpDQty+8+czLgduK/tI28
-	ZVbRzRSw==;
-Received: from [63.135.74.212] (helo=rainbowdash)
-	by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-	id 1rl8TI-00GKtQ-QD; Fri, 15 Mar 2024 14:23:44 +0000
-Received: from ben by rainbowdash with local (Exim 4.97)
-	(envelope-from <ben@rainbowdash>)
-	id 1rl8TI-0000000CBcd-08qD;
-	Fri, 15 Mar 2024 14:23:44 +0000
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-To: devel@lists.orangefs.org
-Cc: martin@omnibond.com,
-	hubcap@omnibond.com,
-	linux-kernel@vger.kernel.org,
-	Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH v2] orangefs: move debug only code into debugfs.c file
-Date: Fri, 15 Mar 2024 14:23:41 +0000
-Message-Id: <20240315142341.2904597-1-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.37.2.352.g3c44437643
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=VRGW8z0NhLdznShUoOOXXxWys2yQ2J3P11bCMfJSNHA=; b=g6icv7vDDLgeuYr8NztGa/YyRL
+	qFIBEY0IPpP1+bYI49n7SxU4bgxjkR3IrM9+Be4Fri5gtC1NtP3VH/d1pGvIeP1i2RlnVDiZtoJZn
+	udcdVqfzdogl745CVcYKrrixMkz8s/WeJyK34trcBUP489ORyWp6kWDYJ43k+tSGlRwYJpnF9jjEa
+	6ROrZUs/r8mqk2pR6H8I00TlCDMwoZm7KXZSFrVn3W8HTtptAlIsHnKm46b0orWAfeK+lJbYXrim+
+	BdImz0lHoczac+PwFVjN8iCsjg9amJPItwdzikKwlWk9QjADmbcL4kAKoXNzxRHdIITfu2bZ5K/8d
+	vQqsjzkA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rl8Tc-0000000AQWv-1Isj;
+	Fri, 15 Mar 2024 14:24:04 +0000
+Date: Fri, 15 Mar 2024 14:24:04 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+	kernel-team@android.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v5 14/37] lib: introduce support for page allocation
+ tagging
+Message-ID: <ZfRaBJ8nq57TAG6L@casper.infradead.org>
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-15-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Sender: srv_ts003@codethink.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306182440.2003814-15-surenb@google.com>
 
-The s_kmod_keyword_mask_map[] is only used in orangefs-debugfs.c and is
-casing a number of warnings about it being defined and not used. Fix
-this by moving it to remove a lot of:
+On Wed, Mar 06, 2024 at 10:24:12AM -0800, Suren Baghdasaryan wrote:
+> +static inline void pgalloc_tag_add(struct page *page, struct task_struct *task,
+> +				   unsigned int order)
 
- warning: ‘num_kmod_keyword_mask_map’ defined but not used [-Wunused-const-variable=]
+If you make this "unsigned int nr" instead of order, (a) it won't look
+completely insane (what does adding an order even mean?) and (b) you
+can reuse it from the __free_pages path.
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> @@ -1101,6 +1102,7 @@ __always_inline bool free_pages_prepare(struct page *page,
+>  		/* Do not let hwpoison pages hit pcplists/buddy */
+>  		reset_page_owner(page, order);
+>  		page_table_check_free(page, order);
+> +		pgalloc_tag_sub(page, order);
 
----
-v2: fix missing move of debugfs table
----
- fs/orangefs/orangefs-debug.h   | 37 ----------------------------------
- fs/orangefs/orangefs-debugfs.c | 37 ++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 37 deletions(-)
-
-diff --git a/fs/orangefs/orangefs-debug.h b/fs/orangefs/orangefs-debug.h
-index 6e079d4230d0..62649f3fb231 100644
---- a/fs/orangefs/orangefs-debug.h
-+++ b/fs/orangefs/orangefs-debug.h
-@@ -49,41 +49,4 @@ struct __keyword_mask_s {
- 	__u64 mask_val;
- };
- 
--/*
-- * Map all kmod keywords to kmod debug masks here. Keep this
-- * structure "packed":
-- *
-- *   "all" is always last...
-- *
-- *   keyword     mask_val     index
-- *     foo          1           0
-- *     bar          2           1
-- *     baz          4           2
-- *     qux          8           3
-- *      .           .           .
-- */
--static struct __keyword_mask_s s_kmod_keyword_mask_map[] = {
--	{"super", GOSSIP_SUPER_DEBUG},
--	{"inode", GOSSIP_INODE_DEBUG},
--	{"file", GOSSIP_FILE_DEBUG},
--	{"dir", GOSSIP_DIR_DEBUG},
--	{"utils", GOSSIP_UTILS_DEBUG},
--	{"wait", GOSSIP_WAIT_DEBUG},
--	{"acl", GOSSIP_ACL_DEBUG},
--	{"dcache", GOSSIP_DCACHE_DEBUG},
--	{"dev", GOSSIP_DEV_DEBUG},
--	{"name", GOSSIP_NAME_DEBUG},
--	{"bufmap", GOSSIP_BUFMAP_DEBUG},
--	{"cache", GOSSIP_CACHE_DEBUG},
--	{"debugfs", GOSSIP_DEBUGFS_DEBUG},
--	{"xattr", GOSSIP_XATTR_DEBUG},
--	{"init", GOSSIP_INIT_DEBUG},
--	{"sysfs", GOSSIP_SYSFS_DEBUG},
--	{"none", GOSSIP_NO_DEBUG},
--	{"all", GOSSIP_MAX_DEBUG}
--};
--
--static const int num_kmod_keyword_mask_map = (int)
--	(ARRAY_SIZE(s_kmod_keyword_mask_map));
--
- #endif /* __ORANGEFS_DEBUG_H */
-diff --git a/fs/orangefs/orangefs-debugfs.c b/fs/orangefs/orangefs-debugfs.c
-index 1b508f543384..d2a68d3dd31e 100644
---- a/fs/orangefs/orangefs-debugfs.c
-+++ b/fs/orangefs/orangefs-debugfs.c
-@@ -146,6 +146,43 @@ static DEFINE_MUTEX(orangefs_debug_lock);
- /* Used to protect data in ORANGEFS_KMOD_DEBUG_HELP_FILE */
- static DEFINE_MUTEX(orangefs_help_file_lock);
- 
-+/*
-+ * Map all kmod keywords to kmod debug masks here. Keep this
-+ * structure "packed":
-+ *
-+ *   "all" is always last...
-+ *
-+ *   keyword     mask_val     index
-+ *     foo          1           0
-+ *     bar          2           1
-+ *     baz          4           2
-+ *     qux          8           3
-+ *      .           .           .
-+ */
-+static struct __keyword_mask_s s_kmod_keyword_mask_map[] = {
-+	{"super", GOSSIP_SUPER_DEBUG},
-+	{"inode", GOSSIP_INODE_DEBUG},
-+	{"file", GOSSIP_FILE_DEBUG},
-+	{"dir", GOSSIP_DIR_DEBUG},
-+	{"utils", GOSSIP_UTILS_DEBUG},
-+	{"wait", GOSSIP_WAIT_DEBUG},
-+	{"acl", GOSSIP_ACL_DEBUG},
-+	{"dcache", GOSSIP_DCACHE_DEBUG},
-+	{"dev", GOSSIP_DEV_DEBUG},
-+	{"name", GOSSIP_NAME_DEBUG},
-+	{"bufmap", GOSSIP_BUFMAP_DEBUG},
-+	{"cache", GOSSIP_CACHE_DEBUG},
-+	{"debugfs", GOSSIP_DEBUGFS_DEBUG},
-+	{"xattr", GOSSIP_XATTR_DEBUG},
-+	{"init", GOSSIP_INIT_DEBUG},
-+	{"sysfs", GOSSIP_SYSFS_DEBUG},
-+	{"none", GOSSIP_NO_DEBUG},
-+	{"all", GOSSIP_MAX_DEBUG}
-+};
-+
-+static const int num_kmod_keyword_mask_map = (int)
-+	(ARRAY_SIZE(s_kmod_keyword_mask_map));
-+
- /*
-  * initialize kmod debug operations, create orangefs debugfs dir and
-  * ORANGEFS_KMOD_DEBUG_HELP_FILE.
--- 
-2.37.2.352.g3c44437643
+Obviously you'll need to make sure all the callers now pass in 1 <<
+order instead of just order.
 
 
