@@ -1,185 +1,387 @@
-Return-Path: <linux-kernel+bounces-104363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0721C87CC9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:45:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B7387CCA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:45:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A235B21078
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:45:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DDF4B21C34
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E811B977;
-	Fri, 15 Mar 2024 11:45:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074231BC22;
+	Fri, 15 Mar 2024 11:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="XNcwQFEE"
-Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MwAvTPay"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B9B18059;
-	Fri, 15 Mar 2024 11:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B481BC59;
+	Fri, 15 Mar 2024 11:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710503115; cv=none; b=lPHwYVS9TGhGPlS7Eg7zW8CuHff7N+tS5QmC1qTeZbNzO6jqgQvAvZw8j4hIS6WaXrbBhlnQF1tf6UbUTAudSW19C4Zg1yFO00a7wMggmQaPiZrXaUOLoIVk3WNvM5tF7uf3/7CbEWN6MJYgWdbu5uxjQuwziLINi8YQ4fSCwqc=
+	t=1710503124; cv=none; b=V9hD6SxiOm0iIyQgUDJIxJmHkKG99hr29x8nJHNgCI1+biW+vdmm56y5sWAOnWDYL0o32JdfDMYkJrPh0GrOniudd4x0pfvJ/bHF9vHRbKJ6GSuSFG4XOsxZGtSCuco97GzOtShbFoutQhHGA+hxFiT60lwfF5dHoDVtvMP/7DE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710503115; c=relaxed/simple;
-	bh=KpR75KqgEIm8e2W9qVlAk0XBZSWfYP8ZbDa/lxuss5c=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=OoJaTU6VSjNamthZ4JdpXpdxYy09iFw616TYWbYPjM6vGCVf0xj8wLqxveMnMgUXOyIyKHnDkO7sciHnRQF8l4EXjBjHc8kUeziH9n4hg2JAJ/yYkuxXVjLuCp9NR82m4hkk6hOoGtBFwSHE43RamvR5QJnKKamIVbgMzHszmAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=XNcwQFEE; arc=none smtp.client-ip=94.231.106.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4Tx2VN2N6fz67wk;
-	Fri, 15 Mar 2024 12:45:00 +0100 (CET)
-Received: from [10.10.15.22] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4Tx2VH4rSZz67rw;
-	Fri, 15 Mar 2024 12:44:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=unoeuro; t=1710503100;
-	bh=SYG6FFdYcYOSTT4mRGqhy/9e4VRQFUqz1xDByJ7kXok=;
-	h=Date:From:To:Cc:Subject;
-	b=XNcwQFEEIhFTijrVsVQOouxFfBCb8TyIrdMEm/C5r1nU5HbvpAO8MZK2h8GGdr/as
-	 +z3tQqpJZVQ4ShcOv/YQBst2fq/gaRDQ6UCU6ndzK2Am5uHgqPCy6H8s9OOlxtEImy
-	 r7TJzBoj1iNxiAA2XPwihNFgb9PHyrGSF/lnYYhI=
-Message-ID: <784e533e-bd89-44fa-a966-b8104309565e@gaisler.com>
-Date: Fri, 15 Mar 2024 12:44:54 +0100
+	s=arc-20240116; t=1710503124; c=relaxed/simple;
+	bh=xADKVOnSLQ/eSoxk0F4pbiiTRO2FBYoibk1GxdCL7Ug=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UFpIZAM3G/V6LH5nmJlrGlN0Ge+oON62uEtKOXuGkvt8K2siTMGd7sMNDRuF3Et6J5CXzutgX8gwqX9FSY0whfGhZAdwCb9yPc4x9/ZLZYTa6cLGXWrxqnfIurcSTQFZlKMHRxZ7R2vbRmKX38GlHP79tKodKdma8KH0zlTpNds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MwAvTPay; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9CFDBE0005;
+	Fri, 15 Mar 2024 11:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710503120;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R0kqNtL6G3XJ3YlpCpRDs+8Ulm0OGWV3L8/ec8/EvgA=;
+	b=MwAvTPaym4uwlN1C1EKgYc3IKFvTxnhIr+kXMPITBXU9heEQTwKc5yqIMpdk4aDLrsHsFr
+	EMDVVDpRFOb71CDe8L7p5WJkkCEUlEj07gGU1kjv7/NSUeCrpkPEIKkEGMZgLlZx70O7LF
+	F4JTHrNdYsnCy0kGE/VSaK8rjaVTOS4f5+gVih9kw3MDFbYvhLwXKDjTYk+lpyY9tRGfdj
+	OrTvX+x2Tw+5/DFixsU306TRTcsuszxO1Pvrx10j1ycpHpRK96t2KP3baGsi7Bp9Q78tr0
+	MJdjRBo3stvEKHJL9Dj74IHYauC5nn3YgYYKHN9HfT5mzCJ/K0K+uqEuK4Y8rA==
+Date: Fri, 15 Mar 2024 12:45:17 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, broonie@kernel.org,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ richard@nod.at, vigneshr@ti.com, manivannan.sadhasivam@linaro.org,
+ neil.armstrong@linaro.org, daniel@makrotopia.org, arnd@arndb.de,
+ chris.packham@alliedtelesis.co.nz, christophe.kerello@foss.st.com,
+ linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, quic_srichara@quicinc.com,
+ quic_varada@quicinc.com
+Subject: Re: [PATCH v4 2/5] drivers: mtd: nand: Add qpic_common API file
+Message-ID: <20240315124517.4a546ce9@xps-13>
+In-Reply-To: <20240308091752.16136-3-quic_mdalam@quicinc.com>
+References: <20240308091752.16136-1-quic_mdalam@quicinc.com>
+	<20240308091752.16136-3-quic_mdalam@quicinc.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Andreas Larsson <andreas@gaisler.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] sparc updates for v6.9
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi Linus,
+Hello,
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+> +/**
+> + * qcom_qpic_bam_dma_done() - Callback for DMA descriptor completion
+> + * @data: data pointer
+> + *
+> + * This function is a callback for DMA descriptor completion
+> + */
+> +void qcom_qpic_bam_dma_done(void *data)
+> +{
+> +	struct bam_transaction *bam_txn =3D data;
+> +
+> +	/*
+> +	 * In case of data transfer with NAND, 2 callbacks will be generated.
+> +	 * One for command channel and another one for data channel.
+> +	 * If current transaction has data descriptors
+> +	 * (i.e. wait_second_completion is true), then set this to false
+> +	 * and wait for second DMA descriptor completion.
+> +	 */
+> +	if (bam_txn->wait_second_completion)
+> +		bam_txn->wait_second_completion =3D false;
+> +	else
+> +		complete(&bam_txn->txn_done);
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+Can't you just call "wait" and "complete" twice? It's supposed to be
+handled by the API. This is totally racy.
 
-are available in the Git repository at:
+> +}
+> +
+> +/**
+> + * qcom_nandc_read_buffer_sync() - Check for dma sync for cpu or device
+> + * @nandc: qpic nand controller
+> + * @is_cpu: cpu or Device
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/alarsson/linux-sparc.git tags/sparc-for-6.9-tag1
+? the naming is really strange dev_to_mem or something like that would
+probably be more helpful.
 
-for you to fetch changes up to 84b76d05828a1909e20d0f66553b876b801f98c8:
+> + *
+> + * This function will check for dma sync for cpu or device
+> + */
+> +void qcom_nandc_read_buffer_sync(struct qcom_nand_controller *nandc,
+> +				 bool is_cpu)
+> +{
+> +	if (!nandc->props->is_bam)
+> +		return;
+> +
+> +	if (is_cpu)
+> +		dma_sync_single_for_cpu(nandc->dev, nandc->reg_read_dma,
+> +					MAX_REG_RD *
+> +					sizeof(*nandc->reg_read_buf),
+> +					DMA_FROM_DEVICE);
+> +	else
+> +		dma_sync_single_for_device(nandc->dev, nandc->reg_read_dma,
+> +					   MAX_REG_RD *
+> +					   sizeof(*nandc->reg_read_buf),
+> +					   DMA_FROM_DEVICE);
+> +}
+> +
+> +/**
+> + * qcom_offset_to_nandc_reg() - Get the actual offset
+> + * @regs: pointer to nandc_reg structure
+> + * @offset: register offset
+> + *
+> + * This function will reurn the actual offset for qpic controller regist=
+er
+> + */
+> +__le32 *qcom_offset_to_nandc_reg(struct nandc_regs *regs, int offset)
+> +{
+> +	switch (offset) {
+> +	case NAND_FLASH_CMD:
+> +		return &regs->cmd;
+> +	case NAND_ADDR0:
+> +		return &regs->addr0;
+> +	case NAND_ADDR1:
+> +		return &regs->addr1;
+> +	case NAND_FLASH_CHIP_SELECT:
+> +		return &regs->chip_sel;
+> +	case NAND_EXEC_CMD:
+> +		return &regs->exec;
+> +	case NAND_FLASH_STATUS:
+> +		return &regs->clrflashstatus;
+> +	case NAND_DEV0_CFG0:
+> +		return &regs->cfg0;
+> +	case NAND_DEV0_CFG1:
+> +		return &regs->cfg1;
+> +	case NAND_DEV0_ECC_CFG:
+> +		return &regs->ecc_bch_cfg;
+> +	case NAND_READ_STATUS:
+> +		return &regs->clrreadstatus;
+> +	case NAND_DEV_CMD1:
+> +		return &regs->cmd1;
+> +	case NAND_DEV_CMD1_RESTORE:
+> +		return &regs->orig_cmd1;
+> +	case NAND_DEV_CMD_VLD:
+> +		return &regs->vld;
+> +	case NAND_DEV_CMD_VLD_RESTORE:
+> +		return &regs->orig_vld;
+> +	case NAND_EBI2_ECC_BUF_CFG:
+> +		return &regs->ecc_buf_cfg;
+> +	case NAND_READ_LOCATION_0:
+> +		return &regs->read_location0;
+> +	case NAND_READ_LOCATION_1:
+> +		return &regs->read_location1;
+> +	case NAND_READ_LOCATION_2:
+> +		return &regs->read_location2;
+> +	case NAND_READ_LOCATION_3:
+> +		return &regs->read_location3;
+> +	case NAND_READ_LOCATION_LAST_CW_0:
+> +		return &regs->read_location_last0;
+> +	case NAND_READ_LOCATION_LAST_CW_1:
+> +		return &regs->read_location_last1;
+> +	case NAND_READ_LOCATION_LAST_CW_2:
+> +		return &regs->read_location_last2;
+> +	case NAND_READ_LOCATION_LAST_CW_3:
+> +		return &regs->read_location_last3;
 
-  lib/fonts: Allow Sparc console 8x16 font for sparc64 early boot text console (2024-03-08 21:29:16 +0100)
+Why do you need this indirection?
 
-----------------------------------------------------------------
-This includes the following changes related to sparc for v6.9:
+> +	default:
+> +		return NULL;
+> +	}
+> +}
+> +
 
-- Fix missing prototype warnings in various places, including switching
-  to using generic cmpdi2/ucmpdi2 and parport.h and stop selecting
-  unneeded GENERIC_ISA_DMA.
-- Reduce duplicate code by using shared font data, with dependency fixup
-  in separate commit touching lib/fonts.
-- Convert sbus drives to use remove callbacks returning void
-- Fix return values of __setup handlers
-- Section mismatch fix for grpci pci drivers
-- Make the vio bus type constant
-- Kconfig cleanups and fixes
-- Typo fixes
+..
 
-----------------------------------------------------------------
-Andreas Larsson (1):
-      lib/fonts: Allow Sparc console 8x16 font for sparc64 early boot text console
+> +/**
+> + * qcom_clear_bam_transaction() - Clears the BAM transaction
+> + * @nandc: qpic nand controller
+> + *
+> + * This function will clear the BAM transaction indexes.
+> + */
+> +void qcom_clear_bam_transaction(struct qcom_nand_controller *nandc)
+> +{
+> +	struct bam_transaction *bam_txn =3D nandc->bam_txn;
+> +
+> +	if (!nandc->props->is_bam)
+> +		return;
+> +
+> +	bam_txn->bam_ce_pos =3D 0;
+> +	bam_txn->bam_ce_start =3D 0;
+> +	bam_txn->cmd_sgl_pos =3D 0;
+> +	bam_txn->cmd_sgl_start =3D 0;
+> +	bam_txn->tx_sgl_pos =3D 0;
+> +	bam_txn->tx_sgl_start =3D 0;
+> +	bam_txn->rx_sgl_pos =3D 0;
+> +	bam_txn->rx_sgl_start =3D 0;
+> +	bam_txn->last_data_desc =3D NULL;
+> +	bam_txn->wait_second_completion =3D false;
 
-Bjorn Helgaas (1):
-      sparc: Fix typos
+What about using memset here?
 
-Dr. David Alan Gilbert (1):
-      sparc: Use shared font data
+> +
+> +	sg_init_table(bam_txn->cmd_sgl, nandc->max_cwperpage *
+> +		      QPIC_PER_CW_CMD_SGL);
+> +	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
+> +		      QPIC_PER_CW_DATA_SGL);
+> +
+> +	reinit_completion(&bam_txn->txn_done);
+> +}
 
-Lukas Bulwahn (1):
-      sparc: remove obsolete config ARCH_ATU
+..
 
-Masahiro Yamada (1):
-      sparc: select FRAME_POINTER instead of redefining it
+> diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nan=
+d-qpic-common.h
+> new file mode 100644
+> index 000000000000..aced15866627
+> --- /dev/null
+> +++ b/include/linux/mtd/nand-qpic-common.h
+> @@ -0,0 +1,486 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * QCOM QPIC common APIs header file
+> + *
+> + * Copyright (c) 2023 Qualcomm Inc.
+> + * Authors:     Md sadre Alam           <quic_mdalam@quicinc.com>
+> + *		Sricharan R             <quic_srichara@quicinc.com>
+> + *		Varadarajan Narayanan   <quic_varada@quicinc.com>
+> + *
+> + */
+> +#ifndef __MTD_NAND_QPIC_COMMON_H__
+> +#define __MTD_NAND_QPIC_COMMON_H__
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/dmaengine.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/dma/qcom_adm.h>
+> +#include <linux/dma/qcom_bam_dma.h>
+> +#include <linux/module.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/mtd/rawnand.h>
 
-Randy Dunlap (2):
-      sparc64: NMI watchdog: fix return value of __setup handler
-      sparc: vDSO: fix return value of __setup handler
+You really need this?
 
-Ricardo B. Marliere (1):
-      sparc: vio: make vio_bus_type const
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +
+> +/* NANDc reg offsets */
+> +#define	NAND_FLASH_CMD			0x00
+> +#define	NAND_ADDR0			0x04
+> +#define	NAND_ADDR1			0x08
+> +#define	NAND_FLASH_CHIP_SELECT		0x0c
+> +#define	NAND_EXEC_CMD			0x10
+> +#define	NAND_FLASH_STATUS		0x14
+> +#define	NAND_BUFFER_STATUS		0x18
+> +#define	NAND_DEV0_CFG0			0x20
+> +#define	NAND_DEV0_CFG1			0x24
+> +#define	NAND_DEV0_ECC_CFG		0x28
+> +#define	NAND_AUTO_STATUS_EN		0x2c
+> +#define	NAND_DEV1_CFG0			0x30
+> +#define	NAND_DEV1_CFG1			0x34
+> +#define	NAND_READ_ID			0x40
+> +#define	NAND_READ_STATUS		0x44
+> +#define	NAND_DEV_CMD0			0xa0
+> +#define	NAND_DEV_CMD1			0xa4
+> +#define	NAND_DEV_CMD2			0xa8
+> +#define	NAND_DEV_CMD_VLD		0xac
+> +#define	SFLASHC_BURST_CFG		0xe0
+> +#define	NAND_ERASED_CW_DETECT_CFG	0xe8
+> +#define	NAND_ERASED_CW_DETECT_STATUS	0xec
+> +#define	NAND_EBI2_ECC_BUF_CFG		0xf0
+> +#define	FLASH_BUF_ACC			0x100
+> +
 
-Sam Ravnborg (6):
-      sparc32: Use generic cmpdi2/ucmpdi2 variants
-      sparc32: Fix build with trapbase
-      mtd: maps: sun_uflash: Declare uflash_devinit static
-      sparc32: Do not select GENERIC_ISA_DMA
-      sparc32: Fix parport build with sparc32
-      sparc32: Fix section mismatch in leon_pci_grpci
+..
 
-Uwe Kleine-König (6):
-      sbus: Add prototype for bbc_envctrl_init and bbc_envctrl_cleanup to header
-      sbus: bbc_i2c: Convert to platform remove callback returning void
-      sbus: display7seg: Convert to platform remove callback returning void
-      sbus: envctrl: Convert to platform remove callback returning void
-      sbus: flash: Convert to platform remove callback returning void
-      sbus: uctrl: Convert to platform remove callback returning void
+> +/*
+> + * This data type corresponds to the NAND controller properties which va=
+ries
+> + * among different NAND controllers.
+> + * @ecc_modes - ecc mode for NAND
 
- arch/sparc/Kconfig                      |  12 +-
- arch/sparc/Kconfig.debug                |   7 +-
- arch/sparc/include/asm/hypervisor.h     |   6 +-
- arch/sparc/include/asm/ldc.h            |   2 +-
- arch/sparc/include/asm/mmu_context_64.h |   4 +-
- arch/sparc/include/asm/parport.h        | 259 +---------------------
- arch/sparc/include/asm/parport_64.h     | 256 ++++++++++++++++++++++
- arch/sparc/include/asm/switch_to_64.h   |   2 +-
- arch/sparc/kernel/btext.c               | 365 +-------------------------------
- arch/sparc/kernel/irq_32.c              |   6 +-
- arch/sparc/kernel/irq_64.c              |   2 +-
- arch/sparc/kernel/kernel.h              |   8 +-
- arch/sparc/kernel/kgdb_32.c             |   4 +-
- arch/sparc/kernel/kprobes.c             |   2 +-
- arch/sparc/kernel/ldc.c                 |   2 +-
- arch/sparc/kernel/leon_pci_grpci1.c     |   2 +-
- arch/sparc/kernel/leon_pci_grpci2.c     |   4 +-
- arch/sparc/kernel/leon_smp.c            |   6 +-
- arch/sparc/kernel/nmi.c                 |   2 +-
- arch/sparc/kernel/of_device_64.c        |   2 +-
- arch/sparc/kernel/pci.c                 |   2 +-
- arch/sparc/kernel/pci_impl.h            |   4 +-
- arch/sparc/kernel/pci_schizo.c          |   4 +-
- arch/sparc/kernel/perf_event.c          |   2 +-
- arch/sparc/kernel/prom_irqtrans.c       |   2 +-
- arch/sparc/kernel/psycho_common.c       |   2 +-
- arch/sparc/kernel/setup_32.c            |   4 +-
- arch/sparc/kernel/signal_32.c           |   2 +-
- arch/sparc/kernel/signal_64.c           |   2 +-
- arch/sparc/kernel/vio.c                 |   2 +-
- arch/sparc/lib/Makefile                 |   4 +-
- arch/sparc/lib/cmpdi2.c                 |  28 ---
- arch/sparc/lib/ucmpdi2.c                |  20 --
- arch/sparc/mm/srmmu.c                   |   2 +-
- arch/sparc/mm/tsb.c                     |   2 +-
- arch/sparc/net/bpf_jit_comp_32.c        |   6 +-
- arch/sparc/vdso/vma.c                   |   7 +-
- drivers/mtd/maps/sun_uflash.c           |   2 +-
- drivers/sbus/char/bbc_i2c.c             |   9 +-
- drivers/sbus/char/bbc_i2c.h             |   3 +
- drivers/sbus/char/display7seg.c         |   6 +-
- drivers/sbus/char/envctrl.c             |   6 +-
- drivers/sbus/char/flash.c               |   6 +-
- drivers/sbus/char/uctrl.c               |   5 +-
- lib/fonts/Kconfig                       |   3 +-
- 45 files changed, 344 insertions(+), 744 deletions(-)
- create mode 100644 arch/sparc/include/asm/parport_64.h
- delete mode 100644 arch/sparc/lib/cmpdi2.c
- delete mode 100644 arch/sparc/lib/ucmpdi2.c
+Should this member be an enum?
+
+> + * @dev_cmd_reg_start - NAND_DEV_CMD_* registers starting offset
+> + * @is_bam - whether NAND controller is using BAM
+
+has_bam_support? supports_bam?
+
+> + * @is_qpic - whether NAND CTRL is part of qpic IP
+
+CTRL? do you mean controller?
+
+> + * @qpic_v2 - flag to indicate QPIC IP version 2
+> + * @use_codeword_fixup - whether NAND has different layout for boot part=
+itions
+
+The doc is clear but the member name is terrible. Please clarify the
+naming.
+
+> + */
+> +struct qcom_nandc_props {
+> +	u32 ecc_modes;
+> +	u32 dev_cmd_reg_start;
+> +	bool is_bam;
+> +	bool is_qpic;
+> +	bool qpic_v2;
+> +	bool use_codeword_fixup;
+> +};
+> +
+> +void config_nand_page_read(struct nand_chip *chip);
+> +void qcom_qpic_bam_dma_done(void *data);
+> +void qcom_nandc_read_buffer_sync(struct qcom_nand_controller *nandc, boo=
+l is_cpu);
+> +__le32 *qcom_offset_to_nandc_reg(struct nandc_regs *regs, int offset);
+> +int qcom_prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
+> +			   int reg_off, const void *vaddr, int size,
+> +			bool flow_control);
+> +int qcom_submit_descs(struct qcom_nand_controller *nandc);
+> +int qcom_prepare_bam_async_desc(struct qcom_nand_controller *nandc,
+> +				struct dma_chan *chan, unsigned long flags);
+> +int qcom_prep_bam_dma_desc_cmd(struct qcom_nand_controller *nandc, bool =
+read,
+> +			       int reg_off, const void *vaddr,
+> +			int size, unsigned int flags);
+> +int qcom_prep_bam_dma_desc_data(struct qcom_nand_controller *nandc, bool=
+ read,
+> +				const void *vaddr,
+> +			int size, unsigned int flags);
+> +int qcom_read_reg_dma(struct qcom_nand_controller *nandc, int first,
+> +		      int num_regs, unsigned int flags);
+> +int qcom_write_reg_dma(struct qcom_nand_controller *nandc, int first,
+> +		       int num_regs, unsigned int flags);
+> +int qcom_read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
+> +		       const u8 *vaddr, int size, unsigned int flags);
+> +int qcom_write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
+> +			const u8 *vaddr, int size, unsigned int flags);
+> +struct bam_transaction *qcom_alloc_bam_transaction(struct qcom_nand_cont=
+roller *nandc);
+> +void qcom_clear_bam_transaction(struct qcom_nand_controller *nandc);
+> +void qcom_nandc_unalloc(struct qcom_nand_controller *nandc);
+> +int qcom_nandc_alloc(struct qcom_nand_controller *nandc);
+> +void qcom_clear_read_regs(struct qcom_nand_controller *nandc);
+> +void qcom_free_bam_transaction(struct qcom_nand_controller *nandc);
+> +#endif
+
+I made several requests on code that already exists, please add these
+changes to your series.
+
+
+Also, this patching being big, please split:
+1- rename your all your symbols to start with the same prefix
+(qcom_nand_ instead of nothing or just qcom)
+2- then perform the move, which should not require changing the names
+of all the functions everywhere.
 
 Thanks,
-Andreas
+Miqu=C3=A8l
 
