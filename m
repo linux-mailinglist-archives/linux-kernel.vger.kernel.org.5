@@ -1,165 +1,130 @@
-Return-Path: <linux-kernel+bounces-104681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20C8687D249
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:05:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFB3187D24C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 527511C21D46
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:05:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DBA81C21081
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854BF5FBAE;
-	Fri, 15 Mar 2024 16:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B647D4F211;
+	Fri, 15 Mar 2024 16:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhZW/+od"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0436026F;
-	Fri, 15 Mar 2024 16:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rSVsPH7E"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905B34779D;
+	Fri, 15 Mar 2024 16:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710521664; cv=none; b=Nb+rbCmhyxYXnPoA9K94Hk2wXrps/VrgeLwKO0r5y+vfSvMMI12CPdI449p/ORTSr9SN38/TsWth0d39Oc+0rj/1klHWHfrEgPKQvD2dtLN1NNS4rPgXvOmnD7cIxbO6oUNi8ozhO/ApNnE/7HTPo6d+b1SdMLPSWWnWAn6QEPI=
+	t=1710521786; cv=none; b=aDPC6G3iSfYofL9jA+mzqfI7jljOgTErZAjld7LW5U9ugZPmfkcn1W3Brx+OSCrTmd6BdDS1TkDsm0AmBSR8eh0NziPZz+WPW7RT0R+HSQeLiejMc2/iRplgMUhQ0FQFdZVYbhxu+a/Icf4xWgrEbxJbzJ1cnSpsAa87AWcIcP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710521664; c=relaxed/simple;
-	bh=8hnOEeLZTKNopoewYVMGy8CGA1IX2Tb3FpvrD/17hVE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CbYArAcWqsSRUeZmcSqOAc7XFvy78fMq6ZY0T2agcQVuqffuNVj8pDTOFwMIKfKC1Bxf5e8NJ2W5gS/AjdbN7/gjtrRl6/mhLzija030y6O9kwjIf8/tlPLa+WDpczIgDNOC8ww2hKBX3wUXuOnKJ207iVpbacUHvUEMpM2OKlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhZW/+od; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3892FC433C7;
-	Fri, 15 Mar 2024 16:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710521664;
-	bh=8hnOEeLZTKNopoewYVMGy8CGA1IX2Tb3FpvrD/17hVE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YhZW/+odc2HllbJoa5yn9sj76E4iGyfuvtpWzbM/eXWcIDZZaaEsEvTBacf87xgk1
-	 735tuAKAjMCV+1N9lEkU5NV0jKF75HpnMqCxkBGZ0XiIhGXipkAmVdUo25Tzc7Di/F
-	 FGlnSh1oozXDN6frIICmD5nTZxKIu5+457fXMMtGDZmXI9269IFJsMYm5M/MSvACfB
-	 3cn2KeFoYxr4NXmjIohcUoazKSx7zr7vciyopFpJBv9aAGsorP4FVet5jBiNPB0dQ3
-	 fsOy7WINLSLugkOWqYxIJkTyXw6VRXQBW7Oa75GmfShpXsZKxWANCrlnCXGCi5sTIP
-	 TgNL1cDH7L62A==
-Date: Fri, 15 Mar 2024 10:54:22 -0600
-From: Rob Herring <robh@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Abel Vesa <abelvesa@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-	imx@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v4 1/6] dt-bindindgs: clock: nxp: support i.MX95 VPU CSR
- module
-Message-ID: <20240315165422.GA1472059-robh@kernel.org>
-References: <20240314-imx95-blk-ctl-v4-0-d23de23b6ff2@nxp.com>
- <20240314-imx95-blk-ctl-v4-1-d23de23b6ff2@nxp.com>
+	s=arc-20240116; t=1710521786; c=relaxed/simple;
+	bh=WdvwjxQVySFmsU+ux3dQqefsmL5GQWcxrNM2Du895kc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a6IxaoSCqFOFu2m3zD8NZRsvorUhtNTc1R9bRksb62NrOifANd0GbHssTPElK6XSK09keYeRMQAN1vbRDN9MwckJjuuq+mTV/f4Y/9tMGgdfbAWayn463bYXDjVNsFQKodEV+e3MI0XELFzs1ASb25DFVgob3/73VZkHxoCTiJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rSVsPH7E; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.64.232.154] (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id BC5F720B74C0;
+	Fri, 15 Mar 2024 09:56:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BC5F720B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710521784;
+	bh=Q78OTWOsVRBCL80yDDNEfCI9drv9glFw8Ky35vj5BKY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rSVsPH7E852ccfLCYlhbYQV4XdBIIohLhdPGxy7GYa1OsmerTjMJ6iRldg68M1qGO
+	 ltnxyOb7WP0YoJpudcR8fzqrgqAn5uWI+D4MCOTe+3WsCOJ5sxU3WKymHt6nSsZGix
+	 FinTjVTBGNmicQoaWhzqdLggvo6NdU2UjcnyU7G0=
+Message-ID: <dd1b378d-6750-419f-8c46-a8f42c0ebe11@linux.microsoft.com>
+Date: Fri, 15 Mar 2024 09:56:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314-imx95-blk-ctl-v4-1-d23de23b6ff2@nxp.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
+ keyfile format
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Michael Kelley <mikelley@microsoft.com>, Olaf Hering <olaf@aepfle.de>,
+ Ani Sinha <anisinha@redhat.com>, Shradha Gupta <shradhagupta@microsoft.com>
+References: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <3bf8844a-3e19-4105-8cce-2b1f8f98d3bc@linux.microsoft.com>
+ <20240313052212.GB22465@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240315140914.GA14685@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Language: en-CA
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+In-Reply-To: <20240315140914.GA14685@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 09:25:10PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> The i.MX95 VPU_CSR contains control and status registers for VPU
-> status, pending transaction status, and clock gating controls.
-> 
-> This patch is to add clock features for VPU CSR.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../bindings/clock/nxp,imx95-vpu-csr.yaml          | 50 ++++++++++++++++++++++
->  include/dt-bindings/clock/nxp,imx95-clock.h        | 14 ++++++
->  2 files changed, 64 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/nxp,imx95-vpu-csr.yaml b/Documentation/devicetree/bindings/clock/nxp,imx95-vpu-csr.yaml
-> new file mode 100644
-> index 000000000000..4a1c6dcfe3f8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/nxp,imx95-vpu-csr.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/nxp,imx95-vpu-csr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX95 VPUMIX Block Control
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: nxp,imx95-vpu-csr
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +    description:
-> +      The clock consumer should specify the desired clock by having the clock
-> +      ID in its "clocks" phandle cell. See
-> +      include/dt-bindings/clock/nxp,imx95-clock.h
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    syscon@4c410000 {
-> +      compatible = "nxp,imx95-vpu-csr", "syscon";
-> +      reg = <0x4c410000 0x10000>;
-> +      #clock-cells = <1>;
-> +      clocks = <&scmi_clk 114>;
-> +      power-domains = <&scmi_devpd 21>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/nxp,imx95-clock.h b/include/dt-bindings/clock/nxp,imx95-clock.h
-> new file mode 100644
-> index 000000000000..9d8f0a6d12d0
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/nxp,imx95-clock.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
-> +/*
-> + * Copyright 2024 NXP
-> + */
-> +
-> +#ifndef __DT_BINDINGS_CLOCK_IMX95_H
-> +#define __DT_BINDINGS_CLOCK_IMX95_H
-> +
-> +#define IMX95_CLK_VPUBLK_WAVE			0
-> +#define IMX95_CLK_VPUBLK_JPEG_ENC		1
-> +#define IMX95_CLK_VPUBLK_JPEG_DEC		2
-> +#define IMX95_CLK_VPUBLK_END			3
+On 3/15/2024 7:09 AM, Shradha Gupta wrote:
 
-If this number can change, then it is not ABI and doesn't go in this 
-header. With that dropped,
+<snip>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+>>>>  }
+>>>>  
+>>>> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
+>>>> +				  int ip_sec)
+>>>> +{
+>>>> +	char addr[INET6_ADDRSTRLEN], *output_str;
+>>>> +	int ip_offset = 0, error = 0, ip_ver;
+>>>> +	char *param_name;
+>>>> +
+>>>> +	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
+>>>> +				    sizeof(char));
+>>>> +
+>>>> +	if (!output_str)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	memset(addr, 0, sizeof(addr));
+>>>> +
+>>>> +	if (type == DNS) {
+>>>> +		param_name = "dns";
+>>>> +	} else if (type == GATEWAY) {
+>>>> +		param_name = "gateway";
+>>>> +	} else {
+>>>> +		error = -EINVAL;
+>>>> +		goto cleanup;
+>>>> +	}
+>>>> +
+>>>> +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
+>>>> +				   (MAX_IP_ADDR_SIZE * 2))) {
+>>>> +		ip_ver = ip_version_check(addr);
+>>>> +		if (ip_ver < 0)
+>>>> +			continue;
+>>>> +
+>>>> +		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
+>>>> +		    (ip_ver == IPV6 && ip_sec == IPV6)) {
+>>>> +			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
+>>>> +			    (strlen(addr))) {
+>>>> +				strcat(output_str, addr);
+>>>> +				strcat(output_str, ",");
+>>>
+>>> Prefer strncat() here
+> Is this needed with the bound check above. I am trying to keep parity with the rest of the 
+> file.
+>>>
+<snip>
+
+I missed this earlier because my comment was more of a general best practice comment.
+
+Note that in the worst case where your bounds check (INET6_ADDRSTRLEN*MAX_IP_ENTRIES) - strlen(output_str) equals (strlen(addr) + 1),
+you will be adding strlen(addr)+1(","), and end up with no ASCII NUL '\0' delimiter.
+
+If you're going to rely on the bounds check to ensure correctness, you'll need to correct that. Generally speaking, strncat would still
+be helpful in case the bounds check changes in the future.
+
+Thanks,
+Easwar
+
 
