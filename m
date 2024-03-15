@@ -1,192 +1,200 @@
-Return-Path: <linux-kernel+bounces-104347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC5987CC65
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:35:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75AC187CC71
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 119F8282D73
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:35:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 998EE1C21B67
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1471B810;
-	Fri, 15 Mar 2024 11:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003CB1B974;
+	Fri, 15 Mar 2024 11:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="rvN6rl9c"
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="KUfLwR3Y"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976791B7FF
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4332A1B7E1;
+	Fri, 15 Mar 2024 11:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710502549; cv=none; b=WhhO662kVRd/hS+6PHB+uz0yHfvBUUsRcbnHc0hpb+LcVJfxZg/g7jp3EXOx2e2k7+08VzGspzBgCd48Z+wnzVxfognKj1UEZ5RScYgjxqzyY2mx7xHbCPKZkSZ/PosRf2RMzYpkNLYHwlP/QKvg2hzYSAecpR+EaWg/vmscffM=
+	t=1710502741; cv=none; b=pjOuI7u4gVZifmoaTNV0oK/mWk8iquHe/ySDvFcP14hOi2dbl3t2NPyVacW6sBnEyRIv1zXCCxoCip2+pWQyZuxt2yiSyfKSvyQz5yoURBX/lduNmfJ7pXPWq5MN7+9m58XNdy75Z62/L/RWfXlDQklIAi3Gh11P8/B6BnUYDSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710502549; c=relaxed/simple;
-	bh=ei6uKuFHNES6Tz2lkRZwuDlTAQukDr3qpC/ZyrUr5b8=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=I0A4KC7v8gHlqv6vTg8PUUWOCnXnIPsBJ8nIww7mD1oekITpGF07hbJxwMEeGqPswXLOKxpfYUbB7d4AxI/+IdiL5tghW8FKdChhMkBq+9ayZu82U/XvGe7uciGItoToTCj1nPW38PVDnI5knR9UjdmtSSjwsr3EpjvvvhZEB60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=rvN6rl9c; arc=none smtp.client-ip=203.254.224.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240315113539epoutp0134f2a2bda3489b6fe741fac2249e9df6~87P82TdXA0339203392epoutp01H
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:35:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240315113539epoutp0134f2a2bda3489b6fe741fac2249e9df6~87P82TdXA0339203392epoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1710502539;
-	bh=ei6uKuFHNES6Tz2lkRZwuDlTAQukDr3qpC/ZyrUr5b8=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=rvN6rl9czyOhuEqDQYokPV2FU6HbTky8MkvTWDm7xYyJyA344VgoX7tundiSihIFa
-	 E9F6APy0xyVfNKxlD5zUptWX/2URthuwihQrO/yKLOaiRidNIMQkRv9zAoj51Faws6
-	 w000B/Z8eZ4ew+EpGlYRqvKHyNLCxObaHRWwBKZo=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-	20240315113538epcas5p435e6d22a7e21c7eb693a923dcefe8038~87P8Mnr102078120781epcas5p4j;
-	Fri, 15 Mar 2024 11:35:38 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.180]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4Tx2HY0N7Lz4x9Pt; Fri, 15 Mar
-	2024 11:35:37 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-	epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	02.D1.08567.88234F56; Fri, 15 Mar 2024 20:35:36 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-	20240315113454epcas5p3a5663e477e0da4b9a6237acb72ea8448~87PTB2AHh2680026800epcas5p3d;
-	Fri, 15 Mar 2024 11:34:54 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240315113454epsmtrp2ad74d84a85d8e88d650483e693a97a23~87PTA3H0h3050830508epsmtrp2q;
-	Fri, 15 Mar 2024 11:34:54 +0000 (GMT)
-X-AuditID: b6c32a44-3abff70000002177-ec-65f43288d5bd
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	2A.2F.08755.E5234F56; Fri, 15 Mar 2024 20:34:54 +0900 (KST)
-Received: from FDSFTE462 (unknown [107.122.81.248]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240315113451epsmtip18aea286a6886ca9c902ce0c807f1000a~87PQOkNfX0872908729epsmtip1h;
-	Fri, 15 Mar 2024 11:34:51 +0000 (GMT)
-From: "Shradha Todi" <shradha.t@samsung.com>
-To: "'Stephen Boyd'" <sboyd@kernel.org>, "'Dan Carpenter'"
-	<dan.carpenter@linaro.org>
-Cc: <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-samsung-soc@vger.kernel.org>, <mturquette@baylibre.com>,
-	<jingoohan1@gmail.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-	<robh@kernel.org>, <bhelgaas@google.com>, <krzysztof.kozlowski@linaro.org>,
-	<alim.akhtar@samsung.com>, <linux@armlinux.org.uk>,
-	<m.szyprowski@samsung.com>, <manivannan.sadhasivam@linaro.org>,
-	<pankaj.dubey@samsung.com>, <gost.dev@samsung.com>
-In-Reply-To: <9927a3356ce54c626ab4733844a4385b.sboyd@kernel.org>
-Subject: RE: [PATCH v6 1/2] clk: Provide managed helper to get and enable
- bulk clocks
-Date: Fri, 15 Mar 2024 17:04:44 +0530
-Message-ID: <104401da76cc$ccc772c0$66565840$@samsung.com>
+	s=arc-20240116; t=1710502741; c=relaxed/simple;
+	bh=YhK/jnk1sN0Eu2k73vdEasVnkAA21VPShol4SbhmQDE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AigQL+p0k9xR64d7kScCl9sY/XShtfoyniyE0HcHQNI4ap1dvUMmQG2lH6PL4MI3h3r4TP4tepeWkHdyLFKkgO0XSFGnhr5NGX1EGZ7AH63bpUrUD8J/TvHLqfQeX0Muye8zOC9/tccoaOzG4EPgPviJqUUWDUcXKdCry4ONHR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=KUfLwR3Y; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-568a3292916so1984175a12.1;
+        Fri, 15 Mar 2024 04:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1710502738; x=1711107538; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ret+NQ/Tw5LK56vjyJDNxqW8M+4jtEPqZMI9umR9cCI=;
+        b=KUfLwR3YydJAheGuADHmPCFzOmeuutYh+cPx3pAcCH1JXoYknT4HVT9fGpGQHhLJDi
+         olBOT21+QWtaOksGCZZ8CHd6EMVD8QEJg4918AHNhf2I62E5flo7lL4zqJRsMDU7tSkI
+         /KjLHhFQ3LP3wzTAq9iTpNJKHaTZeFHWPLaYFzQS6+mtrg4S3DEG2suKfDmG7En7mxhc
+         Yll27I7dKJujo45T8mZwgFHw8iEAhJm92aNa3iQzb/IFiwXvwqqCsR/8Pw6SplacDztV
+         N+9d6NozKyapLVifsnOheV49lTQZGZjObh9/llKi/FIhSOFBYJdC+nf5erbPQW8rhuao
+         V40Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710502738; x=1711107538;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ret+NQ/Tw5LK56vjyJDNxqW8M+4jtEPqZMI9umR9cCI=;
+        b=er0RKIzF0IcU+kWC90ZhsiiCBSbhUkp2gA5VaqtcF2On1rKBtbSs1mQqtkmD0zvV1Y
+         cqxNAKCjrWRra/Zo1WagShjBECx7tJsGMbm8s0e+iJkhu+AJug6VbHmLMF9iyirBqIjr
+         ueeon/g/EYndS3y1pM5Efjjw0eAvybhA23DNVaaVrLDjSrT1PWVvxUZRL3pD0TA5vH5M
+         PNSjCrjt69l2mMZBqcEOVpLgFlAkoTp6YSkYnWj49PGME05TccHUqiuI8obX0/LqDfcV
+         9z/ZcA/jd03Mmq637BbxTxK0p9koyNzLR705XgJ+QbgocOaoa9/PF0hUMev6jNXvpfUg
+         y7EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTWCZDE67T9IvmI0YS4CbbuhFeKCMu6uUu1Zg9qo+Z8onEHrZknnbxYsBA+Pbs5O3h2UVy5ZIAdhCyc+QqDYjPvsp77hQ4qYAIU6kb91XS6xVeH9MzljrD0ODBA8UsYfRULFOKuFhVXwyX1n4+qDo8H0DqxqozFaUC1A==
+X-Gm-Message-State: AOJu0Ywzp54EqvzcF+2uV6FJxeco5CfEWjSddoxAOHAJXAk1QRjZ7rAs
+	ZQshyNSg7RA1BJS464uoBN4fZqaPA7dXXo75oGC8IzDJQUKBAWDAKKSqAO/B++3GPQ==
+X-Google-Smtp-Source: AGHT+IHxB7FB377TOoio0unYbfIwnkxt4g5n3Z4MDqCqa7L7No5w/MvY3FrF55UMKEirChoiUMRGJg==
+X-Received: by 2002:a05:6402:530a:b0:568:797a:f2d with SMTP id eo10-20020a056402530a00b00568797a0f2dmr2968341edb.27.1710502737191;
+        Fri, 15 Mar 2024 04:38:57 -0700 (PDT)
+Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
+        by smtp.gmail.com with ESMTPSA id fg3-20020a056402548300b005682f47aea7sm1610024edb.94.2024.03.15.04.38.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 04:38:56 -0700 (PDT)
+From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To: linux-security-module@vger.kernel.org
+Cc: linux-block@vger.kernel.org,
+	Paul Moore <paul@paul-moore.com>,
+	John Johansen <john.johansen@canonical.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Khadija Kamran <kamrankhadijadj@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	apparmor@lists.ubuntu.com,
+	selinux@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH 01/10] capability: introduce new capable flag CAP_OPT_NOAUDIT_ONDENY
+Date: Fri, 15 Mar 2024 12:37:22 +0100
+Message-ID: <20240315113828.258005-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH2hJCcwYDjJDqbclltz640cKP7jQL/AcmgAaOboDkDexFUCAD2UfeNAfilKBWwqCa/4A==
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TbUxTZxTHc9vb3paty12p44FlDqv7gBOkUrqnU14ymV42l7EZIDNTdmkv
-	BSlt7S2gZmHdBgENL26DAI1W3IAhGwzLO9JFKoNBoqyBNDCGokUkEGRIZYH6srYXN779znn+
-	55zn/7zw2MIlbhAvQ2Og9BpSLeb6oR3XQ0JCi/a4qPD1ZjmcNndwYe1X6fBvcwEGJ651s2CD
-	qxqD1oV2DBqL3RxocTo4cLn4FgeO9pznwhvmQS6sGvmVBW0VVgTmP85HYVP/FAan8s9woH34
-	Xfh9uwuDz3q7MPjUcQWNFRGjDjubWBovwIhu0xRG1FiyCUvjGS7xl6OXS8yMVbKI1toviNK2
-	RoRYsWxN8DuSuS+dIpWUPpjSKLTKDI0qSvz+4ZT9KZGycEmoRA7fEgdryCwqShx3KCH0QIba
-	Y04cnEOqsz2pBJKmxbuj9+m12QYqOF1LG6LElE6p1kl1YTSZRWdrVGEayvC2JDx8T6RH+Flm
-	+nBZMaqbFJxsmJhjGRHrC2cRHg/gUnD/xodnET+eEL+KAMtgJYsJHiLAOHNrI1hFQLtjzRPw
-	fRWli79zvSzErQj4skXDiOYQcLuvAvMucPFdYGbsMdvLIjwZjJ2bZHtFbLwQBT9c/9lXzcdj
-	wb2bQz7294gKlx76GMXfAOOdd30swOXAXeLkMPwyGKqeQb3Mxt8E9ZcW2MyOgsHavXqO148I
-	TwKj9TgjCQC/rRX75gK8kg8W/ihFGc9x4MpKPFPqD+YH2zCGg8DKAyuXYRW43Fq10V4NVltr
-	N8zHgGtj531t2HgI+KVnN5N+DVQMN7OYsS+BEvfMhlwAuszPeTtwPelFGQ4E5oFRzjlEbNpk
-	zLTJmGmTA9P/02oQtBEJpHR0lopSROokGir3v+tWaLMsiO/l74zrQsYvPg2zISweYkMAjy0W
-	CfK2LVNCgZI8dZrSa1P02WqKtiGRntP+hh20RaH1fB2NIUUilYdLZTKZVB4hk4gDBAsFF5RC
-	XEUaqEyK0lH653UsHj/IyIK7bNv5w9Hu7ncKE+sS83v8/4mP+EDlb+sDuaJTE9IOZ/V00qz9
-	68VqZf3xzHGuVZEaIBuKiVt93W7tvptsSZs2t96+r9DUXXryU3l8+1GCINeN/TEL/Pn+PFFu
-	ZfnhWHP5oy2Zrdi3rpatuJFsLizze3XkxLpoznDhZuTBkTsgrZS82PkJb6/wETXbeIS+PLi/
-	vfGVNMoZUdXUdPVgcuWJzqIH7pM7OgLrX5xLXa4B26I/t9sSS4pks32Lk8eMedWLB350fXcn
-	573jfzrj3BFR00lNx/aOzWd9Oij62DG5jjbDNlO5s6U/Fc1pGgB1ztiAoxFy+0cDQ6fpZ6sN
-	ZWKUTiclO9l6mvwXYDHaJYIEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBIsWRmVeSWpSXmKPExsWy7bCSnG6c0ZdUgyuzRS0ezNvGZrGkKcPi
-	w7xWdoubB3YyWaz4MpPdYu/rrewWDT2/WS02Pb7GavGx5x6rxeVdc9gszs47zmYx4/w+JotD
-	U/cyWrT8aWGxWHvkLrvF3ZZOVouLp1wtFm39wm7xf88Odot/1zayOIh4XL52kdnj/Y1Wdo+d
-	s+6yeyzYVOqxaVUnm8eda3vYPJ5cmc7ksXlJvUffllWMHp83yQVwRXHZpKTmZJalFunbJXBl
-	HN1yia1gA2/F8xfv2RoYJ3B3MXJySAiYSPS9PcEGYgsJ7GaUuPvUHSIuKfH54jomCFtYYuW/
-	5+xdjFxANc8YJc43rGAESbAJ6Eg8ufKHGcQWEQiX2Nf0GqyIWWA2i8TfuQuZIaZeYZI4u0YF
-	xOYUcJB4eu4k2DZhgVCJrilb2EFsFgFViRvbH4HFeQUsJX73PmaFsAUlTs58wgJiMwtoS/Q+
-	bGWEsZctfM0McZ2CxM+ny4DqOYCOCJO4vEwAokRc4ujPHuYJjMKzkEyahWTSLCSTZiFpWcDI
-	sopRMrWgODc9t9iwwDAvtVyvODG3uDQvXS85P3cTIzjytTR3MG5f9UHvECMTB+MhRgkOZiUR
-	3jrFj6lCvCmJlVWpRfnxRaU5qcWHGKU5WJTEecVf9KYICaQnlqRmp6YWpBbBZJk4OKUamCa6
-	6dq//iJZ3+3ouX9Je9GnvWc5ZBw2JM6X2DJLdu5nBYN/S7+7tE5/8yJVxGCl6f7fn6/z9M3+
-	W+CyzvByh6J71JUY9o5ZvSKFh+0rWHUMmCwvWvf+enPMW/tXYEpZxH+ZuW+/WD3vU+92jan5
-	Jebq2HOV89W7XU9mHGdZ9ENJ9Y3tth1FU96om9t6Jll4zV45Q6J07c4T3vEcqZHXpv+9yzDL
-	59a6SPFJpmkfO3ec7bs5efuEZz/mhXO5CGyeMd2XJX3tgu9hrxZ411ybffvn/Fjbp5LJFuqz
-	72qmud3fmvfSq3nVh85JBZvqP0s+rNYLdA3uiz709vFjE7HXS21uxzxnyzi7ZusSe4Vb0ZeU
-	WIozEg21mIuKEwEqsX+lawMAAA==
-X-CMS-MailID: 20240315113454epcas5p3a5663e477e0da4b9a6237acb72ea8448
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240220084120epcas5p1e8980539667c3d9da20f49fc645d8f4c
-References: <20240220084046.23786-1-shradha.t@samsung.com>
-	<CGME20240220084120epcas5p1e8980539667c3d9da20f49fc645d8f4c@epcas5p1.samsung.com>
-	<20240220084046.23786-2-shradha.t@samsung.com>
-	<f00eed31-4baf-4d5c-934d-8223d1ab554d@moroto.mountain>
-	<022301da6fbf$aae4f7e0$00aee7a0$@samsung.com>
-	<9927a3356ce54c626ab4733844a4385b.sboyd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Introduce a new capable flag, CAP_OPT_NOAUDIT_ONDENY, to not generate
+an audit event if the requested capability is not granted.  This will be
+used in a new capable_any() functionality to reduce the number of
+necessary capable calls.
 
+Handle the flag accordingly in AppArmor and SELinux.
 
-> -----Original Message-----
-> From: Stephen Boyd <sboyd=40kernel.org>
-> Sent: 09 March 2024 06:21
-> To: 'Dan Carpenter' <dan.carpenter=40linaro.org>; Shradha Todi
-> <shradha.t=40samsung.com>
-> Cc: linux-clk=40vger.kernel.org; linux-kernel=40vger.kernel.org; linux-
-> pci=40vger.kernel.org; linux-arm-kernel=40lists.infradead.org; linux-sams=
-ung-
-> soc=40vger.kernel.org; mturquette=40baylibre.com; jingoohan1=40gmail.com;
-> lpieralisi=40kernel.org; kw=40linux.com; robh=40kernel.org; bhelgaas=40go=
-ogle.com;
-> krzysztof.kozlowski=40linaro.org; alim.akhtar=40samsung.com;
-> linux=40armlinux.org.uk; m.szyprowski=40samsung.com;
-> manivannan.sadhasivam=40linaro.org; pankaj.dubey=40samsung.com;
-> gost.dev=40samsung.com
-> Subject: RE: =5BPATCH v6 1/2=5D clk: Provide managed helper to get and en=
-able bulk
-> clocks
->=20
-> Quoting Shradha Todi (2024-03-06 04:13:03)
-> > >
-> > > When clk_bulk_get_all() returns zero then we return success here.
-> > >
-> >
-> > Yes, we are returning success in case there are no clocks as well. In
-> > case there are no clocks defined in the DT-node, then it is assumed
-> > that the driver does not need any clock manipulation for driver
-> > operation. So the intention here is to continue without throwing
-> > error.
->=20
-> Maybe we shouldn't even return the clks to the caller. Do you have any us=
-e for
-> the clk pointers?
+CC: linux-block@vger.kernel.org
+Suggested-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+---
+v5:
+   rename flag to CAP_OPT_NOAUDIT_ONDENY, suggested by Serge:
+     https://lore.kernel.org/all/20230606190013.GA640488@mail.hallyn.com/
+---
+ include/linux/security.h       |  2 ++
+ security/apparmor/capability.c |  8 +++++---
+ security/selinux/hooks.c       | 14 ++++++++------
+ 3 files changed, 15 insertions(+), 9 deletions(-)
 
-The intention to return the clk pointers was in the case where caller wants=
- to
-manipulate a particular clock in certain conditions. They can obtain the cl=
-ock pointer
-and use clk_set_parent, clk_set_rate on those particular clocks.
-But I understand that in that case users can use existing clk_bulk_get_all(=
-) API.
-So, should I go ahead and send v7?
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 41a8f667bdfa..c60cae78ff8b 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -70,6 +70,8 @@ struct lsm_ctx;
+ #define CAP_OPT_NOAUDIT BIT(1)
+ /* If capable is being called by a setid function */
+ #define CAP_OPT_INSETID BIT(2)
++/* If capable should audit the security request for authorized requests only */
++#define CAP_OPT_NOAUDIT_ONDENY BIT(3)
+ 
+ /* LSM Agnostic defines for security_sb_set_mnt_opts() flags */
+ #define SECURITY_LSM_NATIVE_LABELS	1
+diff --git a/security/apparmor/capability.c b/security/apparmor/capability.c
+index 9934df16c843..08c9c9a0fc19 100644
+--- a/security/apparmor/capability.c
++++ b/security/apparmor/capability.c
+@@ -108,7 +108,8 @@ static int audit_caps(struct apparmor_audit_data *ad, struct aa_profile *profile
+  * profile_capable - test if profile allows use of capability @cap
+  * @profile: profile being enforced    (NOT NULL, NOT unconfined)
+  * @cap: capability to test if allowed
+- * @opts: CAP_OPT_NOAUDIT bit determines whether audit record is generated
++ * @opts: CAP_OPT_NOAUDIT/CAP_OPT_NOAUDIT_ONDENY bit determines whether audit
++ *	record is generated
+  * @ad: audit data (MAY BE NULL indicating no auditing)
+  *
+  * Returns: 0 if allowed else -EPERM
+@@ -126,7 +127,7 @@ static int profile_capable(struct aa_profile *profile, int cap,
+ 	else
+ 		error = -EPERM;
+ 
+-	if (opts & CAP_OPT_NOAUDIT) {
++	if ((opts & CAP_OPT_NOAUDIT) || ((opts & CAP_OPT_NOAUDIT_ONDENY) && error)) {
+ 		if (!COMPLAIN_MODE(profile))
+ 			return error;
+ 		/* audit the cap request in complain mode but note that it
+@@ -143,7 +144,8 @@ static int profile_capable(struct aa_profile *profile, int cap,
+  * @subj_cred: cred we are testing capability against
+  * @label: label being tested for capability (NOT NULL)
+  * @cap: capability to be tested
+- * @opts: CAP_OPT_NOAUDIT bit determines whether audit record is generated
++ * @opts: CAP_OPT_NOAUDIT/CAP_OPT_NOAUDIT_ONDENY bit determines whether audit
++ *	record is generated
+  *
+  * Look up capability in profile capability set.
+  *
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 3448454c82d0..1a2c7c1a89be 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -1624,7 +1624,7 @@ static int cred_has_capability(const struct cred *cred,
+ 	u16 sclass;
+ 	u32 sid = cred_sid(cred);
+ 	u32 av = CAP_TO_MASK(cap);
+-	int rc;
++	int rc, rc2;
+ 
+ 	ad.type = LSM_AUDIT_DATA_CAP;
+ 	ad.u.cap = cap;
+@@ -1643,11 +1643,13 @@ static int cred_has_capability(const struct cred *cred,
+ 	}
+ 
+ 	rc = avc_has_perm_noaudit(sid, sid, sclass, av, 0, &avd);
+-	if (!(opts & CAP_OPT_NOAUDIT)) {
+-		int rc2 = avc_audit(sid, sid, sclass, av, &avd, rc, &ad);
+-		if (rc2)
+-			return rc2;
+-	}
++	if ((opts & CAP_OPT_NOAUDIT) || ((opts & CAP_OPT_NOAUDIT_ONDENY) && rc))
++		return rc;
++
++	rc2 = avc_audit(sid, sid, sclass, av, &avd, rc, &ad);
++	if (rc2)
++		return rc2;
++
+ 	return rc;
+ }
+ 
+-- 
+2.43.0
 
 
