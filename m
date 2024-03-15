@@ -1,95 +1,104 @@
-Return-Path: <linux-kernel+bounces-104399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F05B087CD49
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:31:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6358587CD4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B8C6283C04
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:31:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E79E0B209F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8EE241E3;
-	Fri, 15 Mar 2024 12:31:21 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9187418E2A;
-	Fri, 15 Mar 2024 12:31:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C84B0249F3;
+	Fri, 15 Mar 2024 12:32:09 +0000 (UTC)
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F12663D76;
+	Fri, 15 Mar 2024 12:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710505880; cv=none; b=Jgs6JxY8hpY+b46WWrzJWqg3lnS30DyCDRpvMA53cW9ymJdsTl0gw5Ulj+MMMsEvmJb7ShUPzUPjWARG2n4KV/mIn4q9812ueath0TN1IiCXnGGncgfK395404ntvBZjb64bRl29ZaDhWoMS+qkFt0IG0/Ie18UNcN53E5I1ExU=
+	t=1710505929; cv=none; b=tkkm9pxuuogYrLISp5hvsueTnVdZRTWrNPPOlykoU6844v8ESj4asT1qz0I2XH37Hp2MhmHyygK0Dt5zkZ2RNGHiTzTkAL6ZZd3McHichR+QmK22qudFP24j9gz2PMjAMedtthPt9DPq3mikAU40kjkrs5+WeYwJSqeaEYfiCV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710505880; c=relaxed/simple;
-	bh=JTSXdyneMUtKsAMMlrMN88s36RTjQQq2KAmbHZDa4x8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QUTou/Rg1es85I82N2d40743/gHvgScYMx3LZt6Ld0Lef8MGwPeqgU531tV4joyO8p2cD8vuWunzNK0ZAYlOl8PJfK0YIYDoBcwNWa68DKV0MPfELSzSveefdWQli+NEksyJl9AHb0rSPL+KIoad2Lvat5YDw5MpFgq1oMqyu/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 023F1C15;
-	Fri, 15 Mar 2024 05:31:53 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04E1F3F73F;
-	Fri, 15 Mar 2024 05:31:14 -0700 (PDT)
-Message-ID: <5bb38524-fd13-477f-adde-0a9ac01bfeae@arm.com>
-Date: Fri, 15 Mar 2024 13:31:06 +0100
+	s=arc-20240116; t=1710505929; c=relaxed/simple;
+	bh=j31+yMWO3vIgCtHa47BOYcnWShrCl0VEtcdZTnTOWgw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RIffM4SPoqTiFtQ2uajUmkxf6cQ5iwIl0QSqgoNq11RHh3Nr5oYuFKst99rQCUZ650z1maasO99auZy4Lcsknby+2+nlGLUyNvTmAP+HKNLcpDbRzzFpvCeBZpQqah4BYQDkuiFvlROp8IqkuEOZbuajGQpdTq7A8XS0uqGeQUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2219edd959dso675716fac.0;
+        Fri, 15 Mar 2024 05:32:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710505927; x=1711110727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j31+yMWO3vIgCtHa47BOYcnWShrCl0VEtcdZTnTOWgw=;
+        b=RRydMfu1Qch89m7BqTK6mpQnwA2I4pMmV+5ySipOaJlPvRWWgCYqDrFSIZ2g7zgips
+         M83tdugiPdd2cHiME0HK97VCAKzH5aYPn37m4cf/hbE9/scFbob4PNQr8+l8DuM9fEAh
+         ulIS181+m4jw+ldiCK+FfkF0XUvfusUXbI7uO+p8dYrriukVSBMbHxh2V5sNN3m1PKqf
+         9EC+u/+9UksXqcNwjSEmL0htdRBIf/0QrbM6nPjtJa/EygFd3h0DCsEBkHjVauK9wNhd
+         ruHqznNcDpyrz/npmQN5dDfe7OBni6WFgW9JKj/FzBBOgNXZvSfJCdrvaM5AJPCzUc05
+         a+aA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWSjsK0srLjvcJv/3MMFyhtg30CjJTfZDQUR+7HnacAZDcHhbs9CxNqV5f/MhkwfO4wwEaGLSWC5fDEy/8fJ48XKj9psGYsOndDrMjcL6lOa3kHtiBy3GIqWaZQ+WZNssns3FUkuZPHw==
+X-Gm-Message-State: AOJu0Yx73MALidpyfwxTHQdAeuRYyqA1GR7PEsAtZjjz9Y9ro9/Og1Ef
+	dngzk/c99U90dk2oUQNDohhymQTS4P0JMc/WjLNjnZ9EUfe9Xh4gk3NLY2vtRQGiDrrglTsQJi6
+	ctnAjYLzrBJxaKwtDBcduWO8SBmA=
+X-Google-Smtp-Source: AGHT+IGfMnFTEOnZaqR3REd4OURjr0SyRKy28dnUBfXOV8VCPImJ6jmpCfhSKSb5BKmLCAHTXAFjDVx0p+e6u+QOw88=
+X-Received: by 2002:a05:6871:458a:b0:21f:cd7d:9904 with SMTP id
+ nl10-20020a056871458a00b0021fcd7d9904mr4604361oab.4.1710505927029; Fri, 15
+ Mar 2024 05:32:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 4/7] sched/fair: Use CFS util_avg_uclamp for
- utilization and frequency
-Content-Language: en-US
-To: Hongyan Xia <hongyan.xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Qais Yousef <qyousef@layalina.io>,
- Morten Rasmussen <morten.rasmussen@arm.com>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Christian Loehle <christian.loehle@arm.com>, linux-kernel@vger.kernel.org,
- David Dai <davidai@google.com>, Saravana Kannan <saravanak@google.com>,
- linux-pm@vger.kernel.org
-References: <cover.1706792708.git.hongyan.xia2@arm.com>
- <4f755ae12895bbc74a74bac56bf2ef0f30413a32.1706792708.git.hongyan.xia2@arm.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <4f755ae12895bbc74a74bac56bf2ef0f30413a32.1706792708.git.hongyan.xia2@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240118062930.245937-1-sunilvl@ventanamicro.com> <Zc2U70o7teYnJyp9@sunil-laptop>
+In-Reply-To: <Zc2U70o7teYnJyp9@sunil-laptop>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 15 Mar 2024 13:31:56 +0100
+Message-ID: <CAJZ5v0iaVj+E5yq2wph7-tr6y-vzFbfoscxjk9Y_O1iWqNp3Mg@mail.gmail.com>
+Subject: Re: [PATCH v3 -next 0/3] RISC-V: ACPI: Add LPI support
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>, 
+	Anup Patel <anup@brainfault.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Andrew Jones <ajones@ventanamicro.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Atish Kumar Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 01/02/2024 14:12, Hongyan Xia wrote:
+On Thu, Feb 15, 2024 at 5:37=E2=80=AFAM Sunil V L <sunilvl@ventanamicro.com=
+> wrote:
+>
+> Hi Rafel,
+>
+> On Thu, Jan 18, 2024 at 11:59:27AM +0530, Sunil V L wrote:
+> > This series adds support for Low Power Idle (LPI) on ACPI based
+> > platforms.
+> >
+> > LPI is described in the ACPI spec [1]. RISC-V FFH spec required to
+> > enable this is available at [2].
+> >
+> > [1] - https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Co=
+ntrol.html#lpi-low-power-idle-states
+> > [2] - https://github.com/riscv-non-isa/riscv-acpi-ffh/releases/download=
+/v/riscv-ffh.pdf
+> >
+> Could you please take a look at this series also and provide ACK if
+> looks fine?
 
-[...]
+I cannot really comment on RISC-V-specific changes.
 
-> @@ -7685,11 +7697,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->  static unsigned long
->  cpu_util(int cpu, struct task_struct *p, int dst_cpu, int boost)
->  {
-> -	struct cfs_rq *cfs_rq = &cpu_rq(cpu)->cfs;
-> -	unsigned long util = READ_ONCE(cfs_rq->avg.util_avg);
-> +	struct rq *rq = cpu_rq(cpu);
-> +	struct cfs_rq *cfs_rq = &rq->cfs;
-> +	unsigned long util = root_cfs_util(rq);
-> +	bool capped = uclamp_rq_is_capped(rq);
+As for the ACPI Kconfig change, please feel free to add
 
-I try to rerun your tests in your 2 ipynbs (cover letter) but this let's
-the sum aggr stack go sideways ...
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-if 'sched_uclamp_used' then uclamp_rq_is_capped() will call
-cpu_util_cfs()->cpu_util() which then calls uclamp_rq_is_capped()
-recursively resulting in a stack overflow.
-
-Do you have a fix for that you can share? For the time I remove the call
-to uclamp_rq_is_capped() in cpu_util().
-
-[...]
+to that patch.
 
