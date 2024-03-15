@@ -1,184 +1,156 @@
-Return-Path: <linux-kernel+bounces-104405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AA2287CD5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:44:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D8087CD60
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:45:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80D2E1C21924
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:44:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAADE1F219DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8DE24A0E;
-	Fri, 15 Mar 2024 12:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7838B2577C;
+	Fri, 15 Mar 2024 12:44:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b="NQZY06AJ"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2077.outbound.protection.outlook.com [40.107.20.77])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tTAKYUVA"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2050.outbound.protection.outlook.com [40.107.100.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65DA21AAD2;
-	Fri, 15 Mar 2024 12:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCD125610;
+	Fri, 15 Mar 2024 12:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710506676; cv=fail; b=sZrVGimDPO0x6lEZqIhOYUO0vy1QEZroEJXkjpgrdERfPvUv1kVFfsVkYnD6nIdGGJOvQ7eabCdg0q4HzGiwJh8HA69nLkC5YIXHF92TWe0s15uQhTpJsQNqFIZTz0rSfXJJNzh551S94g2bo6QyjcwlTwUPJlTj9Da3sYIzQpo=
+	t=1710506682; cv=fail; b=FFhZKwEOS9G+HfJfHY5bFL+v1R9WoGlHQOWkvReVSSU3AGiPYP69zO7US3lgezai/Jlwy2fidPLfE/A5YOxlOa6F6zNM4efUlvyvvcIfteju99mVMgvgBGBNjTtFMnPSPGKgqRaJf6MKBw+aUfg5UakeHjwsUewsV9dOSIKsBV0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710506676; c=relaxed/simple;
-	bh=TjT8KbgqRvYGh5bnxW85QV3w6qQ2JI/x3JerBKJTR1o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F9Sb6dN2sRADxLd4CTA6MbWMxZlJXIGXhzxmBFMhTglr992J8pGy1LCUtB6OwpXqx/ya3s+Kt9TtzAkyZnZbQwaIF2Ykk17qUvUVhoYLjswURTus57NNtYUZ2vLDTBvvtIN4MzlneXWYQyeoUcfY84Q3LMfcM46VONQnArfJD9E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com; spf=fail smtp.mailfrom=nokia.com; dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b=NQZY06AJ; arc=fail smtp.client-ip=40.107.20.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia.com
+	s=arc-20240116; t=1710506682; c=relaxed/simple;
+	bh=2AvODDP7c14q+zYQcAXV9HzRG0nVwf8u9lSlwKyZxHc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eo2w6VGQE0f4fJuw1HqIVx1aXGvp1k+r17lqQ7et5tNc4nm8S4ICWOJsSvlcmfCjJovcZf6WdpSCO7FbJGdKRglcvflMFsRBMJNfMP2mq+Kehwiwc1Qb64Sx7bBjCox6yfgQH+mT6CR6SNohi89oDca/mTt8pGy2UVjW3k1IyeI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tTAKYUVA; arc=fail smtp.client-ip=40.107.100.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZHrxnfvENOC3QrsAAqV0RpyMssIsOjrr2XhjHUQUmmy3lyb4kxy7zOc7wegWNXM23w8F1KXJgDvjtaARVqQe7+eaIrHS4s+ChCHrEWfMaZ28gxZsmdKoCN4s5FN1rv8HD0DWP0uCNYxM6kP8HdTm4LCHdL8PTi/DKsi2a3+dn4BplbB3gXBInCO1ZeIYuIOfjDk25ZE497qBx97bZbFTolGaXY8TTt+wk2wgvOCXeoVRkJnm1SAF5D0jPo2zZqAzAapoP4DP8RPLHC8yvzWFlhyw/9IoEswpmbb9yMOpE4OzdKdK1f62KVrm9uvvRtzRDIuJFYIc21wMil2qxNrYmQ==
+ b=iaSPKexRdMw+NECXqc1aOs1fPZJ5PKTCbb99xilpKlM2RadPH0vERA2kjrsn3VpL4icYhQ/ghXUoZqpEGn5RdHLN2oJj19b/F5vSsejsWNICK3U0t1xBkZ2XMgeb4pMO4pCpMD1kk1YRc9dUK7/Y4vfm+cISor6tvIzgD5U30DO598JaQAx9PCfopnvnR8wvNrm4xb0GD2wOTNLW/wLUgn3x6mT/oBuPqPE0WQS7KK4quTFPceC2au9L1Mns0GkArF2cdla+VcWCG4TTmGrMV7sQrC4soAsKLZ37+7tJ67QAPaJ1R167WMv8NslCEVOnpPVRkih5/8QxKcZYpnWlng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xJK99GI76PSJQltt+MdyP1ibHwBbBTDvR90arVlxkXY=;
- b=H5itA2XnhiQteMr7U+6BRZzZvrJcowd5l3QSOXvhkMLa1vxOJIEqJdXlhR/pCNuR4XIxviO+rMsGeKX2xy9ZlmL3M9R2f4MtziaurYfH9o0Z095L/HnrZ8bgO2Jv7BdTlvt3B5LJTTO4Kh64fCP2vHstyOT5Wasj5bxiDYuOARYgCsWrx1MXXvbA4eCrgpPebF4QBdShe/ejVnb2w8heoLP+YRMGwPvrBhKLv/ngms9lCmDbTSU026u8HUgtJnmiQqwu/gPlswvLqmM+V6JsrKCsOoOL1okV4Vsmr5R5zUt1nSuzuAHa8y3YhLqfG/WKdK8XphmySdbm832CwO+EZg==
+ bh=TeZlVl8zDiAyryXi7c4BZnR4xI7fGP+mqPXR0kQrMho=;
+ b=Fnh3Orhozg4+A4KENtJfF+J1+DtRnQuXyO7Jv5unn+Tx4ahTxExEy/Rmv44VJGq5XJogBbe2rbyWr6MkHGP9RnUeM5s62ucN3tYX3BRmjdP6s5bOL7CeqMukVIHLe7UAu7L9bDc2LgYqMSsRSvHiNfcUJwqoilHeD/jaEtnH93k8fk+fDv1qvC6hx6j8LwXaVGXikr9HPItl2nR5A8Fz3v6X8QIKzxxveGCZmSZs8zEnrWc6NgL2MzNpS+uKVyJM4dw4msTww3y1QQWlfvkjeENhGnp/dY9kyNQAwZxB7MMhrD15Q+fvvnjTKZCwu2iTF5BctmDZ8AvuSOZ7UN9T9Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 131.228.2.29) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nokia.com;
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.com;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xJK99GI76PSJQltt+MdyP1ibHwBbBTDvR90arVlxkXY=;
- b=NQZY06AJTP8dok0tiO1uBKJ4jzh6I8qH7t4goulsQCVnIxTPsshHCQ0ecVMPALquClWN0x+8Ue2ugD+nBrASZoxQX77BwlqEhbZz6apXJpCBz7Uv8x8dYDNP/8tx5grx6r5vCqvyKh6uk4qs5149j6CKsjgGw0APO1QfTg8kXpp3IGKSlC7PwgPuvcZOIuoHeBSHR9mpZ/qvuo3N13KLX3wK04dCABViFK9FHoHVXr4tfY6Gtu3OV6zFAyUQRNNFgSKfUUpU8uVFj6jRDjn1I8KPI+IxRZa2zrY0sxfAaMI7JDfo/oOiOzSkGM3iYGMVwtlMgNE85GiqLT7up8pYdg==
-Received: from DU7P195CA0019.EURP195.PROD.OUTLOOK.COM (2603:10a6:10:54d::32)
- by PAXPR07MB8014.eurprd07.prod.outlook.com (2603:10a6:102:13c::23) with
+ bh=TeZlVl8zDiAyryXi7c4BZnR4xI7fGP+mqPXR0kQrMho=;
+ b=tTAKYUVAM7ALcktSIH6g85QZk9rfCs7D0X6x7pnS96eeCBCNPI6N0E04bkNoJcfRVJa1LeFFh6a4guxboT1yUzs3MTyK7EOn50jt+J+eZ1p1oJllTQGCq9gOHZOTPX45yYiNBu8CResToZRoC9GMn9a8DhNZIz8HSC9KUHE2ADG0oEdY0O+Cj/p/7mfHpdyAeCvlVtJ6eDDgkq0VWkMYQDHYFO7u4OONBC11nO+kzecMQy8NMSYckydW1toIbZHneGvCtkWF/SfUAJYW5mftea8/mps8zgYgy/okZC2yBtB3xFHQJgH0G6yqjJH8PfXVC2OwgUofRQaT4zGKwXDBzQ==
+Received: from SJ0PR13CA0149.namprd13.prod.outlook.com (2603:10b6:a03:2c6::34)
+ by MW6PR12MB8958.namprd12.prod.outlook.com (2603:10b6:303:240::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Fri, 15 Mar
- 2024 12:44:31 +0000
-Received: from DU2PEPF00028D0A.eurprd03.prod.outlook.com
- (2603:10a6:10:54d:cafe::1a) by DU7P195CA0019.outlook.office365.com
- (2603:10a6:10:54d::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.22 via Frontend
- Transport; Fri, 15 Mar 2024 12:44:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.29)
- smtp.mailfrom=nokia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nokia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
- 131.228.2.29 as permitted sender) receiver=protection.outlook.com;
- client-ip=131.228.2.29; helo=fihe3nok0735.emea.nsn-net.net; pr=C
-Received: from fihe3nok0735.emea.nsn-net.net (131.228.2.29) by
- DU2PEPF00028D0A.mail.protection.outlook.com (10.167.242.170) with Microsoft
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Fri, 15 Mar
+ 2024 12:44:36 +0000
+Received: from SJ1PEPF00001CDF.namprd05.prod.outlook.com
+ (2603:10b6:a03:2c6:cafe::e2) by SJ0PR13CA0149.outlook.office365.com
+ (2603:10b6:a03:2c6::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.9 via Frontend
+ Transport; Fri, 15 Mar 2024 12:44:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SJ1PEPF00001CDF.mail.protection.outlook.com (10.167.242.7) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.12 via Frontend Transport; Fri, 15 Mar 2024 12:44:30 +0000
-Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
-	by fihe3nok0735.emea.nsn-net.net (GMO) with ESMTP id 42FCiOdq013909;
-	Fri, 15 Mar 2024 12:44:28 GMT
-From: Muhammad Asim Zahid <muhammad.zahid@nokia.com>
-To: "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: Muhammad Asim Zahid <muhammad.zahid@nokia.com>
-Subject: [PATCH] nfsd: Make NFS client_id increment atomic to avoid race condition
-Date: Fri, 15 Mar 2024 13:39:57 +0100
-Message-ID: <20240315124053.24116-1-muhammad.zahid@nokia.com>
-X-Mailer: git-send-email 2.41.0
+ 15.20.7386.12 via Frontend Transport; Fri, 15 Mar 2024 12:44:35 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 15 Mar
+ 2024 05:44:21 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Fri, 15 Mar
+ 2024 05:44:21 -0700
+Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Fri, 15 Mar 2024 05:44:19 -0700
+From: Akhil R <akhilrajeev@nvidia.com>
+To: <ldewangan@nvidia.com>, <jonathanh@nvidia.com>, <vkoul@kernel.org>,
+	<thierry.reding@gmail.com>, <dmaengine@vger.kernel.org>,
+	<linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Akhil R <akhilrajeev@nvidia.com>
+Subject: [PATCH v2 RESEND] dmaengine: tegra186: Fix residual calculation
+Date: Fri, 15 Mar 2024 18:14:11 +0530
+Message-ID: <20240315124411.17582-1-akhilrajeev@nvidia.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PEPF00028D0A:EE_|PAXPR07MB8014:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 408c1711-303f-49da-7a36-08dc44eda8db
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CDF:EE_|MW6PR12MB8958:EE_
+X-MS-Office365-Filtering-Correlation-Id: a5b3d3d0-e449-4aea-efc2-08dc44edab8f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	MQoDjimKMID1cU2608Cowj4SuBbuKSgCeV9Jd4HOVWbcXR11ocfDyjrvdmPdfGtF2Y60amX+gnVujWVKD+R1OpBv+kdJczlVDRDdoKyRcFWRLc77Ux89h5TjAV472PHkqD3d5kU1v81vMycrVUJnTjpyWCQyGee5sO0kEPdlwRdTO8AKk/244JyCzET5EvdTiAsB0qYYjejY7JmArslxeqNDzmPhvxSG/hdZPE1OQvtv76VyjQD80W+EaCqBqtRBXd/QmlaIMyqjsDUoLZ5Q2GSf8jIqh3JyxDR840GWzv3edURlG7Om0OllV1LdhBTF5JWr4U4TNVFuBxpwq4XavVAis8AYOdvPAYwpCPxAouy4vY9n+LT2N/wKejVf0BQSsjEWxvqDRMXV7UnIWpoRZBZ9AVYCnmYCN5S9SXesG/zeXRwukMzoi8QxVO7iC7fd+h2TaJ0Ri1IcTFyAd0x/6fRTL6bphLlmgL5lFmkboF5oeD5UDnj8HrdhF2Kjy6m0jFGfbpG++JRcmQsptNufaul1Ew5k+jEzNNOHK6IfLF2SRxjsyFzJyDXvHfum0HLWfp2a0KnCAzEMPoyteGhTcAEjaDpJdJzVFWG8DmuCYx7ufLvBABHRGU3O3YSMUu5cRi8fK+rvHMksuZgBJEZrvUKKps9k7eZHtSzjmqFwe6/bJv8Haw3v4gYYbBmYKKxCVDg+Ab5gtKnJla16hKXsxfFTOUeg7jam8CxvExgkVKUw8EuDExxwXyTZ+4NVI/oV
+	ZQX65ay6NBm2L/dcbWS0jimP+1A/04kOaEw/C0vwEUYtCl/zjFrQFxsftYLmcXCxBA5BT+cR2TRubqaX4xLO4TyInLgsogt5pSwouQv44n1nhM0m4ZgpDZPona3SHKT0Q6jwzm87XLtHJGvTBEyka350mkPG4IZ7T1sxSEaiXCqX5dCY8KUjA6RK2KIwIgb+Zv8Edt4ko/3IjswxrR9avsVUSDcDx3t7pUbkeVswOz6NQIfwvrRwQ9XzjhkEymAIw/hAAfqrg6vR8FU34Z9BB7lN3erQXNQgXt1llFDk8MkFVH9SQPKrmz7yzsSeBCGfZ/esZ1piziJuSvXVAv0d5CogWZLbR2JrT7zwUDeBR4Jifzm1UJMs6O8UdXeaH02qzETno8LILmh/ghBIEYQ2gpgFIbBB2nUw/zkoizDjGZ0OaVBgbFu8oWdWsM5L1tdCjSyGU2h/g052Ikf8x8CrSo6/p4pl3ZpfuyEHlHHJFZb7OF7fOboAWGZIXCgbLuCxJLuvDJJhbhMRgHyq/yaPhKvwlxRMw3vCvn+toSpL4ebYvK5Ffv/51a/jJ/Shk8T5FzHtnYoS7mcFR1iQ5BP9XBjv2aAZ0gjar6hbFGZddTq/3At/fgy/YV4cidQEqR4HzkyFOL7BnPFKlumE6lhX1fjL6jTingb6foYDCldQ/s/QfXUGPiazFCFDBH0l9KAvIf8mMv9HvXfe9mLlFrUONBVkU3dqA3DsdK7d+XaET5Rj6NAylw5+R+bYdWXWxpmA
 X-Forefront-Antispam-Report:
-	CIP:131.228.2.29;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0735.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(1800799015)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 12:44:30.9099
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(376005)(1800799015)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 12:44:35.4792
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 408c1711-303f-49da-7a36-08dc44eda8db
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.29];Helo=[fihe3nok0735.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5b3d3d0-e449-4aea-efc2-08dc44edab8f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DU2PEPF00028D0A.eurprd03.prod.outlook.com
+	SJ1PEPF00001CDF.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR07MB8014
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8958
 
-The following log messages show conflict in clientid
-       [err] kernel: [   16.228090] NFS: Server fct reports our clientid is in use
-       [warning] kernel: [   16.228102] NFS: state manager: lease expired failed on NFSv4 server fct with error 1
-       [warning] kernel: [   16.228102] NFS: state manager: lease expired failed on NFSv4 server fct with error 1
+The existing residual calculation returns an incorrect value when
+bytes_xfer == bytes_req. This scenario occurs particularly with drivers
+like UART where DMA is scheduled for maximum number of bytes and is
+terminated when the bytes inflow stops. At higher baud rates, it could
+request the tx_status while there is no bytes left to transfer. This will
+lead to incorrect residual being set. Hence return residual as '0' when
+bytes transferred equals to the bytes requested.
 
-The increment to client_verifier counter and client_id counter is
-set to atomic so as to avoid race condition which causes the
-aforementioned error.
-
-Change-Id: Ic0fa8c14a8bba043ae8882f6750f512bb5f3aac1
+Fixes: ee17028009d4 ("dmaengine: tegra: Add tegra gpcdma driver")
+Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
 ---
- fs/nfsd/netns.h     | 4 ++--
- fs/nfsd/nfs4state.c | 4 ++--
- fs/nfsd/nfsctl.c    | 6 +++---
- 3 files changed, 7 insertions(+), 7 deletions(-)
+v1->v2:
+* corrected typo - s/exisiting/existing/
 
-diff --git a/fs/nfsd/netns.h b/fs/nfsd/netns.h
-index 935c1028c217..67b5aa1516e2 100644
---- a/fs/nfsd/netns.h
-+++ b/fs/nfsd/netns.h
-@@ -119,8 +119,8 @@ struct nfsd_net {
- 	unsigned int max_connections;
+ drivers/dma/tegra186-gpc-dma.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/dma/tegra186-gpc-dma.c b/drivers/dma/tegra186-gpc-dma.c
+index 88547a23825b..3642508e88bb 100644
+--- a/drivers/dma/tegra186-gpc-dma.c
++++ b/drivers/dma/tegra186-gpc-dma.c
+@@ -746,6 +746,9 @@ static int tegra_dma_get_residual(struct tegra_dma_channel *tdc)
+ 	bytes_xfer = dma_desc->bytes_xfer +
+ 		     sg_req[dma_desc->sg_idx].len - (wcount * 4);
  
- 	u32 clientid_base;
--	u32 clientid_counter;
--	u32 clverifier_counter;
-+	atomic_t clientid_counter;
-+	atomic_t clverifier_counter;
++	if (dma_desc->bytes_req == bytes_xfer)
++		return 0;
++
+ 	residual = dma_desc->bytes_req - (bytes_xfer % dma_desc->bytes_req);
  
- 	struct svc_serv *nfsd_serv;
- 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index 9b660491f393..d67a6a593f59 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -2321,14 +2321,14 @@ static void gen_confirm(struct nfs4_client *clp, struct nfsd_net *nn)
- 	 * __force to keep sparse happy
- 	 */
- 	verf[0] = (__force __be32)(u32)ktime_get_real_seconds();
--	verf[1] = (__force __be32)nn->clverifier_counter++;
-+	verf[1] = (__force __be32)atomic_inc_return(&(nn->clverifier_counter));
- 	memcpy(clp->cl_confirm.data, verf, sizeof(clp->cl_confirm.data));
- }
- 
- static void gen_clid(struct nfs4_client *clp, struct nfsd_net *nn)
- {
- 	clp->cl_clientid.cl_boot = (u32)nn->boot_time;
--	clp->cl_clientid.cl_id = nn->clientid_counter++;
-+	clp->cl_clientid.cl_id = atomic_inc_return(&(nn->clientid_counter));
- 	gen_confirm(clp, nn);
- }
- 
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index cb73c1292562..a9ef86ee7250 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -1481,10 +1481,10 @@ static __net_init int nfsd_init_net(struct net *net)
- 	nn->nfsd4_grace = 90;
- 	nn->somebody_reclaimed = false;
- 	nn->track_reclaim_completes = false;
--	nn->clverifier_counter = prandom_u32();
-+	atomic_set(&(nn->clverifier_counter), prandom_u32());
- 	nn->clientid_base = prandom_u32();
--	nn->clientid_counter = nn->clientid_base + 1;
--	nn->s2s_cp_cl_id = nn->clientid_counter++;
-+	atomic_set(&(nn->clientid_counter), nn->clientid_base + 1);
-+	nn->s2s_cp_cl_id = atomic_inc_return(&(nn->clientid_counter));
- 
- 	atomic_set(&nn->ntf_refcnt, 0);
- 	init_waitqueue_head(&nn->ntf_wq);
+ 	return residual;
 -- 
-2.42.0
+2.43.2
 
 
