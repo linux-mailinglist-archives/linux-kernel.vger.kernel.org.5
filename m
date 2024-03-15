@@ -1,177 +1,216 @@
-Return-Path: <linux-kernel+bounces-104556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268C087CFCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B56CC87CFD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:08:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B4DA1C2293A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:05:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E78441C228C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929123D0B4;
-	Fri, 15 Mar 2024 15:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849F93D0AB;
+	Fri, 15 Mar 2024 15:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="LQHCrmE3"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Zd0qOD8J"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF113D55D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08BA3CF4B
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710515127; cv=none; b=M6it+p7zIJZVThqRTb50YikqjUZSInnFfZ1KqdeQweX4C7wmqAAy2tL4bDSlHuJhByKZsSAIoAAcuv4atEs5tYzvka+JmHJ9MBIhA/tuFdnbSoZ12VO5xsmS//yri0lpyiAi27Mk5fw5lOrALcAlzrApxhIHFrL3NdKEaCcjjHI=
+	t=1710515298; cv=none; b=LTbihl3DLZbgF1dyAxgXtYBnWS9JD9I0FosKdRO1s/dlFUIa8WJ5q6E2faU5Ph+xnArP+sXT2A+3KzSPkz3lWLFgSz+21sDZwmu571ETqQzKegWhVZFcGAUmRc0CNbZYWWlDR03xjIkRPh3ceTaIzYGZjTKQpSQCZmdWmEado4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710515127; c=relaxed/simple;
-	bh=608S623xqC0b/8HelcnyHmJp3/fN4Q27AKppt8+4SSs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jJrR4FpzZOfJNWuuNLNoCaVp683tqmOeJQm2CW39OCpiHy9AXjUYyjMFzZ3ydJNVtpg4zBtbeJ32g6y+/GKsaVUV8GVW+wE3EbZhIcYJT9f4iDcsI77LVK2fOYPl8m+D95asNGbQyJ/9Wq7gPSBmkKWzX2gRAxZH/1NK+BdVsZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=LQHCrmE3; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a36126ee41eso272930566b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:05:25 -0700 (PDT)
+	s=arc-20240116; t=1710515298; c=relaxed/simple;
+	bh=1p+2qEhn/qrjk/VPCWJTzuUwNlO3E+p95QBrqAO/oNE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mxwVY8Qr+1bDnPNIIO/0czab9//2UqVrtsnTAdHXxpJAsSnMqyBZFW3WeJ5v7i5cPN/16aFCHbvkm1y8DxVabEOcf1BToywce3aE58mDpwujF37Kj7OnOpAPiyUL5O7KKZLC4CqQ99IcVBeA8b/GKgELJcr/WrYAoNCyt6NRheQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Zd0qOD8J; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42f0df98361so10145901cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710515124; x=1711119924; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=24MutwcHiBZkjQYCos7XDdDwAEGZOLUpdfO5OhJienA=;
-        b=LQHCrmE3vq4+P4FXjfetbGuTF5nVJjW16VjjpIsSaqljUy4Mx1G3QbH7kIz615JB0y
-         mifH6On3FYNeDgWpOg4d3iKvGVkPx5O+rgnW9Z0zlGJtCmWKfZ3jsMbTT9f7tOKGA0cG
-         R7gt+uGC/g71lTG/IBiOjuSDVzRgP3w/WIsOcNjWt6nQ2+OZmBsG7aSUqxEu5OLgUy5y
-         QjgAophCgvHYi6SK31LHxgBxTGI1d/vNov6zLsBW1bgcJXUUCiVN/MFq9VP/Q6WfHd4B
-         KzKs9lzCuHg1Wql+38LwwHBN7Wt0gCT2wg9AO3/wd0MGF2haYqzDYMC/b/kUjdNP+s72
-         i9lw==
+        d=chromium.org; s=google; t=1710515294; x=1711120094; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GSZdYN59DhOS8QyekeyWoGZ8e/VbiOIdQPzuTpNSPUk=;
+        b=Zd0qOD8J4wpSz9bHCqS+4f5svRDAaWKkvBxOT8InfDa92eoDMLCYQGW78MKyBm3Czp
+         pBX6uphgmFEFW7yRj17oQ+wqDqdt65HIfaELTgQMOmXNIfYy72w4v+qsEieDM1uq9yIY
+         ztPqDYNb1cBJuMOXc3mFwMnO7DhkWJSfZUF1I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710515124; x=1711119924;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=24MutwcHiBZkjQYCos7XDdDwAEGZOLUpdfO5OhJienA=;
-        b=fJIhb4//KN53Ev5BGvVJXY2CWB2rrVZaPP911enoZUA0dUg8KKu1Zcg2ANSeIoR56A
-         IZglNhOM5CtOYZTKb4n4oQ1JkkmpH7GmwqUcP5NolSy4wxaGMuZuVY2EObZK5WwzhlxP
-         ClxMQoGymY/Sgxsbm14uyXsHz/YtphZKaGP4PJF+0l43lcBzdh5Cl9+pjTW+rfWMDV7q
-         ZfVLDFkRTXluqmLuUSgAOteAQVbWd7Rk8YBx4mC6bgUlfmYrYI3odEZPYd4xxqkmeg20
-         XTLIyxe/mN7HQy/gh7lN+N+lS/M3gfJRhj495d/yTdHN0icQdUEwEvP6bHASDEhlpZHV
-         m5Fg==
-X-Forwarded-Encrypted: i=1; AJvYcCXyzA6FiqqSpW4uZJrSCgCfFMb70Skghhu/R6pm+6gxRm/BeaXnys7cYX5cflCgfKSXmUebzrfNzFTLdYzVO3SpafoOLwBxHn4DAir0
-X-Gm-Message-State: AOJu0YzRTbh1SIAxwp2w//mrTHQriYAjGdihk5sKEjdRfViltUzQWr9+
-	TxWqa14fu8BxoZpF8ge1NxW59JrpGKhBchNbQeJl5hmorNOWBFTgV1ZzQS0bwvc=
-X-Google-Smtp-Source: AGHT+IEO2hyzf/1xUUR4DWAg0e4i1y4j4ET1cfOEMZuvZS0x8BJ0B3U9ZhIu1vGtdXCzcUUMUTMYUw==
-X-Received: by 2002:a17:906:9c8c:b0:a3e:cdae:7aa2 with SMTP id fj12-20020a1709069c8c00b00a3ecdae7aa2mr4284674ejc.35.1710515123916;
-        Fri, 15 Mar 2024 08:05:23 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id j22-20020a170906051600b00a441a7a75b5sm1773189eja.209.2024.03.15.08.05.21
+        d=1e100.net; s=20230601; t=1710515294; x=1711120094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GSZdYN59DhOS8QyekeyWoGZ8e/VbiOIdQPzuTpNSPUk=;
+        b=TQss59dr4gr8yuDBOw+hhqnzkMbZTEICrEtOSkZT3Je4vuYzReeYv3BS4151qbLBcR
+         vPOBR3h/DhbIkoJm1McUChhzHaOBl4BnllaoICu8VQ/YeKIvfFCqfio7HTB+9enS6iUI
+         LYNeAelzVSjCsdse3TPuTPMCJsT4IvsEntIZBFDm5s+u0RQkQmXgHvJx5xdyV6wt43wN
+         yZQkaQMxJGipJbf+f8Jnx76YSCFZ2dheFgSAPFUZIjsGmLhvefyFPSL88y4F+t25s3xA
+         Bfc40f1ufPnOB7khTD+pzFRPQy1SGjUIVaSnNeP02DvnWDJUljsCGf4JFVWXc29wZ/6M
+         HL6w==
+X-Forwarded-Encrypted: i=1; AJvYcCVcSv81U33CVHEaEzGFgVA+auCydjrp35kbQ8atky58cZFpT0zQcmOLGc+z68GRFg+uQmHJmFeCP7wqlad12u5pFxBW9Np5yQOoOKtp
+X-Gm-Message-State: AOJu0YxE2a/4oUncFbV2a5ai/aOtpVPQG8xBAsWxwU5om+P7pTH7SJJv
+	ooZ96lSHt+OoLER0MNL/N8J21M48itBEWj54XnEoAmE5+Qb8BxOyoYPK1h4LyAcm8qXUkNxaz/E
+	=
+X-Google-Smtp-Source: AGHT+IEw5CRuoUb+V/g8jW30fdJXDmq81xlHhBvEddIj5rRd4ZIknqw74/rqD4DnPk3vV6H60fW5KQ==
+X-Received: by 2002:a05:622a:486:b0:42e:f580:39fa with SMTP id p6-20020a05622a048600b0042ef58039famr5885718qtx.56.1710515293964;
+        Fri, 15 Mar 2024 08:08:13 -0700 (PDT)
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com. [209.85.160.178])
+        by smtp.gmail.com with ESMTPSA id jt10-20020a05622aa00a00b0042dfa55a3d5sm2035540qtb.25.2024.03.15.08.08.12
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 08:05:22 -0700 (PDT)
-Message-ID: <fd53a0e7-fa70-4c0d-b578-393183487335@baylibre.com>
-Date: Fri, 15 Mar 2024 16:05:21 +0100
+        Fri, 15 Mar 2024 08:08:12 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-428405a0205so333551cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:08:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWMH58qcmIDd0anMJLXV4Ul29pCXPaRAm9L04CFR0o24c5VBXBRQYtXKSJtGm7M0VEauNb9laIIoTVfjQJ2yFvjfoTLuRIdC6cl6mKU
+X-Received: by 2002:a05:622a:292:b0:430:b2ee:d6bf with SMTP id
+ z18-20020a05622a029200b00430b2eed6bfmr193108qtw.25.1710515292052; Fri, 15 Mar
+ 2024 08:08:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/18] ASoC: codecs: mt6357: add MT6357 codec
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- Nicolas Belin <nbelin@baylibre.com>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
- <9891855d-2284-42e4-9d3a-35ba406540e8@sirena.org.uk>
- <c441a132-b16b-4244-a712-8971c902d4d7@baylibre.com>
- <ff3d2db1-697b-42c6-a0f2-74276e9fc098@sirena.org.uk>
- <dda0e6ba-4538-47a0-95e9-6adcfd4169a7@baylibre.com>
- <0d31ffb2-9df5-4c3e-a728-902b71a1a713@sirena.org.uk>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <0d31ffb2-9df5-4c3e-a728-902b71a1a713@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230703085555.30285-1-quic_mkshah@quicinc.com>
+ <20230703085555.30285-4-quic_mkshah@quicinc.com> <CAD=FV=XWH+Eoa9XjDns--NSDTZHeUwTdrX_r_QZhSPpbZNwz+w@mail.gmail.com>
+ <f638e848-36c5-4cea-c2c8-841a003b1863@quicinc.com>
+In-Reply-To: <f638e848-36c5-4cea-c2c8-841a003b1863@quicinc.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 15 Mar 2024 08:07:56 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XgwrFWZ7uQ1fQbykyipFmyZB6nyJnKmS1s=hdAANd-gg@mail.gmail.com>
+Message-ID: <CAD=FV=XgwrFWZ7uQ1fQbykyipFmyZB6nyJnKmS1s=hdAANd-gg@mail.gmail.com>
+Subject: Re: [RESEND v4 3/3] arm64: dts: qcom: sc7280: Add power-domains for
+ cpuidle states
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Maulik Shah <quic_mkshah@quicinc.com>, andersson@kernel.org, ulf.hansson@linaro.org, 
+	swboyd@chromium.org, wingers@google.com, daniel.lezcano@linaro.org, 
+	rafael@kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, sudeep.holla@arm.com, 
+	jwerner@chromium.org, quic_lsrao@quicinc.com, quic_rjendra@quicinc.com, 
+	devicetree@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Rob Clark <robdclark@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Thu, Mar 14, 2024 at 4:39=E2=80=AFPM Abhinav Kumar <quic_abhinavk@quicin=
+c.com> wrote:
+>
+> Hi Doug
+>
+> On 3/14/2024 4:20 PM, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Mon, Jul 3, 2023 at 1:56=E2=80=AFAM Maulik Shah <quic_mkshah@quicinc=
+com> wrote:
+> >>
+> >> Add power-domains for cpuidle states to use psci os-initiated idle sta=
+tes.
+> >>
+> >> Cc: devicetree@vger.kernel.org
+> >> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> >> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> >> ---
+> >>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 98 +++++++++++++++++++++-----=
+--
+> >>   1 file changed, 73 insertions(+), 25 deletions(-)
+> >
+> > FWIW, I dug up an old sc7280-herobrine board to test some other change
+> > and found it no longer booted. :( I bisected it and this is the change
+> > that breaks it. Specifically, I can make mainline boot with:
+> >
+> > git revert --no-edit db5d137e81bc # arm64: dts: qcom: sc7280: Update
+> > domain-idle-states for cluster sleep
+> > git revert --no-edit 7925ca85e956 # arm64: dts: qcom: sc7280: Add
+> > power-domains for cpuidle states
+> >
+>
+> We noticed that some variants of sc7280 herobrine boards didnt boot but
+> some did atleast till linux 6.8 rc-6. I have not tested linux 6.9 rc-1 ye=
+t.
+
+Wow, really? This doesn't seem like it would be related to the
+variant. Maybe the firmware version? FWIW, the device I was having
+problems with was a "villager-rev2" with FW 15368.0.0.
+
+OK, so I just pulled out a `hoglin-rev5` with 15432.0.0 and v6.8-rc6
+boots and WiFi comes up. However, when I move to full mainline
+(b0546776ad3f (HEAD, linux/master) Merge tag 'printk-for-6.9' of
+git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux) I get the
+ath11k crash.
+
+OK, so I updated my villager to 15432.0.0 and things work even without
+reverting ${SUBJECT} patch. I guess that's the answer: this patch
+broke things with some old firmwares but with the newer firmware it's
+fixed. Hopefully that doesn't happen again since I don't think there
+will ever be a newer firmware than 15432.0.0.
 
 
+> > (I get an ath11k crash after that, but that's easy to hack out since I
+> > don't need WiFi)
+> >
+>
+> hmm, wifi worked alright on 6.8 rc-6 for us.
 
-On 15/03/2024 15:30, Mark Brown wrote:
-> On Fri, Mar 15, 2024 at 12:01:12PM +0100, Alexandre Mergnat wrote:
->> On 13/03/2024 18:23, Mark Brown wrote:
->>> On Tue, Mar 12, 2024 at 07:03:25PM +0100, Alexandre Mergnat wrote:
-> 
->>>> Actually you must save the values because the gain selected by the user will
->>>> be override to do a ramp => volume_ramp(.....):
->>>> - When you switch on the HP, you start from gain=-40db to final_gain
->>>> (selected by user).
->>>> - When you switch off the HP, you start from final_gain (selected by user)
->>>> to gain=-40db.
-> 
->>> You can just read the value back when you need to do a ramp?
-> 
->> You can't. Because you will read -40db when HP isn't playing sound. That is
->> why the gain is saved into the struct.
-> 
->> Let me know, when you change de gain to do a ramp down (start from user gain
->> to gain=-40db), next time for the ramp up, how/where do you find the user
->> gain ?
-> 
-> In the register.  You only need to reset the gain to -40dB at the start
-> of the ramp.
+I guess I'll leave it to you to track down / report as needed.
 
-Sorry but I don't understand your logic, I'm not able to implement it...
-If I'm at -10dB and doing a ramp to reach -40dB, next time I will read 
-the register the value will be -40dB.
 
-This implementation is also done in other MTK audio codec drivers.
+> > I suppose the two options here are to either:
+> >
+> > 1. Track the problem down and figure out why the breaks boot and then
+> > fix it. I'm personally not going to track this down, but if someone
+> > wants me to test a patch I can do that.
+> >
+>
+> Can Maulik help us do that?
 
-> 
->>>> Also, the microphone's gain change when it's enabled/disabled.
-> 
->>> I don't understand what this means?
-> 
->> When microphone isn't capturing, the gain read back from the register is
->> 0dB. I've put some logs in my code and do capture to show how it works:
-> 
-> Is this a property of the hardware or a property of your driver?
+OK, sounds like we don't need to, as long as everyone updates their
+firmware. This should be OK.
 
-At the end of the capture, the gain is set to 0dB by the driver.
-At the start of the capture, the gain is set to the setup gain.
 
-AFAII from the comment in the code, it's done to avoid the "pop noises".
+> > 2. Delete all the herobrine dts files.
+> >
+> > So far we've been keeping the herobrine dts files alive because I
+> > thought some graphics folks (Rob, Abhinav, Jessica, for instance) were
+> > still using it. ...but Rob says he hasn't booted his in a while. No
+> > idea if Abhinav and Jessica are using theirs. Any opinions? Is
+> > herobrine hardware support near and dear to anyone these days?
+> >
+>
+> Yes, so we have been using sc7280 herobrine devices even till the last
+> cycle and quite a bit of feature development was actually done on that.
+>
+> It was the only device having eDP other than sc8280xp till x1e80100
+> landed last cycle.
 
-> 
->>>>>> +	/* ul channel swap */
->>>>>> +	SOC_SINGLE("UL LR Swap", MT6357_AFE_UL_DL_CON0, AFE_UL_LR_SWAP_SFT, 1, 0),
-> 
->>>>> On/off controls should end in Switch.
-> 
->>>> Sorry, I don't understand your comment. Can you reword it please ?
-> 
->>> See control-names.rst.  Run mixer-test on a card with this driver and
->>> fix all the issues it reports.
-> 
->> Ok the name is the issue for you AFAII.
->> This control isn't for on/off but swap Left and Right.
->>  From the codec documentation:
->> "Swaps audio UL L/R channel before UL SRC"
->> This control is overkill, I will remove it
-> 
-> This is turning the swapping on and off.
+OK, thanks for confirming that they're still useful to you. When I got
+the failures I feared that nobody was using them anymore.
 
--- 
-Regards,
-Alexandre
+
+> I do want to start using sc8280xp as well because from the experience we
+> got, it has more visibility in terms of users. So that will address my
+> eDP concern.
+>
+> But, the nice thing about chromebooks is we really like to use them for
+> IGT development / CI debug as CrOS provides a nice environment to
+> cros-deploy IGT.
+>
+> We can continue to use sc7180 for IGT development but if we want to
+> debug issues with eDP + IGT, sc7280 is a really useful platform for that.
+>
+> sc8280xp or x1e80100 is not a CrOS supported device. So we will have to
+> develop and test IGT directly on the device (which is a bit of a pain)
+> unless someone has a better way of "cross-compilation" for IGT on
+> non-CrOS images.
+
+I'd have to let others comment on IGT.
+
+-Doug
 
