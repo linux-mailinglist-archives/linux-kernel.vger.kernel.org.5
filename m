@@ -1,47 +1,49 @@
-Return-Path: <linux-kernel+bounces-104332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ED1687CC41
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:28:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 114DC87CC43
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:28:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3A2C1F21E37
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:28:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5572328274A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE81D1B7E3;
-	Fri, 15 Mar 2024 11:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261F51B81C;
+	Fri, 15 Mar 2024 11:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Hbu9H1td"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UpJMKl+T"
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4922A18EB3;
-	Fri, 15 Mar 2024 11:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5AE1B295;
+	Fri, 15 Mar 2024 11:27:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710502079; cv=none; b=jFV3cjDPikd8eZ4RvuZVNrogRPoT2ecimnG79KiNM96OzgYns4TxMtDi8sgjuFK6Xu2P4J5Ek0STK0fveBfoDiksl/NzisYMCi0g3G2o/4qp3TNZAJeCyGxNir5hUVuvdPVlWWg/vAQ86gf/54ZUsHA5eWQxGgILmBwBD8RfUUI=
+	t=1710502080; cv=none; b=FN0MP9+U6CLAbBPFqzr+n9bAMar+7ixdrXPIZaZT7rmB7mV6f27RKt/nuH1FwhrP+PgRu9XHGfoM7ca54e10iT3v3AlZP1OmPOT5dUrNfF57VwjLfncDgNZ+Mk4CNz2rqjq41OBkD/rAOzbL1ZpoOCQTpaG9txhnuyf6n0swisU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710502079; c=relaxed/simple;
-	bh=cMBm2ZUDvv/FeHjU9MT1L6ylkEfHxwGT+Fdb6DMTg3U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ShFP/CAw/L0qYj7Gcl6nkoOKnSuakTDe8r+xc8bGI94/LBqA8/GlNdIikAhGVDNqpPKEQ323IzYK4gCrXrWaNSK8HGpD+GlUs1XEWBOSz1dhtng9REQtYhojQKD/cwWS5w572SPfSnbEhj8yz3Shjxjhq0N1jRGPDPlrGaw5+L4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Hbu9H1td; arc=none smtp.client-ip=217.70.183.196
+	s=arc-20240116; t=1710502080; c=relaxed/simple;
+	bh=H4RG/XZrAHW/3xUIR1pTsc+DN9COf1TDojyeYAQW0cY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=X1eGcM8mcwoF8CFpyy/S1yLk1ethll3A9Vw/dA7ZcYy1osBIn4l9NoEVx84GDVa3TJHY/oiFEdlueAtaCOX4oiDugXciF0Qk+0DQsKketqVxPN3oXKSqvKtFcGttelO55Tl76MM2iqyTV7MOVP86YRHt9m8oaAqvs/tUkH5gDmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UpJMKl+T; arc=none smtp.client-ip=217.70.183.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 218EDE0004;
-	Fri, 15 Mar 2024 11:27:53 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 3D771E0003;
+	Fri, 15 Mar 2024 11:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710502074;
+	t=1710502076;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=yKwrXtvxj8TEZrcKF8i8hnVKSrTEOPd44rgLaggpYn8=;
-	b=Hbu9H1tdUnGCCxaS50Hbpsn1zVwsI8XeVjXTg81w6ZplrhN1WxMKpPRos8LILwVed0L63B
-	PiW4Zy8L6nEbXD0+3psh3ELfndG3HbMMd/c2hzFfAcbSTDg0BpjNddu7dBxFqP8Hv6gxCL
-	7x4t8xFtmvjwsYrZxLiuBwtxC1fg7lFCv/CF6/7kuoynStldNWHo9EYaZibQSZiGbDpcuJ
-	y5CaZDVJqaVhSqV4Tdj2L6iIYrir+5froFdjZQ56Ue3zxIylI0vla324frDvmOjFNo8AEH
-	QVJTO/rxL7cFSxlqOoNcyfx1GOu+ZNJWDWbk+pSsLQaAVHysLIr5BrNT1KuKNA==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dUAcXFtPdRzxlgNNFBRR/Bz60z5XFsvCtl6oMmi/Tnk=;
+	b=UpJMKl+Tk1kwzSGv27hqthWfNw3H5waB3ZX7b7gxVp9N4uF3iz5yzlx444ZmmD6qbYECIT
+	nZBjQavUzL/LwuU4+Zc0WprIbPgQVVrgHbyjhXWSzBpfjLqZDjIHn10ZVSAODEkDMjBnrQ
+	dcFqjCJG+32dXyce2ExLOQ7bnjlPeoO/9sFeZso9bjsL98edt3vmEb0gdKXfLTApzXt+52
+	xeWKkGVToHRTLT60/8FtRzPC49xtiKEwdPDvWinuOX69KoIY9mNBMKoq6gUp4RSQqL/cK5
+	qa8WowHGk63UGwHquYrLK3OMBAsLNJYDymfbVuC6FUULl1aV4BncJsZyXyVnbA==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -59,10 +61,12 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH 00/13] ASoC: ti: davinci-i2s: Add features to McBSP driver
-Date: Fri, 15 Mar 2024 12:27:32 +0100
-Message-ID: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+Subject: [PATCH 01/13] ASoC: dt-bindings: davinci-mcbsp: convert McBSP bindings to yaml schema
+Date: Fri, 15 Mar 2024 12:27:33 +0100
+Message-ID: <20240315112745.63230-2-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,51 +76,180 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: bastien.curutchet@bootlin.com
 
-This series aims to add some features to McBSP driver.
+Convert the binding for McBSP controllers for TI SoCs from txt
+to YAML schema.
 
-Convert bindings from .txt to .yaml.
-Add possibility to use an external clock as sample rate generator's
-input.
-Add handling of new formats (TDM, S24_LE, BP_FC).
-Add optional properties in DT:
- - ti,enable-sync-err  : Enable the detection of unexpected frame pulses
- - ti,disable-free-run : Disable the free-running mode where McBSP drives
-                         serial clocks during emulation halt
- - ti,drive-dx 	       : Outputs a chosen pattern on DX pin during
-                         capture streams.
+Add properties 'clocks', 'clock-names', 'power-domains' and
+'#sound-dai-cells' which were missing from the txt file.
+Add '#sound-dai-cells' and 'clocks' in the example which were missing
+from the txt file.
 
-This has been tested on a platform designed off of the DAVINCI/OMAP-L138
-connected to 3 daisy-chained AD7767. An external clock drives the
-sample rate generator through the CLKS pin.
-The hardware I have only allowed me to test acquisition side of McBSP.
-It is connected to a 6 channels TDM and acts as Bit clock provider and
-Frame clock consumer.
-
-Bastien Curutchet (13):
-  ASoC: dt-bindings: davinci-mcbsp: convert McBSP bindings to yaml
-    schema
-  ASoC: dt-bindings: davinci-mcbsp: Add new properties
-  ASoC: ti: davinci-i2s: Remove the unused clk_input_pin attribute
-  ASoC: ti: davinci-i2s: Replace dev_err with dev_err_probe
-  ASoC: ti: davinci-i2s: Use external clock to drive sample rate
-    generator
-  ASoC: ti: davinci-i2s: Delete unnecessary assignment
-  ASoC: ti: davinci-i2s: Add TDM support
-  ASoC: ti: davinci-i2s: Add handling of BP_FC format
-  ASoC: ti: davinci-i2s: Enable unexpected frame pulses detection
-  ASoC: ti: davinci-i2s: Make free-running mode optional
-  ASoC: ti: davinci-i2s: Add S24_LE to supported formats
-  ASoC: dt-bindings: davinic-mcbsp: Add the 'ti,drive-dx' property
-  ASoC: ti: davinci-i2s: Opitonally drive DX pin during capture streams
-
- .../bindings/sound/davinci-mcbsp.txt          |  50 ---
- .../bindings/sound/davinci-mcbsp.yaml         | 119 +++++++
- include/linux/platform_data/davinci_asp.h     |  15 -
- sound/soc/ti/davinci-i2s.c                    | 333 ++++++++++++++----
- 4 files changed, 376 insertions(+), 141 deletions(-)
+Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+---
+ .../bindings/sound/davinci-mcbsp.txt          | 50 ----------
+ .../bindings/sound/davinci-mcbsp.yaml         | 96 +++++++++++++++++++
+ 2 files changed, 96 insertions(+), 50 deletions(-)
  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
 
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+deleted file mode 100644
+index 3ffc2562fb31..000000000000
+--- a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
++++ /dev/null
+@@ -1,50 +0,0 @@
+-Texas Instruments DaVinci McBSP module
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-
+-This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
+-audio interface found in some TI DaVinci processors like the OMAP-L138 or AM180x.
+-
+-
+-Required properties:
+-~~~~~~~~~~~~~~~~~~~~
+-- compatible :
+-        "ti,da850-mcbsp" : for DA850, AM180x and OPAM-L138 platforms
+-
+-- reg : physical base address and length of the controller memory mapped
+-        region(s).
+-- reg-names : Should contain:
+-        * "mpu" for the main registers (required).
+-        * "dat" for the data FIFO (optional).
+-
+-- dmas: three element list of DMA controller phandles, DMA request line and
+-	TC channel ordered triplets.
+-- dma-names: identifier string for each DMA request line in the dmas property.
+-	These strings correspond 1:1 with the ordered pairs in dmas. The dma
+-	identifiers must be "rx" and "tx".
+-
+-Optional properties:
+-~~~~~~~~~~~~~~~~~~~~
+-- interrupts : Interrupt numbers for McBSP
+-- interrupt-names : Known interrupt names are "rx" and "tx"
+-
+-- pinctrl-0: Should specify pin control group used for this controller.
+-- pinctrl-names: Should contain only one value - "default", for more details
+-        please refer to pinctrl-bindings.txt
+-
+-Example (AM1808):
+-~~~~~~~~~~~~~~~~~
+-
+-mcbsp0: mcbsp@1d10000 {
+-	compatible = "ti,da850-mcbsp";
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&mcbsp0_pins>;
+-
+-	reg = 	<0x00110000 0x1000>,
+-		<0x00310000 0x1000>;
+-	reg-names = "mpu", "dat";
+-	interrupts = <97 98>;
+-	interrupt-names = "rx", "tx";
+-	dmas = <&edma0 3 1
+-		&edma0 2 1>;
+-	dma-names = "tx", "rx";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
+new file mode 100644
+index 000000000000..8b0e9b5da08f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/davinci-mcbsp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: McBSP Controller for TI SoCs
++
++maintainers:
++  - Bastien Curutchet <bastien.curutchet@bootlin.com>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    enum:
++      - ti,da850-mcbsp
++
++  reg:
++    minItems: 1
++    items:
++      - description: CFG registers
++      - description: data registers
++
++  reg-names:
++    minItems: 1
++    items:
++      - const: mpu
++      - const: dat
++
++  dmas:
++    items:
++      - description: transmission DMA channel
++      - description: reception DMA channel
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++  interrupts:
++    items:
++      - description: RX interrupt
++      - description: TX interrupt
++
++  interrupt-names:
++    items:
++      - const: rx
++      - const: tx
++
++  clocks:
++    items:
++      - description: functional clock
++
++  clock-names:
++    items:
++      - const: fck
++
++  power-domains:
++    description: phandle to the corresponding power-domain
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++required:
++  - "#sound-dai-cells"
++  - compatible
++  - reg
++  - reg-names
++  - dmas
++  - dma-names
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    mcbsp0: mcbsp0@1d10000 {
++      #sound-dai-cells = <0>;
++      compatible = "ti,da850-mcbsp";
++      pinctrl-names = "default";
++      pinctrl-0 = <&mcbsp0_pins>;
++
++      reg = <0x111000 0x1000>,
++            <0x311000 0x1000>;
++      reg-names = "mpu", "dat";
++      interrupts = <97>, <98>;
++      interrupt-names = "rx", "tx";
++      dmas = <&edma0 3 1
++              &edma0 2 1>;
++      dma-names = "tx", "rx";
++
++      clocks = <&psc1 14>;
++    };
 -- 
 2.43.2
 
