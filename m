@@ -1,80 +1,84 @@
-Return-Path: <linux-kernel+bounces-104432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18DE987CDB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:05:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B51C087CDB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5AB1C21AA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:05:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C0521F220C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9C02575D;
-	Fri, 15 Mar 2024 13:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIeK3IEB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3565F250FE;
+	Fri, 15 Mar 2024 13:06:29 +0000 (UTC)
+Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090A124B26;
-	Fri, 15 Mar 2024 13:04:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B731E18624
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710507897; cv=none; b=dLvfY4/g/0eA1kokDCOTa5JA6lDLaopr7GxinQNdJpXspSM3rpFYHlAWvFko06A2chhpaj2shQeg8dyyuM8iAnRszNgsJ1P9f/4vWGRimRoQ7u+sj0vl4dyNywITIn3UjzfD3aPOHr6yKgCYXGXr3GX8nDRYAT7DEIlKRskKPHg=
+	t=1710507988; cv=none; b=aCukTiBHy6Wt/idrCkOM2lM1shma0w3GAdKG6dvG3pOa0w1uMFe13AeCyc27Amyn0hvgGYyybiO9EsTk9FyzOvagZ/+U4qBnwjR5mPNmikMaVkwhyeG9ZgettVIipjnPheCDMZ+KMFowQON5bO0ulASCuz4Np9AI3Hii1OHVF/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710507897; c=relaxed/simple;
-	bh=DvGI8Ea9CrQMc930SjFSluQ/GjUlhlbAS/EJEnqtjTo=;
-	h=Message-ID:Date:From:To:Subject:In-Reply-To:References:Cc; b=jHI8wty+lNsFDujkof44fTuAXLZ6lG0JsYAjDb6a+m9FfSY+zJs6WAS5fHOALrh/pPBJJHPDlncvHcs88Fy4D5U5o93aBW3Jm6kc4DpM3cWnei88mfzC0LMMfdeLc3qA4E3Bd8ydVCV/LmatETgWBHV87O7+B//954ohH1ylxpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hIeK3IEB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D36CBC433C7;
-	Fri, 15 Mar 2024 13:04:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710507896;
-	bh=DvGI8Ea9CrQMc930SjFSluQ/GjUlhlbAS/EJEnqtjTo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
-	b=hIeK3IEBIb6JAM9AZ/wvuH6aNzZGxylrAJRiLiGcHiZgEKx/uWiC6SEEmPlwCYvAD
-	 AZ4C87I2Tz0Mt6ogAzjumauuMWCfhHbASjxypGuMU0JASw/XmAWsL40XfnF6EEgYFB
-	 YEBwL5TE0M5q84QeAWr7NWx4Phe5gaLIjHcVab5MG4PdAGwf+DtQj9ePiKDlE1SAtr
-	 WTCn286Jg1O5nmqXSf/V0bNXrLw0wtE22iPRU+buqFbD11TdhNmeFmyM2uaBMIAiNu
-	 vK4okWTZPWdolle9rIQF8GEzzmSA/YLGZohUJPn9WJ86Kqc92s1oEEIsNnd1FfA3oQ
-	 BfPpmKmlQVz4w==
-Message-ID: <c3dbb1f483849c7ee6f61223514e5d16@kernel.org>
-Date: Fri, 15 Mar 2024 13:04:53 +0000
-From: "Maxime Ripard" <mripard@kernel.org>
-To: "Frank Oltmanns" <frank@oltmanns.dev>
-Subject: Re: [PATCH v4 1/5] clk: sunxi-ng: common: Support minimum and
- maximum rate
-In-Reply-To: <20240310-pinephone-pll-fixes-v4-1-46fc80c83637@oltmanns.dev>
-References: <20240310-pinephone-pll-fixes-v4-1-46fc80c83637@oltmanns.dev>
-Cc: devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev, stable@vger.kernel.org, "Chen-Yu
- Tsai" <wens@csie.org>, "Conor Dooley" <conor+dt@kernel.org>, "Daniel Vetter" <daniel@ffwll.ch>, "David
- Airlie" <airlied@gmail.com>, =?utf-8?b?R3VpZG8gR8O8bnRoZXI=?= <agx@sigxcpu.org>, "Jernej
- Skrabec" <jernej.skrabec@gmail.com>, "Jessica Zhang" <quic_jesszhan@quicinc.com>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>, "Maxime
- Ripard" <mripard@kernel.org>, "Michael Turquette" <mturquette@baylibre.com>, "Neil
- Armstrong" <neil.armstrong@linaro.org>, "Ondrej Jirman" <megi@xff.cz>, "Purism
- Kernel Team" <kernel@puri.sm>, "Rob Herring" <robh+dt@kernel.org>, "Sam
- Ravnborg" <sam@ravnborg.org>, "Samuel Holland" <samuel@sholland.org>, "Stephen
- Boyd" <sboyd@kernel.org>, "Thomas Zimmermann" <tzimmermann@suse.de>
-Content-Transfer-Encoding: 7bit
+	s=arc-20240116; t=1710507988; c=relaxed/simple;
+	bh=yJudiLMA36Y3KxSoumkJPCVd40zRvl4KvkUR0jh4l5g=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=TcPJdxoZGhoE1wqgAQZs7IdUfczqjDNeNVqFbNSTB50FRdHqmsxN2mqfH4ltx2FQ3Bc72XBHORVQ8wjWMHSHFlXkz8VvC2Z7dur+I9t5Gv89TNnewGfwtRo1ppJG3R3T6xJ7eylUX6jExxiuu5SKVmqQclWeF26d7TQsrIIp+SE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.10.95])
+	by sina.com (172.16.235.24) with ESMTP
+	id 65F447BE00006E11; Fri, 15 Mar 2024 21:06:10 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 42060945089131
+X-SMAIL-UIID: 1B503741C4CE417D9884D0A33183E19F-20240315-210610-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+f3bc6f8108108010a03d@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	tiwai@suse.com
+Subject: Re: [syzbot] [sound?] possible deadlock in snd_timer_close_locked
+Date: Fri, 15 Mar 2024 21:05:58 +0800
+Message-Id: <20240315130558.2420-1-hdanton@sina.com>
+In-Reply-To: <00000000000099d9850613b12348@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sun, 10 Mar 2024 14:21:11 +0100, Frank Oltmanns wrote:
-> The Allwinner SoC's typically have an upper and lower limit for their
-> clocks' rates. Up until now, support for that has been implemented
-> separately for each clock type.
+On Fri, 15 Mar 2024 04:16:27 -0700
+> syzbot found the following issue on:
 > 
-> Implement that functionality in the sunxi-ng's common part making use of
-> 
-> [ ... ]
+> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13a304a5180000
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-Thanks!
-Maxime
+--- x/sound/core/timer.c
++++ y/sound/core/timer.c
+@@ -409,8 +409,9 @@ static void snd_timer_close_locked(struc
+ 	struct snd_timer *timer = timeri->timer;
+ 
+ 	if (timer) {
+-		guard(spinlock)(&timer->lock);
++		spin_lock_irq(&timer->lock);
+ 		timeri->flags |= SNDRV_TIMER_IFLG_DEAD;
++		spin_unlock_irq(&timer->lock);
+ 	}
+ 
+ 	if (!list_empty(&timeri->open_list)) {
+--
 
