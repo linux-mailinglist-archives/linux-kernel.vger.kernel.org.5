@@ -1,79 +1,107 @@
-Return-Path: <linux-kernel+bounces-104452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70D8387CE16
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:28:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE8AC87CE19
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:29:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89E9C1C2118C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:28:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EA2F28279F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCD4364D9;
-	Fri, 15 Mar 2024 13:28:45 +0000 (UTC)
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF5536113
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047FF28E3E;
+	Fri, 15 Mar 2024 13:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AuuIXcWd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB20376E6;
+	Fri, 15 Mar 2024 13:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710509325; cv=none; b=Jwf++9g8lD3PB8GAvDZSF6PEUkEOPi5F81LjOjD2XEwaXEZIpqCOZa8XwfEZNolultuMyAUuJc2kxql9vqo0I718JuWJihUElZVcSpVav8cVey3huaxEFrNI/iucvRu/aWyjD8FAN5gW0rxi+U04/3gIkA2M7EhxBatJwyr3CjM=
+	t=1710509365; cv=none; b=HEurv0IAUwKm1NwsoEJGumBghN5LjZws7Wd5j+h2vSqjOi1BJWgXVj8Jme9mfeJrMN9tT9w7pnHghBqy09E/m+yfgsmf0mPhnRnmPG8ZbZESA64wCcf2Uya1jf952OxOUiq1JajQqhbeGUlhdqWP41QpCXlUErIQEJCSxOKRh0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710509325; c=relaxed/simple;
-	bh=O2yLTuHryKNgwQFOPgw1KN/Mr2BrUh8deYtzv9G8CJI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NVewCBrNCU7LPP4JnDF5MWpNdyJaszWBKFiqRxueH4RA2TESvDrjnT3EOxXZ1w7pUt84Rd6m4FqST8jQOTW/uEFgiO6sJpgRqjJBp6gB9Ki1kvBCKkqrDwqyDLb2xWqS+1iucv5pBp0kUUfd05cdeh/PO5KZe3HfZsd8msDexR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-	by mail.parknet.co.jp (Postfix) with ESMTPSA id E34D0205DB9A;
-	Fri, 15 Mar 2024 22:28:34 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42FDSXpc288466
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 22:28:34 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42FDSXnV1717364
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 22:28:33 +0900
-Received: (from hirofumi@localhost)
-	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 42FDSXEP1717363;
-	Fri, 15 Mar 2024 22:28:33 +0900
-From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To: Yang Li <yang.lee@linux.alibaba.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] fs: Add kernel-doc comments to fat_parse_long()
-In-Reply-To: <20240315075249.111059-1-yang.lee@linux.alibaba.com> (Yang Li's
-	message of "Fri, 15 Mar 2024 15:52:49 +0800")
-References: <20240315075249.111059-1-yang.lee@linux.alibaba.com>
-Date: Fri, 15 Mar 2024 22:28:33 +0900
-Message-ID: <87r0gbd3pa.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710509365; c=relaxed/simple;
+	bh=Vb6QoET5XlbVi8dY8PNk86MFBYpawiqOsxptI1/cIE8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qb+JFPb+tiKOs5e0KalibMd77zDkzr13FNpFStm/7iX4g9Fa4mwnF7FZYHBBZwHFXeekHPvrBbSjjpSyx4E80U/tmfFwszTx9XTDQLcvCZVb18l3+ZwiScbBUKdyd+3axg/t3HSOFjidFtVKjAbvfudo/nM3UuXSeUWrtjXBTm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AuuIXcWd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6122CC433F1;
+	Fri, 15 Mar 2024 13:29:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710509364;
+	bh=Vb6QoET5XlbVi8dY8PNk86MFBYpawiqOsxptI1/cIE8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AuuIXcWdjVgqawPveKoDdoZZQGM7YiX17835SOPCU4pqi2cRrbHDlcQEGm5ZyyE0a
+	 wpy82qGfmG/5dNwQ9PmDOaLTFQ3RvoyCQirpcuRrhMjlg+x6vkdUNiTDLNO6VU52vl
+	 a2hnVKTy1b4VcfPqaCkEUN/aEK1i+0xFXvRXpbEVJeFfGxohMFB8n1F//nHNg0lf3P
+	 PhWvMP0ZeelNw8cVsrpXwEeFzKLlg8KrWODtEGN0haPrSFKRju9lrRelW4X4F14Itq
+	 yFTXodGlXL1IZEYa7A261KVUgLmDWUxN5Qv9z6/hTgumIb9xMCAzM+jZrVysm6hq2o
+	 dKkSL4C1vscUw==
+Date: Fri, 15 Mar 2024 14:29:17 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Aleksandr Nogikh <nogikh@google.com>, 
+	syzbot <syzbot+28aaddd5a3221d7fd709@syzkaller.appspotmail.com>, axboe@kernel.dk, jmorris@namei.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, paul@paul-moore.com, serge@hallyn.com, 
+	syzkaller-bugs@googlegroups.com, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
+	Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [syzbot] [hfs] general protection fault in tomoyo_check_acl (3)
+Message-ID: <20240315-zugerechnet-abserviert-36a416bde350@brauner>
+References: <000000000000fcfb4a05ffe48213@google.com>
+ <0000000000009e1b00060ea5df51@google.com>
+ <20240111092147.ywwuk4vopsml3plk@quack3>
+ <bbeeb617-6730-4159-80b1-182841925cce@I-love.SAKURA.ne.jp>
+ <20240314155417.aysvaktvvqxc34zb@quack3>
+ <CANp29Y6uevNW1SmXi_5muEeruP0TVh9Y9xwhgKO==J3fh8oa=w@mail.gmail.com>
+ <20240314172731.vj4tspj6yudztmxu@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240314172731.vj4tspj6yudztmxu@quack3>
 
-Yang Li <yang.lee@linux.alibaba.com> writes:
+On Thu, Mar 14, 2024 at 06:27:31PM +0100, Jan Kara wrote:
+> Hi Aleksandr,
+> 
+> On Thu 14-03-24 17:21:30, Aleksandr Nogikh wrote:
+> > Yes, the CONFIG_BLK_DEV_WRITE_MOUNTED=n change did indeed break our C
+> > executor code (and therefore our C reproducers). I posted a fix[1]
+> > soon afterwards, but the problem is that syzbot will keep on using old
+> > reproducers for old bugs. Syzkaller descriptions change over time, so
+> > during bisection and patch testing we have to use the exact syzkaller
+> > revision that detected the original bug. All older syzkaller revisions
+> > now neither find nor reproduce fs bugs on newer Linux kernel revisions
+> > with CONFIG_BLK_DEV_WRITE_MOUNTED=n.
+> 
+> I see, thanks for explanation!
+> 
+> > If the stream of such bisection results is already bothering you and
+> > other fs people, a very quick fix could be to ban this commit from the
+> > possible bisection results (it's just a one line change in the syzbot
+> > config). Then such bugs would just get gradually obsoleted by syzbot
+> > without any noise.
+> 
+> It isn't bothering me as such but it results in
+> CONFIG_BLK_DEV_WRITE_MOUNTED=n breaking all fs-related reproducers and thus
+> making it difficult to evaluate whether the reproducer was somehow
+> corrupting the fs image or not. Practically it means closing most
+> fs-related syzbot bugs and (somewhat needlessly) starting over from scratch
+> with search for reproducers. I'm OK with that although it is a bit
+> unfortunate... But I'm pretty sure within a few months syzbot will deliver
+> a healthy portion of new issues :)
 
-> + * @bh: Pointer to the buffer head that may be used for reading directory entries.
-> + *      May be updated.
-> + * @de: On input, points to the current directory entry.
-> + *      On output, points to the next directory entry.
-> + * @unicode: Pointer to a buffer where the parsed Unicode long filename will be stored.
-> + * @nr_slots: Pointer to a variable that will store the number of longname slots found.
-> + *
->   * This function returns zero on success, negative value on error, or one of
->   * the following:
->   *
+Fwiw, my take on this is that if an active subsystem (responsive to
+syzbot bugs and whatnot) is not able to fix a bug within months given a
+reproducer then it's likely that the reproducer is not all that useful.
 
-Beyond 80 columns is common now?
-
-Thanks.
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+So by closing that issue and we're hopefully getting a better
+reproducer.
 
