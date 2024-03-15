@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-104725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EFE487D2CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:29:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E3D87D2D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:31:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706D01C220CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:29:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBE382844FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED7748CCC;
-	Fri, 15 Mar 2024 17:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F087D4C600;
+	Fri, 15 Mar 2024 17:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="So4N/Q/6"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="LiRpwiB8"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC13B3B79E;
-	Fri, 15 Mar 2024 17:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6654642A;
+	Fri, 15 Mar 2024 17:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710523749; cv=none; b=PkQ2tIDms2RD25VUXJJRDNAZxDIwelkgL6rF+nme2x2OvdmRk0d+bluIRnC9d6hhJZvQ351MA1czxfKjM06h8GRxo1nShXhM++KZYSr8z8gmipvsPmalu7yq5bbrX+Kgpe5LXrBLMjYq0CIgqpkn5nJ/U6/B1pk7mIE8GW9e0/w=
+	t=1710523874; cv=none; b=WbcKNfx2zbcOOSthdfZOyiTI5Qx7cMZE92K2byTqrs+QKGQ6WQaqw4pNZ7RJ4xU2zdQH04pTsJPQ20MXcfNUs1v0bTuGPra08i0Y1v/NU+Wm2oDusLc/Jq4nc39rVLObn5xtw23F2tCkT0Skm8d46Rm58rFVH85oUY3EiSf/eTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710523749; c=relaxed/simple;
-	bh=anpAHH2KuXL7ULU+QjpHeyggW4JdiKkCHD81lFQDPOc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ksLX6rCFqa4BVPAnUYlhOHG7KHd6/aG51UJRmaJDG0uX1fwsqobh4D5tP/sszmn82zFal4rf+Kjb3XDIfU8Yt0maLcHov6ut3O+qPU/1AskooA6mC+7WcYpPXWnLIicrN5iq/HaDM3RZvfXf35LJdi6SCNieswtCJW1M7LFzg6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=So4N/Q/6; arc=none smtp.client-ip=209.85.208.47
+	s=arc-20240116; t=1710523874; c=relaxed/simple;
+	bh=rjDnkjs+ZYqLGAWaK7/C4IYmXWE3AUvsfoFz7CE1bAA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=d/YZDtvhH7+UPrJbh2ckd+QuXik5o21U5WHKgJUg2YTpWblkIt/7oFQhsn3nj9ELrh93tU5MyiHbKY7a19tWdcDJMInSqfMZvnEmM8+6bIA+VVdmDknqVLuptFJxLBy7H54f9GJbG3sLGATb1tXAEiR3/9uCqqLZva5uTVJGMi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=LiRpwiB8; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5689b7e8387so3131472a12.2;
-        Fri, 15 Mar 2024 10:29:07 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-566e869f631so2752943a12.0;
+        Fri, 15 Mar 2024 10:31:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710523746; x=1711128546; darn=vger.kernel.org;
+        d=googlemail.com; s=20230601; t=1710523870; x=1711128670; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TMhhVpAtizRznG8VJtuyPA2sK8UPTaoFMwou67Bt+5U=;
-        b=So4N/Q/6Rn5HNuCN3cDWiOnnltlv+wODeMYBEtskyFoBKWbJVGpOaWaYZYdBa+bGwk
-         2nHN6vE/sUS7PYqDnkNGJ6ojCGjtK8XmYzZer7LI/fffFRJTZ50ifSXOdZ9pTJEOuNkv
-         +TmJe9+1IA+Q7MfYGWvhCZoDiyG+7BQopSwNFYaXB18t/aQEr4w47Z9hYCr5mf+CaA0K
-         wm/lCdLcpg3AUHwZjV/a5AIFswlK/+hSzBkq804ikCqYu8g3SStN7+BlgpN7d1J6N11m
-         2EM9jK908kiXL7zOYAvTX5pFfS+Yh07/wcqoZAxKOZ48/p7kbIy3XZgcQzrTwetruNqf
-         uieQ==
+        bh=oDsYhpfipGym17a6LaH0lhvlMbNzYHAToLHVYi0KWTs=;
+        b=LiRpwiB8dPS09pF49p5nbOpo4mPy8IXhlMw1SNXkES/5QBTyPG6F018NM2ifrgLZip
+         LI5qKBPERcGIJMzNZgwUdpzIvbIZvl0AnVVTV0s9aiGY4lcaM4E3ys6i1dRSvz1YSyI4
+         t8SrWcN6bupvQWnPlIK8UZyCgKLjAw1VPdyWlatqER0nAEWn8QFQFq2Z6hFxDL2wLMlU
+         dSAzaPx3W4mFT+AUBenQ89MSSo7Jh/2DCYkEh+UXObOBPrEfBHdjI49ORKlY2hHY00SR
+         +QuTCHpc0wIk7ld/pQgoLIA2YLY4i+Awh44sGizuv5iE73luD6pvv7hkP5RBA692bYmc
+         Nw3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710523746; x=1711128546;
+        d=1e100.net; s=20230601; t=1710523870; x=1711128670;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TMhhVpAtizRznG8VJtuyPA2sK8UPTaoFMwou67Bt+5U=;
-        b=UBM14UAzD4Td+sYDHPKmvFpoRqcNzdyAihp0AGR9KSl0a/Kw0Mn+OtjNv6DHYEAUJJ
-         6l3f+2nMshQEh6VEEICE4mUO7Y00yzSHnOBSwBvHtUUCmnUDXupi+VCh+439Te5W6jpR
-         pMaoYyPi4JloGJP1FeLYSBEDPRglSDk8bMkQsr9DWoyv1Eu/hEhspzRZQDOb5L/SV0RD
-         W1nzUWT9x4+r/OUAf3LDeEFgJr93IZusnA+RzTCWPkunTqJxTv+4QCH8n2KvzW0m5w7a
-         j7NOKyk0yhjEvRJ/PY9iqJ4cGkAN29J0f8ogWduJkeEze74aQdqqT5BHVKjTnCPAKBYz
-         GuxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfm8umKci/FRl12B5h+JdZ6+60+Agb88A2q6C9zCp5lnPmvohVO8zrh37kbJhjwlgXfMjKitYiQA52wi++fiTdbaXpzw9mESjBrMs+
-X-Gm-Message-State: AOJu0YzLpZDx8iVvU3M0XqpvDWtumd73WEgRcrrPe40OFQkIzJX/h+5K
-	Y2Z97twX+rfUfIEw/AbCEXBK7+9k8XQ4QXCccu/dlArQNDzVFUi6+7/w4uxWWSAHOQ==
-X-Google-Smtp-Source: AGHT+IE5Ey+yve1/5Gmwz5QEou0DEEA+7EMC7QqO9RW6lYtUMidYpMcchRWJsAd1RzZMfb8ggEkOlg==
-X-Received: by 2002:a17:906:81d1:b0:a46:651a:724e with SMTP id e17-20020a17090681d100b00a46651a724emr2610342ejx.54.1710523746240;
-        Fri, 15 Mar 2024 10:29:06 -0700 (PDT)
+        bh=oDsYhpfipGym17a6LaH0lhvlMbNzYHAToLHVYi0KWTs=;
+        b=XsoY8R681H2n6B7ywe7ja+4ZYjISBxF158trc6Qh3Jg3hzZN4PONr/kWfVvFsaeBPe
+         iqKq42NtRDRb8f4pqGB0JRt90M6GKKl/8kiISwlxOZDgf2ifDOLlCSaNG6eo/VqoceLd
+         kAZz4lLU5gkBdveOBsMJeLmtAWEvJGLyHHrzZzLHsvgzjA4+ViDuNC/GqCdwdNcq2Mdz
+         DTyVMv4tv5b2sGb8Pa22D+5Nga6RFVTz3UEq+frNx7Bj9+XKPRVbhBircTfm4zfFQlDS
+         6E0pCvozNJk53yefHt41Zj69wrwth7nkTyJek4sKkr8f43i3Yqf7hDljPap3ijsd4p2U
+         nkgw==
+X-Forwarded-Encrypted: i=1; AJvYcCWRWdcte/zUg+81PnS7IHRMCMxX8ZqnsF0JHwd7d8aUMm2/Gs2GxYKSKW3GHCezxo1V7toQ6+4wa7pje4xwa6ZCPANxiEOlqolJNftk
+X-Gm-Message-State: AOJu0YzoufYdGjX9Fas/KdFjzrbFZ4G2nZgQ3q+aQ4AkcOR4ojuAYvwn
+	AafpvCofgIB3al/5B5/zFhGxGcGlSTpGZOEiDW6o17PY6HyRDv0CMFC6EZ6wKvRKdw==
+X-Google-Smtp-Source: AGHT+IHpyUZXiIN8kGjVmByDzzTyMESb0L/JkcRU11qQ26QKy5L7v3Z5vhKpomS7I/0PiWnGTnJCrw==
+X-Received: by 2002:a05:6402:5486:b0:566:806a:6f9e with SMTP id fg6-20020a056402548600b00566806a6f9emr3777774edb.28.1710523869433;
+        Fri, 15 Mar 2024 10:31:09 -0700 (PDT)
 Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
-        by smtp.gmail.com with ESMTPSA id kq15-20020a170906abcf00b00a462520d561sm1888870ejb.54.2024.03.15.10.29.05
+        by smtp.gmail.com with ESMTPSA id w23-20020aa7da57000000b00568ba93876esm88935eds.28.2024.03.15.10.31.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 10:29:05 -0700 (PDT)
+        Fri, 15 Mar 2024 10:31:09 -0700 (PDT)
 From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
 To: selinux@vger.kernel.org
 Cc: Paul Moore <paul@paul-moore.com>,
 	Stephen Smalley <stephen.smalley.work@gmail.com>,
 	Ondrej Mosnacek <omosnace@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] selinux: reject invalid ebitmaps
-Date: Fri, 15 Mar 2024 18:28:44 +0100
-Message-ID: <20240315172859.634263-1-cgzones@googlemail.com>
+Subject: [PATCH 2/2] selinux: make more use of current_sid()
+Date: Fri, 15 Mar 2024 18:31:00 +0100
+Message-ID: <20240315173105.636749-1-cgzones@googlemail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -83,51 +83,133 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Reject ebitmaps with a node containing an empty map or with an incorrect
-highbit.  Both checks are already performed by userspace, the former
-since 2008 (patch 13cd4c896068 ("initial import from svn trunk revision
-2950")), the latter since v2.7 in 2017 (patch 75b14a5de10a ("libsepol:
-ebitmap: reject loading bitmaps with incorrect high bit")).
+Use the internal helper current_sid() where applicable.
 
 Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
-v2:
-  update wording as suggested in [1]
+ security/selinux/hooks.c | 22 ++++++----------------
+ security/selinux/xfrm.c  |  7 ++-----
+ 2 files changed, 8 insertions(+), 21 deletions(-)
 
-[1]: https://lore.kernel.org/selinux/d476b21729cafb28c1b881113a563b1f.paul@paul-moore.com/
----
- security/selinux/ss/ebitmap.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
-index 67c1a73cd5ee..f1ba333f127d 100644
---- a/security/selinux/ss/ebitmap.c
-+++ b/security/selinux/ss/ebitmap.c
-@@ -448,6 +448,10 @@ int ebitmap_read(struct ebitmap *e, void *fp)
- 			goto bad;
- 		}
- 		map = le64_to_cpu(mapbits);
-+		if (!map) {
-+			pr_err("SELinux: ebitmap: empty map\n");
-+			goto bad;
-+		}
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index f9a61ff64b83..9c41dc9eb0a0 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -2961,7 +2961,7 @@ static int selinux_inode_init_security_anon(struct inode *inode,
+ 					    const struct qstr *name,
+ 					    const struct inode *context_inode)
+ {
+-	const struct task_security_struct *tsec = selinux_cred(current_cred());
++	u32 sid = current_sid();
+ 	struct common_audit_data ad;
+ 	struct inode_security_struct *isec;
+ 	int rc;
+@@ -2990,7 +2990,7 @@ static int selinux_inode_init_security_anon(struct inode *inode,
+ 	} else {
+ 		isec->sclass = SECCLASS_ANON_INODE;
+ 		rc = security_transition_sid(
+-			tsec->sid, tsec->sid,
++			sid, sid,
+ 			isec->sclass, name, &isec->sid);
+ 		if (rc)
+ 			return rc;
+@@ -3005,7 +3005,7 @@ static int selinux_inode_init_security_anon(struct inode *inode,
+ 	ad.type = LSM_AUDIT_DATA_ANONINODE;
+ 	ad.u.anonclass = name ? (const char *)name->name : "?";
  
- 		index = (startbit - n->startbit) / EBITMAP_UNIT_SIZE;
- 		while (map) {
-@@ -455,6 +459,13 @@ int ebitmap_read(struct ebitmap *e, void *fp)
- 			map = EBITMAP_SHIFT_UNIT_SIZE(map);
- 		}
- 	}
-+
-+	if (n && n->startbit + EBITMAP_SIZE != e->highbit) {
-+		pr_err("SELinux: ebitmap: high bit %d is not equal to the expected value %ld\n",
-+		       e->highbit, n->startbit + EBITMAP_SIZE);
-+		goto bad;
-+	}
-+
- ok:
- 	rc = 0;
- out:
+-	return avc_has_perm(tsec->sid,
++	return avc_has_perm(sid,
+ 			    isec->sid,
+ 			    isec->sclass,
+ 			    FILE__CREATE,
+@@ -3063,14 +3063,12 @@ static int selinux_inode_readlink(struct dentry *dentry)
+ static int selinux_inode_follow_link(struct dentry *dentry, struct inode *inode,
+ 				     bool rcu)
+ {
+-	const struct cred *cred = current_cred();
+ 	struct common_audit_data ad;
+ 	struct inode_security_struct *isec;
+-	u32 sid;
++	u32 sid = current_sid();
+ 
+ 	ad.type = LSM_AUDIT_DATA_DENTRY;
+ 	ad.u.dentry = dentry;
+-	sid = cred_sid(cred);
+ 	isec = inode_security_rcu(inode, rcu);
+ 	if (IS_ERR(isec))
+ 		return PTR_ERR(isec);
+@@ -3094,12 +3092,11 @@ static noinline int audit_inode_permission(struct inode *inode,
+ 
+ static int selinux_inode_permission(struct inode *inode, int mask)
+ {
+-	const struct cred *cred = current_cred();
+ 	u32 perms;
+ 	bool from_access;
+ 	bool no_block = mask & MAY_NOT_BLOCK;
+ 	struct inode_security_struct *isec;
+-	u32 sid;
++	u32 sid = current_sid();
+ 	struct av_decision avd;
+ 	int rc, rc2;
+ 	u32 audited, denied;
+@@ -3116,7 +3113,6 @@ static int selinux_inode_permission(struct inode *inode, int mask)
+ 
+ 	perms = file_mask_to_av(inode->i_mode, mask);
+ 
+-	sid = cred_sid(cred);
+ 	isec = inode_security_rcu(inode, no_block);
+ 	if (IS_ERR(isec))
+ 		return PTR_ERR(isec);
+@@ -5563,13 +5559,7 @@ static void selinux_inet_conn_established(struct sock *sk, struct sk_buff *skb)
+ 
+ static int selinux_secmark_relabel_packet(u32 sid)
+ {
+-	const struct task_security_struct *tsec;
+-	u32 tsid;
+-
+-	tsec = selinux_cred(current_cred());
+-	tsid = tsec->sid;
+-
+-	return avc_has_perm(tsid, sid, SECCLASS_PACKET, PACKET__RELABELTO,
++	return avc_has_perm(current_sid(), sid, SECCLASS_PACKET, PACKET__RELABELTO,
+ 			    NULL);
+ }
+ 
+diff --git a/security/selinux/xfrm.c b/security/selinux/xfrm.c
+index 95fcd2d3433e..90ec4ef1b082 100644
+--- a/security/selinux/xfrm.c
++++ b/security/selinux/xfrm.c
+@@ -76,7 +76,6 @@ static int selinux_xfrm_alloc_user(struct xfrm_sec_ctx **ctxp,
+ 				   gfp_t gfp)
+ {
+ 	int rc;
+-	const struct task_security_struct *tsec = selinux_cred(current_cred());
+ 	struct xfrm_sec_ctx *ctx = NULL;
+ 	u32 str_len;
+ 
+@@ -103,7 +102,7 @@ static int selinux_xfrm_alloc_user(struct xfrm_sec_ctx **ctxp,
+ 	if (rc)
+ 		goto err;
+ 
+-	rc = avc_has_perm(tsec->sid, ctx->ctx_sid,
++	rc = avc_has_perm(current_sid(), ctx->ctx_sid,
+ 			  SECCLASS_ASSOCIATION, ASSOCIATION__SETCONTEXT, NULL);
+ 	if (rc)
+ 		goto err;
+@@ -134,12 +133,10 @@ static void selinux_xfrm_free(struct xfrm_sec_ctx *ctx)
+  */
+ static int selinux_xfrm_delete(struct xfrm_sec_ctx *ctx)
+ {
+-	const struct task_security_struct *tsec = selinux_cred(current_cred());
+-
+ 	if (!ctx)
+ 		return 0;
+ 
+-	return avc_has_perm(tsec->sid, ctx->ctx_sid,
++	return avc_has_perm(current_sid(), ctx->ctx_sid,
+ 			    SECCLASS_ASSOCIATION, ASSOCIATION__SETCONTEXT,
+ 			    NULL);
+ }
 -- 
 2.43.0
 
