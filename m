@@ -1,244 +1,228 @@
-Return-Path: <linux-kernel+bounces-104617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9C4E87D10B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:17:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4E487D10C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC4881C22761
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:17:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AEF01F24355
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:17:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B4E45979;
-	Fri, 15 Mar 2024 16:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23353482D0;
+	Fri, 15 Mar 2024 16:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h6VpuuzC"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="YpKzkTtW"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2083.outbound.protection.outlook.com [40.107.223.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9FA1773D;
-	Fri, 15 Mar 2024 16:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710519441; cv=none; b=SLJMRgorjAGrurOLCe0zoxUovuVCKOy7E1j+v21c/142QYSjR9cQXdUqeYdIo5SpGTpfx00xD/s398EGoTer1viDeQnKZxGoaU0SyCqzafWxjMqwCXht2dyrea/uXkuTNc91Tt2G2zhuuGm7K9NZRnri4WdSFxlplPTQjhUTC6M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710519441; c=relaxed/simple;
-	bh=+siEWXHFz2psbXNoaXiWPftLm9zhkkWUSF8L5Mc+7D4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QhIeWwor/fbm8K361MO67Em9bl3txFix2hkahGAWYCiMQa7pH0J193Zti4zd4PiqQw9ol3wU+1lQ7O3dDYORLvj0gUnmoeoYGPYpK3/tupa6JgSRhrhZj7RCiZ23yWbNQl/SPO6JqWpG5B1hx4zZzoROg/z8H85RUDKN+BW7AhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h6VpuuzC; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1def2a1aafaso5123685ad.3;
-        Fri, 15 Mar 2024 09:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710519437; x=1711124237; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JvTc5Nmq7ya0vJkhA/LyUC5oHHVwCe9apA49fvP71+A=;
-        b=h6VpuuzCgn0VWqRYlIL6EyOxghZc+qh/IxW0QrY6XXnnQqeqs4B2M5m9VEWTCTnd/2
-         LMw8KrHTPYwqq8kUqBephrBRoHu30KRkXeVGMy4Iv4e7asUhZplYbkBhMeb0ux4Ih4rH
-         TvTEkW/cuk/GkKe9htULqJIKdH+nD/Z2UPrW4jlVDRaNhE4OOVdtirEYVTMVlCQO5Nyb
-         Krm1zSoofDZ8oanw9dqM8d+JVUFXXZpYVXqSSxE9IkknKJbgqSoEjQufOtA+RjrogfXw
-         PAr88M/ETkP8GTJwzRlJyosdV5Zq+bviF2PIV0Yirg+TNjH2FZcy2usgwYQhUtVbC/NM
-         gxTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710519437; x=1711124237;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JvTc5Nmq7ya0vJkhA/LyUC5oHHVwCe9apA49fvP71+A=;
-        b=rzBn5O5MuO/VviE9FSe1ZLzHlIb5hNUzw7lXy0ZvNKC1Xc8XOwuTec6JaNiVD0DRa/
-         H1G0/oQwMAyDIdlXadZ68+/SgknxMyDCQLPrMKt8Hymz2vlgBBqHeIFCMOIBWieKQjpg
-         92Nb/lOFUEZc71BDN6T1oQL93nRFYzK6FneDYWdfCshX95YcuUTE+FXmiOLFib5e/lkL
-         CbKwk/7rFYRutR0LabtrCwNfTvtspKVM0EHwg1RHZ18AtljeYVuENQWgM+y3pU/a1y43
-         EtVQDcPYLvgKgp3xncn/HzHy/YeYaYJZrs6faI3rq1LzVY0whOY0nAtGi4ssM9QyhPs7
-         nliA==
-X-Forwarded-Encrypted: i=1; AJvYcCUCUdsU3QhjoluAGFDnJe2nn+hurOtxMmyA2VWN/WKLR3HbUkpQnDn5iVQfEG2+1J2+SEdxg1pLBlfHEpeVNLq9creCkaXTmxa2TM3C
-X-Gm-Message-State: AOJu0YxXO61s5JUX8sAmWv6M+DCctt981a29w1Fc5EqFuqSrxMwVJwuQ
-	hog9ngjn60jyIQg4/tlgQKk8rNysLgXlQD1KU7H7EMuy0DZFLQ8S
-X-Google-Smtp-Source: AGHT+IEjegsX44p9cqszfgX3j2cAN6QCSyKnJxqZGg+ZKFi24Svb8e4VoBu+OKuBt7WdGRrUpeaMug==
-X-Received: by 2002:a17:902:d510:b0:1de:f230:4bd1 with SMTP id b16-20020a170902d51000b001def2304bd1mr2078165plg.10.1710519436599;
-        Fri, 15 Mar 2024 09:17:16 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k10-20020a170902c40a00b001defa97c6basm806766plk.235.2024.03.15.09.17.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 09:17:15 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Fri, 15 Mar 2024 09:17:14 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-	Linus Torvalds <torvalds@linuxfoundation.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-sparse@vger.kernel.org,
-	lkp@intel.com, oe-kbuild-all@lists.linux.dev
-Subject: Re: [patch 5/9] x86: Cure per CPU madness on UP
-Message-ID: <e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net>
-References: <20240303235029.555787150@linutronix.de>
- <20240304005104.622511517@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBFF47F54
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.83
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710519453; cv=fail; b=heivyRB8VO2GcVVc4U2Z0W719DmJzpyzpFiDf8LHCvIoTK+CTgKVuzD5CCtxKRotBk+2S3/8Ovija1Qn5y8JV7u379XolFPWPU+j9+bjp+A2sBFcstOtd8u8p8Ewlf5MEYk40dTuVBDcDVX8wE+qWr9SAbTjm1fuSA8kSZDqylU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710519453; c=relaxed/simple;
+	bh=9ED/83by9Nr7RUGvb8DHKHsROj6534bKr8mnc1/7nFo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=BpBkwSq73QOBt14DeC1pcB3s2nTvLR0P+NcKR5dJUIafYH15eslzgcNWU82Xa0kHeKsaUVxZe7n5Hm9S0sEgMQ4VljcCNYDCcGA9BSMT0E47DIyKz34c2LhkdMliJemy1xHnQNAv8I5PkrSck85dgaq8i02ethV586O+dKC8pVY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=YpKzkTtW; arc=fail smtp.client-ip=40.107.223.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RMaOQJF6zdLSk9SrTDHtG1BkPFRqSCpEiaTTeVc0vLUfogL5owvbo+SgpB+XrYcS+vaduDeq2eaSJZfROwE4z9PQyByqZCBdnRnI9QQoAZrwlOQVi3cbt9cU6+LYT7dYlPf52aVuC3nsTxeQDZVhvhrHSLQmnz/eOcXB7PIvKpBgRP8ZSwuLUKsBctH2PGozjtknFrHqVj91ufPGJjx59obsn40kkBovDEWzTkvztkvLG2mzx37f3XvEAjNHZI75WcQkduHeJXGK6VZCJFCvkxAJe61KJXrOyr2auStN/cM8pzs/XilNNLuoMvoHFptr5SllPRwoljR2RdkPVR3Vcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cwDW5/52kN+sB7uiDUKq6/JUfGfWOQD2kUbv93wxh3k=;
+ b=FED3qSw0h8R/+pouBD7erIvMQ5SZY4M3aAwpoiS45ku0YsPshWjqHSx5nL3DkXOfc/mvKdsBMLNNlb3n0PPhIXAZMPeJKz8yLxDD6l7QBxWQlYn0sxkWFcnYnKNQaw+Kp0RHy8KStleQQEc4JFAbM1gyuXdkaa4CoYWeGt0rmBmSYmy7PnNxZr9XkWqw1lxfaybfqQ09bCnnzMsc+bblftVoVt++jwgQj9aH7Bh28JG0Kcv1V1DEOLXbtSbHBc3D/yj4EH9Z4DN/JEIX6s+DOfU6/Go95QMN1C4jYv0f9Ph5HUbO6mquYIDDK+BPSwjFT2iOfeWg6VhxUHyXN8QB0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cwDW5/52kN+sB7uiDUKq6/JUfGfWOQD2kUbv93wxh3k=;
+ b=YpKzkTtW8V36EwwjRmn0ZlUbRn1ihJeAHXBE25izSUcOBeSYHZUxk8ZhAqBGJO+KydchWMf+CkeB7Rk9eANQGJ+wTWujyM2Co3Vcah06qEy0YAX6ts85jWclhgsImM7HJTcX45YC+bVJBWoE2jy+QR+naFMdhowTbyxKM3T9VeQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by PH7PR12MB6636.namprd12.prod.outlook.com (2603:10b6:510:212::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Fri, 15 Mar
+ 2024 16:17:25 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::873e:e31:6eff:36a4]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::873e:e31:6eff:36a4%5]) with mapi id 15.20.7386.020; Fri, 15 Mar 2024
+ 16:17:24 +0000
+Message-ID: <162f5113-4eb6-dcea-f034-c81b9dc021b6@amd.com>
+Date: Fri, 15 Mar 2024 11:17:21 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Reply-To: babu.moger@amd.com
+Subject: Re: 32bit resctrl? (was Re: [PATCH v2] fs/resctrl: fix domid loss
+ precision issue)
+Content-Language: en-US
+To: Reinette Chatre <reinette.chatre@intel.com>,
+ Rex Nie <rex.nie@jaguarmicro.com>, james.morse@arm.com,
+ "x86@kernel.org" <x86@kernel.org>, "Luck, Tony" <tony.luck@intel.com>,
+ Babu Moger <babu.moger@amd.com>, Peter Newman <peternewman@google.com>,
+ Borislav Petkov <bp@alien8.de>
+Cc: fenghua.yu@intel.com, ilpo.jarvinen@linux.intel.com,
+ linux-kernel@vger.kernel.org
+References: <20240312075349.977-1-rex.nie@jaguarmicro.com>
+ <fed6affb-c7f4-4992-8646-8f5a52c33966@intel.com>
+From: "Moger, Babu" <bmoger@amd.com>
+In-Reply-To: <fed6affb-c7f4-4992-8646-8f5a52c33966@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA1P222CA0135.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:3c2::13) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304005104.622511517@linutronix.de>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|PH7PR12MB6636:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b2f4de3-1b32-463a-600b-08dc450b6691
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/Fvoon6qFzq9QljNRBBJ11Q1FvHAP8mzu2AL0FUvNkMuM6Om7hOJGIUsej1GxoRz/I+zkm9X3RMIRemHVuDanDX6y8+pYPGcirK4m2NUAWsNxhfezmRwHX23Ll2hsy5asnhPedYyCzXUYugMeZnkS6rPdPMN5c3FZ5x0zODiA9W+qZyRKJFMRxyt9X07HLfnPcMxtjXfVjbF7EWHyl9SNSQKkmFq5VdFCrV7cU8onRnObv5VRDGrqEEI4zyBAudOK9LzvZObzvlLTUGayn0Zsx8rCb0abenUUijf+4IvfVpZcMSRVlkfPoZboyeSn0v4WCT+su1FcIUIzcIbQ+5VZ45xhLK4DYM/94uX8IEf7Eu4AxpRyZyMuKSAXYQJLLBnWS2pH6tYEl5MNq5MZEDXaEss5rSvjkroSxFj8pRie2pnxA/QvV/3vMdWyRwgs/14KQgB1wyrcA4fMhrF2dGDchnFpjdFpo1uZAbydTAjaFj+/eNpQi9Abt/mybvB2MpykdNER5UQzyPN8fzxFJNSc+GQbStmKW5Dy+uWu794a0G2smoCVLMQcQ1TRUL3s6j5FyyomhVuy+BwWB2CsW5W71v+rsYC7cFnj4HQyDlr8vqH2PfqRuBdXGLJJv2jyqsqak1cqlffBvjF8N2H7wsnHxHXW3PCtm6BTmEbYcgEnyk=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YmluWmNTbWwvMStEaldlYnMxdHE1Rzh0Y1dvYTR1SmYrWWtvWlJtL3pxL1F5?=
+ =?utf-8?B?cUVyMTNPckozUkM1dDRIVjRxdDBzdXlLY2s3WVlLUjJzdzc5VFdORk1wdW9G?=
+ =?utf-8?B?VmVvN1p4TGhFemROYTJYeUllREoySkR4dHJHVEhYdlJwM1ZTMVg3NjE4U1da?=
+ =?utf-8?B?Rmhmd3lwb01iWjl4Nk4rSW5CdXh4OW1aWENhTUZVeGZQUHdXeHBzTHJMR1hH?=
+ =?utf-8?B?RjlvaDltcHRUNGRTbEdvcnpxM2RLcG84V1lOUE04cTJxczNrcEV1cnpicE1s?=
+ =?utf-8?B?SW9UVTY0cU1lMmVpbHBDSmdHWUR5TjVROFowWHcrZ0t6cVhFUCtDZld0bHVR?=
+ =?utf-8?B?UFFqK1g5V0E5cGlCSWJYdnJlN3RCcFhZeWxwOUJiZC9EUGhQdmRFTTRqbmVR?=
+ =?utf-8?B?QU1oNmJOVkx0UTM4L3h4dGs3NGpJdFRmakVpRkxpZnY4Ukk1cXo4cHY3YUN6?=
+ =?utf-8?B?TEVtakFGOVJuKzJXRHJqa2pLRXpxU0RuUUEzNVo1b2pIRys3YS9FczBKUnlw?=
+ =?utf-8?B?eGl4RWl2QTVLS0xwMVRPcXBQUFpmV1FCS2R2VXdEUFY0a29EUDZkd2g3Zm1v?=
+ =?utf-8?B?eHJUejE5U1RxVWpwZmtCVTk2TXNJMll6eDBQNHdXOEVZQ2R4L1FuUlBMUDFQ?=
+ =?utf-8?B?MyttQmVIMDRaWFIzMXFMeGk5cHBKcndUNnplTUhCeTg5Y0ZKSCtZNTV0c1d0?=
+ =?utf-8?B?OUw5bGtxYjBJTUM1VVZ2MnZmd2pUajF5eEZURnR0RTlzbVBwazRlbzNCWmgw?=
+ =?utf-8?B?ZXBIaXVFb0NvQTVBNXRQd1RMNGlqOTRvQmRuUnJuMDBzaXptTFY1dCtqWHdT?=
+ =?utf-8?B?US9iRW1ObSs1NGRnczBrYmRDTVdRcnhpZjdiMzJGVWo5QThHUm9YcXJEMnVh?=
+ =?utf-8?B?eENYNzMwZXRDblRqYnZOL0cwRE96NmtKRmxkVzdSbVVWUnRncmppZU0rNDZV?=
+ =?utf-8?B?TFNYN2hXbzFBdjZoYkp5a2VaaDJTZDVtK210K3NZOW5CdHZwUlhoMjZOVU5F?=
+ =?utf-8?B?OG00MEQzdHkyZE50ekU4dEVOdFE0dlJPYVlyTjh5bHJBblZOYTdYbEJ5cW9j?=
+ =?utf-8?B?LytFUGVKNVdlK3ZDNjZGdjFSZUlJakV4b25rU2lJclA0aFI0a3FmaXlKNUg0?=
+ =?utf-8?B?SGVsRDVLQ1J0ZXlGR3VOZ2Z0YW4wMnJZc1RsQWxzOExXbEpFdTdhMmtUTktU?=
+ =?utf-8?B?dTA4cXFPMUMzMlQzVjE2aFcwN3RkS2lhYTBzSFk0VDVTN0JGYkJMVlRMdnBu?=
+ =?utf-8?B?R0JFczZDYzd4K3JZN2FJdEJjb3V6STZXZjVoUENXankwT0VqbVNUOVdYbEVI?=
+ =?utf-8?B?VmtQUFBHcUF0ODlHS1o2WVJGVHptdk5wMTdsVG9pVFVUSmQ1VkRPclhXTTRD?=
+ =?utf-8?B?Y0wya1VWTS9DOUNKUUN4ek0xbnhhM29XWTIycWpWVytSZnRNRStuU2lWbEYw?=
+ =?utf-8?B?QXVXTG5QVFBqWDdRaTBoUHJVSlhtekdNNjVFcDdQZjBuK2xTVjhWNmVnWnpJ?=
+ =?utf-8?B?SFU0ajhZWnJicExkRE1tT2NMRnl2TWZEeFBUT3NhL1RGcElZR29XN3VxY0JH?=
+ =?utf-8?B?WjRWUDU2UnFmRWhCYW5PUW1JNndBZjFSd3BUcWp6V0VESUlvQm9kL09RR1cr?=
+ =?utf-8?B?RGFONGYyZEFxbENoU1d3ZXd1M1MvM3BaR0JXTFZhT0N5VllQK2Y2Z3pUeFI3?=
+ =?utf-8?B?UTZsMWNydXJUckdCcTFIZFpoRk42aXpRclpKWm1Ob0k4Y3locjR1ekZ3VXlk?=
+ =?utf-8?B?NXVycGJNRzU2VzV0Z3Q5eFNSaTJSZ0xkajI3M0VVL1loTGpLL1JrbExQUzRK?=
+ =?utf-8?B?bUNtTlYvT2lFS2krQzFCeGtzV29kUHdCQzFOaGh6QlVnSmFYSUd5emVKbE85?=
+ =?utf-8?B?Qkdta2xWSUlZTTBYZUpuS3lNR1ZzL3FOSXpGcmJ1WHlnZSt6aDhXT2czMCt0?=
+ =?utf-8?B?b0dwckJDMVdueko0R1EwbWU5MjBMMHFqYThJYzl3RitXNGNOaGplbkQrOXJQ?=
+ =?utf-8?B?T2RxdXVqTVVBMWdsSHJXVHVCVUJmeW9VSEhyaTk3VEszcnhWMUhHR2orcWVE?=
+ =?utf-8?B?MEJhZ3htMzVRdjlzQ0NLdEZZMDdzeWpUc0JvOUxoN01ZdWYrSmRkVzU1cWwz?=
+ =?utf-8?Q?eRts=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b2f4de3-1b32-463a-600b-08dc450b6691
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 16:17:24.8623
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: STo3/9eKYjDuNZeO5keKU4cot+DGHlwmW/Ur5K4ObxnObICQzcNyw5pZmF8fECyX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6636
 
-Hi,
 
-On Mon, Mar 04, 2024 at 11:12:23AM +0100, Thomas Gleixner wrote:
-> On UP builds sparse complains rightfully about accesses to cpu_info with
-> per CPU accessors:
-> 
-> cacheinfo.c:282:30: sparse: warning: incorrect type in initializer (different address spaces)
-> cacheinfo.c:282:30: sparse:    expected void const [noderef] __percpu *__vpp_verify
-> cacheinfo.c:282:30: sparse:    got unsigned int *
-> 
-> The reason is that on UP builds cpu_info which is a per CPU variable on SMP
-> is mapped to boot_cpu_info which is a regular variable. There is a hideous
-> accessor cpu_data() which tries to hide this, but it's not sufficient as
-> some places require raw accessors and generates worse code than the regular
-> per CPU accessors.
-> 
-> Waste sizeof(struct x86_cpuinfo) memory on UP and provide the per CPU
-> cpu_info unconditionally. This requires to update the CPU info on the boot
-> CPU as SMP does. (Ab)use the weakly defined smp_prepare_boot_cpu() function
-> and implement exactly that.
-> 
-> This allows to use regular per CPU accessors uncoditionally and paves the
-> way to remove the cpu_data() hackery.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+On 3/14/2024 10:25 AM, Reinette Chatre wrote:
+> +x86 maintainers, Tony, Babu, Peter
+>
+> Hi Everybody,
+>
+> On 3/12/2024 12:53 AM, Rex Nie wrote:
+>> Below statement from mkdir_mondata_subdir function will loss precision,
+>> because it assigns int to 14 bits bitfield.
+>> 	priv.u.domid = d->id;
+>>
+>> On some platforms(e.g.,x86), the max cache_id is the amount of L3 caches,
+>> so it is not in the range of 0x3fff. But some platforms use higher
+>> cache_id, e.g., arm uses cache_id as locator for cache MSC. This will
+>> cause below issue if cache_id > 0x3fff likes:
+>> /sys/fs/resctrl/mon_groups/p1/mon_data/mon_L3_1048564 # cat llc_occupancy
+>> cat: read error: No such file or directory
+>>
+>> This is the call trace when cat llc_occupancy:
+>> rdtgroup_mondata_show()
+>> 	domid = md.u.domid
+>> 	d = resctrl_arch_find_domain(r, domid)
+>>
+>> d is null here because of lossing precision
+>>
+>> Signed-off-by: Rex Nie <rex.nie@jaguarmicro.com>
+>> ---
+>>   fs/resctrl/internal.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/resctrl/internal.h b/fs/resctrl/internal.h
+>> index 7a6f46b4edd0..096317610949 100644
+>> --- a/fs/resctrl/internal.h
+>> +++ b/fs/resctrl/internal.h
+>> @@ -94,7 +94,7 @@ union mon_data_bits {
+>>   	struct {
+>>   		unsigned int rid		: 10;
+>>   		enum resctrl_event_id evtid	: 8;
+>> -		unsigned int domid		: 14;
+>> +		u32				domid;
+>>   	} u;
+>>   };
+>>   
+> resctrl currently supports 32bit builds. Fixing this issue* in this way
 
-This patch results in crashes when running the mainline kernel in qemu
-with nosmp builds and Intel CPUs. The problem is _not_ seen on tag
-x86-cleanups-2024-03-11; it is only seen in the mainline kernel. I didn't
-check all of them, but it looks like AMD CPUs are not affected. The
-initial bisect points to the merge of x86-cleanups-2024-03-11 into the
-mainline kernel. I rebased x86-cleanups-2024-03-11 on top of the mainline
-kernel; the second bisect uses that rebase as base. Reverting this patch
-from the mainline kernel fixes the problem.
+I have never bothered about 32bit builds.   Is Intel still testing 32bit 
+builds?
 
-I don't know the code well enough to determine what is wrong.
-Please let me know what I can do to help debugging the problem.
 
-Thanks,
-Guenter
+> would first require that resctrl (the architecture independent fs part)
+> depend on X86_64. Is this a change that everybody will be comfortable with?
+>
+> (Of course, there are other solutions available to address the issue mentioned
+> in this patch that do not require depending on X86_64, but I would like
+> to take this moment to understand the sentiment surrounding continuing support
+> for 32bit resctrl.)
 
-----
-crash log:
+I am thinking we have bigger problem here.
 
-[    3.291087] BUG: unable to handle page fault for address: ffff9cd801f3f2a0
-[    3.291087] #PF: supervisor write access in kernel mode
-[    3.291087] #PF: error_code(0x0002) - not-present page
-[    3.291087] PGD 60201067 P4D 60201067 PUD 0
-[    3.291087] Oops: 0002 [#1] PREEMPT PTI
-[    3.291087] CPU: 0 PID: 1 Comm: swapper Not tainted 6.8.0-06619-ge5e038b7ae9d #1
-[    3.291087] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[    3.291087] RIP: 0010:rapl_cpu_online+0xf2/0x110
-[    3.291087] Code: 05 ff 8e 07 03 40 42 0f 00 48 89 43 60 e8 56 5f 12 00 8b 15 b4 84 61 02 48 8b 05 01 8f 07 03 48 c7 83 90 00 00 00 e0 84 80 b6 <48> 89 9c d0 38 01 00 00 e9 2b ff ff ff b8 f4 ff ff ff e9 47 ff ff
-[    3.291087] RSP: 0018:ffffa3d54001fdd0 EFLAGS: 00000246
-[    3.291087] RAX: ffff9cd001f3f200 RBX: ffff9cd001fb34a8 RCX: 0000000000000000
-[    3.291087] RDX: 00000000ffffffed RSI: 0000000000000001 RDI: ffff9cd001fb3550
-[    3.291087] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-[    3.291087] R10: 0000000000000001 R11: 0000000000018001 R12: 0000000000000000
-[    3.291087] R13: 000000000000009e R14: ffffffffb6808180 R15: ffffffffb86710e5
-[    3.291087] FS:  0000000000000000(0000) GS:ffffffffb8ab0000(0000) knlGS:0000000000000000
-[    3.291087] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    3.291087] CR2: ffff9cd801f3f2a0 CR3: 000000005e6a2000 CR4: 00000000001506f0
-[    3.291087] Call Trace:
-[    3.291087]  <TASK>
-[    3.291087]  ? __die+0x1f/0x60
-[    3.291087]  ? page_fault_oops+0x148/0x460
-[    3.291087]  ? search_exception_tables+0x37/0x50
-[    3.291087]  ? fixup_exception+0x21/0x320
-[    3.291087]  ? exc_page_fault+0xca/0x150
-[    3.291087]  ? asm_exc_page_fault+0x26/0x30
-[    3.291087]  ? __pfx_rapl_cpu_online+0x10/0x10
-[    3.291087]  ? rapl_cpu_online+0xf2/0x110
-[    3.291087]  cpuhp_invoke_callback.constprop.0+0x117/0x3e0
-[    3.291087]  __cpuhp_setup_state_cpuslocked+0x1b7/0x280
-[    3.291087]  ? __pfx_rapl_cpu_online+0x10/0x10
-[    3.291087]  rapl_pmu_init+0x189/0x2e0
-[    3.291087]  ? __pfx_rapl_pmu_init+0x10/0x10
-[    3.291087]  do_one_initcall+0x4f/0x210
-[    3.291087]  kernel_init_freeable+0x166/0x290
-[    3.291087]  ? __pfx_kernel_init+0x10/0x10
-[    3.291087]  kernel_init+0x15/0x1b0
-[    3.291087]  ret_from_fork+0x2f/0x50
-[    3.291087]  ? __pfx_kernel_init+0x10/0x10
-[    3.291087]  ret_from_fork_asm+0x19/0x30
-[    3.291087]  </TASK>
-[    3.291087] Modules linked in:
-[    3.291087] CR2: ffff9cd801f3f2a0
-[    3.291087] ---[ end trace 0000000000000000 ]---
-[    3.291087] RIP: 0010:rapl_cpu_online+0xf2/0x110
-[    3.291087] Code: 05 ff 8e 07 03 40 42 0f 00 48 89 43 60 e8 56 5f 12 00 8b 15 b4 84 61 02 48 8b 05 01 8f 07 03 48 c7 83 90 00 00 00 e0 84 80 b6 <48> 89 9c d0 38 01 00 00 e9 2b ff ff ff b8 f4 ff ff ff e9 47 ff ff
-[    3.291087] RSP: 0018:ffffa3d54001fdd0 EFLAGS: 00000246
-[    3.291087] RAX: ffff9cd001f3f200 RBX: ffff9cd001fb34a8 RCX: 0000000000000000
-[    3.291087] RDX: 00000000ffffffed RSI: 0000000000000001 RDI: ffff9cd001fb3550
-[    3.291087] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-[    3.291087] R10: 0000000000000001 R11: 0000000000018001 R12: 0000000000000000
-[    3.291087] R13: 000000000000009e R14: ffffffffb6808180 R15: ffffffffb86710e5
-[    3.291087] FS:  0000000000000000(0000) GS:ffffffffb8ab0000(0000) knlGS:0000000000000000
-[    3.291087] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    3.291087] CR2: ffff9cd801f3f2a0 CR3: 000000005e6a2000 CR4: 00000000001506f0
-[    3.291087] note: swapper[1] exited with irqs disabled
-[    3.306047] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+The structure pointer "union mon_data_bits priv;" is created in stack 
+and passed to create mondata directory. We are reading it later again in 
+rdtgroup_mondata_show.
 
----
-1st bisect:
+How is this pointer valid again?  Shouldn't we use static pointer or 
+allocate memory for the pointer?
 
-# bad: [1bbeaf83dd7b5e3628b98bec66ff8fe2646e14aa] Merge tag 'perf-tools-for-v6.9-2024-03-13' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools
-# good: [e8f897f4afef0031fe618a8e94127a0934896aba] Linux 6.8
-git bisect start 'HEAD' 'v6.8'
-# bad: [9187210eee7d87eea37b45ea93454a88681894a4] Merge tag 'net-next-6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
-git bisect bad 9187210eee7d87eea37b45ea93454a88681894a4
-# bad: [a01c9fe32378636ae65bec8047b5de3fdb2ba5c8] Merge tag 'nfsd-6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux
-git bisect bad a01c9fe32378636ae65bec8047b5de3fdb2ba5c8
-# bad: [691632f0e86973604678d193ccfa47b9614581aa] Merge tag 's390-6.9-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
-git bisect bad 691632f0e86973604678d193ccfa47b9614581aa
-# good: [8ede842f669b6f78812349bbef4d1efd0fbdafce] Merge tag 'rust-6.9' of https://github.com/Rust-for-Linux/linux
-git bisect good 8ede842f669b6f78812349bbef4d1efd0fbdafce
-# good: [bfdb395a7cde12d83a623949ed029b0ab38d765b] Merge tag 'x86_mtrr_for_v6.9_rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect good bfdb395a7cde12d83a623949ed029b0ab38d765b
-# bad: [685d98211273f60e38a6d361b62d7016c545297e] Merge tag 'x86-core-2024-03-11' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect bad 685d98211273f60e38a6d361b62d7016c545297e
-# good: [b0402403e54ae9eb94ce1cbb53c7def776e97426] Merge tag 'edac_updates_for_v6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras
-git bisect good b0402403e54ae9eb94ce1cbb53c7def776e97426
-# good: [cb81deefb59de01325ab822f900c13941bfaf67f] x86/idle: Sanitize X86_BUG_AMD_E400 handling
-git bisect good cb81deefb59de01325ab822f900c13941bfaf67f
-# good: [73f0d1d7b4abb4a46bae1a0d8caf66e23d1138d0] Merge tag 'x86-asm-2024-03-11' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect good 73f0d1d7b4abb4a46bae1a0d8caf66e23d1138d0
-# good: [65efc4dc12c5cc296374278673b89390eba79fe6] x86/cpu: Provide a declaration for itlb_multihit_kvm_mitigation
-git bisect good 65efc4dc12c5cc296374278673b89390eba79fe6
-# good: [d69ad12c786f0a4593c48c0658043aa4a5116b09] Merge tag 'x86-build-2024-03-11' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect good d69ad12c786f0a4593c48c0658043aa4a5116b09
-# good: [35ce64922c8263448e58a2b9e8d15a64e11e9b2d] x86/idle: Select idle routine only once
-git bisect good 35ce64922c8263448e58a2b9e8d15a64e11e9b2d
-# good: [774a86f1c885460ade4334b901919fa1d8ae6ec6] x86/nmi: Drop unused declaration of proc_nmi_enabled()
-git bisect good 774a86f1c885460ade4334b901919fa1d8ae6ec6
-# bad: [fcc196579aa1fc167d6778948bff69fae6116737] Merge tag 'x86-cleanups-2024-03-11' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect bad fcc196579aa1fc167d6778948bff69fae6116737
-# first bad commit: [fcc196579aa1fc167d6778948bff69fae6116737] Merge tag 'x86-cleanups-2024-03-11' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+thanks
 
----
-2nd bisect:
+Babu
 
-# bad: [6d70929c7019e265425f7a89cf72163a639d462e] x86/nmi: Drop unused declaration of proc_nmi_enabled()
-# good: [d69ad12c786f0a4593c48c0658043aa4a5116b09] Merge tag 'x86-build-2024-03-11' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect start 'HEAD' 'fcc196579aa1fc167d6778948bff69fae6116737~1'
-# good: [5c157d25918ef15454c2a9a9262f7b763d9c9add] x86/msr: Add missing __percpu annotations
-git bisect good 5c157d25918ef15454c2a9a9262f7b763d9c9add
-# bad: [f5a6b1e2d92d825a0f73ca11e960795da336d99e] x86/uaccess: Add missing __force to casts in __access_ok() and valid_user_address()
-git bisect bad f5a6b1e2d92d825a0f73ca11e960795da336d99e
-# bad: [68907233f6d26a214bb79f892db8d999b15dda97] x86/percpu: Cure per CPU madness on UP
-git bisect bad 68907233f6d26a214bb79f892db8d999b15dda97
-# good: [053df18ceb928c8631042317a884b2842a457f1b] smp: Consolidate smp_prepare_boot_cpu()
-git bisect good 053df18ceb928c8631042317a884b2842a457f1b
-# first bad commit: [68907233f6d26a214bb79f892db8d999b15dda97] x86/percpu: Cure per CPU madness on UP
+
+
+>
+> Thank you.
+>
+> Reinette
+>
+> * Please note that this is not an urgent fix but instead a preparatory change
+>    for future Arm support.
+>
 
