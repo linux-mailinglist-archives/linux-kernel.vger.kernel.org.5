@@ -1,146 +1,196 @@
-Return-Path: <linux-kernel+bounces-104386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0934587CD1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:18:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B259487CD20
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 978A31F23C1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:18:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6CF01C218ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3111C6A4;
-	Fri, 15 Mar 2024 12:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019131C694;
+	Fri, 15 Mar 2024 12:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O8CPO8hk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EIqwtruI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130E61C687
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C3A1C683
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710505091; cv=none; b=CidXnolDvhvhYEQeih7FbHN4XcxRPfcBaj4wwF7Ne+peGx8q/SEG7/6gKUwrrLLVP3nlPsixrftqXP9Ktu8kVA/JPchb3zL22ce6Xm7kGrDpJM7t/PN1ExS4R4m9t0DGS8+OEQRz1oX87u805Da8Jxi7LSyWm4vjA2HDMYRZckA=
+	t=1710505111; cv=none; b=pD9Jl3dMes+JfmbW6vIudpodzGa7AyCUbfIsaTcznC7spb0MYmaFTdHwiQ+sd0Vmcosam7eIrOYZslSt73EJzRCxzSKd+Ew43+oqkWLzteOZ0/iZTFgctScbHQTy1tS+arS+eE+asyMsxwRljpT0vNn9ty6h2mAcMJ4c6rGFRY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710505091; c=relaxed/simple;
-	bh=OXBEZqhs7kDse6BVOLPyb/0TPxks7Uu4zNmjP25UPs4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VjZczs7uP0emNMMBgEDXVVmDmbXlRDdk0upjEnbFMITwNhBWe47jo84D5EcW3Hm+g4IQWbYfiZYoFgoiUrr/rUOsuHQSjjC2dFj7Ti+9eWHZmQExVT+WtxT1aevLZaRr4XAemjgc9PBxcJ8KUCnWCnP8U/iiS1R6XjaqaHLesuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O8CPO8hk; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1710505111; c=relaxed/simple;
+	bh=SQgqXlRnDyw92kAhwjNwDxeeaCrqlR2DKUqUs6S3GpA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AlL+f5PwU7OxR640zJIxvnRtYYn+Z5lpYfne0l9sdpxjRXQBzDdmBJvnyXsYryBXtqxkGrWjoqUZQv7kGlE8JgmpXHYuiXMbqOPLFNf0QMMa39+b17ZRIu8nnv8BN0o6kAKaURTwu6V97EgazqnMiYUEniLed+0p7NxpAe4Pmb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EIqwtruI; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710505089;
+	s=mimecast20190719; t=1710505108;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RkV+0UDwdwnEtpTzSiYVVxf6L/nYIk2GiTDZOWrLMLA=;
-	b=O8CPO8hkFsReA0TzyII3P7kY5yAG7zq6uPdT7XywlxFaoDTb/jKmOw9OdndNlH+KlYg200
-	gWEWpnZOPsAXpCYu9yuLJWHpL75ehgQ6rriX7wjOP8dpgSX+QvGQ0Lpit2iFB9gJ+aCdKa
-	1dlxPVfrM2l1n+yqmbRpbQS4YqKliGw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=LT2POqbfgrZp4xIkCsgMst+ERqrnYOoLDyndXBBv0s0=;
+	b=EIqwtruI9XiN4esqiV/DkQ0tox4Mo/xK+o6Xt/9hrqJKpUAuEUm/TvOrBUSCLTOIGcP5dC
+	BEuJtoazp9ysQsxX+U5eIa9gPghOtebs9vSOlA/1Dj47ZS708dZg8QK7pUJY5UMid8kMfk
+	LoV8ZkmVTJGdzr5VAgn1hxId82YRF5I=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-423-2P5q7AxxOZCO0dI-vc4yOw-1; Fri, 15 Mar 2024 08:17:50 -0400
-X-MC-Unique: 2P5q7AxxOZCO0dI-vc4yOw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1E5F5185A781;
-	Fri, 15 Mar 2024 12:17:49 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.52])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id D18562166B4F;
-	Fri, 15 Mar 2024 12:17:35 +0000 (UTC)
-Date: Fri, 15 Mar 2024 20:17:31 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Andreas Hindborg <nmi@metaspace.dk>
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-	Jens Axboe <axboe@kernel.dk>, Keith Busch <kbusch@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Christoph Hellwig <hch@lst.de>,
-	Damien Le Moal <Damien.LeMoal@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Hannes Reinecke <hare@suse.de>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Niklas Cassel <Niklas.Cassel@wdc.com>,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Yexuan Yang <1182282462@bupt.edu.cn>,
-	Sergio =?iso-8859-1?Q?Gonz=E1lez?= Collado <sergio.collado@gmail.com>,
-	Joel Granados <j.granados@samsung.com>,
-	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
-	Daniel Gomez <da.gomez@samsung.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
-	"gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 1/5] rust: block: introduce `kernel::block::mq` module
-Message-ID: <ZfQ8Wz9gMqsN02Mv@fedora>
-References: <20240313110515.70088-1-nmi@metaspace.dk>
- <20240313110515.70088-2-nmi@metaspace.dk>
- <ZfI8-14RUqGqoRd-@boqun-archlinux>
- <87il1ptck0.fsf@metaspace.dk>
- <CANiq72mzBe2npLo=CVR=ShyMuDmr0+TW4Gy0coPFQOBQZ_VnwQ@mail.gmail.com>
- <87plvwsjn5.fsf@metaspace.dk>
- <CANiq72neNUL1m0AbY78eXWJMov4fgjnNcQ_16SoT=ikJ3K7bZQ@mail.gmail.com>
- <8734ssrkxd.fsf@metaspace.dk>
+ us-mta-584-0X87yacEOp2y-1vaLWLDAA-1; Fri, 15 Mar 2024 08:18:27 -0400
+X-MC-Unique: 0X87yacEOp2y-1vaLWLDAA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4131c96569dso9586985e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 05:18:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710505106; x=1711109906;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LT2POqbfgrZp4xIkCsgMst+ERqrnYOoLDyndXBBv0s0=;
+        b=F3hiona4ZiFVkkT4uH+rGrBucDZcklbM7gj/x4GIvBbh4Uyxx2VCWeP/zkYMPKjJ52
+         cHx13Ea0oPazgkbKqfpWQxWG6amJOJ4nKbGgnqdDygwGdLNrMHV0ZhbV4E+crUjeq160
+         usEAmFHE2cDBTwIb88ZYMMqT5WDtXvSWBnCYptobJWYyrto7MZrPH7cEANerHx2wf35U
+         HA7yxhorvFTD6yVu2Avgcd7okvNF/eq2mZJShqB3RODGjDWWEwWqdLv02wBR806JJ5X+
+         4YqxA7PfmolvoTPUnLWQ8Yv9H9TGAduyzRO3+nIWIEBP3BbmM6PZuGrxybKfZkG+lO7e
+         5Dyw==
+X-Forwarded-Encrypted: i=1; AJvYcCW+ZZWThJRFHRShT05NURnGEnZTpJ5uhFdvKvok5w03Zk1A/BeHoPenHp8bpDETVIeeOlSp95MrpJ67mBIFc1mRjFHgIXDsrDvNkN4e
+X-Gm-Message-State: AOJu0YyZTG4/DHhxzxSlxLS/2T+7Og6Dd/efjxs9BgZIAb8kiKzDc5ED
+	+XuigaP9yeZglFwCBNWKbYpCrFR+quARKXSL6nCjE7rHdUeu/cxTkBxuJupUfYJyVBIfco5eg3y
+	kQh+N45HzawdAOBPK/zrjpl0QE3RvfO0HmGK7uS1HnNeWViW3rE07kyceXwGvfw==
+X-Received: by 2002:a05:600c:358e:b0:414:24b:3387 with SMTP id p14-20020a05600c358e00b00414024b3387mr786598wmq.19.1710505105991;
+        Fri, 15 Mar 2024 05:18:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHsvTp/X1ZKGcmuKsmDWlyVlYbB27eraY/h/vb3UwagJfQUtz62OBIR5X/K+MSoZQjAznE58g==
+X-Received: by 2002:a05:600c:358e:b0:414:24b:3387 with SMTP id p14-20020a05600c358e00b00414024b3387mr786575wmq.19.1710505105601;
+        Fri, 15 Mar 2024 05:18:25 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:7700:ef08:112b:278d:7d90? (p200300cbc7197700ef08112b278d7d90.dip0.t-ipconnect.de. [2003:cb:c719:7700:ef08:112b:278d:7d90])
+        by smtp.gmail.com with ESMTPSA id m8-20020a05600c4f4800b00413ea26f942sm8380355wmq.14.2024.03.15.05.18.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 05:18:25 -0700 (PDT)
+Message-ID: <893fd7d3-6f11-45ee-8fe6-52f11dc42cc7@redhat.com>
+Date: Fri, 15 Mar 2024 13:18:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8734ssrkxd.fsf@metaspace.dk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] mm/khugepaged: reduce process visible downtime by
+ pre-zeroing hugepage
+Content-Language: en-US
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com,
+ shy828301@gmail.com, xiehuan09@gmail.com, songmuchun@bytedance.com,
+ minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ libang.li@antgroup.com
+References: <20240308074921.45752-1-ioworker0@gmail.com>
+ <ef409d5e-5652-4fff-933c-49bda6d75018@redhat.com>
+ <CAK1f24k_+qAqxKGMpKziouuds=PQ6kfKyQ8D3SYEyW7cQOAJWw@mail.gmail.com>
+ <75630ba6-79b6-4105-b614-29cfb0331084@redhat.com>
+ <CAK1f24=vU5kEuJC6x099JGFD7z6FK5q+o1to7QY8Q12jNQzr_g@mail.gmail.com>
+ <CAK1f24ktQMYogUETyu04KahC1YAdrY1XwCNNrYUQXN4tSEPKsQ@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAK1f24ktQMYogUETyu04KahC1YAdrY1XwCNNrYUQXN4tSEPKsQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 15, 2024 at 08:52:46AM +0100, Andreas Hindborg wrote:
-> Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> writes:
-> 
-> > On Thu, Mar 14, 2024 at 8:23 PM Andreas Hindborg <nmi@metaspace.dk> wrote:
-> >>
-> >> The way the current code compiles, <kernel::block::mq::Request as
-> >> kernel::types::AlwaysRefCounted>::dec_ref` is inlined into the `rnull`
-> >> module. A relocation for `rust_helper_blk_mq_free_request_internal`
-> >> appears in `rnull_mod.ko`. I didn't test it yet, but if
-> >> `__blk_mq_free_request` (or the helper) is not exported, I don't think
-> >> this would be possible?
-> >
-> > Yeah, something needs to be exported since there is a generic
-> > involved, but even if you want to go the route of exporting only a
-> > different symbol, you would still want to put it in the C header so
-> > that you don't get the C missing declaration warning and so that we
-> > don't have to write the declaration manually in the helper.
-> 
-> That is what I did:
-> 
-> @@ -703,6 +703,7 @@ int blk_mq_alloc_sq_tag_set(struct blk_mq_tag_set *set,
->  		unsigned int set_flags);
->  void blk_mq_free_tag_set(struct blk_mq_tag_set *set);
->  
-> +void __blk_mq_free_request(struct request *rq);
->  void blk_mq_free_request(struct request *rq);
->  int blk_rq_poll(struct request *rq, struct io_comp_batch *iob,
->  		unsigned int poll_flags);
+On 14.03.24 15:19, Lance Yang wrote:
+> Another thought suggested by Bang Li is that we record which pte is none
+> in hpage_collapse_scan_pmd. Then, before acquiring the mmap_lock (write mode),
+> we will pre-zero pages as needed.
 
-Can you explain in detail why one block layer internal helper is
-called into rnull driver directly? It never happens in C driver code.
+Here is my point of view: we cannot optimize the common case where we 
+have mostly !pte_none() in a similar way.
 
+So why do we care about the less common case? Is the process visible 
+downtime reduction for that less common case really noticable?
 
-Thanks,
-Ming
+Or is it rather something that looks good in a micro-benchmark, but 
+won't really make any difference in actual applications (again, where 
+the common case will still result the same downtime).
+
+I'm not against this, I'm rather wonder "do we really care". I'd like to 
+hear other opinions.
+
+>>>>>
+>>>>> So my question is: do we really care about it that much that we care to
+>>>>> optimize?
+>>>>
+>>>> IMO, although it may not be our main concern, reducing the impact of
+>>>> khugepaged on the process remains crucial. I think that users also prefer
+>>>> minimal interference from khugepaged.
+>>>
+>>> The problem I am having with this is that for the *common* case where we
+>>> have a small number of pte_none(), we cannot really optimize because we
+>>> have to perform the copy.
+>>>
+>>> So this feels like we're rather optimizing a corner case, and I am not
+>>> so sure if that is really worth it.
+>>>
+>>> Other thoughts?
+>>
+>> Another thought is to introduce khugepaged/alloc_zeroed_hpage for THP
+>> sysfs settings. This would enable users to decide whether to avoid unnecessary
+>> copies when nr_ptes_none > 0.
+
+Hm, new toggles for that, not sure ... I much rather prefer something 
+without any new toggles, especially for this case.
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
