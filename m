@@ -1,92 +1,306 @@
-Return-Path: <linux-kernel+bounces-104833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D40C87D450
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:04:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DBB287D455
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:06:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C6831C22399
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:04:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B0DF286E1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9077250A7E;
-	Fri, 15 Mar 2024 19:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFF750279;
+	Fri, 15 Mar 2024 19:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="RKeEk8Q9"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="PYwjmUOy"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82EAF51005;
-	Fri, 15 Mar 2024 19:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCED54F201
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710529465; cv=none; b=FMqWsnQJOKSgGR0AJkKbms4PXFfYfAZJp00K5gPDZ1paiGdMTBzROadUZ82zsCt3ina/AiyCQ/WYZKY4fyegxPrzNlXep5zQgmzP7KmtvGUthAzA/AaoCLnVhH+8aJuqtZmqiPQHap3G0ymHlgKdmlEaGPAQ04tmcieXEW17Zbg=
+	t=1710529570; cv=none; b=CjVtshJfwy+YlmpIzn+KoqD7vlEhz7901QFMPyCPCQsjg7dihRxB9M6ZYU7X2NzKV83Q3mUMK/jw4NATdbYyTSTz2mREFRRz7ZrnFNjPX96kqwmYbE8M1COBJuzDZOwMBF1MnjVmw5UQMF4GN3x+7FQn8tigjJGMV5e3zEkbjgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710529465; c=relaxed/simple;
-	bh=H2G1mNojwriAzl/RkRYzjyygSjD5gvvRSE4O9fzPGLg=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=sRTCgQUrL3Zp/7GB/W+A1+/1bY5Sixgx/JmYAJgr24aBzkSN2p8dJ+/uozWPNDwGBg++dNZmP9huTNSUmLhDdvHJzd3jgvUw+yg/GjBnL+de9u5mDrZXcOPw6FUBLoy0mioYGi3AheDPVDCnlmeWK6ZZff/u086uWFv9GVWrpxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=RKeEk8Q9; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1710529570; c=relaxed/simple;
+	bh=c93ef35sRshYiC2AATmcCqw9XtaXh937E9AR1Bv4Ue4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=etPQF1a8bNHfYx49pDR7NyQUOfq+sXqiOzxqBDMKsPKEBOiJ1baEjj5+5mLmtxwNWq59kOfhug9/6K2dfjDSRd4wbSGz1FiHez71KeBCWw40rrEVG12trsqAT7daNVMMVQC7zyRlOJ565rPOiiyq5LxbfN52i1FoaI5NisRr63U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PYwjmUOy; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cdfd47de98so2073371a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710529567; x=1711134367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WxcfU/8IwLCHkk68SMZvcwY7f//etTaSB7/1VZllKVU=;
+        b=PYwjmUOyHSpGEbq7TB5uDIomPhC67T1taiz8iVt7DnaAKz/wfacvOx5h3pyh9+GGx4
+         uafqexKIiEVLfq5WJksUiFDghTsFzJ0UijwbNDaewR66NtnHDZ6EVBWJWPSHhJEhzD2E
+         OHxN9Gs98TtKzrt8T274mfu5kb0gegYaEx9ELYgrXFNdu2I9003uut8Ck4kWSOODeIOO
+         r2PzNviUR/vQ4qgnIFqXOvncgdzykSFn85Udws7zJfmYVqb4S+ap8yOYVCwKA39BmrLC
+         wv7dCEmcRtgYxAaI32SOrEuldsT+8SOGwrdnNWan6ztj8hWl+kvWqdm2ME1UV+OYjVaW
+         9stg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710529567; x=1711134367;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WxcfU/8IwLCHkk68SMZvcwY7f//etTaSB7/1VZllKVU=;
+        b=ijo5OxMKNRiNOYZclAZXbpkt8H4fSFVJSx/f5UxWqGJ1IbLgDuvNrwBoD7ZeN3Swey
+         HRXIC1L+zyMUGjQTmZs1EeqCev0H71CJA16IfI3sbPFugH8kyC5K0bs7YiwH/uuTuXtd
+         7F+ef/RgcY8fzS4i7753TPuwrZNMDNMu40RV7BuO1BYqMSEv09QojXaqeyD17Vkv3E44
+         N8r4IGsiUinoLFbwL25uw604I39F3YN3+ntK6gw16jS2baMtRvniy9A05wMNbJ2ZZBE5
+         Coywv8XeA6V1kews3Ja2Sh/DLB6ijxWTWDXaLkNqYeH0R0eLek/5njz8WEjNQQsqvvJm
+         kakQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV0zan8Mma5NgFBLPVTtX9w2FEy+CH35pc7u925TJA10RzVK5zJ3oFJNmLyEXEOV03EYNVh/XxE9Ef/Xw5h+gD/RieHMUewBgZVvztn
+X-Gm-Message-State: AOJu0Yy7hfjfmRF9/hMruftNTSfl0JrqApILRUlS6YkjmDrx/dyGIUcZ
+	iA8gNASt5FaiCS56BzsVqg4t7tjBDZu4wqzwukzRAjke04x/0PoM/6FwM4pvdeLHM7l7PEwgky9
+	abA==
+X-Google-Smtp-Source: AGHT+IHC9H6HmVEZ9R3YvdGB88rcppNGxPLVqEAHI5Osd5hvODzSOEigb8O/uxQXqUmWxJ4aOH1WTmCcxrI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:dc08:0:b0:5cf:c149:8dc with SMTP id
+ s8-20020a63dc08000000b005cfc14908dcmr13261pgg.11.1710529567041; Fri, 15 Mar
+ 2024 12:06:07 -0700 (PDT)
+Date: Fri, 15 Mar 2024 12:06:05 -0700
+In-Reply-To: <ZfSTh4bLuAMlF6Er@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1710529453;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/QeVTt7EEVUu2Ft0Iu4mZyhzwsN4UDGTEp8s8bgI6eg=;
-	b=RKeEk8Q9e0N+4Vg6+DMe4lGtWMuHetNupWAEWrPFY4DT39ESUMcJnG06KeHUCIo9aiz+Vv
-	Lbj7zoZg067upCQsuWGf8gfD9I2AADS090Gk6sgH9yWXcDcgokA6wstStnP8uCpLtKBkWj
-	/tdC8PIx5ZXsCANqxL9G35MaDuLvhxdIQG9POLYUG17c5ORxXDHN6MPCPLEhljm7FdjZhD
-	Ud9EiXHqF+aTlKPVnis72eqiVsBVh4LPPdhpRcVQcaLaSOsuks8Hz0C6SjJzkL4YpcXGFQ
-	eIoPRufPoXUe7g0RNZccV1G+RHniso19OSYthlQ9ITUac4Smh0mQPCKUd90RsQ==
-Date: Fri, 15 Mar 2024 20:04:11 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Himanshu Bhavani <himanshu.bhavani@siliconsignals.io>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Lorenz Brun
- <lorenz@brun.one>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: rockchip: add &gmac2phy in rk3328-rock64
-In-Reply-To: <PN3PR01MB10135290B74FD411720E431989A282@PN3PR01MB10135.INDPRD01.PROD.OUTLOOK.COM>
-References: <20240315084018.2200581-1-himanshu.bhavani@siliconsignals.io>
- <96a53f8560b3563328eaf7b9d6f63d87@manjaro.org>
- <PN3PR01MB10135290B74FD411720E431989A282@PN3PR01MB10135.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <0f674cf37d01e1a6651068b0402e766c@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Mime-Version: 1.0
+References: <000000000000c6526f06137f18cc@google.com> <CALzav=euH_n9WXG29CFd10urh85O4Mw2L=StEizVmh27CYzrtQ@mail.gmail.com>
+ <ZfSTh4bLuAMlF6Er@google.com>
+Message-ID: <ZfScHYPW5ZV6Gx2k@google.com>
+Subject: Re: [syzbot] [kvm?] WARNING in clear_dirty_gfn_range
+From: Sean Christopherson <seanjc@google.com>
+To: David Matlack <dmatlack@google.com>
+Cc: syzbot <syzbot+900d58a45dcaab9e4821@syzkaller.appspotmail.com>, bp@alien8.de, 
+	dave.hansen@linux.intel.com, hpa@zytor.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org, 
+	vipinsh@google.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-15 16:02, Himanshu Bhavani wrote:
->> Unfortunately, this isn't an acceptable change to the Rock64 dts file.
->> Yes, there's the second built-in Ethernet interface in the RK3328 SoC,
->> but the Rock64 layout doesn't expose it as a separate physical network
->> interface, i.e. it isn't available as a port.
-> 
-> I was wondering if the Rock64 lacks a port.
-> According to this link: https://pine64.org/devices/rock64/,
-> it seems that there is a physical network interface available on the 
-> sbc.
+On Fri, Mar 15, 2024, David Matlack wrote:
+> On 2024-03-15 11:07 AM, David Matlack wrote:
+> > On Tue, Mar 12, 2024 at 4:34=E2=80=AFPM syzbot
+> > <syzbot+900d58a45dcaab9e4821@syzkaller.appspotmail.com> wrote:
+> > >
+> > > ------------[ cut here ]------------
+> > > WARNING: CPU: 1 PID: 5165 at arch/x86/kvm/mmu/tdp_mmu.c:1526 clear_di=
+rty_gfn_range+0x3d6/0x540 arch/x86/kvm/mmu/tdp_mmu.c:1526
+> > > Modules linked in:
+> > > CPU: 1 PID: 5165 Comm: syz-executor417 Not tainted 6.8.0-syzkaller-01=
+185-g855684c7d938 #0
+> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debia=
+n-1.16.2-1 04/01/2014
+> > > RIP: 0010:clear_dirty_gfn_range+0x3d6/0x540 arch/x86/kvm/mmu/tdp_mmu.=
+c:1526
+> > > Call Trace:
+> > >  <TASK>
+> > >  kvm_tdp_mmu_clear_dirty_slot+0x24f/0x2e0 arch/x86/kvm/mmu/tdp_mmu.c:=
+1557
+> > >  kvm_mmu_slot_leaf_clear_dirty+0x38b/0x490 arch/x86/kvm/mmu/mmu.c:678=
+3
+> > >  kvm_mmu_slot_apply_flags arch/x86/kvm/x86.c:12962 [inline]
+> > >  kvm_arch_commit_memory_region+0x299/0x490 arch/x86/kvm/x86.c:13031
+> > >  kvm_commit_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1=
+751 [inline]
+> > >  kvm_set_memslot+0x4d3/0x13e0 arch/x86/kvm/../../../virt/kvm/kvm_main=
+c:1994
+> > >  __kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:21=
+29 [inline]
+> > >  __kvm_set_memory_region+0xdbc/0x1520 arch/x86/kvm/../../../virt/kvm/=
+kvm_main.c:2020
+> > >  kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:2150=
+ [inline]
+> > >  kvm_vm_ioctl_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_ma=
+in.c:2162 [inline]
+> > >  kvm_vm_ioctl+0x151c/0x3e20 arch/x86/kvm/../../../virt/kvm/kvm_main.c=
+:5152
+> >=20
+> > The reproducer uses nested virtualization to launch an L2 with EPT
+> > disabled. This creates a TDP MMU root with role.guest_mode=3D1, which
+> > triggers the WARN_ON() in kvm_tdp_mmu_clear_dirty_slot() because
+> > kvm_mmu_page_ad_need_write_protect() returns false whenever PML is
+> > enabled and the shadow page role.guest_mode=3D1.
 
-As I already described in my previous response, there's another Ethernet
-interface in the RK3328 SoC, which the Rock64 is based on, but there's 
-no
-second Ethernet port on the actual printed circuit board.  That's simply
-how the Rock64 was designed and manufactured.
+Nit, kvm_mmu_page_ad_need_write_protect() returns %true, not %false.  Your =
+analysis
+is correct, I think you just mistyped.
 
->> Such a change would be fine to be applied to the dts by hand, by 
->> someone
->> who actually adds a second physical network port to their Rock64.
+> >=20
+> > If I'm reading prepare_vmcs02_constant_state() correctly, we always
+> > disable PML when running in L2.
+
+Ya.
+
+> So when enable_pml=3D1 and L2 runs with EPT disabled we are blind to dirt=
+y
+> tracking L2 accesses.
+
+Ow.
+
+> +Vipin
+>=20
+> I believe this was introduced by 6.4 commit 5982a5392663 ("KVM: x86/mmu:
+> Use kvm_ad_enabled() to determine if TDP MMU SPTEs need wrprot").
+>=20
+> I see two options to fix:
+>=20
+>   1. Allow PML to be enabled when L2 is running with EPT is disabled.
+>   2. Fix the TDP MMU logic to write-protect role.guest_mode=3D1 SPTEs.
+>=20
+> (1.) sounds more complicated and will require more testing.
+
+It's not terribly complicated, but I 100% agree it's too complicated for a =
+bugfix
+that is destined for stable.  And long term, I don't even know that it's so=
+mething
+we'd want to bother actively supporting, as any amount of complexity beyond=
+ "PML
+is disabled for L2" is probably dead weight since not using TDP is quite un=
+common
+these days.
+
+> (2.) is quite simple since an entire TDP MMU tree is either guest_mode=3D=
+0 or
+> guest_mode=3D1.
+>=20
+> Example fix (fixes syzbot repro but otherwise untested):
+>=20
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 6ae19b4ee5b1..eb6fb8d9c00c 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1498,6 +1498,24 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *=
+kvm,
+>  	}
+>  }
+> =20
+> +static inline u64 tdp_mmu_dirty_bit(struct kvm_mmu_page *root, bool forc=
+e_wrprot)
+
+No "inline" on local statics, formletter incoming...
+
+Do not use "inline" for functions that are visible only to the local compil=
+ation
+unit.  "inline" is just a hint, and modern compilers are smart enough to in=
+line
+functions when appropriate without a hint.
+
+A longer explanation/rant here: https://lore.kernel.org/all/ZAdfX+S323JVWNZ=
+C@google.com
+
+> +{
+> +	if (force_wrprot || kvm_mmu_page_ad_need_write_protect(root) || !kvm_ad=
+_enabled())
+> +		return PT_WRITABLE_MASK;
+> +
+> +	return shadow_dirty_mask;
+> +}
+> +
+> +static inline bool tdp_mmu_dirty_bit_invalid_for_spte(struct tdp_iter *i=
+ter, u64 dbit)
+> +{
+> +	/*
+> +	 * The decision of whether to clear the D-bit or W-bit is made based on
+> +	 * the root, as all TDP MMU SPTEs within a root should require the same
+> +	 * modifications. This check ensures that is actually the case.
+> +	 */
+> +	return dbit =3D=3D shadow_dirty_mask && spte_ad_need_write_protect(iter=
+->old_spte);
+> +}
+> +
+>  /*
+>   * Clear the dirty status of all the SPTEs mapping GFNs in the memslot. =
+If
+>   * AD bits are enabled, this will involve clearing the dirty bit on each=
+ SPTE.
+> @@ -1508,7 +1526,7 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *k=
+vm,
+>  static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *=
+root,
+>  			   gfn_t start, gfn_t end)
+>  {
+> -	u64 dbit =3D kvm_ad_enabled() ? shadow_dirty_mask : PT_WRITABLE_MASK;
+> +	u64 dbit =3D tdp_mmu_dirty_bit(root, false);
+
+Hrm, I like common helpers, but I dislike "blind" booleans even more.  My v=
+ote
+would be to do this:
+
+	u64 dbit =3D wrprot ? PT_WRITABLE_MASK : tdp_mmu_dirty_bit(root);
+
+if we want to hide the PT_WRITABLE_MASK vs. shadow_dirty_mask.  Though I'm =
+tempted
+to vote for open coding the bit selection, e.g.
+
+	u64 dbit =3D (wrprot || tdp_mmu_force_wrprot(root)) ? PT_WRITABLE_MASK :
+							    shadow_dirty_mask;
+
+and
+
+	u64 dbit =3D tdp_mmu_force_wrprot(root) ? PT_WRITABLE_MASK :
+						shadow_dirty_mask;
+
+For tdp_mmu_force_wrprot(), the "what" is pretty clear, i.e. readers only n=
+eed
+to look at the implementation if they care _why_ KVM forces write-protectio=
+n.
+
+But with tdp_mmu_dirty_bit(), even the "what" isn't clear, i.e. it's not ob=
+vious
+that the options are hardware's D-bit and the writable bit.
+
+>  	struct tdp_iter iter;
+>  	bool spte_set =3D false;
+> =20
+> @@ -1523,8 +1541,7 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, =
+struct kvm_mmu_page *root,
+>  		if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
+>  			continue;
+> =20
+> -		KVM_MMU_WARN_ON(kvm_ad_enabled() &&
+> -				spte_ad_need_write_protect(iter.old_spte));
+> +		KVM_MMU_WARN_ON(tdp_mmu_dirty_bit_invalid_for_spte(&iter, dbit));
+> =20
+>  		if (!(iter.old_spte & dbit))
+>  			continue;
+> @@ -1570,8 +1587,7 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
+>  static void clear_dirty_pt_masked(struct kvm *kvm, struct kvm_mmu_page *=
+root,
+>  				  gfn_t gfn, unsigned long mask, bool wrprot)
+>  {
+> -	u64 dbit =3D (wrprot || !kvm_ad_enabled()) ? PT_WRITABLE_MASK :
+> -						   shadow_dirty_mask;
+> +	u64 dbit =3D tdp_mmu_dirty_bit(root, wrprot);
+>  	struct tdp_iter iter;
+> =20
+>  	lockdep_assert_held_write(&kvm->mmu_lock);
+> @@ -1583,8 +1599,7 @@ static void clear_dirty_pt_masked(struct kvm *kvm, =
+struct kvm_mmu_page *root,
+>  		if (!mask)
+>  			break;
+> =20
+> -		KVM_MMU_WARN_ON(kvm_ad_enabled() &&
+> -				spte_ad_need_write_protect(iter.old_spte));
+> +		KVM_MMU_WARN_ON(tdp_mmu_dirty_bit_invalid_for_spte(&iter, dbit));
+
+I would definitely prefer to keep this open coded as:
+
+		KVM_MMU_WARN_ON(dbit !=3D PT_WRITABLE_MASK &&
+				spte_ad_need_write_protect(iter.old_spte));
+
+IMO, that's self-explanatory, i.e. doesn't need a comment, and doesn't requ=
+ire
+hunting down the tdp_mmu_dirty_bit_invalid_for_spte() to see what the fuss =
+is
+about.
 
