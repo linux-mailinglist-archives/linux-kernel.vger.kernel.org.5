@@ -1,147 +1,166 @@
-Return-Path: <linux-kernel+bounces-104118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9148F87C92E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:29:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D0C87C934
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBE19B2391B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:29:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A13CC28308D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B78DF9DE;
-	Fri, 15 Mar 2024 07:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7CB14A8E;
+	Fri, 15 Mar 2024 07:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="bldC4cM9"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HZycXqO4"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149071426E
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 07:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4189012E63;
+	Fri, 15 Mar 2024 07:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710487758; cv=none; b=rLPk+EU3HenUcAtDDyFIWcBUKDdYFYnXWyzLhiPBL7CoWTn77WQZMJycaprqBCx8WbvBR0egfF0I3hxOoeM4qzTK94F97jNpUF7YNHbguY0xB4OzfAkubJTWcEvzFK73IZZFu6gYLhXzOGdWsDWYZuFEBKyyUqenjrtkLgjeefc=
+	t=1710487796; cv=none; b=g6QqKqardfPufTLnQyDbKDCsj2CDzSpMtn7wwmoIm0dbXFgNa5VDyBJ8Q5CkmlBv876LCKzWkCyGtuuAvmx4S+imGkoqxeEc/VkWbpSHh8OTOhsdp4imW1d5a1Evqa/IEnqpbpBb0hLO42t8wnhjd567AaCfa9qIZ83lGNwMZKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710487758; c=relaxed/simple;
-	bh=iigvwIzocTdodmsZFYOAJEizvEhANV9bcbRZVi17hK4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F+N6QTggzpVt7gLOT0ozM06pP14b4G5XH+G0aZGSJCJQpadQtmHOpx6pH3q25mFOQVvKkOEukpmw98MKbk8hd5TSTTa2xIb5M5qOQugjp2Cs9lgxFpr80W+fl1RpK5dCVUmZfDvhOlx3F48OK6rPhFdB6j+KIbjaAYDtEiT4s30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=bldC4cM9; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: ad414a9ce29d11ee935d6952f98a51a9-20240315
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yRWP9snI8RAx/YHERzDgmRG2nMqfLoPSeiF3f8FNgLU=;
-	b=bldC4cM9793BaKcuaQ0gkl4VpnCoZlK0X4MKNorbxVZSnYciSY1gLj36okttM+p8tCVru4t9xaLBIlpN2wutowW8HYiwAV33cAMaecRtcazC4w2KDU1X4dUaF4wgFmuxobfErVVQgTdNnB8i6gMIbrjDvFWNcbgVHPMzPY4vrwA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:cb2ebeb4-4c6e-44e9-b35e-548607db4fa8,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:-30,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-35
-X-CID-META: VersionHash:6f543d0,CLOUDID:81357090-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:2,IP:nil,UR
-	L:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:
-	1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
-X-UUID: ad414a9ce29d11ee935d6952f98a51a9-20240315
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
-	(envelope-from <shuijing.li@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1316206159; Fri, 15 Mar 2024 15:28:53 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 15 Mar 2024 15:28:52 +0800
-Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 15 Mar 2024 15:28:51 +0800
-From: Shuijing Li <shuijing.li@mediatek.com>
-To: <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>, <jitao.shi@mediatek.com>
-CC: <dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>, Shuijing Li
-	<shuijing.li@mediatek.com>
-Subject: [PATCH] mediatek: dsi: Correct calculation formula of PHY Timing
-Date: Fri, 15 Mar 2024 15:29:17 +0800
-Message-ID: <20240315072945.19502-1-shuijing.li@mediatek.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710487796; c=relaxed/simple;
+	bh=IRm5n95xEFQDT7vgK1VdLnXSKwBq0y2erx84Ft6GYXM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G9FdPgdw8CwBVUaPCdQExXLnVitdB+7keVocR2SGAqHNZm1lqRt/2O7t3D6lmmUO4Ach3ob5uqq1dE33KbMdmu17mxZ5UoXEQbZV6tlxDrpTVYtmLmDnxm8SLoG4MJvJILYtTD/XzEb4tFMLSVPt2h8e4jD7k9A8P+L6PgR6/6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HZycXqO4; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5687feeb1feso2043727a12.2;
+        Fri, 15 Mar 2024 00:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710487793; x=1711092593; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ILoelfoifI7jxVJmz5B8PtvwaNYpiquvncdr9oWkqc0=;
+        b=HZycXqO4DgS7mPFbuN8CvjZIZ4/GsdgQ6z6VwEenucb/lm5yqNg4mgSwQO8FU0B6fx
+         5+MgC4qKcSWZL3DgJ3IjMk1cB+8BG7d75Idg3LIiQ5/ujFzOE9A2ALZY0Iml/DdT7ybk
+         1Wuo1DwJP/V/XSC1UisO73ZZq7qCpddrZExWMIWMbRspt4fsxjDXFw/Esh5wUkzkrxQl
+         Op5JXIvC90hYMg50+B9RIHMJfitXiPdDHg8rbBuNwUXr575Sq6KUaZSUT6EBeIIvqlVa
+         80pzSoNI1LpoqrT2xeygJv2BBKaY/dA7lcRnzsL/9HVjTS6sVwbEnK/IqRSH+GPCsKI7
+         sY/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710487793; x=1711092593;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ILoelfoifI7jxVJmz5B8PtvwaNYpiquvncdr9oWkqc0=;
+        b=bNsysmimFdb3icQXDCWXfTe5/BHIbrJpFGC9+6APgMD62kNOUxHwto5q5twLhli/HQ
+         aBghHJBwTj/5YHQxd6/KNRqU2qbw3rCY24P5mARHHtE2MnLdOEKEi6eod1YdXKofQQ2z
+         72aqY/5YZriZonqxqy7x5cVBKpI/MmdN4Ow+akeo2u0A8vW2vWzQzAFzWaOioXFilivq
+         EheSGPP9jAYAB3f47xpPb8MjVe9j2C2V5T3jiTHFfCOvnGkDK/cT7UWkmIQJ2pCvXUUq
+         zrNLuS0ZXs8jkL4lGBj8WK2u9aIgYtB06U3StKmXDTvrCflZPNGLJ/SLy9nr5rpv9j8G
+         5v6g==
+X-Forwarded-Encrypted: i=1; AJvYcCWkOt7Pt7r0ql/G7GK+WzK6wweYxkxw+ZfitvYKgGZbXkvaI38acJn+lPbWUb8m6kXRwN/P0dbdFMBCrU3+uPNLhYBDmLX2g9kXOsYIFFgpbcdWg/vB9YArLvpNlr4RWNXFhLutGfmyKzkQm5ISXcpOTd5rmnMcGQQjN6jiIihH16LDkW/CzOqLFMxnT3dUmirAGgfNow==
+X-Gm-Message-State: AOJu0YyZDNWuysath4BwQA+bI/lFemKycbENWlbJFrcHrUrqkDEzjLSt
+	KX/DlwRWmVVKgHqPP5qOrxcghpqnaSiNXC0k1/lr34LDFSrx4YdP
+X-Google-Smtp-Source: AGHT+IGJ86mFXDqoUu/TpHBtqwtLd+iQ7QPcqhWQfhyfq03s+kI5hJeXzUZlFLQBjFXYzYWC2VWzrA==
+X-Received: by 2002:a05:6402:28c9:b0:568:9e92:2847 with SMTP id ef9-20020a05640228c900b005689e922847mr2106432edb.40.1710487793271;
+        Fri, 15 Mar 2024 00:29:53 -0700 (PDT)
+Received: from pc636 (host-87-9-234-71.retail.telecomitalia.it. [87.9.234.71])
+        by smtp.gmail.com with ESMTPSA id i19-20020a1709061cd300b00a466b2aab55sm1440416ejh.79.2024.03.15.00.29.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 00:29:52 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Fri, 15 Mar 2024 08:29:49 +0100
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Networking <netdev@vger.kernel.org>,
+	David Miller <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the mm-stable
+ tree
+Message-ID: <ZfP47QjBzHwuJOMe@pc636>
+References: <20240307123619.159f1c4c@canb.auug.org.au>
+ <20240313105117.699dc720@canb.auug.org.au>
+ <20240314093012.3dba692a@canb.auug.org.au>
+ <ZfLElrAT3RMLuWdB@pc636>
+ <CAADnVQJpoBCL6r9BM09-kcMeB4Cm0H0y+UD-i8NX5YtvcCpffw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--2.215100-8.000000
-X-TMASE-MatchedRID: YZSAQvmCNEE926lAoePLB6Yb59qT2vdqEbxKVXd70tXfUZT83lbkEEFN
-	G6vV64Np89MfnAiuroaG184Y5LIraR8TzIzimOwPC24oEZ6SpSmcfuxsiY4QFErqa51gGLvDwDD
-	qsyMeG4EW6WhcUTCY/falSjsNC8GOBNZu/eAwGF85FgWkTMqhfn6+pNxelVQZ8K6z02AXwE6f9V
-	II1fK9/PI2nuDg9d7QFezHPq6MHFSrV/xdKQcFSY0leYQxW8u2lExlQIQeRG0=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--2.215100-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 5A67AD3405B3FBFC63F4F8117293508A52A6B56E3483D38D0BF2920C847618F52000:8
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJpoBCL6r9BM09-kcMeB4Cm0H0y+UD-i8NX5YtvcCpffw@mail.gmail.com>
 
-This patch correct calculation formula of PHY timing.
-Make actual phy timing more accurate.
+> > > > This is now a conflict between the net-next tree and the mm-stable tree.
+> > >
+> > >  ... and now a conflict between te mm-stable tree and Linus' tree.
+> > >
+> > If you need some help with resolving conflicts i can help. The problem
+> > to me looks like:
+> >
+> > <snip>
+> > commit d7bca9199a27b8690ae1c71dc11f825154af7234
+> > Author: Alexei Starovoitov <ast@kernel.org>
+> > Date:   Fri Mar 8 09:12:54 2024 -0800
+> >
+> >     mm: Introduce vmap_page_range() to map pages in PCI address space
+> >
+> > commit e6f798225a31485e47a6e4f6aa07ee9fdf80c2cb
+> > Author: Alexei Starovoitov <ast@kernel.org>
+> > Date:   Mon Mar 4 19:05:16 2024 -0800
+> >
+> >     mm: Introduce VM_SPARSE kind and vm_area_[un]map_pages().
+> >
+> > commit 3e49a866c9dcbd8173e4f3e491293619a9e81fa4
+> > Author: Alexei Starovoitov <ast@kernel.org>
+> > Date:   Mon Mar 4 19:05:15 2024 -0800
+> >
+> >     mm: Enforce VM_IOREMAP flag and range in ioremap_page_range.
+> > <snip>
+> >
+> > those three patches were not based on linux-next and are currently
+> > in the Linus tree(bypassing mm-tree?). Whereas below work:
+> >
+> > mm: vmalloc: refactor vmalloc_dump_obj() function
+> > mm: vmalloc: improve description of vmap node layer
+> > mm: vmalloc: add a shrinker to drain vmap pools
+> > mm: vmalloc: set nr_nodes based on CPUs in a system
+> > mm: vmalloc: support multiple nodes in vmallocinfo
+> > mm: vmalloc: support multiple nodes in vread_iter
+> > mm: vmalloc: add a scan area of VA only once
+> > mm: vmalloc: offload free_vmap_area_lock lock
+> > mm: vmalloc: remove global purge_vmap_area_root rb-tree
+> > mm/vmalloc: remove vmap_area_list
+> > mm: vmalloc: remove global vmap_area_root rb-tree
+> > mm: vmalloc: move vmap_init_free_space() down in vmalloc.c
+> > mm: vmalloc: rename adjust_va_to_fit_type() function
+> > mm: vmalloc: add va_alloc() helper
+> >
+> > now should be based on Alexei Starovoitov base in order to resolve
+> > a small conflict.
+> 
+> Pls don't rebase anything.
+> 
+> > But you better know how to proceed. Just in case, if you need some
+> > support please let me know i can help with conflict resolving.
+> 
+> As Stephen said these two conflict:
+> 
+> > > >   8e1d743f2c26 ("mm: vmalloc: support multiple nodes in vmallocinfo")
+> > > >
+> > > >   e6f798225a31 ("mm: Introduce VM_SPARSE kind and vm_area_[un]map_pages().")
+> 
+> and conflict is trivial. It just looks big due to the indent change.
+>
+It is solved in the Linus's tree what is good. 
 
-Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_dsi.c | 33 +++++++++++++++---------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index a2fdfc8ddb15..d1bd7d671880 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -235,22 +235,23 @@ static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi)
- 	u32 data_rate_mhz = DIV_ROUND_UP(dsi->data_rate, 1000000);
- 	struct mtk_phy_timing *timing = &dsi->phy_timing;
- 
--	timing->lpx = (60 * data_rate_mhz / (8 * 1000)) + 1;
--	timing->da_hs_prepare = (80 * data_rate_mhz + 4 * 1000) / 8000;
--	timing->da_hs_zero = (170 * data_rate_mhz + 10 * 1000) / 8000 + 1 -
--			     timing->da_hs_prepare;
--	timing->da_hs_trail = timing->da_hs_prepare + 1;
--
--	timing->ta_go = 4 * timing->lpx - 2;
--	timing->ta_sure = timing->lpx + 2;
--	timing->ta_get = 4 * timing->lpx;
--	timing->da_hs_exit = 2 * timing->lpx + 1;
--
--	timing->clk_hs_prepare = 70 * data_rate_mhz / (8 * 1000);
--	timing->clk_hs_post = timing->clk_hs_prepare + 8;
--	timing->clk_hs_trail = timing->clk_hs_prepare;
--	timing->clk_hs_zero = timing->clk_hs_trail * 4;
--	timing->clk_hs_exit = 2 * timing->clk_hs_trail;
-+	timing->lpx = (80 * data_rate_mhz / (8 * 1000)) + 1;
-+	timing->da_hs_prepare = (59 * data_rate_mhz + 4 * 1000) / 8000 + 1;
-+	timing->da_hs_zero = (163 * data_rate_mhz + 11 * 1000) / 8000 + 1 -
-+		timing->da_hs_prepare;
-+	timing->da_hs_trail = (78 * data_rate_mhz + 7 * 1000) / 8000 + 1;
-+
-+	timing->ta_go = 4 * timing->lpx;
-+	timing->ta_sure = 3 * timing->lpx / 2;
-+	timing->ta_get = 5 * timing->lpx;
-+	timing->da_hs_exit = (118 * data_rate_mhz / (8 * 1000)) + 1;
-+
-+	timing->clk_hs_prepare = (57 * data_rate_mhz / (8 * 1000)) + 1;
-+	timing->clk_hs_post = (65 * data_rate_mhz + 53 * 1000) / 8000 + 1;
-+	timing->clk_hs_trail = (78 * data_rate_mhz + 7 * 1000) / 8000 + 1;
-+	timing->clk_hs_zero = (330 * data_rate_mhz / (8 * 1000)) + 1 -
-+		timing->clk_hs_prepare;
-+	timing->clk_hs_exit = (118 * data_rate_mhz / (8 * 1000)) + 1;
- 
- 	timcon0 = timing->lpx | timing->da_hs_prepare << 8 |
- 		  timing->da_hs_zero << 16 | timing->da_hs_trail << 24;
--- 
-2.43.0
-
+--
+Uladzislau Rezki
 
