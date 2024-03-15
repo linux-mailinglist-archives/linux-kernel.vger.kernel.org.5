@@ -1,154 +1,170 @@
-Return-Path: <linux-kernel+bounces-104726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B66387D2CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:31:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C30C487D2D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:32:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C21E1C20A77
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:31:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E61D81C222DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484A4495E5;
-	Fri, 15 Mar 2024 17:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B48B4AEE5;
+	Fri, 15 Mar 2024 17:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="hmk27yYC"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="f8bSTqO9"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18EB45BFB;
-	Fri, 15 Mar 2024 17:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3332482E2
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710523873; cv=none; b=JvmcWbWAsQCig7W7Ro49VxazxM+pA3JZOnjPzh+1MDd0GC8EC/QVR0TJNvFY9+rUC97Ab/NOEY81hapgjAtAngSOJR3gHfEvOi86jWZQ9qCQUuy/32vYjOUIWsWZuuP+tpmsRX7JlTqStDFHXdH6Jbk5enlqXKhjtSlSr/sxH3A=
+	t=1710523937; cv=none; b=Ke27UAzjBt5mtWwODjOtUBc14QLE16cxyMi11JHfuN9+HSh7rXwkuzwARcwpec0QqSBCDAPIKaQRPUKVMNWVW0tp/Rqj5rhi4rLd2fdVTPKitUAMyOTpdl6reHxRy/x9ereeien0rbvB3yrc84UcrZWsrLr6X4v32DgOyhw3UNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710523873; c=relaxed/simple;
-	bh=AuyctvHzXCuOG0qApdvaa1TbjS2ba7xRFCCfptYNNyc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UJfbUK8KoPqte+UYdeIRYRP47F0qFix60ULP/i5450MlZAGLD8E2clAh1nHGGJ77pvFetNtqWJ5A9mW88Ev5bAUMCDZJelui+YgLSGZo5Bb4VEnAFph4CxR/1EHGV+CvFPqZwozu4YW8X4HZY0dKKlmUHcKNrQMPP8JSoefK8AY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=hmk27yYC; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-568aa3096e9so1907131a12.0;
-        Fri, 15 Mar 2024 10:31:11 -0700 (PDT)
+	s=arc-20240116; t=1710523937; c=relaxed/simple;
+	bh=0LTEsN2O/FgSWhZk5KJW+7bWr7jqaVlwguZyG5cUT4s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E3c2nyA/KPStCS2P5rK7jyniZKoTpQVGIUhHgnWMiKG4BC/2MUu/VuDicGjNx+YybcvFMRrOPVco8AHuGc0UP0v3wgfu2pigAvJNxCbDRcXNYYkc60U2NX0leD9SFDvfpRvSDtZciz/zpnwr8j+ic0Q49Io4heDbuffvJXRE+jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=f8bSTqO9; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e6779ce1fdso712865a34.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:32:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710523870; x=1711128670; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1710523933; x=1711128733; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4I8kF2HOLsV3f6ALBOCC7UdtwRxp7Bq+Pw3KZf1q5w4=;
-        b=hmk27yYCviBmjlIjrJmosuwxL0h7C2XahZz38bEzjDcGQd9iprLnm7oeTdoVaoxQy7
-         fG2MboIml/CFZNBxbVQ6ro3fYOz5d7/WFjb51BvpH+uFxTbNoEIbBvE2c1XWR4dWUk0r
-         Zh3HWexQS+LwdmtH7oxUU0HbtxR4tNnEaEFl0P5ayoc5UJ09YxMIozyogMvXgma/V/h1
-         /mv6i5mc9uSoNH3OCDLUdWx0bVBFlK19Nf6JajHt/qOkQuuM1E9Aq9taDSIt0nsTDIwf
-         AJTvR2otqPW46+FtQ3S8qBD6HKvoiXtcnZdYP1Ta36D2gDWJa6cuTQaH79G16IaY4ibL
-         f5kw==
+        bh=35pY7i/gjcm69pUN8AAJZNQoGf0jouiTU8qeW6pOlqY=;
+        b=f8bSTqO97dV4NRJXwZOl8YCt1H6UwzdG2nE4ckdX1+3D8he/Z50iGd5+odKUcGv0QN
+         wQlU5fCVL2DFGlklRH7dTu8rGNkw01oIdqgOpCWBBPol8FebO0CfWdT/THoa7Np1tKC6
+         GesErz+qFnXqYhMXkAz7+5usnRQ7+gtJpuvGc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710523870; x=1711128670;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1710523933; x=1711128733;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4I8kF2HOLsV3f6ALBOCC7UdtwRxp7Bq+Pw3KZf1q5w4=;
-        b=V12NQ/Fc2Wu6yBeBdONTTcpiNHwBt+/F9dz9JBYtfiyFEmJQj8BfH8ECOZ3yBghppy
-         44E+GNu5yaUAaVBSBLFAYxAWw+gWVjyZCQZu3keyaM4q8gT7as3DHKLBf8FU/W8Ni4/i
-         KWa4XYCSFUsO5MvAcOm/MjQqE1P3BHn460efgriTkIww1F2902FCpFMGkwFIyFWFo3BF
-         eiB/5JwLF7U+wYMhw1dhownxNUiFMkfBwzFvu/7pMsAt5gwGVRf7+U4NnPyU+LBbPe9k
-         rWLbqCFOCYzC7sy4Kkhl37Ufq0Kg43tO8MZcHcRyyFSYBAAy24KyPjsZtaD1tMwc7Dm3
-         QZ1g==
-X-Forwarded-Encrypted: i=1; AJvYcCVEoCmO+W2bWal9FmVq1SCmOgA6k6wzsSdEBNv/6e88mJwle79PgLd3pj7BViJYy6rv//O8BVSLAYwaEXBm+o2W+q6haGM+LwoH+/Nb
-X-Gm-Message-State: AOJu0YxlYoYjup4Zs/M+BYOgJi5klGcPpbbXWhCBVohJ6ZxOYqgvphHL
-	cOyMakA+ljfOjKv7yk+JF+pznnMxvjCQMwB55P4NIEbwdIDS+Ov8Rnwr+PztX2qcWg==
-X-Google-Smtp-Source: AGHT+IFi4/oRUcITZyAkekpL0lNl9ACqipPV/q1xqTx1K7ccrkOr2Q2sI8ksPqSYFH88beTuMAxc9w==
-X-Received: by 2002:a17:906:ad91:b0:a46:7461:b7da with SMTP id la17-20020a170906ad9100b00a467461b7damr3605057ejb.36.1710523870252;
-        Fri, 15 Mar 2024 10:31:10 -0700 (PDT)
-Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
-        by smtp.gmail.com with ESMTPSA id w23-20020aa7da57000000b00568ba93876esm88935eds.28.2024.03.15.10.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 10:31:09 -0700 (PDT)
-From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To: selinux@vger.kernel.org
-Cc: Paul Moore <paul@paul-moore.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] selinux: avoid identifier using reserved name
-Date: Fri, 15 Mar 2024 18:31:01 +0100
-Message-ID: <20240315173105.636749-2-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240315173105.636749-1-cgzones@googlemail.com>
-References: <20240315173105.636749-1-cgzones@googlemail.com>
+        bh=35pY7i/gjcm69pUN8AAJZNQoGf0jouiTU8qeW6pOlqY=;
+        b=LHhQNI7j0iEwSSee2vRaJleLusZj/YoLPma2gwIxasNWfEQP9S9hK83XUpoYC//3dB
+         DF6snOjmEBgx540sN0bysIekWjnqCTKiyzM9rFkRzCc9ONjF/Ekie7qXd6aUIr2ZYDjR
+         Z3FRe54R2zRxt/5uJpN5rpeigxcrBqQBMIhAEaKUUNTvKjHluX7DP3dxAFlM1RSb07NR
+         //jLORBzf3QhPPmhaLDxdUuAanYcUO282FiISoqFn9k0qyKOm+lKuu3ge6i8lcgT5SC6
+         1HKQ3ohNtbZVV0teT+PsuLBofnW9SyNITvbWIUS+EAJf/wG2supD4iw8Ehx9q9TlFHfe
+         jEGg==
+X-Forwarded-Encrypted: i=1; AJvYcCW0MnVrxbcNMcezgLWZdIKQESvQ3JNJ12vba4zM78rJIP66OK8617hhiIdoRkFvP1LTA60xO0pLJAh0c6aR3kQvGzybOwwylRoNlLe8
+X-Gm-Message-State: AOJu0Ywks5Ej8VYuaRjeROY86UU1EHVDkcDhjLFgVFuREPspqHaxVoRT
+	wg+uFoQm9UnyzmFOw6o+wvOtJOjIN4F/O2EHrMxAPzp7gfcET7AAHkE9/PtsDk6bMTsZHugLQtw
+	=
+X-Google-Smtp-Source: AGHT+IHm/MPgqD03ZAa7WahtVo4jh/CgVpGh6ZfKxiV8R5H1QVxVd4AfwF6TqURUpTx804/TUHK+Ww==
+X-Received: by 2002:a9d:3e45:0:b0:6e5:3602:6df6 with SMTP id h5-20020a9d3e45000000b006e536026df6mr5745871otg.18.1710523933170;
+        Fri, 15 Mar 2024 10:32:13 -0700 (PDT)
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com. [209.85.160.169])
+        by smtp.gmail.com with ESMTPSA id j22-20020a9d7696000000b006e5398eb1f9sm744304otl.8.2024.03.15.10.32.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 10:32:12 -0700 (PDT)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-43095dcbee6so17881cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:32:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWJT/rrEEH4j+sw8ogUzcnsaesWwOkUJYFtMUhs3RspO6k3wKHu7EZa4IrNvuhdGv9YdVy8YguSZpOEYY/RNnH3aHF+N1NT/aCDjivp
+X-Received: by 2002:ac8:470b:0:b0:42e:e40f:fca4 with SMTP id
+ f11-20020ac8470b000000b0042ee40ffca4mr311095qtp.13.1710523931775; Fri, 15 Mar
+ 2024 10:32:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20230703085555.30285-1-quic_mkshah@quicinc.com>
+ <20230703085555.30285-4-quic_mkshah@quicinc.com> <CAD=FV=XWH+Eoa9XjDns--NSDTZHeUwTdrX_r_QZhSPpbZNwz+w@mail.gmail.com>
+ <20240315152431.sckqhc6ri63blf2g@bogus> <CAD=FV=UD1nuxryvWH=Mi7E+QzMoa7xCHebY0DtZCAVmEW3ZeAg@mail.gmail.com>
+ <20240315172632.6zxwj4enq4tddbb3@bogus>
+In-Reply-To: <20240315172632.6zxwj4enq4tddbb3@bogus>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 15 Mar 2024 10:31:55 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=X+d8E67fxk0FiLqp3bpR4ZCEB1+bN21V3Lw_XA5JNQag@mail.gmail.com>
+Message-ID: <CAD=FV=X+d8E67fxk0FiLqp3bpR4ZCEB1+bN21V3Lw_XA5JNQag@mail.gmail.com>
+Subject: Re: [RESEND v4 3/3] arm64: dts: qcom: sc7280: Add power-domains for
+ cpuidle states
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Maulik Shah <quic_mkshah@quicinc.com>, andersson@kernel.org, ulf.hansson@linaro.org, 
+	swboyd@chromium.org, wingers@google.com, daniel.lezcano@linaro.org, 
+	rafael@kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, jwerner@chromium.org, 
+	quic_lsrao@quicinc.com, quic_rjendra@quicinc.com, devicetree@vger.kernel.org, 
+	Abhinav Kumar <quic_abhinavk@quicinc.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Rob Clark <robdclark@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Avoid using an identifier starting with double underscores, which
-signals a reserved identifier.
+Hi,
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
- security/selinux/hooks.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+On Fri, Mar 15, 2024 at 10:26=E2=80=AFAM Sudeep Holla <sudeep.holla@arm.com=
+> wrote:
+>
+> On Fri, Mar 15, 2024 at 10:12:12AM -0700, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Fri, Mar 15, 2024 at 8:24=E2=80=AFAM Sudeep Holla <sudeep.holla@arm.=
+com> wrote:
+> > >
+> > > On Thu, Mar 14, 2024 at 04:20:59PM -0700, Doug Anderson wrote:
+> > > > Hi,
+> > > >
+> > > > On Mon, Jul 3, 2023 at 1:56=E2=80=AFAM Maulik Shah <quic_mkshah@qui=
+cinc.com> wrote:
+> > > > >
+> > > > > Add power-domains for cpuidle states to use psci os-initiated idl=
+e states.
+> > > > >
+> > > > > Cc: devicetree@vger.kernel.org
+> > > > > Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > > Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> > > > > ---
+> > > > >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 98 +++++++++++++++++++++-=
+------
+> > > > >  1 file changed, 73 insertions(+), 25 deletions(-)
+> > > >
+> > > > FWIW, I dug up an old sc7280-herobrine board to test some other cha=
+nge
+> > > > and found it no longer booted. :( I bisected it and this is the cha=
+nge
+> > > > that breaks it. Specifically, I can make mainline boot with:
+> > > >
+> > > > git revert --no-edit db5d137e81bc # arm64: dts: qcom: sc7280: Updat=
+e
+> > > > domain-idle-states for cluster sleep
+> > > > git revert --no-edit 7925ca85e956 # arm64: dts: qcom: sc7280: Add
+> > > > power-domains for cpuidle states
+> > > >
+> > >
+> > > IIRC, this could be issue with psci firmware. There were some known
+> > > issues which were discussed few years back but I am not aware of the
+> > > details and if/how it is applicable here.
+> > >
+> > > Not sure if you are getting any logs during the boot, if you do have
+> > > worth look at logs related to PSCI/OSI/Idle/...
+> >
+> > Given that the new firmware fixes it I'm going to say it's not worth
+> > looking into any longer.
+> >
+>
+> But it would be good to know if that is the exact reason, see if it can
+> be upgraded, or else we can disable them by default. The bootloader or
+> something else can detect the f/w version and enable them so that the
+> board with old f/w(if can't be upgraded) can still be used.
+>
+> Otherwise it is a regression IMO.
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index a0fde0641f77..f9a61ff64b83 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -6347,16 +6347,16 @@ static void selinux_d_instantiate(struct dentry *dentry, struct inode *inode)
- static int selinux_lsm_getattr(unsigned int attr, struct task_struct *p,
- 			       char **value)
- {
--	const struct task_security_struct *__tsec;
-+	const struct task_security_struct *tsec;
- 	u32 sid;
- 	int error;
- 	unsigned len;
- 
- 	rcu_read_lock();
--	__tsec = selinux_cred(__task_cred(p));
-+	tsec = selinux_cred(__task_cred(p));
- 
- 	if (current != p) {
--		error = avc_has_perm(current_sid(), __tsec->sid,
-+		error = avc_has_perm(current_sid(), tsec->sid,
- 				     SECCLASS_PROCESS, PROCESS__GETATTR, NULL);
- 		if (error)
- 			goto bad;
-@@ -6364,22 +6364,22 @@ static int selinux_lsm_getattr(unsigned int attr, struct task_struct *p,
- 
- 	switch (attr) {
- 	case LSM_ATTR_CURRENT:
--		sid = __tsec->sid;
-+		sid = tsec->sid;
- 		break;
- 	case LSM_ATTR_PREV:
--		sid = __tsec->osid;
-+		sid = tsec->osid;
- 		break;
- 	case LSM_ATTR_EXEC:
--		sid = __tsec->exec_sid;
-+		sid = tsec->exec_sid;
- 		break;
- 	case LSM_ATTR_FSCREATE:
--		sid = __tsec->create_sid;
-+		sid = tsec->create_sid;
- 		break;
- 	case LSM_ATTR_KEYCREATE:
--		sid = __tsec->keycreate_sid;
-+		sid = tsec->keycreate_sid;
- 		break;
- 	case LSM_ATTR_SOCKCREATE:
--		sid = __tsec->sockcreate_sid;
-+		sid = tsec->sockcreate_sid;
- 		break;
- 	default:
- 		error = -EOPNOTSUPP;
--- 
-2.43.0
+I think it only would really matter if the problematic firmware
+actually made it out into the real world. In this case the only people
+who run into this are developers at Google and Qualcomm who had early
+versions of hardware and had old firmware sitting around on them. I
+can count the number of folks affected on one hand, and that's even if
+one of my fingers gets cut off. All of those folks can just upgrade
+their firmware since there is no downside in doing so.
 
+-Doug
 
