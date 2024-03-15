@@ -1,210 +1,205 @@
-Return-Path: <linux-kernel+bounces-104787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6514687D399
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:29:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F15787D3A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C79952817F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:29:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C7C61C216C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51AA4F20E;
-	Fri, 15 Mar 2024 18:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601531EB5C;
+	Fri, 15 Mar 2024 18:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3hLQDDI+"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="dlPSKZwL"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD8D44C77
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EC0FC0E;
+	Fri, 15 Mar 2024 18:30:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710527379; cv=none; b=aqMQ8UkGn3exc++IeyiD0YZoUK0FNy1N68JSFaBHC/rGEnezbALYXTMvvQs0uw4Zr82wWMIaIT7Ia7bInT8ry2trePuctjV0xKY504rOV8tFh6LBDhGHwZs8d/rKDiV8cB3p8cq2oezoFV33LaXoMRVUmU1rSzSmCCNc6IpmF9w=
+	t=1710527440; cv=none; b=iyqvoxLgyvfCqJj9/5llHIgIrcqxG2zazxCgoyjZTuAZJIv6XBiAqwdjJV2qMR20JH+TGHvD7FUCdrLLIBMFzr6n3JXgXatE6/HNE3sIIUeTlivIBv1MP7fIl3+B638RkOjTzoQ+cMssRuhnPFkDsuVb0HGjhVDHLojkKLSa0x0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710527379; c=relaxed/simple;
-	bh=KUHOP8ehexowNIEsOotntCAdUefMeTgT8ndPqIvacRI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OVNXD0ySfGIcoDFFsz2LnOowl81+UbZLpaGKpZYaZwCbWpxwedCeKYDmqq/hLmT2sif6RTChP9n84iFDptbytEuuKQAxF29m5LXFn7ZIUwnvGA3EhkJlmqgCRK2yFtCp35BCRa9miF72kh9lcC/8llLbdBWiJqq18uktTmthwVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3hLQDDI+; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6ce174d45so1927473b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:29:36 -0700 (PDT)
+	s=arc-20240116; t=1710527440; c=relaxed/simple;
+	bh=xK5t2MEBduj0jxE0jFQRIWHPq413A/oQU2rxAo+9Dx4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q5sC66VlfnUtX9MXhC4oVOWHQsVNq8c26QyCorMnL50YWWK6xXJhn6M+UFH+IMKWX2uqIHaKzkz0CjS0dCLzJUG2ebwTgRt5+a6Vqb0TLieIqQuZTA7rPn2ZC8PFi/si8rJm+IFm29dSo++5KNpKibdFAVjMeAmpOzi5CA3hgl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=dlPSKZwL; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dd14d8e7026so2146456276.2;
+        Fri, 15 Mar 2024 11:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710527376; x=1711132176; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8Yx8GBGZtm8giG+I86hNAaIO2ye/1iwJfeXfUGn8W+g=;
-        b=3hLQDDI+eEN3UTYekutR7sByJhxPou0i4tE2YGyQVOIZHWDIIHm4Zw7hynNsICviyr
-         zlKN76yJ3PiWSPj7NiT1q65DGOXLcovhqrKNS7Veb9FfdV+0zZ8P57O3iNLvqWYURdQq
-         IBuAd6069dIf4ZQh44QOO7ToDMXrhnYgflh+g67Kti/ohCcbiB8pfeKkxQs0ODMWQl7A
-         /2b+r8EgyK7cvFoPV2voZr8WxXUk6U6Q9fEUg9/9PMiau8ThgSvjM1YNWvq2rx4BeAbg
-         sSpRlSJGTDO9oRMfSAeuYg5J2HtpDf7chDJ7TRgpxcfPg/iwKSe++QghZysiop9LaG3C
-         IZkw==
+        d=googlemail.com; s=20230601; t=1710527435; x=1711132235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=spSR6qRGR6QrhghZSwpU7jLDpc5od9SU7Ron6pMaToY=;
+        b=dlPSKZwLr0A4vBbSY8/IMAIP4EiJrxwDmNJ0h5b2JdcpW8UDSL9a3QPjAT/rQ+qUWj
+         l/7LJ5WkQPtyhrJQk6ycBdR2Ki/Nyu149dNFLimqQouD9EcUR/RYXPKeZy7qwvF+8YBT
+         dfHrKCuloCj8VhP/Xcd9Fp1j8PQ0TBfiefXqaAeFNLCqqV0+3THITCUiDanXAyikeDZQ
+         1Dpch7aHUd2NpaH6dLzHzNs3dQYUGgeOHiQdNj6PULp5DhlFlWyrpgsBzR5Dy4AZwpo4
+         EX+YowyE2dx6MpAFjIHRPCYybzP09GRD2+X4Mj2Nu7bZ7PpU5WSLgI5YHAmZOcj6AQ25
+         RpRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710527376; x=1711132176;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Yx8GBGZtm8giG+I86hNAaIO2ye/1iwJfeXfUGn8W+g=;
-        b=jlGIabG7QA6qF09RX2uAX8a/y+WjGejuYPOTo8h32NAa97tB79Ga+W1NoU1PdzaM78
-         ipuSyUG63IEOaaoH2jzR+o8imFlXKANIuGmEH6/5N5or+o77IAgdKXnFXn0xP21jA37b
-         t/wSKXp48lunGnllvt+8aA9ZpIF2fBbUX2P9DK8c1d7jRiv7yw/wZojJ5S2nGuLqHqlC
-         pGcniHO2xcOw6BgCPwB9Q424twufL8k+6Ef7p6iPhUBw+2/Es9AhmGqxbhrpnV4IcCmJ
-         NXmQSPnY9uGx5vjOaGNQomaBbex0BMfxU9BGqge0gdQLoWdHTNL4lc6sMAZ0J4hwEYAo
-         T1Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCUfBfIpHvWHMR45xJTQ1gI7xxraUsKhPwRwAv5M4zLpA0JiADtEy8R5HiGzlgpXzPY078y0zdDL++gf8RCdzwzhcGVvPyfbHBuI3HX3
-X-Gm-Message-State: AOJu0YzmKLzK4GK00MZCPpmIjSAOr71dYRqbZWyEuwavH9b9jn4h2Teb
-	ObxgQjcY+qycU/vEFIv1xTiQsFC/oF2n4ybfZ2fsUdh/9QK/vqHKpCOtn/14dg==
-X-Google-Smtp-Source: AGHT+IHf+8j7zKnvwbaJH/TUrJOU+u8aCZhENiidgnodEi0/+PKq1PeMhJI52e2EQ4QfYyAqDADIhg==
-X-Received: by 2002:a05:6a00:3d0d:b0:6e6:9f29:fc43 with SMTP id lo13-20020a056a003d0d00b006e69f29fc43mr7068182pfb.12.1710527375893;
-        Fri, 15 Mar 2024 11:29:35 -0700 (PDT)
-Received: from google.com (61.139.125.34.bc.googleusercontent.com. [34.125.139.61])
-        by smtp.gmail.com with ESMTPSA id dr23-20020a056a020fd700b005d67862799asm2480674pgb.44.2024.03.15.11.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 11:29:33 -0700 (PDT)
-Date: Fri, 15 Mar 2024 11:29:27 -0700
-From: David Matlack <dmatlack@google.com>
-To: syzbot <syzbot+900d58a45dcaab9e4821@syzkaller.appspotmail.com>
-Cc: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-	pbonzini@redhat.com, seanjc@google.com,
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org,
-	vipinsh@google.com
-Subject: Re: [syzbot] [kvm?] WARNING in clear_dirty_gfn_range
-Message-ID: <ZfSTh4bLuAMlF6Er@google.com>
-References: <000000000000c6526f06137f18cc@google.com>
- <CALzav=euH_n9WXG29CFd10urh85O4Mw2L=StEizVmh27CYzrtQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1710527435; x=1711132235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=spSR6qRGR6QrhghZSwpU7jLDpc5od9SU7Ron6pMaToY=;
+        b=sc6DQa/siKa+bFXp8CoGw9uAR8mpkSCZ0Oz16vvM70+/ZMe1qA/PA8WeWoFqfxO2gN
+         YJ0jDpTM0KooUoZaC/mHzVvEqdvfjpWA285bTD+tNySwg7iwflq4kqweEfPt0iEDZC8f
+         AvjBAf31jYJPk2zIpuby2dkIUQQqqcJbRjsIlInvFBNSpwG7bemDT4ajtOx6pIoFoxvB
+         6Q+7cNzt7tXe0zgx/cg2gqaSi1M6JsFNNySo/R//ONgUy3JSaB2X82llwrbHeq0kCztR
+         PdA/f/RorxM9exEP8Fzv57/GZ6Cbbqcn9X7BQxynXb8Lm8R03S2kVXWM6OrXeXvUkql3
+         qK8A==
+X-Forwarded-Encrypted: i=1; AJvYcCU3GTRfhvtt31/cqOI5J+pG7UE1k8uJJcfCYMMxfrNdkR8ZnRMxBxv2ZsYNZl0vvlhuMcZVphZ5GCjB9w5RomYq3fJpNaSkyze3NKG0VSUX9RuhEDocjdvpbz2CbUykajtlQLdD2jj4+O4DIQ==
+X-Gm-Message-State: AOJu0YyUvcxn/xtQ7mLPyH98uUoh4yZF0GFWBEX4AtXlgUfwptLDffbp
+	nOG5xngRVASDTiKB15gzTg9HR0oLtONh7a2/4QhOD+saHLiHjbwjYzCm4dhFWjrgp3skoZB0xrm
+	GTk/7SyDmcBtU/A1ed2oJbnLo+Y8vdSwNalUBTA==
+X-Google-Smtp-Source: AGHT+IHJpxfHmnBK/IJ5Pv9HDwv1gImnsof0Ltw87oFO+Eu96nE6pWjn/dgNPyvXJNRVuJo7nHd7rz0f0MENO9NTOk4=
+X-Received: by 2002:a25:c7d4:0:b0:dcc:5a25:ae88 with SMTP id
+ w203-20020a25c7d4000000b00dcc5a25ae88mr5970741ybe.19.1710527434195; Fri, 15
+ Mar 2024 11:30:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALzav=euH_n9WXG29CFd10urh85O4Mw2L=StEizVmh27CYzrtQ@mail.gmail.com>
+References: <20240315181032.645161-1-cgzones@googlemail.com>
+ <20240315181032.645161-2-cgzones@googlemail.com> <f6d1b9fc-dfb1-4fd8-bfa0-bd1349c4a1c1@schaufler-ca.com>
+In-Reply-To: <f6d1b9fc-dfb1-4fd8-bfa0-bd1349c4a1c1@schaufler-ca.com>
+From: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date: Fri, 15 Mar 2024 19:30:23 +0100
+Message-ID: <CAJ2a_DfGHBuVBLTWniNektRsY_6P=x37XT-31+P6mV9dgJvt0Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] lsm: introduce new hook security_vm_execstack
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: linux-security-module@vger.kernel.org, 
+	Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Khadija Kamran <kamrankhadijadj@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Alfred Piccioni <alpic@google.com>, John Johansen <john.johansen@canonical.com>, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-15 11:07 AM, David Matlack wrote:
-> On Tue, Mar 12, 2024 at 4:34 PM syzbot
-> <syzbot+900d58a45dcaab9e4821@syzkaller.appspotmail.com> wrote:
+On Fri, 15 Mar 2024 at 19:22, Casey Schaufler <casey@schaufler-ca.com> wrot=
+e:
+>
+> On 3/15/2024 11:08 AM, Christian G=C3=B6ttsche wrote:
+> > Add a new hook guarding instantiations of programs with executable
+> > stack.  They are being warned about since commit 47a2ebb7f505 ("execve:
+> > warn if process starts with executable stack").  Lets give LSMs the
+> > ability to control their presence on a per application basis.
+>
+> This seems like a hideously expensive way to implement a flag
+> disallowing execution of programs with executable stacks. What's
+> wrong with adding a flag VM_NO_EXECUTABLE_STACK?
+
+That would be global and not on a per application basis.
+One might want to exempt known legacy programs.
+Also is performance a concern for this today's rare occurrence?
+
 > >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 5165 at arch/x86/kvm/mmu/tdp_mmu.c:1526 clear_dirty_gfn_range+0x3d6/0x540 arch/x86/kvm/mmu/tdp_mmu.c:1526
-> > Modules linked in:
-> > CPU: 1 PID: 5165 Comm: syz-executor417 Not tainted 6.8.0-syzkaller-01185-g855684c7d938 #0
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> > RIP: 0010:clear_dirty_gfn_range+0x3d6/0x540 arch/x86/kvm/mmu/tdp_mmu.c:1526
-> > Call Trace:
-> >  <TASK>
-> >  kvm_tdp_mmu_clear_dirty_slot+0x24f/0x2e0 arch/x86/kvm/mmu/tdp_mmu.c:1557
-> >  kvm_mmu_slot_leaf_clear_dirty+0x38b/0x490 arch/x86/kvm/mmu/mmu.c:6783
-> >  kvm_mmu_slot_apply_flags arch/x86/kvm/x86.c:12962 [inline]
-> >  kvm_arch_commit_memory_region+0x299/0x490 arch/x86/kvm/x86.c:13031
-> >  kvm_commit_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1751 [inline]
-> >  kvm_set_memslot+0x4d3/0x13e0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1994
-> >  __kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:2129 [inline]
-> >  __kvm_set_memory_region+0xdbc/0x1520 arch/x86/kvm/../../../virt/kvm/kvm_main.c:2020
-> >  kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:2150 [inline]
-> >  kvm_vm_ioctl_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:2162 [inline]
-> >  kvm_vm_ioctl+0x151c/0x3e20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5152
-> 
-> The reproducer uses nested virtualization to launch an L2 with EPT
-> disabled. This creates a TDP MMU root with role.guest_mode=1, which
-> triggers the WARN_ON() in kvm_tdp_mmu_clear_dirty_slot() because
-> kvm_mmu_page_ad_need_write_protect() returns false whenever PML is
-> enabled and the shadow page role.guest_mode=1.
-> 
-> If I'm reading prepare_vmcs02_constant_state() correctly, we always
-> disable PML when running in L2. So when enable_pml=1 and L2 runs with
-> EPT disabled we are blind to dirty tracking L2 accesses.
-
-+Vipin
-
-I believe this was introduced by 6.4 commit 5982a5392663 ("KVM: x86/mmu:
-Use kvm_ad_enabled() to determine if TDP MMU SPTEs need wrprot").
-
-I see two options to fix:
-
-  1. Allow PML to be enabled when L2 is running with EPT is disabled.
-  2. Fix the TDP MMU logic to write-protect role.guest_mode=1 SPTEs.
-
-(1.) sounds more complicated and will require more testing. (2.) is
-quite simple since an entire TDP MMU tree is either guest_mode=0 or
-guest_mode=1.
-
-Example fix (fixes syzbot repro but otherwise untested):
-
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 6ae19b4ee5b1..eb6fb8d9c00c 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1498,6 +1498,24 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *kvm,
- 	}
- }
- 
-+static inline u64 tdp_mmu_dirty_bit(struct kvm_mmu_page *root, bool force_wrprot)
-+{
-+	if (force_wrprot || kvm_mmu_page_ad_need_write_protect(root) || !kvm_ad_enabled())
-+		return PT_WRITABLE_MASK;
-+
-+	return shadow_dirty_mask;
-+}
-+
-+static inline bool tdp_mmu_dirty_bit_invalid_for_spte(struct tdp_iter *iter, u64 dbit)
-+{
-+	/*
-+	 * The decision of whether to clear the D-bit or W-bit is made based on
-+	 * the root, as all TDP MMU SPTEs within a root should require the same
-+	 * modifications. This check ensures that is actually the case.
-+	 */
-+	return dbit == shadow_dirty_mask && spte_ad_need_write_protect(iter->old_spte);
-+}
-+
- /*
-  * Clear the dirty status of all the SPTEs mapping GFNs in the memslot. If
-  * AD bits are enabled, this will involve clearing the dirty bit on each SPTE.
-@@ -1508,7 +1526,7 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *kvm,
- static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 			   gfn_t start, gfn_t end)
- {
--	u64 dbit = kvm_ad_enabled() ? shadow_dirty_mask : PT_WRITABLE_MASK;
-+	u64 dbit = tdp_mmu_dirty_bit(root, false);
- 	struct tdp_iter iter;
- 	bool spte_set = false;
- 
-@@ -1523,8 +1541,7 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 		if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
- 			continue;
- 
--		KVM_MMU_WARN_ON(kvm_ad_enabled() &&
--				spte_ad_need_write_protect(iter.old_spte));
-+		KVM_MMU_WARN_ON(tdp_mmu_dirty_bit_invalid_for_spte(&iter, dbit));
- 
- 		if (!(iter.old_spte & dbit))
- 			continue;
-@@ -1570,8 +1587,7 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
- static void clear_dirty_pt_masked(struct kvm *kvm, struct kvm_mmu_page *root,
- 				  gfn_t gfn, unsigned long mask, bool wrprot)
- {
--	u64 dbit = (wrprot || !kvm_ad_enabled()) ? PT_WRITABLE_MASK :
--						   shadow_dirty_mask;
-+	u64 dbit = tdp_mmu_dirty_bit(root, wrprot);
- 	struct tdp_iter iter;
- 
- 	lockdep_assert_held_write(&kvm->mmu_lock);
-@@ -1583,8 +1599,7 @@ static void clear_dirty_pt_masked(struct kvm *kvm, struct kvm_mmu_page *root,
- 		if (!mask)
- 			break;
- 
--		KVM_MMU_WARN_ON(kvm_ad_enabled() &&
--				spte_ad_need_write_protect(iter.old_spte));
-+		KVM_MMU_WARN_ON(tdp_mmu_dirty_bit_invalid_for_spte(&iter, dbit));
- 
- 		if (iter.level > PG_LEVEL_4K ||
- 		    !(mask & (1UL << (iter.gfn - gfn))))
+> > Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
+> > ---
+> >  fs/exec.c                     |  4 ++++
+> >  include/linux/lsm_hook_defs.h |  1 +
+> >  include/linux/security.h      |  6 ++++++
+> >  security/security.c           | 13 +++++++++++++
+> >  4 files changed, 24 insertions(+)
+> >
+> > diff --git a/fs/exec.c b/fs/exec.c
+> > index 8cdd5b2dd09c..e6f9e980c6b1 100644
+> > --- a/fs/exec.c
+> > +++ b/fs/exec.c
+> > @@ -829,6 +829,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
+> >       BUG_ON(prev !=3D vma);
+> >
+> >       if (unlikely(vm_flags & VM_EXEC)) {
+> > +             ret =3D security_vm_execstack();
+> > +             if (ret)
+> > +                     goto out_unlock;
+> > +
+> >               pr_warn_once("process '%pD4' started with executable stac=
+k\n",
+> >                            bprm->file);
+> >       }
+> > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_def=
+s.h
+> > index 185924c56378..b31d0744e7e7 100644
+> > --- a/include/linux/lsm_hook_defs.h
+> > +++ b/include/linux/lsm_hook_defs.h
+> > @@ -49,6 +49,7 @@ LSM_HOOK(int, 0, syslog, int type)
+> >  LSM_HOOK(int, 0, settime, const struct timespec64 *ts,
+> >        const struct timezone *tz)
+> >  LSM_HOOK(int, 1, vm_enough_memory, struct mm_struct *mm, long pages)
+> > +LSM_HOOK(int, 0, vm_execstack, void)
+> >  LSM_HOOK(int, 0, bprm_creds_for_exec, struct linux_binprm *bprm)
+> >  LSM_HOOK(int, 0, bprm_creds_from_file, struct linux_binprm *bprm, cons=
+t struct file *file)
+> >  LSM_HOOK(int, 0, bprm_check_security, struct linux_binprm *bprm)
+> > diff --git a/include/linux/security.h b/include/linux/security.h
+> > index d0eb20f90b26..084b96814970 100644
+> > --- a/include/linux/security.h
+> > +++ b/include/linux/security.h
+> > @@ -294,6 +294,7 @@ int security_quota_on(struct dentry *dentry);
+> >  int security_syslog(int type);
+> >  int security_settime64(const struct timespec64 *ts, const struct timez=
+one *tz);
+> >  int security_vm_enough_memory_mm(struct mm_struct *mm, long pages);
+> > +int security_vm_execstack(void);
+> >  int security_bprm_creds_for_exec(struct linux_binprm *bprm);
+> >  int security_bprm_creds_from_file(struct linux_binprm *bprm, const str=
+uct file *file);
+> >  int security_bprm_check(struct linux_binprm *bprm);
+> > @@ -624,6 +625,11 @@ static inline int security_vm_enough_memory_mm(str=
+uct mm_struct *mm, long pages)
+> >       return __vm_enough_memory(mm, pages, cap_vm_enough_memory(mm, pag=
+es));
+> >  }
+> >
+> > +static inline int security_vm_execstack(void)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> >  static inline int security_bprm_creds_for_exec(struct linux_binprm *bp=
+rm)
+> >  {
+> >       return 0;
+> > diff --git a/security/security.c b/security/security.c
+> > index 0144a98d3712..f75240d0d99d 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -1125,6 +1125,19 @@ int security_vm_enough_memory_mm(struct mm_struc=
+t *mm, long pages)
+> >       return __vm_enough_memory(mm, pages, cap_sys_admin);
+> >  }
+> >
+> > +/**
+> > + * security_vm_execstack() - Check if starting a program with executab=
+le stack
+> > + * is allowed
+> > + *
+> > + * Check whether starting a program with an executable stack is allowe=
+d.
+> > + *
+> > + * Return: Returns 0 if permission is granted.
+> > + */
+> > +int security_vm_execstack(void)
+> > +{
+> > +     return call_int_hook(vm_execstack);
+> > +}
+> > +
+> >  /**
+> >   * security_bprm_creds_for_exec() - Prepare the credentials for exec()
+> >   * @bprm: binary program information
 
