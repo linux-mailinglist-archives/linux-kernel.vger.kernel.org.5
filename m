@@ -1,49 +1,80 @@
-Return-Path: <linux-kernel+bounces-103988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7156A87C781
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:30:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E905687C784
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A28A61C2125A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:30:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4E61C20DEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50DBE8801;
-	Fri, 15 Mar 2024 02:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63AAE79DE;
+	Fri, 15 Mar 2024 02:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KP6FE4eq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N+uvzB94"
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B78D2FA;
-	Fri, 15 Mar 2024 02:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FAF86FB1;
+	Fri, 15 Mar 2024 02:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710469831; cv=none; b=Mh4MEwuPWtmPFLKjX+38ME0FzIf000fe3r8745CouHRPp3nWFa9YE9SIvoEsRT/JNw3uEDvvm/4O78VaANzmmisxQ1n2RzJatRBmjOGawYRs/9gpxBByluqFzpmGp10m9BwVJ+e45ouflO6/KwxSfRMJo2HrVz8TykKtV1ngcGI=
+	t=1710469858; cv=none; b=BwOdbTpT9bsNKHE7dK02LqHLlaT1+0+39OlDMoLUzHsc9WBztv6EG6OYwmzbSBdhvdqqW+YTNUf010xKpKdNGm01y7gICRb0w3HI9mvDj7HfZRGG83fNchIjx5Z0wQM8J9pdOWVFUB78k6Kl7qH9Z+UULCZNtzDmecDeTFhh/Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710469831; c=relaxed/simple;
-	bh=/DuxcoU5eU7Jg2W0UecnZo3j6aFQsVsJnqcpKoj3iDU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=mVDBStFU77eZ/LU1HaaOnd8nnpsBYTNRxmOTUPyheO72N4g9SOv8g2fG1ChRqxLKetY/647C3EcybO+MrHeiVehzInfSOEoUHekQX6N0r/V19qKPVJ9eKsqHWcu6DuMcxPkjNFvg9MXeoiSPzNHXR/v0POweoP8jdg9eXgVZOEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KP6FE4eq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0D109C433C7;
-	Fri, 15 Mar 2024 02:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710469831;
-	bh=/DuxcoU5eU7Jg2W0UecnZo3j6aFQsVsJnqcpKoj3iDU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KP6FE4eq9/myZv8B6rO85RyDC/5fy8vNg16+Nz/OmRAVWA0o5ldthsyQHF9xdmSQD
-	 3sGhNMgSv2xxV3C5rikVOXZzCyLxjUMljmmQHwVrrkUDmGrnQvOtpyCFOz0ZbHddh6
-	 meiyRECn3tp+MCoUkGwPalXjGO8yEUDPyJLjYi1k2TMOWcwI9VkkDp1EKWuhu8Waxg
-	 DHzRRIfjbJnniJwWQfZM9ckyC7Wq1VzEpcqorHyXiaMEQYz6Sk9RJECU67gJnNavX5
-	 CsyUGj74Bq5C3LTBLwmtQwd0mJbg1t/FxU1HdjS2cYKVqMT74jNfrEZZRl/+PZ1piE
-	 irzVcogN+JBCA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EFF08D84BAB;
-	Fri, 15 Mar 2024 02:30:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710469858; c=relaxed/simple;
+	bh=dpVUTr5Plhl058/uH4Kri3LO8Jz2P9RHi3V4RJfMjhs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bmchRuuI+/mY/kMfP5Ke1J9Zag9qBrdsKW6aY8RlfiWtk8jEldgt6Mv60yM5CkvuVuT8sOZh9IKd8kzb+Gd5MI28SxBtn9iscSJMxJ2HaM48zSGKj6TBIb8h7KZzz4FeB7pXKYAV9KAnBrrMKNx2rhO+T3+Vxs1lwloKteoysZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N+uvzB94; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6910c1f983bso9779006d6.0;
+        Thu, 14 Mar 2024 19:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710469856; x=1711074656; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ejYFjYDwJWT4LMREbSvJVA0/AZZXGt31sFPEUshDaM=;
+        b=N+uvzB94ntlYXes0MCqinhl6lRJfxCXWT+GhdfAah4FAqgN4K8gCqcc1ShUcz0RF5z
+         oaiMxmWco07J754LIv63ZcZMHd4Z4BV1b+GD/xRb9rwh0Ecl1XlUvz3V57pAza1xpaIY
+         RaLBFSMpNquQNWMbtqTLfCv2WpffiiLly1zHUFJJ4pV43HUQH4A5/Bhfu7owQ/qOa5IM
+         +3gswgEcoymFahrYEefZI3yyjZPFsehKBdFeWgqsmMUXzJD4zVEXZX/6JFILOfNq8WEQ
+         Z8+nSQ7gIE2t0eIDf0FvMrFiW4RWqmnNxQJNlRXtdgc5gHPWGW22LQ0CqDR6mOjcQyHG
+         gPgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710469856; x=1711074656;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4ejYFjYDwJWT4LMREbSvJVA0/AZZXGt31sFPEUshDaM=;
+        b=koFgU+OwqFHYGihrpy+ahu7TqTJDfu5mEIkqsboh5JIXq3zs6vbCW1I8GxS+IgN5W1
+         GyZ019sqxPWrPhfiDQqYCU05fFqb/YVKBtobtxmRoEyP5hP4/PKmpgKuNruHCdaBFdsI
+         KCExp8mDB5SZXLq370kyUe3K7umBpDXE1PvGWiKy1LULpra1oGUGI3YpCgpioykrzZlo
+         8l2xG4zYjulQve7MM7LKFov8bm4nXIXFTufTndfWna6ixLQ4qFrVhtw4A63agps8A/LB
+         tJdwymDoJgo5fv7FbtAhenVy/01ha8tZieahK7xXD0Pv0mmpCxY4ApWI48cAXILyPWQF
+         8Eyw==
+X-Forwarded-Encrypted: i=1; AJvYcCVr6h2A1JlgdZrO4bQau+Z3pK6U8JpJpxjyxnslXftkWdm1aK7mHRZVQ6IuKDwr/diqeBgIQ0PYOp+xU9/dm3PFNTqd8Y/8Yho1irz7l0idUun4CXDeaXw0Bh4fL2JRLRk26izwuBhg0oiB
+X-Gm-Message-State: AOJu0YyS56wFRj41Pvn3tpuKdQ7nE6ibK0kXQNHewIIl23jyYLqxZUjM
+	/oPbs234ycTtrDsy1CvqShdrduFLv8QIIgn0LmBklRyg+koplfGh
+X-Google-Smtp-Source: AGHT+IGBD4YCat38Hgt0nDvoW+vYKiJwyKQRJNNvXlsrqMytJXWp8/MfZkqgJ7FC+uUYvVjKiFpA/A==
+X-Received: by 2002:a0c:f8c9:0:b0:690:ad9f:e3dd with SMTP id h9-20020a0cf8c9000000b00690ad9fe3ddmr2540083qvo.63.1710469856213;
+        Thu, 14 Mar 2024 19:30:56 -0700 (PDT)
+Received: from Slackware.localdomain ([191.96.227.83])
+        by smtp.gmail.com with ESMTPSA id im14-20020a056214246e00b0069049298fccsm1292579qvb.65.2024.03.14.19.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 19:30:55 -0700 (PDT)
+From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To: masahiroy@kernel.org,
+	nathan@kernel.org,
+	nicolas@fjasle.eu,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] scripts: Improve source code readability by eliminating too many slashes
+Date: Fri, 15 Mar 2024 08:00:38 +0530
+Message-Id: <20240315023038.4320-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.35.8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,52 +82,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Take return from set_memory_ro() into
- account with bpf_prog_lock_ro()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171046983097.25404.15651868965957197359.git-patchwork-notify@kernel.org>
-Date: Fri, 15 Mar 2024 02:30:30 +0000
-References: <286def78955e04382b227cb3e4b6ba272a7442e3.1709850515.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <286def78955e04382b227cb3e4b6ba272a7442e3.1709850515.git.christophe.leroy@csgroup.eu>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
- sparclinux@vger.kernel.org, netdev@vger.kernel.org,
- linux-hardening@vger.kernel.org, keescook@chromium.org
 
-Hello:
+I have tried to eliminate the convolution(visual) of forward slashes.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ scripts/mkcompile_h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri,  8 Mar 2024 06:38:07 +0100 you wrote:
-> set_memory_ro() can fail, leaving memory unprotected.
-> 
-> Check its return and take it into account as an error.
-> 
-> Link: https://github.com/KSPP/linux/issues/7
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: linux-hardening@vger.kernel.org <linux-hardening@vger.kernel.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> [...]
+diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
+index 2596f78e52ef..d6a7b22d23e3 100755
+--- a/scripts/mkcompile_h
++++ b/scripts/mkcompile_h
+@@ -6,7 +6,7 @@ CC_VERSION="$2"
+ LD=$3
 
-Here is the summary with links:
-  - [bpf-next,v3,1/2] bpf: Take return from set_memory_ro() into account with bpf_prog_lock_ro()
-    https://git.kernel.org/bpf/bpf-next/c/7d2cc63eca0c
-  - [bpf-next,v3,2/2] bpf: Take return from set_memory_rox() into account with bpf_jit_binary_lock_ro()
-    https://git.kernel.org/bpf/bpf-next/c/e60adf513275
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+ if test -z "$KBUILD_BUILD_USER"; then
+-	LINUX_COMPILE_BY=$(whoami | sed 's/\\/\\\\/')
++	LINUX_COMPILE_BY=$(whoami | sed 's#\\#\\\\#')
+ else
+ 	LINUX_COMPILE_BY=$KBUILD_BUILD_USER
+ fi
+--
+2.35.8
 
 
