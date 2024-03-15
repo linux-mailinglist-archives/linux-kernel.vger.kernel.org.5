@@ -1,122 +1,172 @@
-Return-Path: <linux-kernel+bounces-104743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA2987D304
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:47:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8677487D306
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C54112817BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:47:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B88911C21E76
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4846A4CB55;
-	Fri, 15 Mar 2024 17:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6D24C635;
+	Fri, 15 Mar 2024 17:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDARwqBG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="svq0qhBs"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8A950A72;
-	Fri, 15 Mar 2024 17:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBA74CB23
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710524842; cv=none; b=hmPb9M9WrrE5SexmnD6iur6BWVyBIng6mzFN4ccunuRKGCXD2GNyHkJrVuKBbG9CtNPjwEs0wnBmbdOfVc3qCUYi/pP82TJbtd+S15ZVrAmd1u6JhPjhcaj94KNK2OEZCrykrXeHYCGvXGqK869bo5QtAGSVO0dI+/Z9LmW4Jsc=
+	t=1710524868; cv=none; b=thrFgtSebvwcEksVczPvlpNpxdpMDjTEJ4CpQYppj+b6QkcCyBibOjmn0+RuZWb8UXSPVRQf5tSFPATPryJ2neITzToZfWWxfGKifCz12EbCqu8QGyKaYII4uSk9JoZ4xq4KfYxgIfzcHIay7W6oUiA4x1aRbo5Ag0KR6HYouMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710524842; c=relaxed/simple;
-	bh=/JrYBKJ+RvgdTDc3k2bTdx+kammTQVuU4jdoBxQltsY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iy1r5Dkb+3cmXjjg4AsdMuqt9sKFKkixQzX/deOSNyE1N3yXl8CqLWMtdSQ4vw4sw+ERqIuFbkyDJkDGGc7t83y0saT2f0kDytHf5WC76Q0jvh4G29cgK30mPnJ/FDRLlrHGQdHBPmtRoLtbv5XsxIcjbQ3GA7W+N/tB9SetjFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oDARwqBG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B3B1C433C7;
-	Fri, 15 Mar 2024 17:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710524842;
-	bh=/JrYBKJ+RvgdTDc3k2bTdx+kammTQVuU4jdoBxQltsY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oDARwqBGiGClIz25uGXrpOxGj/1cHQyQTcBsJvIVJxoWfdw5bZFeQUUKB15FuqP2b
-	 HCRHvM5mBYugsjRuWMrNkjT+qGGbs/s2nVNR4HIu1R2PP8Stvbb3gvgAlUwhs6v/86
-	 LRfRKqBcSC8QuavWPL9aneeHbpDyhfeqx44T4l/CKpJYyKueY5w5107MORP/RYJwlw
-	 bUTh1kwZmgwyZhnYCBQZqLIul3RKb/98cR/594A4cvMmPTfAmwKTfBNDg3Pt6csqvQ
-	 h9ysLp+9vKiPQdyYbRoCCIsvKdCU+Nc8KnnoEdoNRu1EC2YmAlFMg8KGy2fWKZWpM/
-	 3W3pIflDWoDrA==
-Date: Fri, 15 Mar 2024 17:47:17 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] spi: mt7621: allow GPIO chip select lines
-Message-ID: <6c92fddd-f79b-40b5-bd52-61f43d6a7591@sirena.org.uk>
-References: <20240315015708.13948-1-justin.swartz@risingedge.co.za>
- <d562be73-ad76-4450-8bff-38ed5d144714@sirena.org.uk>
- <2dbc59c9133542f6f8bc465113d9630b@risingedge.co.za>
+	s=arc-20240116; t=1710524868; c=relaxed/simple;
+	bh=fkPK1LmQHyIfCMGWch1qUnlA3RLep24AWMuGdq+oBJg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bofs9cQOSdKmmzFn56DKnbeRmn6nh8nog+mMOGNISZRvmGLOMpLq0KeyQtkUla968cRKC7CZGeNcGd4/mroipmlMrYM6rk9pSpFrr19AvJyaw0GnHZhDP3IJVoE/jfHB6lvSXzK9NL+1cyIsPWyTeIgCGvQ2caoxqU0bb5DNk1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=svq0qhBs; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3b481539-0c9c-4110-ad03-bd252e80efb0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710524864;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NCJFY9oBMIc4jIR5EozdVizV1EDLctfDAJOmTBaMPQI=;
+	b=svq0qhBsz5hF1uH+RwKFS22DuTVjdHzsmisCBiKz0P0nggI+CYt0XPtClNfHaWB4P2oLRw
+	IMrh+Hhp2qttSDqSfcqmiedJUtely/HUU7gSM+gdWwy9WwyVFUC2DBIcWO5q5UfQ9hHo8V
+	FowdcNrSr1m1hut/GiuEjf3Y2LBnCU8=
+Date: Fri, 15 Mar 2024 13:47:40 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sdzcpQVLMTO214wS"
-Content-Disposition: inline
-In-Reply-To: <2dbc59c9133542f6f8bc465113d9630b@risingedge.co.za>
-X-Cookie: A well-known friend is a treasure.
+Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_channels in
+ scan_mask
+Content-Language: en-US
+To: "O'Griofa, Conall" <conall.ogriofa@amd.com>,
+ Jonathan Cameron <jic23@kernel.org>
+Cc: "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>
+References: <20240311162800.11074-1-sean.anderson@linux.dev>
+ <20240314154824.37150a54@jic23-huawei>
+ <a9ed95ec-aafe-49f6-93dd-c94c73620de2@linux.dev>
+ <DM6PR12MB4217EAA1049F815F234EE6D18B282@DM6PR12MB4217.namprd12.prod.outlook.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <DM6PR12MB4217EAA1049F815F234EE6D18B282@DM6PR12MB4217.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+Hi Conall,
 
---sdzcpQVLMTO214wS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 3/15/24 09:18, O'Griofa, Conall wrote:
+> [AMD Official Use Only - General]
+> 
+> Hi,
+> 
+> I think there was a fix for this issue applied to the version that was running on 5.15 that didn't seem to make it into the upstream driver.
+> Please see link for reference https://github.com/Xilinx/linux-xlnx/commit/608426961f16ab149b1b699f1c35f7ad244c0720
+> 
+> I think a similar fix to the above patch is may be beneficial?
 
-On Fri, Mar 15, 2024 at 06:23:09PM +0200, Justin Swartz wrote:
-> On 2024-03-15 16:45, Mark Brown wrote:
+These patches look functionally identical to me.
 
-> > The core should handle GPIO chip selects for you?
+--Sean
 
-> As far as I can tell, it doesn't - at least as far the state
-> of spi-mt7621.c is concerned prior to the patch, plus kernel
-> configuration choices, device tree definition, and other
-> factors I might not be taking into account.
+>> -----Original Message-----
+>> From: Sean Anderson <sean.anderson@linux.dev>
+>> Sent: Thursday, March 14, 2024 5:30 PM
+>> To: Jonathan Cameron <jic23@kernel.org>
+>> Cc: linux-iio@vger.kernel.org; O'Griofa, Conall <conall.ogriofa@amd.com>;
+>> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Lars-Peter
+>> Clausen <lars@metafoo.de>
+>> Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_channels in
+>> scan_mask
+>>
+>> Caution: This message originated from an External Source. Use proper caution
+>> when opening attachments, clicking links, or responding.
+>>
+>>
+>> On 3/14/24 11:48, Jonathan Cameron wrote:
+>> > On Mon, 11 Mar 2024 12:28:00 -0400
+>> > Sean Anderson <sean.anderson@linux.dev> wrote:
+>> >
+>> >> ams_enable_channel_sequence constructs a "scan_mask" for all the PS
+>> >> and PL channels. This works out fine, since scan_index for these
+>> >> channels is less than 64. However, it also includes the
+>> >> ams_ctrl_channels, where scan_index is greater than 64, triggering
+>> >> undefined behavior. Since we don't need these channels anyway, just
+>> exclude them.
+>> >>
+>> >> Fixes: d5c70627a794 ("iio: adc: Add Xilinx AMS driver")
+>> >> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>> >
+>> > Hi Sean,
+>> >
+>> > I'd ideally like to understand why we have channels with such large
+>> > scan indexes.  Those values should only be used for buffered capture.
+>> > It feels like they are being abused here.  Can we set them to -1
+>> > instead and check based on that?
+>> > For a channel, a scan index of -1 means it can't be captured via the
+>> > buffered interfaces but only accessed via sysfs reads.
+>> > I think that's what we have here?
+>>
+>> From what I can tell, none of the channels support buffered reads. And we can't
+>> naïvely convert the scan_index to -1, since that causes sysfs naming conflicts
+>> (not to mention the compatibility break).
+>>
+>> >
+>> > I just feel like if we leave these as things stand, we will get bitten
+>> > by similar bugs in the future.  At least with -1 it should be obvious why!
+>>
+>> There are just as likely to be bugs confusing the PL/PS subdevices...
+>>
+>> FWIW I had no trouble identifying the channels involved with this bug.
+>>
+>> --Sean
+>>
+>> > Jonathan
+>> >
+>> >
+>> >> ---
+>> >>
+>> >>  drivers/iio/adc/xilinx-ams.c | 8 ++++++--
+>> >>  1 file changed, 6 insertions(+), 2 deletions(-)
+>> >>
+>> >> diff --git a/drivers/iio/adc/xilinx-ams.c
+>> >> b/drivers/iio/adc/xilinx-ams.c index a55396c1f8b2..4de7ce598e4d
+>> >> 100644
+>> >> --- a/drivers/iio/adc/xilinx-ams.c
+>> >> +++ b/drivers/iio/adc/xilinx-ams.c
+>> >> @@ -414,8 +414,12 @@ static void ams_enable_channel_sequence(struct
+>> >> iio_dev *indio_dev)
+>> >>
+>> >>      /* Run calibration of PS & PL as part of the sequence */
+>> >>      scan_mask = BIT(0) | BIT(AMS_PS_SEQ_MAX);
+>> >> -    for (i = 0; i < indio_dev->num_channels; i++)
+>> >> -            scan_mask |= BIT_ULL(indio_dev->channels[i].scan_index);
+>> >> +    for (i = 0; i < indio_dev->num_channels; i++) {
+>> >> +            const struct iio_chan_spec *chan =
+>> >> + &indio_dev->channels[i];
+>> >> +
+>> >> +            if (chan->scan_index < AMS_CTRL_SEQ_BASE)
+>> >> +                    scan_mask |= BIT_ULL(chan->scan_index);
+>> >> +    }
+>> >>
+>> >>      if (ams->ps_base) {
+>> >>              /* put sysmon in a soft reset to change the sequence */
+>> >
 
-> But maybe I'm doing something wrong, or perhaps have a
-> misconfiguration somewhere. So, if you're able to point out
-> something I've done incorrectly, it would be appreciated.
-
-Look at other drivers that support GPIO chip selects?
-
-> To attempt to confirm if the core will handle my desired
-> GPIO chip select lines without explicit state toggling,
-> I tried to set the value of use_gpio_descriptors to true,
-> without any other modifications to spi-mt7621.c as of
-> commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
-
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
-
-The core needs to know that the GPIO chip selects are there but once it
-knows that they're there things like setting the chip select should just
-work.
-
---sdzcpQVLMTO214wS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0iaQACgkQJNaLcl1U
-h9ClYgf/VBvBkaKRqN1N5jGqzbE+7ahGMhNcsH8qLPqWGA7txz7YIJ0DYg+F3ySq
-QRYJmJCexCEEH9Vmj/49sauUmN0DXGIBjdUNOR5J3jf5KZD0xNIu69/jTxpjxL7l
-QBFpRB4Rh+7I7+ObVhluJpBSexUrK73x3xwb+FMjOUV5Leh/fM71E2SWiUG9vX96
-Gr3NingqmwpWwnLGkAv/G/45YPo/171bONDqnE7zfslPCSQoexXW0CdDwYiQEU21
-SkDozS8Wb+qRUox0uU9Gp10zPNCzwbFh0FVyikmJ3t0RiLSCLSI3RHfhEd4FMi7t
-1IaadgvwOf5iayGgCUxilb8PlMZNng==
-=HCgu
------END PGP SIGNATURE-----
-
---sdzcpQVLMTO214wS--
 
