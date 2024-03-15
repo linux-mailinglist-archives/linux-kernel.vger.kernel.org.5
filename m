@@ -1,52 +1,53 @@
-Return-Path: <linux-kernel+bounces-104468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F93B87CE59
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:52:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7866C87CE5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FBA71F2213D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:52:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34BBE281F3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBF53838C;
-	Fri, 15 Mar 2024 13:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9421D3BB2E;
+	Fri, 15 Mar 2024 13:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="VMsQ+k1v"
+	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="I1pnnnD4"
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1382CCAD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB28E1BF28;
 	Fri, 15 Mar 2024 13:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710510718; cv=none; b=QCu7/SbTZ0o9jNFQMr4h0yP21duPkxywui9e8Uah6Fi6RZW7UWas8gBlmIMgYWDmyQuEfQPbsKnDegsVpLqgik8vauzvEUCOytKFspwfvOEk5uFc1oF2hlH67Gy1OqAVyQ33aviygDxWTdHMCXNSXtdJGL10OSu9EdBvHYbCYyY=
+	t=1710510719; cv=none; b=XTLOWl+dTe/KKysJ2i7vzSzWnAp5v13dXj5b2TyW84H8IoQWMwhYFasv6wUrX17WSK1zl4urHPGGEPmcz/34lqJLl+dfUcL/OVH2bH+PC1jrHHEtqxz0r1Rxu37OAdYuUambRuLhzoTdfdICo5Cuq4DZmKpCimIiv8dpKLUvNXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710510718; c=relaxed/simple;
-	bh=JrN770EdBryMxnh0Oh99guIP9VQQameiq0rHefV8pac=;
+	s=arc-20240116; t=1710510719; c=relaxed/simple;
+	bh=cQdZcctlx5RnLL3SAODH+Mfrs1oboFH6pGD74qEDrKw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DyN7+c6m2cCUv4qBFL4tQFwP9PSN6nTdLgkqaq5AHeebN//TJc/NgvHFoqRR7Oe2FiEcFAMC1lAwBEJVECCRPhbIS8NaA7AGRX0RKbtHPMP4gn5YHYm7SjnmVOAFI9VnRc+db8/Z83ThMT7SDvjgmr1Q7p6gmrJe8+SV2PI9rW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=VMsQ+k1v; arc=none smtp.client-ip=194.87.146.52
+	 In-Reply-To:To:Cc; b=dx5Hjz3JXXj9xJlwFqbAWlLriN5tM3bAxHZMOrhBRfNtFrbh5tfgX9y/of1C1TRB4oIp5TJBOXc2VyH1stFzgPEKSi9KiUvdg9AG/oe0K7bb/62dxEymbW0N5OBUVvQmFqUUrC3ln2pLpY5LYJF0uIE+meQ4w1E6BQk50m0jF2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=I1pnnnD4; arc=none smtp.client-ip=194.87.146.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
 	(No client certificate requested)
-	by box.trvn.ru (Postfix) with ESMTPSA id E1B7F41EF2;
-	Fri, 15 Mar 2024 18:51:36 +0500 (+05)
+	by box.trvn.ru (Postfix) with ESMTPSA id BA84141EF4;
+	Fri, 15 Mar 2024 18:51:37 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-	t=1710510697; bh=JrN770EdBryMxnh0Oh99guIP9VQQameiq0rHefV8pac=;
+	t=1710510698; bh=cQdZcctlx5RnLL3SAODH+Mfrs1oboFH6pGD74qEDrKw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=VMsQ+k1vmGItKQ5U6NmGqU2qDSQIF0phX2FNowWTobMMazdW9FkciUuNHGIKxRg/G
-	 fXihIuE0CBY1G/Q+FnpohDUeFBQlbm2FGpWfzI5IrQDimhujpnO4KDQQkC8v4pXcRh
-	 HEjWwxgwqfWzAenyuhBLK6SaKXJblDuJg0E/3K4NE0Eo9yfxrIICmeANy7pKFK3ZWu
-	 pK8R9bR3iW42dG7Z9RAXRU//1x0JUqKZ2XwrYBDP/DRM4GBbhs+VxKCMxXufyHyYIT
-	 1gjxrqOZqo7o3gI4K1M8tmpLD1gDTfAyyKVd6EZoS2+WMC1jFid1pJKM67QYJT8VXF
-	 OMDtcJt25uHmQ==
+	b=I1pnnnD4SSQtBBl8gv4dJSGBMyKMuvHfgZBG/FhwqjmhgPHEME08qRuju7TbG4h4p
+	 HsCPxQ1s0K5HDX0yTQ7ZQ8s4q/WEzdai5uPQZ5Nv8RRf6bmHIkOUiGHOUeIaxwvGR6
+	 qo91ugQ+ogowLQUf16gqGFmJiBdmwPLBeOcP5v9YoWbIlMQX0xemUFhwzPHFtuUfvU
+	 3+U2OT70rs9SFrVJhwbxDooZk2Jm9A80k5KM3ZjitX0RMeyCCp+nhjo5DvO7mfd5AP
+	 nw+pqhkXbbnG4laSUEoYWOFLPtCGxLNR5lUkL6W/HC1bzimGAV1FCGp9DfXqsyWdGe
+	 LmxXENvOQRQiQ==
 From: Nikita Travkin <nikita@trvn.ru>
-Date: Fri, 15 Mar 2024 18:51:16 +0500
-Subject: [PATCH v5 2/4] platform: Add ARM64 platform directory
+Date: Fri, 15 Mar 2024 18:51:17 +0500
+Subject: [PATCH v5 3/4] platform: arm64: Add Acer Aspire 1 embedded
+ controller driver
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,8 +55,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240315-aspire1-ec-v5-2-f93381deff39@trvn.ru>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240315-aspire1-ec-v5-3-f93381deff39@trvn.ru>
 References: <20240315-aspire1-ec-v5-0-f93381deff39@trvn.ru>
 In-Reply-To: <20240315-aspire1-ec-v5-0-f93381deff39@trvn.ru>
 To: Hans de Goede <hdegoede@redhat.com>, 
@@ -69,126 +70,666 @@ To: Hans de Goede <hdegoede@redhat.com>,
 Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
  Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3905; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=JrN770EdBryMxnh0Oh99guIP9VQQameiq0rHefV8pac=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBl9FJmunF3ZxQvDUhdFk9TYCpzrVtq7859rIaxQ
- GwZk1aqj/2JAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZfRSZgAKCRBDHOzuKBm/
- daiQEACNmmQYzv5oErLKVrAkzVYSfPoM5fJvDuVkkKvxaZA/sOhyjGdkLbuMn1lya8NRzfRWtvC
- 6OgqWbY8L2lhqmd+N78tzmB6jl22BorP1PSKz/5jscOJiCT3sMuMFHOgwumPEYxqL6Jv22xVXIE
- MD1Fyy7wYDi04qRoo87GEisXIukrvrw1y0XoOBAKDxAnl53r2/ga+slmjYqQJQ8gRcVIJkXtlpf
- kvx69Ruje0wrQTlFukRyAiDw67UoUno8Tdp2Oqp4SRVb+TJB1t4G9y+WVS3wbrxXK0aDxYrypjZ
- 20khUkQnE3lFCB/GZTOb/ms90TA7RXwt4ZdxdioS6b6oAJP+EZH/fB+iu/GqVdu6PUfCN8BoI1I
- vXLd5+DQaO2Qrz3TtHe5jARrI2GE4NM4Mm68APwCpjDiG9kcUhkmdLHJacdJhqLXjYll2Jlilzg
- RzJjKjPNwBfgNd5gvwoFo6S9zKxvcGzdkngc2c+BGk8bVtPXF2BEI1MEtT3sov0x59AiWdcMB6X
- 3WR1W0bTwHAAvV5a/ievw6612IqKZE1g4G9YaDpB07JQ6vA4zNitJ+NG4W7va2Q2aKq5IFa0AIG
- gXMTfLtlHSvsE80TfLi3m759tkEZgYIspjvX/mzTKo1hnPSKjH6mC/VUfq8gq1SX8rS4DBKnysQ
- ILD2vTNsuJffK7A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=19218; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=cQdZcctlx5RnLL3SAODH+Mfrs1oboFH6pGD74qEDrKw=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBl9FJmsDzMcAxaO5t5vfAqStQFp7kXkz7QGeLGT
+ YyJUn6wLSGJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZfRSZgAKCRBDHOzuKBm/
+ dZWuD/4uHmEmMhDWY5DJIXWDiR81ww2pVMmoEhxAi27TwOH2UwxXa7S+bStCacQA5JApPzIW6VH
+ XlZLDD1zpDVyMNY6FjqXl4GW0BVDhDBttZJGW5/JOZz9mYTS4VdDhjpHAJ8DT58S7wInAPjlpZC
+ 5FwbYOw/Uyy1m1VZvlDvacuaaf/dWCTbgFWC+EuVjjK6lx8x3+gyYW47o+vtVhe1tBinNzjUcgX
+ ryosvfuBy2qfSQEFogdwzlGISjdnjOSTIfH+b7WpKUYeK4ElV88p9WMpaU+8qdtsDCcSBzCwlBe
+ Xx090RQG/lv3BJg7sZrtMDgvuDhWjdBWryJlEBlhJ84bQoldTLTAFBrFGBsWqys3K7KewDkYrdq
+ spyWVcko4ZgbJHX7y8QmiYijlDGmc2CF2VLcKJ7wwmspXVGyFenTWkB9JJw3FBfOvk4Xdql1wcW
+ jXG1R4QdAV61HwJVmbR/BG/8PL1KIWaKMA3FsN9JOmvO6OT/YJgdq5dSMuvkQg5nTs+32s8CP05
+ K7UaSzCoqnN+0u6dQNfvPmPTAfoW19bL6uDL7ox8Zz0+W7OhB6iGqHztD9CdGPU6WHM1GXf3c12
+ +j7+b4hisyEEqkevVxkyqBE+B03MPklIU1QBJo2sXQ1KvhzbyXTLUsa4cIFV8sksoHwFgGrd/Oy
+ RGFKig7az16R3vQ==
 X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
  fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 
-Some ARM64 based laptops and computers require vendor/board specific
-drivers for their embedded controllers. Even though usually the most
-important functionality of those devices is implemented inside ACPI,
-unfortunately Linux doesn't currently have great support for ACPI on
-platforms like Qualcomm Snapdragon that are used in most ARM64 laptops
-today. Instead Linux relies on Device Tree for Qualcomm based devices
-and it's significantly easier to reimplement the EC functionality in
-a dedicated driver than to make use of ACPI code.
+Acer Aspire 1 is a Snapdragon 7c based laptop. It uses an embedded
+controller to perform a set of various functions, such as:
 
-This commit introduces a new platform/arm64 subdirectory to give a
-place to such drivers for EC-like devices.
+- Battery and charger monitoring;
+- Keyboard layout control (i.e. fn_lock settings);
+- USB Type-C DP alt mode HPD notifications;
+- Laptop lid status.
 
-A new MAINTAINERS entry is added for this directory. Patches to files in
-this directory will be taken up by the platform-drivers-x86 team (i.e.
-Hans de Goede and Ilpo Järvinen) with additional review from Bryan
-O'Donoghue to represent ARM64 maintainers.
+Unfortunately, while all this functionality is implemented in ACPI, it's
+currently not possible to use ACPI to boot Linux on such Qualcomm
+devices. To allow Linux to still support the features provided by EC,
+this driver reimplments the relevant ACPI parts. This allows us to boot
+the laptop with Device Tree and retain all the features.
 
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 ---
- MAINTAINERS                     | 10 ++++++++++
- drivers/platform/Kconfig        |  2 ++
- drivers/platform/Makefile       |  1 +
- drivers/platform/arm64/Kconfig  | 19 +++++++++++++++++++
- drivers/platform/arm64/Makefile |  6 ++++++
- 5 files changed, 38 insertions(+)
+ MAINTAINERS                              |   6 +
+ drivers/platform/arm64/Kconfig           |  16 +
+ drivers/platform/arm64/Makefile          |   2 +
+ drivers/platform/arm64/acer-aspire1-ec.c | 562 +++++++++++++++++++++++++++++++
+ 4 files changed, 586 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 76b3714710c2..186338451099 100644
+index 186338451099..991303ee340c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -3050,6 +3050,16 @@ F:	drivers/mmc/host/sdhci-of-arasan.c
- N:	zynq
- N:	xilinx
+@@ -258,6 +258,12 @@ L:	linux-acenic@sunsite.dk
+ S:	Maintained
+ F:	drivers/net/ethernet/alteon/acenic*
  
-+ARM64 PLATFORM DRIVERS
-+M:	Hans de Goede <hdegoede@redhat.com>
-+M:	Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-+R:	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-+L:	platform-driver-x86@vger.kernel.org
++ACER ASPIRE 1 EMBEDDED CONTROLLER DRIVER
++M:	Nikita Travkin <nikita@trvn.ru>
 +S:	Maintained
-+Q:	https://patchwork.kernel.org/project/platform-driver-x86/list/
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
-+F:	drivers/platform/arm64/
++F:	Documentation/devicetree/bindings/platform/acer,aspire1-ec.yaml
++F:	drivers/platform/arm64/acer-aspire1-ec.c
 +
- ARM64 PORT (AARCH64 ARCHITECTURE)
- M:	Catalin Marinas <catalin.marinas@arm.com>
- M:	Will Deacon <will@kernel.org>
-diff --git a/drivers/platform/Kconfig b/drivers/platform/Kconfig
-index 868b20361769..81a298517df2 100644
---- a/drivers/platform/Kconfig
-+++ b/drivers/platform/Kconfig
-@@ -14,3 +14,5 @@ source "drivers/platform/olpc/Kconfig"
- source "drivers/platform/surface/Kconfig"
- 
- source "drivers/platform/x86/Kconfig"
-+
-+source "drivers/platform/arm64/Kconfig"
-diff --git a/drivers/platform/Makefile b/drivers/platform/Makefile
-index 41640172975a..fbbe4f77aa5d 100644
---- a/drivers/platform/Makefile
-+++ b/drivers/platform/Makefile
-@@ -11,3 +11,4 @@ obj-$(CONFIG_OLPC_EC)		+= olpc/
- obj-$(CONFIG_GOLDFISH)		+= goldfish/
- obj-$(CONFIG_CHROME_PLATFORMS)	+= chrome/
- obj-$(CONFIG_SURFACE_PLATFORMS)	+= surface/
-+obj-$(CONFIG_ARM64)		+= arm64/
+ ACER ASPIRE ONE TEMPERATURE AND FAN DRIVER
+ M:	Peter Kaestle <peter@piie.net>
+ L:	platform-driver-x86@vger.kernel.org
 diff --git a/drivers/platform/arm64/Kconfig b/drivers/platform/arm64/Kconfig
-new file mode 100644
-index 000000000000..644b83ede093
---- /dev/null
+index 644b83ede093..07d47879a9e3 100644
+--- a/drivers/platform/arm64/Kconfig
 +++ b/drivers/platform/arm64/Kconfig
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# EC-like Drivers for aarch64 based devices.
-+#
-+
-+menuconfig ARM64_PLATFORM_DEVICES
-+	bool "ARM64 Platform-Specific Device Drivers"
-+	depends on ARM64 || COMPILE_TEST
-+	default y
+@@ -16,4 +16,20 @@ menuconfig ARM64_PLATFORM_DEVICES
+ 
+ if ARM64_PLATFORM_DEVICES
+ 
++config EC_ACER_ASPIRE1
++	tristate "Acer Aspire 1 Emedded Controller driver"
++	depends on I2C
++	depends on DRM
++	depends on POWER_SUPPLY
++	depends on INPUT
 +	help
-+	  Say Y here to get to see options for platform-specific device drivers
-+	  for arm64 based devices, primarily EC-like device drivers.
-+	  This option alone does not add any kernel code.
++	  Say Y here to enable the EC driver for the (Snapdragon-based)
++	  Acer Aspire 1 laptop. The EC handles battery and charging
++	  monitoring as well as some misc functions like the lid sensor
++	  and USB Type-C DP HPD events.
 +
-+	  If you say N, all options in this submenu will be skipped and disabled.
++	  This driver provides battery and AC status support for the mentioned
++	  laptop where this information is not properly exposed via the
++	  standard ACPI devices.
 +
-+if ARM64_PLATFORM_DEVICES
-+
-+endif # ARM64_PLATFORM_DEVICES
+ endif # ARM64_PLATFORM_DEVICES
 diff --git a/drivers/platform/arm64/Makefile b/drivers/platform/arm64/Makefile
-new file mode 100644
-index 000000000000..f91cdc7155e2
---- /dev/null
+index f91cdc7155e2..4fcc9855579b 100644
+--- a/drivers/platform/arm64/Makefile
 +++ b/drivers/platform/arm64/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Makefile for linux/drivers/platform/arm64
-+#
-+# This dir should only include drivers for EC-like devices.
-+#
+@@ -4,3 +4,5 @@
+ #
+ # This dir should only include drivers for EC-like devices.
+ #
++
++obj-$(CONFIG_EC_ACER_ASPIRE1)	+= acer-aspire1-ec.o
+diff --git a/drivers/platform/arm64/acer-aspire1-ec.c b/drivers/platform/arm64/acer-aspire1-ec.c
+new file mode 100644
+index 000000000000..dbb1cce13965
+--- /dev/null
++++ b/drivers/platform/arm64/acer-aspire1-ec.c
+@@ -0,0 +1,562 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2024, Nikita Travkin <nikita@trvn.ru> */
++
++#include <asm-generic/unaligned.h>
++#include <drm/drm_bridge.h>
++#include <linux/bits.h>
++#include <linux/delay.h>
++#include <linux/i2c.h>
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/power_supply.h>
++#include <linux/usb/typec_mux.h>
++#include <linux/workqueue_types.h>
++
++#define MILLI_TO_MICRO			1000
++
++#define ASPIRE_EC_EVENT			0x05
++
++#define ASPIRE_EC_EVENT_WATCHDOG	0x20
++#define ASPIRE_EC_EVENT_KBD_BKL_ON	0x57
++#define ASPIRE_EC_EVENT_KBD_BKL_OFF	0x58
++#define ASPIRE_EC_EVENT_LID_CLOSE	0x9b
++#define ASPIRE_EC_EVENT_LID_OPEN	0x9c
++#define ASPIRE_EC_EVENT_BKL_UNBLANKED	0x9d
++#define ASPIRE_EC_EVENT_BKL_BLANKED	0x9e
++#define ASPIRE_EC_EVENT_FG_INF_CHG	0x85
++#define ASPIRE_EC_EVENT_FG_STA_CHG	0xc6
++#define ASPIRE_EC_EVENT_HPD_DIS		0xa3
++#define ASPIRE_EC_EVENT_HPD_CON		0xa4
++
++#define ASPIRE_EC_FG_DYNAMIC		0x07
++#define ASPIRE_EC_FG_STATIC		0x08
++
++#define ASPIRE_EC_FG_FLAG_PRESENT	BIT(0)
++#define ASPIRE_EC_FG_FLAG_FULL		BIT(1)
++#define ASPIRE_EC_FG_FLAG_DISCHARGING	BIT(2)
++#define ASPIRE_EC_FG_FLAG_CHARGING	BIT(3)
++
++#define ASPIRE_EC_RAM_READ		0x20
++#define ASPIRE_EC_RAM_WRITE		0x21
++
++#define ASPIRE_EC_RAM_WATCHDOG		0x19
++#define ASPIRE_EC_WATCHDOG_BIT		BIT(6)
++
++#define ASPIRE_EC_RAM_KBD_MODE		0x43
++
++#define ASPIRE_EC_RAM_KBD_FN_EN		BIT(0)
++#define ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP	BIT(5)
++#define ASPIRE_EC_RAM_KBD_ALWAYS_SET	BIT(6)
++#define ASPIRE_EC_RAM_KBD_NUM_LAYER_EN	BIT(7)
++
++#define ASPIRE_EC_RAM_KBD_MODE_2	0x60
++
++#define ASPIRE_EC_RAM_KBD_MEDIA_NOTIFY	BIT(3)
++
++#define ASPIRE_EC_RAM_HPD_STATUS	0xf4
++#define ASPIRE_EC_HPD_CONNECTED		0x03
++
++#define ASPIRE_EC_RAM_LID_STATUS	0x4c
++#define ASPIRE_EC_LID_OPEN		BIT(6)
++
++#define ASPIRE_EC_RAM_ADP		0x40
++#define ASPIRE_EC_AC_STATUS		BIT(0)
++
++struct aspire_ec {
++	struct i2c_client *client;
++	struct power_supply *bat_psy;
++	struct power_supply *adp_psy;
++	struct input_dev *idev;
++
++	bool bridge_configured;
++	struct drm_bridge bridge;
++	struct work_struct work;
++};
++
++static int aspire_ec_ram_read(struct i2c_client *client, u8 off, u8 *data, u8 data_len)
++{
++	i2c_smbus_write_byte_data(client, ASPIRE_EC_RAM_READ, off);
++	i2c_smbus_read_i2c_block_data(client, ASPIRE_EC_RAM_READ, data_len, data);
++	return 0;
++}
++
++static int aspire_ec_ram_write(struct i2c_client *client, u8 off, u8 data)
++{
++	u8 tmp[2] = {off, data};
++
++	i2c_smbus_write_i2c_block_data(client, ASPIRE_EC_RAM_WRITE, sizeof(tmp), tmp);
++	return 0;
++}
++
++static irqreturn_t aspire_ec_irq_handler(int irq, void *data)
++{
++	struct aspire_ec *ec = data;
++	int id;
++	u8 tmp;
++
++	/*
++	 * The original ACPI firmware actually has a small sleep in the handler.
++	 *
++	 * It seems like in most cases it's not needed but when the device
++	 * just exits suspend, our i2c driver has a brief time where data
++	 * transfer is not possible yet. So this delay allows us to suppress
++	 * quite a bunch of spurious error messages in dmesg. Thus it's kept.
++	 */
++	usleep_range(15000, 30000);
++
++	id = i2c_smbus_read_byte_data(ec->client, ASPIRE_EC_EVENT);
++	if (id < 0) {
++		dev_err(&ec->client->dev, "Failed to read event id: %pe\n", ERR_PTR(id));
++		return IRQ_HANDLED;
++	}
++
++	switch (id) {
++	case 0x0: /* No event */
++		break;
++
++	case ASPIRE_EC_EVENT_WATCHDOG:
++		/*
++		 * Here acpi responds to the event and clears some bit.
++		 * Notify (\_SB.I2C3.BAT1, 0x81) // Information Change
++		 * Notify (\_SB.I2C3.ADP1, 0x80) // Status Change
++		 */
++		aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_WATCHDOG, &tmp, sizeof(tmp));
++		tmp &= ~ASPIRE_EC_WATCHDOG_BIT;
++		aspire_ec_ram_write(ec->client, ASPIRE_EC_RAM_WATCHDOG, tmp);
++		break;
++
++	case ASPIRE_EC_EVENT_LID_CLOSE:
++		/* Notify (\_SB.LID0, 0x80) // Status Change */
++		input_report_switch(ec->idev, SW_LID, 1);
++		input_sync(ec->idev);
++		break;
++
++	case ASPIRE_EC_EVENT_LID_OPEN:
++		/* Notify (\_SB.LID0, 0x80) // Status Change */
++		input_report_switch(ec->idev, SW_LID, 0);
++		input_sync(ec->idev);
++		break;
++
++	case ASPIRE_EC_EVENT_FG_INF_CHG:
++		/* Notify (\_SB.I2C3.BAT1, 0x81) // Information Change */
++		fallthrough;
++	case ASPIRE_EC_EVENT_FG_STA_CHG:
++		/* Notify (\_SB.I2C3.BAT1, 0x80) // Status Change */
++		power_supply_changed(ec->bat_psy);
++		power_supply_changed(ec->adp_psy);
++		break;
++
++	case ASPIRE_EC_EVENT_HPD_DIS:
++		if (ec->bridge_configured)
++			drm_bridge_hpd_notify(&ec->bridge, connector_status_disconnected);
++		break;
++
++	case ASPIRE_EC_EVENT_HPD_CON:
++		if (ec->bridge_configured)
++			drm_bridge_hpd_notify(&ec->bridge, connector_status_connected);
++		break;
++
++	case ASPIRE_EC_EVENT_BKL_BLANKED:
++	case ASPIRE_EC_EVENT_BKL_UNBLANKED:
++		/* Display backlight blanked on FN+F6. No action needed. */
++		break;
++
++	case ASPIRE_EC_EVENT_KBD_BKL_ON:
++	case ASPIRE_EC_EVENT_KBD_BKL_OFF:
++		/*
++		 * There is a keyboard backlight connector on Aspire 1 that is
++		 * controlled by FN+F8. There is no kb backlight on the device though.
++		 * Seems like this is used on other devices like Acer Spin 7.
++		 * No action needed.
++		 */
++		break;
++
++	default:
++		dev_warn(&ec->client->dev, "Unknown event id=0x%x\n", id);
++	}
++
++	return IRQ_HANDLED;
++}
++
++/*
++ * Power supply.
++ */
++
++struct aspire_ec_bat_psy_static_data {
++	u8 unk1;
++	u8 flags;
++	__le16 unk2;
++	__le16 voltage_design;
++	__le16 capacity_full;
++	__le16 unk3;
++	__le16 serial;
++	u8 model_id;
++	u8 vendor_id;
++} __packed;
++
++static const char * const aspire_ec_bat_psy_battery_model[] = {
++	"AP18C4K",
++	"AP18C8K",
++	"AP19B8K",
++	"AP16M4J",
++	"AP16M5J",
++};
++
++static const char * const aspire_ec_bat_psy_battery_vendor[] = {
++	"SANYO",
++	"SONY",
++	"PANASONIC",
++	"SAMSUNG",
++	"SIMPLO",
++	"MOTOROLA",
++	"CELXPERT",
++	"LGC",
++	"GETAC",
++	"MURATA",
++};
++
++struct aspire_ec_bat_psy_dynamic_data {
++	u8 unk1;
++	u8 flags;
++	u8 unk2;
++	__le16 capacity_now;
++	__le16 voltage_now;
++	__le16 current_now;
++	__le16 unk3;
++	__le16 unk4;
++} __packed;
++
++static int aspire_ec_bat_psy_get_property(struct power_supply *psy,
++				      enum power_supply_property psp,
++				      union power_supply_propval *val)
++{
++	struct aspire_ec *ec = power_supply_get_drvdata(psy);
++	struct aspire_ec_bat_psy_static_data sdat;
++	struct aspire_ec_bat_psy_dynamic_data ddat;
++	int str_index = 0;
++
++	i2c_smbus_read_i2c_block_data(ec->client, ASPIRE_EC_FG_STATIC, sizeof(sdat), (u8 *)&sdat);
++	i2c_smbus_read_i2c_block_data(ec->client, ASPIRE_EC_FG_DYNAMIC, sizeof(ddat), (u8 *)&ddat);
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_STATUS:
++		val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
++		if (ddat.flags & ASPIRE_EC_FG_FLAG_CHARGING)
++			val->intval = POWER_SUPPLY_STATUS_CHARGING;
++		else if (ddat.flags & ASPIRE_EC_FG_FLAG_DISCHARGING)
++			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
++		else if (ddat.flags & ASPIRE_EC_FG_FLAG_FULL)
++			val->intval = POWER_SUPPLY_STATUS_FULL;
++		break;
++
++	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
++		val->intval = get_unaligned_le16(&ddat.voltage_now) * MILLI_TO_MICRO;
++		break;
++
++	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
++		val->intval = le16_to_cpu(sdat.voltage_design) * MILLI_TO_MICRO;
++		break;
++
++	case POWER_SUPPLY_PROP_CHARGE_NOW:
++		val->intval = get_unaligned_le16(&ddat.capacity_now) * MILLI_TO_MICRO;
++		break;
++
++	case POWER_SUPPLY_PROP_CHARGE_FULL:
++		val->intval = le16_to_cpu(sdat.capacity_full) * MILLI_TO_MICRO;
++		break;
++
++	case POWER_SUPPLY_PROP_CAPACITY:
++		val->intval = get_unaligned_le16(&ddat.capacity_now) * 100;
++		val->intval /= le16_to_cpu(sdat.capacity_full);
++		break;
++
++	case POWER_SUPPLY_PROP_CURRENT_NOW:
++		val->intval = (s16)get_unaligned_le16(&ddat.current_now) * MILLI_TO_MICRO;
++		break;
++
++	case POWER_SUPPLY_PROP_PRESENT:
++		val->intval = !!(ddat.flags & ASPIRE_EC_FG_FLAG_PRESENT);
++		break;
++
++	case POWER_SUPPLY_PROP_SCOPE:
++		val->intval = POWER_SUPPLY_SCOPE_SYSTEM;
++		break;
++
++	case POWER_SUPPLY_PROP_MODEL_NAME:
++		str_index = sdat.model_id - 1;
++
++		if (str_index >= 0 && str_index < ARRAY_SIZE(aspire_ec_bat_psy_battery_model))
++			val->strval = aspire_ec_bat_psy_battery_model[str_index];
++		else
++			val->strval = "Unknown";
++		break;
++
++	case POWER_SUPPLY_PROP_MANUFACTURER:
++		str_index = sdat.vendor_id - 3; /* ACPI uses 3 as an offset here. */
++
++		if (str_index >= 0 && str_index < ARRAY_SIZE(aspire_ec_bat_psy_battery_vendor))
++			val->strval = aspire_ec_bat_psy_battery_vendor[str_index];
++		else
++			val->strval = "Unknown";
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static enum power_supply_property aspire_ec_bat_psy_props[] = {
++	POWER_SUPPLY_PROP_STATUS,
++	POWER_SUPPLY_PROP_VOLTAGE_NOW,
++	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
++	POWER_SUPPLY_PROP_CHARGE_NOW,
++	POWER_SUPPLY_PROP_CHARGE_FULL,
++	POWER_SUPPLY_PROP_CAPACITY,
++	POWER_SUPPLY_PROP_CURRENT_NOW,
++	POWER_SUPPLY_PROP_PRESENT,
++	POWER_SUPPLY_PROP_SCOPE,
++	POWER_SUPPLY_PROP_MODEL_NAME,
++	POWER_SUPPLY_PROP_MANUFACTURER,
++};
++
++static const struct power_supply_desc aspire_ec_bat_psy_desc = {
++	.name		= "aspire-ec-bat",
++	.type		= POWER_SUPPLY_TYPE_BATTERY,
++	.get_property	= aspire_ec_bat_psy_get_property,
++	.properties	= aspire_ec_bat_psy_props,
++	.num_properties	= ARRAY_SIZE(aspire_ec_bat_psy_props),
++};
++
++static int aspire_ec_adp_psy_get_property(struct power_supply *psy,
++				      enum power_supply_property psp,
++				      union power_supply_propval *val)
++{
++	struct aspire_ec *ec = power_supply_get_drvdata(psy);
++	u8 tmp;
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_ONLINE:
++		aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_ADP, &tmp, sizeof(tmp));
++		val->intval = !!(tmp & ASPIRE_EC_AC_STATUS);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static enum power_supply_property aspire_ec_adp_psy_props[] = {
++	POWER_SUPPLY_PROP_ONLINE,
++};
++
++static const struct power_supply_desc aspire_ec_adp_psy_desc = {
++	.name		= "aspire-ec-adp",
++	.type		= POWER_SUPPLY_TYPE_MAINS,
++	.get_property	= aspire_ec_adp_psy_get_property,
++	.properties	= aspire_ec_adp_psy_props,
++	.num_properties	= ARRAY_SIZE(aspire_ec_adp_psy_props),
++};
++
++/*
++ * USB-C DP Alt mode HPD.
++ */
++
++static int aspire_ec_bridge_attach(struct drm_bridge *bridge, enum drm_bridge_attach_flags flags)
++{
++	return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
++}
++
++static void aspire_ec_bridge_update_hpd_work(struct work_struct *work)
++{
++	struct aspire_ec *ec = container_of(work, struct aspire_ec, work);
++	u8 tmp;
++
++	aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_HPD_STATUS, &tmp, sizeof(tmp));
++	if (tmp == ASPIRE_EC_HPD_CONNECTED)
++		drm_bridge_hpd_notify(&ec->bridge, connector_status_connected);
++	else
++		drm_bridge_hpd_notify(&ec->bridge, connector_status_disconnected);
++}
++
++static void aspire_ec_bridge_hpd_enable(struct drm_bridge *bridge)
++{
++	struct aspire_ec *ec = container_of(bridge, struct aspire_ec, bridge);
++
++	schedule_work(&ec->work);
++}
++
++static const struct drm_bridge_funcs aspire_ec_bridge_funcs = {
++	.hpd_enable = aspire_ec_bridge_hpd_enable,
++	.attach = aspire_ec_bridge_attach,
++};
++
++/*
++ * Sysfs attributes.
++ */
++
++static ssize_t fn_lock_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct aspire_ec *ec = i2c_get_clientdata(to_i2c_client(dev));
++	u8 tmp;
++
++	aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_KBD_MODE, &tmp, sizeof(tmp));
++
++	return sysfs_emit(buf, "%u\n", !(tmp & ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP));
++}
++
++static ssize_t fn_lock_store(struct device *dev, struct device_attribute *attr,
++			     const char *buf, size_t count)
++{
++	struct aspire_ec *ec = i2c_get_clientdata(to_i2c_client(dev));
++	u8 tmp;
++
++	bool state;
++	int ret;
++
++	ret = kstrtobool(buf, &state);
++	if (ret)
++		return ret;
++
++	aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_KBD_MODE, &tmp, sizeof(tmp));
++
++	if (state)
++		tmp &= ~ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP;
++	else
++		tmp |= ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP;
++
++	aspire_ec_ram_write(ec->client, ASPIRE_EC_RAM_KBD_MODE, tmp);
++
++	return count;
++}
++
++static DEVICE_ATTR_RW(fn_lock);
++
++static struct attribute *aspire_ec_attrs[] = {
++	&dev_attr_fn_lock.attr,
++	NULL
++};
++ATTRIBUTE_GROUPS(aspire_ec);
++
++static int aspire_ec_probe(struct i2c_client *client)
++{
++	struct power_supply_config psy_cfg = {0};
++	struct device *dev = &client->dev;
++	struct fwnode_handle *fwnode;
++	struct aspire_ec *ec;
++	int ret;
++	u8 tmp;
++
++	ec = devm_kzalloc(dev, sizeof(*ec), GFP_KERNEL);
++	if (!ec)
++		return -ENOMEM;
++
++	ec->client = client;
++	i2c_set_clientdata(client, ec);
++
++	/* Battery status reports */
++	psy_cfg.drv_data = ec;
++	ec->bat_psy = devm_power_supply_register(dev, &aspire_ec_bat_psy_desc, &psy_cfg);
++	if (IS_ERR(ec->bat_psy))
++		return dev_err_probe(dev, PTR_ERR(ec->bat_psy),
++				     "Failed to register battery power supply\n");
++
++	ec->adp_psy = devm_power_supply_register(dev, &aspire_ec_adp_psy_desc, &psy_cfg);
++	if (IS_ERR(ec->adp_psy))
++		return dev_err_probe(dev, PTR_ERR(ec->adp_psy),
++				     "Failed to register AC power supply\n");
++
++	/* Lid switch */
++	ec->idev = devm_input_allocate_device(dev);
++	if (!ec->idev)
++		return -ENOMEM;
++
++	ec->idev->name = "aspire-ec";
++	ec->idev->phys = "aspire-ec/input0";
++	input_set_capability(ec->idev, EV_SW, SW_LID);
++
++	ret = input_register_device(ec->idev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Input device register failed\n");
++
++	/* Enable the keyboard fn keys */
++	tmp = ASPIRE_EC_RAM_KBD_FN_EN | ASPIRE_EC_RAM_KBD_ALWAYS_SET;
++	tmp |= ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP;
++	aspire_ec_ram_write(client, ASPIRE_EC_RAM_KBD_MODE, tmp);
++
++	aspire_ec_ram_read(client, ASPIRE_EC_RAM_KBD_MODE_2, &tmp, sizeof(tmp));
++	tmp |= ASPIRE_EC_RAM_KBD_MEDIA_NOTIFY;
++	aspire_ec_ram_write(client, ASPIRE_EC_RAM_KBD_MODE_2, tmp);
++
++	/* External Type-C display attach reports */
++	fwnode = device_get_named_child_node(dev, "connector");
++	if (fwnode) {
++		INIT_WORK(&ec->work, aspire_ec_bridge_update_hpd_work);
++		ec->bridge.funcs = &aspire_ec_bridge_funcs;
++		ec->bridge.of_node = to_of_node(fwnode);
++		ec->bridge.ops = DRM_BRIDGE_OP_HPD;
++		ec->bridge.type = DRM_MODE_CONNECTOR_USB;
++
++		ret = devm_drm_bridge_add(dev, &ec->bridge);
++		if (ret) {
++			fwnode_handle_put(fwnode);
++			return dev_err_probe(dev, ret, "Failed to register drm bridge\n");
++		}
++
++		ec->bridge_configured = true;
++	}
++
++	ret = devm_request_threaded_irq(dev, client->irq, NULL,
++					aspire_ec_irq_handler, IRQF_ONESHOT,
++					dev_name(dev), ec);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to request irq\n");
++
++	return 0;
++}
++
++static int aspire_ec_resume(struct device *dev)
++{
++	struct aspire_ec *ec = i2c_get_clientdata(to_i2c_client(dev));
++	u8 tmp;
++
++	aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_LID_STATUS, &tmp, sizeof(tmp));
++	input_report_switch(ec->idev, SW_LID, !!(tmp & ASPIRE_EC_LID_OPEN));
++	input_sync(ec->idev);
++
++	return 0;
++}
++
++static const struct i2c_device_id aspire_ec_id[] = {
++	{ "aspire1-ec", },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, aspire_ec_id);
++
++static const struct of_device_id aspire_ec_of_match[] = {
++	{ .compatible = "acer,aspire1-ec", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, aspire_ec_of_match);
++
++static DEFINE_SIMPLE_DEV_PM_OPS(aspire_ec_pm_ops, NULL, aspire_ec_resume);
++
++static struct i2c_driver aspire_ec_driver = {
++	.driver = {
++		.name = "aspire-ec",
++		.of_match_table = aspire_ec_of_match,
++		.pm = pm_sleep_ptr(&aspire_ec_pm_ops),
++		.dev_groups = aspire_ec_groups,
++	},
++	.probe = aspire_ec_probe,
++	.id_table = aspire_ec_id,
++};
++module_i2c_driver(aspire_ec_driver);
++
++MODULE_DESCRIPTION("Acer Aspire 1 embedded controller");
++MODULE_AUTHOR("Nikita Travkin <nikita@trvn.ru>");
++MODULE_LICENSE("GPL");
 
 -- 
 2.44.0
