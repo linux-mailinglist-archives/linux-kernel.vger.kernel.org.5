@@ -1,96 +1,121 @@
-Return-Path: <linux-kernel+bounces-104284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F43E87CB9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:49:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A70BD87CBA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:49:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3007B21F05
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:49:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 564D3283A47
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEA119477;
-	Fri, 15 Mar 2024 10:48:57 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB3217C6A;
-	Fri, 15 Mar 2024 10:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8621B5B1;
+	Fri, 15 Mar 2024 10:49:30 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D8A1B59D
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:49:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710499737; cv=none; b=AVc///dyD9o4arcX0oKbnd/kYiZvh9L1FAzmZDTTVIKT/ql/rRFeLiJJwM+1HeCr2+ay1UMRuOh8Aai20uS9WyZT5xm67UtDSn+p12weJ3GexHV56GZe5Erbz9giecow066ulUhLB32SM2Z/UoCIcIN6DYzHIz8XI4dUjLzJHkk=
+	t=1710499770; cv=none; b=j2Y1kF83nXNEL8mtUgUGwC78bCRLT1d+GTVU1Asgd+WppUyQNve3atD2KVDpsqCbaKHrYm+HdKwjHEYOoix9IOig8HNeXBs4QqIiQqxMLqj2i6DqmrQaAHr4DWZOZuxxGDJGJlUgC2S04ksijv4IMaj0HD1lkENsUyEAngkIwYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710499737; c=relaxed/simple;
-	bh=R7GjhKviLkpXMF0CKnNF4FoimW5GhqDP2JTJ0azwgoY=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=QpB/VfmsQnajk+Mur1iT678am1oOvCeCwOULy/zWbqp2UxKFMgpwz6ATApajy6FJOut7I46qirvrh0NXshSoE0QlP53JbjPZQbUHRCuKiZC98K75wvYEEYjCqVSwkWlkdtUQEodws+CII3GhgEu0V/Ejey62OZH4xeCunQ0J82A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 2AD903782083;
-	Fri, 15 Mar 2024 10:48:53 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240313164640.616049-1-sashal@kernel.org>
-Date: Fri, 15 Mar 2024 10:48:52 +0000
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>, "Gustavo Padovan" <gustavo.padovan@collabora.com>
-To: "Sasha Levin" <sashal@kernel.org>
+	s=arc-20240116; t=1710499770; c=relaxed/simple;
+	bh=zWIzkz2a8WN8xkBFFysmUJVqxR7TWEnCjfwryFytUEc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XuZh/B9EzUynXkNlYYx7JwyVtYFacnjnrGDjtk6bsl1MoaZW/OuxWCG9hrHh8lMQKYW20jhhDAtySY2bS6X0p90BAXNgKbKOKDdM+p/kqwkTD+CFKGyoNwJIvmBwT5G7ezCXv8HfySl2GlcO2leXPDhtjxfHBFJ8aRMGQqakabM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E58DC15;
+	Fri, 15 Mar 2024 03:49:57 -0700 (PDT)
+Received: from [10.57.69.160] (unknown [10.57.69.160])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E9D23F762;
+	Fri, 15 Mar 2024 03:49:19 -0700 (PDT)
+Message-ID: <1db242d3-5ff1-4ef5-b20a-578a317fa859@arm.com>
+Date: Fri, 15 Mar 2024 10:49:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <1faa5f-65f42780-55-41e48800@256342251>
-Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?5=2E10?= 00/73] 
- =?utf-8?q?5=2E10=2E213-rc1?= review
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/6] mm: vmscan: Avoid split during shrink_folio_list()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-6-ryan.roberts@arm.com>
+ <d8086108-05e7-4765-a6f5-dfb85fb44b90@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <d8086108-05e7-4765-a6f5-dfb85fb44b90@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wednesday, March 13, 2024 22:15 IST, Sasha Levin <sashal@kernel.org>=
- wrote:
+On 15/03/2024 10:43, David Hildenbrand wrote:
+> On 11.03.24 16:00, Ryan Roberts wrote:
+>> Now that swap supports storing all mTHP sizes, avoid splitting large
+>> folios before swap-out. This benefits performance of the swap-out path
+>> by eliding split_folio_to_list(), which is expensive, and also sets us
+>> up for swapping in large folios in a future series.
+>>
+>> If the folio is partially mapped, we continue to split it since we want
+>> to avoid the extra IO overhead and storage of writing out pages
+>> uneccessarily.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>   mm/vmscan.c | 9 +++++----
+>>   1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index cf7d4cf47f1a..0ebec99e04c6 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1222,11 +1222,12 @@ static unsigned int shrink_folio_list(struct list_head
+>> *folio_list,
+>>                       if (!can_split_folio(folio, NULL))
+>>                           goto activate_locked;
+>>                       /*
+>> -                     * Split folios without a PMD map right
+>> -                     * away. Chances are some or all of the
+>> -                     * tail pages can be freed without IO.
+>> +                     * Split partially mapped folios map
+>> +                     * right away. Chances are some or all
+>> +                     * of the tail pages can be freed
+>> +                     * without IO.
+>>                        */
+>> -                    if (!folio_entire_mapcount(folio) &&
+>> +                    if (!list_empty(&folio->_deferred_list) &&
+>>                           split_folio_to_list(folio,
+>>                                   folio_list))
+>>                           goto activate_locked;
+> 
+> Not sure if we might have to annotate that with data_race().
 
->=20
-> This is the start of the stable review cycle for the 5.10.213 release=
-.
-> There are 73 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, plea=
-se
-> let me know.
->=20
-> Responses should be made by Fri Mar 15 04:46:39 PM UTC 2024.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
-stable-rc.git/patch/?id=3Dlinux-5.10.y&id2=3Dv5.10.212
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
-able-rc.git linux-5.10.y
-> and the diffstat can be found below.
->=20
+I asked that exact question to Matthew in another context bt didn't get a
+response. There are examples of checking if the deferred list is empty with and
+without data_race() in the code base. But list_empty() is implemented like this:
 
-KernelCI report for stable-rc/linux-5.10.y for this week.
+static inline int list_empty(const struct list_head *head)
+{
+	return READ_ONCE(head->next) == head;
+}
 
-## stable-rc HEAD for linux-5.10.y:
-Date: 2024-03-13
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
-git/log/?h=3D0a70dd1e1aa9dfe25d4647f86675dc6dac41631e
+So I assumed the READ_ONCE() makes everything safe without a lock? Perhaps not
+sufficient for KCSAN?
 
-## Build failures:
-No build failures seen for the stable-rc/linux-5.10.y commit head \o/
 
-## Boot failures:
-No **new** boot failures seen for the stable-rc/linux-5.10.y commit hea=
-d \o/
+> 
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> 
 
-Tested-by: kernelci.org bot <bot@kernelci.org>
-
-Thanks,
-Shreeya Patel
-
+Thanks!
 
