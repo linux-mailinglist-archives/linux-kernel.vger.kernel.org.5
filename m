@@ -1,201 +1,198 @@
-Return-Path: <linux-kernel+bounces-104780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 962CB87D37E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 930AE87D37F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52E732842D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:21:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46B26281227
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D764E1CB;
-	Fri, 15 Mar 2024 18:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548084DA08;
+	Fri, 15 Mar 2024 18:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="APsW7JUY"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="dG3NQMde"
+Received: from sonic304-27.consmr.mail.ne1.yahoo.com (sonic304-27.consmr.mail.ne1.yahoo.com [66.163.191.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D77C1B810;
-	Fri, 15 Mar 2024 18:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710526911; cv=fail; b=GWXwtlVZvG5YdTU9HJcJdqAAxnhbUGpnE2lQWqlI9xiPw8rmmDkNxhBsJz2DPXwNrO44xHmMrEdh45jlpadaKAzu/DXdgZ+AHkuQH8mBTFE/FtFmYCbwfoJcpVFZOI6zl/PB9djMY6B0grDDmUl/6H7MqBO98v50CEnpwpxmDDo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710526911; c=relaxed/simple;
-	bh=qZ3om0HFEJKy/6ctTb0uKUlPsuzAC1oHff919RCK1KY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=CBmtu76wZMMLutv+3He8etnZEzJajbEnBcWerDD5g+UKotiAjCS71tz03NNetsDrCvrPPp4FxAzAF5zm4yAMwDkwkH0ekJHvkeyVYTbpAEk8hF/J/BOKn2cRkiNinfGSHTlMkGdd2Q7hWsQvZoznaBMiNQSv2H1iy9ai6xZFbKM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=APsW7JUY; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710526910; x=1742062910;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=qZ3om0HFEJKy/6ctTb0uKUlPsuzAC1oHff919RCK1KY=;
-  b=APsW7JUYK5AKIRgkNPrci1bWfgU2djpgS5ekG47rKWkBgLXLiSsq3sTA
-   /226yOgyFQfMnAQfrqqi0Wd3rC+Hg25iiQ73gv1NUiuQo4xkAaFFIdzuG
-   kumURWWkEu6ND8lHbOivg5QzyTD7x/NpvOi03SDngxxY27N4s8UgMOjXH
-   1RVlDrdBkGnhLfrrt4bYPyrVhBVCX5ONa+428cQgpCaU+F8gbxMCZ52wZ
-   e45zP9yczhaPU6yGyeeQTB9eEirGIEubCDuwXUhqLjHkf9M2R5U1XMnSI
-   cWz+JZvUqk12oBpCqx9IbxaH6AMdXca0vQ+AtuwnyiRTMG7nNgeNZHqk3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="9246089"
-X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
-   d="scan'208";a="9246089"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 11:21:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
-   d="scan'208";a="12710647"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Mar 2024 11:21:48 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 15 Mar 2024 11:21:47 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 15 Mar 2024 11:21:47 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 15 Mar 2024 11:21:47 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 15 Mar 2024 11:21:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MnKMrRcCYAN70SuZOEmWC5XSZVGfCGxqZ2vXpF6srU6ZlARILqSoCNevV4uLOqZSOSuLa9bJaVTakvLeItKKp8c+Y6Pv8ykieawtsFFzLz2qIXmuNkuXxWHJSTq4gH58F0kNcPWpP6QmCVETk6bjpvY21aPmlLdbeCsAicp2BSV9pL4eBOSkmA7LVNDhno57/XMaSCiJECAHgyxfwk7ZH53xcS6nmIDkM4JnTVr8AlgMDuIGdbr5K09OxabJcNdpyRuj1Hs2ADL8hp9nmkUvVX5bTuOeStlrHD3C/XWZrX+eDsBuop2M/6txh49gZVqZwKntwbLn4yjnS4hWFNibcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wsygNwAiKlH0c1vZfskg6RE6NWLy9V2N4lbZWEvrHV4=;
- b=ofMZAO46ZL0Qf2Ia8ICRTgvbJAQQ2CmBNbd7KxsKNmEMkyCUI5Vkbu9bVjxWA+dQ8gjwRz+vGMRZL6IIDVseZRfFg0uSvj552ZlewQbAdWjyBOe86FO8PwCu5dEFZ6MVLCtEWYAp8l5kGoaUtWYBk5hTYwCKRFNjv4O+yAzl4IvjK/ql3N29muV7nD6L5A0leAJ82Qli4ZzKskClgJZJ9R8XdRvWXWzKdETqrUM7uca/gkJWpNO8p0q22hH/w88mZRJWDu0fJ9BL1jQKPgjcsTLIoujta4XE6tkiWccVj4Hmfkgrm0RzyAif9MyBvpp6aupcvhkeZPCH2qhcutAnEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by PH8PR11MB8062.namprd11.prod.outlook.com (2603:10b6:510:251::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.17; Fri, 15 Mar
- 2024 18:21:44 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7386.015; Fri, 15 Mar 2024
- 18:21:44 +0000
-Date: Fri, 15 Mar 2024 11:21:42 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: "Li, Ming" <ming4.li@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	<rrichter@amd.com>, <terry.bowman@amd.com>
-CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/6] Add support for root port RAS error handling
-Message-ID: <65f491b64f15a_aa2229497@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20240313083602.239201-1-ming4.li@intel.com>
- <65f3a842988d6_a9b4294f7@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <16ab732d-a009-45ee-a438-3faf048c7acd@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <16ab732d-a009-45ee-a438-3faf048c7acd@intel.com>
-X-ClientProxiedBy: MW4PR04CA0066.namprd04.prod.outlook.com
- (2603:10b6:303:6b::11) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65DC94E1B5
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.191.153
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710526942; cv=none; b=QJznl2S0SyWHOoi6Q/HFB4cRHBNEBzsrV959T7SlCcq5TGnWHexexL990XFHda8LiJBmOWsgHyZD3/zFB84PKLPbWwDK9MWR5Bp4OMgyTyN2SeP+fBXhgtwT7M9/uQdEf+qQZ0iP7+cjaJIp7FbpxVdEvbEbnJ7PJZqOf82CABo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710526942; c=relaxed/simple;
+	bh=KulROZfKAzwLrswj4Z6VQWYRAG7n2mLv/ruBxZuOPk8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PUyGiLusinAi439qRv11GNBVOWeFF/H0Fq2Qi0IIlKgEHW5NseKj/MYMB7jBCwcDu/yYuN0oltkDmzYaWnv9r6p4dGPXBl4cnEy68f4Zf2X2SLOO19SpZg2KzXK+u+LIlbhJQJ3KU+g9NcRsqSKALibMer1F7kDzYNA8eBbhE3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=dG3NQMde; arc=none smtp.client-ip=66.163.191.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710526932; bh=IcLWcAwh7sO6qGb3KzfOR+SqxYFTY+EU4o/Haleqnr8=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=dG3NQMdedq/3xZ0AmufPK7uJPf8qknlRFSRtpbPufTzpxl6L5XVXZUCw/ljUnDmtK1uAU7ZCk/DPZdlLAB2VSrw+ccpFuGBupK9Do6K2ecWOX1HjHu/S0MkZlCVlYXoHDTswO/uGKiF3F8NwnKU2hFr0gUWzrRt/SDveRlcDfdUDQbUIoXD7PC8ScXGMQe0WPd90ZexHPw97SjUOGUYCna1N4/nbt6LryLzwQuv/T+LQPPs2ilbkKl83PWUhRW32A9135SjZZ3GiHlQ27aJq74uRsT0AcUfLHAW/EZpvPV8KRCe+5N39UhQi6lSBqUJBiZEoHPdBl6SG3lyo8rqDFw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710526932; bh=dDwZDOhUfANnYv5RBF+A42YU0fEwj7j7747ZXF9h2pP=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=IGt+HWB647vioG+O1iXUnbWwocLWHfBhJjiLIi0lPwS2uD1fDnqaB0nPmCc4UNGKhDOOjvtky4Re6obGWfHQ6LpqcQPdJoL0vnnqi/j4NCzwkuzJ3ij2JdTIf2JaBiVHRxuUKzWAVf8hvw7BtIaLytvk+b47s2MsElkCc+Wza/UHlavoH+z2rWVr+AjbMi0A+/b/aI5BKmMsKhKMBwaCIMLQMets6QLF5JKWYUZFp8EA9Djx22ynzN/LVl8AZLcyzSWiUyCQQd/Gv4QEPWgqXzhs2MK2Dr5JE41xMJnOj14zKekP2bLl9djl43JDDVGN0w+5rR2aR75uMH4ID8PEOA==
+X-YMail-OSG: 2ozgzP0VM1kchnzeWVCectdYHBQ6XkZUD0js43FPQ..LwyHz1xnZzLLk8DiLue.
+ thkTfVnoT432L4NRN.F1m3GmmpWd_3T9p6nogtMKRStFaEsIwq3RBuw3qbDZxcRDrvdsvyO.X7.H
+ gZ7vdX1hbrNEkTUYeusBZzb.9kHSQ9IFQzfii78KOw6RtFjgSiGXBAeO2xCTxXDuCr2X2GRSoP1r
+ kvJ7QLDk537c_dGyBuDJQjA0dxh9lUc_4G1okKY_0uVBrVwogDdPhNIo5o0pxIEWb.94Qiyx4Dv2
+ fibJyEoDEXA7hXi04Z4AtVLFqhKtiVan1ax7jR5JIynR9fi472mjX7eeap0_YaYXERIZIKsTHme3
+ 9xl9p4mRShF7A2oGuemgaKmYEbTCCYSaCm89BZXDq.Jt6Jyas0DYDi4cqqJmKRt9T1ZfSmlge8Cl
+ Tu9I0OKnwzlalqpXH0tWTH3z3tnTXlwd_imCxUwqnPnUjrTtXiwCjjYgMz3KeiDQFyUyJgAMmEfH
+ y3dcJLeLNdX1UPMkCpEY1fp5ICGgiiTVbbF4u4d6j1lYgd7FFcbVUE2plb1ZzA63TZNPl7A4U9MC
+ cIaA8gvF5MNMPAunYsz7rXjTDMa8coVufpTy8jf4.3AU98kKQAjsVSRNfx0F3D7A4c1gxZVVPcmO
+ qZ7.kgwvx1UFEbDOh3QBrtd6NnG7xVRvxg6ux7.9s5dyL.tc6336DCUM66HcSSf70FVnQOoy9W5D
+ WaNZbJwUjl_hVWf6sESXa41VSlLPsVfJw4wUcubNz2kXHnmGf4ZlrkBgIjcusL5YtW.V3kQMLaCl
+ LSKuJf8_TT_SIei_LuoMqtDaagJt7pk5w3E_3Qr1Drt6FG0a_8SLxPai7r29eTZIEhjrinIIUWFD
+ GKc.NOvY7fUmWIieKs6Cuh5GRt4YPhiXD5VAb.UlRVh8UPE9B99rOKhx3tpQFT35evXN8RVR5DHC
+ ZrJlGDyqUwmgscb312ftoJiWo37ti6HjdRXz1kbmT99y3Toan1eLoCcZfHPYSyxv3UBqWVHrgACK
+ VzuDT_jrYhuA7P.kot2CtQay9yPyfYWVfwk_wIE3adcL0.upaRGIctCvc5AanZ3SbLf07aWNdxQL
+ eLTHf3C8BaRompNlmtXsV30tyL6jl.rDWKy55kdC_RJUfQzzIJUzm_e5r2gJW2LCHI3AoLa61b9L
+ CVjGsYYEt1BdY4OAK33LZAEcIZIrp340Q4iTrBmwwg8yVKIrNOXppy36sXzesJNXjHRffkIiIjYU
+ of4SAcsMPRrBG49qVMdniC0m6idyhpNMIM5A3L2pf0d2DZvqf6SG8Euu3ODur9za5FHWZK21yutI
+ TStKm8klw326vc3eJ0RSHA5e5HBLdtcOccw2SahPr14cUT6m2l4SNeHdKASk6fvna4YXluYko7Q0
+ B3GEwQcv1_5LtyPaU8NbBtKJPX68r1vvSXwWxIr7vbvRNo95xp5DHdyvr.twHpeKAD.YqCJak46Z
+ AoCK0n4hOYdr1VMOoFN1ADftffImrxMgFcLrqr1ZzW_OKXUsXzwxyYXAfIoMzYMOzGk9mMaa0HwD
+ 3Ud0lRMC5UEFwqQpmHX4gpU5TY1CocaBXsBBPpAM.pQAL4mcBs0hKSB8RuzEqZfjFaRm7mdPPceM
+ s0A4yE9H4XEOvKvqphogE4yOmwrDyBsvpanoTYY3Bc0M2wcvdz6ew54snq0ADbgDWLffRu2uqo6u
+ j.YzE5NPYkhXeh4AfX2qFbllYynoVnpJjKmmED6hXzXBqThzGnrJAudvfwbJlw3mevfFteljqEWO
+ lN_vOLb8ix0W09O.8U2BaK9CtYusPpaicylAsfDjUG.7QCs.nkkIn3ufQWl6K_6UTOU8AnuMIjJ3
+ t_CBaeXoXzWI6iukuXDKFVQE0XpicvscSljrfr4ShesEZUzVCR8_eWylhhxK1s6oTwgwnEpWPyc2
+ SkIHXqgfeHCDq_D8.gHyCtOKJhEWSALB5P071L0Hs3WOC6BVgshtn7ha1KmuLg19xcHyxeinsU0Q
+ TqnoJhj2mpukYeLlYV.FurVfDpTbOLbiPacNP5qIPbK2zgL0yjwHPC0jfjJrOjPjZFBJZDBLaZfG
+ OQDI8HS9ee4.Axx58TLFCYHe8n.J7FxVuDvFe6TlbIZN0W555yr9HFIIcgohjoCdmDIiipsudBFO
+ XpjqbqGdZ29s3KwYnDIpdVCmnqQCx1Px5wYRgvI_m_TX54ZZM0kS8c96C1SQ6KryJTRdYSktx0ie
+ lB9kVIOhm74GOhHe200fi5y5yZHewDEfhbFq_QaSTnyW7nKZe95..SqpkT86MQg--
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: e650a4e6-a765-40e7-b88d-02be5f049f41
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Mar 2024 18:22:12 +0000
+Received: by hermes--production-gq1-5c57879fdf-p26ct (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID ce6ad3d26e81771d69316a3d04363fb1;
+          Fri, 15 Mar 2024 18:22:06 +0000 (UTC)
+Message-ID: <f6d1b9fc-dfb1-4fd8-bfa0-bd1349c4a1c1@schaufler-ca.com>
+Date: Fri, 15 Mar 2024 11:22:05 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|PH8PR11MB8062:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4c6dfee4-69bb-4bd0-f924-08dc451cc4e2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vqlqFpVeCvf/t2eIyeN/+eH/rcP8tP91OSbUFHSaY3+Wotq3sCNFfmXuB0TtteuluZfNhooHDjCgdHtPub4IZ/+V7p/NfI8KyAqIhQv5OQAmlknxsQk4VO01lwib8WPbT1LDTBjas/uEithU2PB33ZkJvkldYYGzyuT9UyEwP0uFWmj8Pz7PYVte5OFUnmVem4EqecnWzqbN9TM36fQcEQAZ2aGdy1zVsJdznSAK3QHGECZxX+bCk28nPLVFAh/1rNXbCvWWTkKSClPnmdM2rYJKL56Gmdsz9tkKlpQjL+cNxfUkLN99LD1qZMOecLZun9LXRa/9Q+5jwz+z4T1VTxNkCJ+L/mvDH7+kG6vAxH1LsGk1T7Ece2sdlKpOhLz6CC+zWDtI0C6xfGpEoHP9tlHYA/Di1ci6hpEtToxcWwrYyAjBCbLGT9eqhDDILy/91X+Es5W+MToxunTe+DWVnH/c7b8LpfDlQ1MnC9XiGGtELKn3M0gou9CxBOPIOxuEfebassy5DjNpDz2gib1qufWx3T1o48cauC4aUXkbl3U1XLli+yKYdqopjT2ShlBluzihKTJ6lrWIg8XBc6jZJGKqs2wXAvdCXnziQAd/cT1JAoXT+CrDHyinsmHCWxmjMDkhYVUo9teGJ/hnYTZBKoHC7hnIRGFAJf8KhiKzXZY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SMmxtxadEkI0f3IUlfF8NvV6ok6tFLHC/LUKA87CwzR+4wezzjbq8Q1jnqdS?=
- =?us-ascii?Q?c80Jphv8aE1EMu3SptuX3Qbtk2duPTKJXRhJTN/4ifrPQstCyhBdOSLFOjqC?=
- =?us-ascii?Q?zthyNTzb0VWxWg+UP3v+kRW6n3tSBeu79c5cSFJhRFu8PGVBAxaqMEnHI/lK?=
- =?us-ascii?Q?mQBympOC5WLFdV/2Zl6qLn1dyGSPBioUI2d/zucfeSEjxlaihhJmf/PyvXvH?=
- =?us-ascii?Q?DBt2sDFmGcyvepIVM2HM5hU6Jd50BwJZ3kh0gByBA7S2bJzSnmiWSrXRZR5l?=
- =?us-ascii?Q?i08yCKX+nC0V2mqHs7WmuJT/MCGcqN1PnqBt3sR8WxD/DScLEfkL3I//7usx?=
- =?us-ascii?Q?EGFORDr8KfkGMNVzv9I6BXE4NP21mJVntwn1CTc03V4MYWDN4oYyv/yOsoq8?=
- =?us-ascii?Q?YDwfgSbIY0UVpiNb6TMvP/NsM3nU70xp6CXom26Pv2JQEWmftJqKiaySipBZ?=
- =?us-ascii?Q?3lBAI3kjuMrFv+PQZtjN9ge3Tyj2dbqRYP0RxGeQ+M6G75BBxRLvvPkL6Wqw?=
- =?us-ascii?Q?p4igD9ifSG4Btmza8EplcvWve+qTCK3DuJ4twXKLqtgq9QewL1syozNgsSZh?=
- =?us-ascii?Q?krkQfYab0oxn+RLqkVdJSnMYc6DSbTc7cQUtWqW4Laa7g7Gs9B1O0fm62rx7?=
- =?us-ascii?Q?bb/Xe3uLt/UkTJbIHTNoenCrZMIjTlORN9Qqjeou3IjXuMx2umVZZzR4b/iv?=
- =?us-ascii?Q?3gG0ubuaccQvjlRtuINK+lrHdmjWkt3QS+VhM55xcxQovYRIwCvyQafNM2JO?=
- =?us-ascii?Q?5Jn+Pwum5RVChm84lUKvvYx0GIawpthWHSR86BFAS8znyNy6mRAcyx2mRI4g?=
- =?us-ascii?Q?16skq1qasVyl4ZV2Gzb/I+nlmrg0njSCDJZdmKsjRprs6VINgMsjfqMmoq9L?=
- =?us-ascii?Q?jvauQemJATgZ5F/RkgKOoHj4O31K8YqyyWjnRtCzeTIfzDkNy58+ibjeVvFH?=
- =?us-ascii?Q?0K2FdTM/wadD3vPyDqC5G1sk/1hoDBZhk3ZWmY9B2kFa2NyANk6uIv909YGO?=
- =?us-ascii?Q?r8svT9MNj0Umce3ometVSitzRW7rGRkmom2W6kRFQC6OBVkdQy7fTZDq4Nyr?=
- =?us-ascii?Q?5+ZYOAZ1gUuEsyINPs8xSSfv2n/ZJgNssfJEmFEsZCtEQDZ7zamevjHV83kv?=
- =?us-ascii?Q?YeDRYYuYSCQIyruVhxZ6xAECYxgkheWSUxmcZJGvVTkp3DUOzseX4TKP7WSL?=
- =?us-ascii?Q?kjb8HxpnYmxYboohT26H4jupeIZ2iZnAn1M5mCkVOCuIyQUM5ItZJwvRUSZi?=
- =?us-ascii?Q?IJi8lF0JCTZwhot26q2z02SqL17eEJgLqP9tGwBsRtLWd506gkaNQOb/RmD5?=
- =?us-ascii?Q?DjWo6grOitdbbSuiT4A672nGgtIcHF0s7tPQpIXu0L/Mo204eXtnojjJKKZ9?=
- =?us-ascii?Q?N5BJVygPABfbDDudlxTksGGudvKin8zliCzeZ0qRMR+L4zoclA7yJhE945VT?=
- =?us-ascii?Q?+grH2koSaxVsKYw1aoNuxIqJ6Igp9+yviRq4saIOAu2NxTDg7f30LKT6eFzy?=
- =?us-ascii?Q?JNGwNowi7xVXPzBP7eEJqBWiiENGYbCpGNqdjnjDL0MmG7ZvFg3SISgQ6YV+?=
- =?us-ascii?Q?2GWwt+P/KEBUoP2SNpc2yjUaacYQOuwO/jp4Bcu2/WmZut19zhABMmQXciai?=
- =?us-ascii?Q?yA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c6dfee4-69bb-4bd0-f924-08dc451cc4e2
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 18:21:44.5805
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HGhSG9C8ElOGuZFxr9a/RuKJ7AFDlCXtxVztmEtUj4KkOZx1IsCdnT4+AOiFLLwGCcLkZaZVet7V2w4Az++aPJl3JIXGUrOHNFqqMWKWw6Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8062
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/2] lsm: introduce new hook security_vm_execstack
+Content-Language: en-US
+To: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+ linux-security-module@vger.kernel.org
+Cc: Eric Biederman <ebiederm@xmission.com>, Kees Cook
+ <keescook@chromium.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+ "Serge E. Hallyn" <serge@hallyn.com>,
+ Khadija Kamran <kamrankhadijadj@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Ondrej Mosnacek <omosnace@redhat.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>, Alfred Piccioni
+ <alpic@google.com>, John Johansen <john.johansen@canonical.com>,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Casey Schaufler <casey@schaufler-ca.com>
+References: <20240315181032.645161-1-cgzones@googlemail.com>
+ <20240315181032.645161-2-cgzones@googlemail.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20240315181032.645161-2-cgzones@googlemail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.22129 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Li, Ming wrote:
-[..]
-> > I do expect direct-attach to be a predominant use case, but I want to
-> > make sure that the implementation at least does not make the switch port
-> > error handling case more difficult to implement.
-> 
-> Hi Dan,
-> 
-> Currently, A rough idea I have is that:
-> If a CXL switch connected to the CXL RP, there should be two cases,
-> 1. no CXL memory device connected to the switch, in this case, I'm not
-> sure whether CXL.cachemem protocol errors is still possibly happened
-> between RP and switch without CXL memory device. If not, maybe we
-> don't need to consider such case?
+On 3/15/2024 11:08 AM, Christian Göttsche wrote:
+> Add a new hook guarding instantiations of programs with executable
+> stack.  They are being warned about since commit 47a2ebb7f505 ("execve:
+> warn if process starts with executable stack").  Lets give LSMs the
+> ability to control their presence on a per application basis.
 
-Protocol errors can happen between any 2 ports, just like PCI protocol
-errors.
+This seems like a hideously expensive way to implement a flag
+disallowing execution of programs with executable stacks. What's
+wrong with adding a flag VM_NO_EXECUTABLE_STACK?
 
-> 2. a CXL memory device connected to the switch. I think cxl_pci error
-> handler could also help to handle CXL.cachemem protocol errors
-> happened in switch USP/DSP.
-
-No, for 2 reasons:
-
-* The cxl_pci driver is only for general CXL type-3 memory
-  expanders. Even though no CXL.cache devices have upstream drivers they
-  do exist and they would experience protocol errors that the PCI core
-  needs to consider.
-
-* When a switch is present it is possible to have a protocol error
-  between the switch upstream port and the root port, and not between
-  the switch downstream port and the endpoint.
-
-The more I think about it I do not think it is appropriate for cxl_pci
-to be involved in clearing root port errors in the VH case, it only
-works the RCH case because of the way the device and the root-port get
-combined.
+>
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> ---
+>  fs/exec.c                     |  4 ++++
+>  include/linux/lsm_hook_defs.h |  1 +
+>  include/linux/security.h      |  6 ++++++
+>  security/security.c           | 13 +++++++++++++
+>  4 files changed, 24 insertions(+)
+>
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 8cdd5b2dd09c..e6f9e980c6b1 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -829,6 +829,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
+>  	BUG_ON(prev != vma);
+>  
+>  	if (unlikely(vm_flags & VM_EXEC)) {
+> +		ret = security_vm_execstack();
+> +		if (ret)
+> +			goto out_unlock;
+> +
+>  		pr_warn_once("process '%pD4' started with executable stack\n",
+>  			     bprm->file);
+>  	}
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 185924c56378..b31d0744e7e7 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -49,6 +49,7 @@ LSM_HOOK(int, 0, syslog, int type)
+>  LSM_HOOK(int, 0, settime, const struct timespec64 *ts,
+>  	 const struct timezone *tz)
+>  LSM_HOOK(int, 1, vm_enough_memory, struct mm_struct *mm, long pages)
+> +LSM_HOOK(int, 0, vm_execstack, void)
+>  LSM_HOOK(int, 0, bprm_creds_for_exec, struct linux_binprm *bprm)
+>  LSM_HOOK(int, 0, bprm_creds_from_file, struct linux_binprm *bprm, const struct file *file)
+>  LSM_HOOK(int, 0, bprm_check_security, struct linux_binprm *bprm)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index d0eb20f90b26..084b96814970 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -294,6 +294,7 @@ int security_quota_on(struct dentry *dentry);
+>  int security_syslog(int type);
+>  int security_settime64(const struct timespec64 *ts, const struct timezone *tz);
+>  int security_vm_enough_memory_mm(struct mm_struct *mm, long pages);
+> +int security_vm_execstack(void);
+>  int security_bprm_creds_for_exec(struct linux_binprm *bprm);
+>  int security_bprm_creds_from_file(struct linux_binprm *bprm, const struct file *file);
+>  int security_bprm_check(struct linux_binprm *bprm);
+> @@ -624,6 +625,11 @@ static inline int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
+>  	return __vm_enough_memory(mm, pages, cap_vm_enough_memory(mm, pages));
+>  }
+>  
+> +static inline int security_vm_execstack(void)
+> +{
+> +	return 0;
+> +}
+> +
+>  static inline int security_bprm_creds_for_exec(struct linux_binprm *bprm)
+>  {
+>  	return 0;
+> diff --git a/security/security.c b/security/security.c
+> index 0144a98d3712..f75240d0d99d 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1125,6 +1125,19 @@ int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
+>  	return __vm_enough_memory(mm, pages, cap_sys_admin);
+>  }
+>  
+> +/**
+> + * security_vm_execstack() - Check if starting a program with executable stack
+> + * is allowed
+> + *
+> + * Check whether starting a program with an executable stack is allowed.
+> + *
+> + * Return: Returns 0 if permission is granted.
+> + */
+> +int security_vm_execstack(void)
+> +{
+> +	return call_int_hook(vm_execstack);
+> +}
+> +
+>  /**
+>   * security_bprm_creds_for_exec() - Prepare the credentials for exec()
+>   * @bprm: binary program information
 
