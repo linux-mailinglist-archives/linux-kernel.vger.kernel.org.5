@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-104912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D25C587D59D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:54:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88F4C87D59E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F2C41F25204
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:54:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40A1F1F254C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E61B5DF30;
-	Fri, 15 Mar 2024 20:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150635E08B;
+	Fri, 15 Mar 2024 20:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Th2Jescx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nfrMjTN0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9FE5DF1B;
-	Fri, 15 Mar 2024 20:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575065E06E;
+	Fri, 15 Mar 2024 20:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710535728; cv=none; b=O8z+wCbIH9+PZGElEaXJ5ytJ2+kddvqALhJVeuiTyH3O3mb0YtccMCNq1QriGJP9WUIbOinDqYHzedJK68CHTjayKnYj49pc8s7TjyYJBJ8jUjYW0qzQhbK+edwp2QpfFMzPAvLlOvimu9h+332iFiyoEZseJhv50u+FKOQL4O8=
+	t=1710535730; cv=none; b=Jtihab+6x+rQRPW0Xd3G9p1TllWnkRbKJ/ZhmFzx7OZzQZVE6q0gV752hQOWrP8B13dklH+rmhEaecdTnwFqB2HwupM86w+QBrGR3Pn0J1rELAXBkjMLN8Xj2w6Ncvn89gS7lTTdxFlbfAPzgq0S9fIYdikm3bzj2udJGHlZE3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710535728; c=relaxed/simple;
-	bh=sGWDJZ0P89LGVOcIO9kQVxIBj15Yndvpht5SzGy8FWs=;
+	s=arc-20240116; t=1710535730; c=relaxed/simple;
+	bh=fTuRY+Wcu5iLvw/FqEChUB9CamTV7xWqgGviHXDV6Fg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZNdCWufbFa/GJ6JWNhN/lzKttWxeRIMgI5TLaEzGG+kVfeP5aaCGE09ZBR09PyHDwybv2DWRiIXFvzY+UUq/ruwjrrxBAIXRCXwQnWD6X5RDInfZrh0WErgsiVbza2XicX65p3mryHq8Wp7gA2dKYlKI7q/Xx+ovZDeKa+jpwlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Th2Jescx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE53AC43394;
-	Fri, 15 Mar 2024 20:48:45 +0000 (UTC)
+	 MIME-Version; b=riFNKfGL0wRWIaSIpmmWeSn78wglutBJmBxDXdJgiBx7kzsloGCljfNCRVRonjj5LR4jpS0msLlUb83mA8sxLciF5g+WIwf02I5wHjrW8GK7licCNeyI+Fth084JEudkE1nOxuKuydOfEje1fPHoWtt2TnDS09iFsTaTjRs4+20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nfrMjTN0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24288C433F1;
+	Fri, 15 Mar 2024 20:48:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710535727;
-	bh=sGWDJZ0P89LGVOcIO9kQVxIBj15Yndvpht5SzGy8FWs=;
+	s=k20201202; t=1710535729;
+	bh=fTuRY+Wcu5iLvw/FqEChUB9CamTV7xWqgGviHXDV6Fg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Th2JescxUC5rkugLTby6T+OAHZ50YGKM6lM9f0XtpYB0LEaLuFlVlMcsOD8ljayO9
-	 NVakU+9CrmchQQrPF3Bf/iMLl7KPQ5gvizAxfVVZwtlxnPCOejEWKxciBNobMXHUq5
-	 2eWbxMJS19aBFiQh/aZAjqoYy3YPHQSliDG4ZXMJooRwOxvFkHmJgGQUQ8P0vaj/US
-	 /NXbbak2OFa646LdHl47sovbcjPnhFyWXnFvEPqWzWzIoNt/j6APqhJpDhwMGpinpH
-	 hwWTGGoL2vN/beh50/yxnlSXSmfuyoPdyb2eAchKV+jgs58W4UyanylOhTXxz0m6Ik
-	 +luRHV/BF26yg==
+	b=nfrMjTN0z92wl2NXyAhPYmscd/SvELlG+9vWiRSdaMd+KxmgV6fIaUyYp1EMPxBUp
+	 CuPwdURYOWbxmci+0+7xVc7n1c9kE7OrHg82OQvGUy5KJAmAiRMH3i6qbSrax7P/i3
+	 3/ryfPkKRKnCI2GXkN+f5X6dXXswVNFJb+kwSJ7w0DOEXiPWD6712hx9R6xlFDSf8C
+	 EiZ3nwsuvnf/Muz/CVFVQzv+6DgmaUXUhpMQEjbn8dqr3OoceSv6d/oujATUtItsnF
+	 WZsy+LBoboYclm+TYocJ+Bx4GwQvwCIsrZWN9QAzJfdOfzTc9PMreizIthrMo09ing
+	 xpJ6nOLeP4O4w==
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>,
@@ -48,9 +48,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org,
 	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 2/5] perf beauty: Move prctl.h files (uapi/linux and x86's) copy out of the directory used to build perf
-Date: Fri, 15 Mar 2024 17:48:32 -0300
-Message-ID: <20240315204835.748716-3-acme@kernel.org>
+Subject: [PATCH 3/5] perf beauty: Use the system linux/fcntl.h instead of a copy from the kernel
+Date: Fri, 15 Mar 2024 17:48:33 -0300
+Message-ID: <20240315204835.748716-4-acme@kernel.org>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240315204835.748716-1-acme@kernel.org>
 References: <20240315204835.748716-1-acme@kernel.org>
@@ -64,159 +64,65 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-It is used only to generate string tables, not to build perf, so move it
-to the tools/perf/trace/beauty/{include,arch}/ hierarchies, that is used
-just for scraping.
+Builds ok all the way back to these older distros:
 
-This is a something that should've have happened, as happened with the
-linux/socket.h scrapper, do it now as Ian suggested while doing an
-audit/refactor session in the headers used by perf.
+   1  almalinux:8    : Ok  gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-20) , clang version 16.0.6 (Red Hat 16.0.6-2.module_el8.9.0+3621+df7f7146) flex 2.6.1
+   3  alpine:3.15    : Ok  gcc (Alpine 10.3.1_git20211027) 10.3.1 20211027 , Alpine clang version 12.0.1 flex 2.6.4
+  15  debian:10      : Ok  gcc (Debian 8.3.0-6) 8.3.0 , Debian clang version 11.0.1-2~deb10u1 flex 2.6.4
+  32  opensuse:15.4  : Ok  gcc (SUSE Linux) 7.5.0 , clang version 15.0.7 flex 2.6.4
+  23  fedora:35      : Ok  gcc (GCC) 11.3.1 20220421 (Red Hat 11.3.1-3) , clang version 13.0.1 (Fedora 13.0.1-1.fc35) flex 2.6.4
+  38  ubuntu:18.04   : Ok  gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0  flex 2.6.4
 
-No other tools/ living code uses it, just <linux/usbdevice_fs.h> coming
-from either 'make install_headers' or from the system /usr/include/
-directory.
-
-Suggested-by: Ian Rogers <irogers@google.com>
 Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/lkml/CAP-5=fWZVrpRufO4w-S4EcSi9STXcTAN2ERLwTSN7yrSSA-otQ@mail.gmail.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/Makefile.perf                              | 11 +++++------
- tools/perf/check-headers.sh                           |  4 ++--
- .../trace/beauty}/arch/x86/include/uapi/asm/prctl.h   |  0
- .../trace/beauty}/include/uapi/linux/prctl.h          |  0
- tools/perf/trace/beauty/prctl_option.sh               |  6 +++---
- tools/perf/trace/beauty/x86_arch_prctl.sh             |  4 ++--
- 6 files changed, 12 insertions(+), 13 deletions(-)
- rename tools/{ => perf/trace/beauty}/arch/x86/include/uapi/asm/prctl.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/prctl.h (100%)
+ tools/perf/trace/beauty/fcntl.c | 2 +-
+ tools/perf/trace/beauty/flock.c | 2 +-
+ tools/perf/trace/beauty/statx.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index c75342b21089fc6f..b36c0c68c346d1ac 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -475,11 +475,11 @@ beauty_linux_dir := $(srctree)/tools/perf/trace/beauty/include/linux/
- beauty_uapi_linux_dir := $(srctree)/tools/perf/trace/beauty/include/uapi/linux/
- beauty_uapi_sound_dir := $(srctree)/tools/perf/trace/beauty/include/uapi/sound/
- beauty_arch_asm_dir := $(srctree)/tools/perf/trace/beauty/arch/x86/include/asm/
-+beauty_x86_arch_asm_uapi_dir := $(srctree)/tools/perf/trace/beauty/arch/x86/include/uapi/asm/
+diff --git a/tools/perf/trace/beauty/fcntl.c b/tools/perf/trace/beauty/fcntl.c
+index 56ef83b3d130b5c6..d075904dcccedc86 100644
+--- a/tools/perf/trace/beauty/fcntl.c
++++ b/tools/perf/trace/beauty/fcntl.c
+@@ -7,7 +7,7 @@
  
- linux_uapi_dir := $(srctree)/tools/include/uapi/linux
- asm_generic_uapi_dir := $(srctree)/tools/include/uapi/asm-generic
- arch_asm_uapi_dir := $(srctree)/tools/arch/$(SRCARCH)/include/uapi/asm/
--x86_arch_asm_uapi_dir := $(srctree)/tools/arch/x86/include/uapi/asm/
- x86_arch_asm_dir := $(srctree)/tools/arch/x86/include/asm/
+ #include "trace/beauty/beauty.h"
+ #include <linux/kernel.h>
+-#include <uapi/linux/fcntl.h>
++#include <linux/fcntl.h>
  
- beauty_outdir := $(OUTPUT)trace/beauty/generated
-@@ -617,11 +617,10 @@ $(mmap_prot_array): $(asm_generic_uapi_dir)/mman.h $(asm_generic_uapi_dir)/mman-
- 	$(Q)$(SHELL) '$(mmap_prot_tbl)' $(asm_generic_uapi_dir) $(arch_asm_uapi_dir) > $@
+ static size_t fcntl__scnprintf_getfd(unsigned long val, char *bf, size_t size, bool show_prefix)
+ {
+diff --git a/tools/perf/trace/beauty/flock.c b/tools/perf/trace/beauty/flock.c
+index c14274edd6d9de4f..a6514a6f07cfa066 100644
+--- a/tools/perf/trace/beauty/flock.c
++++ b/tools/perf/trace/beauty/flock.c
+@@ -2,7 +2,7 @@
  
- prctl_option_array := $(beauty_outdir)/prctl_option_array.c
--prctl_hdr_dir := $(srctree)/tools/include/uapi/linux/
- prctl_option_tbl := $(srctree)/tools/perf/trace/beauty/prctl_option.sh
+ #include "trace/beauty/beauty.h"
+ #include <linux/kernel.h>
+-#include <uapi/linux/fcntl.h>
++#include <linux/fcntl.h>
  
--$(prctl_option_array): $(prctl_hdr_dir)/prctl.h $(prctl_option_tbl)
--	$(Q)$(SHELL) '$(prctl_option_tbl)' $(prctl_hdr_dir) > $@
-+$(prctl_option_array): $(beauty_uapi_linux_dir)/prctl.h $(prctl_option_tbl)
-+	$(Q)$(SHELL) '$(prctl_option_tbl)' $(beauty_uapi_linux_dir) > $@
+ #ifndef LOCK_MAND
+ #define LOCK_MAND	 32
+diff --git a/tools/perf/trace/beauty/statx.c b/tools/perf/trace/beauty/statx.c
+index dc5943a6352d91dc..d1ccc93316bd9ac6 100644
+--- a/tools/perf/trace/beauty/statx.c
++++ b/tools/perf/trace/beauty/statx.c
+@@ -8,7 +8,7 @@
+ #include "trace/beauty/beauty.h"
+ #include <linux/kernel.h>
+ #include <sys/types.h>
+-#include <uapi/linux/fcntl.h>
++#include <linux/fcntl.h>
+ #include <uapi/linux/stat.h>
  
- usbdevfs_ioctl_array := $(beauty_ioctl_outdir)/usbdevfs_ioctl_array.c
- usbdevfs_ioctl_tbl := $(srctree)/tools/perf/trace/beauty/usbdevfs_ioctl.sh
-@@ -632,8 +631,8 @@ $(usbdevfs_ioctl_array): $(beauty_uapi_linux_dir)/usbdevice_fs.h $(usbdevfs_ioct
- x86_arch_prctl_code_array := $(beauty_outdir)/x86_arch_prctl_code_array.c
- x86_arch_prctl_code_tbl := $(srctree)/tools/perf/trace/beauty/x86_arch_prctl.sh
- 
--$(x86_arch_prctl_code_array): $(x86_arch_asm_uapi_dir)/prctl.h $(x86_arch_prctl_code_tbl)
--	$(Q)$(SHELL) '$(x86_arch_prctl_code_tbl)' $(x86_arch_asm_uapi_dir) > $@
-+$(x86_arch_prctl_code_array): $(beauty_x86_arch_asm_uapi_dir)/prctl.h $(x86_arch_prctl_code_tbl)
-+	$(Q)$(SHELL) '$(x86_arch_prctl_code_tbl)' $(beauty_x86_arch_asm_uapi_dir) > $@
- 
- x86_arch_irq_vectors_array := $(beauty_outdir)/x86_arch_irq_vectors_array.c
- x86_arch_irq_vectors_tbl := $(srctree)/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
-diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-index b35eba5e99c8d91f..03d00110a48fcb9a 100755
---- a/tools/perf/check-headers.sh
-+++ b/tools/perf/check-headers.sh
-@@ -17,7 +17,6 @@ FILES=(
-   "include/uapi/linux/in.h"
-   "include/uapi/linux/openat2.h"
-   "include/uapi/linux/perf_event.h"
--  "include/uapi/linux/prctl.h"
-   "include/uapi/linux/sched.h"
-   "include/uapi/linux/seccomp.h"
-   "include/uapi/linux/stat.h"
-@@ -35,7 +34,6 @@ FILES=(
-   "arch/x86/include/asm/inat_types.h"
-   "arch/x86/include/asm/emulate_prefix.h"
-   "arch/x86/include/asm/msr-index.h"
--  "arch/x86/include/uapi/asm/prctl.h"
-   "arch/x86/lib/x86-opcode-map.txt"
-   "arch/x86/tools/gen-insn-attr-x86.awk"
-   "arch/arm/include/uapi/asm/perf_regs.h"
-@@ -93,9 +91,11 @@ SYNC_CHECK_FILES=(
- declare -a BEAUTY_FILES
- BEAUTY_FILES=(
-   "arch/x86/include/asm/irq_vectors.h"
-+  "arch/x86/include/uapi/asm/prctl.h"
-   "include/linux/socket.h"
-   "include/uapi/linux/fs.h"
-   "include/uapi/linux/mount.h"
-+  "include/uapi/linux/prctl.h"
-   "include/uapi/linux/usbdevice_fs.h"
-   "include/uapi/sound/asound.h"
- )
-diff --git a/tools/arch/x86/include/uapi/asm/prctl.h b/tools/perf/trace/beauty/arch/x86/include/uapi/asm/prctl.h
-similarity index 100%
-rename from tools/arch/x86/include/uapi/asm/prctl.h
-rename to tools/perf/trace/beauty/arch/x86/include/uapi/asm/prctl.h
-diff --git a/tools/include/uapi/linux/prctl.h b/tools/perf/trace/beauty/include/uapi/linux/prctl.h
-similarity index 100%
-rename from tools/include/uapi/linux/prctl.h
-rename to tools/perf/trace/beauty/include/uapi/linux/prctl.h
-diff --git a/tools/perf/trace/beauty/prctl_option.sh b/tools/perf/trace/beauty/prctl_option.sh
-index 9455d9672f140d13..e049f5e9c01116fb 100755
---- a/tools/perf/trace/beauty/prctl_option.sh
-+++ b/tools/perf/trace/beauty/prctl_option.sh
-@@ -1,18 +1,18 @@
- #!/bin/sh
- # SPDX-License-Identifier: LGPL-2.1
- 
--[ $# -eq 1 ] && header_dir=$1 || header_dir=tools/include/uapi/linux/
-+[ $# -eq 1 ] && beauty_uapi_linux_dir=$1 || beauty_uapi_linux_dir=tools/perf/trace/beauty/include/uapi/linux/
- 
- printf "static const char *prctl_options[] = {\n"
- regex='^#define[[:space:]]{1}PR_(\w+)[[:space:]]*([[:xdigit:]]+)([[:space:]]*/.*)?$'
--grep -E $regex ${header_dir}/prctl.h | grep -v PR_SET_PTRACER | \
-+grep -E $regex ${beauty_uapi_linux_dir}/prctl.h | grep -v PR_SET_PTRACER | \
- 	sed -E "s%$regex%\2 \1%g"	| \
- 	sort -n | xargs printf "\t[%s] = \"%s\",\n"
- printf "};\n"
- 
- printf "static const char *prctl_set_mm_options[] = {\n"
- regex='^#[[:space:]]+define[[:space:]]+PR_SET_MM_(\w+)[[:space:]]*([[:digit:]]+).*'
--grep -E $regex ${header_dir}/prctl.h | \
-+grep -E $regex ${beauty_uapi_linux_dir}/prctl.h | \
- 	sed -r "s/$regex/\2 \1/g"	| \
- 	sort -n | xargs printf "\t[%s] = \"%s\",\n"
- printf "};\n"
-diff --git a/tools/perf/trace/beauty/x86_arch_prctl.sh b/tools/perf/trace/beauty/x86_arch_prctl.sh
-index b1596df251f0aa9f..b714ffa3cb7a4ed8 100755
---- a/tools/perf/trace/beauty/x86_arch_prctl.sh
-+++ b/tools/perf/trace/beauty/x86_arch_prctl.sh
-@@ -2,9 +2,9 @@
- # Copyright (C) 2018, Red Hat Inc, Arnaldo Carvalho de Melo <acme@redhat.com>
- # SPDX-License-Identifier: LGPL-2.1
- 
--[ $# -eq 1 ] && x86_header_dir=$1 || x86_header_dir=tools/arch/x86/include/uapi/asm/
-+[ $# -eq 1 ] && beauty_x86_arch_asm_uapi_dir=$1 || beauty_x86_arch_asm_uapi_dir=tools/perf/trace/beauty/arch/x86/include/uapi/asm/
- 
--prctl_arch_header=${x86_header_dir}/prctl.h
-+prctl_arch_header=${beauty_x86_arch_asm_uapi_dir}/prctl.h
- 
- print_range () {
- 	idx=$1
+ size_t syscall_arg__scnprintf_statx_flags(char *bf, size_t size, struct syscall_arg *arg)
 -- 
 2.43.2
 
