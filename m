@@ -1,176 +1,171 @@
-Return-Path: <linux-kernel+bounces-104771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A081A87D36B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:12:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D3F887D36D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D24B41C2085A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:12:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8CFF1F219DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863CB524BF;
-	Fri, 15 Mar 2024 18:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC7D4E1B5;
+	Fri, 15 Mar 2024 18:12:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ucF35Ds0"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="EBmaaAzM"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9934D9F5;
-	Fri, 15 Mar 2024 18:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84954F1EE;
+	Fri, 15 Mar 2024 18:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710526301; cv=none; b=SDbTg++xmng4DnVZwovCtvt4oGM3u3KMQfPe5BPv4UJjcb7ZSFeU2w1Q+AWE9FfmCw/5Pl4MLMLdGLzWxKnf8eYsIwViYTTmDZsX0kyaElwB+Gt+9JT+6ALwKn6GS54XRdf2vgbov7QlSmOYmk1WkdcEgUvys3wSZK8/1OloPXU=
+	t=1710526330; cv=none; b=fNKTJOnYXYRI++Z6GQiRkAjphEq2AfTl0RRX6YHdFCwBX11rZrWx2bvoA08BEy/P5/fVNK5i45tWNiZtTc44ao2Ftw3JS7J/SDqH94e5Dt44owbeYx0/F7X+f7WIhwe9rHQfm59cSuLYRKKw6FFhr0i+8M8C2Jl8XM8w08Kxu+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710526301; c=relaxed/simple;
-	bh=yZAVxfJujoi4wcGgrDoEtqKa9Pt1OYmQDrNQKqMs0s4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DjnUkxoGkzVk+ZX6ZzVDxSbopppy9wLXxkB4T7eiDJjciYd29YB3UPjr8KtsG99SbIYxzd8cJGcauMJwQACwhqlr4yF+hhkPie3qiDiOxz+bew40E2ZjzpxV3Tp5N04YSny2NSYuw5yvFk2hkqjGLs6JGVccytqPVdo3xlwPG8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ucF35Ds0; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1710526295;
-	bh=yZAVxfJujoi4wcGgrDoEtqKa9Pt1OYmQDrNQKqMs0s4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ucF35Ds0DIHLCoevee8XQOvskfRQ3rlnOnUnTs1Hvt5UDuGZML+Xfq8Pcgbu4/6hA
-	 ogYGa9fK3A0W8USkUaPtdJsAzKTFJuXP4kRKmgvmUavhB/enUmSQmQDexsagojcsTE
-	 oWZ8NEU3nCLIr/tG2puHOitgwNCO247mQLs+EaaQ=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Fri, 15 Mar 2024 19:11:31 +0100
-Subject: [PATCH v3 2/2] sysctl: treewide: constify argument
- ctl_table_root::permissions(table)
+	s=arc-20240116; t=1710526330; c=relaxed/simple;
+	bh=0e2hTLzqSzWSLW52Z9nltO5UKSGGXIc9zzq/LGh+H/U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=t5z4DoCKaREiwBiNfKRZExF+UOgMLZ3VsXMVwdJ1Oemec/ilaz7vtV8JpMJlijXCYB+U0rDbRzB0NZ/JmtLZb2k7L56huypNd7ek0We53/uqKsp9KRHPsaKsMcVUF7iB4Npw7jqxXtmktPNW+NDAo5X1M78Td+N2rAu78tkut4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=EBmaaAzM; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a461c50deccso303813866b.0;
+        Fri, 15 Mar 2024 11:12:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1710526327; x=1711131127; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YocCyKVkREiO6SEkYbFtG3eZAFhKtO/ltd371FGqMMc=;
+        b=EBmaaAzM22HZ3h2mUD7iqSm4N8VstY6fVnb7SUS0/RxyHjDcOVP5cmmFsVThhR99vk
+         h2hjdAG+8lT4L6uQ9/pOJ4rNiV4+XZDsu/sYunMAwLCvYR3uAFh9zkvxsO7TS8qmFG4h
+         WvtOjHaPhPX1l0Dxgay1mfN6KyfiHcZUd2fXvimt6NjUqvkKVqeuGN7MZ/F1WM87YkKB
+         aeI19H36OZQWGhgya/tEUtMy1rGDcNpE+BcAINJxvleqcHiYBFvaCcdTL6gGbVNRR/g9
+         OBDH+ugGayNlKLcjJUn8IpT6/im03vEer3Nm+Zl/og3POdJGdc8PWydAKT6AQbv018XA
+         0xqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710526327; x=1711131127;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YocCyKVkREiO6SEkYbFtG3eZAFhKtO/ltd371FGqMMc=;
+        b=AD4yk6dgJqEak/UNxu4OR1NoUfGtwAGqEwAEQKhmqdBCibKIKkDOB9IzddUVlzy9wH
+         NP/Q0WNJ1hGIEAYMH2TmpLoQ9WrxRFY78hx1EPwJrabftJfqEVu/yvhzcKkG784dfTRV
+         xfZ+ziky7GC+tv/ht91zAkDTNUmSJdmO8KVp3AbwOahKrUy3UP5fYcqxIClIL8sZ8jmY
+         GcrkKLx2iuEXeCKY9dEq1Hk5INY/VzrSTSEdRW4g+DhTCG70Hj5cayHHU8Zt67msd7Zw
+         QMwsVkortsCWnLivIZCRhNPxW+I2/Gb1HXF6XnnLINtxjvKZZqgKUmK8GQz9ghOySVZ9
+         WMeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVs2LHYBnYECo5+RRxaYamrWUGetFoY9nmjCHBL8qaOZcFkvyp6F8BJKvN7NVvhS7nAJGn7NYViKwuv2UWwzwyDUD+blwa5GPy/ZYYJ
+X-Gm-Message-State: AOJu0YztGvrEdOdwsG/EwrF4VQhJh3X4DF6iRSDltTHCoV2ai8oTyaxw
+	eNlTxG33IGE/PbmMbcz8jge6DlYDNOk4z9fDWMUdUdIoH0cHYsZcbWESSlCgpqBU5Q==
+X-Google-Smtp-Source: AGHT+IHkiHOlyaF2CCvrzBL2FiDyb0mSCQv703B1AwmSl6Oa+P7muTJf0VbnAXzaGUoH3C80G0YqOg==
+X-Received: by 2002:a17:906:c30f:b0:a46:2a85:b37b with SMTP id s15-20020a170906c30f00b00a462a85b37bmr3441990ejz.51.1710526327041;
+        Fri, 15 Mar 2024 11:12:07 -0700 (PDT)
+Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
+        by smtp.gmail.com with ESMTPSA id jy5-20020a170907762500b00a4675490095sm1650064ejc.42.2024.03.15.11.12.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 11:12:06 -0700 (PDT)
+From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To: selinux@vger.kernel.org
+Cc: Paul Moore <paul@paul-moore.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] selinux: optimize ebitmap_and()
+Date: Fri, 15 Mar 2024 19:11:55 +0100
+Message-ID: <20240315181204.647182-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240315-sysctl-const-ownership-v3-2-b86680eae02e@weissschuh.net>
-References: <20240315-sysctl-const-ownership-v3-0-b86680eae02e@weissschuh.net>
-In-Reply-To: <20240315-sysctl-const-ownership-v3-0-b86680eae02e@weissschuh.net>
-To: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>, 
- Joel Granados <j.granados@samsung.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710526294; l=3547;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=yZAVxfJujoi4wcGgrDoEtqKa9Pt1OYmQDrNQKqMs0s4=;
- b=VkF+cll2VnMifjDikxSZHzdX0SlbUsfl03rU48ltG+5ANjQmVNJFm297JBiHElG0ojh4ptCFg
- 6g/xnUHmT8KAtlfPMwo0rC96BlF/0PaGQDX3Wd1To46bM3xgD2OeIjM
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-The permissions callback is not supposed to modify the ctl_table.
-Enforce this expectation via the typesystem.
+Iterate on nodes instead of single bits to save node resolution for each
+single bit.
 
-The patch was created with the following coccinelle script:
+Similar to userspace patch efcd00814879 ("libsepol: optimize
+ebitmap_and").
 
-  @@
-  identifier func, head, ctl;
-  @@
-
-  int func(
-    struct ctl_table_header *head,
-  - struct ctl_table *ctl)
-  + const struct ctl_table *ctl)
-  { ... }
-
-(insert_entry() from fs/proc/proc_sysctl.c is a false-positive)
-
-The three changed locations were validated through manually inspection
-and compilation.
-
-In addition a search for '.permissions =' was done over the full tree to
-look for places that were missed by coccinelle.
-None were found.
-
-This change also is a step to put "struct ctl_table" into .rodata
-throughout the kernel.
-
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
- include/linux/sysctl.h | 2 +-
- ipc/ipc_sysctl.c       | 2 +-
- ipc/mq_sysctl.c        | 2 +-
- kernel/ucount.c        | 2 +-
- net/sysctl_net.c       | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+v3:
+  apply format style
+v2:
+  fix array size computation
+---
+ security/selinux/ss/ebitmap.c | 50 +++++++++++++++++++++++++++++------
+ 1 file changed, 42 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index 60333a6b9370..f9214de0490c 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -206,7 +206,7 @@ struct ctl_table_root {
- 	struct ctl_table_set *(*lookup)(struct ctl_table_root *root);
- 	void (*set_ownership)(struct ctl_table_header *head,
- 			      kuid_t *uid, kgid_t *gid);
--	int (*permissions)(struct ctl_table_header *head, struct ctl_table *table);
-+	int (*permissions)(struct ctl_table_header *head, const struct ctl_table *table);
- };
+diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
+index 67c1a73cd5ee..47cb90106118 100644
+--- a/security/selinux/ss/ebitmap.c
++++ b/security/selinux/ss/ebitmap.c
+@@ -78,19 +78,53 @@ int ebitmap_cpy(struct ebitmap *dst, const struct ebitmap *src)
+ int ebitmap_and(struct ebitmap *dst, const struct ebitmap *e1,
+ 		const struct ebitmap *e2)
+ {
+-	struct ebitmap_node *n;
+-	int bit, rc;
++	const struct ebitmap_node *n1, *n2;
++	struct ebitmap_node *new = NULL, **prev;
  
- #define register_sysctl(path, table)	\
-diff --git a/ipc/ipc_sysctl.c b/ipc/ipc_sysctl.c
-index 1a5085e5b178..19b2a67aef40 100644
---- a/ipc/ipc_sysctl.c
-+++ b/ipc/ipc_sysctl.c
-@@ -204,7 +204,7 @@ static void ipc_set_ownership(struct ctl_table_header *head,
- 	*gid = gid_valid(ns_root_gid) ? ns_root_gid : GLOBAL_ROOT_GID;
+ 	ebitmap_init(dst);
+ 
+-	ebitmap_for_each_positive_bit(e1, n, bit)
+-	{
+-		if (ebitmap_get_bit(e2, bit)) {
+-			rc = ebitmap_set_bit(dst, bit, 1);
+-			if (rc < 0)
+-				return rc;
++	prev = &dst->node;
++	n1 = e1->node;
++	n2 = e2->node;
++	while (n1 && n2) {
++		if (n1->startbit == n2->startbit) {
++			unsigned long testmap[EBITMAP_UNIT_NUMS];
++			unsigned int i;
++			bool match = false;
++
++			for (i = 0; i < ARRAY_SIZE(testmap); i++) {
++				testmap[i] = n1->maps[i] & n2->maps[i];
++				if (testmap[i] != 0)
++					match = true;
++			}
++
++			if (match) {
++				new = kmem_cache_zalloc(ebitmap_node_cachep,
++							GFP_ATOMIC);
++				if (!new) {
++					ebitmap_destroy(dst);
++					return -ENOMEM;
++				}
++				new->startbit = n1->startbit;
++				memcpy(new->maps, testmap, EBITMAP_SIZE / 8);
++				new->next = NULL;
++
++				*prev = new;
++				prev = &(new->next);
++			}
++
++			n1 = n1->next;
++			n2 = n2->next;
++		} else if (n1->startbit > n2->startbit) {
++			n2 = n2->next;
++		} else {
++			n1 = n1->next;
+ 		}
+ 	}
++
++	if (new)
++		dst->highbit = new->startbit + EBITMAP_SIZE;
++
+ 	return 0;
  }
  
--static int ipc_permissions(struct ctl_table_header *head, struct ctl_table *table)
-+static int ipc_permissions(struct ctl_table_header *head, const struct ctl_table *table)
- {
- 	int mode = table->mode;
- 
-diff --git a/ipc/mq_sysctl.c b/ipc/mq_sysctl.c
-index 6bb1c5397c69..43c0825da9e8 100644
---- a/ipc/mq_sysctl.c
-+++ b/ipc/mq_sysctl.c
-@@ -90,7 +90,7 @@ static void mq_set_ownership(struct ctl_table_header *head,
- 	*gid = gid_valid(ns_root_gid) ? ns_root_gid : GLOBAL_ROOT_GID;
- }
- 
--static int mq_permissions(struct ctl_table_header *head, struct ctl_table *table)
-+static int mq_permissions(struct ctl_table_header *head, const struct ctl_table *table)
- {
- 	int mode = table->mode;
- 	kuid_t ns_root_uid;
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index 4aa6166cb856..90300840256b 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -38,7 +38,7 @@ static int set_is_seen(struct ctl_table_set *set)
- }
- 
- static int set_permissions(struct ctl_table_header *head,
--				  struct ctl_table *table)
-+			   const struct ctl_table *table)
- {
- 	struct user_namespace *user_ns =
- 		container_of(head->set, struct user_namespace, set);
-diff --git a/net/sysctl_net.c b/net/sysctl_net.c
-index a0a7a79991f9..f5017012a049 100644
---- a/net/sysctl_net.c
-+++ b/net/sysctl_net.c
-@@ -40,7 +40,7 @@ static int is_seen(struct ctl_table_set *set)
- 
- /* Return standard mode bits for table entry. */
- static int net_ctl_permissions(struct ctl_table_header *head,
--			       struct ctl_table *table)
-+			       const struct ctl_table *table)
- {
- 	struct net *net = container_of(head->set, struct net, sysctls);
- 
-
 -- 
-2.44.0
+2.43.0
 
 
