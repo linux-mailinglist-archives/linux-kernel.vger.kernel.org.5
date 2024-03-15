@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-104805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE71587D3EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:50:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2582287D3F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B2472853A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:49:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489EE1C228C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96AA3B79E;
-	Fri, 15 Mar 2024 18:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7EA5025A;
+	Fri, 15 Mar 2024 18:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GWR2a9a9"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WppRtxd+"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB1E4EB5F;
-	Fri, 15 Mar 2024 18:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2A350A72;
+	Fri, 15 Mar 2024 18:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710528581; cv=none; b=TGAu2jmgdxAA3/JD1K73WYma6pHFm9ojU7V7Pvzi7PYO14pW1y37D0NKJgolGoHRdKXDCOZKxwRT3GVbYgb/JcrI6YNsvRP9p/8rWkEcRD4NeSaREw4RSWBGisjrIJ44zLojWv5Lk+j4WO9VD1hANTS85GqMu4Nt6zOwFaOv4YE=
+	t=1710528589; cv=none; b=E6KNhmJFg7gItBAk7vycjq4Cda2cwfEfmHg58F+3pyGPStKEbfEs9FSUDXOwVsKale7YTiiZ1JFzWp8GjSqsCFGKRRBZPke8dr4KAvV0zPqLnkYn4/RM5DGjxo398rcs1DsCl3pburgfAPUawaK/IT7eR+PNzl6nf8oqJ2co4Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710528581; c=relaxed/simple;
-	bh=waEtilpQQJVRhO5jxW08zWdWbqvE0of0BgBfWiZthWs=;
+	s=arc-20240116; t=1710528589; c=relaxed/simple;
+	bh=/1iqh7q7JkmCXPD680/u5QdHu62Glan8gqqqOipKj8A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F9UacBhdGZ7IPiimVYSmMJ9h27csSk99ao4Xq4uvzRAKYyebekGLnelXImdgHAqkV2SDwnWnzXlfYtuvaIKm8ST9N2qv8hTIT2XonQZKQGDLkdncTJlDnnQ5yWqV2KtU3gAgafniSFCzGvaHiGKfnTPVLBn2cdNpPR39wXQF8Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GWR2a9a9; arc=none smtp.client-ip=209.85.215.170
+	 MIME-Version; b=gKuukNx76YaWaIGO7XhLJrRhJwYyVeZQHjatWA6i6hLxgcM8KCtCCvcEB1Uqkb/r/RGTGAraHfSZxuhwD/DjaC9AyyhKL7yXpPpDS+dCNZHB4ZNVN2x1GeUWh7e+8kHvO1WOKnRi5pfSRj9G89iIz2ByJpKUCq0ZYfA9KZOS0VA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WppRtxd+; arc=none smtp.client-ip=209.85.161.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso1919461a12.0;
-        Fri, 15 Mar 2024 11:49:37 -0700 (PDT)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a21859a4b8so1108171eaf.0;
+        Fri, 15 Mar 2024 11:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710528577; x=1711133377; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710528585; x=1711133385; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ekuD/GR/ETK+oPLgoe3fsxeUCpWofF5b/ECIf7CXi9k=;
-        b=GWR2a9a9GnE+stR3i8bHBUZ5C7QCeRmKsRSy12Ejr9OOiK+5RxkL1eJOFLwBGpGv6q
-         GOcKUlCkyzeT5MwD3U5caDIYtbmbQRRVBJQLVwWYrBQIzOQ/8110rRW5yaFiiZf47lw0
-         at3PFXxGrwlPIU+mi8IzIOxojrWbfd6e2DJG3/xPHH3zBFnGVqKBlzUebqyCRNxHsIYG
-         sPakC/w+57wMYIztdfKWUhmkqqv+b5O4ux6inos9ViY6xmfO1NhwzKPu78i+lvfUac1t
-         XOz++NLcmhz2a3QBZUaToJp3WaFttskyqUC32wCJKuqhHd2cEWabXjSjuahe4/GImpRj
-         dkbw==
+        bh=/0yWXrzwVMKSKKedkMOfXRJscJkRhDPTzhMhPeSYFEA=;
+        b=WppRtxd+LC6Ma/TzULo2MNZAluYWqShIBsIFB/VIqtK+TcasNiDoVwW1ImQeQjlfaf
+         ikLS3ageQi9mg1MY7IjkdjojoPAxIsRyf013l5tcrT724zx9qWEvzoFP2niH4T8lNEUj
+         dIxRXIfl6k0fLQ3HqhQ3uN/A8p4GRnI+Y08kRfpe/GXt5xKCSnoiOb0bymy+zotMN7Xs
+         UnoEpprso3419yfezGuiYNZ5DHvcTedsxH7vSqDRrJU9CouA/3klMG7rb2fKlcV6/6Lz
+         Hw0pUmo7beXbhDPSBSm2P5b0fBDGsQ/y5J7pDfAtszZAn1QqVe8eH7CrNshA1yShx9WO
+         DTJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710528577; x=1711133377;
+        d=1e100.net; s=20230601; t=1710528585; x=1711133385;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ekuD/GR/ETK+oPLgoe3fsxeUCpWofF5b/ECIf7CXi9k=;
-        b=VvkJ+7On6QC1+DpJJjDqj80sdHVdo8M2zqG3aMPOtCV/0yLAya6jaDdu6wfsUmqK0v
-         ak1EmNcX/t7kQA1WsjZO6M3TMigm1w8Qel3b10H4VYk4lixfgF51wnTy0O9pemBxUhO3
-         SCTo1uif20XYEAWTCuDL0Ku4XTw+I6MhvagqbK9IbeVOuQFpWu8ikjdEMJOub86KL0sV
-         di+Yy1AiayjxCyVPqnrJzMOpEgxAScIjja41F3F+bhZcET7cevTeXEnxWhVkBI/a3DZL
-         DahQLquMDyzXwNtm7uN4ntsVPjrFQ+yyXMSM1Srk3Z4oyJ7ntyyApdR/g0m7f8gU4w9D
-         pkZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVlaVzt3vgx4F0KYqNK6hyX8hN/qxvfvGOsPMQ3BHh5bpIoij8BRD2BbLBganXXrfk6f1AXKhVxnSy+d65li3pDIKxDpv2gFq8PU+JWN93zOMxYuJYcYENrpw/pBRDwTB0qOyPCJa/6DuD7u2GSkpQG3eiTSriWC0ThVGbq/u2fEC9Axw==
-X-Gm-Message-State: AOJu0YxsFCRXn4EEMW7NuH/bInPy0f/c2lHFGK7E+BjW4LuiafNnaaSA
-	/blVGp4w/GYfQHJ4ZjRMmmCkI5ZwsiCSwXIVj2IPoZagvyWVkCHHVvGGUZXfi0vMmQ==
-X-Google-Smtp-Source: AGHT+IHqxtAsUgvo4NnLO1aRy+KdmDGkLoMtm8Lp1OEsLkEDiyduFba/9liT290O5AFXVR+nRAdYxw==
-X-Received: by 2002:a05:6a21:3990:b0:1a1:7711:cb4d with SMTP id ad16-20020a056a21399000b001a17711cb4dmr4993623pzc.36.1710528576938;
-        Fri, 15 Mar 2024 11:49:36 -0700 (PDT)
+        bh=/0yWXrzwVMKSKKedkMOfXRJscJkRhDPTzhMhPeSYFEA=;
+        b=tBDOe4U1xiJ9pz0zeCmqXQS/w1Spdbt4M103nWr4Sc5Oa++Dmjp2r3NnNn9mgG15+3
+         u3JK3qbsokU++VabLXeaftHi0UmOK4QqEetVLQERylfd156diEuFIWTeeSatz54R+k+N
+         F28CoVntyPbSIU0av/bxFhRYSCTcRVtNriJAgUaLiPebGurS1abU9erhsoEOkVmIC0T5
+         C8HsyXdnPgitTDhg0inX9ubC1VegsHTgxkylSrtIdIVWcp7oSMEV/bl0X03xqmzdNc5V
+         EesWxNU7dE3PHLIPxit27BPRPmAIU6CaWdrKh8nJ+VTvklsI8EsiLnfeSNeVX2TKqFQ5
+         7YIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXsP5H6e5IZEDkK2kY5j7na9muld6oi3xqMfWlK+dkH/6hUkDM4RPMr3yO2HjdupaGSnDN4R6ynsU3QNsw9gUyKallsZSaJpo++EWJGStdcnX4DbyTKp0IziNo5KYIyEe7cUseq/EnURtTJC4BwIxETuch0jX3//eBF1mDU5+Qgliwf+Q==
+X-Gm-Message-State: AOJu0Yw/41nHDyTao3iqcP7vtPfgvvZb4W7LuFwAPt8+zj0q4HOWucWk
+	S4P1mh5MeGY9IPvYf6zMAaXKAqz0tWXCXD65SVVKRsm8uMsibjB/O8JJ0v4PdrF65g==
+X-Google-Smtp-Source: AGHT+IFg3xw+0ZVudlfm5n/W4rF1HiiD1YucYUMdRXsV4US1Q/BNo5ENea/QqSt1LEy1pQccA1e6fg==
+X-Received: by 2002:a05:6870:d251:b0:222:3792:d968 with SMTP id h17-20020a056870d25100b002223792d968mr5680859oac.4.1710528585135;
+        Fri, 15 Mar 2024 11:49:45 -0700 (PDT)
 Received: from toolbox.iitism.net ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id f17-20020a056a0022d100b006e6cc998be8sm3580784pfj.207.2024.03.15.11.49.29
+        by smtp.gmail.com with ESMTPSA id f17-20020a056a0022d100b006e6cc998be8sm3580784pfj.207.2024.03.15.11.49.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 11:49:36 -0700 (PDT)
+        Fri, 15 Mar 2024 11:49:44 -0700 (PDT)
 From: Ayush Singh <ayushdevel1325@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ayush Singh <ayushdevel1325@gmail.com>,
@@ -92,9 +92,9 @@ Cc: Ayush Singh <ayushdevel1325@gmail.com>,
 	linux-spi@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	greybus-dev@lists.linaro.org
-Subject: [PATCH v3 1/8] dt-bindings: misc: Add mikrobus-connector
-Date: Sat, 16 Mar 2024 00:18:59 +0530
-Message-ID: <20240315184908.500352-2-ayushdevel1325@gmail.com>
+Subject: [PATCH v3 2/8] w1: Add w1_find_master_device
+Date: Sat, 16 Mar 2024 00:19:00 +0530
+Message-ID: <20240315184908.500352-3-ayushdevel1325@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240315184908.500352-1-ayushdevel1325@gmail.com>
 References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
@@ -106,150 +106,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add DT bindings for mikroBUS interface. MikroBUS is an open standard
-developed by MikroElektronika for connecting add-on boards to
-microcontrollers or microprocessors.
+Add helper to find w1_master from w1_bus_master, which is present in
+drvdata of platform device.
 
+Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
 Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
 ---
- .../bindings/misc/mikrobus-connector.yaml     | 110 ++++++++++++++++++
- MAINTAINERS                                   |   6 +
- 2 files changed, 116 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
+ drivers/w1/w1.c     |  6 +++---
+ drivers/w1/w1_int.c | 27 +++++++++++++++++++++++++++
+ include/linux/w1.h  |  1 +
+ 3 files changed, 31 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/misc/mikrobus-connector.yaml b/Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
-new file mode 100644
-index 000000000000..6eace2c0dddc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
-@@ -0,0 +1,110 @@
-+# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/misc/mikrobus-connector.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: mikroBUS add-on board socket
-+
-+maintainers:
-+  - Ayush Singh <ayushdevel1325@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: mikrobus-connector
-+
-+  pinctrl-0: true
-+  pinctrl-1: true
-+  pinctrl-2: true
-+  pinctrl-3: true
-+  pinctrl-4: true
-+  pinctrl-5: true
-+  pinctrl-6: true
-+  pinctrl-7: true
-+  pinctrl-8: true
-+
-+  pinctrl-names:
-+    items:
-+      - const: default
-+      - const: pwm_default
-+      - const: pwm_gpio
-+      - const: uart_default
-+      - const: uart_gpio
-+      - const: i2c_default
-+      - const: i2c_gpio
-+      - const: spi_default
-+      - const: spi_gpio
-+
-+  mikrobus-gpios:
-+    minItems: 11
-+    maxItems: 12
-+
-+  i2c-adapter:
-+    description: i2c adapter attached to the mikrobus socket.
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  spi-controller:
-+    description: spi bus number of the spi-master attached to the mikrobus socket.
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  uart:
-+    description: uart port attached to the mikrobus socket
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  pwms:
-+    description: the pwm-controller corresponding to the mikroBUS PWM pin.
-+    maxItems: 1
-+
-+  spi-cs:
-+    description: spi chip-select numbers corresponding to the chip-selects on the mikrobus socket.
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    items:
-+      - description: chip select corresponding to CS pin
-+      - description: chip select corresponding to RST pin
-+
-+required:
-+  - compatible
-+  - pinctrl-0
-+  - pinctrl-1
-+  - pinctrl-2
-+  - pinctrl-3
-+  - pinctrl-4
-+  - pinctrl-5
-+  - pinctrl-6
-+  - pinctrl-7
-+  - pinctrl-8
-+  - i2c-adapter
-+  - spi-controller
-+  - spi-cs
-+  - uart
-+  - pwms
-+  - mikrobus-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+      mikrobus-0 {
-+        compatible = "mikrobus-connector";
-+        status = "okay";
-+        pinctrl-names = "default", "pwm_default", "pwm_gpio","uart_default", "uart_gpio", "i2c_default",
-+                        "i2c_gpio", "spi_default", "spi_gpio";
-+        pinctrl-0 = <&P2_03_gpio_input_pin &P1_04_gpio_pin &P1_02_gpio_pin>;
-+        pinctrl-1 = <&P2_01_pwm_pin>;
-+        pinctrl-2 = <&P2_01_gpio_pin>;
-+        pinctrl-3 = <&P2_05_uart_pin &P2_07_uart_pin>;
-+        pinctrl-4 = <&P2_05_gpio_pin &P2_07_gpio_pin>;
-+        pinctrl-5 = <&P2_09_i2c_pin &P2_11_i2c_pin>;
-+        pinctrl-6 = <&P2_09_gpio_pin &P2_11_gpio_pin>;
-+        pinctrl-7 = <&P1_12_spi_pin &P1_10_spi_pin &P1_08_spi_sclk_pin &P1_06_spi_cs_pin>;
-+        pinctrl-8 = <&P1_12_gpio_pin &P1_10_gpio_pin &P1_08_gpio_pin &P1_06_gpio_pin>;
-+        i2c-adapter = <&i2c1>;
-+        spi-controller = <&spi1>;
-+        spi-cs = <0 1>;
-+        uart = <&uart1>;
-+        pwms = <&ehrpwm1 0 500000 0>;
-+        mikrobus-gpios = <&gpio1 18 0> , <&gpio0 23 0>, <&gpio0 30 0> , <&gpio0 31 0>, <&gpio0 15 0>,
-+                         <&gpio0 14 0>, <&gpio0 4 0> , <&gpio0 3 0>, <&gpio0 2 0>, <&gpio0 5 0>,
-+                         <&gpio2 25 0>, <&gpio2 3 0>;
-+      };
-+
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 375d34363777..69418a058c6b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14767,6 +14767,12 @@ M:	Oliver Neukum <oliver@neukum.org>
- S:	Maintained
- F:	drivers/usb/image/microtek.*
+diff --git a/drivers/w1/w1.c b/drivers/w1/w1.c
+index afb1cc4606c5..ce8a3f93f2ef 100644
+--- a/drivers/w1/w1.c
++++ b/drivers/w1/w1.c
+@@ -673,9 +673,9 @@ static int __w1_attach_slave_device(struct w1_slave *sl)
+ 	sl->dev.of_node = of_find_matching_node(sl->master->dev.of_node,
+ 						sl->family->of_match_table);
  
-+MIKROBUS
-+M:	Ayush Singh <ayushdevel1325@gmail.com>
-+M:	Vaishnav M A <vaishnav@beagleboard.org>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
+-	dev_set_name(&sl->dev, "%02x-%012llx",
+-		 (unsigned int) sl->reg_num.family,
+-		 (unsigned long long) sl->reg_num.id);
++	dev_set_name(&sl->dev, "%s-%02x-%012llx", sl->master->name,
++		     (unsigned int)sl->reg_num.family,
++		     (unsigned long long)sl->reg_num.id);
+ 	snprintf(&sl->name[0], sizeof(sl->name),
+ 		 "%02x-%012llx",
+ 		 (unsigned int) sl->reg_num.family,
+diff --git a/drivers/w1/w1_int.c b/drivers/w1/w1_int.c
+index 3a71c5eb2f83..2bfef8e67687 100644
+--- a/drivers/w1/w1_int.c
++++ b/drivers/w1/w1_int.c
+@@ -242,3 +242,30 @@ void w1_remove_master_device(struct w1_bus_master *bm)
+ 	__w1_remove_master_device(found);
+ }
+ EXPORT_SYMBOL(w1_remove_master_device);
 +
- MIKROTIK CRS3XX 98DX3236 BOARD SUPPORT
- M:	Luka Kovacic <luka.kovacic@sartura.hr>
- M:	Luka Perkov <luka.perkov@sartura.hr>
++/**
++ * w1_find_master_device() - find a master device
++ * @bm:	master bus device to search
++ */
++struct w1_master *w1_find_master_device(struct w1_bus_master *bm)
++{
++	struct w1_master *dev, *found = NULL;
++
++	list_for_each_entry(dev, &w1_masters, w1_master_entry) {
++		if (!dev->initialized)
++			continue;
++
++		if (dev->bus_master->data == bm->data) {
++			found = dev;
++			break;
++		}
++	}
++
++	if (!found) {
++		pr_err("device doesn't exist.\n");
++		return ERR_PTR(-ENODEV);
++	}
++
++	return found;
++}
++EXPORT_SYMBOL(w1_find_master_device);
+diff --git a/include/linux/w1.h b/include/linux/w1.h
+index 9a2a0ef39018..24269d0dd5d1 100644
+--- a/include/linux/w1.h
++++ b/include/linux/w1.h
+@@ -242,6 +242,7 @@ struct w1_master {
+ 
+ int w1_add_master_device(struct w1_bus_master *master);
+ void w1_remove_master_device(struct w1_bus_master *master);
++struct w1_master *w1_find_master_device(struct w1_bus_master *master);
+ 
+ /**
+  * struct w1_family_ops - operations for a family type
 -- 
 2.44.0
 
