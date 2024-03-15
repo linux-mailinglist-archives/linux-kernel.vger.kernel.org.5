@@ -1,186 +1,173 @@
-Return-Path: <linux-kernel+bounces-103978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40D1D87C75D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:03:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E65387C75E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:08:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2762B22231
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:03:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0094128322E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DF06FAF;
-	Fri, 15 Mar 2024 02:02:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83E16FA9;
+	Fri, 15 Mar 2024 02:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hAcQu3m/"
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OdMOyAnF"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1FD63B1
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 02:02:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5A94C8D;
+	Fri, 15 Mar 2024 02:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710468178; cv=none; b=JNhy8ONQSwFzrHJ4HnjlDAex6PkDxtVjJ0n0qLNfIFpIlAFYRpx4E3PGWPrkOseavGz8xNlf016H+zjTJV9Lbi3g/z+vNFlL4nst85TYAAPpPHzU4WdN9eDR30Nita2tMSUCaRCMLsbuY4cWYBPvP41zurUz4kdAceex74dSOiw=
+	t=1710468493; cv=none; b=IKkdvD6vltzg3ugS85Kk6YJQGZYQjZytOobRYGi0Y6jcS6ZJUQSzotY3moslpw52biH5m2G5RGcd1deEnrHAjEiYzrkeoYTRJXeGivLoEloXzcA7RiwJHDtCGBXlSf99kj3IZV/I6UbgTe3xjVrkp0IVrL0xghBSQkEQyJhwNog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710468178; c=relaxed/simple;
-	bh=GprhAwZTA5xKKqzVaUyoGepNiZ2LOhoHorzocMt68H4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uRmSj7ISKoV3C4Pbf13PL23/yHxense4RZ2nGNC435lkMve9fuXVRjgJs0iCOtTaeRr3YnCbdqzQT1MXHD9hBCPR8aG8HXByvuT3dHCfcjwmMI8ojkCSiqLhMiSurZnE5l462zZx5aiIEoddO2T8+WYkqvvc+ACVk8lKDbYZwns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hAcQu3m/; arc=none smtp.client-ip=209.85.210.45
+	s=arc-20240116; t=1710468493; c=relaxed/simple;
+	bh=ZZBqB3DtDkbBNdg7q+F0PFywPz5TG70Od6EhcRlRJzo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=obSTwvK2M6BwPfW15nh4RO3VbLevRQAwr34h7gL95nL5INhUXqBkgVAUxKMD+NeYs/lp57GYQcNUgVQxsnNXd/8oDxdrU/vCVJIvHd5x9tReTU1aKXMUOUGDgjfP2p4UUxzLijBvkR8bbRRJkyQBfRVN00SnZ11nLvvlqoUdVfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OdMOyAnF; arc=none smtp.client-ip=209.85.208.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e678c24a21so219600a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 19:02:56 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d204e102a9so19658551fa.0;
+        Thu, 14 Mar 2024 19:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710468176; x=1711072976; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lWmMvGpzy2YRwPpLNVsDvPWRVOnioBUgAMRFdG1NNV0=;
-        b=hAcQu3m/P6v3E1Ck1yW9xDuhyZdO7ayff2U3MtElha/CZcV4JhqYi25MsJUfysuGIh
-         NFZgwgGmh/cRiU2mS8ZKbMB016pF9kfBPIFgPF6A/bPK1HcWiatKCbYwep2/pxsfcTpQ
-         bWHAAc+td/vj5SlHRb+ehE4Td29zSrtwzedcxoNNvF7BboxwzN5YV2B0q1sFsZEmwyDh
-         AUnVfT54HaHk8lBIbKdKk2HdxDkozSXIeWwWFIIEKu6uMHYcPWhQTipCi1NZHtgIgeVD
-         oTqwDq+3PuOYvXzS84MNuO3Ol3w2qxWAXETDa+LsLjJ8Vvyd2Cv0fz/cFwY7wYnNJyFX
-         FyKg==
+        d=gmail.com; s=20230601; t=1710468489; x=1711073289; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ROdH2C+nyN8nSm7KvbYrrk66P+3+G60TJGcpP9QA9Q=;
+        b=OdMOyAnFYguigLVJfTGyRptlfpPCiJLAzhJj6+e9LVYXu7ALhMMkP4cBrk5UHcwobh
+         sb6yBN06uHnUIhhq3qmwUJfxA1cTwJvVrLkxgdt4dV8rC+0Ie8HwIJtpLHv6xmh4NBBa
+         vIxibZf+rHUc0RybxPMAo7HqvfWbKXWnZAa123QxicyEqHO/f5mUqOy+Ni5TQFY6qK8D
+         r3T6u9RzD5SaEb+bKbEeBGtVOrO0nZhMIRrchVWnFouxKSH7RFc1R0/xoRaWEoaKePit
+         iJMQh80pU1duPB+mReJP/CzU7jplYyqcziTrw19jF4hPHHgB7T1Mf2T6DGfZp/1xL8E6
+         0TtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710468176; x=1711072976;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lWmMvGpzy2YRwPpLNVsDvPWRVOnioBUgAMRFdG1NNV0=;
-        b=W2vFg2sPxj39piceX8uuQ38sX/crn4DMQkeW6HjnhnBt9z27I41UgMqueAFRxMBb6z
-         aEIxa9yBk878pucohr3XzUVG3iu+mWVefaemyExgws+2kH053+owhWvaizQXS/uk2wcb
-         5Njb2QuOyFfPUNfNOQu8ak20VpBUv0DqZWWF+t5WrCkIoqjC/mvEj/QKCqPdfdQyC6B6
-         Sk3Lzu4xJQU6XYzHezxPxCObCaATqpkaTPwkEINbvcKeFzY9G08CJszIVI5WxXIR+wfi
-         URgZqzbJHsb47fqX7B+uT/A8RolKT2ZOo5CoDxvpFw11yZCC7p74q6VSyEK+WuLS3Znq
-         ZaCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVgUTEt43obCjKryURBV1hpy8afsERkJEYPCtM6q2rShLGPr7nbcQ5EYnuTARgiXLO7pKG8vSW95cKnLYueipVALFe8rA6LrSfN0zoS
-X-Gm-Message-State: AOJu0YwF9zmQUO0la3VTswsuR1qlseC4h8zSEl0R5DPgnpQOpy0o6UY+
-	Lye2P7vfS+SSGGLjdjbQ2S8k/Wk2HHaQEc8kSXJBCd0dxoWJwZxW
-X-Google-Smtp-Source: AGHT+IHzl7vikW876yO57pMY86dQvDm5NTHbwSrIFtAbGom5Q5Z5uqDlWGSykKrnoq+2brDIwHBc1Q==
-X-Received: by 2002:a9d:6189:0:b0:6e4:8fa3:d861 with SMTP id g9-20020a9d6189000000b006e48fa3d861mr3606882otk.34.1710468176075;
-        Thu, 14 Mar 2024 19:02:56 -0700 (PDT)
-Received: from ub23.localdomain (c-24-16-118-101.hsd1.wa.comcast.net. [24.16.118.101])
-        by smtp.gmail.com with ESMTPSA id q26-20020a65685a000000b005dc5289c4edsm1205320pgt.64.2024.03.14.19.02.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 19:02:55 -0700 (PDT)
-From: Dawei Li <daweilics@gmail.com>
-To: 
-Cc: Dawei Li <daweilics@gmail.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] sched/fair: simplify __calc_delta()
-Date: Thu, 14 Mar 2024 19:02:34 -0700
-Message-Id: <20240315020234.22092-1-daweilics@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1710468489; x=1711073289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ROdH2C+nyN8nSm7KvbYrrk66P+3+G60TJGcpP9QA9Q=;
+        b=Bi2SbY5xC+mfDVSD/rj31Ptsb47xFWezpQOgFt0eA0ALojZv8rhvSb2KEJyClPc6BV
+         aCjnUyKvNE8ujVgTQWxgVj9PeG5byZP1nJky2DSEL1Xm3lSMQ+Z2OhK9HrOcMIgUBmSQ
+         Mf5RcopVBFBr8SBZUh892q9RX7+lzr39zxWt65y56+6CGQfltFwrd9SNTk1wZIJiW/rU
+         rlhjk002O1Z9pPzKVkSVY/WM+2bYWr/rCNqEVVSa6YODj4ObDsquS3p9cOCSLX9WL2pc
+         kW8b67XnJJD2ACxKt9RBi9mi25HenWV5yD8hfzgI8YwCaTj+cNd+wHRMyMxQw84j09kL
+         giXw==
+X-Forwarded-Encrypted: i=1; AJvYcCVXwJZsaacXjMSl+gbo/dyPzKiuo6fZPsO0OBVjNv4Jr+hUlh+63bHXu+newmBErCMbv4i4ErrJClocL9kQWmCKaMnEraa4qtzBckPotk0apqx70jLAgEKmdn6dKsPz1HmbGr1noz+Gc7nbdFxR
+X-Gm-Message-State: AOJu0Yw5z/ZLUMUHmNbWN+LLZ+1ZwkacJk9BFLrBZMQ4Hmw0530NWQqv
+	cqendSawfEoXo35Ux9MIBAXn5uTfQ5ReuPqE6OwGUn85OG/5wsJb7I87an1fDu3jw/Ib9slKjNk
+	0CAr9qXNsTXvxbIvWhsdd1qH/kmkpUHY0TGio8g==
+X-Google-Smtp-Source: AGHT+IFRxSMNBLfIBXMWkSggNRNgR7JDL62JuMhQo5aTLKc3CaAOrZspTtFnC+nmgqFnH2ssQTui5JclG0syKt2P47Q=
+X-Received: by 2002:a05:651c:ba5:b0:2d4:62b7:4c71 with SMTP id
+ bg37-20020a05651c0ba500b002d462b74c71mr2090389ljb.31.1710468489209; Thu, 14
+ Mar 2024 19:08:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <TYSPR04MB7084FCAF74B4CFA30D386B698A2A2@TYSPR04MB7084.apcprd04.prod.outlook.com>
+ <87cyrxm7ua.ffs@tglx> <CAAfh-jOu0hG1hfWX9kL_gOXkSLXEVGNkddP-azO=pjNAKsRGhA@mail.gmail.com>
+ <877ci5m3c4.ffs@tglx>
+In-Reply-To: <877ci5m3c4.ffs@tglx>
+From: Enlin Mu <enlinmu@gmail.com>
+Date: Fri, 15 Mar 2024 10:07:42 +0800
+Message-ID: <CAAfh-jPvPhu6G6cp_NouhLAeHvLPeVj6JzPmzrL1VK+0BM78+g@mail.gmail.com>
+Subject: Re: [PATCH] hrtimer:Add get_hrtimer_cpu_base()
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Enlin Mu <enlin.mu@outlook.com>, linux-kernel@vger.kernel.org, enlin.mu@unisoc.com, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit 5e963f2bd4654a202a8a05aa3a86cb0300b10e6c ("sched/fair: Commit to
-EEVDF") removed __calc_delta()'s use case where the input weight is not
-equal to NICE_0_LOAD. Now that weight is always NICE_0_LOAD, it is not
-required to have it as an input parameter. NICE_0_LOAD could be
-incorporated in __calc_delta() directly.
+Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2024=E5=B9=B43=E6=9C=8814=E6=
+=97=A5=E5=91=A8=E5=9B=9B 19:59=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Thu, Mar 14 2024 at 18:45, Enlin Mu wrote:
+> > Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2024=E5=B9=B43=E6=9C=8814=
+=E6=97=A5=E5=91=A8=E5=9B=9B 18:22=E5=86=99=E9=81=93=EF=BC=9A
+> >>
+> >> On Wed, Mar 13 2024 at 05:30, Enlin Mu wrote:
+> >> > From: Enlin Mu <enlin.mu@unisoc.com>
+> >> >
+> >> > On the Arm platform,arch_timer may occur irq strom,
+> >> > By using the next_timer of hrtimer_cpu_base, it is
+> >> > possible to quickly locate abnormal timers.
+> >> > As it is an out of tree modules,the function needs
+> >> > to be exproted.
+> >>
+> >> No. We are not exporting for out of tree code.
+> > Can you explain it?
+>
+> Exporting functions or variables requires an in tree usecase.
+>
+Thands, I got it.
 
-Also, when weight is always NICE_0_LOAD, the initial fact value is
-always 2**10, and the first fact_hi will always be 0. Thus, the first
-if block can be removed.
-
-The previous comment "(delta_exec * (weight * lw->inv_weight)) >>
-WMULT_SHIFT" seems to be assuming that lw->weight * lw->inv_weight is
-always (approximately) equal to 2**WMULT_SHIFT. However, when
-CONFIG_64BIT is set, lw->weight * lw->inv_weight is (approximately)
-equal to 2**WMULT_SHIFT * 2**10. What remains true for both CONFIG_32BIT
-and CONFIG_64BIT is: scale_load_down(lw->weight) * lw->inv_weight is
-(approximately) equal to 2**WMULT_SHIFT. Fix the comment so that it
-is correct for both CONFIG_32BIT and CONFIG_64BIT.
-
-Update the comment for calc_delta_fair to make it more precise.
-
-Signed-off-by: Dawei Li <daweilics@gmail.com>
+If patch is following:
 ---
-Changes in v2:
-- update commit message
-- reorder the variables
----
- kernel/sched/fair.c | 29 ++++++++++-------------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
+ include/linux/hrtimer.h     | 1 +
+ kernel/time/hrtimer.c       | 1 +
+ kernel/time/tick-internal.h | 1 -
+ kernel/time/timer_list.c    | 1 +
+ 4 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a19ea290b790..e1869cf454ea 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -252,32 +252,23 @@ static void __update_inv_weight(struct load_weight *lw)
- }
- 
- /*
-- * delta_exec * weight / lw.weight
-+ * delta_exec * NICE_0_LOAD / lw->weight
-  *   OR
-- * (delta_exec * (weight * lw->inv_weight)) >> WMULT_SHIFT
-+ * (delta_exec * scale_load_down(NICE_0_LOAD) * lw->inv_weight) >> WMULT_SHIFT
-  *
-- * Either weight := NICE_0_LOAD and lw \e sched_prio_to_wmult[], in which case
-- * we're guaranteed shift stays positive because inv_weight is guaranteed to
-- * fit 32 bits, and NICE_0_LOAD gives another 10 bits; therefore shift >= 22.
-- *
-- * Or, weight =< lw.weight (because lw.weight is the runqueue weight), thus
-- * weight/lw.weight <= 1, and therefore our shift will also be positive.
-+ * We're guaranteed shift stays positive because inv_weight is guaranteed to
-+ * fit 32 bits, and scale_load_down(NICE_0_LOAD) gives another 10 bits;
-+ * therefore shift >= 22.
-  */
--static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct load_weight *lw)
-+static u64 __calc_delta(u64 delta_exec, struct load_weight *lw)
- {
--	u64 fact = scale_load_down(weight);
--	u32 fact_hi = (u32)(fact >> 32);
-+	u64 fact = scale_load_down(NICE_0_LOAD);
- 	int shift = WMULT_SHIFT;
-+	u32 fact_hi;
- 	int fs;
- 
- 	__update_inv_weight(lw);
- 
--	if (unlikely(fact_hi)) {
--		fs = fls(fact_hi);
--		shift -= fs;
--		fact >>= fs;
--	}
--
- 	fact = mul_u32_u32(fact, lw->inv_weight);
- 
- 	fact_hi = (u32)(fact >> 32);
-@@ -291,12 +282,12 @@ static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct load_weight
- }
- 
- /*
-- * delta /= w
-+ * delta *= NICE_0_LOAD / se->load.weight
-  */
- static inline u64 calc_delta_fair(u64 delta, struct sched_entity *se)
- {
- 	if (unlikely(se->load.weight != NICE_0_LOAD))
--		delta = __calc_delta(delta, NICE_0_LOAD, &se->load);
-+		delta = __calc_delta(delta, &se->load);
- 
- 	return delta;
- }
--- 
-2.40.1
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index 2a37d2a8e808..a0eaed4a3edc 100644
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -278,6 +278,7 @@ static inline void hrtimer_start(struct hrtimer
+*timer, ktime_t tim,
+ extern int hrtimer_cancel(struct hrtimer *timer);
+ extern int hrtimer_try_to_cancel(struct hrtimer *timer);
+ extern struct hrtimer_cpu_base *get_hrtimer_cpu_base(int cpu);
++DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
 
+ static inline void hrtimer_start_expires(struct hrtimer *timer,
+                                         enum hrtimer_mode mode)
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index f7cf7d48b91d..49024d07c61b 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -113,6 +113,7 @@ DEFINE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases) =
+=3D
+                },
+        }
+ };
++EXPORT_PER_CPU_SYMBOL(hrtimer_bases);
+
+ static const int hrtimer_clock_to_base_table[MAX_CLOCKS] =3D {
+        /* Make sure we catch unsupported clockids */
+diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
+index 5f2105e637bd..96df7d21506c 100644
+--- a/kernel/time/tick-internal.h
++++ b/kernel/time/tick-internal.h
+@@ -18,7 +18,6 @@ struct timer_events {
+ # define TICK_DO_TIMER_NONE    -1
+ # define TICK_DO_TIMER_BOOT    -2
+
+-DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
+ extern ktime_t tick_next_period;
+ extern int tick_do_timer_cpu __read_mostly;
+
+diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
+index 1c311c46da50..b6fee42e3861 100644
+--- a/kernel/time/timer_list.c
++++ b/kernel/time/timer_list.c
+@@ -16,6 +16,7 @@
+ #include <linux/uaccess.h>
+
+ #include "tick-internal.h"
++#include <linux/hrtimer.h>
+
+ struct timer_list_iter {
+        int cpu;
+--
+
+please review and comment.
+
+Thanks
 
