@@ -1,81 +1,133 @@
-Return-Path: <linux-kernel+bounces-104055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D13787C853
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:42:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5904487C854
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31AD71F212F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:42:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845561C20F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 943EA179A7;
-	Fri, 15 Mar 2024 04:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21E78F9C3;
+	Fri, 15 Mar 2024 04:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YmBtz8zp"
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EHRj5j0g"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3A7517730
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5A4DF42;
+	Fri, 15 Mar 2024 04:44:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710477676; cv=none; b=qPln70HTTmYLqvLYtOlLjN6/OMU8SQoxBh4sQiB57kAljp9zvzEpZqhB7cf+F7nWURlDjL1OJogsYI6qcw+HXmkgQ9QNbQd/ju7EpM5HJjoQnnOvzwEpvQapdbLqzlAcVZ3or5chGRJudkDUS4uvMebDC2CT8IMdniYgeeq9Un0=
+	t=1710477895; cv=none; b=lmB7pLb/s0x9Mlkr8kAJonF/TETo3MhyqQiOWJ/cmPEunoIcMEAwlR9X6IqIhAwOIIqEBBAdU2ek66pHpu5OcxZeeGTuawdquaj8wkFkBfZDWFMT8SaghJiXKEDuKBEDHMRJFuoGCNrCKYM8RPpS7/3Ob5dhjzgHfvGbR83a5gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710477676; c=relaxed/simple;
-	bh=X556mm4b3NpKRrUCJb6n7/rhicann9OZN87sidxesuU=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=fqMi7Pi++8GV3a4gAJwnHEzrxxSjTqSV5irJaSbIEcMyD+3k1YfTiMa5yGgUE1+DEkqQhNRtWWZU5RKr8+EiSAAcEglxF9m6NrBA/jdgRTAhuzd0m+3xrhtXOcIs2HsnnJhvkU+XZSQC6t/8zzk12Mq9F9vWy89e0TtaPK9/rFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YmBtz8zp; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 15 Mar 2024 00:41:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710477673;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=FxktxHvBJyfDKoa1bxvzSlyMzdw19RWnlTREhjaJS9A=;
-	b=YmBtz8zpXZ3X+nN6YK1MiC/nghiJLmLfgbN0gAzP5k7RRB9MCJuXxPZNTGoGZLmRPiIzjy
-	gdrjstZP82IJC6uwwEEHfIP7wcKCLa93wmUwvVxMU3vsknpQBAPsk/qdr1aLM5Oaf6Phwv
-	iP/HDBDBGrpckvVlFY7kwdG3/hBWyNI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: bcachefs: do not run 6.7: upgrade to 6.8 immediately if you have a
- multi device fs
-Message-ID: <muwlfryvafsskt2l2hgv3szwzjfn7cswmmnoka6zlpz2bxj6lh@ugceww4kv3jr>
+	s=arc-20240116; t=1710477895; c=relaxed/simple;
+	bh=oO1aHmIUCDy4p53JFpDBTnJXbF7ykVbMlBtjCxRL2mc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LS04yTJ51pBg50YFwe5RvwpUs3W/zk+uZVUeMjIYgCjIZAtgdQUNSNnFz2qYQW0odw12XlQPU1PyiAkqyybSwIyMC52B3+N0p1RcleRN2py6SWS39zUPBKuVMcGgWx/is+YZ0RYdsslQIZMJgZ2lKyDUJBxdz4UF/ATJL9+aqvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EHRj5j0g; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710477893; x=1742013893;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oO1aHmIUCDy4p53JFpDBTnJXbF7ykVbMlBtjCxRL2mc=;
+  b=EHRj5j0g/aC8vzJZswpfYWKJtAGwV8pqiPLrbCNns1l1r8mFob2Z6xk1
+   pXf7gPkF2CJGbR1kB4ptYkq21+9K+YORBgVsIJjYDpMg5ww0rY8hsBAJ0
+   CFgMGeET1CMTSYIwUSUl770IQXKVYdOyxWZ8864XBUDrhZk6oAj6yS2GC
+   5Cm9smUJI6PqxiUnP2EtyDyW2lNPfSsJpNbQYBAkYo41hna79ZFvEhWH2
+   77emH7tBCWHHJcxuNYT/S3A7MJeSoifmb7EKMRe4528hC6UKUzX/JE+YP
+   HR4JlF+bLCr9nJb6iMuSJ+4qhPFB6vqj7JVdfatBjMvBJYkMxHRd15lDd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="16483132"
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="16483132"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 21:44:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="17205443"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.242.47]) ([10.124.242.47])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 21:44:50 -0700
+Message-ID: <5470a429-cbbd-4946-b11a-ab86380d9b68@linux.intel.com>
+Date: Fri, 15 Mar 2024 12:44:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ isaku.yamahata@linux.intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <f028d43abeadaa3134297d28fb99f283445c0333.1708933498.git.isaku.yamahata@intel.com>
+ <f5da22e3-55fd-4e8b-8112-ccf1468012c8@linux.intel.com>
+ <20240314162712.GO935089@ls.amr.corp.intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240314162712.GO935089@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-there's a bug in 6.7 with filesystems that are mid upgrade and then get
-downgraded not getting marked in the superblock as downgraded, and this
-translates to a really horrific bug in splitbrain detection when the old
-version isn't updating member sequence nmubers and you go back to the
-new version - this results in every device being kicked out of the fs.
 
-and our backports are not being picked up by the stable team, so - do
-not run 6.7, switch to 6.8 immediately, running 6.7 with new -tools will
-trigger it.
 
-if you are affected:
+On 3/15/2024 12:27 AM, Isaku Yamahata wrote:
+> On Thu, Mar 14, 2024 at 10:05:35AM +0800,
+> Binbin Wu <binbin.wu@linux.intel.com> wrote:
+>
+>>> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+>>> index 18cecf12c7c8..18aef6e23aab 100644
+>>> --- a/arch/x86/kvm/vmx/main.c
+>>> +++ b/arch/x86/kvm/vmx/main.c
+>>> @@ -6,6 +6,22 @@
+>>>    #include "nested.h"
+>>>    #include "pmu.h"
+>>> +static bool enable_tdx __ro_after_init;
+>>> +module_param_named(tdx, enable_tdx, bool, 0444);
+>>> +
+>>> +static __init int vt_hardware_setup(void)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	ret = vmx_hardware_setup();
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>>    #define VMX_REQUIRED_APICV_INHIBITS				\
+>>>    	(BIT(APICV_INHIBIT_REASON_DISABLE)|			\
+>>>    	 BIT(APICV_INHIBIT_REASON_ABSENT) |			\
+>>> @@ -22,6 +38,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>>>    	.hardware_unsetup = vmx_hardware_unsetup,
+>>> +	/* TDX cpu enablement is done by tdx_hardware_setup(). */
+>> How about if there are some LPs that are offline.
+>> In tdx_hardware_setup(), only online LPs are initialed for TDX, right?
+> Correct.
+>
+>
+>> Then when an offline LP becoming online, it doesn't have a chance to call
+>> tdx_cpu_enable()?
+> KVM registers kvm_online/offline_cpu() @ kvm_main.c as cpu hotplug callbacks.
+> Eventually x86 kvm hardware_enable() is called on online/offline event.
 
- - 6.9 (once Linus merges) will have a new no_splitbrain_check option,
-   which runs the splitbrain checks in dry mode and won't kick your
-   devices out
+Yes, hardware_enable() will be called when online,
+but  hardware_enable() now is vmx_hardware_enable() right?
+It doens't call tdx_cpu_enable() during the online path.
 
- - we have new repair code landing soon that can recover from
-   missing/unreadable btree roots by scanning the entire device(s) for
-   btree nodes (which, fortunately, we have sufficient metadata in btree
-   node headers to do safely; reiserfs famously did not). i've seen some
-   crazy corruption resulting from this, but it might still be
-   recoverable
+
 
