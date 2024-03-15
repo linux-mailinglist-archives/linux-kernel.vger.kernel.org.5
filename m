@@ -1,112 +1,170 @@
-Return-Path: <linux-kernel+bounces-104290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1BAD87CBA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:55:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CE387CBAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:55:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D33231C2200F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:55:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C9DA28366F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699FA1B7F4;
-	Fri, 15 Mar 2024 10:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B30419478;
+	Fri, 15 Mar 2024 10:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NSOlEfkO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="chSEqUNx"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C171B7EA
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69E11BC2C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710500114; cv=none; b=sB9psUxIS4HiFhx4zvUCVgK2AZ55EFrdAqWcxXGSo12U3ZSzP+Dgzp8ji0A2tIalypNpI8pxPVLjyRHJLIJSKMLFxoaD1gxxXH6WkVX6j4jn+Q/ERazmrzmx2B3FwJkNZWZ9LZ8xueRkI0J6vM3EJ8Cei7B55It+5CSv3zDGDZ4=
+	t=1710500148; cv=none; b=krVofW7M+nmQgWX7Rec5rRvXks+eSw/d9NnAH8pzAQ3SvLN9u1Gd8HfOOh/v6rnMfJnu5e1xcEoj1uIkyHZSF2tHKQrslFdyC+pOGJ1Nf1OfotXA/Z7lW4FzUpAhi7mpfTN5WuWLziRfz4v04i7T3qhevbVwFTbsLnBDK13FvPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710500114; c=relaxed/simple;
-	bh=egKFcFy18uI/dVjWoyZvuW3VcQWXWF1qul2r340oNl0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=T8ehgNyE8NgFd4YM7GQsYOW0p2sn16H9UBkynGw0zZXLRuq8Ka2gxtNNx9OPHxrPew1t9lVcdhJJ7hzqYgO1SJxgnmnRpGeGKenEJ6vCi0TH25wKAs+yM/npwncNPPDkUD/JM0ENBHMh7jbI1Md41qcnkUGBj414H6VX6IkSuPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NSOlEfkO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710500112;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=WKnajArjwdqkW9mul8mVcKUVfLxGaXnxMQu51jtLd0s=;
-	b=NSOlEfkOJkWYSZFK4TXL6QW6bzIZNoTwaDmk2KihS0kRepk5MxLiq3SXE/u6oEheVUZdqS
-	DjBSTC+1vNLrk8cdsqDskDZr4+CcFXGxXtKZvL82adGWPofLYrjJr7GejaygGMlY8ae9oS
-	3UqwJWrnYXRvzRkAqgyKfwOMtRRqYRk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-495--O4F-DR8Na-mU1jF5OHwsA-1; Fri, 15 Mar 2024 06:55:08 -0400
-X-MC-Unique: -O4F-DR8Na-mU1jF5OHwsA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C8513851780;
-	Fri, 15 Mar 2024 10:55:07 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id A8484492BD0;
-	Fri, 15 Mar 2024 10:55:07 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] selftests: kvm: remove meaningless assignments in Makefiles
-Date: Fri, 15 Mar 2024 06:55:07 -0400
-Message-Id: <20240315105507.2519851-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1710500148; c=relaxed/simple;
+	bh=gKHklsfF2gox13da7B8q8n6TDTbEdarDO5cbu28yMxc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vDW2Y/T9O2R15GyDszi7VAHF95E82zzf4cxSkv1Hb8l6Zj4WZrd8Y9FBN2HGrl6tMY5SKbyWA0DXRTuGX3oY2TYCPEilxubUS7Ttc8wzWTOFuZ08ex5wZ3LHG2hB+T9i4t9KWAp7ve8+9OteBH3MTowOz/0WVSDAt0G7/LcNBTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=chSEqUNx; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60a3c48e70fso21247167b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710500146; x=1711104946; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aYCVB7vuASjmLwIHPiyxNRZapV4SHyBblFxELE1dC1U=;
+        b=chSEqUNxoaFiGa5ivgsGoFfAX9NRw9sBPQlCwTGbp86pz8IhQGbYQzvWlTW2I/z516
+         McMxoFVxHbE4TW5b3+k/9di3rOte1D3Hp+ocXMWRmTjYfgkfKG+WbqaE0Q/QbRQt4OIc
+         ECsPWWSHYBccfVfruIMTJsSjaeBZxNldtNbobKE6g0PDNzLWwAfjvS5EjuZArb+NpRdH
+         duMYCx1q0yRHMfqO3Sm3AYjesOW5sd4GI6q+ivaxiuio+lH0qwAZZVRYIbgu7oKXo1PJ
+         0cvwj+aTY1f4x7AqpMuFJi6dgnzPstUygqXug/v5iKnbnGhXP8t7jYcryf5Wiob4DeMG
+         wiYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710500146; x=1711104946;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aYCVB7vuASjmLwIHPiyxNRZapV4SHyBblFxELE1dC1U=;
+        b=dmpdAh8KrthzewtBKvG7RZAFrjWyyZOCqa2qk59HYXVau/o5kkLr7Dc7SmwJ6uR1nR
+         mkHJS+gk1P15ncu85Gl0wG4XmH5xKUH3PxRivHXoHecArHM7ODxoVKo83Foqpi9jIFdx
+         lgWwU/Q+ElJlM/0ECmYVhwrgUSnC4QjS7yg8u+y9h0BzhaU9L+prW4ZGaF7tKGk5ugX0
+         +irmlFJ61lP1pETxPyYOOJISpwdQSfsgp/42aVb/UaCMoZOHP2S8xtiT2c27joNSOUGU
+         M5NTjlKs+nXz5w70f6pMS+T2r0GFVi6Pbq8tu1fBDY3CGN01+66cgUhFkFMpwT0X8Jgd
+         bNmw==
+X-Gm-Message-State: AOJu0YxNmFf3oROr3UM/EuMSQNDClyt1OxdREPEvr4G1B6IoN83jePWX
+	oMQI0PHqY/7AqNeFOW7ZRV19SpLh2EBXJs4CMMRa/JKMzKQ+mk2k15bXLti4nlFsBDHDzAg2Ytj
+	yjt0/5KAzFaLeVRbLmzl4sJlHIyzLW3Ou6NrARA==
+X-Google-Smtp-Source: AGHT+IEzehH2Yynt/EG5y4VxYs6FaPKWMrio4WVEdwJ7MoEI0eL7E+yiQcbwFj15WntgERZ8J5uQ0goEuQvfH5QlLNA=
+X-Received: by 2002:a25:2e47:0:b0:dcc:4cdc:e98e with SMTP id
+ b7-20020a252e47000000b00dcc4cdce98emr4286555ybn.5.1710500145700; Fri, 15 Mar
+ 2024 03:55:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <20240314141440.3305802-1-serghox@gmail.com>
+In-Reply-To: <20240314141440.3305802-1-serghox@gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Fri, 15 Mar 2024 11:55:09 +0100
+Message-ID: <CAPDyKFrP1XgJo_zDDunpzb6g8QWo4k3Ye1dJCWBGVvhdprCCkg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
+To: Sergey Khimich <serghox@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	Adrian Hunter <adrian.hunter@intel.com>, Shawn Lin <shawn.lin@rock-chips.com>, 
+	Jyan Chou <jyanchou@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
 
-$(shell ...) expands to the output of the command. It expands to the
-empty string when the command does not print anything to stdout.
-Hence, $(shell mkdir ...) is sufficient and does not need any
-variable assignment in front of it.
+On Thu, 14 Mar 2024 at 15:14, Sergey Khimich <serghox@gmail.com> wrote:
+>
+> Hello!
+>
+> This is implementation of SDHCI CQE support for sdhci-of-dwcmshc driver.
+> For enabling CQE support just set 'supports-cqe' in your DevTree file
+> for appropriate mmc node.
+>
+> Also, while implementing CQE support for the driver, I faced with a problem
+> which I will describe below.
+> According to the IP block documentation CQE works only with "AMDA-2 only"
+> mode which is activated only with v4 mode enabled. I see in dwcmshc_probe()
+> function that v4 mode gets enabled only for 'sdhci_dwcmshc_bf3_pdata'
+> platform data.
+>
+> So my question is: is it correct to enable v4 mode for all platform data
+> if 'SDHCI_CAN_64BIT_V4' bit is set in hw?
+>
+> Because I`m afraid that enabling v4 mode for some platforms could break
+> them down. On the other hand, if host controller says that it can do v4
+> (caps & SDHCI_CAN_64BIT_V4), lets do v4 or disable it manualy by some
+> quirk. Anyway - RFC.
+>
 
-Commit c2bd08ba20a5 ("treewide: remove meaningless assignments in
-Makefiles", 2024-02-23) did this to all of tools/ but ignored in-flight
-changes to tools/testing/selftests/kvm/Makefile, so reapply the change.
+We have just updated the bouncing addresses in MAINTAINERS for Asutosh
+Das and Ritesh Harjani, that also helps maintain cqhci. Would you mind
+re-submitting to allow them to have a look at this too?
+Asutosh Das <quic_asutoshd@quicinc.com>
+Ritesh Harjani <ritesh.list@gmail.com>
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- tools/testing/selftests/kvm/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Kind regards
+Uffe
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 19f5710bb456..741c7dc16afc 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -277,7 +277,7 @@ TEST_DEP_FILES += $(patsubst %.o, %.d, $(LIBKVM_OBJS))
- TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TEST_GEN_OBJ))
- -include $(TEST_DEP_FILES)
- 
--x := $(shell mkdir -p $(sort $(OUTPUT)/$(ARCH_DIR) $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
-+$(shell mkdir -p $(sort $(OUTPUT)/$(ARCH_DIR) $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
- 
- $(filter-out $(SPLIT_TEST_GEN_PROGS), $(TEST_GEN_PROGS)) \
- $(TEST_GEN_PROGS_EXTENDED): %: %.o
-@@ -309,7 +309,7 @@ $(LIBKVM_S_OBJ): $(OUTPUT)/%.o: %.S $(GEN_HDRS)
- $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
- 	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c -ffreestanding $< -o $@
- 
--x := $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
-+$(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
- $(SPLIT_TEST_GEN_OBJ): $(GEN_HDRS)
- $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
- $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
--- 
-2.39.1
-
+>
+> v2:
+>  - Added dwcmshc specific cqe_disable hook to prevent losing
+>    in-flight cmd when an ioctl is issued and cqe_disable is called;
+>
+>  - Added processing 128Mb boundary for the host memory data buffer size
+>    and the data buffer. For implementing this processing an extra
+>    callback is added to the struct 'sdhci_ops'.
+>
+>  - Fixed typo.
+>
+> v3:
+>  - Fix warning reported by kernel test robot:
+>         | Reported-by: kernel test robot <lkp@intel.com>
+>         | Closes: https://lore.kernel.org/oe-kbuild-all/202309270807.VoVn81m6-lkp@intel.com/
+>         | Closes: https://lore.kernel.org/oe-kbuild-all/202309300806.dcR19kcE-lkp@intel.com/
+>
+> v4:
+>  - Data reset moved to custom driver tuning hook.
+>  - Removed unnecessary dwcmshc_sdhci_cqe_disable() func
+>  - Removed unnecessary dwcmshc_cqhci_set_tran_desc. Export and use
+>    cqhci_set_tran_desc() instead.
+>  - Provide a hook for cqhci_set_tran_desc() instead of cqhci_prep_tran_desc().
+>  - Fix typo: int_clok_disable --> int_clock_disable
+>
+> v5:
+>  - Fix warning reported by kernel test robot:
+>         | Reported-by: kernel test robot <lkp@intel.com>
+>         | Closes: https://lore.kernel.org/oe-kbuild-all/202312301130.itEZhhI5-lkp@intel.com/
+>
+> v6:
+>  - Rebase to master branch
+>  - Fix typo;
+>  - Fix double blank line;
+>  - Add cqhci_suspend() and cqhci_resume() functions
+>    to support mmc suspend-to-ram (s2r);
+>  - Move reading DWCMSHC_P_VENDOR_AREA2 register under "supports-cqe"
+>    condition as not all IPs have that register;
+>  - Remove sdhci V4 mode from the list of prerequisites to init cqhci.
+>
+>
+> Sergey Khimich (2):
+>   mmc: cqhci: Add cqhci set_tran_desc() callback
+>   mmc: sdhci-of-dwcmshc: Implement SDHCI CQE support
+>
+>  drivers/mmc/host/Kconfig            |   1 +
+>  drivers/mmc/host/cqhci-core.c       |  11 +-
+>  drivers/mmc/host/cqhci.h            |   4 +
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 188 +++++++++++++++++++++++++++-
+>  4 files changed, 199 insertions(+), 5 deletions(-)
+>
+> --
+> 2.30.2
+>
 
