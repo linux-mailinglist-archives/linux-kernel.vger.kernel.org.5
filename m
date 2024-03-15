@@ -1,99 +1,142 @@
-Return-Path: <linux-kernel+bounces-104573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFF687D02C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:25:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D763487CFE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:13:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22BDF1F238CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:25:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98DF7282C21
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA5E405FD;
-	Fri, 15 Mar 2024 15:24:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D056B405FF;
-	Fri, 15 Mar 2024 15:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2EF13D564;
+	Fri, 15 Mar 2024 15:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N6Ih6V2v"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF9C17BA7;
+	Fri, 15 Mar 2024 15:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710516281; cv=none; b=NK3n9LiAd8lXor5LKRxwRMEx8xrPulZ4keUswZCuH8o+p7XfRccHbYVrb9UIdMR/gpFunMcedd0WftRS0tcfFe6kMD4kNaoNdwNhSbgSOucy75uf5QS6aVdy64mDHKp1kDzgzruLCqKYBOKtsnhCuIQTY/35tR8JgHTkMlizmeM=
+	t=1710515582; cv=none; b=Bc4pcx7Et8n924OTZWLA1552cCwVxLWCQmiu8DI4YxkNahcqQf2I+/g1YltrXYOvxQSSLEKA6MI7bvjRB4137BY5nXkAtA+PRb8RMzxUzGhVG2i5R0et3YakUCgddiF72vzfWuopTD+nlLPDaNtxbj2Ua16GXo2rNH0oEKAUsCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710516281; c=relaxed/simple;
-	bh=tvtPqHTyHAvq5sNabGjdAHpevyZoKTYNDRZhl/bZKTY=;
+	s=arc-20240116; t=1710515582; c=relaxed/simple;
+	bh=HevPeEt1n/5IdiWWS/kAj3weJV3b6ArXiNFyiPEDvn8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I0hDFsYnFV++GN7OjEAHtZH160x8GoDLbdcl0EPfOO4PAheh1T1JkGzBDsm/8LL+L1Pc4zQgWcDxnC4UJqAl9Nlo4t3Ye5rdFG1Hl5lUN4J5FedkqUXHHdoBbA8hAKCXFl0zHjCYArYsbbLG4mY9Z/4nOkk24Ph+HhdUgfJr5t4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B10B3C15;
-	Fri, 15 Mar 2024 08:25:12 -0700 (PDT)
-Received: from bogus (unknown [10.57.81.245])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EDD23F73F;
-	Fri, 15 Mar 2024 08:24:34 -0700 (PDT)
-Date: Fri, 15 Mar 2024 15:24:31 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Maulik Shah <quic_mkshah@quicinc.com>, andersson@kernel.org,
-	Sudeep Holla <sudeep.holla@arm.com>, ulf.hansson@linaro.org,
-	swboyd@chromium.org, wingers@google.com, daniel.lezcano@linaro.org,
-	rafael@kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	jwerner@chromium.org, quic_lsrao@quicinc.com,
-	quic_rjendra@quicinc.com, devicetree@vger.kernel.org,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Rob Clark <robdclark@chromium.org>
-Subject: Re: [RESEND v4 3/3] arm64: dts: qcom: sc7280: Add power-domains for
- cpuidle states
-Message-ID: <20240315152431.sckqhc6ri63blf2g@bogus>
-References: <20230703085555.30285-1-quic_mkshah@quicinc.com>
- <20230703085555.30285-4-quic_mkshah@quicinc.com>
- <CAD=FV=XWH+Eoa9XjDns--NSDTZHeUwTdrX_r_QZhSPpbZNwz+w@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lg4AmqQUM2oZB1vu80StAiVCWXlPkkp9DXRQp7y7giy55tD6tERtjyuKcMal9j/Q6nwXoEohSqR6J1Kkc4PurMTSc5JXgwFHdmBR26r0hmnEqq+KGnM0n1qqPrjaZERwIM9MfjfnFCRm0PZTR3pnVh0L5uDOsZRr7XZA0xk/MaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N6Ih6V2v; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710515580; x=1742051580;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HevPeEt1n/5IdiWWS/kAj3weJV3b6ArXiNFyiPEDvn8=;
+  b=N6Ih6V2vrFDE0WBjBa0UDdm9UYxexMetpahMbuio7i1syZrxS2f/+3QL
+   wl/JLLD7Nd+RIrChXWPeT5sRGhw2IcuddMpfJgJ/j1Yc/N/VRG8c2IvXX
+   PeRvXZKJPIh6pjas+N6d+fs6mC86octf+esmc75k/51thte1dq99+Ad0+
+   7Mjd+Q5tmnbRuIGnUINdL4wjWERIN+FSPcJROLsytLhFQ0WB4E7adUh8W
+   lRBpa0f9obF74kL7ysgRL+6xvVc+5/DSI7yjkOvdd9qD84SpjbcDkgRQV
+   u1z2+uARwX95NiiQPYc/h7JuFic2/Nbrigknh6WKB6ndwOMRbcu3bzXzo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="15939466"
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="15939466"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 08:12:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="12613090"
+Received: from liuzhao-optiplex-7080.sh.intel.com (HELO localhost) ([10.239.160.36])
+  by fmviesa007.fm.intel.com with ESMTP; 15 Mar 2024 08:12:55 -0700
+Date: Fri, 15 Mar 2024 23:26:46 +0800
+From: Zhao Liu <zhao1.liu@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, Shan Kang <shan.kang@intel.com>,
+	Kai Huang <kai.huang@intel.com>, Xin Li <xin3.li@intel.com>
+Subject: Re: [PATCH v6 5/9] KVM: VMX: Track CPU's MSR_IA32_VMX_BASIC as a
+ single 64-bit value
+Message-ID: <ZfRotvcaNUft4H4/@intel.com>
+References: <20240309012725.1409949-1-seanjc@google.com>
+ <20240309012725.1409949-6-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=XWH+Eoa9XjDns--NSDTZHeUwTdrX_r_QZhSPpbZNwz+w@mail.gmail.com>
+In-Reply-To: <20240309012725.1409949-6-seanjc@google.com>
 
-On Thu, Mar 14, 2024 at 04:20:59PM -0700, Doug Anderson wrote:
-> Hi,
+Hi Sean,
+
+On Fri, Mar 08, 2024 at 05:27:21PM -0800, Sean Christopherson wrote:
+> Date: Fri,  8 Mar 2024 17:27:21 -0800
+> From: Sean Christopherson <seanjc@google.com>
+> Subject: [PATCH v6 5/9] KVM: VMX: Track CPU's MSR_IA32_VMX_BASIC as a
+>  single 64-bit value
+> X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 > 
-> On Mon, Jul 3, 2023 at 1:56 AM Maulik Shah <quic_mkshah@quicinc.com> wrote:
-> >
-> > Add power-domains for cpuidle states to use psci os-initiated idle states.
-> >
-> > Cc: devicetree@vger.kernel.org
-> > Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 98 +++++++++++++++++++++-------
-> >  1 file changed, 73 insertions(+), 25 deletions(-)
+> Track the "basic" capabilities VMX MSR as a single u64 in vmcs_config
+> instead of splitting it across three fields, that obviously don't combine
+> into a single 64-bit value, so that KVM can use the macros that define MSR
+> bits using their absolute position.  Replace all open coded shifts and
+> masks, many of which are relative to the "high" half, with the appropriate
+> macro.
 > 
-> FWIW, I dug up an old sc7280-herobrine board to test some other change
-> and found it no longer booted. :( I bisected it and this is the change
-> that breaks it. Specifically, I can make mainline boot with:
+> Opportunistically use VMX_BASIC_32BIT_PHYS_ADDR_ONLY instead of an open
+> coded equivalent, and clean up the related comment to not reference a
+> specific SDM section (to the surprise of no one, the comment is stale).
 > 
-> git revert --no-edit db5d137e81bc # arm64: dts: qcom: sc7280: Update
-> domain-idle-states for cluster sleep
-> git revert --no-edit 7925ca85e956 # arm64: dts: qcom: sc7280: Add
-> power-domains for cpuidle states
->
+> No functional change intended (though obviously the code generation will
+> be quite different).
+> 
+> Cc: Shan Kang <shan.kang@intel.com>
+> Cc: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> [sean: split to separate patch, write changelog]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/vmx.h      |  5 +++++
+>  arch/x86/kvm/vmx/capabilities.h |  6 ++----
+>  arch/x86/kvm/vmx/vmx.c          | 28 ++++++++++++++--------------
+>  3 files changed, 21 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> index c3a97dca4a33..ce6d166fc3c5 100644
+> --- a/arch/x86/include/asm/vmx.h
+> +++ b/arch/x86/include/asm/vmx.h
+> @@ -150,6 +150,11 @@ static inline u32 vmx_basic_vmcs_size(u64 vmx_basic)
+>  	return (vmx_basic & GENMASK_ULL(44, 32)) >> 32;
 
-IIRC, this could be issue with psci firmware. There were some known
-issues which were discussed few years back but I am not aware of the
-details and if/how it is applicable here.
+Maybe we could use VMX_BASIC_VMCS_SIZE_SHIFT to replace "32"?
 
-Not sure if you are getting any logs during the boot, if you do have
-worth look at logs related to PSCI/OSI/Idle/...
+>  }
+>  
+> +static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
+> +{
+> +	return (vmx_basic & GENMASK_ULL(53, 50)) >> 50;
+> +}
+> +
 
--- 
-Regards,
-Sudeep
+Also here, we can use VMX_BASIC_MEM_TYPE_SHIFT to replace "50".
+
+And what about defining VMX_BASIC_MEM_TYPE_MASK to replace
+GENMASK_ULL(53, 50), and VMX_BASIC_VMCS_SIZE_MSAK to replace
+GENMASK_ULL(44, 32) above?
+
+Thanks,
+Zhao
+
 
