@@ -1,387 +1,244 @@
-Return-Path: <linux-kernel+bounces-104364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6B7387CCA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:45:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DDAE87CCC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:46:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DDF4B21C34
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:45:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AE842836C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074231BC22;
-	Fri, 15 Mar 2024 11:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED39D1C695;
+	Fri, 15 Mar 2024 11:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MwAvTPay"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="McITOoD1"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B481BC59;
-	Fri, 15 Mar 2024 11:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EDD1B805;
+	Fri, 15 Mar 2024 11:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710503124; cv=none; b=V9hD6SxiOm0iIyQgUDJIxJmHkKG99hr29x8nJHNgCI1+biW+vdmm56y5sWAOnWDYL0o32JdfDMYkJrPh0GrOniudd4x0pfvJ/bHF9vHRbKJ6GSuSFG4XOsxZGtSCuco97GzOtShbFoutQhHGA+hxFiT60lwfF5dHoDVtvMP/7DE=
+	t=1710503196; cv=none; b=SUn37Ia+lOTkeEjUAdWTRRlsRilFRPf3jr781dtWBnFvGEB3l/2yjXViv3/eczg6qjHi6lKtCrFOPHWWd4KROSsUug5BEGO/RTofTt6f+PTuV5jgVfp29n4f+kofWaK5Da4j0Y/0kmO3pacRVd+l0XrxOKh5NBr2QZje834E7iI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710503124; c=relaxed/simple;
-	bh=xADKVOnSLQ/eSoxk0F4pbiiTRO2FBYoibk1GxdCL7Ug=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UFpIZAM3G/V6LH5nmJlrGlN0Ge+oON62uEtKOXuGkvt8K2siTMGd7sMNDRuF3Et6J5CXzutgX8gwqX9FSY0whfGhZAdwCb9yPc4x9/ZLZYTa6cLGXWrxqnfIurcSTQFZlKMHRxZ7R2vbRmKX38GlHP79tKodKdma8KH0zlTpNds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MwAvTPay; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9CFDBE0005;
-	Fri, 15 Mar 2024 11:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710503120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0kqNtL6G3XJ3YlpCpRDs+8Ulm0OGWV3L8/ec8/EvgA=;
-	b=MwAvTPaym4uwlN1C1EKgYc3IKFvTxnhIr+kXMPITBXU9heEQTwKc5yqIMpdk4aDLrsHsFr
-	EMDVVDpRFOb71CDe8L7p5WJkkCEUlEj07gGU1kjv7/NSUeCrpkPEIKkEGMZgLlZx70O7LF
-	F4JTHrNdYsnCy0kGE/VSaK8rjaVTOS4f5+gVih9kw3MDFbYvhLwXKDjTYk+lpyY9tRGfdj
-	OrTvX+x2Tw+5/DFixsU306TRTcsuszxO1Pvrx10j1ycpHpRK96t2KP3baGsi7Bp9Q78tr0
-	MJdjRBo3stvEKHJL9Dj74IHYauC5nn3YgYYKHN9HfT5mzCJ/K0K+uqEuK4Y8rA==
-Date: Fri, 15 Mar 2024 12:45:17 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, broonie@kernel.org,
- robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- richard@nod.at, vigneshr@ti.com, manivannan.sadhasivam@linaro.org,
- neil.armstrong@linaro.org, daniel@makrotopia.org, arnd@arndb.de,
- chris.packham@alliedtelesis.co.nz, christophe.kerello@foss.st.com,
- linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, quic_srichara@quicinc.com,
- quic_varada@quicinc.com
-Subject: Re: [PATCH v4 2/5] drivers: mtd: nand: Add qpic_common API file
-Message-ID: <20240315124517.4a546ce9@xps-13>
-In-Reply-To: <20240308091752.16136-3-quic_mdalam@quicinc.com>
-References: <20240308091752.16136-1-quic_mdalam@quicinc.com>
-	<20240308091752.16136-3-quic_mdalam@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710503196; c=relaxed/simple;
+	bh=VZMYtqfs6hu3j6sEtqmhf7RBOwHd3RT2KLrTrS7SDHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=efxos+M5fLXcTpijLojiC9fM4w0XJg6xN204t7lgT3HVT3ft2fdSNGbtDmR2afhS8yIihaPMq4ndUINnMPN6avuPv0u0yiCIZ191LmnTLSzbyXqvpJz4NNCXFNBMHZX5FzSZ1d4Z1TkeOhSspBzopyUNbbr9NxjwfF37JbkNKY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=McITOoD1; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1710503142; x=1711107942; i=deller@gmx.de;
+	bh=7qGxCcL79dacW1v0qhsaH7joRGKSBJXder9Wljx7Ons=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=McITOoD1wQOPR5qsD5lJhrmT4u/2I6i5oTsCyoNQ+HyXnnYr9lHABJxJNEfBVmE1
+	 bnJ1MnmdGbKRpaekbFqJ1Sc+YOT1phsYE+jnd8d6asLVVMKrY40M8xgREptIDnbvH
+	 y2mErimBTccXiuWpmxUyFOdhtGVN+4463Qd0hpgSpmcplUGnYfMiAp+tngIYhhhNY
+	 pTEncmqpqTVo8ts2zW4JmtQY4Lbszh3JX7Wwh1SGisRNpGW+I3Ws6naI1vcEx94jS
+	 in2nmK4ujOjNzcgmIbahRICBxVzYe1HEkJgrelpkTzJ9xyTl7FxGwxIDRdG1Cv2cw
+	 feVm70l0GQvaQdmRfQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([94.134.155.107]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mo6ux-1r1oxZ2Eln-00pdXJ; Fri, 15
+ Mar 2024 12:45:42 +0100
+Message-ID: <d6436a8f-a1d3-421c-a5e0-5bebd18134bf@gmx.de>
+Date: Fri, 15 Mar 2024 12:45:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/14] parisc: Add support for suppressing warning
+ backtraces
+Content-Language: en-US
+To: Guenter Roeck <linux@roeck-us.net>, linux-kselftest@vger.kernel.org
+Cc: David Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>, Kees Cook <keescook@chromium.org>,
+ Daniel Diaz <daniel.diaz@linaro.org>, David Gow <davidgow@google.com>,
+ Arthur Grillo <arthurgrillo@riseup.net>,
+ Brendan Higgins <brendan.higgins@linux.dev>,
+ Naresh Kamboju <naresh.kamboju@linaro.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Maxime Ripard
+ <mripard@kernel.org>, =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?=
+ <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
+ kunit-dev@googlegroups.com, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ loongarch@lists.linux.dev, netdev@lists.linux.dev
+References: <20240312170309.2546362-1-linux@roeck-us.net>
+ <20240312170309.2546362-11-linux@roeck-us.net>
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20240312170309.2546362-11-linux@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Provags-ID: V03:K1:qslnWwQiqg/DP5uqDNLV3ORiPULWbHV951NE0QBTZs+dRkfEELc
+ Ui2EMTRqay5IFJgqBwNMOkZVxe2c2qIfhYvjWW11LmmVcUomylCerubebwaET5SdJ38HAfD
+ biq5BtQDRRP7q1ov0JwyIPdpf3SRZ5rDbJ6vwSOAbcLsxrExJtjMmO4CHxfr09ugU+u+RTP
+ QxkoLU7U56gOrWo57hroQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:wcEf58u/OD8=;/Vsuh9wNc66rAcyGNGklDP7P14y
+ /KBt0M11EmbCmzLloMdXx4rUW/NT78LYr0GB36xaGvqIn+7+J10HViYMoBef4puW+1Zy+ERmU
+ uCXPBCihgVu3H/tHpbrx7bQVb06U4Fe3PY9DeOnQN/AUubRpBj2Rs4xe7Rklg9dw2ak6y+FDH
+ p6J2fQ/4hN/oaJv4Q0RYeZ2c+7Gsj9OcOVk5yv2q9P5gbpwbCrz+zdvIgeqV0IWNePAXeGLDZ
+ Knwkvjmpt4FHk6T6GRU4nHOKpcR139cvr2sNU1GNyYLwU6LZmOtm8Knrm2XY0W4/z3Yz/QAUZ
+ 8NtDanG36laI9TlZEesDorYKUVcjiZLhO/SW+ejfUMU5w11qdv5iouwWykFJjScDCk2rTsKyP
+ Ob/kkVyAkyZpQBV6eWLvvkxksEdC8e+kBpMuB4zA/7SAuNwm8muKntfI2AP/nHnmMPmJVDgpS
+ R957ToiHNzK38Im3ZMOOvrxjeHFQPGcJSI16olUHuvsUqbU8e7DCw3ZbDUub7HAizDcjnT1To
+ YYIzxaQC4VoEQfmXNYZLQTFN7E0Y7NfVdNAgFho96LriyB+oNgtLnz2CHpPtxLbr0Cw6fx9P3
+ i5SQarSEbvdxpOjqBmI4m1AVvAaJ9M0+aZ8Bntm8DFLec27wgKSKsaxIgy01c089l/7pD0787
+ enyXVSs1ynlfngUb7TBdFbbaxID7J+fg/jdqQ2Qh2ej5EI6n8+19vo0FOS5YP4EE+1vARK9FA
+ /6h5HW8J6ILML8R/YmYavoxbPMJ+ayDR53mwD0Prwij9SmhTtbk+2zLY5cRUJuXCQQAXWgikZ
+ Bi6lPrjOdd/CuHHo38k1VOtLEpGzkK7j/EfuuR6AghFNI=
 
-Hello,
+On 3/12/24 18:03, Guenter Roeck wrote:
+> Add name of functions triggering warning backtraces to the __bug_table
+> object section to enable support for suppressing WARNING backtraces.
+>
+> To limit image size impact, the pointer to the function name is only add=
+ed
+> to the __bug_table section if both CONFIG_KUNIT and CONFIG_DEBUG_BUGVERB=
+OSE
+> are enabled. Otherwise, the __func__ assembly parameter is replaced with=
+ a
+> (dummy) NULL parameter to avoid an image size increase due to unused
+> __func__ entries (this is necessary because __func__ is not a define but=
+ a
+> virtual variable).
+>
+> While at it, declare assembler parameters as constants where possible.
+> Refine .blockz instructions to calculate the necessary padding instead
+> of using fixed values.
+>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-> +/**
-> + * qcom_qpic_bam_dma_done() - Callback for DMA descriptor completion
-> + * @data: data pointer
-> + *
-> + * This function is a callback for DMA descriptor completion
-> + */
-> +void qcom_qpic_bam_dma_done(void *data)
-> +{
-> +	struct bam_transaction *bam_txn =3D data;
+
+Acked-by: Helge Deller <deller@gmx.de>
+
+Helge
+
+
+> ---
+>   arch/parisc/include/asm/bug.h | 29 +++++++++++++++++++++--------
+>   1 file changed, 21 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/parisc/include/asm/bug.h b/arch/parisc/include/asm/bug=
+h
+> index 833555f74ffa..792dacc2a653 100644
+> --- a/arch/parisc/include/asm/bug.h
+> +++ b/arch/parisc/include/asm/bug.h
+> @@ -23,8 +23,17 @@
+>   # define __BUG_REL(val) ".word " __stringify(val)
+>   #endif
+>
+> -
+>   #ifdef CONFIG_DEBUG_BUGVERBOSE
 > +
-> +	/*
-> +	 * In case of data transfer with NAND, 2 callbacks will be generated.
-> +	 * One for command channel and another one for data channel.
-> +	 * If current transaction has data descriptors
-> +	 * (i.e. wait_second_completion is true), then set this to false
-> +	 * and wait for second DMA descriptor completion.
-> +	 */
-> +	if (bam_txn->wait_second_completion)
-> +		bam_txn->wait_second_completion =3D false;
-> +	else
-> +		complete(&bam_txn->txn_done);
-
-Can't you just call "wait" and "complete" twice? It's supposed to be
-handled by the API. This is totally racy.
-
-> +}
+> +#if IS_ENABLED(CONFIG_KUNIT)
+> +# define HAVE_BUG_FUNCTION
+> +# define __BUG_FUNC_PTR	__BUG_REL(%c1)
+> +# define __BUG_FUNC	__func__
+> +#else
+> +# define __BUG_FUNC_PTR
+> +# define __BUG_FUNC	NULL
+> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
 > +
-> +/**
-> + * qcom_nandc_read_buffer_sync() - Check for dma sync for cpu or device
-> + * @nandc: qpic nand controller
-> + * @is_cpu: cpu or Device
+>   #define BUG()								\
+>   	do {								\
+>   		asm volatile("\n"					\
+> @@ -33,10 +42,12 @@
+>   			     "\t.align 4\n"				\
+>   			     "2:\t" __BUG_REL(1b) "\n"			\
+>   			     "\t" __BUG_REL(%c0)  "\n"			\
+> -			     "\t.short %1, %2\n"			\
+> -			     "\t.blockz %3-2*4-2*2\n"			\
+> +			     "\t" __BUG_FUNC_PTR  "\n"			\
+> +			     "\t.short %c2, %c3\n"			\
+> +			     "\t.blockz %c4-(.-2b)\n"			\
+>   			     "\t.popsection"				\
+> -			     : : "i" (__FILE__), "i" (__LINE__),	\
+> +			     : : "i" (__FILE__), "i" (__BUG_FUNC),	\
+> +			     "i" (__LINE__),				\
+>   			     "i" (0), "i" (sizeof(struct bug_entry)) );	\
+>   		unreachable();						\
+>   	} while(0)
+> @@ -58,10 +69,12 @@
+>   			     "\t.align 4\n"				\
+>   			     "2:\t" __BUG_REL(1b) "\n"			\
+>   			     "\t" __BUG_REL(%c0)  "\n"			\
+> -			     "\t.short %1, %2\n"			\
+> -			     "\t.blockz %3-2*4-2*2\n"			\
+> +			     "\t" __BUG_FUNC_PTR  "\n"			\
+> +			     "\t.short %c2, %3\n"			\
+> +			     "\t.blockz %c4-(.-2b)\n"			\
+>   			     "\t.popsection"				\
+> -			     : : "i" (__FILE__), "i" (__LINE__),	\
+> +			     : : "i" (__FILE__), "i" (__BUG_FUNC),	\
+> +			     "i" (__LINE__),				\
+>   			     "i" (BUGFLAG_WARNING|(flags)),		\
+>   			     "i" (sizeof(struct bug_entry)) );		\
+>   	} while(0)
+> @@ -74,7 +87,7 @@
+>   			     "\t.align 4\n"				\
+>   			     "2:\t" __BUG_REL(1b) "\n"			\
+>   			     "\t.short %0\n"				\
+> -			     "\t.blockz %1-4-2\n"			\
+> +			     "\t.blockz %c1-(.-2b)\n"			\
+>   			     "\t.popsection"				\
+>   			     : : "i" (BUGFLAG_WARNING|(flags)),		\
+>   			     "i" (sizeof(struct bug_entry)) );		\
 
-? the naming is really strange dev_to_mem or something like that would
-probably be more helpful.
-
-> + *
-> + * This function will check for dma sync for cpu or device
-> + */
-> +void qcom_nandc_read_buffer_sync(struct qcom_nand_controller *nandc,
-> +				 bool is_cpu)
-> +{
-> +	if (!nandc->props->is_bam)
-> +		return;
-> +
-> +	if (is_cpu)
-> +		dma_sync_single_for_cpu(nandc->dev, nandc->reg_read_dma,
-> +					MAX_REG_RD *
-> +					sizeof(*nandc->reg_read_buf),
-> +					DMA_FROM_DEVICE);
-> +	else
-> +		dma_sync_single_for_device(nandc->dev, nandc->reg_read_dma,
-> +					   MAX_REG_RD *
-> +					   sizeof(*nandc->reg_read_buf),
-> +					   DMA_FROM_DEVICE);
-> +}
-> +
-> +/**
-> + * qcom_offset_to_nandc_reg() - Get the actual offset
-> + * @regs: pointer to nandc_reg structure
-> + * @offset: register offset
-> + *
-> + * This function will reurn the actual offset for qpic controller regist=
-er
-> + */
-> +__le32 *qcom_offset_to_nandc_reg(struct nandc_regs *regs, int offset)
-> +{
-> +	switch (offset) {
-> +	case NAND_FLASH_CMD:
-> +		return &regs->cmd;
-> +	case NAND_ADDR0:
-> +		return &regs->addr0;
-> +	case NAND_ADDR1:
-> +		return &regs->addr1;
-> +	case NAND_FLASH_CHIP_SELECT:
-> +		return &regs->chip_sel;
-> +	case NAND_EXEC_CMD:
-> +		return &regs->exec;
-> +	case NAND_FLASH_STATUS:
-> +		return &regs->clrflashstatus;
-> +	case NAND_DEV0_CFG0:
-> +		return &regs->cfg0;
-> +	case NAND_DEV0_CFG1:
-> +		return &regs->cfg1;
-> +	case NAND_DEV0_ECC_CFG:
-> +		return &regs->ecc_bch_cfg;
-> +	case NAND_READ_STATUS:
-> +		return &regs->clrreadstatus;
-> +	case NAND_DEV_CMD1:
-> +		return &regs->cmd1;
-> +	case NAND_DEV_CMD1_RESTORE:
-> +		return &regs->orig_cmd1;
-> +	case NAND_DEV_CMD_VLD:
-> +		return &regs->vld;
-> +	case NAND_DEV_CMD_VLD_RESTORE:
-> +		return &regs->orig_vld;
-> +	case NAND_EBI2_ECC_BUF_CFG:
-> +		return &regs->ecc_buf_cfg;
-> +	case NAND_READ_LOCATION_0:
-> +		return &regs->read_location0;
-> +	case NAND_READ_LOCATION_1:
-> +		return &regs->read_location1;
-> +	case NAND_READ_LOCATION_2:
-> +		return &regs->read_location2;
-> +	case NAND_READ_LOCATION_3:
-> +		return &regs->read_location3;
-> +	case NAND_READ_LOCATION_LAST_CW_0:
-> +		return &regs->read_location_last0;
-> +	case NAND_READ_LOCATION_LAST_CW_1:
-> +		return &regs->read_location_last1;
-> +	case NAND_READ_LOCATION_LAST_CW_2:
-> +		return &regs->read_location_last2;
-> +	case NAND_READ_LOCATION_LAST_CW_3:
-> +		return &regs->read_location_last3;
-
-Why do you need this indirection?
-
-> +	default:
-> +		return NULL;
-> +	}
-> +}
-> +
-
-..
-
-> +/**
-> + * qcom_clear_bam_transaction() - Clears the BAM transaction
-> + * @nandc: qpic nand controller
-> + *
-> + * This function will clear the BAM transaction indexes.
-> + */
-> +void qcom_clear_bam_transaction(struct qcom_nand_controller *nandc)
-> +{
-> +	struct bam_transaction *bam_txn =3D nandc->bam_txn;
-> +
-> +	if (!nandc->props->is_bam)
-> +		return;
-> +
-> +	bam_txn->bam_ce_pos =3D 0;
-> +	bam_txn->bam_ce_start =3D 0;
-> +	bam_txn->cmd_sgl_pos =3D 0;
-> +	bam_txn->cmd_sgl_start =3D 0;
-> +	bam_txn->tx_sgl_pos =3D 0;
-> +	bam_txn->tx_sgl_start =3D 0;
-> +	bam_txn->rx_sgl_pos =3D 0;
-> +	bam_txn->rx_sgl_start =3D 0;
-> +	bam_txn->last_data_desc =3D NULL;
-> +	bam_txn->wait_second_completion =3D false;
-
-What about using memset here?
-
-> +
-> +	sg_init_table(bam_txn->cmd_sgl, nandc->max_cwperpage *
-> +		      QPIC_PER_CW_CMD_SGL);
-> +	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
-> +		      QPIC_PER_CW_DATA_SGL);
-> +
-> +	reinit_completion(&bam_txn->txn_done);
-> +}
-
-..
-
-> diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nan=
-d-qpic-common.h
-> new file mode 100644
-> index 000000000000..aced15866627
-> --- /dev/null
-> +++ b/include/linux/mtd/nand-qpic-common.h
-> @@ -0,0 +1,486 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * QCOM QPIC common APIs header file
-> + *
-> + * Copyright (c) 2023 Qualcomm Inc.
-> + * Authors:     Md sadre Alam           <quic_mdalam@quicinc.com>
-> + *		Sricharan R             <quic_srichara@quicinc.com>
-> + *		Varadarajan Narayanan   <quic_varada@quicinc.com>
-> + *
-> + */
-> +#ifndef __MTD_NAND_QPIC_COMMON_H__
-> +#define __MTD_NAND_QPIC_COMMON_H__
-> +
-> +#include <linux/bitops.h>
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/dmaengine.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/dma/qcom_adm.h>
-> +#include <linux/dma/qcom_bam_dma.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/mtd/rawnand.h>
-
-You really need this?
-
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +/* NANDc reg offsets */
-> +#define	NAND_FLASH_CMD			0x00
-> +#define	NAND_ADDR0			0x04
-> +#define	NAND_ADDR1			0x08
-> +#define	NAND_FLASH_CHIP_SELECT		0x0c
-> +#define	NAND_EXEC_CMD			0x10
-> +#define	NAND_FLASH_STATUS		0x14
-> +#define	NAND_BUFFER_STATUS		0x18
-> +#define	NAND_DEV0_CFG0			0x20
-> +#define	NAND_DEV0_CFG1			0x24
-> +#define	NAND_DEV0_ECC_CFG		0x28
-> +#define	NAND_AUTO_STATUS_EN		0x2c
-> +#define	NAND_DEV1_CFG0			0x30
-> +#define	NAND_DEV1_CFG1			0x34
-> +#define	NAND_READ_ID			0x40
-> +#define	NAND_READ_STATUS		0x44
-> +#define	NAND_DEV_CMD0			0xa0
-> +#define	NAND_DEV_CMD1			0xa4
-> +#define	NAND_DEV_CMD2			0xa8
-> +#define	NAND_DEV_CMD_VLD		0xac
-> +#define	SFLASHC_BURST_CFG		0xe0
-> +#define	NAND_ERASED_CW_DETECT_CFG	0xe8
-> +#define	NAND_ERASED_CW_DETECT_STATUS	0xec
-> +#define	NAND_EBI2_ECC_BUF_CFG		0xf0
-> +#define	FLASH_BUF_ACC			0x100
-> +
-
-..
-
-> +/*
-> + * This data type corresponds to the NAND controller properties which va=
-ries
-> + * among different NAND controllers.
-> + * @ecc_modes - ecc mode for NAND
-
-Should this member be an enum?
-
-> + * @dev_cmd_reg_start - NAND_DEV_CMD_* registers starting offset
-> + * @is_bam - whether NAND controller is using BAM
-
-has_bam_support? supports_bam?
-
-> + * @is_qpic - whether NAND CTRL is part of qpic IP
-
-CTRL? do you mean controller?
-
-> + * @qpic_v2 - flag to indicate QPIC IP version 2
-> + * @use_codeword_fixup - whether NAND has different layout for boot part=
-itions
-
-The doc is clear but the member name is terrible. Please clarify the
-naming.
-
-> + */
-> +struct qcom_nandc_props {
-> +	u32 ecc_modes;
-> +	u32 dev_cmd_reg_start;
-> +	bool is_bam;
-> +	bool is_qpic;
-> +	bool qpic_v2;
-> +	bool use_codeword_fixup;
-> +};
-> +
-> +void config_nand_page_read(struct nand_chip *chip);
-> +void qcom_qpic_bam_dma_done(void *data);
-> +void qcom_nandc_read_buffer_sync(struct qcom_nand_controller *nandc, boo=
-l is_cpu);
-> +__le32 *qcom_offset_to_nandc_reg(struct nandc_regs *regs, int offset);
-> +int qcom_prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
-> +			   int reg_off, const void *vaddr, int size,
-> +			bool flow_control);
-> +int qcom_submit_descs(struct qcom_nand_controller *nandc);
-> +int qcom_prepare_bam_async_desc(struct qcom_nand_controller *nandc,
-> +				struct dma_chan *chan, unsigned long flags);
-> +int qcom_prep_bam_dma_desc_cmd(struct qcom_nand_controller *nandc, bool =
-read,
-> +			       int reg_off, const void *vaddr,
-> +			int size, unsigned int flags);
-> +int qcom_prep_bam_dma_desc_data(struct qcom_nand_controller *nandc, bool=
- read,
-> +				const void *vaddr,
-> +			int size, unsigned int flags);
-> +int qcom_read_reg_dma(struct qcom_nand_controller *nandc, int first,
-> +		      int num_regs, unsigned int flags);
-> +int qcom_write_reg_dma(struct qcom_nand_controller *nandc, int first,
-> +		       int num_regs, unsigned int flags);
-> +int qcom_read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
-> +		       const u8 *vaddr, int size, unsigned int flags);
-> +int qcom_write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
-> +			const u8 *vaddr, int size, unsigned int flags);
-> +struct bam_transaction *qcom_alloc_bam_transaction(struct qcom_nand_cont=
-roller *nandc);
-> +void qcom_clear_bam_transaction(struct qcom_nand_controller *nandc);
-> +void qcom_nandc_unalloc(struct qcom_nand_controller *nandc);
-> +int qcom_nandc_alloc(struct qcom_nand_controller *nandc);
-> +void qcom_clear_read_regs(struct qcom_nand_controller *nandc);
-> +void qcom_free_bam_transaction(struct qcom_nand_controller *nandc);
-> +#endif
-
-I made several requests on code that already exists, please add these
-changes to your series.
-
-
-Also, this patching being big, please split:
-1- rename your all your symbols to start with the same prefix
-(qcom_nand_ instead of nothing or just qcom)
-2- then perform the move, which should not require changing the names
-of all the functions everywhere.
-
-Thanks,
-Miqu=C3=A8l
 
