@@ -1,222 +1,165 @@
-Return-Path: <linux-kernel+bounces-104786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B9EE87D395
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:29:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B31087D394
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:29:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 984421C21763
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:29:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EF391C21BED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEDD52F8A;
-	Fri, 15 Mar 2024 18:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4888751C2B;
+	Fri, 15 Mar 2024 18:28:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b="D8K8IlPE"
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dJ7Mqpvw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793534F898
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:28:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B4E4F1F8;
+	Fri, 15 Mar 2024 18:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710527338; cv=none; b=pwp/ucMRWY5T1LtXD3KmaPXU33xY093vBWUYJMlw8o15Bf2QFc6hL+N5yOCZ9RcUkHNfiQOz5zfAmX3lAI7LRdQxaHiVe3Mt3E5Ok+vpPp7UDeYuuvLgldIe1Kij8lwP4Y4sM+hbFSYt9Scd7IhXr0S0sz8KA7LBX8xbmYmzsu4=
+	t=1710527336; cv=none; b=lN334V/5qTEv4YC3ReC38e0dcTO89oZqbwerL1me8G3dgEmAGzyXAJcHvs1p46dvzGXfVG95eTf/HsjJwJXFt0DLmcCJBtS6dX6glJNnqZszbQl8/gv4a7idi5pPbw+UUGvkuLNcHtMG70GAi9ntsFwxIwlZHqJzySAA06jOFgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710527338; c=relaxed/simple;
-	bh=ttV9IS7mXHSV0ZtQpCibNPetdR35dyL3P7pVFnt1Rd8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U2XfHcvvc7kPr8XfA7a3QFTeV26KqlXq7qvHEzyypOJCXFcGK0Crf0cqBXtdq+BimqKGDdE2K+wYvK/5K43gbzsWxx6xZ6Wc2M9t3kn9OJV5Okn029vHqlRk6v67MBV4Q5xu/joj6RrC3M7svVVW2tH7zoVq8XVlJ13u35Df5Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com; spf=pass smtp.mailfrom=netflix.com; dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b=D8K8IlPE; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netflix.com
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7c7476a11e0so101503639f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netflix.com; s=google; t=1710527334; x=1711132134; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KfZxqGfm794szzm6SQbZFvEP7H7WQ+NfmahR3rYMEb4=;
-        b=D8K8IlPEXZOu25BFtPybWQ2xEAuj/EIu06ufGthSon+K2097ecUOUzfCT54KET6HPI
-         6XmQblr8Ka3KZRTJtt0kk4Qz+I9+qzNu500tjNatmCefiE5BZKzs2lS0UAt2PMOCMxdo
-         gsBHM2q0VEGN+D/I4vpTJh5TZ7pPhJfc+zfJQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710527334; x=1711132134;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KfZxqGfm794szzm6SQbZFvEP7H7WQ+NfmahR3rYMEb4=;
-        b=fYcFUeqQyHYMIIUZ1Rm0yeZ2GlQAXCE7jw6nM+af2wY99GzN2sn0LZcsniVffxIFEN
-         zEfRW3Z8HXzZi/0GrTkuo3hDOgKETpqH6nOwCZZ0BdQJksfGdp6SpIyN/VNyxjSyntm/
-         rx20dqqZEvEgFK0DDfOP7gCu7n04XbzGQwrN+ouNvRDxoyWYodXvXY+iMg5SjvB1Wbtk
-         qcdpvF3CRCf34vkXngmYNFtwn0iyjzrsVNgHHfXoVhLvgpx1G4Ag70Et3gQ3Ba8UHRPE
-         1Q8JCrewHfUPpTVb3tTITRVqTv+O/YXeSdQDwXZ7hCh3+SI+v3EAINlcfj1Q+ir22Ee2
-         HVxA==
-X-Forwarded-Encrypted: i=1; AJvYcCWfRyGTBcTjSXcDRUsZk+oklTcIFU/l78DZe5GS88FrEyYyoJuR1+C7raz1AUBX44SSw6oqsM65EC30V0WQgM4xe3uqpZA8CzpLRKXM
-X-Gm-Message-State: AOJu0YwFDAXzKZ5fF0UHOZTn7Abu0tOdHi7I521llBQRuhHDsXPJaLSi
-	1CT0aJWng2RwT2j0ULCUuq91LWujXJc2MZHgcKKGt2d/p0ZVZ36Z/aDt3m8v6ms=
-X-Google-Smtp-Source: AGHT+IHT56pFwD1DPWvseGf1YhKPgQoet77lNXaEyjmj1UMSb6H2RIBWlwfZ3LdWLPAnX9PdX7qxJA==
-X-Received: by 2002:a05:6602:4914:b0:7cb:dd4a:428d with SMTP id ef20-20020a056602491400b007cbdd4a428dmr3749532iob.10.1710527334615;
-        Fri, 15 Mar 2024 11:28:54 -0700 (PDT)
-Received: from localhost ([2601:285:8700:8f20:c760:7c0b:344d:cd33])
-        by smtp.gmail.com with UTF8SMTPSA id j1-20020a02a681000000b00476e0c80ec6sm864616jam.93.2024.03.15.11.28.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 11:28:54 -0700 (PDT)
-From: Jose Fernandez <josef@netflix.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Jose Fernandez <josef@netflix.com>,
-	Tycho Andersen <tycho@tycho.pizza>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: add selftest for btf_task_get_cgroup_id
-Date: Fri, 15 Mar 2024 12:28:04 -0600
-Message-Id: <20240315182804.216081-2-josef@netflix.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240315182804.216081-1-josef@netflix.com>
-References: <20240315182804.216081-1-josef@netflix.com>
+	s=arc-20240116; t=1710527336; c=relaxed/simple;
+	bh=Ekhx1lKYY83e5ixwWk+vB7JzXnJuQVvVTUbPByEPsfU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E7mZmSoDcCP9gzNULos21u1t8L0jPIKsV4oRItLlCB1D0vXk0KTVDQDowAwornJfymC1IN8IGzWmkl4qnW9nsydZPlbHUcM/n1FxmNRIZP8Thuvou078ujQfFKShrCPQ0piyEyaLIXnD+aXYuQX1h5GXwqpF/Txk8XKkVROG17o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dJ7Mqpvw; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710527335; x=1742063335;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Ekhx1lKYY83e5ixwWk+vB7JzXnJuQVvVTUbPByEPsfU=;
+  b=dJ7Mqpvwh/3htHIXzKLIyqYp+EPAWFb2H/ckK19hdrP+77yqxLJY4nSp
+   Blph61ybGZEpwZq42XlOtMDfEMiY53ym67hxJeovNKDPWxF2boZ9Ypbhh
+   cbuRAQEBauzPUl8x4c15+Dwx/MAnYzMkoNhGSlaIDQ7lwGmca3weLDIFe
+   akfLtbLctF0pOPTXyPEhu1UZm3alZr+8Yh4mdj7U5moEGtOogSFEIZz3F
+   mLynNBJbVHsxp2aRM6ZVI2T+M4HsPGS35AdM0EODUFX9GC1QQYYtzRrS7
+   nuw8FLHIQND3NKUbSzmKBJVayM6kEpzLOKy/vQ/97YIgTgpAy8I+0IOEI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5544587"
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="5544587"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 11:28:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="17460425"
+Received: from uagu-mobl.amr.corp.intel.com (HELO [10.209.27.9]) ([10.209.27.9])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 11:28:53 -0700
+Message-ID: <ea85f773-b5ef-4cf6-b2bd-2c0e7973a090@intel.com>
+Date: Fri, 15 Mar 2024 11:28:52 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 007/130] x86/virt/tdx: Export SEAMCALL functions
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Kai Huang <kai.huang@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>,
+ "x86@kernel.org" <x86@kernel.org>, Tina Zhang <tina.zhang@intel.com>,
+ Hang Yuan <hang.yuan@intel.com>, Bo2 Chen <chen.bo@intel.com>,
+ "sagis@google.com" <sagis@google.com>,
+ "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+ Erdem Aktas <erdemaktas@google.com>,
+ "pbonzini@redhat.com" <pbonzini@redhat.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <8f64043a6c393c017347bf8954d92b84b58603ec.1708933498.git.isaku.yamahata@intel.com>
+ <e6e8f585-b718-4f53-88f6-89832a1e4b9f@intel.com>
+ <bd21a37560d4d0695425245658a68fcc2a43f0c0.camel@intel.com>
+ <54ae3bbb-34dc-4b10-a14e-2af9e9240ef1@intel.com>
+ <ZfR4UHsW_Y1xWFF-@google.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <ZfR4UHsW_Y1xWFF-@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-This patch adds a selftest for the `bpf_task_get_cgroup_id` kfunc. The
-test focuses on the use case of obtaining the cgroup ID of the previous
-task in a `sched_switch` tracepoint.
+On 3/15/24 09:33, Sean Christopherson wrote:
+>         static inline u64 tdh_mem_page_remove(hpa_t tdr, gpa_t gpa, int level,
+>         				      struct tdx_module_args *out)
+>         {
+>         	struct tdx_module_args in = {
+>         		.rcx = gpa | level,
+>         		.rdx = tdr,
+>         	};
+> 
+>         	return tdx_seamcall_sept(TDH_MEM_PAGE_REMOVE, &in, out);
+>         }
+> 
+> generates the below monstrosity with gcc-13.  And that's just one SEAMCALL wrapper,
+> *every* single one generates the same mess.  clang-16 is kinda sorta a little
+> better, as it at least inlines the helpers that have single callers.
 
-The selftest involves creating a test cgroup, attaching a BPF program
-that utilizes the `bpf_task_get_cgroup_id` during a `sched_switch`
-tracepoint, and validating that the obtained cgroup ID for the previous
-task matches the expected cgroup ID.
+Yeah, that's really awful.
 
-task_get_cgroup_id:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Is all the inlining making the compiler too ambitious?  Why is this all
+inlined in the first place?
 
-Signed-off-by: Jose Fernandez <josef@netflix.com>
-Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
----
- .../bpf/prog_tests/task_get_cgroup_id.c       | 58 +++++++++++++++++++
- .../bpf/progs/test_task_get_cgroup_id.c       | 30 ++++++++++
- 2 files changed, 88 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/task_get_cgroup_id.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_task_get_cgroup_id.c
+tdh_mem_page_remove() _should_ just be logically:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_get_cgroup_id.c b/tools/testing/selftests/bpf/prog_tests/task_get_cgroup_id.c
-new file mode 100644
-index 000000000000..b8c4551195d3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/task_get_cgroup_id.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright 2024 Netflix, Inc.
-+
-+#include <test_progs.h>
-+#include <cgroup_helpers.h>
-+#include "test_task_get_cgroup_id.skel.h"
-+#include <unistd.h>
-+
-+#define TEST_CGROUP "/test-task-get-cgroup-id/"
-+
-+void test_task_get_cgroup_id(void)
-+{
-+	struct test_task_get_cgroup_id *skel;
-+	int err, fd;
-+	pid_t pid;
-+	__u64 cgroup_id, expected_cgroup_id;
-+	const struct timespec req = {
-+		.tv_sec = 1,
-+		.tv_nsec = 0,
-+	};
-+
-+	fd = test__join_cgroup(TEST_CGROUP);
-+	if (!ASSERT_OK(fd < 0, "test_join_cgroup_TEST_CGROUP"))
-+		return;
-+
-+	skel = test_task_get_cgroup_id__open();
-+	if (!ASSERT_OK_PTR(skel, "test_task_get_cgroup_id__open"))
-+		goto cleanup;
-+
-+	err = test_task_get_cgroup_id__load(skel);
-+	if (!ASSERT_OK(err, "test_task_get_cgroup_id__load"))
-+		goto cleanup;
-+
-+	err = test_task_get_cgroup_id__attach(skel);
-+	if (!ASSERT_OK(err, "test_task_get_cgroup_id__attach"))
-+		goto cleanup;
-+
-+	pid = getpid();
-+	expected_cgroup_id = get_cgroup_id(TEST_CGROUP);
-+	if (!ASSERT_GT(expected_cgroup_id, 0, "get_cgroup_id"))
-+		goto cleanup;
-+
-+	/* Trigger nanosleep to enter the sched_switch tracepoint */
-+	/* The previous task should be this process */
-+	syscall(__NR_nanosleep, &req, NULL);
-+
-+	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.pid_to_cgid_map), &pid,
-+				  &cgroup_id);
-+
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(cgroup_id, expected_cgroup_id, "cgroup_id");
-+
-+cleanup:
-+	test_task_get_cgroup_id__destroy(skel);
-+	close(fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_task_get_cgroup_id.c b/tools/testing/selftests/bpf/progs/test_task_get_cgroup_id.c
-new file mode 100644
-index 000000000000..7e6bc008970f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_task_get_cgroup_id.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright 2024 Netflix, Inc.
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+u64 bpf_task_get_cgroup_id(struct task_struct *task) __ksym;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 4096);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} pid_to_cgid_map SEC(".maps");
-+
-+SEC("tp_btf/sched_switch")
-+int BPF_PROG(sched_switch, bool preempt, struct task_struct *prev,
-+	     struct task_struct *next)
-+{
-+	u32 pid = prev->pid;
-+	u64 cgroup_id;
-+
-+	cgroup_id = bpf_task_get_cgroup_id(prev);
-+	bpf_map_update_elem(&pid_to_cgid_map, &pid, &cgroup_id, BPF_ANY);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.40.1
+	* initialize tdx_module_args.  Move a few things into place on
+	  the stack and zero the rest.
+	* Put a pointer to tdx_module_args in a register
+	* Put TDH_MEM_PAGE_REMOVE immediate in a register
+	* Some register preservation, maybe
+	* call
+	* maybe some cleanup
+	* return
 
+Those logical things are *NOT* easy to spot in the disassembly.
 
