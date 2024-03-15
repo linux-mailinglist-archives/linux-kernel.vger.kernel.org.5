@@ -1,252 +1,358 @@
-Return-Path: <linux-kernel+bounces-104213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D266E87CACC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:36:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526AF87CAD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:40:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023DD1C22203
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:36:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03C52283F46
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F289217C6C;
-	Fri, 15 Mar 2024 09:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="l6xpHM69"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E3417C71;
+	Fri, 15 Mar 2024 09:40:18 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F84317C61;
-	Fri, 15 Mar 2024 09:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7BB17C66;
+	Fri, 15 Mar 2024 09:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710495355; cv=none; b=JY41meN/Lh1RXt3SaKEfwXW++xfd+7rLkEJ4nWlBg4oTEsRjye0MXMdDgL2208Fgd/nKV+/khBVrnS8NioU3HJwH2FLNEq4UPbUfpMKwyK/43IiEb3K6LQw9lNKZLLhV5J4qeuKT1Bki5ZJv1BqMNNnZXv44t8r3bZT090K4KIg=
+	t=1710495618; cv=none; b=QUqmTV/rsG4IXrGV4S5zT4I8z/wmsbhHdoe+EKeP6Q+5tLfAGDCQvROZ1Y6rfeqKL2AH+3iUwGCFgwkqh4eJXVfBk2SIaK5axQ0uY0qzpHFnSXtEsVglVHNzw6wGQloKPF2Yidp/6xBVs6yHD5Vt9DLbTNmb7wMKHeW6xmSTjIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710495355; c=relaxed/simple;
-	bh=IGZj8niLOUD7teMx4iptS+sQpMGkLSgrcwjHOtgFJi4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=terdfMjaoiBveQl/eJlAtTzQT5JIeNe4iLso4qurdKO2Z5nqNdao/c+fsR4H+cYHZzuDB+zw3roBPV5u5sloKuwCtKy9RUPlHU9me60LhSR/73TuB26/p/wQXue8l+4eVSIFIFQ/J00FVlQH83/Os0o0sPaTc9ZbwcBqvUvhUKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=l6xpHM69; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710495341; x=1711100141; i=deller@gmx.de;
-	bh=BSFsXVVkqiqnk4vcRljvGoO6ApkWxhy8vwfugbN2UFI=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=l6xpHM69sgOJ3NMGz+1AeZ6EDKi8VKkaLzcmWFu3bmeooMI3wPwGmUxUb/sKECfb
-	 bfzUyDGBmCMa4JwFJHH0Fa82oEEV9UKCXdoWC7xHxeFEP79GRdhiptPTkbcFLq+OT
-	 0K+eU3uuWCtKCU22NHmENBVqC7H0KVRRB0qvBnyQ5guc1YY/8XONeftz/LM6/pG/E
-	 TN7AWEAgiUWGEWNH6zTHkVdhGce0dQJp2CVoJFJFKhh1TlpPaK2F/igEo7GGAN2Wk
-	 JQSqfBdARbouansM/G1RUhh+/ID0tx5rTfI6UFMjARUBhVA7V6Txg/uTSRR8Zc0Vw
-	 /NnsKBLTJTFCMpZj+w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.155.107]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVeMG-1rJfBZ24pA-00RcVT; Fri, 15
- Mar 2024 10:35:41 +0100
-Message-ID: <d7ca4ae3-4bcc-49f0-a819-4ad88907b93c@gmx.de>
-Date: Fri, 15 Mar 2024 10:35:40 +0100
+	s=arc-20240116; t=1710495618; c=relaxed/simple;
+	bh=ZHbeVLAfHZiTs4/exux7+KBrM0d/3hISjFMRW/i22Q8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SCh2kSNNdKX2WzbmPq9hJBE4aTyh+erG1kWrQzFNl68uNHeAVrTrDpCoe/V8bm0Ev9ZjomFBZZLEEoclkSdnRSzuHREjaZPon4PEgIMefMF2dWyq4EyLdcmC89s4R7h5lwyIRhbNEfT1sXnNKr8u2GcwsZ4IwTa7YJiz/p7kl+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TwzgR2Wszz1h2TD;
+	Fri, 15 Mar 2024 17:37:39 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 236C4180062;
+	Fri, 15 Mar 2024 17:40:08 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 15 Mar 2024 17:40:07 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next] RDMA/hns: Support DSCP
+Date: Fri, 15 Mar 2024 17:35:51 +0800
+Message-ID: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fbcon: Increase maximum font width x height to 64 x 64
-Content-Language: en-US
-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- Alexey Gladkov <legion@kernel.org>, Jiry Slaby <jirislaby@kernel.org>
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20240313165934.557879-1-samuel.thibault@ens-lyon.org>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20240313165934.557879-1-samuel.thibault@ens-lyon.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9UMPx34FgMJDlkPgsGQqOWFYUXv9F1RzGoD84LbFXOmKCsKvuyb
- PeZLiSW13Fi5JJsSxr4c7t4DxwRJ6/QpMadAm6yNweRAqxQe4/FDh1QtN/Zqht1RTZmCc77
- ud9Z7tkrxg3pttaYbqf7RzE55SpBJGu9ankVAgFHTKjQSf2bD+JLXV3hVCPoKMfqA03GNQO
- whewmeZOOp6Yep/5TB7BQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dTj5WPzDIcY=;rgvcHdFwjjFrSgt8O3IefyhYJZA
- RqfQbdHr8o/Rc01HBCidMByK+xCJxUYn62E6C1wUxFD6BcELdwc4bCq2dXkKmvDdfqKPQ2gh6
- bwVKiNcuHfAx7RY3Z9l13G9YgD05giyeESNM9msHO3JurypxiYyGPd46my7EMte+zAtt4lHk9
- F4Bz5d7wGbH89lS961gYJ7MTMwHg7F44OmivKsLqMHBevMvruCEz/nToYHj4HhBjAlm4DaygF
- Tb/1CIsBgmo9r6MOlXs4QH/kSHfqckP9dwadfdn3swciK8jrXHDRmpQCylChB7TREXG5kgcs0
- 2oiR2g4IVeA4lb9chd4Gu9rq43j/8qtkW3r0VUT0sYq3NDxnYNDBJaZA3/XqEzqBcKwsXuD7S
- lejLorf3eZqkXqBy3c7Ds2wLoOH9UEJ8GY4VWjf2fJ9wB77gusIbrESYEgLYNUutJdLKKIb5M
- KZbxP4f3ax7cCOKw7fx0aCLVMr7yT9CasCr2ckMUoKyJL6s+Ek+Anr4Q01zMN4xIzzsR54aAf
- UDGk/GiN38A+B4bF6d8m8Ibj4dpDoP7uPa16ADotszBVIHk3fk+BmoJOfxJPlB/PMbeGuwyIe
- RU2CZj94f6FKfi41YTR4frpmLExQzk793Vu+HGISxF5UOa91UJ/2E/v6oouuCp8MwIYeUQjIc
- 6lPBvpSPxm2Spf4bYsIk+BMRKHC5HAr5gzUnqG35AqApM44cyWTAgZEP58OerxOUwe+HbiIVV
- DuB4Ya6WLcV6Bc7ym/qQvKPoM7zRuRzRuo1u1lZiLFFwz4RwXs0gT7XHIC5XXZvDtSSaynMLr
- 4QRdZk++Q7f/FvplOQAraU5LPVQQOzkSVbMmNIRJerFOc=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-You should have marked this patch with "v2"...
+Add support for DSCP configuration. For DSCP, get dscp-prio mapping
+via hns3 nic driver api .get_dscp_prio() and fill the SL (in WQE for
+UD or in QPC for RC) with the priority value. The prio-tc mapping is
+configured to HW by hns3 nic driver. HW will select a corresponding
+TC according to SL and the prio-tc mapping.
 
-On 3/13/24 17:59, Samuel Thibault wrote:
-> This remains relatively simple by just enlarging integers.
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_ah.c     | 32 +++++---
+ drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 86 ++++++++++++++++-----
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 13 ++++
+ include/uapi/rdma/hns-abi.h                 |  9 ++-
+ 5 files changed, 117 insertions(+), 29 deletions(-)
 
-I like the patch, but I still see some u32...
-drivers/video/fbdev/vt8623fb.c:         info->pixmap.blit_x =3D (bpp =3D=
-=3D 4) ? (1 << (8 - 1)) : (~(u32)0);
-drivers/video/fbdev/arkfb.c:            info->pixmap.blit_x =3D (bpp =3D=
-=3D 4) ? (1 << (8 - 1)) : (~(u32)0);
-drivers/video/fbdev/core/fbmem.c:               fb_info->pixmap.blit_x =3D=
- ~(u32)0;
-drivers/video/fbdev/s3fb.c:             info->pixmap.blit_x =3D (bpp =3D=
-=3D 4) ? (1 << (8 - 1)) : (~(u32)0);
-
-And please check blit_y too.
-
-> It wouldn't be that simple to get to the console's 64x128 maximum, as it=
- would
-> require 128b integers.
-
-How realistic are fonts > 64x64 pixels ?
-If they are, using the bitmap_xx functions (include/linux/bitmap.h)
-now instead would be better.
-
-Helge
-
-> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-> ---
->   drivers/video/fbdev/core/fbcon.c | 17 ++++++++++-------
->   include/linux/fb.h               | 10 +++++-----
->   2 files changed, 15 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core=
-/fbcon.c
-> index 46823c2e2ba1..849562f92bd5 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -101,6 +101,9 @@ enum {
->   	FBCON_LOGO_DONTSHOW	=3D -3	/* do not show the logo */
->   };
->
-> +#define FBCON_MAX_FONT_WIDTH	(sizeof(((struct fb_pixmap *) 0)->blit_x) =
-* 8)
-> +#define FBCON_MAX_FONT_HEIGHT	(sizeof(((struct fb_pixmap *) 0)->blit_y)=
- * 8)
-> +
->   static struct fbcon_display fb_display[MAX_NR_CONSOLES];
->
->   static struct fb_info *fbcon_registered_fb[FB_MAX];
-> @@ -2483,12 +2486,12 @@ static int fbcon_set_font(struct vc_data *vc, st=
-ruct console_font *font,
->   	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
->   		return -EINVAL;
->
-> -	if (font->width > 32 || font->height > 32)
-> +	if (font->width > FBCON_MAX_FONT_WIDTH || font->height > FBCON_MAX_FON=
-T_HEIGHT)
->   		return -EINVAL;
->
->   	/* Make sure drawing engine can handle the font */
-> -	if (!(info->pixmap.blit_x & BIT(font->width - 1)) ||
-> -	    !(info->pixmap.blit_y & BIT(font->height - 1)))
-> +	if (!(info->pixmap.blit_x & BIT_ULL(font->width - 1)) ||
-> +	    !(info->pixmap.blit_y & BIT_ULL(font->height - 1)))
->   		return -EINVAL;
->
->   	/* Make sure driver can handle the font length */
-> @@ -3082,8 +3085,8 @@ void fbcon_get_requirement(struct fb_info *info,
->   			vc =3D vc_cons[i].d;
->   			if (vc && vc->vc_mode =3D=3D KD_TEXT &&
->   			    info->node =3D=3D con2fb_map[i]) {
-> -				caps->x |=3D 1 << (vc->vc_font.width - 1);
-> -				caps->y |=3D 1 << (vc->vc_font.height - 1);
-> +				caps->x |=3D 1ULL << (vc->vc_font.width - 1);
-> +				caps->y |=3D 1ULL << (vc->vc_font.height - 1);
->   				charcnt =3D vc->vc_font.charcount;
->   				if (caps->len < charcnt)
->   					caps->len =3D charcnt;
-> @@ -3094,8 +3097,8 @@ void fbcon_get_requirement(struct fb_info *info,
->
->   		if (vc && vc->vc_mode =3D=3D KD_TEXT &&
->   		    info->node =3D=3D con2fb_map[fg_console]) {
-> -			caps->x =3D 1 << (vc->vc_font.width - 1);
-> -			caps->y =3D 1 << (vc->vc_font.height - 1);
-> +			caps->x =3D 1ULL << (vc->vc_font.width - 1);
-> +			caps->y =3D 1ULL << (vc->vc_font.height - 1);
->   			caps->len =3D vc->vc_font.charcount;
->   		}
->   	}
-> diff --git a/include/linux/fb.h b/include/linux/fb.h
-> index 05dc9624897d..2bac166cd3f2 100644
-> --- a/include/linux/fb.h
-> +++ b/include/linux/fb.h
-> @@ -144,8 +144,8 @@ struct fb_event {
->   };
->
->   struct fb_blit_caps {
-> -	u32 x;
-> -	u32 y;
-> +	u64 x;
-> +	u64 y;
->   	u32 len;
->   	u32 flags;
->   };
-> @@ -192,10 +192,10 @@ struct fb_pixmap {
->   	u32 scan_align;		/* alignment per scanline		*/
->   	u32 access_align;	/* alignment per read/write (bits)	*/
->   	u32 flags;		/* see FB_PIXMAP_*			*/
-> -	u32 blit_x;             /* supported bit block dimensions (1-32)*/
-> -	u32 blit_y;             /* Format: blit_x =3D 1 << (width - 1)    */
-> +	u64 blit_x;             /* supported bit block dimensions (1-64)*/
-> +	u64 blit_y;             /* Format: blit_x =3D 1 << (width - 1)    */
->   	                        /*         blit_y =3D 1 << (height - 1)   */
-> -	                        /* if 0, will be set to 0xffffffff (all)*/
-> +	                        /* if 0, will be set to ~0ull (all)     */
->   	/* access methods */
->   	void (*writeio)(struct fb_info *info, void __iomem *dst, void *src, u=
-nsigned int size);
->   	void (*readio) (struct fb_info *info, void *dst, void __iomem *src, u=
-nsigned int size);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
+index b4209b6aed8d..91f7fe0f3235 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_ah.c
++++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
+@@ -59,8 +59,11 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibah->device);
+ 	struct hns_roce_ib_create_ah_resp resp = {};
+ 	struct hns_roce_ah *ah = to_hr_ah(ibah);
+-	int ret = 0;
++	u8 tclass = get_tclass(grh);
++	u8 priority = 0;
++	u8 tc_mode = 0;
+ 	u32 max_sl;
++	int ret;
+ 
+ 	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08 && udata)
+ 		return -EOPNOTSUPP;
+@@ -74,16 +77,23 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+ 	ah->av.hop_limit = grh->hop_limit;
+ 	ah->av.flowlabel = grh->flow_label;
+ 	ah->av.udp_sport = get_ah_udp_sport(ah_attr);
+-	ah->av.tclass = get_tclass(grh);
+-
+-	ah->av.sl = rdma_ah_get_sl(ah_attr);
+-	max_sl = min_t(u32, MAX_SERVICE_LEVEL, hr_dev->caps.sl_num - 1);
+-	if (unlikely(ah->av.sl > max_sl)) {
+-		ibdev_err_ratelimited(&hr_dev->ib_dev,
+-				      "failed to set sl, sl (%u) shouldn't be larger than %u.\n",
+-				      ah->av.sl, max_sl);
++	ah->av.tclass = tclass;
++
++	ret = hr_dev->hw->get_dscp(hr_dev, tclass, &tc_mode, &priority);
++	if (ret == -EOPNOTSUPP)
++		ret = 0;
++
++	if (ret && grh->sgid_attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP)
++		return ret;
++
++	if (tc_mode == HNAE3_TC_MAP_MODE_DSCP &&
++	    grh->sgid_attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP)
++		ah->av.sl = priority;
++	else
++		ah->av.sl = rdma_ah_get_sl(ah_attr);
++
++	if (!check_sl_valid(hr_dev, ah->av.sl))
+ 		return -EINVAL;
+-	}
+ 
+ 	memcpy(ah->av.dgid, grh->dgid.raw, HNS_ROCE_GID_SIZE);
+ 	memcpy(ah->av.mac, ah_attr->roce.dmac, ETH_ALEN);
+@@ -99,6 +109,8 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+ 	}
+ 
+ 	if (udata) {
++		resp.priority = ah->av.sl;
++		resp.tc_mode = tc_mode;
+ 		memcpy(resp.dmac, ah_attr->roce.dmac, ETH_ALEN);
+ 		ret = ib_copy_to_udata(udata, &resp,
+ 				       min(udata->outlen, sizeof(resp)));
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index c3cbd0a494bf..78b4d19ff848 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -645,6 +645,8 @@ struct hns_roce_qp {
+ 	struct hns_user_mmap_entry *dwqe_mmap_entry;
+ 	u32			config;
+ 	enum hns_roce_cong_type	cong_type;
++	u8			tc_mode;
++	u8			priority;
+ };
+ 
+ struct hns_roce_ib_iboe {
+@@ -950,6 +952,8 @@ struct hns_roce_hw {
+ 	int (*query_sccc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
+ 	int (*query_hw_counter)(struct hns_roce_dev *hr_dev,
+ 				u64 *stats, u32 port, int *hw_counters);
++	int (*get_dscp)(struct hns_roce_dev *hr_dev, u8 dscp,
++			u8 *tc_mode, u8 *priority);
+ 	const struct ib_device_ops *hns_roce_dev_ops;
+ 	const struct ib_device_ops *hns_roce_dev_srq_ops;
+ };
+@@ -1292,4 +1296,6 @@ struct hns_user_mmap_entry *
+ hns_roce_user_mmap_entry_insert(struct ib_ucontext *ucontext, u64 address,
+ 				size_t length,
+ 				enum hns_roce_mmap_type mmap_type);
++bool check_sl_valid(struct hns_roce_dev *hr_dev, u8 sl);
++
+ #endif /* _HNS_ROCE_DEVICE_H */
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index ba7ae792d279..4de463e787d4 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -443,10 +443,6 @@ static int fill_ud_av(struct hns_roce_v2_ud_send_wqe *ud_sq_wqe,
+ 	hr_reg_write(ud_sq_wqe, UD_SEND_WQE_HOPLIMIT, ah->av.hop_limit);
+ 	hr_reg_write(ud_sq_wqe, UD_SEND_WQE_TCLASS, ah->av.tclass);
+ 	hr_reg_write(ud_sq_wqe, UD_SEND_WQE_FLOW_LABEL, ah->av.flowlabel);
+-
+-	if (WARN_ON(ah->av.sl > MAX_SERVICE_LEVEL))
+-		return -EINVAL;
+-
+ 	hr_reg_write(ud_sq_wqe, UD_SEND_WQE_SL, ah->av.sl);
+ 
+ 	ud_sq_wqe->sgid_index = ah->av.gid_index;
+@@ -4828,6 +4824,70 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 	return 0;
+ }
+ 
++static int hns_roce_hw_v2_get_dscp(struct hns_roce_dev *hr_dev, u8 dscp,
++				   u8 *tc_mode, u8 *priority)
++{
++	struct hns_roce_v2_priv *priv = hr_dev->priv;
++	struct hnae3_handle *handle = priv->handle;
++	const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
++
++	if (!ops->get_dscp_prio)
++		return -EOPNOTSUPP;
++
++	return ops->get_dscp_prio(handle, dscp, tc_mode, priority);
++}
++
++bool check_sl_valid(struct hns_roce_dev *hr_dev, u8 sl)
++{
++	u32 max_sl;
++
++	max_sl = min_t(u32, MAX_SERVICE_LEVEL, hr_dev->caps.sl_num - 1);
++	if (unlikely(sl > max_sl)) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "failed to set SL(%u). Shouldn't be larger than %u.\n",
++				      sl, max_sl);
++		return false;
++	}
++
++	return true;
++}
++
++static int hns_roce_set_sl(struct ib_qp *ibqp,
++			   const struct ib_qp_attr *attr,
++			   struct hns_roce_v2_qp_context *context,
++			   struct hns_roce_v2_qp_context *qpc_mask)
++{
++	const struct ib_global_route *grh = rdma_ah_read_grh(&attr->ah_attr);
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	u32 sl_num;
++	int ret;
++
++	ret = hns_roce_hw_v2_get_dscp(hr_dev, get_tclass(&attr->ah_attr.grh),
++				      &hr_qp->tc_mode, &hr_qp->priority);
++	if (ret && ret != -EOPNOTSUPP &&
++	    grh->sgid_attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP) {
++		ibdev_err_ratelimited(ibdev,
++				      "failed to get dscp, ret = %d.\n", ret);
++		return ret;
++	}
++
++	if (hr_qp->tc_mode == HNAE3_TC_MAP_MODE_DSCP &&
++	    grh->sgid_attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP)
++		hr_qp->sl = hr_qp->priority;
++	else
++		hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
++
++	if (!check_sl_valid(hr_dev, hr_qp->sl))
++		return -EINVAL;
++
++	hr_reg_write(context, QPC_SL, hr_qp->sl);
++	hr_reg_clear(qpc_mask, QPC_SL);
++
++	return 0;
++}
++
+ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
+ 				const struct ib_qp_attr *attr,
+ 				int attr_mask,
+@@ -4843,25 +4903,18 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
+ 	int is_roce_protocol;
+ 	u16 vlan_id = 0xffff;
+ 	bool is_udp = false;
+-	u32 max_sl;
+ 	u8 ib_port;
+ 	u8 hr_port;
+ 	int ret;
+ 
+-	max_sl = min_t(u32, MAX_SERVICE_LEVEL, hr_dev->caps.sl_num - 1);
+-	if (unlikely(sl > max_sl)) {
+-		ibdev_err_ratelimited(ibdev,
+-				      "failed to fill QPC, sl (%u) shouldn't be larger than %u.\n",
+-				      sl, max_sl);
+-		return -EINVAL;
+-	}
+-
+ 	/*
+ 	 * If free_mr_en of qp is set, it means that this qp comes from
+ 	 * free mr. This qp will perform the loopback operation.
+ 	 * In the loopback scenario, only sl needs to be set.
+ 	 */
+ 	if (hr_qp->free_mr_en) {
++		if (!check_sl_valid(hr_dev, sl))
++			return -EINVAL;
+ 		hr_reg_write(context, QPC_SL, sl);
+ 		hr_reg_clear(qpc_mask, QPC_SL);
+ 		hr_qp->sl = sl;
+@@ -4931,11 +4984,7 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
+ 	memcpy(context->dgid, grh->dgid.raw, sizeof(grh->dgid.raw));
+ 	memset(qpc_mask->dgid, 0, sizeof(grh->dgid.raw));
+ 
+-	hr_qp->sl = sl;
+-	hr_reg_write(context, QPC_SL, hr_qp->sl);
+-	hr_reg_clear(qpc_mask, QPC_SL);
+-
+-	return 0;
++	return  hns_roce_set_sl(ibqp, attr, context, qpc_mask);
+ }
+ 
+ static bool check_qp_state(enum ib_qp_state cur_state,
+@@ -6735,6 +6784,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
+ 	.query_srqc = hns_roce_v2_query_srqc,
+ 	.query_sccc = hns_roce_v2_query_sccc,
+ 	.query_hw_counter = hns_roce_hw_v2_query_counter,
++	.get_dscp = hns_roce_hw_v2_get_dscp,
+ 	.hns_roce_dev_ops = &hns_roce_v2_dev_ops,
+ 	.hns_roce_dev_srq_ops = &hns_roce_v2_dev_srq_ops,
+ };
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index f35a66325d9a..697230f964b1 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1386,6 +1386,7 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		       int attr_mask, struct ib_udata *udata)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_ib_modify_qp_resp resp = {};
+ 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 	enum ib_qp_state cur_state, new_state;
+ 	int ret = -EINVAL;
+@@ -1427,6 +1428,18 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 
+ 	ret = hr_dev->hw->modify_qp(ibqp, attr, attr_mask, cur_state,
+ 				    new_state, udata);
++	if (ret)
++		goto out;
++
++	if (udata && udata->outlen) {
++		resp.tc_mode = hr_qp->tc_mode;
++		resp.priority = hr_qp->sl;
++		ret = ib_copy_to_udata(udata, &resp,
++				       min(udata->outlen, sizeof(resp)));
++		if (ret)
++			ibdev_err_ratelimited(&hr_dev->ib_dev,
++					      "failed to copy modify qp resp.\n");
++	}
+ 
+ out:
+ 	mutex_unlock(&hr_qp->mutex);
+diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+index 158670da2b2a..94e861870e27 100644
+--- a/include/uapi/rdma/hns-abi.h
++++ b/include/uapi/rdma/hns-abi.h
+@@ -109,6 +109,12 @@ struct hns_roce_ib_create_qp_resp {
+ 	__aligned_u64 dwqe_mmap_key;
+ };
+ 
++struct hns_roce_ib_modify_qp_resp {
++	__u8	tc_mode;
++	__u8	priority;
++	__u8	reserved[6];
++};
++
+ enum {
+ 	HNS_ROCE_EXSGE_FLAGS = 1 << 0,
+ 	HNS_ROCE_RQ_INLINE_FLAGS = 1 << 1,
+@@ -143,7 +149,8 @@ struct hns_roce_ib_alloc_pd_resp {
+ 
+ struct hns_roce_ib_create_ah_resp {
+ 	__u8 dmac[6];
+-	__u8 reserved[2];
++	__u8 priority;
++	__u8 tc_mode;
+ };
+ 
+ #endif /* HNS_ABI_USER_H */
+-- 
+2.30.0
 
 
