@@ -1,199 +1,292 @@
-Return-Path: <linux-kernel+bounces-103929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED91087C6A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:06:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E47F87C6AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:08:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A6861C2113E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:06:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C328282A33
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 00:08:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D383749A;
-	Fri, 15 Mar 2024 00:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g5vk295T"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A34EC4;
+	Fri, 15 Mar 2024 00:08:15 +0000 (UTC)
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C02F6FB1;
-	Fri, 15 Mar 2024 00:06:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710461203; cv=fail; b=GQFEbjOP+zLQg6bM1T1OXCVF9g2d3c+fcmhc9GqN/hrbrWFCmTIzTIxvgJ9Zz0ruN8Q6sGrAFVP3BocxbqlVfvN4Ap1zjdV52fEOm/pYAPfCs/5SEI0sl35lj2UYUbI3HH0hIuN5Y08HMvXKX3yojKA7iw/u/QzqZjuVB0a2/pQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710461203; c=relaxed/simple;
-	bh=5XhHFBKwUhOoq2aDyFjL7hGnTuDhuM+aJt8605OpXAQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=OmKi0nRAEHhmLlpsgcJI5nQV4GmbCsVOjh9jc0xUOCBEM8044XT4EDJEqX7cCe1l04dyiiF+yJyimaWoveIcPfeCIWLs6lwW877S+YpeegiDc2U532J45zBFA7EYqTG7aX4P0DZv5fR5janBuBAXTeYb4RYa+waVy0xi1744fYI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g5vk295T; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710461201; x=1741997201;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=5XhHFBKwUhOoq2aDyFjL7hGnTuDhuM+aJt8605OpXAQ=;
-  b=g5vk295TBOBRmYoCGI+iAD17rCtpzn1aI+38qSTfMS2y0v76nYXFOfxU
-   NBo+9vUp8Zz+XWisdQamor80dQgG/JFvwWvGcFx9q04HDqdR6S4TpBRuO
-   oBX1MQo0jKCkQFHqp3fykw3Yn+UGwtZs3lRrBL4MTYqlSk0n3ZsixQS51
-   Xz8L3CxqU6od73TmBVZ5WTFrm0mYGzIeabGSK/CUhTokPMVaUu2I2b5iF
-   GpZU9x2vK2BvpWpFlQDGVWiqhEZOeMWtvYW9UOB22n+VMao8wTgj5cSfy
-   IOlIwwQmIs5GDarAmVGeDOSqeMuJ1g0ikgpS+zU1IzgzNdBo/qPoT6zLv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5518280"
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="5518280"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 17:06:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,126,1708416000"; 
-   d="scan'208";a="12562132"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 17:06:40 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 17:06:40 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 17:06:39 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Mar 2024 17:06:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MAwahonAHDceowJEKbHvz3vZQk0CvJAmQ8pgj7r54CtROwiHIM4CRi5n26J/B78oM1jmcwHQTWtdKMCbx1ZJqJHtbKxLfwkQlSY66g7EVy49N5bLskxuXByoW4emUwHz7mU4M5DRNqft094AfIsFXAJwXhb8a5K4QIfMrp7DZJ0oIX6kxKolFa7VomFQogaUn1cx7WbJwudm1dlJKNzf8sIGy4In1hgbtr2R+8lS5ACmEtSLxi3jen4TMoWpYX7qLsrHg00buuX/cCegGQ8dVE5JC7jutsgAA3SOpD687mf31auUjuhX/ax+bP8CDNy28mRxfssxCk9YE73a7NfWQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5XhHFBKwUhOoq2aDyFjL7hGnTuDhuM+aJt8605OpXAQ=;
- b=I4yIJcufOWiCKVA/xcbjiI9ZKDqT40h7/sp25YHOnuXe1DNTVMuU6SAHhcS4gd/H1Vg1QVEMQXoSxfvg5SpfEot9jaPTWEgV5M1Vgr1jbh4uhlgLT17SMmSd5zlBj4QZ65faJkoCVLe5+U7FmEbtP59hFXcdX8D3UenTuxryssM76NStSHa5xDhunS3cJFprd11AzRWvOo1k+tVfsnxxcGWWdIfv7NzJ5YZg2L1JMBwUuR6xxsIKpvTkOKgdfcerFWhPOlCb+NDMcTjxURNDgqvn1fyp/UrZ6RKyNXDsf+P2IYOLpGbP7/iUV+KdZQI9GGm0e2SFEm//lK12mE9uAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from LV2PR11MB5976.namprd11.prod.outlook.com (2603:10b6:408:17c::13)
- by SA1PR11MB8317.namprd11.prod.outlook.com (2603:10b6:806:38d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.17; Fri, 15 Mar
- 2024 00:06:31 +0000
-Received: from LV2PR11MB5976.namprd11.prod.outlook.com
- ([fe80::4f6f:538b:6c36:92f6]) by LV2PR11MB5976.namprd11.prod.outlook.com
- ([fe80::4f6f:538b:6c36:92f6%7]) with mapi id 15.20.7386.017; Fri, 15 Mar 2024
- 00:06:31 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Yamahata,
- Isaku" <isaku.yamahata@intel.com>
-CC: "Zhang, Tina" <tina.zhang@intel.com>, "seanjc@google.com"
-	<seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>, "Huang, Kai"
-	<kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com"
-	<sagis@google.com>, "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>, "pbonzini@redhat.com"
-	<pbonzini@redhat.com>
-Subject: Re: [PATCH v19 120/130] KVM: TDX: Add a method to ignore dirty
- logging
-Thread-Topic: [PATCH v19 120/130] KVM: TDX: Add a method to ignore dirty
- logging
-Thread-Index: AQHadmyiHbz3BdiqjUa/DQsd0Q/1DQ==
-Date: Fri, 15 Mar 2024 00:06:31 +0000
-Message-ID: <b4cde44a884f2f048987826d59e2054cd1fa532b.camel@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
-	 <1491dd247829bf1a29df1904aeed5ed6b464d29c.1708933498.git.isaku.yamahata@intel.com>
-In-Reply-To: <1491dd247829bf1a29df1904aeed5ed6b464d29c.1708933498.git.isaku.yamahata@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV2PR11MB5976:EE_|SA1PR11MB8317:EE_
-x-ms-office365-filtering-correlation-id: 82fe9d62-48e3-4bde-f202-08dc4483c4d4
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /ijBazQTuDz/6sXPBjzU6ZmRRnTWUYG8VST90KFMCyoo0bL1zVBsQZv0t3u0pqtCcFWDhCe16Ey31iiFBcjIZoWQHeG5yVqVlti6o4sxiUqp8aDZMbwPr65xFINgrCo5HhAS/In5agmztJHFYqAmyYL65cW6i9L4Vo/0JA9pbdEeyJ+WUa9kLAoFI80Y++lvBOxK9/W0cCPl5FLNAerOSnDcw/tr/CCHKC3JsptBl1OZmSHFyno8sZoHnLq2ZHqqdTkobzXsrDgZj8fPhzdkuqgAbD7DYvs3xkL0cz6nUeSE6f/jCopSIazF8uv2BIiHURWwXz3c8VScxTWM8FL57+ceA8i8AFohzsL5hSNxH4EU/q6Tn9mUptu/34ddSK3OboPE5LPlAKDKteIb9CPTONiJtgfGsDwwu2tzA20oXnlCApjRErIOcsILJyiYfZetzi3o3H6q8JfsY+3fvCliMIs2RTn8UgTNSlzJeJ8HFwuFd+FwtHr2jLWpg1ZHivlyeVnqS+EJHK7lfUmLuZXJCx+gR9AmLREbk3incf+7mAC25Lbr9v3CZjLMGHLM4iqktUhbyRScSlpQ0qfFktLUeGUvLw76Or5c8Jd+BK3HgGZghD/okSCJowV1QdSNwCwiDzYlf27EH/yvGMS91SnQylP+XY4UpAL5iC8GiI4vTkVgT7kt609e2hqBoEwCB9Lsaoy7uyqrTMak77rM7+Z/hg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR11MB5976.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NnQwdlN0RCtwekZWbm1TUU8vN0lPcXlqVGpBWFZOWXN2YWZHUjBvNFNDQVRV?=
- =?utf-8?B?YWpLcE1ja2xHTVBmTFc2L1F5cUIrQktidnBmSXZhRnFMOVBjcEFpNnFkMk0z?=
- =?utf-8?B?dS9TS285ZjduOHVMYXFNM1RFbXNrMStZRTFGOXVaaXV2SVBJcUVFay8zRE5G?=
- =?utf-8?B?aGpFN3hNOGZCN3llRGczOWEyM21INHRFQ3RmbDhlK2ZiNTM4Mlpac0JlU0pJ?=
- =?utf-8?B?TUFtaGIvVUIwNEJPcWk5elgzREs3Y3dBckR5NlI4bzdtVE9qSEMxc0FXODNK?=
- =?utf-8?B?WDZDMjVxMFlMUTZReU5zODQ5S2tuNGlGVU1jOUovcXU4QjZ0ei83RkRsZEQ4?=
- =?utf-8?B?WFJvMGpGNDhUMkM2M2VjYm91bHlNQ0ZaT2tkR1pWdzVNVFZZRURvR2MwcFU0?=
- =?utf-8?B?cHBId2NaZVRHaTh2cm4vTGlIOHdsckIxRlhaZGpDUWhYZndSR0dTN05MUUh5?=
- =?utf-8?B?eEVWdkpOSXJMdVphZ3FDZHNCN3pPTmI0VjBoN1pySm85UXNkTWhnYm1GM1lO?=
- =?utf-8?B?cmQ5TmVaNTNsajBlc0lkcXNSUVVlQ3pnamQ4c25uN2dKdklLVzNlaG96aVdr?=
- =?utf-8?B?SVhaZDdIUERIc3ZGZUhZaWRqbzJWVXpBL0hpSnhSSUJ2ODhUbXN3UlZWZ05S?=
- =?utf-8?B?eWNDRllkTDJPUndVRDBHT2VZWjRnNVVSZlJWNVhmTlFJSUMxNzFod3hiUGpp?=
- =?utf-8?B?NVgvamczRnowM2ZzNmFLWkZNTGtwN0QxeXh3NDB1VlRFL1FiWGRwdDR5cWhD?=
- =?utf-8?B?RW9JclpxUWJEZXFJbklRaWt5aGM5Ti9hTGE3czI5d1htS0l3eVA4R3M0b1g0?=
- =?utf-8?B?VjZiaS9mZkhGY0Mxd2c2N0NzT0RMQ1hoQ09ZdW9hemFxYjlGZlJmZU5Gb3Bw?=
- =?utf-8?B?azUrYUdMZGFYVHg2WUhLam02RUpnM0hhcnJaUlNsTWRnRWg1dDJYWkJrODND?=
- =?utf-8?B?L2tuK05NMTRvck1NSy9HaE9JU29qd0dsZFRxWTZ4Y3lGZnVBQW9ONDVjc29U?=
- =?utf-8?B?S1RLRU9jdnpLTnZoU0ZOY0FRSTdjVHkxVVU5V2ZFdmVnekNyODJHYURmKzlO?=
- =?utf-8?B?T1NTVkJDWmY0SzZWOXo3cWU1R0lpZGpaSEZHRXFuRlo1aGxPUFFYQVNhVW9x?=
- =?utf-8?B?TkxRaFZjZnBBNTZuNi9iRmVXeWtMUlZObUxrd0lOQnFqTE5wRVRhQ0lQMkNx?=
- =?utf-8?B?Mll0N0svS3czQlR6NkwvOVh1UnVvMlFPbkk0SjFPZVoxSzB4MTNCYXRyNHNV?=
- =?utf-8?B?VGRrRXg1dENlNldZa0o1bG5DRnp5VTh4ZHIyaXN6d2lmWUJueE1LZVk0TTB5?=
- =?utf-8?B?UzdZR1poSWhiWmNIckZLM1AxM1AzMlpRRXpLTitWWjRnMStLN2FlQlRlbndL?=
- =?utf-8?B?VzNGeXpWR2FzTVVoRjR6WGlqT2JkaWdXM0tHdFdhNWhuU24wNDF2bkNHNG1K?=
- =?utf-8?B?ZVIwV0FlS1V5MUVUOGVEZHpPV2k2b1RrWDBJTkxxbUJmTk1ITVdRTWNSeTRw?=
- =?utf-8?B?dUUwdkF5UnpFNHViRVJESmVQSXgxVGhZaHpiY0UwZ3hMQ1Bvc2pwcTNRYUov?=
- =?utf-8?B?Skt0Tnp3QjhTRUZaOE41enBrOVR5U05qZzRmTGlPbjNFZzJXOHFyRFk3YnVk?=
- =?utf-8?B?UnZEdlNnNEVrYys2ZHFoc0trdmwwZlo5OXFiSjFIWXdUSUk1T1Z5N1l0clJH?=
- =?utf-8?B?V0Y4NDl3WjJ6N3JxNG8rWVNIdFJpRWh0VlF3Qit4RVUycnM3eE0rK3NnSit4?=
- =?utf-8?B?Si9Qc1JtZnVZbGtsQkVuMURCSVNXVUlWcFhkSmhaTHNuRHN6Vy95MXpJcHJq?=
- =?utf-8?B?YmJRMVJmckxZSlBOMG9nMkpvQzNZUzA3R3dReHp3eXlZaSszQW9UbmkwdUhP?=
- =?utf-8?B?WWFsNGJJaWtQb0ovQnZITHpPWFBjQTR6MUlJRDBQem54VURCK0RvVm1UK01U?=
- =?utf-8?B?ZjNOSnRZLysvQndveVVVcndKQjJZdFFmS3BhMk5pZWZrYUltOUVJTGdKSU1t?=
- =?utf-8?B?S3VuOTAwU1F1U0JqbGloeCtHY1R0aGZCUWtxOHMxWUc4VzA0cHEvM1NMejda?=
- =?utf-8?B?ZTF0SldLRUxtZ1MxaWJCb1VFOHBwcGdWWW95cS9QUElrVVNBdlRQSnR5OVds?=
- =?utf-8?B?N245Nnc0dWVqMkxkTnAzZjkvbmdIRGFxUWhGL0R5Yk01THdVRzIzNU5wbnFn?=
- =?utf-8?Q?QTfnaIusq8GFSr+SwwtIMcM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A87FF07F3DA2CF409DAA3D80DA413166@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9637C635;
+	Fri, 15 Mar 2024 00:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710461295; cv=none; b=A1T04VZpGP+IWfIvgw/3F8y+MmRJ8GdHnrw1Of1E/9KYcOrMYGLI2syySx4lKdS65oNpx+8zYwj5abrG9EjdKlDGYgzPY/TKW44+MIEiF7rKJ4mnOF2N2mQefqH/Xt9M9vcB5WebKwh7KX8/ClV0Qh9UeNRHyRxnlLqe+ychy7U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710461295; c=relaxed/simple;
+	bh=eYmW3Ftf7mefPPsE9pr/d71AHAAKr268pFGEIArfBlQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=seXNJ05Ru4yKOBoz1RBxsf/XyL2lN4iQiY9+7hjLe3cFM4LcigrHPu47o8SA0/ClEhW5uKUGfTe0B3cNfbqM+D8DBlGZAQr0WaI45v5t1Cy8BXCvUB9dhkAHoUpTzzsRRhMdAqNfR7E21cGiTZF2GewUVhGwe7AMyT70h7+tDSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1rkv78-00029A-9V; Fri, 15 Mar 2024 01:07:58 +0100
+Date: Fri, 15 Mar 2024 01:07:58 +0100
+From: Florian Westphal <fw@strlen.de>
+To: Florian Westphal <fw@strlen.de>
+Cc: Eric Dumazet <edumazet@google.com>, xingwei lee <xrivendell7@gmail.com>,
+	pabeni@redhat.com, davem@davemloft.net, kuba@kernel.org,
+	linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, ralf@linux-mips.org,
+	syzkaller-bugs@googlegroups.com, samsun1006219@gmail.com
+Subject: Re: KASAN: slab-use-after-free Read in ip_finish_output
+Message-ID: <20240315000758.GA30611@breakpoint.cc>
+References: <CABOYnLwtfAxS7WoMw-1_uxVe3EYajXRuzZfwaQEk0+7m6-B+ug@mail.gmail.com>
+ <CANn89i+qLwyPLztPt6Mavjimyv0H_UihVVNfJXWLjcwrqOudTw@mail.gmail.com>
+ <20240306103632.GC4420@breakpoint.cc>
+ <CANn89iLe0KGjbSim5Qxxr6o0AjJVs7-h79UvMMXKOgGKQUosiA@mail.gmail.com>
+ <20240312132107.GA1529@breakpoint.cc>
+ <CANn89iLkDwnZdBY8CwkrQwCk2o7EAM9J1sv+uxU1tjKb=VB=Ag@mail.gmail.com>
+ <20240314112650.GE1038@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR11MB5976.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82fe9d62-48e3-4bde-f202-08dc4483c4d4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2024 00:06:31.3060
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wAkm3GaFS6pIddumfQpuVjS7vleB+v2a3eeKsfy/rA7Is91LF/Q9PN++osmQOwGhdRe5PFeEbquYGpaBi72xhU+0/pxvmwm+3GXf4qnvGYI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8317
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240314112650.GE1038@breakpoint.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-T24gTW9uLCAyMDI0LTAyLTI2IGF0IDAwOjI3IC0wODAwLCBpc2FrdS55YW1haGF0YUBpbnRlbC5j
-b20gd3JvdGU6DQo+IMKgDQo+ICtzdGF0aWMgdm9pZCB2dF91cGRhdGVfY3B1X2RpcnR5X2xvZ2dp
-bmcoc3RydWN0IGt2bV92Y3B1ICp2Y3B1KQ0KPiArew0KPiArwqDCoMKgwqDCoMKgwqBpZiAoS1ZN
-X0JVR19PTihpc190ZF92Y3B1KHZjcHUpLCB2Y3B1LT5rdm0pKQ0KPiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgcmV0dXJuOw0KPiArDQo+ICvCoMKgwqDCoMKgwqDCoHZteF91cGRhdGVf
-Y3B1X2RpcnR5X2xvZ2dpbmcodmNwdSk7DQo+ICt9DQoNCkRpc2N1c3NlZCB0aGlzIGZpcnN0IHBh
-cnQgb2ZmbGluZSwgYnV0IGxvZ2dpbmcgaXQgaGVyZS4gU2luY2UNCmd1ZXN0X21lbWZkIGNhbm5v
-dCBoYXZlIGRpcnR5IGxvZ2dpbmcsIHRoaXMgaXMgZXNzZW50aWFsbHkgYnVnZ2luZyB0aGUNClZN
-IGlmIHNvbWVob3cgdGhleSBtYW5hZ2UgYW55d2F5LiBCdXQgaXQgc2hvdWxkIGJlIGJsb2NrZWQg
-dmlhIHRoZSBjb2RlDQppbiBjaGVja19tZW1vcnlfcmVnaW9uX2ZsYWdzKCkuDQoNCk9uIHRoZSBz
-dWJqZWN0IG9mIHdhcm5pbmdzIGFuZCBLVk1fQlVHX09OKCksIG15IGZlZWxpbmcgc28gZmFyIGlz
-IHRoYXQNCnRoaXMgc2VyaWVzIGlzIHF1aXRlIGFnZ3Jlc3NpdmUgYWJvdXQgdGhlc2UuIElzIGl0
-IGR1ZSB0aGUgY29tcGxleGl0eQ0Kb2YgdGhlIHNlcmllcz8gSSB0aGluayBtYXliZSB3ZSBjYW4g
-cmVtb3ZlIHNvbWUgb2YgdGhlIHNpbXBsZSBvbmVzLCBidXQNCm5vdCBzdXJlIGlmIHRoZXJlIHdh
-cyBhbHJlYWR5IHNvbWUgZGlzY3Vzc2lvbiBvbiB3aGF0IGxldmVsIGlzDQphcHByb3ByaWF0ZS4N
-Cg==
+Florian Westphal <fw@strlen.de> wrote:
+> Eric Dumazet <edumazet@google.com> wrote:
+> > Thanks for taking a look Florian.
+> > 
+> > Perhaps not messing with truesize at all would help ?
+> >
+> > Something based on this POC :
+> > 
+> >                 spin_lock(&qp->q.lock);
+> > +               if (!qp->q.sk) {
+> > +                       struct sock *sk = skb->sk;
+> > 
+> > +                       if (sk && refcount_inc_not_zero(&sk->sk_refcnt))
+> > +                               qp->q.sk = sk;
+> 
+> Unfortunetely I did not get this to work.
+> 
+> sk_refcnt is 0.  sk is kept alive by sock_wfree destructor.
+> 
+> I don't know how to recover from this, refcnt cannot be "repaired"
+> anymore.
+> 
+> I could artificially inflate sk_wmem counter by 1, to prevent release,
+> but that needs yet another sock_wfree-like destructor.
+> 
+> I'm already not sure how this existing scheme works, there are
+> multiple places that check for skb->destructor == sock_wfree,
+> yet we have is_skb_wmem helper that checks __sock_wfree and tcp_wfree.
+> 
+> Removing defrag from output seems like best option, but it will
+> surely break some scenarios.
+> 
+> Or, I could just fail reasm if sk refcount is already 0, that would
+> likely work too?
+
+I am going to test (and formally submit if no issues found):
+
+inet: inet_defrag: prevent sk release while still in use
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 3023bc2be6a1..b1aeed510f24 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -753,8 +753,6 @@ typedef unsigned char *sk_buff_data_t;
+  *	@list: queue head
+  *	@ll_node: anchor in an llist (eg socket defer_list)
+  *	@sk: Socket we are owned by
+- *	@ip_defrag_offset: (aka @sk) alternate use of @sk, used in
+- *		fragmentation management
+  *	@dev: Device we arrived on/are leaving by
+  *	@dev_scratch: (aka @dev) alternate use of @dev when @dev would be %NULL
+  *	@cb: Control buffer. Free for use by every layer. Put private vars here
+@@ -875,10 +873,7 @@ struct sk_buff {
+ 		struct llist_node	ll_node;
+ 	};
+ 
+-	union {
+-		struct sock		*sk;
+-		int			ip_defrag_offset;
+-	};
++	struct sock		*sk;
+ 
+ 	union {
+ 		ktime_t		tstamp;
+diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+index 7072fc0783ef..fab1ea5df089 100644
+--- a/net/ipv4/inet_fragment.c
++++ b/net/ipv4/inet_fragment.c
+@@ -39,6 +39,7 @@ struct ipfrag_skb_cb {
+ 	};
+ 	struct sk_buff		*next_frag;
+ 	int			frag_run_len;
++	int			ip_defrag_offset;
+ };
+ 
+ #define FRAG_CB(skb)		((struct ipfrag_skb_cb *)((skb)->cb))
+@@ -396,12 +397,12 @@ int inet_frag_queue_insert(struct inet_frag_queue *q, struct sk_buff *skb,
+ 	 */
+ 	if (!last)
+ 		fragrun_create(q, skb);  /* First fragment. */
+-	else if (last->ip_defrag_offset + last->len < end) {
++	else if (FRAG_CB(last)->ip_defrag_offset + last->len < end) {
+ 		/* This is the common case: skb goes to the end. */
+ 		/* Detect and discard overlaps. */
+-		if (offset < last->ip_defrag_offset + last->len)
++		if (offset < FRAG_CB(last)->ip_defrag_offset + last->len)
+ 			return IPFRAG_OVERLAP;
+-		if (offset == last->ip_defrag_offset + last->len)
++		if (offset == FRAG_CB(last)->ip_defrag_offset + last->len)
+ 			fragrun_append_to_last(q, skb);
+ 		else
+ 			fragrun_create(q, skb);
+@@ -418,13 +419,13 @@ int inet_frag_queue_insert(struct inet_frag_queue *q, struct sk_buff *skb,
+ 
+ 			parent = *rbn;
+ 			curr = rb_to_skb(parent);
+-			curr_run_end = curr->ip_defrag_offset +
++			curr_run_end = FRAG_CB(curr)->ip_defrag_offset +
+ 					FRAG_CB(curr)->frag_run_len;
+-			if (end <= curr->ip_defrag_offset)
++			if (end <= FRAG_CB(curr)->ip_defrag_offset)
+ 				rbn = &parent->rb_left;
+ 			else if (offset >= curr_run_end)
+ 				rbn = &parent->rb_right;
+-			else if (offset >= curr->ip_defrag_offset &&
++			else if (offset >= FRAG_CB(curr)->ip_defrag_offset &&
+ 				 end <= curr_run_end)
+ 				return IPFRAG_DUP;
+ 			else
+@@ -438,7 +439,7 @@ int inet_frag_queue_insert(struct inet_frag_queue *q, struct sk_buff *skb,
+ 		rb_insert_color(&skb->rbnode, &q->rb_fragments);
+ 	}
+ 
+-	skb->ip_defrag_offset = offset;
++	FRAG_CB(skb)->ip_defrag_offset = offset;
+ 
+ 	return IPFRAG_OK;
+ }
+@@ -448,13 +449,29 @@ void *inet_frag_reasm_prepare(struct inet_frag_queue *q, struct sk_buff *skb,
+ 			      struct sk_buff *parent)
+ {
+ 	struct sk_buff *fp, *head = skb_rb_first(&q->rb_fragments);
+-	struct sk_buff **nextp;
++	struct sk_buff **nextp = NULL;
++	struct sock *sk = skb->sk;
+ 	int delta;
+ 
++	if (sk) {
++		if (!refcount_inc_not_zero(&sk->sk_refcnt))
++			return NULL;
++
++		/* need to orphan now, both this function and
++		 * inet_frag_reasm_finish alter skb->truesize, which
++		 * messes up sk->sk_wmem accounting.
++		 * skb->sk might have been passed as argument to dst->output
++		 * and must remain valid until tx completes.
++		 */
++		skb_orphan(skb);
++	}
++
+ 	if (head != skb) {
+ 		fp = skb_clone(skb, GFP_ATOMIC);
+-		if (!fp)
+-			return NULL;
++		if (!fp) {
++			head = skb;
++			goto out_restore_sk;
++		}
+ 		FRAG_CB(fp)->next_frag = FRAG_CB(skb)->next_frag;
+ 		if (RB_EMPTY_NODE(&skb->rbnode))
+ 			FRAG_CB(parent)->next_frag = fp;
+@@ -470,13 +487,14 @@ void *inet_frag_reasm_prepare(struct inet_frag_queue *q, struct sk_buff *skb,
+ 		consume_skb(head);
+ 		head = skb;
+ 	}
+-	WARN_ON(head->ip_defrag_offset != 0);
++	WARN_ON(FRAG_CB(head)->ip_defrag_offset != 0);
++	DEBUG_NET_WARN_ON_ONCE(head->sk);
+ 
+ 	delta = -head->truesize;
+ 
+ 	/* Head of list must not be cloned. */
+ 	if (skb_unclone(head, GFP_ATOMIC))
+-		return NULL;
++		goto out_restore_sk;
+ 
+ 	delta += head->truesize;
+ 	if (delta)
+@@ -492,7 +510,7 @@ void *inet_frag_reasm_prepare(struct inet_frag_queue *q, struct sk_buff *skb,
+ 
+ 		clone = alloc_skb(0, GFP_ATOMIC);
+ 		if (!clone)
+-			return NULL;
++			goto out_restore_sk;
+ 		skb_shinfo(clone)->frag_list = skb_shinfo(head)->frag_list;
+ 		skb_frag_list_init(head);
+ 		for (i = 0; i < skb_shinfo(head)->nr_frags; i++)
+@@ -509,6 +527,12 @@ void *inet_frag_reasm_prepare(struct inet_frag_queue *q, struct sk_buff *skb,
+ 		nextp = &skb_shinfo(head)->frag_list;
+ 	}
+ 
++out_restore_sk:
++	if (sk) {
++		head->sk = sk;
++		head->destructor = sock_edemux;
++	}
++
+ 	return nextp;
+ }
+ EXPORT_SYMBOL(inet_frag_reasm_prepare);
+diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
+index a4941f53b523..fb947d1613fe 100644
+--- a/net/ipv4/ip_fragment.c
++++ b/net/ipv4/ip_fragment.c
+@@ -384,6 +384,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+ 	}
+ 
+ 	skb_dst_drop(skb);
++	skb_orphan(skb);
+ 	return -EINPROGRESS;
+ 
+ insert_error:
+@@ -487,7 +488,6 @@ int ip_defrag(struct net *net, struct sk_buff *skb, u32 user)
+ 	struct ipq *qp;
+ 
+ 	__IP_INC_STATS(net, IPSTATS_MIB_REASMREQDS);
+-	skb_orphan(skb);
+ 
+ 	/* Lookup (or create) queue header */
+ 	qp = ip_find(net, ip_hdr(skb), user, vif);
+diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
+index 1a51a44571c3..d0dcbaca1994 100644
+--- a/net/ipv6/netfilter/nf_conntrack_reasm.c
++++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
+@@ -294,6 +294,7 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
+ 	}
+ 
+ 	skb_dst_drop(skb);
++	skb_orphan(skb);
+ 	return -EINPROGRESS;
+ 
+ insert_error:
+@@ -469,7 +470,6 @@ int nf_ct_frag6_gather(struct net *net, struct sk_buff *skb, u32 user)
+ 	hdr = ipv6_hdr(skb);
+ 	fhdr = (struct frag_hdr *)skb_transport_header(skb);
+ 
+-	skb_orphan(skb);
+ 	fq = fq_find(net, fhdr->identification, user, hdr,
+ 		     skb->dev ? skb->dev->ifindex : 0);
+ 	if (fq == NULL) {
 
