@@ -1,306 +1,234 @@
-Return-Path: <linux-kernel+bounces-104834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DBB287D455
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:06:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C5FC87D458
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:08:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B0DF286E1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:06:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D6761C209F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFF750279;
-	Fri, 15 Mar 2024 19:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B7A51005;
+	Fri, 15 Mar 2024 19:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="PYwjmUOy"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WQms5C5V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCED54F201
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2E61F922;
+	Fri, 15 Mar 2024 19:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710529570; cv=none; b=CjVtshJfwy+YlmpIzn+KoqD7vlEhz7901QFMPyCPCQsjg7dihRxB9M6ZYU7X2NzKV83Q3mUMK/jw4NATdbYyTSTz2mREFRRz7ZrnFNjPX96kqwmYbE8M1COBJuzDZOwMBF1MnjVmw5UQMF4GN3x+7FQn8tigjJGMV5e3zEkbjgA=
+	t=1710529728; cv=none; b=b9XvhysBsaBdZd0rZXYtFscLmYsjm+sHUruk6dlmp+84nkZFkbFyK5vYTN19XaFBwMNZEBTsm//Ckf5mawafuFT1rtkDrj7b+rytlgIRd8Gd0UV3WtWGkXIDJH7O8vLCmWMFjdaKFyOfBVYzm/gcW4F/vEgeLpNhPdCI1HXgXzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710529570; c=relaxed/simple;
-	bh=c93ef35sRshYiC2AATmcCqw9XtaXh937E9AR1Bv4Ue4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=etPQF1a8bNHfYx49pDR7NyQUOfq+sXqiOzxqBDMKsPKEBOiJ1baEjj5+5mLmtxwNWq59kOfhug9/6K2dfjDSRd4wbSGz1FiHez71KeBCWw40rrEVG12trsqAT7daNVMMVQC7zyRlOJ565rPOiiyq5LxbfN52i1FoaI5NisRr63U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PYwjmUOy; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cdfd47de98so2073371a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:06:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710529567; x=1711134367; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WxcfU/8IwLCHkk68SMZvcwY7f//etTaSB7/1VZllKVU=;
-        b=PYwjmUOyHSpGEbq7TB5uDIomPhC67T1taiz8iVt7DnaAKz/wfacvOx5h3pyh9+GGx4
-         uafqexKIiEVLfq5WJksUiFDghTsFzJ0UijwbNDaewR66NtnHDZ6EVBWJWPSHhJEhzD2E
-         OHxN9Gs98TtKzrt8T274mfu5kb0gegYaEx9ELYgrXFNdu2I9003uut8Ck4kWSOODeIOO
-         r2PzNviUR/vQ4qgnIFqXOvncgdzykSFn85Udws7zJfmYVqb4S+ap8yOYVCwKA39BmrLC
-         wv7dCEmcRtgYxAaI32SOrEuldsT+8SOGwrdnNWan6ztj8hWl+kvWqdm2ME1UV+OYjVaW
-         9stg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710529567; x=1711134367;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WxcfU/8IwLCHkk68SMZvcwY7f//etTaSB7/1VZllKVU=;
-        b=ijo5OxMKNRiNOYZclAZXbpkt8H4fSFVJSx/f5UxWqGJ1IbLgDuvNrwBoD7ZeN3Swey
-         HRXIC1L+zyMUGjQTmZs1EeqCev0H71CJA16IfI3sbPFugH8kyC5K0bs7YiwH/uuTuXtd
-         7F+ef/RgcY8fzS4i7753TPuwrZNMDNMu40RV7BuO1BYqMSEv09QojXaqeyD17Vkv3E44
-         N8r4IGsiUinoLFbwL25uw604I39F3YN3+ntK6gw16jS2baMtRvniy9A05wMNbJ2ZZBE5
-         Coywv8XeA6V1kews3Ja2Sh/DLB6ijxWTWDXaLkNqYeH0R0eLek/5njz8WEjNQQsqvvJm
-         kakQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0zan8Mma5NgFBLPVTtX9w2FEy+CH35pc7u925TJA10RzVK5zJ3oFJNmLyEXEOV03EYNVh/XxE9Ef/Xw5h+gD/RieHMUewBgZVvztn
-X-Gm-Message-State: AOJu0Yy7hfjfmRF9/hMruftNTSfl0JrqApILRUlS6YkjmDrx/dyGIUcZ
-	iA8gNASt5FaiCS56BzsVqg4t7tjBDZu4wqzwukzRAjke04x/0PoM/6FwM4pvdeLHM7l7PEwgky9
-	abA==
-X-Google-Smtp-Source: AGHT+IHC9H6HmVEZ9R3YvdGB88rcppNGxPLVqEAHI5Osd5hvODzSOEigb8O/uxQXqUmWxJ4aOH1WTmCcxrI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:dc08:0:b0:5cf:c149:8dc with SMTP id
- s8-20020a63dc08000000b005cfc14908dcmr13261pgg.11.1710529567041; Fri, 15 Mar
- 2024 12:06:07 -0700 (PDT)
-Date: Fri, 15 Mar 2024 12:06:05 -0700
-In-Reply-To: <ZfSTh4bLuAMlF6Er@google.com>
+	s=arc-20240116; t=1710529728; c=relaxed/simple;
+	bh=zzUqG1WU549eO/btRXbksc5TjerrX8vjxGYEcFIQwnE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F3VdQLJ6Hw+borOLmXKEwClhjDjBC/9WSaj/4BQV9fwt0cSk/7uuBUHEfQY5E4uLdSa71SUWxEVzYGUQTOn72X4S5wIgHIpkNZazWX8JxNMwinul/+toLdsuxgvjruMjmGU5WdK24caRK8kWd4aZVVfbr39bKBwEXPWGpYeZF4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WQms5C5V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53EE8C433C7;
+	Fri, 15 Mar 2024 19:08:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710529728;
+	bh=zzUqG1WU549eO/btRXbksc5TjerrX8vjxGYEcFIQwnE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WQms5C5VXIArpSqDUztZBblB6q0CIznTw8l6wcMXryHF8K2cQLJmnal9JPzvUJbux
+	 uWSU73rQqg/arpuVmrVWre1VWVbWBwYEK5NNHJqFfq5GagHj58tV+j6+KcbTvgYeNX
+	 uWArwaRxgzHsNUsN40hOIKhWjktra7Oe3GLvbTQvJIGUn89H4zRV1IRp5I2/lMahZa
+	 7klJlJfjSd1gm/GjzTHnkj7ls3OlxXOzNS6sI7ed9tUlBVm+ZKtbn7GIAQs/Uicetr
+	 DkNpewOOUfcg3x5qSZUhaopD+EEdhYkb2q0TTMYDM+D57yWKhbVRF6V5GSKvJCgVty
+	 vjZg0doU2s5bw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	akpm@linux-foundation.org,
+	torvalds@linux-foundation.org
+Cc: lwn@lwn.net,
+	jslaby@suse.cz,
+	gregkh@linuxfoundation.org
+Subject: Linux 5.4.272
+Date: Fri, 15 Mar 2024 15:08:43 -0400
+Message-ID: <20240315190845.1843591-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <000000000000c6526f06137f18cc@google.com> <CALzav=euH_n9WXG29CFd10urh85O4Mw2L=StEizVmh27CYzrtQ@mail.gmail.com>
- <ZfSTh4bLuAMlF6Er@google.com>
-Message-ID: <ZfScHYPW5ZV6Gx2k@google.com>
-Subject: Re: [syzbot] [kvm?] WARNING in clear_dirty_gfn_range
-From: Sean Christopherson <seanjc@google.com>
-To: David Matlack <dmatlack@google.com>
-Cc: syzbot <syzbot+900d58a45dcaab9e4821@syzkaller.appspotmail.com>, bp@alien8.de, 
-	dave.hansen@linux.intel.com, hpa@zytor.com, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org, 
-	vipinsh@google.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 15, 2024, David Matlack wrote:
-> On 2024-03-15 11:07 AM, David Matlack wrote:
-> > On Tue, Mar 12, 2024 at 4:34=E2=80=AFPM syzbot
-> > <syzbot+900d58a45dcaab9e4821@syzkaller.appspotmail.com> wrote:
-> > >
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 1 PID: 5165 at arch/x86/kvm/mmu/tdp_mmu.c:1526 clear_di=
-rty_gfn_range+0x3d6/0x540 arch/x86/kvm/mmu/tdp_mmu.c:1526
-> > > Modules linked in:
-> > > CPU: 1 PID: 5165 Comm: syz-executor417 Not tainted 6.8.0-syzkaller-01=
-185-g855684c7d938 #0
-> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debia=
-n-1.16.2-1 04/01/2014
-> > > RIP: 0010:clear_dirty_gfn_range+0x3d6/0x540 arch/x86/kvm/mmu/tdp_mmu.=
-c:1526
-> > > Call Trace:
-> > >  <TASK>
-> > >  kvm_tdp_mmu_clear_dirty_slot+0x24f/0x2e0 arch/x86/kvm/mmu/tdp_mmu.c:=
-1557
-> > >  kvm_mmu_slot_leaf_clear_dirty+0x38b/0x490 arch/x86/kvm/mmu/mmu.c:678=
-3
-> > >  kvm_mmu_slot_apply_flags arch/x86/kvm/x86.c:12962 [inline]
-> > >  kvm_arch_commit_memory_region+0x299/0x490 arch/x86/kvm/x86.c:13031
-> > >  kvm_commit_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1=
-751 [inline]
-> > >  kvm_set_memslot+0x4d3/0x13e0 arch/x86/kvm/../../../virt/kvm/kvm_main=
-c:1994
-> > >  __kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:21=
-29 [inline]
-> > >  __kvm_set_memory_region+0xdbc/0x1520 arch/x86/kvm/../../../virt/kvm/=
-kvm_main.c:2020
-> > >  kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:2150=
- [inline]
-> > >  kvm_vm_ioctl_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_ma=
-in.c:2162 [inline]
-> > >  kvm_vm_ioctl+0x151c/0x3e20 arch/x86/kvm/../../../virt/kvm/kvm_main.c=
-:5152
-> >=20
-> > The reproducer uses nested virtualization to launch an L2 with EPT
-> > disabled. This creates a TDP MMU root with role.guest_mode=3D1, which
-> > triggers the WARN_ON() in kvm_tdp_mmu_clear_dirty_slot() because
-> > kvm_mmu_page_ad_need_write_protect() returns false whenever PML is
-> > enabled and the shadow page role.guest_mode=3D1.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-Nit, kvm_mmu_page_ad_need_write_protect() returns %true, not %false.  Your =
-analysis
-is correct, I think you just mistyped.
+I'm announcing the release of the 5.4.272 kernel.
 
-> >=20
-> > If I'm reading prepare_vmcs02_constant_state() correctly, we always
-> > disable PML when running in L2.
+All users of the 5.4 kernel series must upgrade.
 
-Ya.
+The updated 5.4.y git tree can be found at:
+        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+        https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-> So when enable_pml=3D1 and L2 runs with EPT disabled we are blind to dirt=
-y
-> tracking L2 accesses.
 
-Ow.
+Thanks,
+Sasha
 
-> +Vipin
->=20
-> I believe this was introduced by 6.4 commit 5982a5392663 ("KVM: x86/mmu:
-> Use kvm_ad_enabled() to determine if TDP MMU SPTEs need wrprot").
->=20
-> I see two options to fix:
->=20
->   1. Allow PML to be enabled when L2 is running with EPT is disabled.
->   2. Fix the TDP MMU logic to write-protect role.guest_mode=3D1 SPTEs.
->=20
-> (1.) sounds more complicated and will require more testing.
+- ------------
 
-It's not terribly complicated, but I 100% agree it's too complicated for a =
-bugfix
-that is destined for stable.  And long term, I don't even know that it's so=
-mething
-we'd want to bother actively supporting, as any amount of complexity beyond=
- "PML
-is disabled for L2" is probably dead weight since not using TDP is quite un=
-common
-these days.
 
-> (2.) is quite simple since an entire TDP MMU tree is either guest_mode=3D=
-0 or
-> guest_mode=3D1.
->=20
-> Example fix (fixes syzbot repro but otherwise untested):
->=20
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 6ae19b4ee5b1..eb6fb8d9c00c 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1498,6 +1498,24 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *=
-kvm,
->  	}
->  }
-> =20
-> +static inline u64 tdp_mmu_dirty_bit(struct kvm_mmu_page *root, bool forc=
-e_wrprot)
+ Makefile                                      |   2 +-
+ arch/alpha/kernel/osf_sys.c                   |   2 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  25 +-
+ arch/um/Kconfig                               |  13 +
+ arch/um/Makefile                              |   3 +-
+ arch/x86/Makefile.um                          |   2 +-
+ drivers/base/regmap/internal.h                |   4 +
+ drivers/base/regmap/regmap.c                  |  77 ++-
+ drivers/input/serio/i8042-x86ia64io.h         |   6 +
+ drivers/net/ethernet/intel/ice/ice_main.c     |   2 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  56 +-
+ drivers/net/geneve.c                          |  18 +-
+ drivers/net/hyperv/netvsc_drv.c               |  96 ++-
+ drivers/net/usb/lan78xx.c                     | 910 ++++++++++++++++++++------
+ drivers/tty/serial/Kconfig                    |   1 +
+ drivers/tty/serial/max310x.c                  | 378 ++++++++---
+ include/linux/regmap.h                        |  19 +
+ include/uapi/linux/resource.h                 |   4 +-
+ kernel/sys.c                                  |  91 +--
+ net/ipv6/route.c                              |  21 +-
+ net/netfilter/nf_conntrack_h323_asn1.c        |   4 +
+ net/netfilter/nft_ct.c                        |  11 +-
+ net/netrom/af_netrom.c                        |  14 +-
+ net/netrom/nr_dev.c                           |   2 +-
+ net/netrom/nr_in.c                            |   6 +-
+ net/netrom/nr_out.c                           |   2 +-
+ net/netrom/nr_route.c                         |   8 +-
+ net/netrom/nr_subr.c                          |   5 +-
+ net/rds/rdma.c                                |   3 +
+ net/rds/send.c                                |   6 +-
+ tools/testing/selftests/vm/map_hugetlb.c      |   7 +
+ 31 files changed, 1334 insertions(+), 464 deletions(-)
 
-No "inline" on local statics, formletter incoming...
+Andy Shevchenko (4):
+      serial: max310x: Use devm_clk_get_optional() to get the input clock
+      serial: max310x: Try to get crystal clock rate from property
+      serial: max310x: Make use of device properties
+      serial: max310x: Unprepare and disable clock in error path
 
-Do not use "inline" for functions that are visible only to the local compil=
-ation
-unit.  "inline" is just a hint, and modern compilers are smart enough to in=
-line
-functions when appropriate without a hint.
+Ansuel Smith (1):
+      regmap: allow to define reg_update_bits for no bus configuration
 
-A longer explanation/rant here: https://lore.kernel.org/all/ZAdfX+S323JVWNZ=
-C@google.com
+Arnd Bergmann (1):
+      y2038: rusage: use __kernel_old_timeval
 
-> +{
-> +	if (force_wrprot || kvm_mmu_page_ad_need_write_protect(root) || !kvm_ad=
-_enabled())
-> +		return PT_WRITABLE_MASK;
-> +
-> +	return shadow_dirty_mask;
-> +}
-> +
-> +static inline bool tdp_mmu_dirty_bit_invalid_for_spte(struct tdp_iter *i=
-ter, u64 dbit)
-> +{
-> +	/*
-> +	 * The decision of whether to clear the D-bit or W-bit is made based on
-> +	 * the root, as all TDP MMU SPTEs within a root should require the same
-> +	 * modifications. This check ensures that is actually the case.
-> +	 */
-> +	return dbit =3D=3D shadow_dirty_mask && spte_ad_need_write_protect(iter=
-->old_spte);
-> +}
-> +
->  /*
->   * Clear the dirty status of all the SPTEs mapping GFNs in the memslot. =
-If
->   * AD bits are enabled, this will involve clearing the dirty bit on each=
- SPTE.
-> @@ -1508,7 +1526,7 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *k=
-vm,
->  static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *=
-root,
->  			   gfn_t start, gfn_t end)
->  {
-> -	u64 dbit =3D kvm_ad_enabled() ? shadow_dirty_mask : PT_WRITABLE_MASK;
-> +	u64 dbit =3D tdp_mmu_dirty_bit(root, false);
+Cosmin Tanislav (4):
+      serial: max310x: use regmap methods for SPI batch operations
+      serial: max310x: use a separate regmap for each port
+      serial: max310x: make accessing revision id interface-agnostic
+      serial: max310x: implement I2C support
 
-Hrm, I like common helpers, but I dislike "blind" booleans even more.  My v=
-ote
-would be to do this:
+Dexuan Cui (1):
+      hv_netvsc: Make netvsc/VF binding check both MAC and serial number
 
-	u64 dbit =3D wrprot ? PT_WRITABLE_MASK : tdp_mmu_dirty_bit(root);
+Edward Adam Davis (1):
+      net/rds: fix WARNING in rds_conn_connect_if_down
 
-if we want to hide the PT_WRITABLE_MASK vs. shadow_dirty_mask.  Though I'm =
-tempted
-to vote for open coding the bit selection, e.g.
+Eric Dumazet (2):
+      geneve: make sure to pull inner header in geneve_rx()
+      net/ipv6: avoid possible UAF in ip6_route_mpath_notify()
 
-	u64 dbit =3D (wrprot || tdp_mmu_force_wrprot(root)) ? PT_WRITABLE_MASK :
-							    shadow_dirty_mask;
+Florian Westphal (1):
+      netfilter: nft_ct: fix l3num expectations with inet pseudo family
 
-and
+Hugo Villeneuve (2):
+      serial: max310x: fail probe if clock crystal is unstable
+      serial: max310x: prevent infinite while() loop in port startup
 
-	u64 dbit =3D tdp_mmu_force_wrprot(root) ? PT_WRITABLE_MASK :
-						shadow_dirty_mask;
+Jan Kundrát (1):
+      serial: max310x: fix IO data corruption in batched operations
 
-For tdp_mmu_force_wrprot(), the "what" is pretty clear, i.e. readers only n=
-eed
-to look at the implementation if they care _why_ KVM forces write-protectio=
-n.
+Jason Xing (12):
+      netrom: Fix a data-race around sysctl_netrom_default_path_quality
+      netrom: Fix a data-race around sysctl_netrom_obsolescence_count_initialiser
+      netrom: Fix data-races around sysctl_netrom_network_ttl_initialiser
+      netrom: Fix a data-race around sysctl_netrom_transport_timeout
+      netrom: Fix a data-race around sysctl_netrom_transport_maximum_tries
+      netrom: Fix a data-race around sysctl_netrom_transport_acknowledge_delay
+      netrom: Fix a data-race around sysctl_netrom_transport_busy_delay
+      netrom: Fix a data-race around sysctl_netrom_transport_requested_window_size
+      netrom: Fix a data-race around sysctl_netrom_transport_no_activity_timeout
+      netrom: Fix a data-race around sysctl_netrom_routing_control
+      netrom: Fix a data-race around sysctl_netrom_link_fails_count
+      netrom: Fix data-races around sysctl_net_busy_read
 
-But with tdp_mmu_dirty_bit(), even the "what" isn't clear, i.e. it's not ob=
-vious
-that the options are hardware's D-bit and the writable bit.
+Johan Hovold (1):
+      arm64: dts: qcom: sdm845: fix USB DP/DM HS PHY interrupts
 
->  	struct tdp_iter iter;
->  	bool spte_set =3D false;
-> =20
-> @@ -1523,8 +1541,7 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, =
-struct kvm_mmu_page *root,
->  		if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
->  			continue;
-> =20
-> -		KVM_MMU_WARN_ON(kvm_ad_enabled() &&
-> -				spte_ad_need_write_protect(iter.old_spte));
-> +		KVM_MMU_WARN_ON(tdp_mmu_dirty_bit_invalid_for_spte(&iter, dbit));
-> =20
->  		if (!(iter.old_spte & dbit))
->  			continue;
-> @@ -1570,8 +1587,7 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
->  static void clear_dirty_pt_masked(struct kvm *kvm, struct kvm_mmu_page *=
-root,
->  				  gfn_t gfn, unsigned long mask, bool wrprot)
->  {
-> -	u64 dbit =3D (wrprot || !kvm_ad_enabled()) ? PT_WRITABLE_MASK :
-> -						   shadow_dirty_mask;
-> +	u64 dbit =3D tdp_mmu_dirty_bit(root, wrprot);
->  	struct tdp_iter iter;
-> =20
->  	lockdep_assert_held_write(&kvm->mmu_lock);
-> @@ -1583,8 +1599,7 @@ static void clear_dirty_pt_masked(struct kvm *kvm, =
-struct kvm_mmu_page *root,
->  		if (!mask)
->  			break;
-> =20
-> -		KVM_MMU_WARN_ON(kvm_ad_enabled() &&
-> -				spte_ad_need_write_protect(iter.old_spte));
-> +		KVM_MMU_WARN_ON(tdp_mmu_dirty_bit_invalid_for_spte(&iter, dbit));
+Johannes Berg (1):
+      um: allow not setting extra rpaths in the linux binary
 
-I would definitely prefer to keep this open coded as:
+John Efstathiades (4):
+      lan78xx: Fix white space and style issues
+      lan78xx: Add missing return code checks
+      lan78xx: Fix partial packet errors on suspend/resume
+      lan78xx: Fix race conditions in suspend/resume handling
 
-		KVM_MMU_WARN_ON(dbit !=3D PT_WRITABLE_MASK &&
-				spte_ad_need_write_protect(iter.old_spte));
+Juhee Kang (1):
+      hv_netvsc: use netif_is_bond_master() instead of open code
 
-IMO, that's self-explanatory, i.e. doesn't need a comment, and doesn't requ=
-ire
-hunting down the tdp_mmu_dirty_bit_invalid_for_spte() to see what the fuss =
-is
-about.
+Lena Wang (1):
+      netfilter: nf_conntrack_h323: Add protection for bmp length out of range
+
+Lina Iyer (1):
+      arm64: dts: qcom: add PDC interrupt controller for SDM845
+
+Maciej Fijalkowski (1):
+      ixgbe: {dis, en}able irqs in ixgbe_txrx_ring_{dis, en}able
+
+Marek Vasut (1):
+      regmap: Add bulk read/write callbacks into regmap_config
+
+Nico Pache (1):
+      selftests: mm: fix map_hugetlb failure on 64K page size systems
+
+Oleg Nesterov (4):
+      getrusage: add the "signal_struct *sig" local variable
+      getrusage: move thread_group_cputime_adjusted() outside of lock_task_sighand()
+      getrusage: use __for_each_thread()
+      getrusage: use sig->stats_lock rather than lock_task_sighand()
+
+Oleksij Rempel (1):
+      net: lan78xx: fix runtime PM count underflow on link stop
+
+Rand Deeb (1):
+      net: ice: Fix potential NULL pointer dereference in ice_bridge_setlink()
+
+Sasha Levin (1):
+      Linux 5.4.272
+
+Shradha Gupta (1):
+      hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed
+
+Werner Sembach (1):
+      Input: i8042 - fix strange behavior of touchpad on Clevo NS70PU
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE4n5dijQDou9mhzu83qZv95d3LNwFAmX0nLoACgkQ3qZv95d3
+LNxrdw/+OcKPa2m7vFsJC7VGQgT9PtU14MOS3rrsVBotR76muYTk9xCXk2JX2fnK
+qaJKLv59rX0bkXTqzrHZbBlWSzslaM9Ka4gdB3hIyLglIAmjXNRb2PKPb0HVA9Dw
+a7vCLxGvv3wGPopTHd5/kED/XPh361VZP3OuNM9+qGsSPh/G4sgy031/6ABLx/i/
+NyUKqY/+5CIx8uzMXKdytseNwBKh0oEaq6JbZ9o+9J6Uf5ZxonW5svSYhWPnr8ks
+WbkH1+Ykxdz77w84WGL1EHjeR5FmeXECUcDviQ9UqHVJabpJManmSV1t4O+8uoev
+x/1+/En9+1viEyUN4F+kbQFwb0a3icN+uF8LSz1GPOR4zJP/AKw7qec4vgcIXElm
+MDGSRNss41pNcCGXQzqQ40fXtdbP+ZOQS1l4GqrLzwt0YKEmF/rAgCxMCfPtiQRI
+BmUoTlTnpD/Yq7VudOXs8dNcH1Fmmfr1jGkEKTulcK8xyHbjxEMaJE19YSa7lnOy
+A1jdfwuNmlY+aM+keUqST5gJDM0qiLTMizxiZwSR9faMefh2teKekLEbCSenJXxw
+OEGlUBZ7EW1P6N6/IUO07Q5BJAcX+pgpj1u3lKYA/x+SxQscAh38F6k/Z44929UK
+F50bBtIsGliRxdktknGA7lYuUJTuVCYulLHYCqP7ovxsOu7D9z8=
+=116+
+-----END PGP SIGNATURE-----
 
