@@ -1,405 +1,275 @@
-Return-Path: <linux-kernel+bounces-104046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9968887C849
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:38:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB8B887C84A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F5E51F2256A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:38:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0846E282BA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C5F1172C;
-	Fri, 15 Mar 2024 04:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658ABDF42;
+	Fri, 15 Mar 2024 04:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VZWZbI3C"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IRf0hc/l"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C9611185
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE02DDA9
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 04:40:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710477475; cv=none; b=EyEIL+PcaFmT3nvmbuWdFQ/arIHpWcnj9YUK0hogJOE8KfHhf9STOxn/Q43FqRmtkujTx41165bj7SipWVSrOPzQO/twE1ktwO1GrhZ9U0rAMeuxImJ5ihUH4FEiIoS0zHKA25FyDap07e+6SBYqphEKbuLKMS+Bw1jFtKvcPqY=
+	t=1710477622; cv=none; b=pjT9E/6Lcha2y5Vjp83/kX0Mt/vuWIKW+QKcSXzas/9fjvnFCnYuDyZpkOcT3XoZqHH0W+D1v8tZbx96vOLF47xONd/yhSeUbJ5EZdETa+OP3XzYjfvtcOO7muwQN8BGXwRXM8YMBOSe8inyG+xBBljRKZ3yMBSXS4R9cGEhTdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710477475; c=relaxed/simple;
-	bh=M7CS8Zh3whvDJ7ess8kkHkXGSbR7TzkECrSRCBYZYnQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=id3aGnHNmKR8gp30t+u2X9tJLlJp4+74vWB2yE6PV0tL4+dT4FaGRXYQCeHW1ECTOn3D2ZMEvLC2gntBJYcS+uKpJaobck3a5TM88Ux02Xn3+Ry02ngz8Sg83NonivQJICrPb8jDCSdzMFgbuWyQJ0xhUnBZJBdX85XaGi+An7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VZWZbI3C; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42F4HMPs021629;
-	Fri, 15 Mar 2024 04:37:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=QtJkBkwdMFdff2I6B/1RAwsWoI3vpqeQXnJvBAtP+0Q=;
- b=VZWZbI3CrsPpY3WJF7btZunGHKyvkmReVSH/Qm0FwVRJaTYeDhw0Tbu0vtW5AGDVQx1h
- yjM7J1+pY01TBaYOisRMx+inDewcRy/6NR4lyLV4Mja/yNd2M9SafzFFBSo93GP62OeQ
- AjVNRdFulAqMMNrVKtREKQkMOoPHlTxOOC0fxQrJKgO8wldZRKK2544x0VkrmVP5plEL
- HayVfqNbQPuWcDmmwpwAPCrsCkaEIj2obWIldA6m395ps3TzYT30kAg74oXbj96qpvR8
- ua6yS0FdsGDOiLuRMvc1wMmDt2PKduoZ0IYJsEWGW1fFnQn+uLcpjtUz7eLIrnvVuRgS Kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wvf5ug6b4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 04:37:31 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42F4VjPJ018606;
-	Fri, 15 Mar 2024 04:37:30 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wvf5ug6ay-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 04:37:30 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42F1ck7a018621;
-	Fri, 15 Mar 2024 04:37:29 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws4t2h75w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 04:37:29 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42F4bQkS45678956
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Mar 2024 04:37:29 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9FE5D58059;
-	Fri, 15 Mar 2024 04:37:26 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8DD2658057;
-	Fri, 15 Mar 2024 04:37:23 +0000 (GMT)
-Received: from [9.124.31.56] (unknown [9.124.31.56])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 15 Mar 2024 04:37:23 +0000 (GMT)
-Message-ID: <d5a53c05-6ff3-4bb3-96e0-b8865bd81611@linux.ibm.com>
-Date: Fri, 15 Mar 2024 10:07:22 +0530
+	s=arc-20240116; t=1710477622; c=relaxed/simple;
+	bh=3dw4kv3nugcZVorg+dGsKk8AUoJOLtIANQbd02wBt3k=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=jHMzl0WS5qUs9tAkZFrgCb6gIbhn503vcvhoaaLuvXBAATlNe3Hd3wOUKrPtHFFdWv2w9HcP/mU6v5OS+YR4Og2n+AmdS/3why3LacyTJQZgAzNK8+HnZQIAI4KO1mG7Q/aWqZs5JpVxMGF9BmeryUAIgTDTQOw1Jp68Kw/iMcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IRf0hc/l; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60ccc3cfa39so25908077b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 21:40:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710477619; x=1711082419; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YbKP0Y6mUsJJmIGBIqz6+lbeOqoIQSjlgI0yOEiAc8M=;
+        b=IRf0hc/lyIhYfnUtXS/9LMT9/Iw/BNL0v/+BWY5DffUg2M4dLF6ZYizZhTgIfoUooB
+         bv7Y4ehOFpgQyND+7M1OoS+TozKUbrcb+DYWbpTpIQmDjg92XWgWM8TeqsFuryd0EXLv
+         Eg67DGRgfVq5mSOj5EDUwtEyQiKQ3LBXaBEKPo5aODo54Hbg/5oVreGY18mGgIgd1t+c
+         Dpaf+Kd567Xo4nKAlF6MxbgmqhfZqP4Qcm3+XUca9fSSg2UKvihikRfRZ4G12SKyzqpZ
+         kclkt7ck0AYWpcx4HQU20aTH2l1G9pLT6xRcvi7cj9ovWD3z8VrWUGnNwWj3Jbz6f8CA
+         8a/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710477619; x=1711082419;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YbKP0Y6mUsJJmIGBIqz6+lbeOqoIQSjlgI0yOEiAc8M=;
+        b=HGGlZvEWVqy9JsbC+q5T96q4ZBr+p4fC21HLh1iE5ZPzzGD69qA0Mbhk99H3DFn9z/
+         Uf32ivpv5/NWFz472cWBd8ok4K0J7dY9mYY9ZJKUZ7XNUPc4ydgHmzEynnacLyhjaWiP
+         rDkZpCa7Yl5z0ZBfN8A2kYmU5kBfPV37LWzH4Pc43FNAWQR/B3JI2wcEVKYtWCqlSOf/
+         obSYQYPdjrMP4D9XIPyzpRpTMznmHKZOarCuAEB6a8HBJBTCF9y1hjm23KwWNpem7pv/
+         ILioRZjkQG4xxeCINtr9S/AW4lzjDu7l3ch9HMqthlC3MijCvPVK+yAzR+ThsFAK3dOB
+         yJ2Q==
+X-Gm-Message-State: AOJu0YwhFrTz8NQIFcQ3RKK0rIN3E9iMbTSCxM6Q1vdgnTk3OndvUUbh
+	kCg7PXhVCns2byBYS89Y5cK4nw9hWHuC2sEJL3HKUESIw9geMv/27u+Ie4R5pMCrMfY2L7Ta0Yr
+	OAiupdI3PnU1llGhWLwGdjHsL97lHc6v39uUWXygZIFA5dftvFR11G8OWVtM0n2prw6iBb8mY1Z
+	3zlygfKpXb4gu4SVD5D7xXFOPIUPC585bvt329ZymUXyX1
+X-Google-Smtp-Source: AGHT+IHdd1lwpiluVuGVbRrghV6qEzZPCztCgpVk1Ar24W5LOEgoRnxyRh5CynnI7t3wIh55th6hwX8VsYII
+X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
+ (user=jstultz job=sendgmr) by 2002:a05:6902:11cc:b0:dc6:dfd9:d431 with SMTP
+ id n12-20020a05690211cc00b00dc6dfd9d431mr1100817ybu.1.1710477619235; Thu, 14
+ Mar 2024 21:40:19 -0700 (PDT)
+Date: Thu, 14 Mar 2024 21:39:45 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/10] sched/debug: Increase SCHEDSTAT_VERSION to 16
-To: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-Cc: linux-kernel@vger.kernel.org, Dietmar Eggemann
- <dietmar.eggemann@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Ingo Molnar <mingo@kernel.org>
-References: <20240308105901.1096078-1-mingo@kernel.org>
- <20240308105901.1096078-5-mingo@kernel.org>
- <14d29fdf-ef10-48e6-a102-f1f0bb27c181@linux.ibm.com>
- <ZfAoEmH6KRhjyUor@gmail.com> <ZfKJaztM0FhKRmjg@BLR-5CG11610CF.amd.com>
- <66f1e42c-9035-4f9b-8c77-976ab50638bd@amd.com>
-Content-Language: en-US
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <66f1e42c-9035-4f9b-8c77-976ab50638bd@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9F1ul7Ev73V2ud58y45RKTFZOoMY_7mO
-X-Proofpoint-GUID: B01tAFiTwuVrn-QyKnXVQfPG8jcWHJJS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_13,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 suspectscore=0 adultscore=0
- mlxscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=999 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403150034
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240315044007.2778856-1-jstultz@google.com>
+Subject: [PATCH v9 0/7] Preparatory changes for Proxy Execution v9
+From: John Stultz <jstultz@google.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: John Stultz <jstultz@google.com>, Joel Fernandes <joelaf@google.com>, 
+	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
+	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+As mentioned last time[1], after previous submissions of the
+Proxy Execution series, I got feedback that the patch series was
+getting a bit unwieldy to review, and Qais suggested I break out
+just the cleanups/preparatory components of the patch series and
+submit them on their own in the hope we can start to merge the
+less complex bits and discussion can focus on the more
+complicated portions afterwards. This so far has not been very
+successful, with the submission & RESEND of the v8 preparatory
+changes not getting much in the way of review.
+
+Nonetheless, for v9 of this series, I=E2=80=99m again only submitting
+those early cleanup/preparatory changes here (which have not
+changed since the v8 submissions, but to avoid confusion with the
+git branch names, I=E2=80=99m labeling it as v9). In the meantime, I=E2=80=
+=99ve
+continued to put a lot of effort into the full series, mostly
+focused on polishing the series for correctness, and fixing some
+hard to trip races.
+
+If you are interested, the full v9 series, it can be found here:
+  https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v9-6.8
+  https://github.com/johnstultz-work/linux-dev.git proxy-exec-v9-6.8
 
 
+New in v9:
+(In the git tree. Again, none of the preparatory patches
+submitted here have changed since v8)
+---------
+* Change to force mutex lock handoff when we have a blocked donor
+  (preserves optimistic spinning elsewhere, but still prioritizes
+  donor when present on unlock)
 
-On 3/14/24 11:34 AM, Swapnil Sapkal wrote:
-> 
-> 
-> Please find the patch below. This is based on tip/sched/core.
-> 
-> ---
-> From deeed5bf937bddf227deb1cdb9e2e6c164c48053 Mon Sep 17 00:00:00 2001
-> From: Swapnil Sapkal <swapnil.sapkal@amd.com>
-> Date: Thu, 15 Jun 2023 04:55:09 +0000
-> Subject: [PATCH] sched: Report the different kinds of imbalances in
-> /proc/schedstat
-> 
-> In /proc/schedstat, lb_imbalance reports the sum of imbalances
-> discovered in sched domains with each call to sched_balance_rq(), which is
-> not very useful because lb_imbalance is an aggregate of the imbalances
-> due to load, utilization, nr_tasks and misfit_tasks. Remove this field
-> from /proc/schedstat.
-> 
+* Do return migration whenever we=E2=80=99re not on the wake_cpu (should
+  address placement concerns brought up earlier by Xuewen Yan)
 
-Yes. This makes sense. any one of them can skew the value. 
+* Closed hole where we might mark a task as BO_RUNNABLE without
+  doing return migration
 
-> Currently there are no fields in /proc/schedstat to report different types
-> of imbalances. Introduce new fields in /proc/schedstat to report the
-> total imbalances in load, utilization, nr_tasks or misfit_tasks.
-> 
-> Added fields to /proc/schedstat:
->      - lb_imbalance_load: Total imbalance due to load.
->     - lb_imbalance_util: Total imbalance due to utilization.
->     - lb_imbalance_task: Total imbalance due to number of tasks.
->     - lb_imbalance_misfit: Total imbalance due to misfit tasks.
-> 
-> Signed-off-by: Swapnil Sapkal <swapnil.sapkal@amd.com>
-> ---
->  Documentation/scheduler/sched-stats.rst | 104 +++++++++++++-----------
->  include/linux/sched/topology.h          |   5 +-
->  kernel/sched/fair.c                     |  15 +++-
->  kernel/sched/stats.c                    |   7 +-
->  4 files changed, 80 insertions(+), 51 deletions(-)
-> 
-> diff --git a/Documentation/scheduler/sched-stats.rst
-> b/Documentation/scheduler/sched-stats.rst
-> index 7c2b16c4729d..d6e9a8a5619c 100644
-> --- a/Documentation/scheduler/sched-stats.rst
-> +++ b/Documentation/scheduler/sched-stats.rst
-> @@ -6,6 +6,9 @@ Version 16 of schedstats changed the order of
-> definitions within
->  'enum cpu_idle_type', which changed the order of [CPU_MAX_IDLE_TYPES]
->  columns in show_schedstat(). In particular the position of CPU_IDLE
->  and __CPU_NOT_IDLE changed places. The size of the array is unchanged.
-> +Also stop reporting 'lb_imbalance' as it has no significance anymore
-> +and instead add more relevant fields namely 'lb_imbalance_load',
-> +'lb_imbalance_util', 'lb_imbalance_task' and 'lb_imbalance_misfit'.
->  
->  Version 15 of schedstats dropped counters for some sched_yield:
->  yld_exp_empty, yld_act_empty and yld_both_empty. Otherwise, it is
-> @@ -73,86 +76,93 @@ One of these is produced per domain for each cpu
-> described. (Note that if
->  CONFIG_SMP is not defined, *no* domains are utilized and these lines
->  will not appear in the output.)
->  
-> -domain<N> <cpumask> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-> 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36
-> +domain<N> <cpumask> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-> 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45
->  
->  The first field is a bit mask indicating what cpus this domain operates
-> over.
->  
+* Much improved handling of balance callbacks when we need to
+  pick_again
 
-IIUC, this is editing the content of Version 15, But changes would happen on Version 16. 
-Instead can we add the section for Version 16 and not modify for 15? 
+* Fixes for cases where we put_prev_task() but left a dangling
+  pointer to rq_selected() when deactivating a task (as it could
+  then be migrated away while we still have a reference to it),
+  by selecting idle before deactivating next.
 
-> -The next 24 are a variety of sched_balance_rq() statistics in grouped
-> into types
-> +The next 33 are a variety of sched_balance_rq() statistics in grouped
-> into types
->  of idleness (idle, busy, and newly idle):
->  
->      1)  # of times in this domain sched_balance_rq() was called when the
-> +        cpu was busy
-> +    2)  # of times in this domain sched_balance_rq() checked but found the
-> +        load did not require balancing when busy
-> +    3)  # of times in this domain sched_balance_rq() tried to move one or
-> +        more tasks and failed, when the cpu was busy
-> +    4)  Total imbalance in load when the cpu was busy
-> +    5)  Total imbalance in utilization when the cpu was busy
-> +    6)  Total imbalance in number of tasks when the cpu was busy
-> +    7)  Total imbalance due to misfit tasks when the cpu was busy
-> +    8)  # of times in this domain pull_task() was called when busy
-> +    9)  # of times in this domain pull_task() was called even though the
-> +        target task was cache-hot when busy
-> +    10) # of times in this domain sched_balance_rq() was called but did
-> not
-> +        find a busier queue while the cpu was busy
-> +    11) # of times in this domain a busier queue was found while the cpu
-> +        was busy but no busier group was found
-> +
-> +    12) # of times in this domain sched_balance_rq() was called when the
->          cpu was idle
-> -    2)  # of times in this domain sched_balance_rq() checked but found
-> +    13) # of times in this domain sched_balance_rq() checked but found
->          the load did not require balancing when the cpu was idle
-> -    3)  # of times in this domain sched_balance_rq() tried to move one or
-> +    14) # of times in this domain sched_balance_rq() tried to move one or
->          more tasks and failed, when the cpu was idle
-> -    4)  sum of imbalances discovered (if any) with each call to
-> -        sched_balance_rq() in this domain when the cpu was idle
-> -    5)  # of times in this domain pull_task() was called when the cpu
-> +    15) Total imbalance in load when the cpu was idle
-> +    16) Total imbalance in utilization when the cpu was idle
-> +    17) Total imbalance in number of tasks when the cpu was idle
-> +    18) Total imbalance due to misfit tasks when the cpu was idle
-> +    19) # of times in this domain pull_task() was called when the cpu
->          was idle
-> -    6)  # of times in this domain pull_task() was called even though
-> +    20) # of times in this domain pull_task() was called even though
->          the target task was cache-hot when idle
-> -    7)  # of times in this domain sched_balance_rq() was called but did
-> +    21) # of times in this domain sched_balance_rq() was called but did
->          not find a busier queue while the cpu was idle
-> -    8)  # of times in this domain a busier queue was found while the
-> +    22) # of times in this domain a busier queue was found while the
->          cpu was idle but no busier group was found
-> -    9)  # of times in this domain sched_balance_rq() was called when the
-> -        cpu was busy
-> -    10) # of times in this domain sched_balance_rq() checked but found the
-> -        load did not require balancing when busy
-> -    11) # of times in this domain sched_balance_rq() tried to move one or
-> -        more tasks and failed, when the cpu was busy
-> -    12) sum of imbalances discovered (if any) with each call to
-> -        sched_balance_rq() in this domain when the cpu was busy
-> -    13) # of times in this domain pull_task() was called when busy
-> -    14) # of times in this domain pull_task() was called even though the
-> -        target task was cache-hot when busy
-> -    15) # of times in this domain sched_balance_rq() was called but did
-> not
-> -        find a busier queue while the cpu was busy
-> -    16) # of times in this domain a busier queue was found while the cpu
-> -        was busy but no busier group was found
->  
-> -    17) # of times in this domain sched_balance_rq() was called when the
-> -        cpu was just becoming idle
-> -    18) # of times in this domain sched_balance_rq() checked but found the
-> +    23) # of times in this domain sched_balance_rq() was called when the
-> +        was just becoming idle
-> +    24) # of times in this domain sched_balance_rq() checked but found the
->          load did not require balancing when the cpu was just becoming idle
-> -    19) # of times in this domain sched_balance_rq() tried to move one
-> or more
-> +    25) # of times in this domain sched_balance_rq() tried to move one
-> or more
->          tasks and failed, when the cpu was just becoming idle
-> -    20) sum of imbalances discovered (if any) with each call to
-> -        sched_balance_rq() in this domain when the cpu was just
-> becoming idle
-> -    21) # of times in this domain pull_task() was called when newly idle
-> -    22) # of times in this domain pull_task() was called even though the
-> +    26) Total imbalance in load when the cpu was just becoming idle
-> +    27) Total imbalance in utilization when the cpu was just becoming idle
-> +    28) Total imbalance in number of tasks when the cpu was just
-> becoming idle
-> +    29) Total imbalance due to misfit tasks when the cpu was just
-> becoming idle
-> +    30) # of times in this domain pull_task() was called when newly idle
-> +    31) # of times in this domain pull_task() was called even though the
->          target task was cache-hot when just becoming idle
-> -    23) # of times in this domain sched_balance_rq() was called but did
-> not
-> +    32) # of times in this domain sched_balance_rq() was called but did
-> not
->          find a busier queue while the cpu was just becoming idle
-> -    24) # of times in this domain a busier queue was found while the cpu
-> +    33) # of times in this domain a busier queue was found while the cpu
->          was just becoming idle but no busier group was found
->  
->     Next three are active_load_balance() statistics:
->  
-> -    25) # of times active_load_balance() was called
-> -    26) # of times active_load_balance() tried to move a task and failed
-> -    27) # of times active_load_balance() successfully moved a task
-> +    34) # of times active_load_balance() was called
-> +    35) # of times active_load_balance() tried to move a task and failed
-> +    36) # of times active_load_balance() successfully moved a task
->  
->     Next three are sched_balance_exec() statistics:
->  
-> -    28) sbe_cnt is not used
-> -    29) sbe_balanced is not used
-> -    30) sbe_pushed is not used
-> +    37) sbe_cnt is not used
-> +    38) sbe_balanced is not used
-> +    39) sbe_pushed is not used
->  
->     Next three are sched_balance_fork() statistics:
->  
-> -    31) sbf_cnt is not used
-> -    32) sbf_balanced is not used
-> -    33) sbf_pushed is not used
-> +    40) sbf_cnt is not used
-> +    41) sbf_balanced is not used
-> +    42) sbf_pushed is not used
->  
->     Next three are try_to_wake_up() statistics:
->  
-> -    34) # of times in this domain try_to_wake_up() awoke a task that
-> +    43) # of times in this domain try_to_wake_up() awoke a task that
->          last ran on a different cpu in this domain
-> -    35) # of times in this domain try_to_wake_up() moved a task to the
-> +    44) # of times in this domain try_to_wake_up() moved a task to the
->          waking cpu because it was cache-cold on its own cpu anyway
-> -    36) # of times in this domain try_to_wake_up() started passive
-> balancing
-> +    45) # of times in this domain try_to_wake_up() started passive
-> balancing
->  
->  /proc/<pid>/schedstat
->  ---------------------
-> diff --git a/include/linux/sched/topology.h
-> b/include/linux/sched/topology.h
-> index c8fe9bab981b..15685c40a713 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -114,7 +114,10 @@ struct sched_domain {
->      unsigned int lb_count[CPU_MAX_IDLE_TYPES];
->      unsigned int lb_failed[CPU_MAX_IDLE_TYPES];
->      unsigned int lb_balanced[CPU_MAX_IDLE_TYPES];
-> -    unsigned int lb_imbalance[CPU_MAX_IDLE_TYPES];
-> +    unsigned int lb_imbalance_load[CPU_MAX_IDLE_TYPES];
-> +    unsigned int lb_imbalance_util[CPU_MAX_IDLE_TYPES];
-> +    unsigned int lb_imbalance_task[CPU_MAX_IDLE_TYPES];
-> +    unsigned int lb_imbalance_misfit[CPU_MAX_IDLE_TYPES];
->      unsigned int lb_gained[CPU_MAX_IDLE_TYPES];
->      unsigned int lb_hot_gained[CPU_MAX_IDLE_TYPES];
->      unsigned int lb_nobusyg[CPU_MAX_IDLE_TYPES];
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a19ea290b790..515258f97ba3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11288,7 +11288,20 @@ static int sched_balance_rq(int this_cpu,
-> struct rq *this_rq,
->  
->      WARN_ON_ONCE(busiest == env.dst_rq);
->  
-> -    schedstat_add(sd->lb_imbalance[idle], env.imbalance);
-> +    switch (env.migration_type) {
-> +    case migrate_load:
-> +        schedstat_add(sd->lb_imbalance_load[idle], env.imbalance);
-> +        break;
-> +    case migrate_util:
-> +        schedstat_add(sd->lb_imbalance_util[idle], env.imbalance);
-> +        break;
-> +    case migrate_task:
-> +        schedstat_add(sd->lb_imbalance_task[idle], env.imbalance);
-> +        break;
-> +    case migrate_misfit:
-> +        schedstat_add(sd->lb_imbalance_misfit[idle], env.imbalance);
-> +        break;
-> +    }
->  
+* Fixes for dangling references to rq->curr (which had been
+  put_prev_task=E2=80=99ed)  when we drop rq lock for proxy_migration
 
-This switch statement could use a helper function. 
+* Fixes for ttwu / find_proxy_task() races if the lock owner was
+  being return migrated, and ttwu hadn=E2=80=99t yet set_task_cpu() and
+  activated it, which allowed that task to be scheduled on two
+  cpus at the same time.
 
->      env.src_cpu = busiest->cpu;
->      env.src_rq = busiest;
-> diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
-> index 78e48f5426ee..a02bc9db2f1c 100644
-> --- a/kernel/sched/stats.c
-> +++ b/kernel/sched/stats.c
-> @@ -151,11 +151,14 @@ static int show_schedstat(struct seq_file *seq,
-> void *v)
->              seq_printf(seq, "domain%d %*pb", dcount++,
->                     cpumask_pr_args(sched_domain_span(sd)));
->              for (itype = 0; itype < CPU_MAX_IDLE_TYPES; itype++) {
-> -                seq_printf(seq, " %u %u %u %u %u %u %u %u",
-> +                seq_printf(seq, " %u %u %u %u %u %u %u %u %u %u %u",
->                      sd->lb_count[itype],
->                      sd->lb_balanced[itype],
->                      sd->lb_failed[itype],
-> -                    sd->lb_imbalance[itype],
-> +                    sd->lb_imbalance_load[itype],
-> +                    sd->lb_imbalance_util[itype],
-> +                    sd->lb_imbalance_task[itype],
-> +                    sd->lb_imbalance_misfit[itype],
->                      sd->lb_gained[itype],
->                      sd->lb_hot_gained[itype],
->                      sd->lb_nobusyq[itype],
+* Fix for live-lock between activate_blocked_tasks() and
+  proxy_enqueue_on_owner() if activated owner went right back to
+  sleep (which also simplifies the locking in
+  activate_blocked_tasks())
+
+* Cleanups to avoid locked BO_WAKING->BO_RUNNABLE transition in
+  try_to_wake_up() if proxy execution isn't enabled
+
+* Fix for psi_dequeue, as proxy changes assumptions around
+  voluntary sleeps.
+
+* Numerous typos, comment improvements, and other fixups
+  suggested by Metin
+
+* And more!
+
+
+Performance:
+---------
+K Prateek Nayak provided some feedback on the v8 series here[2].
+Given the potential extra overhead of doing rq migrations/return
+migrations/etc for the proxy case, it=E2=80=99s not completely surprising
+a few of K Prateek=E2=80=99s test cases saw ~3-5% regressions, but I=E2=80=
+=99m
+hoping to look into this soon to see if we can reduce those
+further. The donor mutex handoff in this revision may help some.
+
+
+Issues still to address:
+---------
+* The chain migration functionality needs further iterations and
+  better validation to ensure it truly maintains the RT/DL load
+  balancing invariants.
+
+* CFS load balancing. There was concern that blocked tasks may
+  carry forward load (PELT) to the lock owner's CPU, so the CPU
+  may look like it is overloaded. Needs investigation.
+
+* The sleeping owner handling (where we deactivate waiting tasks
+  and enqueue them onto a list, then reactivate them when the
+  owner wakes up) doesn=E2=80=99t feel great. This is in part because
+  when we want to activate tasks, we=E2=80=99re already holding a
+  task.pi_lock and a rq_lock, just not the locks for the task
+  we=E2=80=99re activating, nor the rq we=E2=80=99re enqueuing it onto. So =
+there
+  has to be a bit of lock juggling to drop and acquire the right
+  locks (in the right order). It feels like there=E2=80=99s got to be a
+  better way. Also needs some rework to get rid of the recursion.
+
+
+Credit/Disclaimer:
+=E2=80=94--------------------
+As mentioned previously, this Proxy Execution series has a long
+history: First described in a paper[3] by Watkins, Straub,
+Niehaus, then from patches from Peter Zijlstra, extended with
+lots of work by Juri Lelli, Valentin Schneider, and Connor
+O'Brien. (and thank you to Steven Rostedt for providing
+additional details here!)
+
+So again, many thanks to those above, as all the credit for this
+series really is due to them - while the mistakes are likely
+mine.
+
+Thanks so much!
+-john
+
+[1] https://lore.kernel.org/lkml/20240224001153.2584030-1-jstultz@google.co=
+m/
+[2] https://lore.kernel.org/lkml/c26251d2-e1bf-e5c7-0636-12ad886e1ea8@amd.c=
+om/
+[3] https://static.lwn.net/images/conf/rtlws11/papers/proc/p38.pdf
+
+Cc: Joel Fernandes <joelaf@google.com>
+Cc: Qais Yousef <qyousef@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Zimuzo Ezeozue <zezeozue@google.com>
+Cc: Youssef Esmat <youssefesmat@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Metin Kaya <Metin.Kaya@arm.com>
+Cc: Xuewen Yan <xuewen.yan94@gmail.com>
+Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: kernel-team@android.com
+
+
+Connor O'Brien (2):
+  sched: Add do_push_task helper
+  sched: Consolidate pick_*_task to task_is_pushable helper
+
+John Stultz (1):
+  sched: Split out __schedule() deactivate task logic into a helper
+
+Juri Lelli (2):
+  locking/mutex: Make mutex::wait_lock irq safe
+  locking/mutex: Expose __mutex_owner()
+
+Peter Zijlstra (2):
+  locking/mutex: Remove wakeups from under mutex::wait_lock
+  sched: Split scheduler and execution contexts
+
+ kernel/locking/mutex.c       |  60 +++++++----------
+ kernel/locking/mutex.h       |  25 +++++++
+ kernel/locking/rtmutex.c     |  26 +++++---
+ kernel/locking/rwbase_rt.c   |   4 +-
+ kernel/locking/rwsem.c       |   4 +-
+ kernel/locking/spinlock_rt.c |   3 +-
+ kernel/locking/ww_mutex.h    |  49 ++++++++------
+ kernel/sched/core.c          | 122 +++++++++++++++++++++--------------
+ kernel/sched/deadline.c      |  53 ++++++---------
+ kernel/sched/fair.c          |  18 +++---
+ kernel/sched/rt.c            |  59 +++++++----------
+ kernel/sched/sched.h         |  44 ++++++++++++-
+ 12 files changed, 268 insertions(+), 199 deletions(-)
+
+--=20
+2.44.0.291.gc1ea87d7ee-goog
+
 
