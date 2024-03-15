@@ -1,192 +1,166 @@
-Return-Path: <linux-kernel+bounces-104928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2899F87D5FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:16:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B9F587D607
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:17:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C34C1C20EA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:16:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B9E1B217C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3DB454F93;
-	Fri, 15 Mar 2024 21:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6010854911;
+	Fri, 15 Mar 2024 21:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="D33dmYC/"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2059.outbound.protection.outlook.com [40.107.93.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WASBOIO/"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03854524C3;
-	Fri, 15 Mar 2024 21:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710537382; cv=fail; b=PrjOkOOOdfajJvsDD0J128Z1Zx605MaHBnRz7DFXcyAFOD2Jqz7ahpVpQ2gvNqC5H0fbOHhio4luCheKb4mB1CMFSkGOS9Sw8qCyDicTsLnONQoDGYHsji7zdUBHY8ORzRn5ru7F2lgjSwjYkiWV7EI2NG4kc6cUg20fTH/RGwg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710537382; c=relaxed/simple;
-	bh=6sF7qy8PS+a8W+NPl4Ep0P00bX+WJf5susRGkG+mGgA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OwW3Zqvr6B5yXqYeBm8NCwLYmmHsTeLILIMb2E0FyCszOwRgATC1Jt+D47hWzQPpEgd4pBpt3eKZQlmpBzl8P++Z9XpoLFKEBsnv9uMVLiYD2HESTnCxVH0yckNJ6xn5yVG4AzYolKr1pJZPYnb9Nrt/GkcdQP/mTFih69sfMDQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=D33dmYC/; arc=fail smtp.client-ip=40.107.93.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PSDbontWSTQ29LjigBYN1zoW345+qdDA/h9SMoMGnsuiG83cuK3FBoY30LTmusgR+qOsuFMvkl5ZME2srrH7x40FaA48mipF8w1FNrwcqBa/mP8kZBqpd4B0Uy1Ax4zWpFExu090NRfJggVIQ33bviw+kvAhBlXNeCNV/Arq5YCnNC/xx7MU3o7F0n0nTMdm/fOqRfUrEMjYLVOr1X+LhaPSyzyLu3P6Gna0tkAWR5dBxvjNBuInlrK3oXf/hyu3wyQgHoXTDB2K6sshL2u4nSQ2gZNfRRG8HZzhM4frHzV9rRGeOhhFOwIy0wnQ9zxa6LJKsbk28IM7nOiajQbWrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bqv+Knr7fIg09mX5uMLKwGowajJsnIHuU9QcUK1DxNA=;
- b=mFWcwq2QVap8dWrRiz/I+8MGOJQ1zzJFh8D1jZyfizj7xch490dX8BafxHG1pIT/AkQnHvwUuIfEdRdWrB+oy4ZwmI+CtIwKpnA+yLM4B8zg+/a6K8dYM2oGtszKuVIzyqX6uVqBekEkXOzsXFPYBNj/0I7NQdKY1tJHhmYQODMHEzxU4tSuzfoouekMKt1BEeS/dRR6iIOHawjIYkBJvtTSYtBBGmYIcUugxysrJ4ED8KaQpmFu7GAw7KRI5dlP0hpW8C/X8JJ6hIEsSHJdYvOH/xBX0/BQ//yXgpyyF23uRshsDsr1R9Qdq5MdcNg5mnpkY9wGoBGmu8q1VdrU9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bqv+Knr7fIg09mX5uMLKwGowajJsnIHuU9QcUK1DxNA=;
- b=D33dmYC/pPNapkG+fSqARyT6pYJMuxvvZ1lZ47rlyMkTwhxtU2sHJMdueLOL269wRr876xZqws1rLRzl+j2z3mwDdstcXmtDp2dTjibbW0OnraLNiFLyUJ6kzRueRg+mO2xYcRcQL2AcO5eETUs6hzNk2V9WJ4L7Wt1DfsnJhIc=
-Received: from MN2PR07CA0030.namprd07.prod.outlook.com (2603:10b6:208:1a0::40)
- by CH3PR12MB7762.namprd12.prod.outlook.com (2603:10b6:610:151::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Fri, 15 Mar
- 2024 21:16:16 +0000
-Received: from MN1PEPF0000ECD4.namprd02.prod.outlook.com
- (2603:10b6:208:1a0:cafe::cb) by MN2PR07CA0030.outlook.office365.com
- (2603:10b6:208:1a0::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.22 via Frontend
- Transport; Fri, 15 Mar 2024 21:16:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- MN1PEPF0000ECD4.mail.protection.outlook.com (10.167.242.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7386.12 via Frontend Transport; Fri, 15 Mar 2024 21:16:16 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Mar
- 2024 16:16:16 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Mar
- 2024 14:16:15 -0700
-Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Fri, 15 Mar 2024 16:16:14 -0500
-From: Tanmay Shah <tanmay.shah@amd.com>
-To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <michal.simek@amd.com>, <ben.levinsky@amd.com>,
-	<tanmay.shah@amd.com>
-CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] drivers: remoteproc: add Versal and Versal-NET support
-Date: Fri, 15 Mar 2024 14:15:33 -0700
-Message-ID: <20240315211533.1996543-4-tanmay.shah@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240315211533.1996543-1-tanmay.shah@amd.com>
-References: <20240315211533.1996543-1-tanmay.shah@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB00C548F0;
+	Fri, 15 Mar 2024 21:17:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710537432; cv=none; b=oSnymNfDzb020l9NOeeXZT/FrhOrWXtzr5hQTU9Lxy+e1dLFV7HRCHno/Kz+mPbymGXc/6Juli3ovfod5FthB69OUQlIuSPuJ7Kst0xEIRlp2MF6+g+XxoNv3lI58Eu7ZL89OY/bTa+JRkuYmojczb0GWHRlq2dX1yerRgtXi0Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710537432; c=relaxed/simple;
+	bh=hwD/lGz/VzatlOJGLNO2bM+DjLMZEkNqMUkR6QXjBvk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EmKZ/0zBU5JIcy+mcbEoRyI53l+J2EZXBMeF7QvaEl212I6eO6XaXzzTzD1M7vbyJI/x3GWnp9sGfPmNeWCeifu46rHWOYi5sKqAFxV7UFXclb3xtAJFcJJ4yZ8NsZaFnPgeCDrkl0cJwadGATnk3jjJk/H0YerOqv6SExCltAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WASBOIO/; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd9b6098aeso19215645ad.0;
+        Fri, 15 Mar 2024 14:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710537429; x=1711142229; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dbw37BmJsQeVdqK1E7BHtnCUQp5XmW43FRTZzRfLqog=;
+        b=WASBOIO/mk8BOl/FGa78H6u+IUALpPqN0Qt30t5ECct3HdZ2wqtwhtbXDrna/n3cGk
+         pjkV2cgD+E4iIS7AWk0dZK4cbRBKGCew5xYlHuZBhU5TDuQGpQxJmbjjgTaRuSiWJcO8
+         1W52bLKcN7cutPxLcPNiE3iaZqCqfdncGMBjnvRPS4uGwcsGvldPD2uhiMUbwgz922cv
+         +kftX/2jr4wZVspG8EM6NeiYBnjCF36rooC3Uv9BIMjcmwYoPSlE2TpqMen9Ea4Us+2j
+         nXnAo7ZLQjBRfdDiFjEEfs/yw0wJ5hUlEipiKTa13lOSUMgpPIQ2L9F01DIfBdVEizyE
+         wQww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710537429; x=1711142229;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dbw37BmJsQeVdqK1E7BHtnCUQp5XmW43FRTZzRfLqog=;
+        b=PGDhIhJV4YAlspWfXXC/d5bmOLA7U1z5aOHgzFqMa7UPaQg12iQNGsMHTau5Fg43zY
+         tJFwVfeH8tmEO1j9uhK78PqCACITHBWAEJYY0GFxEYOumkVgH4lv/xR4oX+qvctmXxF/
+         zvBu80oL6k5QngESVgi/IX8PH4u06e5YUEsSxKjnvYjZKdPn8nlsLf32wyTyzKn5EjNS
+         5mnitQd/spRNEZugvyo//rJhG3TdYVcLAXkfMUTbhMozblLG8o9b+BIrNdRjEhGNs8m8
+         y7Bho6R5r0daRuRqL28/5ZlKXzO/AkJ633CTLtCNeGGO/A3zuGomJ+6FddmnuKelmt92
+         KnUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUt5opfCpfN8eT27H5L4ewgTcJdG9ZfmtqSKhC+W6KrBvqntatXtqmdbv0idSB7/CQZadO2Z+LtFlrCJ1tbGP+jslygs74lgwHQWxsxj/Jxs+DgJDRYldMwstjK/m/XdUszVqqE92yT1dyDstEYtE4yuXS68OX3ISHOoRjhTp290Zwt6z8nU0XGbcJxT5TgNYQjpRLbrvtDZi4vfdzVlKUDVETK1Mo=
+X-Gm-Message-State: AOJu0YxkEMw31ZKbxzXmWGOQt2SgtTNAaXZie8deiejH08uOYTdoDbmA
+	2m0JLl78RDINLPjjHNG+Ctc9vMgHgrxO8H/iwZ/s0SndIQs5csEl0IaLLnAZ/oSbvAlnRUL7A5p
+	fuCXdUF2iPoOdZSAdNL3V2SrS+FEAxM+n
+X-Google-Smtp-Source: AGHT+IGbDe8TDqWhW7fOhXA2CHqs3losvmxFx7BFSa9/+mgxC9s6/F3YiXoF2pn+xPEHeBz0lVW6B8iNIstOBbhkgns=
+X-Received: by 2002:a17:902:6e16:b0:1dc:ca1b:279b with SMTP id
+ u22-20020a1709026e1600b001dcca1b279bmr5438447plk.1.1710537428873; Fri, 15 Mar
+ 2024 14:17:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD4:EE_|CH3PR12MB7762:EE_
-X-MS-Office365-Filtering-Correlation-Id: 345e9870-1a4e-4b1c-9d2d-08dc453526a5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Hj90QT88PnDPP/nUgGTXdmN5QyBa+wzUe9sompPy5Lp9QqvEfzvoaKVX+mBXvkG4sD1GpDC0ac7BI0PR7mlFsZkrK8ehB1DvLu+e4E973RwRGcWaysu4Gx/qeCSGH/t52mTBautf1u2Yu7cNTYqmG1QnxftyHBvFNeelDEptyzsHceXvkO6fIGbi8RoV+wjgbtToYHYPow1ve0W7n3Ek+GbpCt0muzkE6pql86knBEacl8sP2POtPTIIEy2yYD5McsSbpI4BA3XvuEa+dQa9Zc0LUY/i/U544Wc+CvGh6vRJ5/BHOjss2WsoLbozRW411fTur/3lTODlF1nCOnuJ0aaIch58eevuJ4aqd/25EcP8IW4uo5wKyTxyun32dYmsrWRuqAJrgFjikj10rrnhoZe8oTiCwN6wLX0mX4EFgBRid765ue4AIAwTGZdFosWzv8sBMBKgPc8YZRPOURvrjjDeYc+6KCGCQPYUWLFMzqTax9SV8/NTjNtmf6oCcxtVisZq/76snUbxVU6bgR29DquOobsA+MrgX3aOGCRJJ7OX+NQbBQ1rHKuthvY+zPIIgAwvsASJWSCZZAAk34G/AAKFOdX35sOBSsDFPFGNx5l3NPdn35i88d3vSzmayihldzqZbYLhW3qFd4yL+Neq/RskB3gCINmXqdOi69g2B6Ej6R/LLEMAA3alLrxyAlQAZHjRgGuoMv2RwyR7sZGuBiQv4tzKjbjm5jMZRIPT2Ez1Xg3O0+omB1HiUaPae80D
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 21:16:16.3270
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 345e9870-1a4e-4b1c-9d2d-08dc453526a5
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000ECD4.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7762
+References: <20240315113828.258005-1-cgzones@googlemail.com>
+ <20240315113828.258005-2-cgzones@googlemail.com> <CAEf4BzZF0A9qEzmRigHFLQ4vBQshGUQWZVG5L0q2_--kx4=AXA@mail.gmail.com>
+ <0f8291f7-48b1-4be1-8a57-dbad5d0ab28c@kernel.dk>
+In-Reply-To: <0f8291f7-48b1-4be1-8a57-dbad5d0ab28c@kernel.dk>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 15 Mar 2024 14:16:56 -0700
+Message-ID: <CAEf4BzbgQrYDMma=NbW6A-qikA693eSnz9-RwjkF3xPLRE8qqg@mail.gmail.com>
+Subject: Re: [PATCH 02/10] capability: add any wrappers to test for multiple
+ caps with exactly one audit message
+To: Jens Axboe <axboe@kernel.dk>
+Cc: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>, 
+	linux-security-module@vger.kernel.org, linux-block@vger.kernel.org, 
+	Serge Hallyn <serge@hallyn.com>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-AMD-Xilinx Versal and Versal-NET are successor of ZynqMP platform. ZynqMP
-remoteproc driver is mostly compatible with new platforms except few
-platform specific differences.
+On Fri, Mar 15, 2024 at 11:41=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote=
+:
+>
+> On 3/15/24 10:45 AM, Andrii Nakryiko wrote:
+> >> +/**
+> >> + * ns_capable_any - Determine if the current task has one of two supe=
+rior capabilities in effect
+> >> + * @ns:  The usernamespace we want the capability in
+> >> + * @cap1: The capabilities to be tested for first
+> >> + * @cap2: The capabilities to be tested for secondly
+> >> + *
+> >> + * Return true if the current task has at least one of the two given =
+superior
+> >> + * capabilities currently available for use, false if not.
+> >> + *
+> >> + * In contrast to or'ing capable() this call will create exactly one =
+audit
+> >> + * message, either for @cap1, if it is granted or both are not permit=
+ted,
+> >> + * or @cap2, if it is granted while the other one is not.
+> >> + *
+> >> + * The capabilities should be ordered from least to most invasive, i.=
+e. CAP_SYS_ADMIN last.
+> >> + *
+> >> + * This sets PF_SUPERPRIV on the task if the capability is available =
+on the
+> >> + * assumption that it's about to be used.
+> >> + */
+> >> +bool ns_capable_any(struct user_namespace *ns, int cap1, int cap2)
+> >> +{
+> >> +       if (cap1 =3D=3D cap2)
+> >> +               return ns_capable(ns, cap1);
+> >> +
+> >> +       if (ns_capable_noauditondeny(ns, cap1))
+> >> +               return true;
+> >> +
+> >> +       if (ns_capable_noauditondeny(ns, cap2))
+> >> +               return true;
+> >> +
+> >> +       return ns_capable(ns, cap1);
+> >
+> > this will incur an extra capable() check (with all the LSMs involved,
+> > etc), and so for some cases where capability is expected to not be
+> > present, this will be a regression. Is there some way to not redo the
+> > check, but just audit the failure? At this point we do know that cap1
+> > failed before, so might as well just log that.
+>
+> Not sure why that's important - if it's a failure case, and any audit
+> failure should be, then why would we care if that's now doing a bit of
+> extra work?
 
-Versal has same IP of cortex-R5 cores hence maintained compatible string
-same as ZynqMP platform. However, hardcode TCM addresses are not
-supported for new platforms and must be provided in device-tree as per
-new bindings. This makes TCM representation data-driven and easy to
-maintain. This check is provided in the driver.
+Lack of capability doesn't necessarily mean "failure". E.g., in FUSE
+there are at least few places where the code checks
+capable(CAP_SYS_ADMIN), and based on that decides on some limit values
+or extra checks. So if !capable(CAP_SYS_ADMIN), operation doesn't
+necessarily fail outright, it just has some more restricted resources
+or something.
 
-For Versal-NET platform, TCM doesn't need to be configured in lockstep
-mode or split mode. Hence that call to PMC firmware is avoided in the
-driver for Versal-NET platform.
+Luckily in FUSE's case it's singular capable() check, so capable_any()
+won't incur extra overhead. But I was just wondering if it would be
+possible to avoid this with capable_any() as well, so that no one has
+to do these trade-offs.
 
-Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
----
- drivers/remoteproc/xlnx_r5_remoteproc.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+We also had cases in production of some BPF applications tracing
+cap_capable() calls, so each extra triggering of it would be a bit of
+added overhead, as a general rule.
 
-diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-index d4a22caebaad..193bc159d1b4 100644
---- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-+++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-@@ -323,9 +323,12 @@ static int zynqmp_r5_set_mode(struct zynqmp_r5_core *r5_core,
- 		return ret;
- 	}
- 
--	ret = zynqmp_pm_set_tcm_config(r5_core->pm_domain_id, tcm_mode);
--	if (ret < 0)
--		dev_err(r5_core->dev, "failed to configure TCM\n");
-+	/* TCM configuration is not needed in versal-net */
-+	if (device_is_compatible(r5_core->dev, "xlnx,zynqmp-r5f")) {
-+		ret = zynqmp_pm_set_tcm_config(r5_core->pm_domain_id, tcm_mode);
-+		if (ret < 0)
-+			dev_err(r5_core->dev, "failed to configure TCM\n");
-+	}
- 
- 	return ret;
- }
-@@ -933,10 +936,17 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
- 	int ret, i;
- 
- 	r5_core = cluster->r5_cores[0];
-+
-+	/*
-+	 * New platforms must use device tree for TCM parsing.
-+	 * Only ZynqMP uses hardcode TCM.
-+	 */
- 	if (of_find_property(r5_core->np, "reg", NULL))
- 		ret = zynqmp_r5_get_tcm_node_from_dt(cluster);
--	else
-+	else if (of_machine_is_compatible("xlnx,zynqmp"))
- 		ret = zynqmp_r5_get_tcm_node(cluster);
-+	else
-+		ret = -EINVAL;
- 
- 	if (ret) {
- 		dev_err(dev, "can't get tcm, err %d\n", ret);
-@@ -1198,6 +1208,7 @@ static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
- /* Match table for OF platform binding */
- static const struct of_device_id zynqmp_r5_remoteproc_match[] = {
- 	{ .compatible = "xlnx,zynqmp-r5fss", },
-+	{ .compatible = "xlnx,versal-net-r52fss", },
- 	{ /* end of list */ },
- };
- MODULE_DEVICE_TABLE(of, zynqmp_r5_remoteproc_match);
--- 
-2.25.1
+Having said the above, I do like capable_any() changes (which is why I
+acked BPF side of things).
 
+>
+> I say this not knowing the full picture, as I unhelpfully was only CC'ed
+> on two of the patches... Please don't do that when sending patchsets.
+>
+> --
+> Jens Axboe
+>
 
