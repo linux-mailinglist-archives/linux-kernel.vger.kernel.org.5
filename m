@@ -1,224 +1,230 @@
-Return-Path: <linux-kernel+bounces-103972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6361787C74E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:46:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C416F87C752
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:51:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6F4B282D65
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:46:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 079E0B2228B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1096A53A0;
-	Fri, 15 Mar 2024 01:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3186F612E;
+	Fri, 15 Mar 2024 01:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iaswfEPZ"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="FqcQPsmf"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6450933CA
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 01:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B981F46AB
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 01:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710467204; cv=none; b=HPyCN+ovZ89UqLptEB8jrYD9iqd7dDwp/OGgYsEKXrBKTuJ9ekNPdIQGVkNQNFPvRWQsJ30d+kUxa3uqlgkEwGqACkM5pn7GFazGKUmDh5IGTzJdLRKpZ1Ay5kbr85HClUHzyqk4edsx/DQLOg6RPnnUHrZROTNxFxbRHN/mDgU=
+	t=1710467507; cv=none; b=bL1CYgdeqqmT3HMMOzD0WyjHEcaAnA+lrJA0mu7AInDzF/CmMTylFctnFwwtS0Z58VMFc5RzvFINfLBpimJHqUKMzdDKK9L1R7UoWDO+xQqrcNv5wuakuw2HICEhk2/B45wQlng7oaxfByDOWwARMCc8NGTXXk5RDxo3lZJjDrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710467204; c=relaxed/simple;
-	bh=q8iNWbjGQ+D2fJoo5tG/XMd3JR2XkDgUd51iBpSBcvs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nR+F9vxm6apYb3ORmo4RxP/6wlJGC8V84cXEMBDelAcJnbCutzLJTSMdrNeGhj83Ga0/tWtLybGBuShhfwDP12Db3GMMIAfDPvRMfU7olWSNwLtU1zZ6krVohztAqhKTC2U2OnvPHIKuQBgr4ctiIG7XchU0HC/u+UnPWIaGnas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iaswfEPZ; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d204e102a9so19527601fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 18:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710467200; x=1711072000; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RK3WS8YU/TIO9C5L+2WMErB8Z6UUjxPHl/ZVfvjJt24=;
-        b=iaswfEPZT5rbY3cOYprl4IwFdQ0jFzaompVy30DWJtfA7jtjYHtyLot3Xu39EdnRzA
-         vctpSOwaQMYXTYH6goHGiEj7t1Lo6HAZWHdarau8M1JSsjf1ZYAcaZyg2DFWal32ylMS
-         +uRLWMV4QuvHhbUuu0xS8FFq7DBR5KaIc/PrHylcAnylc/SPbXd55UH8Yaxe55X18ykz
-         u2EQUe8eygBeEudVMpAcB9dx1ipmJKBwpHAWAXQez9cWaYuB/b+PgIUSqI2oXG9btuQ7
-         qpaTI5riUAQUqPHDJYISLvfQMiXp5zZkVlkSu48gSTChAM2kr/hiu3wnYZfvjV5GE29w
-         tm+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710467200; x=1711072000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RK3WS8YU/TIO9C5L+2WMErB8Z6UUjxPHl/ZVfvjJt24=;
-        b=vX9eHYmNK+Tp4JDcHy97PES6LnHxcjMfvhvG4BUwm9o0vVCOJxTMLUpG/lyJvdRTAp
-         42qOuY7OZOfPnAIgsim6Vs/rYxHnzRybkarmeRN+YrkchSgEkWI4i1KOtEoj0mwhGF7N
-         kchWlLBFqcelQ/Fz+hAPLSL6kHQOLTpfzlGGg8FlmW4RPLJ2WKYArp/bwisSU+PkuvRY
-         4o/AnCkZFAND1HHHGoUqi5oFfGo25PgAQjiaOvVFn7rvZDDzFJ59J6iZN+3ZNkB9I8qM
-         RyfncIfMu7W/yCBzrGK5jRCQL2NJS3qCD+HpjFBtVUHHX/N6YBJFJl4ddXmaZXK/fkDc
-         mxvw==
-X-Forwarded-Encrypted: i=1; AJvYcCUttaJXjiDTYJpqOOwdfWhOwp9CEN3qNp6NnAC79lzNTyb2YTXE3wfnRRDgDBtG+UQ3ThSH8pWCgs6M4P0QTD3T7tdGaGHbKcrZDyf2
-X-Gm-Message-State: AOJu0YyJhgLjrKpng5+EFIUewbHNoCmIEns7cQauPllrGfOwf6qJfqC3
-	w3VNRPt8csVt+AopwtbmO9wCvjZOGNqp77+PseA/nMbnq+71Q5kb3NE41UEBS9ifqHaQwQXZein
-	Rw/gKzWT1NNrjU2QHO20Gkjvuf5w=
-X-Google-Smtp-Source: AGHT+IErr3X67ESANY5oZyQc3OQLFn3z4WEmx0f2jrHn04v+Ur73VCVeriymLwGz/734BKBZHnJAHIsYO4kZAqD4yqs=
-X-Received: by 2002:a05:651c:32a:b0:2d4:3c64:53f5 with SMTP id
- b10-20020a05651c032a00b002d43c6453f5mr1972795ljp.19.1710467200055; Thu, 14
- Mar 2024 18:46:40 -0700 (PDT)
+	s=arc-20240116; t=1710467507; c=relaxed/simple;
+	bh=HUIs/wmjmeQILPr8/MQm/pblJj4sQOKycFQ4qKLkjZE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uX92YgL8md/jXRLJSPR2F8LH/+wyQmk3U84rC4ssUWu55fYaHBVC/OtbmlG41A+X+SCYQS1oF1QFsIEtBI+4sw1eZxid8WMv+4PxatsNMTtzlH1MRMtEDkOcWgYVPsIeRWj9odL6LC877h/p61mfN1H98TehA/HBvyfb1nN4CjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=FqcQPsmf; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 917ef8b0e26e11ee935d6952f98a51a9-20240315
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=3XtRxBr8QsjZPZc+HT3MG5xiCdCMjVj6cC1ntJAiCs0=;
+	b=FqcQPsmf/zEF+QB2NaDbLNGZQzULFuSDTcVrquCY+Tkjj+XCgNIC7nvTr827LW61aVrurXpa+rE36b9tox8eAmP5i/LNVpUNy5+RM27TMbsUk6rE9gfwR75fX9hgaHrRfh50OWsY6jPUxov1Axj1c3RNUr54el/P2Cu1eBF91fs=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:33b1d753-1eff-4879-8081-d374ea47e259,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:6f543d0,CLOUDID:32378581-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 917ef8b0e26e11ee935d6952f98a51a9-20240315
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+	(envelope-from <liankun.yang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 310660803; Fri, 15 Mar 2024 09:51:41 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 15 Mar 2024 09:51:39 +0800
+Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 15 Mar 2024 09:51:38 +0800
+From: Liankun Yang <liankun.yang@mediatek.com>
+To: <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>, <airlied@gmail.com>,
+	<daniel@ffwll.ch>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>, <jitao.shi@mediatek.com>,
+	<mac.shen@mediatek.com>, <liankun.yang@mediatek.com>
+CC: <dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v1 1/1] drm/mediatek/ dp: Adjust bandwidth limit for DP
+Date: Fri, 15 Mar 2024 09:52:26 +0800
+Message-ID: <20240315015233.2023-1-liankun.yang@mediatek.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1710303061-16822-1-git-send-email-zhiguo.niu@unisoc.com> <eeefebcb-54db-4087-9319-dd5f9b63a1da@kernel.org>
-In-Reply-To: <eeefebcb-54db-4087-9319-dd5f9b63a1da@kernel.org>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Fri, 15 Mar 2024 09:46:28 +0800
-Message-ID: <CAHJ8P3+mo+yT8wfv2Xd3Rb7sFtXufmOgh_6CLzZxM5CjtYWC2Q@mail.gmail.com>
-Subject: Re: [PATCH] f2fs: add REQ_TIME time update for some user behaviors
-To: Chao Yu <chao@kernel.org>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	ke.wang@unisoc.com, hongyu.jin@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--3.870500-8.000000
+X-TMASE-MatchedRID: aNLZUNMgA8DqDJGloYB7/lu4M/xm4KZeB3WB/vm5tBhvOxpHnc6c8tAO
+	OSAF0cTNjhjs4bjZeL60WiAfCTDLxQDNPxu11HXj4pdq9sdj8LVYN1akkye0qOWPsfbn1jth8TF
+	JvgPXI7A4hXsmqdKfO3aeDhnWViUE0lwI2rCt62G4jAucHcCqncnlJe2gk8vI6dkNekyzYlk+xn
+	rY8SIOUkT88A7P9JJ2kiyjM1Ze4W0Pv5/+N9RjErqQyAveNtg65hCwQ3LNHZ2HegbyfstkOnnUb
+	FaXoymeQc1jtbpiLH2AMuqetGVetnyef22ep6XYymsk/wUE4hqrBS4T8labToBwhkOTCouh1zSU
+	gYfoEuN+67+mR/pqXYPIuqi1bh4/LrruoM7sUMSL8WaUGCH4mw5CO1gbP3VdOM8jHJvq79Wbjw+
+	lQ+OHZvNho9kAt8htLJl1Svx/Hh8xu7K+8aG0gLDxBQ/q2QPNQwymtxuJ6y0=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--3.870500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 2C05BDA06252C926B0A273E8E84954F6A0B77910A9C2749658F0FB14B43045232000:8
+X-MTK: N
 
-On Thu, Mar 14, 2024 at 9:06=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/3/13 12:11, Zhiguo Niu wrote:
-> > some user behaviors requested filesystem operations, which
-> > will cause filesystem not idle.
-> > Meanwhile adjust f2fs_update_time(REQ_TIME) of
-> > f2fs_ioc_defragment to successful case.
-> >
-> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > ---
-> >   fs/f2fs/file.c | 9 ++++++++-
-> >   1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > index 4dfe38e..dac3836 100644
-> > --- a/fs/f2fs/file.c
-> > +++ b/fs/f2fs/file.c
-> > @@ -2784,7 +2784,6 @@ static int f2fs_ioc_defragment(struct file *filp,=
- unsigned long arg)
-> >       err =3D f2fs_defragment_range(sbi, filp, &range);
-> >       mnt_drop_write_file(filp);
-> >
-> > -     f2fs_update_time(sbi, REQ_TIME);
->
-> I guess we need to call f2fs_update_time() here if any data was
-> migrated.
-OK!
->
-> if (range->len)
->         f2fs_update_time(sbi, REQ_TIME);
->
-> >       if (err < 0)
-> >               return err;
-> >
-> > @@ -2792,6 +2791,7 @@ static int f2fs_ioc_defragment(struct file *filp,=
- unsigned long arg)
-> >                                                       sizeof(range)))
-> >               return -EFAULT;
-> >
-> > +     f2fs_update_time(sbi, REQ_TIME);
-> >       return 0;
-> >   }
-> >
-> > @@ -3331,6 +3331,7 @@ static int f2fs_ioc_resize_fs(struct file *filp, =
-unsigned long arg)
-> >       if (copy_from_user(&block_count, (void __user *)arg,
-> >                          sizeof(block_count)))
-> >               return -EFAULT;
-> > +     f2fs_update_time(sbi, REQ_TIME);
->
-> There will be no further IO in the end of f2fs_ioc_resize_fs(), so we don=
-'t
-> need to update time to delay gc/discard thread?
->
-> >
-> >       return f2fs_resize_fs(filp, block_count);
-> >   }
-> > @@ -3424,6 +3425,7 @@ static int f2fs_ioc_setfslabel(struct file *filp,=
- unsigned long arg)
-> >       f2fs_up_write(&sbi->sb_lock);
-> >
-> >       mnt_drop_write_file(filp);
-> > +     f2fs_update_time(sbi, REQ_TIME);
->
-> Ditto,
-Dear Chao,
+By adjusting the order of link training and relocating it to HPD,
+link training can identify the usability of each lane in the current link.
 
-The two parts you proposed should be similar to the below scenario?
----------------------------------------------------------
-static int f2fs_ioc_set_encryption_policy(struct file *filp, unsigned long =
-arg)
-{
-struct inode *inode =3D file_inode(filp);
+It also supports handling signal instability and weakness due to
+environmental issues, enabling the acquisition of a stable bandwidth
+for the current link. Subsequently, DP work can proceed based on
+the actual maximum bandwidth.
 
-if (!f2fs_sb_has_encrypt(F2FS_I_SB(inode)))
-return -EOPNOTSUPP;
+It should training in the hpd event thread.
+Check the mode with lane count and link rate of training.
 
-f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+Signed-off-by: Liankun Yang <liankun.yang@mediatek.com>
+---
+ drivers/gpu/drm/mediatek/mtk_dp.c | 57 +++++++++++++++----------------
+ 1 file changed, 28 insertions(+), 29 deletions(-)
 
-return fscrypt_ioctl_set_policy(filp, (const void __user *)arg);
-}
------------------------------------------------------------
-thanks!
+diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+index 2136a596efa1..14da6077f947 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dp.c
++++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+@@ -1870,6 +1870,7 @@ static irqreturn_t mtk_dp_hpd_event_thread(int hpd, void *dev)
+ 	struct mtk_dp *mtk_dp = dev;
+ 	unsigned long flags;
+ 	u32 status;
++	int ret;
+ 
+ 	if (mtk_dp->need_debounce && mtk_dp->train_info.cable_plugged_in)
+ 		msleep(100);
+@@ -1888,9 +1889,28 @@ static irqreturn_t mtk_dp_hpd_event_thread(int hpd, void *dev)
+ 			memset(&mtk_dp->info.audio_cur_cfg, 0,
+ 			       sizeof(mtk_dp->info.audio_cur_cfg));
+ 
++			mtk_dp->enabled = false;
++			/* power off aux */
++			mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_PWR_STATE,
++			       DP_PWR_STATE_BANDGAP_TPLL,
++			       DP_PWR_STATE_MASK);
++
+ 			mtk_dp->need_debounce = false;
+ 			mod_timer(&mtk_dp->debounce_timer,
+ 				  jiffies + msecs_to_jiffies(100) - 1);
++		} else {
++			mtk_dp_aux_panel_poweron(mtk_dp, true);
++
++			ret = mtk_dp_parse_capabilities(mtk_dp);
++			if (ret)
++				drm_err(mtk_dp->drm_dev, "Can't parse capabilities\n");
++
++			/* Training */
++			ret = mtk_dp_training(mtk_dp);
++			if (ret)
++				drm_err(mtk_dp->drm_dev, "Training failed, %d\n", ret);
++
++			mtk_dp->enabled = true;
+ 		}
+ 	}
+ 
+@@ -2057,16 +2077,6 @@ static struct edid *mtk_dp_get_edid(struct drm_bridge *bridge,
+ 
+ 	new_edid = drm_get_edid(connector, &mtk_dp->aux.ddc);
+ 
+-	/*
+-	 * Parse capability here to let atomic_get_input_bus_fmts and
+-	 * mode_valid use the capability to calculate sink bitrates.
+-	 */
+-	if (mtk_dp_parse_capabilities(mtk_dp)) {
+-		drm_err(mtk_dp->drm_dev, "Can't parse capabilities\n");
+-		kfree(new_edid);
+-		new_edid = NULL;
+-	}
+-
+ 	if (new_edid) {
+ 		struct cea_sad *sads;
+ 
+@@ -2243,14 +2253,10 @@ static void mtk_dp_bridge_atomic_enable(struct drm_bridge *bridge,
+ 		return;
+ 	}
+ 
+-	mtk_dp_aux_panel_poweron(mtk_dp, true);
+-
+-	/* Training */
+-	ret = mtk_dp_training(mtk_dp);
+-	if (ret) {
+-		drm_err(mtk_dp->drm_dev, "Training failed, %d\n", ret);
+-		goto power_off_aux;
+-	}
++	/* power on aux */
++	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_PWR_STATE,
++			   DP_PWR_STATE_BANDGAP_TPLL_LANE,
++			   DP_PWR_STATE_MASK);
+ 
+ 	ret = mtk_dp_video_config(mtk_dp);
+ 	if (ret)
+@@ -2269,7 +2275,6 @@ static void mtk_dp_bridge_atomic_enable(struct drm_bridge *bridge,
+ 		       sizeof(mtk_dp->info.audio_cur_cfg));
+ 	}
+ 
+-	mtk_dp->enabled = true;
+ 	mtk_dp_update_plugged_status(mtk_dp);
+ 
+ 	return;
+@@ -2284,16 +2289,10 @@ static void mtk_dp_bridge_atomic_disable(struct drm_bridge *bridge,
+ {
+ 	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
+ 
+-	mtk_dp->enabled = false;
+ 	mtk_dp_update_plugged_status(mtk_dp);
+ 	mtk_dp_video_enable(mtk_dp, false);
+ 	mtk_dp_audio_mute(mtk_dp, true);
+ 
+-	if (mtk_dp->train_info.cable_plugged_in) {
+-		drm_dp_dpcd_writeb(&mtk_dp->aux, DP_SET_POWER, DP_SET_POWER_D3);
+-		usleep_range(2000, 3000);
+-	}
+-
+ 	/* power off aux */
+ 	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_PWR_STATE,
+ 			   DP_PWR_STATE_BANDGAP_TPLL,
+@@ -2310,10 +2309,10 @@ mtk_dp_bridge_mode_valid(struct drm_bridge *bridge,
+ {
+ 	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
+ 	u32 bpp = info->color_formats & DRM_COLOR_FORMAT_YCBCR422 ? 16 : 24;
+-	u32 rate = min_t(u32, drm_dp_max_link_rate(mtk_dp->rx_cap) *
+-			      drm_dp_max_lane_count(mtk_dp->rx_cap),
+-			 drm_dp_bw_code_to_link_rate(mtk_dp->max_linkrate) *
+-			 mtk_dp->max_lanes);
++
++	u32 lane_count_min = mtk_dp->train_info.lane_count;
++	u32 rate = drm_dp_bw_code_to_link_rate(mtk_dp->train_info.link_rate) *
++			 lane_count_min;
+ 
+ 	if (rate < mode->clock * bpp / 8)
+ 		return MODE_CLOCK_HIGH;
+-- 
+2.43.0
 
-
->
-> Thanks,
->
-> >   out:
-> >       kfree(vbuf);
-> >       return err;
-> > @@ -3597,6 +3599,7 @@ static int f2fs_release_compress_blocks(struct fi=
-le *filp, unsigned long arg)
-> >
-> >       filemap_invalidate_unlock(inode->i_mapping);
-> >       f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > +     f2fs_update_time(sbi, REQ_TIME);
-> >   out:
-> >       inode_unlock(inode);
-> >
-> > @@ -3766,6 +3769,7 @@ static int f2fs_reserve_compress_blocks(struct fi=
-le *filp, unsigned long arg)
-> >               clear_inode_flag(inode, FI_COMPRESS_RELEASED);
-> >               inode_set_ctime_current(inode);
-> >               f2fs_mark_inode_dirty_sync(inode, true);
-> > +             f2fs_update_time(sbi, REQ_TIME);
-> >       }
-> >   unlock_inode:
-> >       inode_unlock(inode);
-> > @@ -3964,6 +3968,7 @@ static int f2fs_sec_trim_file(struct file *filp, =
-unsigned long arg)
-> >       if (len)
-> >               ret =3D f2fs_secure_erase(prev_bdev, inode, prev_index,
-> >                               prev_block, len, range.flags);
-> > +     f2fs_update_time(sbi, REQ_TIME);
-> >   out:
-> >       filemap_invalidate_unlock(mapping);
-> >       f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > @@ -4173,6 +4178,7 @@ static int f2fs_ioc_decompress_file(struct file *=
-filp)
-> >       if (ret)
-> >               f2fs_warn(sbi, "%s: The file might be partially decompres=
-sed (errno=3D%d). Please delete the file.",
-> >                         __func__, ret);
-> > +     f2fs_update_time(sbi, REQ_TIME);
-> >   out:
-> >       inode_unlock(inode);
-> >       file_end_write(filp);
-> > @@ -4252,6 +4258,7 @@ static int f2fs_ioc_compress_file(struct file *fi=
-lp)
-> >       if (ret)
-> >               f2fs_warn(sbi, "%s: The file might be partially compresse=
-d (errno=3D%d). Please delete the file.",
-> >                         __func__, ret);
-> > +     f2fs_update_time(sbi, REQ_TIME);
-> >   out:
-> >       inode_unlock(inode);
-> >       file_end_write(filp);
 
