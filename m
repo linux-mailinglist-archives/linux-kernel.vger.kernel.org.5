@@ -1,168 +1,200 @@
-Return-Path: <linux-kernel+bounces-104609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B8287D0E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:02:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1CC87D0E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A412F1C2169D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:02:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D207B220DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A7C44C86;
-	Fri, 15 Mar 2024 16:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD98A446BA;
+	Fri, 15 Mar 2024 16:04:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SC6rGy6w";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SC6rGy6w"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="uZzgZR3g"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FBD24086B;
-	Fri, 15 Mar 2024 16:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6933FE47
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710518539; cv=none; b=iMwLz/b5c/OxhvrsAwxc66t4n9oITjtongjj3jBmQVfj+YIwrqsKheyo+HzIdiUTX5UOqVLdlkbSHFm5x1BX0riMBA30B554+XUrS+jNyGIC00SdVTLzZHA4wpFWVjv9i/LLOOjUBzPaokGDzgVh1NPmQqLa3G7QYxrHI95HPZI=
+	t=1710518672; cv=none; b=rZpgI15FSI4riU9IXssfy1B7JSrCoPdZRInONhDC7ymHS6rOFoSAMBSPmAIfNhuqCk5AqLCg21CIj5NRfynmdpcpr+/EbeccDa1qCqKSHSrAFi0HVWiX09kPj00/DHmJ5ponigPojd132MfzHl33YE7JIu9u21BYC2n7U5Ry9ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710518539; c=relaxed/simple;
-	bh=6Ule3JN0U15LHh3rH6IkUT0Y0+A+gb7QON59wG/WH1k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cWD1ea0VU9WwzuMvOs576FasD6SE+z611Zc6CE9yu+gDMzoS8ITcKNGlwXM7FVsnfeFGvunN6KjHaFY3OkxN6ILeOkvlIJhPcYMM1PZkoJrgVJZV23RutG/wwR+fSfLP+a4AJZC6+SDLnwjnQ/im/SArHv67ND0+f5+NkgkrREs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SC6rGy6w; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SC6rGy6w; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D3EFF1FB6D;
-	Fri, 15 Mar 2024 16:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710518531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=faiaAnTe6lOY2CBUd6zMN/hZKSHWHcaRYL1tD6+DLRk=;
-	b=SC6rGy6wppVPzsUIuTEShsqR7wG141w9vLma94akKnEXqQjKdQriAhyq7O2BMymjvrDrpS
-	2BhAD3iMSJY9nukgfaShrFuXYUMhzjZRSzoEglx0RNBGmI50G0oUoPAGf40gWKybK44yRG
-	4KK5EQ7Wz+tlRN8ysUQ/9ndVDiADtOo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710518531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=faiaAnTe6lOY2CBUd6zMN/hZKSHWHcaRYL1tD6+DLRk=;
-	b=SC6rGy6wppVPzsUIuTEShsqR7wG141w9vLma94akKnEXqQjKdQriAhyq7O2BMymjvrDrpS
-	2BhAD3iMSJY9nukgfaShrFuXYUMhzjZRSzoEglx0RNBGmI50G0oUoPAGf40gWKybK44yRG
-	4KK5EQ7Wz+tlRN8ysUQ/9ndVDiADtOo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C712513460;
-	Fri, 15 Mar 2024 16:02:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5mBtMANx9GVUXgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Fri, 15 Mar 2024 16:02:11 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Subject: [PATCH] net/sched: Add module alias for sch_fq_pie
-Date: Fri, 15 Mar 2024 17:02:10 +0100
-Message-ID: <20240315160210.8379-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710518672; c=relaxed/simple;
+	bh=Y2vBhougN5jQh8rv8uN/2CT0672Y43Pi3tSh1ogMX2U=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=t573QzXcBji6gyi+W8Z35gcXCPQTfLrQQxETQugtY2UodV5cJXBSzZ0LLqdWp1pgBXW0S8MIH4pY9gdmO8wUlWmZ+GzXeDwGWK+xVymnkEZ8TEV+PpesdajjLSyQPATKookLxlfonelMI8dWb5EJNVwFKFJCrL4crK4UoS6JXRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=uZzgZR3g; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a466a27d30aso303585966b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 09:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1710518667; x=1711123467; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oEkvKZn2d1cHdZ6UttH48shh7x+tm1u4UGnsox8Pajk=;
+        b=uZzgZR3gWzYUgt/PZJlVxTY2ZE2sDeoc5K7567+HJU0/fuVvB1Qu1upq5mz/GYXa+S
+         /+pR2KiSopkUproiZseMX08QLYr43IAgaxpize6zSSEUV5joTjN5IO5MGmGYavvNRDuZ
+         Bz49D/MnZ/fTjqGcPhepTE/mZHZ+/BeC05R42AaiFzm1unsNLSab4C2/kYu7FjsCqHaL
+         0ni3qj1R9yCOdXKqfTLvZ3aB7EIoXvB5SV4x+zck489dCIDC4Tn25BIi1Nu8Etq9QhiX
+         5DRs2baCbK4ezNzNPFKMFivdhhOBC+W58ipuaaY+6ZPYAoEm4mMlisyQFfDRNrE5Reqb
+         FKcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710518667; x=1711123467;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oEkvKZn2d1cHdZ6UttH48shh7x+tm1u4UGnsox8Pajk=;
+        b=qV8CzglaNVVnYoqMGOBd8eW1liDyL5kevue/uaOKYdzSXMGUZ9V7q4w1rl8SnIoKnf
+         uhiQXub2q2Wf4ldO5wanFjfE6df8wZk1/nIQdqwzgL4RIAml1qCZzz6gEsLOlIbdYC7P
+         BcfAuqGZou7P4kBae+3+dlpSwRmYIYUiFkjjIB8EsFzyVp4urTXEqkY0JTTnOfmN73vn
+         gz2kEiuZZyGKNUfVVk0NDykuyW5WWYIh9OSfSjUp7GzZuNfkilWVhjsa7AuMFmSEX+hz
+         Uhk1HSHMcy0CYUa6Vmzv6MZT5NhJtMoM5GrSPkBOIyVMFQ/nBHWE8dSkDrdvc1ppMeoh
+         fLLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOkkMpVi0FAGBm2lM8rOX/6WCtn7zp20HvYXVBvceYsrRHsbp8XJ9GiW3tCWgk5QW/7OpzgZw3Lm1rCkabeDFA0PJ3SbIKxu8XJ2ve
+X-Gm-Message-State: AOJu0Yyx+F0ii5FgIqura2Dr5Inqz2d/dUVbDX07i/iC1/rDBZEFu72r
+	YeP2U4XeOGjwfZq9fsIy8rmsX3zJ3OvxBcq2J9XGwh/kCpgmtZQaKQ6LahDadGU=
+X-Google-Smtp-Source: AGHT+IHsdRPSLjh2pfnZbg/sjdZRuqxBUf7OCP9LULpsybl02qKzFwkUtJvej+Qmg2MWXFSq72Y/Xg==
+X-Received: by 2002:a17:906:c245:b0:a43:f22e:57a6 with SMTP id bl5-20020a170906c24500b00a43f22e57a6mr3672338ejb.67.1710518667125;
+        Fri, 15 Mar 2024 09:04:27 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (213142096067.public.telering.at. [213.142.96.67])
+        by smtp.gmail.com with ESMTPSA id kt6-20020a170906aac600b00a4673706b4dsm1648047ejb.78.2024.03.15.09.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 09:04:26 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Date: Fri, 15 Mar 2024 17:04:22 +0100
+Subject: [PATCH] usb: typec: ptn36502: switch to DRM_AUX_BRIDGE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: 1.10
-X-Spamd-Result: default: False [1.10 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.10)[65.70%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[mojatatu.com,gmail.com,resnulli.us,davemloft.net,google.com,kernel.org,redhat.com,suse.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: *
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240315-ptn36502-aux-v1-1-c9d3c828ff2e@fairphone.com>
+X-B4-Tracking: v=1; b=H4sIAIVx9GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDY0NT3YKSPGMzUwMj3cTSCl1D05QUszQjC8vEtDQloJaCotS0zAqwcdG
+ xtbUADC3eFF4AAAA=
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.13.0
 
-The commit 2c15a5aee2f3 ("net/sched: Load modules via their alias")
-starts loading modules via aliases and not canonical names. The new
-aliases were added in commit 241a94abcf46 ("net/sched: Add module
-aliases for cls_,sch_,act_ modules") via a Coccinele script.
+Switch to using the new DRM_AUX_BRIDGE helper to create the transparent
+DRM bridge device instead of handcoding corresponding functionality.
 
-sch_fq_pie.c is missing module.h header and thus Coccinele did not patch
-it. Add the include and module alias manually, so that autoloading works
-for sch_fq_pie too.
-
-(Note: commit message in commit 241a94abcf46 ("net/sched: Add module
-aliases for cls_,sch_,act_ modules") was mangled due to '#'
-misinterpretation. The predicate haskernel is:
-
-| @ haskernel @
-| @@
-|
-| #include <linux/module.h>
-|
-)
-
-Fixes: 241a94abcf46 ("net/sched: Add module aliases for cls_,sch_,act_ modules")
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
- net/sched/sch_fq_pie.c | 2 ++
- 1 file changed, 2 insertions(+)
+Very similar to this patch:
+c5d296bad640 ("usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE")
+---
+ drivers/usb/typec/mux/Kconfig    |  2 +-
+ drivers/usb/typec/mux/ptn36502.c | 44 ++--------------------------------------
+ 2 files changed, 3 insertions(+), 43 deletions(-)
 
-diff --git a/net/sched/sch_fq_pie.c b/net/sched/sch_fq_pie.c
-index 5b595773e59b..358cf304f4c9 100644
---- a/net/sched/sch_fq_pie.c
-+++ b/net/sched/sch_fq_pie.c
-@@ -10,6 +10,7 @@
+diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
+index 399c7b0983df..4827e86fed6d 100644
+--- a/drivers/usb/typec/mux/Kconfig
++++ b/drivers/usb/typec/mux/Kconfig
+@@ -60,7 +60,7 @@ config TYPEC_MUX_PTN36502
+ 	tristate "NXP PTN36502 Type-C redriver driver"
+ 	depends on I2C
+ 	depends on DRM || DRM=n
+-	select DRM_PANEL_BRIDGE if DRM
++	select DRM_AUX_BRIDGE if DRM_BRIDGE
+ 	select REGMAP_I2C
+ 	help
+ 	  Say Y or M if your system has a NXP PTN36502 Type-C redriver chip
+diff --git a/drivers/usb/typec/mux/ptn36502.c b/drivers/usb/typec/mux/ptn36502.c
+index 72ae38a1b2be..0ec86ef32a87 100644
+--- a/drivers/usb/typec/mux/ptn36502.c
++++ b/drivers/usb/typec/mux/ptn36502.c
+@@ -8,7 +8,7 @@
+  * Copyright (C) 2023 Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
   */
  
- #include <linux/jhash.h>
-+#include <linux/module.h>
- #include <linux/sizes.h>
- #include <linux/vmalloc.h>
- #include <net/pkt_cls.h>
-@@ -563,6 +564,7 @@ static struct Qdisc_ops fq_pie_qdisc_ops __read_mostly = {
- 	.dump_stats	= fq_pie_dump_stats,
- 	.owner		= THIS_MODULE,
- };
-+MODULE_ALIAS_NET_SCH("fq_pie");
+-#include <drm/drm_bridge.h>
++#include <drm/bridge/aux-bridge.h>
+ #include <linux/bitfield.h>
+ #include <linux/i2c.h>
+ #include <linux/kernel.h>
+@@ -68,8 +68,6 @@ struct ptn36502 {
  
- static int __init fq_pie_module_init(void)
- {
+ 	struct typec_switch *typec_switch;
+ 
+-	struct drm_bridge bridge;
+-
+ 	struct mutex lock; /* protect non-concurrent retimer & switch */
+ 
+ 	enum typec_orientation orientation;
+@@ -283,44 +281,6 @@ static int ptn36502_detect(struct ptn36502 *ptn)
+ 	return 0;
+ }
+ 
+-#if IS_ENABLED(CONFIG_OF) && IS_ENABLED(CONFIG_DRM_PANEL_BRIDGE)
+-static int ptn36502_bridge_attach(struct drm_bridge *bridge,
+-				  enum drm_bridge_attach_flags flags)
+-{
+-	struct ptn36502 *ptn = container_of(bridge, struct ptn36502, bridge);
+-	struct drm_bridge *next_bridge;
+-
+-	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
+-		return -EINVAL;
+-
+-	next_bridge = devm_drm_of_get_bridge(&ptn->client->dev, ptn->client->dev.of_node, 0, 0);
+-	if (IS_ERR(next_bridge)) {
+-		dev_err(&ptn->client->dev, "failed to acquire drm_bridge: %pe\n", next_bridge);
+-		return PTR_ERR(next_bridge);
+-	}
+-
+-	return drm_bridge_attach(bridge->encoder, next_bridge, bridge,
+-				 DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+-}
+-
+-static const struct drm_bridge_funcs ptn36502_bridge_funcs = {
+-	.attach	= ptn36502_bridge_attach,
+-};
+-
+-static int ptn36502_register_bridge(struct ptn36502 *ptn)
+-{
+-	ptn->bridge.funcs = &ptn36502_bridge_funcs;
+-	ptn->bridge.of_node = ptn->client->dev.of_node;
+-
+-	return devm_drm_bridge_add(&ptn->client->dev, &ptn->bridge);
+-}
+-#else
+-static int ptn36502_register_bridge(struct ptn36502 *ptn)
+-{
+-	return 0;
+-}
+-#endif
+-
+ static const struct regmap_config ptn36502_regmap = {
+ 	.max_register = 0x0d,
+ 	.reg_bits = 8,
+@@ -369,7 +329,7 @@ static int ptn36502_probe(struct i2c_client *client)
+ 	if (ret)
+ 		goto err_disable_regulator;
+ 
+-	ret = ptn36502_register_bridge(ptn);
++	ret = drm_aux_bridge_register(dev);
+ 	if (ret)
+ 		goto err_disable_regulator;
+ 
 
-base-commit: ea80e3ed09ab2c2b75724faf5484721753e92c31
+---
+base-commit: 9bb9b28d0568991b1d63e66fe75afa5f97ad1156
+change-id: 20240315-ptn36502-aux-15dd6f289aff
+
+Best regards,
 -- 
-2.44.0
+Luca Weiss <luca.weiss@fairphone.com>
 
 
